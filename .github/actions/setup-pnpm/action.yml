@@ -1,0 +1,17 @@
+name: Setup pnpm workspace
+description: Install pnpm (version from package.json "packageManager"), Node (from .nvmrc) and dependencies.
+inputs:
+  install:
+    description: Run `pnpm install --frozen-lockfile`
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+    - if: inputs.install == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile

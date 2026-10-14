@@ -1,0 +1,47 @@
+name: Release
+
+# Push a tag like v1.2.3 to cut a release. The container image is published by docker.yml
+# from the same tag; this workflow attaches the static site and SBOM to the GitHub Release.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # create the release
+      id-token: write # provenance attestation
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm check
+      - run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      - name: Package the static site
+        run: |
+          touch apps/web/out/.nojekyll
+          tar -C apps/web/out -czf "aspirant-site-${GITHUB_REF_NAME}.tar.gz" .
+      - run: pnpm sbom
+      - name: Attest provenance of release assets
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            aspirant-site-*.tar.gz
+            sbom.cdx.json
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            "aspirant-site-${GITHUB_REF_NAME}.tar.gz" \
+            "sbom.cdx.json#SBOM (CycloneDX)"

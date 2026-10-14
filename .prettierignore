@@ -1,0 +1,16 @@
+node_modules
+pnpm-lock.yaml
+.pnpm-store
+.turbo
+.next
+out
+dist
+build
+coverage
+playwright-report
+test-results
+sbom*.json
+*.tsbuildinfo
+next-env.d.ts
+apps/web/public/**/*.glb
+apps/web/public/**/*.gltf

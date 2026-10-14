@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  TURBO_TELEMETRY_DISABLED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  quality:
+    name: Format, types, lint, unused code
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm knip
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm test
+      - name: Coverage (web)
+        run: pnpm --filter @aspirant/web test:coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-web
+          path: apps/web/coverage
+          retention-days: 7
+
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm build
+      - name: Verify static export
+        run: |
+          test -f apps/web/out/index.html
+          test -f apps/web/out/404.html
+          test -f apps/web/out/ui/index.html
+          test -f apps/web/out/data/index.html
+          test -d apps/web/out/_next/static
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: apps/web/out
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
+  e2e:
+    name: E2E (${{ matrix.project }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, mobile]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: apps/web/out
+      - name: Install Playwright browser
+        run: pnpm --filter @aspirant/web exec playwright install --with-deps chromium
+      - name: Run Playwright against the static export
+        run: pnpm --filter @aspirant/web exec playwright test --project=${{ matrix.project }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+        with:
+          install: "false"
+      - run: pnpm audit --prod --audit-level=high
+
+  commitlint:
+    name: Conventional commits
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --verbose
+
+  workflows:
+    name: Lint workflows and Dockerfile
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: raven-actions/actionlint@v2
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+  ci-ok:
+    name: CI passed
+    if: always()
+    needs: [quality, unit, build, e2e, audit, commitlint, workflows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any required job failed or was cancelled
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" || "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more required jobs did not succeed."
+            exit 1
+          fi

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {},
+    "apps/web": {
+      "entry": [
+        "src/app/**/{page,layout,not-found,error,loading,template,default}.tsx",
+        "src/app/**/{route,sitemap,robots,manifest}.ts",
+        "e2e/**/*.ts",
+      ],
+      "project": ["src/**/*.{ts,tsx}", "e2e/**/*.ts"],
+      "ignoreDependencies": [
+        // Toolkit: installed up front for pages you will build (dates, formatting).
+        "date-fns",
+      ],
+    },
+    "packages/ui": {
+      "entry": ["src/components/*.tsx", "src/lib/*.ts", "src/hooks/*.ts"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignoreDependencies": [
+        // Toolkit: these back shadcn/ui components that are not added yet. Install a component
+        // with `pnpm dlx shadcn@latest add <name>` (run in packages/ui) and remove the entry:
+        "cmdk", // command
+        "embla-carousel-react", // carousel
+        "input-otp", // input-otp
+        "react-day-picker", // calendar
+        "react-resizable-panels", // resizable
+        "recharts", // chart
+        "vaul", // drawer
+      ],
+    },
+    "packages/config": {
+      "entry": ["eslint/*.mjs"],
+      // Referenced by name from the Prettier config's `plugins` array, which knip cannot follow.
+      "ignoreDependencies": ["prettier-plugin-tailwindcss"],
+      // tsconfig "plugins": [{ "name": "next" }] is an editor plugin, not an import.
+      "ignoreUnresolved": ["next"],
+    },
+  },
+}

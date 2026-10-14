@@ -1,0 +1,41 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build output
+.next
+out
+dist
+build
+.turbo
+*.tsbuildinfo
+next-env.d.ts
+
+# tests
+coverage
+playwright-report
+test-results
+blob-report
+.playwright
+
+# env
+.env
+.env.*
+!.env.example
+
+# supply chain artifacts generated locally
+sbom*.json
+*.cdx.json
+trivy-*.sarif
+
+# logs / OS / editor
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.lighthouseci

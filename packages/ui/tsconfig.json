@@ -1,0 +1,11 @@
+{
+  "extends": "@aspirant/config/tsconfig/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@aspirant/ui/*": ["./src/*"]
+    },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["src", "*.config.ts", "vitest.setup.ts", "eslint.config.mjs"],
+  "exclude": ["node_modules"]
+}

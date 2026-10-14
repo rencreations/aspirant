@@ -1,0 +1,15 @@
+# Shared Trivy config used by CI (`--config trivy.yaml`) and for local scans.
+severity:
+  - HIGH
+  - CRITICAL
+scan:
+  scanners:
+    - vuln
+    - secret
+    - misconfig
+  skip-dirs:
+    - node_modules
+    - .next
+    - out
+vulnerability:
+  ignore-unfixed: true

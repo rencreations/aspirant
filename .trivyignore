@@ -1,0 +1,2 @@
+# Add vulnerability IDs here ONLY with a justification and an expiry, e.g.:
+# CVE-2026-0000 exp:2026-12-31  # no fix available; not reachable from static files

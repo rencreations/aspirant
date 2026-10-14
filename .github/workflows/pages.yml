@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+# One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+# The site is served from the domain root (custom domain or <org>.github.io), so no basePath.
+# For a project page (https://org.github.io/repo) set the repository variable BASE_PATH=/repo.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  TURBO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        id: pages
+      - uses: ./.github/actions/setup-pnpm
+      - name: Build
+        run: pnpm build
+        env:
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || steps.pages.outputs.origin }}
+      - name: Ensure .nojekyll (serve the _next directory)
+        run: touch apps/web/out/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Smoke test the deployed site
+        env:
+          URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for i in {1..10}; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$URL" || true)
+            echo "attempt $i: HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 6
+          done
+          echo "Deployed site did not return HTTP 200" >&2
+          exit 1

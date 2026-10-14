@@ -1,0 +1,69 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 3 # skip brand-new releases (supply-chain safety)
+    groups:
+      tanstack:
+        patterns: ["@tanstack/*"]
+      three-and-react-three:
+        patterns: ["three", "@types/three", "@react-three/*", "postprocessing"]
+      animation:
+        patterns: ["gsap", "@gsap/*", "motion", "lenis"]
+      radix-and-ui:
+        patterns:
+          [
+            "radix-ui",
+            "@radix-ui/*",
+            "lucide-react",
+            "sonner",
+            "cmdk",
+            "vaul",
+            "tailwind-merge",
+            "class-variance-authority",
+          ]
+      tailwind:
+        patterns: ["tailwindcss", "@tailwindcss/*", "tw-animate-css", "postcss"]
+      lint-and-format:
+        patterns:
+          [
+            "eslint",
+            "@eslint/*",
+            "eslint-*",
+            "typescript-eslint",
+            "prettier",
+            "prettier-plugin-*",
+            "knip",
+            "husky",
+            "lint-staged",
+            "@commitlint/*",
+          ]
+      testing:
+        patterns:
+          ["vitest", "@vitest/*", "@playwright/*", "@axe-core/*", "@testing-library/*", "jsdom"]
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 3
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 3
