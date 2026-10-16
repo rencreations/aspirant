@@ -1,0 +1,197 @@
+/*
+ * Design tokens for The Aspirants (Selrick Academy Resonance Terminal).
+ *
+ * Two worlds share one set of names:
+ *   [data-theme="storm"]    void black base, amber, violet and crimson light (default)
+ *   [data-theme="daybreak"] white ceramic base, cyan resonance and gold daybreak
+ *
+ * Constant palette (never flips): --ink, --graphite, --ceramic and the bright light colours
+ * (--light-*), used for glows, particles and art overlays.
+ * Themed tokens (flip with data-theme): --bg, --bg-2, --panel, --line, --text, --text-dim,
+ * --text-faint, the accent colours (--cyan, --gold, --amber, --violet, --magenta, --crimson,
+ * tuned so each reads at 4.5:1 or more on every surface of its theme) and --focus.
+ * Per page or per component: --accent, --accent-2, --glow (characters set their palette).
+ */
+
+:root {
+  /* Constant palette */
+  --ink: #05070c;
+  --graphite: #141a25;
+  --ceramic: #f3f5f9;
+  --light-cyan: #5ce1ff;
+  --light-gold: #ffcf5c;
+  --light-amber: #ffa24a;
+  --light-violet: #b59cff;
+  --light-magenta: #ff6ac8;
+  --light-crimson: #ff5468;
+
+  /* Type families (self-hosted via @fontsource, see app/layout.tsx) */
+  --font-display-stack:
+    "Big Shoulders Display Variable", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+  --font-serif-stack: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-mono-stack:
+    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-body-stack:
+    "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans",
+    "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+
+  /* Fluid type scale, interpolated linearly from a 320 px to a 3440 px viewport */
+  --step--2: clamp(0.7188rem, 0.7027rem + 0.0801vw, 0.875rem);
+  --step--1: clamp(0.8125rem, 0.7869rem + 0.1282vw, 1.0625rem);
+  --step-0: clamp(1rem, 0.9679rem + 0.1603vw, 1.3125rem);
+  --step-1: clamp(1.1563rem, 1.1018rem + 0.2724vw, 1.6875rem);
+  --step-2: clamp(1.375rem, 1.2853rem + 0.4487vw, 2.25rem);
+  --step-3: clamp(1.6875rem, 1.5401rem + 0.7372vw, 3.125rem);
+  --step-4: clamp(2.0625rem, 1.7997rem + 1.3141vw, 4.625rem);
+  --step-5: clamp(2.5rem, 2.0385rem + 2.3077vw, 7rem);
+  --step-6: clamp(3.125rem, 2.3686rem + 3.7821vw, 10.5rem);
+  --step-7: clamp(3.875rem, 2.6058rem + 6.3462vw, 16.25rem);
+  --step-8: clamp(4.75rem, 2.8013rem + 9.7436vw, 23.75rem);
+
+  /* Fluid space scale */
+  --space-3xs: clamp(0.25rem, 0.2372rem + 0.0641vw, 0.375rem);
+  --space-2xs: clamp(0.5rem, 0.4808rem + 0.0962vw, 0.6875rem);
+  --space-xs: clamp(0.75rem, 0.7179rem + 0.1603vw, 1.0625rem);
+  --space-s: clamp(1rem, 0.9487rem + 0.2564vw, 1.5rem);
+  --space-m: clamp(1.5rem, 1.4231rem + 0.3846vw, 2.25rem);
+  --space-l: clamp(2rem, 1.8718rem + 0.641vw, 3.25rem);
+  --space-xl: clamp(3rem, 2.7949rem + 1.0256vw, 5rem);
+  --space-2xl: clamp(4rem, 3.641rem + 1.7949vw, 7.5rem);
+  --space-3xl: clamp(6rem, 5.3333rem + 3.3333vw, 12.5rem);
+  --space-4xl: clamp(8rem, 7.0256rem + 4.8718vw, 17.5rem);
+
+  /* Page gutter. On desktop it also clears the HUD rails at the left and right edges. */
+  --gutter: clamp(1rem, 0.4872rem + 2.5641vw, 6rem);
+  --measure: 68ch;
+  --content-max: 112rem;
+  --nav-h: 3.5rem;
+  --hud-rail: 0px;
+
+  /* Shape: the terminal has no rounded corners. Chamfers come from clip-path. */
+  --radius: 0;
+  --cut: 14px;
+  --cut-sm: 8px;
+  --cut-lg: 24px;
+  --hairline: 1px;
+
+  /* Motion. JS mirror: @/lib/motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-heavy: cubic-bezier(0.83, 0, 0.17, 1);
+  --ease-spring: linear(
+    0,
+    0.089,
+    0.29,
+    0.524,
+    0.738,
+    0.906,
+    1.019,
+    1.082,
+    1.106,
+    1.102,
+    1.083,
+    1.059,
+    1.035,
+    1.015,
+    1.001,
+    0.993,
+    0.989,
+    0.989,
+    0.99,
+    0.993,
+    0.996,
+    0.998,
+    1
+  );
+  --dur-instant: 90ms;
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 420ms;
+  --dur-slower: 700ms;
+  --dur-epic: 1100ms;
+
+  /* Stacking order */
+  --z-ember: 0;
+  --z-content: 1;
+  --z-hud: 40;
+  --z-nav: 50;
+  --z-menu: 70;
+  --z-popover: 75;
+  --z-modal: 80;
+  --z-transition: 90;
+  --z-cursor: 95;
+  --z-gate: 100;
+  --z-skip: 110;
+
+  /* Lantern position, written by <LanternCursor> (viewport px) */
+  --lx: 50vw;
+  --ly: 50vh;
+}
+
+@media (min-width: 56.3125em) {
+  :root {
+    --gutter: clamp(3.5rem, 2.2rem + 2.5641vw, 7rem);
+    --nav-h: 4.25rem;
+    --hud-rail: 3rem;
+  }
+}
+
+/* Storm: the default world. */
+:root,
+[data-theme="storm"] {
+  --bg: #05070c;
+  --bg-2: #0a0e16;
+  --panel: #0e141f;
+  --panel-glass: rgb(14 20 31 / 0.72);
+  --line: rgb(170 196 235 / 0.2);
+  --line-strong: rgb(190 214 250 / 0.42);
+  --text: #eef3fa;
+  --text-dim: #aab6c8;
+  --text-faint: #7d8aa0;
+  --cyan: #5ce1ff;
+  --gold: #ffcf5c;
+  --amber: #ffa24a;
+  --violet: #b59cff;
+  --magenta: #ff6ac8;
+  --crimson: #ff5468;
+  --focus: #ffe58a;
+  --on-accent: #05070c;
+  --scrim: rgb(3 5 9 / 0.78);
+  --accent: var(--amber);
+  --accent-2: var(--violet);
+  --glow: var(--light-amber);
+  --ember-a: var(--light-amber);
+  --ember-b: var(--light-violet);
+  --hud-ink: rgb(214 228 250 / 0.55);
+  color-scheme: dark;
+}
+
+/* Daybreak: the Academy. */
+[data-theme="daybreak"] {
+  --bg: #f3f5f9;
+  --bg-2: #e7ebf2;
+  --panel: #ffffff;
+  --panel-glass: rgb(255 255 255 / 0.74);
+  --line: rgb(30 48 80 / 0.18);
+  --line-strong: rgb(24 40 70 / 0.42);
+  --text: #0b111c;
+  --text-dim: #3c4859;
+  --text-faint: #5d6a7d;
+  --cyan: #00718c;
+  --gold: #8a5a00;
+  --amber: #a3460a;
+  --violet: #5b3fc4;
+  --magenta: #a8237a;
+  --crimson: #b4192f;
+  --focus: #1336d1;
+  --on-accent: #ffffff;
+  --scrim: rgb(236 240 247 / 0.82);
+  --accent: var(--cyan);
+  --accent-2: var(--gold);
+  --glow: var(--light-cyan);
+  --ember-a: var(--light-cyan);
+  --ember-b: var(--light-gold);
+  --hud-ink: rgb(20 34 60 / 0.5);
+  color-scheme: light;
+}

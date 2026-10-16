@@ -2,7 +2,14 @@
   "ci": {
     "collect": {
       "staticDistDir": "./apps/web/out",
-      "url": ["/index.html", "/ui/index.html", "/data/index.html"],
+      "url": [
+        "/index.html",
+        "/experience/index.html",
+        "/story/index.html",
+        "/character/index.html",
+        "/character/layla/index.html",
+        "/collection/index.html"
+      ],
       "numberOfRuns": 1,
       "settings": {
         "preset": "desktop",
@@ -14,7 +21,7 @@
         "categories:accessibility": [
           "error",
           {
-            "minScore": 0.9
+            "minScore": 1
           }
         ],
         "categories:best-practices": [

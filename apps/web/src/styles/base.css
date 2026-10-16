@@ -1,0 +1,195 @@
+/* Element defaults, focus, selection and motion preferences. */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: var(--bg);
+    scrollbar-color: var(--line-strong) var(--bg);
+    hanging-punctuation: first last;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body-stack);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    font-kerning: normal;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  [data-theme] {
+    color: var(--text);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display-stack);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  img,
+  video {
+    height: auto;
+  }
+
+  button {
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /*
+   * Focus: a high-contrast outline on every focusable element, plus the four-pointed star that
+   * <FocusStar> places on the focused element's corner. Never put clip-path on a focusable
+   * element itself (it would clip the outline): clip a background layer instead.
+   */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* Gate cover: painted before hydration while the loader is pending (see LoaderGate). */
+.gate-cover {
+  display: none;
+}
+
+html[data-gate="on"] .gate-cover {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-gate);
+  background:
+    radial-gradient(60% 50% at 50% 55%, rgb(92 225 255 / 0.08), transparent 70%), var(--ink);
+}
+
+html[data-gate="on"] body {
+  overflow: hidden;
+}
+
+/* Reduced motion: the OS preference and the in-app toggle (html[data-motion="reduced"]). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Skip link: hidden until focused. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: var(--z-skip);
+  padding: 0.75rem 1.1rem;
+  min-height: 44px;
+  background: var(--focus);
+  color: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1rem));
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+  outline-color: var(--text);
+}
+
+.noscript {
+  position: relative;
+  z-index: var(--z-skip);
+  margin: 0;
+  padding: 0.75rem var(--gutter);
+  background: var(--panel);
+  color: var(--text);
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1);
+}

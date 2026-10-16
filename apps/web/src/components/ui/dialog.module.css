@@ -1,0 +1,47 @@
+/* Terminal styling for the shared dialog: a chamfered hairline border drawn by two clipped
+   pseudo layers, so the dialog itself is never clipped (focus outlines stay visible). */
+.content {
+  isolation: isolate;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.content::before,
+.content::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+  pointer-events: none;
+}
+
+.content::before {
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), var(--line-strong) 40%);
+}
+
+.content::after {
+  inset: 1px;
+  background: var(--panel);
+}
+
+.title {
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.description {
+  color: var(--text-dim);
+}

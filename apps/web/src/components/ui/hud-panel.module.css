@@ -1,0 +1,191 @@
+.panel {
+  --hp-cut: 16px;
+  --hp-accent: var(--accent);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text);
+}
+
+/* Border layer and fill layer. Only these are clipped, never the panel itself, so focus
+   outlines and overflowing children stay visible. */
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--hp-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hp-cut)),
+    calc(100% - var(--hp-cut)) 100%,
+    0 100%,
+    0 var(--hp-cut)
+  );
+}
+
+.panel::before {
+  inset: 0;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--hp-accent) 65%, var(--line-strong)) 0%,
+    var(--line-strong) 22%,
+    var(--line) 60%,
+    color-mix(in srgb, var(--hp-accent) 45%, var(--line)) 100%
+  );
+}
+
+.panel::after {
+  inset: 1px;
+  background: var(--panel);
+}
+
+.glass::after {
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+
+/* Corner ticks: brackets on the square corners, a diagonal on the cut ones. */
+.tick {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  border-color: var(--hp-accent);
+  border-style: solid;
+  border-width: 0;
+}
+
+.tr {
+  top: -4px;
+  right: -4px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.bl {
+  bottom: -4px;
+  left: -4px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.tl,
+.br {
+  width: calc(var(--hp-cut) * 0.9);
+  height: 1px;
+  background: var(--hp-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--hp-accent) 60%, transparent);
+}
+
+.tl {
+  top: calc(var(--hp-cut) / 2);
+  left: calc(var(--hp-cut) * -0.15);
+  transform: rotate(-45deg);
+}
+
+.br {
+  bottom: calc(var(--hp-cut) / 2);
+  right: calc(var(--hp-cut) * -0.15);
+  transform: rotate(-45deg);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1.1rem 0.6rem calc(var(--hp-cut) + 0.6rem);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-faint);
+  min-width: 0;
+}
+
+.label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--hp-accent);
+  transform: rotate(45deg);
+}
+
+.code {
+  color: var(--hp-accent);
+  white-space: nowrap;
+}
+
+.body {
+  position: relative;
+  padding: var(--space-s) var(--space-s) var(--space-m);
+  min-width: 0;
+}
+
+/* Scan band: a slow light sweep inside the panel. */
+.scanTrack {
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--hp-cut) 0,
+    100% 0,
+    100% calc(100% - var(--hp-cut)),
+    calc(100% - var(--hp-cut)) 100%,
+    0 100%,
+    0 var(--hp-cut)
+  );
+}
+
+.scanTrack::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -35%;
+  height: 35%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--hp-accent) 12%, transparent) 70%,
+    color-mix(in srgb, var(--hp-accent) 30%, transparent) 98%,
+    transparent
+  );
+  animation: panel-scan 5.5s linear infinite;
+}
+
+@keyframes panel-scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(400%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanTrack::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .scanTrack::before {
+  animation: none;
+  opacity: 0;
+}

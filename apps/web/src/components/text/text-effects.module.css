@@ -1,0 +1,89 @@
+/* Shared styles for SplitText, LampText and Typewriter. */
+
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.unit {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/*
+ * Until the client takes over, split units are hidden only when JS is on and motion is
+ * allowed (the boot script sets html.js before first paint). The failsafe shows them after
+ * 2.5 s if the app never hydrates.
+ */
+:global(:root.js:not([data-motion="reduced"])) [data-split-pending] .unit,
+:global(:root.js:not([data-motion="reduced"])) [data-typing-pending] .typed {
+  opacity: 0;
+  animation: pending-failsafe 0.4s 2.5s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(:root.js) [data-split-pending] .unit,
+  :global(:root.js) [data-typing-pending] .typed {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+@keyframes pending-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+
+/* LampText */
+.lampWord {
+  display: inline;
+  transition:
+    text-shadow var(--dur-slow) var(--ease-out),
+    color var(--dur-slow) var(--ease-out);
+}
+
+.lampWord[data-current="true"] {
+  text-shadow:
+    0 0 18px color-mix(in srgb, var(--glow) 70%, transparent),
+    0 0 2px color-mix(in srgb, var(--glow) 40%, transparent);
+}
+
+/* Typewriter */
+.typed {
+  white-space: pre-wrap;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.08em;
+  vertical-align: -0.16em;
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 60%, transparent);
+  animation: caret-blink 1s steps(1, end) infinite;
+}
+
+.caret[data-done="true"] {
+  opacity: 0.85;
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}

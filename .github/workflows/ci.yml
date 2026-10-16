@@ -59,8 +59,11 @@ jobs:
         run: |
           test -f apps/web/out/index.html
           test -f apps/web/out/404.html
-          test -f apps/web/out/ui/index.html
-          test -f apps/web/out/data/index.html
+          test -f apps/web/out/experience/index.html
+          test -f apps/web/out/story/index.html
+          test -f apps/web/out/character/index.html
+          test -f apps/web/out/character/fanny/index.html
+          test -f apps/web/out/collection/index.html
           test -d apps/web/out/_next/static
       - uses: actions/upload-artifact@v4
         with:
@@ -78,7 +81,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, mobile]
+        project: [phone, tablet, desktop]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm

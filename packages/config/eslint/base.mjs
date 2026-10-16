@@ -13,6 +13,7 @@ export const baseConfig = tseslint.config(
     ignores: [
       "**/node_modules/**",
       "**/.next/**",
+      "**/.next-*/**",
       "**/out/**",
       "**/dist/**",
       "**/coverage/**",

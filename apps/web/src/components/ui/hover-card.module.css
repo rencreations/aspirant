@@ -1,0 +1,131 @@
+.trigger {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 80%, transparent);
+  text-underline-offset: 0.22em;
+  cursor: help;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  color: var(--accent);
+  text-decoration-style: solid;
+  text-decoration-color: var(--accent);
+}
+
+.card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-popover);
+  width: max-content;
+  max-width: min(20rem, calc(100vw - 16px));
+  padding: 0.95rem 1.05rem 1rem;
+  color: var(--text);
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  text-align: left;
+  isolation: isolate;
+  animation: card-in var(--dur-base) var(--ease-out);
+}
+
+.card[data-side="top"] {
+  --rise: 4px;
+}
+
+.card[data-side="bottom"] {
+  --rise: -4px;
+}
+
+/* Chamfered hairline border (::before) and glass fill (::after). */
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+}
+
+.card::before {
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), var(--line-strong) 45%);
+}
+
+.card::after {
+  inset: 1px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.card[data-measuring="true"] {
+  visibility: hidden;
+  animation: none;
+}
+
+.card :where(a) {
+  color: var(--accent);
+}
+
+.arrow {
+  position: absolute;
+  left: var(--arrow-x, 50%);
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.card[data-side="bottom"] .arrow {
+  top: -5px;
+}
+
+.card[data-side="top"] .arrow {
+  bottom: -5px;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise, 4px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Reduced motion: fade only. */
+:root[data-motion="reduced"] .card {
+  animation: card-fade var(--dur-fast) linear;
+}
+
+@keyframes card-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

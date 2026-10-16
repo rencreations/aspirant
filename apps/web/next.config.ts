@@ -6,16 +6,23 @@ import type { NextConfig } from "next";
  * Static export. `next build` writes a fully static site to `apps/web/out`, which is served
  * by GitHub Pages and by the nginx container image.
  *
- * GitHub Pages is served from the domain root (custom domain / org site), so no basePath is
- * needed. Set BASE_PATH (e.g. "/my-repo") only when deploying to a project page.
+ * BASE_PATH: production runs as a GitHub project page under "/aspirant". Leave it empty for a
+ * domain root (dev, container, custom domain). Every non-route URL goes through `asset()`.
+ *
+ * NEXT_DIST_DIR: lets each engineer run a private dev server next to the owner's preview on
+ * port 3000 without sharing a build folder, for example:
+ *   NEXT_DIST_DIR=.next-shell pnpm --filter @aspirant/web exec next dev -p 3101
+ * `output: "export"` still writes the static site to `out/`.
  */
 const basePath = process.env.BASE_PATH ?? "";
+const distDir = process.env.NEXT_DIST_DIR ?? ".next";
 
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
   reactStrictMode: true,
   poweredByHeader: false,
+  distDir,
   ...(basePath ? { basePath, assetPrefix: basePath } : {}),
   images: { unoptimized: true },
   transpilePackages: ["@aspirant/ui"],

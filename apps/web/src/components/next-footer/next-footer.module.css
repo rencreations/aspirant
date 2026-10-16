@@ -1,0 +1,221 @@
+.region {
+  --p: 0;
+  position: relative;
+  height: 140vh;
+  height: 140dvh;
+  margin-top: var(--space-2xl);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: calc(var(--nav-h) + var(--space-s)) var(--gutter) var(--space-l);
+  border-top: 1px solid var(--line);
+  isolation: isolate;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: calc(0.18 + var(--p) * 0.32);
+  transform: scale(calc(1.14 - var(--p) * 0.14));
+  filter: saturate(calc(0.4 + var(--p) * 0.6));
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      to top,
+      var(--bg) 4%,
+      color-mix(in srgb, var(--bg) 40%, transparent) 55%,
+      var(--bg)
+    ),
+    radial-gradient(
+      70% 60% at 30% 60%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 70%
+    );
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  --grid-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  opacity: 0.6;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.body {
+  align-self: end;
+  display: grid;
+  gap: var(--space-s);
+  min-width: 0;
+}
+
+.title {
+  position: relative;
+  display: inline-grid;
+  justify-self: start;
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 15vw, 22rem);
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.titleGhost,
+.titleFill {
+  grid-area: 1 / 1;
+}
+
+.titleGhost {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+
+.titleFill {
+  color: var(--text);
+  clip-path: inset(-0.3em calc(100% - var(--p) * 100%) -0.3em -0.3em);
+  text-shadow: 0 0 0.3em color-mix(in srgb, var(--glow) 26%, transparent);
+}
+
+/* The leading edge of the fill: a thin scan line that travels with the progress. */
+.title::after {
+  content: "";
+  position: absolute;
+  top: 0.04em;
+  bottom: 0.04em;
+  left: calc(var(--p) * 100%);
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+  opacity: calc(min(var(--p) * 25, 1) * min((1 - var(--p)) * 25, 1));
+  pointer-events: none;
+}
+
+.sublabel {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--text-dim);
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.2;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s) var(--space-m);
+  margin-top: var(--space-xs);
+}
+
+.hint {
+  margin: 0;
+}
+
+.ring {
+  position: relative;
+  width: clamp(5.5rem, 9vw, 8.5rem);
+  aspect-ratio: 1;
+  flex: none;
+}
+
+.ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  stroke: var(--line-strong);
+}
+
+.ringFill {
+  stroke: var(--accent);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p));
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+.ringTicks {
+  stroke: var(--line-strong);
+}
+
+.ringValue {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ringValue small {
+  display: block;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+
+.region[data-state="locking"] .ringFill {
+  stroke: var(--focus);
+}
+
+.region[data-state="locking"] .titleFill {
+  animation: breathe 0.5s var(--ease-in-out) infinite;
+}
+
+@media (max-width: 40em) {
+  .top {
+    flex-direction: column-reverse;
+  }
+  .ring {
+    width: 4.75rem;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

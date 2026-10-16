@@ -1,33 +1,31 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
-    ".": {},
+    ".": {
+      // Repository scripts (asset pipeline, content builders, QA scans).
+      "entry": ["scripts/**/*.{mjs,js,ts}"],
+      "project": ["scripts/**/*.{mjs,js,ts}"],
+    },
     "apps/web": {
       "entry": [
         "src/app/**/{page,layout,not-found,error,loading,template,default}.tsx",
         "src/app/**/{route,sitemap,robots,manifest}.ts",
-        "e2e/**/*.ts",
+        "e2e/**/*.{ts,mjs}",
+        // Typed content layer: an API for the page features, consumed as pages land.
+        "src/content/**/*.ts",
       ],
-      "project": ["src/**/*.{ts,tsx}", "e2e/**/*.ts"],
+      "project": ["src/**/*.{ts,tsx}", "e2e/**/*.{ts,mjs}"],
       "ignoreDependencies": [
-        // Toolkit: installed up front for pages you will build (dates, formatting).
-        "date-fns",
+        // Toolkit kept for page work (design brief): Motion for UI animation, cva for
+        // variants, lucide icons. Remove an entry once a page imports it.
+        "motion",
+        "class-variance-authority",
+        "lucide-react",
       ],
     },
     "packages/ui": {
-      "entry": ["src/components/*.tsx", "src/lib/*.ts", "src/hooks/*.ts"],
+      "entry": ["src/components/*.tsx", "src/lib/*.ts"],
       "project": ["src/**/*.{ts,tsx}"],
-      "ignoreDependencies": [
-        // Toolkit: these back shadcn/ui components that are not added yet. Install a component
-        // with `pnpm dlx shadcn@latest add <name>` (run in packages/ui) and remove the entry:
-        "cmdk", // command
-        "embla-carousel-react", // carousel
-        "input-otp", // input-otp
-        "react-day-picker", // calendar
-        "react-resizable-panels", // resizable
-        "recharts", // chart
-        "vaul", // drawer
-      ],
     },
     "packages/config": {
       "entry": ["eslint/*.mjs"],

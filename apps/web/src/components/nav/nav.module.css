@@ -1,0 +1,443 @@
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-nav);
+  height: var(--nav-h);
+  color: var(--text);
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    background-color var(--dur-slow) var(--ease-out);
+}
+
+.nav[data-hidden="true"]:not(:focus-within) {
+  transform: translateY(calc(-100% - 4px));
+}
+
+/* Glass bar, painted only once the page has scrolled. */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg) 92%, transparent),
+    color-mix(in srgb, var(--bg) 70%, transparent)
+  );
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.nav[data-scrolled="true"]::before {
+  opacity: 1;
+}
+
+.inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-inline: var(--gutter);
+}
+
+/* Brand ------------------------------------------------------------------------------------ */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.brandStar {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--glow) 55%, transparent));
+  transition: transform var(--dur-slower) var(--ease-spring);
+}
+
+.brand:hover .brandStar {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.wordmark {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Desktop links ---------------------------------------------------------------------------- */
+.links {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.25rem, 1vw, 1.25rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.75rem 0.6rem;
+  text-decoration: none;
+  color: var(--text-dim);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.linkIndex {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.linkLabel {
+  font-family: var(--font-display-stack);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Bracket corners that close in on hover and on the current page. */
+.link::before,
+.link::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: var(--accent);
+  border-style: solid;
+  opacity: 0;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.link::before {
+  top: 6px;
+  left: 0;
+  border-width: 1px 0 0 1px;
+  transform: translate(-5px, -5px);
+}
+
+.link::after {
+  bottom: 6px;
+  right: 0;
+  border-width: 0 1px 1px 0;
+  transform: translate(5px, 5px);
+}
+
+.link:hover,
+.link:focus-visible,
+.link[aria-current="page"] {
+  color: var(--text);
+}
+
+.link:hover .linkIndex,
+.link[aria-current="page"] .linkIndex {
+  color: var(--accent);
+}
+
+.link:hover::before,
+.link:hover::after,
+.link:focus-visible::before,
+.link:focus-visible::after,
+.link[aria-current="page"]::before,
+.link[aria-current="page"]::after {
+  opacity: 1;
+  transform: none;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+  transform: rotate(45deg);
+  animation: breathe 2.4s var(--ease-in-out) infinite;
+}
+
+.menuButton {
+  display: none;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 75em) {
+  .status {
+    display: none;
+  }
+}
+
+@media (max-width: 56.25em) {
+  .links {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: inline-flex;
+  }
+
+  .menuButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.8rem;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    color: var(--text);
+    font-family: var(--font-mono-stack);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .menuButton:hover {
+    border-color: var(--accent);
+  }
+
+  .wordmark {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 22.5em) {
+  .wordmark {
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+  }
+  .brand {
+    gap: 0.45rem;
+  }
+  .brandStar {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.burger {
+  width: 18px;
+  height: 10px;
+  position: relative;
+}
+
+.burger::before,
+.burger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: currentColor;
+}
+
+.burger::before {
+  top: 0;
+}
+
+.burger::after {
+  bottom: 0;
+  left: 6px;
+}
+
+/* Full screen terminal menu --------------------------------------------------------------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(
+      90% 60% at 80% 0%,
+      color-mix(in srgb, var(--glow) 12%, transparent),
+      transparent
+    ),
+    var(--bg);
+  color: var(--text);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(env(safe-area-inset-top), 0px) var(--gutter) max(env(safe-area-inset-bottom), 1rem);
+}
+
+.menu[data-state="open"] {
+  animation: menu-in var(--dur-slow) var(--ease-out);
+}
+
+.menu[data-state="closed"] {
+  animation: menu-out var(--dur-base) var(--ease-in);
+}
+
+.menuHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--nav-h);
+  border-bottom: 1px solid var(--line);
+}
+
+.menuTitle {
+  margin: 0;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.close:hover {
+  border-color: var(--accent);
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-m) 0;
+  display: grid;
+  gap: 0.25rem;
+  flex: 1;
+  align-content: center;
+}
+
+.menuItem {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: item-in var(--dur-slower) var(--ease-out) forwards;
+  animation-delay: calc(80ms + var(--i) * 55ms);
+}
+
+.menuLink {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--line);
+}
+
+.menuLink:hover,
+.menuLink:focus-visible,
+.menuLink[aria-current="page"] {
+  color: var(--text);
+}
+
+.menuIndex {
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  color: var(--accent);
+  min-width: 2.2em;
+}
+
+.menuLabel {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 11vw, 4.5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* Landscape phones: two columns so all five links fit without scrolling. */
+@media (max-height: 30em) and (orientation: landscape) {
+  .menuList {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+    align-content: start;
+  }
+  .menuLabel {
+    font-size: clamp(1.6rem, 6vh + 1rem, 2.6rem);
+  }
+}
+
+.menuFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: var(--space-s);
+  border-top: 1px solid var(--line);
+}
+
+.menuToggles {
+  display: flex;
+  gap: 0.25rem;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes menu-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes item-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}

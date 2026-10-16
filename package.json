@@ -28,7 +28,8 @@
     "docker:build": "docker build -t aspirant-web:local .",
     "docker:run": "docker run --rm -p 8080:8080 aspirant-web:local",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "prepare": "husky"
+    "prepare": "husky",
+    "assets": "node scripts/assets/build.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [
@@ -48,6 +49,7 @@
     "lint-staged": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-tailwindcss": "catalog:",
+    "sharp": "^0.35.5",
     "turbo": "catalog:",
     "typescript": "catalog:"
   }

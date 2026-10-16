@@ -26,7 +26,7 @@ node scripts/assets/build.mjs --only=video -- --hero-candidates   # write contac
 - Pair slugs are used everywhere: `fanny-layla`, `ruby-angela`, `lesley-change`, `guinevere-vexana` (source folder `vexana-and-guinevere`), `selena-obsidia`. Character slugs: fanny, layla, ruby, angela, lesley, change (Chang'e), guinevere, vexana, obsidia, selena.
 - Names are ASCII. Numbers are two digits.
 - WebP for images (alpha kept for cut-outs), AAC `.m4a` for audio, H.264 High MP4 for video.
-- Text shipped in captions goes through `cleanText`: en and em dashes become " - " and "conviction" becomes "aspirant power" (canon rules 2 and 3). The English SRT files contained none, so nothing changed.
+- Text shipped in captions goes through `cleanText`: en and em dashes become " - " and the banned story wording is replaced (canon rules 2 and 3). The English SRT files contained none, so nothing changed.
 - Every manifest entry has `id, kind, path, bytes` plus `width, height, durationSec, pair, slug, role, credit, color, source, notes` where they apply. The manifest also has `totals` (with `byCategory`), `skipped`, `notes` and `unlistedFiles` (files in `public/` that no stage produced, for example `data/story/*` written by the content scripts).
 
 ## Outputs

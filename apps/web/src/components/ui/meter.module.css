@@ -1,0 +1,87 @@
+.meter {
+  --m-accent: var(--accent);
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  color: var(--text-faint);
+}
+
+.value {
+  color: var(--text);
+}
+
+.track {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+}
+
+.segment {
+  flex: 1 1 0;
+  min-width: 3px;
+  background: var(--line);
+  transform: skewX(-18deg);
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.segment[data-lit="true"] {
+  background: var(--m-accent);
+}
+
+.segment[data-edge="true"] {
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--m-accent) 75%, transparent),
+    0 0 2px var(--m-accent);
+}
+
+/* Vertical: segments stack bottom to top. */
+.vertical {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.vertical .head {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  justify-content: flex-start;
+}
+
+.vertical .track {
+  flex-direction: column-reverse;
+  width: 14px;
+  height: auto;
+  min-height: 8rem;
+}
+
+.vertical .segment {
+  transform: skewY(-18deg);
+  min-height: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .segment {
+  transition: none;
+}

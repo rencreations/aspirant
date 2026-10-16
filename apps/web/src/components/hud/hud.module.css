@@ -1,0 +1,241 @@
+.hud {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-hud);
+  pointer-events: none;
+  color: var(--hud-ink);
+  font-family: var(--font-mono-stack);
+  background: none;
+}
+
+.bottom {
+  position: absolute;
+  inset: 0;
+  color: var(--hud-ink);
+  background: none;
+}
+
+/* Corner brackets ---------------------------------------------------------------------- */
+.corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  color: var(--hud-ink);
+  transition: color var(--dur-slow) var(--ease-out);
+}
+
+.corner[data-pos="tl"] {
+  top: calc(var(--nav-h) + 8px);
+  left: 10px;
+}
+.corner[data-pos="tr"] {
+  top: calc(var(--nav-h) + 8px);
+  right: 10px;
+  transform: scaleX(-1);
+}
+.corner[data-pos="bl"] {
+  bottom: 10px;
+  left: 10px;
+  transform: scaleY(-1);
+}
+.corner[data-pos="br"] {
+  bottom: 10px;
+  right: 10px;
+  transform: scale(-1);
+}
+
+.corner .dot {
+  fill: var(--accent);
+}
+
+/* Left rail: coupling meter ------------------------------------------------------------- */
+.meter {
+  position: absolute;
+  left: 18px;
+  top: 28vh;
+  height: 40vh;
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meterLabel {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  color: var(--text-faint);
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+}
+
+.meterValue {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  width: 2px;
+  height: 100%;
+  background: repeating-linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px 6px);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-2));
+  transform-origin: top;
+  transform: scaleY(0);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 60%, transparent);
+}
+
+.marker {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border: 1px solid var(--accent);
+  background: var(--bg);
+  transform: rotate(45deg);
+}
+
+.ticks {
+  position: absolute;
+  inset: -2px auto -2px 6px;
+  width: 6px;
+  background:
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 0 / 6px 1px no-repeat,
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 25% / 4px 1px no-repeat,
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 50% / 6px 1px no-repeat,
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 75% / 4px 1px no-repeat,
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 100% / 6px 1px no-repeat;
+}
+
+/* Right rail: ruler ----------------------------------------------------------------------- */
+.ruler {
+  position: absolute;
+  right: 18px;
+  top: 30vh;
+  height: 34vh;
+  width: 8px;
+  background:
+    repeating-linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px 8px) right / 4px
+      100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px 40px) right / 8px
+      100% no-repeat;
+  opacity: 0.9;
+}
+
+.rulerLabel {
+  position: absolute;
+  right: 14px;
+  top: calc(30vh - 12px);
+  transform: translateY(-100%);
+  writing-mode: vertical-rl;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* Bottom left: Terrinia time -------------------------------------------------------------- */
+.clock {
+  position: absolute;
+  left: 15px;
+  bottom: 48px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  color: var(--text-faint);
+  display: flex;
+  gap: 0.8em;
+}
+
+.clockTime {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bottom right: toggles ------------------------------------------------------------------ */
+.controls {
+  position: absolute;
+  right: 4px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+/* Mobile top progress bar (sits above the nav) ------------------------------------------- */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: calc(var(--z-nav) + 1);
+  pointer-events: none;
+  background: var(--line);
+  display: none;
+}
+
+.barFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(to right, var(--accent), var(--accent-2));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--glow) 70%, transparent);
+}
+
+@media (max-width: 56.25em) {
+  .meter,
+  .ruler,
+  .rulerLabel,
+  .clock,
+  .controls,
+  .corner[data-pos="tl"],
+  .corner[data-pos="tr"] {
+    display: none;
+  }
+
+  .corner {
+    width: 12px;
+    height: 12px;
+  }
+
+  .corner[data-pos="bl"] {
+    bottom: 4px;
+    left: 4px;
+  }
+  .corner[data-pos="br"] {
+    bottom: 4px;
+    right: 4px;
+  }
+
+  .bar {
+    display: block;
+  }
+}
+
+/* Short landscape screens: hide the rails that would crowd the edges. */
+@media (max-height: 30em) and (min-width: 56.3125em) {
+  .meter,
+  .ruler,
+  .rulerLabel,
+  .clock {
+    display: none;
+  }
+}

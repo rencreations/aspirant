@@ -1,0 +1,254 @@
+.button {
+  --sb-cut: 12px;
+  --sb-h: 3.25rem;
+  --sb-fill: var(--accent);
+  --sb-ink: var(--on-accent);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: var(--sb-h);
+  padding: 0 1.4rem 0 0.55rem;
+  border: 0;
+  background: transparent;
+  color: var(--sb-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  isolation: isolate;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.lg {
+  --sb-h: 4rem;
+  --sb-cut: 16px;
+  font-size: 0.9375rem;
+  padding-right: 1.8rem;
+  gap: 1rem;
+}
+
+.sm {
+  --sb-h: 2.75rem;
+  --sb-cut: 9px;
+  font-size: 0.75rem;
+  padding-right: 1rem;
+  gap: 0.6rem;
+}
+
+/* Chamfered border (::before) and fill (::after). The button itself is never clipped, so
+   the focus outline stays visible. */
+.button::before,
+.button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(
+    var(--sb-cut) 0,
+    100% 0,
+    100% calc(100% - var(--sb-cut)),
+    calc(100% - var(--sb-cut)) 100%,
+    0 100%,
+    0 var(--sb-cut)
+  );
+}
+
+.button::before {
+  inset: 0;
+  background: var(--sb-fill);
+  transition: background var(--dur-base) var(--ease-out);
+}
+
+.button::after {
+  inset: 1px;
+  background: linear-gradient(100deg, var(--sb-fill) 0 50%, transparent 50% 100%) 100% 0 / 220% 100%
+    no-repeat;
+  transition: background-position var(--dur-slow) var(--ease-out);
+}
+
+/* Solid: filled at rest; hover pulls in a darker sheen. */
+.solid::after {
+  background-position: 0 0;
+  background-image: linear-gradient(
+    100deg,
+    var(--sb-fill) 0 45%,
+    color-mix(in srgb, var(--sb-fill) 80%, white) 50%,
+    var(--sb-fill) 55% 100%
+  );
+}
+
+.solid:hover::after {
+  background-position: 100% 0;
+}
+
+/* Ghost: outlined; hover sweeps the fill in from the left. */
+.ghost {
+  --sb-ink: var(--text);
+}
+
+.ghost::before {
+  background: var(--line-strong);
+}
+
+.ghost::after {
+  background-color: color-mix(in srgb, var(--bg) 80%, transparent);
+  background-image: linear-gradient(100deg, var(--sb-fill) 0 50%, transparent 50% 100%);
+}
+
+.ghost:hover {
+  color: var(--on-accent);
+}
+
+.ghost:hover::before {
+  background: var(--sb-fill);
+}
+
+.ghost:hover::after {
+  background-position: 0 0;
+}
+
+.button:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.button[aria-disabled="true"],
+.button:disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Star core ------------------------------------------------------------------------------- */
+.core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--sb-h) - 0.9rem);
+  height: calc(var(--sb-h) - 0.9rem);
+  flex: none;
+}
+
+.core::before {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border: 1px solid currentColor;
+  opacity: 0.45;
+  transform: rotate(45deg);
+  transition: transform var(--dur-slower) var(--ease-spring);
+}
+
+.star {
+  width: 58%;
+  height: 58%;
+  transition: transform var(--dur-slower) var(--ease-spring);
+}
+
+.button:hover .star,
+.button:focus-visible .star {
+  transform: rotate(90deg) scale(1.12);
+}
+
+.button:hover .core::before {
+  transform: rotate(135deg) scale(0.92);
+}
+
+.pulse .star {
+  animation: star-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+.pulse .core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+  animation: ring 2.4s var(--ease-out) infinite;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.arrow {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.button:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Click ripple: a star that grows from the press point. */
+.ripple {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  pointer-events: none;
+  color: var(--glow);
+  z-index: 2;
+  animation: ripple 620ms var(--ease-out) forwards;
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(4.5) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes ring {
+  from {
+    transform: rotate(45deg) scale(0.55);
+    opacity: 0.7;
+  }
+  to {
+    transform: rotate(45deg) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Emblem variant: round icon-only star button. */
+.emblem {
+  width: var(--sb-h);
+  padding: 0;
+  justify-content: center;
+}
+
+.emblem::before,
+.emblem::after {
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.emblem .core {
+  width: 100%;
+  height: 100%;
+}
+
+.emblem .core::before {
+  display: none;
+}
+
+@keyframes star-pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.12) rotate(45deg);
+    opacity: 0.85;
+  }
+}

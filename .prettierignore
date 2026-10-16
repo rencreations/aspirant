@@ -3,6 +3,7 @@ pnpm-lock.yaml
 .pnpm-store
 .turbo
 .next
+.next-*
 out
 dist
 build

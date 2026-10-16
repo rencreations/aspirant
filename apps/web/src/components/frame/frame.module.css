@@ -1,0 +1,180 @@
+.frame {
+  position: relative;
+  display: block;
+  perspective: 1000px;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tilt {
+  position: relative;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* The drop-shadow sits on an unclipped wrapper, so the glow follows the clipped shape. */
+.glow {
+  position: relative;
+  height: 100%;
+  transition: filter var(--dur-slow) var(--ease-out);
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+/* Pointer sheen, positioned by --fx / --fy (0 to 100 percent). */
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 60% at var(--fx, 50%) var(--fy, 0%),
+    color-mix(in srgb, var(--glow) 22%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.outline {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+}
+
+.outlineBase {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.outlineDraw {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-slower) var(--ease-out);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 70%, transparent));
+}
+
+/* HUD corner ticks on the bounding box, shown on hover. */
+.tick {
+  position: absolute;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  border-color: var(--accent);
+  border-style: solid;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+
+.tick[data-pos="tl"] {
+  top: -7px;
+  left: -7px;
+  border-width: 1px 0 0 1px;
+  transform: translate(-4px, -4px);
+}
+
+.tick[data-pos="tr"] {
+  top: -7px;
+  right: -7px;
+  border-width: 1px 1px 0 0;
+  transform: translate(4px, -4px);
+}
+
+.tick[data-pos="bl"] {
+  bottom: -7px;
+  left: -7px;
+  border-width: 0 0 1px 1px;
+  transform: translate(-4px, 4px);
+}
+
+.tick[data-pos="br"] {
+  bottom: -7px;
+  right: -7px;
+  border-width: 0 1px 1px 0;
+  transform: translate(4px, 4px);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.75rem;
+}
+
+.label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+/* Active states: hover (pointer devices), keyboard focus inside, touch press. */
+@media (hover: hover) {
+  .frame:hover .outlineDraw {
+    stroke-dashoffset: 0;
+  }
+  .frame:hover .tick {
+    opacity: 1;
+    transform: none;
+  }
+  .frame:hover .sheen {
+    opacity: 1;
+  }
+  .frame[data-glow="true"]:hover .glow {
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--glow) 55%, transparent));
+  }
+}
+
+.frame:focus-within .outlineDraw,
+.frame[data-active="true"] .outlineDraw {
+  stroke-dashoffset: 0;
+}
+
+.frame:focus-within .tick,
+.frame[data-active="true"] .tick {
+  opacity: 1;
+  transform: none;
+}
+
+.frame[data-active="true"] .sheen {
+  opacity: 1;
+}
+
+.frame[data-glow="true"]:focus-within .glow,
+.frame[data-glow="true"][data-active="true"] .glow {
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--glow) 55%, transparent));
+}
+
+/* Reduced motion: a static, full outline (no draw-in) and no tilt. */
+:root[data-motion="reduced"] .outlineDraw {
+  stroke-dashoffset: 0;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outlineDraw {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}

@@ -8,10 +8,12 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.test.*", "!e2e/**", "!**/*.md"],
       "env": ["NEXT_PUBLIC_*", "SITE_URL", "BASE_PATH"],
+      "passThroughEnv": ["NEXT_DIST_DIR"],
       "outputs": ["out/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
       "cache": false,
+      "passThroughEnv": ["NEXT_DIST_DIR", "PORT"],
       "persistent": true
     },
     "typecheck": {

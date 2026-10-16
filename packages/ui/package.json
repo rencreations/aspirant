@@ -2,7 +2,7 @@
   "name": "@aspirant/ui",
   "version": "0.1.0",
   "private": true,
-  "description": "Shared shadcn/ui components, hooks, utilities and Tailwind v4 theme.",
+  "description": "Shared Radix-based primitives (dialog, tooltip, tabs, slider, switch, accordion), cn() and the Tailwind v4 entry stylesheet.",
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -10,7 +10,6 @@
   "exports": {
     ".": "./src/index.ts",
     "./lib/utils": "./src/lib/utils.ts",
-    "./hooks/*": "./src/hooks/*.ts",
     "./components/*": "./src/components/*.tsx",
     "./styles/globals.css": "./src/styles/globals.css"
   },
@@ -22,20 +21,10 @@
     "clean": "rm -rf .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "class-variance-authority": "catalog:",
     "clsx": "catalog:",
-    "cmdk": "catalog:",
-    "embla-carousel-react": "catalog:",
-    "input-otp": "catalog:",
     "lucide-react": "catalog:",
-    "next-themes": "catalog:",
     "radix-ui": "catalog:",
-    "react-day-picker": "catalog:",
-    "react-resizable-panels": "catalog:",
-    "recharts": "catalog:",
-    "sonner": "catalog:",
-    "tailwind-merge": "catalog:",
-    "vaul": "catalog:"
+    "tailwind-merge": "catalog:"
   },
   "devDependencies": {
     "@aspirant/config": "workspace:*",

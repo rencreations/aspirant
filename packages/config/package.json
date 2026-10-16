@@ -20,7 +20,6 @@
   ],
   "devDependencies": {
     "@eslint/js": "catalog:",
-    "@tanstack/eslint-plugin-query": "catalog:",
     "eslint": "catalog:",
     "eslint-config-next": "catalog:",
     "eslint-config-prettier": "catalog:",
