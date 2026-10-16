@@ -1,0 +1,533 @@
+{
+  "generatedFrom": "scripts/assets/comics.mjs",
+  "comics": {
+    "aspirant": {
+      "title": "The Aspirant",
+      "note": "Original page numbering 1 to 42.",
+      "source": "story/the-aspirant-comic",
+      "pageCount": 42,
+      "missingPages": [],
+      "pages": [
+        {
+          "file": "img/comic/aspirant/01.webp",
+          "width": 1000,
+          "height": 4950,
+          "page": 1
+        },
+        {
+          "file": "img/comic/aspirant/02.webp",
+          "width": 1000,
+          "height": 2817,
+          "page": 2
+        },
+        {
+          "file": "img/comic/aspirant/03.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 3
+        },
+        {
+          "file": "img/comic/aspirant/04.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 4
+        },
+        {
+          "file": "img/comic/aspirant/05.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 5
+        },
+        {
+          "file": "img/comic/aspirant/06.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 6
+        },
+        {
+          "file": "img/comic/aspirant/07.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 7
+        },
+        {
+          "file": "img/comic/aspirant/08.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 8
+        },
+        {
+          "file": "img/comic/aspirant/09.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 9
+        },
+        {
+          "file": "img/comic/aspirant/10.webp",
+          "width": 1000,
+          "height": 3659,
+          "page": 10
+        },
+        {
+          "file": "img/comic/aspirant/11.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 11
+        },
+        {
+          "file": "img/comic/aspirant/12.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 12
+        },
+        {
+          "file": "img/comic/aspirant/13.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 13
+        },
+        {
+          "file": "img/comic/aspirant/14.webp",
+          "width": 1000,
+          "height": 2951,
+          "page": 14
+        },
+        {
+          "file": "img/comic/aspirant/15.webp",
+          "width": 1000,
+          "height": 2230,
+          "page": 15
+        },
+        {
+          "file": "img/comic/aspirant/16.webp",
+          "width": 1000,
+          "height": 2805,
+          "page": 16
+        },
+        {
+          "file": "img/comic/aspirant/17.webp",
+          "width": 1000,
+          "height": 3168,
+          "page": 17
+        },
+        {
+          "file": "img/comic/aspirant/18.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 18
+        },
+        {
+          "file": "img/comic/aspirant/19.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 19
+        },
+        {
+          "file": "img/comic/aspirant/20.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 20
+        },
+        {
+          "file": "img/comic/aspirant/21.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 21
+        },
+        {
+          "file": "img/comic/aspirant/22.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 22
+        },
+        {
+          "file": "img/comic/aspirant/23.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 23
+        },
+        {
+          "file": "img/comic/aspirant/24.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 24
+        },
+        {
+          "file": "img/comic/aspirant/25.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 25
+        },
+        {
+          "file": "img/comic/aspirant/26.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 26
+        },
+        {
+          "file": "img/comic/aspirant/27.webp",
+          "width": 1000,
+          "height": 2900,
+          "page": 27
+        },
+        {
+          "file": "img/comic/aspirant/28.webp",
+          "width": 1000,
+          "height": 2923,
+          "page": 28
+        },
+        {
+          "file": "img/comic/aspirant/29.webp",
+          "width": 1000,
+          "height": 2876,
+          "page": 29
+        },
+        {
+          "file": "img/comic/aspirant/30.webp",
+          "width": 1000,
+          "height": 2572,
+          "page": 30
+        },
+        {
+          "file": "img/comic/aspirant/31.webp",
+          "width": 1000,
+          "height": 3119,
+          "page": 31
+        },
+        {
+          "file": "img/comic/aspirant/32.webp",
+          "width": 1000,
+          "height": 4163,
+          "page": 32
+        },
+        {
+          "file": "img/comic/aspirant/33.webp",
+          "width": 1000,
+          "height": 2353,
+          "page": 33
+        },
+        {
+          "file": "img/comic/aspirant/34.webp",
+          "width": 1000,
+          "height": 2056,
+          "page": 34
+        },
+        {
+          "file": "img/comic/aspirant/35.webp",
+          "width": 1000,
+          "height": 2494,
+          "page": 35
+        },
+        {
+          "file": "img/comic/aspirant/36.webp",
+          "width": 1000,
+          "height": 2975,
+          "page": 36
+        },
+        {
+          "file": "img/comic/aspirant/37.webp",
+          "width": 1000,
+          "height": 2023,
+          "page": 37
+        },
+        {
+          "file": "img/comic/aspirant/38.webp",
+          "width": 1000,
+          "height": 3112,
+          "page": 38
+        },
+        {
+          "file": "img/comic/aspirant/39.webp",
+          "width": 1000,
+          "height": 1778,
+          "page": 39
+        },
+        {
+          "file": "img/comic/aspirant/40.webp",
+          "width": 1000,
+          "height": 3434,
+          "page": 40
+        },
+        {
+          "file": "img/comic/aspirant/41.webp",
+          "width": 1000,
+          "height": 3496,
+          "page": 41
+        },
+        {
+          "file": "img/comic/aspirant/42.webp",
+          "width": 1000,
+          "height": 4060,
+          "page": 42
+        }
+      ]
+    },
+    "guinevere-vexana": {
+      "title": "Guinevere and Vexana",
+      "note": "Original page numbering is kept. Pages 3, 23 and 40 are missing in the source.",
+      "source": "story/guinevere-vexana-comic",
+      "pageCount": 43,
+      "missingPages": [3, 23, 40],
+      "pages": [
+        {
+          "file": "img/comic/guinevere-vexana/01.webp",
+          "width": 1000,
+          "height": 1758,
+          "page": 1
+        },
+        {
+          "file": "img/comic/guinevere-vexana/02.webp",
+          "width": 1000,
+          "height": 830,
+          "page": 2
+        },
+        {
+          "file": "img/comic/guinevere-vexana/04.webp",
+          "width": 1000,
+          "height": 1453,
+          "page": 4
+        },
+        {
+          "file": "img/comic/guinevere-vexana/05.webp",
+          "width": 1000,
+          "height": 1429,
+          "page": 5
+        },
+        {
+          "file": "img/comic/guinevere-vexana/06.webp",
+          "width": 1000,
+          "height": 1970,
+          "page": 6
+        },
+        {
+          "file": "img/comic/guinevere-vexana/07.webp",
+          "width": 1000,
+          "height": 1037,
+          "page": 7
+        },
+        {
+          "file": "img/comic/guinevere-vexana/08.webp",
+          "width": 1000,
+          "height": 1507,
+          "page": 8
+        },
+        {
+          "file": "img/comic/guinevere-vexana/09.webp",
+          "width": 1000,
+          "height": 2060,
+          "page": 9
+        },
+        {
+          "file": "img/comic/guinevere-vexana/10.webp",
+          "width": 1000,
+          "height": 2387,
+          "page": 10
+        },
+        {
+          "file": "img/comic/guinevere-vexana/11.webp",
+          "width": 1000,
+          "height": 2526,
+          "page": 11
+        },
+        {
+          "file": "img/comic/guinevere-vexana/12.webp",
+          "width": 1000,
+          "height": 1236,
+          "page": 12
+        },
+        {
+          "file": "img/comic/guinevere-vexana/13.webp",
+          "width": 1000,
+          "height": 3091,
+          "page": 13
+        },
+        {
+          "file": "img/comic/guinevere-vexana/14.webp",
+          "width": 1000,
+          "height": 1923,
+          "page": 14
+        },
+        {
+          "file": "img/comic/guinevere-vexana/15.webp",
+          "width": 1000,
+          "height": 3372,
+          "page": 15
+        },
+        {
+          "file": "img/comic/guinevere-vexana/16.webp",
+          "width": 1000,
+          "height": 1595,
+          "page": 16
+        },
+        {
+          "file": "img/comic/guinevere-vexana/17.webp",
+          "width": 1000,
+          "height": 1845,
+          "page": 17
+        },
+        {
+          "file": "img/comic/guinevere-vexana/18.webp",
+          "width": 1000,
+          "height": 1586,
+          "page": 18
+        },
+        {
+          "file": "img/comic/guinevere-vexana/19.webp",
+          "width": 1000,
+          "height": 1992,
+          "page": 19
+        },
+        {
+          "file": "img/comic/guinevere-vexana/20.webp",
+          "width": 1000,
+          "height": 1515,
+          "page": 20
+        },
+        {
+          "file": "img/comic/guinevere-vexana/21.webp",
+          "width": 1000,
+          "height": 1700,
+          "page": 21
+        },
+        {
+          "file": "img/comic/guinevere-vexana/22.webp",
+          "width": 1000,
+          "height": 2282,
+          "page": 22
+        },
+        {
+          "file": "img/comic/guinevere-vexana/24.webp",
+          "width": 1000,
+          "height": 797,
+          "page": 24
+        },
+        {
+          "file": "img/comic/guinevere-vexana/25.webp",
+          "width": 1000,
+          "height": 1660,
+          "page": 25
+        },
+        {
+          "file": "img/comic/guinevere-vexana/26.webp",
+          "width": 1000,
+          "height": 1047,
+          "page": 26
+        },
+        {
+          "file": "img/comic/guinevere-vexana/27.webp",
+          "width": 1000,
+          "height": 1970,
+          "page": 27
+        },
+        {
+          "file": "img/comic/guinevere-vexana/28.webp",
+          "width": 1000,
+          "height": 1506,
+          "page": 28
+        },
+        {
+          "file": "img/comic/guinevere-vexana/29.webp",
+          "width": 1000,
+          "height": 1484,
+          "page": 29
+        },
+        {
+          "file": "img/comic/guinevere-vexana/30.webp",
+          "width": 1000,
+          "height": 917,
+          "page": 30
+        },
+        {
+          "file": "img/comic/guinevere-vexana/31.webp",
+          "width": 1000,
+          "height": 1558,
+          "page": 31
+        },
+        {
+          "file": "img/comic/guinevere-vexana/32.webp",
+          "width": 1000,
+          "height": 980,
+          "page": 32
+        },
+        {
+          "file": "img/comic/guinevere-vexana/33.webp",
+          "width": 1000,
+          "height": 1832,
+          "page": 33
+        },
+        {
+          "file": "img/comic/guinevere-vexana/34.webp",
+          "width": 1000,
+          "height": 858,
+          "page": 34
+        },
+        {
+          "file": "img/comic/guinevere-vexana/35.webp",
+          "width": 1000,
+          "height": 1188,
+          "page": 35
+        },
+        {
+          "file": "img/comic/guinevere-vexana/36.webp",
+          "width": 1000,
+          "height": 1486,
+          "page": 36
+        },
+        {
+          "file": "img/comic/guinevere-vexana/37.webp",
+          "width": 1000,
+          "height": 1084,
+          "page": 37
+        },
+        {
+          "file": "img/comic/guinevere-vexana/38.webp",
+          "width": 1000,
+          "height": 1756,
+          "page": 38
+        },
+        {
+          "file": "img/comic/guinevere-vexana/39.webp",
+          "width": 1000,
+          "height": 2746,
+          "page": 39
+        },
+        {
+          "file": "img/comic/guinevere-vexana/41.webp",
+          "width": 1000,
+          "height": 2262,
+          "page": 41
+        },
+        {
+          "file": "img/comic/guinevere-vexana/42.webp",
+          "width": 1000,
+          "height": 2604,
+          "page": 42
+        },
+        {
+          "file": "img/comic/guinevere-vexana/43.webp",
+          "width": 1000,
+          "height": 2041,
+          "page": 43
+        },
+        {
+          "file": "img/comic/guinevere-vexana/44.webp",
+          "width": 1000,
+          "height": 2817,
+          "page": 44
+        },
+        {
+          "file": "img/comic/guinevere-vexana/45.webp",
+          "width": 1000,
+          "height": 1486,
+          "page": 45
+        },
+        {
+          "file": "img/comic/guinevere-vexana/46.webp",
+          "width": 1000,
+          "height": 1346,
+          "page": 46
+        }
+      ]
+    }
+  }
+}
