@@ -1,0 +1,156 @@
+{
+ "stage": "portal",
+ "savedAt": "2026-10-16T12:21:43.534Z",
+ "records": [
+  {
+   "kind": "image",
+   "id": "portal-guinevere-vexana-alt",
+   "path": "img/portal/guinevere-vexana/alt.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-alt",
+   "source": "img/char/vexana/cutout.webp",
+   "notes": "base: Guinevere (guin-fighting-stance-transparent.png). alt: Vexana (vexana-fighting-stance-transparent.png). 4:5 crops, transparent background.",
+   "bytes": 299854,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-guinevere-vexana-base",
+   "path": "img/portal/guinevere-vexana/base.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-base",
+   "source": "img/char/guinevere/cutout.webp",
+   "notes": "base: Guinevere (guin-fighting-stance-transparent.png). alt: Vexana (vexana-fighting-stance-transparent.png). 4:5 crops, transparent background.",
+   "bytes": 381642,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-guinevere-vexana-depth",
+   "path": "img/portal/guinevere-vexana/depth.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-depth",
+   "source": "portal-guinevere-vexana-base",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 31980,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-guinevere-vexana-depth-alt",
+   "path": "img/portal/guinevere-vexana/depth-alt.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-depth-alt",
+   "source": "portal-guinevere-vexana-alt",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 22846,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-selena-obsidia-alt",
+   "path": "img/portal/selena-obsidia/alt.webp",
+   "pair": "selena-obsidia",
+   "role": "portal-alt",
+   "source": "img/char/obsidia/cutout.webp",
+   "notes": "base: Selena (selena-transparent.png). alt: Obsidia (obsidia-transparent.png). Both are 4:5 portrait crops around the head and upper body, transparent background.",
+   "bytes": 276486,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-selena-obsidia-base",
+   "path": "img/portal/selena-obsidia/base.webp",
+   "pair": "selena-obsidia",
+   "role": "portal-base",
+   "source": "img/char/selena/cutout.webp",
+   "notes": "base: Selena (selena-transparent.png). alt: Obsidia (obsidia-transparent.png). Both are 4:5 portrait crops around the head and upper body, transparent background.",
+   "bytes": 260308,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-selena-obsidia-depth",
+   "path": "img/portal/selena-obsidia/depth.webp",
+   "pair": "selena-obsidia",
+   "role": "portal-depth",
+   "source": "portal-selena-obsidia-base",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 24622,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-selena-obsidia-depth-alt",
+   "path": "img/portal/selena-obsidia/depth-alt.webp",
+   "pair": "selena-obsidia",
+   "role": "portal-depth-alt",
+   "source": "portal-selena-obsidia-alt",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 32000,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-vexana-alt",
+   "path": "img/portal/vexana/alt.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-alt",
+   "source": "img/char/vexana/extra-1.webp (vexana-mobile-wallpaper.jpg)",
+   "notes": "base: Aspirant-uniform pose (vexana-fighting-stance-transparent.png, cropped to a 4:5 portrait). alt: Ender-form portrait from vexana-mobile-wallpaper.jpg (blue-lavender hair, opaque background).",
+   "bytes": 124308,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-vexana-base",
+   "path": "img/portal/vexana/base.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-base",
+   "source": "img/char/vexana/cutout.webp",
+   "notes": "base: Aspirant-uniform pose (vexana-fighting-stance-transparent.png, cropped to a 4:5 portrait). alt: Ender-form portrait from vexana-mobile-wallpaper.jpg (blue-lavender hair, opaque background).",
+   "bytes": 299854,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-vexana-depth",
+   "path": "img/portal/vexana/depth.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-depth",
+   "source": "portal-vexana-base",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 22846,
+   "width": 1100,
+   "height": 1375
+  },
+  {
+   "kind": "image",
+   "id": "portal-vexana-depth-alt",
+   "path": "img/portal/vexana/depth-alt.webp",
+   "pair": "guinevere-vexana",
+   "role": "portal-depth-alt",
+   "source": "portal-vexana-alt",
+   "notes": "8-bit grayscale, near = white, same size as the image it belongs to.",
+   "bytes": 16854,
+   "width": 1100,
+   "height": 1375
+  }
+ ],
+ "notes": [
+  {
+   "about": "portal depth maps",
+   "note": "Method this run: Depth-Anything-V2-Small (depth-anything/Depth-Anything-V2-Small-hf), CPU."
+  }
+ ]
+}

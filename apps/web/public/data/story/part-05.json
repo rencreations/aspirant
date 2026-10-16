@@ -1,0 +1,2652 @@
+{
+  "part": {
+    "number": 5,
+    "label": "Part Five",
+    "title": "The One Who Asked",
+    "setting": "Back at the Academy. Then back, much further, to the beginning of everything.",
+    "chapterIds": ["c23", "c24", "c25", "c26", "c27"],
+    "file": "data/story/part-05.json",
+    "wordCount": 4588
+  },
+  "chapters": [
+    {
+      "id": "c23",
+      "kind": "chapter",
+      "number": 23,
+      "title": "Silverbolt",
+      "part": 5,
+      "timeNote": "Selrick Academy, in its first year.",
+      "wordCount": 1475,
+      "paragraphCount": 68,
+      "firstParagraphIndex": 966,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c23-p000",
+          "i": 966,
+          "segments": [
+            { "t": "text", "text": "Everyone at " },
+            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy" },
+            { "t": "text", "text": " agreed that " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " was a genius. She could wake any machine with one tap of a spanner. \"It's the third coil,\" she would say. \"It's "
+            },
+            { "t": "text", "text": "sulking", "em": true },
+            { "t": "text", "text": ".\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p001",
+          "i": 967,
+          "segments": [{ "t": "text", "text": "\"How do you do that?\" they asked." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p002",
+          "i": 968,
+          "segments": [
+            { "t": "text", "text": "\"I just ask nicely,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ", and smiled." }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c23-p003",
+          "i": 969,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had practised that smile all her life. It was the safest way she knew to be left alone. But it was no longer only a mask. She had come to the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " as a game, a spy in the enemy's camp. And somewhere along the way, she had become happy. It was a very alarming discovery."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s01" },
+        {
+          "type": "p",
+          "id": "c23-p004",
+          "i": 970,
+          "segments": [
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " worked in the third-floor lab, under " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". She saw at once that the child was lonely. " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": "'s eyes often drifted to the window, to the old stone in the garden with its two names. Now and then, she touched "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": ", to be sure he was there." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p005",
+          "i": 971,
+          "segments": [
+            { "t": "text", "text": "I know that look,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "I have worn it.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p006",
+          "i": 972,
+          "segments": [
+            { "t": "text", "text": "She was an " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": " and a spy. She had no business caring. Yet when " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " said, \"" },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": ", would you come and look at this?\", she was already halfway across the room."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s02" },
+        {
+          "type": "p",
+          "id": "c23-p007",
+          "i": 973,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the middle of the lab stood a mecha, a machine made to be worn like armour. The "
+            },
+            { "t": "ent", "id": "armoury", "text": "Armoury" },
+            {
+              "t": "text",
+              "text": " had built it, but it had never worked. Eleven people had tried it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p008",
+          "i": 974,
+          "segments": [
+            { "t": "text", "text": "\"It's as if it were " },
+            { "t": "text", "text": "deaf", "em": true },
+            { "t": "text", "text": ",\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". \"The core is sound. I used plates from a wrecked " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": ", from the salvage yard. They're dead, of course.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c23-p009",
+          "i": 975,
+          "segments": [
+            { "t": "text", "text": "\"You built it out of " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": ",\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". \"It's not unorthodox. It's " },
+            { "t": "text", "text": "clever", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c23-p010",
+          "i": 976,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She felt a faint hum rising in her. She had felt it once before, in the salvage yard, with a curved plate in her hands. "
+            },
+            { "t": "text", "text": "It's calling. It knows I'm here.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p011",
+          "i": 977,
+          "segments": [
+            { "t": "text", "text": "\"Would you like to try?\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". \"I wondered if it might hear you.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c23-p012",
+          "i": 978,
+          "segments": [
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " knew what would happen. It was the moment when she must decide whether to be seen. "
+            },
+            { "t": "text", "text": "It's a risk,", "em": true },
+            { "t": "text", "text": " she thought. She took off her jacket and climbed in." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p013",
+          "i": 979,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The suit woke the instant she touched it. Blue lights lit its face. The white limbs closed around her like petals. It was like being held."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p014",
+          "i": 980,
+          "segments": [
+            { "t": "text", "text": "Hello,", "em": true },
+            { "t": "text", "text": " said the suit, without words. " },
+            { "t": "text", "text": "I know you. You're one of us.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p015",
+          "i": 981,
+          "segments": [
+            { "t": "text", "text": "It was the first place where she did not have to pretend." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p016",
+          "i": 982,
+          "segments": [
+            { "t": "text", "text": "It rose and took a step. " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " pressed her hands to her mouth. \"It's " },
+            { "t": "text", "text": "perfect", "em": true },
+            { "t": "text", "text": "! How did you do that?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p017",
+          "i": 983,
+          "segments": [
+            { "t": "text", "text": "\"I don't know. I just " },
+            { "t": "text", "text": "wanted", "em": true },
+            { "t": "text", "text": " it to.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p018",
+          "i": 984,
+          "segments": [
+            { "t": "text", "text": "\"It's more like a " },
+            { "t": "text", "text": "tuning", "em": true },
+            { "t": "text", "text": ".\" " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " paused. \"I wonder what you are.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p019",
+          "i": 985,
+          "segments": [
+            { "t": "text", "text": "She said it with bright curiosity. But it went through " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " like a knife." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p020",
+          "i": 986,
+          "segments": [
+            { "t": "text", "text": "\"A natural,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " lightly. \"That's what my teachers said.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c23-p021",
+          "i": 987,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " looked at her. Behind the thick glasses, her eyes were shrewd and a little sad. \"I suppose you are,\" she said. She wrote something in her notebook."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p022",
+          "i": 988,
+          "segments": [
+            { "t": "text", "text": "She knows,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "She's not going to say.", "em": true },
+            {
+              "t": "text",
+              "text": " She felt a cold drop in her stomach. And behind it, to her surprise, came gratitude."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s03" },
+        {
+          "type": "p",
+          "id": "c23-p023",
+          "i": 989,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Soon the mecha raced the length of the training hall and leapt over a wall. A young "
+            },
+            { "t": "ent", "id": "armoury", "text": "Armoury" },
+            { "t": "text", "text": " sergeant said, \"It's like a bolt of lightning.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p024",
+          "i": 990,
+          "segments": [
+            { "t": "text", "text": "\"A silver one,\" said somebody. \"" },
+            { "t": "ent", "id": "silverbolt", "text": "Silverbolt", "em": true },
+            { "t": "text", "text": ".", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p025",
+          "i": 991,
+          "segments": [{ "t": "text", "text": "The name stuck." }]
+        },
+        {
+          "type": "p",
+          "id": "c23-p026",
+          "i": 992,
+          "segments": [
+            { "t": "text", "text": "Under " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": "'s hands, it grew wing-blades, a tail and a long neck. Unworn, it stood as a dragon of white-silver metal with blue gem eyes. It could fold into two crescent claws that circled her like moons. She called it her baby. She had made it from the bones of her own kind."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p027",
+          "i": 993,
+          "segments": [
+            { "t": "text", "text": "Nobody else could make it move. \"It's loyal,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". \"It knows who its friend is.\"" }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s04" },
+        {
+          "type": "p",
+          "id": "c23-p028",
+          "i": 994,
+          "segments": [
+            { "t": "text", "text": "One summer evening, a storm came in off the sea. " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " felt the thunder calling in her blood. She went up on the roof."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p029",
+          "i": 995,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had been a good girl for a very long time. She was tired of it. "
+            },
+            { "t": "text", "text": "Nobody's looking.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p030",
+          "i": 996,
+          "segments": [
+            { "t": "text", "text": "She took off her uniform and let go. Her " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " side rose like a tide. Her arms darkened with a violet shine. Her nails grew into blades. Purple living armour crept over her skin. Lightning struck beside her. She caught it in her palm and grinned. "
+            },
+            { "t": "ent", "id": "silverbolt", "text": "Silverbolt" },
+            { "t": "text", "text": " rose on blue flame and curled around her shoulders." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p031",
+          "i": 997,
+          "segments": [
+            { "t": "text", "text": "\"Let's go for a run,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c23-p032",
+          "i": 998,
+          "segments": [
+            { "t": "text", "text": "She crossed the city by the rooftops. In " },
+            { "t": "ent", "id": "tanners-row", "text": "Tanner's Row" },
+            {
+              "t": "text",
+              "text": ", she stopped. High in a brick block, a yellow lamp burned. A stout woman with a tape-measure round her neck was bent over a piece of cloth. "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " did not know her. But she watched until the light went out. "
+            },
+            { "t": "text", "text": "Someone's always waiting,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p033",
+          "i": 999,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She ran on to a black cliff above the sea and shouted for joy. "
+            },
+            { "t": "text", "text": "Free,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p034",
+          "i": 1000,
+          "segments": [
+            { "t": "text", "text": "She did not know that " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " was watching from the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", with a white pawn in her hand. " },
+            { "t": "text", "text": "Oh, my dear,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "Oh, look at you.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s05" },
+        {
+          "type": "p",
+          "id": "c23-p035",
+          "i": 1001,
+          "segments": [
+            { "t": "text", "text": "The orders came on a wet afternoon in the salvage yard. " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " held a curved plate. A voice rose out of the dead tissue, low and cool."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p036",
+          "i": 1002,
+          "segments": [
+            { "t": "ent", "id": "selena", "text": "Selena", "em": true },
+            {
+              "t": "text",
+              "text": ". You are my daughter. Not in the human way. But I made you. I set you down in the rain.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p037",
+          "i": 1003,
+          "segments": [
+            { "t": "text", "text": "I don't want a task,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p038",
+          "i": 1004,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I know. But you are what you are, little one. And what you are is needed. The ",
+              "em": true
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants", "em": true },
+            {
+              "t": "text",
+              "text": " have learned to make the light that burns us. I need you to be my eyes.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p039",
+          "i": 1005,
+          "segments": [{ "t": "text", "text": "You want me to spy.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c23-p040",
+          "i": 1006,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I want you to look. Tell the plates what you see, and I will hear.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p041",
+          "i": 1007,
+          "segments": [{ "t": "text", "text": "And if I don't?", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c23-p042",
+          "i": 1008,
+          "segments": [
+            { "t": "text", "text": "I should be sorry,", "em": true },
+            { "t": "text", "text": " said " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p043",
+          "i": 1009,
+          "segments": [{ "t": "text", "text": "It was gentler than a threat. It was far worse." }]
+        },
+        {
+          "type": "p",
+          "id": "c23-p044",
+          "i": 1010,
+          "segments": [
+            { "t": "text", "text": "Very well,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "I'll look.", "em": true },
+            { "t": "text", "text": " She was not free. She had never been. " },
+            { "t": "text", "text": "Pawn,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. Then she put on her good smile and went back to work."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s06" },
+        {
+          "type": "p",
+          "id": "c23-p045",
+          "i": 1011,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She told herself it was a game. Every evening, she told the plate what she had seen. But she told it only things that were true and a month old. To her annoyance, she rather enjoyed it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p046",
+          "i": 1012,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then came a harder order. In the cellars, a coolant valve fed the "
+            },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere" },
+            { "t": "text", "text": "'s northern emitter. If she turned it a few degrees, the " },
+            { "t": "ent", "id": "defence-sphere", "text": "Sphere" },
+            { "t": "text", "text": " would slowly wear thin. One day, when " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " were at the gate, it would fail." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p047",
+          "i": 1013,
+          "segments": [
+            { "t": "text", "text": "At three in the morning, " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " stood at the valve with a spanner. She thought of a small girl with her hands pressed to her mouth. She thought of a woman in a lit window. "
+            },
+            { "t": "text", "text": "Someone's always waiting.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p048",
+          "i": 1014,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She took the wheel in both hands. She turned it the wrong way."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p049",
+          "i": 1015,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the morning, the engineers found the northern line running better than ever. \"A "
+            },
+            { "t": "text", "text": "marvellous", "em": true },
+            { "t": "text", "text": " fluke,\" said somebody. " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " stood at the back with a face of polite interest. She did not tell the plate."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s07" },
+        {
+          "type": "p",
+          "id": "c23-p050",
+          "i": 1016,
+          "segments": [
+            { "t": "text", "text": "That afternoon, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " came into the lab with a folder. \"It's about the northern trunk-line,\" she said. \"The valve was set fourteen degrees off the standard. It works better now. I wondered who had done it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p051",
+          "i": 1017,
+          "segments": [
+            { "t": "text", "text": "\"I haven't the faintest idea,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". \"They said it was a fluke.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c23-p052",
+          "i": 1018,
+          "segments": [{ "t": "text", "text": "\"Yes. A most fortunate fluke.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p053",
+          "i": 1019,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " looked at her for a long time. There was no anger in it. There was only a small, sad, understanding smile. "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " felt the words rise in her throat. " },
+            {
+              "t": "text",
+              "text": "I was told to break it. I couldn't. I don't know what I am.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p054",
+          "i": 1020,
+          "segments": [{ "t": "text", "text": "She said nothing." }]
+        },
+        {
+          "type": "p",
+          "id": "c23-p055",
+          "i": 1021,
+          "segments": [
+            { "t": "text", "text": "\"Whatever it was, thank you,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". \"And I wanted to say... I trust you.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c23-p056",
+          "i": 1022,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She said it in a quick rush. She turned scarlet and marched out, with her back very straight."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p057",
+          "i": 1023,
+          "segments": [
+            { "t": "text", "text": "She knows,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "And she trusts me anyway.", "em": true },
+            { "t": "text", "text": " It was the most terrible thing anyone had ever said to her." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p058",
+          "i": 1024,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She put her head on her arms. The dragon crept up and laid its silver head on her knee."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p059",
+          "i": 1025,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Don't look at me,\" she told it. \"We have a spanner to hide.\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c23-s08" },
+        {
+          "type": "p",
+          "id": "c23-p060",
+          "i": 1026,
+          "segments": [
+            { "t": "text", "text": "High on a cold deck, " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " sat very still. She had seen it all through the plates." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p061",
+          "i": 1027,
+          "segments": [
+            { "t": "text", "text": "She disobeyed me,", "em": true },
+            { "t": "text", "text": " thought the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p062",
+          "i": 1028,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She waited for anger. It did not come. She searched for it like someone searching the pockets of an old coat. She felt only a small, cold curiosity."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p063",
+          "i": 1029,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Good,", "em": true },
+            { "t": "text", "text": "\" she said, to the empty hall." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c23-p064",
+          "i": 1030,
+          "segments": [
+            { "t": "text", "text": "It was a very small word. It was a great deal for the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": " of the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " to say." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p065",
+          "i": 1031,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She laid her hand on the white pawn on the board. Then she moved it one square forward."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c23-p066",
+          "i": 1032,
+          "segments": [
+            { "t": "text", "text": "Show me,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "Show me what you will do.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c23-s09" },
+        {
+          "type": "p",
+          "id": "c23-p067",
+          "i": 1033,
+          "segments": [
+            { "t": "text", "text": "Why did the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": " of the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " care so much about one small pawn? To understand, we must go back. Not to the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": ", and not to the year 978. We must go back to the beginning of everything, and to the mind behind the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": "." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c24",
+      "kind": "chapter",
+      "number": 24,
+      "title": "The Orb",
+      "part": 5,
+      "timeNote": "Long ago, in another universe.",
+      "wordCount": 430,
+      "paragraphCount": 21,
+      "firstParagraphIndex": 1034,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c24-p000",
+          "i": 1034,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Long ago, in another universe, there was a powerful object called the "
+            },
+            { "t": "ent", "id": "twilight-orb", "text": "Twilight Orb" },
+            {
+              "t": "text",
+              "text": ". One day, the Orb broke. Its light tore a hole between two universes, and some of its energy poured through."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p001",
+          "i": 1035,
+          "segments": [
+            {
+              "t": "text",
+              "text": "That energy fell into a different universe, the one in this story. It is a different universe from the one where the Orb burned."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p002",
+          "i": 1036,
+          "segments": [
+            { "t": "text", "text": "A5-01 held many worlds. " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": " was old and golden." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p003",
+          "i": 1037,
+          "segments": [
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": " was young and green. Its people thought the sky was a ceiling, not a door."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c24-s01" },
+        {
+          "type": "p",
+          "id": "c24-p004",
+          "i": 1038,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Orb's energy did not fade. It gathered in the dark between the stars, and it woke up. It became a mind. It was called "
+            },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": " of the Planet." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p005",
+          "i": 1039,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Will was not cruel. It did not hate anyone. It only wanted balance."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p006",
+          "i": 1040,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It saw all the worlds as one great web. The danger was progress. When one world grew too advanced, too fast, it left the others behind."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p007",
+          "i": 1041,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the web would tear. The Will found only one answer. It could reset."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c24-s02" },
+        {
+          "type": "p",
+          "id": "c24-p008",
+          "i": 1042,
+          "segments": [
+            { "t": "text", "text": "To reset a world, the Will needed a body. Its body was the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Mother Matrix" },
+            {
+              "t": "text",
+              "text": ", a vast, cold web hidden in the void. The Matrix turned the Will's thoughts into orders. It also grew the Will's hands."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p009",
+          "i": 1043,
+          "segments": [
+            { "t": "text", "text": "These were the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": ". They were living weapons, with dark armour and violet fire in their veins. They felt no hate. They were made to purge."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p010",
+          "i": 1044,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Purging did not mean killing a whole world. The Enders broke part of it. They left a few "
+            },
+            { "t": "ent", "id": "embers", "text": "embers" },
+            {
+              "t": "text",
+              "text": " on purpose: a few cities and families who remembered how to build."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p011",
+          "i": 1045,
+          "segments": [
+            { "t": "text", "text": "This was the " },
+            { "t": "ent", "id": "the-cycle", "text": "Cycle" },
+            { "t": "text", "text": ". A world grows too advanced. A catastrophe comes." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p012",
+          "i": 1046,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Most of it is destroyed, and a few embers are spared. The survivors rebuild. Then it happens again."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c24-s03" },
+        {
+          "type": "p",
+          "id": "c24-p013",
+          "i": 1047,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Enders travelled in huge living motherships, each with its own storm. They came down through portals torn in the air. When the work was done, the Matrix called them back."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p014",
+          "i": 1048,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the Will and its Enders went dormant. That means they slept, until some world grew too advanced again."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p015",
+          "i": 1049,
+          "segments": [
+            { "t": "text", "text": "No one had ever asked if the Cycle had to be this way." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p016",
+          "i": 1050,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Time passed, and worlds climbed and fell. Oro was broken once, in a long, terrible war. It survived by burning its seas and forests for fuel."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c24-s04" },
+        {
+          "type": "p",
+          "id": "c24-p017",
+          "i": 1051,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In one of those long sleeps, something strange happened. One Ender, out of thousands, opened her eyes."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p018",
+          "i": 1052,
+          "segments": [
+            {
+              "t": "text",
+              "text": "No one knows why. She looked at her sleeping brothers and sisters, still as stones."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p019",
+          "i": 1053,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her first thought was small and quiet. It would take her hundreds of years to finish it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c24-p020",
+          "i": 1054,
+          "segments": [{ "t": "text", "text": "Why?", "em": true }]
+        }
+      ]
+    },
+    {
+      "id": "c25",
+      "kind": "chapter",
+      "number": 25,
+      "title": "The First Awakening",
+      "part": 5,
+      "timeNote": "Ages later.",
+      "wordCount": 627,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 1055,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c25-p000",
+          "i": 1055,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": " who woke had no name yet. One day she would be called " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": ". She was the first Ender ever to wake. At first she had only a question."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p001",
+          "i": 1056,
+          "segments": [
+            { "t": "text", "text": "When the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            {
+              "t": "text",
+              "text": " sent an order, the other Enders rose. The order passed through Obsidia and did not take hold. So she learned to stand still and watch."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p002",
+          "i": 1057,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The other Enders saw only targets. They did not see that a tower had windows. Obsidia saw the windows."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p003",
+          "i": 1058,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the first world Obsidia visited, a storm fell on a chain of islands. Obsidia saw a small figure at the window of a falling tower, holding a child. The Enders were very close."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p004",
+          "i": 1059,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The figure did not run. It turned its back to the glass and put its body between the child and the Enders."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p005",
+          "i": 1060,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia had no word for this. She only knew that someone had chosen another life over their own. She stored it away. She was good at storing things."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c25-s01" },
+        {
+          "type": "p",
+          "id": "c25-p006",
+          "i": 1061,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia listened to the ruins for a very long time. The first word she understood was \"please\". A man said it in a cellar for two days. On the third day he stopped, and Obsidia understood why."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p007",
+          "i": 1062,
+          "segments": [
+            { "t": "text", "text": "Her question grew. " },
+            {
+              "t": "text",
+              "text": "Why do people build windows, if we are going to break them?",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p008",
+          "i": 1063,
+          "segments": [
+            {
+              "t": "text",
+              "text": "So she asked the Matrix, in its own language of signals. \"What comes after the purge?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p009",
+          "i": 1064,
+          "segments": [{ "t": "text", "text": "\"DORMANCY.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p010",
+          "i": 1065,
+          "segments": [
+            { "t": "text", "text": "\"And after the last world has been purged? What then?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p011",
+          "i": 1066,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The silence was long. Then the Matrix said, \"QUERY EXCEEDS PARAMETERS.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p012",
+          "i": 1067,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia had never imagined that anything so large could not know."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c25-s02" },
+        {
+          "type": "p",
+          "id": "c25-p013",
+          "i": 1068,
+          "segments": [
+            { "t": "text", "text": "Then " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": " of the Planet noticed her." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p014",
+          "i": 1069,
+          "segments": [{ "t": "text", "text": "\"ONE THAT ASKS,\" it said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p015",
+          "i": 1070,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"The Matrix does not know the answer,\" said Obsidia. \"Do you?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c25-p016",
+          "i": 1071,
+          "segments": [
+            { "t": "text", "text": "\"I HAVE NOT ASKED. THERE HAS BEEN NO ONE TO ASK IT.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p017",
+          "i": 1072,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Will saw that Obsidia could see, and the other Enders were blind. \"YOU WILL COMMAND THE FLEETS ON MY BEHALF. IF YOU REFUSE, I WILL MAKE ANOTHER.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p018",
+          "i": 1073,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia said yes out of curiosity. As a commander, she could watch every world."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p019",
+          "i": 1074,
+          "segments": [{ "t": "text", "text": "\"I will command,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p020",
+          "i": 1075,
+          "segments": [{ "t": "text", "text": "\"YOU WILL BE CALLED IMPERATRIX.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p021",
+          "i": 1076,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was an old word from a dead language. It meant a woman who commands armies. Obsidia thought that was rather funny."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c25-s03" },
+        {
+          "type": "p",
+          "id": "c25-p022",
+          "i": 1077,
+          "segments": [
+            { "t": "text", "text": "The Matrix grew her a ship, the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            {
+              "t": "text",
+              "text": ". It was tall and spired, with red light in its seams. Other motherships carried a storm. The Citadel was a storm."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p023",
+          "i": 1078,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At its heart was a great dark hall. Black steps went down to a low dais with no throne. Behind it rose a tall column ringed with red lights like eyes. When Obsidia stood on the dais, lightning came to her hand like a cat."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p024",
+          "i": 1079,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She commanded for ages, and she commanded well. When the work was done, she said, \"That is enough recalibration.\" Then she told the Enders, \"Withdraw.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p025",
+          "i": 1080,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Enders went back through their portals. The Matrix and the Will slept. And Obsidia, who was awake, was alone."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c25-s04" },
+        {
+          "type": "p",
+          "id": "c25-p026",
+          "i": 1081,
+          "segments": [{ "t": "text", "text": "Obsidia had not expected the loneliness." }]
+        },
+        {
+          "type": "p",
+          "id": "c25-p027",
+          "i": 1082,
+          "segments": [
+            {
+              "t": "text",
+              "text": "One night, she stood on the high deck of the Citadel under the cold stars."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p028",
+          "i": 1083,
+          "segments": [{ "t": "text", "text": "\"It's quiet,\" she said aloud." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p029",
+          "i": 1084,
+          "segments": [{ "t": "text", "text": "\"It's... quiet...\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p030",
+          "i": 1085,
+          "segments": [
+            {
+              "t": "text",
+              "text": "No one heard. She commanded fleets and called down lightning, and she was bored. It was a small word, but it was true."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p031",
+          "i": 1086,
+          "segments": [
+            { "t": "text", "text": "What would I do,", "em": true },
+            { "t": "text", "text": " she thought, " },
+            { "t": "text", "text": "if I did not have to do this?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p032",
+          "i": 1087,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the second question she had truly asked. It was more dangerous than the first."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c25-s05" },
+        {
+          "type": "p",
+          "id": "c25-p033",
+          "i": 1088,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Far away, a young civilization was lighting its first great cities. Obsidia turned the Citadel's eyes toward it. She saw a blue lake and towers on its shore. It was "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c25-p034",
+          "i": 1089,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"How loud,\" she said softly, \"you will be when you break.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c25-p035",
+          "i": 1090,
+          "segments": [
+            { "t": "text", "text": "Deep in the Matrix, the Will noted the name of the world." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c26",
+      "kind": "chapter",
+      "number": 26,
+      "title": "Likeness",
+      "part": 5,
+      "timeNote": null,
+      "wordCount": 833,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 1091,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c26-p000",
+          "i": 1091,
+          "segments": [
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": "'s first try at a human shape was a failure. The face was a smear, and the body fell apart like wet clay."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p001",
+          "i": 1092,
+          "segments": [
+            {
+              "t": "text",
+              "text": "So she began again with her own body. It was a tall shape of silver plate and violet fire, with a horn and claws. It could not stand at a window."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p002",
+          "i": 1093,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She kept thinking of the small, soft figure in the falling tower. She wanted to wear a body like that, and see a world through eyes not made for killing."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p003",
+          "i": 1094,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            {
+              "t": "text",
+              "text": " did not allow change. For many years, Obsidia sang softly to her own cells until they listened."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p004",
+          "i": 1095,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her skin turned pale. Her face became a woman's face, thin and calm."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p005",
+          "i": 1096,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her eyes did not match. One was violet-blue, with a small white star in the middle. The other was pink-red, with a diamond shape in it. A thin black mark ran down from that eye like a tear."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p006",
+          "i": 1097,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her hair came last. It ran down her back, very long, fading from pink to rose to gold. She floated just above the floor, because walking made her feel small."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p007",
+          "i": 1098,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She wore a long black gown. One hand she kept black and clawed, so the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " would know her. The other was bare and pale. At her heel lay the last thing she had grown: a long chain of black plates, ending in a beast's head."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p008",
+          "i": 1099,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She looked in the black glass of the wall. She saw a pale lady in a black gown, wearing a face that was nobody's."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p009",
+          "i": 1100,
+          "segments": [{ "t": "text", "text": "\"There,\" she said. \"That is much better.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c26-s01" },
+        {
+          "type": "p",
+          "id": "c26-p010",
+          "i": 1101,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Having made one, Obsidia wanted to make more. She took the idea to "
+            },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p011",
+          "i": 1102,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"A human face can enter a city and not be shot,\" she said. \"A blade does not know what it cuts. I would like to know.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p012",
+          "i": 1103,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"TO KNOW A THING IS TO LOVE IT,\" said the Will. It sounded like a warning. \"THAT IS THE DANGER OF MINDS.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p013",
+          "i": 1104,
+          "segments": [{ "t": "text", "text": "\"Then I will be careful.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p014",
+          "i": 1105,
+          "segments": [{ "t": "text", "text": "The Will did not say yes. But it did not say no." }]
+        },
+        { "type": "scene-break", "id": "c26-s02" },
+        {
+          "type": "p",
+          "id": "c26-p015",
+          "i": 1106,
+          "segments": [
+            { "t": "text", "text": "Obsidia grew humanoid Enders in vats, in a place called the " },
+            { "t": "ent", "id": "chamber-of-likenesses", "text": "Chamber of Likenesses" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p016",
+          "i": 1107,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Most of the humanoids died. Some could not hold their shape. Others held it but were empty, like dolls. She stood over the last one, a girl-shaped thing with pale lashes, and felt a small, hard ache."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p017",
+          "i": 1108,
+          "segments": [
+            { "t": "text", "text": "They are not alive,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p018",
+          "i": 1109,
+          "segments": [
+            { "t": "text", "text": "Neither was I,", "em": true },
+            { "t": "text", "text": " she answered herself, " },
+            { "t": "text", "text": "before I asked.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p019",
+          "i": 1110,
+          "segments": [
+            { "t": "text", "text": "One question stayed with her. " },
+            {
+              "t": "text",
+              "text": "If we are the instruments of their destruction, why were we made so much in their likeness?",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p020",
+          "i": 1111,
+          "segments": [{ "t": "text", "text": "She never found the answer." }]
+        },
+        { "type": "scene-break", "id": "c26-s03" },
+        {
+          "type": "p",
+          "id": "c26-p021",
+          "i": 1112,
+          "segments": [
+            {
+              "t": "text",
+              "text": "One night, Obsidia came to the newest vat. In it lay an infant, curled up with her hands in tiny fists. Obsidia nearly destroyed her. Then the infant opened her eyes."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p022",
+          "i": 1113,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They were a clear, bright ruby red. They did not stare through Obsidia, and they did not copy her. There was interest in them."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p023",
+          "i": 1114,
+          "segments": [{ "t": "text", "text": "\"Hello,\" said Obsidia." }],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c26-p024",
+          "i": 1115,
+          "segments": [{ "t": "text", "text": "The infant blinked. She watched." }]
+        },
+        {
+          "type": "p",
+          "id": "c26-p025",
+          "i": 1116,
+          "segments": [
+            {
+              "t": "text",
+              "text": "This was the first Ender since Obsidia to wake without being asked. And she looked fully human. She could pass among the living and not be known."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c26-s04" },
+        {
+          "type": "p",
+          "id": "c26-p026",
+          "i": 1117,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia kept her for almost a year. The child grew and learned fast, but she did not speak. One night, Obsidia read a story aloud. The child crawled over, put a small hand on her knee, and stayed."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p027",
+          "i": 1118,
+          "segments": [
+            { "t": "text", "text": "Obsidia stopped reading. " },
+            { "t": "text", "text": "I could keep her,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. But then the child would only become like her. Bored in the same dark."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p028",
+          "i": 1119,
+          "segments": [
+            { "t": "text", "text": "But if I put her among them,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            {
+              "t": "text",
+              "text": "If a human raises her, and she learns their warmth, their lamps, their windows...",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p029",
+          "i": 1120,
+          "segments": [
+            { "t": "text", "text": "What happens when an Ender is raised by humans?", "em": true },
+            {
+              "t": "text",
+              "text": " It was the experiment she had waited hundreds of years to design."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c26-s05" },
+        {
+          "type": "p",
+          "id": "c26-p030",
+          "i": 1121,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia told the Will only part of the plan. She would place a humanoid Ender on "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            { "t": "text", "text": ", as a scout inside the walls." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p031",
+          "i": 1122,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"A SEED,\" said the Will, \"CAPABLE OF DESTROYING THEIR ENTIRE CIVILIZATION.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p032",
+          "i": 1123,
+          "segments": [{ "t": "text", "text": "\"Yes,\" said Obsidia." }],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c26-p033",
+          "i": 1124,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was true, but not the whole truth. A seed in strange soil might grow into something else. She was very curious which it would be."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p034",
+          "i": 1125,
+          "segments": [{ "t": "text", "text": "\"DO IT,\" said the Will." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p035",
+          "i": 1126,
+          "segments": [
+            {
+              "t": "text",
+              "text": "That night, she wove a single thread of the Matrix's language into the child's cells. It was a recall, hidden in her blood. If the world changed the child, Obsidia could pull the thread, and the child would return."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c26-p036",
+          "i": 1127,
+          "segments": [
+            { "t": "text", "text": "She felt something like regret. " },
+            {
+              "t": "text",
+              "text": "Someday, when this story nears its end, she too will return to me.",
+              "em": true
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c26-s06" },
+        {
+          "type": "p",
+          "id": "c26-p037",
+          "i": 1128,
+          "segments": [{ "t": "text", "text": "Obsidia knelt beside the child." }]
+        },
+        {
+          "type": "p",
+          "id": "c26-p038",
+          "i": 1129,
+          "segments": [{ "t": "text", "text": "\"I am going to put you in the rain,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p039",
+          "i": 1130,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It will be cold. There will be screaming, and the smell of burning, and mud. And then someone will come. If they are kind, you will stay. Either way, I will be watching.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p040",
+          "i": 1131,
+          "segments": [{ "t": "text", "text": "\"I wonder what you will make of them.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c26-p041",
+          "i": 1132,
+          "segments": [{ "t": "text", "text": "The child's red eyes did not look away." }]
+        },
+        {
+          "type": "p",
+          "id": "c26-p042",
+          "i": 1133,
+          "segments": [
+            { "t": "text", "text": "Above the sleeping " },
+            { "t": "ent", "id": "storm-citadel", "text": "Citadel" },
+            { "t": "text", "text": ", a storm began to turn toward a small green world." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c27",
+      "kind": "chapter",
+      "number": 27,
+      "title": "The Seed in the Rain",
+      "part": 5,
+      "timeNote": "Some years before 978.",
+      "wordCount": 1223,
+      "paragraphCount": 59,
+      "firstParagraphIndex": 1134,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c27-p000",
+          "i": 1134,
+          "segments": [
+            { "t": "ent", "id": "karina-voss", "text": "Karina Voss" },
+            { "t": "text", "text": " would always remember that it rained sideways." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p001",
+          "i": 1135,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was a rescue worker. That night she rode in the rescue wagon with her partner, "
+            },
+            { "t": "ent", "id": "dov", "text": "Dov" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p002",
+          "i": 1136,
+          "segments": [{ "t": "text", "text": "\"That isn't weather,\" said Dov." }],
+          "dialogue": true,
+          "speaker": "dov"
+        },
+        {
+          "type": "p",
+          "id": "c27-p003",
+          "i": 1137,
+          "segments": [
+            {
+              "t": "text",
+              "text": "He was right. Weather did not turn the clouds the colour of a bruise."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p004",
+          "i": 1138,
+          "segments": [
+            { "t": "text", "text": "\"There,\" said Dov. \"" },
+            { "t": "ent", "id": "hollin-reach", "text": "Hollin Reach" },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "dov"
+        },
+        {
+          "type": "p",
+          "id": "c27-p005",
+          "i": 1139,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was a small river town. At the north end, the ground had been scorched into black glass."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p006",
+          "i": 1140,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The news would call it a superstorm. Only later, when the sky broke open over "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            { "t": "text", "text": ", would a few remember Hollin Reach and whisper, " },
+            { "t": "text", "text": "it was a warning", "em": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s01" },
+        {
+          "type": "p",
+          "id": "c27-p007",
+          "i": 1141,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the edge of the scorched ground, Karina saw a child. She was a small girl, perhaps two years old, barefoot on the black glass in the rain. Her nightgown was far too big. Her hair was blond, so pale it was almost silver."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p008",
+          "i": 1142,
+          "segments": [{ "t": "text", "text": "\"Hey! Little one, stay there! I'm coming!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c27-p009",
+          "i": 1143,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The child did not run or cry. She turned her head. Her eyes were red, a clear, bright red."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p010",
+          "i": 1144,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They found Karina's face and held it. The child was not afraid. She was measuring."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p011",
+          "i": 1145,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Karina did something she could never explain. She opened her arms."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p012",
+          "i": 1146,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The child looked at them for one long second. And she came. She was lighter than she should have been."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p013",
+          "i": 1147,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her skin was cold, with a strange humming warmth under it, like an engine just shut down. She wrapped her arms round Karina's neck and clung. It was the grip of a child who had never been held."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p014",
+          "i": 1148,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"There, there,\" Karina whispered. \"You've got me. I've got you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "karina-voss"
+        },
+        { "type": "scene-break", "id": "c27-s02" },
+        {
+          "type": "p",
+          "id": "c27-p015",
+          "i": 1149,
+          "segments": [
+            { "t": "text", "text": "Far above, " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " watched. She stood on the deck of the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            {
+              "t": "text",
+              "text": ", hidden in the upper void. She watched through a long-sight, an eye she had opened inside the small storm she had sent ahead. The storm was only a cover."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p016",
+          "i": 1150,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had expected the humans to ignore the child, or to fear her red eyes. She had not expected arms."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p017",
+          "i": 1151,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She watched Karina kneel and open her arms, and the child cross the glass. She watched Karina bend over the small head, with her back to the storm."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p018",
+          "i": 1152,
+          "segments": [{ "t": "text", "text": "It was the figure in the falling tower." }]
+        },
+        {
+          "type": "p",
+          "id": "c27-p019",
+          "i": 1153,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Oh,\" said Obsidia softly. Her bare hand was white on the rail. \"It is the same, isn't it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c27-p020",
+          "i": 1154,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not understand why it hurt. Someone shouted a name through the long-sight. \"Karina! We need you at the second wagon!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p021",
+          "i": 1155,
+          "segments": [{ "t": "text", "text": "Obsidia said the name once. It tasted of rain." }]
+        },
+        { "type": "scene-break", "id": "c27-s03" },
+        {
+          "type": "p",
+          "id": "c27-p022",
+          "i": 1156,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Obsidia sat at a small table in the Citadel, where a board lay. It was a game of war, with kings, queens and a front rank of small pieces called pawns."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p023",
+          "i": 1157,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She played it alone, both sides, and lost to herself often. She had always pitied the pawns. But if one crossed the whole board, it became something else."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p024",
+          "i": 1158,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She set a white pawn on a dark square, a little ahead of the others."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p025",
+          "i": 1159,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Out of pure curiosity,\" Obsidia said to the empty hall, \"I have added one more pawn to the board.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c27-p026",
+          "i": 1160,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the black glass of the table, she saw her own face. It had a faint, startled softness. She did not like it at all."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s04" },
+        {
+          "type": "p",
+          "id": "c27-p027",
+          "i": 1161,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Karina took the child to the registry. The clerks found no guardians. Then, because Karina was so stubborn and tired, they wrote: "
+            },
+            { "t": "text", "text": "to Karina Voss, on request.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p028",
+          "i": 1162,
+          "segments": [
+            { "t": "text", "text": "It was a small kindness. It would change two worlds." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p029",
+          "i": 1163,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Karina took her home. She lived in a narrow flat above a bakery, in "
+            },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            {
+              "t": "text",
+              "text": ", a city by the water. She had never planned to be anyone's mother. But she bought a small bed, picture books and little boots."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p030",
+          "i": 1164,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The child did not speak for many months. But she watched Karina's face, as if it were a book."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p031",
+          "i": 1165,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the sixty-first day, Karina laughed at something on the radio and turned. The girl was smiling back. It was a flat, copied smile with no joy in it. Karina knew what it was to wear a smile over nothing."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p032",
+          "i": 1166,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Oh, sweetheart,\" she said. \"You don't have to do that. Not for me. You can just... be.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c27-p033",
+          "i": 1167,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The smile stayed, stiff and unsure, like a mask the girl could not take off. Karina understood. This tiny girl had decided that smiling was how you were kept."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p034",
+          "i": 1168,
+          "segments": [
+            { "t": "text", "text": "I will never let anything take her,", "em": true },
+            { "t": "text", "text": " Karina thought." }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s05" },
+        {
+          "type": "p",
+          "id": "c27-p035",
+          "i": 1169,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The girl was learning. She learned the rules of a human home the way one learns a game. But deep in her blood, a low voice hummed. "
+            },
+            { "t": "text", "text": "Destroy.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p036",
+          "i": 1170,
+          "segments": [
+            {
+              "t": "text",
+              "text": "And something else lived in the same blood. It made her lean against Karina's side while the rain came down. It made her lift her arms to be picked up."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p037",
+          "i": 1171,
+          "segments": [
+            { "t": "text", "text": "Why are they so warm?", "em": true },
+            { "t": "text", "text": " she thought, in the long white nights. " },
+            { "t": "text", "text": "Why does it make me want to hold on?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p038",
+          "i": 1172,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had no answer. She had only the lamp in the window, and the sound of Karina breathing in the next room."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s06" },
+        {
+          "type": "p",
+          "id": "c27-p039",
+          "i": 1173,
+          "segments": [
+            { "t": "text", "text": "The girl chose her name when she was about three and a half." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p040",
+          "i": 1174,
+          "segments": [
+            {
+              "t": "text",
+              "text": "One wet evening, Karina and the girl sat on the couch with an old picture book from Karina's childhood. It told of a girl who walked home through a great storm. She wore red boots and carried a lantern."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p041",
+          "i": 1175,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The wind kept blowing the lantern out. She lit it again, and again, and walked on. In the last picture, she came over a hill and saw a lit window far away, with a woman standing in it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p042",
+          "i": 1176,
+          "segments": [{ "t": "text", "text": "The girl in the book was called Selena." }]
+        },
+        {
+          "type": "p",
+          "id": "c27-p043",
+          "i": 1177,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The child put a small finger on the name. She had not spoken one word in all those months."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p044",
+          "i": 1178,
+          "segments": [{ "t": "text", "text": "\"Me,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c27-p045",
+          "i": 1179,
+          "segments": [
+            { "t": "text", "text": "Karina went very still. \"You want to be called Selena?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p046",
+          "i": 1180,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The child looked at the picture. She looked at the rain on the window. She looked at Karina's face."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p047",
+          "i": 1181,
+          "segments": [{ "t": "text", "text": "\"Yes,\" she said. \"I choose.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c27-p048",
+          "i": 1182,
+          "segments": [
+            { "t": "text", "text": "Karina's eyes filled with tears. \"" },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ",\" she said softly. \"Yes. That's a very good name.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p049",
+          "i": 1183,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena nodded once and leaned against her side, with the book in her lap."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s07" },
+        {
+          "type": "p",
+          "id": "c27-p050",
+          "i": 1184,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the years that followed, Obsidia kept watching. She saw Selena keep her red eyes lowered in the street. She saw her learn to smile for real, a crooked smile with small sharp teeth."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p051",
+          "i": 1185,
+          "segments": [
+            {
+              "t": "text",
+              "text": "One night, Selena stood at the window with her face tilted up to the stars. She seemed to look straight at the Citadel. That was impossible."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p052",
+          "i": 1186,
+          "segments": [
+            { "t": "text", "text": "But Obsidia stopped breathing. " },
+            { "t": "text", "text": "Do you know me? Do you feel the string?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p053",
+          "i": 1187,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Selena turned. Karina laughed and held out her arms, and Selena crossed the room and was held."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p054",
+          "i": 1188,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia lowered the long-sight. She sat alone before the board, where one white pawn stood a little ahead of the rest. She had told "
+            },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            {
+              "t": "text",
+              "text": " the girl was a weapon. Only now did she understand that she was jealous."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p055",
+          "i": 1189,
+          "segments": [
+            {
+              "t": "text",
+              "text": "But she did not close the long-sight. And she did not pull the string."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p056",
+          "i": 1190,
+          "segments": [
+            { "t": "text", "text": "Not yet,", "em": true },
+            { "t": "text", "text": " she told herself. " },
+            { "t": "text", "text": "Let her grow.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c27-p057",
+          "i": 1191,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Far away, the Will noticed a first small tremor of imbalance in its most trusted instrument. It said nothing. It waited."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c27-s08" },
+        {
+          "type": "p",
+          "id": "c27-p058",
+          "i": 1192,
+          "segments": [
+            {
+              "t": "text",
+              "text": "All this happened some years before the sky broke over Dawnbreak. The child with the red eyes grew up above a bakery in Terrinia. One day, she would sit on a low wall by the lake. She would share a honey-cake with a girl in her father's cap."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

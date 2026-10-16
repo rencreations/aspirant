@@ -276,7 +276,7 @@ const VIDEOS = [
 export const EXCLUDED = [
   {
     what: `${FA}/video/live-action/live-action.webm and english.srt`,
-    why: "Non-canon parody (Seiresk Academy, SHABO, Mr Imran). Excluded per canon rules.",
+    why: "Non-canon parody video. Excluded per canon rules.",
   },
   { what: `${VG}/live-guin.webm`, why: "Multi-hour livestream recording (220 MB)." },
   { what: `${VG}/live-vexana.webm`, why: "Multi-hour livestream recording (150 MB)." },

@@ -4,6 +4,8 @@ node_modules
 
 # build output
 .next
+# private dev servers (NEXT_DIST_DIR=.next-<name>)
+.next-*/
 out
 dist
 build
@@ -39,3 +41,6 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 .lighthouseci
+
+# asset pipeline cache
+scripts/assets/.cache/

@@ -1,0 +1,2699 @@
+{
+  "part": {
+    "number": 4,
+    "label": "Part Four",
+    "title": "The Night the Base Fell",
+    "setting": "Still back in time.",
+    "chapterIds": ["c18", "c19", "c20", "c21", "c22"],
+    "file": "data/story/part-04.json",
+    "wordCount": 5853
+  },
+  "chapters": [
+    {
+      "id": "c18",
+      "kind": "chapter",
+      "number": 18,
+      "title": "Silence",
+      "part": 4,
+      "timeNote": "Selrick Base, in the days before it fell.",
+      "wordCount": 1234,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 763,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c18-p000",
+          "i": 763,
+          "segments": [
+            { "t": "text", "text": "The order came on a Thursday, sealed with the blue wax of " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            { "t": "text", "text": "'s Command Staff. " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " was to report at five the next morning for secret duty. Its length was \"unspecified.\" She could send no messages. The guard at "
+            },
+            { "t": "ent", "id": "selrick-base", "text": "Selrick Base" },
+            {
+              "t": "text",
+              "text": " would be given to someone else. She burned the paper in her hand."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p001",
+          "i": 764,
+          "segments": [
+            { "t": "text", "text": "That night " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " stood in her doorway in pyjamas. \"You are going away,\" she said. \"You packed your spare socks. You only do that for a long one.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p002",
+          "i": 765,
+          "segments": [{ "t": "text", "text": "\"I can't tell you where.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p003",
+          "i": 766,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I didn't ask where.\" Her voice cracked. \"I have a bad feeling. The "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " signal is getting stronger. It is as if it is listening to us. And you are going away, and it isn't "
+            },
+            { "t": "text", "text": "fair", "em": true },
+            { "t": "text", "text": ". I " },
+            { "t": "text", "text": "hate", "em": true },
+            { "t": "text", "text": " scary Big Sis! You said you'd " },
+            { "t": "text", "text": "stay", "em": true },
+            { "t": "text", "text": "!\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p004",
+          "i": 767,
+          "segments": [
+            { "t": "text", "text": "It struck " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " like a slap. She had said it in the lab, and meant every word. She knelt and took "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " by the shoulders." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p005",
+          "i": 768,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I will do everything in my power to come home. And I will be there on your birthday. The twenty-third of January. That's a hundred and nineteen days. I'll be there. With a cake.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p006",
+          "i": 769,
+          "segments": [{ "t": "text", "text": "\"You can't bake.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p007",
+          "i": 770,
+          "segments": [{ "t": "text", "text": "\"Then you bake, and I'll bring the candles.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p008",
+          "i": 771,
+          "segments": [{ "t": "text", "text": "\"That's not a promise.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p009",
+          "i": 772,
+          "segments": [{ "t": "text", "text": "\"It's a plan. I'm better at plans.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p010",
+          "i": 773,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " laughed, wetly. \"I'll be at the window in the morning. And you'll look up.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p011",
+          "i": 774,
+          "segments": [
+            { "t": "text", "text": "\"I'll look up,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". \"I promise.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c18-p012",
+          "i": 775,
+          "segments": [
+            { "t": "text", "text": "At five the next morning, " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " stood at the north gate with her pack and rifle. She looked up at the third-floor window. A small white face was behind the glass, with a hand pressed flat on the pane. "
+            },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " raised her own hand. Then she walked away and did not look back."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c18-s01" },
+        {
+          "type": "p",
+          "id": "c18-p013",
+          "i": 776,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A windowless truck drove her in circles for two hours, with a nervous scholar in a fur coat. When the tailgate opened, she knew the gate. CADET CORPS OF DAWNBREAK. It stood across the harbour from the Base. Her old sergeant, "
+            },
+            { "t": "ent", "id": "brandt", "text": "Brandt" },
+            {
+              "t": "text",
+              "text": ", waited there. \"You're expected,\" he said. \"Not by me. I'm only the gate.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p014",
+          "i": 777,
+          "segments": [
+            { "t": "text", "text": "The scholar was " },
+            { "t": "ent", "id": "piet", "text": "Piet" },
+            {
+              "t": "text",
+              "text": ". He had travelled far north to a black rock in the ice and found an old temple. He had made two hundred paper rubbings of its carved walls. The Command Staff kept them in a vault under the "
+            },
+            { "t": "ent", "id": "cadet-corps", "text": "Corps" },
+            {
+              "t": "text",
+              "text": "' old armoury, far from the Base. They feared that those who watched the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " might be watched in return. " },
+            { "t": "ent", "id": "piet", "text": "Piet" },
+            { "t": "text", "text": " had asked for " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " by name. \"You have seen them,\" he said. \"I need someone to tell me when I am wrong.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p015",
+          "i": 778,
+          "segments": [
+            { "t": "text", "text": "So " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": "'s secret duty was to guard a scholar and look at carvings. For eleven days, the rubbings showed "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " coming down from the clouds again and again. Then " },
+            { "t": "ent", "id": "piet", "text": "Piet" },
+            {
+              "t": "text",
+              "text": " found the last one. A circle was split in two. On one side was a ruined city. On the other were green shoots. Between them stood a shining figure with scales in its hands."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p016",
+          "i": 779,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Balance,", "em": true },
+            { "t": "text", "text": "\" breathed " },
+            { "t": "ent", "id": "piet", "text": "Piet" },
+            { "t": "text", "text": ". \"They were not sent to destroy us. They were sent to " },
+            { "t": "text", "text": "weigh", "em": true },
+            { "t": "text", "text": " us. It is a correction.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p017",
+          "i": 780,
+          "segments": [
+            { "t": "text", "text": "\"That doesn't make it right,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " coldly. \"They killed my family.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c18-p018",
+          "i": 781,
+          "segments": [
+            { "t": "text", "text": "\"I know. It is not an excuse. It is an " },
+            { "t": "text", "text": "answer", "em": true },
+            {
+              "t": "text",
+              "text": ". And an answer is the first step to a question. If there is a question, there may be a way to change it.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p019",
+          "i": 782,
+          "segments": [
+            { "t": "text", "text": "All right,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "Let us ask.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c18-s02" },
+        {
+          "type": "p",
+          "id": "c18-p020",
+          "i": 783,
+          "segments": [
+            { "t": "text", "text": "The alarm began at dusk. " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " stood on the cliff-top with a mug of tea. Bells tolled across the bay. The northern sky turned bruise-violet. A huge dark ship came down through the cloud, and under it "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " fell like rain." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p021",
+          "i": 784,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e", "em": true },
+            { "t": "text", "text": ",", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p022",
+          "i": 785,
+          "segments": [
+            { "t": "text", "text": "\"Private,\" said " },
+            { "t": "ent", "id": "brandt", "text": "Brandt" },
+            { "t": "text", "text": ". \"You have orders. You stay with the scholar.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "brandt"
+        },
+        {
+          "type": "p",
+          "id": "c18-p023",
+          "i": 786,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Write the hour in the log, Sergeant. I will answer for it.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p024",
+          "i": 787,
+          "segments": [
+            {
+              "t": "text",
+              "text": "He looked at her for a long moment. Then he threw her the keys of the black motorcycle. \"I didn't see you,\" said Sergeant "
+            },
+            { "t": "ent", "id": "brandt", "text": "Brandt" },
+            { "t": "text", "text": ". \"Go on, girl. " },
+            { "t": "text", "text": "Go.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p025",
+          "i": 788,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She rode the shore road faster than she could ever explain. In Merchants' Square, she shot an "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " and shouted the crowd to safety. Then she looked north. Over the old quarter, the sky was on fire. There was a flash of violet light where the Base stood."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p026",
+          "i": 789,
+          "segments": [
+            { "t": "text", "text": "I looked up,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I looked up.", "em": true },
+            { "t": "text", "text": " She had kept her promise. It had not been enough." }
+          ]
+        },
+        { "type": "scene-break", "id": "c18-s03" },
+        {
+          "type": "p",
+          "id": "c18-p027",
+          "i": 790,
+          "segments": [
+            { "t": "text", "text": "At that same hour, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " was at her bench in the lab. The lights turned red. \"" },
+            { "t": "text", "text": "Alert. ", "em": true },
+            { "t": "ent", "id": "enders", "text": "Enders", "em": true },
+            { "t": "text", "text": " at the perimeter.", "em": true },
+            { "t": "text", "text": "\" " },
+            { "t": "text", "text": "They heard us listening,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p028",
+          "i": 791,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her father snatched her up and ran. The walls shook. At the street door her mother waited, with the battered case that held all their research. They ran out into the street, with "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " holding a hand of each." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p029",
+          "i": 792,
+          "segments": [
+            { "t": "text", "text": "Then " },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            {
+              "t": "text",
+              "text": " slipped from under her arm. She let go of both hands and turned back for him."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p030",
+          "i": 793,
+          "segments": [
+            {
+              "t": "text",
+              "text": "When she straightened up, she saw it. At the end of the street stood a black "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " edged with gold, as tall as a tower. In its chest, a pink-violet light was growing. Her parents had run two steps ahead. They had turned."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p031",
+          "i": 794,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "change", "text": "Chang'e", "em": true },
+            { "t": "text", "text": "! Come, my moon! Come!", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p032",
+          "i": 795,
+          "segments": [
+            { "t": "text", "text": "For my moon.", "em": true },
+            {
+              "t": "text",
+              "text": " The words were on the back of an old photograph that she kept in her pocket. She had never heard them said aloud. She ran. One step. Two. "
+            },
+            { "t": "text", "text": "I am nearly there.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p033",
+          "i": 796,
+          "segments": [{ "t": "text", "text": "The light fell." }]
+        },
+        {
+          "type": "p",
+          "id": "c18-p034",
+          "i": 797,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The blast threw her like a leaf into the rubble. She lay on her back and saw a column of light, and in it two small shapes holding hands. Her father smiled his small crooked smile. Her mother's lips made one word. "
+            },
+            { "t": "text", "text": "Live.", "em": true },
+            { "t": "text", "text": " Then the light went white, and they were gone." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p035",
+          "i": 798,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At last she crawled to the top of the rubble. The road was gone. In its place was a crater, ten metres across, with a floor of black glass. "
+            },
+            { "t": "text", "text": "It's my fault,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I dropped ", "em": true },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny", "em": true },
+            { "t": "text", "text": ".", "em": true },
+            {
+              "t": "text",
+              "text": " It was not true. But she held on to it. It was something to hold."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p036",
+          "i": 799,
+          "segments": [
+            { "t": "text", "text": "Behind her, a small " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " picked its way across the stones. It stopped. It looked at her. It did not strike. She did not know why."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c18-s04" },
+        {
+          "type": "p",
+          "id": "c18-p037",
+          "i": 800,
+          "segments": [
+            { "t": "text", "text": "High above the burning Base, on the tallest tower of the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " stood alone. The Will had commanded it. " },
+            {
+              "t": "text",
+              "text": "They are looking up. Remove the place that looks back.",
+              "em": true
+            },
+            {
+              "t": "text",
+              "text": " So she had sent a small force. \"Not the city,\" she had said. \"Only the Base.\" But "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " do not understand the word " },
+            { "t": "text", "text": "only", "em": true },
+            { "t": "text", "text": ". The fires spread. A gold " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": " in Harbour Row saw three people in a road." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p038",
+          "i": 801,
+          "segments": [
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": " watched through the long-sight and did not look away. It was her rule. She saw the street go white. And on a heap of stone, she saw a small child."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p039",
+          "i": 802,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She felt something sharper than pity. The law she served was called the "
+            },
+            { "t": "ent", "id": "the-cycle", "text": "Cycle" },
+            { "t": "text", "text": ". It always left a few survivors alive, like " },
+            { "t": "ent", "id": "embers", "text": "embers" },
+            { "t": "text", "text": " in ash. " },
+            { "t": "text", "text": "The ", "em": true },
+            { "t": "ent", "id": "the-cycle", "text": "Cycle", "em": true },
+            { "t": "text", "text": " leaves ", "em": true },
+            { "t": "ent", "id": "embers", "text": "embers", "em": true },
+            { "t": "text", "text": ",", "em": true },
+            {
+              "t": "text",
+              "text": " she told herself. She did not believe a word of it. She raised her hand. "
+            },
+            { "t": "text", "text": "Hold. That one is not to be touched.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p040",
+          "i": 803,
+          "segments": [
+            { "t": "text", "text": "\"That is enough recalibration,\" said the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": " calmly. \"" },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": ". Withdraw.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c18-p041",
+          "i": 804,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They went. She stood at the rail for a long while, with her hand pressed to her breast."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c18-p042",
+          "i": 805,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Forgive me,\" she said, to no one. It was the first time she had ever said it. She did not say it again."
+            }
+          ],
+          "dialogue": true
+        }
+      ]
+    },
+    {
+      "id": "c19",
+      "kind": "chapter",
+      "number": 19,
+      "title": "Go Away",
+      "part": 4,
+      "timeNote": "The same night, and after.",
+      "wordCount": 835,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 806,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c19-p000",
+          "i": 806,
+          "segments": [
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": "'s motorcycle died a mile from the Base. She ran the rest of the way through smoke and broken glass. At the end of a ruined street stood a black-and-gold "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": ", with a pink light dying in its chest. Lesley raised her rifle. The great head turned to her. She had never wanted anything so much."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p001",
+          "i": 807,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the Ender lifted its head, as if it had heard a voice. All along the street, the others did the same. They turned and walked into a pillar of violet fire, and were gone."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p002",
+          "i": 808,
+          "segments": [
+            { "t": "text", "text": "As if somebody told them to,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Lesley. She had seen it once before, at the end of a night in a cellar, when she was nine. She lowered the rifle and walked on."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c19-s01" },
+        {
+          "type": "p",
+          "id": "c19-p003",
+          "i": 809,
+          "segments": [
+            { "t": "text", "text": "She found " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " at the edge of the crater. The child sat on a heap of stone with her knees drawn up, holding "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            {
+              "t": "text",
+              "text": " tight. Her white coat was grey with dust, and one lens of her glasses was cracked."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p004",
+          "i": 810,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley dropped her rifle and fell to her knees. She wrapped her arms round the child. \"I'm sorry,\" she said. \"I'm sorry. I'm so sorry.\" Chang'e did not move."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p005",
+          "i": 811,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Where were you?\" Her voice was small and flat. She did not sound angry. She sounded puzzled."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p006",
+          "i": 812,
+          "segments": [{ "t": "text", "text": "\"In the south. On a mission.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p007",
+          "i": 813,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You said you'd stay. They were running. They were holding my hands. I let go to get Mr. Bunny. There was a light.\" Her voice did not rise. \"And you weren't there.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p008",
+          "i": 814,
+          "segments": [
+            { "t": "text", "text": "It went through Lesley like a bullet through paper." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p009",
+          "i": 815,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then something in Chang'e's face gave way, like a thread being cut. She screamed. \"Go away! You were not here when we needed your protection! You said you'd stay, and you didn't! They died because of you! I'll never forgive you!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p010",
+          "i": 816,
+          "segments": [{ "t": "text", "text": "\"I know.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p011",
+          "i": 817,
+          "segments": [
+            { "t": "text", "text": "\"I don't want your sorry! I want them " },
+            { "t": "text", "text": "back", "em": true },
+            { "t": "text", "text": "!\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p012",
+          "i": 818,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know,\" said Lesley. She did not cry. She did not think she had the right."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c19-p013",
+          "i": 819,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e put her head on her knees. \"Leave me alone...\" she whispered. \"I can't look at you.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p014",
+          "i": 820,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley nodded and stood. \"I won't come near you unless you ask. But I will be nearby.\" Her voice shook. \"I'm going to protect you. You don't have to speak to me. Even if you never forgive me. Ever since that day...\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p015",
+          "i": 821,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her voice broke. She picked up her rifle and walked away into the smoke."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c19-s02" },
+        {
+          "type": "p",
+          "id": "c19-p016",
+          "i": 822,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not go far. She sat against a broken wall where she could see the crater. "
+            },
+            { "t": "ent", "id": "ostrander", "text": "Ostrander" },
+            {
+              "t": "text",
+              "text": ", the foreman, put his coat round Chang'e. On the second morning, a woman in a green rescue coat sat down beside her on the rubble. It was "
+            },
+            { "t": "ent", "id": "karina-voss", "text": "Karina" },
+            { "t": "text", "text": ". She said nothing. She stayed." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p017",
+          "i": 823,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e sat there for three days, holding a dented metal case. It held her parents' research. Lesley watched from the wall. She had left her post without orders, but a Shield officer let it go. \"There isn't a court in "
+            },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            { "t": "text", "text": " that would sit,\" he said. \"Go and sit down, Private.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p018",
+          "i": 824,
+          "segments": [
+            { "t": "text", "text": "There's no time to lament,", "em": true },
+            { "t": "text", "text": " she thought. It was her own creed from the " },
+            { "t": "ent", "id": "cadet-corps", "text": "Cadet Corps" },
+            { "t": "text", "text": ". Now it felt hollow. " },
+            { "t": "text", "text": "Why wasn't I there?", "em": true },
+            { "t": "text", "text": " No one answered." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p019",
+          "i": 825,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the second night, Chang'e looked across the dark toward the wall. Then she wept against Mr. Bunny. Lesley heard every sob. She did not go to her."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c19-s03" },
+        {
+          "type": "p",
+          "id": "c19-p020",
+          "i": 826,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Shield took Chang'e into its care. In the margins of her parents' papers, she had written corrections in small grey pencil. Every one was right. \"Look at the way she forms her sevens,\" said an old colonel. \"She is a child, and she has done this.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p021",
+          "i": 827,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They gave her a small lab and a nurse. She read eleven hours a day. Every evening she said the same thing to the bare wall."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p022",
+          "i": 828,
+          "segments": [{ "t": "text", "text": "\"I'm going to kill them.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c19-s04" },
+        {
+          "type": "p",
+          "id": "c19-p023",
+          "i": 829,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley asked to guard her. Her orders were to observe and report. She must not approach. She took a post on a roof across the street. She never came closer than twenty metres. She never spoke."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p024",
+          "i": 830,
+          "segments": [
+            {
+              "t": "text",
+              "text": "But on the twenty-third of January, at dawn, a parcel in brown paper lay on the lab doorstep. Chang'e had forgotten her own birthday. "
+            },
+            { "t": "text", "text": "A hundred and nineteen days,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p025",
+          "i": 831,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Inside was a very bad cake. It was lopsided and burnt along one edge, with a crooked candle and uneven blue letters: HAPPY BIRTHDAY. Under the plate was a card. On the front, in pencil capitals, was "
+            },
+            { "t": "text", "text": "I'M SO SORRY.", "em": true },
+            { "t": "text", "text": " Inside was one line. " },
+            { "t": "text", "text": "I said I'd be there. I'll always be nearby.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p026",
+          "i": 832,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e looked along the rooftops. She saw a pigeon and a line of washing. But she knew that someone was watching."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c19-p027",
+          "i": 833,
+          "segments": [{ "t": "text", "text": "\"I hate you,\" she whispered. It was not true." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c19-p028",
+          "i": 834,
+          "segments": [
+            {
+              "t": "text",
+              "text": "When the nurse asked who had made the cake, she said, \"Nobody.\" A week later, she wrapped the stale cake and the card in brown paper and put them in her desk drawer. She kept them there for years. She never ate the cake. She never threw it away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c20",
+      "kind": "chapter",
+      "number": 20,
+      "title": "The Years of Ash",
+      "part": 4,
+      "timeNote": "The years after.",
+      "wordCount": 941,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 835,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c20-p000",
+          "i": 835,
+          "segments": [
+            { "t": "text", "text": "For a long time, " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " lived in the same city and did not speak. Lesley kept watch from a roof on Anchor Street, with the rifle Chang'e had made. Through her new blue eye she could read Chang'e's lips. One evening she saw Chang'e say four words to "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "She's not coming back.", "em": true },
+            { "t": "text", "text": " Lesley closed her eyes." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p001",
+          "i": 836,
+          "segments": [
+            { "t": "text", "text": "She was not quite alone. One rainy evening, " },
+            { "t": "ent", "id": "karina-voss", "text": "Karina" },
+            {
+              "t": "text",
+              "text": " climbed the ladder with a thermos. \"Finding people is what I do,\" she said."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p002",
+          "i": 837,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It was my fault,\" said Lesley. \"I told her I would stay.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c20-p003",
+          "i": 838,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I expect you meant it with all your heart,\" said Karina. \"It was a promise nobody could keep. That doesn't make you a liar. It makes you a person.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "karina-voss"
+        },
+        {
+          "type": "p",
+          "id": "c20-p004",
+          "i": 839,
+          "segments": [{ "t": "text", "text": "\"I'm afraid she will never forgive me.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c20-p005",
+          "i": 840,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then you will protect her anyway. Won't you? I don't think you have any other plan.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c20-p006",
+          "i": 841,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Tears ran down Lesley's face into the tea. Karina put an arm round her. \"I'll come again. If you like.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p007",
+          "i": 842,
+          "segments": [{ "t": "text", "text": "\"I'd like that,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        { "type": "scene-break", "id": "c20-s01" },
+        {
+          "type": "p",
+          "id": "c20-p008",
+          "i": 843,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the spring, Chang'e made a discovery. At two in the morning, she sat looking at a piece of "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": " armour that " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            {
+              "t": "text",
+              "text": " had given her. For six months it had done nothing. She hated it. Her hatred was clean and hot, and it was all that kept her upright."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p009",
+          "i": 844,
+          "segments": [
+            { "t": "text", "text": "\"I " },
+            { "t": "text", "text": "hate", "em": true },
+            { "t": "text", "text": " you,\" she told the armour." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c20-p010",
+          "i": 845,
+          "segments": [{ "t": "text", "text": "It glowed brighter." }]
+        },
+        {
+          "type": "p",
+          "id": "c20-p011",
+          "i": 846,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She said it again, and the violet light pulsed in time with her voice. So she asked herself: "
+            },
+            { "t": "text", "text": "What happens if I'm not angry?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p012",
+          "i": 847,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was very hard. She thought of tea in a corridor, with a blue-rimmed cup, and her father humming. She thought of a tall girl in a blue coat, smiling with her eyes shut. It was "
+            },
+            { "t": "text", "text": "home", "em": true },
+            { "t": "text", "text": ". Chang'e cried." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p013",
+          "i": 848,
+          "segments": [
+            {
+              "t": "text",
+              "text": "When she opened her eyes, the armour had gone dark and quiet, like a dog spoken to gently. She had no word for what she had felt. It was not happiness. It was faithfulness to what you love, which holds you up in the middle of grief. It was a heart that is whole and holds to one thing. She wrote a name in her notebook, struck it out, and wrote another."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p014",
+          "i": 849,
+          "segments": [
+            { "t": "ent", "id": "aspirant-power", "text": "ASPIRANT POWER", "em": true },
+            { "t": "text", "text": ".", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p015",
+          "i": 850,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Enders feed on hatred and fear. Aspirant power is the opposite."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p016",
+          "i": 851,
+          "segments": [
+            {
+              "t": "text",
+              "text": "That same spring, in the Shield's salvage yard, where wrecked Enders were kept, a young intern named "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " lifted a curved plate. Through her glove she felt it hum. She went very still, like a traveller who hears her own language in a foreign city. "
+            },
+            { "t": "text", "text": "Hello,", "em": true },
+            {
+              "t": "text",
+              "text": " said the plate, without words. Selena glanced round the yard. Then she smiled slowly and slipped the plate into her apron pocket."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c20-s02" },
+        {
+          "type": "p",
+          "id": "c20-p017",
+          "i": 852,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the summer, the Shield made Lesley a lieutenant and gave her a squad of young cadets. On the first morning she stood on the "
+            },
+            { "t": "ent", "id": "cadet-corps", "text": "Corps" },
+            {
+              "t": "text",
+              "text": "' parade-ground. A dark plate covered her left eye. It hid the eye Chang'e had made. Her father's old cap was folded in her pocket. A voice came out of her that she hardly knew. It was the voice of someone who had once been spoken to, in a lab, by a very small person."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p018",
+          "i": 853,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"A gun without bullets is useless. A soldier with nothing to aspire to is the same. Find the thing you won't let go of. And then protect it.\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c20-s03" },
+        {
+          "type": "p",
+          "id": "c20-p019",
+          "i": 854,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the next anniversary of the day the Base fell, Lesley could not go to the roof. At dawn she heard a small humming. Mr. Bunny hung at her window. He had come by himself."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p020",
+          "i": 855,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then a cloud of blue light gathered over her pillow. It showed a dim lab, a lopsided cake and a rifle. A small girl stood on tiptoe with her hands on a scarred cheek. "
+            },
+            { "t": "text", "text": "Happy Birthday, Lesley!", "em": true },
+            {
+              "t": "text",
+              "text": " Mr. Bunny had kept it all this time. Lesley did not tell it to stop. She wept as she had not wept in a long while."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p021",
+          "i": 856,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Thank you,\" she said at last. \"Go home. She'll be worried.\" He left a small silver receiver on the pillow. Lesley clipped it inside her collar. \"I'm still here,\" she told the empty room."
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c20-s04" },
+        {
+          "type": "p",
+          "id": "c20-p022",
+          "i": 857,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The next winter was bad. One blizzard night, the lamp in Chang'e's window went out. Lesley broke the lab door with her shoulder. Chang'e lay at her bench, burning with fever. Lesley carried her through the snow to the hospital and sat six hours in the corridor."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p023",
+          "i": 858,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At last a tired doctor came out. \"Are you family?\" he asked. She had meant to say, "
+            },
+            { "t": "text", "text": "I am only a guard.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p024",
+          "i": 859,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Yes,\" said Lesley. It was a lie. It was the only true thing she had ever said."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c20-p025",
+          "i": 860,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She sat by the bed all night, then left before dawn. On the bedside table was a paper bag with one cinnamon bun in it. Chang'e did not eat it. She did not throw it away."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c20-s05" },
+        {
+          "type": "p",
+          "id": "c20-p026",
+          "i": 861,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The next spring, Chang'e built her first core. It was a crystal cylinder, no bigger than a thumb, threaded with Ender tissue. It did not make energy. It made aspirant power louder, the way a tuning-fork sings a note back. But the tests failed. Volunteers thought of something they would die for, and the core flickered and went out. \"It's the hatred,\" said Chang'e. \"They have all lost someone. And I'm the same. It is like trying to sing with a sob in my throat.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p027",
+          "i": 862,
+          "segments": [
+            { "t": "text", "text": "Far above, " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            {
+              "t": "text",
+              "text": " of the Planet heard a faint clear hum rising from a small white building by the harbour. A girl was learning to sing. "
+            },
+            { "t": "text", "text": "That is not in the model,", "em": true },
+            { "t": "text", "text": " said the Will. It said one word to the cold dark." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c20-p028",
+          "i": 863,
+          "segments": [{ "t": "text", "text": "Recalibrate.", "em": true }]
+        }
+      ]
+    },
+    {
+      "id": "c21",
+      "kind": "chapter",
+      "number": 21,
+      "title": "The Return",
+      "part": 4,
+      "timeNote": "Some years after the Base fell.",
+      "wordCount": 1560,
+      "paragraphCount": 61,
+      "firstParagraphIndex": 864,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c21-p000",
+          "i": 864,
+          "segments": [
+            { "t": "text", "text": "The nightmare did not stop when " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " woke. That was how she knew. In the dream, the faceless thing bent down and said, "
+            },
+            { "t": "text", "text": "Go away.", "em": true },
+            {
+              "t": "text",
+              "text": " She sat up in the hot grey dawn. The alarm bells were tolling. The sky in the north was bruise-violet."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p001",
+          "i": 865,
+          "segments": [
+            { "t": "text", "text": "They've come back.", "em": true },
+            { "t": "text", "text": " And then, only one thought. " },
+            { "t": "ent", "id": "change", "text": "Chang'e", "em": true },
+            { "t": "text", "text": ".", "em": true },
+            { "t": "text", "text": " Lesley knew what the girl would do. She would not wait for " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            {
+              "t": "text",
+              "text": ". She would put on her new armour and go out alone to meet them. "
+            },
+            { "t": "text", "text": "Exactly as I would,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Lesley. She grabbed her rifle. The cover over her eye lit with its cyan star. She ran."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c21-s01" },
+        {
+          "type": "p",
+          "id": "c21-p002",
+          "i": 866,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e was already gone. At three that morning her core had begun to hum, in answer to something far away. "
+            },
+            { "t": "text", "text": "They're coming.", "em": true },
+            { "t": "text", "text": " She pulled the dust-sheet off the steel cupboard." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p003",
+          "i": 867,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Inside stood her armour, white alloy and teal glass, light as the bones of a bird. It had boots, gauntlets and a belt with a socket for the core. The core was a small crystal that made "
+            },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            { "t": "text", "text": " stronger. She had never tested the armour. " },
+            { "t": "text", "text": "It will almost certainly fail,", "em": true },
+            { "t": "text", "text": " she told herself calmly. She put it on." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p004",
+          "i": 868,
+          "segments": [
+            { "t": "text", "text": "She fixed the core in its socket. It " },
+            { "t": "text", "text": "lit", "em": true },
+            {
+              "t": "text",
+              "text": ". Pale green-white light ran along the struts until she shone like a spire of ice."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p005",
+          "i": 869,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": ",\" she said. \"" },
+            { "t": "text", "text": "Activate.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p006",
+          "i": 870,
+          "segments": [
+            { "t": "text", "text": "The little robot whistled and " },
+            { "t": "text", "text": "unfolded", "em": true },
+            {
+              "t": "text",
+              "text": ". Panels slid out. Great teal ears rose, a metre long. Mr. Bunny was now the size of a house."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p007",
+          "i": 871,
+          "segments": [
+            { "t": "text", "text": "\"Oh, Mr. Bunny,\" said Chang'e. \"You're beautiful.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p008",
+          "i": 872,
+          "segments": [
+            {
+              "t": "text",
+              "text": "He knelt and held out one huge hand. In his chest was the lens where she kept everything she never said. She had dictated three hundred messages to Lesley into it, in a folder named UNSENT."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p009",
+          "i": 873,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Record. Lesley, I have finally developed my new weapon. With it, I can protect others now.\" She frowned. \"No. Don't send that one. File it.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p010",
+          "i": 874,
+          "segments": [{ "t": "text", "text": "She stepped onto his hand." }]
+        },
+        { "type": "scene-break", "id": "c21-s02" },
+        {
+          "type": "p",
+          "id": "c21-p011",
+          "i": 875,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " had come out of the north-east in a black storm. The " },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere" },
+            {
+              "t": "text",
+              "text": ", the glass shield over the city, held for eleven minutes. Then it began to crack."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p012",
+          "i": 876,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e rode high on Mr. Bunny's hand, with her hover-board, the "
+            },
+            { "t": "ent", "id": "crescent-moon", "text": "Crescent Moon" },
+            { "t": "text", "text": ", clipped to his back. She saw an " },
+            { "t": "ent", "id": "ultra-enders", "text": "Ultra Ender" },
+            { "t": "text", "text": ", a giant taller than any tower, tearing down a building. \"" },
+            { "t": "text", "text": "That", "em": true },
+            { "t": "text", "text": " one,\" she said." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p013",
+          "i": 877,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She came down out of the cloud like a thunderbolt and drove both fists into a gap between its plates. \""
+            },
+            { "t": "text", "text": "Maximum output!", "em": true },
+            { "t": "text", "text": "\" The giant fell like a tower, and lay still." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p014",
+          "i": 878,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e hung in the air, gasping. She had expected joy. She felt "
+            },
+            { "t": "text", "text": "empty", "em": true },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "It's dead,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "And they're still dead.", "em": true },
+            {
+              "t": "text",
+              "text": " She could kill ten thousand Enders, and not one person would come back."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p015",
+          "i": 879,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The core flickered. She did not notice. The light dimmed from white to grey. Behind her, thirty dark shapes rose from the broken buildings. They formed a ring."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p016",
+          "i": 880,
+          "segments": [
+            { "t": "text", "text": "She slapped the core. \"Come on. " },
+            { "t": "text", "text": "Come on.", "em": true },
+            { "t": "text", "text": "\" Nothing. " },
+            { "t": "text", "text": "It's the hate,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I stopped hating, and it stopped.", "em": true },
+            {
+              "t": "text",
+              "text": " She had filled a weapon of aspirant power with rage. She had not been fighting out of love. She had been fighting out of spite."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p017",
+          "i": 881,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Enders leapt. One struck Mr. Bunny's head with a blow that rang like a bell. He cried out like a hurt child, and the world turned over."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p018",
+          "i": 882,
+          "segments": [
+            { "t": "text", "text": "I'm going to die,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Chang'e. She was not afraid. She thought of her parents, walking away into a white light. She thought of a tall girl in a blue coat, saying, "
+            },
+            { "t": "text", "text": "She stays.", "em": true },
+            { "t": "text", "text": " " },
+            { "t": "text", "text": "I'm sorry I said go away.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p019",
+          "i": 883,
+          "segments": [{ "t": "text", "text": "She spoke to the lens beneath her feet." }]
+        },
+        {
+          "type": "p",
+          "id": "c21-p020",
+          "i": 884,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Mr. Bunny. Send. Lesley, I guess this is the end of me. Where are you now?\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p021",
+          "i": 885,
+          "segments": [{ "t": "text", "text": "The blow fell." }]
+        },
+        { "type": "scene-break", "id": "c21-s03" },
+        {
+          "type": "p",
+          "id": "c21-p022",
+          "i": 886,
+          "segments": [
+            { "t": "text", "text": "It did not strike her. There was a high, sharp " },
+            { "t": "text", "text": "crack", "em": true },
+            {
+              "t": "text",
+              "text": ", from very far away. The Ender above Mr. Bunny froze. A small neat hole had appeared in its forehead, with a blue light inside. It fell."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p023",
+          "i": 887,
+          "segments": [
+            { "t": "text", "text": "Crack. Crack. Crack.", "em": true },
+            {
+              "t": "text",
+              "text": " Each shot brought down an Ender. On a rooftop two hundred metres away, a tall figure lay on its stomach. It had a long red-orange rifle and a whipping cloak. It had one bright blue eye. A dark plate with a cyan star covered the other."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p024",
+          "i": 888,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley had heard the message in the small silver receiver at her collar. She had answered it aloud, to nobody, with tears on her face. \""
+            },
+            { "t": "text", "text": "Here.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p025",
+          "i": 889,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then she left the roof and came down the fire-escape in one long leap. \"Jump!\" she shouted. \"I'll catch you!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p026",
+          "i": 890,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e took one step off the edge. Lesley caught her, and they went down together in the ash."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p027",
+          "i": 891,
+          "segments": [{ "t": "text", "text": "\"I've got you,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p028",
+          "i": 892,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Go away,", "em": true },
+            {
+              "t": "text",
+              "text": "\" said Chang'e. It was only a sob. \"I'm sorry I said it. I never hated you. I thought if I could hate somebody, it would hurt less. It was only lonelier.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p029",
+          "i": 893,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You were grieving,\" said Lesley. \"That isn't the same as being horrible. I'm here. I'm not going anywhere. I could not keep that promise before. But I will spend my life getting it right.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p030",
+          "i": 894,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Big Sis,\" said Chang'e in a very small voice. \"Mr. Bunny says he missed you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p031",
+          "i": 895,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the most ridiculous thing she could have said. Lesley laughed, and the laugh was half a sob. \"And what does "
+            },
+            { "t": "text", "text": "Chang'e", "em": true },
+            { "t": "text", "text": " say?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p032",
+          "i": 896,
+          "segments": [{ "t": "text", "text": "\"Chang'e says she missed you, too.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c21-s04" },
+        {
+          "type": "p",
+          "id": "c21-p033",
+          "i": 897,
+          "segments": [
+            { "t": "text", "text": "The Enders had stopped, like animals that smell a trap." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p034",
+          "i": 898,
+          "segments": [{ "t": "text", "text": "\"Can you fight?\" asked Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p035",
+          "i": 899,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e looked at the core in her belt. It was a lump of grey crystal. \"It needs aspirant power, and I haven't got any. I thought I had. But it was only rage. Rage doesn't hold.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p036",
+          "i": 900,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She looked up at Lesley. The thin, scarred face above her was not angry or proud. It was "
+            },
+            { "t": "text", "text": "worried", "em": true },
+            {
+              "t": "text",
+              "text": ". It was full of such patient, helpless love that Chang'e could hardly bear to look. It was so simple. It was only a person who stayed. "
+            },
+            { "t": "text", "text": "It isn't about what you hate,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "It's about what you won't let go of.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p037",
+          "i": 901,
+          "segments": [
+            { "t": "text", "text": "And the core in her belt " },
+            { "t": "text", "text": "lit", "em": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p038",
+          "i": 902,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was a slow, gentle glow, like first light on a hillside. \"It was never the rage!\" said Chang'e, laughing and crying. \"It was "
+            },
+            { "t": "text", "text": "you", "em": true },
+            {
+              "t": "text",
+              "text": ". It is only loving something so much that you can't let go. And I looked for it all this time, and it was sitting on a roof on Anchor Street with a rifle.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p039",
+          "i": 903,
+          "segments": [{ "t": "text", "text": "\"I'm... on a roof?\" said Lesley faintly." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p040",
+          "i": 904,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I knew. Mr. Bunny told me. It would have been careless not to notice a sniper.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p041",
+          "i": 905,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley began to laugh, and then Chang'e did too. Then Lesley wiped her eyes and lifted her rifle. \"Together?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p042",
+          "i": 906,
+          "segments": [
+            { "t": "text", "text": "\"Together,\" said Chang'e. \"" },
+            { "t": "text", "text": "Don't make me do this alone.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p043",
+          "i": 907,
+          "segments": [{ "t": "text", "text": "\"Never again,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        { "type": "scene-break", "id": "c21-s05" },
+        {
+          "type": "p",
+          "id": "c21-p044",
+          "i": 908,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the first time Aspirant energy was used in battle. Chang'e rose on the Crescent Moon in a spiral of light, singing a song with no words. Pale lances of energy burned through the Enders. On the roof, Lesley laid her cheek on the stock and fired. The bullet rode a thread of blue light through one Ender, and the next, and the next, like a string of pearls."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p045",
+          "i": 909,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Pulsar!", "em": true },
+            { "t": "text", "text": "\" said Lesley. The word had risen in her throat on its own." }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p046",
+          "i": 910,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They fought for eleven minutes, as two halves of one thing. When Chang'e rose, Lesley covered her. When Lesley moved, Mr. Bunny put his great shoulder in front of her. \""
+            },
+            { "t": "text", "text": "With Mr. Bunny and me,", "em": true },
+            { "t": "text", "text": "\" cried Chang'e, \"" },
+            { "t": "text", "text": "even one plus one is more than two!", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p047",
+          "i": 911,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The last of the twenty-four Enders looked up at the child above it. For a moment it seemed to hesitate. \"I'm sorry,\" said Chang'e. She did not know why she said it. A thread of blue light went through its head, and it fell."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p048",
+          "i": 912,
+          "segments": [
+            { "t": "text", "text": "Later the histories would call it the Engagement at " },
+            { "t": "ent", "id": "gantry-square", "text": "Gantry Square" },
+            { "t": "text", "text": ". It had looked like a song." }
+          ]
+        },
+        { "type": "scene-break", "id": "c21-s06" },
+        {
+          "type": "p",
+          "id": "c21-p049",
+          "i": 913,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They sat in the ruins in the fading light, with Mr. Bunny, shrunk to the size of a loaf, asleep on Chang'e's knee."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p050",
+          "i": 914,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"They stopped,\" said Chang'e. \"All the ones that were left. As if somebody had told them to. Has that happened before?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p051",
+          "i": 915,
+          "segments": [
+            { "t": "text", "text": "\"At " },
+            { "t": "ent", "id": "valemont", "text": "Valemont" },
+            {
+              "t": "text",
+              "text": ",\" said Lesley. \"On the night my family died. I never understood why.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p052",
+          "i": 916,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I do,\" said Chang'e quietly. \"I have been decoding the signals inside the Ender bodies. One is a command that tells them when to stop. And it is "
+            },
+            { "t": "text", "text": "signed", "em": true },
+            { "t": "text", "text": ". The closest word I can find is " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix", "em": true },
+            {
+              "t": "text",
+              "text": ". It means a woman who commands armies. Not a machine. A person.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p053",
+          "i": 917,
+          "segments": [
+            { "t": "text", "text": "\"The Imperatrix called them back,\" said Lesley." }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p054",
+          "i": 918,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"At Valemont. And at the Base. She could have killed me. One of them came right up to me, and "
+            },
+            { "t": "text", "text": "looked", "em": true },
+            { "t": "text", "text": ". Then it went away. I don't know why she let me live.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p055",
+          "i": 919,
+          "segments": [
+            { "t": "text", "text": "\"Then we'll ask her,\" said Lesley. \"One day.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p056",
+          "i": 920,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e leaned against her side. \"I kept the cake,\" she said at last. \"It has gone horribly mouldy.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c21-p057",
+          "i": 921,
+          "segments": [{ "t": "text", "text": "\"It was a bad cake.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c21-p058",
+          "i": 922,
+          "segments": [
+            { "t": "text", "text": "\"It was a " },
+            { "t": "text", "text": "terrible", "em": true },
+            {
+              "t": "text",
+              "text": " cake. I know,\" said Chang'e. \"That's why I kept it.\" She turned her face into Lesley's arm. \"Thank you for coming.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c21-p059",
+          "i": 923,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I will always come,\" said Lesley. \"Ever since that day, Chang'e, I swore I would protect you. I'll never stop.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c21-p060",
+          "i": 924,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e's small cold hand crept up and took hold of the edge of Lesley's cloak. It was the end of the long silence. It was the start of something else."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c22",
+      "kind": "chapter",
+      "number": 22,
+      "title": "On the Ruins",
+      "part": 4,
+      "timeNote": null,
+      "wordCount": 1283,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 925,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c22-p000",
+          "i": 925,
+          "segments": [
+            { "t": "text", "text": "After " },
+            { "t": "ent", "id": "gantry-square", "text": "Gantry Square" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " tried to build a second core for " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            {
+              "t": "text",
+              "text": "'s soldiers. Every test failed. \"Every soldier carries something,\" she told "
+            },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " in despair. \"A brother. A town. They are all angry, and the core won't take it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p001",
+          "i": 926,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then don't test soldiers,\" said Lesley. She sat on the bench, eating a cinnamon bun. She brought one every evening now. \"Test the hopeful ones. There is one sitting in front of me. You carry hatred too, but at Gantry Square you put it down. I think a person can learn that. I think it is easier when you are young.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c22-p002",
+          "i": 927,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then we would need children,\" said Chang'e slowly. \"And we would need a "
+            },
+            { "t": "text", "text": "school", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p003",
+          "i": 928,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then we'll make the Shield give us one,\" said Lesley. It needed a roof, a table and a window with a view of the sea. \"It needs a home,\" said Chang'e. \"Yes,\" said Lesley. \"That's all.\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c22-s01" },
+        {
+          "type": "p",
+          "id": "c22-p004",
+          "i": 929,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They fought the Command Staff for five weeks. The Command Staff wanted an army. \"You can't hand this out like a rifle,\" said Chang'e. \"The person must "
+            },
+            { "t": "text", "text": "want", "em": true },
+            {
+              "t": "text",
+              "text": " it, for the right reason. It is like ordering someone to be in love. A school will give you a few dozen fighters worth a thousand conscripts.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p005",
+          "i": 930,
+          "segments": [
+            { "t": "text", "text": "\"Against the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": "?\" said a white-haired colonel. \"They have done it once, with a sniper.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c22-p006",
+          "i": 931,
+          "segments": [
+            { "t": "text", "text": "\"With a " },
+            { "t": "text", "text": "friend", "em": true },
+            { "t": "text", "text": ",\" said Chang'e." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p007",
+          "i": 932,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley spoke. \"You fight this war as if it were a matter of numbers. I lost my family when I was nine. I lost my eye. I lost a second family on the day the Base fell. But it isn't numbers. It is "
+            },
+            { "t": "text", "text": "reasons", "em": true },
+            {
+              "t": "text",
+              "text": ". A reason cannot be given. It can only be grown. Instructors should teach a loving heart, and perseverance, and "
+            },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            {
+              "t": "text",
+              "text": ". Give us the school, and I will give you an army that cannot be broken.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p008",
+          "i": 933,
+          "segments": [
+            { "t": "text", "text": "The colonel put down his pencil. \"Where?\" he said." }
+          ]
+        },
+        { "type": "scene-break", "id": "c22-s02" },
+        {
+          "type": "p",
+          "id": "c22-p009",
+          "i": 934,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They stood at the edge of the crater on a cold autumn morning. \"Here,\" said Chang'e."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p010",
+          "i": 935,
+          "segments": [{ "t": "text", "text": "\"It's a graveyard,\" said the colonel." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c22-p011",
+          "i": 936,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Because it is where they died,\" said Chang'e. \"I don't want a grave. They were scientists. They wished to know what was at the other end of the signal. The way to honour that is to build a place that goes on "
+            },
+            { "t": "text", "text": "asking", "em": true },
+            { "t": "text", "text": ". A school that teaches the next ones how to look up.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p012",
+          "i": 937,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The colonel was silent for a long time. \"Madam,\" he said, \"I will give you whatever you want.\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c22-s03" },
+        {
+          "type": "p",
+          "id": "c22-p013",
+          "i": 938,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The school rose in a hundred days. They kept the old name. \"It is what they called it,\" said Chang'e. So it was "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy" },
+            {
+              "t": "text",
+              "text": ", a school for aspirant power, built on the ruins of the Base."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p014",
+          "i": 939,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A slender glass tower stood on the lip of the crater, with a crystal lantern at the top. \"It's a signal,\" said the draughtswoman who drew it. \"It says, "
+            },
+            { "t": "text", "text": "we're looking back.", "em": true },
+            {
+              "t": "text",
+              "text": "\" The crater itself was not filled. They planted it with grass and young trees. In the middle stood a low stone with two names on it, and a line beneath."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p015",
+          "i": 940,
+          "segments": [{ "t": "text", "text": "They wished to know.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c22-p016",
+          "i": 941,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was not a memorial. It was a garden. Chang'e sat in it often, with "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": " on her knee." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p017",
+          "i": 942,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Academy opened in the first week of winter. Chang'e was its Chief Scientist, and Lesley led its combat division. Chang'e stood on a box and spoke. \"The Enders are not a punishment. I think they are a "
+            },
+            { "t": "text", "text": "question", "em": true },
+            {
+              "t": "text",
+              "text": ". We cannot answer a question with a gun. So this is not a school of war. It is a school of "
+            },
+            { "t": "text", "text": "reasons", "em": true },
+            {
+              "t": "text",
+              "text": ". We will teach you to hold on to what matters most, and to protect it, and not to let go.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p018",
+          "i": 943,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A rough voice at the back shouted, \"Three cheers for the little scientist!\" Lesley put a hand to her face. \"Don't you "
+            },
+            { "t": "text", "text": "dare", "em": true },
+            { "t": "text", "text": " cry,\" whispered Chang'e." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p019",
+          "i": 944,
+          "segments": [
+            { "t": "text", "text": "\"It's the wind,\" said Lesley, and wiped her eye." }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        { "type": "scene-break", "id": "c22-s04" },
+        {
+          "type": "p",
+          "id": "c22-p020",
+          "i": 945,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The first trial was held in the new year. Three hundred candidates came. The notice said the Academy sought young people of "
+            },
+            { "t": "text", "text": "great purity", "em": true },
+            {
+              "t": "text",
+              "text": ". It was Chang'e's word. It did not mean innocence, or being good. It meant a person whose heart had once been entirely whole. She had held one single thing so truly that the rest of the world went quiet around it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p021",
+          "i": 946,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e could feel it, like a note struck on a distant bell. "
+            },
+            { "t": "text", "text": "That one,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "And that one.", "em": true },
+            { "t": "text", "text": " It was nearly always girls." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p022",
+          "i": 947,
+          "segments": [
+            { "t": "text", "text": "A newspaper had already called the energy " },
+            { "t": "text", "text": "Aspirant energy", "em": true },
+            {
+              "t": "text",
+              "text": ", after Gantry Square. It was the word Chang'e had written in her own notebook. Now a headline called the new students "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants", "em": true },
+            { "t": "text", "text": ": The Academy's First Hopes", "em": true },
+            { "t": "text", "text": ". It meant " },
+            { "t": "text", "text": "those who aspire", "em": true },
+            { "t": "text", "text": ". The girls adopted it at once. It did not say " },
+            { "t": "text", "text": "heroes", "em": true },
+            { "t": "text", "text": ". It said only: " },
+            { "t": "text", "text": "we are reaching for something.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c22-s05" },
+        {
+          "type": "p",
+          "id": "c22-p023",
+          "i": 948,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the third day, a girl in a plain brown coat came to the registry office. She had pale gold hair, a bright smile and deep red eyes. \"I've come about the research post,\" said "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ". \"I seem to have a gift for Ender tissue. I can almost " },
+            { "t": "text", "text": "hear", "em": true },
+            { "t": "text", "text": " it.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p024",
+          "i": 949,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was shown into a lab. A small girl in a white coat sat at the bench, soldering. A tall young woman with a dark plate over one eye leaned beside her, drinking tea."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p025",
+          "i": 950,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena stopped in the doorway. She had known they would be here. She had not known it would "
+            },
+            { "t": "text", "text": "hurt", "em": true },
+            {
+              "t": "text",
+              "text": ". She remembered a rescue wagon, and a small hand on a blanket."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p026",
+          "i": 951,
+          "segments": [
+            { "t": "text", "text": "Lesley turned and saw the gold hair and the eyes. " },
+            { "t": "text", "text": "Red.", "em": true },
+            {
+              "t": "text",
+              "text": " A cold finger touched her mind. Honey. The sea. A small flat voice saying, "
+            },
+            { "t": "text", "text": "You've got two.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p027",
+          "i": 952,
+          "segments": [{ "t": "text", "text": "\"Have we met?\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c22-p028",
+          "i": 953,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena's smile did not falter. \"I don't think so,\" she said lightly."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p029",
+          "i": 954,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"What do you hear, when you hold the tissue?\" asked Chang'e."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p030",
+          "i": 955,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Humming,\" said Selena slowly. \"Like when a person is thinking something and doesn't say it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c22-p031",
+          "i": 956,
+          "segments": [
+            { "t": "text", "text": "\"I have " },
+            { "t": "text", "text": "felt", "em": true },
+            {
+              "t": "text",
+              "text": " it,\" said Chang'e. \"I have never heard it. I would like to learn how.\" She held out a small, sticky hand."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p032",
+          "i": 957,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena had come to see what these people had made out of her own people's bones. She had planned it as a game. She had not expected a child with soldering-flux on her nose, saying, "
+            },
+            { "t": "text", "text": "I would like to learn.", "em": true },
+            { "t": "text", "text": " She took the hand." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p033",
+          "i": 958,
+          "segments": [{ "t": "text", "text": "\"Welcome to Selrick,\" said Chang'e." }],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c22-p034",
+          "i": 959,
+          "segments": [
+            { "t": "ent", "id": "karina-voss", "text": "Karina" },
+            {
+              "t": "text",
+              "text": " had taught Selena to wear a smile like a coat. Now it was no longer a coat at all. It was a small, crooked, helpless smile, with a flash of sharp teeth. \"Thank you,\" said Selena. \"I'd like that very much.\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c22-s06" },
+        {
+          "type": "p",
+          "id": "c22-p035",
+          "i": 960,
+          "segments": [
+            { "t": "text", "text": "I have placed a pawn in their camp,", "em": true },
+            { "t": "text", "text": " thought the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": ", in the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            {
+              "t": "text",
+              "text": ". She laid a hand on the white pawn on her board, and turned it a quarter-turn toward the lit squares. "
+            },
+            { "t": "text", "text": "Go on, my dear. Show me what you are.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p036",
+          "i": 961,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was very old and a little afraid. So she added, in a voice nobody heard: "
+            },
+            { "t": "text", "text": "But please do not let them hurt you.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p037",
+          "i": 962,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not know why she had said it. She did not take it back."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c22-s07" },
+        {
+          "type": "p",
+          "id": "c22-p038",
+          "i": 963,
+          "segments": [
+            {
+              "t": "text",
+              "text": "By spring there were nine Aspirants at the Academy. They stood in the glass hall at dawn, in white and teal, in pairs. They stood in pairs because of Gantry Square. Aspirant power had grown stronger between two people who held on to each other. One plus one was more than two."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p039",
+          "i": 964,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They were not many. They were not enough. But they were the first. And "
+            },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": ", in the dark, watched them rise. She said softly, to the empty air, \""
+            },
+            { "t": "text", "text": "Aspirants.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c22-p040",
+          "i": 965,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the first time she had ever tasted the word. It tasted of hope. She did not like it at all."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

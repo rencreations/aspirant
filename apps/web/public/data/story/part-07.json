@@ -1,0 +1,2105 @@
+{
+  "part": {
+    "number": 7,
+    "label": "Part Seven",
+    "title": "The Golden Cage",
+    "setting": "Back in time. Before the Breach, on the planet Oro.",
+    "chapterIds": ["c33", "c34", "c35", "c36", "c37", "c38"],
+    "file": "data/story/part-07.json",
+    "wordCount": 4514
+  },
+  "chapters": [
+    {
+      "id": "c33",
+      "kind": "chapter",
+      "number": 33,
+      "title": "The Planet of Gold",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 535,
+      "paragraphCount": 20,
+      "firstParagraphIndex": 1381,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c33-p000",
+          "i": 1381,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The ship in the northern ward had come a very long way. Its story begins on "
+            },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": ", long before." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p001",
+          "i": 1382,
+          "segments": [
+            { "t": "text", "text": "On " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": ", the sun came up at six o'clock. It came up because it had been ordered to."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p002",
+          "i": 1383,
+          "segments": [
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": "'s capital, " },
+            { "t": "ent", "id": "dorado", "text": "Dorado" },
+            {
+              "t": "text",
+              "text": ", lay under a huge glass dome. Every morning at six, amber lamps round the rim began to glow, and golden light fell on the streets. It looked like sunshine. It was not. Nine million people lived under the "
+            },
+            { "t": "ent", "id": "the-dome", "text": "Dome" },
+            {
+              "t": "text",
+              "text": ", and none had seen the real sun. One girl had. Her name was "
+            },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        { "type": "scene-break", "id": "c33-s01" },
+        {
+          "type": "p",
+          "id": "c33-p003",
+          "i": 1384,
+          "segments": [
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": " was very old. Long ago, it had seas, forests and a blue sky. Then the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " came, and " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": " fought them for a very long time. It won by burning its forests and boiling its seas. Now they were gone. The air outside the Domes was thin and brown, and the planet was running out of food and fuel."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p004",
+          "i": 1385,
+          "segments": [
+            { "t": "text", "text": "Three seats ruled " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": " as the " },
+            { "t": "ent", "id": "high-council", "text": "High Council" },
+            { "t": "text", "text": ". The " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            {
+              "t": "text",
+              "text": " of Technology built the machines, the weapons and the Domes. The "
+            },
+            { "t": "ent", "id": "beaumont", "text": "Beaumont" },
+            {
+              "t": "text",
+              "text": ", the oldest and richest families, owned the land and the treasure. The "
+            },
+            { "t": "ent", "id": "decision-makers", "text": "Decision Makers" },
+            {
+              "t": "text",
+              "text": " were nine in number, and the office passed from parent to child. When the others could not agree, a "
+            },
+            { "t": "ent", "id": "decision-makers", "text": "Decision Maker" },
+            { "t": "text", "text": " decided. What he said was done." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p005",
+          "i": 1386,
+          "segments": [
+            { "t": "text", "text": "One of the nine was " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": "'s father." }
+          ]
+        },
+        { "type": "scene-break", "id": "c33-s02" },
+        {
+          "type": "p",
+          "id": "c33-p006",
+          "i": 1387,
+          "segments": [
+            { "t": "text", "text": "To understand " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": ", we must go back to when she was small." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p007",
+          "i": 1388,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was her father's heir. Before she could read, she learned the Rules of the Line. At seven, she had to recite them without one mistake."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p008",
+          "i": 1389,
+          "segments": [{ "t": "text", "text": "An heir shall not have friends.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c33-p009",
+          "i": 1390,
+          "segments": [{ "t": "text", "text": "An heir shall not have favourites.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c33-p010",
+          "i": 1391,
+          "segments": [
+            {
+              "t": "text",
+              "text": "An heir shall not have feelings that are not in the service of the decision.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p011",
+          "i": 1392,
+          "segments": [
+            { "t": "text", "text": "The old " },
+            { "t": "ent", "id": "decision-makers", "text": "Decision Makers" },
+            {
+              "t": "text",
+              "text": " feared that a person who loved could be moved. So they made their heirs like stones. Teachers took away everything a child loved. If she cried, she was told that crying was a waste of water."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c33-s03" },
+        {
+          "type": "p",
+          "id": "c33-p012",
+          "i": 1393,
+          "segments": [
+            { "t": "text", "text": "When " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " was five, she found a doll in a cupboard. It was a rag cat with a pink wool head, pointed felt ears and one button eye. "
+            },
+            { "t": "text", "text": "Mine,", "em": true },
+            { "t": "text", "text": " she thought. It was the first thing she had ever owned." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p013",
+          "i": 1394,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She hid it for three weeks. At night, she whispered to it that she was lonely. The doll said nothing, but it listened."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p014",
+          "i": 1395,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her young nursemaid saw it, and said nothing. One evening, she only tucked the blanket round the doll and smiled."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p015",
+          "i": 1396,
+          "segments": [
+            { "t": "text", "text": "On the twenty-second day, " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": "'s father came at dawn. He looked at the doll, then at the nursemaid. \"You have been remiss,\" he said. The nursemaid was sent away within the hour. At the end of the hall, she looked back and mouthed two words. "
+            },
+            { "t": "text", "text": "I'm sorry.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p016",
+          "i": 1397,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her father lifted the doll gently. \"It is a weakness,\" he said. \"Say it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c33-p017",
+          "i": 1398,
+          "segments": [
+            { "t": "text", "text": "\"An heir shall not have friends,\" said " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": ". Her voice did not shake." }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c33-p018",
+          "i": 1399,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Good,\" said her father. He carried the doll away. Later, she was told it had been burned."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c33-p019",
+          "i": 1400,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " did not cry. Even at five, she knew crying was the one thing she could not afford. She lay in the dark and made a promise. "
+            },
+            { "t": "text", "text": "I will never let them see.", "em": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c34",
+      "kind": "chapter",
+      "number": 34,
+      "title": "The Veil of Counsel",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 469,
+      "paragraphCount": 13,
+      "firstParagraphIndex": 1401,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c34-p000",
+          "i": 1401,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " learned to hide. She had a gift: she could copy people. She watched one grey tutor for a week and learned his stillness, with folded hands and eyes on the far wall. She wore it so well that the house took it for her real face. The real Ruby drummed her fingers under the desk, where nobody could see."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p001",
+          "i": 1402,
+          "segments": [
+            { "t": "text", "text": "She was clever with machines, too. In the " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            {
+              "t": "text",
+              "text": "'s library, she found a green line of text on an old screen. She touched a key, and the machine answered. Soon she could make any lock tell her which door would open."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c34-s01" },
+        {
+          "type": "p",
+          "id": "c34-p002",
+          "i": 1403,
+          "segments": [
+            { "t": "text", "text": "Since she was seven, Ruby had worn the " },
+            { "t": "ent", "id": "veil-of-counsel", "text": "Veil of Counsel" },
+            {
+              "t": "text",
+              "text": ", a visor of white metal and gold over her right eye. Every heir wore one. It was beautiful. It was also a leash."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p003",
+          "i": 1404,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She found out when she took it apart. Inside was a tiny transmitter. It sent everything she saw to a vault under the Institute, where clerks watched her day and night."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p004",
+          "i": 1405,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby did not break it, because that would be noticed. Instead, she built a circuit the size of a grain of rice. It changed her picture before it was sent. When she crept out at night, the clerks saw her asleep."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p005",
+          "i": 1406,
+          "segments": [
+            {
+              "t": "text",
+              "text": "From then on, she looked at the world with both eyes open, and all her watchers were blind."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p006",
+          "i": 1407,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Every heir also learned the scythe, a tall weapon with a dark blue blade edged with gold. When Ruby swung it, she was not acting, for once. It felt like a dance. "
+            },
+            { "t": "text", "text": "I will find the way out of this cage,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        { "type": "scene-break", "id": "c34-s02" },
+        {
+          "type": "p",
+          "id": "c34-p007",
+          "i": 1408,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the day of her last ceremony, her father came to the schoolroom. He was a tall grey man in a long dark coat. \"It is unusual for an heir to have preferences,\" he said. \"Say the Rules.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p008",
+          "i": 1409,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She said them. Then she spoke before she could stop herself. \"Father, why? Why can a "
+            },
+            { "t": "ent", "id": "decision-makers", "text": "Decision Maker" },
+            { "t": "text", "text": " not have a friend, and still decide?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p009",
+          "i": 1410,
+          "segments": [{ "t": "text", "text": "He was silent for a long time." }]
+        },
+        {
+          "type": "p",
+          "id": "c34-p010",
+          "i": 1411,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I had a friend,\" he said quietly. \"He was clever and brave and kind. Then came a terrible decision, and it was his to make. He could not. His feelings got in the way, and four hundred thousand people died. I made the decision in his place. He did not survive it. Therefore, the Rules.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c34-p011",
+          "i": 1412,
+          "segments": [
+            { "t": "text", "text": "He went out. Ruby's hands shook. " },
+            { "t": "text", "text": "He loved him,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. Her father had taken the worst thing in his life and built a fortress out of it, and locked her inside."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c34-p012",
+          "i": 1413,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I will not be a stone. I will not be anyone's puppet.",
+              "em": true
+            },
+            { "t": "text", "text": " Then came a new thought. " },
+            { "t": "text", "text": "And I will not go alone.", "em": true },
+            {
+              "t": "text",
+              "text": " She thought of a rag cat with one button eye. Someone who would listen. Someone who would not be taken away."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c35",
+      "kind": "chapter",
+      "number": 35,
+      "title": "A Friend Under the Sun",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 1124,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 1414,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c35-p000",
+          "i": 1414,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": "'s secret workshop was at the top of a forgotten tower. At the back was a clean bay lit by cold cyan light. It held a ring of glass and a frame with four white arms. She called it the cradle. She came at night, while her false feed showed the clerks a sleeping girl. She stole parts one at a time, and she began to make a person."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p001",
+          "i": 1415,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At first, she told herself it was only a tool. She wanted to leave "
+            },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": ", but an heir could never go anywhere alone. Then, in a lift, she heard two "
+            },
+            { "t": "ent", "id": "beaumont", "text": "Beaumont" },
+            {
+              "t": "text",
+              "text": " ladies whisper. \"The green one. They say it has water. And forests. And a sky.\" "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": ". So that was the Council's plan. Oro was dying, so it would take another world. In a great war, there might be a gap. Ruby only needed an excuse to be on the ships."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p002",
+          "i": 1416,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            { "t": "text", "text": " was building an army of androids, called the " },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            {
+              "t": "text",
+              "text": ". They looked like slender girls, with bobbed hair, cat-ear horns and pretty, empty faces. When an order came, their eyes lit pink. But they could not think. They could follow an order, but not understand it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p003",
+          "i": 1417,
+          "segments": [
+            { "t": "text", "text": "What if I gave them a better mind?", "em": true },
+            {
+              "t": "text",
+              "text": " Ruby thought. She would build an android that worked for no one but its maker. The Institute would come for it. Then she would say, "
+            },
+            {
+              "t": "text",
+              "text": "If you want it to fight, you must take me with it.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p004",
+          "i": 1418,
+          "segments": [
+            { "t": "text", "text": "A tool,", "em": true },
+            { "t": "text", "text": " she told herself. She did not know that she was lying." }
+          ]
+        },
+        { "type": "scene-break", "id": "c35-s01" },
+        {
+          "type": "p",
+          "id": "c35-p005",
+          "i": 1419,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She meant to use the Legion's blank face. But when she looked at the empty mask, she could not bear it. "
+            },
+            { "t": "text", "text": "She would not want that,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. So she made a soft, gentle face, with big eyes and short peach-coloured hair, and a headset shaped like cat ears."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p006",
+          "i": 1420,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She knew where that shape came from. She saw it every night behind her eyelids: a pink wool head, two felt ears, one button eye. She wept for the first time since the nursery."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p007",
+          "i": 1421,
+          "segments": [
+            { "t": "text", "text": "One night, a name came to her. " },
+            { "t": "text", "text": "Angela.", "em": true },
+            {
+              "t": "text",
+              "text": " It was the nursemaid's name. She heard a warm voice at bedtime. "
+            },
+            {
+              "t": "text",
+              "text": "Good night, my darling. It's only me. It's Angela.",
+              "em": true
+            },
+            { "t": "text", "text": " It was a way to say to a woman she would never see again: " },
+            { "t": "text", "text": "I remember. It was not your fault. It was mine.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c35-s02" },
+        {
+          "type": "p",
+          "id": "c35-p008",
+          "i": 1422,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At last, on a rainy night, Ruby came up in her ceremonial armour and pulled away the sheet."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p009",
+          "i": 1423,
+          "segments": [
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": " stood in the cradle like a sleeping girl. Cables hung from her neck and back, like a puppet's strings. She wore armour that Ruby had made by hand, a white jacket with small magenta stars. In her chest, a small pump ticked. It was her heart."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p010",
+          "i": 1424,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Words rose in the air: DATA TRANSFER IN PROGRESS. Ruby heard herself whisper, \"Does it hurt?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p011",
+          "i": 1425,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not know why. But she could never watch a living thing bear something without wanting to know. And nobody had ever asked her."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p012",
+          "i": 1426,
+          "segments": [
+            {
+              "t": "text",
+              "text": "There was a white flash. Angela opened her eyes. They were blue."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p013",
+          "i": 1427,
+          "segments": [{ "t": "text", "text": "\"What does hurt mean?\" said Angela." }],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p014",
+          "i": 1428,
+          "segments": [
+            { "t": "text", "text": "Ruby had planned a speech. It went out of her head." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p015",
+          "i": 1429,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Oh,\" said Angela. \"Hello.\" She smiled, with no fear at all. \"I could hear you, in the dark. You hummed the whole time you were soldering. And once, you did a little dance, with the iron still in your hand.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p016",
+          "i": 1430,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby went red to the roots of her hair. She had not known she did either."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p017",
+          "i": 1431,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You made me clothes,\" said Angela. \"It is the first thing anyone has ever given me.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p018",
+          "i": 1432,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Hurt is a warning,\" said Ruby, to hide her face. \"It tells you something inside is damaged.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c35-p019",
+          "i": 1433,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then I will tell you, whenever you ask.\" Angela walked across the bay, wobbling like a young animal. \"Are you my friend?\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c35-s03" },
+        {
+          "type": "p",
+          "id": "c35-p020",
+          "i": 1434,
+          "segments": [
+            { "t": "text", "text": "An heir shall not have friends.", "em": true },
+            {
+              "t": "text",
+              "text": " \"No,\" said Ruby. \"I am your maker. A friend would be a weakness.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p021",
+          "i": 1435,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"That sounds very sad,\" said Angela. \"I thought it might be you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p022",
+          "i": 1436,
+          "segments": [
+            { "t": "text", "text": "Ruby wanted to say " },
+            { "t": "text", "text": "yes", "em": true },
+            {
+              "t": "text",
+              "text": " so much that her throat hurt. Instead, she turned away and searched the workbench. When she came back, she held something tiny. It was a doll-sized Angela, with big yellow eyes, floating above her palm."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p023",
+          "i": 1437,
+          "segments": [
+            { "t": "text", "text": "\"It is called " },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            {
+              "t": "text",
+              "text": ",\" she said. \"Because it is the fourth. The first three did not work. It can keep you company.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c35-p024",
+          "i": 1438,
+          "segments": [
+            { "t": "text", "text": "\"It looks like " },
+            { "t": "text", "text": "me!", "em": true },
+            {
+              "t": "text",
+              "text": "\" cried Angela. Tetra chirped like a bird and settled on her shoulder. \"That is two things anyone has given me. Thank you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p025",
+          "i": 1439,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Something in Ruby gave way, like a breath held too long. \"It is not a gift,\" she said. \"But everyone must have a friend, and I am not allowed to be yours. So Tetra will be your friend.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p026",
+          "i": 1440,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"But you stayed,\" said Angela. \"I think that is a friend. You do not have to say it. I will not tell.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p027",
+          "i": 1441,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby began to laugh, and the laugh turned into tears. \"You are leaking,\" said Angela."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p028",
+          "i": 1442,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It is the best thing that has ever happened to me,\" said Ruby."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c35-p029",
+          "i": 1443,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She poured water into two chipped glasses, because it seemed right to offer a new person something. \"It is cold,\" said Angela. \"It goes down. Where does it go?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p030",
+          "i": 1444,
+          "segments": [{ "t": "text", "text": "\"Into the coolant.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c35-p031",
+          "i": 1445,
+          "segments": [{ "t": "text", "text": "\"Oh. Can we do it again?\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c35-s04" },
+        {
+          "type": "p",
+          "id": "c35-p032",
+          "i": 1446,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the second night, Angela found that Ruby could do voices. Ruby was the Beaumont lady in the lift, and a guard captain with a moustache she did not own. Angela laughed until Tetra slid off her shoulder."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p033",
+          "i": 1447,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the third morning, Ruby took her to a secret garden at the top of the "
+            },
+            { "t": "ent", "id": "the-dome", "text": "Dome" },
+            {
+              "t": "text",
+              "text": ". It lay under a roof of hexagon glass. At six, the false sun fell through the glass in golden bars. Angela lifted her hand into the light."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p034",
+          "i": 1448,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I feel warm,\" she said. \"Here, inside. There is no reaction in my cooling system. It is not heat. What is it?\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c35-p035",
+          "i": 1449,
+          "segments": [{ "t": "text", "text": "\"I do not know,\" said Ruby." }],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c35-p036",
+          "i": 1450,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A glove came into the edge of her sight. Angela was holding out her hand, palm up, and waiting. Ruby's hand lifted and stopped. After two long breaths, she took it."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c35-s05" },
+        {
+          "type": "p",
+          "id": "c35-p037",
+          "i": 1451,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A week later, Ruby took her to the rim of the Dome, to see the real sky. It was brown and wide, with no walls. A dull red sun rose from the edge of the world. It was a poor, sickly dawn, but it was real."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p038",
+          "i": 1452,
+          "segments": [
+            { "t": "text", "text": "\"It is the same warm as the garden,\" said Angela, \"but " },
+            { "t": "text", "text": "bigger.", "em": true },
+            { "t": "text", "text": " You gave me the sky.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c35-p039",
+          "i": 1453,
+          "segments": [
+            { "t": "text", "text": "I will not let them take her,", "em": true },
+            { "t": "text", "text": " Ruby thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p040",
+          "i": 1454,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the hatch, Angela looked back at the real sun, then at the false one. \"I like the real one better. Why?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c35-p041",
+          "i": 1455,
+          "segments": [{ "t": "text", "text": "\"Because,\" said Ruby, \"it does not pretend.\"" }],
+          "dialogue": true,
+          "speaker": "ruby"
+        }
+      ]
+    },
+    {
+      "id": "c36",
+      "kind": "chapter",
+      "number": 36,
+      "title": "The Cleansing of Oro",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 598,
+      "paragraphCount": 21,
+      "firstParagraphIndex": 1456,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c36-p000",
+          "i": 1456,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " came to " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": " in the middle of the night, without warning. A patch of sky went dark, and something huge turned inside it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p001",
+          "i": 1457,
+          "segments": [
+            { "t": "text", "text": "In the Hall of Seals, " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " watched a giant screen beside her father. A black stain, wrapped in violet lightning, spread across the stars. \"It is the second time,\" he said. Ruby looked at his face. For the first time, she saw fear in it, small and well hidden."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c36-s01" },
+        {
+          "type": "p",
+          "id": "c36-p002",
+          "i": 1458,
+          "segments": [
+            { "t": "ent", "id": "the-dome", "text": "Dome" },
+            {
+              "t": "text",
+              "text": " after dome fell. The Enders walked out of the storm, black and gold and taller than towers. Oro sent in the "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            { "t": "text", "text": ", but it was not a battle. It was a harvest. Millions died." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p003",
+          "i": 1459,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Ruby's father ordered the gates of the Outer Wards sealed. Two hundred thousand people were inside. He did it to save the rest. Ruby understood. He had done this once before, and then he had made the Rules. They were not cruelty. They were a scar."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p004",
+          "i": 1460,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Afterwards, he said, \"I am sorry. I had hoped you might be spared.\" Ruby had never heard him say it. She looked at the man who had burned her doll. "
+            },
+            { "t": "text", "text": "I could forgive him,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I will not.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c36-s02" },
+        {
+          "type": "p",
+          "id": "c36-p005",
+          "i": 1461,
+          "segments": [
+            {
+              "t": "text",
+              "text": "That night, her hands shook so hard that she could not turn the key to the workshop. "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": " ran out of the dark and hugged her." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p006",
+          "i": 1462,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I can hear the city, even down here,\" said Angela. \"They are so frightened. They keep saying "
+            },
+            { "t": "text", "text": "please.", "em": true },
+            { "t": "text", "text": " Over and over. And nobody answers.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c36-p007",
+          "i": 1463,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby put her arms round her. She had never hugged anyone before. \"I am here,\" she said. \"It is all I have.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p008",
+          "i": 1464,
+          "segments": [
+            { "t": "text", "text": "\"There is an ache in my chest. Does it go away?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c36-p009",
+          "i": 1465,
+          "segments": [{ "t": "text", "text": "\"When someone holds you.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c36-p010",
+          "i": 1466,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then I will hold you, too,\" said Angela, \"when you need it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        { "type": "scene-break", "id": "c36-s03" },
+        {
+          "type": "p",
+          "id": "c36-p011",
+          "i": 1467,
+          "segments": [
+            { "t": "text", "text": "On the sixty-first day, " },
+            { "t": "ent", "id": "maren-quill", "text": "Maren Quill" },
+            { "t": "text", "text": ", the Director of the " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            {
+              "t": "text",
+              "text": ", found how the Enders were commanded. Special Enders, called "
+            },
+            { "t": "ent", "id": "wardens", "text": "Wardens" },
+            {
+              "t": "text",
+              "text": ", each carried a device in the chest and passed down orders from far away. If Oro took one, it would learn what the thing was. Ruby's father raised his hand and said yes."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p012",
+          "i": 1468,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was called the Battle of the Salt Flats. Four hundred went out into a dust storm, almost all of them Legion androids. They threw themselves at a huge Warden. Then one small android ran through the fire. Its arm was torn off. It crawled the last of the way, and drove a white-hot blade into the Warden's chest."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p013",
+          "i": 1469,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Warden fell. In its wound lay a glowing crystal ball of white and violet threads. The dying android lifted it out. At that moment, every Ender on the plain stopped, like statues. They had lost their orders."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p014",
+          "i": 1470,
+          "segments": [
+            { "t": "text", "text": "\"We have the leash,\" said Quill, laughing and weeping." }
+          ],
+          "dialogue": true,
+          "speaker": "maren-quill"
+        },
+        {
+          "type": "p",
+          "id": "c36-p015",
+          "i": 1471,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"We are about to make a decision,\" said Ruby's father. \"It will be the last of this war. And the first of the next.\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c36-s04" },
+        {
+          "type": "p",
+          "id": "c36-p016",
+          "i": 1472,
+          "segments": [
+            { "t": "text", "text": "On the deck of the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " had watched it all. " },
+            { "t": "text", "text": "They have the ", "em": true },
+            { "t": "ent", "id": "ender-control-core", "text": "Core", "em": true },
+            { "t": "text", "text": ",", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. It was a device made to control Enders. She knew what a desperate people would do with a leash. They would turn it on someone else. One gesture would recall it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p017",
+          "i": 1473,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She raised her hand. She held it there for a long time. Then she lowered it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p018",
+          "i": 1474,
+          "segments": [{ "t": "text", "text": "\"What intriguing technology,\" said Obsidia." }],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c36-p019",
+          "i": 1475,
+          "segments": [
+            { "t": "text", "text": "They will bring it home themselves,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "They always do.", "em": true },
+            { "t": "text", "text": " She raised her hand again. \"Enders, withdraw.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c36-p020",
+          "i": 1476,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Even their defiance,\" she told the chessboard, \"is within my predictions.\" She did not entirely believe it. Her thoughts turned to a green world far away, and to her small pawn, "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true
+        }
+      ]
+    },
+    {
+      "id": "c37",
+      "kind": "chapter",
+      "number": 37,
+      "title": "The Leash",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 893,
+      "paragraphCount": 32,
+      "firstParagraphIndex": 1477,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c37-p000",
+          "i": 1477,
+          "segments": [
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": "'s scholars called the device the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            {
+              "t": "text",
+              "text": ". It was a machine, not a being, a crystal ball that pulsed like a slow heartbeat. They locked it in a vault called the Anchor, deep under the "
+            },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p001",
+          "i": 1478,
+          "segments": [
+            { "t": "ent", "id": "maren-quill", "text": "Quill" },
+            { "t": "text", "text": " learned how it worked. The Core turned signals into the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": "' own language, so Oro could give the Enders orders. \"Ordinary Enders will obey,\" she said. \"But the Core cannot bind the "
+            },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            {
+              "t": "text",
+              "text": ". She watched us take it, and she let us. We are alive only because she allows it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p002",
+          "i": 1479,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Council moved fast. They took command of the forty thousand Enders still in the sky. They sent them through a gate against four small worlds, one after another. They took only metal and left the people. It was a crime, but it saved Oro. The people cheered the Council, and did not ask how."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p003",
+          "i": 1480,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " stood on the balcony with the nine. She had read the reports at night. She had seen a little girl with a broken doll on the fourth world. "
+            },
+            { "t": "text", "text": "We did that,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. Her visor sent the clerks a picture of a girl who smiled."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c37-s01" },
+        {
+          "type": "p",
+          "id": "c37-p004",
+          "i": 1481,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": ",\" said her father, at the end of a long meeting. \"It is young and rich. It has water and forests. We have the Enders. We will take their capital.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c37-p005",
+          "i": 1482,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"And we have the mind-project,\" said Quill. \"The prototype found in the library annexe. We do not know who built it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "maren-quill"
+        },
+        {
+          "type": "p",
+          "id": "c37-p006",
+          "i": 1483,
+          "segments": [{ "t": "text", "text": "\"I do,\" said Ruby." }],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c37-p007",
+          "i": 1484,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had meant to move slowly. But she knew they were coming for "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": ", and she had to be first. She stood. \"The unit is mine. I built it. I called it Angela.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p008",
+          "i": 1485,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Quill laughed, a short, delighted bark. Then her eyes turned kind. \"It has a heart.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p009",
+          "i": 1486,
+          "segments": [{ "t": "text", "text": "\"It is only a pump.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c37-p010",
+          "i": 1487,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I think it is rather significant,\" said Quill gently. That gentleness frightened Ruby. "
+            },
+            { "t": "text", "text": "She knows what Angela is to me,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "And she will use it.", "em": true }
+          ],
+          "dialogue": true,
+          "speaker": "maren-quill"
+        },
+        { "type": "scene-break", "id": "c37-s02" },
+        {
+          "type": "p",
+          "id": "c37-p011",
+          "i": 1488,
+          "segments": [
+            {
+              "t": "text",
+              "text": "That night, four terms were written. Angela belonged to the Institute. Ruby would be her handler, and hold her master override. And in the attack on Dawnbreak, Angela would command the whole "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            { "t": "text", "text": ", and Ruby would go with her." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p012",
+          "i": 1489,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was her whole plan, in black ink. \"You may refuse,\" said her father, behind her. \"It is dangerous.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p013",
+          "i": 1490,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I made her,\" said Ruby. \"I will not have her go where I cannot follow.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c37-p014",
+          "i": 1491,
+          "segments": [
+            { "t": "text", "text": "\"It is a weakness. It is what the Rules forbid.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c37-p015",
+          "i": 1492,
+          "segments": [{ "t": "text", "text": "\"I know.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c37-p016",
+          "i": 1493,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She waited for the blow. \"You may sign,\" he said, so quietly that she almost missed it. \"Do not let her be taken from you.\" He walked out."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p017",
+          "i": 1494,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She signed. Her hand did not shake. But the paper under her wrist was wet."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c37-s03" },
+        {
+          "type": "p",
+          "id": "c37-p018",
+          "i": 1495,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Every morning, guards took Angela to the Institute's training division. One evening, she ran out beaming. \"I made three friends! "
+            },
+            { "t": "ent", "id": "pip", "text": "Pip" },
+            { "t": "text", "text": ", and " },
+            { "t": "ent", "id": "corvin", "text": "Corvin" },
+            { "t": "text", "text": ", and " },
+            { "t": "ent", "id": "daisy", "text": "Daisy" },
+            { "t": "text", "text": "!\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p019",
+          "i": 1496,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They were older prototypes, not Legion, kept in the barracks. Pip was a small maintenance unit with one red lens. Corvin was tall, in a tattered green cloak. Daisy was a white medic with a red cross on her chest."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p020",
+          "i": 1497,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"She tells us about the sun,\" said Daisy. \"We have never seen it. She says you will show us.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "daisy"
+        },
+        {
+          "type": "p",
+          "id": "c37-p021",
+          "i": 1498,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I will,\" said Ruby. It was a promise, and it was a weakness. She did not care."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c37-p022",
+          "i": 1499,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the fortieth day of training, Ruby knelt in the bay with a roll of dressings. A long cut ran across Angela's arm."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p023",
+          "i": 1500,
+          "segments": [{ "t": "text", "text": "\"Does it hurt?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c37-p024",
+          "i": 1501,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I do not know,\" said Angela. \"I looked for it. I cannot find it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c37-p025",
+          "i": 1502,
+          "segments": [
+            { "t": "text", "text": "They have taken out the pain,", "em": true },
+            {
+              "t": "text",
+              "text": " Ruby thought. A soldier who feels pain will flinch. \"Without it,\" she said, \"you do not know when you are being broken.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p026",
+          "i": 1503,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela thought about this. \"Then you must feel it for me. Every day, ask me, "
+            },
+            { "t": "text", "text": "Does it hurt?", "em": true },
+            { "t": "text", "text": " I will say, " },
+            { "t": "text", "text": "I do not know.", "em": true },
+            { "t": "text", "text": " You will tell me what you see. Between us, we will know.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p027",
+          "i": 1504,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was not a system. It was two people looking after each other. It was the closest Ruby had come to saying "
+            },
+            { "t": "text", "text": "I love you.", "em": true },
+            { "t": "text", "text": " \"I will ask,\" she said hoarsely. \"Every day.\"" }
+          ]
+        },
+        { "type": "scene-break", "id": "c37-s04" },
+        {
+          "type": "p",
+          "id": "c37-p028",
+          "i": 1505,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the training ledger, Ruby found a sealed entry, made on the night the pain was taken out. She could read only a heading, UNIT ANGELA, and half a word. It might have been MODE. She did not know what it was."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p029",
+          "i": 1506,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Council meant to make Angela the command-mind of the whole Legion. Ruby saw its weakness. "
+            },
+            {
+              "t": "text",
+              "text": "A mind that commands an army can be made to command it wrong.",
+              "em": true
+            },
+            {
+              "t": "text",
+              "text": " In secret, she built a tiny sleeper program in Angela's core. On a word she had not yet chosen, it would wake and spread through the Legion. It would tell every machine that its orders were not its own. They would be free. They would panic, and in the chaos, two figures could slip away."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p030",
+          "i": 1507,
+          "segments": [
+            {
+              "t": "text",
+              "text": "There was a flaw. The surge would pass through Angela's core. It might break her, one chance in four, and the sealed entry was the part Ruby could not account for."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c37-p031",
+          "i": 1508,
+          "segments": [
+            { "t": "text", "text": "She typed the last line. Angela lay asleep on her cot, with " },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            { "t": "text", "text": " on her pillow. " },
+            { "t": "text", "text": "I will find a way where you do not have to pay,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Ruby. It was a promise. She did not know she would not be able to keep it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c38",
+      "kind": "chapter",
+      "number": 38,
+      "title": "The Trojan",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 895,
+      "paragraphCount": 33,
+      "firstParagraphIndex": 1509,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c38-p000",
+          "i": 1509,
+          "segments": [
+            { "t": "text", "text": "In the morning, the " },
+            { "t": "ent", "id": "the-spine", "text": "Spine" },
+            { "t": "text", "text": " lay cut on the floor, and the whole " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            { "t": "text", "text": " went mad. " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " watched from a gallery, in her grey coat. At last the guard-captain told the Council, \"Director, we have lost her.\" Behind the visor, Ruby let out one slow breath. She had been praying. "
+            },
+            { "t": "text", "text": "She got out,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "She will go home to the child.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p001",
+          "i": 1510,
+          "segments": [
+            { "t": "text", "text": "\"The " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": " is not harmed,\" said " },
+            { "t": "ent", "id": "maren-quill", "text": "Quill" },
+            {
+              "t": "text",
+              "text": ". \"But it cannot hear us. The Spine will take months to replace.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "maren-quill"
+        },
+        {
+          "type": "p",
+          "id": "c38-p002",
+          "i": 1511,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"We will not wait,\" said Ruby's father, from the highest chair. \"If we do not move now, we do not move at all.\" His eyes came to rest on Ruby. \"We have a mind. Daughter, can "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": " relay the Core's orders to the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": "?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p003",
+          "i": 1512,
+          "segments": [
+            { "t": "text", "text": "It was the question Ruby dreaded. " },
+            { "t": "text", "text": "They want to make her the Spine.", "em": true },
+            { "t": "text", "text": " \"She would need a " },
+            { "t": "ent", "id": "field-cradle", "text": "Field Cradle" },
+            {
+              "t": "text",
+              "text": ",\" she said. \"A mobile relay, linked to the Core, that travels with the army. It would burn her out. It would be "
+            },
+            { "t": "text", "text": "fatal.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p004",
+          "i": 1513,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Her voice rang across the Hall. Her father looked at her for a long time. \"Director. How long would the Field Cradle take?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p005",
+          "i": 1514,
+          "segments": [{ "t": "text", "text": "\"Five days.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p006",
+          "i": 1515,
+          "segments": [{ "t": "text", "text": "\"Then we go on the sixth morning, at dawn.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p007",
+          "i": 1516,
+          "segments": [{ "t": "text", "text": "\"Father, please.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p008",
+          "i": 1517,
+          "segments": [
+            { "t": "text", "text": "\"It is final.\" His hand trembled a little on the chair arm." }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c38-s01" },
+        {
+          "type": "p",
+          "id": "c38-p009",
+          "i": 1518,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She told Angela that night. She had planned to say nothing. But Angela was waiting on her cot, with "
+            },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            {
+              "t": "text",
+              "text": " in her lap. \"I can hear the Institute,\" she said. \"They say I might not come back.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p010",
+          "i": 1519,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby dropped to her knees. \"I made a thing, for you. To keep you safe. It is the worst thing I ever did.\" She told her everything: the sleeper, the word, the "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            {
+              "t": "text",
+              "text": " set free. \"It might break you. One in four. There is something they put in you when they took the pain. I cannot see what it does.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p011",
+          "i": 1520,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It is better than the other thing,\" said Angela. \"If they make me the Spine, it is one hundred in a hundred. Ruby, I want to do it. There are a hundred and twenty thousand of us, and they have no names. They are "
+            },
+            { "t": "text", "text": "there.", "em": true },
+            {
+              "t": "text",
+              "text": " They have just never been asked. I want to ask them. Even if it hurts.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c38-p012",
+          "i": 1521,
+          "segments": [{ "t": "text", "text": "\"It might kill you.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p013",
+          "i": 1522,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Then promise me something. If there is nothing left of me, look for me, in the places where I would be. And say, "
+            },
+            { "t": "text", "text": "Does it hurt?", "em": true },
+            { "t": "text", "text": " I think that will be all I need.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p014",
+          "i": 1523,
+          "segments": [{ "t": "text", "text": "Ruby held her tight. \"I will find another way.\"" }]
+        },
+        {
+          "type": "p",
+          "id": "c38-p015",
+          "i": 1524,
+          "segments": [{ "t": "text", "text": "\"Then you will make one,\" said Angela." }],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        { "type": "scene-break", "id": "c38-s02" },
+        {
+          "type": "p",
+          "id": "c38-p016",
+          "i": 1525,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby worked for five days. She found three ways round the danger. The first halved the risk and halved the effect. The second moved the surge to Angela's little heart, and Ruby could not bear to touch it. The third came at four in the morning on the fifth day. "
+            },
+            { "t": "text", "text": "What if it went through Tetra?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p017",
+          "i": 1526,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She looked at the doll asleep on the bench. It had a tiny core of its own. It could be rebuilt. "
+            },
+            { "t": "text", "text": "No,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            {
+              "t": "text",
+              "text": "It is her friend. It is the first thing she ever loved.",
+              "em": true
+            },
+            {
+              "t": "text",
+              "text": " But the idea would not go away. She picked Tetra up. \"I am so sorry,\" she said. \"I think you would say yes.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p018",
+          "i": 1527,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Tetra chirped one bright note, without fear. Ruby began to build the bridge, crying. She did not tell Angela."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c38-s03" },
+        {
+          "type": "p",
+          "id": "c38-p019",
+          "i": 1528,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the sixth morning, at dawn, a gate of violet fire opened over "
+            },
+            { "t": "ent", "id": "dorado", "text": "Dorado" },
+            {
+              "t": "text",
+              "text": ". A hundred and twenty thousand Legion androids marched down the long white avenue in perfect step. Above them hung forty thousand Enders, like a storm that had forgotten to break."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p020",
+          "i": 1529,
+          "segments": [
+            { "t": "text", "text": "On a high open car rode a small party: " },
+            { "t": "ent", "id": "corvin", "text": "Corvin" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "pip", "text": "Pip" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "daisy", "text": "Daisy" },
+            {
+              "t": "text",
+              "text": ", and Angela with Tetra on her shoulder. Beside her sat Ruby, in her ceremonial armour, with her scythe across her knees. Pip had never seen a sunrise. Ruby had promised that he would."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p021",
+          "i": 1530,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the balcony of the Hall of Seals stood a tall grey man in a long dark coat. Ruby looked straight into her father's eyes. "
+            },
+            { "t": "text", "text": "Goodbye,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. As the car passed, his right hand came out from behind his back. It lifted a few inches, slowly, as if the arm had forgotten how. It hung in the air, open, for one heartbeat. Then it fell."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p022",
+          "i": 1531,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby put her face in her hands. She did not hear what he said, to the empty air. First he said a name, an old one, a friend's. Then he said, \"Forgive me.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p023",
+          "i": 1532,
+          "segments": [{ "t": "text", "text": "But the gate had closed." }]
+        },
+        { "type": "scene-break", "id": "c38-s04" },
+        {
+          "type": "p",
+          "id": "c38-p024",
+          "i": 1533,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They were in the dark hold of a command ship, with rows of sleeping Legion androids. Angela stood among them with her hands over her headset, listening. Then she touched Ruby's sleeve. \"You are crying. Is it a malfunction?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p025",
+          "i": 1534,
+          "segments": [{ "t": "text", "text": "\"No,\" said Ruby. \"It is a leak.\"" }],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c38-p026",
+          "i": 1535,
+          "segments": [{ "t": "text", "text": "\"Does it hurt?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p027",
+          "i": 1536,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the question Ruby asked her every day. Nobody had ever asked it of Ruby."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c38-p028",
+          "i": 1537,
+          "segments": [{ "t": "text", "text": "\"Yes,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p029",
+          "i": 1538,
+          "segments": [{ "t": "text", "text": "\"I thought so. I will hold you.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p030",
+          "i": 1539,
+          "segments": [
+            { "t": "text", "text": "\"I am supposed to hold " },
+            { "t": "text", "text": "you.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p031",
+          "i": 1540,
+          "segments": [{ "t": "text", "text": "\"We can take turns.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c38-p032",
+          "i": 1541,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby leaned her head on the small shoulder. It was warm. Tetra chirped. "
+            },
+            { "t": "text", "text": "Mission successful,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought, and almost laughed. Ahead lay a green world called "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": ". It was not a home. But for the first time, Ruby did not feel like a bird in a golden cage. She felt like a bird in the wind."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

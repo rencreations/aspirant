@@ -1,0 +1,1370 @@
+{
+  "title": "ASPIRANT",
+  "subtitle": "The Short Story",
+  "intro": "The whole Aspirant story, in short and simple English. It starts small and grows wider. Some chapters go back in time, and each one says so at the top.",
+  "epigraph": {
+    "lines": [
+      "When the towers grow high and the wheels grow loud,",
+      "When the people forget they are small,",
+      "The sky will break, and the Enders come,",
+      "To end the world, and begin it all."
+    ],
+    "attribution": "An old skipping rhyme from Dawnbreak"
+  },
+  "beforeYouBegin": [
+    {
+      "id": "where-you-are",
+      "title": "Where you are",
+      "blocks": [
+        {
+          "type": "p",
+          "segments": [
+            { "t": "text", "text": "This story takes place on a planet called " },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak", "strong": true },
+            { "t": "text", "text": ". It is green and bright, with a blue lake and a wide sea." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "t": "text", "text": "On the shore of the lake stands a city called " },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia", "strong": true },
+            {
+              "t": "text",
+              "text": ". It is the last great city that is left. Over it hangs a web of pale light, like a glass roof. It is called the "
+            },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere", "strong": true },
+            { "t": "text", "text": ". It keeps out the monsters." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "t": "text", "text": "The monsters are called " },
+            { "t": "ent", "id": "enders", "text": "Enders", "strong": true },
+            {
+              "t": "text",
+              "text": ". They fell out of the sky in the year 978 and broke much of the world. They have come back since."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "t": "text", "text": "In Terrinia there is a school called " },
+            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy", "strong": true },
+            {
+              "t": "text",
+              "text": ". It teaches young women to fight the Enders. They fight with a strange power called "
+            },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power", "strong": true },
+            {
+              "t": "text",
+              "text": ". It comes to a person who holds on to one thing and will not let it go. The young women who have it are called "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants", "strong": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            { "t": "text", "text": "The story starts at that school, on an ordinary morning." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "who-you-will-meet-first",
+      "title": "Who you will meet first",
+      "blocks": [
+        {
+          "type": "people",
+          "rows": [
+            {
+              "entityId": "layla",
+              "name": "Layla",
+              "text": "A small, proud top student. She has a cannon as tall as she is, and a secret hiding place high on a tower."
+            },
+            {
+              "entityId": "fanny",
+              "name": "Fanny",
+              "text": "A new student. She is warm, careful and polite. She flies with folding wings and a steel cable."
+            },
+            {
+              "entityId": "guinevere",
+              "name": "Guinevere",
+              "text": "A rich girl who left her grand house to fight. She calls herself \"the Queen\"."
+            },
+            {
+              "entityId": "vexana",
+              "name": "Vexana",
+              "text": "A quiet girl who hides in a cupboard. She can hear things other people cannot."
+            },
+            {
+              "entityId": "change",
+              "name": "Chang'e",
+              "text": "The Academy's Chief Scientist. She is very small, very clever and very proud. Her robot friend is Mr. Bunny."
+            },
+            {
+              "entityId": "lesley",
+              "name": "Lesley",
+              "text": "Head of combat training. A quiet, steady sniper with a cover over one eye."
+            },
+            {
+              "entityId": "selena",
+              "name": "Selena",
+              "text": "The Academy's best young mechanic. She has red eyes, a lazy smile and a friend for everyone."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "t": "text",
+              "text": "More people come later. You will meet each one when the story needs her."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "how-this-book-is-told",
+      "title": "How this book is told",
+      "blocks": [
+        {
+          "type": "p",
+          "segments": [
+            {
+              "t": "text",
+              "text": "This book does not run in time order. It begins in the middle of the story, at the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": ". Then it goes back to find out how the school began, who the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " are, and where the strangers came from." }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "t": "text",
+              "text": "Each time the story goes back in time, the top of the chapter says so. You will learn things a little at a time, the way the people in the story do. By the end, you will know everything the story knows. Three questions are left open on purpose. The last page names them."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "segments": [
+            {
+              "t": "text",
+              "text": "If you ever get lost, turn to the back. A timeline there puts every event in order."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "number": 1,
+      "label": "Part One",
+      "title": "The Secret Base",
+      "setting": "A morning at Selrick Academy, in the city of Terrinia.",
+      "chapterIds": ["c01", "c02", "c03", "i-far-above-1"],
+      "file": "data/story/part-01.json",
+      "wordCount": 3597
+    },
+    {
+      "number": 2,
+      "label": "Part Two",
+      "title": "Daybreak and Twilight",
+      "setting": "The same year, at the Academy.",
+      "chapterIds": ["c04", "c05", "c06", "c07", "c08", "c09", "c10"],
+      "file": "data/story/part-02.json",
+      "wordCount": 8250
+    },
+    {
+      "number": 3,
+      "label": "Part Three",
+      "title": "The Girl in the Cap",
+      "setting": "Back in time. This is how Selrick Academy began. It starts in the year 978.",
+      "chapterIds": ["c11", "c12", "c13", "c14", "c15", "c16", "c17"],
+      "file": "data/story/part-03.json",
+      "wordCount": 5484
+    },
+    {
+      "number": 4,
+      "label": "Part Four",
+      "title": "The Night the Base Fell",
+      "setting": "Still back in time.",
+      "chapterIds": ["c18", "c19", "c20", "c21", "c22"],
+      "file": "data/story/part-04.json",
+      "wordCount": 5853
+    },
+    {
+      "number": 5,
+      "label": "Part Five",
+      "title": "The One Who Asked",
+      "setting": "Back at the Academy. Then back, much further, to the beginning of everything.",
+      "chapterIds": ["c23", "c24", "c25", "c26", "c27"],
+      "file": "data/story/part-05.json",
+      "wordCount": 4588
+    },
+    {
+      "number": 6,
+      "label": "Part Six",
+      "title": "Forty Days",
+      "setting": "The present again, at the Academy.",
+      "chapterIds": ["c28", "c29", "c30", "c31", "c32"],
+      "file": "data/story/part-06.json",
+      "wordCount": 4034
+    },
+    {
+      "number": 7,
+      "label": "Part Seven",
+      "title": "The Golden Cage",
+      "setting": "Back in time. Before the Breach, on the planet Oro.",
+      "chapterIds": ["c33", "c34", "c35", "c36", "c37", "c38"],
+      "file": "data/story/part-07.json",
+      "wordCount": 4514
+    },
+    {
+      "number": 8,
+      "label": "Part Eight",
+      "title": "Beginning!",
+      "setting": "The Day of the Breach, continued.",
+      "chapterIds": ["c39", "c40", "c41", "c42"],
+      "file": "data/story/part-08.json",
+      "wordCount": 3660
+    },
+    {
+      "number": 9,
+      "label": "Part Nine",
+      "title": "The Newcomers",
+      "setting": "After the Breach.",
+      "chapterIds": ["i-far-above-2", "c43", "c44", "c45", "c46"],
+      "file": "data/story/part-09.json",
+      "wordCount": 3063
+    },
+    {
+      "number": 10,
+      "label": "Part Ten",
+      "title": "The One Who Was Taken",
+      "setting": "The next spring.",
+      "chapterIds": ["c47", "c48", "c49", "c50"],
+      "file": "data/story/part-10.json",
+      "wordCount": 4775
+    },
+    {
+      "number": 11,
+      "label": "Part Eleven",
+      "title": "The Storm",
+      "setting": "Summer, and the first week of September.",
+      "chapterIds": ["c51", "c52", "c53"],
+      "file": "data/story/part-11.json",
+      "wordCount": 4110
+    },
+    {
+      "number": 12,
+      "label": "Part Twelve",
+      "title": "Dawn",
+      "setting": "Graduation day, and after.",
+      "chapterIds": ["c54", "c55", "c56", "c57", "c58", "c59", "c60"],
+      "file": "data/story/part-12.json",
+      "wordCount": 7077
+    }
+  ],
+  "chapters": [
+    {
+      "id": "c01",
+      "kind": "chapter",
+      "number": 1,
+      "title": "The Student Who Was Always First",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 983,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 0
+    },
+    {
+      "id": "c02",
+      "kind": "chapter",
+      "number": 2,
+      "title": "The Transfer Student",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 1155,
+      "paragraphCount": 51,
+      "firstParagraphIndex": 42
+    },
+    {
+      "id": "c03",
+      "kind": "chapter",
+      "number": 3,
+      "title": "Two Stars, One Sky",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 1321,
+      "paragraphCount": 64,
+      "firstParagraphIndex": 93
+    },
+    {
+      "id": "i-far-above-1",
+      "kind": "interlude",
+      "number": null,
+      "title": "Far Above",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 138,
+      "paragraphCount": 7,
+      "firstParagraphIndex": 157
+    },
+    {
+      "id": "c04",
+      "kind": "chapter",
+      "number": 4,
+      "title": "The Daughter of Gold",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1170,
+      "paragraphCount": 53,
+      "firstParagraphIndex": 164
+    },
+    {
+      "id": "c05",
+      "kind": "chapter",
+      "number": 5,
+      "title": "The Girl Who Hid",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1281,
+      "paragraphCount": 55,
+      "firstParagraphIndex": 217
+    },
+    {
+      "id": "c06",
+      "kind": "chapter",
+      "number": 6,
+      "title": "You Are Strong",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1398,
+      "paragraphCount": 60,
+      "firstParagraphIndex": 272
+    },
+    {
+      "id": "c07",
+      "kind": "chapter",
+      "number": 7,
+      "title": "The Chapel",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1138,
+      "paragraphCount": 54,
+      "firstParagraphIndex": 332
+    },
+    {
+      "id": "c08",
+      "kind": "chapter",
+      "number": 8,
+      "title": "Best Partners",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1033,
+      "paragraphCount": 47,
+      "firstParagraphIndex": 386
+    },
+    {
+      "id": "c09",
+      "kind": "chapter",
+      "number": 9,
+      "title": "Like Fireworks",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 702,
+      "paragraphCount": 26,
+      "firstParagraphIndex": 433
+    },
+    {
+      "id": "c10",
+      "kind": "chapter",
+      "number": 10,
+      "title": "The Emblem of Hope",
+      "part": 2,
+      "timeNote": null,
+      "wordCount": 1528,
+      "paragraphCount": 62,
+      "firstParagraphIndex": 459
+    },
+    {
+      "id": "c11",
+      "kind": "chapter",
+      "number": 11,
+      "title": "A Peaceful World",
+      "part": 3,
+      "timeNote": "Terrinia and the town of Valemont, in the year 978.",
+      "wordCount": 755,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 521
+    },
+    {
+      "id": "c12",
+      "kind": "chapter",
+      "number": 12,
+      "title": "Year 978",
+      "part": 3,
+      "timeNote": "The night of the ninth of September, 978.",
+      "wordCount": 923,
+      "paragraphCount": 40,
+      "firstParagraphIndex": 557
+    },
+    {
+      "id": "c13",
+      "kind": "chapter",
+      "number": 13,
+      "title": "The Name of the Monsters",
+      "part": 3,
+      "timeNote": "The months and years after the catastrophe.",
+      "wordCount": 681,
+      "paragraphCount": 21,
+      "firstParagraphIndex": 597
+    },
+    {
+      "id": "c14",
+      "kind": "chapter",
+      "number": 14,
+      "title": "The Girl Who Learned to Aim",
+      "part": 3,
+      "timeNote": null,
+      "wordCount": 823,
+      "paragraphCount": 39,
+      "firstParagraphIndex": 618
+    },
+    {
+      "id": "c15",
+      "kind": "chapter",
+      "number": 15,
+      "title": "The Child of the Laboratory",
+      "part": 3,
+      "timeNote": "Selrick Base, some years later.",
+      "wordCount": 668,
+      "paragraphCount": 33,
+      "firstParagraphIndex": 657
+    },
+    {
+      "id": "c16",
+      "kind": "chapter",
+      "number": 16,
+      "title": "Sis",
+      "part": 3,
+      "timeNote": null,
+      "wordCount": 712,
+      "paragraphCount": 40,
+      "firstParagraphIndex": 690
+    },
+    {
+      "id": "c17",
+      "kind": "chapter",
+      "number": 17,
+      "title": "The Smallest Party in the World",
+      "part": 3,
+      "timeNote": null,
+      "wordCount": 922,
+      "paragraphCount": 33,
+      "firstParagraphIndex": 730
+    },
+    {
+      "id": "c18",
+      "kind": "chapter",
+      "number": 18,
+      "title": "Silence",
+      "part": 4,
+      "timeNote": "Selrick Base, in the days before it fell.",
+      "wordCount": 1234,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 763
+    },
+    {
+      "id": "c19",
+      "kind": "chapter",
+      "number": 19,
+      "title": "Go Away",
+      "part": 4,
+      "timeNote": "The same night, and after.",
+      "wordCount": 835,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 806
+    },
+    {
+      "id": "c20",
+      "kind": "chapter",
+      "number": 20,
+      "title": "The Years of Ash",
+      "part": 4,
+      "timeNote": "The years after.",
+      "wordCount": 941,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 835
+    },
+    {
+      "id": "c21",
+      "kind": "chapter",
+      "number": 21,
+      "title": "The Return",
+      "part": 4,
+      "timeNote": "Some years after the Base fell.",
+      "wordCount": 1560,
+      "paragraphCount": 61,
+      "firstParagraphIndex": 864
+    },
+    {
+      "id": "c22",
+      "kind": "chapter",
+      "number": 22,
+      "title": "On the Ruins",
+      "part": 4,
+      "timeNote": null,
+      "wordCount": 1283,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 925
+    },
+    {
+      "id": "c23",
+      "kind": "chapter",
+      "number": 23,
+      "title": "Silverbolt",
+      "part": 5,
+      "timeNote": "Selrick Academy, in its first year.",
+      "wordCount": 1475,
+      "paragraphCount": 68,
+      "firstParagraphIndex": 966
+    },
+    {
+      "id": "c24",
+      "kind": "chapter",
+      "number": 24,
+      "title": "The Orb",
+      "part": 5,
+      "timeNote": "Long ago, in another universe.",
+      "wordCount": 430,
+      "paragraphCount": 21,
+      "firstParagraphIndex": 1034
+    },
+    {
+      "id": "c25",
+      "kind": "chapter",
+      "number": 25,
+      "title": "The First Awakening",
+      "part": 5,
+      "timeNote": "Ages later.",
+      "wordCount": 627,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 1055
+    },
+    {
+      "id": "c26",
+      "kind": "chapter",
+      "number": 26,
+      "title": "Likeness",
+      "part": 5,
+      "timeNote": null,
+      "wordCount": 833,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 1091
+    },
+    {
+      "id": "c27",
+      "kind": "chapter",
+      "number": 27,
+      "title": "The Seed in the Rain",
+      "part": 5,
+      "timeNote": "Some years before 978.",
+      "wordCount": 1223,
+      "paragraphCount": 59,
+      "firstParagraphIndex": 1134
+    },
+    {
+      "id": "c28",
+      "kind": "chapter",
+      "number": 28,
+      "title": "The Quiet Mission",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 950,
+      "paragraphCount": 34,
+      "firstParagraphIndex": 1193
+    },
+    {
+      "id": "c29",
+      "kind": "chapter",
+      "number": 29,
+      "title": "Inside the Institute",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 1077,
+      "paragraphCount": 47,
+      "firstParagraphIndex": 1227
+    },
+    {
+      "id": "c30",
+      "kind": "chapter",
+      "number": 30,
+      "title": "Team B3",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 641,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 1274
+    },
+    {
+      "id": "c31",
+      "kind": "chapter",
+      "number": 31,
+      "title": "Alert",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 688,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 1303
+    },
+    {
+      "id": "c32",
+      "kind": "chapter",
+      "number": 32,
+      "title": "Cover Me",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 678,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 1345
+    },
+    {
+      "id": "c33",
+      "kind": "chapter",
+      "number": 33,
+      "title": "The Planet of Gold",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 535,
+      "paragraphCount": 20,
+      "firstParagraphIndex": 1381
+    },
+    {
+      "id": "c34",
+      "kind": "chapter",
+      "number": 34,
+      "title": "The Veil of Counsel",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 469,
+      "paragraphCount": 13,
+      "firstParagraphIndex": 1401
+    },
+    {
+      "id": "c35",
+      "kind": "chapter",
+      "number": 35,
+      "title": "A Friend Under the Sun",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 1124,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 1414
+    },
+    {
+      "id": "c36",
+      "kind": "chapter",
+      "number": 36,
+      "title": "The Cleansing of Oro",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 598,
+      "paragraphCount": 21,
+      "firstParagraphIndex": 1456
+    },
+    {
+      "id": "c37",
+      "kind": "chapter",
+      "number": 37,
+      "title": "The Leash",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 893,
+      "paragraphCount": 32,
+      "firstParagraphIndex": 1477
+    },
+    {
+      "id": "c38",
+      "kind": "chapter",
+      "number": 38,
+      "title": "The Trojan",
+      "part": 7,
+      "timeNote": null,
+      "wordCount": 895,
+      "paragraphCount": 33,
+      "firstParagraphIndex": 1509
+    },
+    {
+      "id": "c39",
+      "kind": "chapter",
+      "number": 39,
+      "title": "Beginning!",
+      "part": 8,
+      "timeNote": null,
+      "wordCount": 915,
+      "paragraphCount": 44,
+      "firstParagraphIndex": 1542
+    },
+    {
+      "id": "c40",
+      "kind": "chapter",
+      "number": 40,
+      "title": "The Weak Spot",
+      "part": 8,
+      "timeNote": null,
+      "wordCount": 981,
+      "paragraphCount": 38,
+      "firstParagraphIndex": 1586
+    },
+    {
+      "id": "c41",
+      "kind": "chapter",
+      "number": 41,
+      "title": "The Harbour Front",
+      "part": 8,
+      "timeNote": null,
+      "wordCount": 463,
+      "paragraphCount": 23,
+      "firstParagraphIndex": 1624
+    },
+    {
+      "id": "c42",
+      "kind": "chapter",
+      "number": 42,
+      "title": "What Hurt Means",
+      "part": 8,
+      "timeNote": null,
+      "wordCount": 1301,
+      "paragraphCount": 65,
+      "firstParagraphIndex": 1647
+    },
+    {
+      "id": "i-far-above-2",
+      "kind": "interlude",
+      "number": null,
+      "title": "Far Above",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 208,
+      "paragraphCount": 11,
+      "firstParagraphIndex": 1712
+    },
+    {
+      "id": "c43",
+      "kind": "chapter",
+      "number": 43,
+      "title": "Newcomers",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 899,
+      "paragraphCount": 38,
+      "firstParagraphIndex": 1723
+    },
+    {
+      "id": "c44",
+      "kind": "chapter",
+      "number": 44,
+      "title": "Badges of Honour",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 905,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 1761
+    },
+    {
+      "id": "c45",
+      "kind": "chapter",
+      "number": 45,
+      "title": "The Horizon",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 700,
+      "paragraphCount": 30,
+      "firstParagraphIndex": 1802
+    },
+    {
+      "id": "c46",
+      "kind": "chapter",
+      "number": 46,
+      "title": "Names",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 351,
+      "paragraphCount": 15,
+      "firstParagraphIndex": 1832
+    },
+    {
+      "id": "c47",
+      "kind": "chapter",
+      "number": 47,
+      "title": "The Corridor",
+      "part": 10,
+      "timeNote": null,
+      "wordCount": 995,
+      "paragraphCount": 49,
+      "firstParagraphIndex": 1847
+    },
+    {
+      "id": "c48",
+      "kind": "chapter",
+      "number": 48,
+      "title": "The Edge of the Void",
+      "part": 10,
+      "timeNote": null,
+      "wordCount": 1295,
+      "paragraphCount": 59,
+      "firstParagraphIndex": 1896
+    },
+    {
+      "id": "c49",
+      "kind": "chapter",
+      "number": 49,
+      "title": "Where Vexana Was Not",
+      "part": 10,
+      "timeNote": null,
+      "wordCount": 1031,
+      "paragraphCount": 44,
+      "firstParagraphIndex": 1955
+    },
+    {
+      "id": "c50",
+      "kind": "chapter",
+      "number": 50,
+      "title": "Twilight Star",
+      "part": 10,
+      "timeNote": null,
+      "wordCount": 1454,
+      "paragraphCount": 55,
+      "firstParagraphIndex": 1999
+    },
+    {
+      "id": "c51",
+      "kind": "chapter",
+      "number": 51,
+      "title": "A Different Ending",
+      "part": 11,
+      "timeNote": null,
+      "wordCount": 1278,
+      "paragraphCount": 59,
+      "firstParagraphIndex": 2054
+    },
+    {
+      "id": "c52",
+      "kind": "chapter",
+      "number": 52,
+      "title": "Graduation Season",
+      "part": 11,
+      "timeNote": null,
+      "wordCount": 1404,
+      "paragraphCount": 70,
+      "firstParagraphIndex": 2113
+    },
+    {
+      "id": "c53",
+      "kind": "chapter",
+      "number": 53,
+      "title": "The Matrix Transmits",
+      "part": 11,
+      "timeNote": null,
+      "wordCount": 1428,
+      "paragraphCount": 83,
+      "firstParagraphIndex": 2183
+    },
+    {
+      "id": "c54",
+      "kind": "chapter",
+      "number": 54,
+      "title": "Terrinia Stands",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 786,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 2266
+    },
+    {
+      "id": "c55",
+      "kind": "chapter",
+      "number": 55,
+      "title": "The Emblem Flashes",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 705,
+      "paragraphCount": 31,
+      "firstParagraphIndex": 2309
+    },
+    {
+      "id": "c56",
+      "kind": "chapter",
+      "number": 56,
+      "title": "Why, Vexana?",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 985,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 2340
+    },
+    {
+      "id": "c57",
+      "kind": "chapter",
+      "number": 57,
+      "title": "Twin Streams of Light",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 930,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 2376
+    },
+    {
+      "id": "c58",
+      "kind": "chapter",
+      "number": 58,
+      "title": "The Bell Tower",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1009,
+      "paragraphCount": 44,
+      "firstParagraphIndex": 2417
+    },
+    {
+      "id": "c59",
+      "kind": "chapter",
+      "number": 59,
+      "title": "Even on the Path to Destruction",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1147,
+      "paragraphCount": 53,
+      "firstParagraphIndex": 2461
+    },
+    {
+      "id": "c60",
+      "kind": "chapter",
+      "number": 60,
+      "title": "Dawn",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1515,
+      "paragraphCount": 55,
+      "firstParagraphIndex": 2514
+    }
+  ],
+  "backMatter": {
+    "openQuestions": {
+      "title": "What this story leaves open",
+      "intro": "The story ends with hope, not with an answer. Three questions are still open:",
+      "items": [
+        {
+          "question": "Has the Matrix's invasion been stopped?",
+          "answer": "Guinevere believes it has. The story does not say so. The silver net still hangs over Terrinia."
+        },
+        {
+          "question": "Where is the Ender Control Core now, and can it be broken?",
+          "answer": "The Will took it back into its own dark void. Nobody knows where it is."
+        },
+        {
+          "question": "What happened to Selena and Obsidia?",
+          "answer": "Nobody saw how their fight ended. A woman keeps a lamp lit on an old bell tower."
+        }
+      ]
+    },
+    "closing": "THE END",
+    "reference": {
+      "title": "For reference",
+      "intro": "Now that you know the whole story, here are three pages to keep beside you."
+    },
+    "whoIsWho": {
+      "title": "Now you know: who is who",
+      "rows": [
+        {
+          "entityId": "lesley",
+          "name": "Lesley",
+          "title": "Deadeye Spectre",
+          "text": "A quiet, steady soldier and sniper. She lost her family and her left eye when she was a child. With Chang'e, she started Selrick Academy."
+        },
+        {
+          "entityId": "change",
+          "name": "Chang'e",
+          "title": "Tech Tensai",
+          "text": "A tiny, proud genius scientist. She calls Lesley \"Big Sis\". Her robot friend is Mr. Bunny."
+        },
+        {
+          "entityId": "layla",
+          "name": "Layla",
+          "title": "Miss Hikari",
+          "text": "A proud, ambitious top student with a huge cannon. Sharp on the outside, caring inside."
+        },
+        {
+          "entityId": "fanny",
+          "name": "Fanny",
+          "title": "Blade of Kibou",
+          "text": "A warm, careful, well-organised fighter who flies with wings and cables. Her older brother is Tigreal."
+        },
+        {
+          "entityId": "guinevere",
+          "name": "Guinevere",
+          "title": "Daybreak Halo",
+          "text": "A bright, brave, rich girl who calls herself \"the Queen\". She never gives up on a friend."
+        },
+        {
+          "entityId": "vexana",
+          "name": "Vexana",
+          "title": "Twilight Star",
+          "text": "A quiet girl who can hear Enders from far away. She carries a deep guilt."
+        },
+        {
+          "entityId": "ruby",
+          "name": "Ruby",
+          "title": "Mecha Maiden",
+          "text": "The heir of a ruling family on the planet Oro. She builds Angela. She looks cold, but she loves to laugh and sing."
+        },
+        {
+          "entityId": "angela",
+          "name": "Angela",
+          "title": "Cyber Cherubin",
+          "text": "An android with a gentle heart, built by Ruby. She learns what feelings are."
+        },
+        {
+          "entityId": "selena",
+          "name": "Selena",
+          "title": "Silverbolt Raiko",
+          "text": "An Ender who lives as a human. Playful, clever and rebellious. Karina Voss raised her."
+        },
+        {
+          "entityId": "obsidia",
+          "name": "Obsidia",
+          "title": "Imperatrix Arashi",
+          "text": "The first Ender who woke up. She commands the Storm Citadel. Cold, calm and very clever."
+        }
+      ],
+      "also": [
+        {
+          "entityId": "karina-voss",
+          "name": "Karina Voss",
+          "text": "the rescue worker who raised Selena."
+        },
+        {
+          "entityId": "harlan",
+          "name": "Harlan",
+          "text": "Guinevere's old guard, now the Academy's night porter."
+        },
+        {
+          "entityId": "tigreal",
+          "name": "Tigreal",
+          "text": "Fanny's elder brother, a soldier of the Shield."
+        },
+        { "entityId": "roger", "name": "Roger", "text": "a trainee medic." },
+        { "entityId": "tetra", "name": "Tetra", "text": "Angela's tiny twin." },
+        { "entityId": "mr-bunny", "name": "Mr. Bunny", "text": "Chang'e's robot." },
+        {
+          "entityId": "will-of-the-planet",
+          "name": "The Will of the Planet",
+          "text": "the huge mind that sends the Enders."
+        }
+      ]
+    },
+    "timeOrder": {
+      "title": "The story in time order",
+      "rows": [
+        {
+          "when": "Long ago, in another universe",
+          "what": "The Twilight Orb breaks. Some of its energy leaks into this universe and wakes up as the Will of the Planet.",
+          "chapters": "24",
+          "chapterIds": ["c24"]
+        },
+        {
+          "when": "Ages later",
+          "what": "One Ender wakes up and asks \"Why?\" The Will makes her its commander, the Imperatrix. She is Obsidia.",
+          "chapters": "25",
+          "chapterIds": ["c25"]
+        },
+        {
+          "when": "Ages later still",
+          "what": "Obsidia makes herself a human body. She makes a child who can pass as human, and sets her down in the rain on Dawnbreak.",
+          "chapters": "26, 27",
+          "chapterIds": ["c26", "c27"]
+        },
+        {
+          "when": "Some years before 978",
+          "what": "Karina Voss finds the child in the rain. The child chooses the name Selena.",
+          "chapters": "27",
+          "chapterIds": ["c27"]
+        },
+        {
+          "when": "The year 978",
+          "what": "The festival of First Light. Selena meets Lesley. The first catastrophe: the Enders come. Lesley loses her family and her left eye.",
+          "chapters": "11, 12",
+          "chapterIds": ["c11", "c12"]
+        },
+        {
+          "when": "After 978",
+          "what": "Terrinia becomes the last great city. The Defence Sphere, the Shield and Selrick Base are built. Chang'e is adopted by the Chief Scientists.",
+          "chapters": "13",
+          "chapterIds": ["c13"]
+        },
+        {
+          "when": "Lesley's cadet years",
+          "what": "Lesley trains with Sergeant Brandt and joins the Shield.",
+          "chapters": "14",
+          "chapterIds": ["c14"]
+        },
+        {
+          "when": "Life at Selrick Base",
+          "what": "Lesley guards Chang'e and her parents. Chang'e calls her \"Sis\". Chang'e builds her an eye and a rifle.",
+          "chapters": "15 to 17",
+          "chapterIds": ["c15", "c16", "c17"]
+        },
+        {
+          "when": "The day Selrick Base falls",
+          "what": "The Enders strike the Base at dusk. Chang'e's parents die. Vexana's father dies. Obsidia spares Chang'e.",
+          "chapters": "18, 19, 5",
+          "chapterIds": ["c18", "c19", "c05"]
+        },
+        {
+          "when": "The years after",
+          "what": "Chang'e tells Lesley to go away. Lesley watches over her from a distance. Chang'e finds aspirant power.",
+          "chapters": "19, 20",
+          "chapterIds": ["c19", "c20"]
+        },
+        {
+          "when": "Gantry Square",
+          "what": "Chang'e and Lesley fight the Enders together for the first time. They make up.",
+          "chapters": "21",
+          "chapterIds": ["c21"]
+        },
+        {
+          "when": "The Academy is founded",
+          "what": "Selrick Academy is built on the ruins of the Base. Selena comes to it as a spy.",
+          "chapters": "22",
+          "chapterIds": ["c22"]
+        },
+        {
+          "when": "The Academy's first year",
+          "what": "Layla, Fanny, Guinevere and Vexana meet and become partners. Guinevere makes the Emblems of Hope. Selena disobeys her creator.",
+          "chapters": "1 to 10, 23",
+          "chapterIds": [
+            "c01",
+            "c02",
+            "c03",
+            "c04",
+            "c05",
+            "c06",
+            "c07",
+            "c08",
+            "c09",
+            "c10",
+            "c23"
+          ]
+        },
+        {
+          "when": "Oro, before the Breach",
+          "what": "Ruby grows up in the golden cage of Oro and builds Angela. Enders destroy much of Oro. Oro seizes the Core and plans to take Dawnbreak.",
+          "chapters": "33 to 38",
+          "chapterIds": ["c33", "c34", "c35", "c36", "c37", "c38"]
+        },
+        {
+          "when": "Late summer",
+          "what": "A scout from Oro falls in a barley field. Lesley goes through the Aperture to Oro, meets Ruby and cuts the Spine.",
+          "chapters": "28, 29",
+          "chapterIds": ["c28", "c29"]
+        },
+        {
+          "when": "The Day of the Breach",
+          "what": "Oro's army attacks Terrinia. Angela and Ruby break free. The Will recalls the Core. The Enders withdraw.",
+          "chapters": "30 to 32, 39 to 42",
+          "chapterIds": ["c30", "c31", "c32", "c39", "c40", "c41", "c42"]
+        },
+        {
+          "when": "After the Breach",
+          "what": "Obsidia destroys Oro. The Will plans a reset. Ruby and Angela become Aspirants.",
+          "chapters": "Part Nine (the \"Far Above\" page, then 43 to 46)",
+          "chapterIds": ["i-far-above-2", "c43", "c44", "c45", "c46"]
+        },
+        {
+          "when": "The next spring",
+          "what": "Enders wake under the Academy. Vexana is taken into the void.",
+          "chapters": "47, 48",
+          "chapterIds": ["c47", "c48"]
+        },
+        {
+          "when": "The months after",
+          "what": "Guinevere waits and hopes. Vexana pretends to serve the Will. She gets Selena's needle.",
+          "chapters": "49, 50",
+          "chapterIds": ["c49", "c50"]
+        },
+        {
+          "when": "Summer",
+          "what": "The Matrix wakes. Obsidia makes her plan. Selena says goodbye.",
+          "chapters": "51, 52",
+          "chapterIds": ["c51", "c52"]
+        },
+        {
+          "when": "Graduation day",
+          "what": "The sky opens. The Matrix transmits. Guinevere and Vexana fight. Selena goes to the Storm Citadel.",
+          "chapters": "53 to 59",
+          "chapterIds": ["c53", "c54", "c55", "c56", "c57", "c58", "c59"]
+        },
+        {
+          "when": "That night, and after",
+          "what": "The Enders stop. Nobody knows if it is over.",
+          "chapters": "60",
+          "chapterIds": ["c60"]
+        }
+      ]
+    },
+    "wordsToKnow": {
+      "title": "Words to know",
+      "items": [
+        {
+          "term": "Dawnbreak",
+          "entityId": "dawnbreak",
+          "text": "the planet of the Aspirants. Its last great city is Terrinia.",
+          "segments": [
+            { "t": "text", "text": "the planet of the Aspirants. Its last great city is " },
+            { "t": "text", "text": "Terrinia", "strong": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "term": "Selrick Academy",
+          "entityId": "selrick-academy",
+          "text": "the school in Terrinia where young women learn to fight the Enders.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "the school in Terrinia where young women learn to fight the Enders."
+            }
+          ]
+        },
+        {
+          "term": "The Defence Sphere",
+          "entityId": "defence-sphere",
+          "text": "the web of light that covers Terrinia.",
+          "segments": [{ "t": "text", "text": "the web of light that covers Terrinia." }]
+        },
+        {
+          "term": "Aspirant",
+          "entityId": "aspirants",
+          "text": "a young woman who can use aspirant power. Aspirants fight in pairs.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "a young woman who can use aspirant power. Aspirants fight in "
+            },
+            { "t": "text", "text": "pairs", "strong": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "term": "Aspirant power",
+          "entityId": "aspirant-power",
+          "text": "the power of a heart that is whole and holds on to one thing. Two partners together make it stronger. How strongly two hearts link is called coupling.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "the power of a heart that is whole and holds on to one thing. Two partners together make it stronger. How strongly two hearts link is called "
+            },
+            { "t": "text", "text": "coupling", "strong": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "term": "Emblem of Hope",
+          "entityId": "emblem-of-hope",
+          "text": "a small gold star that glows when two partners' powers are in sync.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "a small gold star that glows when two partners' powers are in sync."
+            }
+          ]
+        },
+        {
+          "term": "Enders",
+          "entityId": "enders",
+          "text": "living weapons. They come to destroy.",
+          "segments": [{ "t": "text", "text": "living weapons. They come to destroy." }]
+        },
+        {
+          "term": "The Will of the Planet",
+          "entityId": "will-of-the-planet",
+          "text": "a huge mind that keeps the worlds in balance. It sends the Enders.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "a huge mind that keeps the worlds in balance. It sends the Enders."
+            }
+          ]
+        },
+        {
+          "term": "The Mother Matrix",
+          "entityId": "mother-matrix",
+          "text": "the Will's body. It makes Enders and sends them orders.",
+          "segments": [
+            { "t": "text", "text": "the Will's body. It makes Enders and sends them orders." }
+          ]
+        },
+        {
+          "term": "The Cycle",
+          "entityId": "the-cycle",
+          "text": "the Will's law. A world grows too advanced. A catastrophe comes. Most is destroyed, and a few people, called embers, are spared. Then the survivors rebuild, and it all starts again.",
+          "segments": [
+            {
+              "t": "text",
+              "text": "the Will's law. A world grows too advanced. A catastrophe comes. Most is destroyed, and a few people, called "
+            },
+            { "t": "text", "text": "embers", "strong": true },
+            {
+              "t": "text",
+              "text": ", are spared. Then the survivors rebuild, and it all starts again."
+            }
+          ]
+        },
+        {
+          "term": "The Storm Citadel",
+          "entityId": "storm-citadel",
+          "text": "Obsidia's giant flying fortress.",
+          "segments": [{ "t": "text", "text": "Obsidia's giant flying fortress." }]
+        },
+        {
+          "term": "Oro",
+          "entityId": "oro",
+          "text": "an old golden planet, ruled by cold, clever people.",
+          "segments": [
+            { "t": "text", "text": "an old golden planet, ruled by cold, clever people." }
+          ]
+        },
+        {
+          "term": "The Legion",
+          "entityId": "legion",
+          "text": "the android soldiers of Oro.",
+          "segments": [{ "t": "text", "text": "the android soldiers of Oro." }]
+        },
+        {
+          "term": "The Ender Control Core",
+          "entityId": "ender-control-core",
+          "text": "a device that lets its holder control ordinary Enders.",
+          "segments": [
+            { "t": "text", "text": "a device that lets its holder control ordinary Enders." }
+          ]
+        }
+      ]
+    }
+  },
+  "stats": { "parts": 12, "chapters": 60, "interludes": 2, "paragraphs": 2569, "words": 59005 }
+}

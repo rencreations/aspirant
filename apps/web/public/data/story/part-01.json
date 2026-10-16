@@ -1,0 +1,2067 @@
+{
+  "part": {
+    "number": 1,
+    "label": "Part One",
+    "title": "The Secret Base",
+    "setting": "A morning at Selrick Academy, in the city of Terrinia.",
+    "chapterIds": ["c01", "c02", "c03", "i-far-above-1"],
+    "file": "data/story/part-01.json",
+    "wordCount": 3597
+  },
+  "chapters": [
+    {
+      "id": "c01",
+      "kind": "chapter",
+      "number": 1,
+      "title": "The Student Who Was Always First",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 983,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 0,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c01-p000",
+          "i": 0,
+          "segments": [
+            { "t": "text", "text": "There was a place at the top of " },
+            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy" },
+            { "t": "text", "text": " that was on no map." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p001",
+          "i": 1,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A rusty ladder led up the outside of the central tower. At the top was a narrow steel walkway called a "
+            },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            {
+              "t": "text",
+              "text": ". It ran around the tower, seventy metres up. On a clear morning, you could watch the sun rise out of the sea."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p002",
+          "i": 2,
+          "segments": [
+            { "t": "text", "text": "Below lay all of " },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            { "t": "text", "text": ", under the pale web of the " },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p003",
+          "i": 3,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " had found it in her first week. It was hers. She had left a green cushion there, and a thermos. She had hung a sign in red paint: "
+            },
+            { "t": "text", "text": "PRIVATE. KEEP OUT. THIS MEANS YOU.", "strong": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p004",
+          "i": 4,
+          "segments": [
+            { "t": "text", "text": "This is my ", "em": true },
+            { "t": "ent", "id": "gantry", "text": "secret base", "em": true },
+            { "t": "text", "text": ",", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Nobody knows. And nobody is going to.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c01-s01" },
+        {
+          "type": "p",
+          "id": "c01-p005",
+          "i": 5,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " was small, quick and stubborn. She was an " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirant" },
+            { "t": "text", "text": ", one of the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": "'s special fighters. Her hair was bright coral pink, in two ponytails that almost touched the floor. She wore the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " uniform in her own way, cut short, with gold buttons. Pinned on it, where the badge should be, was a small silver heart. She said it was a gift from a relative. Nobody dared ask more."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p006",
+          "i": 6,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Nobody knew where she came from. The truth was simple. She came from "
+            },
+            { "t": "ent", "id": "tanners-row", "text": "Tanner's Row" },
+            { "t": "text", "text": ", in the lower terraces, the poorest part of " },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            {
+              "t": "text",
+              "text": ". Her mother kept a stall in the market there, with cloth, buttons and coloured thread. She sat behind it from dawn to dusk, with pins in her mouth and a tape-measure round her neck."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p007",
+          "i": 7,
+          "segments": [
+            {
+              "t": "text",
+              "text": "When work was slow, she made clothes for her daughter. Little dresses with too many frills. Jackets with too many buttons. It was all she had to give. She had time and thread."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p008",
+          "i": 8,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " wore them to school. Other children laughed. She wore them anyway. "
+            },
+            { "t": "text", "text": "They're mine,", "em": true },
+            { "t": "text", "text": " she told herself. " },
+            { "t": "text", "text": "Mama made them.", "em": true },
+            {
+              "t": "text",
+              "text": " Out of that grew the girl she was: loud, prickly and impossible to ignore."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p009",
+          "i": 9,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the first night of term, she came home in her new, customised coat. Her mother pinned and tucked it for an hour, until it fitted perfectly."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p010",
+          "i": 10,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Don't thank me,\" she said gruffly. \"Just don't get it torn. And come home alive.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p011",
+          "i": 11,
+          "segments": [
+            { "t": "text", "text": "She said it lightly. But " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " saw that her hands were shaking." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p012",
+          "i": 12,
+          "segments": [{ "t": "text", "text": "\"Of course I will. I'm the strongest, Mama.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p013",
+          "i": 13,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know you are. I made you that way. Now go and eat your soup.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p014",
+          "i": 14,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " told nobody. But now, on the " },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            { "t": "text", "text": ", she touched the silver heart and held it tight." }
+          ]
+        },
+        { "type": "scene-break", "id": "c01-s02" },
+        {
+          "type": "p",
+          "id": "c01-p015",
+          "i": 15,
+          "segments": [
+            { "t": "text", "text": "Only a few people had " },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            {
+              "t": "text",
+              "text": ". It came to those who held on to one thing and would not let it go. The "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " found them with a test called the " },
+            { "t": "ent", "id": "resonance-trial", "text": "Resonance Trial" },
+            { "t": "text", "text": ", and it had been the best day of " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": "'s life. Each candidate put a hand on a crystal core and held the thing she most wanted to protect. If she had "
+            },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            { "t": "text", "text": ", the core woke. " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " was number 38 of three hundred." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p016",
+          "i": 16,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ", the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": "'s Chief Scientist, sat at the table. She was very small and very clever. She had helped to start the school."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p017",
+          "i": 17,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " did not choose what to hold. It came by itself. Her mother's counter. A coil of red thread. Shaking hands. Then all of "
+            },
+            { "t": "ent", "id": "tanners-row", "text": "Tanner's Row" },
+            {
+              "t": "text",
+              "text": " at dusk, with a thousand small windows, each with a lamp in it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p018",
+          "i": 18,
+          "segments": [
+            { "t": "text", "text": "All the little lights,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p019",
+          "i": 19,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had always said she hated that place. Now she knew it was the one thing she would die for."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p020",
+          "i": 20,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A green beam shot up through the glass roof, three hundred metres high. "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": "'s pen fell on the floor." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p021",
+          "i": 21,
+          "segments": [
+            { "t": "text", "text": "\"So I'm first?\" said " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c01-p022",
+          "i": 22,
+          "segments": [
+            { "t": "text", "text": "\"You are the first,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " slowly, \"to make a beam that can be seen from the harbour.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c01-p023",
+          "i": 23,
+          "segments": [
+            { "t": "text", "text": "\"Told you,\" said " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": ", grinning." }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c01-p024",
+          "i": 24,
+          "segments": [
+            { "t": "text", "text": "Every " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirant" },
+            {
+              "t": "text",
+              "text": " was given a designation, a name to be known by in the field. "
+            },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " asked to be written down as " },
+            { "t": "text", "text": "The Strongest ", "em": true },
+            { "t": "ent", "id": "aspirants", "text": "Aspirant", "em": true },
+            {
+              "t": "text",
+              "text": ". The clerk said the register took names, not adjectives. She wrote "
+            },
+            { "t": "ent", "id": "layla", "text": "Miss Hikari", "em": true },
+            { "t": "text", "text": ", which means Miss Light." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p025",
+          "i": 25,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You looked as if you had brought the light in with you,\" she said. \"It's what you gave off.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p026",
+          "i": 26,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " thought of the little lights. \"Fine,\" she said. \"Put " },
+            { "t": "text", "text": "The Strongest", "em": true },
+            { "t": "text", "text": " underneath, in the notes.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p027",
+          "i": 27,
+          "segments": [{ "t": "text", "text": "In the end, she wore the name like a badge." }]
+        },
+        { "type": "scene-break", "id": "c01-s03" },
+        {
+          "type": "p",
+          "id": "c01-p028",
+          "i": 28,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "armoury", "text": "Armoury" },
+            { "t": "text", "text": ", the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": "'s weapon workshop, issued long-range cannons." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p029",
+          "i": 29,
+          "segments": [
+            { "t": "text", "text": "\"They're too short,\" said " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": ". \"I want one as long as me.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c01-p030",
+          "i": 30,
+          "segments": [{ "t": "text", "text": "\"You'll never lift it,\" said the armourer." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p031",
+          "i": 31,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Watch me.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p032",
+          "i": 32,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was built in a week. It was a white cannon, exactly as tall as she was. "
+            },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " swung it onto her shoulder and grinned." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p033",
+          "i": 33,
+          "segments": [
+            { "t": "text", "text": "\"I call it my magic gun,\" she said. \"Obviously.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p034",
+          "i": 34,
+          "segments": [
+            { "t": "text", "text": "But the " },
+            { "t": "ent", "id": "armoury", "text": "Armoury" },
+            { "t": "text", "text": " only built it. " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " finished it herself, at night, in a second secret place. It was a hidden room at the bottom of the mechanics wing. The "
+            },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            { "t": "text", "text": " was for mornings and feelings. This room was for work." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p035",
+          "i": 35,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It had old photographs, a seedling under glass, and three small drones with faces of \">\" and \"<\". "
+            },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " knelt on the floor and set tiny chips in her cannon with tweezers. A weapon that would stand between a thousand lit windows and the dark was not for a stranger to finish."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c01-s04" },
+        {
+          "type": "p",
+          "id": "c01-p036",
+          "i": 36,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " was first in everything, and she was alone. A gentle boy named "
+            },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": ", a trainee medic, asked her to train with the team." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p037",
+          "i": 37,
+          "segments": [{ "t": "text", "text": "\"No,\" she said. \"I prefer being alone.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c01-p038",
+          "i": 38,
+          "segments": [
+            { "t": "text", "text": "At supper she sat apart while the other " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": " laughed together. She thought of her mother's hands. " },
+            { "t": "text", "text": "Come home alive.", "em": true },
+            {
+              "t": "text",
+              "text": " Her eyes stung. It was only steam from the stew, she told herself."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p039",
+          "i": 39,
+          "segments": [
+            { "t": "text", "text": "Then she heard gossip. A new student was coming from the " },
+            { "t": "ent", "id": "cadet-corps", "text": "Cadet Corps" },
+            { "t": "text", "text": ", the army's school on the cliffs. They said she was " },
+            { "t": "text", "text": "perfect", "em": true },
+            { "t": "text", "text": ", and that she flew with a cable." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p040",
+          "i": 40,
+          "segments": [
+            { "t": "text", "text": "We'll see,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c01-p041",
+          "i": 41,
+          "segments": [
+            {
+              "t": "text",
+              "text": "With a heart on her coat and a chip on her shoulder, she began to plan a war."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c02",
+      "kind": "chapter",
+      "number": 2,
+      "title": "The Transfer Student",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 1155,
+      "paragraphCount": 51,
+      "firstParagraphIndex": 42,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c02-p000",
+          "i": 42,
+          "segments": [
+            { "t": "text", "text": "\"Off we go,\" said " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " to the sea. \"Toward a free world!\"" }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c02-p001",
+          "i": 43,
+          "segments": [
+            { "t": "text", "text": "She said it on a cliff at the edge of the " },
+            { "t": "ent", "id": "cadet-corps", "text": "Cadet Corps" },
+            {
+              "t": "text",
+              "text": ", an hour before dawn. Only a gull heard. The gull was not impressed."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p002",
+          "i": 44,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny was leaving the only home she had known, and she was happy. She had always loved heights. As a child, she had walked the barracks roofs against every rule. \"I only like to see,\" she said. \"It's so much bigger from up there.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p003",
+          "i": 45,
+          "segments": [
+            { "t": "text", "text": "Underneath was a deep longing with one direction: " },
+            { "t": "text", "text": "out", "em": true },
+            { "t": "text", "text": ". Out past the " },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere" },
+            { "t": "text", "text": ", the net of light that covered " },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            { "t": "text", "text": " like a lid. Out past the sea, to wherever the world began." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p004",
+          "i": 46,
+          "segments": [
+            { "t": "text", "text": "Someday,", "em": true },
+            { "t": "text", "text": " she thought, " },
+            { "t": "text", "text": "I will be able to leave Terrinia freely.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c02-s01" },
+        {
+          "type": "p",
+          "id": "c02-p005",
+          "i": 47,
+          "segments": [
+            { "t": "text", "text": "Sergeant " },
+            { "t": "ent", "id": "brandt", "text": "Brandt" },
+            {
+              "t": "text",
+              "text": ", her old trainer, waited at the gate. The Corps took in children whose parents had died in the first catastrophe. That was the night in 978 when the "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": " first fell from the sky. It trained them as soldiers of " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            { "t": "text", "text": "'s army. Fanny was one of them." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p006",
+          "i": 48,
+          "segments": [{ "t": "text", "text": "\"Show me the gear,\" said Brandt." }],
+          "dialogue": true,
+          "speaker": "brandt"
+        },
+        {
+          "type": "p",
+          "id": "c02-p007",
+          "i": 49,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At her hips hung two long white cases, each as long as her leg. When she flew, they opened into wings. She had built the rest herself, with an old engineer. It was a small, strong motor, a coil of fine steel cable and a grapple that fired like a bullet. Two swords lay on her back. Every flight was written in her black drill-book."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p008",
+          "i": 50,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She fired at the signal mast and flew up the cable like a dolphin."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p009",
+          "i": 51,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You'll do,\" said Brandt gruffly. \"You'll more than do. There's an officer at the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " called " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". I trained her. Ask her about " },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            { "t": "text", "text": ". She'll tell you something.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "brandt"
+        },
+        {
+          "type": "p",
+          "id": "c02-p010",
+          "i": 52,
+          "segments": [{ "t": "text", "text": "\"About what?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p011",
+          "i": 53,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"About what holds you up,\" said Brandt, \"when there's nothing else.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "brandt"
+        },
+        { "type": "scene-break", "id": "c02-s02" },
+        {
+          "type": "p",
+          "id": "c02-p012",
+          "i": 54,
+          "segments": [
+            { "t": "text", "text": "Fanny had an elder brother, and she spoke of him to no one. " },
+            { "t": "ent", "id": "tigreal", "text": "Tigreal" },
+            {
+              "t": "text",
+              "text": " was broad and quiet and hard to move. He was a front-line fighter of the Shield, far away in its grey camps. They had been orphaned together in the shelters. She was too small to remember their parents. He remembered. He turned his grief into a wall."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p013",
+          "i": 55,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Once, in a street of rubble, he had lifted her onto his shoulders. \"Don't look down, Fan,\" he said. \"Look at me.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p014",
+          "i": 56,
+          "segments": [
+            {
+              "t": "text",
+              "text": "All she wanted was to stand beside him and fight. So she trained until her hands bled. Still, a knot of doubt sat in her. "
+            },
+            { "t": "text", "text": "I could never quite reach his level.", "em": true },
+            { "t": "text", "text": " But she carried one hope like a lantern in the wind. " },
+            { "t": "text", "text": "If I never stop, maybe one day I will.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c02-s03" },
+        {
+          "type": "p",
+          "id": "c02-p015",
+          "i": 57,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the Academy gate, a very small person in a white coat asked, \"Are you lost?\" A little round robot sat on her shoulder. It was "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ", the Chief Scientist, with her robot friend, " },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p016",
+          "i": 58,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e asked to see the cable-gear. \"That motor runs at a tolerance I thought impossible. Who made it?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p017",
+          "i": 59,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I did. I'm not clever. I'm only thorough. I built it, took it apart, and built it again until it stopped failing.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p018",
+          "i": 60,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Not very clever,\" said Chang'e. \"Hm. I'll be the judge of that.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c02-p019",
+          "i": 61,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She gave Fanny the Trial in the training hall. Lesley watched from the wall. She led the Academy's combat classes. She was tall and quiet, with a dark cover over her left eye and a small cyan star lit on it. Fanny did not ask about it. Fanny held the thing she most wanted to protect. A long grey back in a corridor. A voice saying, "
+            },
+            { "t": "text", "text": "Don't look down.", "em": true },
+            {
+              "t": "text",
+              "text": " A soft cyan light spread from the core over her hand, like the first light of morning."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p020",
+          "i": 62,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"A perfect resonance,\" Chang'e whispered. \"Lesley, did you see?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c02-p021",
+          "i": 63,
+          "segments": [
+            { "t": "text", "text": "\"I saw,\" said Lesley. \"She'll do. She'll more than do.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c02-p022",
+          "i": 64,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was exactly what Brandt had said. \"Ma'am,\" said Fanny, \"Sergeant Brandt told me to ask you about aspirant power.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p023",
+          "i": 65,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley's face softened. She turned away. \"That man talks too much. Come to my office tomorrow at six. And don't let go of whatever you were holding.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p024",
+          "i": 66,
+          "segments": [{ "t": "text", "text": "\"I won't,\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c02-p025",
+          "i": 67,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the clerk's desk, Fanny chose her designation. \"My brother said a sword is only a way of being brave,\" she said. \"He said to hold a blade for something that matters. He had an old word from the hills for it. "
+            },
+            { "t": "text", "text": "Kibou.", "em": true },
+            { "t": "text", "text": " It means hope.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p026",
+          "i": 68,
+          "segments": [
+            { "t": "text", "text": "The clerk wrote: " },
+            { "t": "text", "text": "BLADE OF KIBOU.", "strong": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c02-s04" },
+        {
+          "type": "p",
+          "id": "c02-p027",
+          "i": 69,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At dinner, a girl at a long table waved. \"Over here!\" But Fanny saw a small table in the far corner, set for one. A tiny girl with long pink ponytails ate her stew as if it had wronged her."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p028",
+          "i": 70,
+          "segments": [
+            { "t": "text", "text": "She's alone,", "em": true },
+            { "t": "text", "text": " thought Fanny. She crossed the hall." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p029",
+          "i": 71,
+          "segments": [{ "t": "text", "text": "\"May I sit here?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p030",
+          "i": 72,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "No.", "em": true },
+            { "t": "text", "text": " It's taken. It's reserved. For me.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p031",
+          "i": 73,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"But you're only one person,\" said Fanny reasonably. \"It's a rather large table. I thought we might fit.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c02-p032",
+          "i": 74,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " stared. It was like being hit on the nose with a feather. " },
+            { "t": "text", "text": "She isn't being rude,", "em": true },
+            { "t": "text", "text": " she thought, baffled. " },
+            { "t": "text", "text": "She really wants to sit here.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p033",
+          "i": 75,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Fine,\" she said. \"But don't talk to me. Don't touch my things. And don't "
+            },
+            { "t": "text", "text": "smile", "em": true },
+            { "t": "text", "text": " at me.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p034",
+          "i": 76,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Was I? I'm so sorry. I'll try to stop.\" Fanny tasted her stew. \"It's good! Who makes it? I'd like to thank them.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p035",
+          "i": 77,
+          "segments": [
+            { "t": "text", "text": "Layla felt a blush climb to her hair. \"A woman called " },
+            { "t": "ent", "id": "odile", "text": "Odile" },
+            { "t": "text", "text": ",\" she heard herself say. \"I " },
+            { "t": "text", "text": "hate", "em": true },
+            { "t": "text", "text": " you.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p036",
+          "i": 78,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'm sorry to hear it,\" said Fanny mildly. \"That's your privilege.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c02-p037",
+          "i": 79,
+          "segments": [
+            { "t": "text", "text": "Trying to fight Fanny was like trying to fight a sunrise. " },
+            { "t": "text", "text": "I'm going to destroy her,", "em": true },
+            { "t": "text", "text": " thought Layla." }
+          ]
+        },
+        { "type": "scene-break", "id": "c02-s05" },
+        {
+          "type": "p",
+          "id": "c02-p038",
+          "i": 80,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On Friday, the weekly ranking went up outside the training hall. Layla came early, sure she was first."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p039",
+          "i": 81,
+          "segments": [{ "t": "text", "text": "1. FANNY (Blade of Kibou) ... 987", "strong": true }]
+        },
+        {
+          "type": "p",
+          "id": "c02-p040",
+          "i": 82,
+          "segments": [{ "t": "text", "text": "2. LAYLA (Miss Hikari) ... 962", "strong": true }]
+        },
+        {
+          "type": "p",
+          "id": "c02-p041",
+          "i": 83,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She read it three times. She had seen Fanny in the drills, running along the wall and even the ceiling. She had told herself it was luck. "
+            },
+            { "t": "text", "text": "She's better than me,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. She had never been second. And Fanny had not even seemed to try."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p042",
+          "i": 84,
+          "segments": [
+            { "t": "text", "text": "Fanny found her there. \"I'm sure it was a fluke,\" she said." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p043",
+          "i": 85,
+          "segments": [
+            {
+              "t": "text",
+              "text": "For a moment, Fanny saw something in Layla's face. It was not anger. It was hurt."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c02-p044",
+          "i": 86,
+          "segments": [
+            { "t": "text", "text": "\"Don't you " },
+            { "t": "text", "text": "dare", "em": true },
+            { "t": "text", "text": " pity me,\" said Layla. \"You " },
+            { "t": "text", "text": "won", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c02-p045",
+          "i": 87,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'm not working hard just to take first place,\" said Fanny helplessly. \"I'm only trying to get stronger.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c02-p046",
+          "i": 88,
+          "segments": [{ "t": "text", "text": "It was the wrong thing to say." }]
+        },
+        {
+          "type": "p",
+          "id": "c02-p047",
+          "i": 89,
+          "segments": [
+            { "t": "text", "text": "\"You're not even " },
+            { "t": "text", "text": "trying", "em": true },
+            {
+              "t": "text",
+              "text": ",\" said Layla, in a small flat voice. \"You take everything and you don't even "
+            },
+            { "t": "text", "text": "want", "em": true },
+            {
+              "t": "text",
+              "text": " it. I'm going to beat you. Every drill. Every score. And then I'm going to take "
+            },
+            { "t": "text", "text": "more", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c02-p048",
+          "i": 90,
+          "segments": [{ "t": "text", "text": "\"I don't want to compete with you.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p049",
+          "i": 91,
+          "segments": [
+            { "t": "text", "text": "\"I know. That's what makes it so " },
+            { "t": "text", "text": "annoying", "em": true },
+            { "t": "text", "text": ".\" At the door, she turned. \"" },
+            { "t": "text", "text": "Rival.", "em": true },
+            { "t": "text", "text": " You're my rival now.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c02-p050",
+          "i": 92,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny felt like a villain. But slowly, she smiled at the shaking door. "
+            },
+            { "t": "text", "text": "She has a very nice sort of fire,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I'd like to meet it properly.", "em": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c03",
+      "kind": "chapter",
+      "number": 3,
+      "title": "Two Stars, One Sky",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 1321,
+      "paragraphCount": 64,
+      "firstParagraphIndex": 93,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c03-p000",
+          "i": 93,
+          "segments": [
+            { "t": "text", "text": "Article 77 of the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " rules said no student could fly on the grounds. The only place was the Aerial Practice Zone, with an instructor."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p001",
+          "i": 94,
+          "segments": [
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            {
+              "t": "text",
+              "text": " agreed it was a good rule. But on her third day, she had filed Form 77-C, asking properly for one hour a day in the Zone. It was stamped RECEIVED and put in a tray. The tray was in no hurry. She waited the full fortnight that the rules allowed."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p002",
+          "i": 95,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then, one cold Saturday before dawn, she stood at the foot of the central tower with her cable-gun. "
+            },
+            { "t": "text", "text": "I'll only go up a little,", "em": true },
+            { "t": "text", "text": " she told herself." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p003",
+          "i": 96,
+          "segments": [
+            { "t": "text", "text": "She flew up the glass wall with her hip wings spread wide. " },
+            { "t": "text", "text": "Flying feels great,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. At seventy metres, she swung round the curve and saw the "
+            },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p004",
+          "i": 97,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She crashed onto the walkway, onto a green cushion. Beside it were a thermos, field-glasses and a sign. "
+            },
+            { "t": "text", "text": "PRIVATE. KEEP OUT. THIS MEANS YOU.", "strong": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p005",
+          "i": 98,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "What", "em": true },
+            { "t": "text", "text": " are you doing here?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p006",
+          "i": 99,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " sat against the wall with a half-eaten bread roll. \"That's my "
+            },
+            { "t": "text", "text": "secret base", "em": true },
+            { "t": "text", "text": "! There's a " },
+            { "t": "text", "text": "sign", "em": true },
+            { "t": "text", "text": "! And flying is " },
+            { "t": "text", "text": "banned", "em": true },
+            { "t": "text", "text": "! Article 77!\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p007",
+          "i": 100,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know,\" said Fanny. \"I filed for the Practice Zone a fortnight ago. I waited the time the rules allow. Then I came. I would rather be fined than rusty.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p008",
+          "i": 101,
+          "segments": [
+            { "t": "text", "text": "\"You sneak around the " },
+            { "t": "text", "text": "rules", "em": true },
+            { "t": "text", "text": "?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p009",
+          "i": 102,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I don't sneak. I log it. Every landing is in my book, and I'll answer for it.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p010",
+          "i": 103,
+          "segments": [{ "t": "text", "text": "Layla stared. \"Why do you fly at all?\"" }]
+        },
+        {
+          "type": "p",
+          "id": "c03-p011",
+          "i": 104,
+          "segments": [
+            { "t": "text", "text": "\"Being up high makes me feel " },
+            { "t": "text", "text": "free", "em": true },
+            { "t": "text", "text": ",\" said Fanny, looking at the sea." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p012",
+          "i": 105,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla went still. \"Sit down,\" she said abruptly. \"You're too near the edge.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p013",
+          "i": 106,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They sat two metres apart as the sun rose. \"I come up here to look at the "
+            },
+            { "t": "ent", "id": "defence-sphere", "text": "Sphere" },
+            { "t": "text", "text": ",\" Layla said at last. \"I'm not " },
+            { "t": "text", "text": "interested", "em": true },
+            { "t": "text", "text": " in the outside world. The field-glasses are for " },
+            { "t": "text", "text": "surveillance", "em": true },
+            { "t": "text", "text": ".\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p014",
+          "i": 107,
+          "segments": [
+            { "t": "text", "text": "Fanny saw her pink cheeks. " },
+            { "t": "text", "text": "Oh,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "She's the same.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p015",
+          "i": 108,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"There's a thing I've always wanted to see,\" said Fanny. \"A harbour on the far side of the sea. I read about it in a book at the "
+            },
+            { "t": "ent", "id": "cadet-corps", "text": "Corps" },
+            {
+              "t": "text",
+              "text": ". It has a hundred and seventeen lighthouses. When the wind blows, each one sings a different note.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p016",
+          "i": 109,
+          "segments": [{ "t": "text", "text": "\"I'd go to the mountains,\" said Layla." }],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c03-p017",
+          "i": 110,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It came out in a rush. She clapped a hand over her mouth. \"I didn't say that.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p018",
+          "i": 111,
+          "segments": [{ "t": "text", "text": "\"I didn't hear a thing,\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p019",
+          "i": 112,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"There are mountains on the old maps,\" Layla muttered. \"Snow all year. You can see the whole sky. My mother had a picture of them, cut from a magazine. She kept it in a drawer. It's a "
+            },
+            { "t": "text", "text": "stupid", "em": true },
+            { "t": "text", "text": " thing to want. Everyone knows we can't go out.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c03-p020",
+          "i": 113,
+          "segments": [{ "t": "text", "text": "\"I like to know it's there,\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p021",
+          "i": 114,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Something in Layla's chest loosened, like a fist let go. \"This is my secret base. Don't tell anyone.\" She held out the thermos, without looking. \"It's tea. Don't spill it. It's not a favour.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p022",
+          "i": 115,
+          "segments": [{ "t": "text", "text": "\"It's the best I've ever had.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p023",
+          "i": 116,
+          "segments": [
+            { "t": "text", "text": "\"You're a " },
+            { "t": "text", "text": "liar", "em": true },
+            { "t": "text", "text": ",\" said Layla. But she was smiling, a tiny crooked smile. " },
+            { "t": "text", "text": "There she is,", "em": true },
+            { "t": "text", "text": " thought Fanny." }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        { "type": "scene-break", "id": "c03-s01" },
+        {
+          "type": "p",
+          "id": "c03-p024",
+          "i": 117,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It did not end the war. The next Friday, Layla scored 994 to Fanny's 993. \""
+            },
+            { "t": "text", "text": "Ha!", "em": true },
+            { "t": "text", "text": " Be " },
+            { "t": "text", "text": "annoyed", "em": true },
+            {
+              "t": "text",
+              "text": "!\" Fanny tried to frown. She looked like a kitten trying to growl."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p025",
+          "i": 118,
+          "segments": [
+            {
+              "t": "text",
+              "text": "There were contests of every kind. In a cleaning-duty race, both girls crawled along a corridor with mops. In a race down the tower stair, Fanny, who had never lost a descent, was beaten by a banister."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p026",
+          "i": 119,
+          "segments": [
+            {
+              "t": "text",
+              "text": "After one contest they lay on the grass. \"I think I'm getting better,\" said Fanny. \"Because of you. Now I'm finding out how much more there is.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p027",
+          "i": 120,
+          "segments": [
+            { "t": "text", "text": "Layla stared. " },
+            { "t": "text", "text": "She means it.", "em": true },
+            {
+              "t": "text",
+              "text": " Fanny never minded losing, so Layla could not even hate her. And a cold suspicion crept in. Maybe all the contests were a way of being near her. She put the thought away in a drawer."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p028",
+          "i": 121,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Academy called it \"the frenemy business.\" At dawn, the two began to meet on the gantry. Fanny's drill-book had a line in it: "
+            },
+            { "t": "text", "text": "Layla, range, Thurs.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c03-s02" },
+        {
+          "type": "p",
+          "id": "c03-p029",
+          "i": 122,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Sweet Day was an old festival of the lower terraces, when people give each other chocolate. Layla had never had one. This year she found a pile outside her door, all addressed to "
+            },
+            { "t": "text", "text": "Miss Hikari", "em": true },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p030",
+          "i": 123,
+          "segments": [
+            { "t": "text", "text": "\"They like you,\" said her roommate, " },
+            { "t": "ent", "id": "pia", "text": "Pia" },
+            {
+              "t": "text",
+              "text": ". \"You stood up to that horrible teacher over the uniform. It meant a lot to some of them.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p031",
+          "i": 124,
+          "segments": [
+            { "t": "text", "text": "They like me,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Layla. She had thought she was alone behind a wall. She had never imagined anyone on the other side. It was too warm to bear. So, being Layla, she boasted."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p032",
+          "i": 125,
+          "segments": [
+            { "t": "text", "text": "\"Four " },
+            { "t": "text", "text": "dozen", "em": true },
+            { "t": "text", "text": "!\" she told the breakfast room. \"A record! How many have " },
+            { "t": "text", "text": "you", "em": true },
+            { "t": "text", "text": " got?\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p033",
+          "i": 126,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I haven't counted,\" said Fanny. \"I don't think chocolates are a score. You give one so that someone will be happy.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p034",
+          "i": 127,
+          "segments": [
+            { "t": "text", "text": "Layla felt a hollow, like a stair that is not there. " },
+            { "t": "text", "text": "She's right,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "I hate it.", "em": true },
+            { "t": "text", "text": " She stormed out, ears scarlet." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p035",
+          "i": 128,
+          "segments": [
+            { "t": "text", "text": "At noon, on the gantry, she heard a " },
+            { "t": "text", "text": "tink", "em": true },
+            { "t": "text", "text": ". Fanny swung over the rail with a brown paper bag." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p036",
+          "i": 129,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It's chocolate. I made it. I burnt the first batch. I wanted to give you one, because you're my teammate.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p037",
+          "i": 130,
+          "segments": [
+            { "t": "text", "text": "\"I'm your " },
+            { "t": "text", "text": "rival", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p038",
+          "i": 131,
+          "segments": [{ "t": "text", "text": "\"Yes. And my teammate.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p039",
+          "i": 132,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla took the bag in both hands, like a medal. \"I accept. You're still not forgiven.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p040",
+          "i": 133,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Inside was a lopsided chocolate heart. In white icing, it said "
+            },
+            { "t": "text", "text": "FOR MY RIVAL.", "strong": true },
+            { "t": "text", "text": " Her eyes stung. She ate a piece. It was burnt and bitter." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p041",
+          "i": 134,
+          "segments": [
+            { "t": "text", "text": "\"It's " },
+            { "t": "text", "text": "dreadful", "em": true },
+            { "t": "text", "text": ",\" she said thickly. \"I'm going to eat it " },
+            { "t": "text", "text": "all", "em": true },
+            { "t": "text", "text": ". And you're not to " },
+            { "t": "text", "text": "watch", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p042",
+          "i": 135,
+          "segments": [
+            { "t": "text", "text": "Fanny turned away and smiled at the sea. " },
+            { "t": "text", "text": "That's my teammate,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "That's my friend.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c03-s03" },
+        {
+          "type": "p",
+          "id": "c03-p043",
+          "i": 136,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the Monday after, a notice went up outside the training hall, signed "
+            },
+            { "t": "text", "text": "C.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p044",
+          "i": 137,
+          "segments": [
+            { "t": "text", "text": "It announced a " },
+            { "t": "ent", "id": "pair-system", "text": "PAIR SYSTEM" },
+            { "t": "text", "text": ". Each " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirant" },
+            {
+              "t": "text",
+              "text": " would choose a partner, to train, study and fight with. Every pair had to be registered and pass a test of harmonic compatibility. Anyone who had not chosen by the end of next term would be assigned a partner."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p045",
+          "i": 138,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Below it was a list of advice, based on measurements. It was not binding. At the fourth line, Layla froze."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p046",
+          "i": 139,
+          "segments": [
+            {
+              "t": "text",
+              "text": "LAYLA (Miss Hikari) - FANNY (Blade of Kibou) - highest recorded ",
+              "strong": true
+            },
+            { "t": "ent", "id": "coupling", "text": "coupling", "strong": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p047",
+          "i": 140,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "No!", "em": true },
+            { "t": "text", "text": "\" she cried. \"I'd sooner be paired with a " },
+            { "t": "text", "text": "goat", "em": true },
+            { "t": "text", "text": "!\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p048",
+          "i": 141,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It isn't my doing,\" said a dry voice. \"It's the numbers.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p049",
+          "i": 142,
+          "segments": [
+            { "t": "text", "text": "It was " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ", with her clipboard. \"" },
+            { "t": "text", "text": "Coupling", "em": true },
+            {
+              "t": "text",
+              "text": " is how strongly two partners' power links. When two cores are close, their fields boost each other. In a good pair, the output is not doubled. It is "
+            },
+            { "t": "text", "text": "squared", "em": true },
+            {
+              "t": "text",
+              "text": ". In the best pair I have ever measured, it was squared again.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p050",
+          "i": 143,
+          "segments": [{ "t": "text", "text": "Layla's mouth opened and closed." }]
+        },
+        {
+          "type": "p",
+          "id": "c03-p051",
+          "i": 144,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It was you two,\" said Chang'e. \"Your pride and her warmth do not cancel. They "
+            },
+            { "t": "text", "text": "complete", "em": true },
+            {
+              "t": "text",
+              "text": ".\" She tucked her clipboard under her arm. \"It's only advice. A partnership cannot be ordered. It must be "
+            },
+            { "t": "text", "text": "chosen", "em": true },
+            { "t": "text", "text": ". But I should like to see what happens when you fight " },
+            { "t": "text", "text": "together", "em": true },
+            { "t": "text", "text": ". So I have put you in the same VR team. " },
+            { "t": "ent", "id": "team-b3", "text": "Team B3" },
+            { "t": "text", "text": ", with a young man named " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c03-p052",
+          "i": 145,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She walked away. Layla stood rooted to the floor, red as a beetroot."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p053",
+          "i": 146,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Fanny came running down the corridor, with her face alight. \"Did you see? We're "
+            },
+            { "t": "text", "text": "recommended", "em": true },
+            { "t": "text", "text": "! I think it might be the best thing that ever happened.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p054",
+          "i": 147,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla thought of a thermos of tea, and a bad chocolate. She thought of a hundred and seventeen lighthouses, and a picture of a mountain."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p055",
+          "i": 148,
+          "segments": [
+            { "t": "text", "text": "It would be fun,", "em": true },
+            { "t": "text", "text": " she thought, in helpless defeat." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p056",
+          "i": 149,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Hmph,", "em": true },
+            {
+              "t": "text",
+              "text": "\" said Layla. \"It's advisory. I'll think about it in about a hundred years. And you're not to look at me like that.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c03-p057",
+          "i": 150,
+          "segments": [{ "t": "text", "text": "\"Like what?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p058",
+          "i": 151,
+          "segments": [
+            { "t": "text", "text": "\"Like you've " },
+            { "t": "text", "text": "won", "em": true },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p059",
+          "i": 152,
+          "segments": [{ "t": "text", "text": "\"I can't help it,\" said Fanny, smiling." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c03-p060",
+          "i": 153,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Well, try!", "em": true },
+            { "t": "text", "text": "\" Layla strode off, with her ears bright red." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p061",
+          "i": 154,
+          "segments": [{ "t": "text", "text": "\"Not even a little?\" Fanny called after her." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c03-p062",
+          "i": 155,
+          "segments": [
+            {
+              "t": "text",
+              "text": "From far down the corridor, a small voice, as stiff and cross as a kettle on the boil, floated back."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c03-p063",
+          "i": 156,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Not even a little.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        }
+      ]
+    },
+    {
+      "id": "i-far-above-1",
+      "kind": "interlude",
+      "number": null,
+      "title": "Far Above",
+      "part": 1,
+      "timeNote": null,
+      "wordCount": 138,
+      "paragraphCount": 7,
+      "firstParagraphIndex": 157,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "i-far-above-1-p000",
+          "i": 157,
+          "segments": [
+            { "t": "text", "text": "Far above " },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            { "t": "text", "text": ", higher than the clouds and higher than the " },
+            { "t": "ent", "id": "defence-sphere", "text": "Sphere" },
+            { "t": "text", "text": ", a woman sat alone in the dark." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p001",
+          "i": 158,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She wore a long black gown. Her hair was pink at the top and gold at the ends. Her two eyes did not match."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p002",
+          "i": 159,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Before her stood a board for a game of war. One white pawn stood a little ahead of the other pieces."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p003",
+          "i": 160,
+          "segments": [
+            { "t": "text", "text": "She was watching the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " through a thin eye of storm. A small girl with pink ponytails was marching away from a tall girl who was smiling. The tall girl called something after her."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p004",
+          "i": 161,
+          "segments": [{ "t": "text", "text": "\"How loud they are,\" said the woman, softly." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p005",
+          "i": 162,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then she stopped. She had almost smiled. She did not know what to do with that."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-1-p006",
+          "i": 163,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not touch the white pawn. But she looked at it for a long time."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

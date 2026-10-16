@@ -1,0 +1,120 @@
+import type { CharacterData } from "../types";
+
+export const guinevere: CharacterData = {
+  slug: "guinevere",
+  order: 7,
+  name: "Guinevere",
+  aspirantName: "Daybreak Halo",
+  jp: { script: "グィネヴィア", romaji: "Guinevia" },
+  ageText: "16",
+  birthday: "February 28",
+  mbti: "ENFP",
+  role: "Close-combat fighter",
+  weapon: "Her fists and spiked gauntlets, gold star blades, and two cat-eared drones",
+  partnerSlug: "vexana",
+  pair: "guinevere-vexana",
+  side: "daybreak",
+  palette: { primary: "#F6B98A", secondary: "#E1322E", glow: "#2ED3C5", ink: "#24110E" },
+  tagline: "She would follow the light across the whole world.",
+  summary:
+    "Guinevere left a house with two hundred and forty windows to fight on her own merits. She is the best close fighter in the Academy, and she calls herself the Queen. She made the Emblem of Hope by hand, for her partner, Vexana.",
+  sections: {
+    personality: [
+      "Warm, loud, bold and generous. She loves to give.",
+      "Stubborn to the bone. She does not stop, and she does not give up on people.",
+      "Hungry for her father's approval, and set on earning her own way.",
+      "Full of ideas, and quick to find a loophole in the rules when she needs one.",
+      "Hopeful on purpose. She chooses to believe.",
+    ],
+    appearance: [
+      "Long peach-gold hair in a high side ponytail with ringlets, tied with big red bows.",
+      "Bright red eyes.",
+      "A white cropped jacket with a red collar, a black vest, and a long white and red skirt.",
+      "Two round drones with cat ears float beside her.",
+    ],
+    fighting: [
+      "Close combat with her fists. She taught herself from an old book and a punching bag made from a bolster, before a master took her on.",
+      "Boosters at her heels let her fly on red-gold fire.",
+      "She won the spring Combat Trials with her left hand tied behind her back.",
+      "With Vexana at her back she goes in front, and never needs to look round.",
+    ],
+    background: [
+      "Her father, the Chairman, saw a daughter as part of the family business. He never asked what she wanted.",
+      "Her bodyguard Harlan was kind to her, and was sacked for it.",
+      "She went to the Academy without her family's name or money, and came first in the winter exams with 911 out of 1,000.",
+      "When she showed her father, he told her to stop being so stubborn and focus on the family business.",
+      "A quiet girl on a stair told her she was strong. Guinevere spent ten days of doughnuts winning that girl as a partner.",
+    ],
+    motivation: [
+      "To be so bright on her own that the world has to look.",
+      "To protect the world, and to do it with Vexana.",
+      "To be seen for herself, not for her name.",
+    ],
+    flaws: [
+      "Proud and a little vain: the self-named Queen of the Academy.",
+      "Charges in first.",
+      "Hurt by her father's coldness, and hungry to be seen.",
+      "Stubborn even when it hurts her.",
+    ],
+    relationships: [
+      {
+        slug: "vexana",
+        name: "Vexana",
+        text: "Her partner and best friend, and the first person who saw her for herself. Their coupling measured 1.62 when they registered.",
+      },
+      {
+        slug: null,
+        entityId: "harlan",
+        name: "Harlan",
+        text: "Her old bodyguard, now the Academy's night porter. He packed her a suitcase, with biscuits, the day she left home.",
+      },
+      {
+        slug: null,
+        entityId: "the-chairman",
+        name: "The Chairman",
+        text: "Her father: cold, correct and silent about anything like pride.",
+      },
+      {
+        slug: "layla",
+        name: "Layla",
+        text: "A loud rival since their eleven-second fight in the training hall.",
+      },
+      {
+        slug: "selena",
+        name: "Selena",
+        text: "Helped rebuild her old drones, and showed her that a crystal wants to be listened to, not gripped.",
+      },
+    ],
+  },
+  laterInStory: [
+    {
+      text: "When Vexana is taken, Guinevere keeps her Emblem lit and refuses to give up.",
+      chapterId: "c49",
+    },
+    {
+      text: "On graduation day her father shouts well done as she flies north.",
+      chapterId: "c54",
+    },
+  ],
+  keyQuotes: [13, 16, 17, 18, 27, 39],
+  inStory: {
+    chapterIds: [
+      "c04",
+      "c06",
+      "c07",
+      "c08",
+      "c09",
+      "c10",
+      "c41",
+      "c44",
+      "c45",
+      "c47",
+      "c49",
+      "c53",
+      "c55",
+      "c56",
+      "c57",
+      "c60",
+    ],
+  },
+};

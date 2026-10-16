@@ -1,0 +1,184 @@
+Story build report
+Source: D:/ren/aspirant/story/short-v2.md
+
+COUNTS
+  parts: 12
+  chapters: 60
+  interludes: 2 (spec.md says 3; the source has 2)
+  paragraphs: 2569
+  words: 59005
+  dialogue paragraphs with a speaker hint: 418
+  entity annotations: 1184
+
+DASH REPLACEMENTS (11)
+  Dashes are shown as <U+2014> (em) and <U+2013> (en).
+  line 12 [pause between words]
+    before: > *To end the world<U+2014>and begin it all.*
+    after:  > *To end the world, and begin it all.*
+  line 1405 [pause between words]
+    before: *To end the world<U+2014>and begin it all.*
+    after:  *To end the world, and begin it all.*
+  line 4959 [cut-off speech]
+    before: ," said Selena. "I didn't mean<U+2014>"
+    after:  ," said Selena. "I didn't mean..."
+  line 5129 [cut-off speech]
+    before: "You can't<U+2014>" said Fanny.
+    after:  "You can't..." said Fanny.
+  line 5977 [number range]
+    before: ds her an eye and a rifle. | 15<U+2013>17 |
+    after:  ds her an eye and a rifle. | 15 to 17 |
+  line 5982 [number range]
+    before: elena disobeys her creator. | 1<U+2013>10, 23 |
+    after:  elena disobeys her creator. | 1 to 10, 23 |
+  line 5983 [number range]
+    before: d plans to take Dawnbreak. | 33<U+2013>38 |
+    after:  d plans to take Dawnbreak. | 33 to 38 |
+  line 5985 [number range]
+    before: Core. The Enders withdraw. | 30<U+2013>32, 39<U+2013>42 |
+    after:  Core. The Enders withdraw. | 30 to 32, 39<U+2013>42 |
+  line 5985 [number range]
+    before: he Enders withdraw. | 30<U+2013>32, 39<U+2013>42 |
+    after:  he Enders withdraw. | 30<U+2013>32, 39 to 42 |
+  line 5986 [number range]
+    before:  (the "Far Above" page, then 43<U+2013>46) |
+    after:   (the "Far Above" page, then 43 to 46) |
+  line 5990 [number range]
+    before: goes to the Storm Citadel. | 53<U+2013>59 |
+    after:  goes to the Storm Citadel. | 53 to 59 |
+
+TIME NOTES (12)
+  c11: Terrinia and the town of Valemont, in the year 978.
+  c12: The night of the ninth of September, 978.
+  c13: The months and years after the catastrophe.
+  c15: Selrick Base, some years later.
+  c18: Selrick Base, in the days before it fell.
+  c19: The same night, and after.
+  c20: The years after.
+  c21: Some years after the Base fell.
+  c23: Selrick Academy, in its first year.
+  c24: Long ago, in another universe.
+  c25: Ages later.
+  c27: Some years before 978.
+
+ANNOTATION RULES
+  The first unit of each part annotates every occurrence; other chapters the first only.
+  Part Nine opens with an interlude, so the interlude is its first unit.
+  First units: c01, c04, c11, c18, c23, c28, c33, c39, i-far-above-2, c47, c51, c54
+  Angela in c29 is the android (Ruby names her), so it is annotated.
+
+EXCLUSIONS APPLIED (5)
+  c13 line 1417: no "hunters" (human hunters who joined the Shield)
+  c15 line 1585: no "change" (Chang'e of the moon legend)
+  c27 line 2769: no "selena" (the girl in Karina's picture-book)
+  c27 line 2775: no "selena" (the name is still the book's name here)
+  c35 line 3337: no "angela" (the nursemaid Angela, not the android)
+
+ENTITIES (annotations, first chapter in the text, firstChapter in entities.ts)
+  fanny                      30  c02             c02
+  layla                      39  c01             c01
+  ruby                       39  c29             c29
+  angela                     46  c29             c29
+  lesley                     66  c02             c02
+  change                     74  c01             c01
+  guinevere                  54  c04             c04
+  vexana                     44  c05             c05
+  obsidia                    43  c12             c12
+  selena                     56  c08             c08
+  karina-voss                11  c11             c11
+  harlan                     15  c04             c04
+  tigreal                     5  c02             c02
+  roger                      11  c01             c01
+  mr-bunny                   20  c02             c02
+  tetra                      15  c35             c35
+  pip                         6  c37             c37
+  corvin                      6  c37             c37
+  daisy                       5  c37             c37
+  brandt                      5  c02             c02
+  ostrander                   3  c10             c10
+  pia                         2  c03             c03
+  odile                       1  c02             c02
+  dolly                       1  c09             c09
+  odalys                      2  c06             c06
+  the-chairman               11  c04             c04
+  maren-quill                 3  c36             c36
+  mr-pomfrey                  1  c08             c08
+  tomas                       3  c11             c11
+  marta                       3  c11             c11
+  pim                         5  c11             c11
+  dov                         1  c27             c27
+  hale                        1  c13             c13
+  orla                        1  c13             c13
+  piet                        4  c18             c18
+  the-marshal                 7  c39             c39
+  ottoline                    1  c52             c52
+  dawnbreak                  20  c02             c02
+  terrinia                   24  c01             c01
+  selrick-academy            40  c01             c01
+  selrick-base                5  c05             c05
+  gantry                      8  c01             c01
+  tanners-row                 5  c01             c01
+  crown-heights               1  c04             c04
+  harbour-front               5  c09             c09
+  valemont                    3  c11             c11
+  hollin-reach                1  c27             c27
+  underhill                   2  c50             c50
+  oro                        24  c24             c24
+  dorado                      2  c33             c33
+  the-dome                    5  c33             c33
+  tinkers-row                 1  c43             c43
+  bell-tower                  4  c31             c31
+  gantry-square               2  c21             c21
+  girls-house                 2  c09             c09
+  chapel                      2  c06             c06
+  armoury                     6  c01             c01
+  storm-citadel              20  c12             c12
+  star-chaser                 1  c09             c09
+  virtual-battlefield         1  c30             c30
+  hall-of-the-sleepers        2  c51             c51
+  chamber-of-likenesses       1  c26             c26
+  shield-of-dawnbreak        12  c02             c02
+  cadet-corps                 8  c01             c01
+  legion                     16  c28             c28
+  institute                  11  c29             c29
+  beaumont                    3  c33             c33
+  decision-makers             4  c33             c33
+  high-council                1  c33             c33
+  team-b3                     2  c03             c03
+  appreciation-society        2  c52             c52
+  aspirant-power             10  c01             c01
+  aspirants                  30  c01             c01
+  enders                     81  c02             c02
+  ultra-enders                4  c21             c21
+  wardens                     5  c36             c36
+  hunters                     2  c55             c55
+  guardian                    4  c50             c50
+  defence-sphere             15  c01             c01
+  coupling                    6  c03             c03
+  emblem-of-hope             12  c10             c10
+  resonance-trial             1  c01             c01
+  pair-system                 2  c03             c03
+  the-cycle                   6  c18             c18
+  embers                     10  c18             c18
+  will-of-the-planet         23  c17             c17
+  mother-matrix              18  c24             c24
+  twilight-orb                1  c24             c24
+  imperatrix                 15  c12             c12
+  ender-control-core         18  c28             c28
+  aperture                    3  c28             c28
+  the-spine                   2  c29             c29
+  veil-of-counsel             2  c34             c34
+  field-cradle                3  c38             c38
+  trojan                      1  c39             c39
+  purge-probe                 3  c51             c51
+  horizon                     1  c45             c45
+  silverbolt                  6  c23             c23
+  crescent-moon               3  c15             c15
+  left-and-right              1  c08             c08
+  aspirant-field              1  c54             c54
+  hour-of-voices              1  c60             c60
+  first-light                 1  c11             c11
+  combat-trials               1  c06             c06
+  the-breach                  4  i-far-above-2   i-far-above-2
+  teru-teru-bozu              2  c09             c09
+
+WARNINGS (0)

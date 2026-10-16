@@ -1,0 +1,1687 @@
+{
+  "part": {
+    "number": 9,
+    "label": "Part Nine",
+    "title": "The Newcomers",
+    "setting": "After the Breach.",
+    "chapterIds": ["i-far-above-2", "c43", "c44", "c45", "c46"],
+    "file": "data/story/part-09.json",
+    "wordCount": 3063
+  },
+  "chapters": [
+    {
+      "id": "i-far-above-2",
+      "kind": "interlude",
+      "number": null,
+      "title": "Far Above",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 208,
+      "paragraphCount": 11,
+      "firstParagraphIndex": 1712,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "i-far-above-2-p000",
+          "i": 1712,
+          "segments": [
+            { "t": "text", "text": "In the weeks after the " },
+            { "t": "ent", "id": "the-breach", "text": "Breach" },
+            { "t": "text", "text": ", far away on the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " finished her work on " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p001",
+          "i": 1713,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " brought the Domes down one by one. She spared the schools and a few libraries. She left a few hidden "
+            },
+            { "t": "ent", "id": "embers", "text": "embers" },
+            {
+              "t": "text",
+              "text": " in the deep shelters, as she always did. Then she felt something small and sharp. "
+            },
+            { "t": "text", "text": "I am sorry,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. It astonished her. She saw a lit window in a gilded tower, and a grey cat on the sill. She said, \"That is enough recalibration. "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": ", withdraw.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p002",
+          "i": 1714,
+          "segments": [
+            { "t": "text", "text": "Soon after, " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": " of the Planet spoke." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p003",
+          "i": 1715,
+          "segments": [
+            {
+              "t": "text",
+              "text": "DAWNBREAK IS TOO HEAVY. IT HAS LEARNED TO MAKE THE LIGHT THAT BURNS US. YOU HAVE A CHILD THERE. SHE HAS NOT BEEN OBEDIENT. I DO NOT UNDERSTAND HER.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p004",
+          "i": 1716,
+          "segments": [
+            { "t": "text", "text": "Nor do I,", "em": true },
+            { "t": "text", "text": " said " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p005",
+          "i": 1717,
+          "segments": [
+            {
+              "t": "text",
+              "text": "THEN IT WILL BE TESTED. I WILL SEND THE WHOLE OF MYSELF. NOT A RECALIBRATION: A RESET. THERE WILL BE NO EMBERS. THE FIRST PROBE WILL BE SENT IN THE SPRING.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p006",
+          "i": 1718,
+          "segments": [
+            { "t": "text", "text": "And ", "em": true },
+            { "t": "ent", "id": "selena", "text": "Selena", "em": true },
+            { "t": "text", "text": "?", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p007",
+          "i": 1719,
+          "segments": [
+            {
+              "t": "text",
+              "text": "SHE WILL BE ASKED TO COME HOME. IF SHE WILL NOT, SHE WILL BE CORRECTED.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p008",
+          "i": 1720,
+          "segments": [
+            { "t": "text", "text": "As you will,", "em": true },
+            { "t": "text", "text": " said the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p009",
+          "i": 1721,
+          "segments": [
+            { "t": "text", "text": "A single tear fell onto a dark square of her board." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "i-far-above-2-p010",
+          "i": 1722,
+          "segments": [
+            { "t": "text", "text": "How curious,", "em": true },
+            { "t": "text", "text": " said " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "I did not know that I could do that.", "em": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c43",
+      "kind": "chapter",
+      "number": 43,
+      "title": "Newcomers",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 899,
+      "paragraphCount": 38,
+      "firstParagraphIndex": 1723,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c43-p000",
+          "i": 1723,
+          "segments": [
+            { "t": "text", "text": "They buried " },
+            { "t": "ent", "id": "corvin", "text": "Corvin" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "daisy", "text": "Daisy" },
+            { "t": "text", "text": " on the third morning, in the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " garden where the old crater had been." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p001",
+          "i": 1724,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Shield's chaplain had no service for a thing made of metal. \"It doesn't matter,\" said "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": ". \"He said it was an honour to be a soldier for something. If somebody could say it again.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p002",
+          "i": 1725,
+          "segments": [
+            { "t": "text", "text": "The old man said it. " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": " stood with her right eye bare, because " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " had kept the visor. " },
+            { "t": "ent", "id": "pip", "text": "Pip" },
+            { "t": "text", "text": ", Chang'e, " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": " were there." }
+          ]
+        },
+        { "type": "scene-break", "id": "c43-s01" },
+        {
+          "type": "p",
+          "id": "c43-p003",
+          "i": 1726,
+          "segments": [
+            { "t": "text", "text": "On the tenth day the Command Staff held a hearing." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p004",
+          "i": 1727,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Guilty,\" said Ruby. \"I struck down a boy and raised a weapon over a child. I'm told I was not myself. I don't want that counted as a defence. I don't ask for mercy.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c43-p005",
+          "i": 1728,
+          "segments": [{ "t": "text", "text": "The colonel called Angela \"a unit.\"" }]
+        },
+        {
+          "type": "p",
+          "id": "c43-p006",
+          "i": 1729,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Objection!", "em": true },
+            {
+              "t": "text",
+              "text": "\" cried Chang'e, jumping onto her stool. \"She isn't a machine. She's a girl!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c43-p007",
+          "i": 1730,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Please,", "em": true },
+            { "t": "text", "text": "\" said a thin voice. Angela had risen, with " },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            {
+              "t": "text",
+              "text": " in her hands. \"May I speak? My name is Angela. I took the chair. For thirty-one minutes I held the "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            { "t": "text", "text": " and the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": ", and many people died. I did it on purpose, so that Ruby and I could be free. That was selfish. There was also a part I did not choose. I was shut behind glass. I am answerable for the first part. I would like to be allowed to be sorry about the second.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p008",
+          "i": 1731,
+          "segments": [{ "t": "text", "text": "\"It was my plan,\" said Ruby hoarsely." }],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c43-p009",
+          "i": 1732,
+          "segments": [
+            { "t": "text", "text": "\"It was " },
+            { "t": "text", "text": "ours,", "em": true },
+            {
+              "t": "text",
+              "text": "\" said Angela. \"I am not a tool. I did something I knew was wrong, and I will carry it. That is what it means to be a person. Isn't it?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c43-p010",
+          "i": 1733,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then Chang'e spoke for two hours. She showed a grey cylinder from the visor, and a sheet from Angela. The "
+            },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            {
+              "t": "text",
+              "text": " had hidden a second lock in the girl and a second leash in the heir. \"I won't take part in the trial of a person for the crime of being made. Because I was made, too! It isn't the making that counts. It's what you "
+            },
+            { "t": "text", "text": "do.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p011",
+          "i": 1734,
+          "segments": [
+            { "t": "text", "text": "Lesley stood up. \"On my mission to " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": ", I met Ruby in a corridor. She knew me for an enemy, and she did not raise the alarm. She gave me the guard rotation. She asked for one thing: that I spare Angela. I owe her my life.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p012",
+          "i": 1735,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The colonel gave his sentence. Ruby must serve ninety days, helping to rebuild the north-east of "
+            },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            {
+              "t": "text",
+              "text": ", under an officer's watch. Angela, in law \"a person of no standing,\" would serve the same days in Ruby's care. A rider said she should be called "
+            },
+            { "t": "text", "text": "Miss", "em": true },
+            { "t": "text", "text": " in all papers." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p013",
+          "i": 1736,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela read it three times on a bench in the corridor. No one had ever called her that. \""
+            },
+            { "t": "text", "text": "Miss,", "em": true },
+            { "t": "text", "text": "\" she said softly." }
+          ]
+        },
+        { "type": "scene-break", "id": "c43-s02" },
+        {
+          "type": "p",
+          "id": "c43-p014",
+          "i": 1737,
+          "segments": [
+            { "t": "text", "text": "The two girls were given a ruined lane called " },
+            { "t": "ent", "id": "tinkers-row", "text": "Tinker's Row" },
+            { "t": "text", "text": ", with a dry fountain in the middle." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p015",
+          "i": 1738,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley walked them there. \"I'm to stand here and watch,\" she said, without a smile. \"I'm a very good watcher.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p016",
+          "i": 1739,
+          "segments": [
+            { "t": "text", "text": "She's guarding us,", "em": true },
+            { "t": "text", "text": " Ruby thought. \"Thank you.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p017",
+          "i": 1740,
+          "segments": [{ "t": "text", "text": "\"It's only my duty.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c43-s03" },
+        {
+          "type": "p",
+          "id": "c43-p018",
+          "i": 1741,
+          "segments": [
+            { "t": "text", "text": "On the fourth afternoon, " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " crept up behind a stack of timber at the end of the lane. \"You're not on the roster, Cadet,\" said Lesley, without turning her head."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p019",
+          "i": 1742,
+          "segments": [{ "t": "text", "text": "\"I'm conducting a reconnaissance.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p020",
+          "i": 1743,
+          "segments": [{ "t": "text", "text": "\"Carry on.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p021",
+          "i": 1744,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela sat on the lip of the dry fountain, bent over the cracked Tetra. Layla knew that way of bending. "
+            },
+            { "t": "text", "text": "She's the same as me,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p022",
+          "i": 1745,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Behind Angela, a leaning wall gave a crack. A chimney began to fall."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p023",
+          "i": 1746,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Look out!", "em": true },
+            { "t": "text", "text": "\" screamed Layla." }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c43-p024",
+          "i": 1747,
+          "segments": [
+            { "t": "text", "text": "Angela heard the shout and thought, " },
+            { "t": "text", "text": "she's in danger.", "em": true },
+            {
+              "t": "text",
+              "text": " She ran across the lane and tackled Layla to the ground. The chimney crashed down where Angela had been sitting."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p025",
+          "i": 1748,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Are you all right?\" said Layla. It was the stupidest thing she had ever said."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c43-p026",
+          "i": 1749,
+          "segments": [{ "t": "text", "text": "\"Yes. Are you?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p027",
+          "i": 1750,
+          "segments": [
+            { "t": "text", "text": "\"I wasn't in danger! I was shouting at " },
+            { "t": "text", "text": "you!", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p028",
+          "i": 1751,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Oh. I'm sorry.\" Angela sat back. \"My name is Angela. I came here with the army. I sent the Legions and the Enders in. I'm so very sorry.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c43-p029",
+          "i": 1752,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla stared. This was the enemy from the screen. \"Stop saying sorry!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p030",
+          "i": 1753,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela gave a tiny, wobbling smile. \"You're very loud. I think it's rather nice. I'd like to be your friend, if you'd let me.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p031",
+          "i": 1754,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She held out her hand, stiffly, and pulled Angela up. \"...You're not so bad,\" she muttered. She marched off."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p032",
+          "i": 1755,
+          "segments": [{ "t": "text", "text": "\"Reconnaissance complete?\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c43-p033",
+          "i": 1756,
+          "segments": [
+            { "t": "text", "text": "\"Inconclusive,\" said Layla, and ran round the corner." }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        { "type": "scene-break", "id": "c43-s04" },
+        {
+          "type": "p",
+          "id": "c43-p034",
+          "i": 1757,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Pip mended the drains and the old pump in the square. When clear water ran at last, he whispered, \"I wish Corvin could see it. And Daisy.\" Angela knelt and hugged him, and he whistled softly. It was, as far as anyone could tell, a song."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p035",
+          "i": 1758,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela had put Tetra in Ruby's hands to mend. Ruby was afraid to try. On the thirty-first night, Chang'e let her into the lab, and they worked until four in the morning."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c43-p036",
+          "i": 1759,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I lost my parents when the Base fell,\" said Chang'e quietly. \"I hated the person who wasn't there. What helped was being held by the person I'd blamed.\" She looked at Tetra. \"He made a choice. It wasn't yours to take back. You say thank you, and you carry it.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c43-p037",
+          "i": 1760,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At dawn Tetra woke and chirped. Ruby carried him to the garden, where Angela sat alone on a bench. Tetra lifted his head and trilled. "
+            },
+            { "t": "text", "text": "I'm here. I'm here.", "em": true },
+            { "t": "text", "text": " \"Oh,\" said Angela. It was all she said." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c44",
+      "kind": "chapter",
+      "number": 44,
+      "title": "Badges of Honour",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 905,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 1761,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c44-p000",
+          "i": 1761,
+          "segments": [
+            { "t": "text", "text": "In October, the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " gave out its badges. It was the second Saturday of the month, and the great glass hall was full. White and gold banners hung from the roof. The whole Academy sat in rows, in dress uniform. At the back, the cooks held up a banner. "
+            },
+            { "t": "text", "text": "WELL DONE GIRLS.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p001",
+          "i": 1762,
+          "segments": [
+            { "t": "text", "text": "Two chairs by the door held two newcomers. " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": " had been allowed to come. Ruby was still serving the Council's sentence."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p002",
+          "i": 1763,
+          "segments": [{ "t": "text", "text": "\"Is it for us?\" whispered Angela." }],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c44-p003",
+          "i": 1764,
+          "segments": [
+            { "t": "text", "text": "\"It's for the " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": " who held the line at the " },
+            { "t": "ent", "id": "the-breach", "text": "Breach" },
+            { "t": "text", "text": ",\" said Ruby." }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c44-p004",
+          "i": 1765,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I think it's rather nice, to be given a thing for being brave,\" said Angela. \"I'd like to be given one.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c44-p005",
+          "i": 1766,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'll see to it,\" said Ruby. \"Failing that, I'll make you one out of a bottle-top and scratch something rude on the back.\" She did not smile. But she took Angela's cold hand and held it."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c44-p006",
+          "i": 1767,
+          "segments": [
+            { "t": "text", "text": "On the platform, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " stood at a lectern with her rabbit on her shoulder. Her speech ran to eleven pages. At the end, she put her notes down."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p007",
+          "i": 1768,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I should like to say something that isn't in the speech,\" she said. \"When this Academy began, I said it would teach you to hold on to the thing that matters most. I was not sure. It was only a theory.\" Her chin trembled. \"It has been proved.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p008",
+          "i": 1769,
+          "segments": [
+            { "t": "text", "text": "Somebody clapped slowly. It was " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": ", in the third row. She did not smile. But her eye was very bright. Then the whole hall rose and cheered. "
+            },
+            { "t": "text", "text": "Chang'e! Chang'e!", "em": true },
+            {
+              "t": "text",
+              "text": " The little scientist went scarlet. \"Oh, do stop,\" she said. Nobody did."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c44-s01" },
+        {
+          "type": "p",
+          "id": "c44-p009",
+          "i": 1770,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The badges were small gold stars inside a circle. On the back each one said, "
+            },
+            { "t": "text", "text": "FOR VALOUR AT THE BREACH. SELRICK ACADEMY.", "em": true },
+            { "t": "text", "text": " Lesley, in her white officer's coat, pinned them on herself." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p010",
+          "i": 1771,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": " came up first. She marched, saluted, and stood stiff as a post. Lesley pinned the star on her coat. \"Well done,\" said Lesley."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p011",
+          "i": 1772,
+          "segments": [{ "t": "text", "text": "\"I know,\" said Layla." }],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c44-p012",
+          "i": 1773,
+          "segments": [{ "t": "text", "text": "\"I mean it.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p013",
+          "i": 1774,
+          "segments": [
+            { "t": "text", "text": "\"Oh. Thank you.\" Layla marched off with pink ears. " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            {
+              "t": "text",
+              "text": " whispered something to her, and she grinned in spite of herself."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p014",
+          "i": 1775,
+          "segments": [{ "t": "text", "text": "\"Ruby,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p015",
+          "i": 1776,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A murmur ran through the hall. Ruby stood up slowly. \"Me? I'm a prisoner.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p016",
+          "i": 1777,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You were at the Breach,\" said Lesley. \"You went alone into the northern ward, after a friend. You did not turn back. The Council decided it should be noted. Come up.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p017",
+          "i": 1778,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby walked down the aisle with the whole school watching. She stood before Lesley with her eyes on the floor."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p018",
+          "i": 1779,
+          "segments": [{ "t": "text", "text": "\"I don't deserve it,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p019",
+          "i": 1780,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"No,\" said Lesley. \"Nobody does. A badge is not a payment. It is given so that you know somebody saw.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p020",
+          "i": 1781,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She pinned the star on the grey coat. Ruby's tears fell on the floor. \"I'll try to deserve it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p021",
+          "i": 1782,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You've started,\" said Lesley. She straightened the little star, the way a mother straightens a child's collar."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p022",
+          "i": 1783,
+          "segments": [{ "t": "text", "text": "\"Angela,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p023",
+          "i": 1784,
+          "segments": [{ "t": "text", "text": "Angela rose, trembling. \"I'm only a machine.\"" }]
+        },
+        {
+          "type": "p",
+          "id": "c44-p024",
+          "i": 1785,
+          "segments": [{ "t": "text", "text": "\"Come here.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p025",
+          "i": 1786,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She walked down the aisle like someone in a dream. Her small scorched "
+            },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            { "t": "text", "text": " hovered at her shoulder, chirping with worry." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p026",
+          "i": 1787,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You led the enemy's first division,\" said Lesley. \"And you came back. You held up a shield over a child who had every reason to fear you. This star is not for being from "
+            },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": ". It is for what you did. It is for what " },
+            { "t": "ent", "id": "corvin", "text": "Corvin" },
+            { "t": "text", "text": " said. 'It is an honour to be a soldier for something.'\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p027",
+          "i": 1788,
+          "segments": [
+            { "t": "text", "text": "Angela's face crumpled. \"Thank you, Lieutenant.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p028",
+          "i": 1789,
+          "segments": [{ "t": "text", "text": "\"You may call me Lesley.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p029",
+          "i": 1790,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Thank you, Lesley.\" Angela threw her arms round Lesley's waist."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c44-p030",
+          "i": 1791,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley stood very stiff. Then, slowly, awkwardly, like someone who had forgotten how, she put a hand on Angela's head."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c44-s02" },
+        {
+          "type": "p",
+          "id": "c44-p031",
+          "i": 1792,
+          "segments": [
+            { "t": "text", "text": "\"The last badge,\" said Lesley, \"is different.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p032",
+          "i": 1793,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e had invented it at four in the morning, over a cold cup of tea. It was for \"exceptional partnership.\" No one had ever been given it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p033",
+          "i": 1794,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It goes to the pair who showed best what this Academy teaches,\" said Lesley. \"They held the "
+            },
+            { "t": "ent", "id": "harbour-front", "text": "harbour front" },
+            { "t": "text", "text": " for forty-one minutes, against three hundred " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": ". They did it alone. They did not break. " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": ". " },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p034",
+          "i": 1795,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They walked up the aisle with half a pace between them. Guinevere had her chin up. Vexana looked at the floor. Each wore a gold star at her collar."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p035",
+          "i": 1796,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley looked at them for a long time. Then something at the corner of her mouth changed. It was a smile. Almost nobody in the hall had ever seen it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p036",
+          "i": 1797,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'm proud of you,\" said Lesley. \"Both of you. I have seen many good fighters. I have never seen two fight like that. It was like watching one person with four hands. When it is very dark, remember this day.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c44-p037",
+          "i": 1798,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She pinned a special star to Guinevere's vest. It was a small gold sun with a dark crescent across it, like an eclipse. Then she went back to the lectern. She raised her hand to her brow and held a salute for a count of five. The whole hall rose and roared."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p038",
+          "i": 1799,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere held the star up in the sun. \"We're the best partners in the Aspirants!\" she cried. She was crying. So was Vexana. Vexana took her hand and raised it, in front of everyone."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p039",
+          "i": 1800,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the back, Ruby bent her head and smiled. It was the first time in a long while that anyone had looked so happy."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c44-p040",
+          "i": 1801,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It would not last. But nobody in that bright hall could have known."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c45",
+      "kind": "chapter",
+      "number": 45,
+      "title": "The Horizon",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 700,
+      "paragraphCount": 30,
+      "firstParagraphIndex": 1802,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c45-p000",
+          "i": 1802,
+          "segments": [
+            { "t": "text", "text": "In November, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " called the " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": " to the glass hall. They sat on the floor in a ring. She held a slate and a wooden pointer."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p001",
+          "i": 1803,
+          "segments": [
+            { "t": "text", "text": "\"I wish to explain what we are fighting,\" she said." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p002",
+          "i": 1804,
+          "segments": [
+            { "t": "text", "text": "She told them about " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": " of the Planet and its body, the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Mother Matrix" },
+            { "t": "text", "text": ". Then she spoke about the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": ". \"It is the device that controls " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": ",\" she said. \"" },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": " took it. Oro lost it. After Oro's fall, the Will recalled it into its void. That is a dark place at the heart of the Matrix, where the Will sits and thinks.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p003",
+          "i": 1805,
+          "segments": [{ "t": "text", "text": "\"Can we go there?\" someone asked." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p004",
+          "i": 1806,
+          "segments": [
+            { "t": "text", "text": "\"No. It lies beyond a barrier. I call it the " },
+            { "t": "ent", "id": "horizon", "text": "Horizon" },
+            {
+              "t": "text",
+              "text": ". Beyond it, the pull is so strong that nothing can cross. Not light. Not matter. Not even a thought.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p005",
+          "i": 1807,
+          "segments": [{ "t": "text", "text": "\"Like a black hole?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p006",
+          "i": 1808,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Close.\" Chang'e drew a circle. \"A black hole is a place where the pull is so strong that nothing escapes, not even light. At its heart is a single point. It is called a singularity.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p007",
+          "i": 1809,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She put down her chalk. She looked round the circle, at the tall girl in the purple tie who sat a little apart."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p008",
+          "i": 1810,
+          "segments": [
+            { "t": "text", "text": "\"I have a theory,\" she said. \"At the " },
+            { "t": "ent", "id": "the-breach", "text": "Breach" },
+            {
+              "t": "text",
+              "text": ", when the Core was recalled, my instruments caught a trace of what lies beyond the Horizon. It was very large, very cold and very patient. And it was listening.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p009",
+          "i": 1811,
+          "segments": [{ "t": "text", "text": "The hall was silent." }]
+        },
+        {
+          "type": "p",
+          "id": "c45-p010",
+          "i": 1812,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I think that an Aspirant who holds her power steady would not be destroyed. The resonance would keep her mind together. It would not go out. It would bloom, which means it would grow wider and stronger. If so, a person might enter the void and come back. She could destroy the Core. Then the Enders would be free of the Will's orders. The "
+            },
+            { "t": "ent", "id": "the-cycle", "text": "Cycle" },
+            { "t": "text", "text": " would end.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p011",
+          "i": 1813,
+          "segments": [{ "t": "text", "text": "\"That would be wonderful,\" said someone." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p012",
+          "i": 1814,
+          "segments": [
+            { "t": "text", "text": "\"It would,\" said Chang'e. \"I only wish I knew how.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c45-p013",
+          "i": 1815,
+          "segments": [
+            { "t": "text", "text": "She wrote the theory down as a paper. Its title was long. " },
+            {
+              "t": "text",
+              "text": "On the Behaviour of Coupled Aspirant Power in the Vicinity of a Gravitational Singularity.",
+              "em": true
+            },
+            { "t": "text", "text": " " },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": " would soon ask to read it." }
+          ]
+        },
+        { "type": "scene-break", "id": "c45-s01" },
+        {
+          "type": "p",
+          "id": "c45-p014",
+          "i": 1816,
+          "segments": [
+            { "t": "text", "text": "The next afternoon, " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            {
+              "t": "text",
+              "text": " lay on the grass under a plane tree, with her head in Vexana's lap. The last leaves fell like small gold coins."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p015",
+          "i": 1817,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Teacher Chang'e told us how to defeat the Will of the Planet,\" said Guinevere. \"We must destroy the Ender's Control Core, hidden in its dark void.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c45-p016",
+          "i": 1818,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"She said we can't get near it,\" said Vexana. \"She said it was impossible.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "vexana"
+        },
+        {
+          "type": "p",
+          "id": "c45-p017",
+          "i": 1819,
+          "segments": [
+            { "t": "text", "text": "\"She said " },
+            { "t": "text", "text": "not yet.", "em": true },
+            {
+              "t": "text",
+              "text": "\" Guinevere sat up and took Vexana's hands. \"It's the one thing in the whole war that might end it. And nobody is even trying.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p018",
+          "i": 1820,
+          "segments": [{ "t": "text", "text": "\"We don't know how.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p019",
+          "i": 1821,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Don't worry. I will definitely find a way.\" Her eyes blazed. \"I don't care if it's at the bottom of the sea. I'll fly there with my bare hands. I'll do it for everyone. For the whole world. But mostly,\" she said, going pink, \"for you.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p020",
+          "i": 1822,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana did not answer. She looked pale. She was thinking very hard."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p021",
+          "i": 1823,
+          "segments": [
+            { "t": "text", "text": "A person with ", "em": true },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power", "em": true },
+            {
+              "t": "text",
+              "text": ". A person who could go in, and not be destroyed. A person who could come back.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p022",
+          "i": 1824,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was a dark idea. It came into her mind like a stranger into a lit room, and stood in the corner with its hands folded. "
+            },
+            { "t": "text", "text": "It's only a theory,", "em": true },
+            { "t": "text", "text": " she told herself. " },
+            { "t": "text", "text": "It has nothing to do with me.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p023",
+          "i": 1825,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere lay down again with her eyes shut. \"That's settled. I'll find a way. And you will read all the books and write a paper. You're so clever. You'll find out how.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p024",
+          "i": 1826,
+          "segments": [{ "t": "text", "text": "\"I'll try.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c45-p025",
+          "i": 1827,
+          "segments": [
+            { "t": "text", "text": "\"That's all anyone can do,\" said Guinevere, drowsily." }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c45-p026",
+          "i": 1828,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not see Vexana's hand stop on her hair. She did not see it tremble. She did not see the violet eyes fill with light."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p027",
+          "i": 1829,
+          "segments": [
+            { "t": "text", "text": "\"Yes,\" said Vexana, very low. \"That's all anyone can do.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "vexana"
+        },
+        {
+          "type": "p",
+          "id": "c45-p028",
+          "i": 1830,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She went on stroking the peach-gold hair while the leaves came down. The girl in her lap fell asleep. Vexana looked up at the sky. It was a high, clear, tender blue."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c45-p029",
+          "i": 1831,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not know that she would not see a sky like it again for a long time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c46",
+      "kind": "chapter",
+      "number": 46,
+      "title": "Names",
+      "part": 9,
+      "timeNote": null,
+      "wordCount": 351,
+      "paragraphCount": 15,
+      "firstParagraphIndex": 1832,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c46-p000",
+          "i": 1832,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the eighty-ninth day the lane was finished. The whole street held a party. \"They like us,\" said "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": ". \"Why?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p001",
+          "i": 1833,
+          "segments": [
+            { "t": "text", "text": "\"I think it's because we stayed,\" said " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c46-p002",
+          "i": 1834,
+          "segments": [
+            { "t": "text", "text": "At the back of the crowd stood " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": ", as she had every day. She lifted one hand, palm open, like someone holding up a light. "
+            },
+            { "t": "text", "text": "You're welcome,", "em": true },
+            { "t": "text", "text": " it said. " },
+            { "t": "text", "text": "Come home.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c46-s01" },
+        {
+          "type": "p",
+          "id": "c46-p003",
+          "i": 1835,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They were given their names in winter. The clerk looked up from her ledger. \"You have both passed. You'll be entered as "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": ". The children in the street call you the lady with the big scythe,\" she told Ruby. \"I'd put "
+            },
+            { "t": "text", "text": "Mecha Maiden.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p004",
+          "i": 1836,
+          "segments": [
+            { "t": "text", "text": "A maiden,", "em": true },
+            { "t": "text", "text": " Ruby thought. " },
+            { "t": "text", "text": "Not an heir. A girl.", "em": true },
+            { "t": "text", "text": " \"Put it down.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p005",
+          "i": 1837,
+          "segments": [
+            { "t": "text", "text": "\"And you, dear? The Chief Scientist suggests " },
+            { "t": "text", "text": "Cyber Cherubin.", "em": true },
+            { "t": "text", "text": " A cherub is a small angel.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c46-p006",
+          "i": 1838,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Cyber Cherubin,", "em": true },
+            {
+              "t": "text",
+              "text": "\" said Angela, smiling through tears. \"It's the loveliest thing anyone has called me.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c46-p007",
+          "i": 1839,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The clerk gave Ruby a parcel. Inside was her visor, with an empty hollow where the grey cylinder had been. \"With the Chief Scientist's compliments. It's finished talking. You may do as you like with it.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p008",
+          "i": 1840,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby had worn it since she was seven. She put it on. Behind it, for the first time, there was only her own sight. Nothing was looking back. The clerk also gave Angela her white jacket with magenta stars. \"With the "
+            },
+            { "t": "ent", "id": "armoury", "text": "Armoury" },
+            { "t": "text", "text": "'s apologies.\"" }
+          ]
+        },
+        { "type": "scene-break", "id": "c46-s02" },
+        {
+          "type": "p",
+          "id": "c46-p009",
+          "i": 1841,
+          "segments": [
+            { "t": "text", "text": "In the first week of the new year, " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " found the hatch to her " },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            { "t": "text", "text": " open. " },
+            { "t": "text", "text": "They're on my gantry,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p010",
+          "i": 1842,
+          "segments": [
+            { "t": "text", "text": "She climbed up. " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": ", Angela, Ruby and " },
+            { "t": "ent", "id": "pia", "text": "Pia" },
+            {
+              "t": "text",
+              "text": " sat in a row on the iron. Pia, Layla's roommate, had Layla's green cushion in her lap."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p011",
+          "i": 1843,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It's my secret base,\" said Layla. \"I don't share it.\" She looked along the row of faces. \"Fine. You can stay. But it's not a club. It's a tactical arrangement. And nobody touches my cushion.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c46-p012",
+          "i": 1844,
+          "segments": [{ "t": "text", "text": "\"I'm only keeping it warm,\" said Pia." }],
+          "dialogue": true,
+          "speaker": "pia"
+        },
+        {
+          "type": "p",
+          "id": "c46-p013",
+          "i": 1845,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla sat down between Fanny and Ruby, and took the tea Fanny held out."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c46-p014",
+          "i": 1846,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The sun rose out of the sea, red, then gold, then white. Five girls sat shoulder to shoulder on the iron, and watched the dawn."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

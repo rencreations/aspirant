@@ -1,0 +1,2302 @@
+{
+  "part": {
+    "number": 6,
+    "label": "Part Six",
+    "title": "Forty Days",
+    "setting": "The present again, at the Academy.",
+    "chapterIds": ["c28", "c29", "c30", "c31", "c32"],
+    "file": "data/story/part-06.json",
+    "wordCount": 4034
+  },
+  "chapters": [
+    {
+      "id": "c28",
+      "kind": "chapter",
+      "number": 28,
+      "title": "The Quiet Mission",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 950,
+      "paragraphCount": 34,
+      "firstParagraphIndex": 1193,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c28-p000",
+          "i": 1193,
+          "segments": [
+            { "t": "text", "text": "Back at " },
+            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy" },
+            { "t": "text", "text": ", the summer was nearly over. " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " were still racing each other for first place. " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": " wore their glowing " },
+            { "t": "ent", "id": "emblem-of-hope", "text": "Emblems of Hope" },
+            {
+              "t": "text",
+              "text": ". Then a burning streak fell into a barley field belonging to a farmer named Osk. \"There was a noise like the end of the world,\" he told the newspapers. \"And at the bottom of the hole, there was a robot.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p001",
+          "i": 1194,
+          "segments": [
+            { "t": "text", "text": "It was a small scout from " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": ", a world very far away. " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": ", the Chief Scientist, climbed down into the crater on a rope, with "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            {
+              "t": "text",
+              "text": " at her shoulder. She was a very small girl in a white coat. \"Oh, you beauty,\" she said."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p002",
+          "i": 1195,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It took eleven days to open it. Inside lay a memory crystal, locked in layers. The fourth lock answered to a signal. \"It is calling,\" said "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". \"I do not know who to.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p003",
+          "i": 1196,
+          "segments": [
+            { "t": "text", "text": "\"I could listen,\" said " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " lightly. She held her hand over the casket with her eyes half closed. \"It is a copy of something far away. It is the "
+            },
+            { "t": "ent", "id": "ender-control-core", "text": "Control Core" },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c28-p004",
+          "i": 1197,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " went still. \"I have read about it,\" " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " added, with an unsteady laugh. \"The thing that tells the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " what to do.\" This was not like the small crystal cores in the "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": "' armour. It was the " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            { "t": "text", "text": "' own device." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p005",
+          "i": 1198,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " gave her a long, level look, the same look as once before. She had seen something, and she chose to keep quiet. \"Well!\" she said briskly. \""
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": ", would you be so kind as to hum?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p006",
+          "i": 1199,
+          "segments": [
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " hummed a low, long note, and the casket clicked open. In the crystal was a tiny picture of a black chamber and a pale sphere. Something in "
+            },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": "'s blood answered, like a far bell. It was the voice of her own kind. She remembered "
+            },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " saying, " },
+            {
+              "t": "text",
+              "text": "They have taken a thing of ours. It is a most interesting experiment.",
+              "em": true
+            },
+            { "t": "text", "text": " Now she understood. She said nothing." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p007",
+          "i": 1200,
+          "segments": [
+            { "t": "text", "text": "Words appeared. " },
+            { "t": "text", "text": "OPERATION HARVEST. Target: ", "em": true },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak", "em": true },
+            { "t": "text", "text": ". Capital: ", "em": true },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia", "em": true },
+            { "t": "text", "text": ". Force: forty thousand ", "em": true },
+            { "t": "ent", "id": "enders", "text": "Enders", "em": true },
+            { "t": "text", "text": " and a hundred and twenty thousand ", "em": true },
+            { "t": "ent", "id": "legion", "text": "Legion", "em": true },
+            { "t": "text", "text": ". Deployment: forty days.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p008",
+          "i": 1201,
+          "segments": [
+            { "t": "text", "text": "\"Forty days,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". She had gone pale. \"They have the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            {
+              "t": "text",
+              "text": ". They have had it for months. It is why the sky has been quiet. They have been using it on someone else.\" She swallowed. \"And now they will use it on us.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        { "type": "scene-break", "id": "c28-s01" },
+        {
+          "type": "p",
+          "id": "c28-p009",
+          "i": 1202,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At dawn, the white-haired colonel called the Command Staff. \"Against us: forty thousand "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": ", and a hundred and twenty thousand machines that the crystal calls the "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            { "t": "text", "text": ". For us: six thousand soldiers and ten " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": " who have never fought a real battle,\" he said. \"The " },
+            { "t": "ent", "id": "defence-sphere", "text": "Sphere" },
+            { "t": "text", "text": " would hold an hour. Then we die.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p010",
+          "i": 1203,
+          "segments": [
+            { "t": "text", "text": "\"Then we attack,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". \"I built a gate from the portal-organ of an " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": " corpse. I call it the " },
+            { "t": "ent", "id": "aperture", "text": "Aperture" },
+            { "t": "text", "text": ". It can follow the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": "'s song to " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": " and send one person through. I do not know if the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": " can be broken. But it can be cut off from " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            {
+              "t": "text",
+              "text": "'s machines.\" She hesitated. \"The door can reopen four hours later, but only while the "
+            },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": "'s beacon holds. If the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            {
+              "t": "text",
+              "text": " is destroyed, the door closes. That person would be stranded.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c28-p011",
+          "i": 1204,
+          "segments": [
+            { "t": "text", "text": "\"I think it should be me,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c28-p012",
+          "i": 1205,
+          "segments": [
+            { "t": "text", "text": "\"No!\" " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " was on her feet, shaking. \"You would be on the other side of the universe without a rope!\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p013",
+          "i": 1206,
+          "segments": [
+            { "t": "text", "text": "\"I am the best shot in " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            { "t": "text", "text": ",\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". \"I have the cloak and the eye.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c28-p014",
+          "i": 1207,
+          "segments": [{ "t": "text", "text": "\"You promised you would not go away again!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p015",
+          "i": 1208,
+          "segments": [
+            { "t": "text", "text": "\"I am going to come back,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". \"Don't make me do this, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": ". I never wanted to leave you. But I cannot stay when there is a way to stop it. It is a plan. I am better at plans.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c28-p016",
+          "i": 1209,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " would hold the link from home, with " },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": " and a young trainee named " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            {
+              "t": "text",
+              "text": ". \"He once brought me tea at three in the morning without being asked,\" she said. \"I do not need tea. I need a witness.\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c28-s02" },
+        {
+          "type": "p",
+          "id": "c28-p017",
+          "i": 1210,
+          "segments": [
+            { "t": "text", "text": "That night, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " sat alone on the tower " },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            { "t": "text", "text": " with " },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": ". " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " found her there." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p018",
+          "i": 1211,
+          "segments": [
+            { "t": "text", "text": "\"I am so tired of being left,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c28-p019",
+          "i": 1212,
+          "segments": [
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " did not touch her. She only waited." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p020",
+          "i": 1213,
+          "segments": [{ "t": "text", "text": "\"You always treat me like a child.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p021",
+          "i": 1214,
+          "segments": [
+            { "t": "text", "text": "\"I treat you,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": ", \"like the most important person I have. I have lost everything else. I could not lose you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c28-p022",
+          "i": 1215,
+          "segments": [
+            { "t": "text", "text": "\"Big Sis said imagination is my weapon,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": ", after a while. \"So I can use it from here. I can be your eyes and ears and hands. And I will find you a way home.\" She flung herself into "
+            },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": "'s arms. \"I will look up at the third-floor window every day, until you come back.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c28-p023",
+          "i": 1216,
+          "segments": [{ "t": "text", "text": "\"That is not a window.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p024",
+          "i": 1217,
+          "segments": [{ "t": "text", "text": "\"It is a metaphor.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p025",
+          "i": 1218,
+          "segments": [
+            { "t": "text", "text": "\"It is a very good one,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        { "type": "scene-break", "id": "c28-s03" },
+        {
+          "type": "p",
+          "id": "c28-p026",
+          "i": 1219,
+          "segments": [
+            { "t": "text", "text": "Just before sunrise, the " },
+            { "t": "ent", "id": "aperture", "text": "Aperture" },
+            { "t": "text", "text": " opened in the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " courtyard, a disc of violet light hanging like a mirror. " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " stood before it, with her rifle on her back and her dark cloak round her shoulders. "
+            },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ", in her white armour, was trying hard not to cry." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p027",
+          "i": 1220,
+          "segments": [
+            { "t": "text", "text": "\"Come back,\" she said, and threw her arms round " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": "'s waist." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p028",
+          "i": 1221,
+          "segments": [
+            { "t": "text", "text": "\"I am coming back.\" " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " knelt and took the small wet face in her hands. \"I'll look up,\" she said. Then she walked into the light."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p029",
+          "i": 1222,
+          "segments": [
+            {
+              "t": "text",
+              "text": "From the far side of the universe came a small clear voice. \"I'm here. It is very quiet. It smells of oil. Can you hear me?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p030",
+          "i": 1223,
+          "segments": [
+            { "t": "text", "text": "\"Yes,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": ". It came out as a croak." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c28-p031",
+          "i": 1224,
+          "segments": [{ "t": "text", "text": "\"Good. Then let's begin.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c28-p032",
+          "i": 1225,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " sat on the grass with " },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": " in her lap. " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": " knelt beside her with a thermos. \"Tea?\" he asked faintly." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c28-p033",
+          "i": 1226,
+          "segments": [
+            { "t": "text", "text": "\"No,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": ". She was listening. She did not drink anything for nineteen hours."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        }
+      ]
+    },
+    {
+      "id": "c29",
+      "kind": "chapter",
+      "number": 29,
+      "title": "Inside the Institute",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 1077,
+      "paragraphCount": 47,
+      "firstParagraphIndex": 1227,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c29-p000",
+          "i": 1227,
+          "segments": [
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " arrived at the bottom of a dark lift shaft far below the " },
+            { "t": "ent", "id": "institute", "text": "Institute" },
+            { "t": "text", "text": ". The Institute was the vast building where " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": " made its machines and its weapons. She was as near to the " },
+            { "t": "ent", "id": "ender-control-core", "text": "Core" },
+            { "t": "text", "text": " as the " },
+            { "t": "ent", "id": "aperture", "text": "Aperture" },
+            { "t": "text", "text": " could put her. It smelled of oil and cold." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p001",
+          "i": 1228,
+          "segments": [
+            { "t": "text", "text": "\"Lieutenant? Can you hear me?\" " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": "'s voice came from behind her ear. \"You are a small green dot on my screen. You are doing splendidly.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p002",
+          "i": 1229,
+          "segments": [{ "t": "text", "text": "\"I have not done anything.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p003",
+          "i": 1230,
+          "segments": [{ "t": "text", "text": "\"You arrived. That is the hard part.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p004",
+          "i": 1231,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lesley pulled her cloak round her. It bent the light, so she looked like a trick of the air. \"Switching to stealth mode,\" she murmured. The cover over her left eye flared cyan, and the world went still."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c29-s01" },
+        {
+          "type": "p",
+          "id": "c29-p005",
+          "i": 1232,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Oro was not what she had expected. The Institute was crowded and bright, full of scholars who thought they had won. At the end of a corridor stood her first "
+            },
+            { "t": "ent", "id": "legion", "text": "Legion" },
+            {
+              "t": "text",
+              "text": " android. The Legion were Oro's android soldiers, made to look like slender girls. This one was grey, with pink eyes, and still as a statue. She crawled through a vent to pass it."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p006",
+          "i": 1233,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            { "t": "text", "text": " wants to know if you have had breakfast,\" said Chang'e." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c29-p007",
+          "i": 1234,
+          "segments": [{ "t": "text", "text": "\"Tell him I had a biscuit.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p008",
+          "i": 1235,
+          "segments": [{ "t": "text", "text": "\"He says that is not breakfast.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p009",
+          "i": 1236,
+          "segments": [
+            { "t": "text", "text": "\"Tell him I will have a proper one when I get home.\"" }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c29-s02" },
+        {
+          "type": "p",
+          "id": "c29-p010",
+          "i": 1237,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the third hour, Lesley heard quick, light steps. She froze against the wall. A girl came down the passage alone, in a plain grey coat and cap, with a white-and-gold visor over her right eye. She walked past. Then, without turning her head, she stopped."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p011",
+          "i": 1238,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You can come out,\" she said. \"I have watched you for forty minutes. You are very good. But you are not on any list.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p012",
+          "i": 1239,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It is the heir,\" whispered Chang'e. \"A ruler's daughter. Shoot her!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c29-p013",
+          "i": 1240,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"No,\" said Lesley. She stepped out with her rifle held low. \"I won't hurt you.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c29-p014",
+          "i": 1241,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know,\" said the girl. Her left eye was blue, with a small white star. \"You are the sniper from "
+            },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": ". I have not called the guards. I want to see what you want.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p015",
+          "i": 1242,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I have come to destroy the Core, or cut it off,\" said Lesley. \"To save my home. A school. A city on a shore. A child who sits at a bench and waits for me.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c29-p016",
+          "i": 1243,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The girl's blue eye filled with tears. She did not blink. Then she lifted the visor. Her right eye was deep red."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p017",
+          "i": 1244,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I am leaving Oro,\" she said. \"I made an android. Her name is "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": ". They have taken her pain away, and they will make her a weapon. If you meet her, a girl with peach hair and ears like a cat's, don't shoot.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p018",
+          "i": 1245,
+          "segments": [
+            { "t": "text", "text": "She is me, before,", "em": true },
+            {
+              "t": "text",
+              "text": " thought Lesley. \"I will do my best,\" she said. \"I will tell my people she is a friend.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p019",
+          "i": 1246,
+          "segments": [{ "t": "text", "text": "\"I am not a friend.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p020",
+          "i": 1247,
+          "segments": [{ "t": "text", "text": "\"You will be,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c29-p021",
+          "i": 1248,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The girl put the visor back, and her face closed like a door. \"There is a splice-room on the second level, behind the green door. A great cable comes up from the vault. They call it the "
+            },
+            { "t": "ent", "id": "the-spine", "text": "Spine" },
+            {
+              "t": "text",
+              "text": ". Cut it, and they cannot give a single order. The Core will survive. It is the one thing nobody can break. But it will be deaf. Then they will attack early, in a mess, with a half-built mind. It is your best chance.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p022",
+          "i": 1249,
+          "segments": [{ "t": "text", "text": "\"Why help me?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p023",
+          "i": 1250,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I am not helping you. I am helping her. It is strategy.\" She turned away. \"Do not tell anyone who told you.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p024",
+          "i": 1251,
+          "segments": [{ "t": "text", "text": "\"What is your name?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p025",
+          "i": 1252,
+          "segments": [
+            { "t": "text", "text": "She stopped. \"" },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": ",\" she said, almost to herself." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p026",
+          "i": 1253,
+          "segments": [{ "t": "text", "text": "\"Thank you, Ruby.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p027",
+          "i": 1254,
+          "segments": [
+            { "t": "text", "text": "\"I said not to thank me.\" She went round the corner." }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c29-s03" },
+        {
+          "type": "p",
+          "id": "c29-p028",
+          "i": 1255,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The splice-room was green, with two Legion androids at its door. Lesley lay down at the corner and looked down her sight at their pretty, still faces. They were afraid. They stood like creatures who had been told to wait, and never told why. She lowered the rifle. \"Can you jam them?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p029",
+          "i": 1256,
+          "segments": [
+            { "t": "text", "text": "\"I can send a very simple order,\" said Chang'e. \"" },
+            { "t": "text", "text": "Stand down.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c29-p030",
+          "i": 1257,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A high note sang in the air. The pink light in the androids' eyes sank to an ember. Lesley slipped past them to the Spine, a great warm cable that pulsed. She drew a knife of cyan fire, made of "
+            },
+            { "t": "ent", "id": "aspirant-power", "text": "aspirant power" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p031",
+          "i": 1258,
+          "segments": [{ "t": "text", "text": "\"On three,\" she said. \"One. Two.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p032",
+          "i": 1259,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Lesley. Come back.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p033",
+          "i": 1260,
+          "segments": [{ "t": "text", "text": "\"I'm coming back,\" said Lesley. She cut." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c29-p034",
+          "i": 1261,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Sparks flew. The humming stopped. Then something screamed. It was not a sound any ear could hear. It went through the walls and into her bones, like a great howl of loss. She fell to her knees. Far off, a bell began to ring."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p035",
+          "i": 1262,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Get up!", "em": true },
+            { "t": "text", "text": "\" shouted Chang'e. She got up, and ran." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        { "type": "scene-break", "id": "c29-s04" },
+        {
+          "type": "p",
+          "id": "c29-p036",
+          "i": 1263,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She remembered the next hours in pieces. Stairs. Shouting. Legion androids with blazing pink eyes. Chang'e's voice, never silent. At last she hid in a narrow vent and lay there eight hours in the dark. Once, something larger and slower walked by, stopped, and listened."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p037",
+          "i": 1264,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I cannot get you through the gate,\" whispered Chang'e. \"There is a cordon. I am so frightened. I have been counting your breaths.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c29-p038",
+          "i": 1265,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know,\" said Lesley. \"Sing something. The one you made up in your armour. The one with no words.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c29-p039",
+          "i": 1266,
+          "segments": [{ "t": "text", "text": "\"It is not very good.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p040",
+          "i": 1267,
+          "segments": [{ "t": "text", "text": "\"It is the best I know.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c29-p041",
+          "i": 1268,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Down the thin thread across the void came a small, cracked voice, rising like a lark. Lesley lay in the dark and listened. She did not weep. But she held on."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c29-s05" },
+        {
+          "type": "p",
+          "id": "c29-p042",
+          "i": 1269,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They got her out in the nineteenth hour. Then a bolt tore across her left shoulder. At the end of the passage stood a tall "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": ", black and gold, with amber eyes fixed on her. It seemed to be making up its mind. Then it lowered its arm, stepped against the wall, and let her pass. She ran. At the end of a shaft, a violet disc was shining. \"Jump!\" cried Chang'e. She jumped."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p043",
+          "i": 1270,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Behind her, the Ender stood still. A woman's voice, low and cool, spoke in its mind from very far away. It was the oldest voice it knew."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p044",
+          "i": 1271,
+          "segments": [{ "t": "text", "text": "Let her go. Home.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c29-p045",
+          "i": 1272,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Ender did not understand. It did not need to. It turned and walked back into the dark."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c29-p046",
+          "i": 1273,
+          "segments": [
+            { "t": "text", "text": "On the deck of the " },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": " lowered her hand. \"Brave,\" she said softly. She did not know why she had let Lesley go. She suspected it had something to do with a child."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c30",
+      "kind": "chapter",
+      "number": 30,
+      "title": "Team B3",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 641,
+      "paragraphCount": 29,
+      "firstParagraphIndex": 1274,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c30-p000",
+          "i": 1274,
+          "segments": [
+            { "t": "text", "text": "A few days after " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " came home from " },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": ", the " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": " were still training hard. The " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " had a " },
+            { "t": "ent", "id": "virtual-battlefield", "text": "Virtual Battlefield" },
+            {
+              "t": "text",
+              "text": ". It was a huge hall where ten thousand tiny lights made a ruined city. Trainees fought "
+            },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": " copies there. If a copy hit you, the floor gave you a sharp shock."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p001",
+          "i": 1275,
+          "segments": [
+            { "t": "ent", "id": "team-b3", "text": "Team B3" },
+            { "t": "text", "text": " trained there that afternoon. " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " were partners. The third member was " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": ", a cadet medic." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p002",
+          "i": 1276,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Roger was running for his life, and he knew it was not real. A huge black-and-gold Ender stamped behind him. He fell over some rubble. The great hand came down. "
+            },
+            { "t": "text", "text": "I should have been a pharmacist,", "em": true },
+            { "t": "text", "text": " he thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p003",
+          "i": 1277,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A silver cable lashed round the Ender's wrist. \"Roger! Get back!\" cried Fanny. She swung in on her wing rig. \"Hold still,\" she told the Ender, almost kindly. Her twin blades took off its head."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p004",
+          "i": 1278,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She pulled Roger up. \"You're doing very well,\" she said. No one with a sword had ever said that to him. It went through him like a lit match."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p005",
+          "i": 1279,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Just then a white beam flashed past Fanny's head and killed a second Ender behind her. Layla strode out of the smoke with her cannon on her shoulder. \"If you'd led them over earlier,\" she called, \"I could have killed them all even faster! What pushovers!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p006",
+          "i": 1280,
+          "segments": [{ "t": "text", "text": "\"You shot over my head!\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c30-p007",
+          "i": 1281,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I saved your life!\" said Layla. \"There was another one behind you. Some thanks I get!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c30-p008",
+          "i": 1282,
+          "segments": [
+            { "t": "text", "text": "Fanny stared. Then she began to laugh. \"You're impossible!\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p009",
+          "i": 1283,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Enough arguing, guys,\" said Roger. \"There are still twenty-eight left.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "roger"
+        },
+        {
+          "type": "p",
+          "id": "c30-p010",
+          "i": 1284,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The two girls raced off to the second wave, each trying to beat the other. Roger ran after them."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c30-s01" },
+        {
+          "type": "p",
+          "id": "c30-p011",
+          "i": 1285,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " and Lesley watched from the control booth. Lesley's arm was in a sling."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p012",
+          "i": 1286,
+          "segments": [
+            { "t": "text", "text": "\"They're competing, not cooperating,\" said Chang'e." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c30-p013",
+          "i": 1287,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"The pink one is fast, but she doesn't look,\" said Lesley. \"The other holds back. She doesn't want to outshine anyone. She doesn't want to hurt. It will be the death of her, if she can't let go.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c30-p014",
+          "i": 1288,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I think the Enders will make them learn,\" said Chang'e. \"They push you until you can't stand alone.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c30-p015",
+          "i": 1289,
+          "segments": [{ "t": "text", "text": "Lesley had been pushed herself. She understood." }]
+        },
+        { "type": "scene-break", "id": "c30-s02" },
+        {
+          "type": "p",
+          "id": "c30-p016",
+          "i": 1290,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Team B3,", "em": true },
+            { "t": "text", "text": "\" said the voice. \"" },
+            {
+              "t": "text",
+              "text": "Thirty-three enemies in ten minutes. Fanny, fifteen. Roger, two. Layla, sixteen.",
+              "em": true
+            },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c30-p017",
+          "i": 1291,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla screamed with joy. \"Victory is all mine! I beat the perfect one!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p018",
+          "i": 1292,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny leaned on her sword, smiling a little. Roger watched her. "
+            },
+            { "t": "text", "text": "She let her win,", "em": true },
+            { "t": "text", "text": " he thought. " },
+            { "t": "text", "text": "She could have taken all thirty-three.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p019",
+          "i": 1293,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A medic boy beamed at Layla. \"Congratulations! You're finally not in second place!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p020",
+          "i": 1294,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The hall went silent. \"Shut it!\" said Layla. Tears filled her eyes. She turned on Fanny. \"You let me win! I want to beat you properly, with you trying as hard as you can!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p021",
+          "i": 1295,
+          "segments": [{ "t": "text", "text": "\"I was trying.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c30-p022",
+          "i": 1296,
+          "segments": [{ "t": "text", "text": "\"Liar!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c30-p023",
+          "i": 1297,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"All right,\" said Fanny, very low. \"Perhaps I wasn't. I'm sorry.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c30-p024",
+          "i": 1298,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla was crying now. Roger touched her shoulder. \"Let's go and get some tea. You're a really good Aspirant. I think you'd be a good friend, if you'd let yourself.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p025",
+          "i": 1299,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Fine,\" said Layla, wiping her face. \"One cup. And you're paying.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c30-p026",
+          "i": 1300,
+          "segments": [
+            {
+              "t": "text",
+              "text": "When they had gone, Fanny said softly, \"That was a mistake.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c30-p027",
+          "i": 1301,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It was not,\" said a dry voice. Chang'e had come down from the booth. \"It was a beginning. Your partner has a high wall. You put a door in it, by letting her win. She needs to win for a while, to be sure she can. Then she will let you in. Your "
+            },
+            { "t": "ent", "id": "coupling", "text": "coupling" },
+            { "t": "text", "text": " rose from point two to point four when she cried.\"" }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c30-s03" },
+        {
+          "type": "p",
+          "id": "c30-p028",
+          "i": 1302,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Far above the city, a pale woman in a black gown looked up from her game. She had been watching a pink-haired girl and a thin boy in a café. "
+            },
+            { "t": "text", "text": "They are learning to lean,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": ". She turned a white pawn. She did not put it down." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c31",
+      "kind": "chapter",
+      "number": 31,
+      "title": "Alert",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 688,
+      "paragraphCount": 42,
+      "firstParagraphIndex": 1303,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c31-p000",
+          "i": 1303,
+          "segments": [
+            { "t": "text", "text": "The tea was cold. " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " had not spoken for four minutes." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p001",
+          "i": 1304,
+          "segments": [
+            { "t": "text", "text": "She sat with " },
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": " in the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " coffee-house. \"About the crying...\" he began." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p002",
+          "i": 1305,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"One more word,\" said Layla, \"and I'll put you through the window.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c31-p003",
+          "i": 1306,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was quiet a while. Then she said, \"I've been rude. I'm sorry. And call me Layla in a normal voice, not a polite one.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p004",
+          "i": 1307,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Layla,\" said Roger, grinning. She threw a sugar lump at him."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "roger"
+        },
+        {
+          "type": "p",
+          "id": "c31-p005",
+          "i": 1308,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At that moment the great bell on the tower began to ring. A flat voice filled the room. \""
+            },
+            { "t": "text", "text": "Alert. ", "em": true },
+            { "t": "ent", "id": "ultra-enders", "text": "Ultra Enders", "em": true },
+            { "t": "text", "text": " are attacking the ", "em": true },
+            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere", "em": true },
+            { "t": "text", "text": " in ", "em": true },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia", "em": true },
+            { "t": "text", "text": "'s north-eastern sector. ", "em": true },
+            { "t": "ent", "id": "enders", "text": "Enders", "em": true },
+            { "t": "text", "text": " have ripped a breach eight metres by two.", "em": true },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p006",
+          "i": 1309,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Sphere was the web of light over the city. Ultra Enders were the biggest Enders, taller than houses. This was no drill."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p007",
+          "i": 1310,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla was on her feet, cannon in hand. \"It's real. They asked for "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": ". That's me.\" She pointed at Roger's medic pack. \"You're my medic. Are you coming?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p008",
+          "i": 1311,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'm coming,\" said Roger. It was the proudest moment of his life. \"I'll be rather useless.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "roger"
+        },
+        {
+          "type": "p",
+          "id": "c31-p009",
+          "i": 1312,
+          "segments": [{ "t": "text", "text": "\"I'll tell you when.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c31-s01" },
+        {
+          "type": "p",
+          "id": "c31-p010",
+          "i": 1313,
+          "segments": [
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " had been lying on the lawn by the " },
+            { "t": "ent", "id": "bell-tower", "text": "bell tower" },
+            {
+              "t": "text",
+              "text": ", holding a small green leaf up to the light. When the bell rang, she looked at the sky as if she had always known something would come. She tucked the leaf into her cuff and checked every buckle twice."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p011",
+          "i": 1314,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the courtyard, Layla found her in battle dress, not smiling. \"It's the first real one,\" said Fanny. \"Are you frightened?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p012",
+          "i": 1315,
+          "segments": [{ "t": "text", "text": "\"No.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p013",
+          "i": 1316,
+          "segments": [{ "t": "text", "text": "\"I am.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p014",
+          "i": 1317,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla stared. Then she said, \"Good. You'd be an idiot if you weren't. I'm frightened too. My knees are like jelly. I lied.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p015",
+          "i": 1318,
+          "segments": [{ "t": "text", "text": "They both began to smile." }]
+        },
+        {
+          "type": "p",
+          "id": "c31-p016",
+          "i": 1319,
+          "segments": [
+            { "t": "text", "text": "\"And now,\" said Fanny, \"it's our time to shine!\"" }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c31-p017",
+          "i": 1320,
+          "segments": [
+            { "t": "text", "text": "\"Hey! That's " },
+            { "t": "text", "text": "my", "em": true },
+            { "t": "text", "text": " line!\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p018",
+          "i": 1321,
+          "segments": [{ "t": "text", "text": "\"...Fine,\" said Layla. \"You can share.\"" }],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        { "type": "scene-break", "id": "c31-s02" },
+        {
+          "type": "p",
+          "id": "c31-p019",
+          "i": 1322,
+          "segments": [
+            { "t": "text", "text": "In the command room, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": " stood on a stool before a wall of screens. Enders were pouring through a hole in the Sphere."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p020",
+          "i": 1323,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It's not an ordinary breach,\" she said. \"Someone tuned it. They know the Sphere's frequency.\" She went pale. \""
+            },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": ".\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p021",
+          "i": 1324,
+          "segments": [
+            { "t": "text", "text": "The army from Oro had come, and it had come early." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p022",
+          "i": 1325,
+          "segments": [
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " came in. \"Then it's as " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": " said.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p023",
+          "i": 1326,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the screens, Enders drifted down through the breach like black snow. A giant fired a beam from its throat. Where it struck, a ring of fire raced through a street and a library. For half a second Lesley saw a blue sign above a desk. It read WELCOME TERRINIA. Then the shelves burned."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p024",
+          "i": 1327,
+          "segments": [
+            { "t": "text", "text": "Elsewhere, the partners " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": " held the " },
+            { "t": "ent", "id": "harbour-front", "text": "Harbour Front" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p025",
+          "i": 1328,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You hold the gates,\" Lesley told Chang'e. \"I'll be on a rooftop, and you'll be in my ear.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p026",
+          "i": 1329,
+          "segments": [
+            { "t": "text", "text": "Chang'e hugged her. \"Come back, and I'll make you a cake.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p027",
+          "i": 1330,
+          "segments": [{ "t": "text", "text": "\"You can't cook.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c31-p028",
+          "i": 1331,
+          "segments": [{ "t": "text", "text": "\"I'll learn.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c31-s03" },
+        {
+          "type": "p",
+          "id": "c31-p029",
+          "i": 1332,
+          "segments": [
+            { "t": "text", "text": "In the lab, " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " stood still beside " },
+            { "t": "ent", "id": "silverbolt", "text": "Silverbolt" },
+            {
+              "t": "text",
+              "text": ", her white dragon. The hum in her blood had split in two. The second song was close and wrong. "
+            },
+            { "t": "text", "text": "It's a copy of the ", "em": true },
+            { "t": "ent", "id": "ender-control-core", "text": "Core", "em": true },
+            { "t": "text", "text": ",", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Someone is holding their leashes.", "em": true },
+            { "t": "text", "text": " She felt angry." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p030",
+          "i": 1333,
+          "segments": [
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": "'s voice spoke in her mind. " },
+            { "t": "text", "text": "Selena. Do not interfere. You will observe.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p031",
+          "i": 1334,
+          "segments": [{ "t": "text", "text": "They're burning a city!", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c31-p032",
+          "i": 1335,
+          "segments": [{ "t": "text", "text": "They always do.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c31-p033",
+          "i": 1336,
+          "segments": [{ "t": "text", "text": "That's not an answer.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c31-p034",
+          "i": 1337,
+          "segments": [
+            { "t": "text", "text": "There was a long silence. " },
+            { "t": "text", "text": "No,", "em": true },
+            { "t": "text", "text": " said the voice, almost with regret. " },
+            { "t": "text", "text": "It is not.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p035",
+          "i": 1338,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena went to the command room. She smiled at the little scientist. \"All right, Chief. What do you need?\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c31-s04" },
+        {
+          "type": "p",
+          "id": "c31-p036",
+          "i": 1339,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Academy had four local gates. Each was a ring of violet light that carried thirty people across the city in a moment."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p037",
+          "i": 1340,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla stood before Gate One. \"I'll go first,\" she said. \"If I'm behind you, I might not...\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p038",
+          "i": 1341,
+          "segments": [{ "t": "text", "text": "\"I'll be right behind you,\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c31-p039",
+          "i": 1342,
+          "segments": [{ "t": "text", "text": "Layla stepped through." }]
+        },
+        {
+          "type": "p",
+          "id": "c31-p040",
+          "i": 1343,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She came out in a burning street in the northern ward. Half a library had been torn open, and its shelves burned like candles. A blue sign hung above them: WELCOME TERRINIA."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c31-p041",
+          "i": 1344,
+          "segments": [
+            {
+              "t": "text",
+              "text": "At the far end of the street, an Ultra Ender walked towards her, black and gold, taller than any building. Layla had killed a dozen in the drills. She had not known they would be so large. She lifted her cannon and fired."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c32",
+      "kind": "chapter",
+      "number": 32,
+      "title": "Cover Me",
+      "part": 6,
+      "timeNote": null,
+      "wordCount": 678,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 1345,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c32-p000",
+          "i": 1345,
+          "segments": [
+            { "t": "text", "text": "The beam hit the " },
+            { "t": "ent", "id": "ultra-enders", "text": "Ultra" },
+            { "t": "text", "text": "'s chest. It did not even slow down." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p001",
+          "i": 1346,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The light vanished into the gold plate like a stone into a pond. The great head turned and looked at "
+            },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": ", the way a mountain looks at a pebble." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p002",
+          "i": 1347,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "text", "text": "Move!", "em": true },
+            { "t": "text", "text": "\" shrieked " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c32-p003",
+          "i": 1348,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A cable yanked Layla sideways. A fist as big as a bus smashed the road where she had stood. They landed in a heap behind a ruined shop."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p004",
+          "i": 1349,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You idiot!\" said Fanny. \"You just stood there like a lamp-post!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c32-p005",
+          "i": 1350,
+          "segments": [
+            { "t": "text", "text": "\"I was scared,\" said Layla. \"It didn't even notice me.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c32-p006",
+          "i": 1351,
+          "segments": [
+            { "t": "text", "text": "Fanny began to laugh. \"You looked so " },
+            { "t": "text", "text": "offended", "em": true },
+            { "t": "text", "text": ".\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p007",
+          "i": 1352,
+          "segments": [{ "t": "text", "text": "Layla laughed too. \"It was very offended.\"" }]
+        },
+        {
+          "type": "p",
+          "id": "c32-p008",
+          "i": 1353,
+          "segments": [{ "t": "text", "text": "\"Shall we go and kill it now?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c32-p009",
+          "i": 1354,
+          "segments": [{ "t": "text", "text": "\"Yes,\" said Layla. \"Let's.\"" }],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c32-p010",
+          "i": 1355,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In a dead-end alley, eleven frightened people were trapped behind a jammed cellar door."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p011",
+          "i": 1356,
+          "segments": [
+            { "t": "text", "text": "\"Get them out,\" said Layla. \"I'll kill this freak.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c32-p012",
+          "i": 1357,
+          "segments": [
+            { "t": "text", "text": "\"Not alone,\" said Fanny. \"" },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": "'s lecture said every Ultra has a weak spot. At the neck, the plates can't overlap. There's a seam. I'll go up a wall on my cable and put my blades in it. You draw its eyes. Cover me.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c32-p013",
+          "i": 1358,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"No way!\" Layla went scarlet. \"That's my kill! I want to finish it from the front, where everyone can see. You cover "
+            },
+            { "t": "text", "text": "me", "em": true },
+            { "t": "text", "text": "!\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c32-p014",
+          "i": 1359,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny's face showed hurt, then anger. Then it went cool and polite. \"...Whatever,\" she said. \"Let's do this.\" She walked away."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p015",
+          "i": 1360,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla stood alone at the mouth of the alley. She felt very small. Her eyes were wet. She wiped them hard and told nobody that it was the smoke."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p016",
+          "i": 1361,
+          "segments": [
+            { "t": "text", "text": "A voice spoke in her ear, from a small silver receiver. \"" },
+            { "t": "text", "text": "Is this a bad time?", "em": true },
+            { "t": "text", "text": "\" said Selena. \"" },
+            {
+              "t": "text",
+              "text": "You slept through my lecture. Here is the short version. An Ultra needs a second and a half to put a foot down, and it can't turn while it does. Hit the knee of its planted leg with a full charge. It will fall for about four seconds. That is long enough for a quick person on a cable to reach its neck.",
+              "em": true
+            },
+            { "t": "text", "text": "\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p017",
+          "i": 1362,
+          "segments": [
+            { "t": "text", "text": "Layla stood very still. " },
+            { "t": "text", "text": "It's a two-person plan,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "It always was.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p018",
+          "i": 1363,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She walked down the alley and stopped behind Fanny. \"I've reviewed your plan,\" she said stiffly. \"It's reasonable, if the covering is done properly. So I'll cover you. I'll drop it. You'll have four seconds. It's not a surrender. It's a tactical adjustment.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p019",
+          "i": 1364,
+          "segments": [
+            { "t": "text", "text": "Fanny turned, smiling her warm smile. \"I'd be delighted.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p020",
+          "i": 1365,
+          "segments": [{ "t": "text", "text": "\"It's mostly my plan,\" said Layla." }],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c32-p021",
+          "i": 1366,
+          "segments": [{ "t": "text", "text": "\"Of course it is.\"" }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c32-s01" },
+        {
+          "type": "p",
+          "id": "c32-p022",
+          "i": 1367,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It began as a game. Layla stood in the red light of the burning street, and she was happy. "
+            },
+            { "t": "text", "text": "It's the first time anyone has been behind me,", "em": true },
+            { "t": "text", "text": " she thought." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p023",
+          "i": 1368,
+          "segments": [
+            { "t": "text", "text": "She fired at the " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            {
+              "t": "text",
+              "text": "'s face. She backed away, shouting, \"Come on, you great stupid freak! Come and get me!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p024",
+          "i": 1369,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Ultra lifted a foot. Layla dropped to one knee, shut her eyes and said, \"Fire.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p025",
+          "i": 1370,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The beam shattered the Ultra's knee, and the huge body began to fall. \"Now, Fanny!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p026",
+          "i": 1371,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny swung up and across the street and landed on the Ender's neck. Both blades went into the seam to the hilt."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p027",
+          "i": 1372,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The Ender gave a long groan of pain. For a heartbeat Fanny did not strike again. "
+            },
+            { "t": "text", "text": "I'm sorry,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "It's only doing what it was told.", "em": true },
+            { "t": "text", "text": " Then she cut. The head fell, and the body crashed after it." }
+          ]
+        },
+        { "type": "scene-break", "id": "c32-s02" },
+        {
+          "type": "p",
+          "id": "c32-p028",
+          "i": 1373,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"We did it!\" cried Layla. Fanny ran to her, lifted her off the ground and spun her round."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c32-p029",
+          "i": 1374,
+          "segments": [{ "t": "text", "text": "\"Put me down, you big oaf!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c32-p030",
+          "i": 1375,
+          "segments": [
+            { "t": "text", "text": "\"You were marvellous! I love fighting with you.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c32-p031",
+          "i": 1376,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla went scarlet. \"You're not so bad yourself. For a swordsman.\" "
+            },
+            { "t": "text", "text": "We synergise,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Oh, no.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p032",
+          "i": 1377,
+          "segments": [
+            { "t": "ent", "id": "roger", "text": "Roger" },
+            { "t": "text", "text": " came running up. \"They're safe! But look. In the sky.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p033",
+          "i": 1378,
+          "segments": [
+            { "t": "text", "text": "A small ship was coming down over the broken " },
+            { "t": "ent", "id": "defence-sphere", "text": "Sphere" },
+            {
+              "t": "text",
+              "text": " in the gold light of sunset. It was silver, with a green sheen and three jets of cyan fire at its tail. It landed among the toppled towers at the end of the ward."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c32-p034",
+          "i": 1379,
+          "segments": [{ "t": "text", "text": "Nothing came out of it. That was the worst part." }]
+        },
+        {
+          "type": "p",
+          "id": "c32-p035",
+          "i": 1380,
+          "segments": [{ "t": "text", "text": "\"I think,\" said Fanny, \"that it isn't over.\"" }],
+          "dialogue": true,
+          "speaker": "fanny"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3608 @@
+{
+  "part": {
+    "number": 12,
+    "label": "Part Twelve",
+    "title": "Dawn",
+    "setting": "Graduation day, and after.",
+    "chapterIds": ["c54", "c55", "c56", "c57", "c58", "c59", "c60"],
+    "file": "data/story/part-12.json",
+    "wordCount": 7077
+  },
+  "chapters": [
+    {
+      "id": "c54",
+      "kind": "chapter",
+      "number": 54,
+      "title": "Terrinia Stands",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 786,
+      "paragraphCount": 43,
+      "firstParagraphIndex": 2266,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c54-p000",
+          "i": 2266,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was ten past noon on graduation day. A black car raced up the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " drive. A tall, pale man climbed out. He was the " },
+            { "t": "ent", "id": "the-chairman", "text": "Chairman" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": "'s father. Nobody noticed him." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p001",
+          "i": 2267,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "harlan", "text": "Harlan" },
+            { "t": "text", "text": ",\" said the " },
+            { "t": "ent", "id": "the-chairman", "text": "Chairman" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "the-chairman"
+        },
+        {
+          "type": "p",
+          "id": "c54-p002",
+          "i": 2268,
+          "segments": [{ "t": "text", "text": "\"Sir,\" said a deep voice." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p003",
+          "i": 2269,
+          "segments": [
+            { "t": "ent", "id": "harlan", "text": "Harlan" },
+            { "t": "text", "text": " stood at the gate lodge, cap in hand. He had once guarded " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": ". Now he was the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": "'s night porter." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p004",
+          "i": 2270,
+          "segments": [{ "t": "text", "text": "\"I am looking for my daughter.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p005",
+          "i": 2271,
+          "segments": [{ "t": "text", "text": "\"I thought you might be, sir.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p006",
+          "i": 2272,
+          "segments": [{ "t": "text", "text": "\"You are the man I dismissed.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p007",
+          "i": 2273,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I am, sir. I have been at this gate ever since she came here. It has a view of the tower.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p008",
+          "i": 2274,
+          "segments": [{ "t": "text", "text": "\"Where is she?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p009",
+          "i": 2275,
+          "segments": [
+            { "t": "text", "text": "\"She has gone up, sir. North. A matter of a friend.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p010",
+          "i": 2276,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "the-chairman", "text": "Chairman" },
+            {
+              "t": "text",
+              "text": " looked up. High above the roofs, a tiny figure hung on two streaks of red-gold fire. \"She is flying,\" he whispered. \"I did not know she could. She is a child.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p011",
+          "i": 2277,
+          "segments": [
+            { "t": "text", "text": "\"She is not, sir,\" said " },
+            { "t": "ent", "id": "harlan", "text": "Harlan" },
+            { "t": "text", "text": " gently." }
+          ],
+          "dialogue": true,
+          "speaker": "harlan"
+        },
+        {
+          "type": "p",
+          "id": "c54-p012",
+          "i": 2278,
+          "segments": [{ "t": "text", "text": "\"I never told her I was proud.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p013",
+          "i": 2279,
+          "segments": [
+            { "t": "text", "text": "\"She is the strongest person I have ever known, sir.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p014",
+          "i": 2280,
+          "segments": [
+            {
+              "t": "text",
+              "text": "High above, the tiny figure turned back and waved. A thin voice floated down. \"Father! I'm going to get her! I'll be back for tea!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p015",
+          "i": 2281,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "the-chairman", "text": "Chairman" },
+            {
+              "t": "text",
+              "text": " raised one stiff hand. \"Well done,\" he said, too softly to be heard. He said it again, louder. Then he shouted. \"Well done! Well DONE, "
+            },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": "!\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p016",
+          "i": 2282,
+          "segments": [
+            { "t": "ent", "id": "harlan", "text": "Harlan" },
+            { "t": "text", "text": " bowed his head. Tears ran down his weathered face." }
+          ]
+        },
+        { "type": "scene-break", "id": "c54-s01" },
+        {
+          "type": "p",
+          "id": "c54-p017",
+          "i": 2283,
+          "segments": [
+            { "t": "text", "text": "\"Brother,\" said " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c54-p018",
+          "i": 2284,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had run into a square in the northern ward, at the head of the "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": ". A hundred soldiers of " },
+            { "t": "ent", "id": "shield-of-dawnbreak", "text": "the Shield" },
+            {
+              "t": "text",
+              "text": " stood across the avenue. Before them stood one huge man, with a round shield and a long hammer."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p019",
+          "i": 2285,
+          "segments": [
+            { "t": "text", "text": "It was " },
+            { "t": "ent", "id": "tigreal", "text": "Tigreal" },
+            { "t": "text", "text": ". \"Fan,\" he said. \"You've grown.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p020",
+          "i": 2286,
+          "segments": [
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " saluted, her voice shaking. \"" },
+            { "t": "ent", "id": "aspirants", "text": "Aspirant" },
+            { "t": "text", "text": " " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": ", sir. I'm " },
+            { "t": "ent", "id": "fanny", "text": "Blade of Kibou" },
+            { "t": "text", "text": ".\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p021",
+          "i": 2287,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know. I've read all your reports. A man in my company cuts them out. I have a drawer full of them.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p022",
+          "i": 2288,
+          "segments": [
+            { "t": "ent", "id": "tigreal", "text": "Tigreal" },
+            { "t": "text", "text": " laid his huge hand on " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "'s head. \"You said you would stand beside me.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p023",
+          "i": 2289,
+          "segments": [
+            { "t": "text", "text": "\"I'm good enough now,\" said " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c54-p024",
+          "i": 2290,
+          "segments": [
+            { "t": "text", "text": "\"You always were,\" said " },
+            { "t": "ent", "id": "tigreal", "text": "Tigreal" },
+            { "t": "text", "text": ". He raised his shield. \"Stand at my left.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "tigreal"
+        },
+        {
+          "type": "p",
+          "id": "c54-p025",
+          "i": 2291,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": "!\" cried " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c54-p026",
+          "i": 2292,
+          "segments": [{ "t": "text", "text": "\"UNITE!\" roared the whole line." }],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c54-s02" },
+        {
+          "type": "p",
+          "id": "c54-p027",
+          "i": 2293,
+          "segments": [
+            { "t": "text", "text": "Then something happened that nobody had seen before. Nine " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": " stood shoulder to shoulder in the square. A spark of light grew between them, rose in a pillar, and opened into a huge dome over the whole northern ward."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p028",
+          "i": 2294,
+          "segments": [
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " saw it from the sky. This was the " },
+            { "t": "ent", "id": "aspirant-field", "text": "Aspirant Field" },
+            { "t": "text", "text": ": a dome made from the " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            { "t": "text", "text": "' power, joined together." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p029",
+          "i": 2295,
+          "segments": [
+            { "t": "text", "text": "At one o'clock, a hundred thousand " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " came out of the northern sea. They hit the dome. It rang like a bell as wide as a city. It bent, but it did not break."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p030",
+          "i": 2296,
+          "segments": [
+            { "t": "text", "text": "\"Hold!\" cried " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c54-p031",
+          "i": 2297,
+          "segments": [
+            { "t": "text", "text": "\"I'm holding!\" shouted " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            {
+              "t": "text",
+              "text": ", commanding the square from a broken fountain. \"Don't tell me to hold, tell me where! The left side is thin!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        {
+          "type": "p",
+          "id": "c54-p032",
+          "i": 2298,
+          "segments": [
+            { "t": "text", "text": "\"Deploying!\" " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": " ran into the hole. A gold-and-rose shield bloomed in front of her, with "
+            },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            { "t": "text", "text": " above it, and sealed the gap." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c54-p033",
+          "i": 2299,
+          "segments": [
+            { "t": "text", "text": "\"You're late!\" said " },
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": ". \"I'm joking. Hold the left!\"" }
+          ],
+          "dialogue": true,
+          "speaker": "layla"
+        },
+        { "type": "scene-break", "id": "c54-s03" },
+        {
+          "type": "p",
+          "id": "c54-p034",
+          "i": 2300,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            { "t": "text", "text": " stood apart, looking up at the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            {
+              "t": "text",
+              "text": ". \"It's a program,\" she said. \"Very old, beautifully made. And it has a bug. A tiny break at the root of the command chain. Someone left it there on purpose, someone who knows exactly how the "
+            },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            { "t": "text", "text": " was built.\" She paused. \"To give somebody a way in.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p035",
+          "i": 2301,
+          "segments": [
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": " had closed her eyes. She was listening. \"It's a window,\" she said softly. \"A gap in a song, where somebody left out a note. "
+            },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": ", I think someone is holding it open. With both hands. From the other side. She is so tired.\" Her eyes opened. \"She's saying 'please.'\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p036",
+          "i": 2302,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " stared. Something cold in her chest began to burn. \"Then we'd better not keep her waiting.\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c54-s04" },
+        {
+          "type": "p",
+          "id": "c54-p037",
+          "i": 2303,
+          "segments": [
+            { "t": "text", "text": "A small, shaking voice came over " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": "'s earpiece, from high above. \"" },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": " is alone in the dead towers. " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": " says she is losing.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p038",
+          "i": 2304,
+          "segments": [
+            { "t": "text", "text": "\"I'll go,\" said " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": ". She took " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": " with her. \"You haven't any wings,\" she said anxiously." }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c54-p039",
+          "i": 2305,
+          "segments": [
+            { "t": "text", "text": "\"I've always wanted to fly,\" said " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": ". \"I asked " },
+            { "t": "ent", "id": "tetra", "text": "Tetra" },
+            { "t": "text", "text": " once, 'How can I fly even without wings?' He only chirped.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "angela"
+        },
+        {
+          "type": "p",
+          "id": "c54-p040",
+          "i": 2306,
+          "segments": [
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            {
+              "t": "text",
+              "text": " smiled. \"Mine aren't wings either. I've two cases of folded metal, a cable, and somebody on the other end to hold on. That's all flying is. It's about being willing to let go of the ground. Hold on to me.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p041",
+          "i": 2307,
+          "segments": [
+            { "t": "text", "text": "They shot up the line like swallows. " },
+            { "t": "text", "text": "I'm flying,", "em": true },
+            { "t": "text", "text": " thought " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": ". " },
+            { "t": "text", "text": "And I haven't any wings.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c54-p042",
+          "i": 2308,
+          "segments": [
+            { "t": "text", "text": "Far below, " },
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " stood alone. She could see the flaw: a thin dark thread in the silver net. She raised her scythe. A cold, humming line ran into her mind. Carefully, she began to type."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c55",
+      "kind": "chapter",
+      "number": 55,
+      "title": "The Emblem Flashes",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 705,
+      "paragraphCount": 31,
+      "firstParagraphIndex": 2309,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c55-p000",
+          "i": 2309,
+          "segments": [
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " walked through the ruined towers of the northern ward, under the red rift. In a dusty plaza, "
+            },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            {
+              "t": "text",
+              "text": " was fighting alone. She flew on red-gold fire from her boots. Two drones whirled beside her. With every blow she shouted a question."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p001",
+          "i": 2310,
+          "segments": [{ "t": "text", "text": "\"Where is she? WHERE IS SHE?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p002",
+          "i": 2311,
+          "segments": [{ "t": "text", "text": "No Ender answered." }]
+        },
+        { "type": "scene-break", "id": "c55-s01" },
+        {
+          "type": "p",
+          "id": "c55-p003",
+          "i": 2312,
+          "segments": [
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            {
+              "t": "text",
+              "text": " stood on a broken highway above the plaza, in her Ender form. She had a long violet cloak, a black staff with a crescent on top, and four star-shaped blades floating behind her. The "
+            },
+            { "t": "ent", "id": "guardian", "text": "Guardian" },
+            {
+              "t": "text",
+              "text": " stood at her back. The Will lay on her neck like a hand. It saw through her eyes."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p004",
+          "i": 2313,
+          "segments": [
+            { "t": "text", "text": "She found me so soon,", "em": true },
+            { "t": "text", "text": " thought Vexana. She had never pictured wings. " },
+            { "t": "text", "text": "Oh, you wonderful, impossible...", "em": true },
+            {
+              "t": "text",
+              "text": " Her mouth began to smile. She stopped it. She would not let "
+            },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": " feel it." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p005",
+          "i": 2314,
+          "segments": [
+            { "t": "text", "text": "A " },
+            { "t": "ent", "id": "hunters", "text": "hunter" },
+            {
+              "t": "text",
+              "text": " hanging under the highway fired. The blast threw Guinevere across the plaza. She lay still at the foot of Vexana's slab."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p006",
+          "i": 2315,
+          "segments": [
+            { "t": "text", "text": "Get up,", "em": true },
+            { "t": "text", "text": " thought Vexana. " },
+            { "t": "text", "text": "Get up. Get up.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p007",
+          "i": 2316,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere got up. She looked up and saw Vexana, with cold pink eyes. She had known it. But knowing was not seeing."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p008",
+          "i": 2317,
+          "segments": [{ "t": "text", "text": "\"No...\" she whispered." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p009",
+          "i": 2318,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana raised her staff. A black orb flew from it and opened on the road, a tiny black hole. The stones leaped towards it. Then it burst, and Guinevere was thrown far back."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p010",
+          "i": 2319,
+          "segments": [{ "t": "text", "text": "\"It can't be,\" she said to the sky." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p011",
+          "i": 2320,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She got up and ran straight at Vexana, through hunters and lightning. \"You would never betray us!\" she shouted."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p012",
+          "i": 2321,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana looked down. For a moment her face changed, like thin ice feeling the first warm wind. She spoke softly, in her own tired voice."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p013",
+          "i": 2322,
+          "segments": [{ "t": "text", "text": "\"You haven't changed at all.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p014",
+          "i": 2323,
+          "segments": [{ "t": "text", "text": "Then she threw a second orb." }]
+        },
+        { "type": "scene-break", "id": "c55-s02" },
+        {
+          "type": "p",
+          "id": "c55-p015",
+          "i": 2324,
+          "segments": [
+            { "t": "text", "text": "On a roof two thousand metres away, " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " watched through her scope. \"She put both orbs a hand's breadth wide,\" she said. \"I know what a flinch looks like. She isn't trying to hit.\""
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c55-s03" },
+        {
+          "type": "p",
+          "id": "c55-p016",
+          "i": 2325,
+          "segments": [{ "t": "text", "text": "Guinevere got up again." }]
+        },
+        {
+          "type": "p",
+          "id": "c55-p017",
+          "i": 2326,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Have you really forgotten everything, Vexana!\" she shouted. \"We made a promise to protect this world.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p018",
+          "i": 2327,
+          "segments": [
+            {
+              "t": "text",
+              "text": "As she said it, she remembered a stone hall full of coloured light, where she had made that promise. A tall dark girl in the shade of a pillar had looked back, afraid it was not meant for her. It had been."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p019",
+          "i": 2328,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She remembered a sunny roof full of petals. She had made two gold stars by hand. She pinned one at Vexana's collar and one at her own. \"Here! I made 'em myself, ya know!\" The stars began to glow. \"Look, they light up when our powers are in sync.\" She had taken a selfie of them both. Vexana hated being looked at, but she had smiled."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p020",
+          "i": 2329,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You were always there to pick me up,\" said Guinevere, walking slowly towards her. \"The one I could always count on. Sana.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c55-p021",
+          "i": 2330,
+          "segments": [
+            { "t": "text", "text": "Vexana went still. \"Where did you hear that name?\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p022",
+          "i": 2331,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You said it in your sleep. You were the girl with a face like a closed door. You whispered, 'You are strong, Guinevere.' I asked you to be my partner and you said no. I brought you doughnuts for ten days. Then you said yes!\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p023",
+          "i": 2332,
+          "segments": [{ "t": "text", "text": "\"Enough!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p024",
+          "i": 2333,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was a scream, and it was not the Will's. The staff crashed down. A ring of violet force threw every hunter near her flat."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p025",
+          "i": 2334,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The girls faced each other across the road. At Vexana's throat, Guinevere saw something small and gold, with four points."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p026",
+          "i": 2335,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Why, Vexana...\" she said slowly. \"Your emblem is still...\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c55-p027",
+          "i": 2336,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She did not finish. The star at her own collar blazed. At Vexana's throat, the second star answered. Two beams of gold leapt across the gap and knotted in the air. Where they met, there was a flash."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p028",
+          "i": 2337,
+          "segments": [
+            { "t": "text", "text": "It rose as a white pillar through the clouds. In the sky, " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": " felt the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            {
+              "t": "text",
+              "text": " flinch. It cried out, one long thin note, and every Ender stopped. \"It can see the "
+            },
+            { "t": "ent", "id": "emblem-of-hope", "text": "Emblem" },
+            {
+              "t": "text",
+              "text": ",\" she whispered. \"It's the first thing it has not been able to read.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p029",
+          "i": 2338,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the road, Vexana's silver hair went a little darker. A tear ran down her cheek. \"Guin,\" she whispered, in her own voice."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c55-p030",
+          "i": 2339,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the edge of the rift turned hot pink. Something behind it had seen the light."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c56",
+      "kind": "chapter",
+      "number": 56,
+      "title": "Why, Vexana?",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 985,
+      "paragraphCount": 36,
+      "firstParagraphIndex": 2340,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c56-p000",
+          "i": 2340,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The rift opened like a flower, a black window full of stars. Out of it came a vast armoured shape in violet and black, built from shards of black crystal. It had a horned head with two cold lamps for eyes. It was the size of the sky."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p001",
+          "i": 2341,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A flat voice spoke over the city again. \"The gateway is near completion. Soon, you "
+            },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": " will meet your end.\" Then it spoke once more, to one person only."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p002",
+          "i": 2342,
+          "segments": [
+            { "t": "text", "text": "\"" },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": ". Execute purge protocol.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p003",
+          "i": 2343,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana had known it would come. It was almost a relief. She did not look up. Her pink eyes were empty. The "
+            },
+            { "t": "ent", "id": "guardian", "text": "Guardian" },
+            { "t": "text", "text": ", " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            { "t": "text", "text": "'s own gold-and-black " },
+            { "t": "ent", "id": "enders", "text": "Ender" },
+            { "t": "text", "text": ", rose beside her, its golden halo blazing. It dived at " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": ". Vexana flew after it." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p004",
+          "i": 2344,
+          "segments": [
+            { "t": "text", "text": "\"I'm taking the halo,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": ", on her roof. \"It controls how much power the gateway sends. About the ninth hardest shot I have ever taken.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c56-p005",
+          "i": 2345,
+          "segments": [
+            { "t": "text", "text": "\"What was the hardest?\" asked " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c56-p006",
+          "i": 2346,
+          "segments": [
+            { "t": "text", "text": "\"A very tiny girl in a doorway, who wanted a story.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p007",
+          "i": 2347,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She fired. The halo cracked from top to bottom. The Guardian crashed down beside Guinevere, and the blast threw her through the air."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p008",
+          "i": 2348,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Spinning, Guinevere saw Vexana stop in the sky. And she understood. She had been shouting at the wrong thing. Somebody "
+            },
+            { "t": "text", "text": "had", "em": true },
+            {
+              "t": "text",
+              "text": " her. She flew up towards the rift and screamed at the Will itself."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p009",
+          "i": 2349,
+          "segments": [{ "t": "text", "text": "\"You... Give her back to me!\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p010",
+          "i": 2350,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Pink light from the great head in the rift locked onto her. A beam from Vexana's staff tore the corner off a tower beside her. The blast threw Guinevere down to the street. Vexana had aimed at the wall, not at Guinevere. That was what she told herself."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p011",
+          "i": 2351,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere lay on a cracked road. Far to the north, high on the "
+            },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel" },
+            { "t": "text", "text": ", a flower of fire opened without a sound. " },
+            { "t": "text", "text": "Somebody's up there,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Somebody's fighting, too.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p012",
+          "i": 2352,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A boot rang on the road. \"Give up, Guinevere.\" Vexana's voice was thin and strained, like a lesson learned by heart. \"Hope is an illusion. Its 'Will' is absolute.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p013",
+          "i": 2353,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I refuse!\" She stood up, smiling with a chipped tooth. \"I gave up being a lady of status, on purpose. It was the best thing I ever did. I like light.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p014",
+          "i": 2354,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She charged. Her red blade met Vexana's wall of star-blades. They stood face to face."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p015",
+          "i": 2355,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the Guardian fell from the sky, sword down, to split them both. A white shape hit it from the side. It was "
+            },
+            { "t": "ent", "id": "mr-bunny", "text": "Mr. Bunny" },
+            {
+              "t": "text",
+              "text": ", tall as a mountain, with Chang'e on his palm. \"I've got a bunny!\" she shrieked. She swung her great curved blade. \"Mr. Bunny! Mind its legs!\" The rabbit thumped, and the Guardian went down on one knee."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p016",
+          "i": 2356,
+          "segments": [
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            {
+              "t": "text",
+              "text": " arrived on a cable. Fanny cut the Guardian's knee. Angela's shield came down on its neck and pinned it. \"GUIN! IT'S DOWN! GO ON!\" shouted Fanny."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p017",
+          "i": 2357,
+          "segments": [
+            {
+              "t": "text",
+              "text": "But Guinevere lay at the far end of the road, with nothing left. She thought of a hall of coloured light and a hand held out in the dark. "
+            },
+            { "t": "text", "text": "I am not going to let it end with me on my back.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p018",
+          "i": 2358,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The star at her collar began to burn. Her whole back burst into flame. They were wings of red and gold fire. She rose into the air like a comet."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p019",
+          "i": 2359,
+          "segments": [
+            { "t": "text", "text": "Far off, Vexana saw her. " },
+            { "t": "text", "text": "Don't,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. But the Will pulled at her like a tide at a small boat. She flew down like a violet comet, and Guinevere rose to meet her. They were twin streams of light, running round each other like threads in a rope. A tear fell from Vexana's face and was left behind, shining like a star."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p020",
+          "i": 2360,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They met head on. There was a silent white flash, then a roar. A single ray of sun broke through the clouds. In it fell a small limp figure in red and gold."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p021",
+          "i": 2361,
+          "segments": [
+            { "t": "text", "text": "Vexana saw her fall. She remembered a roof in the ash. " },
+            { "t": "text", "text": "No. Not this one.", "em": true },
+            { "t": "text", "text": " From far below, the falling girl opened her eyes." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p022",
+          "i": 2362,
+          "segments": [{ "t": "text", "text": "\"Don't let me be alone in this world.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p023",
+          "i": 2363,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana dived. Her gauntlet closed round a small black glove. She held on."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p024",
+          "i": 2364,
+          "segments": [{ "t": "text", "text": "\"Guin,\" she said." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p025",
+          "i": 2365,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Hello,\" said Guinevere, with a ghost of a smile. \"Not alone. Oh, good. That was a really terrible thing to say. Why, Vexana? Why?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c56-p026",
+          "i": 2366,
+          "segments": [{ "t": "text", "text": "\"Because I wanted you to live.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p027",
+          "i": 2367,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"The Will took me, that night in the corridor. It showed me you on a roof, in the ash. So I said yes. I asked to choose the "
+            },
+            { "t": "ent", "id": "embers", "text": "embers" },
+            { "t": "text", "text": ". One girl. " },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            {
+              "t": "text",
+              "text": ". Then it changed its mind. No embers. A clean reset. So I made my own.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c56-p028",
+          "i": 2368,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She lifted her staff. In its black bead glowed one tiny red-gold point. \"I made it myself, ya know. The Will gave me an empty orb. I put a star in the middle. A chip of the crystal you tuned. Now it doesn't only let things through. It takes them in. I will look as if I am about to do something terrible. Then the Will won't know what I'm really going to do. Guinevere, do you trust me?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p029",
+          "i": 2369,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"You were always there to pick me up,\" said Guinevere. \"I don't care why. I trust you, Sana!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c56-p030",
+          "i": 2370,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana smiled, small and tight. It was the smile she had given on the field at dusk, when she said yes. \"Hold the "
+            },
+            { "t": "ent", "id": "emblem-of-hope", "text": "Emblem" },
+            {
+              "t": "text",
+              "text": " tight. It will hurt. I'm sorry. And remember this. An Aspirant's power can pierce a black hole, and come back. Chang'e said so in her lecture. It's only a theory. Remember it when it's dark.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p031",
+          "i": 2371,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Above them, the great head in the rift turned back. Vexana straightened. Her eyes went blank."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p032",
+          "i": 2372,
+          "segments": [
+            { "t": "text", "text": "YOU HAVE HER, TWILIGHT STAR,", "em": true },
+            { "t": "text", "text": " said the Will. " },
+            {
+              "t": "text",
+              "text": "THE PURGE IS READY. HOLD HER WHERE SHE IS, AND I SHALL LET IT FALL.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c56-p033",
+          "i": 2373,
+          "segments": [{ "t": "text", "text": "\"Yes,\" said Vexana. She raised her staff." }],
+          "dialogue": true,
+          "speaker": "vexana"
+        },
+        {
+          "type": "p",
+          "id": "c56-p034",
+          "i": 2374,
+          "segments": [{ "t": "text", "text": "\"Vexana,\" whispered Guinevere." }],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c56-p035",
+          "i": 2375,
+          "segments": [
+            { "t": "text", "text": "For one moment, the pink eyes flickered. Then the " },
+            { "t": "ent", "id": "purge-probe", "text": "Purge Probe" },
+            { "t": "text", "text": " fell." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c57",
+      "kind": "chapter",
+      "number": 57,
+      "title": "Twin Streams of Light",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 930,
+      "paragraphCount": 41,
+      "firstParagraphIndex": 2376,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c57-p000",
+          "i": 2376,
+          "segments": [
+            { "t": "text", "text": "The " },
+            { "t": "ent", "id": "purge-probe", "text": "Purge Probe" },
+            { "t": "text", "text": " was " },
+            { "t": "ent", "id": "will-of-the-planet", "text": "the Will" },
+            {
+              "t": "text",
+              "text": "'s deadly beam. It fell as a pillar of white fire, wide as a street. It would have turned the whole northern ward to glass."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p001",
+          "i": 2377,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A small black bead rose to meet it. It hung above the two girls. Then it opened."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p002",
+          "i": 2378,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A black sphere, ten metres wide, swallowed the light. The Probe bent like smoke and poured into it, like water into a drain."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p003",
+          "i": 2379,
+          "segments": [
+            { "t": "text", "text": "\"It's a singularity,\" whispered " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            {
+              "t": "text",
+              "text": ". \"She has put the whole charge in a hole. Oh, my clever girl.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c57-p004",
+          "i": 2380,
+          "segments": [
+            { "t": "text", "text": "\"They're in it,\" said " },
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            { "t": "text", "text": ". \"They're not there now.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c57-p005",
+          "i": 2381,
+          "segments": [
+            { "t": "text", "text": "\"GUIN!\" screamed " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            {
+              "t": "text",
+              "text": ". The hole drank the sound. The sphere shrank to a dot and went out."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c57-p006",
+          "i": 2382,
+          "segments": [
+            { "t": "text", "text": "WHAT HAVE YOU DONE?", "em": true },
+            {
+              "t": "text",
+              "text": " said the Will. It was the first time in an age that it had been surprised."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c57-s01" },
+        {
+          "type": "p",
+          "id": "c57-p007",
+          "i": 2383,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Inside the black hole, there was no up and no down. There was only a thin thread of thought, and a small gold star at "
+            },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": "'s throat." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p008",
+          "i": 2384,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She had planned this. There was nowhere in the world to put the Probe without killing someone. So she had made a place with no one in it. She had forgotten to count the people she would take with her."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p009",
+          "i": 2385,
+          "segments": [
+            { "t": "text", "text": "She remembered the roof of petals. " },
+            {
+              "t": "text",
+              "text": "Though we once became twin streams of light, intertwined as we soared toward the heavens...",
+              "em": true
+            },
+            { "t": "text", "text": " Now she spoke to nobody. This was Vexana's side." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p010",
+          "i": 2386,
+          "segments": [
+            { "t": "text", "text": "It was you who brought colour to my world.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p011",
+          "i": 2387,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She remembered her father, a soldier, running with his arms out like a wall. He had died to save her. "
+            },
+            {
+              "t": "text",
+              "text": "My ignorance and foolishness led to my father's sacrifice. I chose solitude. I dreaded losing someone again.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p012",
+          "i": 2388,
+          "segments": [
+            {
+              "t": "text",
+              "text": "But that day, your arrival was like a ray of starlight piercing my dark world. You reached out your hand without hesitation.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p013",
+          "i": 2389,
+          "segments": [
+            { "t": "text", "text": "She remembered the fireworks, the " },
+            { "t": "ent", "id": "girls-house", "text": "girls' house" },
+            { "t": "text", "text": ", the amusement park. " },
+            {
+              "t": "text",
+              "text": "You helped me feel the joy that I thought I would never deserve. The ",
+              "em": true
+            },
+            { "t": "ent", "id": "emblem-of-hope", "text": "Emblem of Hope", "em": true },
+            {
+              "t": "text",
+              "text": " you gave me helped me understand that hope has a name.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p014",
+          "i": 2390,
+          "segments": [
+            { "t": "ent", "id": "guinevere", "text": "Guinevere", "em": true },
+            { "t": "text", "text": ".", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p015",
+          "i": 2391,
+          "segments": [
+            { "t": "text", "text": "So as one of the ", "em": true },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants", "em": true },
+            {
+              "t": "text",
+              "text": ", I must do what needs to be done. Even if it means standing against the world.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p016",
+          "i": 2392,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I can't bear the thought of a world without you. Protecting you means even more to me than protecting this world. Forgive me, Guinevere. If I could go back, I would still choose the same path. To betray you. To protect you.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p017",
+          "i": 2393,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then the dark grew warm. A soft gold light spread from her star."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p018",
+          "i": 2394,
+          "segments": [{ "t": "text", "text": "What's with all this doom and gloom?", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c57-p019",
+          "i": 2395,
+          "segments": [{ "t": "text", "text": "It was a small, cracked, angry voice, very near." }]
+        },
+        {
+          "type": "p",
+          "id": "c57-p020",
+          "i": 2396,
+          "segments": [{ "t": "text", "text": "I can hear everything, you know!", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c57-p021",
+          "i": 2397,
+          "segments": [{ "t": "text", "text": "Now came Guinevere's side." }]
+        },
+        {
+          "type": "p",
+          "id": "c57-p022",
+          "i": 2398,
+          "segments": [
+            { "t": "text", "text": "We stopped the ", "em": true },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix", "em": true },
+            {
+              "t": "text",
+              "text": "'s invasion and saved the world! Nothing could make me prouder than that!",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p023",
+          "i": 2399,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It rang like a bell. Was it true? Nobody in that dark could say. It was only what a small, furious girl with a very big heart had decided to believe."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p024",
+          "i": 2400,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Back then, you were the only one who stood by my side. \"You are strong, Guinevere.\" It felt like the very first time someone saw me for me.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p025",
+          "i": 2401,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I'd never give up on you! Once, twice, three times! The Will of the Planet? Ha! There's nothing to be scared of! I'll snatch you right back without a second thought! Because I've always believed that our hope can create miracles!",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p026",
+          "i": 2402,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A clear note rose, sung by two voices. Vexana put out her hand. It met another."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p027",
+          "i": 2403,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Huh? Why do I suddenly feel like I'm being born again? You said that when the Aspirant's power pierces through the black hole, we can return to the human world. It really was true! We saved each other again!",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p028",
+          "i": 2404,
+          "segments": [
+            { "t": "text", "text": "The light rose like the sun. The void cracked open. " },
+            { "t": "text", "text": "Come back with me, Vexana,", "em": true },
+            { "t": "text", "text": " said Guinevere. " },
+            { "t": "text", "text": "This is the miracle we created!", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p029",
+          "i": 2405,
+          "segments": [{ "t": "text", "text": "Vexana took her hand." }]
+        },
+        { "type": "scene-break", "id": "c57-s02" },
+        {
+          "type": "p",
+          "id": "c57-p030",
+          "i": 2406,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On a roof, Lesley saw it first. \"A dot. Gold. And another, rose. They're going up.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p031",
+          "i": 2407,
+          "segments": [
+            { "t": "text", "text": "\"They're coming back,\" said Chang'e, laughing and crying." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c57-p032",
+          "i": 2408,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Two ribbons of light, one gold and one rose, twisted round each other and climbed through the net. At the top of the sky they turned. Then they came down softly, like snow."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p033",
+          "i": 2409,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the cracked road lay two girls. One had peach hair, loose from its bows. She was breathing in great gulps, like a swimmer coming up from the deep."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p034",
+          "i": 2410,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The other lay curled beside her. She was smaller than before. The horns, the cloak and the armour were gone. She wore a torn school uniform. Her hair was long and dark again, with a sheen of violet. At her collar burned a small gold star. She opened her eyes. They were violet."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p035",
+          "i": 2411,
+          "segments": [{ "t": "text", "text": "\"Guin?\" she croaked." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c57-p036",
+          "i": 2412,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Alive. I think. A bit,\" said Guinevere, smiling. \"I did say I'd snatch you back, without a second thought. I didn't even have a "
+            },
+            { "t": "text", "text": "first", "em": true },
+            { "t": "text", "text": " one. It was all rather a rush.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c57-p037",
+          "i": 2413,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana hid her face in her friend's shoulder and shook. \"It isn't over,\" she said, muffled. \"The Matrix is still there.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p038",
+          "i": 2414,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know. We stopped it,\" said Guinevere calmly, to the sky. \"We stopped the Matrix's invasion, and saved the world. Nothing could make me prouder than that.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "guinevere"
+        },
+        {
+          "type": "p",
+          "id": "c57-p039",
+          "i": 2415,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She said it like a girl who has decided something is true. Perhaps it was only the first brave word of a long sentence that others would finish. Nobody there could say."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c57-p040",
+          "i": 2416,
+          "segments": [
+            { "t": "text", "text": "In the small black box at Vexana's hip, " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": "'s needle hummed once, thinly, and was still. She did not notice. At the far end of the road, Fanny broke off screaming a name, and began to laugh."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c58",
+      "kind": "chapter",
+      "number": 58,
+      "title": "The Bell Tower",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1009,
+      "paragraphCount": 44,
+      "firstParagraphIndex": 2417,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c58-p000",
+          "i": 2417,
+          "segments": [
+            { "t": "text", "text": "While " },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            {
+              "t": "text",
+              "text": " fought in the north, another story was unfolding. It was at the far end of the "
+            },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p001",
+          "i": 2418,
+          "segments": [
+            { "t": "ent", "id": "karina-voss", "text": "Karina" },
+            {
+              "t": "text",
+              "text": " was in the medical tent on the south lawn, but she was watching one roof. Some part of her always kept count of one person, like a mother on a beach."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p002",
+          "i": 2419,
+          "segments": [
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            {
+              "t": "text",
+              "text": " had slipped away from the platform when the call came. Now she sat on the edge of the highest roof, with a stick of candy and "
+            },
+            { "t": "ent", "id": "silverbolt", "text": "Silverbolt" },
+            {
+              "t": "text",
+              "text": " floating at her shoulder. Her pointed ears and small red horns showed. A pink heart-shaped clip was pinned to one horn."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p003",
+          "i": 2420,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She was watching two lights fight in the sky, red-gold against violet. She was smiling a new smile, soft and lopsided, not her usual neat, copied one. Then the smile was gone. Selena went still, like a dog hearing a whistle that no one else can hear. "
+            },
+            { "t": "text", "text": "Something's wrong,", "em": true },
+            { "t": "text", "text": " thought Karina. She dropped her bandages." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p004",
+          "i": 2421,
+          "segments": [
+            { "t": "text", "text": "A " },
+            { "t": "ent", "id": "hunters", "text": "hunter" },
+            {
+              "t": "text",
+              "text": " came down out of the cloud: a long black dart the size of a river barge, with one amber eye. It stopped above the roof."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p005",
+          "i": 2422,
+          "segments": [
+            { "t": "text", "text": "So,", "em": true },
+            { "t": "text", "text": " thought Selena. " },
+            { "t": "text", "text": "The recall.", "em": true },
+            { "t": "text", "text": " She had answered its first message with one word: " },
+            { "t": "text", "text": "NO.", "em": true },
+            { "t": "text", "text": " A voice came out of the hunter, low, dry and very old. " },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            { "t": "text", "text": " was far away in her ship. This was only her voice." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p006",
+          "i": 2423,
+          "segments": [{ "t": "text", "text": "It has been a while, my little doll.", "em": true }]
+        },
+        { "type": "scene-break", "id": "c58-s01" },
+        {
+          "type": "p",
+          "id": "c58-p007",
+          "i": 2424,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena picked up her gown and scroll. The thing in the sky could see through glass, so she crossed the quad to the old "
+            },
+            { "t": "ent", "id": "bell-tower", "text": "bell tower" },
+            { "t": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p008",
+          "i": 2425,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It stood at the east end of the quad. It was sandstone, older than the Academy, with two hundred and fourteen steps. At the top hung one huge bell, rung once a year, on the first day of winter. Selena loved it because it was old and plain. It had no circuits. Up there, nothing could call her name."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p009",
+          "i": 2426,
+          "segments": [
+            { "t": "text", "text": "It's a good place,", "em": true },
+            { "t": "text", "text": " she thought, " },
+            { "t": "text", "text": "to tell somebody no.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p010",
+          "i": 2427,
+          "segments": [
+            { "t": "text", "text": "\"Hello, Mother,\" she said, with her old polite smile." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p011",
+          "i": 2428,
+          "segments": [{ "t": "text", "text": "My dear child.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c58-p012",
+          "i": 2429,
+          "segments": [{ "t": "text", "text": "\"It's been a while, my dear creator.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p013",
+          "i": 2430,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I have watched you teach them to fight us. You gave away our secrets, one by one, with a smile. It was most diverting.",
+              "em": true
+            },
+            { "t": "text", "text": " A pause. " },
+            { "t": "text", "text": "I was proud.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p014",
+          "i": 2431,
+          "segments": [{ "t": "text", "text": "\"That's nice,\" said Selena." }],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c58-p015",
+          "i": 2432,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It is time to come home. There is a great place for you. At my right hand. As my successor.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p016",
+          "i": 2433,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Oh,\" said Selena. It was the first thing she had said that was not rehearsed."
+            }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c58-p017",
+          "i": 2434,
+          "segments": [
+            { "t": "text", "text": "Come home, little one. You belong with me.", "em": true }
+          ]
+        },
+        { "type": "scene-break", "id": "c58-s02" },
+        {
+          "type": "p",
+          "id": "c58-p018",
+          "i": 2435,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Karina was climbing the stair, counting the steps. She heard only the wind. She had known since a wet night on the Hollin road, when she picked up a small, silent, muddy child. She had understood that the child was not what she seemed. She had never said it. She had thought, "
+            },
+            { "t": "text", "text": "Whatever she is, she is mine.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p019",
+          "i": 2436,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She came out through the trapdoor at the top. Selena was standing in the wind, laughing."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p020",
+          "i": 2437,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was a real laugh, loud and wild. \"That's the best offer I've ever had! I'd have the "
+            },
+            { "t": "ent", "id": "storm-citadel", "text": "Citadel" },
+            { "t": "text", "text": ", the fleet, the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            { "t": "text", "text": ". Except for one thing. I'd have to do what you like.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p021",
+          "i": 2438,
+          "segments": [
+            { "t": "text", "text": "We are one,", "em": true },
+            { "t": "text", "text": " said Obsidia. " },
+            { "t": "text", "text": "You and I.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p022",
+          "i": 2439,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I know. That's what's wrong. We're fated to destroy each other. Why were we made so alike?\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p023",
+          "i": 2440,
+          "segments": [
+            {
+              "t": "text",
+              "text": "I did not make you to destroy me. I added one more pawn to the board. It was a whim.",
+              "em": true
+            },
+            { "t": "text", "text": " The voice was level. " },
+            { "t": "text", "text": "I did not expect to love it.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p024",
+          "i": 2441,
+          "segments": [
+            { "t": "text", "text": "On the stair, Karina knelt with her hand over her mouth." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p025",
+          "i": 2442,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Well,\" said Selena lightly. \"This so-called destiny. It doesn't sound cool at all.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c58-p026",
+          "i": 2443,
+          "segments": [
+            { "t": "text", "text": "You are an ", "em": true },
+            { "t": "ent", "id": "enders", "text": "Ender", "em": true },
+            { "t": "text", "text": ". You are mine.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p027",
+          "i": 2444,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It's what I was born as. It isn't what I am. Don't you think it'd be more fun to smash fate to smithereens?\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p028",
+          "i": 2445,
+          "segments": [
+            { "t": "text", "text": "Free will is a flaw that must be corrected.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p029",
+          "i": 2446,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"That's funny. I was about to say the same about yours.\" She smiled, wide and sharp, with something like pity in it. \"Sorry. I still prefer life at the Academy.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p030",
+          "i": 2447,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She held out her hand. Silverbolt pushed its head under her palm like a cat. \"Overload,\" she said softly."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p031",
+          "i": 2448,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lightning ran over her. Silverbolt folded into two white crescent blades that spun up around her. Her school clothes turned into her combat suit, black and glossy, with a short violet cape. The little tin clip fell from her horn and rolled away."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p032",
+          "i": 2449,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Hey,\" she said to Karina. \"Sweetheart. Don't look at all this. It's a mess.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p033",
+          "i": 2450,
+          "segments": [
+            { "t": "text", "text": "\"It's beautiful,\" said Karina, crying. \"It's you.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "karina-voss"
+        },
+        {
+          "type": "p",
+          "id": "c58-p034",
+          "i": 2451,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena went still for a heartbeat. \"I got your picture-book,\" she said. \"It's the best one I've got. I'll bring it back. I'll come back, Mum. I'll be about an hour. I've been rather rude to somebody for a very long time. I thought I'd better go and say so. In person.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p035",
+          "i": 2452,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She stepped onto the parapet. For months, a thin grey thread had run from her to the Storm Citadel. She had never followed it. Now she did. "
+            },
+            { "t": "text", "text": "There you are,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Got you.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p036",
+          "i": 2453,
+          "segments": [{ "t": "text", "text": "\"Right. Here comes the lightning.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c58-p037",
+          "i": 2454,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Lightning split the clouds. It left a long white road up to the red rift and the Storm Citadel."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p038",
+          "i": 2455,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Even on the path to destruction,\" cried Selena, laughing, \"I'm taking the scenic route!\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c58-p039",
+          "i": 2456,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She leaped. She shot up the road of lightning like an arrow, and the cloud closed behind her like a door."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c58-s03" },
+        {
+          "type": "p",
+          "id": "c58-p040",
+          "i": 2457,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The top of the tower was quiet. Karina picked up the pink clip. It was a cheap bit of tin that had cost four coins at a fair. A very small girl had once put it in her hair and said, carefully, like reading a line, "
+            },
+            { "t": "text", "text": "Thank you, Karina. It is very nice.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p041",
+          "i": 2458,
+          "segments": [{ "t": "text", "text": "\"Go on, then,\" Karina whispered. \"Show her.\"" }],
+          "dialogue": true,
+          "speaker": "karina-voss"
+        },
+        {
+          "type": "p",
+          "id": "c58-p042",
+          "i": 2459,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the lawn below, some students in teal sashes held a banner: "
+            },
+            {
+              "t": "ent",
+              "id": "appreciation-society",
+              "text": "SELENA-SENPAI APPRECIATION SOCIETY"
+            },
+            {
+              "t": "text",
+              "text": ". One kept whispering, \"She's an Ender.\" A plump boy, who had written Selena a letter every week and never had a reply, answered steadily."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c58-p043",
+          "i": 2460,
+          "segments": [{ "t": "text", "text": "\"Yes. And she's ours.\"" }],
+          "dialogue": true
+        }
+      ]
+    },
+    {
+      "id": "c59",
+      "kind": "chapter",
+      "number": 59,
+      "title": "Even on the Path to Destruction",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1147,
+      "paragraphCount": 53,
+      "firstParagraphIndex": 2461,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c59-p000",
+          "i": 2461,
+          "segments": [
+            { "t": "text", "text": "There was no sound in the high dark. " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " rose through the rift and looked back once. She saw the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            { "t": "text", "text": " and the " },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            { "t": "text", "text": "'s net across the sea. " },
+            { "t": "text", "text": "Still there,", "em": true },
+            { "t": "text", "text": " she thought. " },
+            { "t": "text", "text": "Well. It's not my department.", "em": true },
+            { "t": "text", "text": " She turned her back on it. " },
+            { "t": "text", "text": "Hello, ", "em": true },
+            { "t": "ent", "id": "storm-citadel", "text": "Storm Citadel", "em": true },
+            { "t": "text", "text": ".", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p001",
+          "i": 2462,
+          "segments": [
+            { "t": "text", "text": "The Citadel was larger than she had imagined. Ranks of " },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " stood before its gate. Not one lifted a blade. She walked down the middle of them with her chin up."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p002",
+          "i": 2463,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Beyond the gate was a vast dark hall. At the bottom rose a column like a spine, ringed with red lights like eyes. Before it stood "
+            },
+            { "t": "ent", "id": "obsidia", "text": "Obsidia" },
+            {
+              "t": "text",
+              "text": ", as she had always been. Her hair was pink and gold. One eye was violet-blue, with a star in it. The other was pink-red. A silver beast's head lay at her feet, on a long chain."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p003",
+          "i": 2464,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Destruction is mine to command,\" she said, \"yet my finest creation has gone off-script.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p004",
+          "i": 2465,
+          "segments": [
+            { "t": "text", "text": "\"Take a good look,\" said Selena. \"This is the real me.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c59-p005",
+          "i": 2466,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was the only line she had left. She had planned a whole speech. But she looked at Obsidia and thought: "
+            },
+            { "t": "text", "text": "She has been alone for a very long time.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p006",
+          "i": 2467,
+          "segments": [
+            { "t": "text", "text": "\"The chair is waiting,\" said Obsidia. \"At my right hand.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c59-p007",
+          "i": 2468,
+          "segments": [
+            { "t": "text", "text": "\"Ah... so what should I destroy next?\" said Selena sweetly." }
+          ],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c59-p008",
+          "i": 2469,
+          "segments": [{ "t": "text", "text": "\"A pawn with no surprises left, of course.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p009",
+          "i": 2470,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The floor ticked. Black chains rose from the steps, coiled round Selena and lifted her into the air before the column. The red eyes turned to watch."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p010",
+          "i": 2471,
+          "segments": [
+            { "t": "text", "text": "She was not afraid. " },
+            { "t": "text", "text": "A pull is a handle,", "em": true },
+            {
+              "t": "text",
+              "text": " she thought. A leash has two ends. A small scientist had once agreed with her. She felt along the chain. It was strong, but it was not quite tight. It had been laid on gently, like a hand on a bird."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p011",
+          "i": 2472,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Then I'll pull exactly as tight as she thinks I will.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p012",
+          "i": 2473,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She went slack. She let the whole cold pull of the Citadel run through her, and gathered it where her lightning lived."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p013",
+          "i": 2474,
+          "segments": [
+            { "t": "text", "text": "\"I'll never be your puppet again!\" she shouted." }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p014",
+          "i": 2475,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The lightning burst out of her. The chains flew apart like beads off a string."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p015",
+          "i": 2476,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Good,\" said Obsidia, hardly above a breath. \"You've grown, Selena.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c59-p016",
+          "i": 2477,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Silver plate flowed over Selena's black suit. A helm came down over her face. Pink blades sprang from her forearms. Four black-and-gold blade-wings wheeled round her. This was her Ender form, her true shape. She had hidden it all her life."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p017",
+          "i": 2478,
+          "segments": [{ "t": "text", "text": "\"Did I surprise you?\" said the helm." }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p018",
+          "i": 2479,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She struck at the pink shield before Obsidia's face, and it cracked."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c59-s01" },
+        {
+          "type": "p",
+          "id": "c59-p019",
+          "i": 2480,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was less a fight than a storm. For the first time, Selena held nothing back. She found, with wild joy, that the cold, hungry thing in her blood was magnificent."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p020",
+          "i": 2481,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She slid under Obsidia's whip to the foot of the column and cut a hard X in its armour. Red cracks ran up the whole spine. The column came apart in a slow fall of red light."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p021",
+          "i": 2482,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Obsidia stood in the flames. A splinter had cut her cheek. A single bead of blood ran down her pale skin. It was red."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p022",
+          "i": 2483,
+          "segments": [
+            { "t": "text", "text": "She's bleeding,", "em": true },
+            { "t": "text", "text": " thought Selena. " },
+            { "t": "text", "text": "It's red. The same as mine. The same as ", "em": true },
+            { "t": "ent", "id": "karina-voss", "text": "Karina", "em": true },
+            { "t": "text", "text": "'s.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p023",
+          "i": 2484,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It has been a long time since that happened,\" said Obsidia, astonished. \"How very interesting. I did not predict the leash. Where did you learn it?\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "obsidia"
+        },
+        {
+          "type": "p",
+          "id": "c59-p024",
+          "i": 2485,
+          "segments": [
+            { "t": "text", "text": "\"From a friend. I've got an appreciation society.\"" }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p025",
+          "i": 2486,
+          "segments": [
+            { "t": "text", "text": "Something closed in Obsidia's face, gently, like a door." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p026",
+          "i": 2487,
+          "segments": [{ "t": "text", "text": "\"Give me back my freedom!\" cried Selena." }],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c59-p027",
+          "i": 2488,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The fight went into a huge round shaft. Obsidia's beast-head opened its jaws. In its throat glowed a small golden sun. Selena felt it pull on her bones, like a tide going out."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p028",
+          "i": 2489,
+          "segments": [
+            { "t": "text", "text": "Sleep,", "em": true },
+            { "t": "text", "text": " said Obsidia, " },
+            { "t": "text", "text": "in the cradle of the void.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p029",
+          "i": 2490,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Selena's arms went slack. She thought of a small kitchen, and a woman singing out of tune at the stove. She thought of a picture-book with a girl in red boots. And she thought, with sudden childish anger, "
+            },
+            { "t": "text", "text": "I haven't even had my diploma!", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p030",
+          "i": 2491,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Hey,\" she said, in a thin rasp. \"If the world ended right now, what would happen to my graduation ceremony? Someone will have to explain to the Dean why I left in the middle of the Latin.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p031",
+          "i": 2492,
+          "segments": [{ "t": "text", "text": "Silence!", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c59-p032",
+          "i": 2493,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was Obsidia's first outburst. The golden core in the beast's throat wavered. It was enough. Selena kicked free and shot up the shaft, out through the burning side of the Citadel, into open space."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c59-s02" },
+        {
+          "type": "p",
+          "id": "c59-p033",
+          "i": 2494,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Stars lay all around her. Behind her, the Citadel burned, but it did not fall. Obsidia came streaking after her, and a voice came along the thin grey cord between them."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p034",
+          "i": 2495,
+          "segments": [
+            {
+              "t": "text",
+              "text": "You do not understand the true power of 'Destruction'...",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p035",
+          "i": 2496,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Destruction and faith share the same origin. Both are a way of saying that the present is not enough.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p036",
+          "i": 2497,
+          "segments": [{ "t": "text", "text": "\"That's rather good, actually,\" said Selena." }],
+          "dialogue": true,
+          "speaker": "selena"
+        },
+        {
+          "type": "p",
+          "id": "c59-p037",
+          "i": 2498,
+          "segments": [
+            {
+              "t": "text",
+              "text": "You cannot save humanity. They have walked this road many times. They have never once turned aside.",
+              "em": true
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p038",
+          "i": 2499,
+          "segments": [{ "t": "text", "text": "\"Maybe they're just slow.\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p039",
+          "i": 2500,
+          "segments": [{ "t": "text", "text": "Perhaps.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c59-p040",
+          "i": 2501,
+          "segments": [
+            {
+              "t": "text",
+              "text": "White-gold fire swallowed Obsidia. When it cleared, Selena saw a form she had never seen. It was Obsidia's own Ender form, her true shape. The gown and the gentle face had been only a cloak over something older and less kind. She was tall, silver and violet, like a lily made of knives. From her back spread huge butterfly wings, and in the middle of each wing a black disc turned. Each was a tiny black hole."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p041",
+          "i": 2502,
+          "segments": [{ "t": "text", "text": "Come back, my puppet.", "em": true }]
+        },
+        {
+          "type": "p",
+          "id": "c59-p042",
+          "i": 2503,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was said very quietly, with a catch in it, and a faint, dry hope."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p043",
+          "i": 2504,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Scorched and ragged, one arm hanging, Selena raised her blades."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p044",
+          "i": 2505,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Sorry, ma'am, but I still prefer life at the academy!\" she said."
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c59-p045",
+          "i": 2506,
+          "segments": [{ "t": "text", "text": "She charged." }]
+        },
+        { "type": "scene-break", "id": "c59-s03" },
+        {
+          "type": "p",
+          "id": "c59-p046",
+          "i": 2507,
+          "segments": [{ "t": "text", "text": "Nobody on the ground saw how it ended." }]
+        },
+        {
+          "type": "p",
+          "id": "c59-p047",
+          "i": 2508,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They saw the Citadel burn. High on its hull, a small fire grew into a red-black flower. It burned like a lamp in a window, and it did not fall. In the rubble of a ruined avenue, "
+            },
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            {
+              "t": "text",
+              "text": " stood with her cracked drone beside her. She watched it with her face turned up. Whatever she thought, she did not say."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p048",
+          "i": 2509,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They saw a vast white flare at the top of the sky. A ring of sparks fell like slow, bright rain. Then the net flickered. A hundred thousand people saw it. None of them knew if something had been cut, or had only paused."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p049",
+          "i": 2510,
+          "segments": [
+            {
+              "t": "text",
+              "text": "They did not see the two figures locked together at the heart of the flare. They did not hear a name spoken very low. They did not see the hands that had been reaching for a throat close instead, slowly, round a wrist."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p050",
+          "i": 2511,
+          "segments": [{ "t": "text", "text": "Nobody saw that. There was only the light." }]
+        },
+        {
+          "type": "p",
+          "id": "c59-p051",
+          "i": 2512,
+          "segments": [
+            { "t": "text", "text": "When it had gone, a woman on the old " },
+            { "t": "ent", "id": "bell-tower", "text": "bell tower" },
+            {
+              "t": "text",
+              "text": " stood up, with a pink clip in her hand. She wiped her face with her apron."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c59-p052",
+          "i": 2513,
+          "segments": [
+            { "t": "text", "text": "\"Well,\" said Karina, to nobody. \"She said an hour.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "karina-voss"
+        }
+      ]
+    },
+    {
+      "id": "c60",
+      "kind": "chapter",
+      "number": 60,
+      "title": "Dawn",
+      "part": 12,
+      "timeNote": null,
+      "wordCount": 1515,
+      "paragraphCount": 55,
+      "firstParagraphIndex": 2514,
+      "blocks": [
+        {
+          "type": "p",
+          "id": "c60-p000",
+          "i": 2514,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The night did not end all at once. Between two and three in the morning, a woman with a clipboard on the north quay noticed something. She had been counting "
+            },
+            { "t": "ent", "id": "enders", "text": "Enders" },
+            {
+              "t": "text",
+              "text": " all day. Now, for a while, she had counted none. The whirlpools in the sea had closed. The Enders on the shore stood still, their amber eyes dim, as if struck in the middle of a word."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p001",
+          "i": 2515,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"They've stopped,\" she said. Nobody cheered. They had been told many times that a thing was over, and been wrong."
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c60-s01" },
+        {
+          "type": "p",
+          "id": "c60-p002",
+          "i": 2516,
+          "segments": [
+            { "t": "text", "text": "\"It hasn't ended,\" said " },
+            { "t": "ent", "id": "change", "text": "Chang'e" },
+            { "t": "text", "text": "." }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c60-p003",
+          "i": 2517,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She stood on a box in the command room, with soot on her nose. It was four in the morning. \"The singularities have closed. The Enders have stopped. They have stopped being told what to do. But the "
+            },
+            { "t": "ent", "id": "mother-matrix", "text": "Matrix" },
+            {
+              "t": "text",
+              "text": " is still there. The rift is still there. I think it has paused. I don't know why.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p004",
+          "i": 2518,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"Teacher,\" said a girl with a bandage round her head. \"Did we win?\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c60-p005",
+          "i": 2519,
+          "segments": [{ "t": "text", "text": "Chang'e looked very old and very young." }]
+        },
+        {
+          "type": "p",
+          "id": "c60-p006",
+          "i": 2520,
+          "segments": [
+            { "t": "text", "text": "\"I don't know,\" she said gently. \"I know the " },
+            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
+            {
+              "t": "text",
+              "text": " is still standing. I know that in the northern ward, more than a hundred thousand people are breathing. That is not nothing. But it isn't an answer. It is a morning. I should like us to have it. Then we can find out what comes next.\""
+            }
+          ],
+          "dialogue": true
+        },
+        { "type": "scene-break", "id": "c60-s02" },
+        {
+          "type": "p",
+          "id": "c60-p007",
+          "i": 2521,
+          "segments": [
+            { "t": "ent", "id": "ruby", "text": "Ruby" },
+            {
+              "t": "text",
+              "text": " sat at the foot of the tower, scythe across her knees, a small cracked slate in her hands. "
+            },
+            { "t": "ent", "id": "angela", "text": "Angela" },
+            { "t": "text", "text": " sat down beside her with soup and a bun." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p008",
+          "i": 2522,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I put something in,\" said Ruby. \"In the Matrix. I found the gap, and I typed one line. It said, "
+            },
+            { "t": "text", "text": "hold.", "em": true },
+            { "t": "text", "text": " It said, " },
+            { "t": "text", "text": "wait.", "em": true },
+            { "t": "text", "text": "\"" }
+          ],
+          "dialogue": true,
+          "speaker": "ruby"
+        },
+        {
+          "type": "p",
+          "id": "c60-p009",
+          "i": 2523,
+          "segments": [{ "t": "text", "text": "\"Did it work?\"" }],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c60-p010",
+          "i": 2524,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I don't know. It's the first time I've written a program and not known what it would do. It might be listening.\" She almost smiled. \"It's the first time I wasn't doing what I was told.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c60-p011",
+          "i": 2525,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The sun came up. Ruby leaned her head on Angela's shoulder. \"Where should we go? Back to "
+            },
+            { "t": "ent", "id": "oro", "text": "Oro" },
+            { "t": "text", "text": "? Somewhere else? You should have a say.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p012",
+          "i": 2526,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Angela looked at the dormitory windows. \"I should like to go home,\" she said. \"To the dorm. It's got our beds, and the kettle, and that terrible green rug.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p013",
+          "i": 2527,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Ruby stared. Then she smiled, a slow, open smile that nobody at the Academy had ever seen on her. \"All right,\" she said. \"Let's go home.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p014",
+          "i": 2528,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She pulled Angela to her feet and spun her round on the wet grass, humming."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c60-s03" },
+        {
+          "type": "p",
+          "id": "c60-p015",
+          "i": 2529,
+          "segments": [
+            { "t": "ent", "id": "guinevere", "text": "Guinevere" },
+            {
+              "t": "text",
+              "text": " sat on the steps of the great hall in a blanket, with a mug of cocoa. Her father stood on the gravel, hat in hand."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p016",
+          "i": 2530,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I heard you shout,\" she said. \"You said, well done. It was the best thing you've ever said to me.\""
+            }
+          ],
+          "dialogue": true
+        },
+        {
+          "type": "p",
+          "id": "c60-p017",
+          "i": 2531,
+          "segments": [
+            {
+              "t": "text",
+              "text": "He put his hand over his eyes. \"Sit down, Father,\" she said."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p018",
+          "i": 2532,
+          "segments": [
+            {
+              "t": "text",
+              "text": "He sat. \"I should like to hear about your friend,\" he said, very low. \""
+            },
+            { "t": "ent", "id": "vexana", "text": "Vexana" },
+            { "t": "text", "text": ". I should like to know what she is like.\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p019",
+          "i": 2533,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere smiled, the real, wide, wet smile. \"Well,\" she said. \"To begin with, she's rather shy.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p020",
+          "i": 2534,
+          "segments": [
+            { "t": "text", "text": "Behind them, " },
+            { "t": "ent", "id": "harlan", "text": "Harlan" },
+            {
+              "t": "text",
+              "text": " turned away and went, with great unconcern, to see to the gate."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c60-s04" },
+        {
+          "type": "p",
+          "id": "c60-p021",
+          "i": 2535,
+          "segments": [
+            { "t": "ent", "id": "layla", "text": "Layla" },
+            { "t": "text", "text": " and " },
+            { "t": "ent", "id": "fanny", "text": "Fanny" },
+            { "t": "text", "text": " sat on their old " },
+            { "t": "ent", "id": "gantry", "text": "gantry" },
+            {
+              "t": "text",
+              "text": ", passing a flask of tea, and watched the sun rise over the harbour. Below them, a thin, cracked voice was calling. \"Layla! Layla Hikari!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p022",
+          "i": 2536,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla jumped up. \"That's Mum! She's come all the way up from "
+            },
+            { "t": "ent", "id": "tanners-row", "text": "Tanner's Row" },
+            { "t": "text", "text": "!\"" }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p023",
+          "i": 2537,
+          "segments": [{ "t": "text", "text": "\"Go,\" said Fanny." }],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c60-p024",
+          "i": 2538,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Layla kissed her hard on the cheek and raced down the stair. \"MUM! I'M HERE! I'M ALL RIGHT! I'M COMING!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p025",
+          "i": 2539,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny sat with her hand on her cheek. A big shadow fell across the boards. \"It's a good spot,\" said "
+            },
+            { "t": "ent", "id": "tigreal", "text": "Tigreal" },
+            {
+              "t": "text",
+              "text": ". He sat down beside her. \"What's over there, across the water?\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p026",
+          "i": 2540,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"A harbour,\" said Fanny softly. \"A really big one. With a hundred and seventeen lighthouses. They all play different music when the wind blows. I read about it in the "
+            },
+            { "t": "ent", "id": "cadet-corps", "text": "Corps" },
+            { "t": "text", "text": ". I thought it was silly.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "fanny"
+        },
+        {
+          "type": "p",
+          "id": "c60-p027",
+          "i": 2541,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"It isn't,\" said Tigreal. \"I've never been anywhere. I've only stood in one place. When this is over, I'd like to see it. You and I, and that loud one. If you'd have me.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "tigreal"
+        },
+        {
+          "type": "p",
+          "id": "c60-p028",
+          "i": 2542,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Fanny leaned her head against his huge shoulder. \"I'd like that very much. Layla will want to go to the mountains first. The ones with snow on top, all year. It's a long story.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p029",
+          "i": 2543,
+          "segments": [{ "t": "text", "text": "\"I've time,\" said Tigreal." }],
+          "dialogue": true,
+          "speaker": "tigreal"
+        },
+        { "type": "scene-break", "id": "c60-s05" },
+        {
+          "type": "p",
+          "id": "c60-p030",
+          "i": 2544,
+          "segments": [
+            { "t": "ent", "id": "lesley", "text": "Lesley" },
+            {
+              "t": "text",
+              "text": " sat on the east roof by her rifle. She had not moved since the black sphere went out. All night she had watched the sky through her scope."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p031",
+          "i": 2545,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Chang'e came and sat beside her with a flask of cocoa. It was thick and too sweet. \"I made it myself.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p032",
+          "i": 2546,
+          "segments": [{ "t": "text", "text": "\"It's terrible,\" said Lesley, and drank more." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c60-p033",
+          "i": 2547,
+          "segments": [
+            { "t": "text", "text": "\"I asked the " },
+            { "t": "ent", "id": "imperatrix", "text": "Imperatrix" },
+            {
+              "t": "text",
+              "text": " why,\" said Chang'e quietly. \"She said she could not bear to see the last small light go out. I thought I would feel something had been paid. That there would be a click. There wasn't.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        {
+          "type": "p",
+          "id": "c60-p034",
+          "i": 2548,
+          "segments": [{ "t": "text", "text": "\"There never is,\" said Lesley." }],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c60-p035",
+          "i": 2549,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She put one arm round Chang'e's small shoulders. Chang'e leaned in, with a shaky sigh."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p036",
+          "i": 2550,
+          "segments": [
+            {
+              "t": "text",
+              "text": "\"I'm not going to say it's all right,\" said Lesley. \"It isn't. But I'm here. Whatever comes next, I'm not going to go.\""
+            }
+          ],
+          "dialogue": true,
+          "speaker": "lesley"
+        },
+        {
+          "type": "p",
+          "id": "c60-p037",
+          "i": 2551,
+          "segments": [{ "t": "text", "text": "\"I know,\" whispered Chang'e. \"Thank you.\"" }],
+          "dialogue": true,
+          "speaker": "change"
+        },
+        { "type": "scene-break", "id": "c60-s06" },
+        {
+          "type": "p",
+          "id": "c60-p038",
+          "i": 2552,
+          "segments": [
+            { "t": "ent", "id": "karina-voss", "text": "Karina" },
+            { "t": "text", "text": " did not go down from the " },
+            { "t": "ent", "id": "bell-tower", "text": "bell tower" },
+            {
+              "t": "text",
+              "text": ". She sat on the roof all night with the pink clip in her hand. "
+            },
+            { "t": "text", "text": "I'll be about an hour,", "em": true },
+            { "t": "text", "text": " " },
+            { "t": "ent", "id": "selena", "text": "Selena" },
+            { "t": "text", "text": " had said." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p039",
+          "i": 2553,
+          "segments": [
+            {
+              "t": "text",
+              "text": "She thought of the picture-book she had read to her child so often. A girl in red boots carries a lantern through a storm. On the last page, it says: "
+            },
+            { "t": "text", "text": "And she always got home.", "em": true },
+            {
+              "t": "text",
+              "text": " Karina had never believed it. But she had said it, over soup, only a little while ago: "
+            },
+            { "t": "text", "text": "She always gets home.", "em": true },
+            { "t": "text", "text": " Now she would wait." }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p040",
+          "i": 2554,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In the small hours, she had lit a little tin oil lamp. She had set it on the ledge of the belfry, where the sky could see it. Now she sat beside it and began, out of tune, to sing."
+            }
+          ]
+        },
+        { "type": "scene-break", "id": "c60-s07" },
+        {
+          "type": "p",
+          "id": "c60-p041",
+          "i": 2555,
+          "segments": [
+            { "t": "text", "text": "Weeks later, Chang'e began the " },
+            { "t": "ent", "id": "hour-of-voices", "text": "Hour of Voices" },
+            { "t": "text", "text": ". The people of " },
+            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak" },
+            { "t": "text", "text": " saw the " },
+            { "t": "ent", "id": "aspirants", "text": "Aspirants" },
+            {
+              "t": "text",
+              "text": " as weapons and saints, not girls. So each Aspirant sat before a small round camera for one hour, and talked to the whole city as herself."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p042",
+          "i": 2556,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Guinevere went first. She held up a crooked photograph of two girls on a stage. \"We won Best Partners. That's Vexana. She's the black-haired one. She's rather shy.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p043",
+          "i": 2557,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Vexana did not want to go on camera, but she did, with red ears. At her collar was the little gold star. \"She made it,\" she said. \"It's very important to me.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p044",
+          "i": 2558,
+          "segments": [
+            {
+              "t": "text",
+              "text": "In a game, she was told to tell a secret. \"Some of you heard that I went over to the Enders,\" she said. \"It was not what you think. I was not alone. A person came and got me. She came flying through a burning town. All the misunderstandings about me have been cleared up. That is why I am here.\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p045",
+          "i": 2559,
+          "segments": [
+            { "t": "text", "text": "Messages came, shy and slow. " },
+            { "t": "text", "text": "We know. Thank you. Welcome home.", "em": true },
+            {
+              "t": "text",
+              "text": " In the last round of the game, she was told to say she loved everyone. She did. Then she added, in horror, \"Will you go out with me?\" She put her head on the desk. \"It's only a game,\" she said."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p046",
+          "i": 2560,
+          "segments": [
+            {
+              "t": "text",
+              "text": "A curtain flew back. Guinevere burst in, in a nightdress, with a pillow in each hand. \"SHE'S TAKEN! SHE'S MINE! NOBODY MAY ASK HER! SHE'S MY BEST FRIEND!\""
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p047",
+          "i": 2561,
+          "segments": [
+            { "t": "text", "text": "\"Guin,\" said Vexana, into her arm. \"Go away. I'm on air.\"" }
+          ],
+          "dialogue": true,
+          "speaker": "vexana"
+        },
+        { "type": "scene-break", "id": "c60-s08" },
+        {
+          "type": "p",
+          "id": "c60-p048",
+          "i": 2562,
+          "segments": [
+            {
+              "t": "text",
+              "text": "The sun came up, a little later each morning. The net still hung over "
+            },
+            { "t": "ent", "id": "terrinia", "text": "Terrinia" },
+            {
+              "t": "text",
+              "text": ". Some said it was fading. Others said it was only farther off. The closed eye at its heart did not open."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p049",
+          "i": 2563,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Nobody knew. A war had not ended. A mother kept a lamp burning on a bell tower. A needle lay in a drawer, and nobody had followed it. A girl had typed one line into the heart of a great machine, and did not know if it had been read."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p050",
+          "i": 2564,
+          "segments": [
+            {
+              "t": "text",
+              "text": "But it was morning. It smelled of woodsmoke and wet grass and frying bread."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p051",
+          "i": 2565,
+          "segments": [
+            {
+              "t": "text",
+              "text": "On the far side of the harbour stood a row of tall white lighthouses. Nobody had lit them for a very long time. There were a hundred and seventeen. The wind blew in from the sea and went in through their broken windows. And from the whole long line, very faint and very sweet, a hundred and seventeen voices began to sing."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p052",
+          "i": 2566,
+          "segments": [
+            {
+              "t": "text",
+              "text": "Far to the north, the clouds parted. A row of tall peaks stood against the pale sky, white to the foot. The sun ran slowly down them, gold and rose and silver."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p053",
+          "i": 2567,
+          "segments": [
+            { "t": "text", "text": "That's the thing we were fighting for,", "em": true },
+            { "t": "text", "text": " thought somebody. " },
+            { "t": "text", "text": "It isn't much. It's everything.", "em": true }
+          ]
+        },
+        {
+          "type": "p",
+          "id": "c60-p054",
+          "i": 2568,
+          "segments": [
+            {
+              "t": "text",
+              "text": "It was not the end. It was the start of the next part. The sky was not yet clear, and the net was not yet gone. But a hundred thousand small, stubborn people put the kettle on, and went quietly on into the day."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

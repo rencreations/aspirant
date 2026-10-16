@@ -1,0 +1,39 @@
+Voice build report
+Source: D:/ren/aspirant/audio
+
+fanny      28 lines
+layla      28 lines
+ruby       40 lines
+angela     40 lines
+lesley     37 lines
+change     37 lines
+guinevere  41 lines
+vexana     42 lines
+obsidia    41 lines
+selena     46 lines
+
+DASHES REPLACED WITH A COMMA (11)
+  lesley-16: shouldn't only teach technique, they should also teach a lovin
+  lesley-23: This battle, I'm in control.
+  lesley-25: One shot, that's enough.
+  lesley-36: Chang'e, ever since that day, I vowed t
+  guinevere-19: You said it, didn't you, that miracles bloom in the dar
+  guinevere-40: Planning to run? Hehe, yes, I'm good at catching fast
+  vexana-11: Solitude was my fate, so I believed. Until starlight
+  obsidia-01: ringing an end to civilization, this is my mission.
+  obsidia-13: esolate nights, a raging storm, everything is washed away.
+  selena-07: A little surprise, I should pay them a visit.
+  selena-11: Field test, another huge success!
+
+OTHER CHANGES (11)
+  fanny-18 en: "I'll show you <U+2014> I'm going to become the strongest Aspirant." -> "I'll show you. I'm going to become the strongest Aspirant." (reviewed wording)
+  lesley-36 jpTitle: ジョーカー -> 嫦娥
+  lesley-37 jpTitle: ジョーカー -> 嫦娥
+  guinevere-18 en: "A girl's Aspirant spirit <U+2014> it is believing in miracles." -> "A girl's Aspirant spirit: it is believing in miracles." (reviewed wording)
+  vexana-06 en: "Just for this moment <U+2014> time, stop!" -> "Just for this moment: time, stop!" (reviewed wording)
+  vexana-20 en: "Look up <U+2014> the stars are shining." -> "Look up. The stars are shining." (reviewed wording)
+  vexana-22 en: "Now is the time <U+2014> stake everything." -> "Now is the time. Stake everything." (reviewed wording)
+  vexana-37 en: "My decision <U+2014> it won't reach you, Guinevere." -> "My decision: it won't reach you, Guinevere." (reviewed wording)
+  vexana-42 en: moved "(cut off)" into the note
+  selena-01 en: ""Destroy that, wipe out this" <U+2014> I just want to be free." -> ""Destroy that, wipe out this." I just want to be free." (reviewed wording)
+  selena-35 en: "Oops <U+2014> I might have gone too far." -> "Oops. I might have gone too far." (reviewed wording)
