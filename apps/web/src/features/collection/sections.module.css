@@ -127,6 +127,10 @@
 }
 
 .credit a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  width: fit-content;
   color: var(--text);
   text-decoration: underline;
   text-decoration-color: var(--accent);
