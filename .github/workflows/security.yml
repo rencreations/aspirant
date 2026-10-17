@@ -85,6 +85,7 @@ jobs:
       - name: Upload SARIF
         if: ${{ !cancelled() && hashFiles('trivy-fs.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
         with:
           sarif_file: trivy-fs.sarif
           category: trivy-fs
@@ -146,6 +147,7 @@ jobs:
           results_format: sarif
           publish_results: true
       - uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
         with:
           sarif_file: scorecard.sarif
           category: scorecard
@@ -174,6 +176,7 @@ jobs:
           TRIVY_USERNAME: ${{ github.actor }}
           TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
         if: ${{ !cancelled() && hashFiles('trivy-published.sarif') != '' }}
         with:
           sarif_file: trivy-published.sarif
