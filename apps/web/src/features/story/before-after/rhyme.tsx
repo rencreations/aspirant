@@ -36,8 +36,9 @@ export function Rhyme() {
           opacity: 1,
           yPercent: 0,
           ease: "none",
+          immediateRender: false,
           stagger: 1,
-          scrollTrigger: { trigger: root, start: "top 70%", end: "bottom 62%", scrub: 0.6 },
+          scrollTrigger: { trigger: root, start: "top 92%", end: "bottom 62%", scrub: 0.6 },
         },
       );
       gsap.fromTo(

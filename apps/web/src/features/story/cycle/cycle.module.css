@@ -202,8 +202,14 @@ section:not([data-run="true"]) .orbit {
 }
 
 @media (max-width: 40em) {
+  /* Visually hidden, but still part of the tab's name. */
   .nodeName {
-    display: none;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

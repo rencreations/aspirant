@@ -64,8 +64,9 @@ export function Hierarchy() {
           opacity: 1,
           scale: 1,
           ease: "none",
+          immediateRender: false,
           stagger: 0.1,
-          scrollTrigger: { trigger: stack, start: "top 85%", end: "top 35%", scrub: 0.7 },
+          scrollTrigger: { trigger: stack, start: "top 95%", end: "top 40%", scrub: 0.7 },
         },
       );
     },

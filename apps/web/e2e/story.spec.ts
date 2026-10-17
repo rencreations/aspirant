@@ -201,12 +201,9 @@ test("glossary: search and filters narrow the list and announce the count", asyn
 
 test("ends with one Next footer to the characters", async ({ page }) => {
   await open(page);
-  await expect(
-    page
-      .locator("main a[href*='character']")
-      .filter({ hasText: /Continue|The ten/ })
-      .first(),
-  ).toBeAttached();
+  await expect(page.getByRole("heading", { level: 2, name: "Next: The ten" })).toBeAttached();
+  await expect(page.getByRole("button", { name: "Continue to The ten" })).toBeAttached();
+  await expect(page.getByRole("heading", { level: 2, name: /^Next:/ })).toHaveCount(1);
 });
 
 test("reduced motion: content and controls still work", async ({ page }) => {
