@@ -81,7 +81,12 @@ function Director({ quality }: { quality: number }) {
     slotsRef.current = slots;
   }, [slots]);
 
-  const flow = useRef({ front: 0, mix: 0, transitioning: false, requested: false });
+  const flow = useRef<{ front: 0 | 1; mix: number; transitioning: boolean; requested: boolean }>({
+    front: 0,
+    mix: 0,
+    transitioning: false,
+    requested: false,
+  });
   const scenes = useMemo(() => [new Scene(), new Scene()] as const, []);
   const clocks = useMemo(() => [createClock(quality), createClock(quality)] as const, [quality]);
   const composite = useMemo(createComposite, []);
@@ -141,7 +146,7 @@ function Director({ quality }: { quality: number }) {
     driver.sceneSince += dt;
     const f = flow.current;
     const keys = slotsRef.current;
-    const back = 1 - f.front;
+    const back = (1 - f.front) as 0 | 1;
     const frontKey = keys[f.front];
 
     if (!f.transitioning && frontKey !== driver.scene) {
@@ -187,6 +192,7 @@ function Director({ quality }: { quality: number }) {
       c.beat = driver.beat;
       c.px = p.x;
       c.py = p.y;
+      c.pixelH = targets[0].height;
       if (c.live) {
         c.chapter = damp(c.chapter, clamp(driver.chapterProgress), 2.5, dt);
         c.part = damp(c.part, partP, 2.5, dt);
@@ -217,7 +223,7 @@ function Director({ quality }: { quality: number }) {
   // After the layers: render the slots and composite them to the screen.
   useFrame(() => {
     const f = flow.current;
-    const back = 1 - f.front;
+    const back = (1 - f.front) as 0 | 1;
     const front = targets[f.front];
     const behind = targets[back];
     gl.setRenderTarget(front);

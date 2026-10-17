@@ -113,7 +113,7 @@ describe("Chapter scenes", () => {
 
 describe("Set piece anchors", () => {
   it("anchors every piece after a real paragraph of its chapter, in reading order", () => {
-    const order = new Map(storyChapters.map(({ chapter }, i) => [chapter.id, i]));
+    const order = new Map<string, number>(storyChapters.map(({ chapter }, i) => [chapter.id, i]));
     let last = -1;
     const ids = new Set<string>();
     for (const anchor of SET_PIECE_ANCHORS) {
