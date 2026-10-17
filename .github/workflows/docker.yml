@@ -213,6 +213,7 @@ jobs:
 
       - name: GitHub build provenance attestation
         uses: actions/attest-build-provenance@v2
+        continue-on-error: true
         with:
           subject-name: ${{ env.IMAGE }}
           subject-digest: ${{ steps.build.outputs.digest }}
