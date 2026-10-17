@@ -8,6 +8,8 @@ import { CouplingLab } from "./lab/coupling-lab";
 import { Intro } from "./intro/intro";
 import { Timeline } from "./timeline/timeline";
 import { WhosWho } from "./who/whos-who";
+import { OpenQuestions } from "./open/open-questions";
+import { Glossary } from "./glossary/glossary";
 import { PlacesIndex } from "./places/places-index";
 
 /** /story: the world explained, in contrast and diagrams. The narrative itself is /experience. */
@@ -22,6 +24,8 @@ export function StoryPage() {
       <CouplingLab />
       <Timeline />
       <WhosWho />
+      <OpenQuestions />
+      <Glossary />
       <NextFooter
         eyebrow="Next"
         label="The ten"

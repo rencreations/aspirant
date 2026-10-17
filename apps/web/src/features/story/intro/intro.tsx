@@ -16,7 +16,7 @@ import { useReducedMotion } from "@/lib/hooks";
 import { ChapterLinks } from "../chapter-link";
 import styles from "./intro.module.css";
 import { calloutAt, type Layout, type SceneFocus } from "./sphere-layout";
-import type { SceneControl } from "./sphere-scene";
+import type { SceneApi, SceneControl } from "./sphere-scene";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -41,10 +41,11 @@ export function Intro() {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const control = useRef<SceneControl>({ focus: null, ripple: () => undefined });
+  const control = useRef<SceneControl>({ focus: null });
   const reduced = useReducedMotion();
   const [active, setActive] = useState<SceneFocus | null>(null);
   const hover = useRef<SceneFocus | null>(null);
+  const api = useRef<SceneApi | null>(null);
 
   const apply = useCallback((nextActive: SceneFocus | null) => {
     control.current.focus = hover.current ?? nextActive;
@@ -60,7 +61,7 @@ export function Intro() {
     const layout = layoutRef.current;
     if (next && layout) {
       const at = calloutAt(layout, id);
-      control.current.ripple(at.x / 100, at.y / 100, id === "defence-sphere" ? 1.6 : 1);
+      api.current?.ripple(at.x / 100, at.y / 100, id === "defence-sphere" ? 1.6 : 1);
     }
   };
 
@@ -126,7 +127,14 @@ export function Intro() {
           </h2>
           <div ref={stageRef} className={styles.stage} data-active={active ?? "none"}>
             <div ref={innerRef} className={styles.stageInner}>
-              <SphereScene control={control} className={styles.scene} onLayout={onLayout} />
+              <SphereScene
+                control={control}
+                className={styles.scene}
+                onLayout={onLayout}
+                onReady={(a) => {
+                  api.current = a;
+                }}
+              />
             </div>
             <div className={styles.hud} aria-hidden="true">
               <span className={`${styles.brk} ${styles.tl}`} />

@@ -18,6 +18,10 @@ interface Ripple {
 export interface SceneControl {
   /** Which callout is lit (hover, focus or tap on its card). */
   focus: SceneFocus | null;
+}
+
+/** What the scene hands back once it is running. */
+export interface SceneApi {
   /** Ask for a ripple from a point, in 0 to 1 stage coordinates. */
   ripple: (x: number, y: number, power?: number) => void;
 }
@@ -206,6 +210,8 @@ interface SphereSceneProps {
   className?: string;
   /** Called with the layout whenever the stage resizes (for the HTML callouts). */
   onLayout?: (layout: Layout) => void;
+  /** Called once with the scene's methods. */
+  onReady?: (api: SceneApi) => void;
 }
 
 /**
@@ -214,7 +220,7 @@ interface SphereSceneProps {
  * finger lands or when a legend card is pressed. It breathes on its own while idle. Under
  * reduced motion it draws still and only answers to input.
  */
-export function SphereScene({ control, className, onLayout }: SphereSceneProps) {
+export function SphereScene({ control, className, onLayout, onReady }: SphereSceneProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
@@ -233,19 +239,18 @@ export function SphereScene({ control, className, onLayout }: SphereSceneProps) 
     lastSpawnX: -999,
     lastSpawnY: -999,
     idleAt: 0,
-    focusLit: { dawnbreak: 0, terrinia: 0, "selrick-academy": 0, "defence-sphere": 0 } as Record<
-      SceneFocus,
-      number
-    >,
+    focusLit: { dawnbreak: 0, terrinia: 0, "selrick-academy": 0, "defence-sphere": 0 },
     px01: 0,
     dirty: true,
     time: 0,
   });
 
   const onLayoutRef = useRef(onLayout);
+  const onReadyRef = useRef(onReady);
   const reducedRef = useRef(reduced);
   useEffect(() => {
     onLayoutRef.current = onLayout;
+    onReadyRef.current = onReady;
     reducedRef.current = reduced;
   });
 
@@ -331,11 +336,12 @@ export function SphereScene({ control, className, onLayout }: SphereSceneProps) 
     wrap.addEventListener("pointercancel", onLeave, { passive: true });
     wrap.addEventListener("pointerup", onLeave, { passive: true });
 
-    const c = control.current;
-    c.ripple = (nx, ny, power = 1.3) => {
-      const l = s.layout;
-      if (l) spawn(nx * l.w, ny * l.h, power);
-    };
+    onReadyRef.current?.({
+      ripple: (nx, ny, power = 1.3) => {
+        const l = s.layout;
+        if (l) spawn(nx * l.w, ny * l.h, power);
+      },
+    });
 
     return () => {
       ro.disconnect();
@@ -345,7 +351,7 @@ export function SphereScene({ control, className, onLayout }: SphereSceneProps) 
       wrap.removeEventListener("pointercancel", onLeave);
       wrap.removeEventListener("pointerup", onLeave);
     };
-  }, [control]);
+  }, []);
 
   useEffect(() => {
     const s = live.current;
