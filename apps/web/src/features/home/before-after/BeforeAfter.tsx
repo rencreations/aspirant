@@ -83,7 +83,7 @@ export function BeforeAfter({ contrast }: { contrast: ContrastView }) {
           <span className={styles.before}>
             {contrast.before.line}
             <span className={styles.strike} aria-hidden="true" />
-          </span>
+          </span>{" "}
           <span className={styles.after}>{contrast.after.line}</span>
         </button>
 

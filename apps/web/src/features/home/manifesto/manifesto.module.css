@@ -59,15 +59,18 @@
 }
 
 @media (min-width: 64em) {
+  .body {
+    margin-left: 10%;
+  }
+
   .textWrap {
     max-width: 30ch;
-    margin-left: 12%;
   }
 }
 
 @media (min-aspect-ratio: 21/9) {
-  .textWrap {
-    margin-left: 22%;
+  .body {
+    margin-left: 20%;
   }
 }
 
