@@ -130,7 +130,10 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
 
   useEffect(() => {
     const st = c.current;
-    return () => cancelAnimationFrame(st.raf);
+    return () => {
+      cancelAnimationFrame(st.raf);
+      st.raf = 0;
+    };
   }, []);
 
   useGSAP(
