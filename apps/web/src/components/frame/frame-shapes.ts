@@ -20,20 +20,6 @@ export type FrameShape =
 /** One vertex: x percent, x pixel offset, y percent, y pixel offset. @public */
 export type FrameVertex = readonly [number, number, number, number];
 
-/** All shape names, in display order. */
-export const FRAME_SHAPE_NAMES: readonly FrameShape[] = [
-  "chamfer",
-  "hex",
-  "star",
-  "arch",
-  "parallelogram",
-  "rift",
-  "bite",
-  "ticket",
-  "circle",
-  "emblem",
-];
-
 const r3 = (n: number) => Math.round(n * 1000) / 1000;
 
 function pct(x: number, y: number): FrameVertex {

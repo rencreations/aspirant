@@ -49,7 +49,7 @@ const NODES: Record<Exhibit, readonly string[]> = {
 /** World height each exhibit is scaled to on the pedestal. */
 const FIT: Record<Exhibit, number> = { character: 2, weapon: 2.1, robot: 1.5 };
 
-const DRACO = "/vendor/draco/";
+const DRACO = "/draco/";
 
 /**
  * The robot's face texture is a 3 by 3 atlas of expressions; the screen's UVs cover the top

@@ -1,6 +1,6 @@
 # The Aspirants: design system and shell
 
-Read this and `spec.md` before you build a page. The visual QA surface is `/kit` (every component, every variant, both worlds). It is a dev page: `noindex`, not in the nav, removed before launch.
+Read this and `spec.md` before you build a page. The `/kit` reference page existed during development and has been removed; the pages themselves are the reference now.
 
 Contents: [Run it](#run-it) · [Tokens](#tokens) · [Utilities](#utilities) · [The shell](#the-shell) · [Components](#components) · [Hooks and lib](#hooks-and-lib) · [Audio](#audio) · [Motion rules](#motion-rules) · [Accessibility rules](#accessibility-rules) · [Responsive rules](#responsive-rules) · [How to build a page](#how-to-build-a-page)
 
@@ -412,7 +412,7 @@ Lighthouse accessibility 100 is a hard gate. axe runs on every route in e2e.
 5. Interactive things: hover, `focus-visible`, active and touch states, sound blips on mouse hover and click, `data-cursor` labels where useful.
 6. Check reduced motion (toggle in the HUD) and keyboard only (Tab, Enter, Space, Esc, `N`, `M`).
 7. End with one `NextFooter` pointing to the next stop in the chain.
-8. Check `/kit` if you changed shared styles. Run `pnpm check`, `pnpm build`, `pnpm test:e2e` and `node scripts/qa/scan-text.mjs`. No em dashes, no en dashes, anywhere.
+8. Run `pnpm check`, `pnpm build`, `pnpm test:e2e` and `node scripts/qa/scan-text.mjs`. No em dashes, no en dashes, anywhere.
 
 ## Additions
 

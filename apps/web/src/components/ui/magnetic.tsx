@@ -1,15 +1,10 @@
 "use client";
 
-import type { Route } from "next";
-import { useRef, type ButtonHTMLAttributes, type PointerEvent, type ReactNode } from "react";
+import { useRef, type PointerEvent, type ReactNode } from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
-import { TLink } from "@/components/transition/t-link";
-import { audio } from "@/lib/audio";
 import { prefersReducedMotion } from "@/lib/hooks";
-
-import styles from "./magnetic.module.css";
 
 export interface MagneticProps {
   children: ReactNode;
@@ -59,76 +54,5 @@ export function Magnetic({ children, strength = 0.3, max = 14, as, className }: 
     >
       {children}
     </Tag>
-  );
-}
-
-export interface MagneticButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
-  children: ReactNode;
-  /** Render as an internal link through the page transition. */
-  href?: Route;
-  /** Label for the transition cover when `href` is set. */
-  transitionLabel?: string;
-  /** Magnetic pull (fraction of the pointer offset). Default 0.3. */
-  strength?: number;
-  type?: "button" | "submit" | "reset";
-}
-
-/**
- * Secondary action: a ghost terminal button (mono label, hairline chamfered border, accent
- * fill sweeping in on hover and focus) that leans toward the pointer. Blips on hover and
- * click. Pass `href` for a transition link.
- *
- * <MagneticButton onClick={replay}>Replay</MagneticButton>
- */
-export function MagneticButton({
-  children,
-  href,
-  transitionLabel,
-  strength = 0.3,
-  className,
-  onClick,
-  onPointerEnter,
-  type = "button",
-  ...rest
-}: MagneticButtonProps) {
-  const hover = (e: PointerEvent<HTMLElement>) => {
-    if (e.pointerType === "mouse") audio.blip("hover");
-  };
-  const content = (
-    <>
-      <span className={styles.dot} aria-hidden="true" />
-      <span>{children}</span>
-    </>
-  );
-  return (
-    <Magnetic strength={strength}>
-      {href ? (
-        <TLink
-          href={href}
-          className={cn(styles.button, className)}
-          transitionLabel={transitionLabel ?? (typeof children === "string" ? children : undefined)}
-          aria-label={rest["aria-label"]}
-          onPointerEnter={hover}
-        >
-          {content}
-        </TLink>
-      ) : (
-        <button
-          type={type}
-          className={cn(styles.button, className)}
-          onPointerEnter={(e) => {
-            hover(e);
-            onPointerEnter?.(e);
-          }}
-          onClick={(e) => {
-            audio.blip("click");
-            onClick?.(e);
-          }}
-          {...rest}
-        >
-          {content}
-        </button>
-      )}
-    </Magnetic>
   );
 }
