@@ -4,7 +4,10 @@ import { routes } from "@/lib/site";
 import { BeforeAfter } from "./before-after/before-after";
 import { Cycle } from "./cycle/cycle";
 import { Hierarchy } from "./hierarchy/hierarchy";
+import { CouplingLab } from "./lab/coupling-lab";
 import { Intro } from "./intro/intro";
+import { Timeline } from "./timeline/timeline";
+import { WhosWho } from "./who/whos-who";
 import { PlacesIndex } from "./places/places-index";
 
 /** /story: the world explained, in contrast and diagrams. The narrative itself is /experience. */
@@ -16,6 +19,9 @@ export function StoryPage() {
       <BeforeAfter />
       <Cycle />
       <Hierarchy />
+      <CouplingLab />
+      <Timeline />
+      <WhosWho />
       <NextFooter
         eyebrow="Next"
         label="The ten"

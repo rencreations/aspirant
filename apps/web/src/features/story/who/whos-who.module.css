@@ -1,0 +1,330 @@
+.section {
+  padding-block: var(--space-2xl);
+  overflow: clip;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 62em) {
+  .row {
+    flex-direction: row;
+    height: clamp(28rem, 66svh, 40rem);
+  }
+}
+
+.slat {
+  --cut: 18px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  flex: none;
+  height: 4.6rem;
+  background: var(--bg-2);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+  );
+  transition:
+    height var(--dur-slower) var(--ease-out),
+    flex-grow var(--dur-slower) var(--ease-out);
+}
+
+.slat[data-on="true"] {
+  height: 31rem;
+}
+
+@media (min-width: 62em) {
+  .slat {
+    flex: 1 1 0;
+    height: auto;
+    min-width: 0;
+  }
+
+  .slat[data-on="true"] {
+    flex-grow: 6.5;
+    height: auto;
+  }
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--p1) 70%, #fff), var(--p2));
+  color: #fff;
+  text-align: left;
+  overflow: hidden;
+}
+
+.splash,
+.cutout {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus-pos);
+  transition:
+    opacity var(--dur-slower) var(--ease-out),
+    filter var(--dur-slower) var(--ease-out),
+    transform var(--dur-epic) var(--ease-out);
+}
+
+.splash {
+  filter: grayscale(0.65) brightness(0.78);
+}
+
+.slat[data-on="true"] .splash {
+  filter: none;
+  transform: scale(1.04);
+}
+
+.cutout {
+  opacity: 0;
+  transform: scale(1.1) translateY(4%);
+}
+
+.slat[data-on="true"] .cutout {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.slat[data-on="true"] .face:has(.cutout) .splash {
+  opacity: 0;
+}
+
+/* Scrim so the open slat's text reads over the art. */
+.face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(5 7 12 / 0.9), rgb(5 7 12 / 0.15) 60%, transparent);
+  opacity: 0.55;
+  transition: opacity var(--dur-slow);
+}
+
+.slat[data-on="true"] .face::after {
+  opacity: 1;
+}
+
+.stripe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  height: 4px;
+  background: linear-gradient(90deg, var(--p1), var(--p2));
+}
+
+.name {
+  position: absolute;
+  z-index: 1;
+  left: 1rem;
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  transform: translateY(50%);
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-2);
+  text-transform: uppercase;
+  line-height: 1;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.7);
+  transition: opacity var(--dur-base);
+}
+
+.num {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  color: #e4ecf8;
+}
+
+.slat[data-on="true"] .name {
+  opacity: 0;
+}
+
+@media (min-width: 62em) {
+  .name {
+    left: 50%;
+    bottom: 1.2rem;
+    transform: translateX(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    flex-direction: row-reverse;
+    font-size: var(--step-1);
+  }
+}
+
+.tag {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.2rem 0.35rem;
+  background: var(--light-gold);
+  color: #05070c;
+  font-weight: 600;
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+}
+
+.slat[data-partner="true"] {
+  box-shadow: inset 0 0 0 2px var(--light-gold);
+}
+
+.slat[data-partner="true"] .splash {
+  filter: grayscale(0) brightness(0.95);
+}
+
+.slat[data-grouped="true"] .splash {
+  filter: grayscale(0.2) brightness(0.9);
+}
+
+/* The open slat's words. */
+.info {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 0.55rem;
+  padding: var(--space-s) var(--space-s) var(--space-s) var(--space-s);
+  color: #f4f7fc;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out),
+    visibility 0s var(--dur-slow);
+}
+
+.slat[data-on="true"] .info {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.12s;
+}
+
+.aspirant {
+  margin: 0;
+  color: var(--light-gold);
+}
+
+.bigName {
+  margin: 0;
+  font-size: var(--step-5);
+  line-height: 0.85;
+  color: #fff;
+}
+
+.text {
+  margin: 0;
+  max-width: 40ch;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: #e4ecf8;
+}
+
+.pairLine {
+  margin: 0;
+  color: #cfdcf0;
+}
+
+.voice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.wave {
+  width: min(12rem, 50%);
+  height: 2rem;
+  color: var(--light-gold);
+}
+
+.quote {
+  margin: 0;
+  max-width: 38ch;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-0);
+  line-height: 1.25;
+  color: #fff;
+}
+
+.meet {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  background: var(--light-gold);
+  color: #05070c;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--dur-base);
+}
+
+@media (hover: hover) {
+  .meet:hover {
+    background: #fff;
+  }
+}
+
+.alsoTitle {
+  margin: var(--space-xl) 0 var(--space-xs);
+  font-weight: 500;
+}
+
+.also {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-2xs) var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alsoItem {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.5rem 0.8rem;
+  border-left: 2px solid var(--line-strong);
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.alsoItem strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The slat is clipped, so its focus ring is drawn inside the button. */
+.face:focus-visible {
+  outline-offset: -6px;
+}
