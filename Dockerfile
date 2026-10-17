@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 # Stage 1: install dependencies (cached on the lockfile + manifests only)
 # ---------------------------------------------------------------------------
-FROM node:22-alpine AS deps
+FROM node:26-alpine AS deps
 ENV PNPM_HOME=/pnpm \
     PATH=/pnpm:$PATH \
     CI=true
