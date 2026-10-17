@@ -64,6 +64,7 @@ class AudioEngine {
   private voiceBus: GainNode | null = null;
   private musicBus: GainNode | null = null;
   private analyser: AnalyserNode | null = null;
+  private musicAnalyser: AnalyserNode | null = null;
   private noise: AudioBuffer | null = null;
 
   private voiceSource: AudioBufferSourceNode | null = null;
@@ -290,6 +291,37 @@ class AudioEngine {
     return { ctx: this.ctx, out: this.master };
   }
 
+  /** The media element of the active music track, or null. Use it to read time and seek. */
+  getMusicElement(): HTMLAudioElement | null {
+    return this.music[this.activeMusic]?.el ?? null;
+  }
+
+  /**
+   * Analyser tapped off the music bus (null before unlock). Separate from the voice analyser,
+   * so voice waveforms never draw the music.
+   */
+  getMusicAnalyser(): AnalyserNode | null {
+    return this.musicAnalyser;
+  }
+
+  /** Pause the active music track without fading. `resumeMusic` continues it. */
+  pauseMusic(): void {
+    this.getMusicElement()?.pause();
+  }
+
+  /** Continue a paused music track. Call inside a user gesture the first time. */
+  resumeMusic(): void {
+    void this.getMusicElement()
+      ?.play()
+      .catch(() => undefined);
+  }
+
+  /** Set the level of the active music track (0 to 1) with a short ramp. */
+  setMusicVolume(volume: number): void {
+    const slot = this.music[this.activeMusic];
+    if (slot) this.fadeSlot(slot, Math.min(1, Math.max(0, volume)), 80);
+  }
+
   /** Fade out and stop the music. */
   stopMusic(fadeMs = 800): void {
     const slot = this.music[this.activeMusic];
@@ -322,6 +354,11 @@ class AudioEngine {
       voiceBus.connect(analyser).connect(master);
       const musicBus = ctx.createGain();
       musicBus.connect(master);
+      const musicAnalyser = ctx.createAnalyser();
+      musicAnalyser.fftSize = 1024;
+      musicAnalyser.smoothingTimeConstant = 0.82;
+      musicBus.connect(musicAnalyser);
+      this.musicAnalyser = musicAnalyser;
       this.ctx = ctx;
       this.master = master;
       this.sfx = sfx;

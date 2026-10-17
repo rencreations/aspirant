@@ -413,3 +413,10 @@ Lighthouse accessibility 100 is a hard gate. axe runs on every route in e2e.
 6. Check reduced motion (toggle in the HUD) and keyboard only (Tab, Enter, Space, Esc, `N`, `M`).
 7. End with one `NextFooter` pointing to the next stop in the chain.
 8. Check `/kit` if you changed shared styles. Run `pnpm check`, `pnpm build`, `pnpm test:e2e` and `node scripts/qa/scan-text.mjs`. No em dashes, no en dashes, anywhere.
+
+## Additions
+
+Primitives that page engineers added to shared code. One line each.
+
+- `audio.getMusicElement()`, `audio.getMusicAnalyser()`, `audio.pauseMusic()`, `audio.resumeMusic()`, `audio.setMusicVolume(v)` (`lib/audio.ts`, Collection): a music player needs time, seeking, pause and a level. The music analyser is separate from the voice analyser, so voice waveforms never draw the music.
+- `public/draco/` (Collection): the Draco decoder (`draco_decoder.js`, `.wasm`, `draco_wasm_wrapper.js`, copied from three). Load the GLB models with `useGLTF(asset("/models/x.glb"), asset("/draco/"))` so nothing is fetched from a CDN.

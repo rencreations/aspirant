@@ -1,0 +1,311 @@
+.section {
+  padding-block: var(--space-2xl) var(--space-xl);
+  overflow: clip;
+}
+
+.note {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 60ch;
+  margin: 0 0 var(--space-m);
+  padding: var(--space-xs) var(--space-s);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  color: var(--text-dim);
+  font-size: var(--step--1);
+}
+
+.pin {
+  position: relative;
+}
+
+.pin[data-mode="pinned"] {
+  height: calc(100svh + var(--travel, 0px));
+}
+
+.sticky {
+  display: grid;
+  gap: var(--space-m);
+}
+
+.pin[data-mode="pinned"] .sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  align-content: center;
+  padding-top: var(--nav-h);
+}
+
+/* Controls: counter, progress rail, previous and next. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.counter {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.rail {
+  position: relative;
+  flex: 1;
+  height: 18px;
+  min-width: 4rem;
+}
+
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8px;
+  height: 2px;
+  background: var(--line-strong);
+}
+
+.railFill {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  height: 2px;
+  width: calc(var(--tp, 0) * 100%);
+  background: var(--accent);
+}
+
+.railTick {
+  position: absolute;
+  top: 5px;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transform: rotate(45deg);
+  transition:
+    background-color var(--dur-base),
+    box-shadow var(--dur-base);
+}
+
+.railTick[data-on="true"] {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  font-size: 1.2rem;
+  color: var(--text);
+  transition:
+    border-color var(--dur-base),
+    background-color var(--dur-base);
+}
+
+.step:disabled {
+  opacity: 0.35;
+}
+
+@media (hover: hover) {
+  .step:not(:disabled):hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+}
+
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.pin[data-mode="pinned"] .scroller {
+  overflow: hidden;
+}
+
+.pin[data-mode="native"] .scroller {
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 24px;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-m);
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  padding: var(--space-xs) var(--gutter) var(--space-xl) calc(var(--gutter) + 24px);
+  list-style: none;
+}
+
+/* The line the stops hang from. */
+.track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--space-xs) + 6px);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line-strong) 4%,
+    var(--line-strong) 96%,
+    transparent
+  );
+}
+
+.stop {
+  position: relative;
+  flex: none;
+  width: clamp(17rem, 26vw, 23rem);
+  padding-top: var(--space-m);
+  scroll-snap-align: start;
+}
+
+.stop[data-low="true"] {
+  margin-top: var(--space-l);
+}
+
+.node {
+  position: absolute;
+  left: 1.2rem;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 2px var(--line-strong);
+  transform: rotate(45deg);
+  transition:
+    background-color var(--dur-base),
+    box-shadow var(--dur-base),
+    transform var(--dur-slow) var(--ease-spring);
+}
+
+.node::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: var(--space-m);
+  background: var(--line-strong);
+  transform: rotate(-45deg);
+  transform-origin: top left;
+}
+
+.stop[data-on="true"] .node {
+  background: var(--accent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent);
+  transform: rotate(45deg) scale(1.25);
+}
+
+.frame {
+  width: 100%;
+}
+
+.media {
+  background: var(--panel);
+}
+
+.card {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-s) var(--space-m) var(--space-s) var(--space-s);
+}
+
+.when {
+  margin: 0;
+  font-size: var(--step-3);
+  line-height: 0.95;
+  color: var(--accent);
+}
+
+.what {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.chapters {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.chLabel {
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Phones: the stops stack down a vertical line. */
+.pin[data-mode="stack"] .scroller {
+  overflow: visible;
+  cursor: auto;
+}
+
+.pin[data-mode="stack"] .track {
+  flex-direction: column;
+  width: auto;
+  gap: var(--space-s);
+  padding: var(--space-xs) var(--gutter) var(--space-l) calc(var(--gutter) + 1.5rem);
+}
+
+.pin[data-mode="stack"] .track::before {
+  left: calc(var(--gutter) + 6px);
+  right: auto;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  height: auto;
+  background: var(--line-strong);
+}
+
+.pin[data-mode="stack"] .stop {
+  width: 100%;
+  padding-top: 0;
+}
+
+.pin[data-mode="stack"] .stop[data-low="true"] {
+  margin-top: 0;
+}
+
+.pin[data-mode="stack"] .node {
+  left: -1.5rem;
+  top: 1.2rem;
+}
+
+.pin[data-mode="stack"] .node::after {
+  display: none;
+}
+
+.pin[data-mode="stack"] .buttons {
+  display: none;
+}

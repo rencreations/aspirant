@@ -15,3 +15,4 @@ sbom*.json
 next-env.d.ts
 apps/web/public/**/*.glb
 apps/web/public/**/*.gltf
+apps/web/public/draco

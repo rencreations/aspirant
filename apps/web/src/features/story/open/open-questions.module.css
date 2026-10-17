@@ -1,0 +1,278 @@
+.section {
+  padding-block: var(--space-2xl) var(--space-3xl);
+  overflow: clip;
+  background:
+    radial-gradient(
+      70% 50% at 50% 30%,
+      color-mix(in srgb, var(--crimson) 10%, transparent),
+      transparent
+    ),
+    var(--bg);
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 56em) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-m);
+  }
+}
+
+.card {
+  --cut: 22px;
+  position: relative;
+  isolation: isolate;
+  min-height: 27rem;
+  display: grid;
+}
+
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  transition: background-color var(--dur-slow);
+}
+
+.card::before {
+  inset: 0;
+  background: color-mix(in srgb, var(--crimson) 45%, var(--line-strong));
+}
+
+.card::after {
+  inset: 1px;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--crimson) 8%, var(--panel)),
+    var(--panel)
+  );
+}
+
+.card[data-open="true"]::before {
+  background: var(--light-gold);
+}
+
+.hit {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-s);
+  width: 100%;
+  min-height: 27rem;
+  padding: var(--space-m) var(--space-s) var(--space-s);
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+
+.kicker {
+  color: var(--light-gold);
+}
+
+.question {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.halfL,
+.halfR,
+.crack {
+  grid-area: 1 / 1;
+}
+
+.halfL,
+.halfR {
+  width: clamp(6rem, 12vw, 8rem);
+  transition:
+    transform var(--dur-slower) var(--ease-spring),
+    opacity var(--dur-slow);
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--crimson) 70%, transparent));
+}
+
+.seal {
+  display: block;
+  width: 100%;
+}
+
+.sealL {
+  clip-path: polygon(0 0, 54% 0, 46% 38%, 56% 62%, 48% 100%, 0 100%);
+}
+
+.sealR {
+  clip-path: polygon(54% 0, 100% 0, 100% 100%, 48% 100%, 56% 62%, 46% 38%);
+}
+
+.card:not([data-open="true"]) .halfL,
+.card:not([data-open="true"]) .halfR {
+  animation: seal-breathe 3.4s ease-in-out infinite;
+}
+
+@keyframes seal-breathe {
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.card[data-open="true"] .halfL {
+  transform: translate(-190%, 40%) rotate(-24deg);
+  opacity: 0;
+}
+
+.card[data-open="true"] .halfR {
+  transform: translate(190%, 60%) rotate(28deg);
+  opacity: 0;
+}
+
+.crack {
+  width: 2px;
+  height: 0;
+  background: var(--light-gold);
+  box-shadow: 0 0 20px 6px var(--light-gold);
+  opacity: 0;
+}
+
+.card[data-open="true"] .crack {
+  animation: crack 0.9s var(--ease-out) both;
+}
+
+@keyframes crack {
+  0% {
+    height: 0;
+    opacity: 1;
+  }
+  60% {
+    height: 120%;
+    opacity: 1;
+  }
+  100% {
+    height: 120%;
+    opacity: 0;
+  }
+}
+
+.state {
+  color: var(--text-faint);
+}
+
+/* The sentence sits where the seal was and appears when the seal is gone. */
+.answer {
+  position: absolute;
+  left: var(--space-s);
+  right: var(--space-s);
+  top: 42%;
+  bottom: 4rem;
+  display: grid;
+  align-content: center;
+  gap: var(--space-xs);
+  justify-items: start;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity var(--dur-slower) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out),
+    visibility 0s var(--dur-slower);
+  pointer-events: none;
+}
+
+.answer p {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.answerStar {
+  width: 1.4rem;
+  color: var(--light-gold);
+}
+
+.card[data-open="true"] .answer {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.25s;
+}
+
+/* The lamp. */
+.lamp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  margin-top: var(--space-2xl);
+}
+
+.lampArt {
+  flex: none;
+  width: clamp(4.5rem, 9vw, 7rem);
+  overflow: visible;
+}
+
+.lampHalo {
+  fill: color-mix(in srgb, var(--light-gold) 22%, transparent);
+  animation: breathe 3.6s ease-in-out infinite;
+}
+
+.flame {
+  fill: var(--light-amber);
+  transform-origin: 40px 78px;
+  animation: flicker 1.8s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  40% {
+    transform: scale(0.94, 1.06) rotate(-2deg);
+  }
+  70% {
+    transform: scale(1.03, 0.97) rotate(2deg);
+  }
+}
+
+.lampText {
+  display: grid;
+  gap: var(--space-xs);
+  justify-items: start;
+}
+
+.closing {
+  margin: 0;
+  max-width: 36ch;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-3);
+  line-height: 1.12;
+  color: var(--text);
+}

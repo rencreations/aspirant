@@ -1,0 +1,385 @@
+.intro {
+  padding-top: calc(var(--nav-h) + var(--space-l));
+  padding-bottom: var(--space-2xl);
+  overflow: clip;
+  isolation: isolate;
+}
+
+.hexes {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 70%;
+  opacity: 0.6;
+  pointer-events: none;
+  --grid-color: color-mix(in srgb, var(--cyan) 30%, transparent);
+}
+
+.top {
+  display: grid;
+  gap: var(--space-m);
+  align-items: end;
+  margin-bottom: var(--space-l);
+}
+
+@media (min-width: 62em) {
+  .top {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.7fr);
+    gap: var(--space-xl);
+  }
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin: 0 0 var(--space-s);
+}
+
+.eyebrow svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--accent);
+}
+
+.h1 {
+  margin: 0;
+  font-size: min(var(--step-8), 17vw, 15rem);
+  line-height: 0.82;
+  overflow-wrap: anywhere;
+  color: var(--text);
+}
+
+.lead {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.22;
+  color: var(--text-dim);
+}
+
+.where {
+  position: relative;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The stage: a dawn-lit HUD screen with cut corners. */
+.stage {
+  --cut: 28px;
+  position: relative;
+  aspect-ratio: 16 / 8;
+  min-height: 18rem;
+  overflow: hidden;
+  background: #071632;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  box-shadow: 0 0 0 1px var(--line-strong);
+  touch-action: pan-y;
+}
+
+@media (max-width: 43.75em) {
+  .stage {
+    --cut: 18px;
+    aspect-ratio: 10 / 11;
+  }
+}
+
+.stageInner {
+  position: absolute;
+  inset: -4% 0;
+  will-change: transform;
+}
+
+.scene,
+.sceneFallback {
+  position: absolute;
+  inset: 0;
+}
+
+.sceneFallback {
+  background: linear-gradient(#071632, #5d88c2 55%, #f2c58b 72%, #4f8fc4 72%, #12356a);
+}
+
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: #bff6ff;
+}
+
+.hud::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgb(255 255 255 / 0.035) 2px,
+    rgb(255 255 255 / 0.035) 3px
+  );
+}
+
+.brk {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid rgb(190 246 255 / 0.9);
+}
+
+.tl {
+  top: 14px;
+  left: 14px;
+  border-width: 1px 0 0 1px;
+}
+.tr {
+  top: 14px;
+  right: 14px;
+  border-width: 1px 1px 0 0;
+}
+.bl {
+  bottom: 14px;
+  left: 14px;
+  border-width: 0 0 1px 1px;
+}
+.br {
+  bottom: 14px;
+  right: 14px;
+  border-width: 0 1px 1px 0;
+}
+
+.readout,
+.readoutR {
+  position: absolute;
+  top: 18px;
+  left: 46px;
+  color: rgb(214 240 255 / 0.9);
+}
+
+.readoutR {
+  left: auto;
+  right: 46px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.readoutR::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: #5ce1ff;
+  animation: blinkdot 1.6s steps(2) infinite;
+}
+
+@keyframes blinkdot {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.hint {
+  position: absolute;
+  left: 46px;
+  bottom: 16px;
+  margin: 0;
+  color: rgb(214 240 255 / 0.85);
+  pointer-events: none;
+}
+
+/* Callout markers sit on the part of the scene they name. */
+.marker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transform: translate(-50%, -140%);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 6px rgb(3 10 30 / 0.9);
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    color var(--dur-base);
+}
+
+.marker::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 14px;
+  background: linear-gradient(rgb(190 246 255 / 0.9), transparent);
+}
+
+.markerNum {
+  display: grid;
+  place-items: center;
+  min-width: 1.7em;
+  height: 1.7em;
+  padding-inline: 0.25em;
+  background: rgb(7 22 50 / 0.82);
+  box-shadow: inset 0 0 0 1px rgb(190 246 255 / 0.7);
+}
+
+.markerName {
+  display: none;
+  padding: 0.15em 0.5em;
+  background: rgb(7 22 50 / 0.7);
+}
+
+@media (min-width: 62em) {
+  .markerName {
+    display: block;
+  }
+}
+
+.marker[data-lit="true"] {
+  color: #ffe9a8;
+  transform: translate(-50%, -150%) scale(1.06);
+}
+
+.marker[data-lit="true"] .markerNum {
+  background: #ffcf5c;
+  color: #05070c;
+  box-shadow: 0 0 18px rgb(255 207 92 / 0.8);
+}
+
+/* Readout cards under the stage. */
+.cards {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-xs);
+  margin: calc(var(--space-m) * -1) 0 0;
+  padding: 0 var(--space-xs);
+  list-style: none;
+}
+
+@media (min-width: 43.75em) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 75em) {
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0 var(--space-m);
+  }
+}
+
+.card {
+  --cut: 14px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-s);
+  background: transparent;
+}
+
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  transition:
+    background-color var(--dur-base),
+    transform var(--dur-slow) var(--ease-out);
+}
+
+.card::before {
+  inset: 0;
+  background: var(--line-strong);
+}
+
+.card::after {
+  inset: 1px;
+  background: var(--panel);
+}
+
+.card[data-on="true"]::before {
+  background: var(--accent);
+}
+
+.card[data-on="true"]::after {
+  background: color-mix(in srgb, var(--accent) 7%, var(--panel));
+}
+
+.cardBtn {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+
+.cardNum {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.cardName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.cardLine {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+@media (hover: hover) {
+  .card:hover::after {
+    background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+  }
+}
+
+@media (max-width: 43.75em) {
+  .readoutR,
+  .hint {
+    display: none;
+  }
+}
