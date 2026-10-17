@@ -1,0 +1,317 @@
+.section {
+  padding-block: var(--space-2xl) var(--space-3xl);
+  overflow: clip;
+  background: linear-gradient(to bottom, var(--bg), #02030a 40%, var(--bg));
+}
+
+.void {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  pointer-events: none;
+  --grid-color: color-mix(in srgb, var(--violet) 40%, transparent);
+}
+
+.stack {
+  --cut: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (min-width: 62em) {
+  .stack {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    column-gap: var(--space-2xl);
+    grid-template-rows: repeat(5, min-content) 1fr;
+    row-gap: 14px;
+    align-items: start;
+  }
+
+  .item {
+    display: contents;
+  }
+}
+
+.item {
+  position: relative;
+}
+
+.plate {
+  --c: inherit;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  width: 100%;
+  min-height: 5.6rem;
+  padding: 0.9rem var(--space-s) 0.9rem calc(var(--cut) + 0.5rem);
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--text);
+  grid-column: 1;
+  grid-row: var(--row);
+}
+
+@media (min-width: 62em) {
+  .plate {
+    width: calc(100% - var(--i) * 3.5%);
+    translate: calc(var(--px, 0) * var(--depth) * 1px) calc(var(--py, 0) * var(--depth) * 0.4px);
+    transition:
+      translate var(--dur-slow) var(--ease-out),
+      width var(--dur-slow) var(--ease-out);
+  }
+}
+
+.plate::before,
+.plate::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  transition: background-color var(--dur-base);
+}
+
+.plate::before {
+  inset: 0;
+  background: color-mix(in srgb, var(--c) 55%, var(--line-strong));
+}
+
+.plate::after {
+  inset: 1px;
+  background: color-mix(in srgb, var(--c) 6%, var(--panel));
+}
+
+.item[data-on="true"] .plate::before {
+  background: var(--c);
+}
+
+.item[data-on="true"] .plate::after {
+  background: color-mix(in srgb, var(--c) 16%, var(--panel));
+}
+
+@media (hover: hover) {
+  .plate:hover::after {
+    background: color-mix(in srgb, var(--c) 12%, var(--panel));
+  }
+}
+
+/* The device is a different object: all four corners cut and a hatched face. */
+.item[data-device="true"] {
+  margin-top: var(--space-s);
+}
+
+.item[data-device="true"] .plate::before,
+.item[data-device="true"] .plate::after {
+  clip-path: polygon(
+    var(--cut) 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut)),
+    0 var(--cut)
+  );
+}
+
+.item[data-device="true"] .plate::after {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 6px,
+      color-mix(in srgb, var(--c) 10%, transparent) 6px 7px
+    ),
+    color-mix(in srgb, var(--c) 5%, var(--panel));
+}
+
+/* Orders flow down from layer to layer, but not into the device. */
+.item:not([data-device="true"]):not(:nth-last-child(2)) .plate .chev {
+  position: absolute;
+  left: 2.3rem;
+  bottom: -14px;
+  width: 2px;
+  height: 14px;
+  background: repeating-linear-gradient(to bottom, var(--c) 0 3px, transparent 3px 6px);
+  background-size: 2px 12px;
+  animation: flow 1s linear infinite;
+}
+
+@keyframes flow {
+  to {
+    background-position-y: 12px;
+  }
+}
+
+.idx {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  color: var(--c);
+}
+
+.glyph {
+  flex: none;
+  width: 2.6rem;
+  color: var(--c);
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+
+.item[data-on="true"] .glyph {
+  transform: scale(1.14) rotate(-4deg);
+}
+
+.titles {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.role {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.chev {
+  margin-left: auto;
+}
+
+/* Detail: beside the stack on a wide screen, under the plate on a phone. */
+.detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--dur-slower) var(--ease-out),
+    visibility 0s var(--dur-slower);
+  grid-column: 1;
+}
+
+.detailInner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: var(--space-s);
+  padding-inline: var(--space-2xs);
+}
+
+.item[data-on="true"] .detail {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.item[data-on="true"] .detailInner {
+  padding-block: var(--space-s) var(--space-xs);
+}
+
+@media (min-width: 62em) {
+  .detail {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    grid-template-rows: 1fr;
+    opacity: 0;
+    transform: translateX(24px);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slower) var(--ease-out),
+      visibility 0s var(--dur-slow);
+  }
+
+  .item[data-on="true"] .detail {
+    opacity: 1;
+    transform: none;
+  }
+
+  .detailInner {
+    overflow: visible;
+    padding-left: var(--space-m);
+    border-left: 2px solid var(--c);
+  }
+
+  .item[data-on="true"] .detailInner {
+    padding-block: 0;
+  }
+}
+
+.kicker {
+  margin: 0;
+  color: var(--c);
+}
+
+.dTitle {
+  margin: 0;
+  font-size: var(--step-5);
+  line-height: 0.88;
+}
+
+.text {
+  margin: 0;
+  max-width: 46ch;
+  font-size: var(--step-0);
+  color: var(--text-dim);
+}
+
+.kinds {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kind {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border-left: 2px solid var(--line-strong);
+  background: color-mix(in srgb, var(--c) 6%, transparent);
+}
+
+.kindName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-1);
+  text-transform: uppercase;
+}
+
+.kindText {
+  grid-column: 1;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.kind > :last-child {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}

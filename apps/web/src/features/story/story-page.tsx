@@ -2,6 +2,8 @@ import { NextFooter } from "@/components/next-footer/next-footer";
 import { routes } from "@/lib/site";
 
 import { BeforeAfter } from "./before-after/before-after";
+import { Cycle } from "./cycle/cycle";
+import { Hierarchy } from "./hierarchy/hierarchy";
 import { Intro } from "./intro/intro";
 import { PlacesIndex } from "./places/places-index";
 
@@ -12,6 +14,8 @@ export function StoryPage() {
       <Intro />
       <PlacesIndex />
       <BeforeAfter />
+      <Cycle />
+      <Hierarchy />
       <NextFooter
         eyebrow="Next"
         label="The ten"
