@@ -37,6 +37,7 @@ uniform vec3 uAurora; uniform float uAuroraAmount;
 uniform vec3 uWater; uniform vec2 uWaterK; // glitter, waves
 uniform float uHasWater;
 uniform vec3 uWhiteColor; uniform float uWhite;
+uniform vec3 uPillarColor; uniform vec2 uPillar; // x along the horizon, width
 ${NOISE}
 ${STAR4}
 
@@ -173,6 +174,12 @@ void main() {
   }
   col = mix(below, sky, above);
 
+  if (uPillar.y > 0.0) {
+    float px = abs(along - uPillar.x);
+    float beam = exp(-px / uPillar.y) * 1.6 + exp(-px / (uPillar.y * 6.0)) * 0.35;
+    float flick = 0.8 + 0.2 * vnoise(vec2(h * 30.0 - uTime * 6.0, uTime));
+    col += uPillarColor * beam * flick * smoothstep(-0.12, 0.05, h);
+  }
   col = mix(col, uWhiteColor, uWhite);
   gl_FragColor = vec4(col * uExposure, 1.0);
 }
@@ -248,6 +255,8 @@ export function Sky({ params }: { params: SkyParams }) {
         uHasWater: { value: p.water ? 1 : 0 },
         uWhiteColor: { value: col(p.whiteColor ?? "#e9ecef") },
         uWhite: { value: p.white ?? 0 },
+        uPillarColor: { value: col(p.pillar?.color ?? "#000000") },
+        uPillar: { value: new Vector2(p.pillar?.x ?? 0, p.pillar ? (p.pillar.width ?? 0.012) : 0) },
       },
     });
   }, [params]);

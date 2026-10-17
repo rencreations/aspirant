@@ -181,7 +181,7 @@ export function Corridor({ p }: { p: ShapeParams }) {
   }, [p]);
   useDisposables(built.list);
   useFrame(() => {
-    const walk = smoothstep(0, 1, driven(p.drive ?? "chapter", clock));
+    const walk = smoothstep(p.a ?? 0, p.b ?? 1, driven(p.drive ?? "chapter", clock));
     built.group.position.z = walk * (built.L - 16);
     const u = built.mat.uniforms;
     u.uTime!.value = clock.time;

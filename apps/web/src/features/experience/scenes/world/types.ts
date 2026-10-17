@@ -53,6 +53,8 @@ export interface SkyParams {
   vortex?: { amount: number; color: string; color2: string };
   aurora?: { amount: number; color: string };
   water?: { color: string; glitter?: number; waves?: number };
+  /** A vertical beam of light from the ground into the clouds (x along the horizon). */
+  pillar?: { x: number; color: string; width?: number };
   /** Whiteout, 0 to 1 (white silence). */
   white?: number;
   whiteColor?: string;

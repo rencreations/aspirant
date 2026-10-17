@@ -46,6 +46,7 @@ export type SceneKey =
   | "orb-void"
   | "matrix-lattice"
   | "sleepers"
+  | "hall-of-sleepers"
   | "citadel"
   | "vats"
   | "rain-glass"
@@ -694,7 +695,7 @@ export const CHAPTERS: Readonly<Record<string, ChapterScene>> = {
     still: STILL.obsidiaEyes,
     turns: [
       { at: "c51-p019", scene: "citadel-garden" },
-      { at: "c51-p040", scene: "sleepers" },
+      { at: "c51-p040", scene: "hall-of-sleepers" },
       { at: "c51-p047", scene: "citadel" },
     ],
   },
