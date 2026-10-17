@@ -60,6 +60,8 @@ export function FilmCard({ film, index, onOpen }: FilmCardProps) {
       className={styles.card}
       data-kind="film"
       data-vertical={film.vertical}
+      data-shape={shape}
+      data-tall={shape === "arch" || shape === "star"}
       data-cursor="WATCH"
       aria-label={`Watch ${film.title}, ${pairName}, ${film.category.toLowerCase()}, ${spokenDuration(film.durationSec)}`}
       onClick={(e) => {

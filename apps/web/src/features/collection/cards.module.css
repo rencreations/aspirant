@@ -1,0 +1,304 @@
+/* Cards: a frame with art, and a caption underneath. The whole card is one button. */
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--bg-2);
+}
+
+.media[data-alpha="true"] {
+  background:
+    radial-gradient(
+      70% 70% at 50% 40%,
+      color-mix(in srgb, var(--accent) 22%, transparent),
+      transparent 75%
+    ),
+    linear-gradient(160deg, #0b1020, #04060c);
+}
+
+.scrub {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.scrub[data-ready="true"] {
+  opacity: 1;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgb(2 3 10 / 0.82), rgb(2 3 10 / 0) 52%),
+    linear-gradient(to bottom, rgb(2 3 10 / 0.5), rgb(2 3 10 / 0) 28%);
+}
+
+.scrim[data-soft] {
+  background: linear-gradient(to top, rgb(2 3 10 / 0.5), rgb(2 3 10 / 0) 40%);
+}
+
+.chip {
+  position: absolute;
+  z-index: 2;
+  max-width: 70%;
+  padding: 0.28rem 0.5rem;
+  overflow: hidden;
+  background: rgb(2 3 10 / 0.78);
+  color: #eef3fa;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  line-height: 1.1;
+  letter-spacing: 0.14em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chip[data-pos="tl"] {
+  top: 0.7rem;
+  left: 1.3rem;
+  border-left: 2px solid var(--accent);
+}
+
+.chip[data-pos="br"] {
+  right: 1.5rem;
+  bottom: 0.7rem;
+}
+
+.card[data-shape="parallelogram"] .chip[data-pos="tl"] {
+  left: 13%;
+}
+
+.card[data-shape="parallelogram"] .chip[data-pos="br"] {
+  right: 13%;
+}
+
+.card[data-shape="rift"] .chip[data-pos="br"] {
+  right: 2rem;
+}
+
+.card[data-tall="true"] .chip[data-pos="tl"] {
+  top: 36%;
+  left: 0.8rem;
+}
+
+.card[data-round="true"] .chip {
+  display: none;
+}
+
+.play {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -1.75rem;
+  color: var(--on-accent);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-spring);
+}
+
+.play::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  z-index: -1;
+  rotate: 45deg;
+  background: var(--accent);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--glow) 65%, transparent);
+}
+
+.play svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.card:hover .play,
+.card:focus-visible .play,
+.card[data-active="true"] .play {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .play {
+    opacity: 0.92;
+    transform: none;
+    width: 3rem;
+    height: 3rem;
+    margin: -1.5rem 0 0 -1.5rem;
+  }
+  .card[data-kind="art"] .play,
+  .card[data-kind="fanart"] .play {
+    display: none;
+  }
+}
+
+.scrubBar {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: calc(var(--scrub, 0) * 100%);
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--glow);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.card:hover .scrubBar {
+  opacity: 1;
+}
+
+/* Equaliser: five bars that move while a track plays. */
+.eq {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 22%;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 1.6rem;
+  translate: -50% 0;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.eq[data-on="true"] {
+  opacity: 1;
+}
+
+.eq i {
+  display: block;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+  transform: scaleY(0.2);
+  transform-origin: bottom;
+}
+
+.eq[data-on="true"] i {
+  animation: bounce 0.9s ease-in-out infinite alternate;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: -0.2s;
+}
+.eq i:nth-child(3) {
+  animation-delay: -0.45s;
+}
+.eq i:nth-child(4) {
+  animation-delay: -0.1s;
+}
+.eq i:nth-child(5) {
+  animation-delay: -0.7s;
+}
+
+@keyframes bounce {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Caption */
+.meta {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 0.25rem 0;
+}
+
+.meta[data-compact] {
+  padding-top: 0.6rem;
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.code::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  rotate: 45deg;
+  background: var(--accent);
+}
+
+.title {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.card:hover .title,
+.card:focus-visible .title {
+  color: var(--accent);
+}
+
+.sub {
+  color: var(--text-dim);
+  font-size: var(--step--1);
+}
+
+.credit {
+  color: var(--text-dim);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eq[data-on="true"] i {
+    animation: none;
+    transform: scaleY(0.7);
+  }
+}
+
+:root[data-motion="reduced"] .eq[data-on="true"] i {
+  animation: none;
+  transform: scaleY(0.7);
+}

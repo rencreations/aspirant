@@ -7,6 +7,7 @@ import { audio } from "@/lib/audio";
 import { useMounted } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
+import type { TrackItem } from "./types";
 import { formatDuration, spokenDuration } from "./format";
 import styles from "./mini-player.module.css";
 import {
@@ -117,23 +118,28 @@ function Icon({ name }: { name: "play" | "pause" | "prev" | "next" | "close" | "
 export function MiniPlayer() {
   const mounted = useMounted();
   const track = usePlayer((s) => s.track);
+  if (!mounted || !track) return null;
+  // The key gives each track a fresh bar, so time and duration start from the new element.
+  return <PlayerBar key={track.id} track={track} />;
+}
+
+function PlayerBar({ track }: { track: TrackItem }) {
   const playing = usePlayer((s) => s.playing);
   const volume = usePlayer((s) => s.volume);
   const queueLength = usePlayer((s) => s.queue.length);
   const muted = useSiteStore((s) => s.muted);
   const toggleMute = useSiteStore((s) => s.toggleMute);
-  const [time, setTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const trackId = track?.id;
-  const trackDuration = track?.durationSec ?? 0;
+  const [time, setTime] = useState(() => audio.getMusicElement()?.currentTime ?? 0);
+  const [duration, setDuration] = useState(() => {
+    const d = audio.getMusicElement()?.duration;
+    return d !== undefined && Number.isFinite(d) && d > 0 ? d : 0;
+  });
+  const trackId = track.id;
 
   // Follow the audio element of the current track.
   useEffect(() => {
-    if (!trackId) return;
     const el = audio.getMusicElement();
     if (!el) return;
-    setTime(el.currentTime || 0);
-    setDuration(Number.isFinite(el.duration) && el.duration > 0 ? el.duration : trackDuration);
     const onTime = () => setTime(el.currentTime);
     const onMeta = () => {
       if (Number.isFinite(el.duration) && el.duration > 0) setDuration(el.duration);
@@ -163,11 +169,11 @@ export function MiniPlayer() {
       el.removeEventListener("pause", onPause);
       el.removeEventListener("ended", onEnded);
     };
-  }, [trackId, trackDuration]);
+  }, [trackId]);
 
   // Media Session: title, artwork, and the media keys.
   useEffect(() => {
-    if (!track || typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
     const session = navigator.mediaSession;
     try {
       session.metadata = new MediaMetadata({
@@ -205,10 +211,9 @@ export function MiniPlayer() {
 
   useEffect(() => {
     if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
-    navigator.mediaSession.playbackState = track ? (playing ? "playing" : "paused") : "none";
-  }, [track, playing]);
+    navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }, [playing]);
 
-  if (!mounted || !track) return null;
   const total = duration || track.durationSec;
 
   return (

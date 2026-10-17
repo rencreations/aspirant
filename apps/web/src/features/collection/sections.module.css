@@ -1,0 +1,197 @@
+.section {
+  --row-h: clamp(10rem, 22vw, 17rem);
+  position: relative;
+  padding-block: var(--space-2xl);
+  scroll-margin-top: calc(var(--nav-h) + 9rem);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin-bottom: var(--space-l);
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 var(--space-2xs);
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.count {
+  margin-top: 0.15em;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.blurb {
+  margin: var(--space-xs) 0 0;
+  max-width: 52ch;
+  color: var(--text-dim);
+}
+
+.sub {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: var(--space-xl) 0 var(--space-s);
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sub:first-of-type {
+  margin-top: 0;
+}
+
+.sub span {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+/* Grids */
+.list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filmGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  gap: var(--space-l) var(--space-m);
+  align-items: start;
+}
+
+.reelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 1fr));
+  gap: var(--space-l) var(--space-s);
+  align-items: start;
+}
+
+.trackGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: var(--space-l) var(--space-m);
+  align-items: start;
+}
+
+.comicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 24rem));
+  justify-content: start;
+  gap: var(--space-l) var(--space-xl);
+  align-items: start;
+}
+
+/* Justified rows: every frame in a row has the same height, and the last row keeps its size. */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m) var(--space-s);
+}
+
+.gallery::after {
+  content: "";
+  flex-grow: 999999;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.credit {
+  margin: 0.4rem 0.25rem 0;
+  display: grid;
+  gap: 0.15rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.credit a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.25em;
+}
+
+.credit a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-s);
+  padding: var(--space-xl) 0;
+  color: var(--text-dim);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.note {
+  padding-block: var(--space-xl) var(--space-2xl);
+}
+
+.noteBody {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 62ch;
+}
+
+.noteBody p {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.noteBody strong {
+  color: var(--text);
+}
+
+.pad {
+  height: 6rem;
+}
+
+@media (max-width: 40em) {
+  .section {
+    padding-block: var(--space-xl);
+  }
+
+  .reelGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery {
+    --row-h: 11rem;
+  }
+}
+
+@media (max-width: 25em) {
+  .gallery {
+    --row-h: 9rem;
+  }
+}

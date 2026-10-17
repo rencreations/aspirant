@@ -21,7 +21,7 @@ import { restoreFocusTo, shieldNextHotkey, useModalScrollLock } from "./modal-ut
 import type { ArtItem, FanArtItem } from "./types";
 
 interface ArtViewerProps {
-  items: readonly (ArtItem | FanArtItem)[];
+  items: ReadonlyArray<ArtItem | FanArtItem>;
   index: number | null;
   onIndexChange: (index: number | null) => void;
   label: string;
@@ -59,14 +59,14 @@ export default function ArtViewer({ items, index, onIndexChange, label, opener }
   const apply = useCallback(() => {
     const img = imgRef.current;
     const stage = stageRef.current;
-    if (!img || !stage) return;
     const v = view.current;
+    setPercent(Math.round(v.s * 100));
+    if (!img || !stage) return;
     const maxX = Math.max(0, (img.offsetWidth * v.s - stage.clientWidth) / 2);
     const maxY = Math.max(0, (img.offsetHeight * v.s - stage.clientHeight) / 2);
     v.x = clamp(v.x, -maxX, maxX);
     v.y = clamp(v.y, -maxY, maxY);
     img.style.transform = `translate3d(${v.x.toFixed(1)}px, ${v.y.toFixed(1)}px, 0) scale(${v.s.toFixed(3)})`;
-    setPercent(Math.round(v.s * 100));
   }, []);
 
   const zoomTo = useCallback(
@@ -101,9 +101,9 @@ export default function ArtViewer({ items, index, onIndexChange, label, opener }
   const itemId = item?.id;
   useEffect(() => {
     view.current = { s: 1, x: 0, y: 0 };
-    setPercent(100);
     if (imgRef.current) imgRef.current.style.transform = "";
-  }, [itemId]);
+    apply();
+  }, [itemId, apply]);
 
   useEffect(() => {
     if (!open) return;

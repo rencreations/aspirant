@@ -16,6 +16,10 @@ import { restoreFocusTo, shieldNextHotkey, useModalScrollLock } from "./modal-ut
 import { pauseForFilm } from "./player-store";
 import type { FilmItem } from "./types";
 
+interface WebkitVideo {
+  webkitEnterFullscreen?: () => void;
+}
+
 interface CinemaDialogProps {
   /** The films in the order the visitor sees them (after filtering). */
   films: readonly FilmItem[];
@@ -63,15 +67,15 @@ export default function CinemaDialog({ films, index, onIndexChange, opener }: Ci
   };
 
   const toggleFullscreen = () => {
-    const video = videoRef.current as
-      (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
+    const video = videoRef.current;
     if (!video) return;
     if (document.fullscreenElement) {
       void document.exitFullscreen().catch(() => undefined);
-    } else if (video.requestFullscreen) {
+    } else if (typeof video.requestFullscreen === "function") {
       void video.requestFullscreen().catch(() => undefined);
     } else {
-      video.webkitEnterFullscreen?.();
+      // iOS Safari only offers the prefixed call.
+      (video as WebkitVideo).webkitEnterFullscreen?.();
     }
   };
 

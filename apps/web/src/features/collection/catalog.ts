@@ -79,7 +79,7 @@ export interface ComicsFile {
         title: string;
         pageCount: number;
         missingPages: readonly number[];
-        pages: readonly { file: string; width: number; height: number; page: number }[];
+        pages: ReadonlyArray<{ file: string; width: number; height: number; page: number }>;
       }
     >
   >;
@@ -349,7 +349,7 @@ function buildModels(assets: readonly ManifestAsset[]): ModelItem[] {
   const models: ModelItem[] = [];
   for (const a of assets) {
     if (a.kind !== "model" || !isSlug(a.slug) || !isPairId(a.pair)) continue;
-    const poster = assets.find((p) => p.path === `img/char/${a.slug}/cutout.webp`);
+    const poster = assets.find((p) => p.path === `img/char/${a.slug}/splash-sm.webp`);
     if (!poster?.width || !poster.height) throw new Error(`No poster for model ${a.slug}.`);
     const emotes = assets
       .filter((e) => e.role === "emote" && e.slug === a.slug)
@@ -360,7 +360,7 @@ function buildModels(assets: readonly ManifestAsset[]): ModelItem[] {
       kind: "model",
       slug: a.slug,
       title: `${nameOf(a.slug)}, 3D model`,
-      alt: `${nameOf(a.slug)}, cutout art shown while the 3D model loads`,
+      alt: `${nameOf(a.slug)}, splash art shown before the 3D model loads`,
       pair: a.pair,
       characters: [a.slug],
       src: a.path,
@@ -408,7 +408,7 @@ export function buildCatalog({ manifest, fanart, comics }: CatalogSources): Cata
   const models = buildModels(manifest.assets);
   const voice = buildVoice(manifest.assets);
 
-  const sum = (list: readonly { durationSec: number }[]) =>
+  const sum = (list: ReadonlyArray<{ durationSec: number }>) =>
     list.reduce((total, item) => total + item.durationSec, 0);
   const counts: Record<SectionId, number> = {
     films: films.length,
@@ -443,9 +443,9 @@ export function buildCatalog({ manifest, fanart, comics }: CatalogSources): Cata
 /** The catalog built from the committed data files. */
 export function loadCatalog(): Catalog {
   return buildCatalog({
-    manifest: manifestJson as unknown as ManifestFile,
+    manifest: manifestJson,
     fanart: fanartJson as unknown as FanartFile,
-    comics: comicsJson as unknown as ComicsFile,
+    comics: comicsJson,
   });
 }
 

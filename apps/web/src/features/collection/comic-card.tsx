@@ -39,6 +39,8 @@ export function ComicCard({ comic, onOpen }: ComicCardProps) {
       type="button"
       className={styles.card}
       data-kind="comic"
+      data-shape="arch"
+      data-tall="true"
       data-cursor="READ"
       aria-label={`Read ${comic.title}, ${comic.pageCount} pages${showResume ? `. Resume at page ${resume}` : ""}${comic.missingPages.length ? `. Pages ${listPages(comic.missingPages)} are missing from the source` : ""}`}
       onClick={(e) => {

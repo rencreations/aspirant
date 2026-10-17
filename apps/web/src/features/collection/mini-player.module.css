@@ -8,10 +8,9 @@
   max-width: 62rem;
   margin-inline: auto;
   display: grid;
-  grid-template-columns: auto minmax(7rem, 13rem) auto minmax(10rem, 1fr) minmax(
-      5rem,
-      9rem
-    ) auto auto;
+  grid-template-columns:
+    auto minmax(7rem, 13rem) auto minmax(10rem, 1fr) minmax(5rem, 9rem)
+    auto auto;
   align-items: center;
   gap: 0.25rem 1rem;
   padding: 0.5rem 0.75rem 0.5rem 0.5rem;

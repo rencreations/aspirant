@@ -49,6 +49,9 @@ export function GalleryCard({ item, index, onOpen }: GalleryCardProps) {
       type="button"
       className={styles.card}
       data-kind={item.kind}
+      data-shape={shape}
+      data-tall={shape === "arch" || shape === "star"}
+      data-round={shape === "hex" || shape === "bite" || shape === "emblem"}
       data-cursor="VIEW"
       aria-label={`View ${item.title}${isFan ? `. ${item.credit}` : ""}`}
       onClick={(e) => {

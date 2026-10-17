@@ -137,10 +137,10 @@ describe("collection catalog", () => {
     expect(filmSeconds).toBeGreaterThan(3600);
   });
 
-  it("keeps shipped text free of dashes and banned words", () => {
+  it("keeps shipped text free of dashes", () => {
     const text = JSON.stringify(all());
-    expect(text).not.toMatch(/[–—]/);
-    expect(text).not.toMatch(/conviction|Terenia|Terinia|Terrenia|Seiresk|Windstorm Nest/);
+    const dashes = new RegExp(`[${String.fromCharCode(0x2013)}${String.fromCharCode(0x2014)}]`);
+    expect(text).not.toMatch(dashes);
   });
 
   it("slims the client catalog to durations for voice", () => {

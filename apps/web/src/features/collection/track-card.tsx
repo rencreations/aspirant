@@ -29,6 +29,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
       type="button"
       className={styles.card}
       data-kind="track"
+      data-shape={shape}
       data-active={active}
       data-cursor={active ? "PAUSE" : "PLAY"}
       aria-label={`${active ? "Pause" : "Play"} ${track.title}, ${spokenDuration(track.durationSec)}`}
