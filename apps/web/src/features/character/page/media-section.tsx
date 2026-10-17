@@ -25,7 +25,8 @@ export interface ModelInfo {
   readonly src: string;
   readonly name: string;
   readonly weapon: string;
-  readonly emotes: readonly string[];
+  /** The robot's face-screen atlas (an emote texture), or null. */
+  readonly screen: string | null;
   readonly fallback: string;
 }
 

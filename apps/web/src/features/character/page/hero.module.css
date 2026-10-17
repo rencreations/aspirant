@@ -245,18 +245,17 @@
 .figLabel {
   position: absolute;
   z-index: 2;
-  top: 0.8rem;
-  left: calc(var(--gutter) + 1.2rem);
-  right: calc(var(--gutter) + 1rem);
+  top: calc(100% + 0.6rem);
+  left: var(--gutter);
+  right: var(--gutter);
   display: flex;
   justify-content: space-between;
   margin: 0;
-  color: #eef3fa;
+  color: var(--text-dim);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
   pointer-events: none;
 }
 
@@ -566,9 +565,11 @@
 @media (min-width: 68.75em) {
   .hero {
     --name-w: 44vw;
-    min-height: max(100svh, 48rem);
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(
+        max(40rem, calc(100svh - var(--nav-h) - var(--space-xs) - 4rem)),
+        auto
+      ) auto;
     column-gap: var(--space-l);
     row-gap: var(--space-m);
     padding-bottom: var(--space-l);
@@ -578,8 +579,8 @@
     grid-row: 1;
     align-self: center;
     width: auto;
-    max-height: none;
-    margin-inline: 0 calc(var(--gutter) * -0.5);
+    max-height: calc(100svh - var(--nav-h) - 7rem);
+    margin-inline: 0;
     aspect-ratio: 16 / 12.5;
   }
   .content {
@@ -589,8 +590,8 @@
     align-self: center;
   }
   .figLabel {
-    left: 1.4rem;
-    right: 1.4rem;
+    left: 0;
+    right: 0;
   }
   .dock {
     grid-column: 1 / -1;

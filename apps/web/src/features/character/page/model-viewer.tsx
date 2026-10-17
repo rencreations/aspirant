@@ -9,12 +9,14 @@ import {
   useMemo,
   useRef,
   useState,
+  type ComponentRef,
   type KeyboardEvent,
   type RefObject,
 } from "react";
 import {
   Box3,
   Color,
+  RepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
@@ -25,7 +27,8 @@ import {
   type Object3D,
   type Texture,
 } from "three";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+
+type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
 
 import GLStage from "@/components/gl/gl-stage";
 import { asset } from "@/lib/asset";
@@ -48,6 +51,30 @@ const NODES: Record<Exhibit, readonly string[]> = {
 const FIT: Record<Exhibit, number> = { character: 2, weapon: 2.1, robot: 1.15 };
 
 const DRACO = "/vendor/draco/";
+
+/**
+ * The robot's face texture is a 3 by 3 atlas of expressions; the screen's UVs cover the top
+ * middle cell, so a face is chosen by shifting the texture offset. Labels are our own.
+ */
+interface Face {
+  readonly c: number;
+  readonly r: number;
+  readonly label: string;
+}
+
+const FACES: readonly Face[] = [
+  { c: 1, r: 0, label: "Wide eyes" },
+  { c: 2, r: 0, label: "Squeezed eyes" },
+  { c: 0, r: 1, label: "Smiling eyes" },
+  { c: 1, r: 1, label: "Crossed eyes" },
+  { c: 2, r: 1, label: "Pulse readout" },
+  { c: 0, r: 2, label: "Signal readout" },
+  { c: 1, r: 2, label: "Resting eyes" },
+  { c: 2, r: 2, label: "Sharp eyes" },
+];
+
+/** The cell the screen's UVs point at when the offset is zero. */
+const BASE_CELL = { c: 1, r: 0 };
 const KEY_STEP = Math.PI / 12;
 
 interface Colours {
@@ -69,11 +96,25 @@ interface ViewerProps {
  */
 export default function ModelViewer({ model, colours }: ViewerProps) {
   const [exhibit, setExhibit] = useState<Exhibit>("character");
-  const [emote, setEmote] = useState(0);
+  const [face, setFace] = useState(0);
   const reduced = useReducedMotion();
   const controls = useRef<OrbitControlsImpl | null>(null);
   const keyTarget = useRef<{ az: number; pol: number } | null>(null);
   const hintId = useId();
+  const alive = useRef(false);
+  const modelUrl = asset(model.src);
+
+  // Drop the parsed model from the loader cache once the viewer is really gone (the timeout
+  // lets a development double mount pass without a reload).
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      window.setTimeout(() => {
+        if (!alive.current) useGLTF.clear(modelUrl);
+      }, 0);
+    };
+  }, [modelUrl]);
 
   const labels: Record<Exhibit, string> = {
     character: model.name,
@@ -130,9 +171,10 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
         <GLStage camera={{ position: [0, 0.35, 6.2], fov: 28 }} fallback={fallback}>
           <Suspense fallback={null}>
             <Scene
-              src={asset(model.src)}
+              src={modelUrl}
               exhibit={exhibit}
-              emote={model.emotes[emote] ? asset(model.emotes[emote]) : null}
+              atlas={model.screen ? asset(model.screen) : null}
+              face={FACES[face] ?? FACES[0]}
               reduced={reduced}
               colours={colours}
               controlsRef={controls}
@@ -171,25 +213,32 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
             </button>
           ))}
         </div>
-        {model.emotes.length > 0 && (
+        {model.screen && (
           <div className={styles.emotes}>
-            <p className="hud-label">Robot face</p>
+            <p className="hud-label">Robot face screen</p>
             <div role="group" aria-label="Robot face" className={styles.emoteGrid}>
-              {model.emotes.map((src, i) => (
+              {FACES.map((f, i) => (
                 <button
-                  key={src}
+                  key={f.label}
                   type="button"
                   className={styles.emote}
-                  aria-pressed={emote === i}
-                  aria-label={`Face ${i + 1}`}
+                  aria-pressed={face === i}
+                  aria-label={f.label}
+                  title={f.label}
                   onClick={() => {
                     audio.blip("star");
-                    setEmote(i);
-                    if (exhibit !== "robot") setExhibit("robot");
+                    setFace(i);
+                    if (exhibit !== "robot") choose("robot");
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={asset(src)} alt="" loading="lazy" decoding="async" />
+                  <span
+                    className={styles.emoteCell}
+                    aria-hidden="true"
+                    style={{
+                      backgroundImage: `url(${asset(model.screen ?? "")})`,
+                      backgroundPosition: `${f.c * 50}% ${f.r * 50}%`,
+                    }}
+                  />
                 </button>
               ))}
             </div>
@@ -203,14 +252,24 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
 interface SceneProps {
   src: string;
   exhibit: Exhibit;
-  emote: string | null;
+  atlas: string | null;
+  face: Face;
   reduced: boolean;
   colours: Colours;
   controlsRef: RefObject<OrbitControlsImpl | null>;
   keyTarget: RefObject<{ az: number; pol: number } | null>;
 }
 
-function Scene({ src, exhibit, emote, reduced, colours, controlsRef, keyTarget }: SceneProps) {
+function Scene({
+  src,
+  exhibit,
+  atlas,
+  face,
+  reduced,
+  colours,
+  controlsRef,
+  keyTarget,
+}: SceneProps) {
   const gltf = useGLTF(src, asset(DRACO), false);
   const rig = useRef<Group>(null);
   const turntable = useRef<Group>(null);
@@ -269,33 +328,43 @@ function Scene({ src, exhibit, emote, reduced, colours, controlsRef, keyTarget }
     });
   }, [gltf]);
 
-  // The robot's face screen shows the chosen emote (flipY off, sRGB, like glTF textures).
+  // The robot's face screen: the expression atlas, lit from within, glTF conventions
+  // (flipY off, sRGB) and repeat wrapping, because the screen's UVs sit at v = 4.
+  const [screenTex, setScreenTex] = useState<Texture | null>(null);
   useEffect(() => {
     const screen = nodes.get("robot_screen") as Mesh | undefined;
     const mat = screen?.material as MeshStandardMaterial | undefined;
-    if (!mat || !emote) return;
+    if (!mat || !atlas) return;
     let alive = true;
     let tex: Texture | null = null;
-    new TextureLoader().load(emote, (t) => {
+    new TextureLoader().load(atlas, (t) => {
       if (!alive) {
         t.dispose();
         return;
       }
       t.flipY = false;
       t.colorSpace = SRGBColorSpace;
+      t.wrapS = RepeatWrapping;
+      t.wrapT = RepeatWrapping;
       tex = t;
       mat.map = t;
       mat.emissive = new Color("#ffffff");
       mat.emissiveMap = t;
-      mat.emissiveIntensity = 0.55;
+      mat.emissiveIntensity = 0.9;
       mat.needsUpdate = true;
-      invalidate();
+      setScreenTex(t);
     });
     return () => {
       alive = false;
       tex?.dispose();
     };
-  }, [emote, nodes, invalidate]);
+  }, [atlas, nodes]);
+
+  useEffect(() => {
+    if (!screenTex) return;
+    screenTex.offset.set((face.c - BASE_CELL.c) / 3, (face.r - BASE_CELL.r) / 3);
+    invalidate();
+  }, [face, screenTex, invalidate]);
 
   // Dispose the model when the viewer unmounts.
   useEffect(() => {
@@ -314,9 +383,8 @@ function Scene({ src, exhibit, emote, reduced, colours, controlsRef, keyTarget }
           m.dispose();
         }
       });
-      useGLTF.clear(src);
     };
-  }, [gltf, src]);
+  }, [gltf]);
 
   const target = useRef({ x: 0, y: 0, z: 0, s: 1 });
   useFrame((state, dt) => {
