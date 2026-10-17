@@ -42,7 +42,7 @@ export function EndMatter() {
       <div className={s.theEnd}>
         <StarGlyph className={s.theEndStar} />
         <p className={s.theEndWord}>{storyIndex.backMatter.closing}</p>
-        <p className={cn(s.theEndNote, "hud-label")}>The lamp is on.</p>
+        <p className={cn(s.theEndNote, "hud-label")}>End of story file A5-01</p>
       </div>
     </section>
   );

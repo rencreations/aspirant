@@ -300,6 +300,18 @@
   }
 }
 
+.rail {
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    translate var(--dur-slow) var(--ease-out);
+}
+
+.rail[data-visible="false"] {
+  opacity: 0;
+  translate: -0.75rem 0;
+  pointer-events: none;
+}
+
 .railTrack {
   position: relative;
   display: flex;

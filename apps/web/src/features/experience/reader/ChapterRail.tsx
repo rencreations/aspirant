@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+} from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { audio } from "@/lib/audio";
+import { useThemeAt } from "@/lib/hooks";
 
 import { useExperience } from "../contract";
 import s from "./chrome.module.css";
@@ -35,11 +43,14 @@ function partStep(i: number, dir: 1 | -1): number {
 export function ChapterRail() {
   const chapterId = useExperience((st) => st.chapterId);
   const { jumpTo } = useReader();
+  const finished = useExperience((st) => st.storyProgress >= 0.9999);
   const current = chapterId ? unitIndex(chapterId) : -1;
+  const visible = current >= 0 && !finished;
   const [preview, setPreview] = useState<number | null>(null);
   const [tipTop, setTipTop] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const commitTimer = useRef(0);
+  const theme = useThemeAt((w, h) => ({ x: w / 2, y: h / 2 }));
 
   useEffect(() => () => window.clearTimeout(commitTimer.current), []);
 
@@ -47,7 +58,9 @@ export function ChapterRail() {
     const track = trackRef.current;
     const tick = track?.querySelector<HTMLElement>(`[data-i="${i}"]`);
     if (!track || !tick) return 0;
-    return tick.getBoundingClientRect().top - track.getBoundingClientRect().top + tick.offsetHeight / 2;
+    return (
+      tick.getBoundingClientRect().top - track.getBoundingClientRect().top + tick.offsetHeight / 2
+    );
   };
 
   const go = (i: number) => {
@@ -107,7 +120,14 @@ export function ChapterRail() {
 
   const shown = preview ?? current;
   return (
-    <nav className={s.rail} aria-label="Chapters" data-overlay="rail">
+    <nav
+      className={s.rail}
+      aria-label="Chapters"
+      data-overlay="rail"
+      data-theme={theme}
+      data-visible={visible ? "true" : "false"}
+      inert={!visible}
+    >
       <div
         ref={trackRef}
         className={s.railTrack}
@@ -132,7 +152,12 @@ export function ChapterRail() {
           const first = unitIndex(part.chapterIds[0] ?? "");
           const inPart = current >= first && current < first + part.chapterIds.length;
           return (
-            <div key={part.number} className={s.railPart} data-current={inPart ? "true" : undefined}>
+            <div
+              key={part.number}
+              className={s.railPart}
+              data-current={inPart ? "true" : undefined}
+              style={{ "--n": part.chapterIds.length + 1 } as CSSProperties}
+            >
               <span className={s.railPartNum} aria-hidden="true">
                 {String(part.number).padStart(2, "0")}
               </span>
@@ -144,7 +169,15 @@ export function ChapterRail() {
                       key={id}
                       data-i={i}
                       className={cn(s.tick, UNITS[i]?.kind === "interlude" && s.tickInterlude)}
-                      data-state={i === current ? "current" : i < current ? "read" : i === preview ? "preview" : undefined}
+                      data-state={
+                        i === current
+                          ? "current"
+                          : i < current
+                            ? "read"
+                            : i === preview
+                              ? "preview"
+                              : undefined
+                      }
                     />
                   );
                 })}

@@ -10,6 +10,7 @@ import { cn } from "@aspirant/ui/lib/utils";
 
 import hc from "@/components/ui/hover-card.module.css";
 import type { ParagraphBlock, PoemBlock, Segment } from "@/content/story-types";
+import { CHARACTER_NAMES, isCharacterSlug } from "@/lib/slugs";
 
 import type { KeyLine } from "./key-lines";
 import s from "./reader.module.css";
@@ -110,7 +111,8 @@ function renderGroups(pieces: readonly Piece[], { words = false, dropCap = false
     const lead = group[0];
     if (!lead) return;
     if (lead.ent !== undefined) {
-      const label = capEntity && gi === 0 && capEntity.id === lead.ent ? capEntity.label : undefined;
+      const label =
+        capEntity && gi === 0 && capEntity.id === lead.ent ? capEntity.label : undefined;
       out.push(
         <EntityButton key={`e${lead.start}`} id={lead.ent} label={label}>
           {group.map((piece) => (
@@ -132,13 +134,22 @@ export function Segments({ segments }: { segments: readonly Segment[] }) {
   return <>{renderGroups(toPieces(segments), {})}</>;
 }
 
+/** A speaker's short name: the Aspirant's name, the name as written, or the id in words. */
+function speakerName(block: ParagraphBlock, id: string): string {
+  if (isCharacterSlug(id)) return CHARACTER_NAMES[id];
+  const named = block.segments.find((seg) => seg.t === "ent" && seg.id === id);
+  if (named) return named.text;
+  return id
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function SpeakerHint({ block }: { block: ParagraphBlock }) {
   if (!block.speaker) return null;
-  const named = block.segments.find((seg) => seg.t === "ent" && seg.id === block.speaker);
-  if (!named) return null;
   return (
     <span className={s.speaker} aria-hidden="true">
-      {named.text}
+      {speakerName(block, block.speaker)}
     </span>
   );
 }

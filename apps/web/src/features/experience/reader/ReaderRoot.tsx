@@ -6,7 +6,15 @@
  * chapter rail, contents, settings) and `jumpTo`, which loads a Part before it scrolls there.
  */
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { prefersReducedMotion } from "@/lib/hooks";
@@ -38,6 +46,41 @@ function partFor(id: string): { part: number; all: boolean } | null {
   if (unit) return { part: unit.part, all: true };
   const host = document.getElementById(id)?.closest<HTMLElement>("[data-part]");
   return host ? { part: Number(host.dataset.part), all: false } : null;
+}
+
+/**
+ * Keep a jump target in place while late layout lands (chapters rendering for the first time
+ * above it, fonts, neighbouring Parts). Stops at the first wheel, touch, key or press, or after
+ * 1.6 s. Resolves after a few frames so the veil can lift while it keeps watching.
+ */
+function settle(el: HTMLElement, offset: number, fix: (offset: number) => void): Promise<void> {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    let user = false;
+    let resolved = false;
+    const stop = () => {
+      user = true;
+    };
+    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    for (const type of events) window.addEventListener(type, stop, { passive: true, once: true });
+    const done = () => {
+      for (const type of events) window.removeEventListener(type, stop);
+      if (!resolved) resolve();
+    };
+    const tick = () => {
+      if (user) return done();
+      const drift = el.getBoundingClientRect().top + offset;
+      if (Math.abs(drift) > 3) fix(offset);
+      const t = performance.now() - start;
+      if (!resolved && t > 140) {
+        resolved = true;
+        resolve();
+      }
+      if (t < 1600) requestAnimationFrame(tick);
+      else done();
+    };
+    requestAnimationFrame(tick);
+  });
 }
 
 function chromeHeight(): number {
@@ -83,16 +126,8 @@ export function ReaderRoot({ children }: { children: ReactNode }) {
           await wait(150);
         }
         scrollTo(el, { offset, immediate: true });
-        await nextFrame();
-        await nextFrame();
-        // Late layout (fonts, neighbouring Parts) can move the target: settle it once more.
-        const drift = el.getBoundingClientRect().top + offset;
-        if (Math.abs(drift) > 4) scrollTo(el, { offset, immediate: true });
+        await settle(el, offset, (y) => scrollTo(el, { offset: y, immediate: true }));
         if (veil) delete veil.dataset.on;
-        window.setTimeout(() => {
-          const late = el.getBoundingClientRect().top + offset;
-          if (Math.abs(late) > 24) scrollTo(el, { offset, immediate: true });
-        }, 350);
       }
       if (focus) {
         const heading = isPart
