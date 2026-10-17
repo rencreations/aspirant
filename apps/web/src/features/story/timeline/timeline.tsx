@@ -56,7 +56,8 @@ export function Timeline() {
   const { scrollTo } = useLenis();
   const wide = useMediaQuery("(min-width: 48em)");
   const reduced = useReducedMotion();
-  const mode = !wide ? "stack" : reduced ? "native" : "pinned";
+  const short = useMediaQuery("(max-height: 34rem)");
+  const mode = !wide ? "stack" : reduced || short ? "native" : "pinned";
   const [active, setActive] = useState(0);
   const travel = useRef(0);
   const drag = useRef({ on: false, x: 0, moved: 0 });

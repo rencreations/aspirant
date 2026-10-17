@@ -95,7 +95,7 @@ export function makeLayout(w: number, h: number): Layout {
     hexes,
     planet: {
       x: w * (narrow ? 0.84 : 0.88),
-      y: h * (narrow ? 0.12 : 0.2),
+      y: h * (narrow ? 0.17 : 0.2),
       r: Math.min(w, h) * 0.1,
     },
     academy: {

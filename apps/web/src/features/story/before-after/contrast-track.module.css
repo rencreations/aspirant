@@ -358,9 +358,19 @@
     display: none;
   }
 
+  .copy {
+    padding-bottom: calc(10rem + env(safe-area-inset-bottom));
+  }
+
+  .sources a {
+    padding: 0 0.5rem;
+    letter-spacing: 0.04em;
+  }
+
   .sources {
     margin-left: 0;
     width: 100%;
+    justify-content: flex-end;
   }
 }
 

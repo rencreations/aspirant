@@ -18,7 +18,7 @@
 
 /* Honeycomb: rows of three, every second row shifted by half a cell. */
 .comb {
-  --w: clamp(6rem, 27vw, 11.75rem);
+  --w: clamp(4.9rem, 25.5vw, 11.75rem);
   --h: calc(var(--w) * 1.1547);
   --gap: 5px;
   display: flex;
@@ -148,7 +148,7 @@
 .name {
   font-family: var(--font-display-stack);
   font-weight: 800;
-  font-size: clamp(0.95rem, 0.6rem + 1.4vw, 1.55rem);
+  font-size: clamp(0.78rem, 0.5rem + 1.4vw, 1.55rem);
   line-height: 0.92;
   text-transform: uppercase;
   text-wrap: balance;

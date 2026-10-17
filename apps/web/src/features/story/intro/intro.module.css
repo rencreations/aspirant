@@ -43,7 +43,7 @@
 
 .h1 {
   margin: 0;
-  font-size: var(--step-8);
+  font-size: min(var(--step-8), 17vw);
   line-height: 0.82;
   overflow-wrap: anywhere;
   color: var(--text);
@@ -374,5 +374,12 @@
 @media (hover: hover) {
   .card:hover::after {
     background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+  }
+}
+
+@media (max-width: 43.75em) {
+  .readoutR,
+  .hint {
+    display: none;
   }
 }

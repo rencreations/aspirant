@@ -328,3 +328,12 @@
 .face:focus-visible {
   outline-offset: -6px;
 }
+
+@media (max-width: 61.99em) {
+  .tag {
+    left: auto;
+    right: calc(var(--cut) + 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
