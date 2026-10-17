@@ -143,4 +143,3 @@ Depth: `depth.webp` belongs to `base`, and `depth-alt.webp` (extra) belongs to `
 - Both comics have all pages as tall JPG strips at 1000 to 2500 px wide; the Guinevere and Vexana originals are 124 MB, the output is 4.5 MB.
 - The Selena and Obsidia `comic.webm` is a 556 s narrated comic video (the transcript README says Indonesian narration that repeats `story/villain-arrives.md` with pre-correction wording); it is shipped as `selena-obsidia/comic-video` and should not be quoted as lore.
 - Total video is 323 MB of the 365 MB. If the budget gets tight, the cheapest cuts are `fanny-layla/music-bts` (24 MB), `fanny-layla/music-video` (31 MB) and `selena-obsidia/comic-video` (16 MB).
-- Local machine note: `C:` had under 9 GB free during the build; all temp files went to the scratch folder under `C:\Users\muham\AppData\Local\Temp\claude\...`.

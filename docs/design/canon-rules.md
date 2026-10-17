@@ -1,6 +1,6 @@
 # Canon and content rules
 
-Every contributor follows these. They come from the author's own `CANON-NOTES.md` and `CLAUDE.md` in the source folder, plus the owner's brief.
+Every contributor follows these. They come from the author's own notes in the source folder (`CANON-NOTES.md` and the project readme), plus the owner's brief.
 
 ## Sources
 
