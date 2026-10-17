@@ -76,7 +76,7 @@ export const SET_PIECE_ANCHORS: readonly SetPieceAnchor[] = [
     after: "c47-p025",
     caption: "The long white corridor",
     label:
-      "Walk the corridor under the cold blue lamps by dragging, scrolling over the panel, or with the arrow keys. It ends at the black gate.",
+      "Walk the corridor under the cold blue lamps by dragging across it, with the arrow keys, or with the Walk slider. It ends at the black gate.",
   },
   {
     id: "third-floor-lamp",
