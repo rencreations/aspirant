@@ -2,7 +2,38 @@
  * The reader's own saved state (localStorage, never throws): last position, text size and
  * Calm reading. The chapter also goes to the site store's `lastChapter`.
  */
+import { create } from "zustand";
+
 const KEY = "aspirants:reader";
+
+interface LivePrefs {
+  readonly textScale: number;
+  readonly calm: boolean;
+  /** Where the reader left off on a previous visit (read once on load). */
+  readonly resume: { readonly chapterId: string; readonly paragraphId: string | null } | null;
+}
+
+/**
+ * Live reader preferences. Starts at the defaults on the server and the first client render,
+ * then `loadReaderPrefs()` fills it from storage after hydration.
+ */
+export const useReaderPrefs = create<LivePrefs>()(() => ({
+  textScale: 1,
+  calm: false,
+  resume: null,
+}));
+
+export function loadReaderPrefs(): void {
+  const saved = readPrefs();
+  useReaderPrefs.setState({
+    textScale: saved.textScale,
+    calm: saved.calm,
+    resume:
+      saved.chapterId && saved.paragraphId && saved.paragraphId !== "c01-p000"
+        ? { chapterId: saved.chapterId, paragraphId: saved.paragraphId }
+        : null,
+  });
+}
 
 export const TEXT_SCALES = [0.875, 1, 1.125, 1.25, 1.375] as const;
 

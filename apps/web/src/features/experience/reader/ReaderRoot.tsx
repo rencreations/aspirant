@@ -6,15 +6,7 @@
  * chapter rail, contents, settings) and `jumpTo`, which loads a Part before it scrolls there.
  */
 import dynamic from "next/dynamic";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { prefersReducedMotion } from "@/lib/hooks";
@@ -25,8 +17,8 @@ import { useReadingEngine } from "./engine";
 import { EntityCards } from "./EntityCards";
 import { MiniBar } from "./MiniBar";
 import { READING_LINE } from "./observers";
-import { readPrefs, writePrefs } from "./prefs";
-import { ReaderContext, type JumpOptions, type ReaderApi, type SavedPlace } from "./reader-context";
+import { loadReaderPrefs, useReaderPrefs, writePrefs } from "./prefs";
+import { ReaderContext, type JumpOptions, type ReaderApi } from "./reader-context";
 import s from "./reader.module.css";
 import { getUnit } from "./story-data";
 
@@ -94,9 +86,9 @@ export function ReaderRoot({ children }: { children: ReactNode }) {
   const probeRef = useRef<HTMLParagraphElement>(null);
   const veilRef = useRef<HTMLDivElement>(null);
   const { scrollTo } = useLenis();
-  const [textScale, setScale] = useState(1);
-  const [calm, setCalmState] = useState(false);
-  const [resume, setResume] = useState<SavedPlace | null>(null);
+  const textScale = useReaderPrefs((st) => st.textScale);
+  const calm = useReaderPrefs((st) => st.calm);
+  const resume = useReaderPrefs((st) => st.resume);
 
   useReadingEngine(rootRef, probeRef);
 
@@ -144,7 +136,7 @@ export function ReaderRoot({ children }: { children: ReactNode }) {
     // Keep the lit paragraph where it is while the text reflows.
     const lit = document.querySelector<HTMLElement>("[data-lit]");
     const before = lit?.getBoundingClientRect().top;
-    setScale(value);
+    useReaderPrefs.setState({ textScale: value });
     writePrefs({ textScale: value });
     if (lit && before !== undefined) {
       requestAnimationFrame(() =>
@@ -157,17 +149,13 @@ export function ReaderRoot({ children }: { children: ReactNode }) {
   }, []);
 
   const setCalm = useCallback((value: boolean) => {
-    setCalmState(value);
+    useReaderPrefs.setState({ calm: value });
     writePrefs({ calm: value });
   }, []);
 
   // Saved preferences, the first Part, and deep links (#c30, #part-06, #c30-p012).
   useEffect(() => {
-    const prefs = readPrefs();
-    setScale(prefs.textScale);
-    setCalmState(prefs.calm);
-    if (prefs.chapterId && prefs.paragraphId && prefs.paragraphId !== "c01-p000")
-      setResume({ chapterId: prefs.chapterId, paragraphId: prefs.paragraphId });
+    loadReaderPrefs();
     void ensurePart(1);
     const fromHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));

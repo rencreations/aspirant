@@ -18,14 +18,7 @@ import { HELD_BEATS } from "./key-lines";
 import { Opening } from "./Opening";
 import s from "./reader.module.css";
 import { ReaderRoot } from "./ReaderRoot";
-import {
-  getPartMeta,
-  getUnit,
-  partAnchor,
-  PARTS,
-  toPartNumber,
-  unitLabel,
-} from "./story-data";
+import { getPartMeta, getUnit, partAnchor, PARTS, toPartNumber, unitLabel } from "./story-data";
 
 const fmt = new Intl.NumberFormat("en-GB");
 
@@ -142,7 +135,9 @@ function HeldBeat({ part, mood }: { part: PartMeta; mood: Mood }) {
 
 function PartSection({ part }: { part: PartMeta }) {
   const mood = partMood(toPartNumber(part.number));
-  let previous: Mood = mood;
+  const units = part.chapterIds.map((id) => getUnit(id));
+  const moods: Mood[] = units.map((unit) => (unit ? unitMood(unit) : mood));
+  const lastMood = moods.at(-1) ?? mood;
   return (
     <section
       id={partAnchor(part.number)}
@@ -152,11 +147,10 @@ function PartSection({ part }: { part: PartMeta }) {
     >
       <PartCard part={part} mood={mood} />
       {part.chapterIds.map((id, index) => {
-        const unit = getUnit(id);
+        const unit = units[index];
         if (!unit) return null;
-        const unitMoodValue = unitMood(unit);
-        const shift = unitMoodValue !== previous;
-        previous = unitMoodValue;
+        const unitMoodValue = moods[index] ?? mood;
+        const shift = unitMoodValue !== (index === 0 ? mood : moods[index - 1]);
         return (
           <article
             key={id}
@@ -182,7 +176,7 @@ function PartSection({ part }: { part: PartMeta }) {
           </article>
         );
       })}
-      <HeldBeat part={part} mood={previous} />
+      <HeldBeat part={part} mood={lastMood} />
     </section>
   );
 }

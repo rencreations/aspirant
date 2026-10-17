@@ -8,13 +8,22 @@
  * in, Esc closes and returns focus, viewport-aware placement) without a component per name.
  * The glossary and the voice lines load on first use, so they stay out of the first bundle.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { TLink } from "@/components/transition/t-link";
 import hc from "@/components/ui/hover-card.module.css";
+import type * as GlossaryModule from "@/content/entities";
 import type { Entity } from "@/content/entities";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
@@ -41,7 +50,7 @@ const KIND_LABEL: Readonly<Record<Entity["kind"], string>> = {
   object: "Object",
 };
 
-type Glossary = typeof import("@/content/entities");
+type Glossary = typeof GlossaryModule;
 let glossaryPromise: Promise<Glossary> | null = null;
 function loadGlossary(): Promise<Glossary> {
   glossaryPromise ??= import("@/content/entities");
@@ -67,8 +76,19 @@ function triggerFor(node: EventTarget | null): HTMLButtonElement | null {
 function HexGlyph({ kind }: { kind: Entity["kind"] | undefined }) {
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-      <path d="M24 3 42 13.5v21L24 45 6 34.5v-21Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M24 11 35 17.5v13L24 37l-11-6.5v-13Z" fill="none" stroke="currentColor" strokeWidth="0.75" opacity="0.6" />
+      <path
+        d="M24 3 42 13.5v21L24 45 6 34.5v-21Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M24 11 35 17.5v13L24 37l-11-6.5v-13Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="0.75"
+        opacity="0.6"
+      />
       {kind === "place" ? (
         <circle cx="24" cy="24" r="3.2" fill="currentColor" />
       ) : (
@@ -115,7 +135,12 @@ function HearHer({ slug, name }: { slug: string; name: string }) {
       >
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path d="M2 6h2.6L8 3v10L4.6 10H2z" fill="currentColor" />
-          <path d="M10.5 5.5a3.5 3.5 0 0 1 0 5M12.5 3.5a6.3 6.3 0 0 1 0 9" fill="none" stroke="currentColor" strokeWidth="1.2" />
+          <path
+            d="M10.5 5.5a3.5 3.5 0 0 1 0 5M12.5 3.5a6.3 6.3 0 0 1 0 9"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          />
         </svg>
         Hear her
       </button>
@@ -129,7 +154,15 @@ function HearHer({ slug, name }: { slug: string; name: string }) {
   );
 }
 
-function CardBody({ id, fallback, glossary }: { id: string; fallback: string; glossary: Glossary | null }) {
+function CardBody({
+  id,
+  fallback,
+  glossary,
+}: {
+  id: string;
+  fallback: string;
+  glossary: Glossary | null;
+}) {
   const entity = glossary?.getEntity(id);
   const slug = entity?.characterSlug ?? null;
   const portrait = portraitFor(slug);
@@ -143,7 +176,13 @@ function CardBody({ id, fallback, glossary }: { id: string; fallback: string; gl
         {portrait ? (
           // Decorative portrait: the name is the card's text.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={asset(portrait.src)} alt="" width={800} height={450} style={{ objectPosition: portrait.position }} />
+          <img
+            src={asset(portrait.src)}
+            alt=""
+            width={800}
+            height={450}
+            style={{ objectPosition: portrait.position }}
+          />
         ) : (
           <HexGlyph kind={entity?.kind} />
         )}
@@ -158,7 +197,11 @@ function CardBody({ id, fallback, glossary }: { id: string; fallback: string; gl
       {slug && isCharacterSlug(slug) && (
         <span className={s.cardActions}>
           <HearHer slug={slug} name={label} />
-          <TLink href={characterRoute(slug)} transitionLabel={label} className={cn(s.cardLink, "link")}>
+          <TLink
+            href={characterRoute(slug)}
+            transitionLabel={label}
+            className={cn(s.cardLink, "link")}
+          >
             Open {label}&rsquo;s page
           </TLink>
         </span>
@@ -192,7 +235,7 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
       clearTimers();
       const id = el.dataset.ent ?? "";
       const current = openRef.current;
-      if (!current || current.el !== el) audio.blip("hover");
+      if (current?.el !== el) audio.blip("hover");
       setTheme(el.closest<HTMLElement>("[data-theme]")?.dataset.theme);
       commit({ el, id, pinned: pinned || (current?.el === el && current.pinned) });
       void loadGlossary().then(setGlossary);
@@ -310,7 +353,10 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
     const left = Math.min(Math.max(MARGIN, centre - w / 2), Math.max(MARGIN, vw - w - MARGIN));
     el.style.top = `${Math.round(Math.max(MARGIN, Math.min(top, vh - h - MARGIN)))}px`;
     el.style.left = `${Math.round(left)}px`;
-    el.style.setProperty("--arrow-x", `${Math.round(Math.min(Math.max(14, centre - left), w - 14))}px`);
+    el.style.setProperty(
+      "--arrow-x",
+      `${Math.round(Math.min(Math.max(14, centre - left), w - 14))}px`,
+    );
     el.dataset.side = side;
     el.dataset.measuring = "false";
   }, []);
@@ -378,7 +424,11 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
       ref={cardRef}
       id={CARD_ID}
       role={focusable ? "dialog" : "tooltip"}
-      aria-label={focusable ? (open.el.getAttribute("aria-label") ?? open.el.textContent ?? undefined) : undefined}
+      aria-label={
+        focusable
+          ? (open.el.getAttribute("aria-label") ?? open.el.textContent ?? undefined)
+          : undefined
+      }
       className={cn(hc.card, s.entCard)}
       data-theme={theme}
       data-measuring="true"
@@ -395,7 +445,11 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
         hide();
       }}
     >
-      <CardBody id={open.id} fallback={open.el.getAttribute("aria-label") ?? open.el.textContent ?? ""} glossary={glossary} />
+      <CardBody
+        id={open.id}
+        fallback={open.el.getAttribute("aria-label") ?? open.el.textContent ?? ""}
+        glossary={glossary}
+      />
       <span className={hc.arrow} aria-hidden="true" />
     </div>,
     document.body,

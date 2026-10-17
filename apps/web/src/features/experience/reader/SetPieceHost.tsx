@@ -1,36 +1,18 @@
 "use client";
 
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-  type ComponentType,
-  type LazyExoticComponent,
-} from "react";
+import { createElement, lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import { HudPanel } from "@/components/ui/hud-panel";
 import { useReducedMotion } from "@/lib/hooks";
 
-import type { SetPieceAnchor, SetPieceProps } from "../contract";
+import type { SetPieceAnchor } from "../contract";
 import { setPieceRegistry } from "../scenes/setpieces";
 import s from "./reader.module.css";
 
-type Piece = LazyExoticComponent<ComponentType<SetPieceProps>>;
-const pieces = new Map<string, Piece>();
-
-/** One lazy component per set piece id, created once; null when the id is not registered. */
-function pieceFor(id: string): Piece | null {
-  const load = setPieceRegistry[id];
-  if (!load) return null;
-  let piece = pieces.get(id);
-  if (!piece) {
-    piece = lazy(load);
-    pieces.set(id, piece);
-  }
-  return piece;
-}
+/** One lazy component per registered set piece, created once at module load. */
+const PIECES = new Map(
+  Object.entries(setPieceRegistry).map(([id, load]) => [id, lazy(load)] as const),
+);
 
 /**
  * Frames an inline set piece after its paragraph: a HUD panel with the caption, skip links
@@ -38,21 +20,22 @@ function pieceFor(id: string): Piece | null {
  * reduced-motion flag. Renders nothing for ids the scene library does not register.
  */
 export function SetPieceHost({ anchor }: { anchor: SetPieceAnchor }) {
-  const Piece = pieceFor(anchor.id);
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const reduced = useReducedMotion();
+  const known = PIECES.has(anchor.id);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !Piece) return;
+    if (!el || !known) return;
     const io = new IntersectionObserver(([entry]) => setActive(entry?.isIntersecting ?? false), {
       rootMargin: "10% 0px",
     });
     io.observe(el);
     return () => io.disconnect();
-  }, [Piece]);
+  }, [known]);
 
+  const Piece = PIECES.get(anchor.id);
   if (!Piece) return null;
   const before = `setpiece-${anchor.id}-before`;
   const after = `setpiece-${anchor.id}-after`;
@@ -62,10 +45,17 @@ export function SetPieceHost({ anchor }: { anchor: SetPieceAnchor }) {
         Skip the scene: {anchor.caption}
       </a>
       <div ref={ref}>
-        <HudPanel as="figure" label={anchor.caption} code="Interactive" tone="glass" scan={!reduced}>
+        <HudPanel
+          as="figure"
+          label={anchor.caption}
+          code="Interactive"
+          tone="glass"
+          scan={!reduced}
+        >
           <div role="group" aria-label={anchor.label} className={s.setPieceStage}>
             <Suspense fallback={<p className={s.setPieceWait}>{anchor.caption}</p>}>
-              <Piece active={active} reduced={reduced} chapterId={anchor.chapterId} />
+              {/* `Piece` comes from the module-level PIECES map, so its identity is stable. */}
+              {createElement(Piece, { active, reduced, chapterId: anchor.chapterId })}
             </Suspense>
           </div>
         </HudPanel>

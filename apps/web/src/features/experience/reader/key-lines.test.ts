@@ -8,8 +8,8 @@ const order = new Map(index.chapters.map((chapter, i) => [chapter.id as string, 
 const DASHES = new RegExp(`[${String.fromCharCode(0x2014)}${String.fromCharCode(0x2013)}]`, "u");
 
 function textOf(id: string): string {
-  const hit = blocks.get(id);
-  return hit && hit.block.type === "p" ? plainText(hit.block.segments) : "";
+  const block = blocks.get(id)?.block;
+  return block?.type === "p" ? plainText(block.segments) : "";
 }
 
 describe("key lines", () => {
