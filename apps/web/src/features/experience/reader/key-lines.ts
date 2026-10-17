@@ -15,6 +15,11 @@ export interface KeyLine {
   readonly id: string;
   /** Exact substrings of the paragraph to set in the accent colour. */
   readonly emphasis?: readonly string[];
+  /**
+   * For a long paragraph: the one sentence (an exact substring) that breaks out large in
+   * place, while the rest of the paragraph stays at reading size.
+   */
+  readonly excerpt?: string;
 }
 
 export interface HeldBeat {
@@ -106,7 +111,7 @@ export const KEY_LINES: readonly KeyLine[] = [
   { id: "c22-p015" },
   // c23 Silverbolt
   { id: "c23-p015", emphasis: ["did not have to pretend"] },
-  { id: "c23-p048", emphasis: ["the wrong way"] },
+  { id: "c23-p047", excerpt: "Someone's always waiting.", emphasis: ["waiting"] },
   { id: "c23-p055", emphasis: ["I trust you."] },
   // c24 The Orb
   { id: "c24-p011", emphasis: ["the Cycle"] },
