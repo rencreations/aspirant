@@ -20,7 +20,7 @@ import {
 
 import { smoothstep } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import { NOISE } from "../glsl";
 import type { ShapeParams } from "../types";
 
@@ -120,9 +120,10 @@ export function Board({ p }: { p: ShapeParams }) {
     return { group, white, list: [plane, mat, lathe, darkMat, whiteMat] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     // The pawn turns a quarter toward the lit squares, slowly.
-    built.white.rotation.y =
+    liveRef.current.white.rotation.y =
       Math.sin(clock.time * 0.2) * 0.3 + smoothstep(0, 1, clock.chapter) * 1.57;
   });
   return <primitive object={built.group} />;
@@ -179,8 +180,9 @@ export function Portal({ p }: { p: ShapeParams }) {
     return { mesh, mat, list: [geo, mat] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    const u = built.mat.uniforms;
+    const u = liveRef.current.mat.uniforms;
     u.uTime!.value = clock.time;
     const open = p.drive ? smoothstep(0, 0.6, driven(p.drive, clock)) : 1;
     u.uOpen!.value = 0.8 * Math.max(0.02, open) * Math.min(1, clock.age / 1.5 + 0.2);
@@ -226,12 +228,13 @@ export function Ticks({ p }: { p: ShapeParams }) {
     return { group, marks, lit, dim, list: [geo, lit, dim] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     const count = Math.round(smoothstep(0, 0.9, driven(p.drive ?? "chapter", clock)) * 40);
-    built.marks.forEach((m, i) => {
-      m.material = i < count ? built.lit : built.dim;
+    liveRef.current.marks.forEach((m, i) => {
+      m.material = i < count ? liveRef.current.lit : liveRef.current.dim;
     });
-    built.group.rotation.z = Math.sin(clock.time * 0.1) * 0.03;
+    liveRef.current.group.rotation.z = Math.sin(clock.time * 0.1) * 0.03;
   });
   return <primitive object={built.group} />;
 }
@@ -310,13 +313,15 @@ export function Orb({ p }: { p: ShapeParams }) {
     return { group, mesh, mat, hm, list: [geo, mat, hg, hm] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    const u = built.mat.uniforms;
+    const u = liveRef.current.mat.uniforms;
     u.uTime!.value = clock.time;
     u.uCrack!.value = p.drive ? driven(p.drive, clock) * (p.a ?? 1) : (p.a ?? 0);
     u.uBeat!.value = clock.beat;
-    built.mesh.rotation.y = clock.time * 0.12;
-    built.hm.uniforms.uK!.value = 0.5 + (u.uCrack!.value as number) * 0.6 + clock.beat * 0.4;
+    liveRef.current.mesh.rotation.y = clock.time * 0.12;
+    liveRef.current.hm.uniforms.uK!.value =
+      0.5 + (u.uCrack!.value as number) * 0.6 + clock.beat * 0.4;
   });
   return <primitive object={built.group} />;
 }

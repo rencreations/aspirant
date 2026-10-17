@@ -18,7 +18,7 @@ import {
 
 import { mulberry32 } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import type { CityParams } from "../types";
 
 const WIN_VERT = /* glsl */ `
@@ -84,7 +84,7 @@ export function City({ params }: { params: CityParams }) {
     const ground = p.ground ?? -2.2;
     const towers = layout(p, clock.quality);
     const group = new Group();
-    const disposables: { dispose(): void }[] = [];
+    const disposables: Array<{ dispose(): void }> = [];
     const rand = mulberry32(99);
     const ruin = p.ruin ?? 0;
 
@@ -202,14 +202,15 @@ export function City({ params }: { params: CityParams }) {
     [built],
   );
 
+  const liveRef = useLatest(built);
   useFrame(() => {
-    const u = built.windows.uniforms;
+    const u = liveRef.current.windows.uniforms;
     u.uTime!.value = clock.time;
     u.uPixel!.value = clock.pixelH * 0.5;
     u.uLit!.value = driven(params.lit ?? 0.5, clock, 0.5);
-    if (built.lamp) {
+    if (liveRef.current.lamp) {
       const glow = 0.85 + 0.15 * Math.sin(clock.time * 1.7) + clock.beat * 0.6;
-      built.lamp.scale.setScalar(glow);
+      liveRef.current.lamp.scale.setScalar(glow);
     }
   });
 

@@ -6,7 +6,7 @@ import { AdditiveBlending, BufferAttribute, BufferGeometry, Points, ShaderMateri
 
 import { smoothstep } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import type { LightsParams } from "../types";
 
 const KIND = { orb: 0, star: 1, lamp: 2, flare: 3 } as const;
@@ -103,8 +103,9 @@ export function Lights({ params }: { params: LightsParams }) {
     [built],
   );
 
+  const liveRef = useLatest(built);
   useFrame(() => {
-    const u = built.material.uniforms;
+    const u = liveRef.current.material.uniforms;
     u.uTime!.value = clock.time;
     u.uPixel!.value = clock.pixelH * 0.5;
     u.uBeat!.value = clock.beat;
@@ -114,7 +115,7 @@ export function Lights({ params }: { params: LightsParams }) {
       const sep = o.from + (o.to - o.from) * t;
       const ang = clock.time * (o.speed ?? 0.25);
       const [cx, cy, cz] = o.center;
-      const attr = built.geometry.getAttribute("position") as BufferAttribute;
+      const attr = liveRef.current.geometry.getAttribute("position") as BufferAttribute;
       const r = sep / 2;
       attr.setXYZ(
         0,

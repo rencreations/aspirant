@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { Color } from "three";
 
 import { clamp } from "@/lib/math";
@@ -77,6 +77,18 @@ export function partProgress(chapterId: string | null, chapterProgress: number):
   const place = chapterId ? chapterOrder.get(chapterId) : undefined;
   if (!place) return 0;
   return clamp((place.index + clamp(chapterProgress)) / place.count);
+}
+
+/**
+ * A ref that always holds the latest value. Frame loops mutate three.js objects through it,
+ * which keeps memoized values immutable as far as React is concerned.
+ */
+export function useLatest<T>(value: T): { readonly current: T } {
+  const ref = useRef(value);
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref;
 }
 
 const colorCache = new Map<string, Color>();

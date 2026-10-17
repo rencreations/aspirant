@@ -1,12 +1,12 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ShaderMaterial, Vector2, Vector3, type Camera } from "three";
 
 import { smoothstep } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import { NOISE, STAR4 } from "../glsl";
 import type { SkyParams } from "../types";
 
@@ -263,10 +263,11 @@ export function Sky({ params }: { params: SkyParams }) {
 
   useEffect(() => () => material.dispose(), [material]);
 
-  const strike = useMemo(() => ({ next: 2 + Math.random() * 4, level: 0 }), []);
+  const strikeRef = useRef({ next: 3, level: 0 });
 
+  const liveRef = useLatest(material);
   useFrame((state, delta) => {
-    const u = material.uniforms;
+    const u = liveRef.current.uniforms;
     const aspect = state.size.width / Math.max(1, state.size.height);
     u.uAspect!.value = aspect;
     u.uTime!.value = clock.time;
@@ -296,15 +297,15 @@ export function Sky({ params }: { params: SkyParams }) {
     // Lightning: rare random strikes plus the beat. Never more than about one flash a second.
     const rate = Math.min(0.5, params.flash ?? 0);
     if (rate > 0) {
-      strike.next -= delta;
-      if (strike.next <= 0) {
-        strike.level = 1;
-        strike.next = 1.2 + (Math.random() * 2) / rate;
+      strikeRef.current.next -= delta;
+      if (strikeRef.current.next <= 0) {
+        strikeRef.current.level = 1;
+        strikeRef.current.next = 1.2 + (Math.random() * 2) / rate;
       }
     }
-    strike.level = Math.max(0, strike.level - delta * 3.2);
+    strikeRef.current.level = Math.max(0, strikeRef.current.level - delta * 3.2);
     u.uFlash!.value =
-      Math.min(1, strike.level * strike.level + clock.beat * 0.5) *
+      Math.min(1, strikeRef.current.level * strikeRef.current.level + clock.beat * 0.5) *
       (rate > 0 || clock.beat > 0 ? 1 : 0);
   });
 

@@ -31,7 +31,7 @@ import {
 import { asset } from "@/lib/asset";
 import { mulberry32, smoothstep } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import { NOISE } from "../glsl";
 import type { ShapeParams } from "../types";
 
@@ -180,15 +180,16 @@ export function Corridor({ p }: { p: ShapeParams }) {
     return { group, mat, gm, L, list: [geo, mat, gg, gm] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     const walk = smoothstep(p.a ?? 0, p.b ?? 1, driven(p.drive ?? "chapter", clock));
-    built.group.position.z = walk * (built.L - 16);
-    const u = built.mat.uniforms;
+    liveRef.current.group.position.z = walk * (liveRef.current.L - 16);
+    const u = liveRef.current.mat.uniforms;
     u.uTime!.value = clock.time;
     // At the end the lights go out and the gate opens.
     u.uLights!.value = 1 - smoothstep(0.62, 0.75, walk) * 0.85;
-    built.gm.uniforms.uTime!.value = clock.time;
-    built.gm.uniforms.uOpen!.value = smoothstep(0.55, 0.8, walk);
+    liveRef.current.gm.uniforms.uTime!.value = clock.time;
+    liveRef.current.gm.uniforms.uOpen!.value = smoothstep(0.55, 0.8, walk);
   });
   return <primitive object={built.group} />;
 }
@@ -299,9 +300,10 @@ export function Hall({ p }: { p: ShapeParams }) {
     return { mesh, mat, list: [geo, mat] as Disposable[] };
   }, [p, clock.quality]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    built.mat.uniforms.uTime!.value = clock.time;
-    built.mat.uniforms.uBeat!.value = clock.beat;
+    liveRef.current.mat.uniforms.uTime!.value = clock.time;
+    liveRef.current.mat.uniforms.uBeat!.value = clock.beat;
   });
   return <primitive object={built.mesh} />;
 }
@@ -368,15 +370,17 @@ export function Citadel({ p }: { p: ShapeParams }) {
     return {
       group,
       mat,
-      list: [geo, mat, hull.geometry, hull.material as MeshBasicMaterial] as Disposable[],
+      list: [geo, mat, hull.geometry, hull.material] as Disposable[],
     };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    built.mat.uniforms.uTime!.value = clock.time;
-    built.mat.uniforms.uBeat!.value = clock.beat;
+    liveRef.current.mat.uniforms.uTime!.value = clock.time;
+    liveRef.current.mat.uniforms.uBeat!.value = clock.beat;
     const descend = p.drive ? smoothstep(0, 1, driven(p.drive, clock)) : 0;
-    built.group.position.y = (p.pos?.[1] ?? 3.5) + Math.sin(clock.time * 0.3) * 0.15 - descend * 2;
+    liveRef.current.group.position.y =
+      (p.pos?.[1] ?? 3.5) + Math.sin(clock.time * 0.3) * 0.15 - descend * 2;
   });
   return <primitive object={built.group} />;
 }
@@ -414,7 +418,7 @@ export function Terrain({ p }: { p: ShapeParams }) {
   const built = useMemo(() => {
     const group = new Group();
     const list: Disposable[] = [];
-    const ridgeMats: ShaderMaterial[] = [];
+    const uRun = { value: 1 };
     const rand = mulberry32(31);
     const fbm1 = (x: number, seed: number) => {
       let v = 0;
@@ -458,14 +462,13 @@ export function Terrain({ p }: { p: ShapeParams }) {
             uLit: { value: col(p.color2 ?? "#ffcf9a") },
             uBase: { value: col(p.color3 ?? "#5a6478") },
             uFog: { value: col("#dfe4ec") },
-            uRun: { value: 1 },
+            uRun,
             uFogK: { value: layer.fog },
           },
         });
         const mesh = new Mesh(geo, mat);
         mesh.position.z = layer.z;
         group.add(mesh);
-        ridgeMats.push(mat);
         list.push(geo, mat);
       });
     }
@@ -515,14 +518,15 @@ export function Terrain({ p }: { p: ShapeParams }) {
       group.add(cliff);
       list.push(geo, mat);
     }
-    return { group, ridgeMats, lamps, list };
+    return { group, uRun, lamps, list };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     const run = p.drive ? 1 - smoothstep(0, 1, driven(p.drive, clock)) * 0.9 : 0.4;
-    for (const m of built.ridgeMats) m.uniforms.uRun!.value = run + 0.15;
-    if (built.lamps) {
-      const u = built.lamps.material.uniforms;
+    liveRef.current.uRun.value = run + 0.15;
+    if (liveRef.current.lamps) {
+      const u = liveRef.current.lamps.material.uniforms;
       u.uTime!.value = clock.time;
       u.uPixel!.value = clock.pixelH * 0.5;
       u.uLit!.value = p.drive ? driven(p.drive, clock) : (p.b ?? 0);
@@ -578,11 +582,12 @@ export function Tree({ p }: { p: ShapeParams }) {
     return { group, leaves, list: [geo, mat, leaves.geometry, leaves.material] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    const u = built.leaves.material.uniforms;
+    const u = liveRef.current.leaves.material.uniforms;
     u.uTime!.value = clock.time;
     u.uPixel!.value = clock.pixelH * 0.5;
-    built.group.rotation.z = Math.sin(clock.time * 0.4) * 0.01;
+    liveRef.current.group.rotation.z = Math.sin(clock.time * 0.4) * 0.01;
   });
   return <primitive object={built.group} />;
 }
@@ -615,16 +620,17 @@ export function Ship({ p }: { p: ShapeParams }) {
     return { group, jets, list: [geo, mat, jets.geometry, jets.material] as Disposable[] };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     const [x, y, z] = p.pos ?? [3, 0.5, -10];
     const land = p.drive ? smoothstep(0, 1, driven(p.drive, clock)) : 1;
-    built.group.position.set(
+    liveRef.current.group.position.set(
       x + (1 - land) * 6,
       y + (1 - land) * 5 + Math.sin(clock.time * 0.8) * 0.05,
       z,
     );
-    built.group.rotation.z = (1 - land) * -0.25;
-    const u = built.jets.material.uniforms;
+    liveRef.current.group.rotation.z = (1 - land) * -0.25;
+    const u = liveRef.current.jets.material.uniforms;
     u.uTime!.value = clock.time;
     u.uPixel!.value = clock.pixelH * 0.5;
   });
@@ -692,9 +698,10 @@ export function Giant({ p }: { p: ShapeParams }) {
     return { group, halo, list };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    built.group.rotation.y = Math.sin(clock.time * 0.15) * 0.08;
-    if (built.halo) built.halo.rotation.z = clock.time * 0.2;
+    liveRef.current.group.rotation.y = Math.sin(clock.time * 0.15) * 0.08;
+    if (liveRef.current.halo) liveRef.current.halo.rotation.z = clock.time * 0.2;
   });
   return <primitive object={built.group} />;
 }
@@ -721,7 +728,7 @@ export function Ribbons({ p }: { p: ShapeParams }) {
   const built = useMemo(() => {
     const group = new Group();
     const list: Disposable[] = [];
-    const mats: ShaderMaterial[] = [];
+    const shared = { uTime: { value: 0 }, uGrow: { value: 1 } };
     [p.color, p.color2 ?? "#ff8fb0"].forEach((color, k) => {
       const pts: Vector3[] = [];
       for (let i = 0; i <= 120; i++) {
@@ -740,28 +747,26 @@ export function Ribbons({ p }: { p: ShapeParams }) {
         blending: AdditiveBlending,
         uniforms: {
           uColor: { value: col(color) },
-          uTime: { value: 0 },
-          uGrow: { value: 1 },
+          uTime: shared.uTime,
+          uGrow: shared.uGrow,
           uComet: { value: p.c ?? 0 },
         },
       });
       group.add(new Mesh(geo, mat));
-      mats.push(mat);
       list.push(geo, mat);
     });
     const [x, y, z] = p.pos ?? [0, 0, 0];
     group.position.set(x, y, z);
     group.scale.setScalar(p.scale ?? 1);
-    return { group, mats, list };
+    return { group, shared, list };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
     const grow = p.drive ? 0.15 + smoothstep(0, 1, driven(p.drive, clock)) * 0.85 : 1;
-    for (const m of built.mats) {
-      m.uniforms.uTime!.value = clock.time;
-      m.uniforms.uGrow!.value = Math.min(grow, 0.2 + clock.age * 0.25);
-    }
-    built.group.rotation.y = clock.time * 0.25;
+    liveRef.current.shared.uTime.value = clock.time;
+    liveRef.current.shared.uGrow.value = Math.min(grow, 0.2 + clock.age * 0.25);
+    liveRef.current.group.rotation.y = clock.time * 0.25;
   });
   return <primitive object={built.group} />;
 }
@@ -788,7 +793,7 @@ export function Memories({ p }: { p: ShapeParams }) {
     });
     const frameGeo = new PlaneGeometry(1, 1);
     list.push(frameMat, frameGeo);
-    const places: [number, number, number, number][] = [
+    const places: Array<[number, number, number, number]> = [
       [-4.2, 1.4, -6, 0.25],
       [4.0, 0.6, -8, -0.2],
       [-1.2, -1.6, -10, 0.1],
@@ -819,9 +824,10 @@ export function Memories({ p }: { p: ShapeParams }) {
     return { group, list };
   }, [p]);
   useDisposables(built.list);
+  const liveRef = useLatest(built);
   useFrame(() => {
-    built.group.position.y = Math.sin(clock.time * 0.3) * 0.2 - clock.chapter * 1.5;
-    built.group.rotation.z = Math.sin(clock.time * 0.1) * 0.05;
+    liveRef.current.group.position.y = Math.sin(clock.time * 0.3) * 0.2 - clock.chapter * 1.5;
+    liveRef.current.group.rotation.z = Math.sin(clock.time * 0.1) * 0.05;
   });
   return <primitive object={built.group} />;
 }

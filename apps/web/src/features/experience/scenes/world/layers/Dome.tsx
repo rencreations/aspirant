@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo } from "react";
 import { AdditiveBlending, DoubleSide, Mesh, ShaderMaterial, SphereGeometry } from "three";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import { NOISE } from "../glsl";
 import type { DomeParams } from "../types";
 
@@ -101,13 +101,14 @@ export function Dome({ params }: { params: DomeParams }) {
   useEffect(
     () => () => {
       mesh.geometry.dispose();
-      (mesh.material as ShaderMaterial).dispose();
+      mesh.material.dispose();
     },
     [mesh],
   );
 
+  const liveRef = useLatest(mesh);
   useFrame(() => {
-    const u = (mesh.material as ShaderMaterial).uniforms;
+    const u = liveRef.current.material.uniforms;
     u.uTime!.value = clock.time;
     u.uBuild!.value = driven(params.build ?? 1, clock, 1);
     u.uCrack!.value = driven(params.crack ?? 0, clock, 0);

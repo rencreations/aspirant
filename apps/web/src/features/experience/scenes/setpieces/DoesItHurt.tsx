@@ -15,7 +15,7 @@ interface Line {
 }
 
 /** The exchanges so far, in story order, exactly as told. */
-const RUBY_ASKS: { place: string; light: string; lines: Line[] }[] = [
+const RUBY_ASKS: Array<{ place: string; light: string; lines: Line[] }> = [
   {
     place: "The cyan bay, the night Angela woke",
     light: "#7fe8ff",

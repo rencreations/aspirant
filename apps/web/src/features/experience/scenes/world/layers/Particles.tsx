@@ -13,7 +13,7 @@ import {
 
 import { mulberry32 } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import type { ParticleMode, ParticleParams } from "../types";
 
 const MODES: Record<ParticleMode, number> = {
@@ -255,13 +255,14 @@ export function Particles({ params }: { params: ParticleParams }) {
   useEffect(
     () => () => {
       points.geometry.dispose();
-      (points.material as ShaderMaterial).dispose();
+      points.material.dispose();
     },
     [points],
   );
 
+  const liveRef = useLatest(points);
   useFrame(() => {
-    const u = (points.material as ShaderMaterial).uniforms;
+    const u = liveRef.current.material.uniforms;
     u.uTime!.value = clock.time;
     u.uPixel!.value = clock.pixelH * 0.5;
     u.uAmount!.value = driven(params.amount ?? 1, clock, 1);

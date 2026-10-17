@@ -12,7 +12,7 @@ import {
 
 import { mulberry32 } from "@/lib/math";
 
-import { col, driven, useClock } from "../context";
+import { col, driven, useClock, useLatest } from "../context";
 import type { LatticeParams } from "../types";
 
 const VERT = /* glsl */ `
@@ -221,13 +221,14 @@ export function Lattice({ params }: { params: LatticeParams }) {
   useEffect(
     () => () => {
       lines.geometry.dispose();
-      (lines.material as ShaderMaterial).dispose();
+      lines.material.dispose();
     },
     [lines],
   );
 
+  const liveRef = useLatest(lines);
   useFrame(() => {
-    const u = (lines.material as ShaderMaterial).uniforms;
+    const u = liveRef.current.material.uniforms;
     u.uTime!.value = clock.time;
     u.uGrow!.value = driven(params.grow ?? 1, clock, 1) * 1.05;
     u.uBeat!.value = clock.beat;

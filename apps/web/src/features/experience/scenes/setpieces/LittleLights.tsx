@@ -54,7 +54,7 @@ function buildGrid(): Grid {
 
 /** Tanner's Row at dusk: light the thousand little windows. */
 export default function LittleLights({ active, reduced }: SetPieceProps) {
-  const grid = useMemo(buildGrid, []);
+  const grid = useMemo(() => buildGrid(), []);
   const litAt = useRef(new Float32Array(TOTAL).fill(-1));
   const [count, setCount] = useState(0);
   const countRef = useRef(0);

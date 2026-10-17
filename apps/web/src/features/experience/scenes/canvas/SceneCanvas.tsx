@@ -21,7 +21,7 @@ import { clamp, damp, lerp, smoothstep } from "@/lib/math";
 import { driver } from "../driver";
 import type { SceneKey } from "../parts";
 import { scrimState } from "../scrim";
-import { createClock, partProgress } from "../world/context";
+import { createClock, partProgress, useLatest } from "../world/context";
 import { presetFor } from "../world/presets";
 import type { Preset } from "../world/types";
 import { World } from "../world/World";
@@ -70,7 +70,6 @@ function makeTarget(halfFloat: boolean, samples: number) {
 function Director({ quality }: { quality: number }) {
   const gl = useThree((s) => s.gl);
   const size = useThree((s) => s.size);
-  const camera = useThree((s) => s.camera) as PerspectiveCamera;
   const { ref: pointer } = usePointer({ tilt: true });
   const [slots, setSlots] = useState<[SceneKey | null, SceneKey | null]>(() => [
     driver.scene,
@@ -89,7 +88,7 @@ function Director({ quality }: { quality: number }) {
   });
   const scenes = useMemo(() => [new Scene(), new Scene()] as const, []);
   const clocks = useMemo(() => [createClock(quality), createClock(quality)] as const, [quality]);
-  const composite = useMemo(createComposite, []);
+  const composite = useMemo(() => createComposite(), []);
   const quad = useMemo(() => {
     const geometry = new PlaneGeometry(2, 2);
     const mesh = new Mesh(geometry, composite);
@@ -138,9 +137,12 @@ function Director({ quality }: { quality: number }) {
   }, [gl]);
 
   const cam = useRef({ y: 0, lookY: 0, z: 10, fov: 45, roll: 0 });
+  const liveRef = useLatest({ clocks, scenes, targets, composite, quad, ortho });
 
   // Before the layers: transitions, clocks and the camera rig.
-  useFrame((_, rawDt) => {
+  useFrame((state, rawDt) => {
+    const camera = state.camera as PerspectiveCamera;
+    const { clocks, scenes, targets } = liveRef.current;
     const dt = Math.min(rawDt, 0.1);
     driver.beat = Math.max(0, driver.beat - dt * 1.3);
     driver.sceneSince += dt;
@@ -221,7 +223,9 @@ function Director({ quality }: { quality: number }) {
   }, -1);
 
   // After the layers: render the slots and composite them to the screen.
-  useFrame(() => {
+  useFrame((state) => {
+    const camera = state.camera;
+    const { clocks, scenes, targets, composite, quad, ortho } = liveRef.current;
     const f = flow.current;
     const back = (1 - f.front) as 0 | 1;
     const front = targets[f.front];

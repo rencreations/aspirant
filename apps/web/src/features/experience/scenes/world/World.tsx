@@ -57,8 +57,9 @@ function Shape({ p }: { p: ShapeParams }): ReactNode {
 }
 
 function SceneFog({ fog }: { fog: Preset["fog"] }) {
-  const scene = useThree((s) => s.scene);
+  const get = useThree((s) => s.get);
   useLayoutEffect(() => {
+    const scene = get().scene;
     scene.fog = fog ? new Fog(col(fog.color).clone(), fog.near, fog.far) : null;
     // Materials compiled before the fog existed need a rebuild to pick it up.
     scene.traverse((o) => {
@@ -68,7 +69,7 @@ function SceneFog({ fog }: { fog: Preset["fog"] }) {
     return () => {
       scene.fog = null;
     };
-  }, [scene, fog]);
+  }, [get, fog]);
   return null;
 }
 

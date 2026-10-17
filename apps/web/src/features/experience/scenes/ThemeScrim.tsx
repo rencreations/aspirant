@@ -41,7 +41,7 @@ function segments(elements: HTMLElement[], vh: number): ThemeZone[] {
   const push = (z: ThemeZone) => {
     if (z.y1 - z.y0 < 0.5) return;
     const last = out[out.length - 1];
-    if (last && last.theme === z.theme && Math.abs(last.y1 - z.y0) < 1) last.y1 = z.y1;
+    if (last?.theme === z.theme && Math.abs(last.y1 - z.y0) < 1) last.y1 = z.y1;
     else out.push({ ...z });
   };
   for (const s of spans) {

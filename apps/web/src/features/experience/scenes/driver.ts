@@ -42,6 +42,13 @@ export const driver: SceneDriver = {
 type Listener = (d: SceneDriver) => void;
 const sceneListeners = new Set<Listener>();
 const beatListeners = new Set<Listener>();
+const placeListeners = new Set<Listener>();
+
+/** Called when the lit paragraph, chapter or Part changes. Returns unsubscribe. */
+export function onPlace(listener: Listener): () => void {
+  placeListeners.add(listener);
+  return () => placeListeners.delete(listener);
+}
 
 /** Called when the scene key, mood or still changes (not on progress). Returns unsubscribe. */
 export function onSceneChange(listener: Listener): () => void {
@@ -72,6 +79,7 @@ export function syncDriver(): () => void {
       driver.part = s.partNumber;
       driver.chapterId = s.chapterId;
       driver.paragraphId = s.paragraphId;
+      for (const l of placeListeners) l(driver);
       if (s.partNumber !== null) {
         const next = sceneAt(s.chapterId, s.paragraphId, s.partNumber);
         const changed =

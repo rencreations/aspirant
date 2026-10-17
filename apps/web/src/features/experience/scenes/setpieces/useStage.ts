@@ -28,7 +28,10 @@ export function useStage(
   });
   const size = useRef<StageSize>({ w: 1, h: 1, dpr: 1 });
   const visible = usePageVisible();
-  const start = useRef(typeof performance === "undefined" ? 0 : performance.now());
+  const start = useRef(0);
+  useEffect(() => {
+    start.current = performance.now();
+  }, []);
 
   const paint = useCallback(
     (dt: number) => {

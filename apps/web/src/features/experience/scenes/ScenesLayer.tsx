@@ -58,13 +58,15 @@ function StillBackdrop({ still, mood, drift }: { still: string; mood: Mood; drif
     b: null,
     front: "a",
   });
-  useEffect(() => {
-    setLayers((l) => {
-      const current = l.front === "a" ? l.a : l.b;
-      if (current === still) return l;
-      return l.front === "a" ? { ...l, b: still, front: "b" } : { ...l, a: still, front: "a" };
-    });
-  }, [still]);
+  // Adjust state while rendering when the still changes (no effect needed).
+  const current = layers.front === "a" ? layers.a : layers.b;
+  if (current !== still) {
+    setLayers(
+      layers.front === "a"
+        ? { ...layers, b: still, front: "b" }
+        : { ...layers, a: still, front: "a" },
+    );
+  }
 
   const render = (src: string | null, on: boolean) =>
     src ? (
@@ -75,6 +77,7 @@ function StillBackdrop({ still, mood, drift }: { still: string; mood: Mood; drif
         data-drift={drift ? "" : undefined}
       >
         {/* Decorative backdrop: the story text carries the content. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={asset(src)} alt="" decoding="async" />
       </div>
     ) : null;
@@ -117,10 +120,7 @@ export default function ScenesLayer({ column }: ScenesLayerProps) {
   const quality = tier !== "low" && viewport.w >= 900 ? 1 : 0.6;
 
   useEffect(() => {
-    if (!live) {
-      setGlReady(false);
-      return;
-    }
+    if (!live) return;
     const id = window.setTimeout(() => setGlReady(true), 250);
     return () => window.clearTimeout(id);
   }, [live]);
@@ -131,7 +131,7 @@ export default function ScenesLayer({ column }: ScenesLayerProps) {
     <div className={styles.layer} style={style} data-scenes-layer="" data-overlay="" aria-hidden>
       <StillBackdrop still={look.still} mood={look.mood} drift={calm && !reduced} />
       {live ? (
-        <div className={styles.canvas} data-on={glReady ? "" : undefined}>
+        <div className={styles.canvas} data-on={glReady && live ? "" : undefined}>
           <SceneCanvas
             running={look.active && visible}
             quality={quality}

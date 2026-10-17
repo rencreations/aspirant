@@ -32,7 +32,7 @@ export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) 
   }, []);
   const crack = useMemo(() => {
     const r = mulberry32(9);
-    const pts: [number, number][] = [];
+    const pts: Array<[number, number]> = [];
     let y = 0.18;
     for (let i = 0; i <= 14; i++) {
       pts.push([i / 14, y]);
@@ -166,8 +166,7 @@ export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) 
     }
   };
 
-  const busy = held || k.current > 0;
-  const { redraw } = useStage(canvasRef, draw, active && (busy || !reduced));
+  const { redraw } = useStage(canvasRef, draw, active && (held || !reduced));
 
   useEffect(() => {
     if (!reduced) return;
