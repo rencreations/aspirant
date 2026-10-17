@@ -30,14 +30,14 @@ import type { ArtImage, FormArt, SignatureKind } from "../art";
 import styles from "./hero.module.css";
 import { createSignature, type SignatureFx } from "./signature";
 
-export interface HeroLine {
+interface HeroLine {
   readonly src: string;
   readonly n: number;
   readonly jp: string;
   readonly en: string;
 }
 
-export interface HeroForms {
+interface HeroForms {
   readonly normal: { readonly text: string; readonly art: FormArt };
   readonly ender: { readonly text: string; readonly art: FormArt };
 }

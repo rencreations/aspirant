@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* Draco decoder from three (examples/jsm/libs/draco/gltf), vendored for offline GLB loading. */
 var $jscomp = $jscomp || {};
 $jscomp.scope = {};
 $jscomp.arrayIteratorImpl = function (h) {

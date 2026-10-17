@@ -25,7 +25,7 @@ const TOWARD: Record<Side, string> = { daybreak: "#0b111c", storm: "#eef3fa" };
 const INK = "#05070c";
 const WHITE = "#ffffff";
 
-export function hexToRgb(hex: string): Rgb {
+function hexToRgb(hex: string): Rgb {
   const clean = hex.replace("#", "");
   const full =
     clean.length === 3
@@ -95,7 +95,7 @@ export function onColor(color: string): string {
   return contrast(color, INK) >= contrast(color, WHITE) ? INK : WHITE;
 }
 
-export type PaletteKey = keyof Palette;
+type PaletteKey = keyof Palette;
 
 /** Which palette colours lead a character's page (art direction, see `art.ts`). */
 export interface AccentChoice {

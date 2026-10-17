@@ -58,20 +58,10 @@ export interface ArtDirection {
 }
 
 const SPLASH = { width: 2048, height: 1152 } as const;
-const SPLASH_SM = { width: 800, height: 450 } as const;
 
-/** The splash art of a character (2048 wide). */
+/** The splash art of a character (2048 wide; an 800 wide `splash-sm` sits next to it). */
 export function splashOf(slug: Slug, name: string): ArtImage {
   return { src: `/img/char/${slug}/splash.webp`, ...SPLASH, alt: `${name}, official splash art` };
-}
-
-/** The small splash (800 wide), for cards and previews. */
-export function splashSmOf(slug: Slug, name: string): ArtImage {
-  return {
-    src: `/img/char/${slug}/splash-sm.webp`,
-    ...SPLASH_SM,
-    alt: `${name}, official splash art`,
-  };
 }
 
 function cutout(slug: Slug, name: string, width: number, height: number): ArtImage {
@@ -286,8 +276,3 @@ export const PAIR_ART: Readonly<Record<PairId, readonly ArtImage[]>> = {
   "lesley-change": [],
   "selena-obsidia": [],
 };
-
-/** The three characters with a second form. */
-export function hasForms(slug: Slug): boolean {
-  return ART[slug].forms !== undefined;
-}

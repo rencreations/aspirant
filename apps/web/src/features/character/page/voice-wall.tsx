@@ -13,7 +13,7 @@ import { useSiteStore } from "@/lib/stores";
 import { SectionHead } from "./section-head";
 import styles from "./voice-wall.module.css";
 
-export interface WallLine {
+interface WallLine {
   readonly n: number;
   readonly jp: string;
   readonly en: string;
