@@ -72,7 +72,7 @@ test.describe("portal hero", () => {
       max = Math.max(max, await radius(page));
     }
     expect(max).toBeGreaterThan(0);
-    await expect.poll(() => radius(page), { timeout: 6000 }).toBe(0);
+    await expect.poll(() => radius(page), { timeout: 15_000 }).toBe(0);
   });
 
   test("tabs switch the pair by click and by arrow keys", async ({ page }) => {

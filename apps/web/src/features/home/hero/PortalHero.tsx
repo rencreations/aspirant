@@ -170,7 +170,7 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
     return () => window.clearTimeout(t);
   }, [entered, intro, reduced, controller]);
 
-  useRafLoop((dt, t) => controller.tick(dt, t), inView);
+  useRafLoop((_, t) => controller.tick(t), inView);
 
   const onGLReady = useCallback(() => setGlOn(true), []);
 

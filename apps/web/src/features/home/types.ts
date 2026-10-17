@@ -6,7 +6,7 @@
 import type { CharacterSlug } from "@/lib/slugs";
 import type { ExternalHref } from "@/lib/site";
 
-export type World = "daybreak" | "storm";
+type World = "daybreak" | "storm";
 
 /** One voice line, ready to play: `file` is a relative public path (wrap in asset()). */
 export interface VoiceRef {

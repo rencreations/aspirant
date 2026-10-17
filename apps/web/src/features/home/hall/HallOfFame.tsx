@@ -42,6 +42,13 @@ export function HallOfFame({ art, total }: { art: readonly FanArtView[]; total: 
   const gridRef = useRef<HTMLUListElement>(null);
   const [index, setIndex] = useState<number | null>(null);
   const [opened, setOpened] = useState(false);
+  const opener = useRef<HTMLButtonElement | null>(null);
+
+  const change = (next: number | null) => {
+    setIndex(next);
+    // Return focus to the piece that opened the viewer.
+    if (next === null) requestAnimationFrame(() => opener.current?.focus());
+  };
 
   const items = useMemo<LightboxItem[]>(
     () =>
@@ -137,8 +144,9 @@ export function HallOfFame({ art, total }: { art: readonly FanArtView[]; total: 
                 onPointerEnter={(e) => {
                   if (e.pointerType === "mouse") audio.blip("hover");
                 }}
-                onClick={() => {
+                onClick={(e) => {
                   audio.unlock();
+                  opener.current = e.currentTarget;
                   setOpened(true);
                   setIndex(i);
                 }}
@@ -180,7 +188,7 @@ export function HallOfFame({ art, total }: { art: readonly FanArtView[]; total: 
       </ul>
 
       {opened && (
-        <Lightbox items={items} index={index} onIndexChange={setIndex} label="Hall of fame" />
+        <Lightbox items={items} index={index} onIndexChange={change} label="Hall of fame" />
       )}
     </ThemeZone>
   );

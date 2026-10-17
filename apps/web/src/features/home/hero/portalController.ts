@@ -95,6 +95,7 @@ export class PortalController {
   private lastMove = -1e9;
   private mirrorAt = 0;
   private lastMirror = "";
+  private lastNow = -1;
 
   attach(hero: HTMLElement, figure: HTMLElement, readout: HTMLElement | null): () => void {
     this.hero = hero;
@@ -183,11 +184,13 @@ export class PortalController {
     this.introTarget = 1;
   }
 
-  /** Advance one frame. `dt` in seconds, `now` in seconds. */
-  tick(dt: number, now: number): void {
+  /** Advance one frame. `now` in seconds; the step is measured here (capped at 0.25 s). */
+  tick(now: number): void {
     const f = this.f;
     const hero = this.hero;
     if (!hero) return;
+    const dt = this.lastNow < 0 ? 1 / 60 : Math.min(0.25, Math.max(0, now - this.lastNow));
+    this.lastNow = now;
     f.time += dt;
     const rect = hero.getBoundingClientRect();
     f.w = rect.width;
@@ -243,7 +246,7 @@ export class PortalController {
     }
     if (reduced) f.r = tr;
     else f.r = tr > f.r ? damp(f.r, tr, 8, dt) : damp(f.r, tr, this.hold ? 6 : 1.7, dt);
-    if (tr === 0 && f.r < 0.4) f.r = 0;
+    if (tr === 0 && f.r < 1) f.r = 0;
 
     // Form wipe --------------------------------------------------------------------------
     if (reduced) f.form = this.formTarget;
