@@ -1,0 +1,41 @@
+.head {
+  display: grid;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-l);
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.star {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--accent);
+}
+
+.rule {
+  width: clamp(2rem, 8vw, 6rem);
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--line));
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-6);
+  line-height: 0.85;
+  text-transform: uppercase;
+}
+
+.lead {
+  margin: var(--space-2xs) 0 0;
+  max-width: 52ch;
+  color: var(--text-dim);
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.25;
+}

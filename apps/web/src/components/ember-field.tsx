@@ -15,6 +15,8 @@ export interface EmberFieldProps {
   theme?: "storm" | "daybreak";
   /** Particle count multiplier. Default 1. */
   density?: number;
+  /** Two hex colours that replace the world palette (for example a character's), optional. */
+  colors?: readonly [string, string];
   className?: string;
 }
 
@@ -92,11 +94,19 @@ export function EmberField(props: EmberFieldProps) {
   return <EmberCanvas {...props} />;
 }
 
-function EmberCanvas({ contained = false, theme, density = 1, className }: EmberFieldProps) {
+function EmberCanvas({
+  contained = false,
+  theme,
+  density = 1,
+  colors,
+  className,
+}: EmberFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { ref: pointer } = usePointer();
   const touch = useIsTouch();
   const tier = useDeviceTier();
+  const colorA = colors?.[0];
+  const colorB = colors?.[1];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -116,10 +126,13 @@ function EmberCanvas({ contained = false, theme, density = 1, className }: Ember
     const hue = new Uint8Array(MAX);
 
     const sprites: Record<World, [HTMLCanvasElement, HTMLCanvasElement]> = {
-      storm: [makeSprite(PALETTES.storm[0], "shard"), makeSprite(PALETTES.storm[1], "shard")],
+      storm: [
+        makeSprite(colorA ?? PALETTES.storm[0], "shard"),
+        makeSprite(colorB ?? PALETTES.storm[1], "shard"),
+      ],
       daybreak: [
-        makeSprite(PALETTES.daybreak[0], "mote"),
-        makeSprite(PALETTES.daybreak[1], "mote"),
+        makeSprite(colorA ?? PALETTES.daybreak[0], "mote"),
+        makeSprite(colorB ?? PALETTES.daybreak[1], "mote"),
       ],
     };
 
@@ -314,7 +327,7 @@ function EmberCanvas({ contained = false, theme, density = 1, className }: Ember
       resizeObserver?.disconnect();
       io?.disconnect();
     };
-  }, [contained, theme, density, touch, tier, pointer]);
+  }, [contained, theme, density, touch, tier, pointer, colorA, colorB]);
 
   return (
     <canvas

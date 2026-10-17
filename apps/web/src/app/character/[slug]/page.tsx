@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { NextFooter } from "@/components/next-footer/next-footer";
-import { PageIntro } from "@/components/page-intro";
-import { characterRoute } from "@/lib/site";
-import { CHARACTER_NAMES, CHARACTER_SLUGS, isCharacterSlug, nextSlug } from "@/lib/slugs";
+import { findCharacter } from "@/content/characters";
+import { CharacterView } from "@/features/character/page/character-view";
+import { asset } from "@/lib/asset";
+import { siteConfig } from "@/lib/site";
+import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 export const dynamicParams = false;
 
@@ -18,33 +19,34 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  if (!isCharacterSlug(slug)) return {};
-  const name = CHARACTER_NAMES[slug];
+  const c = findCharacter(slug);
+  if (!c) return {};
+  const title = `${c.name}, ${c.aspirantName}`;
+  const description = `${c.tagline} ${c.summary}`;
+  const image = {
+    url: asset(`/img/char/${c.slug}/splash-sm.webp`),
+    width: 800,
+    height: 450,
+    alt: `${c.name}, official splash art`,
+  };
   return {
-    title: name,
-    description: `${name}, one of the ten Aspirants of Selrick Academy: who she is, her voice lines and her place in the story.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+      siteName: siteConfig.name,
+      locale: "en",
+      images: [image],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
   };
 }
 
 export default async function CharacterPage({ params }: Props) {
   const { slug } = await params;
-  if (!isCharacterSlug(slug)) notFound();
-  const index = CHARACTER_SLUGS.indexOf(slug);
-  const next = nextSlug(slug);
-  return (
-    <>
-      <PageIntro
-        code={`Unit ${String(index + 1).padStart(2, "0")} / ${slug}`}
-        title={CHARACTER_NAMES[slug]}
-        lead="Profile, voice lines and her place in the story arrive here next."
-      />
-      <NextFooter
-        eyebrow="Next in queue"
-        label={CHARACTER_NAMES[next]}
-        sublabel={`Unit ${String(CHARACTER_SLUGS.indexOf(next) + 1).padStart(2, "0")} of 10`}
-        href={characterRoute(next)}
-        image={`/img/char/${next}/splash.webp`}
-      />
-    </>
-  );
+  const c = findCharacter(slug);
+  if (!c) notFound();
+  return <CharacterView slug={c.slug} />;
 }

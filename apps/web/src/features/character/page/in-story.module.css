@@ -1,0 +1,117 @@
+.section {
+  position: relative;
+  padding-block: var(--space-2xl) var(--space-xl);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-s) 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.item[data-new-part] {
+  margin-left: var(--space-s);
+  padding-left: var(--space-s);
+  border-left: 1px solid var(--line-strong);
+}
+
+.item:first-child {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.part {
+  color: var(--text-faint);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.chip {
+  --c-cut: 9px;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: 100%;
+  min-height: 48px;
+  padding: 0.35rem 0.95rem 0.35rem 0.6rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: translate var(--dur-base) var(--ease-spring);
+}
+
+.chip::before,
+.chip::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--c-cut) 0,
+    100% 0,
+    100% calc(100% - var(--c-cut)),
+    calc(100% - var(--c-cut)) 100%,
+    0 100%,
+    0 var(--c-cut)
+  );
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.chip::before {
+  inset: 0;
+  background: var(--line-strong);
+}
+
+.chip::after {
+  inset: 1px;
+  background: var(--panel);
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.3rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.interlude {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.title {
+  min-width: 0;
+  font-size: var(--step--1);
+  line-height: 1.25;
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    translate: 0 -3px;
+  }
+  .chip:hover::before {
+    background: var(--accent);
+  }
+}

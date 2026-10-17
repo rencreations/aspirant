@@ -1,0 +1,626 @@
+/* Roster: toolbar, constellation of pair groups, cards and the pointer preview. */
+
+.root {
+  position: relative;
+}
+
+/* Toolbar ------------------------------------------------------------------------------ */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s) var(--space-m);
+  padding-block: var(--space-s);
+  border-block: 1px solid var(--line);
+  margin-bottom: var(--space-xl);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter {
+  --f-cut: 9px;
+  --f-accent: var(--accent);
+  position: relative;
+  isolation: isolate;
+  min-height: 44px;
+  padding: 0 1.05rem;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.filter[data-kind="daybreak"] {
+  --f-accent: var(--cyan);
+}
+
+.filter[data-kind="storm"] {
+  --f-accent: var(--crimson);
+}
+
+/* Border and fill layers carry the chamfer; the button itself is never clipped. */
+.filter::before,
+.filter::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: polygon(
+    var(--f-cut) 0,
+    100% 0,
+    100% calc(100% - var(--f-cut)),
+    calc(100% - var(--f-cut)) 100%,
+    0 100%,
+    0 var(--f-cut)
+  );
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.filter::before {
+  inset: 0;
+  background: var(--line-strong);
+}
+
+.filter::after {
+  inset: 1px;
+  background: var(--bg);
+}
+
+@media (hover: hover) {
+  .filter:hover {
+    color: var(--text);
+  }
+  .filter:hover::before {
+    background: var(--f-accent);
+  }
+}
+
+.filter[aria-pressed="true"] {
+  color: var(--on-accent);
+}
+
+.filter[aria-pressed="true"]::before,
+.filter[aria-pressed="true"]::after {
+  background: var(--f-accent);
+}
+
+.count {
+  margin: 0;
+}
+
+.countValue {
+  color: var(--text);
+}
+
+/* Constellation ------------------------------------------------------------------------ */
+
+.constellation {
+  position: relative;
+  display: grid;
+  gap: var(--space-2xl);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group {
+  position: relative;
+  min-width: 0;
+  animation: group-in var(--dur-slower) var(--ease-out) both;
+}
+
+.groupHead {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: var(--space-m);
+  padding-left: 0.9rem;
+  border-left: 2px solid;
+  border-image: linear-gradient(var(--pa), var(--pb)) 1;
+}
+
+.groupCode {
+  margin: 0;
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: var(--step-3);
+  text-transform: uppercase;
+}
+
+.groupLine {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--text-dim);
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+
+.members {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 3.25rem auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.member {
+  position: relative;
+  z-index: 1;
+  width: 88%;
+  min-width: 0;
+  animation: member-float 7s var(--ease-in-out) infinite;
+}
+
+.member[data-pos="a"] {
+  grid-row: 1;
+  justify-self: start;
+}
+
+.member[data-pos="b"] {
+  grid-row: 3;
+  justify-self: end;
+  animation-delay: -3.5s;
+}
+
+.group[data-single="true"] .member {
+  grid-row: 1;
+  justify-self: center;
+}
+
+.group[data-single="true"] .tether {
+  display: none;
+}
+
+/* The tether between partners: a hairline that lights in the pair's two colours. */
+.tether {
+  position: relative;
+  grid-row: 2;
+  grid-column: 1;
+  pointer-events: none;
+}
+
+.tetherLine {
+  position: absolute;
+  left: 50%;
+  top: -1.5rem;
+  bottom: -1.5rem;
+  width: 2px;
+  translate: -50% 0;
+  background: var(--line-strong);
+  overflow: hidden;
+}
+
+.tetherLine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--pa), var(--pb));
+  opacity: 0.45;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.tetherLine::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  top: -30%;
+  background: linear-gradient(transparent, #fff, transparent);
+  opacity: 0;
+}
+
+.tetherNode {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  translate: -50% -50%;
+  rotate: 45deg;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    scale var(--dur-base) var(--ease-spring);
+}
+
+.group[data-lit="true"] .tetherLine::before {
+  opacity: 1;
+}
+
+.group[data-lit="true"] .tetherLine {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--pa) 60%, transparent);
+}
+
+.group[data-lit="true"] .tetherLine::after {
+  animation: spark 1.1s linear infinite;
+  opacity: 0.9;
+}
+
+.group[data-lit="true"] .tetherNode {
+  background: linear-gradient(135deg, var(--pa), var(--pb));
+  border-color: transparent;
+  scale: 1.35;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--pb) 70%, transparent);
+}
+
+.group[data-lit="true"] .groupTitle {
+  color: var(--text);
+}
+
+/* Cards ---------------------------------------------------------------------------------- */
+
+.card {
+  display: block;
+  position: relative;
+  color: var(--text);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.frame {
+  aspect-ratio: 4 / 4.6;
+}
+
+.cardShade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgb(5 7 12 / 0.82), transparent 42%),
+    linear-gradient(to bottom, rgb(5 7 12 / 0.45), transparent 24%);
+}
+
+.cardUnit {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.85rem;
+  z-index: 2;
+  color: #eef3fa;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.cardSide {
+  position: absolute;
+  left: 0.85rem;
+  bottom: 0.7rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #eef3fa;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cardSide::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  rotate: 45deg;
+  background: var(--c-lead);
+  box-shadow: 0 0 8px var(--c-lead);
+}
+
+.card[data-side="storm"] .cardSide::before {
+  background: var(--light-crimson);
+  box-shadow: 0 0 8px var(--light-crimson);
+}
+
+.cardText {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.85rem;
+}
+
+.cardName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-4);
+  line-height: 0.86;
+  text-transform: uppercase;
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.cardAspirant {
+  color: var(--accent);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cardJp {
+  color: var(--text-dim);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+}
+
+.card[data-active="true"] .cardName {
+  color: var(--accent);
+}
+
+/* Pointer preview (desktop with a fine pointer only) ------------------------------------- */
+
+.preview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--z-popover);
+  display: none;
+  width: 340px;
+  height: 460px;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.94;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    scale var(--dur-slow) var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 68.75em) {
+  .preview {
+    display: block;
+  }
+}
+
+.preview[data-visible="true"] {
+  opacity: 1;
+  scale: 1;
+}
+
+.previewInner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: polygon(
+    22px 0,
+    100% 0,
+    100% calc(100% - 22px),
+    calc(100% - 22px) 100%,
+    0 100%,
+    0 22px
+  );
+  background:
+    radial-gradient(
+      70% 55% at 50% 30%,
+      color-mix(in srgb, var(--c-lead) 42%, transparent),
+      transparent 75%
+    ),
+    linear-gradient(to bottom, var(--graphite), var(--ink));
+  border: 1px solid color-mix(in srgb, var(--c-lead) 50%, transparent);
+}
+
+.previewArt {
+  position: absolute;
+  inset: 0 0 34% 0;
+}
+
+.previewArt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.previewArt[data-cutout="true"] img {
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--c-lead) 60%, transparent));
+}
+
+.previewArt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--ink), transparent 40%);
+}
+
+.previewText {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0 1.3rem 1.2rem;
+  color: #eef3fa;
+}
+
+.previewText p {
+  margin: 0;
+}
+
+.previewCode {
+  display: flex;
+  justify-content: space-between;
+  color: #aab6c8;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.previewCode span {
+  color: var(--accent);
+}
+
+.previewAspirant {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 2.1rem;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.previewJp {
+  display: flex;
+  gap: 0.7rem;
+  align-items: baseline;
+  color: #aab6c8;
+  font-size: 0.95rem;
+}
+
+.previewJp span + span {
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.previewTagline {
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.previewVoice {
+  color: #aab6c8;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+/* Layouts -------------------------------------------------------------------------------- */
+
+@media (min-width: 40em) and (max-width: 68.74em) {
+  .members {
+    grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-items: start;
+  }
+  .member {
+    width: 100%;
+  }
+  .member[data-pos="a"] {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .member[data-pos="b"] {
+    grid-row: 1;
+    grid-column: 3;
+    margin-top: var(--space-xl);
+  }
+  .group[data-single="true"] .member {
+    grid-column: 1 / -1;
+    width: 60%;
+    margin-top: 0;
+  }
+  .tether {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: stretch;
+  }
+  .tetherLine {
+    left: -1.5rem;
+    right: -1.5rem;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+    translate: 0 -50%;
+  }
+  .tetherLine::before {
+    background: linear-gradient(90deg, var(--pa), var(--pb));
+  }
+  .tetherLine::after {
+    top: 0;
+    left: -30%;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+  }
+  .group[data-lit="true"] .tetherLine::after {
+    animation-name: spark-x;
+  }
+}
+
+@media (min-width: 68.75em) {
+  .constellation {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--space-m);
+  }
+  .group {
+    flex: 0 1 calc((100% - 4 * var(--space-m)) / 5);
+  }
+  .group:nth-child(even) {
+    margin-top: var(--space-2xl);
+  }
+  .groupTitle {
+    font-size: var(--step-2);
+  }
+  .groupLine {
+    font-size: var(--step-0);
+  }
+  .member {
+    width: 84%;
+  }
+  .cardName {
+    font-size: var(--step-3);
+  }
+}
+
+@keyframes spark {
+  from {
+    top: -30%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes spark-x {
+  from {
+    left: -30%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes member-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@keyframes group-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
