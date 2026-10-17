@@ -1,0 +1,329 @@
+.player {
+  --cut: 14px;
+  position: fixed;
+  z-index: 45;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  max-width: 62rem;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: auto minmax(7rem, 13rem) auto minmax(10rem, 1fr) minmax(
+      5rem,
+      9rem
+    ) auto auto;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+  color: var(--text);
+  isolation: isolate;
+  animation: rise var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* Border and glass fill. Only these layers are clipped, so focus rings stay whole. */
+.bg,
+.bg::after {
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent) 70%, var(--line-strong)),
+    var(--line-strong) 40%,
+    color-mix(in srgb, var(--violet) 50%, var(--line-strong))
+  );
+}
+
+.bg::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.cover {
+  width: 3.25rem;
+  height: 3.25rem;
+  overflow: hidden;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: var(--bg-2);
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.info {
+  min-width: 0;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  rotate: 45deg;
+  background: var(--text-faint);
+}
+
+.dot[data-on="true"] {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.title {
+  margin: 0.1rem 0 0;
+  overflow: hidden;
+  font-family: var(--font-display-stack);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.transport {
+  display: flex;
+  align-items: center;
+}
+
+.btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.btn:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+}
+
+.main {
+  position: relative;
+  color: var(--on-accent);
+  isolation: isolate;
+}
+
+.main::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0.25rem;
+  rotate: 45deg;
+  background: var(--accent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--glow) 60%, transparent);
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.main:hover::before {
+  transform: scale(1.1);
+}
+
+.main:hover:not(:disabled) {
+  color: var(--on-accent);
+}
+
+.icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.seek,
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.time {
+  min-width: 2.6em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.wave {
+  display: block;
+  width: 100%;
+  height: 2rem;
+  color: var(--accent);
+}
+
+.volume {
+  color: var(--text-dim);
+}
+
+.volume .icon {
+  flex: none;
+}
+
+/* Range inputs: a thin track that fills with the accent and a diamond thumb. */
+.range {
+  flex: 1;
+  min-width: 0;
+  height: 2.75rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill, 0%),
+    var(--line-strong) var(--fill, 0%)
+  );
+}
+
+.range::-moz-range-track {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill, 0%),
+    var(--line-strong) var(--fill, 0%)
+  );
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -4.5px;
+  border: 0;
+  border-radius: 0;
+  background: var(--text);
+  rotate: 45deg;
+}
+
+.range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 0;
+  background: var(--text);
+  rotate: 45deg;
+}
+
+.muted {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 56.25em) {
+  .player {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "cover info transport close"
+      "seek seek seek seek";
+    gap: 0 0.5rem;
+  }
+
+  .cover {
+    grid-area: cover;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .info {
+    grid-area: info;
+  }
+
+  .transport {
+    grid-area: transport;
+  }
+
+  .seek {
+    grid-area: seek;
+  }
+
+  .wave,
+  .volume {
+    display: none;
+  }
+
+  .player > .btn:last-child {
+    grid-area: close;
+  }
+}
+
+@media (max-height: 30em) and (orientation: landscape) {
+  .player {
+    max-width: 42rem;
+  }
+}
