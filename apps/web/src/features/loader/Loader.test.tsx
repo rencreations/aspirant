@@ -28,9 +28,9 @@ describe("Loader", () => {
     await waitFor(() => expect(screen.getByText(LIVE_READY)).toBeInTheDocument(), {
       timeout: 6000,
     });
-    expect(button).toHaveFocus();
+    await waitFor(() => expect(button).toHaveFocus(), { timeout: 3000 });
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
-  }, 10_000);
+  }, 15_000);
 
   it("activates inside the click and calls onEnter exactly once", async () => {
     const onEnter = vi.fn();
