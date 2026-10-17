@@ -27,7 +27,7 @@ const ScenesLayer = dynamic(() => import("../scenes/ScenesLayer"), { ssr: false 
 const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
-const ID = /^(?:part-\d{2}|c\d{2}|i-far-above-\d)(?:-p\d{3})?$|^setpiece-/u;
+const ID = /^(?:part-\d{2}|c\d{2}|i-far-above-\d)(?:-p\d{3})?$|^setpiece-|^the-end$/u;
 
 /** Which Part holds an element id, and whether the whole Part must be mounted for it. */
 function partFor(id: string): { part: number; all: boolean } | null {

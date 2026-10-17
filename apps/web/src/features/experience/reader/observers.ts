@@ -61,7 +61,7 @@ function reveal(el: HTMLElement, animate: boolean) {
     return;
   }
   el.dataset.state = "lighting";
-  const words = Array.from(el.querySelectorAll<HTMLElement>(`.${s.w}`));
+  const words = Array.from(el.querySelectorAll<HTMLElement>("[data-w]"));
   const css = getComputedStyle(el);
   const ink = css.getPropertyValue("--text").trim() || "#eef3fa";
   const accent = css.getPropertyValue("--accent").trim() || ink;

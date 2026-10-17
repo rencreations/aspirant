@@ -37,7 +37,7 @@ function splitWords(text: string, key: string): ReactNode[] {
     part.trim() === "" ? (
       part
     ) : (
-      <span key={`${key}-${i}`} className={s.w}>
+      <span key={`${key}-${i}`} className={s.w} data-w="">
         {part}
       </span>
     ),

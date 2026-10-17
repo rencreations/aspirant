@@ -219,6 +219,7 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
   const openTimer = useRef(0);
   const closeTimer = useRef(0);
   const lastPointer = useRef("mouse");
+  const returning = useRef<HTMLButtonElement | null>(null);
 
   const clearTimers = () => {
     window.clearTimeout(openTimer.current);
@@ -248,7 +249,12 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
       clearTimers();
       const current = openRef.current;
       commit(null);
-      if (returnFocus) current?.el.focus();
+      if (returnFocus && current) {
+        // Focus goes back to the name without reopening the card it just closed.
+        returning.current = current.el;
+        current.el.focus();
+        returning.current = null;
+      }
     },
     [commit],
   );
@@ -297,7 +303,7 @@ export function EntityCards({ rootRef }: { rootRef: RefObject<HTMLElement | null
       } catch {
         keyboard = false;
       }
-      if (keyboard) show(el);
+      if (keyboard && returning.current !== el) show(el);
     };
     const onFocusOut = (e: FocusEvent) => {
       const el = e.target instanceof HTMLButtonElement && e.target.dataset.ent ? e.target : null;
