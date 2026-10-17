@@ -127,15 +127,6 @@ function Director({ quality }: { quality: number }) {
     [composite, quad],
   );
 
-  // Dev only: let the harness read renderer.info for leak checks.
-  useEffect(() => {
-    if (process.env.NODE_ENV !== "development") return;
-    (window as unknown as { __scenesGL?: unknown }).__scenesGL = gl;
-    return () => {
-      delete (window as unknown as { __scenesGL?: unknown }).__scenesGL;
-    };
-  }, [gl]);
-
   const cam = useRef({ y: 0, lookY: 0, z: 10, fov: 45, roll: 0 });
   const liveRef = useLatest({ clocks, scenes, targets, composite, quad, ortho });
 

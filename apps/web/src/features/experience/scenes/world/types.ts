@@ -136,7 +136,7 @@ export interface ParticleParams {
   tilt?: number;
 }
 
-export interface LightSpec {
+interface LightSpec {
   color: string;
   size: number;
   /** Position, or orbit around `center` when `orbit` is set. */

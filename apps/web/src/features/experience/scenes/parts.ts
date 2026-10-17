@@ -114,7 +114,7 @@ export type AmbientKey =
   | "dawn-sea";
 
 /** A Part's colours, as sRGB hex. `sky` and `ground` frame the backdrop; accents are lights. */
-export interface PartPalette {
+interface PartPalette {
   readonly sky: string;
   readonly horizon: string;
   readonly ground: string;
@@ -139,7 +139,7 @@ export interface PartScene {
 }
 
 /** From this paragraph on, the backdrop shows `scene` (and, if given, `mood` and `still`). */
-export interface SceneTurn {
+interface SceneTurn {
   readonly at: string;
   readonly scene: SceneKey;
   readonly mood?: Mood;
