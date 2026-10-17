@@ -59,7 +59,7 @@ jobs:
           cache-to: type=gha,scope=container,mode=max
 
       - name: Trivy image scan (fail on fixable HIGH/CRITICAL)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: aspirant-web:ci
           format: table
@@ -70,7 +70,7 @@ jobs:
 
       - name: Trivy image scan (SARIF for code scanning)
         if: ${{ !cancelled() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: aspirant-web:ci
           format: sarif
