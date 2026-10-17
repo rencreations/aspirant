@@ -130,6 +130,8 @@ export interface ParticleParams {
   opacity?: number;
   /** Fraction of particles visible, or a drive (eyes opening). */
   amount?: number | Drive;
+  /** Sideways slant for rain and streaks (x per unit of fall). */
+  tilt?: number;
 }
 
 export interface LightSpec {
@@ -202,6 +204,8 @@ export interface Preset {
   /** One line: what this scene carries. */
   intent: string;
   camera?: { y?: number; lookY?: number; z?: number; fov?: number; push?: number };
+  /** Distance fog for silhouettes (towers, terrain, halls). */
+  fog?: { color: string; near: number; far: number };
   sky: SkyParams;
   city?: CityParams;
   dome?: DomeParams;

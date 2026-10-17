@@ -21,6 +21,8 @@ export interface WorldClock {
   live: boolean;
   /** Quality scale for counts: 1 desktop, 0.5 phones. */
   quality: number;
+  /** Height of the render target in pixels (for point sizes). */
+  pixelH: number;
 }
 
 export function createClock(quality: number): WorldClock {
@@ -35,6 +37,7 @@ export function createClock(quality: number): WorldClock {
     age: 0,
     live: true,
     quality,
+    pixelH: 720,
   };
 }
 
