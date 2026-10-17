@@ -1,0 +1,82 @@
+.section {
+  padding-block: var(--space-3xl);
+  overflow: clip;
+}
+
+.kicker {
+  margin: 0 0 var(--space-l);
+  font-weight: 500;
+}
+
+.poem {
+  position: relative;
+  display: grid;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+}
+
+.line {
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-6);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+/* The rope turns: each line lands a little further along, then swings back. */
+.line[data-line="1"] {
+  margin-left: 8%;
+}
+
+.line[data-line="2"] {
+  margin-left: 2%;
+  max-width: 20ch;
+}
+
+.line[data-line="3"] {
+  margin-left: 14%;
+  max-width: 22ch;
+}
+
+.last {
+  font-family: var(--font-display-stack);
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: var(--step-7);
+  line-height: 0.84;
+  color: var(--light-gold);
+  text-shadow: 0 0 70px color-mix(in srgb, var(--light-amber) 45%, transparent);
+}
+
+.word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.rope {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1.2rem;
+  height: 2px;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--light-amber), var(--light-crimson) 60%, transparent);
+}
+
+.note {
+  margin: var(--space-l) 0 0;
+}
+
+@media (max-width: 43.75em) {
+  .line[data-line="1"],
+  .line[data-line="2"],
+  .line[data-line="3"] {
+    margin-left: 0;
+  }
+}
