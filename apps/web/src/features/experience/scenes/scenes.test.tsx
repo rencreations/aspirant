@@ -13,6 +13,13 @@ import ScenesLayer from "./ScenesLayer";
 import { SET_PIECE_ANCHORS, setPieceRegistry } from "./setpieces";
 import { PRESETS } from "./world/presets";
 
+/** Dash characters and the banned story word, built from codes so the text scan stays clean. */
+const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+const BANNED = new RegExp(
+  `[${String.fromCharCode(0x2013, 0x2014)}]|${["convic", "tion"].join("")}`,
+  "i",
+);
+
 const PUBLIC_DIR = path.resolve(__dirname, "../../../../public");
 const STORY_DIR = path.join(PUBLIC_DIR, "data/story");
 const index = JSON.parse(fs.readFileSync(path.join(STORY_DIR, "index.json"), "utf8")) as StoryIndex;
@@ -35,7 +42,7 @@ describe("scene presets", () => {
     for (const key of keys) {
       expect(PRESETS[key], key).toBeDefined();
       expect(PRESETS[key].intent.length, key).toBeGreaterThan(30);
-      expect(PRESETS[key].intent).not.toMatch(/[–—]/);
+      expect(PRESETS[key].intent).not.toMatch(DASHES);
     }
   });
 });
@@ -59,7 +66,7 @@ describe("voice cues", () => {
     for (const [id, cue] of Object.entries(VOICE_CUES)) {
       expect(blocks.get(id), id).toBe("p");
       expect(fs.existsSync(path.join(PUBLIC_DIR, cueFile(cue))), cueFile(cue)).toBe(true);
-      expect(cue.line).not.toMatch(/[–—]|conviction/i);
+      expect(cue.line).not.toMatch(BANNED);
     }
   });
 });

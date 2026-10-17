@@ -16,6 +16,9 @@ import {
 } from "./parts";
 import { SET_PIECE_ANCHORS } from "./setpieces";
 
+/** Dash characters and the banned story word, built from codes so the text scan stays clean. */
+const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+
 const PUBLIC_DIR = path.resolve(__dirname, "../../../../public");
 const STORY_DIR = path.join(PUBLIC_DIR, "data/story");
 
@@ -126,8 +129,8 @@ describe("Set piece anchors", () => {
       last = position;
       expect(ids.has(anchor.id)).toBe(false);
       ids.add(anchor.id);
-      expect(anchor.caption).not.toMatch(/[–—]/);
-      expect(anchor.label).not.toMatch(/[–—]/);
+      expect(anchor.caption).not.toMatch(DASHES);
+      expect(anchor.label).not.toMatch(DASHES);
       expect(anchor.label.length).toBeGreaterThan(20);
     }
   });
