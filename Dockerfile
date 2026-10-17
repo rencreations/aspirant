@@ -49,6 +49,11 @@ LABEL org.opencontainers.image.title="aspirant-web" \
       org.opencontainers.image.source=$SOURCE_URL \
       org.opencontainers.image.licenses="MIT"
 
+# Pick up fixed Alpine packages that are newer than the base image (scanner gate).
+USER root
+RUN apk upgrade --no-cache
+USER 101
+
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY docker/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY --from=build --chown=101:101 /repo/apps/web/out /usr/share/nginx/html
