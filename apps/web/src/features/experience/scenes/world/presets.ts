@@ -410,9 +410,6 @@ export const PRESETS: Record<SceneKey, Preset> = {
       flash: 0.3,
     },
     city: terrinia({ color: "#06050c", fog: "#140c24", lit: 0.08, height: 0.6 }),
-    shapes: [
-      { kind: "giant", a: 3, color: "#0a0714", color2: "#b07aff", pos: [6, 6, -60], scale: 2.2 },
-    ],
     particles: [
       {
         mode: "sparks",
@@ -977,7 +974,7 @@ export const PRESETS: Record<SceneKey, Preset> = {
         mode: "eyes",
         color: "#ffa24a",
         amount: "chapter",
-        area: [10, -0.4, 3, 2, -60],
+        area: [2.4, -0.2, 3, 0, -60],
         size: 0.07,
       },
     ],

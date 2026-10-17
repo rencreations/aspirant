@@ -1,7 +1,7 @@
 "use client";
 
 import { useThree } from "@react-three/fiber";
-import { useEffect, type ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 import { Fog } from "three";
 
 import { col, WorldContext, type WorldClock } from "./context";
@@ -58,8 +58,13 @@ function Shape({ p }: { p: ShapeParams }): ReactNode {
 
 function SceneFog({ fog }: { fog: Preset["fog"] }) {
   const scene = useThree((s) => s.scene);
-  useEffect(() => {
+  useLayoutEffect(() => {
     scene.fog = fog ? new Fog(col(fog.color).clone(), fog.near, fog.far) : null;
+    // Materials compiled before the fog existed need a rebuild to pick it up.
+    scene.traverse((o) => {
+      const m = (o as { material?: { needsUpdate: boolean } }).material;
+      if (m) m.needsUpdate = true;
+    });
     return () => {
       scene.fog = null;
     };

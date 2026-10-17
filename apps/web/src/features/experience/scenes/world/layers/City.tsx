@@ -60,18 +60,18 @@ interface Tower {
 
 function layout(p: CityParams, quality: number): Tower[] {
   const rand = mulberry32(4242);
-  const depth = p.depth ?? 40;
-  const count = Math.round(150 * Math.max(0.5, quality));
+  const depth = p.depth ?? 52;
+  const count = Math.round(260 * Math.max(0.5, quality));
   const towers: Tower[] = [];
   for (let i = 0; i < count; i++) {
     const row = rand();
-    const z = -depth + 18 - row * 34;
-    const spread = 34 + row * 30;
+    const z = -depth + 14 - row * 40;
+    const spread = 40 + row * 40;
     const x = (rand() * 2 - 1) * spread;
     const tall = rand() < 0.12 ? 2.6 : 1;
     const centre = Math.exp(-((x / 22) ** 2)) * 0.8 + 0.4;
     const h = (0.8 + rand() * 3.2) * tall * centre * (p.height ?? 1) * (1 + row * 0.6);
-    towers.push({ x, z, w: 0.7 + rand() * 1.6, d: 0.7 + rand() * 1.4, h });
+    towers.push({ x, z, w: 0.45 + rand() * 0.9, d: 0.5 + rand() * 0.9, h });
   }
   return towers;
 }

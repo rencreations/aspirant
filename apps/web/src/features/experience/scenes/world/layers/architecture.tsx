@@ -226,7 +226,7 @@ void main() {
   float r = hash11(vId * 7.13);
   if (uStyle < 0.5) {
     // Glass cells with a cold light inside.
-    float fill = smoothstep(0.0, 0.9, y) * 0.35 + 0.15;
+    float fill = (smoothstep(0.0, 0.9, y) * 0.35 + 0.1) * 0.45;
     float frame = smoothstep(0.46, 0.5, max(abs(vLocal.x), abs(vLocal.z)));
     c = mix(uBase, uGlow, fill * (0.6 + 0.4 * sin(uTime * 0.6 + r * 10.0))) + uGlow * frame * 0.3;
   } else if (uStyle < 1.5) {
@@ -290,7 +290,7 @@ export function Hall({ p }: { p: ShapeParams }) {
           const h = style === 1 ? 3.4 : 2.6 + rand() * (style === 2 ? 3 : 0.8);
           const w = style === 1 ? 1.5 : 1.2;
           m.makeScale(w, h, w);
-          m.setPosition(side * (3.2 + (style === 2 ? rand() * 0.8 : 0)), -2 + h / 2, 6 - i * 4.4);
+          m.setPosition(side * (3.2 + (style === 2 ? rand() * 0.8 : 0)), -2 + h / 2, 1 - i * 4.4);
           mesh.setMatrixAt(i * 2 + (side > 0 ? 1 : 0), m);
         }
       }

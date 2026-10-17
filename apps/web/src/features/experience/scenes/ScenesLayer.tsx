@@ -5,7 +5,7 @@ import { useEffect, useState, useSyncExternalStore, type CSSProperties } from "r
 
 import { hasWebGL } from "@/components/gl/use-gl-ready";
 import { asset } from "@/lib/asset";
-import { useDeviceTier } from "@/lib/device";
+import { guessDeviceTier, useDeviceTier } from "@/lib/device";
 import { useMounted, usePageVisible, useReducedMotion, useViewport } from "@/lib/hooks";
 
 import type { Mood } from "../contract";
@@ -110,9 +110,11 @@ export default function ScenesLayer({ column }: ScenesLayerProps) {
   useEffect(() => syncDriver(), []);
   useSceneAudio();
 
-  const calm = reduced || tier === "low";
+  // Calm on reduced motion or weak hardware. The FPS probe can dip during first load, so it
+  // only lowers quality; it never switches the scene off.
+  const calm = reduced || (mounted && guessDeviceTier() === "low");
   const live = mounted && !calm && !glFailed && hasWebGL();
-  const quality = tier === "high" && viewport.w >= 900 ? 1 : 0.6;
+  const quality = tier !== "low" && viewport.w >= 900 ? 1 : 0.6;
 
   useEffect(() => {
     if (!live) {
