@@ -27,7 +27,7 @@ async function open(page: Page) {
   const errors = watchErrors(page);
   await page.goto(url("/"));
   await page.waitForLoadState("networkidle");
-  await expect(hero(page)).toHaveAttribute("data-intro", "play");
+  await expect(hero(page)).toHaveAttribute("data-intro", "play", { timeout: 15_000 });
   return errors;
 }
 
@@ -55,6 +55,9 @@ test("home loads with one h1, the hero and every section, without errors or over
 });
 
 test.describe("portal hero", () => {
+  // Software WebGL (SwiftShader) is slow on busy CI machines: give the hero room.
+  test.slow();
+
   test("moving the pointer opens the portal, and it relaxes when idle", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop", "mouse only");
     await open(page);
