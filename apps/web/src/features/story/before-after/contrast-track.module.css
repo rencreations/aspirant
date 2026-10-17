@@ -55,13 +55,9 @@
   height: 100%;
   padding: calc(var(--nav-h) + var(--space-l)) var(--gutter)
     calc(8rem + env(safe-area-inset-bottom));
-  max-width: calc(var(--content-max) * 0.82);
-}
-
-@media (min-width: 62em) {
-  .copy {
-    padding-right: 28%;
-  }
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
 }
 
 .kicker {
