@@ -338,25 +338,23 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
         <ThemeZone theme="storm" surface={false} as="div" className="relative">
           <ArchiveHeader stats={catalog.stats} onJump={(id) => select(id, true)} />
 
-          <div data-collection-bar>
-            <FilterBar
-              section={section}
-              onSection={(next) => select(next)}
-              counts={counts}
-              query={query}
-              onQuery={(value) => {
-                setQuery(value);
-                setVoiceLimit(VOICE_PAGE);
-              }}
-              who={who}
-              onWho={(next) => {
-                setWho(next);
-                setVoiceLimit(VOICE_PAGE);
-              }}
-              summary={summary}
-              onClear={clearAll}
-            />
-          </div>
+          <FilterBar
+            section={section}
+            onSection={(next) => select(next)}
+            counts={counts}
+            query={query}
+            onQuery={(value) => {
+              setQuery(value);
+              setVoiceLimit(VOICE_PAGE);
+            }}
+            who={who}
+            onWho={(next) => {
+              setWho(next);
+              setVoiceLimit(VOICE_PAGE);
+            }}
+            summary={summary}
+            onClear={clearAll}
+          />
 
           <div ref={resultsRef} id="collection-results">
             {showing("films") && (

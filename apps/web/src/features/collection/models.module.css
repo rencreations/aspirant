@@ -22,7 +22,7 @@
 }
 
 .frame {
-  width: min(100%, 34rem);
+  width: min(100%, 26rem);
   margin-inline: auto;
 }
 
@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem 1rem;
-  width: min(100%, 34rem);
+  width: min(100%, 26rem);
   margin-inline: auto;
 }
 

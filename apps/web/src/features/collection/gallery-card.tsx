@@ -53,6 +53,7 @@ export function GalleryCard({ item, index, onOpen }: GalleryCardProps) {
       data-tall={shape === "arch" || shape === "star"}
       data-round={shape === "hex" || shape === "bite" || shape === "emblem"}
       data-cursor="VIEW"
+      style={isFan ? ({ "--piece": item.color } as CSSProperties) : undefined}
       aria-label={`View ${item.title}${isFan ? `. ${item.credit}` : ""}`}
       onClick={(e) => {
         audio.blip("click");

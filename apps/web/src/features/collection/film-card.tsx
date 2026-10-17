@@ -11,7 +11,7 @@ import { clamp } from "@/lib/math";
 
 import styles from "./cards.module.css";
 import { formatDuration, pad2, spokenDuration } from "./format";
-import { pairAccent, pickShape, shapeRatio } from "./frames";
+import { pairAccent, pickShape } from "./frames";
 import type { FilmItem } from "./types";
 
 interface FilmCardProps {
@@ -28,7 +28,7 @@ interface FilmCardProps {
  */
 export function FilmCard({ film, index, onOpen }: FilmCardProps) {
   const shape = pickShape(film.vertical ? "tall" : "wide", index);
-  const ratio = shapeRatio(shape, film.width / film.height);
+  const ratio = film.vertical ? 0.72 : 16 / 9;
   const [hover, setHover] = useState(false);
   const [ready, setReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);

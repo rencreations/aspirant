@@ -175,10 +175,10 @@ function ReaderBody({ comic, opener }: { comic: ComicItem; opener: HTMLElement |
             <label className={styles.jump}>
               <span>Page</span>
               <input
-                type="number"
+                type="text"
                 inputMode="numeric"
-                min={1}
-                max={lastPage}
+                pattern="[0-9]*"
+                maxLength={3}
                 value={jump}
                 onChange={(e) => setJump(e.target.value)}
                 onKeyDown={(e) => {

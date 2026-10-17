@@ -107,6 +107,17 @@
 .card[data-tall="true"] .chip[data-pos="tl"] {
   top: 36%;
   left: 0.8rem;
+  max-width: calc(100% - 1.6rem);
+}
+
+.card[data-kind="comic"] .chip[data-pos="tl"] {
+  top: auto;
+  bottom: 0.7rem;
+  left: 1.5rem;
+}
+
+.card[data-kind="fanart"] .frame {
+  filter: drop-shadow(0 8px 24px color-mix(in srgb, var(--piece, transparent) 34%, transparent));
 }
 
 .card[data-round="true"] .chip {

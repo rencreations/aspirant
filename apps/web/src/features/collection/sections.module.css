@@ -1,7 +1,7 @@
 .section {
-  --row-h: clamp(10rem, 22vw, 17rem);
+  --row-h: clamp(8rem, 15vw, 13rem);
   position: relative;
-  padding-block: var(--space-2xl);
+  padding-block: var(--space-xl);
   scroll-margin-top: calc(var(--nav-h) + 9rem);
 }
 
@@ -52,10 +52,6 @@
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
-}
-
-.sub:first-of-type {
-  margin-top: 0;
 }
 
 .sub span {
