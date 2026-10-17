@@ -1,0 +1,198 @@
+/* Before and after: one strip that drains from Daybreak to Storm as its line is struck. */
+
+.section {
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: var(--space-2xl);
+  transition:
+    background-color 1100ms var(--ease-heavy),
+    color 1100ms var(--ease-heavy);
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 80% at 80% 30%, rgb(255 207 92 / 0.35), transparent 70%),
+    radial-gradient(50% 60% at 10% 90%, rgb(92 225 255 / 0.22), transparent 70%);
+  transition: opacity 1100ms var(--ease-heavy);
+}
+
+.glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(55% 75% at 78% 35%, rgb(255 84 104 / 0.3), transparent 70%),
+    radial-gradient(40% 60% at 15% 80%, rgb(181 156 255 / 0.2), transparent 70%);
+  transition: opacity 1100ms var(--ease-heavy);
+}
+
+.section[data-state="after"] .glow::after {
+  opacity: 1;
+}
+
+.inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-m);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-m);
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.place {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.lines {
+  display: grid;
+  justify-items: start;
+  gap: 0.1em;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.before {
+  position: relative;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-6);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  transition: color 900ms var(--ease-out);
+}
+
+.strike {
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  top: 55%;
+  height: 0.07em;
+  background: var(--crimson);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--crimson) 60%, transparent);
+  transform: scaleX(0) rotate(-1.5deg);
+  transform-origin: left center;
+  transition: transform 900ms var(--ease-heavy);
+}
+
+.after {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-6);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0;
+  transform: translateY(0.2em);
+  transition:
+    opacity 900ms var(--ease-out) 250ms,
+    transform 1100ms var(--ease-out) 250ms;
+}
+
+.section[data-state="after"] .before {
+  color: var(--text-faint);
+}
+
+.section[data-state="after"] .strike {
+  transform: scaleX(1) rotate(-1.5deg);
+}
+
+.section[data-state="after"] .after {
+  opacity: 1;
+  transform: none;
+}
+
+.lines:focus-visible {
+  outline-offset: 8px;
+}
+
+.quote {
+  max-width: 52ch;
+  margin: var(--space-s) 0 0;
+  padding-left: var(--space-s);
+  border-left: 2px solid var(--accent);
+  animation: ba-quote 600ms var(--ease-out) both;
+}
+
+.quoteText {
+  margin: 0;
+}
+
+.quoteText p {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  line-height: 1.35;
+  color: var(--text-dim);
+}
+
+.cite {
+  margin-top: 0.4rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.more {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  font-family: var(--font-display-stack);
+  font-weight: 700;
+  font-size: var(--step-1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+.arrow {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .more:hover .arrow {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes ba-quote {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

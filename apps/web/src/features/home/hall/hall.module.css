@@ -1,0 +1,152 @@
+/* Hall of fame: art-directed masonry of fan art in varied frames, each floating at a depth. */
+
+.section {
+  overflow: hidden;
+  padding-block: var(--space-3xl);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-m) var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.title {
+  margin: var(--space-2xs) 0 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-6);
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.note {
+  display: grid;
+  gap: var(--space-s);
+  max-width: 40ch;
+}
+
+.note p {
+  margin: 0;
+  font-size: var(--step-1);
+  color: var(--text-dim);
+}
+
+.more {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cyan);
+}
+
+.grid {
+  columns: 4 15rem;
+  column-gap: clamp(1rem, 2.5vw, 3rem);
+  margin: 0 auto;
+  list-style: none;
+}
+
+.tile {
+  break-inside: avoid;
+  margin-bottom: clamp(1.75rem, 4vw, 4rem);
+  transform: translate3d(0, var(--float, 0px), 0);
+  will-change: transform;
+}
+
+/* Art direction: some pieces sit narrower and to one side. */
+.tile:nth-child(3n + 2) .open {
+  width: 84%;
+  margin-left: auto;
+}
+
+.tile:nth-child(5n + 4) .open {
+  width: 90%;
+}
+
+.open {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.open:focus-visible {
+  outline-offset: 6px;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--ratio);
+}
+
+.tile[data-kind="square"] .frame {
+  aspect-ratio: 1;
+}
+
+.tag {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 4;
+  padding: 0.2rem 0.5rem;
+  background: rgb(5 7 12 / 0.78);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #eef3fa;
+  pointer-events: none;
+}
+
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: 0.6rem 0 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+@media (max-width: 40em) {
+  .grid {
+    columns: 2 9rem;
+  }
+
+  .tile:nth-child(3n + 2) .open,
+  .tile:nth-child(5n + 4) .open {
+    width: 100%;
+  }
+}
