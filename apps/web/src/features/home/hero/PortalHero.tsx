@@ -142,17 +142,15 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   }, [controller, pointer]);
 
   useEffect(() => {
-    controller.reduced = reduced;
+    controller.setReduced(reduced);
   }, [controller, reduced]);
 
   useEffect(() => {
-    controller.onSwap = (index) => {
+    controller.setSwapHandler((index) => {
       setShown(index);
       setAlt(false);
-    };
-    return () => {
-      controller.onSwap = null;
-    };
+    });
+    return () => controller.setSwapHandler(null);
   }, [controller]);
 
   useEffect(() => {
@@ -216,7 +214,7 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   const onPointerUp = (e: PointerEvent<HTMLElement>) => {
     const start = tap.current;
     tap.current = null;
-    if (!start || start.id !== e.pointerId || isControl(e.target)) return;
+    if (start?.id !== e.pointerId || isControl(e.target)) return;
     const moved = Math.hypot(e.clientX - start.x, e.clientY - start.y);
     if (moved > 10 || performance.now() - start.t > 320) return;
     const hero = heroRef.current;

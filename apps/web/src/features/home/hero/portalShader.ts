@@ -101,9 +101,9 @@ vec2 parallax(sampler2D depthMap, vec2 uv) {
 }
 
 float edgeFade(vec2 uv, float opaque) {
-  float side = mix(0.13, 0.05, opaque);
+  float side = mix(0.13, 0.2, opaque);
   float e = smoothstep(0.0, side, uv.x) * smoothstep(0.0, side, 1.0 - uv.x);
-  e *= smoothstep(0.0, 0.03, uv.y);
+  e *= smoothstep(0.0, mix(0.03, 0.12, opaque), uv.y);
   // The lower body fades into the dark so the crop never shows a hard line.
   e *= smoothstep(0.0, 0.24, 1.0 - uv.y);
   return e;

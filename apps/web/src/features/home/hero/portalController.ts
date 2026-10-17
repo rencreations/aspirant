@@ -72,13 +72,13 @@ export class PortalController {
     time: 0,
   };
 
-  reduced = false;
+  private reduced = false;
   /** Write the CSS mask variables (no WebGL). */
-  cssMask = true;
+  private cssMask = true;
   /** Returns true when the textures of a pair are loaded (set by the scene). */
-  isPairReady: (index: number) => boolean = () => true;
+  private isPairReady: (index: number) => boolean = () => true;
   /** Called when the drawn pair changes (at the middle of the dissolve). */
-  onSwap: ((index: number) => void) | null = null;
+  private onSwap: ((index: number) => void) | null = null;
 
   private hero: HTMLElement | null = null;
   private figure: HTMLElement | null = null;
@@ -113,6 +113,21 @@ export class PortalController {
 
   usePointerSource(pointer: { readonly current: PointerState }): void {
     this.pointer = pointer;
+  }
+
+  setReduced(reduced: boolean): void {
+    this.reduced = reduced;
+  }
+
+  /** Called with the new pair index when the drawn pair changes. */
+  setSwapHandler(handler: ((index: number) => void) | null): void {
+    this.onSwap = handler;
+  }
+
+  /** The WebGL scene reports which pairs have their textures; null means always ready. */
+  setPairReadyCheck(check: ((index: number) => boolean) | null): void {
+    this.isPairReady = check ?? (() => true);
+    this.cssMask = check === null;
   }
 
   measure(): void {
