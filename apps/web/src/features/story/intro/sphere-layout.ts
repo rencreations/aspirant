@@ -16,7 +16,7 @@ export interface Building {
   readonly spire: boolean;
 }
 
-export interface Hex {
+interface Hex {
   /** Position in stage pixels. */
   readonly x: number;
   readonly y: number;
@@ -57,7 +57,7 @@ export const CITY: readonly Building[] = (() => {
 })();
 
 /** The Academy tower stands right of centre. */
-export const ACADEMY_X = 0.64;
+const ACADEMY_X = 0.64;
 
 /** Build the layout for a stage of `w` by `h` pixels. */
 export function makeLayout(w: number, h: number): Layout {

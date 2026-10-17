@@ -9,7 +9,7 @@ import { useHotkey } from "@/lib/hooks";
 
 import { ChapterLink } from "../chapter-link";
 import { SectionHead } from "../section-head";
-import { buildGlossary, type GlossaryEntry, type GlossaryKind } from "./glossary-data";
+import type { GlossaryEntry, GlossaryKind } from "./glossary-data";
 import styles from "./glossary.module.css";
 
 type Filter = "all" | "listed" | GlossaryKind;
@@ -40,8 +40,7 @@ function matches(entry: GlossaryEntry, filter: Filter, query: string): boolean {
  * Search as you type, filter by kind, and a polite live region says how many entries match.
  * Press "/" to jump to the search box.
  */
-export function Glossary() {
-  const all = useMemo(() => buildGlossary(), []);
+export function Glossary({ entries: all }: { entries: readonly GlossaryEntry[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const input = useRef<HTMLInputElement>(null);

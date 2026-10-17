@@ -6,9 +6,6 @@ import { Waveform } from "@/components/audio/waveform";
 import { TLink } from "@/components/transition/t-link";
 import { StarButton } from "@/components/ui/star-button";
 import { ThemeZone } from "@/components/theme-zone";
-import { characters, keyVoiceLines } from "@/content/characters";
-import { getPair } from "@/content/pairs";
-import { whoIsWho } from "@/content/world";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useMediaQuery } from "@/lib/hooks";
@@ -16,6 +13,7 @@ import { characterRoute } from "@/lib/site";
 
 import { SectionHead } from "../section-head";
 import styles from "./whos-who.module.css";
+import type { WhoPerson } from "./whos-who-data";
 
 /** Where each splash is cropped, so the face stays in the narrow slat. */
 const FOCUS: Readonly<Record<string, string>> = {
@@ -38,15 +36,19 @@ const HAS_CUTOUT = new Set(["fanny", "layla", "guinevere", "vexana", "selena", "
  * swaps to the cut-out, the voice line plays, and the partner's slat lights up. Selena and
  * Obsidia are grouped as creator and creation, not as partners.
  */
-export function WhosWho() {
+export function WhosWho({
+  people,
+  also,
+}: {
+  people: readonly WhoPerson[];
+  also: ReadonlyArray<{ readonly name: string; readonly text: string }>;
+}) {
   const [active, setActive] = useState(0);
   const wide = useMediaQuery("(min-width: 62em)");
   const hoverTimer = useRef(0);
 
-  const speak = (slug: string) => {
-    const character = characters.find((c) => c.slug === slug);
-    const line = character ? keyVoiceLines(character.slug)[0] : undefined;
-    if (line) void audio.playVoice(asset(line.file));
+  const speak = (person: WhoPerson) => {
+    if (person.voice) void audio.playVoice(asset(person.voice.file));
   };
 
   useEffect(() => {
@@ -57,9 +59,9 @@ export function WhosWho() {
     };
   }, []);
 
-  const current = characters[active] ?? characters[0];
+  const current = people[active] ?? people[0];
   const partnerSlug = current?.partnerSlug ?? null;
-  const currentPair = current ? getPair(current.pair) : null;
+  const currentPairId = current?.pairId ?? null;
 
   return (
     <ThemeZone theme="daybreak" aria-labelledby="who-title" className={styles.section}>
@@ -72,17 +74,15 @@ export function WhosWho() {
         />
 
         <ul className={styles.row} aria-label="The ten Aspirants">
-          {characters.map((c, i) => {
-            const row = whoIsWho.rows.find((r) => r.entityId === c.slug);
-            const pair = getPair(c.pair);
+          {people.map((c, i) => {
             const on = i === active;
             const isPartner = partnerSlug === c.slug;
-            const grouped = !partnerSlug && currentPair?.id === c.pair && !on;
-            const line = keyVoiceLines(c.slug)[0];
+            const grouped = !partnerSlug && currentPairId === c.pairId && !on;
+            const line = c.voice;
             const style = {
-              "--p1": pair.colours[0],
-              "--p2": pair.colours[1],
-              "--c": c.palette.primary,
+              "--p1": c.pairColours[0],
+              "--p2": c.pairColours[1],
+              "--c": c.colour,
               "--focus-pos": FOCUS[c.slug] ?? "50% 25%",
             } as CSSProperties;
             return (
@@ -105,14 +105,14 @@ export function WhosWho() {
                     window.clearTimeout(hoverTimer.current);
                     hoverTimer.current = window.setTimeout(() => {
                       setActive(i);
-                      speak(c.slug);
+                      speak(c);
                       audio.blip("hover");
                     }, 140);
                   }}
                   onPointerLeave={() => window.clearTimeout(hoverTimer.current)}
                   onClick={() => {
                     setActive(i);
-                    speak(c.slug);
+                    speak(c);
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -155,11 +155,11 @@ export function WhosWho() {
                   aria-label={`${c.name}`}
                   className={styles.info}
                 >
-                  <p className={`${styles.aspirant} hud-label`}>{row?.title ?? c.aspirantName}</p>
+                  <p className={`${styles.aspirant} hud-label`}>{c.title}</p>
                   <h3 className={`${styles.bigName} display`}>{c.name}</h3>
-                  <p className={styles.text}>{row?.text ?? c.tagline}</p>
+                  <p className={styles.text}>{c.text}</p>
                   <p className={`${styles.pairLine} hud-label`}>
-                    {pair.kind === "partners" ? "Partners" : "Creator and creation"}: {pair.names}
+                    {c.pairKind === "partners" ? "Partners" : "Creator and creation"}: {c.pairNames}
                   </p>
                   {line && (
                     <div className={styles.voice}>
@@ -167,7 +167,7 @@ export function WhosWho() {
                         emblem
                         size="sm"
                         aria-label={`Play ${c.name}'s voice line`}
-                        onClick={() => speak(c.slug)}
+                        onClick={() => speak(c)}
                       />
                       <Waveform url={asset(line.file)} className={styles.wave} bars={28} />
                     </div>
@@ -188,7 +188,7 @@ export function WhosWho() {
 
         <h3 className={`${styles.alsoTitle} hud-label`}>Also in the story</h3>
         <ul className={styles.also}>
-          {whoIsWho.also.map((a) => (
+          {also.map((a) => (
             <li key={a.name} className={styles.alsoItem}>
               <strong>{a.name}</strong>
               <span>{a.text.charAt(0).toUpperCase() + a.text.slice(1)}</span>

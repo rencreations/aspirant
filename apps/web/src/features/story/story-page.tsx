@@ -8,7 +8,9 @@ import { CouplingLab } from "./lab/coupling-lab";
 import { Intro } from "./intro/intro";
 import { Timeline } from "./timeline/timeline";
 import { WhosWho } from "./who/whos-who";
+import { buildAlso, buildPeople } from "./who/whos-who-data";
 import { OpenQuestions } from "./open/open-questions";
+import { buildGlossary } from "./glossary/glossary-data";
 import { Glossary } from "./glossary/glossary";
 import { PlacesIndex } from "./places/places-index";
 
@@ -23,9 +25,9 @@ export function StoryPage() {
       <Hierarchy />
       <CouplingLab />
       <Timeline />
-      <WhosWho />
+      <WhosWho people={buildPeople()} also={buildAlso()} />
       <OpenQuestions />
-      <Glossary />
+      <Glossary entries={buildGlossary()} />
       <NextFooter
         eyebrow="Next"
         label="The ten"

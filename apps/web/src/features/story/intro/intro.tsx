@@ -107,13 +107,10 @@ export function Intro() {
               <StarGlyph />
               03 / Story, the world
             </p>
-            <ScatterText
-              as="h1"
-              text="Dawnbreak"
-              className={`${styles.h1} display`}
-              radius={110}
-              strength={0.9}
-            />
+            <h1 id="story-title" className={`${styles.h1} display`}>
+              <span className={styles.srOnly}>Story: </span>
+              <ScatterText as="span" text="Dawnbreak" radius={110} strength={0.9} />
+            </h1>
           </div>
           <p className={styles.lead}>
             A young green planet. A city built round a lake. A roof of glass hexagons over it, and a

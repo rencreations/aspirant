@@ -4,7 +4,7 @@ import { clamp } from "@/lib/math";
 export const MAX_SCORE = 2.5;
 
 /** Scores at which the Emblem of Hope stars wake, link and merge. The lab's own thresholds. */
-export const THRESHOLDS = { wake: 0.8, link: 1.62, merge: 2.1 } as const;
+const THRESHOLDS = { wake: 0.8, link: 1.62, merge: 2.1 } as const;
 
 const CURVE = 1.6;
 
