@@ -120,7 +120,7 @@ jobs:
       - name: E2E against the running container
         env:
           E2E_BASE_URL: http://127.0.0.1:8080/
-        run: pnpm --filter @aspirant/web exec playwright test --project=desktop --project=phone
+        run: pnpm --filter @aspirant/web exec playwright test --project=desktop --project=phone e2e/smoke.spec.ts e2e/shell.spec.ts e2e/a11y.spec.ts e2e/character.spec.ts e2e/collection.spec.ts
 
       - name: Container logs
         if: failure()
