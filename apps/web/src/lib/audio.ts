@@ -281,6 +281,16 @@ class AudioEngine {
     }
   }
 
+  /**
+   * The shared context and a bus into the master (so beds obey mute and the compressor) for
+   * procedural ambience and set-piece synths. Null until `unlock()` ran in a user gesture.
+   * The caller owns the nodes it connects and should duck itself under voice (onVoiceChange).
+   */
+  getSynthOut(): { ctx: AudioContext; out: AudioNode } | null {
+    if (!this.unlockedFlag || !this.ctx || !this.master) return null;
+    return { ctx: this.ctx, out: this.master };
+  }
+
   /** The media element of the active music track, or null. Use it to read time and seek. */
   getMusicElement(): HTMLAudioElement | null {
     return this.music[this.activeMusic]?.el ?? null;
