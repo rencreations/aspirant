@@ -552,8 +552,9 @@
   text-wrap: balance;
 }
 
+/* Words stay inline so punctuation never wraps away from its word; the reveal is colour only. */
 .w {
-  display: inline-block;
+  display: inline;
 }
 
 .hi {
@@ -561,10 +562,8 @@
   color: var(--accent);
 }
 
-[data-state="idle"] > * .w,
-[data-state="idle"] > .w {
+[data-state="idle"] .w {
   color: var(--rd-dim);
-  transform: translateY(0.12em);
 }
 
 [data-state="idle"] .hi .w {
@@ -573,7 +572,6 @@
 
 :root[data-motion="reduced"] [data-state="idle"] .w {
   color: inherit;
-  transform: none;
 }
 
 :root[data-motion="reduced"] [data-state="idle"] .hi .w {

@@ -173,6 +173,8 @@ test.describe("experience reader", () => {
     test.setTimeout(150_000);
     await openReader(page);
     await readTo(page, "c01-p010");
+    // Let the page colour finish its crossfade into Daybreak before measuring contrast.
+    await page.waitForTimeout(1600);
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
       .analyze();

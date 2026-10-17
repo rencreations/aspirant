@@ -68,7 +68,6 @@ function reveal(el: HTMLElement, animate: boolean) {
   const hi = `.${s.hi}`;
   gsap.to(words, {
     color: (_i: number, word: HTMLElement) => (word.closest(hi) ? accent : ink),
-    y: 0,
     opacity: 1,
     duration: 0.9,
     stagger: Math.min(0.09, 1.4 / Math.max(1, words.length)),
