@@ -212,9 +212,9 @@
 .lens {
   position: absolute;
   z-index: 1;
-  left: 4%;
-  bottom: -5%;
-  width: clamp(8.5rem, 34vw, 17rem);
+  right: 5%;
+  top: 6%;
+  width: clamp(7rem, 30vw, 17rem);
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
@@ -620,6 +620,8 @@
   }
   .lens {
     left: -7%;
+    right: auto;
+    top: auto;
     bottom: 4%;
     width: clamp(10rem, 14vw, 19rem);
   }
