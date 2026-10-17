@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { NextFooter } from "@/components/next-footer/next-footer";
-import { PageIntro } from "@/components/page-intro";
+import { loadCatalog, toClientCatalog } from "@/features/collection/catalog";
+import { CollectionPage } from "@/features/collection/collection-page";
 import { routes } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -10,15 +11,12 @@ export const metadata: Metadata = {
     "The Aspirant archive: films, music, comics, art, fan art, 3D models and voice lines, with credits.",
 };
 
-export default function CollectionPage() {
+export default function Page() {
+  // Built once at export time. The client gets a slim copy (no voice text, no manifest).
+  const catalog = toClientCatalog(loadCatalog());
   return (
     <>
-      <PageIntro
-        code="05 / Collection"
-        title="Collection"
-        lead="Films, music, comics, art, fan art, 3D and voice. Every piece, with credit."
-        note="The archive terminal is being stocked."
-      />
+      <CollectionPage catalog={catalog} />
       <NextFooter
         label="Home"
         sublabel="Back to the start. The lamp is on."
