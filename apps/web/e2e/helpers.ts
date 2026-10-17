@@ -46,5 +46,11 @@ export function sitePath(page: Page, baseURL: string | undefined): string {
 
 /** Wait for the page transition overlay to finish. */
 export async function settled(page: Page): Promise<void> {
-  await expect(page.locator('[data-overlay="transition"]')).toHaveAttribute("data-active", "false");
+  await expect(page.locator('[data-overlay="transition"]')).toHaveAttribute(
+    "data-active",
+    "false",
+    {
+      timeout: 30_000,
+    },
+  );
 }

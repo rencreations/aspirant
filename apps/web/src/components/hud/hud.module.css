@@ -157,13 +157,16 @@
   white-space: nowrap;
   font-size: 0.6875rem;
   letter-spacing: 0.2em;
-  color: var(--text-faint);
+  /* The HUD floats over both worlds, so the clock keeps its own dark backing and fixed colours. */
+  color: #aeb9cc;
+  background: rgb(7 9 15 / 0.82);
+  padding: 0.6em 0.35em;
   display: flex;
   gap: 0.8em;
 }
 
 .clockTime {
-  color: var(--text);
+  color: #f4f7fb;
   font-variant-numeric: tabular-nums;
 }
 
