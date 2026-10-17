@@ -102,7 +102,7 @@ export type FilmCategory =
   | "Q and A";
 
 /** Fields every collection item carries. */
-export interface ItemBase {
+interface ItemBase {
   id: string;
   /** Human title in our own words. Never empty. */
   title: string;
@@ -141,7 +141,7 @@ export interface TrackItem extends ItemBase {
   cover: { src: string; width: number; height: number };
 }
 
-export interface ComicPage {
+interface ComicPage {
   file: string;
   width: number;
   height: number;
@@ -157,7 +157,7 @@ export interface ComicItem extends ItemBase {
   pages: readonly ComicPage[];
 }
 
-export type ArtKind = "Splash art" | "Cutout" | "Pose" | "Wallpaper" | "Pair art";
+type ArtKind = "Splash art" | "Cutout" | "Pose" | "Wallpaper" | "Pair art";
 
 export interface ArtItem extends ItemBase {
   kind: "art";

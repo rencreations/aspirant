@@ -78,7 +78,7 @@ export function ArchiveHeader({ stats, onJump }: ArchiveHeaderProps) {
 
         <div className={styles.layout}>
           <div className={styles.main}>
-            <h1 className={`${styles.title} display text-step-7`}>Collection</h1>
+            <h1 className={`${styles.title} display`}>Collection</h1>
             <div className={styles.terminal} aria-label="Archive status">
               <p>
                 <span className={styles.prompt}>&gt;</span>{" "}

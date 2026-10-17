@@ -83,6 +83,7 @@
 
 .title {
   margin: 0;
+  font-size: clamp(3.4rem, 1rem + 6.4vw, 8rem);
 }
 
 .terminal {

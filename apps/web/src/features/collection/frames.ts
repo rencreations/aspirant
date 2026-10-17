@@ -1,5 +1,3 @@
-import type { CSSProperties } from "react";
-
 import type { FrameShape } from "@/components/frame/frame-shapes";
 import type { PairId } from "@/content/types";
 
@@ -56,12 +54,4 @@ const PAIR_ACCENT: Readonly<Record<PairId, string>> = {
 
 export function pairAccent(pair: PairId | null): string | undefined {
   return pair ? PAIR_ACCENT[pair] : undefined;
-}
-
-/** Inline style that sets a frame's ratio for justified rows. */
-export function ratioStyle(ratio: number): CSSProperties {
-  return {
-    "--ar": ratio.toFixed(4),
-    aspectRatio: ratio.toFixed(4),
-  } as CSSProperties;
 }

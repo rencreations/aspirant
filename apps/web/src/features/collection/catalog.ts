@@ -33,7 +33,7 @@ import type {
 
 // Source shapes ---------------------------------------------------------------------------
 
-export interface ManifestAsset {
+interface ManifestAsset {
   id: string;
   kind: string;
   path: string;
@@ -51,7 +51,7 @@ export interface ManifestFile {
   assets: readonly ManifestAsset[];
 }
 
-export interface FanartRecord {
+interface FanartRecord {
   id: string;
   character: "fanny" | "layla" | "both";
   site: string;
@@ -67,11 +67,11 @@ export interface FanartRecord {
   height: number;
 }
 
-export interface FanartFile {
+interface FanartFile {
   items: readonly FanartRecord[];
 }
 
-export interface ComicsFile {
+interface ComicsFile {
   comics: Readonly<
     Record<
       string,
