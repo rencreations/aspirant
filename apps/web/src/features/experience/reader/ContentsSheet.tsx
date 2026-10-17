@@ -79,7 +79,10 @@ export function ContentsSheet() {
           <ol className={s.sheetParts}>
             {PARTS.map((part) => (
               <li key={part.number}>
-                <details className={s.sheetPart} open={part.number === (partNumber ?? 1) || undefined}>
+                <details
+                  className={s.sheetPart}
+                  open={part.number === (partNumber ?? 1) || undefined}
+                >
                   <summary className={s.sheetSummary}>
                     <span className={s.sheetNum} aria-hidden="true">
                       {String(part.number).padStart(2, "0")}

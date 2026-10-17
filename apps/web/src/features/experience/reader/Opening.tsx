@@ -31,7 +31,11 @@ function LitWord({ word, offset }: { word: string; offset: number }) {
   );
 }
 
-function People({ rows }: { rows: Extract<FrontSection["blocks"][number], { type: "people" }>["rows"] }) {
+function People({
+  rows,
+}: {
+  rows: Extract<FrontSection["blocks"][number], { type: "people" }>["rows"];
+}) {
   return (
     <ul className={o.people}>
       {rows.map((row) => {

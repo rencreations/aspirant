@@ -48,7 +48,7 @@ const DEFAULTS: ReaderPrefs = { chapterId: null, paragraphId: null, textScale: 1
 
 const ID = /^(c\d{2}|i-far-above-\d)(-p\d{3})?$/u;
 
-export function readPrefs(): ReaderPrefs {
+function readPrefs(): ReaderPrefs {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return { ...DEFAULTS };

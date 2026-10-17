@@ -48,7 +48,11 @@ export function splitAt(pieces: readonly Piece[], cuts: readonly number[]): Piec
     let from = piece.start;
     for (const cut of sorted) {
       if (cut <= from || cut >= end) continue;
-      out.push({ ...piece, text: piece.text.slice(from - piece.start, cut - piece.start), start: from });
+      out.push({
+        ...piece,
+        text: piece.text.slice(from - piece.start, cut - piece.start),
+        start: from,
+      });
       from = cut;
     }
     out.push({ ...piece, text: piece.text.slice(from - piece.start), start: from });
@@ -73,7 +77,9 @@ export function findRanges(text: string, phrases: readonly string[]): Array<[num
 /** Mark pieces that fall inside any of the ranges. Call after splitting at the range edges. */
 export function markRanges(pieces: readonly Piece[], ranges: ReadonlyArray<[number, number]>) {
   return pieces.map((piece) =>
-    ranges.some(([a, b]) => piece.start >= a && piece.start < b) ? { ...piece, hi: true as const } : piece,
+    ranges.some(([a, b]) => piece.start >= a && piece.start < b)
+      ? { ...piece, hi: true as const }
+      : piece,
   );
 }
 

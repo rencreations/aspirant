@@ -44,7 +44,12 @@ export interface Metrics {
 }
 
 /** First guess from the column width and the type size; calibrated against real chapters. */
-export function baseMetrics(columnPx: number, fontPx: number, linePx: number, gapPx: number): Metrics {
+export function baseMetrics(
+  columnPx: number,
+  fontPx: number,
+  linePx: number,
+  gapPx: number,
+): Metrics {
   const wordEm = 2.62; // about 5.85 characters per word, 0.448 em each in Instrument Serif
   const wordsPerLine = Math.max(3, columnPx / (wordEm * fontPx));
   return { ppw: linePx / wordsPerLine, ppp: linePx * 0.5 + gapPx };
@@ -64,7 +69,10 @@ function lastAtOrBefore(values: readonly number[], y: number): number {
   return found;
 }
 
-export function useReadingEngine(rootRef: RefObject<HTMLElement | null>, probeRef: RefObject<HTMLElement | null>) {
+export function useReadingEngine(
+  rootRef: RefObject<HTMLElement | null>,
+  probeRef: RefObject<HTMLElement | null>,
+) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -170,7 +178,9 @@ export function useReadingEngine(rootRef: RefObject<HTMLElement | null>, probeRe
       return { first, last };
     };
 
-    const write = (patch: Parameters<ReturnType<typeof useExperience.getState>["setPosition"]>[0]) => {
+    const write = (
+      patch: Parameters<ReturnType<typeof useExperience.getState>["setPosition"]>[0],
+    ) => {
       const state = useExperience.getState();
       const changed = (Object.keys(patch) as Array<keyof typeof patch>).some(
         (key) => state[key] !== patch[key],
@@ -233,7 +243,8 @@ export function useReadingEngine(rootRef: RefObject<HTMLElement | null>, probeRe
         partNumber: box.part ? (toPartNumber(box.part) satisfies PartNumber) : null,
         chapterId,
         chapterProgress: Math.round(progress * 1000) / 1000,
-        paragraphId: paragraph?.id ?? (box.kind === "chapter" ? useExperience.getState().paragraphId : null),
+        paragraphId:
+          paragraph?.id ?? (box.kind === "chapter" ? useExperience.getState().paragraphId : null),
         storyProgress: Math.round(storyProgress * 10000) / 10000,
       });
 

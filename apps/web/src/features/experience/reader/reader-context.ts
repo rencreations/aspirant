@@ -9,7 +9,7 @@ export interface JumpOptions {
   focus?: boolean;
 }
 
-export interface SavedPlace {
+interface SavedPlace {
   readonly chapterId: string;
   readonly paragraphId: string | null;
 }

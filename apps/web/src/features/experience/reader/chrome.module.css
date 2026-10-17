@@ -27,8 +27,8 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(12px) saturate(1.15);
+  /* Opaque enough to read over text; no backdrop blur, which costs a frame budget per scroll. */
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
   border-bottom: 1px solid var(--line);
 }
 

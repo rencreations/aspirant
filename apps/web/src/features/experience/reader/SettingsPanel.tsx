@@ -67,7 +67,13 @@ export function SettingsPanel() {
         </span>
         <span>Settings</span>
       </button>
-      <div id={panelId} className={s.settingsPanel} hidden={!open} role="group" aria-label="Reading settings">
+      <div
+        id={panelId}
+        className={s.settingsPanel}
+        hidden={!open}
+        role="group"
+        aria-label="Reading settings"
+      >
         <p className={cn(s.settingsTitle, "hud-label")}>Reading settings</p>
         <div className={s.sizeRow}>
           <span className={s.settingLabel}>Text size</span>

@@ -66,7 +66,9 @@ export function MiniBar() {
   const part = partNumber ? getPartMeta(partNumber) : undefined;
   const saved = resume ? getUnit(resume.chapterId) : undefined;
   const showResume =
-    resume !== null && saved !== undefined && resume.chapterId !== chapterId &&
+    resume !== null &&
+    saved !== undefined &&
+    resume.chapterId !== chapterId &&
     (chapterId === null || unitIndex(chapterId) < unitIndex(resume.chapterId));
 
   return (

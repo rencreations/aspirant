@@ -73,7 +73,11 @@ function Placeholder({ part, failed }: { part: number; failed: boolean }) {
       {failed ? (
         <p className={s.loadError}>
           This chapter did not load.{" "}
-          <button type="button" className={s.retry} onClick={() => void ensurePart(part, { all: true })}>
+          <button
+            type="button"
+            className={s.retry}
+            onClick={() => void ensurePart(part, { all: true })}
+          >
             Try again
           </button>
         </p>
@@ -118,8 +122,17 @@ export function ChapterBody({
 
   const style = { "--w": words, "--p": paragraphs, "--k": keys } as CSSProperties;
   return (
-    <div ref={ref} className={ready ? s.body : s.bodyPending} style={style} data-body={ready ? "" : undefined}>
-      {chapter && mounted ? <Blocks chapter={chapter} /> : <Placeholder part={part} failed={failed} />}
+    <div
+      ref={ref}
+      className={ready ? s.body : s.bodyPending}
+      style={style}
+      data-body={ready ? "" : undefined}
+    >
+      {chapter && mounted ? (
+        <Blocks chapter={chapter} />
+      ) : (
+        <Placeholder part={part} failed={failed} />
+      )}
     </div>
   );
 }

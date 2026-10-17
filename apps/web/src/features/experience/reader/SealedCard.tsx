@@ -10,7 +10,15 @@ import s from "./reader.module.css";
  * A sealed archive file. Hover, tap or Enter breaks the seal and shows what the story says;
  * the status never changes from Open, because the story never answers.
  */
-export function SealedCard({ index, question, answer }: { index: number; question: string; answer: string }) {
+export function SealedCard({
+  index,
+  question,
+  answer,
+}: {
+  index: number;
+  question: string;
+  answer: string;
+}) {
   const [pinned, setPinned] = useState(false);
   const [hover, setHover] = useState(false);
   const open = pinned || hover;

@@ -40,7 +40,7 @@ export function observePlaceholder(el: HTMLElement, part: number): () => void {
 
 // The beat: raised to 1 when a key line lands, then eased back to 0 so the next pulse is new.
 let beatRaf = 0;
-export function pulseBeat(): void {
+function pulseBeat(): void {
   useExperience.getState().pulse();
   cancelAnimationFrame(beatRaf);
   let last = performance.now();

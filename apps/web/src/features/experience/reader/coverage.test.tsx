@@ -70,5 +70,6 @@ describe("reader coverage", () => {
     expect(mismatched).toEqual([]);
     const indexIds = index.chapters.map((chapter) => chapter.id);
     expect(files.flatMap((file) => file.chapters.map((chapter) => chapter.id))).toEqual(indexIds);
-  });
+    // Renders all 2,569 paragraphs in jsdom: a few seconds alone, longer on a busy machine.
+  }, 180_000);
 });

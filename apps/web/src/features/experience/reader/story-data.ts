@@ -44,16 +44,6 @@ export function unitShort(unit: ChapterMeta): string {
   return unit.number === null ? "IN" : String(unit.number).padStart(2, "0");
 }
 
-/** "One" from "Part One". */
-export function partWord(part: PartMeta): string {
-  return part.label.replace(/^Part\s+/u, "");
-}
-
 export function partAnchor(n: number): string {
   return `part-${String(n).padStart(2, "0")}`;
-}
-
-/** Index of a unit inside its part (0 based). */
-export function indexInPart(unit: ChapterMeta): number {
-  return getPartMeta(unit.part)?.chapterIds.indexOf(unit.id) ?? -1;
 }
