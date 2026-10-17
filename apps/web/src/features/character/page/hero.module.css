@@ -520,11 +520,21 @@
   margin: 0;
 }
 
-.formFigure img,
+/* The wrapper clips; the image inside may zoom from its bottom edge (see FormArt.zoom). */
+.formArt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 100%;
+}
+
+.formArt,
 .formEmpty {
+  display: block;
+  overflow: hidden;
   width: 100%;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
   clip-path: polygon(
     12px 0,
     100% 0,

@@ -34,6 +34,8 @@ export interface FormArt {
   readonly image: ArtImage | null;
   /** CSS object-position, to keep the figure (and never a burned-in caption) in view. */
   readonly position?: string;
+  /** Zoom from the bottom edge, to crop a band off the top (a burned-in caption). */
+  readonly zoom?: number;
   /** Where the image comes from, shown under it. */
   readonly source: string;
 }
@@ -174,7 +176,7 @@ export const ART: Readonly<Record<Slug, ArtDirection>> = {
           height: 3200,
           alt: "Vexana with blue-lavender hair and horns, official mobile wallpaper",
         },
-        position: "50% 30%",
+        position: "50% 42%",
         source: "Official mobile wallpaper. Her splash art shows this form too.",
       },
     },
@@ -201,8 +203,10 @@ export const ART: Readonly<Record<Slug, ArtDirection>> = {
           height: 540,
           alt: "A pale figure arched back in white and orange flame, official trailer frame",
         },
-        // The frame carries a burned-in caption at the top: keep the lower part in view.
-        position: "50% 100%",
+        // The frame carries a burned-in caption in its top tenth: zoom from the bottom edge
+        // so that band falls outside the crop.
+        position: "44% 100%",
+        zoom: 1.18,
         source: "Official trailer frame, 2:35.",
       },
     },
@@ -229,7 +233,7 @@ export const ART: Readonly<Record<Slug, ArtDirection>> = {
           height: 540,
           alt: "A pink-haired figure with one glowing star-shaped pupil, official trailer frame",
         },
-        position: "50% 40%",
+        position: "62% 40%",
         source: "Official trailer frame, 1:18.",
       },
     },

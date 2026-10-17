@@ -373,7 +373,7 @@ export function Hero(props: HeroProps) {
           <HudPanel
             tone="glass"
             label="Form"
-            code={form === "ender" ? "Ender form" : "Aspirant form"}
+            code={form === "ender" ? "Ender form" : "Normal form"}
             className={styles.formPanel}
             bodyClassName={styles.formBody}
           >
@@ -384,7 +384,7 @@ export function Hero(props: HeroProps) {
                 onClick={() => choose("normal")}
                 className={styles.formButton}
               >
-                Aspirant form
+                Normal form
               </button>
               <button
                 type="button"
@@ -399,15 +399,20 @@ export function Hero(props: HeroProps) {
             <div className={styles.formView} key={form}>
               <figure className={styles.formFigure} data-empty={current.art.image === null}>
                 {current.art.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={asset(current.art.image.src)}
-                    alt={current.art.image.alt}
-                    width={current.art.image.width}
-                    height={current.art.image.height}
-                    style={{ objectPosition: current.art.position }}
-                    decoding="async"
-                  />
+                  <span className={styles.formArt}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={asset(current.art.image.src)}
+                      alt={current.art.image.alt}
+                      width={current.art.image.width}
+                      height={current.art.image.height}
+                      style={{
+                        objectPosition: current.art.position,
+                        ...(current.art.zoom ? { scale: String(current.art.zoom) } : {}),
+                      }}
+                      decoding="async"
+                    />
+                  </span>
                 ) : (
                   <span className={styles.formEmpty} aria-hidden="true">
                     No art on file
