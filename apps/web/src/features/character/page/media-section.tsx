@@ -32,7 +32,7 @@ export interface ModelInfo {
 
 interface MediaSectionProps {
   name: string;
-  official: readonly (ArtImage & { caption: string })[];
+  official: ReadonlyArray<ArtImage & { caption: string }>;
   fanart: readonly FanArtItem[];
   videos: readonly VideoItem[];
   model: ModelInfo | null;

@@ -66,6 +66,11 @@ export interface HeroProps {
 
 type Form = "normal" | "ender";
 
+/** Wrap a line in curly quotes, unless it already opens with a quotation of its own. */
+function quoted(text: string): string {
+  return /^["“']/.test(text) ? text : `“${text}”`;
+}
+
 /**
  * The frame shape drawn inside margins of the box (percent). The splash is clipped to it
  * while the aligned cut-out keeps the full box, so the figure spills over the frame.
@@ -353,7 +358,7 @@ export function Hero(props: HeroProps) {
                 <span className="hud-label">Voice {String(line.n).padStart(2, "0")}</span>
                 <Waveform url={lineSrc} bars={36} className={styles.wave} />
               </p>
-              <p className={styles.voiceEn}>&ldquo;{line.en}&rdquo;</p>
+              <p className={styles.voiceEn}>{quoted(line.en)}</p>
               <p className={styles.voiceJp} lang="ja">
                 {line.jp}
               </p>
@@ -362,7 +367,7 @@ export function Hero(props: HeroProps) {
         )}
       </div>
 
-      <div className={`${styles.dock} shell`}>
+      <div className={`${styles.dock} shell`} data-forms={forms ? "" : undefined}>
         <div className={styles.stats}>{stats}</div>
         {forms && current && (
           <HudPanel

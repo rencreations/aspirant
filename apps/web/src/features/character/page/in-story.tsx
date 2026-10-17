@@ -29,7 +29,7 @@ export function InStory({ name, chapters }: InStoryProps) {
       <ol className={styles.list}>
         {chapters.map((c, i) => {
           const prev = chapters[i - 1];
-          const newPart = !prev || prev.part !== c.part;
+          const newPart = prev?.part !== c.part;
           return (
             <li key={c.id} className={styles.item} data-new-part={newPart || undefined}>
               {newPart && (

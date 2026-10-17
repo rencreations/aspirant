@@ -60,7 +60,7 @@ export function Roster({ characters, pairs }: RosterProps) {
 
   const filters: Array<{ id: Filter; label: string }> = [
     { id: "all", label: "All ten" },
-    ...pairs.map((p) => ({ id: p.id as Filter, label: p.names })),
+    ...pairs.map((p) => ({ id: p.id, label: p.names })),
     { id: "daybreak", label: "Daybreak" },
     { id: "storm", label: "Storm" },
   ];
@@ -345,7 +345,11 @@ function Preview({ character: c }: { character: RosterCharacter }) {
           {c.romaji && <span>{c.romaji}</span>}
         </p>
         <p className={styles.previewTagline}>{c.tagline}</p>
-        {c.voice && <p className={styles.previewVoice}>&ldquo;{c.voice.en}&rdquo;</p>}
+        {c.voice && (
+          <p className={styles.previewVoice}>
+            {/^["“']/.test(c.voice.en) ? c.voice.en : `“${c.voice.en}”`}
+          </p>
+        )}
       </div>
     </div>
   );

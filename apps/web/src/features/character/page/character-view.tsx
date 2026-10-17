@@ -2,8 +2,6 @@
  * One character page, composed on the server. Reads the content layer and the build-time
  * media lists, then hands slim props to the client islands.
  */
-import type { CSSProperties } from "react";
-
 import { NextFooter } from "@/components/next-footer/next-footer";
 import {
   getCharacter,
@@ -200,7 +198,7 @@ export function CharacterView({ slug }: { slug: Slug }) {
         />
       </div>
       <InStory name={c.name} chapters={chapters} />
-      <div data-theme={next.side} className={styles.nextZone} style={nextVars as CSSProperties}>
+      <div data-theme={next.side} className={styles.nextZone} style={nextVars}>
         <NextFooter
           eyebrow="Next in queue"
           label={next.name}

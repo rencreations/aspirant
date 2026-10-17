@@ -169,8 +169,11 @@
 }
 
 /* A figure cut-out: stands in front of the dimmed splash, breaking out of the frame. */
+/* With a figure in front, the splash steps back into a scene: off-centre, softened. */
 .hero[data-cutout="figure"] .splash {
-  filter: saturate(0.8) brightness(0.92);
+  object-position: 12% 40%;
+  filter: saturate(0.75) brightness(0.9) blur(2px);
+  scale: 1.12;
 }
 
 .cutout {
@@ -306,9 +309,23 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-self: start;
   gap: 0.6rem;
   margin: 0;
+  padding: 0.35rem 0.7rem 0.35rem 0;
   color: var(--text-dim);
+}
+
+/* Small screens: the eyebrow sits on the art as a tab, the figure caption is left out. */
+@media (max-width: 68.74em) {
+  .eyebrow {
+    padding-left: 0.7rem;
+    background: var(--bg);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  .figLabel {
+    display: none;
+  }
 }
 
 .dot {
@@ -566,10 +583,9 @@
   .hero {
     --name-w: 44vw;
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    grid-template-rows: minmax(
-        max(40rem, calc(100svh - var(--nav-h) - var(--space-xs) - 4rem)),
-        auto
-      ) auto;
+    grid-template-rows:
+      minmax(max(40rem, calc(100svh - var(--nav-h) - var(--space-xs) - 4rem)), auto)
+      auto;
     column-gap: var(--space-l);
     row-gap: var(--space-m);
     padding-bottom: var(--space-l);
@@ -596,8 +612,11 @@
   .dock {
     grid-column: 1 / -1;
     grid-row: 2;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: end;
+  }
+  .dock[data-forms] {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   }
   .lens {
     left: -7%;

@@ -21,14 +21,11 @@ import {
   TextureLoader,
   Vector3,
   type Group,
-  type Material,
   type Mesh,
   type MeshStandardMaterial,
   type Object3D,
   type Texture,
 } from "three";
-
-type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
 
 import GLStage from "@/components/gl/gl-stage";
 import { asset } from "@/lib/asset";
@@ -37,6 +34,8 @@ import { useReducedMotion } from "@/lib/hooks";
 
 import type { ModelInfo } from "./media-section";
 import styles from "./model-viewer.module.css";
+
+type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
 
 type Exhibit = "character" | "weapon" | "robot";
 
@@ -48,7 +47,7 @@ const NODES: Record<Exhibit, readonly string[]> = {
 };
 
 /** World height each exhibit is scaled to on the pedestal. */
-const FIT: Record<Exhibit, number> = { character: 2, weapon: 2.1, robot: 1.15 };
+const FIT: Record<Exhibit, number> = { character: 2, weapon: 2.1, robot: 1.5 };
 
 const DRACO = "/vendor/draco/";
 
@@ -75,6 +74,7 @@ const FACES: readonly Face[] = [
 
 /** The cell the screen's UVs point at when the offset is zero. */
 const BASE_CELL = { c: 1, r: 0 };
+const DEFAULT_FACE: Face = { ...BASE_CELL, label: "Wide eyes" };
 const KEY_STEP = Math.PI / 12;
 
 interface Colours {
@@ -99,7 +99,7 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
   const [face, setFace] = useState(0);
   const reduced = useReducedMotion();
   const controls = useRef<OrbitControlsImpl | null>(null);
-  const keyTarget = useRef<{ az: number; pol: number } | null>(null);
+  const keyTargetRef = useRef<{ az: number; pol: number } | null>(null);
   const hintId = useId();
   const alive = useRef(false);
   const modelUrl = asset(model.src);
@@ -131,7 +131,7 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const c = controls.current;
     if (!c) return;
-    const base = keyTarget.current ?? { az: c.getAzimuthalAngle(), pol: c.getPolarAngle() };
+    const base = keyTargetRef.current ?? { az: c.getAzimuthalAngle(), pol: c.getPolarAngle() };
     let handled = true;
     if (e.key === "ArrowLeft") base.az -= KEY_STEP;
     else if (e.key === "ArrowRight") base.az += KEY_STEP;
@@ -141,13 +141,13 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
     else if (e.key === "-" || e.key === "_") c.dollyOut(1.15);
     else if (e.key === "0" || e.key === "Home") {
       c.reset();
-      keyTarget.current = null;
+      keyTargetRef.current = null;
       e.preventDefault();
       return;
     } else handled = false;
     if (!handled) return;
     e.preventDefault();
-    keyTarget.current = base;
+    keyTargetRef.current = base;
     c.update();
   };
 
@@ -174,11 +174,11 @@ export default function ModelViewer({ model, colours }: ViewerProps) {
               src={modelUrl}
               exhibit={exhibit}
               atlas={model.screen ? asset(model.screen) : null}
-              face={FACES[face] ?? FACES[0]}
+              face={FACES[face] ?? DEFAULT_FACE}
               reduced={reduced}
               colours={colours}
               controlsRef={controls}
-              keyTarget={keyTarget}
+              keyTargetRef={keyTargetRef}
             />
           </Suspense>
         </GLStage>
@@ -257,7 +257,7 @@ interface SceneProps {
   reduced: boolean;
   colours: Colours;
   controlsRef: RefObject<OrbitControlsImpl | null>;
-  keyTarget: RefObject<{ az: number; pol: number } | null>;
+  keyTargetRef: RefObject<{ az: number; pol: number } | null>;
 }
 
 function Scene({
@@ -268,7 +268,7 @@ function Scene({
   reduced,
   colours,
   controlsRef,
-  keyTarget,
+  keyTargetRef,
 }: SceneProps) {
   const gltf = useGLTF(src, asset(DRACO), false);
   const rig = useRef<Group>(null);
@@ -374,7 +374,7 @@ function Scene({
         const mesh = o as Mesh;
         if (!mesh.isMesh) return;
         mesh.geometry.dispose();
-        const mats = (Array.isArray(mesh.material) ? mesh.material : [mesh.material]) as Material[];
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
         for (const m of mats) {
           for (const value of Object.values(m)) {
             if (value && typeof value === "object" && (value as Texture).isTexture)
@@ -406,19 +406,20 @@ function Scene({
     t.position.y = reduced ? 0 : Math.sin(state.clock.elapsedTime * 0.9) * 0.025;
 
     const c = controlsRef.current;
-    const kt = keyTarget.current;
+    const kt = keyTargetRef.current;
     if (c && kt) {
       const az = c.getAzimuthalAngle();
       const pol = c.getPolarAngle();
       const step = reduced ? 1 : 1 - Math.exp(-dt * 10);
       c.setAzimuthalAngle(az + (kt.az - az) * step);
       c.setPolarAngle(pol + (kt.pol - pol) * step);
-      if (Math.abs(kt.az - az) < 0.002 && Math.abs(kt.pol - pol) < 0.002) keyTarget.current = null;
+      if (Math.abs(kt.az - az) < 0.002 && Math.abs(kt.pol - pol) < 0.002)
+        keyTargetRef.current = null;
     }
     if (idleSince.current < 0) idleSince.current = state.clock.elapsedTime;
     if (c) {
       const idle = !interacting && state.clock.elapsedTime - idleSince.current > 2.5;
-      c.autoRotate = !reduced && idle && keyTarget.current === null;
+      c.autoRotate = !reduced && idle && keyTargetRef.current === null;
     }
   });
 
@@ -460,7 +461,7 @@ function Scene({
         target={[0, 0, 0]}
         onStart={() => {
           setInteracting(true);
-          keyTarget.current = null;
+          keyTargetRef.current = null;
         }}
         onEnd={() => {
           setInteracting(false);
