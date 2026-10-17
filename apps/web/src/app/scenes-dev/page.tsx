@@ -11,3 +11,5 @@ export const metadata: Metadata = {
 export default function ScenesDevPage() {
   return <Harness />;
 }
+
+// The set-piece gallery lives at /scenes-dev/?pieces=1 (switched inside Harness).

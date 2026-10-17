@@ -6,6 +6,8 @@ import { useExperience, type PartNumber } from "@/features/experience/contract";
 import { CHAPTERS, PARTS, type SceneKey } from "@/features/experience/scenes/parts";
 import ScenesLayer from "@/features/experience/scenes/ScenesLayer";
 
+import { PiecesGallery } from "./pieces";
+
 type TextMode = "auto" | "storm" | "daybreak" | "split" | "none";
 
 const SAMPLE = [
@@ -41,6 +43,15 @@ interface GLLike {
 }
 
 export function Harness() {
+  const [gallery] = useState(
+    () =>
+      typeof window !== "undefined" && new URLSearchParams(window.location.search).has("pieces"),
+  );
+  if (gallery) return <PiecesGallery />;
+  return <SceneHarness />;
+}
+
+function SceneHarness() {
   const scenes = useMemo(sceneIndex, []);
   const [text, setText] = useState<TextMode>("auto");
   const [stats, setStats] = useState("");
