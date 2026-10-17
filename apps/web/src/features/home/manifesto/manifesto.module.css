@@ -1,0 +1,188 @@
+/* What is Aspirant: a white ceramic briefing with a lantern on a rail and a counter strip. */
+
+.section {
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: var(--space-3xl) var(--space-2xl);
+  --glow: var(--light-gold);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.55;
+  background-image: radial-gradient(circle at center, var(--line-strong) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  -webkit-mask: radial-gradient(70% 60% at 70% 40%, #000 20%, transparent 80%);
+  mask: radial-gradient(70% 60% at 70% 40%, #000 20%, transparent 80%);
+}
+
+.inner {
+  position: relative;
+}
+
+.head {
+  display: grid;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-xl);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-5);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--space-m);
+}
+
+.textWrap {
+  max-width: 34ch;
+  font-size: var(--step-4);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: inherit;
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+@media (min-width: 64em) {
+  .textWrap {
+    max-width: 30ch;
+    margin-left: 12%;
+  }
+}
+
+@media (min-aspect-ratio: 21/9) {
+  .textWrap {
+    margin-left: 22%;
+  }
+}
+
+/* Lantern rail ------------------------------------------------------------------------- */
+
+.rail {
+  position: relative;
+  --lamp: 0;
+}
+
+.railTrack,
+.railLit {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  translate: -50% 0;
+}
+
+.railTrack {
+  bottom: 0;
+  background: repeating-linear-gradient(to bottom, var(--line-strong) 0 6px, transparent 6px 12px);
+}
+
+.railLit {
+  height: calc(var(--lamp) * 100%);
+  background: linear-gradient(to bottom, transparent, var(--gold));
+}
+
+.lamp {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--lamp) * 100%);
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 207 92 / 0.55), transparent 70%);
+  animation: lamp-breathe 3.2s ease-in-out infinite;
+}
+
+.lampStar {
+  width: 1rem;
+  height: 1rem;
+  color: var(--gold);
+}
+
+/* Counters ------------------------------------------------------------------------------ */
+
+.counters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+  margin: var(--space-2xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.counter {
+  position: relative;
+  display: grid;
+  gap: 0.3rem;
+  padding: var(--space-s) var(--space-s) var(--space-m);
+  background: var(--panel);
+  border-top: 2px solid var(--line);
+  transition: border-color var(--dur-slow) var(--ease-out);
+}
+
+.counters[data-live="true"] .counter {
+  border-top-color: var(--cyan);
+}
+
+.counterValue {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--step-6);
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.counterLabel {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.counterTicks {
+  position: absolute;
+  right: var(--space-s);
+  bottom: var(--space-s);
+  width: 3rem;
+  height: 0.5rem;
+  background: repeating-linear-gradient(to right, var(--line-strong) 0 1px, transparent 1px 6px);
+}
+
+@media (max-width: 40em) {
+  .counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .body {
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: var(--space-s);
+  }
+}
+
+@keyframes lamp-breathe {
+  50% {
+    scale: 1.15;
+    opacity: 0.85;
+  }
+}

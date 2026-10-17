@@ -316,14 +316,13 @@ function centreOn([fx, fy]: readonly [number, number]): string {
 export function getRoster(): readonly RosterCard[] {
   return characters.map((c) => {
     const pair = pairs.find((p) => p.id === c.pair);
-    const partner = c.partnerSlug ? getCharacter(c.partnerSlug).name : "";
     return {
       slug: c.slug,
       order: c.order,
       name: c.name,
       aspirantName: c.aspirantName,
       jp: c.jp.script,
-      partner,
+      pairName: pair?.names ?? "",
       pairColours: pair ? pair.colours : [c.palette.primary, c.palette.secondary],
       primary: c.palette.primary,
       world: c.side,

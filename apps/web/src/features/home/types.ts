@@ -91,7 +91,7 @@ export interface RosterCard {
   readonly name: string;
   readonly aspirantName: string;
   readonly jp: string;
-  readonly partner: string;
+  readonly pairName: string;
   readonly pairColours: readonly [string, string];
   readonly primary: string;
   readonly world: World;
