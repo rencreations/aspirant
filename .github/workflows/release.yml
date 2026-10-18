@@ -19,7 +19,7 @@ jobs:
       id-token: write # provenance attestation
       attestations: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-pnpm
       - run: pnpm check
       - run: pnpm build
@@ -31,7 +31,7 @@ jobs:
           tar -C apps/web/out -czf "aspirant-site-${GITHUB_REF_NAME}.tar.gz" .
       - run: pnpm sbom
       - name: Attest provenance of release assets
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
             aspirant-site-*.tar.gz
