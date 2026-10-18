@@ -1,6 +1,6 @@
 /**
  * Base-path helpers. Production is served under "/aspirant" (a GitHub project page), so every
- * URL that is not a Next route (image, video, audio, JSON, GLB, texture) must go through
+ * URL that is not a Next route (image, video, audio, JSON, texture) must go through
  * `asset()`. Next routes rendered with <Link>/<TLink> get the base path from Next itself.
  */
 

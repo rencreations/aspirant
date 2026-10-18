@@ -103,7 +103,7 @@ export function ArchiveHeader({ stats, onJump }: ArchiveHeaderProps) {
           <div className={styles.side}>
             <p className={styles.intro}>
               Everything made for Aspirant is kept here. Watch the films, play the songs, read the
-              two comics, study the art, turn the models round and hear every voice line.
+              two comics, study the art and hear every voice line.
             </p>
             <p className={styles.lead}>Take your time.</p>
             <dl className={styles.runtime}>

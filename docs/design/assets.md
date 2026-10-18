@@ -8,17 +8,17 @@ Result of the last full run: 685 listed assets, 365 MB for the whole `public/` f
 
 ```
 pnpm assets                                   # same as: node scripts/assets/build.mjs
-node scripts/assets/build.mjs --only=images,comics,video,audio,models,portal
+node scripts/assets/build.mjs --only=images,comics,video,audio,portal
 node scripts/assets/build.mjs --only=video --force            # ignore the freshness check
 node scripts/assets/build.mjs --only=video -- --hero-candidates   # write contact sheets of trailer frames to the temp folder
 ```
 
-- Idempotent: an output is skipped when it exists and is newer than its inputs (and, for GLB, the Blender scripts). `--force` redoes it.
+- Idempotent: an output is skipped when it exists and is newer than its inputs. `--force` redoes it.
 - One build at a time: `scripts/assets/.cache/build.lock` stops a second run. (A first version of the pipeline was started twice by mistake, the two runs wrote the same temp file, and three videos came out corrupt. They were re-encoded and all 31 MP4 files were then fully decoded with `ffmpeg -f null` with zero errors.)
-- Environment variables: `ASPIRANT_SRC` (originals), `ASSET_TMP` (scratch folder; default is the OS temp folder, never the repo), `BLENDER` (blender.exe), `DEPTH_PYTHON` (python of a venv with torch, transformers, pillow, numpy; without it portal depth falls back to a pseudo-depth), `--concurrency=N` (images, audio; default 3), `--vconcurrency=N` (video; default 2).
-- Tools: `sharp` (root devDependency), `ffmpeg` and `ffprobe` on PATH, Blender 4.5 for models. Installing sharp with pnpm needed `--config.engine-strict=false` because the machine has Node 24.2 and some repo dependencies want 24.11 or newer.
+- Environment variables: `ASPIRANT_SRC` (originals), `ASSET_TMP` (scratch folder; default is the OS temp folder, never the repo), `DEPTH_PYTHON` (python of a venv with torch, transformers, pillow, numpy; without it portal depth falls back to a pseudo-depth), `--concurrency=N` (images, audio; default 3), `--vconcurrency=N` (video; default 2).
+- Tools: `sharp` (root devDependency), `ffmpeg` and `ffprobe` on PATH. Installing sharp with pnpm needed `--config.engine-strict=false` because the machine has Node 24.2 and some repo dependencies want 24.11 or newer.
 - `scripts/assets/.cache/` holds per-stage records that `manifest.mjs` merges; it is git-ignored.
-- Files: `build.mjs` (entry), `lib.mjs`, `images.mjs`, `comics.mjs`, `video.mjs`, `audio.mjs`, `models.mjs`, `portal.mjs`, `manifest.mjs`, `depth.py`, `blender/convert.py`, `blender/verify.py`.
+- Files: `build.mjs` (entry), `lib.mjs`, `images.mjs`, `comics.mjs`, `video.mjs`, `audio.mjs`, `portal.mjs`, `manifest.mjs`, `depth.py`.
 
 ## Conventions
 
@@ -37,14 +37,12 @@ node scripts/assets/build.mjs --only=video -- --hero-candidates   # write contac
 | `img/pair/{pair}/`                       | Shared art, 2048 wide                                                                                                                     | 1.1 MB  |
 | `img/fanart/`                            | `{id}.webp` (fit in 1800x1800) and `{id}-sm.webp` (fit in 720x720), 29 pieces                                                             | 3.5 MB  |
 | `img/comic/{aspirant,guinevere-vexana}/` | `NN.webp`, at most 1000 wide, q78                                                                                                         | 14.1 MB |
-| `img/emote/{layla,fanny}/NN.webp`        | 512x512 RGBA, 8 each                                                                                                                      | 0.2 MB  |
 | `img/portal/{id}/`                       | `base.webp`, `alt.webp`, `depth.webp`, `depth-alt.webp`, all 1100x1375                                                                    | 1.7 MB  |
 | `img/stills/`                            | Two trailer frames, 1280 wide                                                                                                             | 0.1 MB  |
 | `img/hero-stills/`                       | 16 trailer frames, 1280 wide, each under 65 KB                                                                                            | 0.5 MB  |
 | `video/{pair}/`                          | `{name}.mp4`, `{name}.jpg` poster, `{name}.vtt` where captions exist                                                                      | 323 MB  |
 | `audio/voice/{slug}/`                    | `NN.m4a` and `index.json`                                                                                                                 | 5.9 MB  |
 | `audio/music/`                           | `we-believe`, `obsidia-aspirant`, `obsidia-solo` (`.m4a`, AAC 96 kbps stereo)                                                             | 5.0 MB  |
-| `models/`                                | `layla.glb`, `fanny.glb`                                                                                                                  | 1.9 MB  |
 | `data/`                                  | `manifest.json`, `comics.json`, `fanart.json`                                                                                             | small   |
 
 ### img/char
@@ -103,14 +101,6 @@ The `video/.../*.mp4` of the selena-obsidia trailer and the others are large fil
 - `audio/voice/{slug}/NN.m4a` for every voice line flac, 380 lines: angela 40, change 37, fanny 28, guinevere 41, layla 28, lesley 37, obsidia 41, ruby 40, selena 46, vexana 42. Mono, 24 kHz, AAC 32 kbps. Leading and trailing silence is trimmed with `silenceremove` (threshold -50 dB, short natural pad kept), then a static gain brings the gated RMS of every line to about -18 dBFS (about -17 to -19 LUFS) with a peak ceiling, 5 ms fade in and 40 ms fade out. Line numbers match `voice.md`.
 - `audio/voice/{slug}/index.json`: `[{n, file, durationSec}]`. `file` is relative to that folder (`"01.m4a"`).
 - Music: `we-believe` (Layla and Fanny song, 308 s), `obsidia-aspirant` (36 s), `obsidia-solo` (80 s). The two Obsidia files are stereo MP3s in `audio/obsidia/long`; their spectrograms show sustained phrases, not isolated voice lines.
-
-### Models
-
-`models/layla.glb` (856 KB) and `models/fanny.glb` (1.1 MB). Y-up, Draco compressed, textures embedded (the source textures are 512 px, so none needed shrinking). The character is 2 units tall with its bounding box centred on the origin and faces +Z. The OBJ is split into nodes by material: `body`, `face`, `hair_eyes` (the character), `weapon`, `robot` and `robot_screen` (a small robot companion, shared by both characters). The weapon and robot sit beside the character in model space, as in the source (Layla's weapon is about 2.4 units to her left; Fanny's two blade and wing pairs are about 3.5 units to her right), so hide or reposition them. Materials are rebuilt as matte Principled materials with the texture as base colour: the OBJ materials carried an emission value of 0.5 that would have washed the model out, and the alpha channels of the body and weapon textures are masks, so the materials are opaque.
-
-Verification: each GLB is loaded back into Blender headless (6 meshes, 6 textured materials, no untextured material; Layla 29,993 vertices and 28,882 triangles, Fanny 31,820 vertices and 27,699 triangles) and rendered from the front and side with the Workbench engine, textured. Both previews were viewed and look right (faces, hair, weapon and robot textures on the correct parts). The previews are written to the scratch folder, not the repo.
-
-`img/emote/{layla,fanny}/01..08.webp`: the eight robot face-screen textures. The Layla and Fanny PNG files are byte-identical, so both folders hold the same images.
 
 ### Portal images
 

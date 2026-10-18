@@ -8,7 +8,7 @@ import { routes } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Collection",
   description:
-    "The Aspirant archive: films, music, comics, art, fan art, 3D models and voice lines, with credits.",
+    "The Aspirant archive: films, music, comics, art, fan art and voice lines, with credits.",
 };
 
 export default function Page() {

@@ -25,7 +25,6 @@ import type {
   ComicItem,
   FanArtItem,
   FilmItem,
-  ModelItem,
   SectionId,
   TrackItem,
   VoiceItem,
@@ -345,33 +344,6 @@ function buildFanArt(
   });
 }
 
-function buildModels(assets: readonly ManifestAsset[]): ModelItem[] {
-  const models: ModelItem[] = [];
-  for (const a of assets) {
-    if (a.kind !== "model" || !isSlug(a.slug) || !isPairId(a.pair)) continue;
-    const poster = assets.find((p) => p.path === `img/char/${a.slug}/splash-sm.webp`);
-    if (!poster?.width || !poster.height) throw new Error(`No poster for model ${a.slug}.`);
-    const emotes = assets
-      .filter((e) => e.role === "emote" && e.slug === a.slug)
-      .map((e) => e.path)
-      .sort();
-    models.push({
-      id: a.id,
-      kind: "model",
-      slug: a.slug,
-      title: `${nameOf(a.slug)}, 3D model`,
-      alt: `${nameOf(a.slug)}, splash art shown before the 3D model loads`,
-      pair: a.pair,
-      characters: [a.slug],
-      src: a.path,
-      poster: { src: poster.path, width: poster.width, height: poster.height },
-      emotes,
-    });
-  }
-  const order: Slug[] = ["layla", "fanny"];
-  return models.sort((x, y) => order.indexOf(x.slug) - order.indexOf(y.slug));
-}
-
 function buildVoice(assets: readonly ManifestAsset[]): VoiceItem[] {
   const duration = new Map(
     assets.filter((a) => a.role === "voice-line").map((a) => [a.path, a.durationSec ?? 0]),
@@ -405,7 +377,6 @@ export function buildCatalog({ manifest, fanart, comics }: CatalogSources): Cata
   const comicItems = buildComics(comics.comics);
   const art = buildArt(manifest.assets);
   const fan = buildFanArt(fanart.items, manifest.assets);
-  const models = buildModels(manifest.assets);
   const voice = buildVoice(manifest.assets);
 
   const sum = (list: ReadonlyArray<{ durationSec: number }>) =>
@@ -416,7 +387,6 @@ export function buildCatalog({ manifest, fanart, comics }: CatalogSources): Cata
     comics: comicItems.length,
     art: art.length,
     fanart: fan.length,
-    models: models.length,
     voice: voice.length,
   };
   const filmSeconds = sum(films);
@@ -428,7 +398,6 @@ export function buildCatalog({ manifest, fanart, comics }: CatalogSources): Cata
     comics: comicItems,
     art,
     fanart: fan,
-    models,
     voice,
     stats: {
       counts,

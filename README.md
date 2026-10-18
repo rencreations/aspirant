@@ -12,8 +12,8 @@ This is a fan project. It is not affiliated with or endorsed by Moonton. Officia
 | `/experience`       | The story told by scrolling: the whole short story as a web novel, scenes behind the text, hover cards, toys      |
 | `/story`            | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
 | `/character`        | The roster of ten                                                                                                 |
-| `/character/[slug]` | One page per Aspirant, with a voice wall, media, 3D viewer and a footer that leads to the next in the queue       |
-| `/collection`       | Films, music, comics, art, fan art, 3D models and every voice line                                                |
+| `/character/[slug]` | One page per Aspirant, with a voice wall, media and a footer that leads to the next in the queue                  |
+| `/collection`       | Films, music, comics, art, fan art and every voice line                                                           |
 
 ## Run it
 
@@ -48,7 +48,7 @@ apps/web/src/content/        typed content: characters, entities, world data, si
 apps/web/public/             processed media and data (committed)
 packages/ui/                 shared shadcn/ui components and the Tailwind v4 theme
 packages/config/             shared tsconfig, ESLint and Prettier config
-scripts/assets/              media pipeline (ffmpeg, sharp, Blender)
+scripts/assets/              media pipeline (ffmpeg, sharp)
 scripts/content/             story and voice builders
 scripts/qa/                  text scan
 docs/                        design spec, canon rules, design system, asset notes, open questions
@@ -60,7 +60,7 @@ Next.js 16 (App Router, static export), React 19, TypeScript, Tailwind v4, three
 
 ## Media
 
-The original sources (about 7 GB) stay outside the repository. `pnpm assets` reads them and writes optimised outputs into `apps/web/public`: WebP images, H.264 video, AAC audio, GLB models, depth maps for the Home portal. See [docs/design/assets.md](docs/design/assets.md).
+The original sources (about 7 GB) stay outside the repository. `pnpm assets` reads them and writes optimised outputs into `apps/web/public`: WebP images, H.264 video, AAC audio, depth maps for the Home portal. See [docs/design/assets.md](docs/design/assets.md).
 
 ## Content rules
 

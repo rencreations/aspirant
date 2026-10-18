@@ -16,7 +16,7 @@ const QUEUE = [
   "selena",
 ] as const;
 
-/** Layla (cut-out and 3D), Ruby (no cut-out), Obsidia (Storm, forms), Vexana (forms). */
+/** Layla (cut-out), Ruby (no cut-out), Obsidia (Storm, forms), Vexana (forms). */
 const PAGES = [
   { slug: "layla", name: "Layla" },
   { slug: "ruby", name: "Ruby" },
@@ -159,27 +159,6 @@ test("the form toggle switches between the two forms", async ({ page }) => {
   );
   await expect(page.getByText("Official trailer frame, 1:18.")).toBeVisible();
 });
-
-for (const slug of ["layla", "fanny"] as const) {
-  test(`the 3D viewer loads for ${slug} without errors`, async ({ page }) => {
-    const errors = watchErrors(page);
-    await page.goto(url(`/character/${slug}/`));
-    await page.getByRole("heading", { name: /3D model/ }).scrollIntoViewIfNeeded();
-    const viewer = page.locator('[aria-roledescription="3D viewer"]');
-    await expect(viewer).toBeVisible({ timeout: 15000 });
-    await expect(viewer.locator("canvas")).toHaveCount(1, { timeout: 15000 });
-    await page.waitForTimeout(2500);
-    await page
-      .getByRole("group", { name: "Exhibit" })
-      .getByRole("button", { name: /Robot/ })
-      .click();
-    await page.getByRole("button", { name: "Crossed eyes" }).click();
-    await viewer.focus();
-    await page.keyboard.press("ArrowLeft");
-    await page.waitForTimeout(500);
-    expect(errors).toEqual([]);
-  });
-}
 
 test("the next footer chain visits all ten and loops", async ({ page, baseURL }, info) => {
   test.skip(info.project.name !== "desktop", "One walk through the queue is enough");

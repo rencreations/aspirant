@@ -20,7 +20,6 @@ const all = (): CollectionItem[] => [
   ...catalog.comics,
   ...catalog.art,
   ...catalog.fanart,
-  ...catalog.models,
   ...catalog.voice,
 ];
 
@@ -36,8 +35,6 @@ function filesOf(item: CollectionItem): string[] {
     case "art":
     case "fanart":
       return [item.src, item.thumb];
-    case "model":
-      return [item.src, item.poster.src, ...item.emotes];
     case "voice":
       return [item.file];
   }
@@ -130,7 +127,6 @@ describe("collection catalog", () => {
     expect(counts.films).toBe(31);
     expect(counts.music).toBe(3);
     expect(counts.comics).toBe(2);
-    expect(counts.models).toBe(2);
     expect(counts.voice).toBe(380);
     expect(counts.art).toBe(catalog.art.length);
     expect(totalSeconds).toBeCloseTo(filmSeconds + musicSeconds + voiceSeconds, 5);

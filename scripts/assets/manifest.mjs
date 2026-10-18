@@ -13,7 +13,7 @@ function walk(dir, out = []) {
   return out;
 }
 
-const KIND_BY_TOP = { img: "image", video: "video", audio: "audio", models: "model", data: "data" };
+const KIND_BY_TOP = { img: "image", video: "video", audio: "audio", data: "data" };
 
 export async function buildManifest() {
   const sharp = await getSharp();

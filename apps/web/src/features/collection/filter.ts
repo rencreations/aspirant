@@ -26,9 +26,6 @@ export function itemText(item: Exclude<CollectionItem, { kind: "voice" }>): stri
     case "fanart":
       parts.push(item.credit, item.artist ?? "", "fan art");
       break;
-    case "model":
-      parts.push("3d model glb");
-      break;
   }
   return parts.join(" ").toLowerCase();
 }

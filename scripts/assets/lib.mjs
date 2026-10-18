@@ -16,8 +16,6 @@ export const SRC = process.env.ASPIRANT_SRC ?? "D:/ren/aspirant";
 /** Scratch space for temp files. Never inside the repo. Override with ASSET_TMP. */
 export const TMP = process.env.ASSET_TMP ?? path.join(os.tmpdir(), "aspirant-assets");
 
-export const BLENDER =
-  process.env.BLENDER ?? "C:/Program Files/Blender Foundation/Blender 4.5/blender.exe";
 export const PYTHON = process.env.ASSET_PYTHON ?? "C:/Users/muham/anaconda3/python";
 /** Python venv with torch + transformers for depth maps (optional). */
 export const DEPTH_PYTHON = process.env.DEPTH_PYTHON ?? "";

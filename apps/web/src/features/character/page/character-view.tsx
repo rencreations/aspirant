@@ -21,7 +21,7 @@ import { characterVars, readable } from "../theme";
 import styles from "./character-view.module.css";
 import { Hero } from "./hero";
 import { InStory, type ChapterChip } from "./in-story";
-import { MediaSection, type ModelInfo } from "./media-section";
+import { MediaSection } from "./media-section";
 import { Profile } from "./profile";
 import { Relationships, type RelationshipCard } from "./relationships";
 import type { SpoilerFact } from "./spoilers";
@@ -106,17 +106,6 @@ export function CharacterView({ slug }: { slug: Slug }) {
     ...PAIR_ART[c.pair].map((p) => ({ ...p, caption: `${pair.names}, official art` })),
   ];
 
-  const model: ModelInfo | null =
-    slug === "layla" || slug === "fanny"
-      ? {
-          src: `/models/${slug}.glb`,
-          name: c.name,
-          weapon: slug === "layla" ? "Laser cannon" : "Blades and wings",
-          screen: `/img/emote/${slug}/01.webp`,
-          fallback: `/img/char/${slug}/splash-sm.webp`,
-        }
-      : null;
-
   const chapters: ChapterChip[] = c.inStory.chapterIds.map((id) => {
     const info = chapterInfo(id);
     return {
@@ -193,8 +182,6 @@ export function CharacterView({ slug }: { slug: Slug }) {
           official={official}
           fanart={fanArtFor(slug)}
           videos={videosFor(c.pair, slug)}
-          model={model}
-          colours={colours}
         />
       </div>
       <InStory name={c.name} chapters={chapters} />

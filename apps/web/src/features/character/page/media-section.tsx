@@ -1,7 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Frame } from "@/components/frame/frame";
 import { FrameImage } from "@/components/frame/frame-image";
@@ -9,34 +8,17 @@ import type { FrameShape } from "@/components/frame/frame-shapes";
 import { Lightbox, type LightboxItem } from "@/components/ui/lightbox";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useInView } from "@/lib/hooks";
 
 import type { ArtImage } from "../art";
 import type { FanArtItem, VideoItem } from "../media";
 import styles from "./media-section.module.css";
 import { SectionHead } from "./section-head";
 
-const ModelViewer = dynamic(() => import("./model-viewer"), {
-  ssr: false,
-  loading: () => <div className={styles.modelLoading}>Loading the model</div>,
-});
-
-export interface ModelInfo {
-  readonly src: string;
-  readonly name: string;
-  readonly weapon: string;
-  /** The robot's face-screen atlas (an emote texture), or null. */
-  readonly screen: string | null;
-  readonly fallback: string;
-}
-
 interface MediaSectionProps {
   name: string;
   official: ReadonlyArray<ArtImage & { caption: string }>;
   fanart: readonly FanArtItem[];
   videos: readonly VideoItem[];
-  model: ModelInfo | null;
-  colours: { lead: string; second: string; glow: string };
 }
 
 const SHAPES: readonly FrameShape[] = ["chamfer", "parallelogram", "ticket", "arch", "star"];
@@ -48,15 +30,8 @@ function minutes(sec: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-/** Official art, the 3D model, films and fan art. */
-export function MediaSection({
-  name,
-  official,
-  fanart,
-  videos,
-  model,
-  colours,
-}: MediaSectionProps) {
+/** Official art, films and fan art. */
+export function MediaSection({ name, official, fanart, videos }: MediaSectionProps) {
   const [box, setBox] = useState<{ set: "official" | "fan"; index: number } | null>(null);
 
   const officialItems: LightboxItem[] = official.map((a) => ({
@@ -80,7 +55,7 @@ export function MediaSection({
   return (
     <section aria-labelledby="media-title" className={`${styles.section} shell`}>
       <SectionHead id="media-title" index="04" code="Media archive" title="Gallery">
-        {`Official art of ${name}${model ? ", her 3D model" : ""}${videos.length ? ", films" : ""}${fanart.length ? " and fan art, always with the artist's credit" : ""}.`}
+        {`Official art of ${name}${videos.length ? ", films" : ""}${fanart.length ? " and fan art, always with the artist's credit" : ""}.`}
       </SectionHead>
 
       <div className={styles.block}>
@@ -125,8 +100,6 @@ export function MediaSection({
           ))}
         </ul>
       </div>
-
-      {model && <ModelBlock model={model} colours={colours} />}
 
       {videos.length > 0 && <Cinema videos={videos} />}
 
@@ -193,31 +166,6 @@ export function MediaSection({
         label={box?.set === "fan" ? "Fan art" : "Official art"}
       />
     </section>
-  );
-}
-
-function ModelBlock({
-  model,
-  colours,
-}: {
-  model: ModelInfo;
-  colours: MediaSectionProps["colours"];
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const near = useInView(ref, { rootMargin: "600px 0px", once: true });
-  return (
-    <div className={styles.block} ref={ref}>
-      <h3 className={styles.blockTitle}>
-        <span className="hud-label">B / 3D</span> 3D model
-      </h3>
-      <div className={styles.modelWrap}>
-        {near ? (
-          <ModelViewer model={model} colours={colours} />
-        ) : (
-          <div className={styles.modelLoading}>The model loads as you reach it</div>
-        )}
-      </div>
-    </div>
   );
 }
 

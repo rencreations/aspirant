@@ -5,7 +5,7 @@ import { skipGate, url, watchErrors } from "./helpers";
 
 /**
  * The collection archive: filters, the cinema, the music player, the comic reader, the art
- * viewer, fan art credits, the voice archive and the 3D viewer. Playback itself is not asserted
+ * viewer fan art credits and the voice archive. Playback itself is not asserted
  * (the test browser may lack H.264 and AAC); the interface state is.
  */
 
@@ -226,17 +226,6 @@ test("voice: search by character or text and play a line", async ({ page }) => {
   await page.getByRole("button", { name: /Show \d+ more/ }).click();
   expect(await serious(page)).toEqual([]);
   expect(errors).toEqual([]);
-});
-
-test("3D: the viewer opens and closes", async ({ page }) => {
-  await open(page);
-  await page.getByRole("button", { name: "3D 2", exact: true }).click();
-  await page.getByRole("button", { name: "Open Layla in 3D" }).click();
-  await expect(page.getByRole("group", { name: /3D viewer for Layla/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Turn left" })).toBeVisible();
-  await page.getByRole("button", { name: "Close viewer" }).click();
-  await expect(page.getByRole("button", { name: "Open Layla in 3D" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /^Emote 1 of 8/ })).toBeVisible();
 });
 
 test("reduced motion: filters and dialogs still work", async ({ page }) => {

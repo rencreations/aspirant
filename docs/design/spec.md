@@ -49,7 +49,7 @@ Sections flip between the two, and a pointer can tear a portal from one to the o
 | `/story`            | The world explained: places, the Cycle, the Enders hierarchy, before and after contrast, coupling lab, time-order timeline, open questions, glossary |
 | `/character`        | Roster of the ten                                                                                                                                    |
 | `/character/[slug]` | One page per Aspirant (10 static pages). Footer shows the next in queue                                                                              |
-| `/collection`       | Archive of films, music, comics, art, fanart, 3D models, voice lines                                                                                 |
+| `/collection`       | Archive of films, music, comics, art, fan art, voice lines                                                                                           |
 
 Character order (the queue, looping): fanny, layla, ruby, angela, lesley, change, guinevere, vexana, obsidia, selena. Slugs: `fanny`, `layla`, `ruby`, `angela`, `lesley`, `change`, `guinevere`, `vexana`, `obsidia`, `selena`. (The `characters.md` roster order.)
 
@@ -122,19 +122,18 @@ The world explained, in contrast and diagrams. Sections:
 - HUD stat block: age, birthday, MBTI, role, weapon, partner (values from `CANON-NOTES.md`, "Not specified" where unknown).
 - Sections from `characters.md`: personality, appearance, fighting style, motivation, flaws, relationships. Spoiler-light.
 - **Voice wall:** every voice line, playable, with the Japanese audio's title, the English translation and a live waveform. Keyboard and touch work.
-- Media: art, relevant fan art, videos, 3D model for Layla and Fanny.
+- Media: art, relevant fan art and videos.
 - "In the story": chapter links into `/experience`.
 - **Next footer** (reference: landonorris.com footer): next character in queue, large; scrolling past the end fills a loading ring and transitions into their page. Visible button and the `N` key for access.
 
 ### 4.6 Collection
 
-An archive terminal. Filters: Films, Music, Comics, Art, Fan art, 3D, Voice. Items sit in varied frames. Behaviours:
+An archive terminal. Filters: Films, Music, Comics, Art, Fan art, Voice. Items sit in varied frames. Behaviours:
 
 - Films open in a cinema modal (poster-first loading, captions where `.srt` exists, keyboard control).
 - Music in a persistent mini player.
 - Comics open a vertical reader (the two comics are webtoon strips). Page-by-page descriptions are not shown.
 - Fan art in the hall-of-fame style with credits.
-- 3D: orbit viewers for the Layla and Fanny models.
 - Voice archive: all lines, search by character or text.
 - The live-action video is a **non-canon parody**; if included, it carries a clear badge. See OPEN-QUESTIONS.
 
@@ -165,7 +164,7 @@ apps/web/src/features/<name>/      per-page code (home, experience, story, chara
 apps/web/src/content/              typed content (characters, entities, collection manifest)
 apps/web/src/lib/                  asset(), math, hooks, stores
 apps/web/public/{img,video,audio,models,data}/   processed assets (committed)
-scripts/assets/                    asset pipeline (ffmpeg, sharp, Blender)
+scripts/assets/                    asset pipeline (ffmpeg, sharp)
 scripts/content/                   markdown to JSON builders
 docs/                              specs, canon rules, open questions
 ```
@@ -178,7 +177,6 @@ Originals (`D:\ren\aspirant`) are never copied into the repo. The pipeline reads
 - Images: WebP (and AVIF where it helps), responsive widths. Splash art 2048 wide, thumbs 640. Comic strips 1000 to 1200 wide.
 - Video: H.264 MP4 only (plays everywhere), 540p to 720p, capped bitrate, `faststart`. Wide trailers are scaled down from 2560. A poster frame for each.
 - Audio: AAC `.m4a`, mono, about 32 kbps for voice lines; music about 96 kbps. ASCII file names.
-- 3D: Layla and Fanny OBJ and MTL to GLB with the Blender CLI, with Draco compression if it helps.
 - Depth maps for Home portal pairs: generate with a depth model in a throwaway venv if it can be done quickly; otherwise a hand-built alpha-and-luminance pseudo-depth. Do not spend hours on it.
 - Excluded: the live-action parody (unless badged, see OPEN-QUESTIONS), both `_backup*` folders, `audio/source`, the two multi-hour livestream recordings.
 - A manifest (`public/data/manifest.json`) lists every processed asset with type, character, source and credit.

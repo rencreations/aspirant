@@ -419,4 +419,3 @@ Lighthouse accessibility 100 is a hard gate. axe runs on every route in e2e.
 Primitives that page engineers added to shared code. One line each.
 
 - `audio.getMusicElement()`, `audio.getMusicAnalyser()`, `audio.pauseMusic()`, `audio.resumeMusic()`, `audio.setMusicVolume(v)` (`lib/audio.ts`, Collection): a music player needs time, seeking, pause and a level. The music analyser is separate from the voice analyser, so voice waveforms never draw the music.
-- `public/draco/` (Collection): the Draco decoder (`draco_decoder.js`, `.wasm`, `draco_wasm_wrapper.js`, copied from three). Load the GLB models with `useGLTF(asset("/models/x.glb"), asset("/draco/"))` so nothing is fetched from a CDN.

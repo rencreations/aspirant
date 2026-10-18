@@ -5,15 +5,7 @@
 import type { PairId, Slug } from "@/content/types";
 
 /** The seven sections of the archive, in page order. */
-export const SECTION_IDS = [
-  "films",
-  "music",
-  "comics",
-  "art",
-  "fanart",
-  "models",
-  "voice",
-] as const;
+export const SECTION_IDS = ["films", "music", "comics", "art", "fanart", "voice"] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
 export interface SectionMeta {
@@ -73,19 +65,11 @@ export const SECTIONS: readonly SectionMeta[] = [
       "Pieces made by readers and fans. Every artist is credited, with a link when we know one.",
   },
   {
-    id: "models",
-    label: "3D models",
-    filterLabel: "3D",
-    hash: "3d",
-    code: "06 / 3D",
-    blurb: "Layla and Fanny, turned all the way round. Drag to orbit.",
-  },
-  {
     id: "voice",
     label: "Voice archive",
     filterLabel: "Voice",
     hash: "voice",
-    code: "07 / Voice",
+    code: "06 / Voice",
     blurb: "Every line the ten recorded, with the Japanese title and an English translation.",
   },
 ];
@@ -191,16 +175,6 @@ export interface FanArtItem extends ItemBase {
   color: string;
 }
 
-export interface ModelItem extends ItemBase {
-  kind: "model";
-  slug: Slug;
-  src: string;
-  /** Still image shown before the viewer loads. */
-  poster: { src: string; width: number; height: number };
-  /** The eight face-screen textures of the robot companion. */
-  emotes: readonly string[];
-}
-
 export interface VoiceItem extends ItemBase {
   kind: "voice";
   slug: Slug;
@@ -211,8 +185,7 @@ export interface VoiceItem extends ItemBase {
   durationSec: number;
 }
 
-export type CollectionItem =
-  FilmItem | TrackItem | ComicItem | ArtItem | FanArtItem | ModelItem | VoiceItem;
+export type CollectionItem = FilmItem | TrackItem | ComicItem | ArtItem | FanArtItem | VoiceItem;
 
 export interface CatalogStats {
   counts: Record<SectionId, number>;
@@ -229,7 +202,6 @@ export interface Catalog {
   comics: readonly ComicItem[];
   art: readonly ArtItem[];
   fanart: readonly FanArtItem[];
-  models: readonly ModelItem[];
   voice: readonly VoiceItem[];
   stats: CatalogStats;
 }

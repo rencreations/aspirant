@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Asset pipeline entry point.
-//   node scripts/assets/build.mjs [--only=images,comics,video,audio,models,portal] [--force] [--concurrency=3]
+//   node scripts/assets/build.mjs [--only=images,comics,video,audio,portal] [--force] [--concurrency=3]
 // Originals are read from ASPIRANT_SRC (default D:/ren/aspirant) and never copied wholesale.
 import fs from "node:fs";
 import path from "node:path";
 import { ARGS, CACHE, log, mkdirp } from "./lib.mjs";
 
-const STAGES = ["images", "comics", "video", "audio", "models", "portal"];
+const STAGES = ["images", "comics", "video", "audio", "portal"];
 const onlyArg = ARGS.find((a) => a.startsWith("--only="));
 const only = onlyArg ? onlyArg.split("=")[1].split(",").filter(Boolean) : STAGES;
 for (const s of only) {

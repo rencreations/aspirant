@@ -26,7 +26,6 @@
     "@fontsource-variable/jetbrains-mono": "catalog:",
     "@fontsource/instrument-serif": "catalog:",
     "@gsap/react": "catalog:",
-    "@react-three/drei": "catalog:",
     "@react-three/fiber": "catalog:",
     "class-variance-authority": "catalog:",
     "gsap": "catalog:",

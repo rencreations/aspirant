@@ -190,7 +190,7 @@ export const siteCopy = {
     experience: "The whole story of Aspirant, told by scrolling, in twelve parts.",
     story: "Where the story happens, who sends the Enders, and what the story leaves open.",
     characters: "Meet the ten Aspirants of Selrick Academy.",
-    collection: "Films, music, comics, art, fan art, 3D models and every voice line.",
+    collection: "Films, music, comics, art, fan art and every voice line.",
   },
 } as const;
 

@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-10-16T12:21:43.599Z",
   "totals": {
-    "files": 685,
-    "bytes": 382335966,
+    "files": 667,
+    "bytes": 380173086,
     "byCategory": {
       "audio/music": {
         "files": 3,
@@ -47,10 +47,6 @@
       "img/stills": {
         "files": 2,
         "bytes": 50282
-      },
-      "models": {
-        "files": 2,
-        "bytes": 1986512
       },
       "video": {
         "files": 66,
@@ -5744,214 +5740,6 @@
       "source": "story/guinevere-vexana-comic/46.jpg"
     },
     {
-      "id": "emote-fanny-01",
-      "kind": "image",
-      "path": "img/emote/fanny/01.webp",
-      "bytes": 10900,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote1_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-02",
-      "kind": "image",
-      "path": "img/emote/fanny/02.webp",
-      "bytes": 10894,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote2_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-03",
-      "kind": "image",
-      "path": "img/emote/fanny/03.webp",
-      "bytes": 11364,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote3_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-04",
-      "kind": "image",
-      "path": "img/emote/fanny/04.webp",
-      "bytes": 11596,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote4_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-05",
-      "kind": "image",
-      "path": "img/emote/fanny/05.webp",
-      "bytes": 10538,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote5_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-06",
-      "kind": "image",
-      "path": "img/emote/fanny/06.webp",
-      "bytes": 10882,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote6_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-07",
-      "kind": "image",
-      "path": "img/emote/fanny/07.webp",
-      "bytes": 11034,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote7_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-fanny-08",
-      "kind": "image",
-      "path": "img/emote/fanny/08.webp",
-      "bytes": 10976,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/fanny/Emote/jiqirenbiaoqing_skin09_emote8_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-01",
-      "kind": "image",
-      "path": "img/emote/layla/01.webp",
-      "bytes": 10900,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote1_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-02",
-      "kind": "image",
-      "path": "img/emote/layla/02.webp",
-      "bytes": 10894,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote2_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-03",
-      "kind": "image",
-      "path": "img/emote/layla/03.webp",
-      "bytes": 11364,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote3_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-04",
-      "kind": "image",
-      "path": "img/emote/layla/04.webp",
-      "bytes": 11596,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote4_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-05",
-      "kind": "image",
-      "path": "img/emote/layla/05.webp",
-      "bytes": 10538,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote5_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-06",
-      "kind": "image",
-      "path": "img/emote/layla/06.webp",
-      "bytes": 10882,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote6_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-07",
-      "kind": "image",
-      "path": "img/emote/layla/07.webp",
-      "bytes": 11034,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote7_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
-      "id": "emote-layla-08",
-      "kind": "image",
-      "path": "img/emote/layla/08.webp",
-      "bytes": 10976,
-      "width": 512,
-      "height": 512,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "emote",
-      "source": "media/layla-and-fanny/art/3d/layla/Emote/jiqirenbiaoqing_skin09_emote8_d.png",
-      "notes": "Face-screen texture of the robot companion (one of 8 expressions)."
-    },
-    {
       "id": "fanart-both-bukkavyi-1-sm",
       "kind": "image",
       "path": "img/fanart/both-bukkavyi-1-sm.webp",
@@ -7181,28 +6969,6 @@
       "role": "still",
       "source": "media/selena-and-obsidia/trailer.webm @ 78s",
       "notes": "Trailer frame at 1:18. Shows, as seen: a close-up of a pink-haired character in three-quarter view, one glowing pink eye with a star-shaped pupil, dark angular marks on the cheek, a faint smile, gold ornaments at the neck and a horn-like ornament at the top right, against a dark indigo background with violet streaks. No on-screen text. Who this is and what it means is not stated by the frame."
-    },
-    {
-      "id": "model-fanny",
-      "kind": "model",
-      "path": "models/fanny.glb",
-      "bytes": 1110124,
-      "pair": "fanny-layla",
-      "slug": "fanny",
-      "role": "model-3d",
-      "source": "media/layla-and-fanny/art/3d/fanny/hero_fanny_skin09_high_add.obj",
-      "notes": "Y-up GLB, Draco compressed, textures embedded (512 px originals, max 1024). Character is 2 units tall with its bounding box centred on the origin and faces +Z. Separate nodes: body, face, hair_eyes (character), weapon, robot, robot_screen (companion). The weapon and robot sit beside the character in model space (as in the source), so hide or reposition them. VERIFY meshes 6 verts 31820 tris 27699 materials 6 images {'fanny_skin09_high_body_d': (512, 512), 'fanny_skin09_high_eye_hair_tooth_d': (512, 512), 'fanny_skin09_high_face_d': (512, 512), 'fanny_skin09_high_wuqi_d': (512, 512), 'jiqiren_skin09_d': (512, 512), 'jiqirenbiaoqing_skin09_d': (512, 512)}"
-    },
-    {
-      "id": "model-layla",
-      "kind": "model",
-      "path": "models/layla.glb",
-      "bytes": 876388,
-      "pair": "fanny-layla",
-      "slug": "layla",
-      "role": "model-3d",
-      "source": "media/layla-and-fanny/art/3d/layla/hero_shooter_skin08_high_add.obj",
-      "notes": "Y-up GLB, Draco compressed, textures embedded (512 px originals, max 1024). Character is 2 units tall with its bounding box centred on the origin and faces +Z. Separate nodes: body, face, hair_eyes (character), weapon, robot, robot_screen (companion). The weapon and robot sit beside the character in model space (as in the source), so hide or reposition them. VERIFY meshes 6 verts 29993 tris 28882 materials 6 images {'jiqiren_skin09_d': (512, 512), 'jiqirenbiaoqing_skin09_d': (512, 512), 'shooter_skin08_high_body_d': (512, 512), 'shooter_skin08_high_eye_hair_tooth_d': (512, 512), 'shooter_skin08_high_face_d': (512, 512), 'shooter_skin08_high_weapon_d': (512, 512)}"
     },
     {
       "id": "video-fanny-layla-idea-bts-poster",

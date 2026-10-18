@@ -33,7 +33,6 @@ const TYPES = {
   ".mp4": "video/mp4",
   ".m4a": "audio/mp4",
   ".vtt": "text/vtt",
-  ".glb": "model/gltf-binary",
 };
 
 function send(res, file, status = 200) {

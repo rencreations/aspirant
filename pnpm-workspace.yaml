@@ -35,7 +35,6 @@ catalog:
   three: ^0.186.0
   "@types/three": ^0.186.0
   "@react-three/fiber": ^9.0.0
-  "@react-three/drei": ^10.0.0
   gsap: ^3.0.0
   "@gsap/react": ^2.0.0
   motion: ^14.0.0

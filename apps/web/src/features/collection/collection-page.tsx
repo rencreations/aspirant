@@ -14,7 +14,6 @@ import { FilterBar, type SectionFilter } from "./filter-bar";
 import { itemText, matchesQuery, matchesWho, whoLabel } from "./filter";
 import { whenIdle } from "./idle";
 import { MiniPlayer } from "./mini-player";
-import { ModelsSection } from "./model-section";
 import { closePlayer, setQueue } from "./player-store";
 import { SectionShell } from "./section-shell";
 import {
@@ -192,11 +191,6 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
     [catalog.fanart, who, deferredQuery],
   );
   const fan = useMemo(() => fanGroups.flatMap((g) => g.items), [fanGroups]);
-  const models = useMemo(
-    () =>
-      catalog.models.filter((x) => matchesWho(x, who) && matchesQuery(textOf(x), deferredQuery)),
-    [catalog.models, who, deferredQuery],
-  );
   const voice = useMemo(() => {
     if (!voiceRows) return null;
     return voiceRows.filter((row) => voiceMatchesWho(row, who) && voiceMatches(row, deferredQuery));
@@ -208,7 +202,6 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
     comics: comics.length,
     art: art.length,
     fanart: fan.length,
-    models: models.length,
     voice: voice ? voice.length : hasFilter ? 0 : catalog.stats.counts.voice,
   };
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
@@ -446,16 +439,6 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
                       />
                     </div>
                   ))
-                )}
-              </SectionShell>
-            )}
-
-            {showing("models") && (
-              <SectionShell meta={meta("models")} theme="daybreak" count={counts.models}>
-                {models.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  <ModelsSection models={models} />
                 )}
               </SectionShell>
             )}
