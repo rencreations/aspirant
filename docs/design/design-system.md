@@ -170,14 +170,7 @@ router.push(routes.collection, { label: "Collection", origin: { x: e.clientX, y:
 <StarButton emblem size="sm" aria-label="Play line 3" aria-pressed={playing} data-cursor="PLAY" />
 ```
 
-**`MagneticButton`**, **`Magnetic`** `@/components/ui/magnetic`: secondary ghost button that leans toward the pointer (`{ href?: Route; transitionLabel?; strength? } & button attributes`), and a wrapper that makes anything magnetic (`{ strength?: 0.3; max?: 14; as? }`). No effect on touch or reduced motion.
-
-```tsx
-<MagneticButton onClick={replay}>Replay</MagneticButton>
-<Magnetic><TLink href={routes.home}>Home</TLink></Magnetic>
-```
-
-**`SoundToggle`**, **`MotionToggle`** `@/components/hud/preference-toggles`: `{ labeled?: boolean; className? }`. Already in the HUD and the menu; use them in a page only for an in-context control.
+**`SoundToggle`**, **`MotionToggle`** `@/components/hud/preference-toggles`: `{ labeled?: boolean; className? }`. `MotionToggle` is in the HUD and the menu. The nav has its own `SoundButton` (below); use these toggles in a page only for an in-context control.
 
 ### Text
 
@@ -397,7 +390,7 @@ Lighthouse accessibility 100 is a hard gate. axe runs on every route in e2e.
 ## Responsive rules
 
 - Design at 360, 768, 1280, 1920 and 2560, check 320 and 3440, portrait and landscape, and 21:9 and 32:9 (`useViewport().isUltrawide`) and tall phones (`isTall`).
-- Breakpoint for the shell is 900 px: above it the HUD lives in the side rails (inside `--gutter`) and the nav shows links; at 900 and below the HUD becomes a 2 px top progress bar and the nav shows Sound and MENU.
+- Breakpoint for the shell is 900 px: above it the HUD lives in the side rails (inside `--gutter`); at 900 and below the HUD becomes a 2 px top progress bar. The nav is the same at every size (menu and sound left, logo centre on 768 px and up, logo right below that).
 - Use `shell` (or `px-gutter`) for page content so nothing sits under the HUD rails. Full-bleed art is fine; text is not.
 - Use `dvh`/`svh` for full-height blocks, `env(safe-area-inset-*)` at screen edges.
 - No horizontal scroll at any size (e2e checks `scrollWidth <= innerWidth`). Long display words: `break-words` and fluid steps.
@@ -419,3 +412,22 @@ Lighthouse accessibility 100 is a hard gate. axe runs on every route in e2e.
 Primitives that page engineers added to shared code. One line each.
 
 - `audio.getMusicElement()`, `audio.getMusicAnalyser()`, `audio.pauseMusic()`, `audio.resumeMusic()`, `audio.setMusicVolume(v)` (`lib/audio.ts`, Collection): a music player needs time, seeking, pause and a level. The music analyser is separate from the voice analyser, so voice waveforms never draw the music.
+
+## Navbar and menu
+
+`components/nav/`. The bar is sticky and never hides. Left: the **Menu** plate button (opens the menu) and the **sound button**. Centre: the large vector logo (`AspirantLogo`, 52 px on desktop, 36 px on phones). Right: the current page ("03 Story"). `--nav-h` is 4 rem, 5 rem from 900 px.
+
+**Sound button** (`sound-button.tsx`). Seven bars driven on the GSAP ticker. Sound on: the bars move like a waveform. Off: they ease into a flat line of dots. Hover lifts the wave and speeds it up, a press kicks it and sends a pink ring out, an orange keyline draws round the plate, and the ON / OFF read-out slides. `aria-pressed` means sound is on. The `M` key does the same.
+
+**Menu** (`site-nav.tsx`, Radix Dialog). It covers the whole screen. Opening: an ink sheet sweeps down while the paper wipes in, then the five titles rise out of masks one by one. The titles are big, centred and slanted. Hover or keyboard focus on a title:
+
+- The page colour blooms from the pointer behind the menu (tints in `menu-pairs.ts`).
+- An ink plate wipes in behind the title and the text turns white.
+- The other titles fade back.
+- Two aspirants appear either side of the title, art only, no names. They drift a little with the pointer.
+
+The pairs: Home is Fanny (left) and Layla (right), Experience is Angela and Ruby, Story is Chang'e and Lesley, Characters is Guinevere and Vexana, Collection is Selena and Obsidia. Left art faces right, right art faces left.
+
+**Portrait art** (`scripts/menu/build.py`, output `public/img/menu/<slug>.webp`). The source busts differ in crop and scale, so the script scales each one until the eye-to-chin distance is the same and places the eye at the same height on a fixed canvas. All ten figures end up the same size and both eyes of a pair sit on one line, which is also the centre line of the title. The eye and chin points are measured by hand on the sources and stored in the script. In the source folder `vexana-left.png` is Selena. Rebuild with `python -I scripts/menu/build.py "<source folder>"`.
+
+On narrow or tall screens nothing hovers and the title fills the width, so the pair of the current page stands at the bottom of the menu instead. The art is warmed after the site opens (it is not in the loading bar, because the menu is not first paint).

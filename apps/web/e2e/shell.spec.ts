@@ -15,27 +15,55 @@ test("skip link moves focus to main", async ({ page }) => {
   await expect(page.locator("main#main")).toBeFocused();
 });
 
-test("nav links navigate and mark the current page", async ({ page, baseURL }, info) => {
+test("the menu links navigate and mark the current page", async ({ page, baseURL }) => {
   await page.goto(url("/"));
-  if (info.project.name === "desktop") {
-    await page
-      .getByRole("navigation", { name: "Main" })
-      .getByRole("link", { name: /Story/ })
-      .click();
-  } else {
-    await page.getByRole("button", { name: "Open menu" }).click();
-    const menu = page.getByRole("dialog");
-    await expect(menu).toBeVisible();
-    await menu.getByRole("link", { name: /Story/ }).click();
-  }
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const menu = page.getByRole("dialog");
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("link", { name: /Home/ })).toHaveAttribute("aria-current", "page");
+  await menu.getByRole("link", { name: /Story/ }).click();
   await settled(page);
   await expect.poll(() => sitePath(page, baseURL)).toBe("/story/");
   await expect(page.getByRole("heading", { level: 1, name: "Story" })).toBeVisible();
-  await expect(page.locator('a[aria-current="page"]').first()).toContainText("Story");
 });
 
-test("mobile menu keeps focus inside, closes on Escape, restores focus", async ({ page }, info) => {
-  test.skip(info.project.name === "desktop", "The menu button exists at 900 px and below");
+test("the bar stays put while scrolling", async ({ page }) => {
+  await page.goto(url("/collection/"));
+  await page.waitForLoadState("networkidle");
+  const bar = page.getByRole("banner");
+  await page.evaluate(() => window.scrollTo(0, 1800));
+  await page.waitForTimeout(500);
+  await page.evaluate(() => window.scrollBy(0, 600));
+  await page.waitForTimeout(500);
+  const box = await bar.boundingBox();
+  expect(box?.y).toBe(0);
+  await expect(bar.getByRole("button", { name: "Open menu" })).toBeInViewport();
+});
+
+test("hovering a menu page shows its two aspirants and the pair sits on one eye line", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "desktop", "Hover needs a pointer");
+  await page.goto(url("/"));
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const menu = page.getByRole("dialog");
+  await expect(menu).toBeVisible();
+  const link = menu.getByRole("link", { name: /Characters/ });
+  await link.hover();
+  const pair = link.locator("img");
+  await expect(pair).toHaveCount(2);
+  await expect(pair.first()).toHaveCSS("opacity", "1");
+  const [a, b] = await Promise.all([pair.first().boundingBox(), pair.last().boundingBox()]);
+  // Same size, same top: the eyes sit on one line.
+  expect(Math.abs((a?.height ?? 0) - (b?.height ?? 1))).toBeLessThan(2);
+  expect(Math.abs((a?.y ?? 0) - (b?.y ?? 1))).toBeLessThan(2);
+  // The left figure is left of the title and the right figure is right of it.
+  const title = await link.boundingBox();
+  expect((a?.x ?? 0) + (a?.width ?? 0)).toBeLessThanOrEqual((title?.x ?? 0) + 80);
+  expect(b?.x ?? 0).toBeGreaterThanOrEqual((title?.x ?? 0) + (title?.width ?? 0) - 80);
+});
+
+test("menu keeps focus inside, closes on Escape, restores focus", async ({ page }) => {
   await page.goto(url("/experience/"));
   const button = page.getByRole("button", { name: "Open menu" });
   await button.click();
@@ -67,13 +95,9 @@ test("character pages loop to the next in queue, and N goes next", async ({ page
   await expect(page.getByRole("heading", { level: 1, name: "Fanny" })).toBeVisible();
 });
 
-test("M toggles sound and the toggle reflects it", async ({ page }, info) => {
+test("M toggles sound and the toggle reflects it", async ({ page }) => {
   await page.goto(url("/"));
-  const scope =
-    info.project.name === "desktop"
-      ? page.getByRole("complementary", { name: "Page controls" })
-      : page.getByRole("banner");
-  const toggle = scope.getByRole("button", { name: "Sound" });
+  const toggle = page.getByRole("banner").getByRole("button", { name: "Sound" });
   await expect(toggle).toHaveAttribute("aria-pressed", "true");
   await page.locator("body").press("m");
   await expect(toggle).toHaveAttribute("aria-pressed", "false");

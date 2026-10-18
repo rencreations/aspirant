@@ -1,0 +1,111 @@
+/* The sound button: a plate with a waveform and a small ON / OFF read-out. */
+.sound {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 0.95rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
+}
+
+/* The orange keyline of the logo, drawn from the corner on hover. */
+.sound::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid #f2b04c;
+  clip-path: inset(0 100% 100% 0);
+  transition: clip-path var(--dur-slower) var(--ease-out);
+  pointer-events: none;
+}
+
+.sound:hover,
+.sound:focus-visible {
+  border-color: transparent;
+}
+
+.sound:hover::before,
+.sound:focus-visible::before {
+  clip-path: inset(0 0 0 0);
+}
+
+.sound:active {
+  transform: scale(0.94);
+}
+
+.sound[data-on="false"] {
+  color: var(--text-dim);
+}
+
+.ring {
+  position: absolute;
+  inset: -1px;
+  border: 1.5px solid #ff2e90;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wave {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+
+.state {
+  position: relative;
+  display: grid;
+  height: 1em;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.stateOn,
+.stateOff {
+  grid-area: 1 / 1;
+  transition:
+    transform var(--dur-slower) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.sound[data-on="true"] .stateOff,
+.sound[data-on="false"] .stateOn {
+  transform: translateY(110%);
+  opacity: 0;
+}
+
+.sound[data-on="true"] .stateOn {
+  color: var(--accent);
+}
+
+@media (max-width: 26em) {
+  .sound {
+    padding: 0 0.7rem;
+  }
+
+  .state {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound,
+  .sound::before,
+  .stateOn,
+  .stateOff {
+    transition: none;
+  }
+}

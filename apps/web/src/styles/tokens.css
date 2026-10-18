@@ -64,7 +64,7 @@
   --gutter: clamp(1rem, 0.4872rem + 2.5641vw, 6rem);
   --measure: 68ch;
   --content-max: 112rem;
-  --nav-h: 3.5rem;
+  --nav-h: 4rem;
   --hud-rail: 0px;
 
   /* Shape: the terminal has no rounded corners. Chamfers come from clip-path. */
@@ -132,7 +132,7 @@
 @media (min-width: 56.3125em) {
   :root {
     --gutter: clamp(3.5rem, 2.2rem + 2.5641vw, 7rem);
-    --nav-h: 4.25rem;
+    --nav-h: 5rem;
     --hud-rail: 3rem;
   }
 }

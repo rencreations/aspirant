@@ -1,30 +1,20 @@
+/* The bar: sticky, always visible. Menu and sound on the left, the large logo in the middle. */
 .nav {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: var(--z-nav);
   height: var(--nav-h);
   color: var(--text);
-  transition:
-    transform var(--dur-slow) var(--ease-out),
-    background-color var(--dur-slow) var(--ease-out);
 }
 
-.nav[data-hidden="true"]:not(:focus-within) {
-  transform: translateY(calc(-100% - 4px));
-}
-
-/* Glass bar, painted only once the page has scrolled. */
+/* Flat paper bar with a hairline, painted once the page has scrolled. */
 .nav::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--bg) 92%, transparent),
-    color-mix(in srgb, var(--bg) 70%, transparent)
-  );
-  backdrop-filter: blur(14px) saturate(1.2);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-out);
@@ -35,19 +25,27 @@
 }
 
 .inner {
+  position: relative;
   height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding-inline: var(--gutter);
+}
+
+.left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-inline: var(--gutter);
+  gap: 0.5rem;
+  justify-self: start;
 }
 
 /* Brand ------------------------------------------------------------------------------------ */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  justify-content: center;
   min-height: 44px;
   text-decoration: none;
   color: var(--text);
@@ -56,193 +54,97 @@
 .logo {
   display: block;
   width: auto;
-  height: 34px;
+  height: 2.25rem;
   overflow: visible;
 }
 
-/* Desktop links ---------------------------------------------------------------------------- */
-.links {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.25rem, 1vw, 1.25rem);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.link {
-  position: relative;
-  display: inline-flex;
+.here {
+  display: none;
+  justify-self: end;
   align-items: baseline;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0.75rem 0.6rem;
-  text-decoration: none;
-  color: var(--text-dim);
-  transition: color var(--dur-fast) var(--ease-out);
-}
-
-.linkIndex {
+  gap: 0.6rem;
+  margin: 0;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  color: var(--text-faint);
-  transition: color var(--dur-fast) var(--ease-out);
-}
-
-.linkLabel {
-  font-family: var(--font-display-stack);
-  font-weight: 700;
-  font-size: 1.0625rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--text-dim);
 }
 
-/* Bracket corners that close in on hover and on the current page. */
-.link::before,
-.link::after {
-  content: "";
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-color: var(--accent);
-  border-style: solid;
-  opacity: 0;
-  transition:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-base) var(--ease-out);
-}
-
-.link::before {
-  top: 6px;
-  left: 0;
-  border-width: 1px 0 0 1px;
-  transform: translate(-5px, -5px);
-}
-
-.link::after {
-  bottom: 6px;
-  right: 0;
-  border-width: 0 1px 1px 0;
-  transform: translate(5px, 5px);
-}
-
-.link:hover,
-.link:focus-visible,
-.link[aria-current="page"] {
-  color: var(--text);
-}
-
-.link:hover .linkIndex,
-.link[aria-current="page"] .linkIndex {
+.hereIndex {
   color: var(--accent);
 }
 
-.link:hover::before,
-.link:hover::after,
-.link:focus-visible::before,
-.link:focus-visible::after,
-.link[aria-current="page"]::before,
-.link[aria-current="page"]::after {
-  opacity: 1;
-  transform: none;
-}
-
-.right {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.status {
+/* Menu button: a plate that fills with ink on hover. ---------------------------------------- */
+.menuButton {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 1rem 0 0.9rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
 }
 
-.statusDot {
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  transform: rotate(45deg);
-  animation: breathe 2.4s var(--ease-in-out) infinite;
+.menuButton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
-.menuButton {
-  display: none;
+.menuButton:hover,
+.menuButton:focus-visible {
+  color: var(--bg);
 }
 
-.mobileOnly {
-  display: none;
+.menuButton:hover::before,
+.menuButton:focus-visible::before {
+  transform: scaleX(1);
 }
 
-@media (max-width: 75em) {
-  .status {
-    display: none;
-  }
+.menuButton:active {
+  transform: scale(0.95);
 }
 
-@media (max-width: 56.25em) {
-  .links {
-    display: none;
-  }
-
-  .mobileOnly {
-    display: inline-flex;
-  }
-
-  .menuButton {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0 0.8rem;
-    border: 1px solid var(--line-strong);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    color: var(--text);
-    font-family: var(--font-mono-stack);
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-
-  .menuButton:hover {
-    border-color: var(--accent);
-  }
-
-  .wordmark {
-    font-size: 1.05rem;
-  }
-}
-
-@media (max-width: 22.5em) {
-  .wordmark {
-    font-size: 0.95rem;
-    letter-spacing: 0.05em;
-  }
-  .brand {
-    gap: 0.45rem;
-  }
-  .logo {
-    height: 28px;
-  }
-}
-
-.burger {
+.burger,
+.cross {
+  position: relative;
   width: 18px;
   height: 10px;
-  position: relative;
+  flex: none;
 }
 
 .burger::before,
-.burger::after {
+.burger::after,
+.cross::before,
+.cross::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   height: 1.5px;
   background: currentColor;
+  transition:
+    left var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
 }
 
 .burger::before {
@@ -254,195 +156,479 @@
   left: 6px;
 }
 
-/* Full screen terminal menu --------------------------------------------------------------- */
+.menuButton:hover .burger::after,
+.menuButton:focus-visible .burger::after {
+  left: 0;
+}
+
+.cross::before,
+.cross::after {
+  top: 50%;
+  margin-top: -0.75px;
+}
+
+.cross::before {
+  transform: rotate(45deg);
+}
+
+.cross::after {
+  transform: rotate(-45deg);
+}
+
+.menuButton:hover .cross::before,
+.menuButton:focus-visible .cross::before {
+  transform: rotate(135deg);
+}
+
+.menuButton:hover .cross::after,
+.menuButton:focus-visible .cross::after {
+  transform: rotate(45deg);
+}
+
+@media (min-width: 48em) {
+  .here {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 47.99em) {
+  .inner {
+    grid-template-columns: auto 1fr;
+  }
+
+  .brand {
+    justify-self: end;
+  }
+}
+
+@media (min-width: 56.3125em) {
+  .logo {
+    height: 3.25rem;
+  }
+}
+
+@media (max-width: 26em) {
+  .menuButton {
+    padding-inline: 0.8rem;
+  }
+}
+
+/* The menu ---------------------------------------------------------------------------------- */
 .menu {
+  --pH: clamp(17rem, 76vh, 58rem);
   position: fixed;
   inset: 0;
   z-index: var(--z-menu);
-  display: flex;
-  flex-direction: column;
-  background:
-    radial-gradient(
-      90% 60% at 80% 0%,
-      color-mix(in srgb, var(--glow) 12%, transparent),
-      transparent
-    ),
-    var(--bg);
+  display: grid;
+  grid-template-rows: var(--nav-h) minmax(0, 1fr) auto;
+  isolation: isolate;
+  background-color: var(--bg);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--text) 9%, transparent) 1px,
+    transparent 1.4px
+  );
+  background-size: 22px 22px;
   color: var(--text);
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: max(env(safe-area-inset-top), 0px) var(--gutter) max(env(safe-area-inset-bottom), 1rem);
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
 }
 
 .menu[data-state="open"] {
-  animation: menu-in var(--dur-slow) var(--ease-out);
+  animation: menu-open 800ms var(--ease-heavy) both;
 }
 
 .menu[data-state="closed"] {
-  animation: menu-out var(--dur-base) var(--ease-in);
+  animation: menu-close 520ms var(--ease-heavy) both;
+}
+
+/* An ink sheet that leads the opening wipe. */
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  background: #0b0b0e;
+  pointer-events: none;
+  transform: translateY(101%);
+}
+
+.menu[data-state="open"] .wipe {
+  animation: ink-open 900ms var(--ease-heavy) 120ms both;
+}
+
+.menu[data-state="closed"] .wipe {
+  animation: none;
+}
+
+.paper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tint {
+  position: absolute;
+  inset: 0;
+  animation: bloom 900ms var(--ease-out) both;
+}
+
+.tint[data-out="true"] {
+  animation: tint-out 450ms ease forwards;
 }
 
 .menuHead {
-  display: flex;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  min-height: var(--nav-h);
-  border-bottom: 1px solid var(--line);
+  gap: 1rem;
+  padding-inline: var(--gutter);
+  opacity: 0;
+  animation: fade-in 500ms ease 450ms forwards;
 }
 
 .menuTitle {
-  margin: 0;
-}
-
-.close {
   display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 44px;
-  padding: 0 0.8rem;
-  border: 1px solid var(--line-strong);
-  background: transparent;
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  margin: 0;
+  justify-content: center;
 }
 
-.close:hover {
-  border-color: var(--accent);
+@media (max-width: 47.99em) {
+  .menuHead {
+    grid-template-columns: auto 1fr;
+  }
+
+  .menuTitle {
+    justify-self: end;
+  }
+
+  .menuHead .here {
+    display: none;
+  }
+}
+
+.menuNav {
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+  display: grid;
 }
 
 .menuList {
   list-style: none;
   margin: 0;
-  padding: var(--space-m) 0;
-  display: grid;
-  gap: 0.25rem;
-  flex: 1;
-  align-content: center;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0rem, 0.8vh, 0.5rem);
 }
 
 .menuItem {
-  opacity: 0;
-  transform: translateY(14px);
-  animation: item-in var(--dur-slower) var(--ease-out) forwards;
-  animation-delay: calc(80ms + var(--i) * 55ms);
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .menuLink {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.35rem 0;
-  min-height: 44px;
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: clamp(0.6rem, 1.2vw, 1.1rem);
+  padding: 0.04em 0.5em;
+  font-size: clamp(2.6rem, min(12.5vh, 10vw), 9.5rem);
   text-decoration: none;
-  color: var(--text-dim);
-  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.menuLink:hover,
-.menuLink:focus-visible,
-.menuLink[aria-current="page"] {
-  color: var(--text);
+/* The highlight: an ink plate, slanted like the logo, wipes in behind the title. */
+.plate {
+  position: absolute;
+  inset: 0.04em 0;
+  z-index: 0;
+  background: #0b0b0e;
+  transform: skewX(-12deg) scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--dur-slower) var(--ease-out);
+}
+
+.menuLink[data-active="true"] .plate,
+.menuLink:focus-visible .plate {
+  transform: skewX(-12deg) scaleX(1);
 }
 
 .menuIndex {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.55em;
   font-family: var(--font-mono-stack);
-  font-size: 0.8125rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
   color: var(--accent);
-  min-width: 2.2em;
+  opacity: 0;
+  animation: fade-in 500ms ease forwards;
+  animation-delay: calc(500ms + var(--i) * 70ms);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.menuMask {
+  position: relative;
+  z-index: 2;
+  display: block;
+  overflow: hidden;
+  padding: 0.04em 0.16em 0.04em 0.06em;
+  margin-right: -0.1em;
+  transition: opacity var(--dur-slow) var(--ease-out);
 }
 
 .menuLabel {
+  display: block;
   font-family: var(--font-display-stack);
   font-weight: 800;
-  font-size: clamp(2.6rem, 11vw, 4.5rem);
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1em;
   line-height: 0.95;
   text-transform: uppercase;
   letter-spacing: 0.01em;
+  transform: translateY(112%);
+  animation: label-in 900ms var(--ease-out) forwards;
+  animation-delay: calc(380ms + var(--i) * 80ms);
+  transition: color var(--dur-base) var(--ease-out);
 }
 
-/* Landscape phones: two columns so all five links fit without scrolling. */
-@media (max-height: 30em) and (orientation: landscape) {
-  .menuList {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 2rem;
-    align-content: start;
-  }
-  .menuLabel {
-    font-size: clamp(1.6rem, 6vh + 1rem, 2.6rem);
-  }
+.menuLink[data-active="true"] .menuLabel,
+.menuLink:focus-visible .menuLabel {
+  color: #ffffff;
+}
+
+.menuLink[data-active="true"] .menuIndex,
+.menuLink:focus-visible .menuIndex {
+  color: #f2b04c;
+}
+
+/* The current page keeps an orange keyline, taken from the logo outline. */
+.menuLink[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0.5em;
+  right: 0.5em;
+  bottom: 0.02em;
+  height: 3px;
+  z-index: 3;
+  background: #f2b04c;
+}
+
+.menuList[data-hovering="true"] .menuLink:not([data-active="true"]) .menuMask {
+  opacity: 0.22;
+}
+
+/* Portraits ---------------------------------------------------------------------------------
+   Both figures share one size and one eye line (0.3796 of the image height), set when the art
+   is built. The pair stands either side of the hovered title. */
+.pair {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.figL,
+.figR {
+  position: absolute;
+  top: calc(50% - var(--pH) * 0.3796);
+  height: var(--pH);
+  width: auto;
+  max-width: none;
+  opacity: 0;
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+.figL {
+  right: calc(100% - 0.4em);
+  transform: translateX(-3.5rem);
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 38%),
+    linear-gradient(to left, transparent 2%, #000 15%),
+    linear-gradient(to bottom, #000 66%, transparent 98%);
+}
+
+.figR {
+  left: calc(100% - 0.4em);
+  transform: translateX(3.5rem);
+  mask-image:
+    linear-gradient(to left, transparent 0, #000 38%),
+    linear-gradient(to right, transparent 2%, #000 15%),
+    linear-gradient(to bottom, #000 66%, transparent 98%);
+}
+
+.pair[data-shown="hover"] .figL,
+.pair[data-shown="hover"] .figR {
+  opacity: 1;
+  transform: translateX(calc(var(--mx, 0) * 0.9rem));
+}
+
+.pair[data-shown="hover"] .figR {
+  transition-delay: 60ms;
 }
 
 .menuFoot {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding-top: var(--space-s);
-  border-top: 1px solid var(--line);
+  padding-inline: var(--gutter);
+  opacity: 0;
+  animation: fade-in 500ms ease 700ms forwards;
 }
 
-.menuToggles {
-  display: flex;
-  gap: 0.25rem;
-}
+/* Narrow and tall screens: nothing hovers and the title fills the width, so the pair of the
+   current page stands at the bottom of the screen, eyes level, behind the titles. */
+@media (max-width: 56em), (max-aspect-ratio: 5/4) {
+  .menu {
+    --pH: min(44vh, 66vw);
+  }
 
-@keyframes menu-in {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
+  .menuLink {
+    font-size: clamp(2.4rem, min(11vh, 14vw), 6rem);
   }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
 
-@keyframes menu-out {
-  from {
-    opacity: 1;
+  .pair {
+    position: fixed;
+    inset: auto 0 0 0;
+    height: 0;
   }
-  to {
-    opacity: 0;
-  }
-}
 
-@keyframes item-in {
-  to {
+  .figL,
+  .figR {
+    top: auto;
+    bottom: 0;
+    transform: none;
+  }
+
+  .figL {
+    left: 0;
+    right: auto;
+  }
+
+  .menuFoot p {
+    display: none;
+  }
+
+  .menuFoot {
+    justify-content: flex-end;
+  }
+
+  .figR {
+    right: 0;
+    left: auto;
+  }
+
+  .pair[data-shown="hover"] .figL,
+  .pair[data-shown="hover"] .figR,
+  .pair[data-shown="current"] .figL,
+  .pair[data-shown="current"] .figR {
     opacity: 1;
     transform: none;
   }
 }
 
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.55;
+/* Landscape phones: the five titles must fit without scrolling. */
+@media (max-height: 30em) and (orientation: landscape) {
+  .menuLink {
+    font-size: clamp(1.6rem, 11vh, 2.6rem);
   }
-  50% {
+}
+
+@keyframes menu-open {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes menu-close {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes ink-open {
+  from {
+    transform: translateY(-101%);
+  }
+  to {
+    transform: translateY(101%);
+  }
+}
+
+@keyframes label-in {
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  to {
     opacity: 1;
   }
 }
 
-/* Active and hovered links: an orange keyline underneath, taken from the logo outline. */
-.link::before,
-.link::after {
-  display: none;
+@keyframes bloom {
+  from {
+    clip-path: circle(0 at var(--tx) var(--ty));
+  }
+  to {
+    clip-path: circle(150vmax at var(--tx) var(--ty));
+  }
 }
 
-.link .linkLabel {
-  background-image: linear-gradient(#f2b04c, #f2b04c);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 3px;
-  padding-bottom: 0.18em;
-  transition: background-size var(--dur-slow) var(--ease-out);
+@keyframes tint-out {
+  from {
+    clip-path: circle(150vmax at var(--tx) var(--ty));
+    opacity: 1;
+  }
+  to {
+    clip-path: circle(150vmax at var(--tx) var(--ty));
+    opacity: 0;
+  }
 }
 
-.link:hover .linkLabel,
-.link:focus-visible .linkLabel,
-.link[aria-current="page"] .linkLabel {
-  background-size: 100% 3px;
+@media (prefers-reduced-motion: reduce) {
+  .menu[data-state="open"],
+  .menu[data-state="closed"] {
+    animation: fade-in 200ms ease both;
+  }
+
+  .wipe {
+    display: none;
+  }
+
+  .menuLabel {
+    transform: none;
+    animation: none;
+  }
+
+  .tint {
+    animation: none;
+  }
 }

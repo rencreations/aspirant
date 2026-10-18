@@ -7,7 +7,7 @@ import { useHotkey, useScrollProgress, useThemeAt } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import styles from "./hud.module.css";
-import { MotionToggle, SoundToggle } from "./preference-toggles";
+import { MotionToggle } from "./preference-toggles";
 
 function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
   return (
@@ -19,8 +19,8 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
 
 /**
  * The persistent frame: four thin corner brackets, a hairline scroll progress bar along the top
- * edge, and the sound and reduce-motion toggles. Fixed and click-through except for the
- * toggles. On screens up to 900 px wide the toggles move into the nav. The M key toggles sound.
+ * edge, and the reduce-motion toggle. Fixed and click-through except for the toggle. The sound
+ * button lives in the nav. The M key toggles sound.
  */
 export function HudFrame() {
   const barRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,6 @@ export function HudFrame() {
           <Corner pos="bl" />
           <Corner pos="br" />
           <div className={styles.controls}>
-            <SoundToggle />
             <MotionToggle />
           </div>
         </div>

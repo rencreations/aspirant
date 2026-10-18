@@ -53,7 +53,7 @@ Sections flip between the two, and a pointer can tear a portal from one to the o
 
 Character order (the queue, looping): fanny, layla, ruby, angela, lesley, change, guinevere, vexana, obsidia, selena. Slugs: `fanny`, `layla`, `ruby`, `angela`, `lesley`, `change`, `guinevere`, `vexana`, `obsidia`, `selena`. (The `characters.md` roster order.)
 
-Global elements on every page: HUD frame, nav, lantern cursor, scroll "coupling" meter, sound toggle, footer with the next destination.
+Global elements on every page: HUD frame, the sticky nav (menu button, sound button, large logo, current page), the full-screen menu with the aspirant pairs, lantern cursor, scroll "coupling" meter, footer with the next destination. See `design-system.md`, "Navbar and menu".
 
 ## 4. Page design
 
