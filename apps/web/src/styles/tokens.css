@@ -2,8 +2,8 @@
  * Design tokens for The Aspirants (Selrick Academy Resonance Terminal).
  *
  * Two worlds share one set of names:
- *   [data-theme="storm"]    void black base, amber, violet and crimson light (default)
- *   [data-theme="daybreak"] white ceramic base, cyan resonance and gold daybreak
+ *   [data-theme="storm"]    void black base, amber, violet and crimson light
+ *   [data-theme="daybreak"] white ceramic base, cyan resonance and gold daybreak (default)
  *
  * Constant palette (never flips): --ink, --graphite, --ceramic and the bright light colours
  * (--light-*), used for glows, particles and art overlays.
@@ -137,8 +137,7 @@
   }
 }
 
-/* Storm: the default world. */
-:root,
+/* Storm: the dark world, used where the story needs it. */
 [data-theme="storm"] {
   --bg: #05070c;
   --bg-2: #0a0e16;
@@ -167,7 +166,8 @@
   color-scheme: dark;
 }
 
-/* Daybreak: the Academy. */
+/* Daybreak: the Academy. Light, and the default world. */
+:root,
 [data-theme="daybreak"] {
   --bg: #f3f5f9;
   --bg-2: #e7ebf2;

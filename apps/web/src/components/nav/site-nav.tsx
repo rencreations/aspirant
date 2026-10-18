@@ -4,9 +4,8 @@ import { usePathname } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { useEffect, useRef, useState } from "react";
 
-import { StarGlyph } from "@/components/star-glyph";
 import { MotionToggle, SoundToggle } from "@/components/hud/preference-toggles";
-import { ScatterText } from "@/components/text/scatter-text";
+import { AspirantLogo } from "@/components/logo/aspirant-logo";
 import { TLink } from "@/components/transition/t-link";
 import { Magnetic } from "@/components/ui/magnetic";
 import { audio } from "@/lib/audio";
@@ -83,10 +82,9 @@ export function SiteNav() {
           className={styles.brand}
           aria-label={`${siteConfig.name}, home`}
           transitionLabel="Home"
-          onPointerEnter={() => audio.blip("hover")}
+          data-logo-host
         >
-          <StarGlyph className={styles.brandStar} />
-          <ScatterText text="The Aspirants" className={styles.wordmark} radius={70} />
+          <AspirantLogo variant="interactive" className={styles.logo} decorative />
         </TLink>
 
         <nav aria-label="Main">

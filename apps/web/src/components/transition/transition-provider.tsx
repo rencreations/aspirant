@@ -1,6 +1,5 @@
 "use client";
 
-import gsap from "gsap";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -13,37 +12,45 @@ import {
   type ReactNode,
 } from "react";
 
+import { LogoCurtain, type CurtainHandle } from "@/components/curtain/logo-curtain";
 import { useLenis } from "@/components/smooth-scroll";
-import { StarGlyph } from "@/components/star-glyph";
 import { audio } from "@/lib/audio";
 import { NAVIGATED_EVENT, prefersReducedMotion } from "@/lib/hooks";
+import { whenPageReady } from "@/lib/page-ready";
+import { runPreload, type PreloadProgress } from "@/lib/preload";
+import { routeItems } from "@/lib/route-preloads";
 
-import styles from "./transition.module.css";
+/** A page that is not ready this long after the click gets the loading state. */
+export const LOADING_STATE_AFTER_MS = 500;
+
+/** The shortest the first loading screen stays up, so the logo is seen. */
+const BOOT_MIN_MS = 1500;
 
 export interface PushOptions {
-  /** Viewport point the iris opens from (defaults to the centre). */
-  origin?: { x: number; y: number };
-  /** Short label shown while covered, for example "Experience". */
+  /** Short name of the destination, for example "Experience". Shown in the loading state. */
   label?: string;
 }
 
 export interface TransitionRouter {
-  /** Navigate with the hexagon iris (a 150 ms crossfade under reduced motion). */
+  /**
+   * Navigate with the logo transition: the logo zooms out (its letters are windows onto the
+   * page you are leaving), the route changes, then the logo zooms in and opens the new page.
+   * If the new page is not ready after 500 ms a loading state shows. Reduced motion: a fade.
+   */
   push: (href: Route, options?: PushOptions) => void;
   /** Prefetch a route. */
   prefetch: (href: Route) => void;
   /** True while a transition is running. */
   isTransitioning: () => boolean;
   /**
-   * Start fully covered and open the hexagon iris onto the current page. Used by the loader
-   * gate after its light flash ("light" tiles) and available for other full-screen exits.
+   * The first loading screen. Shows the logo and a real loading bar, runs `load` (which reports
+   * progress), then opens the page through the letters of the logo. Resolves when the page is
+   * fully visible.
    */
-  reveal: (options?: { tone?: "light" | "dark" }) => Promise<void>;
+  boot: (load: (report: (p: PreloadProgress) => void) => Promise<void>) => Promise<void>;
 }
 
 const TransitionContext = createContext<TransitionRouter | null>(null);
-
-const SQRT3 = Math.sqrt(3);
 
 function normalisePath(href: string): string {
   const path = href.split(/[?#]/)[0] ?? "/";
@@ -54,22 +61,21 @@ function nextFrame(): Promise<void> {
   return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((r) => window.setTimeout(r, ms));
+}
+
 /**
- * Page transitions. Covers the screen with a grid of hexagon tiles (GSAP, staggered from the
- * click point), navigates, then reveals the new page from the centre. Moves focus to <main>
- * afterwards. Use `useTransitionRouter().push()` or <TLink> for every internal navigation.
+ * Page transitions and the first loading screen, both drawn by the logo curtain. Moves focus
+ * to <main> afterwards. Use `useTransitionRouter().push()` or <TLink> for every internal
+ * navigation.
  */
 export function TransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { pause, resume, scrollTo } = useLenis();
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const tilesRef = useRef<HTMLDivElement>(null);
-  const centerRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const fadeRef = useRef<HTMLDivElement>(null);
+  const curtain = useRef<CurtainHandle>(null);
   const busy = useRef(false);
-  const grid = useRef({ key: "", rows: 0, cols: 0 });
   const waiter = useRef<{ target: string; resolve: () => void } | null>(null);
   const pathRef = useRef(pathname);
 
@@ -94,7 +100,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       const timer = window.setTimeout(() => {
         waiter.current = null;
         resolve();
-      }, 6000);
+      }, 8000);
       waiter.current = {
         target,
         resolve: () => {
@@ -105,150 +111,139 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const buildTiles = useCallback(() => {
-    const host = tilesRef.current;
-    if (!host) return { rows: 0, cols: 0 };
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const size = Math.round(Math.min(168, Math.max(64, vw / 12)));
-    const height = (size * 2) / SQRT3;
-    const cols = Math.ceil(vw / size) + 1;
-    const rows = Math.ceil(vh / (height * 0.75)) + 1;
-    const key = `${cols}x${rows}x${size}`;
-    if (grid.current.key === key) return grid.current;
-    const frag = document.createDocumentFragment();
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const tile = document.createElement("div");
-        tile.className = styles.tile ?? "";
-        const x = c * size - (r % 2 ? 0 : size / 2);
-        const y = r * height * 0.75 - height / 2;
-        tile.style.cssText = `left:${x}px;top:${y}px;width:${size + 1}px;height:${height + 1}px`;
-        frag.appendChild(tile);
-      }
-    }
-    host.replaceChildren(frag);
-    grid.current = { key, rows, cols };
-    return grid.current;
-  }, []);
-
   const focusMain = useCallback(() => {
-    const main = document.getElementById("main");
-    main?.focus({ preventScroll: true });
+    document.getElementById("main")?.focus({ preventScroll: true });
   }, []);
 
   const push = useCallback(
     (href: Route, options: PushOptions = {}) => {
       const target = normalisePath(href);
       if (busy.current) return;
-      if (target === normalisePath(pathRef.current) && !href.includes("#")) {
-        scrollTo(0);
+      const sameRoute = target === normalisePath(pathRef.current);
+      if (sameRoute) {
+        if (href.includes("#")) router.push(href);
+        else scrollTo(0);
         return;
       }
-      const overlay = overlayRef.current;
-      if (!overlay) {
+      const c = curtain.current;
+      if (!c) {
         router.push(href);
         return;
       }
       busy.current = true;
-      overlay.dataset.active = "true";
       pause();
+      const startedAt = performance.now();
+      router.prefetch(href);
+      const assets = runPreload(routeItems(target));
+      const label = options.label ? `Loading ${options.label}` : "Loading";
 
       const finish = () => {
-        overlay.dataset.active = "false";
+        c.hide();
         busy.current = false;
         resume();
       };
 
       if (prefersReducedMotion()) {
-        const fade = fadeRef.current;
         void (async () => {
-          if (fade) await gsap.to(fade, { opacity: 1, duration: 0.075, ease: "none" });
+          c.setMode("transition");
+          c.setZoom(1);
+          c.setFill(0);
+          c.show();
+          await c.fade(1, 0.09);
           router.push(href, { scroll: false });
-          await waitForPath(target);
+          await Promise.all([waitForPath(target), assets]);
           window.scrollTo(0, 0);
           await nextFrame();
           focusMain();
-          if (fade) await gsap.to(fade, { opacity: 0, duration: 0.075, ease: "none" });
+          await c.fade(0, 0.09);
           finish();
         })();
         return;
       }
 
-      const { rows, cols } = buildTiles();
-      const tiles = tilesRef.current ? Array.from(tilesRef.current.children) : [];
-      const ox = options.origin ? options.origin.x / window.innerWidth : 0.5;
-      const oy = options.origin ? options.origin.y / window.innerHeight : 0.5;
-      if (labelRef.current) labelRef.current.textContent = options.label ?? "Loading";
-      audio.blip("whoosh");
-
       void (async () => {
-        gsap.set(tiles, { scale: 0, rotate: -30 });
-        await gsap
-          .timeline()
-          .to(tiles, {
-            scale: 1.04,
-            rotate: 0,
-            duration: 0.42,
-            ease: "power3.out",
-            stagger: { grid: [rows, cols], from: [ox, oy], amount: 0.38 },
-          })
-          .to(centerRef.current, { opacity: 1, duration: 0.2, ease: "none" }, "-=0.25");
+        c.setMode("transition");
+        c.setFill(0);
+        c.setZoom(1);
+        c.show();
+        audio.blip("whoosh");
+        // Zoom out: the logo appears, its letters showing the page that is leaving.
+        await c.tweenZoom(0, 0.85, "power3.inOut");
         router.push(href, { scroll: false });
-        await waitForPath(target);
+        let ready = false;
+        const arrived = Promise.all([waitForPath(target), assets])
+          .then(() => whenPageReady(3500))
+          .then(() => nextFrame())
+          .then(() => {
+            ready = true;
+          });
+        const left = LOADING_STATE_AFTER_MS - (performance.now() - startedAt);
+        if (left > 0) await Promise.race([arrived, sleep(left)]);
+        let waiting = false;
+        if (!ready) {
+          // Still loading after 500 ms: cover the windows and show the loading state.
+          waiting = true;
+          void c.tweenFill(1, 0.3);
+          c.startWaiting(label);
+          await arrived;
+        }
+        if (waiting) {
+          c.stopLoops();
+          await c.tweenFill(0, 0.4);
+        }
         scrollTo(0, { immediate: true });
         window.scrollTo(0, 0);
-        await nextFrame();
         focusMain();
         audio.blip("star");
-        await gsap
-          .timeline()
-          .to(centerRef.current, { opacity: 0, duration: 0.18, ease: "none" })
-          .to(tiles, {
-            scale: 0,
-            rotate: 30,
-            duration: 0.36,
-            ease: "power3.in",
-            stagger: { grid: [rows, cols], from: "center", amount: 0.34 },
-          });
+        // Zoom in: a letter window grows until it fills the screen with the new page.
+        await c.tweenZoom(1, 1.05, "power3.inOut");
         finish();
       })();
     },
-    [buildTiles, focusMain, pause, resume, router, scrollTo, waitForPath],
+    [focusMain, pause, resume, router, scrollTo, waitForPath],
   );
 
-  const reveal = useCallback(
-    async ({ tone = "dark" }: { tone?: "light" | "dark" } = {}) => {
-      const overlay = overlayRef.current;
-      if (!overlay || busy.current) return;
-      busy.current = true;
-      overlay.dataset.active = "true";
-      overlay.dataset.tone = tone;
-      if (prefersReducedMotion()) {
-        const fade = fadeRef.current;
-        if (fade) {
-          gsap.set(fade, { opacity: 1 });
-          await gsap.to(fade, { opacity: 0, duration: 0.15, ease: "none" });
-        }
-      } else {
-        buildTiles();
-        const tiles = tilesRef.current ? Array.from(tilesRef.current.children) : [];
-        const { rows, cols } = grid.current;
-        gsap.set(tiles, { scale: 1.04, rotate: 0 });
-        await nextFrame();
-        await gsap.to(tiles, {
-          scale: 0,
-          rotate: 30,
-          duration: 0.5,
-          ease: "power3.in",
-          stagger: { grid: [rows, cols], from: "center", amount: 0.55 },
-        });
+  const boot = useCallback(
+    async (load: (report: (p: PreloadProgress) => void) => Promise<void>) => {
+      const c = curtain.current;
+      if (!c) {
+        await load(() => undefined);
+        return;
       }
-      overlay.dataset.active = "false";
-      overlay.dataset.tone = "dark";
+      busy.current = true;
+      const reduced = prefersReducedMotion();
+      c.setMode("boot");
+      c.setZoom(0);
+      c.setFill(1);
+      c.showBoot(true);
+      c.show();
+      if (!reduced) c.startIdle();
+
+      const report = (p: PreloadProgress) => {
+        c.setBoot(p.progress, p.label);
+      };
+      await Promise.all([load(report), sleep(reduced ? 300 : BOOT_MIN_MS)]);
+      c.setBoot(1, "Drawing the page");
+      await whenPageReady(5000);
+      c.setBoot(1, "Ready");
+      await sleep(reduced ? 80 : 380);
+      c.showBoot(false);
+      await nextFrame();
+
+      if (reduced) {
+        await c.fadeOut(0.2);
+      } else {
+        // The white of the letters drains away, then the logo zooms in through a letter.
+        await c.tweenFill(0, 0.75);
+        c.stopLoops();
+        audio.blip("star");
+        await c.tweenZoom(1, 1.5, "power3.inOut");
+      }
+      c.hide();
+      c.setMode("transition");
       busy.current = false;
     },
-    [buildTiles],
+    [],
   );
 
   const api = useMemo<TransitionRouter>(
@@ -256,29 +251,15 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       push,
       prefetch: (href) => router.prefetch(href),
       isTransitioning: () => busy.current,
-      reveal,
+      boot,
     }),
-    [push, reveal, router],
+    [boot, push, router],
   );
 
   return (
     <TransitionContext.Provider value={api}>
       {children}
-      <div
-        ref={overlayRef}
-        className={styles.overlay}
-        data-active="false"
-        data-tone="dark"
-        aria-hidden="true"
-        data-overlay="transition"
-      >
-        <div ref={fadeRef} className={styles.fade} />
-        <div ref={tilesRef} className={styles.tiles} />
-        <div ref={centerRef} className={styles.center}>
-          <StarGlyph className={styles.star} />
-          <span ref={labelRef} className={styles.label} />
-        </div>
-      </div>
+      <LogoCurtain ref={curtain} />
     </TransitionContext.Provider>
   );
 }
@@ -293,7 +274,7 @@ export function useTransitionRouter(): TransitionRouter {
         push: (href: Route) => router.push(href),
         prefetch: (href: Route) => router.prefetch(href),
         isTransitioning: () => false,
-        reveal: () => Promise.resolve(),
+        boot: (load) => load(() => undefined),
       },
     [ctx, router],
   );

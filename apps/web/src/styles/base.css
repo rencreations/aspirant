@@ -108,8 +108,7 @@ html[data-gate="on"] .gate-cover {
   position: fixed;
   inset: 0;
   z-index: var(--z-gate);
-  background:
-    radial-gradient(60% 50% at 50% 55%, rgb(92 225 255 / 0.08), transparent 70%), var(--ink);
+  background: #f3f5f9;
 }
 
 html[data-gate="on"] body {

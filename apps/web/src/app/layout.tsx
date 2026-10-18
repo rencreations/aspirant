@@ -43,8 +43,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05070c",
-  colorScheme: "dark light",
+  themeColor: "#f3f5f9",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -58,7 +58,7 @@ const BOOT = `(function(){try{var d=document.documentElement;d.classList.add("js
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" data-theme="storm" suppressHydrationWarning>
+    <html lang="en" data-theme="daybreak" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       </head>

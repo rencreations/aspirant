@@ -1,14 +1,14 @@
 "use client";
 
-import { Component, lazy, Suspense, useCallback, useEffect, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-import { StarGlyph } from "@/components/star-glyph";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { useMounted } from "@/lib/hooks";
+import { runPreload } from "@/lib/preload";
+import { routeItems } from "@/lib/route-preloads";
 import { readEntered, useSiteStore } from "@/lib/stores";
-
-const Loader = lazy(() => import("@/features/loader/Loader"));
 
 declare global {
   interface Window {
@@ -17,95 +17,72 @@ declare global {
   }
 }
 
-/** Element id of the wrapper around nav, HUD and <main>. It is made inert while gated. */
+/** Element id of the wrapper around nav, HUD and <main>. It is made inert while loading. */
 export const SHELL_ID = "site-shell";
 
-class GateBoundary extends Component<{ onError: () => void; children: ReactNode }> {
-  override state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  override componentDidCatch() {
-    this.props.onError();
-  }
-  override render() {
-    return this.state.failed ? null : this.props.children;
-  }
-}
-
-function GatePending({ onSkip }: { onSkip: () => void }) {
-  return (
-    <div className="fixed inset-0 z-(--z-gate) grid place-items-center bg-ink text-ceramic">
-      <StarGlyph className="size-10 animate-pulse text-[var(--light-gold)]" />
-      <button
-        type="button"
-        onClick={onSkip}
-        className="absolute top-4 right-4 min-h-11 px-4 mono text-xs tracking-[0.2em] text-[#cfd9e8] uppercase"
-      >
-        Skip
-      </button>
-    </div>
-  );
-}
-
 /**
- * Shows the loader (from @/features/loader, loaded on demand) once per browser session.
- * The server always renders the full site underneath, so crawlers and no-JS visitors get the
- * content; a boot script paints a cover first (html[data-gate="on"]) to avoid a flash.
- * Entering unlocks audio inside the click, then the hexagon iris opens onto the page.
+ * The first visit of a browser session: shows the logo loading screen, loads everything the
+ * landing page needs through `lib/preload.ts` (the bar reports real work), then opens the page
+ * through the letters of the logo. There is nothing to click. The server always renders the
+ * full site underneath, so crawlers and no-JS visitors get the content; a boot script paints a
+ * light cover first (html[data-gate="on"]) to avoid a flash.
+ *
+ * Browsers only start audio after a gesture, so the first touch, click or key press anywhere
+ * unlocks it.
  */
-export function LoaderGate({ preload }: { preload?: readonly string[] }) {
+export function LoaderGate() {
   const mounted = useMounted();
+  const pathname = usePathname();
   const entered = useSiteStore((s) => s.entered);
   const setEntered = useSiteStore((s) => s.setEntered);
-  const { reveal } = useTransitionRouter();
-  // Client only: the server and the first client render never show the gate.
-  const show = mounted && !entered && !readEntered();
+  const { boot } = useTransitionRouter();
+  const started = useRef(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    if (!mounted) return;
-    const root = document.documentElement;
-    if (show) {
-      window.__aspirantsGate = true;
-      root.dataset.gate = "on";
-    } else {
-      delete root.dataset.gate;
-    }
-    const shell = document.getElementById(SHELL_ID);
-    if (shell) shell.inert = show;
-  }, [mounted, show]);
-
-  const open = useCallback(
-    (tone: "light" | "dark") => {
-      void reveal({ tone });
-      setEntered(true);
-      delete document.documentElement.dataset.gate;
-      requestAnimationFrame(() => document.getElementById("main")?.focus({ preventScroll: true }));
-    },
-    [reveal, setEntered],
-  );
-
-  const activate = useCallback(() => {
-    audio.unlock();
-    audio.blip("star");
+    const unlock = () => {
+      audio.unlock();
+    };
+    const opts = { once: true, passive: true } as const;
+    window.addEventListener("pointerdown", unlock, opts);
+    window.addEventListener("keydown", unlock, opts);
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
   }, []);
 
-  if (!show) return null;
+  useEffect(() => {
+    if (!mounted || started.current) return;
+    const root = document.documentElement;
+    const shell = document.getElementById(SHELL_ID);
+    if (entered || readEntered()) {
+      delete root.dataset.gate;
+      if (shell) shell.inert = false;
+      started.current = true;
+      return;
+    }
+    started.current = true;
+    window.__aspirantsGate = true;
+    if (shell) shell.inert = true;
+    setStatus("Loading the site");
+    const run = boot((report) => runPreload(routeItems(pathname), report));
+    // The curtain is drawn now; the plain cover can go.
+    requestAnimationFrame(() => {
+      delete root.dataset.gate;
+    });
+    void run.finally(() => {
+      delete root.dataset.gate;
+      if (shell) shell.inert = false;
+      setEntered(true);
+      setStatus("Loaded");
+      document.getElementById("main")?.focus({ preventScroll: true });
+    });
+  }, [boot, entered, mounted, pathname, setEntered]);
 
   return (
-    <GateBoundary onError={() => open("dark")}>
-      <Suspense
-        fallback={
-          <GatePending
-            onSkip={() => {
-              activate();
-              open("dark");
-            }}
-          />
-        }
-      >
-        <Loader onActivate={activate} onEnter={() => open("light")} preload={preload} />
-      </Suspense>
-    </GateBoundary>
+    <p role="status" aria-live="polite" className="sr-only">
+      {status}
+    </p>
   );
 }

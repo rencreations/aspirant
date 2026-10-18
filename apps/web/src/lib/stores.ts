@@ -98,7 +98,7 @@ export const useSiteStore = create<SiteState>()(
       toggleMute: () => set((s) => ({ muted: !s.muted })),
       motion: "auto",
       setMotion: (value) => set({ motion: value }),
-      theme: "storm",
+      theme: "daybreak",
       setTheme: (value) => set({ theme: value }),
       lastChapter: null,
       setLastChapter: (value) => set({ lastChapter: value }),

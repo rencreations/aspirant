@@ -15,6 +15,7 @@ import { cn } from "@aspirant/ui/lib/utils";
 
 import { EmberField } from "@/components/ember-field";
 import { useGLReady } from "@/components/gl/use-gl-ready";
+import { expectReady } from "@/lib/page-ready";
 import { useLenis } from "@/components/smooth-scroll";
 import { StarGlyph } from "@/components/star-glyph";
 import { StarButton } from "@/components/ui/star-button";
@@ -120,7 +121,8 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
 
   const reduced = useReducedMotion();
   const touch = useIsTouch();
-  const { ready: glReady, tier } = useGLReady();
+  const { ready: glReady, supported, tier } = useGLReady();
+  const markReady = useRef<(() => void) | null>(null);
   const entered = useSiteStore((s) => s.entered);
   const inView = useInView(heroRef, { rootMargin: "120px" });
   const { ref: pointer } = usePointer({ tilt });
@@ -173,6 +175,15 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   useRafLoop((_, t) => controller.tick(t), inView);
 
   const onGLReady = useCallback(() => setGlOn(true), []);
+
+  // Hold the loading curtain until the hero is showing something.
+  useEffect(() => {
+    markReady.current = expectReady("home-hero");
+    return () => markReady.current?.();
+  }, []);
+  useEffect(() => {
+    if (glOn || (supported !== null && !glReady)) markReady.current?.();
+  }, [glOn, glReady, supported]);
 
   const select = (index: number, opts: { focus?: boolean } = {}) => {
     const next = pairs[index];

@@ -14,9 +14,9 @@ type LinkProps = ComponentPropsWithoutRef<typeof Link>;
 export interface TLinkProps extends Omit<LinkProps, "href"> {
   /** Internal route ("/story") or an external URL (rendered as a plain new-tab link). */
   href: Route | ExternalHref;
-  /** Label shown on the transition cover. Defaults to the link text when it is a string. */
+  /** Name of the destination, shown in the transition's loading state. Defaults to the link text when it is a string. */
   transitionLabel?: string;
-  /** Set false to use plain client navigation without the iris. */
+  /** Set false to use plain client navigation without the logo transition. */
   transition?: boolean;
   /** Play the click blip. Default true. */
   blip?: boolean;
@@ -52,11 +52,8 @@ export const TLink = forwardRef<HTMLAnchorElement, TLinkProps>(function TLink(
     if (rest.download !== undefined) return;
     e.preventDefault();
     if (blip) audio.blip("click");
-    const keyboard = e.detail === 0;
-    router.push(href, {
-      ...(keyboard ? {} : { origin: { x: e.clientX, y: e.clientY } }),
-      label: transitionLabel ?? (typeof children === "string" ? children : undefined),
-    });
+    const label = transitionLabel ?? (typeof children === "string" ? children : undefined);
+    router.push(href, label ? { label } : {});
   };
 
   return (
