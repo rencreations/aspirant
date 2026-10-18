@@ -101,7 +101,7 @@ export function Cycle() {
   const glow = GLOWS[index] ?? GLOWS[0];
 
   return (
-    <ThemeZone theme="storm" aria-labelledby="cycle-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="cycle-title" className={styles.section}>
       <section
         ref={rootRef}
         className="shell"

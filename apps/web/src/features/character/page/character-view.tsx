@@ -50,7 +50,7 @@ export function CharacterView({ slug }: { slug: Slug }) {
   const partner = partnerOf(slug);
   const otherSlug = pair.members.find((m) => m !== slug) ?? null;
   const other = otherSlug ? getCharacter(otherSlug) : null;
-  const vars = characterVars(c.palette, c.side, art.accent);
+  const vars = characterVars(c.palette, "daybreak", art.accent);
   const lead = c.palette[art.accent.accent];
   const colours = {
     lead,
@@ -130,11 +130,11 @@ export function CharacterView({ slug }: { slug: Slug }) {
 
   const next = nextCharacter(slug);
   const nextArt = ART[next.slug];
-  const nextVars = characterVars(next.palette, next.side, nextArt.accent);
-  const nextAccent = readable(next.palette[nextArt.accent.accent], next.side);
+  const nextVars = characterVars(next.palette, "daybreak", nextArt.accent);
+  const nextAccent = readable(next.palette[nextArt.accent.accent], "daybreak");
 
   return (
-    <div data-theme={c.side} className={styles.page} style={vars}>
+    <div data-theme="daybreak" className={styles.page} style={vars}>
       <Hero
         name={c.name}
         aspirantName={c.aspirantName}
@@ -184,9 +184,9 @@ export function CharacterView({ slug }: { slug: Slug }) {
         }))}
       />
       <div
-        data-theme="storm"
+        data-theme="daybreak"
         className={styles.cinemaZone}
-        style={characterVars(c.palette, "storm", art.accent)}
+        style={characterVars(c.palette, "daybreak", art.accent)}
       >
         <MediaSection
           name={c.name}
@@ -198,7 +198,7 @@ export function CharacterView({ slug }: { slug: Slug }) {
         />
       </div>
       <InStory name={c.name} chapters={chapters} />
-      <div data-theme={next.side} className={styles.nextZone} style={nextVars}>
+      <div data-theme="daybreak" className={styles.nextZone} style={nextVars}>
         <NextFooter
           eyebrow="Next in queue"
           label={next.name}

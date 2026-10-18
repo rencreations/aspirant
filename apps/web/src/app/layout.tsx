@@ -8,7 +8,6 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
-import { EmberField } from "@/components/ember-field";
 import { FocusStar } from "@/components/focus-star";
 import { HudFrame } from "@/components/hud/hud-frame";
 import { LanternCursor } from "@/components/lantern-cursor";
@@ -69,7 +68,6 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             <a href="#main" className="skip-link">
               Skip to content
             </a>
-            <EmberField />
             <SiteNav />
             <HudFrame />
             <main id="main" tabIndex={-1} className="relative z-(--z-content)">

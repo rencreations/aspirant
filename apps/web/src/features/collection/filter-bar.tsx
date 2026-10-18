@@ -68,7 +68,7 @@ export function FilterBar({
   };
 
   return (
-    <div className={styles.bar} data-theme="storm" data-collection-bar>
+    <div className={styles.bar} data-collection-bar>
       <div className={styles.surface} aria-hidden="true" />
       <div className="shell">
         <div className={styles.row}>

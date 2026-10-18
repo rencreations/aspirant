@@ -13,7 +13,6 @@ import {
 
 import { cn } from "@aspirant/ui/lib/utils";
 
-import { EmberField } from "@/components/ember-field";
 import { useGLReady } from "@/components/gl/use-gl-ready";
 import { expectReady } from "@/lib/page-ready";
 import { useLenis } from "@/components/smooth-scroll";
@@ -286,9 +285,6 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
         <img className={styles.backdropBase} src={asset(pair.base.backdrop)} alt="" />
         {/* eslint-disable-next-line @next/next/no-img-element -- decorative backdrop */}
         <img className={styles.backdropAlt} src={asset(pair.alt.backdrop)} alt="" loading="lazy" />
-      </div>
-      <div className={styles.embers} data-theme={figure.world} aria-hidden="true">
-        <EmberField contained density={touch ? 0.5 : 0.85} />
       </div>
       <div className={styles.halo} aria-hidden="true" />
 

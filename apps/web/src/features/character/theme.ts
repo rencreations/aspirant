@@ -15,7 +15,7 @@ type Rgb = readonly [number, number, number];
 
 /** The surfaces of each world (tokens.css): page, raised and panel backgrounds. */
 const SURFACES: Record<Side, readonly string[]> = {
-  daybreak: ["#f3f5f9", "#e7ebf2", "#ffffff"],
+  daybreak: ["#f4f6f9", "#e9edf2", "#ffffff"],
   storm: ["#05070c", "#0a0e16", "#0e141f"],
 };
 

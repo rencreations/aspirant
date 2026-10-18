@@ -1,7 +1,7 @@
 import { LOGO } from "./logo-data.generated";
 
 /** Brand colours of the logo artwork. They stay the same in both themes. */
-export const LOGO_COLORS = {
+const LOGO_COLORS = {
   orange: "#f2b04c",
   ink: "#0b0b0e",
   pink: "#ff2e90",

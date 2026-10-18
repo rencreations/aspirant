@@ -113,11 +113,12 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
     if (camRef.current) partsRef.current = queryLogoParts(camRef.current);
     measure();
     window.addEventListener("resize", measure);
+    const s = state.current;
     return () => {
       window.removeEventListener("resize", measure);
-      state.current.stop?.();
-      state.current.zoomTween?.kill();
-      state.current.fillTween?.kill();
+      s.stop?.();
+      s.zoomTween?.kill();
+      s.fillTween?.kill();
     };
   }, [measure]);
 

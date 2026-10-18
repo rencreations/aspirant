@@ -31,14 +31,9 @@
   will-change: transform;
 }
 
+/* On the light pages there is no glow: only the ring follows the pointer. */
 .root[data-theme="daybreak"] .disc {
-  mix-blend-mode: multiply;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--light-cyan) 16%, transparent) 0%,
-    color-mix(in srgb, var(--light-cyan) 6%, transparent) 34%,
-    transparent 66%
-  );
+  display: none;
 }
 
 /* The lagging ring. */
@@ -70,8 +65,8 @@
 }
 
 .root[data-hover="true"] .ring {
-  border-color: var(--accent);
-  background-color: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: var(--text);
+  background-color: transparent;
 }
 
 .root[data-ring="light"] .ring {
@@ -83,7 +78,7 @@
 }
 
 .root[data-pressed="true"] .ring {
-  background-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  background-color: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .label {

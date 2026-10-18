@@ -20,8 +20,8 @@ export function EndMatter() {
       data-unit="end"
       data-part={12}
       data-chapter="c60"
-      data-mood="storm"
-      data-theme="storm"
+      data-mood="daybreak"
+      data-theme="daybreak"
       aria-labelledby="open-title"
       tabIndex={-1}
     >

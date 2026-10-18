@@ -130,7 +130,7 @@ export function VersusStage({ pairings }: { pairings: readonly VersusPairing[] }
   };
 
   return (
-    <ThemeZone theme="storm" aria-labelledby="versus-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="versus-title" className={styles.section}>
       <div className={cn(styles.head, "shell")}>
         <div>
           <p className="hud-label">03 / Versus</p>

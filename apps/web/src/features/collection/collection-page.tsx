@@ -335,7 +335,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
   return (
     <LazyMotion features={loadFeatures} strict>
       <MotionConfig reducedMotion={reduced ? "always" : "never"}>
-        <ThemeZone theme="storm" surface={false} as="div" className="relative">
+        <ThemeZone theme="daybreak" surface={false} as="div" className="relative">
           <ArchiveHeader stats={catalog.stats} onJump={(id) => select(id, true)} />
 
           <FilterBar
@@ -360,7 +360,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
             {showing("films") && (
               <SectionShell
                 meta={meta("films")}
-                theme="storm"
+                theme="daybreak"
                 count={counts.films}
                 seeAllTotal={hiddenTotal("films", filmsShown)}
                 onSeeAll={() => select("films", true)}
@@ -379,7 +379,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
             )}
 
             {showing("music") && (
-              <SectionShell meta={meta("music")} theme="storm" count={counts.music}>
+              <SectionShell meta={meta("music")} theme="daybreak" count={counts.music}>
                 {music.length === 0 ? (
                   <EmptySection onClear={clearAll} />
                 ) : (
@@ -422,7 +422,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
             {showing("fanart") && (
               <SectionShell
                 meta={meta("fanart")}
-                theme="storm"
+                theme="daybreak"
                 count={counts.fanart}
                 seeAllTotal={hiddenTotal("fanart", fanShown.length)}
                 onSeeAll={() => select("fanart", true)}
@@ -451,7 +451,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
             )}
 
             {showing("models") && (
-              <SectionShell meta={meta("models")} theme="storm" count={counts.models}>
+              <SectionShell meta={meta("models")} theme="daybreak" count={counts.models}>
                 {models.length === 0 ? (
                   <EmptySection onClear={clearAll} />
                 ) : (
@@ -463,7 +463,7 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
             {showing("voice") && (
               <SectionShell
                 meta={meta("voice")}
-                theme="storm"
+                theme="daybreak"
                 count={counts.voice}
                 seeAllTotal={hiddenTotal("voice", voiceShown.length)}
                 onSeeAll={() => select("voice", true)}

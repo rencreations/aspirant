@@ -21,7 +21,7 @@ import { runPreload, type PreloadProgress } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
 /** A page that is not ready this long after the click gets the loading state. */
-export const LOADING_STATE_AFTER_MS = 500;
+const LOADING_STATE_AFTER_MS = 500;
 
 /** The shortest the first loading screen stays up, so the logo is seen. */
 const BOOT_MIN_MS = 1500;

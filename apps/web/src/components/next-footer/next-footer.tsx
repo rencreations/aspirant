@@ -56,7 +56,8 @@ export function NextFooter({
   const lockTimer = useRef(0);
 
   const go = () => {
-    if (fired.current) return;
+    // A transition in flight owns navigation. Do not mark ourselves fired for a call it ignores.
+    if (fired.current || router.isTransitioning()) return;
     fired.current = true;
     setAnnounce(`Opening ${label}.`);
     router.push(href, { label });

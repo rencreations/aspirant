@@ -169,15 +169,15 @@
 /* Daybreak: the Academy. Light, and the default world. */
 :root,
 [data-theme="daybreak"] {
-  --bg: #f3f5f9;
-  --bg-2: #e7ebf2;
+  --bg: #f4f6f9;
+  --bg-2: #e9edf2;
   --panel: #ffffff;
-  --panel-glass: rgb(255 255 255 / 0.74);
-  --line: rgb(30 48 80 / 0.18);
-  --line-strong: rgb(24 40 70 / 0.42);
-  --text: #0b111c;
-  --text-dim: #3c4859;
-  --text-faint: #5d6a7d;
+  --panel-glass: rgb(255 255 255 / 0.78);
+  --line: rgb(11 11 14 / 0.14);
+  --line-strong: rgb(11 11 14 / 0.42);
+  --text: #0b0b0e;
+  --text-dim: #3b3f48;
+  --text-faint: #626773;
   --cyan: #00718c;
   --gold: #8a5a00;
   --amber: #a3460a;
@@ -187,11 +187,11 @@
   --focus: #1336d1;
   --on-accent: #ffffff;
   --scrim: rgb(236 240 247 / 0.82);
-  --accent: var(--cyan);
-  --accent-2: var(--gold);
-  --glow: var(--light-cyan);
-  --ember-a: var(--light-cyan);
+  --accent: #c8006a;
+  --accent-2: #8a5a00;
+  --glow: rgb(255 46 144 / 0.35);
+  --ember-a: var(--light-magenta);
   --ember-b: var(--light-gold);
-  --hud-ink: rgb(20 34 60 / 0.5);
+  --hud-ink: rgb(11 11 14 / 0.42);
   color-scheme: light;
 }

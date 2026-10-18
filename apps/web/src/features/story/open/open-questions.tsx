@@ -63,7 +63,7 @@ export function OpenQuestions() {
     setOpen((prev) => prev.map((v, k) => (k === i ? value : v)));
 
   return (
-    <ThemeZone theme="storm" aria-labelledby="open-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="open-title" className={styles.section}>
       <section className="shell">
         <SectionHead
           id="open-title"

@@ -71,7 +71,7 @@ test("M toggles sound and the toggle reflects it", async ({ page }, info) => {
   await page.goto(url("/"));
   const scope =
     info.project.name === "desktop"
-      ? page.getByRole("complementary", { name: "Terminal status" })
+      ? page.getByRole("complementary", { name: "Page controls" })
       : page.getByRole("banner");
   const toggle = scope.getByRole("button", { name: "Sound" });
   await expect(toggle).toHaveAttribute("aria-pressed", "true");
@@ -104,7 +104,7 @@ test("the Reduce motion toggle applies at once and persists across reloads", asy
   await expect(page.locator("html")).toHaveAttribute("data-motion", "auto");
   if (info.project.name === "desktop") {
     await page
-      .getByRole("complementary", { name: "Terminal status" })
+      .getByRole("complementary", { name: "Page controls" })
       .getByRole("button", { name: "Reduce motion" })
       .click();
   } else {

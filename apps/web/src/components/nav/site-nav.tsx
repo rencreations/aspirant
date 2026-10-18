@@ -115,10 +115,6 @@ export function SiteNav() {
         </nav>
 
         <div className={styles.right}>
-          <span className={`${styles.status} hud-label`} aria-hidden="true">
-            <span className={styles.statusDot} />
-            Archive online
-          </span>
           <SoundToggle className={styles.mobileOnly} />
           <Dialog.Root
             open={open}

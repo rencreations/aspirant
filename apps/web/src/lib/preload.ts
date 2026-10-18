@@ -27,7 +27,7 @@ export interface PreloadProgress {
   pending: readonly string[];
 }
 
-export const ITEM_TIMEOUT_MS = 12_000;
+const ITEM_TIMEOUT_MS = 12_000;
 
 const started = new Map<string, Promise<void>>();
 

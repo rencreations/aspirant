@@ -74,7 +74,7 @@ export function Hierarchy() {
   );
 
   return (
-    <ThemeZone theme="storm" aria-labelledby="hierarchy-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="hierarchy-title" className={styles.section}>
       <div className={`${styles.void} grid-hex fade-edges`} aria-hidden="true" />
       <section ref={rootRef} className="relative shell">
         <SectionHead

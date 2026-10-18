@@ -349,7 +349,7 @@
 }
 
 .cardAspirant {
-  color: var(--accent);
+  color: color-mix(in srgb, var(--accent) 36%, var(--text));
   font-family: var(--font-mono-stack);
   font-size: var(--step--2);
   font-weight: 500;

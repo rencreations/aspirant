@@ -108,7 +108,7 @@ html[data-gate="on"] .gate-cover {
   position: fixed;
   inset: 0;
   z-index: var(--z-gate);
-  background: #f3f5f9;
+  background: #f4f6f9;
 }
 
 html[data-gate="on"] body {

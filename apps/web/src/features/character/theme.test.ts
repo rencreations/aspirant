@@ -4,7 +4,7 @@ import { ART } from "./art";
 import { characterVars, contrast, mix, onColor, readable } from "./theme";
 
 const SURFACES = {
-  daybreak: ["#f3f5f9", "#e7ebf2", "#ffffff"],
+  daybreak: ["#f4f6f9", "#e9edf2", "#ffffff"],
   storm: ["#05070c", "#0a0e16", "#0e141f"],
 } as const;
 

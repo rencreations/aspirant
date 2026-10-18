@@ -8,7 +8,7 @@ This is a fan project. It is not affiliated with or endorsed by Moonton. Officia
 
 | Route               | What it is                                                                                                        |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `/`                 | Interactive loader and title, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame  |
+| `/`                 | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame           |
 | `/experience`       | The story told by scrolling: the whole short story as a web novel, scenes behind the text, hover cards, toys      |
 | `/story`            | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
 | `/character`        | The roster of ten                                                                                                 |

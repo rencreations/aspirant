@@ -30,7 +30,7 @@ const DOORS = [
 /** Two doors: big portal links to the Experience and the Collection, with a hover reveal. */
 export function TwoDoors() {
   return (
-    <ThemeZone theme="storm" aria-labelledby="doors-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="doors-title" className={styles.section}>
       <h2 id="doors-title" className="sr-only">
         Where to go next
       </h2>

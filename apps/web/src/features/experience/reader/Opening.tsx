@@ -78,7 +78,7 @@ export function Opening({ front }: { front: readonly FrontSection[] }) {
   const { stats } = storyIndex;
   const hours = Math.round(stats.words / 230 / 60);
   return (
-    <div className={o.opening} data-unit="opening" data-mood="storm" data-theme="storm">
+    <div className={o.opening} data-unit="opening" data-mood="daybreak" data-theme="daybreak">
       <section className={o.hero} aria-labelledby="experience-title">
         <div className={o.glow} aria-hidden="true" />
         <p className={cn(o.kicker, "hud-label")}>

@@ -53,7 +53,7 @@
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
-  color: var(--accent);
+  color: color-mix(in srgb, var(--accent) 36%, var(--text));
 }
 
 .text {

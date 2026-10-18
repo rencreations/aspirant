@@ -1,6 +1,16 @@
 import { isSlug } from "@/content/characters";
 import { chunkItem, dataItem, fontsItem, imageItem, type PreloadItem } from "@/lib/preload";
 
+/** Characters that have a cut-out in `public/img/char/<slug>/` (the others have splash art only). */
+const HAS_CUTOUT: ReadonlySet<string> = new Set([
+  "fanny",
+  "layla",
+  "guinevere",
+  "vexana",
+  "obsidia",
+  "selena",
+]);
+
 /**
  * What each route needs on first paint. The boot screen runs the list for the page the visitor
  * landed on; a page transition runs the list for the page it is going to. Add every new asset
@@ -57,7 +67,9 @@ export function routeItems(pathname: string): PreloadItem[] {
       return [
         ...shared,
         imageItem(`/img/char/${slug}/splash.webp`, "Loading the splash art", 3),
-        imageItem(`/img/char/${slug}/cutout.webp`, "Loading the cutout", 2),
+        ...(HAS_CUTOUT.has(slug)
+          ? [imageItem(`/img/char/${slug}/cutout.webp`, "Loading the cutout", 2)]
+          : []),
         dataItem(`/audio/voice/${slug}/index.json`, "Reading the voice index", 1),
       ];
     }

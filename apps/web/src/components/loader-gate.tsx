@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
@@ -37,7 +37,10 @@ export function LoaderGate() {
   const setEntered = useSiteStore((s) => s.setEntered);
   const { boot } = useTransitionRouter();
   const started = useRef(false);
-  const [status, setStatus] = useState("");
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  const say = (text: string) => {
+    if (statusRef.current) statusRef.current.textContent = text;
+  };
 
   useEffect(() => {
     const unlock = () => {
@@ -65,7 +68,7 @@ export function LoaderGate() {
     started.current = true;
     window.__aspirantsGate = true;
     if (shell) shell.inert = true;
-    setStatus("Loading the site");
+    say("Loading the site");
     const run = boot((report) => runPreload(routeItems(pathname), report));
     // The curtain is drawn now; the plain cover can go.
     requestAnimationFrame(() => {
@@ -75,14 +78,10 @@ export function LoaderGate() {
       delete root.dataset.gate;
       if (shell) shell.inert = false;
       setEntered(true);
-      setStatus("Loaded");
+      say("Loaded");
       document.getElementById("main")?.focus({ preventScroll: true });
     });
   }, [boot, entered, mounted, pathname, setEntered]);
 
-  return (
-    <p role="status" aria-live="polite" className="sr-only">
-      {status}
-    </p>
-  );
+  return <p ref={statusRef} role="status" aria-live="polite" className="sr-only" />;
 }

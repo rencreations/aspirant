@@ -62,7 +62,7 @@ export function ArchiveHeader({ stats, onJump }: ArchiveHeaderProps) {
   const items = SECTION_IDS.reduce((sum, id) => sum + stats.counts[id], 0);
 
   return (
-    <ThemeZone theme="storm" surface={false} className={`${styles.header} below-nav`}>
+    <ThemeZone theme="daybreak" surface={false} className={`${styles.header} below-nav`}>
       <div className={`${styles.grid} grid-hex fade-edges`} aria-hidden="true" />
       <div className={styles.glow} aria-hidden="true" />
       <p className={styles.ghost} aria-hidden="true">

@@ -161,7 +161,7 @@ export function TheTen({ cards }: { cards: readonly RosterCard[] }) {
   };
 
   return (
-    <ThemeZone theme="storm" aria-labelledby="ten-title" className={styles.section}>
+    <ThemeZone theme="daybreak" aria-labelledby="ten-title" className={styles.section}>
       <div className={cn(styles.head, "shell")}>
         <div>
           <p className="hud-label">05 / Roster</p>

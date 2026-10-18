@@ -57,13 +57,14 @@ Global elements on every page: HUD frame, nav, lantern cursor, scroll "coupling"
 
 ## 4. Page design
 
-### 4.1 Loader and title (reference: aten7.com/intro)
+### 4.1 Loader and page transition (reference: lusion.co)
 
-- A full-screen canvas. Progress counts 0 to 100 while a field of glyphs and noise shimmers. As real asset loading completes, the field condenses into the wordmark **THE ASPIRANTS**, built from particles with spring physics.
-- The pointer disturbs the wordmark: repel, swirl, a light sweep. Letters tilt in 3D toward the cursor. Touch drags do the same.
-- Below the wordmark: the line "Someone is always waiting." and one button, **Enter the archive**, a four-pointed star button that pulses.
-- Click: unlocks audio (this is the user gesture), plays a short synthesised chime, and an iris of hexagon tiles opens onto Home.
-- Shown once per session (`sessionStorage`). A "Skip" link is always visible. Reduced motion: static wordmark, no particles.
+Both are drawn by one component, the **logo curtain** (`components/curtain/`). The logo is a vector (`components/logo/`, traced from the bitmap by `scripts/logo/build.py`). Its twelve letters are cut out of the plate, so they are windows: with the white fill removed, the page shows through them.
+
+- **First load.** A light screen. The logo is centred and large and idles in a loop: the letters ripple in a wave, a band of light sweeps across them, a spark runs round the outline, the mascot bobs, blinks and twitches its antennae. Below it a loading bar reports real work (fonts, lazy code chunks, the images and data the landing page needs, from `lib/route-preloads.ts`) with a label for what is still loading. A few hairlines and corner brackets echo the plate. When loading is done there is nothing to click: the white drains from the letters, then the logo zooms into a letter until the page fills the screen.
+- **Page transition.** Click a link and the logo zooms out of the page you are leaving (its letters show that page), the route changes, then the logo zooms in again through a letter onto the new page. If the new page is not ready 500 ms after the click, the letters fill white and a quieter loading state shows (the letters flicker like a scanner, the mascot looks around, a short label and a scanning line). Pages can hold the reveal with `expectReady` (`lib/page-ready.ts`).
+- Reduced motion: no logo movement. A short light fade for transitions and for the first load.
+- Audio starts on the first touch, click or key press anywhere.
 
 ### 4.2 Home (references: landonorris.com, kprverse.com)
 
