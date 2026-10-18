@@ -171,7 +171,6 @@
   transform-origin: left;
   transform: scaleX(0);
   background: linear-gradient(to right, var(--accent), var(--accent-2));
-  box-shadow: 0 0 8px color-mix(in srgb, var(--glow) 70%, transparent);
 }
 
 /* Settings ------------------------------------------------------------------------------ */
@@ -388,7 +387,6 @@
   width: 1.35rem;
   height: 2px;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--glow);
 }
 
 .railTip {

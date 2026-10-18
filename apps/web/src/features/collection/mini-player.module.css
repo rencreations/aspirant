@@ -101,7 +101,6 @@
 
 .dot[data-on="true"] {
   background: var(--accent);
-  box-shadow: 0 0 8px var(--glow);
   animation: pulse 1.4s ease-in-out infinite;
 }
 
@@ -167,7 +166,6 @@
   inset: 0.25rem;
   rotate: 45deg;
   background: var(--accent);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--glow) 60%, transparent);
   transition: transform var(--dur-base) var(--ease-spring);
 }
 

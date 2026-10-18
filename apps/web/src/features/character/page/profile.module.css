@@ -156,7 +156,6 @@
   height: 18px;
   rotate: 45deg;
   background: var(--accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 60%, transparent);
   transition: left var(--dur-slower) var(--ease-spring);
 }
 

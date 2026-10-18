@@ -22,18 +22,6 @@
   inset: 10% -10% 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(
-      38% 34% at 30% 52%,
-      color-mix(in srgb, var(--light-amber) 16%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      30% 40% at 72% 40%,
-      color-mix(in srgb, var(--light-violet) 12%, transparent),
-      transparent 70%
-    );
-  animation: breathe 7s var(--ease-in-out) infinite;
 }
 
 .kicker {

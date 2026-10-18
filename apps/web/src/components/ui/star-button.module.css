@@ -252,3 +252,35 @@
     opacity: 0.85;
   }
 }
+
+/* The plate: black body, orange keyline, pink star. The house style of the primary action,
+   taken from the logo. Overrides the generic solid and ghost looks above. */
+.solid {
+  --sb-ink: #ffffff;
+}
+
+.solid::before {
+  background: #f2b04c;
+}
+
+.solid::after {
+  inset: 2px;
+  background-image: none;
+  background-color: #0b0b0e;
+}
+
+.solid:hover::before {
+  background: #ff2e90;
+}
+
+.solid .star {
+  color: #ff2e90;
+}
+
+.ghost {
+  --sb-fill: #0b0b0e;
+}
+
+.ghost:hover {
+  color: #ffffff;
+}

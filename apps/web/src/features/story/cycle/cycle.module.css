@@ -235,7 +235,6 @@ section:not([data-run="true"]) .orbit {
   font-size: calc(var(--size) * 0.2);
   line-height: 0.9;
   color: var(--accent);
-  text-shadow: 0 0 40px var(--glow);
 }
 
 .read {

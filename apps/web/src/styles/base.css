@@ -26,6 +26,17 @@
     color: var(--text);
   }
 
+  /* Paper: the page ground carries a faint dot grid, like drafting paper. */
+  body {
+    background-color: var(--bg);
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--text) 9%, transparent) 1px,
+      transparent 1.4px
+    );
+    background-size: 28px 28px;
+  }
+
   h1,
   h2,
   h3,
@@ -35,6 +46,8 @@
     line-height: 0.92;
     letter-spacing: -0.01em;
     text-wrap: balance;
+    font-style: italic;
+    font-synthesis: style;
   }
 
   p {

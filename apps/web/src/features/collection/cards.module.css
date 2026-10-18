@@ -150,7 +150,6 @@
   z-index: -1;
   rotate: 45deg;
   background: var(--accent);
-  box-shadow: 0 0 22px color-mix(in srgb, var(--glow) 65%, transparent);
 }
 
 .play svg {
@@ -187,7 +186,6 @@
   height: 3px;
   width: calc(var(--scrub, 0) * 100%);
   background: var(--accent);
-  box-shadow: 0 0 10px var(--glow);
   opacity: 0;
   transition: opacity var(--dur-base) var(--ease-out);
 }
@@ -220,7 +218,6 @@
   width: 4px;
   height: 100%;
   background: var(--accent);
-  box-shadow: 0 0 8px var(--glow);
   transform: scaleY(0.2);
   transform-origin: bottom;
 }

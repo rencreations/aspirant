@@ -162,7 +162,6 @@
   width: 3.5rem;
   height: 2px;
   background: var(--accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 60%, transparent);
 }
 
 .headTitle {
@@ -235,7 +234,6 @@
 .headStar {
   width: 0.75rem;
   height: 0.75rem;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--glow) 70%, transparent));
 }
 
 /* Interludes: a transmission from far above, in the Storm style. */
@@ -510,7 +508,6 @@
   font-style: normal;
   text-transform: uppercase;
   color: var(--accent);
-  text-shadow: 0 0 28px color-mix(in srgb, var(--glow) 35%, transparent);
 }
 
 .opening {
@@ -672,7 +669,6 @@
   letter-spacing: -0.05em;
   color: transparent;
   -webkit-text-stroke: 1.5px var(--accent);
-  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--glow) 35%, transparent));
   user-select: none;
 }
 
@@ -817,7 +813,6 @@
   width: 1.4rem;
   height: 1.4rem;
   color: var(--accent);
-  filter: drop-shadow(0 0 14px var(--glow));
   animation: star-pulse 5s var(--ease-in-out) infinite;
 }
 
@@ -1154,7 +1149,6 @@
 .cardArt svg {
   width: 3.25rem;
   height: 3.25rem;
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--glow) 50%, transparent));
 }
 
 .cardText {

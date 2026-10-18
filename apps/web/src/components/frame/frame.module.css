@@ -67,7 +67,6 @@
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition: stroke-dashoffset var(--dur-slower) var(--ease-out);
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--glow) 70%, transparent));
 }
 
 /* HUD corner ticks on the bounding box, shown on hover. */
@@ -142,7 +141,6 @@
     opacity: 1;
   }
   .frame[data-glow="true"]:hover .glow {
-    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--glow) 55%, transparent));
   }
 }
 
@@ -163,7 +161,6 @@
 
 .frame[data-glow="true"]:focus-within .glow,
 .frame[data-glow="true"][data-active="true"] .glow {
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--glow) 55%, transparent));
 }
 
 /* Reduced motion: a static, full outline (no draw-in) and no tilt. */

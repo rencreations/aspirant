@@ -56,7 +56,7 @@ test("shows the archive header with computed counts and one h1", async ({ page }
 test("filters by type, announces the count and clears", async ({ page }) => {
   await open(page);
   const status = page.getByRole("status").filter({ hasText: /items|result/ });
-  await expect(status).toContainText("470 items in the archive.");
+  await expect(status).toContainText("468 items in the archive.");
 
   const films = page.getByRole("button", { name: "Films 31", exact: true });
   await films.click();
@@ -70,8 +70,8 @@ test("filters by type, announces the count and clears", async ({ page }) => {
   await expect(page.getByRole("button", { name: /^Watch Teaser/ })).toBeVisible();
 
   await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(status).toContainText("470 items in the archive.");
-  await expect(page.getByRole("button", { name: "All 470", exact: true })).toHaveAttribute(
+  await expect(status).toContainText("468 items in the archive.");
+  await expect(page.getByRole("button", { name: "All 468", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );

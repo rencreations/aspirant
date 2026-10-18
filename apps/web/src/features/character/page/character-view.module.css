@@ -7,13 +7,7 @@
 /* Media sits in a Storm band on every page: films and art read best on a dark screen. */
 .cinemaZone {
   position: relative;
-  background:
-    radial-gradient(
-      70% 40% at 80% 0%,
-      color-mix(in srgb, var(--c-lead) 14%, transparent),
-      transparent 70%
-    ),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
 }
 

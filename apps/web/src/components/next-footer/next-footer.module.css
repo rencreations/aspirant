@@ -106,7 +106,6 @@
 .titleFill {
   color: var(--text);
   clip-path: inset(-0.3em calc(100% - var(--p) * 100%) -0.3em -0.3em);
-  text-shadow: 0 0 0.3em color-mix(in srgb, var(--glow) 26%, transparent);
 }
 
 /* The leading edge of the fill: a thin scan line that travels with the progress. */
@@ -118,7 +117,6 @@
   left: calc(var(--p) * 100%);
   width: 2px;
   background: var(--accent);
-  box-shadow: 0 0 14px var(--glow);
   opacity: calc(min(var(--p) * 25, 1) * min((1 - var(--p)) * 25, 1));
   pointer-events: none;
 }
@@ -166,7 +164,6 @@
   stroke: var(--accent);
   stroke-dasharray: 1;
   stroke-dashoffset: calc(1 - var(--p));
-  filter: drop-shadow(0 0 6px var(--glow));
 }
 
 .ringTicks {

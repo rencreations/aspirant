@@ -382,7 +382,8 @@
   font-family: var(--font-display-stack);
   font-weight: 800;
   text-transform: uppercase;
-  font-synthesis: none;
+  font-style: italic;
+  font-synthesis: style;
 }
 
 .titleBig {
@@ -473,7 +474,6 @@
   width: 4rem;
   height: 2px;
   background: var(--hero-glow);
-  box-shadow: 0 0 12px var(--hero-glow);
   transition: background 900ms var(--ease-out);
 }
 
@@ -595,7 +595,6 @@
 
 .tab[aria-selected="true"]::before {
   background: var(--tab-glow);
-  box-shadow: 0 0 14px var(--tab-glow);
 }
 
 @media (hover: hover) {
@@ -714,7 +713,6 @@
   height: 0.85rem;
   border-radius: 50%;
   border: 1.5px solid var(--hero-glow);
-  box-shadow: 0 0 8px var(--hero-glow);
 }
 
 .chip[aria-pressed="true"] .chipRing {
@@ -759,7 +757,6 @@
   width: 1px;
   height: 40%;
   background: var(--hero-glow);
-  box-shadow: 0 0 8px var(--hero-glow);
   animation: hero-cue 2.2s var(--ease-in-out) infinite;
 }
 
@@ -977,4 +974,82 @@
   100% {
     top: 100%;
   }
+}
+
+/* Flat paper behind the figure: no splash wash, no glow. */
+.backdrop {
+  display: none;
+}
+
+.halo {
+  background: none;
+}
+
+/* The console is a plate: black body, orange keyline, white type. */
+.console {
+  --text: #f4f6f9;
+  --text-dim: #c3c9d4;
+  --text-faint: #98a0ae;
+  --line: rgb(255 255 255 / 0.18);
+  --accent: #ff6aa9;
+  color: #f4f6f9;
+}
+
+.console::before {
+  background: #0b0b0e;
+  backdrop-filter: none;
+  outline: 2px solid #f2b04c;
+  outline-offset: -2px;
+}
+
+.console::after {
+  background: #ff2e90;
+  box-shadow: none;
+}
+
+.tab {
+  background: rgb(255 255 255 / 0.06);
+  color: #c3c9d4;
+}
+
+.tab[aria-selected="true"] {
+  background: rgb(255 255 255 / 0.14);
+  color: #ffffff;
+}
+
+.tab:hover {
+  color: #ffffff;
+  background: rgb(255 255 255 / 0.12);
+}
+
+.tab::before {
+  background: rgb(255 255 255 / 0.22);
+}
+
+.tabIndex {
+  color: #ffb4d3;
+}
+
+.tabNote {
+  color: #98a0ae;
+}
+
+.chip {
+  color: #f4f6f9;
+}
+
+.console .chip::before {
+  background: rgb(255 255 255 / 0.3);
+}
+
+.console .chip::after {
+  background: #0b0b0e;
+}
+
+.console .chip[aria-pressed="true"]::after {
+  background: color-mix(in srgb, var(--hero-glow) 30%, #0b0b0e);
+}
+
+.console .chipIcon {
+  background: linear-gradient(90deg, #ffffff 50%, var(--hero-glow-2) 50%);
 }

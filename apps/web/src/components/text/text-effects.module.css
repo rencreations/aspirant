@@ -69,7 +69,6 @@
   margin-left: 0.08em;
   vertical-align: -0.16em;
   background: var(--accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 60%, transparent);
   animation: caret-blink 1s steps(1, end) infinite;
 }
 

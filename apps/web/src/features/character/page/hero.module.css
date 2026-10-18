@@ -181,8 +181,7 @@
   z-index: 1;
   pointer-events: none;
   translate: calc(var(--px) * 26px) calc(var(--py) * 16px);
-  filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--c-ink) 45%, transparent))
-    drop-shadow(0 0 26px color-mix(in srgb, var(--glow) 35%, transparent));
+  filter: drop-shadow(0 14px 18px rgb(11 11 14 / 0.22));
   animation: float 8s var(--ease-in-out) infinite;
 }
 
@@ -341,7 +340,6 @@
   line-height: 0.8;
   text-transform: uppercase;
   color: var(--text);
-  text-shadow: 0 0 0.25em color-mix(in srgb, var(--glow) 22%, transparent);
   transition: text-shadow var(--dur-slower) var(--ease-heavy);
 }
 
@@ -678,4 +676,9 @@
 :root[data-motion="reduced"] .hero {
   --px: 0 !important;
   --py: 0 !important;
+}
+
+/* Flat paper: no blurred splash wash behind the character. */
+.backdrop {
+  display: none;
 }

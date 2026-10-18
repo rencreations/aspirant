@@ -10,7 +10,9 @@
   line-height: 0.86;
   letter-spacing: -0.005em;
   text-transform: uppercase;
-  font-synthesis: none;
+  /* Slanted like the logo lettering (the browser skews the upright face). */
+  font-style: italic;
+  font-synthesis: style;
 }
 
 @utility serif {

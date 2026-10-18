@@ -164,7 +164,6 @@
   width: 6px;
   height: 6px;
   background: var(--accent);
-  box-shadow: 0 0 8px var(--glow);
   transform: rotate(45deg);
   animation: breathe 2.4s var(--ease-in-out) infinite;
 }
@@ -425,4 +424,25 @@
   50% {
     opacity: 1;
   }
+}
+
+/* Active and hovered links: an orange keyline underneath, taken from the logo outline. */
+.link::before,
+.link::after {
+  display: none;
+}
+
+.link .linkLabel {
+  background-image: linear-gradient(#f2b04c, #f2b04c);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 3px;
+  padding-bottom: 0.18em;
+  transition: background-size var(--dur-slow) var(--ease-out);
+}
+
+.link:hover .linkLabel,
+.link:focus-visible .linkLabel,
+.link[aria-current="page"] .linkLabel {
+  background-size: 100% 3px;
 }
