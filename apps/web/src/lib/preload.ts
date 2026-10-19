@@ -66,6 +66,37 @@ export function imageItem(path: string, label: string, weight = 1): PreloadItem 
   };
 }
 
+const warming = new Set<HTMLVideoElement>();
+
+/**
+ * Buffer the start of a video so it plays at once. Resolves when the browser can play it (or if
+ * it cannot load it). The elements the page uses later share the media cache.
+ */
+export function videoItem(path: string, label: string, weight = 3): PreloadItem {
+  return {
+    id: `video:${path}`,
+    label,
+    weight,
+    run: () =>
+      new Promise<void>((resolve) => {
+        const video = document.createElement("video");
+        warming.add(video);
+        const done = () => {
+          warming.delete(video);
+          video.removeAttribute("src");
+          video.load();
+          resolve();
+        };
+        video.preload = "auto";
+        video.muted = true;
+        video.addEventListener("canplaythrough", done, { once: true });
+        video.addEventListener("error", done, { once: true });
+        video.src = asset(path);
+        video.load();
+      }),
+  };
+}
+
 /** Fetch a data file into the HTTP cache. */
 export function dataItem(path: string, label: string, weight = 1): PreloadItem {
   return {

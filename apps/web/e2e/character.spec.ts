@@ -150,14 +150,14 @@ test("spoilers stay sealed until opened", async ({ page }) => {
 });
 
 test("the form toggle switches between the two forms", async ({ page }) => {
-  await page.goto(url("/character/selena/"));
-  const group = page.getByRole("group", { name: "Selena's form" });
+  await page.goto(url("/character/obsidia/"));
+  const group = page.getByRole("group", { name: "Obsidia's form" });
   await group.getByRole("button", { name: "Ender form" }).click();
   await expect(group.getByRole("button", { name: "Ender form" })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await expect(page.getByText("Official trailer frame, 1:18.")).toBeVisible();
+  await expect(page.getByText("Official trailer frame, 2:35.")).toBeVisible();
 });
 
 test("the next footer chain visits all ten and loops", async ({ page, baseURL }, info) => {

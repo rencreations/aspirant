@@ -21,6 +21,10 @@ The logo is a vector (`components/logo/`, traced from the bitmap by `scripts/log
 
 The bar is sticky and always visible. Pages open from the full-screen menu (`components/nav/`), not from links in the bar. Each page has a pair of aspirants shown as art only, never with names. The menu art is built by `scripts/menu/build.py` so every figure has the same size and the eyes sit on one line. If you add or change a portrait, rebuild with that script. The art is warmed after the site opens and is not part of the loading bar.
 
+## Video
+
+Use the custom player in `components/video-player/` (`VideoCard`) for new videos, not a bare `<video controls>`. Videos never start by themselves. Selena's page is built from recordings cut by `scripts/selena/build.py`: do not re-cut by hand, change the constants there and rebuild. The welcome and the idle loop of her page are in the loading bar like any first-paint asset.
+
 ## Look and feel
 
 Light mode by default (`data-theme="daybreak"`). Dark (`storm`) only where the story needs it. Modern, minimal, futuristic with a mechanical feel: generous spacing, thin lines, few effects, no glow or gradient clutter.

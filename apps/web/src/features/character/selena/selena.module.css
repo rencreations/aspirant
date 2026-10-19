@@ -1,0 +1,551 @@
+/* Selena's page. The picture is the page; the buttons and the trailer card take their look from
+   it: white armour plates, violet edges, the crimson crystal of her horns, gold trim. */
+.page {
+  --armor: #f4f2ff;
+  --armor-2: #d6d0ff;
+  --violet: #6c4cf0;
+  --violet-deep: #20185e;
+  --crystal: #e8335a;
+  --crystal-2: #ff7d98;
+  --gold: #e9b95f;
+  background: #0a0a14;
+  color: #fff;
+}
+
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #0a0a14;
+}
+
+/* The picture ------------------------------------------------------------------------------- */
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  --focus: 50% 50%;
+}
+
+.still,
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus);
+  user-select: none;
+}
+
+.video {
+  background: transparent;
+}
+
+/* The director sets data-layer: off is hidden, back is shown under the front video, front is
+   shown on top and fades in over --xfade. */
+.video[data-layer="off"] {
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.video[data-layer="back"] {
+  opacity: 1;
+  z-index: 1;
+}
+
+.video[data-layer="front"] {
+  opacity: 1;
+  z-index: 2;
+  animation: dissolve var(--xfade, 120ms) linear both;
+}
+
+@keyframes dissolve {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The interface ----------------------------------------------------------------------------- */
+.ui {
+  --pad: clamp(1rem, 2.4vw, 3rem);
+  --top: calc(var(--nav-h) + clamp(0.75rem, 4.5vh, 2.5rem));
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s linear 400ms;
+}
+
+.ui[data-visible="true"] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.ui > * {
+  pointer-events: auto;
+}
+
+/* Top left: the trailer. It sits in the empty corner of the picture and stays small. */
+.trailer {
+  position: absolute;
+  left: var(--pad);
+  top: var(--top);
+  width: clamp(11.5rem, 17vw, 20.5rem);
+  opacity: 0;
+  transform: translateX(-28px);
+  transition:
+    opacity 600ms var(--ease-out) 120ms,
+    transform 800ms var(--ease-out) 120ms;
+}
+
+.ui[data-visible="true"] .trailer {
+  opacity: 1;
+  transform: none;
+}
+
+.trailerCard {
+  --card-edge-colour: var(--violet-deep);
+  --card-accent-colour: var(--gold);
+  --card-play-colour: var(--crystal);
+  --cut: 16px;
+}
+
+/* Top right: the buttons, listed down the empty corner. */
+.menu {
+  position: absolute;
+  right: var(--pad);
+  top: var(--top);
+  width: clamp(10.5rem, 15vw, 16rem);
+}
+
+.menu ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu li {
+  opacity: 0;
+  transform: translateX(46px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 800ms var(--ease-out);
+  transition-delay: calc(var(--i) * 70ms + 200ms);
+}
+
+.ui[data-visible="true"] .menu li {
+  opacity: 1;
+  transform: none;
+}
+
+/* One button: an armour plate with a chamfered corner, a crystal shard and a gold edge. */
+.button {
+  --cut: 17px;
+  --plate: linear-gradient(112deg, #ffffff 0%, var(--armor) 45%, var(--armor-2) 100%);
+  --ink: #1a1342;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  height: 3.4rem;
+  padding: 0 1.1rem 0 0.9rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 6px 14px rgb(10 8 40 / 0.35));
+  transition:
+    transform 520ms var(--ease-spring),
+    color 280ms var(--ease-out),
+    opacity 300ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+
+/* The edge (violet) and the face (the plate) are two copies of the same chamfered shape. */
+.button::before,
+.button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.button::before {
+  inset: 0;
+  background: linear-gradient(120deg, var(--violet), #a995ff 55%, var(--violet));
+}
+
+.button::after {
+  inset: 2px;
+  background: var(--plate);
+  transition: background 360ms var(--ease-out);
+}
+
+/* The crystal: a crimson shard like her horns. */
+.shard {
+  position: relative;
+  width: 0.95rem;
+  height: 1.7rem;
+  background: linear-gradient(160deg, var(--crystal-2), var(--crystal) 55%, #8c1230);
+  clip-path: polygon(50% 0, 100% 34%, 76% 100%, 24% 100%, 0 34%);
+  transition:
+    transform 560ms var(--ease-spring),
+    filter 320ms var(--ease-out);
+}
+
+.index {
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+  transition: opacity 280ms var(--ease-out);
+}
+
+.text {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: transform 460ms var(--ease-out);
+}
+
+/* The gold trim runs along the bottom edge on hover. */
+.text::after {
+  content: "";
+  position: absolute;
+  left: 2.9rem;
+  right: 1.6rem;
+  bottom: 0.55rem;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 560ms var(--ease-out);
+}
+
+/* The bars say a clip is waiting. */
+.bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.95rem;
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+.bars i {
+  width: 3px;
+  height: 100%;
+  background: currentColor;
+  transform-origin: 50% 100%;
+  transform: scaleY(0.3);
+}
+
+.sheen {
+  position: absolute;
+  inset: 2px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: polygon(
+    calc(var(--cut) - 2px) 0,
+    100% 0,
+    100% calc(100% - var(--cut) + 2px),
+    calc(100% - var(--cut) + 2px) 100%,
+    0 100%,
+    0 calc(var(--cut) - 2px)
+  );
+}
+
+.sheen::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -40%;
+  width: 28%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  transform: skewX(-24deg) translateX(0);
+}
+
+.shard,
+.index,
+.text,
+.bars {
+  position: relative;
+  z-index: 1;
+}
+
+.button:not(:disabled):hover,
+.button:not(:disabled):focus-visible {
+  transform: translateX(-12px);
+  color: #fff;
+  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
+}
+
+.button:not(:disabled):hover .shard,
+.button:not(:disabled):focus-visible .shard {
+  transform: scale(1.25) rotate(14deg);
+  filter: brightness(1.25) drop-shadow(0 0 6px var(--crystal));
+}
+
+.button:not(:disabled):hover .index,
+.button:not(:disabled):focus-visible .index {
+  opacity: 1;
+  color: var(--gold);
+}
+
+.button:not(:disabled):hover .text,
+.button:not(:disabled):focus-visible .text {
+  transform: translateX(3px);
+}
+
+.button:not(:disabled):hover .text::after,
+.button:not(:disabled):focus-visible .text::after {
+  transform: scaleX(1);
+}
+
+.button:not(:disabled):hover .sheen::before,
+.button:not(:disabled):focus-visible .sheen::before {
+  animation: sweep 900ms var(--ease-out) forwards;
+}
+
+.button:not(:disabled):active {
+  transform: translateX(-6px) scale(0.97);
+}
+
+/* Waiting for the loop to reach the frame the clip starts on. */
+.button.button[data-state="queued"],
+.button.button[data-state="loading"] {
+  --plate: linear-gradient(112deg, #d12a4d 0%, var(--crystal) 100%);
+  color: #fff;
+  transform: translateX(-12px);
+}
+
+.button[data-state="queued"] .bars,
+.button[data-state="loading"] .bars {
+  opacity: 1;
+}
+
+.button[data-state="queued"] .bars i,
+.button[data-state="loading"] .bars i {
+  animation: bars 760ms var(--ease-in-out) infinite;
+}
+
+.button[data-state="loading"] .bars i {
+  animation-duration: 1100ms;
+}
+
+.button[data-state="queued"] .bars i:nth-child(2),
+.button[data-state="loading"] .bars i:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.button[data-state="queued"] .bars i:nth-child(3),
+.button[data-state="loading"] .bars i:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.button[data-state="queued"] .index,
+.button[data-state="loading"] .index {
+  color: #fff;
+  opacity: 0.9;
+}
+
+.button[data-dim="true"] {
+  opacity: 0.4;
+  filter: grayscale(0.4) drop-shadow(0 6px 14px rgb(10 8 40 / 0.2));
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Skip and Back, bottom right. */
+.corner {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  translate: -50% 0;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2.9rem;
+  padding: 0 1.2rem;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(10 8 40 / 0.5);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: rise 600ms var(--ease-out) 400ms both;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.corner i {
+  width: 0.9rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 360ms var(--ease-out);
+}
+
+.corner:hover,
+.corner:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--gold);
+}
+
+.corner:hover i,
+.corner:focus-visible i {
+  width: 1.6rem;
+}
+
+.corner:disabled {
+  opacity: 0.5;
+}
+
+.nextZone {
+  position: relative;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Phones and tall screens: the picture is cropped to her, the trailer stays top left and the four
+   buttons sit along the bottom in two rows. */
+@media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
+  .stage {
+    --focus: 63% 50%;
+  }
+
+  .trailer {
+    width: clamp(9.5rem, 42vw, 14rem);
+  }
+
+  .menu {
+    left: var(--pad);
+    right: var(--pad);
+    top: auto;
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+    width: auto;
+  }
+
+  .menu ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .button {
+    --cut: 13px;
+    min-width: 0;
+    height: 3.1rem;
+    gap: 0.5rem;
+    padding: 0 0.7rem 0 0.7rem;
+  }
+
+  .bars {
+    display: none;
+  }
+
+  .button[data-state="queued"] .bars,
+  .button[data-state="loading"] .bars {
+    display: inline-flex;
+  }
+
+  .button:not(:disabled):hover,
+  .button:not(:disabled):focus-visible,
+  .button[data-state="queued"],
+  .button[data-state="loading"] {
+    transform: none;
+  }
+
+  .text {
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+  }
+
+  .text::after {
+    display: none;
+  }
+
+  .index {
+    display: none;
+  }
+
+  .corner {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: skewX(-24deg) translateX(0);
+  }
+  to {
+    transform: skewX(-24deg) translateX(1000%);
+  }
+}
+
+@keyframes bars {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .shard,
+  .text,
+  .menu li,
+  .trailer {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+
+  .button[data-state="queued"] .bars i,
+  .button[data-state="loading"] .bars i {
+    animation: none;
+    transform: scaleY(0.7);
+  }
+}

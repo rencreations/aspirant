@@ -71,6 +71,11 @@
   color: var(--text-dim);
 }
 
+.nav[data-theme="storm"] .here {
+  color: #fff;
+  text-shadow: 0 1px 10px rgb(5 5 20 / 0.7);
+}
+
 .hereIndex {
   color: var(--accent);
 }
