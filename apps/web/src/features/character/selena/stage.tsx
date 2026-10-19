@@ -7,7 +7,6 @@ import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl, releaseMedia } from "@/lib/media-store";
 import { expectReady } from "@/lib/page-ready";
-import { useSiteStore } from "@/lib/stores";
 
 import {
   SelenaDirector,
@@ -80,7 +79,6 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     window.clearTimeout(releaseTimer);
     const tier = selenaTier();
     const d = new SelenaDirector(els as StageElements, {
-      muted: () => useSiteStore.getState().muted,
       reduced,
       onState: (s) => {
         onStateRef.current(s);
@@ -88,6 +86,9 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
       attach: (key, el) => {
         if (el.dataset.attached) return;
         el.dataset.attached = "1";
+        // No video has sound, so every one is muted for good and the browser lets it autoplay.
+        el.defaultMuted = true;
+        el.muted = true;
         el.src = mediaUrl(selenaPath(tier, videoFile(key)));
         if (LOOPING(key)) el.loop = true;
       },
@@ -133,27 +134,15 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     };
     waitAndStart();
 
-    const unsub = useSiteStore.subscribe((s, prev) => {
-      if (s.muted !== prev.muted) d.setMuted(s.muted);
-    });
     const onVisibility = () => {
       d.setHidden(document.visibilityState === "hidden");
     };
     document.addEventListener("visibilitychange", onVisibility);
-    // The first touch or key after a muted start gives the browser the permission it needs.
-    const unmute = () => {
-      d.setMuted(useSiteStore.getState().muted);
-    };
-    window.addEventListener("pointerdown", unmute, { once: true });
-    window.addEventListener("keydown", unmute, { once: true });
 
     return () => {
       alive = false;
       mark();
-      unsub();
       document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("pointerdown", unmute);
-      window.removeEventListener("keydown", unmute);
       for (const v of targets) {
         v.removeEventListener("canplay", check);
         v.removeEventListener("loadeddata", check);
@@ -188,7 +177,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
           }}
           className={styles.video}
           playsInline
-          muted={LOOPING(key)}
+          muted
           preload="auto"
           tabIndex={-1}
         />

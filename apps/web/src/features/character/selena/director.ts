@@ -77,8 +77,6 @@ export interface StageState {
 export type StageElements = Record<VideoKey, HTMLVideoElement>;
 
 interface DirectorOptions {
-  /** Read at the moment a video starts, so the sound button is always honoured. */
-  muted: () => boolean;
   /** Reduced motion: nothing starts by itself and nothing loops. */
   reduced: boolean;
   onState: (state: StageState) => void;
@@ -285,33 +283,22 @@ export class SelenaDirector {
     return this.all().find((v) => v.dataset.layer === "front") ?? null;
   }
 
-  private async play(video: HTMLVideoElement, silent = false): Promise<boolean> {
-    video.muted = silent || this.opts.muted();
+  /** The videos have no sound, so the browser lets them start by themselves. */
+  private async play(video: HTMLVideoElement): Promise<boolean> {
     try {
       await video.play();
       return true;
     } catch {
-      video.muted = true;
-      try {
-        await video.play();
-        return true;
-      } catch {
-        return false;
-      }
+      return false;
     }
   }
 
   /** Seek, play and wait for the picture at `time` to be on screen. */
-  private async startAt(video: HTMLVideoElement, time: number, silent = false): Promise<boolean> {
+  private async startAt(video: HTMLVideoElement, time: number): Promise<boolean> {
     await seekTo(video, time);
-    if (!(await this.play(video, silent))) return false;
+    if (!(await this.play(video))) return false;
     await presented(video, time);
     return true;
-  }
-
-  /** Set the sound on whatever is playing (the sound button). */
-  setMuted(muted: boolean) {
-    for (const el of this.all()) el.muted = muted;
   }
 
   /** Get a scene's videos ready (the pointer is on its button). */
@@ -356,7 +343,7 @@ export class SelenaDirector {
     this.stopWatch?.();
     const idle = this.use("idle");
     const welcome = this.els.welcome;
-    await this.startAt(idle, 0, true);
+    await this.startAt(idle, 0);
     await this.swap(idle, this.topVideo() === welcome ? welcome : null, HANDOVER_MS);
     welcome.currentTime = 0;
     this.set({ mode: "idle" });
@@ -383,7 +370,7 @@ export class SelenaDirector {
       el.dataset.layer = "off";
     }
     this.zoomNow(idle, 1);
-    if (!this.opts.reduced) await this.startAt(idle, 0, true);
+    if (!this.opts.reduced) await this.startAt(idle, 0);
     else idle.currentTime = 0;
     idle.style.setProperty("--xfade", "0ms");
     idle.dataset.layer = "front";
@@ -542,7 +529,7 @@ export class SelenaDirector {
     const from = this.els[`${scene}-in`];
     const loop = this.use(`${scene}-loop`);
     this.use(`${scene}-out`);
-    await this.startAt(loop, 0, true);
+    await this.startAt(loop, 0);
     await this.swap(loop, from, HANDOVER_MS);
     from.currentTime = 0;
     this.set({ mode: "page", scene });
@@ -635,7 +622,7 @@ export class SelenaDirector {
     const ms = reduced ? 380 : back.blendMs;
     this.zoomNow(idle, back.align === 1 ? 1 : 1 / back.align);
     if (reduced) idle.currentTime = 0;
-    else await this.startAt(idle, phase / SELENA_FPS, true);
+    else await this.startAt(idle, phase / SELENA_FPS);
     if (back.align !== 1) this.zoom(idle, 1, ms);
     await this.swap(idle, from, ms);
     this.zoomNow(idle, 1);

@@ -23,7 +23,6 @@ class FakeVideo {
     },
   };
   offsetWidth = 0;
-  muted = false;
   readyState = 4;
   duration = 10;
   error: unknown = null;
@@ -102,7 +101,6 @@ function setup(options: { reduced?: boolean } = {}) {
   const attached: VideoKey[] = [];
   const states: StageState[] = [];
   const director = new SelenaDirector(els as unknown as StageElements, {
-    muted: () => false,
     reduced: options.reduced ?? false,
     onState: (s) => states.push(s),
     attach: (key) => attached.push(key),
@@ -256,8 +254,8 @@ describe("a choice reacts at once", () => {
     const ctx = setup();
     const out = await toOutro(ctx, "gallery");
     out.tick(f(SELENA_PAGES.gallery.out.uiFrame));
-    ctx.director.request("others");
-    expect(ctx.director.current.next).toBe("others");
+    ctx.director.request("about");
+    expect(ctx.director.current.next).toBe("about");
     ctx.director.cancel();
     expect(ctx.director.current.next).toBeNull();
   });
@@ -392,7 +390,7 @@ describe("pages", () => {
   it("can leave the queue", async () => {
     const ctx = setup();
     await toIdle(ctx);
-    ctx.director.request("others");
+    ctx.director.request("about");
     ctx.director.cancel();
     expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null, wait: null });
   });

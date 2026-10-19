@@ -8,7 +8,7 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import { VideoCard } from "@/components/video-player/video-card";
 import { audio } from "@/lib/audio";
 import { useHotkey } from "@/lib/hooks";
-import { MUSIC_VOLUME, startMusic, type Track } from "@/lib/now-playing";
+import { startMusic, type Track } from "@/lib/now-playing";
 
 import { SHORT_NAMES, type PageName, type SceneName, type StageState } from "./director";
 import styles from "./selena.module.css";
@@ -16,14 +16,12 @@ import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
 import { SkillsDrawers } from "./skills/skills-drawers";
 import { SelenaStage, type StageApi } from "./stage";
-import { SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
-/** The four buttons, in order, and the page each one opens. */
+/** The three buttons, in order, and the page each one opens. */
 const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName }> = [
   { id: "about", label: "About", scene: "about" },
   { id: "skills", label: "Skills", scene: "skills" },
   { id: "gallery", label: "Gallery", scene: "gallery" },
-  { id: "others", label: "Others", scene: "others" },
 ];
 
 const TRAILER = {
@@ -76,7 +74,7 @@ const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false
 /**
  * Selena's page. One full-screen picture that does not scroll. The welcome animation plays once
  * the page is in view, then she idles in a seamless loop. The trailer sits in the empty top-left
- * of the picture, with the Random Animation button under it, and four buttons in the empty
+ * of the picture, with the Random Animation button under it, and three buttons in the empty
  * top-right send her into pages of her own: each has an entrance, a loop of its own and an exit
  * back to the idle. Random Animation plays the three short animations in turn: the panel steps aside while one
  * plays and comes back when it ends. Music plays and loops while the page is open.
@@ -145,20 +143,6 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
   // The nav picks its colours from what is under it. Once the page is up (after the boot screen
   // the first sample is stale) ask it to look again.
-  // The music steps back while a clip with its own sound (a voice line) plays.
-  useEffect(() => {
-    let loud = false;
-    if (scene && scene in SELENA_PAGES) {
-      const page = SELENA_PAGES[scene as keyof typeof SELENA_PAGES];
-      loud =
-        (mode === "intro" && page.in.audio) ||
-        ((mode === "outro" || mode === "leaving") && page.out.audio);
-    } else if (scene && scene in SELENA_SHORTS) {
-      loud = mode === "short" && SELENA_SHORTS[scene as keyof typeof SELENA_SHORTS].audio;
-    }
-    audio.setMusicVolume(loud ? MUSIC_VOLUME * 0.2 : MUSIC_VOLUME, 1200);
-  }, [mode, scene]);
-
   const booted = mode !== "boot";
   useEffect(() => {
     if (booted) window.dispatchEvent(new Event("resize"));

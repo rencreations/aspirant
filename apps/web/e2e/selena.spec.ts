@@ -24,11 +24,11 @@ async function open(page: Page) {
   return errors;
 }
 
-test("shows the four buttons, Random Animation and the trailer, with one h1", async ({ page }) => {
+test("shows the three buttons, Random Animation and the trailer, with one h1", async ({ page }) => {
   const errors = await open(page);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.getByRole("heading", { level: 1, name: "Selena" })).toBeAttached();
-  for (const name of ["About", "Skills", "Gallery", "Others", "Random Animation"])
+  for (const name of ["About", "Skills", "Gallery", "Random Animation"])
     await expect(page.getByRole("button", { name })).toBeVisible();
   await expect(page.getByRole("button", { name: /Play video: Selena, trailer/ })).toBeVisible();
   // Only the picture: nothing left of the old page.
@@ -436,7 +436,7 @@ test("fits the screen without sideways scrolling", async ({ page }) => {
     return el.scrollWidth - window.innerWidth;
   });
   expect(overflow).toBeLessThanOrEqual(0);
-  for (const name of ["About", "Skills", "Gallery", "Others", "Random Animation"]) {
+  for (const name of ["About", "Skills", "Gallery", "Random Animation"]) {
     const box = await page.getByRole("button", { name }).first().boundingBox();
     const vw = page.viewportSize()?.width ?? 0;
     expect(box!.x).toBeGreaterThanOrEqual(0);

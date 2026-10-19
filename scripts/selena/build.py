@@ -21,10 +21,10 @@ of the recordings, windowed mean squared error between frames).
   idle     The idle animation repeats every 486 frames (8.1 s). The loop is idle frames 1471..1956,
            the frames after the welcome cut. The last 20 frames dissolve into the 20 before the
            start, so the wrap is hidden (the debris in the background drifts and never repeats).
-  pages    About, Skills, Gallery and Others are four more poses. Each recording is cut in three:
+  pages    About, Skills and Gallery are three more poses. Each recording is cut in three:
              in    36 frames before the action to the loop start, plus 3 frames (EXTRA)
              loop  one cycle of the page's own animation (486 frames for Skills and Gallery, 240
-                   for About and Others), dissolved at the seam like the idle loop
+                   for About), dissolved at the seam like the idle loop
              out   from the last frame that still matches the loop to about a second after the
                    idle resumes. `outPhase` is the loop frame it starts at.
            `startPhases` are the idle loop frames an `in` can start at (3, 162 frames apart).
@@ -36,7 +36,6 @@ Run: python -I scripts/selena/build.py "C:/Users/muham/Videos/selena" "C:/Users/
 """
 
 import json
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -59,7 +58,6 @@ PAGES = {
     "about": ("phone-empty.mkv", 385, 604, 240, 1329, [160, 322, 484], 560),
     "skills": ("horizontal.mkv", 420, 753, 486, 1777, [122, 284, 446], 480),
     "gallery": ("vertical.mkv", 345, 894, 486, 1961, [124, 286, 448], 480),
-    "others": ("phone-messages.mkv", 381, 664, 240, 1848, [20, 182, 344], 480),
 }
 
 # key -> (source, a0, idle start phases, dissolve into the short in ms)
@@ -80,7 +78,6 @@ TAILS = {
     "about": (1654, 1678, 181),
     "skills": (1975, 2179, 197),
     "gallery": (2151, 2397, 77),
-    "others": (2173, 2233, 55),
     "short-1": (746, 770, 339),
     "short-2": (821, 845, 177),
     "short-3": (871, 949, 391),
@@ -99,13 +96,10 @@ ALIGN = {
     "about": (0.995, 0.995),
     "skills": (1.0, 1.0),
     "gallery": (1.0, 1.0),
-    "others": (1.0, 0.995),
     "short-1": (0.995, 1.0),
     "short-2": (1.0, 0.9975),
     "short-3": (0.9975, 1.0),
 }
-
-AUDIO = ["-c:a", "aac", "-b:a", "112k", "-ar", "48000", "-ac", "2"]
 
 
 def run(args: list[str]) -> None:
@@ -132,20 +126,6 @@ class Tier:
         return f"[{inp}:v]trim=start_frame={a}:end_frame={b},{self.scale},setpts=N/({FPS}*TB)[{tag}]"
 
 
-def mean_volume(path: Path) -> float:
-    p = subprocess.run(
-        ["ffmpeg", "-v", "info", "-i", str(path), "-vn", "-af", "volumedetect", "-f", "null", "-"],
-        capture_output=True,
-        text=True,
-    )
-    m = re.search(r"mean_volume: (-?[\d.]+) dB", p.stderr)
-    return float(m.group(1)) if m else -91.0
-
-
-def has_audio(path: Path) -> bool:
-    return mean_volume(path) > -70
-
-
 def build_welcome(t: Tier, src: Path, out: Path) -> None:
     n = WELCOME_END + 1 - WELCOME_BLEND
     parts = [
@@ -156,15 +136,10 @@ def build_welcome(t: Tier, src: Path, out: Path) -> None:
         f"[wt][it]blend=all_expr='A*(1-(N+1)/{WELCOME_BLEND})+B*((N+1)/{WELCOME_BLEND})'[b]",
         "[m][b][x]concat=n=3:v=1:a=0[v]",
     ]
-    t0, t1 = WELCOME_START / FPS, (WELCOME_END + 1) / FPS
-    audio = (
-        f"[0:a]atrim=start={t0:.5f}:end={t1:.5f},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,"
-        f"afade=t=out:st={t1 - t0 - 0.06:.4f}:d=0.06,apad=pad_dur={EXTRA / FPS:.5f}[a]"
-    )
     run([
         "-i", str(src / "welcome.mkv"), "-i", str(src / "idle.mkv"),
-        "-filter_complex", ";".join([*parts, audio]),
-        "-map", "[v]", "-map", "[a]", *t.enc, *AUDIO, str(out),
+        "-filter_complex", ";".join(parts),
+        "-map", "[v]", *t.enc, "-an", str(out),
     ])
 
 
@@ -181,22 +156,9 @@ def build_loop(t: Tier, source: Path, start: int, frames: int, out: Path) -> Non
     run(["-i", str(source), "-filter_complex", ";".join(parts), "-map", "[v]", *t.enc, "-an", str(out)])
 
 
-def build_cut(t: Tier, source: Path, a: int, b: int, out: Path, audio: bool, fade_out: float) -> None:
-    """Frames [a, b) of a recording, with its sound when it has any."""
-    t0, t1 = a / FPS, b / FPS
-    parts = [t.seg(0, a, b, "v")]
-    maps = ["-map", "[v]"]
-    codec = [*t.enc]
-    if audio:
-        parts.append(
-            f"[0:a]atrim=start={t0:.5f}:end={t1:.5f},asetpts=PTS-STARTPTS,"
-            f"afade=t=in:d=0.02,afade=t=out:st={t1 - t0 - fade_out:.4f}:d={fade_out}[a]"
-        )
-        maps += ["-map", "[a]"]
-        codec += AUDIO
-    else:
-        codec += ["-an"]
-    run(["-i", str(source), "-filter_complex", ";".join(parts), *maps, *codec, str(out)])
+def build_cut(t: Tier, source: Path, a: int, b: int, out: Path) -> None:
+    """Frames [a, b) of a recording. The videos are silent: the sound comes from the site."""
+    run(["-i", str(source), "-filter_complex", t.seg(0, a, b, "v"), "-map", "[v]", *t.enc, "-an", str(out)])
 
 
 def build_still(src: Path, out: Path, w: int, h: int) -> None:
@@ -234,7 +196,7 @@ def tail_end(key: str) -> int:
     return TAILS[key][1] + TAIL_WINDOW
 
 
-def build_tier(name: str, src: Path, out_root: Path, audio: dict[str, bool], parts: set[str]) -> None:
+def build_tier(name: str, src: Path, out_root: Path, parts: set[str]) -> None:
     t = Tier(name)
     out = out_root / name
     out.mkdir(parents=True, exist_ok=True)
@@ -242,21 +204,20 @@ def build_tier(name: str, src: Path, out_root: Path, audio: dict[str, bool], par
         build_welcome(t, src, out / "welcome.mp4")
         build_loop(t, src / "idle.mkv", LOOP_START, LOOP_FRAMES, out / "idle.mp4")
     for key, (file, a0, l0, p, o0, _s, _b) in PAGES.items():
-        a = audio[file]
         if "in" in parts:
-            build_cut(t, src / file, a0, l0 + EXTRA, out / f"{key}-in.mp4", a, 0.1)
+            build_cut(t, src / file, a0, l0 + EXTRA, out / f"{key}-in.mp4")
         if "loop" in parts:
             build_loop(t, src / file, l0, p, out / f"{key}-loop.mp4")
         if "out" in parts:
-            build_cut(t, src / file, o0, tail_end(key), out / f"{key}-out.mp4", a, 0.12)
+            build_cut(t, src / file, o0, tail_end(key), out / f"{key}-out.mp4")
     if "short" in parts:
         for key, (file, a0, _s, _b) in SHORTS.items():
-            build_cut(t, src / file, a0, tail_end(key), out / f"{key}.mp4", audio[file], 0.12)
+            build_cut(t, src / file, a0, tail_end(key), out / f"{key}.mp4")
     print(name, "done", sum(f.stat().st_size for f in out.glob("*.mp4")) // 1048576, "MB", flush=True)
 
 
-def seg_info(file: str, frames: int, audio: bool, **extra) -> dict:
-    return {"file": file, "frames": frames, "audio": audio, **extra}
+def seg_info(file: str, frames: int, **extra) -> dict:
+    return {"file": file, "frames": frames, **extra}
 
 
 def back_timing(key: str, start: int) -> dict:
@@ -271,19 +232,17 @@ def back_timing(key: str, start: int) -> dict:
     }
 
 
-def timeline(audio: dict[str, bool], out_root: Path) -> str:
+def timeline(out_root: Path) -> str:
     pages = {}
-    for key, (file, a0, l0, p, o0, starts, b_in) in PAGES.items():
-        a = audio[file]
+    for key, (_file, a0, l0, p, o0, starts, b_in) in PAGES.items():
         pages[key] = {
             "in": seg_info(
-                f"{key}-in.mp4", l0 + EXTRA - a0, a, startPhases=starts, blendMs=b_in, align=ALIGN[key][0]
+                f"{key}-in.mp4", l0 + EXTRA - a0, startPhases=starts, blendMs=b_in, align=ALIGN[key][0]
             ),
-            "loop": seg_info(f"{key}-loop.mp4", p, False),
+            "loop": seg_info(f"{key}-loop.mp4", p),
             "out": seg_info(
                 f"{key}-out.mp4",
                 tail_end(key) - o0,
-                a,
                 startPhase=(o0 - l0) % p,
                 **back_timing(key, o0),
             ),
@@ -292,13 +251,12 @@ def timeline(audio: dict[str, bool], out_root: Path) -> str:
         key: seg_info(
             f"{key}.mp4",
             tail_end(key) - a0,
-            audio[file],
             startPhases=starts,
             blendMs=b_in,
             align=ALIGN[key][0],
             back=back_timing(key, a0),
         )
-        for key, (file, a0, starts, b_in) in SHORTS.items()
+        for key, (_file, a0, starts, b_in) in SHORTS.items()
     }
     names = ["welcome.mp4", "idle.mp4"]
     for key in PAGES:
@@ -322,7 +280,6 @@ def timeline(audio: dict[str, bool], out_root: Path) -> str:
         "interface IdleStart {\n"
         "  file: string;\n"
         "  frames: number;\n"
-        "  audio: boolean;\n"
         "  /** Idle loop frames this video can start at. They repeat every 162 frames. */\n"
         "  startPhases: readonly number[];\n"
         "  /** Length of the dissolve into the video, in ms. */\n"
@@ -346,11 +303,10 @@ def timeline(audio: dict[str, bool], out_root: Path) -> str:
         "}\n\n"
         "export interface PageTiming {\n"
         "  in: IdleStart;\n"
-        "  loop: { file: string; frames: number; audio: boolean };\n"
+        "  loop: { file: string; frames: number };\n"
         "  out: BackTiming & {\n"
         "    file: string;\n"
         "    frames: number;\n"
-        "    audio: boolean;\n"
         "    /** Page loop frame the exit starts at. */\n"
         "    startPhase: number;\n"
         "  };\n"
@@ -376,10 +332,9 @@ def main() -> None:
     parts = {"base", "in", "loop", "out", "short"}
     if "--parts" in argv:
         parts = set(argv[argv.index("--parts") + 1].split(","))
-    audio = {f: has_audio(src / f) for f in {p[0] for p in PAGES.values()} | {s[0] for s in SHORTS.values()}}
     if "--timeline-only" not in flags:
         for name in [only] if only else list(TIERS):
-            build_tier(name, src, out_root, audio, parts)
+            build_tier(name, src, out_root, parts)
         build_still(src, out_root / "still.webp", 1920, 864)
         if len(args) > 1:
             build_poster(Path(args[1]), out_root / "trailer-poster.webp")
@@ -388,7 +343,7 @@ def main() -> None:
 
     dest = web / "src" / "features" / "character" / "selena" / "timeline.generated.ts"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(timeline(audio, out_root), encoding="utf-8")
+    dest.write_text(timeline(out_root), encoding="utf-8")
     print("wrote", dest)
 
 

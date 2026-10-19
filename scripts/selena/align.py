@@ -30,7 +30,6 @@ PAIRS = {
     "about": ("phone-empty.mkv", 385, 160, 1684, 187),
     "skills": ("horizontal.mkv", 420, 122, 2185, 203),
     "gallery": ("vertical.mkv", 345, 124, 2403, 83),
-    "others": ("phone-messages.mkv", 381, 20, 2239, 61),
     "short-1": ("short-1.mkv", 339, 42, 776, 345),
     "short-2": ("short-2.mkv", 412, 22, 851, 183),
     "short-3": ("short-3.mkv", 486, 19, 955, 397),

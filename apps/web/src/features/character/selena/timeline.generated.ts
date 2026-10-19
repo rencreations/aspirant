@@ -21,68 +21,58 @@ export type SelenaTier = keyof typeof SELENA_TIERS;
 /** Size in bytes of every file in every tier, for the loading bar. */
 export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
   "1080": {
-    "welcome.mp4": 13102439,
+    "welcome.mp4": 12866454,
     "idle.mp4": 4719775,
-    "about-in.mp4": 3146380,
+    "about-in.mp4": 3090630,
     "about-loop.mp4": 1663630,
-    "about-out.mp4": 5749640,
+    "about-out.mp4": 5647644,
     "skills-in.mp4": 4616685,
     "skills-loop.mp4": 4293890,
     "skills-out.mp4": 5383342,
     "gallery-in.mp4": 6454590,
     "gallery-loop.mp4": 4730236,
     "gallery-out.mp4": 5751589,
-    "others-in.mp4": 3678600,
-    "others-loop.mp4": 1646654,
-    "others-out.mp4": 6031892,
-    "short-1.mp4": 7137007,
-    "short-2.mp4": 6588715,
-    "short-3.mp4": 6600765,
+    "short-1.mp4": 7014392,
+    "short-2.mp4": 6465706,
+    "short-3.mp4": 6470274,
   },
   "1440": {
-    "welcome.mp4": 18682914,
+    "welcome.mp4": 18446985,
     "idle.mp4": 6391202,
-    "about-in.mp4": 4245507,
+    "about-in.mp4": 4189789,
     "about-loop.mp4": 2203875,
-    "about-out.mp4": 8019054,
+    "about-out.mp4": 7917090,
     "skills-in.mp4": 6268512,
     "skills-loop.mp4": 5735903,
     "skills-out.mp4": 7292205,
     "gallery-in.mp4": 8758288,
     "gallery-loop.mp4": 6377118,
     "gallery-out.mp4": 7785175,
-    "others-in.mp4": 4950956,
-    "others-loop.mp4": 2188081,
-    "others-out.mp4": 8405642,
-    "short-1.mp4": 9954205,
-    "short-2.mp4": 9121166,
-    "short-3.mp4": 9329002,
+    "short-1.mp4": 9831638,
+    "short-2.mp4": 8998189,
+    "short-3.mp4": 9198531,
   },
   "2160": {
-    "welcome.mp4": 29855678,
+    "welcome.mp4": 29619949,
     "idle.mp4": 9361156,
-    "about-in.mp4": 6310915,
+    "about-in.mp4": 6255229,
     "about-loop.mp4": 3171546,
-    "about-out.mp4": 12371682,
+    "about-out.mp4": 12269782,
     "skills-in.mp4": 9229788,
     "skills-loop.mp4": 8329613,
     "skills-out.mp4": 10717493,
     "gallery-in.mp4": 12834653,
     "gallery-loop.mp4": 9332511,
     "gallery-out.mp4": 11490022,
-    "others-in.mp4": 7303939,
-    "others-loop.mp4": 3151809,
-    "others-out.mp4": 12876325,
-    "short-1.mp4": 15349828,
-    "short-2.mp4": 13862063,
-    "short-3.mp4": 14841614,
+    "short-1.mp4": 15227341,
+    "short-2.mp4": 13739166,
+    "short-3.mp4": 14711251,
   },
 };
 
 interface IdleStart {
   file: string;
   frames: number;
-  audio: boolean;
   /** Idle loop frames this video can start at. They repeat every 162 frames. */
   startPhases: readonly number[];
   /** Length of the dissolve into the video, in ms. */
@@ -109,11 +99,10 @@ export interface ShortTiming extends IdleStart {
 
 export interface PageTiming {
   in: IdleStart;
-  loop: { file: string; frames: number; audio: boolean };
+  loop: { file: string; frames: number };
   out: BackTiming & {
     file: string;
     frames: number;
-    audio: boolean;
     /** Page loop frame the exit starts at. */
     startPhase: number;
   };
@@ -124,7 +113,6 @@ export const SELENA_PAGES = {
     in: {
       file: "about-in.mp4",
       frames: 222,
-      audio: true,
       startPhases: [160, 322, 484],
       blendMs: 560,
       align: 0.995,
@@ -132,12 +120,10 @@ export const SELENA_PAGES = {
     loop: {
       file: "about-loop.mp4",
       frames: 240,
-      audio: false,
     },
     out: {
       file: "about-out.mp4",
       frames: 409,
-      audio: true,
       startPhase: 5,
       syncFrame: 355,
       syncPhase: 187,
@@ -150,7 +136,6 @@ export const SELENA_PAGES = {
     in: {
       file: "skills-in.mp4",
       frames: 336,
-      audio: false,
       startPhases: [122, 284, 446],
       blendMs: 480,
       align: 1.0,
@@ -158,12 +143,10 @@ export const SELENA_PAGES = {
     loop: {
       file: "skills-loop.mp4",
       frames: 486,
-      audio: false,
     },
     out: {
       file: "skills-out.mp4",
       frames: 462,
-      audio: false,
       startPhase: 52,
       syncFrame: 408,
       syncPhase: 203,
@@ -176,7 +159,6 @@ export const SELENA_PAGES = {
     in: {
       file: "gallery-in.mp4",
       frames: 552,
-      audio: false,
       startPhases: [124, 286, 448],
       blendMs: 480,
       align: 1.0,
@@ -184,12 +166,10 @@ export const SELENA_PAGES = {
     loop: {
       file: "gallery-loop.mp4",
       frames: 486,
-      audio: false,
     },
     out: {
       file: "gallery-out.mp4",
       frames: 496,
-      audio: false,
       startPhase: 95,
       syncFrame: 442,
       syncPhase: 83,
@@ -198,39 +178,12 @@ export const SELENA_PAGES = {
       align: 1.0,
     },
   },
-  others: {
-    in: {
-      file: "others-in.mp4",
-      frames: 286,
-      audio: true,
-      startPhases: [20, 182, 344],
-      blendMs: 480,
-      align: 1.0,
-    },
-    loop: {
-      file: "others-loop.mp4",
-      frames: 240,
-      audio: false,
-    },
-    out: {
-      file: "others-out.mp4",
-      frames: 445,
-      audio: true,
-      startPhase: 224,
-      syncFrame: 391,
-      syncPhase: 61,
-      uiFrame: 319,
-      blendMs: 560,
-      align: 0.995,
-    },
-  },
 } as const satisfies Record<string, PageTiming>;
 
 export const SELENA_SHORTS = {
   "short-1": {
     file: "short-1.mp4",
     frames: 491,
-    audio: true,
     startPhases: [42, 204, 366],
     blendMs: 560,
     align: 0.995,
@@ -245,7 +198,6 @@ export const SELENA_SHORTS = {
   "short-2": {
     file: "short-2.mp4",
     frames: 493,
-    audio: true,
     startPhases: [22, 184, 346],
     blendMs: 480,
     align: 1.0,
@@ -260,7 +212,6 @@ export const SELENA_SHORTS = {
   "short-3": {
     file: "short-3.mp4",
     frames: 523,
-    audio: true,
     startPhases: [19, 181, 343],
     blendMs: 560,
     align: 0.9975,

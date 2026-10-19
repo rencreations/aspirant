@@ -25,7 +25,7 @@ export const useNowPlaying = create<NowPlayingState>(() => ({ track: null, playi
 let cleanup: (() => void) | null = null;
 
 /** How loud page music sits. Voice lines are lifted well above it, and it ducks under them. */
-export const MUSIC_VOLUME = 0.22;
+const MUSIC_VOLUME = 0.22;
 /** Music fades in and out slowly, so it never starts or stops with a jolt. */
 const FADE_IN_MS = 5000;
 const FADE_OUT_MS = 3500;

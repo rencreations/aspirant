@@ -515,7 +515,7 @@
   transform: translateX(6px);
 }
 
-/* Phones and tall screens: the picture is cropped to her, the trailer stays top left and the four
+/* Phones and tall screens: the picture is cropped to her, the trailer stays top left and the three
    buttons sit along the bottom in two rows. */
 @media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
   .stage {
