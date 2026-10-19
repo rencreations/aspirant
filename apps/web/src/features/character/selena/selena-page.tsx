@@ -10,10 +10,13 @@ import { VideoCard } from "@/components/video-player/video-card";
 import { audio } from "@/lib/audio";
 import { useHotkey } from "@/lib/hooks";
 import { startMusic, type Track } from "@/lib/now-playing";
+import { expectReady } from "@/lib/page-ready";
+import { runPreload } from "@/lib/preload";
+import { routeItems } from "@/lib/route-preloads";
 
 import type { PageName, SceneName, ShortName, StageState } from "./director";
 import { Hotspots, SPOTS } from "./hotspots";
-import { MENU_ICON, selenaTierReady, TRAILER } from "./media";
+import { loadCore, MENU_ICON, TRAILER } from "./media";
 import { MenuButton } from "./menu-button";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
@@ -105,13 +108,28 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   const [drawersBuilt, setDrawersBuilt] = useState(0);
   useEffect(() => {
     let alive = true;
-    void selenaTierReady().then(() => {
+    // The curtain waits for the stage, which waits for the videos it starts with.
+    const mark = expectReady("selena-core");
+    // Never longer than 15 seconds: after that the stage starts on what it has.
+    const cap = new Promise<void>((resolve) => window.setTimeout(resolve, 15_000));
+    void Promise.race([loadCore(initial === null), cap]).then(() => {
       if (alive) setTierReady(true);
     });
+    // The loading screen has loaded all of the rest. Coming back by the browser's Back button, or
+    // after the page was left, skips that screen: top it up from the saved copies in the
+    // background. What is already loaded costs nothing.
+    void runPreload(routeItems(pathname));
     return () => {
       alive = false;
+      mark();
     };
+    // Once per visit: the address at that moment decides.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // The stage has mounted (its own effect has registered what it waits for) and the page is ready.
+  useEffect(() => {
+    if (tierReady) expectReady("selena-core")();
+  }, [tierReady]);
 
   const onState = useCallback((s: StageState) => {
     setState(s);

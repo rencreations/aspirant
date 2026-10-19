@@ -79,4 +79,17 @@ describe("runPreload byte progress", () => {
     await done;
     expect(seen.at(-1)).toBe(1);
   });
+
+  it("remembers an item for the session, unless it opts out (media is freed and loaded again)", async () => {
+    const kept = vi.fn(() => Promise.resolve());
+    const again = vi.fn(() => Promise.resolve());
+    await runPreload([item("kept-once", 1, kept)]);
+    await runPreload([item("kept-once", 1, kept)]);
+    expect(kept).toHaveBeenCalledTimes(1);
+
+    const media = (): PreloadItem => ({ ...item("media-twice", 1, again), memo: false });
+    await runPreload([media()]);
+    await runPreload([media()]);
+    expect(again).toHaveBeenCalledTimes(2);
+  });
 });

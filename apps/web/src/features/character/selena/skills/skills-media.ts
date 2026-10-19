@@ -18,6 +18,7 @@ function clipItem(path: string, bytes: number): PreloadItem {
     label: "Loading the skill clips",
     weight: Math.max(1, Math.round(bytes / 1_000_000)),
     timeoutMs: 120_000,
+    memo: false,
     run: (report) =>
       loadMedia(path, { type: "video/mp4", expectedBytes: bytes, onFraction: report }),
   };

@@ -14,6 +14,7 @@ import {
   fontsItem,
   imageItem,
   mediaItem,
+  savedItem,
   type PreloadItem,
 } from "@/lib/preload";
 
@@ -97,7 +98,7 @@ export function routeItems(pathname: string): PreloadItem[] {
           timeoutMs: 120_000,
         }),
         ...Array.from({ length: SELENA_VOICE_COUNT }, (_, i) =>
-          dataItem(selenaVoicePath(i + 1), "Loading her voice lines", 1),
+          savedItem(selenaVoicePath(i + 1), "Loading her voice lines", 1),
         ),
         ...ABOUT_IMAGES.map((name) =>
           imageItem(aboutImagePath(name), "Loading the About pictures", 1),

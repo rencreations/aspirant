@@ -23,6 +23,12 @@ export interface PreloadItem {
   run: (report: (fraction: number) => void) => Promise<unknown>;
   /** How long to wait for this item before the site goes on without it. Default 12 s. */
   timeoutMs?: number;
+  /**
+   * Remember the item for the session, so a second list that has it does not run it again.
+   * Default true. Media turns it off: it is freed when its page is left, and the next visit
+   * has to load it again (from the saved copy, which is quick).
+   */
+  memo?: boolean;
 }
 
 export interface PreloadProgress {
@@ -45,7 +51,7 @@ interface Started {
 const started = new Map<string, Started>();
 
 function once(item: PreloadItem): Started {
-  let s = started.get(item.id);
+  let s = item.memo === false ? undefined : started.get(item.id);
   if (!s) {
     const created: Started = { promise: Promise.resolve(), fraction: 0, listeners: new Set() };
     const report = (fraction: number) => {
@@ -63,7 +69,7 @@ function once(item: PreloadItem): Started {
       .then(() => {
         created.fraction = 1;
       });
-    started.set(item.id, created);
+    if (item.memo !== false) started.set(item.id, created);
     s = created;
   }
   return s;
@@ -90,10 +96,23 @@ export function imageItem(path: string, label: string, weight = 1): PreloadItem 
   };
 }
 
-/** Fetch a data file (or a short sound) and save it in the browser. */
+/** Fetch a data file into the HTTP cache. */
 export function dataItem(path: string, label: string, weight = 1): PreloadItem {
   return {
     id: `data:${path}`,
+    label,
+    weight,
+    run: () => fetch(asset(path)).then((r) => r.arrayBuffer()),
+  };
+}
+
+/**
+ * Fetch a small file that the audio engine reads (a voice line) and save it in the browser. The
+ * engine reads it through the same saved copy.
+ */
+export function savedItem(path: string, label: string, weight = 1): PreloadItem {
+  return {
+    id: `saved:${path}`,
     label,
     weight,
     run: () => cachedFetch(asset(path)).then((r) => r.arrayBuffer()),
@@ -115,6 +134,7 @@ export function mediaItem(
     label,
     weight: options.weight ?? Math.max(1, Math.round((options.bytes ?? 1_000_000) / 1_000_000)),
     timeoutMs: options.timeoutMs ?? 120_000,
+    memo: false,
     run: (report) =>
       loadMedia(path, { type: options.type, expectedBytes: options.bytes, onFraction: report }),
   };

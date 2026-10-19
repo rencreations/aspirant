@@ -124,7 +124,7 @@ let ready: Promise<SelenaTier> | null = null;
  * can decode smoothly. Everything that loads or plays the videos waits for it, so they all use
  * the same size.
  */
-export function selenaTierReady(): Promise<SelenaTier> {
+function selenaTierReady(): Promise<SelenaTier> {
   ready ??= limitTier(selenaTier(), browserDecodes).then((tier) => {
     chosen = tier;
     return tier;
@@ -149,6 +149,7 @@ export function selenaItems(): PreloadItem[] {
         : `Loading Selena in ${TIER_NAME[tier]}`,
     weight: Math.max(1, Math.round(size / 1_000_000)),
     timeoutMs: 120_000,
+    memo: false,
     run: async (report) => {
       const use = await selenaTierReady();
       return loadMedia(selenaPath(use, file), {
@@ -158,6 +159,25 @@ export function selenaItems(): PreloadItem[] {
       });
     },
   }));
+}
+
+/**
+ * The videos the stage needs at its very first frame: the idle loop, and the welcome unless it is
+ * skipped. The stage waits for them (they come from memory, from the saved copy, or from the
+ * network, whichever is first), so it never starts on a plain address while the file it needs
+ * is being loaded. Whatever else is missing is loaded in the background.
+ */
+export async function loadCore(welcome: boolean): Promise<void> {
+  const tier = await selenaTierReady();
+  const files = welcome ? ["idle.mp4", "welcome.mp4"] : ["idle.mp4"];
+  await Promise.all(
+    files.map((file) =>
+      loadMedia(selenaPath(tier, file), {
+        type: "video/mp4",
+        expectedBytes: SELENA_BYTES[tier][file],
+      }),
+    ),
+  );
 }
 
 /** The trailer on her page, in three sizes for the player's quality menu. */
