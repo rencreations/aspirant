@@ -1,0 +1,344 @@
+/* The touch points. Faint white circles over the picture: subtle, but easy to find. -------------- */
+.layer.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --spot: clamp(3.5rem, 6.4vw, 6rem);
+  --line: rgb(255 255 255 / 0.88);
+  --shade: rgb(8 10 26 / 0.3);
+}
+
+.spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--spot);
+  height: var(--spot);
+  margin: calc(var(--spot) / -2) 0 0 calc(var(--spot) / -2);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 280ms var(--ease-out);
+}
+
+.layer[data-on="true"] .spot {
+  opacity: 1;
+  transition-duration: 700ms;
+  transition-delay: calc(var(--i) * 170ms + 260ms);
+}
+
+.spot[data-away="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 260ms;
+  transition-delay: 0s;
+}
+
+.spot:focus-visible {
+  outline: 2px solid var(--line);
+  outline-offset: -6px;
+}
+
+/* A float of 2 to 3 pixels, so the circle looks light on the picture. */
+.float {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: drift 7s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -2.3s);
+}
+
+.ring,
+.halo,
+.dot,
+.progress {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+.ring,
+.halo {
+  width: 2.2rem;
+  height: 2.2rem;
+  margin: -1.1rem 0 0 -1.1rem;
+  border-radius: 50%;
+}
+
+.ring {
+  border: 1.5px solid var(--line);
+  background: rgb(255 255 255 / 0.07);
+  box-shadow:
+    0 0 0 1px var(--shade),
+    inset 0 0 0 1px rgb(8 10 26 / 0.16);
+  animation: glow 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1.2s);
+  transition:
+    transform 420ms var(--ease-spring),
+    background-color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+/* A ripple leaves the circle now and then. */
+.halo {
+  border: 1px solid rgb(255 255 255 / 0.7);
+  box-shadow: 0 0 0 1px rgb(8 10 26 / 0.12);
+  opacity: 0;
+  animation: ripple 3.6s ease-out infinite;
+  animation-delay: calc(var(--i) * -1.2s);
+}
+
+.dot {
+  width: 0.36rem;
+  height: 0.36rem;
+  margin: -0.18rem 0 0 -0.18rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--shade);
+  transition: transform 360ms var(--ease-spring);
+}
+
+/* The name, shown while the circle is hovered or focused. */
+.tag {
+  position: absolute;
+  left: calc(50% + 1.95rem);
+  top: 50%;
+  translate: -8px -50%;
+  padding: 0.3rem 0.6rem;
+  border-left: 2px solid #fff;
+  background: rgb(10 12 30 / 0.62);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 240ms var(--ease-out),
+    translate 340ms var(--ease-out);
+}
+
+/* On the left half the name sits to the right of the circle, on the right half to the left. */
+.spot[data-side="left"] .tag {
+  left: auto;
+  right: calc(50% + 1.95rem);
+  translate: 8px -50%;
+  border-left: 0;
+  border-right: 2px solid #fff;
+}
+
+/* A point that is off screen (a phone shows only the middle) is held at the edge, with an arrow
+   towards where it really is. */
+.arrow {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transform: rotate(var(--a, 0deg)) translateX(1.9rem);
+}
+
+.spot[data-docked="true"] .arrow {
+  display: block;
+}
+
+.arrow::before {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: -0.25rem 0 0 -0.25rem;
+  border-top: 2px solid var(--line);
+  border-right: 2px solid var(--line);
+  filter: drop-shadow(0 0 1px rgb(8 10 26 / 0.5));
+  transform: rotate(45deg);
+}
+
+/* Hover and focus: the circle opens up and the name shows. */
+.spot:hover:not(:disabled) .ring,
+.spot:focus-visible .ring {
+  transform: scale(1.5);
+  border-color: #fff;
+  background: rgb(255 255 255 / 0.16);
+  animation-play-state: paused;
+  opacity: 1;
+}
+
+.spot:hover:not(:disabled) .dot,
+.spot:focus-visible .dot {
+  transform: scale(1.5);
+}
+
+.spot:hover:not(:disabled) .tag,
+.spot:focus-visible .tag {
+  opacity: 1;
+  translate: 0 -50%;
+}
+
+/* Pressed: the circle pulls in around the dot. */
+.spot:active:not(:disabled) .ring {
+  transform: scale(0.8);
+  background: rgb(255 255 255 / 0.4);
+  transition-duration: 110ms;
+}
+
+.spot:active:not(:disabled) .dot {
+  transform: scale(2.3);
+  transition-duration: 110ms;
+}
+
+/* Chosen: a burst leaves it, the circle holds open and a ring fills for the wait. */
+.spot[data-mine="true"] .ring {
+  transform: scale(1.3);
+  background: rgb(255 255 255 / 0.22);
+  border-color: #fff;
+  animation: none;
+  opacity: 1;
+}
+
+.spot[data-mine="true"] .halo {
+  animation: burst 850ms var(--ease-out) both;
+}
+
+.spot[data-mine="true"] .tag {
+  opacity: 1;
+  translate: 0 -50%;
+}
+
+.progress {
+  width: 3.1rem;
+  height: 3.1rem;
+  margin: -1.55rem 0 0 -1.55rem;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.progress circle {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 1px rgb(8 10 26 / 0.45));
+}
+
+.progress[data-mode="run"] circle {
+  animation: arc var(--wait, 1s) linear forwards;
+}
+
+.progress[data-mode="sweep"] circle {
+  stroke-dasharray: 28 72;
+  stroke-dashoffset: 0;
+  transform-origin: 50% 50%;
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  33% {
+    translate: 3px -2px;
+  }
+  66% {
+    translate: -2px 2px;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.55;
+  }
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(1);
+    opacity: 0.95;
+    border-width: 2px;
+  }
+  100% {
+    transform: scale(3.6);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+@keyframes arc {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (pointer: coarse) {
+  .layer.layer {
+    --spot: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .ring,
+  .halo {
+    animation: none;
+  }
+
+  .halo {
+    display: none;
+  }
+
+  .ring {
+    opacity: 0.85;
+  }
+
+  .spot,
+  .ring,
+  .dot,
+  .tag {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+}

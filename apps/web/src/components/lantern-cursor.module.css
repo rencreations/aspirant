@@ -81,6 +81,16 @@
   background-color: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
+/* Snapped to a touch point: the ring locks around it, with no centre mark. */
+.root[data-state="snap"] .ring,
+.root[data-state="pressed"][data-snap="true"] .ring {
+  border-color: var(--accent);
+}
+
+.root[data-snap="true"] .ring::after {
+  opacity: 0;
+}
+
 .label {
   position: absolute;
   top: 0;

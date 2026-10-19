@@ -301,6 +301,12 @@ export class SelenaDirector {
     return true;
   }
 
+  /** The time of the idle loop while it can be read, for things that follow its picture. */
+  idleTime(): number | null {
+    const idle = this.els.idle;
+    return idle.readyState > 0 ? idle.currentTime : null;
+  }
+
   /** Get a scene's videos ready (the pointer is on its button). */
   warm(scene: SceneName) {
     for (const key of this.keysOf(scene)) this.use(key);

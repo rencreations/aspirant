@@ -5,6 +5,13 @@ import { SELENA_BYTES, SELENA_TIERS, type SelenaTier } from "./timeline.generate
 
 export const SELENA_DIR = "/video/selena";
 
+/** Her pictures on the three page buttons. */
+export const MENU_ICON = {
+  about: "/img/selena/btn/about.webp",
+  skills: "/img/selena/btn/skills.webp",
+  gallery: "/img/selena/btn/gallery.webp",
+} as const;
+
 const TIER_IDS = Object.keys(SELENA_TIERS) as SelenaTier[];
 
 /** The size of the source recordings, for the cover maths. */

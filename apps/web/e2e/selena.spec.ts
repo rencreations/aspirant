@@ -24,12 +24,23 @@ async function open(page: Page) {
   return errors;
 }
 
-test("shows the three buttons, Random Animation and the trailer, with one h1", async ({ page }) => {
+const SPOT_NAMES = [
+  "Play the Silverbolt animation",
+  "Play the badge animation",
+  "Play the right arm animation",
+];
+
+test("shows the three buttons, the three touch points and the trailer, with one h1", async ({
+  page,
+}) => {
   const errors = await open(page);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.getByRole("heading", { level: 1, name: "Selena" })).toBeAttached();
-  for (const name of ["About", "Skills", "Gallery", "Random Animation"])
+  for (const name of ["About", "Skills", "Gallery"])
     await expect(page.getByRole("button", { name })).toBeVisible();
+  for (const name of SPOT_NAMES) await expect(page.getByRole("button", { name })).toBeVisible();
+  // There is no Random Animation button any more.
+  await expect(page.getByRole("button", { name: "Random Animation" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /Play video: Selena, trailer/ })).toBeVisible();
   // Only the picture: nothing left of the old page.
   await expect(page.locator("#voice-title, #profile-title, #media-title")).toHaveCount(0);
@@ -63,22 +74,16 @@ test("the sound and the music are in the nav, nothing is left in the bottom righ
   await expect(page.getByRole("button", { name: "Reduce motion" })).toHaveCount(0);
 });
 
-test("the buttons sit in the right half, the trailer and Random Animation in the left", async ({
-  page,
-}, info) => {
+test("the buttons sit in the right half and the trailer in the left", async ({ page }, info) => {
   test.skip(info.project.name !== "desktop", "The corner layout is the desktop one");
   await open(page);
   const vw = page.viewportSize()?.width ?? 0;
   const about = await page.getByRole("button", { name: "About" }).boundingBox();
   const card = await page.getByRole("button", { name: /Play video/ }).boundingBox();
-  const random = await page.getByRole("button", { name: "Random Animation" }).boundingBox();
   expect(about!.x).toBeGreaterThan(vw * 0.6);
   expect(card!.x + card!.width).toBeLessThan(vw * 0.4);
   // Small: the trailer card never takes much of the picture.
   expect(card!.width).toBeLessThan(vw * 0.25);
-  // The Random Animation button is below the trailer, in the same column.
-  expect(random!.y).toBeGreaterThan(card!.y + card!.height - 1);
-  expect(Math.abs(random!.x - card!.x)).toBeLessThan(2);
 });
 
 test("the trailer opens the custom player, which closes on Escape and gives focus back", async ({
@@ -134,17 +139,49 @@ test("the buttons can be pressed without errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("Random Animation plays at once and the main panel comes back, with no extra page", async ({
+test("a touch point plays its short at once and the main panel comes back, with no extra page", async ({
   page,
 }) => {
   await open(page);
-  const random = page.getByRole("button", { name: "Random Animation" });
-  await random.click();
+  const spot = page.getByRole("button", { name: SPOT_NAMES[0]! });
+  await spot.click();
   // There is no second view: no Back button, and the panel is back when the short is over.
   await expect(page.getByRole("button", { name: "Back" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "About" })).toBeVisible({ timeout: 20_000 });
-  await expect(random).toBeVisible();
-  await expect(random).toBeEnabled();
+  await expect(spot).toBeVisible();
+  await expect(spot).toBeEnabled();
+});
+
+test("every touch point stays on screen, on a phone too", async ({ page }) => {
+  await open(page);
+  const vw = page.viewportSize()?.width ?? 0;
+  const vh = page.viewportSize()?.height ?? 0;
+  for (const name of SPOT_NAMES) {
+    const box = await page.getByRole("button", { name }).boundingBox();
+    expect(box).not.toBeNull();
+    const cx = box!.x + box!.width / 2;
+    const cy = box!.y + box!.height / 2;
+    expect(cx).toBeGreaterThan(0);
+    expect(cx).toBeLessThan(vw);
+    expect(cy).toBeGreaterThan(0);
+    expect(cy).toBeLessThan(vh);
+  }
+});
+
+test("the cursor snaps to a touch point and shows what it is doing", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "Phones and tablets have no pointer to snap");
+  await open(page);
+  const cursor = page.locator("[data-overlay='cursor']");
+  const spot = page.getByRole("button", { name: SPOT_NAMES[1]! });
+  const box = (await spot.boundingBox())!;
+  // Close, but not on the centre: the ring still locks on.
+  await page.mouse.move(box.x + box.width / 2 + 24, box.y + box.height / 2 + 20, { steps: 6 });
+  await expect(cursor).toHaveAttribute("data-state", "snap");
+  await page.mouse.down();
+  await expect(cursor).toHaveAttribute("data-state", "pressed");
+  await page.mouse.up();
+  await page.mouse.move(8, box.y + box.height / 2, { steps: 6 });
+  await expect(cursor).toHaveAttribute("data-state", /idle|hover/);
 });
 
 async function openAbout(page: Page, narrow: boolean) {
@@ -384,7 +421,7 @@ test("a press is answered at once: the chosen button lights and the rest steps a
   if (!waiting) return;
   await expect(skills).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Random Animation" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: SPOT_NAMES[0]! })).toBeDisabled();
   // The pressed button runs a bar for the length of the wait.
   await expect(skills.locator("[class*='fill']")).toHaveCount(1);
 });
@@ -436,7 +473,7 @@ test("fits the screen without sideways scrolling", async ({ page }) => {
     return el.scrollWidth - window.innerWidth;
   });
   expect(overflow).toBeLessThanOrEqual(0);
-  for (const name of ["About", "Skills", "Gallery", "Random Animation"]) {
+  for (const name of ["About", "Skills", "Gallery"]) {
     const box = await page.getByRole("button", { name }).first().boundingBox();
     const vw = page.viewportSize()?.width ?? 0;
     expect(box!.x).toBeGreaterThanOrEqual(0);

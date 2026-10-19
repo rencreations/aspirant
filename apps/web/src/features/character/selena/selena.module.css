@@ -21,6 +21,8 @@
   min-height: 34rem;
   overflow: hidden;
   background: #0a0a14;
+  /* Where the picture is cropped to. The stage and the touch points both read it. */
+  --focus: 50% 50%;
 }
 
 /* The picture ------------------------------------------------------------------------------- */
@@ -28,7 +30,6 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  --focus: 50% 50%;
 }
 
 .still,
@@ -139,6 +140,7 @@
 }
 
 .menu li {
+  position: relative;
   opacity: 0;
   transform: translateX(46px);
   transition:
@@ -152,245 +154,7 @@
   transform: none;
 }
 
-/* One button: an armour plate with a chamfered corner, a crystal shard and a gold edge. */
-.button {
-  --cut: 17px;
-  --plate: linear-gradient(112deg, #ffffff 0%, var(--armor) 45%, var(--armor-2) 100%);
-  --ink: #1a1342;
-  position: relative;
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
-  align-items: center;
-  gap: 0.7rem;
-  width: 100%;
-  height: 3.4rem;
-  padding: 0 1.1rem 0 0.9rem;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  text-align: left;
-  isolation: isolate;
-  -webkit-tap-highlight-color: transparent;
-  filter: drop-shadow(0 6px 14px rgb(10 8 40 / 0.35));
-  transition:
-    transform 520ms var(--ease-spring),
-    color 280ms var(--ease-out),
-    opacity 300ms var(--ease-out),
-    filter 300ms var(--ease-out);
-}
-
-/* The edge (violet) and the face (the plate) are two copies of the same chamfered shape. */
-.button::before,
-.button::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  clip-path: polygon(
-    var(--cut) 0,
-    100% 0,
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    0 100%,
-    0 var(--cut)
-  );
-}
-
-.button::before {
-  inset: 0;
-  background: linear-gradient(120deg, var(--violet), #a995ff 55%, var(--violet));
-}
-
-.button::after {
-  inset: 2px;
-  background: var(--plate);
-  transition: background 360ms var(--ease-out);
-}
-
-/* The crystal: a crimson shard like her horns. */
-.shard {
-  position: relative;
-  width: 0.95rem;
-  height: 1.7rem;
-  background: linear-gradient(160deg, var(--crystal-2), var(--crystal) 55%, #8c1230);
-  clip-path: polygon(50% 0, 100% 34%, 76% 100%, 24% 100%, 0 34%);
-  transition:
-    transform 560ms var(--ease-spring),
-    filter 320ms var(--ease-out);
-}
-
-.index {
-  font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  opacity: 0.55;
-  transition: opacity 280ms var(--ease-out);
-}
-
-.text {
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-style: italic;
-  font-synthesis: style;
-  font-size: 1.15rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1;
-  transition: transform 460ms var(--ease-out);
-}
-
-/* The gold trim runs along the bottom edge on hover. */
-.text::after {
-  content: "";
-  position: absolute;
-  left: 2.9rem;
-  right: 1.6rem;
-  bottom: 0.55rem;
-  height: 2px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 560ms var(--ease-out);
-}
-
-/* The bars say a clip is waiting. */
-.bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 0.95rem;
-  opacity: 0;
-  transition: opacity 240ms var(--ease-out);
-}
-
-.bars i {
-  width: 3px;
-  height: 100%;
-  background: currentColor;
-  transform-origin: 50% 100%;
-  transform: scaleY(0.3);
-}
-
-.sheen {
-  position: absolute;
-  inset: 2px;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  clip-path: polygon(
-    calc(var(--cut) - 2px) 0,
-    100% 0,
-    100% calc(100% - var(--cut) + 2px),
-    calc(100% - var(--cut) + 2px) 100%,
-    0 100%,
-    0 calc(var(--cut) - 2px)
-  );
-}
-
-.sheen::before {
-  content: "";
-  position: absolute;
-  top: -20%;
-  bottom: -20%;
-  left: -40%;
-  width: 28%;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
-  transform: skewX(-24deg) translateX(0);
-}
-
-.shard,
-.index,
-.text,
-.bars {
-  position: relative;
-  z-index: 1;
-}
-
-.button:not(:disabled):hover,
-.button:not(:disabled):focus-visible {
-  transform: translateX(-12px);
-  color: #fff;
-  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
-}
-
-.button:not(:disabled):hover .shard,
-.button:not(:disabled):focus-visible .shard {
-  transform: scale(1.25) rotate(14deg);
-  filter: brightness(1.25) drop-shadow(0 0 6px var(--crystal));
-}
-
-.button:not(:disabled):hover .index,
-.button:not(:disabled):focus-visible .index {
-  opacity: 1;
-  color: var(--gold);
-}
-
-.button:not(:disabled):hover .text,
-.button:not(:disabled):focus-visible .text {
-  transform: translateX(3px);
-}
-
-.button:not(:disabled):hover .text::after,
-.button:not(:disabled):focus-visible .text::after {
-  transform: scaleX(1);
-}
-
-.button:not(:disabled):hover .sheen::before,
-.button:not(:disabled):focus-visible .sheen::before {
-  animation: sweep 900ms var(--ease-out) forwards;
-}
-
-.button:not(:disabled):active {
-  transform: translateX(-6px) scale(0.97);
-}
-
-/* Waiting for the loop to reach the frame the clip starts on. */
-.button.button[data-state="queued"],
-.button.button[data-state="loading"] {
-  --plate: linear-gradient(112deg, #d12a4d 0%, var(--crystal) 100%);
-  color: #fff;
-  transform: translateX(-12px);
-}
-
-.button[data-state="queued"] .bars,
-.button[data-state="loading"] .bars {
-  opacity: 1;
-}
-
-.button[data-state="queued"] .bars i,
-.button[data-state="loading"] .bars i {
-  animation: bars 760ms var(--ease-in-out) infinite;
-}
-
-.button[data-state="loading"] .bars i {
-  animation-duration: 1100ms;
-}
-
-.button[data-state="queued"] .bars i:nth-child(2),
-.button[data-state="loading"] .bars i:nth-child(2) {
-  animation-delay: 120ms;
-}
-
-.button[data-state="queued"] .bars i:nth-child(3),
-.button[data-state="loading"] .bars i:nth-child(3) {
-  animation-delay: 240ms;
-}
-
-.button[data-state="queued"] .index,
-.button[data-state="loading"] .index {
-  color: #fff;
-  opacity: 0.9;
-}
-
-.button[data-dim="true"] {
-  opacity: 0.4;
-  filter: grayscale(0.4) drop-shadow(0 6px 14px rgb(10 8 40 / 0.2));
-}
-
-.button:disabled {
-  cursor: not-allowed;
-}
-
-/* The bar along the bottom: Skip, Back and Random Animation. */
+/* The bar along the bottom: Skip and Back. */
 .bar {
   position: absolute;
   left: 50%;
@@ -450,18 +214,6 @@
   opacity: 0.5;
 }
 
-/* Random Animation, under the trailer. */
-.random {
-  --cut: 14px;
-  height: 3rem;
-  grid-template-columns: auto auto 1fr auto;
-}
-
-.random .text {
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
-}
-
 /* Next character, bottom left. */
 .next {
   position: absolute;
@@ -518,7 +270,7 @@
 /* Phones and tall screens: the picture is cropped to her, the trailer stays top left and the three
    buttons sit along the bottom in two rows. */
 @media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
-  .stage {
+  .hero {
     --focus: 63% 50%;
   }
 
@@ -535,45 +287,8 @@
   }
 
   .menu ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
-  }
-
-  .button {
-    --cut: 13px;
-    min-width: 0;
-    height: 3.1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.5rem;
-    padding: 0 0.7rem 0 0.7rem;
-  }
-
-  .bars {
-    display: none;
-  }
-
-  .button[data-state="queued"] .bars,
-  .button[data-state="loading"] .bars {
-    display: inline-flex;
-  }
-
-  .button:not(:disabled):hover,
-  .button:not(:disabled):focus-visible,
-  .button[data-state="queued"],
-  .button[data-state="loading"] {
-    transform: none;
-  }
-
-  .text {
-    font-size: 0.95rem;
-    letter-spacing: 0.06em;
-  }
-
-  .text::after {
-    display: none;
-  }
-
-  .index {
-    display: none;
   }
 
   .bar {
@@ -594,25 +309,6 @@
   }
 }
 
-@keyframes sweep {
-  from {
-    transform: skewX(-24deg) translateX(0);
-  }
-  to {
-    transform: skewX(-24deg) translateX(1000%);
-  }
-}
-
-@keyframes bars {
-  0%,
-  100% {
-    transform: scaleY(0.3);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
-
 @keyframes rise {
   from {
     opacity: 0;
@@ -621,19 +317,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button,
-  .shard,
-  .text,
   .menu li,
   .trailer {
     transition-duration: 1ms;
     transition-delay: 0s;
-  }
-
-  .button[data-state="queued"] .bars i,
-  .button[data-state="loading"] .bars i {
-    animation: none;
-    transform: scaleY(0.7);
   }
 }
 
@@ -674,11 +361,6 @@
   border-right: 0;
 }
 
-.button[data-state="queued"],
-.button[data-state="loading"] {
-  animation: press 520ms var(--ease-spring);
-}
-
 /* Everything else on the panel steps out of the way as soon as a button is pressed. */
 .ui[data-busy="true"] .menu li[data-mine="false"] {
   opacity: 0;
@@ -688,8 +370,9 @@
   pointer-events: none;
 }
 
+/* Her picture jumps out of the plate, so the chosen one sits above the others. */
 .ui[data-busy="true"] .menu li[data-mine="true"] {
-  transform: translateX(-10px);
+  z-index: 2;
 }
 
 .cardWrap {
@@ -698,15 +381,10 @@
     transform 520ms var(--ease-out);
 }
 
-.cardWrap[data-away="true"],
-.random[data-away="true"] {
+.cardWrap[data-away="true"] {
   opacity: 0;
   transform: translateX(-44px);
   pointer-events: none;
-}
-
-.random[data-away="true"] {
-  transition-delay: 70ms;
 }
 
 .next[data-away="true"] {
@@ -760,23 +438,9 @@
   }
 }
 
-@keyframes press {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  35% {
-    transform: translateX(-16px) scale(1.05);
-  }
-  100% {
-    transform: translateX(-12px) scale(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .fill[data-mode="run"],
-  .fill[data-mode="sweep"],
-  .button[data-state="queued"],
-  .button[data-state="loading"] {
+  .fill[data-mode="sweep"] {
     animation: none;
   }
 

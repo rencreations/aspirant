@@ -1,0 +1,638 @@
+/* One page button: an armour plate with her picture on it. -------------------------------------- */
+.button {
+  --cut: 17px;
+  --ico: 4.9rem;
+  --x0: 2.2rem;
+  --plate: linear-gradient(112deg, #ffffff 0%, var(--armor) 45%, var(--armor-2) 100%);
+  --ink: #1a1342;
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.6rem auto 1fr;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  height: 3.4rem;
+  padding: 0 1.1rem 0 0.9rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 6px 14px rgb(10 8 40 / 0.35));
+  transition:
+    transform 520ms var(--ease-spring),
+    color 280ms var(--ease-out),
+    opacity 300ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+
+/* The edge (violet) and the face (the plate) are two copies of the same chamfered shape. */
+.button::before,
+.button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.button::before {
+  inset: 0;
+  background: linear-gradient(120deg, var(--violet), #a995ff 55%, var(--violet));
+}
+
+.button::after {
+  inset: 2px;
+  background: var(--plate);
+  transition: background 360ms var(--ease-out);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Her picture. It is bigger than the plate and rises above it. ------------------------------- */
+.icon {
+  position: relative;
+  z-index: 1;
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.icon img,
+.hop img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--ico);
+  height: var(--ico);
+  margin: calc(var(--ico) / -2) 0 0 calc(var(--ico) / -2);
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  transform-origin: 50% 88%;
+  filter: drop-shadow(0 3px 3px rgb(10 8 40 / 0.4));
+}
+
+.icon img {
+  animation: rest 4.6s ease-in-out infinite;
+}
+
+.index {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+  transition: opacity 280ms var(--ease-out);
+}
+
+.text {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: transform 460ms var(--ease-out);
+}
+
+/* The gold trim grows from the right edge, under the name. It is its own element, placed from the
+   plate, so it never crosses the letters. */
+.trim {
+  position: absolute;
+  z-index: 1;
+  right: 1.1rem;
+  bottom: 0.55rem;
+  width: calc(100% - 8.2rem);
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 560ms var(--ease-out);
+}
+
+.sheen {
+  position: absolute;
+  inset: 2px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: polygon(
+    calc(var(--cut) - 2px) 0,
+    100% 0,
+    100% calc(100% - var(--cut) + 2px),
+    calc(100% - var(--cut) + 2px) 100%,
+    0 100%,
+    0 calc(var(--cut) - 2px)
+  );
+}
+
+.sheen::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -40%;
+  width: 28%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  transform: skewX(-24deg) translateX(0);
+}
+
+/* Hover and focus: the plate darkens and slides out, her picture wobbles, the trim grows. */
+.button:not(:disabled):hover,
+.button:not(:disabled):focus-visible {
+  transform: translateX(-12px);
+  color: #fff;
+  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
+}
+
+.button:not(:disabled):hover .icon img,
+.button:not(:disabled):focus-visible .icon img {
+  animation:
+    wobble 900ms var(--ease-out) both,
+    bob 2.2s ease-in-out 900ms infinite;
+}
+
+.button:not(:disabled):hover .index,
+.button:not(:disabled):focus-visible .index {
+  opacity: 1;
+  color: var(--gold);
+}
+
+.button:not(:disabled):hover .text,
+.button:not(:disabled):focus-visible .text {
+  transform: translateX(3px);
+}
+
+.button:not(:disabled):hover .trim,
+.button:not(:disabled):focus-visible .trim {
+  transform: scaleX(1);
+}
+
+.button:not(:disabled):hover .sheen::before,
+.button:not(:disabled):focus-visible .sheen::before {
+  animation: sweep 900ms var(--ease-out) forwards;
+}
+
+.button:not(:disabled):active {
+  transform: translateX(-6px) scale(0.97);
+}
+
+/* Pressed ------------------------------------------------------------------------------------ */
+/* The timeline. `--wait` is the length of the wait for her matching frame. A short wait squeezes
+   the jump and the stomp, the run takes the rest. */
+.button[data-mode] {
+  --jump: clamp(140ms, calc(var(--wait) * 0.28), 340ms);
+  --stomp: clamp(90ms, calc(var(--wait) * 0.14), 200ms);
+  --lead: calc(var(--jump) + var(--stomp));
+  --hit: calc(var(--jump) + var(--stomp) * 0.72);
+  --travel: max(260ms, calc(var(--wait) - var(--lead)));
+  transform: translateX(-12px);
+  color: #fff;
+  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
+  animation: thud 380ms var(--ease-out) var(--hit) both;
+}
+
+/* The picture on the plate hands over to the one that jumps. */
+.button[data-mode] .icon img {
+  visibility: hidden;
+  animation: none;
+}
+
+.press {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* The sheet that covers the plate, name, number and trim as she runs. */
+.cover {
+  position: absolute;
+  inset: 2px;
+  overflow: hidden;
+  clip-path: polygon(
+    calc(var(--cut) - 2px) 0,
+    100% 0,
+    100% calc(100% - var(--cut) + 2px),
+    calc(100% - var(--cut) + 2px) 100%,
+    0 100%,
+    0 calc(var(--cut) - 2px)
+  );
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  overflow: hidden;
+  background: linear-gradient(100deg, #b81f42 0%, var(--crystal) 60%, #e8456a 100%);
+  border-right: 3px solid #fff;
+  box-shadow: inset -3px 0 0 var(--gold);
+  animation: grow var(--travel) linear var(--lead) forwards;
+}
+
+.button[data-mode="hold"] .sheet {
+  animation-duration: 600ms;
+  animation-timing-function: var(--ease-out);
+}
+
+/* Stripes slide through the sheet, so it looks like it is being pulled. */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 -20px;
+  background: repeating-linear-gradient(
+    115deg,
+    rgb(255 255 255 / 0.13) 0 9px,
+    transparent 9px 18px
+  );
+  animation: stripes 560ms linear infinite;
+}
+
+.loading {
+  position: absolute;
+  left: 4.9rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: #fff;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dots i {
+  display: inline-block;
+  font-style: normal;
+  animation: dot 900ms ease-in-out infinite;
+}
+
+.dots i:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.dots i:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+/* She runs along the plate, at the front edge of the sheet. */
+.runner {
+  position: absolute;
+  left: var(--x0);
+  top: 50%;
+  width: 0;
+  height: 0;
+  animation: run var(--travel) linear var(--lead) both;
+}
+
+.button[data-mode="hold"] .runner {
+  animation-duration: 600ms;
+  animation-timing-function: var(--ease-out);
+}
+
+/* The jump at the camera, then the stomp. They run one after the other on the same element. */
+.leap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--ico);
+  height: var(--ico);
+  margin: calc(var(--ico) / -2) 0 0 calc(var(--ico) / -2);
+  transform-origin: 50% 88%;
+  animation:
+    leap-up var(--jump) cubic-bezier(0.2, 0.8, 0.2, 1) forwards,
+    leap-down var(--stomp) cubic-bezier(0.6, 0, 0.9, 0.5) var(--jump) forwards;
+}
+
+/* Then she runs: a small bounce with a lean, for as long as she is on the plate. */
+.hop {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 88%;
+  animation: hop 340ms ease-in-out var(--lead) infinite;
+}
+
+/* A ring leaves her as she jumps. */
+.pulse {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3rem;
+  height: 3rem;
+  margin: -1.5rem 0 0 -1.5rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse var(--jump) ease-out both;
+}
+
+/* The shockwave where she lands: a flat ring on the ground and chips thrown to both sides. */
+.dust {
+  position: absolute;
+  left: 0;
+  top: calc(var(--ico) * 0.38);
+  width: calc(var(--ico) * 1.1);
+  height: 1.1rem;
+  margin: -0.55rem 0 0 calc(var(--ico) * -0.55);
+  border: 2px solid rgb(255 255 255 / 0.9);
+  border-radius: 50%;
+  opacity: 0;
+  animation: dust 520ms var(--ease-out) var(--hit) both;
+}
+
+.dust::before,
+.dust::after {
+  content: "";
+  position: absolute;
+  top: 25%;
+  width: 0.4rem;
+  height: 0.4rem;
+  background: #fff;
+  opacity: 0;
+}
+
+.dust::before {
+  left: 12%;
+  animation: chip-left 520ms var(--ease-out) var(--hit) both;
+}
+
+.dust::after {
+  right: 12%;
+  animation: chip-right 520ms var(--ease-out) var(--hit) both;
+}
+
+/* Phones and tall screens: the three buttons sit side by side along the bottom. */
+@media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
+  .button {
+    --cut: 12px;
+    --ico: 3.5rem;
+    --x0: 1.65rem;
+    grid-template-columns: 2.1rem 1fr;
+    min-width: 0;
+    height: 3.2rem;
+    gap: 0.3rem;
+    padding: 0 0.5rem 0 0.6rem;
+  }
+
+  .icon {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .index {
+    display: none;
+  }
+
+  .text {
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+
+  .trim {
+    right: 0.6rem;
+    bottom: 0.45rem;
+    width: calc(100% - 3.7rem);
+  }
+
+  .loading {
+    left: 3.6rem;
+    font-size: 0.82rem;
+  }
+
+  .button:not(:disabled):hover,
+  .button:not(:disabled):focus-visible,
+  .button[data-mode] {
+    transform: none;
+  }
+}
+
+@keyframes rest {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(1.5deg);
+  }
+}
+
+@keyframes wobble {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  20% {
+    transform: rotate(-12deg) scale(1.16);
+  }
+  45% {
+    transform: rotate(9deg) scale(1.2);
+  }
+  70% {
+    transform: rotate(-5deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(0deg) scale(1.14);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: scale(1.14) translateY(0);
+  }
+  50% {
+    transform: scale(1.14) translateY(-3px);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: skewX(-24deg) translateX(0);
+  }
+  to {
+    transform: skewX(-24deg) translateX(1000%);
+  }
+}
+
+@keyframes leap-up {
+  from {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  to {
+    transform: translateY(-1.1rem) scale(2.5) rotate(-7deg);
+  }
+}
+
+@keyframes leap-down {
+  0% {
+    transform: translateY(-1.1rem) scale(2.5) rotate(-7deg);
+  }
+  72% {
+    transform: translateY(0.15rem) scale(1) rotate(0deg);
+  }
+  86% {
+    transform: translateY(0.25rem) scale(1.28, 0.7) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes dust {
+  from {
+    transform: scale(0.3, 0.3);
+    opacity: 0.95;
+  }
+  to {
+    transform: scale(2.2, 1);
+    opacity: 0;
+  }
+}
+
+@keyframes chip-left {
+  from {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  to {
+    translate: -2.2rem -1.5rem;
+    rotate: -140deg;
+    opacity: 0;
+  }
+}
+
+@keyframes chip-right {
+  from {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  to {
+    translate: 2.2rem -1.5rem;
+    rotate: 140deg;
+    opacity: 0;
+  }
+}
+
+@keyframes thud {
+  0% {
+    translate: 0 0;
+  }
+  28% {
+    translate: 0 3px;
+  }
+  58% {
+    translate: 0 -1px;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes hop {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-0.45rem) rotate(4deg);
+  }
+}
+
+@keyframes run {
+  from {
+    left: var(--x0);
+  }
+  to {
+    left: calc(100% - 1.6rem);
+  }
+}
+
+@keyframes grow {
+  from {
+    width: calc(var(--x0) - 0.2rem);
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes stripes {
+  to {
+    translate: 20px 0;
+  }
+}
+
+@keyframes dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    translate: 0 0;
+  }
+  30% {
+    opacity: 1;
+    translate: 0 -2px;
+  }
+}
+
+/* Reduced motion: no jump, stomp, hop or wobble. The sheet still shows how long the wait is. */
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .text,
+  .trim {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+
+  .icon img,
+  .button:not(:disabled):hover .icon img,
+  .button:not(:disabled):focus-visible .icon img,
+  .button[data-mode],
+  .leap,
+  .hop,
+  .pulse,
+  .dust,
+  .dust::before,
+  .dust::after,
+  .sheet::before,
+  .dots i {
+    animation: none;
+  }
+
+  .pulse,
+  .dust {
+    display: none;
+  }
+}

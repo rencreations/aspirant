@@ -10,7 +10,10 @@ import { audio } from "@/lib/audio";
 import { useHotkey } from "@/lib/hooks";
 import { startMusic, type Track } from "@/lib/now-playing";
 
-import { SHORT_NAMES, type PageName, type SceneName, type StageState } from "./director";
+import type { PageName, SceneName, ShortName, StageState } from "./director";
+import { Hotspots, SPOTS } from "./hotspots";
+import { MENU_ICON } from "./media";
+import { MenuButton } from "./menu-button";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
@@ -18,10 +21,10 @@ import { SkillsDrawers } from "./skills/skills-drawers";
 import { SelenaStage, type StageApi } from "./stage";
 
 /** The three buttons, in order, and the page each one opens. */
-const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName }> = [
-  { id: "about", label: "About", scene: "about" },
-  { id: "skills", label: "Skills", scene: "skills" },
-  { id: "gallery", label: "Gallery", scene: "gallery" },
+const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; icon: string }> = [
+  { id: "about", label: "About", scene: "about", icon: MENU_ICON.about },
+  { id: "skills", label: "Skills", scene: "skills", icon: MENU_ICON.skills },
+  { id: "gallery", label: "Gallery", scene: "gallery", icon: MENU_ICON.gallery },
 ];
 
 const TRAILER = {
@@ -49,7 +52,8 @@ interface SelenaNext {
   name: string;
 }
 
-const pad = (n: number) => String(n).padStart(2, "0");
+/** The music waits this long after the welcome begins. */
+const MUSIC_DELAY_MS = 500;
 
 /**
  * The waiting animation inside a pressed button. A bar fills for exactly as long as the wait for
@@ -74,10 +78,11 @@ const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false
 /**
  * Selena's page. One full-screen picture that does not scroll. The welcome animation plays once
  * the page is in view, then she idles in a seamless loop. The trailer sits in the empty top-left
- * of the picture, with the Random Animation button under it, and three buttons in the empty
- * top-right send her into pages of her own: each has an entrance, a loop of its own and an exit
- * back to the idle. Random Animation plays the three short animations in turn: the panel steps aside while one
- * plays and comes back when it ends. Music plays and loops while the page is open.
+ * of the picture, and three buttons in the empty top-right send her into pages of her own: each
+ * has an entrance, a loop of its own and an exit back to the idle. Three faint circles on the
+ * picture (the Silverbolt, the badge and the right arm) play a short animation each: the panel
+ * steps aside while one plays and comes back when it ends. Music plays and loops while the page
+ * is open.
  */
 export function SelenaPage({ next }: { next: SelenaNext }) {
   const router = useTransitionRouter();
@@ -93,7 +98,6 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     leaving: false,
     wait: null,
   });
-  const [shortIndex, setShortIndex] = useState(0);
   const [announce, setAnnounce] = useState("");
   const musicStop = useRef<(() => void) | null>(null);
 
@@ -101,7 +105,9 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     setState(s);
     if (s.mode === "queued" && s.scene) {
       const item = MENU.find((m) => m.scene === s.scene);
-      setAnnounce(s.loading ? "Loading" : `${item?.label ?? "Animation"} is getting ready`);
+      const spot = SPOTS.find((p) => p.short === s.scene);
+      const name = item?.label ?? spot?.label ?? "Animation";
+      setAnnounce(s.loading ? "Loading" : `${name} is getting ready`);
     } else if (s.leaving && s.mode !== "idle") {
       setAnnounce("Going back");
     } else if (s.mode === "page" && s.scene) {
@@ -125,13 +131,22 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     };
   }, [pause, resume]);
 
-  // The music starts with the welcome and loops until the page is left.
+  // The music starts with the welcome and loops until the page is left. In the welcome it comes
+  // in half a second after the picture, so the animation is seen first. If the welcome is skipped
+  // it starts at once.
+  const musicTimer = useRef(0);
   useEffect(() => {
     if (musicStop.current || (state.mode !== "welcome" && state.mode !== "idle")) return;
-    musicStop.current = startMusic(TRACK);
+    window.clearTimeout(musicTimer.current);
+    const start = () => {
+      musicStop.current ??= startMusic(TRACK);
+    };
+    if (state.mode === "welcome") musicTimer.current = window.setTimeout(start, MUSIC_DELAY_MS);
+    else start();
   }, [state.mode]);
   useEffect(
     () => () => {
+      window.clearTimeout(musicTimer.current);
       musicStop.current?.();
       musicStop.current = null;
     },
@@ -160,7 +175,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // for exactly as long as the wait. Choosing while she is still finishing keeps the choice.
   const chosen = mode === "queued" ? scene : state.next;
   const busy = chosen !== null;
-  const randomChosen = chosen !== null && isShort(chosen);
+  const chosenShort = chosen !== null && isShort(chosen) ? (chosen as ShortName) : null;
   const waitMs = mode === "queued" && state.wait && !state.loading ? state.wait.ms : null;
   const waitKey = state.wait?.at ?? 0;
   const nextRoute = useCallback(() => {
@@ -176,12 +191,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     void cover.current?.run(() => stage.current?.jumpToIdle());
   }, []);
 
-  const playRandom = useCallback(() => {
-    const name = SHORT_NAMES[shortIndex % SHORT_NAMES.length]!;
-    setShortIndex((i) => (i + 1) % SHORT_NAMES.length);
-    audio.blip("click");
-    stage.current?.request(name);
-  }, [shortIndex]);
+  const idleTime = useCallback(() => stage.current?.idleTime() ?? null, []);
 
   useHotkey(
     "n",
@@ -218,6 +228,30 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         <SelenaStage ref={stage} onState={onState} />
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
+          <Hotspots
+            idleTime={idleTime}
+            visible={showMain}
+            chosen={chosenShort}
+            loading={state.loading}
+            waitMs={waitMs}
+            waitKey={waitKey}
+            away={busy && chosenShort === null}
+            onPick={(short) => {
+              audio.blip("click");
+              stage.current?.request(short);
+            }}
+            onCancel={() => {
+              audio.blip("click");
+              stage.current?.cancel();
+            }}
+            onWarm={(short) => {
+              stage.current?.warm(short);
+            }}
+            onHover={() => {
+              audio.blip("hover");
+            }}
+          />
+
           <div className={styles.trailer}>
             <div className={styles.cardWrap} data-away={busy}>
               <VideoCard
@@ -231,35 +265,6 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
                 className={styles.trailerCard}
               />
             </div>
-            <button
-              type="button"
-              className={`${styles.button} ${styles.random}`}
-              data-state={randomChosen ? (state.loading ? "loading" : "queued") : "idle"}
-              data-away={busy && !randomChosen}
-              aria-pressed={randomChosen}
-              disabled={busy && !randomChosen}
-              onPointerEnter={() => {
-                audio.blip("hover");
-                stage.current?.warm(SHORT_NAMES[shortIndex % SHORT_NAMES.length]!);
-              }}
-              onClick={() => {
-                if (randomChosen) stage.current?.cancel();
-                else playRandom();
-              }}
-            >
-              <span className={styles.shard} aria-hidden="true" />
-              <span className={styles.index} aria-hidden="true">
-                {pad((shortIndex % SHORT_NAMES.length) + 1)}
-              </span>
-              <span className={styles.text}>Random Animation</span>
-              <span className={styles.bars} aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              <span className={styles.sheen} aria-hidden="true" />
-              {randomChosen ? <Fill ms={waitMs} k={waitKey} /> : null}
-            </button>
           </div>
 
           <nav className={styles.menu} aria-label="Selena" inert={!showMain}>
@@ -269,11 +274,13 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
                 const status = mine ? (state.loading ? "loading" : "queued") : "idle";
                 return (
                   <li key={item.id} data-mine={mine} style={{ ["--i" as string]: i }}>
-                    <button
-                      type="button"
-                      className={styles.button}
-                      data-state={status}
-                      aria-pressed={mine}
+                    <MenuButton
+                      label={item.label}
+                      icon={item.icon}
+                      index={i + 1}
+                      state={status}
+                      waitMs={waitMs}
+                      waitKey={waitKey}
                       disabled={busy && !mine}
                       onPointerEnter={() => {
                         stage.current?.warm(item.scene);
@@ -287,20 +294,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
                         if (mine) stage.current?.cancel();
                         else stage.current?.request(item.scene);
                       }}
-                    >
-                      <span className={styles.shard} aria-hidden="true" />
-                      <span className={styles.index} aria-hidden="true">
-                        {pad(i + 1)}
-                      </span>
-                      <span className={styles.text}>{item.label}</span>
-                      <span className={styles.bars} aria-hidden="true">
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                      <span className={styles.sheen} aria-hidden="true" />
-                      {mine ? <Fill ms={waitMs} k={waitKey} /> : null}
-                    </button>
+                    />
                   </li>
                 );
               })}
