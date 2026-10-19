@@ -4,7 +4,7 @@ import type { PageName } from "./director";
 import { SELENA_PAGES } from "./timeline.generated";
 
 /** Her page and its three pages. Each page has its own address under her own. */
-export const SELENA_ROOT = "/character/selena";
+const SELENA_ROOT = "/character/selena";
 
 export const SELENA_PAGE_NAMES = Object.keys(SELENA_PAGES) as PageName[];
 
