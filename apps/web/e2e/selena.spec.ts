@@ -273,6 +273,101 @@ test("Back closes the drawers and returns to the main panel", async ({ page }, i
   await expect(page.getByRole("region", { name: "Story, scrollable" })).toHaveCount(0);
 });
 
+async function openSkills(page: Page, narrow: boolean) {
+  await open(page);
+  await page.getByRole("button", { name: "Skills", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Skills, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  if (narrow) await page.getByRole("tab", { name: "Demo" }).click();
+  await expect(page.getByRole("region", { name: "Demonstration, scrollable" })).toBeVisible();
+  await page.waitForTimeout(900);
+  if (narrow) await page.getByRole("tab", { name: "Skills" }).click();
+}
+
+test("Skills opens the skill list on the left and a demonstration on the right", async ({
+  page,
+}, info) => {
+  await openSkills(page, isNarrow(info));
+  const skills = page.getByRole("region", { name: "Skills, scrollable" });
+  await expect(skills.getByRole("button", { name: /Symbiosis/ })).toBeVisible();
+  await expect(skills.getByRole("button", { name: /Abyssal Trap/ })).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  await expect(skills.getByText("Control effects")).toBeVisible();
+  await expect(skills.getByRole("img", { name: "Control effects: 10 out of 10" })).toBeAttached();
+  if (!isNarrow(info)) {
+    const vw = page.viewportSize()?.width ?? 0;
+    const l = await page.getByRole("complementary", { name: "Selena's skills" }).boundingBox();
+    const r = await page.getByRole("complementary", { name: "Skill demonstration" }).boundingBox();
+    expect(l!.x + l!.width).toBeLessThan(vw * 0.4);
+    expect(r!.x).toBeGreaterThan(vw * 0.6);
+  }
+});
+
+test("each form lists its own skills with their numbers", async ({ page }, info) => {
+  await openSkills(page, isNarrow(info));
+  const skills = page.getByRole("region", { name: "Skills, scrollable" });
+  const forms = skills.getByRole("group", { name: "Form" });
+  for (const name of ["Abyssal Trap", "Abyssal Arrow", "Primal Darkness"])
+    await expect(skills.getByRole("button", { name: new RegExp(name) })).toBeVisible();
+  await expect(skills.getByRole("button", { name: /Soul Eater/ })).toHaveCount(0);
+
+  await forms.getByRole("button", { name: "Abyssal Form" }).click();
+  for (const name of ["Soul Eater", "Garotte", "Blessing of the Moon Goddess"])
+    await expect(skills.getByRole("button", { name: new RegExp(name) })).toBeVisible();
+  await expect(skills.getByRole("button", { name: /Abyssal Trap/ })).toHaveCount(0);
+
+  // The opened skill shows its level table.
+  await skills.getByRole("button", { name: /Garotte/ }).click();
+  const table = skills.getByRole("table", { name: /Garotte, by skill level/ });
+  await expect(table.getByRole("row", { name: /Cooldown/ })).toContainText("12.0");
+  await expect(table.getByRole("row", { name: /Base damage/ })).toContainText("350");
+});
+
+test("choosing a skill changes the clip, and the clips can be paused", async ({ page }, info) => {
+  const narrow = isNarrow(info);
+  await openSkills(page, narrow);
+  const skills = page.getByRole("region", { name: "Skills, scrollable" });
+  await skills.getByRole("button", { name: /Abyssal Arrow/ }).click();
+  if (narrow) await page.getByRole("tab", { name: "Demo" }).click();
+  const demo = page.getByRole("region", { name: "Demonstration, scrollable" });
+  await expect(demo.getByRole("heading", { level: 2, name: "Abyssal Arrow" })).toBeVisible();
+  const clip = demo.locator("video");
+  await expect(clip).toHaveAttribute("aria-label", /Abyssal Arrow/);
+  const toggle = demo.getByRole("button", { name: /^(Pause|Play) the clip$/ });
+  await expect(toggle).toBeVisible();
+  // Another clip from the showcase.
+  await demo.getByRole("button", { name: /Idle animation/ }).click();
+  await expect(demo.locator("video")).toHaveAttribute("aria-label", /Idle animation/);
+});
+
+test("a clip opens in the custom player with sound and closes on Escape", async ({
+  page,
+}, info) => {
+  const narrow = isNarrow(info);
+  await openSkills(page, narrow);
+  if (narrow) await page.getByRole("tab", { name: "Demo" }).click();
+  await page.getByRole("button", { name: "Watch with sound" }).click();
+  const player = page.getByRole("dialog", { name: "Abyssal Trap" });
+  await expect(player).toBeVisible();
+  await expect(player.getByRole("slider", { name: "Seek" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(player).toHaveCount(0);
+  // The page is still on Skills.
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible();
+});
+
+test("Back closes the Skills drawers and returns to the main panel", async ({ page }, info) => {
+  await openSkills(page, isNarrow(info));
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
+    timeout: 20_000,
+  });
+  await expect(page.getByRole("region", { name: "Skills, scrollable" })).toHaveCount(0);
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

@@ -22,7 +22,7 @@
   position: absolute;
   top: calc(var(--nav-h) + 0.7rem);
   bottom: 5.4rem;
-  width: var(--w);
+  width: var(--w-this, var(--w));
   display: flex;
   pointer-events: auto;
   transition: transform 760ms var(--ease-out);
@@ -750,8 +750,8 @@
     transform: none;
   }
 
-  .drawers[data-tab="profile"] .drawer[data-side="right"],
-  .drawers[data-tab="story"] .drawer[data-side="left"] {
+  .drawers[data-tab="left"] .drawer[data-side="right"],
+  .drawers[data-tab="right"] .drawer[data-side="left"] {
     visibility: hidden;
     pointer-events: none;
   }

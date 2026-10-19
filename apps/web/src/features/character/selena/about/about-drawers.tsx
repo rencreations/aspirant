@@ -6,10 +6,10 @@ import { TLink } from "@/components/transition/t-link";
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useMediaQuery } from "@/lib/hooks";
 import { experienceHref } from "@/features/character/links";
 
 import { aboutImagePath } from "./about-images";
+import { DrawerShell } from "./drawer-shell";
 import styles from "./about.module.css";
 import { InlineText } from "./inline-text";
 import {
@@ -350,104 +350,32 @@ function StoryBody({ scroller }: { scroller: React.RefObject<HTMLDivElement | nu
 }
 
 interface Props {
-  /** The drawers are mounted. They stay mounted while they slide away. */
   present: boolean;
-  /** The drawers are open. */
   shown: boolean;
 }
 
 /**
  * The About page. Her profile slides in from the left and her story from the right, and she stays
- * visible between them. Each drawer scrolls on its own and has a tab that folds it away. On a
- * narrow screen they become one sheet at the bottom with two tabs.
+ * visible between them.
  */
 export function AboutDrawers({ present, shown }: Props) {
-  const [left, setLeft] = useState(true);
-  const [right, setRight] = useState(true);
-  const [tab, setTab] = useState<"profile" | "story">("profile");
-  const storyRef = useRef<HTMLDivElement>(null);
-  const profileRef = useRef<HTMLDivElement>(null);
-  // On a narrow screen the drawers are one sheet and cannot be folded.
-  const narrow = useMediaQuery("(max-width: 56em), (max-aspect-ratio: 1/1)");
-  if (!present) return null;
   return (
-    <div className={styles.drawers} data-shown={shown} data-tab={tab} data-theme="daybreak">
-      <div className={styles.tabs} role="tablist" aria-label="About Selena">
-        {(["profile", "story"] as const).map((t) => (
-          <button
-            key={t}
-            type="button"
-            role="tab"
-            aria-selected={tab === t}
-            onClick={() => {
-              setTab(t);
-              audio.blip("click");
-            }}
-          >
-            {t === "profile" ? "Profile" : "Story"}
-          </button>
-        ))}
-      </div>
-
-      <aside
-        className={styles.drawer}
-        data-side="left"
-        data-open={left}
-        aria-label="Selena's profile"
-      >
-        <button
-          type="button"
-          className={styles.handle}
-          aria-expanded={left}
-          onClick={() => {
-            setLeft((o) => !o);
-            audio.blip("click");
-          }}
-        >
-          <span>{left ? "Hide" : "Profile"}</span>
-        </button>
-        <div
-          ref={profileRef}
-          className={styles.scroll}
-          tabIndex={0}
-          data-lenis-prevent
-          role="region"
-          aria-label="Profile, scrollable"
-          inert={!shown || (!left && !narrow)}
-        >
-          <ProfileBody />
-        </div>
-      </aside>
-
-      <aside
-        className={styles.drawer}
-        data-side="right"
-        data-open={right}
-        aria-label="Selena's story"
-      >
-        <button
-          type="button"
-          className={styles.handle}
-          aria-expanded={right}
-          onClick={() => {
-            setRight((o) => !o);
-            audio.blip("click");
-          }}
-        >
-          <span>{right ? "Hide" : "Story"}</span>
-        </button>
-        <div
-          ref={storyRef}
-          className={styles.scroll}
-          tabIndex={0}
-          data-lenis-prevent
-          role="region"
-          aria-label="Story, scrollable"
-          inert={!shown || (!right && !narrow)}
-        >
-          <StoryBody scroller={storyRef} />
-        </div>
-      </aside>
-    </div>
+    <DrawerShell
+      present={present}
+      shown={shown}
+      label="About Selena"
+      left={{
+        title: "Profile",
+        aria: "Selena's profile",
+        region: "Profile, scrollable",
+        render: () => <ProfileBody />,
+      }}
+      right={{
+        title: "Story",
+        aria: "Selena's story",
+        region: "Story, scrollable",
+        render: (scroller) => <StoryBody scroller={scroller} />,
+      }}
+    />
   );
 }

@@ -488,3 +488,33 @@ Mapping: About is `phone-empty`, Skills is `horizontal`, Gallery is `vertical`, 
 **Story** (`story-data.ts`), 21 sections from the storm at Hollin Reach to the lamp on the bell tower, in plain English and in time order. It is written from the novel text (each section links to the chapters it comes from) and the official trailers. Nothing is added, and how the duel with Obsidia ends is left open. Names in the text open a tooltip (`{{entity-id|words}}` markup, backed by the glossary in `content/entities.ts`, with a link to the character's page where there is one). A numbered index along the top jumps between sections. There are 15 pictures, each a frame from `selena.webm`, `trailer.webm` or `skin-showcase.webm` taken at the moment the text describes (`about-assets.py` lists the timestamps; a test checks that every picture is used and in the loading bar), and 34 voice lines placed where they fit the scene: quotes, dialogue and inner monologue. A voice card shows the Japanese words, the translation and a play button. One line plays at a time.
 
 If a page video cannot play (no codec), the drawers still open over the still picture, and Back returns to the main panel.
+
+### The Skills page
+
+`features/character/selena/skills/`. Pressing Skills plays the entrance and then opens two drawers over the page loop, built on the same shell as About (`about/drawer-shell.tsx`: slide in from each side, fold tabs, one sheet with two tabs on narrow screens). She stays visible between them.
+
+**Left: the skills** (`skills-data.ts`). The wording is ours and the numbers are from the Mobile Legends: Bang Bang wiki page for Selena. They are game rules, not story, and the page says so. A header with role (Assassin and Mage), specialty (Initiator and Finisher), lane, resource, damage type and the four ratings (durability 4, offense 7, control effects 10, difficulty 8). A switch between Elven Form and Abyssal Form. Each form lists its skills as cards with the icon from `media/others/skills-icon`, the slot, the name and tags. A card opens to the full text, a level table (cooldown, mana, damage, shield, speed and Magic Power bonus by level) and notes. The passive Symbiosis is in both forms. Under the list: how the forms work together (each ultimate resets the other form's skills).
+
+| Form    | Skill 1      | Skill 2       | Ultimate                                |
+| ------- | ------------ | ------------- | --------------------------------------- |
+| Elven   | Abyssal Trap | Abyssal Arrow | Primal Darkness (to Abyssal)            |
+| Abyssal | Soul Eater   | Garotte       | Blessing of the Moon Goddess (to Elven) |
+
+**Right: the demonstration.** The clip of the chosen skill loops quietly at the top and stays there while the list under it scrolls. A button opens the same clip in the custom player, with sound, full page. Under it: four more clips from the skin showcase (the skin opening, Silverbolt in flight, the idle animation, the interactive animation) and a chip for every skill clip.
+
+**The clips** are cut from `skin-showcase.webm` by `scripts/selena/skills-assets.py`, which also copies the icons and writes `clips.generated.ts`. Only Selena is shown. The showcase has Obsidia's skin too, and its idle and interactive parts are split screen with Obsidia on the left, so those two are cropped to Selena's half (and the label bar is cropped off). The skill times came from reading the skill bar on screen, which lights the skill being cast, and from frame differences to find the cuts. All clips are 1080p H.264 with sound, 29 MB in all, loaded into memory by the loading bar like the rest of the page.
+
+| Clip            | Time in the showcase | Shows                                |
+| --------------- | -------------------- | ------------------------------------ |
+| trap            | 56.5 to 63.6 s       | Elven Skill 1                        |
+| soul-eater      | 63.7 to 67.3 s       | Abyssal Skill 1                      |
+| arrow           | 67.4 to 73.9 s       | Elven Skill 2                        |
+| garotte         | 73.9 to 76.65 s      | Abyssal Skill 2                      |
+| primal-darkness | 76.7 to 79.9 s       | Elven ultimate                       |
+| moon-goddess    | 81.6 to 83.45 s      | Abyssal ultimate                     |
+| skin-intro      | 5.37 to 11.1 s       | The skin's opening cinematic         |
+| skin-flight     | 49.2 to 53.9 s       | The flying scene                     |
+| idle            | 84.1 to 101.9 s      | Idle animation, Selena's half        |
+| interactive     | 102.0 to 108.4 s     | Interactive animation, Selena's half |
+
+The showcase is edited, so the form changes between some demonstrations are cut and not shown. The passive has nothing to cast, so it shows the skin opening and says why.

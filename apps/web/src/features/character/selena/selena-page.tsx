@@ -14,6 +14,7 @@ import { SHORT_NAMES, type PageName, type SceneName, type StageState } from "./d
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
+import { SkillsDrawers } from "./skills/skills-drawers";
 import { SelenaStage, type StageApi } from "./stage";
 import { SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
@@ -321,6 +322,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         ) : null}
 
         <AboutDrawers present={pageOpen && scene === "about"} shown={mode === "page"} />
+        <SkillsDrawers present={pageOpen && scene === "skills"} shown={mode === "page"} />
 
         <ScreenCover ref={cover} />
 

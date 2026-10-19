@@ -1,6 +1,7 @@
 import { isSlug } from "@/content/characters";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
 import { selenaItems } from "@/features/character/selena/media";
+import { skillItems } from "@/features/character/selena/skills/skills-media";
 import { chunkItem, dataItem, fontsItem, imageItem, type PreloadItem } from "@/lib/preload";
 
 /** Characters that have a cut-out in `public/img/char/<slug>/` (the others have splash art only). */
@@ -77,6 +78,7 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...ABOUT_IMAGES.map((name) =>
           imageItem(aboutImagePath(name), "Loading the About pictures", 1),
         ),
+        ...skillItems(),
         ...selenaItems(),
       ];
     }
