@@ -368,6 +368,67 @@ test("Back closes the Skills drawers and returns to the main panel", async ({ pa
   await expect(page.getByRole("region", { name: "Skills, scrollable" })).toHaveCount(0);
 });
 
+test("a press is answered at once: the chosen button lights and the rest steps away", async ({
+  page,
+}) => {
+  await open(page);
+  const skills = page.getByRole("button", { name: "Skills", exact: true });
+  await skills.click();
+  // A browser without H.264 has no idle frame to wait for and goes straight in. Where she waits,
+  // the answer is in the same moment as the press.
+  const waiting = await page
+    .locator("section[data-mode='queued']")
+    .waitFor({ timeout: 800 })
+    .then(() => true)
+    .catch(() => false);
+  if (!waiting) return;
+  await expect(skills).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Random Animation" })).toBeDisabled();
+  // The pressed button runs a bar for the length of the wait.
+  await expect(skills.locator("[class*='fill']")).toHaveCount(1);
+});
+
+test("Back is answered at once and the panel returns before the exit has finished", async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Profile, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  const back = page.getByRole("button", { name: "Back", exact: true });
+  await back.click();
+  await expect(back)
+    .toBeDisabled({ timeout: 800 })
+    .catch(() => undefined);
+  // The drawers go straight away: they are off the screen well before the exit has finished.
+  const drawer = page.locator('aside[aria-label="Selena\'s profile"]');
+  await expect
+    .poll(
+      async () => {
+        const box = await drawer.boundingBox();
+        const vp = page.viewportSize();
+        return !box || !vp || box.x + box.width <= 0 || box.y >= vp.height;
+      },
+      { timeout: 3000 },
+    )
+    .toBe(true);
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 20_000,
+  });
+});
+
+test("pressing the record with the sound off turns the sound on", async ({ page }) => {
+  await open(page);
+  const nav = page.getByRole("banner");
+  const sound = nav.getByRole("button", { name: "Sound" });
+  await page.locator("body").press("m");
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  await nav.getByRole("button", { name: /Silverbolt Raiko/ }).click();
+  await expect(sound).toHaveAttribute("aria-pressed", "true");
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

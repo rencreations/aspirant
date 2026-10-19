@@ -8,23 +8,45 @@ import {
   type StageState,
   type VideoKey,
 } from "./director";
-import { LEAD_FRAMES } from "./phase";
+import { LEAD_FRAMES, triggerFrames, waitFrames } from "./phase";
 import { SELENA_EXTRA_FRAMES, SELENA_FPS, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
+
+type Listener = () => void;
 
 /** Just enough of a video element, with the frame callback driven by the test. */
 class FakeVideo {
   dataset: Record<string, string> = {};
-  style = { setProperty: () => undefined };
-  currentTime = 0;
+  props: Record<string, string> = {};
+  style = {
+    setProperty: (k: string, v: string) => {
+      this.props[k] = v;
+    },
+  };
+  offsetWidth = 0;
   muted = false;
   readyState = 4;
   duration = 10;
   error: unknown = null;
   paused = true;
+  seeking = false;
   plays = 0;
   failPlay = false;
+  private time = 0;
   private frames: Array<(now: number, meta: { mediaTime: number }) => void> = [];
+  private listeners = new Map<string, Set<Listener>>();
 
+  get currentTime() {
+    return this.time;
+  }
+  /** Setting the time starts a seek that ends a moment later, like a real video. */
+  set currentTime(value: number) {
+    this.time = value;
+    this.seeking = true;
+    queueMicrotask(() => {
+      this.seeking = false;
+      this.emit("seeked");
+    });
+  }
   play() {
     if (this.failPlay) return Promise.reject(new Error("no codec"));
     this.paused = false;
@@ -34,8 +56,16 @@ class FakeVideo {
   pause() {
     this.paused = true;
   }
-  addEventListener() {
-    /* the tests end videos by ticking to their last frames */
+  addEventListener(type: string, fn: Listener) {
+    const set = this.listeners.get(type) ?? new Set<Listener>();
+    set.add(fn);
+    this.listeners.set(type, set);
+  }
+  removeEventListener(type: string, fn: Listener) {
+    this.listeners.get(type)?.delete(fn);
+  }
+  private emit(type: string) {
+    for (const fn of Array.from(this.listeners.get(type) ?? [])) fn();
   }
   requestVideoFrameCallback(cb: (now: number, meta: { mediaTime: number }) => void) {
     this.frames.push(cb);
@@ -43,7 +73,7 @@ class FakeVideo {
   }
   /** Present a frame at this media time. */
   tick(mediaTime: number) {
-    this.currentTime = mediaTime;
+    this.time = mediaTime;
     const due = this.frames.splice(0);
     for (const cb of due) cb(0, { mediaTime });
   }
@@ -51,6 +81,7 @@ class FakeVideo {
 
 const FPS = SELENA_FPS;
 const EARLY = (LEAD_FRAMES + SELENA_EXTRA_FRAMES) / FPS;
+const f = (frame: number) => frame / FPS;
 
 function setup(options: { reduced?: boolean } = {}) {
   const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, new FakeVideo()])) as Record<
@@ -60,12 +91,13 @@ function setup(options: { reduced?: boolean } = {}) {
   els.welcome.duration = 15.8;
   els.idle.duration = 8.1;
   for (const [name, page] of Object.entries(SELENA_PAGES)) {
-    els[`${name as keyof typeof SELENA_PAGES}-in`].duration = page.in.frames / FPS;
-    els[`${name as keyof typeof SELENA_PAGES}-loop`].duration = page.loop.frames / FPS;
-    els[`${name as keyof typeof SELENA_PAGES}-out`].duration = page.out.frames / FPS;
+    const n = name as keyof typeof SELENA_PAGES;
+    els[`${n}-in`].duration = f(page.in.frames);
+    els[`${n}-loop`].duration = f(page.loop.frames);
+    els[`${n}-out`].duration = f(page.out.frames);
   }
   for (const [name, short] of Object.entries(SELENA_SHORTS)) {
-    els[name as keyof typeof SELENA_SHORTS].duration = short.frames / FPS;
+    els[name as keyof typeof SELENA_SHORTS].duration = f(short.frames);
   }
   const attached: VideoKey[] = [];
   const states: StageState[] = [];
@@ -80,7 +112,7 @@ function setup(options: { reduced?: boolean } = {}) {
 
 type Ctx = ReturnType<typeof setup>;
 
-const settle = () => vi.advanceTimersByTimeAsync(1500);
+const settle = () => vi.advanceTimersByTimeAsync(4000);
 
 /** Start the director and play the welcome out until the idle loop runs. */
 async function toIdle(ctx: Ctx) {
@@ -93,8 +125,8 @@ async function toIdle(ctx: Ctx) {
 /** Tick the idle loop over the frame a scene's entrance starts on. */
 async function enter(ctx: Ctx, phase: number) {
   const trigger = phase - LEAD_FRAMES;
-  ctx.els.idle.tick((trigger - 1) / FPS);
-  ctx.els.idle.tick(trigger / FPS);
+  ctx.els.idle.tick(f(trigger - 1));
+  ctx.els.idle.tick(f(trigger));
   await settle();
 }
 
@@ -105,6 +137,19 @@ async function toPage(ctx: Ctx, name: keyof typeof SELENA_PAGES) {
   const intro = ctx.els[`${name}-in`];
   intro.tick(intro.duration - EARLY);
   await settle();
+}
+
+/** Leave a page and play its exit until the video is where the hand-over to the idle loop starts. */
+async function toOutro(ctx: Ctx, name: keyof typeof SELENA_PAGES) {
+  await toPage(ctx, name);
+  const page = SELENA_PAGES[name];
+  ctx.director.leave();
+  const trigger = page.out.startPhase - LEAD_FRAMES;
+  const loop = ctx.els[`${name}-loop`];
+  loop.tick(f(trigger - 1));
+  loop.tick(f(trigger));
+  await settle();
+  return ctx.els[`${name}-out`];
 }
 
 beforeEach(() => {
@@ -127,6 +172,7 @@ describe("welcome and idle", () => {
     void ctx.director.start();
     await settle();
     expect(ctx.director.current.mode).toBe("welcome");
+    expect(ctx.director.current.ui).toBe(false);
     expect(ctx.els.idle.plays).toBe(0);
     ctx.els.welcome.tick(5);
     await settle();
@@ -134,8 +180,8 @@ describe("welcome and idle", () => {
 
     ctx.els.welcome.tick(ctx.els.welcome.duration - EARLY);
     await settle();
-    expect(ctx.director.current.mode).toBe("idle");
-    expect(ctx.els.idle.currentTime).toBe(0);
+    expect(ctx.director.current).toMatchObject({ mode: "idle", ui: true });
+    expect(ctx.els.idle.currentTime).toBeLessThan(1);
     expect(ctx.els.idle.dataset.layer).toBe("front");
     expect(ctx.els.welcome.dataset.layer).toBe("off");
     expect(ctx.els.welcome.paused).toBe(true);
@@ -148,11 +194,10 @@ describe("welcome and idle", () => {
     const jump = ctx.director.jumpToIdle();
     await settle();
     await jump;
-    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
+    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null, ui: true });
     expect(ctx.els.idle.dataset.layer).toBe("front");
     expect(ctx.els.welcome.dataset.layer).toBe("off");
     expect(ctx.els.welcome.paused).toBe(true);
-    expect(ctx.els.idle.currentTime).toBe(0);
   });
 
   it("ignores a request while the welcome plays", async () => {
@@ -161,6 +206,60 @@ describe("welcome and idle", () => {
     await settle();
     ctx.director.request("about");
     expect(ctx.director.current.mode).toBe("welcome");
+  });
+});
+
+describe("a choice reacts at once", () => {
+  it("is queued in the same call, with the length of the wait", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.els.idle.tick(f(10));
+    const t0 = performance.now();
+    ctx.director.request("skills");
+    const s = ctx.director.current;
+    expect(s).toMatchObject({ mode: "queued", scene: "skills", ui: true, loading: false });
+    const frames = waitFrames(10, triggerFrames(SELENA_PAGES.skills.in.startPhases));
+    expect(s.wait?.ms).toBeCloseTo((frames / FPS) * 1000, 3);
+    expect(s.wait?.at).toBeGreaterThanOrEqual(t0);
+  });
+
+  it("does not know the wait while the clip is still loading", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.els["about-in"].readyState = 1;
+    ctx.director.request("about");
+    expect(ctx.director.current).toMatchObject({ mode: "queued", loading: true, wait: null });
+  });
+
+  it("keeps a choice made while she is still finishing, and starts it when she is idle", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "about");
+    expect(ctx.director.current.mode).toBe("outro");
+    const back = SELENA_PAGES.about.out;
+    // The panel is not back yet, so the choice is ignored.
+    ctx.director.request("skills");
+    expect(ctx.director.current.next).toBeNull();
+    // She is back in her idle pose: the panel is back and a choice is kept.
+    out.tick(f(back.uiFrame));
+    expect(ctx.director.current).toMatchObject({ mode: "outro", ui: true });
+    ctx.director.request("skills");
+    expect(ctx.director.current).toMatchObject({ next: "skills", mode: "outro" });
+    // The hand-over finishes, and the choice starts waiting for its frame.
+    out.tick(f(back.syncFrame - LEAD_FRAMES));
+    await settle();
+    expect(ctx.director.current).toMatchObject({ mode: "queued", scene: "skills", next: null });
+    await enter(ctx, SELENA_PAGES.skills.in.startPhases[0]);
+    expect(ctx.director.current).toMatchObject({ mode: "intro", scene: "skills" });
+  });
+
+  it("a kept choice can be taken back", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "gallery");
+    out.tick(f(SELENA_PAGES.gallery.out.uiFrame));
+    ctx.director.request("others");
+    expect(ctx.director.current.next).toBe("others");
+    ctx.director.cancel();
+    expect(ctx.director.current.next).toBeNull();
   });
 });
 
@@ -176,16 +275,37 @@ describe("pages", () => {
 
     const phase = SELENA_PAGES.skills.in.startPhases[0];
     const trigger = phase - LEAD_FRAMES;
-    for (const f of [trigger - 3, trigger - 2, trigger - 1]) ctx.els.idle.tick(f / FPS);
+    for (const fr of [trigger - 3, trigger - 2, trigger - 1]) ctx.els.idle.tick(f(fr));
     await settle();
     expect(ctx.director.current.mode).toBe("queued");
     expect(ctx.els["skills-in"].plays).toBe(0);
 
-    ctx.els.idle.tick(trigger / FPS);
+    ctx.els.idle.tick(f(trigger));
     await settle();
-    expect(ctx.director.current).toMatchObject({ mode: "intro", scene: "skills" });
+    expect(ctx.director.current).toMatchObject({ mode: "intro", scene: "skills", ui: false });
     expect(ctx.els["skills-in"].plays).toBe(1);
     expect(ctx.els["skills-in"].dataset.layer).toBe("front");
+    expect(ctx.els.idle.dataset.layer).toBe("off");
+  });
+
+  it("seeks to the start and waits for the seek before it plays, so no old picture shows", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.els["skills-in"].tick(7.5);
+    ctx.director.request("skills");
+    await enter(ctx, SELENA_PAGES.skills.in.startPhases[0]);
+    expect(ctx.els["skills-in"].currentTime).toBe(0);
+    expect(ctx.els["skills-in"].seeking).toBe(false);
+  });
+
+  it("eases the idle picture to the new camera while it dissolves, then puts it back", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.director.request("about");
+    expect(SELENA_PAGES.about.in.align).toBeLessThan(1);
+    await enter(ctx, SELENA_PAGES.about.in.startPhases[0]);
+    // After the dissolve the idle picture is back at its own scale.
+    expect(ctx.els.idle.props["--zoom"]).toBe("1");
     expect(ctx.els.idle.dataset.layer).toBe("off");
   });
 
@@ -194,42 +314,65 @@ describe("pages", () => {
     await toPage(ctx, "about");
     expect(ctx.director.current).toMatchObject({ mode: "page", scene: "about" });
     expect(ctx.els["about-loop"].plays).toBe(1);
-    expect(ctx.els["about-loop"].currentTime).toBe(0);
     expect(ctx.els["about-loop"].dataset.layer).toBe("front");
     expect(ctx.els["about-in"].dataset.layer).toBe("off");
   });
 
-  it("leaving waits for the loop frame the exit starts on, plays the exit, then resumes the idle loop", async () => {
+  it("leaving reacts at once, waits for the exit's frame, then plays the exit", async () => {
     const ctx = setup();
     await toPage(ctx, "about");
     const page = SELENA_PAGES.about;
+    ctx.els["about-loop"].tick(f(40));
     ctx.director.leave();
-    expect(ctx.director.current.mode).toBe("leaving");
+    expect(ctx.director.current).toMatchObject({ mode: "leaving", leaving: true });
+    expect(ctx.director.current.wait?.ms).toBeGreaterThanOrEqual(0);
 
     const trigger = page.out.startPhase - LEAD_FRAMES;
     const loop = ctx.els["about-loop"];
-    loop.tick((trigger - 2) / FPS);
-    loop.tick((trigger - 1) / FPS);
+    loop.tick(f(trigger - 2));
+    loop.tick(f(trigger - 1));
     await settle();
     expect(ctx.director.current.mode).toBe("leaving");
     expect(ctx.els["about-out"].plays).toBe(0);
 
-    loop.tick(trigger / FPS);
+    loop.tick(f(trigger));
     await settle();
-    expect(ctx.director.current.mode).toBe("outro");
+    expect(ctx.director.current).toMatchObject({ mode: "outro", ui: false, leaving: true });
     expect(ctx.els["about-out"].plays).toBe(1);
     expect(ctx.els["about-out"].dataset.layer).toBe("front");
+  });
 
-    const out = ctx.els["about-out"];
-    out.tick(out.duration - EARLY);
+  it("brings the panel back as soon as she is in her idle pose, before the hand-over", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "skills");
+    const back = SELENA_PAGES.skills.out;
+    const plays = ctx.els.idle.plays;
+    out.tick(f(back.uiFrame - 2));
+    expect(ctx.director.current.ui).toBe(false);
+    out.tick(f(back.uiFrame));
+    expect(ctx.director.current).toMatchObject({ mode: "outro", ui: true });
+    // The hand-over to the idle loop has not started yet: only the panel came back.
+    expect(ctx.els.idle.plays).toBe(plays);
+  });
+
+  it("starts the idle loop at the phase that matches the exit and dissolves while both play", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "gallery");
+    const back = SELENA_PAGES.gallery.out;
+    const at = back.syncFrame - LEAD_FRAMES;
+    out.tick(f(at));
     await settle();
-    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
+    expect(ctx.director.current).toMatchObject({
+      mode: "idle",
+      scene: null,
+      ui: true,
+      leaving: false,
+    });
+    const ahead = at - back.syncFrame + (LEAD_FRAMES + 2);
+    expect(ctx.els.idle.currentTime).toBeCloseTo(f(back.syncPhase + ahead), 5);
     expect(ctx.els.idle.dataset.layer).toBe("front");
-    expect(ctx.els.idle.currentTime).toBeCloseTo(
-      (page.out.endPhase - (LEAD_FRAMES + SELENA_EXTRA_FRAMES)) / FPS,
-      5,
-    );
     expect(out.dataset.layer).toBe("off");
+    expect(out.paused).toBe(true);
   });
 
   it("pressing Back during the entrance leaves as soon as the page loop is up", async () => {
@@ -239,6 +382,7 @@ describe("pages", () => {
     await enter(ctx, SELENA_PAGES.gallery.in.startPhases[0]);
     expect(ctx.director.current.mode).toBe("intro");
     ctx.director.leave();
+    expect(ctx.director.current.leaving).toBe(true);
     const intro = ctx.els["gallery-in"];
     intro.tick(intro.duration - EARLY);
     await settle();
@@ -250,7 +394,7 @@ describe("pages", () => {
     await toIdle(ctx);
     ctx.director.request("others");
     ctx.director.cancel();
-    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
+    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null, wait: null });
   });
 
   it("waits while the entrance is still loading, and says so", async () => {
@@ -269,22 +413,22 @@ describe("pages", () => {
 });
 
 describe("shorts", () => {
-  it("plays a short from the idle loop and hands back to the idle loop at its end phase", async () => {
+  it("plays a short, brings the panel back when she is idle again and hands over to the idle loop", async () => {
     const ctx = setup();
     await toIdle(ctx);
     const name = SHORT_NAMES[1]!;
     ctx.director.request(name);
     await enter(ctx, SELENA_SHORTS[name].startPhases[0]);
-    expect(ctx.director.current).toMatchObject({ mode: "short", scene: name });
+    expect(ctx.director.current).toMatchObject({ mode: "short", scene: name, ui: false });
     const clip = ctx.els[name];
     expect(clip.plays).toBe(1);
-    clip.tick(clip.duration - EARLY);
+    const back = SELENA_SHORTS[name].back;
+    clip.tick(f(back.uiFrame));
+    expect(ctx.director.current).toMatchObject({ mode: "short", ui: true });
+    clip.tick(f(back.syncFrame - LEAD_FRAMES));
     await settle();
     expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
-    expect(ctx.els.idle.currentTime).toBeCloseTo(
-      (SELENA_SHORTS[name].endPhase - (LEAD_FRAMES + SELENA_EXTRA_FRAMES)) / FPS,
-      5,
-    );
+    expect(ctx.els.idle.dataset.layer).toBe("front");
   });
 
   it("jumps to the idle loop at once, from a short or a page (Back under the cover)", async () => {

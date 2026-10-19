@@ -220,9 +220,9 @@ export const EXTRAS: readonly Extra[] = [
     note: "Selena changes form in the Silverbolt Raiko skin.",
   },
   {
-    clip: "skin-flight",
-    title: "Silverbolt in flight",
-    note: "The skin's flying scene, with Silverbolt beside her.",
+    clip: "skin-fight",
+    title: "Fight scene",
+    note: "Selena in her Ender form, fighting with the skin's effects.",
   },
   { clip: "idle", title: "Idle animation", note: "How she waits on the hero screen." },
   {
@@ -246,7 +246,7 @@ export const CLIP_LABEL: Record<ClipId, string> = {
   "primal-darkness": "Primal Darkness",
   "moon-goddess": "Blessing of the Moon Goddess",
   "skin-intro": "Skin opening",
-  "skin-flight": "Silverbolt in flight",
+  "skin-fight": "Fight scene",
   idle: "Idle animation",
   interactive: "Interactive animation",
 };

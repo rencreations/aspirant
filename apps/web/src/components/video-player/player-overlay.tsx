@@ -534,10 +534,10 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   useEffect(() => {
     const el = audio.getMusicElement();
     const resume = el !== null && !el.paused;
-    if (resume) audio.pauseMusic();
+    if (resume) audio.pauseMusic(1100);
     audio.stopVoice();
     return () => {
-      if (resume) audio.resumeMusic();
+      if (resume) audio.resumeMusic(2600);
     };
   }, []);
 

@@ -71,18 +71,33 @@ describe("timeline data", () => {
     }
   });
 
-  it("gives each page a loop, an exit that starts inside it and an end phase inside the idle loop", () => {
+  it("gives each exit and short a dissolve point inside the video, a panel point before it and a matching idle phase", () => {
+    const backs = [
+      ...Object.values(SELENA_PAGES).map((p) => ({ ...p.out, frames: p.out.frames })),
+      ...Object.values(SELENA_SHORTS).map((s) => ({ ...s.back, frames: s.frames })),
+    ];
+    for (const b of backs) {
+      expect(b.syncPhase).toBeGreaterThanOrEqual(0);
+      expect(b.syncPhase).toBeLessThan(SELENA_LOOP_FRAMES);
+      // The panel is back before the dissolve starts, and the dissolve fits in the video.
+      expect(b.uiFrame).toBeGreaterThan(60);
+      expect(b.uiFrame).toBeLessThan(b.syncFrame);
+      const dissolveFrames = (b.blendMs / 1000) * 60;
+      expect(b.syncFrame + dissolveFrames).toBeLessThan(b.frames);
+      expect(b.align).toBeGreaterThan(0.98);
+      expect(b.align).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("gives each page a loop and an exit that starts inside it", () => {
     for (const page of Object.values(SELENA_PAGES)) {
       expect([240, 486]).toContain(page.loop.frames);
       expect(page.out.startPhase).toBeGreaterThanOrEqual(0);
       expect(page.out.startPhase).toBeLessThan(page.loop.frames);
-      expect(page.out.endPhase).toBeLessThan(SELENA_LOOP_FRAMES);
       expect(page.in.frames).toBeGreaterThan(120);
-      expect(page.out.frames).toBeGreaterThan(120);
+      expect(page.out.frames).toBeGreaterThan(300);
+      expect(page.in.align).toBeLessThanOrEqual(1);
     }
-    for (const short of Object.values(SELENA_SHORTS)) {
-      expect(short.endPhase).toBeLessThan(SELENA_LOOP_FRAMES);
-      expect(short.frames).toBeGreaterThan(300);
-    }
+    for (const short of Object.values(SELENA_SHORTS)) expect(short.frames).toBeGreaterThan(300);
   });
 });

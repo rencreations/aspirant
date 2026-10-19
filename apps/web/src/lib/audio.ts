@@ -42,6 +42,10 @@ interface MusicSlot {
   gain: GainNode | null;
   source: MediaElementAudioSourceNode | null;
   url: string | null;
+  /** The level the track is meant to sit at. Pausing and ducking fade away from it and back. */
+  target: number;
+  /** Bumped by every pause or resume, so an old fade-out never pauses a track that came back. */
+  pauseToken: number;
 }
 
 // A 0.05 s silent WAV, used to unlock HTMLMediaElement playback on iOS inside the gesture.
@@ -260,6 +264,7 @@ class AudioEngine {
     try {
       const current = this.music[this.activeMusic];
       if (current?.url === url) {
+        current.target = volume;
         this.fadeSlot(current, volume, fadeMs);
         return;
       }
@@ -269,6 +274,7 @@ class AudioEngine {
       if (!slot) return;
       this.activeMusic = next;
       slot.url = url;
+      slot.target = volume;
       slot.el.loop = loop;
       slot.el.src = url;
       slot.el.muted = this.muted && !slot.gain;
@@ -304,26 +310,47 @@ class AudioEngine {
     return this.musicAnalyser;
   }
 
-  /** Pause the active music track without fading. `resumeMusic` continues it. */
-  pauseMusic(): void {
-    this.getMusicElement()?.pause();
-  }
-
-  /** Continue a paused music track. Call inside a user gesture the first time. */
-  resumeMusic(): void {
-    void this.getMusicElement()
-      ?.play()
-      .catch(() => undefined);
-  }
-
-  /** Set the level of the active music track (0 to 1) with a short ramp. */
-  setMusicVolume(volume: number): void {
+  /**
+   * Pause the active music track. With `fadeMs` it fades out first and pauses at the end, and
+   * `resumeMusic` fades it back in to the level it had.
+   */
+  pauseMusic(fadeMs = 0): void {
     const slot = this.music[this.activeMusic];
-    if (slot) this.fadeSlot(slot, Math.min(1, Math.max(0, volume)), 80);
+    if (!slot) return;
+    const token = ++slot.pauseToken;
+    if (fadeMs <= 0 || !slot.gain) {
+      slot.el.pause();
+      return;
+    }
+    this.fadeSlot(slot, 0, fadeMs);
+    window.setTimeout(() => {
+      if (slot.pauseToken === token) slot.el.pause();
+    }, fadeMs + 40);
+  }
+
+  /** Continue a paused music track, fading in over `fadeMs`. Call inside a user gesture the first time. */
+  resumeMusic(fadeMs = 0): void {
+    const slot = this.music[this.activeMusic];
+    if (!slot) return;
+    slot.pauseToken += 1;
+    if (fadeMs > 0 && slot.gain) {
+      if (slot.el.paused) slot.gain.gain.value = 0;
+      this.fadeSlot(slot, slot.target, fadeMs);
+    }
+    void slot.el.play().catch(() => undefined);
+  }
+
+  /** Set the level of the active music track (0 to 1), easing there over `fadeMs`. */
+  setMusicVolume(volume: number, fadeMs = 700): void {
+    const slot = this.music[this.activeMusic];
+    if (!slot) return;
+    const v = Math.min(1, Math.max(0, volume));
+    slot.target = v;
+    this.fadeSlot(slot, v, fadeMs);
   }
 
   /** Fade out and stop the music. */
-  stopMusic(fadeMs = 800): void {
+  stopMusic(fadeMs = 2500): void {
     const slot = this.music[this.activeMusic];
     if (slot) this.stopSlot(slot, fadeMs);
     this.activeMusic = -1;
@@ -351,6 +378,8 @@ class AudioEngine {
       analyser.fftSize = 1024;
       analyser.smoothingTimeConstant = 0.78;
       const voiceBus = ctx.createGain();
+      // Voice lines are recorded quieter than the music, so the bus lifts them.
+      voiceBus.gain.value = 1.9;
       voiceBus.connect(analyser).connect(master);
       const musicBus = ctx.createGain();
       musicBus.connect(master);
@@ -388,7 +417,7 @@ class AudioEngine {
         gain.gain.value = 0;
         source.connect(gain).connect(this.musicBus);
       }
-      const slot: MusicSlot = { el, gain, source, url: null };
+      const slot: MusicSlot = { el, gain, source, url: null, target: 0, pauseToken: 0 };
       this.music[index] = slot;
       return slot;
     } catch {
@@ -396,13 +425,26 @@ class AudioEngine {
     }
   }
 
+  /** Ease a track to `volume` along a smooth S curve, so a fade has no audible start or end. */
   private fadeSlot(slot: MusicSlot, volume: number, fadeMs: number): void {
     const ctx = this.ctx;
     if (slot.gain && ctx) {
       const now = ctx.currentTime;
+      const from = slot.gain.gain.value;
       slot.gain.gain.cancelScheduledValues(now);
-      slot.gain.gain.setValueAtTime(slot.gain.gain.value, now);
-      slot.gain.gain.linearRampToValueAtTime(volume, now + fadeMs / 1000);
+      slot.gain.gain.setValueAtTime(from, now);
+      if (fadeMs < 30 || Math.abs(volume - from) < 0.001) {
+        slot.gain.gain.setValueAtTime(volume, now + 0.02);
+        return;
+      }
+      const steps = 96;
+      const curve = new Float32Array(steps);
+      for (let i = 0; i < steps; i++) {
+        const k = i / (steps - 1);
+        const eased = k * k * (3 - 2 * k);
+        curve[i] = from + (volume - from) * eased;
+      }
+      slot.gain.gain.setValueCurveAtTime(curve, now, fadeMs / 1000);
       return;
     }
     // Fallback without Web Audio: step the element volume.
@@ -410,7 +452,8 @@ class AudioEngine {
     const t0 = performance.now();
     const step = () => {
       const k = Math.min(1, (performance.now() - t0) / Math.max(1, fadeMs));
-      slot.el.volume = start + (volume - start) * k;
+      const eased = k * k * (3 - 2 * k);
+      slot.el.volume = start + (volume - start) * eased;
       if (k < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -430,7 +473,10 @@ class AudioEngine {
   private duckMusic(duck: boolean): void {
     const ctx = this.ctx;
     if (!ctx || !this.musicBus) return;
-    this.musicBus.gain.setTargetAtTime(duck ? 0.35 : 1, ctx.currentTime, duck ? 0.08 : 0.4);
+    // Voice lines sit well above the music: it falls to about a fifth while a line plays, and
+    // comes back slowly once it ends.
+    this.musicBus.gain.cancelScheduledValues(ctx.currentTime);
+    this.musicBus.gain.setTargetAtTime(duck ? 0.18 : 1, ctx.currentTime, duck ? 0.18 : 0.9);
   }
 
   private finishVoice(): void {

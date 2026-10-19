@@ -43,9 +43,9 @@ export const SKILL_CLIPS = {
     bytes: 4634998,
     portrait: false,
   },
-  "skin-flight": {
-    seconds: 4.7,
-    bytes: 3388273,
+  "skin-fight": {
+    seconds: 5.25,
+    bytes: 3647051,
     portrait: false,
   },
   idle: {

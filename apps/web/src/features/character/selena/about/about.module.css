@@ -116,12 +116,6 @@
 .drawer[data-side="right"] .handle {
   border-right: 0;
   clip-path: polygon(0 14px, 100% 0, 100% 100%, 0 calc(100% - 14px));
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-}
-
-.drawer[data-side="right"] .handle span {
-  transform: none;
 }
 
 .handle:hover,

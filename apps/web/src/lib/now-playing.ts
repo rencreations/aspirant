@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { useSiteStore } from "@/lib/stores";
 
 export interface Track {
   title: string;
@@ -23,15 +24,21 @@ export const useNowPlaying = create<NowPlayingState>(() => ({ track: null, playi
 
 let cleanup: (() => void) | null = null;
 
+/** How loud page music sits. Voice lines are lifted well above it, and it ducks under them. */
+export const MUSIC_VOLUME = 0.22;
+/** Music fades in and out slowly, so it never starts or stops with a jolt. */
+const FADE_IN_MS = 5000;
+const FADE_OUT_MS = 3500;
+
 /**
  * Start a looping track for the page and show it in the nav. The audio engine owns the sound, so
  * the sound button mutes it. Returns a function that stops it. If the browser blocks the start
  * (no gesture yet), the first touch, click or key press starts it.
  */
-export function startMusic(track: Track, volume = 0.5): () => void {
+export function startMusic(track: Track, volume = MUSIC_VOLUME): () => void {
   cleanup?.();
   useNowPlaying.setState({ track, playing: false });
-  audio.playMusic(asset(track.src), { loop: true, volume, fadeMs: 1600 });
+  audio.playMusic(asset(track.src), { loop: true, volume, fadeMs: FADE_IN_MS });
   const el = audio.getMusicElement();
   const onPlay = () => {
     useNowPlaying.setState({ playing: true });
@@ -44,7 +51,7 @@ export function startMusic(track: Track, volume = 0.5): () => void {
   if (el && !el.paused) onPlay();
   let wanted = true;
   const retry = () => {
-    if (wanted && el?.paused) audio.resumeMusic();
+    if (wanted && el?.paused) audio.resumeMusic(FADE_IN_MS);
   };
   window.addEventListener("pointerdown", retry, { once: true });
   window.addEventListener("keydown", retry, { once: true });
@@ -54,7 +61,7 @@ export function startMusic(track: Track, volume = 0.5): () => void {
     window.removeEventListener("keydown", retry);
     el?.removeEventListener("play", onPlay);
     el?.removeEventListener("pause", onPause);
-    audio.stopMusic(900);
+    audio.stopMusic(FADE_OUT_MS);
     useNowPlaying.setState({ track: null, playing: false });
     if (cleanup === stop) cleanup = null;
   };
@@ -62,10 +69,27 @@ export function startMusic(track: Track, volume = 0.5): () => void {
   return stop;
 }
 
-/** Pause or resume the track (the record widget). */
+/**
+ * The record widget. Pauses or resumes the track, with a fade. If the sound is off, a press turns
+ * the sound on and starts the record, since that is what the press means.
+ */
 export function toggleMusic(): void {
   const el = audio.getMusicElement();
   if (!el) return;
-  if (el.paused) audio.resumeMusic();
-  else audio.pauseMusic();
+  const site = useSiteStore.getState();
+  const state = useNowPlaying;
+  if (site.muted) {
+    site.setMuted(false);
+    audio.setMuted(false);
+    audio.resumeMusic(1800);
+    state.setState({ playing: true });
+    return;
+  }
+  if (el.paused) {
+    audio.resumeMusic(1800);
+    state.setState({ playing: true });
+  } else {
+    audio.pauseMusic(900);
+    state.setState({ playing: false });
+  }
 }

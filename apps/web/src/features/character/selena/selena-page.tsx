@@ -8,7 +8,7 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import { VideoCard } from "@/components/video-player/video-card";
 import { audio } from "@/lib/audio";
 import { useHotkey } from "@/lib/hooks";
-import { startMusic, type Track } from "@/lib/now-playing";
+import { MUSIC_VOLUME, startMusic, type Track } from "@/lib/now-playing";
 
 import { SHORT_NAMES, type PageName, type SceneName, type StageState } from "./director";
 import styles from "./selena.module.css";
@@ -52,6 +52,25 @@ interface SelenaNext {
 }
 
 const pad = (n: number) => String(n).padStart(2, "0");
+
+/**
+ * The waiting animation inside a pressed button. A bar fills for exactly as long as the wait for
+ * her matching frame, so the press is answered at once and the wait is shown as it runs. When the
+ * length is not known (a clip is still loading) a band sweeps instead.
+ */
+function Fill({ ms, k }: { ms: number | null; k: number }) {
+  return (
+    <span
+      key={k}
+      className={styles.fill}
+      data-mode={ms === null ? "sweep" : "run"}
+      style={
+        ms === null ? undefined : ({ "--wait": `${Math.max(ms, 120)}ms` } as React.CSSProperties)
+      }
+      aria-hidden="true"
+    />
+  );
+}
 const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false;
 
 /**
@@ -67,7 +86,15 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   const { pause, resume } = useLenis();
   const stage = useRef<StageApi>(null);
   const cover = useRef<CoverApi>(null);
-  const [state, setState] = useState<StageState>({ mode: "boot", scene: null, loading: false });
+  const [state, setState] = useState<StageState>({
+    mode: "boot",
+    scene: null,
+    loading: false,
+    ui: false,
+    next: null,
+    leaving: false,
+    wait: null,
+  });
   const [shortIndex, setShortIndex] = useState(0);
   const [announce, setAnnounce] = useState("");
   const musicStop = useRef<(() => void) | null>(null);
@@ -76,7 +103,9 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     setState(s);
     if (s.mode === "queued" && s.scene) {
       const item = MENU.find((m) => m.scene === s.scene);
-      setAnnounce(s.loading ? "Loading" : `${item?.label ?? "Animation"} is next`);
+      setAnnounce(s.loading ? "Loading" : `${item?.label ?? "Animation"} is getting ready`);
+    } else if (s.leaving && s.mode !== "idle") {
+      setAnnounce("Going back");
     } else if (s.mode === "page" && s.scene) {
       setAnnounce(`${MENU.find((m) => m.scene === s.scene)?.label ?? "Page"} is open`);
     } else if (s.mode === "idle") {
@@ -127,7 +156,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     } else if (scene && scene in SELENA_SHORTS) {
       loud = mode === "short" && SELENA_SHORTS[scene as keyof typeof SELENA_SHORTS].audio;
     }
-    audio.setMusicVolume(loud ? 0.1 : 0.5);
+    audio.setMusicVolume(loud ? MUSIC_VOLUME * 0.2 : MUSIC_VOLUME, 1200);
   }, [mode, scene]);
 
   const booted = mode !== "boot";
@@ -140,9 +169,16 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     mode === "leaving" ||
     mode === "outro" ||
     (mode === "returning" && scene !== null && !isShort(scene));
-  // The main panel stays while a scene waits for its frame and goes while a short plays.
-  const showMain = mode === "idle" || mode === "queued";
-  const randomQueued = mode === "queued" && isShort(scene);
+  // The main panel shows while she idles, and comes back as soon as she is back in her idle
+  // pose after an exit or a short, before the hand-over has finished.
+  const showMain = state.ui;
+  // A choice reacts at once: the rest of the panel steps away and the chosen button runs a bar
+  // for exactly as long as the wait. Choosing while she is still finishing keeps the choice.
+  const chosen = mode === "queued" ? scene : state.next;
+  const busy = chosen !== null;
+  const randomChosen = chosen !== null && isShort(chosen);
+  const waitMs = mode === "queued" && state.wait && !state.loading ? state.wait.ms : null;
+  const waitKey = state.wait?.at ?? 0;
   const nextRoute = useCallback(() => {
     router.push(next.href, { label: next.label });
   }, [next.href, next.label, router]);
@@ -166,7 +202,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   useHotkey(
     "n",
     () => {
-      const free = !pageOpen && mode !== "queued" && mode !== "short";
+      const free = !pageOpen && !busy && mode !== "short";
       if (free && !document.querySelector("[role='dialog']")) nextRoute();
     },
     true,
@@ -181,13 +217,13 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
       if (document.querySelector("[role='dialog'], [role='tooltip']")) return;
       if (mode === "short") leaveShort();
       else if (mode === "page") stage.current?.leave();
-      else if (mode === "queued") stage.current?.cancel();
+      else if (mode === "queued" || state.next) stage.current?.cancel();
     };
     window.addEventListener("keydown", onKey, true);
     return () => {
       window.removeEventListener("keydown", onKey, true);
     };
-  }, [mode, leaveShort]);
+  }, [mode, leaveShort, state.next]);
 
   return (
     <div className={styles.page} data-theme="storm">
@@ -197,30 +233,33 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         </h1>
         <SelenaStage ref={stage} onState={onState} />
 
-        <div className={styles.ui} data-visible={showMain}>
+        <div className={styles.ui} data-visible={showMain} data-busy={busy}>
           <div className={styles.trailer}>
-            <VideoCard
-              video={{
-                sources: TRAILER.sources,
-                poster: TRAILER.poster,
-                title: TRAILER.title,
-              }}
-              duration={TRAILER.duration}
-              tag="Trailer"
-              className={styles.trailerCard}
-            />
+            <div className={styles.cardWrap} data-away={busy}>
+              <VideoCard
+                video={{
+                  sources: TRAILER.sources,
+                  poster: TRAILER.poster,
+                  title: TRAILER.title,
+                }}
+                duration={TRAILER.duration}
+                tag="Trailer"
+                className={styles.trailerCard}
+              />
+            </div>
             <button
               type="button"
               className={`${styles.button} ${styles.random}`}
-              data-state={randomQueued ? (state.loading ? "loading" : "queued") : "idle"}
-              aria-pressed={randomQueued}
-              disabled={mode === "queued" && !randomQueued}
+              data-state={randomChosen ? (state.loading ? "loading" : "queued") : "idle"}
+              data-away={busy && !randomChosen}
+              aria-pressed={randomChosen}
+              disabled={busy && !randomChosen}
               onPointerEnter={() => {
                 audio.blip("hover");
                 stage.current?.warm(SHORT_NAMES[shortIndex % SHORT_NAMES.length]!);
               }}
               onClick={() => {
-                if (randomQueued) stage.current?.cancel();
+                if (randomChosen) stage.current?.cancel();
                 else playRandom();
               }}
             >
@@ -235,23 +274,23 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
                 <i />
               </span>
               <span className={styles.sheen} aria-hidden="true" />
+              {randomChosen ? <Fill ms={waitMs} k={waitKey} /> : null}
             </button>
           </div>
 
           <nav className={styles.menu} aria-label="Selena" inert={!showMain}>
             <ul>
               {MENU.map((item, i) => {
-                const mine = state.scene === item.scene && mode === "queued";
+                const mine = chosen === item.scene;
                 const status = mine ? (state.loading ? "loading" : "queued") : "idle";
                 return (
-                  <li key={item.id} style={{ ["--i" as string]: i }}>
+                  <li key={item.id} data-mine={mine} style={{ ["--i" as string]: i }}>
                     <button
                       type="button"
                       className={styles.button}
                       data-state={status}
-                      data-dim={mode === "queued" && !mine}
                       aria-pressed={mine}
-                      disabled={mode === "queued" && !mine}
+                      disabled={busy && !mine}
                       onPointerEnter={() => {
                         stage.current?.warm(item.scene);
                         audio.blip("hover");
@@ -276,6 +315,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
                         <i />
                       </span>
                       <span className={styles.sheen} aria-hidden="true" />
+                      {mine ? <Fill ms={waitMs} k={waitKey} /> : null}
                     </button>
                   </li>
                 );
@@ -286,6 +326,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           <button
             type="button"
             className={styles.next}
+            data-away={busy}
             aria-label={`Continue to ${next.name}`}
             tabIndex={showMain ? 0 : -1}
             onClick={nextRoute}
@@ -305,18 +346,23 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           </div>
         ) : null}
 
-        {pageOpen ? (
+        {pageOpen && !showMain ? (
           <div className={styles.bar}>
             <button
               type="button"
               className={styles.corner}
-              disabled={mode !== "page" && mode !== "intro"}
+              data-busy={state.leaving}
+              disabled={state.leaving || (mode !== "page" && mode !== "intro")}
               onClick={() => {
+                audio.blip("click");
                 stage.current?.leave();
               }}
             >
               <i className={styles.back} aria-hidden="true" />
               <span>Back</span>
+              {state.leaving ? (
+                <Fill ms={mode === "leaving" && state.wait ? state.wait.ms : null} k={waitKey} />
+              ) : null}
             </button>
           </div>
         ) : null}

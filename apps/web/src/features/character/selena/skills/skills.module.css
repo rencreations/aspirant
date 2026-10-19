@@ -503,3 +503,97 @@
     transition-duration: 1ms;
   }
 }
+
+/* The picker under the clip: the form switch and the skill icons of that form. */
+.picker {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.pickForms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid rgb(108 76 240 / 0.5);
+}
+
+.pickForms button {
+  padding: 0.45rem 0;
+  border: 0;
+  background: transparent;
+  color: #1a1342;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition:
+    background-color 220ms var(--ease-out),
+    color 220ms var(--ease-out);
+}
+
+.pickForms button:hover {
+  background: rgb(108 76 240 / 0.12);
+}
+
+.pickForms button[aria-pressed="true"] {
+  background: #1a1342;
+  color: #e9b95f;
+}
+
+.icons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icons button {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.3rem 0 0.2rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #1a1342;
+  transition:
+    background-color 220ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+}
+
+.icons img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px rgb(108 76 240 / 0.6);
+  transition:
+    transform 460ms var(--ease-spring),
+    box-shadow 260ms var(--ease-out);
+}
+
+.icons button:hover img,
+.icons button:focus-visible img {
+  transform: scale(1.1) rotate(-4deg);
+}
+
+.icons button[aria-pressed="true"] {
+  background: rgb(108 76 240 / 0.1);
+  border-color: #6c4cf0;
+}
+
+.icons button[aria-pressed="true"] img {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #e9b95f;
+}
+
+.icons span {
+  font-family: var(--font-mono-stack);
+  font-size: 0.5rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

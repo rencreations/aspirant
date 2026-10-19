@@ -54,21 +54,55 @@ TIERS = {
     "2160": dict(w=3840, h=1728, crf=31, preset="medium"),
 }
 
-# key -> (source, a0, L0, loop frames, out start, e, idle start phases, idle end phase, in dissolve ms, out dissolve ms)
-# The phone clips (About, Others) were recorded with the pointer elsewhere, so their idle pose
-# differs a little from the idle loop and they dissolve more slowly.
+# key -> (source, a0, L0, loop frames, out start, idle start phases, dissolve into the page in ms)
 PAGES = {
-    "about": ("phone-empty.mkv", 385, 604, 240, 1329, 1762, [160, 322, 484], 265, 420, 420),
-    "skills": ("horizontal.mkv", 420, 753, 486, 1777, 2080, [122, 284, 446], 422, 140, 140),
-    "gallery": ("vertical.mkv", 345, 894, 486, 1961, 2256, [124, 286, 448], 422, 140, 140),
-    "others": ("phone-messages.mkv", 381, 664, 240, 1848, 2305, [20, 182, 344], 128, 420, 420),
+    "about": ("phone-empty.mkv", 385, 604, 240, 1329, [160, 322, 484], 560),
+    "skills": ("horizontal.mkv", 420, 753, 486, 1777, [122, 284, 446], 480),
+    "gallery": ("vertical.mkv", 345, 894, 486, 1961, [124, 286, 448], 480),
+    "others": ("phone-messages.mkv", 381, 664, 240, 1848, [20, 182, 344], 480),
 }
 
-# key -> (source, a0, e, idle start phases, idle end phase, dissolve ms)
+# key -> (source, a0, idle start phases, dissolve into the short in ms)
 SHORTS = {
-    "short-1": ("short-1.mkv", 339, 776, [42, 204, 366], 345, 420),
-    "short-2": ("short-2.mkv", 412, 962, [22, 184, 346], 134, 420),
-    "short-3": ("short-3.mkv", 486, 982, [19, 181, 343], 424, 420),
+    "short-1": ("short-1.mkv", 339, [42, 204, 366], 560),
+    "short-2": ("short-2.mkv", 412, [22, 184, 346], 480),
+    "short-3": ("short-3.mkv", 486, [19, 181, 343], 560),
+}
+
+# Where each exit and short gives the stage back to the idle loop. After the action there is a
+# stretch of the recording where she is back in her idle pose. In a window of TAIL_WINDOW frames
+# starting at `e0` that stretch matches the idle loop frame for frame, starting at idle phase
+# `phi` (found by matching windows of frames against the loop, so both pictures move together).
+# The dissolve starts SYNC_LEAD frames into the window, with the idle loop at the matching phase,
+# and runs while both play. The clip is cut to end with the window.
+# key -> (frame where the action ends in the source, e0, phi)
+TAILS = {
+    "about": (1654, 1678, 181),
+    "skills": (1975, 2179, 197),
+    "gallery": (2151, 2397, 77),
+    "others": (2173, 2233, 55),
+    "short-1": (746, 770, 339),
+    "short-2": (821, 845, 177),
+    "short-3": (871, 949, 391),
+}
+TAIL_WINDOW = 60
+SYNC_LEAD = 6
+UI_LEAD = 6  # the panel comes back this many frames before the action ends
+BACK_BLEND_MS = 560
+
+# Some recordings were made with the camera a fraction of a percent closer than the idle one
+# (scripts/selena/align.py measures it). Scale of the clip that matches the idle picture, at its
+# first frame and at its sync frame. The stage eases the idle picture by the inverse during the
+# dissolve so the edges do not jump.
+# key -> (at the start, at the end)
+ALIGN = {
+    "about": (0.995, 0.995),
+    "skills": (1.0, 1.0),
+    "gallery": (1.0, 1.0),
+    "others": (1.0, 0.995),
+    "short-1": (0.995, 1.0),
+    "short-2": (1.0, 0.9975),
+    "short-3": (0.9975, 1.0),
 }
 
 AUDIO = ["-c:a", "aac", "-b:a", "112k", "-ar", "48000", "-ac", "2"]
@@ -195,19 +229,29 @@ def build_trailer(webm: Path, out_dir: Path) -> None:
         ])
 
 
-def build_tier(name: str, src: Path, out_root: Path, audio: dict[str, bool]) -> None:
+def tail_end(key: str) -> int:
+    """The last frame (exclusive) of an exit or a short in its recording."""
+    return TAILS[key][1] + TAIL_WINDOW
+
+
+def build_tier(name: str, src: Path, out_root: Path, audio: dict[str, bool], parts: set[str]) -> None:
     t = Tier(name)
     out = out_root / name
     out.mkdir(parents=True, exist_ok=True)
-    build_welcome(t, src, out / "welcome.mp4")
-    build_loop(t, src / "idle.mkv", LOOP_START, LOOP_FRAMES, out / "idle.mp4")
-    for key, (file, a0, l0, p, o0, e, _s, _e, _bi, _bo) in PAGES.items():
+    if "base" in parts:
+        build_welcome(t, src, out / "welcome.mp4")
+        build_loop(t, src / "idle.mkv", LOOP_START, LOOP_FRAMES, out / "idle.mp4")
+    for key, (file, a0, l0, p, o0, _s, _b) in PAGES.items():
         a = audio[file]
-        build_cut(t, src / file, a0, l0 + EXTRA, out / f"{key}-in.mp4", a, 0.1)
-        build_loop(t, src / file, l0, p, out / f"{key}-loop.mp4")
-        build_cut(t, src / file, o0, e + 1, out / f"{key}-out.mp4", a, 0.12)
-    for key, (file, a0, e, _s, _e, _b) in SHORTS.items():
-        build_cut(t, src / file, a0, e + 1, out / f"{key}.mp4", audio[file], 0.12)
+        if "in" in parts:
+            build_cut(t, src / file, a0, l0 + EXTRA, out / f"{key}-in.mp4", a, 0.1)
+        if "loop" in parts:
+            build_loop(t, src / file, l0, p, out / f"{key}-loop.mp4")
+        if "out" in parts:
+            build_cut(t, src / file, o0, tail_end(key), out / f"{key}-out.mp4", a, 0.12)
+    if "short" in parts:
+        for key, (file, a0, _s, _b) in SHORTS.items():
+            build_cut(t, src / file, a0, tail_end(key), out / f"{key}.mp4", audio[file], 0.12)
     print(name, "done", sum(f.stat().st_size for f in out.glob("*.mp4")) // 1048576, "MB", flush=True)
 
 
@@ -215,20 +259,46 @@ def seg_info(file: str, frames: int, audio: bool, **extra) -> dict:
     return {"file": file, "frames": frames, "audio": audio, **extra}
 
 
+def back_timing(key: str, start: int) -> dict:
+    """How a clip hands the stage back to the idle loop. `start` is its first frame in the recording."""
+    action_end, e0, phi = TAILS[key]
+    return {
+        "syncFrame": e0 + SYNC_LEAD - start,
+        "syncPhase": (phi + SYNC_LEAD) % LOOP_FRAMES,
+        "uiFrame": max(0, action_end - UI_LEAD - start),
+        "blendMs": BACK_BLEND_MS,
+        "align": ALIGN[key][1],
+    }
+
+
 def timeline(audio: dict[str, bool], out_root: Path) -> str:
     pages = {}
-    for key, (file, a0, l0, p, o0, e, starts, end_phase, b_in, b_out) in PAGES.items():
+    for key, (file, a0, l0, p, o0, starts, b_in) in PAGES.items():
         a = audio[file]
         pages[key] = {
-            "in": seg_info(f"{key}-in.mp4", l0 + EXTRA - a0, a, startPhases=starts, blendMs=b_in),
+            "in": seg_info(
+                f"{key}-in.mp4", l0 + EXTRA - a0, a, startPhases=starts, blendMs=b_in, align=ALIGN[key][0]
+            ),
             "loop": seg_info(f"{key}-loop.mp4", p, False),
             "out": seg_info(
-                f"{key}-out.mp4", e + 1 - o0, a, startPhase=(o0 - l0) % p, endPhase=end_phase, blendMs=b_out
+                f"{key}-out.mp4",
+                tail_end(key) - o0,
+                a,
+                startPhase=(o0 - l0) % p,
+                **back_timing(key, o0),
             ),
         }
     shorts = {
-        key: seg_info(f"{key}.mp4", e + 1 - a0, audio[file], startPhases=starts, endPhase=end_phase, blendMs=b)
-        for key, (file, a0, e, starts, end_phase, b) in SHORTS.items()
+        key: seg_info(
+            f"{key}.mp4",
+            tail_end(key) - a0,
+            audio[file],
+            startPhases=starts,
+            blendMs=b_in,
+            align=ALIGN[key][0],
+            back=back_timing(key, a0),
+        )
+        for key, (file, a0, starts, b_in) in SHORTS.items()
     }
     names = ["welcome.mp4", "idle.mp4"]
     for key in PAGES:
@@ -257,23 +327,32 @@ def timeline(audio: dict[str, bool], out_root: Path) -> str:
         "  startPhases: readonly number[];\n"
         "  /** Length of the dissolve into the video, in ms. */\n"
         "  blendMs: number;\n"
+        "  /** Scale of the video that matches the idle picture at its first frame. */\n"
+        "  align: number;\n"
+        "}\n\n"
+        "interface BackTiming {\n"
+        "  /** Frame of the video where the dissolve into the idle loop starts. */\n"
+        "  syncFrame: number;\n"
+        "  /** Idle loop frame that matches `syncFrame`, so both move together. */\n"
+        "  syncPhase: number;\n"
+        "  /** Frame where she is back in her idle pose and the panel can come back. */\n"
+        "  uiFrame: number;\n"
+        "  blendMs: number;\n"
+        "  /** Scale of the video that matches the idle picture at `syncFrame`. */\n"
+        "  align: number;\n"
         "}\n\n"
         "export interface ShortTiming extends IdleStart {\n"
-        "  /** Idle loop frame the idle resumes at when the short ends. */\n"
-        "  endPhase: number;\n"
+        "  back: BackTiming;\n"
         "}\n\n"
         "export interface PageTiming {\n"
         "  in: IdleStart;\n"
         "  loop: { file: string; frames: number; audio: boolean };\n"
-        "  out: {\n"
+        "  out: BackTiming & {\n"
         "    file: string;\n"
         "    frames: number;\n"
         "    audio: boolean;\n"
         "    /** Page loop frame the exit starts at. */\n"
         "    startPhase: number;\n"
-        "    /** Idle loop frame the idle resumes at. */\n"
-        "    endPhase: number;\n"
-        "    blendMs: number;\n"
         "  };\n"
         "}\n\n"
         f"export const SELENA_PAGES = {json.dumps(pages, indent=2)} as const satisfies Record<string, PageTiming>;\n\n"
@@ -287,17 +366,20 @@ def main() -> None:
     only = None
     if "--tier" in argv:
         only = argv[argv.index("--tier") + 1]
-    args = [a for a in argv if not a.startswith("--") and a != only]
+    args = [a for a in argv if not a.startswith("--") and a != only and a not in {"base,in,loop,out,short"} and "," not in a]
     src = Path(args[0])
     root = Path(__file__).resolve().parents[2]
     web = root / "apps" / "web"
     out_root = web / "public" / "video" / "selena"
     out_root.mkdir(parents=True, exist_ok=True)
 
+    parts = {"base", "in", "loop", "out", "short"}
+    if "--parts" in argv:
+        parts = set(argv[argv.index("--parts") + 1].split(","))
     audio = {f: has_audio(src / f) for f in {p[0] for p in PAGES.values()} | {s[0] for s in SHORTS.values()}}
     if "--timeline-only" not in flags:
         for name in [only] if only else list(TIERS):
-            build_tier(name, src, out_root, audio)
+            build_tier(name, src, out_root, audio, parts)
         build_still(src, out_root / "still.webp", 1920, 864)
         if len(args) > 1:
             build_poster(Path(args[1]), out_root / "trailer-poster.webp")

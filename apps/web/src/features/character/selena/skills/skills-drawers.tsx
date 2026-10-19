@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { PlayerOverlay } from "@/components/video-player/player-overlay";
@@ -210,7 +210,7 @@ function SkillsBody({
 }
 
 /** A clip that loops quietly. A button below it opens the same clip with sound, full page. */
-function Demo({ clip, note }: { clip: ClipId; note?: string }) {
+function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?: ReactNode }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
@@ -279,6 +279,7 @@ function Demo({ clip, note }: { clip: ClipId; note?: string }) {
           Watch with sound
         </button>
       </figcaption>
+      {children}
       {big
         ? createPortal(
             <PlayerOverlay
@@ -299,14 +300,83 @@ function Demo({ clip, note }: { clip: ClipId; note?: string }) {
   );
 }
 
+/** The form switch and the skill icons of that form. Pressing an icon picks the skill. */
+function Picker({
+  form,
+  onForm,
+  selected,
+  onPick,
+}: {
+  form: FormId;
+  onForm: (f: FormId) => void;
+  selected: string | null;
+  onPick: (id: string) => void;
+}) {
+  return (
+    <div className={styles.picker}>
+      <div className={styles.pickForms} role="group" aria-label="Form of the skills shown">
+        {(["elven", "abyssal"] as const).map((f) => (
+          <button
+            key={f}
+            type="button"
+            aria-pressed={form === f}
+            onClick={() => {
+              onForm(f);
+              audio.blip("click");
+            }}
+          >
+            {FORM_NAME[f]}
+          </button>
+        ))}
+      </div>
+      <ul className={styles.icons} aria-label="Skills">
+        {bySlot(form).map((s) => (
+          <li key={s.id}>
+            <button
+              type="button"
+              aria-pressed={selected === s.id}
+              aria-label={`${s.slot}: ${s.name}`}
+              title={s.name}
+              onPointerEnter={() => {
+                audio.blip("hover");
+              }}
+              onClick={() => {
+                onPick(s.id);
+                audio.blip("click");
+              }}
+            >
+              {/* Plain <img>: static export, a 100 px icon. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset(skillIconPath(s.icon))}
+                alt=""
+                width={48}
+                height={48}
+                draggable={false}
+              />
+              <span>{s.slot}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function DemoBody({
   skill,
   clip,
   onClip,
+  form,
+  onForm,
+  onPick,
 }: {
   skill: Skill;
   clip: ClipId;
   onClip: (c: ClipId) => void;
+  form: FormId;
+  onForm: (f: FormId) => void;
+  onPick: (id: string) => void;
 }) {
   const own = clip === skill.clip;
   return (
@@ -321,7 +391,9 @@ function DemoBody({
         </p>
       </header>
 
-      <Demo clip={clip} note={own ? skill.clipNote : undefined} />
+      <Demo clip={clip} note={own ? skill.clipNote : undefined}>
+        <Picker form={form} onForm={onForm} selected={own ? skill.id : null} onPick={onPick} />
+      </Demo>
 
       <section className={styles.more}>
         <h3>More from the skin showcase</h3>
@@ -355,26 +427,6 @@ function DemoBody({
           ))}
         </ul>
       </section>
-
-      <section className={styles.more}>
-        <h3>Every skill clip</h3>
-        <ul className={styles.chips}>
-          {SKILLS.filter((s) => s.id !== "symbiosis").map((s) => (
-            <li key={s.id}>
-              <button
-                type="button"
-                aria-pressed={clip === s.clip}
-                onClick={() => {
-                  onClip(s.clip);
-                  audio.blip("click");
-                }}
-              >
-                {s.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
     </>
   );
 }
@@ -400,6 +452,13 @@ export function SkillsDrawers({ present, shown }: Props) {
     setClipOverride(null);
   };
 
+  const changeForm = (f: FormId) => {
+    setForm(f);
+    // Keep the open skill if it exists in the other form, otherwise open the first.
+    const same = SKILLS.find((s) => s.slot === skill.slot && (s.form === f || s.form === "both"));
+    pick((same ?? bySlot(f)[1]!).id);
+  };
+
   return (
     <DrawerShell
       present={present}
@@ -411,19 +470,7 @@ export function SkillsDrawers({ present, shown }: Props) {
         region: "Skills, scrollable",
         width: "clamp(21rem, 30vw, 32rem)",
         render: () => (
-          <SkillsBody
-            form={form}
-            onForm={(f) => {
-              setForm(f);
-              // Keep the open skill if it exists in the other form, otherwise open the first.
-              const same = SKILLS.find(
-                (s) => s.slot === skill.slot && (s.form === f || s.form === "both"),
-              );
-              pick((same ?? bySlot(f)[1]!).id);
-            }}
-            selected={selected}
-            onSelect={pick}
-          />
+          <SkillsBody form={form} onForm={changeForm} selected={selected} onSelect={pick} />
         ),
       }}
       right={{
@@ -431,7 +478,16 @@ export function SkillsDrawers({ present, shown }: Props) {
         aria: "Skill demonstration",
         region: "Demonstration, scrollable",
         width: "clamp(21rem, 30vw, 32rem)",
-        render: () => <DemoBody skill={skill} clip={clip} onClip={setClipOverride} />,
+        render: () => (
+          <DemoBody
+            skill={skill}
+            clip={clip}
+            onClip={setClipOverride}
+            form={form}
+            onForm={changeForm}
+            onPick={pick}
+          />
+        ),
       }}
     />
   );

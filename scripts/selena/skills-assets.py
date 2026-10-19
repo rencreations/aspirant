@@ -28,7 +28,7 @@ CLIPS = {
     "primal-darkness": (76.7, 79.9, None),
     "moon-goddess": (81.6, 83.45, None),
     "skin-intro": (5.37, 11.1, None),
-    "skin-flight": (49.2, 53.9, None),
+    "skin-fight": (11.2, 16.45, None),
     "idle": (84.1, 101.9, "crop=960:920:960:0"),
     "interactive": (102.0, 108.4, "crop=960:920:960:0"),
 }

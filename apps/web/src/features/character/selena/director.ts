@@ -1,11 +1,5 @@
-import { crossed, frameAt, LEAD_FRAMES, triggerFrames, wrapFrame } from "./phase";
-import {
-  SELENA_EXTRA_FRAMES,
-  SELENA_FPS,
-  SELENA_LOOP_FRAMES,
-  SELENA_PAGES,
-  SELENA_SHORTS,
-} from "./timeline.generated";
+import { crossed, frameAt, LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
+import { SELENA_EXTRA_FRAMES, SELENA_FPS, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
 export type PageName = keyof typeof SELENA_PAGES;
 export type ShortName = keyof typeof SELENA_SHORTS;
@@ -64,6 +58,20 @@ export interface StageState {
   scene: SceneName | null;
   /** True while a queued scene is still loading. */
   loading: boolean;
+  /**
+   * The main panel can show. It is true while she idles, and it comes back as soon as she is in
+   * her idle pose again, a moment before the exit or the short has finished handing over.
+   */
+  ui: boolean;
+  /** A scene the visitor chose while she was still finishing another one. */
+  next: SceneName | null;
+  /** True once the visitor asked to leave a page, until she is back in her idle pose. */
+  leaving: boolean;
+  /**
+   * How long the wait for the matching frame is, measured when it began. The page uses it to run
+   * a waiting animation of exactly that length. Null when it is not known.
+   */
+  wait: { ms: number; at: number } | null;
 }
 
 export type StageElements = Record<VideoKey, HTMLVideoElement>;
@@ -78,24 +86,61 @@ interface DirectorOptions {
   attach?: (key: VideoKey, el: HTMLVideoElement) => void;
 }
 
+interface Back {
+  syncFrame: number;
+  syncPhase: number;
+  uiFrame: number;
+  blendMs: number;
+  align: number;
+}
+
 const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 const EARLY = LEAD_FRAMES + SELENA_EXTRA_FRAMES;
-const HANDOVER_MS = 110;
+/** A video needs a few frames to show its first picture after play(). */
+const START_LATENCY = LEAD_FRAMES + 2;
+const HANDOVER_MS = 160;
 
-/** Resolve at the next frame the video presents (or after `ms`, so a stall never hangs). */
-function firstFrame(video: HTMLVideoElement, ms = 900): Promise<void> {
+/** Move a video to `time` and wait until the seek is done, so no old picture is left on show. */
+function seekTo(video: HTMLVideoElement, time: number, ms = 1500): Promise<void> {
+  return new Promise((resolve) => {
+    if (Math.abs(video.currentTime - time) < 0.002 && !video.seeking) {
+      resolve();
+      return;
+    }
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      window.clearTimeout(timer);
+      video.removeEventListener("seeked", finish);
+      resolve();
+    };
+    const timer = window.setTimeout(finish, ms);
+    video.addEventListener("seeked", finish);
+    video.currentTime = time;
+  });
+}
+
+/**
+ * Resolve when the video presents the picture at `time` (or after `ms`, so a stall never hangs).
+ * A picture from before the seek, left over from the last time the video played, does not count.
+ */
+function presented(video: HTMLVideoElement, time: number, ms = 900): Promise<void> {
   return new Promise((resolve) => {
     let done = false;
     const finish = () => {
       if (done) return;
       done = true;
+      window.clearTimeout(timer);
       resolve();
     };
-    window.setTimeout(finish, ms);
+    const timer = window.setTimeout(finish, ms);
     if (typeof video.requestVideoFrameCallback === "function") {
-      video.requestVideoFrameCallback(() => {
-        finish();
-      });
+      const check = (_now: number, meta: VideoFrameCallbackMetadata) => {
+        if (meta.mediaTime >= time - 0.05) finish();
+        else video.requestVideoFrameCallback(check);
+      };
+      video.requestVideoFrameCallback(check);
     } else {
       video.addEventListener("playing", finish, { once: true });
     }
@@ -136,26 +181,41 @@ function isReady(video: HTMLVideoElement): boolean {
  * Runs the Selena stage. A video per piece sits on top of the others and only one is on top at a
  * time: the welcome, the idle loop, for each page an entrance, a loop and an exit, and the short
  * animations. Every hand-over is cut on matching frames (see scripts/selena/build.py), so each
- * swap is a short dissolve between two pictures that are nearly the same:
+ * swap is a dissolve between two pictures that are nearly the same:
  *
  *   welcome -> idle   when the welcome is a few frames from its end
  *   idle -> intro     when the idle loop reaches the frame the entrance was cut from
  *   intro -> page     when the entrance is a few frames from its end (the page loop begins there)
  *   page -> outro     after `leave()`, when the page loop reaches the frame the exit starts on
- *   outro -> idle     when the exit is a few frames from its end; the idle loop resumes at the
- *                     frame that matches the exit's last
+ *   outro -> idle     in the stretch at the end of the exit where she is back in her idle pose.
+ *                     The idle loop starts at the phase that matches, the two play together, and
+ *                     they dissolve while both move
  *   idle -> short     like idle -> intro, and back to idle like outro -> idle
+ *
+ * The recordings were made one by one and the camera sits a fraction of a percent closer in some,
+ * so the idle picture is eased by that fraction while it dissolves with them.
  *
  * Nothing here touches React. The page passes the elements and listens to `onState`.
  */
 export class SelenaDirector {
-  private state: StageState = { mode: "boot", scene: null, loading: false };
+  private state: StageState = {
+    mode: "boot",
+    scene: null,
+    loading: false,
+    ui: false,
+    next: null,
+    leaving: false,
+    wait: null,
+  };
   private stopWatch: (() => void) | null = null;
   private pending: SceneName | null = null;
+  private after: SceneName | null = null;
   private prevFrame: number | null = null;
   private handed = false;
   private destroyed = false;
   private leaveAsked = false;
+  /** She is back in her idle pose, so the panel may show before the hand-over has finished. */
+  private poseBack = false;
   /** A page opened without its video (no codec): it shows over the still picture. */
   private degraded = false;
 
@@ -188,9 +248,24 @@ export class SelenaDirector {
     return isPage(scene) ? [`${scene}-in`, `${scene}-loop`, `${scene}-out`] : [scene];
   }
 
-  private set(next: Partial<StageState>) {
-    this.state = { ...this.state, ...next };
+  private set(next: Partial<Omit<StageState, "ui">>) {
+    const merged = { ...this.state, ...next };
+    merged.ui = merged.mode === "idle" || merged.mode === "queued" || this.poseBack;
+    this.state = merged;
     this.opts.onState(this.state);
+  }
+
+  /** Ease the picture's scale. A video's zoom is set in CSS (`--zoom`). */
+  private zoom(el: HTMLVideoElement, scale: number, ms: number) {
+    el.style.setProperty("--zoom-ms", `${ms}ms`);
+    el.style.setProperty("--zoom", String(scale));
+  }
+
+  private zoomNow(el: HTMLVideoElement, scale: number) {
+    el.style.setProperty("--zoom-ms", "0ms");
+    el.style.setProperty("--zoom", String(scale));
+    // Let the browser take the new scale before an easing starts from it.
+    void el.offsetWidth;
   }
 
   /** Put `to` on top and let `from` go once the dissolve is done. */
@@ -226,6 +301,14 @@ export class SelenaDirector {
     }
   }
 
+  /** Seek, play and wait for the picture at `time` to be on screen. */
+  private async startAt(video: HTMLVideoElement, time: number, silent = false): Promise<boolean> {
+    await seekTo(video, time);
+    if (!(await this.play(video, silent))) return false;
+    await presented(video, time);
+    return true;
+  }
+
   /** Set the sound on whatever is playing (the sound button). */
   setMuted(muted: boolean) {
     for (const el of this.all()) el.muted = muted;
@@ -247,13 +330,11 @@ export class SelenaDirector {
       this.set({ mode: "idle" });
       return;
     }
-    welcome.currentTime = 0;
-    const ok = await this.play(welcome);
+    const ok = await this.startAt(welcome, 0);
     if (!ok || this.destroyed) {
       await this.handToIdle();
       return;
     }
-    await firstFrame(welcome);
     await this.swap(welcome, null, 0);
     this.set({ mode: "welcome" });
     const lead = EARLY / SELENA_FPS;
@@ -275,9 +356,7 @@ export class SelenaDirector {
     this.stopWatch?.();
     const idle = this.use("idle");
     const welcome = this.els.welcome;
-    idle.currentTime = 0;
-    await this.play(idle, true);
-    await firstFrame(idle);
+    await this.startAt(idle, 0, true);
     await this.swap(idle, this.topVideo() === welcome ? welcome : null, HANDOVER_MS);
     welcome.currentTime = 0;
     this.set({ mode: "idle" });
@@ -292,8 +371,10 @@ export class SelenaDirector {
     if (this.destroyed) return;
     this.stopWatch?.();
     this.pending = null;
+    this.after = null;
     this.leaveAsked = false;
     this.degraded = false;
+    this.poseBack = false;
     this.handed = true;
     const idle = this.use("idle");
     for (const el of this.all()) {
@@ -301,14 +382,12 @@ export class SelenaDirector {
       el.pause();
       el.dataset.layer = "off";
     }
-    idle.currentTime = 0;
-    if (!this.opts.reduced) {
-      await this.play(idle, true);
-      await firstFrame(idle, 500);
-    }
+    this.zoomNow(idle, 1);
+    if (!this.opts.reduced) await this.startAt(idle, 0, true);
+    else idle.currentTime = 0;
     idle.style.setProperty("--xfade", "0ms");
     idle.dataset.layer = "front";
-    this.set({ mode: "idle", scene: null, loading: false });
+    this.set({ mode: "idle", scene: null, loading: false, next: null, leaving: false, wait: null });
     if (!this.opts.reduced) this.watchIdle();
   }
 
@@ -332,7 +411,7 @@ export class SelenaDirector {
           ) {
             void this.startScene(pending);
           } else if (!this.state.loading) {
-            this.set({ loading: true });
+            this.set({ loading: true, wait: null });
           }
         }
       }
@@ -340,9 +419,30 @@ export class SelenaDirector {
     });
   }
 
-  /** The visitor chose a scene. */
+  /** Milliseconds until the idle loop reaches one of the frames a scene can start at. */
+  private idleWait(scene: SceneName): number | null {
+    const idle = this.els.idle;
+    if (idle.paused || idle.error) return null;
+    const phases = isPage(scene)
+      ? SELENA_PAGES[scene].in.startPhases
+      : SELENA_SHORTS[scene].startPhases;
+    const frames = waitFrames(frameAt(idle.currentTime), triggerFrames(phases));
+    return (frames / SELENA_FPS) * 1000;
+  }
+
+  /**
+   * The visitor chose a scene. It reacts at once: the state changes in this call, so the page can
+   * show it. If she is still finishing another animation, the choice is kept and starts when she
+   * is back in her idle pose.
+   */
   request(scene: SceneName) {
-    const { mode } = this.state;
+    const { mode, ui } = this.state;
+    if (mode === "outro" || mode === "returning" || mode === "short") {
+      if (!ui) return;
+      this.after = scene;
+      this.set({ next: scene, wait: null });
+      return;
+    }
     if (mode !== "idle" && mode !== "queued") return;
     this.warm(scene);
     this.pending = scene;
@@ -352,35 +452,49 @@ export class SelenaDirector {
       return;
     }
     const first = this.els[this.keysOf(scene)[0]!];
-    this.set({ mode: "queued", scene, loading: !isReady(first) });
+    const loading = !isReady(first);
+    const ms = loading ? null : this.idleWait(scene);
+    this.set({
+      mode: "queued",
+      scene,
+      loading,
+      next: null,
+      wait: ms === null ? null : { ms, at: performance.now() },
+    });
   }
 
   /** Leave the queue. */
   cancel() {
+    if (this.after) {
+      this.after = null;
+      this.set({ next: null });
+      return;
+    }
     if (this.state.mode !== "queued") return;
     this.pending = null;
-    this.set({ mode: "idle", scene: null, loading: false });
+    this.set({ mode: "idle", scene: null, loading: false, wait: null });
   }
 
   private async startScene(scene: SceneName) {
     if (this.destroyed || (this.state.mode !== "queued" && this.state.mode !== "idle")) return;
     this.pending = null;
+    this.poseBack = false;
     const page = isPage(scene);
     const key: VideoKey = page ? `${scene}-in` : scene;
     const el = this.use(key);
     const timing = page ? SELENA_PAGES[scene].in : SELENA_SHORTS[scene];
-    this.set({ mode: page ? "intro" : "short", scene, loading: false });
+    const idle = this.els.idle;
+    this.set({ mode: page ? "intro" : "short", scene, loading: false, wait: null });
     this.stopWatch?.();
     if (this.opts.reduced && page) {
       // No intro: the page loop shows its first frame.
       const loop = this.use(`${scene}-loop`);
       loop.currentTime = 0;
-      await this.swap(loop, this.els.idle, 280);
+      await this.swap(loop, idle, 280);
       this.set({ mode: "page" });
       return;
     }
-    el.currentTime = 0;
-    const ok = await this.play(el);
+    const ok = await this.startAt(el, 0);
     if (!ok) {
       if (page) {
         // The video cannot play, but the page is the point: open it over the still picture.
@@ -392,17 +506,33 @@ export class SelenaDirector {
       this.watchIdle();
       return;
     }
-    await firstFrame(el);
-    await this.swap(el, this.els.idle, this.opts.reduced ? 280 : timing.blendMs);
+    // The idle picture, still moving under the new one, eases to the new one's camera.
+    const ms = this.opts.reduced ? 280 : timing.blendMs;
+    if (timing.align !== 1) this.zoom(idle, 1 / timing.align, ms);
+    await this.swap(el, idle, ms);
+    this.zoomNow(idle, 1);
     const lead = EARLY / SELENA_FPS;
-    const done = () => {
-      if (page) void this.handToPage(scene);
-      else void this.toIdle(el, SELENA_SHORTS[scene].endPhase, SELENA_SHORTS[scene].blendMs, scene);
-    };
-    this.stopWatch = watchFrames(el, (t) => {
-      if (Number.isFinite(el.duration) && t >= el.duration - lead) done();
-    });
-    el.addEventListener("ended", done, { once: true });
+    if (page) {
+      this.stopWatch = watchFrames(el, (t) => {
+        if (Number.isFinite(el.duration) && t >= el.duration - lead) void this.handToPage(scene);
+      });
+      el.addEventListener("ended", () => void this.handToPage(scene), { once: true });
+    } else {
+      const back = SELENA_SHORTS[scene].back;
+      this.stopWatch = watchFrames(el, (t) => {
+        this.watchBack(t * SELENA_FPS, back, el, scene);
+      });
+      el.addEventListener("ended", () => void this.toIdle(el, back, scene), { once: true });
+    }
+  }
+
+  /** While an exit or a short plays: bring the panel back, then hand over to the idle loop. */
+  private watchBack(frame: number, back: Back, clip: HTMLVideoElement, scene: SceneName) {
+    if (!this.poseBack && frame >= back.uiFrame) {
+      this.poseBack = true;
+      this.set({});
+    }
+    if (frame >= back.syncFrame - LEAD_FRAMES) void this.toIdle(clip, back, scene);
   }
 
   private async handToPage(scene: PageName) {
@@ -412,9 +542,7 @@ export class SelenaDirector {
     const from = this.els[`${scene}-in`];
     const loop = this.use(`${scene}-loop`);
     this.use(`${scene}-out`);
-    loop.currentTime = 0;
-    await this.play(loop, true);
-    await firstFrame(loop);
+    await this.startAt(loop, 0, true);
     await this.swap(loop, from, HANDOVER_MS);
     from.currentTime = 0;
     this.set({ mode: "page", scene });
@@ -424,34 +552,44 @@ export class SelenaDirector {
     }
   }
 
-  /** The visitor leaves a page. Its exit plays, then the idle loop carries on. */
+  /**
+   * The visitor leaves a page. Its exit plays, then the idle loop carries on. The call changes
+   * the state at once; the exit itself starts when the page loop reaches the frame it was cut at.
+   */
   leave() {
     const { mode, scene } = this.state;
     if (!scene || !isPage(scene)) return;
     if (mode === "intro") {
       this.leaveAsked = true;
+      this.set({ leaving: true });
       return;
     }
     if (mode !== "page") return;
-    if (this.degraded) {
-      this.degraded = false;
-      this.set({ mode: "idle", scene: null });
-      return;
-    }
     const page = SELENA_PAGES[scene];
     const loop = this.els[`${scene}-loop`];
     const out = this.use(`${scene}-out`);
+    if (this.degraded) {
+      this.degraded = false;
+      this.set({ mode: "idle", scene: null, leaving: false });
+      return;
+    }
     if (this.opts.reduced) {
+      this.set({ leaving: true });
       void this.swap(this.els.idle, loop, 380).then(() => {
-        this.set({ mode: "idle", scene: null });
+        this.set({ mode: "idle", scene: null, leaving: false });
       });
       return;
     }
-    this.set({ mode: "leaving" });
-    this.stopWatch?.();
-    this.prevFrame = null;
     const n = page.loop.frames;
     const triggers = triggerFrames([page.out.startPhase], n);
+    const frames = waitFrames(frameAt(loop.currentTime, n), triggers, n);
+    this.set({
+      mode: "leaving",
+      leaving: true,
+      wait: { ms: (frames / SELENA_FPS) * 1000, at: performance.now() },
+    });
+    this.stopWatch?.();
+    this.prevFrame = null;
     this.stopWatch = watchFrames(loop, (t) => {
       const frame = frameAt(t, n);
       const hit = this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, n);
@@ -462,54 +600,56 @@ export class SelenaDirector {
 
   private async startOutro(scene: PageName) {
     if (this.destroyed || this.state.mode !== "leaving") return;
-    this.set({ mode: "outro" });
+    this.set({ mode: "outro", wait: null });
     this.stopWatch?.();
     const out = this.els[`${scene}-out`];
     const loop = this.els[`${scene}-loop`];
     const timing = SELENA_PAGES[scene].out;
-    out.currentTime = 0;
-    const ok = await this.play(out);
+    const ok = await this.startAt(out, 0);
     if (!ok) {
-      await this.toIdle(loop, timing.endPhase, timing.blendMs, scene, true);
+      await this.toIdle(loop, timing, scene, true);
       return;
     }
-    await firstFrame(out);
     await this.swap(out, loop, HANDOVER_MS);
     loop.currentTime = 0;
-    const lead = EARLY / SELENA_FPS;
-    const done = () => {
-      void this.toIdle(out, timing.endPhase, timing.blendMs, scene);
-    };
     this.stopWatch = watchFrames(out, (t) => {
-      if (Number.isFinite(out.duration) && t >= out.duration - lead) done();
+      this.watchBack(t * SELENA_FPS, timing, out, scene);
     });
-    out.addEventListener("ended", done, { once: true });
+    out.addEventListener("ended", () => void this.toIdle(out, timing, scene), { once: true });
   }
 
-  /** Hand a finished video back to the idle loop at the frame that matches its last. */
-  private async toIdle(
-    from: HTMLVideoElement,
-    endPhase: number,
-    blendMs: number,
-    scene: SceneName,
-    immediate = false,
-  ) {
+  /**
+   * Hand a video that is back in its idle pose over to the idle loop. The idle loop starts at the
+   * frame that matches the video now, the two play together, and the idle picture dissolves in
+   * (easing its scale to the video's camera first, so the edges do not jump).
+   */
+  private async toIdle(from: HTMLVideoElement, back: Back, scene: SceneName, immediate = false) {
     if (this.destroyed || this.state.scene !== scene) return;
     if (this.state.mode === "returning" || this.state.mode === "idle") return;
     this.stopWatch?.();
     this.set({ mode: "returning" });
     const idle = this.els.idle;
-    // Resume a few frames early: the video keeps playing for the frames the idle loop needs to start.
-    const early = immediate || this.opts.reduced ? 0 : EARLY;
-    idle.currentTime = this.opts.reduced
-      ? 0
-      : wrapFrame(endPhase - early, SELENA_LOOP_FRAMES) / SELENA_FPS;
-    if (!this.opts.reduced) await this.play(idle, true);
-    await firstFrame(idle, 500);
-    await this.swap(idle, from, this.opts.reduced ? 380 : blendMs);
+    const reduced = this.opts.reduced;
+    const ahead = from.currentTime * SELENA_FPS - back.syncFrame + START_LATENCY;
+    const phase = immediate || reduced ? back.syncPhase : wrapFrame(back.syncPhase + ahead);
+    const ms = reduced ? 380 : back.blendMs;
+    this.zoomNow(idle, back.align === 1 ? 1 : 1 / back.align);
+    if (reduced) idle.currentTime = 0;
+    else await this.startAt(idle, phase / SELENA_FPS, true);
+    if (back.align !== 1) this.zoom(idle, 1, ms);
+    await this.swap(idle, from, ms);
+    this.zoomNow(idle, 1);
     from.currentTime = 0;
-    this.set({ mode: "idle", scene: null, loading: false });
-    if (!this.opts.reduced) this.watchIdle();
+    this.poseBack = false;
+    this.set({ mode: "idle", scene: null, loading: false, leaving: false, wait: null });
+    if (!reduced) this.watchIdle();
+    // Something chosen while she was finishing starts now.
+    const after = this.after;
+    if (after) {
+      this.after = null;
+      this.set({ next: null });
+      this.request(after);
+    }
   }
 
   /** The tab is hidden or shown again: stop the picture and the sound, then carry on. */
