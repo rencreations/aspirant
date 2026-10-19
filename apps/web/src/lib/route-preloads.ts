@@ -1,12 +1,6 @@
 import { isSlug } from "@/content/characters";
-import {
-  chunkItem,
-  dataItem,
-  fontsItem,
-  imageItem,
-  videoItem,
-  type PreloadItem,
-} from "@/lib/preload";
+import { selenaItems } from "@/features/character/selena/media";
+import { chunkItem, dataItem, fontsItem, imageItem, type PreloadItem } from "@/lib/preload";
 
 /** Characters that have a cut-out in `public/img/char/<slug>/` (the others have splash art only). */
 const HAS_CUTOUT: ReadonlySet<string> = new Set([
@@ -71,13 +65,15 @@ export function routeItems(pathname: string): PreloadItem[] {
   if (path.startsWith("/character/")) {
     const slug = path.slice("/character/".length).split("/")[0] ?? "";
     if (slug === "selena") {
-      // Her page is one picture: the still, the welcome and the idle loop.
+      // Her page is one picture made of videos. All of them load into memory here, in the size
+      // that suits the display, so nothing waits on the network once the page is open.
       return [
         ...shared,
         imageItem("/video/selena/still.webp", "Loading Selena", 1),
-        videoItem("/video/selena/welcome.mp4", "Loading the welcome animation", 6),
-        videoItem("/video/selena/loop.mp4", "Loading the idle animation", 3),
         imageItem("/video/selena/trailer-poster.webp", "Loading the trailer", 1),
+        imageItem("/img/char/selena/splash-sm.webp", "Loading the album art", 1),
+        dataItem("/audio/music/silverbolt-raiko.m4a", "Loading the music", 3),
+        ...selenaItems(),
       ];
     }
     if (isSlug(slug)) {

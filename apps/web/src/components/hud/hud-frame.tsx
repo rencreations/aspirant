@@ -7,7 +7,6 @@ import { useHotkey, useScrollProgress, useThemeAt } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import styles from "./hud.module.css";
-import { MotionToggle } from "./preference-toggles";
 
 function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
   return (
@@ -18,9 +17,9 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
 }
 
 /**
- * The persistent frame: four thin corner brackets, a hairline scroll progress bar along the top
- * edge, and the reduce-motion toggle. Fixed and click-through except for the toggle. The sound
- * button lives in the nav. The M key toggles sound.
+ * The persistent frame: four thin corner brackets and a hairline scroll progress bar along the top
+ * edge. Fixed, click-through and decorative. The sound button lives in the nav and the
+ * reduce-motion toggle in the menu. The M key toggles sound.
  */
 export function HudFrame() {
   const barRef = useRef<HTMLDivElement>(null);
@@ -42,20 +41,12 @@ export function HudFrame() {
 
   return (
     <>
-      <aside
-        className={styles.hud}
-        data-theme={theme}
-        data-overlay="hud"
-        aria-label="Page controls"
-      >
+      <aside className={styles.hud} data-theme={theme} data-overlay="hud" aria-hidden="true">
         <Corner pos="tl" />
         <Corner pos="tr" />
         <div className={styles.bottom} data-theme={bottomTheme}>
           <Corner pos="bl" />
           <Corner pos="br" />
-          <div className={styles.controls}>
-            <MotionToggle />
-          </div>
         </div>
       </aside>
       <div className={styles.bar} data-theme={theme} aria-hidden="true">

@@ -9,7 +9,7 @@ import {
   waitFrames,
   wrapFrame,
 } from "./phase";
-import { SELENA_CLIPS, SELENA_LOOP_FRAMES } from "./timeline.generated";
+import { SELENA_LOOP_FRAMES, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
 describe("loop frame maths", () => {
   it("wraps into the loop", () => {
@@ -19,13 +19,21 @@ describe("loop frame maths", () => {
     expect(frameAt(8.1)).toBe(0);
   });
 
+  it("works for loops of another length", () => {
+    expect(wrapFrame(245, 240)).toBe(5);
+    expect(frameAt(4.05, 240)).toBe(3);
+    expect(framesUntil(236, 4, 240)).toBe(8);
+    expect(crossed(238, 1, [0], 240)).toBe(true);
+    expect(triggerFrames([1], 240)).toEqual([240 - 2]);
+  });
+
   it("counts frames forward round the loop", () => {
     expect(framesUntil(10, 15)).toBe(5);
     expect(framesUntil(480, 4)).toBe(10);
     expect(framesUntil(7, 7)).toBe(0);
   });
 
-  it("starts clips a few frames early", () => {
+  it("starts videos a few frames early", () => {
     expect(triggerFrames([100, 2])).toEqual([100 - LEAD_FRAMES, SELENA_LOOP_FRAMES - 1]);
   });
 
@@ -46,17 +54,35 @@ describe("loop frame maths", () => {
   });
 });
 
-describe("clip timing data", () => {
-  it("has start phases inside the loop and 162 frames apart", () => {
-    for (const clip of Object.values(SELENA_CLIPS)) {
-      expect(clip.startPhases.length).toBeGreaterThan(1);
-      for (const p of clip.startPhases) {
+describe("timeline data", () => {
+  it("has idle start phases inside the loop and 162 frames apart for every page and short", () => {
+    const starts = [
+      ...Object.values(SELENA_PAGES).map((p) => p.in.startPhases),
+      ...Object.values(SELENA_SHORTS).map((s) => s.startPhases),
+    ];
+    for (const phases of starts) {
+      expect(phases).toHaveLength(3);
+      for (const p of phases) {
         expect(p).toBeGreaterThanOrEqual(0);
         expect(p).toBeLessThan(SELENA_LOOP_FRAMES);
       }
-      expect(clip.endPhase).toBeGreaterThanOrEqual(0);
-      expect(clip.endPhase).toBeLessThan(SELENA_LOOP_FRAMES);
-      expect(clip.frames).toBeGreaterThan(600);
+      expect(framesUntil(phases[0], phases[1])).toBe(162);
+      expect(framesUntil(phases[1], phases[2])).toBe(162);
+    }
+  });
+
+  it("gives each page a loop, an exit that starts inside it and an end phase inside the idle loop", () => {
+    for (const page of Object.values(SELENA_PAGES)) {
+      expect([240, 486]).toContain(page.loop.frames);
+      expect(page.out.startPhase).toBeGreaterThanOrEqual(0);
+      expect(page.out.startPhase).toBeLessThan(page.loop.frames);
+      expect(page.out.endPhase).toBeLessThan(SELENA_LOOP_FRAMES);
+      expect(page.in.frames).toBeGreaterThan(120);
+      expect(page.out.frames).toBeGreaterThan(120);
+    }
+    for (const short of Object.values(SELENA_SHORTS)) {
+      expect(short.endPhase).toBeLessThan(SELENA_LOOP_FRAMES);
+      expect(short.frames).toBeGreaterThan(300);
     }
   });
 });

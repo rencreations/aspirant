@@ -15,6 +15,7 @@ import { isActiveRoute, navItems, routes, siteConfig } from "@/lib/site";
 import { useSiteStore } from "@/lib/stores";
 
 import { MENU_PAIRS, warmMenuPairs } from "./menu-pairs";
+import { NowPlaying } from "./now-playing";
 import styles from "./nav.module.css";
 import { SoundButton } from "./sound-button";
 
@@ -150,6 +151,7 @@ export function SiteNav() {
               </span>
             </Dialog.Trigger>
             <SoundButton />
+            <NowPlaying />
           </div>
 
           <TLink

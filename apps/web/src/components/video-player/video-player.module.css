@@ -50,6 +50,34 @@
   font-size: 1.1em;
 }
 
+/* The poster sits over the picture and goes with a soft diagonal wipe, so the thumbnail's art
+   melts into the first frame instead of snapping to it. */
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  mask-image: linear-gradient(104deg, #000 0%, #000 38%, transparent 62%, transparent 100%);
+  mask-size: 260% 100%;
+  mask-repeat: no-repeat;
+  mask-position: 0% 0;
+}
+
+.poster[data-state="out"] {
+  animation: poster-out 900ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.poster[data-state="in"] {
+  animation: poster-in 460ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.poster[data-state="off"] {
+  visibility: hidden;
+}
+
 .scrim {
   position: absolute;
   inset: 0;
@@ -162,6 +190,7 @@
 
 .timeline:hover :is(.trackBase, .trackBuffered, .trackFill),
 .timeline:focus-visible :is(.trackBase, .trackBuffered, .trackFill),
+.timeline[data-snapped="true"] :is(.trackBase, .trackBuffered, .trackFill),
 .timeline[data-scrubbing="true"] :is(.trackBase, .trackBuffered, .trackFill) {
   height: 7px;
 }
@@ -180,22 +209,9 @@
 
 .timeline:hover .thumb,
 .timeline:focus-visible .thumb,
+.timeline[data-snapped="true"] .thumb,
 .timeline[data-scrubbing="true"] .thumb {
   transform: rotate(45deg) scale(1.2);
-}
-
-.preview {
-  position: absolute;
-  bottom: 30px;
-  transform: translateX(-50%);
-  padding: 0.18rem 0.5rem;
-  background: var(--ink);
-  border: 1px solid var(--orange);
-  color: #fff;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  pointer-events: none;
 }
 
 .row {
@@ -230,10 +246,18 @@
 }
 
 .textButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding-inline: 0.7rem;
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
   letter-spacing: 0.1em;
+}
+
+.textButton svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* The orange keyline draws round a button on hover or focus. */
@@ -321,11 +345,11 @@
   transform: rotate(45deg);
 }
 
-.speed {
+.quality {
   position: relative;
 }
 
-.speedMenu {
+.menu {
   position: absolute;
   right: 0;
   bottom: calc(100% + 6px);
@@ -338,7 +362,7 @@
   animation: pop var(--dur-base) var(--ease-out);
 }
 
-.speedMenu button {
+.menu button {
   width: 100%;
   min-height: 36px;
   padding: 0 1rem;
@@ -351,18 +375,18 @@
   text-align: left;
 }
 
-.speedMenu button:hover,
-.speedMenu button:focus-visible {
+.menu button:hover,
+.menu button:focus-visible {
   background: #fff;
   color: var(--ink);
 }
 
-.speedMenu button[aria-pressed="true"] {
+.menu button[aria-pressed="true"] {
   color: var(--orange);
 }
 
-.speedMenu button[aria-pressed="true"]:hover,
-.speedMenu button[aria-pressed="true"]:focus-visible {
+.menu button[aria-pressed="true"]:hover,
+.menu button[aria-pressed="true"]:focus-visible {
   color: var(--ink);
 }
 
@@ -474,6 +498,11 @@
   opacity: 1;
 }
 
+/* While the controls are hidden the cursor goes with them and comes back when the pointer moves. */
+.root:not([data-controls="true"]) .cursor {
+  opacity: 0;
+}
+
 @media (hover: none), (pointer: coarse) {
   .cursor {
     display: none;
@@ -544,11 +573,14 @@
 }
 
 .cursor[data-shape="scrub"] .blob {
-  width: 10px;
-  height: 10px;
+  width: 26px;
+  height: 26px;
   background: var(--orange);
   border-radius: 0;
   transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow:
+    0 0 0 4px rgb(11 11 14 / 0.6),
+    0 0 0 6px #fff;
 }
 
 .cursor[data-shape="play"] .glyph[data-for="play"],
@@ -604,8 +636,30 @@
   transform: translate(-50%, 58px) scale(1);
 }
 
+/* Snapped to the timeline: the time stands above the track. */
 .cursor[data-shape="scrub"] .label {
-  opacity: 0;
+  opacity: 1;
+  transform: translate(-50%, -52px) scale(1);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+}
+
+@keyframes poster-out {
+  from {
+    mask-position: 0% 0;
+  }
+  to {
+    mask-position: 100% 0;
+  }
+}
+
+@keyframes poster-in {
+  from {
+    mask-position: 100% 0;
+  }
+  to {
+    mask-position: 0% 0;
+  }
 }
 
 @keyframes flash {

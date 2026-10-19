@@ -15,7 +15,13 @@ export interface PreloadItem {
   label: string;
   /** Relative size of the item. Default 1. */
   weight?: number;
-  run: () => Promise<unknown>;
+  /**
+   * Do the work. Call `report(0..1)` while it runs (a download reports the bytes received) so
+   * the bar moves smoothly instead of jumping when the item ends.
+   */
+  run: (report: (fraction: number) => void) => Promise<unknown>;
+  /** How long to wait for this item before the site goes on without it. Default 12 s. */
+  timeoutMs?: number;
 }
 
 export interface PreloadProgress {
@@ -29,20 +35,37 @@ export interface PreloadProgress {
 
 const ITEM_TIMEOUT_MS = 12_000;
 
-const started = new Map<string, Promise<void>>();
+interface Started {
+  promise: Promise<void>;
+  fraction: number;
+  listeners: Set<(fraction: number) => void>;
+}
 
-function once(id: string, run: () => Promise<unknown>): Promise<void> {
-  let p = started.get(id);
-  if (!p) {
-    p = Promise.resolve()
-      .then(run)
+const started = new Map<string, Started>();
+
+function once(item: PreloadItem): Started {
+  let s = started.get(item.id);
+  if (!s) {
+    const created: Started = { promise: Promise.resolve(), fraction: 0, listeners: new Set() };
+    const report = (fraction: number) => {
+      created.fraction = Math.min(1, Math.max(created.fraction, fraction));
+      created.listeners.forEach((l) => {
+        l(created.fraction);
+      });
+    };
+    created.promise = Promise.resolve()
+      .then(() => item.run(report))
       .then(
         () => undefined,
         () => undefined,
-      );
-    started.set(id, p);
+      )
+      .then(() => {
+        created.fraction = 1;
+      });
+    started.set(item.id, created);
+    s = created;
   }
-  return p;
+  return s;
 }
 
 /** Decode an image into the browser cache. `path` is a public path such as "/img/a.webp". */
@@ -62,37 +85,6 @@ export function imageItem(path: string, label: string, weight = 1): PreloadItem 
           resolve();
         };
         img.src = asset(path);
-      }),
-  };
-}
-
-const warming = new Set<HTMLVideoElement>();
-
-/**
- * Buffer the start of a video so it plays at once. Resolves when the browser can play it (or if
- * it cannot load it). The elements the page uses later share the media cache.
- */
-export function videoItem(path: string, label: string, weight = 3): PreloadItem {
-  return {
-    id: `video:${path}`,
-    label,
-    weight,
-    run: () =>
-      new Promise<void>((resolve) => {
-        const video = document.createElement("video");
-        warming.add(video);
-        const done = () => {
-          warming.delete(video);
-          video.removeAttribute("src");
-          video.load();
-          resolve();
-        };
-        video.preload = "auto";
-        video.muted = true;
-        video.addEventListener("canplaythrough", done, { once: true });
-        video.addEventListener("error", done, { once: true });
-        video.src = asset(path);
-        video.load();
       }),
   };
 }
@@ -142,8 +134,8 @@ function withTimeout(p: Promise<void>, ms: number): Promise<void> {
 }
 
 /**
- * Run items in parallel and report progress as each finishes. Resolves when all are done (or
- * timed out). Items already finished earlier in the session resolve at once.
+ * Run items in parallel and report progress as bytes arrive and items finish. Resolves when all
+ * are done (or timed out). Items already finished earlier in the session resolve at once.
  */
 export async function runPreload(
   items: readonly PreloadItem[],
@@ -152,16 +144,21 @@ export async function runPreload(
   const unique = Array.from(new Map(items.map((i) => [i.id, i])).values());
   const total = unique.reduce((sum, i) => sum + (i.weight ?? 1), 0) || 1;
   const pending = new Map(unique.map((i) => [i.id, i]));
-  let doneWeight = 0;
+  const fractions = new Map<string, number>();
 
   const emit = () => {
     const rest = Array.from(pending.values());
+    let done = 0;
+    for (const i of unique) {
+      const f = pending.has(i.id) ? (fractions.get(i.id) ?? 0) : 1;
+      done += (i.weight ?? 1) * f;
+    }
     const heaviest = rest.reduce<PreloadItem | undefined>(
       (best, i) => ((i.weight ?? 1) > (best?.weight ?? 0) ? i : best),
       undefined,
     );
     onProgress?.({
-      progress: Math.min(1, doneWeight / total),
+      progress: Math.min(1, done / total),
       label: heaviest?.label ?? "Ready",
       pending: rest.map((i) => i.label),
     });
@@ -169,12 +166,18 @@ export async function runPreload(
   emit();
 
   await Promise.all(
-    unique.map((item) =>
-      withTimeout(once(item.id, item.run), ITEM_TIMEOUT_MS).then(() => {
+    unique.map((item) => {
+      const s = once(item);
+      const listener = (f: number) => {
+        fractions.set(item.id, f);
+        if (pending.has(item.id)) emit();
+      };
+      s.listeners.add(listener);
+      return withTimeout(s.promise, item.timeoutMs ?? ITEM_TIMEOUT_MS).then(() => {
+        s.listeners.delete(listener);
         pending.delete(item.id);
-        doneWeight += item.weight ?? 1;
         emit();
-      }),
-    ),
+      });
+    }),
   );
 }

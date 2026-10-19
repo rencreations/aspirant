@@ -10,6 +10,10 @@
   --gold: #e9b95f;
   background: #0a0a14;
   color: #fff;
+  height: 100svh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .hero {
@@ -97,6 +101,8 @@
   position: absolute;
   left: var(--pad);
   top: var(--top);
+  display: grid;
+  gap: 0.8rem;
   width: clamp(11.5rem, 17vw, 20.5rem);
   opacity: 0;
   transform: translateX(-28px);
@@ -385,13 +391,19 @@
   cursor: not-allowed;
 }
 
-/* Skip and Back, bottom right. */
-.corner {
+/* The bar along the bottom: Skip, Back and Random Animation. */
+.bar {
   position: absolute;
   left: 50%;
   bottom: clamp(1rem, 4vh, 2.5rem);
-  translate: -50% 0;
   z-index: 6;
+  display: flex;
+  gap: 0.7rem;
+  translate: -50% 0;
+  animation: rise 600ms var(--ease-out) 300ms both;
+}
+
+.corner {
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
@@ -405,7 +417,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  animation: rise 600ms var(--ease-out) 400ms both;
+  white-space: nowrap;
   transition:
     background-color 260ms var(--ease-out),
     color 260ms var(--ease-out),
@@ -417,6 +429,10 @@
   height: 1px;
   background: currentColor;
   transition: width 360ms var(--ease-out);
+}
+
+.corner .back {
+  order: -1;
 }
 
 .corner:hover,
@@ -435,10 +451,69 @@
   opacity: 0.5;
 }
 
-.nextZone {
-  position: relative;
-  background: var(--bg);
-  color: var(--text);
+/* Random Animation, under the trailer. */
+.random {
+  --cut: 14px;
+  height: 3rem;
+  grid-template-columns: auto auto 1fr auto;
+}
+
+.random .text {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+/* Next character, bottom left. */
+.next {
+  position: absolute;
+  left: var(--pad);
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  column-gap: 0.7rem;
+  height: 2.9rem;
+  padding: 0 1.1rem;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(10 8 40 / 0.5);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  text-align: left;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out),
+    transform 460ms var(--ease-spring);
+}
+
+.nextTop {
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.nextName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.next i {
+  display: none;
+}
+
+.next:hover,
+.next:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--gold);
+  transform: translateX(6px);
 }
 
 /* Phones and tall screens: the picture is cropped to her, the trailer stays top left and the four
@@ -502,8 +577,21 @@
     display: none;
   }
 
-  .corner {
+  .bar {
     bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .corner {
+    padding: 0 0.9rem;
+    letter-spacing: 0.14em;
+  }
+
+  .next {
+    left: auto;
+    right: var(--pad);
+    top: var(--top);
+    bottom: auto;
+    height: 2.6rem;
   }
 }
 

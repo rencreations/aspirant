@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { findCharacter, nextCharacter } from "@/content/characters";
-import { ART } from "@/features/character/art";
 import { CharacterView } from "@/features/character/page/character-view";
 import { SelenaPage } from "@/features/character/selena/selena-page";
-import { characterVars, readable } from "@/features/character/theme";
 import { asset } from "@/lib/asset";
 import { characterRoute, siteConfig } from "@/lib/site";
 import { CHARACTER_SLUGS } from "@/lib/slugs";
@@ -53,16 +51,12 @@ export default async function CharacterPage({ params }: Props) {
   if (!c) notFound();
   if (c.slug === "selena") {
     const n = nextCharacter(c.slug);
-    const art = ART[n.slug];
     return (
       <SelenaPage
         next={{
           label: n.name,
-          sublabel: `${n.aspirantName}. Unit ${String(n.order).padStart(2, "0")} of 10. ${n.tagline}`,
+          name: n.name,
           href: characterRoute(n.slug),
-          image: `/img/char/${n.slug}/splash.webp`,
-          accent: readable(n.palette[art.accent.accent], "daybreak"),
-          vars: characterVars(n.palette, "daybreak", art.accent),
         }}
       />
     );

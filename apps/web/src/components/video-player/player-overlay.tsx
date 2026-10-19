@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent,
@@ -16,13 +17,22 @@ import { audio } from "@/lib/audio";
 import { useReducedMotion } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
-import { cursorShape, formatTime, fractionAt, inLeaveZone, type CursorShape } from "./player-math";
+import {
+  autoQuality,
+  cursorShape,
+  formatTime,
+  fractionAt,
+  inLeaveZone,
+  snapToTrack,
+  type CursorShape,
+  type QualityOption,
+} from "./player-math";
 import styles from "./video-player.module.css";
 
 export interface PlayerVideo {
-  /** Public path of the video (passed through asset()). */
-  src: string;
-  /** Public path of the poster. */
+  /** The video in one or more sizes (public paths, passed through asset()). */
+  sources: readonly QualityOption[];
+  /** Public path of the poster. It is what the thumbnail shows, and the player fades out of it. */
   poster: string;
   title: string;
   /** Public path of a WebVTT track, if there is one. */
@@ -37,35 +47,28 @@ interface Props {
 }
 
 const STORE_KEY = "aspirants:player";
-const RATES = [0.75, 1, 1.25, 1.5, 2] as const;
 const EASE = "cubic-bezier(0.83, 0, 0.17, 1)";
 const ENTER_MS = 760;
 const EXIT_MS = 560;
+const POSTER_MS = 900;
 
-interface Saved {
-  volume: number;
-  muted: boolean;
-}
-
-function readSaved(): Saved {
+/** Only the volume is remembered. Whether the sound is on follows the site's sound button. */
+function readVolume(): number {
   try {
     const raw = window.localStorage.getItem(STORE_KEY);
     if (raw) {
-      const v = JSON.parse(raw) as Partial<Saved>;
-      return {
-        volume: typeof v.volume === "number" ? Math.min(1, Math.max(0, v.volume)) : 0.9,
-        muted: v.muted === true,
-      };
+      const v = JSON.parse(raw) as { volume?: unknown };
+      if (typeof v.volume === "number") return Math.min(1, Math.max(0, v.volume));
     }
   } catch {
     /* ignore */
   }
-  return { volume: 0.9, muted: false };
+  return 0.9;
 }
 
-function writeSaved(value: Saved): void {
+function writeVolume(volume: number): void {
   try {
-    window.localStorage.setItem(STORE_KEY, JSON.stringify(value));
+    window.localStorage.setItem(STORE_KEY, JSON.stringify({ volume }));
   } catch {
     /* ignore */
   }
@@ -80,11 +83,10 @@ function insetFor(rect: DOMRect, vw: number, vh: number): string {
   return `inset(${top}px ${right}px ${bottom}px ${left}px round 6px)`;
 }
 
-function Icon({
-  name,
-}: {
-  name: "play" | "pause" | "back" | "forward" | "volume" | "mute" | "cc" | "close" | "replay";
-}) {
+type IconName =
+  "play" | "pause" | "back" | "forward" | "volume" | "mute" | "cc" | "replay" | "gear";
+
+function Icon({ name }: { name: IconName }) {
   const common = {
     width: 22,
     height: 22,
@@ -92,6 +94,7 @@ function Icon({
     "aria-hidden": true,
     focusable: false,
   } as const;
+  const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.6 } as const;
   switch (name) {
     case "play":
       return (
@@ -108,12 +111,7 @@ function Icon({
     case "back":
       return (
         <svg {...common}>
-          <path
-            d="M12 5a7 7 0 1 1-6.6 4.7M12 2v6L7.5 5z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
+          <path d="M12 5a7 7 0 1 1-6.6 4.7M12 2v6L7.5 5z" {...stroke} />
           <text
             x="12"
             y="16"
@@ -129,12 +127,7 @@ function Icon({
     case "forward":
       return (
         <svg {...common}>
-          <path
-            d="M12 5a7 7 0 1 0 6.6 4.7M12 2v6l4.5-3z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
+          <path d="M12 5a7 7 0 1 0 6.6 4.7M12 2v6l4.5-3z" {...stroke} />
           <text
             x="12"
             y="16"
@@ -151,56 +144,40 @@ function Icon({
       return (
         <svg {...common}>
           <path d="M3 9.5h3.5L11 5.5v13l-4.5-4H3z" fill="currentColor" />
-          <path
-            d="M14.5 9a4.2 4.2 0 0 1 0 6M17 6.5a8 8 0 0 1 0 11"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
+          <path d="M14.5 9a4.2 4.2 0 0 1 0 6M17 6.5a8 8 0 0 1 0 11" {...stroke} />
         </svg>
       );
     case "mute":
       return (
         <svg {...common}>
           <path d="M3 9.5h3.5L11 5.5v13l-4.5-4H3z" fill="currentColor" />
-          <path d="M15 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M15 9.5l5 5m0-5l-5 5" {...stroke} />
         </svg>
       );
     case "cc":
       return (
         <svg {...common}>
-          <rect
-            x="3"
-            y="5"
-            width="18"
-            height="14"
-            rx="1.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
+          <rect x="3" y="5" width="18" height="14" rx="1.5" {...stroke} />
           <path
             d="M10 10.2a2.2 2.2 0 1 0 0 3.6M17 10.2a2.2 2.2 0 1 0 0 3.6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
+            {...stroke}
+            strokeWidth={1.5}
           />
-        </svg>
-      );
-    case "close":
-      return (
-        <svg {...common}>
-          <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" strokeWidth="1.7" />
         </svg>
       );
     case "replay":
       return (
         <svg {...common}>
+          <path d="M5 12a7 7 0 1 0 2.3-5.2M5 4v4.5h4.5" {...stroke} strokeWidth={1.7} />
+        </svg>
+      );
+    case "gear":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="3" {...stroke} />
           <path
-            d="M5 12a7 7 0 1 0 2.3-5.2M5 4v4.5h4.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
+            d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"
+            {...stroke}
           />
         </svg>
       );
@@ -208,10 +185,13 @@ function Icon({
 }
 
 /**
- * The custom player. It grows out of the thumbnail to fill the page (not the display), plays
- * the video, and has its own controls, loading state and a cursor that changes shape with the
- * place it is over: Play or Pause in the middle, Leave along the top and sides, the time over the
- * timeline. Esc, the Leave cursor and the close button shrink it back into the thumbnail.
+ * The custom player. It grows out of the thumbnail to fill the page (not the display), fades from
+ * the poster into the first frame, and plays. The picture is as wide as the window and never
+ * taller than it. It has its own controls, loading state and a cursor that changes shape with the
+ * place it is over: Play or Pause in the middle half of the screen, Leave in the outer quarters,
+ * and the time over the timeline, where the cursor snaps onto the track and follows it. The cursor
+ * and the controls hide together while the video plays. Esc and the Leave zones shrink it back into
+ * the thumbnail.
  */
 export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   const reduced = useReducedMotion();
@@ -223,39 +203,58 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const returnFocus = useRef<Element | null>(null);
   const pointer = useRef({ x: -100, y: -100, sx: -100, sy: -100, raf: 0, inside: false });
+  const snapRef = useRef<{ fraction: number } | null>(null);
   const hideTimer = useRef(0);
   const closing = useRef(false);
+  const menuRef = useRef(false);
 
   const [ready, setReady] = useState(false); // enter animation finished
+  const [poster, setPoster] = useState<"on" | "out" | "in" | "off">("on");
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(true);
   const [ended, setEnded] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
-  const [volume, setVolume] = useState(() => readSaved().volume);
-  const [muted, setMuted] = useState(() => readSaved().muted || useSiteStore.getState().muted);
-  const [rate, setRate] = useState<number>(1);
+  const [volume, setVolume] = useState(readVolume);
+  // The video's sound is on whenever the site's sound is on, and follows the sound button.
+  const [muted, setMuted] = useState(() => useSiteStore.getState().muted);
+  const [quality, setQuality] = useState<string>("auto");
+  const [menuOpen, setMenuOpen] = useState(false);
   const [captions, setCaptions] = useState(false);
   const [controls, setControls] = useState(true);
   const [shape, setShape] = useState<CursorShape>("dot");
   const [cursorOn, setCursorOn] = useState(false);
+  const [snapped, setSnapped] = useState(false);
   const [hoverFraction, setHoverFraction] = useState<number | null>(null);
   const [scrubbing, setScrubbing] = useState(false);
   const [flash, setFlash] = useState<{ id: number; icon: "play" | "pause" } | null>(null);
-  const [speedOpen, setSpeedOpen] = useState(false);
-  const speedRef = useRef(false);
-  useEffect(() => {
-    speedRef.current = speedOpen;
-  }, [speedOpen]);
 
   const v = () => videoRef.current;
+
+  // The size in use. "Auto" is worked out once, for this screen.
+  const auto = useMemo(() => {
+    const conn = (navigator as Navigator & { connection?: { downlink?: number } }).connection;
+    return autoQuality(video.sources, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      dpr: window.devicePixelRatio || 1,
+      downlinkMbps: conn?.downlink,
+    });
+  }, [video.sources]);
+  const active =
+    quality === "auto" ? auto : (video.sources.find((s) => s.label === quality) ?? auto);
+
+  useEffect(() => {
+    menuRef.current = menuOpen;
+  }, [menuOpen]);
 
   // Close ------------------------------------------------------------------------------------
   const close = useCallback(() => {
     if (closing.current) return;
     closing.current = true;
     setControls(false);
+    setMenuOpen(false);
     const el = v();
     el?.pause();
     audio.blip("hover");
@@ -282,23 +281,29 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
         .finished.then(finish, finish);
       return;
     }
-    const sx = rect.width / vw;
-    const dx = rect.left + rect.width / 2 - vw / 2;
-    const dy = rect.top + rect.height / 2 - vh / 2;
-    const opts = { duration: EXIT_MS, easing: EASE, fill: "forwards" } as const;
-    frame.animate(
-      [
-        { transform: "translate(0,0) scale(1)" },
-        { transform: `translate(${dx}px, ${dy}px) scale(${sx})` },
-      ],
-      opts,
-    );
-    root
-      .animate(
-        [{ clipPath: "inset(0 0 0 0 round 0px)" }, { clipPath: insetFor(rect, vw, vh) }],
+    // The poster comes back over the picture first, so what shrinks into the thumbnail is the
+    // thumbnail's own picture and nothing jumps when the player goes.
+    setPoster("in");
+    const shrink = () => {
+      const sx = rect.width / vw;
+      const dx = rect.left + rect.width / 2 - vw / 2;
+      const dy = rect.top + rect.height / 2 - vh / 2;
+      const opts = { duration: EXIT_MS, easing: EASE, fill: "forwards" } as const;
+      frame.animate(
+        [
+          { transform: "translate(0,0) scale(1)" },
+          { transform: `translate(${dx}px, ${dy}px) scale(${sx})` },
+        ],
         opts,
-      )
-      .finished.then(finish, finish);
+      );
+      root
+        .animate(
+          [{ clipPath: "inset(0 0 0 0 round 0px)" }, { clipPath: insetFor(rect, vw, vh) }],
+          opts,
+        )
+        .finished.then(finish, finish);
+    };
+    window.setTimeout(shrink, 480);
   }, [getOrigin, onClosed, reduced]);
 
   // Open: grow out of the thumbnail, then play ----------------------------------------------
@@ -338,7 +343,6 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     void finished.then(() => {
       if (!alive) return;
       setReady(true);
-      root.focus({ preventScroll: true });
       const el = videoRef.current;
       if (el) {
         el.volume = volume;
@@ -358,6 +362,33 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // The poster fades into the first frame with a soft gradient once a frame is on screen.
+  useEffect(() => {
+    const el = v();
+    if (!el) return;
+    const reveal = () => {
+      const show = () => {
+        setPoster((p) => (p === "on" ? "out" : p));
+      };
+      if (typeof el.requestVideoFrameCallback === "function") el.requestVideoFrameCallback(show);
+      else show();
+    };
+    el.addEventListener("playing", reveal, { once: true });
+    return () => {
+      el.removeEventListener("playing", reveal);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (poster !== "out") return;
+    const t = window.setTimeout(() => {
+      setPoster("off");
+    }, POSTER_MS);
+    return () => {
+      window.clearTimeout(t);
+    };
+  }, [poster]);
+
   // Page chrome: freeze the page behind, make it inert, give focus back on the way out ------
   useEffect(() => {
     pauseScroll();
@@ -376,7 +407,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     const onEscape = (e: globalThis.KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
-      if (speedRef.current) setSpeedOpen(false);
+      if (menuRef.current) setMenuOpen(false);
       else close();
     };
     window.addEventListener("keydown", onEscape);
@@ -391,6 +422,26 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     if (!el) return;
     for (const t of Array.from(el.textTracks)) t.mode = captions ? "showing" : "disabled";
   }, [captions, ready]);
+
+  // Another size: carry on from the same moment ---------------------------------------------
+  const lastSrc = useRef(active.src);
+  useEffect(() => {
+    const el = v();
+    if (!el || lastSrc.current === active.src) return;
+    lastSrc.current = active.src;
+    const at = el.currentTime;
+    const wasPlaying = !el.paused;
+    setBusy(true);
+    el.src = asset(active.src);
+    el.addEventListener(
+      "loadedmetadata",
+      () => {
+        el.currentTime = at;
+        if (wasPlaying) void el.play().catch(() => undefined);
+      },
+      { once: true },
+    );
+  }, [active.src]);
 
   // Video events ----------------------------------------------------------------------------
   useEffect(() => {
@@ -466,13 +517,29 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     if (!el) return;
     el.volume = volume;
     el.muted = muted;
-    writeSaved({ volume, muted });
+    writeVolume(volume);
   }, [volume, muted]);
 
+  // The sound button in the nav and the M key reach the player too.
+  useEffect(
+    () =>
+      useSiteStore.subscribe((s, prev) => {
+        if (s.muted !== prev.muted) setMuted(s.muted);
+      }),
+    [],
+  );
+
+  // While the player is open nothing else makes a sound: the page's music and any voice line
+  // stop, and the music carries on when the player closes.
   useEffect(() => {
-    const el = v();
-    if (el) el.playbackRate = rate;
-  }, [rate]);
+    const el = audio.getMusicElement();
+    const resume = el !== null && !el.paused;
+    if (resume) audio.pauseMusic();
+    audio.stopVoice();
+    return () => {
+      if (resume) audio.resumeMusic();
+    };
+  }, []);
 
   // Actions ---------------------------------------------------------------------------------
   const toggle = useCallback((withFlash = true) => {
@@ -509,14 +576,14 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     setMuted(clamped === 0);
   }, []);
 
-  // Controls hide while playing and the pointer rests ----------------------------------------
+  // Controls and cursor hide together while it plays and the pointer rests -------------------
   const scheduleHide = useCallback(() => {
     window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
       const el = v();
-      if (el && !el.paused && !speedOpen) setControls(false);
+      if (el && !el.paused && !menuRef.current) setControls(false);
     }, 2600);
-  }, [speedOpen]);
+  }, []);
 
   const wake = useCallback(() => {
     setControls(true);
@@ -531,23 +598,11 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   }, [playing, scheduleHide]);
 
   // Cursor ----------------------------------------------------------------------------------
-  const pickShape = useCallback(
-    (target: EventTarget | null, x: number, y: number) => {
-      const el = target instanceof Element ? target : null;
-      const zoneEl = el?.closest("[data-zone]");
-      const zone = (zoneEl?.getAttribute("data-zone") ?? "stage") as
-        "controls" | "timeline" | "button" | "stage";
-      const leave = inLeaveZone(x, y, window.innerWidth, window.innerHeight);
-      setShape(cursorShape({ zone, leave, playing, busy: busy && !playing }));
-    },
-    [busy, playing],
-  );
-
   useEffect(() => {
     const p = pointer.current;
     const tick = () => {
-      p.sx += (p.x - p.sx) * 0.24;
-      p.sy += (p.y - p.sy) * 0.24;
+      p.sx += (p.x - p.sx) * 0.22;
+      p.sy += (p.y - p.sy) * 0.22;
       const c = cursorRef.current;
       if (c) c.style.transform = `translate3d(${p.sx.toFixed(1)}px, ${p.sy.toFixed(1)}px, 0)`;
       p.raf = requestAnimationFrame(tick);
@@ -567,14 +622,43 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
       p.inside = true;
       setCursorOn(true);
     }
-    p.x = e.clientX;
-    p.y = e.clientY;
-    pickShape(e.target, e.clientX, e.clientY);
+    // Near the timeline the cursor lets go of the pointer and sits on the track.
+    const rect = trackRef.current?.getBoundingClientRect();
+    const snap = controls && rect ? snapToTrack(e.clientX, e.clientY, rect) : null;
+    if (snap) {
+      p.x = snap.x;
+      p.y = snap.y;
+      snapRef.current = { fraction: snap.fraction };
+      setHoverFraction(snap.fraction);
+    } else {
+      p.x = e.clientX;
+      p.y = e.clientY;
+      snapRef.current = null;
+      setHoverFraction(null);
+    }
+    setSnapped(snap !== null);
+    const el = e.target instanceof Element ? e.target : null;
+    const zone = (el?.closest("[data-zone]")?.getAttribute("data-zone") ?? "stage") as
+      "controls" | "button" | "stage";
+    setShape(
+      cursorShape({
+        snapped: snap !== null,
+        zone,
+        leave: inLeaveZone(e.clientX, window.innerWidth),
+        playing,
+        busy: busy && !playing,
+      }),
+    );
     wake();
   };
 
   const onStageClick = (e: React.MouseEvent) => {
-    if (inLeaveZone(e.clientX, e.clientY, window.innerWidth, window.innerHeight)) {
+    if (snapRef.current) {
+      seekTo(snapRef.current.fraction);
+      wake();
+      return;
+    }
+    if (inLeaveZone(e.clientX, window.innerWidth)) {
       close();
       return;
     }
@@ -594,9 +678,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     seekTo(fractionFromEvent(e));
   };
   const onTrackMove = (e: ReactPointerEvent) => {
-    const f = fractionFromEvent(e);
-    setHoverFraction(f);
-    if (scrubbing) seekTo(f);
+    if (scrubbing) seekTo(fractionFromEvent(e));
   };
   const onTrackUp = (e: ReactPointerEvent) => {
     if (e.currentTarget.hasPointerCapture(e.pointerId))
@@ -695,6 +777,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
             : shape === "scrub"
               ? formatTime(previewTime)
               : "";
+  const cursorShown = cursorOn && (controls || !playing);
 
   return (
     <div
@@ -713,7 +796,10 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
       onPointerMove={onPointerMove}
       onPointerLeave={() => {
         pointer.current.inside = false;
+        snapRef.current = null;
         setCursorOn(false);
+        setSnapped(false);
+        setHoverFraction(null);
         setShape("dot");
       }}
     >
@@ -723,8 +809,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           <video
             ref={videoRef}
             className={styles.video}
-            src={asset(video.src)}
-            poster={asset(video.poster)}
+            src={asset(active.src)}
             playsInline
             preload="auto"
           >
@@ -732,6 +817,15 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
               <track kind="captions" src={asset(video.captions)} srcLang="en" label="English" />
             ) : null}
           </video>
+          {/* The poster sits over the first frame and fades out with a soft wipe. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className={styles.poster}
+            src={asset(video.poster)}
+            alt=""
+            draggable={false}
+            data-state={poster}
+          />
         </div>
         <div className={styles.scrim} aria-hidden="true" />
       </div>
@@ -744,7 +838,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
       ) : null}
 
       {/* Loading state: a plate that draws itself while the video buffers. */}
-      <div className={styles.loader} data-on={busy && ready} aria-hidden="true">
+      <div className={styles.loader} data-on={busy && ready && poster === "off"} aria-hidden="true">
         <svg viewBox="0 0 80 80" width="80" height="80">
           <path className={styles.loaderOuter} d="M40 6 L70 23 L70 57 L40 74 L10 57 L10 23 Z" />
           <path className={styles.loaderInner} d="M40 22 L56 31 L56 49 L40 58 L24 49 L24 31 Z" />
@@ -768,22 +862,13 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
 
       <div className={styles.top} data-zone="controls">
         <p className={styles.title}>{video.title}</p>
-        <button
-          type="button"
-          className={styles.iconButton}
-          onClick={close}
-          aria-label="Close video"
-          data-zone="button"
-        >
-          <Icon name="close" />
-        </button>
       </div>
 
       <div className={styles.bar} data-zone="controls">
         <div
           ref={trackRef}
           className={styles.timeline}
-          data-zone="timeline"
+          data-snapped={snapped}
           data-scrubbing={scrubbing}
           role="slider"
           tabIndex={0}
@@ -796,9 +881,6 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           onPointerMove={onTrackMove}
           onPointerUp={onTrackUp}
           onPointerCancel={onTrackUp}
-          onPointerLeave={() => {
-            if (!scrubbing) setHoverFraction(null);
-          }}
           onKeyDown={(e) => {
             if (e.key === "ArrowLeft") {
               e.preventDefault();
@@ -815,11 +897,6 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           <span className={styles.trackBuffered} style={{ transform: `scaleX(${buffered})` }} />
           <span className={styles.trackFill} style={{ transform: `scaleX(${progress})` }} />
           <span className={styles.thumb} style={{ left: `${progress * 100}%` }} />
-          {hoverFraction !== null ? (
-            <span className={styles.preview} style={{ left: `${hoverFraction * 100}%` }}>
-              {formatTime(previewTime)}
-            </span>
-          ) : null}
         </div>
 
         <div className={styles.row}>
@@ -888,37 +965,44 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
             </span>
           </div>
           <div className={styles.group}>
-            <div className={styles.speed} data-zone="button">
-              <button
-                type="button"
-                className={styles.textButton}
-                aria-haspopup="true"
-                aria-expanded={speedOpen}
-                onClick={() => {
-                  setSpeedOpen((o) => !o);
-                }}
-              >
-                {rate}x
-              </button>
-              {speedOpen ? (
-                <ul className={styles.speedMenu} aria-label="Speed">
-                  {RATES.map((r) => (
-                    <li key={r}>
-                      <button
-                        type="button"
-                        aria-pressed={r === rate}
-                        onClick={() => {
-                          setRate(r);
-                          setSpeedOpen(false);
-                        }}
-                      >
-                        {r}x
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
+            {video.sources.length > 1 ? (
+              <div className={styles.quality} data-zone="button">
+                <button
+                  type="button"
+                  className={styles.textButton}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen}
+                  aria-label={`Quality, ${quality === "auto" ? `Auto, ${auto.label}` : active.label}`}
+                  onClick={() => {
+                    setMenuOpen((o) => !o);
+                  }}
+                >
+                  <Icon name="gear" />
+                  <span>{quality === "auto" ? "Auto" : active.label}</span>
+                </button>
+                {menuOpen ? (
+                  <ul className={styles.menu} aria-label="Quality">
+                    {[
+                      { id: "auto", text: `Auto (${auto.label})` },
+                      ...video.sources.map((s) => ({ id: s.label, text: s.label })),
+                    ].map((item) => (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          aria-pressed={item.id === quality}
+                          onClick={() => {
+                            setQuality(item.id);
+                            setMenuOpen(false);
+                          }}
+                        >
+                          {item.text}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : null}
             {video.captions ? (
               <button
                 type="button"
@@ -941,7 +1025,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
         ref={cursorRef}
         className={styles.cursor}
         data-shape={shape}
-        data-on={cursorOn}
+        data-on={cursorShown}
         aria-hidden="true"
       >
         <span className={styles.blob}>
@@ -952,7 +1036,9 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
             <Icon name="pause" />
           </span>
           <span className={styles.glyph} data-for="leave">
-            <Icon name="close" />
+            <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" strokeWidth="2" />
+            </svg>
           </span>
           <span className={styles.glyph} data-for="busy">
             <span className={styles.dots}>

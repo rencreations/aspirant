@@ -121,21 +121,14 @@ test("scrolling through the footer opens the next page", async ({ page, baseURL 
   await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/");
 });
 
-test("the Reduce motion toggle applies at once and persists across reloads", async ({
-  page,
-}, info) => {
+test("the Reduce motion toggle applies at once and persists across reloads", async ({ page }) => {
   await page.goto(url("/experience/"));
   await expect(page.locator("html")).toHaveAttribute("data-motion", "auto");
-  if (info.project.name === "desktop") {
-    await page
-      .getByRole("complementary", { name: "Page controls" })
-      .getByRole("button", { name: "Reduce motion" })
-      .click();
-  } else {
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("dialog").getByRole("button", { name: "Reduce motion" }).click();
-    await page.keyboard.press("Escape");
-  }
+  // It lives in the menu, with no control left in the bottom right corner of the page.
+  await expect(page.getByRole("button", { name: "Reduce motion" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Open menu" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Reduce motion" }).click();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");

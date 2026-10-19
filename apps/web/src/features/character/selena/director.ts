@@ -1,42 +1,86 @@
 import { crossed, frameAt, LEAD_FRAMES, triggerFrames, wrapFrame } from "./phase";
-import { SELENA_CLIPS, SELENA_FPS, SELENA_WELCOME_EXTRA_FRAMES } from "./timeline.generated";
+import {
+  SELENA_EXTRA_FRAMES,
+  SELENA_FPS,
+  SELENA_LOOP_FRAMES,
+  SELENA_PAGES,
+  SELENA_SHORTS,
+} from "./timeline.generated";
 
-export type ClipName = keyof typeof SELENA_CLIPS;
-export const CLIP_NAMES = Object.keys(SELENA_CLIPS) as ClipName[];
+export type PageName = keyof typeof SELENA_PAGES;
+export type ShortName = keyof typeof SELENA_SHORTS;
+export type SceneName = PageName | ShortName;
+
+const PAGE_NAMES = Object.keys(SELENA_PAGES) as PageName[];
+export const SHORT_NAMES = Object.keys(SELENA_SHORTS) as ShortName[];
+
+export type VideoKey = "welcome" | "idle" | `${PageName}-${"in" | "loop" | "out"}` | ShortName;
+
+export const VIDEO_KEYS: VideoKey[] = [
+  "welcome",
+  "idle",
+  ...PAGE_NAMES.flatMap((p) => [`${p}-in`, `${p}-loop`, `${p}-out`] as const),
+  ...SHORT_NAMES,
+];
+
+/** The file name of a video (inside its size folder). */
+export function videoFile(key: VideoKey): string {
+  if (key === "welcome") return "welcome.mp4";
+  if (key === "idle") return "idle.mp4";
+  if (key in SELENA_SHORTS) return SELENA_SHORTS[key as ShortName].file;
+  const [page, part] = key.split("-") as [PageName, "in" | "loop" | "out"];
+  return SELENA_PAGES[page][part].file;
+}
+
+const isPage = (scene: SceneName): scene is PageName => scene in SELENA_PAGES;
 
 /**
- * - boot: nothing plays yet, the still image shows.
+ * - boot: nothing plays yet.
  * - welcome: the welcome animation.
- * - loop: the idle animation loops.
- * - queued: a clip was asked for and waits for the loop to reach its start frame.
- * - clip: a clip plays.
- * - returning: a clip is handing back to the loop.
+ * - idle: the idle animation loops.
+ * - queued: a scene was asked for and waits for the idle loop to reach its start frame.
+ * - intro: a page's entrance plays.
+ * - page: the page's own animation loops.
+ * - leaving: the visitor left the page and the loop waits for the frame its exit starts on.
+ * - outro: the page's exit plays.
+ * - short: a short animation plays.
+ * - returning: a video is handing back to the idle loop.
  */
-type StageMode = "boot" | "welcome" | "loop" | "queued" | "clip" | "returning";
+type StageMode =
+  | "boot"
+  | "welcome"
+  | "idle"
+  | "queued"
+  | "intro"
+  | "page"
+  | "leaving"
+  | "outro"
+  | "short"
+  | "returning";
 
 export interface StageState {
   mode: StageMode;
-  /** The clip that is queued or playing. */
-  clip: ClipName | null;
-  /** True while a queued clip is still downloading. */
+  /** The scene that is queued or playing. */
+  scene: SceneName | null;
+  /** True while a queued scene is still loading. */
   loading: boolean;
 }
 
-export interface StageElements {
-  welcome: HTMLVideoElement;
-  loop: HTMLVideoElement;
-  clips: Record<ClipName, HTMLVideoElement>;
-}
+export type StageElements = Record<VideoKey, HTMLVideoElement>;
 
-export interface DirectorOptions {
+interface DirectorOptions {
   /** Read at the moment a video starts, so the sound button is always honoured. */
   muted: () => boolean;
-  /** Reduced motion: nothing starts by itself, clips play at once. */
+  /** Reduced motion: nothing starts by itself and nothing loops. */
   reduced: boolean;
   onState: (state: StageState) => void;
+  /** Called before a video is first used, so the page can give it its source. */
+  attach?: (key: VideoKey, el: HTMLVideoElement) => void;
 }
 
 const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
+const EARLY = LEAD_FRAMES + SELENA_EXTRA_FRAMES;
+const HANDOVER_MS = 110;
 
 /** Resolve at the next frame the video presents (or after `ms`, so a stall never hangs). */
 function firstFrame(video: HTMLVideoElement, ms = 900): Promise<void> {
@@ -81,38 +125,37 @@ function watchFrames(video: HTMLVideoElement, fn: (mediaTime: number) => void): 
   };
 }
 
-/** Enough of a clip is downloaded to play through the first seconds without a stall. */
+/** A video is loaded enough to start. One that cannot load counts as ready: the page falls back
+ * to the still picture instead of waiting for ever. */
 function isReady(video: HTMLVideoElement): boolean {
-  // A video that cannot load (no codec, a network error) counts as ready: the page then falls
-  // back to the still image instead of waiting for ever.
   if (video.error) return true;
-  if (video.readyState >= 4) return true;
-  if (video.readyState < 3 || video.buffered.length === 0) return false;
-  const need = Math.min(Number.isFinite(video.duration) ? video.duration : 8, 8);
-  return video.buffered.end(video.buffered.length - 1) >= need;
+  return video.readyState >= 3;
 }
 
 /**
- * Runs the Selena stage. Four kinds of video sit on top of each other: the welcome animation, the
- * idle loop and one video per action clip. Only one is on top at a time. The hand-overs are cut
- * on matching frames (see scripts/selena/build.py), so each swap is a short dissolve between two
- * pictures that are nearly the same:
+ * Runs the Selena stage. A video per piece sits on top of the others and only one is on top at a
+ * time: the welcome, the idle loop, for each page an entrance, a loop and an exit, and the short
+ * animations. Every hand-over is cut on matching frames (see scripts/selena/build.py), so each
+ * swap is a short dissolve between two pictures that are nearly the same:
  *
- *   welcome -> loop    when the welcome is a few frames from its end
- *   loop    -> clip    when the loop reaches the frame the clip was cut from
- *   clip    -> loop    when the clip is a few frames from its end, the loop resumes at the
- *                      frame that matches the clip's last
+ *   welcome -> idle   when the welcome is a few frames from its end
+ *   idle -> intro     when the idle loop reaches the frame the entrance was cut from
+ *   intro -> page     when the entrance is a few frames from its end (the page loop begins there)
+ *   page -> outro     after `leave()`, when the page loop reaches the frame the exit starts on
+ *   outro -> idle     when the exit is a few frames from its end; the idle loop resumes at the
+ *                     frame that matches the exit's last
+ *   idle -> short     like idle -> intro, and back to idle like outro -> idle
  *
  * Nothing here touches React. The page passes the elements and listens to `onState`.
  */
 export class SelenaDirector {
-  private state: StageState = { mode: "boot", clip: null, loading: false };
+  private state: StageState = { mode: "boot", scene: null, loading: false };
   private stopWatch: (() => void) | null = null;
-  private pending: ClipName | null = null;
+  private pending: SceneName | null = null;
   private prevFrame: number | null = null;
   private handed = false;
   private destroyed = false;
-  private requested = new Set<ClipName>();
+  private leaveAsked = false;
 
   constructor(
     private readonly els: StageElements,
@@ -121,7 +164,8 @@ export class SelenaDirector {
     for (const el of this.all()) el.dataset.layer = "off";
     // Until it plays, the welcome shows its own first frame, so the animation does not pop in
     // over a different picture. Reduced motion never plays it.
-    if (!opts.reduced) els.welcome.dataset.layer = "front";
+    if (!opts.reduced) this.use("welcome").dataset.layer = "front";
+    this.use("idle");
   }
 
   get current(): StageState {
@@ -129,7 +173,17 @@ export class SelenaDirector {
   }
 
   private all(): HTMLVideoElement[] {
-    return [this.els.welcome, this.els.loop, ...Object.values(this.els.clips)];
+    return Object.values(this.els);
+  }
+
+  private use(key: VideoKey): HTMLVideoElement {
+    const el = this.els[key];
+    this.opts.attach?.(key, el);
+    return el;
+  }
+
+  private keysOf(scene: SceneName): VideoKey[] {
+    return isPage(scene) ? [`${scene}-in`, `${scene}-loop`, `${scene}-out`] : [scene];
   }
 
   private set(next: Partial<StageState>) {
@@ -154,7 +208,7 @@ export class SelenaDirector {
     return this.all().find((v) => v.dataset.layer === "front") ?? null;
   }
 
-  private async playMuted(video: HTMLVideoElement, silent = false): Promise<boolean> {
+  private async play(video: HTMLVideoElement, silent = false): Promise<boolean> {
     video.muted = silent || this.opts.muted();
     try {
       await video.play();
@@ -172,162 +226,276 @@ export class SelenaDirector {
 
   /** Set the sound on whatever is playing (the sound button). */
   setMuted(muted: boolean) {
-    for (const el of [this.els.welcome, ...Object.values(this.els.clips)]) el.muted = muted;
+    for (const el of this.all()) el.muted = muted;
   }
 
-  /** Start a download early (the pointer is on its button). */
-  warm(name: ClipName) {
-    if (this.requested.has(name)) return;
-    this.requested.add(name);
-    const el = this.els.clips[name];
-    el.preload = "auto";
-    el.load();
+  /** Get a scene's videos ready (the pointer is on its button). */
+  warm(scene: SceneName) {
+    for (const key of this.keysOf(scene)) this.use(key);
   }
 
   async start() {
     if (this.destroyed || this.state.mode !== "boot") return;
-    const { welcome, loop } = this.els;
+    const welcome = this.use("welcome");
+    const idle = this.use("idle");
     if (this.opts.reduced) {
-      // No motion: the loop shows its first frame and stays there.
-      loop.currentTime = 0;
-      await this.swap(loop, null, 0);
-      this.set({ mode: "loop" });
+      // No motion: the idle loop shows its first frame and stays there.
+      idle.currentTime = 0;
+      await this.swap(idle, null, 0);
+      this.set({ mode: "idle" });
       return;
     }
     welcome.currentTime = 0;
-    const ok = await this.playMuted(welcome);
+    const ok = await this.play(welcome);
     if (!ok || this.destroyed) {
-      await this.handToLoop();
+      await this.handToIdle();
       return;
     }
     await firstFrame(welcome);
     await this.swap(welcome, null, 0);
     this.set({ mode: "welcome" });
-    const lead = (SELENA_WELCOME_EXTRA_FRAMES + LEAD_FRAMES) / SELENA_FPS;
+    const lead = EARLY / SELENA_FPS;
     this.stopWatch = watchFrames(welcome, (t) => {
-      if (Number.isFinite(welcome.duration) && t >= welcome.duration - lead) void this.handToLoop();
+      if (Number.isFinite(welcome.duration) && t >= welcome.duration - lead) void this.handToIdle();
     });
     welcome.addEventListener(
       "ended",
       () => {
-        void this.handToLoop();
+        void this.handToIdle();
       },
       { once: true },
     );
   }
 
-  /** The visitor skips the welcome. */
-  skipWelcome() {
-    const w = this.els.welcome;
-    if (this.state.mode !== "welcome" || !Number.isFinite(w.duration)) return;
-    w.currentTime = Math.max(0, w.duration - 0.25);
-  }
-
-  private async handToLoop() {
+  private async handToIdle() {
     if (this.handed || this.destroyed) return;
     this.handed = true;
     this.stopWatch?.();
-    const { loop, welcome } = this.els;
-    loop.currentTime = 0;
-    await this.playMuted(loop, true);
-    await firstFrame(loop);
-    await this.swap(loop, this.topVideo() === welcome ? welcome : null, 110);
+    const idle = this.use("idle");
+    const welcome = this.els.welcome;
+    idle.currentTime = 0;
+    await this.play(idle, true);
+    await firstFrame(idle);
+    await this.swap(idle, this.topVideo() === welcome ? welcome : null, HANDOVER_MS);
     welcome.currentTime = 0;
-    this.set({ mode: "loop" });
-    this.watchLoop();
+    this.set({ mode: "idle" });
+    this.watchIdle();
   }
 
-  private watchLoop() {
+  /**
+   * Go straight to the idle loop, from wherever the stage is. The page covers the screen while
+   * this happens, so there is nothing to blend. Used by Skip and by Back from the short animations.
+   */
+  async jumpToIdle() {
+    if (this.destroyed) return;
+    this.stopWatch?.();
+    this.pending = null;
+    this.leaveAsked = false;
+    this.handed = true;
+    const idle = this.use("idle");
+    for (const el of this.all()) {
+      if (el === idle) continue;
+      el.pause();
+      el.dataset.layer = "off";
+    }
+    idle.currentTime = 0;
+    if (!this.opts.reduced) {
+      await this.play(idle, true);
+      await firstFrame(idle, 500);
+    }
+    idle.style.setProperty("--xfade", "0ms");
+    idle.dataset.layer = "front";
+    this.set({ mode: "idle", scene: null, loading: false });
+    if (!this.opts.reduced) this.watchIdle();
+  }
+
+  private watchIdle() {
     this.stopWatch?.();
     this.prevFrame = null;
-    this.stopWatch = watchFrames(this.els.loop, (t) => {
+    this.stopWatch = watchFrames(this.els.idle, (t) => {
       const frame = frameAt(t);
       const pending = this.pending;
       if (pending && this.state.mode === "queued") {
-        const triggers = triggerFrames(SELENA_CLIPS[pending].startPhases);
-        const hit = this.prevFrame !== null && crossed(this.prevFrame, frame, triggers);
+        const phases = isPage(pending)
+          ? SELENA_PAGES[pending].in.startPhases
+          : SELENA_SHORTS[pending].startPhases;
+        const hit =
+          this.prevFrame !== null && crossed(this.prevFrame, frame, triggerFrames(phases));
         if (hit) {
-          if (isReady(this.els.clips[pending])) void this.startClip(pending);
-          else if (!this.state.loading) this.set({ loading: true });
+          if (
+            this.keysOf(pending)
+              .slice(0, 1)
+              .every((k) => isReady(this.els[k]))
+          ) {
+            void this.startScene(pending);
+          } else if (!this.state.loading) {
+            this.set({ loading: true });
+          }
         }
       }
       this.prevFrame = frame;
     });
   }
 
-  /** The visitor chose a clip. */
-  request(name: ClipName) {
+  /** The visitor chose a scene. */
+  request(scene: SceneName) {
     const { mode } = this.state;
-    if (mode !== "loop" && mode !== "queued") return;
-    this.warm(name);
-    this.pending = name;
-    // Reduced motion, or a loop that cannot play (no codec): there is no phase to wait for.
-    if (this.opts.reduced || this.els.loop.error) {
-      void this.startClip(name);
+    if (mode !== "idle" && mode !== "queued") return;
+    this.warm(scene);
+    this.pending = scene;
+    // Reduced motion, or an idle loop that cannot play (no codec): there is no frame to wait for.
+    if (this.opts.reduced || this.els.idle.error) {
+      void this.startScene(scene);
       return;
     }
-    this.set({ mode: "queued", clip: name, loading: !isReady(this.els.clips[name]) });
+    const first = this.els[this.keysOf(scene)[0]!];
+    this.set({ mode: "queued", scene, loading: !isReady(first) });
   }
 
-  /** Leave the queue or the clip. */
+  /** Leave the queue. */
   cancel() {
-    if (this.state.mode === "queued") {
-      this.pending = null;
-      this.set({ mode: "loop", clip: null, loading: false });
-    } else if (this.state.mode === "clip" && this.state.clip) {
-      void this.endClip(this.state.clip, true);
-    }
+    if (this.state.mode !== "queued") return;
+    this.pending = null;
+    this.set({ mode: "idle", scene: null, loading: false });
   }
 
-  private async startClip(name: ClipName) {
-    if (this.destroyed || this.state.mode === "clip") return;
+  private async startScene(scene: SceneName) {
+    if (this.destroyed || (this.state.mode !== "queued" && this.state.mode !== "idle")) return;
     this.pending = null;
-    const clip = this.els.clips[name];
-    this.set({ mode: "clip", clip: name, loading: false });
+    const page = isPage(scene);
+    const key: VideoKey = page ? `${scene}-in` : scene;
+    const el = this.use(key);
+    const timing = page ? SELENA_PAGES[scene].in : SELENA_SHORTS[scene];
+    this.set({ mode: page ? "intro" : "short", scene, loading: false });
     this.stopWatch?.();
-    clip.currentTime = 0;
-    const ok = await this.playMuted(clip);
-    if (!ok) {
-      this.set({ mode: "loop", clip: null });
-      this.watchLoop();
+    if (this.opts.reduced && page) {
+      // No intro: the page loop shows its first frame.
+      const loop = this.use(`${scene}-loop`);
+      loop.currentTime = 0;
+      await this.swap(loop, this.els.idle, 280);
+      this.set({ mode: "page" });
       return;
     }
-    await firstFrame(clip);
-    await this.swap(clip, this.els.loop, this.opts.reduced ? 220 : SELENA_CLIPS[name].blendMs);
-    const lead = (LEAD_FRAMES + SELENA_WELCOME_EXTRA_FRAMES) / SELENA_FPS;
-    this.stopWatch = watchFrames(clip, (t) => {
-      if (Number.isFinite(clip.duration) && t >= clip.duration - lead)
-        void this.endClip(name, false);
+    el.currentTime = 0;
+    const ok = await this.play(el);
+    if (!ok) {
+      this.set({ mode: "idle", scene: null });
+      this.watchIdle();
+      return;
+    }
+    await firstFrame(el);
+    await this.swap(el, this.els.idle, this.opts.reduced ? 280 : timing.blendMs);
+    const lead = EARLY / SELENA_FPS;
+    const done = () => {
+      if (page) void this.handToPage(scene);
+      else void this.toIdle(el, SELENA_SHORTS[scene].endPhase, SELENA_SHORTS[scene].blendMs, scene);
+    };
+    this.stopWatch = watchFrames(el, (t) => {
+      if (Number.isFinite(el.duration) && t >= el.duration - lead) done();
     });
-    clip.addEventListener(
-      "ended",
-      () => {
-        void this.endClip(name, false);
-      },
-      { once: true },
-    );
+    el.addEventListener("ended", done, { once: true });
   }
 
-  private async endClip(name: ClipName, aborted: boolean) {
-    if (this.destroyed || this.state.mode !== "clip" || this.state.clip !== name) return;
+  private async handToPage(scene: PageName) {
+    if (this.destroyed || this.state.mode !== "intro" || this.state.scene !== scene) return;
+    this.set({ mode: "returning" }); // blocks a second hand-over
     this.stopWatch?.();
-    const clip = this.els.clips[name];
-    const { loop } = this.els;
-    this.set({ mode: "returning" }); // blocks a second end while the hand-over runs
-    // The loop is told to resume a few frames before the matching frame, because the clip keeps
-    // playing for the few frames the loop needs to start.
-    const early = aborted ? 0 : LEAD_FRAMES + SELENA_WELCOME_EXTRA_FRAMES;
-    loop.currentTime = this.opts.reduced
-      ? 0
-      : wrapFrame(SELENA_CLIPS[name].endPhase - early) / SELENA_FPS;
-    if (!this.opts.reduced) {
-      await this.playMuted(loop, true);
+    const from = this.els[`${scene}-in`];
+    const loop = this.use(`${scene}-loop`);
+    this.use(`${scene}-out`);
+    loop.currentTime = 0;
+    await this.play(loop, true);
+    await firstFrame(loop);
+    await this.swap(loop, from, HANDOVER_MS);
+    from.currentTime = 0;
+    this.set({ mode: "page", scene });
+    if (this.leaveAsked) {
+      this.leaveAsked = false;
+      this.leave();
     }
-    await firstFrame(loop, 500);
-    await this.swap(loop, clip, aborted || this.opts.reduced ? 380 : SELENA_CLIPS[name].blendMs);
-    clip.currentTime = 0;
-    this.set({ mode: "loop", clip: null, loading: false });
-    if (!this.opts.reduced) this.watchLoop();
+  }
+
+  /** The visitor leaves a page. Its exit plays, then the idle loop carries on. */
+  leave() {
+    const { mode, scene } = this.state;
+    if (!scene || !isPage(scene)) return;
+    if (mode === "intro") {
+      this.leaveAsked = true;
+      return;
+    }
+    if (mode !== "page") return;
+    const page = SELENA_PAGES[scene];
+    const loop = this.els[`${scene}-loop`];
+    const out = this.use(`${scene}-out`);
+    if (this.opts.reduced) {
+      void this.swap(this.els.idle, loop, 380).then(() => {
+        this.set({ mode: "idle", scene: null });
+      });
+      return;
+    }
+    this.set({ mode: "leaving" });
+    this.stopWatch?.();
+    this.prevFrame = null;
+    const n = page.loop.frames;
+    const triggers = triggerFrames([page.out.startPhase], n);
+    this.stopWatch = watchFrames(loop, (t) => {
+      const frame = frameAt(t, n);
+      const hit = this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, n);
+      this.prevFrame = frame;
+      if (hit && isReady(out)) void this.startOutro(scene);
+    });
+  }
+
+  private async startOutro(scene: PageName) {
+    if (this.destroyed || this.state.mode !== "leaving") return;
+    this.set({ mode: "outro" });
+    this.stopWatch?.();
+    const out = this.els[`${scene}-out`];
+    const loop = this.els[`${scene}-loop`];
+    const timing = SELENA_PAGES[scene].out;
+    out.currentTime = 0;
+    const ok = await this.play(out);
+    if (!ok) {
+      await this.toIdle(loop, timing.endPhase, timing.blendMs, scene, true);
+      return;
+    }
+    await firstFrame(out);
+    await this.swap(out, loop, HANDOVER_MS);
+    loop.currentTime = 0;
+    const lead = EARLY / SELENA_FPS;
+    const done = () => {
+      void this.toIdle(out, timing.endPhase, timing.blendMs, scene);
+    };
+    this.stopWatch = watchFrames(out, (t) => {
+      if (Number.isFinite(out.duration) && t >= out.duration - lead) done();
+    });
+    out.addEventListener("ended", done, { once: true });
+  }
+
+  /** Hand a finished video back to the idle loop at the frame that matches its last. */
+  private async toIdle(
+    from: HTMLVideoElement,
+    endPhase: number,
+    blendMs: number,
+    scene: SceneName,
+    immediate = false,
+  ) {
+    if (this.destroyed || this.state.scene !== scene) return;
+    if (this.state.mode === "returning" || this.state.mode === "idle") return;
+    this.stopWatch?.();
+    this.set({ mode: "returning" });
+    const idle = this.els.idle;
+    // Resume a few frames early: the video keeps playing for the frames the idle loop needs to start.
+    const early = immediate || this.opts.reduced ? 0 : EARLY;
+    idle.currentTime = this.opts.reduced
+      ? 0
+      : wrapFrame(endPhase - early, SELENA_LOOP_FRAMES) / SELENA_FPS;
+    if (!this.opts.reduced) await this.play(idle, true);
+    await firstFrame(idle, 500);
+    await this.swap(idle, from, this.opts.reduced ? 380 : blendMs);
+    from.currentTime = 0;
+    this.set({ mode: "idle", scene: null, loading: false });
+    if (!this.opts.reduced) this.watchIdle();
   }
 
   /** The tab is hidden or shown again: stop the picture and the sound, then carry on. */
@@ -335,7 +503,7 @@ export class SelenaDirector {
     const top = this.topVideo();
     if (!top || this.state.mode === "boot") return;
     if (hidden) top.pause();
-    else if (!(this.opts.reduced && top === this.els.loop)) void top.play().catch(() => undefined);
+    else if (!(this.opts.reduced && top === this.els.idle)) void top.play().catch(() => undefined);
   }
 
   destroy() {

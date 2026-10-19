@@ -5,29 +5,37 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
+import { mediaUrl, releaseMedia } from "@/lib/media-store";
 import { expectReady } from "@/lib/page-ready";
 import { useSiteStore } from "@/lib/stores";
 
 import {
-  CLIP_NAMES,
   SelenaDirector,
-  type ClipName,
+  VIDEO_KEYS,
+  videoFile,
+  type SceneName,
   type StageElements,
   type StageState,
+  type VideoKey,
 } from "./director";
+import { SELENA_DIR, selenaPath, selenaTier } from "./media";
 import styles from "./selena.module.css";
-import { SELENA_CLIPS } from "./timeline.generated";
 
-const SELENA_VIDEO_DIR = "/video/selena";
-const SELENA_STILL = `${SELENA_VIDEO_DIR}/still.webp`;
-const SELENA_WELCOME = `${SELENA_VIDEO_DIR}/welcome.mp4`;
-const SELENA_LOOP = `${SELENA_VIDEO_DIR}/loop.mp4`;
+const STILL = `${SELENA_DIR}/still.webp`;
+
+/** Freed a moment after the page is left, so a quick remount (React's dev double mount) keeps it. */
+let releaseTimer = 0;
+
+/** The videos that loop by themselves. The others play once. */
+const LOOPING = (key: VideoKey) => key === "idle" || key.endsWith("-loop");
 
 export interface StageApi {
-  request: (name: ClipName) => void;
-  warm: (name: ClipName) => void;
+  request: (scene: SceneName) => void;
+  warm: (scene: SceneName) => void;
   cancel: () => void;
-  skipWelcome: () => void;
+  leave: () => void;
+  /** Straight to the idle loop. The caller covers the screen while it happens. */
+  jumpToIdle: () => Promise<void>;
 }
 
 interface Props {
@@ -35,17 +43,16 @@ interface Props {
 }
 
 /**
- * The picture. A still frame sits underneath so the page is never empty, and on top of it the
- * welcome, the idle loop and one hidden video per clip. `SelenaDirector` decides which one shows.
- * The curtain waits for this stage (page-ready), and the welcome starts once the page transition
- * has finished, so it always plays on a fully visible page.
+ * The picture. A still frame sits underneath so the page is never empty, and on top of it one
+ * video per piece. `SelenaDirector` decides which one shows. The videos are already in memory
+ * (the loading bar fetched them), so each one only gets its source when it is first needed. The
+ * curtain waits for this stage (page-ready), and the welcome starts once the page transition has
+ * finished, so it always plays on a fully visible page.
  */
 export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ onState }, ref) {
   const reduced = useReducedMotion();
   const router = useTransitionRouter();
-  const welcomeRef = useRef<HTMLVideoElement>(null);
-  const loopRef = useRef<HTMLVideoElement>(null);
-  const clipRefs = useRef<Partial<Record<ClipName, HTMLVideoElement | null>>>({});
+  const refs = useRef<Partial<Record<VideoKey, HTMLVideoElement | null>>>({});
   const director = useRef<SelenaDirector | null>(null);
   const onStateRef = useRef(onState);
 
@@ -56,34 +63,38 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
   useImperativeHandle(
     ref,
     (): StageApi => ({
-      request: (name) => director.current?.request(name),
-      warm: (name) => director.current?.warm(name),
+      request: (scene) => director.current?.request(scene),
+      warm: (scene) => director.current?.warm(scene),
       cancel: () => director.current?.cancel(),
-      skipWelcome: () => director.current?.skipWelcome(),
+      leave: () => director.current?.leave(),
+      jumpToIdle: () => director.current?.jumpToIdle() ?? Promise.resolve(),
     }),
     [],
   );
 
   useEffect(() => {
-    const welcome = welcomeRef.current;
-    const loop = loopRef.current;
-    const clips = Object.fromEntries(CLIP_NAMES.map((n) => [n, clipRefs.current[n]])) as Partial<
-      Record<ClipName, HTMLVideoElement>
+    const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, refs.current[k]])) as Partial<
+      Record<VideoKey, HTMLVideoElement>
     >;
-    if (!welcome || !loop || CLIP_NAMES.some((n) => !clips[n])) return;
-    const els: StageElements = {
-      welcome,
-      loop,
-      clips: clips as Record<ClipName, HTMLVideoElement>,
-    };
-    const d = new SelenaDirector(els, {
+    if (VIDEO_KEYS.some((k) => !els[k])) return;
+    window.clearTimeout(releaseTimer);
+    const tier = selenaTier();
+    const d = new SelenaDirector(els as StageElements, {
       muted: () => useSiteStore.getState().muted,
       reduced,
       onState: (s) => {
         onStateRef.current(s);
       },
+      attach: (key, el) => {
+        if (el.dataset.attached) return;
+        el.dataset.attached = "1";
+        el.src = mediaUrl(selenaPath(tier, videoFile(key)));
+        if (LOOPING(key)) el.loop = true;
+      },
     });
     director.current = d;
+    const welcome = els.welcome!;
+    const idle = els.idle!;
 
     // The curtain waits until there is something to show: the welcome can play and so can the loop.
     const mark = expectReady("selena-stage");
@@ -93,10 +104,10 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     const canPlay = (v: HTMLVideoElement) => v.readyState >= 3 || v.error !== null;
     const check = () => {
       if (!reduced && !canPlay(welcome)) return;
-      if (!canPlay(loop)) return;
+      if (!canPlay(idle)) return;
       mark();
     };
-    const targets = reduced ? [loop] : [welcome, loop];
+    const targets = reduced ? [idle] : [welcome, idle];
     for (const v of targets) {
       v.addEventListener("canplay", check);
       v.addEventListener("loadeddata", check);
@@ -112,7 +123,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
       if (
         router.isTransitioning() ||
         document.visibilityState !== "visible" ||
-        (!canPlay(loop) && !slow)
+        (!canPlay(idle) && !slow)
       ) {
         window.setTimeout(waitAndStart, 80);
         return;
@@ -150,6 +161,15 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
       }
       d.destroy();
       director.current = null;
+      // Let go of the videos held in memory.
+      for (const v of Object.values(els)) {
+        v.removeAttribute("src");
+        v.load();
+        delete v.dataset.attached;
+      }
+      releaseTimer = window.setTimeout(() => {
+        releaseMedia(`${SELENA_DIR}/`);
+      }, 1500);
     };
     // The stage is built once per mount; `reduced` is read at that moment.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,35 +179,17 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     <div className={styles.stage} aria-hidden="true">
       {/* Plain <img>: static export. It shows until the first video frame. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.still} src={asset(SELENA_STILL)} alt="" draggable={false} />
-      <video
-        ref={welcomeRef}
-        className={styles.video}
-        src={asset(SELENA_WELCOME)}
-        playsInline
-        preload="auto"
-        tabIndex={-1}
-      />
-      <video
-        ref={loopRef}
-        className={styles.video}
-        src={asset(SELENA_LOOP)}
-        playsInline
-        muted
-        loop
-        preload="auto"
-        tabIndex={-1}
-      />
-      {CLIP_NAMES.map((name) => (
+      <img className={styles.still} src={asset(STILL)} alt="" draggable={false} />
+      {VIDEO_KEYS.map((key) => (
         <video
-          key={name}
+          key={key}
           ref={(el) => {
-            clipRefs.current[name] = el;
+            refs.current[key] = el;
           }}
           className={styles.video}
-          src={asset(`${SELENA_VIDEO_DIR}/${SELENA_CLIPS[name].file}`)}
           playsInline
-          preload="none"
+          muted={LOOPING(key)}
+          preload="auto"
           tabIndex={-1}
         />
       ))}

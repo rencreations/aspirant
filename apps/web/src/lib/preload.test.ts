@@ -51,3 +51,32 @@ describe("runPreload", () => {
     expect(run).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("runPreload byte progress", () => {
+  it("moves with the fraction an item reports before it ends", async () => {
+    const seen: number[] = [];
+    let release: () => void = () => undefined;
+    const done = runPreload(
+      [
+        {
+          id: "download",
+          label: "Loading a download",
+          weight: 4,
+          run: (report) =>
+            new Promise<void>((resolve) => {
+              report(0.25);
+              report(0.5);
+              release = resolve;
+            }),
+        },
+        item("quick", 4, () => Promise.resolve()),
+      ],
+      (p) => seen.push(p.progress),
+    );
+    await new Promise((r) => setTimeout(r, 5));
+    expect(seen.some((v) => Math.abs(v - 0.75) < 1e-9)).toBe(true);
+    release();
+    await done;
+    expect(seen.at(-1)).toBe(1);
+  });
+});

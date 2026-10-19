@@ -1,0 +1,168 @@
+/* The record widget: a vinyl with the album art on its label, the song and the artist. */
+.widget {
+  --disc: 38px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  height: 44px;
+  padding: 0 0.9rem 0 0.35rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
+}
+
+.widget:hover,
+.widget:focus-visible {
+  border-color: #f2b04c;
+}
+
+.widget:active {
+  transform: scale(0.96);
+}
+
+.player {
+  position: relative;
+  flex: none;
+  width: calc(var(--disc) + 10px);
+  height: var(--disc);
+}
+
+.disc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--disc);
+  height: var(--disc);
+  border-radius: 50%;
+  background: #0d0d11;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+  overflow: hidden;
+  animation: spin 5.5s linear infinite;
+  animation-play-state: paused;
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+
+.widget[data-spin="true"] .disc {
+  animation-play-state: running;
+}
+
+.widget:hover .disc {
+  transform: scale(1.06);
+}
+
+/* Grooves and a light sheen across the vinyl. */
+.grooves {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 20deg,
+      transparent 0 18%,
+      rgb(255 255 255 / 0.2) 24%,
+      transparent 32% 68%,
+      rgb(255 255 255 / 0.16) 74%,
+      transparent 82%
+    ),
+    repeating-radial-gradient(circle, #101015 0 1px, #1b1b22 1px 2px);
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46%;
+  height: 46%;
+  margin: -23% 0 0 -23%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1.5px #f2b04c;
+}
+
+.hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: #0b0b0e;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4);
+}
+
+/* The tone arm lifts off the record when it stops. */
+.arm {
+  position: absolute;
+  top: -7px;
+  right: -12px;
+  color: var(--text-dim);
+  transform-origin: 33px 7px;
+  transform: rotate(-34deg);
+  transition: transform 700ms var(--ease-spring);
+}
+
+.widget[data-spin="true"] .arm {
+  transform: rotate(0deg);
+  color: #f2b04c;
+}
+
+.meta {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  max-width: 10.5rem;
+  text-align: left;
+}
+
+.title {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist {
+  font-family: var(--font-mono-stack);
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 75em) {
+  .meta {
+    display: none;
+  }
+
+  .widget {
+    padding-right: 0.35rem;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc {
+    animation: none;
+  }
+}

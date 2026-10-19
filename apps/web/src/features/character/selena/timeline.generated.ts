@@ -2,51 +2,227 @@
 
 export const SELENA_FPS = 60;
 export const SELENA_LOOP_FRAMES = 486;
-export const SELENA_WELCOME_EXTRA_FRAMES = 3;
+export const SELENA_EXTRA_FRAMES = 3;
 
-export interface SelenaClipTiming {
+/** The sizes the videos exist in, smallest first. `width` is the video width in pixels. */
+export const SELENA_TIERS = {
+  "1080": {
+    width: 1920,
+  },
+  "1440": {
+    width: 2560,
+  },
+  "2160": {
+    width: 3840,
+  },
+} as const;
+export type SelenaTier = keyof typeof SELENA_TIERS;
+
+/** Size in bytes of every file in every tier, for the loading bar. */
+export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
+  "1080": {
+    "welcome.mp4": 13102439,
+    "idle.mp4": 4719775,
+    "about-in.mp4": 3146380,
+    "about-loop.mp4": 1663630,
+    "about-out.mp4": 6013500,
+    "skills-in.mp4": 4616685,
+    "skills-loop.mp4": 4293890,
+    "skills-out.mp4": 3861857,
+    "gallery-in.mp4": 6454590,
+    "gallery-loop.mp4": 4730236,
+    "gallery-out.mp4": 3776153,
+    "others-in.mp4": 3678600,
+    "others-loop.mp4": 1646654,
+    "others-out.mp4": 6211630,
+    "short-1.mp4": 6588667,
+    "short-2.mp4": 7179897,
+    "short-3.mp4": 6326035,
+  },
+  "1440": {
+    "welcome.mp4": 18682914,
+    "idle.mp4": 6391202,
+    "about-in.mp4": 4245507,
+    "about-loop.mp4": 2203875,
+    "about-out.mp4": 8372629,
+    "skills-in.mp4": 6268512,
+    "skills-loop.mp4": 5735903,
+    "skills-out.mp4": 5235046,
+    "gallery-in.mp4": 8758288,
+    "gallery-loop.mp4": 6377118,
+    "gallery-out.mp4": 5128542,
+    "others-in.mp4": 4950956,
+    "others-loop.mp4": 2188081,
+    "others-out.mp4": 8641244,
+    "short-1.mp4": 9220013,
+    "short-2.mp4": 9915266,
+    "short-3.mp4": 8961624,
+  },
+  "2160": {
+    "welcome.mp4": 29855678,
+    "idle.mp4": 9361156,
+    "about-in.mp4": 6310915,
+    "about-loop.mp4": 3171546,
+    "about-out.mp4": 12879218,
+    "skills-in.mp4": 9229788,
+    "skills-loop.mp4": 8329613,
+    "skills-out.mp4": 7705023,
+    "gallery-in.mp4": 12834653,
+    "gallery-loop.mp4": 9332511,
+    "gallery-out.mp4": 7600624,
+    "others-in.mp4": 7303939,
+    "others-loop.mp4": 3151809,
+    "others-out.mp4": 13211915,
+    "short-1.mp4": 14282815,
+    "short-2.mp4": 15018817,
+    "short-3.mp4": 14310834,
+  },
+};
+
+interface IdleStart {
   file: string;
   frames: number;
-  /** Loop frames the clip can start at. They repeat every 162 frames. */
-  startPhases: readonly number[];
-  /** Loop frame the idle resumes at when the clip ends. */
-  endPhase: number;
   audio: boolean;
-  /** Length of the dissolve into and out of the clip, in ms. */
+  /** Idle loop frames this video can start at. They repeat every 162 frames. */
+  startPhases: readonly number[];
+  /** Length of the dissolve into the video, in ms. */
   blendMs: number;
 }
 
-export const SELENA_CLIPS = {
-  horizontal: {
-    file: "horizontal.mp4",
-    frames: 1661,
-    startPhases: [122, 284, 446],
-    endPhase: 422,
-    audio: false,
-    blendMs: 140,
+export interface ShortTiming extends IdleStart {
+  /** Idle loop frame the idle resumes at when the short ends. */
+  endPhase: number;
+}
+
+export interface PageTiming {
+  in: IdleStart;
+  loop: { file: string; frames: number; audio: boolean };
+  out: {
+    file: string;
+    frames: number;
+    audio: boolean;
+    /** Page loop frame the exit starts at. */
+    startPhase: number;
+    /** Idle loop frame the idle resumes at. */
+    endPhase: number;
+    blendMs: number;
+  };
+}
+
+export const SELENA_PAGES = {
+  about: {
+    in: {
+      file: "about-in.mp4",
+      frames: 222,
+      audio: true,
+      startPhases: [160, 322, 484],
+      blendMs: 420,
+    },
+    loop: {
+      file: "about-loop.mp4",
+      frames: 240,
+      audio: false,
+    },
+    out: {
+      file: "about-out.mp4",
+      frames: 434,
+      audio: true,
+      startPhase: 5,
+      endPhase: 265,
+      blendMs: 420,
+    },
   },
-  vertical: {
-    file: "vertical.mp4",
-    frames: 1912,
-    startPhases: [124, 286, 448],
-    endPhase: 422,
-    audio: false,
-    blendMs: 140,
+  skills: {
+    in: {
+      file: "skills-in.mp4",
+      frames: 336,
+      audio: false,
+      startPhases: [122, 284, 446],
+      blendMs: 140,
+    },
+    loop: {
+      file: "skills-loop.mp4",
+      frames: 486,
+      audio: false,
+    },
+    out: {
+      file: "skills-out.mp4",
+      frames: 304,
+      audio: false,
+      startPhase: 52,
+      endPhase: 422,
+      blendMs: 140,
+    },
   },
-  "phone-empty": {
-    file: "phone-empty.mp4",
-    frames: 1378,
-    startPhases: [160, 322, 484],
-    endPhase: 265,
+  gallery: {
+    in: {
+      file: "gallery-in.mp4",
+      frames: 552,
+      audio: false,
+      startPhases: [124, 286, 448],
+      blendMs: 140,
+    },
+    loop: {
+      file: "gallery-loop.mp4",
+      frames: 486,
+      audio: false,
+    },
+    out: {
+      file: "gallery-out.mp4",
+      frames: 296,
+      audio: false,
+      startPhase: 95,
+      endPhase: 422,
+      blendMs: 140,
+    },
+  },
+  others: {
+    in: {
+      file: "others-in.mp4",
+      frames: 286,
+      audio: true,
+      startPhases: [20, 182, 344],
+      blendMs: 420,
+    },
+    loop: {
+      file: "others-loop.mp4",
+      frames: 240,
+      audio: false,
+    },
+    out: {
+      file: "others-out.mp4",
+      frames: 458,
+      audio: true,
+      startPhase: 224,
+      endPhase: 128,
+      blendMs: 420,
+    },
+  },
+} as const satisfies Record<string, PageTiming>;
+
+export const SELENA_SHORTS = {
+  "short-1": {
+    file: "short-1.mp4",
+    frames: 438,
     audio: true,
+    startPhases: [42, 204, 366],
+    endPhase: 345,
     blendMs: 420,
   },
-  "phone-messages": {
-    file: "phone-messages.mp4",
-    frames: 1925,
-    startPhases: [20, 182, 344],
-    endPhase: 128,
+  "short-2": {
+    file: "short-2.mp4",
+    frames: 551,
     audio: true,
+    startPhases: [22, 184, 346],
+    endPhase: 134,
     blendMs: 420,
   },
-} as const satisfies Record<string, SelenaClipTiming>;
+  "short-3": {
+    file: "short-3.mp4",
+    frames: 497,
+    audio: true,
+    startPhases: [19, 181, 343],
+    endPhase: 424,
+    blendMs: 420,
+  },
+} as const satisfies Record<string, ShortTiming>;

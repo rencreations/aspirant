@@ -1,0 +1,27 @@
+.cover {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.cover[data-on="true"] {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.gold,
+.plate {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+}
+
+.gold {
+  background: #e9b95f;
+}
+
+.plate {
+  background: linear-gradient(112deg, #2a1d78 0%, #20185e 55%, #0b0b0e 100%);
+}
