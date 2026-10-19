@@ -22,9 +22,11 @@ class FakeVideo {
   error: unknown = null;
   paused = true;
   plays = 0;
+  failPlay = false;
   private frames: Array<(now: number, meta: { mediaTime: number }) => void> = [];
 
   play() {
+    if (this.failPlay) return Promise.reject(new Error("no codec"));
     this.paused = false;
     this.plays += 1;
     return Promise.resolve();
@@ -303,6 +305,17 @@ describe("shorts", () => {
 });
 
 describe("failure and reduced motion", () => {
+  it("opens a page over the still picture when its video cannot play, and closes it again", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.els["about-in"].failPlay = true;
+    ctx.director.request("about");
+    await enter(ctx, SELENA_PAGES.about.in.startPhases[0]);
+    expect(ctx.director.current).toMatchObject({ mode: "page", scene: "about" });
+    ctx.director.leave();
+    expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
+  });
+
   it("starts a scene at once when the idle loop cannot play", async () => {
     const ctx = setup();
     await toIdle(ctx);

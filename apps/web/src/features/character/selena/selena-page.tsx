@@ -13,6 +13,7 @@ import { startMusic, type Track } from "@/lib/now-playing";
 import { SHORT_NAMES, type PageName, type SceneName, type StageState } from "./director";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
+import { AboutDrawers } from "./about/about-drawers";
 import { SelenaStage, type StageApi } from "./stage";
 import { SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
@@ -170,17 +171,20 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     true,
   );
 
-  // Esc backs out one step: out of the queue, out of a page, out of a short.
+  // Esc backs out one step: out of the queue, out of a page, out of a short. It runs in the
+  // capture phase, before a tooltip or the video player closes itself, so a card that Esc just
+  // closed does not also close the page.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || document.querySelector("[role='dialog']")) return;
+      if (e.key !== "Escape") return;
+      if (document.querySelector("[role='dialog'], [role='tooltip']")) return;
       if (mode === "short") leaveShort();
       else if (mode === "page") stage.current?.leave();
       else if (mode === "queued") stage.current?.cancel();
     };
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
     return () => {
-      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keydown", onKey, true);
     };
   }, [mode, leaveShort]);
 
@@ -315,6 +319,8 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
             </button>
           </div>
         ) : null}
+
+        <AboutDrawers present={pageOpen && scene === "about"} shown={mode === "page"} />
 
         <ScreenCover ref={cover} />
 

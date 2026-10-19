@@ -156,6 +156,8 @@ export class SelenaDirector {
   private handed = false;
   private destroyed = false;
   private leaveAsked = false;
+  /** A page opened without its video (no codec): it shows over the still picture. */
+  private degraded = false;
 
   constructor(
     private readonly els: StageElements,
@@ -291,6 +293,7 @@ export class SelenaDirector {
     this.stopWatch?.();
     this.pending = null;
     this.leaveAsked = false;
+    this.degraded = false;
     this.handed = true;
     const idle = this.use("idle");
     for (const el of this.all()) {
@@ -379,6 +382,12 @@ export class SelenaDirector {
     el.currentTime = 0;
     const ok = await this.play(el);
     if (!ok) {
+      if (page) {
+        // The video cannot play, but the page is the point: open it over the still picture.
+        this.degraded = true;
+        this.set({ mode: "page", scene });
+        return;
+      }
       this.set({ mode: "idle", scene: null });
       this.watchIdle();
       return;
@@ -424,6 +433,11 @@ export class SelenaDirector {
       return;
     }
     if (mode !== "page") return;
+    if (this.degraded) {
+      this.degraded = false;
+      this.set({ mode: "idle", scene: null });
+      return;
+    }
     const page = SELENA_PAGES[scene];
     const loop = this.els[`${scene}-loop`];
     const out = this.use(`${scene}-out`);

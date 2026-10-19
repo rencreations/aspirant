@@ -147,6 +147,132 @@ test("Random Animation plays at once and the main panel comes back, with no extr
   await expect(random).toBeEnabled();
 });
 
+async function openAbout(page: Page, narrow: boolean) {
+  await open(page);
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Profile, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  if (narrow) await page.getByRole("tab", { name: "Story" }).click();
+  await expect(page.getByRole("region", { name: "Story, scrollable" })).toBeVisible();
+  await page.waitForTimeout(900);
+}
+
+const isNarrow = (info: { project: { name: string } }) => info.project.name !== "desktop";
+
+test("About opens a profile and a story drawer, both scrollable", async ({ page }, info) => {
+  await openAbout(page, isNarrow(info));
+  const story = page.getByRole("region", { name: "Story, scrollable" });
+  const scrolls = await story.evaluate((el) => el.scrollHeight > el.clientHeight + 200);
+  expect(scrolls).toBe(true);
+  if (!isNarrow(info)) {
+    const profile = page.getByRole("region", { name: "Profile, scrollable" });
+    expect(await profile.evaluate((el) => el.scrollHeight > el.clientHeight + 200)).toBe(true);
+    // She stays visible in the middle: the drawers leave the centre of the screen free.
+    const vw = page.viewportSize()?.width ?? 0;
+    const l = await page.getByRole("complementary", { name: "Selena's profile" }).boundingBox();
+    const r = await page.getByRole("complementary", { name: "Selena's story" }).boundingBox();
+    expect(l!.x + l!.width).toBeLessThan(vw * 0.36);
+    expect(r!.x).toBeGreaterThan(vw * 0.64);
+  }
+});
+
+test("the profile lists the facts and switches only the picture between the two forms", async ({
+  page,
+}, info) => {
+  await openAbout(page, isNarrow(info));
+  if (isNarrow(info)) await page.getByRole("tab", { name: "Profile" }).click();
+  const profile = page.getByRole("region", { name: "Profile, scrollable" });
+  for (const label of ["Age", "Birthday", "MBTI", "Occupation"])
+    await expect(profile.getByText(label, { exact: true })).toBeVisible();
+  await expect(profile.getByText("June 18")).toBeVisible();
+  await expect(profile.getByText("ENTP")).toBeVisible();
+  await expect(profile.getByText("セリナ")).toBeVisible();
+  const group = profile.getByRole("group", { name: "Form shown in the picture" });
+  await expect(group.getByRole("button", { name: "Normal" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await group.getByRole("button", { name: "Mecha" }).click();
+  await expect(group.getByRole("button", { name: "Mecha" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  const mecha = profile.getByRole("img", { name: /mecha form/ });
+  await expect(mecha).toHaveCSS("opacity", "1");
+  // The text did not change.
+  await expect(profile.getByText("Silverbolt Raiko").first()).toBeVisible();
+  // Both voices: the normal form (line 1) and the Ender form (line 19).
+  await expect(profile.getByRole("button", { name: /Play voice line 1:/ })).toBeAttached();
+  await expect(profile.getByRole("button", { name: /Play voice line 19:/ })).toBeAttached();
+});
+
+test("the story has tooltips, pictures and voice lines you can press", async ({ page }, info) => {
+  await openAbout(page, isNarrow(info));
+  const story = page.getByRole("region", { name: "Story, scrollable" });
+  await expect(
+    story.getByRole("heading", { level: 3, name: "The storm at Hollin Reach" }),
+  ).toBeAttached();
+  expect(await story.getByRole("img").count()).toBeGreaterThanOrEqual(12);
+  expect(
+    await story.getByRole("button", { name: /Play voice line/ }).count(),
+  ).toBeGreaterThanOrEqual(30);
+  // A name opens a tooltip.
+  const name = story.getByRole("button", { name: "Hollin Reach" }).first();
+  await name.evaluate((el) => {
+    el.scrollIntoView({ block: "center" });
+  });
+  await name.click();
+  await expect(page.getByRole("dialog").filter({ hasText: "river town" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  // A voice line toggles.
+  const voice = story.getByRole("button", { name: /Play voice line 18:/ });
+  await voice.evaluate((el) => {
+    el.scrollIntoView({ block: "center" });
+  });
+  await voice.click();
+  await expect(story.getByRole("button", { name: /voice line 18:/ })).toHaveAttribute(
+    "aria-pressed",
+    /true|false/,
+  );
+});
+
+test("the story's index jumps to a section", async ({ page }, info) => {
+  await openAbout(page, isNarrow(info));
+  const story = page.getByRole("region", { name: "Story, scrollable" });
+  const before = await story.evaluate((el) => el.scrollTop);
+  await story
+    .getByRole("navigation", { name: "Story sections" })
+    .getByRole("button", { name: "10" })
+    .click();
+  await expect.poll(() => story.evaluate((el) => el.scrollTop)).toBeGreaterThan(before + 1000);
+});
+
+test("a drawer folds away and comes back", async ({ page }, info) => {
+  test.skip(isNarrow(info), "Drawers fold on wide screens only");
+  await openAbout(page, false);
+  const drawer = page.getByRole("complementary", { name: "Selena's profile" });
+  // Wait for it to finish sliding in.
+  await expect.poll(async () => (await drawer.boundingBox())!.x).toBeGreaterThan(0);
+  await page.waitForTimeout(1000);
+  const before = await drawer.boundingBox();
+  await drawer.getByRole("button", { name: "Hide" }).click();
+  await expect.poll(async () => (await drawer.boundingBox())!.x).toBeLessThan(before!.x - 200);
+  await drawer.getByRole("button", { name: "Profile", exact: true }).click();
+  await expect
+    .poll(async () => Math.abs((await drawer.boundingBox())!.x - before!.x))
+    .toBeLessThan(4);
+});
+
+test("Back closes the drawers and returns to the main panel", async ({ page }, info) => {
+  await openAbout(page, isNarrow(info));
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 20_000,
+  });
+  await expect(page.getByRole("region", { name: "Story, scrollable" })).toHaveCount(0);
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

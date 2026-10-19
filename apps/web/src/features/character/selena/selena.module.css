@@ -13,7 +13,6 @@
   height: 100svh;
   overflow: hidden;
   overscroll-behavior: none;
-  touch-action: none;
 }
 
 .hero {

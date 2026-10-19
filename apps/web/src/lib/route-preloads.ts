@@ -1,4 +1,5 @@
 import { isSlug } from "@/content/characters";
+import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
 import { selenaItems } from "@/features/character/selena/media";
 import { chunkItem, dataItem, fontsItem, imageItem, type PreloadItem } from "@/lib/preload";
 
@@ -73,6 +74,9 @@ export function routeItems(pathname: string): PreloadItem[] {
         imageItem("/video/selena/trailer-poster.webp", "Loading the trailer", 1),
         imageItem("/img/char/selena/splash-sm.webp", "Loading the album art", 1),
         dataItem("/audio/music/silverbolt-raiko.m4a", "Loading the music", 3),
+        ...ABOUT_IMAGES.map((name) =>
+          imageItem(aboutImagePath(name), "Loading the About pictures", 1),
+        ),
         ...selenaItems(),
       ];
     }
