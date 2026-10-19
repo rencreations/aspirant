@@ -79,6 +79,8 @@ export type StageElements = Record<VideoKey, HTMLVideoElement>;
 interface DirectorOptions {
   /** Reduced motion: nothing starts by itself and nothing loops. */
   reduced: boolean;
+  /** Start on the idle loop with no welcome (the visitor came to one of her pages). */
+  skipWelcome?: boolean;
   onState: (state: StageState) => void;
   /** Called before a video is first used, so the page can give it its source. */
   attach?: (key: VideoKey, el: HTMLVideoElement) => void;
@@ -224,7 +226,7 @@ export class SelenaDirector {
     for (const el of this.all()) el.dataset.layer = "off";
     // Until it plays, the welcome shows its own first frame, so the animation does not pop in
     // over a different picture. Reduced motion never plays it.
-    if (!opts.reduced) this.use("welcome").dataset.layer = "front";
+    if (!opts.reduced && !opts.skipWelcome) this.use("welcome").dataset.layer = "front";
     this.use("idle");
   }
 
@@ -314,6 +316,10 @@ export class SelenaDirector {
 
   async start() {
     if (this.destroyed || this.state.mode !== "boot") return;
+    if (this.opts.skipWelcome && !this.opts.reduced) {
+      await this.jumpToIdle();
+      return;
+    }
     const welcome = this.use("welcome");
     const idle = this.use("idle");
     if (this.opts.reduced) {

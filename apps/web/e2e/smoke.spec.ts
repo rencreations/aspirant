@@ -8,7 +8,9 @@ for (const route of ROUTES) {
     const errors = watchErrors(page);
     const response = await page.goto(url(route));
     expect(response?.status()).toBe(200);
-    await page.waitForLoadState("networkidle");
+    // Her pages hold video connections open, so the network never goes quiet there.
+    if (route.startsWith("/character/selena/")) await page.waitForLoadState("load");
+    else await page.waitForLoadState("networkidle");
 
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator("h1")).toBeVisible();
@@ -43,6 +45,6 @@ test("serves robots.txt, sitemap.xml and the web manifest", async ({ request }) 
   const sitemap = await request.get(url("/sitemap.xml"));
   expect(sitemap.ok()).toBe(true);
   const xml = await sitemap.text();
-  expect(xml.match(/<loc>/g)?.length).toBe(15);
+  expect(xml.match(/<loc>/g)?.length).toBe(18);
   expect((await request.get(url("/manifest.webmanifest"))).ok()).toBe(true);
 });

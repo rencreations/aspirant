@@ -41,6 +41,8 @@ export interface StageApi {
 
 interface Props {
   onState: (state: StageState) => void;
+  /** Play the welcome first. False when the visitor came straight to one of her pages. */
+  welcome: boolean;
 }
 
 /**
@@ -50,7 +52,10 @@ interface Props {
  * curtain waits for this stage (page-ready), and the welcome starts once the page transition has
  * finished, so it always plays on a fully visible page.
  */
-export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ onState }, ref) {
+export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
+  { onState, welcome: playWelcome },
+  ref,
+) {
   const reduced = useReducedMotion();
   const router = useTransitionRouter();
   const refs = useRef<Partial<Record<VideoKey, HTMLVideoElement | null>>>({});
@@ -83,6 +88,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     const tier = selenaTier();
     const d = new SelenaDirector(els as StageElements, {
       reduced,
+      skipWelcome: !playWelcome,
       onState: (s) => {
         onStateRef.current(s);
       },
@@ -107,11 +113,11 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage({ on
     // A video that fails to load (no codec) counts as playable: the still picture stays.
     const canPlay = (v: HTMLVideoElement) => v.readyState >= 3 || v.error !== null;
     const check = () => {
-      if (!reduced && !canPlay(welcome)) return;
+      if (!reduced && playWelcome && !canPlay(welcome)) return;
       if (!canPlay(idle)) return;
       mark();
     };
-    const targets = reduced ? [idle] : [welcome, idle];
+    const targets = reduced || !playWelcome ? [idle] : [welcome, idle];
     for (const v of targets) {
       v.addEventListener("canplay", check);
       v.addEventListener("loadeddata", check);

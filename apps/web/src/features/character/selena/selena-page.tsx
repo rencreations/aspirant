@@ -1,6 +1,7 @@
 "use client";
 
 import type { Route } from "next";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
@@ -18,7 +19,9 @@ import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
 import { SkillsDrawers } from "./skills/skills-drawers";
+import { pageFromPath } from "./routes";
 import { SelenaStage, type StageApi } from "./stage";
+import { useSelenaUrl } from "./use-selena-url";
 
 /** The three buttons, in order, and the page each one opens. */
 const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; icon: string }> = [
@@ -100,6 +103,10 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   });
   const [announce, setAnnounce] = useState("");
   const musicStop = useRef<(() => void) | null>(null);
+  // The page the address named when the visitor arrived. Her own address plays the welcome; a
+  // page's address skips it and plays that page's entrance.
+  const pathname = usePathname();
+  const [initial] = useState(() => pageFromPath(pathname));
 
   const onState = useCallback((s: StageState) => {
     setState(s);
@@ -158,6 +165,8 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
   // The nav picks its colours from what is under it. Once the page is up (after the boot screen
   // the first sample is stale) ask it to look again.
+  useSelenaUrl({ state, stage, initial });
+
   const booted = mode !== "boot";
   useEffect(() => {
     if (booted) window.dispatchEvent(new Event("resize"));
@@ -225,7 +234,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         <h1 id="selena-title" className="sr-only">
           Selena
         </h1>
-        <SelenaStage ref={stage} onState={onState} />
+        <SelenaStage ref={stage} onState={onState} welcome={initial === null} />
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
           <Hotspots

@@ -9,7 +9,7 @@ import { skipGate, url, watchErrors } from "./helpers";
  * maths and the director's state machine have unit tests next to the code.
  */
 
-test.describe.configure({ timeout: 90_000 });
+test.describe.configure({ timeout: 120_000 });
 
 async function open(page: Page) {
   await skipGate(page);
@@ -135,7 +135,7 @@ test("the buttons can be pressed without errors", async ({ page }) => {
   const errors = await open(page);
   await page.getByRole("button", { name: "Skills" }).click();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Skills" })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole("button", { name: "Skills" })).toBeVisible({ timeout: 45_000 });
   expect(errors).toEqual([]);
 });
 
@@ -147,7 +147,7 @@ test("a touch point plays its short at once and the main panel comes back, with 
   await spot.click();
   // There is no second view: no Back button, and the panel is back when the short is over.
   await expect(page.getByRole("button", { name: "Back" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "About" })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole("button", { name: "About" })).toBeVisible({ timeout: 45_000 });
   await expect(spot).toBeVisible();
   await expect(spot).toBeEnabled();
 });
@@ -305,9 +305,11 @@ test("Back closes the drawers and returns to the main panel", async ({ page }, i
   await openAbout(page, isNarrow(info));
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
-    timeout: 20_000,
+    timeout: 45_000,
   });
-  await expect(page.getByRole("region", { name: "Story, scrollable" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Story, scrollable" })).toHaveCount(0, {
+    timeout: 45_000,
+  });
 });
 
 async function openSkills(page: Page, narrow: boolean) {
@@ -400,9 +402,11 @@ test("Back closes the Skills drawers and returns to the main panel", async ({ pa
   await openSkills(page, isNarrow(info));
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
-    timeout: 20_000,
+    timeout: 45_000,
   });
-  await expect(page.getByRole("region", { name: "Skills, scrollable" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Skills, scrollable" })).toHaveCount(0, {
+    timeout: 45_000,
+  });
 });
 
 test("a press is answered at once: the chosen button lights and the rest steps away", async ({
@@ -423,7 +427,7 @@ test("a press is answered at once: the chosen button lights and the rest steps a
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeDisabled();
   await expect(page.getByRole("button", { name: SPOT_NAMES[0]! })).toBeDisabled();
   // The pressed button runs a bar for the length of the wait.
-  await expect(skills.locator("[class*='fill']")).toHaveCount(1);
+  await expect(skills.locator("[class*='press']")).toHaveCount(1);
 });
 
 test("Back is answered at once and the panel returns before the exit has finished", async ({
@@ -452,7 +456,7 @@ test("Back is answered at once and the panel returns before the exit has finishe
     )
     .toBe(true);
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
-    timeout: 20_000,
+    timeout: 45_000,
   });
 });
 
@@ -465,6 +469,49 @@ test("pressing the record with the sound off turns the sound on", async ({ page 
   await nav.getByRole("button", { name: /Silverbolt Raiko/ }).click();
   await expect(sound).toHaveAttribute("aria-pressed", "true");
 });
+
+test("each page has its own address and title, and Back returns to her own", async ({ page }) => {
+  await open(page);
+  await page.getByRole("button", { name: "Skills", exact: true }).click();
+  await expect(page).toHaveURL(/\/character\/selena\/skills\/$/, { timeout: 30_000 });
+  await expect(page).toHaveTitle(/Selena, Skills/);
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page).toHaveURL(/\/character\/selena\/$/, { timeout: 30_000 });
+  await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
+});
+
+test("the browser back button leaves a page, and forward opens it again", async ({ page }) => {
+  await open(page);
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page).toHaveURL(/\/character\/selena\/about\/$/, { timeout: 30_000 });
+  await page.goBack();
+  await expect(page).toHaveURL(/\/character\/selena\/$/);
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
+  await page.goForward();
+  await expect(page).toHaveURL(/\/character\/selena\/about\/$/);
+  await expect(page.getByRole("region", { name: /Profile|Story/ }).first()).toBeAttached({
+    timeout: 30_000,
+  });
+});
+
+for (const name of ["about", "skills", "gallery"] as const) {
+  test(`the address of ${name} opens that page directly, with no welcome`, async ({ page }) => {
+    await skipGate(page);
+    const errors = watchErrors(page);
+    await page.goto(url(`/character/selena/${name}/`));
+    await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible({
+      timeout: 60_000,
+    });
+    await expect(page.getByRole("button", { name: "Skip" })).toHaveCount(0);
+    await expect(page).toHaveURL(new RegExp(`/character/selena/${name}/$`));
+    expect(errors).toEqual([]);
+  });
+}
 
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);

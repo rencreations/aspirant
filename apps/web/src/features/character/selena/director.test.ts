@@ -82,7 +82,7 @@ const FPS = SELENA_FPS;
 const EARLY = (LEAD_FRAMES + SELENA_EXTRA_FRAMES) / FPS;
 const f = (frame: number) => frame / FPS;
 
-function setup(options: { reduced?: boolean } = {}) {
+function setup(options: { reduced?: boolean; skipWelcome?: boolean } = {}) {
   const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, new FakeVideo()])) as Record<
     VideoKey,
     FakeVideo
@@ -102,6 +102,7 @@ function setup(options: { reduced?: boolean } = {}) {
   const states: StageState[] = [];
   const director = new SelenaDirector(els as unknown as StageElements, {
     reduced: options.reduced ?? false,
+    skipWelcome: options.skipWelcome,
     onState: (s) => states.push(s),
     attach: (key) => attached.push(key),
   });
@@ -163,6 +164,20 @@ describe("welcome and idle", () => {
     expect(ctx.els.welcome.dataset.layer).toBe("front");
     expect(ctx.els.idle.dataset.layer).toBe("off");
     expect(setup({ reduced: true }).els.welcome.dataset.layer).toBe("off");
+  });
+
+  it("starts straight on the idle loop when the visitor came to one of her pages", async () => {
+    const ctx = setup({ skipWelcome: true });
+    expect(ctx.els.welcome.dataset.layer).toBe("off");
+    void ctx.director.start();
+    await settle();
+    ctx.els.idle.tick(0);
+    await settle();
+    expect(ctx.director.current.mode).toBe("idle");
+    expect(ctx.els.idle.dataset.layer).toBe("front");
+    expect(ctx.els.welcome.plays).toBe(0);
+    expect(ctx.els.idle.plays).toBe(1);
+    expect(ctx.attached).not.toContain("welcome");
   });
 
   it("plays the welcome, then hands over to the idle loop a few frames before the end", async () => {

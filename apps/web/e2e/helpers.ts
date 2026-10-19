@@ -8,6 +8,9 @@ export const ROUTES = [
   "/character/",
   "/character/fanny/",
   "/character/selena/",
+  "/character/selena/about/",
+  "/character/selena/skills/",
+  "/character/selena/gallery/",
   "/collection/",
 ] as const;
 
