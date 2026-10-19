@@ -18,7 +18,9 @@ async function open(page: Page) {
   // The welcome animation can be skipped; without a decodable video the page goes straight on.
   const skip = page.getByRole("button", { name: "Skip" });
   await skip.click({ timeout: 4000 }).catch(() => undefined);
-  await expect(page.getByRole("button", { name: "About" })).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
   // The buttons slide in; let them settle.
   await page.waitForTimeout(1300);
   return errors;
@@ -37,7 +39,7 @@ test("shows the three buttons, the three touch points and the trailer, with one 
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.getByRole("heading", { level: 1, name: "Selena" })).toBeAttached();
   for (const name of ["About", "Skills", "Gallery"])
-    await expect(page.getByRole("button", { name })).toBeVisible();
+    await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
   for (const name of SPOT_NAMES) await expect(page.getByRole("button", { name })).toBeVisible();
   // There is no Random Animation button any more.
   await expect(page.getByRole("button", { name: "Random Animation" })).toHaveCount(0);
@@ -78,7 +80,7 @@ test("the buttons sit in the right half and the trailer in the left", async ({ p
   test.skip(info.project.name !== "desktop", "The corner layout is the desktop one");
   await open(page);
   const vw = page.viewportSize()?.width ?? 0;
-  const about = await page.getByRole("button", { name: "About" }).boundingBox();
+  const about = await page.getByRole("button", { name: "About", exact: true }).boundingBox();
   const card = await page.getByRole("button", { name: /Play video/ }).boundingBox();
   expect(about!.x).toBeGreaterThan(vw * 0.6);
   expect(card!.x + card!.width).toBeLessThan(vw * 0.4);
@@ -133,9 +135,11 @@ test("a click in the outer quarters of the player leaves", async ({ page }, info
 
 test("the buttons can be pressed without errors", async ({ page }) => {
   const errors = await open(page);
-  await page.getByRole("button", { name: "Skills" }).click();
+  await page.getByRole("button", { name: "Skills", exact: true }).click();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Skills" })).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
   expect(errors).toEqual([]);
 });
 
@@ -146,8 +150,10 @@ test("a touch point plays its short at once and the main panel comes back, with 
   const spot = page.getByRole("button", { name: SPOT_NAMES[0]! });
   await spot.click();
   // There is no second view: no Back button, and the panel is back when the short is over.
-  await expect(page.getByRole("button", { name: "Back" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "About" })).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
   await expect(spot).toBeVisible();
   await expect(spot).toBeEnabled();
 });
@@ -187,6 +193,9 @@ test("the cursor snaps to a touch point and shows what it is doing", async ({ pa
 async function openAbout(page: Page, narrow: boolean) {
   await open(page);
   await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.locator("[class*='drawers'][data-shown='true']")).toHaveCount(1, {
+    timeout: 45_000,
+  });
   await expect(page.getByRole("region", { name: "Profile, scrollable" })).toBeVisible({
     timeout: 30_000,
   });
@@ -307,7 +316,8 @@ test("Back closes the drawers and returns to the main panel", async ({ page }, i
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
     timeout: 45_000,
   });
-  await expect(page.getByRole("region", { name: "Story, scrollable" })).toHaveCount(0, {
+  // The drawers stay built, off screen and inert, ready for the next visit.
+  await expect(page.locator("[class*='drawers'][data-shown='true']")).toHaveCount(0, {
     timeout: 45_000,
   });
 });
@@ -315,6 +325,9 @@ test("Back closes the drawers and returns to the main panel", async ({ page }, i
 async function openSkills(page: Page, narrow: boolean) {
   await open(page);
   await page.getByRole("button", { name: "Skills", exact: true }).click();
+  await expect(page.locator("[class*='drawers'][data-shown='true']")).toHaveCount(1, {
+    timeout: 45_000,
+  });
   await expect(page.getByRole("region", { name: "Skills, scrollable" })).toBeVisible({
     timeout: 30_000,
   });
@@ -404,7 +417,7 @@ test("Back closes the Skills drawers and returns to the main panel", async ({ pa
   await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
     timeout: 45_000,
   });
-  await expect(page.getByRole("region", { name: "Skills, scrollable" })).toHaveCount(0, {
+  await expect(page.locator("[class*='drawers'][data-shown='true']")).toHaveCount(0, {
     timeout: 45_000,
   });
 });

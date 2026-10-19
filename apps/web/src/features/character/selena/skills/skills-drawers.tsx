@@ -24,7 +24,7 @@ import {
   type FormId,
   type Skill,
 } from "./skills-data";
-import { skillClipPath, skillIconPath, skillPosterPath } from "./skills-media";
+import { skillClipPath, skillIconPath, skillPosterPath, skillSmallPath } from "./skills-media";
 
 const FORM_NAME: Record<FormId, string> = { elven: "Elven Form", abyssal: "Abyssal Form" };
 
@@ -215,16 +215,34 @@ function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(!reduced);
+  const [inView, setInView] = useState(false);
   const [big, setBig] = useState(false);
   const meta = SKILL_CLIPS[clip];
   const label = CLIP_LABEL[clip];
 
+  // The clip decodes only while it can be seen: not while the drawer is still off screen or
+  // folded away, and not in a hidden tab.
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry?.isIntersecting ?? false);
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (playing) void el.play().catch(() => setPlaying(false));
+    if (playing && inView) void el.play().catch(() => setPlaying(false));
     else el.pause();
-  }, [playing, clip]);
+  }, [playing, inView, clip]);
 
   const getOrigin = useCallback(() => frame.current?.getBoundingClientRect() ?? null, []);
 
@@ -240,12 +258,11 @@ function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?
           key={clip}
           ref={ref}
           className={styles.clip}
-          src={mediaUrl(skillClipPath(clip))}
+          src={mediaUrl(skillSmallPath(clip))}
           poster={asset(skillPosterPath(clip))}
           muted
           loop
           playsInline
-          autoPlay={!reduced}
           aria-label={`${label}, demonstration without sound`}
         />
         <button

@@ -99,14 +99,16 @@ function setup(options: { reduced?: boolean; skipWelcome?: boolean } = {}) {
     els[name as keyof typeof SELENA_SHORTS].duration = f(short.frames);
   }
   const attached: VideoKey[] = [];
+  const detached: VideoKey[] = [];
   const states: StageState[] = [];
   const director = new SelenaDirector(els as unknown as StageElements, {
     reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
     onState: (s) => states.push(s),
     attach: (key) => attached.push(key),
+    detach: (key) => detached.push(key),
   });
-  return { els, director, states, attached };
+  return { els, director, states, attached, detached };
 }
 
 type Ctx = ReturnType<typeof setup>;
@@ -282,9 +284,9 @@ describe("pages", () => {
     await toIdle(ctx);
     ctx.director.request("skills");
     expect(ctx.director.current).toMatchObject({ mode: "queued", scene: "skills" });
-    expect(ctx.attached).toEqual(
-      expect.arrayContaining(["skills-in", "skills-loop", "skills-out"]),
-    );
+    // Only the entrance is held while it waits. The loop is attached when the entrance plays.
+    expect(ctx.attached).toContain("skills-in");
+    expect(ctx.attached).not.toContain("skills-loop");
 
     const phase = SELENA_PAGES.skills.in.startPhases[0];
     const trigger = phase - LEAD_FRAMES;
@@ -471,6 +473,57 @@ describe("failure and reduced motion", () => {
     expect(ctx.director.current).toMatchObject({ mode: "page", scene: "about" });
     ctx.director.leave();
     expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
+  });
+
+  it("lets go of the videos that are done, so the browser frees their decoders", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    // The welcome is done once the idle loop has taken over.
+    expect(ctx.detached).toContain("welcome");
+    ctx.director.request("skills");
+    await enter(ctx, SELENA_PAGES.skills.in.startPhases[0]);
+    expect(ctx.attached).toContain("skills-loop");
+    const intro = ctx.els["skills-in"];
+    intro.tick(intro.duration - EARLY);
+    await settle();
+    expect(ctx.detached).toContain("skills-in");
+    expect(ctx.detached).not.toContain("skills-loop");
+  });
+
+  it("lets go of the whole page once its exit has handed over to the idle loop", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "gallery");
+    out.tick(f(SELENA_PAGES.gallery.out.syncFrame));
+    await settle();
+    expect(ctx.director.current.mode).toBe("idle");
+    expect(ctx.detached).toEqual(
+      expect.arrayContaining(["gallery-in", "gallery-loop", "gallery-out"]),
+    );
+  });
+
+  it("draws the waiting entrance at 1 percent, and puts it away if the choice is taken back", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.director.request("skills");
+    expect(ctx.els["skills-in"].dataset.layer).toBe("warm");
+    ctx.director.cancel();
+    expect(ctx.els["skills-in"].dataset.layer).toBe("off");
+    ctx.director.request("skills");
+    await enter(ctx, SELENA_PAGES.skills.in.startPhases[0]);
+    expect(ctx.els["skills-in"].dataset.layer).toBe("front");
+  });
+
+  it("holds only one warmed entrance at a time", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.director.warm("about");
+    ctx.director.warm("skills");
+    expect(ctx.detached).toEqual(expect.arrayContaining(["about-in", "about-loop", "about-out"]));
+    expect(ctx.detached).not.toContain("skills-in");
+    // The one that was chosen is kept when the pointer moves on.
+    ctx.director.request("skills");
+    ctx.director.warm("gallery");
+    expect(ctx.detached).not.toContain("skills-in");
   });
 
   it("starts a scene at once when the idle loop cannot play", async () => {

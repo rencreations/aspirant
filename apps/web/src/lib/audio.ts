@@ -10,6 +10,8 @@
  * before unlock, or when Web Audio is missing. Voice and music files are AAC .m4a.
  */
 
+import { cachedFetch } from "@/lib/media-store";
+
 export type BlipKind = "hover" | "click" | "confirm" | "whoosh" | "star" | "error";
 
 /** @public */
@@ -509,7 +511,7 @@ class AudioEngine {
     if (cached) return cached;
     const ctx = this.ensureContext();
     if (!ctx) return Promise.resolve(null);
-    const promise = fetch(url)
+    const promise = cachedFetch(url)
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
       .then((data) => ctx.decodeAudioData(data))
       .catch(() => {

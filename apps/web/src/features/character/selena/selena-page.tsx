@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
@@ -13,7 +13,7 @@ import { startMusic, type Track } from "@/lib/now-playing";
 
 import type { PageName, SceneName, ShortName, StageState } from "./director";
 import { Hotspots, SPOTS } from "./hotspots";
-import { MENU_ICON } from "./media";
+import { MENU_ICON, selenaTierReady, TRAILER } from "./media";
 import { MenuButton } from "./menu-button";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
@@ -29,17 +29,6 @@ const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; icon: st
   { id: "skills", label: "Skills", scene: "skills", icon: MENU_ICON.skills },
   { id: "gallery", label: "Gallery", scene: "gallery", icon: MENU_ICON.gallery },
 ];
-
-const TRAILER = {
-  poster: "/video/selena/trailer-poster.webp",
-  title: "Selena, trailer",
-  duration: 69,
-  sources: [
-    { label: "1080p", height: 1080, src: "/video/selena/trailer-1080.mp4" },
-    { label: "720p", height: 720, src: "/video/selena/trailer-720.mp4" },
-    { label: "480p", height: 480, src: "/video/selena/trailer-480.mp4" },
-  ],
-} as const;
 
 const TRACK: Track = {
   title: "Silverbolt Raiko",
@@ -107,6 +96,22 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // page's address skips it and plays that page's entrance.
   const pathname = usePathname();
   const [initial] = useState(() => pageFromPath(pathname));
+  // The stage waits for the size of video the device can play smoothly (a moment, usually done
+  // long before), so every video it uses is of the same size.
+  const [tierReady, setTierReady] = useState(false);
+  // The drawers of About and Skills are built while she idles, off screen, a moment after the
+  // welcome. React builds them in small slices, so the idle picture never stalls, and a press
+  // finds them ready instead of building them in the frames of its own animation.
+  const [drawersBuilt, setDrawersBuilt] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    void selenaTierReady().then(() => {
+      if (alive) setTierReady(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const onState = useCallback((s: StageState) => {
     setState(s);
@@ -166,6 +171,22 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // The nav picks its colours from what is under it. Once the page is up (after the boot screen
   // the first sample is stale) ask it to look again.
   useSelenaUrl({ state, stage, initial });
+
+  useEffect(() => {
+    if (state.mode !== "idle" || drawersBuilt >= 2) return;
+    // About first, Skills a moment later, so no single frame carries both.
+    const timer = window.setTimeout(
+      () => {
+        startTransition(() => {
+          setDrawersBuilt((n) => n + 1);
+        });
+      },
+      drawersBuilt === 0 ? 1500 : 1200,
+    );
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [state.mode, drawersBuilt]);
 
   const booted = mode !== "boot";
   useEffect(() => {
@@ -234,7 +255,9 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         <h1 id="selena-title" className="sr-only">
           Selena
         </h1>
-        <SelenaStage ref={stage} onState={onState} welcome={initial === null} />
+        {tierReady ? (
+          <SelenaStage ref={stage} onState={onState} welcome={initial === null} />
+        ) : null}
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
           <Hotspots
@@ -265,7 +288,11 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
             <div className={styles.cardWrap} data-away={busy}>
               <VideoCard
                 video={{
-                  sources: TRAILER.sources,
+                  sources: TRAILER.sources.map(({ label, height, src }) => ({
+                    label,
+                    height,
+                    src,
+                  })),
                   poster: TRAILER.poster,
                   title: TRAILER.title,
                 }}
@@ -354,8 +381,15 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           </div>
         ) : null}
 
-        <AboutDrawers present={pageOpen && scene === "about"} shown={mode === "page"} />
-        <SkillsDrawers present={pageOpen && scene === "skills"} shown={mode === "page"} />
+        {/* Built ahead of time (see `drawersBuilt`), or as soon as a page is chosen. */}
+        <AboutDrawers
+          present={drawersBuilt >= 1 || (pageOpen && scene === "about") || chosen === "about"}
+          shown={mode === "page" && scene === "about"}
+        />
+        <SkillsDrawers
+          present={drawersBuilt >= 2 || (pageOpen && scene === "skills") || chosen === "skills"}
+          shown={mode === "page" && scene === "skills"}
+        />
 
         <ScreenCover ref={cover} />
 

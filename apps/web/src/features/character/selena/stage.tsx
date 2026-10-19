@@ -92,6 +92,14 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
       onState: (s) => {
         onStateRef.current(s);
       },
+      detach: (_key, el) => {
+        if (!el.dataset.attached) return;
+        el.pause();
+        el.removeAttribute("src");
+        el.load();
+        delete el.dataset.attached;
+        el.dataset.layer = "off";
+      },
       attach: (key, el) => {
         if (el.dataset.attached) return;
         el.dataset.attached = "1";

@@ -7,8 +7,12 @@ cinematic and gameplay, and the right half of the split-screen idle and interact
 (Obsidia is on the left half and is cropped away). The times were found by frame differencing
 and by reading the skill bar on screen, which lights the skill that is being cast.
 
-Output: apps/web/public/video/selena/skills/<id>.mp4 (and .webp poster) and
-        apps/web/public/img/selena/skills/<icon>.webp
+Output: apps/web/public/video/selena/skills/<id>.mp4 (and .webp poster), <id>-s.mp4 (the small,
+        silent loop shown next to the skill list) and apps/web/public/img/selena/skills/<icon>.webp
+
+The small loop is 960 pixels wide at most and runs at 60 fps like the page. It is shown about 450 pixels wide (900 on a sharp
+screen), so it is as sharp as it needs to be, and the browser decodes a fifth of the pixels while
+it plays next to the live 4K picture. The full clip (with sound) opens in the player.
 
 Run: python -I scripts/selena/skills-assets.py "D:/ren/aspirant/media/selena-and-obsidia/skin-showcase.webm" "D:/ren/aspirant/media/others/skills-icon"
 """
@@ -40,9 +44,31 @@ def run(args: list[str]) -> None:
         raise SystemExit(p.stderr)
 
 
+def small(clip: Path) -> Path:
+    """The silent, small loop of a clip: 960 pixels wide at most, at 60 fps.
+
+    The page's own picture runs at 60 fps. A second video at 30 fps beside it makes the browser
+    pace every frame of the page at half the screen's rate, so the loop is made at 60 (each frame
+    twice, which costs almost nothing in size).
+    """
+    out = clip.with_name(f"{clip.stem}-s.mp4")
+    run([
+        "-i", str(clip), "-an",
+        "-vf", "scale='min(960,iw)':-2:flags=lanczos,setsar=1,format=yuv420p,fps=60",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "24", "-profile:v", "high",
+        "-g", "60", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+        str(out),
+    ])
+    return out
+
+
 def main() -> None:
-    video = Path(sys.argv[1])
-    icons = Path(sys.argv[2])
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    # --previews-only: keep the clips and posters as they are, and only make the small loops
+    # (the clips are cut already, so the source video is not needed).
+    previews_only = "--previews-only" in sys.argv
+    video = Path(args[0]) if args else Path()
+    icons = Path(args[1]) if len(args) > 1 else Path()
     root = Path(__file__).resolve().parents[2]
     web = root / "apps" / "web" / "public"
     out_v = web / "video" / "selena" / "skills"
@@ -52,31 +78,34 @@ def main() -> None:
 
     meta = {}
     for key, (a, b, crop) in CLIPS.items():
-        vf = ",".join(x for x in (crop, "setsar=1", "format=yuv420p") if x)
         target = out_v / f"{key}.mp4"
-        run([
-            "-ss", str(a), "-to", str(b), "-i", str(video),
-            "-vf", vf,
-            "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-profile:v", "high",
-            "-g", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
-            "-c:a", "aac", "-b:a", "96k", "-ar", "48000", "-ac", "2",
-            str(target),
-        ])
-        run([
-            "-ss", str(a + min(0.6, (b - a) / 3)), "-i", str(video), "-frames:v", "1",
-            "-vf", ",".join(x for x in (crop, "scale=960:-2:flags=lanczos") if x),
-            "-c:v", "libwebp", "-quality", "78", str(out_v / f"{key}.webp"),
-        ])
+        if not previews_only:
+            vf = ",".join(x for x in (crop, "setsar=1", "format=yuv420p") if x)
+            run([
+                "-ss", str(a), "-to", str(b), "-i", str(video),
+                "-vf", vf,
+                "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-profile:v", "high",
+                "-g", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                "-c:a", "aac", "-b:a", "96k", "-ar", "48000", "-ac", "2",
+                str(target),
+            ])
+            run([
+                "-ss", str(a + min(0.6, (b - a) / 3)), "-i", str(video), "-frames:v", "1",
+                "-vf", ",".join(x for x in (crop, "scale=960:-2:flags=lanczos") if x),
+                "-c:v", "libwebp", "-quality", "78", str(out_v / f"{key}.webp"),
+            ])
         meta[key] = {
             "seconds": round(b - a, 2),
             "bytes": target.stat().st_size,
+            "smallBytes": small(target).stat().st_size,
             "portrait": crop is not None,
         }
         print(key, round(b - a, 2), "s", target.stat().st_size // 1024, "KB")
 
-    for f in sorted(icons.glob("*.webp")):
-        shutil.copy2(f, out_i / f.name)
-    print("icons", len(list(out_i.glob("*.webp"))))
+    if not previews_only:
+        for f in sorted(icons.glob("*.webp")):
+            shutil.copy2(f, out_i / f.name)
+        print("icons", len(list(out_i.glob("*.webp"))))
     dest = root / "apps" / "web" / "src" / "features" / "character" / "selena" / "skills"
     dest.mkdir(parents=True, exist_ok=True)
     body = json.dumps(meta, indent=2)
@@ -85,6 +114,8 @@ def main() -> None:
         "export interface SkillClipMeta {\n"
         "  seconds: number;\n"
         "  bytes: number;\n"
+        "  /** The small silent loop next to the list. */\n"
+        "  smallBytes: number;\n"
         "  /** Cropped to Selena's half of the split screen. */\n"
         "  portrait: boolean;\n"
         "}\n\n"

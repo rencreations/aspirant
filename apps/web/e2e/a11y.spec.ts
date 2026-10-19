@@ -16,7 +16,11 @@ for (const route of ROUTES) {
   test(`no serious accessibility violations on ${route}`, async ({ page }) => {
     await skipGate(page);
     await page.goto(url(route));
-    await page.waitForLoadState("networkidle");
+    // Her pages hold video connections open, so the network never goes quiet there.
+    if (route.startsWith("/character/selena/")) {
+      await page.waitForLoadState("load");
+      await page.waitForTimeout(1500);
+    } else await page.waitForLoadState("networkidle");
     const serious = await seriousViolations(page);
     expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
   });

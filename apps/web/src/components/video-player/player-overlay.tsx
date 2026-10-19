@@ -13,6 +13,7 @@ import {
 
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
+import { mediaUrl } from "@/lib/media-store";
 import { audio } from "@/lib/audio";
 import { useReducedMotion } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
@@ -432,7 +433,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     const at = el.currentTime;
     const wasPlaying = !el.paused;
     setBusy(true);
-    el.src = asset(active.src);
+    el.src = mediaUrl(active.src);
     el.addEventListener(
       "loadedmetadata",
       () => {
@@ -809,7 +810,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           <video
             ref={videoRef}
             className={styles.video}
-            src={asset(active.src)}
+            src={mediaUrl(active.src)}
             playsInline
             preload="auto"
           >

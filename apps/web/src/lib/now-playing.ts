@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { asset } from "@/lib/asset";
+import { mediaUrl } from "@/lib/media-store";
 import { audio } from "@/lib/audio";
 import { useSiteStore } from "@/lib/stores";
 
@@ -38,7 +38,7 @@ const FADE_OUT_MS = 3500;
 export function startMusic(track: Track, volume = MUSIC_VOLUME): () => void {
   cleanup?.();
   useNowPlaying.setState({ track, playing: false });
-  audio.playMusic(asset(track.src), { loop: true, volume, fadeMs: FADE_IN_MS });
+  audio.playMusic(mediaUrl(track.src), { loop: true, volume, fadeMs: FADE_IN_MS });
   const el = audio.getMusicElement();
   const onPlay = () => {
     useNowPlaying.setState({ playing: true });

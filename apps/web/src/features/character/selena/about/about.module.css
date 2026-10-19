@@ -63,7 +63,6 @@
   overscroll-behavior: contain;
   padding: 1.15rem 1.2rem 1.6rem;
   background: var(--paper);
-  backdrop-filter: blur(12px);
   border: 1px solid color-mix(in srgb, var(--edge) 55%, transparent);
   scrollbar-width: thin;
   scrollbar-color: var(--edge) transparent;

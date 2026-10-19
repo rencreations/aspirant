@@ -8,9 +8,9 @@ The first loading screen and every page transition report real work. Keep it tha
 
 - Anything a page needs on first paint is declared in `apps/web/src/lib/route-preloads.ts` as a `PreloadItem` (an image, a data file, a lazy code chunk, fonts). The loading bar, its label and the preloading all come from that list.
 - When you add an asset, a lazy chunk or a data fetch that matters at first paint, add it to the list for that route. If it is not in the list, it is not in the bar and the page will pop in late.
-- Pre-load for speed: warm the cache before the page opens. Items run in parallel, share a cache, and never block longer than 12 seconds.
+- Pre-load for speed: warm the cache before the page opens. Items run in parallel, share a cache, and never block longer than 12 seconds. Big media may set a longer `timeoutMs` (Selena's page waits up to two minutes: a long first load is accepted so that nothing waits afterwards).
 - A component with a slow first paint (a WebGL scene) calls `expectReady(id)` from `lib/page-ready.ts` and marks itself ready once it shows something, so the curtain waits for it.
-- Big media (the Selena videos) is loaded whole into memory through `lib/media-store.ts` by a `PreloadItem` that reports the bytes received, so the bar is real. Items can set `timeoutMs`.
+- Big media (the Selena videos, skill clips, trailer, music) is loaded whole into memory through `lib/media-store.ts` by a `PreloadItem` that reports the bytes received, so the bar is real, and it is saved in the browser (Cache Storage) so the next visit does not download it again. Small files read as bytes (data, voice lines) use `cachedFetch`. Replacing a file under the same address means bumping the cache name in `media-store.ts`. Her page and its three pages (`/character/selena/{about,skills,gallery}/`) share one list.
 - Never fake progress. Never add a timer that pretends to load.
 - A page that is not ready 500 ms after a navigation shows the loading state of the logo transition. Do not remove that.
 
@@ -24,7 +24,7 @@ The bar is sticky and always visible. Pages open from the full-screen menu (`com
 
 ## Video
 
-Use the custom player in `components/video-player/` (`VideoCard`) for new videos, not a bare `<video controls>`. Videos never start by themselves. Selena's page is built from recordings cut by `scripts/selena/build.py`: do not re-cut by hand, change the constants there and rebuild. The page picks a size for the visitor's display and loads all of that size before it opens. The welcome and the idle loop of her page are in the loading bar like any first-paint asset.
+Use the custom player in `components/video-player/` (`VideoCard`) for new videos, not a bare `<video controls>`. Videos never start by themselves. Selena's page is built from recordings cut by `scripts/selena/build.py`: do not re-cut by hand, change the constants there and rebuild. The page picks a size for the visitor's display, held back to what the device decodes smoothly, and loads all of that size before it opens. The videos have no sound (muted): sound is the music and the voice lines. Keep a video that plays beside the stage at 60 fps, since a 30 fps one makes the page pace at half rate.
 
 ## Look and feel
 

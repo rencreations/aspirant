@@ -1,8 +1,21 @@
 import { isSlug } from "@/content/characters";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
-import { MENU_ICON, selenaItems } from "@/features/character/selena/media";
+import {
+  MENU_ICON,
+  SELENA_VOICE_COUNT,
+  selenaItems,
+  selenaVoicePath,
+  trailerItem,
+} from "@/features/character/selena/media";
 import { skillItems } from "@/features/character/selena/skills/skills-media";
-import { chunkItem, dataItem, fontsItem, imageItem, type PreloadItem } from "@/lib/preload";
+import {
+  chunkItem,
+  dataItem,
+  fontsItem,
+  imageItem,
+  mediaItem,
+  type PreloadItem,
+} from "@/lib/preload";
 
 /** Characters that have a cut-out in `public/img/char/<slug>/` (the others have splash art only). */
 const HAS_CUTOUT: ReadonlySet<string> = new Set([
@@ -67,19 +80,30 @@ export function routeItems(pathname: string): PreloadItem[] {
   if (path.startsWith("/character/")) {
     const slug = path.slice("/character/".length).split("/")[0] ?? "";
     if (slug === "selena") {
-      // Her page is one picture made of videos. All of them load into memory here, in the size
-      // that suits the display, so nothing waits on the network once the page is open.
+      // Her page and its three pages (About, Skills, Gallery) are one stage, so one list covers
+      // them all: the videos in the size that suits the display, the skill clips, the trailer, the
+      // music, her voice lines and every picture. All of it is loaded into memory and saved in the
+      // browser, so nothing waits on the network once the page is open, and the next visit starts
+      // from the saved copy. A visitor on the first visit waits for it here.
       return [
         ...shared,
         imageItem("/video/selena/still.webp", "Loading Selena", 1),
         imageItem("/video/selena/trailer-poster.webp", "Loading the trailer", 1),
         imageItem("/img/char/selena/splash-sm.webp", "Loading the album art", 1),
         ...Object.values(MENU_ICON).map((path) => imageItem(path, "Loading the buttons", 1)),
-        dataItem("/audio/music/silverbolt-raiko.m4a", "Loading the music", 3),
+        mediaItem("/audio/music/silverbolt-raiko.m4a", "Loading the music", {
+          type: "audio/mp4",
+          weight: 3,
+          timeoutMs: 120_000,
+        }),
+        ...Array.from({ length: SELENA_VOICE_COUNT }, (_, i) =>
+          dataItem(selenaVoicePath(i + 1), "Loading her voice lines", 1),
+        ),
         ...ABOUT_IMAGES.map((name) =>
           imageItem(aboutImagePath(name), "Loading the About pictures", 1),
         ),
         ...skillItems(),
+        trailerItem(),
         ...selenaItems(),
       ];
     }

@@ -1,4 +1,5 @@
 import { asset } from "@/lib/asset";
+import { cachedFetch, loadMedia } from "@/lib/media-store";
 
 /**
  * Everything the site must have before a page can show goes through this file, so the loading
@@ -89,13 +90,33 @@ export function imageItem(path: string, label: string, weight = 1): PreloadItem 
   };
 }
 
-/** Fetch a data file into the HTTP cache. */
+/** Fetch a data file (or a short sound) and save it in the browser. */
 export function dataItem(path: string, label: string, weight = 1): PreloadItem {
   return {
     id: `data:${path}`,
     label,
     weight,
-    run: () => fetch(asset(path)).then((r) => r.arrayBuffer()),
+    run: () => cachedFetch(asset(path)).then((r) => r.arrayBuffer()),
+  };
+}
+
+/**
+ * Download a big file whole (a video, the music), keep it in memory and save it in the browser.
+ * The bar moves with the bytes received. Pass `bytes` when the size is known: it sets the
+ * weight, and a saved copy of another size is thrown away.
+ */
+export function mediaItem(
+  path: string,
+  label: string,
+  options: { type: string; bytes?: number; weight?: number; timeoutMs?: number },
+): PreloadItem {
+  return {
+    id: `media:${path}`,
+    label,
+    weight: options.weight ?? Math.max(1, Math.round((options.bytes ?? 1_000_000) / 1_000_000)),
+    timeoutMs: options.timeoutMs ?? 120_000,
+    run: (report) =>
+      loadMedia(path, { type: options.type, expectedBytes: options.bytes, onFraction: report }),
   };
 }
 

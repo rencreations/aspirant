@@ -3,6 +3,8 @@
 export interface SkillClipMeta {
   seconds: number;
   bytes: number;
+  /** The small silent loop next to the list. */
+  smallBytes: number;
   /** Cropped to Selena's half of the split screen. */
   portrait: boolean;
 }
@@ -11,51 +13,61 @@ export const SKILL_CLIPS = {
   trap: {
     seconds: 7.1,
     bytes: 2691489,
+    smallBytes: 1275419,
     portrait: false,
   },
   "soul-eater": {
     seconds: 3.6,
     bytes: 1529466,
+    smallBytes: 692939,
     portrait: false,
   },
   arrow: {
     seconds: 6.5,
     bytes: 2577771,
+    smallBytes: 1169230,
     portrait: false,
   },
   garotte: {
     seconds: 2.75,
     bytes: 1153167,
+    smallBytes: 535243,
     portrait: false,
   },
   "primal-darkness": {
     seconds: 3.2,
     bytes: 1382067,
+    smallBytes: 649286,
     portrait: false,
   },
   "moon-goddess": {
     seconds: 1.85,
     bytes: 702555,
+    smallBytes: 332329,
     portrait: false,
   },
   "skin-intro": {
     seconds: 5.73,
     bytes: 4634998,
+    smallBytes: 2162097,
     portrait: false,
   },
   "skin-fight": {
     seconds: 5.25,
     bytes: 3647051,
+    smallBytes: 1741985,
     portrait: false,
   },
   idle: {
     seconds: 17.8,
     bytes: 7184463,
+    smallBytes: 7819264,
     portrait: true,
   },
   interactive: {
     seconds: 6.4,
     bytes: 2931487,
+    smallBytes: 3246549,
     portrait: true,
   },
 } as const satisfies Record<string, SkillClipMeta>;

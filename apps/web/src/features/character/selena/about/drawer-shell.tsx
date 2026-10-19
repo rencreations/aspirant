@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+} from "react";
 
 import { audio } from "@/lib/audio";
 import { useMediaQuery } from "@/lib/hooks";
@@ -20,7 +27,10 @@ interface Side {
 }
 
 interface Props {
-  /** The drawers are mounted. They stay mounted while they slide away. */
+  /**
+   * The drawers are mounted. They stay mounted while they slide away, and the page may mount them
+   * ahead of time, off screen, so that building them never competes with an entrance.
+   */
   present: boolean;
   /** The drawers are open. */
   shown: boolean;
@@ -79,13 +89,41 @@ export function DrawerShell({ present, shown, label, left, right }: Props) {
   const [tab, setTab] = useState<"left" | "right">("left");
   // On a narrow screen the drawers are one sheet and cannot be folded.
   const narrow = useMediaQuery("(max-width: 56em), (max-aspect-ratio: 1/1)");
+  const root = useRef<HTMLDivElement>(null);
+
+  // Away again: the next visit starts as the first did (both open, the first tab, at the top).
+  // State is adjusted while rendering, the pattern React gives for state that follows a prop.
+  const [wasShown, setWasShown] = useState(shown);
+  if (shown !== wasShown) {
+    setWasShown(shown);
+    if (!shown) {
+      setOpen({ left: true, right: true });
+      setTab("left");
+    }
+  }
+  useEffect(() => {
+    if (shown) return;
+    const timer = window.setTimeout(() => {
+      for (const el of root.current?.querySelectorAll("[role='region']") ?? []) el.scrollTop = 0;
+    }, 900);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [shown]);
+
   if (!present) return null;
   const sides = [
     { key: "left", side: left },
     { key: "right", side: right },
   ] as const;
   return (
-    <div className={styles.drawers} data-shown={shown} data-tab={tab} data-theme="daybreak">
+    <div
+      ref={root}
+      className={styles.drawers}
+      data-shown={shown}
+      data-tab={tab}
+      data-theme="daybreak"
+    >
       <div className={styles.tabs} role="tablist" aria-label={label}>
         {sides.map(({ key, side }) => (
           <button

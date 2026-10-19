@@ -84,6 +84,11 @@ interface DirectorOptions {
   onState: (state: StageState) => void;
   /** Called before a video is first used, so the page can give it its source. */
   attach?: (key: VideoKey, el: HTMLVideoElement) => void;
+  /**
+   * Called when a video is done for now. The page lets go of its source, so the browser frees the
+   * decoder and the frames it holds (a 4K video holds many). `attach` gives it back when needed.
+   */
+  detach?: (key: VideoKey, el: HTMLVideoElement) => void;
 }
 
 interface Back {
@@ -218,6 +223,8 @@ export class SelenaDirector {
   private poseBack = false;
   /** A page opened without its video (no codec): it shows over the still picture. */
   private degraded = false;
+  /** The scene whose first video was warmed by a hover, so only one is ever held that way. */
+  private warmed: SceneName | null = null;
 
   constructor(
     private readonly els: StageElements,
@@ -246,6 +253,27 @@ export class SelenaDirector {
 
   private keysOf(scene: SceneName): VideoKey[] {
     return isPage(scene) ? [`${scene}-in`, `${scene}-loop`, `${scene}-out`] : [scene];
+  }
+
+  /**
+   * While a scene waits for its frame, its first video sits on screen at 1 percent opacity. The
+   * browser has then made its layer and picture before the dissolve starts, instead of doing it
+   * in the first frames of the dissolve (a 4K layer takes a while to set up).
+   */
+  private prime(scene: SceneName) {
+    const el = this.els[this.keysOf(scene)[0]!];
+    if (el.dataset.layer === "off") el.dataset.layer = "warm";
+  }
+
+  private unprime(scene: SceneName | null) {
+    if (!scene) return;
+    const el = this.els[this.keysOf(scene)[0]!];
+    if (el.dataset.layer === "warm") el.dataset.layer = "off";
+  }
+
+  /** Let go of the videos of a scene that is not on screen. */
+  private releaseScene(scene: SceneName) {
+    for (const key of this.keysOf(scene)) this.opts.detach?.(key, this.els[key]);
   }
 
   private set(next: Partial<Omit<StageState, "ui">>) {
@@ -309,9 +337,24 @@ export class SelenaDirector {
     return idle.readyState > 0 ? idle.currentTime : null;
   }
 
-  /** Get a scene's videos ready (the pointer is on its button). */
+  /**
+   * Get a scene's first video ready (the pointer is on its button). Only the entrance is warmed:
+   * the rest of a page is attached when the entrance plays, and the one warmed before is let go,
+   * so a pointer moving over the buttons never leaves several 4K decoders behind.
+   */
   warm(scene: SceneName) {
-    for (const key of this.keysOf(scene)) this.use(key);
+    const before = this.warmed;
+    if (
+      before &&
+      before !== scene &&
+      before !== this.state.scene &&
+      before !== this.pending &&
+      before !== this.after
+    ) {
+      this.releaseScene(before);
+    }
+    this.warmed = scene;
+    this.use(this.keysOf(scene)[0]!);
   }
 
   async start() {
@@ -358,6 +401,7 @@ export class SelenaDirector {
     await this.startAt(idle, 0);
     await this.swap(idle, this.topVideo() === welcome ? welcome : null, HANDOVER_MS);
     welcome.currentTime = 0;
+    this.opts.detach?.("welcome", welcome);
     this.set({ mode: "idle" });
     this.watchIdle();
   }
@@ -376,11 +420,13 @@ export class SelenaDirector {
     this.poseBack = false;
     this.handed = true;
     const idle = this.use("idle");
-    for (const el of this.all()) {
+    for (const [key, el] of Object.entries(this.els) as Array<[VideoKey, HTMLVideoElement]>) {
       if (el === idle) continue;
       el.pause();
       el.dataset.layer = "off";
+      this.opts.detach?.(key, el);
     }
+    this.warmed = null;
     this.zoomNow(idle, 1);
     if (!this.opts.reduced) await this.startAt(idle, 0);
     else idle.currentTime = 0;
@@ -444,6 +490,7 @@ export class SelenaDirector {
     }
     if (mode !== "idle" && mode !== "queued") return;
     this.warm(scene);
+    this.prime(scene);
     this.pending = scene;
     // Reduced motion, or an idle loop that cannot play (no codec): there is no frame to wait for.
     if (this.opts.reduced || this.els.idle.error) {
@@ -470,6 +517,7 @@ export class SelenaDirector {
       return;
     }
     if (this.state.mode !== "queued") return;
+    this.unprime(this.pending);
     this.pending = null;
     this.set({ mode: "idle", scene: null, loading: false, wait: null });
   }
@@ -483,6 +531,9 @@ export class SelenaDirector {
     const el = this.use(key);
     const timing = page ? SELENA_PAGES[scene].in : SELENA_SHORTS[scene];
     const idle = this.els.idle;
+    this.warmed = scene;
+    // The loop starts when the entrance ends: have it loaded by then.
+    if (page) this.use(`${scene}-loop`);
     this.set({ mode: page ? "intro" : "short", scene, loading: false, wait: null });
     this.stopWatch?.();
     if (this.opts.reduced && page) {
@@ -544,6 +595,7 @@ export class SelenaDirector {
     await this.startAt(loop, 0);
     await this.swap(loop, from, HANDOVER_MS);
     from.currentTime = 0;
+    this.opts.detach?.(`${scene}-in`, from);
     this.set({ mode: "page", scene });
     if (this.leaveAsked) {
       this.leaveAsked = false;
@@ -611,6 +663,7 @@ export class SelenaDirector {
     }
     await this.swap(out, loop, HANDOVER_MS);
     loop.currentTime = 0;
+    this.opts.detach?.(`${scene}-loop`, loop);
     this.stopWatch = watchFrames(out, (t) => {
       this.watchBack(t * SELENA_FPS, timing, out, scene);
     });
@@ -639,6 +692,8 @@ export class SelenaDirector {
     await this.swap(idle, from, ms);
     this.zoomNow(idle, 1);
     from.currentTime = 0;
+    this.releaseScene(scene);
+    if (this.warmed === scene) this.warmed = null;
     this.poseBack = false;
     this.set({ mode: "idle", scene: null, loading: false, leaving: false, wait: null });
     if (!reduced) this.watchIdle();
