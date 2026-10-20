@@ -50,3 +50,4 @@ apps/web/AGENTS.md
 
 # local agent worktrees
 .claude/
+__pycache__/

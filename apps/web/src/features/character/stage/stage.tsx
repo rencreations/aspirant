@@ -8,19 +8,10 @@ import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl, releaseMedia } from "@/lib/media-store";
 import { expectReady } from "@/lib/page-ready";
 
-import {
-  SelenaDirector,
-  VIDEO_KEYS,
-  videoFile,
-  type SceneName,
-  type StageElements,
-  type StageState,
-  type VideoKey,
-} from "./director";
-import { SELENA_DIR, selenaPath, selenaTier } from "./media";
-import styles from "./selena.module.css";
-
-const STILL = `${SELENA_DIR}/still.webp`;
+import { StageDirector, videoFile, type StageElements, type StageState } from "./director";
+import type { StageMedia } from "./media";
+import styles from "./stage.module.css";
+import { VIDEO_KEYS, type SceneName, type Timeline, type VideoKey } from "./timeline";
 
 /** Freed a moment after the page is left, so a quick remount (React's dev double mount) keeps it. */
 let releaseTimer = 0;
@@ -47,6 +38,10 @@ export interface StageApi {
 }
 
 interface Props {
+  /** Her videos: the frame numbers every hand-over is cut on. */
+  timeline: Timeline;
+  /** Where her videos are and which size is used. */
+  media: StageMedia;
   onState: (state: StageState) => void;
   /** Play the welcome first. False when the visitor came straight to one of her pages. */
   welcome: boolean;
@@ -56,19 +51,19 @@ interface Props {
 
 /**
  * The picture. A still frame sits underneath so the page is never empty, and on top of it one
- * video per piece. `SelenaDirector` decides which one shows. The videos are already in memory
+ * video per piece. `StageDirector` decides which one shows. The videos are already in memory
  * (the loading bar fetched them), so each one only gets its source when it is first needed. The
  * curtain waits for this stage (page-ready), and the welcome starts once the page transition has
  * finished, so it always plays on a fully visible page.
  */
-export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
-  { onState, welcome: playWelcome, onBegin },
+export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStage(
+  { timeline, media, onState, welcome: playWelcome, onBegin },
   ref,
 ) {
   const reduced = useReducedMotion();
   const router = useTransitionRouter();
   const refs = useRef<Partial<Record<VideoKey, HTMLVideoElement | null>>>({});
-  const director = useRef<SelenaDirector | null>(null);
+  const director = useRef<StageDirector | null>(null);
   const onStateRef = useRef(onState);
 
   const onBeginRef = useRef(onBegin);
@@ -99,7 +94,8 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
     >;
     if (VIDEO_KEYS.some((k) => !els[k])) return;
     window.clearTimeout(releaseTimer);
-    const d = new SelenaDirector(els as StageElements, {
+    const d = new StageDirector(els as StageElements, {
+      timeline,
       reduced,
       skipWelcome: !playWelcome,
       welcomeDelayMs: WELCOME_DELAY_MS,
@@ -118,7 +114,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
         el.dataset.layer = "off";
       },
       attach: (key, el) => {
-        const tier = selenaTier();
+        const tier = media.tier();
         if (el.dataset.attached === tier) return;
         // What is on screen keeps its size. It gets the new one the next time it is attached, which
         // is when it is out of sight (the performance level can step down while the page plays).
@@ -129,7 +125,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
         // No video has sound, so every one is muted for good and the browser lets it autoplay.
         el.defaultMuted = true;
         el.muted = true;
-        el.src = mediaUrl(selenaPath(tier, videoFile(key)));
+        el.src = mediaUrl(media.path(tier, videoFile(timeline, key)));
         if (LOOPING(key)) el.loop = true;
       },
     });
@@ -138,7 +134,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
     const idle = els.idle!;
 
     // The curtain waits until there is something to show: the welcome can play and so can the loop.
-    const mark = expectReady("selena-stage");
+    const mark = expectReady("stage");
     let started = false;
     let alive = true;
     // A video that fails to load (no codec) counts as playable: the still picture stays.
@@ -197,7 +193,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
         delete v.dataset.attached;
       }
       releaseTimer = window.setTimeout(() => {
-        releaseMedia(`${SELENA_DIR}/`);
+        releaseMedia(`${media.dir}/`);
       }, 1500);
     };
     // The stage is built once per mount; `reduced` is read at that moment.
@@ -208,7 +204,12 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
     <div className={styles.stage} aria-hidden="true">
       {/* Plain <img>: static export. It shows until the first video frame. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.still} src={asset(STILL)} alt="" draggable={false} />
+      <img
+        className={styles.still}
+        src={asset(`${media.dir}/still.webp`)}
+        alt=""
+        draggable={false}
+      />
       {VIDEO_KEYS.map((key) => (
         <video
           key={key}

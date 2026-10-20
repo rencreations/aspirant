@@ -1,37 +1,24 @@
 import { describe, expect, it } from "vitest";
 
-import { coverPoint, dock, pathAt, SPOTS } from "./hotspots";
-import { HOTSPOT_PATHS, HOTSPOT_STEP } from "./hotspots.generated";
-import { SELENA_LOOP_FRAMES } from "./timeline.generated";
+import { coverPoint, dock, pathAt } from "./hotspots";
+
+const HOTSPOT_STEP = 3;
 
 describe("touch point paths", () => {
-  it("has a point for every spot, covering the whole idle loop", () => {
-    for (const spot of SPOTS) {
-      const path = HOTSPOT_PATHS[spot.id];
-      expect(path.length * HOTSPOT_STEP).toBe(SELENA_LOOP_FRAMES);
-      for (const [x, y] of path) {
-        expect(x).toBeGreaterThan(0);
-        expect(x).toBeLessThan(1);
-        expect(y).toBeGreaterThan(0);
-        expect(y).toBeLessThan(1);
-      }
-    }
-  });
-
   it("moves between samples and wraps with the loop", () => {
     const path: Array<readonly [number, number]> = [
       [0.2, 0.4],
       [0.4, 0.6],
     ];
-    expect(pathAt(path, 0)).toEqual([0.2, 0.4]);
-    const mid = pathAt(path, HOTSPOT_STEP / 2);
+    expect(pathAt(path, 0, HOTSPOT_STEP)).toEqual([0.2, 0.4]);
+    const mid = pathAt(path, HOTSPOT_STEP / 2, HOTSPOT_STEP);
     expect(mid[0]).toBeCloseTo(0.3);
     expect(mid[1]).toBeCloseTo(0.5);
     // After the last sample it runs back towards the first one.
-    const end = pathAt(path, HOTSPOT_STEP * 1.5);
+    const end = pathAt(path, HOTSPOT_STEP * 1.5, HOTSPOT_STEP);
     expect(end[0]).toBeCloseTo(0.3);
-    expect(pathAt(path, HOTSPOT_STEP * 2)).toEqual([0.2, 0.4]);
-    expect(pathAt(path, -HOTSPOT_STEP)).toEqual([0.4, 0.6]);
+    expect(pathAt(path, HOTSPOT_STEP * 2, HOTSPOT_STEP)).toEqual([0.2, 0.4]);
+    expect(pathAt(path, -HOTSPOT_STEP, HOTSPOT_STEP)).toEqual([0.4, 0.6]);
   });
 
   it("stays on the same spot of a wide picture however the box is cropped", () => {

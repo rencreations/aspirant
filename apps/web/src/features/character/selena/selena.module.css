@@ -25,63 +25,6 @@
   --focus: 50% 50%;
 }
 
-/* The picture ------------------------------------------------------------------------------- */
-.stage {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.still,
-.video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--focus);
-  user-select: none;
-}
-
-.video {
-  background: transparent;
-}
-
-/* The director sets data-layer: off is hidden, back is shown under the front video, front is
-   shown on top and fades in over --xfade. */
-.video[data-layer="off"] {
-  opacity: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* The next video, waiting for its frame, is drawn at 1 percent so its layer is ready. */
-.video[data-layer="warm"] {
-  opacity: 0.01;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.video[data-layer="back"] {
-  opacity: 1;
-  z-index: 1;
-}
-
-.video[data-layer="front"] {
-  opacity: 1;
-  z-index: 2;
-  animation: dissolve var(--xfade, 120ms) linear both;
-}
-
-@keyframes dissolve {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* The first welcome starts on a black screen. The music plays first, the video starts under the
    black, and the black fades away to show a picture that is already moving. */
 .blackout {
@@ -354,10 +297,6 @@
 }
 
 /* A choice is answered at once ------------------------------------------------------------- */
-.video {
-  transform: scale(var(--zoom, 1));
-  transition: transform var(--zoom-ms, 0ms) var(--ease-in-out);
-}
 
 /* Everything else on the panel steps out of the way as soon as a button is pressed. */
 .ui[data-busy="true"] .menu li[data-mine="false"] {

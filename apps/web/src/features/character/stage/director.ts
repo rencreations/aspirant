@@ -1,32 +1,21 @@
 import { crossed, frameAt, LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
-import { SELENA_EXTRA_FRAMES, SELENA_FPS, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
-
-export type PageName = keyof typeof SELENA_PAGES;
-export type ShortName = keyof typeof SELENA_SHORTS;
-export type SceneName = PageName | ShortName;
-
-const PAGE_NAMES = Object.keys(SELENA_PAGES) as PageName[];
-export const SHORT_NAMES = Object.keys(SELENA_SHORTS) as ShortName[];
-
-export type VideoKey = "welcome" | "idle" | `${PageName}-${"in" | "loop" | "out"}` | ShortName;
-
-export const VIDEO_KEYS: VideoKey[] = [
-  "welcome",
-  "idle",
-  ...PAGE_NAMES.flatMap((p) => [`${p}-in`, `${p}-loop`, `${p}-out`] as const),
-  ...SHORT_NAMES,
-];
+import {
+  isPage,
+  type PageName,
+  type SceneName,
+  type ShortName,
+  type Timeline,
+  type VideoKey,
+} from "./timeline";
 
 /** The file name of a video (inside its size folder). */
-export function videoFile(key: VideoKey): string {
+export function videoFile(timeline: Timeline, key: VideoKey): string {
   if (key === "welcome") return "welcome.mp4";
   if (key === "idle") return "idle.mp4";
-  if (key in SELENA_SHORTS) return SELENA_SHORTS[key as ShortName].file;
+  if (key in timeline.shorts) return timeline.shorts[key as ShortName].file;
   const [page, part] = key.split("-") as [PageName, "in" | "loop" | "out"];
-  return SELENA_PAGES[page][part].file;
+  return timeline.pages[page][part].file;
 }
-
-const isPage = (scene: SceneName): scene is PageName => scene in SELENA_PAGES;
 
 /**
  * - boot: nothing plays yet.
@@ -77,6 +66,8 @@ export interface StageState {
 export type StageElements = Record<VideoKey, HTMLVideoElement>;
 
 interface DirectorOptions {
+  /** Her videos: the frame numbers every hand-over is cut on (`timeline.generated.ts`). */
+  timeline: Timeline;
   /** Reduced motion: nothing starts by itself and nothing loops. */
   reduced: boolean;
   /** Start on the idle loop with no welcome (the visitor came to one of her pages). */
@@ -104,7 +95,6 @@ interface Back {
 }
 
 const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
-const EARLY = LEAD_FRAMES + SELENA_EXTRA_FRAMES;
 /** A video needs a few frames to show its first picture after play(). */
 const START_LATENCY = LEAD_FRAMES + 2;
 const HANDOVER_MS = 160;
@@ -187,9 +177,9 @@ function isReady(video: HTMLVideoElement): boolean {
 }
 
 /**
- * Runs the Selena stage. A video per piece sits on top of the others and only one is on top at a
+ * Runs a character's stage. A video per piece sits on top of the others and only one is on top at a
  * time: the welcome, the idle loop, for each page an entrance, a loop and an exit, and the short
- * animations. Every hand-over is cut on matching frames (see scripts/selena/build.py), so each
+ * animations. Every hand-over is cut on matching frames (see scripts/<name>/build.py), so each
  * swap is a dissolve between two pictures that are nearly the same:
  *
  *   welcome -> idle   when the welcome is a few frames from its end
@@ -208,7 +198,7 @@ function isReady(video: HTMLVideoElement): boolean {
  *
  * Nothing here touches React. The page passes the elements and listens to `onState`.
  */
-export class SelenaDirector {
+export class StageDirector {
   private state: StageState = {
     mode: "boot",
     scene: null,
@@ -236,10 +226,18 @@ export class SelenaDirector {
   /** The scene whose first video was warmed by a hover, so only one is ever held that way. */
   private warmed: SceneName | null = null;
 
+  private readonly tl: Timeline;
+  /** Frames a second, and frames in the idle loop. */
+  private readonly fps: number;
+  private readonly n: number;
+
   constructor(
     private readonly els: StageElements,
     private readonly opts: DirectorOptions,
   ) {
+    this.tl = opts.timeline;
+    this.fps = this.tl.fps;
+    this.n = this.tl.loopFrames;
     for (const el of this.all()) el.dataset.layer = "off";
     // Until it plays, the welcome shows its own first frame, so the animation does not pop in
     // over a different picture. Reduced motion never plays it.
@@ -408,7 +406,7 @@ export class SelenaDirector {
     }
     await this.swap(welcome, null, 0);
     this.set({ mode: "welcome" });
-    const lead = EARLY / SELENA_FPS;
+    const lead = (LEAD_FRAMES + this.tl.extraFrames) / this.fps;
     this.stopWatch = watchFrames(welcome, (t) => {
       if (Number.isFinite(welcome.duration) && t >= welcome.duration - lead) void this.handToIdle();
     });
@@ -482,14 +480,15 @@ export class SelenaDirector {
     this.stopWatch?.();
     this.prevFrame = null;
     this.stopWatch = watchFrames(this.els.idle, (t) => {
-      const frame = frameAt(t);
+      const frame = frameAt(t, this.n, this.fps);
       const pending = this.pending;
       if (pending && this.state.mode === "queued") {
         const phases = isPage(pending)
-          ? SELENA_PAGES[pending].in.startPhases
-          : SELENA_SHORTS[pending].startPhases;
+          ? this.tl.pages[pending].in.startPhases
+          : this.tl.shorts[pending].startPhases;
         const hit =
-          this.prevFrame !== null && crossed(this.prevFrame, frame, triggerFrames(phases));
+          this.prevFrame !== null &&
+          crossed(this.prevFrame, frame, triggerFrames(phases, this.n), this.n);
         if (hit) {
           if (
             this.keysOf(pending)
@@ -511,10 +510,14 @@ export class SelenaDirector {
     const idle = this.els.idle;
     if (idle.paused || idle.error) return null;
     const phases = isPage(scene)
-      ? SELENA_PAGES[scene].in.startPhases
-      : SELENA_SHORTS[scene].startPhases;
-    const frames = waitFrames(frameAt(idle.currentTime), triggerFrames(phases));
-    return (frames / SELENA_FPS) * 1000;
+      ? this.tl.pages[scene].in.startPhases
+      : this.tl.shorts[scene].startPhases;
+    const frames = waitFrames(
+      frameAt(idle.currentTime, this.n, this.fps),
+      triggerFrames(phases, this.n),
+      this.n,
+    );
+    return (frames / this.fps) * 1000;
   }
 
   /**
@@ -566,16 +569,16 @@ export class SelenaDirector {
     if (!exit) return null;
     const { clip, back } = exit;
     const phases = isPage(scene)
-      ? SELENA_PAGES[scene].in.startPhases
-      : SELENA_SHORTS[scene].startPhases;
+      ? this.tl.pages[scene].in.startPhases
+      : this.tl.shorts[scene].startPhases;
     // The video plays on to the frame the hand-over starts at, then the idle loop dissolves in.
-    const toSync = Math.max(0, back.syncFrame - LEAD_FRAMES - clip.currentTime * SELENA_FPS);
-    const blend = (((this.opts.reduced ? 380 : back.blendMs) + 40) / 1000) * SELENA_FPS;
+    const toSync = Math.max(0, back.syncFrame - LEAD_FRAMES - clip.currentTime * this.fps);
+    const blend = (((this.opts.reduced ? 380 : back.blendMs) + 40) / 1000) * this.fps;
     // The idle loop starts a few frames after the matching phase, and runs while it dissolves in.
-    const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend);
-    const wait = waitFrames(phase, triggerFrames(phases));
+    const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend, this.n);
+    const wait = waitFrames(phase, triggerFrames(phases, this.n), this.n);
     // Measured: the entrance starts about 0.15 s after the idle loop reaches its frame.
-    return ((toSync + blend + wait) / SELENA_FPS) * 1000 + 150;
+    return ((toSync + blend + wait) / this.fps) * 1000 + 150;
   }
 
   /** Work out the wait for the scene chosen during the hand-over, and follow its first video. */
@@ -621,7 +624,7 @@ export class SelenaDirector {
     const page = isPage(scene);
     const key: VideoKey = page ? `${scene}-in` : scene;
     const el = this.use(key);
-    const timing = page ? SELENA_PAGES[scene].in : SELENA_SHORTS[scene];
+    const timing = page ? this.tl.pages[scene].in : this.tl.shorts[scene];
     const idle = this.els.idle;
     this.warmed = scene;
     // The loop starts when the entrance ends: have it loaded by then.
@@ -656,16 +659,16 @@ export class SelenaDirector {
     if (page) {
       // Hand over to the loop when she is in the page's pose, not when the entrance ends: the
       // content shows as soon as she is posed. (The start is a few frames early, as everywhere.)
-      const hand = SELENA_PAGES[scene].in.handFrame - LEAD_FRAMES;
+      const hand = this.tl.pages[scene].in.handFrame - LEAD_FRAMES;
       this.stopWatch = watchFrames(el, (t) => {
-        if (t * SELENA_FPS >= hand) void this.handToPage(scene);
+        if (t * this.fps >= hand) void this.handToPage(scene);
       });
       el.addEventListener("ended", () => void this.handToPage(scene), { once: true });
     } else {
-      const back = SELENA_SHORTS[scene].back;
+      const back = this.tl.shorts[scene].back;
       this.exit = { clip: el, back };
       this.stopWatch = watchFrames(el, (t) => {
-        this.watchBack(t * SELENA_FPS, back, el, scene);
+        this.watchBack(t * this.fps, back, el, scene);
       });
       el.addEventListener("ended", () => void this.toIdle(el, back, scene), { once: true });
     }
@@ -689,12 +692,12 @@ export class SelenaDirector {
     this.use(`${scene}-out`);
     // From the pose frame the entrance is the page loop itself: the loop starts at the frame that
     // matches the entrance now (and the frames it takes to start), so the two play together.
-    const page = SELENA_PAGES[scene];
+    const page = this.tl.pages[scene];
     const phase = wrapFrame(
-      Math.round(from.currentTime * SELENA_FPS) + page.in.loopOffset + START_LATENCY,
+      Math.round(from.currentTime * this.fps) + page.in.loopOffset + START_LATENCY,
       page.loop.frames,
     );
-    await this.startAt(loop, phase / SELENA_FPS);
+    await this.startAt(loop, phase / this.fps);
     if (this.destroyed) return;
     const dissolve = this.swap(loop, from, HANDOVER_MS);
     // She is in the pose: the page shows now, while the entrance finishes dissolving away.
@@ -721,7 +724,7 @@ export class SelenaDirector {
       return;
     }
     if (mode !== "page") return;
-    const page = SELENA_PAGES[scene];
+    const page = this.tl.pages[scene];
     const loop = this.els[`${scene}-loop`];
     const out = this.use(`${scene}-out`);
     if (this.degraded) {
@@ -738,16 +741,16 @@ export class SelenaDirector {
     }
     const n = page.loop.frames;
     const triggers = triggerFrames([page.out.startPhase], n);
-    const frames = waitFrames(frameAt(loop.currentTime, n), triggers, n);
+    const frames = waitFrames(frameAt(loop.currentTime, n, this.fps), triggers, n);
     this.set({
       mode: "leaving",
       leaving: true,
-      wait: { ms: (frames / SELENA_FPS) * 1000, at: performance.now() },
+      wait: { ms: (frames / this.fps) * 1000, at: performance.now() },
     });
     this.stopWatch?.();
     this.prevFrame = null;
     this.stopWatch = watchFrames(loop, (t) => {
-      const frame = frameAt(t, n);
+      const frame = frameAt(t, n, this.fps);
       const hit = this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, n);
       this.prevFrame = frame;
       if (hit && isReady(out)) void this.startOutro(scene);
@@ -756,13 +759,13 @@ export class SelenaDirector {
 
   private async startOutro(scene: PageName) {
     if (this.destroyed || this.state.mode !== "leaving") return;
-    const timing = SELENA_PAGES[scene].out;
+    const timing = this.tl.pages[scene].out;
     // The way back is over when she is in her idle pose (`uiFrame`): that is how long the screen
     // that says so lasts (a few frames more, for the video to start).
     this.set({
       mode: "outro",
       wait: {
-        ms: (timing.uiFrame / SELENA_FPS) * 1000 + (START_LATENCY / SELENA_FPS) * 1000,
+        ms: (timing.uiFrame / this.fps) * 1000 + (START_LATENCY / this.fps) * 1000,
         at: performance.now(),
       },
     });
@@ -779,7 +782,7 @@ export class SelenaDirector {
     this.opts.detach?.(`${scene}-loop`, loop);
     this.exit = { clip: out, back: timing };
     this.stopWatch = watchFrames(out, (t) => {
-      this.watchBack(t * SELENA_FPS, timing, out, scene);
+      this.watchBack(t * this.fps, timing, out, scene);
     });
     out.addEventListener("ended", () => void this.toIdle(out, timing, scene), { once: true });
   }
@@ -798,12 +801,12 @@ export class SelenaDirector {
     // asks for now, if the performance level stepped down while the page played.
     const idle = this.use("idle");
     const reduced = this.opts.reduced;
-    const ahead = from.currentTime * SELENA_FPS - back.syncFrame + START_LATENCY;
-    const phase = immediate || reduced ? back.syncPhase : wrapFrame(back.syncPhase + ahead);
+    const ahead = from.currentTime * this.fps - back.syncFrame + START_LATENCY;
+    const phase = immediate || reduced ? back.syncPhase : wrapFrame(back.syncPhase + ahead, this.n);
     const ms = reduced ? 380 : back.blendMs;
     this.zoomNow(idle, back.align === 1 ? 1 : 1 / back.align);
     if (reduced) idle.currentTime = 0;
-    else await this.startAt(idle, phase / SELENA_FPS);
+    else await this.startAt(idle, phase / this.fps);
     if (back.align !== 1) this.zoom(idle, 1, ms);
     await this.swap(idle, from, ms);
     this.zoomNow(idle, 1);

@@ -16,21 +16,23 @@ import { onPerfLevel, startGovernor } from "@/lib/perf";
 import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
-import type { PageName, SceneName, ShortName, StageState } from "./director";
-import { warmGlyphs } from "./glyph-warm";
-import { Hotspots, SPOTS } from "./hotspots";
-import { loadCore, MENU_ICON, selenaItems, TRAILER } from "./media";
-import { SELENA_PAGES } from "./timeline.generated";
-import { MenuButton } from "./menu-button";
-import { WaitFx } from "./wait-fx";
-import styles from "./selena.module.css";
-import { ScreenCover, type CoverApi } from "./screen-cover";
+import type { StageState } from "../stage/director";
+import { warmGlyphs } from "../stage/glyph-warm";
+import { Hotspots } from "../stage/hotspots";
+import { MenuButton } from "../stage/menu-button";
+import { ScreenCover, type CoverApi } from "../stage/screen-cover";
+import { CharacterStage, type StageApi } from "../stage/stage";
+import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
+import { useStageUrl } from "../stage/use-stage-url";
+import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawers } from "./about/about-drawers";
 import { GalleryDrawers } from "./gallery/gallery-drawers";
 import { SkillsDrawers } from "./skills/skills-drawers";
-import { pageFromPath } from "./routes";
-import { SelenaStage, type StageApi } from "./stage";
-import { useSelenaUrl } from "./use-selena-url";
+import { loadCore, MENU_ICON, selenaItems, selenaMedia, TRAILER } from "./media";
+import { pageFromPath, SELENA_ROUTES } from "./routes";
+import styles from "./selena.module.css";
+import { HOTSPOT_PATHS, HOTSPOT_STEP, SPOTS } from "./spots";
+import { SELENA_TIMELINE } from "./timeline.generated";
 
 /** The three buttons, in order, and the page each one opens. */
 const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; icon: string }> = [
@@ -201,13 +203,17 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
   // The nav picks its colours from what is under it. Once the page is up (after the boot screen
   // the first sample is stale) ask it to look again.
-  useSelenaUrl({ state, stage, initial });
+  useStageUrl({ state, stage, initial, routes: SELENA_ROUTES });
 
   // The drawer of the page that is opening is drawn (off screen) in the middle of the entrance,
   // not when it slides in. See DrawerShell `warm`.
   const [warmed, setWarmed] = useState<PageName | null>(null);
   useEffect(() => {
-    if (state.mode === "intro" && state.scene && state.scene in SELENA_PAGES) {
+    if (
+      state.mode === "intro" &&
+      state.scene &&
+      (PAGE_NAMES as readonly string[]).includes(state.scene)
+    ) {
       const page = state.scene as PageName;
       const timer = window.setTimeout(() => {
         setWarmed(page);
@@ -391,7 +397,14 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           Selena
         </h1>
         {tierReady ? (
-          <SelenaStage ref={stage} onState={onState} welcome={initial === null} onBegin={begin} />
+          <CharacterStage
+            ref={stage}
+            timeline={SELENA_TIMELINE}
+            media={selenaMedia}
+            onState={onState}
+            welcome={initial === null}
+            onBegin={begin}
+          />
         ) : null}
 
         {waiting ? (
@@ -409,6 +422,10 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
           <Hotspots
+            spots={SPOTS}
+            paths={HOTSPOT_PATHS}
+            step={HOTSPOT_STEP}
+            fps={SELENA_TIMELINE.fps}
             idleClock={idleClock}
             visible={showMain}
             chosen={chosenShort}

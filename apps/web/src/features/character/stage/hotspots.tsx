@@ -2,40 +2,32 @@
 
 import { useEffect, useRef } from "react";
 
-import type { ShortName } from "./director";
-import { HOTSPOT_PATHS, HOTSPOT_STEP } from "./hotspots.generated";
 import styles from "./hotspots.module.css";
-import { SELENA_FPS } from "./timeline.generated";
+import type { ShortName } from "./timeline";
 
 /** The size of the picture, for the crop maths. */
 const PIC_W = 3840;
 const PIC_H = 1728;
 
-export type SpotId = keyof typeof HOTSPOT_PATHS;
+/** A touch point on her picture. It plays a short animation. The wording is plain on purpose. */
+export interface Spot {
+  id: string;
+  short: ShortName;
+  label: string;
+  action: string;
+}
 
-/**
- * The three touch points on her picture. Each one plays a short animation. The wording is plain
- * on purpose: a button says what it does.
- */
-export const SPOTS: ReadonlyArray<{ id: SpotId; short: ShortName; label: string; action: string }> =
-  [
-    {
-      id: "silverbolt",
-      short: "short-1",
-      label: "Silverbolt",
-      action: "Play the Silverbolt animation",
-    },
-    { id: "badge", short: "short-2", label: "Badge", action: "Play the badge animation" },
-    { id: "hand", short: "short-3", label: "Right arm", action: "Play the right arm animation" },
-  ];
+/** Where a point is at every `step` frames of the idle loop, as fractions of the picture. */
+type SpotPaths = Record<string, ReadonlyArray<readonly [number, number]>>;
 
 /** Where a point is on the picture (a fraction of its size) at `frame` of the idle loop. */
 export function pathAt(
   path: ReadonlyArray<readonly [number, number]>,
   frame: number,
+  step: number,
 ): [number, number] {
   const n = path.length;
-  const f = (((frame / HOTSPOT_STEP) % n) + n) % n;
+  const f = (((frame / step) % n) + n) % n;
   const i = Math.floor(f);
   const t = f - i;
   const a = path[i] ?? [0, 0];
@@ -88,6 +80,14 @@ function percent(text: string | undefined): number {
 }
 
 interface Props {
+  /** The touch points of her picture. */
+  spots: readonly Spot[];
+  /** Where each one is through the idle loop (tracked from the recording). */
+  paths: SpotPaths;
+  /** Frames between the samples of a path. */
+  step: number;
+  /** Frames a second of the video the paths were tracked in. */
+  fps: number;
   /** The clock of the idle loop, so the points follow its picture. Null while it cannot play. */
   idleClock: () => { time: number; playing: boolean } | null;
   /** The panel shows, so the points do. */
@@ -127,12 +127,16 @@ function Progress({ ms, k }: { ms: number | null; k: number }) {
 
 /**
  * Faint white circles on the picture that tell the visitor where to touch. Each follows its spot
- * through the idle loop (`hotspots.generated.ts`, from `scripts/selena/track.py`), so it never
- * slides off the Silverbolt, the badge or the hand. The circles breathe, ripple and drift softly.
+ * through the idle loop (the paths come from the character's `hotspots.generated.ts`, tracked by
+ * her `scripts/<name>/track.py`), so it never slides off its spot. The circles breathe, ripple and drift softly.
  * Hovering one grows it, pressing one pulls it in, and a chosen one runs a ring for the wait.
  * The cursor snaps to a circle (`data-snap`, see the lantern cursor).
  */
 export function Hotspots({
+  spots: SPOTS,
+  paths: HOTSPOT_PATHS,
+  step: HOTSPOT_STEP,
+  fps,
   idleClock,
   visible,
   chosen,
@@ -146,7 +150,7 @@ export function Hotspots({
   onHover,
 }: Props) {
   const layer = useRef<HTMLDivElement>(null);
-  const spots = useRef<Partial<Record<SpotId, HTMLButtonElement | null>>>({});
+  const spotEls = useRef<Partial<Record<string, HTMLButtonElement | null>>>({});
 
   // What the loop below reads: the latest values, without restarting it.
   const live = useRef({ visible, idleClock });
@@ -157,12 +161,12 @@ export function Hotspots({
   useEffect(() => {
     const root = layer.current;
     if (!root) return;
-    const loopMs = ((HOTSPOT_PATHS.silverbolt.length * HOTSPOT_STEP) / SELENA_FPS) * 1000;
+    const loopMs = ((HOTSPOT_PATHS[SPOTS[0]!.id]!.length * HOTSPOT_STEP) / fps) * 1000;
     let w = 0;
     let h = 0;
     let focus: [number, number] = [0.5, 0.5];
     let top = DOCK_MARGIN;
-    const animations = new Map<SpotId, Animation>();
+    const animations = new Map<string, Animation>();
 
     const measure = () => {
       w = root.clientWidth;
@@ -185,9 +189,10 @@ export function Hotspots({
     const build = () => {
       measure();
       for (const spot of SPOTS) {
-        const el = spots.current[spot.id];
+        const el = spotEls.current[spot.id];
         if (!el) continue;
         const path = HOTSPOT_PATHS[spot.id];
+        if (!path) continue;
         const place = (nx: number, ny: number) => {
           const [px, py] = coverPoint(nx, ny, w, h, focus);
           return dock(px, py, w, h, top);
@@ -256,7 +261,7 @@ export function Hotspots({
       document.removeEventListener("visibilitychange", sync);
       for (const a of animations.values()) a.cancel();
     };
-  }, []);
+  }, [SPOTS, HOTSPOT_PATHS, HOTSPOT_STEP, fps]);
 
   return (
     <div
@@ -273,7 +278,7 @@ export function Hotspots({
           <button
             key={spot.id}
             ref={(el) => {
-              spots.current[spot.id] = el;
+              spotEls.current[spot.id] = el;
             }}
             type="button"
             className={styles.spot}

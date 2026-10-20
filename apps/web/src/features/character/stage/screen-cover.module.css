@@ -19,9 +19,14 @@
 }
 
 .gold {
-  background: #e9b95f;
+  background: var(--cover-edge, #e9b95f);
 }
 
 .plate {
-  background: linear-gradient(112deg, #2a1d78 0%, #20185e 55%, #0b0b0e 100%);
+  background: linear-gradient(
+    112deg,
+    var(--cover-a, #2a1d78) 0%,
+    var(--cover-b, #20185e) 55%,
+    var(--cover-c, #0b0b0e) 100%
+  );
 }

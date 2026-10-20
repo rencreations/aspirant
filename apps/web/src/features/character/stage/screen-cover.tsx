@@ -1,11 +1,19 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import { forwardRef, useImperativeHandle, useRef, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
 import { prefersReducedMotion, useMounted } from "@/lib/hooks";
 
 import styles from "./screen-cover.module.css";
+
+/** The colours of the wipe: the leading edge, and the plate (three stops of its gradient). */
+export interface CoverColors {
+  edge: string;
+  a: string;
+  b: string;
+  c: string;
+}
 
 export interface CoverApi {
   /**
@@ -32,7 +40,10 @@ const uncovering = (e: number) =>
  * changes underneath, and they sweep on and uncover it. It sits above the nav so the whole screen
  * is covered. Reduced motion uses a short fade.
  */
-export const ScreenCover = forwardRef<CoverApi>(function ScreenCover(_props, ref) {
+export const ScreenCover = forwardRef<CoverApi, { colors?: CoverColors }>(function ScreenCover(
+  { colors },
+  ref,
+) {
   const root = useRef<HTMLDivElement>(null);
   const gold = useRef<HTMLSpanElement>(null);
   const plate = useRef<HTMLSpanElement>(null);
@@ -94,7 +105,22 @@ export const ScreenCover = forwardRef<CoverApi>(function ScreenCover(_props, ref
   // In the body, so it is above the nav and the whole screen is covered.
   if (!mounted) return null;
   return createPortal(
-    <div ref={root} className={styles.cover} data-on="false" aria-hidden="true">
+    <div
+      ref={root}
+      className={styles.cover}
+      data-on="false"
+      aria-hidden="true"
+      style={
+        colors
+          ? ({
+              "--cover-edge": colors.edge,
+              "--cover-a": colors.a,
+              "--cover-b": colors.b,
+              "--cover-c": colors.c,
+            } as CSSProperties)
+          : undefined
+      }
+    >
       <span ref={gold} className={styles.gold} />
       <span ref={plate} className={styles.plate} />
     </div>,

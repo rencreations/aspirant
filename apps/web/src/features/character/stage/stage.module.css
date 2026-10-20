@@ -1,0 +1,63 @@
+/* The picture of a character's stage. The page that holds it sets `--focus`, the point of the
+   picture that stays in view when the screen is cropped. */
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.still,
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus);
+  user-select: none;
+}
+
+.video {
+  background: transparent;
+}
+
+/* The director sets data-layer: off is hidden, back is shown under the front video, front is
+   shown on top and fades in over --xfade. */
+.video[data-layer="off"] {
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The next video, waiting for its frame, is drawn at 1 percent so its layer is ready. */
+.video[data-layer="warm"] {
+  opacity: 0.01;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.video[data-layer="back"] {
+  opacity: 1;
+  z-index: 1;
+}
+
+.video[data-layer="front"] {
+  opacity: 1;
+  z-index: 2;
+  animation: dissolve var(--xfade, 120ms) linear both;
+}
+
+@keyframes dissolve {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The director eases the scale of a video by a fraction of a percent while it dissolves. */
+.video {
+  transform: scale(var(--zoom, 1));
+  transition: transform var(--zoom-ms, 0ms) var(--ease-in-out);
+}

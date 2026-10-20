@@ -1,15 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  SelenaDirector,
-  SHORT_NAMES,
-  VIDEO_KEYS,
-  type StageElements,
-  type StageState,
-  type VideoKey,
-} from "./director";
+import { SELENA_TIMELINE } from "../selena/timeline.generated";
+import { StageDirector, type StageElements, type StageState } from "./director";
 import { LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
-import { SELENA_EXTRA_FRAMES, SELENA_FPS, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
+import { SHORT_NAMES, VIDEO_KEYS, type VideoKey } from "./timeline";
+
+const TL = SELENA_TIMELINE;
+const SELENA_PAGES = TL.pages;
+const SELENA_SHORTS = TL.shorts;
 
 type Listener = () => void;
 
@@ -78,8 +76,8 @@ class FakeVideo {
   }
 }
 
-const FPS = SELENA_FPS;
-const EARLY = (LEAD_FRAMES + SELENA_EXTRA_FRAMES) / FPS;
+const FPS = TL.fps;
+const EARLY = (LEAD_FRAMES + TL.extraFrames) / FPS;
 const f = (frame: number) => frame / FPS;
 
 function setup(
@@ -104,7 +102,8 @@ function setup(
   const attached: VideoKey[] = [];
   const detached: VideoKey[] = [];
   const states: StageState[] = [];
-  const director = new SelenaDirector(els as unknown as StageElements, {
+  const director = new StageDirector(els as unknown as StageElements, {
+    timeline: TL,
     reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
     welcomeDelayMs: options.welcomeDelayMs,
@@ -263,7 +262,11 @@ describe("a choice reacts at once", () => {
     ctx.director.request("skills");
     const s = ctx.director.current;
     expect(s).toMatchObject({ mode: "queued", scene: "skills", ui: true, loading: false });
-    const frames = waitFrames(10, triggerFrames(SELENA_PAGES.skills.in.startPhases));
+    const frames = waitFrames(
+      10,
+      triggerFrames(SELENA_PAGES.skills.in.startPhases, TL.loopFrames),
+      TL.loopFrames,
+    );
     expect(s.wait?.ms).toBeCloseTo((frames / FPS) * 1000, 3);
     expect(s.wait?.at).toBeGreaterThanOrEqual(t0);
   });
@@ -493,7 +496,7 @@ describe("shorts", () => {
   it("plays a short, brings the panel back when she is idle again and hands over to the idle loop", async () => {
     const ctx = setup();
     await toIdle(ctx);
-    const name = SHORT_NAMES[1]!;
+    const name = SHORT_NAMES[1];
     ctx.director.request(name);
     await enter(ctx, SELENA_SHORTS[name].startPhases[0]);
     expect(ctx.director.current).toMatchObject({ mode: "short", scene: name, ui: false });
@@ -511,7 +514,7 @@ describe("shorts", () => {
   it("jumps to the idle loop at once, from a short or a page (Back under the cover)", async () => {
     const ctx = setup();
     await toIdle(ctx);
-    const name = SHORT_NAMES[0]!;
+    const name = SHORT_NAMES[0];
     ctx.director.request(name);
     await enter(ctx, SELENA_SHORTS[name].startPhases[0]);
     expect(ctx.director.current.mode).toBe("short");
@@ -588,7 +591,7 @@ describe("failure and reduced motion", () => {
     // The entrance ends: the hand-over to the page loop comes from the last frames seen.
     const intro = ctx.els["gallery-in"];
     intro.tick(intro.duration - 2 * EARLY);
-    intro.tick(intro.duration - EARLY + 1 / SELENA_FPS);
+    intro.tick(intro.duration - EARLY + 1 / FPS);
     await settle();
     expect(ctx.director.current.mode).toBe("page");
   });
@@ -639,9 +642,9 @@ describe("failure and reduced motion", () => {
     const ctx = setup();
     await toIdle(ctx);
     ctx.els.idle.error = new Error("no codec");
-    ctx.director.request(SHORT_NAMES[2]!);
+    ctx.director.request(SHORT_NAMES[2]);
     await settle();
-    expect(ctx.els[SHORT_NAMES[2]!].plays).toBe(1);
+    expect(ctx.els[SHORT_NAMES[2]].plays).toBe(1);
   });
 
   it("reduced motion: no welcome, a still idle, pages show their loop's first frame", async () => {
