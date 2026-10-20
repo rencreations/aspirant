@@ -26,7 +26,7 @@ const STILL = `${SELENA_DIR}/still.webp`;
 let releaseTimer = 0;
 
 /** The music plays this long on its own before the welcome video starts. */
-const WELCOME_DELAY_MS = 500;
+const WELCOME_DELAY_MS = 400;
 
 /** The videos that loop by themselves. The others play once. */
 const LOOPING = (key: VideoKey) => key === "idle" || key.endsWith("-loop");
