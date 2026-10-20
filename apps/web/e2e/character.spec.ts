@@ -53,7 +53,6 @@ test.describe("roster", () => {
     page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" });
   const left = (page: Page) => row(page).evaluate((el) => el.scrollLeft);
   const lit = (page: Page) => page.locator("nav[aria-label='Jump to a pair'] [aria-current]");
-  const met = (page: Page) => page.getByText("Aspirants met:");
 
   test("loads with one h1, ten panels of splash art and no errors", async ({ page }) => {
     const errors = watchErrors(page);
@@ -125,7 +124,39 @@ test.describe("roster", () => {
       .toBeLessThan(4);
   });
 
-  test("hovering a panel plays no voice line and lights its pair", async ({ page }, info) => {
+  test("every panel is shaded until it is hovered, wherever it is on the screen", async ({
+    page,
+  }, info) => {
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    // Opacity of the haze that sleeps over each panel: 1 is shaded, 0 is lit.
+    const haze = (slug: string) =>
+      page
+        .locator(`li[data-slug='${slug}'] [class*='_veil']`)
+        .evaluate((el) => Number(getComputedStyle(el).opacity));
+    for (const slug of ["obsidia", "selena", "vexana", "fanny"]) expect(await haze(slug)).toBe(1);
+    // Scrolling a pair into the middle does not light it.
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
+    await expect(page.locator("nav[aria-label='Jump to a pair'] [aria-current]")).toHaveAttribute(
+      "aria-label",
+      "Ruby and Angela",
+      { timeout: 6000 },
+    );
+    await page.waitForTimeout(900);
+    expect(await haze("ruby")).toBe(1);
+    expect(await haze("angela")).toBe(1);
+    test.skip(info.project.name !== "desktop", "Phones have no hover");
+    // Hovering lights that panel only.
+    await page.locator("li[data-slug='ruby']").hover({ force: true });
+    await expect.poll(() => haze("ruby"), { timeout: 3000 }).toBe(0);
+    expect(await haze("angela")).toBe(1);
+    // And it is shaded again when the pointer leaves.
+    await page.mouse.move(5, 5);
+    await expect.poll(() => haze("ruby"), { timeout: 3000 }).toBe(1);
+  });
+
+  test("a hover plays no voice line, and the panels carry only a name", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop", "Phones have no hover");
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
@@ -135,31 +166,38 @@ test.describe("roster", () => {
     });
     const rail = page.getByRole("navigation", { name: "Jump to a pair" });
     await rail.getByRole("button", { name: "Ruby and Angela" }).click();
-    await expect(lit(page)).toHaveAttribute("aria-label", "Ruby and Angela", { timeout: 6000 });
-    const ruby = page.locator("li[data-slug='ruby']");
-    await ruby.hover({ force: true });
     await page.waitForTimeout(900);
-    await expect(ruby).toHaveAttribute("data-mate", "true");
+    await page.locator("li[data-slug='ruby']").hover({ force: true });
+    await page.waitForTimeout(900);
     expect(voices).toEqual([]);
+    // No description, no Open button, no met counter, no "newest pair" tag, no numbers on the names.
+    const text = await page.locator("main").innerText();
+    for (const gone of [
+      "Silverbolt Raiko",
+      "Blade of Kibou",
+      "Open",
+      "Aspirants met",
+      "Newest pair",
+    ])
+      expect(text).not.toContain(gone);
+    await expect(page.locator("main [class*='_tag']").first()).not.toContainText(/\d/);
   });
 
-  test("the rail jumps to a pair, and staying on it meets the two", async ({ page }) => {
+  test("a name tag is a parallelogram on the lean of the frame, with the text on the same lean", async ({
+    page,
+  }) => {
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    await expect(met(page)).toContainText("/10");
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
-    await rail.getByRole("button", { name: "Lesley and Chang'e" }).click();
-    await expect(lit(page)).toHaveAttribute("aria-label", "Lesley and Chang'e", {
-      timeout: 6000,
-    });
-    await expect(met(page)).toContainText("/10");
-    await expect
-      .poll(() => page.evaluate(() => window.localStorage.getItem("aspirants:met") ?? ""), {
-        timeout: 6000,
-      })
-      .toContain("lesley");
-    const saved = await page.evaluate(() => window.localStorage.getItem("aspirants:met"));
-    expect(saved).toContain("change");
+    const tag = page.locator("li[data-slug='vexana'] [class*='_tag']");
+    const clip = await tag.evaluate((el) => getComputedStyle(el).clipPath);
+    expect(clip).toContain("polygon");
+    const skew = await tag.locator("span").evaluate((el) => getComputedStyle(el).transform);
+    // matrix(1, 0, tan(-32.6deg), 1, 0, 0): a skew along x of about -0.64.
+    const m = /matrix\(([^)]+)\)/.exec(skew);
+    expect(m).not.toBeNull();
+    const c = Number(m![1]!.split(",")[2]);
+    expect(c).toBeLessThan(-0.6);
+    expect(c).toBeGreaterThan(-0.68);
   });
 
   test("a click closes the other panels and opens the character page", async ({

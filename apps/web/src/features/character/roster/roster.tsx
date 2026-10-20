@@ -35,9 +35,6 @@ import { splashPath } from "./splash";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** How long a pair has to be in front of you to count as met. */
-const MEET_AFTER = 1000;
-const MET_KEY = "aspirants:met";
 /** The click flourish before the page opens. */
 const CHOOSE_MS = 360;
 
@@ -46,23 +43,6 @@ export interface RosterProps {
   pairs: readonly RosterPair[];
   voiceLines: number;
   next: { href: Route; label: string; name: string };
-}
-
-function readMet(): Set<Slug> {
-  try {
-    const raw = window.localStorage.getItem(MET_KEY);
-    return new Set(raw ? (JSON.parse(raw) as Slug[]) : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function writeMet(met: ReadonlySet<Slug>) {
-  try {
-    window.localStorage.setItem(MET_KEY, JSON.stringify([...met]));
-  } catch {
-    // Private window: the count lives for this visit only.
-  }
 }
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -105,23 +85,17 @@ interface PanelProps {
   character: RosterCharacter;
   bay: number;
   index: number;
-  lit: boolean;
-  mate: boolean;
-  met: boolean;
   chosen: boolean;
   actions: Actions;
   registerArt: (el: HTMLSpanElement | null) => void;
 }
 
-/** One panel. It only draws again when it lights up, is met or is chosen, not on every scroll. */
+/** One panel. It only draws again when it is chosen, not on every scroll. It is shaded until it is hovered. */
 const PanelView = memo(function PanelView({
   slot: s,
   character: c,
   bay,
   index,
-  lit,
-  mate,
-  met,
   chosen,
   actions,
   registerArt,
@@ -147,18 +121,13 @@ const PanelView = memo(function PanelView({
       className={styles.panel}
       style={style}
       data-slug={c.slug}
-      data-lit={lit}
-      data-mate={mate}
-      data-met={met}
       data-chosen={chosen}
       data-tall={s.tall}
-      data-bright={s.bright === true}
     >
       <TLink
         href={characterRoute(c.slug)}
         transitionLabel={c.name}
         className={styles.card}
-        data-cursor="OPEN"
         draggable={false}
         onClick={(e) => {
           actions.choose(c, e);
@@ -192,25 +161,7 @@ const PanelView = memo(function PanelView({
           <span className={styles.scrim} aria-hidden="true" />
           <span className={styles.shine} aria-hidden="true" />
           <span className={styles.tag}>
-            <b aria-hidden="true">{pad(c.order)}</b>
             <span>{c.name}</span>
-          </span>
-          <span className={styles.more}>
-            <span className={styles.aspirant}>{c.aspirantName}</span>
-            <span className={styles.jp} lang="ja">
-              {c.jp}
-              {c.romaji ? <span> {c.romaji}</span> : null}
-            </span>
-            <span className={styles.tagline}>{c.tagline}</span>
-          </span>
-        </span>
-        <span className={styles.ribbon} aria-hidden="true">
-          <span>Open</span>
-          <svg viewBox="0 0 28 14" width="26" height="13" focusable="false">
-            <path d="M0 5h16V0l12 7-12 7V9H0z" fill="currentColor" />
-          </svg>
-          <span className={styles.badge}>
-            <StarGlyph />
           </span>
         </span>
       </TLink>
@@ -273,15 +224,9 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   });
 
   const [active, setActive] = useState(0);
-  const [hovered, setHovered] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [moved, setMoved] = useState(false);
-  const [met, setMet] = useState<ReadonlySet<Slug>>(() => new Set());
-  const metRef = useRef<Set<Slug>>(new Set());
-  const [pop, setPop] = useState(0);
   const [chosen, setChosen] = useState<Slug | null>(null);
-  const hoverTimer = useRef(0);
-  const meetTimer = useRef(0);
 
   // ---- the engine -------------------------------------------------------------------------
 
@@ -536,88 +481,28 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     };
   }, [pause, resume]);
 
-  // The panels slide in once the page is painted.
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setReady(true);
-      });
-    });
-    return () => {
-      cancelAnimationFrame(id);
-    };
-  }, []);
-
-  // The pictures are decoded one by one while the page is quiet, so a panel that slides in later
-  // does not have to decode a 2048 pixel picture in the middle of its own move.
+  // The panels slide in only when their pictures are decoded, so a panel is never an empty dark
+  // shape while its picture is still arriving. (The pictures are in the loading bar, so this is
+  // normally at once. It never waits longer than four seconds.)
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
     let alive = true;
-    let i = 0;
-    let timer = 0;
-    const nextImage = () => {
-      const img = imgs[i++];
-      if (!alive || !img) return;
-      void img
-        .decode()
-        .catch(() => undefined)
-        .then(() => {
-          timer = window.setTimeout(nextImage, 120);
+    const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
+    const decoded = Promise.all(imgs.map((img) => img.decode().catch(() => undefined)));
+    const cap = new Promise<void>((resolve) => window.setTimeout(resolve, 4000));
+    void Promise.race([decoded, cap]).then(() => {
+      if (!alive) return;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (alive) setReady(true);
         });
-    };
-    timer = window.setTimeout(nextImage, 900);
+      });
+    });
     return () => {
       alive = false;
-      window.clearTimeout(timer);
     };
   }, []);
-
-  // Who has been met is kept in the browser.
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      metRef.current = readMet();
-      setMet(new Set(metRef.current));
-    }, 0);
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, []);
-
-  const meet = useCallback((slugs: readonly Slug[]) => {
-    let added = false;
-    for (const slug of slugs) {
-      if (!metRef.current.has(slug)) {
-        metRef.current.add(slug);
-        added = true;
-      }
-    }
-    if (!added) return;
-    writeMet(metRef.current);
-    setMet(new Set(metRef.current));
-    setPop((n) => n + 1);
-  }, []);
-
-  // Staying on a pair for a moment meets the two of them.
-  useEffect(() => {
-    window.clearTimeout(meetTimer.current);
-    const here = SLOTS_OF_BAY[active];
-    if (!here) return;
-    meetTimer.current = window.setTimeout(() => {
-      meet(here.map((s) => s.slug));
-    }, MEET_AFTER);
-    return () => {
-      window.clearTimeout(meetTimer.current);
-    };
-  }, [active, meet]);
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(hoverTimer.current);
-    },
-    [],
-  );
 
   // Keys: sideways by one pair, to the ends.
   useEffect(() => {
@@ -659,16 +544,9 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
 
   // ---- a panel ----------------------------------------------------------------------------
 
-  const bayOf = (c: RosterCharacter) => BAYS.indexOf(c.pair);
-
-  const onEnter = (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => {
+  const onEnter = (_c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType !== "mouse" || engine.current.drag.on) return;
     audio.blip("hover");
-    setHovered(bayOf(c));
-    window.clearTimeout(hoverTimer.current);
-    hoverTimer.current = window.setTimeout(() => {
-      meet([c.slug]);
-    }, 600);
   };
 
   const onTilt = (e: PointerEvent<HTMLAnchorElement>) => {
@@ -682,16 +560,13 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     tilt.style.transform = `translate3d(${(-x * 30).toFixed(1)}px,${(-y * 20).toFixed(1)}px,0) scale(1.07)`;
   };
   const onLeave = (e: PointerEvent<HTMLAnchorElement>) => {
-    window.clearTimeout(hoverTimer.current);
-    setHovered(null);
     const tilt = e.currentTarget.querySelector<HTMLElement>("[data-tilt]");
     if (tilt) tilt.style.transform = "";
   };
 
-  const onFocus = (c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => {
+  const onFocus = (_c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => {
     if (!e.currentTarget.matches(":focus-visible")) return;
     goBay(bay);
-    meet([c.slug]);
   };
 
   const choose = (c: RosterCharacter, e: MouseEvent<HTMLAnchorElement>) => {
@@ -748,8 +623,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   );
 
   const here = BAYS[active] ? pairNames.get(BAYS[active]) : undefined;
-  const metCount = met.size;
-  const allMet = metCount >= count;
 
   return (
     <section
@@ -763,11 +636,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       <div className={styles.chrome} aria-hidden="true">
         <span className={styles.stripes} />
         <span className={styles.dots} />
-        <span className={styles.sparks}>
-          {Array.from({ length: 14 }, (_, n) => (
-            <i key={n} style={{ "--n": n } as CSSProperties} />
-          ))}
-        </span>
       </div>
 
       <div
@@ -824,9 +692,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
                 character={character}
                 bay={bay}
                 index={i}
-                lit={bay === active || bay === hovered || slot.bright === true}
-                mate={hovered === bay}
-                met={met.has(slot.slug)}
                 chosen={chosen === slot.slug}
                 actions={actions}
                 registerArt={registerArts[i] as (el: HTMLSpanElement | null) => void}
@@ -874,10 +739,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
               </div>
             </div>
             <span className={styles.trim} aria-hidden="true" />
-            <span className={styles.newest} aria-hidden="true">
-              <StarGlyph />
-              Newest pair
-            </span>
             <svg
               className={styles.tear}
               aria-hidden="true"
@@ -902,34 +763,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
                 style={{ "--ex": m.x, "--ev": m.v, "--n": n } as CSSProperties}
               />
             ))}
-            <div className={styles.met} data-complete={allMet}>
-              <p className={styles.metText}>
-                Aspirants met:{" "}
-                <b key={pop}>
-                  {metCount}/{count}
-                </b>
-                <span className={styles.help} title="Stay on a pair, or hover a panel, to meet it.">
-                  ?
-                </span>
-              </p>
-              <div className={styles.slots} aria-hidden="true">
-                <span className={styles.coin}>
-                  <StarGlyph />
-                </span>
-                <ul>
-                  {SLOTS.map((s) => (
-                    <li
-                      key={s.slug}
-                      data-met={met.has(s.slug)}
-                      style={{ "--c": bySlug.get(s.slug)?.colour } as CSSProperties}
-                    >
-                      <StarGlyph />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <span className={styles.sheen} aria-hidden="true" />
-            </div>
           </div>
         </div>
       </div>
