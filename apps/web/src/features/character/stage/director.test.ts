@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SELENA_TIMELINE } from "../selena/timeline.generated";
 import { StageDirector, type StageElements, type StageState } from "./director";
-import { LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
+import { LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame, type SkipOptions } from "./phase";
 import { SHORT_NAMES, VIDEO_KEYS, type VideoKey } from "./timeline";
 
 const TL = SELENA_TIMELINE;
@@ -26,6 +26,7 @@ class FakeVideo {
   error: unknown = null;
   paused = true;
   seeking = false;
+  playbackRate = 1;
   plays = 0;
   failPlay = false;
   private time = 0;
@@ -81,7 +82,12 @@ const EARLY = (LEAD_FRAMES + TL.extraFrames) / FPS;
 const f = (frame: number) => frame / FPS;
 
 function setup(
-  options: { reduced?: boolean; skipWelcome?: boolean; welcomeDelayMs?: number } = {},
+  options: {
+    reduced?: boolean;
+    skipWelcome?: boolean;
+    welcomeDelayMs?: number;
+    skip?: SkipOptions;
+  } = {},
 ) {
   const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, new FakeVideo()])) as Record<
     VideoKey,
@@ -107,6 +113,7 @@ function setup(
     reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
     welcomeDelayMs: options.welcomeDelayMs,
+    skip: options.skip ? () => options.skip ?? null : undefined,
     onBegin: () => {
       begun.count += 1;
     },
@@ -721,5 +728,76 @@ describe("a page opens when she is in its pose", () => {
       expect(ctx.director.current.ui).toBe(true);
       expect(ctx.director.current.leaving).toBe(true);
     }
+  });
+});
+
+describe("time skip", () => {
+  const SKIP = { maxRate: 2.5, minFrames: 20 };
+
+  it("runs the waiting idle loop faster, and says so, while a page waits for its frame", async () => {
+    const ctx = setup({ skip: SKIP });
+    await toIdle(ctx);
+    ctx.els.idle.tick(f(10));
+    const frames = waitFrames(
+      10,
+      triggerFrames(SELENA_PAGES.skills.in.startPhases, TL.loopFrames),
+      TL.loopFrames,
+    );
+    ctx.director.request("skills");
+    // The wait is told shorter than real time, since the picture will run faster.
+    expect(ctx.director.current.wait?.ms).toBeLessThan((frames / FPS) * 1000);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(ctx.els.idle.playbackRate).toBeGreaterThan(1.5);
+    expect(ctx.director.current.fast).toBe(true);
+  });
+
+  it("is back at normal speed when the entrance starts", async () => {
+    const ctx = setup({ skip: SKIP });
+    await toIdle(ctx);
+    ctx.director.request("skills");
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(ctx.els.idle.playbackRate).toBeGreaterThan(1);
+    await enter(ctx, SELENA_PAGES.skills.in.startPhases[0]);
+    expect(ctx.els.idle.playbackRate).toBe(1);
+    expect(ctx.director.current.fast).toBe(false);
+  });
+
+  it("slows down again as the frame comes close", async () => {
+    const ctx = setup({ skip: SKIP });
+    await toIdle(ctx);
+    ctx.director.request("skills");
+    await vi.advanceTimersByTimeAsync(1000);
+    const trigger = SELENA_PAGES.skills.in.startPhases[0] - LEAD_FRAMES;
+    ctx.els.idle.tick(f(trigger - 5));
+    await vi.advanceTimersByTimeAsync(200);
+    expect(ctx.els.idle.playbackRate).toBeLessThan(1.3);
+  });
+
+  it("does not hurry a wait that is already short, nor when motion is reduced", async () => {
+    const ctx = setup({ skip: { maxRate: 2.5, minFrames: 100000 } });
+    await toIdle(ctx);
+    ctx.director.request("skills");
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(ctx.els.idle.playbackRate).toBe(1);
+    const calm = setup({ skip: SKIP, reduced: true });
+    await toIdle(calm);
+    calm.director.request("skills");
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(calm.els.idle.playbackRate).toBe(1);
+  });
+
+  it("hurries the page loop while she leaves, and lets go when the exit starts", async () => {
+    const ctx = setup({ skip: SKIP });
+    await toPage(ctx, "skills");
+    ctx.director.leave();
+    await vi.advanceTimersByTimeAsync(1000);
+    const loop = ctx.els["skills-loop"];
+    expect(loop.playbackRate).toBeGreaterThan(1);
+    const trigger = SELENA_PAGES.skills.out.startPhase - LEAD_FRAMES;
+    loop.tick(f(trigger - 1));
+    loop.tick(f(trigger));
+    await settle();
+    expect(loop.playbackRate).toBe(1);
+    expect(ctx.director.current.fast).toBe(false);
   });
 });

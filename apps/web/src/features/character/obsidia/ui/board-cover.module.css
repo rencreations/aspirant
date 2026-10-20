@@ -1,0 +1,99 @@
+/* The chessboard wipe. Each square is two layers that grow from its middle: a gold one that leads,
+   and the velvet plate behind it a moment later. Transform only. */
+.cover {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.cover:not([data-phase="off"]) {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.square {
+  position: relative;
+  display: block;
+  /* A pixel of overlap hides the seams between squares. */
+  margin: -0.5px;
+}
+
+.square b,
+.square u {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+  transform: scale(0);
+  will-change: transform;
+}
+
+.square b {
+  background: #e8b85a;
+}
+
+.square u {
+  background: #07030a;
+  box-shadow: inset 0 0 0 1px rgb(232 184 90 / 0.35);
+}
+
+.square[data-tone="1"] u {
+  background: #2a0b1d;
+}
+
+.cover[data-phase="in"] .square b {
+  animation: grow var(--dur) var(--ease-out) both;
+  animation-delay: calc(var(--d) * var(--step));
+}
+
+.cover[data-phase="in"] .square u {
+  animation: grow var(--dur) var(--ease-out) both;
+  animation-delay: calc(var(--d) * var(--step) + 90ms);
+}
+
+.cover[data-phase="out"] .square b,
+.cover[data-phase="out"] .square u {
+  transform: scale(1.02);
+}
+
+.cover[data-phase="out"] .square u {
+  animation: shrink var(--dur) var(--ease-in-out) both;
+  animation-delay: calc(var(--d) * var(--step));
+}
+
+.cover[data-phase="out"] .square b {
+  animation: shrink var(--dur) var(--ease-in-out) both;
+  animation-delay: calc(var(--d) * var(--step) + 80ms);
+}
+
+@keyframes grow {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+/* Reduced motion: one plate that fades. */
+.cover[data-phase="fade"] .square b {
+  display: none;
+}
+
+.cover[data-phase="fade"] .square u {
+  transform: scale(1.02);
+}

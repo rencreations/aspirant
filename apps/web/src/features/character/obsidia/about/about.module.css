@@ -1,221 +1,245 @@
-/* The content of her drawers: profile, story, skills and gallery share these. Dark crimson,
-   cream text, rose and gold for emphasis. Long text uses content-visibility. */
-.block {
-  margin: 0 0 2rem;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 14rem;
-}
-
-.h3 {
-  margin: 0 0 0.9rem;
+/* The content of her drawers: profile, story, skills and gallery share these. The page is
+   an imperial book: Instrument Serif italic for names and titles, small mono capitals for labels,
+   gold and rose on velvet black, and a strip of board squares for a rule. Long text uses
+   content-visibility. */
+.kicker {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.65rem;
+  margin: 0 0 0.5rem;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #e2b04a;
+  color: #e8b85a;
 }
 
-.h3::after {
+.kicker::before {
   content: "";
-  flex: 1;
-  height: 1px;
-  background: rgb(255 214 190 / 0.26);
-}
-
-.kicker {
-  margin: 0 0 0.4rem;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: #ff5a86;
-}
-
-/* Who she is -------------------------------------------------------------------------------- */
-.who {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 1.8rem;
-}
-
-.avatar {
-  position: relative;
-  width: 8.5rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid #ff5a86;
-  box-shadow: 0 0 0 5px rgb(20 6 14 / 0.94);
-  outline: 1px solid rgb(226 176 74 / 0.7);
-  outline-offset: 5px;
-  background: #14060d;
-}
-
-.avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 0.45rem;
+  height: 0.45rem;
+  background: #ff5c8a;
+  transform: rotate(45deg);
 }
 
 .name {
   margin: 0;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-weight: 400;
   font-style: italic;
-  font-synthesis: style;
-  font-size: clamp(2rem, 3.4vw, 2.8rem);
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: clamp(2.8rem, 4.2vw, 4rem);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: #fbeadf;
 }
 
 .jp {
-  margin: 0.5rem 0 0;
-  font-size: 1.15rem;
-  letter-spacing: 0.1em;
+  margin: 0.7rem 0 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
 }
 
 .jp span {
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgb(255 241 232 / 0.62);
+  color: rgb(251 234 223 / 0.6);
 }
 
 .aka {
-  margin: 0.35rem 0 0;
-  font-family: var(--font-display-stack);
+  margin: 0.4rem 0 0;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
   font-style: italic;
-  font-synthesis: style;
-  font-size: 0.95rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #e2b04a;
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+  color: #e8b85a;
 }
 
 .summary {
-  margin: 0.9rem 0 0;
+  margin: 1rem 0 0;
   font-size: 0.97rem;
-  line-height: 1.65;
-  color: rgb(255 241 232 / 0.86);
+  line-height: 1.72;
+  color: rgb(251 234 223 / 0.88);
+}
+
+/* A section: its title, and a strip of board squares for a rule. */
+.block {
+  margin: 0 0 2.2rem;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 14rem;
+}
+
+.h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.65rem;
+  line-height: 1;
+  color: #fbeadf;
+}
+
+.h3::after {
+  content: "";
+  flex: 1;
+  height: 0.5rem;
+  background: repeating-conic-gradient(rgb(232 184 90 / 0.4) 0 25%, transparent 0 50%) 0 0 / 1rem
+    1rem;
+  opacity: 0.8;
+}
+
+/* Who she is ------------------------------------------------------------------------------- */
+.who {
+  display: grid;
+  gap: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  position: relative;
+  width: 9.5rem;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+/* Her picture in a circle, ringed by the eclipse. */
+.avatar::before {
+  content: "";
+  position: absolute;
+  inset: -1.6rem;
+  background-image: var(--eclipse);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.95;
+}
+
+.avatar img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 2px #10050e,
+    0 0 0 3px #e8b85a;
+  background: #10050e;
 }
 
 /* Facts, chips, lists --------------------------------------------------------------------- */
 .facts {
   display: grid;
-  gap: 0;
   margin: 0;
-  border-top: 1px solid rgb(255 214 190 / 0.18);
 }
 
 .facts > div {
   display: grid;
-  grid-template-columns: 7.4rem minmax(0, 1fr);
+  grid-template-columns: 7.6rem minmax(0, 1fr);
   gap: 0.9rem;
-  padding: 0.62rem 0;
-  border-bottom: 1px solid rgb(255 214 190 / 0.18);
+  padding: 0.7rem 0;
+  border-bottom: 1px dotted rgb(232 184 90 / 0.4);
 }
 
 .facts dt {
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgb(255 241 232 / 0.6);
-  padding-top: 0.15rem;
+  color: #e8b85a;
+  padding-top: 0.2rem;
 }
 
 .facts dd {
   margin: 0;
-  font-size: 0.93rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .chips li {
-  padding: 0.38rem 0.7rem;
-  border: 1px solid rgb(255 214 190 / 0.32);
-  font-size: 0.82rem;
-  background: rgb(255 90 134 / 0.08);
+  padding: 0.42rem 0.9rem;
+  font-size: 0.84rem;
+  background: rgb(232 184 90 / 0.1);
+  box-shadow: inset 0 0 0 1px rgb(232 184 90 / 0.45);
+  clip-path: polygon(0.5rem 0, 100% 0, calc(100% - 0.5rem) 100%, 0 100%);
 }
 
 .timeline {
   display: grid;
-  gap: 0;
   margin: 0;
-  padding: 0 0 0 1.1rem;
+  padding: 0 0 0 1.3rem;
   list-style: none;
-  border-left: 1px solid rgb(255 90 134 / 0.5);
+  border-left: 1px solid rgb(232 184 90 / 0.5);
 }
 
 .timeline li {
   position: relative;
   display: grid;
-  gap: 0.15rem;
-  padding: 0 0 1.1rem;
-  font-size: 0.9rem;
-  line-height: 1.55;
+  gap: 0.2rem;
+  padding: 0 0 1.3rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .timeline li::before {
   content: "";
   position: absolute;
-  left: -1.42rem;
-  top: 0.45rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  background: #ff5a86;
+  left: -1.62rem;
+  top: 0.55rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: #ff5c8a;
   transform: rotate(45deg);
+  box-shadow: 0 0 0 3px #10050e;
 }
 
 .timeline strong {
-  font-family: var(--font-display-stack);
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
   font-style: italic;
-  font-synthesis: style;
-  font-size: 1rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 1.3rem;
+  line-height: 1.1;
 }
 
 .place {
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #e2b04a;
+  color: #e8b85a;
 }
 
 .two {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.4rem;
+  gap: 1.6rem;
 }
 
 .plain {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.5rem;
   margin: 0;
-  padding: 0 0 0 1.1rem;
-  font-size: 0.92rem;
-  line-height: 1.5;
+  padding: 0 0 0 1.2rem;
+  font-size: 0.93rem;
+  line-height: 1.55;
 }
 
 .plain li::marker {
-  color: #ff5a86;
+  color: #ff5c8a;
 }
 
 .ties {
@@ -228,281 +252,366 @@
 
 .ties li {
   display: grid;
-  gap: 0.2rem;
-  padding: 0.8rem 0.9rem;
-  border: 1px solid rgb(255 214 190 / 0.2);
-  background: rgb(255 255 255 / 0.03);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 2px solid #e8b85a;
+  background: rgb(255 255 255 / 0.035);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .tieHead {
   display: flex;
   align-items: baseline;
-  gap: 0.7rem;
+  gap: 0.8rem;
+}
+
+.tieHead strong {
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.3rem;
 }
 
 .tieHead em {
   font-family: var(--font-mono-stack);
   font-style: normal;
   font-size: 0.6875rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #ff5a86;
+  color: #ff5c8a;
 }
 
-/* Voice lines ----------------------------------------------------------------------------- */
+/* Voice lines: a record. A black eclipse to press, and the words beside it. ------------------ */
 .voices {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.3rem;
 }
 
 .voice {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.9rem;
-  align-items: start;
+  gap: 1rem;
+  align-items: center;
   margin: 1rem 0;
-  padding: 0.85rem 0.95rem;
-  border: 1px solid rgb(255 214 190 / 0.26);
-  border-left: 3px solid #ff5a86;
-  background: rgb(255 90 134 / 0.06);
-  transition:
-    background-color 260ms var(--ease-out),
-    border-color 260ms var(--ease-out);
+  padding: 0.9rem 1.1rem 0.9rem 0.9rem;
+  background: #090308;
+  box-shadow: inset 0 0 0 1px rgb(232 184 90 / 0.35);
+  clip-path: polygon(
+    0.7rem 0,
+    100% 0,
+    100% calc(100% - 0.7rem),
+    calc(100% - 0.7rem) 100%,
+    0 100%,
+    0 0.7rem
+  );
+  transition: box-shadow 260ms var(--ease-out);
 }
 
 .voice[data-playing="true"] {
-  background: rgb(255 90 134 / 0.16);
-  border-left-color: #e2b04a;
+  box-shadow: inset 0 0 0 1px #ff5c8a;
 }
 
 .voiceButton {
   position: relative;
   display: grid;
   place-items: center;
-  width: 2.7rem;
-  height: 2.7rem;
+  width: 3.2rem;
+  height: 3.2rem;
   border-radius: 50%;
-  color: #14060d;
-  background: #ff5a86;
+  color: #ff5c8a;
+  background: #020104;
+  box-shadow:
+    0 0 0 1px rgb(232 184 90 / 0.85),
+    0 0 0 5px #090308,
+    0 0 0 6px rgb(232 184 90 / 0.3);
   transition:
-    transform 320ms var(--ease-spring),
-    background-color 260ms var(--ease-out);
+    transform 420ms var(--ease-spring),
+    color 260ms var(--ease-out);
+}
+
+.voiceButton::after {
+  content: "";
+  position: absolute;
+  inset: -0.55rem;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: #e8b85a;
+  opacity: 0;
 }
 
 .voiceButton:hover,
 .voiceButton:focus-visible {
   transform: scale(1.1);
-  background: #ffd6a0;
+  color: #e8b85a;
 }
 
 .voiceButton svg {
   grid-area: 1 / 1;
 }
 
-.voiceBars {
-  grid-area: 1 / 1;
-  display: none;
+.voice[data-playing="true"] .voiceButton {
+  color: #e8b85a;
 }
 
-.voice[data-playing="true"] .voiceButton {
-  background: #e2b04a;
+.voice[data-playing="true"] .voiceButton::after {
+  opacity: 1;
+  animation: turn 1.4s linear infinite;
+}
+
+.voiceBars {
+  display: none;
 }
 
 .voiceText {
   display: grid;
-  gap: 0.22rem;
+  gap: 0.25rem;
   min-width: 0;
 }
 
 .voiceMeta {
   font-family: var(--font-mono-stack);
   font-size: 0.625rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgb(255 241 232 / 0.58);
+  color: #e8b85a;
 }
 
 .voiceJp {
   font-size: 1rem;
   line-height: 1.5;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .voiceEn {
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
   font-style: italic;
-  font-size: 0.93rem;
-  line-height: 1.5;
-  color: rgb(255 241 232 / 0.9);
+  font-size: 1.2rem;
+  line-height: 1.35;
+  color: #fbeadf;
 }
 
 .voiceWhy {
   font-size: 0.8rem;
   line-height: 1.5;
-  color: #e2b04a;
+  color: rgb(251 234 223 / 0.62);
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Story ------------------------------------------------------------------------------------ */
 .storyHead {
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
+/* The index is a row of board squares, black and crimson, with the one you are on in gold. */
 .index {
   position: sticky;
-  top: -1.4rem;
+  top: -1.6rem;
   z-index: 2;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
-  margin: 0 -0.2rem 1.6rem;
-  padding: 0.6rem 0.2rem;
-  background: rgb(20 6 14 / 0.97);
-  border-bottom: 1px solid rgb(255 214 190 / 0.2);
+  gap: 0;
+  margin: 0 0 1.8rem;
+  padding: 0.3rem 0;
+  background: #10050e;
+  box-shadow: 0 1px 0 rgb(232 184 90 / 0.3);
 }
 
 .index button {
-  min-width: 2rem;
-  height: 1.8rem;
-  padding: 0 0.3rem;
+  width: 2.1rem;
+  height: 2.1rem;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  color: rgb(255 241 232 / 0.6);
-  border: 1px solid rgb(255 214 190 / 0.2);
+  letter-spacing: 0.06em;
+  color: rgb(251 234 223 / 0.7);
+  background: #07030a;
   transition:
     background-color 220ms var(--ease-out),
     color 220ms var(--ease-out);
 }
 
+.index button:nth-child(even) {
+  background: #2a0b1d;
+}
+
 .index button:hover,
 .index button:focus-visible,
 .index button[aria-current="true"] {
-  background: #ff5a86;
-  color: #14060d;
-  border-color: #ff5a86;
+  background: #e8b85a;
+  color: #12060f;
 }
 
 .chapter {
-  margin: 0 0 2.6rem;
+  margin: 0 0 3rem;
   scroll-margin-top: 4rem;
 }
 
 .chapterHead {
   display: flex;
-  align-items: flex-start;
-  gap: 0.9rem;
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+/* The number is Roman, in a small black eclipse. */
+.num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 3rem;
+  height: 3rem;
+  padding: 0 0.5rem;
+  border-radius: 1.5rem;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: #e8b85a;
+  background: #020104;
+  box-shadow:
+    0 0 0 1px rgb(232 184 90 / 0.85),
+    0 0 0 4px #10050e,
+    0 0 0 5px rgb(232 184 90 / 0.3);
 }
 
 .chapterHead h3 {
   margin: 0;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-weight: 400;
   font-style: italic;
-  font-synthesis: style;
-  font-size: 1.3rem;
-  line-height: 1.15;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.num {
-  font-family: var(--font-mono-stack);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  color: #14060d;
-  background: #e2b04a;
-  padding: 0.25rem 0.45rem;
-  clip-path: polygon(0 0, 100% 0, 100% 70%, 78% 100%, 0 100%);
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  line-height: 1.02;
+  color: #fbeadf;
 }
 
 .when {
-  margin: 0.3rem 0 0;
+  margin: 0.4rem 0 0;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgb(255 241 232 / 0.58);
+  color: rgb(251 234 223 / 0.55);
 }
 
 .p {
-  margin: 0 0 1rem;
-  font-size: 0.97rem;
-  line-height: 1.75;
-  color: rgb(255 241 232 / 0.92);
+  margin: 0 0 1.05rem;
+  font-size: 1rem;
+  line-height: 1.82;
+  color: rgb(251 234 223 / 0.92);
+}
+
+/* The first paragraph of a chapter opens with a drop cap in gold. */
+.chapterHead + .p::first-letter {
+  float: left;
+  margin: 0.12rem 0.55rem 0 0;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-size: 3.7rem;
+  line-height: 0.82;
+  color: #e8b85a;
 }
 
 .quote {
-  margin: 1.1rem 0;
-  padding: 0.2rem 0 0.2rem 1rem;
-  border-left: 2px solid #ff5a86;
+  margin: 1.2rem 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 2px solid #ff5c8a;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
   font-style: italic;
-  line-height: 1.7;
+  font-size: 1.3rem;
+  line-height: 1.5;
 }
 
+/* A still: a gold hairline and four corner ticks. */
 .shot {
-  margin: 1.2rem 0;
+  position: relative;
+  margin: 1.4rem 0;
+  padding: 0.4rem;
+  background: #090308;
+  box-shadow: inset 0 0 0 1px rgb(232 184 90 / 0.5);
+}
+
+.shot::before,
+.shot::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  border: 2px solid #e8b85a;
+}
+
+.shot::before {
+  left: -3px;
+  top: -3px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.shot::after {
+  right: -3px;
+  bottom: -3px;
+  border-left: 0;
+  border-top: 0;
 }
 
 .shot img {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid rgb(255 214 190 / 0.3);
 }
 
 .shot figcaption {
-  margin-top: 0.45rem;
+  margin: 0.55rem 0.2rem 0.15rem;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
-  line-height: 1.5;
-  color: rgb(255 241 232 / 0.62);
+  line-height: 1.55;
+  color: rgb(251 234 223 / 0.62);
 }
 
 .read {
-  margin: 0.6rem 0 0;
+  margin: 0.8rem 0 0;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
-  color: rgb(255 241 232 / 0.62);
+  color: rgb(251 234 223 / 0.62);
 }
 
 .readLink {
-  color: #ff5a86;
+  color: #ff5c8a;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 /* Tooltips -------------------------------------------------------------------------------- */
 .ent {
-  text-decoration: underline dotted #ff5a86;
-  text-underline-offset: 3px;
-  color: #ffd6a0;
+  text-decoration: underline dotted #ff5c8a;
+  text-underline-offset: 4px;
+  color: #ffd9a8;
 }
 
 .entCard {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.3rem;
   max-width: 17rem;
 }
 
 .entKind {
   font-family: var(--font-mono-stack);
   font-size: 0.625rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ff5a86;
+  color: #ff5c8a;
 }
 
 .entName {
-  font-family: var(--font-display-stack);
-  font-weight: 800;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
   font-style: italic;
-  font-synthesis: style;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 1.25rem;
+  line-height: 1.1;
 }
 
 .entShort {
@@ -517,6 +626,14 @@
   text-underline-offset: 3px;
 }
 
+/* The trailer card in the corner: the ink of her plates, a gold keyline, a rose play button. */
+.dockCard {
+  --card-edge-colour: #10050e;
+  --card-accent-colour: #e8b85a;
+  --card-play-colour: #ff5c8a;
+  --cut: 12px;
+}
+
 @media (max-width: 30em) {
   .facts > div {
     grid-template-columns: 1fr;
@@ -528,10 +645,12 @@
   }
 }
 
-/* The trailer card in the corner: the ink of her plates, a gold keyline, a rose play button. */
-.dockCard {
-  --card-edge-colour: #14060d;
-  --card-accent-colour: #e2b04a;
-  --card-play-colour: #ff5a86;
-  --cut: 16px;
+@media (prefers-reduced-motion: reduce) {
+  .voiceButton {
+    transition-duration: 1ms;
+  }
+
+  .voice[data-playing="true"] .voiceButton::after {
+    animation: none;
+  }
 }

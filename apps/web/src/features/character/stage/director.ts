@@ -1,4 +1,14 @@
-import { crossed, frameAt, LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
+import {
+  crossed,
+  frameAt,
+  LEAD_FRAMES,
+  skipRate,
+  skipWallMs,
+  triggerFrames,
+  waitFrames,
+  wrapFrame,
+  type SkipOptions,
+} from "./phase";
 import {
   isPage,
   type PageName,
@@ -56,6 +66,8 @@ export interface StageState {
   next: SceneName | null;
   /** True once the visitor asked to leave a page, until she is back in her idle pose. */
   leaving: boolean;
+  /** The picture is running faster than normal, to get to its frame sooner (see `skip`). */
+  fast: boolean;
   /**
    * How long the wait for the matching frame is, measured when it began. The page uses it to run
    * a waiting animation of exactly that length. Null when it is not known.
@@ -66,6 +78,12 @@ export interface StageState {
 export type StageElements = Record<VideoKey, HTMLVideoElement>;
 
 interface DirectorOptions {
+  /**
+   * Speed the picture up while it waits for the frame a video hands over on, and ease it back to
+   * normal as that frame comes. A character whose idle never repeats has long waits (up to the
+   * whole loop), and this makes them a fraction as long. Null or missing: normal speed.
+   */
+  skip?: () => SkipOptions | null;
   /** Her videos: the frame numbers every hand-over is cut on (`timeline.generated.ts`). */
   timeline: Timeline;
   /** Reduced motion: nothing starts by itself and nothing loops. */
@@ -206,6 +224,7 @@ export class StageDirector {
     ui: false,
     next: null,
     leaving: false,
+    fast: false,
     wait: null,
   };
   private stopWatch: (() => void) | null = null;
@@ -216,6 +235,8 @@ export class StageDirector {
   /** The exit or short that is playing, to work out how long until she is back in the idle loop. */
   private exit: { clip: HTMLVideoElement; back: Back } | null = null;
   private prevFrame: number | null = null;
+  private skipTimer = 0;
+  private skipped: HTMLVideoElement | null = null;
   private handed = false;
   private destroyed = false;
   private leaveAsked = false;
@@ -321,6 +342,45 @@ export class StageDirector {
     return this.all().find((v) => v.dataset.layer === "front") ?? null;
   }
 
+  /** The speed-up in force, or null when there is none (reduced motion, or the character has none). */
+  private skipOptions(): SkipOptions | null {
+    return this.opts.reduced ? null : (this.opts.skip?.() ?? null);
+  }
+
+  /**
+   * Run `video` faster while it waits for one of `triggers`, and ease back to normal speed as the
+   * frame comes. The speed is set every 50 ms from how many frames are left.
+   */
+  private startSkip(video: HTMLVideoElement, triggers: readonly number[], n: number) {
+    this.stopSkip();
+    const skip = this.skipOptions();
+    if (!skip) return;
+    const left = () => waitFrames(frameAt(video.currentTime, n, this.fps), triggers, n);
+    if (left() <= skip.minFrames) return;
+    const from = performance.now();
+    this.skipped = video;
+    this.skipTimer = window.setInterval(() => {
+      if (video.paused || document.hidden) return;
+      const rate = this.state.loading
+        ? 1
+        : skipRate(left(), performance.now() - from, skip.maxRate);
+      video.playbackRate = rate;
+      const fast = rate > 1.05;
+      if (fast !== this.state.fast) this.set({ fast });
+    }, 50);
+  }
+
+  /** Back to normal speed. */
+  private stopSkip() {
+    window.clearInterval(this.skipTimer);
+    this.skipTimer = 0;
+    if (this.skipped) {
+      this.skipped.playbackRate = 1;
+      this.skipped = null;
+    }
+    if (this.state.fast) this.set({ fast: false });
+  }
+
   /** The videos have no sound, so the browser lets them start by themselves. */
   private async play(video: HTMLVideoElement): Promise<boolean> {
     try {
@@ -343,10 +403,14 @@ export class StageDirector {
    * The idle loop's clock while it can be read, for things that follow its picture: its time, and
    * whether it is playing (it is paused while a page or a short is on top).
    */
-  idleClock(): { time: number; playing: boolean } | null {
+  idleClock(): { time: number; playing: boolean; rate: number } | null {
     const idle = this.els.idle;
     if (idle.readyState === 0) return null;
-    return { time: idle.currentTime, playing: !idle.paused && !idle.ended };
+    return {
+      time: idle.currentTime,
+      playing: !idle.paused && !idle.ended,
+      rate: idle.playbackRate || 1,
+    };
   }
 
   /** Frames the video on top has dropped and shown (counters that only grow), or null. */
@@ -440,6 +504,7 @@ export class StageDirector {
   async jumpToIdle() {
     if (this.destroyed) return;
     this.stopWatch?.();
+    this.stopSkip();
     this.pending = null;
     this.after = null;
     this.afterWait = null;
@@ -517,7 +582,7 @@ export class StageDirector {
       triggerFrames(phases, this.n),
       this.n,
     );
-    return (frames / this.fps) * 1000;
+    return skipWallMs(frames, this.fps, this.skipOptions());
   }
 
   /**
@@ -561,6 +626,10 @@ export class StageDirector {
       next: null,
       wait: keep ? carry : ms === null ? null : { ms, at: now },
     });
+    const phases = isPage(scene)
+      ? this.tl.pages[scene].in.startPhases
+      : this.tl.shorts[scene].startPhases;
+    this.startSkip(this.els.idle, triggerFrames(phases, this.n), this.n);
   }
 
   /** Frames of the idle loop's wait for an entrance, from the moment she is handed back to it. */
@@ -578,7 +647,9 @@ export class StageDirector {
     const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend, this.n);
     const wait = waitFrames(phase, triggerFrames(phases, this.n), this.n);
     // Measured: the entrance starts about 0.15 s after the idle loop reaches its frame.
-    return ((toSync + blend + wait) / this.fps) * 1000 + 150;
+    return (
+      ((toSync + blend) / this.fps) * 1000 + skipWallMs(wait, this.fps, this.skipOptions()) + 150
+    );
   }
 
   /** Work out the wait for the scene chosen during the hand-over, and follow its first video. */
@@ -612,6 +683,7 @@ export class StageDirector {
       return;
     }
     if (this.state.mode !== "queued") return;
+    this.stopSkip();
     this.unprime(this.pending);
     this.pending = null;
     this.set({ mode: "idle", scene: null, loading: false, wait: null });
@@ -619,6 +691,7 @@ export class StageDirector {
 
   private async startScene(scene: SceneName) {
     if (this.destroyed || (this.state.mode !== "queued" && this.state.mode !== "idle")) return;
+    this.stopSkip();
     this.pending = null;
     this.poseBack = false;
     const page = isPage(scene);
@@ -745,8 +818,9 @@ export class StageDirector {
     this.set({
       mode: "leaving",
       leaving: true,
-      wait: { ms: (frames / this.fps) * 1000, at: performance.now() },
+      wait: { ms: skipWallMs(frames, this.fps, this.skipOptions()), at: performance.now() },
     });
+    this.startSkip(loop, triggers, n);
     this.stopWatch?.();
     this.prevFrame = null;
     this.stopWatch = watchFrames(loop, (t) => {
@@ -759,6 +833,7 @@ export class StageDirector {
 
   private async startOutro(scene: PageName) {
     if (this.destroyed || this.state.mode !== "leaving") return;
+    this.stopSkip();
     const timing = this.tl.pages[scene].out;
     // The way back is over when she is in her idle pose (`uiFrame`): that is how long the screen
     // that says so lasts (a few frames more, for the video to start).
@@ -839,6 +914,7 @@ export class StageDirector {
   destroy() {
     this.destroyed = true;
     this.stopWatch?.();
+    this.stopSkip();
     for (const el of this.all()) el.pause();
   }
 }

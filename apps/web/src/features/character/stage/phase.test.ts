@@ -5,6 +5,8 @@ import {
   frameAt,
   framesUntil,
   LEAD_FRAMES,
+  skipRate,
+  skipWallMs,
   triggerFrames,
   waitFrames,
   wrapFrame,
@@ -56,5 +58,34 @@ describe("loop frame maths", () => {
   it("reports the wait until the next start", () => {
     expect(waitFrames(110, [100, 262], SELENA_LOOP_FRAMES)).toBe(152);
     expect(waitFrames(100, [100], SELENA_LOOP_FRAMES)).toBe(0);
+  });
+});
+
+describe("time skip", () => {
+  const skip = { maxRate: 2.25, minFrames: 70 };
+
+  it("runs at normal speed for a short wait and when the frame is near", () => {
+    expect(skipWallMs(60, 60, skip)).toBe(1000);
+    expect(skipRate(10, 5000, 2.25)).toBeCloseTo(1, 1);
+    expect(skipRate(400, 0, 2.25)).toBe(1);
+  });
+
+  it("eases up to the top speed and back down to normal", () => {
+    expect(skipRate(400, 450, 2.25)).toBeCloseTo(2.25, 5);
+    const mid = skipRate(45, 5000, 2.25);
+    expect(mid).toBeGreaterThan(1.3);
+    expect(mid).toBeLessThan(2.25);
+    expect(skipRate(0, 5000, 2.25)).toBe(1);
+  });
+
+  it("makes a long wait much shorter, and never longer than the wait at normal speed", () => {
+    const full = (480 / 60) * 1000;
+    const wait = skipWallMs(480, 60, skip);
+    expect(wait).toBeLessThan(full * 0.65);
+    expect(wait).toBeGreaterThan(full * 0.3);
+    for (const frames of [90, 150, 241, 482]) {
+      expect(skipWallMs(frames, 60, skip)).toBeLessThanOrEqual((frames / 60) * 1000 + 20);
+    }
+    expect(skipWallMs(480, 60, null)).toBe(full);
   });
 });

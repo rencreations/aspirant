@@ -29,6 +29,12 @@ export interface PreloadItem {
    * has to load it again (from the saved copy, which is quick).
    */
   memo?: boolean;
+  /**
+   * Not needed at first paint. The loading bar does not wait for it: it starts once everything
+   * else is in, a few at a time, and whatever uses it waits for it then (a button shows that it
+   * is loading). Only for things the page does not show until the visitor asks for them.
+   */
+  deferred?: boolean;
 }
 
 export interface PreloadProgress {
@@ -41,6 +47,8 @@ export interface PreloadProgress {
 }
 
 const ITEM_TIMEOUT_MS = 12_000;
+/** Deferred items download this many at a time, in the order of the list. */
+const DEFERRED_AT_ONCE = 3;
 /** The loading bar is told at most this often. */
 const PROGRESS_EVERY_MS = 100;
 
@@ -176,15 +184,28 @@ function withTimeout(p: Promise<void>, ms: number): Promise<void> {
   });
 }
 
+/** Run the deferred items a few at a time, in order. Nothing waits for it and nothing fails. */
+function runDeferred(items: readonly PreloadItem[]): void {
+  const queue = [...items];
+  const next = (): Promise<void> => {
+    const item = queue.shift();
+    return item ? once(item).promise.then(next) : Promise.resolve();
+  };
+  for (let i = 0; i < DEFERRED_AT_ONCE; i += 1) void next();
+}
+
 /**
  * Run items in parallel and report progress as bytes arrive and items finish. Resolves when all
- * are done (or timed out). Items already finished earlier in the session resolve at once.
+ * the items that are not `deferred` are done (or timed out). Items already finished earlier in
+ * the session resolve at once. The deferred ones start when the others are in.
  */
 export async function runPreload(
   items: readonly PreloadItem[],
   onProgress?: (p: PreloadProgress) => void,
 ): Promise<void> {
-  const unique = Array.from(new Map(items.map((i) => [i.id, i])).values());
+  const all = Array.from(new Map(items.map((i) => [i.id, i])).values());
+  const unique = all.filter((i) => !i.deferred);
+  const later = all.filter((i) => i.deferred);
   const total = unique.reduce((sum, i) => sum + (i.weight ?? 1), 0) || 1;
   const pending = new Map(unique.map((i) => [i.id, i]));
   const fractions = new Map<string, number>();
@@ -236,4 +257,5 @@ export async function runPreload(
   window.clearTimeout(timer);
   timer = 0;
   flush();
+  runDeferred(later);
 }

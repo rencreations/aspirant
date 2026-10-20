@@ -83,6 +83,7 @@
   top: 50%;
   left: 50%;
   z-index: 2;
+  scale: var(--card-play-scale, 1);
   width: 62px;
   height: 62px;
   margin: -31px 0 0 -31px;
@@ -159,7 +160,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   z-index: 2;
-  display: flex;
+  display: var(--card-meta-display, flex);
   align-items: center;
   justify-content: space-between;
   padding: 0.55rem 1rem 0.5rem 1.1rem;

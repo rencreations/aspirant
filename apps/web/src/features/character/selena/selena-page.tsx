@@ -81,6 +81,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     ui: false,
     next: null,
     leaving: false,
+    fast: false,
     wait: null,
   });
   const [announce, setAnnounce] = useState("");

@@ -16,10 +16,22 @@ export const obsidiaMedia = createStageMedia({
   tierNames: { lite: "light", "1080": "HD", "1440": "QHD", "2160": "4K" },
   // The size of the source recordings, for the cover maths.
   source: { width: 3840, height: 1728 },
+  // The first load is the welcome and the idle loop. The page clips and the shorts follow it.
+  deferRest: true,
 });
 
 export const { pickTier, loadCore } = obsidiaMedia;
 export const obsidiaItems = obsidiaMedia.items;
+
+/** The pictures her interface is drawn with (the pieces on the buttons, the eclipse, the thorns). */
+export const OBSIDIA_UI_IMAGES: readonly string[] = [
+  "/img/obsidia/ui/pawn.webp",
+  "/img/obsidia/ui/knight.webp",
+  "/img/obsidia/ui/queen.webp",
+  "/img/obsidia/ui/eclipse.webp",
+  "/img/obsidia/ui/corner.webp",
+  "/img/obsidia/ui/veins.webp",
+];
 
 /** Her theme, which plays and loops while her page is open. */
 export const OBSIDIA_MUSIC = "/audio/music/obsidia-theme.m4a";

@@ -144,35 +144,40 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
   return (
     <div ref={root} className={styles.shell} data-shown={shown} data-warm={warm} data-tab={tab}>
       <aside className={styles.drawer} data-open={!folded} aria-label={label}>
-        <div className={styles.tabs} role="tablist" aria-label={label}>
+        <span className={styles.rim} aria-hidden="true" />
+        <div className={styles.frame}>
+          <div className={styles.tabs} role="tablist" aria-label={label}>
+            {tabs.map((t, i) => (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                id={`${id}-tab-${t.id}`}
+                aria-selected={tab === i}
+                aria-controls={`${id}-panel-${t.id}`}
+                tabIndex={shown && !folded ? 0 : -1}
+                onClick={() => {
+                  setTab(i);
+                  audio.blip("click");
+                }}
+              >
+                <span>{t.label}</span>
+              </button>
+            ))}
+          </div>
           {tabs.map((t, i) => (
-            <button
+            <Panel
               key={t.id}
-              type="button"
-              role="tab"
-              id={`${id}-tab-${t.id}`}
-              aria-selected={tab === i}
-              aria-controls={`${id}-panel-${t.id}`}
-              tabIndex={shown && !folded ? 0 : -1}
-              onClick={() => {
-                setTab(i);
-                audio.blip("click");
-              }}
-            >
-              {t.label}
-            </button>
+              tab={t}
+              panelId={`${id}-panel-${t.id}`}
+              hidden={tab !== i}
+              inert={!shown || folded}
+              build={i < built || shown}
+            />
           ))}
+          <span className={styles.thorn} data-corner="tr" aria-hidden="true" />
+          <span className={styles.thorn} data-corner="bl" aria-hidden="true" />
         </div>
-        {tabs.map((t, i) => (
-          <Panel
-            key={t.id}
-            tab={t}
-            panelId={`${id}-panel-${t.id}`}
-            hidden={tab !== i}
-            inert={!shown || folded}
-            build={i < built || shown}
-          />
-        ))}
         <button
           type="button"
           className={styles.handle}
@@ -187,7 +192,13 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
           <span>{folded ? tabs[tab]?.label : "Hide"}</span>
         </button>
       </aside>
-      {dock ? <div className={styles.dock}>{dock}</div> : null}
+      {dock ? (
+        <div className={styles.dock}>
+          <span className={styles.dockRim} aria-hidden="true" />
+          <div className={styles.dockBody}>{dock}</div>
+          <span className={styles.thorn} data-corner="tr" aria-hidden="true" />
+        </div>
+      ) : null}
     </div>
   );
 }

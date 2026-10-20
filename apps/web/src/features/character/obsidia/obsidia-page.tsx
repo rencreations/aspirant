@@ -2,11 +2,20 @@
 
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
+import { asset } from "@/lib/asset";
 import { useHotkey, useReducedMotion } from "@/lib/hooks";
 import { startMusic, type Track } from "@/lib/now-playing";
 import { expectReady } from "@/lib/page-ready";
@@ -16,26 +25,29 @@ import { routeItems } from "@/lib/route-preloads";
 
 import type { StageState } from "../stage/director";
 import { Hotspots } from "../stage/hotspots";
-import { ScreenCover, type CoverApi, type CoverColors } from "../stage/screen-cover";
+import type { CoverApi } from "../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../stage/stage";
+import type { SkipOptions } from "../stage/phase";
 import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
 import { useStageUrl } from "../stage/use-stage-url";
-import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawer } from "./about/about-drawer";
 import { GalleryDrawer } from "./gallery/gallery-drawer";
 import { SkillsDrawer } from "./skills/skills-drawer";
 import { loadCore, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
 import styles from "./obsidia.module.css";
-import { PlateButton, type Glyph } from "./plate-button";
 import { obsidiaPageFromPath, OBSIDIA_ROUTES } from "./routes";
+import { BladeButton } from "./ui/blade-button";
+import { BoardCover } from "./ui/board-cover";
+import { EclipseWait } from "./ui/eclipse-wait";
+import { PieceButton, type Piece } from "./ui/piece-button";
 import { HOTSPOT_PATHS, HOTSPOT_STEP, SPOTS } from "./spots";
 import { OBSIDIA_TIMELINE } from "./timeline.generated";
 
 /** The three buttons, in order, and the page each one opens. */
-const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; glyph: Glyph }> = [
-  { id: "about", label: "About", scene: "about", glyph: "about" },
-  { id: "skills", label: "Skills", scene: "skills", glyph: "skills" },
-  { id: "gallery", label: "Gallery", scene: "gallery", glyph: "gallery" },
+const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; piece: Piece }> = [
+  { id: "about", label: "About", scene: "about", piece: "pawn" },
+  { id: "skills", label: "Skills", scene: "skills", piece: "knight" },
+  { id: "gallery", label: "Gallery", scene: "gallery", piece: "queen" },
 ];
 
 const TRACK: Track = {
@@ -44,9 +56,6 @@ const TRACK: Track = {
   cover: "/img/char/obsidia/splash-sm.webp",
   src: OBSIDIA_MUSIC,
 };
-
-/** The wipe between her pictures: rose gold leads, a dark crimson plate follows. */
-const COVER: CoverColors = { edge: "#e2b04a", a: "#5c0b22", b: "#2a0612", c: "#0b0507" };
 
 interface ObsidiaNext {
   label: string;
@@ -59,6 +68,17 @@ interface ObsidiaNext {
 const BLACK_FADE_MS = 1700;
 
 const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false;
+
+/**
+ * How the picture is sped up while it waits for a frame. Her idle never repeats inside its eight
+ * seconds, so a wait can be that long, and running the picture faster makes it about half as
+ * long. The bigger the picture, the less it can be sped up (a 4K video decodes twice as fast at
+ * most).
+ */
+function skipFor(): SkipOptions {
+  const tier = obsidiaMedia.tier();
+  return { maxRate: tier === "2160" ? 2 : tier === "1440" ? 2.25 : 2.5, minFrames: 70 };
+}
 
 /**
  * Obsidia's page. One full-screen picture that does not scroll. The welcome animation plays once
@@ -80,6 +100,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
     ui: false,
     next: null,
     leaving: false,
+    fast: false,
     wait: null,
   });
   const [announce, setAnnounce] = useState("");
@@ -253,15 +274,18 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   // smaller size are loaded in the background and used from the next video on.
   const judged = useRef(false);
   const modeNow = useRef<StageState["mode"]>("boot");
+  const fastNow = useRef(false);
   useEffect(() => {
     judged.current = state.mode !== "boot" && state.mode !== "welcome";
     modeNow.current = state.mode;
-  }, [state.mode]);
+    fastNow.current = state.fast;
+  }, [state.mode, state.fast]);
   useEffect(() => {
     if (!tierReady) return;
     const stop = startGovernor({
       video: () => stage.current?.videoQuality() ?? null,
-      paused: () => !judged.current,
+      // Not while the picture runs faster to get to its frame: that is not the device.
+      paused: () => !judged.current || fastNow.current,
     });
     const off = onPerfLevel(() => {
       void runPreload(obsidiaItems());
@@ -369,8 +393,20 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
     };
   }, [mode, leaveShort, state.next]);
 
+  // The pictures that the interface draws with, as variables the stylesheets of the drawers and
+  // the buttons read (a stylesheet cannot know the base path of the site).
+  const art = useMemo(
+    () =>
+      ({
+        "--veins": `url("${asset("/img/obsidia/ui/veins.webp")}")`,
+        "--corner": `url("${asset("/img/obsidia/ui/corner.webp")}")`,
+        "--eclipse": `url("${asset("/img/obsidia/ui/eclipse.webp")}")`,
+      }) as CSSProperties,
+    [],
+  );
+
   return (
-    <div className={styles.page} data-theme="storm">
+    <div className={styles.page} data-theme="storm" style={art}>
       <section className={styles.hero} aria-labelledby="obsidia-title" data-mode={mode}>
         <h1 id="obsidia-title" className="sr-only">
           Obsidia
@@ -380,6 +416,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
             ref={stage}
             timeline={OBSIDIA_TIMELINE}
             media={obsidiaMedia}
+            skip={skipFor}
             onState={onState}
             welcome={initial === null}
             onBegin={begin}
@@ -387,11 +424,12 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
         ) : null}
 
         {waiting ? (
-          <WaitFx
+          <EclipseWait
             key={chosen === null && state.leaving ? "back" : waitKey}
             railKey={waitKey}
             label={waitLabel}
             ms={chosen === null && state.leaving ? backWait : waitMs}
+            fast={state.fast}
           />
         ) : null}
 
@@ -435,10 +473,10 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
                 const status = mine ? (state.loading ? "loading" : "queued") : "idle";
                 return (
                   <li key={item.id} data-mine={mine} style={{ ["--i" as string]: i }}>
-                    <PlateButton
+                    <PieceButton
                       label={item.label}
-                      glyph={item.glyph}
-                      index={i + 1}
+                      piece={item.piece}
+                      rank={i + 1}
                       state={status}
                       waitMs={waitMs}
                       waitKey={waitKey}
@@ -486,9 +524,8 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
         {showBack ? (
           <div className={styles.back}>
-            <PlateButton
+            <BladeButton
               label="Back"
-              glyph="back"
               badge="ESC"
               loadingWord="Heading back"
               state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
@@ -527,7 +564,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
           warm={warmed === "gallery"}
         />
 
-        <ScreenCover ref={cover} colors={COVER} />
+        <BoardCover ref={cover} />
 
         <p role="status" aria-live="polite" className="sr-only">
           {announce}

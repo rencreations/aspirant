@@ -35,6 +35,34 @@ import {
 import { STORY, type StoryBlock } from "./story-data";
 import { VoiceCard } from "./voice-card";
 
+/** 1 to 3999 in Roman numerals: her chapters are numbered like a book of state. */
+function toRoman(n: number): string {
+  const table: ReadonlyArray<readonly [number, string]> = [
+    [1000, "M"],
+    [900, "CM"],
+    [500, "D"],
+    [400, "CD"],
+    [100, "C"],
+    [90, "XC"],
+    [50, "L"],
+    [40, "XL"],
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let left = n;
+  let out = "";
+  for (const [value, glyph] of table) {
+    while (left >= value) {
+      out += glyph;
+      left -= value;
+    }
+  }
+  return out;
+}
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className={styles.block}>
@@ -347,7 +375,9 @@ function StoryBody({ scroller }: { scroller: RefObject<HTMLDivElement | null> })
           }}
         >
           <header className={styles.chapterHead}>
-            <span className={styles.num}>{String(i + 1).padStart(2, "0")}</span>
+            <span className={styles.num} aria-hidden="true">
+              {toRoman(i + 1)}
+            </span>
             <div>
               <h3 id={`obsidia-${s.id}-title`}>{s.title}</h3>
               {s.when ? <p className={styles.when}>{s.when}</p> : null}

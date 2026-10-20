@@ -155,11 +155,14 @@ function SkillsBody({ selected, onSelect }: { selected: string; onSelect: (id: s
           <li key={r.label}>
             <span>{r.label}</span>
             <span
-              className={styles.meter}
+              className={styles.pips}
               role="img"
               aria-label={`${r.label}: ${r.value} out of 10`}
-              style={{ ["--v" as string]: r.value / 10 }}
-            />
+            >
+              {Array.from({ length: 10 }, (_, k) => (
+                <i key={k} data-on={k < r.value} />
+              ))}
+            </span>
             <b>{r.value}</b>
           </li>
         ))}

@@ -33,6 +33,11 @@ export interface StageMediaConfig<T extends string> {
   tierNames: Record<T, string>;
   /** The size of the source recordings, for the cover maths. */
   source: { width: number; height: number };
+  /**
+   * Load only the idle loop and the welcome before the page opens, and the rest (the page clips,
+   * the shorts) in the background after it. Without it everything is loaded first.
+   */
+  deferRest?: boolean;
 }
 
 /**
@@ -125,7 +130,7 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
   const path = (t: string, file: string) => `${cfg.dir}/${t}/${file}`;
 
   /** Every video of the page in the chosen size, for the loading bar (weighted by bytes). */
-  function items(): PreloadItem[] {
+  function items(options: { page?: string } = {}): PreloadItem[] {
     // The weights follow the size that suits the display. The files loaded are those of the size
     // the device can decode (`tierReady`), which is the same unless the device is slower.
     const t = tier();
@@ -141,6 +146,12 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
       weight: Math.max(1, Math.round(size / 1_000_000)),
       timeoutMs: 120_000,
       memo: false,
+      // The page the visitor landed on needs its own clips at once.
+      deferred:
+        cfg.deferRest === true &&
+        file !== "idle.mp4" &&
+        file !== "welcome.mp4" &&
+        !(options.page && file.startsWith(`${options.page}-`)),
       run: async (report) => {
         const use = await tierReady();
         return loadMedia(path(use, file), {

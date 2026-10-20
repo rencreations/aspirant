@@ -9,6 +9,7 @@ import { mediaUrl, releaseMedia } from "@/lib/media-store";
 import { expectReady } from "@/lib/page-ready";
 
 import { StageDirector, videoFile, type StageElements, type StageState } from "./director";
+import type { SkipOptions } from "./phase";
 import type { StageMedia } from "./media";
 import styles from "./stage.module.css";
 import { VIDEO_KEYS, type SceneName, type Timeline, type VideoKey } from "./timeline";
@@ -30,7 +31,7 @@ export interface StageApi {
   /** Straight to the idle loop. The caller covers the screen while it happens. */
   jumpToIdle: () => Promise<void>;
   /** The clock of the idle loop, so touch points can follow its picture. Null until it can play. */
-  idleClock: () => { time: number; playing: boolean } | null;
+  idleClock: () => { time: number; playing: boolean; rate: number } | null;
   /** Video frames dropped and shown so far by the picture on top (counters), for the governor. */
   videoQuality: () => { dropped: number; total: number } | null;
   /** Give the idle loop the size the device asks for now. The caller covers the screen. */
@@ -40,6 +41,8 @@ export interface StageApi {
 interface Props {
   /** Her videos: the frame numbers every hand-over is cut on. */
   timeline: Timeline;
+  /** Speed the picture up while it waits for a frame (see the director's `skip`). */
+  skip?: () => SkipOptions | null;
   /** Where her videos are and which size is used. */
   media: StageMedia;
   onState: (state: StageState) => void;
@@ -57,7 +60,7 @@ interface Props {
  * finished, so it always plays on a fully visible page.
  */
 export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStage(
-  { timeline, media, onState, welcome: playWelcome, onBegin },
+  { timeline, media, skip, onState, welcome: playWelcome, onBegin },
   ref,
 ) {
   const reduced = useReducedMotion();
@@ -67,11 +70,13 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
   const onStateRef = useRef(onState);
 
   const onBeginRef = useRef(onBegin);
+  const skipRef = useRef(skip);
 
   useEffect(() => {
     onStateRef.current = onState;
     onBeginRef.current = onBegin;
-  }, [onState, onBegin]);
+    skipRef.current = skip;
+  }, [onState, onBegin, skip]);
 
   useImperativeHandle(
     ref,
@@ -96,6 +101,7 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
     window.clearTimeout(releaseTimer);
     const d = new StageDirector(els as StageElements, {
       timeline,
+      skip: () => skipRef.current?.() ?? null,
       reduced,
       skipWelcome: !playWelcome,
       welcomeDelayMs: WELCOME_DELAY_MS,

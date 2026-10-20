@@ -49,3 +49,48 @@ export function crossed(
 export function waitFrames(current: number, triggers: readonly number[], n: number): number {
   return Math.min(...triggers.map((t) => framesUntil(current, t, n)));
 }
+
+// Time skip -------------------------------------------------------------------------------------
+
+/** The last stretch of the wait (in frames) is spent easing back to normal speed. */
+const SKIP_RAMP_FRAMES = 90;
+/** It takes this long to get up to speed. */
+const SKIP_EASE_MS = 450;
+
+const smooth = (t: number) => t * t * (3 - 2 * t);
+
+/** How the picture is sped up while it waits for a frame (see the director's `skip` option). */
+export interface SkipOptions {
+  /** The fastest the picture runs, as a multiple of normal speed. */
+  maxRate: number;
+  /** A wait shorter than this many frames runs at normal speed. */
+  minFrames: number;
+}
+
+/**
+ * The speed of the picture while it waits for the frame it hands over on. It eases up to `maxRate`
+ * in `SKIP_EASE_MS`, and eases back down over the last `SKIP_RAMP_FRAMES`, so the picture arrives
+ * at normal speed and the dissolve that follows starts from a natural motion.
+ */
+export function skipRate(remaining: number, elapsedMs: number, maxRate: number): number {
+  const out = smooth(Math.min(1, Math.max(0, remaining / SKIP_RAMP_FRAMES)));
+  const into = smooth(Math.min(1, Math.max(0, elapsedMs / SKIP_EASE_MS)));
+  return 1 + (maxRate - 1) * out * into;
+}
+
+/**
+ * How long a wait of `frames` frames takes on the clock when it is sped up as `skipRate` says.
+ * The page uses it for the length of the waiting animation, so the animation ends exactly when
+ * the picture does.
+ */
+export function skipWallMs(frames: number, fps: number, skip: SkipOptions | null): number {
+  if (!skip || frames <= skip.minFrames) return (frames / fps) * 1000;
+  const dt = 16;
+  let remaining = frames;
+  let elapsed = 0;
+  while (remaining > 0 && elapsed < 60_000) {
+    remaining -= skipRate(remaining, elapsed, skip.maxRate) * fps * (dt / 1000);
+    elapsed += dt;
+  }
+  return elapsed;
+}

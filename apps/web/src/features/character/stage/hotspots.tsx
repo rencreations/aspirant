@@ -89,7 +89,7 @@ interface Props {
   /** Frames a second of the video the paths were tracked in. */
   fps: number;
   /** The clock of the idle loop, so the points follow its picture. Null while it cannot play. */
-  idleClock: () => { time: number; playing: boolean } | null;
+  idleClock: () => { time: number; playing: boolean; rate?: number } | null;
   /** The panel shows, so the points do. */
   visible: boolean;
   /** The short that was chosen and is waiting for its frame. */
@@ -242,6 +242,9 @@ export function Hotspots({
         const now = (((Number(a.currentTime) || 0) % loopMs) + loopMs) % loopMs;
         const gap = Math.abs(now - t);
         if (Math.min(gap, loopMs - gap) > 45) a.currentTime = t;
+        // The picture may be running faster while it waits (the time skip): the circle follows it.
+        const rate = c?.rate ?? 1;
+        if (a.playbackRate !== rate) a.updatePlaybackRate(rate);
         if (a.playState !== "running") a.play();
       }
     };

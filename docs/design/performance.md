@@ -83,13 +83,19 @@ on the same machine (a press frame of 1,000 ms against 300 ms). Judge speed on `
 - **At the start**, from the device: hardware video decoding (`mediaCapabilities`, `powerEfficient`),
   cores, memory, data saving. A device that decodes in software gets `lite` with fewer than 6 cores,
   `balanced` with fewer than 12.
-- **Remembered** for five days (`localStorage`, `aspirants:perf`).
+- **Remembered** (`localStorage`, `aspirants:perf`): a level the governor chose for one day, any other for five.
 - **Overridden** with `?quality=full|balanced|lite`. `?quality=auto` forgets what was remembered.
   The tests pin a level this way.
 - **Lowered by a governor** (`startGovernor`) that watches the real frame rate and the video's
   dropped frames while she plays, from the end of the welcome. Two bad stretches of two seconds in
-  a row lower it one step, then it waits six seconds. It never raises the level within a visit, and
-  it ignores hidden tabs. When it lowers the level, the smaller videos load in the background, and
+  a row lower it one step, then it waits six seconds. It ignores hidden tabs, and it does not judge
+  the frame rate while the picture runs faster to get to a frame (time skip). The same governor
+  raises the level: a device that sits below what its hardware suggests (`levelFor`) and plays
+  smoothly for twelve stretches in a row (24 seconds) tries one step up, and one bad stretch after
+  that sends it back down and stops it trying again (`failedUp` in the memory) until the memory
+  expires. A level lowered in a visit is never raised in that visit. This was added because a step
+  down used to stick for five days, so one busy moment could keep a fast laptop on a smaller,
+  softer picture. When it lowers the level, the smaller videos load in the background, and
   the idle loop is swapped under the cover wipe if she is idling (otherwise the next time she
   returns to it).
 

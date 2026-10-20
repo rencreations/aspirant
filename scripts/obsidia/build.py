@@ -54,13 +54,18 @@ XFADE = 20  # frames dissolved at a loop seam
 EXTRA = 3  # frames after a cut, skipped by the hand-over
 WELCOME_START, WELCOME_END, WELCOME_BLEND = 226, 1176, 6
 
+# `loop` is the CRF of the idle loop and the page loops, which are on screen almost all the time
+# and are looked at, so they get the most bits. `clip` is the CRF of everything that is on screen
+# for a moment while it moves (the welcome, the entrances, the exits and the shorts). `level` is the
+# H.264 level the size needs at 60 fps (it also keeps the encoder inside what a hardware decoder
+# accepts).
 TIERS = {
     # For devices that decode video in software, or slow ones: half the frame rate (the loops and
     # seams are measured in time, so they work at 30 fps) and a third of the pixels.
-    "lite": dict(w=1280, h=576, crf=28, preset="slow", fps=30),
-    "1080": dict(w=1920, h=864, crf=30, preset="slow"),
-    "1440": dict(w=2560, h=1152, crf=31, preset="slow"),
-    "2160": dict(w=3840, h=1728, crf=32, preset="slow"),
+    "lite": dict(w=1280, h=576, loop=22, clip=26, level="3.1", preset="slower", fps=30),
+    "1080": dict(w=1920, h=864, loop=20, clip=25, level="4.2", preset="slower"),
+    "1440": dict(w=2560, h=1152, loop=20, clip=26, level="5.1", preset="slower"),
+    "2160": dict(w=3840, h=1728, loop=19, clip=26, level="5.2", preset="slower"),
 }
 
 # What was measured in each recording.
@@ -154,9 +159,16 @@ class Tier:
         self.w, self.h = t["w"], t["h"]
         self.fps = t.get("fps", FPS)
         self.scale = f"scale={self.w}:{self.h}:flags=lanczos,setsar=1,format=yuv420p"
-        self.enc = [
-            "-c:v", "libx264", "-preset", t["preset"], "-crf", str(t["crf"]), "-pix_fmt", "yuv420p",
-            "-profile:v", "high", "-g", str(self.fps), "-keyint_min", "10", "-sc_threshold", "0", "-bf", "3",
+        self.enc = self.encoder(t["clip"])
+        self.enc_loop = self.encoder(t["loop"])
+
+    def encoder(self, crf: int) -> list[str]:
+        t = TIERS[self.name]
+        return [
+            "-c:v", "libx264", "-preset", t["preset"], "-tune", "animation", "-crf", str(crf),
+            "-pix_fmt", "yuv420p", "-profile:v", "high", "-level:v", t["level"],
+            "-g", str(self.fps), "-keyint_min", "10", "-sc_threshold", "0", "-bf", "3",
+            "-x264-params", "aq-mode=3:deblock=-1,-1",
             "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
             "-movflags", "+faststart", "-r", str(self.fps),
         ]
@@ -203,7 +215,7 @@ def build_loop(t: Tier, source: Path, start: int, frames: int, out: Path) -> Non
         "[m][b]concat=n=2:v=1:a=0[v]",
     ]
     graph, label = t.graph(";".join(parts))
-    run(["-i", str(source), "-filter_complex", graph, "-map", label, *t.enc, "-an", str(out)])
+    run(["-i", str(source), "-filter_complex", graph, "-map", label, *t.enc_loop, "-an", str(out)])
 
 
 def build_cut(t: Tier, source: Path, a: int, b: int, out: Path) -> None:

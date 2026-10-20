@@ -611,10 +611,12 @@ test("Gallery has both trailers and her voice lines in two forms, with the Japan
   await expect(page.getByText("15 mecha lines")).toBeAttached();
   await expect(lines).toHaveCount(15);
   // Line 9 is split: the mecha form has the second part, in Japanese and in English.
-  await expect(page.getByText("今の私、すっごく危険かも")).toBeAttached();
-  await expect(page.getByText("Right now, I might be super dangerous.")).toBeAttached();
+  // Only in the Gallery's own drawer: the About drawer, built while she idles, has the whole line.
+  const voices = page.getByRole("region", { name: "Trailers and voice lines, scrollable" });
+  await expect(voices.getByText("今の私、すっごく危険かも")).toBeAttached();
+  await expect(voices.getByText("Right now, I might be super dangerous.")).toBeAttached();
   await page.getByRole("button", { name: "Normal", exact: true }).click();
-  await expect(page.getByText("ああ、なんか危険な香りがする")).toBeAttached();
+  await expect(voices.getByText("ああ、なんか危険な香りがする")).toBeAttached();
 });
 
 test("Gallery shows the official art first, then the fan art, each with a credit link", async ({

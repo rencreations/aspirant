@@ -5,14 +5,18 @@
  *   balanced  a smaller picture (at most 1080), fewer effects
  *   lite      the smallest picture at half the frame rate, and only the effects that cost nothing
  *
- * The level is set in three steps, and never goes up by itself within a visit:
+ * The level is set in three steps:
  *
  *  1. At the start, from the device: does it decode video in hardware, how many cores and how
- *     much memory, is data saving on. A level remembered from an earlier visit (for five days)
- *     replaces this, and `?quality=full|balanced|lite` overrides everything (`auto` forgets it).
+ *     much memory, is data saving on. A level remembered from an earlier visit replaces this
+ *     (a level the governor chose is trusted for one day, any other for five), and
+ *     `?quality=full|balanced|lite` overrides everything (`auto` forgets it).
  *  2. `startGovernor` watches the real frame rate while the page plays and steps the level down,
  *     one step at a time, when it stays low. It ignores the first seconds, hidden tabs, and
  *     anything while the page is loading, so one bad moment does not pin a device at a low level.
+ *     When a device sits below what its hardware suggests and plays smoothly for half a minute,
+ *     it tries one step up. If that step is bad it goes back down and does not try again until
+ *     the memory expires, so a device is never stuck low because of one busy moment.
  *  3. The level is written to `<html data-perf>` for the CSS and kept for the next visit.
  */
 export type PerfLevel = "full" | "balanced" | "lite";
@@ -21,6 +25,8 @@ const LEVELS: readonly PerfLevel[] = ["lite", "balanced", "full"];
 const STORE_KEY = "aspirants:perf";
 /** A remembered level is trusted this long, then the device is measured again. */
 const KEEP_MS = 5 * 24 * 60 * 60 * 1000;
+/** A level the governor chose (a step down or up) is trusted for a day only. */
+const GOVERNED_KEEP_MS = 24 * 60 * 60 * 1000;
 
 export interface DeviceInfo {
   /** The browser decodes video in hardware (mediaCapabilities `powerEfficient`). */
@@ -44,6 +50,11 @@ export function levelFor(d: DeviceInfo): PerfLevel {
   }
   if (cores <= 2 || (d.memory !== null && d.memory <= 4 && cores <= 4)) return "balanced";
   return "full";
+}
+
+/** One step up. The biggest stays. */
+export function raiseLevel(level: PerfLevel): PerfLevel {
+  return LEVELS[Math.min(LEVELS.length - 1, LEVELS.indexOf(level) + 1)] ?? "full";
 }
 
 /** One step down. The smallest stays. */
@@ -80,24 +91,38 @@ type Listener = (level: PerfLevel, reason: string) => void;
 let current: PerfLevel | null = null;
 const listeners = new Set<Listener>();
 let hardwareDecode: boolean | null = null;
+/** No step up in this visit (a step down happened, or a step up was tried and failed). */
+let noPromote = false;
+/** The governor stepped up in this visit and has not been judged on it yet. */
+let promoted = false;
 
-function readStored(): PerfLevel | null {
+interface Stored {
+  level: PerfLevel;
+  /** A step up was tried from here and failed. */
+  failedUp: boolean;
+}
+
+function readStored(): Stored | null {
   try {
     const raw = window.localStorage.getItem(STORE_KEY);
     if (!raw) return null;
-    const v = JSON.parse(raw) as { level?: string; at?: number };
+    const v = JSON.parse(raw) as { level?: string; at?: number; by?: string; failedUp?: boolean };
     if (!v.level || !LEVELS.includes(v.level as PerfLevel)) return null;
-    if (typeof v.at !== "number" || Date.now() - v.at > KEEP_MS) return null;
-    return v.level as PerfLevel;
+    const keep = v.by === "governor" ? GOVERNED_KEEP_MS : KEEP_MS;
+    if (typeof v.at !== "number" || Date.now() - v.at > keep) return null;
+    return { level: v.level as PerfLevel, failedUp: v.failedUp === true };
   } catch {
     return null;
   }
 }
 
-function store(level: PerfLevel | null) {
+function store(level: PerfLevel | null, failedUp = false) {
   try {
     if (level === null) window.localStorage.removeItem(STORE_KEY);
-    else window.localStorage.setItem(STORE_KEY, JSON.stringify({ level, at: Date.now() }));
+    else {
+      const v = { level, at: Date.now(), by: "governor", failedUp };
+      window.localStorage.setItem(STORE_KEY, JSON.stringify(v));
+    }
   } catch {
     // Private window: the level is just not remembered.
   }
@@ -127,11 +152,12 @@ function device(): DeviceInfo {
   };
 }
 
-function apply(level: PerfLevel, reason: string, remember: boolean) {
+/** `remember`: not at all, as a governor's choice, or as a step up that failed. */
+function apply(level: PerfLevel, reason: string, remember: "governor" | "failed-up" | null) {
   if (current === level) return;
   current = level;
   document.documentElement.dataset.perf = level;
-  if (remember) store(level);
+  if (remember) store(level, remember === "failed-up");
   for (const l of listeners) l(level, reason);
 }
 
@@ -142,7 +168,9 @@ export function perfLevel(): PerfLevel {
     const asked = fromAddress();
     if (asked === "auto") store(null);
     const fixed = asked && asked !== "auto" ? asked : null;
-    current = fixed ?? readStored() ?? levelFor(device());
+    const kept = fixed ? null : readStored();
+    if (kept?.failedUp) noPromote = true;
+    current = fixed ?? kept?.level ?? levelFor(device());
     document.documentElement.dataset.perf = current;
     if (fixed) locked = true;
     void probeHardware();
@@ -184,7 +212,7 @@ async function runProbe(): Promise<void> {
     hardwareDecode = info.powerEfficient;
     if (locked || readStored() !== null) return;
     const wanted = levelFor(device());
-    if (current && LEVELS.indexOf(wanted) < LEVELS.indexOf(current)) apply(wanted, "device", false);
+    if (current && LEVELS.indexOf(wanted) < LEVELS.indexOf(current)) apply(wanted, "device", null);
   } catch {
     // No answer: the level stays as it was.
   }
@@ -208,8 +236,27 @@ export function onPerfLevel(fn: Listener): () => void {
 /** Step the level down once (the governor, or a test). Returns the new level. */
 export function lowerPerf(reason: string): PerfLevel {
   const next = lowerLevel(perfLevel());
-  if (!locked) apply(next, reason, true);
+  // Down right after a step up means the step up was wrong. Remember that, so it is not tried
+  // again until the memory expires.
+  const failedUp = promoted;
+  promoted = false;
+  noPromote = true;
+  if (!locked) apply(next, reason, failedUp ? "failed-up" : "governor");
   return current ?? next;
+}
+
+/**
+ * Step the level up once, when the device is below what its hardware suggests and nothing in this
+ * visit or in the memory says it failed. Returns whether it stepped.
+ */
+function raisePerf(reason: string): boolean {
+  const now = perfLevel();
+  if (locked || noPromote) return false;
+  const ceiling = levelFor(device());
+  if (LEVELS.indexOf(now) >= LEVELS.indexOf(ceiling)) return false;
+  promoted = true;
+  apply(raiseLevel(now), reason, "governor");
+  return true;
 }
 
 interface GovernorOptions {
@@ -226,6 +273,8 @@ const WARM_MS = 4000;
 const BAD_NEEDED = 2;
 /** After stepping down, give the new level time before judging it. */
 const COOL_MS = 6000;
+/** Smooth stretches in a row (half a minute) before a device that sits low tries a step up. */
+const GOOD_NEEDED = 12;
 
 /**
  * Watch the frame rate and step the level down when it stays low. Counts frames only while the
@@ -240,6 +289,7 @@ export function startGovernor(options: GovernorOptions = {}): () => void {
   let windowStart = performance.now();
   let blockedUntil = windowStart + WARM_MS;
   let bad = 0;
+  let good = 0;
   let videoBefore = options.video?.() ?? null;
 
   const reset = (now: number, wait = 0) => {
@@ -265,10 +315,20 @@ export function startGovernor(options: GovernorOptions = {}): () => void {
       videoBefore && after && after.total >= videoBefore.total
         ? { dropped: after.dropped - videoBefore.dropped, total: after.total - videoBefore.total }
         : null;
-    bad = isBad({ deltas, video }) ? bad + 1 : 0;
-    if (bad >= BAD_NEEDED) {
+    const wasBad = isBad({ deltas, video });
+    bad = wasBad ? bad + 1 : 0;
+    good = wasBad ? 0 : good + 1;
+    // A step up is judged strictly: one bad stretch sends it back down. Two good ones keep it.
+    if (promoted && good >= BAD_NEEDED) promoted = false;
+    if (bad >= BAD_NEEDED || (promoted && wasBad)) {
       bad = 0;
+      good = 0;
       lowerPerf("frame rate");
+      reset(now, COOL_MS);
+      return;
+    }
+    if (good >= GOOD_NEEDED && raisePerf("smooth")) {
+      good = 0;
       reset(now, COOL_MS);
       return;
     }
@@ -288,5 +348,7 @@ export function resetPerfForTests(): void {
   probed = false;
   probePromise = null;
   hardwareDecode = null;
+  noPromote = false;
+  promoted = false;
   listeners.clear();
 }

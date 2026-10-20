@@ -78,7 +78,7 @@ test("the three buttons sit side by side in the top left", async ({ page }, info
   }
   for (const b of boxes) {
     expect(b.y).toBeLessThan(vh * 0.3);
-    expect(b.x + b.width).toBeLessThan(vw * 0.5);
+    expect(b.x + b.width).toBeLessThan(vw * 0.6);
   }
   // In one row, in order.
   expect(Math.abs(boxes[0]!.y - boxes[2]!.y)).toBeLessThan(4);

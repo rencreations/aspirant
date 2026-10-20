@@ -17,6 +17,7 @@ import {
 } from "@/features/character/obsidia/about/about-images";
 import {
   OBSIDIA_MUSIC,
+  OBSIDIA_UI_IMAGES,
   OBSIDIA_VOICE_COUNT,
   obsidiaItems,
   obsidiaVoicePath,
@@ -129,27 +130,37 @@ export function routeItems(pathname: string): PreloadItem[] {
     }
     if (slug === "obsidia") {
       // Her page and its three pages share one stage, like Selena's: one list covers them all.
-      // The stage videos come first, so the page can start while the rest is still arriving.
+      // Only what the first minute needs is waited for: the welcome, the idle loop, her picture,
+      // the buttons and the music, and the clips of the page the visitor landed on. The rest (the
+      // other page clips, the shorts, the skill clips, the trailer, her voice lines and the
+      // pictures) is deferred: it loads in the background once the page is open, and a button
+      // that needs something that is still arriving shows that it is loading.
+      const landed = path.split("/")[3];
+      const later = (items: readonly PreloadItem[]): PreloadItem[] =>
+        items.map((i) => ({ ...i, deferred: true }));
       return [
         ...shared,
-        ...obsidiaItems(),
+        ...obsidiaItems({ page: landed }),
         imageItem("/video/obsidia/still.webp", "Loading Obsidia", 1),
-        imageItem("/video/obsidia/trailer-poster.webp", "Loading the trailer", 1),
+        ...OBSIDIA_UI_IMAGES.map((p) => imageItem(p, "Loading the buttons", 1)),
         imageItem("/img/char/obsidia/splash-sm.webp", "Loading the album art", 1),
         mediaItem(OBSIDIA_MUSIC, "Loading the music", {
           type: "audio/mp4",
           weight: 3,
           timeoutMs: 120_000,
         }),
-        ...Array.from({ length: OBSIDIA_VOICE_COUNT }, (_, i) =>
-          savedItem(obsidiaVoicePath(i + 1), "Loading her voice lines", 1),
-        ),
-        ...OBSIDIA_ABOUT_IMAGES.map((name) =>
-          imageItem(obsidiaAboutImagePath(name), "Loading the About pictures", 1),
-        ),
-        ...obsidiaSkillItems(),
-        ...obsidiaGalleryItems(),
-        obsidiaTrailerItem(),
+        ...later([
+          imageItem("/video/obsidia/trailer-poster.webp", "Loading the trailer", 1),
+          ...Array.from({ length: OBSIDIA_VOICE_COUNT }, (_, i) =>
+            savedItem(obsidiaVoicePath(i + 1), "Loading her voice lines", 1),
+          ),
+          ...OBSIDIA_ABOUT_IMAGES.map((name) =>
+            imageItem(obsidiaAboutImagePath(name), "Loading the About pictures", 1),
+          ),
+          ...obsidiaSkillItems(),
+          ...obsidiaGalleryItems(),
+          obsidiaTrailerItem(),
+        ]),
       ];
     }
     if (isSlug(slug)) {

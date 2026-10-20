@@ -6,6 +6,7 @@ import {
   lowerLevel,
   lowerPerf,
   onPerfLevel,
+  raiseLevel,
   perfLevel,
   resetPerfForTests,
   startGovernor,
@@ -45,6 +46,12 @@ describe("the level a device starts at", () => {
     expect(lowerLevel("full")).toBe("balanced");
     expect(lowerLevel("balanced")).toBe("lite");
     expect(lowerLevel("lite")).toBe("lite");
+  });
+
+  it("steps up one level at a time and stops at the highest", () => {
+    expect(raiseLevel("lite")).toBe("balanced");
+    expect(raiseLevel("balanced")).toBe("full");
+    expect(raiseLevel("full")).toBe("full");
   });
 });
 
@@ -116,6 +123,21 @@ describe("the level of this visit", () => {
       JSON.stringify({ level: "lite", at: Date.now() - 6 * 24 * 60 * 60 * 1000 }),
     );
     expect(perfLevel()).not.toBe("lite");
+  });
+
+  it("trusts a level the governor chose for a day, and another for five", () => {
+    const day = 24 * 60 * 60 * 1000;
+    window.localStorage.setItem(
+      "aspirants:perf",
+      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - 2 * day }),
+    );
+    expect(perfLevel()).not.toBe("lite");
+    resetPerfForTests();
+    window.localStorage.setItem(
+      "aspirants:perf",
+      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - day / 2 }),
+    );
+    expect(perfLevel()).toBe("lite");
   });
 
   it("forgets what was remembered with ?quality=auto", () => {
@@ -218,6 +240,71 @@ describe("the governor", () => {
   it("does not count time while the page says it is busy", () => {
     const stop = startGovernor({ paused: () => true });
     run(30, 100);
+    stop();
+    expect(perfLevel()).toBe("full");
+  });
+
+  const stored = (level: string, extra: Record<string, unknown> = {}) =>
+    window.localStorage.setItem(
+      "aspirants:perf",
+      JSON.stringify({ level, by: "governor", at: Date.now(), ...extra }),
+    );
+
+  it("tries one step up after half a minute of smooth playback on a device that sits low", () => {
+    stored("balanced");
+    resetPerfForTests();
+    const seen: string[] = [];
+    perfLevel();
+    onPerfLevel((l, why) => seen.push(`${l}:${why}`));
+    const stop = startGovernor();
+    run(20, 16.7);
+    expect(perfLevel()).toBe("balanced");
+    run(14, 16.7);
+    expect(perfLevel()).toBe("full");
+    expect(seen).toEqual(["full:smooth"]);
+    stop();
+  });
+
+  it("goes back down at once when the step up is bad, and does not try again", () => {
+    stored("balanced");
+    resetPerfForTests();
+    const stop = startGovernor();
+    run(34, 16.7);
+    expect(perfLevel()).toBe("full");
+    run(8, 100); // past the cool-down, then bad
+    expect(perfLevel()).toBe("balanced");
+    const kept = JSON.parse(window.localStorage.getItem("aspirants:perf") ?? "{}") as {
+      failedUp?: boolean;
+    };
+    expect(kept.failedUp).toBe(true);
+    run(60, 16.7);
+    expect(perfLevel()).toBe("balanced");
+    stop();
+  });
+
+  it("does not try a step up where one failed before", () => {
+    stored("balanced", { failedUp: true });
+    resetPerfForTests();
+    const stop = startGovernor();
+    run(60, 16.7);
+    stop();
+    expect(perfLevel()).toBe("balanced");
+  });
+
+  it("does not step up after a step down in the same visit", () => {
+    const stop = startGovernor();
+    run(14, 100);
+    expect(perfLevel()).toBe("balanced");
+    run(60, 16.7);
+    stop();
+    expect(perfLevel()).toBe("balanced");
+  });
+
+  it("does not step up past what the device suggests", () => {
+    stored("full");
+    resetPerfForTests();
+    const stop = startGovernor();
+    run(60, 16.7);
     stop();
     expect(perfLevel()).toBe("full");
   });
