@@ -4,7 +4,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: #0b0d14;
+  background: var(--viewer-bg, #0b0d14);
   animation: fade-in var(--dur-base) var(--ease-out);
 }
 

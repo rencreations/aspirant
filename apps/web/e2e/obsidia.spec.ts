@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 import { skipGate, url, watchErrors } from "./helpers";
@@ -397,4 +398,125 @@ test("Back closes the Skills drawer and returns to the main panel", async ({ pag
   await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(0, {
     timeout: 45_000,
   });
+});
+
+async function openGallery(page: Page) {
+  await open(page);
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(1, {
+    timeout: 60_000,
+  });
+  await expect(page.getByRole("tabpanel", { name: "Art, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  await page.waitForTimeout(900);
+}
+
+test("Gallery has Art, Watch and Voice in one drawer", async ({ page }, info) => {
+  await openGallery(page);
+  const tabs = page.getByRole("tablist", { name: "Obsidia's gallery" });
+  await expect(tabs.getByRole("tab")).toHaveText(["Art", "Watch", "Voice"]);
+  if (info.project.name === "desktop") {
+    const vw = page.viewportSize()?.width ?? 0;
+    const d = await page.getByRole("complementary", { name: "Obsidia's gallery" }).boundingBox();
+    expect(d!.x + d!.width).toBeLessThanOrEqual(vw * 0.4);
+  }
+});
+
+test("Gallery shows the official art first, then the fan art, each with a credit link", async ({
+  page,
+}) => {
+  await openGallery(page);
+  const art = page.getByRole("tabpanel", { name: "Art, scrollable" });
+  const headings = await art.getByRole("heading", { level: 3 }).allTextContents();
+  expect(headings.map((h) => h.toLowerCase())).toEqual(["official art", "fan art"]);
+  // Every credit opens in a new tab, safely.
+  const links = art.locator("a[href^='http']");
+  const count = await links.count();
+  expect(count).toBeGreaterThanOrEqual(8);
+  for (let i = 0; i < count; i++) {
+    await expect(links.nth(i)).toHaveAttribute("target", "_blank");
+    await expect(links.nth(i)).toHaveAttribute("rel", /noopener/);
+  }
+  await expect(art.getByRole("link", { name: /haniwa_\.20 on Instagram/ })).toBeAttached();
+  await expect(art.getByRole("link", { name: /on Reddit/ })).toBeAttached();
+  await expect(art.getByRole("link", { name: /@bomboclau_ on TikTok/ })).toBeAttached();
+  await expect(
+    art.getByRole("button", { name: /Play video: TikTok by @bomboclau_/ }),
+  ).toBeAttached();
+});
+
+test("the viewer opens a picture in her colours, zooms, moves between pictures and closes", async ({
+  page,
+}) => {
+  await openGallery(page);
+  const art = page.getByRole("tabpanel", { name: "Art, scrollable" });
+  const opener = art.getByRole("button", {
+    name: /View larger: .*splash|View larger: .*Obsidia in her skin/,
+  });
+  await opener.scrollIntoViewIfNeeded();
+  await opener.click();
+  const viewer = page.getByRole("dialog", { name: /Obsidia's art/ });
+  await expect(viewer).toBeVisible();
+  const readout = viewer.locator("[class*='readout']");
+  const fit = await readout.textContent();
+  await page.keyboard.press("+");
+  await expect(readout).not.toHaveText(fit ?? "");
+  await page.keyboard.press("0");
+  await expect(readout).toHaveText(fit ?? "");
+  await viewer.getByRole("button", { name: "Next picture" }).click();
+  await expect(viewer.getByText("The Queen's Endgame, title card", { exact: true })).toBeVisible();
+  await expect(
+    viewer.getByText("Moonton, Mobile Legends: Bang Bang", { exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+  await expect(opener).toBeFocused();
+});
+
+test("Watch has her trailer and Day of Enders, and Voice has all 41 lines with the Japanese", async ({
+  page,
+}) => {
+  await openGallery(page);
+  await page.getByRole("tab", { name: "Watch" }).click();
+  await expect(
+    page.getByRole("button", { name: /^Play video: Obsidia, The Queen's Endgame/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Play video: Day of Enders/ })).toBeVisible();
+  await page.getByRole("tab", { name: "Voice" }).click();
+  const voice = page.getByRole("tabpanel", { name: "Voice, scrollable" });
+  await expect(voice.getByRole("button", { name: /^(Play|Stop) voice line/ })).toHaveCount(41);
+  await expect(voice.getByText("エンダーたちよ、引け")).toBeAttached();
+  await expect(voice.getByText("I am the storm.")).toBeAttached();
+  const headings = await voice.getByRole("heading", { level: 3 }).allTextContents();
+  expect(headings).toHaveLength(6);
+});
+
+test("Back closes the Gallery drawer and returns to the main panel", async ({ page }) => {
+  await openGallery(page);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 60_000,
+  });
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(0, {
+    timeout: 60_000,
+  });
+});
+
+test("fits the screen without sideways scrolling, and has no serious accessibility violations", async ({
+  page,
+}) => {
+  await openAbout(page);
+  const overflow = await page.evaluate(() => {
+    const el = document.scrollingElement ?? document.documentElement;
+    return el.scrollWidth - window.innerWidth;
+  });
+  expect(overflow).toBeLessThanOrEqual(0);
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  const serious = results.violations
+    .filter((v) => v.impact === "serious" || v.impact === "critical")
+    .map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(" ")) }));
+  expect(serious).toEqual([]);
 });

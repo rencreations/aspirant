@@ -52,6 +52,8 @@ interface Props {
   onIndexChange: (index: number | null) => void;
   /** Name of the whole collection, for the dialog's title. */
   label: string;
+  /** Colours for a character's page: the ground, the keyline and the accent of the links. */
+  skin?: { ground: string; keyline: string; accent: string };
 }
 
 const FIT: View = { z: 1, x: 0, y: 0 };
@@ -109,7 +111,14 @@ const ICON = {
  * but the compositor works while it moves. The small size shows while the full size loads, and the
  * pictures on either side are loaded ahead.
  */
-export function ImageViewer({ items, index, onIndexChange, label }: Props) {
+export function ImageViewer({ items, index, onIndexChange, label, skin }: Props) {
+  const skinStyle = skin
+    ? ({
+        "--viewer-bg": skin.ground,
+        "--light-gold": skin.keyline,
+        "--light-cyan": skin.accent,
+      } as React.CSSProperties)
+    : undefined;
   const open = index !== null && items.length > 0;
   const at = open ? wrap(index, items.length) : 0;
   const item = open ? items[at] : undefined;
@@ -427,10 +436,11 @@ export function ImageViewer({ items, index, onIndexChange, label }: Props) {
       }}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
+        <Dialog.Overlay className={styles.overlay} style={skinStyle} />
         <Dialog.Content
           ref={content}
           className={styles.viewer}
+          style={skinStyle}
           data-cursor-theme="light"
           data-lenis-prevent
           onKeyDown={onKeyDown}
