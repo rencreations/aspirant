@@ -18,6 +18,14 @@ import { audio } from "@/lib/audio";
 import { useReducedMotion } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
+import { CaptionLayer, type CaptionControl } from "./caption-layer";
+import {
+  CAPTION_BACKGROUNDS,
+  CAPTION_SIZES,
+  DEFAULT_CAPTIONS,
+  normalizeCaptions,
+  type CaptionSettings,
+} from "./caption-math";
 import {
   autoQuality,
   cursorShape,
@@ -48,6 +56,25 @@ interface Props {
 }
 
 const STORE_KEY = "aspirants:player";
+const CAPTION_KEY = "aspirants:captions";
+
+/** The captions as the viewer left them (on, size, background, place). They start on. */
+function readCaptions(): CaptionSettings {
+  try {
+    const raw = window.localStorage.getItem(CAPTION_KEY);
+    return raw ? normalizeCaptions(JSON.parse(raw)) : { ...DEFAULT_CAPTIONS };
+  } catch {
+    return { ...DEFAULT_CAPTIONS };
+  }
+}
+
+function writeCaptions(settings: CaptionSettings) {
+  try {
+    window.localStorage.setItem(CAPTION_KEY, JSON.stringify(settings));
+  } catch {
+    // Not saved: the settings last until the player closes.
+  }
+}
 const EASE = "cubic-bezier(0.83, 0, 0.17, 1)";
 const ENTER_MS = 760;
 const EXIT_MS = 560;
@@ -222,7 +249,10 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   const [muted, setMuted] = useState(() => useSiteStore.getState().muted);
   const [quality, setQuality] = useState<string>("auto");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [captions, setCaptions] = useState(false);
+  const [cap, setCap] = useState<CaptionSettings>(readCaptions);
+  const [capMenu, setCapMenu] = useState(false);
+  const capRef = useRef(cap);
+  const capControl = useRef<CaptionControl | null>(null);
   const [controls, setControls] = useState(true);
   const [shape, setShape] = useState<CursorShape>("dot");
   const [cursorOn, setCursorOn] = useState(false);
@@ -247,8 +277,16 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     quality === "auto" ? auto : (video.sources.find((s) => s.label === quality) ?? auto);
 
   useEffect(() => {
-    menuRef.current = menuOpen;
-  }, [menuOpen]);
+    menuRef.current = menuOpen || capMenu;
+  }, [menuOpen, capMenu]);
+
+  /** Change the captions. Saved when `done` is true (a drag saves once, when it ends). */
+  const changeCaptions = useCallback((next: Partial<CaptionSettings>, done: boolean) => {
+    const merged = { ...capRef.current, ...next };
+    capRef.current = merged;
+    setCap(merged);
+    if (done) writeCaptions(merged);
+  }, []);
 
   // Close ------------------------------------------------------------------------------------
   const close = useCallback(() => {
@@ -408,21 +446,16 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     const onEscape = (e: globalThis.KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
-      if (menuRef.current) setMenuOpen(false);
-      else close();
+      if (menuRef.current) {
+        setMenuOpen(false);
+        setCapMenu(false);
+      } else close();
     };
     window.addEventListener("keydown", onEscape);
     return () => {
       window.removeEventListener("keydown", onEscape);
     };
   }, [close]);
-
-  // Captions track on or off ----------------------------------------------------------------
-  useEffect(() => {
-    const el = v();
-    if (!el) return;
-    for (const t of Array.from(el.textTracks)) t.mode = captions ? "showing" : "disabled";
-  }, [captions, ready]);
 
   // Another size: carry on from the same moment ---------------------------------------------
   const lastSrc = useRef(active.src);
@@ -725,7 +758,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
         setMuted((m) => !m);
         break;
       case "c":
-        if (video.captions) setCaptions((c) => !c);
+        if (video.captions) changeCaptions({ on: !capRef.current.on }, true);
         break;
       case "Home":
         if (!onControl) seekTo(0);
@@ -829,6 +862,15 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           />
         </div>
         <div className={styles.scrim} aria-hidden="true" />
+        {video.captions ? (
+          <CaptionLayer
+            videoRef={videoRef}
+            settings={cap}
+            onChange={changeCaptions}
+            preview={capMenu}
+            control={capControl}
+          />
+        ) : null}
       </div>
 
       {/* Big feedback pulse for play and pause. */}
@@ -976,6 +1018,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
                   aria-label={`Quality, ${quality === "auto" ? `Auto, ${auto.label}` : active.label}`}
                   onClick={() => {
                     setMenuOpen((o) => !o);
+                    setCapMenu(false);
                   }}
                 >
                   <Icon name="gear" />
@@ -1005,13 +1048,102 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
               </div>
             ) : null}
             {video.captions ? (
+              <div className={styles.quality} data-zone="button">
+                <button
+                  type="button"
+                  className={styles.textButton}
+                  aria-haspopup="true"
+                  aria-expanded={capMenu}
+                  aria-label="Caption settings"
+                  onClick={() => {
+                    setCapMenu((o) => !o);
+                    setMenuOpen(false);
+                  }}
+                >
+                  <span aria-hidden="true">Aa</span>
+                </button>
+                {capMenu ? (
+                  <div className={styles.capPanel} role="group" aria-label="Caption settings">
+                    <div className={styles.capRow} role="group" aria-label="Size">
+                      <span className={styles.capLabel}>Size</span>
+                      <div className={styles.capSegment}>
+                        {CAPTION_SIZES.map((size, i) => (
+                          <button
+                            key={size.label}
+                            type="button"
+                            aria-pressed={cap.size === i}
+                            onClick={() => {
+                              changeCaptions({ size: i }, true);
+                            }}
+                          >
+                            {size.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.capRow} role="group" aria-label="Background">
+                      <span className={styles.capLabel}>Background</span>
+                      <div className={styles.capSegment}>
+                        {CAPTION_BACKGROUNDS.map((bg) => (
+                          <button
+                            key={bg.id}
+                            type="button"
+                            aria-pressed={cap.background === bg.id}
+                            onClick={() => {
+                              changeCaptions({ background: bg.id }, true);
+                            }}
+                          >
+                            {bg.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.capRow} role="group" aria-label="Position">
+                      <span className={styles.capLabel}>Position</span>
+                      <div className={styles.capNudge}>
+                        {(
+                          [
+                            ["Move up", "↑", 0, -1],
+                            ["Move down", "↓", 0, 1],
+                            ["Move left", "←", -1, 0],
+                            ["Move right", "→", 1, 0],
+                          ] as const
+                        ).map(([name, glyph, dx, dy]) => (
+                          <button
+                            key={name}
+                            type="button"
+                            aria-label={`${name} captions`}
+                            onClick={() => {
+                              capControl.current?.nudge(dx, dy);
+                            }}
+                          >
+                            <span aria-hidden="true">{glyph}</span>
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          className={styles.capReset}
+                          onClick={() => {
+                            changeCaptions({ x: DEFAULT_CAPTIONS.x, y: DEFAULT_CAPTIONS.y }, true);
+                          }}
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                    <p className={styles.capHint}>You can also drag the captions on the picture.</p>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {video.captions ? (
               <button
                 type="button"
                 className={styles.iconButton}
-                aria-pressed={captions}
+                aria-pressed={cap.on}
                 aria-label="Captions"
                 onClick={() => {
-                  setCaptions((c) => !c);
+                  changeCaptions({ on: !cap.on }, true);
                 }}
                 data-zone="button"
               >

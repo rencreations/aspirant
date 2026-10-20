@@ -393,6 +393,90 @@
   color: var(--ink);
 }
 
+/* Caption settings ---------------------------------------------------------------------------- */
+.capPanel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  display: grid;
+  gap: 0.7rem;
+  width: min(21rem, calc(100vw - 2rem));
+  padding: 0.8rem 0.9rem;
+  background: var(--ink);
+  border: 1px solid var(--orange);
+  color: #fff;
+  animation: pop var(--dur-base) var(--ease-out);
+}
+
+.capRow {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.capLabel {
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.capSegment {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.capSegment button,
+.capNudge button {
+  min-height: 36px;
+  padding: 0 0.4rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.capSegment button + button {
+  margin-left: -1px;
+}
+
+.capSegment button:hover,
+.capSegment button:focus-visible,
+.capNudge button:hover,
+.capNudge button:focus-visible {
+  background: #fff;
+  color: var(--ink);
+}
+
+.capSegment button[aria-pressed="true"] {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--ink);
+}
+
+.capNudge {
+  display: grid;
+  grid-template-columns: repeat(4, 2.4rem) 1fr;
+  gap: 0.3rem;
+}
+
+.capNudge .capReset {
+  padding-inline: 0.8rem;
+}
+
+.capHint {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 0.75);
+}
+
 /* Centre feedback --------------------------------------------------------------------------- */
 .flash {
   position: absolute;
