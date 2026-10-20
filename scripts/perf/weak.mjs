@@ -16,9 +16,10 @@ import { pathToFileURL } from "node:url";
 
 // Playwright is a dependency of apps/web, so it is found from there.
 const require = createRequire(new URL("../../apps/web/package.json", import.meta.url));
-const { chromium } = await import(
+const playwright = await import(
   pathToFileURL(require.resolve(["@playwright", "test"].join("/"))).href
 );
+const { chromium } = playwright.default ?? playwright;
 const [
   ,
   ,
