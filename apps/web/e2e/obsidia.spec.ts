@@ -96,17 +96,22 @@ test("the buttons can be pressed without errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("a touch point plays its short at once and the main panel comes back, with no extra page", async ({
+test("a touch point plays its short at once, Back leaves it, and the main panel comes back", async ({
   page,
 }) => {
   await open(page);
   const spot = page.getByRole("button", { name: SPOT_NAMES[0]! });
   // The circle follows the picture, so it is never still.
   await spot.click({ force: true });
-  await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
+  // The panel steps aside and Back is the way out (Esc does the same).
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible({
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
     timeout: 60_000,
   });
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
   await expect(spot).toBeVisible();
   await expect(spot).toBeEnabled();
 });

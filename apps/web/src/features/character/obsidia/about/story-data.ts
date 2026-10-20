@@ -115,7 +115,7 @@ export const STORY: readonly StorySection[] = [
       {
         type: "voice",
         n: 3,
-        why: "The doctrine of {{the-cycle|the Cycle}}, which I repeat as if I believed it.",
+        why: "The doctrine of {{the-cycle|the Cycle}}, in my own words.",
       },
       {
         type: "voice",
@@ -145,13 +145,13 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: "At its heart is a great dark hall. Black steps go down to a low dais with no throne. Behind it rises a tall column ringed with red lights like eyes. When I stand on the dais, lightning comes to my hand like a cat.",
       },
-      { type: "voice", n: 30, why: "What the storm says when it is asked who it is." },
+      { type: "voice", n: 30, why: "What the storm would say if it were asked who it is." },
       {
         type: "p",
         text: "I commanded for ages, and I commanded well. The Matrix sent its word to the fleet, and I passed it on.",
       },
       { type: "voice", n: 6, why: "How a purge begins." },
-      { type: "voice", n: 7, why: "When a new weapon is made for the Enders." },
+      { type: "voice", n: 7, why: "What I say when the Matrix offers the fleet more strength." },
       {
         type: "p",
         text: 'When the work was done, I said: "That is enough recalibration." That is my word for a reset that stops short of the end. Then I told them to withdraw. They went back through their portals.',
@@ -216,7 +216,7 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: 'I looked in the black glass of the wall. I saw a pale lady in a black gown, wearing a face that was nobody\'s. "There," I said. "That is much better."',
       },
-      { type: "voice", n: 1, why: "What I say when I wear this face and speak of my work." },
+      { type: "voice", n: 1, why: "A line about my work, as I say it to myself." },
     ],
   },
   {
@@ -305,7 +305,7 @@ export const STORY: readonly StorySection[] = [
         alt: "Obsidia with her long gold hair, a storm and a ruined city behind her, a pink blade at her side",
         caption: "Official trailer. A storm, and the one who sends it.",
       },
-      { type: "voice", n: 13, why: "The night itself." },
+      { type: "voice", n: 13, why: "What I thought of that night." },
       {
         type: "p",
         text: "I had expected the humans to ignore the child, or to fear her red eyes. I had not expected arms. A rescue worker, {{karina-voss|Karina Voss}}, knelt in the glass and opened hers. The child crossed to her. Karina bent over the small head, with her back to the storm.",
@@ -404,12 +404,12 @@ export const STORY: readonly StorySection[] = [
   },
   {
     id: "world",
-    title: "The voice I use on the world",
-    chapters: ["c51", "c59"],
+    title: "What the world hears from me",
+    chapters: [],
     blocks: [
       {
         type: "p",
-        text: "I have a second voice. I use it on the ones below. It is short, and it is certain, and it does not ask. This is how it sounds.",
+        text: "These are my words for the world below. They are not tied to one scene. I say them short, and certain, and I do not ask.",
       },
       {
         type: "image",
@@ -420,10 +420,10 @@ export const STORY: readonly StorySection[] = [
       {
         type: "voice",
         n: 38,
-        why: "What I tell the ones who call us destroyers.",
+        why: "What I say to the ones who call us destroyers.",
       },
-      { type: "voice", n: 19, why: "What I tell the ones who refuse." },
-      { type: "voice", n: 25, why: "What I tell myself when I need it to be simple." },
+      { type: "voice", n: 19, why: "What I say to the ones who refuse." },
+      { type: "voice", n: 25, why: "What I say when I want it to be simple." },
       {
         type: "p",
         text: "When someone stands in front of me, I speak to them like this.",
@@ -511,7 +511,7 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: 'The Will told me where. IT IS THE SHORE WITH THE LAMP. "Terrinia," I said. I would bring the Citadel and the fleet and lead the purge. There would be no recalibration. There would be no withdrawal. There would be no embers.',
       },
-      { type: "voice", n: 11, why: "What I thought as I heard it, and meant for her." },
+      { type: "voice", n: 11, why: "A hope I held for her as I heard the order." },
       {
         type: "p",
         text: "I had planned to argue. I had prepared whole speeches. But at the rail I could not say one word. It was not fear. It was habit. I had obeyed the Will all my life. I wonder if this is how Selena felt, I thought, before she had a name. Under that thought I found envy. She said no. She said it to my face. I did not know it could be done.",
@@ -520,7 +520,7 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: 'THE CHILD IS A THING YOU HAVE MADE, TO MY USE, said the Will, AND SHE HAS TURNED IT. YOU WILL ASK HER TO COME HOME. YOU WILL ASK HER ONCE. IF SHE REFUSES, YOU WILL ASK HER A SECOND TIME. IF SHE REFUSES A SECOND TIME, YOU WILL CORRECT HER. I CANNOT HAVE A STRING THAT WILL NOT PULL. I did not answer. "...Yes," I said, in the end. I did not know why. I did not believe I would.',
       },
-      { type: "voice", n: 40, why: "The question I put to the Will's order, in my own head." },
+      { type: "voice", n: 40, why: "The question I put to the order, in my own head." },
     ],
   },
   {
@@ -688,7 +688,7 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: 'Her arms went slack. Then she said, in a thin rasp: "Hey. If the world ended right now, what would happen to my graduation ceremony? Someone will have to explain to the Dean why I left in the middle of the Latin." "Silence!" It was my first outburst. The golden core in the beast\'s throat wavered. It was enough. She kicked free and shot up the shaft, out through the burning side of the Citadel, into open space.',
       },
-      { type: "voice", n: 36, why: "What I had said to her, and could not hold to." },
+      { type: "voice", n: 36, why: "The ending I had ready for her, in my own head." },
     ],
   },
   {
@@ -715,7 +715,7 @@ export const STORY: readonly StorySection[] = [
         type: "p",
         text: '"Come back, my puppet," I said. I said it very quietly, with a catch in it, and a faint, dry hope. Scorched and ragged, one arm hanging, she raised her blades. "Sorry, ma\'am, but I still prefer life at the academy!" She charged.',
       },
-      { type: "voice", n: 18, why: "The last thing I had left to say to anyone who defied me." },
+      { type: "voice", n: 18, why: "What I say to anyone who defies me." },
     ],
   },
   {

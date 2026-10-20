@@ -54,7 +54,9 @@ describe("Obsidia's story", () => {
     expect(STORY.length).toBeGreaterThanOrEqual(18);
     for (const s of STORY) {
       expect(s.blocks.length).toBeGreaterThan(1);
-      expect(s.chapters.length).toBeGreaterThan(0);
+      // Every section points at its chapters, except the words she has for the world, which are
+      // tied to no scene.
+      if (s.id !== "world") expect(s.chapters.length).toBeGreaterThan(0);
     }
   });
 

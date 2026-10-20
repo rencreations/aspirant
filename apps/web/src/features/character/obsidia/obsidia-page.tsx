@@ -318,7 +318,9 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   const waiting = chosen !== null || (state.leaving && !state.ui);
   // Back is there while the page is open and while it waits for the exit to start. It goes when
   // the exit starts, and the "Heading back" screen carries on alone until she is posed.
-  const showBack = mode === "page" || mode === "leaving";
+  // During a short it is the way out as well (the wipe covers the screen while the picture goes
+  // back to the idle loop). Esc does the same.
+  const showBack = mode === "page" || mode === "leaving" || mode === "short";
   const pageOpen = showBack || mode === "intro" || mode === "outro";
   const waitLabel =
     chosen === null && state.leaving
@@ -344,7 +346,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   useHotkey(
     "n",
     () => {
-      const free = !pageOpen && !busy && mode !== "short";
+      const free = !pageOpen && !busy;
       if (free && !document.querySelector("[role='dialog']")) nextRoute();
     },
     true,
@@ -492,14 +494,15 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
               state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
               waitMs={backWait}
               waitKey={waitKey}
-              disabled={state.leaving || mode !== "page"}
+              disabled={state.leaving || (mode !== "page" && mode !== "short")}
               onPointerEnter={() => {
                 audio.blip("hover");
               }}
               onFocus={() => undefined}
               onClick={() => {
                 audio.blip("click");
-                stage.current?.leave();
+                if (mode === "short") leaveShort();
+                else stage.current?.leave();
               }}
             />
           </div>
