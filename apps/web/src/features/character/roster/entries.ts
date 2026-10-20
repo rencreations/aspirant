@@ -2,7 +2,7 @@
  * Server-side data for the roster: slim, serialisable entries for the client island, so the
  * voice tables and the full character files stay out of the browser bundle.
  */
-import { characters, keyVoiceLines } from "@/content/characters";
+import { characters } from "@/content/characters";
 import { pairs } from "@/content/pairs";
 import type { PairId, Side, Slug } from "@/content/types";
 
@@ -18,10 +18,6 @@ export interface RosterCharacter {
   readonly tagline: string;
   readonly side: Side;
   readonly pair: PairId;
-  /** The face in the splash, as an object-position. */
-  readonly focus: string;
-  /** Signature voice line (public path) and its translation. */
-  readonly voice: { readonly src: string; readonly en: string } | null;
   /** The character's signature colour, raw, for lines and glows. */
   readonly colour: string;
 }
@@ -38,7 +34,6 @@ export interface RosterPair {
 export function rosterCharacters(): RosterCharacter[] {
   return characters.map((c) => {
     const art = ART[c.slug];
-    const line = keyVoiceLines(c.slug)[0] ?? c.voice[0];
     return {
       slug: c.slug,
       order: c.order,
@@ -49,8 +44,6 @@ export function rosterCharacters(): RosterCharacter[] {
       tagline: c.tagline,
       side: c.side,
       pair: c.pair,
-      focus: `${art.focus.x}% ${art.focus.y}%`,
-      voice: line ? { src: `/${line.file}`, en: line.en } : null,
       colour: c.palette[art.accent.accent],
     };
   });

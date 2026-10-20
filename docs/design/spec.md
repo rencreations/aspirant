@@ -114,7 +114,7 @@ The world explained, in contrast and diagrams. Sections:
 
 ### 4.5 Characters
 
-`/character`: the roster wall. One full-screen row of ten big slanted panels of splash art (the only pictures on it), in pairs, that scrolls sideways (wheel, drag, swipe, arrow keys, the rail) and comes to rest on a panel like a magnet. The panel in front is lit and shows its file, the others sleep behind a blue haze. Hover or focus plays a voice line. A click closes the others and opens the character. See "The roster wall" in `design-system.md`.
+`/character`: the roster wall, after the owner's reference strip. One full-screen row of slanted panels of splash art (the only pictures on it), each pair laid out its own way, the newest pair first and big on a crimson plate with a red tear, a blue plate at the end. It scrolls sideways (wheel, drag, swipe, arrow keys, the rail). The pair in the middle is lit. Hover lifts a panel and lights its pair, and plays nothing. A click closes the others and opens the character. See "The roster wall" in `design-system.md`.
 
 `/character/[slug]`:
 

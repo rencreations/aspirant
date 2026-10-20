@@ -25,35 +25,27 @@ import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { isTypingTarget, prefersReducedMotion, useHotkey, useIsoLayoutEffect } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
+import { perfLevel, startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
+import { BAYS, BOARD_H, BOARD_W, END, mid, SLANT, SLOTS, TEAR, type Slot } from "./layout";
 import styles from "./roster.module.css";
-import { splashPath, splashSmallPath } from "./splash";
+import { splashPath } from "./splash";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Hover intent before a voice line plays, so sweeping across the wall stays quiet. */
-const VOICE_DELAY = 240;
-/** How long an Aspirant has to be in front of you to count as met. */
-const MEET_AFTER = 900;
+/** How long a pair has to be in front of you to count as met. */
+const MEET_AFTER = 1000;
 const MET_KEY = "aspirants:met";
 /** The click flourish before the page opens. */
-const CHOOSE_MS = 340;
+const CHOOSE_MS = 360;
 
 export interface RosterProps {
   characters: readonly RosterCharacter[];
   pairs: readonly RosterPair[];
   voiceLines: number;
   next: { href: Route; label: string; name: string };
-}
-
-interface Entry {
-  character: RosterCharacter;
-  pair: RosterPair;
-  pairIndex: number;
-  /** 0 for the first of the pair, 1 for the second. */
-  place: 0 | 1;
 }
 
 function readMet(): Set<Slug> {
@@ -75,49 +67,92 @@ function writeMet(met: ReadonlySet<Slug>) {
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
+/** The slots of each pair, in the order of the bays. */
+const SLOTS_OF_BAY = BAYS.map((id) => SLOTS.filter((s) => s.pair === id));
+/** Where each pair is across the board (the middle of its panels), and the closing plate. */
+const BAY_CENTRES = [
+  ...SLOTS_OF_BAY.map((ss) => ss.reduce((sum, s) => sum + mid(s), 0) / ss.length),
+  (END.x1 + END.x2) / 2,
+];
+
+/** The jagged line of the tear that splits the crimson from the dim, along the edge of Obsidia. */
+const TEAR_JITTER = [0, 7, -5, 9, -8, 4, -9, 8, -4, 10, -7, 5, -9, 6, 0, -6];
+const TEAR_POINTS = TEAR_JITTER.map((j, i) => {
+  const v = 5 + (i * 375) / (TEAR_JITTER.length - 1);
+  return [TEAR.top - SLANT * (v - 5) + j, v] as const;
+});
+const TEAR_PATH = TEAR_POINTS.map(
+  ([x, v], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${v.toFixed(1)}`,
+).join(" ");
+const TEAR_X0 = Math.min(...TEAR_POINTS.map(([x]) => x)) - 40;
+const TEAR_X1 = Math.max(...TEAR_POINTS.map(([x]) => x)) + 40;
+/** Embers that leave the tear. */
+const EMBERS = Array.from({ length: 9 }, (_, n) => {
+  const v = 40 + n * 38;
+  return { v, x: TEAR.top - SLANT * (v - 5) };
+});
+
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
   tilt: (e: PointerEvent<HTMLAnchorElement>) => void;
-  tiltEnd: (e: PointerEvent<HTMLAnchorElement>) => void;
-  release: () => void;
-  focus: (c: RosterCharacter, stop: number, e: FocusEvent<HTMLAnchorElement>) => void;
+  leave: (e: PointerEvent<HTMLAnchorElement>) => void;
+  focus: (c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => void;
   choose: (c: RosterCharacter, e: MouseEvent<HTMLAnchorElement>) => void;
 }
 
 interface PanelProps {
-  entry: Entry;
-  stop: number;
+  slot: Slot;
+  character: RosterCharacter;
+  bay: number;
   index: number;
   lit: boolean;
+  mate: boolean;
   met: boolean;
   chosen: boolean;
   actions: Actions;
-  registerStop: (el: HTMLLIElement | null) => void;
   registerArt: (el: HTMLSpanElement | null) => void;
 }
 
 /** One panel. It only draws again when it lights up, is met or is chosen, not on every scroll. */
 const PanelView = memo(function PanelView({
-  entry: { character: c, pair, pairIndex, place },
-  stop,
-  index: i,
+  slot: s,
+  character: c,
+  bay,
+  index,
   lit,
+  mate,
   met,
   chosen,
   actions,
-  registerStop,
   registerArt,
 }: PanelProps) {
+  const style = {
+    "--x0": s.x0,
+    "--x1": s.x1,
+    "--x2": s.x2,
+    "--x3": s.x3,
+    "--y0": s.y0,
+    "--y1": s.y1,
+    "--z": s.z,
+    "--zoom": s.zoom,
+    "--fx": s.fx,
+    "--fy": s.fy,
+    "--tx": s.tx,
+    "--ty": s.ty,
+    "--c": c.colour,
+    "--i": index,
+  } as CSSProperties;
   return (
     <li
-      ref={registerStop}
       className={styles.panel}
-      style={{ "--c": c.colour, "--i": i, "--focus": c.focus } as CSSProperties}
-      data-active={lit}
+      style={style}
+      data-slug={c.slug}
+      data-lit={lit}
+      data-mate={mate}
       data-met={met}
       data-chosen={chosen}
-      data-place={place}
-      data-pair={pairIndex}
+      data-tall={s.tall}
+      data-bright={s.bright === true}
     >
       <TLink
         href={characterRoute(c.slug)}
@@ -132,16 +167,11 @@ const PanelView = memo(function PanelView({
           actions.enter(c, e);
         }}
         onPointerMove={actions.tilt}
-        onPointerLeave={(e) => {
-          actions.release();
-          actions.tiltEnd(e);
-        }}
+        onPointerLeave={actions.leave}
         onFocus={(e) => {
-          actions.focus(c, stop, e);
+          actions.focus(c, bay, e);
         }}
-        onBlur={actions.release}
       >
-        <span className={styles.echo} aria-hidden="true" />
         <span className={styles.rim} aria-hidden="true" />
         <span className={styles.face}>
           <span className={styles.art} ref={registerArt} aria-hidden="true">
@@ -150,8 +180,6 @@ const PanelView = memo(function PanelView({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={asset(splashPath(c.slug))}
-                srcSet={`${asset(splashSmallPath(c.slug))} 800w, ${asset(splashPath(c.slug))} 2048w`}
-                sizes="(min-width: 48em) 60vw, 100vw"
                 alt=""
                 width={2048}
                 height={1152}
@@ -163,59 +191,40 @@ const PanelView = memo(function PanelView({
           <span className={styles.veil} aria-hidden="true" />
           <span className={styles.scrim} aria-hidden="true" />
           <span className={styles.shine} aria-hidden="true" />
-          <span className={styles.num} aria-hidden="true">
-            {pad(c.order)}
+          <span className={styles.tag}>
+            <b aria-hidden="true">{pad(c.order)}</b>
+            <span>{c.name}</span>
           </span>
-          <span className={styles.chips}>
-            <span className={styles.chip}>
-              Pair {pad(pairIndex + 1)} <span aria-hidden="true">/</span> {pair.names}
-            </span>
-            <span className={styles.chip} data-side={c.side}>
-              {c.side === "storm" ? "Storm" : "Daybreak"}
-            </span>
-          </span>
-          <span className={styles.info}>
-            <span className={styles.name}>{c.name}</span>
+          <span className={styles.more}>
             <span className={styles.aspirant}>{c.aspirantName}</span>
-            <span className={styles.more}>
-              <span className={styles.jp} lang="ja">
-                {c.jp}
-                {c.romaji ? <span> {c.romaji}</span> : null}
-              </span>
-              <span className={styles.tagline}>{c.tagline}</span>
-              {c.voice ? (
-                <span className={styles.voice}>
-                  {/^["“']/.test(c.voice.en) ? c.voice.en : `“${c.voice.en}”`}
-                </span>
-              ) : null}
+            <span className={styles.jp} lang="ja">
+              {c.jp}
+              {c.romaji ? <span> {c.romaji}</span> : null}
             </span>
+            <span className={styles.tagline}>{c.tagline}</span>
           </span>
-          <span className={styles.ribbon} aria-hidden="true">
-            <span>Open file</span>
-            <svg viewBox="0 0 24 12" width="22" height="11" focusable="false">
-              <path d="M0 4h14V0l10 6-10 6V8H0z" fill="currentColor" />
-            </svg>
-            <span className={styles.badge}>
-              <StarGlyph />
-            </span>
+        </span>
+        <span className={styles.ribbon} aria-hidden="true">
+          <span>Open</span>
+          <svg viewBox="0 0 28 14" width="26" height="13" focusable="false">
+            <path d="M0 5h16V0l12 7-12 7V9H0z" fill="currentColor" />
+          </svg>
+          <span className={styles.badge}>
+            <StarGlyph />
           </span>
         </span>
       </TLink>
-      {place === 0 ? (
-        <span className={styles.seam} aria-hidden="true">
-          <StarGlyph />
-        </span>
-      ) : null}
     </li>
   );
 });
 
 /**
- * The roster wall: the ten as big slanted panels of their splash art, side by side, that you
- * scroll sideways (wheel, drag, swipe, keys, the rail). The panel in front lights up and shows
- * its file, the others sleep behind a blue haze. Scrolling settles on a panel like a magnet. A
- * hover or a stop on a panel plays its voice line and counts it as met. A click closes the other
- * panels and opens the character.
+ * The roster wall, drawn from the owner's reference strip: one row of slanted panels of splash
+ * art, each pair laid out its own way (one over the other, one tall, one narrow), the newest pair
+ * first and big on a crimson plate split by a red tear, and a blue plate at the end. It scrolls
+ * sideways (wheel, drag, swipe, keys, the rail). The pair in front is lit and the rest sleep behind
+ * a blue haze. A hover lifts a panel and lights its pair. A click closes the others and opens the
+ * character. Nothing plays on a hover.
  *
  * The page does not scroll up and down: the row is a native `overflow-x` box, so touch, keys and
  * find-in-page keep working, and the wheel is turned into sideways easing on top of it. Only
@@ -225,105 +234,123 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   const router = useTransitionRouter();
   const { pause, resume } = useLenis();
 
-  // The ten in the order the wall shows them: pair by pair.
-  const list = useMemo<Entry[]>(() => {
-    const bySlug = new Map(characters.map((c) => [c.slug, c]));
-    return pairs.flatMap((pair, pairIndex) =>
-      pair.members
-        .map((slug) => bySlug.get(slug))
-        .filter((c): c is RosterCharacter => c !== undefined)
-        .sort((a, b) => a.order - b.order)
-        .map((character, i) => ({ character, pair, pairIndex, place: i === 0 ? 0 : 1 })),
-    );
-  }, [characters, pairs]);
-  const count = list.length;
-  /** Stops: the opening plate, the ten, the closing plate. */
-  const STOPS = count + 2;
+  const bySlug = useMemo(() => new Map(characters.map((c) => [c.slug, c])), [characters]);
+  const pairNames = useMemo(() => new Map(pairs.map((p) => [p.id, p])), [pairs]);
+  const entries = useMemo(
+    () =>
+      SLOTS.flatMap((slot) => {
+        const character = bySlug.get(slot.slug);
+        return character ? [{ slot, character, bay: BAYS.indexOf(slot.pair) }] : [];
+      }),
+    [bySlug],
+  );
+  const count = entries.length;
+  const STOPS = BAYS.length + 1;
 
   const scroller = useRef<HTMLDivElement>(null);
-  const stops = useRef<Array<HTMLLIElement | null>>([]);
+  const board = useRef<HTMLDivElement>(null);
   const arts = useRef<Array<HTMLSpanElement | null>>([]);
   const ghost = useRef<HTMLDivElement>(null);
   const fill = useRef<HTMLSpanElement>(null);
   const engine = useRef({
-    centers: [] as number[],
-    mids: [] as number[],
-    max: 0,
+    u: 1,
+    left: 0,
     vw: 0,
+    max: 0,
+    mids: [] as number[],
+    bays: [] as number[],
+    centers: [] as number[],
     target: 0,
     wheeling: false,
     wheelRaf: 0,
     glideRaf: 0,
-    programmatic: false,
-    settle: 0,
     frame: 0,
-    touching: false,
+    last: 0,
+    skew: 0,
     drag: { on: false, moved: false, x: 0, from: 0, v: 0, last: 0, lastX: 0 },
     suppress: false,
     active: 0,
   });
 
   const [active, setActive] = useState(0);
+  const [hovered, setHovered] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [moved, setMoved] = useState(false);
   const [met, setMet] = useState<ReadonlySet<Slug>>(() => new Set());
   const metRef = useRef<Set<Slug>>(new Set());
   const [pop, setPop] = useState(0);
   const [chosen, setChosen] = useState<Slug | null>(null);
-  const voiceTimer = useRef(0);
+  const hoverTimer = useRef(0);
   const meetTimer = useRef(0);
 
   // ---- the engine -------------------------------------------------------------------------
 
   const measure = useCallback(() => {
     const el = scroller.current;
-    if (!el) return;
+    const b = board.current;
+    if (!el || !b) return;
     const e = engine.current;
     e.vw = el.clientWidth;
     e.max = Math.max(0, el.scrollWidth - e.vw);
-    e.mids = stops.current.map((li) => (li ? li.offsetLeft + li.offsetWidth / 2 : 0));
-    e.centers = e.mids.map((m) => clamp(m - e.vw / 2, 0, e.max));
+    e.u = b.offsetHeight / BOARD_H;
+    e.left = b.offsetLeft;
+    e.mids = SLOTS.map((s) => e.left + e.u * mid(s));
+    e.bays = BAY_CENTRES.map((c) => e.left + e.u * c);
+    e.centers = e.bays.map((x) => clamp(x - e.vw / 2, 0, e.max));
   }, []);
 
-  /** The scroll position that puts a stop in the middle. */
-  const nearest = (x: number) => {
-    const { centers } = engine.current;
+  /** The pair (or the closing plate) in the middle of the screen. */
+  const bayAt = (sl: number) => {
+    const { bays, vw } = engine.current;
+    const middle = sl + vw / 2;
     let best = 0;
-    for (let i = 1; i < centers.length; i++) {
-      if (Math.abs((centers[i] ?? 0) - x) < Math.abs((centers[best] ?? 0) - x)) best = i;
+    for (let i = 1; i < bays.length; i++) {
+      if (Math.abs((bays[i] ?? 0) - middle) < Math.abs((bays[best] ?? 0) - middle)) best = i;
     }
     return best;
   };
 
-  /** Everything that follows the scroll: the parallax, the progress line, the stop in front. */
+  const updateRef = useRef<() => void>(() => undefined);
+
+  /** Everything that follows the scroll: the parallax, the lean, the progress line, the pair in front. */
   const update = useCallback(() => {
     const el = scroller.current;
     const e = engine.current;
     e.frame = 0;
     if (!el) return;
     const sl = el.scrollLeft;
+    const still = prefersReducedMotion();
+    const lean = !still && perfLevel() === "full";
+    // The speed of the scroll leans the pictures a little, and eases back to nothing.
+    const v = sl - e.last;
+    e.last = sl;
+    e.skew = !lean ? 0 : e.skew * 0.82 + clamp(-v * 0.05, -4, 4) * 0.18;
+    if (Math.abs(e.skew) < 0.02) e.skew = 0;
     if (ghost.current)
-      ghost.current.style.transform = `translate3d(${(-sl * 0.32).toFixed(1)}px,0,0)`;
+      ghost.current.style.transform = `translate3d(${(-sl * 0.22).toFixed(1)}px,0,0)`;
     if (fill.current)
       fill.current.style.transform = `scaleX(${e.max > 0 ? (sl / e.max).toFixed(4) : 0})`;
-    const still = prefersReducedMotion();
     for (let i = 0; i < arts.current.length; i++) {
       const art = arts.current[i];
       if (!art) continue;
       // Where the panel is relative to the middle of the screen, in screens.
-      const d = ((e.mids[i + 1] ?? 0) - sl - e.vw / 2) / Math.max(1, e.vw);
-      if (Math.abs(d) > 1.1) continue;
+      const d = ((e.mids[i] ?? 0) - sl - e.vw / 2) / Math.max(1, e.vw);
+      if (Math.abs(d) > 0.9) continue;
       art.style.transform = still
-        ? "translate3d(0,0,0) scale(1.1)"
-        : `translate3d(${(-d * 9).toFixed(2)}%,0,0) scale(1.14)`;
+        ? "translate3d(0,0,0) scale(1.08)"
+        : `translate3d(${(-d * 7).toFixed(2)}%,0,0) scale(1.1)${e.skew === 0 ? "" : ` skewX(${e.skew.toFixed(2)}deg)`}`;
     }
-    const a = nearest(sl);
+    const a = bayAt(sl);
     if (a !== e.active) {
       e.active = a;
       setActive(a);
     }
     if (sl > 8) setMoved(true);
+    if (e.skew !== 0) e.frame = requestAnimationFrame(() => updateRef.current());
   }, []);
+  useIsoLayoutEffect(() => {
+    updateRef.current = update;
+  });
 
   const schedule = useCallback(() => {
     const e = engine.current;
@@ -334,15 +361,13 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     const e = engine.current;
     cancelAnimationFrame(e.glideRaf);
     cancelAnimationFrame(e.wheelRaf);
-    window.clearTimeout(e.settle);
     e.glideRaf = 0;
     e.wheelRaf = 0;
     e.wheeling = false;
-    e.programmatic = false;
   };
 
   /** Ease the row to a scroll position. */
-  const glide = useCallback((to: number, fast = false) => {
+  const glide = useCallback((to: number) => {
     const el = scroller.current;
     if (!el) return;
     const e = engine.current;
@@ -354,42 +379,22 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       el.scrollLeft = target;
       return;
     }
-    const dur = fast ? 380 : clamp(420 + Math.abs(target - from) * 0.45, 460, 1200);
+    const dur = clamp(520 + Math.abs(target - from) * 0.4, 560, 1300);
     const t0 = performance.now();
-    e.programmatic = true;
     const step = (now: number) => {
       const p = Math.min(1, (now - t0) / dur);
       el.scrollLeft = from + (target - from) * easeOut(p);
-      if (p < 1) e.glideRaf = requestAnimationFrame(step);
-      else {
-        e.glideRaf = 0;
-        e.programmatic = false;
-      }
+      e.glideRaf = p < 1 ? requestAnimationFrame(step) : 0;
     };
     e.glideRaf = requestAnimationFrame(step);
   }, []);
 
-  const goStop = useCallback(
-    (stop: number, fast = false) => {
-      const i = clamp(stop, 0, STOPS - 1);
-      glide(engine.current.centers[i] ?? 0, fast);
+  /** Go to a pair: 0 is the newest, the last stop is the closing plate. */
+  const goBay = useCallback(
+    (bay: number) => {
+      glide(engine.current.centers[clamp(bay, 0, STOPS - 1)] ?? 0);
     },
     [glide, STOPS],
-  );
-
-  /** After the last push, come to rest on the nearest panel. */
-  const settleSoon = useCallback(
-    (from: () => number, wait: number) => {
-      const e = engine.current;
-      window.clearTimeout(e.settle);
-      e.settle = window.setTimeout(() => {
-        const x = from();
-        cancelAnimationFrame(e.wheelRaf);
-        e.wheeling = false;
-        glide(e.centers[nearest(x)] ?? 0, true);
-      }, wait);
-    },
-    [glide],
   );
 
   useEffect(() => {
@@ -411,8 +416,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       }
       cancelAnimationFrame(e.glideRaf);
       e.glideRaf = 0;
-      e.programmatic = false;
-      e.target = clamp((e.wheeling ? e.target : el.scrollLeft) + d * 1.15, 0, e.max);
+      e.target = clamp((e.wheeling ? e.target : el.scrollLeft) + d * 1.2, 0, e.max);
       if (!e.wheeling) {
         e.wheeling = true;
         const run = () => {
@@ -424,28 +428,18 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
             e.wheelRaf = 0;
             return;
           }
-          el.scrollLeft = cur + diff * 0.16;
+          el.scrollLeft = cur + diff * 0.14;
           e.wheelRaf = requestAnimationFrame(run);
         };
         e.wheelRaf = requestAnimationFrame(run);
       }
-      settleSoon(() => e.target, 190);
     };
 
     const onScroll = () => {
       schedule();
-      // A touch swipe scrolls by itself (native momentum): settle when it has stopped.
-      if (!e.programmatic && !e.wheeling && !e.drag.on && !e.touching) {
-        settleSoon(() => el.scrollLeft, 150);
-      }
     };
 
     const onDown = (ev: globalThis.PointerEvent) => {
-      if (ev.pointerType === "touch") {
-        e.touching = true;
-        stopMotion();
-        return;
-      }
       if (ev.pointerType !== "mouse" || ev.button !== 0) return;
       stopMotion();
       e.drag = {
@@ -473,13 +467,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       d.lastX = ev.clientX;
       el.scrollLeft = d.from - dx;
     };
-    const endTouch = () => {
-      if (!e.touching) return;
-      e.touching = false;
-      settleSoon(() => el.scrollLeft, 220);
-    };
     const onUp = () => {
-      endTouch();
       const d = e.drag;
       if (!d.on) return;
       d.on = false;
@@ -489,9 +477,8 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
         window.setTimeout(() => {
           e.suppress = false;
         }, 0);
-        // Carry on a little in the direction it was thrown, then land on a panel.
-        const thrown = clamp(el.scrollLeft - d.v * 260, 0, e.max);
-        glide(e.centers[nearest(thrown)] ?? 0);
+        // Carry on a little in the direction it was thrown.
+        glide(clamp(el.scrollLeft - d.v * 320, 0, e.max));
       }
     };
     const onClickCapture = (ev: Event) => {
@@ -513,7 +500,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       schedule();
     });
     ro.observe(el);
-    if (el.firstElementChild) ro.observe(el.firstElementChild);
+    if (board.current) ro.observe(board.current);
     void document.fonts?.ready.then(() => {
       measure();
       schedule();
@@ -530,7 +517,10 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       cancelAnimationFrame(e.frame);
       stopMotion();
     };
-  }, [measure, update, schedule, settleSoon, glide]);
+  }, [measure, update, schedule, glide]);
+
+  // A device that cannot keep the frame rate loses effects (lib/perf.ts), here and on the other pages.
+  useEffect(() => startGovernor(), []);
 
   // The page is one wall: nothing scrolls up and down.
   useEffect(() => {
@@ -567,17 +557,17 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     let alive = true;
     let i = 0;
     let timer = 0;
-    const next = () => {
+    const nextImage = () => {
       const img = imgs[i++];
       if (!alive || !img) return;
       void img
         .decode()
         .catch(() => undefined)
         .then(() => {
-          timer = window.setTimeout(next, 120);
+          timer = window.setTimeout(nextImage, 120);
         });
     };
-    timer = window.setTimeout(next, 900);
+    timer = window.setTimeout(nextImage, 900);
     return () => {
       alive = false;
       window.clearTimeout(timer);
@@ -595,35 +585,41 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     };
   }, []);
 
-  const meet = useCallback((slug: Slug) => {
-    if (metRef.current.has(slug)) return;
-    metRef.current.add(slug);
+  const meet = useCallback((slugs: readonly Slug[]) => {
+    let added = false;
+    for (const slug of slugs) {
+      if (!metRef.current.has(slug)) {
+        metRef.current.add(slug);
+        added = true;
+      }
+    }
+    if (!added) return;
     writeMet(metRef.current);
     setMet(new Set(metRef.current));
     setPop((n) => n + 1);
   }, []);
 
-  // Stopping on a panel for a moment meets it.
+  // Staying on a pair for a moment meets the two of them.
   useEffect(() => {
     window.clearTimeout(meetTimer.current);
-    const entry = list[active - 1];
-    if (!entry) return;
+    const here = SLOTS_OF_BAY[active];
+    if (!here) return;
     meetTimer.current = window.setTimeout(() => {
-      meet(entry.character.slug);
+      meet(here.map((s) => s.slug));
     }, MEET_AFTER);
     return () => {
       window.clearTimeout(meetTimer.current);
     };
-  }, [active, list, meet]);
+  }, [active, meet]);
 
   useEffect(
     () => () => {
-      window.clearTimeout(voiceTimer.current);
+      window.clearTimeout(hoverTimer.current);
     },
     [],
   );
 
-  // Keys: sideways by one panel, to the ends.
+  // Keys: sideways by one pair, to the ends.
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
       if (ev.metaKey || ev.ctrlKey || ev.altKey || isTypingTarget(ev.target)) return;
@@ -632,18 +628,25 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       const go = (to: number) => {
         ev.preventDefault();
         setMoved(true);
-        goStop(to, true);
+        goBay(to);
       };
       if (ev.key === "ArrowRight" || ev.key === "PageDown") go(at + 1);
       else if (ev.key === "ArrowLeft" || ev.key === "PageUp") go(at - 1);
-      else if (ev.key === "Home") go(0);
-      else if (ev.key === "End") go(STOPS - 1);
+      else if (ev.key === "Home") {
+        ev.preventDefault();
+        setMoved(true);
+        glide(0);
+      } else if (ev.key === "End") {
+        ev.preventDefault();
+        setMoved(true);
+        glide(engine.current.max);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
     };
-  }, [goStop, STOPS]);
+  }, [goBay, glide]);
 
   const goNext = useCallback(() => {
     audio.blip("click");
@@ -656,24 +659,16 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
 
   // ---- a panel ----------------------------------------------------------------------------
 
-  const engage = (c: RosterCharacter) => {
-    window.clearTimeout(voiceTimer.current);
-    window.setTimeout(() => {
-      meet(c.slug);
-    }, 500);
-    if (!c.voice) return;
-    const src = asset(c.voice.src);
-    audio.preloadVoice(src);
-    voiceTimer.current = window.setTimeout(() => void audio.playVoice(src), VOICE_DELAY);
-  };
-  const release = () => {
-    window.clearTimeout(voiceTimer.current);
-  };
+  const bayOf = (c: RosterCharacter) => BAYS.indexOf(c.pair);
 
   const onEnter = (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType !== "mouse" || engine.current.drag.on) return;
     audio.blip("hover");
-    engage(c);
+    setHovered(bayOf(c));
+    window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => {
+      meet([c.slug]);
+    }, 600);
   };
 
   const onTilt = (e: PointerEvent<HTMLAnchorElement>) => {
@@ -684,17 +679,19 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     const r = card.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    tilt.style.transform = `translate3d(${(-x * 26).toFixed(1)}px,${(-y * 18).toFixed(1)}px,0) scale(1.06)`;
+    tilt.style.transform = `translate3d(${(-x * 30).toFixed(1)}px,${(-y * 20).toFixed(1)}px,0) scale(1.07)`;
   };
-  const onTiltEnd = (e: PointerEvent<HTMLAnchorElement>) => {
+  const onLeave = (e: PointerEvent<HTMLAnchorElement>) => {
+    window.clearTimeout(hoverTimer.current);
+    setHovered(null);
     const tilt = e.currentTarget.querySelector<HTMLElement>("[data-tilt]");
     if (tilt) tilt.style.transform = "";
   };
 
-  const onFocus = (c: RosterCharacter, stop: number, e: FocusEvent<HTMLAnchorElement>) => {
+  const onFocus = (c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => {
     if (!e.currentTarget.matches(":focus-visible")) return;
-    goStop(stop, true);
-    engage(c);
+    goBay(bay);
+    meet([c.slug]);
   };
 
   const choose = (c: RosterCharacter, e: MouseEvent<HTMLAnchorElement>) => {
@@ -702,7 +699,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     e.preventDefault();
     if (chosen) return;
     audio.blip("click");
-    window.clearTimeout(voiceTimer.current);
     setChosen(c.slug);
     window.setTimeout(
       () => {
@@ -716,20 +712,12 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   const act = useRef<Actions>({
     enter: onEnter,
     tilt: onTilt,
-    tiltEnd: onTiltEnd,
-    release,
+    leave: onLeave,
     focus: onFocus,
     choose,
   });
   useIsoLayoutEffect(() => {
-    act.current = {
-      enter: onEnter,
-      tilt: onTilt,
-      tiltEnd: onTiltEnd,
-      release,
-      focus: onFocus,
-      choose,
-    };
+    act.current = { enter: onEnter, tilt: onTilt, leave: onLeave, focus: onFocus, choose };
   });
   const actions = useMemo<Actions>(
     () => ({
@@ -739,27 +727,17 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       tilt: (e) => {
         act.current.tilt(e);
       },
-      tiltEnd: (e) => {
-        act.current.tiltEnd(e);
+      leave: (e) => {
+        act.current.leave(e);
       },
-      release: () => {
-        act.current.release();
-      },
-      focus: (c, stop, e) => {
-        act.current.focus(c, stop, e);
+      focus: (c, bay, e) => {
+        act.current.focus(c, bay, e);
       },
       choose: (c, e) => {
         act.current.choose(c, e);
       },
     }),
     [],
-  );
-  const registerStops = useMemo(
-    () =>
-      Array.from({ length: STOPS }, (_, n) => (el: HTMLLIElement | null) => {
-        stops.current[n] = el;
-      }),
-    [STOPS],
   );
   const registerArts = useMemo(
     () =>
@@ -769,7 +747,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     [count],
   );
 
-  const here = list[active - 1];
+  const here = BAYS[active] ? pairNames.get(BAYS[active]) : undefined;
   const metCount = met.size;
   const allMet = metCount >= count;
 
@@ -781,13 +759,10 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       data-moved={moved}
       data-chosen={chosen !== null}
     >
-      {/* The world behind the panels: silver and blue, slanted stripes and a huge ghost word. */}
+      {/* The world behind the panels: silver and blue, slanted stripes. */}
       <div className={styles.chrome} aria-hidden="true">
         <span className={styles.stripes} />
         <span className={styles.dots} />
-        <div ref={ghost} className={styles.ghost}>
-          <span>ASPIRANTS</span>
-        </div>
         <span className={styles.sparks}>
           {Array.from({ length: 14 }, (_, n) => (
             <i key={n} style={{ "--n": n } as CSSProperties} />
@@ -803,83 +778,26 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
         tabIndex={0}
         data-lenis-prevent
       >
-        <ol className={styles.track}>
-          <li
-            ref={(el) => {
-              stops.current[0] = el;
-            }}
-            className={styles.plate}
-            data-kind="intro"
-            data-active={active === 0}
-          >
-            <div className={styles.plateBody}>
-              <p className={styles.plateLogo}>
-                <AspirantLogo className={styles.logo} decorative />
-              </p>
-              <p className={`${styles.kicker} hud-label`}>
-                <StarGlyph className={styles.star} />
-                04 / Roster <span aria-hidden="true">/</span> Selrick Academy registry
-              </p>
-              <h1 className={styles.title}>
-                <span className={styles.line}>
-                  <ScatterText text="Meet" className={styles.titleText} radius={120} />
-                </span>{" "}
-                <span className={styles.line}>
-                  <ScatterText text="the ten" className={styles.titleText} radius={120} />
-                </span>
-              </h1>
-              <p className={styles.lead}>
-                Ten names in the registry, in the pairs the story puts together. Scroll sideways.
-                Hover a panel to hear a voice. Open one to read her file.
-              </p>
-              <dl className={styles.readout}>
-                <div>
-                  <dt className="hud-label">Aspirants</dt>
-                  <dd>{pad(count)}</dd>
-                </div>
-                <div>
-                  <dt className="hud-label">Pairs</dt>
-                  <dd>{pad(pairs.length)}</dd>
-                </div>
-                <div>
-                  <dt className="hud-label">Voice lines</dt>
-                  <dd>{voiceLines}</dd>
-                </div>
-              </dl>
-            </div>
-            <span className={styles.slash} aria-hidden="true" />
-          </li>
+        <div ref={board} className={styles.board} style={{ "--bw": BOARD_W } as CSSProperties}>
+          {/* A huge word behind the panels, drifting slower than they do. */}
+          <div ref={ghost} className={styles.ghost} aria-hidden="true">
+            <span>ASPIRANTS</span>
+          </div>
 
-          {list.map((entry, i) => (
-            <PanelView
-              key={entry.character.slug}
-              entry={entry}
-              stop={i + 1}
-              index={i}
-              lit={active === i + 1}
-              met={met.has(entry.character.slug)}
-              chosen={chosen === entry.character.slug}
-              actions={actions}
-              registerStop={registerStops[i + 1] as (el: HTMLLIElement | null) => void}
-              registerArt={registerArts[i] as (el: HTMLSpanElement | null) => void}
-            />
-          ))}
-
-          <li
-            ref={(el) => {
-              stops.current[count + 1] = el;
-            }}
-            className={styles.plate}
-            data-kind="outro"
-            data-active={active === count + 1}
+          {/* The blue plate at the end of the row. */}
+          <div
+            className={styles.end}
+            data-active={active === BAYS.length}
+            style={{ "--e0": END.x0, "--e1": END.x1, "--e2": END.x2 } as CSSProperties}
           >
-            <div className={styles.plateBody}>
-              <p className={`${styles.kicker} hud-label`}>
+            <span className={styles.endRim} aria-hidden="true" />
+            <div className={styles.endBody}>
+              <p className={`${styles.endKicker} hud-label`}>
                 <StarGlyph className={styles.star} />
                 05 / Next
               </p>
-              <h2 className={styles.outroTitle}>The collection</h2>
-              <p className={styles.lead}>Every film, song, comic and drawing, in one archive.</p>
+              <h2 className={styles.endTitle}>The collection</h2>
+              <p className={styles.endLead}>Every film, song, comic and drawing, in one archive.</p>
               <button
                 type="button"
                 className={styles.bigRibbon}
@@ -888,92 +806,173 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
                 onClick={goNext}
               >
                 <span>Enter</span>
-                <svg viewBox="0 0 24 12" width="26" height="13" focusable="false">
-                  <path d="M0 4h14V0l10 6-10 6V8H0z" fill="currentColor" />
+                <svg viewBox="0 0 28 14" width="30" height="15" focusable="false">
+                  <path d="M0 5h16V0l12 7-12 7V9H0z" fill="currentColor" />
                 </svg>
                 <span className={styles.badge}>
                   <StarGlyph />
                 </span>
               </button>
             </div>
-          </li>
-        </ol>
+          </div>
+
+          <ul className={styles.panels}>
+            {entries.map(({ slot, character, bay }, i) => (
+              <PanelView
+                key={slot.slug}
+                slot={slot}
+                character={character}
+                bay={bay}
+                index={i}
+                lit={bay === active || bay === hovered || slot.bright === true}
+                mate={hovered === bay}
+                met={met.has(slot.slug)}
+                chosen={chosen === slot.slug}
+                actions={actions}
+                registerArt={registerArts[i] as (el: HTMLSpanElement | null) => void}
+              />
+            ))}
+          </ul>
+
+          {/* The newest pair, at the front: a crimson plate with the logo, a pink trim along its
+              slant, a red tear between Obsidia and Selena, and the ribbon of those met. */}
+          <div className={styles.hero}>
+            <div className={styles.plate}>
+              <div className={styles.plateText}>
+                <p className={styles.logoWrap}>
+                  <AspirantLogo className={styles.logo} decorative />
+                </p>
+                <p className={`${styles.kicker} hud-label`}>
+                  <StarGlyph className={styles.star} />
+                  04 / Roster
+                </p>
+                <h1 className={styles.title}>
+                  <span className={styles.line}>
+                    <ScatterText text="Meet" className={styles.titleText} radius={90} />
+                  </span>{" "}
+                  <span className={styles.line}>
+                    <ScatterText text="the ten" className={styles.titleText} radius={90} />
+                  </span>
+                </h1>
+                <dl className={styles.readout}>
+                  <div>
+                    <dt>Aspirants</dt>
+                    <dd>{pad(count)}</dd>
+                  </div>
+                  <div>
+                    <dt>Pairs</dt>
+                    <dd>{pad(pairs.length)}</dd>
+                  </div>
+                  <div>
+                    <dt>Voices</dt>
+                    <dd>{voiceLines}</dd>
+                  </div>
+                </dl>
+                <span className={styles.emblem} aria-hidden="true">
+                  <StarGlyph />
+                </span>
+              </div>
+            </div>
+            <span className={styles.trim} aria-hidden="true" />
+            <span className={styles.newest} aria-hidden="true">
+              <StarGlyph />
+              Newest pair
+            </span>
+            <svg
+              className={styles.tear}
+              aria-hidden="true"
+              viewBox={`${TEAR_X0} 0 ${TEAR_X1 - TEAR_X0} ${BOARD_H}`}
+              style={
+                {
+                  "--t0": TEAR_X0,
+                  "--t1": TEAR_X1,
+                } as CSSProperties
+              }
+              preserveAspectRatio="none"
+            >
+              <path className={styles.tearWide} d={TEAR_PATH} />
+              <path className={styles.tearMid} d={TEAR_PATH} />
+              <path className={styles.tearCore} d={TEAR_PATH} />
+            </svg>
+            {EMBERS.map((m, n) => (
+              <i
+                key={n}
+                className={styles.ember}
+                aria-hidden="true"
+                style={{ "--ex": m.x, "--ev": m.v, "--n": n } as CSSProperties}
+              />
+            ))}
+            <div className={styles.met} data-complete={allMet}>
+              <p className={styles.metText}>
+                Aspirants met:{" "}
+                <b key={pop}>
+                  {metCount}/{count}
+                </b>
+                <span className={styles.help} title="Stay on a pair, or hover a panel, to meet it.">
+                  ?
+                </span>
+              </p>
+              <div className={styles.slots} aria-hidden="true">
+                <span className={styles.coin}>
+                  <StarGlyph />
+                </span>
+                <ul>
+                  {SLOTS.map((s) => (
+                    <li
+                      key={s.slug}
+                      data-met={met.has(s.slug)}
+                      style={{ "--c": bySlug.get(s.slug)?.colour } as CSSProperties}
+                    >
+                      <StarGlyph />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <span className={styles.sheen} aria-hidden="true" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* The HUD over the wall. */}
-      <div
-        className={styles.hud}
-        style={{ "--accent-now": here?.character.colour ?? "#e0245e" } as CSSProperties}
-      >
+      <div className={styles.hud}>
         <p className={`${styles.where} hud-label`} aria-hidden="true">
           <span key={active} className={styles.whereValue}>
-            {active === 0
-              ? "Registry"
-              : active === count + 1
-                ? "End"
-                : pad(here?.character.order ?? 0)}
+            {active < BAYS.length ? `Pair ${pad(active + 1)}` : "End"}
           </span>
-          <span> / {pad(count)}</span>
-          <span className={styles.whereName}>{here ? here.character.name : ""}</span>
+          <span> / {pad(BAYS.length)}</span>
+          <span className={styles.whereName}>{here ? here.names : ""}</span>
         </p>
 
-        <div className={styles.met} data-complete={allMet}>
-          <p className={styles.metText}>
-            Aspirants met:{" "}
-            <b key={pop}>
-              {metCount}/{count}
-            </b>
-            <span className={styles.help} title="Hover a panel or stay on it to meet an Aspirant.">
-              ?
-            </span>
-          </p>
-          <ul className={styles.medals} aria-hidden="true">
-            {list.map(({ character: c }) => (
-              <li
-                key={c.slug}
-                data-met={met.has(c.slug)}
-                data-now={here?.character.slug === c.slug}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={asset(splashSmallPath(c.slug))}
-                  alt=""
-                  width={800}
-                  height={450}
-                  style={{ objectPosition: c.focus }}
-                  draggable={false}
-                />
-              </li>
-            ))}
-          </ul>
-          <span className={styles.sheen} aria-hidden="true" />
-        </div>
-
-        <nav className={styles.rail} aria-label="Jump to an Aspirant">
+        <nav className={styles.rail} aria-label="Jump to a pair">
           <span className={styles.railLine} aria-hidden="true">
             <span ref={fill} className={styles.railFill} />
           </span>
           <ul>
-            {list.map(({ character: c, place }, i) => (
-              <li key={c.slug} data-gap={place === 0 && i > 0}>
-                <button
-                  type="button"
-                  aria-label={c.name}
-                  aria-current={active === i + 1 ? "true" : undefined}
-                  style={{ "--c": c.colour } as CSSProperties}
-                  onPointerEnter={(e) => {
-                    if (e.pointerType === "mouse") audio.blip("hover");
-                  }}
-                  onClick={() => {
-                    audio.blip("click");
-                    setMoved(true);
-                    goStop(i + 1);
-                  }}
-                >
-                  <span aria-hidden="true">{pad(c.order)}</span>
-                </button>
-              </li>
-            ))}
+            {BAYS.map((id, i) => {
+              const p = pairNames.get(id);
+              return (
+                <li key={id}>
+                  <button
+                    type="button"
+                    aria-label={p?.names ?? id}
+                    title={p?.names}
+                    aria-current={active === i ? "true" : undefined}
+                    style={{ "--c": p?.colours[0] } as CSSProperties}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === "mouse") audio.blip("hover");
+                    }}
+                    onClick={() => {
+                      audio.blip("click");
+                      setMoved(true);
+                      goBay(i);
+                    }}
+                  >
+                    <span aria-hidden="true">{pad(i + 1)}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
@@ -985,7 +984,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
             disabled={active === 0}
             onClick={() => {
               audio.blip("click");
-              goStop(engine.current.active - 1);
+              goBay(engine.current.active - 1);
             }}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -999,7 +998,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
             disabled={active === STOPS - 1}
             onClick={() => {
               audio.blip("click");
-              goStop(engine.current.active + 1);
+              goBay(engine.current.active + 1);
             }}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -1026,7 +1025,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {here ? `${here.character.name}, ${pad(here.character.order)} of ${count}.` : ""}
+        {here ? `${here.names}, pair ${active + 1} of ${BAYS.length}.` : ""}
       </p>
     </section>
   );

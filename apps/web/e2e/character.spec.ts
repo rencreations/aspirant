@@ -52,7 +52,8 @@ test.describe("roster", () => {
   const row = (page: Page) =>
     page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" });
   const left = (page: Page) => row(page).evaluate((el) => el.scrollLeft);
-  const lit = (page: Page) => page.locator("nav[aria-label='Jump to an Aspirant'] [aria-current]");
+  const lit = (page: Page) => page.locator("nav[aria-label='Jump to a pair'] [aria-current]");
+  const met = (page: Page) => page.getByText("Aspirants met:");
 
   test("loads with one h1, ten panels of splash art and no errors", async ({ page }) => {
     const errors = watchErrors(page);
@@ -60,43 +61,62 @@ test.describe("roster", () => {
     await page.waitForLoadState("networkidle");
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: "Meet the ten" })).toBeAttached();
-    const cards = page.locator('main a[href*="/character/"]');
-    await expect(cards).toHaveCount(10);
+    await expect(page.locator('main a[href*="/character/"]')).toHaveCount(10);
     // The only pictures on the wall are the splash art of the ten.
     const sources = await page
       .locator("main img")
       .evaluateAll((els) => els.map((el) => el.getAttribute("src") ?? ""));
-    expect(sources.length).toBeGreaterThanOrEqual(10);
-    for (const src of sources) expect(src).toMatch(/\/img\/char\/[a-z]+\/splash(-sm)?\.webp$/);
+    expect(sources.length).toBe(10);
+    for (const src of sources) expect(src).toMatch(/\/img\/char\/[a-z]+\/splash\.webp$/);
     await noOverflow(page);
     // It is a wall that scrolls sideways, not a page that scrolls down.
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
     ).toBe(true);
-    expect(await row(page).evaluate((el) => el.scrollWidth > el.clientWidth * 3)).toBe(true);
+    expect(await row(page).evaluate((el) => el.scrollWidth > el.clientWidth * 1.5)).toBe(true);
     expect(errors).toEqual([]);
   });
 
-  test("scrolls sideways, settles on a panel and lights it", async ({ page }, info) => {
+  test("the pairs run from the newest to the oldest, the newest big at the front", async ({
+    page,
+  }) => {
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    await expect(lit(page)).toHaveCount(0);
+    const boxes = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>("li[data-slug]")].map((li) => {
+        const r = li.getBoundingClientRect();
+        return { slug: li.dataset.slug ?? "", left: r.left, area: r.width * r.height };
+      }),
+    );
+    const x = (slug: string) => boxes.find((b) => b.slug === slug)!.left;
+    // Left to right on screen: Obsidia, Selena, Guinevere and Vexana, Lesley, Angela, Layla, Fanny.
+    const order = ["obsidia", "selena", "guinevere", "lesley", "angela", "ruby", "layla", "fanny"];
+    for (let i = 1; i < order.length; i++)
+      expect(x(order[i]!), order[i]).toBeGreaterThan(x(order[i - 1]!));
+    // The pair in front is the biggest.
+    const sorted = [...boxes].sort((a, b) => b.area - a.area);
+    expect(sorted[0]?.slug).toBe("obsidia");
+    expect(sorted.slice(0, 3).map((b) => b.slug)).toContain("selena");
+    // The panels do not all have one size.
+    expect(new Set(boxes.map((b) => Math.round(b.area / 1000))).size).toBeGreaterThan(3);
+  });
+
+  test("scrolls sideways, and the pair in the middle is lit", async ({ page }, info) => {
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    await expect(lit(page)).toHaveAttribute("aria-label", "Selena and Obsidia");
     if (info.project.name === "desktop") {
       await page.mouse.move(700, 500);
       await page.mouse.wheel(0, 900);
       await expect.poll(() => left(page), { timeout: 5000 }).toBeGreaterThan(200);
     } else {
-      await row(page).evaluate((el) => el.scrollTo({ left: el.clientWidth * 1.4 }));
+      await row(page).evaluate((el) => el.scrollTo({ left: el.scrollWidth * 0.45 }));
     }
-    // It comes to rest on a panel (the magnet), and that panel is the lit one.
-    await expect(lit(page)).toHaveCount(1, { timeout: 5000 });
-    const panel = page.locator("main li[data-active='true']");
-    await expect(panel).toHaveCount(1);
-    await expect(panel.locator("a")).toHaveAttribute("href", /\/character\/[a-z]+\/?$/);
+    await expect(lit(page)).not.toHaveAttribute("aria-label", "Selena and Obsidia", {
+      timeout: 5000,
+    });
     await page.keyboard.press("Home");
-    await expect.poll(() => left(page), { timeout: 5000 }).toBeLessThan(4);
-    await page.keyboard.press("ArrowRight");
-    await expect(lit(page)).toHaveCount(1, { timeout: 5000 });
+    await expect.poll(() => left(page), { timeout: 5000 }).toBeLessThan(40);
     await page.keyboard.press("End");
     await expect
       .poll(() => row(page).evaluate((el) => el.scrollWidth - el.clientWidth - el.scrollLeft), {
@@ -105,25 +125,41 @@ test.describe("roster", () => {
       .toBeLessThan(4);
   });
 
-  test("the rail jumps to an Aspirant and the count of those met goes up", async ({ page }) => {
+  test("hovering a panel plays no voice line and lights its pair", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "Phones have no hover");
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    await expect(page.getByText("Aspirants met:")).toContainText("0/10");
-    const rail = page.getByRole("navigation", { name: "Jump to an Aspirant" });
-    await rail.getByRole("button", { name: "Obsidia" }).click();
-    await expect(rail.getByRole("button", { name: "Obsidia" })).toHaveAttribute(
-      "aria-current",
-      "true",
-      { timeout: 6000 },
-    );
-    // Stopping on a panel for a moment meets it.
-    await expect(page.getByText("Aspirants met:")).toContainText("1/10", { timeout: 6000 });
-    const panel = page.locator("main li[data-active='true']");
-    await expect(panel).toContainText("Obsidia");
-    await expect(panel.getByText("Open file")).toBeAttached();
-    expect(await page.evaluate(() => window.localStorage.getItem("aspirants:met"))).toContain(
-      "obsidia",
-    );
+    const voices: string[] = [];
+    page.on("request", (r) => {
+      if (r.url().includes("/audio/voice/")) voices.push(r.url());
+    });
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
+    await expect(lit(page)).toHaveAttribute("aria-label", "Ruby and Angela", { timeout: 6000 });
+    const ruby = page.locator("li[data-slug='ruby']");
+    await ruby.hover({ force: true });
+    await page.waitForTimeout(900);
+    await expect(ruby).toHaveAttribute("data-mate", "true");
+    expect(voices).toEqual([]);
+  });
+
+  test("the rail jumps to a pair, and staying on it meets the two", async ({ page }) => {
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    await expect(met(page)).toContainText("/10");
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    await rail.getByRole("button", { name: "Lesley and Chang'e" }).click();
+    await expect(lit(page)).toHaveAttribute("aria-label", "Lesley and Chang'e", {
+      timeout: 6000,
+    });
+    await expect(met(page)).toContainText("/10");
+    await expect
+      .poll(() => page.evaluate(() => window.localStorage.getItem("aspirants:met") ?? ""), {
+        timeout: 6000,
+      })
+      .toContain("lesley");
+    const saved = await page.evaluate(() => window.localStorage.getItem("aspirants:met"));
+    expect(saved).toContain("change");
   });
 
   test("a click closes the other panels and opens the character page", async ({
@@ -132,12 +168,10 @@ test.describe("roster", () => {
   }) => {
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    const rail = page.getByRole("navigation", { name: "Jump to an Aspirant" });
-    await rail.getByRole("button", { name: "Ruby" }).click();
-    await expect(page.locator("main li[data-active='true']")).toContainText("Ruby", {
-      timeout: 6000,
-    });
-    await page.locator('main li[data-active="true"] a').click();
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
+    await expect(lit(page)).toHaveAttribute("aria-label", "Ruby and Angela", { timeout: 6000 });
+    await page.locator('main a[href*="/character/ruby"]').click({ force: true });
     await expect(page.locator("section[data-chosen='true']")).toBeAttached();
     await settled(page);
     await expect.poll(() => sitePath(page, baseURL)).toBe("/character/ruby/");
