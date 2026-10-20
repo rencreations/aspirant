@@ -17,7 +17,7 @@ for (const route of ROUTES) {
     await skipGate(page);
     await page.goto(url(route));
     // Her pages hold video connections open, so the network never goes quiet there.
-    if (route.startsWith("/character/selena/")) {
+    if (route.startsWith("/character/selena/") || route.startsWith("/character/obsidia/")) {
       await page.waitForLoadState("load");
       await page.waitForTimeout(1500);
     } else await page.waitForLoadState("networkidle");

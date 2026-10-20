@@ -11,6 +11,10 @@ export const ROUTES = [
   "/character/selena/about/",
   "/character/selena/skills/",
   "/character/selena/gallery/",
+  "/character/obsidia/",
+  "/character/obsidia/about/",
+  "/character/obsidia/skills/",
+  "/character/obsidia/gallery/",
   "/collection/",
 ] as const;
 

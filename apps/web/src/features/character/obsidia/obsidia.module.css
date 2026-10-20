@@ -265,9 +265,9 @@
     letter-spacing: 0.14em;
   }
 
+  /* Top left, away from the spot beside her face. */
   .next {
-    left: auto;
-    right: var(--pad);
+    left: var(--pad);
     top: var(--top);
     bottom: auto;
     height: 2.6rem;
