@@ -336,7 +336,12 @@ class AudioEngine {
     if (!slot) return;
     slot.pauseToken += 1;
     if (fadeMs > 0 && slot.gain) {
-      if (slot.el.paused) slot.gain.gain.value = 0;
+      if (slot.el.paused) {
+        // A fade may still be scheduled on the gain (the pause just before): clear it first, as
+        // setting the value over a scheduled curve throws.
+        slot.gain.gain.cancelScheduledValues(0);
+        slot.gain.gain.value = 0;
+      }
       this.fadeSlot(slot, slot.target, fadeMs);
     }
     void slot.el.play().catch(() => undefined);

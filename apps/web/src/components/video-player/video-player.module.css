@@ -32,6 +32,9 @@
   position: absolute;
   inset: 0;
   display: grid;
+  /* One track as big as the stage, so the picture fits inside it at any shape (a phone recording
+     is taller than the screen). */
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
 }
 

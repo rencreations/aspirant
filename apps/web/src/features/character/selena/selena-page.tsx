@@ -26,6 +26,7 @@ import { WaitFx } from "./wait-fx";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
+import { GalleryDrawers } from "./gallery/gallery-drawers";
 import { SkillsDrawers } from "./skills/skills-drawers";
 import { pageFromPath } from "./routes";
 import { SelenaStage, type StageApi } from "./stage";
@@ -89,7 +90,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // The stage waits for the size of video the device can play smoothly (a moment, usually done
   // long before), so every video it uses is of the same size.
   const [tierReady, setTierReady] = useState(false);
-  // The drawers of About and Skills are built while she idles, off screen, a moment after the
+  // The drawers of About, Skills and Gallery are built while she idles, off screen, a moment after the
   // welcome. React builds them in small slices, so the idle picture never stalls, and a press
   // finds them ready instead of building them in the frames of its own animation.
   const [drawersBuilt, setDrawersBuilt] = useState(0);
@@ -288,8 +289,8 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   }, [state.mode, pathname]);
 
   useEffect(() => {
-    if (state.mode !== "idle" || drawersBuilt >= 2) return;
-    // About first, Skills a moment later, so no single frame carries both.
+    if (state.mode !== "idle" || drawersBuilt >= 3) return;
+    // About first, then Skills, then Gallery, a moment apart, so no single frame carries two.
     const timer = window.setTimeout(
       () => {
         startTransition(() => {
@@ -526,6 +527,12 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           present={drawersBuilt >= 2 || (pageOpen && scene === "skills") || chosen === "skills"}
           shown={mode === "page" && scene === "skills"}
           warm={warmed === "skills"}
+        />
+
+        <GalleryDrawers
+          present={drawersBuilt >= 3 || (pageOpen && scene === "gallery") || chosen === "gallery"}
+          shown={mode === "page" && scene === "gallery"}
+          warm={warmed === "gallery"}
         />
 
         <ScreenCover ref={cover} />

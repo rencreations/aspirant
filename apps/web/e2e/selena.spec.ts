@@ -576,6 +576,126 @@ test("a voice line asks about the sound when it is off, and plays after a yes", 
   await expect(sound).toHaveAttribute("aria-pressed", "true");
 });
 
+async function openGallery(page: Page, narrow: boolean) {
+  await open(page);
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
+  await expect(page.locator("[class*='drawers'][data-shown='true']")).toHaveCount(1, {
+    timeout: 60_000,
+  });
+  await expect(
+    page.getByRole("region", { name: "Trailers and voice lines, scrollable" }),
+  ).toBeVisible({ timeout: 30_000 });
+  await page.waitForTimeout(900);
+  if (narrow) await page.getByRole("tab", { name: "Art" }).click();
+  await expect(page.getByRole("region", { name: "Art, scrollable" })).toBeVisible();
+}
+
+test("Gallery has both trailers and her voice lines in two forms, with the Japanese", async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Trailers and voice lines, scrollable" }),
+  ).toBeVisible({ timeout: 60_000 });
+  await page.waitForTimeout(900);
+  await expect(page.getByRole("button", { name: /^Play video: The Pawn's Gambit/ })).toBeAttached();
+  await expect(page.getByRole("button", { name: /^Play video: Day of Enders/ })).toBeAttached();
+  const lines = page.getByRole("button", { name: /^(Play|Stop) voice line/ });
+  await expect(page.getByText("32 normal lines")).toBeAttached();
+  await expect(lines).toHaveCount(32);
+  await page.getByRole("button", { name: "Mecha", exact: true }).click();
+  await expect(page.getByText("15 mecha lines")).toBeAttached();
+  await expect(lines).toHaveCount(15);
+  // Line 9 is split: the mecha form has the second part, in Japanese and in English.
+  await expect(page.getByText("今の私、すっごく危険かも")).toBeAttached();
+  await expect(page.getByText("Right now, I might be super dangerous.")).toBeAttached();
+  await page.getByRole("button", { name: "Normal", exact: true }).click();
+  await expect(page.getByText("ああ、なんか危険な香りがする")).toBeAttached();
+});
+
+test("Gallery shows the official art first, then the fan art, each with a credit link", async ({
+  page,
+}, info) => {
+  await openGallery(page, isNarrow(info));
+  const art = page.getByRole("region", { name: "Art, scrollable" });
+  const headings = await art.getByRole("heading", { level: 3 }).allTextContents();
+  expect(headings.map((h) => h.toLowerCase())).toEqual(["official art", "fan art"]);
+  // The artist with four posts is named once, with the count.
+  await expect(art.getByText("4 posts")).toBeAttached();
+  await expect(
+    art.getByRole("link", { name: /jlen_ismyname on Instagram/ }).first(),
+  ).toBeAttached();
+  // Every credit opens in a new tab, safely.
+  const links = art.locator("a[href^='http']");
+  const count = await links.count();
+  expect(count).toBeGreaterThanOrEqual(12);
+  for (let i = 0; i < count; i++) {
+    await expect(links.nth(i)).toHaveAttribute("target", "_blank");
+    await expect(links.nth(i)).toHaveAttribute("rel", /noopener/);
+  }
+  // The two TikToks are credited by the name in the file.
+  await expect(art.getByRole("link", { name: /@bomboclau_ on TikTok/ })).toBeAttached();
+  await expect(art.getByRole("link", { name: /@hashirama1697 on TikTok/ })).toBeAttached();
+  await expect(
+    art.getByRole("button", { name: /Play video: TikTok by @bomboclau_/ }),
+  ).toBeAttached();
+});
+
+test("the viewer opens a picture, zooms, moves between pictures and closes", async ({
+  page,
+}, info) => {
+  await openGallery(page, isNarrow(info));
+  const art = page.getByRole("region", { name: "Art, scrollable" });
+  const opener = art.getByRole("button", {
+    name: /View larger: .*Selena in her mecha form leaping/,
+  });
+  await opener.scrollIntoViewIfNeeded();
+  await opener.click();
+  const viewer = page.getByRole("dialog", { name: /Selena's art/ });
+  await expect(viewer).toBeVisible();
+  const readout = viewer.locator("[class*='readout']");
+  const fit = await readout.textContent();
+  await page.keyboard.press("+");
+  await expect(readout).not.toHaveText(fit ?? "");
+  await page.keyboard.press("0");
+  await expect(readout).toHaveText(fit ?? "");
+  await page.keyboard.press("1");
+  await expect(readout).toHaveText("100%");
+  await page.keyboard.press("0");
+  // Next picture, with the credit.
+  await viewer.getByRole("button", { name: "Next picture" }).click();
+  await expect(viewer.getByText("The Pawn's Gambit, title card", { exact: true })).toBeVisible();
+  await expect(
+    viewer.getByText("Moonton, Mobile Legends: Bang Bang", { exact: true }),
+  ).toBeVisible();
+  await expect(viewer.getByRole("button", { name: "Whole picture" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+  // Focus goes back to where it was.
+  await expect(opener).toBeFocused();
+});
+
+test("a drawing process opens as a set of seven, with a strip to jump between them", async ({
+  page,
+}, info) => {
+  await openGallery(page, isNarrow(info));
+  const art = page.getByRole("region", { name: "Art, scrollable" });
+  const opener = art.getByRole("button", { name: /View larger: the drawing process, 7 pictures/ });
+  await opener.scrollIntoViewIfNeeded();
+  await opener.click();
+  const viewer = page.getByRole("dialog", { name: /Selena's art/ });
+  await expect(viewer).toBeVisible();
+  const strip = viewer.getByRole("group", { name: /Pictures of Fan art by jlen_ismyname/ });
+  await expect(strip.getByRole("button")).toHaveCount(7);
+  await expect(viewer.getByText("1 of 7")).toBeVisible();
+  await strip.getByRole("button", { name: "Picture 4 of 7" }).click();
+  await expect(viewer.getByText("Colour study: Selena", { exact: true })).toBeVisible();
+  await expect(viewer.getByText("4 of 7")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

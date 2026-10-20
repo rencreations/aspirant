@@ -15,8 +15,20 @@ const LINES = new Map(getCharacter("selena").voice.map((l) => [l.n, l]));
 /** The numbers of Selena's voice lines, for the content tests. */
 export const SELENA_VOICE_NUMBERS: ReadonlySet<number> = new Set(LINES.keys());
 
+/** One half of a line that has two parts, such as line 9 (see gallery-data.ts). */
+export interface VoicePart {
+  /** Shown after the number, for example "first part". */
+  name: string;
+  /** Public path of the half's file (no leading slash). */
+  file: string;
+  jp: string;
+  en: string;
+}
+
 interface Props {
   n: number;
+  /** Plays and shows this half of the line in place of the whole line. */
+  part?: VoicePart;
   /** One line that says why the line sits here. */
   why?: string;
   /** A label above the line, for the profile. */
@@ -27,11 +39,14 @@ interface Props {
  * One of her voice lines: the Japanese words, the English translation and a button that plays it.
  * One line plays at a time, and playing it again stops it.
  */
-export function VoiceCard({ n, why, label }: Props) {
+export function VoiceCard({ n, part, why, label }: Props) {
   const line = LINES.get(n);
   const voice = useVoiceState();
-  const url = useMemo(() => (line ? asset(`/${line.file}`) : ""), [line]);
+  const file = part?.file ?? line?.file;
+  const url = useMemo(() => (file ? asset(`/${file}`) : ""), [file]);
   if (!line) return null;
+  const jp = part?.jp ?? line.jpTitle;
+  const en = part?.en ?? line.en;
   const playing = voice.playing && voice.url === url;
   return (
     <figure className={styles.voice} data-playing={playing}>
@@ -39,7 +54,7 @@ export function VoiceCard({ n, why, label }: Props) {
         type="button"
         className={styles.voiceButton}
         aria-pressed={playing}
-        aria-label={`${playing ? "Stop" : "Play"} voice line ${n}: ${line.en}`}
+        aria-label={`${playing ? "Stop" : "Play"} voice line ${n}${part ? `, ${part.name}` : ""}: ${en}`}
         data-cursor={playing ? "STOP" : "HEAR"}
         onClick={() => {
           audio.unlock();
@@ -64,11 +79,12 @@ export function VoiceCard({ n, why, label }: Props) {
       <figcaption className={styles.voiceText}>
         <span className={styles.voiceMeta}>
           {label ? `${label} · ` : ""}Voice line {String(n).padStart(2, "0")}
+          {part ? ` · ${part.name}` : ""}
         </span>
         <span className={styles.voiceJp} lang="ja">
-          {line.jpTitle}
+          {jp}
         </span>
-        <span className={styles.voiceEn}>{line.en}</span>
+        <span className={styles.voiceEn}>{en}</span>
         {why ? <span className={styles.voiceWhy}>{why}</span> : null}
       </figcaption>
     </figure>

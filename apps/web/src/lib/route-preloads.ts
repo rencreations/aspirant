@@ -7,6 +7,7 @@ import {
   selenaVoicePath,
   trailerItem,
 } from "@/features/character/selena/media";
+import { galleryItems } from "@/features/character/selena/gallery/gallery-media";
 import { skillItems } from "@/features/character/selena/skills/skills-media";
 import {
   chunkItem,
@@ -108,6 +109,9 @@ export function routeItems(pathname: string): PreloadItem[] {
         ),
         ...skillItems(),
         trailerItem(),
+        ...galleryItems(),
+        savedItem("/audio/voice/selena/09-a.m4a", "Loading her voice lines", 1),
+        savedItem("/audio/voice/selena/09-b.m4a", "Loading her voice lines", 1),
       ];
     }
     if (isSlug(slug)) {

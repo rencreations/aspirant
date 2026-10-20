@@ -95,11 +95,11 @@ on the same machine (a press frame of 1,000 ms against 300 ms). Judge speed on `
 
 What a level changes:
 
-| Level      | Video                                                                                     | Effects                                                                                                                                            |
-| ---------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `full`     | the size the display needs, up to 1440 (4K only with hardware decoding, 8 cores and 8 GB) | everything                                                                                                                                         |
-| `balanced` | at most 1080                                                                              | no light disc blend on the cursor, no drift or ripple on the touch points, no bobbing, no drawer shadow, no logo flourish, no loading screen loops |
-| `lite`     | the light tier: 1280 by 576 at 30 frames a second                                         | also a press without the jump and the stomp, no breathing on the touch points, the small skill loop does not start by itself                       |
+| Level      | Video                                             | Effects                                                                                                                                            |
+| ---------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `full`     | the size the display needs, up to 1440            | everything                                                                                                                                         |
+| `balanced` | at most 1080                                      | no light disc blend on the cursor, no drift or ripple on the touch points, no bobbing, no drawer shadow, no logo flourish, no loading screen loops |
+| `lite`     | the light tier: 1280 by 576 at 30 frames a second | also a press without the jump and the stomp, no breathing on the touch points, the small skill loop does not start by itself                       |
 
 The light tier (`scripts/selena/build.py`, tier `lite`) keeps every other frame of the 60 fps
 timeline, so its loops and seams, which are measured in time, work unchanged (the director is tested

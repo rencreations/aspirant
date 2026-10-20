@@ -1,0 +1,331 @@
+/* The picture viewer. Dark, because the picture is the light. No blur and no filters: the picture
+   moves with one transform and the rest stays still. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: #0b0d14;
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  color: #eef3fa;
+  outline: none;
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+.bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: max(env(safe-area-inset-top), 0.5rem) max(env(safe-area-inset-right), 0.75rem) 0.5rem
+    max(env(safe-area-inset-left), 0.75rem);
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  color: #cfd9e8;
+  white-space: nowrap;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tools button,
+.close {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 44px;
+  height: 44px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #eef3fa;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.tools button:hover,
+.close:hover {
+  border-color: rgb(190 214 250 / 0.5);
+  background: rgb(255 255 255 / 0.08);
+}
+
+.tools button:active,
+.close:active {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.tools button[aria-pressed="true"] {
+  border-color: rgb(190 214 250 / 0.5);
+  background: rgb(255 255 255 / 0.12);
+}
+
+.tools button:focus-visible,
+.close:focus-visible,
+.nav:focus-visible,
+.strip button:focus-visible,
+.credit a:focus-visible {
+  outline: 2px solid var(--light-gold);
+  outline-offset: 2px;
+}
+
+.readout {
+  min-width: 3.4rem;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #cfd9e8;
+  font-variant-numeric: tabular-nums;
+}
+
+.natural {
+  font-weight: 600;
+}
+
+.stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  cursor: zoom-in;
+}
+
+.stage[data-zoomed="true"] {
+  cursor: grab;
+}
+
+.stage[data-zoomed="true"]:active {
+  cursor: grabbing;
+}
+
+/* The sheet holds the picture at its natural size, in the middle of the stage. */
+.sheet {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.sheet[data-ease="true"] {
+  transition: transform 260ms var(--ease-out);
+}
+
+.under,
+.picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+.picture {
+  opacity: 0;
+  transition: opacity 220ms var(--ease-out);
+}
+
+.sheet[data-loaded="true"] .picture {
+  opacity: 1;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border: 1px solid rgb(190 214 250 / 0.4);
+  background: rgb(14 20 31 / 0.72);
+  color: #eef3fa;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.nav[data-side="left"] {
+  left: max(env(safe-area-inset-left), 0.75rem);
+}
+
+.nav[data-side="right"] {
+  right: max(env(safe-area-inset-right), 0.75rem);
+}
+
+.nav:hover:not(:disabled) {
+  border-color: var(--light-cyan);
+  background: rgb(92 225 255 / 0.14);
+}
+
+.nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.foot {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem max(env(safe-area-inset-right), 0.75rem) max(env(safe-area-inset-bottom), 0.75rem)
+    max(env(safe-area-inset-left), 0.75rem);
+}
+
+.strip {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.strip button {
+  flex: none;
+  height: 4.2rem;
+  max-width: 7rem;
+  padding: 0;
+  border: 2px solid transparent;
+  background: #151a26;
+  opacity: 0.6;
+  cursor: pointer;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.strip button:hover {
+  opacity: 0.9;
+}
+
+.strip button[aria-current="true"] {
+  border-color: var(--light-gold);
+  opacity: 1;
+}
+
+.strip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card {
+  display: grid;
+  gap: 0.15rem;
+  max-width: 44rem;
+}
+
+.card p {
+  margin: 0;
+}
+
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #aab6c8;
+}
+
+.name {
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.credit {
+  font-size: 0.8125rem;
+  color: #cfd9e8;
+}
+
+.credit a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 24px;
+  color: var(--light-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 40em) {
+  .tools button,
+  .close {
+    min-width: 40px;
+  }
+
+  /* Phones have no full screen for a page, and the picture already fills the width. */
+  .full {
+    display: none;
+  }
+
+  .nav {
+    top: auto;
+    bottom: 0.75rem;
+    margin-top: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .readout {
+    min-width: 2.8rem;
+  }
+
+  .strip button {
+    height: 3.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .viewer {
+    animation: none;
+  }
+
+  .picture {
+    transition: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

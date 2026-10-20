@@ -1,0 +1,289 @@
+/* Selena's Gallery drawers. They sit inside the shared drawer shell (about.module.css), so only the
+   content is styled here. Same language as About and Skills: lavender faces, violet edges, gold
+   trim. */
+.head {
+  padding-bottom: 0.4rem;
+}
+
+.kicker {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--edge);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: clamp(1.7rem, 2.4vw, 2.3rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.lead {
+  margin: 0.55rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.h3 {
+  margin: 0 0 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--edge);
+}
+
+.h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+}
+
+.block {
+  margin-top: 1.5rem;
+}
+
+.note {
+  margin: 0 0 0.8rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+/* Trailers --------------------------------------------------------------------------------- */
+.trailers {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.trailer {
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.trailer figcaption {
+  display: grid;
+  gap: 0.1rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.trailer strong {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Voice ------------------------------------------------------------------------------------ */
+.switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 12rem;
+  background: rgb(26 19 66 / 0.9);
+}
+
+.switch button {
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background-color 220ms var(--ease-out),
+    color 220ms var(--ease-out);
+}
+
+.switch button[aria-pressed="true"] {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.switch button:not([aria-pressed="true"]):hover {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.count {
+  margin: 0.6rem 0 0.7rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.voices {
+  display: grid;
+  gap: 0.7rem;
+}
+
+/* Art -------------------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 1rem 0.85rem;
+  align-items: start;
+}
+
+.tile {
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.tile figcaption {
+  display: grid;
+  gap: 0.1rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.pieceTitle {
+  font-weight: 600;
+}
+
+.credit {
+  color: var(--edge);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+a.credit:hover {
+  color: var(--ink);
+}
+
+a.credit:focus-visible,
+.h4 a:focus-visible,
+.thumb:focus-visible,
+.switch button:focus-visible {
+  outline: 2px solid var(--edge);
+  outline-offset: 2px;
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--edge) 55%, transparent);
+  background: #d9d3f7;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb:hover,
+.thumb:focus-visible {
+  transform: translateY(-2px);
+}
+
+.thumb:active {
+  transform: scale(0.985);
+}
+
+/* A carousel looks like a stack of pictures. */
+.carousel .thumb {
+  box-shadow:
+    5px 5px 0 -1px #fff,
+    5px 5px 0 0 color-mix(in srgb, var(--edge) 55%, transparent),
+    10px 10px 0 -1px #fff,
+    10px 10px 0 0 color-mix(in srgb, var(--edge) 55%, transparent);
+  margin-bottom: 10px;
+  width: calc(100% - 10px);
+}
+
+.badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0.25rem 0.55rem;
+  background: rgb(26 19 66 / 0.92);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.artist {
+  margin-top: 1.4rem;
+}
+
+.h4 {
+  margin: 1.4rem 0 0.7rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.artist .h4 {
+  margin-top: 0;
+}
+
+.h4 a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.h4 span {
+  color: var(--edge);
+  font-size: 0.6875rem;
+}
+
+/* A video keeps its own shape. A tall one (a phone recording) is narrower, so it does not tower
+   over the rest. */
+.video {
+  min-width: 0;
+}
+
+.tile[data-tall="true"] .video {
+  max-width: 9rem;
+}
+
+.video > button {
+  aspect-ratio: var(--ar, 16 / 9);
+}
+
+@media (max-width: 30em) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition: none;
+  }
+}
