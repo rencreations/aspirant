@@ -10,6 +10,13 @@ import {
 import { galleryItems } from "@/features/character/selena/gallery/gallery-media";
 import { skillItems } from "@/features/character/selena/skills/skills-media";
 import {
+  OBSIDIA_MUSIC,
+  OBSIDIA_VOICE_COUNT,
+  obsidiaItems,
+  obsidiaVoicePath,
+  trailerItem as obsidiaTrailerItem,
+} from "@/features/character/obsidia/media";
+import {
   chunkItem,
   dataItem,
   fontsItem,
@@ -112,6 +119,26 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...galleryItems(),
         savedItem("/audio/voice/selena/09-a.m4a", "Loading her voice lines", 1),
         savedItem("/audio/voice/selena/09-b.m4a", "Loading her voice lines", 1),
+      ];
+    }
+    if (slug === "obsidia") {
+      // Her page and its three pages share one stage, like Selena's: one list covers them all.
+      // The stage videos come first, so the page can start while the rest is still arriving.
+      return [
+        ...shared,
+        ...obsidiaItems(),
+        imageItem("/video/obsidia/still.webp", "Loading Obsidia", 1),
+        imageItem("/video/obsidia/trailer-poster.webp", "Loading the trailer", 1),
+        imageItem("/img/char/obsidia/splash-sm.webp", "Loading the album art", 1),
+        mediaItem(OBSIDIA_MUSIC, "Loading the music", {
+          type: "audio/mp4",
+          weight: 3,
+          timeoutMs: 120_000,
+        }),
+        ...Array.from({ length: OBSIDIA_VOICE_COUNT }, (_, i) =>
+          savedItem(obsidiaVoicePath(i + 1), "Loading her voice lines", 1),
+        ),
+        obsidiaTrailerItem(),
       ];
     }
     if (isSlug(slug)) {

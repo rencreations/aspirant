@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { OBSIDIA_PAGE_NAMES, obsidiaRoute } from "@/features/character/obsidia/routes";
 import { SELENA_PAGE_NAMES, selenaRoute } from "@/features/character/selena/routes";
 import { characterRoute, navItems, siteConfig } from "@/lib/site";
 import { CHARACTER_SLUGS } from "@/lib/slugs";
@@ -25,9 +26,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       priority: 0.6,
     })),
-    // Her three pages have an address of their own.
+    // Their three pages have an address of their own.
     ...SELENA_PAGE_NAMES.map((page) => ({
       url: absolute(selenaRoute(page)),
+      lastModified,
+      priority: 0.5,
+    })),
+    ...OBSIDIA_PAGE_NAMES.map((page) => ({
+      url: absolute(obsidiaRoute(page)),
       lastModified,
       priority: 0.5,
     })),

@@ -9,8 +9,10 @@ import { CHARACTER_SLUGS } from "@/lib/slugs";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  // Selena has her own route folder (her page and its three pages share a layout).
-  return CHARACTER_SLUGS.filter((slug) => slug !== "selena").map((slug) => ({ slug }));
+  // Selena and Obsidia have their own route folders (a page and its three pages share a layout).
+  return CHARACTER_SLUGS.filter((slug) => slug !== "selena" && slug !== "obsidia").map((slug) => ({
+    slug,
+  }));
 }
 
 interface Props {

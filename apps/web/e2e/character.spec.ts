@@ -16,11 +16,13 @@ const QUEUE = [
   "selena",
 ] as const;
 
-/** Layla (cut-out), Ruby (no cut-out), Obsidia (Storm, forms), Vexana (forms). */
+/**
+ * Layla (cut-out), Ruby (no cut-out), Vexana (forms). Selena and Obsidia have pages of their
+ * own (see selena.spec.ts and obsidia.spec.ts).
+ */
 const PAGES = [
   { slug: "layla", name: "Layla" },
   { slug: "ruby", name: "Ruby" },
-  { slug: "obsidia", name: "Obsidia" },
   { slug: "vexana", name: "Vexana" },
 ] as const;
 
@@ -150,14 +152,16 @@ test("spoilers stay sealed until opened", async ({ page }) => {
 });
 
 test("the form toggle switches between the two forms", async ({ page }) => {
-  await page.goto(url("/character/obsidia/"));
-  const group = page.getByRole("group", { name: "Obsidia's form" });
+  await page.goto(url("/character/vexana/"));
+  const group = page.getByRole("group", { name: "Vexana's form" });
   await group.getByRole("button", { name: "Ender form" }).click();
   await expect(group.getByRole("button", { name: "Ender form" })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await expect(page.getByText("Official trailer frame, 2:35.")).toBeVisible();
+  await expect(
+    page.getByText("Official mobile wallpaper. Her splash art shows this form too."),
+  ).toBeVisible();
 });
 
 test("the next footer chain visits all ten and loops", async ({ page, baseURL }, info) => {
