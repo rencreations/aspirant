@@ -22,6 +22,7 @@ import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../st
 import { useStageUrl } from "../stage/use-stage-url";
 import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawer } from "./about/about-drawer";
+import { SkillsDrawer } from "./skills/skills-drawer";
 import { loadCore, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
 import styles from "./obsidia.module.css";
 import { PlateButton, type Glyph } from "./plate-button";
@@ -508,6 +509,12 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
           present={drawersBuilt >= 1 || (pageOpen && scene === "about") || chosen === "about"}
           shown={mode === "page" && scene === "about"}
           warm={warmed === "about"}
+        />
+
+        <SkillsDrawer
+          present={drawersBuilt >= 2 || (pageOpen && scene === "skills") || chosen === "skills"}
+          shown={mode === "page" && scene === "skills"}
+          warm={warmed === "skills"}
         />
 
         <ScreenCover ref={cover} colors={COVER} />

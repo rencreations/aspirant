@@ -8,6 +8,7 @@ import {
   trailerItem,
 } from "@/features/character/selena/media";
 import { galleryItems } from "@/features/character/selena/gallery/gallery-media";
+import { skillItems as obsidiaSkillItems } from "@/features/character/obsidia/skills/skills-media";
 import { skillItems } from "@/features/character/selena/skills/skills-media";
 import {
   ABOUT_IMAGES as OBSIDIA_ABOUT_IMAGES,
@@ -145,6 +146,7 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...OBSIDIA_ABOUT_IMAGES.map((name) =>
           imageItem(obsidiaAboutImagePath(name), "Loading the About pictures", 1),
         ),
+        ...obsidiaSkillItems(),
         obsidiaTrailerItem(),
       ];
     }

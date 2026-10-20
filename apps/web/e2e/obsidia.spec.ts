@@ -314,3 +314,87 @@ test("Back closes the drawer and returns to the main panel", async ({ page }) =>
     timeout: 45_000,
   });
 });
+
+async function openSkills(page: Page) {
+  await open(page);
+  await page.getByRole("button", { name: "Skills", exact: true }).click();
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(1, {
+    timeout: 45_000,
+  });
+  await expect(page.getByRole("tabpanel", { name: "Skills, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  await page.waitForTimeout(900);
+}
+
+test("Skills lists her passive and three skills with their numbers, in one drawer", async ({
+  page,
+}, info) => {
+  await openSkills(page);
+  const skills = page.getByRole("tabpanel", { name: "Skills, scrollable" });
+  for (const name of [
+    "Return to Bone",
+    "Abyssal Bone Needle",
+    "Phantom Shadowmeld",
+    "Hunt of Bone",
+  ])
+    await expect(skills.getByRole("button", { name: new RegExp(name) })).toBeVisible();
+  await expect(skills.getByRole("button", { name: /Abyssal Bone Needle/ })).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  await expect(skills.getByRole("img", { name: "Offense: 7 out of 10" })).toBeAttached();
+  const table = skills.getByRole("table", { name: /Abyssal Bone Needle, by skill level/ });
+  await expect(table.getByRole("row", { name: /Base damage/ })).toContainText("325");
+  // The ultimate has three levels.
+  await skills.getByRole("button", { name: /Hunt of Bone/ }).click();
+  const ult = skills.getByRole("table", { name: /Hunt of Bone, by skill level/ });
+  await expect(ult.getByRole("row", { name: /Cooldown/ })).toContainText("40.0");
+  await expect(skills.getByRole("table", { name: /Base stats/ })).toBeAttached();
+  if (info.project.name === "desktop") {
+    const vw = page.viewportSize()?.width ?? 0;
+    const d = await page.getByRole("complementary", { name: "Obsidia's skills" }).boundingBox();
+    expect(d!.x + d!.width).toBeLessThanOrEqual(vw * 0.4);
+  }
+});
+
+test("choosing a skill changes the clip in the corner, and the clip can be paused", async ({
+  page,
+}) => {
+  await openSkills(page);
+  const skills = page.getByRole("tabpanel", { name: "Skills, scrollable" });
+  await skills.getByRole("button", { name: /Phantom Shadowmeld/ }).click();
+  const clip = page.locator("video[aria-label*='demonstration']");
+  await expect(clip).toHaveAttribute("aria-label", /Phantom Shadowmeld/);
+  await expect(page.getByRole("button", { name: /^(Pause|Play) the clip$/ })).toBeVisible();
+  // The showcase has more clips.
+  await page.getByRole("tab", { name: "Showcase" }).click();
+  await page.getByRole("button", { name: /Idle animation/ }).click();
+  await expect(page.locator("video[aria-label*='demonstration']")).toHaveAttribute(
+    "aria-label",
+    /Idle animation/,
+  );
+});
+
+test("a skill clip opens in the custom player in her colours and closes on Escape", async ({
+  page,
+}) => {
+  await openSkills(page);
+  await page.getByRole("button", { name: "Watch with sound" }).click();
+  const player = page.getByRole("dialog", { name: "Abyssal Bone Needle" });
+  await expect(player).toBeVisible();
+  await expect(player.getByRole("slider", { name: "Seek" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(player).toHaveCount(0);
+});
+
+test("Back closes the Skills drawer and returns to the main panel", async ({ page }) => {
+  await openSkills(page);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(0, {
+    timeout: 45_000,
+  });
+});
