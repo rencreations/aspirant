@@ -14,6 +14,16 @@ The first loading screen and every page transition report real work. Keep it tha
 - Never fake progress. Never add a timer that pretends to load.
 - A page that is not ready 500 ms after a navigation shows the loading state of the logo transition. Do not remove that.
 
+## Performance
+
+The site must not lag on an ordinary laptop and must lighten itself on a weak one. Read `docs/design/performance.md`. The rules that matter every day:
+
+- Never write a CSS custom property or an inline style on `<html>` or `<body>` per frame (it restyles the whole page), and never give an element an attribute that a script then selects by. A test guards the cursor.
+- Animate `transform` and `opacity` only. No `width`, `left`, `top` or `margin` in an animation. No `filter`, `backdrop-filter` or `mix-blend-mode` over the live picture or on an element with animated children. No per-frame SVG attribute writes.
+- Something that follows a video runs on the compositor (a Web Animation), not in a frame loop. Long text and long lists use `content-visibility: auto` and are built in small slices.
+- Judge speed on the production build, not `pnpm dev` (it is 2 to 3 times slower), with `scripts/perf/weak.mjs`.
+- Effects that cost something are gated on the performance level (`:root[data-perf="balanced"]`, `lib/perf.ts`).
+
 ## Logo
 
 The logo is a vector (`components/logo/`, traced from the bitmap by `scripts/logo/build.py`). Use `AspirantLogo` wherever the logo appears. The letters are windows: the plate never covers them. The page transition (`components/curtain/`, `components/transition/`) zooms through those windows.

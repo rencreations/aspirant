@@ -214,21 +214,30 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     return undefined;
   }, [state.mode, state.scene]);
 
-  // The performance level (lib/perf.ts) steps down when the frame rate stays low while she plays
-  // (idle or on a page: the transitions between are judged by nothing). When it steps down, the
-  // videos of the smaller size are loaded in the background and used from the next video on.
-  const steady = useRef(false);
+  // The performance level (lib/perf.ts) steps down when the frame rate stays low while the page
+  // plays: in idle, in the presses and the entrances, on a page. Not during the boot and the
+  // welcome, which are the page getting started. When the level steps down, the videos of the
+  // smaller size are loaded in the background and used from the next video on.
+  const judged = useRef(false);
+  const modeNow = useRef<StageState["mode"]>("boot");
   useEffect(() => {
-    steady.current = state.mode === "idle" || state.mode === "page";
+    judged.current = state.mode !== "boot" && state.mode !== "welcome";
+    modeNow.current = state.mode;
   }, [state.mode]);
   useEffect(() => {
     if (!tierReady) return;
     const stop = startGovernor({
       video: () => stage.current?.videoQuality() ?? null,
-      paused: () => !steady.current,
+      paused: () => !judged.current,
     });
     const off = onPerfLevel(() => {
       void runPreload(selenaItems());
+      // While she idles the idle loop is on screen, so it is swapped for the smaller size under
+      // the cover wipe, once the smaller size has arrived. In any other state the next return to
+      // the idle loop does it.
+      void loadCore(false).then(() => {
+        if (modeNow.current === "idle") void cover.current?.run(() => stage.current?.retier());
+      });
     });
     return () => {
       stop();

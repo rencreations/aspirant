@@ -447,6 +447,17 @@ export class SelenaDirector {
     if (!this.opts.reduced) this.watchIdle();
   }
 
+  /**
+   * Give the idle loop the size the device asks for now (the performance level stepped down while
+   * she idles). It restarts from its first frame, so the page covers the screen while this runs
+   * (the same wipe as Skip). Does nothing unless she is idling.
+   */
+  async retier() {
+    if (this.destroyed || this.state.mode !== "idle") return;
+    this.opts.detach?.("idle", this.els.idle);
+    await this.jumpToIdle();
+  }
+
   private watchIdle() {
     this.stopWatch?.();
     this.prevFrame = null;
@@ -691,7 +702,9 @@ export class SelenaDirector {
     if (this.state.mode === "returning" || this.state.mode === "idle") return;
     this.stopWatch?.();
     this.set({ mode: "returning" });
-    const idle = this.els.idle;
+    // The idle loop is out of sight and paused: this is where it takes the size the device
+    // asks for now, if the performance level stepped down while the page played.
+    const idle = this.use("idle");
     const reduced = this.opts.reduced;
     const ahead = from.currentTime * SELENA_FPS - back.syncFrame + START_LATENCY;
     const phase = immediate || reduced ? back.syncPhase : wrapFrame(back.syncPhase + ahead);

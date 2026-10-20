@@ -39,6 +39,8 @@ export interface StageApi {
   idleClock: () => { time: number; playing: boolean } | null;
   /** Video frames dropped and shown so far by the picture on top (counters), for the governor. */
   videoQuality: () => { dropped: number; total: number } | null;
+  /** Give the idle loop the size the device asks for now. The caller covers the screen. */
+  retier: () => Promise<void>;
 }
 
 interface Props {
@@ -78,6 +80,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
       jumpToIdle: () => director.current?.jumpToIdle() ?? Promise.resolve(),
       idleClock: () => director.current?.idleClock() ?? null,
       videoQuality: () => director.current?.videoQuality() ?? null,
+      retier: () => director.current?.retier() ?? Promise.resolve(),
     }),
     [],
   );

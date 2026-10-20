@@ -531,6 +531,35 @@ describe("failure and reduced motion", () => {
     expect(ctx.director.current.mode).toBe("page");
   });
 
+  it("takes the size of the idle loop that the device asks for when she comes back to it", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "skills");
+    const before = ctx.attached.filter((k) => k === "idle").length;
+    out.tick(f(SELENA_PAGES.skills.out.syncFrame));
+    await settle();
+    expect(ctx.director.current.mode).toBe("idle");
+    // The idle loop was asked for again on the way back, so it can be given another size then.
+    expect(ctx.attached.filter((k) => k === "idle").length).toBeGreaterThan(before);
+  });
+
+  it("can swap the idle loop for another size while she idles", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.detached.length = 0;
+    void ctx.director.retier();
+    await settle();
+    ctx.els.idle.tick(0);
+    await settle();
+    expect(ctx.detached).toContain("idle");
+    expect(ctx.director.current.mode).toBe("idle");
+    expect(ctx.els.idle.dataset.layer).toBe("front");
+    // Not while something else is playing.
+    ctx.director.request("about");
+    ctx.detached.length = 0;
+    await ctx.director.retier();
+    expect(ctx.detached).not.toContain("idle");
+  });
+
   it("holds only one warmed entrance at a time", async () => {
     const ctx = setup();
     await toIdle(ctx);
