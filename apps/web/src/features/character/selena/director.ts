@@ -221,6 +221,10 @@ export class SelenaDirector {
   private stopWatch: (() => void) | null = null;
   private pending: SceneName | null = null;
   private after: SceneName | null = null;
+  /** The wait shown for `after`, so it carries on, and does not start again, when it begins. */
+  private afterWait: { ms: number; at: number } | null = null;
+  /** The exit or short that is playing, to work out how long until she is back in the idle loop. */
+  private exit: { clip: HTMLVideoElement; back: Back } | null = null;
   private prevFrame: number | null = null;
   private handed = false;
   private destroyed = false;
@@ -440,6 +444,8 @@ export class SelenaDirector {
     this.stopWatch?.();
     this.pending = null;
     this.after = null;
+    this.afterWait = null;
+    this.exit = null;
     this.leaveAsked = false;
     this.degraded = false;
     this.poseBack = false;
@@ -516,12 +522,17 @@ export class SelenaDirector {
    * show it. If she is still finishing another animation, the choice is kept and starts when she
    * is back in her idle pose.
    */
-  request(scene: SceneName) {
+  request(scene: SceneName, carry: { ms: number; at: number } | null = null) {
     const { mode, ui } = this.state;
     if (mode === "outro" || mode === "returning" || mode === "short") {
       if (!ui) return;
+      // Chosen while she is still handing back to the idle loop: it starts as soon as she idles.
+      // Its first video loads now, and the wait shown is the real one: the rest of the hand-over
+      // and then the idle loop's wait for the frame the entrance starts on.
       this.after = scene;
-      this.set({ next: scene, wait: null });
+      this.warm(scene);
+      this.prime(scene);
+      this.refreshAfter(scene);
       return;
     }
     if (mode !== "idle" && mode !== "queued") return;
@@ -536,20 +547,65 @@ export class SelenaDirector {
     const first = this.els[this.keysOf(scene)[0]!];
     const loading = !isReady(first);
     const ms = loading ? null : this.idleWait(scene);
+    // A wait that was already running (the choice was made during the hand-over) keeps running if
+    // it is still right, so the bar does not start again.
+    const now = performance.now();
+    const keep = carry !== null && ms !== null && Math.abs(carry.ms - (now - carry.at) - ms) < 300;
     this.set({
       mode: "queued",
       scene,
       loading,
       next: null,
-      wait: ms === null ? null : { ms, at: performance.now() },
+      wait: keep ? carry : ms === null ? null : { ms, at: now },
     });
+  }
+
+  /** Frames of the idle loop's wait for an entrance, from the moment she is handed back to it. */
+  private afterEstimate(scene: SceneName): number | null {
+    const exit = this.exit;
+    if (!exit) return null;
+    const { clip, back } = exit;
+    const phases = isPage(scene)
+      ? SELENA_PAGES[scene].in.startPhases
+      : SELENA_SHORTS[scene].startPhases;
+    // The video plays on to the frame the hand-over starts at, then the idle loop dissolves in.
+    const toSync = Math.max(0, back.syncFrame - LEAD_FRAMES - clip.currentTime * SELENA_FPS);
+    const blend = (((this.opts.reduced ? 380 : back.blendMs) + 40) / 1000) * SELENA_FPS;
+    // The idle loop starts a few frames after the matching phase, and runs while it dissolves in.
+    const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend);
+    const wait = waitFrames(phase, triggerFrames(phases));
+    // Measured: the entrance starts about 0.15 s after the idle loop reaches its frame.
+    return ((toSync + blend + wait) / SELENA_FPS) * 1000 + 150;
+  }
+
+  /** Work out the wait for the scene chosen during the hand-over, and follow its first video. */
+  private refreshAfter(scene: SceneName) {
+    const first = this.els[this.keysOf(scene)[0]!];
+    const loading = !isReady(first);
+    const ms = loading ? null : this.afterEstimate(scene);
+    this.afterWait = ms === null ? null : { ms, at: performance.now() };
+    this.set({ next: scene, loading, wait: this.afterWait });
+    if (loading) {
+      // Show the real state of the load, and the wait once the video is ready.
+      const ready = () => {
+        first.removeEventListener("canplay", ready);
+        first.removeEventListener("loadeddata", ready);
+        if (this.after === scene && this.state.next === scene && isReady(first)) {
+          this.refreshAfter(scene);
+        }
+      };
+      first.addEventListener("canplay", ready);
+      first.addEventListener("loadeddata", ready);
+    }
   }
 
   /** Leave the queue. */
   cancel() {
     if (this.after) {
+      this.unprime(this.after);
       this.after = null;
-      this.set({ next: null });
+      this.afterWait = null;
+      this.set({ next: null, loading: false, wait: null });
       return;
     }
     if (this.state.mode !== "queued") return;
@@ -607,6 +663,7 @@ export class SelenaDirector {
       el.addEventListener("ended", () => void this.handToPage(scene), { once: true });
     } else {
       const back = SELENA_SHORTS[scene].back;
+      this.exit = { clip: el, back };
       this.stopWatch = watchFrames(el, (t) => {
         this.watchBack(t * SELENA_FPS, back, el, scene);
       });
@@ -720,6 +777,7 @@ export class SelenaDirector {
     await this.swap(out, loop, HANDOVER_MS);
     loop.currentTime = 0;
     this.opts.detach?.(`${scene}-loop`, loop);
+    this.exit = { clip: out, back: timing };
     this.stopWatch = watchFrames(out, (t) => {
       this.watchBack(t * SELENA_FPS, timing, out, scene);
     });
@@ -756,11 +814,14 @@ export class SelenaDirector {
     this.set({ mode: "idle", scene: null, loading: false, leaving: false, wait: null });
     if (!reduced) this.watchIdle();
     // Something chosen while she was finishing starts now.
+    this.exit = null;
     const after = this.after;
     if (after) {
+      const carry = this.afterWait;
       this.after = null;
+      this.afterWait = null;
       this.set({ next: null });
-      this.request(after);
+      this.request(after, carry);
     }
   }
 

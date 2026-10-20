@@ -297,6 +297,38 @@ describe("a choice reacts at once", () => {
     expect(ctx.director.current).toMatchObject({ mode: "intro", scene: "skills" });
   });
 
+  it("a page chosen as she comes back loads at once and shows the real wait", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "about");
+    const back = SELENA_PAGES.about.out;
+    out.tick(f(back.uiFrame));
+    ctx.director.request("skills");
+    // Its first video is attached now, not when she is idle, and the wait is known: the bar runs
+    // for the rest of the hand-over and the idle loop's wait, and does not just fill and hold.
+    expect(ctx.attached).toContain("skills-in");
+    const shown = ctx.director.current;
+    expect(shown).toMatchObject({ next: "skills", loading: false });
+    expect(shown.wait).not.toBeNull();
+    const rest = ((back.syncFrame - LEAD_FRAMES - back.uiFrame) / FPS) * 1000;
+    expect(shown.wait!.ms).toBeGreaterThan(rest);
+    expect(shown.wait!.ms).toBeLessThan(rest + 1000 + 2700 + 700);
+    // When she is handed back, the same wait carries on (the bar does not start again).
+    out.tick(f(back.syncFrame - LEAD_FRAMES));
+    await settle();
+    const queued = ctx.director.current;
+    expect(queued).toMatchObject({ mode: "queued", scene: "skills" });
+    expect(queued.wait).not.toBeNull();
+  });
+
+  it("a page chosen as she comes back says it is loading when its video is not ready", async () => {
+    const ctx = setup();
+    const out = await toOutro(ctx, "about");
+    ctx.els["skills-in"].readyState = 0;
+    out.tick(f(SELENA_PAGES.about.out.uiFrame));
+    ctx.director.request("skills");
+    expect(ctx.director.current).toMatchObject({ next: "skills", loading: true, wait: null });
+  });
+
   it("a kept choice can be taken back", async () => {
     const ctx = setup();
     const out = await toOutro(ctx, "gallery");

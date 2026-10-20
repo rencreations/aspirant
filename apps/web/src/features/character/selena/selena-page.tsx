@@ -322,7 +322,9 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   const chosen = mode === "queued" ? scene : state.next;
   const busy = chosen !== null;
   const chosenShort = chosen !== null && isShort(chosen) ? (chosen as ShortName) : null;
-  const waitMs = mode === "queued" && state.wait && !state.loading ? state.wait.ms : null;
+  // The wait is known while she waits for her frame, and also when a page was chosen during the
+  // hand-over to the idle loop (it is worked out from the hand-over).
+  const waitMs = chosen !== null && state.wait && !state.loading ? state.wait.ms : null;
   const waitKey = state.wait?.at ?? 0;
   // How long the way back takes to put her in her idle pose, when it is known: the wait for her
   // frame, then the exit up to the moment she is posed.
@@ -335,11 +337,12 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // Back is there while the page is open and while it waits for the exit to start. It goes when
   // the exit starts, and the "Heading back" screen carries on alone until she is posed.
   const showBack = mode === "page" || mode === "leaving";
-  const waitLabel = state.leaving
-    ? "Heading back"
-    : chosenShort
-      ? "Getting ready"
-      : `Opening ${MENU.find((m) => m.scene === chosen)?.label ?? "the page"}`;
+  const waitLabel =
+    chosen === null && state.leaving
+      ? "Heading back"
+      : chosenShort
+        ? "Getting ready"
+        : `Opening ${MENU.find((m) => m.scene === chosen)?.label ?? "the page"}`;
   const nextRoute = useCallback(() => {
     router.push(next.href, { label: next.label });
   }, [next.href, next.label, router]);
@@ -393,10 +396,10 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
         {waiting ? (
           <WaitFx
-            key={state.leaving ? "back" : waitKey}
+            key={chosen === null && state.leaving ? "back" : waitKey}
             railKey={waitKey}
             label={waitLabel}
-            ms={state.leaving ? backWait : waitMs}
+            ms={chosen === null && state.leaving ? backWait : waitMs}
           />
         ) : null}
 

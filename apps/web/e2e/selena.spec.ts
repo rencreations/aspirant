@@ -489,7 +489,10 @@ test("each page has its own address and title, and Back returns to her own", asy
   await page.getByRole("button", { name: "Skills", exact: true }).click();
   await expect(page).toHaveURL(/\/character\/selena\/skills\/$/, { timeout: 30_000 });
   await expect(page).toHaveTitle(/Selena, Skills/);
-  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible();
+  // Back shows with the page, once she is in her pose.
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(page).toHaveURL(/\/character\/selena\/$/, { timeout: 30_000 });
   await expect(page.getByRole("button", { name: "Skills", exact: true })).toBeVisible({
