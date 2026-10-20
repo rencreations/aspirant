@@ -5,19 +5,11 @@ import { describe, expect, it } from "vitest";
 
 import { entities } from "@/content/entities";
 
+import { FORM_NAMES, FORMS } from "../media";
+
 import { ABOUT_IMAGES } from "./about-images";
 import { entityIds } from "./inline-text";
-import {
-  DISLIKES,
-  EXPERIENCE,
-  LIKES,
-  PROFILE_FACTS,
-  PROFILE_VOICES,
-  PROJECTS,
-  SKILLS,
-  SUMMARY,
-  TIES,
-} from "./profile-data";
+import { DISLIKES, LIKES, PROFILE_FACTS, PROFILE_VOICES, SUMMARY, TIES } from "./profile-data";
 import { STORY } from "./story-data";
 import { OBSIDIA_VOICE_NUMBERS } from "./voice-card";
 
@@ -40,12 +32,9 @@ const storyText = (): string[] =>
 const profileText = (): string[] => [
   SUMMARY,
   ...PROFILE_FACTS.flatMap((f) => [f.label, f.value]),
-  ...SKILLS,
-  ...EXPERIENCE.flatMap((e) => [e.role, e.place, e.note]),
   ...LIKES,
   ...DISLIKES,
   ...TIES.flatMap((t) => [t.name, t.relation, t.text]),
-  ...PROJECTS.flatMap((p) => [p.label, p.value]),
 ];
 
 describe("Obsidia's story", () => {
@@ -98,5 +87,14 @@ describe("Obsidia's story", () => {
     for (const word of banned) expect(text.toLowerCase()).not.toContain(word.toLowerCase());
     // The duel is left open.
     expect(text).not.toMatch(/Selena (won|lost|died)|Obsidia (won|lost|died)/i);
+  });
+});
+
+describe("Her two forms", () => {
+  it("has a photo and a silent clip for each, in the folders the script writes", () => {
+    for (const f of FORM_NAMES) {
+      expect(existsSync(join(publicDir, FORMS[f].poster)), FORMS[f].poster).toBe(true);
+      expect(existsSync(join(publicDir, FORMS[f].src)), FORMS[f].src).toBe(true);
+    }
   });
 });

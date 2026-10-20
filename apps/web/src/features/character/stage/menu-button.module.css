@@ -4,7 +4,7 @@
   --ico: 4.9rem;
   --x0: 2.2rem;
   --plate: linear-gradient(112deg, #ffffff 0%, var(--armor) 45%, var(--armor-2) 100%);
-  --ink: #1a1342;
+  --ink: var(--btn-ink, #1a1342);
   position: relative;
   display: grid;
   grid-template-columns: 2.6rem auto 1fr;
@@ -31,7 +31,7 @@
   position: absolute;
   inset: 3px 2px 0;
   z-index: -2;
-  box-shadow: 0 6px 14px rgb(10 8 40 / 0.32);
+  box-shadow: 0 6px 14px var(--btn-shadow, rgb(10 8 40 / 0.32));
   pointer-events: none;
 }
 
@@ -53,7 +53,12 @@
 
 .button::before {
   inset: 0;
-  background: linear-gradient(120deg, var(--violet), #a995ff 55%, var(--violet));
+  background: linear-gradient(
+    120deg,
+    var(--violet),
+    var(--btn-edge-mid, #a995ff) 55%,
+    var(--violet)
+  );
 }
 
 .button::after {
@@ -161,9 +166,9 @@
 /* Hover and focus: the plate darkens and slides out, her picture wobbles, the trim grows. */
 .button:not(:disabled):hover,
 .button:not(:disabled):focus-visible {
-  transform: translateX(-12px);
+  transform: translateX(var(--nudge, -12px));
   color: #fff;
-  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
+  --plate: linear-gradient(112deg, var(--btn-hover, #3a2a9c) 0%, var(--violet-deep) 70%);
 }
 
 .button:not(:disabled):hover .icon img,
@@ -195,7 +200,7 @@
 }
 
 .button:not(:disabled):active {
-  transform: translateX(-6px) scale(0.97);
+  transform: translateX(calc(var(--nudge, -12px) / 2)) scale(0.97);
 }
 
 /* Pressed ------------------------------------------------------------------------------------ */
@@ -208,9 +213,9 @@
   --hit: calc(var(--jump) + var(--stomp) * 0.72);
   --travel: max(260ms, calc(var(--wait) - var(--lead)));
   --run: calc(var(--bw, 14rem) - var(--x0) - 1.6rem);
-  transform: translateX(-12px);
+  transform: translateX(var(--nudge, -12px));
   color: #fff;
-  --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
+  --plate: linear-gradient(112deg, var(--btn-hover, #3a2a9c) 0%, var(--violet-deep) 70%);
   animation: thud 380ms var(--ease-out) var(--hit) both;
 }
 
@@ -246,7 +251,12 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: linear-gradient(100deg, #b81f42 0%, var(--crystal) 60%, #e8456a 100%);
+  background: linear-gradient(
+    100deg,
+    var(--btn-sheet, #b81f42) 0%,
+    var(--crystal) 60%,
+    var(--btn-sheet-end, #e8456a) 100%
+  );
   border-right: 3px solid #fff;
   box-shadow: inset -3px 0 0 var(--gold);
   /* Starts with its front edge under her picture, and slides in as she runs. */

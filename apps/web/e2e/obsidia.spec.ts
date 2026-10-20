@@ -67,7 +67,7 @@ test("her music is in the nav", async ({ page }) => {
   await expect(record).toHaveAttribute("aria-pressed", /true|false/);
 });
 
-test("the three buttons sit side by side in the top left", async ({ page }, info) => {
+test("the three buttons are a column in the top left, like Selena's", async ({ page }, info) => {
   test.skip(info.project.name !== "desktop", "The corner layout is the desktop one");
   await open(page);
   const vw = page.viewportSize()?.width ?? 0;
@@ -77,13 +77,13 @@ test("the three buttons sit side by side in the top left", async ({ page }, info
     boxes.push((await page.getByRole("button", { name, exact: true }).boundingBox())!);
   }
   for (const b of boxes) {
-    expect(b.y).toBeLessThan(vh * 0.3);
-    expect(b.x + b.width).toBeLessThan(vw * 0.6);
+    expect(b.y).toBeLessThan(vh * 0.5);
+    expect(b.x + b.width).toBeLessThan(vw * 0.25);
   }
-  // In one row, in order.
-  expect(Math.abs(boxes[0]!.y - boxes[2]!.y)).toBeLessThan(4);
-  expect(boxes[0]!.x).toBeLessThan(boxes[1]!.x);
-  expect(boxes[1]!.x).toBeLessThan(boxes[2]!.x);
+  // One under the other, in order, with the same left edge.
+  expect(Math.abs(boxes[0]!.x - boxes[2]!.x)).toBeLessThan(4);
+  expect(boxes[0]!.y).toBeLessThan(boxes[1]!.y);
+  expect(boxes[1]!.y).toBeLessThan(boxes[2]!.y);
 });
 
 test("the buttons can be pressed without errors", async ({ page }) => {
@@ -96,24 +96,39 @@ test("the buttons can be pressed without errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("a touch point plays its short at once, Back leaves it, and the main panel comes back", async ({
+test("a touch point plays its short to the end, with no Back, and the main panel comes back", async ({
   page,
 }) => {
   await open(page);
   const spot = page.getByRole("button", { name: SPOT_NAMES[0]! });
   // The circle follows the picture, so it is never still.
   await spot.click({ force: true });
-  // The panel steps aside and Back is the way out (Esc does the same).
-  await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible({
-    timeout: 60_000,
-  });
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+  // The panel steps aside. There is no Back and Esc does nothing: a short plays to its end.
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeHidden({
     timeout: 60_000,
   });
   await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(400);
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 60_000,
+  });
   await expect(spot).toBeVisible();
   await expect(spot).toBeEnabled();
+});
+
+test("pressing a page button takes the touch points away at once", async ({ page }) => {
+  await open(page);
+  const spots = page.getByRole("button", { name: /^Play the animation|^Play the weapon/ });
+  await expect(spots).toHaveCount(3);
+  await page.getByRole("button", { name: "Skills", exact: true }).click();
+  // The points fade out in a quarter of a second.
+  await expect
+    .poll(() => spots.evaluateAll((els) => els.map((el) => Number(getComputedStyle(el).opacity))), {
+      timeout: 1500,
+    })
+    .toEqual([0, 0, 0]);
 });
 
 test("every touch point stays on screen, on a phone too", async ({ page }) => {
@@ -203,7 +218,9 @@ test("About opens one drawer on the left with Details and Story, and her trailer
   await expect(page.getByRole("button", { name: /Play video: Obsidia, The Queen/ })).toBeVisible();
   const vw = page.viewportSize()?.width ?? 0;
   const drawer = await page.getByRole("complementary", { name: "About Obsidia" }).boundingBox();
-  const card = await page.getByRole("button", { name: /Play video/ }).boundingBox();
+  const card = await page
+    .getByRole("button", { name: /Play video: Obsidia, The Queen/ })
+    .boundingBox();
   if (!isNarrow(info)) {
     // The drawer takes at most 40 percent, so she stays in view on the right, and there is no
     // second drawer.
@@ -220,6 +237,13 @@ test("the details list the facts, her profile picture and her voice", async ({ p
   const details = page.getByRole("tabpanel", { name: "Details, scrollable" });
   for (const label of ["Age", "Birthday", "MBTI", "Occupation", "Species"])
     await expect(details.getByText(label, { exact: true })).toBeVisible();
+  // What was taken out stays out.
+  for (const label of ["Eyes", "Voice"])
+    await expect(details.locator("dt", { hasText: new RegExp(`^${label}$`) })).toHaveCount(0);
+  for (const title of ["Skills", "Experience", "Projects", "Fighting"])
+    await expect(details.getByRole("heading", { level: 3, name: title, exact: true })).toHaveCount(
+      0,
+    );
   await expect(details.getByText("November 13")).toBeVisible();
   await expect(details.getByText("INTJ")).toBeVisible();
   await expect(details.getByText("アイーダ")).toBeVisible();
@@ -228,6 +252,33 @@ test("the details list the facts, her profile picture and her voice", async ({ p
     await expect(
       details.getByRole("button", { name: new RegExp(`Play voice line ${n}:`) }),
     ).toBeAttached();
+});
+
+test("the top of the details is centred, and each form has a photo and a silent clip", async ({
+  page,
+}) => {
+  await openAbout(page);
+  const details = page.getByRole("tabpanel", { name: "Details, scrollable" });
+  const panel = (await details.boundingBox())!;
+  for (const name of [
+    details.getByRole("img", { name: /Imperatrix Arashi/ }),
+    details.getByRole("heading", { level: 2, name: "Obsidia" }),
+  ]) {
+    const box = (await name.boundingBox())!;
+    expect(Math.abs(box.x + box.width / 2 - (panel.x + panel.width / 2))).toBeLessThan(24);
+  }
+  await details.getByRole("heading", { level: 3, name: "Two forms" }).scrollIntoViewIfNeeded();
+  for (const title of ["Obsidia, normal form", "Obsidia, Ender form, the transformation"]) {
+    const card = details.getByRole("button", { name: `Play video: ${title}` });
+    await expect(card).toBeVisible();
+    expect(await card.locator("img").getAttribute("src")).toMatch(/form-(normal|ender)\.webp$/);
+  }
+  const ender = details.getByRole("button", { name: /Ender form/ });
+  await ender.click();
+  const player = page.getByRole("dialog", { name: /Ender form/ });
+  await expect(player).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(player).toHaveCount(0);
 });
 
 test("the story is told by her, with tooltips, pictures and voice lines you can press", async ({
@@ -358,9 +409,19 @@ test("Skills lists her passive and three skills with their numbers, in one drawe
   await expect(ult.getByRole("row", { name: /Cooldown/ })).toContainText("40.0");
   await expect(skills.getByRole("table", { name: /Base stats/ })).toBeAttached();
   if (info.project.name === "desktop") {
+    // Two drawers with her between them: the skills on the left (narrower than Selena's, so her
+    // hand shows) and the demonstration on the right, both the same width.
     const vw = page.viewportSize()?.width ?? 0;
-    const d = await page.getByRole("complementary", { name: "Obsidia's skills" }).boundingBox();
-    expect(d!.x + d!.width).toBeLessThanOrEqual(vw * 0.4);
+    const left = (await page
+      .getByRole("complementary", { name: "Obsidia's skills", exact: true })
+      .boundingBox())!;
+    const right = (await page.getByRole("complementary", { name: /^Demo, / }).boundingBox())!;
+    expect(left.x + left.width).toBeLessThanOrEqual(vw * 0.3);
+    expect(right.x).toBeGreaterThanOrEqual(vw * 0.7);
+    expect(Math.abs(left.width - right.width)).toBeLessThan(2);
+    await expect(page.getByRole("heading", { level: 2, name: "How Obsidia hunts" })).toBeVisible();
+    // No tabs on the left: it is only the skills.
+    await expect(page.getByRole("tab", { name: "Showcase" })).toHaveCount(0);
   }
 });
 
@@ -372,9 +433,16 @@ test("choosing a skill changes the clip in the corner, and the clip can be pause
   await skills.getByRole("button", { name: /Phantom Shadowmeld/ }).click();
   const clip = page.locator("video[aria-label*='demonstration']");
   await expect(clip).toHaveAttribute("aria-label", /Phantom Shadowmeld/);
+  // On a narrow screen the demonstration is a tab of the sheet.
+  const demoTab = page.getByRole("tab", { name: "Demo" });
+  if ((await demoTab.count()) > 0) await demoTab.click();
   await expect(page.getByRole("button", { name: /^(Pause|Play) the clip$/ })).toBeVisible();
-  // The showcase has more clips.
-  await page.getByRole("tab", { name: "Showcase" }).click();
+  // The icons under the clip pick a skill, and the skin showcase has more clips.
+  await page.getByRole("button", { name: /^Skill 1: Abyssal Bone Needle/ }).click();
+  await expect(page.locator("video[aria-label*='demonstration']")).toHaveAttribute(
+    "aria-label",
+    /Abyssal Bone Needle/,
+  );
   await page.getByRole("button", { name: /Idle animation/ }).click();
   await expect(page.locator("video[aria-label*='demonstration']")).toHaveAttribute(
     "aria-label",
@@ -386,6 +454,8 @@ test("a skill clip opens in the custom player in her colours and closes on Escap
   page,
 }) => {
   await openSkills(page);
+  const demoTab = page.getByRole("tab", { name: "Demo" });
+  if ((await demoTab.count()) > 0) await demoTab.click();
   await page.getByRole("button", { name: "Watch with sound" }).click();
   const player = page.getByRole("dialog", { name: "Abyssal Bone Needle" });
   await expect(player).toBeVisible();
@@ -423,8 +493,11 @@ test("Gallery has Art, Watch and Voice in one drawer", async ({ page }, info) =>
   await expect(tabs.getByRole("tab")).toHaveText(["Art", "Watch", "Voice"]);
   if (info.project.name === "desktop") {
     const vw = page.viewportSize()?.width ?? 0;
+    const vh = page.viewportSize()?.height ?? 0;
     const d = await page.getByRole("complementary", { name: "Obsidia's gallery" }).boundingBox();
     expect(d!.x + d!.width).toBeLessThanOrEqual(vw * 0.4);
+    // Only the top half of the usual height, so her feet are in view.
+    expect(d!.y + d!.height).toBeLessThanOrEqual(vh * 0.55);
   }
 });
 

@@ -291,6 +291,7 @@ export function GalleryDrawer({ present, shown, warm }: Props) {
   return (
     <>
       <ObsidiaDrawer
+        size="half"
         present={present}
         shown={shown}
         warm={warm}

@@ -44,17 +44,6 @@ export const PROFILE_FACTS: readonly Fact[] = [
 export const SUMMARY =
   "Selena is the Academy's best young mechanic. She has red eyes, a lazy smile and a friend for everyone. She is also an Ender, made by Obsidia and raised by a rescue worker. She plays at being human, and slowly finds that it is not a game.";
 
-export const SKILLS: readonly string[] = [
-  "Mecha engineering",
-  "Hearing Ender tissue hum",
-  "Flying Silverbolt",
-  "Catching lightning",
-  "Improvising under pressure",
-  "Copying a smile until it is real",
-  "Teaching cadets",
-  "Tracing a signal to its sender",
-];
-
 export const EXPERIENCE: readonly ExperienceEntry[] = [
   {
     role: "Mechanic, Science Division",

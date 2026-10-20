@@ -19,6 +19,7 @@ import {
   OBSIDIA_MUSIC,
   OBSIDIA_UI_IMAGES,
   OBSIDIA_VOICE_COUNT,
+  formItems as obsidiaFormItems,
   obsidiaItems,
   obsidiaVoicePath,
   trailerItem as obsidiaTrailerItem,
@@ -160,6 +161,7 @@ export function routeItems(pathname: string): PreloadItem[] {
           ...obsidiaSkillItems(),
           ...obsidiaGalleryItems(),
           obsidiaTrailerItem(),
+          ...obsidiaFormItems(),
         ]),
       ];
     }

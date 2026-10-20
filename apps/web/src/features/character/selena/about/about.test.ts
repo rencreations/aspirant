@@ -14,7 +14,6 @@ import {
   PROFILE_FACTS,
   PROFILE_VOICES,
   PROJECTS,
-  SKILLS,
   SUMMARY,
   TIES,
 } from "./profile-data";
@@ -40,7 +39,6 @@ const storyText = (): string[] =>
 const profileText = (): string[] => [
   SUMMARY,
   ...PROFILE_FACTS.flatMap((f) => [f.label, f.value]),
-  ...SKILLS,
   ...EXPERIENCE.flatMap((e) => [e.role, e.place, e.note]),
   ...LIKES,
   ...DISLIKES,

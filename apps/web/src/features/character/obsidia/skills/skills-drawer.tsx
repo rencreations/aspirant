@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { PlayerOverlay } from "@/components/video-player/player-overlay";
@@ -135,9 +135,9 @@ function SkillsBody({ selected, onSelect }: { selected: string; onSelect: (id: s
     <>
       <header className={styles.head}>
         <p className={base.kicker}>Skills</p>
-        <h2 className={base.name}>Four skills, one hunt</h2>
+        <h2 className={base.name}>How Obsidia hunts</h2>
         <p className={styles.lead}>
-          A passive and three skills. Press one to read it. Its clip plays in the corner.
+          A passive and three skills. Press one to read it. Its clip plays on the right.
         </p>
       </header>
 
@@ -231,55 +231,109 @@ function SkillsBody({ selected, onSelect }: { selected: string; onSelect: (id: s
   );
 }
 
-function ShowcaseBody({ clip, onClip }: { clip: ClipId; onClip: (c: ClipId) => void }) {
+/** The icons of her four skills under the clip. Pressing one shows its clip. */
+function Picker({ selected, onPick }: { selected: string | null; onPick: (id: string) => void }) {
+  return (
+    <ul className={styles.icons} aria-label="Skills">
+      {SKILLS.map((k) => (
+        <li key={k.id}>
+          <button
+            type="button"
+            aria-pressed={selected === k.id}
+            aria-label={`${k.slot}: ${k.name}`}
+            title={k.name}
+            onPointerEnter={() => {
+              audio.blip("hover");
+            }}
+            onClick={() => {
+              onPick(k.id);
+              audio.blip("click");
+            }}
+          >
+            {/* Plain <img>: static export, a 100 px icon. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset(skillIconPath(k.icon))}
+              alt=""
+              width={48}
+              height={48}
+              draggable={false}
+            />
+            <span>{k.slot}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function DemoBody({
+  skill,
+  clip,
+  onClip,
+  onPick,
+}: {
+  skill: Skill;
+  clip: ClipId;
+  onClip: (c: ClipId) => void;
+  onPick: (id: string) => void;
+}) {
+  const own = clip === skill.clip;
   return (
     <>
       <header className={styles.head}>
-        <p className={base.kicker}>Skin showcase</p>
-        <h2 className={base.name}>Imperatrix Arashi</h2>
+        <p className={base.kicker}>Demonstration</p>
+        <h2 className={base.name}>{skill.name}</h2>
         <p className={styles.lead}>
-          Clips from the official skin showcase. They show Obsidia only. Press one to play it in the
-          corner.
+          {skill.slot}. Clips come from the official skin showcase and show Obsidia only.
         </p>
       </header>
-      <ul className={styles.more}>
-        {EXTRAS.map((e) => (
-          <li key={e.clip}>
-            <button
-              type="button"
-              aria-pressed={clip === e.clip}
-              onClick={() => {
-                onClip(e.clip);
-                audio.blip("click");
-              }}
-            >
-              {/* Plain <img>: static export, a poster of the clip. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset(skillPosterPath(e.clip))}
-                alt=""
-                width={e.clip === "idle" || e.clip === "interactive" ? 54 : 96}
-                height={54}
-                loading="lazy"
-                draggable={false}
-              />
-              <span>
-                <strong>{e.title}</strong>
-                <em>{e.note}</em>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+
+      <ClipDock clip={clip} note={own ? skill.clipNote : undefined}>
+        <Picker selected={own ? skill.id : null} onPick={onPick} />
+      </ClipDock>
+
+      <section className={styles.flow}>
+        <h3>More from the skin showcase</h3>
+        <ul className={styles.more}>
+          {EXTRAS.map((e) => (
+            <li key={e.clip}>
+              <button
+                type="button"
+                aria-pressed={clip === e.clip}
+                onClick={() => {
+                  onClip(e.clip);
+                  audio.blip("click");
+                }}
+              >
+                {/* Plain <img>: static export, a poster of the clip. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={asset(skillPosterPath(e.clip))}
+                  alt=""
+                  width={e.clip === "idle" || e.clip === "interactive" ? 54 : 96}
+                  height={54}
+                  loading="lazy"
+                  draggable={false}
+                />
+                <span>
+                  <strong>{e.title}</strong>
+                  <em>{e.note}</em>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </>
   );
 }
 
 /**
- * The clip in the corner: a small silent loop, with a button that pauses it and one that opens the
- * same clip with sound, full page, in the custom player in her colours.
+ * The clip: a silent loop, with a button that pauses it and one that opens the same clip with
+ * sound, full page, in the custom player in her colours. What is given as children sits below it.
  */
-function ClipDock({ clip, note }: { clip: ClipId; note?: string }) {
+function ClipDock({ clip, note, children }: { clip: ClipId; note?: string; children?: ReactNode }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
@@ -365,6 +419,7 @@ function ClipDock({ clip, note }: { clip: ClipId; note?: string }) {
           Watch with sound
         </button>
       </figcaption>
+      {children}
       {big
         ? createPortal(
             <PlayerOverlay
@@ -394,8 +449,8 @@ interface Props {
 }
 
 /**
- * The Skills page. The skills are on the left, each one opening to its numbers, and the clip that
- * shows the chosen skill plays small in the bottom right corner. She stays visible between them.
+ * The Skills page. Her skills are on the left, each one opening to its numbers, and the clip that
+ * shows the chosen skill plays on the right. She stays visible between the two.
  */
 export function SkillsDrawer({ present, shown, warm }: Props) {
   const [selected, setSelected] = useState("abyssal-bone-needle");
@@ -403,28 +458,28 @@ export function SkillsDrawer({ present, shown, warm }: Props) {
   const skill = SKILLS.find((s) => s.id === selected) ?? SKILLS[1]!;
   const clip = clipOverride ?? skill.clip;
 
+  const pick = useCallback((id: string) => {
+    setSelected(id);
+    setClipOverride(null);
+  }, []);
+
   const tabs = useMemo<readonly DrawerTab[]>(
     () => [
       {
         id: "skills",
         label: "Skills",
-        render: () => (
-          <SkillsBody
-            selected={selected}
-            onSelect={(id) => {
-              setSelected(id);
-              setClipOverride(null);
-            }}
-          />
-        ),
-      },
-      {
-        id: "showcase",
-        label: "Showcase",
-        render: () => <ShowcaseBody clip={clip} onClip={setClipOverride} />,
+        render: () => <SkillsBody selected={selected} onSelect={pick} />,
       },
     ],
-    [selected, clip],
+    [selected, pick],
+  );
+  const right = useMemo<DrawerTab>(
+    () => ({
+      id: "demo",
+      label: "Demo",
+      render: () => <DemoBody skill={skill} clip={clip} onClip={setClipOverride} onPick={pick} />,
+    }),
+    [skill, clip, pick],
   );
 
   return (
@@ -434,7 +489,8 @@ export function SkillsDrawer({ present, shown, warm }: Props) {
       warm={warm}
       label="Obsidia's skills"
       tabs={tabs}
-      dock={<ClipDock clip={clip} note={clipOverride === null ? skill.clipNote : undefined} />}
+      right={right}
+      width="min(27rem, 25vw)"
     />
   );
 }

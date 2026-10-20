@@ -6,10 +6,6 @@ folder:
 
   eclipse  A solar eclipse emblem, centred and symmetrical: a pure black disc with a thin molten
            gold corona ring, fine gold rays and tiny diamond sparks, a faint crimson glow at the rim.
-  pawn     A chess pawn as a luxurious engraved emblem, front view: gold metal outline and
-           highlights, an obsidian black body, tiny thorns, a thin crimson inner glow.
-  knight   The same for a chess knight (horse head), side view facing left, thorns on the mane.
-  queen    The same for a chess queen, front view, with a spiked gold crown and a small ruby.
   veins    A seamless tileable square texture of polished black obsidian glass with fine golden
            kintsugi veins and a few faint crimson cracks, very dark and low in contrast.
   corner   An ornate top-left corner ornament of black thorny vines with fine gold edging and a few
@@ -31,9 +27,6 @@ from PIL import Image, ImageFilter
 # name -> (longest edge in pixels, quality)
 SPRITES = {
     "eclipse": (512, 86),
-    "pawn": (256, 88),
-    "knight": (256, 88),
-    "queen": (256, 88),
     "corner": (640, 86),
 }
 TEXTURES = {"veins": (768, 72)}

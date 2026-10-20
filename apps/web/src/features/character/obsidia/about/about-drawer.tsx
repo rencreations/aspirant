@@ -17,21 +17,11 @@ import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 
 import { ObsidiaDrawer, type DrawerTab } from "../drawer/drawer";
-import { TRAILER, TRAILER_SKIN } from "../media";
+import { FORM_NAMES, FORMS, TRAILER, TRAILER_SKIN } from "../media";
 import { aboutImagePath } from "./about-images";
 import styles from "./about.module.css";
 import { InlineText } from "./inline-text";
-import {
-  DISLIKES,
-  EXPERIENCE,
-  LIKES,
-  PROFILE_FACTS,
-  PROFILE_VOICES,
-  PROJECTS,
-  SKILLS,
-  SUMMARY,
-  TIES,
-} from "./profile-data";
+import { DISLIKES, LIKES, PROFILE_FACTS, PROFILE_VOICES, SUMMARY, TIES } from "./profile-data";
 import { STORY, type StoryBlock } from "./story-data";
 import { VoiceCard } from "./voice-card";
 
@@ -116,30 +106,6 @@ function DetailsBody() {
         </dl>
       </Section>
 
-      <Section title="Skills">
-        <ul className={styles.chips}>
-          {SKILLS.map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Experience">
-        <ol className={styles.timeline}>
-          {EXPERIENCE.map((e) => (
-            <li key={e.role}>
-              <strong>{e.role}</strong>
-              <span className={styles.place}>
-                <InlineText text={e.place} />
-              </span>
-              <span>
-                <InlineText text={e.note} />
-              </span>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
       <div className={styles.two}>
         <Section title="Likes">
           <ul className={styles.plain}>
@@ -175,30 +141,28 @@ function DetailsBody() {
         </ul>
       </Section>
 
-      <Section title="Projects">
-        <dl className={styles.facts}>
-          {PROJECTS.map((p) => (
-            <div key={p.label}>
-              <dt>{p.label}</dt>
-              <dd>
-                <InlineText text={p.value} />
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
-
       <Section title="Two forms">
-        <dl className={styles.facts}>
-          <div>
-            <dt>Normal</dt>
-            <dd>{c.forms?.normal}</dd>
-          </div>
-          <div>
-            <dt>Ender</dt>
-            <dd>{c.forms?.ender}</dd>
-          </div>
-        </dl>
+        <div className={styles.forms}>
+          {FORM_NAMES.map((f) => (
+            <figure key={f} className={styles.form}>
+              <VideoCard
+                video={{
+                  sources: [{ label: FORMS[f].label, height: FORMS[f].height, src: FORMS[f].src }],
+                  poster: FORMS[f].poster,
+                  title: FORMS[f].title,
+                  skin: TRAILER_SKIN,
+                }}
+                duration={FORMS[f].duration}
+                tag={f === "normal" ? "Normal" : "Ender"}
+                className={styles.formCard}
+              />
+              <figcaption>
+                <strong>{f === "normal" ? "Normal" : "Ender"}</strong>
+                <span>{c.forms?.[f]}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </Section>
 
       <Section title="Appearance">
@@ -212,14 +176,6 @@ function DetailsBody() {
       <Section title="Personality">
         <ul className={styles.plain}>
           {c.sections.personality.map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Fighting">
-        <ul className={styles.plain}>
-          {c.sections.fighting.map((p) => (
             <li key={p}>{p}</li>
           ))}
         </ul>

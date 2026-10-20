@@ -36,6 +36,8 @@
   transition-delay: calc(var(--i) * 170ms + 260ms);
 }
 
+/* This has to outrank `.layer[data-on="true"] .spot`, or a point that steps away stays. */
+.layer[data-on="true"] .spot[data-away="true"],
 .spot[data-away="true"] {
   opacity: 0;
   pointer-events: none;

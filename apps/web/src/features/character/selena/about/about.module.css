@@ -325,22 +325,6 @@
   margin: 0;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.chips li {
-  padding: 0.28rem 0.6rem;
-  border: 1px solid color-mix(in srgb, var(--edge) 50%, transparent);
-  background: rgb(108 76 240 / 0.07);
-  font-size: 0.75rem;
-}
-
 .timeline {
   margin: 0;
   padding: 0 0 0 1rem;

@@ -13,6 +13,22 @@
   --gold-deep: #a8782a;
   --pearl: #fbeadf;
   --font-serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  /* The page buttons are Selena's (stage/menu-button), in her colours: a pearl plate with a gold
+     edge that turns wine on hover, and a blood and rose sheet for the wait. */
+  --armor: #fff4ee;
+  --armor-2: #f4d3d2;
+  --violet: #b07a22;
+  --btn-edge-mid: #f2d08a;
+  --violet-deep: #2a0b1d;
+  --btn-hover: #5a1636;
+  --btn-ink: #2a0b1d;
+  --btn-shadow: rgb(20 4 12 / 0.42);
+  --crystal: #c4123c;
+  --btn-sheet: #8f0f2e;
+  --btn-sheet-end: #ff5c8a;
+  /* The wait screen is Selena's too (stage/wait-fx). */
+  --fx-shade: rgb(44 4 22 / 0.62);
+  --fx-chip: rgb(16 5 14 / 0.78);
   background: var(--void);
   color: var(--pearl);
   height: 100svh;
@@ -67,18 +83,19 @@
   pointer-events: auto;
 }
 
-/* Top left: the three pieces, side by side in the empty corner of the picture. */
+/* Top left: the three buttons, listed down the empty corner of the picture (Selena's are down the
+   top right). On hover a plate nudges toward the middle of the screen. */
 .menu {
+  --nudge: 12px;
   position: absolute;
   left: var(--pad);
   top: var(--top);
-  width: min(54vw, 50rem);
+  width: clamp(10.5rem, 15vw, 16rem);
 }
 
 .menu ul {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.8rem;
+  gap: 0.7rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -87,11 +104,11 @@
 .menu li {
   position: relative;
   opacity: 0;
-  transform: translateY(-16px);
+  transform: translateX(-46px);
   transition:
     opacity 500ms var(--ease-out),
     transform 800ms var(--ease-out);
-  transition-delay: calc(var(--i) * 80ms + 200ms);
+  transition-delay: calc(var(--i) * 70ms + 200ms);
 }
 
 .ui[data-visible="true"] .menu li {
@@ -99,15 +116,16 @@
   transform: none;
 }
 
-/* Everything else on the panel steps out of the way as soon as a piece is chosen. */
+/* Everything else on the panel steps out of the way as soon as a button is pressed. */
 .ui[data-busy="true"] .menu li[data-mine="false"] {
   opacity: 0;
-  transform: translateY(-18px);
+  transform: translateX(-56px);
   transition-delay: calc(var(--i) * 45ms);
   transition-duration: 380ms, 480ms;
   pointer-events: none;
 }
 
+/* Her sticker jumps out of the plate, so the chosen one sits above the others. */
 .ui[data-busy="true"] .menu li[data-mine="true"] {
   z-index: 2;
 }
@@ -263,7 +281,12 @@
     width: auto;
   }
 
+  .menu {
+    --nudge: 0px;
+  }
+
   .menu ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.5rem;
   }
 

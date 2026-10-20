@@ -58,6 +58,28 @@
   transform: translateX(calc(-100% - var(--gap) + 2.6rem));
 }
 
+/* Only the top half of the height: the picture below it (her feet) stays in view. */
+.shell[data-size="half"] .drawer {
+  bottom: auto;
+  height: calc((100% - var(--nav-h) - 6.1rem) / 2);
+}
+
+/* The right drawer is the left one in a mirror: it comes from the right edge, its blade cuts are on
+   the other corners, its fold tab is on its left edge. */
+.drawer[data-side="right"] {
+  left: auto;
+  right: var(--gap);
+  transform: translateX(calc(100% + 3rem));
+}
+
+.shell[data-shown="true"] .drawer[data-side="right"] {
+  transform: none;
+}
+
+.shell[data-shown="true"] .drawer[data-side="right"][data-open="false"] {
+  transform: translateX(calc(100% + var(--gap) - 2.6rem));
+}
+
 /* The gold rim: a gradient behind a frame that is a pixel smaller. */
 .rim,
 .frame {
@@ -69,6 +91,18 @@
     calc(100% - var(--cut)) 100%,
     0 100%,
     0 var(--cut)
+  );
+}
+
+.drawer[data-side="right"] .rim,
+.drawer[data-side="right"] .frame {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
   );
 }
 
@@ -112,6 +146,17 @@
   transform: scaleY(-1);
 }
 
+.thorn[data-corner="tl"] {
+  top: -0.25rem;
+  left: -0.25rem;
+}
+
+.thorn[data-corner="br"] {
+  bottom: -0.25rem;
+  right: -0.25rem;
+  transform: scale(-1, -1);
+}
+
 /* Tabs ------------------------------------------------------------------------------------ */
 .tabs {
   position: relative;
@@ -122,6 +167,45 @@
   flex: none;
   padding: 0 3.4rem 0 1.4rem;
   border-bottom: 1px solid rgb(232 184 90 / 0.3);
+}
+
+.drawer[data-side="right"] .tabs {
+  padding: 0 1.4rem 0 3.4rem;
+}
+
+/* The right drawer has one title, set like an open tab. */
+.single {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 3.5rem;
+  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-style: italic;
+  font-size: 1.55rem;
+  line-height: 1;
+  color: var(--pearl);
+}
+
+.single::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - 3.2rem);
+  top: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: -0.2rem;
+  background: var(--rose);
+  transform: rotate(45deg);
+}
+
+.single::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: -1px;
+  height: 2px;
+  background: var(--gold);
 }
 
 .tabs button {
@@ -230,6 +314,12 @@
   transform: rotate(180deg);
 }
 
+.drawer[data-side="right"] .handle {
+  right: auto;
+  left: -2.1rem;
+  clip-path: polygon(0 0.7rem, 100% 0, 100% 100%, 0 calc(100% - 0.7rem));
+}
+
 .handle:hover,
 .handle:focus-visible {
   background: var(--gold);
@@ -305,6 +395,12 @@
 /* Phones and tall screens: a sheet that floats above the bottom buttons, and the corner thing at
    the top right. */
 @media (max-width: 56em), (max-aspect-ratio: 1/1) {
+  .shell[data-size="half"] .drawer {
+    top: auto;
+    bottom: 5.4rem;
+    height: min(29svh, 18rem);
+  }
+
   .drawer {
     top: auto;
     left: var(--pad);

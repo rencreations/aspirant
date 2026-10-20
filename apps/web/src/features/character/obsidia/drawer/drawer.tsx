@@ -6,6 +6,7 @@ import {
   useId,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
   type RefObject,
 } from "react";
@@ -41,6 +42,15 @@ interface Props {
   tabs: readonly DrawerTab[];
   /** What sits in the bottom right corner of the picture (the trailer, the demonstration). */
   dock?: ReactNode;
+  /** Width of the drawer on a wide screen (any CSS length). Default `min(34rem, 38vw)`. */
+  width?: string;
+  /** `half`: only the top half of the height, so the picture below it stays in view. */
+  size?: "full" | "half";
+  /**
+   * A second drawer on the right, with the character between the two (the Skills page). On a
+   * narrow screen it becomes one more tab of the sheet.
+   */
+  right?: DrawerTab;
 }
 
 /** The content of one tab, built when `built` says so. */
@@ -63,6 +73,7 @@ function Panel({
   hidden,
   inert,
   build,
+  region = false,
 }: {
   tab: DrawerTab;
   panelId: string;
@@ -70,6 +81,8 @@ function Panel({
   inert: boolean;
   /** The content is built. Before that the panel is an empty frame. */
   build: boolean;
+  /** A region of its own (the right drawer), not the panel of a tab. */
+  region?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   return (
@@ -77,7 +90,7 @@ function Panel({
       ref={ref}
       id={panelId}
       className={styles.scroll}
-      role="tabpanel"
+      role={region ? "region" : "tabpanel"}
       aria-label={`${tab.label}, scrollable`}
       hidden={hidden}
       tabIndex={0}
@@ -95,17 +108,33 @@ function Panel({
  * its edge folds it away. On a narrow or tall screen it is a sheet at the bottom. The corner
  * `dock` holds one small thing that plays (a trailer or a clip).
  */
-export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock }: Props) {
+export function ObsidiaDrawer({
+  present,
+  shown,
+  warm = false,
+  label,
+  tabs: own,
+  dock,
+  width,
+  size = "full",
+  right,
+}: Props) {
   const id = useId();
   const [tab, setTab] = useState(0);
   const [open, setOpen] = useState(true);
+  const [openRight, setOpenRight] = useState(true);
   const narrow = useMediaQuery("(max-width: 56em), (max-aspect-ratio: 1/1)");
+  // On a narrow screen the right drawer is one more tab of the sheet.
+  const tabs = right && narrow ? [...own, right] : own;
+  const sideBySide = right !== undefined && !narrow;
   const root = useRef<HTMLDivElement>(null);
   // Each tab is built after the one before it, so no single frame carries them all. A page that
   // is opened builds whatever is missing at once.
   const [built, setBuilt] = useState(0);
+  // The right drawer comes after all the tabs.
+  const total = tabs.length + (sideBySide ? 1 : 0);
   useEffect(() => {
-    if (!present || built >= tabs.length) return;
+    if (!present || built >= total) return;
     const timer = window.setTimeout(
       () => {
         startTransition(() => {
@@ -117,7 +146,7 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
     return () => {
       window.clearTimeout(timer);
     };
-  }, [present, built, tabs.length]);
+  }, [present, built, total]);
 
   // Away again: the next visit starts as the first did (open, the first tab, at the top). State is
   // adjusted while rendering, the pattern React gives for state that follows a prop.
@@ -126,13 +155,16 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
     setWasShown(shown);
     if (!shown) {
       setOpen(true);
+      setOpenRight(true);
       setTab(0);
     }
   }
   useEffect(() => {
     if (shown) return;
     const timer = window.setTimeout(() => {
-      for (const el of root.current?.querySelectorAll("[role='tabpanel']") ?? []) el.scrollTop = 0;
+      for (const el of root.current?.querySelectorAll("[role='tabpanel'], [role='region']") ?? []) {
+        el.scrollTop = 0;
+      }
     }, 900);
     return () => {
       window.clearTimeout(timer);
@@ -141,8 +173,18 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
 
   if (!present) return null;
   const folded = !open && !narrow;
+  const foldedRight = !openRight && !narrow;
+  const sized = width ? ({ "--w": width } as CSSProperties) : undefined;
   return (
-    <div ref={root} className={styles.shell} data-shown={shown} data-warm={warm} data-tab={tab}>
+    <div
+      ref={root}
+      className={styles.shell}
+      data-shown={shown}
+      data-warm={warm}
+      data-tab={tab}
+      data-size={size}
+      style={sized}
+    >
       <aside className={styles.drawer} data-open={!folded} aria-label={label}>
         <span className={styles.rim} aria-hidden="true" />
         <div className={styles.frame}>
@@ -192,6 +234,44 @@ export function ObsidiaDrawer({ present, shown, warm = false, label, tabs, dock 
           <span>{folded ? tabs[tab]?.label : "Hide"}</span>
         </button>
       </aside>
+      {right && sideBySide ? (
+        <aside
+          className={styles.drawer}
+          data-side="right"
+          data-open={!foldedRight}
+          aria-label={`${right.label}, ${label}`}
+        >
+          <span className={styles.rim} aria-hidden="true" />
+          <div className={styles.frame}>
+            <div className={styles.tabs} data-single="true">
+              <span className={styles.single}>{right.label}</span>
+            </div>
+            <Panel
+              tab={right}
+              panelId={`${id}-panel-${right.id}`}
+              hidden={false}
+              inert={!shown || foldedRight}
+              build={built >= tabs.length + 1 || shown}
+              region
+            />
+            <span className={styles.thorn} data-corner="tl" aria-hidden="true" />
+            <span className={styles.thorn} data-corner="br" aria-hidden="true" />
+          </div>
+          <button
+            type="button"
+            className={styles.handle}
+            aria-expanded={!foldedRight}
+            aria-label={foldedRight ? `Show ${right.label}` : `Hide ${right.label}`}
+            tabIndex={shown ? 0 : -1}
+            onClick={() => {
+              setOpenRight((o) => !o);
+              audio.blip("click");
+            }}
+          >
+            <span>{foldedRight ? right.label : "Hide"}</span>
+          </button>
+        </aside>
+      ) : null}
       {dock ? (
         <div className={styles.dock}>
           <span className={styles.dockRim} aria-hidden="true" />

@@ -25,29 +25,28 @@ import { routeItems } from "@/lib/route-preloads";
 
 import type { StageState } from "../stage/director";
 import { Hotspots } from "../stage/hotspots";
+import { MenuButton } from "../stage/menu-button";
 import type { CoverApi } from "../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../stage/stage";
 import type { SkipOptions } from "../stage/phase";
 import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
 import { useStageUrl } from "../stage/use-stage-url";
+import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawer } from "./about/about-drawer";
 import { GalleryDrawer } from "./gallery/gallery-drawer";
 import { SkillsDrawer } from "./skills/skills-drawer";
-import { loadCore, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
+import { loadCore, MENU_ICON, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
 import styles from "./obsidia.module.css";
 import { obsidiaPageFromPath, OBSIDIA_ROUTES } from "./routes";
-import { BladeButton } from "./ui/blade-button";
 import { BoardCover } from "./ui/board-cover";
-import { EclipseWait } from "./ui/eclipse-wait";
-import { PieceButton, type Piece } from "./ui/piece-button";
 import { HOTSPOT_PATHS, HOTSPOT_STEP, SPOTS } from "./spots";
 import { OBSIDIA_TIMELINE } from "./timeline.generated";
 
 /** The three buttons, in order, and the page each one opens. */
-const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; piece: Piece }> = [
-  { id: "about", label: "About", scene: "about", piece: "pawn" },
-  { id: "skills", label: "Skills", scene: "skills", piece: "knight" },
-  { id: "gallery", label: "Gallery", scene: "gallery", piece: "queen" },
+const MENU: ReadonlyArray<{ id: string; label: string; scene: PageName; icon: string }> = [
+  { id: "about", label: "About", scene: "about", icon: MENU_ICON.about },
+  { id: "skills", label: "Skills", scene: "skills", icon: MENU_ICON.skills },
+  { id: "gallery", label: "Gallery", scene: "gallery", icon: MENU_ICON.gallery },
 ];
 
 const TRACK: Track = {
@@ -333,21 +332,19 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   // hand-over to the idle loop (it is worked out from the hand-over).
   const waitMs = chosen !== null && state.wait && !state.loading ? state.wait.ms : null;
   const waitKey = state.wait?.at ?? 0;
-  // How long the way back takes to put her in her idle pose, when it is known: the wait for her
-  // frame, then the exit up to the moment she is posed.
-  const backWait = (mode === "leaving" || mode === "outro") && state.wait ? state.wait.ms : null;
-  // Something to look at while she waits for the frame she hands over on: a page opening, a short
-  // getting ready, or the way back. The way back is over as soon as she is in her idle pose (the
-  // panel is back then), not when the exit has finished playing.
-  const waiting = chosen !== null || (state.leaving && !state.ui);
+  // How long Back waits for the frame her exit starts on. Only the wait is shown: once the exit
+  // plays there is no bar, so it ends full.
+  const backWait = mode === "leaving" && state.wait ? state.wait.ms : null;
+  // Something to look at while she waits for the frame her animation starts on: a page opening, a
+  // short getting ready, or the way back. It is for the wait only. When the animation plays, it
+  // goes (its bar has just filled).
+  const waiting = chosen !== null || mode === "leaving";
   // Back is there while the page is open and while it waits for the exit to start. It goes when
-  // the exit starts, and the "Heading back" screen carries on alone until she is posed.
-  // During a short it is the way out as well (the wipe covers the screen while the picture goes
-  // back to the idle loop). Esc does the same.
-  const showBack = mode === "page" || mode === "leaving" || mode === "short";
+  // the exit starts. A short has no Back: it plays to its end.
+  const showBack = mode === "page" || mode === "leaving";
   const pageOpen = showBack || mode === "intro" || mode === "outro";
   const waitLabel =
-    chosen === null && state.leaving
+    chosen === null && mode === "leaving"
       ? "Heading back"
       : chosenShort
         ? "Getting ready"
@@ -357,11 +354,6 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   }, [next.href, next.label, router]);
 
   const skip = useCallback(() => {
-    void cover.current?.run(() => stage.current?.jumpToIdle());
-  }, []);
-
-  // Leave a short early (Esc): the screen is covered while the picture goes back to the idle loop.
-  const leaveShort = useCallback(() => {
     void cover.current?.run(() => stage.current?.jumpToIdle());
   }, []);
 
@@ -376,22 +368,21 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
     true,
   );
 
-  // Esc backs out one step: out of the queue, out of a page, out of a short. It runs in the
+  // Esc backs out one step: out of the queue, out of a page. A short plays to its end. It runs in the
   // capture phase, before a tooltip or the video player closes itself, so a card that Esc just
   // closed does not also close the page.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (document.querySelector("[role='dialog'], [role='tooltip']")) return;
-      if (mode === "short") leaveShort();
-      else if (mode === "page") stage.current?.leave();
+      if (mode === "page") stage.current?.leave();
       else if (mode === "queued" || state.next) stage.current?.cancel();
     };
     window.addEventListener("keydown", onKey, true);
     return () => {
       window.removeEventListener("keydown", onKey, true);
     };
-  }, [mode, leaveShort, state.next]);
+  }, [mode, state.next]);
 
   // The pictures that the interface draws with, as variables the stylesheets of the drawers and
   // the buttons read (a stylesheet cannot know the base path of the site).
@@ -424,12 +415,11 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
         ) : null}
 
         {waiting ? (
-          <EclipseWait
-            key={chosen === null && state.leaving ? "back" : waitKey}
+          <WaitFx
+            key={chosen === null && mode === "leaving" ? "back" : waitKey}
             railKey={waitKey}
             label={waitLabel}
-            ms={chosen === null && state.leaving ? backWait : waitMs}
-            fast={state.fast}
+            ms={chosen === null && mode === "leaving" ? backWait : waitMs}
           />
         ) : null}
 
@@ -473,10 +463,10 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
                 const status = mine ? (state.loading ? "loading" : "queued") : "idle";
                 return (
                   <li key={item.id} data-mine={mine} style={{ ["--i" as string]: i }}>
-                    <PieceButton
+                    <MenuButton
                       label={item.label}
-                      piece={item.piece}
-                      rank={i + 1}
+                      icon={item.icon}
+                      index={i + 1}
                       state={status}
                       waitMs={waitMs}
                       waitKey={waitKey}
@@ -524,22 +514,22 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
         {showBack ? (
           <div className={styles.back}>
-            <BladeButton
+            <MenuButton
               label="Back"
+              icon={MENU_ICON.weapon}
               badge="ESC"
               loadingWord="Heading back"
               state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
               waitMs={backWait}
               waitKey={waitKey}
-              disabled={state.leaving || (mode !== "page" && mode !== "short")}
+              disabled={state.leaving || mode !== "page"}
               onPointerEnter={() => {
                 audio.blip("hover");
               }}
               onFocus={() => undefined}
               onClick={() => {
                 audio.blip("click");
-                if (mode === "short") leaveShort();
-                else stage.current?.leave();
+                stage.current?.leave();
               }}
             />
           </div>

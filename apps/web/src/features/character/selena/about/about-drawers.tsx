@@ -19,7 +19,6 @@ import {
   PROFILE_FACTS,
   PROFILE_VOICES,
   PROJECTS,
-  SKILLS,
   SUMMARY,
   TIES,
 } from "./profile-data";
@@ -104,14 +103,6 @@ function ProfileBody() {
             </div>
           ))}
         </dl>
-      </Section>
-
-      <Section title="Skills">
-        <ul className={styles.chips}>
-          {SKILLS.map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
       </Section>
 
       <Section title="Experience">
