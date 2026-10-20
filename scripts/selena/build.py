@@ -62,6 +62,15 @@ PAGES = {
     "gallery": ("vertical.mkv", 345, 894, 486, 1961, [124, 286, 448], 480),
 }
 
+# Where an entrance hands over to the page loop. It is the frame of the `in` clip (counted from its
+# first frame) at which she is in the page's pose and the content can show: found with
+# scripts/selena/analyze.py by matching the clip against the loop. From that frame on the clip
+# is the loop itself, frame for frame (the loop's phase is (a0 + frame - l0) mod loop frames), so
+# the stage can start the loop at the matching phase, at once, instead of playing on to the loop's
+# own first frame (which was seconds later: 0.5 s for About, 1.7 s for Skills, 5.3 s for Gallery).
+POSE = {"about": 198, "skills": 238, "gallery": 240}
+IN_TAIL = 24  # frames kept after that frame, so the dissolve into the loop has a picture to dissolve from
+
 # key -> (source, a0, idle start phases, dissolve into the short in ms)
 SHORTS = {
     "short-1": ("short-1.mkv", 339, [42, 204, 366], 560),
@@ -219,7 +228,7 @@ def build_tier(name: str, src: Path, out_root: Path, parts: set[str]) -> None:
         build_loop(t, src / "idle.mkv", LOOP_START, LOOP_FRAMES, out / "idle.mp4")
     for key, (file, a0, l0, p, o0, _s, _b) in PAGES.items():
         if "in" in parts:
-            build_cut(t, src / file, a0, l0 + EXTRA, out / f"{key}-in.mp4")
+            build_cut(t, src / file, a0, a0 + POSE[key] + IN_TAIL, out / f"{key}-in.mp4")
         if "loop" in parts:
             build_loop(t, src / file, l0, p, out / f"{key}-loop.mp4")
         if "out" in parts:
@@ -251,7 +260,13 @@ def timeline(out_root: Path) -> str:
     for key, (_file, a0, l0, p, o0, starts, b_in) in PAGES.items():
         pages[key] = {
             "in": seg_info(
-                f"{key}-in.mp4", l0 + EXTRA - a0, startPhases=starts, blendMs=b_in, align=ALIGN[key][0]
+                f"{key}-in.mp4",
+                POSE[key] + IN_TAIL,
+                startPhases=starts,
+                blendMs=b_in,
+                align=ALIGN[key][0],
+                handFrame=POSE[key],
+                loopOffset=(a0 - l0) % p,
             ),
             "loop": seg_info(f"{key}-loop.mp4", p),
             "out": seg_info(
@@ -316,7 +331,12 @@ def timeline(out_root: Path) -> str:
         "  back: BackTiming;\n"
         "}\n\n"
         "export interface PageTiming {\n"
-        "  in: IdleStart;\n"
+        "  in: IdleStart & {\n"
+        "    /** Frame of the entrance where she is in the page's pose and the page content shows. */\n"
+        "    handFrame: number;\n"
+        "    /** Add this to a frame of the entrance to get the matching frame of the page loop. */\n"
+        "    loopOffset: number;\n"
+        "  };\n"
         "  loop: { file: string; frames: number };\n"
         "  out: BackTiming & {\n"
         "    file: string;\n"
@@ -336,7 +356,10 @@ def main() -> None:
     only = None
     if "--tier" in argv:
         only = argv[argv.index("--tier") + 1]
-    args = [a for a in argv if not a.startswith("--") and a != only and a not in {"base,in,loop,out,short"} and "," not in a]
+    skip = {only} if only else set()
+    if "--parts" in argv:
+        skip.add(argv[argv.index("--parts") + 1])
+    args = [a for a in argv if not a.startswith("--") and a not in skip]
     src = Path(args[0])
     root = Path(__file__).resolve().parents[2]
     web = root / "apps" / "web"

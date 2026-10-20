@@ -8,7 +8,7 @@ import {
   type StageState,
   type VideoKey,
 } from "./director";
-import { LEAD_FRAMES, triggerFrames, waitFrames } from "./phase";
+import { LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame } from "./phase";
 import { SELENA_EXTRA_FRAMES, SELENA_FPS, SELENA_PAGES, SELENA_SHORTS } from "./timeline.generated";
 
 type Listener = () => void;
@@ -143,7 +143,7 @@ async function toPage(ctx: Ctx, name: keyof typeof SELENA_PAGES) {
   ctx.director.request(name);
   await enter(ctx, SELENA_PAGES[name].in.startPhases[0]);
   const intro = ctx.els[`${name}-in`];
-  intro.tick(intro.duration - EARLY);
+  intro.tick(f(SELENA_PAGES[name].in.handFrame - LEAD_FRAMES));
   await settle();
 }
 
@@ -626,5 +626,65 @@ describe("failure and reduced motion", () => {
     ctx.director.leave();
     await settle();
     expect(ctx.director.current.mode).toBe("idle");
+  });
+});
+
+describe("a page opens when she is in its pose", () => {
+  it("hands over to the page loop at the pose frame, not at the end of the entrance", async () => {
+    for (const name of Object.keys(SELENA_PAGES) as Array<keyof typeof SELENA_PAGES>) {
+      const ctx = setup();
+      await toIdle(ctx);
+      ctx.director.request(name);
+      await enter(ctx, SELENA_PAGES[name].in.startPhases[0]);
+      const entrance = SELENA_PAGES[name].in;
+      const intro = ctx.els[`${name}-in`];
+      // A moment before the pose frame she is still moving into the pose.
+      intro.tick(f(entrance.handFrame - LEAD_FRAMES - 2));
+      await settle();
+      expect(ctx.director.current).toMatchObject({ mode: "intro", scene: name, ui: false });
+      // At the pose frame the page shows, with most of the entrance still unplayed.
+      intro.tick(f(entrance.handFrame - LEAD_FRAMES));
+      await vi.advanceTimersByTimeAsync(0);
+      await settle();
+      expect(ctx.director.current).toMatchObject({ mode: "page", scene: name });
+      expect(entrance.frames - entrance.handFrame).toBeLessThan(40);
+      expect(ctx.els[`${name}-loop`].dataset.layer).toBe("front");
+    }
+  });
+
+  it("starts the page loop at the frame that matches the entrance", async () => {
+    for (const name of Object.keys(SELENA_PAGES) as Array<keyof typeof SELENA_PAGES>) {
+      const ctx = setup();
+      await toPage(ctx, name);
+      const entrance = SELENA_PAGES[name].in;
+      const at = entrance.handFrame - LEAD_FRAMES;
+      const expected = wrapFrame(
+        at + entrance.loopOffset + LEAD_FRAMES + 2,
+        SELENA_PAGES[name].loop.frames,
+      );
+      expect(ctx.els[`${name}-loop`].currentTime * FPS).toBeCloseTo(expected, 0);
+    }
+  });
+
+  it("keeps the entrance clip only a short while past the pose frame", () => {
+    for (const page of Object.values(SELENA_PAGES)) {
+      expect(page.in.frames - page.in.handFrame).toBeGreaterThanOrEqual(LEAD_FRAMES + 12);
+      expect(page.in.handFrame).toBeLessThan(page.in.frames);
+    }
+  });
+
+  it("says how long the way back lasts: until she is in her idle pose", async () => {
+    for (const name of Object.keys(SELENA_PAGES) as Array<keyof typeof SELENA_PAGES>) {
+      const ctx = setup();
+      const out = await toOutro(ctx, name);
+      const timing = SELENA_PAGES[name].out;
+      expect(ctx.director.current).toMatchObject({ mode: "outro", leaving: true, ui: false });
+      expect(ctx.director.current.wait?.ms).toBeGreaterThan((timing.uiFrame / FPS) * 1000 - 1);
+      // The panel is back when she is in her pose, before the exit has finished.
+      out.tick(f(timing.uiFrame));
+      await settle();
+      expect(ctx.director.current.ui).toBe(true);
+      expect(ctx.director.current.leaving).toBe(true);
+    }
   });
 });

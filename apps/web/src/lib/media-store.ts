@@ -16,7 +16,7 @@ import { asset } from "@/lib/asset";
  * everything still works from memory. The saved copy is named by `CACHE`. Change that name when a
  * file is replaced under the same address, and the old copy is thrown away.
  */
-const CACHE = "aspirants-media-v1";
+const CACHE = "aspirants-media-v2";
 const CACHE_PREFIX = "aspirants-media-";
 
 const loading = new Map<string, Promise<string>>();

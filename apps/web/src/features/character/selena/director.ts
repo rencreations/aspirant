@@ -194,7 +194,9 @@ function isReady(video: HTMLVideoElement): boolean {
  *
  *   welcome -> idle   when the welcome is a few frames from its end
  *   idle -> intro     when the idle loop reaches the frame the entrance was cut from
- *   intro -> page     when the entrance is a few frames from its end (the page loop begins there)
+ *   intro -> page     when she is in the page's pose (`handFrame` of the entrance). From there the
+ *                     entrance is the page loop itself, frame for frame, so the loop starts at the
+ *                     matching phase and the page shows at once
  *   page -> outro     after `leave()`, when the page loop reaches the frame the exit starts on
  *   outro -> idle     in the stretch at the end of the exit where she is back in her idle pose.
  *                     The idle loop starts at the phase that matches, the two play together, and
@@ -595,10 +597,12 @@ export class SelenaDirector {
     if (timing.align !== 1) this.zoom(idle, 1 / timing.align, ms);
     await this.swap(el, idle, ms);
     this.zoomNow(idle, 1);
-    const lead = EARLY / SELENA_FPS;
     if (page) {
+      // Hand over to the loop when she is in the page's pose, not when the entrance ends: the
+      // content shows as soon as she is posed. (The start is a few frames early, as everywhere.)
+      const hand = SELENA_PAGES[scene].in.handFrame - LEAD_FRAMES;
       this.stopWatch = watchFrames(el, (t) => {
-        if (Number.isFinite(el.duration) && t >= el.duration - lead) void this.handToPage(scene);
+        if (t * SELENA_FPS >= hand) void this.handToPage(scene);
       });
       el.addEventListener("ended", () => void this.handToPage(scene), { once: true });
     } else {
@@ -626,11 +630,21 @@ export class SelenaDirector {
     const from = this.els[`${scene}-in`];
     const loop = this.use(`${scene}-loop`);
     this.use(`${scene}-out`);
-    await this.startAt(loop, 0);
-    await this.swap(loop, from, HANDOVER_MS);
+    // From the pose frame the entrance is the page loop itself: the loop starts at the frame that
+    // matches the entrance now (and the frames it takes to start), so the two play together.
+    const page = SELENA_PAGES[scene];
+    const phase = wrapFrame(
+      Math.round(from.currentTime * SELENA_FPS) + page.in.loopOffset + START_LATENCY,
+      page.loop.frames,
+    );
+    await this.startAt(loop, phase / SELENA_FPS);
+    if (this.destroyed) return;
+    const dissolve = this.swap(loop, from, HANDOVER_MS);
+    // She is in the pose: the page shows now, while the entrance finishes dissolving away.
+    this.set({ mode: "page", scene });
+    await dissolve;
     from.currentTime = 0;
     this.opts.detach?.(`${scene}-in`, from);
-    this.set({ mode: "page", scene });
     if (this.leaveAsked) {
       this.leaveAsked = false;
       this.leave();
@@ -685,11 +699,19 @@ export class SelenaDirector {
 
   private async startOutro(scene: PageName) {
     if (this.destroyed || this.state.mode !== "leaving") return;
-    this.set({ mode: "outro", wait: null });
+    const timing = SELENA_PAGES[scene].out;
+    // The way back is over when she is in her idle pose (`uiFrame`): that is how long the screen
+    // that says so lasts (a few frames more, for the video to start).
+    this.set({
+      mode: "outro",
+      wait: {
+        ms: (timing.uiFrame / SELENA_FPS) * 1000 + (START_LATENCY / SELENA_FPS) * 1000,
+        at: performance.now(),
+      },
+    });
     this.stopWatch?.();
     const out = this.els[`${scene}-out`];
     const loop = this.els[`${scene}-loop`];
-    const timing = SELENA_PAGES[scene].out;
     const ok = await this.startAt(out, 0);
     if (!ok) {
       await this.toIdle(loop, timing, scene, true);

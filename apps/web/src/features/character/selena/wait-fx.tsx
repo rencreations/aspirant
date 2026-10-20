@@ -9,6 +9,8 @@ interface Props {
   label: string;
   /** How long the wait is, when it is known. */
   ms: number | null;
+  /** The rail starts again when this changes (the way back has two parts, on one screen). */
+  railKey?: number;
 }
 
 const STREAKS = [0, 1, 2, 3, 4, 5, 6] as const;
@@ -25,7 +27,7 @@ const CORNERS = ["tl", "tr", "bl", "br"] as const;
  * `transform` and `opacity`, so it costs the main thread nothing. Reduced motion: the vignette,
  * the chip and the rail only.
  */
-export function WaitFx({ label, ms }: Props) {
+export function WaitFx({ label, ms, railKey = 0 }: Props) {
   const style = ms === null ? undefined : ({ "--wait": `${Math.max(ms, 300)}ms` } as CSSProperties);
   return (
     <div
@@ -54,7 +56,7 @@ export function WaitFx({ label, ms }: Props) {
         </span>
       </span>
       <span className={styles.rail}>
-        <span className={styles.fill} />
+        <span key={railKey} className={styles.fill} />
       </span>
     </div>
   );

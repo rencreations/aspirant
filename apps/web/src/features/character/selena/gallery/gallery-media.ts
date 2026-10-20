@@ -18,7 +18,7 @@ import { GALLERY_IMAGES, GALLERY_TRAILER, GALLERY_VIDEOS } from "./gallery-media
  * this page and the 540p file of the collection.
  */
 export const DAY_OF_ENDERS = {
-  poster: "/video/selena-obsidia/trailer.jpg",
+  poster: "/img/selena/gallery/official-day-of-enders.webp",
   captions: "/video/selena-obsidia/trailer.vtt",
   title: "Day of Enders, trailer",
   duration: Math.round(GALLERY_TRAILER.seconds),

@@ -696,6 +696,75 @@ test("a drawing process opens as a set of seven, with a strip to jump between th
   await expect(viewer).toBeHidden();
 });
 
+test("the captions of Day of Enders start on, and can be resized, restyled and moved", async ({
+  page,
+}, info) => {
+  await open(page);
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Trailers and voice lines, scrollable" }),
+  ).toBeVisible({ timeout: 60_000 });
+  await page.waitForTimeout(900);
+  void info;
+  const card = page.getByRole("button", { name: /^Play video: Day of Enders/ });
+  await card.scrollIntoViewIfNeeded();
+  await card.click();
+  const player = page.getByRole("dialog");
+  await expect(player).toBeVisible();
+  // They start on.
+  await expect(player.getByRole("button", { name: "Captions", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  // The settings: size, background and position. A sample line shows while they are open.
+  await player.getByRole("button", { name: "Caption settings" }).click();
+  const panel = player.getByRole("group", { name: "Caption settings" });
+  await expect(panel).toBeVisible();
+  const caption = player.getByRole("group", { name: /^Captions\./ });
+  await expect(caption).toBeVisible();
+  const before = await caption.boundingBox();
+  await panel.getByRole("button", { name: "Huge" }).click();
+  await expect(panel.getByRole("button", { name: "Huge" })).toHaveAttribute("aria-pressed", "true");
+  await panel.getByRole("button", { name: "Solid" }).click();
+  await expect(caption).toHaveAttribute("data-bg", "solid");
+  const bigger = await caption.boundingBox();
+  expect(bigger!.height).toBeGreaterThan(before!.height);
+  // Moved with the buttons.
+  await panel.getByRole("button", { name: "Move up captions" }).click();
+  await panel.getByRole("button", { name: "Move up captions" }).click();
+  const up = await caption.boundingBox();
+  expect(up!.y).toBeLessThan(bigger!.y);
+  // The captions stay on the picture, and Reset brings them back.
+  await panel.getByRole("button", { name: "Reset" }).click();
+  const back = await caption.boundingBox();
+  expect(Math.abs(back!.y - bigger!.y)).toBeLessThan(2);
+  // What was chosen is remembered.
+  const saved = await page.evaluate(() => window.localStorage.getItem("aspirants:captions"));
+  expect(JSON.parse(saved ?? "{}")).toMatchObject({ on: true, size: 3, background: "solid" });
+  // Off, and on again.
+  await page.keyboard.press("Escape");
+  await player.getByRole("button", { name: "Captions", exact: true }).click();
+  await expect(player.getByRole("button", { name: "Captions", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+});
+
+test("Back shows with the page and is gone from the main panel", async ({ page }, info) => {
+  await open(page);
+  await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
+  await openGallery(page, isNarrow(info));
+  const back = page.getByRole("button", { name: "Back", exact: true });
+  await expect(back).toBeVisible();
+  await back.click();
+  await expect(page.getByRole("button", { name: "Gallery", exact: true })).toBeVisible({
+    timeout: 60_000,
+  });
+  await expect(back).toHaveCount(0);
+  // The "Heading back" screen goes with it.
+  await expect(page.getByText("Heading back")).toHaveCount(0);
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

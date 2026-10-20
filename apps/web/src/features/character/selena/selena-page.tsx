@@ -324,11 +324,17 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   const chosenShort = chosen !== null && isShort(chosen) ? (chosen as ShortName) : null;
   const waitMs = mode === "queued" && state.wait && !state.loading ? state.wait.ms : null;
   const waitKey = state.wait?.at ?? 0;
-  // How long the exit has to wait for her frame, when it is known.
-  const backWait = mode === "leaving" && state.wait ? state.wait.ms : null;
+  // How long the way back takes to put her in her idle pose, when it is known: the wait for her
+  // frame, then the exit up to the moment she is posed.
+  const backWait = (mode === "leaving" || mode === "outro") && state.wait ? state.wait.ms : null;
   // Something to look at while she waits for the frame she hands over on: a page opening, a short
   // getting ready, or the way back.
-  const waiting = chosen !== null || state.leaving;
+  // The way back is over as soon as she is in her idle pose (the panel is back then), not when
+  // the exit has finished playing.
+  const waiting = chosen !== null || (state.leaving && !state.ui);
+  // Back is there while the page is open and while it waits for the exit to start. It goes when
+  // the exit starts, and the "Heading back" screen carries on alone until she is posed.
+  const showBack = mode === "page" || mode === "leaving";
   const waitLabel = state.leaving
     ? "Heading back"
     : chosenShort
@@ -386,7 +392,12 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         ) : null}
 
         {waiting ? (
-          <WaitFx key={waitKey} label={waitLabel} ms={state.leaving ? backWait : waitMs} />
+          <WaitFx
+            key={state.leaving ? "back" : waitKey}
+            railKey={waitKey}
+            label={waitLabel}
+            ms={state.leaving ? backWait : waitMs}
+          />
         ) : null}
 
         {blackExpected && black !== "off" ? (
@@ -494,7 +505,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           </div>
         ) : null}
 
-        {pageOpen && !showMain ? (
+        {showBack ? (
           <div className={styles.back}>
             <MenuButton
               label="Back"
@@ -504,7 +515,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
               state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
               waitMs={backWait}
               waitKey={waitKey}
-              disabled={state.leaving || (mode !== "page" && mode !== "intro")}
+              disabled={state.leaving || mode !== "page"}
               onPointerEnter={() => {
                 audio.blip("hover");
               }}

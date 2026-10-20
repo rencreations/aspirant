@@ -29,10 +29,10 @@ export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
     "about-in.mp4": 1689775,
     "about-loop.mp4": 860779,
     "about-out.mp4": 3082982,
-    "skills-in.mp4": 2484018,
+    "skills-in.mp4": 2155426,
     "skills-loop.mp4": 2308739,
     "skills-out.mp4": 2924939,
-    "gallery-in.mp4": 3510103,
+    "gallery-in.mp4": 1989158,
     "gallery-loop.mp4": 2564381,
     "gallery-out.mp4": 3196640,
     "short-1.mp4": 3853909,
@@ -42,13 +42,13 @@ export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
   "1080": {
     "welcome.mp4": 12866454,
     "idle.mp4": 4719775,
-    "about-in.mp4": 3090630,
+    "about-in.mp4": 2796071,
     "about-loop.mp4": 1663630,
     "about-out.mp4": 5647644,
-    "skills-in.mp4": 4616685,
+    "skills-in.mp4": 3611724,
     "skills-loop.mp4": 4293890,
     "skills-out.mp4": 5383342,
-    "gallery-in.mp4": 6454590,
+    "gallery-in.mp4": 3274249,
     "gallery-loop.mp4": 4730236,
     "gallery-out.mp4": 5751589,
     "short-1.mp4": 7014392,
@@ -58,13 +58,13 @@ export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
   "1440": {
     "welcome.mp4": 18446985,
     "idle.mp4": 6391202,
-    "about-in.mp4": 4189789,
+    "about-in.mp4": 3822964,
     "about-loop.mp4": 2203875,
     "about-out.mp4": 7917090,
-    "skills-in.mp4": 6268512,
+    "skills-in.mp4": 4947794,
     "skills-loop.mp4": 5735903,
     "skills-out.mp4": 7292205,
-    "gallery-in.mp4": 8758288,
+    "gallery-in.mp4": 4489302,
     "gallery-loop.mp4": 6377118,
     "gallery-out.mp4": 7785175,
     "short-1.mp4": 9831638,
@@ -101,7 +101,12 @@ export interface ShortTiming extends IdleStart {
 }
 
 export interface PageTiming {
-  in: IdleStart;
+  in: IdleStart & {
+    /** Frame of the entrance where she is in the page's pose and the page content shows. */
+    handFrame: number;
+    /** Add this to a frame of the entrance to get the matching frame of the page loop. */
+    loopOffset: number;
+  };
   loop: { file: string; frames: number };
   out: BackTiming & {
     file: string;
@@ -119,6 +124,8 @@ export const SELENA_PAGES = {
       startPhases: [160, 322, 484],
       blendMs: 560,
       align: 0.995,
+      handFrame: 198,
+      loopOffset: 21,
     },
     loop: {
       file: "about-loop.mp4",
@@ -138,10 +145,12 @@ export const SELENA_PAGES = {
   skills: {
     in: {
       file: "skills-in.mp4",
-      frames: 336,
+      frames: 262,
       startPhases: [122, 284, 446],
       blendMs: 480,
       align: 1.0,
+      handFrame: 238,
+      loopOffset: 153,
     },
     loop: {
       file: "skills-loop.mp4",
@@ -161,10 +170,12 @@ export const SELENA_PAGES = {
   gallery: {
     in: {
       file: "gallery-in.mp4",
-      frames: 552,
+      frames: 264,
       startPhases: [124, 286, 448],
       blendMs: 480,
       align: 1.0,
+      handFrame: 240,
+      loopOffset: 423,
     },
     loop: {
       file: "gallery-loop.mp4",
