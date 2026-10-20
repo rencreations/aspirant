@@ -554,6 +554,28 @@ test("moving the pointer never rewrites the style of <html> (that restyles the w
   expect(writes).toBe(0);
 });
 
+test("a voice line asks about the sound when it is off, and plays after a yes", async ({
+  page,
+}, info) => {
+  await openAbout(page, isNarrow(info));
+  const sound = page.getByRole("banner").getByRole("button", { name: "Sound" });
+  await page.locator("body").press("m");
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  const voice = page.getByRole("button", { name: /^Play voice line/ }).first();
+  await voice.scrollIntoViewIfNeeded();
+  await voice.click();
+  const dialog = page.getByRole("dialog", { name: "The sound is off" });
+  await expect(dialog).toBeVisible();
+  // No: nothing plays and the sound stays off.
+  await dialog.getByRole("button", { name: "Keep it off" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  // Yes: the sound comes on.
+  await voice.click();
+  await dialog.getByRole("button", { name: "Turn sound on" }).click();
+  await expect(sound).toHaveAttribute("aria-pressed", "true");
+});
+
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);
   const overflow = await page.evaluate(() => {

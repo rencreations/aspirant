@@ -10,6 +10,7 @@ import { create } from "zustand";
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { withSound } from "@/lib/sound-prompt";
 
 import type { TrackItem } from "./types";
 
@@ -42,8 +43,11 @@ export function playTrack(track: TrackItem): void {
     togglePlayback();
     return;
   }
-  audio.playMusic(asset(track.src), { loop: false, volume: get().volume, fadeMs: 250 });
-  set({ track, playing: true });
+  // With the sound off the visitor is asked first (a song is only sound).
+  withSound("This track", () => {
+    audio.playMusic(asset(track.src), { loop: false, volume: get().volume, fadeMs: 250 });
+    set({ track, playing: true });
+  });
 }
 
 export function togglePlayback(): void {
@@ -59,8 +63,10 @@ export function togglePlayback(): void {
     audio.pauseMusic();
     set({ playing: false });
   } else {
-    audio.resumeMusic();
-    set({ playing: true });
+    withSound("This track", () => {
+      audio.resumeMusic();
+      set({ playing: true });
+    });
   }
 }
 

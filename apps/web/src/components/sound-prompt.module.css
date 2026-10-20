@@ -1,0 +1,147 @@
+/* The sound question: a small armour plate over a dimmed page. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgb(10 8 40 / 0.56);
+  animation: fade 220ms var(--ease-out) both;
+}
+
+.panel {
+  --ink: #1a1342;
+  --edge: #6c4cf0;
+  --cut: 18px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: calc(var(--z-modal) + 1);
+  display: grid;
+  gap: 0.85rem;
+  width: min(25rem, calc(100vw - 2rem));
+  padding: 1.5rem 1.5rem 1.2rem;
+  translate: -50% -50%;
+  background: linear-gradient(112deg, #ffffff, #e9e4fc);
+  border: 2px solid var(--edge);
+  color: var(--ink);
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  animation: rise 320ms var(--ease-spring) both;
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #6a6688;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.primary,
+.secondary {
+  height: 2.7rem;
+  padding: 0 1.2rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid var(--edge);
+  transition:
+    background-color 220ms var(--ease-out),
+    color 220ms var(--ease-out),
+    transform 320ms var(--ease-spring);
+}
+
+.primary {
+  background: var(--edge);
+  color: #fff;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background: #3a2a9c;
+  transform: translateY(-2px);
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  background: rgb(108 76 240 / 0.1);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible,
+.never:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.never {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #6a6688;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.never:hover {
+  color: var(--ink);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: -50% -46%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .panel {
+    animation: none;
+  }
+}

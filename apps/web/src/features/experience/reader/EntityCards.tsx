@@ -27,6 +27,7 @@ import type * as GlossaryModule from "@/content/entities";
 import type { Entity } from "@/content/entities";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { withSound } from "@/lib/sound-prompt";
 import { characterRoute } from "@/lib/site";
 import { isCharacterSlug } from "@/lib/slugs";
 import { useSiteStore } from "@/lib/stores";
@@ -131,7 +132,10 @@ function HearHer({ slug, name }: { slug: string; name: string }) {
         aria-label={`Hear her: ${name}`}
         aria-pressed={playing}
         data-cursor="PLAY"
-        onClick={() => void play()}
+        onClick={() => {
+          audio.unlock();
+          withSound("Her voice", () => void play());
+        }}
       >
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path d="M2 6h2.6L8 3v10L4.6 10H2z" fill="currentColor" />

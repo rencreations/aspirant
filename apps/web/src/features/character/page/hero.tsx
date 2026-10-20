@@ -18,6 +18,7 @@ import { HudPanel } from "@/components/ui/hud-panel";
 import { StarButton } from "@/components/ui/star-button";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { withSound } from "@/lib/sound-prompt";
 import {
   prefersReducedMotion,
   useInView,
@@ -232,8 +233,10 @@ export function Hero(props: HeroProps) {
       audio.stopVoice();
       return;
     }
-    void audio.playVoice(lineSrc);
-    fireAtArt();
+    withSound("This voice line", () => {
+      void audio.playVoice(lineSrc);
+      fireAtArt();
+    });
   };
 
   const choose = (next: Form) => {

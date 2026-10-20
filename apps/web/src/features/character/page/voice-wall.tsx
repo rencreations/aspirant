@@ -7,6 +7,7 @@ import { SoundToggle } from "@/components/hud/preference-toggles";
 import { StarButton } from "@/components/ui/star-button";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { withSound } from "@/lib/sound-prompt";
 import { useMounted, useVoiceState } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
@@ -66,7 +67,7 @@ export function VoiceWall({ name, lines }: VoiceWallProps) {
   const toggle = (url: string) => {
     audio.unlock();
     if (voice.playing && voice.url === url) audio.stopVoice();
-    else void audio.playVoice(url);
+    else withSound("This voice line", () => void audio.playVoice(url));
   };
 
   const playRandom = () => {
@@ -74,7 +75,7 @@ export function VoiceWall({ name, lines }: VoiceWallProps) {
     const pick = pool[Math.floor(Math.random() * pool.length)];
     if (!pick) return;
     audio.unlock();
-    void audio.playVoice(pick.url);
+    withSound("A voice line", () => void audio.playVoice(pick.url));
     const i = shown.indexOf(pick);
     if (i >= 0) setFocusIndex(i);
   };

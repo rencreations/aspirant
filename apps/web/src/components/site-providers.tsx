@@ -5,6 +5,7 @@ import { useEffect, type ReactNode } from "react";
 import { TooltipProvider } from "@aspirant/ui/components/tooltip";
 
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
+import { SoundPrompt } from "@/components/sound-prompt";
 import { TransitionProvider } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { useMediaQuery } from "@/lib/hooks";
@@ -56,6 +57,7 @@ export function SiteProviders({ children }: { children: ReactNode }) {
         <TooltipProvider delayDuration={150}>
           <PreferencesSync />
           {children}
+          <SoundPrompt />
         </TooltipProvider>
       </TransitionProvider>
     </SmoothScrollProvider>

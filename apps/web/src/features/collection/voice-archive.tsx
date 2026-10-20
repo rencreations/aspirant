@@ -6,6 +6,7 @@ import { Waveform } from "@/components/audio/waveform";
 import { StarButton } from "@/components/ui/star-button";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { withSound } from "@/lib/sound-prompt";
 import { useVoiceState } from "@/lib/hooks";
 import { CHARACTER_NAMES } from "@/lib/slugs";
 
@@ -37,8 +38,10 @@ function VoiceLineRow({ row }: { row: VoiceRow }) {
     if (playing) {
       audio.stopVoice();
     } else {
-      audio.blip("click");
-      void audio.playVoice(url);
+      withSound("This voice line", () => {
+        audio.blip("click");
+        void audio.playVoice(url);
+      });
     }
   };
 

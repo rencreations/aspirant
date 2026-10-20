@@ -6,6 +6,7 @@ import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useVoiceState } from "@/lib/hooks";
+import { withSound } from "@/lib/sound-prompt";
 
 import styles from "./about.module.css";
 
@@ -43,7 +44,7 @@ export function VoiceCard({ n, why, label }: Props) {
         onClick={() => {
           audio.unlock();
           if (playing) audio.stopVoice();
-          else void audio.playVoice(url);
+          else withSound("This voice line", () => void audio.playVoice(url));
         }}
       >
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
