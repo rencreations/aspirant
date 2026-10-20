@@ -1,0 +1,256 @@
+/* What is on screen while she waits for the frame she hands over on. Transform and opacity only. */
+.fx {
+  --wait: 1200ms;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The edges of the screen darken. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 52%, rgb(8 6 36 / 0.6) 100%);
+  animation: fade-in 520ms var(--ease-out) both;
+}
+
+/* A band of light travels down the screen. */
+.scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 16%;
+  background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.1), transparent);
+  will-change: transform;
+  animation: scan 2.8s linear infinite;
+}
+
+/* Thin streaks run across, each at its own height and speed. */
+.streaks {
+  position: absolute;
+  inset: 0;
+}
+
+.streaks i {
+  position: absolute;
+  left: 0;
+  top: calc(var(--n) * 11% + 14%);
+  width: 30vw;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.85), transparent);
+  opacity: 0.55;
+  will-change: transform;
+  animation: streak calc(900ms + var(--n) * 130ms) linear infinite;
+  animation-delay: calc(var(--n) * -230ms);
+}
+
+/* Brackets close in on the corners and breathe. */
+.corner {
+  position: absolute;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0 solid rgb(255 255 255 / 0.85);
+  opacity: 0.85;
+  animation:
+    bracket 700ms var(--ease-spring) both,
+    breathe 1.6s ease-in-out 700ms infinite;
+}
+
+.corner[data-c="tl"] {
+  top: 1rem;
+  left: 1rem;
+  border-width: 2px 0 0 2px;
+  --from: 1.2rem 1.2rem;
+}
+
+.corner[data-c="tr"] {
+  top: 1rem;
+  right: 1rem;
+  border-width: 2px 2px 0 0;
+  --from: -1.2rem 1.2rem;
+}
+
+.corner[data-c="bl"] {
+  bottom: 1rem;
+  left: 1rem;
+  border-width: 0 0 2px 2px;
+  --from: 1.2rem -1.2rem;
+}
+
+.corner[data-c="br"] {
+  bottom: 1rem;
+  right: 1rem;
+  border-width: 0 2px 2px 0;
+  --from: -1.2rem -1.2rem;
+}
+
+/* What is happening, under the logo. */
+.chip {
+  position: absolute;
+  top: calc(var(--nav-h, 4rem) + clamp(1rem, 4vh, 2.2rem));
+  left: 50%;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  background: rgb(10 8 40 / 0.66);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: chip-in 520ms var(--ease-spring) both;
+}
+
+.spin {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid rgb(255 255 255 / 0.95);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+.dots i {
+  display: inline-block;
+  font-style: normal;
+  animation: dot 900ms ease-in-out infinite;
+}
+
+.dots i:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.dots i:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+/* The rail along the bottom fills for exactly as long as the wait. */
+.rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.16);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--violet, #6c4cf0), #fff 60%, var(--gold, #e9b95f));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.fx[data-mode="run"] .fill {
+  animation: fill var(--wait) linear forwards;
+}
+
+.fx[data-mode="hold"] .fill {
+  right: auto;
+  width: 40%;
+  transform: translateX(-100%);
+  animation: sweep 1100ms var(--ease-in-out) infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(620%);
+  }
+}
+
+@keyframes streak {
+  from {
+    transform: translateX(-35vw);
+  }
+  to {
+    transform: translateX(105vw);
+  }
+}
+
+@keyframes bracket {
+  from {
+    opacity: 0;
+    translate: var(--from);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    translate: -50% -14px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    translate: 0 0;
+  }
+  30% {
+    opacity: 1;
+    translate: 0 -2px;
+  }
+}
+
+@keyframes fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan,
+  .streaks,
+  .corner {
+    display: none;
+  }
+
+  .vignette,
+  .chip,
+  .spin,
+  .dots i {
+    animation: none;
+  }
+}

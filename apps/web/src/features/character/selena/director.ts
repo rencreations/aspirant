@@ -81,6 +81,10 @@ interface DirectorOptions {
   reduced: boolean;
   /** Start on the idle loop with no welcome (the visitor came to one of her pages). */
   skipWelcome?: boolean;
+  /** Called once, as the stage begins: the page starts the music here. */
+  onBegin?: () => void;
+  /** How long the music plays alone before the welcome video starts, in ms. Default 0. */
+  welcomeDelayMs?: number;
   onState: (state: StageState) => void;
   /** Called before a video is first used, so the page can give it its source. */
   attach?: (key: VideoKey, el: HTMLVideoElement) => void;
@@ -370,6 +374,14 @@ export class SelenaDirector {
 
   async start() {
     if (this.destroyed || this.state.mode !== "boot") return;
+    this.opts.onBegin?.();
+    // The music comes first. The welcome video starts after the delay, on a black screen that then
+    // fades away, so the picture is already moving when it is seen.
+    const delay = this.opts.welcomeDelayMs ?? 0;
+    if (delay > 0 && !this.opts.skipWelcome && !this.opts.reduced) {
+      await sleep(delay);
+      if (this.destroyed) return;
+    }
     if (this.opts.skipWelcome && !this.opts.reduced) {
       await this.jumpToIdle();
       return;

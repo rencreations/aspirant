@@ -25,6 +25,9 @@ const STILL = `${SELENA_DIR}/still.webp`;
 /** Freed a moment after the page is left, so a quick remount (React's dev double mount) keeps it. */
 let releaseTimer = 0;
 
+/** The music plays this long on its own before the welcome video starts. */
+const WELCOME_DELAY_MS = 500;
+
 /** The videos that loop by themselves. The others play once. */
 const LOOPING = (key: VideoKey) => key === "idle" || key.endsWith("-loop");
 
@@ -47,6 +50,8 @@ interface Props {
   onState: (state: StageState) => void;
   /** Play the welcome first. False when the visitor came straight to one of her pages. */
   welcome: boolean;
+  /** The stage begins: the music starts now, half a second before the welcome video. */
+  onBegin: () => void;
 }
 
 /**
@@ -57,7 +62,7 @@ interface Props {
  * finished, so it always plays on a fully visible page.
  */
 export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
-  { onState, welcome: playWelcome },
+  { onState, welcome: playWelcome, onBegin },
   ref,
 ) {
   const reduced = useReducedMotion();
@@ -66,9 +71,12 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
   const director = useRef<SelenaDirector | null>(null);
   const onStateRef = useRef(onState);
 
+  const onBeginRef = useRef(onBegin);
+
   useEffect(() => {
     onStateRef.current = onState;
-  }, [onState]);
+    onBeginRef.current = onBegin;
+  }, [onState, onBegin]);
 
   useImperativeHandle(
     ref,
@@ -94,6 +102,10 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
     const d = new SelenaDirector(els as StageElements, {
       reduced,
       skipWelcome: !playWelcome,
+      welcomeDelayMs: WELCOME_DELAY_MS,
+      onBegin: () => {
+        onBeginRef.current();
+      },
       onState: (s) => {
         onStateRef.current(s);
       },

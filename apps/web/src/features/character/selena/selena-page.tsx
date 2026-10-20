@@ -8,7 +8,7 @@ import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { VideoCard } from "@/components/video-player/video-card";
 import { audio } from "@/lib/audio";
-import { useHotkey } from "@/lib/hooks";
+import { useHotkey, useReducedMotion } from "@/lib/hooks";
 import { getCharacter } from "@/content/characters";
 import { startMusic, type Track } from "@/lib/now-playing";
 import { expectReady } from "@/lib/page-ready";
@@ -22,6 +22,7 @@ import { Hotspots, SPOTS } from "./hotspots";
 import { loadCore, MENU_ICON, selenaItems, TRAILER } from "./media";
 import { SELENA_PAGES } from "./timeline.generated";
 import { MenuButton } from "./menu-button";
+import { WaitFx } from "./wait-fx";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
 import { AboutDrawers } from "./about/about-drawers";
@@ -51,27 +52,9 @@ interface SelenaNext {
   name: string;
 }
 
-/** The music waits this long after the welcome begins. */
-const MUSIC_DELAY_MS = 500;
+/** How long the black screen of the first welcome takes to fade, in ms (see selena.module.css). */
+const BLACK_FADE_MS = 1700;
 
-/**
- * The waiting animation inside a pressed button. A bar fills for exactly as long as the wait for
- * her matching frame, so the press is answered at once and the wait is shown as it runs. When the
- * length is not known (a clip is still loading) a band sweeps instead.
- */
-function Fill({ ms, k }: { ms: number | null; k: number }) {
-  return (
-    <span
-      key={k}
-      className={styles.fill}
-      data-mode={ms === null ? "sweep" : "run"}
-      style={
-        ms === null ? undefined : ({ "--wait": `${Math.max(ms, 120)}ms` } as React.CSSProperties)
-      }
-      aria-hidden="true"
-    />
-  );
-}
 const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false;
 
 /**
@@ -161,27 +144,56 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     };
   }, [pause, resume]);
 
-  // The music starts with the welcome and loops until the page is left. In the welcome it comes
-  // in half a second after the picture, so the animation is seen first. If the welcome is skipped
-  // it starts at once.
-  const musicTimer = useRef(0);
-  useEffect(() => {
-    if (musicStop.current || (state.mode !== "welcome" && state.mode !== "idle")) return;
-    window.clearTimeout(musicTimer.current);
-    const start = () => {
-      musicStop.current ??= startMusic(TRACK);
-    };
-    if (state.mode === "welcome") musicTimer.current = window.setTimeout(start, MUSIC_DELAY_MS);
-    else start();
-  }, [state.mode]);
+  // The music starts when the stage begins and loops until the page is left. In the first
+  // welcome it plays half a second on a black screen, then the video starts under the black, and
+  // the black fades away to show a picture that is already moving.
+  const begin = useCallback(() => {
+    musicStop.current ??= startMusic(TRACK);
+  }, []);
   useEffect(
     () => () => {
-      window.clearTimeout(musicTimer.current);
       musicStop.current?.();
       musicStop.current = null;
     },
     [],
   );
+
+  // The black screen of the first welcome. It is there from the first frame and starts to fade a
+  // beat after the welcome video is playing (or at once if the welcome does not play at all).
+  const reducedMotion = useReducedMotion();
+  const blackExpected = initial === null && !reducedMotion;
+  const [black, setBlack] = useState<"on" | "fade" | "off">("on");
+  useEffect(() => {
+    if (!blackExpected || black !== "on") return;
+    if (state.mode === "boot") return;
+    const timer = window.setTimeout(
+      () => {
+        setBlack("fade");
+      },
+      state.mode === "welcome" ? 350 : 0,
+    );
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [blackExpected, black, state.mode]);
+  useEffect(() => {
+    if (black !== "fade") return;
+    const timer = window.setTimeout(() => {
+      setBlack("off");
+    }, BLACK_FADE_MS + 200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [black]);
+  // Whatever happens, the page is not left black.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setBlack((b) => (b === "on" ? "fade" : b));
+    }, 14_000);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   const mode = state.mode;
   const scene = state.scene;
@@ -311,6 +323,16 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   const chosenShort = chosen !== null && isShort(chosen) ? (chosen as ShortName) : null;
   const waitMs = mode === "queued" && state.wait && !state.loading ? state.wait.ms : null;
   const waitKey = state.wait?.at ?? 0;
+  // How long the exit has to wait for her frame, when it is known.
+  const backWait = mode === "leaving" && state.wait ? state.wait.ms : null;
+  // Something to look at while she waits for the frame she hands over on: a page opening, a short
+  // getting ready, or the way back.
+  const waiting = chosen !== null || state.leaving;
+  const waitLabel = state.leaving
+    ? "Heading back"
+    : chosenShort
+      ? "Getting ready"
+      : `Opening ${MENU.find((m) => m.scene === chosen)?.label ?? "the page"}`;
   const nextRoute = useCallback(() => {
     router.push(next.href, { label: next.label });
   }, [next.href, next.label, router]);
@@ -359,7 +381,15 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
           Selena
         </h1>
         {tierReady ? (
-          <SelenaStage ref={stage} onState={onState} welcome={initial === null} />
+          <SelenaStage ref={stage} onState={onState} welcome={initial === null} onBegin={begin} />
+        ) : null}
+
+        {waiting ? (
+          <WaitFx key={waitKey} label={waitLabel} ms={state.leaving ? backWait : waitMs} />
+        ) : null}
+
+        {blackExpected && black !== "off" ? (
+          <div className={styles.blackout} data-state={black} aria-hidden="true" />
         ) : null}
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
@@ -464,23 +494,25 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         ) : null}
 
         {pageOpen && !showMain ? (
-          <div className={styles.bar}>
-            <button
-              type="button"
-              className={styles.corner}
-              data-busy={state.leaving}
+          <div className={styles.back}>
+            <MenuButton
+              label="Back"
+              icon={MENU_ICON.back}
+              badge="ESC"
+              loadingWord="Heading back"
+              state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
+              waitMs={backWait}
+              waitKey={waitKey}
               disabled={state.leaving || (mode !== "page" && mode !== "intro")}
+              onPointerEnter={() => {
+                audio.blip("hover");
+              }}
+              onFocus={() => undefined}
               onClick={() => {
                 audio.blip("click");
                 stage.current?.leave();
               }}
-            >
-              <i className={styles.back} aria-hidden="true" />
-              <span>Back</span>
-              {state.leaving ? (
-                <Fill ms={mode === "leaving" && state.wait ? state.wait.ms : null} k={waitKey} />
-              ) : null}
-            </button>
+            />
           </div>
         ) : null}
 

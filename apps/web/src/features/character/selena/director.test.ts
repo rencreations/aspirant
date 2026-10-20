@@ -82,7 +82,9 @@ const FPS = SELENA_FPS;
 const EARLY = (LEAD_FRAMES + SELENA_EXTRA_FRAMES) / FPS;
 const f = (frame: number) => frame / FPS;
 
-function setup(options: { reduced?: boolean; skipWelcome?: boolean } = {}) {
+function setup(
+  options: { reduced?: boolean; skipWelcome?: boolean; welcomeDelayMs?: number } = {},
+) {
   const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, new FakeVideo()])) as Record<
     VideoKey,
     FakeVideo
@@ -98,17 +100,22 @@ function setup(options: { reduced?: boolean; skipWelcome?: boolean } = {}) {
   for (const [name, short] of Object.entries(SELENA_SHORTS)) {
     els[name as keyof typeof SELENA_SHORTS].duration = f(short.frames);
   }
+  const begun = { count: 0 };
   const attached: VideoKey[] = [];
   const detached: VideoKey[] = [];
   const states: StageState[] = [];
   const director = new SelenaDirector(els as unknown as StageElements, {
     reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
+    welcomeDelayMs: options.welcomeDelayMs,
+    onBegin: () => {
+      begun.count += 1;
+    },
     onState: (s) => states.push(s),
     attach: (key) => attached.push(key),
     detach: (key) => detached.push(key),
   });
-  return { els, director, states, attached, detached };
+  return { els, director, states, attached, detached, begun };
 }
 
 type Ctx = ReturnType<typeof setup>;
@@ -166,6 +173,29 @@ describe("welcome and idle", () => {
     expect(ctx.els.welcome.dataset.layer).toBe("front");
     expect(ctx.els.idle.dataset.layer).toBe("off");
     expect(setup({ reduced: true }).els.welcome.dataset.layer).toBe("off");
+  });
+
+  it("begins at once (the music starts) and starts the welcome video only after the delay", async () => {
+    const ctx = setup({ welcomeDelayMs: 500 });
+    void ctx.director.start();
+    await vi.advanceTimersByTimeAsync(200);
+    expect(ctx.begun.count).toBe(1);
+    expect(ctx.els.welcome.plays).toBe(0);
+    expect(ctx.director.current.mode).toBe("boot");
+    await vi.advanceTimersByTimeAsync(600);
+    expect(ctx.els.welcome.plays).toBe(1);
+  });
+
+  it("does not wait when she goes straight to a page or motion is reduced", async () => {
+    const page = setup({ welcomeDelayMs: 500, skipWelcome: true });
+    void page.director.start();
+    await vi.advanceTimersByTimeAsync(50);
+    expect(page.begun.count).toBe(1);
+    expect(page.els.idle.plays).toBe(1);
+    const still = setup({ welcomeDelayMs: 500, reduced: true });
+    void still.director.start();
+    await vi.advanceTimersByTimeAsync(50);
+    expect(still.director.current.mode).toBe("idle");
   });
 
   it("starts straight on the idle loop when the visitor came to one of her pages", async () => {

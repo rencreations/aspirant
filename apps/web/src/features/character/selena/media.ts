@@ -12,6 +12,8 @@ export const MENU_ICON = {
   about: "/img/selena/btn/about.webp",
   skills: "/img/selena/btn/skills.webp",
   gallery: "/img/selena/btn/gallery.webp",
+  /** The Silverbolt, on the Back button. */
+  back: "/img/selena/btn/silverbolt.webp",
 } as const;
 
 /** The tiers, smallest first. (Object keys that look like numbers come first, so sort by width.) */

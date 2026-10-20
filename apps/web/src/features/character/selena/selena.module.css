@@ -82,6 +82,22 @@
   }
 }
 
+/* The first welcome starts on a black screen. The music plays first, the video starts under the
+   black, and the black fades away to show a picture that is already moving. */
+.blackout {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #000;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1700ms var(--ease-in-out);
+}
+
+.blackout[data-state="fade"] {
+  opacity: 0;
+}
+
 /* The interface ----------------------------------------------------------------------------- */
 .ui {
   --pad: clamp(1rem, 2.4vw, 3rem);
@@ -161,7 +177,18 @@
   transform: none;
 }
 
-/* The bar along the bottom: Skip and Back. */
+/* The Back button: a plate with the Silverbolt, like the page buttons. */
+.back {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  z-index: 6;
+  width: clamp(11.5rem, 16vw, 14.5rem);
+  translate: -50% 0;
+  animation: rise 600ms var(--ease-out) 300ms both;
+}
+
+/* The bar along the bottom: Skip. */
 .bar {
   position: absolute;
   left: 50%;
@@ -198,10 +225,6 @@
   height: 1px;
   background: currentColor;
   transition: width 360ms var(--ease-out);
-}
-
-.corner .back {
-  order: -1;
 }
 
 .corner:hover,
@@ -296,7 +319,8 @@
     gap: 0.5rem;
   }
 
-  .bar {
+  .bar,
+  .back {
     bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
   }
 
@@ -333,37 +357,6 @@
 .video {
   transform: scale(var(--zoom, 1));
   transition: transform var(--zoom-ms, 0ms) var(--ease-in-out);
-}
-
-/* The pressed button fills for as long as the wait, so the press is answered and the wait is shown. */
-.fill {
-  position: absolute;
-  inset: 2px;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.42));
-  border-right: 2px solid rgb(255 255 255 / 0.9);
-  transform-origin: 0 50%;
-  transform: scaleX(0);
-  clip-path: polygon(
-    calc(var(--cut) - 2px) 0,
-    100% 0,
-    100% calc(100% - var(--cut) + 2px),
-    calc(100% - var(--cut) + 2px) 100%,
-    0 100%,
-    0 calc(var(--cut) - 2px)
-  );
-}
-
-.fill[data-mode="run"] {
-  animation: fill-run var(--wait, 1s) linear forwards;
-}
-
-.fill[data-mode="sweep"] {
-  width: 38%;
-  animation: fill-sweep 1100ms var(--ease-in-out) infinite;
-  transform: none;
-  border-right: 0;
 }
 
 /* Everything else on the panel steps out of the way as soon as a button is pressed. */
@@ -410,46 +403,4 @@
 .corner {
   position: relative;
   overflow: hidden;
-}
-
-.corner .fill {
-  inset: 0;
-  clip-path: none;
-}
-
-.corner[data-busy="true"] {
-  border-color: var(--gold);
-  color: #fff;
-}
-
-.corner > span:not(.fill),
-.corner > i {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes fill-run {
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes fill-sweep {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(300%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fill[data-mode="run"],
-  .fill[data-mode="sweep"] {
-    animation: none;
-  }
-
-  .fill[data-mode="run"] {
-    transform: scaleX(0.5);
-  }
 }

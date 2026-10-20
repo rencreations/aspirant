@@ -12,8 +12,12 @@ interface Props {
   label: string;
   /** Public path of her picture on the button. */
   icon: string;
-  /** Position in the list, from 1. */
-  index: number;
+  /** Position in the list, from 1. Shown as 01, 02, 03. */
+  index?: number;
+  /** Text for the small badge instead of the number (the Back button shows its key). */
+  badge?: string;
+  /** The word on the sheet that covers the plate while she runs. Default "Loading". */
+  loadingWord?: string;
   /** Chosen and waiting for her matching frame (`queued`), or still loading the clip. */
   state: "idle" | "queued" | "loading";
   /** How long the wait is, when it is known. */
@@ -42,6 +46,8 @@ export function MenuButton({
   label,
   icon,
   index,
+  badge,
+  loadingWord = "Loading",
   state,
   waitMs,
   waitKey,
@@ -85,7 +91,7 @@ export function MenuButton({
         <img src={src} alt="" draggable={false} decoding="async" />
       </span>
       <span className={styles.index} aria-hidden="true">
-        {pad(index)}
+        {badge ?? pad(index ?? 0)}
       </span>
       <span className={styles.text}>{label}</span>
       <span className={styles.trim} aria-hidden="true" />
@@ -100,7 +106,7 @@ export function MenuButton({
           <span className={styles.cover}>
             <span className={styles.sheet}>
               <span className={styles.loading}>
-                Loading
+                {loadingWord}
                 <span className={styles.dots}>
                   <i>.</i>
                   <i>.</i>
