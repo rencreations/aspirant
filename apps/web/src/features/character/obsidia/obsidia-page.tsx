@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
@@ -18,9 +18,10 @@ import type { StageState } from "../stage/director";
 import { Hotspots } from "../stage/hotspots";
 import { ScreenCover, type CoverApi, type CoverColors } from "../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../stage/stage";
-import type { PageName, SceneName, ShortName } from "../stage/timeline";
+import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
 import { useStageUrl } from "../stage/use-stage-url";
 import { WaitFx } from "../stage/wait-fx";
+import { AboutDrawer } from "./about/about-drawer";
 import { loadCore, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
 import styles from "./obsidia.module.css";
 import { PlateButton, type Glyph } from "./plate-button";
@@ -192,6 +193,54 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
   const mode = state.mode;
   const scene = state.scene;
+
+  // The drawers are built while she idles, off screen, a moment after the welcome. React builds
+  // them in small slices, so the idle picture never stalls, and a press finds them ready instead
+  // of building them in the frames of its own animation.
+  const [drawersBuilt, setDrawersBuilt] = useState(0);
+  useEffect(() => {
+    if (state.mode !== "idle" || drawersBuilt >= 3) return;
+    // About first, then Skills, then Gallery, a moment apart, so no single frame carries two.
+    const timer = window.setTimeout(
+      () => {
+        startTransition(() => {
+          setDrawersBuilt((n) => n + 1);
+        });
+      },
+      drawersBuilt === 0 ? 1500 : 1200,
+    );
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [state.mode, drawersBuilt]);
+
+  // The drawer of the page that is opening is drawn (off screen) in the middle of the entrance,
+  // not when it slides in. See ObsidiaDrawer `warm`.
+  const [warmed, setWarmed] = useState<PageName | null>(null);
+  useEffect(() => {
+    if (
+      state.mode === "intro" &&
+      state.scene &&
+      (PAGE_NAMES as readonly string[]).includes(state.scene)
+    ) {
+      const page = state.scene as PageName;
+      const timer = window.setTimeout(() => {
+        setWarmed(page);
+      }, 1200);
+      return () => {
+        window.clearTimeout(timer);
+      };
+    }
+    if (state.mode === "idle") {
+      const timer = window.setTimeout(() => {
+        setWarmed(null);
+      }, 0);
+      return () => {
+        window.clearTimeout(timer);
+      };
+    }
+    return undefined;
+  }, [state.mode, state.scene]);
 
   // Her address follows the page that is open, and the other way round.
   useStageUrl({ state, stage, initial, routes: OBSIDIA_ROUTES });
@@ -453,6 +502,13 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
             />
           </div>
         ) : null}
+
+        {/* Built ahead of time (see `drawersBuilt`), or as soon as a page is chosen. */}
+        <AboutDrawer
+          present={drawersBuilt >= 1 || (pageOpen && scene === "about") || chosen === "about"}
+          shown={mode === "page" && scene === "about"}
+          warm={warmed === "about"}
+        />
 
         <ScreenCover ref={cover} colors={COVER} />
 

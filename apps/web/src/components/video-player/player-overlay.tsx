@@ -46,6 +46,15 @@ export interface PlayerVideo {
   title: string;
   /** Public path of a WebVTT track, if there is one. */
   captions?: string;
+  /** Colours for a character's page: the dark plate, the keyline and the accent. */
+  skin?: PlayerSkin;
+}
+
+/** The three colours of the player's plate language (see video-player.module.css). */
+export interface PlayerSkin {
+  ink: string;
+  keyline: string;
+  accent: string;
 }
 
 interface Props {
@@ -826,6 +835,15 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
       data-ready={ready}
       data-busy={busy}
       data-shape={shape}
+      style={
+        video.skin
+          ? ({
+              "--ink": video.skin.ink,
+              "--orange": video.skin.keyline,
+              "--pink": video.skin.accent,
+            } as React.CSSProperties)
+          : undefined
+      }
       onKeyDown={onKeyDown}
       onPointerMove={onPointerMove}
       onPointerLeave={() => {

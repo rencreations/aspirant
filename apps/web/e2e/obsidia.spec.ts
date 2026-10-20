@@ -170,3 +170,147 @@ test("Esc leaves the page it opened", async ({ page }) => {
     timeout: 45_000,
   });
 });
+
+async function openAbout(page: Page) {
+  await open(page);
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(1, {
+    timeout: 45_000,
+  });
+  await expect(page.getByRole("tabpanel", { name: "Details, scrollable" })).toBeVisible({
+    timeout: 30_000,
+  });
+  await page.waitForTimeout(900);
+}
+
+const isNarrow = (info: { project: { name: string } }) => info.project.name !== "desktop";
+
+test("About opens one drawer on the left with Details and Story, and her trailer in the corner", async ({
+  page,
+}, info) => {
+  await openAbout(page);
+  const tabs = page.getByRole("tablist", { name: "About Obsidia" });
+  await expect(tabs.getByRole("tab", { name: "Details" })).toHaveAttribute("aria-selected", "true");
+  await expect(tabs.getByRole("tab", { name: "Story" })).toHaveAttribute("aria-selected", "false");
+  const details = page.getByRole("tabpanel", { name: "Details, scrollable" });
+  expect(await details.evaluate((el) => el.scrollHeight > el.clientHeight + 200)).toBe(true);
+  await expect(page.getByRole("button", { name: /Play video: Obsidia, The Queen/ })).toBeVisible();
+  const vw = page.viewportSize()?.width ?? 0;
+  const drawer = await page.getByRole("complementary", { name: "About Obsidia" }).boundingBox();
+  const card = await page.getByRole("button", { name: /Play video/ }).boundingBox();
+  if (!isNarrow(info)) {
+    // The drawer takes at most 40 percent, so she stays in view on the right, and there is no
+    // second drawer.
+    expect(drawer!.x + drawer!.width).toBeLessThanOrEqual(vw * 0.4);
+    await expect(page.getByRole("complementary")).toHaveCount(1);
+    // The trailer is small and sits in the bottom right.
+    expect(card!.x).toBeGreaterThan(vw * 0.6);
+    expect(card!.width).toBeLessThan(vw * 0.25);
+  }
+});
+
+test("the details list the facts, her profile picture and her voice", async ({ page }) => {
+  await openAbout(page);
+  const details = page.getByRole("tabpanel", { name: "Details, scrollable" });
+  for (const label of ["Age", "Birthday", "MBTI", "Occupation", "Species"])
+    await expect(details.getByText(label, { exact: true })).toBeVisible();
+  await expect(details.getByText("November 13")).toBeVisible();
+  await expect(details.getByText("INTJ")).toBeVisible();
+  await expect(details.getByText("アイーダ")).toBeVisible();
+  await expect(details.getByRole("img", { name: /Imperatrix Arashi/ })).toBeAttached();
+  for (const n of [1, 30, 41])
+    await expect(
+      details.getByRole("button", { name: new RegExp(`Play voice line ${n}:`) }),
+    ).toBeAttached();
+});
+
+test("the story is told by her, with tooltips, pictures and voice lines you can press", async ({
+  page,
+}) => {
+  await openAbout(page);
+  await page.getByRole("tab", { name: "Story" }).click();
+  const story = page.getByRole("tabpanel", { name: "Story, scrollable" });
+  await expect(story).toBeVisible();
+  await expect(
+    story.getByRole("heading", { level: 3, name: "I woke without a name" }),
+  ).toBeAttached();
+  expect(await story.getByRole("img").count()).toBeGreaterThanOrEqual(12);
+  expect(
+    await story.getByRole("button", { name: /Play voice line/ }).count(),
+  ).toBeGreaterThanOrEqual(30);
+  // A name opens a tooltip.
+  const name = story.getByRole("button", { name: "Matrix" }).first();
+  await name.evaluate((el) => {
+    el.scrollIntoView({ block: "center" });
+  });
+  await name.click();
+  await expect(page.getByRole("dialog").first()).toBeVisible();
+  await page.keyboard.press("Escape");
+  // A voice line toggles.
+  const voice = story.getByRole("button", { name: /Play voice line 41:/ });
+  await voice.evaluate((el) => {
+    el.scrollIntoView({ block: "center" });
+  });
+  await voice.click();
+  await expect(story.getByRole("button", { name: /voice line 41:/ })).toHaveAttribute(
+    "aria-pressed",
+    /true|false/,
+  );
+});
+
+test("the story's index jumps to a section", async ({ page }) => {
+  await openAbout(page);
+  await page.getByRole("tab", { name: "Story" }).click();
+  const story = page.getByRole("tabpanel", { name: "Story, scrollable" });
+  const before = await story.evaluate((el) => el.scrollTop);
+  await story
+    .getByRole("navigation", { name: "Story sections" })
+    .getByRole("button", { name: "12" })
+    .click();
+  await expect.poll(() => story.evaluate((el) => el.scrollTop)).toBeGreaterThan(before + 1000);
+});
+
+test("the drawer folds away and comes back", async ({ page }, info) => {
+  test.skip(isNarrow(info), "The drawer folds on wide screens only");
+  await openAbout(page);
+  const drawer = page.getByRole("complementary", { name: "About Obsidia" });
+  await page.waitForTimeout(1000);
+  const before = await drawer.boundingBox();
+  await drawer.getByRole("button", { name: /^Hide/ }).click();
+  await expect.poll(async () => (await drawer.boundingBox())!.x).toBeLessThan(before!.x - 200);
+  await drawer.getByRole("button", { name: /^Show/ }).click();
+  await expect
+    .poll(async () => Math.abs((await drawer.boundingBox())!.x - before!.x))
+    .toBeLessThan(4);
+});
+
+test("the trailer opens the player in her colours, and Escape closes it and gives focus back", async ({
+  page,
+}) => {
+  await openAbout(page);
+  const card = page.getByRole("button", { name: /Play video: Obsidia, The Queen/ });
+  await card.click();
+  const player = page.getByRole("dialog", { name: /The Queen's Endgame/ });
+  await expect(player).toBeVisible();
+  await expect(player.getByRole("slider", { name: "Seek" })).toBeVisible();
+  await expect(player.getByRole("button", { name: /^Quality/ })).toBeVisible();
+  // Her colours: the keyline is gold, not the site's orange.
+  expect(await player.evaluate((el) => getComputedStyle(el).getPropertyValue("--orange"))).toBe(
+    "#e2b04a",
+  );
+  await page.keyboard.press("Escape");
+  await expect(player).toHaveCount(0);
+  await expect(card).toBeFocused();
+});
+
+test("Back closes the drawer and returns to the main panel", async ({ page }) => {
+  await openAbout(page);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
+    timeout: 45_000,
+  });
+  // The drawer stays built, off screen and inert, ready for the next visit.
+  await expect(page.locator("[class*='shell'][data-shown='true']")).toHaveCount(0, {
+    timeout: 45_000,
+  });
+});

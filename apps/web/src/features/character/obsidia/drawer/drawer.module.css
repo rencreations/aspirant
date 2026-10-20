@@ -1,0 +1,211 @@
+/* Her drawer. Dark crimson plates with a thin rose-gold edge, like her buttons. Everything that
+   moves is transform or opacity, and nothing is blurred over the live picture. */
+.shell {
+  --w: min(38vw, 34rem);
+  --pad: clamp(1rem, 2.4vw, 3rem);
+  --panel: rgb(20 6 14 / 0.94);
+  --line: rgb(255 214 190 / 0.34);
+  --rose: #ff5a86;
+  --gold: #e2b04a;
+  --cream: #fff1e8;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  color: var(--cream);
+}
+
+/* The panel ------------------------------------------------------------------------------- */
+.drawer {
+  position: absolute;
+  left: 0;
+  top: var(--nav-h);
+  bottom: 0;
+  width: var(--w);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  pointer-events: auto;
+  transform: translateX(-104%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 760ms var(--ease-out),
+    opacity 420ms var(--ease-out),
+    visibility 0s linear 760ms;
+}
+
+/* Drawn off screen ahead of time (see `warm`), or open. */
+.shell[data-warm="true"] .drawer {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.shell[data-shown="true"] .drawer {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s, 0s;
+}
+
+.shell[data-shown="true"] .drawer[data-open="false"] {
+  transform: translateX(calc(-100% + 0px));
+}
+
+.tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  flex: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs button {
+  position: relative;
+  height: 3.1rem;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 241 232 / 0.62);
+  transition: color 260ms var(--ease-out);
+}
+
+.tabs button::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -1px;
+  height: 2px;
+  background: var(--rose);
+  transform: scaleX(0);
+  transition: transform 420ms var(--ease-out);
+}
+
+.tabs button:hover,
+.tabs button:focus-visible,
+.tabs button[aria-selected="true"] {
+  color: var(--cream);
+}
+
+.tabs button[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1.4rem clamp(1rem, 2vw, 1.7rem) 4rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 90 134 / 0.5) transparent;
+  outline-offset: -3px;
+}
+
+.scroll[hidden] {
+  display: none;
+}
+
+/* The tab that folds the drawer away, on its right edge. */
+.handle {
+  position: absolute;
+  right: -2.1rem;
+  top: 38%;
+  width: 2.1rem;
+  height: 7.5rem;
+  display: grid;
+  place-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 0;
+  color: var(--cream);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0.6rem, 100% calc(100% - 0.6rem), 0 100%);
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out);
+}
+
+.handle span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.handle:hover,
+.handle:focus-visible {
+  background: var(--cream);
+  color: var(--ink, #14060d);
+}
+
+/* The corner ------------------------------------------------------------------------------ */
+.dock {
+  position: absolute;
+  right: var(--pad);
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  width: clamp(13rem, 19vw, 22rem);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateX(34px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 560ms var(--ease-out);
+}
+
+.shell[data-shown="true"] .dock {
+  opacity: 1;
+  transform: none;
+  transition-duration: 600ms, 800ms;
+  transition-delay: 380ms;
+}
+
+/* Phones and tall screens: a sheet at the bottom, and the corner thing at the top right. */
+@media (max-width: 56em), (max-aspect-ratio: 1/1) {
+  .drawer {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: 58svh;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    transform: translateY(104%);
+  }
+
+  .shell[data-shown="true"] .drawer[data-open="false"] {
+    transform: none;
+  }
+
+  .handle {
+    display: none;
+  }
+
+  .dock {
+    top: calc(var(--nav-h) + 0.6rem);
+    bottom: auto;
+    width: clamp(8.5rem, 38vw, 13rem);
+    transform: translateY(-14px);
+  }
+
+  .scroll {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .dock {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+}

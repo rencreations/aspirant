@@ -27,7 +27,7 @@ export const OBSIDIA_MUSIC = "/audio/music/obsidia-theme.m4a";
 /** Her trailer, in three sizes for the player's quality menu (60 fps, like the stage). */
 export const TRAILER = {
   poster: "/video/obsidia/trailer-poster.webp",
-  title: "Obsidia, trailer",
+  title: "Obsidia, The Queen's Endgame",
   duration: 80,
   sources: [
     { label: "1080p", height: 1080, src: "/video/obsidia/trailer-1080.mp4" },
@@ -35,6 +35,9 @@ export const TRAILER = {
     { label: "480p", height: 480, src: "/video/obsidia/trailer-480.mp4" },
   ],
 } as const;
+
+/** The colours of her player: the ink of her plates, a gold keyline and a rose accent. */
+export const TRAILER_SKIN = { ink: "#14060d", keyline: "#e2b04a", accent: "#ff5a86" } as const;
 
 /**
  * The trailer in the size "Auto" would pick for this screen (the player fills the screen), so the

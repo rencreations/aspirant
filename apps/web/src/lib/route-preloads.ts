@@ -10,6 +10,10 @@ import {
 import { galleryItems } from "@/features/character/selena/gallery/gallery-media";
 import { skillItems } from "@/features/character/selena/skills/skills-media";
 import {
+  ABOUT_IMAGES as OBSIDIA_ABOUT_IMAGES,
+  aboutImagePath as obsidiaAboutImagePath,
+} from "@/features/character/obsidia/about/about-images";
+import {
   OBSIDIA_MUSIC,
   OBSIDIA_VOICE_COUNT,
   obsidiaItems,
@@ -137,6 +141,9 @@ export function routeItems(pathname: string): PreloadItem[] {
         }),
         ...Array.from({ length: OBSIDIA_VOICE_COUNT }, (_, i) =>
           savedItem(obsidiaVoicePath(i + 1), "Loading her voice lines", 1),
+        ),
+        ...OBSIDIA_ABOUT_IMAGES.map((name) =>
+          imageItem(obsidiaAboutImagePath(name), "Loading the About pictures", 1),
         ),
         obsidiaTrailerItem(),
       ];

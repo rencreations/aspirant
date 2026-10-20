@@ -21,6 +21,8 @@
   background: #0a0508;
   /* Where the picture is cropped to. The stage and the touch points both read it. */
   --focus: 50% 50%;
+  --pad: clamp(1rem, 2.4vw, 3rem);
+  --top: calc(var(--nav-h) + clamp(0.75rem, 4.5vh, 2.5rem));
 }
 
 /* The first welcome starts on a black screen. The music plays first, the video starts under the
@@ -41,8 +43,6 @@
 
 /* The interface ----------------------------------------------------------------------------- */
 .ui {
-  --pad: clamp(1rem, 2.4vw, 3rem);
-  --top: calc(var(--nav-h) + clamp(0.75rem, 4.5vh, 2.5rem));
   position: absolute;
   inset: 0;
   z-index: 5;
@@ -247,9 +247,17 @@
     transform: translateY(24px);
   }
 
-  .bar,
-  .back {
+  .bar {
     bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The drawer is a sheet at the bottom, so Back waits at the top left. */
+  .back {
+    left: var(--pad);
+    top: calc(var(--nav-h) + 0.6rem);
+    bottom: auto;
+    width: clamp(8rem, 34vw, 11rem);
+    translate: 0 0;
   }
 
   .skip {
