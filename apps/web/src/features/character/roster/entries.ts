@@ -2,16 +2,11 @@
  * Server-side data for the roster: slim, serialisable entries for the client island, so the
  * voice tables and the full character files stay out of the browser bundle.
  */
-import type { CSSProperties } from "react";
-
 import { characters, keyVoiceLines } from "@/content/characters";
 import { pairs } from "@/content/pairs";
 import type { PairId, Side, Slug } from "@/content/types";
 
-import type { FrameShape } from "@/components/frame/frame-shapes";
-
-import { ART, type ArtImage } from "../art";
-import { characterVars } from "../theme";
+import { ART } from "../art";
 
 export interface RosterCharacter {
   readonly slug: Slug;
@@ -23,15 +18,10 @@ export interface RosterCharacter {
   readonly tagline: string;
   readonly side: Side;
   readonly pair: PairId;
+  /** The face in the splash, as an object-position. */
   readonly focus: string;
-  readonly shape: FrameShape;
-  readonly cutout: ArtImage | null;
-  /** object-position for the cut-out in the preview panel. */
-  readonly cutoutFocus: string;
   /** Signature voice line (public path) and its translation. */
   readonly voice: { readonly src: string; readonly en: string } | null;
-  /** Accent tokens computed for the roster's world (Storm). */
-  readonly vars: CSSProperties;
   /** The character's signature colour, raw, for lines and glows. */
   readonly colour: string;
 }
@@ -60,11 +50,7 @@ export function rosterCharacters(): RosterCharacter[] {
       side: c.side,
       pair: c.pair,
       focus: `${art.focus.x}% ${art.focus.y}%`,
-      shape: art.shape,
-      cutout: art.cutout,
-      cutoutFocus: art.cutoutAligned ? `${art.focus.x}% ${art.focus.y}%` : "50% 12%",
       voice: line ? { src: `/${line.file}`, en: line.en } : null,
-      vars: characterVars(c.palette, "storm", art.accent),
       colour: c.palette[art.accent.accent],
     };
   });

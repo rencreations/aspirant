@@ -1,4 +1,5 @@
-import { isSlug } from "@/content/characters";
+import { characters, isSlug } from "@/content/characters";
+import { splashPath } from "@/features/character/roster/splash";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
 import {
   MENU_ICON,
@@ -91,6 +92,14 @@ export function routeItems(pathname: string): PreloadItem[] {
       dataItem("/data/manifest.json", "Reading the archive index", 2),
       dataItem("/data/comics.json", "Reading the comic index", 1),
       dataItem("/data/fanart.json", "Reading the fan art credits", 1),
+    ];
+  }
+
+  if (path === "/character") {
+    // The wall of the ten: their splash art, the only pictures on it.
+    return [
+      ...shared,
+      ...characters.map((c) => imageItem(splashPath(c.slug), `Loading ${c.name}`, 3)),
     ];
   }
 

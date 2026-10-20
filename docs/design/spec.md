@@ -114,7 +114,7 @@ The world explained, in contrast and diagrams. Sections:
 
 ### 4.5 Characters
 
-`/character`: the roster as a constellation of ten custom-framed cards that group by partner pair. Hover plays a voice line and brightens the pair link. Filters: all, by pair, Daybreak, Storm.
+`/character`: the roster wall. One full-screen row of ten big slanted panels of splash art (the only pictures on it), in pairs, that scrolls sideways (wheel, drag, swipe, arrow keys, the rail) and comes to rest on a panel like a magnet. The panel in front is lit and shows its file, the others sleep behind a blue haze. Hover or focus plays a voice line. A click closes the others and opens the character. See "The roster wall" in `design-system.md`.
 
 `/character/[slug]`:
 

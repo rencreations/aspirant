@@ -48,39 +48,116 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("roster", () => {
-  test("loads with one h1, ten cards, filters and no errors", async ({ page }) => {
+  /** The row of panels: it scrolls sideways, and the page itself does not scroll. */
+  const row = (page: Page) =>
+    page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" });
+  const left = (page: Page) => row(page).evaluate((el) => el.scrollLeft);
+  const lit = (page: Page) => page.locator("nav[aria-label='Jump to an Aspirant'] [aria-current]");
+
+  test("loads with one h1, ten panels of splash art and no errors", async ({ page }) => {
     const errors = watchErrors(page);
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Meet the ten");
-    const cards = page.locator('main a[href*="/character/"]:visible');
+    await expect(page.getByRole("heading", { level: 1, name: "Meet the ten" })).toBeAttached();
+    const cards = page.locator('main a[href*="/character/"]');
     await expect(cards).toHaveCount(10);
+    // The only pictures on the wall are the splash art of the ten.
+    const sources = await page
+      .locator("main img")
+      .evaluateAll((els) => els.map((el) => el.getAttribute("src") ?? ""));
+    expect(sources.length).toBeGreaterThanOrEqual(10);
+    for (const src of sources) expect(src).toMatch(/\/img\/char\/[a-z]+\/splash(-sm)?\.webp$/);
     await noOverflow(page);
-
-    const filters = page.getByRole("group", { name: "Filter the roster" });
-    await filters.getByRole("button", { name: "Fanny and Layla" }).click();
-    await expect(filters.getByRole("button", { name: "Fanny and Layla" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    await expect(cards).toHaveCount(2);
-    await filters.getByRole("button", { name: "Storm" }).click();
-    await expect(cards).toHaveCount(1);
-    await expect(cards.first()).toContainText("Obsidia");
-    await filters.getByRole("button", { name: "All ten" }).click();
-    await expect(cards).toHaveCount(10);
+    // It is a wall that scrolls sideways, not a page that scrolls down.
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
+    ).toBe(true);
+    expect(await row(page).evaluate((el) => el.scrollWidth > el.clientWidth * 3)).toBe(true);
     expect(errors).toEqual([]);
   });
 
-  test("cards open the character page from the keyboard", async ({ page, baseURL }) => {
+  test("scrolls sideways, settles on a panel and lights it", async ({ page }, info) => {
     await page.goto(url("/character/"));
-    // The cards breathe (idle float), so drive them like a keyboard user would.
+    await page.waitForLoadState("networkidle");
+    await expect(lit(page)).toHaveCount(0);
+    if (info.project.name === "desktop") {
+      await page.mouse.move(700, 500);
+      await page.mouse.wheel(0, 900);
+      await expect.poll(() => left(page), { timeout: 5000 }).toBeGreaterThan(200);
+    } else {
+      await row(page).evaluate((el) => el.scrollTo({ left: el.clientWidth * 1.4 }));
+    }
+    // It comes to rest on a panel (the magnet), and that panel is the lit one.
+    await expect(lit(page)).toHaveCount(1, { timeout: 5000 });
+    const panel = page.locator("main li[data-active='true']");
+    await expect(panel).toHaveCount(1);
+    await expect(panel.locator("a")).toHaveAttribute("href", /\/character\/[a-z]+\/?$/);
+    await page.keyboard.press("Home");
+    await expect.poll(() => left(page), { timeout: 5000 }).toBeLessThan(4);
+    await page.keyboard.press("ArrowRight");
+    await expect(lit(page)).toHaveCount(1, { timeout: 5000 });
+    await page.keyboard.press("End");
+    await expect
+      .poll(() => row(page).evaluate((el) => el.scrollWidth - el.clientWidth - el.scrollLeft), {
+        timeout: 6000,
+      })
+      .toBeLessThan(4);
+  });
+
+  test("the rail jumps to an Aspirant and the count of those met goes up", async ({ page }) => {
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByText("Aspirants met:")).toContainText("0/10");
+    const rail = page.getByRole("navigation", { name: "Jump to an Aspirant" });
+    await rail.getByRole("button", { name: "Obsidia" }).click();
+    await expect(rail.getByRole("button", { name: "Obsidia" })).toHaveAttribute(
+      "aria-current",
+      "true",
+      { timeout: 6000 },
+    );
+    // Stopping on a panel for a moment meets it.
+    await expect(page.getByText("Aspirants met:")).toContainText("1/10", { timeout: 6000 });
+    const panel = page.locator("main li[data-active='true']");
+    await expect(panel).toContainText("Obsidia");
+    await expect(panel.getByText("Open file")).toBeAttached();
+    expect(await page.evaluate(() => window.localStorage.getItem("aspirants:met"))).toContain(
+      "obsidia",
+    );
+  });
+
+  test("a click closes the other panels and opens the character page", async ({
+    page,
+    baseURL,
+  }) => {
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    const rail = page.getByRole("navigation", { name: "Jump to an Aspirant" });
+    await rail.getByRole("button", { name: "Ruby" }).click();
+    await expect(page.locator("main li[data-active='true']")).toContainText("Ruby", {
+      timeout: 6000,
+    });
+    await page.locator('main li[data-active="true"] a').click();
+    await expect(page.locator("section[data-chosen='true']")).toBeAttached();
+    await settled(page);
+    await expect.poll(() => sitePath(page, baseURL)).toBe("/character/ruby/");
+    await expect(page.getByRole("heading", { level: 1, name: "Ruby" })).toBeVisible();
+  });
+
+  test("panels open the character page from the keyboard", async ({ page, baseURL }) => {
+    await page.goto(url("/character/"));
     await page.locator('main a[href*="/character/ruby"]').first().focus();
     await page.keyboard.press("Enter");
     await settled(page);
     await expect.poll(() => sitePath(page, baseURL)).toBe("/character/ruby/");
     await expect(page.getByRole("heading", { level: 1, name: "Ruby" })).toBeVisible();
+  });
+
+  test("goes on to the collection", async ({ page, baseURL }) => {
+    await page.goto(url("/character/"));
+    await page.getByRole("button", { name: /^Continue to The collection/ }).click();
+    await settled(page);
+    await expect.poll(() => sitePath(page, baseURL)).toBe("/collection/");
   });
 
   test("has no serious accessibility violations", async ({ page }) => {

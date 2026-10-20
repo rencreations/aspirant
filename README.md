@@ -11,7 +11,7 @@ This is a fan project. It is not affiliated with or endorsed by Moonton. Officia
 | `/`                 | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame           |
 | `/experience`       | The story told by scrolling: the whole short story as a web novel, scenes behind the text, hover cards, toys      |
 | `/story`            | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
-| `/character`        | The roster of ten                                                                                                 |
+| `/character`        | The roster wall, ten panels that scroll sideways                                                                  |
 | `/character/[slug]` | One page per Aspirant, with a voice wall, media and a footer that leads to the next in the queue                  |
 | `/collection`       | Films, music, comics, art, fan art and every voice line                                                           |
 
