@@ -51,7 +51,7 @@ export interface PlayerVideo {
 }
 
 /** The three colours of the player's plate language (see video-player.module.css). */
-export interface PlayerSkin {
+interface PlayerSkin {
   ink: string;
   keyline: string;
   accent: string;

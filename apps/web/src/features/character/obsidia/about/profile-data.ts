@@ -199,12 +199,3 @@ export const PROFILE_VOICES = [
   { form: "Her storm", n: 30 },
   { form: "Her quiet", n: 41 },
 ] as const;
-
-/** Personality, appearance and fighting, in her own file. */
-export const TRAITS: readonly string[] = [
-  "Calm, cold and exact. She thinks many moves ahead.",
-  "Curious about people, and about why they build windows.",
-  "Lonely and bored after ages awake while the others sleep.",
-  "Shows feeling only at an angle, and is surprised when she does.",
-  "Has obeyed the Will all her life, out of long habit.",
-];
