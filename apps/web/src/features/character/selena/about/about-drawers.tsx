@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 
 import { TLink } from "@/components/transition/t-link";
 import { getCharacter } from "@/content/characters";
@@ -251,10 +251,28 @@ function Block({ block }: { block: StoryBlock }) {
   }
 }
 
+/** Chapters built when the drawer opens, and how many more follow at each step. */
+const FIRST_CHAPTERS = 3;
+const CHAPTER_STEP = 2;
+
 /** Her whole story, section by section, with a numbered index along the top. */
 function StoryBody({ scroller }: { scroller: React.RefObject<HTMLDivElement | null> }) {
   const [active, setActive] = useState(0);
   const refs = useRef<Array<HTMLElement | null>>([]);
+  // The story is 21 chapters and over 30,000 pixels. The first few are built at once and the rest
+  // a few at a time, while the page is idle, so no single frame carries the whole drawer.
+  const [built, setBuilt] = useState(FIRST_CHAPTERS);
+  useEffect(() => {
+    if (built >= STORY.length) return;
+    const timer = window.setTimeout(() => {
+      startTransition(() => {
+        setBuilt((n) => n + CHAPTER_STEP);
+      });
+    }, 140);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [built]);
 
   useEffect(() => {
     const el = scroller.current;
@@ -275,10 +293,16 @@ function StoryBody({ scroller }: { scroller: React.RefObject<HTMLDivElement | nu
 
   const jump = (i: number) => {
     const el = scroller.current;
-    const target = refs.current[i];
-    if (!el || !target) return;
-    el.scrollTo({ top: target.offsetTop - 52, behavior: "smooth" });
+    if (!el) return;
     audio.blip("click");
+    // The chapters before the target must be built, or the target is not where it will be.
+    if (built <= i) setBuilt(STORY.length);
+    const go = () => {
+      const target = refs.current[i];
+      if (target) el.scrollTo({ top: target.offsetTop - 52, behavior: "smooth" });
+    };
+    if (built <= i) requestAnimationFrame(() => requestAnimationFrame(go));
+    else go();
   };
 
   return (
@@ -323,10 +347,8 @@ function StoryBody({ scroller }: { scroller: React.RefObject<HTMLDivElement | nu
               {s.when ? <p className={styles.when}>{s.when}</p> : null}
             </div>
           </header>
-          {s.blocks.map((b, k) => (
-            <Block key={k} block={b} />
-          ))}
-          {s.chapters.length > 0 ? (
+          {i < built ? s.blocks.map((b, k) => <Block key={k} block={b} />) : null}
+          {i < built && s.chapters.length > 0 ? (
             <p className={styles.read}>
               Read it in the Experience:{" "}
               {s.chapters.map((id, k) => (
@@ -352,17 +374,20 @@ function StoryBody({ scroller }: { scroller: React.RefObject<HTMLDivElement | nu
 interface Props {
   present: boolean;
   shown: boolean;
+  /** Draw the content now, still off screen (see DrawerShell). */
+  warm?: boolean;
 }
 
 /**
  * The About page. Her profile slides in from the left and her story from the right, and she stays
  * visible between them.
  */
-export function AboutDrawers({ present, shown }: Props) {
+export function AboutDrawers({ present, shown, warm }: Props) {
   return (
     <DrawerShell
       present={present}
       shown={shown}
+      warm={warm}
       label="About Selena"
       left={{
         title: "Profile",

@@ -42,6 +42,18 @@
   transition-delay: 90ms;
 }
 
+/* The soft shadow is a filter over a layer as big as the drawer. Not on a device that is short of
+   speed. */
+:root[data-perf="balanced"] .drawer,
+:root[data-perf="lite"] .drawer {
+  filter: none;
+}
+
+/* Built ahead of time but not shown: nothing of it is styled, laid out or drawn until it is. */
+.drawers[data-shown="false"]:not([data-warm="true"]) .scroll {
+  content-visibility: hidden;
+}
+
 .drawers[data-shown="true"] .drawer[data-open="true"] {
   transform: none;
 }

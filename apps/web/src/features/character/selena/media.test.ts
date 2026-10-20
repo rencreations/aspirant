@@ -5,14 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { voiceLines } from "@/content/voice.generated";
 
-import {
-  limitTier,
-  MENU_ICON,
-  pickTier,
-  SELENA_VOICE_COUNT,
-  selenaVoicePath,
-  TRAILER,
-} from "./media";
+import { MENU_ICON, pickTier, SELENA_VOICE_COUNT, selenaVoicePath, TRAILER } from "./media";
 import { SKILL_CLIPS } from "./skills/clips.generated";
 import { skillClipPath, skillSmallPath } from "./skills/skills-media";
 
@@ -43,46 +36,41 @@ describe("what her page loads", () => {
   });
 });
 
-describe("the size of video a device can play", () => {
-  it("keeps the size that suits the display when the device decodes it smoothly", async () => {
-    expect(await limitTier("2160", () => Promise.resolve(true))).toBe("2160");
-    expect(await limitTier("1440", () => Promise.resolve(true))).toBe("1440");
-  });
+describe("the size of video for a display and a device", () => {
+  const full = { level: "full" as const, hardware: true, cores: 8, memory: 8 };
 
-  it("steps down one size at a time from a size the device cannot decode smoothly", async () => {
-    const asked: string[] = [];
-    const tier = await limitTier("2160", (t) => {
-      asked.push(t);
-      return Promise.resolve(t !== "2160");
-    });
-    expect(tier).toBe("1440");
-    expect(asked).toEqual(["2160", "1440"]);
-  });
-
-  it("falls back to the smallest size and never asks about it", async () => {
-    const asked: string[] = [];
-    const tier = await limitTier("2160", (t) => {
-      asked.push(t);
-      return Promise.resolve(false);
-    });
-    expect(tier).toBe("1080");
-    expect(asked).toEqual(["2160", "1440"]);
-    expect(await limitTier("1080", () => Promise.resolve(false))).toBe("1080");
-  });
-});
-
-describe("the size that suits a display", () => {
   it("matches the width of the picture in device pixels", () => {
     // The picture covers the screen: a 1920x1080 window at 1x needs about 2400 px of video.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 1 })).toBe("1440");
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2 })).toBe("2160");
-    expect(pickTier({ width: 1280, height: 720, dpr: 1 })).toBe("1080");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
+    expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
+    expect(pickTier({ width: 1280, height: 720, dpr: 1, ...full })).toBe("1080");
+    expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");
   });
 
-  it("stops at 1440 on touch devices, and goes smallest on low memory or data saving", () => {
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2, touch: true })).toBe("1440");
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2, touch: true, memory: 4 })).toBe("1080");
-    expect(pickTier({ width: 2560, height: 1440, dpr: 2, saveData: true })).toBe("1080");
-    expect(pickTier({ width: 2560, height: 1440, dpr: 2, memory: 2 })).toBe("1080");
+  it("gives 4K only to a device that decodes in hardware and has the cores and the memory", () => {
+    const retina = { width: 1920, height: 1080, dpr: 2 };
+    expect(pickTier({ ...retina, ...full })).toBe("2160");
+    expect(pickTier({ ...retina, ...full, hardware: false })).toBe("1440");
+    expect(pickTier({ ...retina, ...full, hardware: null })).toBe("1440");
+    expect(pickTier({ ...retina, ...full, cores: 4 })).toBe("1440");
+    expect(pickTier({ ...retina, ...full, memory: 4 })).toBe("1440");
+  });
+
+  it("follows the performance level", () => {
+    const retina = { width: 1920, height: 1080, dpr: 2, hardware: true, cores: 8, memory: 8 };
+    expect(pickTier({ ...retina, level: "balanced" })).toBe("1080");
+    expect(pickTier({ ...retina, level: "lite" })).toBe("lite");
+  });
+
+  it("stops at 1440 on touch devices, and at 1080 with little memory", () => {
+    const phone = { width: 1920, height: 1080, dpr: 2, touch: true, level: "full" as const };
+    expect(pickTier({ ...phone, hardware: true, cores: 8, memory: 8 })).toBe("1440");
+    expect(pickTier({ ...phone, memory: 4 })).toBe("1080");
+  });
+
+  it("is the smallest for data saving and for very little memory", () => {
+    const big = { width: 2560, height: 1440, dpr: 2, level: "full" as const };
+    expect(pickTier({ ...big, saveData: true })).toBe("lite");
+    expect(pickTier({ ...big, memory: 2 })).toBe("lite");
   });
 });

@@ -8,6 +8,7 @@ import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { TransitionProvider } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { useMediaQuery } from "@/lib/hooks";
+import { perfLevel } from "@/lib/perf";
 import { hydrateSiteStore, useSiteStore } from "@/lib/stores";
 
 /** Keeps <html> attributes and the audio engine in sync with the store and the OS. */
@@ -20,6 +21,11 @@ function PreferencesSync() {
 
   useEffect(() => {
     void hydrateSiteStore();
+  }, []);
+
+  // The performance level of this device (see lib/perf.ts) is decided now, and written on <html>.
+  useEffect(() => {
+    perfLevel();
   }, []);
 
   useEffect(() => {

@@ -11,6 +11,7 @@ import {
   useRef,
 } from "react";
 
+import { perfLevel } from "@/lib/perf";
 import { LogoLayers } from "@/components/logo/logo-art";
 import {
   cameraAt,
@@ -187,13 +188,14 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
       startIdle: () => {
         const s = state.current;
         s.stop?.();
-        if (partsRef.current) s.stop = idleLoop(partsRef.current);
+        // The loops move SVG attributes on every frame. Only a device that can spare it runs them.
+        if (partsRef.current && perfLevel() === "full") s.stop = idleLoop(partsRef.current);
       },
       startWaiting: (label) => {
         const s = state.current;
         s.stop?.();
         if (waitRef.current) waitRef.current.textContent = label;
-        if (partsRef.current) s.stop = waitingLoop(partsRef.current);
+        if (partsRef.current && perfLevel() === "full") s.stop = waitingLoop(partsRef.current);
         const root = rootRef.current;
         if (root) root.dataset.wait = "on";
       },

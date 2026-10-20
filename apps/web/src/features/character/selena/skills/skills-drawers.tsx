@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { perfLevel } from "@/lib/perf";
 import { PlayerOverlay } from "@/components/video-player/player-overlay";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
@@ -214,7 +215,8 @@ function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?
   const reduced = useReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(!reduced);
+  // The light level does not start it by itself (a second video to decode beside the picture).
+  const [playing, setPlaying] = useState(!reduced && perfLevel() !== "lite");
   const [inView, setInView] = useState(false);
   const [big, setBig] = useState(false);
   const meta = SKILL_CLIPS[clip];
@@ -451,13 +453,15 @@ function DemoBody({
 interface Props {
   present: boolean;
   shown: boolean;
+  /** Draw the content now, still off screen (see DrawerShell). */
+  warm?: boolean;
 }
 
 /**
  * The Skills page. The skills sit on the left, in two forms, each one opening to its numbers. The
  * clip that shows the chosen skill plays on the right. She stays visible between them.
  */
-export function SkillsDrawers({ present, shown }: Props) {
+export function SkillsDrawers({ present, shown, warm }: Props) {
   const [form, setForm] = useState<FormId>("elven");
   const [selected, setSelected] = useState("abyssal-trap");
   const [clipOverride, setClipOverride] = useState<ClipId | null>(null);
@@ -480,6 +484,7 @@ export function SkillsDrawers({ present, shown }: Props) {
     <DrawerShell
       present={present}
       shown={shown}
+      warm={warm}
       label="Selena's skills"
       left={{
         title: "Skills",

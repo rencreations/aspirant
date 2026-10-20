@@ -112,3 +112,10 @@
 .root[data-label="true"] .label {
   opacity: 1;
 }
+
+/* The soft light blends over everything under it. That costs a device that is short of speed the
+   whole picture on every frame, so only the full level has it. The ring stays. */
+:root[data-perf="balanced"] .disc,
+:root[data-perf="lite"] .disc {
+  display: none;
+}

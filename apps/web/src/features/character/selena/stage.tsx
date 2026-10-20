@@ -37,6 +37,8 @@ export interface StageApi {
   jumpToIdle: () => Promise<void>;
   /** The clock of the idle loop, so touch points can follow its picture. Null until it can play. */
   idleClock: () => { time: number; playing: boolean } | null;
+  /** Video frames dropped and shown so far by the picture on top (counters), for the governor. */
+  videoQuality: () => { dropped: number; total: number } | null;
 }
 
 interface Props {
@@ -75,6 +77,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
       leave: () => director.current?.leave(),
       jumpToIdle: () => director.current?.jumpToIdle() ?? Promise.resolve(),
       idleClock: () => director.current?.idleClock() ?? null,
+      videoQuality: () => director.current?.videoQuality() ?? null,
     }),
     [],
   );
@@ -85,7 +88,6 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
     >;
     if (VIDEO_KEYS.some((k) => !els[k])) return;
     window.clearTimeout(releaseTimer);
-    const tier = selenaTier();
     const d = new SelenaDirector(els as StageElements, {
       reduced,
       skipWelcome: !playWelcome,
@@ -101,8 +103,14 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
         el.dataset.layer = "off";
       },
       attach: (key, el) => {
-        if (el.dataset.attached) return;
-        el.dataset.attached = "1";
+        const tier = selenaTier();
+        if (el.dataset.attached === tier) return;
+        // What is on screen keeps its size. It gets the new one the next time it is attached, which
+        // is when it is out of sight (the performance level can step down while the page plays).
+        if (el.dataset.attached && (el.dataset.layer === "front" || el.dataset.layer === "back")) {
+          return;
+        }
+        el.dataset.attached = tier;
         // No video has sound, so every one is muted for good and the browser lets it autoplay.
         el.defaultMuted = true;
         el.muted = true;

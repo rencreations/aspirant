@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  startTransition,
   useEffect,
   useRef,
   useState,
@@ -34,9 +35,28 @@ interface Props {
   present: boolean;
   /** The drawers are open. */
   shown: boolean;
+  /**
+   * Draw the content now, still off screen. The first drawing of a drawer's text is a frame of
+   * work, so the page asks for it in the middle of the entrance, when the picture runs on the
+   * browser's compositor and the main thread is free, and not when the drawer slides in.
+   */
+  warm?: boolean;
   label: string;
   left: Side;
   right: Side;
+}
+
+/** The content of one side, built when `built` says so. */
+function Content({
+  side,
+  scroller,
+  built,
+}: {
+  side: Side;
+  scroller: RefObject<HTMLDivElement | null>;
+  built: boolean;
+}) {
+  return built ? side.render(scroller) : null;
 }
 
 function Drawer({
@@ -44,12 +64,15 @@ function Drawer({
   place,
   open,
   inert,
+  built,
   onToggle,
 }: {
   side: Side;
   place: "left" | "right";
   open: boolean;
   inert: boolean;
+  /** The content is built. Before that the drawer is an empty frame. */
+  built: boolean;
   onToggle: () => void;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
@@ -73,7 +96,7 @@ function Drawer({
         aria-label={side.region}
         inert={inert}
       >
-        {side.render(scroller)}
+        <Content side={side} scroller={scroller} built={built} />
       </div>
     </aside>
   );
@@ -84,12 +107,33 @@ function Drawer({
  * its own and has a tab that folds it away. On a narrow or tall screen they become one sheet at
  * the bottom with a tab for each. Used by the About and Skills pages.
  */
-export function DrawerShell({ present, shown, label, left, right }: Props) {
+export function DrawerShell({ present, shown, warm = false, label, left, right }: Props) {
   const [open, setOpen] = useState({ left: true, right: true });
   const [tab, setTab] = useState<"left" | "right">("left");
   // On a narrow screen the drawers are one sheet and cannot be folded.
   const narrow = useMediaQuery("(max-width: 56em), (max-aspect-ratio: 1/1)");
   const root = useRef<HTMLDivElement>(null);
+
+  // The two sides are built one after the other, so no single frame carries both (a drawer is
+  // hundreds of elements). A page that is opened builds whatever is missing at once.
+  const [built, setBuilt] = useState({ left: false, right: false });
+  useEffect(() => {
+    if (!present) return;
+    const first = window.setTimeout(() => {
+      startTransition(() => {
+        setBuilt((b) => ({ ...b, left: true }));
+      });
+    }, 0);
+    const second = window.setTimeout(() => {
+      startTransition(() => {
+        setBuilt((b) => ({ ...b, right: true }));
+      });
+    }, 350);
+    return () => {
+      window.clearTimeout(first);
+      window.clearTimeout(second);
+    };
+  }, [present]);
 
   // Away again: the next visit starts as the first did (both open, the first tab, at the top).
   // State is adjusted while rendering, the pattern React gives for state that follows a prop.
@@ -121,6 +165,7 @@ export function DrawerShell({ present, shown, label, left, right }: Props) {
       ref={root}
       className={styles.drawers}
       data-shown={shown}
+      data-warm={warm}
       data-tab={tab}
       data-theme="daybreak"
     >
@@ -147,6 +192,7 @@ export function DrawerShell({ present, shown, label, left, right }: Props) {
           place={key}
           open={open[key]}
           inert={!shown || (!open[key] && !narrow)}
+          built={built[key] || shown}
           onToggle={() => {
             setOpen((o) => ({ ...o, [key]: !o[key] }));
             audio.blip("click");

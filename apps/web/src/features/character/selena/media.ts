@@ -1,5 +1,6 @@
 import { autoQuality } from "@/components/video-player/player-math";
 import { loadMedia } from "@/lib/media-store";
+import { hasHardwareDecode, onPerfLevel, perfLevel, perfReady, type PerfLevel } from "@/lib/perf";
 import { mediaItem, type PreloadItem } from "@/lib/preload";
 
 import { SELENA_BYTES, SELENA_TIERS, type SelenaTier } from "./timeline.generated";
@@ -13,7 +14,10 @@ export const MENU_ICON = {
   gallery: "/img/selena/btn/gallery.webp",
 } as const;
 
-const TIER_IDS = Object.keys(SELENA_TIERS) as SelenaTier[];
+/** The tiers, smallest first. (Object keys that look like numbers come first, so sort by width.) */
+const TIER_IDS = (Object.keys(SELENA_TIERS) as SelenaTier[]).sort(
+  (a, b) => SELENA_TIERS[a].width - SELENA_TIERS[b].width,
+);
 
 /** The size of the source recordings, for the cover maths. */
 const SRC_W = 3840;
@@ -29,28 +33,50 @@ interface DisplayInfo {
   saveData?: boolean;
   /** GB of memory the device reports (Chrome only). */
   memory?: number;
+  /** Logical cores. */
+  cores?: number;
   /** A touch-first device: phones and tablets. */
   touch?: boolean;
+  /** The device decodes video in hardware. Null when it is not known (yet). */
+  hardware?: boolean | null;
+  /** The performance level of the device (see `lib/perf.ts`). Default `full`. */
+  level?: PerfLevel;
 }
 
 /**
- * The size of video worth loading for this display. The picture covers the screen, so the video
- * has to be as wide as it appears in device pixels. A tier is chosen when it reaches 82 percent
- * of that (a little softness is better than a download twice the size). Touch devices stop at
- * 1440, and low-memory or data-saving visitors get the smallest.
+ * The size of video for this display and this device. The picture covers the screen, so a video
+ * as wide as the picture appears in device pixels is as sharp as it can be, and a tier is taken
+ * when it reaches 82 percent of that (a little softness is better than a much bigger download).
+ * Then the device holds it back:
+ *
+ *  - the performance level: `lite` is the smallest tier (half the frame rate), `balanced` is at
+ *    most 1080;
+ *  - touch devices stop at 1440, and with little memory at 1080; data saving and very little
+ *    memory get the smallest;
+ *  - 4K is only for a device that decodes in hardware and has the cores and the memory for it.
+ *    Its stream is H.264 level 5.2 at 60 frames a second, and decoding it in software takes about
+ *    two cores.
  */
 export function pickTier(d: DisplayInfo): SelenaTier {
-  if (d.saveData || (d.memory !== undefined && d.memory <= 2)) return "1080";
+  if (d.level === "lite" || d.saveData || (d.memory !== undefined && d.memory <= 2)) {
+    return TIER_IDS[0]!;
+  }
   const cover = Math.max(d.width / SRC_W, d.height / SRC_H);
   const need = SRC_W * cover * d.dpr;
-  let tier =
-    TIER_IDS.find((id) => SELENA_TIERS[id].width >= need * 0.82) ?? TIER_IDS[TIER_IDS.length - 1]!;
-  if (d.touch && tier === "2160") tier = "1440";
-  if (d.touch && d.memory !== undefined && d.memory <= 4) tier = "1080";
+  const index = (id: SelenaTier) => TIER_IDS.indexOf(id);
+  let tier = TIER_IDS.find((id) => SELENA_TIERS[id].width >= need * 0.82) ?? TIER_IDS.at(-1)!;
+  const cap = (max: SelenaTier) => {
+    if (index(tier) > index(max)) tier = max;
+  };
+  if (d.touch) cap("1440");
+  if (d.touch && d.memory !== undefined && d.memory <= 4) cap("1080");
+  if (d.level === "balanced") cap("1080");
+  const fourK = d.hardware === true && (d.cores ?? 0) >= 8 && (d.memory ?? 8) >= 8;
+  if (!fourK) cap("1440");
   return tier;
 }
 
-/** Read the current display (browser only). */
+/** Read the current display and device (browser only). */
 function currentDisplay(): DisplayInfo {
   const nav = navigator as Navigator & {
     connection?: { saveData?: boolean };
@@ -62,79 +88,49 @@ function currentDisplay(): DisplayInfo {
     dpr: window.devicePixelRatio || 1,
     saveData: nav.connection?.saveData === true,
     memory: nav.deviceMemory,
+    cores: nav.hardwareConcurrency,
     touch: window.matchMedia("(pointer: coarse)").matches,
+    hardware: hasHardwareDecode(),
+    level: perfLevel(),
   };
 }
 
-/** Chosen once per visit, so the loading bar and the page agree on the size. */
+/**
+ * The size for this visit, so the loading bar and the page agree. It follows the performance
+ * level: when the device steps down, the next video that is attached is of the smaller size.
+ */
 let chosen: SelenaTier | null = null;
+let following = false;
 export function selenaTier(): SelenaTier {
+  if (!following && typeof window !== "undefined") {
+    following = true;
+    onPerfLevel(() => {
+      chosen = pickTier(currentDisplay());
+    });
+  }
   chosen ??= pickTier(currentDisplay());
   return chosen;
 }
 
 /**
- * The biggest size at or below `wanted` that `decodes` says plays smoothly. The picture is kept as
- * big as the device can show: only a size it cannot decode at 60 frames a second is left out, and
- * the next one down is used. The smallest is the last resort.
- */
-export async function limitTier(
-  wanted: SelenaTier,
-  decodes: (tier: SelenaTier) => Promise<boolean>,
-): Promise<SelenaTier> {
-  for (let i = TIER_IDS.indexOf(wanted); i > 0; i--) {
-    if (await decodes(TIER_IDS[i]!)) return TIER_IDS[i]!;
-  }
-  return TIER_IDS[0]!;
-}
-
-/** The H.264 profile and level each size is encoded at (High 4.2, High 5.1, High 5.2). */
-const TIER_CODEC: Record<SelenaTier, string> = {
-  "1080": 'video/mp4; codecs="avc1.64002a"',
-  "1440": 'video/mp4; codecs="avc1.640033"',
-  "2160": 'video/mp4; codecs="avc1.640034"',
-};
-
-/** Ask the browser whether a size plays smoothly on this device (no answer counts as yes). */
-async function browserDecodes(tier: SelenaTier): Promise<boolean> {
-  try {
-    const caps = navigator.mediaCapabilities;
-    if (!caps?.decodingInfo) return true;
-    const width = SELENA_TIERS[tier].width;
-    const info = await caps.decodingInfo({
-      type: "file",
-      video: {
-        contentType: TIER_CODEC[tier],
-        width,
-        height: Math.round(width * (SRC_H / SRC_W)),
-        bitrate: 10_000_000,
-        framerate: 60,
-      },
-    });
-    return info.supported && info.smooth;
-  } catch {
-    return true;
-  }
-}
-
-let ready: Promise<SelenaTier> | null = null;
-
-/**
- * Settles the size for this visit: the one that suits the display, held back to what the device
- * can decode smoothly. Everything that loads or plays the videos waits for it, so they all use
- * the same size.
+ * Resolves with the size for this visit once the device has been asked (whether it decodes in
+ * hardware). Everything that loads or plays the videos waits for it, so they use the same size.
  */
 function selenaTierReady(): Promise<SelenaTier> {
-  ready ??= limitTier(selenaTier(), browserDecodes).then((tier) => {
-    chosen = tier;
-    return tier;
+  return perfReady().then(() => {
+    chosen = pickTier(currentDisplay());
+    return chosen;
   });
-  return ready;
 }
 
 export const selenaPath = (tier: SelenaTier, file: string) => `${SELENA_DIR}/${tier}/${file}`;
 
-const TIER_NAME: Record<SelenaTier, string> = { "1080": "HD", "1440": "QHD", "2160": "4K" };
+const TIER_NAME: Record<SelenaTier, string> = {
+  lite: "light",
+  "1080": "HD",
+  "1440": "QHD",
+  "2160": "4K",
+};
 
 /** Every video of the page in the chosen size, for the loading bar (weighted by bytes). */
 export function selenaItems(): PreloadItem[] {

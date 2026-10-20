@@ -148,7 +148,8 @@ test("a touch point plays its short at once and the main panel comes back, with 
 }) => {
   await open(page);
   const spot = page.getByRole("button", { name: SPOT_NAMES[0]! });
-  await spot.click();
+  // The circle follows the picture, so it is never still.
+  await spot.click({ force: true });
   // There is no second view: no Back button, and the panel is back when the short is over.
   await expect(page.getByRole("button", { name: "Back", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
@@ -525,6 +526,33 @@ for (const name of ["about", "skills", "gallery"] as const) {
     expect(errors).toEqual([]);
   });
 }
+
+test("moving the pointer never rewrites the style of <html> (that restyles the whole page)", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "desktop", "Phones and tablets have no pointer");
+  await open(page);
+  // The cursor marks <html> for its own CSS. The mark must not look like one of the elements the
+  // cursor lights up (`data-lantern`), or the cursor writes its light position onto <html>.
+  expect(await page.evaluate(() => document.documentElement.hasAttribute("data-lantern"))).toBe(
+    false,
+  );
+  await page.evaluate(() => {
+    const w = window as unknown as { __rootStyleWrites: number };
+    w.__rootStyleWrites = 0;
+    new MutationObserver((records) => {
+      w.__rootStyleWrites += records.length;
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
+  });
+  for (let i = 0; i < 40; i++) {
+    await page.mouse.move(120 + i * 25, 180 + (i % 6) * 60, { steps: 3 });
+  }
+  await page.waitForTimeout(400);
+  const writes = await page.evaluate(
+    () => (window as unknown as { __rootStyleWrites: number }).__rootStyleWrites,
+  );
+  expect(writes).toBe(0);
+});
 
 test("fits the screen without sideways scrolling", async ({ page }) => {
   await open(page);

@@ -9,14 +9,18 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import { VideoCard } from "@/components/video-player/video-card";
 import { audio } from "@/lib/audio";
 import { useHotkey } from "@/lib/hooks";
+import { getCharacter } from "@/content/characters";
 import { startMusic, type Track } from "@/lib/now-playing";
 import { expectReady } from "@/lib/page-ready";
+import { onPerfLevel, startGovernor } from "@/lib/perf";
 import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
 import type { PageName, SceneName, ShortName, StageState } from "./director";
+import { warmGlyphs } from "./glyph-warm";
 import { Hotspots, SPOTS } from "./hotspots";
-import { loadCore, MENU_ICON, TRAILER } from "./media";
+import { loadCore, MENU_ICON, selenaItems, TRAILER } from "./media";
+import { SELENA_PAGES } from "./timeline.generated";
 import { MenuButton } from "./menu-button";
 import styles from "./selena.module.css";
 import { ScreenCover, type CoverApi } from "./screen-cover";
@@ -185,6 +189,67 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // The nav picks its colours from what is under it. Once the page is up (after the boot screen
   // the first sample is stale) ask it to look again.
   useSelenaUrl({ state, stage, initial });
+
+  // The drawer of the page that is opening is drawn (off screen) in the middle of the entrance,
+  // not when it slides in. See DrawerShell `warm`.
+  const [warmed, setWarmed] = useState<PageName | null>(null);
+  useEffect(() => {
+    if (state.mode === "intro" && state.scene && state.scene in SELENA_PAGES) {
+      const page = state.scene as PageName;
+      const timer = window.setTimeout(() => {
+        setWarmed(page);
+      }, 1200);
+      return () => {
+        window.clearTimeout(timer);
+      };
+    }
+    if (state.mode === "idle") {
+      const timer = window.setTimeout(() => {
+        setWarmed(null);
+      }, 0);
+      return () => {
+        window.clearTimeout(timer);
+      };
+    }
+    return undefined;
+  }, [state.mode, state.scene]);
+
+  // The performance level (lib/perf.ts) steps down when the frame rate stays low while she plays
+  // (idle or on a page: the transitions between are judged by nothing). When it steps down, the
+  // videos of the smaller size are loaded in the background and used from the next video on.
+  const steady = useRef(false);
+  useEffect(() => {
+    steady.current = state.mode === "idle" || state.mode === "page";
+  }, [state.mode]);
+  useEffect(() => {
+    if (!tierReady) return;
+    const stop = startGovernor({
+      video: () => stage.current?.videoQuality() ?? null,
+      paused: () => !steady.current,
+    });
+    const off = onPerfLevel(() => {
+      void runPreload(selenaItems());
+    });
+    return () => {
+      stop();
+      off();
+    };
+  }, [tierReady]);
+
+  // The characters the drawers show that the fonts lack (the Japanese titles of her voice lines)
+  // are laid out a few at a time while she idles, so opening a drawer does not pay for it.
+  useEffect(() => {
+    if (state.mode !== "idle") return;
+    let stop = () => undefined as void;
+    const timer = window.setTimeout(() => {
+      const lines = getCharacter("selena").voice;
+      stop = warmGlyphs(lines.flatMap((l) => [l.jpTitle, l.en]));
+    }, 600);
+    return () => {
+      window.clearTimeout(timer);
+      stop();
+    };
+  }, [state.mode]);
 
   // The loading screen has loaded all of the rest. Coming back by the browser's Back button, or
   // after the page was left, skips that screen: top it up from the saved copies. It waits until
@@ -414,10 +479,12 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         <AboutDrawers
           present={drawersBuilt >= 1 || (pageOpen && scene === "about") || chosen === "about"}
           shown={mode === "page" && scene === "about"}
+          warm={warmed === "about"}
         />
         <SkillsDrawers
           present={drawersBuilt >= 2 || (pageOpen && scene === "skills") || chosen === "skills"}
           shown={mode === "page" && scene === "skills"}
+          warm={warmed === "skills"}
         />
 
         <ScreenCover ref={cover} />

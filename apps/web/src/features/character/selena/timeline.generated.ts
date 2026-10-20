@@ -6,20 +6,43 @@ export const SELENA_EXTRA_FRAMES = 3;
 
 /** The sizes the videos exist in, smallest first. `width` is the video width in pixels. */
 export const SELENA_TIERS = {
+  lite: {
+    width: 1280,
+    fps: 30,
+  },
   "1080": {
     width: 1920,
+    fps: 60,
   },
   "1440": {
     width: 2560,
+    fps: 60,
   },
   "2160": {
     width: 3840,
+    fps: 60,
   },
 } as const;
 export type SelenaTier = keyof typeof SELENA_TIERS;
 
 /** Size in bytes of every file in every tier, for the loading bar. */
 export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
+  lite: {
+    "welcome.mp4": 6672043,
+    "idle.mp4": 2584352,
+    "about-in.mp4": 1689775,
+    "about-loop.mp4": 860779,
+    "about-out.mp4": 3082982,
+    "skills-in.mp4": 2484018,
+    "skills-loop.mp4": 2308739,
+    "skills-out.mp4": 2924939,
+    "gallery-in.mp4": 3510103,
+    "gallery-loop.mp4": 2564381,
+    "gallery-out.mp4": 3196640,
+    "short-1.mp4": 3853909,
+    "short-2.mp4": 3608585,
+    "short-3.mp4": 3387184,
+  },
   "1080": {
     "welcome.mp4": 12866454,
     "idle.mp4": 4719775,

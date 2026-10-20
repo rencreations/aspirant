@@ -341,6 +341,13 @@ export class SelenaDirector {
     return { time: idle.currentTime, playing: !idle.paused && !idle.ended };
   }
 
+  /** Frames the video on top has dropped and shown (counters that only grow), or null. */
+  videoQuality(): { dropped: number; total: number } | null {
+    const top = this.topVideo();
+    const q = top?.getVideoPlaybackQuality?.();
+    return q ? { dropped: q.droppedVideoFrames, total: q.totalVideoFrames } : null;
+  }
+
   /**
    * Get a scene's first video ready (the pointer is on its button). Only the entrance is warmed:
    * the rest of a page is attached when the entrance plays, and the one warmed before is let go,

@@ -611,6 +611,28 @@
   }
 }
 
+/* A device that is short of speed: no bobbing at rest, and a press without the jump and the
+   stomp (they are many animated layers). The sheet still shows how long the wait is. */
+:root[data-perf="balanced"] .icon img,
+:root[data-perf="lite"] .icon img {
+  animation: none;
+}
+
+:root[data-perf="lite"] .leap,
+:root[data-perf="lite"] .hop,
+:root[data-perf="lite"] .pulse,
+:root[data-perf="lite"] .dust,
+:root[data-perf="lite"] .dust::before,
+:root[data-perf="lite"] .dust::after,
+:root[data-perf="lite"] .sheet::before {
+  animation: none;
+}
+
+:root[data-perf="lite"] .pulse,
+:root[data-perf="lite"] .dust {
+  display: none;
+}
+
 /* Reduced motion: no jump, stomp, hop or wobble. The sheet still shows how long the wait is. */
 @media (prefers-reduced-motion: reduce) {
   .button,

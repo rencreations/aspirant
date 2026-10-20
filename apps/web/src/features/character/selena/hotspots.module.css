@@ -313,6 +313,24 @@
   }
 }
 
+/* Fewer effects on a device that is short of speed: the circles keep their place, hover and press. */
+:root[data-perf="balanced"] .float,
+:root[data-perf="lite"] .float,
+:root[data-perf="balanced"] .halo,
+:root[data-perf="lite"] .halo {
+  animation: none;
+}
+
+:root[data-perf="balanced"] .halo,
+:root[data-perf="lite"] .halo {
+  display: none;
+}
+
+:root[data-perf="lite"] .ring {
+  animation: none;
+  opacity: 0.85;
+}
+
 @media (pointer: coarse) {
   .layer.layer {
     --spot: 4.5rem;

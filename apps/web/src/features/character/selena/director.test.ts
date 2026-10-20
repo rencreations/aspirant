@@ -513,6 +513,24 @@ describe("failure and reduced motion", () => {
     expect(ctx.els["skills-in"].dataset.layer).toBe("front");
   });
 
+  it("works when the video shows every other frame, as the light size (30 fps) does", async () => {
+    const ctx = setup();
+    await toIdle(ctx);
+    ctx.director.request("gallery");
+    const trigger = SELENA_PAGES.gallery.in.startPhases[0] - LEAD_FRAMES;
+    // The loop is seen at every second frame, and the trigger frame is one that is skipped.
+    ctx.els.idle.tick(f(trigger - 1));
+    ctx.els.idle.tick(f(trigger + 1));
+    await settle();
+    expect(ctx.director.current).toMatchObject({ mode: "intro", scene: "gallery" });
+    // The entrance ends: the hand-over to the page loop comes from the last frames seen.
+    const intro = ctx.els["gallery-in"];
+    intro.tick(intro.duration - 2 * EARLY);
+    intro.tick(intro.duration - EARLY + 1 / SELENA_FPS);
+    await settle();
+    expect(ctx.director.current.mode).toBe("page");
+  });
+
   it("holds only one warmed entrance at a time", async () => {
     const ctx = setup();
     await toIdle(ctx);
