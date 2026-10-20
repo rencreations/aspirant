@@ -53,7 +53,6 @@ TIERS = {
     "lite": dict(w=1280, h=576, crf=26, preset="slow", fps=30),
     "1080": dict(w=1920, h=864, crf=28, preset="slow"),
     "1440": dict(w=2560, h=1152, crf=29, preset="medium"),
-    "2160": dict(w=3840, h=1728, crf=31, preset="medium"),
 }
 
 # key -> (source, a0, L0, loop frames, out start, idle start phases, dissolve into the page in ms)

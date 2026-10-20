@@ -197,11 +197,6 @@ export function perfReady(): Promise<void> {
   return probePromise ?? Promise.resolve();
 }
 
-/** Is hardware decoding known, and true? (`null` until the browser has answered.) */
-export function hasHardwareDecode(): boolean | null {
-  return hardwareDecode;
-}
-
 /** Be told when the level changes. Returns a function that stops it. */
 export function onPerfLevel(fn: Listener): () => void {
   listeners.add(fn);

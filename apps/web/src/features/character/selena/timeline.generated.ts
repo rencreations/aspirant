@@ -18,10 +18,6 @@ export const SELENA_TIERS = {
     width: 2560,
     fps: 60,
   },
-  "2160": {
-    width: 3840,
-    fps: 60,
-  },
 } as const;
 export type SelenaTier = keyof typeof SELENA_TIERS;
 
@@ -74,22 +70,6 @@ export const SELENA_BYTES: Record<SelenaTier, Record<string, number>> = {
     "short-1.mp4": 9831638,
     "short-2.mp4": 8998189,
     "short-3.mp4": 9198531,
-  },
-  "2160": {
-    "welcome.mp4": 29619949,
-    "idle.mp4": 9361156,
-    "about-in.mp4": 6255229,
-    "about-loop.mp4": 3171546,
-    "about-out.mp4": 12269782,
-    "skills-in.mp4": 9229788,
-    "skills-loop.mp4": 8329613,
-    "skills-out.mp4": 10717493,
-    "gallery-in.mp4": 12834653,
-    "gallery-loop.mp4": 9332511,
-    "gallery-out.mp4": 11490022,
-    "short-1.mp4": 15227341,
-    "short-2.mp4": 13739166,
-    "short-3.mp4": 14711251,
   },
 };
 

@@ -1,6 +1,6 @@
 import { autoQuality } from "@/components/video-player/player-math";
 import { loadMedia } from "@/lib/media-store";
-import { hasHardwareDecode, onPerfLevel, perfLevel, perfReady, type PerfLevel } from "@/lib/perf";
+import { onPerfLevel, perfLevel, perfReady, type PerfLevel } from "@/lib/perf";
 import { mediaItem, type PreloadItem } from "@/lib/preload";
 
 import { SELENA_BYTES, SELENA_TIERS, type SelenaTier } from "./timeline.generated";
@@ -35,12 +35,8 @@ interface DisplayInfo {
   saveData?: boolean;
   /** GB of memory the device reports (Chrome only). */
   memory?: number;
-  /** Logical cores. */
-  cores?: number;
   /** A touch-first device: phones and tablets. */
   touch?: boolean;
-  /** The device decodes video in hardware. Null when it is not known (yet). */
-  hardware?: boolean | null;
   /** The performance level of the device (see `lib/perf.ts`). Default `full`. */
   level?: PerfLevel;
 }
@@ -55,9 +51,6 @@ interface DisplayInfo {
  *    most 1080;
  *  - touch devices stop at 1440, and with little memory at 1080; data saving and very little
  *    memory get the smallest;
- *  - 4K is only for a device that decodes in hardware and has the cores and the memory for it.
- *    Its stream is H.264 level 5.2 at 60 frames a second, and decoding it in software takes about
- *    two cores.
  */
 export function pickTier(d: DisplayInfo): SelenaTier {
   if (d.level === "lite" || d.saveData || (d.memory !== undefined && d.memory <= 2)) {
@@ -73,8 +66,6 @@ export function pickTier(d: DisplayInfo): SelenaTier {
   if (d.touch) cap("1440");
   if (d.touch && d.memory !== undefined && d.memory <= 4) cap("1080");
   if (d.level === "balanced") cap("1080");
-  const fourK = d.hardware === true && (d.cores ?? 0) >= 8 && (d.memory ?? 8) >= 8;
-  if (!fourK) cap("1440");
   return tier;
 }
 
@@ -90,9 +81,7 @@ function currentDisplay(): DisplayInfo {
     dpr: window.devicePixelRatio || 1,
     saveData: nav.connection?.saveData === true,
     memory: nav.deviceMemory,
-    cores: nav.hardwareConcurrency,
     touch: window.matchMedia("(pointer: coarse)").matches,
-    hardware: hasHardwareDecode(),
     level: perfLevel(),
   };
 }
@@ -131,7 +120,6 @@ const TIER_NAME: Record<SelenaTier, string> = {
   lite: "light",
   "1080": "HD",
   "1440": "QHD",
-  "2160": "4K",
 };
 
 /** Every video of the page in the chosen size, for the loading bar (weighted by bytes). */

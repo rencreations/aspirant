@@ -37,34 +37,27 @@ describe("what her page loads", () => {
 });
 
 describe("the size of video for a display and a device", () => {
-  const full = { level: "full" as const, hardware: true, cores: 8, memory: 8 };
+  const full = { level: "full" as const, memory: 8 };
 
   it("matches the width of the picture in device pixels", () => {
     // The picture covers the screen: a 1920x1080 window at 1x needs about 2400 px of video.
     expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
+    // No size is bigger than 1440: a sharp screen gets the same.
+    expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("1440");
     expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
     expect(pickTier({ width: 1280, height: 720, dpr: 1, ...full })).toBe("1080");
     expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");
   });
 
-  it("gives 4K only to a device that decodes in hardware and has the cores and the memory", () => {
-    const retina = { width: 1920, height: 1080, dpr: 2 };
-    expect(pickTier({ ...retina, ...full })).toBe("2160");
-    expect(pickTier({ ...retina, ...full, hardware: false })).toBe("1440");
-    expect(pickTier({ ...retina, ...full, hardware: null })).toBe("1440");
-    expect(pickTier({ ...retina, ...full, cores: 4 })).toBe("1440");
-    expect(pickTier({ ...retina, ...full, memory: 4 })).toBe("1440");
-  });
-
   it("follows the performance level", () => {
-    const retina = { width: 1920, height: 1080, dpr: 2, hardware: true, cores: 8, memory: 8 };
+    const retina = { width: 1920, height: 1080, dpr: 2, memory: 8 };
     expect(pickTier({ ...retina, level: "balanced" })).toBe("1080");
     expect(pickTier({ ...retina, level: "lite" })).toBe("lite");
   });
 
   it("stops at 1440 on touch devices, and at 1080 with little memory", () => {
     const phone = { width: 1920, height: 1080, dpr: 2, touch: true, level: "full" as const };
-    expect(pickTier({ ...phone, hardware: true, cores: 8, memory: 8 })).toBe("1440");
+    expect(pickTier({ ...phone, memory: 8 })).toBe("1440");
     expect(pickTier({ ...phone, memory: 4 })).toBe("1080");
   });
 
