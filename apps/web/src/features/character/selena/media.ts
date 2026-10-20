@@ -141,7 +141,10 @@ export function selenaItems(): PreloadItem[] {
   // The weights follow the size that suits the display. The files loaded are those of the size
   // the device can decode (`selenaTierReady`), which is the same unless the device is slower.
   const tier = selenaTier();
-  return Object.entries(SELENA_BYTES[tier]).map(([file, size]) => ({
+  // The videos the stage starts with come first, so they arrive first.
+  const first = (file: string) => (file === "idle.mp4" ? 0 : file === "welcome.mp4" ? 1 : 2);
+  const files = Object.entries(SELENA_BYTES[tier]).sort((a, b) => first(a[0]) - first(b[0]));
+  return files.map(([file, size]) => ({
     id: `media:selena:${file}`,
     label:
       file === "welcome.mp4"

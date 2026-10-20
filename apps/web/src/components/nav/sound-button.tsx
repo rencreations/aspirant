@@ -17,6 +17,8 @@ const VIEW_W = BARS * BAR_W + (BARS - 1) * GAP;
 const VIEW_H = 20;
 const MAX_H = 16;
 /** Per-bar weight, so the wave has a body: calm at the edges, tall in the middle. */
+const WAVE_W = VIEW_W * 1.15;
+const WAVE_H = VIEW_H * 1.15;
 const SHAPE = [0.45, 0.7, 0.92, 1, 0.92, 0.7, 0.45];
 
 interface Sim {
@@ -42,20 +44,45 @@ export function SoundButton({ className }: { className?: string }) {
   const reduced = useReducedMotion();
   const on = mounted && !muted;
 
-  const barsRef = useRef<Array<SVGRectElement | null>>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  /** The bars' colour (the button's text colour), read now and then, never every frame. */
+  const ink = useRef({ colour: "#fff", at: 0 });
   const ringRef = useRef<HTMLSpanElement>(null);
   const sim = useRef<Sim>({ amp: 0, kick: 0, speed: 1, phase: 0 });
   const hover = useRef(false);
 
+  /**
+   * The bars are drawn on a canvas. Moving SVG attributes every frame restyles the page on every
+   * frame the sound is on, and this button is on every page.
+   */
   const draw = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    // Sharp on a dense screen (capped at 2: the bars are tiny). Sized here, not in the markup, so
+    // the server and the browser render the same markup.
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = Math.round(WAVE_W * dpr);
+    if (canvas.width !== w) {
+      canvas.width = w;
+      canvas.height = Math.round(WAVE_H * dpr);
+    }
+    const now = performance.now();
+    if (now - ink.current.at > 120) {
+      ink.current = { colour: getComputedStyle(canvas).color, at: now };
+    }
+    const k = canvas.width / VIEW_W;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = ink.current.colour;
     const s = sim.current;
     for (let i = 0; i < BARS; i++) {
-      const el = barsRef.current[i];
-      if (!el) continue;
       const wave = 0.5 + 0.5 * Math.sin(s.phase * 4.2 + i * 0.95);
       const h = BAR_W + (MAX_H - BAR_W) * Math.min(1, s.amp * (0.18 + 0.82 * wave) * SHAPE[i]!);
-      el.setAttribute("height", h.toFixed(2));
-      el.setAttribute("y", ((VIEW_H - h) / 2).toFixed(2));
+      const x = i * (BAR_W + GAP) * k;
+      const y = ((VIEW_H - h) / 2) * k;
+      ctx.beginPath();
+      ctx.roundRect(x, y, BAR_W * k, h * k, (BAR_W / 2) * k);
+      ctx.fill();
     }
   };
 
@@ -145,29 +172,14 @@ export function SoundButton({ className }: { className?: string }) {
       }}
     >
       <span ref={ringRef} className={styles.ring} aria-hidden="true" />
-      <svg
+      <canvas
+        ref={canvasRef}
         className={styles.wave}
-        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-        width={VIEW_W * 1.15}
-        height={VIEW_H * 1.15}
+        width={WAVE_W}
+        height={WAVE_H}
+        style={{ width: WAVE_W, height: WAVE_H }}
         aria-hidden="true"
-        focusable="false"
-      >
-        {Array.from({ length: BARS }, (_, i) => (
-          <rect
-            key={i}
-            ref={(el) => {
-              barsRef.current[i] = el;
-            }}
-            x={i * (BAR_W + GAP)}
-            y={(VIEW_H - BAR_W) / 2}
-            width={BAR_W}
-            height={BAR_W}
-            rx={BAR_W / 2}
-            fill="currentColor"
-          />
-        ))}
-      </svg>
+      />
       <span className={styles.state} aria-hidden="true">
         <span className={styles.stateOn}>On</span>
         <span className={styles.stateOff}>Off</span>

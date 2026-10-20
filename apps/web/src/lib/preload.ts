@@ -41,6 +41,8 @@ export interface PreloadProgress {
 }
 
 const ITEM_TIMEOUT_MS = 12_000;
+/** The loading bar is told at most this often. */
+const PROGRESS_EVERY_MS = 100;
 
 interface Started {
   promise: Promise<void>;
@@ -187,7 +189,7 @@ export async function runPreload(
   const pending = new Map(unique.map((i) => [i.id, i]));
   const fractions = new Map<string, number>();
 
-  const emit = () => {
+  const flush = () => {
     const rest = Array.from(pending.values());
     let done = 0;
     for (const i of unique) {
@@ -204,7 +206,17 @@ export async function runPreload(
       pending: rest.map((i) => i.label),
     });
   };
-  emit();
+  // Progress arrives with every chunk of every download, thousands of times a second. The bar
+  // needs about ten updates a second: more only costs the loading screen its smoothness.
+  let timer = 0;
+  const emit = () => {
+    if (timer) return;
+    timer = window.setTimeout(() => {
+      timer = 0;
+      flush();
+    }, PROGRESS_EVERY_MS);
+  };
+  flush();
 
   await Promise.all(
     unique.map((item) => {
@@ -221,4 +233,7 @@ export async function runPreload(
       });
     }),
   );
+  window.clearTimeout(timer);
+  timer = 0;
+  flush();
 }

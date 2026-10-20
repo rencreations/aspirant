@@ -19,12 +19,20 @@
   text-align: left;
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
-  filter: drop-shadow(0 6px 14px rgb(10 8 40 / 0.35));
   transition:
     transform 520ms var(--ease-spring),
     color 280ms var(--ease-out),
-    opacity 300ms var(--ease-out),
-    filter 300ms var(--ease-out);
+    opacity 300ms var(--ease-out);
+}
+
+/* The shadow under the plate. It is a box-shadow on its own element, drawn once. A `filter` on the
+   button would be redrawn on every frame of the press, which animates inside it. */
+.shade {
+  position: absolute;
+  inset: 3px 2px 0;
+  z-index: -2;
+  box-shadow: 0 6px 14px rgb(10 8 40 / 0.32);
+  pointer-events: none;
 }
 
 /* The edge (violet) and the face (the plate) are two copies of the same chamfered shape. */
@@ -78,7 +86,6 @@
   user-select: none;
   pointer-events: none;
   transform-origin: 50% 88%;
-  filter: drop-shadow(0 3px 3px rgb(10 8 40 / 0.4));
 }
 
 .icon img {
@@ -200,6 +207,7 @@
   --lead: calc(var(--jump) + var(--stomp));
   --hit: calc(var(--jump) + var(--stomp) * 0.72);
   --travel: max(260ms, calc(var(--wait) - var(--lead)));
+  --run: calc(var(--bw, 14rem) - var(--x0) - 1.6rem);
   transform: translateX(-12px);
   color: #fff;
   --plate: linear-gradient(112deg, #3a2a9c 0%, var(--violet-deep) 70%);
@@ -236,14 +244,13 @@
 
 .sheet {
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0;
+  inset: 0;
   overflow: hidden;
   background: linear-gradient(100deg, #b81f42 0%, var(--crystal) 60%, #e8456a 100%);
   border-right: 3px solid #fff;
   box-shadow: inset -3px 0 0 var(--gold);
+  /* Starts with its front edge under her picture, and slides in as she runs. */
+  translate: calc(-100% + var(--x0) - 0.2rem) 0;
   animation: grow var(--travel) linear var(--lead) forwards;
 }
 
@@ -267,7 +274,7 @@
 
 .loading {
   position: absolute;
-  left: 4.9rem;
+  right: 1.6rem;
   top: 50%;
   translate: 0 -50%;
   color: #fff;
@@ -415,7 +422,7 @@
   }
 
   .loading {
-    left: 3.6rem;
+    right: 1rem;
     font-size: 0.82rem;
   }
 
@@ -572,19 +579,16 @@
 
 @keyframes run {
   from {
-    left: var(--x0);
+    translate: 0 0;
   }
   to {
-    left: calc(100% - 1.6rem);
+    translate: var(--run) 0;
   }
 }
 
 @keyframes grow {
-  from {
-    width: calc(var(--x0) - 0.2rem);
-  }
   to {
-    width: 100%;
+    translate: 0 0;
   }
 }
 

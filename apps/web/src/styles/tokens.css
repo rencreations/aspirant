@@ -123,10 +123,6 @@
   --z-cursor: 95;
   --z-gate: 100;
   --z-skip: 110;
-
-  /* Lantern position, written by <LanternCursor> (viewport px) */
-  --lx: 50vw;
-  --ly: 50vh;
 }
 
 @media (min-width: 56.3125em) {

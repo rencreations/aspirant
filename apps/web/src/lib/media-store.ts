@@ -29,6 +29,31 @@ interface LoadOptions {
   onFraction?: (fraction: number) => void;
 }
 
+/** A download reports its progress at most this often. */
+const REPORT_EVERY_MS = 100;
+
+/**
+ * At most a few big downloads run at once, in the order they were asked for. The loading screen
+ * asks for the videos the stage starts with first, so they arrive first, and the network, the
+ * memory and the main thread are not shared among dozens of streams.
+ */
+const gate = (() => {
+  const LIMIT = 4;
+  let active = 0;
+  const queue: Array<() => void> = [];
+  return {
+    async enter(): Promise<() => void> {
+      if (active >= LIMIT) await new Promise<void>((resolve) => queue.push(resolve));
+      else active += 1;
+      return () => {
+        const next = queue.shift();
+        if (next) next();
+        else active -= 1;
+      };
+    },
+  };
+})();
+
 let cachePromise: Promise<Cache | null> | null = null;
 
 /** The saved store, or null when the browser has none. Older versions are removed. */
@@ -110,22 +135,35 @@ async function download(path: string, options: LoadOptions): Promise<string> {
       const type = options.type ?? blob.type;
       return URL.createObjectURL(blob.slice(0, blob.size, type));
     }
-    const res = await fetch(fallback);
-    if (!res.ok || !res.body) return fallback;
-    const header = Number(res.headers.get("content-length"));
-    const total = header > 0 ? header : (options.expectedBytes ?? 0);
-    const reader = res.body.getReader();
-    const chunks: BlobPart[] = [];
-    let received = 0;
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-      received += value.byteLength;
-      if (total > 0) options.onFraction?.(Math.min(0.999, received / total));
+    const release = await gate.enter();
+    let blob: Blob;
+    let type: string;
+    try {
+      const res = await fetch(fallback);
+      if (!res.ok || !res.body) return fallback;
+      const header = Number(res.headers.get("content-length"));
+      const total = header > 0 ? header : (options.expectedBytes ?? 0);
+      type = options.type ?? res.headers.get("content-type") ?? "video/mp4";
+      // The bytes are only counted here. The browser builds the Blob itself, which is much
+      // cheaper than collecting thousands of chunks in script and copying them once more.
+      let received = 0;
+      let lastReport = 0;
+      const counter = new TransformStream<Uint8Array, Uint8Array>({
+        transform(chunk, controller) {
+          received += chunk.byteLength;
+          const now = performance.now();
+          if (total > 0 && now - lastReport > REPORT_EVERY_MS) {
+            lastReport = now;
+            options.onFraction?.(Math.min(0.999, received / total));
+          }
+          controller.enqueue(chunk);
+        },
+      });
+      const body = await new Response(res.body.pipeThrough(counter)).blob();
+      blob = body.slice(0, body.size, type);
+    } finally {
+      release();
     }
-    const type = options.type ?? res.headers.get("content-type") ?? "video/mp4";
-    const blob = new Blob(chunks, { type });
     // The file counts as loaded when it is saved too.
     if (!options.expectedBytes || blob.size === options.expectedBytes) {
       await save(cache, fallback, blob, type);

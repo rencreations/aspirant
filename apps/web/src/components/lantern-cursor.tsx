@@ -18,8 +18,8 @@ const INTERACTIVE =
  * the element moves. `data-state` on the root says what the cursor is doing: idle, hover, snap
  * or pressed. The native cursor stays visible. Off for touch-first devices and reduced motion.
  *
- * It also publishes the light position: --lx/--ly (viewport px) on <html>, and --mx/--my
- * (local px) on every in-view element with `data-lantern`, for `lantern-mask` reveals.
+ * It also publishes the light position as --mx/--my (local px) on every in-view element
+ * with `data-lantern`, for `lantern-mask` reveals. Nothing is written to <html> per frame.
  * Mounted once in the root layout.
  */
 export function LanternCursor() {
@@ -43,7 +43,7 @@ function Lantern() {
     const label = labelRef.current;
     if (!root || !disc || !ring || !label) return;
     const html = document.documentElement;
-    html.dataset.lantern = "on";
+    html.dataset.lanternOn = "on";
 
     let tx = window.innerWidth / 2;
     let ty = window.innerHeight / 2;
@@ -103,11 +103,17 @@ function Lantern() {
       const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
       last = now;
       if (snapEl && (!snapEl.isConnected || snapEl.matches(":disabled"))) release();
+
+      // Every layout read comes first and every style write after, so the browser lays the page
+      // out at most once per frame. Reading a rect after a write forces a layout.
       if (snapEl) {
         const r = snapEl.getBoundingClientRect();
         sx = r.left + r.width / 2;
         sy = r.top + r.height / 2;
       }
+      let count = 0;
+      for (const el of lanterns) rects[count++] = el.getBoundingClientRect();
+
       const gx = snapEl ? sx : tx;
       const gy = snapEl ? sy : ty;
       dx = damp(dx, tx, 32, dt);
@@ -119,13 +125,11 @@ function Lantern() {
       disc.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
       ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${scale})`;
       label.style.transform = `translate3d(${rx + 18 * scale + 6}px, ${ry + 14 * scale}px, 0)`;
-      html.style.setProperty("--lx", `${dx.toFixed(1)}px`);
-      html.style.setProperty("--ly", `${dy.toFixed(1)}px`);
 
-      // Read every rect first, then write, so the browser lays out once.
+      // The light position goes only to the elements that use it (`--mx`/`--my`). It is never
+      // written to <html>: a custom property on the root is inherited by every element, so each
+      // write restyles the whole document, every frame the pointer moves.
       let i = 0;
-      for (const el of lanterns) rects[i++] = el.getBoundingClientRect();
-      i = 0;
       for (const el of lanterns) {
         const r = rects[i++];
         if (!r) continue;
@@ -245,9 +249,7 @@ function Lantern() {
       window.removeEventListener("pointerup", onUp);
       document.removeEventListener("mouseout", onLeave);
       window.removeEventListener("blur", onBlur);
-      delete html.dataset.lantern;
-      html.style.removeProperty("--lx");
-      html.style.removeProperty("--ly");
+      delete html.dataset.lanternOn;
     };
   }, []);
 

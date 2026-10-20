@@ -73,7 +73,7 @@ describe("runPreload byte progress", () => {
       ],
       (p) => seen.push(p.progress),
     );
-    await new Promise((r) => setTimeout(r, 5));
+    await new Promise((r) => setTimeout(r, 150));
     expect(seen.some((v) => Math.abs(v - 0.75) < 1e-9)).toBe(true);
     release();
     await done;

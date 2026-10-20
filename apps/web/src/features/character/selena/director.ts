@@ -331,10 +331,14 @@ export class SelenaDirector {
     return true;
   }
 
-  /** The time of the idle loop while it can be read, for things that follow its picture. */
-  idleTime(): number | null {
+  /**
+   * The idle loop's clock while it can be read, for things that follow its picture: its time, and
+   * whether it is playing (it is paused while a page or a short is on top).
+   */
+  idleClock(): { time: number; playing: boolean } | null {
     const idle = this.els.idle;
-    return idle.readyState > 0 ? idle.currentTime : null;
+    if (idle.readyState === 0) return null;
+    return { time: idle.currentTime, playing: !idle.paused && !idle.ended };
   }
 
   /**

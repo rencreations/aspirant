@@ -204,6 +204,11 @@
 
 .block {
   margin-top: 1.5rem;
+  /* Only what is near the screen is drawn. The browser skips style, layout and paint for the
+     rest, so a long drawer costs no more than the part that is in view. The size is a guess that
+     the browser replaces by the real one once it has drawn the block. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 18rem;
 }
 
 /* Profile ----------------------------------------------------------------------------------- */
@@ -450,6 +455,9 @@
 
 .chapter {
   margin-top: 2rem;
+  /* See .block. The story is 21 chapters and more than 30,000 pixels tall. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60rem;
 }
 
 .chapterHead {

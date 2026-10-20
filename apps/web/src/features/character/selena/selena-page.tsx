@@ -115,10 +115,6 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     void Promise.race([loadCore(initial === null), cap]).then(() => {
       if (alive) setTierReady(true);
     });
-    // The loading screen has loaded all of the rest. Coming back by the browser's Back button, or
-    // after the page was left, skips that screen: top it up from the saved copies in the
-    // background. What is already loaded costs nothing.
-    void runPreload(routeItems(pathname));
     return () => {
       alive = false;
       mark();
@@ -190,6 +186,21 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // the first sample is stale) ask it to look again.
   useSelenaUrl({ state, stage, initial });
 
+  // The loading screen has loaded all of the rest. Coming back by the browser's Back button, or
+  // after the page was left, skips that screen: top it up from the saved copies. It waits until
+  // she idles, so it never competes with the welcome, and what is loaded already costs nothing.
+  const toppedUp = useRef(false);
+  useEffect(() => {
+    if (state.mode !== "idle" || toppedUp.current) return;
+    const timer = window.setTimeout(() => {
+      toppedUp.current = true;
+      void runPreload(routeItems(pathname));
+    }, 2500);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [state.mode, pathname]);
+
   useEffect(() => {
     if (state.mode !== "idle" || drawersBuilt >= 2) return;
     // About first, Skills a moment later, so no single frame carries both.
@@ -239,7 +250,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
     void cover.current?.run(() => stage.current?.jumpToIdle());
   }, []);
 
-  const idleTime = useCallback(() => stage.current?.idleTime() ?? null, []);
+  const idleClock = useCallback(() => stage.current?.idleClock() ?? null, []);
 
   useHotkey(
     "n",
@@ -279,7 +290,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
         <div className={styles.ui} data-visible={showMain} data-busy={busy}>
           <Hotspots
-            idleTime={idleTime}
+            idleClock={idleClock}
             visible={showMain}
             chosen={chosenShort}
             loading={state.loading}

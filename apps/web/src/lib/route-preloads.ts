@@ -86,8 +86,11 @@ export function routeItems(pathname: string): PreloadItem[] {
       // music, her voice lines and every picture. All of it is loaded into memory and saved in the
       // browser, so nothing waits on the network once the page is open, and the next visit starts
       // from the saved copy. A visitor on the first visit waits for it here.
+      // The stage videos come first (the list is started in order, and big downloads queue in it),
+      // so the page can start while the clips, the trailer and the voice lines are still arriving.
       return [
         ...shared,
+        ...selenaItems(),
         imageItem("/video/selena/still.webp", "Loading Selena", 1),
         imageItem("/video/selena/trailer-poster.webp", "Loading the trailer", 1),
         imageItem("/img/char/selena/splash-sm.webp", "Loading the album art", 1),
@@ -105,7 +108,6 @@ export function routeItems(pathname: string): PreloadItem[] {
         ),
         ...skillItems(),
         trailerItem(),
-        ...selenaItems(),
       ];
     }
     if (isSlug(slug)) {

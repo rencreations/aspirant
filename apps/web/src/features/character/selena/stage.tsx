@@ -35,8 +35,8 @@ export interface StageApi {
   leave: () => void;
   /** Straight to the idle loop. The caller covers the screen while it happens. */
   jumpToIdle: () => Promise<void>;
-  /** The time of the idle loop, so touch points can follow its picture. Null until it can play. */
-  idleTime: () => number | null;
+  /** The clock of the idle loop, so touch points can follow its picture. Null until it can play. */
+  idleClock: () => { time: number; playing: boolean } | null;
 }
 
 interface Props {
@@ -74,7 +74,7 @@ export const SelenaStage = forwardRef<StageApi, Props>(function SelenaStage(
       cancel: () => director.current?.cancel(),
       leave: () => director.current?.leave(),
       jumpToIdle: () => director.current?.jumpToIdle() ?? Promise.resolve(),
-      idleTime: () => director.current?.idleTime() ?? null,
+      idleClock: () => director.current?.idleClock() ?? null,
     }),
     [],
   );

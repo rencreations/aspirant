@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useLayoutEffect, useRef, type CSSProperties } from "react";
 
 import { asset } from "@/lib/asset";
 
@@ -52,12 +52,21 @@ export function MenuButton({
 }: Props) {
   const pressed = state !== "idle";
   const known = pressed && waitMs !== null;
+  const button = useRef<HTMLButtonElement>(null);
+  // The width of the plate in pixels, measured once when the press starts. CSS works out how far
+  // she runs from it, so the run is a plain `translate`, which the browser animates without
+  // touching layout or style (a `left` or `width` animation redoes layout on every frame).
+  useLayoutEffect(() => {
+    const el = button.current;
+    if (el && pressed) el.style.setProperty("--bw", `${el.offsetWidth}px`);
+  }, [pressed, waitKey]);
   const style = pressed
     ? ({ "--wait": `${known ? Math.max(waitMs, 120) : 900}ms` } as CSSProperties)
     : undefined;
   const src = asset(icon);
   return (
     <button
+      ref={button}
       type="button"
       className={styles.button}
       data-state={state}
@@ -69,6 +78,7 @@ export function MenuButton({
       onFocus={onFocus}
       onClick={onClick}
     >
+      <span className={styles.shade} aria-hidden="true" />
       <span className={styles.icon} aria-hidden="true">
         {/* Plain <img>: static export. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

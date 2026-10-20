@@ -180,7 +180,7 @@
 
 /* Lantern reveal: masks the element to a soft disc around the lantern (see data-lantern). */
 @utility lantern-mask {
-  :root[data-lantern="on"] & {
+  :root[data-lantern-on="on"] & {
     -webkit-mask: radial-gradient(
       circle var(--lantern-r, 14rem) at var(--mx, -50vmax) var(--my, -50vmax),
       #000 0%,

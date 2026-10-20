@@ -73,15 +73,52 @@ function antennae(p: LogoParts, amount: number, duration: number) {
 }
 
 /**
- * A light loop that only touches the mascot: it blinks and its antennae sway. For the logo
- * in the navigation. Returns a cleanup that restores every part.
+ * A light flourish for the logo in the navigation: the mascot blinks, its antennae sway and its
+ * head bobs once, then it rests for a few seconds, and again. The logo is on every page, and a
+ * loop that never rests moves SVG attributes on every frame, which the browser has to restyle.
+ * Resting between flourishes costs nothing. Returns a cleanup that restores every part.
  */
 export function ambientLoop(p: LogoParts): () => void {
   const ctx = gsap.context(() => {
-    blink(p, 3.4);
-    antennae(p, 6, 1.5);
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 4.5, delay: 1.2 });
+    if (p.lid) {
+      gsap.set(p.lid, { svgOrigin: lidOrigin });
+      tl.to(p.lid, { scaleY: 1, duration: 0.07, ease: "power2.out" }, 0.5).to(
+        p.lid,
+        { scaleY: 0, duration: 0.11, ease: "power2.in" },
+        "+=0.07",
+      );
+    }
+    if (p.antL) {
+      tl.to(
+        p.antL,
+        {
+          rotation: -6,
+          svgOrigin: pivotL,
+          duration: 0.75,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: 1,
+        },
+        0,
+      );
+    }
+    if (p.antR) {
+      tl.to(
+        p.antR,
+        {
+          rotation: 6,
+          svgOrigin: pivotR,
+          duration: 0.85,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: 1,
+        },
+        0.25,
+      );
+    }
     if (p.head) {
-      gsap.to(p.head, { y: -4, duration: 1.7, ease: "sine.inOut", yoyo: true, repeat: -1 });
+      tl.to(p.head, { y: -4, duration: 0.85, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
     }
   });
   return () => ctx.revert();

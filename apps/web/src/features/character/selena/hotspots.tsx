@@ -88,8 +88,8 @@ function percent(text: string | undefined): number {
 }
 
 interface Props {
-  /** The time of the idle loop, so the points follow its picture. Null while it cannot play. */
-  idleTime: () => number | null;
+  /** The clock of the idle loop, so the points follow its picture. Null while it cannot play. */
+  idleClock: () => { time: number; playing: boolean } | null;
   /** The panel shows, so the points do. */
   visible: boolean;
   /** The short that was chosen and is waiting for its frame. */
@@ -133,7 +133,7 @@ function Progress({ ms, k }: { ms: number | null; k: number }) {
  * The cursor snaps to a circle (`data-snap`, see the lantern cursor).
  */
 export function Hotspots({
-  idleTime,
+  idleClock,
   visible,
   chosen,
   loading,
@@ -148,13 +148,22 @@ export function Hotspots({
   const layer = useRef<HTMLDivElement>(null);
   const spots = useRef<Partial<Record<SpotId, HTMLButtonElement | null>>>({});
 
+  // What the loop below reads: the latest values, without restarting it.
+  const live = useRef({ visible, idleClock });
+  useEffect(() => {
+    live.current = { visible, idleClock };
+  }, [visible, idleClock]);
+
   useEffect(() => {
     const root = layer.current;
     if (!root) return;
+    const loopMs = ((HOTSPOT_PATHS.silverbolt.length * HOTSPOT_STEP) / SELENA_FPS) * 1000;
     let w = 0;
     let h = 0;
     let focus: [number, number] = [0.5, 0.5];
     let top = DOCK_MARGIN;
+    const animations = new Map<SpotId, Animation>();
+
     const measure = () => {
       w = root.clientWidth;
       h = root.clientHeight;
@@ -166,58 +175,88 @@ export function Hotspots({
         (Number.parseFloat(getComputedStyle(root).getPropertyValue("--nav-h")) || 4) * rem;
       top = nav + DOCK_MARGIN / 2;
     };
-    const seen = new Map<SpotId, string>();
-    const place = () => {
-      const frame = (idleTime() ?? 0) * SELENA_FPS;
+
+    /**
+     * Each circle moves along its tracked path as a Web Animation of `transform`, which the
+     * browser runs on its compositor: no script and no style work on any frame. (Moving it from
+     * script on every frame restyled the circle and everything animated inside it, about 180
+     * times a second.) The animation's clock is set from the idle video a few times a second.
+     */
+    const build = () => {
+      measure();
       for (const spot of SPOTS) {
         const el = spots.current[spot.id];
         if (!el) continue;
-        const [nx, ny] = pathAt(HOTSPOT_PATHS[spot.id], frame);
-        const [px, py] = coverPoint(nx, ny, w, h, focus);
-        const { x, y, angle } = dock(px, py, w, h, top);
-        el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-        // The state that CSS reads changes rarely, so it is only written when it does.
-        const key = `${angle === null ? "" : Math.round(angle / 5)}|${x > w / 2 ? "l" : "r"}`;
-        if (seen.get(spot.id) !== key) {
-          seen.set(spot.id, key);
-          el.dataset.docked = String(angle !== null);
-          el.dataset.side = x > w / 2 ? "left" : "right";
-          if (angle !== null) el.style.setProperty("--a", `${angle.toFixed(0)}deg`);
+        const path = HOTSPOT_PATHS[spot.id];
+        const place = (nx: number, ny: number) => {
+          const [px, py] = coverPoint(nx, ny, w, h, focus);
+          return dock(px, py, w, h, top);
+        };
+        const frames: Keyframe[] = [...path, path[0]!].map(([nx, ny]) => {
+          const { x, y } = place(nx, ny);
+          return { transform: `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)` };
+        });
+        const known = animations.get(spot.id);
+        if (known && known.effect instanceof KeyframeEffect) {
+          known.effect.setKeyframes(frames);
+        } else if (typeof el.animate === "function") {
+          const a = el.animate(frames, {
+            duration: loopMs,
+            iterations: Infinity,
+            easing: "linear",
+          });
+          a.pause();
+          animations.set(spot.id, a);
+        } else {
+          el.style.transform = frames[0]!.transform as string;
         }
+        // Docking and the side of the name follow the middle of the path.
+        const mean = path.reduce(
+          (m, [nx, ny]) => [m[0] + nx / path.length, m[1] + ny / path.length],
+          [0, 0],
+        );
+        const mid = place(mean[0], mean[1]);
+        el.dataset.docked = String(mid.angle !== null);
+        el.dataset.side = mid.x > w / 2 ? "left" : "right";
+        if (mid.angle !== null) el.style.setProperty("--a", `${mid.angle.toFixed(0)}deg`);
       }
     };
-    measure();
-    place();
+
+    /** Set each animation's clock from the idle video, and run or pause it with the video. */
+    const sync = () => {
+      const { visible: on, idleClock: clock } = live.current;
+      const c = clock();
+      const playing = on && !document.hidden && c?.playing === true;
+      const t = ((((c?.time ?? 0) * 1000) % loopMs) + loopMs) % loopMs;
+      for (const a of animations.values()) {
+        if (!playing) {
+          if (a.playState === "running") a.pause();
+          a.currentTime = t;
+          continue;
+        }
+        const now = (((Number(a.currentTime) || 0) % loopMs) + loopMs) % loopMs;
+        const gap = Math.abs(now - t);
+        if (Math.min(gap, loopMs - gap) > 45) a.currentTime = t;
+        if (a.playState !== "running") a.play();
+      }
+    };
+
+    build();
+    sync();
     const ro = new ResizeObserver(() => {
-      measure();
-      place();
+      build();
+      sync();
     });
     ro.observe(root);
-
-    let raf = 0;
-    const tick = () => {
-      place();
-      raf = requestAnimationFrame(tick);
-    };
-    const run = () => {
-      if (!raf && visible && !document.hidden) raf = requestAnimationFrame(tick);
-    };
-    const stop = () => {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    };
-    const onVisibility = () => {
-      if (document.hidden) stop();
-      else run();
-    };
-    run();
-    document.addEventListener("visibilitychange", onVisibility);
+    const timer = window.setInterval(sync, 250);
+    document.addEventListener("visibilitychange", sync);
     return () => {
-      stop();
+      window.clearInterval(timer);
       ro.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
+      document.removeEventListener("visibilitychange", sync);
+      for (const a of animations.values()) a.cancel();
     };
-  }, [idleTime, visible]);
+  }, []);
 
   return (
     <div
