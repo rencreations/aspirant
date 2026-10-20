@@ -44,40 +44,40 @@ function ProfileBody() {
   return (
     <>
       <header className={styles.who}>
-        <div className={styles.portrait} data-form={form}>
+        <div className={styles.avatar} data-form={form}>
           {(["normal", "mecha"] as const).map((f) => (
-            // Plain <img>: static export, art already cropped.
+            // Plain <img>: static export, a round picture.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={f}
-              className={styles.portraitImg}
+              className={styles.avatarImg}
               data-for={f}
               src={asset(aboutImagePath(`profile-${f}`))}
               alt={
                 f === "normal"
-                  ? "Concept art of Selena in her normal form, with her dragon above her"
-                  : "Concept art of Selena in her mecha form, in white and blue armour with blade-wings"
+                  ? "Selena in her normal form, laughing, with her hair tied up"
+                  : "Selena's mecha form: the head of a blue armoured dragon"
               }
-              width={242}
-              height={484}
+              width={368}
+              height={368}
               draggable={false}
             />
           ))}
-          <div className={styles.switch} role="group" aria-label="Form shown in the picture">
-            {(["normal", "mecha"] as const).map((f) => (
-              <button
-                key={f}
-                type="button"
-                aria-pressed={form === f}
-                onClick={() => {
-                  setForm(f);
-                  audio.blip("click");
-                }}
-              >
-                {f === "normal" ? "Normal" : "Mecha"}
-              </button>
-            ))}
-          </div>
+        </div>
+        <div className={styles.switch} role="group" aria-label="Form shown in the picture">
+          {(["normal", "mecha"] as const).map((f) => (
+            <button
+              key={f}
+              type="button"
+              aria-pressed={form === f}
+              onClick={() => {
+                setForm(f);
+                audio.blip("click");
+              }}
+            >
+              {f === "normal" ? "Normal" : "Mecha"}
+            </button>
+          ))}
         </div>
         <div className={styles.names}>
           <p className={styles.kicker}>Profile</p>

@@ -2,9 +2,9 @@
 Builds the images of Selena's About drawers.
 
 Stills: frames taken from the official videos at the moments the story tells (see STILLS).
-Profile: the two halves of the concept sheet (normal form on the left, mecha form on the right).
+Profile: the two round profile pictures, normal.jpg and mecha.jpg (a folder given as the second argument).
 
-Run: python -I scripts/selena/about-assets.py "D:/ren/aspirant/media/selena-and-obsidia" "C:/Users/muham/Downloads/9ftpjc.webp"
+Run: python -I scripts/selena/about-assets.py "D:/ren/aspirant/media/selena-and-obsidia" "C:/Users/muham/Downloads"
 """
 
 import subprocess
@@ -48,10 +48,10 @@ def main() -> None:
             check=True,
         )
     if len(sys.argv) > 2:
-        sheet = Image.open(sys.argv[2]).convert("RGB")
-        half = sheet.width // 2
-        sheet.crop((0, 0, half, sheet.height)).save(out / "profile-normal.webp", quality=90, method=6)
-        sheet.crop((half, 0, sheet.width, sheet.height)).save(out / "profile-mecha.webp", quality=90, method=6)
+        # Shown as circles, so they are square pictures with the face in the middle.
+        for form in ("normal", "mecha"):
+            picture = Image.open(Path(sys.argv[2]) / f"{form}.jpg").convert("RGB")
+            picture.save(out / f"profile-{form}.webp", quality=92, method=6)
     for f in sorted(out.glob("*.webp")):
         print(f.name, f.stat().st_size // 1024, "KB")
 
