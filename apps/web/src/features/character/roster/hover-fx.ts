@@ -1,10 +1,20 @@
 import { prefersReducedMotion } from "@/lib/hooks";
 import { perfLevel } from "@/lib/perf";
 
+import { mediaUrl } from "@/lib/media-store";
+
+import { CLIP_RATIO, ROSTER_CLIPS, type RosterClip } from "./clips.generated";
 import { FACE, RIG } from "./layout";
 
 /**
  * What a panel does while the pointer is on it, and only then.
+ *
+ * For the characters that have a recording of the game's animated skin card (`clips.generated.ts`,
+ * made by `scripts/roster/build.py`) the picture is that recording, which is real animation: every
+ * strand of hair, the cloth and the light are animated, and the rainbow shimmer is in it. It is
+ * placed in the frame so the face is in the middle, fades in over the still picture when the pointer
+ * arrives and fades out when it leaves. The rest of this file is for the characters that have no
+ * recording yet.
  *
  * The panel is marked `data-hover` (the stylesheet reads it to take the haze off, colour the rim,
  * lift the frame and show the sparkles). The picture itself is redrawn by one WebGL canvas that moves
@@ -90,6 +100,9 @@ void main() {
   float hl = smoothstep(0.7, 0.98, L);
   float pulse = 0.5 + 0.5 * sin(t * 2.2 + suv.y * 5.0 + suv.x * 3.0);
   c += tint * hl * (0.1 + 0.2 * pulse) * k;
+  // The rainbow shimmer of the art: a slow iridescent colour over the bright parts.
+  vec3 rainbow = 0.5 + 0.5 * cos(6.2832 * (suv.x * 0.9 + suv.y * 0.7 + L * 0.8 + t * 0.07 + vec3(0.0, 0.33, 0.67)));
+  c += rainbow * smoothstep(0.55, 0.95, L) * (0.1 + 0.1 * pulse) * k;
   // Bloom that breathes.
   c += vec3(1.0, 0.97, 0.92) * pow(L, 4.0) * (0.06 + 0.07 * sin(t * 1.7)) * k;
   // The eyes glow.
@@ -104,7 +117,7 @@ void main() {
     float ly = luma(texture(tex, suv + vec2(0.0, px.y)).rgb) - luma(texture(tex, suv - vec2(0.0, px.y)).rgb);
     float edge = clamp(length(vec2(lx, ly)) * 2.6, 0.0, 1.0);
     float swing = 0.5 + 0.5 * sin(t * 1.4 + atan(ly, lx) + suv.y * 3.0);
-    c += mix(tint, vec3(1.0), 0.45) * edge * swing * 0.28 * k;
+    c += mix(rainbow, vec3(1.0), 0.35) * edge * swing * 0.34 * k;
     // Glitter on the brightest pixels, each twinkling on its own.
     vec2 gs = suv * vec2(190.0, 107.0);
     vec2 cell = floor(gs);
@@ -140,7 +153,107 @@ function hexToRgb(hex: string): [number, number, number] {
   return [parseInt(m[1]!, 16) / 255, parseInt(m[2]!, 16) / 255, parseInt(m[3]!, 16) / 255];
 }
 
+interface Clip {
+  video: HTMLVideoElement;
+  fade: number;
+}
+
 export function createHoverFx() {
+  const clips = new Map<string, Clip>();
+  let clipOn: { li: HTMLElement; slug: string } | null = null;
+
+  /**
+   * Size and place the recording in the panel. A "patch" is laid over the part of the still picture
+   * that it was made from, at the same scale, so it plays where the art is and the rest stays still.
+   * A "fill" covers the whole frame, with the face as near to where the layout wants it as a cover
+   * allows.
+   */
+  const placeClip = (li: HTMLElement, video: HTMLVideoElement, info: RosterClip) => {
+    const pw = li.offsetWidth;
+    const ph = li.offsetHeight;
+    if (info.mode === "patch" && info.box) {
+      const img = li.querySelector<HTMLImageElement>("img");
+      if (!img) return;
+      const cs = getComputedStyle(img);
+      const il = parseFloat(cs.left);
+      const it = parseFloat(cs.top);
+      const iw = parseFloat(cs.width);
+      const ih = parseFloat(cs.height);
+      const [cx, cy, bw, bh] = info.box;
+      video.dataset.mode = "patch";
+      video.style.width = `${(bw * iw).toFixed(1)}px`;
+      video.style.height = `${(bh * ih).toFixed(1)}px`;
+      video.style.left = `${(il + (cx - bw / 2) * iw).toFixed(1)}px`;
+      video.style.top = `${(it + (cy - bh / 2) * ih).toFixed(1)}px`;
+      return;
+    }
+    const tx = parseFloat(li.style.getPropertyValue("--tx")) || 0.5;
+    const ty = parseFloat(li.style.getPropertyValue("--ty")) || 0.4;
+    const [fx, fy] = info.face ?? [0.5, 0.35];
+    const w = Math.max(pw * 1.04, ph * 1.04 * CLIP_RATIO);
+    const h = w / CLIP_RATIO;
+    video.dataset.mode = "fill";
+    video.style.width = `${w.toFixed(1)}px`;
+    video.style.height = `${h.toFixed(1)}px`;
+    video.style.left = `${Math.min(0, Math.max(pw - w, pw * tx - w * fx)).toFixed(1)}px`;
+    video.style.top = `${Math.min(0, Math.max(ph - h, ph * ty - h * fy)).toFixed(1)}px`;
+  };
+
+  const enterClip = (li: HTMLElement, slug: string): boolean => {
+    const info = ROSTER_CLIPS[slug];
+    const art = li.querySelector<HTMLElement>("[data-fx='art']");
+    if (!info || !art) return false;
+    let clip = clips.get(slug);
+    if (!clip) {
+      const video = document.createElement("video");
+      video.muted = true;
+      video.defaultMuted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = "auto";
+      video.setAttribute("aria-hidden", "true");
+      video.src = mediaUrl(`/video/roster/${slug}.mp4`);
+      clip = { video, fade: 0 };
+      clips.set(slug, clip);
+    }
+    window.clearTimeout(clip.fade);
+    const { video } = clip;
+    video.className = art.dataset.clipClass ?? "";
+    placeClip(li, video, info);
+    if (video.parentElement !== art.parentElement) art.after(video);
+    clipOn = { li, slug };
+    // It shows only once a frame is on screen, so the still picture is never replaced by a blank.
+    const show = () => {
+      if (clipOn?.slug === slug) video.dataset.on = "true";
+    };
+    if (video.readyState >= 3 && !video.paused) show();
+    else {
+      void video.play().then(
+        () => {
+          if ("requestVideoFrameCallback" in video) video.requestVideoFrameCallback(show);
+          else show();
+        },
+        () => undefined,
+      );
+    }
+    return true;
+  };
+
+  const leaveClip = () => {
+    if (!clipOn) return;
+    const clip = clips.get(clipOn.slug);
+    // The frame goes back to its shade at once.
+    delete clipOn.li.dataset.hover;
+    clipOn = null;
+    if (!clip) return;
+    delete clip.video.dataset.on;
+    // Let it fade out, then stop it and take it away.
+    clip.fade = window.setTimeout(() => {
+      clip.video.pause();
+      clip.video.remove();
+    }, 600);
+  };
+
   let canvas: HTMLCanvasElement | null = null;
   let gl: WebGL2RenderingContext | null = null;
   let program: WebGLProgram | null = null;
@@ -342,11 +455,14 @@ export function createHoverFx() {
   return {
     /** The pointer came onto a panel (or moved onto one from another). */
     enter(li: HTMLElement) {
-      if (current?.li === li) return;
-      if (current) this.leave();
+      if (current?.li === li || clipOn?.li === li) return;
+      if (current || clipOn) this.leave();
       // The frame is lit at once, whatever the device.
       li.dataset.hover = "true";
-      if (!canDraw() || !setup()) return;
+      if (!canDraw()) return;
+      if (li.dataset.slug && li.dataset.slug in ROSTER_CLIPS && enterClip(li, li.dataset.slug))
+        return;
+      if (!setup()) return;
       const img = li.querySelector<HTMLImageElement>("img");
       const art = li.querySelector<HTMLElement>("[data-fx='art']");
       const slug = li.dataset.slug as keyof typeof FACE | undefined;
@@ -371,6 +487,7 @@ export function createHoverFx() {
     },
     /** The pointer left it: it eases back to rest. */
     leave() {
+      leaveClip();
       if (!current) return;
       current.goal = 0;
       // The frame goes back to its shade at once, with the stylesheet's own fade.
@@ -381,6 +498,15 @@ export function createHoverFx() {
       run();
     },
     destroy() {
+      leaveClip();
+      for (const c of clips.values()) {
+        window.clearTimeout(c.fade);
+        c.video.pause();
+        c.video.remove();
+        c.video.removeAttribute("src");
+        c.video.load();
+      }
+      clips.clear();
       cancelAnimationFrame(raf);
       raf = 0;
       if (current) release(current);

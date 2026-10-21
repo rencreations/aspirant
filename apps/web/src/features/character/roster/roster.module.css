@@ -1257,3 +1257,35 @@
     transform: scale(4.2);
   }
 }
+
+/* The recording of the animated card, over the still picture. It is placed by script so that the face
+   is in the middle of the slanted frame. */
+.clip {
+  position: absolute;
+  max-width: none;
+  opacity: 0;
+  transition: opacity 450ms var(--ease-out);
+  pointer-events: none;
+}
+
+.clip[data-on="true"] {
+  opacity: 1;
+}
+
+/* The recording has its own light and glitter, so the stylesheet's glow and specks are not added. */
+.panel[data-clip="true"] .glow,
+.panel[data-clip="true"] .motes {
+  display: none;
+}
+
+/* A patch is feathered into the still picture around it, so no edge shows. */
+.clip[data-mode="patch"] {
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent),
+    linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image:
+    linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent),
+    linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}

@@ -291,6 +291,38 @@ test.describe("roster", () => {
     await expect(ruby).not.toHaveAttribute("data-hover", "true");
   });
 
+  test("a character with a recording plays it on hover, and it stops and goes away after", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "Phones have no hover");
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    for (const [slug, pair] of [
+      ["obsidia", "Selena and Obsidia"],
+      ["vexana", "Guinevere and Vexana"],
+    ] as const) {
+      await rail.getByRole("button", { name: pair }).click();
+      await page.waitForTimeout(1400);
+      const li = page.locator(`li[data-slug='${slug}']`);
+      const box = (await li.boundingBox())!;
+      await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.45, { steps: 4 });
+      const video = li.locator("video");
+      await expect(video).toHaveCount(1);
+      await expect(video).toHaveAttribute("data-on", "true", { timeout: 8000 });
+      // It really plays: the clock moves.
+      const t0 = await video.evaluate((v) => (v as HTMLVideoElement).currentTime);
+      await page.waitForTimeout(700);
+      const t1 = await video.evaluate((v) => (v as HTMLVideoElement).currentTime);
+      expect(t1).toBeGreaterThan(t0);
+      // And it has no sound and does not follow the pointer.
+      expect(await video.evaluate((v) => (v as HTMLVideoElement).muted)).toBe(true);
+      await page.mouse.move(5, 5);
+      await expect(video).toHaveCount(0, { timeout: 4000 });
+      await expect(li).not.toHaveAttribute("data-hover", "true");
+    }
+  });
+
   test("hovering Obsidia does not cover the title plate or her neighbour", async ({
     page,
   }, info) => {

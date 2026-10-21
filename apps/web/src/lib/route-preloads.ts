@@ -1,4 +1,5 @@
 import { characters, isSlug } from "@/content/characters";
+import { ROSTER_CLIPS } from "@/features/character/roster/clips.generated";
 import { splashPath } from "@/features/character/roster/splash";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
 import {
@@ -100,6 +101,15 @@ export function routeItems(pathname: string): PreloadItem[] {
     return [
       ...shared,
       ...characters.map((c) => imageItem(splashPath(c.slug), `Loading ${c.name}`, 3)),
+      // The animated card of each character is not seen until the pointer is on a panel, so it
+      // loads in the background once the wall is open.
+      ...Object.entries(ROSTER_CLIPS).map(([slug, clip]): PreloadItem => ({
+        ...mediaItem(`/video/roster/${slug}.mp4`, "Loading the animations", {
+          type: "video/mp4",
+          bytes: clip.bytes,
+        }),
+        deferred: true,
+      })),
     ];
   }
 

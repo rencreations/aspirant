@@ -23,12 +23,14 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import type { Slug } from "@/content/types";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
+import { releaseMedia } from "@/lib/media-store";
 import { isTypingTarget, prefersReducedMotion, useHotkey, useIsoLayoutEffect } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 import { startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
+import { ROSTER_CLIPS } from "./clips.generated";
 import { createHoverFx } from "./hover-fx";
 import { BAYS, BOARD_H, BOARD_W, END, mid, SLANT, SLOTS, TEAR, type Slot } from "./layout";
 import styles from "./roster.module.css";
@@ -131,7 +133,13 @@ const PanelView = memo(function PanelView({
     "--i": index,
   } as CSSProperties;
   return (
-    <li className={styles.panel} style={style} data-slug={c.slug} data-chosen={chosen}>
+    <li
+      className={styles.panel}
+      style={style}
+      data-slug={c.slug}
+      data-clip={c.slug in ROSTER_CLIPS}
+      data-chosen={chosen}
+    >
       <TLink
         href={characterRoute(c.slug)}
         transitionLabel={c.name}
@@ -152,7 +160,12 @@ const PanelView = memo(function PanelView({
         <span className={styles.lift}>
           <span className={styles.rim} aria-hidden="true" />
           <span className={styles.face}>
-            <span className={styles.art} data-fx="art" aria-hidden="true">
+            <span
+              className={styles.art}
+              data-fx="art"
+              data-clip-class={styles.clip}
+              aria-hidden="true"
+            >
               <span className={styles.tilt}>
                 {/* Plain <img>: static export. The splash art is the only picture here. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -548,6 +561,8 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   useEffect(
     () => () => {
       hoverFx.destroy();
+      // The animated cards were loaded into memory for this page only.
+      releaseMedia("/video/roster/");
     },
     [hoverFx],
   );
