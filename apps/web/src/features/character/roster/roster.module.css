@@ -290,6 +290,103 @@
   }
 }
 
+/* What plays while a panel is hovered, and only then ------------------------------------------- */
+.fx {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 600ms var(--ease-out),
+    visibility 0s linear 600ms;
+}
+
+.card:focus-visible .fx {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+@media (hover: hover) {
+  .card:has(.hit:hover) .fx {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+
+/* The edges darken, so the middle of the picture comes forward. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 42%, rgb(8 12 36 / 0.5) 100%);
+}
+
+/* Fine streaks of light that drift along the lean of the frame, like light through glass. */
+.streaks {
+  position: absolute;
+  inset: 0 -25%;
+  background: repeating-linear-gradient(
+    122.6deg,
+    transparent 0 56px,
+    rgb(255 255 255 / 0.2) 56px 60px,
+    transparent 60px 132px,
+    rgb(255 255 255 / 0.1) 132px 150px,
+    transparent 150px 220px
+  );
+  animation: streak 7s linear infinite;
+}
+
+/* A soft light that follows the pointer. The script only moves it. */
+.spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--ph) * 0.95);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(255 255 255 / 0.55) 0%,
+    rgb(255 255 255 / 0.2) 38%,
+    transparent 68%
+  );
+  will-change: transform;
+}
+
+/* Specks of light that rise through the picture, each at its own pace. */
+.motes {
+  position: absolute;
+  inset: 0;
+}
+
+.motes i {
+  position: absolute;
+  left: calc(var(--n) * 13% + 8%);
+  bottom: -8px;
+  width: 5px;
+  aspect-ratio: 1;
+  background: rgb(255 255 255 / 0.9);
+  opacity: 0;
+  transform: rotate(45deg);
+  animation: mote calc(3.4s + var(--n) * 0.45s) linear infinite;
+  animation-delay: calc(var(--n) * -0.8s);
+}
+
+.motes i:nth-child(3n) {
+  width: 7px;
+  background: color-mix(in srgb, var(--c) 55%, #fff);
+}
+
+/* Only a fast device plays the streaks and the specks. */
+:root[data-perf="balanced"] .streaks,
+:root[data-perf="balanced"] .motes,
+:root[data-perf="lite"] .fx {
+  display: none;
+}
+
 /* A band of light across the slant, once, when the panel is hovered. */
 .shine {
   position: absolute;
@@ -1130,4 +1227,39 @@
 
 .wall[data-far="true"] .ember {
   visibility: hidden;
+}
+
+@keyframes streak {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(261px, 0, 0);
+  }
+}
+
+@keyframes mote {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(45deg) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(calc((var(--n) - 3) * 12px), calc(var(--ph) * -1.05), 0) rotate(225deg)
+      scale(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streaks,
+  .motes i {
+    animation: none !important;
+  }
+
+  .motes {
+    display: none;
+  }
 }

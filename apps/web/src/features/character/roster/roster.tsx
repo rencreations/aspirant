@@ -29,6 +29,7 @@ import { startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
+import { createHoverFx } from "./hover-fx";
 import { BAYS, BOARD_H, BOARD_W, END, mid, SLANT, SLOTS, TEAR, type Slot } from "./layout";
 import styles from "./roster.module.css";
 import { splashPath } from "./splash";
@@ -72,8 +73,13 @@ const EMBERS = Array.from({ length: 9 }, (_, n) => {
   return { v, x: TEAR.top - SLANT * (v - 5) };
 });
 
+/** Specks of light that rise through a hovered panel. */
+const MOTES = [0, 1, 2, 3, 4, 5, 6] as const;
+
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
+  move: (e: PointerEvent<HTMLAnchorElement>) => void;
+  leave: () => void;
   focus: (c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => void;
   choose: (c: RosterCharacter, e: MouseEvent<HTMLAnchorElement>) => void;
 }
@@ -125,6 +131,8 @@ const PanelView = memo(function PanelView({
         onPointerEnter={(e) => {
           actions.enter(c, e);
         }}
+        onPointerMove={actions.move}
+        onPointerLeave={actions.leave}
         onFocus={(e) => {
           actions.focus(c, bay, e);
         }}
@@ -133,7 +141,7 @@ const PanelView = memo(function PanelView({
           <span className={styles.rim} aria-hidden="true" />
           <span className={styles.face}>
             <span className={styles.art} aria-hidden="true">
-              <span className={styles.tilt}>
+              <span className={styles.tilt} data-fx="tilt">
                 {/* Plain <img>: static export. The splash art is the only picture here. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -147,8 +155,19 @@ const PanelView = memo(function PanelView({
               </span>
             </span>
             <span className={styles.veil} aria-hidden="true" />
+            {/* What plays while the panel is hovered, and only then: it makes the picture look deep. */}
+            <span className={styles.fx} aria-hidden="true">
+              <span className={styles.vignette} />
+              <span className={styles.streaks} />
+              <span className={styles.spot} data-fx="spot" />
+              <span className={styles.motes}>
+                {MOTES.map((n) => (
+                  <i key={n} style={{ "--n": n } as CSSProperties} />
+                ))}
+              </span>
+            </span>
             <span className={styles.shine} aria-hidden="true" />
-            <span className={styles.tag}>
+            <span className={styles.tag} data-fx="tag">
               <span>{c.name}</span>
             </span>
           </span>
@@ -504,9 +523,25 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
 
   // ---- a panel ----------------------------------------------------------------------------
 
+  const [hoverFx] = useState(createHoverFx);
+  useEffect(
+    () => () => {
+      hoverFx.destroy();
+    },
+    [hoverFx],
+  );
+
   const onEnter = (_c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType !== "mouse" || engine.current.drag.on) return;
     audio.blip("hover");
+    const li = e.currentTarget.closest("li");
+    if (li) hoverFx.enter(li, e.clientX, e.clientY);
+  };
+  const onMove = (e: PointerEvent<HTMLAnchorElement>) => {
+    if (e.pointerType === "mouse") hoverFx.move(e.clientX, e.clientY);
+  };
+  const onLeave = () => {
+    hoverFx.leave();
   };
 
   const onFocus = (_c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => {
@@ -531,16 +566,24 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   // The panels get the same functions on every render, so they do not draw again on a scroll.
   const act = useRef<Actions>({
     enter: onEnter,
+    move: onMove,
+    leave: onLeave,
     focus: onFocus,
     choose,
   });
   useIsoLayoutEffect(() => {
-    act.current = { enter: onEnter, focus: onFocus, choose };
+    act.current = { enter: onEnter, move: onMove, leave: onLeave, focus: onFocus, choose };
   });
   const actions = useMemo<Actions>(
     () => ({
       enter: (c, e) => {
         act.current.enter(c, e);
+      },
+      move: (e) => {
+        act.current.move(e);
+      },
+      leave: () => {
+        act.current.leave();
       },
       focus: (c, bay, e) => {
         act.current.focus(c, bay, e);
