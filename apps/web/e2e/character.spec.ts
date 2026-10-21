@@ -113,10 +113,15 @@ test.describe("roster", () => {
     const order = ["obsidia", "selena", "guinevere", "lesley", "angela", "ruby", "layla", "fanny"];
     for (let i = 1; i < order.length; i++)
       expect(x(order[i]!), order[i]).toBeGreaterThan(x(order[i - 1]!));
-    // The pair in front is the biggest.
+    // The pair in front is the biggest, and the two are the same size.
     const sorted = [...boxes].sort((a, b) => b.area - a.area);
-    expect(sorted[0]?.slug).toBe("obsidia");
-    expect(sorted.slice(0, 3).map((b) => b.slug)).toContain("selena");
+    expect(
+      sorted
+        .slice(0, 2)
+        .map((b) => b.slug)
+        .sort(),
+    ).toEqual(["obsidia", "selena"]);
+    expect(Math.abs(sorted[0]!.area - sorted[1]!.area) / sorted[0]!.area).toBeLessThan(0.02);
     // The panels do not all have one size.
     expect(new Set(boxes.map((b) => Math.round(b.area / 1000))).size).toBeGreaterThan(3);
   });

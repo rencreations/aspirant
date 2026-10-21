@@ -1,6 +1,6 @@
 /* The roster wall, drawn from the owner's reference strip. One row of slanted panels of splash art
    on a silver world, each pair laid out its own way, the newest pair at the front on a crimson
-   plate split by a red tear, and a blue plate at the end. Every size is in `--u`, one 404th of the
+   plate, and a blue plate at the end. Every size is in `--u`, one 404th of the
    height of the board, so the whole composition scales with the screen. Only transform and
    opacity move. */
 
@@ -138,7 +138,7 @@
   pointer-events: none;
 }
 
-/* A panel never rises above the front pair's plate and tear (z 5). */
+/* A panel never rises above the front pair's plate (z 5). */
 .panel[data-hover="true"],
 .panel:focus-within {
   z-index: 4;
@@ -473,34 +473,6 @@
 .emblem svg {
   width: 55%;
   height: 55%;
-}
-
-/* The tear between Obsidia and Selena: layers of flat shapes that glow without a blur. */
-.tear {
-  position: absolute;
-  left: calc(var(--u) * var(--t0));
-  top: 0;
-  width: calc(var(--u) * (var(--t1) - var(--t0)));
-  height: calc(var(--u) * 404);
-  overflow: visible;
-}
-
-.ember {
-  position: absolute;
-  left: calc(var(--u) * var(--ex));
-  top: calc(var(--u) * var(--ev));
-  width: calc(var(--u) * 5);
-  aspect-ratio: 1;
-  background: #ff8a5c;
-  opacity: 0;
-  transform: rotate(45deg);
-  animation: ember 3.6s ease-out infinite;
-  animation-delay: calc(var(--n) * -0.9s);
-}
-
-.ember:nth-of-type(odd) {
-  background: #fff0d0;
-  width: calc(var(--u) * 3.5);
 }
 
 /* The blue plate at the end of the row ------------------------------------------------------- */
@@ -882,20 +854,6 @@
   }
 }
 
-@keyframes ember {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(45deg) scale(0.5);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(calc(var(--u) * -34), calc(var(--u) * -76), 0) rotate(225deg) scale(1);
-    opacity: 0;
-  }
-}
-
 @keyframes tick {
   from {
     transform: translate3d(0, 0.7rem, 0);
@@ -935,8 +893,6 @@
     transition-delay: 0s;
   }
 
-  .tear,
-  .ember,
   .hint i,
   .whereValue {
     animation: none !important;
@@ -950,19 +906,4 @@
     transition-duration: 1ms;
     transition-delay: 0s;
   }
-}
-
-/* A device that is short of speed keeps the pictures still and the world plain. */
-:root[data-perf="lite"] .ember {
-  animation: none;
-}
-
-/* The tear and the embers rest while the front pair is out of sight. */
-.wall[data-far="true"] .tear,
-.wall[data-far="true"] .ember {
-  animation-play-state: paused;
-}
-
-.wall[data-far="true"] .ember {
-  visibility: hidden;
 }

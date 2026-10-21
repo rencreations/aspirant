@@ -30,7 +30,7 @@ import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
 import { createHoverFx } from "./hover-fx";
-import { BAYS, BOARD_H, BOARD_W, END, mid, SLANT, SLOTS, TEAR, type Slot } from "./layout";
+import { BAYS, BOARD_H, BOARD_W, END, mid, SLOTS, type Slot } from "./layout";
 import styles from "./roster.module.css";
 import { splashPath } from "./splash";
 
@@ -55,56 +55,6 @@ const BAY_CENTRES = [
   ...SLOTS_OF_BAY.map((ss) => ss.reduce((sum, s) => sum + mid(s), 0) / ss.length),
   (END.x1 + END.x2) / 2,
 ];
-
-/**
- * The tear between Obsidia and Selena, like a blade cut with fire in it: a straight slash on the lean
- * of the frames, wide and dim at the edges and thin and white-hot in the middle, tapering to a point
- * at both ends, with torn edges. It is layers of flat shapes, wider and fainter outward, so it glows
- * without a blur.
- */
-const TEAR_CENTRE = (TEAR.top + 553) / 2;
-const TEAR_REACH = 50;
-const TEAR_X0 = TEAR_CENTRE - SLANT * 375 - TEAR_REACH - 8;
-const TEAR_X1 = TEAR_CENTRE + TEAR_REACH + 8;
-const TEAR_STEPS = 64;
-
-/** A repeatable ragged edge: the same on every render. */
-const rough = (i: number, seed: number) => {
-  const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
-  return (x - Math.floor(x)) * 2 - 1;
-};
-
-/** The outline of one layer: half a width on each side of the cut, tapering, with torn edges. */
-function tearBand(half: number, tear: number, seed: number): string {
-  const left: string[] = [];
-  const right: string[] = [];
-  for (let i = 0; i <= TEAR_STEPS; i++) {
-    const v = 5 + (i * 375) / TEAR_STEPS;
-    const t = Math.sin((Math.PI * (v - 5)) / 375);
-    const w = half * (0.18 + 0.82 * Math.pow(t, 0.6));
-    const c = TEAR_CENTRE - SLANT * (v - 5);
-    left.push(`${(c - w + rough(i, seed) * tear).toFixed(1)} ${v.toFixed(1)}`);
-    right.push(`${(c + w + rough(i, seed + 9) * tear).toFixed(1)} ${v.toFixed(1)}`);
-  }
-  return `M${left.join(" L")} L${right.reverse().join(" L")} Z`;
-}
-
-const TEAR_LAYERS = [
-  { d: tearBand(48, 4, 1), fill: "rgb(110 6 26 / 0.16)" },
-  { d: tearBand(33, 3.5, 2), fill: "rgb(140 8 34 / 0.3)" },
-  { d: tearBand(20, 3, 3), fill: "rgb(196 16 48 / 0.55)" },
-  { d: tearBand(10, 2.4, 4), fill: "#ff3350" },
-  { d: tearBand(3.4, 1.4, 5), fill: "#ffd9d0" },
-  { d: tearBand(1.2, 0.8, 6), fill: "#ffffff" },
-] as const;
-/** Where the cut burns hottest: a spark of fire in the middle. */
-const TEAR_SPARK = { v: 215, x: TEAR_CENTRE - SLANT * (215 - 5) };
-
-/** Embers that leave the tear. */
-const EMBERS = Array.from({ length: 9 }, (_, n) => {
-  const v = 40 + n * 38;
-  return { v, x: TEAR_CENTRE - SLANT * (v - 5) };
-});
 
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
@@ -200,7 +150,7 @@ const PanelView = memo(function PanelView({
 /**
  * The roster wall, drawn from the owner's reference strip: one row of slanted panels of splash
  * art, each pair laid out its own way (one over the other, one tall, one narrow), the newest pair
- * first and big on a crimson plate split by a red tear, and a blue plate at the end. It scrolls
+ * first and big on a crimson plate, and a blue plate at the end. It scrolls
  * sideways (wheel, drag, swipe, keys, the rail). The pair in front is lit and the rest sleep behind
  * a blue haze. A hover lifts a panel and lights its pair. A click closes the others and opens the
  * character. Nothing plays on a hover.
@@ -626,7 +576,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       aria-label="Roster"
       data-ready={ready}
       data-moved={moved}
-      data-far={active !== 0}
       data-chosen={chosen !== null}
     >
       {/* The world behind the panels: silver and blue, slanted stripes. */}
@@ -696,7 +645,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
           </ul>
 
           {/* The newest pair, at the front: a crimson plate with the logo, a pink trim along its
-              slant, a red tear between Obsidia and Selena, and the ribbon of those met. */}
+              slant. */}
           <div className={styles.hero}>
             <div className={styles.plate}>
               <div className={styles.plateText}>
@@ -735,45 +684,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
               </div>
             </div>
             <span className={styles.trim} aria-hidden="true" />
-            <svg
-              className={styles.tear}
-              aria-hidden="true"
-              viewBox={`${TEAR_X0} 0 ${TEAR_X1 - TEAR_X0} ${BOARD_H}`}
-              style={
-                {
-                  "--t0": TEAR_X0,
-                  "--t1": TEAR_X1,
-                } as CSSProperties
-              }
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <radialGradient id="roster-tear-spark">
-                  <stop offset="0" stopColor="#fff4c8" stopOpacity="0.95" />
-                  <stop offset="0.3" stopColor="#ffa040" stopOpacity="0.8" />
-                  <stop offset="0.65" stopColor="#ff3a2a" stopOpacity="0.35" />
-                  <stop offset="1" stopColor="#ff2a2a" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-              {TEAR_LAYERS.map((l, n) => (
-                <path key={n} d={l.d} fill={l.fill} />
-              ))}
-              <ellipse
-                cx={TEAR_SPARK.x}
-                cy={TEAR_SPARK.v}
-                rx="26"
-                ry="34"
-                fill="url(#roster-tear-spark)"
-              />
-            </svg>
-            {EMBERS.map((m, n) => (
-              <i
-                key={n}
-                className={styles.ember}
-                aria-hidden="true"
-                style={{ "--ex": m.x, "--ev": m.v, "--n": n } as CSSProperties}
-              />
-            ))}
           </div>
         </div>
       </div>

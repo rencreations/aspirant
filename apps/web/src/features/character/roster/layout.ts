@@ -16,7 +16,6 @@ import type { PairId, Slug } from "@/content/types";
  * staggered so that the rows never line up. The pairs run from the newest to the oldest.
  */
 export const BOARD_H = 404;
-export const SLANT = 0.64;
 
 export interface Slot {
   readonly slug: Slug;
@@ -152,28 +151,25 @@ export const BAYS: readonly PairId[] = [
 ];
 
 export const SLOTS: readonly Slot[] = [
-  // The pair at the front: Obsidia next to the crimson plate, Selena beside her. The tear runs
-  // between them.
-  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.25, z: 1, dx: -0.035 }),
-  slot("selena", "selena-obsidia", tall(553, 727), { ty: 0.34, z: 1 }),
+  // The pair at the front: Obsidia next to the crimson plate and Selena beside her, the same size.
+  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.19, z: 1, dx: -0.035 }),
+  slot("selena", "selena-obsidia", tall(553, 805), { ty: 0.24, z: 1 }),
   // Guinevere and Vexana, one over the other.
-  slot("vexana", "guinevere-vexana", top(735, 971), { ty: 0.38, zoom: 2.4, dx: -0.06 }),
-  slot("guinevere", "guinevere-vexana", bottom(615, 840), { ty: 0.45, zoom: 1.7, dx: -0.05 }),
+  slot("vexana", "guinevere-vexana", top(813, 1049), { ty: 0.38, zoom: 2.4, dx: -0.06 }),
+  slot("guinevere", "guinevere-vexana", bottom(693, 918), { ty: 0.45, zoom: 1.7, dx: -0.02 }),
   // Lesley tall, Chang'e under the next pair.
-  slot("lesley", "lesley-change", tall(979, 1148), { ty: 0.34 }),
-  slot("change", "lesley-change", bottom(1036, 1164), { ty: 0.45, zoom: 2 }),
+  slot("lesley", "lesley-change", tall(1057, 1226), { ty: 0.34 }),
+  slot("change", "lesley-change", bottom(1114, 1242), { ty: 0.45, zoom: 2 }),
   // Angela above, Ruby under.
-  slot("angela", "ruby-angela", top(1156, 1389), { ty: 0.45, zoom: 1.5, dx: -0.05 }),
-  slot("ruby", "ruby-angela", bottom(1169, 1396), { ty: 0.45, zoom: 1.6 }),
+  slot("angela", "ruby-angela", top(1234, 1467), { ty: 0.25 }),
+  slot("ruby", "ruby-angela", bottom(1247, 1474), { ty: 0.45, zoom: 1.6 }),
   // Layla above, narrow, and Fanny tall at the end.
-  slot("layla", "fanny-layla", top(1397, 1529), { ty: 0.45, zoom: 2.2 }),
-  slot("fanny", "fanny-layla", tall(1539, 1714), { ty: 0.34 }),
+  slot("layla", "fanny-layla", top(1475, 1607), { ty: 0.45, zoom: 2.2 }),
+  slot("fanny", "fanny-layla", tall(1617, 1792), { ty: 0.34 }),
 ];
 
 /** The blue plate at the end of the row. */
-export const END = { x0: 1482, x1: 1722, x2: 2290 } as const;
-/** The tear between Obsidia and Selena runs along the right edge of Obsidia's panel. */
-export const TEAR = { top: 545, bottom: 545 - TALL } as const;
+export const END = { x0: 1560, x1: 1800, x2: 2368 } as const;
 export const BOARD_W = END.x2;
 
 /** The middle of a panel across its box, for the parallax and for finding the one in front. */
