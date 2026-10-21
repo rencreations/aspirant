@@ -255,7 +255,7 @@ test.describe("roster", () => {
     }
   });
 
-  test("the picture follows the pointer while the panel is hovered, and rests when it is not", async ({
+  test("a hovered panel is redrawn with a rig, does not follow the pointer, and rests after", async ({
     page,
   }, info) => {
     test.skip(info.project.name !== "desktop", "Phones have no hover");
@@ -264,29 +264,31 @@ test.describe("roster", () => {
     const rail = page.getByRole("navigation", { name: "Jump to a pair" });
     await rail.getByRole("button", { name: "Ruby and Angela" }).click();
     await page.waitForTimeout(1300);
-    const tilt = page.locator("li[data-slug='ruby'] [data-fx='tilt']");
-    const move = () => tilt.evaluate((el) => (el as HTMLElement).style.transform);
-    // At rest nothing is written.
-    expect(await move()).toBe("");
-    const box = (await page.locator("li[data-slug='ruby']").boundingBox())!;
+    const ruby = page.locator("li[data-slug='ruby']");
+    const canvas = ruby.locator("canvas");
+    // At rest there is no canvas and nothing is written on the picture.
+    await expect(canvas).toHaveCount(0);
+    const box = (await ruby.boundingBox())!;
     await page.mouse.move(box.x + box.width * 0.45, box.y + box.height * 0.5, { steps: 4 });
-    await page.mouse.move(box.x + box.width * 0.45, box.y + box.height * 0.5);
-    await page.waitForTimeout(500);
-    const a = await move();
-    expect(a).toContain("translate3d");
-    // Moving the pointer to the other side moves the picture the other way.
-    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.5, { steps: 6 });
+    await expect(ruby).toHaveAttribute("data-hover", "true");
+    await expect(canvas).toHaveCount(1);
+    const shot = () => canvas.screenshot();
+    // The picture moves on its own: two shots a moment apart differ.
+    await page.waitForTimeout(600);
+    const a = await shot();
     await page.waitForTimeout(700);
-    const b = await move();
-    expect(b).not.toBe(a);
-    const x = (t: string) => Number(/translate3d\((-?[\d.]+)px/.exec(t)?.[1]);
-    expect(x(b)).toBeLessThan(x(a));
-    // The overlay effects are there while hovered and gone when not.
-    const fx = page.locator("li[data-slug='ruby'] [class*='_fx']");
-    await expect(fx).toHaveCSS("opacity", "1");
+    const b = await shot();
+    expect(Buffer.compare(a, b)).not.toBe(0);
+    // And the removed lights are gone: no streaks, no light that follows the pointer.
+    for (const gone of ["_streaks", "_spot", "_shine"]) {
+      await expect(ruby.locator(`[class*='${gone}']`)).toHaveCount(0);
+    }
+    // The picture does not follow the pointer: nothing on it is moved by the pointer position.
+    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.5, { steps: 6 });
+    await expect(ruby.locator("[class*='_tilt']")).toHaveCSS("transform", "none");
     await page.mouse.move(5, 5);
-    await expect.poll(move, { timeout: 4000 }).toBe("");
-    await expect(fx).toHaveCSS("visibility", "hidden");
+    await expect(canvas).toHaveCount(0, { timeout: 4000 });
+    await expect(ruby).not.toHaveAttribute("data-hover", "true");
   });
 
   test("hovering Obsidia does not cover the title plate or her neighbour", async ({

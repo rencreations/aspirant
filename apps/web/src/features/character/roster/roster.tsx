@@ -152,8 +152,8 @@ const PanelView = memo(function PanelView({
         <span className={styles.lift}>
           <span className={styles.rim} aria-hidden="true" />
           <span className={styles.face}>
-            <span className={styles.art} aria-hidden="true">
-              <span className={styles.tilt} data-fx="tilt">
+            <span className={styles.art} data-fx="art" aria-hidden="true">
+              <span className={styles.tilt}>
                 {/* Plain <img>: static export. The splash art is the only picture here. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -171,8 +171,7 @@ const PanelView = memo(function PanelView({
             <span className={styles.fx} aria-hidden="true">
               <span className={styles.vignette} />
               <span className={styles.glow} />
-              <span className={styles.streaks} />
-              <span className={styles.spot} data-fx="spot" />
+              <span className={styles.ripple} />
               <span className={styles.sparkles}>
                 {SPARKLES.map(([x, y, size], n) => (
                   <i
@@ -189,8 +188,7 @@ const PanelView = memo(function PanelView({
                 ))}
               </span>
             </span>
-            <span className={styles.shine} aria-hidden="true" />
-            <span className={styles.tag} data-fx="tag">
+            <span className={styles.tag}>
               <span>{c.name}</span>
             </span>
           </span>
@@ -559,14 +557,13 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     const li = e.currentTarget.closest("li");
     if (!li || li.dataset.hover === "true") return;
     audio.blip("hover");
-    hoverFx.enter(li, e.clientX, e.clientY);
+    hoverFx.enter(li);
   };
   const onMove = (e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType === "touch" || engine.current.drag.on) return;
     const li = e.currentTarget.closest("li");
     // A move onto a panel counts as an enter, even if the enter itself was missed.
-    if (li && li.dataset.hover !== "true") hoverFx.enter(li, e.clientX, e.clientY);
-    hoverFx.move(e.clientX, e.clientY);
+    if (li && li.dataset.hover !== "true") hoverFx.enter(li);
   };
   const onLeave = () => {
     hoverFx.leave();

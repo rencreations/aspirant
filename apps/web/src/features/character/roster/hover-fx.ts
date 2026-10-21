@@ -1,115 +1,336 @@
 import { prefersReducedMotion } from "@/lib/hooks";
-import { clamp } from "@/lib/math";
 import { perfLevel } from "@/lib/perf";
+
+import { FACE, RIG } from "./layout";
 
 /**
  * What a panel does while the pointer is on it, and only then.
  *
- * The panel is marked as hovered (`data-hover` on its `<li>`, which the stylesheet reads to lift the
- * frame, take the haze off and colour the rim), the picture follows the pointer in two dimensions
- * (it slides against it, so it seems to sit behind the frame), the name tag slides a little the
- * other way, and a soft light follows the pointer. On top of that the picture idles the way the
- * animated cards of the game do: it floats and sways on two slow rhythms that never quite line
- * up. All of it eases in when the pointer arrives and out when it
- * leaves.
+ * The panel is marked `data-hover` (the stylesheet reads it to take the haze off, colour the rim,
+ * lift the frame and show the sparkles). The picture itself is redrawn by one WebGL canvas that moves
+ * to the hovered panel. It does not follow the pointer. Instead the flat splash art is given a rig,
+ * as the animated cards of the game have: the whole figure sways from the hips, the chest breathes,
+ * the head turns on the neck, and the hair streams in waves that grow toward its tips, each part on
+ * its own rhythm. Light plays on the subject too: highlights glint, the bright parts pulse in the
+ * character's colour, the edges catch a rim light, the eyes glow, bloom breathes, and a grain of
+ * glitter twinkles on the brightest pixels.
  *
- * One panel at a time runs this, in one animation frame loop that stops when the panel has settled.
- * Only `transform` is written. The sparkles, light streaks and glow that go with it are in the
- * stylesheet and run on the compositor while the panel is hovered.
+ * The regions are placed from where the face is in each picture (`FACE`) and how big the head is
+ * (`RIG`), measured on the art. One canvas and one loop serve the hovered panel, which eases in and
+ * out; when nothing is hovered the loop stops and the canvas is taken away.
  */
-interface Fx {
+
+const VERT = `#version 300 es
+in vec2 a;
+void main() { gl_Position = vec4(a, 0.0, 1.0); }`;
+
+const FRAG = `#version 300 es
+precision highp float;
+uniform sampler2D tex;
+uniform vec2 res;
+uniform vec4 box;
+uniform float t;
+uniform float k;
+uniform float q;
+uniform vec2 face;
+uniform float hs;
+uniform float hair;
+uniform vec3 tint;
+out vec4 o;
+
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+
+float luma(vec3 c) { return dot(c, vec3(0.299, 0.587, 0.114)); }
+
+void main() {
+  vec2 p = vec2(gl_FragCoord.x, res.y - gl_FragCoord.y);
+  vec2 uv = (p - box.xy) / box.zw;
+  const float R = 1.7778;
+
+  // Where each part of the rig is, in the picture.
+  vec2 d0 = vec2((uv.x - face.x) * R, uv.y - face.y);
+  float head = exp(-dot(d0, d0) / (hs * hs * 1.7));
+  vec2 dh = vec2(d0.x / (hs * 3.4), (d0.y - hs * 0.9) / (hs * 3.2));
+  float hairM = clamp(exp(-dot(dh, dh)) - head * 0.55, 0.0, 1.0);
+  float below = clamp((uv.y - face.y) / (0.98 - face.y), 0.0, 1.0);
+  float above = 1.0 - below;
+  vec2 chestC = vec2(face.x, face.y + hs * 2.7);
+  vec2 dc = vec2((uv.x - chestC.x) * R, uv.y - chestC.y);
+  float chest = exp(-dot(dc, dc) / (hs * hs * 6.0));
+
+  vec2 disp = vec2(0.0);
+  // The body sways from the hips: the further from the bottom, the more it moves.
+  disp.x += (sin(t * 0.8) * 0.7 + sin(t * 1.9 + 1.0) * 0.3) * 0.008 * above * above;
+  disp.y += sin(t * 1.25) * 0.0035 * above;
+  // The chest breathes.
+  disp += (uv - chestC) * sin(t * 1.25 + 0.4) * 0.016 * chest;
+  // The head turns and nods on the neck.
+  vec2 neck = vec2(face.x, face.y + hs * 1.0);
+  vec2 rr = vec2((uv.x - neck.x) * R, uv.y - neck.y);
+  float ang = (sin(t * 0.7 + 1.3) * 0.7 + sin(t * 1.6) * 0.3) * 0.036 * head;
+  disp += ang * vec2(-rr.y / R, rr.x);
+  disp.y += sin(t * 1.1 + 0.8) * 0.0028 * head;
+  // The hair streams: waves that travel down it and grow toward the tips.
+  float tip = clamp(length(vec2(d0.x, d0.y - hs * 0.5)) / (hs * 3.0), 0.0, 1.0);
+  float wave = sin(t * 1.9 + uv.y * 12.0 + uv.x * 5.0) * 0.6 + sin(t * 3.1 + uv.y * 21.0) * 0.4;
+  disp.x += wave * 0.009 * hair * hairM * (0.35 + tip);
+  disp.y += sin(t * 1.5 + uv.x * 10.0 + uv.y * 4.0) * 0.005 * hair * hairM * (0.3 + tip);
+  // Cloth and the rest of the air move a little, so no part is dead still.
+  disp += vec2(sin(t * 1.4 + uv.y * 16.0), cos(t * 1.2 + uv.x * 14.0)) * 0.0011 * (1.0 - head) * q;
+
+  vec2 suv = uv + disp * k;
+  vec3 c = texture(tex, suv).rgb;
+  float L = luma(c);
+
+  // Light that plays on the subject.
+  float hl = smoothstep(0.7, 0.98, L);
+  float pulse = 0.5 + 0.5 * sin(t * 2.2 + suv.y * 5.0 + suv.x * 3.0);
+  c += tint * hl * (0.1 + 0.2 * pulse) * k;
+  // Bloom that breathes.
+  c += vec3(1.0, 0.97, 0.92) * pow(L, 4.0) * (0.06 + 0.07 * sin(t * 1.7)) * k;
+  // The eyes glow.
+  vec2 de = d0 - vec2(0.0, hs * 0.05);
+  float eye = exp(-dot(de, de) / (hs * hs * 0.35));
+  c += tint * eye * (0.12 + 0.14 * sin(t * 2.6)) * k;
+
+  if (q > 0.5) {
+    // Rim light: the edges of the figure catch light that travels around them.
+    vec2 px = 1.6 / box.zw;
+    float lx = luma(texture(tex, suv + vec2(px.x, 0.0)).rgb) - luma(texture(tex, suv - vec2(px.x, 0.0)).rgb);
+    float ly = luma(texture(tex, suv + vec2(0.0, px.y)).rgb) - luma(texture(tex, suv - vec2(0.0, px.y)).rgb);
+    float edge = clamp(length(vec2(lx, ly)) * 2.6, 0.0, 1.0);
+    float swing = 0.5 + 0.5 * sin(t * 1.4 + atan(ly, lx) + suv.y * 3.0);
+    c += mix(tint, vec3(1.0), 0.45) * edge * swing * 0.28 * k;
+    // Glitter on the brightest pixels, each twinkling on its own.
+    vec2 gs = suv * vec2(190.0, 107.0);
+    vec2 cell = floor(gs);
+    vec2 f = fract(gs) - 0.5;
+    float g = hash(cell);
+    float tw = pow(0.5 + 0.5 * sin(t * (2.0 + g * 5.0) + g * 40.0), 10.0);
+    // A small soft point with a faint cross, not a square.
+    float spark = exp(-dot(f, f) * 40.0) + 0.5 * exp(-abs(f.x) * 30.0 - abs(f.y) * 4.0) + 0.5 * exp(-abs(f.y) * 30.0 - abs(f.x) * 4.0);
+    c += mix(vec3(1.0), tint, 0.3) * step(0.86, g) * tw * spark * smoothstep(0.5, 0.88, L) * 1.1 * k;
+    // A touch more colour while it is alive.
+    float gray = luma(c);
+    c = mix(vec3(gray), c, 1.0 + 0.16 * k);
+  }
+  o = vec4(c, 1.0);
+}`;
+
+interface Panel {
   li: HTMLElement;
-  tilt: HTMLElement | null;
-  tag: HTMLElement | null;
-  spot: HTMLElement | null;
-  /** The pointer, from -0.5 to 0.5 across and down the panel, and where it is in px. */
-  tx: number;
-  ty: number;
-  nx: number;
-  ny: number;
-  sx: number;
-  sy: number;
-  px: number;
-  py: number;
+  art: HTMLElement;
+  img: HTMLImageElement;
+  slug: keyof typeof FACE;
+  tint: [number, number, number];
   /** 0 off the panel, 1 on it. */
   k: number;
   goal: number;
-  half: number;
-  w: number;
-  h: number;
-  /** The box of the panel on the screen, read now and then and not on every move. */
-  left: number;
-  top: number;
-  at: number;
-  /** Shifts the rhythm of the idle motion, so two panels never sway together. */
+  /** A time offset, so two panels never move in step. */
   phase: number;
-  /** Movement is on (not the lightest level, not reduced motion). */
-  moving: boolean;
 }
 
-const FOLLOW = { x: 30, y: 19, zoom: 0.06 };
-const TAG = { x: 9, y: 5 };
-/** The idle sway, as a share of the panel: sideways, up and down. */
-const SWAY = { x: 0.016, y: 0.022 };
+function hexToRgb(hex: string): [number, number, number] {
+  const m = /#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex.trim());
+  if (!m) return [1, 0.4, 0.6];
+  return [parseInt(m[1]!, 16) / 255, parseInt(m[2]!, 16) / 255, parseInt(m[3]!, 16) / 255];
+}
 
 export function createHoverFx() {
-  let fx: Fx | null = null;
+  let canvas: HTMLCanvasElement | null = null;
+  let gl: WebGL2RenderingContext | null = null;
+  let program: WebGLProgram | null = null;
+  let failed = false;
+  const textures = new Map<string, WebGLTexture>();
+  const uniforms: Record<string, WebGLUniformLocation | null> = {};
+
+  let current: Panel | null = null;
+  let leaving: Panel | null = null;
   let raf = 0;
-  /** A panel that has been left and is still easing back. */
-  let leaving: Fx | null = null;
+  let shownOn: Panel | null = null;
 
-  const canMove = () => !prefersReducedMotion() && perfLevel() !== "lite";
+  const canDraw = () => !failed && !prefersReducedMotion() && perfLevel() !== "lite";
 
-  const write = (f: Fx, now: number) => {
-    const k = f.k;
-    let swayX = 0;
-    let swayY = 0;
-    if (f.moving) {
-      const t = now / 1000 + f.phase;
-      swayX = (0.7 * Math.sin(t * 0.9) + 0.3 * Math.sin(t * 2.1 + 1)) * SWAY.x * f.w;
-      swayY = (0.65 * Math.sin(t * 1.15 + 0.5) + 0.35 * Math.sin(t * 2.7)) * SWAY.y * f.h;
+  const hideCanvas = () => {
+    if (canvas) {
+      canvas.style.display = "none";
+      canvas.remove();
     }
-    if (f.tilt && f.moving) {
-      const x = -f.nx * FOLLOW.x * k + swayX * k;
-      const y = -f.ny * FOLLOW.y * k + swayY * k;
-      // The scale only changes while the pointer arrives or leaves: a scale that changes on every
-      // frame would make the browser draw the whole picture again on every frame.
-      const s = 1 + FOLLOW.zoom * k;
-      f.tilt.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${s.toFixed(4)})`;
-    }
-    if (f.tag && f.moving) {
-      f.tag.style.transform = `translate3d(${(f.nx * TAG.x * k).toFixed(1)}px,${(f.ny * TAG.y * k).toFixed(1)}px,0)`;
-    }
-    if (f.spot) {
-      f.spot.style.transform = `translate3d(${(f.sx - f.half).toFixed(1)}px,${(f.sy - f.half).toFixed(1)}px,0)`;
+    shownOn = null;
+  };
+
+  /** The canvas, the context and the program are made on the first hover. */
+  const setup = (): boolean => {
+    if (canvas && gl && program) return true;
+    if (failed) return false;
+    try {
+      canvas = document.createElement("canvas");
+      canvas.setAttribute("aria-hidden", "true");
+      canvas.style.cssText =
+        "position:absolute;left:0;top:0;width:100%;height:100%;display:none;pointer-events:none";
+      gl = canvas.getContext("webgl2", {
+        alpha: false,
+        antialias: false,
+        powerPreference: "high-performance",
+      });
+      if (!gl) throw new Error("no webgl2");
+      const ctx = gl;
+      const compile = (type: number, src: string) => {
+        const sh = ctx.createShader(type)!;
+        ctx.shaderSource(sh, src);
+        ctx.compileShader(sh);
+        if (!ctx.getShaderParameter(sh, ctx.COMPILE_STATUS)) {
+          throw new Error(ctx.getShaderInfoLog(sh) ?? "shader");
+        }
+        return sh;
+      };
+      program = ctx.createProgram();
+      ctx.attachShader(program, compile(ctx.VERTEX_SHADER, VERT));
+      ctx.attachShader(program, compile(ctx.FRAGMENT_SHADER, FRAG));
+      ctx.linkProgram(program);
+      if (!ctx.getProgramParameter(program, ctx.LINK_STATUS)) throw new Error("link");
+      ctx.useProgram(program);
+      const buf = ctx.createBuffer();
+      ctx.bindBuffer(ctx.ARRAY_BUFFER, buf);
+      ctx.bufferData(
+        ctx.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+        ctx.STATIC_DRAW,
+      );
+      const loc = ctx.getAttribLocation(program, "a");
+      ctx.enableVertexAttribArray(loc);
+      ctx.vertexAttribPointer(loc, 2, ctx.FLOAT, false, 0, 0);
+      for (const n of ["tex", "res", "box", "t", "k", "q", "face", "hs", "hair", "tint"]) {
+        uniforms[n] = ctx.getUniformLocation(program, n);
+      }
+      canvas.addEventListener("webglcontextlost", (e) => {
+        e.preventDefault();
+        failed = true;
+        hideCanvas();
+      });
+      return true;
+    } catch {
+      failed = true;
+      canvas = null;
+      gl = null;
+      program = null;
+      return false;
     }
   };
 
-  const clear = (f: Fx) => {
-    for (const el of [f.tilt, f.tag, f.spot]) {
-      if (!el) continue;
-      el.style.transform = "";
-      el.style.transition = "";
-      el.style.willChange = "";
+  const textureFor = (p: Panel): WebGLTexture | null => {
+    if (!gl) return null;
+    const have = textures.get(p.slug);
+    if (have) return have;
+    if (!p.img.complete || p.img.naturalWidth === 0) return null;
+    const tex = gl.createTexture();
+    if (!tex) return null;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB8, gl.RGB, gl.UNSIGNED_BYTE, p.img);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    textures.set(p.slug, tex);
+    // Only the last few pictures stay on the graphics card.
+    if (textures.size > 4) {
+      const oldest = textures.keys().next().value;
+      if (oldest !== undefined && oldest !== p.slug) {
+        gl.deleteTexture(textures.get(oldest) ?? null);
+        textures.delete(oldest);
+      }
     }
-    delete f.li.dataset.hover;
+    return tex;
+  };
+
+  /** Put the canvas over the picture of this panel and size it. */
+  const mount = (p: Panel): boolean => {
+    if (!canvas || !gl) return false;
+    if (shownOn === p) return true;
+    const w = p.li.offsetWidth;
+    const h = p.li.offsetHeight;
+    if (w < 2 || h < 2) return false;
+    const scale = Math.min(window.devicePixelRatio || 1, 1.5);
+    const cw = Math.max(2, Math.round(Math.min(w * scale, 1500)));
+    const ch = Math.max(2, Math.round((h * cw) / w));
+    if (canvas.width !== cw || canvas.height !== ch) {
+      canvas.width = cw;
+      canvas.height = ch;
+    }
+    gl.viewport(0, 0, cw, ch);
+    p.art.after(canvas);
+    canvas.style.display = "block";
+    shownOn = p;
+    return true;
+  };
+
+  const draw = (p: Panel, now: number): boolean => {
+    if (!canvas || !gl || !program) return false;
+    const tex = textureFor(p);
+    if (!tex || !mount(p)) return false;
+    const cs = getComputedStyle(p.img);
+    const s = canvas.width / p.li.offsetWidth;
+    const f = FACE[p.slug];
+    const r = RIG[p.slug];
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.uniform1i(uniforms.tex!, 0);
+    gl.uniform2f(uniforms.res!, canvas.width, canvas.height);
+    gl.uniform4f(
+      uniforms.box!,
+      parseFloat(cs.left) * s,
+      parseFloat(cs.top) * s,
+      parseFloat(cs.width) * s,
+      parseFloat(cs.height) * s,
+    );
+    gl.uniform1f(uniforms.t!, now / 1000 + p.phase);
+    gl.uniform1f(uniforms.k!, p.k);
+    gl.uniform1f(uniforms.q!, perfLevel() === "full" ? 1 : 0);
+    gl.uniform2f(uniforms.face!, f.fx, f.fy);
+    gl.uniform1f(uniforms.hs!, r.hs);
+    gl.uniform1f(uniforms.hair!, r.hair);
+    gl.uniform3f(uniforms.tint!, p.tint[0], p.tint[1], p.tint[2]);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    return true;
+  };
+
+  const release = (p: Panel) => {
+    delete p.li.dataset.hover;
+    if (shownOn === p) hideCanvas();
   };
 
   const frame = (now: number) => {
     raf = 0;
     let busy = false;
-    for (const f of [fx, leaving]) {
-      if (!f) continue;
-      f.nx += (f.tx - f.nx) * 0.14;
-      f.ny += (f.ty - f.ny) * 0.14;
-      f.sx += (f.px - f.sx) * 0.3;
-      f.sy += (f.py - f.sy) * 0.3;
-      f.k += (f.goal - f.k) * 0.1;
-      write(f, now);
-      if (f.goal === 0 && f.k < 0.004) {
-        clear(f);
-        if (f === leaving) leaving = null;
-      } else busy = true;
+    for (const p of [current, leaving]) {
+      if (!p) continue;
+      p.k += (p.goal - p.k) * 0.09;
+      if (p.goal === 0 && p.k < 0.01) {
+        if (p === leaving) {
+          release(p);
+          leaving = null;
+        }
+        continue;
+      }
+      // The panel that is leaving gives the canvas up to the one that arrives.
+      if (p === leaving && current && shownOn !== p) {
+        release(p);
+        leaving = null;
+        continue;
+      }
+      if (!draw(p, now)) {
+        // No picture to draw yet: the plain picture stays.
+        if (p === leaving) {
+          release(p);
+          leaving = null;
+        }
+        continue;
+      }
+      busy = true;
     }
     if (busy) raf = requestAnimationFrame(frame);
   };
@@ -120,96 +341,55 @@ export function createHoverFx() {
 
   return {
     /** The pointer came onto a panel (or moved onto one from another). */
-    enter(li: HTMLElement, x: number, y: number) {
-      if (fx?.li === li) return;
-      if (fx) this.leave();
-      // The frame is lit at once, whatever the device: only the movement is for a device with room.
+    enter(li: HTMLElement) {
+      if (current?.li === li) return;
+      if (current) this.leave();
+      // The frame is lit at once, whatever the device.
       li.dataset.hover = "true";
+      if (!canDraw() || !setup()) return;
+      const img = li.querySelector<HTMLImageElement>("img");
+      const art = li.querySelector<HTMLElement>("[data-fx='art']");
+      const slug = li.dataset.slug as keyof typeof FACE | undefined;
+      if (!img || !art || !slug || !(slug in FACE)) return;
       if (leaving?.li === li) {
-        fx = leaving;
+        current = leaving;
         leaving = null;
+        current.goal = 1;
       } else {
-        const tilt = li.querySelector<HTMLElement>("[data-fx='tilt']");
-        const tag = li.querySelector<HTMLElement>("[data-fx='tag']");
-        const spot = li.querySelector<HTMLElement>("[data-fx='spot']");
-        const r = li.getBoundingClientRect();
-        const moving = canMove();
-        fx = {
+        current = {
           li,
-          tilt,
-          tag,
-          spot,
-          tx: 0,
-          ty: 0,
-          nx: 0,
-          ny: 0,
-          sx: 0,
-          sy: 0,
-          px: 0,
-          py: 0,
+          art,
+          img,
+          slug,
+          tint: hexToRgb(getComputedStyle(li).getPropertyValue("--c")),
           k: 0,
           goal: 1,
-          half: (spot?.offsetWidth ?? 0) / 2,
-          w: r.width,
-          h: r.height,
-          left: r.left,
-          top: r.top,
-          at: performance.now(),
-          phase: Math.random() * 20,
-          moving,
+          phase: Math.random() * 30,
         };
-        // The eased writes take the place of the stylesheet's own transition.
-        if (moving) for (const el of [tilt, tag]) if (el) el.style.transition = "none";
-        // Its own layer, but only while the pointer is on it.
-        if (moving && tilt) tilt.style.willChange = "transform";
-        if (spot) spot.style.transition = "none";
       }
-      fx.goal = 1;
-      this.move(x, y);
-      fx.sx = fx.px;
-      fx.sy = fx.py;
-      run();
-    },
-    /** The pointer moved on the panel. */
-    move(x: number, y: number) {
-      if (!fx) return;
-      // Reading the box makes the browser lay the page out, so it is read a few times a second (the
-      // panel moves only when the row scrolls).
-      const now = performance.now();
-      if (now - fx.at > 200) {
-        const r = fx.li.getBoundingClientRect();
-        fx.left = r.left;
-        fx.top = r.top;
-        fx.w = r.width;
-        fx.h = r.height;
-        fx.at = now;
-      }
-      fx.tx = clamp((x - fx.left) / fx.w - 0.5, -0.5, 0.5);
-      fx.ty = clamp((y - fx.top) / fx.h - 0.5, -0.5, 0.5);
-      fx.px = x - fx.left;
-      fx.py = y - fx.top;
       run();
     },
     /** The pointer left it: it eases back to rest. */
     leave() {
-      if (!fx) return;
-      fx.goal = 0;
-      fx.tx = 0;
-      fx.ty = 0;
+      if (!current) return;
+      current.goal = 0;
       // The frame goes back to its shade at once, with the stylesheet's own fade.
-      delete fx.li.dataset.hover;
-      if (leaving && leaving !== fx) clear(leaving);
-      leaving = fx;
-      fx = null;
+      delete current.li.dataset.hover;
+      if (leaving && leaving !== current) release(leaving);
+      leaving = current;
+      current = null;
       run();
     },
     destroy() {
       cancelAnimationFrame(raf);
       raf = 0;
-      if (fx) clear(fx);
-      if (leaving) clear(leaving);
-      fx = null;
+      if (current) release(current);
+      if (leaving) release(leaving);
+      current = null;
       leaving = null;
+      for (const t of textures.values()) gl?.deleteTexture(t);
+      textures.clear();
+      hideCanvas();
     },
   };
 }
