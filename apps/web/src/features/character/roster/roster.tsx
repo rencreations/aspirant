@@ -25,7 +25,7 @@ import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { isTypingTarget, prefersReducedMotion, useHotkey, useIsoLayoutEffect } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
-import { perfLevel, startGovernor } from "@/lib/perf";
+import { startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
@@ -74,8 +74,6 @@ const EMBERS = Array.from({ length: 9 }, (_, n) => {
 
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
-  tilt: (e: PointerEvent<HTMLAnchorElement>) => void;
-  leave: (e: PointerEvent<HTMLAnchorElement>) => void;
   focus: (c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => void;
   choose: (c: RosterCharacter, e: MouseEvent<HTMLAnchorElement>) => void;
 }
@@ -87,7 +85,6 @@ interface PanelProps {
   index: number;
   chosen: boolean;
   actions: Actions;
-  registerArt: (el: HTMLSpanElement | null) => void;
 }
 
 /** One panel. It only draws again when it is chosen, not on every scroll. It is shaded until it is hovered. */
@@ -98,7 +95,6 @@ const PanelView = memo(function PanelView({
   index,
   chosen,
   actions,
-  registerArt,
 }: PanelProps) {
   const style = {
     "--x0": s.x0,
@@ -117,13 +113,7 @@ const PanelView = memo(function PanelView({
     "--i": index,
   } as CSSProperties;
   return (
-    <li
-      className={styles.panel}
-      style={style}
-      data-slug={c.slug}
-      data-chosen={chosen}
-      data-tall={s.tall}
-    >
+    <li className={styles.panel} style={style} data-slug={c.slug} data-chosen={chosen}>
       <TLink
         href={characterRoute(c.slug)}
         transitionLabel={c.name}
@@ -135,35 +125,36 @@ const PanelView = memo(function PanelView({
         onPointerEnter={(e) => {
           actions.enter(c, e);
         }}
-        onPointerMove={actions.tilt}
-        onPointerLeave={actions.leave}
         onFocus={(e) => {
           actions.focus(c, bay, e);
         }}
       >
-        <span className={styles.rim} aria-hidden="true" />
-        <span className={styles.face}>
-          <span className={styles.art} ref={registerArt} aria-hidden="true">
-            <span className={styles.tilt} data-tilt>
-              {/* Plain <img>: static export. The splash art is the only picture here. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset(splashPath(c.slug))}
-                alt=""
-                width={2048}
-                height={1152}
-                decoding="async"
-                draggable={false}
-              />
+        <span className={styles.lift}>
+          <span className={styles.rim} aria-hidden="true" />
+          <span className={styles.face}>
+            <span className={styles.art} aria-hidden="true">
+              <span className={styles.tilt}>
+                {/* Plain <img>: static export. The splash art is the only picture here. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={asset(splashPath(c.slug))}
+                  alt=""
+                  width={2048}
+                  height={1152}
+                  decoding="async"
+                  draggable={false}
+                />
+              </span>
+            </span>
+            <span className={styles.veil} aria-hidden="true" />
+            <span className={styles.shine} aria-hidden="true" />
+            <span className={styles.tag}>
+              <span>{c.name}</span>
             </span>
           </span>
-          <span className={styles.veil} aria-hidden="true" />
-          <span className={styles.scrim} aria-hidden="true" />
-          <span className={styles.shine} aria-hidden="true" />
-          <span className={styles.tag}>
-            <span>{c.name}</span>
-          </span>
         </span>
+        {/* The part that answers the pointer: the same slanted shape as the frame, and nothing else. */}
+        <span className={styles.hit} aria-hidden="true" />
       </TLink>
     </li>
   );
@@ -200,15 +191,12 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
 
   const scroller = useRef<HTMLDivElement>(null);
   const board = useRef<HTMLDivElement>(null);
-  const arts = useRef<Array<HTMLSpanElement | null>>([]);
-  const ghost = useRef<HTMLDivElement>(null);
   const fill = useRef<HTMLSpanElement>(null);
   const engine = useRef({
     u: 1,
     left: 0,
     vw: 0,
     max: 0,
-    mids: [] as number[],
     bays: [] as number[],
     centers: [] as number[],
     target: 0,
@@ -216,8 +204,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     wheelRaf: 0,
     glideRaf: 0,
     frame: 0,
-    last: 0,
-    skew: 0,
     drag: { on: false, moved: false, x: 0, from: 0, v: 0, last: 0, lastX: 0 },
     suppress: false,
     active: 0,
@@ -239,7 +225,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     e.max = Math.max(0, el.scrollWidth - e.vw);
     e.u = b.offsetHeight / BOARD_H;
     e.left = b.offsetLeft;
-    e.mids = SLOTS.map((s) => e.left + e.u * mid(s));
     e.bays = BAY_CENTRES.map((c) => e.left + e.u * c);
     e.centers = e.bays.map((x) => clamp(x - e.vw / 2, 0, e.max));
   }, []);
@@ -255,47 +240,22 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     return best;
   };
 
-  const updateRef = useRef<() => void>(() => undefined);
-
-  /** Everything that follows the scroll: the parallax, the lean, the progress line, the pair in front. */
+  /** What follows the scroll: the progress line and the pair in front. Nothing else moves. */
   const update = useCallback(() => {
     const el = scroller.current;
     const e = engine.current;
     e.frame = 0;
     if (!el) return;
     const sl = el.scrollLeft;
-    const still = prefersReducedMotion();
-    const lean = !still && perfLevel() === "full";
-    // The speed of the scroll leans the pictures a little, and eases back to nothing.
-    const v = sl - e.last;
-    e.last = sl;
-    e.skew = !lean ? 0 : e.skew * 0.82 + clamp(-v * 0.05, -4, 4) * 0.18;
-    if (Math.abs(e.skew) < 0.02) e.skew = 0;
-    if (ghost.current)
-      ghost.current.style.transform = `translate3d(${(-sl * 0.22).toFixed(1)}px,0,0)`;
     if (fill.current)
       fill.current.style.transform = `scaleX(${e.max > 0 ? (sl / e.max).toFixed(4) : 0})`;
-    for (let i = 0; i < arts.current.length; i++) {
-      const art = arts.current[i];
-      if (!art) continue;
-      // Where the panel is relative to the middle of the screen, in screens.
-      const d = ((e.mids[i] ?? 0) - sl - e.vw / 2) / Math.max(1, e.vw);
-      if (Math.abs(d) > 0.9) continue;
-      art.style.transform = still
-        ? "translate3d(0,0,0) scale(1.08)"
-        : `translate3d(${(-d * 7).toFixed(2)}%,0,0) scale(1.1)${e.skew === 0 ? "" : ` skewX(${e.skew.toFixed(2)}deg)`}`;
-    }
     const a = bayAt(sl);
     if (a !== e.active) {
       e.active = a;
       setActive(a);
     }
     if (sl > 8) setMoved(true);
-    if (e.skew !== 0) e.frame = requestAnimationFrame(() => updateRef.current());
   }, []);
-  useIsoLayoutEffect(() => {
-    updateRef.current = update;
-  });
 
   const schedule = useCallback(() => {
     const e = engine.current;
@@ -549,21 +509,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     audio.blip("hover");
   };
 
-  const onTilt = (e: PointerEvent<HTMLAnchorElement>) => {
-    if (e.pointerType !== "mouse" || prefersReducedMotion()) return;
-    const card = e.currentTarget;
-    const tilt = card.querySelector<HTMLElement>("[data-tilt]");
-    if (!tilt) return;
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    tilt.style.transform = `translate3d(${(-x * 30).toFixed(1)}px,${(-y * 20).toFixed(1)}px,0) scale(1.07)`;
-  };
-  const onLeave = (e: PointerEvent<HTMLAnchorElement>) => {
-    const tilt = e.currentTarget.querySelector<HTMLElement>("[data-tilt]");
-    if (tilt) tilt.style.transform = "";
-  };
-
   const onFocus = (_c: RosterCharacter, bay: number, e: FocusEvent<HTMLAnchorElement>) => {
     if (!e.currentTarget.matches(":focus-visible")) return;
     goBay(bay);
@@ -586,24 +531,16 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   // The panels get the same functions on every render, so they do not draw again on a scroll.
   const act = useRef<Actions>({
     enter: onEnter,
-    tilt: onTilt,
-    leave: onLeave,
     focus: onFocus,
     choose,
   });
   useIsoLayoutEffect(() => {
-    act.current = { enter: onEnter, tilt: onTilt, leave: onLeave, focus: onFocus, choose };
+    act.current = { enter: onEnter, focus: onFocus, choose };
   });
   const actions = useMemo<Actions>(
     () => ({
       enter: (c, e) => {
         act.current.enter(c, e);
-      },
-      tilt: (e) => {
-        act.current.tilt(e);
-      },
-      leave: (e) => {
-        act.current.leave(e);
       },
       focus: (c, bay, e) => {
         act.current.focus(c, bay, e);
@@ -614,13 +551,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     }),
     [],
   );
-  const registerArts = useMemo(
-    () =>
-      Array.from({ length: count }, (_, n) => (el: HTMLSpanElement | null) => {
-        arts.current[n] = el;
-      }),
-    [count],
-  );
 
   const here = BAYS[active] ? pairNames.get(BAYS[active]) : undefined;
 
@@ -630,6 +560,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       aria-label="Roster"
       data-ready={ready}
       data-moved={moved}
+      data-far={active !== 0}
       data-chosen={chosen !== null}
     >
       {/* The world behind the panels: silver and blue, slanted stripes. */}
@@ -648,7 +579,7 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       >
         <div ref={board} className={styles.board} style={{ "--bw": BOARD_W } as CSSProperties}>
           {/* A huge word behind the panels, drifting slower than they do. */}
-          <div ref={ghost} className={styles.ghost} aria-hidden="true">
+          <div className={styles.ghost} aria-hidden="true">
             <span>ASPIRANTS</span>
           </div>
 
@@ -694,7 +625,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
                 index={i}
                 chosen={chosen === slot.slug}
                 actions={actions}
-                registerArt={registerArts[i] as (el: HTMLSpanElement | null) => void}
               />
             ))}
           </ul>

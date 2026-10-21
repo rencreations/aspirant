@@ -156,6 +156,130 @@ test.describe("roster", () => {
     await expect.poll(() => haze("ruby"), { timeout: 3000 }).toBe(1);
   });
 
+  const pairOf = (slug: string) =>
+    ({
+      selena: "Selena and Obsidia",
+      obsidia: "Selena and Obsidia",
+      guinevere: "Guinevere and Vexana",
+      vexana: "Guinevere and Vexana",
+      lesley: "Lesley and Chang'e",
+      change: "Lesley and Chang'e",
+      ruby: "Ruby and Angela",
+      angela: "Ruby and Angela",
+      fanny: "Fanny and Layla",
+      layla: "Fanny and Layla",
+    })[slug] ?? "";
+
+  test("only the visible slanted shape answers the pointer, panel by panel", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "Phones have no hover");
+    test.setTimeout(120_000);
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    // Which panel is lit: the opacity of the haze over it (0 is lit).
+    const litSlugs = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>("li[data-slug]")]
+          .filter((li) => {
+            const veil = li.querySelector<HTMLElement>("[class*='_veil']");
+            return veil !== null && Number(getComputedStyle(veil).opacity) < 0.5;
+          })
+          .map((li) => li.dataset.slug),
+      );
+    // The owner of a point, worked out from the geometry of the panels: the slanted shape of each.
+    const ownerOf = (x: number, y: number) =>
+      page.evaluate(
+        ([px = 0, py = 0]) => {
+          for (const li of document.querySelectorAll<HTMLElement>("li[data-slug]")) {
+            const r = li.getBoundingClientRect();
+            const v = (n: string) => Number.parseFloat(li.style.getPropertyValue(n));
+            const u = r.height / (v("--y1") - v("--y0"));
+            const top = r.top + 0;
+            const left = r.left + u * (v("--x1") - v("--x0"));
+            const bottomLeft = r.left;
+            const bottomRight = r.left + u * (v("--x3") - v("--x0"));
+            // The lean is the same on both sides, so a point is inside when it is between the two
+            // slanted edges at its height.
+            const t = (py - top) / r.height;
+            if (t < 0 || t > 1) continue;
+            const a = bottomLeft + (left - bottomLeft) * (1 - t);
+            const b = bottomRight + (r.right - bottomRight) * (1 - t);
+            if (px >= a && px <= b) return li.dataset.slug ?? null;
+          }
+          return null;
+        },
+        [x, y],
+      );
+    // What the pointer would hit at a point: the slug of the panel, or null.
+    const hitAt = (x: number, y: number) =>
+      page.evaluate(
+        ([px = 0, py = 0]) => {
+          const e = document.elementFromPoint(px, py);
+          if (!e?.className.toString().includes("_hit")) return null;
+          return e.closest("li")?.dataset.slug ?? null;
+        },
+        [x, y],
+      );
+    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
+    const vp = page.viewportSize()!;
+    const checked = new Set<string>();
+    let outside = 0;
+    for (const pair of ["Selena and Obsidia", "Lesley and Chang'e", "Fanny and Layla"]) {
+      await rail.getByRole("button", { name: pair }).click();
+      await page.waitForTimeout(1500);
+      for (let gx = 0; gx <= 30; gx++) {
+        for (let gy = 0; gy <= 11; gy++) {
+          const x = 10 + ((gx + (gy % 2) * 0.5) * (vp.width - 40)) / 31;
+          const y = 100 + (gy * (vp.height - 140)) / 11;
+          const owner = await ownerOf(x, y);
+          // The pointer hits exactly the panel whose slanted shape holds the point, and nothing in a
+          // gap, on the red plate's edge or on the blue plate.
+          expect(await hitAt(x, y), `${x},${y}`).toBe(owner);
+          if (owner === null) outside += 1;
+          else checked.add(owner);
+        }
+      }
+    }
+    expect(checked.size).toBe(10);
+    expect(outside).toBeGreaterThan(10);
+    // And hovering the middle of each panel lights that panel and no other.
+    for (const slug of [...checked]) {
+      const box = (await page.locator(`li[data-slug='${slug}']`).first().boundingBox())!;
+      await rail.getByRole("button", { name: pairOf(slug) }).click();
+      await page.waitForTimeout(1300);
+      const b = (await page.locator(`li[data-slug='${slug}']`).first().boundingBox())!;
+      await page.mouse.move(b.x + b.width * 0.5, b.y + b.height * 0.5);
+      await expect.poll(litSlugs, { timeout: 4000 }).toEqual([slug]);
+      void box;
+    }
+  });
+
+  test("hovering Obsidia does not cover the title plate or her neighbour", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "Phones have no hover");
+    await page.goto(url("/character/"));
+    await page.waitForLoadState("networkidle");
+    const obsidia = page.locator("li[data-slug='obsidia']");
+    const box = (await obsidia.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.62, box.y + box.height * 0.3);
+    await page.waitForTimeout(900);
+    // What is on top at the title plate and at Selena's tag is still the plate and the tag.
+    const top = await page.evaluate(() => {
+      const logo = document.querySelector("h1");
+      const tag = document.querySelector("li[data-slug='selena'] [class*='_tag']");
+      const at = (el: Element | null) => {
+        const r = el?.getBoundingClientRect();
+        if (!r) return null;
+        const e = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        return e !== null && ((el?.closest("li") ?? el)?.contains(e) ?? false);
+      };
+      return { title: at(logo), tag: at(tag) };
+    });
+    expect(top).toEqual({ title: true, tag: true });
+  });
+
   test("a hover plays no voice line, and the panels carry only a name", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop", "Phones have no hover");
     await page.goto(url("/character/"));
@@ -192,12 +316,12 @@ test.describe("roster", () => {
     const clip = await tag.evaluate((el) => getComputedStyle(el).clipPath);
     expect(clip).toContain("polygon");
     const skew = await tag.locator("span").evaluate((el) => getComputedStyle(el).transform);
-    // matrix(1, 0, tan(-32.6deg), 1, 0, 0): a skew along x of about -0.64.
+    // matrix(1, 0, tan(-16deg), 1, 0, 0): a gentle skew along x of about -0.29.
     const m = /matrix\(([^)]+)\)/.exec(skew);
     expect(m).not.toBeNull();
     const c = Number(m![1]!.split(",")[2]);
-    expect(c).toBeLessThan(-0.6);
-    expect(c).toBeGreaterThan(-0.68);
+    expect(c).toBeLessThan(-0.25);
+    expect(c).toBeGreaterThan(-0.33);
   });
 
   test("a click closes the other panels and opens the character page", async ({

@@ -77,7 +77,7 @@
   height: var(--avail);
 }
 
-/* A huge word under the panels, drifting slower than they do. */
+/* A huge word under the panels. */
 .ghost {
   position: absolute;
   left: calc(var(--u) * 880);
@@ -134,11 +134,14 @@
   height: var(--ph);
   opacity: 0;
   translate: calc(var(--u) * 60) calc(var(--u) * 38);
+  /* Its box is a rectangle that overlaps the neighbours: only the slanted shape answers. */
+  pointer-events: none;
 }
 
-.panel:hover,
+/* A panel never rises above the front pair's plate and tear (z 5). */
+.panel:has(.hit:hover),
 .panel:focus-within {
-  z-index: 6;
+  z-index: 4;
 }
 
 /* They come in along the lean of the panels, one after another. */
@@ -158,16 +161,35 @@
   outline: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* What lifts on a hover. The hit area stays where the frame is, so the lift never moves the edge
+   of what answers the pointer. */
+.lift {
+  position: absolute;
+  inset: 0;
   transition: transform 700ms var(--ease-spring);
 }
 
+/* The part that answers the pointer. It is the same parallelogram as the frame, so a hover or a
+   click is only ever on the visible shape, and never on the corner of a box that lies over a
+   neighbour. (clip-path also clips what the pointer can hit.) */
+.hit {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--shape);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 @media (hover: hover) {
-  .card:hover {
+  .card:has(.hit:hover) .lift {
     transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
   }
 }
 
-.card:focus-visible {
+.card:focus-visible .lift {
   transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
 }
 
@@ -204,7 +226,7 @@
 }
 
 @media (hover: hover) {
-  .card:hover .rim::before {
+  .card:has(.hit:hover) .rim::before {
     opacity: 1;
   }
 }
@@ -217,13 +239,12 @@
 .art {
   position: absolute;
   inset: 0;
-  transform: translate3d(0, 0, 0) scale(1.1);
 }
 
 .tilt {
   position: absolute;
   inset: 0;
-  transition: transform 800ms var(--ease-out);
+  transition: transform 900ms var(--ease-out);
 }
 
 /* The splash is 16:9. It is sized from the height of the panel and placed so that its face lands
@@ -238,10 +259,14 @@
   -webkit-user-drag: none;
 }
 
-/* Hovered: the picture drifts slowly, like a held breath. */
+/* Hovered: the picture comes in a little, slowly. */
+.card:focus-visible .tilt {
+  transform: scale(1.05);
+}
+
 @media (hover: hover) {
-  .card:hover .tilt img {
-    animation: drift 15s ease-in-out infinite alternate;
+  .card:has(.hit:hover) .tilt {
+    transform: scale(1.05);
   }
 }
 
@@ -260,26 +285,8 @@
 }
 
 @media (hover: hover) {
-  .card:hover .veil {
+  .card:has(.hit:hover) .veil {
     opacity: 0;
-  }
-}
-
-.scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgb(6 8 20 / 0.82), rgb(6 8 20 / 0.3) 36%, transparent 58%);
-  opacity: 0.35;
-  transition: opacity 600ms var(--ease-out);
-}
-
-.card:focus-visible .scrim {
-  opacity: 1;
-}
-
-@media (hover: hover) {
-  .card:hover .scrim {
-    opacity: 1;
   }
 }
 
@@ -295,17 +302,20 @@
     rgb(255 255 255 / 0.3) 53%,
     transparent 62%
   );
-  transform: translate3d(-130%, 0, 0);
+  transform: translateX(-130%);
+  visibility: hidden;
   pointer-events: none;
 }
 
 @media (hover: hover) {
-  .card:hover .shine {
+  .card:has(.hit:hover) .shine {
+    visibility: visible;
     animation: sweep 1.1s ease-out 1;
   }
 }
 
 .panel[data-chosen="true"] .shine {
+  visibility: visible;
   animation: sweep 0.45s ease-in 1;
 }
 
@@ -336,13 +346,14 @@
   display: block;
   font-family: var(--font-display-stack);
   font-weight: 800;
-  font-style: italic;
+  font-style: normal;
   font-size: 1.2rem;
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  /* Over the slant of the italic itself: 0.64 is a lean of 32.6 degrees. */
-  transform: skewX(-32.6deg);
+  /* A gentle lean (16 degrees). The shape around it leans at 32.6 degrees, and the letters follow it
+     without going as far. */
+  transform: skewX(-16deg);
 }
 
 /* The round badge of the big ribbon on the blue plate. */
@@ -367,12 +378,6 @@
   height: 1.2rem;
 }
 
-/* The two parts of the front pair: Obsidia is always lit, her ribbon sits above the met bar. */
-.panel[data-slug="obsidia"] .tag {
-  /* Her frame is hidden under the crimson plate: the tag follows the edge of the plate instead. */
-  left: calc(var(--u) * 283 - 0.64 * (var(--top) - 3px) + 0.35rem - var(--lean));
-}
-
 /* The front pair ------------------------------------------------------------------------------ */
 .hero {
   position: absolute;
@@ -395,7 +400,7 @@
       rgb(132 14 56 / 0.93) 52%,
       rgb(196 24 76 / 0.9) 100%
     );
-  clip-path: polygon(0 0, 100% 0, calc(var(--u) * 22) 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, calc(var(--u) * 43) 100%, 0 100%);
 }
 
 /* The pink line along the slant of the plate. */
@@ -409,8 +414,8 @@
   clip-path: polygon(
     calc(var(--u) * 272) 0,
     calc(var(--u) * 283) 0,
-    calc(var(--u) * 22) 100%,
-    calc(var(--u) * 11) 100%
+    calc(var(--u) * 43) 100%,
+    calc(var(--u) * 32) 100%
   );
 }
 
@@ -707,7 +712,7 @@
     transform 340ms var(--ease-in);
 }
 
-.wall[data-chosen="true"] .panel[data-chosen="true"] .card {
+.wall[data-chosen="true"] .panel[data-chosen="true"] .lift {
   transform: scale(1.04);
 }
 
@@ -832,6 +837,7 @@
   background: rgb(36 48 84 / 0.22);
   overflow: hidden;
   pointer-events: none;
+  contain: strict;
 }
 
 .railFill {
@@ -840,6 +846,7 @@
   background: #e0245e;
   transform-origin: 0 50%;
   transform: scaleX(0);
+  will-change: transform;
 }
 
 /* Prev, next and the way on */
@@ -939,6 +946,11 @@
 
 .hint[data-gone="true"] {
   opacity: 0;
+  visibility: hidden;
+}
+
+.hint[data-gone="true"] i {
+  animation: none;
 }
 
 .hint i {
@@ -1000,15 +1012,6 @@
 
   .where {
     font-size: 0.6rem;
-  }
-}
-
-@keyframes drift {
-  from {
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  to {
-    transform: scale(1.06) translate3d(-1.4%, -1.1%, 0);
   }
 }
 
@@ -1098,15 +1101,13 @@
   .ember,
   .shine,
   .hint i,
-  .tilt img,
   .whereValue {
     animation: none !important;
   }
 
-  .card,
+  .lift,
   .tilt,
   .veil,
-  .scrim,
   .rail button,
   .arrow,
   .next {
@@ -1116,9 +1117,17 @@
 }
 
 /* A device that is short of speed keeps the pictures still and the world plain. */
-:root[data-perf="lite"] .tilt img,
-:root[data-perf="balanced"] .tilt img,
 :root[data-perf="lite"] .shine,
 :root[data-perf="lite"] .ember {
   animation: none;
+}
+
+/* The tear and the embers rest while the front pair is out of sight. */
+.wall[data-far="true"] .tear,
+.wall[data-far="true"] .ember {
+  animation-play-state: paused;
+}
+
+.wall[data-far="true"] .ember {
+  visibility: hidden;
 }

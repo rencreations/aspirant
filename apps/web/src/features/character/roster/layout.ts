@@ -29,82 +29,116 @@ export interface Slot {
   /** The top edge and the bottom edge. */
   readonly y0: number;
   readonly y1: number;
-  /** Stacking: the hero sits at the back, the rest in front of it. */
   readonly z: number;
   /**
    * Where the picture sits. The splash is 16:9. `zoom` is the height of the picture in panel
-   * heights, (`fx`, `fy`) is the point of it to show (a face, as fractions of the picture) and
-   * (`tx`, `ty`) is where in the panel that point goes (as fractions of the panel box).
+   * heights, (`fx`, `fy`) is the face in the picture (fractions of it), and (`tx`, `ty`) is where
+   * in the panel box that face lands (fractions of the box). `tx` is worked out so that the face
+   * is in the middle of the slanted shape at the height of `ty`, and `zoom` is raised, if it has
+   * to be, until the picture covers the whole panel with the face there.
    */
   readonly zoom: number;
   readonly fx: number;
   readonly fy: number;
   readonly tx: number;
   readonly ty: number;
-  /** A tall panel shows its ribbon all the time, like the reference. */
-  readonly tall: boolean;
-  /** The part of the hero that is always lit. */
-  readonly bright?: boolean;
+}
+
+/** The face of each character in her splash art, as fractions of the picture. */
+const FACE: Record<Slug, { fx: number; fy: number }> = {
+  selena: { fx: 0.672, fy: 0.272 },
+  obsidia: { fx: 0.479, fy: 0.167 },
+  vexana: { fx: 0.595, fy: 0.42 },
+  guinevere: { fx: 0.607, fy: 0.359 },
+  lesley: { fx: 0.62, fy: 0.37 },
+  change: { fx: 0.6, fy: 0.34 },
+  angela: { fx: 0.565, fy: 0.245 },
+  ruby: { fx: 0.453, fy: 0.353 },
+  layla: { fx: 0.616, fy: 0.484 },
+  fanny: { fx: 0.567, fy: 0.37 },
+};
+
+/** The picture is wider than it is tall by this much. */
+const RATIO = 16 / 9;
+/** Room for the parallax (a few percent of the width either way) and for the scale. */
+const SPARE_X = 1.14;
+const SPARE_Y = 1.08;
+
+interface Box {
+  x0: number;
+  x1: number;
+  x2: number;
+  x3: number;
+  y0: number;
+  y1: number;
+}
+
+/**
+ * Put a face in the middle of a panel. The middle of a slanted panel moves across by the lean as
+ * you go down it, so `tx` follows the height at which the face is.
+ */
+function place(
+  slug: Slug,
+  box: Box,
+  want: { zoom: number; ty: number },
+): Pick<Slot, "zoom" | "fx" | "fy" | "tx" | "ty"> {
+  const { fx, fy } = FACE[slug];
+  const pw = box.x2 - box.x0;
+  const ph = box.y1 - box.y0;
+  const lean = box.x1 - box.x0;
+  const { ty } = want;
+  const tx = 0.5 + (lean * (0.5 - ty)) / pw;
+  // The picture must cover the panel on every side with the face where it is asked to be.
+  const need = Math.max(
+    (ty / fy) * SPARE_Y,
+    ((1 - ty) / (1 - fy)) * SPARE_Y,
+    ((pw * tx) / (RATIO * ph * fx)) * SPARE_X,
+    ((pw * (1 - tx)) / (RATIO * ph * (1 - fx))) * SPARE_X,
+  );
+  return { zoom: Math.max(want.zoom, need), fx, fy, tx, ty };
 }
 
 const ROW = 117; // the lean across half a panel
 const TALL = 240; // and across a whole one
 
-const top = (slug: Slug, pair: PairId, x1: number, x2: number, rest: Partial<Slot>): Slot => ({
-  slug,
-  pair,
+function slot(
+  slug: Slug,
+  pair: PairId,
+  box: Box,
+  want: { zoom?: number; ty: number; z?: number },
+): Slot {
+  return {
+    slug,
+    pair,
+    ...box,
+    z: want.z ?? 3,
+    ...place(slug, box, { zoom: want.zoom ?? 1, ty: want.ty }),
+  };
+}
+
+const top = (x1: number, x2: number): Box => ({
   x0: x1 - ROW,
   x1,
   x2,
   x3: x2 - ROW,
   y0: 5,
   y1: 188,
-  z: 3,
-  zoom: 1.4,
-  fx: 0.5,
-  fy: 0.3,
-  tx: 0.5,
-  ty: 0.42,
-  tall: false,
-  ...rest,
 });
-
-const bottom = (slug: Slug, pair: PairId, x1: number, x2: number, rest: Partial<Slot>): Slot => ({
-  slug,
-  pair,
+const bottom = (x1: number, x2: number): Box => ({
   x0: x1 - ROW,
   x1,
   x2,
   x3: x2 - ROW,
   y0: 197,
   y1: 380,
-  z: 3,
-  zoom: 1.4,
-  fx: 0.5,
-  fy: 0.3,
-  tx: 0.5,
-  ty: 0.42,
-  tall: false,
-  ...rest,
 });
-
-const tall = (slug: Slug, pair: PairId, x1: number, x2: number, rest: Partial<Slot>): Slot => ({
-  slug,
-  pair,
+const tall = (x1: number, x2: number): Box => ({
   x0: x1 - TALL,
   x1,
   x2,
   x3: x2 - TALL,
   y0: 5,
   y1: 380,
-  z: 2,
-  zoom: 1.15,
-  fx: 0.5,
-  fy: 0.3,
-  tx: 0.5,
-  ty: 0.36,
-  tall: true,
-  ...rest,
 });
 
 /** The pairs, newest first. */
@@ -117,44 +151,22 @@ export const BAYS: readonly PairId[] = [
 ];
 
 export const SLOTS: readonly Slot[] = [
-  // The pair at the front: Obsidia in the crimson, Selena behind the red tear.
-  {
-    slug: "obsidia",
-    pair: "selena-obsidia",
-    x0: 0,
-    x1: 0,
-    x2: 545,
-    x3: 545 - TALL,
-    y0: 5,
-    y1: 380,
-    z: 1,
-    zoom: 1.12,
-    fx: 0.5,
-    fy: 0.45,
-    tx: 0.56,
-    ty: 0.5,
-    tall: true,
-    bright: true,
-  },
-  tall("selena", "selena-obsidia", 553, 727, {
-    z: 1,
-    zoom: 1.2,
-    fx: 0.66,
-    fy: 0.4,
-    ty: 0.45,
-  }),
+  // The pair at the front: Obsidia next to the crimson plate, Selena beside her. The tear runs
+  // between them.
+  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.34, z: 1 }),
+  slot("selena", "selena-obsidia", tall(553, 727), { ty: 0.34, z: 1 }),
   // Guinevere and Vexana, one over the other.
-  top("vexana", "guinevere-vexana", 735, 971, { zoom: 1.5, fx: 0.7, fy: 0.55, ty: 0.46 }),
-  bottom("guinevere", "guinevere-vexana", 615, 840, { zoom: 1.45, fx: 0.62, fy: 0.36, ty: 0.4 }),
+  slot("vexana", "guinevere-vexana", top(735, 971), { ty: 0.45, zoom: 2.4 }),
+  slot("guinevere", "guinevere-vexana", bottom(615, 840), { ty: 0.45, zoom: 1.7 }),
   // Lesley tall, Chang'e under the next pair.
-  tall("lesley", "lesley-change", 979, 1148, { zoom: 1.35, fx: 0.62, fy: 0.34, ty: 0.38 }),
-  bottom("change", "lesley-change", 1036, 1164, { zoom: 1.7, fx: 0.4, fy: 0.3, ty: 0.42 }),
+  slot("lesley", "lesley-change", tall(979, 1148), { ty: 0.34 }),
+  slot("change", "lesley-change", bottom(1036, 1164), { ty: 0.45, zoom: 2 }),
   // Angela above, Ruby under.
-  top("angela", "ruby-angela", 1156, 1389, { zoom: 1.5, fx: 0.68, fy: 0.34, ty: 0.46 }),
-  bottom("ruby", "ruby-angela", 1169, 1396, { zoom: 1.4, fx: 0.52, fy: 0.3, ty: 0.42 }),
+  slot("angela", "ruby-angela", top(1156, 1389), { ty: 0.45, zoom: 1.5 }),
+  slot("ruby", "ruby-angela", bottom(1169, 1396), { ty: 0.45, zoom: 1.6 }),
   // Layla above, narrow, and Fanny tall at the end.
-  top("layla", "fanny-layla", 1397, 1529, { zoom: 1.7, fx: 0.72, fy: 0.48, ty: 0.46 }),
-  tall("fanny", "fanny-layla", 1539, 1714, { zoom: 1.35, fx: 0.62, fy: 0.3, ty: 0.36 }),
+  slot("layla", "fanny-layla", top(1397, 1529), { ty: 0.45, zoom: 2.2 }),
+  slot("fanny", "fanny-layla", tall(1539, 1714), { ty: 0.34 }),
 ];
 
 /** The blue plate at the end of the row. */
