@@ -61,8 +61,8 @@ const FACE: Record<Slug, { fx: number; fy: number }> = {
 /** The picture is wider than it is tall by this much. */
 const RATIO = 16 / 9;
 /** Room for the parallax (a few percent of the width either way) and for the scale. */
-const SPARE_X = 1.14;
-const SPARE_Y = 1.08;
+const SPARE_X = 1.16;
+const SPARE_Y = 1.12;
 
 interface Box {
   x0: number;
@@ -80,14 +80,15 @@ interface Box {
 function place(
   slug: Slug,
   box: Box,
-  want: { zoom: number; ty: number },
+  want: { zoom: number; ty: number; dx: number },
 ): Pick<Slot, "zoom" | "fx" | "fy" | "tx" | "ty"> {
   const { fx, fy } = FACE[slug];
   const pw = box.x2 - box.x0;
   const ph = box.y1 - box.y0;
   const lean = box.x1 - box.x0;
   const { ty } = want;
-  const tx = 0.5 + (lean * (0.5 - ty)) / pw;
+  // `dx` moves the face off the middle, to the left when it is negative.
+  const tx = 0.5 + (lean * (0.5 - ty)) / pw + want.dx;
   // The picture must cover the panel on every side with the face where it is asked to be.
   const need = Math.max(
     (ty / fy) * SPARE_Y,
@@ -105,14 +106,14 @@ function slot(
   slug: Slug,
   pair: PairId,
   box: Box,
-  want: { zoom?: number; ty: number; z?: number },
+  want: { zoom?: number; ty: number; z?: number; dx?: number },
 ): Slot {
   return {
     slug,
     pair,
     ...box,
     z: want.z ?? 3,
-    ...place(slug, box, { zoom: want.zoom ?? 1, ty: want.ty }),
+    ...place(slug, box, { zoom: want.zoom ?? 1, ty: want.ty, dx: want.dx ?? 0 }),
   };
 }
 
@@ -153,16 +154,16 @@ export const BAYS: readonly PairId[] = [
 export const SLOTS: readonly Slot[] = [
   // The pair at the front: Obsidia next to the crimson plate, Selena beside her. The tear runs
   // between them.
-  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.34, z: 1 }),
+  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.25, z: 1, dx: -0.07 }),
   slot("selena", "selena-obsidia", tall(553, 727), { ty: 0.34, z: 1 }),
   // Guinevere and Vexana, one over the other.
-  slot("vexana", "guinevere-vexana", top(735, 971), { ty: 0.45, zoom: 2.4 }),
-  slot("guinevere", "guinevere-vexana", bottom(615, 840), { ty: 0.45, zoom: 1.7 }),
+  slot("vexana", "guinevere-vexana", top(735, 971), { ty: 0.38, zoom: 2.4, dx: -0.06 }),
+  slot("guinevere", "guinevere-vexana", bottom(615, 840), { ty: 0.45, zoom: 1.7, dx: -0.05 }),
   // Lesley tall, Chang'e under the next pair.
   slot("lesley", "lesley-change", tall(979, 1148), { ty: 0.34 }),
   slot("change", "lesley-change", bottom(1036, 1164), { ty: 0.45, zoom: 2 }),
   // Angela above, Ruby under.
-  slot("angela", "ruby-angela", top(1156, 1389), { ty: 0.45, zoom: 1.5 }),
+  slot("angela", "ruby-angela", top(1156, 1389), { ty: 0.45, zoom: 1.5, dx: -0.05 }),
   slot("ruby", "ruby-angela", bottom(1169, 1396), { ty: 0.45, zoom: 1.6 }),
   // Layla above, narrow, and Fanny tall at the end.
   slot("layla", "fanny-layla", top(1397, 1529), { ty: 0.45, zoom: 2.2 }),

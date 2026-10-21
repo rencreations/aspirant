@@ -76,6 +76,18 @@ const EMBERS = Array.from({ length: 9 }, (_, n) => {
 /** Specks of light that rise through a hovered panel. */
 const MOTES = [0, 1, 2, 3, 4, 5, 6] as const;
 
+/** Where the four-pointed sparkles twinkle in a hovered panel (percent across, down, and a size). */
+const SPARKLES = [
+  [14, 20, 1],
+  [76, 12, 0.7],
+  [62, 44, 1.2],
+  [30, 58, 0.8],
+  [86, 68, 1],
+  [18, 80, 0.7],
+  [50, 28, 0.6],
+  [68, 88, 0.9],
+] as const;
+
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
   move: (e: PointerEvent<HTMLAnchorElement>) => void;
@@ -158,8 +170,19 @@ const PanelView = memo(function PanelView({
             {/* What plays while the panel is hovered, and only then: it makes the picture look deep. */}
             <span className={styles.fx} aria-hidden="true">
               <span className={styles.vignette} />
+              <span className={styles.glow} />
               <span className={styles.streaks} />
               <span className={styles.spot} data-fx="spot" />
+              <span className={styles.sparkles}>
+                {SPARKLES.map(([x, y, size], n) => (
+                  <i
+                    key={n}
+                    style={
+                      { "--n": n, "--sx": `${x}%`, "--sy": `${y}%`, "--sz": size } as CSSProperties
+                    }
+                  />
+                ))}
+              </span>
               <span className={styles.motes}>
                 {MOTES.map((n) => (
                   <i key={n} style={{ "--n": n } as CSSProperties} />
@@ -532,13 +555,18 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
   );
 
   const onEnter = (_c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => {
-    if (e.pointerType !== "mouse" || engine.current.drag.on) return;
-    audio.blip("hover");
+    if (e.pointerType === "touch" || engine.current.drag.on) return;
     const li = e.currentTarget.closest("li");
-    if (li) hoverFx.enter(li, e.clientX, e.clientY);
+    if (!li || li.dataset.hover === "true") return;
+    audio.blip("hover");
+    hoverFx.enter(li, e.clientX, e.clientY);
   };
   const onMove = (e: PointerEvent<HTMLAnchorElement>) => {
-    if (e.pointerType === "mouse") hoverFx.move(e.clientX, e.clientY);
+    if (e.pointerType === "touch" || engine.current.drag.on) return;
+    const li = e.currentTarget.closest("li");
+    // A move onto a panel counts as an enter, even if the enter itself was missed.
+    if (li && li.dataset.hover !== "true") hoverFx.enter(li, e.clientX, e.clientY);
+    hoverFx.move(e.clientX, e.clientY);
   };
   const onLeave = () => {
     hoverFx.leave();

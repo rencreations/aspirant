@@ -139,7 +139,7 @@
 }
 
 /* A panel never rises above the front pair's plate and tear (z 5). */
-.panel:has(.hit:hover),
+.panel[data-hover="true"],
 .panel:focus-within {
   z-index: 4;
 }
@@ -183,10 +183,8 @@
   cursor: pointer;
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .lift {
-    transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
-  }
+.panel[data-hover="true"] .lift {
+  transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
 }
 
 .card:focus-visible .lift {
@@ -225,10 +223,8 @@
   opacity: 1;
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .rim::before {
-    opacity: 1;
-  }
+.panel[data-hover="true"] .rim::before {
+  opacity: 1;
 }
 
 .face {
@@ -264,10 +260,8 @@
   transform: scale(1.05);
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .tilt {
-    transform: scale(1.05);
-  }
+.panel[data-hover="true"] .tilt {
+  transform: scale(1.05);
 }
 
 /* The haze that makes the others sleep. */
@@ -284,10 +278,8 @@
   opacity: 0;
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .veil {
-    opacity: 0;
-  }
+.panel[data-hover="true"] .veil {
+  opacity: 0;
 }
 
 /* What plays while a panel is hovered, and only then ------------------------------------------- */
@@ -309,12 +301,10 @@
   transition-delay: 0s;
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .fx {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
-  }
+.panel[data-hover="true"] .fx {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 /* The edges darken, so the middle of the picture comes forward. */
@@ -356,6 +346,45 @@
   will-change: transform;
 }
 
+/* A glow in the colour of the character that breathes, like the light of the animated cards. */
+.glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 58%,
+    color-mix(in srgb, var(--c) 60%, #fff) 0%,
+    color-mix(in srgb, var(--c) 30%, transparent) 38%,
+    transparent 72%
+  );
+  opacity: 0;
+  animation: glow 3.4s ease-in-out infinite;
+}
+
+/* Four-pointed sparkles that twinkle in and out in turn. */
+.sparkles {
+  position: absolute;
+  inset: 0;
+}
+
+.sparkles i {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: calc(1.35rem * var(--sz));
+  aspect-ratio: 1;
+  margin: calc(0.675rem * var(--sz) * -1) 0 0 calc(0.675rem * var(--sz) * -1);
+  background: #fff;
+  clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+  opacity: 0;
+  transform: scale(0) rotate(0deg);
+  animation: twinkle calc(2.2s + var(--n) * 0.35s) ease-in-out infinite;
+  animation-delay: calc(var(--n) * -0.6s);
+}
+
+.sparkles i:nth-child(3n) {
+  background: color-mix(in srgb, var(--c) 40%, #fff);
+}
+
 /* Specks of light that rise through the picture, each at its own pace. */
 .motes {
   position: absolute;
@@ -383,6 +412,7 @@
 /* Only a fast device plays the streaks and the specks. */
 :root[data-perf="balanced"] .streaks,
 :root[data-perf="balanced"] .motes,
+:root[data-perf="balanced"] .sparkles,
 :root[data-perf="lite"] .fx {
   display: none;
 }
@@ -404,11 +434,9 @@
   pointer-events: none;
 }
 
-@media (hover: hover) {
-  .card:has(.hit:hover) .shine {
-    visibility: visible;
-    animation: sweep 1.1s ease-out 1;
-  }
+.panel[data-hover="true"] .shine {
+  visibility: visible;
+  animation: sweep 1.1s ease-out 1;
 }
 
 .panel[data-chosen="true"] .shine {
@@ -1255,11 +1283,40 @@
 
 @media (prefers-reduced-motion: reduce) {
   .streaks,
-  .motes i {
+  .glow,
+  .motes i,
+  .sparkles i {
     animation: none !important;
   }
 
-  .motes {
+  .motes,
+  .sparkles {
     display: none;
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.04;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  70% {
+    opacity: 0.35;
+    transform: scale(0.55) rotate(80deg);
   }
 }
