@@ -56,37 +56,55 @@ const BAY_CENTRES = [
   (END.x1 + END.x2) / 2,
 ];
 
-/** The jagged line of the tear that splits the crimson from the dim, along the edge of Obsidia. */
-const TEAR_JITTER = [0, 7, -5, 9, -8, 4, -9, 8, -4, 10, -7, 5, -9, 6, 0, -6];
-const TEAR_POINTS = TEAR_JITTER.map((j, i) => {
-  const v = 5 + (i * 375) / (TEAR_JITTER.length - 1);
-  return [TEAR.top - SLANT * (v - 5) + j, v] as const;
-});
-const TEAR_PATH = TEAR_POINTS.map(
-  ([x, v], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${v.toFixed(1)}`,
-).join(" ");
-const TEAR_X0 = Math.min(...TEAR_POINTS.map(([x]) => x)) - 40;
-const TEAR_X1 = Math.max(...TEAR_POINTS.map(([x]) => x)) + 40;
+/**
+ * The tear between Obsidia and Selena, like a blade cut with fire in it: a straight slash on the lean
+ * of the frames, wide and dim at the edges and thin and white-hot in the middle, tapering to a point
+ * at both ends, with torn edges. It is layers of flat shapes, wider and fainter outward, so it glows
+ * without a blur.
+ */
+const TEAR_CENTRE = (TEAR.top + 553) / 2;
+const TEAR_REACH = 50;
+const TEAR_X0 = TEAR_CENTRE - SLANT * 375 - TEAR_REACH - 8;
+const TEAR_X1 = TEAR_CENTRE + TEAR_REACH + 8;
+const TEAR_STEPS = 64;
+
+/** A repeatable ragged edge: the same on every render. */
+const rough = (i: number, seed: number) => {
+  const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
+  return (x - Math.floor(x)) * 2 - 1;
+};
+
+/** The outline of one layer: half a width on each side of the cut, tapering, with torn edges. */
+function tearBand(half: number, tear: number, seed: number): string {
+  const left: string[] = [];
+  const right: string[] = [];
+  for (let i = 0; i <= TEAR_STEPS; i++) {
+    const v = 5 + (i * 375) / TEAR_STEPS;
+    const t = Math.sin((Math.PI * (v - 5)) / 375);
+    const w = half * (0.18 + 0.82 * Math.pow(t, 0.6));
+    const c = TEAR_CENTRE - SLANT * (v - 5);
+    left.push(`${(c - w + rough(i, seed) * tear).toFixed(1)} ${v.toFixed(1)}`);
+    right.push(`${(c + w + rough(i, seed + 9) * tear).toFixed(1)} ${v.toFixed(1)}`);
+  }
+  return `M${left.join(" L")} L${right.reverse().join(" L")} Z`;
+}
+
+const TEAR_LAYERS = [
+  { d: tearBand(48, 4, 1), fill: "rgb(110 6 26 / 0.16)" },
+  { d: tearBand(33, 3.5, 2), fill: "rgb(140 8 34 / 0.3)" },
+  { d: tearBand(20, 3, 3), fill: "rgb(196 16 48 / 0.55)" },
+  { d: tearBand(10, 2.4, 4), fill: "#ff3350" },
+  { d: tearBand(3.4, 1.4, 5), fill: "#ffd9d0" },
+  { d: tearBand(1.2, 0.8, 6), fill: "#ffffff" },
+] as const;
+/** Where the cut burns hottest: a spark of fire in the middle. */
+const TEAR_SPARK = { v: 215, x: TEAR_CENTRE - SLANT * (215 - 5) };
+
 /** Embers that leave the tear. */
 const EMBERS = Array.from({ length: 9 }, (_, n) => {
   const v = 40 + n * 38;
-  return { v, x: TEAR.top - SLANT * (v - 5) };
+  return { v, x: TEAR_CENTRE - SLANT * (v - 5) };
 });
-
-/** Specks of light that rise through a hovered panel. */
-const MOTES = [0, 1, 2, 3, 4, 5, 6] as const;
-
-/** Where the four-pointed sparkles twinkle in a hovered panel (percent across, down, and a size). */
-const SPARKLES = [
-  [14, 20, 1],
-  [76, 12, 0.7],
-  [62, 44, 1.2],
-  [30, 58, 0.8],
-  [86, 68, 1],
-  [18, 80, 0.7],
-  [50, 28, 0.6],
-  [68, 88, 0.9],
-] as const;
 
 interface Actions {
   enter: (c: RosterCharacter, e: PointerEvent<HTMLAnchorElement>) => void;
@@ -152,8 +170,8 @@ const PanelView = memo(function PanelView({
         <span className={styles.lift}>
           <span className={styles.rim} aria-hidden="true" />
           <span className={styles.face}>
-            <span className={styles.art} data-fx="art" aria-hidden="true">
-              <span className={styles.tilt}>
+            <span className={styles.art} aria-hidden="true">
+              <span className={styles.tilt} data-fx="pic">
                 {/* Plain <img>: static export. The splash art is the only picture here. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -167,27 +185,6 @@ const PanelView = memo(function PanelView({
               </span>
             </span>
             <span className={styles.veil} aria-hidden="true" />
-            {/* What plays while the panel is hovered, and only then: it makes the picture look deep. */}
-            <span className={styles.fx} aria-hidden="true">
-              <span className={styles.vignette} />
-              <span className={styles.glow} />
-              <span className={styles.ripple} />
-              <span className={styles.sparkles}>
-                {SPARKLES.map(([x, y, size], n) => (
-                  <i
-                    key={n}
-                    style={
-                      { "--n": n, "--sx": `${x}%`, "--sy": `${y}%`, "--sz": size } as CSSProperties
-                    }
-                  />
-                ))}
-              </span>
-              <span className={styles.motes}>
-                {MOTES.map((n) => (
-                  <i key={n} style={{ "--n": n } as CSSProperties} />
-                ))}
-              </span>
-            </span>
             <span className={styles.tag}>
               <span>{c.name}</span>
             </span>
@@ -557,13 +554,14 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     const li = e.currentTarget.closest("li");
     if (!li || li.dataset.hover === "true") return;
     audio.blip("hover");
-    hoverFx.enter(li);
+    hoverFx.enter(li, e.clientX, e.clientY);
   };
   const onMove = (e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType === "touch" || engine.current.drag.on) return;
     const li = e.currentTarget.closest("li");
     // A move onto a panel counts as an enter, even if the enter itself was missed.
-    if (li && li.dataset.hover !== "true") hoverFx.enter(li);
+    if (li && li.dataset.hover !== "true") hoverFx.enter(li, e.clientX, e.clientY);
+    hoverFx.move(e.clientX, e.clientY);
   };
   const onLeave = () => {
     hoverFx.leave();
@@ -749,9 +747,24 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
               }
               preserveAspectRatio="none"
             >
-              <path className={styles.tearWide} d={TEAR_PATH} />
-              <path className={styles.tearMid} d={TEAR_PATH} />
-              <path className={styles.tearCore} d={TEAR_PATH} />
+              <defs>
+                <radialGradient id="roster-tear-spark">
+                  <stop offset="0" stopColor="#fff4c8" stopOpacity="0.95" />
+                  <stop offset="0.3" stopColor="#ffa040" stopOpacity="0.8" />
+                  <stop offset="0.65" stopColor="#ff3a2a" stopOpacity="0.35" />
+                  <stop offset="1" stopColor="#ff2a2a" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              {TEAR_LAYERS.map((l, n) => (
+                <path key={n} d={l.d} fill={l.fill} />
+              ))}
+              <ellipse
+                cx={TEAR_SPARK.x}
+                cy={TEAR_SPARK.v}
+                rx="26"
+                ry="34"
+                fill="url(#roster-tear-spark)"
+              />
             </svg>
             {EMBERS.map((m, n) => (
               <i
@@ -775,37 +788,17 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
           <span className={styles.whereName}>{here ? here.names : ""}</span>
         </p>
 
-        <nav className={styles.rail} aria-label="Jump to a pair">
-          <span className={styles.railLine} aria-hidden="true">
-            <span ref={fill} className={styles.railFill} />
-          </span>
-          <ul>
-            {BAYS.map((id, i) => {
-              const p = pairNames.get(id);
-              return (
-                <li key={id}>
-                  <button
-                    type="button"
-                    aria-label={p?.names ?? id}
-                    title={p?.names}
-                    aria-current={active === i ? "true" : undefined}
-                    style={{ "--c": p?.colours[0] } as CSSProperties}
-                    onPointerEnter={(e) => {
-                      if (e.pointerType === "mouse") audio.blip("hover");
-                    }}
-                    onClick={() => {
-                      audio.blip("click");
-                      setMoved(true);
-                      goBay(i);
-                    }}
-                  >
-                    <span aria-hidden="true">{pad(i + 1)}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+        <div
+          className={styles.progress}
+          role="progressbar"
+          aria-label="Position in the roster"
+          aria-valuemin={1}
+          aria-valuemax={BAYS.length}
+          aria-valuenow={Math.min(active + 1, BAYS.length)}
+          aria-valuetext={here ? here.names : "The collection"}
+        >
+          <span ref={fill} className={styles.railFill} />
+        </div>
 
         <div className={styles.controls}>
           <button

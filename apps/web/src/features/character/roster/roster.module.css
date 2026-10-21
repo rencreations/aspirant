@@ -164,12 +164,10 @@
   pointer-events: none;
 }
 
-/* What lifts on a hover. The hit area stays where the frame is, so the lift never moves the edge
-   of what answers the pointer. */
+/* The frame and its picture. The hit area is separate, so it never moves. */
 .lift {
   position: absolute;
   inset: 0;
-  transition: transform 700ms var(--ease-spring);
 }
 
 /* The part that answers the pointer. It is the same parallelogram as the frame, so a hover or a
@@ -181,14 +179,6 @@
   clip-path: var(--shape);
   pointer-events: auto;
   cursor: pointer;
-}
-
-.panel[data-hover="true"] .lift {
-  transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
-}
-
-.card:focus-visible .lift {
-  transform: translate3d(calc(var(--u) * 2), calc(var(--u) * -6), 0);
 }
 
 .rim,
@@ -271,108 +261,6 @@
 
 .panel[data-hover="true"] .veil {
   opacity: 0;
-}
-
-/* What plays while a panel is hovered, and only then ------------------------------------------- */
-.fx {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 600ms var(--ease-out),
-    visibility 0s linear 600ms;
-}
-
-.card:focus-visible .fx {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
-}
-
-.panel[data-hover="true"] .fx {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
-}
-
-/* The edges darken, so the middle of the picture comes forward. */
-.vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 45%, transparent 42%, rgb(8 12 36 / 0.5) 100%);
-}
-
-/* A glow in the colour of the character that breathes, like the light of the animated cards. */
-.glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 58%,
-    color-mix(in srgb, var(--c) 60%, #fff) 0%,
-    color-mix(in srgb, var(--c) 30%, transparent) 38%,
-    transparent 72%
-  );
-  opacity: 0;
-  animation: glow 3.4s ease-in-out infinite;
-}
-
-/* Four-pointed sparkles that twinkle in and out in turn. */
-.sparkles {
-  position: absolute;
-  inset: 0;
-}
-
-.sparkles i {
-  position: absolute;
-  left: var(--sx);
-  top: var(--sy);
-  width: calc(1.35rem * var(--sz));
-  aspect-ratio: 1;
-  margin: calc(0.675rem * var(--sz) * -1) 0 0 calc(0.675rem * var(--sz) * -1);
-  background: #fff;
-  clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
-  opacity: 0;
-  transform: scale(0) rotate(0deg);
-  animation: twinkle calc(2.2s + var(--n) * 0.35s) ease-in-out infinite;
-  animation-delay: calc(var(--n) * -0.6s);
-}
-
-.sparkles i:nth-child(3n) {
-  background: color-mix(in srgb, var(--c) 40%, #fff);
-}
-
-/* Specks of light that rise through the picture, each at its own pace. */
-.motes {
-  position: absolute;
-  inset: 0;
-}
-
-.motes i {
-  position: absolute;
-  left: calc(var(--n) * 13% + 8%);
-  bottom: -8px;
-  width: 5px;
-  aspect-ratio: 1;
-  background: rgb(255 255 255 / 0.9);
-  opacity: 0;
-  transform: rotate(45deg);
-  animation: mote calc(3.4s + var(--n) * 0.45s) linear infinite;
-  animation-delay: calc(var(--n) * -0.8s);
-}
-
-.motes i:nth-child(3n) {
-  width: 7px;
-  background: color-mix(in srgb, var(--c) 55%, #fff);
-}
-
-/* Only a fast device plays the sparkles and the specks. */
-:root[data-perf="balanced"] .motes,
-:root[data-perf="balanced"] .sparkles,
-:root[data-perf="lite"] .fx {
-  display: none;
 }
 
 /* The name, at the top of the panel. It is a parallelogram on the same lean as the frame (0.64 across
@@ -587,7 +475,7 @@
   height: 55%;
 }
 
-/* The tear between Obsidia and Selena: three strokes along the same jagged line. */
+/* The tear between Obsidia and Selena: layers of flat shapes that glow without a blur. */
 .tear {
   position: absolute;
   left: calc(var(--u) * var(--t0));
@@ -595,28 +483,6 @@
   width: calc(var(--u) * (var(--t1) - var(--t0)));
   height: calc(var(--u) * 404);
   overflow: visible;
-  animation: flicker 3.4s steps(1, end) infinite;
-}
-
-.tear path {
-  fill: none;
-  stroke-linejoin: miter;
-  stroke-linecap: butt;
-}
-
-.tearWide {
-  stroke: rgb(255 52 90 / 0.3);
-  stroke-width: 22;
-}
-
-.tearMid {
-  stroke: rgb(255 70 104 / 0.8);
-  stroke-width: 8;
-}
-
-.tearCore {
-  stroke: #fff2f6;
-  stroke-width: 2.4;
 }
 
 .ember {
@@ -817,79 +683,14 @@
   color: #a1123f;
 }
 
-/* The rail: five slanted ticks, one for each pair, with the line that fills as you scroll */
-.rail {
+/* The progress bar: a thin track along the bottom that fills as you scroll. */
+.progress {
   position: absolute;
   left: 50%;
-  bottom: 1.5rem;
+  bottom: 1.7rem;
   translate: -50% 0;
-}
-
-.rail ul {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rail button {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 3.2rem;
-  height: 2.2rem;
-  padding: 0;
-  border: 0;
-  font-family: var(--font-mono-stack);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  color: #2a3350;
-  background: rgb(36 48 84 / 0.22);
-  clip-path: polygon(0.7rem 0, 100% 0, calc(100% - 0.7rem) 100%, 0 100%);
-  transition:
-    transform 500ms var(--ease-spring),
-    opacity 300ms var(--ease-out);
-}
-
-.rail button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--c);
-  opacity: 0;
-  transition: opacity 300ms var(--ease-out);
-}
-
-.rail button span {
-  position: relative;
-}
-
-.rail button:hover,
-.rail button:focus-visible {
-  transform: translateY(-4px);
-}
-
-.rail button:hover::before {
-  opacity: 0.55;
-}
-
-.rail button[aria-current="true"] {
-  transform: scale(1.18, 1.1);
-  color: #fff;
-}
-
-.rail button[aria-current="true"]::before {
-  opacity: 1;
-}
-
-.railLine {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.55rem;
-  height: 2px;
+  width: min(24rem, 42vw);
+  height: 4px;
   background: rgb(36 48 84 / 0.22);
   overflow: hidden;
   pointer-events: none;
@@ -1041,15 +842,6 @@
     font-size: 1rem;
   }
 
-  .rail {
-    bottom: 1.2rem;
-  }
-
-  .rail button {
-    width: 2.6rem;
-    height: 2rem;
-  }
-
   .controls {
     bottom: 3.9rem;
   }
@@ -1153,7 +945,6 @@
   .lift,
   .tilt,
   .veil,
-  .rail button,
   .arrow,
   .next {
     transition-duration: 1ms;
@@ -1174,86 +965,4 @@
 
 .wall[data-far="true"] .ember {
   visibility: hidden;
-}
-
-@keyframes mote {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(45deg) scale(0.6);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.9;
-  }
-  100% {
-    transform: translate3d(calc((var(--n) - 3) * 12px), calc(var(--ph) * -1.05), 0) rotate(225deg)
-      scale(1);
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .glow,
-  .motes i,
-  .sparkles i {
-    animation: none !important;
-  }
-
-  .motes,
-  .sparkles {
-    display: none;
-  }
-}
-
-@keyframes glow {
-  0%,
-  100% {
-    opacity: 0.04;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  45% {
-    opacity: 1;
-    transform: scale(1) rotate(45deg);
-  }
-  70% {
-    opacity: 0.35;
-    transform: scale(0.55) rotate(80deg);
-  }
-}
-
-/* A ring of light that opens from the middle of the panel once, when the pointer arrives. */
-.ripple {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(var(--ph) * 0.5);
-  aspect-ratio: 1;
-  margin: calc(var(--ph) * -0.25) 0 0 calc(var(--ph) * -0.25);
-  border-radius: 50%;
-  border: 2px solid color-mix(in srgb, var(--c) 40%, #fff);
-  opacity: 0;
-}
-
-.panel[data-hover="true"] .ripple {
-  animation: ripple 900ms var(--ease-out) 1;
-}
-
-@keyframes ripple {
-  from {
-    opacity: 0.85;
-    transform: scale(0.2);
-  }
-  to {
-    opacity: 0;
-    transform: scale(4.2);
-  }
 }

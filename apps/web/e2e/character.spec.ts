@@ -43,6 +43,27 @@ async function noOverflow(page: Page) {
   expect(overflow).toBeLessThanOrEqual(0);
 }
 
+const PAIR_NAMES = [
+  "Selena and Obsidia",
+  "Guinevere and Vexana",
+  "Lesley and Chang'e",
+  "Ruby and Angela",
+  "Fanny and Layla",
+];
+
+/** Go to a pair with the keyboard: Home, then one pair at a time. The progress bar says where it is. */
+async function goToPair(page: Page, name: string) {
+  const bar = page.getByRole("progressbar", { name: "Position in the roster" });
+  await page.keyboard.press("Home");
+  await expect(bar).toHaveAttribute("aria-valuetext", PAIR_NAMES[0]!, { timeout: 6000 });
+  for (let i = 1; i <= PAIR_NAMES.indexOf(name); i++) {
+    await page.keyboard.press("ArrowRight");
+    await expect(bar).toHaveAttribute("aria-valuetext", PAIR_NAMES[i]!, { timeout: 6000 });
+  }
+  // Let it come to rest under the pointer.
+  await page.waitForTimeout(500);
+}
+
 test.beforeEach(async ({ page }) => {
   await skipGate(page);
 });
@@ -52,7 +73,7 @@ test.describe("roster", () => {
   const row = (page: Page) =>
     page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" });
   const left = (page: Page) => row(page).evaluate((el) => el.scrollLeft);
-  const lit = (page: Page) => page.locator("nav[aria-label='Jump to a pair'] [aria-current]");
+  const lit = (page: Page) => page.getByRole("progressbar", { name: "Position in the roster" });
 
   test("loads with one h1, ten panels of splash art and no errors", async ({ page }) => {
     const errors = watchErrors(page);
@@ -103,7 +124,7 @@ test.describe("roster", () => {
   test("scrolls sideways, and the pair in the middle is lit", async ({ page }, info) => {
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    await expect(lit(page)).toHaveAttribute("aria-label", "Selena and Obsidia");
+    await expect(lit(page)).toHaveAttribute("aria-valuetext", "Selena and Obsidia");
     if (info.project.name === "desktop") {
       await page.mouse.move(700, 500);
       await page.mouse.wheel(0, 900);
@@ -111,7 +132,7 @@ test.describe("roster", () => {
     } else {
       await row(page).evaluate((el) => el.scrollTo({ left: el.scrollWidth * 0.45 }));
     }
-    await expect(lit(page)).not.toHaveAttribute("aria-label", "Selena and Obsidia", {
+    await expect(lit(page)).not.toHaveAttribute("aria-valuetext", "Selena and Obsidia", {
       timeout: 5000,
     });
     await page.keyboard.press("Home");
@@ -136,13 +157,8 @@ test.describe("roster", () => {
         .evaluate((el) => Number(getComputedStyle(el).opacity));
     for (const slug of ["obsidia", "selena", "vexana", "fanny"]) expect(await haze(slug)).toBe(1);
     // Scrolling a pair into the middle does not light it.
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
-    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
-    await expect(page.locator("nav[aria-label='Jump to a pair'] [aria-current]")).toHaveAttribute(
-      "aria-label",
-      "Ruby and Angela",
-      { timeout: 6000 },
-    );
+    await goToPair(page, "Ruby and Angela");
+    await expect(lit(page)).toHaveAttribute("aria-valuetext", "Ruby and Angela", { timeout: 6000 });
     await page.waitForTimeout(900);
     expect(await haze("ruby")).toBe(1);
     expect(await haze("angela")).toBe(1);
@@ -221,12 +237,11 @@ test.describe("roster", () => {
         },
         [x, y],
       );
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
     const vp = page.viewportSize()!;
     const checked = new Set<string>();
     let outside = 0;
     for (const pair of ["Selena and Obsidia", "Lesley and Chang'e", "Fanny and Layla"]) {
-      await rail.getByRole("button", { name: pair }).click();
+      await goToPair(page, pair);
       await page.waitForTimeout(1500);
       for (let gx = 0; gx <= 30; gx++) {
         for (let gy = 0; gy <= 11; gy++) {
@@ -246,7 +261,7 @@ test.describe("roster", () => {
     // And hovering the middle of each panel lights that panel and no other.
     for (const slug of [...checked]) {
       const box = (await page.locator(`li[data-slug='${slug}']`).first().boundingBox())!;
-      await rail.getByRole("button", { name: pairOf(slug) }).click();
+      await goToPair(page, pairOf(slug));
       await page.waitForTimeout(1300);
       const b = (await page.locator(`li[data-slug='${slug}']`).first().boundingBox())!;
       await page.mouse.move(b.x + b.width * 0.5, b.y + b.height * 0.5);
@@ -255,39 +270,41 @@ test.describe("roster", () => {
     }
   });
 
-  test("a hovered panel is redrawn with a rig, does not follow the pointer, and rests after", async ({
+  test("the picture follows the pointer while the panel is hovered, with nothing drawn over it", async ({
     page,
   }, info) => {
     test.skip(info.project.name !== "desktop", "Phones have no hover");
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
-    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
+    await goToPair(page, "Ruby and Angela");
     await page.waitForTimeout(1300);
     const ruby = page.locator("li[data-slug='ruby']");
-    const canvas = ruby.locator("canvas");
-    // At rest there is no canvas and nothing is written on the picture.
-    await expect(canvas).toHaveCount(0);
+    const pic = ruby.locator("[class*='_tilt']");
+    const transform = () => pic.evaluate((el) => (el as HTMLElement).style.transform);
+    const x = (t: string) => Number(/translate3d\((-?[\d.]+)px/.exec(t)?.[1]);
+    // At rest nothing is written, and there is no canvas or video on the panel.
+    expect(await transform()).toBe("");
     const box = (await ruby.boundingBox())!;
-    await page.mouse.move(box.x + box.width * 0.45, box.y + box.height * 0.5, { steps: 4 });
+    await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5, { steps: 4 });
     await expect(ruby).toHaveAttribute("data-hover", "true");
-    await expect(canvas).toHaveCount(1);
-    const shot = () => canvas.screenshot();
-    // The picture moves on its own: two shots a moment apart differ.
     await page.waitForTimeout(600);
-    const a = await shot();
+    const left = await transform();
+    expect(left).toContain("translate3d");
+    // Moving the pointer to the right moves the picture to the left, against it.
+    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.5, { steps: 6 });
     await page.waitForTimeout(700);
-    const b = await shot();
-    expect(Buffer.compare(a, b)).not.toBe(0);
-    // And the removed lights are gone: no streaks, no light that follows the pointer.
-    for (const gone of ["_streaks", "_spot", "_shine"]) {
+    expect(x(await transform())).toBeLessThan(x(left));
+    // Nothing is drawn over the picture: no canvas, no video, no effects layer.
+    for (const tag of ["canvas", "video"]) await expect(ruby.locator(tag)).toHaveCount(0);
+    for (const gone of ["_fx", "_glow", "_sparkles", "_motes", "_ripple", "_vignette"]) {
       await expect(ruby.locator(`[class*='${gone}']`)).toHaveCount(0);
     }
-    // The picture does not follow the pointer: nothing on it is moved by the pointer position.
-    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.5, { steps: 6 });
-    await expect(ruby.locator("[class*='_tilt']")).toHaveCSS("transform", "none");
+    // The frame does not move, only the picture in it.
+    expect(
+      await ruby.locator("[class*='_lift']").evaluate((el) => getComputedStyle(el).transform),
+    ).toBe("none");
     await page.mouse.move(5, 5);
-    await expect(canvas).toHaveCount(0, { timeout: 4000 });
+    await expect.poll(transform, { timeout: 4000 }).toBe("");
     await expect(ruby).not.toHaveAttribute("data-hover", "true");
   });
 
@@ -324,8 +341,7 @@ test.describe("roster", () => {
     page.on("request", (r) => {
       if (r.url().includes("/audio/voice/")) voices.push(r.url());
     });
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
-    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
+    await goToPair(page, "Ruby and Angela");
     await page.waitForTimeout(900);
     await page.locator("li[data-slug='ruby']").hover({ force: true });
     await page.waitForTimeout(900);
@@ -366,9 +382,8 @@ test.describe("roster", () => {
   }) => {
     await page.goto(url("/character/"));
     await page.waitForLoadState("networkidle");
-    const rail = page.getByRole("navigation", { name: "Jump to a pair" });
-    await rail.getByRole("button", { name: "Ruby and Angela" }).click();
-    await expect(lit(page)).toHaveAttribute("aria-label", "Ruby and Angela", { timeout: 6000 });
+    await goToPair(page, "Ruby and Angela");
+    await expect(lit(page)).toHaveAttribute("aria-valuetext", "Ruby and Angela", { timeout: 6000 });
     await page.locator('main a[href*="/character/ruby"]').click({ force: true });
     await expect(page.locator("section[data-chosen='true']")).toBeAttached();
     await settled(page);

@@ -45,7 +45,7 @@ export interface Slot {
 }
 
 /** The face of each character in her splash art, as fractions of the picture. */
-export const FACE: Record<Slug, { fx: number; fy: number }> = {
+const FACE: Record<Slug, { fx: number; fy: number }> = {
   selena: { fx: 0.672, fy: 0.272 },
   obsidia: { fx: 0.479, fy: 0.167 },
   vexana: { fx: 0.595, fy: 0.42 },
@@ -56,23 +56,6 @@ export const FACE: Record<Slug, { fx: number; fy: number }> = {
   ruby: { fx: 0.453, fy: 0.353 },
   layla: { fx: 0.616, fy: 0.484 },
   fanny: { fx: 0.567, fy: 0.37 },
-};
-
-/**
- * The rig of each character: how big the head is in the picture (as a share of its height, the
- * radius of the part that turns on the neck) and how much the hair streams (0 for short hair).
- */
-export const RIG: Record<Slug, { hs: number; hair: number }> = {
-  selena: { hs: 0.13, hair: 1.2 },
-  obsidia: { hs: 0.11, hair: 1.3 },
-  vexana: { hs: 0.08, hair: 1.2 },
-  guinevere: { hs: 0.14, hair: 1.1 },
-  lesley: { hs: 0.13, hair: 0.9 },
-  change: { hs: 0.12, hair: 1.0 },
-  angela: { hs: 0.14, hair: 0.6 },
-  ruby: { hs: 0.11, hair: 1.0 },
-  layla: { hs: 0.1, hair: 1.3 },
-  fanny: { hs: 0.12, hair: 0.9 },
 };
 
 /** The picture is wider than it is tall by this much. */
@@ -171,7 +154,7 @@ export const BAYS: readonly PairId[] = [
 export const SLOTS: readonly Slot[] = [
   // The pair at the front: Obsidia next to the crimson plate, Selena beside her. The tear runs
   // between them.
-  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.25, z: 1, dx: -0.07 }),
+  slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.25, z: 1, dx: -0.035 }),
   slot("selena", "selena-obsidia", tall(553, 727), { ty: 0.34, z: 1 }),
   // Guinevere and Vexana, one over the other.
   slot("vexana", "guinevere-vexana", top(735, 971), { ty: 0.38, zoom: 2.4, dx: -0.06 }),
