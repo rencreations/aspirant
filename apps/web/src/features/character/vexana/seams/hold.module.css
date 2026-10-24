@@ -1,0 +1,47 @@
+/*
+ * A section whose last screen is held. The section sits in a sticky box whose top is negative (so
+ * the box sticks when its BOTTOM reaches the bottom of the screen), and the wrapper is taller than
+ * the section by the hold. A second, absolutely placed track covers that last screen and the hold,
+ * with a sticky stage the size of the screen: the stage is where a transition draws.
+ */
+.root {
+  --lvh: 100vh;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+@supports (height: 100lvh) {
+  .root {
+    --lvh: 100lvh;
+  }
+}
+
+.stick {
+  position: sticky;
+  top: min(0px, calc(var(--lvh) - var(--h)));
+  pointer-events: auto;
+}
+
+.spacer {
+  height: calc(var(--hold) * var(--lvh));
+}
+
+.track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: max(0px, calc(var(--h) - var(--lvh)));
+  z-index: 5;
+  pointer-events: none;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: var(--lvh);
+  overflow: clip;
+  pointer-events: none;
+}

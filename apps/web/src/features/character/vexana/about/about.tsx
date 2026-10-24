@@ -66,25 +66,28 @@ export function About({ covers = false }: { covers?: boolean }) {
             ))}
           </span>
         </h2>
-        <p className={styles.alias}>{c.aspirantName}</p>
-        <p className={styles.tagline}>{c.tagline}</p>
         <div className={styles.jp}>
           <span className={styles.jpKana} lang="ja">
             {c.jp.script}
           </span>
           <span className={styles.jpRoman}>{c.jp.romaji}</span>
-          <span className={styles.jpNote}>Her father&apos;s name for her</span>
         </div>
       </header>
 
       <div className={styles.body}>
         <div className={styles.stage}>
-          <div className={styles.ring} aria-hidden="true">
-            <span className={styles.ringA} />
-            <span className={styles.ringB} />
-            <StarGlyph className={styles.ringStar} />
+          <div className={styles.stageHead}>
+            <p className={styles.alias}>{c.aspirantName}</p>
+            <p className={styles.tagline}>{c.tagline}</p>
           </div>
-          <SkinFrame />
+          <div className={styles.stageArt}>
+            <div className={styles.ring} aria-hidden="true">
+              <span className={styles.ringA} />
+              <span className={styles.ringB} />
+              <StarGlyph className={styles.ringStar} />
+            </div>
+            <SkinFrame />
+          </div>
         </div>
 
         <div className={styles.side}>

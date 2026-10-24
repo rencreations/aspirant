@@ -10,6 +10,7 @@ import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
 
 import { FIGURES } from "../media";
+import { facesGate } from "../seams/gates";
 import styles from "./faces.module.css";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
@@ -78,7 +79,7 @@ function Letters({ text, from }: { text: string; from: number }) {
  * Only `transform` and `opacity` move. Reduced motion shows the finished picture, and the hold is
  * dropped.
  */
-export function Faces() {
+export function Faces({ gated = false }: { gated?: boolean }) {
   const reduced = useReducedMotion();
   const track = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -123,7 +124,7 @@ export function Faces() {
         xPercent: (i: number) => from(i) * 42,
         yPercent: 3,
         scale: 1.34,
-        transformOrigin: (i: number) => (i === 0 ? "74% 34%" : "21% 34%"),
+        transformOrigin: (i: number) => (i === 0 ? "76% 21%" : "17% 27%"),
       },
       { xPercent: 0, yPercent: 0, scale: 1, duration: 2.8, ease: "expo.out", stagger: 0.24 },
       0.05,
@@ -154,17 +155,30 @@ export function Faces() {
       root.dataset.hint = p > 0.12 ? "true" : "false";
     };
 
-    const entry = ScrollTrigger.create({
-      trigger: root,
-      start: "top 62%",
-      onEnter: () => {
-        tl.play();
-      },
-      onLeaveBack: () => {
-        tl.pause(0);
-        root.dataset.in = "false";
-      },
-    });
+    const begin = () => {
+      tl.play();
+    };
+    const rewind = () => {
+      tl.pause(0);
+      root.dataset.in = "false";
+    };
+    // Gated: the doors in front of the section throw the switch when they have closed, and the pair
+    // arrives from the two sides then. Otherwise it begins when the section is about to be seen.
+    const entry = gated
+      ? null
+      : ScrollTrigger.create({
+          trigger: root,
+          start: "top 62%",
+          onEnter: begin,
+          onLeaveBack: rewind,
+        });
+    const unsubscribe = gated
+      ? facesGate.subscribe((on) => {
+          if (on) begin();
+          else rewind();
+        })
+      : null;
+    if (gated && facesGate.get()) tl.progress(1);
     const hold = ScrollTrigger.create({
       trigger: root,
       start: "top top",
@@ -175,14 +189,15 @@ export function Faces() {
       },
     });
     // Loaded below the section (a reload part way down the page): show it finished.
-    if (entry.progress > 0 && !tl.isActive()) {
+    if (entry && entry.progress > 0 && !tl.isActive()) {
       tl.progress(1);
       root.dataset.in = "true";
     }
     lean(hold.progress);
 
     return () => {
-      entry.kill();
+      entry?.kill();
+      unsubscribe?.();
       hold.kill();
       tl.kill();
       delete root.dataset.armed;
@@ -196,7 +211,7 @@ export function Faces() {
       }
       if (rg) rg.style.transform = "";
     };
-  }, [reduced]);
+  }, [reduced, gated]);
 
   // The pointer parallax: a loop that runs only while the picture is catching up with the pointer.
   useEffect(() => {

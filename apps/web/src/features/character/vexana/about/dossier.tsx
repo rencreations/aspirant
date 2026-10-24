@@ -39,6 +39,10 @@ const FIGURES: ReadonlyArray<readonly [string, string]> = [
   ["Partner", "Guinevere"],
 ];
 
+/** The lead of her file, as the owner wrote it. */
+const LEAD =
+  "Burdened by a heavy past, Vexana had no friends until Guinevere entered her life and formed the strongest combat duo with her. During one mission, Vexana came face-to-face with the Will of the Planet. She was not corrupted. Instead, her final hope erupted from within: she would step into the darkness and endure terrible pain, protecting the world for Guinevere in her own way!";
+
 const AUTO_MS = 7000;
 
 function line(ax: number, ay: number, bx: number, by: number) {
@@ -124,13 +128,12 @@ export function Dossier() {
 
   return (
     <div ref={rootRef} className={styles.dossier}>
-      <p className={styles.summary}>{c.summary}</p>
+      <p className={styles.summary}>{LEAD}</p>
 
       <div className={styles.plate} role="group" aria-label="Registry plate">
         <div className={styles.plateHead}>
           <StarGlyph className={styles.plateStar} />
           <span>Registry plate</span>
-          <span className={styles.plateSchool}>Selrick Academy</span>
         </div>
         <span className={styles.stamp} aria-hidden="true">
           <StarGlyph className={styles.stampStar} />
@@ -146,14 +149,43 @@ export function Dossier() {
             </div>
           ))}
         </dl>
+        <dl className={styles.standing}>
+          <div
+            className={`${styles.stand} ${styles.standDivision}`}
+            style={{ ["--i" as string]: 4 }}
+          >
+            <dt>Division</dt>
+            <dd>
+              <strong>Combat Division,</strong>
+              <span>Selrick Academy</span>
+            </dd>
+          </div>
+          <div className={`${styles.stand} ${styles.standPower}`} style={{ ["--i" as string]: 5 }}>
+            <dt>Combat Power</dt>
+            <dd>
+              <StarGlyph className={styles.powerStar} />
+              <strong>Ace</strong>
+            </dd>
+          </div>
+          <div className={`${styles.stand} ${styles.standStatus}`} style={{ ["--i" as string]: 6 }}>
+            <dt>Status</dt>
+            <dd>
+              <span className={styles.missing}>
+                <i className={styles.missingDot} aria-hidden="true" />
+                Missing
+              </span>
+            </dd>
+          </div>
+        </dl>
         <dl className={styles.stripes}>
           {(
             [
+              ["Personality", "Cold and resolute"],
               ["Role", c.role],
               ["Weapon", c.weapon],
             ] as const
           ).map(([k, v], i) => (
-            <div key={k} className={styles.stripe} style={{ ["--i" as string]: i + 4 }}>
+            <div key={k} className={styles.stripe} style={{ ["--i" as string]: i + 7 }}>
               <dt>{k}</dt>
               <dd>{v}</dd>
             </div>

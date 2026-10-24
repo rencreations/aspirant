@@ -1,0 +1,26 @@
+/*
+ * A section that waits under the one before it. It starts `open` screens higher than the end of the
+ * one before (a negative margin), so when that one lets go it is already in place, and it stays stuck
+ * for `open` screens (a sticky box with a spacer after it) while the doors in front of it open.
+ */
+.under {
+  --lvh: 100vh;
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--lvh) * (1 + var(--open)));
+}
+
+@supports (height: 100lvh) {
+  .under {
+    --lvh: 100lvh;
+  }
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+}
+
+.spacer {
+  height: calc(var(--open) * var(--lvh));
+}

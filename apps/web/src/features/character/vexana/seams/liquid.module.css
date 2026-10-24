@@ -1,0 +1,92 @@
+/*
+ * The liquid that rises from the middle of the screen: a few blobs of different shapes grow at
+ * different times and merge. Each blob is a wrapper moved by scroll (a scale and a turn) around a
+ * shape that wobbles by itself (a squash, a turn), so the edge is never a plain circle.
+ */
+.liquid {
+  --lvh: 100vh;
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+@supports (height: 100lvh) {
+  .liquid {
+    --lvh: 100lvh;
+  }
+}
+
+/* The last of the cover: solid, so the corners of the screen are certain to be covered. */
+.wash {
+  position: absolute;
+  inset: 0;
+  background: #f5f2fc;
+  opacity: 0;
+}
+
+.blob {
+  --s: calc(max(100vw, var(--lvh)) * 0.62);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  visibility: hidden;
+  will-change: transform;
+}
+
+.shape {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: squish 2.8s ease-in-out infinite;
+}
+
+.blob:nth-child(2n) .shape {
+  animation-duration: 3.4s;
+  animation-direction: reverse;
+}
+
+.blob:nth-child(3n) .shape {
+  animation-duration: 2.3s;
+  animation-delay: -1.1s;
+}
+
+.blob[data-tone="glow"] path {
+  fill: rgb(122 79 214 / 0.38);
+}
+
+.blob[data-tone="rim"] path {
+  fill: #cdbdf5;
+}
+
+.blob[data-tone="paper"] path {
+  fill: #f5f2fc;
+}
+
+@keyframes squish {
+  0%,
+  100% {
+    transform: scale(1, 1) rotate(0deg);
+  }
+
+  33% {
+    transform: scale(1.06, 0.94) rotate(5deg);
+  }
+
+  66% {
+    transform: scale(0.95, 1.05) rotate(-4deg);
+  }
+}
+
+/* The light levels draw one blob and keep it still. */
+:global(:root[data-perf="lite"]) .blob[data-extra="true"] {
+  display: none;
+}
+
+:global(:root[data-perf="lite"]) .shape {
+  animation: none;
+}

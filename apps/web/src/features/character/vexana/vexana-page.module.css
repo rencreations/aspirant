@@ -1,0 +1,30 @@
+/*
+ * The page is one column of sections. Where one section gives way to the next, the layout does it
+ * (see `seams/`): a section holds its last screen, and what follows overlaps the hold by the same
+ * length, so plain scrolling lays it over, or opens a pair of doors on it, with no gap.
+ */
+.page {
+  --lvh: 100vh;
+  overflow-x: clip;
+}
+
+@supports (height: 100lvh) {
+  .page {
+    --lvh: 100lvh;
+  }
+}
+
+/* The registry rises over the held screen of the opening, with a thin rim of light and a shadow. */
+.aboutHold {
+  margin-top: calc(-1 * var(--lvh));
+  box-shadow:
+    0 -2px 0 rgb(169 139 245 / 55%),
+    0 -36px 90px rgb(5 3 12 / 70%);
+}
+
+/* The pair of faces waits under the craft: in place (and stuck) while the doors fade. */
+.facesUnder {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--lvh) * 1.9);
+}

@@ -3,22 +3,59 @@
  * transform or an opacity, driven by `data-hot` (which part the pointer is on) and `data-seen`
  * (the section has scrolled into view). Sizes are in container units of `.stage`.
  */
+/*
+ * The section is a tall box with a sticky screen in it. It waits under the interlude (it starts
+ * `0.9` screens earlier than the interlude's end, so it is already in place when the interlude's
+ * doors open), stays held for 2 more screens while it is played with, and in the last of them its
+ * two halves open like doors on the livestream under it (see comics.tsx). So its own background is
+ * clear: only the two halves colour the screen, and they leave when they open.
+ */
 .comics {
+  --sh: 100vh;
   position: relative;
   z-index: 3;
-  overflow: clip;
+  height: calc(var(--sh) * 3.9);
+  margin-top: calc(var(--sh) * -1.9);
   color: #fff;
-  background: #140e26;
   --spring: cubic-bezier(0.3, 1.55, 0.5, 1);
   --glide: cubic-bezier(0.2, 0.9, 0.25, 1);
 }
 
+@supports (height: 100lvh) {
+  .comics {
+    --sh: 100lvh;
+  }
+}
+
+/* No scroll tricks: the comic is one screen and nothing is held. */
+.comics[data-plain="true"] {
+  height: auto;
+  margin-top: 0;
+  background: #140e26;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: max(540px, var(--sh));
+  pointer-events: none;
+}
+
 .stage {
   position: relative;
-  height: clamp(540px, 100svh, 960px);
+  height: 100%;
   container-type: size;
   overflow: clip;
   isolation: isolate;
+  pointer-events: auto;
+}
+
+/* One of the two doors: a full-size layer that holds its half, its picture, its word and its half of
+   the disc, and slides out sideways at the end. */
+.door {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 /* ---- The halves: the two buttons. Each is a full-size layer scaled from its own edge. ---- */
@@ -34,6 +71,7 @@
   border: 0;
   appearance: none;
   cursor: pointer;
+  pointer-events: auto;
   color: inherit;
   transform: translate3d(var(--enter), 0, 0) scaleX(var(--s));
   transition: transform 850ms var(--glide);
@@ -48,22 +86,20 @@
 
 .watch {
   transform-origin: 0 50%;
-  --enter: -101%;
+  --enter: 0%;
   --s: 0.5;
-  background: linear-gradient(115deg, #2c1d78 0%, #5a3fc9 62%, #7f63e8 100%);
+  background-color: #5a3fc9;
+  background-image: linear-gradient(115deg, #2c1d78 0%, #5a3fc9 62%, #7f63e8 100%);
 }
 
 .read {
   left: auto;
   right: 0;
   transform-origin: 100% 50%;
-  --enter: 101%;
-  --s: 0.5;
-  background: linear-gradient(245deg, #6b1853 0%, #b02a78 62%, #d9459f 100%);
-}
-
-.comics[data-seen="true"] .half {
   --enter: 0%;
+  --s: 0.5;
+  background-color: #b02a78;
+  background-image: linear-gradient(245deg, #6b1853 0%, #b02a78 62%, #d9459f 100%);
 }
 
 .comics[data-hot="watch"] .watch {
@@ -80,6 +116,27 @@
 
 .comics[data-hot="read"] .read {
   --s: 0.58;
+}
+
+/* While the doors open nothing is chosen: the halves meet in the middle and nothing takes the pointer. */
+.comics[data-leaving="true"] .watch,
+.comics[data-leaving="true"] .read {
+  --s: 0.5;
+  pointer-events: none;
+}
+
+.comics[data-leaving="true"] .hub {
+  --hx: 0;
+  --hy: 0;
+}
+
+.comics[data-leaving="true"] .disc {
+  pointer-events: none;
+}
+
+/* The livestream under the opening doors is the one to take the pointer now. */
+.comics[data-leaving="true"] .stage {
+  pointer-events: none;
 }
 
 /* ---- The scene on top of the halves. Nothing here takes the pointer except the disc. ---- */
@@ -274,6 +331,16 @@
 }
 
 /* ---- The hub: the disc, its dashed orbit and the chibi ---- */
+/* The disc is drawn twice, one copy per door, each showing its own side of the middle line (the
+   overlap is a hair so no seam shows). */
+.hubLayer[data-part="a"] {
+  clip-path: inset(0 49.8% 0 0);
+}
+
+.hubLayer[data-part="b"] {
+  clip-path: inset(0 0 0 49.8%);
+}
+
 .hub {
   position: absolute;
   left: 50%;
@@ -306,6 +373,20 @@
   pointer-events: none;
 }
 
+/* The disc comes in once (a pop), on this wrapper, so no hover state can ever start it again. */
+.pop {
+  position: absolute;
+  inset: 0;
+}
+
+.comics[data-seen="false"] .pop {
+  transform: scale(0);
+}
+
+.comics[data-seen="true"] .pop {
+  animation: pop 1000ms var(--spring) 200ms backwards;
+}
+
 .disc {
   position: absolute;
   inset: 0;
@@ -320,14 +401,6 @@
   cursor: pointer;
   pointer-events: auto;
   transition: transform 700ms var(--spring);
-}
-
-.comics[data-seen="false"] .disc {
-  transform: scale(0);
-}
-
-.comics[data-seen="true"] .disc {
-  animation: pop 1000ms var(--spring) 650ms backwards;
 }
 
 .comics[data-hot="disc"] .disc {
@@ -644,8 +717,16 @@
 
 /* ---- Phones: the halves are stacked, Watch above Read, and the disc sits between them ---- */
 @media (max-width: 760px) {
-  .stage {
-    height: clamp(620px, 100svh, 900px);
+  .sticky {
+    height: max(620px, var(--sh));
+  }
+
+  .hubLayer[data-part="a"] {
+    clip-path: inset(0 0 49.8% 0);
+  }
+
+  .hubLayer[data-part="b"] {
+    clip-path: inset(49.8% 0 0 0);
   }
 
   .watch {
@@ -664,14 +745,6 @@
 
   .watch,
   .read {
-    --enter: -101%;
-  }
-
-  .read {
-    --enter: 101%;
-  }
-
-  .comics[data-seen="true"] .half {
     --enter: 0%;
   }
 
@@ -781,17 +854,13 @@
   }
 
   .comics[data-seen="false"] .rise,
-  .comics[data-seen="false"] .disc,
+  .comics[data-seen="false"] .pop,
   .comics[data-seen="false"] .chibiPos {
     opacity: 1;
     transform: none;
   }
 
   .half {
-    --enter: 0%;
-  }
-
-  .comics[data-seen="false"] .half {
     --enter: 0%;
   }
 }

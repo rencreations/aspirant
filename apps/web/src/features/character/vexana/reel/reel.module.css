@@ -141,97 +141,6 @@
   display: inline-block;
 }
 
-.ctaLift {
-  width: fit-content;
-  margin-top: 3em;
-  font-size: clamp(0.875rem, 1vw, 1.75rem);
-}
-
-.ctaMagnet {
-  display: inline-block;
-}
-
-.cta {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  gap: 1em;
-  height: 3.375em;
-  padding: 1em 1.5em 1em 1.625em;
-  overflow: hidden;
-  border-radius: 5.3125em;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: #fff;
-  color: var(--reel-ink);
-  box-shadow:
-    0 6px 10px rgb(20 14 38 / 8%),
-    0 2px 4px rgb(20 14 38 / 6%);
-  transition: background-color 0.2s var(--reel-ease);
-}
-
-.ctaDot {
-  position: relative;
-  z-index: 1;
-  flex: none;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-  background: currentColor;
-  transition:
-    background-color 0.5s var(--reel-ease),
-    transform 0.4s var(--reel-ease);
-}
-
-.ctaText {
-  position: relative;
-  z-index: 1;
-  transition:
-    color 0.5s var(--reel-ease),
-    transform 0.4s var(--reel-ease);
-}
-
-.ctaArrow {
-  position: absolute;
-  right: 1em;
-  z-index: 1;
-  width: 1.2em;
-  height: 1.2em;
-  color: #fff;
-  transform: translate3d(3em, 0, 0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0, 1);
-}
-
-.cta:focus-visible {
-  outline: 2px solid var(--reel-violet);
-  outline-offset: 3px;
-}
-
-@media (hover: hover) {
-  .cta:hover,
-  .cta:focus-visible {
-    background: var(--reel-violet);
-    transition: background-color 0.5s var(--reel-ease) 0.3s;
-  }
-  .cta:hover .ctaDot,
-  .cta:focus-visible .ctaDot {
-    background: var(--reel-violet);
-    transform: translate3d(3em, 0, 0) scale(20);
-  }
-  .cta:hover .ctaText,
-  .cta:focus-visible .ctaText {
-    color: #fff;
-    transform: translate3d(-1.5em, 0, 0);
-  }
-  .cta:hover .ctaArrow,
-  .cta:focus-visible .ctaArrow {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 /* ------------------------------------------------------------ thumbnail */
 
 .thumbWrap {
@@ -661,8 +570,8 @@
     border-radius: 0.3em;
     box-shadow: 0 0 0.9em 0.45em var(--reel-paper);
   }
-  .ctaLift {
-    margin-bottom: 4em;
+  .content {
+    padding-bottom: 4em;
   }
   .thumbWrap {
     top: 0;
@@ -713,10 +622,6 @@
   .container {
     padding-bottom: 0;
   }
-  .cta,
-  .ctaDot,
-  .ctaText,
-  .ctaArrow,
   .watchFill,
   .watchIcon {
     transition-duration: 0.01ms !important;

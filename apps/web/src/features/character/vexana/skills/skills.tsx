@@ -34,7 +34,7 @@ function mayPlay() {
  * pressed. A clip is a file of under a megabyte, and the background queue has usually brought it
  * by the time the section is reached.
  */
-function Screen({ active, skill, second }: { active: number; skill: Skill; second: boolean }) {
+function Screen({ active, skill }: { active: number; skill: Skill }) {
   const reduced = useReducedMotion();
   const frameRef = useRef<HTMLDivElement>(null);
   const videos = useRef<Array<HTMLVideoElement | null>>([]);
@@ -134,17 +134,8 @@ function Screen({ active, skill, second }: { active: number; skill: Skill; secon
       <p className={styles.tag}>
         {/* Plain <img>: static export, the icon is 100 px. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={asset(second && skill.recast ? skill.recast.icon : skill.icon)}
-          alt=""
-          width={28}
-          height={28}
-          draggable={false}
-        />
-        <span>
-          {skill.slot}
-          {second && skill.recast ? ", second press" : ""}
-        </span>
+        <img src={asset(skill.icon)} alt="" width={28} height={28} draggable={false} />
+        <span>{skill.slot}</span>
       </p>
 
       <button
@@ -162,133 +153,113 @@ function Screen({ active, skill, second }: { active: number; skill: Skill; secon
   );
 }
 
-function Plate({
-  skill,
-  second,
-  onSecond,
-}: {
-  skill: Skill;
-  second: boolean;
-  onSecond: (v: boolean) => void;
-}) {
-  const recast = skill.recast;
-  const showRecast = second && recast;
+/**
+ * The detail of the open skill. The plate keeps one height for every skill (the height of the
+ * screen and the dock beside it), and its content scrolls inside it, so nothing around it moves
+ * when another skill is opened.
+ */
+function Plate({ skill }: { skill: Skill }) {
   return (
-    <article
-      key={skill.id}
-      id={`vx-skill-panel-${skill.id}`}
-      role="tabpanel"
-      aria-labelledby={`vx-skill-tab-${skill.id}`}
-      className={styles.plate}
-    >
-      <p className={styles.tags}>
-        <span className={styles.slot}>{skill.slot}</span>
-        {skill.tags.map((t) => (
-          <span key={t} className={styles.chip}>
-            {t}
-          </span>
-        ))}
-      </p>
+    <div className={styles.plateBox}>
+      <article
+        key={skill.id}
+        id={`vx-skill-panel-${skill.id}`}
+        role="tabpanel"
+        aria-labelledby={`vx-skill-tab-${skill.id}`}
+        className={styles.plate}
+        // The panel scrolls, so the keyboard must be able to reach it.
+        tabIndex={0}
+      >
+        <p className={styles.tags}>
+          <span className={styles.slot}>{skill.slot}</span>
+          {skill.tags.map((t) => (
+            <span key={t} className={styles.chip}>
+              {t}
+            </span>
+          ))}
+          {skill.ratio ? <span className={styles.chip}>{skill.ratio}</span> : null}
+        </p>
 
-      <h3 className={styles.name}>{showRecast ? recast.name : skill.name}</h3>
-      <p className={styles.game}>
-        In the game: <b>{skill.game}</b>
-      </p>
+        <h3 className={styles.name}>{skill.name}</h3>
 
-      {recast ? (
-        <div className={styles.press} role="group" aria-label="Which press">
-          <button
-            type="button"
-            aria-pressed={!second}
-            onClick={() => {
-              onSecond(false);
-            }}
-          >
-            {/* Plain <img>: static export, the icon is 100 px. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset(skill.icon)} alt="" width={26} height={26} draggable={false} />
-            <span>First press</span>
-          </button>
-          <button
-            type="button"
-            aria-pressed={second}
-            onClick={() => {
-              onSecond(true);
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset(recast.icon)} alt="" width={26} height={26} draggable={false} />
-            <span>Second press</span>
-          </button>
+        <div className={styles.copy}>
+          <p>{skill.description}</p>
         </div>
-      ) : null}
 
-      <div className={styles.copy} key={showRecast ? "second" : "first"}>
-        {showRecast ? <p>{recast.text}</p> : skill.text.map((t) => <p key={t}>{t}</p>)}
-      </div>
+        {skill.terms.length > 0 ? (
+          <dl className={styles.terms}>
+            <dt>Skill terms</dt>
+            {skill.terms.map((t) => (
+              <dd key={t.name}>
+                <b>{t.name}</b>
+                {t.text ? <span>{t.text}</span> : null}
+              </dd>
+            ))}
+          </dl>
+        ) : null}
 
-      <dl className={styles.facts}>
-        {(showRecast ? recast.facts : skill.facts).map(([k, v]) => (
-          <div key={k}>
-            <dt>{k}</dt>
-            <dd>{v}</dd>
-          </div>
-        ))}
-      </dl>
-
-      {!showRecast ? (
-        <>
-          <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <caption className="sr-only">{skill.name}, by level</caption>
-              <thead>
-                <tr>
-                  <th scope="col">{skill.columns}</th>
-                  {skill.heads.map((h) => (
-                    <th key={h} scope="col">
-                      {h}
-                    </th>
+        <p className={styles.scaling}>{skill.scaling}</p>
+        <div
+          className={styles.tableWrap}
+          role="region"
+          tabIndex={0}
+          aria-label={`${skill.name}, level table`}
+        >
+          <table className={styles.table}>
+            <caption className="sr-only">
+              {skill.name}, {skill.scaling.toLowerCase()}
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">{skill.propertyHead}</th>
+                {skill.heads.map((h) => (
+                  <th key={h} scope="col">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {skill.rows.map((r) => (
+                <tr key={r.label}>
+                  <th scope="row">{r.label}</th>
+                  {r.values.map((v, i) => (
+                    <td key={i}>{v}</td>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                {skill.rows.map((r) => (
-                  <tr key={r.label}>
-                    <th scope="row">{r.label}</th>
-                    {r.values.map((v, i) => (
-                      <td key={i}>{v}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <ul className={styles.notes}>
-            {skill.notes.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
-        </>
-      ) : null}
-    </article>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {skill.notes.length > 0 ? (
+          <>
+            <p className={styles.scaling}>Notes</p>
+            <ul className={styles.notes}>
+              {skill.notes.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+      </article>
+    </div>
   );
 }
 
 /**
  * Her craft. The screen shows the game's own footage of the skill that is open, the dock under
  * it holds one key for the passive and for each skill, and the plate beside it says how the skill
- * behaves, with the game's figures. Any key opens at any time, in any order: nothing steps with
- * the scroll. The last skill has a second press, shown on the same key.
+ * behaves, with the wiki's own text and figures. Any key opens at any time, in any order: nothing
+ * steps with the scroll.
  */
 export function Skills() {
   const [active, setActive] = useState(0);
-  const [second, setSecond] = useState(false);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const skill = SKILLS[active] ?? SKILLS[0]!;
 
   const choose = useCallback((i: number, focus = false) => {
     setActive(i);
-    setSecond(false);
     audio.blip("click");
     if (focus) tabs.current[i]?.focus();
   }, []);
@@ -326,19 +297,15 @@ export function Skills() {
           <span>Craft</span>
         </p>
         <h2 id="skills-title" className={styles.title}>
-          From twelve
+          In-game
           <br />
-          <em>paces back</em>
+          <em>Skills</em>
         </h2>
-        <p className={styles.lede}>
-          She stands behind everyone and works with a staff, a hum and an orb. Press a key to see it
-          happen, and to read how it behaves.
-        </p>
       </header>
 
       <div className={styles.console}>
         <div className={styles.left}>
-          <Screen active={active} skill={skill} second={second} />
+          <Screen active={active} skill={skill} />
 
           <div className={styles.dock} role="tablist" aria-label="Skills">
             {SKILLS.map((s, i) => (
@@ -370,11 +337,11 @@ export function Skills() {
                   {/* Plain <img>: static export, the icon is 100 px. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={asset(s.icon)} alt="" width={100} height={100} draggable={false} />
-                  {s.recast ? (
+                  {s.icon2 ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       className={styles.keyAlt}
-                      src={asset(s.recast.icon)}
+                      src={asset(s.icon2)}
                       alt=""
                       width={100}
                       height={100}
@@ -389,11 +356,12 @@ export function Skills() {
           </div>
         </div>
 
-        <Plate skill={skill} second={second} onSecond={setSecond} />
+        <Plate skill={skill} />
       </div>
 
       <p className={styles.credit}>
-        The clips and the figures come from the game. The names are hers.
+        Names, text and figures: Mobile Legends: Bang Bang Wiki, Vexana. The clips are the game's
+        footage.
       </p>
     </section>
   );

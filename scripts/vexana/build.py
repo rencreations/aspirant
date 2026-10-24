@@ -17,11 +17,13 @@ the frame, 180.8 s), only in VP9, so `final.mp4` covers it. `video.mp4` and `vid
 source folder are the same two films as final_video*.mp4 and are not used either.
 
 The skin showcase is a promo for two skins: Vexana and Guinevere. It is cut down to Vexana's parts
-and framed 5:6 (900x1080) so it fits a column of the page. Its parts (seconds, found by looking at
-a frame every 3 s and at the cuts): the intro and the hero shot are full frames (a 900 wide window is
-cut around her), the "display" and "effects" parts are split-screen, and her half is the left one
-(the window stops short of the divider). Guinevere's parts (13 to 27, 66 to 96) and the parts with both
-skills (118 to 123) are left out.
+and framed square (900x900) so it fits a column of the page. Only the parts that show her skin
+move are kept: the intro and the hero shot are full frames (a 900 wide window is cut around her),
+and the "display" part is split-screen, where her half is the left one (the window stops short of
+the divider). Left out: Guinevere's parts (13 to 27, 66 to 96) and every part that is play in the
+game (the skills in play, spawn, recall, statues, kill notices, emotes, graffiti), which is game
+mechanics and not her animation. The bottom of the picture (the caption bars of the display
+part) is cropped off, and the loop fades through black at its seam.
 
 Run: python -I scripts/vexana/build.py            everything
      python -I scripts/vexana/build.py --manifest-only   write media.generated.ts from the sources
@@ -90,15 +92,14 @@ VIDEOS = {
     # for the player's quality menu.
     "final": dict(src="final_video.mp4", w=2560, crf=28, preset="slow", audio=True, poster=100, tune=None),
     "final-1080": dict(src="final_video.mp4", w=1920, crf=29, preset="slow", audio=True, poster=100, tune=None),
-    # The second film: with its sound for the player, and a small silent copy for the cover section,
-    # which plays by itself.
+    # The second film: with its sound for the player. The cover section plays the same file muted by
+    # itself, so there is one copy of it.
     "final2": dict(src="final_video2.mp4", w=2560, crf=26, preset="slow", audio=True, poster=8, tune=None),
-    "final2-loop": dict(src="final_video2.mp4", w=1280, crf=32, preset="slow", audio=False, poster=8, tune=None),
     # Portrait, 60 fps.
     # Vexana only: the source cuts to Guinevere at 3.9 s and back with a wipe, so only 1.7 s to 3.85 s (where she is in
     # frame) is kept, cropped to 4:5 (the signature card) and played forward then backward so it loops.
     "splash-short": dict(src="video/short-splash-art-showcase.webm", w=864, crf=22, preset="slow", audio=False, poster=1.5, tune="animation", pingpong=dict(start=1.7, end=3.85, crop=(1080, 1350, 0, 200))),
-    "skin-showcase": dict(src="video/skin-showcase.webm", w=None, crf=24, preset="slow", audio=False, poster=14, tune="animation", skin=True),
+    "skin-showcase": dict(src="video/skin-showcase.webm", w=None, crf=24, preset="slow", audio=False, poster=2.0, tune="animation", skin=True),
     # The skill clips of the Craft section, cut from the skin showcase (full frame, no Guinevere) at the
     # moment each skill is shown in play (the times were found with a frame every 0.25 s from 96 s to
     # 113 s). The bottom 280 px (the caption bar and the skill icon of the promo, the joystick) are
@@ -108,7 +109,8 @@ VIDEOS = {
     "skill-1": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=1.6, tune="animation", clip=dict(start=99.7, end=103.0, crop=(1920, 800, 0, 0))),
     "skill-2": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=1.4, tune="animation", clip=dict(start=103.0, end=106.4, crop=(1920, 800, 0, 0))),
     "skill-3": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=2.0, tune="animation", clip=dict(start=109.4, end=112.7, crop=(1920, 800, 0, 0))),
-    "comic-jp": dict(src="video/comic-jp.mp4", w=1080, crf=29, preset="slow", audio=False, poster=8, tune="animation"),
+    # The comic film is voiced (Japanese): it keeps its sound, which the site's player plays.
+    "comic-jp": dict(src="video/comic-jp.mp4", w=1080, crf=29, preset="slow", audio=True, abr="128k", poster=8, tune="animation"),
     # Her livestream: long, so 720p. It streams; nothing waits for it.
     "live-vexana": dict(src="video/live-vexana.webm", w=608, crop=(608, 1080, 656, 0), crf=33, preset="medium", audio=True, abr="96k", poster=20, tune="animation"),
     "heart-dance": dict(src="video/heart-short-dance.webm", w=None, crf=26, preset="slow", audio=False, poster=4, tune="animation"),
@@ -118,14 +120,13 @@ VIDEOS = {
 
 # The skin showcase parts: (start, end, kind, window x). `full` cuts a SKIN_W wide window out of the
 # 1920x1080 frame at x, `half` is the left half of a split-screen part (x is 0).
-SKIN_W, SKIN_H = 900, 1080
+SKIN_W, SKIN_H = 900, 900
+SKIN_FADE_IN, SKIN_FADE_OUT = 0.4, 0.6
 SKIN_PARTS = [
-    (0.0, 13.2, "full", 510),  # her skin's intro
-    (27.65, 29.0, "full", 414),  # the hero shot, with the mech
-    (29.0, 65.8, "half", 0),  # display animations (idle, interactive)
-    (96.2, 117.4, "full", 376),  # the skills in play
-    (123.0, 156.6, "half", 0),  # spawn, recall, emotes, kill notices
-    (159.0, 161.9, "half", 0),  # the graffiti
+    # (start, end, kind, window x, window y, window size): a square window, scaled to SKIN_W
+    (0.0, 12.5, "full", 460, 40, 1000),  # her skin's intro (Guinevere's arm comes in at 12.9 s)
+    (27.65, 29.0, "full", 364, 40, 1000),  # the hero shot, with the mech
+    (29.0, 65.8, "half", 0, 0, 910),  # display animations (the caption bars start below 920 px)
 ]
 
 FORCE = "--force" in sys.argv
@@ -239,7 +240,7 @@ def out_size(name: str) -> tuple[int, int]:
 def out_duration(name: str) -> float:
     spec = VIDEOS[name]
     if spec.get("skin"):
-        return round(sum(e - s for s, e, _, _ in SKIN_PARTS), 3)
+        return round(sum(e - s for s, e, _, _, _, _ in SKIN_PARTS), 3)
     if spec.get("clip"):
         return round(spec["clip"]["end"] - spec["clip"]["start"], 3)
     if spec.get("pingpong"):
@@ -261,13 +262,21 @@ def encode(name: str) -> None:
         x264 += ["-tune", spec["tune"]]
     if spec.get("skin"):
         chains, tags = [], []
-        for i, (s, e, kind, x) in enumerate(SKIN_PARTS):
+        for i, (s, e, kind, x, y, cw) in enumerate(SKIN_PARTS):
             chains.append(
                 f"[0:v]trim=start={s}:end={e},setpts=PTS-STARTPTS,fps=30,"
-                f"crop={SKIN_W}:{SKIN_H}:{x}:0[v{i}]"
+                f"crop={cw}:{cw}:{x}:{y},scale={SKIN_W}:{SKIN_H}:flags=lanczos[v{i}]"
             )
             tags.append(f"[v{i}]")
-        graph = ";".join(chains) + ";" + "".join(tags) + f"concat=n={len(SKIN_PARTS)}:v=1:a=0[v]"
+        total = sum(e - s for s, e, _, _, _, _ in SKIN_PARTS)
+        # The loop passes through black at its seam: out at the end, in at the start.
+        graph = (
+            ";".join(chains)
+            + ";"
+            + "".join(tags)
+            + f"concat=n={len(SKIN_PARTS)}:v=1:a=0,"
+            + f"fade=t=in:st=0:d={SKIN_FADE_IN},fade=t=out:st={total - SKIN_FADE_OUT:.3f}:d={SKIN_FADE_OUT}[v]"
+        )
         run(["-i", str(src), "-filter_complex", graph, "-map", "[v]", *x264, "-an", str(tmp)])
     elif spec.get("clip"):
         c = spec["clip"]

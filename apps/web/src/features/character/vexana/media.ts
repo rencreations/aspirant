@@ -55,7 +55,6 @@ export type VideoName =
   | "final"
   | "final-1080"
   | "final2"
-  | "final2-loop"
   | "skin-showcase"
   | "comic-jp"
   | "live-vexana"

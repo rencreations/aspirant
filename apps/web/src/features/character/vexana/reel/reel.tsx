@@ -225,37 +225,6 @@ export function Reel() {
             </span>
           ))}
         </p>
-        <div className={styles.ctaLift} data-reel="cta-lift">
-          <span className={styles.ctaMagnet}>
-            <a
-              href={copy.cta.href}
-              className={styles.cta}
-              onClick={(e) => {
-                // It only scrolls down to the story (the two halves below); it opens nothing.
-                e.preventDefault();
-                lenisApi.scrollTo(copy.cta.href, { duration: 2.4 });
-              }}
-            >
-              <span className={styles.ctaDot} aria-hidden="true" />
-              <span className={styles.ctaText}>{copy.cta.label}</span>
-              <svg
-                className={styles.ctaArrow}
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M2.3 8h11.4m0 0L8.7 3M13.7 8l-5 5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
-          </span>
-        </div>
       </div>
 
       <div className={styles.thumbWrap} aria-hidden="true">

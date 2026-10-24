@@ -248,6 +248,9 @@ export function Opening() {
     let signed = false;
     let shimmerOn = true;
     let videoSrc = false;
+    // The nav reads this to colour its top-right text: light page behind it, or ink (set on change).
+    const section = track.closest<HTMLElement>("section");
+    let toneName = "";
     let progress = 0;
 
     const read = () => {
@@ -296,6 +299,11 @@ export function Opening() {
       });
 
       toneRef.current = s.tone;
+      const nextTone = s.tone > 0.55 ? "dark" : "light";
+      if (nextTone !== toneName) {
+        toneName = nextTone;
+        section?.setAttribute("data-vx-tone", nextTone);
+      }
       activeRef.current = s.glActive;
       glRef.current?.setTone(s.tone);
       glRef.current?.setActive(s.glActive);

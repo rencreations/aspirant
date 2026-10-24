@@ -26,14 +26,6 @@ export const VIDEOS: Record<VideoName, VideoInfo> = {
     width: 2560,
     height: 1080,
   },
-  "final2-loop": {
-    file: "/video/vexana/final2-loop.mp4",
-    poster: "/video/vexana/final2-loop-poster.webp",
-    bytes: 7640879,
-    duration: 65.12,
-    width: 1280,
-    height: 540,
-  },
   "splash-short": {
     file: "/video/vexana/splash-short.mp4",
     poster: "/video/vexana/splash-short-poster.webp",
@@ -45,10 +37,10 @@ export const VIDEOS: Record<VideoName, VideoInfo> = {
   "skin-showcase": {
     file: "/video/vexana/skin-showcase.mp4",
     poster: "/video/vexana/skin-showcase-poster.webp",
-    bytes: 32985052,
-    duration: 109.03,
+    bytes: 20837827,
+    duration: 50.63,
     width: 900,
-    height: 1080,
+    height: 900,
   },
   "skill-passive": {
     file: "/video/vexana/skill-passive.mp4",
@@ -85,7 +77,7 @@ export const VIDEOS: Record<VideoName, VideoInfo> = {
   "comic-jp": {
     file: "/video/vexana/comic-jp.mp4",
     poster: "/video/vexana/comic-jp-poster.webp",
-    bytes: 28161344,
+    bytes: 30377417,
     duration: 132.03,
     width: 1080,
     height: 1920,

@@ -41,6 +41,17 @@ const DEPTH_H = 108;
 const HANG = 0.075;
 /** Where the head turns from, the neck, as a fraction of the picture's height from the middle. */
 const PIVOT = -0.13;
+/**
+ * How strong the 3D is. The relief (how far the face stands out of the plane), the turn of the
+ * neck and the slide were each about three times these values at first, and bent the face. The
+ * turn is in radians at the edge of the screen, the slide is in fractions of the picture.
+ */
+const DEPTH_SCALE = 0.04;
+const TURN_Y = 0.085;
+const TURN_X = 0.055;
+const ROLL = 0.004;
+const SLIDE_X = 0.016;
+const SLIDE_Y = 0.011;
 
 export interface FigureGLOptions {
   normalUrl: string;
@@ -361,7 +372,7 @@ export async function createFigureGL(
     pivot.position.set(0, PIVOT * figH, 0);
     halo.scale.setScalar(figW);
     halo.position.set(0, -PIVOT * figH, figW * 0.05);
-    figureMat.uniforms.uDepthScale!.value = figW * 0.13;
+    figureMat.uniforms.uDepthScale!.value = figW * DEPTH_SCALE;
     figure.position.set(0, baseY, 0);
   };
   const resize = () => {
@@ -505,12 +516,12 @@ export async function createFigureGL(
     // The whole of her moves like a body seen in depth: the neck turns toward the cursor, she
     // slides toward it, and the page behind her slides the other way. Her face, which is nearest,
     // moves most (the relief in the shader), so the turn reads as a real head and not a card.
-    pivot.rotation.y = driveX * 0.27;
-    pivot.rotation.x = driveY * 0.17;
-    pivot.rotation.z = -driveX * 0.012 + Math.sin(time * 0.7) * 0.004;
-    figure.position.x = driveX * figW * 0.03;
-    figure.position.y = baseY - driveY * figH * 0.022 + Math.sin(time * 0.9) * figH * 0.0025;
-    shared.uPan.value = [driveX * 0.042, -driveY * 0.03];
+    pivot.rotation.y = driveX * TURN_Y;
+    pivot.rotation.x = driveY * TURN_X;
+    pivot.rotation.z = -driveX * ROLL + Math.sin(time * 0.7) * 0.0015;
+    figure.position.x = driveX * figW * SLIDE_X;
+    figure.position.y = baseY - driveY * figH * SLIDE_Y + Math.sin(time * 0.9) * figH * 0.002;
+    shared.uPan.value = [driveX * 0.03, -driveY * 0.02];
     halo.rotation.y += dt * 0.12;
     cageMat.opacity = 0.1 + 0.2 * reveal;
     hornMat.opacity = 0.08 + 0.62 * reveal;

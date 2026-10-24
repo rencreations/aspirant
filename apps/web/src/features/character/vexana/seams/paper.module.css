@@ -1,0 +1,23 @@
+.paper {
+  --lvh: 100vh;
+  position: relative;
+  z-index: 3;
+  margin-top: calc(-1 * var(--lvh) * var(--overlap));
+  transform-origin: 50% 0;
+  box-shadow:
+    0 -2px 0 rgb(169 139 245 / 55%),
+    0 -36px 90px rgb(5 3 12 / 60%);
+}
+
+@supports (height: 100lvh) {
+  .paper {
+    --lvh: 100lvh;
+  }
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  background: #140e26;
+  opacity: 0;
+}

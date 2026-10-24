@@ -136,15 +136,23 @@
   pointer-events: none;
 }
 
-/* Her face sits at about 16 percent and 84 percent of the screen, looking at the other one. */
+/*
+ * The two figures are the same size and their eyes are level and mirrored about the middle of the
+ * screen. Measured on the two pictures (1086 by 1448): the Ender eye is at 16.6 percent across and
+ * 26.9 percent down, the Academy eye at 76.4 percent across and 20.9 percent down, and the two
+ * heads are the same size (about 122 pixels from the eye to the chin). So the Academy figure is
+ * set 6.07 percent of its height lower, and each eye sits at 16 percent and 84 percent of the
+ * screen, give or take the same small amount, looking at the other.
+ */
 .zone[data-side="academic"] .fig {
-  left: calc(16vw - var(--pw) * 0.74);
-  transform-origin: 74% 100%;
+  top: calc(var(--sh) * 0.02 + var(--ph) * 0.0607);
+  left: calc(16vw - var(--pw) * 0.72);
+  transform-origin: 76% 100%;
 }
 
 .zone[data-side="ender"] .fig {
   left: calc(34vw - var(--pw) * 0.21);
-  transform-origin: 21% 100%;
+  transform-origin: 17% 100%;
 }
 
 .enter,
@@ -186,12 +194,8 @@
   height: 100%;
   object-fit: contain;
   user-select: none;
+  /* Both figures breathe together, so their eyes stay level. */
   animation: breathe 8s ease-in-out infinite alternate;
-}
-
-.zone[data-side="ender"] .img {
-  animation-delay: -3.5s;
-  animation-duration: 9s;
 }
 
 @keyframes breathe {
@@ -370,7 +374,7 @@
   }
 
   .zone[data-side="academic"] .fig {
-    left: calc(25vw - var(--pw) * 0.74);
+    left: calc(23vw - var(--pw) * 0.72);
   }
 
   .zone[data-side="ender"] .fig {

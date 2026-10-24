@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 import { perfLevel } from "@/lib/perf";
 
-import { easeInOut, put } from "./seam-kit";
+import { easeInOut, put } from "./scroll-kit";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 

@@ -82,7 +82,7 @@ export function vexanaLater(): Array<{ priority: number; items: PreloadItem[] }>
       priority: 22,
       items: [videoItem("skin-showcase", "Loading her registry")],
     },
-    { priority: 25, items: [videoItem("final2-loop", "Loading the film")] },
+    { priority: 25, items: [videoItem("final2", "Loading the film")] },
     {
       priority: 30,
       items: [

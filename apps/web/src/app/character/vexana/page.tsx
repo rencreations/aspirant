@@ -6,7 +6,6 @@ import { ART } from "@/features/character/art";
 import { characterMetadata } from "@/features/character/metadata";
 import { characterVars, readable } from "@/features/character/theme";
 import { MusicCredit } from "@/features/character/vexana/music-credit";
-import { Seam } from "@/features/character/vexana/seams/seam";
 import { VexanaPage } from "@/features/character/vexana/vexana-page";
 import { characterRoute } from "@/lib/site";
 
@@ -20,9 +19,7 @@ export default function VexanaRoot() {
   return (
     <>
       <VexanaPage />
-      <Seam kind="dusk" />
       <MusicCredit />
-      <Seam kind="dawn" />
       <div
         data-theme="daybreak"
         style={{
