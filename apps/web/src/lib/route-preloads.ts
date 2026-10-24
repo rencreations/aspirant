@@ -25,6 +25,7 @@ import {
   obsidiaVoicePath,
   trailerItem as obsidiaTrailerItem,
 } from "@/features/character/obsidia/media";
+import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import {
   chunkItem,
   dataItem,
@@ -175,6 +176,15 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...later("skills", 30, obsidiaSkillItems()),
         ...later("gallery", 31, obsidiaGalleryItems()),
         ...later(null, 40, [obsidiaTrailerItem()]),
+      ];
+    }
+    if (slug === "vexana") {
+      // One long page and two story pages: the same first paint, everything else in the
+      // background (see `features/character/vexana/preload-items.ts`).
+      return [
+        ...shared,
+        ...vexanaFirstPaint(),
+        ...vexanaLater().flatMap((g) => later(null, g.priority, g.items)),
       ];
     }
     if (isSlug(slug)) {

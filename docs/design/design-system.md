@@ -635,3 +635,12 @@ The cuts, in frames at 60 fps (the numbers are in `build.py`):
 - **HUD.** Top left: the pair in front. Bottom centre: a plain progress bar that fills as you scroll (a `progressbar` for assistive technology, with the names of the pair in front). Bottom right: previous, next, and the way on to the collection (N does the same).
 - **Phones and tall screens:** the same board, smaller, with the HUD in two rows at the bottom.
 - **Performance.** On a fast machine a scroll is a 6 ms frame. The governor (`lib/perf.ts`) runs here too and drops the lean, the drift, the light bands and the sparks on a device that lags. Reduced motion removes the entrance and all of these and makes the wheel move directly.
+
+## Vexana's page
+
+Her page is a long scroll of its own design, not the stage engine of Selena and Obsidia. The brief and the order of sections are in `docs/superpowers/specs/2026-10-24-vexana-page-design.md`. The code is in `features/character/vexana/` (one folder per section) and the routes are `/character/vexana/` and `/character/vexana/story/{academic,ender}/`, which share a layout that holds her music.
+
+- **Files:** `scripts/vexana/build.py` makes everything in `public/video/vexana/`, `public/img/vexana/` and her music from the owner's source folder, and writes `media.generated.ts`. About 420 MB in all. `final` (the film) loads in the background by display size, the long videos (daily life, the comic films, `final2` with sound) stream when played.
+- **Autoplay:** the muted pictures that play by themselves while on screen are the signature short, the Reel preview, the skin showcase and the cover film. All pause off screen, none has sound, and reduced motion keeps the poster.
+- **Opening:** the figure is drawn in WebGL (`opening/figure-gl.ts`) with a plain image fallback for `lite`, reduced motion and no WebGL. The background is chosen from a registry (`opening/backgrounds/registry.ts`) and the choice is remembered.
+- **Music:** her theme plays through `startMusic`. The site's sound button is the only control.

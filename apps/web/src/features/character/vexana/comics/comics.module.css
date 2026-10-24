@@ -1,0 +1,256 @@
+.comics {
+  position: relative;
+  z-index: 3;
+  overflow: clip;
+  padding: clamp(80px, 14vh, 180px) clamp(20px, 6vw, 112px) clamp(80px, 14vh, 160px);
+  color: #140e26;
+  background:
+    radial-gradient(60vw 40vh at 85% 0%, rgb(183 156 242 / 0.35), transparent 70%), #f1ecf9;
+}
+
+.head {
+  max-width: 1100px;
+}
+
+.kicker {
+  margin: 0 0 16px;
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #7a4fd6;
+}
+
+.title {
+  margin: 0;
+  display: grid;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(56px, 11vw, 190px);
+  line-height: 0.84;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.title span {
+  display: block;
+  transform: translate3d(0, 40px, 0);
+  opacity: 0;
+  transition:
+    transform 900ms var(--ease-out),
+    opacity 900ms var(--ease-out);
+}
+
+.title span:nth-child(2) {
+  transition-delay: 120ms;
+}
+
+.comics[data-seen="true"] .title span {
+  transform: none;
+  opacity: 1;
+}
+
+.serif {
+  font-family: var(--font-serif-stack);
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  color: #e040a0;
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  margin: 28px 0 0;
+  max-width: 46ch;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.55;
+  color: rgb(20 14 38 / 0.75);
+}
+
+.choices {
+  margin-top: clamp(40px, 8vh, 96px);
+  display: flex;
+  gap: clamp(16px, 2.4vw, 36px);
+  align-items: stretch;
+}
+
+.choice {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 18px;
+  padding: clamp(18px, 2vw, 28px);
+  border: 1px solid rgb(20 14 38 / 0.2);
+  border-radius: 28px;
+  background: rgb(255 255 255 / 0.55);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 500ms var(--ease-out),
+    opacity 400ms var(--ease-out),
+    background-color 300ms var(--ease-out),
+    border-color 300ms var(--ease-out);
+}
+
+/* The pointer decides: the card it is over lifts, the other one steps back. */
+.choices:hover .choice {
+  opacity: 0.62;
+  transform: scale(0.985);
+}
+.choices .choice:hover,
+.choices .choice:focus-visible {
+  opacity: 1;
+  transform: translate3d(0, -8px, 0);
+  background: #fff;
+  border-color: #7a4fd6;
+}
+
+.step {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 2;
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #fff;
+  background: #140e26;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.screen {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  height: min(62vh, 560px);
+  aspect-ratio: 9 / 16;
+  max-width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #140e26;
+  box-shadow: 0 30px 60px -30px rgb(20 14 38 / 0.6);
+}
+
+.screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 900ms var(--ease-out);
+}
+
+.watch:hover .screen img {
+  transform: scale(1.06);
+}
+
+.playDot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  color: #fff;
+  background: #e040a0;
+  transition: transform 400ms var(--ease-spring);
+}
+
+.watch:hover .playDot {
+  transform: scale(1.14);
+}
+
+.fan {
+  position: relative;
+  display: block;
+  height: min(62vh, 560px);
+}
+
+.sheet {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(46%, 300px);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 24px 50px -24px rgb(20 14 38 / 0.65);
+  /* Resting: a neat, slightly crooked stack. */
+  --spread: 0;
+  transform: translate3d(-50%, -50%, 0) translate3d(calc((var(--i) - 1) * 18px), 0, 0)
+    rotate(calc((var(--i) - 1) * 5deg));
+  transition: transform 800ms var(--ease-out);
+}
+
+.sheet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.read:hover .sheet,
+.read:focus-visible .sheet {
+  transform: translate3d(-50%, -50%, 0)
+    translate3d(calc((var(--i) - 1) * 62%), calc(var(--i) * -2%), 0)
+    rotate(calc((var(--i) - 1) * 9deg));
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.label b {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(36px, 4.4vw, 68px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.label small {
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(20 14 38 / 0.62);
+}
+
+@media (max-width: 860px) {
+  .choices {
+    flex-direction: column;
+  }
+  .choices:hover .choice {
+    opacity: 1;
+    transform: none;
+  }
+  .screen,
+  .fan {
+    height: min(52vh, 440px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title span {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+  .choice,
+  .sheet,
+  .screen img {
+    transition: none;
+  }
+}

@@ -15,6 +15,9 @@ export const ROUTES = [
   "/character/obsidia/about/",
   "/character/obsidia/skills/",
   "/character/obsidia/gallery/",
+  "/character/vexana/",
+  "/character/vexana/story/academic/",
+  "/character/vexana/story/ender/",
   "/collection/",
 ] as const;
 
