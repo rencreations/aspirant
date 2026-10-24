@@ -62,10 +62,13 @@ WELCOME_START, WELCOME_END, WELCOME_BLEND = 226, 1176, 6
 TIERS = {
     # For devices that decode video in software, or slow ones: half the frame rate (the loops and
     # seams are measured in time, so they work at 30 fps) and a third of the pixels.
-    "lite": dict(w=1280, h=576, loop=22, clip=26, level="3.1", preset="slower", fps=30),
-    "1080": dict(w=1920, h=864, loop=20, clip=25, level="4.2", preset="slower"),
-    "1440": dict(w=2560, h=1152, loop=20, clip=26, level="5.1", preset="slower"),
-    "2160": dict(w=3840, h=1728, loop=19, clip=26, level="5.2", preset="slower"),
+    # The quality is as high as the budget allows: x264 CRF 17 at 2560 wide and 20 at 3840 wide are
+    # visually lossless on this art (the recordings are 75 Mbit/s H.264 themselves). `loop` is the
+    # idle and page loops, which are on screen most of the time, `clip` the rest.
+    "lite": dict(w=1280, h=576, loop=23, clip=25, level="3.1", preset="slow", fps=30),
+    "1080": dict(w=1920, h=864, loop=19, clip=20, level="4.2", preset="slow"),
+    "1440": dict(w=2560, h=1152, loop=17, clip=18, level="5.1", preset="slow"),
+    "2160": dict(w=3840, h=1728, loop=20, clip=21, level="5.2", preset="slow"),
 }
 
 # What was measured in each recording.
@@ -237,9 +240,9 @@ def build_poster(jpg: Path, out: Path) -> None:
 
 
 TRAILER = {  # name -> (height, crf, max kbit/s)
-    "1080": (1080, 31, 3000),
-    "720": (720, 32, 1400),
-    "480": (480, 33, 600),
+    "1080": (1080, 23, 5000),
+    "720": (720, 24, 2800),
+    "480": (480, 25, 1200),
 }
 
 
@@ -383,7 +386,7 @@ def main() -> None:
     if "--timeline-only" not in flags:
         for name in [only] if only else list(TIERS):
             build_tier(name, src, out_root, parts)
-        build_still(src, out_root / "still.webp", 1920, 864)
+        build_still(src, out_root / "still.webp", 2560, 1152)
         if len(args) > 1:
             build_poster(Path(args[1]), out_root / "trailer-poster.webp")
         if len(args) > 2:

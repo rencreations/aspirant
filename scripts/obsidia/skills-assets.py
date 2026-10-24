@@ -52,8 +52,8 @@ def small(clip: Path) -> Path:
     out = clip.with_name(f"{clip.stem}-s.mp4")
     run([
         "-i", str(clip), "-an",
-        "-vf", "scale='min(960,iw)':-2:flags=lanczos,setsar=1,format=yuv420p,fps=60",
-        "-c:v", "libx264", "-preset", "slow", "-crf", "29", "-profile:v", "high",
+        "-vf", "scale='min(1280,iw)':-2:flags=lanczos,setsar=1,format=yuv420p,fps=60",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "21", "-profile:v", "high",
         "-g", "60", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
         str(out),
     ])
@@ -82,7 +82,7 @@ def main() -> None:
             run([
                 "-ss", str(a), "-to", str(b), "-i", str(video),
                 "-vf", vf,
-                "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-profile:v", "high",
+                "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-profile:v", "high",
                 "-g", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
                 "-c:a", "aac", "-b:a", "96k", "-ar", "48000", "-ac", "2",
                 str(target),

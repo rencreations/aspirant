@@ -140,3 +140,50 @@ describe("cachedFetch", () => {
     expect(fake.store.has("/data/missing.json")).toBe(false);
   });
 });
+
+describe("downloads for later", () => {
+  /** A fetch that stays open until it is let go, one for each file. */
+  function slowFetch() {
+    const open = new Map<string, () => void>();
+    fetchMock.mockImplementation((url?: unknown) => {
+      return new Promise<Response>((resolve) => {
+        open.set(String(url), () => resolve(respond(100)));
+      });
+    });
+    return open;
+  }
+  const tick = () => new Promise((r) => setTimeout(r, 0));
+
+  it("take at most two of the four slots, and an urgent one is never stuck behind them", async () => {
+    vi.stubGlobal("caches", undefined);
+    const open = slowFetch();
+    const { loadMedia } = await import("./media-store");
+    for (const n of [1, 2, 3, 4]) void loadMedia(`/video/bg${n}.mp4`, { background: true });
+    await tick();
+    expect(open.size).toBe(2);
+    // An urgent download starts at once, although background ones are waiting.
+    void loadMedia("/video/now.mp4");
+    await tick();
+    expect(open.has("/video/now.mp4")).toBe(true);
+    expect(open.size).toBe(3);
+  });
+
+  it("go first when something asks for them", async () => {
+    vi.stubGlobal("caches", undefined);
+    const open = slowFetch();
+    const { loadMedia, promoteMedia } = await import("./media-store");
+    for (const n of [1, 2, 3, 4, 5]) void loadMedia(`/video/p${n}.mp4`, { background: true });
+    // Two urgent ones fill the other two slots.
+    void loadMedia("/video/u1.mp4");
+    void loadMedia("/video/u2.mp4");
+    await tick();
+    expect(open.size).toBe(4);
+    expect(open.has("/video/p5.mp4")).toBe(false);
+    // The visitor needs the last one: when a slot frees up it goes before the others.
+    promoteMedia("/video/p5.mp4");
+    open.get("/video/u1.mp4")?.();
+    await tick();
+    expect(open.has("/video/p5.mp4")).toBe(true);
+    expect(open.has("/video/p3.mp4")).toBe(false);
+  });
+});

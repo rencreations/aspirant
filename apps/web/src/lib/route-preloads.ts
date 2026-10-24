@@ -105,17 +105,27 @@ export function routeItems(pathname: string): PreloadItem[] {
 
   if (path.startsWith("/character/")) {
     const slug = path.slice("/character/".length).split("/")[0] ?? "";
+    // Her page and its three pages (About, Skills, Gallery) are one stage, so one list covers them
+    // all. Only what the first minute needs is waited for: the welcome and the idle loop in the size
+    // that suits the display, her picture, the buttons and the music, and what belongs to the page
+    // the visitor landed on. Everything else (the other pages' clips, the shorts, the skill clips,
+    // the trailer, the voice lines and the pictures) is deferred: it keeps downloading in the
+    // background once the page is open, nearest need first (see `PreloadItem.priority`), so it is
+    // there before the visitor asks for it, and what is loaded is saved in the browser for the next
+    // visit. A button whose clip is still arriving shows that it is loading.
+    const landed = path.split("/")[3] ?? "";
+    /** A group that belongs to one page: not deferred on that page, deferred on the others. */
+    const later = (page: string | null, priority: number, items: readonly PreloadItem[]) =>
+      items.map((i) => ({
+        ...i,
+        deferred: page === null || page !== landed,
+        priority,
+        group: slug,
+      }));
     if (slug === "selena") {
-      // Her page and its three pages (About, Skills, Gallery) are one stage, so one list covers
-      // them all: the videos in the size that suits the display, the skill clips, the trailer, the
-      // music, her voice lines and every picture. All of it is loaded into memory and saved in the
-      // browser, so nothing waits on the network once the page is open, and the next visit starts
-      // from the saved copy. A visitor on the first visit waits for it here.
-      // The stage videos come first (the list is started in order, and big downloads queue in it),
-      // so the page can start while the clips, the trailer and the voice lines are still arriving.
       return [
         ...shared,
-        ...selenaItems(),
+        ...selenaItems({ page: landed }),
         imageItem("/video/selena/still.webp", "Loading Selena", 1),
         imageItem("/video/selena/trailer-poster.webp", "Loading the trailer", 1),
         imageItem("/img/char/selena/splash-sm.webp", "Loading the album art", 1),
@@ -125,29 +135,22 @@ export function routeItems(pathname: string): PreloadItem[] {
           weight: 3,
           timeoutMs: 120_000,
         }),
-        ...Array.from({ length: SELENA_VOICE_COUNT }, (_, i) =>
-          savedItem(selenaVoicePath(i + 1), "Loading her voice lines", 1),
-        ),
-        ...ABOUT_IMAGES.map((name) =>
-          imageItem(aboutImagePath(name), "Loading the About pictures", 1),
-        ),
-        ...skillItems(),
-        trailerItem(),
-        ...galleryItems(),
-        savedItem("/audio/voice/selena/09-a.m4a", "Loading her voice lines", 1),
-        savedItem("/audio/voice/selena/09-b.m4a", "Loading her voice lines", 1),
+        ...later("about", 20, [
+          ...Array.from({ length: SELENA_VOICE_COUNT }, (_, i) =>
+            savedItem(selenaVoicePath(i + 1), "Loading her voice lines", 1),
+          ),
+          savedItem("/audio/voice/selena/09-a.m4a", "Loading her voice lines", 1),
+          savedItem("/audio/voice/selena/09-b.m4a", "Loading her voice lines", 1),
+          ...ABOUT_IMAGES.map((name) =>
+            imageItem(aboutImagePath(name), "Loading the About pictures", 1),
+          ),
+        ]),
+        ...later("skills", 30, skillItems()),
+        ...later("gallery", 31, galleryItems()),
+        ...later(null, 40, [trailerItem()]),
       ];
     }
     if (slug === "obsidia") {
-      // Her page and its three pages share one stage, like Selena's: one list covers them all.
-      // Only what the first minute needs is waited for: the welcome, the idle loop, her picture,
-      // the buttons and the music, and the clips of the page the visitor landed on. The rest (the
-      // other page clips, the shorts, the skill clips, the trailer, her voice lines and the
-      // pictures) is deferred: it loads in the background once the page is open, and a button
-      // that needs something that is still arriving shows that it is loading.
-      const landed = path.split("/")[3];
-      const later = (items: readonly PreloadItem[]): PreloadItem[] =>
-        items.map((i) => ({ ...i, deferred: true }));
       return [
         ...shared,
         ...obsidiaItems({ page: landed }),
@@ -159,7 +162,7 @@ export function routeItems(pathname: string): PreloadItem[] {
           weight: 3,
           timeoutMs: 120_000,
         }),
-        ...later([
+        ...later("about", 20, [
           imageItem("/video/obsidia/trailer-poster.webp", "Loading the trailer", 1),
           ...Array.from({ length: OBSIDIA_VOICE_COUNT }, (_, i) =>
             savedItem(obsidiaVoicePath(i + 1), "Loading her voice lines", 1),
@@ -167,11 +170,11 @@ export function routeItems(pathname: string): PreloadItem[] {
           ...OBSIDIA_ABOUT_IMAGES.map((name) =>
             imageItem(obsidiaAboutImagePath(name), "Loading the About pictures", 1),
           ),
-          ...obsidiaSkillItems(),
-          ...obsidiaGalleryItems(),
-          obsidiaTrailerItem(),
           ...obsidiaFormItems(),
         ]),
+        ...later("skills", 30, obsidiaSkillItems()),
+        ...later("gallery", 31, obsidiaGalleryItems()),
+        ...later(null, 40, [obsidiaTrailerItem()]),
       ];
     }
     if (isSlug(slug)) {

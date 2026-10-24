@@ -43,6 +43,8 @@ describe("the size of video for a display and a device", () => {
     // A laptop at 3840x2160 with 200 percent scaling shows 1920x1080 in CSS pixels, 4K in device pixels.
     expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("2160");
     expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
+    // A 2560x1440 (2K) screen gets the 2560 picture, not the 4K one.
+    expect(pickTier({ width: 2560, height: 1440, dpr: 1, ...full })).toBe("1440");
     expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
     expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");
   });

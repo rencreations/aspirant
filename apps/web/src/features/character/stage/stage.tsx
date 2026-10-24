@@ -5,7 +5,8 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
-import { mediaUrl, releaseMedia } from "@/lib/media-store";
+import { mediaUrl, promoteMedia, releaseMedia } from "@/lib/media-store";
+import { cancelDeferred } from "@/lib/preload";
 import { expectReady } from "@/lib/page-ready";
 
 import { StageDirector, videoFile, type StageElements, type StageState } from "./director";
@@ -131,7 +132,10 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
         // No video has sound, so every one is muted for good and the browser lets it autoplay.
         el.defaultMuted = true;
         el.muted = true;
-        el.src = mediaUrl(media.path(tier, videoFile(timeline, key)));
+        const file = media.path(tier, videoFile(timeline, key));
+        // Wanted now: if its background download has not started, it goes first.
+        promoteMedia(file);
+        el.src = mediaUrl(file);
         if (LOOPING(key)) el.loop = true;
       },
     });
@@ -200,6 +204,8 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
       }
       releaseTimer = window.setTimeout(() => {
         releaseMedia(`${media.dir}/`);
+        // What was still waiting in the background for this page is not wanted any more.
+        cancelDeferred(media.dir.split("/").pop() ?? "");
       }, 1500);
     };
     // The stage is built once per mount; `reduced` is read at that moment.

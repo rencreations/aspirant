@@ -20,7 +20,7 @@ export interface PreloadItem {
    * Do the work. Call `report(0..1)` while it runs (a download reports the bytes received) so
    * the bar moves smoothly instead of jumping when the item ends.
    */
-  run: (report: (fraction: number) => void) => Promise<unknown>;
+  run: (report: (fraction: number) => void, context: { background: boolean }) => Promise<unknown>;
   /** How long to wait for this item before the site goes on without it. Default 12 s. */
   timeoutMs?: number;
   /**
@@ -35,6 +35,10 @@ export interface PreloadItem {
    * is loading). Only for things the page does not show until the visitor asks for them.
    */
   deferred?: boolean;
+  /** Deferred items start in this order, the smallest first. Default 50. */
+  priority?: number;
+  /** Who wants it (a character's name), so leaving that page can drop what is still waiting. */
+  group?: string;
 }
 
 export interface PreloadProgress {
@@ -60,7 +64,7 @@ interface Started {
 
 const started = new Map<string, Started>();
 
-function once(item: PreloadItem): Started {
+function once(item: PreloadItem, background = false): Started {
   let s = item.memo === false ? undefined : started.get(item.id);
   if (!s) {
     const created: Started = { promise: Promise.resolve(), fraction: 0, listeners: new Set() };
@@ -71,7 +75,7 @@ function once(item: PreloadItem): Started {
       });
     };
     created.promise = Promise.resolve()
-      .then(() => item.run(report))
+      .then(() => item.run(report, { background }))
       .then(
         () => undefined,
         () => undefined,
@@ -137,7 +141,13 @@ export function savedItem(path: string, label: string, weight = 1): PreloadItem 
 export function mediaItem(
   path: string,
   label: string,
-  options: { type: string; bytes?: number; weight?: number; timeoutMs?: number },
+  options: {
+    type: string;
+    bytes?: number;
+    weight?: number;
+    timeoutMs?: number;
+    background?: boolean;
+  },
 ): PreloadItem {
   return {
     id: `media:${path}`,
@@ -145,8 +155,13 @@ export function mediaItem(
     weight: options.weight ?? Math.max(1, Math.round((options.bytes ?? 1_000_000) / 1_000_000)),
     timeoutMs: options.timeoutMs ?? 120_000,
     memo: false,
-    run: (report) =>
-      loadMedia(path, { type: options.type, expectedBytes: options.bytes, onFraction: report }),
+    run: (report, context) =>
+      loadMedia(path, {
+        type: options.type,
+        expectedBytes: options.bytes,
+        onFraction: report,
+        background: options.background ?? context.background,
+      }),
   };
 }
 
@@ -184,14 +199,54 @@ function withTimeout(p: Promise<void>, ms: number): Promise<void> {
   });
 }
 
-/** Run the deferred items a few at a time, in order. Nothing waits for it and nothing fails. */
+/**
+ * The background queue. Every page that asks adds to the same queue (an item that is in it or was
+ * started already is not added twice), so the work never runs more than `DEFERRED_AT_ONCE` wide
+ * however many times a list is asked for. It runs in order of `priority`, and goes on after the
+ * loading screen has gone and the page is open. Nothing waits for it and nothing fails.
+ */
+const deferredQueue: PreloadItem[] = [];
+const deferredSeen = new Set<string>();
+let deferredRunning = 0;
+
+function pumpDeferred(): void {
+  while (deferredRunning < DEFERRED_AT_ONCE) {
+    const item = deferredQueue.shift();
+    if (!item) return;
+    deferredRunning += 1;
+    void once(item, true).promise.then(() => {
+      // A file that is freed when its page is left has to be asked for again on the next visit.
+      if (item.memo === false) deferredSeen.delete(item.id);
+      deferredRunning -= 1;
+      pumpDeferred();
+    });
+  }
+}
+
 function runDeferred(items: readonly PreloadItem[]): void {
-  const queue = [...items];
-  const next = (): Promise<void> => {
-    const item = queue.shift();
-    return item ? once(item).promise.then(next) : Promise.resolve();
-  };
-  for (let i = 0; i < DEFERRED_AT_ONCE; i += 1) void next();
+  for (const item of items) {
+    if (deferredSeen.has(item.id)) continue;
+    deferredSeen.add(item.id);
+    // Stable insertion by priority.
+    const p = item.priority ?? 50;
+    let at = deferredQueue.length;
+    while (at > 0 && (deferredQueue[at - 1]?.priority ?? 50) > p) at -= 1;
+    deferredQueue.splice(at, 0, item);
+  }
+  pumpDeferred();
+}
+
+/**
+ * Forget what is still waiting in the background queue for `group` (the visitor left its page).
+ * What has started carries on, and a later visit asks for the rest again.
+ */
+export function cancelDeferred(group: string): void {
+  for (let i = deferredQueue.length - 1; i >= 0; i -= 1) {
+    const item = deferredQueue[i];
+    if (item?.group !== group) continue;
+    deferredSeen.delete(item.id);
+    deferredQueue.splice(i, 1);
+  }
 }
 
 /**

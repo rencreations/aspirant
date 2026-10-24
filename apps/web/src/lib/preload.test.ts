@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { runPreload, type PreloadItem, type PreloadProgress } from "./preload";
+import { cancelDeferred, runPreload, type PreloadItem, type PreloadProgress } from "./preload";
 
 const item = (id: string, weight: number, run: () => Promise<unknown>): PreloadItem => ({
   id,
@@ -91,5 +91,90 @@ describe("runPreload byte progress", () => {
     await runPreload([media()]);
     await runPreload([media()]);
     expect(again).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("deferred items", () => {
+  /** An item that stays running until it is let go. */
+  function held(id: string, extra: Partial<PreloadItem> = {}) {
+    let release: () => void = () => undefined;
+    const started = vi.fn();
+    const it: PreloadItem = {
+      id,
+      label: id,
+      weight: 1,
+      deferred: true,
+      run: () =>
+        new Promise<void>((resolve) => {
+          started();
+          release = resolve;
+        }),
+      ...extra,
+    };
+    return { it, started, release: () => release() };
+  }
+  const tick = () => new Promise((r) => setTimeout(r, 0));
+
+  it("are not waited for, and start once the rest is in, three at a time, nearest need first", async () => {
+    const first = held("d-first", { priority: 10 });
+    const late = held("d-late", { priority: 40 });
+    const mid = held("d-mid", { priority: 20 });
+    const mid2 = held("d-mid2", { priority: 20 });
+    const now = vi.fn(() => Promise.resolve());
+    const seen: PreloadProgress[] = [];
+    await runPreload([late.it, item("d-now", 1, now), mid.it, first.it, mid2.it], (p) =>
+      seen.push(p),
+    );
+    // The loading bar was only about the item that was not deferred.
+    expect(now).toHaveBeenCalledTimes(1);
+    expect(seen.at(-1)?.progress).toBe(1);
+    await tick();
+    expect(first.started).toHaveBeenCalledTimes(1);
+    expect(mid.started).toHaveBeenCalledTimes(1);
+    expect(mid2.started).toHaveBeenCalledTimes(1);
+    expect(late.started).not.toHaveBeenCalled();
+    // One finishes, and the next in line takes its place.
+    first.release();
+    await tick();
+    expect(late.started).toHaveBeenCalledTimes(1);
+    for (const h of [mid, mid2, late]) h.release();
+    await tick();
+  });
+
+  it("are not started twice when a list is asked for again, whatever wide the queue is", async () => {
+    const a = held("e-a");
+    const b = held("e-b");
+    const c = held("e-c");
+    const d = held("e-d");
+    await runPreload([a.it, b.it, c.it, d.it]);
+    await runPreload([a.it, b.it, c.it, d.it]);
+    await tick();
+    expect(a.started).toHaveBeenCalledTimes(1);
+    expect(d.started).not.toHaveBeenCalled();
+    for (const h of [a, b, c]) h.release();
+    await tick();
+    expect(d.started).toHaveBeenCalledTimes(1);
+    d.release();
+    await tick();
+  });
+
+  it("can be dropped for one group while they wait, and are asked for again next time", async () => {
+    const blockers = [held("f-1"), held("f-2"), held("f-3")];
+    const mine = held("f-mine", { group: "selena" });
+    const other = held("f-other", { group: "obsidia" });
+    await runPreload([...blockers.map((b) => b.it), mine.it, other.it]);
+    await tick();
+    cancelDeferred("selena");
+    for (const b of blockers) b.release();
+    await tick();
+    expect(mine.started).not.toHaveBeenCalled();
+    expect(other.started).toHaveBeenCalledTimes(1);
+    other.release();
+    await tick();
+    await runPreload([mine.it]);
+    await tick();
+    expect(mine.started).toHaveBeenCalledTimes(1);
+    mine.release();
+    await tick();
   });
 });

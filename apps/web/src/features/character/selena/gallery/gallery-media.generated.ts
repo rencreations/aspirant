@@ -195,5 +195,5 @@ export const GALLERY_TRAILER = {
   w: 1920,
   h: 810,
   seconds: 179.79,
-  bytes: 50416891,
+  bytes: 74315194,
 } as const;

@@ -42,8 +42,13 @@ describe("the size of video for a display and a device", () => {
   it("matches the width of the picture in device pixels", () => {
     // The picture covers the screen: a 1920x1080 window at 1x needs about 2400 px of video.
     expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
-    // No size is bigger than 1440: a sharp screen gets the same.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("1440");
+    // A 2560x1440 (2K) screen gets the 2560 picture, not the 4K one.
+    expect(pickTier({ width: 2560, height: 1440, dpr: 1, ...full })).toBe("1440");
+    // A full HD window with 125 percent scaling also stays at 2560.
+    expect(pickTier({ width: 1920, height: 1080, dpr: 1.25, ...full })).toBe("1440");
+    // A sharp screen (4K, or full HD at 200 percent) gets the 4K picture.
+    expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("2160");
+    expect(pickTier({ width: 3840, height: 2160, dpr: 1, ...full })).toBe("2160");
     expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
     expect(pickTier({ width: 1280, height: 720, dpr: 1, ...full })).toBe("1080");
     expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");

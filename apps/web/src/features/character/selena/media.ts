@@ -22,7 +22,9 @@ export const selenaMedia = createStageMedia({
   dir: SELENA_DIR,
   tiers: SELENA_TIERS,
   bytes: SELENA_BYTES,
-  tierNames: { lite: "light", "1080": "HD", "1440": "QHD" },
+  tierNames: { lite: "light", "1080": "HD", "1440": "QHD", "2160": "4K" },
+  // The first load is the welcome and the idle loop. The page clips and the shorts follow it.
+  deferRest: true,
   // The size of the source recordings, for the cover maths.
   source: { width: 3840, height: 1728 },
 });

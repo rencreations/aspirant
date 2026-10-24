@@ -57,7 +57,7 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
   /**
    * The size of video for this display and this device. The picture covers the screen, so a video
    * as wide as the picture appears in device pixels is as sharp as it can be, and a tier is taken
-   * when it reaches 82 percent of that (a little softness is better than a much bigger download).
+   * when it reaches 82 percent of that (76 percent for 2560 and above) (a little softness is better than a much bigger download).
    * Then the device holds it back:
    *
    *  - the performance level: `lite` is the smallest tier (half the frame rate), `balanced` is at
@@ -71,7 +71,12 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
     }
     const cover = Math.max(d.width / cfg.source.width, d.height / cfg.source.height);
     const need = cfg.source.width * cover * d.dpr;
-    let tier = tierIds.find((id) => cfg.tiers[id].width >= need * 0.82) ?? tierIds.at(-1)!;
+    // A size of 2560 or more is taken when it reaches 76 percent of the need: a QHD screen, or a full
+    // HD one with a little scaling, gets the 2560 picture and not the 4K one (a third of the bytes,
+    // and much easier to decode at 60 frames a second).
+    const enough = (id: T) =>
+      cfg.tiers[id].width >= need * (cfg.tiers[id].width >= 2560 ? 0.76 : 0.82);
+    let tier = tierIds.find(enough) ?? tierIds.at(-1)!;
     const cap = (max: string) => {
       const m = named(max);
       if (m && index(tier) > index(m)) tier = m;
@@ -137,30 +142,40 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
     // The videos the stage starts with come first, so they arrive first.
     const first = (file: string) => (file === "idle.mp4" ? 0 : file === "welcome.mp4" ? 1 : 2);
     const files = Object.entries(cfg.bytes[t]).sort((a, b) => first(a[0]) - first(b[0]));
-    return files.map(([file, size]) => ({
-      id: `media:${cfg.id}:${file}`,
-      label:
-        file === "welcome.mp4"
-          ? "Loading the welcome animation"
-          : `Loading ${cfg.name} in ${cfg.tierNames[t]}`,
-      weight: Math.max(1, Math.round(size / 1_000_000)),
-      timeoutMs: 120_000,
-      memo: false,
+    // What is wanted first of the rest: the entrances and the shorts (a press needs them at once),
+    // then the page loops (the entrance hands over to them a few seconds later), then the exits.
+    const priority = (file: string) =>
+      file.endsWith("-loop.mp4") ? 11 : file.endsWith("-out.mp4") ? 12 : 10;
+    return files.map(([file, size]) => {
       // The page the visitor landed on needs its own clips at once.
-      deferred:
+      const later =
         cfg.deferRest === true &&
         file !== "idle.mp4" &&
         file !== "welcome.mp4" &&
-        !(options.page && file.startsWith(`${options.page}-`)),
-      run: async (report) => {
-        const use = await tierReady();
-        return loadMedia(path(use, file), {
-          type: "video/mp4",
-          expectedBytes: cfg.bytes[use][file] ?? size,
-          onFraction: report,
-        });
-      },
-    }));
+        !(options.page && file.startsWith(`${options.page}-`));
+      return {
+        id: `media:${cfg.id}:${file}`,
+        label:
+          file === "welcome.mp4"
+            ? "Loading the welcome animation"
+            : `Loading ${cfg.name} in ${cfg.tierNames[t]}`,
+        weight: Math.max(1, Math.round(size / 1_000_000)),
+        timeoutMs: 120_000,
+        memo: false,
+        deferred: later,
+        priority: priority(file),
+        group: cfg.id,
+        run: async (report) => {
+          const use = await tierReady();
+          return loadMedia(path(use, file), {
+            type: "video/mp4",
+            expectedBytes: cfg.bytes[use][file] ?? size,
+            onFraction: report,
+            background: later,
+          });
+        },
+      };
+    });
   }
 
   /**

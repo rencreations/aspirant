@@ -16,7 +16,7 @@ import { asset } from "@/lib/asset";
  * everything still works from memory. The saved copy is named by `CACHE`. Change that name when a
  * file is replaced under the same address, and the old copy is thrown away.
  */
-const CACHE = "aspirants-media-v2";
+const CACHE = "aspirants-media-v3";
 const CACHE_PREFIX = "aspirants-media-";
 
 const loading = new Map<string, Promise<string>>();
@@ -24,6 +24,11 @@ const loaded = new Map<string, string>();
 
 interface LoadOptions {
   type?: string;
+  /**
+   * Not needed yet: it is loaded in the background, behind everything the visitor is waiting for,
+   * and never takes more than two of the download slots. `promoteMedia` makes it urgent.
+   */
+  background?: boolean;
   /** The size the file should have. A saved copy of another size is thrown away. */
   expectedBytes?: number;
   onFraction?: (fraction: number) => void;
@@ -35,24 +40,64 @@ const REPORT_EVERY_MS = 100;
 /**
  * At most a few big downloads run at once, in the order they were asked for. The loading screen
  * asks for the videos the stage starts with first, so they arrive first, and the network, the
- * memory and the main thread are not shared among dozens of streams.
+ * memory and the main thread are not shared among dozens of streams. Downloads for later
+ * (`background`) wait behind the urgent ones and use at most two slots, so something the visitor
+ * asks for is never stuck behind them.
  */
 const gate = (() => {
   const LIMIT = 4;
+  const BACKGROUND_LIMIT = 2;
   let active = 0;
-  const queue: Array<() => void> = [];
+  let activeBackground = 0;
+  interface Waiting {
+    path: string;
+    background: boolean;
+    start: () => void;
+  }
+  const queue: Waiting[] = [];
+  const pump = () => {
+    while (active < LIMIT) {
+      let i = queue.findIndex((w) => !w.background);
+      if (i === -1 && activeBackground < BACKGROUND_LIMIT) i = queue.findIndex((w) => w.background);
+      if (i === -1) return;
+      const [w] = queue.splice(i, 1);
+      w?.start();
+    }
+  };
   return {
-    async enter(): Promise<() => void> {
-      if (active >= LIMIT) await new Promise<void>((resolve) => queue.push(resolve));
-      else active += 1;
+    async enter(path: string, background: boolean): Promise<() => void> {
+      await new Promise<void>((resolve) => {
+        queue.push({
+          path,
+          background,
+          start: () => {
+            active += 1;
+            if (background) activeBackground += 1;
+            resolve();
+          },
+        });
+        pump();
+      });
+      let background_ = background;
       return () => {
-        const next = queue.shift();
-        if (next) next();
-        else active -= 1;
+        active -= 1;
+        if (background_) activeBackground -= 1;
+        background_ = false;
+        pump();
       };
+    },
+    /** Make a waiting download urgent. */
+    promote(path: string) {
+      for (const w of queue) if (w.path === path) w.background = false;
+      pump();
     },
   };
 })();
+
+/** Something the visitor now needs: if its download is only waiting for a slot, it goes first. */
+export function promoteMedia(path: string): void {
+  gate.promote(asset(path));
+}
 
 let cachePromise: Promise<Cache | null> | null = null;
 
@@ -135,7 +180,7 @@ async function download(path: string, options: LoadOptions): Promise<string> {
       const type = options.type ?? blob.type;
       return URL.createObjectURL(blob.slice(0, blob.size, type));
     }
-    const release = await gate.enter();
+    const release = await gate.enter(fallback, options.background === true);
     let blob: Blob;
     let type: string;
     try {

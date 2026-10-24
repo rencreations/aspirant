@@ -1,11 +1,12 @@
 """
-Builds the Selena stage videos in three sizes.
+Builds the Selena stage videos in four sizes.
 
 Source: C:/Users/muham/Videos/selena/*.mkv (3840x1728, 60 fps, recorded from the Live2D viewer).
 Output: apps/web/public/video/selena/<tier>/*.mp4, a still, the trailer renditions and
         src/features/character/selena/timeline.generated.ts
 
 Tiers (all H.264, so every browser plays them; the page picks one for the visitor's display):
+  lite  1280x576    at 30 fps, for devices that decode in software
   1080  1920x864    phones, tablets, small screens
   1440  2560x1152   full HD and QHD screens
   2160  3840x1728   the source size, for 4K and retina screens
@@ -50,9 +51,13 @@ WELCOME_START, WELCOME_END, WELCOME_BLEND = 86, 1034, 6
 TIERS = {
     # For devices that decode video in software, or slow ones: half the frame rate (the loops and
     # seams are measured in time, so they work at 30 fps) and a third of the pixels.
-    "lite": dict(w=1280, h=576, crf=26, preset="slow", fps=30),
-    "1080": dict(w=1920, h=864, crf=28, preset="slow"),
-    "1440": dict(w=2560, h=1152, crf=29, preset="medium"),
+    # The quality is as high as the budget allows: x264 CRF 17 at 2560 wide and 20 at 3840 wide are
+    # visually lossless on this art (the recordings are 75 Mbit/s H.264 themselves). `loop` is the
+    # idle and page loops, which are on screen most of the time, `clip` the rest.
+    "lite": dict(w=1280, h=576, loop=23, clip=25, level="3.1", preset="slow", fps=30),
+    "1080": dict(w=1920, h=864, loop=19, clip=20, level="4.2", preset="slow"),
+    "1440": dict(w=2560, h=1152, loop=17, clip=18, level="5.1", preset="slow"),
+    "2160": dict(w=3840, h=1728, loop=20, clip=21, level="5.2", preset="slow"),
 }
 
 # key -> (source, a0, L0, loop frames, out start, idle start phases, dissolve into the page in ms)
@@ -126,9 +131,16 @@ class Tier:
         self.w, self.h = t["w"], t["h"]
         self.fps = t.get("fps", FPS)
         self.scale = f"scale={self.w}:{self.h}:flags=lanczos,setsar=1,format=yuv420p"
-        self.enc = [
-            "-c:v", "libx264", "-preset", t["preset"], "-crf", str(t["crf"]), "-pix_fmt", "yuv420p",
-            "-profile:v", "high", "-g", str(self.fps), "-keyint_min", "10", "-sc_threshold", "0", "-bf", "3",
+        self.enc = self.encoder(t["clip"])
+        self.enc_loop = self.encoder(t["loop"])
+
+    def encoder(self, crf: int) -> list[str]:
+        t = TIERS[self.name]
+        return [
+            "-c:v", "libx264", "-preset", t["preset"], "-tune", "animation", "-crf", str(crf),
+            "-pix_fmt", "yuv420p", "-profile:v", "high", "-level:v", t["level"],
+            "-g", str(self.fps), "-keyint_min", "10", "-sc_threshold", "0", "-bf", "3",
+            "-x264-params", "aq-mode=3:deblock=-1,-1",
             "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
             "-movflags", "+faststart", "-r", str(self.fps),
         ]
@@ -175,7 +187,7 @@ def build_loop(t: Tier, source: Path, start: int, frames: int, out: Path) -> Non
         "[m][b]concat=n=2:v=1:a=0[v]",
     ]
     graph, label = t.graph(";".join(parts))
-    run(["-i", str(source), "-filter_complex", graph, "-map", label, *t.enc, "-an", str(out)])
+    run(["-i", str(source), "-filter_complex", graph, "-map", label, *t.enc_loop, "-an", str(out)])
 
 
 def build_cut(t: Tier, source: Path, a: int, b: int, out: Path) -> None:
@@ -197,9 +209,9 @@ def build_poster(jpg: Path, out: Path) -> None:
 
 
 TRAILER = {  # name -> (height, crf, max kbit/s)
-    "1080": (1080, 29, 3600),
-    "720": (720, 30, 1800),
-    "480": (480, 31, 800),
+    "1080": (1080, 23, 5000),
+    "720": (720, 24, 2800),
+    "480": (480, 25, 1200),
 }
 
 
@@ -336,7 +348,7 @@ def main() -> None:
     if "--timeline-only" not in flags:
         for name in [only] if only else list(TIERS):
             build_tier(name, src, out_root, parts)
-        build_still(src, out_root / "still.webp", 1920, 864)
+        build_still(src, out_root / "still.webp", 2560, 1152)
         if len(args) > 1:
             build_poster(Path(args[1]), out_root / "trailer-poster.webp")
         if len(args) > 2:

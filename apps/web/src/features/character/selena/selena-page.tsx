@@ -285,7 +285,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // she idles, so it never competes with the welcome, and what is loaded already costs nothing.
   const toppedUp = useRef(false);
   useEffect(() => {
-    if (state.mode !== "idle" || toppedUp.current) return;
+    if ((state.mode !== "idle" && state.mode !== "page") || toppedUp.current) return;
     const timer = window.setTimeout(() => {
       toppedUp.current = true;
       void runPreload(routeItems(pathname));
