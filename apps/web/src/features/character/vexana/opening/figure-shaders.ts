@@ -5,10 +5,16 @@
  * (staggered bands, ragged noise), glow, and bend the picture a little.
  */
 export const FIGURE_VERT = /* glsl */ `
+uniform sampler2D uDepth;
+uniform float uDepthScale;
 varying vec2 vUv;
 void main() {
   vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  // The picture is a relief: the face stands out of the plane, the hair and the shoulders sit
+  // behind it. The camera and the turn of the head do the rest, in real perspective.
+  vec3 pos = position;
+  pos.z += texture2D(uDepth, uv).r * uDepthScale;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `;
 
@@ -16,6 +22,7 @@ export const FIGURE_FRAG = /* glsl */ `
 precision highp float;
 uniform sampler2D uA;
 uniform sampler2D uB;
+uniform sampler2D uDepth;
 uniform vec2 uTilt;
 uniform vec3 uCur;
 uniform float uCurR;
@@ -113,8 +120,8 @@ void main() {
   float wide = 1.0 - smoothstep(0.0, 0.07, abs(f));
   vec2 disp = vec2(vn(p * 22.0 + uTime) - 0.5, vn(p * 22.0 + 7.3 - uTime) - 0.5) * 0.02 * wide;
   vec2 uvA = vUv + disp;
-  // The Ender picture sits a little deeper: it slides against the normal one as the head turns.
-  vec2 uvB = (vUv - 0.5) * 1.012 - uTilt * vec2(0.012, -0.008) + 0.5 + disp;
+  // Both pictures share one relief, so the Ender form stays exactly on top of the normal one.
+  vec2 uvB = vUv + disp;
   vec4 a = texture2D(uA, uvA);
   vec4 b = texture2D(uB, uvB);
   vec4 c = mix(a, b, m);
@@ -125,6 +132,15 @@ void main() {
   float rim = clamp(c.a - aRim, 0.0, 1.0);
   c.rgb += vec3(0.78, 0.7, 1.0) * rim * 0.55;
 
+  // Relief light: the slope of the depth map takes the light that comes from the cursor's side,
+  // so the nose, the cheek and the hair catch it as the head turns.
+  vec2 te = vec2(1.0 / 192.0, 1.0 / 108.0);
+  float dx = texture2D(uDepth, vUv + vec2(te.x, 0.0)).r - texture2D(uDepth, vUv - vec2(te.x, 0.0)).r;
+  float dy = texture2D(uDepth, vUv + vec2(0.0, te.y)).r - texture2D(uDepth, vUv - vec2(0.0, te.y)).r;
+  vec3 nrm = normalize(vec3(-dx * 5.0, -dy * 5.0, 1.0));
+  vec3 lig = normalize(vec3(uTilt.x * 1.1, -uTilt.y * 1.1 + 0.45, 0.8));
+  c.rgb *= 1.0 + 0.7 * (dot(nrm, lig) - lig.z);
+
   // The torn edge glows.
   float body = clamp(max(a.a, b.a), 0.0, 1.0);
   c.rgb += vec3(0.95, 0.45, 0.9) * edge * 1.1 * body;
@@ -134,6 +150,9 @@ void main() {
   float sh = 1.0 - smoothstep(0.0, 0.07, abs(vUv.x * 0.65 + vUv.y * 0.35 - uShine));
   c.rgb += sh * 0.1 * c.a;
   c.rgb += (h21(gl_FragCoord.xy + fract(uTime) * 91.0) - 0.5) * 0.03 * c.a;
+
+  // Where the picture ends at the top its last pixels fade, so no flat cut shows.
+  c *= 1.0 - smoothstep(0.994, 1.0, vUv.y);
 
   gl_FragColor = c * uFade;
 }

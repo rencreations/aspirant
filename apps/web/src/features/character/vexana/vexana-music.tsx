@@ -7,8 +7,8 @@ import { startMusic, type Track } from "@/lib/now-playing";
 import { MUSIC } from "./media";
 
 const TRACK: Track = {
-  title: "Vexana theme",
-  artist: "The Aspirants",
+  title: "CROSSxCREDO: Vexana Version",
+  artist: "WaMi",
   cover: "/img/char/vexana/splash-sm.webp",
   src: MUSIC,
 };

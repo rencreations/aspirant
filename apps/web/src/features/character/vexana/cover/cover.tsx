@@ -13,18 +13,16 @@ import styles from "./cover.module.css";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
-/** Height of the tab above the panel's top edge, px. It is hidden above the screen once the panel is in. */
-const TAB = 48;
-
 /**
- * The cover-up. This section does not scroll in like the others: the section before it stays where it
- * is (it is counter-moved by exactly the distance the page scrolls) and this panel rises and covers it,
- * with a shadow thrown up onto what it covers. Then the panel holds while the picture slowly pushes in,
- * and the film plays muted by itself while it is in view. The play button opens the site's player with
+ * The cover-up. This section does not scroll in like the others: it overlaps the section before it
+ * (`margin-top: -100lvh`, and that section keeps its stage stuck for that screen: see `.track` in
+ * faces.module.css), so plain scrolling makes this panel rise and cover it, with a shadow thrown up
+ * onto what it covers. There is no script moving the section underneath, so nothing can lag behind a
+ * fast or touch scroll and leave a gap. Then the panel holds while the picture slowly pushes in, and
+ * the film plays muted by itself while it is in view. The play button opens the site's player with
  * the full film and its sound.
  *
- * Only `transform` and `opacity` move: the section before it gets a translate, the shadow an opacity,
- * the picture a scale.
+ * Only `transform` and `opacity` move: the shadow gets an opacity and the picture a scale.
  */
 export function Cover() {
   const reduced = useReducedMotion();
@@ -69,11 +67,10 @@ export function Cover() {
     };
   }, [reduced]);
 
-  // The cover-up itself, and the push-in.
+  // The shadow on what is covered, and the push-in of the picture.
   useEffect(() => {
     const root = section.current;
     if (!root) return;
-    const behind = root.previousElementSibling as HTMLElement | null;
     const triggers: ScrollTrigger[] = [];
 
     triggers.push(
@@ -83,13 +80,10 @@ export function Cover() {
         end: "top top",
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          const p = self.progress;
-          const travelled = p * window.innerHeight;
-          if (behind) behind.style.transform = `translate3d(0, ${travelled}px, 0)`;
-          if (shade.current) shade.current.style.opacity = String(Math.min(1, p * 1.15));
+          if (shade.current)
+            shade.current.style.opacity = String(Math.min(1, self.progress * 1.15));
         },
         onLeaveBack: () => {
-          if (behind) behind.style.transform = "";
           if (shade.current) shade.current.style.opacity = "0";
         },
       }),
@@ -112,7 +106,6 @@ export function Cover() {
 
     return () => {
       for (const t of triggers) t.kill();
-      if (behind) behind.style.transform = "";
     };
   }, [reduced]);
 
@@ -125,17 +118,8 @@ export function Cover() {
       aria-labelledby="cover-title"
     >
       <div ref={shade} className={styles.shade} aria-hidden="true" />
-      <div className={styles.pin} style={{ top: -TAB, height: `calc(100vh + ${TAB}px)` }}>
-        <svg
-          className={styles.tab}
-          viewBox="0 0 360 48"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M0 48C70 48 78 0 150 0H210C282 0 290 48 360 48Z" />
-        </svg>
-        <div className={styles.panel} style={{ top: TAB }}>
+      <div className={styles.pin}>
+        <div className={styles.panel}>
           <div ref={zoom} className={styles.zoom}>
             <video
               ref={video}

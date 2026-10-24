@@ -27,6 +27,7 @@ Run: python -I scripts/vexana/build.py            everything
      python -I scripts/vexana/build.py --manifest-only   write media.generated.ts from the sources
                                                    (before the long encodes), then stop
      python -I scripts/vexana/build.py --only images,audio,final2,skin-showcase
+     python -I scripts/vexana/build.py --only skills   the four skill clips of the Craft section
      python -I scripts/vexana/build.py --force    rebuild what exists
 """
 
@@ -58,13 +59,30 @@ ART = ["both-splash-art", "fighting-moment", "fighting-stance", "guinevere-splas
 ART_QUALITY, ART_W, ART_SM_W = 85, 2560, 960
 COMIC_QUALITY, COMIC_MAX_W = 82, 1200
 SKILLS = ["passive", "skill-1", "skill-2", "skill-3", "skill-3-cancel"]
+CHIBI_SRC = Path("C:/Users/muham/Downloads/chibi.png")  # the sticker of the comic section (alpha)
+CHIBI_QUALITY, CHIBI_W = 92, 1000
+# The fan wall: fanart-1..7 in the order of the files (the names in the folder are Instagram exports).
+FANART_DIR = SRC / "fanart/vexana"
+FANART_SRC = [
+    "igexport-DPV12RbDHy1.jpg",
+    "igexport-DPV12RbDHy1-2.jpg",
+    "igexport-DPV12RbDHy1-3.jpg",
+    "igexport-DPV12RbDHy1-4.jpg",
+    "igexport-DPV12RbDHy1-6.jpg",
+    "igexport-DPV12RbDHy1-8.jpg",
+    "igexport-DPi3XJ_iZBy (1).jpg",
+]
+FANART = [f"fanart-{i + 1}" for i in range(len(FANART_SRC))]
+FANART_QUALITY, FANART_W, FANART_SM_W = 84, 1600, 640
 
 # --- videos -----------------------------------------------------------------------------------
 # src       the file under SRC
 # w         output width (height keeps the aspect); None keeps the size
 # crf       x264 quality (lower is better); the budget for the whole folder is 500 MB
 # preset    x264 preset
-# audio     keep the sound (the two films and nothing else: the page's videos are muted)
+# audio     keep the sound (the films, the stream, the game scene and the 3D process: every picture that
+#           plays by itself is muted by the page, and the site's player plays the sound)
+# abr       audio bitrate (default 160k)
 # poster    second of the output to take the poster from
 # fps       cap the frame rate (None keeps it)
 VIDEOS = {
@@ -77,18 +95,25 @@ VIDEOS = {
     "final2": dict(src="final_video2.mp4", w=2560, crf=26, preset="slow", audio=True, poster=8, tune=None),
     "final2-loop": dict(src="final_video2.mp4", w=1280, crf=32, preset="slow", audio=False, poster=8, tune=None),
     # Portrait, 60 fps.
-    "splash-short": dict(src="video/short-splash-art-showcase.webm", w=None, crf=25, preset="slow", audio=False, poster=4, tune="animation"),
+    # Vexana only: the source cuts to Guinevere at 3.9 s and back with a wipe, so only 1.7 s to 3.85 s (where she is in
+    # frame) is kept, cropped to 4:5 (the signature card) and played forward then backward so it loops.
+    "splash-short": dict(src="video/short-splash-art-showcase.webm", w=864, crf=22, preset="slow", audio=False, poster=1.5, tune="animation", pingpong=dict(start=1.7, end=3.85, crop=(1080, 1350, 0, 200))),
     "skin-showcase": dict(src="video/skin-showcase.webm", w=None, crf=24, preset="slow", audio=False, poster=14, tune="animation", skin=True),
+    # The skill clips of the Craft section, cut from the skin showcase (full frame, no Guinevere) at the
+    # moment each skill is shown in play (the times were found with a frame every 0.25 s from 96 s to
+    # 113 s). The bottom 280 px (the caption bar and the skill icon of the promo, the joystick) are
+    # cropped off, and the clip is 1440x600. The recast of the third skill is not in the source, so it
+    # shares the third clip.
+    "skill-passive": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=1.6, tune="animation", clip=dict(start=107.0, end=109.3, crop=(1920, 800, 0, 0))),
+    "skill-1": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=1.6, tune="animation", clip=dict(start=99.7, end=103.0, crop=(1920, 800, 0, 0))),
+    "skill-2": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=1.4, tune="animation", clip=dict(start=103.0, end=106.4, crop=(1920, 800, 0, 0))),
+    "skill-3": dict(src="video/skin-showcase.webm", w=1440, crf=24, preset="slow", audio=False, poster=2.0, tune="animation", clip=dict(start=109.4, end=112.7, crop=(1920, 800, 0, 0))),
     "comic-jp": dict(src="video/comic-jp.mp4", w=1080, crf=29, preset="slow", audio=False, poster=8, tune="animation"),
-    "comic": dict(src="video/comic.webm", w=1080, crf=29, preset="slow", audio=False, poster=8, tune="animation"),
-    # Her daily life: long, so 720p. They stream; nothing waits for them.
-    "live-vexana": dict(src="video/live-vexana.webm", w=1280, crf=30, preset="medium", audio=False, poster=300, tune="animation"),
-    "live-guin": dict(src="video/live-guin.webm", w=1280, crf=30, preset="medium", audio=False, poster=300, tune="animation"),
-    "sleeping": dict(src="video/sleeping.webm", w=None, crf=26, preset="slow", audio=False, poster=20, tune="animation"),
+    # Her livestream: long, so 720p. It streams; nothing waits for it.
+    "live-vexana": dict(src="video/live-vexana.webm", w=608, crop=(608, 1080, 656, 0), crf=33, preset="medium", audio=True, abr="96k", poster=20, tune="animation"),
     "heart-dance": dict(src="video/heart-short-dance.webm", w=None, crf=26, preset="slow", audio=False, poster=4, tune="animation"),
-    "relink": dict(src="video/relink.webm", w=None, crf=28, preset="slow", audio=False, poster=20, tune="animation"),
-    "3d-process": dict(src="video/3d-process.webm", w=None, crf=24, preset="slow", audio=False, poster=8, tune="animation"),
-    "interactive-drama": dict(src="video/interactive-drama.webm", w=None, crf=24, preset="slow", audio=False, poster=15, tune="animation"),
+    "3d-process": dict(src="video/3d-process.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=8, tune="animation"),
+    "interactive-drama": dict(src="video/interactive-drama.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=35, tune="animation"),
 }
 
 # The skin showcase parts: (start, end, kind, window x). `full` cuts a SKIN_W wide window out of the
@@ -166,6 +191,18 @@ def build_images() -> None:
              f"scale='min({COMIC_MAX_W},iw)':-2:flags=lanczos")
 
 
+def build_chibi() -> None:
+    """The sticker of the comic section: Vexana and Guinevere as chibis, with alpha."""
+    webp(CHIBI_SRC, IMG / "comic-chibi.webp", CHIBI_QUALITY, f"scale={CHIBI_W}:-2:flags=lanczos")
+
+
+def build_fanart() -> None:
+    for name, file in zip(FANART, FANART_SRC):
+        src = FANART_DIR / file
+        webp(src, IMG / "fanart" / f"{name}.webp", FANART_QUALITY, f"scale='min({FANART_W},iw)':-2:flags=lanczos")
+        webp(src, IMG / "fanart" / f"{name}-sm.webp", 80, f"scale={FANART_SM_W}:-2:flags=lanczos")
+
+
 def comic_pages() -> list[int]:
     """The panels that exist, by their original numbers. 3, 23 and 40 were never supplied."""
     return sorted(int(p.stem) for p in COMICS.glob("*.jpg") if re.fullmatch(r"\d+", p.stem))
@@ -185,6 +222,14 @@ def out_size(name: str) -> tuple[int, int]:
     spec = VIDEOS[name]
     if spec.get("skin"):
         return SKIN_W, SKIN_H
+    if spec.get("clip"):
+        cw, ch, _, _ = spec["clip"]["crop"]
+        return spec["w"], round(ch * spec["w"] / cw / 2) * 2
+    if spec.get("pingpong"):
+        cw, ch, _, _ = spec["pingpong"]["crop"]
+        return spec["w"], round(ch * spec["w"] / cw / 2) * 2
+    if spec.get("crop"):
+        return spec["crop"][0], spec["crop"][1]
     p = probe(SRC / spec["src"])
     w = spec["w"] or p["width"]
     w = min(w, p["width"])
@@ -195,6 +240,10 @@ def out_duration(name: str) -> float:
     spec = VIDEOS[name]
     if spec.get("skin"):
         return round(sum(e - s for s, e, _, _ in SKIN_PARTS), 3)
+    if spec.get("clip"):
+        return round(spec["clip"]["end"] - spec["clip"]["start"], 3)
+    if spec.get("pingpong"):
+        return round((spec["pingpong"]["end"] - spec["pingpong"]["start"]) * 2, 3)
     return probe(SRC / spec["src"])["duration"]
 
 
@@ -220,17 +269,37 @@ def encode(name: str) -> None:
             tags.append(f"[v{i}]")
         graph = ";".join(chains) + ";" + "".join(tags) + f"concat=n={len(SKIN_PARTS)}:v=1:a=0[v]"
         run(["-i", str(src), "-filter_complex", graph, "-map", "[v]", *x264, "-an", str(tmp)])
+    elif spec.get("clip"):
+        c = spec["clip"]
+        cw, ch, cx, cy = c["crop"]
+        w, h = out_size(name)
+        vf = f"crop={cw}:{ch}:{cx}:{cy},scale={w}:{h}:flags=lanczos,fps=30"
+        run(["-i", str(src), "-ss", f"{c['start']}", "-t", f"{c['end'] - c['start']:.3f}", "-vf", vf, *x264, "-an", str(tmp)])
+    elif spec.get("pingpong"):
+        pp = spec["pingpong"]
+        cw, ch, cx, cy = pp["crop"]
+        w, h = out_size(name)
+        graph = (
+            f"[0:v]trim=start={pp['start']}:end={pp['end']},setpts=PTS-STARTPTS,crop={cw}:{ch}:{cx}:{cy},"
+            f"scale={w}:{h}:flags=lanczos,split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0[v]"
+        )
+        run(["-i", str(src), "-filter_complex", graph, "-map", "[v]", *x264, "-an", str(tmp)])
     else:
         w, _ = out_size(name)
         vf = []
-        if spec["w"] and w < probe(src)["width"]:
+        if spec.get("crop"):
+            # (width, height, x, y) of the picture inside the frame (the stream is a portrait picture
+            # with black bars on both sides in a 16:9 frame)
+            cw, ch, cx, cy = spec["crop"]
+            vf.append(f"crop={cw}:{ch}:{cx}:{cy}")
+        elif spec["w"] and w < probe(src)["width"]:
             vf.append(f"scale={w}:-2:flags=lanczos")
         args = ["-i", str(src)]
         if vf:
             args += ["-vf", ",".join(vf)]
         args += x264
         if spec["audio"] and audio_codec(src):
-            args += ["-c:a", "aac", "-b:a", "160k"]
+            args += ["-c:a", "aac", "-b:a", spec.get("abr", "160k")]
         else:
             args += ["-an"]
         run([*args, str(tmp)])
@@ -283,6 +352,7 @@ def write_generated() -> None:
     for sub, names in (
         ("hero", HERO),
         ("art", [*ART, *[f"{a}-sm" for a in ART]]),
+        ("fanart", [*FANART, *[f"{a}-sm" for a in FANART]]),
     ):
         for name in names:
             info = image_size(IMG / sub / f"{name}.webp")
@@ -311,10 +381,14 @@ def main() -> None:
         return
     if want("images"):
         build_images()
+    if want("chibi"):
+        build_chibi()
+    if want("fanart"):
+        build_fanart()
     if want("audio"):
         build_audio()
     for name in VIDEOS:
-        if want(name) or (only and "videos" in only):
+        if want(name) or (only and "videos" in only) or (only and "skills" in only and VIDEOS[name].get("clip")):
             encode(name)
             poster(name)
             write_generated()

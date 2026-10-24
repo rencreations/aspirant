@@ -1,21 +1,32 @@
-/* The cover-up: a tall section whose sticky stage is the panel. The section before it is moved by
-   script so that it stays put while this rises over it. */
+/* The cover-up: a tall section whose sticky stage is the panel. It overlaps the section before it by
+   one screen (that section keeps its own stage stuck for that screen), so scrolling alone makes the
+   panel rise over it. The rounded top corners show that stuck stage, so there is no gap anywhere. */
 .cover {
+  --vh: 100vh;
+  --r: clamp(24px, 4.5vw, 72px);
   position: relative;
   z-index: 2;
-  height: 230vh;
+  height: calc(var(--vh) * 2.3);
+  margin-top: calc(var(--vh) * -1);
   background: transparent;
   color: #f4effc;
   --ink: #140e26;
 }
 
-/* The shadow the rising panel throws up onto what it covers. */
+@supports (height: 100lvh) {
+  .cover {
+    --vh: 100lvh;
+  }
+}
+
+/* The shadow the rising panel throws up onto what it covers. It reaches down behind the rounded
+   corners too, so they are not lighter than the picture above them. */
 .shade {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 100%;
-  height: 100vh;
+  bottom: calc(100% - var(--r));
+  height: calc(var(--vh) + var(--r));
   opacity: 0;
   pointer-events: none;
   background: linear-gradient(to top, rgb(20 14 38 / 0.78), rgb(20 14 38 / 0));
@@ -24,29 +35,17 @@
 
 .pin {
   position: sticky;
-  overflow: clip;
-  pointer-events: none;
-}
-
-.tab {
-  position: absolute;
-  left: 50%;
   top: 0;
-  width: min(30vw, 360px);
-  min-width: 190px;
-  height: 48px;
-  translate: -50% 0;
-  fill: var(--ink);
+  height: var(--vh);
+  pointer-events: none;
 }
 
 .panel {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   overflow: hidden;
   background: var(--ink);
-  border-radius: clamp(24px, 4.5vw, 72px) clamp(24px, 4.5vw, 72px) 0 0;
+  border-radius: var(--r) var(--r) 0 0;
   pointer-events: auto;
   isolation: isolate;
 }

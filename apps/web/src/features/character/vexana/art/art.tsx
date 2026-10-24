@@ -134,7 +134,7 @@ export function ArtShowcase() {
     >
       <div className={styles.lamp} aria-hidden="true" />
       <header className={styles.head}>
-        <p className={styles.kicker}>The gallery</p>
+        <p className={styles.kicker}>09 The gallery</p>
         <h2 id="art-title" className={styles.title}>
           <span>Hung on</span>
           <span className={styles.serif}>the wall.</span>

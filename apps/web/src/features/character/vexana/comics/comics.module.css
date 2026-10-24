@@ -1,256 +1,797 @@
+/*
+ * The comic: two halves, a disc on the seam and a chibi on the disc. Everything that moves is a
+ * transform or an opacity, driven by `data-hot` (which part the pointer is on) and `data-seen`
+ * (the section has scrolled into view). Sizes are in container units of `.stage`.
+ */
 .comics {
   position: relative;
   z-index: 3;
   overflow: clip;
-  padding: clamp(80px, 14vh, 180px) clamp(20px, 6vw, 112px) clamp(80px, 14vh, 160px);
-  color: #140e26;
-  background:
-    radial-gradient(60vw 40vh at 85% 0%, rgb(183 156 242 / 0.35), transparent 70%), #f1ecf9;
-}
-
-.head {
-  max-width: 1100px;
-}
-
-.kicker {
-  margin: 0 0 16px;
-  font-family: var(--font-mono-stack);
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #7a4fd6;
-}
-
-.title {
-  margin: 0;
-  display: grid;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(56px, 11vw, 190px);
-  line-height: 0.84;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-}
-
-.title span {
-  display: block;
-  transform: translate3d(0, 40px, 0);
-  opacity: 0;
-  transition:
-    transform 900ms var(--ease-out),
-    opacity 900ms var(--ease-out);
-}
-
-.title span:nth-child(2) {
-  transition-delay: 120ms;
-}
-
-.comics[data-seen="true"] .title span {
-  transform: none;
-  opacity: 1;
-}
-
-.serif {
-  font-family: var(--font-serif-stack);
-  font-weight: 400;
-  font-style: italic;
-  text-transform: none;
-  color: #e040a0;
-  letter-spacing: -0.02em;
-}
-
-.lede {
-  margin: 28px 0 0;
-  max-width: 46ch;
-  font-size: clamp(15px, 1.3vw, 18px);
-  line-height: 1.55;
-  color: rgb(20 14 38 / 0.75);
-}
-
-.choices {
-  margin-top: clamp(40px, 8vh, 96px);
-  display: flex;
-  gap: clamp(16px, 2.4vw, 36px);
-  align-items: stretch;
-}
-
-.choice {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 18px;
-  padding: clamp(18px, 2vw, 28px);
-  border: 1px solid rgb(20 14 38 / 0.2);
-  border-radius: 28px;
-  background: rgb(255 255 255 / 0.55);
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    transform 500ms var(--ease-out),
-    opacity 400ms var(--ease-out),
-    background-color 300ms var(--ease-out),
-    border-color 300ms var(--ease-out);
-}
-
-/* The pointer decides: the card it is over lifts, the other one steps back. */
-.choices:hover .choice {
-  opacity: 0.62;
-  transform: scale(0.985);
-}
-.choices .choice:hover,
-.choices .choice:focus-visible {
-  opacity: 1;
-  transform: translate3d(0, -8px, 0);
-  background: #fff;
-  border-color: #7a4fd6;
-}
-
-.step {
-  position: absolute;
-  top: 18px;
-  left: 22px;
-  z-index: 2;
-  font-family: var(--font-mono-stack);
-  font-size: 12px;
-  letter-spacing: 0.2em;
   color: #fff;
   background: #140e26;
-  padding: 5px 10px;
-  border-radius: 999px;
+  --spring: cubic-bezier(0.3, 1.55, 0.5, 1);
+  --glide: cubic-bezier(0.2, 0.9, 0.25, 1);
 }
 
-.screen {
+.stage {
   position: relative;
-  display: block;
-  margin: 0 auto;
-  height: min(62vh, 560px);
-  aspect-ratio: 9 / 16;
-  max-width: 100%;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #140e26;
-  box-shadow: 0 30px 60px -30px rgb(20 14 38 / 0.6);
+  height: clamp(540px, 100svh, 960px);
+  container-type: size;
+  overflow: clip;
+  isolation: isolate;
 }
 
-.screen img {
+/* ---- The halves: the two buttons. Each is a full-size layer scaled from its own edge. ---- */
+.half {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+  color: inherit;
+  transform: translate3d(var(--enter), 0, 0) scaleX(var(--s));
+  transition: transform 850ms var(--glide);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.half:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -12px;
+}
+
+.watch {
+  transform-origin: 0 50%;
+  --enter: -101%;
+  --s: 0.5;
+  background: linear-gradient(115deg, #2c1d78 0%, #5a3fc9 62%, #7f63e8 100%);
+}
+
+.read {
+  left: auto;
+  right: 0;
+  transform-origin: 100% 50%;
+  --enter: 101%;
+  --s: 0.5;
+  background: linear-gradient(245deg, #6b1853 0%, #b02a78 62%, #d9459f 100%);
+}
+
+.comics[data-seen="true"] .half {
+  --enter: 0%;
+}
+
+.comics[data-hot="watch"] .watch {
+  --s: 0.6;
+}
+
+.comics[data-hot="watch"] .read {
+  --s: 0.4;
+}
+
+.comics[data-hot="read"] .watch {
+  --s: 0.42;
+}
+
+.comics[data-hot="read"] .read {
+  --s: 0.58;
+}
+
+/* ---- The scene on top of the halves. Nothing here takes the pointer except the disc. ---- */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ---- The words ---- */
+.word {
+  position: absolute;
+  left: 0;
+  top: 44%;
+  text-align: center;
+  opacity: var(--dim, 1);
+  transform: translate3d(calc(var(--wx) * 1cqw - 50%), calc(var(--wy) * 1cqh - 50%), 0);
+  transition:
+    transform 850ms var(--glide),
+    opacity 450ms var(--glide);
+  --wy: 0;
+}
+
+.wordWatch {
+  --wx: 19;
+}
+
+.wordRead {
+  --wx: 81;
+}
+
+.comics[data-hot="watch"] .wordWatch {
+  --wx: 24;
+  --wy: 0;
+}
+
+.comics[data-hot="watch"] .wordRead {
+  --wx: 86;
+  --dim: 0.5;
+}
+
+.comics[data-hot="read"] .wordWatch {
+  --wx: 14;
+  --dim: 0.5;
+}
+
+.comics[data-hot="read"] .wordRead {
+  --wx: 77;
+}
+
+.rise {
+  display: block;
+  transition:
+    transform 900ms var(--glide) 700ms,
+    opacity 700ms var(--glide) 700ms;
+}
+
+.comics[data-seen="false"] .rise {
+  opacity: 0;
+  transform: translate3d(0, 44px, 0);
+}
+
+.big {
+  display: block;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(54px, 8.6cqw, 160px);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.letter {
+  display: inline-block;
+  transition: transform 600ms var(--spring) calc(var(--i) * 45ms);
+}
+
+.comics[data-hot="watch"] .wordWatch .letter,
+.comics[data-hot="read"] .wordRead .letter {
+  animation: wave 1.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+.sub {
+  display: block;
+  margin-top: 1.6cqh;
+  font-family: var(--font-mono-stack);
+  font-size: clamp(10px, 1.05cqw, 15px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+/* ---- What is behind Watch: the film's poster, peeking from the bottom ---- */
+.poster {
+  position: absolute;
+  left: 4cqw;
+  bottom: 0;
+  height: 40cqh;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 56px rgb(10 5 30 / 0.5);
+  transform-origin: 50% 100%;
+  transform: translate3d(0, var(--py), 0) rotate(var(--pr));
+  transition: transform 850ms var(--spring);
+  --py: 80%;
+  --pr: -9deg;
+}
+
+.poster img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 900ms var(--ease-out);
-}
-
-.watch:hover .screen img {
-  transform: scale(1.06);
 }
 
 .playDot {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  inset: 0;
+  margin: auto;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 72px;
-  translate: -50% -50%;
   border-radius: 50%;
   color: #fff;
   background: #e040a0;
-  transition: transform 400ms var(--ease-spring);
+  box-shadow: 0 8px 22px rgb(10 5 30 / 0.4);
 }
 
-.watch:hover .playDot {
-  transform: scale(1.14);
+.comics[data-hot="watch"] .poster {
+  --py: 8%;
+  --pr: -5deg;
 }
 
+.comics[data-hot="read"] .poster {
+  --py: 112%;
+  --pr: -14deg;
+}
+
+/* ---- What is behind Read: a fan of pages ---- */
 .fan {
-  position: relative;
-  display: block;
-  height: min(62vh, 560px);
+  position: absolute;
+  right: 4cqw;
+  bottom: 0;
+  width: 19cqh;
+  height: 28cqh;
 }
 
 .sheet {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(46%, 300px);
-  aspect-ratio: 9 / 16;
+  inset: 0;
   overflow: hidden;
+  border: 4px solid #fff;
   border-radius: 6px;
   background: #fff;
-  box-shadow: 0 24px 50px -24px rgb(20 14 38 / 0.65);
-  /* Resting: a neat, slightly crooked stack. */
-  --spread: 0;
-  transform: translate3d(-50%, -50%, 0) translate3d(calc((var(--i) - 1) * 18px), 0, 0)
-    rotate(calc((var(--i) - 1) * 5deg));
-  transition: transform 800ms var(--ease-out);
+  box-shadow: 0 16px 36px rgb(10 5 30 / 0.45);
+  transform-origin: 50% 100%;
+  transform: translate3d(var(--fx), var(--fy), 0) rotate(var(--fr));
+  transition: transform 850ms var(--spring) calc(var(--i) * 60ms);
+  --fy: 80%;
+  --fr: calc((var(--i) - 1) * 4deg);
+  --fx: calc((var(--i) - 1) * 6%);
 }
 
 .sheet img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
-  display: block;
 }
 
-.read:hover .sheet,
-.read:focus-visible .sheet {
-  transform: translate3d(-50%, -50%, 0)
-    translate3d(calc((var(--i) - 1) * 62%), calc(var(--i) * -2%), 0)
-    rotate(calc((var(--i) - 1) * 9deg));
+.comics[data-hot="read"] .sheet {
+  --fy: 6%;
+  --fr: calc((var(--i) - 1) * 15deg);
+  --fx: calc((var(--i) - 1) * 56%);
 }
 
-.label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+.comics[data-hot="watch"] .sheet {
+  --fy: 112%;
 }
 
-.label b {
+/* ---- The hub: the disc, its dashed orbit and the chibi ---- */
+.hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  --d: min(27cqw, 52cqh);
+  --hx: 0;
+  --hy: 0;
+  width: var(--d);
+  height: var(--d);
+  transform: translate3d(calc(-50% + var(--hx) * 1cqw), -50%, 0);
+  transition: transform 850ms var(--spring);
+}
+
+.comics[data-hot="watch"] .hub {
+  --hx: 10;
+  --hy: 8;
+}
+
+.comics[data-hot="read"] .hub {
+  --hx: -8;
+  --hy: -8;
+}
+
+.orbit {
+  position: absolute;
+  inset: -8%;
+  border: 2px dashed rgb(255 255 255 / 0.62);
+  border-radius: 50%;
+  animation: spin 36s linear infinite;
+  pointer-events: none;
+}
+
+.disc {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #140e26;
+  background: #efe9ff;
+  box-shadow:
+    0 30px 80px rgb(10 5 30 / 0.38),
+    inset 0 -10px 0 rgb(20 14 38 / 0.07);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 700ms var(--spring);
+}
+
+.comics[data-seen="false"] .disc {
+  transform: scale(0);
+}
+
+.comics[data-seen="true"] .disc {
+  animation: pop 1000ms var(--spring) 650ms backwards;
+}
+
+.comics[data-hot="disc"] .disc {
+  transform: scale(1.07);
+  animation: wobble 800ms ease-in-out;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: pulse-soft 3.8s ease-out infinite;
+}
+
+.comics[data-hot="disc"] .ring {
+  animation: pulse 1.1s ease-out infinite;
+}
+
+.discText {
   font-family: var(--font-display-stack);
   font-weight: 800;
-  font-size: clamp(36px, 4.4vw, 68px);
+  font-size: calc(var(--d) * 0.22);
   line-height: 1;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
-.label small {
-  font-family: var(--font-mono-stack);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgb(20 14 38 / 0.62);
+.comics[data-hot="disc"] .discText .letter {
+  animation: wave 0.9s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 70ms);
 }
 
-@media (max-width: 860px) {
-  .choices {
-    flex-direction: column;
+/* ---- The chibi: a sticker on the disc. Lean, then bob, then jump, one element each. ---- */
+.chibiPos {
+  position: absolute;
+  left: calc(var(--d) * 0.56);
+  top: calc(var(--d) * -0.44);
+  width: calc(var(--d) * 0.62);
+  pointer-events: none;
+}
+
+.comics[data-seen="false"] .chibiPos {
+  opacity: 0;
+}
+
+.comics[data-seen="true"] .chibiPos {
+  animation: drop 1100ms var(--spring) 1150ms backwards;
+}
+
+.lean {
+  transform-origin: 50% 90%;
+  transform: translate3d(var(--lx), 0, 0) rotate(var(--lr));
+  transition: transform 750ms var(--spring);
+  --lx: 0%;
+  --lr: 0deg;
+}
+
+.comics[data-hot="watch"] .lean {
+  --lx: -14%;
+  --lr: -12deg;
+}
+
+.comics[data-hot="read"] .lean {
+  --lx: 10%;
+  --lr: 11deg;
+}
+
+.bob {
+  transform-origin: 50% 90%;
+  animation: bob 3.8s ease-in-out infinite;
+}
+
+.jump {
+  transform-origin: 50% 100%;
+}
+
+.jump[data-live="true"][data-kind="hop"] {
+  animation: hop 650ms var(--glide);
+}
+
+.jump[data-live="true"][data-kind="spin"] {
+  animation: spinhop 950ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+
+/* The white edge of a sticker. The image is still, so the filter is painted once. */
+.chibi {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(calc(var(--d) * 0.008) 0 0 #fff) drop-shadow(calc(var(--d) * -0.008) 0 0 #fff)
+    drop-shadow(0 calc(var(--d) * 0.008) 0 #fff) drop-shadow(0 calc(var(--d) * -0.008) 0 #fff)
+    drop-shadow(0 calc(var(--d) * 0.02) calc(var(--d) * 0.03) rgb(20 14 38 / 0.35));
+}
+
+/* ---- Sparkles in the halves ---- */
+.sparks {
+  position: absolute;
+  inset: 0;
+}
+
+.spark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+  animation: twinkle 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.55s);
+}
+
+.spark:nth-child(1) {
+  left: 8%;
+  top: 14%;
+}
+
+.spark:nth-child(2) {
+  left: 30%;
+  top: 22%;
+  width: 9px;
+  height: 9px;
+}
+
+.spark:nth-child(3) {
+  left: 14%;
+  top: 70%;
+  width: 10px;
+  height: 10px;
+}
+
+.spark:nth-child(4) {
+  left: 34%;
+  top: 82%;
+}
+
+.spark:nth-child(5) {
+  left: 24%;
+  top: 8%;
+  width: 8px;
+  height: 8px;
+}
+
+.spark:nth-child(6) {
+  left: 92%;
+  top: 16%;
+}
+
+.spark:nth-child(7) {
+  left: 70%;
+  top: 24%;
+  width: 9px;
+  height: 9px;
+}
+
+.spark:nth-child(8) {
+  left: 86%;
+  top: 66%;
+  width: 10px;
+  height: 10px;
+}
+
+.spark:nth-child(9) {
+  left: 66%;
+  top: 84%;
+}
+
+.spark:nth-child(10) {
+  left: 76%;
+  top: 8%;
+  width: 8px;
+  height: 8px;
+}
+
+/* ---- Keyframes (transform and opacity only) ---- */
+@keyframes wave {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
   }
-  .choices:hover .choice {
+
+  50% {
+    transform: translate3d(0, -9%, 0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: scale(1.07) rotate(0deg);
+  }
+
+  25% {
+    transform: scale(1.07) rotate(-6deg);
+  }
+
+  60% {
+    transform: scale(1.07) rotate(5deg);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-soft {
+  from {
+    transform: scale(1);
+    opacity: 0.32;
+  }
+
+  to {
+    transform: scale(1.28);
+    opacity: 0;
+  }
+}
+
+@keyframes drop {
+  from {
+    transform: translate3d(0, calc(var(--d) * -2.2), 0) rotate(-14deg);
+    opacity: 0;
+  }
+
+  18% {
     opacity: 1;
-    transform: none;
   }
-  .screen,
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-1.5deg);
+  }
+
+  50% {
+    transform: translate3d(0, -3%, 0) rotate(1.5deg);
+  }
+}
+
+@keyframes hop {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+  }
+
+  18% {
+    transform: translate3d(0, 0, 0) scale(1.07, 0.9);
+  }
+
+  50% {
+    transform: translate3d(0, -17%, 0) scale(0.96, 1.06);
+  }
+
+  82% {
+    transform: translate3d(0, 0, 0) scale(1.05, 0.94);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+  }
+}
+
+@keyframes spinhop {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+
+  15% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1.08, 0.88);
+  }
+
+  55% {
+    transform: translate3d(0, -28%, 0) rotate(210deg) scale(1);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1) rotate(45deg);
+    opacity: 0.85;
+  }
+}
+
+/* ---- Phones: the halves are stacked, Watch above Read, and the disc sits between them ---- */
+@media (max-width: 760px) {
+  .stage {
+    height: clamp(620px, 100svh, 900px);
+  }
+
+  .watch {
+    transform-origin: 50% 0;
+    transform: translate3d(0, var(--enter), 0) scaleY(var(--s));
+  }
+
+  .read {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    transform-origin: 50% 100%;
+    transform: translate3d(0, var(--enter), 0) scaleY(var(--s));
+  }
+
+  .watch,
+  .read {
+    --enter: -101%;
+  }
+
+  .read {
+    --enter: 101%;
+  }
+
+  .comics[data-seen="true"] .half {
+    --enter: 0%;
+  }
+
+  .comics[data-hot="watch"] .watch {
+    --s: 0.58;
+  }
+
+  .comics[data-hot="watch"] .read {
+    --s: 0.42;
+  }
+
+  .comics[data-hot="read"] .watch {
+    --s: 0.42;
+  }
+
+  .comics[data-hot="read"] .read {
+    --s: 0.58;
+  }
+
+  .hub {
+    --d: min(44cqw, 23cqh);
+    transform: translate3d(-50%, calc(-50% + var(--hy) * 1cqh), 0);
+  }
+
+  .word {
+    top: 0;
+  }
+
+  .wordWatch,
+  .wordRead,
+  .comics[data-hot="watch"] .wordWatch,
+  .comics[data-hot="watch"] .wordRead,
+  .comics[data-hot="read"] .wordWatch,
+  .comics[data-hot="read"] .wordRead {
+    --wx: 50;
+  }
+
+  .wordWatch {
+    --wy: 21;
+  }
+
+  .wordRead {
+    --wy: 79;
+  }
+
+  .comics[data-hot="watch"] .wordWatch {
+    --wy: 25;
+  }
+
+  .comics[data-hot="watch"] .wordRead {
+    --wy: 82;
+  }
+
+  .comics[data-hot="read"] .wordWatch {
+    --wy: 17;
+  }
+
+  .comics[data-hot="read"] .wordRead {
+    --wy: 75;
+  }
+
+  .big {
+    font-size: clamp(46px, 19cqw, 96px);
+  }
+
+  .sub {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .poster {
+    left: auto;
+    right: 3cqw;
+    bottom: auto;
+    top: 10cqh;
+    height: 19cqh;
+    transform-origin: 50% 0;
+    --py: -55%;
+    --pr: 8deg;
+  }
+
+  .comics[data-hot="watch"] .poster {
+    --py: 0%;
+    --pr: 4deg;
+  }
+
+  .comics[data-hot="read"] .poster {
+    --py: -125%;
+    --pr: 12deg;
+  }
+
   .fan {
-    height: min(52vh, 440px);
+    right: auto;
+    left: 5cqw;
+    width: 14cqh;
+    height: 21cqh;
   }
 }
 
+/* ---- Reduced motion: the final picture, no movement ---- */
 @media (prefers-reduced-motion: reduce) {
-  .title span {
-    transform: none;
-    opacity: 1;
-    transition: none;
+  .comics *,
+  .comics *::before,
+  .comics *::after {
+    animation: none !important;
+    transition: none !important;
   }
-  .choice,
-  .sheet,
-  .screen img {
-    transition: none;
+
+  .comics[data-seen="false"] .rise,
+  .comics[data-seen="false"] .disc,
+  .comics[data-seen="false"] .chibiPos {
+    opacity: 1;
+    transform: none;
+  }
+
+  .half {
+    --enter: 0%;
+  }
+
+  .comics[data-seen="false"] .half {
+    --enter: 0%;
   }
 }

@@ -35,11 +35,19 @@ export const ART_NAMES: readonly ArtName[] = [
 export const artPath = (n: ArtName) => `${IMG}/art/${n}.webp`;
 export const artThumb = (n: ArtName) => `${IMG}/art/${n}-sm.webp`;
 
+/** The fanart prints (portrait, 4:5): `fanart-1` to `fanart-7`, full size and a small one. */
+export const FANART_COUNT = 7;
+export const fanartPath = (n: number) => `${IMG}/fanart/fanart-${n}.webp`;
+export const fanartThumb = (n: number) => `${IMG}/fanart/fanart-${n}-sm.webp`;
+
 export type SkillIcon = "passive" | "skill-1" | "skill-2" | "skill-3" | "skill-3-cancel";
 export const skillIcon = (n: SkillIcon) => `${IMG}/skill/${n}.webp`;
 
 /** A comic page by its original number (3, 23 and 40 were never supplied). */
 export const comicPage = (n: number) => `${IMG}/comic/${String(n).padStart(2, "0")}.webp`;
+
+/** The chibi sticker of the comic section (transparent webp). */
+export const CHIBI = `${IMG}/comic-chibi.webp`;
 
 /** Every video of the page: a file, its poster, a title and a length in seconds. */
 export type VideoName =
@@ -50,14 +58,14 @@ export type VideoName =
   | "final2-loop"
   | "skin-showcase"
   | "comic-jp"
-  | "comic"
   | "live-vexana"
-  | "live-guin"
-  | "sleeping"
   | "heart-dance"
-  | "relink"
   | "3d-process"
-  | "interactive-drama";
+  | "interactive-drama"
+  | "skill-passive"
+  | "skill-1"
+  | "skill-2"
+  | "skill-3";
 
 /** What `media.generated.ts` knows about a video: its file, its poster, its size and its length. */
 export interface VideoInfo {

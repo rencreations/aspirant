@@ -4,6 +4,7 @@ export interface ReelCopy {
   /** The heading as two lines of words. The first line has two words (the controller leans on it). */
   titleLines: ReadonlyArray<readonly string[]>;
   description: string;
+  /** `href` is the id of the section it scrolls down to. */
   cta: { label: string; href: string };
   /** The two words either side of the play button. */
   playWords: readonly [string, string];
@@ -22,7 +23,7 @@ export const REEL_COPY: ReelCopy = {
   ],
   description:
     "A quiet girl who can hear the Enders hum. A partner who found her in a broom cupboard, with a doughnut. This is the film of Twilight Star, from the first note to the last.",
-  cta: { label: "Read her story", href: "/character/vexana/story/academic/" },
+  cta: { label: "Read her story", href: "#faces" },
   playWords: ["Play", "Film"],
   watchLabel: "Play the film",
   stripLines: [

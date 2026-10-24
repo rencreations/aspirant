@@ -12,8 +12,21 @@
 
 .track {
   position: relative;
-  /* One screen of hero, then three and a half of hand-over, signature and message. */
-  height: 460svh;
+  /* One screen of hero, then three and a half of hand-over, signature and message, then one more
+     screen that only the next section uses: it rises over the held signature (see About). */
+  height: 560svh;
+  background: #140e26;
+}
+
+/* The held screen steps back and darkens while About rises over it. */
+.coverDim {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #05030c;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 .pin {
@@ -26,6 +39,7 @@
   overflow: hidden;
   background: var(--vx-paper);
   isolation: isolate;
+  transform-origin: 50% 40%;
 }
 
 .tint {
@@ -69,8 +83,9 @@
 .dFigure {
   position: absolute;
   left: 50%;
-  bottom: -0.5svh;
-  height: 93svh;
+  /* The picture hangs below the screen by the same share as in the scene (HANG in figure-gl.ts). */
+  bottom: -7.5svh;
+  height: 100svh;
   aspect-ratio: 1672 / 941;
   transform: translateX(-50%);
 }
@@ -100,7 +115,7 @@
 @media (max-aspect-ratio: 17/20) {
   .dFigure {
     height: min(62svh, 135vw);
-    bottom: -0.6svh;
+    bottom: calc(min(62svh, 135vw) * -0.075);
   }
 }
 
@@ -147,8 +162,6 @@
 }
 
 .eyebrow,
-.form,
-.pickerLabel,
 .cue span,
 .label {
   font-family: var(--font-mono-stack);
@@ -157,53 +170,35 @@
   text-transform: uppercase;
 }
 
-.name {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(2.6rem, 5vw, 4.6rem);
-  line-height: 0.86;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-}
-
-.name small {
-  display: block;
-  margin-top: 0.15em;
-  font-family: var(--font-serif-stack);
-  font-weight: 400;
-  font-size: 0.4em;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--vx-primary);
-}
-
-.form {
+.nameRow {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 0.9rem;
+  white-space: nowrap;
+}
+
+.eyebrow {
   color: rgb(20 14 38 / 0.7);
 }
 
-.form b {
-  font-weight: 600;
-  color: var(--vx-ink);
+.name {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-style: normal;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 5vw, 4.6rem);
+  line-height: 0.86;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
 }
 
-.formDot {
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--vx-primary);
-  transform: rotate(45deg);
-  transition:
-    background-color 0.3s,
-    transform 0.3s var(--ease-out);
-}
-
-.formDot[data-ender="true"] {
-  background: var(--vx-pink);
-  transform: rotate(225deg) scale(1.2);
+.title {
+  font-family: var(--font-serif-stack);
+  font-style: normal;
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  line-height: 1;
+  color: var(--vx-primary);
 }
 
 .jp {
@@ -261,57 +256,6 @@
   to {
     transform: translateY(100%);
   }
-}
-
-.picker {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(1rem, 5svh, 3rem);
-  display: grid;
-  justify-items: end;
-  gap: 0.5rem;
-  pointer-events: auto;
-}
-
-.pickerLabel b {
-  margin-left: 0.4rem;
-  font-weight: 600;
-}
-
-.pickerRow {
-  display: flex;
-  gap: 0.3rem;
-}
-
-.pickerBtn {
-  width: 2.1rem;
-  height: 2.1rem;
-  border: 1px solid rgb(20 14 38 / 0.4);
-  background: rgb(248 245 252 / 0.7);
-  color: var(--vx-ink);
-  font-family: var(--font-mono-stack);
-  font-size: 0.64rem;
-  letter-spacing: 0.06em;
-  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-.pickerBtn:hover {
-  background: rgb(122 79 214 / 0.18);
-}
-
-.pickerBtn[data-on="true"] {
-  background: var(--vx-primary);
-  border-color: var(--vx-primary);
-  color: #fff;
-}
-
-.pickerBtn:focus-visible {
-  outline: 2px solid var(--vx-pink);
-  outline-offset: 2px;
 }
 
 /* ------------------------------------------------------------------ the message and the signature */
@@ -457,6 +401,16 @@
   stroke-dashoffset: 0;
 }
 
+/* The pen tip, the sparkles and the band of light rest invisible until the signature plays. */
+.tip,
+.spark {
+  opacity: 0;
+}
+
+.shine {
+  transform: translateX(0);
+}
+
 .statementWrap {
   position: absolute;
   inset: 0;
@@ -584,11 +538,17 @@
     padding: 0.7rem 0.9rem 0.8rem;
   }
 
-  .picker {
-    left: 1rem;
-    right: auto;
-    justify-items: start;
-    bottom: 1rem;
+  .nameRow {
+    gap: 0.6rem;
+  }
+
+  .eyebrow {
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+  }
+
+  .name {
+    font-size: 2.2rem;
   }
 
   .cue {

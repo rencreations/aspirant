@@ -1,11 +1,9 @@
 "use client";
 
-import type { Route } from "next";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { PlayerOverlay, type PlayerVideo } from "@/components/video-player/player-overlay";
-import { TLink } from "@/components/transition/t-link";
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
@@ -229,10 +227,14 @@ export function Reel() {
         </p>
         <div className={styles.ctaLift} data-reel="cta-lift">
           <span className={styles.ctaMagnet}>
-            <TLink
-              href={copy.cta.href as Route}
-              transitionLabel="Vexana, her story"
+            <a
+              href={copy.cta.href}
               className={styles.cta}
+              onClick={(e) => {
+                // It only scrolls down to the story (the two halves below); it opens nothing.
+                e.preventDefault();
+                lenisApi.scrollTo(copy.cta.href, { duration: 2.4 });
+              }}
             >
               <span className={styles.ctaDot} aria-hidden="true" />
               <span className={styles.ctaText}>{copy.cta.label}</span>
@@ -251,7 +253,7 @@ export function Reel() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </TLink>
+            </a>
           </span>
         </div>
       </div>

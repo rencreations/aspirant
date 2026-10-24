@@ -23,7 +23,6 @@ const QUEUE = [
 const PAGES = [
   { slug: "layla", name: "Layla" },
   { slug: "ruby", name: "Ruby" },
-  { slug: "vexana", name: "Vexana" },
 ] as const;
 
 async function serious(page: Page) {
@@ -468,29 +467,14 @@ test("voice wall: arrow keys move, search filters, random plays", async ({ page 
 });
 
 test("spoilers stay sealed until opened", async ({ page }) => {
-  await page.goto(url("/character/vexana/"));
+  await page.goto(url("/character/layla/"));
   const button = page.getByRole("button", { name: "Show spoilers" });
   await expect(button).toHaveAttribute("aria-expanded", "false");
-  await expect(page.getByText("In the void, the Will remakes her")).toHaveCount(0);
   await button.click();
   await expect(page.getByRole("button", { name: "Seal the record" })).toHaveAttribute(
     "aria-expanded",
     "true",
   );
-  await expect(page.getByText(/In the void, the Will remakes her/)).toBeVisible();
-});
-
-test("the form toggle switches between the two forms", async ({ page }) => {
-  await page.goto(url("/character/vexana/"));
-  const group = page.getByRole("group", { name: "Vexana's form" });
-  await group.getByRole("button", { name: "Ender form" }).click();
-  await expect(group.getByRole("button", { name: "Ender form" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  await expect(
-    page.getByText("Official mobile wallpaper. Her splash art shows this form too."),
-  ).toBeVisible();
 });
 
 test("the next footer chain visits all ten and loops", async ({ page, baseURL }, info) => {

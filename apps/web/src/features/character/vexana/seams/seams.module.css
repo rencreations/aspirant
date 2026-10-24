@@ -1,0 +1,329 @@
+/* A seam: a zero height anchor at the join of two sections, and over it a stage one and a half
+   screens high, centred on the join, which an effect draws into while the join crosses the screen. */
+.anchor {
+  position: relative;
+  height: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -75svh;
+  height: 150svh;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+/* ---------------------------------------------------------------- iris (About to the film) */
+.disc,
+.ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 800px;
+  height: 800px;
+  margin: -400px 0 0 -400px;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.disc {
+  background: #f5f2fc;
+}
+
+.ring {
+  border: 2px solid #7a4fd6;
+  box-shadow: 0 0 40px rgb(122 79 214 / 50%);
+}
+
+/* ---------------------------------------------------------------- blinds (the film to the craft) */
+.slat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #0b0715;
+  box-shadow: inset 0 1px 0 rgb(122 79 214 / 55%);
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------- slab (the craft to the pair) */
+.slab {
+  position: absolute;
+  left: -40vw;
+  top: 0;
+  width: 180vw;
+  height: 100%;
+  will-change: transform;
+}
+
+.slabViolet {
+  background: linear-gradient(100deg, #3d2a82, #7a4fd6);
+}
+
+.slabLight {
+  background: #f4f0f8;
+}
+
+/* ---------------------------------------------------------------- curtain (the interlude to the comic) */
+.drape {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(50% + 1px);
+  will-change: transform;
+}
+
+.drapeL {
+  left: 0;
+  background: linear-gradient(115deg, #2c1d78 0%, #5a3fc9 62%, #7f63e8 100%);
+  box-shadow: 10px 0 40px rgb(5 3 12 / 45%);
+}
+
+.drapeR {
+  right: 0;
+  background: linear-gradient(245deg, #6b1853 0%, #b02a78 62%, #d9459f 100%);
+  box-shadow: -10px 0 40px rgb(5 3 12 / 45%);
+}
+
+/* ---------------------------------------------------------------- crt (the comic to the stream) */
+.veil {
+  position: absolute;
+  inset: 0;
+  background: #0b0716;
+  will-change: transform, opacity;
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 7%) 0 1px, transparent 1px 4px),
+    linear-gradient(to bottom, rgb(122 79 214 / 14%), transparent 30%, rgb(224 64 160 / 12%));
+  will-change: opacity, transform;
+}
+
+.beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1px;
+  background: #f4efff;
+  box-shadow:
+    0 0 18px 4px rgb(183 156 242 / 85%),
+    0 0 60px 12px rgb(122 79 214 / 55%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.split {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  will-change: transform, opacity;
+}
+
+.splitA {
+  top: 36%;
+  background: rgb(41 211 255 / 55%);
+}
+
+.splitB {
+  top: 63%;
+  background: rgb(224 64 160 / 55%);
+}
+
+/* ---------------------------------------------------------------- pixels (the stream to the game) */
+.pixels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* ---------------------------------------------------------------- scan (the game to the 3D work) */
+.gridVeil {
+  position: absolute;
+  inset: 0;
+  background-color: #0b0716;
+  background-image:
+    linear-gradient(rgb(122 79 214 / 30%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(122 79 214 / 30%) 1px, transparent 1px),
+    linear-gradient(rgb(122 79 214 / 12%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(122 79 214 / 12%) 1px, transparent 1px);
+  background-size:
+    112px 112px,
+    112px 112px,
+    28px 28px,
+    28px 28px;
+  transform-origin: 50% 0;
+  will-change: transform, opacity;
+}
+
+.laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: #8ff0ff;
+  box-shadow:
+    0 0 14px 3px rgb(143 240 255 / 80%),
+    0 0 60px 10px rgb(41 211 255 / 40%);
+  will-change: transform, opacity;
+}
+
+.tag {
+  position: absolute;
+  left: 4vw;
+  top: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8ff0ff;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+/* ---------------------------------------------------------------- heart (the 3D work to Guinevere) */
+.heart {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 600px;
+  height: 540px;
+  margin: -270px 0 0 -300px;
+  will-change: transform, opacity;
+}
+
+.heartCream {
+  position: absolute;
+  inset: 0;
+  background: #fff4e8;
+  will-change: opacity;
+}
+
+/* ---------------------------------------------------------------- waves and paper (rising edges) */
+.rise {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 220svh;
+  will-change: transform;
+}
+
+.crest {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200%;
+  height: 120px;
+  display: block;
+  will-change: transform;
+}
+
+.body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 119px;
+  bottom: 0;
+}
+
+.paper {
+  position: absolute;
+  left: -12%;
+  top: 0;
+  width: 124%;
+  height: 230svh;
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+.tear {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 56px;
+  display: block;
+}
+
+.paperBody {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 54px;
+  bottom: 0;
+  background-color: #ece6f8;
+  background-image: radial-gradient(rgb(122 79 214 / 20%) 1.4px, transparent 1.7px);
+  background-size: 22px 22px;
+}
+
+.tape {
+  position: absolute;
+  top: 14px;
+  width: 84px;
+  height: 26px;
+  background: rgb(246 228 168 / 88%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+}
+
+/* ---------------------------------------------------------------- dusk and dawn (the end of the page) */
+.sky {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: linear-gradient(to bottom, #0b0716 0%, #0b0716 55%, rgb(11 7 22 / 0%) 100%);
+  will-change: transform;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #efe9ff;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.moon {
+  position: absolute;
+  right: 14%;
+  top: 22%;
+  width: clamp(46px, 7vw, 96px);
+  height: auto;
+  will-change: transform, opacity;
+}
+
+.sun {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1200px;
+  height: 1200px;
+  margin: -600px 0 0 -600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #fff0d9 0%,
+    #ffd7b8 22%,
+    #ffc2d8 42%,
+    rgb(255 194 216 / 0%) 70%
+  );
+  will-change: transform, opacity;
+}

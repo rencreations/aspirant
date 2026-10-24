@@ -1,7 +1,7 @@
 /**
- * The words of the opening. Vexana speaks, in the first person, from what the canon gives her:
- * she hears the Enders hum, her father called her Sana, Guinevere found her in a broom cupboard
- * with a doughnut, and she stands twelve paces behind her. Plain words, short sentences.
+ * The words of the opening. Vexana speaks, in the first person, in plain words anyone can follow:
+ * she is quiet, she carries a weight nobody sees, she stands behind the person she loves so that
+ * person can shine, and she is still here. Nothing in it needs the story to be understood.
  */
 export interface Part {
   text: string;
@@ -12,26 +12,28 @@ export interface Part {
 /** The two rows of big text that run behind the card. */
 export const MARQUEE: ReadonlyArray<readonly Part[]> = [
   [
-    { text: "In the dark I " },
-    { text: "listen", mark: true },
-    { text: ". The Enders " },
-    { text: "hum", mark: true },
-    { text: ". " },
+    { text: "Quiet, but I " },
+    { text: "notice", mark: true },
+    { text: ". Heavy, but I " },
+    { text: "carry", mark: true },
+    { text: " it. " },
   ],
   [
-    { text: "In the light I stand " },
-    { text: "behind her", mark: true },
-    { text: ". Twelve paces. " },
+    { text: "I stand " },
+    { text: "behind", mark: true },
+    { text: " you. And I am still " },
+    { text: "here", mark: true },
+    { text: ". " },
   ],
 ];
 
 /** The closing message, one line each. */
 export const STATEMENT: ReadonlyArray<readonly Part[]> = [
-  [{ text: "I hear the Enders " }, { text: "hum", mark: true }, { text: "." }],
-  [{ text: "I sit in the dark so " }, { text: "she", mark: true }, { text: " can shine." }],
-  [{ text: "My father called me " }, { text: "Sana", mark: true }, { text: "." }],
-  [{ text: "A doughnut found me in a broom cupboard." }],
-  [{ text: "Now I stand twelve paces behind " }, { text: "her", mark: true }, { text: "." }],
+  [{ text: "I do not say much. I " }, { text: "notice", mark: true }, { text: " a lot." }],
+  [{ text: "I carry a " }, { text: "weight", mark: true }, { text: " nobody sees." }],
+  [{ text: "Being brave is not always " }, { text: "loud", mark: true }, { text: "." }],
+  [{ text: "Sometimes it is standing " }, { text: "behind", mark: true }, { text: " someone." }],
+  [{ text: "So " }, { text: "she", mark: true }, { text: " can walk ahead and shine." }],
   [{ text: "I am still " }, { text: "here", mark: true }, { text: "." }],
 ];
 

@@ -24,6 +24,14 @@
   opacity: 1;
 }
 
+/* Vexana's page: the bar is a thin tint of the colour under it (the theme of the section behind the
+   bar), with no blur and no line, so the picture shows through and the bar follows the page. */
+:global(body:has([data-vexana])) .nav::before {
+  background: color-mix(in srgb, var(--bg) 34%, transparent);
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+
 .inner {
   position: relative;
   height: 100%;

@@ -11,9 +11,7 @@ import { expectReady } from "@/lib/page-ready";
 import { onPerfLevel, perfLevel } from "@/lib/perf";
 
 import { FIGURES, videoFile, videoPoster } from "../media";
-import { BACKGROUNDS, type BackgroundId } from "./backgrounds/registry";
-import { BackgroundPicker } from "./bg-picker";
-import { useBackground } from "./bg-store";
+import { BACKGROUND_CSS } from "./backgrounds/background";
 import { MARQUEE, STATEMENT, STATEMENT_PLAIN, type Part } from "./copy";
 import type { FigureGL } from "./figure-gl";
 import { easeOut, faceOf, openingState, seg, type Measure } from "./opening-math";
@@ -31,11 +29,6 @@ const TOKENS = {
   "--vx-paper": "#f8f5fc",
   "--vx-bone": "#efe9ff",
 } as CSSProperties;
-
-interface Props {
-  /** The background to start on. Visitors can change it, and the choice is remembered. */
-  background?: BackgroundId;
-}
 
 /** Writes a style only when it changed, so a scroll frame touches only what moved. */
 const written = new WeakMap<HTMLElement, Record<string, string>>();
@@ -72,19 +65,14 @@ function HeroFigures({ ender }: { ender: boolean }) {
   );
 }
 
-function NameCard({ ender }: { ender: boolean }) {
+function NameCard() {
   return (
     <div className={styles.nameCard}>
-      <span className={styles.eyebrow}>Aspirant of Selrick Academy</span>
-      <h1 className={styles.name}>
-        Vexana
-        <small>Twilight Star</small>
-      </h1>
-      <span className={styles.form} aria-hidden="true">
-        <i className={styles.formDot} data-ender={ender} />
-        Form {ender ? "02" : "01"}
-        <b>{ender ? "Ender" : "Normal"}</b>
-      </span>
+      <div className={styles.nameRow}>
+        <span className={styles.eyebrow}>Aspirant of Selrick Academy</span>
+        <h1 className={styles.name}>Vexana</h1>
+      </div>
+      <span className={styles.title}>Twilight Star</span>
     </div>
   );
 }
@@ -132,19 +120,18 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
  *
  * With reduced motion the same pieces are laid out in a plain column, nothing pinned.
  */
-export function Opening({ background }: Props) {
+export function Opening() {
   const reduced = useReducedMotion();
-  const [bg, chooseBackground] = useBackground(background);
   const [ender, setEnder] = useState(false);
   const [gl, setGl] = useState(false);
   const [lite, setLite] = useState(false);
 
   const glRef = useRef<FigureGL | null>(null);
-  const bgRef = useRef(bg);
   const toneRef = useRef(0);
   const activeRef = useRef(true);
 
   const trackRef = useRef<HTMLDivElement>(null);
+  const dimRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -174,11 +161,6 @@ export function Opening({ background }: Props) {
     [],
   );
 
-  useEffect(() => {
-    bgRef.current = bg;
-    glRef.current?.setBackground(bg);
-  }, [bg]);
-
   // A device that falls to the lowest level drops the scene and keeps the flat version.
   useEffect(
     () =>
@@ -206,7 +188,6 @@ export function Opening({ background }: Props) {
         const made = await createFigureGL(canvas, {
           normalUrl: asset(FIGURES.normalFront),
           enderUrl: asset(FIGURES.enderFront),
-          background: bgRef.current,
           quality: level === "full" ? "full" : "balanced",
         });
         if (cancelled) {
@@ -265,6 +246,7 @@ export function Opening({ background }: Props) {
     if (reduced || !track || !pin || !card) return;
     const measure: Measure = { vw: 1, vh: 1, cardW: 1, cardH: 1 };
     let signed = false;
+    let shimmerOn = true;
     let videoSrc = false;
     let progress = 0;
 
@@ -330,23 +312,43 @@ export function Opening({ background }: Props) {
 
       if (s.signed && !signed) {
         signed = true;
+        shimmerOn = true;
         signature.play();
       } else if (!s.signed && signed && p < 0.34) {
         signed = false;
         signature.reset();
+      }
+      // The band of light rests while the signature is off screen.
+      const showing = p < 0.76;
+      if (showing !== shimmerOn) {
+        shimmerOn = showing;
+        signature.setVisible(showing);
       }
     };
 
     const trigger = ScrollTrigger.create({
       trigger: track,
       start: "top top",
-      end: "bottom bottom",
+      // The last screen of the track belongs to the section that rises over it.
+      end: "bottom bottom+=100%",
       onUpdate: (self) => {
         apply(self.progress);
       },
       onRefresh: (self) => {
         read();
         apply(self.progress);
+      },
+    });
+    // While the next section rises over the held screen, the screen steps back and darkens.
+    const dim = dimRef.current;
+    const cover = ScrollTrigger.create({
+      trigger: track,
+      start: "bottom bottom+=100%",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        const e = self.progress * self.progress * (3 - 2 * self.progress);
+        put(pin, "transform", `scale(${1 - 0.06 * e})`);
+        put(dim, "opacity", String(0.7 * e));
       },
     });
     read();
@@ -359,18 +361,18 @@ export function Opening({ background }: Props) {
     return () => {
       window.removeEventListener("resize", onResize);
       trigger.kill();
+      cover.kill();
       signature.reset();
     };
   }, [reduced, signature]);
 
-  const backgroundCss = BACKGROUNDS[bg].css;
   const flat = (
     <>
-      <div className={styles.dBg} style={{ background: backgroundCss.light }} />
+      <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
       <div
         ref={domDarkRef}
         className={styles.dBg}
-        style={{ background: backgroundCss.dark, opacity: 0 }}
+        style={{ background: BACKGROUND_CSS.dark, opacity: 0 }}
       />
       <HeroFigures ender={shownEnder} />
     </>
@@ -380,7 +382,7 @@ export function Opening({ background }: Props) {
     return (
       <section id="opening" className={styles.opening} style={TOKENS} data-static="true">
         <div className={styles.staticHero}>
-          <div className={styles.dBg} style={{ background: backgroundCss.light }} />
+          <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
           <div
             className={styles.staticFigure}
             onPointerEnter={() => {
@@ -392,8 +394,7 @@ export function Opening({ background }: Props) {
           >
             <HeroFigures ender={ender} />
           </div>
-          <NameCard ender={ender} />
-          <BackgroundPicker value={bg} onChange={chooseBackground} />
+          <NameCard />
         </div>
         <div className={styles.staticSign}>
           <p className={styles.label}>
@@ -446,7 +447,7 @@ export function Opening({ background }: Props) {
               <StarGlyph className={styles.labelStar} /> A message from Sana
             </p>
             <div className={styles.signWrap}>
-              <SignatureSvg setStroke={signature.set} />
+              <SignatureSvg reg={signature.reg} />
             </div>
           </div>
 
@@ -454,8 +455,10 @@ export function Opening({ background }: Props) {
             <Statement setLine={setLine} />
           </div>
 
+          <div ref={dimRef} className={styles.coverDim} />
+
           <div ref={uiRef} className={styles.ui}>
-            <NameCard ender={shownEnder} />
+            <NameCard />
             <div className={styles.jp} aria-hidden="true">
               <StarGlyph className={styles.jpStar} />
               <span lang="ja">サナ</span>
@@ -464,7 +467,6 @@ export function Opening({ background }: Props) {
               <span>Scroll</span>
               <i />
             </div>
-            <BackgroundPicker value={bg} onChange={chooseBackground} />
           </div>
         </div>
       </div>

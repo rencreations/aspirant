@@ -9,6 +9,8 @@ export const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 /** The cut-out is 1672 x 941, and her face is a little above the middle of it. */
 const PICTURE_AR = 1672 / 941;
 const FACE_IN_PICTURE = 0.4;
+/** How much of the picture hangs below the screen (`HANG` in `figure-gl.ts`). */
+const PICTURE_HANG = 0.075;
 
 /**
  * Where the face sits on screen (fractions of the screen), which is where the frame closes onto.
@@ -17,8 +19,9 @@ const FACE_IN_PICTURE = 0.4;
  */
 export function faceOf(vw: number, vh: number): { x: number; y: number } {
   const portrait = vw / vh < 0.85;
-  const figH = portrait ? Math.min(vh * 0.62, (vw * 2.4) / PICTURE_AR) : vh * 0.93;
-  const top = portrait ? vh - figH * 1.01 : vh * 0.075;
+  const figH = portrait ? Math.min(vh * 0.62, (vw * 2.4) / PICTURE_AR) : vh;
+  // Her bottom edge hangs below the screen by `PICTURE_HANG` of her height.
+  const top = vh + figH * PICTURE_HANG - figH;
   return { x: 0.5, y: (top + FACE_IN_PICTURE * figH) / vh };
 }
 /** The picture grows a little while the frame closes, so the card is a close up. */
