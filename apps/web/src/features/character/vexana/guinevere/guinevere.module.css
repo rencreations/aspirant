@@ -184,6 +184,83 @@
   scale: 1.1;
 }
 
+/* The print is a button: the picture opens in the viewer. */
+.paperBtn {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: hidden;
+  cursor: pointer;
+  color: inherit;
+}
+
+.paperBtn img {
+  transition: scale 0.7s var(--ease-out);
+}
+
+.paperBtn:hover img,
+.paperBtn:focus-visible img {
+  scale: 1.17;
+}
+
+.paperBtn:focus-visible {
+  outline: 3px solid var(--g-violet);
+  outline-offset: 3px;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 38%, rgb(255 255 255 / 0.4) 50%, transparent 62%);
+  translate: -120% 0;
+  pointer-events: none;
+}
+
+.paperBtn:hover .sheen,
+.paperBtn:focus-visible .sheen {
+  translate: 120% 0;
+  transition: translate 0.9s var(--ease-out);
+}
+
+.view {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--g-ink);
+  color: var(--g-cream);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 0.3s var(--ease-out),
+    translate 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.paperBtn:hover .view,
+.paperBtn:focus-visible .view {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (hover: none) {
+  .view {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 .caption {
   position: absolute;
   left: clamp(14px, 1.6vw, 24px);
@@ -451,106 +528,6 @@
   translate: 0 0;
 }
 
-/* ---------- the pair meter ---------- */
-.meter {
-  margin-top: 40px;
-  padding: 22px 22px 18px;
-  border: 1.5px solid var(--g-ink);
-  border-radius: 18px;
-  background: rgb(255 255 255 / 0.6);
-}
-
-.meterLabel {
-  margin: 0 0 22px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--g-soft);
-}
-
-.meterLabel b {
-  font-family: var(--font-display-stack);
-  font-size: 40px;
-  line-height: 1;
-  letter-spacing: 0;
-  color: var(--g-red-text);
-}
-
-.track {
-  position: relative;
-  height: 12px;
-  border-radius: 999px;
-  background: rgb(122 79 214 / 0.28);
-  container-type: inline-size;
-}
-
-.fill {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: var(--g-gold);
-  transform-origin: left center;
-  transform: scaleX(0);
-  transition: transform 1.9s cubic-bezier(0.3, 0.8, 0.2, 1) 1.3s;
-}
-
-.needle {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  display: block;
-  line-height: 0;
-  color: var(--g-red);
-  transform: translate(-50%, -50%);
-  transition: transform 1.9s cubic-bezier(0.3, 0.8, 0.2, 1) 1.3s;
-}
-
-.root[data-in="true"] .fill {
-  transform: scaleX(var(--v));
-}
-
-.root[data-in="true"] .needle {
-  transform: translate(calc(100cqw * var(--v) - 50%), -50%);
-}
-
-.ends {
-  margin: 14px 0 0;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.endGold,
-.endViolet {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.endGold::before,
-.endViolet::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.endGold::before {
-  background: var(--g-gold);
-}
-
-.endViolet::before {
-  background: var(--g-violet);
-}
-
 /* ---------- facts and a line of hers ---------- */
 .facts {
   margin: 0;
@@ -603,6 +580,86 @@
   background: var(--g-ink);
   rotate: 45deg;
   border-radius: 0 0 6px 0;
+}
+
+.quoteRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 18px;
+}
+
+.play {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--g-cream);
+  color: var(--g-ink);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease-out);
+}
+
+.play:hover,
+.play:focus-visible {
+  background: var(--g-pink);
+  outline: none;
+}
+
+.play:focus-visible {
+  box-shadow: 0 0 0 3px var(--g-gold);
+}
+
+.bars {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 14px;
+}
+
+.bars i {
+  width: 3px;
+  height: 18px;
+  background: var(--g-ink);
+  transform-origin: bottom;
+  animation: voiceBar 0.9s ease-in-out infinite;
+}
+
+.bars i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.bars i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+
+.bars i:nth-child(4) {
+  animation-delay: -0.15s;
+}
+
+.play[data-playing="true"] svg {
+  opacity: 0;
+}
+
+.play[data-playing="true"] .bars {
+  display: flex;
+}
+
+@keyframes voiceBar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 .quoteText {
@@ -701,14 +758,13 @@
   .print,
   .heartBtn,
   .body .story,
-  .body .side,
-  .fill,
-  .needle {
+  .body .side {
     transition: none;
   }
 
   .heartBtn,
   .quoteText,
+  .bars i,
   .threadGold,
   .threadViolet,
   .knot,

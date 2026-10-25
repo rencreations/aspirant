@@ -51,3 +51,6 @@ apps/web/AGENTS.md
 # local agent worktrees
 .claude/
 __pycache__/
+
+# scratch output of scripts/vexana/comments.py (crops and scans)
+scripts/vexana/_comments*/

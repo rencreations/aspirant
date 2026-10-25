@@ -30,6 +30,7 @@ Run: python -I scripts/vexana/build.py            everything
                                                    (before the long encodes), then stop
      python -I scripts/vexana/build.py --only images,audio,final2,skin-showcase
      python -I scripts/vexana/build.py --only skills   the four skill clips of the Craft section
+     python -I scripts/vexana/build.py --only musicvideo   the music video (music.mp4) from vex.mov
      python -I scripts/vexana/build.py --force    rebuild what exists
 """
 
@@ -113,6 +114,9 @@ VIDEOS = {
     "comic-jp": dict(src="video/comic-jp.mp4", w=1080, crf=29, preset="slow", audio=True, abr="128k", poster=8, tune="animation"),
     # Her livestream: long, so 720p. It streams; nothing waits for it.
     "live-vexana": dict(src="video/live-vexana.webm", w=608, crop=(608, 1080, 656, 0), crf=33, preset="medium", audio=True, abr="96k", poster=20, tune="animation"),
+    # The music video of her theme (a .mov, which does not stream well): 1080p H.264 and the song's AAC.
+    # The section plays it muted by itself and the player plays it with sound, from the start.
+    "music": dict(src="C:/Users/muham/Downloads/vex.mov", w=None, crf=21, preset="slow", audio=True, abr="160k", poster=2, tune=None),
     "heart-dance": dict(src="video/heart-short-dance.webm", w=None, crf=26, preset="slow", audio=False, poster=4, tune="animation"),
     "3d-process": dict(src="video/3d-process.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=8, tune="animation"),
     "interactive-drama": dict(src="video/interactive-drama.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=35, tune="animation"),
@@ -303,7 +307,7 @@ def encode(name: str) -> None:
             vf.append(f"crop={cw}:{ch}:{cx}:{cy}")
         elif spec["w"] and w < probe(src)["width"]:
             vf.append(f"scale={w}:-2:flags=lanczos")
-        args = ["-i", str(src)]
+        args = ["-i", str(src), "-dn"]
         if vf:
             args += ["-vf", ",".join(vf)]
         args += x264
@@ -397,7 +401,9 @@ def main() -> None:
     if want("audio"):
         build_audio()
     for name in VIDEOS:
-        if want(name) or (only and "videos" in only) or (only and "skills" in only and VIDEOS[name].get("clip")):
+        if want(name) or (only and "videos" in only) or (only and "skills" in only and VIDEOS[name].get("clip")) or (
+            only and "musicvideo" in only and name == "music"
+        ):
             encode(name)
             poster(name)
             write_generated()

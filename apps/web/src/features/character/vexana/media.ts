@@ -64,7 +64,8 @@ export type VideoName =
   | "skill-passive"
   | "skill-1"
   | "skill-2"
-  | "skill-3";
+  | "skill-3"
+  | "music";
 
 /** What `media.generated.ts` knows about a video: its file, its poster, its size and its length. */
 export interface VideoInfo {

@@ -90,6 +90,14 @@ export const VIDEOS: Record<VideoName, VideoInfo> = {
     width: 608,
     height: 1080,
   },
+  music: {
+    file: "/video/vexana/music.mp4",
+    poster: "/video/vexana/music-poster.webp",
+    bytes: 57251603,
+    duration: 105.22,
+    width: 1920,
+    height: 1080,
+  },
   "heart-dance": {
     file: "/video/vexana/heart-dance.mp4",
     poster: "/video/vexana/heart-dance-poster.webp",

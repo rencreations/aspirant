@@ -1,4 +1,5 @@
 import { autoQuality } from "@/components/video-player/player-math";
+import { nextCharacter } from "@/content/characters";
 import { chunkItem, imageItem, mediaItem, type PreloadItem } from "@/lib/preload";
 
 import {
@@ -20,6 +21,7 @@ import {
   type VideoName,
 } from "./media";
 import { COMIC_PAGES, VIDEOS } from "./media.generated";
+import { roomItems } from "./room/media";
 
 const FANART_NUMBERS = Array.from({ length: FANART_COUNT }, (_, i) => i + 1);
 
@@ -109,6 +111,9 @@ export function vexanaLater(): Array<{ priority: number; items: PreloadItem[] }>
         ...FANART_NUMBERS.map((n) => imageItem(fanartThumb(n), "Loading the fanart")),
       ],
     },
+    // The music video streams (57 MB, played muted by itself and with sound in the player), so only
+    // its poster is fetched ahead.
+    { priority: 40, items: [imageItem(videoPoster("music"), "Loading the music video")] },
     { priority: 41, items: small.map((n) => videoItem(n, "Loading the videos")) },
     {
       priority: 42,
@@ -118,5 +123,25 @@ export function vexanaLater(): Array<{ priority: number; items: PreloadItem[] }>
       priority: 43,
       items: FANART_NUMBERS.map((n) => imageItem(fanartPath(n), "Loading the fanart")),
     },
+    // The room at the bottom: the welcome and the idle loop of the visitor's size first (the way
+    // into the room waits for them, see `room/room-load.ts`), then the three shorts, then the zoom
+    // pose. The size is large, so it comes last and takes at most two download slots.
+    ...roomGroups(),
+  ];
+}
+
+/** The room's videos in three groups, in the order the room wants them, plus the next preview. */
+function roomGroups(): Array<{ priority: number; items: PreloadItem[] }> {
+  const all = roomItems();
+  const file = (i: PreloadItem) => i.id.split(":").at(-1) ?? "";
+  const core = all.filter((i) => file(i) === "welcome.mp4" || file(i) === "idle.mp4");
+  const shorts = all.filter((i) => file(i).startsWith("short-"));
+  const pose = all.filter((i) => file(i).startsWith("gallery-"));
+  const preview = `/img/char/${nextCharacter("vexana").slug}/splash-sm.webp`;
+  return [
+    { priority: 39, items: [imageItem(preview, "Loading the next character")] },
+    { priority: 44, items: core },
+    { priority: 45, items: shorts },
+    { priority: 46, items: pose },
   ];
 }

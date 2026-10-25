@@ -1,0 +1,590 @@
+/* Vexana's room: the last section of her page. The picture is the section; the buttons take their
+   look from it (the stage's own components, in her violet and magenta). The section is a tall
+   track with a sticky screen: the screen stays put while the visitor scrolls the last stretch, and
+   how far they have scrolled runs the two meters (see scroll-math.ts). */
+.track {
+  position: relative;
+  /* One screen, and the stretch the meters run through: a quiet part, the strength meter, and the
+     meter in the information bar. */
+  height: calc(100svh + 230svh);
+  background: #0b0716;
+}
+
+.hero {
+  --pad: clamp(1rem, 2.4vw, 3rem);
+  --top: calc(var(--nav-h) + clamp(0.75rem, 4.5vh, 2.5rem));
+  /* Where the picture is cropped to. The stage and the touch points both read it. */
+  --focus: 50% 50%;
+  /* Set by useRoomScroll while the page scrolls. */
+  --strength: 0;
+  --ahead: 0;
+  /* The page buttons are Selena's (stage/menu-button), in her colours: a pale plate with a violet
+     edge that turns dark on hover, and a magenta sheet for the wait. */
+  --armor: #f7f2ff;
+  --armor-2: #dccdfb;
+  --violet: #7a4fd6;
+  --btn-edge-mid: #cdb4ff;
+  --violet-deep: #1c1038;
+  --btn-hover: #3a1a78;
+  --btn-ink: #1c1038;
+  --btn-shadow: rgb(20 8 48 / 0.45);
+  --crystal: #e040a0;
+  --btn-sheet: #a81d6b;
+  --btn-sheet-end: #e040a0;
+  --gold: #e9b95f;
+  /* The wait screen is Selena's too (stage/wait-fx). */
+  --fx-shade: rgb(30 8 70 / 0.6);
+  --fx-chip: rgb(14 7 30 / 0.78);
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #0b0716;
+  color: #fff;
+}
+
+/* The picture before the stage is up. */
+.still {
+  position: absolute;
+  inset: 0;
+  background: var(--still) var(--focus) / cover no-repeat;
+}
+
+/* Loading the welcome and the idle loop, for real (the bar is the bytes received). */
+.loading {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.5rem, 8vh, 4rem);
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto minmax(4rem, 16rem) auto;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 1.1rem;
+  translate: -50% 0;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: rgb(14 7 30 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.loadingLabel {
+  white-space: nowrap;
+}
+
+.loadingRail {
+  position: relative;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.25);
+}
+
+.loadingFill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform-origin: left center;
+  transition: transform 180ms linear;
+}
+
+.loadingValue {
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* The first welcome starts on a black screen that fades to a picture that is already moving. */
+.blackout {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #000;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1100ms var(--ease-in-out);
+}
+
+.blackout[data-state="fade"] {
+  opacity: 0;
+}
+
+/* The interface ----------------------------------------------------------------------------- */
+.ui {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s linear 400ms;
+}
+
+.ui[data-visible="true"] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.ui > * {
+  pointer-events: auto;
+}
+
+/* The circles are easy to find and the cursor is drawn to them from a little way off: a roomy
+   hit area, with the ring itself unchanged. */
+.ui [role="group"][aria-label="Touch points"] {
+  --spot: clamp(4.75rem, 8.2vw, 8rem);
+}
+
+/* Change pose: the bigger button, in the empty left side, in the middle of the screen's height. */
+.pose {
+  position: absolute;
+  left: var(--pad);
+  top: 50%;
+  width: clamp(11rem, 16vw, 17rem);
+  translate: 0 -50%;
+  opacity: 0;
+  transform: translateX(-46px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 800ms var(--ease-out);
+  transition-delay: 320ms;
+}
+
+.ui[data-visible="true"] .pose {
+  opacity: 1;
+  transform: none;
+}
+
+/* When a short is chosen, the button steps out of the way at once. */
+.ui .pose[data-away="true"] {
+  opacity: 0;
+  transform: translateX(-56px);
+  transition-delay: 0s;
+  transition-duration: 380ms, 480ms;
+  pointer-events: none;
+}
+
+/* The hint under the points: one short line at a time until something has been touched. */
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(5.5rem, 13vh, 8rem);
+  margin: 0;
+  translate: -50% 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.86);
+  text-shadow: 0 1px 8px rgb(10 5 30 / 0.7);
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.hint[data-gone="true"] {
+  opacity: 0;
+}
+
+.hint span {
+  display: inline-block;
+  animation: hint 3800ms var(--ease-in-out) both;
+}
+
+.hint span::before {
+  content: "";
+  display: inline-block;
+  width: 1.6rem;
+  height: 1px;
+  margin-right: 0.8rem;
+  vertical-align: middle;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+@keyframes hint {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  14%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* The strength meter at the right edge: it rises as the visitor scrolls on. ------------------- */
+.scroll {
+  position: absolute;
+  right: var(--pad);
+  top: 50%;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  height: min(34svh, 20rem);
+  grid-template-rows: auto 1fr;
+  translate: 0 -50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.scroll[data-visible="true"] {
+  opacity: 1;
+}
+
+.scrollLabel {
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.8);
+  text-shadow: 0 1px 8px rgb(10 5 30 / 0.7);
+}
+
+.scrollTrack {
+  position: relative;
+  display: block;
+  width: 3px;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.28);
+  box-shadow: 0 0 0 1px rgb(10 5 30 / 0.3);
+}
+
+.scrollFill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform-origin: center bottom;
+  transform: scaleY(var(--strength));
+}
+
+/* The bar about the next character: a fifth of the screen, as wide as it. ---------------------- */
+.nextBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 26rem) auto;
+  align-items: center;
+  column-gap: clamp(1rem, 2.4vw, 2.5rem);
+  height: 20svh;
+  min-height: 8.5rem;
+  padding: 0 var(--pad);
+  background: linear-gradient(180deg, rgb(14 7 30 / 0.82), rgb(11 7 22 / 0.96));
+  color: #fff;
+  transform: translateY(101%);
+  transition: transform 700ms var(--ease-out);
+}
+
+.nextBar[data-open="true"] {
+  transform: none;
+}
+
+/* The line along the top edge fills with the second meter. */
+.nextEdge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: rgb(255 255 255 / 0.2);
+}
+
+.nextEdge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent, #e040a0);
+  transform-origin: left center;
+  transform: scaleX(var(--ahead));
+}
+
+.nextPreview {
+  height: 66%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  background: #0b0716;
+}
+
+.nextPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.nextText {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.nextEyebrow {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.nextName {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nextSub {
+  margin: 0;
+  font-family: var(--font-serif-stack, "Instrument Serif", Georgia, serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.nextAhead {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.nextHint {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.86);
+}
+
+.nextMeter {
+  position: relative;
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.nextFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent, #e040a0);
+  transform-origin: left center;
+  transform: scaleX(var(--ahead));
+}
+
+.nextGo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2.9rem;
+  padding: 0 1.2rem;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  background: rgb(10 8 40 / 0.5);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.nextGo kbd {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid currentColor;
+  font: inherit;
+  font-size: 0.5625rem;
+  opacity: 0.8;
+}
+
+.nextGo:hover,
+.nextGo:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--accent, #e040a0);
+}
+
+/* Skip and Back ----------------------------------------------------------------------------- */
+.back,
+.bar {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  z-index: 6;
+  translate: -50% 0;
+  animation: rise 600ms var(--ease-out) 300ms both;
+}
+
+.back {
+  width: clamp(11.5rem, 16vw, 14.5rem);
+}
+
+.bar {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.skip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2.9rem;
+  padding: 0 1.2rem;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(10 8 40 / 0.66);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.skip i {
+  width: 0.9rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 360ms var(--ease-out);
+}
+
+.skip:hover,
+.skip:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--crystal);
+}
+
+.skip:hover i,
+.skip:focus-visible i {
+  width: 1.6rem;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Phones and tall screens: the picture is cropped to her, the pose button sits along the bottom,
+   and the next bar stacks its parts. */
+@media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
+  .pose {
+    left: 50%;
+    top: auto;
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+    width: clamp(11rem, 54vw, 14.5rem);
+    translate: -50% 0;
+  }
+
+  .ui .pose[data-away="true"] {
+    transform: translateY(20px);
+  }
+
+  .hint {
+    top: var(--top);
+    bottom: auto;
+  }
+
+  .bar,
+  .back {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .scroll {
+    right: 0.7rem;
+    height: min(24svh, 12rem);
+  }
+
+  .nextBar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "preview text go"
+      "preview ahead go";
+    column-gap: 0.8rem;
+    row-gap: 0.4rem;
+    height: 20svh;
+    min-height: 7.5rem;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .nextPreview {
+    grid-area: preview;
+    height: 58%;
+    aspect-ratio: 1;
+  }
+
+  .nextHint {
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    line-height: 1.35;
+  }
+
+  .nextText {
+    grid-area: text;
+    align-self: end;
+  }
+
+  .nextAhead {
+    grid-area: ahead;
+    align-self: start;
+  }
+
+  .nextGo {
+    grid-area: go;
+    height: 2.4rem;
+    padding: 0 0.7rem;
+    letter-spacing: 0.14em;
+  }
+
+  .nextGo kbd,
+  .nextSub,
+  .nextEyebrow {
+    display: none;
+  }
+
+  .nextName {
+    font-size: clamp(1.4rem, 7vw, 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pose,
+  .nextBar,
+  .blackout {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+
+  .hint span {
+    animation: none;
+  }
+}

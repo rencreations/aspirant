@@ -24,6 +24,10 @@ interface HoldApi {
   subscribe: (fn: (p: number) => void) => () => void;
   /** Hides or shows the held section (the doors hide it once they have closed). */
   hideContent: (hide: boolean) => void;
+  /** The box the held section sits in (a transition may move it). */
+  content: RefObject<HTMLDivElement | null>;
+  /** A layer behind the held section, as tall as the wrapper: what shows where the section has moved away. */
+  backdrop: RefObject<HTMLDivElement | null>;
 }
 
 const HoldContext = createContext<HoldApi | null>(null);
@@ -73,12 +77,15 @@ export function Hold({ hold, overlay, enabled = true, className, style, children
   const root = useRef<HTMLDivElement>(null);
   const stick = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  const backdrop = useRef<HTMLDivElement>(null);
   const subs = useRef(new Set<(p: number) => void>());
   const progress = useRef(0);
 
   const api = useMemo<HoldApi>(
     () => ({
       root,
+      content: stick,
+      backdrop,
       subscribe(fn) {
         subs.current.add(fn);
         fn(progress.current);
@@ -151,6 +158,7 @@ export function Hold({ hold, overlay, enabled = true, className, style, children
         className={[styles.root, className].filter(Boolean).join(" ")}
         style={{ ...style, ["--hold" as string]: hold }}
       >
+        <div ref={backdrop} className={styles.backdrop} aria-hidden="true" />
         <div ref={stick} className={styles.stick}>
           {children}
         </div>

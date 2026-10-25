@@ -1,0 +1,82 @@
+/*
+ * The two things a gate draws: the meter at the bottom of the held screen (it fills as the visitor
+ * scrolls on, and the transition starts when it is full), and the layer the scene plays in. The
+ * layer is fixed to the screen, so it stays put while the page jumps to the next section under it.
+ */
+.meter {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(16px, 3.6vh, 36px);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.28s ease;
+}
+
+.meter[data-tone="dark"] {
+  color: #eae4ff;
+  background: rgb(20 14 38 / 0.78);
+  border: 1px solid rgb(183 156 242 / 0.5);
+}
+
+.meter[data-tone="light"] {
+  color: #140e26;
+  background: rgb(255 255 255 / 0.82);
+  border: 1px solid rgb(20 14 38 / 0.28);
+}
+
+.label {
+  display: block;
+}
+
+.track {
+  position: relative;
+  display: block;
+  width: 84px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, currentColor 24%, transparent);
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.gateLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .label {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track {
+    width: 52px;
+  }
+}

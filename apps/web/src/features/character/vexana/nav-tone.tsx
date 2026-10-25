@@ -27,6 +27,8 @@ const TONES: Record<string, "light" | "dark" | "auto"> = {
   guinevere: "light",
   art: "dark",
   fanart: "light",
+  music: "dark",
+  room: "dark",
 };
 
 /** Relative luminance of a computed colour, with its alpha, or null when it is not a colour. */

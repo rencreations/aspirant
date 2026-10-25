@@ -5,22 +5,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { formatTime } from "@/components/video-player/player-math";
+import { ImageViewer, type ViewerImage } from "@/components/image-viewer/image-viewer";
 import { getCharacter, keyVoiceLines } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
+import { useReducedMotion, useVoiceState } from "@/lib/hooks";
+import { withSound } from "@/lib/sound-prompt";
 
 import { artPath, artThumb, videoPoster, videoFile } from "../media";
 import { PlayerButton, videoFor } from "../shared/player-button";
 import { videoInfo } from "../shared/info";
 import styles from "./guinevere.module.css";
-import { useVisiblePlay } from "./use-visible-play";
+import { useVisiblePlay } from "../shared/use-visible-play";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
-
-/** The pair's coupling when they registered (canon: 1.62), on a scale of 0 to 2. */
-const COUPLING = 1.62;
-const COUPLING_MAX = 2;
 
 const FILM = videoInfo("heart-dance");
 
@@ -48,15 +46,25 @@ const SPARKLES = [
   { x: 88, y: 84, s: 20, d: 1.1 },
 ] as const;
 
-const FACTS = (c: ReturnType<typeof getCharacter>) =>
-  [
-    ["Aspirant name", c.aspirantName],
-    ["Age", c.ageText],
-    ["Birthday", c.birthday],
-    ["Type", c.mbti],
-    ["Role", c.role],
-    ["Weapon", c.weapon],
-  ] as const;
+/** What the two of them are to each other (canon: the characters' data and the comic notes). */
+const BOND = [
+  ["Met", "In a broom cupboard, with a doughnut"],
+  ["Partners", "The best duo in the Academy"],
+  ["In a fight", "Guinevere in front, Vexana behind"],
+  ["Their light", "The Emblem of Hope"],
+] as const;
+
+const PRINT: ViewerImage = {
+  src: artPath("guinevere-splash-art"),
+  thumb: artThumb("guinevere-splash-art"),
+  alt: "Guinevere leaping above the city with her two drones, official splash art",
+  width: 2560,
+  height: 1440,
+  title: "The brightest thing in the sky",
+  set: "official",
+  setLabel: "Official art",
+  credit: { name: "Moonton", platform: "Mobile Legends: Bang Bang" },
+};
 
 interface Point {
   x: number;
@@ -101,8 +109,8 @@ function threadPaths(a: Point, b: Point, w: number, h: number): Threads {
 /**
  * Her best friend. A bright page after the dark ones: Guinevere's splash art hangs as a taped print,
  * Vexana and she dance in a heart-shaped frame that plays by itself (muted) while it is on screen,
- * two threads (her gold, Vexana's violet) are drawn between them, and a meter shows how well they
- * were matched on the day they registered. The play button opens the dance in the site's player.
+ * two threads (her gold, Vexana's violet) are drawn between them. The print opens in the site's
+ * viewer, a line of hers plays when asked, and the play button opens the dance in the site's player.
  */
 export function Guinevere() {
   const reduced = useReducedMotion();
@@ -114,6 +122,8 @@ export function Guinevere() {
   const video = useRef<HTMLVideoElement>(null);
   const tape = useRef<HTMLSpanElement>(null);
   const [quote, setQuote] = useState(0);
+  const [viewing, setViewing] = useState(false);
+  const voice = useVoiceState();
   const [threads, setThreads] = useState<Threads | null>(null);
 
   useVisiblePlay(video, frame, videoFile("heart-dance"));
@@ -201,7 +211,8 @@ export function Guinevere() {
   }, [reduced]);
 
   const q = quotes[quote % Math.max(1, quotes.length)];
-  const facts = FACTS(g);
+  const quoteUrl = q ? asset(`/${q.file}`) : null;
+  const quotePlaying = quoteUrl !== null && voice.playing && voice.url === quoteUrl;
 
   return (
     <section
@@ -242,7 +253,7 @@ export function Guinevere() {
 
       <header className={styles.head}>
         <p className={styles.eyebrow}>
-          <b>08</b>
+          <b>10</b>
           <span className={styles.bar} aria-hidden="true" />
           <span>Her best friend</span>
         </p>
@@ -257,18 +268,45 @@ export function Guinevere() {
           <span className={`${styles.tape} ${styles.tapeA}`} aria-hidden="true" />
           <span ref={tape} className={`${styles.tape} ${styles.tapeB}`} aria-hidden="true" />
           <div className={styles.paper}>
-            {/* Plain <img>: static export. The small size shows first, the browser picks. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={asset(artThumb("guinevere-splash-art"))}
-              srcSet={`${asset(artThumb("guinevere-splash-art"))} 960w, ${asset(artPath("guinevere-splash-art"))} 2560w`}
-              data-drift="-30"
-              sizes="(max-width: 800px) 92vw, 60vw"
-              alt="Guinevere leaping above the city with her two drones, official splash art"
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-            />
+            <button
+              type="button"
+              className={styles.paperBtn}
+              aria-label="Open Guinevere's art to see it in detail"
+              aria-haspopup="dialog"
+              data-cursor="VIEW"
+              onPointerEnter={() => {
+                audio.blip("hover");
+              }}
+              onClick={() => {
+                setViewing(true);
+              }}
+            >
+              {/* Plain <img>: static export. The small size shows first, the browser picks. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset(artThumb("guinevere-splash-art"))}
+                srcSet={`${asset(artThumb("guinevere-splash-art"))} 960w, ${asset(artPath("guinevere-splash-art"))} 2560w`}
+                data-drift="-30"
+                sizes="(max-width: 800px) 92vw, 60vw"
+                alt={PRINT.alt}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+              <span className={styles.sheen} aria-hidden="true" />
+              <span className={styles.view} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="14" height="14">
+                  <path
+                    d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="square"
+                  />
+                </svg>
+                View
+              </span>
+            </button>
           </div>
           <figcaption className={styles.caption}>
             <b>{g.aspirantName}</b>
@@ -325,48 +363,19 @@ export function Guinevere() {
       <div className={styles.body}>
         <div className={styles.story}>
           <p className={styles.lead}>
-            Guinevere is sixteen and the best close fighter in the Academy. She calls herself the
-            Queen. She won the spring Combat Trials with one hand tied behind her back.
+            Vexana was hiding in a broom cupboard when Guinevere found her, with a doughnut. It took
+            ten days of doughnuts to win her as a partner.
           </p>
           <p>
-            Vexana was hiding in a broom cupboard. Guinevere found her with a doughnut. It took ten
-            days of doughnuts to win her as a partner, and she would do it again.
+            Now they fight as one. Guinevere goes in front, Vexana stands behind her, and neither of
+            them has to look round. Guinevere made the Emblem of Hope by hand, for Vexana. It lights
+            when the other is near.
           </p>
-          <p>
-            Now they fight as one. Guinevere goes in front. Vexana stands twelve paces behind her,
-            and neither of them has to look round. Guinevere made the Emblem of Hope by hand, for
-            Vexana.
-          </p>
-
-          <div className={styles.meter} role="img" aria-label="Their coupling was 1.62 out of 2">
-            <p className={styles.meterLabel}>
-              <span>Coupling on the day they registered</span>
-              <b>{COUPLING.toFixed(2)}</b>
-            </p>
-            <div
-              className={styles.track}
-              style={{ "--v": COUPLING / COUPLING_MAX } as CSSProperties}
-            >
-              <span className={styles.fill} />
-              <span className={styles.needle}>
-                <svg viewBox="0 0 24 22" width="26" height="24" aria-hidden="true">
-                  <path
-                    d="M12 21 C12 21 1.5 14.5 1.5 7.5 C1.5 3.8 4.3 1.5 7.2 1.5 C9.4 1.5 11.2 2.7 12 4.6 C12.8 2.7 14.6 1.5 16.8 1.5 C19.7 1.5 22.5 3.8 22.5 7.5 C22.5 14.5 12 21 12 21 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </span>
-            </div>
-            <p className={styles.ends}>
-              <span className={styles.endGold}>Guinevere</span>
-              <span className={styles.endViolet}>Vexana</span>
-            </p>
-          </div>
         </div>
 
         <div className={styles.side}>
           <dl className={styles.facts}>
-            {facts.map(([k, v]) => (
+            {BOND.map(([k, v]) => (
               <div key={k}>
                 <dt>{k}</dt>
                 <dd>{v}</dd>
@@ -374,14 +383,48 @@ export function Guinevere() {
             ))}
           </dl>
 
-          {q ? (
+          {q && quoteUrl ? (
             <blockquote className={styles.quote} aria-live="polite">
-              <p key={q.n} className={styles.quoteText}>
-                {q.en}
-              </p>
-              <p className={styles.quoteJp} lang="ja">
-                {q.jpTitle}
-              </p>
+              <div className={styles.quoteRow}>
+                <button
+                  type="button"
+                  className={styles.play}
+                  data-playing={quotePlaying}
+                  aria-pressed={quotePlaying}
+                  aria-label={`${quotePlaying ? "Stop" : "Hear"} Guinevere say: ${q.en}`}
+                  data-cursor={quotePlaying ? "STOP" : "HEAR"}
+                  onPointerEnter={() => {
+                    audio.blip("hover");
+                  }}
+                  onClick={() => {
+                    audio.unlock();
+                    if (quotePlaying) audio.stopVoice();
+                    else withSound("This voice line", () => void audio.playVoice(quoteUrl));
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    {quotePlaying ? (
+                      <path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor" />
+                    ) : (
+                      <path d="M8 5v14l11-7z" fill="currentColor" />
+                    )}
+                  </svg>
+                  <span className={styles.bars} aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                </button>
+                <div>
+                  <p key={q.n} className={styles.quoteText}>
+                    {q.en}
+                  </p>
+                  <p className={styles.quoteJp} lang="ja">
+                    {q.jpTitle}
+                  </p>
+                </div>
+              </div>
               <button
                 type="button"
                 className={styles.another}
@@ -390,6 +433,7 @@ export function Guinevere() {
                 }}
                 onClick={() => {
                   audio.blip("click");
+                  audio.stopVoice();
                   setQuote((n) => n + 1);
                 }}
               >
@@ -402,6 +446,16 @@ export function Guinevere() {
           ) : null}
         </div>
       </div>
+
+      <ImageViewer
+        items={[PRINT]}
+        index={viewing ? 0 : null}
+        onIndexChange={(i) => {
+          setViewing(i !== null);
+        }}
+        label="Guinevere's art"
+        skin={{ ground: "#0b0716", keyline: "#b79cf2", accent: "#e040a0" }}
+      />
     </section>
   );
 }

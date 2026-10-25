@@ -197,7 +197,7 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
     );
   }
 
-  return { dir: cfg.dir, pickTier, tier, path, items, loadCore };
+  return { dir: cfg.dir, pickTier, tier, tierReady, path, items, loadCore };
 }
 
 /** What the stage needs of a character's media: where a video of a size is. */

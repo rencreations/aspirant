@@ -45,3 +45,11 @@
   overflow: clip;
   pointer-events: none;
 }
+
+/* Behind the held section, inside the wrapper (which isolates): empty unless a transition fills it. */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}

@@ -135,17 +135,16 @@ export function Fanart() {
     >
       <header className={styles.head}>
         <p className={styles.eyebrow}>
-          <b>10</b>
+          <b>09</b>
           <span className={styles.bar} aria-hidden="true" />
           <span>Fanart</span>
         </p>
         <h2 id="fanart-title" className={styles.title}>
-          <span>Pinned up</span>
-          <span className={styles.serif}>by the fans.</span>
+          <span>Fans</span> <span className={styles.serif}>Creations</span>
         </h2>
         <p className={styles.lede}>
-          Seven prints, drawn by people who love her. Each one carries its artist&rsquo;s own mark.
-          Hover to lift one off the wall. Click to see it large.
+          Drawn by people who love her. Each one carries its artist&rsquo;s own mark. Hover to lift
+          one off the wall. Click to see it large.
         </p>
       </header>
 

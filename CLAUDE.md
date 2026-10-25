@@ -20,6 +20,7 @@ The site must not lag on an ordinary laptop and must lighten itself on a weak on
 
 - Never write a CSS custom property or an inline style on `<html>` or `<body>` per frame (it restyles the whole page), and never give an element an attribute that a script then selects by. A test guards the cursor.
 - Animate `transform` and `opacity` only. No `width`, `left`, `top` or `margin` in an animation. No `filter`, `backdrop-filter` or `mix-blend-mode` over the live picture or on an element with animated children. No per-frame SVG attribute writes.
+- A transition between two sections of a long page (Vexana's page) is made by the layout, not by an overlay that appears over the next section for no reason: the section holds its last screen, a meter fills over a short scroll threshold, then a scene plays by itself and the page jumps to the next section while the screen is covered. It waits, with a real progress and never a timer, for what the next section needs. See `seams/` and `docs/design/design-system.md`.
 - Something that follows a video runs on the compositor (a Web Animation), not in a frame loop. Long text and long lists use `content-visibility: auto` and are built in small slices.
 - Judge speed on the production build, not `pnpm dev` (it is 2 to 3 times slower), with `scripts/perf/weak.mjs`.
 - Effects that cost something are gated on the performance level (`:root[data-perf="balanced"]`, `lib/perf.ts`).

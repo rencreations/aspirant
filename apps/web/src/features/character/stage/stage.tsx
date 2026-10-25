@@ -37,6 +37,8 @@ export interface StageApi {
   videoQuality: () => { dropped: number; total: number } | null;
   /** Give the idle loop the size the device asks for now. The caller covers the screen. */
   retier: () => Promise<void>;
+  /** Pause the picture (the stage is off screen) or carry on. Hidden tabs are handled already. */
+  setHidden: (hidden: boolean) => void;
 }
 
 interface Props {
@@ -90,6 +92,7 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
       idleClock: () => director.current?.idleClock() ?? null,
       videoQuality: () => director.current?.videoQuality() ?? null,
       retier: () => director.current?.retier() ?? Promise.resolve(),
+      setHidden: (hidden) => director.current?.setHidden(hidden),
     }),
     [],
   );

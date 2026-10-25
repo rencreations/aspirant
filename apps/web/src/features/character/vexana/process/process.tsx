@@ -115,9 +115,8 @@ export function Process() {
           <span>3D</span> process
         </h2>
         <p className={styles.lede}>
-          Before the colour, there is grey clay. This clip cuts between the plain model, the painted
-          render and the effects on top. Use the timeline to move through it, and switch the shading
-          to see the viewport the way a modeller does.
+          The plain clay model, the painted render and the effects on top. Drag the timeline to move
+          through them.
         </p>
       </header>
 

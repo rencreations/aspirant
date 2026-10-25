@@ -112,6 +112,45 @@
   white-space: nowrap;
 }
 
+/* The top score and the full screen button share the right end of the header. */
+.topEnd {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 22px);
+}
+
+.fs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgb(224 64 160 / 0.7);
+  background: rgb(224 64 160 / 0.14);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: var(--notch);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.fs:hover,
+.fs:focus-visible {
+  background: var(--magenta);
+  color: var(--ink);
+  outline: none;
+}
+
+@media (max-width: 560px) {
+  .topEnd .max {
+    display: none;
+  }
+}
+
 .max {
   display: flex;
   align-items: baseline;

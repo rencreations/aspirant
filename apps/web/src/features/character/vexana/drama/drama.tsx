@@ -123,6 +123,15 @@ export function Drama() {
     void video.current?.play().catch(() => undefined);
   }, [sfx]);
 
+  // The full player takes over: the game's own picture and sound stop first.
+  const openFull = useCallback(() => {
+    if (modeRef.current === "play") {
+      video.current?.pause();
+      setMode("pause");
+    }
+    sfx("confirm");
+  }, [sfx]);
+
   const toTitle = useCallback(() => {
     const el = video.current;
     if (el) {
@@ -247,10 +256,29 @@ export function Drama() {
         <h2 id="drama-title" className={styles.sr}>
           First day at Selrick, a scene to play
         </h2>
-        <p className={styles.max}>
-          <span>Top score</span>
-          {pad(info.duration * POINTS_PER_SECOND + (LEVELS.length - 1) * POINTS_PER_LEVEL)}
-        </p>
+        <div className={styles.topEnd}>
+          <p className={styles.max}>
+            <span>Top score</span>
+            {pad(info.duration * POINTS_PER_SECOND + (LEVELS.length - 1) * POINTS_PER_LEVEL)}
+          </p>
+          <PlayerButton
+            video={videoFor("interactive-drama", "First day at Selrick")}
+            label="Play the whole visual novel in full screen, with sound"
+            className={styles.fs}
+            onOpen={openFull}
+          >
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+              <path
+                d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="square"
+              />
+            </svg>
+            <span>Full screen</span>
+          </PlayerButton>
+        </div>
       </header>
 
       <div className={styles.cab}>
@@ -416,6 +444,15 @@ export function Drama() {
                       </button>
                     </li>
                     <li>
+                      <PlayerButton
+                        video={videoFor("interactive-drama", "First day at Selrick")}
+                        label="Play the whole visual novel in full screen, with sound"
+                        onOpen={openFull}
+                      >
+                        Full screen
+                      </PlayerButton>
+                    </li>
+                    <li>
                       <button
                         type="button"
                         onClick={() => {
@@ -464,9 +501,10 @@ export function Drama() {
                     <li>
                       <PlayerButton
                         video={videoFor("interactive-drama", "First day at Selrick")}
-                        label="Open the scene in the player"
+                        label="Play the whole visual novel in full screen, with sound"
+                        onOpen={openFull}
                       >
-                        Full player
+                        Full screen
                       </PlayerButton>
                     </li>
                     <li>

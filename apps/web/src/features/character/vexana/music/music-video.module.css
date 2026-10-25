@@ -1,0 +1,463 @@
+/* The music video of her theme: a small premiere stage, only for this section. */
+.music {
+  --ink: #140e26;
+  --deep: #0a0614;
+  --violet: #7a4fd6;
+  --magenta: #e040a0;
+  --lav: #b79cf2;
+  --glow: #d9d5f5;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(72px, 12vh, 140px) clamp(16px, 4vw, 64px) clamp(56px, 9vh, 110px);
+  display: grid;
+  justify-items: center;
+  gap: clamp(28px, 5vh, 56px);
+  color: #f1ecfb;
+  background: radial-gradient(120% 70% at 50% 0%, #1e1240 0%, var(--deep) 62%);
+}
+
+/* ---- the lights --------------------------------------------------------------------------- */
+.lights {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.spotA,
+.spotB {
+  position: absolute;
+  top: -10%;
+  width: 46%;
+  height: 90%;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out) 0.2s;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+}
+
+.spotA {
+  left: 4%;
+  background: linear-gradient(to bottom, rgb(224 64 160 / 0.32), transparent 78%);
+  rotate: 8deg;
+  transform-origin: 50% 0;
+}
+
+.spotB {
+  right: 4%;
+  background: linear-gradient(to bottom, rgb(122 79 214 / 0.42), transparent 78%);
+  rotate: -8deg;
+  transform-origin: 50% 0;
+}
+
+.music[data-in="true"] .spotA,
+.music[data-in="true"] .spotB {
+  opacity: 1;
+  animation: sway 9s ease-in-out infinite alternate;
+}
+
+.music[data-in="true"] .spotB {
+  animation-delay: -4.5s;
+}
+
+@keyframes sway {
+  from {
+    rotate: 5deg;
+  }
+  to {
+    rotate: 11deg;
+  }
+}
+
+.floor {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(1200px, 100%);
+  height: 38%;
+  translate: -50% 0;
+  background: radial-gradient(60% 100% at 50% 100%, rgb(183 156 242 / 0.18), transparent 70%);
+}
+
+/* ---- the head ----------------------------------------------------------------------------- */
+.head {
+  width: min(1200px, 100%);
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--lav);
+}
+
+.eyebrow i {
+  width: 34px;
+  height: 1px;
+  background: currentColor;
+}
+
+.title {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(40px, 8.4vw, 132px);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.cross {
+  display: block;
+  opacity: 0;
+  translate: 0 36px;
+  transition:
+    opacity 0.9s var(--ease-out),
+    translate 1s var(--ease-out);
+}
+
+.cross em {
+  font-style: normal;
+  color: var(--magenta);
+}
+
+.serif {
+  display: block;
+  font-family: var(--font-serif-stack);
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  color: var(--glow);
+  font-size: 0.74em;
+  opacity: 0;
+  translate: 0 36px;
+  transition:
+    opacity 0.9s var(--ease-out) 0.15s,
+    translate 1s var(--ease-out) 0.15s;
+}
+
+.music[data-in="true"] .cross,
+.music[data-in="true"] .serif {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ---- the stage ---------------------------------------------------------------------------- */
+.stage {
+  width: min(1200px, 100%);
+  display: grid;
+  gap: 18px;
+  opacity: 0;
+  translate: 0 48px;
+  scale: 0.97;
+  transition:
+    opacity 1s var(--ease-out) 0.3s,
+    translate 1.1s var(--ease-out) 0.3s,
+    scale 1.1s var(--ease-out) 0.3s;
+}
+
+.music[data-in="true"] .stage {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgb(183 156 242 / 0.5);
+  box-shadow:
+    0 0 0 8px var(--ink),
+    0 0 0 9px rgb(224 64 160 / 0.5),
+    0 50px 120px rgb(0 0 0 / 0.6),
+    0 0 140px rgb(122 79 214 / 0.28);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--glow);
+  pointer-events: none;
+}
+
+.corner[data-pos="tl"] {
+  top: 10px;
+  left: 10px;
+  border-width: 2px 0 0 2px;
+}
+
+.corner[data-pos="tr"] {
+  top: 10px;
+  right: 10px;
+  border-width: 2px 2px 0 0;
+}
+
+.corner[data-pos="bl"] {
+  bottom: 10px;
+  left: 10px;
+  border-width: 0 0 2px 2px;
+}
+
+.corner[data-pos="br"] {
+  bottom: 10px;
+  right: 10px;
+  border-width: 0 2px 2px 0;
+}
+
+/* ---- the deck: the button and the level meter ---------------------------------------------- */
+.deck {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+}
+
+.cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 26px 10px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(100deg, var(--magenta), var(--violet));
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 14px 40px -12px rgb(224 64 160 / 0.7);
+  transition:
+    transform 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 48px -12px rgb(224 64 160 / 0.9);
+  outline: none;
+}
+
+.cta:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--ink),
+    0 0 0 6px var(--glow);
+}
+
+.ctaIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #fff;
+  color: #7a1f5a;
+}
+
+.ctaIcon::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgb(255 255 255 / 0.6);
+  animation: ring 2.4s ease-out infinite;
+}
+
+@keyframes ring {
+  from {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+.ctaText {
+  display: grid;
+  gap: 2px;
+}
+
+.ctaText b {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(22px, 2.2vw, 30px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.ctaText small {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* The level meter: a fixed pattern of bars. They move while the site's sound is on and lie flat
+   when it is off, like the sound button. They are not a reading of the song. */
+.meter {
+  flex: 1;
+  min-width: 0;
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.meter i {
+  flex: 1;
+  min-width: 2px;
+  height: 100%;
+  background: linear-gradient(to top, var(--magenta), var(--lav));
+  transform-origin: bottom;
+  transform: scaleY(0.06);
+  opacity: 0.55;
+}
+
+.music[data-sound="on"][data-in="true"] .meter i {
+  opacity: 1;
+  animation: level 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes level {
+  from {
+    transform: scaleY(calc(var(--h) * 0.25));
+  }
+  to {
+    transform: scaleY(var(--h));
+  }
+}
+
+/* ---- the sleeve: the disc and the credits -------------------------------------------------- */
+.sleeve {
+  width: min(1200px, 100%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  padding: clamp(22px, 3vw, 40px) clamp(22px, 3.4vw, 48px);
+  border: 1px solid rgb(183 156 242 / 0.28);
+  background: linear-gradient(120deg, rgb(122 79 214 / 0.16), rgb(224 64 160 / 0.06));
+}
+
+.disc {
+  width: clamp(110px, 14vw, 190px);
+  height: auto;
+  animation: spin 16s linear infinite;
+  animation-play-state: paused;
+}
+
+.music[data-in="true"] .disc {
+  animation-play-state: running;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.credits {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px clamp(20px, 3vw, 40px);
+}
+
+.credits div {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(183 156 242 / 0.5);
+}
+
+.credits dt {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lav);
+}
+
+.credits dd {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(24px, 2.8vw, 40px);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ---- narrow screens ------------------------------------------------------------------------ */
+@media (max-width: 760px) {
+  .deck {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta {
+    justify-content: flex-start;
+  }
+
+  .meter {
+    height: 40px;
+  }
+
+  .sleeve {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .credits {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+
+/* ---- reduced motion: the finished picture, nothing moves ------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .cross,
+  .serif,
+  .stage,
+  .spotA,
+  .spotB {
+    transition: none;
+  }
+
+  .music[data-in="true"] .spotA,
+  .music[data-in="true"] .spotB,
+  .ctaIcon::after,
+  .disc,
+  .music[data-sound="on"][data-in="true"] .meter i {
+    animation: none;
+  }
+
+  .meter i {
+    transform: scaleY(var(--h));
+  }
+}
