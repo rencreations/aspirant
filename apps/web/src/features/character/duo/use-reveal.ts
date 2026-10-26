@@ -25,7 +25,9 @@ export function useReveal<T extends HTMLElement>(margin = "160px"): RefObject<T 
     el.dataset.armed = "true";
     el.dataset.live = "false";
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         if (!entry) return;
         el.dataset.live = entry.isIntersecting ? "true" : "false";
         if (entry.isIntersecting) el.dataset.in = "true";

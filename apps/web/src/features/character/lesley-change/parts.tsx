@@ -88,14 +88,18 @@ export function Channel({ who }: { who: Who }) {
     const end = document.getElementById("together");
     if (!top) return;
     const a = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         setAway((s) => ({ ...s, top: e?.isIntersecting ?? false }));
       },
       { threshold: 0.6 },
     );
     a.observe(top);
     const b = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         setAway((s) => ({ ...s, end: e?.isIntersecting ?? false }));
       },
       { threshold: 0.2 },

@@ -228,7 +228,9 @@ function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?
     const el = frame.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         setInView(entry?.isIntersecting ?? false);
       },
       { threshold: 0.25 },

@@ -337,7 +337,9 @@ export function ScopeHero() {
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onCancel);
 
-    const io = new IntersectionObserver(([e]) => {
+    const io = new IntersectionObserver((entries) => {
+      // The last entry is how it is now (several queue up when the page is busy).
+      const e = entries[entries.length - 1];
       visible = e?.isIntersecting ?? false;
     });
     io.observe(el);

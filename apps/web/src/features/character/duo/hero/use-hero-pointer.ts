@@ -104,7 +104,9 @@ export function useHeroPointer({ reduced, flood }: Options) {
     };
 
     const io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         visible = entry?.isIntersecting ?? false;
         if (visible) {
           rect = hostEl.getBoundingClientRect();

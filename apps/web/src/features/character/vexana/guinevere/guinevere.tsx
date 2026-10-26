@@ -136,7 +136,9 @@ export function Guinevere() {
       return;
     }
     const io = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         if (e?.isIntersecting) {
           el.dataset.in = "true";
           io.disconnect();

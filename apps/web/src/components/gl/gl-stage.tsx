@@ -76,7 +76,7 @@ function GLStage({
     const el = wrapRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry?.isIntersecting ?? false),
+      (entries) => setInView(entries[entries.length - 1]?.isIntersecting ?? false),
       { rootMargin: "100px" },
     );
     observer.observe(el);

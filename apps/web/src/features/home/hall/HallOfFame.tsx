@@ -84,7 +84,9 @@ export function HallOfFame({ art, total }: { art: readonly FanArtView[]; total: 
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
-    const io = new IntersectionObserver(([entry]) => {
+    const io = new IntersectionObserver((entries) => {
+      // The last entry is how it is now (several queue up when the page is busy).
+      const entry = entries[entries.length - 1];
       const next = entry?.isIntersecting ?? false;
       if (next === on) return;
       on = next;

@@ -131,7 +131,9 @@ export function useInView<T extends Element>(
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // Several entries can be queued when the page was busy: the last one is how it is now.
+        const entry = entries[entries.length - 1];
         const visible = entry?.isIntersecting ?? false;
         setInView(visible);
         if (visible && once) observer.disconnect();

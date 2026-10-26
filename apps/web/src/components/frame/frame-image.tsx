@@ -83,7 +83,9 @@ export function FrameImage({
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-    const io = new IntersectionObserver(([entry]) => {
+    const io = new IntersectionObserver((entries) => {
+      // The last entry is how it is now (several queue up when the page is busy).
+      const entry = entries[entries.length - 1];
       if (entry?.isIntersecting) start();
       else stop();
     });

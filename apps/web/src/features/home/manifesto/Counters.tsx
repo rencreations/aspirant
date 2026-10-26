@@ -39,7 +39,9 @@ export function Counters({ items }: { items: readonly CounterView[] }) {
       raf = requestAnimationFrame(tick);
     };
     const io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         if (!entry?.isIntersecting) return;
         io.disconnect();
         root.dataset.live = "true";

@@ -33,7 +33,9 @@ export function LampRail() {
       if (!raf) raf = requestAnimationFrame(read);
     };
     let listening = false;
-    const io = new IntersectionObserver(([entry]) => {
+    const io = new IntersectionObserver((entries) => {
+      // The last entry is how it is now (several queue up when the page is busy).
+      const entry = entries[entries.length - 1];
       const on = entry?.isIntersecting ?? false;
       if (on && !listening) {
         listening = true;

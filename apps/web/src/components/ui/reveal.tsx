@@ -54,7 +54,9 @@ export function Reveal({
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         const visible = entry?.isIntersecting ?? false;
         if (visible) {
           el.dataset.revealed = "true";

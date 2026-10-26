@@ -71,6 +71,12 @@ export function useVideoDeck(options: DeckOptions) {
     }
   }, []);
 
+  /** A stall is over: drop the pending spinner and the spinner itself (a failed film keeps its message). */
+  const clearSpinner = useCallback(() => {
+    window.clearTimeout(spin.current);
+    setStatus((s) => (s === "loading" ? "ready" : s));
+  }, []);
+
   const swap = useCallback((back: Slot, t: number, file: DramaFileName) => {
     const old = els.current[frontRef.current];
     frontRef.current = back;
@@ -206,6 +212,13 @@ export function useVideoDeck(options: DeckOptions) {
     },
     onWaiting: () => {
       if (i === frontRef.current) later(true, token.current);
+    },
+    // The film in front is running again (after a seek or a stall): the spinner it asked for goes.
+    onPlaying: () => {
+      if (i === frontRef.current && !pending.current) clearSpinner();
+    },
+    onCanPlay: () => {
+      if (i === frontRef.current && !pending.current) clearSpinner();
     },
   });
 

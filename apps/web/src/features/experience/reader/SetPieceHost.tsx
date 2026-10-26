@@ -28,9 +28,12 @@ export function SetPieceHost({ anchor }: { anchor: SetPieceAnchor }) {
   useEffect(() => {
     const el = ref.current;
     if (!el || !known) return;
-    const io = new IntersectionObserver(([entry]) => setActive(entry?.isIntersecting ?? false), {
-      rootMargin: "10% 0px",
-    });
+    const io = new IntersectionObserver(
+      (entries) => setActive(entries[entries.length - 1]?.isIntersecting ?? false),
+      {
+        rootMargin: "10% 0px",
+      },
+    );
     io.observe(el);
     return () => io.disconnect();
   }, [known]);

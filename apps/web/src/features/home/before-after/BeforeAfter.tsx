@@ -27,7 +27,9 @@ export function BeforeAfter({ contrast }: { contrast: ContrastView }) {
     const el = rootRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         if (!entry?.isIntersecting) return;
         io.disconnect();
         setStruck(true);

@@ -68,7 +68,9 @@ function Screen({ active, skill }: { active: number; skill: Skill }) {
     const frame = frameRef.current;
     if (!frame) return;
     const warm = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         view.current.near = e?.isIntersecting ?? false;
         if (view.current.near) {
           videos.current.forEach((v) => {
@@ -80,7 +82,9 @@ function Screen({ active, skill }: { active: number; skill: Skill }) {
       { rootMargin: "80% 0px 80% 0px" },
     );
     const seen = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         view.current.seen = e?.isIntersecting ?? false;
         apply();
       },

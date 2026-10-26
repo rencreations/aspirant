@@ -588,7 +588,9 @@ export class ReelController {
 
     // Near: the section is within about half a screen of the viewport.
     this.io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         if (!entry) return;
         this.near = entry.isIntersecting;
         if (!entry.isIntersecting && entry.boundingClientRect.top > 0) this.resetEntrance();
@@ -601,7 +603,9 @@ export class ReelController {
     // Approach: a screen and a half away, early enough to warm the GL layer
     // and to start buffering the video.
     this.approachIo = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const entry = entries[entries.length - 1];
         if (!entry?.isIntersecting) return;
         this.approachIo?.disconnect();
         this.approachIo = null;

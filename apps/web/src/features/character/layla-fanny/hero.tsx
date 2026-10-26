@@ -188,7 +188,9 @@ export function Hero({ who }: { who: Who }) {
     root.addEventListener("pointerleave", onLeave);
 
     // By itself: a shot every few seconds while the first screen is showing and nobody is moving.
-    const io = new IntersectionObserver(([e]) => {
+    const io = new IntersectionObserver((entries) => {
+      // The last entry is how it is now (several queue up when the page is busy).
+      const e = entries[entries.length - 1];
       visible = e?.isIntersecting ?? false;
     });
     io.observe(root);

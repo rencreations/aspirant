@@ -144,7 +144,9 @@ export function useVideoSlot(
     };
 
     const warm = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         near = e?.isIntersecting ?? false;
         if (near) attach();
         apply();
@@ -152,13 +154,17 @@ export function useVideoSlot(
       { rootMargin: `${NEAR} 0px ${NEAR} 0px` },
     );
     const far = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         if (e && !e.isIntersecting) release();
       },
       { rootMargin: `${FAR} 0px ${FAR} 0px` },
     );
     const view = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         seen = e?.isIntersecting ?? false;
         apply();
       },

@@ -31,7 +31,9 @@ export function useVisiblePlay(
       }
     };
     const warm = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         near = e?.isIntersecting ?? false;
         if (near && !v.getAttribute("src")) {
           giveSource(v, file);
@@ -42,7 +44,9 @@ export function useVisiblePlay(
       { rootMargin: "60% 0px 60% 0px" },
     );
     const view = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         seen = e?.isIntersecting ?? false;
         apply();
       },

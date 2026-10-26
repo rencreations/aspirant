@@ -208,7 +208,9 @@ export function HeroPhoto({ host, active, reduced }: Props) {
     hostEl.addEventListener("pointerdown", onDown, { passive: true });
     hostEl.addEventListener("pointerleave", onLeave, { passive: true });
     const io = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         visible = e?.isIntersecting ?? true;
         sync();
       },

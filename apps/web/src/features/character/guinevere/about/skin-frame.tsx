@@ -38,7 +38,9 @@ export function SkinFrame() {
     };
     // The loading bar may already hold the file in memory: use that copy, or stream the file.
     const warm = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         near = e?.isIntersecting ?? false;
         if (near && !video.getAttribute("src") && !reduced && mayPlay()) {
           giveSource(video, FILE);
@@ -49,7 +51,9 @@ export function SkinFrame() {
       { rootMargin: "60% 0px 60% 0px" },
     );
     const view = new IntersectionObserver(
-      ([e]) => {
+      (entries) => {
+        // The last entry is how it is now (several queue up when the page is busy).
+        const e = entries[entries.length - 1];
         seen = e?.isIntersecting ?? false;
         apply();
       },
