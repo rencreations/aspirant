@@ -29,6 +29,7 @@ import { PixelScene } from "../vexana/seams/scenes/pixel";
 import { storyHooks } from "../vexana/seams/story-link";
 import { Under } from "../vexana/seams/under";
 import { UpZone } from "../vexana/seams/up";
+import { useFreshStart } from "../vexana/seams/fresh-start";
 import { useBackScale } from "../vexana/seams/use-back-scale";
 import { About } from "./about/about";
 import { ArtShowcase } from "./art/art";
@@ -91,6 +92,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export function GuinevereRoot({ next }: { next: NextCharacter }) {
   const reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
+  useFreshStart();
   useBackScale(reduced);
 
   // The joins read the position of the sections, so they are measured again when the page grows

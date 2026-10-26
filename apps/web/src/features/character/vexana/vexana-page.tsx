@@ -37,6 +37,7 @@ import { storyHooks } from "./seams/story-link";
 import { FanScene, WallScene } from "./seams/scenes/fall";
 import { Under } from "./seams/under";
 import { UpZone } from "./seams/up";
+import { useFreshStart } from "./seams/fresh-start";
 import { useBackScale } from "./seams/use-back-scale";
 import { Skills } from "./skills/skills";
 import { Stream } from "./stream/stream";
@@ -144,6 +145,7 @@ const ROOM_HOLD = 1;
 export function VexanaPage({ next }: { next: NextCharacter }) {
   const reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
+  useFreshStart();
   useBackScale(reduced);
 
   // The joins read the position of the sections, so they are measured again when the page grows
