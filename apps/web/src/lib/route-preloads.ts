@@ -25,6 +25,7 @@ import {
   obsidiaVoicePath,
   trailerItem as obsidiaTrailerItem,
 } from "@/features/character/obsidia/media";
+import { duoFirstPaint, duoLater } from "@/features/character/duo/duo-media";
 import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinevere/preload-items";
 import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
@@ -205,6 +206,15 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...shared,
         ...lfFirstPaint(slug),
         ...lfLater(slug).flatMap((g) => later(null, g.priority, g.items)),
+      ];
+    }
+    if (slug === "ruby" || slug === "angela") {
+      // The pair's two pages: the splash art and the second picture of the hero first, then the
+      // strip of the film, the posters and the voice lines in the background (see `features/character/duo/duo-media.ts`).
+      return [
+        ...shared,
+        ...duoFirstPaint(slug),
+        ...duoLater(slug).flatMap((g) => later(null, g.priority, g.items)),
       ];
     }
     if (isSlug(slug)) {

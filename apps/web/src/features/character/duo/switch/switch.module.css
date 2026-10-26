@@ -1,0 +1,117 @@
+.section {
+  position: relative;
+  padding: clamp(5rem, 12vw, 10rem) clamp(1.2rem, 5vw, 5rem);
+  overflow: hidden;
+}
+.section[data-who="ruby"] {
+  background: var(--ink);
+}
+.section[data-who="angela"] {
+  background: #ffd7c4;
+}
+
+.link {
+  display: grid;
+  justify-items: center;
+  gap: 1.4rem;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+}
+
+.kicker {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.4vw, 1.9rem);
+  color: var(--paper-dim);
+}
+
+.track {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: clamp(14rem, 34vw, 24rem);
+  height: clamp(5rem, 11vw, 7.4rem);
+  padding: 0 clamp(1.2rem, 3vw, 2rem);
+  border-radius: 10rem;
+  border: 2px solid var(--a);
+}
+.moon,
+.sun {
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  width: clamp(2.4rem, 5vw, 3.4rem);
+  height: clamp(2.4rem, 5vw, 3.4rem);
+}
+.section[data-who="ruby"] .moon {
+  color: var(--ink);
+}
+.section[data-who="ruby"] .sun {
+  color: var(--paper-dim);
+}
+.section[data-who="angela"] .sun {
+  color: #fff;
+}
+.section[data-who="angela"] .moon {
+  color: var(--ink-2);
+}
+.knob {
+  position: absolute;
+  top: 50%;
+  width: clamp(3.4rem, 8vw, 5.4rem);
+  height: clamp(3.4rem, 8vw, 5.4rem);
+  border-radius: 50%;
+  background: var(--a);
+  translate: 0 -50%;
+  transition: transform 0.7s cubic-bezier(0.3, 1.5, 0.4, 1);
+}
+/* Ruby's page is the night, so the knob rests on the moon (left); Angela's on the sun (right). */
+.section[data-who="ruby"] .knob {
+  left: 0.7rem;
+}
+.section[data-who="angela"] .knob {
+  right: 0.7rem;
+}
+.link:hover .knob,
+.link:focus-visible .knob {
+  transform: translateX(var(--slide));
+}
+.section[data-who="ruby"] {
+  --slide: calc(clamp(14rem, 34vw, 24rem) - clamp(3.4rem, 8vw, 5.4rem) - 1.4rem - 4px);
+}
+.section[data-who="angela"] {
+  --slide: calc((clamp(14rem, 34vw, 24rem) - clamp(3.4rem, 8vw, 5.4rem) - 1.4rem - 4px) * -1);
+}
+
+.label {
+  font: 700 0.78rem/1 var(--font-mono);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--a);
+}
+.name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.6rem, 12vw, 10rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  transition: letter-spacing 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.link:hover .name {
+  letter-spacing: 0.04em;
+}
+.section[data-who="ruby"] .name {
+  color: var(--paper);
+}
+.section[data-who="angela"] .name {
+  color: var(--a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knob,
+  .name {
+    transition: none;
+  }
+}

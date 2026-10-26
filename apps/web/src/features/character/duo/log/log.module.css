@@ -1,0 +1,145 @@
+.section {
+  position: relative;
+  padding: clamp(5rem, 11vw, 9rem) clamp(1.2rem, 5vw, 5rem);
+}
+.section[data-who="ruby"] {
+  background: var(--ink-2);
+}
+.section[data-who="angela"] {
+  background: #ffe9e0;
+}
+
+.list {
+  display: grid;
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+  max-width: 64rem;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(8rem, 13rem) 1fr;
+  gap: clamp(1rem, 4vw, 3rem);
+  padding: clamp(1.2rem, 3vw, 2.2rem);
+}
+.entry[data-who="ruby"] {
+  border-left: 2px solid var(--a);
+  background: rgb(10 15 36 / 0.55);
+  font-family: var(--font-mono);
+}
+.entry[data-who="angela"] {
+  border-radius: 1.6rem;
+  background: #fff;
+  box-shadow: 0 0.6rem 1.8rem rgb(226 58 146 / 0.12);
+}
+.entry[data-who="angela"]:nth-child(odd) {
+  transform: rotate(-0.7deg);
+  margin-right: 3rem;
+}
+.entry[data-who="angela"]:nth-child(even) {
+  transform: rotate(0.7deg);
+  margin-left: 3rem;
+}
+
+.entryHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+.num {
+  font: 700 0.76rem/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--a);
+}
+.entryTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lines {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lines li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: clamp(0.96rem, 1.3vw, 1.08rem);
+  line-height: 1.55;
+}
+.entry[data-who="ruby"] .lines li {
+  font-size: clamp(0.86rem, 1.15vw, 0.96rem);
+}
+.entry[data-who="ruby"] .lines li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  color: var(--a);
+  font-weight: 700;
+}
+.entry[data-who="angela"] .lines li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.55em;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50% 50% 50% 0;
+  background: var(--a);
+  rotate: -45deg;
+}
+.entry[data-who="angela"] .lines li:first-child {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+}
+
+/* Reveal: each line comes in after the entry is on screen. */
+.entry[data-armed="true"] .lines li {
+  opacity: 0;
+  transform: translateX(-1rem);
+  transition:
+    opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.entry[data-in="true"] .lines li {
+  opacity: 1;
+  transform: none;
+}
+.entry[data-armed="true"] .entryHead {
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.entry[data-in="true"] .entryHead {
+  opacity: 1;
+}
+
+.seal {
+  max-width: 64rem;
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+@media (max-width: 760px) {
+  .entry {
+    grid-template-columns: 1fr;
+  }
+  .entry[data-who="angela"]:nth-child(odd),
+  .entry[data-who="angela"]:nth-child(even) {
+    margin-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry[data-armed="true"] .lines li,
+  .entry[data-armed="true"] .entryHead {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

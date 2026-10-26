@@ -1,0 +1,48 @@
+/*
+ * The two pages of the pair share this root. Each sets its own colours here as custom properties,
+ * and every section below reads them (`--ink` the dark, `--paper` the light, `--a`, `--b` and `--c`
+ * the three inks of the page, `--line` the keyline).
+ */
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+  font-family: var(--font-sans);
+}
+
+.page[data-who="ruby"] {
+  --ink: #0a0f24;
+  --ink-2: #111a3a;
+  --paper: #e9eefc;
+  --paper-dim: rgb(233 238 252 / 0.68);
+  --a: #f2b83b;
+  --b: #e0388e;
+  --c: #5fc8ff;
+  --line: rgb(95 200 255 / 0.28);
+  --panel: #0e1634;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.page[data-who="angela"] {
+  --ink: #2a1422;
+  --ink-2: #4a2a3c;
+  --paper: #fff7f2;
+  --paper-dim: rgb(42 20 34 / 0.7);
+  --a: #e23a92;
+  --b: #ffb28c;
+  --c: #2fc7d9;
+  --line: rgb(226 58 146 / 0.28);
+  --panel: #fff0e8;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.page *:focus-visible {
+  outline: 2px solid var(--a);
+  outline-offset: 3px;
+}
+
+.zone {
+  position: relative;
+}

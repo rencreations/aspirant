@@ -48,6 +48,26 @@
   color: #ffb3e0;
 }
 
+/* Ruby's and Angela's pages open on full-bleed art: until the bar is painted, the text on the
+   right takes the ink of the page (white on Ruby's night, plum on Angela's morning). */
+:global(body:has([data-duo="ruby"])) .nav:not([data-scrolled="true"]) .here {
+  color: #fff;
+  text-shadow: 0 1px 10px rgb(5 5 20 / 0.7);
+}
+
+:global(body:has([data-duo="ruby"])) .nav:not([data-scrolled="true"]) .hereIndex {
+  color: #f2b83b;
+}
+
+:global(body:has([data-duo="angela"])) .nav:not([data-scrolled="true"]) .here {
+  color: #2a1422;
+  text-shadow: 0 0 10px rgb(255 255 255 / 0.6);
+}
+
+:global(body:has([data-duo="angela"])) .nav:not([data-scrolled="true"]) .hereIndex {
+  color: #b01e6e;
+}
+
 .inner {
   position: relative;
   height: 100%;

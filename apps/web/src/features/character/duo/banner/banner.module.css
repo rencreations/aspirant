@@ -1,0 +1,65 @@
+.band {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(1rem, 3vw, 2.2rem);
+  border-block: 1px solid var(--line);
+}
+.band[data-who="ruby"] {
+  background: var(--ink);
+}
+.band[data-who="angela"] {
+  background: #ffd7c4;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: drift 38s linear infinite;
+}
+.band[data-live="false"] .track {
+  animation-play-state: paused;
+}
+.half {
+  display: flex;
+  flex: none;
+}
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.4rem, 4vw, 3rem);
+  padding-right: clamp(1.4rem, 4vw, 3rem);
+}
+.word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.4rem, 10vw, 9rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.band[data-who="ruby"] .word {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--a);
+}
+.band[data-who="angela"] .word {
+  color: var(--a);
+}
+.mark {
+  font: 700 clamp(1.6rem, 4vw, 3rem) / 1 var(--font-mono);
+  color: var(--b);
+}
+.band[data-who="angela"] .mark {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

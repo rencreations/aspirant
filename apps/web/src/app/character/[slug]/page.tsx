@@ -8,17 +8,21 @@ import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 export const dynamicParams = false;
 
+/** Characters whose page has a route folder of its own. */
+const OWN_ROUTE: ReadonlySet<string> = new Set([
+  "selena",
+  "obsidia",
+  "vexana",
+  "guinevere",
+  "ruby",
+  "angela",
+  "layla",
+  "fanny",
+]);
+
 export function generateStaticParams() {
-  // Selena, Obsidia, Vexana and Guinevere have their own route folders (a page and its three pages share a layout).
-  return CHARACTER_SLUGS.filter(
-    (slug) =>
-      slug !== "selena" &&
-      slug !== "obsidia" &&
-      slug !== "vexana" &&
-      slug !== "guinevere" &&
-      slug !== "layla" &&
-      slug !== "fanny",
-  ).map((slug) => ({
+  // Every character in the set above has a route folder of its own.
+  return CHARACTER_SLUGS.filter((slug) => !OWN_ROUTE.has(slug)).map((slug) => ({
     slug,
   }));
 }

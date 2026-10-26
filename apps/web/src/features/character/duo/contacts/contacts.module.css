@@ -1,0 +1,192 @@
+.section {
+  position: relative;
+  padding: clamp(5rem, 11vw, 9rem) clamp(1.2rem, 5vw, 5rem);
+}
+.section[data-who="ruby"] {
+  background: var(--ink);
+}
+.section[data-who="angela"] {
+  background: linear-gradient(180deg, #fff7f2, #ffe9e0);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card[data-partner="true"] {
+  grid-column: 1 / -1;
+}
+.inner {
+  display: grid;
+  grid-template-columns: 5.6rem 1fr;
+  gap: 1.1rem;
+  height: 100%;
+  padding: 1.1rem;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.25s cubic-bezier(0.3, 1.4, 0.5, 1),
+    background 0.2s;
+}
+.card[data-partner="true"] .inner {
+  grid-template-columns: clamp(7rem, 16vw, 12rem) 1fr;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  padding: clamp(1.2rem, 3vw, 2rem);
+}
+.section[data-who="ruby"] .inner {
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+}
+.section[data-who="angela"] .inner {
+  border-radius: 1.8rem;
+  background: #fff;
+  box-shadow: 0 0.4rem 1.2rem rgb(226 58 146 / 0.12);
+}
+a.inner:hover {
+  transform: translateY(-4px);
+}
+.section[data-who="ruby"] a.inner:hover {
+  border-color: var(--a);
+}
+a.inner:hover .go {
+  letter-spacing: 0.3em;
+}
+
+.pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--panel);
+}
+.pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(2.6);
+}
+.pic[data-blank] {
+  display: grid;
+  place-items: center;
+  font: 900 2.4rem/1 var(--font-display);
+  color: var(--a);
+  border: 1px dashed var(--a);
+  background: transparent;
+}
+
+.body {
+  display: grid;
+  gap: 0.35rem;
+  align-content: center;
+}
+.kicker {
+  font: 700 0.66rem/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--a);
+}
+.who {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.text {
+  font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+.go {
+  margin-top: 0.4rem;
+  font: 700 0.68rem/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--a);
+  transition: letter-spacing 0.3s;
+}
+
+.chapters {
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+}
+.chaptersTitle {
+  margin: 0 0 1.2rem;
+  font: 700 0.76rem/1 var(--font-mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--a);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.section[data-who="angela"] .chip {
+  border-radius: 2rem;
+  background: #fff;
+}
+.chip:hover {
+  background: var(--a);
+  color: var(--ink);
+}
+.section[data-who="angela"] .chip:hover {
+  color: #fff;
+}
+.chipNum {
+  font: 700 0.68rem/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--a);
+}
+.chip:hover .chipNum {
+  color: inherit;
+}
+
+.section[data-armed="true"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.6rem);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.section[data-in="true"] [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 560px) {
+  .inner,
+  .card[data-partner="true"] .inner {
+    grid-template-columns: 4.4rem 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section[data-armed="true"] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .inner {
+    transition: none;
+  }
+}

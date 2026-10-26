@@ -1,0 +1,527 @@
+.hero {
+  position: relative;
+  color: var(--paper);
+}
+
+.stage {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ink);
+  touch-action: pan-y;
+  cursor: crosshair;
+}
+
+.art,
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 50% 30%);
+  user-select: none;
+}
+
+.hero[data-who="ruby"] {
+  --focus: 47% 26%;
+}
+.hero[data-who="angela"] {
+  --focus: 57% 26%;
+}
+
+.art {
+  transform: scale(1.04);
+  animation: settle 2.4s cubic-bezier(0.16, 0.8, 0.2, 1) both;
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.14);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* The second picture shows through the circle that the script moves. */
+.layer {
+  transform: scale(1.04);
+  -webkit-mask-image: radial-gradient(
+    circle var(--r, 0px) at var(--mx, 50%) var(--my, 50%),
+    #000 58%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--r, 0px) at var(--mx, 50%) var(--my, 50%),
+    #000 58%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero[data-who="ruby"] .scrim {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(10 15 36 / 0.6) 0%,
+      transparent 24%,
+      transparent 46%,
+      rgb(10 15 36 / 0.94) 100%
+    ),
+    linear-gradient(90deg, rgb(10 15 36 / 0.55) 0%, transparent 52%);
+}
+.hero[data-who="angela"] .scrim {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 247 242 / 0.5) 0%,
+      transparent 22%,
+      transparent 48%,
+      rgb(255 247 242 / 0.95) 100%
+    ),
+    linear-gradient(90deg, rgb(255 247 242 / 0.5) 0%, transparent 50%);
+}
+
+/* The mark that follows the circle. */
+.markWrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.mark {
+  position: absolute;
+  left: -1.7rem;
+  top: -1.7rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+}
+.hero[data-who="ruby"] .mark {
+  border: 1px solid var(--a);
+}
+.hero[data-who="ruby"] .mark::before,
+.hero[data-who="ruby"] .mark::after {
+  content: "";
+  position: absolute;
+  background: var(--a);
+}
+.hero[data-who="ruby"] .mark::before {
+  left: 50%;
+  top: -0.8rem;
+  bottom: -0.8rem;
+  width: 1px;
+}
+.hero[data-who="ruby"] .mark::after {
+  top: 50%;
+  left: -0.8rem;
+  right: -0.8rem;
+  height: 1px;
+}
+.hero[data-who="angela"] .mark {
+  border: 2px solid var(--a);
+  box-shadow: 0 0 0 0.5rem rgb(226 58 146 / 0.14);
+  animation: halo 2.8s ease-in-out infinite;
+}
+@keyframes halo {
+  50% {
+    transform: scale(1.18);
+    opacity: 0.7;
+  }
+}
+.markName {
+  position: absolute;
+  left: 2.3rem;
+  top: -0.5rem;
+  font: 600 0.68rem/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hero[data-who="ruby"] .markName {
+  color: var(--a);
+}
+.hero[data-who="angela"] .markName {
+  color: var(--ink);
+}
+
+/* Ruby: the drafting frame, the scan line and the terminal. */
+.bracket {
+  position: absolute;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 0 solid var(--a);
+  pointer-events: none;
+  opacity: 0.9;
+}
+.tl {
+  top: 5.2rem;
+  left: 1.4rem;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+.tr {
+  top: 5.2rem;
+  right: 1.4rem;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+.bl {
+  bottom: 1.4rem;
+  left: 1.4rem;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+.br {
+  bottom: 1.4rem;
+  right: 1.4rem;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+.scan {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c), transparent);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: scan 7s linear infinite;
+}
+@keyframes scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100svh);
+  }
+}
+.hero[data-live="false"] .scan,
+.hero[data-live="false"] .caret,
+.hero[data-live="false"] .beatLine,
+.hero[data-live="false"] .tetraFace,
+.hero[data-live="false"] .cueLine,
+.hero[data-live="false"] .mark {
+  animation-play-state: paused;
+}
+
+.terminal {
+  position: absolute;
+  right: 2rem;
+  bottom: 5.5rem;
+  width: min(26rem, 42vw);
+  padding: 0.9rem 1rem 1.1rem;
+  border: 1px solid rgb(95 200 255 / 0.4);
+  background: rgb(8 12 32 / 0.78);
+  font: 500 0.78rem/1.55 var(--font-mono);
+  color: var(--paper);
+  pointer-events: none;
+}
+.termBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgb(95 200 255 / 0.25);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+.termDot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--b);
+}
+.termLine {
+  margin: 0 0 0.35rem;
+  display: flex;
+  flex-direction: column;
+}
+.termCmd {
+  color: var(--a);
+}
+.termOut {
+  color: rgb(233 238 252 / 0.9);
+  padding-left: 1.1rem;
+}
+.caret {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.95rem;
+  background: var(--a);
+  animation: blink 1s steps(2, jump-none) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Angela: the heartbeat, the tick and Tetra. */
+.beat {
+  position: absolute;
+  left: 0;
+  bottom: 0.4rem;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  overflow: visible;
+}
+.beatLine,
+.beatBase {
+  fill: none;
+  stroke: var(--a);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.beatBase {
+  opacity: 0.22;
+}
+.beatLine {
+  stroke-dasharray: 0.22 1;
+  stroke-dashoffset: 0.22;
+  animation: pulse 2.6s linear infinite;
+}
+@keyframes pulse {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+.tick {
+  position: absolute;
+  right: 2rem;
+  top: 5.6rem;
+  margin: 0;
+  font: 500 0.78rem/1 var(--font-mono);
+  letter-spacing: 0.3em;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+.tetra {
+  position: absolute;
+  right: clamp(1rem, 5vw, 5rem);
+  bottom: 6.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+.tetraFace {
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0.5rem 1.4rem rgb(226 58 146 / 0.32);
+  cursor: pointer;
+  animation: bob 3.6s ease-in-out infinite;
+  transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.tetraFace:hover {
+  transform: scale(1.12) rotate(-4deg);
+}
+.tetraFace:active {
+  transform: scale(0.94);
+}
+@keyframes bob {
+  50% {
+    translate: 0 -0.7rem;
+  }
+}
+.bubble {
+  margin: 0;
+  max-width: 17rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 1.1rem 1.1rem 0.2rem 1.1rem;
+  background: #fff;
+  color: var(--ink);
+  font: 500 0.9rem/1.35 var(--font-sans);
+  box-shadow: 0 0.4rem 1.2rem rgb(42 20 34 / 0.12);
+  transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.bubble[data-on="true"] {
+  transform: scale(1.04);
+}
+
+/* The words. */
+.text {
+  position: absolute;
+  left: clamp(1.2rem, 4vw, 4.5rem);
+  right: clamp(1.2rem, 4vw, 4.5rem);
+  bottom: clamp(3rem, 8vh, 6rem);
+  pointer-events: none;
+}
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 0.4rem;
+  font: 600 0.74rem/1.2 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.hero[data-who="ruby"] .eyebrow {
+  color: var(--a);
+}
+.hero[data-who="angela"] .eyebrow {
+  color: var(--ink);
+}
+
+.name {
+  display: flex;
+  margin: 0;
+  overflow: hidden;
+  padding-top: 0.04em;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(5.4rem, 19vw, 18rem);
+  line-height: 0.84;
+  letter-spacing: -0.01em;
+}
+.hero[data-who="ruby"] .name {
+  color: var(--paper);
+}
+.hero[data-who="angela"] .name {
+  color: var(--a);
+}
+.letter {
+  display: inline-block;
+  animation: rise 0.95s cubic-bezier(0.16, 0.9, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 80ms + 260ms);
+}
+@keyframes rise {
+  from {
+    transform: translateY(104%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.jp {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.1rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.romaji {
+  font: 500 0.78rem/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.tagline {
+  max-width: 34rem;
+  margin: 0.7rem 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.25;
+}
+.hero[data-who="angela"] .tagline,
+.hero[data-who="angela"] .jp {
+  color: var(--ink);
+}
+.hint {
+  margin: 1.1rem 0 0;
+  font: 500 0.7rem/1.4 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.hero[data-who="angela"] .hint {
+  color: var(--ink);
+}
+
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  translate: -50% 0;
+  font: 600 0.62rem/1 var(--font-mono);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.hero[data-who="angela"] .cue {
+  color: var(--ink);
+}
+.cueLine {
+  width: 1px;
+  height: 1.6rem;
+  background: currentColor;
+  transform-origin: top;
+  animation: cue 2.2s ease-in-out infinite;
+}
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  60% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  .terminal {
+    display: none;
+  }
+  .tick,
+  .cue {
+    display: none;
+  }
+  .tetra {
+    bottom: 12rem;
+  }
+  .stage {
+    cursor: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art,
+  .letter,
+  .scan,
+  .caret,
+  .beatLine,
+  .tetraFace,
+  .cueLine,
+  .mark {
+    animation: none;
+  }
+  .art {
+    transform: scale(1.04);
+  }
+}

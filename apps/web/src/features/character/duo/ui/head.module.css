@@ -1,0 +1,80 @@
+.head {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 62rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0;
+  font: 600 0.74rem/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--a);
+}
+.index {
+  font-variant-numeric: tabular-nums;
+}
+.rule {
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 7.4vw, 6.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.lede {
+  max-width: 38rem;
+  margin: 0;
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.55;
+  color: var(--paper-dim);
+}
+
+/* The reveal: written by `useReveal` (data-armed, then data-in). */
+.head[data-armed="true"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.4rem);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.head[data-armed="true"] [data-reveal]:nth-child(2) {
+  transition-delay: 0.08s;
+}
+.head[data-armed="true"] [data-reveal]:nth-child(3) {
+  transition-delay: 0.16s;
+}
+.head[data-in="true"] [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+.head[data-armed="true"] .rule {
+  transform: scaleX(0);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+}
+.head[data-in="true"] .rule {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .head[data-armed="true"] [data-reveal],
+  .head[data-armed="true"] .rule {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
