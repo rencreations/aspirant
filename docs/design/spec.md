@@ -150,7 +150,7 @@ An archive terminal. Filters: Films, Music, Comics, Art, Fan art, Voice. Items s
 - Tailwind v4 tokens plus hand-written CSS modules for the HUD and frames. shadcn components only where useful (tooltip, dialog).
 - Three.js via React Three Fiber and drei; postprocessing for bloom and distortion. GSAP and ScrollTrigger; Lenis; Motion for UI. Zustand for global state (audio, cursor, entry state).
 - Fonts: self-hosted through `@fontsource` packages (no network at build). Display: Big Shoulders Display. Narration: Instrument Serif. HUD labels: JetBrains Mono. Body: Hanken Grotesk. Japanese text uses the system CJK fallback.
-- **Base path.** The repo is a GitHub project page, so production is served under `/aspirant`. Every URL that is not a Next route (video, audio, image, JSON, GLB, texture) MUST go through the `asset()` helper in `src/lib/asset.ts`, which prefixes `NEXT_PUBLIC_BASE_PATH`. Never hardcode `/media/...`.
+- **Base path.** Production is served from the custom domain https://aspirant.cc, a domain root, so the base path is empty (it was `/aspirant` while the site was a GitHub project page). Every URL that is not a Next route (video, audio, image, JSON, GLB, texture) MUST go through the `asset()` helper in `src/lib/asset.ts`, which prefixes `NEXT_PUBLIC_BASE_PATH`. Never hardcode `/media/...`.
 - Dev runs on `http://localhost:3000` with no base path.
 - Heavy scenes load with `next/dynamic` (`ssr: false`), pause when off screen, cap device pixel ratio at 1.75, and drop particle counts on small screens and `prefers-reduced-motion`.
 - All story and character content lives in typed local data under `src/content` and `public/data`. No network calls at runtime.
@@ -200,7 +200,7 @@ Originals (`D:\ren\aspirant`) are never copied into the repo. The pipeline reads
 
 ## 10. Deploy and workflow
 
-- Static export, GitHub Actions to GitHub Pages (`.github/workflows/pages.yml`). The workflow defaults `BASE_PATH` to `/aspirant` and asks `configure-pages` to enable Pages.
+- Static export, GitHub Actions to GitHub Pages (`.github/workflows/pages.yml`). The workflow leaves `BASE_PATH` empty, sets `NEXT_PUBLIC_SITE_URL` to https://aspirant.cc and asks `configure-pages` to enable Pages.
 - Conventional commits. No AI or tool named as author or co-author in commits, PRs, docs or file headers.
 - Commit and push to `main` at each milestone. The first push proves the deploy path with a thin slice (loader, Home skeleton, one character page).
 - `pnpm check` must pass before each push where feasible (format, typecheck, lint, tests, knip).

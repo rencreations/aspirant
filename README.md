@@ -36,7 +36,7 @@ pnpm dev            # http://localhost:3000
 | `node scripts/content/build-story.mjs` | Rebuild the story JSON from `short-v2.md`                          |
 | `node scripts/qa/scan-text.mjs`        | Scan for dashes and banned words in shipped text                   |
 
-Production is served from `/aspirant` (a GitHub project page). Build it with `BASE_PATH=/aspirant pnpm build`. In Git Bash prefix `MSYS_NO_PATHCONV=1`. Every URL that is not a Next route goes through `asset()` in `apps/web/src/lib/asset.ts`, which adds the base path.
+Production is served from the custom domain https://aspirant.cc (GitHub Pages), a domain root, so the base path is empty and a plain `pnpm build` is the production build. If the site is ever served from a sub-path again, build with `BASE_PATH=/sub-path pnpm build` (in Git Bash prefix `MSYS_NO_PATHCONV=1`). Every URL that is not a Next route goes through `asset()` in `apps/web/src/lib/asset.ts`, which adds the base path.
 
 ## Layout
 

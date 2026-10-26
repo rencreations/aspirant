@@ -12,7 +12,7 @@ You build one part of "The Aspirants", a static, immersive, Awwwards-level site.
 
 - You work in your own git worktree on your own branch. Run `pnpm install` once at the start (fast, uses the shared store).
 - Run a private dev server: `NEXT_DIST_DIR=.next-<name> pnpm --filter @aspirant/web exec next dev -p <your port>`. Never use port 3000 (the owner's preview). Stop your servers when done.
-- In Git Bash use `MSYS_NO_PATHCONV=1` when setting `BASE_PATH=/aspirant`.
+- The production site is a domain root (https://aspirant.cc), so the base path is empty. To test a sub-path build in Git Bash use `MSYS_NO_PATHCONV=1` when setting `BASE_PATH=/aspirant`.
 - Playwright Chromium is installed or install it with `pnpm --filter @aspirant/web exec playwright install chromium`. Take screenshots into the scratchpad dir given in your task and LOOK at them with the Read tool. Be self-critical. Iterate until it is beautiful, not merely working.
 - Commit your work on your branch with conventional commit messages (`feat(home): ...`). No AI or tool is named as author or co-author anywhere. Do not push. Do not merge. Commit often, at least after every major piece.
 
@@ -28,7 +28,7 @@ Only the paths named in your task. Shared code (`components/`, `lib/`, `styles/`
 ## Quality bar (hard gates)
 
 - `pnpm check` passes (format, typecheck, lint, tests, knip) in your worktree before your final commit. Fix knip by deleting unused code, not by ignoring.
-- `pnpm build` passes, and `MSYS_NO_PATHCONV=1 BASE_PATH=/aspirant pnpm build` has all assets prefixed.
+- `pnpm build` passes, and `MSYS_NO_PATHCONV=1 BASE_PATH=/aspirant pnpm build` (the sub-path check) has all assets prefixed.
 - e2e: add or extend a Playwright spec in `apps/web/e2e/` for your routes (phone 390x844, tablet 820x1180, desktop 1440x900): loads, one `h1`, no console errors, no horizontal overflow, your key interactions work, axe has no serious or critical violations.
 - Accessibility: every hover effect has tap and keyboard equivalents; all controls named; `prefers-reduced-motion` and the site's Reduce motion toggle respected (no particles, no pinning, no parallax; crossfades only; content and interaction still work); no focus traps except modals; touch targets 44 px.
 - Responsive: design and CHECK at 320, 390, 768, 1024, 1440, 1920, 2560x1080 (21:9), 3440x1440, plus landscape phone 844x390 and tall 390x844. No horizontal scroll, no overlapped HUD, nothing clipped. Use `dvh`, safe-area insets.

@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
 # One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
-# This repo is a project page (https://rencreations.github.io/aspirant), so BASE_PATH defaults to
-# /aspirant. For a custom domain or an org site, set the repository variable BASE_PATH to the path
-# you need (an empty variable falls back to the default).
+# The site is served from the custom domain https://aspirant.cc (set in Settings -> Pages), which is
+# a domain root, so BASE_PATH is empty. Only set the repository variable BASE_PATH if the site is
+# ever served from a sub-path again (for example the project page /aspirant). SITE_URL defaults to
+# the custom domain and is used for metadata, the sitemap and robots.txt.
 
 on:
   push:
@@ -35,8 +36,8 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          BASE_PATH: ${{ vars.BASE_PATH || '/aspirant' }}
-          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || steps.pages.outputs.origin }}
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || 'https://aspirant.cc' }}
       - name: Ensure .nojekyll (serve the _next directory)
         run: touch apps/web/out/.nojekyll
       - uses: actions/upload-pages-artifact@v3
