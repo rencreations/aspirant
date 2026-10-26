@@ -25,6 +25,7 @@ import {
   obsidiaVoicePath,
   trailerItem as obsidiaTrailerItem,
 } from "@/features/character/obsidia/media";
+import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinevere/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import {
   chunkItem,
@@ -185,6 +186,15 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...shared,
         ...vexanaFirstPaint(),
         ...vexanaLater().flatMap((g) => later(null, g.priority, g.items)),
+      ];
+    }
+    if (slug === "guinevere") {
+      // One long page and two story pages: the same first paint, everything else in the
+      // background (see `features/character/guinevere/preload-items.ts`).
+      return [
+        ...shared,
+        ...guinevereFirstPaint(),
+        ...guinevereLater().flatMap((g) => later(null, g.priority, g.items)),
       ];
     }
     if (isSlug(slug)) {

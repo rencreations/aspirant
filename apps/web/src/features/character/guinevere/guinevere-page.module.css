@@ -1,0 +1,50 @@
+/*
+ * The page is one column of sections. Where one section gives way to the next, the layout does it
+ * (see `seams/`): a section holds its last screen, and what follows overlaps the hold by the same
+ * length, so plain scrolling lays it over, or opens a pair of doors on it, with no gap.
+ */
+.page {
+  --lvh: 100vh;
+  overflow-x: clip;
+}
+
+@supports (height: 100lvh) {
+  .page {
+    --lvh: 100lvh;
+  }
+}
+
+/* The registry rises over the held screen of the opening, with a thin rim of light and a shadow. */
+.aboutHold {
+  margin-top: calc(-1 * var(--lvh));
+}
+
+/* The rim and the shadow, above the top edge only: a box-shadow would also spill out under the
+   bottom of the box and cross the film as a hard-edged dark band while the page scrolled past. */
+.aboutHold::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 130px;
+  pointer-events: none;
+  background: linear-gradient(to top, rgb(12 7 3 / 0.6), rgb(12 7 3 / 0.28) 30%, rgb(12 7 3 / 0));
+  border-bottom: 2px solid rgb(245 204 169 / 55%);
+}
+
+/* A section far from the screen (see seams/offscreen-pause.tsx) runs none of its CSS animations: a
+   running animation makes the browser work out the styles of its element on every frame. */
+.page :global([data-vx-off]),
+.page :global([data-vx-off]) *,
+.page :global([data-vx-off]) *::before,
+.page :global([data-vx-off]) *::after {
+  animation-play-state: paused !important;
+}
+
+/* The interlude's door gate: the held box is a tall transparent one that lies over the pair of faces
+   while the interlude rises over it. Only the panel takes the pointer (`.cover` in cover.module.css),
+   so the box (the second child of the gate's wrapper) must not either. */
+.coverGate > :nth-child(2) {
+  pointer-events: none;
+}

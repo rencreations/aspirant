@@ -1,0 +1,673 @@
+/*
+ * Craft: a screen that shows the game's footage of the open skill, a dock of keys under it, and a
+ * plate with the detail beside it. Dark, with the colour of the open skill (--sk) carried through
+ * the frame, the key and the name. Everything that moves is transform and opacity.
+ */
+
+.skills {
+  --sk: #f5cca9;
+  --sk-ink: #150d07;
+  --sk-ink-2: #291a0d;
+  --sk-text: #faf0e8;
+  --sk-dim: #dfcec1;
+  --sk-line: rgb(250 240 232 / 16%);
+  --sk-violet: #f5cca9;
+  --sk-magenta: #f28e8b;
+  --ease: cubic-bezier(0.35, 0, 0, 1);
+
+  position: relative;
+  isolation: isolate;
+  padding: 16vh 0 14vh;
+  overflow-x: clip;
+  background: var(--sk-ink);
+  color: var(--sk-text);
+  font-family: var(--font-body-stack);
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(46% 38% at 28% 46%, rgb(215 153 101 / 24%), transparent 70%),
+    radial-gradient(40% 32% at 82% 62%, rgb(224 92 87 / 12%), transparent 70%);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ head */
+
+.head {
+  padding: 0 max(6vw, 28px);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin: 0 0 2vh;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+.eyebrowNo {
+  color: var(--sk-magenta);
+}
+
+.eyebrowBar {
+  width: 3.4em;
+  height: 1px;
+  background: currentcolor;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: clamp(4rem, 12vw, 13rem);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+}
+
+.title em {
+  font-family: var(--font-serif-stack);
+  font-size: 0.82em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--sk-violet);
+}
+
+/* --------------------------------------------------------------- console */
+
+.console {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(20px, 3vw, 48px);
+  margin-top: 8vh;
+  padding: 0 max(6vw, 28px);
+}
+
+.left {
+  display: grid;
+  gap: clamp(14px, 1.6vw, 22px);
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- screen */
+
+.screen {
+  position: relative;
+  aspect-ratio: 12 / 5;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sk) 55%, transparent);
+  border-radius: 6px;
+  background: #0b0703;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 40%),
+    0 30px 80px -30px color-mix(in srgb, var(--sk) 55%, transparent);
+  transition:
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+
+.clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+
+.clip[data-on="true"] {
+  opacity: 1;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(11 7 3 / 55%), transparent 26%),
+    linear-gradient(0deg, rgb(11 7 3 / 62%), transparent 30%);
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--sk);
+  opacity: 0.9;
+  pointer-events: none;
+  transition: border-color 0.5s var(--ease);
+}
+
+.corner[data-at="tl"] {
+  top: 10px;
+  left: 10px;
+  border-width: 2px 0 0 2px;
+}
+
+.corner[data-at="tr"] {
+  top: 10px;
+  right: 10px;
+  border-width: 2px 2px 0 0;
+}
+
+.corner[data-at="bl"] {
+  bottom: 10px;
+  left: 10px;
+  border-width: 0 0 2px 2px;
+}
+
+.corner[data-at="br"] {
+  right: 10px;
+  bottom: 10px;
+  border-width: 0 2px 2px 0;
+}
+
+/* A bright bar crosses the screen when a skill is opened. */
+.sweep {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 22%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--sk) 38%, white 6%),
+    transparent
+  );
+  opacity: 0;
+  transform: translateX(-120%);
+  pointer-events: none;
+  animation: sweep 0.7s var(--ease) 1;
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0.9;
+    transform: translateX(-120%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(520%);
+  }
+}
+
+.tag {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.tag img {
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--sk);
+}
+
+.toggle {
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px 8px 11px;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 999px;
+  background: rgb(18 11 5 / 62%);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+
+.toggle:hover {
+  border-color: var(--sk);
+  background: rgb(18 11 5 / 82%);
+}
+
+/* The pause and play marks are two bars that become a triangle: only the shape changes. */
+.toggleIcon {
+  position: relative;
+  width: 11px;
+  height: 11px;
+}
+
+.toggleIcon::before,
+.toggleIcon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 3.5px;
+  height: 11px;
+  border-radius: 1px;
+  background: currentcolor;
+}
+
+.toggleIcon::before {
+  left: 0.5px;
+}
+
+.toggleIcon::after {
+  right: 0.5px;
+}
+
+.toggleIcon[data-on="false"]::before {
+  left: 1px;
+  width: 9px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  background: currentcolor;
+}
+
+.toggleIcon[data-on="false"]::after {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ dock */
+
+.dock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 14px);
+}
+
+.key {
+  --tone: #f5cca9;
+
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 14px 14px 13px;
+  border: 1px solid var(--sk-line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 3.5%);
+  color: var(--sk-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.4s var(--ease),
+    border-color 0.4s var(--ease),
+    background-color 0.4s var(--ease);
+}
+
+.key:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--tone) 60%, transparent);
+}
+
+.key[aria-selected="true"] {
+  transform: translateY(-6px);
+  border-color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 16%, rgb(21 13 7));
+}
+
+/* A bar under the open key. */
+.key::after {
+  content: "";
+  position: absolute;
+  inset: auto 14px -1px;
+  height: 2px;
+  background: var(--tone);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease);
+}
+
+.key[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.keyIcon {
+  position: relative;
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+}
+
+.keyIcon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--tone) 70%, transparent);
+}
+
+/* The recast sits on the same key, small, at the corner of the icon. */
+.keyIcon .keyAlt {
+  position: absolute;
+  right: -14px;
+  bottom: -6px;
+  width: 26px;
+  height: 26px;
+  box-shadow:
+    0 0 0 2px var(--sk-ink-2),
+    0 0 0 3.5px color-mix(in srgb, var(--tone) 80%, transparent);
+}
+
+.keySlot {
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+.keyName {
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.05rem, 1.35vw, 1.4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------- plate */
+
+.plateBox {
+  position: relative;
+  min-width: 0;
+  min-height: 420px;
+}
+
+/* The plate fills the box and scrolls inside it, so every skill has the same height. */
+.plate {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sk) transparent;
+  padding: clamp(18px, 2vw, 30px);
+  border: 1px solid color-mix(in srgb, var(--sk) 35%, var(--sk-line));
+  border-radius: 8px;
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1.5%)), var(--sk-ink);
+  animation: rise 0.55s var(--ease) 1;
+}
+
+.plate::-webkit-scrollbar {
+  width: 6px;
+}
+
+.plate::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--sk) 70%, transparent);
+}
+
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.slot {
+  margin-right: 6px;
+  color: var(--sk);
+}
+
+.chip {
+  padding: 4px 10px;
+  border: 1px solid var(--sk-line);
+  border-radius: 999px;
+  color: var(--sk-dim);
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: clamp(2.2rem, 3.6vw, 3.8rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--sk) 55%, white);
+}
+
+.copy {
+  margin-top: 18px;
+  animation: rise 0.5s var(--ease) 1;
+}
+
+.copy p {
+  margin: 0 0 0.8em;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.1rem, 1.35vw, 1.4rem);
+  line-height: 1.4;
+  color: var(--sk-text);
+}
+
+.terms {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--sk-line);
+  border-radius: 6px;
+}
+
+.terms dt {
+  margin-bottom: 8px;
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+.terms dd {
+  margin: 0 0 6px;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--sk-text);
+}
+
+.terms dd b {
+  margin-right: 8px;
+  font-weight: 600;
+  color: var(--sk);
+}
+
+.scaling {
+  margin: 20px 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+.tableWrap {
+  margin-top: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: var(--sk) transparent;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+}
+
+.table th,
+.table td {
+  padding: 8px 9px;
+  border-bottom: 1px solid var(--sk-line);
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.table thead th {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+.table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding-left: 0;
+  background: #191009;
+  text-align: left;
+  color: var(--sk-dim);
+}
+
+.table tbody td {
+  color: var(--sk-text);
+}
+
+.notes {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notes li {
+  position: relative;
+  margin: 0 0 7px;
+  padding-left: 16px;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--sk-dim);
+}
+
+.notes li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sk);
+}
+
+.credit {
+  margin: 6vh 0 0;
+  padding: 0 max(6vw, 28px);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-dim);
+}
+
+/* --------------------------------------------------------------- focus */
+
+.key:focus-visible,
+.toggle:focus-visible,
+.plate:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------- narrower */
+
+@media (max-width: 1000px) {
+  .console {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plateBox {
+    min-height: 0;
+    height: min(68vh, 560px);
+  }
+}
+
+@media (max-width: 640px) {
+  .skills {
+    padding: 12vh 0 10vh;
+  }
+
+  .screen {
+    aspect-ratio: 16 / 9;
+  }
+
+  .tag {
+    top: 12px;
+    left: 14px;
+  }
+
+  .toggle {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .dock {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .key[aria-selected="true"] {
+    transform: translateY(-3px);
+  }
+
+  .keyIcon .keyAlt {
+    right: -10px;
+  }
+
+  .plateBox {
+    min-height: 0;
+    height: min(72vh, 580px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep {
+    display: none;
+  }
+
+  .plate {
+    animation: none;
+  }
+
+  .clip,
+  .key,
+  .key::after,
+  .screen {
+    transition: none;
+  }
+}

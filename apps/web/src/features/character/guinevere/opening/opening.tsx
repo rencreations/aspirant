@@ -1,0 +1,409 @@
+"use client";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useRef, type CSSProperties } from "react";
+
+import { StarGlyph } from "@/components/star-glyph";
+import { asset } from "@/lib/asset";
+import { useReducedMotion } from "@/lib/hooks";
+import { startGovernor } from "@/lib/perf";
+
+import { videoFile, videoPoster } from "../media";
+import { MARQUEE, STATEMENT, STATEMENT_PLAIN, type Part } from "./copy";
+import { HeroPhoto } from "./hero-photo";
+import {
+  easeOut,
+  faceOf,
+  openingState,
+  seg,
+  type Measure,
+} from "../../vexana/opening/opening-math";
+import styles from "./opening.module.css";
+import { SignatureSvg } from "./signature";
+import { useSignature } from "./use-signature";
+
+if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
+
+const TOKENS = {
+  "--vx-primary": "#d9342b",
+  "--vx-pink": "#ff9db8",
+  "--vx-lav": "#f6b98a",
+  "--vx-ink": "#24110e",
+  "--vx-paper": "#fff6ec",
+  "--vx-bone": "#ffe9d6",
+} as CSSProperties;
+
+/** The first light of day, and the same page after dark (the hand-over turns the one into the other). */
+const BACKGROUND_CSS = {
+  light:
+    "radial-gradient(46% 60% at 50% 38%, #ffe3c4 0%, transparent 72%), radial-gradient(60% 50% at 82% 78%, #ffd9cf 0%, transparent 70%), radial-gradient(50% 45% at 12% 30%, #fff0d8 0%, transparent 70%), #fff6ec",
+  dark: "radial-gradient(60% 50% at 80% 70%, #3b1c14 0%, transparent 70%), #24110e",
+} as const;
+
+/** Writes a style only when it changed, so a scroll frame touches only what moved. */
+const written = new WeakMap<HTMLElement, Record<string, string>>();
+function put(el: HTMLElement | null, prop: "transform" | "opacity" | "visibility", v: string) {
+  if (!el) return;
+  const seen = written.get(el) ?? {};
+  if (seen[prop] === v) return;
+  seen[prop] = v;
+  written.set(el, seen);
+  el.style[prop] = v;
+}
+
+function Words({ parts }: { parts: readonly Part[] }) {
+  return parts.map((p, i) =>
+    p.mark ? (
+      <em key={i} className={styles.mark}>
+        {p.text}
+      </em>
+    ) : (
+      <span key={i}>{p.text}</span>
+    ),
+  );
+}
+
+function NameCard() {
+  return (
+    <div className={styles.nameCard}>
+      <div className={styles.nameRow}>
+        <span className={styles.eyebrow}>Aspirant of Selrick Academy</span>
+        <h1 className={styles.name}>Guinevere</h1>
+      </div>
+      <span className={styles.title}>Daybreak Halo</span>
+    </div>
+  );
+}
+
+function Statement({ setLine }: { setLine?: (i: number) => (el: HTMLElement | null) => void }) {
+  return (
+    <div className={styles.statement}>
+      <p className={styles.srOnly}>{STATEMENT_PLAIN}</p>
+      <div aria-hidden="true">
+        {STATEMENT.map((parts, i) => (
+          <span key={i} className={styles.line}>
+            <span ref={setLine?.(i)} className={styles.lineIn}>
+              <Words parts={parts} />
+              {i === STATEMENT.length - 1 ? <i className={styles.caret} /> : null}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | null) => void }) {
+  return (
+    <div className={styles.marquee} aria-hidden="true">
+      {MARQUEE.map((parts, i) => (
+        <div key={i} ref={setRow?.(i)} className={styles.row}>
+          {[0, 1, 2].map((n) => (
+            <span key={n} className={styles.rowItem}>
+              <Words parts={parts} />
+              <StarGlyph className={styles.rowStar} />
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * The opening of Guinevere's page: the hero (one photo of her that answers the pointer, see
+ * `hero-photo.tsx`),
+ * the hand-over (the screen closes into a card and the page goes dark), and the signature with
+ * her message. One tall track holds a sticky screen; the scroll position drives everything with
+ * transforms and opacity only. See `opening-math.ts` for the timeline.
+ *
+ * With reduced motion the same pieces are laid out in a plain column, nothing pinned.
+ */
+export function Opening() {
+  const reduced = useReducedMotion();
+
+  const toneRef = useRef(0);
+  const activeRef = useRef(true);
+  const alwaysActive = useRef(true);
+  const staticRef = useRef<HTMLDivElement>(null);
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dimRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const tintRef = useRef<HTMLDivElement>(null);
+  const domDarkRef = useRef<HTMLDivElement>(null);
+  const uiRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const rows = useRef<Array<HTMLElement | null>>([]);
+  const lines = useRef<Array<HTMLElement | null>>([]);
+  const statementRef = useRef<HTMLDivElement>(null);
+  const signature = useSignature();
+
+  const setRow = useCallback(
+    (i: number) => (el: HTMLElement | null) => {
+      rows.current[i] = el;
+    },
+    [],
+  );
+  const setLine = useCallback(
+    (i: number) => (el: HTMLElement | null) => {
+      lines.current[i] = el;
+    },
+    [],
+  );
+
+  // The scene does not depend on the performance level: that level is a guess that is often wrong
+  // (a busy page, a level remembered from another page), and the scene looks after itself (it gives
+  // up pixels and noise first when frames are slow). Only reduced motion, data saving and very
+  // little memory keep the flat version.
+  //
+  // A level that was dropped and remembered can come back: this page looks for a step up while the
+  // hero is on screen (it never steps down on its own; the room at the bottom judges frames only
+  // while it is shown).
+  useEffect(
+    () =>
+      startGovernor({
+        raiseOnly: true,
+        paused: () => document.hidden || !activeRef.current,
+      }),
+    [],
+  );
+
+  // The scroll: one trigger over the whole track.
+  useEffect(() => {
+    const track = trackRef.current;
+    const pin = pinRef.current;
+    const card = cardRef.current;
+    if (reduced || !track || !pin || !card) return;
+    const measure: Measure = { vw: 1, vh: 1, cardW: 1, cardH: 1 };
+    let signed = false;
+    let shimmerOn = true;
+    let videoSrc = false;
+    // The nav reads this to colour its top-right text: light page behind it, or ink (set on change).
+    const section = track.closest<HTMLElement>("section");
+    let toneName = "";
+    let progress = 0;
+
+    const read = () => {
+      measure.vw = pin.clientWidth;
+      measure.vh = pin.clientHeight;
+      measure.cardW = card.offsetWidth;
+      measure.cardH = card.offsetHeight;
+      const face = faceOf(measure.vw, measure.vh);
+      if (innerRef.current) {
+        innerRef.current.style.transformOrigin = `${face.x * 100}% ${face.y * 100}%`;
+      }
+    };
+
+    const apply = (p: number) => {
+      progress = p;
+      const s = openingState(p, measure);
+      put(frameRef.current, "transform", `scale(${s.frameSx},${s.frameSy})`);
+      put(frameRef.current, "opacity", String(s.frameOpacity));
+      put(frameRef.current, "visibility", s.frameOpacity < 0.01 ? "hidden" : "visible");
+      put(
+        innerRef.current,
+        "transform",
+        `translate(${s.innerTx}px,${s.innerTy}px) scale(${s.innerSx},${s.innerSy})`,
+      );
+      put(tintRef.current, "opacity", String(Math.min(1, s.tone * 1.4)));
+      put(domDarkRef.current, "opacity", String(s.tone));
+      put(uiRef.current, "opacity", String(s.uiOpacity));
+      put(uiRef.current, "visibility", s.uiOpacity < 0.02 ? "hidden" : "visible");
+
+      put(cardRef.current, "opacity", String(s.cardOpacity));
+      put(cardRef.current, "visibility", s.cardOpacity < 0.01 ? "hidden" : "visible");
+      put(labelRef.current, "opacity", String(s.cardOpacity));
+      put(marqueeRef.current, "opacity", String(s.marqueeOpacity));
+      put(marqueeRef.current, "visibility", s.marqueeOpacity < 0.01 ? "hidden" : "visible");
+      rows.current.forEach((row, i) => {
+        const dir = i % 2 === 0 ? 1 : -1;
+        const x = (0.45 - s.marqueeT * 1.55) * measure.vw * dir - (dir < 0 ? measure.vw * 0.3 : 0);
+        put(row, "transform", `translate3d(${x}px,0,0)`);
+      });
+
+      const visible = s.statement > 0.001;
+      put(statementRef.current, "visibility", visible ? "visible" : "hidden");
+      lines.current.forEach((line, i) => {
+        const t = easeOut(seg(s.statement, i * 0.12, i * 0.12 + 0.32));
+        put(line, "transform", `translate3d(0,${(1 - t) * 112}%,0)`);
+      });
+
+      toneRef.current = s.tone;
+      const nextTone = s.tone > 0.55 ? "dark" : "light";
+      if (nextTone !== toneName) {
+        toneName = nextTone;
+        section?.setAttribute("data-vx-tone", nextTone);
+      }
+      activeRef.current = s.glActive;
+
+      const video = videoRef.current;
+      if (video) {
+        if (!videoSrc && p > 0.1) {
+          videoSrc = true;
+          video.src = asset(videoFile("splash-short"));
+        }
+        if (s.videoOn && video.paused && videoSrc) void video.play().catch(() => undefined);
+        else if (!s.videoOn && !video.paused) video.pause();
+      }
+
+      if (s.signed && !signed) {
+        signed = true;
+        shimmerOn = true;
+        signature.play();
+      } else if (!s.signed && signed && p < 0.34) {
+        signed = false;
+        signature.reset();
+      }
+      // The band of light rests while the signature is off screen.
+      const showing = p < 0.76;
+      if (showing !== shimmerOn) {
+        shimmerOn = showing;
+        signature.setVisible(showing);
+      }
+    };
+
+    const trigger = ScrollTrigger.create({
+      trigger: track,
+      start: "top top",
+      // The last screen of the track belongs to the section that rises over it.
+      end: "bottom bottom+=100%",
+      onUpdate: (self) => {
+        apply(self.progress);
+      },
+      onRefresh: (self) => {
+        read();
+        apply(self.progress);
+      },
+    });
+    // While the next section rises over the held screen, the screen steps back and darkens.
+    const dim = dimRef.current;
+    const cover = ScrollTrigger.create({
+      trigger: track,
+      start: "bottom bottom+=100%",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        const e = self.progress * self.progress * (3 - 2 * self.progress);
+        put(pin, "transform", `scale(${1 - 0.06 * e})`);
+        put(dim, "opacity", String(0.7 * e));
+      },
+    });
+    read();
+    apply(trigger.progress);
+    const onResize = () => {
+      read();
+      apply(progress);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      trigger.kill();
+      cover.kill();
+      signature.reset();
+    };
+  }, [reduced, signature]);
+
+  const flat = (
+    <>
+      <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
+      <div
+        ref={domDarkRef}
+        className={styles.dBg}
+        style={{ background: BACKGROUND_CSS.dark, opacity: 0 }}
+      />
+      <HeroPhoto host={pinRef} active={activeRef} reduced={false} />
+    </>
+  );
+
+  if (reduced) {
+    return (
+      <section id="opening" className={styles.opening} style={TOKENS} data-static="true">
+        <div ref={staticRef} className={styles.staticHero}>
+          <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
+          <div className={styles.staticFigure}>
+            <HeroPhoto host={staticRef} active={alwaysActive} reduced />
+          </div>
+          <NameCard />
+        </div>
+        <div className={styles.staticSign}>
+          <p className={styles.label}>
+            <StarGlyph className={styles.labelStar} /> A message from Guin
+          </p>
+          <div className={styles.staticCard}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={asset(videoPoster("splash-short"))} alt="" />
+            <SignatureSvg done />
+          </div>
+          <Statement />
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section id="opening" className={styles.opening} style={TOKENS}>
+      <div ref={trackRef} className={styles.track}>
+        <div ref={pinRef} className={styles.pin}>
+          <div ref={tintRef} className={styles.tint} />
+
+          <div ref={marqueeRef} className={styles.marqueeWrap}>
+            <MarqueeRows setRow={setRow} />
+          </div>
+
+          <div ref={frameRef} className={styles.frame}>
+            <div ref={innerRef} className={styles.inner}>
+              <div className={styles.flat}>{flat}</div>
+            </div>
+          </div>
+
+          <div ref={cardRef} className={styles.card}>
+            <video
+              ref={videoRef}
+              className={styles.cardVideo}
+              poster={asset(videoPoster("splash-short"))}
+              muted
+              loop
+              playsInline
+              preload="none"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+            <div className={styles.cardShade} />
+          </div>
+          <div ref={labelRef} className={styles.labelWrap}>
+            <p className={styles.label}>
+              <StarGlyph className={styles.labelStar} /> A message from Guin
+            </p>
+            <div className={styles.signWrap}>
+              <SignatureSvg reg={signature.reg} />
+            </div>
+          </div>
+
+          <div ref={statementRef} className={styles.statementWrap}>
+            <Statement setLine={setLine} />
+          </div>
+
+          <div ref={dimRef} className={styles.coverDim} />
+
+          <div ref={uiRef} className={styles.ui}>
+            <NameCard />
+            <div className={styles.jp} aria-hidden="true">
+              <StarGlyph className={styles.jpStar} />
+              <span lang="ja">グィネヴィア</span>
+            </div>
+            <div className={styles.cue} aria-hidden="true">
+              <span>Scroll</span>
+              <i />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -9,9 +9,9 @@ import { CHARACTER_SLUGS } from "@/lib/slugs";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  // Selena, Obsidia and Vexana have their own route folders (a page and its three pages share a layout).
+  // Selena, Obsidia, Vexana and Guinevere have their own route folders (a page and its three pages share a layout).
   return CHARACTER_SLUGS.filter(
-    (slug) => slug !== "selena" && slug !== "obsidia" && slug !== "vexana",
+    (slug) => slug !== "selena" && slug !== "obsidia" && slug !== "vexana" && slug !== "guinevere",
   ).map((slug) => ({
     slug,
   }));

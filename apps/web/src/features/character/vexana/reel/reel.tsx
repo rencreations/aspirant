@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { createPortal } from "react-dom";
 
 import { PlayerOverlay, type PlayerVideo } from "@/components/video-player/player-overlay";
@@ -11,7 +18,7 @@ import { useReducedMotion } from "@/lib/hooks";
 import { FINAL_SOURCES, videoFile, videoPoster } from "../media";
 import { mayPlay } from "../shared/autoplay";
 import { ReelController } from "./reel-controller";
-import { REEL_COPY } from "./reel-copy";
+import { REEL_COPY, type ReelCopy } from "./reel-copy";
 import styles from "./reel.module.css";
 
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -122,7 +129,18 @@ function PlayWord({ text }: { text: string }) {
  * Phones stack the section and skip the morph and the pin. Reduced motion shows the finished
  * state, still. This is a port of the lab website's reel, without its WebGL layer.
  */
-export function Reel() {
+export function Reel({
+  copy = REEL_COPY,
+  title = FILM.title,
+  tone,
+}: {
+  /** The words of the section (her page gives its own). */
+  copy?: ReelCopy;
+  /** The title the site's player shows. */
+  title?: string;
+  /** Colours of the section (the `--reel-*` properties), when the page has a palette of its own. */
+  tone?: CSSProperties;
+} = {}) {
   const rootRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const controller = useRef<ReelController | null>(null);
@@ -131,7 +149,6 @@ export function Reel() {
   const lenisRef = useRef(lenisApi);
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
-  const copy = REEL_COPY;
 
   useEffect(() => {
     lenisRef.current = lenisApi;
@@ -175,7 +192,13 @@ export function Reel() {
   const longestLine = copy.stripLines.reduce((a, b) => (b.length > a.length ? b : a), "");
 
   return (
-    <section ref={rootRef} id="reel" aria-labelledby="reel-title" className={cx(styles.section)}>
+    <section
+      ref={rootRef}
+      id="reel"
+      aria-labelledby="reel-title"
+      className={cx(styles.section)}
+      style={tone}
+    >
       <svg className={styles.lineSvg} data-reel="line-svg" aria-hidden="true" focusable="false">
         <path className={styles.linePath} data-reel="line-path" pathLength={1} />
       </svg>
@@ -296,7 +319,7 @@ export function Reel() {
 
       {open
         ? createPortal(
-            <PlayerOverlay video={FILM} getOrigin={getOrigin} onClosed={onClosed} />,
+            <PlayerOverlay video={{ ...FILM, title }} getOrigin={getOrigin} onClosed={onClosed} />,
             document.body,
           )
         : null}
