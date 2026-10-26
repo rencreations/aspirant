@@ -119,7 +119,6 @@ VIDEOS = {
     "music": dict(src="C:/Users/muham/Downloads/vex.mov", w=None, crf=21, preset="slow", audio=True, abr="160k", poster=2, tune=None),
     "heart-dance": dict(src="video/heart-short-dance.webm", w=None, crf=26, preset="slow", audio=False, poster=4, tune="animation"),
     "3d-process": dict(src="video/3d-process.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=8, tune="animation"),
-    "interactive-drama": dict(src="video/interactive-drama.webm", w=None, crf=24, preset="slow", audio=True, abr="128k", poster=35, tune="animation"),
 }
 
 # The skin showcase parts: (start, end, kind, window x). `full` cuts a SKIN_W wide window out of the

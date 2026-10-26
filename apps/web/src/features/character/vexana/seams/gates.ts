@@ -24,9 +24,6 @@ function makeStore<T>(initial: T) {
   };
 }
 
-/** The doors of the craft have closed: the pair of faces may arrive. */
-export const facesGate = makeStore(false);
-
 /** The doors in front of the comic are opening: its words and its disc may arrive. */
 export const comicsGate = makeStore(false);
 

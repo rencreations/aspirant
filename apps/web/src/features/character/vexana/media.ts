@@ -60,7 +60,6 @@ export type VideoName =
   | "live-vexana"
   | "heart-dance"
   | "3d-process"
-  | "interactive-drama"
   | "skill-passive"
   | "skill-1"
   | "skill-2"

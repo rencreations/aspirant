@@ -7,6 +7,7 @@ import styles from "./up.module.css";
 import { boundary } from "./gates";
 import { lvh } from "./scroll-kit";
 import { useScrollSnap } from "./snap";
+import { setThresholdProgress } from "./threshold-progress";
 
 interface UpZoneProps {
   /** The boundary in front of this section (the section before it passes the same id to `Gate`). */
@@ -17,6 +18,8 @@ interface UpZoneProps {
   at: number;
   /** False (reduced motion): the section is shown as it is. */
   enabled?: boolean;
+  /** Quiet time, in ms, after which a stop in the stretch snaps. Default: the page's 1500. */
+  idleMs?: number;
   children: ReactNode;
 }
 
@@ -28,7 +31,7 @@ interface UpZoneProps {
  * the scene of the boundary plays again and the page goes back to the last screen of the
  * section before, which has no threshold above it.
  */
-export function UpZone({ id, hold, at, enabled = true, children }: UpZoneProps) {
+export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZoneProps) {
   const root = useRef<HTMLDivElement>(null);
   const stick = useRef<HTMLDivElement>(null);
   const backdrop = useRef<HTMLDivElement>(null);
@@ -72,7 +75,15 @@ export function UpZone({ id, hold, at, enabled = true, children }: UpZoneProps) 
     // Going up, the progress falls from 1 (the first screen of the section) to 0.
     function tick(p: number) {
       const t = state.current;
+      // How far into the threshold the visitor is, going up (the section that shows it reads this).
       if (p > 1 - at + 0.2) t.armed = true;
+      // Nothing is drawn until the visitor has been on the first screen: arriving from above lands in
+      // the threshold, and that is not a way out.
+      setThresholdProgress(
+        id,
+        "up",
+        !t.armed || p >= 1 || p <= 0 || b.busy ? 0 : Math.min(1, (1 - p) / at),
+      );
       if (p <= 1 - at && p > 0 && p < t.last && t.armed && !b.busy) {
         t.armed = false;
         b.play?.("up");
@@ -100,6 +111,7 @@ export function UpZone({ id, hold, at, enabled = true, children }: UpZoneProps) 
     },
     {
       enabled,
+      idleMs,
       onSnap: (side) => {
         if (side !== "end") return false;
         const b = boundary(id);

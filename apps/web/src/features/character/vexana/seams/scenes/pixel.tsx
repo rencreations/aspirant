@@ -39,10 +39,14 @@ export const PixelScene = forwardRef<SceneHandle>(function PixelScene(_, ref) {
         const cols = ctx.level === "full" ? 28 : ctx.level === "balanced" ? 18 : 12;
         const cell = Math.ceil(ctx.vw / cols);
         const rows = Math.ceil(ctx.vh / cell);
-        c.width = cols * cell;
-        c.height = rows * cell;
+        // The squares are big, so the canvas has a quarter of the pixels and is scaled up crisp: a
+        // full-size canvas is a texture of several megabytes sent to the graphics process each frame.
+        const q = 0.5;
+        c.width = Math.ceil(cols * cell * q);
+        c.height = Math.ceil(rows * cell * q);
         c.style.width = `${String(cols * cell)}px`;
         c.style.height = `${String(rows * cell)}px`;
+        g.setTransform(q, 0, 0, q, 0, 0);
         const n = cols * rows;
         const inDelay = new Float32Array(n);
         const outDelay = new Float32Array(n);
@@ -54,7 +58,7 @@ export const PixelScene = forwardRef<SceneHandle>(function PixelScene(_, ref) {
         }
         const state = { cover: 0, reveal: 0 };
         const draw = () => {
-          g.clearRect(0, 0, c.width, c.height);
+          g.clearRect(0, 0, cols * cell, rows * cell);
           for (let i = 0; i < n; i++) {
             const v =
               state.reveal > 0
@@ -84,7 +88,11 @@ export const PixelScene = forwardRef<SceneHandle>(function PixelScene(_, ref) {
       },
       reset() {
         const c = canvas.current;
-        c?.getContext("2d")?.clearRect(0, 0, c.width, c.height);
+        const g = c?.getContext("2d");
+        if (c && g) {
+          g.setTransform(1, 0, 0, 1, 0, 0);
+          g.clearRect(0, 0, c.width, c.height);
+        }
       },
     }),
     [],

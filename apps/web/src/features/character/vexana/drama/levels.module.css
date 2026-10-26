@@ -1,0 +1,314 @@
+/* The level select: the decision tree on the left, what is known of the chosen episode on the right. */
+.levels {
+  --ink: #140e26;
+  --violet: #7a4fd6;
+  --magenta: #e040a0;
+  --lav: #b79cf2;
+  --gold: #f2b04c;
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 28%);
+  gap: 2%;
+  padding: 2.2%;
+  background: rgb(10 6 20 / 0.96);
+  cursor: default;
+}
+
+@container cab (aspect-ratio < 1) {
+  .levels {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 1.4em;
+    padding: 3%;
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.5em;
+  min-width: 0;
+  min-height: 0;
+}
+
+.captions {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 0.88em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(183 156 242 / 0.8);
+}
+
+.captions span {
+  display: block;
+  padding: 0 0.2em;
+  line-height: 1.25;
+}
+
+.captions b {
+  display: block;
+  color: var(--magenta);
+  font-weight: 600;
+}
+
+.graph {
+  position: relative;
+  min-height: 0;
+}
+
+.edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--lav);
+  stroke-width: 1.5;
+}
+
+.edge[data-state="crossed"] {
+  stroke: var(--magenta);
+  stroke-width: 2.2;
+}
+
+.edge[data-state="open"] {
+  stroke-dasharray: 5 5;
+  opacity: 0.6;
+}
+
+.edge[data-state="far"] {
+  stroke-dasharray: 3 6;
+  opacity: 0.2;
+}
+
+.tag {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  padding: 0.1em 0.45em;
+  background: var(--ink);
+  border: 1px solid var(--magenta);
+  font-family: var(--font-mono-stack);
+  font-size: 0.78em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tag[data-crossed="false"] {
+  border-color: rgb(183 156 242 / 0.5);
+  color: rgb(183 156 242 / 0.9);
+}
+
+.card {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  gap: 0.25em;
+  padding: 0.25em;
+  border: 1px solid rgb(183 156 242 / 0.4);
+  border-radius: 0.4em;
+  background: var(--ink);
+  color: #f1ecfb;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+
+.thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.25em;
+  background: #120c24;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumb svg {
+  width: 38%;
+  height: 70%;
+  color: rgb(183 156 242 / 0.6);
+}
+
+.name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono-stack);
+  font-size: 0.82em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.card[data-state="locked"] {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.card[data-state="ending"] {
+  border-color: var(--gold);
+}
+
+.card[data-selected="true"],
+.card:focus-visible {
+  border-color: var(--magenta);
+  box-shadow: 0 0 0 2px rgb(224 64 160 / 0.6);
+  outline: none;
+  opacity: 1;
+  z-index: 2;
+}
+
+.card[data-here="true"]::after {
+  content: "";
+  position: absolute;
+  top: -0.35em;
+  right: -0.35em;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  background: var(--magenta);
+  border: 2px solid var(--ink);
+}
+
+/* What is known of the chosen episode. */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  min-width: 0;
+  min-height: 0;
+  padding: 1em 1.1em;
+  overflow-y: auto;
+  border: 1px solid rgb(183 156 242 / 0.25);
+  background: rgb(255 255 255 / 0.04);
+  scrollbar-width: thin;
+  scrollbar-color: var(--violet) transparent;
+}
+
+.chapter {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.8em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lav);
+}
+
+.chapter span {
+  color: var(--gold);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.9em;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.summary {
+  margin: 0;
+  font-size: 0.98em;
+  line-height: 1.45;
+  color: rgb(241 236 251 / 0.88);
+}
+
+.answers {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35em;
+}
+
+.answers li {
+  display: grid;
+  gap: 0.1em;
+  padding: 0.4em 0.6em;
+  border-left: 2px solid rgb(183 156 242 / 0.4);
+  font-size: 0.9em;
+  line-height: 1.3;
+}
+
+.answers li[data-crossed="true"] {
+  border-left-color: var(--magenta);
+}
+
+.answers b {
+  font-family: var(--font-mono-stack);
+  font-size: 0.9em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.answers span {
+  opacity: 0.8;
+}
+
+.actions {
+  margin-top: auto;
+  display: grid;
+  gap: 0.4em;
+}
+
+.play,
+.back {
+  padding: 0.6em 1em;
+  border: 1px solid var(--magenta);
+  background: transparent;
+  color: #f1ecfb;
+  font-family: var(--font-mono-stack);
+  font-size: 0.95em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.play {
+  background: var(--magenta);
+  color: var(--ink);
+}
+
+.play:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: transparent;
+  color: inherit;
+  border-color: rgb(183 156 242 / 0.4);
+}
+
+.back {
+  border-color: rgb(183 156 242 / 0.5);
+}
+
+.play:hover:not(:disabled),
+.play:focus-visible,
+.back:hover,
+.back:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

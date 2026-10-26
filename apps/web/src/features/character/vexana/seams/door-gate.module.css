@@ -1,0 +1,13 @@
+/*
+ * The layer the doors of a DoorGate move in. It is fixed to the screen, so it stays put while the
+ * page jumps to the other section under it. It takes the pointer while it plays (nothing under it
+ * can be pressed in the middle of a scene) and not otherwise. It draws no indicator of its own.
+ */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}

@@ -25,6 +25,14 @@
   opacity: 0;
 }
 
+/* The black liquid's solid last of the cover, in the registry's own dark ink. */
+.washInk {
+  position: absolute;
+  inset: 0;
+  background: #07040f;
+  opacity: 0;
+}
+
 .blob {
   --s: calc(max(100vw, var(--lvh)) * 0.62);
   position: absolute;
@@ -65,6 +73,18 @@
 
 .blob[data-tone="paper"] path {
   fill: #f5f2fc;
+}
+
+.blob[data-tone="inkglow"] path {
+  fill: rgb(96 52 190 / 0.42);
+}
+
+.blob[data-tone="inkrim"] path {
+  fill: #2a1853;
+}
+
+.blob[data-tone="ink"] path {
+  fill: #07040f;
 }
 
 @keyframes squish {

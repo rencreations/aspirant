@@ -1,10 +1,10 @@
 /*
  * The film arrives under the liquid. By default it is simply there (a reload part way down the page
  * shows it). When the liquid has covered the screen the switch turns on and the film fades up by
- * itself while the liquid drains: opacity only, so nothing that is fixed inside the film is moved.
+ * itself while the liquid drains (the scroll is locked until it has): opacity only, so nothing that is fixed inside the film is moved.
  */
 .film[data-on="true"] {
-  animation: arrive 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
+  animation: arrive 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
 }
 
 @keyframes arrive {

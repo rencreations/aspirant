@@ -19,7 +19,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 2vw;
-  padding: 14vh max(6vw, 28px) clamp(24px, 4vh, 40px);
+  padding: 14vh max(6vw, 28px) 0;
   overflow-x: clip;
   background: var(--ab-ink);
   color: var(--ab-text);
@@ -933,10 +933,19 @@
 
 /* ---------------------------------------------------------------- voices */
 
+/*
+ * The last screen of the registry is held on the page, so the voices are one whole screen of their
+ * own: at least as tall as the screen, their content in the middle of it. The space above the heading
+ * and the space below the pager are the same, so the held screen looks centred at any height.
+ */
 .voices {
   grid-column: 1 / -1;
   grid-row: 3;
-  margin-top: 14vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--lvh, 100vh);
+  padding-block: clamp(10px, 2.8vh, 40px);
 }
 
 .voicesHead {
@@ -1174,7 +1183,7 @@
 
 @media (max-width: 900px) {
   .about {
-    padding: 11vh 20px 28px;
+    padding: 11vh 20px 0;
     row-gap: 6vh;
   }
   .name {
@@ -1220,6 +1229,7 @@
   }
   .voices {
     margin-top: 4vh;
+    padding-block: 40px;
   }
   .voiceList {
     grid-template-columns: 1fr;

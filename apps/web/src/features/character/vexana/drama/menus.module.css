@@ -1,0 +1,354 @@
+/* The menus of the game: the title, the pause menu and its pages, the ending, and the answers. */
+.title,
+.page,
+.overlay {
+  --ink: #140e26;
+  --violet: #7a4fd6;
+  --magenta: #e040a0;
+  --lav: #b79cf2;
+  --notch: polygon(
+    0 0.35em,
+    0.35em 0.35em,
+    0.35em 0,
+    calc(100% - 0.35em) 0,
+    calc(100% - 0.35em) 0.35em,
+    100% 0.35em,
+    100% calc(100% - 0.35em),
+    calc(100% - 0.35em) calc(100% - 0.35em),
+    calc(100% - 0.35em) 100%,
+    0.35em 100%,
+    0.35em calc(100% - 0.35em),
+    0 calc(100% - 0.35em)
+  );
+}
+
+/* The title screen sits over the poster and its vignette. */
+.title {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9em;
+  padding: 4%;
+  text-align: center;
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 1.05em;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--lav);
+}
+
+.logo {
+  margin: 0 0 0.4em;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 4.6em;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0.06em 0.06em 0 var(--magenta);
+}
+
+.menu {
+  display: grid;
+  gap: 0.25em;
+  justify-items: center;
+}
+
+.item {
+  display: block;
+  width: min(22em, 80cqw);
+  padding: 0.65em 1.2em;
+  border: 0;
+  background: transparent;
+  color: #f1ecfb;
+  font-family: var(--font-mono-stack);
+  font-size: 1.15em;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  clip-path: var(--notch);
+  position: relative;
+}
+
+.item em {
+  display: block;
+  margin-top: 0.2em;
+  font-style: normal;
+  font-size: 0.68em;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+
+.item:hover:not(:disabled),
+.item:focus-visible {
+  background: var(--magenta);
+  color: var(--ink);
+  outline: none;
+}
+
+/* The chevron on the item that is pointed at or focused. It is drawn as a shape, not as text, so a
+   screen reader does not read it as part of the name. */
+.caret {
+  position: absolute;
+  left: 1.4em;
+  top: 50%;
+  width: 0.5em;
+  height: 0.5em;
+  margin-top: -0.25em;
+  border-top: 0.14em solid currentColor;
+  border-right: 0.14em solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+.item:hover:not(:disabled) .caret,
+.item:focus-visible .caret {
+  opacity: 1;
+}
+
+.item:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+/* A layer over the game: the pause menu, and the ending. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  padding: 3%;
+  background: rgb(10 6 20 / 0.88);
+  cursor: default;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  max-width: 100%;
+  max-height: 100%;
+  text-align: center;
+}
+
+.page[data-ending="good"] .heading {
+  text-shadow: 0.06em 0.06em 0 #f2b04c;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 3.4em;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0.06em 0.06em 0 var(--magenta);
+}
+
+.sub {
+  margin: 0.4em 0 0.2em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.95em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lav);
+}
+
+.lead {
+  margin: 0;
+  max-width: 34em;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+
+.keys {
+  margin: 0;
+  display: grid;
+  gap: 0.35em;
+  width: min(40em, 92%);
+  text-align: left;
+}
+
+.keys div {
+  display: grid;
+  grid-template-columns: 12em 1fr;
+  gap: 1em;
+  padding: 0.35em 0.8em;
+  background: rgb(255 255 255 / 0.05);
+}
+
+.keys dt {
+  font-family: var(--font-mono-stack);
+  font-size: 0.95em;
+  letter-spacing: 0.1em;
+  color: var(--lav);
+}
+
+.keys dd {
+  margin: 0;
+  font-size: 1.05em;
+}
+
+.scroll {
+  width: min(44em, 92%);
+  max-height: 14em;
+  overflow-y: auto;
+  padding: 0.6em 1em;
+  text-align: left;
+  border: 1px solid rgb(183 156 242 / 0.25);
+  background: rgb(255 255 255 / 0.04);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--violet) transparent;
+}
+
+.scroll:focus-visible {
+  outline: 2px solid var(--magenta);
+}
+
+.log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35em;
+}
+
+.log li {
+  display: grid;
+  grid-template-columns: 8em 1fr;
+  gap: 0.8em;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+.log b {
+  font-family: var(--font-mono-stack);
+  font-size: 0.9em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lav);
+  font-weight: 500;
+}
+
+.none {
+  margin: 0;
+  font-size: 1em;
+  opacity: 0.7;
+}
+
+.recap {
+  margin: 0 0 0.6em;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4em 0.5em;
+  max-width: 44em;
+}
+
+.recap li {
+  padding: 0.25em 0.7em;
+  border: 1px solid rgb(183 156 242 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.9em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* The two answers over the picture the film holds at the end of a chapter. */
+.choices {
+  --ink: #140e26;
+  --magenta: #e040a0;
+  --lav: #b79cf2;
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 6%;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2em;
+  cursor: default;
+}
+
+@container cab (aspect-ratio < 1) {
+  .choices {
+    top: calc(100cqw * 9 / 16 + 3%);
+    bottom: 3%;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    gap: 0.8em;
+    align-content: center;
+  }
+}
+
+.choice {
+  display: grid;
+  align-content: center;
+  gap: 0.4em;
+  padding: 0.9em 1.2em;
+  border: 1px solid rgb(183 156 242 / 0.4);
+  background: rgb(10 6 20 / 0.84);
+  color: #f1ecfb;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.choice b {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.7em;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.choice i {
+  display: grid;
+  place-items: center;
+  width: 1.4em;
+  height: 1.4em;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono-stack);
+  font-style: normal;
+  font-size: 0.55em;
+  letter-spacing: 0;
+  color: var(--lav);
+}
+
+.choice span {
+  font-size: 1.05em;
+  line-height: 1.35;
+  color: rgb(241 236 251 / 0.9);
+}
+
+.choice[data-selected="true"],
+.choice:focus-visible {
+  border-color: var(--magenta);
+  background: rgb(224 64 160 / 0.26);
+  outline: none;
+}
+
+.choice[data-selected="true"] i {
+  color: var(--magenta);
+}

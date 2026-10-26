@@ -1,0 +1,232 @@
+/* The game screen: two stacked films, the strip of dialogue ticks, the tools and the waiting marks. */
+.game {
+  position: absolute;
+  inset: 0;
+  outline: none;
+  background: #000;
+  cursor: pointer;
+  --lav: #b79cf2;
+  --magenta: #e040a0;
+  --ink: #140e26;
+}
+
+/*
+ * The film that comes to the front fades in over the one that was there, which stays until the new
+ * one is whole (its own fade out starts after the new one has finished fading in), so there is never
+ * a dark moment between two episodes.
+ */
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #000;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0s linear 0.42s;
+}
+
+.video[data-front="true"] {
+  opacity: 1;
+  z-index: 2;
+  transition: opacity 0.36s ease;
+}
+
+/* On a tall screen the film sits at the top, as wide as the frame, and the answers go under it. */
+@container cab (aspect-ratio < 1) {
+  .video {
+    inset: 0 0 auto 0;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+:global(html[data-motion="reduced"]) .video,
+:global(html[data-motion="reduced"]) .video[data-front="true"] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video,
+  .video[data-front="true"] {
+    transition: none;
+  }
+}
+
+/* A tick for every line of dialogue, and a fill for how far the film has gone. */
+.strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: max(3px, 0.35em);
+  z-index: 3;
+  background: rgb(255 255 255 / 0.12);
+  pointer-events: none;
+}
+
+@container cab (aspect-ratio < 1) {
+  .strip {
+    bottom: auto;
+    top: calc(100cqw * 9 / 16 - max(3px, 0.35em));
+  }
+}
+
+.strip i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(255 255 255 / 0.55);
+}
+
+.strip i[data-choice] {
+  width: 3px;
+  background: var(--magenta);
+}
+
+.strip b {
+  position: absolute;
+  inset: 0;
+  background: rgb(224 64 160 / 0.9);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 0.3s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strip b {
+    transition: none;
+  }
+}
+
+.tools {
+  position: absolute;
+  top: 0.8em;
+  right: 0.8em;
+  z-index: 4;
+  display: flex;
+  gap: 0.5em;
+  opacity: 0.55;
+}
+
+.tools:hover,
+.tools:focus-within {
+  opacity: 1;
+}
+
+.tools button {
+  width: 2.6em;
+  height: 2.6em;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(183 156 242 / 0.4);
+  border-radius: 0.4em;
+  background: rgb(10 6 20 / 0.6);
+  color: #f1ecfb;
+  cursor: pointer;
+}
+
+.tools button:hover,
+.tools button:focus-visible {
+  background: var(--magenta);
+  color: var(--ink);
+  outline: none;
+}
+
+@media (hover: none) {
+  .tools {
+    opacity: 1;
+  }
+
+  .tools button {
+    width: 3em;
+    height: 3em;
+  }
+}
+
+/* On a tall screen there is room under the film: a reminder of how to go on. */
+.hint {
+  display: none;
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: calc(100cqw * 9 / 16 + 6%);
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(217 213 245 / 0.6);
+  pointer-events: none;
+}
+
+@container cab (aspect-ratio < 1) {
+  .hint {
+    display: block;
+  }
+}
+
+/* The next episode is not ready, or did not start. */
+.wait {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.8em;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 1.1em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.wait p {
+  margin: 0;
+  padding: 0.4em 0.9em;
+  background: rgb(10 6 20 / 0.8);
+}
+
+.wait button {
+  pointer-events: auto;
+}
+
+.spinner {
+  width: 2.6em;
+  height: 2.6em;
+  border: 0.28em solid rgb(255 255 255 / 0.18);
+  border-top-color: var(--magenta);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+.retry {
+  padding: 0.5em 1.2em;
+  border: 0;
+  background: var(--magenta);
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+}

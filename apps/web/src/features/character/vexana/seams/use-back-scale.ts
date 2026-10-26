@@ -11,15 +11,18 @@ import { easeInOut, put } from "./scroll-kit";
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 /**
- * The pair of Academic and Ender is held still while the interlude rises over it. Under the rising
- * panel the held screen steps back a little (it scales down about its middle), which is the depth
- * of the cover-up. Plain scale, driven by scroll alone.
+ * The pair of Human and Ender is held still while the interlude rises over it. Under the rising
+ * panel the pair steps back a little (its foreground scales down about the middle), which is the
+ * depth of the cover-up. The ground behind it (the pale gradient and the contour lines) is not
+ * scaled: it stays full-bleed, so there is never a strip with a hard edge beside the scaled
+ * picture, and the beams of colour keep matching what is beside the interlude's panel while the
+ * panel is still narrower than the screen. Plain scale, driven by scroll alone.
  */
 export function useBackScale(reduced: boolean) {
   useEffect(() => {
     if (reduced || perfLevel() === "lite") return;
     const cover = document.getElementById("cover");
-    const stage = document.querySelector<HTMLElement>("#faces > *");
+    const stage = document.querySelector<HTMLElement>("#faces [data-depth]");
     if (!cover || !stage) return;
     const st = ScrollTrigger.create({
       trigger: cover,

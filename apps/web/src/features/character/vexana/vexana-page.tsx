@@ -13,23 +13,27 @@ import { Drama } from "./drama/drama";
 import { Faces } from "./faces/faces";
 import { Fanart } from "./fanart/fanart";
 import { NavTone } from "./nav-tone";
+import { OffscreenPause } from "./seams/offscreen-pause";
 import { Guinevere } from "./guinevere/guinevere";
 import { MusicVideo } from "./music/music-video";
 import { Opening } from "./opening/opening";
 import { Process } from "./process/process";
 import { Reel } from "./reel/reel";
 import { Room, type NextCharacter } from "./room/room";
-import { CraftDoors } from "./seams/doors";
+import { comicStreamHooks, interludeComicHooks } from "./seams/comic-link";
+import { DoorGate } from "./seams/door-gate";
 import { FilmArrive, GuinevereArrive } from "./seams/film-arrive";
 import { Gate } from "./seams/gate";
 import { HeartCover } from "./seams/heart-cover";
 import { Hold } from "./seams/hold";
 import { Liquid } from "./seams/liquid";
+import { HOLD_SCREENS, UP_SCREENS } from "./seams/liquid-math";
 import { Paper, Veil } from "./seams/paper";
 import { Rise } from "./seams/rise";
 import { RoomHeart } from "./seams/room-heart";
 import { CrtScene } from "./seams/scenes/crt";
 import { PixelScene } from "./seams/scenes/pixel";
+import { storyHooks } from "./seams/story-link";
 import { FanScene, WallScene } from "./seams/scenes/fall";
 import { Under } from "./seams/under";
 import { UpZone } from "./seams/up";
@@ -43,11 +47,28 @@ const HOLD = 0.8;
 const AT = 0.72;
 
 /**
- * The film waits under the held screen of the registry, in place for the last stretch of the liquid
- * (the screens of the hold left after the liquid has covered it: 1.7 * (1 - 0.8)), so it needs no
- * scrolling to be seen once the liquid has drained.
+ * The craft to the story and back: the screens the craft's last screen is held for going down, and
+ * the screens the pair's first screen is held for going back up, and the share of each at which the
+ * doors start by themselves.
  */
-const FILM_OPEN = 0.34;
+const STORY_HOLD = 0.8;
+const STORY_AT = 0.72;
+
+/**
+ * The interlude to the comic and the comic to the livestream, both with doors that play by time and
+ * both ways: the screens the last screen of the section before is held for (going down), the screens
+ * the first screen of the section after is held for (going back up), and the share of each at which
+ * the doors start by themselves.
+ */
+const COMIC_HOLD = 0.8;
+const COMIC_AT = 0.72;
+
+/**
+ * The film waits under the held screen of the registry, in place for the last stretch of the hold:
+ * the screens the black liquid rises over when the visitor goes back up (`seams/liquid-math.ts`).
+ * Going down the page jumps over that stretch while the white liquid has the screen covered.
+ */
+const FILM_OPEN = UP_SCREENS;
 
 /**
  * Her theme to her best friend: the screens of the hold of the music film, and the screens her
@@ -70,17 +91,35 @@ const ROOM_HOLD = 1;
  * after a moment (`seams/snap.ts`), the page goes on by itself from the half on and goes back
  * before it, in both directions, with the progress in the one bar at the left of the screen:
  *   Opening to Registry   the registry rises over the held signature screen (no snap)
- *   Registry to the film  the dark voices are held, a liquid rises; when it has covered the screen
- *                         the registry is hidden, the liquid drains by time and the film, waiting
- *                         under it in place (`Under`), fades in by itself (`FilmArrive`)
+ *   Registry to the film  the dark voices are held, a white liquid rises over the scroll; when it
+ *                         has covered the screen the scroll is locked, the page goes to the film
+ *                         (waiting under it in place, `Under`), the liquid drains by time and the
+ *                         film fades in by itself (`FilmArrive`); the scroll comes back when all of
+ *                         it is in view. Back up from the film a BLACK liquid rises the same way, the
+ *                         page goes to the voices, the black drains and the scroll comes back. Both
+ *                         snap after a second of quiet (`seams/liquid.tsx`)
  *   the film to the craft the craft is laid over the held film like a sheet of paper (no snap)
- *   the craft to the pair white doors close on the held craft; once they have met the pair arrives
- *                         from both sides by time and can be pressed at once (`facesUnder`)
- *   the pair to the interlude   the interlude rises over the held pair, full width, its corners
- *                         sharpening slowly then quickly (square from 60 percent)
- *   the interlude to the comic  dark doors close on the held interlude; once they have met they open
- *                         by themselves on the comic, which waits in place under them
- *   the comic to the stream     the two halves of the comic open like doors on the stream
+ *   the craft to the pair white doors (`seams/door-gate.tsx`, TIME based, both ways): a little
+ *                         scrolling on the held craft starts them; the scroll is LOCKED, they close,
+ *                         the page goes to the pair, they open while the pair arrives from both sides,
+ *                         and the scroll comes back when both halves can be pressed. Back up from the
+ *                         pair, past its own threshold: the figures leave to the two sides, the ground
+ *                         is plain, the doors open on the craft. A stop snaps after a second
+ *   the pair to the interlude   the interlude rises over the held pair, narrow at first with a padding
+ *                         at both sides that fills as it comes, its corners sharpening slowly then
+ *                         quickly (square from 60 percent); the pair steps back (its ground stays whole)
+ *   the interlude to the comic  dark doors (`seams/door-gate.tsx`, TIME based, both ways): a little
+ *                         scrolling on the held interlude starts them; the scroll is LOCKED, they close,
+ *                         the page goes to the comic, they open while its words, its disc and its
+ *                         sticker come in, and the scroll comes back when Read and Watch can be
+ *                         pressed. Back up from the comic, past its own threshold, the same doors
+ *                         close on the comic and open on the interlude. A stop snaps after a second
+ *   the comic to the stream     the comic's own halves are the doors (`seams/comic-link.ts`, the same
+ *                         gate with clear doors, TIME based, both ways): the stage is pinned to the
+ *                         screen, the page goes to the stream under it and the Watch half slides out
+ *                         to the left with the whole disc while the Read half slides out to the
+ *                         right. Back up from the stream they slide in over it and meet, the page goes
+ *                         to the comic, and its words and sticker come in by time
  * From the stream to Our Artwork's end (`seams/gate.tsx` and `seams/up.tsx`, scenes in `seams/scenes/`),
  * each join is a boundary that works both ways. Going down, the section holds its last screen and a
  * little more scrolling starts a transition that plays by itself; the section after it has no
@@ -133,9 +172,10 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
   return (
     <div ref={root} data-vexana className={styles.page}>
       <NavTone />
+      <OffscreenPause />
       <Opening />
       <Hold
-        hold={1.7}
+        hold={HOLD_SCREENS}
         enabled={on}
         overlay={<Liquid />}
         className={on ? styles.aboutHold : undefined}
@@ -144,27 +184,57 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
         <About covers={false} />
       </Hold>
       <Under open={FILM_OPEN} enabled={on}>
-        <Hold hold={1} enabled={on} overlay={<Veil />}>
+        <Hold hold={1} shift={FILM_OPEN} enabled={on} overlay={<Veil />}>
           <FilmArrive>
             <Reel />
           </FilmArrive>
         </Hold>
       </Under>
       <Paper overlap={1} enabled={on}>
-        <Hold hold={2.4} enabled={on} overlay={<CraftDoors />}>
+        <DoorGate
+          id="craft-story"
+          hold={STORY_HOLD}
+          at={STORY_AT}
+          closing={{ up: "instant" }}
+          hooks={storyHooks}
+          enabled={on}
+        >
           <Skills />
-        </Hold>
+        </DoorGate>
       </Paper>
-      <div className={on ? styles.facesUnder : undefined}>
+      <UpZone id="craft-story" hold={STORY_HOLD} at={STORY_AT} idleMs={1000} enabled={on}>
         <Faces gated={on} />
-      </div>
-      <Cover />
-      <Comics />
-      <Gate id="stream-drama" enabled={on} hold={HOLD} at={AT} scene={PixelScene}>
-        <Under open={1} enabled={on}>
+      </UpZone>
+      <DoorGate
+        id="interlude-comic"
+        hold={COMIC_HOLD}
+        at={COMIC_AT}
+        tone="comic"
+        hooks={interludeComicHooks}
+        enabled={on}
+        className={on ? styles.coverGate : undefined}
+        style={on ? { marginTop: "calc(var(--lvh) * -1)" } : undefined}
+      >
+        <Cover />
+      </DoorGate>
+      <UpZone id="interlude-comic" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
+        <DoorGate
+          id="comic-stream"
+          hold={COMIC_HOLD}
+          at={COMIC_AT}
+          tone="clear"
+          closing={{ down: "instant", up: "instant" }}
+          hooks={comicStreamHooks}
+          enabled={on}
+        >
+          <Comics />
+        </DoorGate>
+      </UpZone>
+      <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
+        <Gate id="stream-drama" enabled={on} hold={HOLD} at={AT} scene={PixelScene}>
           <Stream />
-        </Under>
-      </Gate>
+        </Gate>
+      </UpZone>
       <UpZone id="stream-drama" enabled={on} hold={HOLD} at={AT}>
         <Gate id="drama-process" enabled={on} hold={HOLD} at={AT} scene={CrtScene}>
           <Drama />

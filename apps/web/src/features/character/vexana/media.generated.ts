@@ -114,14 +114,6 @@ export const VIDEOS: Record<VideoName, VideoInfo> = {
     width: 1080,
     height: 1920,
   },
-  "interactive-drama": {
-    file: "/video/vexana/interactive-drama.mp4",
-    poster: "/video/vexana/interactive-drama-poster.webp",
-    bytes: 8621240,
-    duration: 48.85,
-    width: 1920,
-    height: 1080,
-  },
 };
 
 /** The comic panels that exist, by their original numbers (3, 23 and 40 were never supplied). */

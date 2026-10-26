@@ -21,6 +21,7 @@ import {
   type VideoName,
 } from "./media";
 import { COMIC_PAGES, VIDEOS } from "./media.generated";
+import { dramaPoster } from "./drama/drama-media";
 import { roomItems } from "./room/media";
 
 const FANART_NUMBERS = Array.from({ length: FANART_COUNT }, (_, i) => i + 1);
@@ -76,7 +77,7 @@ export function vexanaLater(): Array<{ priority: number; items: PreloadItem[] }>
     height: window.innerHeight,
     dpr: window.devicePixelRatio || 1,
   });
-  const small: VideoName[] = ["heart-dance", "3d-process", "interactive-drama"];
+  const small: VideoName[] = ["heart-dance", "3d-process"];
   const streamed: VideoName[] = ["final2", "comic-jp", "live-vexana"];
   return [
     { priority: 20, items: [videoItem("final", "Loading the film", pick.src)] },
@@ -98,6 +99,8 @@ export function vexanaLater(): Array<{ priority: number; items: PreloadItem[] }>
       priority: 35,
       items: [
         imageItem(CHIBI, "Loading the comic"),
+        // The title screen of the interactive drama; its episodes load when they are played.
+        imageItem(dramaPoster("1"), "Loading the interactive drama"),
         ...COMIC_PAGES.slice(0, 6).map((n) => imageItem(comicPage(n), "Loading the comic")),
         ...[...small, ...streamed, "final", "skin-showcase"].map((n) =>
           imageItem(videoPoster(n as VideoName), "Loading the posters"),

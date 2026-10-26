@@ -76,3 +76,8 @@
   width: 90px;
   background: linear-gradient(to left, rgb(5 3 12 / 0.55), rgb(5 3 12 / 0));
 }
+
+/* ---- Clear doors: no colour at all. Only their timing is used (the sections draw the scene). ---- */
+.clear .shade {
+  display: none;
+}

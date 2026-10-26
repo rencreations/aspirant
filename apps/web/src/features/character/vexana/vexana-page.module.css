@@ -33,11 +33,18 @@
   border-bottom: 2px solid rgb(169 139 245 / 55%);
 }
 
-/* The pair of faces waits under the craft: in place (and stuck) from the moment the doors have met
-   (half way through the craft's hold: 1 + 2.4 * 0.5 screens above the end of it), so when the doors
-   fade by time it is already where it is meant to be, with nothing left to scroll to. */
-.facesUnder {
-  position: relative;
-  z-index: 1;
-  margin-top: calc(-1 * var(--lvh) * 2.2);
+/* A section far from the screen (see seams/offscreen-pause.tsx) runs none of its CSS animations: a
+   running animation makes the browser work out the styles of its element on every frame. */
+.page :global([data-vx-off]),
+.page :global([data-vx-off]) *,
+.page :global([data-vx-off]) *::before,
+.page :global([data-vx-off]) *::after {
+  animation-play-state: paused !important;
+}
+
+/* The interlude's door gate: the held box is a tall transparent one that lies over the pair of faces
+   while the interlude rises over it. Only the panel takes the pointer (`.cover` in cover.module.css),
+   so the box (the second child of the gate's wrapper) must not either. */
+.coverGate > :nth-child(2) {
+  pointer-events: none;
 }

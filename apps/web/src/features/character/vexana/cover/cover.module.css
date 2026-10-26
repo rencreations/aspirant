@@ -5,11 +5,9 @@
   --vh: 100vh;
   --r: clamp(24px, 4.5vw, 72px);
   position: relative;
-  z-index: 4;
-  /* The panel rises (1 screen, over the pair), is held for 1.3 screens (the film), then 2 more while the
-     doors close and open on the comic: see the notes in cover.tsx. */
-  height: calc(var(--vh) * 4.3);
-  margin-top: calc(var(--vh) * -1);
+  /* The panel rises (1 screen, over the pair, which the wrapper in vexana-page.tsx lets this section
+     overlap) and is held for 1.3 screens (the film). Its last screen is then held by the door gate. */
+  height: calc(var(--vh) * 2.3);
   background: transparent;
   color: #f4effc;
   --ink: #140e26;
@@ -24,19 +22,8 @@
   }
 }
 
-.cover[data-plain="true"] {
-  height: calc(var(--vh) * 2.3);
-}
-
 .cover[data-plain="true"] .panel {
   border-radius: 0;
-}
-
-.doors {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
 }
 
 .pin {
@@ -52,6 +39,9 @@
   overflow: hidden;
   background: var(--ink);
   border-radius: var(--r) var(--r) 0 0;
+  /* It rises narrower and grows to the screen: a scale about its top middle (cover.tsx). */
+  transform-origin: 50% 0;
+  will-change: transform;
   pointer-events: auto;
   isolation: isolate;
   /* The shadow the rising panel throws up onto what it covers: it follows the corners, so there is

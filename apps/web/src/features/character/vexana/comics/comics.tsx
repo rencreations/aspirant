@@ -1,7 +1,6 @@
 "use client";
 
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   useCallback,
   useEffect,
@@ -10,6 +9,7 @@ import {
   useSyncExternalStore,
   type FocusEvent,
   type PointerEvent,
+  type RefObject,
 } from "react";
 
 import { asset } from "@/lib/asset";
@@ -17,33 +17,24 @@ import { audio } from "@/lib/audio";
 import { useReducedMotion } from "@/lib/hooks";
 
 import { CHIBI, comicPage, videoPoster } from "../media";
+import { registerComic } from "../seams/comic-link";
 import { comicsGate } from "../seams/gates";
-import { easeInOut, lvh, put } from "../seams/scroll-kit";
-import { useScrollSnap, type SnapRange } from "../seams/snap";
+import { put } from "../seams/scroll-kit";
 import { COMIC_COUNT, videoInfo } from "../shared/info";
 import { PlayerButton, videoFor } from "../shared/player-button";
 import { ComicReader } from "./comic-reader";
 import styles from "./comics.module.css";
 import { useParallax } from "./use-parallax";
 
-if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
-
 /** The pages that make the fan on the Read half. */
 const FAN = [1, 2, 4] as const;
 
 type Hot = "none" | "watch" | "read" | "disc";
-type Part = "a" | "b";
 
-/**
- * Screens of scrolling. The comic is already in place when the interlude's doors have closed (it
- * waits under the interlude and the doors then open by themselves: see `cover.tsx`), is held for
- * `HOLD` more screens (the visitor can play with it), and in the last `LEAVE` of those its two
- * halves open like doors on the livestream, which waits under it (`Under open={LEAVE}` in
- * vexana-page.tsx).
- */
-const OPEN = 0.9;
-const HOLD = 2;
-const LEAVE = 1;
+/** The time, in ms, the entrance takes: the words, the disc and the sticker (see `--d-*` in the CSS). */
+const ENTER_MS = 1800;
+/** The time, in ms, the halves, the words and the disc take to go back to neutral when the pointer lets go. */
+const CALM_MS = 220;
 
 /** "2 min 12 s" from a length in seconds. */
 function lengthText(seconds: number) {
@@ -65,23 +56,23 @@ function Letters({ text }: { text: string }) {
 }
 
 /**
- * The disc on the seam, with its orbit and the chibi sitting on it. It is drawn twice, once in each
- * door: the first copy shows the half on the Watch side of the middle line and the second the half
- * on the Read side, so the disc comes apart when the doors open. Both copies hold exactly the same
- * state, so together they look like one disc.
+ * The disc on the seam, with its orbit and the chibi sitting on it. It is ONE whole disc and it lives
+ * in the Watch door: when the doors open it goes with the Watch half to the left, whole, and when
+ * they close it comes in with it. (The door of the Read half is under it in the stack, so the part of
+ * the disc that lies over the Read half is drawn over it, as before.)
  */
 function Hub({
-  part,
   hop,
   onSpin,
+  hubRef,
 }: {
-  part: Part;
   hop: { n: number; kind: string };
   onSpin: () => void;
+  hubRef: RefObject<HTMLDivElement | null>;
 }) {
   return (
-    <div className={`${styles.layer} ${styles.hubLayer}`} data-part={part} data-depth="12">
-      <div className={styles.hub}>
+    <div className={`${styles.layer} ${styles.hubLayer}`} data-depth="12">
+      <div ref={hubRef} className={styles.hub}>
         <span className={styles.orbit} aria-hidden="true" />
         <div className={styles.pop}>
           <div className={styles.disc} aria-hidden="true" onClick={onSpin}>
@@ -119,25 +110,29 @@ function Hub({
  * chibi sitting on the disc leans toward the half, hops when the disc is pointed at, and spins
  * when it is pressed. Every motion is a transform or an opacity, set by `data-hot` in the CSS.
  *
- * The disc and its words are never hidden by a state: they come in once, when the doors of the
+ * The disc and its words are never hidden by a pointer state: they come in once, when the doors of the
  * interlude open on this section, and from then on only move.
  *
- * The section is a tall box with a sticky screen in it. The two halves are two doors (each holds its
- * half, its picture, its word and its half of the disc). They open on the livestream at the end:
- * the Watch door slides out to the left, the Read door to the right.
+ * The section is one screen. The two halves are two doors (the Watch door holds its half, its picture,
+ * its word and the WHOLE disc; the Read door its half, its fan of pages and its word). The join with
+ * the livestream (`seams/comic-link.ts`) pins the stage to the screen, and the Watch door slides out
+ * to the left with the whole disc while the Read door slides out to the right, or the other way
+ * round when the visitor comes back up. The pointer's choice is let go of first (`calm`), so the
+ * doors always move from the neutral picture, wherever the pointer was.
  */
 export function Comics() {
   const [reading, setReading] = useState(false);
   const [hot, setHot] = useState<Hot>("none");
   const [hop, setHop] = useState({ n: 0, kind: "hop" });
   const [leaving, setLeaving] = useState(false);
+  /** The disc is already there (it came in with its half), whatever else has not arrived yet. */
+  const [disc, setDisc] = useState(false);
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const doorA = useRef<HTMLDivElement>(null);
   const doorB = useRef<HTMLDivElement>(null);
+  const hub = useRef<HTMLDivElement>(null);
   const sparks = useRef<HTMLDivElement>(null);
-  /** The stretch of the page the doors open over, in scroll pixels. */
-  const leave = useRef<SnapRange | null>(null);
   const reduced = useReducedMotion();
   useParallax(stage, !reduced);
 
@@ -147,49 +142,142 @@ export function Comics() {
   const gate = useSyncExternalStore(comicsGate.subscribe, comicsGate.get, () => false);
   const seen = gate || reduced;
 
-  // At the end of the hold the two halves open like doors on the livestream under them.
+  // What the joins around the comic ask of it (`seams/comic-link.ts`).
   useEffect(() => {
+    if (reduced) return;
     const el = root.current;
-    if (!el || reduced) return;
-    const doors = [doorA.current, doorB.current];
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: () => `top top-=${((OPEN + HOLD - LEAVE) * lvh()).toFixed(0)}`,
-      end: () => `top top-=${((OPEN + HOLD) * lvh()).toFixed(0)}`,
-      invalidateOnRefresh: true,
-      onRefresh: (self) => {
-        leave.current = { start: self.start, end: self.end };
+    if (!el) return;
+    const move = { v: 0 };
+    let tween: gsap.core.Tween | null = null;
+    let calmTimer = 0;
+    let enterTimer = 0;
+    const pending = new Set<() => void>();
+
+    /** How far a door has to go to be out of sight, with the disc (and its orbit and sticker) on it. */
+    const travel = () => {
+      const st = stage.current;
+      const h = hub.current;
+      if (!st) return 0;
+      const vertical = window.matchMedia("(max-width: 760px)").matches;
+      const r = st.getBoundingClientRect();
+      return (vertical ? r.height : r.width) / 2 + (h?.offsetWidth ?? 0) * 0.85;
+    };
+    /**
+     * 0 is the doors shut (the picture at rest), 1 is both out of sight. A little below 0 the two halves
+     * lie over each other by a few pixels: the doors close to there and then settle at 0, so no hairline
+     * of what is under them shows at the seam in the last frames of closing.
+     */
+    const slide = (v: number) => {
+      move.v = v;
+      const vertical = window.matchMedia("(max-width: 760px)").matches;
+      const d = v * travel();
+      const axis = (n: number) =>
+        vertical ? `translate3d(0,${n.toFixed(1)}px,0)` : `translate3d(${n.toFixed(1)}px,0,0)`;
+      // No transform at all while the doors are shut: the picture at rest is what the page lays out.
+      const shut = Math.abs(v) <= 0.0005;
+      put(doorA.current, "transform", shut ? "none" : axis(-d));
+      put(doorB.current, "transform", shut ? "none" : axis(d));
+      put(sparks.current, "opacity", Math.min(1, 1 - v).toFixed(3));
+    };
+    const to = (v: number, seconds: number) =>
+      new Promise<void>((resolve) => {
+        tween?.kill();
+        if (seconds <= 0) {
+          slide(v);
+          resolve();
+          return;
+        }
+        pending.add(resolve);
+        tween = gsap.to(move, {
+          v,
+          duration: seconds,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            slide(move.v);
+          },
+          onComplete: () => {
+            pending.delete(resolve);
+            resolve();
+          },
+        });
+      });
+    const wait = (ms: number, slot: "calm" | "enter") =>
+      new Promise<void>((resolve) => {
+        pending.add(resolve);
+        const done = () => {
+          pending.delete(resolve);
+          resolve();
+        };
+        if (slot === "calm") {
+          window.clearTimeout(calmTimer);
+          calmTimer = window.setTimeout(done, ms);
+        } else {
+          window.clearTimeout(enterTimer);
+          enterTimer = window.setTimeout(done, ms);
+        }
+      });
+    const warm = () => {
+      const urls = [CHIBI, videoPoster("comic-jp"), ...FAN.map((n) => comicPage(n))];
+      return Promise.all(
+        urls.map((u) => {
+          const img = new Image();
+          img.src = asset(u);
+          return img.decode().catch(() => undefined);
+        }),
+      ).then(() => undefined);
+    };
+    const pin = (on: boolean) => {
+      el.dataset.pinned = on ? "true" : "false";
+    };
+
+    const unregister = registerComic({
+      calm: (waitFor = true) => {
+        setHot("none");
+        setLeaving(true);
+        return waitFor ? wait(CALM_MS, "calm") : Promise.resolve();
       },
-      onUpdate: (self) => {
-        const e = easeInOut(self.progress);
-        const vertical = window.matchMedia("(max-width: 760px)").matches;
-        const a = (-e * 52).toFixed(3);
-        const b = (e * 52).toFixed(3);
-        // No transform at all while the doors are shut: a transform would make each door its own
-        // layer, and the right door would then paint over the left half of the disc.
-        put(
-          doorA.current,
-          "transform",
-          e <= 0.0005 ? "none" : vertical ? `translate3d(0,${a}%,0)` : `translate3d(${a}%,0,0)`,
-        );
-        put(
-          doorB.current,
-          "transform",
-          e <= 0.0005 ? "none" : vertical ? `translate3d(0,${b}%,0)` : `translate3d(${b}%,0,0)`,
-        );
-        put(sparks.current, "opacity", (1 - e).toFixed(3));
-        setLeaving(self.progress > 0.001);
+      release: () => {
+        setLeaving(false);
       },
+      pin,
+      show: (what) => {
+        comicsGate.set(what === "all");
+        if (what !== "all") setDisc(what === "disc");
+      },
+      slideOut: (seconds) => to(1, seconds),
+      slideIn: async (seconds) => {
+        await to(-0.006, seconds);
+        slide(0);
+      },
+      enter: () => {
+        comicsGate.set(true);
+        return wait(ENTER_MS, "enter");
+      },
+      rest: () => {
+        tween?.kill();
+        slide(0);
+        pin(false);
+        setLeaving(false);
+      },
+      decoded: warm,
     });
+    // The pictures are fetched while the page is idle, so they are there when the doors open.
+    const idle = window.setTimeout(() => {
+      void warm();
+    }, 1500);
+
     return () => {
-      st.kill();
-      for (const d of doors) if (d) d.style.transform = "";
+      unregister();
+      window.clearTimeout(idle);
+      window.clearTimeout(calmTimer);
+      window.clearTimeout(enterTimer);
+      tween?.kill();
+      for (const resolve of pending) resolve();
+      pending.clear();
+      slide(0);
+      pin(false);
     };
   }, [reduced]);
-
-  // The doors can never be left half way open on the livestream: from half on they open and the
-  // page goes on, before it they shut again and the comic is as it was.
-  useScrollSnap("comic-doors", () => leave.current, { enabled: !reduced });
 
   const choose = useCallback((next: Hot) => {
     setHot((prev) => {
@@ -231,6 +319,7 @@ export function Comics() {
       data-plain={reduced}
       data-theme="storm"
       data-seen={seen}
+      data-disc={disc}
       data-hot={leaving ? "none" : hot}
       data-leaving={leaving}
       aria-labelledby="comics-title"
@@ -252,7 +341,7 @@ export function Comics() {
             choose("none");
           }}
         >
-          {/* The Watch door: its half (a button), its picture, its word and its half of the disc. */}
+          {/* The Watch door: its half (a button), its picture, its word and the whole disc. */}
           <div ref={doorA} className={styles.door}>
             <PlayerButton
               className={`${styles.half} ${styles.watch}`}
@@ -292,7 +381,7 @@ export function Comics() {
                 </div>
               </div>
             </div>
-            <Hub part="a" hop={hop} onSpin={onSpin} />
+            <Hub hop={hop} onSpin={onSpin} hubRef={hub} />
           </div>
 
           {/* The Read door. */}
@@ -337,7 +426,6 @@ export function Comics() {
                 </div>
               </div>
             </div>
-            <Hub part="b" hop={hop} onSpin={onSpin} />
           </div>
 
           <div ref={sparks} className={styles.sparks} aria-hidden="true">

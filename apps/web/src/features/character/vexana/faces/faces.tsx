@@ -10,7 +10,7 @@ import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
 
 import { FIGURES } from "../media";
-import { facesGate } from "../seams/gates";
+import { registerStory } from "../seams/story-link";
 import styles from "./faces.module.css";
 import { STORY_DEPTH, StoryWord } from "./story-word";
 
@@ -52,6 +52,13 @@ const FACES: readonly Face[] = [
 /** How far the page scrolls, in screens, while the section is held in place. */
 const HOLD = 1.7;
 
+/**
+ * The seconds, on the entrance's clock, at which everything is in view and the section is ready to
+ * be used (the figures are all but settled, the word and the titles have risen, the texts are in).
+ * The doors that bring the pair in give the scroll back at this moment.
+ */
+const READY_AT = 1.7;
+
 /** Splits a word into letters that rise one after the other once the section has begun. */
 function Letters({ text, from }: { text: string; from: number }) {
   return (
@@ -90,6 +97,9 @@ export function Faces({ gated = false }: { gated?: boolean }) {
   const figs = useRef<Array<HTMLSpanElement | null>>([null, null]);
   const cols = useRef<Array<HTMLSpanElement | null>>([null, null]);
   const rings = useRef<SVGSVGElement>(null);
+  const ground = useRef<HTMLDivElement>(null);
+  const zones = useRef<Array<HTMLAnchorElement | null>>([null, null]);
+  const hintEl = useRef<HTMLParagraphElement>(null);
   const word = useRef<HTMLDivElement>(null);
   const letterPar = useRef<Array<HTMLSpanElement | null>>([]);
   const letterRip = useRef<Array<HTMLSpanElement | null>>([]);
@@ -108,6 +118,9 @@ export function Faces({ gated = false }: { gated?: boolean }) {
     root.dataset.armed = "1";
     root.dataset.in = "false";
     const e = enters.current;
+    const zs = zones.current;
+    const gr = ground.current;
+    const hn = hintEl.current;
     const h = halos.current;
     const pu = pushes.current;
     const rg = rings.current;
@@ -119,7 +132,7 @@ export function Faces({ gated = false }: { gated?: boolean }) {
     tl.fromTo(
       h,
       { autoAlpha: 0, scale: 0.5 },
-      { autoAlpha: 1, scale: 1, duration: 2.6, ease: "expo.out", stagger: 0.2 },
+      { autoAlpha: 1, scale: 1, duration: 1.8, ease: "expo.out", stagger: 0.14 },
       0,
     );
     // The figures slide in from their edges, zoomed in tight, and ease out to rest (no overshoot).
@@ -131,14 +144,14 @@ export function Faces({ gated = false }: { gated?: boolean }) {
         scale: 1.34,
         transformOrigin: (i: number) => (i === 0 ? "76% 21%" : "17% 27%"),
       },
-      { xPercent: 0, yPercent: 0, scale: 1, duration: 2.8, ease: "expo.out", stagger: 0.24 },
+      { xPercent: 0, yPercent: 0, scale: 1, duration: 1.7, ease: "expo.out", stagger: 0.16 },
       0.05,
     );
     // They show sooner than they settle.
     tl.fromTo(
       e,
       { autoAlpha: 0 },
-      { autoAlpha: 1, duration: 1.1, ease: "power2.out", stagger: 0.24 },
+      { autoAlpha: 1, duration: 0.8, ease: "power2.out", stagger: 0.16 },
       0.05,
     );
     // The words follow once the figures are well on the way.
@@ -147,7 +160,17 @@ export function Faces({ gated = false }: { gated?: boolean }) {
         root.dataset.in = "true";
       },
       [],
-      0.7,
+      0.4,
+    );
+    // The moment everything is in view and can be used: the doors waiting for it give the scroll back.
+    let readyCb: (() => void) | null = null;
+    tl.call(
+      () => {
+        readyCb?.();
+        readyCb = null;
+      },
+      [],
+      READY_AT,
     );
 
     const lean = (p: number) => {
@@ -182,13 +205,74 @@ export function Faces({ gated = false }: { gated?: boolean }) {
           onEnter: begin,
           onLeaveBack: rewind,
         });
-    const unsubscribe = gated
-      ? facesGate.subscribe((on) => {
-          if (on) begin();
-          else rewind();
+    // Gated: the doors in front of the section drive it through `registerStory`. They start the
+    // entrance when the screen is covered, wait for it to be ready, and make the pair leave to the
+    // two sides when the visitor goes back up.
+    let exitTl: gsap.core.Timeline | null = null;
+    const letterEls = () => [
+      ...(word.current?.querySelectorAll<HTMLElement>(`.${styles.sl}`) ?? []),
+    ];
+    const clearExit = () => {
+      exitTl?.kill();
+      exitTl = null;
+      for (const el of [...zones.current, ...letterEls(), ground.current, hintEl.current]) {
+        if (el) gsap.set(el, { clearProps: "transform,opacity" });
+      }
+    };
+    const resetState = () => {
+      clearExit();
+      readyCb = null;
+      tl.pause(0);
+      root.dataset.in = "false";
+    };
+    const unregister = gated
+      ? registerStory({
+          enter: () =>
+            new Promise<void>((resolve) => {
+              resetState();
+              readyCb = resolve;
+              tl.play(0);
+            }),
+          enterNow: () => {
+            clearExit();
+            tl.progress(1);
+            root.dataset.in = "true";
+          },
+          reset: resetState,
+          decoded: () => {
+            const imgs = [...root.querySelectorAll<HTMLImageElement>("img")];
+            return Promise.all(imgs.map((img) => img.decode().catch(() => undefined))).then(
+              () => undefined,
+            );
+          },
+          exit: () =>
+            new Promise<void>((resolve) => {
+              clearExit();
+              const x = gsap.timeline({ onComplete: resolve });
+              exitTl = x;
+              const [left, right] = zones.current;
+              // The left figure and its words leave to the left, the right ones to the right.
+              if (left) x.to(left, { xPercent: -112, duration: 0.62, ease: "power2.in" }, 0);
+              if (right) x.to(right, { xPercent: 112, duration: 0.62, ease: "power2.in" }, 0);
+              // The big word comes apart: its letters go out to both sides and fade.
+              x.to(
+                letterEls(),
+                {
+                  x: (i: number) => (i - 2) * window.innerWidth * 0.32,
+                  opacity: 0,
+                  duration: 0.55,
+                  ease: "power2.in",
+                },
+                0,
+              );
+              // The ground goes plain (the colour of the doors) and the hint goes.
+              if (ground.current) {
+                x.to(ground.current, { opacity: 0, duration: 0.5, ease: "power1.inOut" }, 0.1);
+              }
+              if (hintEl.current) x.to(hintEl.current, { opacity: 0, duration: 0.2 }, 0);
+            }),
         })
       : null;
-    if (gated && facesGate.get()) tl.progress(1);
     const hold = ScrollTrigger.create({
       trigger: root,
       start: "top top",
@@ -207,12 +291,16 @@ export function Faces({ gated = false }: { gated?: boolean }) {
 
     return () => {
       entry?.kill();
-      unsubscribe?.();
+      unregister?.();
+      exitTl?.kill();
       hold.kill();
       tl.kill();
       delete root.dataset.armed;
       delete root.dataset.in;
       delete root.dataset.hint;
+      for (const el of [...zs, gr, hn]) {
+        if (el) gsap.set(el, { clearProps: "transform,opacity" });
+      }
       for (const el of [...e, ...h, ...pu]) {
         if (el) {
           gsap.set(el, { clearProps: "all" });
@@ -309,10 +397,7 @@ export function Faces({ gated = false }: { gated?: boolean }) {
       aria-labelledby="faces-title"
     >
       <div ref={stage} className={styles.stage} onPointerDown={ripple}>
-        <h2 id="faces-title" className={styles.sr}>
-          Read her story in two parts
-        </h2>
-        <div className={styles.bg} aria-hidden="true">
+        <div ref={ground} className={styles.bg} aria-hidden="true">
           <svg
             ref={rings}
             viewBox="0 0 1600 900"
@@ -329,85 +414,93 @@ export function Faces({ gated = false }: { gated?: boolean }) {
           </svg>
         </div>
 
-        <StoryWord wordRef={word} parRefs={letterPar} ripRefs={letterRip} />
+        <div className={styles.depth} data-depth="">
+          <h2 id="faces-title" className={styles.sr}>
+            Read her story in two parts
+          </h2>
+          <StoryWord wordRef={word} parRefs={letterPar} ripRefs={letterRip} />
 
-        {FACES.map((f, i) => (
-          <TLink
-            key={f.side}
-            href={f.href}
-            transitionLabel={f.title}
-            className={styles.zone}
-            data-side={f.side}
-            data-cursor="READ"
-            aria-label={f.label}
-            onPointerEnter={hover(f.side)}
-            onPointerLeave={hover(null)}
-            onFocus={() => setActive(f.side)}
-            onBlur={() => setActive(null)}
-          >
-            <span
-              className={styles.halo}
-              aria-hidden="true"
-              ref={(el) => {
-                halos.current[i] = el;
+          {FACES.map((f, i) => (
+            <TLink
+              key={f.side}
+              ref={(el: HTMLAnchorElement | null) => {
+                zones.current[i] = el;
               }}
-            />
-            <span className={styles.fig} aria-hidden="true">
+              href={f.href}
+              transitionLabel={f.title}
+              className={styles.zone}
+              data-side={f.side}
+              data-cursor="READ"
+              aria-label={f.label}
+              onPointerEnter={hover(f.side)}
+              onPointerLeave={hover(null)}
+              onFocus={() => setActive(f.side)}
+              onBlur={() => setActive(null)}
+            >
               <span
-                className={styles.enter}
+                className={styles.halo}
+                aria-hidden="true"
                 ref={(el) => {
-                  enters.current[i] = el;
+                  halos.current[i] = el;
                 }}
-              >
+              />
+              <span className={styles.fig} aria-hidden="true">
                 <span
-                  className={styles.push}
+                  className={styles.enter}
                   ref={(el) => {
-                    pushes.current[i] = el;
+                    enters.current[i] = el;
                   }}
                 >
                   <span
-                    className={styles.par}
+                    className={styles.push}
                     ref={(el) => {
-                      figs.current[i] = el;
+                      pushes.current[i] = el;
                     }}
                   >
-                    {/* Plain <img>: static export, a transparent cut-out. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      className={styles.img}
-                      src={asset(f.src)}
-                      alt=""
-                      width={1086}
-                      height={1448}
-                      draggable={false}
-                      decoding="async"
-                    />
+                    <span
+                      className={styles.par}
+                      ref={(el) => {
+                        figs.current[i] = el;
+                      }}
+                    >
+                      {/* Plain <img>: static export, a transparent cut-out. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        className={styles.img}
+                        src={asset(f.src)}
+                        alt=""
+                        width={1086}
+                        height={1448}
+                        draggable={false}
+                        decoding="async"
+                      />
+                    </span>
                   </span>
                 </span>
               </span>
-            </span>
 
-            <span className={styles.col}>
-              <span
-                className={styles.colPar}
-                ref={(el) => {
-                  cols.current[i] = el;
-                }}
-              >
-                <span className={styles.kicker}>{f.kicker}</span>
-                <span className={styles.title} role="presentation">
-                  <Letters text={f.title.toUpperCase()} from={i * 3} />
+              <span className={styles.col}>
+                <span
+                  className={styles.colPar}
+                  ref={(el) => {
+                    cols.current[i] = el;
+                  }}
+                >
+                  <span className={styles.kicker}>{f.kicker}</span>
+                  <span className={styles.title} role="presentation">
+                    <Letters text={f.title.toUpperCase()} from={i * 3} />
+                  </span>
+                  <span className={styles.text}>{f.text}</span>
                 </span>
-                <span className={styles.text}>{f.text}</span>
               </span>
-            </span>
-          </TLink>
-        ))}
+            </TLink>
+          ))}
 
-        <p className={styles.hint} aria-hidden="true">
-          <span className={styles.hintFine}>Choose a side</span>
-          <span className={styles.hintCoarse}>Tap a side</span>
-        </p>
+          <p ref={hintEl} className={styles.hint} aria-hidden="true">
+            <span className={styles.hintFine}>Choose a side</span>
+            <span className={styles.hintCoarse}>Tap a side</span>
+          </p>
+        </div>
       </div>
     </section>
   );

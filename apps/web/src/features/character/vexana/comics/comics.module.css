@@ -4,19 +4,20 @@
  * (the section has scrolled into view). Sizes are in container units of `.stage`.
  */
 /*
- * The section is a tall box with a sticky screen in it. It waits under the interlude (it starts
- * `2.2` screens earlier than the interlude's end, so it is already in place when the interlude's
- * doors have closed and begin to open by themselves), stays held for 2 more screens while it is played with, and in the last of them its
- * two halves open like doors on the livestream under it (see comics.tsx). So its own background is
- * clear: only the two halves colour the screen, and they leave when they open.
+ * The section is one screen. It is the screen the interlude's doors open on (and close on when the
+ * visitor comes back up), and it is held for a little while the visitor plays with it, then its two
+ * halves go out like doors on the livestream (see seams/comic-link.ts and vexana-page.tsx). So its
+ * own background is clear: only the two halves colour the screen, and they leave when they open.
  */
 .comics {
   --sh: 100vh;
+  /* How long each part of the entrance waits (the words, the disc, the sticker): kept short, the
+     visitor is held in place until all of it is in. */
+  --d-rise: 250ms;
+  --d-pop: 0ms;
+  --d-chibi: 650ms;
   position: relative;
-  z-index: 3;
-  height: calc(var(--sh) * 3.9);
-  margin-top: calc(var(--sh) * -2.2);
-  /* A tall transparent box over the livestream waiting under it: only the stage takes the pointer. */
+  /* A transparent box over the livestream under it: only the stage takes the pointer. */
   pointer-events: none;
   color: #fff;
   --spring: cubic-bezier(0.3, 1.55, 0.5, 1);
@@ -31,14 +32,11 @@
 
 /* No scroll tricks: the comic is one screen and nothing is held. */
 .comics[data-plain="true"] {
-  height: auto;
-  margin-top: 0;
   background: #140e26;
 }
 
 .sticky {
-  position: sticky;
-  top: 0;
+  position: relative;
   height: max(540px, var(--sh));
   pointer-events: none;
 }
@@ -52,12 +50,31 @@
   pointer-events: auto;
 }
 
-/* One of the two doors: a full-size layer that holds its half, its picture, its word and its half of
-   the disc, and slides out sideways at the end. */
+/* While the join with the livestream plays (comic-link.ts) the stage is fixed to the screen, in the
+   very place the page holds it in (the same top, the same height), so the page can jump under it and
+   the two halves can open (or close) on what is there. */
+.comics[data-pinned="true"] .stage {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: min(0px, calc(var(--sh) - max(540px, var(--sh))));
+  height: max(540px, var(--sh));
+  z-index: 2;
+}
+
+/* One of the two doors: a full-size layer that holds its half, its picture, its word and (the Watch
+   door) the whole disc, and slides out sideways at the end. Each is its own stacking context (their
+   z-index), always: so a transform that is put on them or taken off never changes which one is
+   above, and the disc of the Watch door is over the Read half both at rest and while they move. */
 .door {
   position: absolute;
   inset: 0;
+  z-index: 1;
   pointer-events: none;
+}
+
+.door:first-child {
+  z-index: 2;
 }
 
 /* ---- The halves: the two buttons. Each is a full-size layer scaled from its own edge. ---- */
@@ -148,6 +165,12 @@
   transition-timing-function: ease-out !important;
 }
 
+/* The doors themselves follow the slide frame by frame. A transition on them would make them lag the
+   tween, and the page would jump while the halves were still a few pixels apart. */
+.comics[data-leaving="true"] .door {
+  transition: none !important;
+}
+
 /* The livestream under the opening doors is the one to take the pointer now. */
 .comics[data-leaving="true"] .stage {
   pointer-events: none;
@@ -212,13 +235,16 @@
 .rise {
   display: block;
   transition:
-    transform 900ms var(--glide) 700ms,
-    opacity 700ms var(--glide) 700ms;
+    transform 900ms var(--glide) var(--d-rise),
+    opacity 700ms var(--glide) var(--d-rise);
 }
 
+/* Taken away at once (no wait, no fade): it is only ever put away while the screen is covered, or
+   while the halves come in over the livestream before the words arrive. */
 .comics[data-seen="false"] .rise {
   opacity: 0;
   transform: translate3d(0, 44px, 0);
+  transition: none;
 }
 
 .big {
@@ -345,16 +371,6 @@
 }
 
 /* ---- The hub: the disc, its dashed orbit and the chibi ---- */
-/* The disc is drawn twice, one copy per door, each showing its own side of the middle line (the
-   overlap is a hair so no seam shows). */
-.hubLayer[data-part="a"] {
-  clip-path: inset(0 49.8% 0 0);
-}
-
-.hubLayer[data-part="b"] {
-  clip-path: inset(0 0 0 49.8%);
-}
-
 .hub {
   position: absolute;
   left: 50%;
@@ -397,8 +413,14 @@
   transform: scale(0);
 }
 
-.comics[data-seen="true"] .pop {
-  animation: pop 1000ms var(--spring) 200ms backwards;
+/* The disc came in with its half (the visitor is coming back up from the livestream): it is there
+   from the first frame and does not pop again when the words arrive. */
+.comics[data-seen="false"][data-disc="true"] .pop {
+  transform: none;
+}
+
+.comics[data-seen="true"]:not([data-disc="true"]) .pop {
+  animation: pop 1000ms var(--spring) var(--d-pop) backwards;
 }
 
 .disc {
@@ -464,7 +486,7 @@
 }
 
 .comics[data-seen="true"] .chibiPos {
-  animation: drop 1100ms var(--spring) 1150ms backwards;
+  animation: drop 1100ms var(--spring) var(--d-chibi) backwards;
 }
 
 .lean {
@@ -735,12 +757,9 @@
     height: max(620px, var(--sh));
   }
 
-  .hubLayer[data-part="a"] {
-    clip-path: inset(0 0 49.8% 0);
-  }
-
-  .hubLayer[data-part="b"] {
-    clip-path: inset(49.8% 0 0 0);
+  .comics[data-pinned="true"] .stage {
+    top: min(0px, calc(var(--sh) - max(620px, var(--sh))));
+    height: max(620px, var(--sh));
   }
 
   .watch {

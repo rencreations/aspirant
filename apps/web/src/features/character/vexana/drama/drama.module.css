@@ -1,4 +1,11 @@
-/* 06, the game: the visual novel scene as a game, only for this section. */
+/*
+ * 06, the interactive drama. The whole section is one screen tall: the title, the game and the line
+ * under it all fit, so nothing has to be scrolled to play. The game frame (`.cab`) takes the largest
+ * 16:9 box that fits in the space that is left (`.stage`), and everything inside it is sized in `em`
+ * from that frame (its font size is a share of its width), so a menu on a 4K screen and on a laptop
+ * are the same picture. On a screen taller than it is wide the frame takes all the space instead and
+ * the film sits at the top of it.
+ */
 .drama {
   --ink: #140e26;
   --deep: #0a0614;
@@ -6,89 +13,51 @@
   --magenta: #e040a0;
   --lav: #b79cf2;
   --glow: #d9d5f5;
-  --notch: polygon(
-    0 6px,
-    6px 6px,
-    6px 0,
-    calc(100% - 6px) 0,
-    calc(100% - 6px) 6px,
-    100% 6px,
-    100% calc(100% - 6px),
-    calc(100% - 6px) calc(100% - 6px),
-    calc(100% - 6px) 100%,
-    6px 100%,
-    6px calc(100% - 6px),
-    0 calc(100% - 6px)
-  );
+  --pad: 24px;
   position: relative;
   isolation: isolate;
   overflow: clip;
-  min-height: 100svh;
-  padding: clamp(60px, 9vh, 96px) clamp(10px, 2vw, 32px) clamp(32px, 6vh, 64px);
+  contain: layout paint;
+  height: 100svh;
   display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: 14px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(6px, 1.1vh, 14px);
+  padding: calc(var(--nav-h, 4rem) + 4px) clamp(10px, 2vw, 32px) clamp(8px, 1.4vh, 16px);
   color: #f1ecfb;
-  background: radial-gradient(120% 80% at 50% 0%, #1e1240 0%, var(--deep) 60%);
+  background:
+    linear-gradient(rgb(183 156 242 / 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgb(183 156 242 / 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(120% 80% at 50% 0%, #1e1240 0%, var(--deep) 60%);
 }
 
-.bg {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgb(183 156 242 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(183 156 242 / 0.07) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(80% 70% at 50% 50%, #000 30%, transparent 85%);
-}
-
-.pixel {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: var(--magenta);
-  opacity: 0.5;
-  animation: twinkle 3.6s steps(2, end) infinite;
-}
-
-.pixel:nth-child(3n) {
-  background: var(--lav);
-  width: 6px;
-  height: 6px;
-}
-
-@keyframes twinkle {
-  50% {
-    opacity: 0.08;
-  }
-}
-
-.top {
-  width: min(96vw, calc((100svh - 150px) * 16 / 9));
+/* ---- the line above and the line under the game -------------------------------------------- */
+.top,
+.foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
 }
 
 .eyebrow {
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 0;
+  gap: 10px;
   font-family: var(--font-mono-stack);
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--lav);
+  white-space: nowrap;
 }
 
 .eyebrow b {
@@ -97,122 +66,148 @@
 }
 
 .eyebrow i {
-  width: 48px;
+  width: 32px;
   height: 1px;
   background: currentColor;
   opacity: 0.6;
 }
 
-.sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
+.heading {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 28px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-/* The top score and the full screen button share the right end of the header. */
-.topEnd {
-  display: flex;
-  align-items: center;
-  gap: clamp(10px, 2vw, 22px);
-}
-
-.fs {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 1px solid rgb(224 64 160 / 0.7);
-  background: rgb(224 64 160 / 0.14);
-  color: #fff;
+.how {
+  margin: 0;
+  min-width: 0;
   font-family: var(--font-mono-stack);
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  font-size: clamp(9px, 0.8vw, 12px);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  cursor: pointer;
-  clip-path: var(--notch);
-  transition:
-    background-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
+  color: rgb(217 213 245 / 0.72);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fs:hover,
-.fs:focus-visible {
-  background: var(--magenta);
-  color: var(--ink);
-  outline: none;
+/* The quiet marks that say how far the visitor has scrolled towards the page before or after. */
+.touch {
+  display: none;
 }
 
-@media (max-width: 560px) {
-  .topEnd .max {
+@media (hover: none) {
+  .keys {
     display: none;
   }
+
+  .touch {
+    display: inline;
+  }
+
+  .how {
+    white-space: normal;
+    line-height: 1.3;
+  }
 }
 
-.max {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
+.cue {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
   font-family: var(--font-mono-stack);
-  font-size: 13px;
-  letter-spacing: 0.18em;
-  color: var(--glow);
-  font-variant-numeric: tabular-nums;
-}
-
-.max span {
-  font-size: 10px;
-  letter-spacing: 0.22em;
+  font-size: clamp(9px, 0.8vw, 12px);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--lav);
+  color: rgb(217 213 245 / 0.55);
 }
 
-/* ---- the cabinet --------------------------------------------------------------------------- */
-.cab {
-  width: min(96vw, calc((100svh - 150px) * 16 / 9));
-  display: grid;
-  gap: 12px;
+.cue[data-active="true"] {
+  color: #fff;
 }
 
-.screen {
+.cue i {
   position: relative;
+  width: clamp(48px, 7vw, 120px);
+  height: 3px;
+  background: rgb(183 156 242 / 0.22);
+  overflow: hidden;
+}
+
+.cue b {
+  position: absolute;
+  inset: 0;
+  background: var(--magenta);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* ---- the game frame ------------------------------------------------------------------------ */
+.stage {
+  container: stage / size;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  min-width: 0;
+}
+
+.cab {
+  container: cab / size;
+  position: relative;
+  width: min(calc(100cqw - var(--pad)), calc((100cqh - var(--pad)) * 16 / 9));
   aspect-ratio: 16 / 9;
+  font-size: max(10px, calc(min(100cqw - var(--pad), (100cqh - var(--pad)) * 16 / 9) * 0.0115));
   overflow: hidden;
   border-radius: 14px;
-  background: #000;
+  background: #07040f;
   border: 3px solid #2a1d4d;
   box-shadow:
-    0 0 0 7px var(--ink),
-    0 0 0 9px rgb(224 64 160 / 0.55),
-    0 40px 110px rgb(0 0 0 / 0.65),
-    0 0 120px rgb(122 79 214 / 0.25);
-  outline: none;
-  opacity: 0;
+    0 0 0 6px var(--ink),
+    0 0 0 8px rgb(224 64 160 / 0.55),
+    0 18px 50px rgb(0 0 0 / 0.5);
+  contain: layout paint;
+  color: #f1ecfb;
 }
 
-.screen[data-powered="true"] {
-  opacity: 1;
-  animation: power 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-@keyframes power {
-  0% {
-    transform: scaleY(0.02) scaleX(0.6);
-    opacity: 0;
-  }
-  45% {
-    transform: scaleY(0.02) scaleX(1);
-    opacity: 1;
-  }
-  100% {
-    transform: none;
+/* A screen taller than it is wide: the frame takes the whole space and the film sits at its top. */
+@container stage (aspect-ratio < 1) {
+  .cab {
+    width: calc(100cqw - var(--pad));
+    height: calc(100cqh - var(--pad));
+    aspect-ratio: auto;
+    font-size: max(11px, calc((100cqw - var(--pad)) * 0.031));
   }
 }
 
-.video {
+.cab:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: max(11px, calc(min(100vw, 100vh * 16 / 9) * 0.0115));
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .cab:fullscreen {
+    font-size: max(11px, calc(100vw * 0.031));
+  }
+}
+
+.cab[data-ready="false"] [data-needs-save] {
+  visibility: hidden;
+}
+
+/* ---- the title screen ---------------------------------------------------------------------- */
+.poster {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -221,669 +216,56 @@
   display: block;
 }
 
-.scanlines {
+/* The vignette: one gradient, so the picture is darker where the menu is. */
+.vignette {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.22) 0 1px, transparent 1px 3px);
-  opacity: 0;
+  background: radial-gradient(90% 90% at 50% 45%, rgb(10 6 20 / 0.35), rgb(10 6 20 / 0.9));
 }
 
-.screen[data-scan="true"] .scanlines {
-  opacity: 0.6;
-}
-
-/* ---- the menus ----------------------------------------------------------------------------- */
-.overlay {
+.screenTools {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(8px, 1.6vh, 18px);
-  padding: 4%;
-  text-align: center;
-  background: rgb(10 6 20 / 0.84);
+  top: 0.8em;
+  right: 0.8em;
+  z-index: 5;
 }
 
-.overlay[data-kind="title"] {
-  background: linear-gradient(
-    to top,
-    rgb(10 6 20 / 0.92),
-    rgb(10 6 20 / 0.45) 60%,
-    rgb(10 6 20 / 0.6)
-  );
-}
-
-.overlay[data-kind="clear"] {
-  background: radial-gradient(80% 80% at 50% 40%, rgb(122 79 214 / 0.55), rgb(10 6 20 / 0.92));
-}
-
-.kicker {
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(10px, 1vw, 13px);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--lav);
-}
-
-.logo {
-  margin: 0;
+.tool {
+  width: 2.6em;
+  height: 2.6em;
   display: grid;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(36px, 7.4vw, 124px);
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: #fff;
-  text-shadow:
-    3px 3px 0 var(--magenta),
-    6px 6px 0 var(--violet);
-}
-
-.press {
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(12px, 1.3vw, 18px);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: #fff;
-  animation: blink 1.1s steps(2, end) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-.heading {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(30px, 5vw, 72px);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-shadow: 3px 3px 0 var(--magenta);
-}
-
-.menu {
-  display: grid;
-  gap: 4px;
-  margin: 0;
+  place-items: center;
   padding: 0;
-  list-style: none;
-}
-
-.menu button,
-.menu > li > button {
-  display: block;
-  width: clamp(190px, 26vw, 340px);
-  padding: clamp(6px, 1vh, 11px) 18px;
-  border: 0;
-  background: transparent;
+  border: 1px solid rgb(183 156 242 / 0.4);
+  border-radius: 0.4em;
+  background: rgb(10 6 20 / 0.6);
   color: #f1ecfb;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(11px, 1.2vw, 16px);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
   cursor: pointer;
-  clip-path: var(--notch);
 }
 
-.menu button:hover,
-.menu button:focus-visible,
-.levels button:hover,
-.levels button:focus-visible {
+.tool:hover,
+.tool:focus-visible {
   background: var(--magenta);
   color: var(--ink);
   outline: none;
 }
 
-.menu button:hover::before,
-.menu button:focus-visible::before {
-  content: "> ";
-}
-
-.menu em {
-  font-style: normal;
-  opacity: 0.75;
-}
-
-.levels {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(6px, 1.2vw, 14px);
-  width: min(92%, 880px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.levels button {
-  display: grid;
-  justify-items: start;
-  gap: 2px;
-  width: 100%;
-  padding: clamp(8px, 1.4vh, 16px) 12px;
-  border: 0;
-  background: rgb(255 255 255 / 0.07);
-  box-shadow: inset 0 0 0 2px rgb(183 156 242 / 0.5);
-  color: #f1ecfb;
-  text-align: left;
-  cursor: pointer;
-  clip-path: var(--notch);
-}
-
-.levels b {
-  font-family: var(--font-display-stack);
-  font-size: clamp(22px, 3vw, 44px);
-  line-height: 1;
-}
-
-.levels span {
-  font-family: var(--font-mono-stack);
-  font-size: clamp(9px, 1vw, 13px);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.levels small {
-  font-family: var(--font-mono-stack);
-  font-size: clamp(8px, 0.8vw, 11px);
-  opacity: 0.7;
-}
-
-.back {
-  grid-column: 1 / -1;
-}
-
-.back button {
-  justify-items: center;
-  text-align: center;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  font-family: var(--font-mono-stack);
-}
-
-.final {
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(11px, 1.3vw, 17px);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.final b {
-  display: block;
-  margin-top: 4px;
-  font-family: var(--font-display-stack);
-  font-size: clamp(28px, 4.4vw, 64px);
-  letter-spacing: 0.08em;
-  color: #fff;
-}
-
-.count {
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(11px, 1.2vw, 16px);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #ffb1dd;
-}
-
-.count b {
-  font-family: var(--font-display-stack);
-  font-size: 1.8em;
-  margin-left: 8px;
-  color: #fff;
-}
-
-/* ---- the HUD ------------------------------------------------------------------------------- */
-.hud {
+/* A layer over the game or the title: the level select and the ending. */
+.cover {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  z-index: 6;
 }
 
-.hud button {
-  pointer-events: auto;
-}
-
-.bar {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1.6vw, 22px);
-  padding: clamp(8px, 1.2vw, 16px) clamp(10px, 1.6vw, 22px) clamp(18px, 3vw, 40px);
-  background: linear-gradient(to bottom, rgb(10 6 20 / 0.82), transparent);
-  font-family: var(--font-mono-stack);
-  font-size: clamp(9px, 1vw, 13px);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.chip {
-  white-space: nowrap;
-}
-
-.chip b {
-  color: var(--magenta);
-  margin-right: 2px;
-}
-
-.hope {
-  flex: 1;
-  max-width: 380px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.hope small,
-.score small {
-  font-size: 0.8em;
-  letter-spacing: 0.22em;
-  color: var(--lav);
-}
-
-.hopeTrack {
-  position: relative;
-  flex: 1;
-  height: 10px;
-  border: 2px solid #fff;
-  background: rgb(255 255 255 / 0.12);
-  overflow: hidden;
-}
-
-.hopeTrack::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0 10px,
-    rgb(10 6 20 / 0.85) 10px 12px
-  );
-}
-
-.hopeFill {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, var(--violet), var(--magenta));
-  transform-origin: 0 50%;
-  transition: transform 260ms linear;
-}
-
-.score {
-  margin-left: auto;
-  display: grid;
-  justify-items: end;
-  font-variant-numeric: tabular-nums;
-}
-
-.icon {
-  display: grid;
-  place-items: center;
-  width: clamp(26px, 2.6vw, 36px);
-  height: clamp(26px, 2.6vw, 36px);
-  border: 0;
-  background: rgb(255 255 255 / 0.14);
-  color: #fff;
-  cursor: pointer;
-  clip-path: var(--notch);
-}
-
-.icon:hover {
-  background: var(--magenta);
-}
-
-.quests {
-  position: absolute;
-  right: clamp(8px, 1.4vw, 20px);
-  top: clamp(44px, 6vw, 74px);
-  width: clamp(170px, 21%, 270px);
-  padding: 10px 12px;
-  background: rgb(10 6 20 / 0.74);
-  box-shadow: inset 0 0 0 2px rgb(183 156 242 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: clamp(8.5px, 0.85vw, 11.5px);
-  line-height: 1.4;
-  clip-path: var(--notch);
-}
-
-.quests p {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 0 8px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--lav);
-}
-
-.quests p button {
-  border: 0;
-  background: transparent;
-  color: var(--glow);
-  font: inherit;
-  letter-spacing: 0.12em;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.quests ol {
-  display: grid;
-  gap: 5px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.quests li {
-  display: grid;
-  grid-template-columns: 12px 1fr;
-  gap: 6px;
-  color: rgb(241 236 251 / 0.7);
-}
-
-.quests li[data-state="done"] {
-  opacity: 0.55;
-  text-decoration: line-through;
-}
-
-.quests li[data-state="now"] {
-  color: #ffd1ea;
-}
-
-.quests i {
-  font-style: normal;
-  color: var(--magenta);
-}
-
-.logOpen {
-  position: absolute;
-  right: clamp(8px, 1.4vw, 20px);
-  top: clamp(44px, 6vw, 74px);
-  padding: 6px 12px;
-  border: 0;
-  background: rgb(10 6 20 / 0.74);
-  box-shadow: inset 0 0 0 2px rgb(183 156 242 / 0.45);
-  color: var(--glow);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  clip-path: var(--notch);
-}
-
-/* ---- achievement --------------------------------------------------------------------------- */
-.toast {
-  position: absolute;
-  left: 50%;
-  top: clamp(46px, 6vw, 80px);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 18px 10px 12px;
-  background: rgb(20 14 38 / 0.95);
-  box-shadow:
-    inset 0 0 0 2px #ffd36e,
-    0 14px 40px rgb(0 0 0 / 0.5);
-  font-size: clamp(10px, 1vw, 13px);
-  line-height: 1.35;
-  clip-path: var(--notch);
-  animation: toast 4.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  pointer-events: none;
-}
-
-.toast small {
-  display: block;
-  font-family: var(--font-mono-stack);
-  font-size: 0.78em;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #ffd36e;
-}
-
-.toast b {
-  display: block;
-  font-family: var(--font-display-stack);
-  font-size: 1.6em;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.trophy {
-  flex: none;
-  width: clamp(24px, 2.6vw, 36px);
-  height: clamp(24px, 2.6vw, 36px);
-  background: #ffd36e;
-  clip-path: polygon(
-    50% 0,
-    62% 34%,
-    100% 38%,
-    70% 60%,
-    80% 100%,
-    50% 78%,
-    20% 100%,
-    30% 60%,
-    0 38%,
-    38% 34%
-  );
-}
-
-@keyframes toast {
-  0% {
-    transform: translate(-50%, -140%);
-    opacity: 0;
-  }
-  9%,
-  86% {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -140%);
-    opacity: 0;
+@media (hover: none) {
+  .tool {
+    width: 3em;
+    height: 3em;
   }
 }
 
-/* ---- under the screen ---------------------------------------------------------------------- */
-.pad {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 3vw, 40px);
-  flex-wrap: wrap;
-}
-
-.keys {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px clamp(10px, 1.6vw, 22px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgb(241 236 251 / 0.65);
-}
-
-.keys li {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.keys kbd {
-  padding: 2px 7px;
-  border-radius: 4px;
-  border: 1px solid rgb(183 156 242 / 0.55);
-  box-shadow: 0 2px 0 rgb(183 156 242 / 0.4);
-  font: inherit;
-  color: #fff;
-}
-
-.stages {
-  position: relative;
-  flex: 1;
-  min-width: 260px;
-  height: 36px;
-}
-
-.rail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 4px;
-  margin-top: -2px;
-  background: rgb(183 156 242 / 0.28);
-  overflow: hidden;
-}
-
-.railFill {
-  position: absolute;
-  inset: 0;
-  background: var(--magenta);
-  transform-origin: 0 50%;
-  transition: transform 260ms linear;
-}
-
-.tick {
-  position: absolute;
-  top: 50%;
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  margin: -13px 0 0 -13px;
-  border: 0;
-  background: #2a1d4d;
-  color: #fff;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  cursor: pointer;
-  clip-path: var(--notch);
-  transition: transform 200ms ease;
-}
-
-.tick[data-state="done"] {
-  background: var(--magenta);
-}
-
-.tick[data-state="now"] {
-  background: #fff;
-  color: var(--ink);
-  transform: scale(1.2);
-}
-
-.tick:hover {
-  transform: scale(1.25);
-}
-
-.tick:first-of-type {
-  margin-left: 0;
-}
-
-@media (max-width: 900px) {
-  .keys {
+@media (max-height: 520px) {
+  .eyebrow i {
     display: none;
-  }
-
-  .levels {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 700px) {
-  .drama {
-    padding-inline: 8px;
-  }
-
-  .quests,
-  .logOpen {
-    display: none;
-  }
-
-  .chip {
-    display: none;
-  }
-
-  .overlay {
-    gap: 4px;
-    padding: 2%;
-  }
-
-  .kicker,
-  .press {
-    display: none;
-  }
-
-  .logo {
-    font-size: clamp(26px, 9vw, 40px);
-  }
-
-  .heading {
-    font-size: clamp(22px, 7vw, 32px);
-  }
-
-  .final b {
-    font-size: 26px;
-  }
-
-  .menu {
-    gap: 0;
-  }
-
-  .menu button,
-  .menu > li > button {
-    width: min(70vw, 260px);
-    padding: 3px 12px;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-  }
-
-  .levels {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 4px;
-  }
-
-  .levels button {
-    padding: 6px 6px;
-  }
-
-  .levels span,
-  .levels small {
-    display: none;
-  }
-
-  .stages {
-    min-width: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pixel,
-  .press,
-  .toast {
-    animation: none;
-  }
-
-  .screen[data-powered="true"] {
-    animation: none;
-  }
-
-  .toast {
-    transform: translate(-50%, 0);
-  }
-
-  .hopeFill,
-  .railFill {
-    transition: none;
   }
 }

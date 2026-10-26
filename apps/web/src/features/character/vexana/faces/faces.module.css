@@ -34,6 +34,15 @@
   background: #f4f0f8;
 }
 
+/* Everything in the stage except the ground. The interlude that rises over the pair makes it step
+   back (a small scale about the middle): the ground stays whole and full-bleed, so nothing of the
+   stage's own edge shows beside the scaled picture. */
+.depth {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
 .sr {
   position: absolute;
   width: 1px;
@@ -235,7 +244,7 @@
   padding: 0.02em 0.06em;
   font-family: var(--font-display-stack);
   font-weight: 800;
-  font-size: min(clamp(7rem, 29svh, 22rem), 20vw);
+  font-size: min(clamp(5.6rem, 23svh, 17.6rem), 16vw);
   line-height: 0.84;
   letter-spacing: 0;
   user-select: none;
@@ -280,8 +289,8 @@
 }
 
 .sIn {
-  transition: transform 1.3s var(--ease);
-  transition-delay: calc(var(--i) * 95ms + 650ms);
+  transition: transform 0.9s var(--ease);
+  transition-delay: calc(var(--i) * 60ms + 120ms);
 }
 
 .sFloat {
@@ -413,8 +422,8 @@
   line-height: 1;
   color: var(--lead);
   transition:
-    opacity 0.9s ease-out 0.15s,
-    transform 0.9s var(--ease) 0.15s;
+    opacity 0.7s ease-out 0.1s,
+    transform 0.7s var(--ease) 0.1s;
 }
 
 .title {
@@ -438,8 +447,8 @@
 
 .ch {
   display: inline-block;
-  transition: transform 1.05s var(--ease);
-  transition-delay: calc(var(--i) * 55ms + 250ms);
+  transition: transform 0.8s var(--ease);
+  transition-delay: calc(var(--i) * 45ms + 100ms);
 }
 
 .text {
@@ -450,8 +459,8 @@
   line-height: 1.5;
   color: rgb(20 14 38 / 0.74);
   transition:
-    opacity 0.9s ease-out 0.7s,
-    transform 0.9s var(--ease) 0.7s;
+    opacity 0.7s ease-out 0.3s,
+    transform 0.7s var(--ease) 0.3s;
 }
 
 .hint {
@@ -574,7 +583,7 @@
   }
 
   .sw {
-    font-size: min(23vw, 18svh);
+    font-size: min(18.4vw, 14.4svh);
   }
 
   .text {

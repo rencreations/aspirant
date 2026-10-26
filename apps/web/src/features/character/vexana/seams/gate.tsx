@@ -7,9 +7,11 @@ import { useLenis } from "@/components/smooth-scroll";
 import { perfLevel, type PerfLevel } from "@/lib/perf";
 
 import styles from "./gate.module.css";
+import { whenCalm } from "./calm";
 import { boundary, toneHint, type Dir } from "./gates";
 import { Hold, useHold, useHoldProgress } from "./hold";
 import { useScrollSnap } from "./snap";
+import { setThresholdProgress } from "./threshold-progress";
 
 /** What a scene is given when the transition starts. All times are in seconds on its timeline. */
 interface SceneCtx {
@@ -76,7 +78,12 @@ function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled
     const l = layer.current;
     if (!r || !l) return;
     const b = boundary(id);
-    const s = { armed: true, last: 0, tl: null as gsap.core.Timeline | null };
+    const s = {
+      armed: true,
+      last: 0,
+      tl: null as gsap.core.Timeline | null,
+      calm: null as (() => void) | null,
+    };
 
     const finish = () => {
       l.style.visibility = "hidden";
@@ -84,6 +91,10 @@ function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled
       r.style.zIndex = "";
       scene.current?.reset();
       toneHint.set(null);
+      setThresholdProgress(id, "down", 0);
+      setThresholdProgress(id, "up", 0);
+      s.calm?.();
+      s.calm = null;
       s.tl?.kill();
       s.tl = null;
       b.busy = false;
@@ -166,9 +177,16 @@ function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled
         },
       });
       if (swapTime < 0) swapTime = tl.duration() * 0.5;
+      // The page jumps while the screen is covered. Painting the section it lands on takes the
+      // graphics process a while, so the scene stands still until the frames are smooth again.
       tl.call(
         () => {
+          tl.pause();
           swap(dir);
+          s.calm = whenCalm(() => {
+            s.calm = null;
+            tl.resume();
+          });
         },
         undefined,
         swapTime,
@@ -179,7 +197,27 @@ function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled
     playRef.current = play;
     b.play = play;
 
+    // The held section is scaled by the scene. On a layer of its own the scale only moves a texture;
+    // on a plain one every step paints the whole section again (about 175 ms of graphics work at the
+    // start of the scene). It gets its own layer while the boundary is within a screen or two, which
+    // is also when its tiles are painted anyway, and gives it back when it is far (memory).
+    const promote = (on: boolean) => {
+      for (const el of [content.current, b.up?.held]) {
+        if (el) el.style.willChange = on ? "transform" : "";
+      }
+    };
+    const near = new IntersectionObserver(
+      (entries) => {
+        const last = entries[entries.length - 1];
+        if (last) promote(last.isIntersecting || b.busy);
+      },
+      { rootMargin: "120% 0px 120% 0px" },
+    );
+    near.observe(r);
+
     tick.current = (p) => {
+      // How far into the threshold the visitor is (the section that shows it reads this).
+      setThresholdProgress(id, "down", p <= 0 || p >= 0.995 || b.busy ? 0 : Math.min(1, p / at));
       if (p < at - 0.2) s.armed = true;
       if (p >= at && p < 0.995 && p > s.last && s.armed && !b.busy) play("down");
       s.last = p;
@@ -190,6 +228,9 @@ function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled
       tick.current = () => undefined;
       playRef.current = () => undefined;
       if (b.play === play) b.play = null;
+      near.disconnect();
+      promote(false);
+      s.calm?.();
       s.tl?.kill();
       if (b.busy) lenisRef.current.resume();
       b.busy = false;
