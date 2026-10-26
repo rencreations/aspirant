@@ -28,6 +28,7 @@ import {
 import { duoFirstPaint, duoLater } from "@/features/character/duo/duo-media";
 import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinevere/preload-items";
 import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
+import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import {
   chunkItem,
@@ -206,6 +207,15 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...shared,
         ...lfFirstPaint(slug),
         ...lfLater(slug).flatMap((g) => later(null, g.priority, g.items)),
+      ];
+    }
+    if (slug === "lesley" || slug === "change") {
+      // Her page of the pair: her splash art is waited for, the voice lines, the films' posters
+      // and her partner's art arrive in the background (see `features/character/lesley-change/preload-items.ts`).
+      return [
+        ...shared,
+        ...lcFirstPaint(slug),
+        ...lcLater(slug).flatMap((g) => later(null, g.priority, g.items)),
       ];
     }
     if (slug === "ruby" || slug === "angela") {

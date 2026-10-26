@@ -8,6 +8,8 @@ export const ROUTES = [
   "/character/",
   "/character/fanny/",
   "/character/layla/",
+  "/character/lesley/",
+  "/character/change/",
   "/character/selena/",
   "/character/selena/about/",
   "/character/selena/skills/",

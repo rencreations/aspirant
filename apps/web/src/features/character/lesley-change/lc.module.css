@@ -1,0 +1,1099 @@
+/*
+ * The pair's pages below the first screen. One channel, two ends.
+ * Lesley: steel and sunrise. A log: hairline rules, squared cards, heavy capitals, a service card.
+ * Chang'e: a lab. Soft pastel cards, dotted paper, a serif title, a lab pass with a barcode.
+ * The pill that leads to the other end, the order of the sections and the meeting are the same.
+ * Everything that moves is a transform or an opacity.
+ */
+
+.page {
+  position: relative;
+  background: var(--lc-ground);
+  color: var(--lc-ink);
+  font-family: var(--font-body-stack);
+  overflow-x: clip;
+  --lc-pad: max(5vw, 24px);
+  --lc-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nextZone {
+  position: relative;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------------ shared bits */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 0.7s var(--lc-ease),
+    transform 0.7s var(--lc-ease);
+  transition-delay: calc(var(--d, 0) * 70ms);
+}
+
+.reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.profile,
+.notes,
+.voice,
+.films,
+.gallery,
+.together {
+  position: relative;
+  padding: clamp(5rem, 14vh, 9rem) var(--lc-pad);
+}
+
+.page[data-who="change"] .profile,
+.page[data-who="change"] .notes,
+.page[data-who="change"] .films,
+.page[data-who="change"] .gallery {
+  background-image: radial-gradient(var(--lc-line) 1.2px, transparent 1.4px);
+  background-size: 26px 26px;
+}
+
+.voice,
+.together {
+  background: var(--lc-ink);
+  color: #f6efe9;
+}
+
+.head {
+  margin: 0 0 clamp(2rem, 6vh, 4rem);
+}
+
+.page[data-who="lesley"] .head {
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--lc-line);
+}
+
+.voice .head,
+.together .head {
+  border-color: rgb(255 255 255 / 20%);
+}
+
+.eyebrow {
+  display: flex;
+  gap: 0.9em;
+  align-items: center;
+  margin: 0 0 1.4vh;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lc-a-text);
+}
+
+.voice .eyebrow,
+.together .eyebrow {
+  color: var(--lc-a);
+}
+
+.eyebrow i {
+  width: 3.4em;
+  height: 1px;
+  background: currentcolor;
+}
+
+.h2 {
+  margin: 0;
+  line-height: 0.9;
+}
+
+.page[data-who="lesley"] .h2 {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.page[data-who="change"] .h2 {
+  font-family: var(--font-serif-stack);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 8vw, 7.4rem);
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin: 1.4rem 0 0;
+  font-size: clamp(1.02rem, 1.4vw, 1.25rem);
+  line-height: 1.5;
+  opacity: 0.84;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.7em 1.4em;
+  border: 2px solid var(--lc-a);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.25s var(--lc-ease);
+}
+
+.page[data-who="change"] .pill {
+  border-radius: 999px;
+}
+
+.pill:hover,
+.pill:focus-visible,
+.pill[aria-pressed="true"] {
+  background: var(--lc-a);
+  color: var(--lc-ink);
+  transform: translateY(-2px);
+}
+
+/* ------------------------------------------------------------------ channel */
+
+.channel {
+  position: fixed;
+  right: max(3vw, 14px);
+  bottom: 14px;
+  z-index: 40;
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.45rem 1.1rem 0.45rem 0.9rem;
+  border: 2px solid var(--lc-a);
+  border-radius: 999px;
+  background: var(--lc-ink);
+  color: #fff;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.4s var(--lc-ease),
+    transform 0.4s var(--lc-ease);
+}
+
+.channel[data-shown="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.channel:focus-visible {
+  outline: 3px solid var(--lc-b);
+  outline-offset: 3px;
+}
+
+.meter {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 20px;
+}
+
+.meter i {
+  width: 4px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--lc-b);
+  transform-origin: 50% 100%;
+  transform: scaleY(0.3);
+}
+
+.channel[data-shown="true"] .meter i {
+  animation: level 1.3s ease-in-out infinite;
+}
+
+.channel[data-shown="true"] .meter i:nth-child(2) {
+  animation-delay: -0.4s;
+}
+
+.channel[data-shown="true"] .meter i:nth-child(3) {
+  animation-delay: -0.8s;
+}
+
+.channel[data-shown="true"] .meter i:nth-child(4) {
+  animation-delay: -0.2s;
+}
+
+.channel:hover .meter i,
+.channel:focus-visible .meter i {
+  animation-duration: 0.5s;
+}
+
+@keyframes level {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.chanText {
+  display: grid;
+  gap: 1px;
+  line-height: 1.15;
+}
+
+.chanText small {
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lc-b);
+}
+
+.chanText b {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ 01 profile */
+
+.profileBody {
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem 1rem 1.4rem;
+  border: 2px solid var(--lc-ink);
+  background: var(--lc-ground-2);
+}
+
+.page[data-who="change"] .card {
+  padding-top: 2.2rem;
+  border-radius: 24px;
+  text-align: center;
+}
+
+/* The lanyard slot of the lab pass. */
+.page[data-who="change"] .card::before {
+  content: "";
+  position: absolute;
+  top: 0.8rem;
+  left: 50%;
+  width: 4.2rem;
+  height: 0.7rem;
+  border: 2px solid var(--lc-ink);
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+
+/* The corner marks of the service card. */
+.page[data-who="lesley"] .card::before,
+.page[data-who="lesley"] .card::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid var(--lc-a);
+}
+
+.page[data-who="lesley"] .card::before {
+  top: -6px;
+  left: -6px;
+  border-width: 4px 0 0 4px;
+}
+
+.page[data-who="lesley"] .card::after {
+  right: -6px;
+  bottom: -6px;
+  border-width: 0 4px 4px 0;
+}
+
+.portrait {
+  display: block;
+  aspect-ratio: 4 / 5;
+  background-repeat: no-repeat;
+  background-size: 360%;
+  background-color: var(--lc-ink);
+}
+
+.page[data-who="change"] .portrait {
+  width: 78%;
+  margin: 0 auto;
+  aspect-ratio: 1;
+  border: 2px solid var(--lc-ink);
+  border-radius: 50%;
+  background-size: 420%;
+}
+
+.jp {
+  margin: 0.4rem 0 0;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.romaji {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lc-dim);
+}
+
+.summary {
+  max-width: 52ch;
+  margin: 0 0 2rem;
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  line-height: 1.5;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1.6rem;
+  margin: 0;
+}
+
+.fact {
+  margin: 0;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--lc-line);
+}
+
+.page[data-who="change"] .fact {
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--lc-ink);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 55%);
+}
+
+.fact dt {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lc-a-text);
+}
+
+.fact dd {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.fact small {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--lc-dim);
+}
+
+/* ------------------------------------------------------------------ 02 notes (the deck) */
+
+.notesBody {
+  display: grid;
+  grid-template-columns: minmax(0, 44rem) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+
+.deck {
+  display: grid;
+  gap: 2rem;
+  max-width: 44rem;
+}
+
+.tall {
+  position: sticky;
+  top: 14vh;
+  display: block;
+  width: min(100%, 26rem);
+  aspect-ratio: 4 / 5;
+  justify-self: center;
+  border: 2px solid var(--lc-ink);
+  background-color: var(--lc-ink);
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+}
+
+.page[data-who="change"] .tall {
+  border-radius: 999px 999px 24px 24px;
+}
+
+.stack {
+  display: grid;
+  padding: 0 40px 36px 0;
+}
+
+.note {
+  grid-area: 1 / 1;
+  min-height: 20rem;
+  padding: 2rem 2rem 2.2rem;
+  border: 2px solid var(--lc-ink);
+  background: var(--lc-ground-2);
+  transform: translate3d(calc(var(--o) * 14px), calc(var(--o) * 11px), 0)
+    rotate(calc(var(--o) * 0.9deg)) scale(calc(1 - var(--o) * 0.04));
+  transform-origin: 0 0;
+  opacity: calc(1 - var(--o) * 0.28);
+  z-index: calc(10 - var(--o));
+  transition:
+    transform 0.6s var(--lc-ease),
+    opacity 0.5s var(--lc-ease);
+}
+
+.note[data-far="true"] {
+  opacity: 0;
+}
+
+.page[data-who="lesley"] .note {
+  border-top: 10px solid var(--lc-a);
+}
+
+.page[data-who="change"] .note {
+  border-radius: 22px;
+  background: #fff3fa;
+}
+
+.page[data-who="change"] .note:nth-child(even) {
+  background: #effcf8;
+}
+
+/* A strip of tape on the note. */
+.page[data-who="change"] .note::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 2rem;
+  width: 5rem;
+  height: 26px;
+  background: rgb(63 211 184 / 55%);
+  transform: rotate(-4deg);
+}
+
+.note {
+  position: relative;
+}
+
+.noteNo {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--lc-a-text);
+}
+
+.note h3 {
+  margin: 0 0 1.1rem;
+  line-height: 0.95;
+}
+
+.page[data-who="lesley"] .note h3 {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.page[data-who="change"] .note h3 {
+  font-family: var(--font-serif-stack);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+  letter-spacing: -0.02em;
+}
+
+.note ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note li {
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--lc-b);
+  font-size: 1.04rem;
+  line-height: 1.5;
+}
+
+.deckBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dots {
+  display: flex;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dots button {
+  position: relative;
+  width: 32px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dots button::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  background: var(--lc-line);
+  transform-origin: 50% 50%;
+  transition:
+    transform 0.3s var(--lc-ease),
+    background 0.3s;
+}
+
+.dots button[aria-current="true"]::before {
+  background: var(--lc-a);
+  transform: scaleY(2);
+}
+
+.dots button:focus-visible {
+  outline: 3px solid var(--lc-b);
+  outline-offset: -2px;
+}
+
+/* ------------------------------------------------------------------ 03 voice */
+
+.voiceTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  align-items: center;
+  margin: 0 0 2rem;
+}
+
+.count {
+  font-family: var(--font-mono-stack);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.lines {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 1.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60rem;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 20%);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+
+.page[data-who="change"] .line {
+  border: 2px solid rgb(255 255 255 / 22%);
+  border-radius: 16px;
+}
+
+.line:hover,
+.line:focus-visible,
+.line[data-on="true"] {
+  background: var(--lc-a);
+  color: var(--lc-ink);
+}
+
+.line:focus-visible {
+  outline: 3px solid var(--lc-b);
+  outline-offset: 2px;
+}
+
+.lineNo {
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+}
+
+.lineText {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.lineText b {
+  font-size: 0.82rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.lineText span {
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.bars {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 18px;
+}
+
+.bars i {
+  width: 3px;
+  height: 100%;
+  background: currentcolor;
+  transform-origin: 50% 100%;
+  transform: scaleY(0.2);
+}
+
+.line[data-on="true"] .bars i {
+  animation: level 0.9s ease-in-out infinite;
+}
+
+.line[data-on="true"] .bars i:nth-child(2) {
+  animation-delay: -0.2s;
+}
+
+.line[data-on="true"] .bars i:nth-child(3) {
+  animation-delay: -0.5s;
+}
+
+.line[data-on="true"] .bars i:nth-child(4) {
+  animation-delay: -0.35s;
+}
+
+.line[data-on="true"] .bars i:nth-child(5) {
+  animation-delay: -0.1s;
+}
+
+/* ------------------------------------------------------------------ 04 films */
+
+.filmGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+.filmGrid > :first-child {
+  grid-column: 1 / -1;
+}
+
+.film {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.filmCard {
+  width: 100%;
+}
+
+.page[data-who="lesley"] .filmCard {
+  border: 2px solid var(--lc-ink);
+}
+
+.page[data-who="change"] .filmCard {
+  overflow: hidden;
+  border: 2px solid var(--lc-ink);
+  border-radius: 22px;
+}
+
+.film figcaption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem;
+  align-items: baseline;
+}
+
+.film figcaption b {
+  font-size: 1.1rem;
+}
+
+.film figcaption span {
+  font-size: 0.95rem;
+  color: var(--lc-dim);
+}
+
+.film figcaption em {
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  color: var(--lc-a-text);
+}
+
+/* ------------------------------------------------------------------ 05 gallery */
+
+.official {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: clamp(1rem, 2.4vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid var(--lc-ink);
+  background: var(--lc-ink);
+  cursor: pointer;
+}
+
+.page[data-who="change"] .tile {
+  border-radius: 22px;
+}
+
+.tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 16rem;
+  object-fit: cover;
+  transition: transform 0.9s var(--lc-ease);
+}
+
+.tile:hover img,
+.tile:focus-visible img {
+  transform: scale(1.04);
+}
+
+.tile:focus-visible {
+  outline: 3px solid var(--lc-b);
+  outline-offset: 3px;
+}
+
+.tile span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0.5rem 1rem;
+  background: var(--lc-ink);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ 06 together */
+
+.halves {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.half {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #000;
+  transition: transform 0.7s var(--lc-ease);
+}
+
+.half img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.half figcaption {
+  position: absolute;
+  bottom: 0;
+  padding: 0.5rem 1rem;
+  background: var(--lc-ink);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.half[data-side="lesley"] figcaption {
+  left: 0;
+}
+
+.half[data-side="change"] figcaption {
+  right: 0;
+}
+
+.halves[data-joined="true"] .half[data-side="lesley"] {
+  transform: translate3d(14px, 0, 0);
+}
+
+.halves[data-joined="true"] .half[data-side="change"] {
+  transform: translate3d(-14px, 0, 0);
+}
+
+.thread {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 2;
+  width: 4px;
+  margin-left: -2px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--lc-a), var(--lc-b));
+  transform: scaleY(0.4);
+  transition: transform 0.7s var(--lc-ease);
+}
+
+.thread::after {
+  content: "";
+  position: absolute;
+  inset: 0 -6px;
+  background: linear-gradient(to bottom, transparent 0 42%, #fff 50%, transparent 58%);
+  animation: travel 3.2s ease-in-out infinite;
+}
+
+.halves[data-joined="true"] .thread {
+  transform: scaleY(1);
+}
+
+@keyframes travel {
+  0% {
+    transform: translate3d(0, -60%, 0);
+  }
+  100% {
+    transform: translate3d(0, 60%, 0);
+  }
+}
+
+.togetherBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem 4rem;
+  align-items: end;
+  max-width: 64rem;
+  margin: clamp(2rem, 6vh, 4rem) auto 0;
+}
+
+.togetherText p {
+  max-width: 46ch;
+  margin: 0 0 1rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.5;
+}
+
+.page[data-who="lesley"] .quote {
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lc-a);
+}
+
+.page[data-who="change"] .quote {
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.7rem, 3.2vw, 2.7rem);
+  color: var(--lc-a);
+}
+
+.partnerLink {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 14rem;
+  padding: 1rem 1.6rem;
+  border: 2px solid var(--lc-a);
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.3s var(--lc-ease);
+}
+
+.page[data-who="change"] .partnerLink {
+  border-radius: 999px;
+  text-align: center;
+}
+
+.partnerLink span {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.partnerLink small {
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.partnerLink:hover,
+.partnerLink:focus-visible {
+  background: var(--lc-a);
+  color: var(--lc-ink);
+  transform: translateY(-3px);
+}
+
+.partnerLink:focus-visible {
+  outline: 3px solid var(--lc-b);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ small screens */
+
+@media (max-width: 860px) {
+  .profileBody,
+  .notesBody,
+  .togetherBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tall {
+    display: none;
+  }
+
+  .lines,
+  .filmGrid,
+  .official {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filmGrid > :first-child {
+    grid-column: auto;
+  }
+
+  .card {
+    max-width: 22rem;
+  }
+
+  .stack {
+    padding: 0 22px 24px 0;
+  }
+
+  .note {
+    min-height: 22rem;
+    padding: 1.4rem 1.3rem 1.6rem;
+  }
+
+  .film figcaption {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .film figcaption span {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .chanText {
+    display: none;
+  }
+
+  .channel {
+    padding: 0.45rem 0.9rem;
+  }
+
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .halves {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------ weak devices and motion */
+
+:global(:root[data-perf="lite"]) .thread::after,
+:global(:root[data-perf="lite"]) .channel[data-shown="true"] .meter i {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .note,
+  .half,
+  .thread,
+  .channel {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .thread::after,
+  .channel[data-shown="true"] .meter i,
+  .line[data-on="true"] .bars i {
+    animation: none;
+  }
+}
+
+:global(:root[data-motion="reduced"]) .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+:global(:root[data-motion="reduced"]) .note,
+:global(:root[data-motion="reduced"]) .half,
+:global(:root[data-motion="reduced"]) .thread,
+:global(:root[data-motion="reduced"]) .channel {
+  transition: none;
+}
+
+:global(:root[data-motion="reduced"]) .thread::after,
+:global(:root[data-motion="reduced"]) .channel[data-shown="true"] .meter i,
+:global(:root[data-motion="reduced"]) .line[data-on="true"] .bars i {
+  animation: none;
+}

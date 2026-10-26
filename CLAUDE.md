@@ -39,6 +39,8 @@ Use the custom player in `components/video-player/` (`VideoCard`) for new videos
 
 Ruby's and Angela's pages are one pair on one view (`features/character/duo/`, routes `/character/ruby/` and `/character/angela/`): Ruby's is the night shift (a blueprint of her art shows through the pointer), Angela's is the first sunrise (a warmth map of hers). Their films are the site's own files in `public/video/ruby-angela/` (not encoded again, they play only when the visitor presses play); the second hero picture and the strip of stills are made by `scripts/ruby-angela/build.py` (the anaconda Python, Pillow and numpy).
 
+Lesley's and Chang'e's pages are two ends of one channel (`features/character/lesley-change/`, routes `/character/lesley/` and `/character/change/`): Lesley's first screen is a scope that magnifies her splash art and fires a thread of light (hold to steady, let go to fire), Chang'e's is a bench with guides, pins that measure each other and markers on her gear. Both show their own splash art full bleed, share the order of the sections and a pill that leads to the other end, and use the site's own files in `public/video/lesley-change/` (they play only when the visitor presses play). Nothing is encoded for them: the sources hold no music, no cut-outs and no fan art for this pair.
+
 ## Look and feel
 
 Light mode by default (`data-theme="daybreak"`). Dark (`storm`) only where the story needs it. Modern, minimal, futuristic with a mechanical feel: generous spacing, thin lines, few effects, no glow or gradient clutter.

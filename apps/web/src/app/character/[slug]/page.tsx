@@ -18,6 +18,8 @@ const OWN_ROUTE: ReadonlySet<string> = new Set([
   "angela",
   "layla",
   "fanny",
+  "lesley",
+  "change",
 ]);
 
 export function generateStaticParams() {
