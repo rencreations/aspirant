@@ -17,13 +17,10 @@ const QUEUE = [
 ] as const;
 
 /**
- * Layla (cut-out), Ruby (no cut-out), Vexana (forms). Selena and Obsidia have pages of their
+ * Ruby (no cut-out). Layla and Fanny, Selena and Obsidia have pages of their
  * own (see selena.spec.ts and obsidia.spec.ts).
  */
-const PAGES = [
-  { slug: "layla", name: "Layla" },
-  { slug: "ruby", name: "Ruby" },
-] as const;
+const PAGES = [{ slug: "ruby", name: "Ruby" }] as const;
 
 async function serious(page: Page) {
   const results = await new AxeBuilder({ page })
@@ -449,33 +446,6 @@ for (const { slug, name } of PAGES) {
     });
   });
 }
-
-test("voice wall: arrow keys move, search filters, random plays", async ({ page }) => {
-  await page.goto(url("/character/layla/"));
-  const wall = page.locator("section[aria-labelledby='voice-title']");
-  const lines = wall.getByRole("list").first().getByRole("button");
-  await expect(lines).toHaveCount(28);
-  await lines.first().focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(lines.nth(1)).toBeFocused();
-  await page.keyboard.press("End");
-  await expect(lines.nth(27)).toBeFocused();
-  await wall.getByRole("searchbox", { name: "Search lines" }).fill("magic gun");
-  await expect(lines).toHaveCount(1);
-  await expect(lines.first()).toContainText("magic gun");
-  await wall.getByRole("button", { name: "Play random" }).click();
-});
-
-test("spoilers stay sealed until opened", async ({ page }) => {
-  await page.goto(url("/character/layla/"));
-  const button = page.getByRole("button", { name: "Show spoilers" });
-  await expect(button).toHaveAttribute("aria-expanded", "false");
-  await button.click();
-  await expect(page.getByRole("button", { name: "Seal the record" })).toHaveAttribute(
-    "aria-expanded",
-    "true",
-  );
-});
 
 test("the next footer chain visits all ten and loops", async ({ page, baseURL }, info) => {
   test.skip(info.project.name !== "desktop", "One walk through the queue is enough");

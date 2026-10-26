@@ -26,6 +26,7 @@ import {
   trailerItem as obsidiaTrailerItem,
 } from "@/features/character/obsidia/media";
 import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinevere/preload-items";
+import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import {
   chunkItem,
@@ -195,6 +196,15 @@ export function routeItems(pathname: string): PreloadItem[] {
         ...shared,
         ...guinevereFirstPaint(),
         ...guinevereLater().flatMap((g) => later(null, g.priority, g.items)),
+      ];
+    }
+    if (slug === "layla" || slug === "fanny") {
+      // Her page of the pair: the first screen is waited for, the voice lines, the films' posters
+      // and the art arrive in the background (see `features/character/layla-fanny/preload-items.ts`).
+      return [
+        ...shared,
+        ...lfFirstPaint(slug),
+        ...lfLater(slug).flatMap((g) => later(null, g.priority, g.items)),
       ];
     }
     if (isSlug(slug)) {

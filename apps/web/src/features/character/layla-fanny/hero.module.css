@@ -1,0 +1,461 @@
+/*
+ * The first screen of the pair. Layla: a coral slab, the name set in heavy capitals behind the
+ * figure, a cannon that fires where you press. Fanny: thin rings and a ruler, the name set in
+ * italic serif behind the figure, a grapple that hooks where you press. Everything that moves is a
+ * transform or an opacity.
+ */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  overflow: clip;
+  background: var(--lf-ground);
+  color: var(--lf-ink);
+  font-family: var(--font-body-stack);
+  touch-action: pan-y;
+}
+
+/* ------------------------------------------------------------------ back */
+
+.back {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.slab {
+  position: absolute;
+}
+
+.ruler {
+  position: absolute;
+}
+
+.hero[data-who="layla"] .slab {
+  left: -8%;
+  right: -8%;
+  bottom: 0;
+  height: 42%;
+  background: var(--lf-a);
+  clip-path: polygon(0 34%, 100% 0, 100% 100%, 0 100%);
+}
+
+.hero[data-who="layla"] .ruler {
+  left: 0;
+  right: 0;
+  top: 22%;
+  height: 1px;
+  background: var(--lf-ink);
+  opacity: 0.18;
+}
+
+.hero[data-who="fanny"] .slab {
+  right: 4vw;
+  top: 50%;
+  width: min(82vmin, 52vw);
+  aspect-ratio: 1;
+  margin-top: calc(min(82vmin, 52vw) / -2);
+  border: 1px solid var(--lf-b);
+  border-radius: 50%;
+}
+
+.hero[data-who="fanny"] .slab::after {
+  content: "";
+  position: absolute;
+  inset: 11%;
+  border: 1px dashed var(--lf-a);
+  border-radius: 50%;
+}
+
+.hero[data-who="fanny"] .ruler {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  background: repeating-linear-gradient(to bottom, var(--lf-ink) 0 1px, transparent 1px 18px);
+  opacity: 0.22;
+  -webkit-mask-image: linear-gradient(to right, #000 0 40%, transparent 40%);
+  mask-image: linear-gradient(to right, #000 0 40%, transparent 40%);
+}
+
+/* ------------------------------------------------------------------ title */
+
+.titleWrap {
+  position: absolute;
+  z-index: 1;
+  left: max(4vw, 24px);
+  bottom: 9svh;
+  pointer-events: none;
+}
+
+.kicker {
+  display: flex;
+  gap: 1.2em;
+  align-items: baseline;
+  margin: 0 0 0.6em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lf-dim);
+}
+
+.kicker span:last-child {
+  color: var(--lf-a-text);
+  letter-spacing: 0.1em;
+}
+
+.name {
+  margin: 0;
+  line-height: 0.8;
+}
+
+.hero[data-who="layla"] .titleWrap {
+  z-index: 3;
+  bottom: 15svh;
+}
+
+.hero[data-who="layla"] .name {
+  font-family: var(--font-display-stack);
+  font-weight: 900;
+  font-size: clamp(6rem, 17vw, 20rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--lf-ink);
+}
+
+.hero[data-who="fanny"] .titleWrap {
+  bottom: auto;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.hero[data-who="fanny"] .name {
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(7.5rem, 29vw, 33rem);
+  letter-spacing: -0.04em;
+  color: var(--lf-b);
+}
+
+/* ------------------------------------------------------------------ figure */
+
+.figure {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero[data-who="layla"] .figure {
+  right: 0;
+  bottom: 0;
+  width: min(100vw, 177.8svh);
+  aspect-ratio: 16 / 9;
+}
+
+.hero[data-who="fanny"] .figure {
+  right: max(4vw, 24px);
+  bottom: 2svh;
+  height: min(94svh, 150vw);
+  aspect-ratio: 1272 / 1800;
+}
+
+.bob,
+.recoil {
+  width: 100%;
+  height: 100%;
+}
+
+.bob {
+  animation: bob 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero[data-who="fanny"] .bob {
+  animation-name: float;
+  animation-duration: 8s;
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -0.8%, 0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.6deg);
+  }
+
+  50% {
+    transform: translate3d(0, -2.2%, 0) rotate(0.8deg);
+  }
+}
+
+/* ------------------------------------------------------------------ shots */
+
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The aim line, the cannon's beam and the grapple cable are drawn under the figure (z-index 1). */
+.layer > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 50%;
+}
+
+.aim {
+  width: 1000px;
+  height: 1px;
+  background: var(--lf-b);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.mark {
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 1.5px solid var(--lf-ink);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.hero[data-who="layla"] .mark {
+  border-radius: 50%;
+  border-color: var(--lf-b-text);
+}
+
+.hero[data-who="fanny"] .mark {
+  border-color: var(--lf-a-text);
+  rotate: 45deg;
+}
+
+.beam {
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--lf-glow), var(--lf-b) 35%, var(--lf-b));
+  box-shadow: 0 0 0 3px rgb(20 179 166 / 20%);
+}
+
+.beam::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2px;
+  height: 1px;
+  background: #fff;
+}
+
+.impact {
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border: 3px solid var(--lf-b);
+  border-radius: 50%;
+}
+
+.cable {
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(90deg, var(--lf-a), var(--lf-b));
+}
+
+.hook {
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+}
+
+.hook::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 2px solid var(--lf-a);
+  background: var(--lf-ground);
+  rotate: 45deg;
+}
+
+/* ------------------------------------------------------------------ foot */
+
+.foot {
+  position: absolute;
+  z-index: 3;
+  left: max(4vw, 24px);
+  right: max(4vw, 24px);
+  bottom: 3svh;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4em 2em;
+  align-items: end;
+  pointer-events: none;
+}
+
+.tagline {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.15;
+}
+
+.hero[data-who="layla"] .tagline {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+  justify-self: end;
+  padding: 0.4em 0.8em;
+  background: var(--lf-ground);
+}
+
+.hero[data-who="fanny"] .tagline {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+}
+
+.hero[data-who="fanny"] .hint {
+  grid-row: 2;
+}
+
+.hint {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lf-dim);
+}
+
+.hero[data-who="layla"] .hint {
+  color: var(--lf-ink);
+  background: var(--lf-ground);
+  justify-self: start;
+  padding: 0.5em 0.9em;
+}
+
+.cue {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 1.2em);
+  display: flex;
+  gap: 0.8em;
+  align-items: center;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--lf-dim);
+  writing-mode: vertical-rl;
+}
+
+.hero[data-who="layla"] .cue {
+  display: none;
+}
+
+.cue i {
+  width: 1px;
+  height: 56px;
+  background: currentcolor;
+  transform-origin: 50% 0;
+  animation: cue 2.4s ease-in-out infinite;
+}
+
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+
+  60% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@media (width <= 700px) {
+  .hero[data-who="layla"] .figure {
+    left: 50%;
+    right: auto;
+    bottom: 16svh;
+    width: calc(70svh * 16 / 9);
+    height: 70svh;
+    translate: -50% 0;
+  }
+
+  .hero[data-who="layla"] .titleWrap {
+    bottom: 22svh;
+  }
+
+  .hero[data-who="layla"] .name {
+    font-size: 30vw;
+  }
+
+  .hero[data-who="fanny"] .titleWrap {
+    top: 19svh;
+    translate: none;
+  }
+
+  .hero[data-who="fanny"] .name {
+    font-size: 34vw;
+  }
+
+  .hero[data-who="fanny"] .figure {
+    right: -8vw;
+    height: 64svh;
+    bottom: 13svh;
+  }
+
+  .hero[data-who="fanny"] .slab {
+    right: -20vw;
+    width: 110vw;
+    margin-top: -45vw;
+  }
+
+  .foot {
+    grid-template-columns: 1fr;
+  }
+
+  .hero[data-who="layla"] .tagline {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: left;
+    justify-self: start;
+  }
+
+  .cue {
+    display: none;
+  }
+}
