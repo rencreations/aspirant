@@ -100,6 +100,16 @@
     0 0 0 1px rgb(255 240 200 / 0.4) inset,
     0 18px 40px rgb(0 0 0 / 0.5);
   transform-origin: 50% 0;
+  background: #0b0716;
+}
+
+.wallFrame img,
+.printFrame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
 }
 
 /* The wire it hangs from, going up off the screen. */
@@ -113,211 +123,41 @@
   background: rgb(207 168 79 / 0.65);
 }
 
-/* ---------- the zoom: the gallery to the fanart ---------- */
-.zFrame {
+/* ---------- the prints: Our Artwork to Fans Creations ---------- */
+.printFrame {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(62vw, 112vh);
-  aspect-ratio: 16 / 10;
-  border: 12px solid #fbf6ec;
-  background: #ece6f8;
-  box-shadow:
-    0 0 0 2px #cdb87a,
-    0 30px 80px rgb(0 0 0 / 0.45);
-  opacity: 0;
+  aspect-ratio: 4 / 5;
+  border: 9px solid #fbf6ec;
+  border-bottom-width: 22px;
+  background: #fbf6ec;
+  box-shadow: 0 18px 40px rgb(20 14 38 / 0.35);
+  transform-origin: 50% 0;
 }
 
-.zPin {
+/* The pin it hangs from, and a strip of tape over it. */
+.printFrame::before {
+  content: "";
   position: absolute;
-  width: 16px;
-  height: 16px;
+  left: 50%;
+  top: -16px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
   border-radius: 50%;
   background: #e040a0;
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.35);
+  z-index: 2;
 }
 
-.zPin[data-at="tl"] {
-  left: 12px;
-  top: 12px;
-}
-
-.zPin[data-at="tr"] {
-  right: 12px;
-  top: 12px;
-}
-
-.zPin[data-at="bl"] {
-  left: 12px;
-  bottom: 12px;
-}
-
-.zPin[data-at="br"] {
-  right: 12px;
-  bottom: 12px;
-}
-
-/* ---------- the film: the fanart to her theme ---------- */
-.film {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.filmPanel {
-  position: absolute;
-  inset: 0;
-  background: #05030a;
-}
-
-.filmStrip {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 46px;
-  background: #0d0a14;
-}
-
-.filmStrip[data-side="l"] {
-  left: 0;
-  border-right: 1px solid rgb(183 156 242 / 0.4);
-}
-
-.filmStrip[data-side="r"] {
-  right: 0;
-  border-left: 1px solid rgb(183 156 242 / 0.4);
-}
-
-.filmStrip::before {
+.printFrame::after {
   content: "";
   position: absolute;
-  left: 12px;
-  right: 12px;
-  top: 0;
-  bottom: 0;
-  border-radius: 3px;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 12px,
-    #f2ecff 12px 30px,
-    transparent 30px 42px
-  );
-}
-
-/* A soft edge of light and shadow in front of the leading side. */
-.filmGlow {
-  position: absolute;
-  left: -90px;
-  top: 0;
-  bottom: 0;
-  width: 90px;
-  background: linear-gradient(to right, transparent, rgb(5 3 10 / 0.7));
-}
-
-/* ---------- the heart: her theme to her best friend ---------- */
-.heartBox {
-  position: absolute;
-  inset: 0;
-}
-
-.heart {
-  position: absolute;
   left: 50%;
-  top: 50%;
-  width: min(34vmin, 300px);
-  aspect-ratio: 104 / 90;
-}
-
-.heart svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-}
-
-.heart[data-tone="pink"] path {
-  fill: #ff9db8;
-}
-
-.heart[data-tone="cream"] path {
-  fill: #fff4e8;
-}
-
-.ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(34vmin, 300px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 2px solid #ff9db8;
-  opacity: 0;
-}
-
-.heartCover {
-  position: absolute;
-  inset: 0;
-  background: #fff4e8;
-  opacity: 0;
-}
-
-/* ---------- the lens: her best friend to the room ---------- */
-.iris {
-  position: absolute;
-  inset: 0;
-}
-
-.arm {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-}
-
-.blade {
-  position: absolute;
-  left: 0;
-  top: -320vmax;
-  width: 320vmax;
-  height: 640vmax;
-  background: #0b0716;
-  border-left: 2px solid rgb(183 156 242 / 0.85);
-  opacity: 0;
-}
-
-.irisLoad {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  gap: 14px;
-  justify-items: center;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-
-.irisText {
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #d9d5f5;
-}
-
-.irisTrack {
-  display: block;
-  width: min(220px, 56vw);
-  height: 2px;
-  overflow: hidden;
-  background: rgb(183 156 242 / 0.3);
-}
-
-.irisFill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #e040a0;
-  transform: scaleX(0);
-  transform-origin: 0 50%;
+  top: -10px;
+  width: 54px;
+  height: 18px;
+  margin-left: -27px;
+  background: rgb(255 230 160 / 0.55);
+  transform: rotate(-3deg);
+  z-index: 1;
 }

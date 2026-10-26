@@ -20,7 +20,7 @@ The site must not lag on an ordinary laptop and must lighten itself on a weak on
 
 - Never write a CSS custom property or an inline style on `<html>` or `<body>` per frame (it restyles the whole page), and never give an element an attribute that a script then selects by. A test guards the cursor.
 - Animate `transform` and `opacity` only. No `width`, `left`, `top` or `margin` in an animation. No `filter`, `backdrop-filter` or `mix-blend-mode` over the live picture or on an element with animated children. No per-frame SVG attribute writes.
-- A transition between two sections of a long page (Vexana's page) is made by the layout, not by an overlay that appears over the next section for no reason: the section holds its last screen, a meter fills over a short scroll threshold, then a scene plays by itself and the page jumps to the next section while the screen is covered. It waits, with a real progress and never a timer, for what the next section needs. See `seams/` and `docs/design/design-system.md`.
+- A transition between two sections of a long page (Vexana's page) is made by the layout, not by an overlay that appears over the next section for no reason: the section holds its last screen, then a scene plays by itself and the page jumps to the next section while the screen is covered (or the next section simply rises over it, or a heart of colour closes on it as the visitor scrolls). There is no scroll indicator of any kind in a transition. A lower join works both ways: the next section has no threshold when you arrive by scrolling down, and has one when you scroll up out of it (the same scene plays back). A stop inside a transition snaps after a moment (half or more goes on, less goes back), so nobody is left standing in one. It waits, with a real progress and never a timer, for what the next section needs. See `seams/` and `docs/design/design-system.md`.
 - Something that follows a video runs on the compositor (a Web Animation), not in a frame loop. Long text and long lists use `content-visibility: auto` and are built in small slices.
 - Judge speed on the production build, not `pnpm dev` (it is 2 to 3 times slower), with `scripts/perf/weak.mjs`.
 - Effects that cost something are gated on the performance level (`:root[data-perf="balanced"]`, `lib/perf.ts`).
@@ -49,5 +49,6 @@ Formal English written like to a friend but business. Short sentences. No em-das
 
 - Run on `http://localhost:3000` (`pnpm dev`).
 - Commit with conventional commits (headers under 100 characters) and push to `main` when done.
-- Do not list Claude or any AI as an author, co-author or contributor, in commits, pull requests, docs or file headers.
+- Never list or mention Claude or any AI anywhere in this repository or its history: not as an author, co-author or contributor, and not in commit messages or trailers (no `Co-Authored-By`, no session links), pull requests, docs, code comments or file headers. A tool default that adds such a line is wrong here: leave it out.
+- The site is served from the custom domain https://aspirant.cc (the domain root, no `/aspirant` path). The Pages workflow builds with an empty base path.
 - `pnpm check` must pass before pushing: format, typecheck, lint, unit tests, knip.

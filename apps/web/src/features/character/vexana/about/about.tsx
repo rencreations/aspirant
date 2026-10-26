@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { StarGlyph } from "@/components/star-glyph";
 import { getCharacter } from "@/content/characters";
@@ -9,7 +9,7 @@ import { useInView } from "@/lib/hooks";
 import { Dossier } from "./dossier";
 import styles from "./about.module.css";
 import { SkinFrame } from "./skin-frame";
-import { VoiceRow } from "./voice-row";
+import { VoicePlaylist } from "./voice-playlist";
 
 const c = getCharacter("vexana");
 
@@ -19,9 +19,6 @@ const c = getCharacter("vexana");
  */
 const VOICES = c.voice.filter((line) => line.n !== 42);
 
-/** The playlist opens with this many lines. */
-const SHOWN = 12;
-
 /**
  * Who she is, without the long story: the name in two scripts, her skin showcase in motion, a
  * registry file (a plate of figures and a sky of five notes) and the playlist of her voice lines.
@@ -29,7 +26,6 @@ const SHOWN = 12;
  */
 export function About({ covers = false }: { covers?: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
-  const [allVoices, setAllVoices] = useState(false);
   const seen = useInView(rootRef, { rootMargin: "0px 0px -12% 0px", once: true });
 
   return (
@@ -100,23 +96,7 @@ export function About({ covers = false }: { covers?: boolean }) {
           <h3 className={styles.voicesTitle}>Hear her</h3>
           <p className={styles.voicesNote}>{VOICES.length} lines</p>
         </div>
-        <ul className={styles.voiceList}>
-          {(allVoices ? VOICES : VOICES.slice(0, SHOWN)).map((line) => (
-            <VoiceRow key={line.n} line={line} />
-          ))}
-        </ul>
-        {VOICES.length > SHOWN ? (
-          <button
-            type="button"
-            className={styles.more}
-            aria-expanded={allVoices}
-            onClick={() => {
-              setAllVoices((v) => !v);
-            }}
-          >
-            {allVoices ? "Show fewer lines" : `Show all ${VOICES.length} lines`}
-          </button>
-        ) : null}
+        <VoicePlaylist lines={VOICES} />
       </div>
     </section>
   );

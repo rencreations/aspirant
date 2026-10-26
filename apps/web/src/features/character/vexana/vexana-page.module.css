@@ -22,9 +22,11 @@
     0 -36px 90px rgb(5 3 12 / 70%);
 }
 
-/* The pair of faces waits under the craft: in place (and stuck) while the doors fade. */
+/* The pair of faces waits under the craft: in place (and stuck) from the moment the doors have met
+   (half way through the craft's hold: 1 + 2.4 * 0.5 screens above the end of it), so when the doors
+   fade by time it is already where it is meant to be, with nothing left to scroll to. */
 .facesUnder {
   position: relative;
   z-index: 1;
-  margin-top: calc(-1 * var(--lvh) * 1.9);
+  margin-top: calc(-1 * var(--lvh) * 2.2);
 }

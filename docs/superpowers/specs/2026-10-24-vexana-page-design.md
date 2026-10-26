@@ -39,9 +39,9 @@ Obsidia's and Selena's pages are not touched.
    reel section), playing `final`. Uses the site's player (`VideoCard`, `PlayerOverlay`).
 4. **Skills** (`skills/`). Original and creative. Passive and three skills (the third with its cancel), with the
    icons. Skin showcase with `skin-showcase`, cropped to Vexana only and fitted into the layout.
-5. **Faces** (`faces/`). The On Track and Off Track pair: normal on the left ("Academic"), Ender on the right
+5. **Faces** (`faces/`). The On Track and Off Track pair: normal on the left ("Human"), Ender on the right
    ("Ender"), face to face, entrance animations, a button each to a story page.
-6. **Story pages** (`story/`, routes `/character/vexana/story/academic/` and `/ender/`). Academic: from her birth
+6. **Story pages** (`story/`, routes `/character/vexana/story/academic/` and `/ender/`; the first route keeps its old slug, its label is "Human"). Human: from her birth
    to the taking. Ender: from there on. Told in a creative way, different for each.
 7. **Cover** (`cover/`). A section that slides over the previous one (not a normal scroll), revealing `final2`, which
    plays muted by itself, with a play button that opens the full player with sound.

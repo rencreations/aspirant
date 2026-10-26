@@ -7,9 +7,9 @@ import { PlayerOverlay, type PlayerVideo } from "@/components/video-player/playe
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
-import { perfLevel } from "@/lib/perf";
 
 import { FINAL_SOURCES, videoFile, videoPoster } from "../media";
+import { mayPlay } from "../shared/autoplay";
 import { ReelController } from "./reel-controller";
 import { REEL_COPY } from "./reel-copy";
 import styles from "./reel.module.css";
@@ -113,12 +113,6 @@ function PlayWord({ text }: { text: string }) {
       ))}
     </span>
   );
-}
-
-/** The device may run a picture by itself: not on the light level, not with data saving. */
-function mayPlay() {
-  const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-  return perfLevel() !== "lite" && nav.connection?.saveData !== true;
 }
 
 /**

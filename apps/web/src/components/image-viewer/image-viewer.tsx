@@ -57,8 +57,6 @@ interface Props {
 }
 
 const FIT: View = { z: 1, x: 0, y: 0 };
-/** Two taps this close together, in time and in place, are a double tap. */
-const DOUBLE_TAP_MS = 320;
 const TAP_SLOP = 10;
 const SWIPE_MIN = 56;
 
@@ -99,9 +97,10 @@ const ICON = {
  * A viewer for pictures, built for looking closely. It opens in a dialog (focus is kept inside and
  * goes back to what opened it, Esc closes) and shows one picture at a time:
  *
- *  - Zoom with the wheel or a trackpad pinch (around the pointer), two fingers on a screen, a
- *    double click or double tap, the + and - buttons or keys, `0` for the whole picture and `1`
- *    for its natural size. The picture can be zoomed to three times its natural size.
+ *  - Zoom with the wheel or a trackpad pinch (around the pointer), two fingers on a screen, one
+ *    click or tap on the picture (a second one zooms back out), the + and - buttons or keys, `0` for the whole picture and `1`
+ *    for its natural size. The picture can be zoomed to three times its natural size. A click or
+ *    tap on the ground around the picture closes the viewer.
  *  - Move a zoomed picture by dragging it or with the arrow keys.
  *  - Previous and next with the buttons, the arrow keys (when the picture is not zoomed), Home and
  *    End, or a swipe. The strip below shows the other pictures of the same post and jumps to them.
@@ -149,7 +148,7 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
     return resume;
   }, [open, pause, resume]);
 
-  /** Write the view to the picture. `animated` eases it (buttons, keys, double tap), not a drag. */
+  /** Write the view to the picture. `animated` eases it (buttons, keys, a tap), not a drag. */
   const apply = useCallback((animated = false) => {
     const el = img.current;
     if (!el) return;
@@ -237,7 +236,7 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
     };
   }, [open, setView, stageEl]);
 
-  // Pointer gestures: drag to move, two fingers to pinch, a swipe to change picture, a double tap.
+  // Pointer gestures: drag to move, two fingers to pinch, a swipe to change picture, a tap.
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const gesture = useRef({
     start: { x: 0, y: 0 },
@@ -245,7 +244,8 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
     d0: 1,
     c0: { x: 0, y: 0 },
     moved: false,
-    lastTap: { t: 0, x: 0, y: 0 },
+    /** A tap just ended: the click that follows it does the work (see `onStageClick`). */
+    tapped: 0,
   });
 
   const rel = (x: number, y: number) => {
@@ -326,17 +326,36 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
       return;
     }
     if (g.moved) return;
-    // A tap. Two of them close together zoom in on the point, or back out.
-    const now = performance.now();
-    const last = g.lastTap;
-    if (now - last.t < DOUBLE_TAP_MS && Math.hypot(e.clientX - last.x, e.clientY - last.y) < 24) {
-      g.lastTap = { t: 0, x: 0, y: 0 };
-      const p = rel(e.clientX, e.clientY);
-      if (view.current.z > 1.05) setView({ ...FIT }, true);
-      else zoomTo(Math.max(2.6, naturalZoom(box.current)), p.x, p.y);
+    // A tap: the click that follows it acts (see `onStageClick`). Acting here, on pointer up, would
+    // close the viewer first, and on a touch screen the click would then land on the page below.
+    g.tapped = performance.now();
+  };
+
+  /**
+   * One tap or click. On the picture it zooms in on the point, or back out when it is zoomed. On the
+   * ground around the picture (the gap beside it, the dark backdrop) it closes the viewer.
+   */
+  const onStageClick = (e: React.MouseEvent) => {
+    const g = gesture.current;
+    const at = g.tapped;
+    g.tapped = 0;
+    // A click that ends a drag, a pinch or a swipe is not a tap.
+    if (!at || performance.now() - at > 600) return;
+    if ((e.target as HTMLElement).closest("[data-ui]")) return;
+    const sheet = img.current?.getBoundingClientRect();
+    const onPicture =
+      !!sheet &&
+      e.clientX >= sheet.left &&
+      e.clientX <= sheet.right &&
+      e.clientY >= sheet.top &&
+      e.clientY <= sheet.bottom;
+    if (!onPicture) {
+      onIndexChange(null);
       return;
     }
-    g.lastTap = { t: now, x: e.clientX, y: e.clientY };
+    const p = rel(e.clientX, e.clientY);
+    if (view.current.z > 1.05) setView({ ...FIT }, true);
+    else zoomTo(Math.max(2.6, naturalZoom(box.current)), p.x, p.y);
   };
 
   const toggleFullscreen = () => {
@@ -464,8 +483,9 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
           <Dialog.Title className="sr-only">{`${label}: ${item?.title ?? ""}`}</Dialog.Title>
           <Dialog.Description id="viewer-help" className="sr-only">
             Arrow keys change picture. Plus and minus zoom, 0 shows the whole picture, 1 shows it at
-            its natural size. Drag a zoomed picture to move it. I shows or hides the details, F goes
-            full screen, Escape closes.
+            its natural size. Click the picture to zoom in and click again to zoom out. Drag a
+            zoomed picture to move it. Click outside the picture to close. I shows or hides the
+            details, F goes full screen, Escape closes.
           </Dialog.Description>
 
           <div className={styles.bar} data-ui>
@@ -537,6 +557,7 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
+            onClick={onStageClick}
           >
             {item ? (
               <>

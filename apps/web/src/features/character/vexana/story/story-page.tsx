@@ -13,7 +13,7 @@ import { StoryBar } from "./story-bar";
 
 export type StorySide = "academic" | "ender";
 
-/** Her violet for the Academic half and her magenta for the Ender half. */
+/** Her violet for the human half and her magenta for the Ender half. */
 const ACCENT: Record<StorySide, CSSProperties> = {
   academic: { "--accent": "#7a4fd6", "--accent-2": "#e040a0" } as CSSProperties,
   ender: { "--accent": "#ff4fb8", "--accent-2": "#9b72ff" } as CSSProperties,
@@ -47,7 +47,7 @@ export function StoryPage({ side }: { side: StorySide }) {
       >
         <NextFooter
           eyebrow={academic ? "Part two" : "Part one"}
-          label={academic ? "Ender" : "Academic"}
+          label={academic ? "Ender" : "Human"}
           sublabel={
             academic
               ? "What she did after the black gate."

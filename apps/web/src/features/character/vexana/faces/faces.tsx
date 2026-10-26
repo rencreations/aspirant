@@ -12,6 +12,7 @@ import { useReducedMotion } from "@/lib/hooks";
 import { FIGURES } from "../media";
 import { facesGate } from "../seams/gates";
 import styles from "./faces.module.css";
+import { STORY_DEPTH, StoryWord } from "./story-word";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
@@ -31,10 +32,10 @@ const FACES: readonly Face[] = [
   {
     side: "academic",
     kicker: "Part one",
-    title: "Academic",
+    title: "Human",
     text: "A gate in the rain, a broom cupboard, a doughnut and a gold star. How she came to stand behind Guinevere.",
     href: "/character/vexana/story/academic",
-    label: "Read the Academic story. Vexana in her Academy uniform, looking right.",
+    label: "Read the Human story. Vexana in her Academy uniform, looking right.",
     src: FIGURES.normalSide,
   },
   {
@@ -65,7 +66,7 @@ function Letters({ text, from }: { text: string; from: number }) {
 }
 
 /**
- * The pair of faces, waist up. Her Academy self fills the left half of the screen and her Ender
+ * The pair of faces, waist up. Her human self fills the left half of the screen and her Ender
  * self the right half, and each half is one big link to its half of the story.
  *
  * When the section is about to come into view nothing is on it. The two figures then arrive from
@@ -89,6 +90,9 @@ export function Faces({ gated = false }: { gated?: boolean }) {
   const figs = useRef<Array<HTMLSpanElement | null>>([null, null]);
   const cols = useRef<Array<HTMLSpanElement | null>>([null, null]);
   const rings = useRef<SVGSVGElement>(null);
+  const word = useRef<HTMLDivElement>(null);
+  const letterPar = useRef<Array<HTMLSpanElement | null>>([]);
+  const letterRip = useRef<Array<HTMLSpanElement | null>>([]);
   const [active, setActive] = useState<Side | null>(null);
   const pointer = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: 0 });
 
@@ -107,6 +111,7 @@ export function Faces({ gated = false }: { gated?: boolean }) {
     const h = halos.current;
     const pu = pushes.current;
     const rg = rings.current;
+    const wd = word.current;
     const from = (i: number) => (i === 0 ? -1 : 1);
 
     const tl = gsap.timeline({ paused: true });
@@ -152,6 +157,11 @@ export function Faces({ gated = false }: { gated?: boolean }) {
         el.style.transform = `translate3d(${(from(i) * -k * 1.2).toFixed(3)}vw,${(-k * 1).toFixed(3)}svh,0) scale(${(1 + k * 0.045).toFixed(4)})`;
       }
       if (rg) rg.style.transform = `translate3d(${(-k * 4).toFixed(3)}vw,0,0)`;
+      // The big word drifts up and fades a little while the section is held.
+      if (wd) {
+        wd.style.transform = `translate3d(0,${(-k * 5).toFixed(3)}svh,0)`;
+        wd.style.opacity = (1 - k * 0.55).toFixed(3);
+      }
       root.dataset.hint = p > 0.12 ? "true" : "false";
     };
 
@@ -210,6 +220,10 @@ export function Faces({ gated = false }: { gated?: boolean }) {
         }
       }
       if (rg) rg.style.transform = "";
+      if (wd) {
+        wd.style.transform = "";
+        wd.style.opacity = "";
+      }
     };
   }, [reduced, gated]);
 
@@ -226,6 +240,12 @@ export function Faces({ gated = false }: { gated?: boolean }) {
       for (const [i, c] of cols.current.entries()) {
         if (c)
           c.style.transform = `translate3d(${(p.x * (i ? 1 : -1) * 8).toFixed(2)}px,${(p.y * 5).toFixed(2)}px,0)`;
+      }
+      for (const [i, l] of letterPar.current.entries()) {
+        if (l) {
+          const d = STORY_DEPTH[i] ?? 0.6;
+          l.style.transform = `translate3d(${(p.x * -26 * d).toFixed(2)}px,${(p.y * -14 * d).toFixed(2)}px,0)`;
+        }
       }
     };
     const tick = () => {
@@ -260,6 +280,21 @@ export function Faces({ gated = false }: { gated?: boolean }) {
     };
   }, [reduced]);
 
+  // A press ripples the letters of the big word, one after the other.
+  const ripple = () => {
+    if (reduced) return;
+    for (const [i, el] of letterRip.current.entries()) {
+      el?.animate(
+        [
+          { transform: "translate3d(0,0,0)" },
+          { transform: "translate3d(0,-9%,0)", offset: 0.4 },
+          { transform: "translate3d(0,0,0)" },
+        ],
+        { duration: 760, delay: i * 70, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      );
+    }
+  };
+
   const hover = (side: Side | null) => (e: { pointerType?: string }) => {
     if (e.pointerType && e.pointerType !== "mouse") return;
     setActive(side);
@@ -273,7 +308,7 @@ export function Faces({ gated = false }: { gated?: boolean }) {
       data-active={active ?? "none"}
       aria-labelledby="faces-title"
     >
-      <div ref={stage} className={styles.stage}>
+      <div ref={stage} className={styles.stage} onPointerDown={ripple}>
         <h2 id="faces-title" className={styles.sr}>
           Read her story in two parts
         </h2>
@@ -293,6 +328,8 @@ export function Faces({ gated = false }: { gated?: boolean }) {
             </g>
           </svg>
         </div>
+
+        <StoryWord wordRef={word} parRefs={letterPar} ripRefs={letterRip} />
 
         {FACES.map((f, i) => (
           <TLink

@@ -56,12 +56,12 @@ export function StoryBar({ side }: { side: StorySide }) {
           <TLink
             key={s}
             href={ROUTES[s]}
-            transitionLabel={s === "academic" ? "Academic" : "Ender"}
+            transitionLabel={s === "academic" ? "Human" : "Ender"}
             className={styles.tab}
             aria-current={s === side ? "page" : undefined}
           >
             <span className={styles.num}>{i + 1}</span>
-            {s === "academic" ? "Academic" : "Ender"}
+            {s === "academic" ? "Human" : "Ender"}
           </TLink>
         ))}
       </nav>

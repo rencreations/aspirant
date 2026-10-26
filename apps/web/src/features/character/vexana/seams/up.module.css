@@ -1,0 +1,34 @@
+/*
+ * The way back of a boundary. The first screen of a section is held for a stretch of the page,
+ * but only for a visitor who scrolls up into it: the transition down jumps past the stretch.
+ * The section sits in a box that is pinned at its top (a sticky box in a wrapper taller than the
+ * section by the hold), so while the visitor scrolls the stretch the first screen stays put.
+ */
+.root {
+  --lvh: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+@supports (height: 100lvh) {
+  .root {
+    --lvh: 100lvh;
+  }
+}
+
+.stick {
+  position: sticky;
+  top: 0;
+}
+
+.spacer {
+  height: calc(var(--hold) * var(--lvh));
+}
+
+/* Behind the pinned section: empty unless a transition fills it where the section has moved away. */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}

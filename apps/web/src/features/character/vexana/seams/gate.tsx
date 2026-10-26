@@ -7,9 +7,9 @@ import { useLenis } from "@/components/smooth-scroll";
 import { perfLevel, type PerfLevel } from "@/lib/perf";
 
 import styles from "./gate.module.css";
-import { toneHint } from "./gates";
+import { boundary, toneHint, type Dir } from "./gates";
 import { Hold, useHold, useHoldProgress } from "./hold";
-import { put } from "./scroll-kit";
+import { useScrollSnap } from "./snap";
 
 /** What a scene is given when the transition starts. All times are in seconds on its timeline. */
 interface SceneCtx {
@@ -21,7 +21,9 @@ interface SceneCtx {
   level: PerfLevel;
   vw: number;
   vh: number;
-  /** The moment the screen is fully covered: the page jumps to the next section there. */
+  /** Which way the page is crossing the boundary (the scene may play the same way both times). */
+  dir: Dir;
+  /** The moment the screen is fully covered: the page jumps to the other section there. */
   swapAt: (t: number) => void;
   /** What the corner of the screen is on from `t` (the nav text follows it). Null: the page. */
   hint: (t: number, tone: "light" | "dark" | null) => void;
@@ -33,34 +35,18 @@ interface SceneCtx {
 export interface SceneHandle {
   build: (ctx: SceneCtx) => void;
   reset: () => void;
-  /** The wait for the next section's media has begun (true) or ended (false). */
-  loading?: (show: boolean) => void;
-  /** Real progress of that wait, 0 to 1. */
-  progress?: (fraction: number) => void;
 }
 
 type SceneComponent = ComponentType<RefAttributes<SceneHandle>>;
 
-/** Something the transition must wait for before it shows the next section. */
-interface GateWait {
-  ready: () => boolean;
-  run: (onProgress: (loaded: number, total: number) => void) => Promise<void>;
-}
-
 interface GateProps {
+  /** The boundary this section's end belongs to (the section after it passes the same id to `UpZone`). */
+  id: string;
   /** Screens of scrolling the last screen of the section is held for (the threshold is part of it). */
   hold: number;
   /** The share of the hold at which the transition starts by itself. */
   at: number;
-  /** The small line on the meter: what lies ahead. */
-  label: string;
-  /** The tone of the held section, for the meter. */
-  tone: "light" | "dark";
   scene: SceneComponent;
-  /** The next section needs something loaded first (the room). */
-  wait?: GateWait;
-  /** Called once when the section comes near, so the wait is usually zero. */
-  warm?: () => void;
   /** False (reduced motion): the section is shown as it is, with the next one right after it. */
   enabled?: boolean;
   children: ReactNode;
@@ -69,54 +55,28 @@ interface GateProps {
 /** The held section stays at the screen bottom; its own scene plays from the threshold. */
 const Z_ABOVE_SECTIONS = "44";
 
-function GateOverlay({
-  at,
-  label,
-  tone,
-  scene: Scene,
-  wait,
-  warm,
-}: Omit<GateProps, "hold" | "enabled" | "children">) {
-  const { root, content, backdrop } = useHold();
+function GateOverlay({ id, at, scene: Scene }: Omit<GateProps, "hold" | "enabled" | "children">) {
+  const { root, content, backdrop, range } = useHold();
   const lenis = useLenis();
   const lenisRef = useRef(lenis);
   const layer = useRef<HTMLDivElement>(null);
-  const meter = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
   const scene = useRef<SceneHandle>(null);
-  const waitRef = useRef(wait);
-  /** The gate's logic, built in the effect below, called with the progress of the hold. */
+  const rangeRef = useRef(range);
+  /** The gate's logic, built in the effect below. */
   const tick = useRef<(p: number) => void>(() => undefined);
+  const playRef = useRef<(dir: Dir) => void>(() => undefined);
 
   useEffect(() => {
     lenisRef.current = lenis;
-    waitRef.current = wait;
+    rangeRef.current = range;
   });
-
-  useEffect(() => {
-    if (!warm || typeof IntersectionObserver === "undefined") return;
-    const el = root.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          warm();
-          io.disconnect();
-        }
-      },
-      { rootMargin: "200% 0px 200% 0px" },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-    };
-  }, [warm, root]);
 
   useEffect(() => {
     const r = root.current;
     const l = layer.current;
     if (!r || !l) return;
-    const s = { armed: true, busy: false, last: 0, tl: null as gsap.core.Timeline | null };
+    const b = boundary(id);
+    const s = { armed: true, last: 0, tl: null as gsap.core.Timeline | null };
 
     const finish = () => {
       l.style.visibility = "hidden";
@@ -126,52 +86,52 @@ function GateOverlay({
       toneHint.set(null);
       s.tl?.kill();
       s.tl = null;
-      s.busy = false;
+      b.busy = false;
       lenisRef.current.resume();
     };
 
-    const jump = () => {
-      // The next section starts where this wrapper ends.
-      const y = r.getBoundingClientRect().bottom + window.scrollY;
-      lenisRef.current.scrollTo(y, { immediate: true });
-      const held = content.current;
+    /** Where the page goes while the screen is covered. */
+    const target = (dir: Dir): number => {
+      if (dir === "down") {
+        // The next section starts where the up zone in front of it ends (or where this wrapper ends).
+        const up = b.up?.range();
+        if (up) return up.end;
+        return r.getBoundingClientRect().bottom + window.scrollY;
+      }
+      // Back up: the last screen of this section, with the hold below it (no threshold above it).
+      const own = rangeRef.current();
+      if (own) return own.start;
+      const h = content.current?.offsetHeight ?? 0;
+      return r.getBoundingClientRect().top + window.scrollY + Math.max(0, h - window.innerHeight);
+    };
+
+    const heldOf = (dir: Dir): { held: HTMLElement | null; back: HTMLElement | null } =>
+      dir === "down"
+        ? { held: content.current, back: backdrop.current }
+        : { held: b.up?.held ?? null, back: b.up?.backdrop ?? null };
+
+    const jump = (dir: Dir) => {
+      lenisRef.current.scrollTo(target(dir), { immediate: true });
+      const { held, back } = heldOf(dir);
       if (held) gsap.set(held, { clearProps: "transform,opacity,visibility,transformOrigin" });
-      const back = backdrop.current;
       if (back) back.style.background = "";
     };
 
-    const swap = (tl: gsap.core.Timeline) => {
-      const w = waitRef.current;
-      if (w && !w.ready()) {
-        tl.pause();
-        scene.current?.loading?.(true);
-        void w
-          .run((loaded, total) => {
-            scene.current?.progress?.(total > 0 ? Math.min(1, loaded / total) : 1);
-          })
-          .catch(() => undefined)
-          .then(() => {
-            scene.current?.loading?.(false);
-            jump();
-            tl.resume();
-          });
-        return;
-      }
-      jump();
+    const swap = (dir: Dir) => {
+      jump(dir);
     };
 
-    const play = () => {
+    const play = (dir: Dir) => {
       const sc = scene.current;
-      if (!sc) return;
-      s.busy = true;
+      if (!sc || b.busy) return;
+      b.busy = true;
       s.armed = false;
       lenisRef.current.pause();
       // Above the sections that follow (they have a z-index of their own), below the nav.
       r.style.zIndex = Z_ABOVE_SECTIONS;
       l.style.visibility = "visible";
       l.style.pointerEvents = "auto";
-      put(meter.current, "opacity", "0");
-      const held = content.current;
+      const { held, back } = heldOf(dir);
       const tl = gsap.timeline({ paused: true, onComplete: finish });
       s.tl = tl;
       let swapTime = -1;
@@ -179,10 +139,11 @@ function GateOverlay({
       sc.build({
         tl,
         held,
-        backdrop: backdrop.current,
+        backdrop: back,
         level: perfLevel(),
         vw: window.innerWidth,
         vh,
+        dir,
         swapAt: (t) => {
           swapTime = t;
         },
@@ -197,6 +158,9 @@ function GateOverlay({
         },
         pivot: () => {
           if (!held) return "50% 50%";
+          // Going down the held screen is the last one of the section (at the bottom of its box);
+          // going back it is the first one of the next section (at the top).
+          if (dir === "up") return `50% ${String(vh / 2)}px`;
           const h = held.offsetHeight;
           return `50% ${String(Math.max(h - vh / 2, h / 2))}px`;
         },
@@ -204,7 +168,7 @@ function GateOverlay({
       if (swapTime < 0) swapTime = tl.duration() * 0.5;
       tl.call(
         () => {
-          swap(tl);
+          swap(dir);
         },
         undefined,
         swapTime,
@@ -212,70 +176,60 @@ function GateOverlay({
       tl.play(0);
     };
 
+    playRef.current = play;
+    b.play = play;
+
     tick.current = (p) => {
-      const showing = !s.busy && p > 0.035 && p < at;
-      put(meter.current, "opacity", showing ? "1" : "0");
-      put(bar.current, "transform", `scaleX(${Math.min(1, p / at).toFixed(3)})`);
       if (p < at - 0.2) s.armed = true;
-      if (p >= at && p < 0.995 && p > s.last && s.armed && !s.busy) play();
+      if (p >= at && p < 0.995 && p > s.last && s.armed && !b.busy) play("down");
       s.last = p;
     };
 
     // If the page goes while a transition plays, give the scroll back.
     return () => {
       tick.current = () => undefined;
+      playRef.current = () => undefined;
+      if (b.play === play) b.play = null;
       s.tl?.kill();
-      if (s.busy) lenisRef.current.resume();
-      s.busy = false;
+      if (b.busy) lenisRef.current.resume();
+      b.busy = false;
       toneHint.set(null);
       r.style.zIndex = "";
     };
-  }, [root, content, backdrop, at]);
+  }, [id, root, content, backdrop, at]);
 
   useHoldProgress((p) => {
     tick.current(p);
   });
 
+  // The visitor stops scrolling in the threshold: from the half on the transition goes on by itself,
+  // before it the page goes back to the start of the hold.
+  useScrollSnap(`${id}:down`, () => (boundary(id).busy ? null : rangeRef.current()), {
+    onSnap: (side) => {
+      if (side !== "end") return false;
+      playRef.current("down");
+      return true;
+    },
+  });
+
   return (
-    <>
-      <div ref={meter} className={styles.meter} data-tone={tone} aria-hidden="true">
-        <span className={styles.label}>{label}</span>
-        <span className={styles.track}>
-          <span ref={bar} className={styles.bar} />
-        </span>
-      </div>
-      <div ref={layer} className={styles.gateLayer} aria-hidden="true">
-        <Scene ref={scene} />
-      </div>
-    </>
+    <div ref={layer} className={styles.gateLayer} aria-hidden="true">
+      <Scene ref={scene} />
+    </div>
   );
 }
 
 /**
- * A section whose last screen is held. The visitor scrolls on a little (the meter at the bottom
- * fills), and at the threshold the transition starts and finishes by itself: the held section
- * and the scene play together, the page jumps to the next section while the screen is covered,
- * and the scene opens on it. Scrolling back before the threshold takes the meter back down.
+ * A section whose last screen is held. The visitor scrolls on a little, and at the threshold the transition starts and finishes by itself: the held
+ * section and the scene play together, the page jumps to the next section while the screen is
+ * covered, and the scene opens on it. Scrolling back before the threshold takes the bar back down,
+ * and a stop in the middle snaps to the nearer end. The next section carries the way back
+ * (`UpZone` with the same id).
  */
-export function Gate({
-  hold,
-  at,
-  label,
-  tone,
-  scene,
-  wait,
-  warm,
-  enabled = true,
-  children,
-}: GateProps) {
+export function Gate({ id, hold, at, scene, enabled = true, children }: GateProps) {
   if (!enabled) return <>{children}</>;
   return (
-    <Hold
-      hold={hold}
-      overlay={
-        <GateOverlay at={at} label={label} tone={tone} scene={scene} wait={wait} warm={warm} />
-      }
-    >
+    <Hold hold={hold} overlay={<GateOverlay id={id} at={at} scene={scene} />}>
       {children}
     </Hold>
   );

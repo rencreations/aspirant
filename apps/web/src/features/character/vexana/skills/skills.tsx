@@ -13,19 +13,13 @@ import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
-import { perfLevel } from "@/lib/perf";
 
+import { mayPlay } from "../shared/autoplay";
 import { videoFile, videoPoster } from "../media";
 import { SKILLS, type Skill } from "./skill-data";
 import styles from "./skills.module.css";
 
 const noSubscribe = () => () => undefined;
-
-/** A muted picture may run by itself, but not on the light level or with data saving on. */
-function mayPlay() {
-  const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-  return perfLevel() !== "lite" && nav.connection?.saveData !== true;
-}
 
 /**
  * The screen: one video for each skill, stacked, the open one on top. The clips are short pieces

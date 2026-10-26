@@ -137,7 +137,7 @@ describe("characters", () => {
       lesley: ["Deadeye Spectre", "20", "September 10", "ISTJ", "ラズリー"],
       change: ["Tech Tensai", "Not specified", "January 23", "ENTP", "嫦娥"],
       guinevere: ["Daybreak Halo", "16", "February 28", "ENFP", "グィネヴィア"],
-      vexana: ["Twilight Star", "15 to 17", "March 10", "INFJ", "サナ"],
+      vexana: ["Twilight Star", "17", "March 10", "INFJ", "サナ"],
       obsidia: ["Imperatrix Arashi", "No human age (Ender)", "November 13", "INTJ", "アイーダ"],
       selena: ["Silverbolt Raiko", "19", "June 18", "ENTP", "セリナ"],
     });

@@ -6,7 +6,7 @@ export const vexana: CharacterData = {
   name: "Vexana",
   aspirantName: "Twilight Star",
   jp: { script: "サナ", romaji: "Sana" },
-  ageText: "15 to 17",
+  ageText: "17",
   birthday: "March 10",
   mbti: "INFJ",
   role: "Staff mage and Ender-form summoner",

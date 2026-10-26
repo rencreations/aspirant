@@ -12,7 +12,6 @@ import { onPerfLevel, startGovernor } from "@/lib/perf";
 import { runPreload } from "@/lib/preload";
 
 import type { StageState } from "../../stage/director";
-import { Hotspots } from "../../stage/hotspots";
 import { MenuButton } from "../../stage/menu-button";
 import type { SkipOptions } from "../../stage/phase";
 import { ScreenCover, type CoverApi } from "../../stage/screen-cover";
@@ -23,7 +22,8 @@ import { roomItems, roomMedia } from "./media";
 import { NextBar } from "./next-bar";
 import styles from "./room.module.css";
 import { loadRoomMedia } from "./room-load";
-import { HINTS, HOTSPOT_PATHS, HOTSPOT_STEP, SPOTS } from "./spots";
+import { roomBack } from "./room-back";
+import { ACTIONS } from "./spots";
 import { VEXANA_STAGE_TIMELINE } from "./timeline.generated";
 import { useRoomScroll } from "./use-room-scroll";
 
@@ -70,14 +70,15 @@ function skipFor(): SkipOptions {
 /**
  * The room: the last section of Vexana's page, and the same idea as Selena's and Obsidia's pages.
  * Its screen is held (a sticky screen in a tall track) while the visitor scrolls the last stretch of
- * the page. Reaching it plays the welcome (with Skip) and then she idles in a seamless loop. Three
- * faint circles on the picture (her hand, the Guardian, a spot beside her face) play a short each,
- * and the Change pose button sends her into the zoom pose, which she keeps until Back. Everything
- * but the site's bar steps away while a short or the pose plays.
+ * the page. Reaching it plays the welcome (with Skip) and then she idles in a seamless loop. A column
+ * of buttons on the left: Back (to the section before the room), Action 1, 2 and 3 (a short each:
+ * her face, her left hand and the Guardian), and Change pose, which sends her into the zoom pose,
+ * which she keeps until Back. Everything but the site's bar steps away while a short or the pose
+ * plays.
  *
- * The scroll through the track runs two meters (`scroll-math.ts`): a strength meter at the side, and
- * when it is full a bar a fifth of the screen high that names the next character and fills while
- * the visitor keeps scrolling, and then goes on to her page.
+ * Bottom left, a line says the page has ended, with a meter under it (`scroll-math.ts`): the meter
+ * fills as the visitor scrolls on, and when it is full a bar a fifth of the screen high names the
+ * next character and fills while the visitor keeps scrolling, and then goes on to her page.
  */
 export function Room({ next }: { next: NextCharacter }) {
   const router = useTransitionRouter();
@@ -159,8 +160,8 @@ export function Room({ next }: { next: NextCharacter }) {
     setState(s);
     if (s.mode === "welcome") welcomePlayed = true;
     if (s.mode === "queued" && s.scene) {
-      const spot = SPOTS.find((p) => p.short === s.scene);
-      setAnnounce(s.loading ? "Loading" : `${spot?.label ?? "Her pose"} is getting ready`);
+      const action = ACTIONS.find((a) => a.short === s.scene);
+      setAnnounce(s.loading ? "Loading" : `${action?.label ?? "Her pose"} is getting ready`);
     } else if (s.leaving && s.mode !== "idle") {
       setAnnounce("Going back");
     } else if (s.mode === "page") {
@@ -185,17 +186,32 @@ export function Room({ next }: { next: NextCharacter }) {
   }, [locked, pause, resume]);
 
   // The stage rests while the screen is off the display (a 4K video is a lot to decode for nothing).
+  // A change of the performance level while the room is on show only loads the other size in the
+  // background (the next video uses it): the idle loop is swapped to it later, while the room is
+  // off the display, so nothing is ever drawn over the picture for it.
   const resting = useRef(false);
+  const visibleNow = useRef(false);
+  const retierPending = useRef(false);
+  const modeNow = useRef<StageState["mode"]>("boot");
+  const applyRetier = useCallback(() => {
+    if (!retierPending.current || visibleNow.current || modeNow.current !== "idle") return;
+    retierPending.current = false;
+    void stage.current?.retier().then(() => {
+      if (!visibleNow.current) stage.current?.setHidden(true);
+    });
+  }, []);
   useEffect(() => {
+    visibleNow.current = visible;
     if (!mountStage) return;
     if (!visible && !resting.current) {
       resting.current = true;
       stage.current?.setHidden(true);
+      applyRetier();
     } else if (visible && resting.current) {
       resting.current = false;
       stage.current?.setHidden(false);
     }
-  }, [visible, mountStage]);
+  }, [visible, mountStage, applyRetier]);
 
   // The black screen of the first welcome. It fades a beat after the welcome video is playing.
   const blackExpected = welcome && !reduced;
@@ -234,9 +250,12 @@ export function Room({ next }: { next: NextCharacter }) {
 
   // The performance level steps down when the frame rate stays low while the room plays (not in
   // the welcome, which is it getting started). The smaller size is then loaded in the background
-  // and used from the next video on; while she idles it is swapped under the cover wipe.
+  // and used from the next video on; the idle loop gets it while the room is off the display.
   const judged = useRef(false);
-  const modeNow = useRef<StageState["mode"]>("boot");
+  const shownNow = useRef(false);
+  useEffect(() => {
+    shownNow.current = visible;
+  }, [visible]);
   const fastNow = useRef(false);
   useEffect(() => {
     judged.current = mode !== "boot" && mode !== "welcome";
@@ -248,19 +267,22 @@ export function Room({ next }: { next: NextCharacter }) {
     const stop = startGovernor({
       video: () => stage.current?.videoQuality() ?? null,
       // Not while the picture runs faster to get to its frame, and not off screen.
-      paused: () => !judged.current || fastNow.current || document.hidden,
+      // And only while the room is on the display: the rest of the long page has its own cost, and
+      // a drop caused there is remembered by every page of the site.
+      paused: () => !judged.current || fastNow.current || document.hidden || !shownNow.current,
     });
     const off = onPerfLevel(() => {
       void runPreload(roomItems());
       void roomMedia.loadCore(false).then(() => {
-        if (modeNow.current === "idle") void cover.current?.run(() => stage.current?.retier());
+        retierPending.current = true;
+        applyRetier();
       });
     });
     return () => {
       stop();
       off();
     };
-  }, [mountStage]);
+  }, [mountStage, applyRetier]);
 
   // What the panel shows, as on Selena's and Obsidia's pages.
   const showMain = state.ui;
@@ -272,7 +294,10 @@ export function Room({ next }: { next: NextCharacter }) {
   const waitKey = state.wait?.at ?? 0;
   const backWait = mode === "leaving" && state.wait ? state.wait.ms : null;
   const waiting = chosen !== null || mode === "leaving";
-  const showBack = mode === "page" || mode === "leaving";
+  // In the zoom pose the top button takes her back to the main panel; anywhere else it takes the
+  // visitor back to the section before the room.
+  const inPose = mode === "page" || mode === "leaving";
+  const topShown = inPose || (!busy && (mode === "boot" || mode === "welcome" || mode === "idle"));
   const waitLabel =
     chosen === null && mode === "leaving"
       ? "Heading back"
@@ -280,23 +305,18 @@ export function Room({ next }: { next: NextCharacter }) {
         ? "Getting ready"
         : "Changing her pose";
 
-  // The hint under the points: one line at a time, until the visitor has touched something.
-  const [hint, setHint] = useState(0);
-  const [touched, setTouched] = useState(false);
-  useEffect(() => {
-    if (touched || !showMain || reduced) return;
-    const timer = window.setInterval(() => {
-      setHint((n) => (n + 1) % HINTS.length);
-    }, 3800);
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [touched, showMain, reduced]);
-
   const go = useCallback(() => {
     if (router.isTransitioning()) return;
     router.push(next.href, { label: next.name });
   }, [next.href, next.name, router]);
+
+  // The way back out of the room: the page's smooth scroll is the default of `roomBack`.
+  const { scrollTo } = useLenis();
+  useEffect(() => {
+    roomBack.scrollTo = (top) => {
+      scrollTo(top, { duration: 1.6 });
+    };
+  }, [scrollTo]);
   const barOpen = useRoomScroll(track, screen, { reduced, go });
 
   useHotkey(
@@ -325,7 +345,6 @@ export function Room({ next }: { next: NextCharacter }) {
   const skip = useCallback(() => {
     void cover.current?.run(() => stage.current?.jumpToIdle());
   }, []);
-  const idleClock = useCallback(() => stage.current?.idleClock() ?? null, []);
 
   return (
     <section
@@ -383,38 +402,78 @@ export function Room({ next }: { next: NextCharacter }) {
           <div className={styles.blackout} data-state={black} aria-hidden="true" />
         ) : null}
 
-        <div className={styles.ui} data-visible={showMain} data-busy={busy}>
-          <Hotspots
-            spots={SPOTS}
-            paths={HOTSPOT_PATHS}
-            step={HOTSPOT_STEP}
-            fps={VEXANA_STAGE_TIMELINE.fps}
-            idleClock={idleClock}
-            visible={showMain}
-            chosen={chosenShort}
-            loading={state.loading}
-            waitMs={waitMs}
-            waitKey={waitKey}
-            away={busy && chosenShort === null}
-            onPick={(short) => {
-              setTouched(true);
-              audio.blip("click");
-              stage.current?.request(short);
-            }}
-            onCancel={() => {
-              audio.blip("click");
-              stage.current?.cancel();
-            }}
-            onWarm={(short) => {
-              stage.current?.warm(short);
-            }}
-            onHover={() => {
-              audio.blip("hover");
-            }}
-          />
+        <div className={styles.column} data-busy={busy} data-in-pose={inPose}>
+          <div
+            className={styles.item}
+            data-slot="top"
+            data-show={topShown}
+            data-away={barOpen && !inPose}
+            data-cursor="BACK"
+          >
+            <MenuButton
+              label={inPose ? "Back to main panel" : "Back"}
+              icon={ICON.back}
+              badge={inPose ? "ESC" : "UP"}
+              loadingWord="Heading back"
+              state={inPose && state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
+              waitMs={backWait}
+              waitKey={waitKey}
+              disabled={inPose ? state.leaving || mode !== "page" : false}
+              onPointerEnter={() => {
+                audio.blip("hover");
+              }}
+              onFocus={() => undefined}
+              onClick={() => {
+                audio.blip("click");
+                if (inPose) stage.current?.leave();
+                else roomBack.go();
+              }}
+            />
+          </div>
+
+          {ACTIONS.map((a, i) => {
+            const mine = chosenShort === a.short;
+            return (
+              <div
+                key={a.id}
+                className={styles.item}
+                data-slot="action"
+                data-show={showMain && !inPose}
+                data-away={(busy && !mine) || barOpen}
+                data-cursor="PLAY"
+                style={{ "--i": i } as CSSProperties}
+              >
+                <MenuButton
+                  label={a.label}
+                  icon={a.icon}
+                  index={i + 1}
+                  loadingWord="Getting ready"
+                  state={mine ? (state.loading ? "loading" : "queued") : "idle"}
+                  waitMs={waitMs}
+                  waitKey={waitKey}
+                  disabled={busy && !mine}
+                  ariaLabel={a.action}
+                  onPointerEnter={() => {
+                    stage.current?.warm(a.short);
+                    audio.blip("hover");
+                  }}
+                  onFocus={() => {
+                    stage.current?.warm(a.short);
+                  }}
+                  onClick={() => {
+                    audio.blip("click");
+                    if (mine) stage.current?.cancel();
+                    else stage.current?.request(a.short);
+                  }}
+                />
+              </div>
+            );
+          })}
 
           <div
-            className={styles.pose}
+            className={styles.item}
+            data-slot="pose"
+            data-show={showMain && !inPose}
             data-away={(busy && !poseChosen) || barOpen}
             data-cursor="POSE"
           >
@@ -435,23 +494,24 @@ export function Room({ next }: { next: NextCharacter }) {
                 stage.current?.warm("gallery");
               }}
               onClick={() => {
-                setTouched(true);
                 audio.blip("click");
                 if (poseChosen) stage.current?.cancel();
                 else stage.current?.request("gallery");
               }}
             />
           </div>
-
-          <p className={styles.hint} data-gone={touched || busy || barOpen} aria-hidden="true">
-            <span key={hint}>{HINTS[hint]}</span>
-          </p>
         </div>
 
-        <div className={styles.scroll} data-visible={showMain && reached} aria-hidden="true">
-          <span className={styles.scrollLabel}>Scroll</span>
-          <span className={styles.scrollTrack}>
-            <span className={styles.scrollFill} />
+        <div
+          className={styles.end}
+          data-visible={showMain && reached && !barOpen}
+          inert={!(showMain && reached && !barOpen)}
+        >
+          <p className={styles.endText}>
+            You have reached the end. Scroll more for the next character.
+          </p>
+          <span className={styles.endMeter} aria-hidden="true">
+            <span className={styles.endFill} />
           </span>
         </div>
 
@@ -463,29 +523,6 @@ export function Room({ next }: { next: NextCharacter }) {
               <span>Skip</span>
               <i aria-hidden="true" />
             </button>
-          </div>
-        ) : null}
-
-        {showBack ? (
-          <div className={styles.back} data-cursor="BACK">
-            <MenuButton
-              label="Back"
-              icon={ICON.back}
-              badge="ESC"
-              loadingWord="Heading back"
-              state={state.leaving ? (backWait === null ? "loading" : "queued") : "idle"}
-              waitMs={backWait}
-              waitKey={waitKey}
-              disabled={state.leaving || mode !== "page"}
-              onPointerEnter={() => {
-                audio.blip("hover");
-              }}
-              onFocus={() => undefined}
-              onClick={() => {
-                audio.blip("click");
-                stage.current?.leave();
-              }}
-            />
           </div>
         ) : null}
 

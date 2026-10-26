@@ -9,7 +9,7 @@
  *
  *  1. At the start, from the device: does it decode video in hardware, how many cores and how
  *     much memory, is data saving on. A level remembered from an earlier visit replaces this
- *     (a level the governor chose is trusted for one day, any other for five), and
+ *     (a level the governor chose is trusted for half an hour, any other for five days), and
  *     `?quality=full|balanced|lite` overrides everything (`auto` forgets it).
  *  2. `startGovernor` watches the real frame rate while the page plays and steps the level down,
  *     one step at a time, when it stays low. It ignores the first seconds, hidden tabs, and
@@ -25,8 +25,13 @@ const LEVELS: readonly PerfLevel[] = ["lite", "balanced", "full"];
 const STORE_KEY = "aspirants:perf";
 /** A remembered level is trusted this long, then the device is measured again. */
 const KEEP_MS = 5 * 24 * 60 * 60 * 1000;
-/** A level the governor chose (a step down or up) is trusted for a day only. */
-const GOVERNED_KEEP_MS = 24 * 60 * 60 * 1000;
+/**
+ * A level the governor chose (a step down or up) is trusted for half an hour only. A drop is often
+ * the page being busy (loading big media, a long page being scrolled), not the device, and a
+ * remembered drop flattens every page of the site on the next visit. A device that really is
+ * slow is found out again within seconds.
+ */
+const GOVERNED_KEEP_MS = 30 * 60 * 1000;
 
 export interface DeviceInfo {
   /** The browser decodes video in hardware (mediaCapabilities `powerEfficient`). */
@@ -264,6 +269,12 @@ interface GovernorOptions {
   video?: () => { dropped: number; total: number } | null;
   /** The page is busy loading or changing and must not be judged. */
   paused?: () => boolean;
+  /**
+   * Only look for a step up (a level that was dropped and remembered comes back when frames are
+   * good), and step down only to undo a step up that went wrong. For a page that must never be
+   * flattened by its own busy moments.
+   */
+  raiseOnly?: boolean;
 }
 
 const WINDOW_MS = 2000;
@@ -320,7 +331,8 @@ export function startGovernor(options: GovernorOptions = {}): () => void {
     good = wasBad ? 0 : good + 1;
     // A step up is judged strictly: one bad stretch sends it back down. Two good ones keep it.
     if (promoted && good >= BAD_NEEDED) promoted = false;
-    if (bad >= BAD_NEEDED || (promoted && wasBad)) {
+    const mayLower = !options.raiseOnly || promoted;
+    if (mayLower && (bad >= BAD_NEEDED || (promoted && wasBad))) {
       bad = 0;
       good = 0;
       lowerPerf("frame rate");

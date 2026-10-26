@@ -83,7 +83,7 @@ on the same machine (a press frame of 1,000 ms against 300 ms). Judge speed on `
 - **At the start**, from the device: hardware video decoding (`mediaCapabilities`, `powerEfficient`),
   cores, memory, data saving. A device that decodes in software gets `lite` with fewer than 6 cores,
   `balanced` with fewer than 12.
-- **Remembered** (`localStorage`, `aspirants:perf`): a level the governor chose for one day, any other for five.
+- **Remembered** (`localStorage`, `aspirants:perf`): a level the governor chose for half an hour (a drop is often a busy page, not the device, and it must not flatten every page for a day), any other for five days. Vexana's page does not step down on its own (`raiseOnly`): its hero is always built (the scene gives up pixels and noise first when frames are slow), and a remembered drop can come back up after half a minute of smooth frames. Its muted pictures run on every level except with data saving on.
 - **Overridden** with `?quality=full|balanced|lite`. `?quality=auto` forgets what was remembered.
   The tests pin a level this way.
 - **Lowered by a governor** (`startGovernor`) that watches the real frame rate and the video's

@@ -1,41 +1,42 @@
-import type { Spot } from "../../stage/hotspots";
-import { HOTSPOT_PATHS as TRACKED, HOTSPOT_STEP } from "./hotspots.generated";
+import type { ShortName } from "../../stage/timeline";
 
-export { HOTSPOT_STEP };
+/** One of the three buttons on the left: it plays one of the three shorts. */
+export interface Action {
+  id: string;
+  short: ShortName;
+  /** What the button says. */
+  label: string;
+  /** What it does, for the screen reader. */
+  action: string;
+  /** Public path of the medallion on the plate (`scripts/vexana/room-assets.py`). */
+  icon: string;
+}
 
 /**
- * The touch points on her picture, tracked through the idle loop by `scripts/vexana/stage-track.py`.
- * The ids are the names of the tracked paths: her left hand, the Guardian at her back, and a spot
- * beside her face (not on it). Each plays one of the three shorts. The wording is plain on purpose:
- * a button says what it does.
+ * The three actions, in the order of the buttons: Action 1 is the face (`short-1`), Action 2 her
+ * left hand (`short-2`) and Action 3 the Guardian at her back (`short-3`). The wording is plain on
+ * purpose: a button says what it does.
  */
-export const SPOTS: readonly Spot[] = [
+export const ACTIONS: readonly Action[] = [
   {
-    id: "left-hand",
+    id: "action-1",
+    short: "short-1",
+    label: "Action 1",
+    action: "Play the face animation",
+    icon: "/img/vexana/room/btn-action-1.webp",
+  },
+  {
+    id: "action-2",
     short: "short-2",
-    label: "Her hand",
-    action: "Play the animation of her left hand",
+    label: "Action 2",
+    action: "Play the left hand animation",
+    icon: "/img/vexana/room/btn-action-2.webp",
   },
   {
-    id: "big-thing",
+    id: "action-3",
     short: "short-3",
-    label: "The Guardian",
-    action: "Play the animation of the Guardian",
+    label: "Action 3",
+    action: "Play the Guardian animation",
+    icon: "/img/vexana/room/btn-action-3.webp",
   },
-  { id: "face", short: "short-1", label: "Her gaze", action: "Play the animation of her face" },
 ];
-
-/** The paths of the three points (the fourth tracked path is the middle of the left side). */
-export const HOTSPOT_PATHS = {
-  "left-hand": TRACKED["left-hand"],
-  "big-thing": TRACKED["big-thing"],
-  face: TRACKED.face,
-};
-
-/** A short line for each point, shown under the picture while nothing has been touched yet. */
-export const HINTS = [
-  "Touch her hand",
-  "Touch the Guardian",
-  "Touch beside her face",
-  "Or change her pose",
-] as const;

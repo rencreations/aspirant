@@ -19,6 +19,7 @@ import { useReducedMotion } from "@/lib/hooks";
 import { CHIBI, comicPage, videoPoster } from "../media";
 import { comicsGate } from "../seams/gates";
 import { easeInOut, lvh, put } from "../seams/scroll-kit";
+import { useScrollSnap, type SnapRange } from "../seams/snap";
 import { COMIC_COUNT, videoInfo } from "../shared/info";
 import { PlayerButton, videoFor } from "../shared/player-button";
 import { ComicReader } from "./comic-reader";
@@ -34,10 +35,11 @@ type Hot = "none" | "watch" | "read" | "disc";
 type Part = "a" | "b";
 
 /**
- * Screens of scrolling. The comic is already in place `OPEN` screens before the interlude lets go
- * (it waits under the interlude: see `cover.tsx`), is held for `HOLD` more screens (the visitor
- * can play with it), and in the last `LEAVE` of those its two halves open like doors on the
- * livestream, which waits under it (`Under open={LEAVE}` in vexana-page.tsx).
+ * Screens of scrolling. The comic is already in place when the interlude's doors have closed (it
+ * waits under the interlude and the doors then open by themselves: see `cover.tsx`), is held for
+ * `HOLD` more screens (the visitor can play with it), and in the last `LEAVE` of those its two
+ * halves open like doors on the livestream, which waits under it (`Under open={LEAVE}` in
+ * vexana-page.tsx).
  */
 const OPEN = 0.9;
 const HOLD = 2;
@@ -134,6 +136,8 @@ export function Comics() {
   const doorA = useRef<HTMLDivElement>(null);
   const doorB = useRef<HTMLDivElement>(null);
   const sparks = useRef<HTMLDivElement>(null);
+  /** The stretch of the page the doors open over, in scroll pixels. */
+  const leave = useRef<SnapRange | null>(null);
   const reduced = useReducedMotion();
   useParallax(stage, !reduced);
 
@@ -153,6 +157,9 @@ export function Comics() {
       start: () => `top top-=${((OPEN + HOLD - LEAVE) * lvh()).toFixed(0)}`,
       end: () => `top top-=${((OPEN + HOLD) * lvh()).toFixed(0)}`,
       invalidateOnRefresh: true,
+      onRefresh: (self) => {
+        leave.current = { start: self.start, end: self.end };
+      },
       onUpdate: (self) => {
         const e = easeInOut(self.progress);
         const vertical = window.matchMedia("(max-width: 760px)").matches;
@@ -179,6 +186,10 @@ export function Comics() {
       for (const d of doors) if (d) d.style.transform = "";
     };
   }, [reduced]);
+
+  // The doors can never be left half way open on the livestream: from half on they open and the
+  // page goes on, before it they shut again and the comic is as it was.
+  useScrollSnap("comic-doors", () => leave.current, { enabled: !reduced });
 
   const choose = useCallback((next: Hot) => {
     setHot((prev) => {

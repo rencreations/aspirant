@@ -113,161 +113,113 @@
   opacity: 0;
 }
 
-/* The interface ----------------------------------------------------------------------------- */
-.ui {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  visibility: hidden;
-  transition: visibility 0s linear 400ms;
-}
-
-.ui[data-visible="true"] {
-  visibility: visible;
-  transition-delay: 0s;
-}
-
-.ui > * {
-  pointer-events: auto;
-}
-
-/* The circles are easy to find and the cursor is drawn to them from a little way off: a roomy
-   hit area, with the ring itself unchanged. */
-.ui [role="group"][aria-label="Touch points"] {
-  --spot: clamp(4.75rem, 8.2vw, 8rem);
-}
-
-/* Change pose: the bigger button, in the empty left side, in the middle of the screen's height. */
-.pose {
+/* The left column: Back, the three actions and Change pose, top to bottom. --------------------- */
+.column {
   position: absolute;
   left: var(--pad);
-  top: 50%;
-  width: clamp(11rem, 16vw, 17rem);
-  translate: 0 -50%;
+  top: var(--top);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: clamp(11.5rem, 16vw, 17rem);
+  pointer-events: none;
+}
+
+/* A medium gap under Back, the three actions close together, and a larger gap before Change pose. */
+.item[data-slot="action"]:first-of-type,
+.item[data-slot="top"] + .item[data-slot="action"] {
+  margin-top: clamp(1.4rem, 4.5vh, 2.8rem);
+}
+
+.item[data-slot="action"] + .item[data-slot="action"] {
+  margin-top: 0.55rem;
+}
+
+.item[data-slot="pose"] {
+  margin-top: clamp(2.2rem, 8vh, 4.8rem);
+}
+
+.item {
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   transform: translateX(-46px);
   transition:
     opacity 500ms var(--ease-out),
-    transform 800ms var(--ease-out);
-  transition-delay: 320ms;
+    transform 800ms var(--ease-out),
+    visibility 0s linear 800ms;
 }
 
-.ui[data-visible="true"] .pose {
+.item[data-show="true"] {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
   transform: none;
+  transition-delay: calc(240ms + var(--i, 0) * 80ms), calc(240ms + var(--i, 0) * 80ms), 0s;
 }
 
-/* When a short is chosen, the button steps out of the way at once. */
-.ui .pose[data-away="true"] {
+/* When a short is chosen, or the next-character bar is up, the others step out of the way at once. */
+.item[data-show="true"][data-away="true"] {
   opacity: 0;
   transform: translateX(-56px);
+  pointer-events: none;
   transition-delay: 0s;
-  transition-duration: 380ms, 480ms;
-  pointer-events: none;
+  transition-duration: 380ms, 480ms, 0s;
 }
 
-/* The hint under the points: one short line at a time until something has been touched. */
-.hint {
+/* Bottom left: the page has ended. A line, and under it a thin meter that fills as the visitor
+   scrolls on (--strength, set by useRoomScroll). ----------------------------------------------- */
+.end {
   position: absolute;
-  left: 50%;
-  bottom: clamp(5.5rem, 13vh, 8rem);
-  margin: 0;
-  translate: -50% 0;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgb(255 255 255 / 0.86);
-  text-shadow: 0 1px 8px rgb(10 5 30 / 0.7);
-  pointer-events: none;
-  transition: opacity 600ms var(--ease-out);
-}
-
-.hint[data-gone="true"] {
-  opacity: 0;
-}
-
-.hint span {
-  display: inline-block;
-  animation: hint 3800ms var(--ease-in-out) both;
-}
-
-.hint span::before {
-  content: "";
-  display: inline-block;
-  width: 1.6rem;
-  height: 1px;
-  margin-right: 0.8rem;
-  vertical-align: middle;
-  background: currentColor;
-  opacity: 0.7;
-}
-
-@keyframes hint {
-  0% {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  14%,
-  80% {
-    opacity: 1;
-    transform: none;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-}
-
-/* The strength meter at the right edge: it rises as the visitor scrolls on. ------------------- */
-.scroll {
-  position: absolute;
-  right: var(--pad);
-  top: 50%;
+  left: var(--pad);
+  bottom: clamp(1.4rem, 5vh, 3rem);
   z-index: 6;
   display: grid;
-  justify-items: center;
-  gap: 0.8rem;
-  height: min(34svh, 20rem);
-  grid-template-rows: auto 1fr;
-  translate: 0 -50%;
+  gap: 0.75rem;
+  width: min(21rem, 46vw);
   opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 600ms var(--ease-out),
+    visibility 0s linear 600ms;
   pointer-events: none;
-  transition: opacity 500ms var(--ease-out);
 }
 
-.scroll[data-visible="true"] {
+.end[data-visible="true"] {
   opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 300ms, 300ms, 0s;
 }
 
-.scrollLabel {
-  writing-mode: vertical-rl;
+.endText {
+  margin: 0;
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.3em;
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 0.8);
-  text-shadow: 0 1px 8px rgb(10 5 30 / 0.7);
+  color: rgb(255 255 255 / 0.92);
+  text-shadow: 0 1px 10px rgb(10 5 30 / 0.8);
 }
 
-.scrollTrack {
+.endMeter {
   position: relative;
   display: block;
-  width: 3px;
-  height: 100%;
+  height: 3px;
   overflow: hidden;
-  border-radius: 2px;
   background: rgb(255 255 255 / 0.28);
-  box-shadow: 0 0 0 1px rgb(10 5 30 / 0.3);
+  box-shadow: 0 0 0 1px rgb(10 5 30 / 0.28);
 }
 
-.scrollFill {
+.endFill {
   position: absolute;
   inset: 0;
   background: #fff;
-  transform-origin: center bottom;
-  transform: scaleY(var(--strength));
+  transform-origin: left center;
+  transform: scaleX(var(--strength));
 }
 
 /* The bar about the next character: a fifth of the screen, as wide as it. ---------------------- */
@@ -427,7 +379,6 @@
 }
 
 /* Skip and Back ----------------------------------------------------------------------------- */
-.back,
 .bar {
   position: absolute;
   left: 50%;
@@ -435,10 +386,6 @@
   z-index: 6;
   translate: -50% 0;
   animation: rise 600ms var(--ease-out) 300ms both;
-}
-
-.back {
-  width: clamp(11.5rem, 16vw, 14.5rem);
 }
 
 .bar {
@@ -494,34 +441,40 @@
   }
 }
 
-/* Phones and tall screens: the picture is cropped to her, the pose button sits along the bottom,
-   and the next bar stacks its parts. */
+/* Phones and tall screens: the picture is cropped to her, the column sits along the bottom left in
+   narrower plates, and the next bar stacks its parts. */
 @media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
-  .pose {
-    left: 50%;
+  .column {
     top: auto;
+    bottom: calc(clamp(4.6rem, 12vh, 6.5rem) + env(safe-area-inset-bottom, 0px));
+    width: clamp(9.5rem, 46vw, 12.5rem);
+  }
+
+  .item[data-slot="action"]:first-of-type,
+  .item[data-slot="top"] + .item[data-slot="action"] {
+    margin-top: 0.8rem;
+  }
+
+  .item[data-slot="action"] + .item[data-slot="action"] {
+    margin-top: 0.4rem;
+  }
+
+  .item[data-slot="pose"] {
+    margin-top: 0.8rem;
+  }
+
+  .end {
     bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
-    width: clamp(11rem, 54vw, 14.5rem);
-    translate: -50% 0;
+    width: min(18rem, 58vw);
   }
 
-  .ui .pose[data-away="true"] {
-    transform: translateY(20px);
+  .endText {
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
   }
 
-  .hint {
-    top: var(--top);
-    bottom: auto;
-  }
-
-  .bar,
-  .back {
+  .bar {
     bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
-  }
-
-  .scroll {
-    right: 0.7rem;
-    height: min(24svh, 12rem);
   }
 
   .nextBar {
@@ -577,14 +530,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pose,
+  .item,
+  .end,
   .nextBar,
   .blackout {
     transition-duration: 1ms;
     transition-delay: 0s;
-  }
-
-  .hint span {
-    animation: none;
   }
 }

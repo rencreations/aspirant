@@ -114,14 +114,20 @@
   outline: none;
   touch-action: none;
   user-select: none;
+  /* The ground around the picture: a click there closes the viewer. */
+  cursor: default;
+}
+
+/* On the picture itself a click zooms in, and zooms out again when it is zoomed. */
+.sheet {
   cursor: zoom-in;
 }
 
-.stage[data-zoomed="true"] {
+.stage[data-zoomed="true"] .sheet {
   cursor: grab;
 }
 
-.stage[data-zoomed="true"]:active {
+.stage[data-zoomed="true"]:active .sheet {
   cursor: grabbing;
 }
 

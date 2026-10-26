@@ -4,9 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { audio } from "@/lib/audio";
 import { useInView, useReducedMotion } from "@/lib/hooks";
+import { mediaUrl } from "@/lib/media-store";
 
 import { videoInfo } from "../shared/info";
 import { PlayerButton, videoFor } from "../shared/player-button";
+import { useVideoSlot } from "../shared/use-video-slot";
 import { FPS, PASSES, SHADES, TOOLS, passAt, type Shade } from "./process-data";
 import styles from "./process.module.css";
 
@@ -30,6 +32,7 @@ const frame = (t: number) => String(Math.round(t * FPS)).padStart(3, "0");
 export function Process() {
   const info = useMemo(() => videoInfo("3d-process"), []);
   const root = useRef<HTMLElement>(null);
+  const cam = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const head = useRef<HTMLSpanElement>(null);
   const readout = useRef<HTMLElement>(null);
@@ -39,7 +42,9 @@ export function Process() {
   const [tool, setTool] = useState<(typeof TOOLS)[number]>("Rotate");
   const [playing, setPlaying] = useState(false);
   const [held, setHeld] = useState(false);
-  const wanted = useRef(true);
+  // The visitor pressed pause: it stays stopped until they press play.
+  const stopped = useRef(false);
+  const always = useCallback(() => true, []);
   const [pass, setPass] = useState(PASSES[0]!);
 
   const paint = useCallback(() => {
@@ -52,13 +57,19 @@ export function Process() {
     setPass((prev) => (prev.id === p.id ? prev : p));
   }, [info.duration]);
 
-  // The picture plays while it is on screen, and stops when it is not (unless the visitor stopped it).
+  // The picture is given its source when it is near the screen and plays by itself (muted) while it
+  // is on screen; far away the source is taken back, so the browser keeps a decoder for it.
+  useVideoSlot(video, cam, info.src, { auto: true, stopped, muted: always });
+
+  // Scrubbing holds the picture; letting go gives it back.
   useEffect(() => {
     const el = video.current;
     if (!el) return;
-    if (inView && wanted.current && !reduced && !held) void el.play().catch(() => undefined);
-    else el.pause();
-  }, [inView, reduced, held]);
+    if (held) el.pause();
+    else if (inView && !stopped.current && !reduced && el.paused && el.getAttribute("src")) {
+      void el.play().catch(() => undefined);
+    }
+  }, [held, inView, reduced]);
 
   // The playhead is moved a frame at a time, on this one element, while the clip plays.
   useEffect(() => {
@@ -89,13 +100,14 @@ export function Process() {
     if (!el) return;
     audio.blip("click");
     if (el.paused) {
-      wanted.current = true;
+      stopped.current = false;
+      if (!el.getAttribute("src")) el.src = mediaUrl(info.src);
       void el.play().catch(() => undefined);
     } else {
-      wanted.current = false;
+      stopped.current = true;
       el.pause();
     }
-  }, []);
+  }, [info.src]);
 
   return (
     <section
@@ -179,16 +191,14 @@ export function Process() {
               ))}
             </div>
 
-            <div className={styles.cam}>
+            <div ref={cam} className={styles.cam}>
               <video
                 ref={video}
                 className={styles.video}
-                src={info.src}
                 poster={info.poster}
                 muted
                 loop
                 playsInline
-                preload="metadata"
                 onPlay={() => {
                   setPlaying(true);
                 }}

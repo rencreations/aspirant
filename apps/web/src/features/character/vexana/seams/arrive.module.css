@@ -1,0 +1,42 @@
+/*
+ * The film arrives under the liquid. By default it is simply there (a reload part way down the page
+ * shows it). When the liquid has covered the screen the switch turns on and the film fades up by
+ * itself while the liquid drains: opacity only, so nothing that is fixed inside the film is moved.
+ */
+.film[data-on="true"] {
+  animation: arrive 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Her best friend arrives under the cream heart: it fades in and rises a little into place. */
+.guin[data-on="true"] {
+  animation: arrive-up 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s both;
+}
+
+@keyframes arrive-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 3.5vh, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film[data-on="true"],
+  .guin[data-on="true"] {
+    animation: none;
+  }
+}

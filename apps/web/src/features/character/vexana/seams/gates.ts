@@ -36,3 +36,39 @@ export const comicsGate = makeStore(false);
  * "nothing of mine is there, look at the page".
  */
 export const toneHint = makeStore<"light" | "dark" | null>(null);
+
+/** Which way a boundary between two sections is crossed. */
+export type Dir = "down" | "up";
+
+/**
+ * What the section AFTER a boundary shows the boundary: the pinned box its first screen sits in
+ * (a scene may move it when the visitor goes back up), the layer behind it, and the stretch of the
+ * page (scroll pixels) the "up" threshold is made of.
+ */
+interface UpAnchors {
+  held: HTMLElement;
+  backdrop: HTMLElement;
+  range: () => { start: number; end: number } | null;
+}
+
+/**
+ * One boundary between two sections of the lower page. The section before it plays the scene (it
+ * owns the scene and the "down" threshold); the section after it has the "up" threshold and asks
+ * the same scene to play again, backwards in meaning, to go back. `busy` is true while it plays.
+ */
+interface Boundary {
+  busy: boolean;
+  play: ((dir: Dir) => void) | null;
+  up: UpAnchors | null;
+}
+
+const boundaries = new Map<string, Boundary>();
+
+export function boundary(id: string): Boundary {
+  let b = boundaries.get(id);
+  if (!b) {
+    b = { busy: false, play: null, up: null };
+    boundaries.set(id, b);
+  }
+  return b;
+}

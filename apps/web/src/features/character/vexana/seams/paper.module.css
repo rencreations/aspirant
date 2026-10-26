@@ -4,6 +4,8 @@
   z-index: 3;
   margin-top: calc(-1 * var(--lvh) * var(--overlap));
   transform-origin: 50% 0;
+  /* The sheet's box reaches down over the section waiting under it: it must not take its clicks. */
+  pointer-events: none;
   box-shadow:
     0 -2px 0 rgb(169 139 245 / 55%),
     0 -36px 90px rgb(5 3 12 / 60%);

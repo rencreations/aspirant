@@ -26,24 +26,6 @@
   right: 0;
 }
 
-/* The bright edge of a leaf, where the two meet. */
-.left::after,
-.right::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-}
-
-.left::after {
-  right: 0;
-}
-
-.right::after {
-  left: 0;
-}
-
 /* ---- Pale doors: the colour of the pair of faces behind them. ---- */
 .paper .door {
   background: #f4f0f8;
@@ -57,10 +39,6 @@
   box-shadow: -18px 0 60px rgb(20 14 38 / 0.14);
 }
 
-.paper .door::after {
-  background: linear-gradient(to bottom, rgb(122 79 214 / 0.5), rgb(224 64 160 / 0.5));
-}
-
 /* ---- Dark doors in the two colours of the comic, violet and magenta. ---- */
 .comic .left {
   background-color: #1b1148;
@@ -72,8 +50,4 @@
   background-color: #3b0e2e;
   background-image: linear-gradient(245deg, #3b0e2e 0%, #7a1d57 70%, #a02a74 100%);
   box-shadow: -24px 0 70px rgb(5 3 12 / 0.55);
-}
-
-.comic .door::after {
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.15));
 }

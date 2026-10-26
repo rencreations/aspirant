@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import styles from "./hold.module.css";
+import { lvh } from "./scroll-kit";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
@@ -28,6 +29,8 @@ interface HoldApi {
   content: RefObject<HTMLDivElement | null>;
   /** A layer behind the held section, as tall as the wrapper: what shows where the section has moved away. */
   backdrop: RefObject<HTMLDivElement | null>;
+  /** The stretch of the page the hold is made of, in scroll pixels (null before it is measured). */
+  range: () => { start: number; end: number } | null;
 }
 
 const HoldContext = createContext<HoldApi | null>(null);
@@ -64,6 +67,12 @@ interface HoldProps {
   enabled?: boolean;
   className?: string;
   style?: CSSProperties;
+  /**
+   * Screens the whole hold sits lower than where the page lays it out: a hold inside an `Under`
+   * (which is pinned, and ends `open` screens lower than it starts) is displaced by that much, and
+   * ScrollTrigger measures at rest, so it must be told.
+   */
+  shift?: number;
   children: ReactNode;
 }
 
@@ -73,19 +82,29 @@ interface HoldProps {
  * back plays it backwards). The section is not touched: the hold is made by the layout around it.
  * What follows the wrapper may overlap its spacer (a negative margin) to be revealed under it.
  */
-export function Hold({ hold, overlay, enabled = true, className, style, children }: HoldProps) {
+export function Hold({
+  hold,
+  overlay,
+  enabled = true,
+  className,
+  style,
+  shift = 0,
+  children,
+}: HoldProps) {
   const root = useRef<HTMLDivElement>(null);
   const stick = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const backdrop = useRef<HTMLDivElement>(null);
   const subs = useRef(new Set<(p: number) => void>());
   const progress = useRef(0);
+  const span = useRef<{ start: number; end: number } | null>(null);
 
   const api = useMemo<HoldApi>(
     () => ({
       root,
       content: stick,
       backdrop,
+      range: () => span.current,
       subscribe(fn) {
         subs.current.add(fn);
         fn(progress.current);
@@ -129,25 +148,28 @@ export function Hold({ hold, overlay, enabled = true, className, style, children
     ro.observe(s);
     const st = ScrollTrigger.create({
       trigger: t,
-      start: "top top",
-      end: "bottom bottom",
+      start: () => `top top-=${String(shift * lvh())}`,
+      end: () => `bottom bottom-=${String(shift * lvh())}`,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         emit(self.progress);
       },
       onRefresh: (self) => {
+        span.current = { start: self.start, end: self.end };
         emit(self.progress);
       },
     });
+    span.current = { start: st.start, end: st.end };
     emit(st.progress);
     return () => {
       window.clearTimeout(timer);
       ro.disconnect();
       st.kill();
+      span.current = null;
       s.style.visibility = "";
       emit(0);
     };
-  }, [enabled]);
+  }, [enabled, shift]);
 
   if (!enabled) return <div className={className}>{children}</div>;
 

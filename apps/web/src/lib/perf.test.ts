@@ -125,17 +125,17 @@ describe("the level of this visit", () => {
     expect(perfLevel()).not.toBe("lite");
   });
 
-  it("trusts a level the governor chose for a day, and another for five", () => {
-    const day = 24 * 60 * 60 * 1000;
+  it("trusts a level the governor chose for half an hour, and another for five days", () => {
+    const minute = 60 * 1000;
     window.localStorage.setItem(
       "aspirants:perf",
-      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - 2 * day }),
+      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - 45 * minute }),
     );
     expect(perfLevel()).not.toBe("lite");
     resetPerfForTests();
     window.localStorage.setItem(
       "aspirants:perf",
-      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - day / 2 }),
+      JSON.stringify({ level: "lite", by: "governor", at: Date.now() - 10 * minute }),
     );
     expect(perfLevel()).toBe("lite");
   });
@@ -235,6 +235,29 @@ describe("the governor", () => {
     run(10, 100);
     expect(perfLevel()).toBe("lite");
     stop();
+  });
+
+  it("never steps down in raise-only mode, and steps up when a remembered drop can recover", () => {
+    window.localStorage.setItem(
+      "aspirants:perf",
+      JSON.stringify({ level: "full", at: Date.now() }),
+    );
+    resetPerfForTests();
+    const busy = startGovernor({ raiseOnly: true });
+    run(30, 100); // a busy page: bad frames all the time
+    busy();
+    expect(perfLevel()).toBe("full");
+
+    window.localStorage.setItem(
+      "aspirants:perf",
+      JSON.stringify({ level: "lite", by: "governor", at: Date.now() }),
+    );
+    resetPerfForTests();
+    expect(perfLevel()).toBe("lite");
+    const calm = startGovernor({ raiseOnly: true });
+    run(40, 16.7); // the page settles: smooth frames
+    calm();
+    expect(perfLevel()).not.toBe("lite");
   });
 
   it("does not count time while the page says it is busy", () => {

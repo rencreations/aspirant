@@ -1,7 +1,7 @@
 import type { ArtName } from "../../media";
 
 /**
- * The Academic half of Vexana's story, as seven ledger entries. It runs from the north gate to the
+ * The human half of Vexana's story, as seven ledger entries. It runs from the north gate to the
  * black gate. Sources: chapters 5 to 10 and 47 of the novel, and the Guinevere and Vexana comic.
  */
 export type Doodle = "gate" | "plum" | "lamp" | "doughnut" | "bag" | "fireworks" | "rift";

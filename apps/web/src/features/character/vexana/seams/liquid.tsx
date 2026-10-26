@@ -1,12 +1,13 @@
 "use client";
 
+import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
-import { useLenis } from "@/components/smooth-scroll";
-
+import { filmArrive } from "./arrive";
 import { toneHint } from "./gates";
 import { useHold, useHoldProgress } from "./hold";
 import { easeInOut, put, seg } from "./scroll-kit";
+import { useScrollSnap } from "./snap";
 import styles from "./liquid.module.css";
 
 /**
@@ -59,58 +60,43 @@ const BLOBS: readonly Blob[] = [
   { tone: "paper", x: 0, y: -9, a: 0.14, b: 0.69, k: 3.2, rot: -20, extra: true, d: blobPath(6) },
 ];
 
-/** Past this share of the hold the page goes on by itself to the next section. */
-const SNAP_AT = 0.64;
+/** The share of the hold at which the liquid has covered the whole screen. Past it, time takes over. */
+const DONE = 0.8;
+/** Seconds the liquid takes to drain away and show the film once it has covered the screen. */
+const DRAIN = 1.25;
 
 /**
  * The registry to the film. The last screen of the registry (the dark voices) is held with nothing
- * white on it. Then a liquid rises from the middle, in the colour of the film section, and past
- * about two thirds of the way the page carries on by itself to the film (the same colour, so
- * there is no seam). Scrolling back before that plays it backwards. The scroll is taken over
- * only once, and a wheel turned the other way gives it back.
+ * white on it. Then a liquid rises from the middle, in the colour of the film section. The rise
+ * follows the scroll, and it can never be left half way: stop for a moment and it either goes on by
+ * itself (from half on) or sinks back (before half), see `useScrollSnap`. The film waits under
+ * the held screen, already in place (see `Under` in vexana-page.tsx), so when the liquid has
+ * covered the screen the registry is hidden and the liquid drains away by TIME, showing the film,
+ * which fades in at the same moment. Nothing is left to scroll through to see it.
  */
 export function Liquid() {
-  const { root } = useHold();
-  const lenis = useLenis();
+  const { range, hideContent } = useHold();
   const wash = useRef<HTMLDivElement>(null);
   const blobs = useRef<Array<HTMLDivElement | null>>([]);
-  const state = useRef({ last: 0, busy: false, timer: 0 });
-  const lenisRef = useRef(lenis);
+  const state = useRef({ p: 0, drain: 0, done: false, tween: null as gsap.core.Tween | null });
 
-  useEffect(() => {
-    lenisRef.current = lenis;
-  });
-
-  // A wheel turned back while the page is carrying on by itself gives the scroll back.
-  useEffect(() => {
-    const s = state.current;
-    const onWheel = (e: WheelEvent) => {
-      if (!s.busy || e.deltaY >= 0) return;
-      s.busy = false;
-      window.clearTimeout(s.timer);
-      lenisRef.current.scrollTo(window.scrollY, { immediate: true });
-    };
-    window.addEventListener("wheel", onWheel, { passive: true });
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.clearTimeout(s.timer);
-      toneHint.set(null);
-    };
-  }, []);
-
-  useHoldProgress((p) => {
+  const draw = () => {
+    const { p, drain } = state.current;
+    const grow = 1 - drain;
     BLOBS.forEach((b, i) => {
       const el = blobs.current[i];
       const e = easeInOut(seg(p, b.a, b.b));
-      put(el, "visibility", e > 0.001 ? "visible" : "hidden");
+      const scale = (0.03 + b.k * e) * grow;
+      put(el, "visibility", e > 0.001 && scale > 0.02 ? "visible" : "hidden");
       put(
         el,
         "transform",
-        `translate3d(${String(b.x)}vw,${String(b.y)}vh,0) rotate(${(b.rot * e).toFixed(2)}deg) scale(${(0.03 + b.k * e).toFixed(4)})`,
+        `translate3d(${String(b.x)}vw,${String(b.y)}vh,0) rotate(${(b.rot * e).toFixed(2)}deg) scale(${scale.toFixed(4)})`,
       );
     });
-    put(wash.current, "opacity", seg(p, 0.66, 0.8).toFixed(3));
-    put(wash.current, "visibility", p > 0.65 ? "visible" : "hidden");
+    const w = seg(p, 0.66, DONE) * grow;
+    put(wash.current, "opacity", w.toFixed(3));
+    put(wash.current, "visibility", w > 0.001 ? "visible" : "hidden");
     // The pale liquid reaches the top corner (where the nav text is) when the edge of its rim blob,
     // which is the biggest of the pale ones, is as far from the middle as the corner is.
     const rim = BLOBS[1];
@@ -122,25 +108,51 @@ export function Liquid() {
       const radius = 0.38 * size * (0.03 + rim.k * easeInOut(seg(p, rim.a, rim.b))) * 0.92;
       reached = radius >= Math.hypot(vw / 2 - 130, vh / 2 - 40);
     }
-    toneHint.set(reached && p < 0.995 ? "light" : null);
+    toneHint.set(reached && grow > 0.55 ? "light" : null);
+  };
 
+  // From the moment the screen is covered the film is shown by time: the liquid drains and the
+  // film fades in. Taken back (scrolling up past the cover) it is as it was.
+  useHoldProgress((p) => {
     const s = state.current;
-    if (p > SNAP_AT && p > s.last && p < 0.995 && !s.busy) {
-      const el = root.current;
-      if (el) {
-        s.busy = true;
-        lenisRef.current.scrollTo(el.getBoundingClientRect().bottom + window.scrollY, {
-          duration: 1.2,
-        });
-        window.clearTimeout(s.timer);
-        s.timer = window.setTimeout(() => {
-          s.busy = false;
-        }, 1500);
-      }
+    s.p = p;
+    const covered = p >= DONE - 0.0005;
+    if (covered && !s.done) {
+      s.done = true;
+      hideContent(true);
+      filmArrive.set(true);
+      s.tween?.kill();
+      s.tween = gsap.to(s, {
+        drain: 1,
+        duration: DRAIN,
+        ease: "power2.inOut",
+        onUpdate: draw,
+      });
+    } else if (!covered && s.done) {
+      s.done = false;
+      s.tween?.kill();
+      s.tween = null;
+      s.drain = 0;
+      hideContent(false);
+      filmArrive.set(false);
     }
-    if (p < 0.5) s.busy = false;
-    s.last = p;
+    if (!s.done) draw();
   });
+
+  // Never left half way: the stretch the liquid rises over is snapped (a half goes on).
+  useScrollSnap("liquid", () => {
+    const r = range();
+    return r ? { start: r.start, end: r.start + DONE * (r.end - r.start) } : null;
+  });
+
+  useEffect(() => {
+    const s = state.current;
+    return () => {
+      s.tween?.kill();
+      filmArrive.set(false);
+      toneHint.set(null);
+    };
+  }, []);
 
   return (
     <div className={styles.liquid} aria-hidden="true">

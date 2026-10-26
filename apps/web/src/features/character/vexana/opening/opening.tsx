@@ -8,7 +8,7 @@ import { StarGlyph } from "@/components/star-glyph";
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
 import { expectReady } from "@/lib/page-ready";
-import { onPerfLevel, perfLevel } from "@/lib/perf";
+import { perfLevel, startGovernor } from "@/lib/perf";
 
 import { FIGURES, videoFile, videoPoster } from "../media";
 import { BACKGROUND_CSS } from "./backgrounds/background";
@@ -112,6 +112,15 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
   );
 }
 
+/** The scene may run unless the visitor saves data, or the device has very little memory. */
+function glAllowed(): boolean {
+  const nav = navigator as Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean };
+  };
+  return nav.connection?.saveData !== true && (nav.deviceMemory ?? 8) > 2;
+}
+
 /**
  * The opening of Vexana's page: the hero (her normal form, with the Ender form coming through),
  * the hand-over (the screen closes into a card and the page goes dark), and the signature with
@@ -124,7 +133,7 @@ export function Opening() {
   const reduced = useReducedMotion();
   const [ender, setEnder] = useState(false);
   const [gl, setGl] = useState(false);
-  const [lite, setLite] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   const glRef = useRef<FigureGL | null>(null);
   const toneRef = useRef(0);
@@ -161,60 +170,96 @@ export function Opening() {
     [],
   );
 
-  // A device that falls to the lowest level drops the scene and keeps the flat version.
+  // The scene does not depend on the performance level: that level is a guess that is often wrong
+  // (a busy page, a level remembered from another page), and the scene looks after itself (it gives
+  // up pixels and noise first when frames are slow). Only reduced motion, data saving and very
+  // little memory keep the flat version.
+  //
+  // A level that was dropped and remembered can come back: this page looks for a step up while the
+  // hero is on screen (it never steps down on its own; the room at the bottom judges frames only
+  // while it is shown).
   useEffect(
     () =>
-      onPerfLevel((level) => {
-        if (level === "lite") setLite(true);
+      startGovernor({
+        raiseOnly: true,
+        paused: () => document.hidden || !activeRef.current,
       }),
     [],
   );
 
-  // The scene. Built after mount, from a canvas made here (a lost context cannot be reused).
+  // The scene. Built after mount, from a canvas made here (a lost context cannot be reused). It is
+  // tried again if the first attempts fail, and built again if the browser takes the context away
+  // (a GPU reset, too many contexts, a tab that was discarded).
+  const rebuilds = useRef(0);
   useEffect(() => {
     const host = glHostRef.current;
-    if (reduced || lite || !host) return;
+    if (reduced || !host || !glAllowed()) return;
     const level = perfLevel();
-    if (level === "lite") return;
     const mark = expectReady("opening");
     const canvas = document.createElement("canvas");
     canvas.className = styles.canvas ?? "";
     host.appendChild(canvas);
     let cancelled = false;
     let scene: FigureGL | null = null;
+    let rebuildTimer = 0;
+    const lost = (e: Event) => {
+      e.preventDefault();
+      canvas.removeEventListener("webglcontextlost", lost);
+      if (cancelled) return;
+      glRef.current = null;
+      setGl(false);
+      scene?.dispose();
+      scene = null;
+      if (rebuilds.current < 4) {
+        rebuilds.current += 1;
+        rebuildTimer = window.setTimeout(() => {
+          if (!cancelled) setAttempt((n) => n + 1);
+        }, 600);
+      }
+    };
     void (async () => {
       try {
         const { createFigureGL } = await import("./figure-gl");
-        const made = await createFigureGL(canvas, {
-          normalUrl: asset(FIGURES.normalFront),
-          enderUrl: asset(FIGURES.enderFront),
-          quality: level === "full" ? "full" : "balanced",
-        });
-        if (cancelled) {
-          made.dispose();
-          return;
+        for (let tries = 0; tries < 3 && !cancelled; tries += 1) {
+          try {
+            const made = await createFigureGL(canvas, {
+              normalUrl: asset(FIGURES.normalFront),
+              enderUrl: asset(FIGURES.enderFront),
+              quality: level === "full" ? "full" : "balanced",
+            });
+            if (cancelled) {
+              made.dispose();
+              return;
+            }
+            scene = made;
+            glRef.current = made;
+            canvas.addEventListener("webglcontextlost", lost);
+            made.onForm(setEnder);
+            made.setTone(toneRef.current);
+            made.setActive(activeRef.current);
+            setGl(true);
+            return;
+          } catch {
+            // The pictures or the context were not ready: try again a moment later.
+            await new Promise((r) => window.setTimeout(r, 900 * (tries + 1)));
+          }
         }
-        scene = made;
-        glRef.current = made;
-        made.onForm(setEnder);
-        made.setTone(toneRef.current);
-        made.setActive(activeRef.current);
-        setGl(true);
-      } catch {
-        // No WebGL, or the pictures failed: the flat version stays.
+        // No WebGL after three tries: the flat version stays.
       } finally {
         mark();
       }
     })();
     return () => {
       cancelled = true;
+      window.clearTimeout(rebuildTimer);
       mark();
+      canvas.removeEventListener("webglcontextlost", lost);
       glRef.current = null;
       setGl(false);
       scene?.dispose();
       canvas.remove();
     };
-  }, [reduced, lite]);
+  }, [reduced, attempt]);
 
   // The flat version moves too: the Ender form shows while the pointer is on the hero, and now
   // and then by itself.

@@ -156,7 +156,7 @@
 }
 
 .title em {
-  display: inline-block;
+  display: block;
   font-family: var(--font-serif-stack);
   font-weight: 400;
   font-style: italic;
@@ -405,6 +405,33 @@
 }
 
 .play:hover {
+  background: var(--magenta);
+  border-color: var(--magenta);
+}
+
+.soundChip {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  background: rgb(20 14 38 / 0.82);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.soundChip:hover,
+.soundChip:focus-visible {
   background: var(--magenta);
   border-color: var(--magenta);
 }

@@ -5,8 +5,8 @@
  */
 /*
  * The section is a tall box with a sticky screen in it. It waits under the interlude (it starts
- * `0.9` screens earlier than the interlude's end, so it is already in place when the interlude's
- * doors open), stays held for 2 more screens while it is played with, and in the last of them its
+ * `2.2` screens earlier than the interlude's end, so it is already in place when the interlude's
+ * doors have closed and begin to open by themselves), stays held for 2 more screens while it is played with, and in the last of them its
  * two halves open like doors on the livestream under it (see comics.tsx). So its own background is
  * clear: only the two halves colour the screen, and they leave when they open.
  */
@@ -15,7 +15,9 @@
   position: relative;
   z-index: 3;
   height: calc(var(--sh) * 3.9);
-  margin-top: calc(var(--sh) * -1.9);
+  margin-top: calc(var(--sh) * -2.2);
+  /* A tall transparent box over the livestream waiting under it: only the stage takes the pointer. */
+  pointer-events: none;
   color: #fff;
   --spring: cubic-bezier(0.3, 1.55, 0.5, 1);
   --glide: cubic-bezier(0.2, 0.9, 0.25, 1);
@@ -132,6 +134,18 @@
 
 .comics[data-leaving="true"] .disc {
   pointer-events: none;
+}
+
+/* The state the pointer chose gives way fast, so the two halves, the words and the disc are neutral
+   (and the two copies of the disc agree) by the time the doors have moved: they open on a clean
+   picture. Without this they were still gliding back for most of a second, and the door that had
+   begun to slide out no longer lined up with the half it carried. */
+.comics[data-leaving="true"] *,
+.comics[data-leaving="true"] *::before,
+.comics[data-leaving="true"] *::after {
+  transition-duration: 140ms !important;
+  transition-delay: 0s !important;
+  transition-timing-function: ease-out !important;
 }
 
 /* The livestream under the opening doors is the one to take the pointer now. */

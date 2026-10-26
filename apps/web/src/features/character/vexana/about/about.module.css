@@ -19,7 +19,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: 2vw;
-  padding: 14vh max(6vw, 28px) 16vh;
+  padding: 14vh max(6vw, 28px) clamp(24px, 4vh, 40px);
   overflow-x: clip;
   background: var(--ab-ink);
   color: var(--ab-text);
@@ -967,7 +967,13 @@
   color: var(--ab-dim);
 }
 
+.voicePages {
+  display: grid;
+}
+
 .voiceList {
+  grid-area: 1 / 1;
+  align-content: start;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 3vw;
@@ -976,10 +982,12 @@
   list-style: none;
 }
 
+.voiceList[data-current="false"] {
+  visibility: hidden;
+}
+
 .voiceItem {
   border-bottom: 1px solid var(--ab-line);
-  content-visibility: auto;
-  contain-intrinsic-size: auto 84px;
 }
 
 .voiceButton {
@@ -1086,10 +1094,17 @@
 
 /* ------------------------------------------------------------ narrow */
 
-.more {
-  display: block;
-  margin: 2.4rem auto 0;
-  padding: 0.9rem 1.6rem;
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem 1.2rem;
+  margin: 1.4rem 0 0;
+}
+
+.pagerStep,
+.pagerNumber {
   border: 1px solid var(--ab-line);
   border-radius: 999px;
   background: transparent;
@@ -1101,22 +1116,65 @@
   cursor: pointer;
   transition:
     border-color 0.3s var(--ease),
-    background-color 0.3s var(--ease);
+    background-color 0.3s var(--ease),
+    color 0.3s var(--ease);
 }
 
-.more:hover {
+.pagerStep {
+  padding: 0.8rem 1.4rem;
+}
+
+.pagerNumber {
+  min-width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+}
+
+.pagerStep:hover:not(:disabled),
+.pagerNumber:hover {
   border-color: var(--acc);
   background: rgb(237 232 250 / 5%);
 }
 
-.more:focus-visible {
+.pagerNumber[aria-current="page"] {
+  border-color: var(--acc);
+  background: var(--acc);
+  color: var(--ab-ink);
+}
+
+.pagerStep:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagerStep:focus-visible,
+.pagerNumber:focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 3px;
 }
 
+.pagerNumbers {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pagerLabel {
+  margin: 0;
+  flex-basis: 100%;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ab-dim);
+}
+
 @media (max-width: 900px) {
   .about {
-    padding: 11vh 20px 12vh;
+    padding: 11vh 20px 28px;
     row-gap: 6vh;
   }
   .name {

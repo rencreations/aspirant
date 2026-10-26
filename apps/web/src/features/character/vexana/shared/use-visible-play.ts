@@ -3,14 +3,8 @@
 import { useEffect, type RefObject } from "react";
 
 import { useReducedMotion } from "@/lib/hooks";
-import { mediaUrl } from "@/lib/media-store";
-import { perfLevel } from "@/lib/perf";
 
-/** A muted picture may run by itself, but not on the light level or with data saving on. */
-function mayPlay() {
-  const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-  return perfLevel() !== "lite" && nav.connection?.saveData !== true;
-}
+import { giveSource, mayPlay } from "./autoplay";
 
 /**
  * Plays a muted looping video only while its frame is on screen. It gets its source when the
@@ -40,7 +34,7 @@ export function useVisiblePlay(
       ([e]) => {
         near = e?.isIntersecting ?? false;
         if (near && !v.getAttribute("src")) {
-          v.src = mediaUrl(file);
+          giveSource(v, file);
           v.load();
         }
         apply();

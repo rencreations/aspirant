@@ -25,6 +25,8 @@ interface Props {
   /** Changes when a new wait begins, so the animation starts again. */
   waitKey: number;
   disabled: boolean;
+  /** What the button does, for the screen reader, when the label alone does not say it. */
+  ariaLabel?: string;
   onPointerEnter: () => void;
   onFocus: () => void;
   onClick: () => void;
@@ -52,6 +54,7 @@ export function MenuButton({
   waitMs,
   waitKey,
   disabled,
+  ariaLabel,
   onPointerEnter,
   onFocus,
   onClick,
@@ -78,6 +81,7 @@ export function MenuButton({
       data-state={state}
       data-mode={pressed ? (known ? "run" : "hold") : undefined}
       aria-pressed={pressed}
+      aria-label={ariaLabel}
       disabled={disabled}
       style={style}
       onPointerEnter={onPointerEnter}

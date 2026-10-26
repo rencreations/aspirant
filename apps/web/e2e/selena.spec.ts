@@ -647,6 +647,39 @@ test("Gallery shows the official art first, then the fan art, each with a credit
   ).toBeAttached();
 });
 
+test("the viewer zooms with one click on the picture and closes with a click beside it", async ({
+  page,
+}, info) => {
+  test.skip(isNarrow(info), "The gap beside the picture is only there on a wide screen");
+  await openGallery(page, false);
+  const art = page.getByRole("region", { name: "Art, scrollable" });
+  const opener = art.getByRole("button", {
+    name: /View larger: .*Selena in her mecha form leaping/,
+  });
+  await opener.scrollIntoViewIfNeeded();
+  await opener.click();
+  const viewer = page.getByRole("dialog", { name: /Selena's art/ });
+  await expect(viewer).toBeVisible();
+  const stage = viewer.locator("[data-zoomed]");
+  await expect(stage).toHaveAttribute("data-zoomed", "false");
+  const sheet = viewer.locator("[data-loaded]");
+  await expect(sheet).toHaveAttribute("data-loaded", "true", { timeout: 30_000 });
+  const box = await sheet.boundingBox();
+  const area = await stage.boundingBox();
+  if (!box || !area) throw new Error("the picture has no box");
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  // One click zooms in, the next one zooms back out.
+  await page.mouse.click(x, y);
+  await expect(stage).toHaveAttribute("data-zoomed", "true");
+  await page.mouse.click(x, y);
+  await expect(stage).toHaveAttribute("data-zoomed", "false");
+  // A click on the ground beside the picture closes the viewer.
+  const gap = box.x - area.x > 24 ? box.x - 12 : box.x + box.width + 12;
+  await page.mouse.click(gap, y);
+  await expect(viewer).toBeHidden();
+});
+
 test("the viewer opens a picture, zooms, moves between pictures and closes", async ({
   page,
 }, info) => {

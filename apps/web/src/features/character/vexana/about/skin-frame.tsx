@@ -4,21 +4,14 @@ import { useEffect, useRef, useState } from "react";
 
 import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
-import { mediaUrl } from "@/lib/media-store";
-import { perfLevel } from "@/lib/perf";
 
+import { giveSource, mayPlay } from "../shared/autoplay";
 import { videoFile, videoPoster } from "../media";
 import { VIDEOS } from "../media.generated";
 import styles from "./about.module.css";
 
 const FILE = videoFile("skin-showcase");
 const INFO = VIDEOS["skin-showcase"];
-
-/** A muted picture may run by itself, but not on the light level or with data saving on. */
-function mayPlay() {
-  const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-  return perfLevel() !== "lite" && nav.connection?.saveData !== true;
-}
 
 /**
  * Her skin showcase, cut to Vexana only, where her picture used to be: muted, looping, and
@@ -48,7 +41,7 @@ export function SkinFrame() {
       ([e]) => {
         near = e?.isIntersecting ?? false;
         if (near && !video.getAttribute("src") && !reduced && mayPlay()) {
-          video.src = mediaUrl(FILE);
+          giveSource(video, FILE);
           video.preload = "auto";
         }
         apply();

@@ -1,0 +1,47 @@
+/*
+ * The layer of the black heart that closes on her best friend and opens on the room. It is fixed to
+ * the screen, so it stays put while the page jumps to the room under it.
+ */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+}
+
+/* The thin line that fills with the real progress of the room's videos, while the black waits. */
+.loader {
+  position: absolute;
+  left: 50%;
+  bottom: 14vh;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  width: min(320px, 70vw);
+  translate: -50% 0;
+  opacity: 0;
+  color: #f4effc;
+}
+
+.text {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.track {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: rgb(244 239 252 / 0.25);
+}
+
+.fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #e040a0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}

@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { audio } from "@/lib/audio";
-import { useInView } from "@/lib/hooks";
+import { mediaUrl } from "@/lib/media-store";
 import { useSiteStore } from "@/lib/stores";
 
 import { PlayerButton, videoFor } from "../shared/player-button";
 import { videoInfo } from "../shared/info";
+import { useVideoSlot } from "../shared/use-video-slot";
 import { STREAM_COMMENTS } from "./comments.generated";
 import { TAGS } from "./stream-data";
 import { useMusicDuck } from "./use-duck";
@@ -35,36 +36,103 @@ const CHAT_SHOWN = 8;
  */
 export function Stream() {
   const info = useMemo(() => videoInfo("live-vexana"), []);
-  const root = useRef<HTMLElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const chatRef = useRef<HTMLOListElement>(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
-  const inView = useInView(root, { rootMargin: "0px", threshold: 0.15 });
 
-  // The site's sound button decides whether the stream has sound at all.
+  // The sound: the stream starts muted by itself (a browser allows that), and the visitor turns
+  // the sound on with the button. The site's sound button still has the last word.
+  const [soundOn, setSoundOn] = useState(false);
+  const soundRef = useRef(false);
   const [siteMuted, setSiteMuted] = useState(() => useSiteStore.getState().muted);
   useEffect(() => useSiteStore.subscribe((s) => setSiteMuted(s.muted)), []);
-
+  const silent = !soundOn || siteMuted;
   useEffect(() => {
+    soundRef.current = soundOn;
     const el = video.current;
-    if (el) el.muted = siteMuted;
-  }, [siteMuted]);
+    if (el) el.muted = !soundOn || siteMuted;
+  }, [soundOn, siteMuted]);
 
   const duck = useMusicDuck();
+  // The visitor pressed pause: the stream stays stopped until they press play.
+  const stopped = useRef(false);
+  const isMuted = useCallback(() => !soundRef.current || useSiteStore.getState().muted, []);
+  const blocked = useCallback(() => {
+    setSoundOn(false);
+  }, []);
+  useVideoSlot(video, frame, info.src, {
+    auto: true,
+    stopped,
+    muted: isMuted,
+    onSoundBlocked: blocked,
+  });
 
-  useEffect(() => {
+  /** Make sure the file is given to the video (it may not be, far from the screen). */
+  const ensureSource = useCallback(() => {
     const el = video.current;
-    if (el && !inView && !el.paused) el.pause();
-  }, [inView]);
+    if (el && !el.getAttribute("src")) {
+      el.src = mediaUrl(info.src);
+      el.load();
+    }
+  }, [info.src]);
 
   const toggle = useCallback(() => {
     const el = video.current;
     if (!el) return;
     audio.blip("click");
-    if (el.paused) void el.play().catch(() => undefined);
-    else el.pause();
-  }, []);
+    if (el.paused) {
+      stopped.current = false;
+      ensureSource();
+      void el.play().catch(() => undefined);
+    } else {
+      stopped.current = true;
+      el.pause();
+    }
+  }, [ensureSource]);
+
+  /** Sound on (turning the site's sound on too if it was off), or off again. */
+  const toggleSound = useCallback(() => {
+    const el = video.current;
+    if (!el) return;
+    audio.blip("click");
+    if (soundRef.current && !useSiteStore.getState().muted) {
+      soundRef.current = false;
+      setSoundOn(false);
+      el.muted = true;
+      return;
+    }
+    if (useSiteStore.getState().muted) {
+      audio.unlock();
+      useSiteStore.getState().setMuted(false);
+    }
+    soundRef.current = true;
+    setSoundOn(true);
+    el.muted = false;
+    if (el.paused) {
+      stopped.current = false;
+      ensureSource();
+      void el.play().catch(() => undefined);
+    }
+  }, [ensureSource]);
+
+  /** "Go live": starts the stream with its sound. */
+  const goLive = useCallback(() => {
+    const el = video.current;
+    if (!el) return;
+    audio.blip("click");
+    if (useSiteStore.getState().muted) {
+      audio.unlock();
+      useSiteStore.getState().setMuted(false);
+    }
+    soundRef.current = true;
+    setSoundOn(true);
+    el.muted = false;
+    stopped.current = false;
+    ensureSource();
+    void el.play().catch(() => undefined);
+  }, [ensureSource]);
 
   const onTime = useCallback(() => {
     const el = video.current;
@@ -85,7 +153,6 @@ export function Stream() {
 
   return (
     <section
-      ref={root}
       id="stream"
       className={styles.stream}
       data-theme="storm"
@@ -108,7 +175,7 @@ export function Stream() {
         </p>
         <h2 id="stream-title" className={styles.title}>
           Livestream
-          <em> Challenge</em>
+          <em>Challenge</em>
         </h2>
         <ul className={styles.tags} aria-label="Stream tags">
           {TAGS.map((t) => (
@@ -119,19 +186,21 @@ export function Stream() {
 
       <div className={styles.desk}>
         <div className={styles.stage}>
-          <div className={styles.frame}>
+          <div ref={frame} className={styles.frame}>
             <div className={styles.picture}>
-              {/* The stream is fetched when it plays, not before. */}
+              {/* The file is given to the video when it is near the screen (`useVideoSlot`). */}
               <video
                 ref={video}
                 className={styles.video}
-                src={info.src}
                 poster={info.poster}
-                preload="none"
+                muted
                 playsInline
-                onPlay={() => {
+                onPlay={(e) => {
                   setPlaying(true);
-                  duck(!useSiteStore.getState().muted);
+                  duck(!e.currentTarget.muted);
+                }}
+                onVolumeChange={(e) => {
+                  duck(!e.currentTarget.paused && !e.currentTarget.muted);
                 }}
                 onPause={() => {
                   setPlaying(false);
@@ -160,13 +229,22 @@ export function Stream() {
             </div>
 
             {!playing && time < 1 ? (
-              <button type="button" className={styles.start} onClick={toggle}>
+              <button type="button" className={styles.start} onClick={goLive}>
                 <span className={styles.startIcon} aria-hidden="true">
                   <svg viewBox="0 0 24 24" width="26" height="26">
                     <path d="M8 5v14l11-7z" fill="currentColor" />
                   </svg>
                 </span>
                 <span>Go live</span>
+              </button>
+            ) : null}
+
+            {playing && silent ? (
+              <button type="button" className={styles.soundChip} onClick={toggleSound}>
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 010 6" fill="currentColor" />
+                </svg>
+                <span>Tap for sound</span>
               </button>
             ) : null}
           </div>
@@ -204,6 +282,24 @@ export function Stream() {
             <span className={styles.clock}>
               {clock(time)} / {clock(info.duration)}
             </span>
+            <button
+              type="button"
+              className={styles.play}
+              onClick={toggleSound}
+              aria-pressed={!silent}
+              aria-label={silent ? "Turn the stream's sound on" : "Turn the stream's sound off"}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                {silent ? (
+                  <path d="M4 9v6h4l5 4V5L8 9zM16 9l5 6M21 9l-5 6" fill="currentColor" />
+                ) : (
+                  <path
+                    d="M4 9v6h4l5 4V5L8 9zM16 8a5 5 0 010 8M18.5 5.5a9 9 0 010 13"
+                    fill="currentColor"
+                  />
+                )}
+              </svg>
+            </button>
             <PlayerButton
               video={videoFor("live-vexana", "Vexana, live from her room")}
               className={styles.full}
@@ -215,9 +311,6 @@ export function Stream() {
               Player
             </PlayerButton>
           </div>
-          {siteMuted ? (
-            <p className={styles.note}>The site's sound button is off, so the stream is silent.</p>
-          ) : null}
         </div>
 
         <aside className={styles.chat} aria-label="Chat, the comments of the stream">

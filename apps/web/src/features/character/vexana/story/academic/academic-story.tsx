@@ -148,8 +148,8 @@ export function AcademicStory() {
         <div className={styles.heroText}>
           <p className={styles.kicker}>Part one of two</p>
           <h1 id="academic-title" className={styles.h1}>
-            <span className={shared.sr}>Academic</span>
-            <Rise text="ACADEMIC" />
+            <span className={shared.sr}>Human</span>
+            <Rise text="HUMAN" />
           </h1>
           <p className={styles.lede}>
             From a gate in the rain to a gate made of dark. Her half of the story, up to the night
