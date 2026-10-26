@@ -24,6 +24,8 @@ export const Doors = forwardRef<DoorsApi, { tone: "paper" | "comic" }>(function 
 ) {
   const left = useRef<HTMLDivElement>(null);
   const right = useRef<HTMLDivElement>(null);
+  const shadeLeft = useRef<HTMLDivElement>(null);
+  const shadeRight = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(
     ref,
@@ -35,6 +37,12 @@ export const Doors = forwardRef<DoorsApi, { tone: "paper" | "comic" }>(function 
         put(right.current, "visibility", shown ? "visible" : "hidden");
         put(left.current, "transform", `translate3d(${(-(1 - c) * 101).toFixed(3)}%,0,0)`);
         put(right.current, "transform", `translate3d(${((1 - c) * 101).toFixed(3)}%,0,0)`);
+        // The shadows each leaf throws at its edge fade out as the doors meet, so a shut pair is one
+        // flat surface: a shadow left on the other leaf would show as a streak with a hard edge in the
+        // middle of the screen.
+        const shade = (1 - seg(c, 0.78, 1)).toFixed(3);
+        put(shadeLeft.current, "opacity", shade);
+        put(shadeRight.current, "opacity", shade);
       },
     }),
     [],
@@ -42,8 +50,12 @@ export const Doors = forwardRef<DoorsApi, { tone: "paper" | "comic" }>(function 
 
   return (
     <div className={`${styles.doors} ${styles[tone] ?? ""}`} aria-hidden="true">
-      <div ref={left} className={`${styles.door} ${styles.left}`} />
-      <div ref={right} className={`${styles.door} ${styles.right}`} />
+      <div ref={left} className={`${styles.door} ${styles.left}`}>
+        <div ref={shadeLeft} className={styles.shade} />
+      </div>
+      <div ref={right} className={`${styles.door} ${styles.right}`}>
+        <div ref={shadeRight} className={styles.shade} />
+      </div>
     </div>
   );
 });
@@ -66,6 +78,8 @@ export function CraftDoors() {
   const wrap = useRef<HTMLDivElement>(null);
   const { hideContent, range } = useHold();
   const closed = useRef(false);
+  /** The shut doors have faded away: the pair underneath is the screen, so no hint is wanted. */
+  const faded = useRef(false);
   const tween = useRef<gsap.core.Tween | null>(null);
 
   useHoldProgress((p) => {
@@ -77,15 +91,28 @@ export function CraftDoors() {
       facesGate.set(shut);
       tween.current?.kill();
       if (shut) {
-        tween.current = gsap.to(wrap.current, { opacity: 0, duration: 0.7, ease: "power2.inOut" });
+        tween.current = gsap.to(wrap.current, {
+          opacity: 0,
+          duration: 0.7,
+          ease: "power2.inOut",
+          onComplete: () => {
+            faded.current = true;
+            toneHint.set(null);
+          },
+        });
       } else {
         tween.current = null;
+        faded.current = false;
         put(wrap.current, "opacity", "1");
       }
     }
     // The right door is over the corner once it has closed a little; the pair of faces under the
     // doors is pale too, so the hint stays until the doors have faded.
-    toneHint.set(p > CLOSE_FROM && easeInOut(seg(p, CLOSE_FROM, CLOSED)) >= 0.2 ? "light" : null);
+    toneHint.set(
+      !faded.current && p > CLOSE_FROM && easeInOut(seg(p, CLOSE_FROM, CLOSED)) >= 0.2
+        ? "light"
+        : null,
+    );
   });
 
   // Never left half way: the doors are taken to shut (the pair is shown) or to open (the craft).

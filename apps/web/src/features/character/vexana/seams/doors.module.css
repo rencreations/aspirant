@@ -18,6 +18,23 @@
   will-change: transform;
 }
 
+/* The shadow of a leaf's leading edge: its own layer, so it fades with opacity alone. */
+.shade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  pointer-events: none;
+}
+
+.left .shade {
+  left: 100%;
+}
+
+.right .shade {
+  right: 100%;
+}
+
 .left {
   left: 0;
 }
@@ -31,23 +48,31 @@
   background: #f4f0f8;
 }
 
-.paper .left {
-  box-shadow: 18px 0 60px rgb(20 14 38 / 0.14);
+.paper .left .shade {
+  background: linear-gradient(to right, rgb(20 14 38 / 0.14), rgb(20 14 38 / 0));
 }
 
-.paper .right {
-  box-shadow: -18px 0 60px rgb(20 14 38 / 0.14);
+.paper .right .shade {
+  background: linear-gradient(to left, rgb(20 14 38 / 0.14), rgb(20 14 38 / 0));
 }
 
 /* ---- Dark doors in the two colours of the comic, violet and magenta. ---- */
 .comic .left {
   background-color: #1b1148;
   background-image: linear-gradient(115deg, #1b1148 0%, #2c1d78 70%, #3b2a98 100%);
-  box-shadow: 24px 0 70px rgb(5 3 12 / 0.55);
+}
+
+.comic .left .shade {
+  width: 90px;
+  background: linear-gradient(to right, rgb(5 3 12 / 0.55), rgb(5 3 12 / 0));
 }
 
 .comic .right {
   background-color: #3b0e2e;
   background-image: linear-gradient(245deg, #3b0e2e 0%, #7a1d57 70%, #a02a74 100%);
-  box-shadow: -24px 0 70px rgb(5 3 12 / 0.55);
+}
+
+.comic .right .shade {
+  width: 90px;
+  background: linear-gradient(to left, rgb(5 3 12 / 0.55), rgb(5 3 12 / 0));
 }

@@ -11,6 +11,16 @@
   margin-top: calc(-1 * var(--lvh));
   overflow: clip;
   box-shadow: 0 -22px 70px rgb(20 14 38 / 0.32);
+  /* The shadow is wanted above the top edge only: below the box it would spill over the section that
+     slides under it as a dark band. A clip region that reaches up and stops at the bottom edge does it. */
+  clip-path: inset(-120px 0 0 0);
+  /* It is a tall box that lies over the top of the section after it (that one slides under it), so it
+     must not catch clicks: only the section it holds does. */
+  pointer-events: none;
+}
+
+.rise :global(section) {
+  pointer-events: auto;
 }
 
 @supports (height: 100lvh) {

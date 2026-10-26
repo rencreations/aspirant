@@ -99,6 +99,11 @@ export function Room({ next }: { next: NextCharacter }) {
     wait: null,
   });
   const [announce, setAnnounce] = useState("");
+  // A button the visitor just pressed, from the click until the engine has taken the choice. The
+  // engine's first work (loading the short, speeding up the idle loop) can hold the page for a
+  // moment, so the choice is shown first, on the next painted frame: the other buttons step away
+  // at once, as the stylesheet intends.
+  const [pressed, setPressed] = useState<SceneName | null>(null);
 
   // The screen is on show (any part of it), and it is fully reached (most of it).
   const [near, setNear] = useState(false);
@@ -175,8 +180,10 @@ export function Room({ next }: { next: NextCharacter }) {
   const scene = state.scene;
 
   // The page does not scroll while she welcomes, plays a short or holds the pose: the visitor is
-  // looking at her, and a stray wheel must not run the meters.
-  const locked = mode !== "boot" && mode !== "idle";
+  // looking at her, and a stray wheel must not run the meters. It only holds while the room is on
+  // the screen: a visitor who goes Back during the welcome must get the page's scroll back (the
+  // stage rests off screen, so the welcome would never end and the lock would never let go).
+  const locked = visible && mode !== "boot" && mode !== "idle";
   useEffect(() => {
     if (!locked) return;
     pause();
@@ -286,7 +293,7 @@ export function Room({ next }: { next: NextCharacter }) {
 
   // What the panel shows, as on Selena's and Obsidia's pages.
   const showMain = state.ui;
-  const chosen = mode === "queued" ? scene : state.next;
+  const chosen = (mode === "queued" ? scene : state.next) ?? pressed;
   const busy = chosen !== null;
   const chosenShort = chosen !== null && isShort(chosen) ? (chosen as ShortName) : null;
   const poseChosen = chosen === "gallery";
@@ -309,6 +316,18 @@ export function Room({ next }: { next: NextCharacter }) {
     if (router.isTransitioning()) return;
     router.push(next.href, { label: next.name });
   }, [next.href, next.name, router]);
+
+  // Ask the engine for a scene. The choice is shown first (see `pressed`), the engine is asked on
+  // the frame after that is painted, and from then on its own state tells what is chosen.
+  const press = useCallback((scene: SceneName) => {
+    setPressed(scene);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        stage.current?.request(scene);
+        setPressed(null);
+      });
+    });
+  }, []);
 
   // The way back out of the room: the page's smooth scroll is the default of `roomBack`.
   const { scrollTo } = useLenis();
@@ -462,8 +481,9 @@ export function Room({ next }: { next: NextCharacter }) {
                   }}
                   onClick={() => {
                     audio.blip("click");
+                    if (pressed !== null) return;
                     if (mine) stage.current?.cancel();
-                    else stage.current?.request(a.short);
+                    else press(a.short);
                   }}
                 />
               </div>
@@ -495,8 +515,9 @@ export function Room({ next }: { next: NextCharacter }) {
               }}
               onClick={() => {
                 audio.blip("click");
+                if (pressed !== null) return;
                 if (poseChosen) stage.current?.cancel();
-                else stage.current?.request("gallery");
+                else press("gallery");
               }}
             />
           </div>

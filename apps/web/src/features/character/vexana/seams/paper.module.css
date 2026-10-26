@@ -6,9 +6,23 @@
   transform-origin: 50% 0;
   /* The sheet's box reaches down over the section waiting under it: it must not take its clicks. */
   pointer-events: none;
-  box-shadow:
-    0 -2px 0 rgb(169 139 245 / 55%),
-    0 -36px 90px rgb(5 3 12 / 60%);
+}
+
+/*
+ * The rim and the shadow the sheet throws up onto what it covers, drawn above its top edge only. A
+ * box-shadow would also spill out under the bottom of the box, where the sheet is already gone: a
+ * hard-edged dark band that crossed the screen while the page scrolled past it.
+ */
+.paper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 130px;
+  pointer-events: none;
+  background: linear-gradient(to top, rgb(5 3 12 / 0.5), rgb(5 3 12 / 0.24) 30%, rgb(5 3 12 / 0));
+  border-bottom: 2px solid rgb(169 139 245 / 55%);
 }
 
 @supports (height: 100lvh) {

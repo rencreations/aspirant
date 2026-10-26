@@ -134,14 +134,39 @@ export function Stream() {
     void el.play().catch(() => undefined);
   }, [ensureSource]);
 
+  // How many comments have arrived at the video's own clock. It is counted on every frame while
+  // the stream plays and on every seek, so a line shows at the second it was sent, and the
+  // component only renders again when the count changes.
+  const [seen, setSeen] = useState(0);
+  const countSeen = useCallback((t: number) => {
+    let n = 0;
+    while (n < STREAM_COMMENTS.length && (STREAM_COMMENTS[n]?.t ?? Infinity) <= t) n++;
+    return n;
+  }, []);
+
   const onTime = useCallback(() => {
     const el = video.current;
     if (!el) return;
-    // a quarter of a second is fine for the clock and the chat
+    // a quarter of a second is fine for the clock
     setTime((prev) => (Math.abs(prev - el.currentTime) < 0.25 ? prev : el.currentTime));
-  }, []);
+    setSeen(countSeen(el.currentTime));
+  }, [countSeen]);
 
-  const arrived = useMemo(() => STREAM_COMMENTS.filter((c) => c.t <= time), [time]);
+  useEffect(() => {
+    if (!playing) return;
+    let raf = 0;
+    const tick = () => {
+      const el = video.current;
+      if (el) setSeen(countSeen(el.currentTime));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+    };
+  }, [playing, countSeen]);
+
+  const arrived = useMemo(() => STREAM_COMMENTS.slice(0, seen), [seen]);
   const lines = arrived.slice(-CHAT_SHOWN);
 
   useEffect(() => {
