@@ -2,7 +2,14 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type SyntheticEvent,
+} from "react";
 
 import { StarGlyph } from "@/components/star-glyph";
 import { asset } from "@/lib/asset";
@@ -53,14 +60,31 @@ function Words({ parts }: { parts: readonly Part[] }) {
   );
 }
 
+/** A picture that did not arrive leaves nothing behind (no broken-image mark). */
+function hideBroken(e: SyntheticEvent<HTMLImageElement>) {
+  e.currentTarget.style.visibility = "hidden";
+}
+
 function HeroFigures({ ender }: { ender: boolean }) {
   return (
     <div className={styles.dFigure} data-ender={ender}>
       {/* Plain <img>: static export. The scene replaces these when it is up. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.dNormal} src={asset(FIGURES.normalFront)} alt="" draggable={false} />
+      <img
+        className={styles.dNormal}
+        src={asset(FIGURES.normalFront)}
+        alt=""
+        draggable={false}
+        onError={hideBroken}
+      />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.dEnder} src={asset(FIGURES.enderFront)} alt="" draggable={false} />
+      <img
+        className={styles.dEnder}
+        src={asset(FIGURES.enderFront)}
+        alt=""
+        draggable={false}
+        onError={hideBroken}
+      />
     </div>
   );
 }
@@ -455,7 +479,7 @@ export function Opening() {
           </p>
           <div className={styles.staticCard}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset(videoPoster("splash-short"))} alt="" />
+            <img src={asset(videoPoster("splash-short"))} alt="" onError={hideBroken} />
             <SignatureSvg done />
           </div>
           <Statement />
