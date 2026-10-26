@@ -4,12 +4,12 @@
  * signature effect behaves. No lore lives here, only layout and asset facts.
  */
 import type { FrameShape } from "@/components/frame/frame-shapes";
-import type { PairId, Slug } from "@/content/types";
+import type { Slug } from "@/content/types";
 
 import type { AccentChoice } from "./theme";
 
 /** A processed image with its intrinsic size. `src` is a public path for asset(). */
-export interface ArtImage {
+interface ArtImage {
   readonly src: string;
   readonly width: number;
   readonly height: number;
@@ -17,7 +17,7 @@ export interface ArtImage {
 }
 
 /** The pointer effect drawn over each hero, taken from the character's weapon or power. */
-export type SignatureKind =
+type SignatureKind =
   | "cable"
   | "beam"
   | "scythe"
@@ -30,7 +30,7 @@ export type SignatureKind =
   | "moons";
 
 /** One of the two forms, as art (when official art exists) and a caption. */
-export interface FormArt {
+interface FormArt {
   readonly image: ArtImage | null;
   /** CSS object-position, to keep the figure (and never a burned-in caption) in view. */
   readonly position?: string;
@@ -57,13 +57,6 @@ export interface ArtDirection {
   readonly extras: readonly ArtImage[];
   /** Art for the form toggle (Vexana, Selena and Obsidia only). */
   readonly forms?: { readonly normal: FormArt; readonly ender: FormArt };
-}
-
-const SPLASH = { width: 2048, height: 1152 } as const;
-
-/** The splash art of a character (2048 wide; an 800 wide `splash-sm` sits next to it). */
-export function splashOf(slug: Slug, name: string): ArtImage {
-  return { src: `/img/char/${slug}/splash.webp`, ...SPLASH, alt: `${name}, official splash art` };
 }
 
 function cutout(slug: Slug, name: string, width: number, height: number): ArtImage {
@@ -238,45 +231,4 @@ export const ART: Readonly<Record<Slug, ArtDirection>> = {
       },
     },
   },
-};
-
-/** Shared official art of a pair (only two pairs have any). */
-export const PAIR_ART: Readonly<Record<PairId, readonly ArtImage[]>> = {
-  "fanny-layla": [
-    {
-      src: "/img/pair/fanny-layla/fighting-together-splash-art.webp",
-      width: 2048,
-      height: 1152,
-      alt: "Fanny and Layla fighting together, official splash art",
-    },
-    {
-      src: "/img/pair/fanny-layla/fanny-and-layla.webp",
-      width: 1000,
-      height: 563,
-      alt: "Fanny and Layla, official art",
-    },
-  ],
-  "guinevere-vexana": [
-    {
-      src: "/img/pair/guinevere-vexana/both-splash-art.webp",
-      width: 2048,
-      height: 1152,
-      alt: "Guinevere and Vexana, official splash art",
-    },
-    {
-      src: "/img/pair/guinevere-vexana/fighting-moment.webp",
-      width: 2048,
-      height: 1152,
-      alt: "Guinevere and Vexana in a fight, official art",
-    },
-    {
-      src: "/img/pair/guinevere-vexana/fighting-stance.webp",
-      width: 2048,
-      height: 1152,
-      alt: "Guinevere and Vexana in a fighting stance, official art",
-    },
-  ],
-  "ruby-angela": [],
-  "lesley-change": [],
-  "selena-obsidia": [],
 };
