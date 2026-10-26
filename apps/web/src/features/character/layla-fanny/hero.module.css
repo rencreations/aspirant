@@ -152,7 +152,7 @@
 .hero[data-who="layla"] .figure {
   right: 0;
   bottom: 0;
-  width: min(100vw, 177.8svh);
+  width: 100vw;
   aspect-ratio: 16 / 9;
 }
 
