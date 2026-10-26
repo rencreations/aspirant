@@ -199,6 +199,14 @@
   opacity: 0;
 }
 
+@media (max-aspect-ratio: 17/20) and (min-width: 641px) {
+  /* A tall tablet: the clear air is above her, so the hint goes up there. */
+  .hint {
+    top: calc(var(--nav-h) + 1.6rem);
+    bottom: auto;
+  }
+}
+
 @media (max-aspect-ratio: 17/20) {
   .dFigure {
     height: min(62svh, 135vw);
@@ -628,6 +636,13 @@
   .cue {
     right: 1rem;
     bottom: 5.6rem;
+  }
+
+  /* Under the name card, in the clear air above her, so it never sits on her face or chest. */
+  .hint {
+    top: calc(var(--nav-h) + 9rem);
+    bottom: auto;
+    left: 1rem;
   }
 
   .jp {

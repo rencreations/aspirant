@@ -91,6 +91,10 @@
   text-transform: uppercase;
   color: var(--a);
 }
+/* The bright pink is below 4.5:1 on her peach ground, so the small label takes a deeper pink. */
+.section[data-who="angela"] .label {
+  color: #a8195f;
+}
 .name {
   font-family: var(--font-display);
   font-weight: 900;

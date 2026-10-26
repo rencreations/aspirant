@@ -7,6 +7,13 @@ import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 export const dynamic = "force-static";
 
+const STORY_PAGES = [
+  "/character/vexana/story/academic",
+  "/character/vexana/story/ender",
+  "/character/guinevere/story/alone",
+  "/character/guinevere/story/partner",
+] as const;
+
 /** Absolute URL with the base path and the trailing slash the static export uses. */
 function absolute(path: string): string {
   const clean = path === "/" ? "" : path.replace(/\/+$/, "");
@@ -37,5 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       priority: 0.5,
     })),
+    // The two story pages of the long-scroll pair have an address of their own too.
+    ...STORY_PAGES.map((path) => ({ url: absolute(path), lastModified, priority: 0.5 })),
   ];
 }
