@@ -37,7 +37,7 @@ describe("the registry to film join", () => {
   });
 
   it("keeps the old timing of the shapes", () => {
-    expect(shapeClock(1)).toBeCloseTo(0.8);
+    expect(shapeClock(1)).toBeCloseTo(0.56);
     expect(shapeClock(0)).toBe(0);
   });
 

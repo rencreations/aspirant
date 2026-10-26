@@ -14,8 +14,12 @@ export const HOLD_SCREENS = DOWN_SCREENS + UP_SCREENS;
 /** The share of the hold where the white liquid has covered the page and the black one begins. */
 export const DONE = DOWN_SCREENS / HOLD_SCREENS;
 
-/** The share of the old hold (1.7 screens, covered at 0.8) the shapes were timed in. */
-const OLD_DONE = 0.8;
+/**
+ * The progress of the shapes in the units they were timed in. The page is covered (corners included)
+ * at about 0.45 of it, so with 0.56 at the end of the way down it is covered a little before the
+ * scroll locks and the white waits for hardly any scrolling.
+ */
+const OLD_DONE = 0.56;
 
 /** How far the white liquid has come, 0 to 1, at a progress of the hold. */
 export function whiteAt(p: number): number {

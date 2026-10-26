@@ -211,39 +211,46 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         return;
       }
       busy.current = true;
-      const reduced = prefersReducedMotion();
-      c.setMode("boot");
-      c.setZoom(0);
-      c.setFill(1);
-      c.showBoot(true);
-      c.show();
-      if (!reduced) c.startIdle();
+      // The page cannot be scrolled while the loading screen covers it: whoever scrolls under it
+      // would find the page somewhere else when it opens.
+      pause();
+      try {
+        const reduced = prefersReducedMotion();
+        c.setMode("boot");
+        c.setZoom(0);
+        c.setFill(1);
+        c.showBoot(true);
+        c.show();
+        if (!reduced) c.startIdle();
 
-      const report = (p: PreloadProgress) => {
-        c.setBoot(p.progress, p.label);
-      };
-      await Promise.all([load(report), sleep(reduced ? 300 : BOOT_MIN_MS)]);
-      c.setBoot(1, "Drawing the page");
-      await whenPageReady(5000);
-      c.setBoot(1, "Ready");
-      await sleep(reduced ? 80 : 380);
-      c.showBoot(false);
-      await nextFrame();
+        const report = (p: PreloadProgress) => {
+          c.setBoot(p.progress, p.label);
+        };
+        await Promise.all([load(report), sleep(reduced ? 300 : BOOT_MIN_MS)]);
+        c.setBoot(1, "Drawing the page");
+        await whenPageReady(5000);
+        c.setBoot(1, "Ready");
+        await sleep(reduced ? 80 : 380);
+        c.showBoot(false);
+        await nextFrame();
 
-      if (reduced) {
-        await c.fadeOut(0.2);
-      } else {
-        // The white of the letters drains away, then the logo zooms in through a letter.
-        await c.tweenFill(0, 0.75);
-        c.stopLoops();
-        audio.blip("star");
-        await c.tweenZoom(1, 1.5, "power3.inOut");
+        if (reduced) {
+          await c.fadeOut(0.2);
+        } else {
+          // The white of the letters drains away, then the logo zooms in through a letter.
+          await c.tweenFill(0, 0.75);
+          c.stopLoops();
+          audio.blip("star");
+          await c.tweenZoom(1, 1.5, "power3.inOut");
+        }
+        c.hide();
+        c.setMode("transition");
+      } finally {
+        busy.current = false;
+        resume();
       }
-      c.hide();
-      c.setMode("transition");
-      busy.current = false;
     },
-    [],
+    [pause, resume],
   );
 
   const api = useMemo<TransitionRouter>(

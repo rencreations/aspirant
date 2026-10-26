@@ -616,6 +616,11 @@
     min-height: 0;
     height: min(68vh, 560px);
   }
+
+  /* A finger on the plate must never trap the page: once the plate is at its end the swipe goes on. */
+  .plate {
+    overscroll-behavior: auto;
+  }
 }
 
 @media (max-width: 640px) {

@@ -945,7 +945,9 @@
   flex-direction: column;
   justify-content: center;
   min-height: var(--lvh, 100vh);
-  padding-block: clamp(10px, 2.8vh, 40px);
+  /* The nav sits over the top of the screen, so the space above the heading clears it and the same
+     space is left below the pager: the held screen reads as centred. */
+  padding-block: clamp(64px, 9vh, 110px);
 }
 
 .voicesHead {
@@ -1098,6 +1100,15 @@
 @keyframes bars {
   50% {
     transform: scaleY(1.9);
+  }
+}
+
+@media (min-width: 901px) {
+  .voiceButton {
+    padding-block: clamp(0.4rem, 1.35vh, 1.1rem);
+  }
+  .voicesTitle {
+    font-size: min(5vw, 8vh, 5rem);
   }
 }
 
