@@ -14,6 +14,7 @@ import { Faces } from "./faces/faces";
 import { Fanart } from "./fanart/fanart";
 import { NavTone } from "./nav-tone";
 import { OffscreenPause } from "./seams/offscreen-pause";
+import { BareScrollbar } from "./shared/bare-scrollbar";
 import { FocusReveal } from "./shared/focus-reveal";
 import { ImageRescue } from "./shared/image-rescue";
 import { VideoOcclusion } from "./shared/video-occlusion";
@@ -26,7 +27,6 @@ import { Room, type NextCharacter } from "./room/room";
 import { comicStreamHooks, interludeComicHooks } from "./seams/comic-link";
 import { DoorGate } from "./seams/door-gate";
 import { FilmArrive, GuinevereArrive } from "./seams/film-arrive";
-import { Gate } from "./seams/gate";
 import { HeartCover } from "./seams/heart-cover";
 import { Hold } from "./seams/hold";
 import { Liquid } from "./seams/liquid";
@@ -34,10 +34,7 @@ import { HOLD_SCREENS, UP_SCREENS } from "./seams/liquid-math";
 import { Paper, Veil } from "./seams/paper";
 import { Rise } from "./seams/rise";
 import { RoomHeart } from "./seams/room-heart";
-import { CrtScene } from "./seams/scenes/crt";
-import { PixelScene } from "./seams/scenes/pixel";
 import { storyHooks } from "./seams/story-link";
-import { FanScene, WallScene } from "./seams/scenes/fall";
 import { Under } from "./seams/under";
 import { UpZone } from "./seams/up";
 import { useFreshStart } from "./seams/fresh-start";
@@ -45,10 +42,6 @@ import { useBackScale } from "./seams/use-back-scale";
 import { Skills } from "./skills/skills";
 import { Stream } from "./stream/stream";
 import styles from "./vexana-page.module.css";
-
-/** Screens of scrolling a boundary of the lower page holds a screen for, and the share of it at which the scene starts. */
-const HOLD = 0.8;
-const AT = 0.72;
 
 /**
  * The craft to the story and back: the screens the craft's last screen is held for going down, and
@@ -124,17 +117,10 @@ const ROOM_HOLD = 1;
  *                         to the left with the whole disc while the Read half slides out to the
  *                         right. Back up from the stream they slide in over it and meet, the page goes
  *                         to the comic, and its words and sticker come in by time
- * From the stream to Our Artwork's end (`seams/gate.tsx` and `seams/up.tsx`, scenes in `seams/scenes/`),
- * each join is a boundary that works both ways. Going down, the section holds its last screen and a
- * little more scrolling starts a transition that plays by itself; the section after it has no
- * threshold at its top. Going up from its top there is a threshold, the same scene plays again and
- * lands on the last screen of the section before, with no threshold above it. A stop inside a
- * threshold snaps after a moment (`seams/snap.ts`): from the half on it goes on, before it goes back:
- *   the stream to the game      a mosaic of pixels grows over the stream and goes out on the game
- *   the game to the 3D process  the screen collapses to a line and a dot, the workspace grid is drawn
- *   the 3D process to the art   the workspace turns away, gold frames of the official artwork drop in
- *   the art to the fanart       the fan prints fall in over the gallery and on out of the screen
- * Then three joins that follow the scroll, with no threshold and no overlay left standing:
+ * From the stream to the fanart (05 to 09) there are no joins at all: the stream, the game, the
+ * 3D process, the gallery and the fanart follow each other as one plain, smooth scroll, each
+ * section arriving with its own reveals and none covering the page. Then three joins that follow
+ * the scroll, with no threshold and no overlay left standing:
  *   the fanart to her theme     her theme rises over the held fanart like a page (`seams/rise.tsx`)
  *   her theme to her friend     cream with a heart cut out of it closes on the held film from all the
  *                               sides (`seams/heart-cover.tsx`); when it has shut, her section (waiting
@@ -177,6 +163,7 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
   return (
     <div ref={root} data-vexana className={styles.page}>
       <NavTone />
+      <BareScrollbar />
       <OffscreenPause />
       <VideoOcclusion />
       <ImageRescue />
@@ -239,30 +226,14 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
         </DoorGate>
       </UpZone>
       <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
-        <Gate id="stream-drama" enabled={on} hold={HOLD} at={AT} scene={PixelScene}>
-          <Stream />
-        </Gate>
+        <Stream />
       </UpZone>
-      <UpZone id="stream-drama" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="drama-process" enabled={on} hold={HOLD} at={AT} scene={CrtScene}>
-          <Drama />
-        </Gate>
-      </UpZone>
-      <UpZone id="drama-process" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="process-art" enabled={on} hold={HOLD} at={AT} scene={WallScene}>
-          <Process />
-        </Gate>
-      </UpZone>
-      <UpZone id="process-art" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="art-fanart" enabled={on} hold={HOLD} at={AT} scene={FanScene}>
-          <ArtShowcase />
-        </Gate>
-      </UpZone>
-      <UpZone id="art-fanart" enabled={on} hold={HOLD} at={AT}>
-        <Hold hold={1} enabled={on}>
-          <Fanart />
-        </Hold>
-      </UpZone>
+      <Drama />
+      <Process />
+      <ArtShowcase />
+      <Hold hold={1} enabled={on}>
+        <Fanart />
+      </Hold>
       <Rise id="fanart-music" enabled={on}>
         <Hold hold={MUSIC_HOLD} enabled={on} overlay={<HeartCover />}>
           <MusicVideo />

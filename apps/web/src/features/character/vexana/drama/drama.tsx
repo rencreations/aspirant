@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { asset } from "@/lib/asset";
 import { useInView, useReducedMotion } from "@/lib/hooks";
 
-import { useThresholdProgress } from "../seams/threshold-progress";
 import { DRAMA_START, nodeById } from "./drama-graph";
 import { dramaPoster } from "./drama-media";
 import { canContinue, routeTags } from "./drama-state";
@@ -27,21 +26,6 @@ function useFullscreenSupport(): boolean {
     subscribeNever,
     () => document.fullscreenEnabled,
     () => false,
-  );
-}
-
-/** The quiet mark at the top or the bottom of the section: how far the visitor is into the way out. */
-function ScrollCue({ id, dir, label }: { id: string; dir: "up" | "down"; label: string }) {
-  const p = useThresholdProgress(id, dir);
-  return (
-    <p className={styles.cue} data-active={p > 0}>
-      <span>
-        {dir === "up" ? "Up" : "Down"}: {label}
-      </span>
-      <i aria-hidden="true">
-        <b style={{ transform: `scaleX(${String(p)})` }} />
-      </i>
-    </p>
   );
 }
 
@@ -159,7 +143,6 @@ export function Drama() {
             Interactive Drama
           </h2>
         </div>
-        <ScrollCue id="stream-drama" dir="up" label="05 On air" />
       </header>
 
       <div className={styles.stage}>
@@ -263,7 +246,6 @@ export function Drama() {
             Tap the picture for the next line. The pause button opens the menu.
           </span>
         </p>
-        <ScrollCue id="drama-process" dir="down" label="07 3D process" />
       </footer>
     </section>
   );

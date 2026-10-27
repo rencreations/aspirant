@@ -96,7 +96,7 @@
   white-space: nowrap;
 }
 
-/* The quiet marks that say how far the visitor has scrolled towards the page before or after. */
+/* The touch line replaces the key line on a screen with no hover. */
 .touch {
   display: none;
 }
@@ -114,39 +114,6 @@
     white-space: normal;
     line-height: 1.3;
   }
-}
-
-.cue {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: none;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(9px, 0.8vw, 12px);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgb(217 213 245 / 0.55);
-}
-
-.cue[data-active="true"] {
-  color: #fff;
-}
-
-.cue i {
-  position: relative;
-  width: clamp(48px, 7vw, 120px);
-  height: 3px;
-  background: rgb(183 156 242 / 0.22);
-  overflow: hidden;
-}
-
-.cue b {
-  position: absolute;
-  inset: 0;
-  background: var(--magenta);
-  transform-origin: 0 50%;
-  transform: scaleX(0);
 }
 
 /* ---- the game frame ------------------------------------------------------------------------ */
@@ -268,4 +235,20 @@
   .eyebrow i {
     display: none;
   }
+}
+
+/* A soft join: the colour the section before ends in melts into this one, so the scroll flows in. */
+.drama::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(90px, 18vh, 200px);
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--melt-from, #06030e) 0%,
+    color-mix(in srgb, var(--melt-from, #06030e) 62%, transparent) 30%,
+    color-mix(in srgb, var(--melt-from, #06030e) 22%, transparent) 68%,
+    transparent 100%
+  );
 }

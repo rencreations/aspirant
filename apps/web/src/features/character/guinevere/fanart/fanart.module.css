@@ -295,3 +295,19 @@
     scale: 1;
   }
 }
+
+/* A soft join: the colour the section before ends in melts into this one, so the scroll flows in. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(70px, 13vh, 150px);
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--melt-from, #140d07) 0%,
+    color-mix(in srgb, var(--melt-from, #140d07) 62%, transparent) 30%,
+    color-mix(in srgb, var(--melt-from, #140d07) 22%, transparent) 68%,
+    transparent 100%
+  );
+}

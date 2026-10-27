@@ -7,7 +7,6 @@ import styles from "./up.module.css";
 import { boundary } from "./gates";
 import { lvh } from "./scroll-kit";
 import { useScrollSnap } from "./snap";
-import { setThresholdProgress } from "./threshold-progress";
 
 interface UpZoneProps {
   /** The boundary in front of this section (the section before it passes the same id to `Gate`). */
@@ -75,15 +74,7 @@ export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZon
     // Going up, the progress falls from 1 (the first screen of the section) to 0.
     function tick(p: number) {
       const t = state.current;
-      // How far into the threshold the visitor is, going up (the section that shows it reads this).
       if (p > 1 - at + 0.2) t.armed = true;
-      // Nothing is drawn until the visitor has been on the first screen: arriving from above lands in
-      // the threshold, and that is not a way out.
-      setThresholdProgress(
-        id,
-        "up",
-        !t.armed || p >= 1 || p <= 0 || b.busy ? 0 : Math.min(1, (1 - p) / at),
-      );
       if (p <= 1 - at && p > 0 && p < t.last && t.armed && !b.busy) {
         t.armed = false;
         b.play?.("up");

@@ -8,6 +8,11 @@
   overflow-x: clip;
 }
 
+/* Her livestream is warm: the join into the (shared) interactive drama melts from her brown, not violet. */
+.page :global(#drama) {
+  --melt-from: #0e0804;
+}
+
 @supports (height: 100lvh) {
   .page {
     --lvh: 100lvh;

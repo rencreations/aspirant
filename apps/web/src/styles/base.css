@@ -22,6 +22,15 @@
     overflow-x: clip;
   }
 
+  /* The long character pages hide the scrollbar (BareScrollbar): their progress is the hairline on top. */
+  html[data-bare-scroll] {
+    scrollbar-width: none;
+  }
+
+  html[data-bare-scroll]::-webkit-scrollbar {
+    display: none;
+  }
+
   [data-theme] {
     color: var(--text);
   }

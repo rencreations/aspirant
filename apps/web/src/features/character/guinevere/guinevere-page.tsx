@@ -13,7 +13,6 @@ import { Reel } from "../vexana/reel/reel";
 import { comicStreamHooks, interludeComicHooks } from "../vexana/seams/comic-link";
 import { DoorGate } from "../vexana/seams/door-gate";
 import { FilmArrive, GuinevereArrive } from "../vexana/seams/film-arrive";
-import { Gate } from "../vexana/seams/gate";
 import { HeartCover } from "../vexana/seams/heart-cover";
 import { Hold } from "../vexana/seams/hold";
 import { Liquid } from "../vexana/seams/liquid";
@@ -21,9 +20,6 @@ import { HOLD_SCREENS, UP_SCREENS } from "../vexana/seams/liquid-math";
 import { OffscreenPause } from "../vexana/seams/offscreen-pause";
 import { Paper, Veil } from "../vexana/seams/paper";
 import { Rise } from "../vexana/seams/rise";
-import { CrtScene } from "../vexana/seams/scenes/crt";
-import { FanScene, WallScene } from "../vexana/seams/scenes/fall";
-import { PixelScene } from "../vexana/seams/scenes/pixel";
 import { storyHooks } from "../vexana/seams/story-link";
 import { Under } from "../vexana/seams/under";
 import { UpZone } from "../vexana/seams/up";
@@ -37,6 +33,7 @@ import { Fanart } from "./fanart/fanart";
 import { Friend } from "./friend/friend";
 import styles from "./guinevere-page.module.css";
 import { NavTone } from "./nav-tone";
+import { BareScrollbar } from "../vexana/shared/bare-scrollbar";
 import { MusicVideo } from "./music/music-video";
 import { Opening } from "./opening/opening";
 import { REEL_COPY, REEL_TITLE, REEL_TONE } from "./reel-copy";
@@ -44,10 +41,6 @@ import { Room } from "./room/room";
 import { RoomHeart } from "./room/room-heart";
 import { Skills } from "./skills/skills";
 import { Stream } from "./stream/stream";
-
-/** Screens of scrolling a boundary of the lower page holds a screen for, and the share of it at which the scene starts. */
-const HOLD = 0.8;
-const AT = 0.72;
 
 /** The craft to the story and back (see `vexana-page.tsx`, the joins are the same). */
 const STORY_HOLD = 0.8;
@@ -122,6 +115,7 @@ export function GuinevereRoot({ next }: { next: NextCharacter }) {
   return (
     <div ref={root} data-vexana data-guinevere className={styles.page}>
       <NavTone />
+      <BareScrollbar />
       <OffscreenPause />
       <Opening />
       <Hold
@@ -181,30 +175,14 @@ export function GuinevereRoot({ next }: { next: NextCharacter }) {
         </DoorGate>
       </UpZone>
       <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
-        <Gate id="stream-drama" enabled={on} hold={HOLD} at={AT} scene={PixelScene}>
-          <Stream />
-        </Gate>
+        <Stream />
       </UpZone>
-      <UpZone id="stream-drama" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="drama-process" enabled={on} hold={HOLD} at={AT} scene={CrtScene}>
-          <Drama />
-        </Gate>
-      </UpZone>
-      <UpZone id="drama-process" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="process-art" enabled={on} hold={HOLD} at={AT} scene={WallScene}>
-          <Process />
-        </Gate>
-      </UpZone>
-      <UpZone id="process-art" enabled={on} hold={HOLD} at={AT}>
-        <Gate id="art-fanart" enabled={on} hold={HOLD} at={AT} scene={FanScene}>
-          <ArtShowcase />
-        </Gate>
-      </UpZone>
-      <UpZone id="art-fanart" enabled={on} hold={HOLD} at={AT}>
-        <Hold hold={1} enabled={on}>
-          <Fanart />
-        </Hold>
-      </UpZone>
+      <Drama />
+      <Process />
+      <ArtShowcase />
+      <Hold hold={1} enabled={on}>
+        <Fanart />
+      </Hold>
       <Rise id="fanart-music" enabled={on}>
         <Hold hold={MUSIC_HOLD} enabled={on} overlay={<HeartCover />}>
           <MusicVideo />
