@@ -22,6 +22,7 @@ import {
   type SkillIcon,
   type VideoName,
 } from "./media";
+import { roomItems } from "./room/media";
 import { VIDEOS } from "./videos";
 
 const FANART_NUMBERS = Array.from({ length: FANART_COUNT }, (_, i) => i + 1);
@@ -151,14 +152,28 @@ export function guinevereLater(): Array<{ priority: number; items: PreloadItem[]
       priority: 43,
       items: FANART_NUMBERS.map((n) => imageItem(fanartPath(n), "Loading the fanart")),
     },
-    {
-      priority: 44,
-      items: [
-        imageItem(
-          `/img/char/${nextCharacter("guinevere").slug}/splash-sm.webp`,
-          "Loading the next character",
-        ),
-      ],
-    },
+    // The room at the bottom: the welcome and the idle loop of the visitor's size first (the way
+    // into the room waits for them, see `room/room-load.ts`), then the three shorts, then the zoom
+    // pose. The size is large, so it comes last and takes at most two download slots.
+    ...roomGroups(),
+  ];
+}
+
+/** The room's videos in three groups, in the order the room wants them, plus the next preview. */
+function roomGroups(): Array<{ priority: number; items: PreloadItem[] }> {
+  const all = roomItems();
+  const file = (i: PreloadItem) => i.id.split(":").at(-1) ?? "";
+  const core = all.filter((i) => file(i) === "welcome.mp4" || file(i) === "idle.mp4");
+  const shorts = all.filter((i) => file(i).startsWith("short-"));
+  const pose = all.filter((i) => file(i).startsWith("gallery-"));
+  const preview = `/img/char/${nextCharacter("guinevere").slug}/splash-sm.webp`;
+  const buttons = ["btn-action-1", "btn-action-2", "btn-action-3", "btn-pose", "btn-back"].map(
+    (n) => imageItem(`/img/guinevere/room/${n}.webp`, "Loading her room"),
+  );
+  return [
+    { priority: 39, items: [imageItem(preview, "Loading the next character"), ...buttons] },
+    { priority: 44, items: core },
+    { priority: 45, items: shorts },
+    { priority: 46, items: pose },
   ];
 }

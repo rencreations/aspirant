@@ -1,0 +1,549 @@
+/* Guinevere's room: the last section of her page. The picture is the section; the buttons take their
+   look from it (the stage's own components, in her peach, red and gold). The section is a tall
+   track with a sticky screen: the screen stays put while the visitor scrolls the last stretch, and
+   how far they have scrolled runs the two meters (see scroll-math.ts). */
+.track {
+  position: relative;
+  /* One screen, and the stretch the meters run through: a quiet part, the strength meter, and the
+     meter in the information bar. */
+  height: calc(100svh + 230svh);
+  background: #150a08;
+}
+
+.hero {
+  --pad: clamp(1rem, 2.4vw, 3rem);
+  --top: calc(var(--nav-h) + clamp(0.75rem, 4.5vh, 2.5rem));
+  /* Where the picture is cropped to. The stage and the touch points both read it. */
+  --focus: 50% 50%;
+  /* Set by useRoomScroll while the page scrolls. */
+  --strength: 0;
+  --ahead: 0;
+  /* The page buttons are the stage's (stage/menu-button), in her colours: a cream plate with a red
+     and peach edge that turns deep red on hover, and a red to orange sheet for the wait. */
+  --armor: #fff6ec;
+  --armor-2: #fbd9bc;
+  --violet: #d9463a;
+  --btn-edge-mid: #f6b98a;
+  --violet-deep: #2b130f;
+  --btn-hover: #8a2420;
+  --btn-ink: #2b130f;
+  --btn-shadow: rgb(43 19 15 / 0.45);
+  --crystal: #e1322e;
+  --btn-sheet: #b3201e;
+  --btn-sheet-end: #f0713f;
+  --gold: #f2b84b;
+  /* The wait screen is the stage's too (stage/wait-fx). */
+  --fx-shade: rgb(80 22 14 / 0.6);
+  --fx-chip: rgb(36 17 14 / 0.78);
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #150a08;
+  color: #fff;
+}
+
+/* The picture before the stage is up. */
+.still {
+  position: absolute;
+  inset: 0;
+  background: var(--still) var(--focus) / cover no-repeat;
+}
+
+/* Loading the welcome and the idle loop, for real (the bar is the bytes received). */
+.loading {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.5rem, 8vh, 4rem);
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto minmax(4rem, 16rem) auto;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 1.1rem;
+  translate: -50% 0;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: rgb(36 17 14 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.loadingLabel {
+  white-space: nowrap;
+}
+
+.loadingRail {
+  position: relative;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.25);
+}
+
+.loadingFill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform-origin: left center;
+  transition: transform 180ms linear;
+}
+
+.loadingValue {
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* The first welcome starts on a black screen that fades to a picture that is already moving. */
+.blackout {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #000;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1100ms var(--ease-in-out);
+}
+
+.blackout[data-state="fade"] {
+  opacity: 0;
+}
+
+/* The left column: Back, the three actions and Change pose, top to bottom. --------------------- */
+.column {
+  position: absolute;
+  left: var(--pad);
+  top: var(--top);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: clamp(11.5rem, 16vw, 17rem);
+  pointer-events: none;
+}
+
+/* A medium gap under Back, the three actions close together, and a larger gap before Change pose. */
+.item[data-slot="action"]:first-of-type,
+.item[data-slot="top"] + .item[data-slot="action"] {
+  margin-top: clamp(1.4rem, 4.5vh, 2.8rem);
+}
+
+.item[data-slot="action"] + .item[data-slot="action"] {
+  margin-top: 0.55rem;
+}
+
+.item[data-slot="pose"] {
+  margin-top: clamp(2.2rem, 8vh, 4.8rem);
+}
+
+.item {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-46px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 800ms var(--ease-out),
+    visibility 0s linear 800ms;
+}
+
+.item[data-show="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition-delay: calc(240ms + var(--i, 0) * 80ms), calc(240ms + var(--i, 0) * 80ms), 0s;
+}
+
+/* When a short is chosen, or the next-character bar is up, the others step out of the way at once. */
+.item[data-show="true"][data-away="true"] {
+  opacity: 0;
+  transform: translateX(-56px);
+  pointer-events: none;
+  transition-delay: 0s;
+  transition-duration: 380ms, 480ms, 0s;
+}
+
+/* Bottom left: the page has ended. A line, and under it a thin meter that fills as the visitor
+   scrolls on (--strength, set by useRoomScroll). ----------------------------------------------- */
+.end {
+  position: absolute;
+  left: var(--pad);
+  bottom: clamp(1.4rem, 5vh, 3rem);
+  z-index: 6;
+  display: grid;
+  gap: 0.75rem;
+  width: min(21rem, 46vw);
+  /* Her sky is bright: the line sits on a soft warm shade so it reads on any part of it. */
+  padding: 0.85rem 1rem 0.95rem;
+  margin-left: -1rem;
+  background: linear-gradient(
+    90deg,
+    rgb(36 17 14 / 0.62),
+    rgb(36 17 14 / 0.5) 72%,
+    rgb(36 17 14 / 0)
+  );
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 600ms var(--ease-out),
+    visibility 0s linear 600ms;
+  pointer-events: none;
+}
+
+.end[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 300ms, 300ms, 0s;
+}
+
+.endText {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.92);
+  text-shadow: 0 1px 10px rgb(36 17 14 / 0.8);
+}
+
+.endMeter {
+  position: relative;
+  display: block;
+  height: 3px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.28);
+  box-shadow: 0 0 0 1px rgb(36 17 14 / 0.28);
+}
+
+.endFill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform-origin: left center;
+  transform: scaleX(var(--strength));
+}
+
+/* The bar about the next character: a fifth of the screen, as wide as it. ---------------------- */
+.nextBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 26rem) auto;
+  align-items: center;
+  column-gap: clamp(1rem, 2.4vw, 2.5rem);
+  height: 20svh;
+  min-height: 8.5rem;
+  padding: 0 var(--pad);
+  background: linear-gradient(180deg, rgb(36 17 14 / 0.82), rgb(26 12 10 / 0.96));
+  color: #fff;
+  transform: translateY(101%);
+  transition: transform 700ms var(--ease-out);
+}
+
+.nextBar[data-open="true"] {
+  transform: none;
+}
+
+/* The line along the top edge fills with the second meter. */
+.nextEdge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: rgb(255 255 255 / 0.2);
+}
+
+.nextEdge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent, #e1322e);
+  transform-origin: left center;
+  transform: scaleX(var(--ahead));
+}
+
+.nextPreview {
+  height: 66%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  background: #150a08;
+}
+
+.nextPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.nextText {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.nextEyebrow {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.nextName {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nextSub {
+  margin: 0;
+  font-family: var(--font-serif-stack, "Instrument Serif", Georgia, serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.nextAhead {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.nextHint {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.86);
+}
+
+.nextMeter {
+  position: relative;
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.nextFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent, #e1322e);
+  transform-origin: left center;
+  transform: scaleX(var(--ahead));
+}
+
+.nextGo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2.9rem;
+  padding: 0 1.2rem;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  background: rgb(46 20 16 / 0.5);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.nextGo kbd {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid currentColor;
+  font: inherit;
+  font-size: 0.5625rem;
+  opacity: 0.8;
+}
+
+.nextGo:hover,
+.nextGo:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--accent, #e1322e);
+}
+
+/* Skip and Back ----------------------------------------------------------------------------- */
+.bar {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  z-index: 6;
+  translate: -50% 0;
+  animation: rise 600ms var(--ease-out) 300ms both;
+}
+
+.bar {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.skip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 2.9rem;
+  padding: 0 1.2rem;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(46 20 16 / 0.66);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 260ms var(--ease-out),
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.skip i {
+  width: 0.9rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 360ms var(--ease-out);
+}
+
+.skip:hover,
+.skip:focus-visible {
+  background: #fff;
+  color: var(--violet-deep);
+  border-color: var(--crystal);
+}
+
+.skip:hover i,
+.skip:focus-visible i {
+  width: 1.6rem;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Phones and tall screens: the picture is cropped to her, the column sits along the bottom left in
+   narrower plates, and the next bar stacks its parts. */
+@media (max-width: 47.99em), (max-aspect-ratio: 1/1) {
+  .column {
+    top: auto;
+    bottom: calc(clamp(4.6rem, 12vh, 6.5rem) + env(safe-area-inset-bottom, 0px));
+    width: clamp(9.5rem, 46vw, 12.5rem);
+  }
+
+  .item[data-slot="action"]:first-of-type,
+  .item[data-slot="top"] + .item[data-slot="action"] {
+    margin-top: 0.8rem;
+  }
+
+  .item[data-slot="action"] + .item[data-slot="action"] {
+    margin-top: 0.4rem;
+  }
+
+  .item[data-slot="pose"] {
+    margin-top: 0.8rem;
+  }
+
+  .end {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+    width: min(18rem, 58vw);
+  }
+
+  .endText {
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+  }
+
+  .bar {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .nextBar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "preview text go"
+      "preview ahead go";
+    column-gap: 0.8rem;
+    row-gap: 0.4rem;
+    height: 20svh;
+    min-height: 7.5rem;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .nextPreview {
+    grid-area: preview;
+    height: 58%;
+    aspect-ratio: 1;
+  }
+
+  .nextHint {
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    line-height: 1.35;
+  }
+
+  .nextText {
+    grid-area: text;
+    align-self: end;
+  }
+
+  .nextAhead {
+    grid-area: ahead;
+    align-self: start;
+  }
+
+  .nextGo {
+    grid-area: go;
+    height: 2.4rem;
+    padding: 0 0.7rem;
+    letter-spacing: 0.14em;
+  }
+
+  .nextGo kbd,
+  .nextSub,
+  .nextEyebrow {
+    display: none;
+  }
+
+  .nextName {
+    font-size: clamp(1.4rem, 7vw, 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .end,
+  .nextBar,
+  .blackout {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+}

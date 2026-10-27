@@ -1,0 +1,16 @@
+/*
+ * The colour that closes over a section with a heart-shaped hole in it (see heart-hole.tsx). It is
+ * drawn into a layer as big as the screen; the hole is the layer's clip-path, so what is under the
+ * layer shows through the heart and nothing shows outside it.
+ */
+.hole {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* The warm ink of her room (a very dark brown), the colour of the cover that closes on her best friend. */
+.hole {
+  background: #1a0b09;
+}

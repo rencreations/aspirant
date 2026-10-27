@@ -446,8 +446,14 @@ test("the next footer chain visits all ten and loops", async ({ page, baseURL },
   await page.goto(url("/character/fanny/"));
   const overlay = page.locator('[data-overlay="transition"]');
   for (let i = 1; i <= QUEUE.length; i++) {
+    const here = QUEUE[(i - 1) % QUEUE.length];
     const next = QUEUE[i % QUEUE.length];
-    await page.getByRole("button", { name: /^Continue to/ }).click();
+    const go = page.getByRole("button", { name: /^Continue to/ });
+    // The long pages end in a room: its Continue button is at the very end of a tall track and only
+    // the visitor's own scrolling brings it forward, so it is pressed directly there.
+    if (here === "vexana" || here === "guinevere")
+      await go.evaluate((el) => (el as HTMLElement).click());
+    else await go.click();
     await expect
       .poll(() => sitePath(page, baseURL), { timeout: 15_000 })
       .toBe(`/character/${next}/`);

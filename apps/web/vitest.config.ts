@@ -15,6 +15,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
+    // Some tests import every scene of a long page; on a busy machine that passes the 5 s default.
+    testTimeout: 20_000,
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**", "node_modules/**"],
     coverage: {

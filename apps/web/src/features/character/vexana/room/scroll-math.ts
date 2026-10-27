@@ -42,3 +42,15 @@ export function meters(progress: number, barWas = false): Meters {
   const ahead = bar ? clamp01((progress - BAR_AT) / (ARM_AT - BAR_AT)) : 0;
   return { strength, ahead, bar, armed: progress >= ARM_AT };
 }
+
+/** How long after the visitor's last scroll input the page may still go on by itself. */
+const INPUT_WINDOW_MS = 5000;
+
+/**
+ * Whether the visitor has scrolled (wheel, touch, key or pointer) recently enough for the end of the
+ * track to count as theirs. Without this, a page opened with the previous page's scroll position
+ * (the curtain is still up) reads as "the end was reached" and goes on by itself, again and again.
+ */
+export function recentInput(now: number, lastInput: number, windowMs = INPUT_WINDOW_MS): boolean {
+  return now - lastInput <= windowMs;
+}

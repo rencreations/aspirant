@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ARM_AT, BAR_AT, DEAD, meters, trackProgress } from "./scroll-math";
+import { ARM_AT, BAR_AT, DEAD, meters, recentInput, trackProgress } from "./scroll-math";
 
 describe("trackProgress", () => {
   it("is 0 before the track moves and 1 at its end", () => {
@@ -48,5 +48,15 @@ describe("meters", () => {
     expect(meters(BAR_AT - 0.02, true).bar).toBe(true);
     expect(meters(BAR_AT - 0.02, false).bar).toBe(false);
     expect(meters(BAR_AT - 0.2, true).bar).toBe(false);
+  });
+});
+
+describe("recentInput", () => {
+  it("counts a scroll input a moment ago", () => {
+    expect(recentInput(10_000, 8_000)).toBe(true);
+  });
+  it("does not count an input long ago, or none at all", () => {
+    expect(recentInput(10_000, 1_000)).toBe(false);
+    expect(recentInput(10_000, -Infinity)).toBe(false);
   });
 });

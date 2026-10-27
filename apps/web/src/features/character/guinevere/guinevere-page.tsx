@@ -4,8 +4,6 @@ import type { Route } from "next";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
-import { NextFooter } from "@/components/next-footer/next-footer";
-import { ThemeZone } from "@/components/theme-zone";
 import { useReducedMotion } from "@/lib/hooks";
 
 import { Comics } from "../vexana/comics/comics";
@@ -42,6 +40,8 @@ import { NavTone } from "./nav-tone";
 import { MusicVideo } from "./music/music-video";
 import { Opening } from "./opening/opening";
 import { REEL_COPY, REEL_TITLE, REEL_TONE } from "./reel-copy";
+import { Room } from "./room/room";
+import { RoomHeart } from "./room/room-heart";
 import { Skills } from "./skills/skills";
 import { Stream } from "./stream/stream";
 
@@ -64,7 +64,10 @@ const FILM_OPEN = UP_SCREENS;
 const MUSIC_HOLD = 1.5;
 const FRIEND_OPEN = 0.45;
 
-/** What the page needs to say about the next character (the footer at the very end). */
+/** The screens her best friend's last screen is held for while the heart of ink closes on it. */
+const ROOM_HOLD = 1;
+
+/** What the page needs to say about the next character (the room at the very end carries it). */
 export interface NextCharacter {
   slug: string;
   name: string;
@@ -78,15 +81,13 @@ export interface NextCharacter {
   accent: string;
 }
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 /**
  * Guinevere's page: the same long scroll and the same joins as Vexana's (`../vexana/vexana-page.tsx`
  * lists them one by one, and `../vexana/seams/` makes them), with every section her own: the
  * opening with one photo of her, 01 the registry, 02 the film, 03 the craft, the pair of Alone and
  * Partner with her drones, the interlude, the comic, the livestream, the game, the 3D process, the
- * art with hers first, the fanart, her theme, her best friend (Vexana) and the footer that leads on
- * to the next character. The comic, the interactive drama and the 3D process are Vexana's own
+ * art with hers first, the fanart, her theme, her best friend (Vexana) and, at the very bottom, her
+ * interactive room (the same idea as Vexana's), which also leads on to the next character. The comic, the interactive drama and the 3D process are Vexana's own
  * sections, unchanged, since the story in them belongs to both.
  */
 export function GuinevereRoot({ next }: { next: NextCharacter }) {
@@ -210,20 +211,13 @@ export function GuinevereRoot({ next }: { next: NextCharacter }) {
         </Hold>
       </Rise>
       <Under open={FRIEND_OPEN} enabled={on}>
-        <GuinevereArrive>
-          <Friend />
-        </GuinevereArrive>
+        <Hold hold={ROOM_HOLD} shift={FRIEND_OPEN} enabled={on} overlay={<RoomHeart />}>
+          <GuinevereArrive>
+            <Friend />
+          </GuinevereArrive>
+        </Hold>
       </Under>
-      <ThemeZone theme="daybreak" as="div" className="flow-root">
-        <NextFooter
-          eyebrow="Next in queue"
-          label={next.name}
-          sublabel={`${next.aspirantName}. Unit ${pad(next.order)} of 10. ${next.tagline}`}
-          href={next.href}
-          image={next.image}
-          accent={next.accent}
-        />
-      </ThemeZone>
+      <Room next={next} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 
-import { ARM_AT, CANCEL_BELOW, meters, trackProgress } from "./scroll-math";
+import { ARM_AT, CANCEL_BELOW, meters, recentInput, trackProgress } from "./scroll-math";
 
 /** The last stretch is held this long before the page goes on, so a bounce does not trigger it. */
 const LOCK_MS = 520;
@@ -39,6 +39,11 @@ export function useRoomScroll(
     let raf = 0;
     let lock = 0;
     let open = false;
+    // Only the visitor's own scrolling may take the page on: see `recentInput`.
+    let lastInput = -Infinity;
+    const touch = () => {
+      lastInput = performance.now();
+    };
     const progress = () => {
       const r = el.getBoundingClientRect();
       return trackProgress(r.top, r.height, window.innerHeight);
@@ -57,7 +62,8 @@ export function useRoomScroll(
       if (p >= ARM_AT && !lock) {
         lock = window.setTimeout(() => {
           lock = 0;
-          if (progress() >= CANCEL_BELOW) goRef.current();
+          if (progress() >= CANCEL_BELOW && recentInput(performance.now(), lastInput))
+            goRef.current();
         }, LOCK_MS);
       } else if (p < CANCEL_BELOW && lock) {
         window.clearTimeout(lock);
@@ -70,7 +76,10 @@ export function useRoomScroll(
     read();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
+    const inputs = ["wheel", "touchstart", "touchmove", "keydown", "pointerdown"] as const;
+    for (const type of inputs) window.addEventListener(type, touch, { passive: true });
     return () => {
+      for (const type of inputs) window.removeEventListener(type, touch);
       cancelAnimationFrame(raf);
       window.clearTimeout(lock);
       window.removeEventListener("scroll", schedule);

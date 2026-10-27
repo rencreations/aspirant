@@ -28,6 +28,7 @@ const TONES: Record<string, "light" | "dark" | "auto"> = {
   art: "dark",
   fanart: "light",
   music: "dark",
+  room: "auto",
 };
 
 /** The least time between two looks under the corner while the page scrolls. */
