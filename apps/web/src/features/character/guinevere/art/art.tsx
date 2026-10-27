@@ -27,7 +27,7 @@ const PIECES: Record<ArtName, Piece> = {
   "vexana-splash-art": {
     name: "vexana-splash-art",
     title: "The Guardian answers",
-    line: "Her Ender form, with the giant at her back.",
+    line: "Vexana in her Ender form, with the giant at her back.",
     alt: "Vexana in her Ender form with a giant guardian behind her, official splash art",
     drift: 70,
   },

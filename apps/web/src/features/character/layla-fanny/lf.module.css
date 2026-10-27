@@ -391,7 +391,7 @@
 }
 
 [data-who="layla"] .tab[aria-selected="true"] {
-  color: var(--lf-a);
+  color: var(--lf-a-text);
   -webkit-text-stroke: 2px var(--lf-ink);
   transform: translateX(1.4rem);
 }

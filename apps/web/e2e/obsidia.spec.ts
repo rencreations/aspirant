@@ -598,3 +598,16 @@ test("fits the screen without sideways scrolling, and has no serious accessibili
     .map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(" ")) }));
   expect(serious).toEqual([]);
 });
+
+test("the keyboard stays with the visitor: Enter on a page button lands on Back, Escape returns to it", async ({
+  page,
+}) => {
+  await open(page);
+  const about = page.getByRole("button", { name: "About", exact: true });
+  await about.focus();
+  await page.keyboard.press("Enter");
+  // The button steps aside with the menu, so focus goes to Back instead of falling to the page.
+  await expect(page.getByRole("button", { name: /Back/ })).toBeFocused({ timeout: 30_000 });
+  await page.keyboard.press("Escape");
+  await expect(about).toBeFocused({ timeout: 45_000 });
+});

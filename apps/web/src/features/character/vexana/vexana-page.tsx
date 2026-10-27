@@ -14,6 +14,9 @@ import { Faces } from "./faces/faces";
 import { Fanart } from "./fanart/fanart";
 import { NavTone } from "./nav-tone";
 import { OffscreenPause } from "./seams/offscreen-pause";
+import { FocusReveal } from "./shared/focus-reveal";
+import { ImageRescue } from "./shared/image-rescue";
+import { VideoOcclusion } from "./shared/video-occlusion";
 import { Guinevere } from "./guinevere/guinevere";
 import { MusicVideo } from "./music/music-video";
 import { Opening } from "./opening/opening";
@@ -175,6 +178,9 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
     <div ref={root} data-vexana className={styles.page}>
       <NavTone />
       <OffscreenPause />
+      <VideoOcclusion />
+      <ImageRescue />
+      <FocusReveal />
       <Opening />
       <Hold
         hold={HOLD_SCREENS}

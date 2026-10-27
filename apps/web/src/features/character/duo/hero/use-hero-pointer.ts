@@ -30,6 +30,7 @@ export function useHeroPointer({ reduced, flood }: Options) {
     const markEl = mark.current;
 
     const weak = document.documentElement.dataset.perf === "balanced";
+    let flipped = "0";
     let rect = hostEl.getBoundingClientRect();
     const cur = { x: rect.width * 0.5, y: rect.height * 0.45, r: 0 };
     const goal = { x: cur.x, y: cur.y, r: 0 };
@@ -45,8 +46,16 @@ export function useHeroPointer({ reduced, flood }: Options) {
       layerEl.style.setProperty("--mx", `${cur.x.toFixed(1)}px`);
       layerEl.style.setProperty("--my", `${cur.y.toFixed(1)}px`);
       layerEl.style.setProperty("--r", `${Math.max(0, cur.r).toFixed(1)}px`);
-      if (markEl)
+      if (markEl) {
         markEl.style.transform = `translate3d(${cur.x.toFixed(1)}px, ${cur.y.toFixed(1)}px, 0)`;
+        // The tag sits to the right of the circle, and to its left once the circle is on the right
+        // half, so it is never cut by the edge. Written only when it changes sides.
+        const side = cur.x > rect.width * 0.55 ? "1" : "0";
+        if (side !== flipped) {
+          flipped = side;
+          markEl.style.setProperty("--flip", side);
+        }
+      }
     };
 
     const frame = (now: number) => {

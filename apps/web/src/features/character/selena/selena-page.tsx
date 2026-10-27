@@ -17,12 +17,14 @@ import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
 import type { StageState } from "../stage/director";
+import type { SkipOptions } from "../stage/phase";
 import { warmGlyphs } from "../stage/glyph-warm";
 import { Hotspots } from "../stage/hotspots";
 import { MenuButton } from "../stage/menu-button";
 import { ScreenCover, type CoverApi } from "../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../stage/stage";
 import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
+import { useStageFocus } from "../stage/use-stage-focus";
 import { useStageUrl } from "../stage/use-stage-url";
 import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawers } from "./about/about-drawers";
@@ -59,6 +61,17 @@ interface SelenaNext {
 const BLACK_FADE_MS = 1700;
 
 const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false;
+
+/**
+ * How the picture is sped up while it waits for a frame. Her page loops are up to eight seconds
+ * long and do not repeat inside themselves, so a wait for the frame an exit starts on can be that
+ * long, and running the picture faster cuts it by half. The bigger the picture, the less it can
+ * be sped up (a 4K video decodes twice as fast at most). Same as Obsidia's.
+ */
+function skipFor(): SkipOptions {
+  const tier = selenaMedia.tier();
+  return { maxRate: tier === "2160" ? 2 : tier === "1440" ? 2.25 : 2.5, minFrames: 70 };
+}
 
 /**
  * Selena's page. One full-screen picture that does not scroll. The welcome animation plays once
@@ -240,15 +253,18 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // smaller size are loaded in the background and used from the next video on.
   const judged = useRef(false);
   const modeNow = useRef<StageState["mode"]>("boot");
+  const fastNow = useRef(false);
   useEffect(() => {
     judged.current = state.mode !== "boot" && state.mode !== "welcome";
     modeNow.current = state.mode;
-  }, [state.mode]);
+    fastNow.current = state.fast;
+  }, [state.mode, state.fast]);
   useEffect(() => {
     if (!tierReady) return;
     const stop = startGovernor({
       video: () => stage.current?.videoQuality() ?? null,
-      paused: () => !judged.current,
+      // Not while the picture runs faster to get to its frame: that is not the device.
+      paused: () => !judged.current || fastNow.current,
     });
     const off = onPerfLevel(() => {
       void runPreload(selenaItems());
@@ -344,6 +360,10 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
   // Back is there while the page is open and while it waits for the exit to start. It goes when
   // the exit starts, and the "Heading back" screen carries on alone until she is posed.
   const showBack = mode === "page" || mode === "leaving";
+  // The keyboard stays with the visitor when a page opens and closes (see `use-stage-focus.ts`).
+  const heroRef = useRef<HTMLElement>(null);
+  const backRef = useRef<HTMLDivElement>(null);
+  useStageFocus(mode, heroRef, backRef);
   const waitLabel =
     chosen === null && state.leaving
       ? "Heading back"
@@ -393,7 +413,12 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
 
   return (
     <div className={styles.page} data-theme="storm">
-      <section className={styles.hero} aria-labelledby="selena-title" data-mode={mode}>
+      <section
+        ref={heroRef}
+        className={styles.hero}
+        aria-labelledby="selena-title"
+        data-mode={mode}
+      >
         <h1 id="selena-title" className="sr-only">
           Selena
         </h1>
@@ -402,6 +427,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
             ref={stage}
             timeline={SELENA_TIMELINE}
             media={selenaMedia}
+            skip={skipFor}
             onState={onState}
             welcome={initial === null}
             onBegin={begin}
@@ -527,7 +553,7 @@ export function SelenaPage({ next }: { next: SelenaNext }) {
         ) : null}
 
         {showBack ? (
-          <div className={styles.back}>
+          <div className={styles.back} ref={backRef}>
             <MenuButton
               label="Back"
               icon={MENU_ICON.back}

@@ -16,11 +16,15 @@ import { LogoCurtain, type CurtainHandle } from "@/components/curtain/logo-curta
 import { useLenis } from "@/components/smooth-scroll";
 import { audio } from "@/lib/audio";
 import { NAVIGATED_EVENT, prefersReducedMotion } from "@/lib/hooks";
+import { OFFLINE_BLOCKED_EVENT, isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
-import { runPreload, type PreloadProgress } from "@/lib/preload";
+import { capWait, runPreload, type PreloadProgress } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
 /** A page that is not ready this long after the click gets the loading state. */
+/** The longest a page change waits for the next page's files (see `capWait`). */
+const TRANSITION_MAX_WAIT_MS = 25_000;
+
 const LOADING_STATE_AFTER_MS = 500;
 
 /** The shortest the first loading screen stays up, so the logo is seen. */
@@ -78,9 +82,12 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   const busy = useRef(false);
   const waiter = useRef<{ target: string; resolve: () => void } | null>(null);
   const pathRef = useRef(pathname);
+  /** Pages opened in this tab: the only ones that can still open without a connection. */
+  const visited = useRef(new Set<string>());
 
   useEffect(() => {
     pathRef.current = pathname;
+    visited.current.add(normalisePath(pathname));
     const w = waiter.current;
     if (w?.target === normalisePath(pathname)) {
       waiter.current = null;
@@ -119,6 +126,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     (href: Route, options: PushOptions = {}) => {
       const target = normalisePath(href);
       if (busy.current) return;
+      // Offline, a page that was never opened cannot load: say so calmly and do not go blank.
+      if (isOffline() && !visited.current.has(target)) {
+        window.dispatchEvent(new Event(OFFLINE_BLOCKED_EVENT));
+        return;
+      }
       const sameRoute = target === normalisePath(pathRef.current);
       if (sameRoute) {
         if (href.includes("#")) router.push(href);
@@ -134,7 +146,8 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       pause();
       const startedAt = performance.now();
       router.prefetch(href);
-      const assets = runPreload(routeItems(target));
+      // A slow connection never holds a page change for more than this: the rest arrives late.
+      const assets = capWait(runPreload(routeItems(target)), TRANSITION_MAX_WAIT_MS);
       const label = options.label ? `Loading ${options.label}` : "Loading";
 
       const finish = () => {

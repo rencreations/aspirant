@@ -93,6 +93,11 @@
     linear-gradient(90deg, rgb(255 247 242 / 0.5) 0%, transparent 50%);
 }
 
+/* The hero keeps Angela's bright pink: its words are large and sit over her art. */
+.hero[data-who="angela"] {
+  --a: #e23a92;
+}
+
 /* The mark that follows the circle. */
 .markWrap {
   position: absolute;
@@ -147,6 +152,8 @@
   position: absolute;
   left: 2.3rem;
   top: -0.5rem;
+  /* On the right half of the picture the tag moves to the left of the circle (--flip is 1). */
+  transform: translateX(calc(var(--flip, 0) * (-100% - 4.6rem)));
   font: 600 0.68rem/1 var(--font-mono);
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -382,6 +389,10 @@
 }
 .hero[data-who="ruby"] .eyebrow {
   color: var(--a);
+  /* A dark halo keeps the amber readable over the pale parts of the art. */
+  text-shadow:
+    0 0 0.5rem rgb(5 10 34 / 0.95),
+    0 1px 2px rgb(5 10 34 / 0.95);
 }
 .hero[data-who="angela"] .eyebrow {
   color: var(--ink);
@@ -495,6 +506,10 @@
 }
 
 @media (max-width: 820px) {
+  /* The portrait chip sits at the right: the eyebrow wraps before it instead of running under it. */
+  .hero[data-who="angela"] .eyebrow {
+    padding-right: 6.6rem;
+  }
   .terminal {
     display: none;
   }
@@ -507,6 +522,13 @@
   }
   .stage {
     cursor: auto;
+  }
+}
+
+/* A short screen (a phone on its side) has no room for the terminal. */
+@media (max-height: 520px) {
+  .terminal {
+    display: none;
   }
 }
 

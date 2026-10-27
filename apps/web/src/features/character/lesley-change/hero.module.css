@@ -744,6 +744,25 @@
   }
 }
 
+/* A short screen (a phone on its side, a small window): Chang'e's three cards share the width, so
+   they never lie over one another, and the hint line (the cards say it already) is left out. */
+@media (max-height: 560px) and (min-width: 761px) {
+  .hero[data-who="change"] .hint {
+    display: none;
+  }
+  .hero[data-who="change"] .plate {
+    width: min(30rem, calc(100% - 2 * max(4vw, 24px) - min(24rem, 40vw) - 1.5rem));
+    bottom: calc(4svh + 5rem);
+    padding: 0.7rem 1rem 0.6rem;
+  }
+  .hero[data-who="change"] .foot {
+    max-width: calc(100% - 2 * max(4vw, 24px) - min(24rem, 40vw) - 1.5rem);
+  }
+  .hero[data-who="change"] .panel {
+    padding: 0.8rem 1rem;
+  }
+}
+
 /* ------------------------------------------------------------------ weak devices and motion */
 
 :global(:root[data-perf="lite"]) .zoom img {

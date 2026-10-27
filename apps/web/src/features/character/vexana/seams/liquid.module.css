@@ -110,3 +110,39 @@
 :global(:root[data-perf="lite"]) .shape {
   animation: none;
 }
+
+/*
+ * Guinevere's page uses the same liquid in her colours: a cream light that ends in the colour of
+ * the film (`#fff6ec`) and a warm brown ink that ends in the colour of her registry (`#26190e`).
+ */
+:global([data-guinevere]) .wash {
+  background: #fff6ec;
+}
+
+:global([data-guinevere]) .washInk {
+  background: #26190e;
+}
+
+:global([data-guinevere]) .blob[data-tone="glow"] path {
+  fill: rgb(240 138 75 / 0.38);
+}
+
+:global([data-guinevere]) .blob[data-tone="rim"] path {
+  fill: #f6c79f;
+}
+
+:global([data-guinevere]) .blob[data-tone="paper"] path {
+  fill: #fff6ec;
+}
+
+:global([data-guinevere]) .blob[data-tone="inkglow"] path {
+  fill: rgb(240 138 75 / 0.34);
+}
+
+:global([data-guinevere]) .blob[data-tone="inkrim"] path {
+  fill: #4a2a16;
+}
+
+:global([data-guinevere]) .blob[data-tone="ink"] path {
+  fill: #26190e;
+}

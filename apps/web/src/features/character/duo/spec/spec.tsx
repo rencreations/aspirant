@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import { asset } from "@/lib/asset";
 
 import { crop } from "../crop";
@@ -71,7 +73,7 @@ export function Spec(p: SpecProps) {
               key={k}
               className={styles.row}
               data-reveal
-              style={{ transitionDelay: `${i * 60}ms` }}
+              style={{ "--d": `${i * 60}ms` } as CSSProperties}
             >
               <dt>{k}</dt>
               <dd>{v}</dd>

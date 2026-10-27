@@ -30,6 +30,7 @@ import type { CoverApi } from "../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../stage/stage";
 import type { SkipOptions } from "../stage/phase";
 import { PAGE_NAMES, type PageName, type SceneName, type ShortName } from "../stage/timeline";
+import { useStageFocus } from "../stage/use-stage-focus";
 import { useStageUrl } from "../stage/use-stage-url";
 import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawer } from "./about/about-drawer";
@@ -342,6 +343,10 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
   // Back is there while the page is open and while it waits for the exit to start. It goes when
   // the exit starts. A short has no Back: it plays to its end.
   const showBack = mode === "page" || mode === "leaving";
+  // The keyboard stays with the visitor when a page opens and closes (see `use-stage-focus.ts`).
+  const heroRef = useRef<HTMLElement>(null);
+  const backRef = useRef<HTMLDivElement>(null);
+  useStageFocus(mode, heroRef, backRef);
   const pageOpen = showBack || mode === "intro" || mode === "outro";
   const waitLabel =
     chosen === null && mode === "leaving"
@@ -398,7 +403,12 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
   return (
     <div className={styles.page} data-theme="storm" style={art}>
-      <section className={styles.hero} aria-labelledby="obsidia-title" data-mode={mode}>
+      <section
+        ref={heroRef}
+        className={styles.hero}
+        aria-labelledby="obsidia-title"
+        data-mode={mode}
+      >
         <h1 id="obsidia-title" className="sr-only">
           Obsidia
         </h1>
@@ -513,7 +523,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
         ) : null}
 
         {showBack ? (
-          <div className={styles.back}>
+          <div className={styles.back} ref={backRef}>
             <MenuButton
               label="Back"
               icon={MENU_ICON.weapon}

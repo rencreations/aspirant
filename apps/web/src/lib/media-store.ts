@@ -16,7 +16,7 @@ import { asset } from "@/lib/asset";
  * everything still works from memory. The saved copy is named by `CACHE`. Change that name when a
  * file is replaced under the same address, and the old copy is thrown away.
  */
-const CACHE = "aspirants-media-v3";
+const CACHE = "aspirants-media-v4";
 const CACHE_PREFIX = "aspirants-media-";
 
 const loading = new Map<string, Promise<string>>();
@@ -36,6 +36,13 @@ interface LoadOptions {
 
 /** A download reports its progress at most this often. */
 const REPORT_EVERY_MS = 100;
+
+/**
+ * A download that gets no byte at all for this long is given up on (a dead connection holds the
+ * socket open for minutes): its slot is freed and the plain address is used, so the browser
+ * streams the file itself and the loading bar goes on instead of waiting behind it.
+ */
+export const STALL_MS = 20_000;
 
 /**
  * At most a few big downloads run at once, in the order they were asked for. The loading screen
@@ -161,7 +168,10 @@ export function loadMedia(path: string, options: LoadOptions = {}): Promise<stri
   let p = loading.get(path);
   if (!p) {
     p = download(path, options).then((url) => {
-      loaded.set(path, url);
+      // Only a file that arrived is kept. One that failed (a stall, a dropped connection, a short
+      // file) falls back to the plain address and is tried again the next time it is asked for.
+      if (url.startsWith("blob:")) loaded.set(path, url);
+      else loading.delete(path);
       return url;
     });
     loading.set(path, p);
@@ -183,8 +193,17 @@ async function download(path: string, options: LoadOptions): Promise<string> {
     const release = await gate.enter(fallback, options.background === true);
     let blob: Blob;
     let type: string;
+    const abort = new AbortController();
+    let stall = 0;
+    const watch = () => {
+      window.clearTimeout(stall);
+      stall = window.setTimeout(() => {
+        abort.abort();
+      }, STALL_MS);
+    };
     try {
-      const res = await fetch(fallback);
+      watch();
+      const res = await fetch(fallback, { signal: abort.signal });
       if (!res.ok || !res.body) return fallback;
       const header = Number(res.headers.get("content-length"));
       const total = header > 0 ? header : (options.expectedBytes ?? 0);
@@ -195,6 +214,7 @@ async function download(path: string, options: LoadOptions): Promise<string> {
       let lastReport = 0;
       const counter = new TransformStream<Uint8Array, Uint8Array>({
         transform(chunk, controller) {
+          watch();
           received += chunk.byteLength;
           const now = performance.now();
           if (total > 0 && now - lastReport > REPORT_EVERY_MS) {
@@ -205,8 +225,11 @@ async function download(path: string, options: LoadOptions): Promise<string> {
         },
       });
       const body = await new Response(res.body.pipeThrough(counter)).blob();
+      // A body shorter than the server said is a cut download: never keep or save half a video.
+      if (header > 0 && body.size !== header) return fallback;
       blob = body.slice(0, body.size, type);
     } finally {
+      window.clearTimeout(stall);
       release();
     }
     // The file counts as loaded when it is saved too.

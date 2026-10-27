@@ -146,6 +146,23 @@ function glAllowed(): boolean {
 }
 
 /**
+ * The script of the WebGL scene. On a poor connection it can fail to arrive: it is asked for again
+ * a few times, a little later each time, and when it never comes the flat picture stays (the visitor
+ * is never shown an error, and nothing is left rejected without a handler).
+ */
+async function loadFigureGL(stopped: () => boolean) {
+  for (let tries = 0; tries < 4; tries += 1) {
+    if (stopped()) return null;
+    try {
+      return await import("./figure-gl");
+    } catch {
+      await new Promise((r) => window.setTimeout(r, 900 * (tries + 1)));
+    }
+  }
+  return null;
+}
+
+/**
  * The opening of Vexana's page: the hero (her normal form, with the Ender form coming through),
  * the hand-over (the screen closes into a card and the page goes dark), and the signature with
  * her message. One tall track holds a sticky screen; the scroll position drives everything with
@@ -243,7 +260,9 @@ export function Opening() {
     };
     void (async () => {
       try {
-        const { createFigureGL } = await import("./figure-gl");
+        const loaded = await loadFigureGL(() => cancelled);
+        if (!loaded || cancelled) return;
+        const { createFigureGL } = loaded;
         for (let tries = 0; tries < 3 && !cancelled; tries += 1) {
           try {
             const made = await createFigureGL(canvas, {
@@ -273,9 +292,17 @@ export function Opening() {
         mark();
       }
     })();
+    // The connection came back after the scene could not be built (its script never arrived): try again.
+    const online = () => {
+      if (cancelled || glRef.current || rebuilds.current >= 4) return;
+      rebuilds.current += 1;
+      setAttempt((n) => n + 1);
+    };
+    window.addEventListener("online", online);
     return () => {
       cancelled = true;
       window.clearTimeout(rebuildTimer);
+      window.removeEventListener("online", online);
       mark();
       canvas.removeEventListener("webglcontextlost", lost);
       glRef.current = null;

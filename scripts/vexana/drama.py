@@ -33,15 +33,12 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-WORK = Path(
-    os.environ.get(
-        "DRAMA_WORK",
-        "C:/Users/muham/AppData/Local/Temp/claude/D--aspirant/99e6bfa2-8c11-4064-b32b-e3a66299918d/scratchpad/drama",
-    )
-)
+# Downloads and analysis caches (large): set DRAMA_WORK to a folder with room for about 2 GB.
+WORK = Path(os.environ.get("DRAMA_WORK", str(Path(tempfile.gettempdir()) / "aspirants-drama")))
 OUT = ROOT / "apps/web/public/video/vexana/drama"
 WEB = ROOT / "apps/web/src/features/character/vexana/drama"
 

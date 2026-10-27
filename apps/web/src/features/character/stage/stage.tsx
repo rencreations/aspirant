@@ -206,7 +206,7 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
         delete v.dataset.attached;
       }
       releaseTimer = window.setTimeout(() => {
-        releaseMedia(`${media.dir}/`);
+        for (const prefix of media.release ?? [`${media.dir}/`]) releaseMedia(prefix);
         // What was still waiting in the background for this page is not wanted any more.
         cancelDeferred(media.dir.split("/").pop() ?? "");
       }, 1500);

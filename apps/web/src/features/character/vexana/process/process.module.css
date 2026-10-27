@@ -587,6 +587,13 @@
   box-shadow: 0 0 10px rgb(255 255 255 / 0.7);
 }
 
+/* The range input is invisible and lies over the tracks: show the focus on the tracks themselves. */
+.tracks:has(.scrub:focus-visible) {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 .scrub {
   position: absolute;
   inset: -8px 0;

@@ -200,6 +200,15 @@ function withTimeout(p: Promise<void>, ms: number): Promise<void> {
 }
 
 /**
+ * Wait for `p` but never longer than `ms`. The work is not stopped: it goes on in the background
+ * and what it brings in is simply late. A slow connection must never hold a visitor at a loading
+ * screen for minutes.
+ */
+export function capWait(p: Promise<void>, ms: number): Promise<void> {
+  return withTimeout(p, ms);
+}
+
+/**
  * The background queue. Every page that asks adds to the same queue (an item that is in it or was
  * started already is not added twice), so the work never runs more than `DEFERRED_AT_ONCE` wide
  * however many times a list is asked for. It runs in order of `priority`, and goes on after the

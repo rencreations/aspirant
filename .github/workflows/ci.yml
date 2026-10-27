@@ -77,7 +77,8 @@ jobs:
     name: E2E (${{ matrix.project }})
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # The suite loads video-heavy pages; the desktop project alone ran past 30 minutes.
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:

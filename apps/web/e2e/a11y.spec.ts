@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-import { ROUTES, skipGate, url } from "./helpers";
+import { ROUTES, skipGate, streamsVideo, url } from "./helpers";
 
 async function seriousViolations(page: Page) {
   const results = await new AxeBuilder({ page })
@@ -16,8 +16,8 @@ for (const route of ROUTES) {
   test(`no serious accessibility violations on ${route}`, async ({ page }) => {
     await skipGate(page);
     await page.goto(url(route));
-    // Her pages hold video connections open, so the network never goes quiet there.
-    if (route.startsWith("/character/selena/") || route.startsWith("/character/obsidia/")) {
+    // Pages that stream video hold connections open, so the network never goes quiet there.
+    if (streamsVideo(route)) {
       await page.waitForLoadState("load");
       await page.waitForTimeout(1500);
     } else await page.waitForLoadState("networkidle");

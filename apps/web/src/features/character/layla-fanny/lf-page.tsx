@@ -8,6 +8,7 @@ import { TLink } from "@/components/transition/t-link";
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { characterRoute } from "@/lib/site";
+import { BrokenImages } from "../broken-images";
 import { CONFIG } from "./config";
 import { Hero } from "./hero";
 import styles from "./lf.module.css";
@@ -124,6 +125,7 @@ export function LfPage({
 }) {
   return (
     <div data-lf data-who={who} className={styles.page} style={CONFIG[who].vars}>
+      <BrokenImages />
       <Rail who={who} />
       <Hero who={who} />
       <Profile who={who} />

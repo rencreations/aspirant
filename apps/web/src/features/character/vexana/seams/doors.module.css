@@ -81,3 +81,16 @@
 .clear .shade {
   display: none;
 }
+
+/* Guinevere's page: the pale doors are the warm off-white of her pair of faces. */
+:global([data-guinevere]) .paper .door {
+  background: #f8f4f0;
+}
+
+:global([data-guinevere]) .paper .left .shade {
+  background: linear-gradient(to right, rgb(38 25 14 / 0.14), rgb(38 25 14 / 0));
+}
+
+:global([data-guinevere]) .paper .right .shade {
+  background: linear-gradient(to left, rgb(38 25 14 / 0.14), rgb(38 25 14 / 0));
+}

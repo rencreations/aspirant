@@ -13,8 +13,8 @@ export const OWN_VIDEOS: Record<OwnVideoName, VideoInfo> = {
   "skin-showcase": {
     file: "/video/guinevere/skin-showcase.mp4",
     poster: "/video/guinevere/skin-showcase-poster.webp",
-    bytes: 20816518,
-    duration: 56.3,
+    bytes: 20382007,
+    duration: 55.3,
     width: 900,
     height: 900,
   },

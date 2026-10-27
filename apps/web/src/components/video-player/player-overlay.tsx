@@ -250,6 +250,9 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(true);
   const [ended, setEnded] = useState(false);
+  // The file could not be loaded (a network or server error), or has been loading for a long time.
+  const [failed, setFailed] = useState(false);
+  const [slow, setSlow] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -486,6 +489,28 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     );
   }, [active.src]);
 
+  // A file that has been loading for a long time says so (the connection is slow, it is not stuck).
+  useEffect(() => {
+    if (!busy || !ready || failed) return;
+    const id = window.setTimeout(() => {
+      setSlow(true);
+    }, 9000);
+    return () => {
+      window.clearTimeout(id);
+      setSlow(false);
+    };
+  }, [busy, ready, failed]);
+
+  /** Ask for the file again after a failure. */
+  const retry = useCallback(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    setFailed(false);
+    setBusy(true);
+    el.load();
+    void el.play().catch(() => undefined);
+  }, []);
+
   // Video events ----------------------------------------------------------------------------
   useEffect(() => {
     const el = v();
@@ -518,9 +543,16 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
       }),
       on("playing", () => {
         setBusy(false);
+        setFailed(false);
       }),
       on("canplay", () => {
         setBusy(false);
+        setFailed(false);
+      }),
+      on("error", () => {
+        setFailed(true);
+        setBusy(false);
+        setPlaying(false);
       }),
       on("waiting", () => {
         setBusy(true);
@@ -904,8 +936,23 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
           <path className={styles.loaderOuter} d="M40 6 L70 23 L70 57 L40 74 L10 57 L10 23 Z" />
           <path className={styles.loaderInner} d="M40 22 L56 31 L56 49 L40 58 L24 49 L24 31 Z" />
         </svg>
-        <span>Loading</span>
+        <span>{slow ? "Still loading" : "Loading"}</span>
       </div>
+
+      {failed ? (
+        <div className={styles.failed} role="alert" data-zone="button">
+          <p>This video could not be loaded.</p>
+          <span>Check your connection and try again.</span>
+          <div>
+            <button type="button" onClick={retry}>
+              Try again
+            </button>
+            <button type="button" onClick={close}>
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {ended ? (
         <button

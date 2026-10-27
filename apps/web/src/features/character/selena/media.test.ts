@@ -71,4 +71,19 @@ describe("the size of video for a display and a device", () => {
     expect(pickTier({ ...big, saveData: true })).toBe("lite");
     expect(pickTier({ ...big, memory: 2 })).toBe("lite");
   });
+
+  it("goes easy on a slow link", () => {
+    const big = { width: 3840, height: 2160, dpr: 1, level: "full" as const, memory: 8 };
+    // No answer from the browser (Safari, Firefox), or a link that says it is fast: nothing changes.
+    expect(pickTier({ ...big })).toBe("2160");
+    expect(pickTier({ ...big, downlink: 10, effectiveType: "4g" })).toBe("2160");
+    // Under 6 Mbit/s the first load must stay small: no bigger than 1080.
+    expect(pickTier({ ...big, downlink: 5.5 })).toBe("1080");
+    // Under 3 Mbit/s, or a link the browser calls 3g or worse: the smallest.
+    expect(pickTier({ ...big, downlink: 2.9 })).toBe("lite");
+    expect(pickTier({ ...big, downlink: 8, effectiveType: "3g" })).toBe("lite");
+    expect(pickTier({ ...big, effectiveType: "2g" })).toBe("lite");
+    // A link of 0 is "unknown", not "slow".
+    expect(pickTier({ ...big, downlink: 0 })).toBe("2160");
+  });
 });

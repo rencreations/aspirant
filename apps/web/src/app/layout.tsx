@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  // Resolved against the address of each page, so every route names itself as canonical.
+  alternates: { canonical: "./" },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,

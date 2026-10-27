@@ -221,7 +221,9 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
           bar: next,
           duration: 0.35,
           ease: "power2.out",
-          overwrite: true,
+          // Only an earlier move of the bar itself: `true` would also kill the fill and zoom
+          // tweens that open the page, which share this state object.
+          overwrite: "auto",
           onUpdate: () => {
             if (fillRef.current) fillRef.current.style.transform = `scaleX(${s.bar.toFixed(4)})`;
             if (pctRef.current) pctRef.current.textContent = `${Math.round(s.bar * 100)}%`;

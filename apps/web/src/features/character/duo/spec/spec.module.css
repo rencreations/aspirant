@@ -90,7 +90,8 @@
   color: var(--ink);
 }
 .section[data-who="angela"] .tag {
-  background: var(--a);
+  /* A deeper pink than her accent: white on it reads at 4.5:1 or more. */
+  background: #bd2577;
   color: #fff;
   border-radius: 2rem;
 }
@@ -133,21 +134,28 @@
 .section[data-who="angela"] .row:nth-child(even) {
   margin-left: 1.6rem;
 }
+.section[data-who="angela"] .row dt {
+  color: #bd2577;
+}
 .section[data-who="angela"] .row dd {
   font-family: var(--font-serif);
   font-style: italic;
 }
 
+/* Arming is instant (no transition), so nothing flashes before it is hidden; only the reveal animates: the
+   transition sits on the revealed state, and a stagger comes in through `--d` (set inline). */
 .section[data-armed="true"] [data-reveal] {
   opacity: 0;
   transform: translateY(1.6rem);
-  transition:
-    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: none;
 }
 .section[data-in="true"] [data-reveal] {
   opacity: 1;
   transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--d, 0s);
 }
 
 @media (max-width: 820px) {

@@ -18,6 +18,8 @@ export const obsidiaMedia = createStageMedia({
   source: { width: 3840, height: 1728 },
   // The first load is the welcome and the idle loop. The page clips and the shorts follow it.
   deferRest: true,
+  // The "Day of Enders" film of her gallery is Selena's file, shared by the pair.
+  alsoRelease: ["/video/selena/trailer-day-of-enders"],
 });
 
 export const { pickTier, loadCore } = obsidiaMedia;

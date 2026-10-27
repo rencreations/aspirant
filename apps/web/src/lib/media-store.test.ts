@@ -187,3 +187,56 @@ describe("downloads for later", () => {
     expect(open.has("/video/p3.mp4")).toBe(false);
   });
 });
+
+describe("a bad connection", () => {
+  it("falls back to the plain address when the body is shorter than the server said", async () => {
+    const fake = fakeCaches();
+    vi.stubGlobal("caches", fake.api);
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(
+        new Response(bytes(60), {
+          headers: { "content-type": "video/mp4", "content-length": "100" },
+        }),
+      ),
+    );
+    const { loadMedia } = await import("./media-store");
+    const url = await loadMedia("/video/short.mp4", { type: "video/mp4" });
+    expect(url).toBe("/video/short.mp4");
+    // Half a file is never saved.
+    expect(fake.store.has("/video/short.mp4")).toBe(false);
+  });
+
+  it("asks again next time after a failure instead of remembering it", async () => {
+    vi.stubGlobal("caches", fakeCaches().api);
+    fetchMock.mockImplementationOnce(() => Promise.reject(new TypeError("network error")));
+    const { loadMedia, mediaUrl } = await import("./media-store");
+    expect(await loadMedia("/video/flaky.mp4", { type: "video/mp4" })).toBe("/video/flaky.mp4");
+    expect(mediaUrl("/video/flaky.mp4")).toBe("/video/flaky.mp4");
+    // The connection is back: the second ask downloads it.
+    const again = await loadMedia("/video/flaky.mp4", { type: "video/mp4", expectedBytes: 100 });
+    expect(again).toBe("blob:test");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("gives up on a download that gets no byte for too long and frees its slot", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal("caches", fakeCaches().api);
+      // A response whose body never produces a byte, and that obeys the abort signal.
+      fetchMock.mockImplementation(
+        ((_url: string, init?: { signal?: AbortSignal }) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => {
+              reject(new DOMException("aborted", "AbortError"));
+            });
+          })) as unknown as () => Promise<Response>,
+      );
+      const { loadMedia, STALL_MS } = await import("./media-store");
+      const pending = loadMedia("/video/stuck.mp4", { type: "video/mp4" });
+      await vi.advanceTimersByTimeAsync(STALL_MS + 50);
+      expect(await pending).toBe("/video/stuck.mp4");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

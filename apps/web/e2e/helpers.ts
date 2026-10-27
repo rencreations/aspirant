@@ -29,6 +29,14 @@ export const ROUTES = [
   "/collection/",
 ] as const;
 
+/**
+ * Pages that stream video by themselves hold connections open, so the network never goes quiet
+ * there: wait for `load` and a moment instead of `networkidle`.
+ */
+export function streamsVideo(route: string): boolean {
+  return /^\/character\/(selena|obsidia|vexana|guinevere)\//.test(route);
+}
+
 /** Resolve a site path against the baseURL (which may include a base path). */
 export function url(path: string): string {
   return path.replace(/^\/+/, "") || "./";

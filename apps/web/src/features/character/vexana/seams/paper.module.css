@@ -37,3 +37,12 @@
   background: #140e26;
   opacity: 0;
 }
+
+/* Guinevere's page: the rim of the sheet is a warm gold and the film dims to her brown ink. */
+:global([data-guinevere]) .paper::before {
+  border-bottom-color: rgb(245 204 169 / 55%);
+}
+
+:global([data-guinevere]) .veil {
+  background: #26190e;
+}

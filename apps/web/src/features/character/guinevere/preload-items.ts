@@ -60,8 +60,6 @@ export function guinevereFirstPaint(): PreloadItem[] {
     imageItem(GLOW, "Loading the first light", 2),
     imageItem(videoPoster("splash-short"), "Loading the signature", 1),
     imageItem(videoPoster("final2"), "Loading the film", 1),
-    videoItem("splash-short", "Loading the signature"),
-    mediaItem(MUSIC, "Loading the music", { type: "audio/mp4", weight: 3, timeoutMs: 120_000 }),
   ];
 }
 
@@ -81,6 +79,15 @@ export function guinevereLater(): Array<{ priority: number; items: PreloadItem[]
   const small: VideoName[] = ["heart-dance"];
   const streamed: VideoName[] = ["final2", "live-guin"];
   return [
+    // The music and the signature short are first in line, right after the page opens, but they are
+    // not waited for: they are 7.7 MB of the 8.5 MB the first screen used to wait for, and a slow
+    // line should open the hero from its two small pictures (the page streams both from the file
+    // until they have arrived).
+    {
+      priority: 2,
+      items: [mediaItem(MUSIC, "Loading the music", { type: "audio/mp4", timeoutMs: 120_000 })],
+    },
+    { priority: 3, items: [videoItem("splash-short", "Loading the signature")] },
     { priority: 20, items: [videoItem("final", "Loading the film", pick.src)] },
     { priority: 22, items: [videoItem("skin-showcase", "Loading her registry")] },
     { priority: 25, items: [videoItem("final2", "Loading the film")] },

@@ -4,6 +4,8 @@ import { useEffect, type ReactNode } from "react";
 
 import { TooltipProvider } from "@aspirant/ui/components/tooltip";
 
+import { OfflineNotice } from "@/components/offline-notice";
+import { RuntimeGuard } from "@/components/runtime-guard";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
 import { SoundPrompt } from "@/components/sound-prompt";
 import { TransitionProvider } from "@/components/transition/transition-provider";
@@ -56,6 +58,8 @@ export function SiteProviders({ children }: { children: ReactNode }) {
       <TransitionProvider>
         <TooltipProvider delayDuration={150}>
           <PreferencesSync />
+          <RuntimeGuard />
+          <OfflineNotice />
           {children}
           <SoundPrompt />
         </TooltipProvider>

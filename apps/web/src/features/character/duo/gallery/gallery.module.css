@@ -80,16 +80,20 @@
   border-radius: 0 1rem 0 0;
 }
 
+/* Arming is instant (no transition), so nothing flashes before it is hidden; only the reveal animates: the
+   transition sits on the revealed state, and a stagger comes in through `--d` (set inline). */
 .section[data-armed="true"] [data-reveal] {
   opacity: 0;
   transform: translateY(2rem);
-  transition:
-    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: none;
 }
 .section[data-in="true"] [data-reveal] {
   opacity: 1;
   transform: none;
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--d, 0s);
 }
 
 @media (max-width: 760px) {

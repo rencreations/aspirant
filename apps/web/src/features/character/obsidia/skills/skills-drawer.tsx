@@ -137,7 +137,7 @@ function SkillsBody({ selected, onSelect }: { selected: string; onSelect: (id: s
         <p className={base.kicker}>Skills</p>
         <h2 className={base.name}>How Obsidia hunts</h2>
         <p className={styles.lead}>
-          A passive and three skills. Press one to read it. Its clip plays on the right.
+          A passive and three skills. Press one to read it. Its clip plays in the demo.
         </p>
       </header>
 

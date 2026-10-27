@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 
 import { ImageViewer, type ViewerImage } from "@/components/image-viewer/image-viewer";
 import { asset } from "@/lib/asset";
@@ -75,7 +75,7 @@ export function Gallery({ who }: { who: Who }) {
             className={styles.cell}
             data-i={i}
             data-reveal
-            style={{ transitionDelay: `${i * 80}ms` }}
+            style={{ "--d": `${i * 80}ms` } as CSSProperties}
           >
             <button
               type="button"

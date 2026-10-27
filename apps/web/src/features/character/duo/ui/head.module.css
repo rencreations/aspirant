@@ -45,29 +45,33 @@
 }
 
 /* The reveal: written by `useReveal` (data-armed, then data-in). */
+/* Arming is instant (no transition), so nothing flashes before it is hidden; only the reveal animates: the
+   transition sits on the revealed state, and a stagger comes in through `--d` (set inline). */
 .head[data-armed="true"] [data-reveal] {
   opacity: 0;
   transform: translateY(1.4rem);
-  transition:
-    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.head[data-armed="true"] [data-reveal]:nth-child(2) {
-  transition-delay: 0.08s;
-}
-.head[data-armed="true"] [data-reveal]:nth-child(3) {
-  transition-delay: 0.16s;
+  transition: none;
 }
 .head[data-in="true"] [data-reveal] {
   opacity: 1;
   transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.head[data-in="true"] [data-reveal]:nth-child(2) {
+  transition-delay: 0.08s;
+}
+.head[data-in="true"] [data-reveal]:nth-child(3) {
+  transition-delay: 0.16s;
 }
 .head[data-armed="true"] .rule {
   transform: scaleX(0);
-  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  transition: none;
 }
 .head[data-in="true"] .rule {
   transform: scaleX(1);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
 }
 
 @media (prefers-reduced-motion: reduce) {

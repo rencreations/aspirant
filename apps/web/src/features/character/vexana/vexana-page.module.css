@@ -48,3 +48,8 @@
 .coverGate > :nth-child(2) {
   pointer-events: none;
 }
+
+/* A picture that could not be loaded is hidden (see shared/image-rescue.tsx), not left as a broken mark. */
+.page :global(img[data-vx-failed]) {
+  visibility: hidden;
+}

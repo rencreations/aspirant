@@ -8,6 +8,7 @@ import { TLink } from "@/components/transition/t-link";
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { characterRoute } from "@/lib/site";
+import { BrokenImages } from "../broken-images";
 import { CONFIG } from "./config";
 import { BenchHero } from "./hero-bench";
 import { ScopeHero } from "./hero-scope";
@@ -112,6 +113,7 @@ function Together({ who }: { who: Who }) {
 export function LcPage({ who, next }: { who: Who; next: NextCharacter }) {
   return (
     <div data-lc data-who={who} className={styles.page} style={CONFIG[who].vars}>
+      <BrokenImages />
       {who === "lesley" ? <ScopeHero /> : <BenchHero />}
       <Channel who={who} />
       <Profile who={who} />

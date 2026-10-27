@@ -1187,7 +1187,7 @@
     row-gap: 6vh;
   }
   .name {
-    font-size: 30vw;
+    font-size: 19vw;
   }
   .jp {
     position: static;
@@ -1202,8 +1202,10 @@
   }
   .jpKana {
     writing-mode: horizontal-tb;
-    font-size: 3.6rem;
+    /* Six kana: they must stay on one line (a lone ア on a second line reads as a mistake). */
+    font-size: min(3.6rem, 11.4vw);
     letter-spacing: 0.04em;
+    white-space: nowrap;
   }
   .stage {
     position: relative;

@@ -17,7 +17,7 @@ exists is kept (delete it to rebuild it, or pass `--force`).
 The skin showcase is a promo for two skins. It is cut down to Guinevere's parts and framed square
 (900x900): her intro (12.9 s to 27 s), the display part where she is the RIGHT half of a split
 screen (29 s to 65.8 s, the window stops short of the divider and above the caption bars), and her
-title card (66 s to 71.4 s, before the flash). The skills in play (72 s to 89 s) are her four
+title card (67 s to 71.4 s, before the flash, cropped above the caption). The skills in play (72 s to 89 s) are her four
 skill clips, with the caption bar and the joystick cropped off.
 
 Run: python -I scripts/guinevere/build.py            everything
@@ -101,7 +101,9 @@ SKIN_FADE_IN, SKIN_FADE_OUT = 0.4, 0.6
 SKIN_PARTS = [
     (12.9, 27.0, "full", 460, 40, 1000),  # her intro (her arm comes in at 12.9 s)
     (29.0, 65.8, "half", 1010, 0, 910),  # display animations: she is the right half
-    (66.0, 71.4, "full", 440, 0, 900),  # her title card, before the flash (the title text is below 920 px)
+    # Her title card. It starts at 67 s (from 66 s to 67 s the video shows Vexana's skin reveal) and the
+    # window stops at 790 px, above the caption that rises along the bottom edge.
+    (67.0, 71.4, "full", 495, 0, 790),
 ]
 
 FORCE = "--force" in sys.argv

@@ -1,6 +1,7 @@
 "use client";
 
 import type { Route } from "next";
+import type { CSSProperties } from "react";
 
 import { TLink } from "@/components/transition/t-link";
 import { asset } from "@/lib/asset";
@@ -85,7 +86,7 @@ export function Contacts({ who, name, contacts, chapters }: Props) {
               </span>
             </>
           );
-          const delay = { transitionDelay: `${i * 70}ms` };
+          const delay = { "--d": `${i * 70}ms` } as CSSProperties;
           return (
             <li
               key={c.key}

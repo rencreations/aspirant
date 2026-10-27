@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { ROUTES, skipGate, url, watchErrors } from "./helpers";
+import { ROUTES, skipGate, streamsVideo, url, watchErrors } from "./helpers";
 
 for (const route of ROUTES) {
   test(`smoke ${route}: one h1, no console errors, no horizontal overflow`, async ({ page }) => {
@@ -8,9 +8,8 @@ for (const route of ROUTES) {
     const errors = watchErrors(page);
     const response = await page.goto(url(route));
     expect(response?.status()).toBe(200);
-    // Her pages hold video connections open, so the network never goes quiet there.
-    if (route.startsWith("/character/selena/") || route.startsWith("/character/obsidia/"))
-      await page.waitForLoadState("load");
+    // Pages that stream video hold connections open, so the network never goes quiet there.
+    if (streamsVideo(route)) await page.waitForLoadState("load");
     else await page.waitForLoadState("networkidle");
 
     await expect(page.locator("h1")).toHaveCount(1);
@@ -46,6 +45,13 @@ test("serves robots.txt, sitemap.xml and the web manifest", async ({ request }) 
   const sitemap = await request.get(url("/sitemap.xml"));
   expect(sitemap.ok()).toBe(true);
   const xml = await sitemap.text();
-  expect(xml.match(/<loc>/g)?.length).toBe(21);
+  // Every page the smoke test walks is in the sitemap (the sitemap may list more, for example
+  // pages that only the crawler needs), and nothing in it points at localhost.
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1] ?? "");
+  expect(locs.length).toBeGreaterThanOrEqual(ROUTES.length);
+  for (const route of ROUTES) {
+    expect(locs.some((loc) => loc.endsWith(route === "/" ? "/" : route))).toBe(true);
+  }
+  expect(new Set(locs).size).toBe(locs.length);
   expect((await request.get(url("/manifest.webmanifest"))).ok()).toBe(true);
 });

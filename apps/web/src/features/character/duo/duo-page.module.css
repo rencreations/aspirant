@@ -29,7 +29,9 @@
   --ink-2: #4a2a3c;
   --paper: #fff7f2;
   --paper-dim: rgb(42 20 34 / 0.7);
-  --a: #e23a92;
+  /* Her accent for small words and for fills under white words: 4.5:1 or more on her paper. The
+     hero keeps the bright pink (see hero.module.css), where the letters are large. */
+  --a: #c0267c;
   --b: #ffb28c;
   --c: #2fc7d9;
   --line: rgb(226 58 146 / 0.28);

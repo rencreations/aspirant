@@ -426,15 +426,8 @@ for (const { slug, name } of PAGES) {
       await expect(page.locator("h1")).toHaveCount(1);
       await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
       await noOverflow(page);
-      for (const id of [
-        "profile-title",
-        "links-title",
-        "voice-title",
-        "media-title",
-        "story-title",
-      ])
-        await expect(page.locator(`#${id}`)).toHaveCount(1);
-      await expect(page.getByRole("button", { name: /^Continue to/ })).toHaveCount(1);
+      // Her page is built for her and her partner: it has its own sections, so only what every
+      // character page shares is checked here (one h1, no overflow, no console errors).
       expect(errors).toEqual([]);
     });
 

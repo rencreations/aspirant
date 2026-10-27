@@ -9,7 +9,11 @@ export const siteConfig = {
   tagline: "Someone is always waiting.",
   description:
     "The Aspirants is a fan-made archive for Aspirant, a story series set in an alternate universe of Mobile Legends: Bang Bang. Read the whole story, meet the ten Aspirants and browse every film, song and drawing. Not affiliated with Moonton.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // A production build without NEXT_PUBLIC_SITE_URL still names the real domain, so canonical
+  // links, the sitemap and the share cards can never point at localhost.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.NODE_ENV === "production" ? "https://aspirant.cc" : "http://localhost:3000"),
   basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
 } as const;
 

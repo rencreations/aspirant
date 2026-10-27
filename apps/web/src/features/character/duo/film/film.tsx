@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import { VideoCard } from "@/components/video-player/video-card";
 import { asset } from "@/lib/asset";
 
@@ -78,7 +80,7 @@ export function Film({ who, name, label, videos }: Props) {
       </div>
       <ul className={styles.rest}>
         {rest.map((v, i) => (
-          <li key={v.id} data-reveal style={{ transitionDelay: `${i * 70}ms` }}>
+          <li key={v.id} data-reveal style={{ "--d": `${i * 70}ms` } as CSSProperties}>
             <VideoCard
               className={styles.small}
               tag={v.title}

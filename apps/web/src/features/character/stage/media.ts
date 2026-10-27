@@ -10,6 +10,13 @@ export interface DisplayInfo {
   dpr: number;
   /** The visitor asked for less data. */
   saveData?: boolean;
+  /**
+   * The connection, where the browser says (Chrome): the estimated speed in Mbit/s (it stops at 10,
+   * so 10 means "fast enough") and the class of the link. A slow link is told apart from a fast one
+   * so the page does not ask it for a hundred megabytes before it opens.
+   */
+  downlink?: number;
+  effectiveType?: string;
   /** GB of memory the device reports (Chrome only). */
   memory?: number;
   /** A touch-first device: phones and tablets. */
@@ -38,6 +45,11 @@ export interface StageMediaConfig<T extends string> {
    * the shorts) in the background after it. Without it everything is loaded first.
    */
   deferRest?: boolean;
+  /**
+   * Files of another folder that this page loads too (a film shared with its pair). They are let go
+   * with the page, so they do not sit in memory after it has been left.
+   */
+  alsoRelease?: readonly string[];
 }
 
 /**
@@ -63,10 +75,21 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
    *  - the performance level: `lite` is the smallest tier (half the frame rate), `balanced` is at
    *    most 1080;
    *  - touch devices stop at 1440, and with little memory at 1080; data saving and very little
-   *    memory get the smallest.
+   *    memory get the smallest;
+   *  - a slow link (under 3 Mbit/s, or a link the browser calls 3g or worse) gets the smallest and
+   *    one under 6 Mbit/s stops at 1080, so the first load does not take minutes.
    */
   function pickTier(d: DisplayInfo): T {
-    if (d.level === "lite" || d.saveData || (d.memory !== undefined && d.memory <= 2)) {
+    const slowClass =
+      d.effectiveType === "slow-2g" || d.effectiveType === "2g" || d.effectiveType === "3g";
+    const known = d.downlink !== undefined && d.downlink > 0;
+    if (
+      d.level === "lite" ||
+      d.saveData ||
+      slowClass ||
+      (known && d.downlink! < 3) ||
+      (d.memory !== undefined && d.memory <= 2)
+    ) {
       return tierIds[0]!;
     }
     const cover = Math.max(d.width / cfg.source.width, d.height / cfg.source.height);
@@ -84,13 +107,14 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
     if (d.touch) cap("1440");
     if (d.touch && d.memory !== undefined && d.memory <= 4) cap("1080");
     if (d.level === "balanced") cap("1080");
+    if (known && d.downlink! < 6) cap("1080");
     return tier;
   }
 
   /** Read the current display and device (browser only). */
   function currentDisplay(): DisplayInfo {
     const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean };
+      connection?: { saveData?: boolean; downlink?: number; effectiveType?: string };
       deviceMemory?: number;
     };
     return {
@@ -98,6 +122,8 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
       height: window.innerHeight,
       dpr: window.devicePixelRatio || 1,
       saveData: nav.connection?.saveData === true,
+      downlink: nav.connection?.downlink,
+      effectiveType: nav.connection?.effectiveType,
       memory: nav.deviceMemory,
       touch: window.matchMedia("(pointer: coarse)").matches,
       level: perfLevel(),
@@ -197,12 +223,17 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
     );
   }
 
-  return { dir: cfg.dir, pickTier, tier, tierReady, path, items, loadCore };
+  /** What is let go when the page is left: her folder, and whatever else she loaded. */
+  const release = [`${cfg.dir}/`, ...(cfg.alsoRelease ?? [])];
+
+  return { dir: cfg.dir, release, pickTier, tier, tierReady, path, items, loadCore };
 }
 
 /** What the stage needs of a character's media: where a video of a size is. */
 export interface StageMedia {
   dir: string;
+  /** Prefixes of what is let go when the page is left (`dir` and anything shared). */
+  release?: readonly string[];
   tier: () => string;
   path: (tier: string, file: string) => string;
 }

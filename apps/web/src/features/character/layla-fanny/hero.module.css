@@ -107,6 +107,17 @@
   letter-spacing: 0.1em;
 }
 
+/* Layla's name sits over her art: a pale halo keeps the small words readable on the busy parts. */
+.hero[data-who="layla"] .kicker {
+  color: var(--lf-ink);
+  text-shadow:
+    0 0 0.6em rgb(255 244 242 / 0.95),
+    0 0 0.2em rgb(255 244 242 / 0.9);
+}
+.hero[data-who="layla"] .kicker span:last-child {
+  color: inherit;
+}
+
 .name {
   margin: 0;
   line-height: 0.8;

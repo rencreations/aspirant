@@ -12,6 +12,7 @@ import type { ChapterId } from "@/content/types";
 import { characterRoute } from "@/lib/site";
 
 import { ART } from "../art";
+import { BrokenImages } from "../broken-images";
 import { experienceHref } from "../links";
 import { videosFor, voiceDurations } from "../media";
 import type { SpoilerFact } from "../page/spoilers";
@@ -139,6 +140,7 @@ export function DuoView({ who, next }: { who: Who; next: NextCharacter }) {
       data-who={who}
       data-duo={who}
     >
+      <BrokenImages />
       <Hero
         who={who}
         name={c.name}

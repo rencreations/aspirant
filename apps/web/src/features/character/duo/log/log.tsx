@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import { Spoilers, type SpoilerFact } from "../../page/spoilers";
 import type { Who } from "../duo-data";
 import { Head } from "../ui/head";
@@ -31,7 +33,7 @@ function Entry({ who, entry, n }: { who: Who; entry: LogEntry; n: number }) {
       </header>
       <ul className={styles.lines}>
         {entry.lines.map((line, i) => (
-          <li key={i} style={{ transitionDelay: `${120 + i * 90}ms` }}>
+          <li key={i} style={{ "--d": `${120 + i * 90}ms` } as CSSProperties}>
             {line}
           </li>
         ))}

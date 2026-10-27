@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { cancelDeferred, runPreload, type PreloadItem, type PreloadProgress } from "./preload";
+import {
+  cancelDeferred,
+  capWait,
+  runPreload,
+  type PreloadItem,
+  type PreloadProgress,
+} from "./preload";
 
 const item = (id: string, weight: number, run: () => Promise<unknown>): PreloadItem => ({
   id,
@@ -176,5 +182,30 @@ describe("deferred items", () => {
     expect(mine.started).toHaveBeenCalledTimes(1);
     mine.release();
     await tick();
+  });
+});
+
+describe("capWait", () => {
+  it("returns at once when the work is done, and at the cap when it is not", async () => {
+    vi.useFakeTimers();
+    try {
+      let finish: () => void = () => undefined;
+      const slow = new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+      let capped = false;
+      void capWait(slow, 1000).then(() => {
+        capped = true;
+      });
+      await vi.advanceTimersByTimeAsync(999);
+      expect(capped).toBe(false);
+      await vi.advanceTimersByTimeAsync(2);
+      expect(capped).toBe(true);
+      // The work itself was not cancelled.
+      finish();
+      await slow;
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

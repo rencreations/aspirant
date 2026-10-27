@@ -111,6 +111,39 @@ The light tier (`scripts/selena/build.py`, tier `lite`) keeps every other frame 
 timeline, so its loops and seams, which are measured in time, work unchanged (the director is tested
 with a video that shows every other frame).
 
+## Bad connections
+
+The site is several gigabytes of media, so a poor connection is the normal hard case, not an edge
+case. What was measured with `scripts/perf/net.mjs` (the production build, Chromium with the network
+limited), before and after the fixes:
+
+| Case                                    | Before                              | After                                                           |
+| --------------------------------------- | ----------------------------------- | --------------------------------------------------------------- |
+| 1.5 Mbit/s, Vexana's first visit        | the loading screen holds 83 seconds | "Enter now" after 12 seconds, the wait ends at 60               |
+| 400 kbit/s, the home page               | 77 seconds                          | 42 seconds, and "Enter now" is there                            |
+| The connection drops while loading      | home page empty, console errors     | the page text stays, a calm notice says the device is offline   |
+| Offline, a click on a page never opened | a nearly blank page                 | the page stays, the notice shows, "Back online" when it returns |
+| A file of an old deploy is gone         | a silent half-working page          | one reload by itself, never a loop, never while offline         |
+
+How it is built:
+
+- `components/loader-gate.tsx`: "Enter now" after 12 seconds, a stop at 60. The files still arriving
+  go on and arrive late, and they must not move the curtain once it has started to open
+  (`setBoot` overwrites only its own bar: a plain `overwrite: true` killed the animation that opens
+  the page).
+- `lib/preload.ts` (`capWait`) and the transition provider: a page change waits at most 25 seconds.
+- `lib/media-store.ts`: a download that gets no byte for 20 seconds, or ends short of the length
+  the server gave, is dropped and the plain address is used (the browser streams it); a file that
+  failed is asked for again the next time.
+- `components/offline-notice.tsx`, `lib/offline.ts`: the notice, and no navigation to a page that
+  was never opened while offline.
+- `lib/chunk-guard.ts`, `components/runtime-guard.tsx`: one reload for a stale tab (after a deploy
+  the file names change), once a minute at most, and only when online; promises nobody caught are
+  logged once each.
+- `app/error.tsx`, `app/global-error.tsx`: a page that throws shows a way back, not a blank screen.
+- Every page degrades without its media: posters and text stay when the videos, the audio, the data
+  or the pictures fail (tested with 404 and 500 answers).
+
 ## How to check
 
 - `scripts/perf/weak.mjs`: the weak browser. `FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 gpu 4 1366 768 1`
@@ -119,6 +152,7 @@ with a video that shows every other frame).
   and the video acceleration off.
 - `scripts/perf/trace.mjs`: a Chromium trace of a press with the style invalidation tracking, and a
   count of the style recalculations by what caused them. This is how the cursor was found.
+- `scripts/perf/net.mjs`: bad connections (slow, offline, failing files, a stale tab, the "Enter now" button).
 - Serve the production build (`pnpm build`, then `node apps/web/e2e/static-server.mjs --port 3190`).
 
 ## What was measured about video
