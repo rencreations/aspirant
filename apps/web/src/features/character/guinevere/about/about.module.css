@@ -144,22 +144,29 @@
   color: var(--ab-dim);
 }
 
-.jp {
-  position: absolute;
-  top: 3vh;
-  right: 0;
+/* The English name and the Japanese one share a line: the Japanese name is horizontal, beside the
+   English one and anchored to its bottom right, so it never covers a letter. */
+.nameLine {
   display: flex;
+  align-items: flex-end;
+  gap: clamp(0.8rem, 2vw, 2.4rem);
+}
+
+.jp {
+  display: flex;
+  flex: none;
   flex-direction: column;
-  align-items: center;
-  gap: 1.2vh;
+  align-items: flex-start;
+  gap: 0.2em;
+  padding-bottom: 0.2vw;
 }
 
 .jpKana {
-  writing-mode: vertical-rl;
-  font-size: clamp(1.8rem, 3.4vw, 4.2rem);
+  font-size: clamp(1.3rem, 2.5vw, 3.4rem);
   font-weight: 800;
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
   color: var(--ab-text);
 }
 
@@ -1189,8 +1196,10 @@
   .name {
     font-size: 19vw;
   }
+  .nameLine {
+    display: block;
+  }
   .jp {
-    position: static;
     flex-direction: row;
     align-items: baseline;
     gap: 1rem;
@@ -1201,7 +1210,6 @@
     margin-bottom: 1rem;
   }
   .jpKana {
-    writing-mode: horizontal-tb;
     /* Six kana: they must stay on one line (a lone ア on a second line reads as a mistake). */
     font-size: min(3.6rem, 11.4vw);
     letter-spacing: 0.04em;

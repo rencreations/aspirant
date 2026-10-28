@@ -94,6 +94,16 @@ SHORTS_AND_PAGES = {k: dict(v, e0=v["action_end"] + 16) for k, v in CLIPS.items(
 
 IN_LEAD = 36  # frames of idle pose before the action, in an entrance or a short
 IN_TAIL = 24  # frames kept after the pose frame, so the dissolve into the loop has a picture to dissolve from
+# The most frames (at 60 fps) the visitor waits for the idle loop (or the pose loop, for the exit) to
+# come round to the frame a video was cut at. Further than that, the video starts at once and
+# dissolves in from wherever the loop is. The idle loop is 610 frames and the pose loop 600, and
+# both are the true period of the picture (the squared error at any shorter lag is 20 or more,
+# against 3.6 and 6.0 at the period), so neither can be cut shorter without a visible jump; the wait
+# for a frame used to be up to 10 s. The two pictures are a few frames out of step when it starts
+# at once (the squared error between any two idle frames is under 30, a sway of about a percent),
+# which the dissolve hides, and nothing is sped up.
+MAX_WAIT = 24
+
 BLEND_MS = {"gallery": 560, "short-1": 560, "short-2": 560, "short-3": 560}
 
 TAIL_WINDOW = 60
@@ -295,6 +305,7 @@ def timeline_data() -> tuple[dict, dict]:
                 f"{key}-in.mp4",
                 pose_frame(key) + IN_TAIL,
                 startPhases=[start_phase(key)],
+                maxWait=MAX_WAIT,
                 blendMs=BLEND_MS[key],
                 align=ALIGN[key][0],
                 handFrame=pose_frame(key),
@@ -305,6 +316,7 @@ def timeline_data() -> tuple[dict, dict]:
                 f"{key}-out.mp4",
                 tail_end(key) - c["exit"],
                 startPhase=(c["exit"] - c["l0"]) % c["p"],
+                maxWait=MAX_WAIT,
                 **back_timing(key, c["exit"]),
             ),
         }
@@ -315,6 +327,7 @@ def timeline_data() -> tuple[dict, dict]:
             f"{key}.mp4",
             tail_end(key) - a0_of(key),
             startPhases=[start_phase(key)],
+            maxWait=MAX_WAIT,
             blendMs=BLEND_MS[key],
             align=ALIGN[key][0],
             back=back_timing(key, a0_of(key)),

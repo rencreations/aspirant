@@ -1,66 +1,50 @@
+import { GLYPH_BOX } from "./signature-glyph.generated";
+
 /**
- * The signature: a capital G in one flowing hand. The body of the letter is one round stroke that
- * starts at the upper right, goes over the top and down the left, round the bottom and up the right;
- * the bar is a quick stroke back through the middle; then a long swash runs out under the letter and
- * curls into a loop at the right, and a short thin flick crosses it. Drawn in a 760 x 420 box and
- * slanted a little on screen. The order is the order of the strokes, so it writes the way a hand
- * would. Every stroke is a centre line with a pressure profile: `signature-outline.ts` turns it
- * into a tapered shape, light at the start, full in the middle and thin at the flick, the way a
- * pen presses.
+ * The signature is a fancy written G (the owner's drawing, traced into `signature-glyph.generated.ts`
+ * by `scripts/guinevere/signature.py`). The letter itself is one filled shape; what is animated is
+ * the pen: a few wide strokes along the rough centre lines of the letter, in the order a hand writes
+ * it, that uncover the shape as they are drawn. A glowing tip rides at the end of each.
  */
 export interface SignatureStroke {
-  /** The centre line: one `M` and cubic `C` segments. */
+  /** The centre line: one `M`, then `Q` and `L` segments, in the box of the glyph. */
   d: string;
-  /** Pen width in box units at full pressure. */
+  /** Width of the uncovering stroke in box units (a little wider than the ink). */
   width: number;
-  /** Pressure along the stroke, evenly spaced, 0 to 1. */
-  press: readonly number[];
   /** Rough length, so a longer stroke takes longer. */
   length: number;
   /** A quick stroke is written faster than its length says. */
   speed?: number;
 }
 
-export const SIGNATURE_BOX = { w: 760, h: 420 } as const;
+export const SIGNATURE_BOX = GLYPH_BOX;
 
 export const SIGNATURE: readonly SignatureStroke[] = [
-  // The body of the G: in at the upper right with a small hook, over the top, down the left side,
-  // round the bottom and up the right.
+  // The hook and the upper loop, ending on the tip where the long stroke starts.
   {
-    d: "M612 118 C586 64 536 30 458 22 C340 10 220 58 168 150 C118 238 150 336 232 372 C330 414 468 380 534 288 C560 252 566 220 552 196",
-    width: 17,
-    press: [0.25, 0.8, 1, 1, 0.9, 0.7, 0.4],
-    length: 1040,
+    d: "M460.5 0.8Q329.0 14.0 282.0 40.3Q235.1 66.6 216.3 105.1Q197.5 143.6 216.3 180.2Q235.1 216.8 272.7 228.1Q310.2 239.4 347.8 241.3Q385.4 243.1 441.7 230.9Q498.1 218.7 563.8 190.5Q629.6 162.4 676.5 134.2Q723.5 106.0 738.5 82.5Q753.6 59.0 733.8 41.2Q714.1 23.3 671.8 31.8Q629.6 40.3 573.2 73.1Q516.9 106.0 460.5 148.3Q404.2 190.5 366.6 228.1Q329.0 265.7 313.0 298.6Q297.1 331.4 308.3 359.6Q319.6 387.8 352.5 397.2Q385.4 406.6 427.6 387.8Q469.9 369.0 507.5 331.4Q545.0 293.9 581.7 271.3L618.3 248.8",
+    width: 62,
+    length: 1989,
   },
-  // The bar: from the right, back through the middle of the letter.
+  // The long stem down to the lower left, round the big loop at the bottom and back up.
   {
-    d: "M606 204 C540 214 452 220 360 214",
-    width: 11,
-    press: [0.5, 1, 0.9, 0.2],
-    length: 260,
-    speed: 1.3,
+    d: "M610.8 254.4Q535.6 340.8 498.1 392.5Q460.5 444.1 422.9 491.1Q385.4 538.1 343.1 585.0Q300.8 632.0 258.6 667.2Q216.3 702.4 169.3 728.3Q122.4 754.1 80.1 744.7Q37.8 735.3 21.4 697.7Q5.0 660.2 21.4 620.3Q37.8 580.3 80.1 545.1Q122.4 509.9 174.0 488.8Q225.7 467.6 277.4 460.6Q329.0 453.5 355.3 467.6Q381.6 481.7 390.1 519.3Q398.5 556.9 382.5 596.8Q366.6 636.7 333.7 664.9Q300.8 693.0 268.0 701.0L235.1 709.0",
+    width: 62,
+    length: 1664,
   },
-  // The swash: out from under the letter, long and low, ending in a loop at the right.
+  // The small curl inside the loop.
   {
-    d: "M96 392 C230 420 470 424 640 352 C714 320 742 276 716 256 C696 242 674 262 692 282",
-    width: 8,
-    press: [0.2, 0.8, 1, 0.9, 0.6, 0.25],
-    length: 720,
-  },
-  // The flick: thin and quick, back across the swash.
-  {
-    d: "M700 404 C560 414 330 416 190 402",
-    width: 4,
-    press: [0.2, 1, 0.8, 0.1],
-    length: 520,
-    speed: 2.4,
+    d: "M182.5 556.9Q158.1 599.1 159.9 624.9Q161.8 650.8 175.0 669.6Q188.1 688.3 202.2 692.1L216.3 695.9",
+    width: 44,
+    length: 176,
+    speed: 0.7,
   },
 ];
 
 /** Four-pointed sparkles that pop at the end of the signature: where, how big, how late (s). */
 export const SPARKS: ReadonlyArray<{ x: number; y: number; size: number; delay: number }> = [
-  { x: 640, y: 96, size: 22, delay: 0 },
-  { x: 90, y: 330, size: 14, delay: 0.12 },
-  { x: 730, y: 236, size: 16, delay: 0.22 },
-  { x: 380, y: 372, size: 12, delay: 0.3 },
+  { x: 748, y: 24, size: 24, delay: 0 },
+  { x: 60, y: 520, size: 15, delay: 0.12 },
+  { x: 650, y: 330, size: 16, delay: 0.22 },
+  { x: 120, y: 760, size: 13, delay: 0.3 },
 ];

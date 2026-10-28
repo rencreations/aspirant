@@ -184,7 +184,7 @@ export function GuinevereRoot({ next }: { next: NextCharacter }) {
         <Fanart />
       </Hold>
       <Rise id="fanart-music" enabled={on}>
-        <Hold hold={MUSIC_HOLD} enabled={on} overlay={<HeartCover />}>
+        <Hold hold={MUSIC_HOLD} enabled={on} overlay={<HeartCover tone="ink" />}>
           <MusicVideo />
         </Hold>
       </Rise>

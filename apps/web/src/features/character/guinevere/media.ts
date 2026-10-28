@@ -14,8 +14,26 @@ const VID = "/video/guinevere";
 const SHARED_VID = "/video/vexana";
 const SHARED_IMG = "/img/vexana";
 
-/** Her hero photo (one picture, a transparent cut-out) and the pair of the story page. */
+/** Her photo (one picture, a transparent cut-out): the hero of her story page. */
 export const HERO = { front: `${IMG}/hero/front.webp` } as const;
+
+/**
+ * Her hero: a silent recording of her animation that closes on itself with no jump
+ * (`scripts/guinevere/hero-loop.py`), in two sizes, and its first frame.
+ */
+export const HERO_LOOP = {
+  poster: `${VID}/hero-loop-poster.webp`,
+  hd: { src: `${VID}/hero-loop-1080.mp4`, bytes: 2290957 },
+  lite: { src: `${VID}/hero-loop-720.mp4`, bytes: 1069597 },
+} as const;
+
+/** The size of the hero loop for this screen: the small one for a small screen or a saving line. */
+export function heroLoopFile(): { src: string; bytes: number } {
+  if (typeof window === "undefined") return HERO_LOOP.hd;
+  const link = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const pixels = window.innerWidth * (window.devicePixelRatio || 1);
+  return pixels <= 1500 || link?.saveData ? HERO_LOOP.lite : HERO_LOOP.hd;
+}
 
 export const WEB = {
   left: `${IMG}/web/left.webp`,

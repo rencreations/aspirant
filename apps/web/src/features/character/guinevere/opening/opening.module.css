@@ -74,150 +74,19 @@
   inset: 0;
 }
 
-.dBg {
-  position: absolute;
-  inset: 0;
-}
-
-.dFigure {
-  position: absolute;
-  left: 50%;
-  /* The picture hangs below the screen by the same share the opening maths expects (PICTURE_HANG). */
-  bottom: -7.5svh;
-  height: 100svh;
-  aspect-ratio: 1672 / 941;
-  transform: translateX(-50%);
-  perspective: 1400px;
-}
-
-/* The lean toward the pointer: the whole photo, both pictures, turns together. */
-.dTilt {
-  position: absolute;
-  inset: 0;
-  transform-origin: 50% 70%;
-  will-change: transform;
-}
-
-.dBase,
-.dGlow {
+/* The hero is one looping recording that fills the screen. Her name is in the recording itself, so
+   nothing is written over it. On a screen that is narrower than the recording the picture is cut at
+   the sides and kept on her (waist up); on a wider one it is cut a little at the top and bottom. */
+.heroVideo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: 66% 38%;
+  background: #1b1520;
   user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* The same photo in the colours of the first light, seen through a circle that the script moves
-   (mask-image is written on this element only). Nothing shows until the circle has a size. */
-.dGlow {
-  -webkit-mask-image: radial-gradient(circle 1px at 50% 40%, #000 0%, transparent 100%);
-  mask-image: radial-gradient(circle 1px at 50% 40%, #000 0%, transparent 100%);
-  will-change: mask-image;
-}
-
-/* The halo: two thin broken rings and a ring of dots, behind her head, turning slowly. */
-.halo {
-  position: absolute;
-  left: 50%;
-  top: 2%;
-  width: 36%;
-  aspect-ratio: 1;
-  margin-left: -18%;
   pointer-events: none;
-  will-change: transform;
-}
-
-.haloRingA,
-.haloRingB,
-.haloDots {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-}
-
-.haloRingA {
-  border: 2px solid rgb(242 182 61 / 0.85);
-  clip-path: polygon(0 0, 100% 0, 100% 62%, 78% 100%, 0 100%, 0 38%, 22% 0);
-  animation: halo-turn 26s linear infinite;
-}
-
-.haloRingB {
-  inset: 9%;
-  border: 1px solid rgb(225 50 46 / 0.55);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 40% 100%, 0 60%);
-  animation: halo-turn 38s linear infinite reverse;
-}
-
-.haloDots {
-  inset: -7%;
-  background: radial-gradient(circle, rgb(242 182 61 / 0.9) 0 2px, transparent 3px) 0 0 / 22px 22px;
-  -webkit-mask-image: radial-gradient(circle, transparent 66%, #000 67%, #000 70%, transparent 71%);
-  mask-image: radial-gradient(circle, transparent 66%, #000 67%, #000 70%, transparent 71%);
-  animation: halo-turn 60s linear infinite;
-  opacity: 0.7;
-}
-
-@keyframes halo-turn {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.sparks {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.spark2 {
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  margin: 0;
-  background: #f2b63d;
-  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
-  will-change: transform, opacity;
-}
-
-.hint {
-  position: absolute;
-  left: var(--gutter);
-  bottom: calc(clamp(1rem, 5svh, 3rem) + 9.4rem);
-  z-index: 6;
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: 0.64rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgb(36 17 14 / 0.6);
-  white-space: nowrap;
-  transition: opacity 0.6s var(--ease-out);
-}
-
-.hint[data-gone="true"] {
-  opacity: 0;
-}
-
-@media (max-aspect-ratio: 17/20) and (min-width: 641px) {
-  /* A tall tablet: the clear air is above her, so the hint goes up there. */
-  .hint {
-    top: calc(var(--nav-h) + 1.6rem);
-    bottom: auto;
-  }
-}
-
-@media (max-aspect-ratio: 17/20) {
-  .dFigure {
-    height: min(62svh, 135vw);
-    bottom: calc(min(62svh, 135vw) * -0.075);
-  }
-}
-
-@media (hover: none) {
-  .hint {
-    letter-spacing: 0.1em;
-  }
 }
 
 /* ------------------------------------------------------------------ hero overlay */
@@ -229,18 +98,6 @@
   pointer-events: none;
 }
 
-.nameCard {
-  position: absolute;
-  left: var(--gutter);
-  bottom: clamp(1rem, 5svh, 3rem);
-  display: grid;
-  gap: 0.4rem;
-  padding: 0.9rem 1.2rem 1rem;
-  border: 1px solid rgb(38 25 14 / 0.32);
-  background: rgb(252 248 245 / 0.72);
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
-}
-
 .eyebrow,
 .cue span,
 .label {
@@ -250,60 +107,11 @@
   text-transform: uppercase;
 }
 
-.nameRow {
-  display: grid;
-  justify-items: start;
-  gap: 0.45rem;
-  white-space: nowrap;
-}
-
-.eyebrow {
-  color: rgb(38 25 14 / 0.7);
-}
-
-.name {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-style: normal;
-  font-weight: 800;
-  font-size: clamp(2.6rem, 5vw, 4.6rem);
-  line-height: 0.86;
-  letter-spacing: 0.005em;
-  text-transform: uppercase;
-}
-
-.title {
-  font-family: var(--font-serif-stack);
-  font-style: normal;
-  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
-  line-height: 1;
-  color: var(--vx-primary);
-}
-
-.jp {
-  position: absolute;
-  right: var(--gutter);
-  top: 50%;
-  display: grid;
-  justify-items: center;
-  gap: 0.6rem;
-  transform: translateY(-50%);
-  font-size: 0.8rem;
-  letter-spacing: 0.4em;
-  writing-mode: vertical-rl;
-  color: rgb(38 25 14 / 0.75);
-}
-
-.jpStar {
-  width: 1rem;
-  height: 1rem;
-  color: var(--vx-primary);
-}
-
 .cue {
   position: absolute;
   right: var(--gutter);
-  bottom: calc(clamp(1rem, 5svh, 3rem) + 4.6rem);
+  top: 50%;
+  transform: translateY(-50%);
   display: grid;
   justify-items: center;
   gap: 0.5rem;
@@ -460,8 +268,8 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(calc(var(--cw) * 2.2), 96vw);
-  transform: translate(-48%, -40%);
+  width: min(calc(var(--cw) * 1.4), 96vw);
+  transform: translate(-50%, -50%);
 }
 
 .sign {
@@ -564,11 +372,6 @@
   background: var(--vx-paper);
 }
 
-.staticFigure {
-  position: absolute;
-  inset: 0;
-}
-
 .staticSign {
   display: grid;
   justify-items: center;
@@ -595,57 +398,21 @@
 
 .staticCard .sign {
   position: absolute;
-  left: -45%;
-  top: 22%;
-  width: 190%;
+  left: -20%;
+  top: -12%;
+  width: 140%;
   max-width: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cue i::after,
-  .caret,
-  .haloRingA,
-  .haloRingB,
-  .haloDots {
+  .caret {
     animation: none;
   }
 }
 
 @media (max-width: 640px) {
-  .nameCard {
-    left: 1rem;
-    right: auto;
-    top: calc(var(--nav-h) + 1.4rem);
-    bottom: auto;
-    padding: 0.7rem 0.9rem 0.8rem;
-  }
-
-  .nameRow {
-    gap: 0.35rem;
-  }
-
-  .eyebrow {
-    font-size: 0.56rem;
-    letter-spacing: 0.1em;
-  }
-
-  .name {
-    font-size: 2.2rem;
-  }
-
   .cue {
-    right: 1rem;
-    bottom: 5.6rem;
-  }
-
-  /* Under the name card, in the clear air above her, so it never sits on her face or chest. */
-  .hint {
-    top: calc(var(--nav-h) + 9rem);
-    bottom: auto;
-    left: 1rem;
-  }
-
-  .jp {
     right: 1rem;
   }
 }

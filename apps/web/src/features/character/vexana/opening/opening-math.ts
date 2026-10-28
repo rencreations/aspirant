@@ -62,13 +62,21 @@ export interface Measure {
   cardH: number;
 }
 
+/** What a hero can set for itself: where the frame closes onto, how far it zooms, when it starts. */
+export interface HeroView {
+  face?: { x: number; y: number };
+  zoom?: number;
+  /** The progress at which the frame starts to close (the zoom starts with it). */
+  from?: number;
+}
+
 /** Everything the hero and the signature do, from the scroll progress of the pinned track. */
-export function openingState(p: number, m: Measure): OpeningState {
-  const s = easeInOut(seg(p, 0.1, 0.34));
+export function openingState(p: number, m: Measure, view: HeroView = {}): OpeningState {
+  const s = easeInOut(seg(p, view.from ?? 0.1, 0.34));
   const sx = lerp(1, m.cardW / m.vw, s);
   const sy = lerp(1, m.cardH / m.vh, s);
-  const z = lerp(1, ZOOM, s);
-  const face = faceOf(m.vw, m.vh);
+  const z = lerp(1, view.zoom ?? ZOOM, s);
+  const face = view.face ?? faceOf(m.vw, m.vh);
   const swap = seg(p, 0.31, 0.4);
   const leave = seg(p, 0.7, 0.78);
   const group = swap * (1 - leave);

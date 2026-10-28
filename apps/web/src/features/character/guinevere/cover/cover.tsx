@@ -4,10 +4,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
+import { asset } from "@/lib/asset";
 import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
 
-import { videoFile, videoPoster } from "../media";
+import { videoFile } from "../media";
 import { lvh } from "../../vexana/seams/scroll-kit";
 import { useScrollSnap, type SnapRange } from "../../vexana/seams/snap";
 import { PlayerButton, videoFor } from "../shared/player-button";
@@ -42,6 +43,10 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
  *
  * Only `transform` and `opacity` move, except the radius of the corners while the panel rises.
  */
+/** Where the preview starts, in seconds of the film: Vexana is down and the monster is about to fire. */
+const PREVIEW_START = 22.4;
+const PREVIEW_POSTER = "/video/guinevere/cover-preview-poster.webp";
+
 export function Cover() {
   const reduced = useReducedMotion();
   const section = useRef<HTMLElement>(null);
@@ -66,6 +71,21 @@ export function Cover() {
     el.defaultMuted = true;
     el.muted = true;
     el.src = mediaUrl(videoFile("final2"));
+    // The preview starts where Vexana is down, the monster fires and Guinevere blocks the beam, and
+    // it comes back to that moment each time it ends. The film in the player is not touched.
+    const start = () => {
+      el.currentTime = PREVIEW_START;
+    };
+    const again = () => {
+      start();
+      void el.play().catch(() => undefined);
+    };
+    el.addEventListener("loadedmetadata", start, { once: true });
+    el.addEventListener("ended", again);
+    return () => {
+      el.removeEventListener("loadedmetadata", start);
+      el.removeEventListener("ended", again);
+    };
   }, []);
 
   // Plays only while it is on screen, and never under reduced motion.
@@ -174,9 +194,8 @@ export function Cover() {
             <video
               ref={video}
               className={styles.film}
-              poster={videoPoster("final2")}
+              poster={asset(PREVIEW_POSTER)}
               muted
-              loop
               playsInline
               preload="metadata"
               aria-hidden="true"

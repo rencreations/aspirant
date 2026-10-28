@@ -28,6 +28,20 @@ export function triggerFrames(
 }
 
 /**
+ * True when the loop is too far from the frame a video starts at for the visitor to wait for it:
+ * more than `maxWait` frames until the trigger frame. False when there is no limit (`maxWait`
+ * missing), and the video waits for its frame.
+ */
+export function tooFar(
+  current: number,
+  triggers: readonly number[],
+  maxWait: number | undefined,
+  n: number,
+): boolean {
+  return maxWait !== undefined && waitFrames(current, triggers, n) > maxWait;
+}
+
+/**
  * True when the loop moved from `prev` to `cur` (frames can be skipped on a slow screen) and
  * passed one of the trigger frames on the way. `cur` counts, `prev` does not.
  */

@@ -17,3 +17,8 @@
 .hole[data-tone="black"] {
   background: #000;
 }
+
+/* Vexana's ink, for the heart that closes on her section from Guinevere's page. */
+.hole[data-tone="ink"] {
+  background: #140e26;
+}

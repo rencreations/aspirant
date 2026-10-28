@@ -1,15 +1,8 @@
 import { useId, type RefCallback } from "react";
 
 import styles from "./opening.module.css";
-import { strokeOutline } from "../../vexana/opening/signature-outline";
+import { GLYPH_D } from "./signature-glyph.generated";
 import { SIGNATURE, SIGNATURE_BOX, SPARKS } from "./signature-paths";
-
-/** The three layers of every stroke, made once: a wide amber glow, a coral body and a bright core. */
-const SHAPES = SIGNATURE.map((s) => ({
-  wide: strokeOutline(s.d, s.width, s.press, 3.6),
-  mid: strokeOutline(s.d, s.width, s.press, 1.8),
-  core: strokeOutline(s.d, s.width, s.press, 1),
-}));
 
 /** A four-pointed star around the origin, pointing up, right, down and left. */
 const STAR =
@@ -25,11 +18,11 @@ interface Props {
 }
 
 /**
- * The G as a signature. Each stroke is a tapered shape (pressure: thin, full, thin) drawn in three
- * layers and uncovered by a dashed mask, so it is written along its centre line. A glowing pen
- * tip rides in front of it, sparkles pop at the end, and a band of light passes over the finished
- * ink now and then. `useSignature` plays all of it with Web Animations (no frame loop). Strokes
- * start blank (the stylesheet).
+ * The G as a signature: the owner's fancy written G as one filled shape (a soft amber glow around
+ * it and a light body), uncovered by wide dashed strokes along the letter so it is written the way
+ * a hand would. A glowing pen tip rides in front of the ink, sparkles pop at the end, and a band of
+ * light passes over the finished letter now and then. `useSignature` plays all of it with Web
+ * Animations (no frame loop). The strokes start blank (the stylesheet).
  */
 export function SignatureSvg({ reg, done = false }: Props) {
   const id = useId().replace(/:/g, "");
@@ -38,7 +31,7 @@ export function SignatureSvg({ reg, done = false }: Props) {
   return (
     <svg
       className={styles.sign}
-      viewBox={`-20 -20 ${w + 40} ${h + 40}`}
+      viewBox={`-30 -30 ${w + 60} ${h + 60}`}
       aria-hidden="true"
       focusable="false"
     >
@@ -74,7 +67,7 @@ export function SignatureSvg({ reg, done = false }: Props) {
               pathLength={1}
               fill="none"
               stroke="#fff"
-              strokeWidth={s.width * 4.5}
+              strokeWidth={s.width}
               strokeLinecap="round"
               strokeLinejoin="round"
               className={styles.stroke}
@@ -90,17 +83,21 @@ export function SignatureSvg({ reg, done = false }: Props) {
           width={w + 80}
           height={h + 80}
         >
-          {SHAPES.map((sh, i) => (
-            <path key={i} d={sh.core} fill="#fff" />
-          ))}
+          <path d={GLYPH_D} fill="#fff" fillRule="evenodd" />
         </mask>
       </defs>
-      <g transform="translate(36 0) skewX(-9)">
-        {SHAPES.map((sh, i) => (
+      <g>
+        {SIGNATURE.map((_, i) => (
           <g key={i} mask={`url(#${id}m${i})`}>
-            <path d={sh.wide} fill="#ff8a3d" opacity="0.2" />
-            <path d={sh.mid} fill="#ff7a52" opacity="0.45" />
-            <path d={sh.core} fill={`url(#${id}c)`} />
+            <path
+              d={GLYPH_D}
+              fill="none"
+              stroke="#ff8a3d"
+              strokeOpacity="0.28"
+              strokeWidth="9"
+              strokeLinejoin="round"
+            />
+            <path d={GLYPH_D} fill={`url(#${id}c)`} fillRule="evenodd" />
           </g>
         ))}
         <g mask={`url(#${id}all)`}>

@@ -9,7 +9,8 @@ import {
   ART_NAMES,
   FANART_COUNT,
   FINAL_SOURCES,
-  HERO,
+  HERO_LOOP,
+  heroLoopFile,
   MUSIC,
   WEB,
   artPath,
@@ -38,8 +39,6 @@ const SKILL_ICONS: readonly SkillIcon[] = [
   "skill-3",
 ];
 
-const GLOW = "/img/guinevere/hero/glow.webp";
-
 /** A video held whole in memory (and saved in the browser) so its section starts at once. */
 function videoItem(name: VideoName, label: string, src = videoFile(name)): PreloadItem {
   const bytes = VIDEOS[name].bytes;
@@ -51,14 +50,19 @@ function videoItem(name: VideoName, label: string, src = videoFile(name)): Prelo
 }
 
 /**
- * What Guinevere's page needs before it opens: the photo of the opening (and the same photo in the
- * colours of the first light, which the pointer pulls over her), the posters of the two silent
- * videos of the first screens, the short in the signature, and her music.
+ * What Guinevere's page needs before it opens: the hero loop (a silent recording, 1 to 2 MB) and its
+ * first frame, the posters of the two silent videos of the first screens, and the signature short's
+ * poster.
  */
 export function guinevereFirstPaint(): PreloadItem[] {
+  const hero = heroLoopFile();
   return [
-    imageItem(HERO.front, "Loading Guinevere", 3),
-    imageItem(GLOW, "Loading the first light", 2),
+    imageItem(HERO_LOOP.poster, "Loading Guinevere", 3),
+    mediaItem(hero.src, "Loading Guinevere", {
+      type: "video/mp4",
+      bytes: hero.bytes,
+      timeoutMs: 60_000,
+    }),
     imageItem(videoPoster("splash-short"), "Loading the signature", 1),
     imageItem(videoPoster("final2"), "Loading the film", 1),
   ];

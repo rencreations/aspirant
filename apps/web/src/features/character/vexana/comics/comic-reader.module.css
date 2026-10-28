@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: rgb(10 7 20 / 0.92);
+  background: rgb(var(--vx-0a0714-rgb, 10 7 20) / 0.92);
 }
 
 .reader {
@@ -11,8 +11,8 @@
   z-index: var(--z-modal);
   display: flex;
   flex-direction: column;
-  color: #f4effc;
-  background: #0e0a1a;
+  color: var(--vx-f4effc, #f4effc);
+  background: var(--vx-0e0a1a, #0e0a1a);
   outline: none;
 }
 
@@ -37,8 +37,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 14px clamp(16px, 3vw, 40px) 16px;
-  background: #140e26;
-  border-bottom: 1px solid rgb(183 156 242 / 0.18);
+  background: var(--vx-140e26, #140e26);
+  border-bottom: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.18);
 }
 
 .name {
@@ -51,7 +51,7 @@
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #b79cf2;
+  color: var(--vx-b79cf2, #b79cf2);
 }
 
 .count {
@@ -67,7 +67,7 @@
   font-weight: 400;
   font-size: 18px;
   text-transform: none;
-  color: rgb(244 239 252 / 0.6);
+  color: rgb(var(--vx-f4effc-rgb, 244 239 252) / 0.6);
 }
 
 .tools {
@@ -78,7 +78,7 @@
 
 .toggle {
   display: flex;
-  border: 1px solid rgb(183 156 242 / 0.4);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
   border-radius: 999px;
   padding: 3px;
 }
@@ -102,18 +102,18 @@
 }
 
 .toggle button[data-on="true"] {
-  background: #e040a0;
+  background: var(--vx-e040a0, #e040a0);
   color: #fff;
 }
 
 .tool {
-  border: 1px solid rgb(183 156 242 / 0.4);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
 }
 
 .tool:hover:not(:disabled),
 .pager button:hover:not(:disabled),
 .toggle button:hover:not([data-on="true"]) {
-  background: rgb(183 156 242 / 0.2);
+  background: rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.2);
 }
 
 .tool:disabled,
@@ -128,13 +128,13 @@
   right: 0;
   bottom: -1px;
   height: 3px;
-  background: rgb(183 156 242 / 0.15);
+  background: rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.15);
 }
 
 .fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #7a4fd6, #e040a0);
+  background: linear-gradient(90deg, var(--vx-7a4fd6, #7a4fd6), var(--vx-e040a0, #e040a0));
   transform: scaleX(0);
   transform-origin: 0 50%;
 }
@@ -145,7 +145,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   outline: none;
-  scrollbar-color: #7a4fd6 #140e26;
+  scrollbar-color: var(--vx-7a4fd6, #7a4fd6) var(--vx-140e26, #140e26);
 }
 
 .strip {
@@ -161,7 +161,7 @@
 .tile {
   position: relative;
   width: 100%;
-  background: #1b1431;
+  background: var(--vx-1b1431, #1b1431);
   content-visibility: auto;
   contain-intrinsic-size: auto 1200px;
 }
@@ -182,8 +182,8 @@
   justify-items: center;
   gap: 4px;
   min-height: 150px;
-  border: 1px dashed rgb(183 156 242 / 0.28);
-  color: rgb(244 239 252 / 0.5);
+  border: 1px dashed rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.28);
+  color: rgb(var(--vx-f4effc-rgb, 244 239 252) / 0.5);
   font-family: var(--font-mono-stack);
   font-size: 12px;
   letter-spacing: 0.2em;
@@ -193,7 +193,7 @@
 .gap small {
   font-size: 10px;
   letter-spacing: 0.16em;
-  color: rgb(244 239 252 / 0.32);
+  color: rgb(var(--vx-f4effc-rgb, 244 239 252) / 0.32);
 }
 
 .end {
@@ -203,7 +203,7 @@
   font-family: var(--font-serif-stack);
   font-style: italic;
   font-size: 18px;
-  color: rgb(244 239 252 / 0.55);
+  color: rgb(var(--vx-f4effc-rgb, 244 239 252) / 0.55);
 }
 
 .pager {
@@ -215,8 +215,8 @@
   gap: 8px;
   padding: 6px;
   border-radius: 999px;
-  background: rgb(20 14 38 / 0.9);
-  border: 1px solid rgb(183 156 242 / 0.4);
+  background: rgb(var(--vx-140e26-rgb, 20 14 38) / 0.9);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
 }
 
 .pager button {

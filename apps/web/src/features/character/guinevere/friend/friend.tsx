@@ -22,19 +22,27 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 const FILM = videoInfo("heart-dance");
 
-/** Guinevere's colours on a bright page, with Vexana's violet as the thread between them (hers is the picture). */
+/**
+ * Vexana's palette: this section is hers, so it is dark ink with her violet and magenta, to match
+ * the picture of her and the heart that closes over the film before it. Guinevere is the picture.
+ * `--g-ink` is the text colour and `--g-cream` the ground, as everywhere on this page.
+ */
 const VARS = {
-  "--g-cream": "#fff4e8",
-  "--g-peach": "#f6b98a",
-  "--g-pink": "#ff9db8",
-  "--g-gold": "#f2b63d",
-  "--g-red": "#e1322e",
-  "--g-ink": "#24110e",
-  "--g-soft": "#5a3a30",
-  "--g-red-text": "#b3201c",
+  "--g-cream": "#140e26",
+  "--g-peach": "#2a1d4d",
+  "--g-pink": "#e040a0",
+  "--g-gold": "#f2b04c",
+  "--g-red": "#e040a0",
+  "--g-ink": "#f1ecfb",
+  "--g-soft": "#cfc6ea",
+  "--g-red-text": "#f08ac8",
   "--g-violet": "#7a4fd6",
-  "--g-violet-text": "#5b34b5",
+  "--g-violet-text": "#b79cf2",
   "--g-magenta": "#e040a0",
+  "--g-card": "#2a1d4d",
+  "--g-card-line": "rgb(183 156 242 / 0.4)",
+  "--g-paper-ink": "#140e26",
+  "--g-paper-soft": "#5b4a86",
 } as CSSProperties;
 
 const SPARKLES = [
@@ -221,7 +229,7 @@ export function Friend() {
       ref={root}
       id="friend"
       className={styles.root}
-      data-theme="daybreak"
+      data-theme="storm"
       data-in="false"
       style={VARS}
       aria-labelledby="friend-title"

@@ -24,7 +24,7 @@ const TONES: Record<string, "light" | "dark" | "auto"> = {
   stream: "dark",
   drama: "dark",
   process: "dark",
-  friend: "light",
+  friend: "dark",
   art: "dark",
   fanart: "light",
   music: "dark",

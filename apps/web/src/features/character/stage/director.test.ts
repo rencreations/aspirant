@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SELENA_TIMELINE } from "../selena/timeline.generated";
 import { StageDirector, type StageElements, type StageState } from "./director";
 import { LEAD_FRAMES, triggerFrames, waitFrames, wrapFrame, type SkipOptions } from "./phase";
-import { SHORT_NAMES, VIDEO_KEYS, type VideoKey } from "./timeline";
+import { SHORT_NAMES, VIDEO_KEYS, type Timeline, type VideoKey } from "./timeline";
 
 const TL = SELENA_TIMELINE;
 const SELENA_PAGES = TL.pages;
@@ -87,6 +87,7 @@ function setup(
     skipWelcome?: boolean;
     welcomeDelayMs?: number;
     skip?: SkipOptions;
+    timeline?: Timeline;
   } = {},
 ) {
   const els = Object.fromEntries(VIDEO_KEYS.map((k) => [k, new FakeVideo()])) as Record<
@@ -109,7 +110,7 @@ function setup(
   const detached: VideoKey[] = [];
   const states: StageState[] = [];
   const director = new StageDirector(els as unknown as StageElements, {
-    timeline: TL,
+    timeline: options.timeline ?? TL,
     reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
     welcomeDelayMs: options.welcomeDelayMs,
@@ -516,6 +517,42 @@ describe("shorts", () => {
     await settle();
     expect(ctx.director.current).toMatchObject({ mode: "idle", scene: null });
     expect(ctx.els.idle.dataset.layer).toBe("front");
+  });
+
+  it("starts a short at once when its maxWait is shorter than the wait for the loop's frame", async () => {
+    const name = SHORT_NAMES[0];
+    const timeline: Timeline = {
+      ...TL,
+      shorts: { ...TL.shorts, [name]: { ...TL.shorts[name], maxWait: 24 } },
+    };
+    const ctx = setup({ timeline });
+    await toIdle(ctx);
+    ctx.director.request(name);
+    // The loop is just past the short's frame: it would have to come all the way round.
+    const trigger = wrapFrame(TL.shorts[name].startPhases[0] - LEAD_FRAMES, TL.loopFrames);
+    ctx.els.idle.tick(f(wrapFrame(trigger + 100, TL.loopFrames)));
+    await settle();
+    expect(ctx.director.current).toMatchObject({ mode: "short", scene: name });
+    expect(ctx.els[name].currentTime).toBe(0);
+    expect(ctx.els[name].plays).toBe(1);
+  });
+
+  it("still waits for the frame when it is within the maxWait", async () => {
+    const name = SHORT_NAMES[0];
+    const timeline: Timeline = {
+      ...TL,
+      shorts: { ...TL.shorts, [name]: { ...TL.shorts[name], maxWait: 24 } },
+    };
+    const ctx = setup({ timeline });
+    await toIdle(ctx);
+    ctx.director.request(name);
+    const trigger = wrapFrame(TL.shorts[name].startPhases[0] - LEAD_FRAMES, TL.loopFrames);
+    ctx.els.idle.tick(f(wrapFrame(trigger - 10, TL.loopFrames)));
+    await settle();
+    expect(ctx.director.current.mode).toBe("queued");
+    ctx.els.idle.tick(f(trigger));
+    await settle();
+    expect(ctx.director.current.mode).toBe("short");
   });
 
   it("jumps to the idle loop at once, from a short or a page (Back under the cover)", async () => {

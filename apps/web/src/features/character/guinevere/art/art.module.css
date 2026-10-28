@@ -234,9 +234,9 @@
   z-index: -1;
   pointer-events: none;
   background: linear-gradient(
-    var(--melt-from, #0d0b14) 0%,
-    color-mix(in srgb, var(--melt-from, #0d0b14) 62%, transparent) 30%,
-    color-mix(in srgb, var(--melt-from, #0d0b14) 22%, transparent) 68%,
+    var(--melt-from, #1a120a) 0%,
+    color-mix(in srgb, var(--melt-from, #1a120a) 62%, transparent) 30%,
+    color-mix(in srgb, var(--melt-from, #1a120a) 22%, transparent) 68%,
     transparent 100%
   );
 }

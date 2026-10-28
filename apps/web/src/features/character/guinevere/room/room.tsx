@@ -13,7 +13,6 @@ import { runPreload } from "@/lib/preload";
 
 import type { StageState } from "../../stage/director";
 import { MenuButton } from "../../stage/menu-button";
-import type { SkipOptions } from "../../stage/phase";
 import { ScreenCover, type CoverApi } from "../../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../../stage/stage";
 import type { SceneName, ShortName } from "../../stage/timeline";
@@ -57,16 +56,6 @@ const BLACK_FADE_MS = 1100;
 let welcomePlayed = false;
 
 const isShort = (scene: SceneName | null) => scene?.startsWith("short") ?? false;
-
-/**
- * How the picture is sped up while it waits for a frame. Her idle loop is about ten seconds, so a
- * wait can be long: the picture runs faster to reach the frame it needs (more so on a small size,
- * less so on a big one).
- */
-function skipFor(): SkipOptions {
-  const tier = roomMedia.tier();
-  return { maxRate: tier === "1440" ? 2.25 : 2.5, minFrames: 50 };
-}
 
 /**
  * The room: the last section of Guinevere's page, and the same idea as Vexana's, Selena's and
@@ -393,7 +382,6 @@ export function Room({ next }: { next: NextCharacter }) {
             ref={stage}
             timeline={GUINEVERE_STAGE_TIMELINE}
             media={roomMedia}
-            skip={skipFor}
             onState={onState}
             welcome={welcome}
             onBegin={noop}

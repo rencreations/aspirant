@@ -17,6 +17,13 @@ interface IdleStart {
   frames: number;
   /** Idle loop frames this video can start at. */
   startPhases: readonly number[];
+  /**
+   * The most frames the visitor waits for the idle loop to come round to the video's first frame.
+   * When the loop is further from it than that, the video starts at once and dissolves in from
+   * wherever the loop is (the two pictures are not in step for a moment, which the dissolve
+   * hides). Missing: the video always waits for its frame, so the two are in step.
+   */
+  maxWait?: number;
   /** Length of the dissolve into the video, in ms. */
   blendMs: number;
   /** Scale of the video that matches the idle picture at its first frame. */
@@ -52,6 +59,8 @@ interface PageTiming {
     frames: number;
     /** Page loop frame the exit starts at. */
     startPhase: number;
+    /** As `IdleStart.maxWait`, for the page loop and the exit. */
+    maxWait?: number;
   };
 }
 

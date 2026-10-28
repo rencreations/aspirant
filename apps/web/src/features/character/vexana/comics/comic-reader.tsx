@@ -304,7 +304,11 @@ function ReaderBody() {
         index={zoomAt}
         onIndexChange={setZoomAt}
         label="The comic"
-        skin={{ ground: "#0e0a1a", keyline: "#b79cf2", accent: "#e040a0" }}
+        skin={{
+          ground: "var(--vx-0e0a1a, #0e0a1a)",
+          keyline: "var(--vx-b79cf2, #b79cf2)",
+          accent: "var(--vx-e040a0, #e040a0)",
+        }}
       />
     </div>
   );

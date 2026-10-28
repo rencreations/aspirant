@@ -5,9 +5,9 @@
   outline: none;
   background: #000;
   cursor: pointer;
-  --lav: #b79cf2;
-  --magenta: #e040a0;
-  --ink: #140e26;
+  --lav: var(--vx-b79cf2, #b79cf2);
+  --magenta: var(--vx-e040a0, #e040a0);
+  --ink: var(--vx-140e26, #140e26);
 }
 
 /*
@@ -91,7 +91,7 @@
 .strip b {
   position: absolute;
   inset: 0;
-  background: rgb(224 64 160 / 0.9);
+  background: rgb(var(--vx-e040a0-rgb, 224 64 160) / 0.9);
   transform-origin: 0 50%;
   transform: scaleX(0);
   transition: transform 0.3s linear;
@@ -124,10 +124,10 @@
   display: grid;
   place-items: center;
   padding: 0;
-  border: 1px solid rgb(183 156 242 / 0.4);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
   border-radius: 0.4em;
-  background: rgb(10 6 20 / 0.6);
-  color: #f1ecfb;
+  background: rgb(var(--vx-0a0614-rgb, 10 6 20) / 0.6);
+  color: var(--vx-f1ecfb, #f1ecfb);
   cursor: pointer;
 }
 
@@ -162,7 +162,7 @@
   font-size: 1em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgb(217 213 245 / 0.6);
+  color: rgb(var(--vx-d9d5f5-rgb, 217 213 245) / 0.6);
   pointer-events: none;
 }
 
@@ -192,7 +192,7 @@
 .wait p {
   margin: 0;
   padding: 0.4em 0.9em;
-  background: rgb(10 6 20 / 0.8);
+  background: rgb(var(--vx-0a0614-rgb, 10 6 20) / 0.8);
 }
 
 .wait button {

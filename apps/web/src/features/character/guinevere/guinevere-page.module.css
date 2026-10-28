@@ -8,8 +8,102 @@
   overflow-x: clip;
 }
 
-/* Her livestream is warm: the join into the (shared) interactive drama melts from her brown, not violet. */
+/*
+ * Her palette for the sections she shares with Vexana (the comic, the interactive drama, the 3D
+ * process). Those sections read every colour as `var(--vx-<hex of Vexana's colour>, <that colour>)`,
+ * so on Vexana's page they are unchanged, and here each of her violets, magentas and night blues is
+ * swapped for a warm one. The properties sit on the body, not on the page, because the comic's
+ * reader opens in a portal outside the page.
+ */
+:global(body):has(.page) {
+  --vx-06030e: #0e0804;
+  --vx-06030e-rgb: 14 8 4;
+  --vx-07040f: #0f0905;
+  --vx-07040f-rgb: 15 9 5;
+  --vx-080610: #0d0804;
+  --vx-080610-rgb: 13 8 4;
+  --vx-0a051e: #1a0f06;
+  --vx-0a051e-rgb: 26 15 6;
+  --vx-0a0614: #160e07;
+  --vx-0a0614-rgb: 22 14 7;
+  --vx-0a0714: #150d06;
+  --vx-0a0714-rgb: 21 13 6;
+  --vx-0a090e: #120c07;
+  --vx-0a090e-rgb: 18 12 7;
+  --vx-0e0a1a: #1a1008;
+  --vx-0e0a1a-rgb: 26 16 8;
+  --vx-0f0d17: #1a120a;
+  --vx-0f0d17-rgb: 26 18 10;
+  --vx-120c24: #22150a;
+  --vx-120c24-rgb: 34 21 10;
+  --vx-121118: #1b130b;
+  --vx-121118-rgb: 27 19 11;
+  --vx-140e26: #26190e;
+  --vx-140e26-rgb: 38 25 14;
+  --vx-15141b: #20170f;
+  --vx-15141b-rgb: 32 23 15;
+  --vx-17151f: #241911;
+  --vx-17151f-rgb: 36 25 17;
+  --vx-17161e: #231a12;
+  --vx-17161e-rgb: 35 26 18;
+  --vx-1b1431: #2a1a0e;
+  --vx-1b1431-rgb: 42 26 14;
+  --vx-1b1a23: #281d14;
+  --vx-1b1a23-rgb: 40 29 20;
+  --vx-1e1240: #3a2410;
+  --vx-1e1240-rgb: 58 36 16;
+  --vx-1e1d27: #2d2218;
+  --vx-1e1d27-rgb: 45 34 24;
+  --vx-24232e: #35291d;
+  --vx-24232e-rgb: 53 41 29;
+  --vx-2a1d4d: #4a2f1a;
+  --vx-2a1d4d-rgb: 74 47 26;
+  --vx-2c1d78: #8a4f26;
+  --vx-2c1d78-rgb: 138 79 38;
+  --vx-3a3946: #4a3b2c;
+  --vx-3a3946-rgb: 74 59 44;
+  --vx-4a4959: #6a5642;
+  --vx-4a4959-rgb: 106 86 66;
+  --vx-5a3fc9: #b9743a;
+  --vx-5a3fc9-rgb: 185 116 58;
+  --vx-6b1853: #8f2f27;
+  --vx-6b1853-rgb: 143 47 39;
+  --vx-7a4fd6: #d79965;
+  --vx-7a4fd6-rgb: 215 153 101;
+  --vx-7f63e8: #e8a874;
+  --vx-7f63e8-rgb: 232 168 116;
+  --vx-a81d6b: #c4503f;
+  --vx-a81d6b-rgb: 196 80 63;
+  --vx-b02a78: #d4584a;
+  --vx-b02a78-rgb: 212 88 74;
+  --vx-b79cf2: #f4d4ba;
+  --vx-b79cf2-rgb: 244 212 186;
+  --vx-b9b9c4: #cbb9a6;
+  --vx-b9b9c4-rgb: 203 185 166;
+  --vx-cfcfd8: #dcc9b5;
+  --vx-cfcfd8-rgb: 220 201 181;
+  --vx-d9459f: #e86a5a;
+  --vx-d9459f-rgb: 232 106 90;
+  --vx-d9d5f5: #f4e3d6;
+  --vx-d9d5f5-rgb: 244 227 214;
+  --vx-e040a0: #e05c57;
+  --vx-e040a0-rgb: 224 92 87;
+  --vx-ecebf2: #f6ece3;
+  --vx-ecebf2-rgb: 246 236 227;
+  --vx-efe9ff: #fbf0e6;
+  --vx-efe9ff-rgb: 251 240 230;
+  --vx-f1ecfb: #fbf3ec;
+  --vx-f1ecfb-rgb: 251 243 236;
+  --vx-f4effc: #fbf3ec;
+  --vx-f4effc-rgb: 251 243 236;
+}
+
+/* The joins between the sections melt from the colour the section before ends in. */
 .page :global(#drama) {
+  --melt-from: #0e0804;
+}
+
+.page :global(#process) {
   --melt-from: #0e0804;
 }
 

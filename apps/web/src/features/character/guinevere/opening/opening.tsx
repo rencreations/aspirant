@@ -11,14 +11,9 @@ import { startGovernor } from "@/lib/perf";
 
 import { videoFile, videoPoster } from "../media";
 import { MARQUEE, STATEMENT, STATEMENT_PLAIN, type Part } from "./copy";
-import { HeroPhoto } from "./hero-photo";
-import {
-  easeOut,
-  faceOf,
-  openingState,
-  seg,
-  type Measure,
-} from "../../vexana/opening/opening-math";
+import { HeroVideo } from "./hero-video";
+import { heroFace, heroView } from "./hero-view";
+import { easeOut, openingState, seg, type Measure } from "../../vexana/opening/opening-math";
 import styles from "./opening.module.css";
 import { SignatureSvg } from "./signature";
 import { useSignature } from "./use-signature";
@@ -33,13 +28,6 @@ const TOKENS = {
   "--vx-paper": "#fff6ec",
   "--vx-bone": "#ffe9d6",
 } as CSSProperties;
-
-/** The first light of day, and the same page after dark (the hand-over turns the one into the other). */
-const BACKGROUND_CSS = {
-  light:
-    "radial-gradient(46% 60% at 50% 38%, #ffe3c4 0%, transparent 72%), radial-gradient(60% 50% at 82% 78%, #ffd9cf 0%, transparent 70%), radial-gradient(50% 45% at 12% 30%, #fff0d8 0%, transparent 70%), #fff6ec",
-  dark: "radial-gradient(60% 50% at 80% 70%, #3b1c14 0%, transparent 70%), #24110e",
-} as const;
 
 /** Writes a style only when it changed, so a scroll frame touches only what moved. */
 const written = new WeakMap<HTMLElement, Record<string, string>>();
@@ -64,16 +52,9 @@ function Words({ parts }: { parts: readonly Part[] }) {
   );
 }
 
-function NameCard() {
-  return (
-    <div className={styles.nameCard}>
-      <div className={styles.nameRow}>
-        <span className={styles.eyebrow}>Aspirant of Selrick Academy</span>
-        <h1 className={styles.name}>Guinevere</h1>
-      </div>
-      <span className={styles.title}>Daybreak Halo</span>
-    </div>
-  );
+/** Her name is in the recording; the page still needs its heading, for a reader and for search. */
+function PageHeading() {
+  return <h1 className={styles.srOnly}>Guinevere, Daybreak Halo</h1>;
 }
 
 function Statement({ setLine }: { setLine?: (i: number) => (el: HTMLElement | null) => void }) {
@@ -112,9 +93,8 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
 }
 
 /**
- * The opening of Guinevere's page: the hero (one photo of her that answers the pointer, see
- * `hero-photo.tsx`),
- * the hand-over (the screen closes into a card and the page goes dark), and the signature with
+ * The opening of Guinevere's page: the hero (a silent loop of her animation that fills the screen,
+ * see `hero-video.tsx`; her name is in it), the hand-over (the screen closes into a card and the page goes dark), and the signature with
  * her message. One tall track holds a sticky screen; the scroll position drives everything with
  * transforms and opacity only. See `opening-math.ts` for the timeline.
  *
@@ -125,8 +105,7 @@ export function Opening() {
 
   const toneRef = useRef(0);
   const activeRef = useRef(true);
-  const alwaysActive = useRef(true);
-  const staticRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLVideoElement>(null);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const dimRef = useRef<HTMLDivElement>(null);
@@ -134,7 +113,6 @@ export function Opening() {
   const frameRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const tintRef = useRef<HTMLDivElement>(null);
-  const domDarkRef = useRef<HTMLDivElement>(null);
   const uiRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -195,7 +173,7 @@ export function Opening() {
       measure.vh = pin.clientHeight;
       measure.cardW = card.offsetWidth;
       measure.cardH = card.offsetHeight;
-      const face = faceOf(measure.vw, measure.vh);
+      const face = heroFace(measure.vw, measure.vh);
       if (innerRef.current) {
         innerRef.current.style.transformOrigin = `${face.x * 100}% ${face.y * 100}%`;
       }
@@ -203,7 +181,7 @@ export function Opening() {
 
     const apply = (p: number) => {
       progress = p;
-      const s = openingState(p, measure);
+      const s = openingState(p, measure, heroView(measure.vw, measure.vh));
       put(frameRef.current, "transform", `scale(${s.frameSx},${s.frameSy})`);
       put(frameRef.current, "opacity", String(s.frameOpacity));
       put(frameRef.current, "visibility", s.frameOpacity < 0.01 ? "hidden" : "visible");
@@ -213,7 +191,6 @@ export function Opening() {
         `translate(${s.innerTx}px,${s.innerTy}px) scale(${s.innerSx},${s.innerSy})`,
       );
       put(tintRef.current, "opacity", String(Math.min(1, s.tone * 1.4)));
-      put(domDarkRef.current, "opacity", String(s.tone));
       put(uiRef.current, "opacity", String(s.uiOpacity));
       put(uiRef.current, "visibility", s.uiOpacity < 0.02 ? "hidden" : "visible");
 
@@ -236,12 +213,21 @@ export function Opening() {
       });
 
       toneRef.current = s.tone;
-      const nextTone = s.tone > 0.55 ? "dark" : "light";
+      // The corner of her recording is dark steel and sky, and the page after it is ink: white text.
+      const nextTone = "dark";
       if (nextTone !== toneName) {
         toneName = nextTone;
         section?.setAttribute("data-vx-tone", nextTone);
       }
       activeRef.current = s.glActive;
+
+      // The hero loop plays while the hero is what is on screen.
+      const hero = heroRef.current;
+      if (hero) {
+        if (s.glActive && !document.hidden) {
+          if (hero.paused) void hero.play().catch(() => undefined);
+        } else if (!hero.paused) hero.pause();
+      }
 
       const video = videoRef.current;
       if (video) {
@@ -309,27 +295,12 @@ export function Opening() {
     };
   }, [reduced, signature]);
 
-  const flat = (
-    <>
-      <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
-      <div
-        ref={domDarkRef}
-        className={styles.dBg}
-        style={{ background: BACKGROUND_CSS.dark, opacity: 0 }}
-      />
-      <HeroPhoto host={pinRef} active={activeRef} reduced={false} />
-    </>
-  );
-
   if (reduced) {
     return (
       <section id="opening" className={styles.opening} style={TOKENS} data-static="true">
-        <div ref={staticRef} className={styles.staticHero}>
-          <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
-          <div className={styles.staticFigure}>
-            <HeroPhoto host={staticRef} active={alwaysActive} reduced />
-          </div>
-          <NameCard />
+        <div className={styles.staticHero}>
+          <HeroVideo ref={heroRef} reduced />
+          <PageHeading />
         </div>
         <div className={styles.staticSign}>
           <p className={styles.label}>
@@ -358,7 +329,9 @@ export function Opening() {
 
           <div ref={frameRef} className={styles.frame}>
             <div ref={innerRef} className={styles.inner}>
-              <div className={styles.flat}>{flat}</div>
+              <div className={styles.flat}>
+                <HeroVideo ref={heroRef} reduced={false} />
+              </div>
             </div>
           </div>
 
@@ -392,11 +365,7 @@ export function Opening() {
           <div ref={dimRef} className={styles.coverDim} />
 
           <div ref={uiRef} className={styles.ui}>
-            <NameCard />
-            <div className={styles.jp} aria-hidden="true">
-              <StarGlyph className={styles.jpStar} />
-              <span lang="ja">グィネヴィア</span>
-            </div>
+            <PageHeading />
             <div className={styles.cue} aria-hidden="true">
               <span>Scroll</span>
               <i />

@@ -94,3 +94,22 @@
 :global([data-guinevere]) .paper .right .shade {
   background: linear-gradient(to left, rgb(38 25 14 / 0.14), rgb(38 25 14 / 0));
 }
+
+/* Her page: the dark doors of the comic are her two warm colours, amber on the left and coral on the right. */
+:global([data-guinevere]) .comic .left {
+  background-color: #4a2812;
+  background-image: linear-gradient(115deg, #4a2812 0%, #8a4f26 70%, #b9743a 100%);
+}
+
+:global([data-guinevere]) .comic .left .shade {
+  background: linear-gradient(to right, rgb(14 8 4 / 0.55), rgb(14 8 4 / 0));
+}
+
+:global([data-guinevere]) .comic .right {
+  background-color: #4a1511;
+  background-image: linear-gradient(245deg, #4a1511 0%, #8f2f27 70%, #c4503f 100%);
+}
+
+:global([data-guinevere]) .comic .right .shade {
+  background: linear-gradient(to left, rgb(14 8 4 / 0.55), rgb(14 8 4 / 0));
+}

@@ -44,29 +44,31 @@ export function About({ covers = false }: { covers?: boolean }) {
           <span className={styles.eyebrowBar} aria-hidden="true" />
           <span>Registry entry</span>
         </p>
-        <h2 id="about-title" className={styles.name}>
-          <span className={styles.nameEcho} aria-hidden="true">
-            Guinevere
-          </span>
-          <span className={styles.nameMain}>
-            <span className="sr-only">Guinevere</span>
-            {Array.from("Guinevere").map((ch, i) => (
-              <span
-                key={i}
-                className={styles.letter}
-                style={{ ["--i" as string]: i }}
-                aria-hidden="true"
-              >
-                {ch}
-              </span>
-            ))}
-          </span>
-        </h2>
-        <div className={styles.jp}>
-          <span className={styles.jpKana} lang="ja">
-            {c.jp.script}
-          </span>
-          <span className={styles.jpRoman}>{c.jp.romaji}</span>
+        <div className={styles.nameLine}>
+          <h2 id="about-title" className={styles.name}>
+            <span className={styles.nameEcho} aria-hidden="true">
+              Guinevere
+            </span>
+            <span className={styles.nameMain}>
+              <span className="sr-only">Guinevere</span>
+              {Array.from("Guinevere").map((ch, i) => (
+                <span
+                  key={i}
+                  className={styles.letter}
+                  style={{ ["--i" as string]: i }}
+                  aria-hidden="true"
+                >
+                  {ch}
+                </span>
+              ))}
+            </span>
+          </h2>
+          <div className={styles.jp}>
+            <span className={styles.jpKana} lang="ja">
+              {c.jp.script}
+            </span>
+            <span className={styles.jpRoman}>{c.jp.romaji}</span>
+          </div>
         </div>
       </header>
 

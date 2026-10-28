@@ -32,7 +32,7 @@
 
 /* No scroll tricks: the comic is one screen and nothing is held. */
 .comics[data-plain="true"] {
-  background: #140e26;
+  background: var(--vx-140e26, #140e26);
 }
 
 .sticky {
@@ -107,8 +107,13 @@
   transform-origin: 0 50%;
   --enter: 0%;
   --s: 0.5;
-  background-color: #5a3fc9;
-  background-image: linear-gradient(115deg, #2c1d78 0%, #5a3fc9 62%, #7f63e8 100%);
+  background-color: var(--vx-5a3fc9, #5a3fc9);
+  background-image: linear-gradient(
+    115deg,
+    var(--vx-2c1d78, #2c1d78) 0%,
+    var(--vx-5a3fc9, #5a3fc9) 62%,
+    var(--vx-7f63e8, #7f63e8) 100%
+  );
 }
 
 .read {
@@ -117,8 +122,13 @@
   transform-origin: 100% 50%;
   --enter: 0%;
   --s: 0.5;
-  background-color: #b02a78;
-  background-image: linear-gradient(245deg, #6b1853 0%, #b02a78 62%, #d9459f 100%);
+  background-color: var(--vx-b02a78, #b02a78);
+  background-image: linear-gradient(
+    245deg,
+    var(--vx-6b1853, #6b1853) 0%,
+    var(--vx-b02a78, #b02a78) 62%,
+    var(--vx-d9459f, #d9459f) 100%
+  );
 }
 
 .comics[data-hot="watch"] .watch {
@@ -288,7 +298,7 @@
   overflow: hidden;
   border: 5px solid #fff;
   border-radius: 14px;
-  box-shadow: 0 24px 56px rgb(10 5 30 / 0.5);
+  box-shadow: 0 24px 56px rgb(var(--vx-0a051e-rgb, 10 5 30) / 0.5);
   transform-origin: 50% 100%;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
   transition: transform 850ms var(--spring);
@@ -313,8 +323,8 @@
   place-items: center;
   border-radius: 50%;
   color: #fff;
-  background: #e040a0;
-  box-shadow: 0 8px 22px rgb(10 5 30 / 0.4);
+  background: var(--vx-e040a0, #e040a0);
+  box-shadow: 0 8px 22px rgb(var(--vx-0a051e-rgb, 10 5 30) / 0.4);
 }
 
 .comics[data-hot="watch"] .poster {
@@ -343,7 +353,7 @@
   border: 4px solid #fff;
   border-radius: 6px;
   background: #fff;
-  box-shadow: 0 16px 36px rgb(10 5 30 / 0.45);
+  box-shadow: 0 16px 36px rgb(var(--vx-0a051e-rgb, 10 5 30) / 0.45);
   transform-origin: 50% 100%;
   transform: translate3d(var(--fx), var(--fy), 0) rotate(var(--fr));
   transition: transform 850ms var(--spring) calc(var(--i) * 60ms);
@@ -429,11 +439,11 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: #140e26;
-  background: #efe9ff;
+  color: var(--vx-140e26, #140e26);
+  background: var(--vx-efe9ff, #efe9ff);
   box-shadow:
-    0 30px 80px rgb(10 5 30 / 0.38),
-    inset 0 -10px 0 rgb(20 14 38 / 0.07);
+    0 30px 80px rgb(var(--vx-0a051e-rgb, 10 5 30) / 0.38),
+    inset 0 -10px 0 rgb(var(--vx-140e26-rgb, 20 14 38) / 0.07);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 700ms var(--spring);
@@ -531,7 +541,9 @@
   height: auto;
   filter: drop-shadow(calc(var(--d) * 0.008) 0 0 #fff) drop-shadow(calc(var(--d) * -0.008) 0 0 #fff)
     drop-shadow(0 calc(var(--d) * 0.008) 0 #fff) drop-shadow(0 calc(var(--d) * -0.008) 0 #fff)
-    drop-shadow(0 calc(var(--d) * 0.02) calc(var(--d) * 0.03) rgb(20 14 38 / 0.35));
+    drop-shadow(
+      0 calc(var(--d) * 0.02) calc(var(--d) * 0.03) rgb(var(--vx-140e26-rgb, 20 14 38) / 0.35)
+    );
 }
 
 /* ---- Sparkles in the halves ---- */

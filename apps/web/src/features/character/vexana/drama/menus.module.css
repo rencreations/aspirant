@@ -2,10 +2,10 @@
 .title,
 .page,
 .overlay {
-  --ink: #140e26;
-  --violet: #7a4fd6;
-  --magenta: #e040a0;
-  --lav: #b79cf2;
+  --ink: var(--vx-140e26, #140e26);
+  --violet: var(--vx-7a4fd6, #7a4fd6);
+  --magenta: var(--vx-e040a0, #e040a0);
+  --lav: var(--vx-b79cf2, #b79cf2);
   --notch: polygon(
     0 0.35em,
     0.35em 0.35em,
@@ -69,7 +69,7 @@
   padding: 0.65em 1.2em;
   border: 0;
   background: transparent;
-  color: #f1ecfb;
+  color: var(--vx-f1ecfb, #f1ecfb);
   font-family: var(--font-mono-stack);
   font-size: 1.15em;
   letter-spacing: 0.24em;
@@ -129,7 +129,7 @@
   display: grid;
   place-items: center;
   padding: 3%;
-  background: rgb(10 6 20 / 0.88);
+  background: rgb(var(--vx-0a0614-rgb, 10 6 20) / 0.88);
   cursor: default;
 }
 
@@ -209,7 +209,7 @@
   overflow-y: auto;
   padding: 0.6em 1em;
   text-align: left;
-  border: 1px solid rgb(183 156 242 / 0.25);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.25);
   background: rgb(255 255 255 / 0.04);
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -264,7 +264,7 @@
 
 .recap li {
   padding: 0.25em 0.7em;
-  border: 1px solid rgb(183 156 242 / 0.4);
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
   font-family: var(--font-mono-stack);
   font-size: 0.9em;
   letter-spacing: 0.1em;
@@ -273,9 +273,9 @@
 
 /* The two answers over the picture the film holds at the end of a chapter. */
 .choices {
-  --ink: #140e26;
-  --magenta: #e040a0;
-  --lav: #b79cf2;
+  --ink: var(--vx-140e26, #140e26);
+  --magenta: var(--vx-e040a0, #e040a0);
+  --lav: var(--vx-b79cf2, #b79cf2);
   position: absolute;
   left: 4%;
   right: 4%;
@@ -303,9 +303,9 @@
   align-content: center;
   gap: 0.4em;
   padding: 0.9em 1.2em;
-  border: 1px solid rgb(183 156 242 / 0.4);
-  background: rgb(10 6 20 / 0.84);
-  color: #f1ecfb;
+  border: 1px solid rgb(var(--vx-b79cf2-rgb, 183 156 242) / 0.4);
+  background: rgb(var(--vx-0a0614-rgb, 10 6 20) / 0.84);
+  color: var(--vx-f1ecfb, #f1ecfb);
   text-align: left;
   font: inherit;
   cursor: pointer;
@@ -339,13 +339,13 @@
 .choice span {
   font-size: 1.05em;
   line-height: 1.35;
-  color: rgb(241 236 251 / 0.9);
+  color: rgb(var(--vx-f1ecfb-rgb, 241 236 251) / 0.9);
 }
 
 .choice[data-selected="true"],
 .choice:focus-visible {
   border-color: var(--magenta);
-  background: rgb(224 64 160 / 0.26);
+  background: rgb(var(--vx-e040a0-rgb, 224 64 160) / 0.26);
   outline: none;
 }
 

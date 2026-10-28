@@ -7,6 +7,7 @@ import {
   LEAD_FRAMES,
   skipRate,
   skipWallMs,
+  tooFar,
   triggerFrames,
   waitFrames,
   wrapFrame,
@@ -53,6 +54,19 @@ describe("loop frame maths", () => {
     expect(crossed(SELENA_LOOP_FRAMES - 3, 2, [0], SELENA_LOOP_FRAMES)).toBe(true);
     // A jump back (a seek) is not a crossing.
     expect(crossed(300, 10, [200], SELENA_LOOP_FRAMES)).toBe(false);
+  });
+
+  it("starts a video at once when the loop is too far from its frame", () => {
+    const n = 610;
+    const t = triggerFrames([200], n);
+    // 20 frames before the trigger frame, with a limit of 24: it waits for the frame.
+    expect(tooFar(t[0]! - 20, t, 24, n)).toBe(false);
+    expect(tooFar(t[0]!, t, 24, n)).toBe(false);
+    expect(tooFar(t[0]! - 25, t, 24, n)).toBe(true);
+    // Just after the frame it has to come all the way round: start now.
+    expect(tooFar(t[0]! + 1, t, 24, n)).toBe(true);
+    // No limit: it always waits.
+    expect(tooFar(t[0]! + 1, t, undefined, n)).toBe(false);
   });
 
   it("reports the wait until the next start", () => {

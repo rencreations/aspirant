@@ -22,14 +22,17 @@ const HEART_SHUT = 0.7;
  * on it goes on and shuts, before it the heart opens again), and it works the same going back up.
  * When it has shut, TIME takes over: the film is hidden, her section (already in place under the
  * cream, see `Under`) is switched on (`guinevereArrive`, it fades in by itself) and the cream fades
- * away on it.
+ * away on it. On Guinevere's page the section it closes on is Vexana's, so the colour is her ink
+ * (`tone="ink"`) and the nav text follows it (the corner is dark, not pale).
  */
-export function HeartCover() {
+export function HeartCover({ tone = "cream" }: { tone?: "cream" | "ink" }) {
   const hole = useRef<HeartHoleApi>(null);
   const { hideContent, range } = useHold();
   const shut = useRef(false);
   const tween = useRef<gsap.core.Tween | null>(null);
   const corner = useRef(0.5);
+  /** The tone of the nav text over the colour: ink is dark, cream is pale. */
+  const covered = tone === "ink" ? "dark" : "light";
   /** The cream has faded away, so the hint is no longer needed. */
   const faded = useRef(false);
 
@@ -76,9 +79,9 @@ export function HeartCover() {
     // The cream is over the corner (the nav text) once the heart has shrunk past it, and stays
     // there until it has faded (the fade clears the hint).
     if (now) {
-      if (!faded.current) toneHint.set("light");
+      if (!faded.current) toneHint.set(covered);
     } else {
-      toneHint.set(q > 0 && q >= corner.current ? "light" : null);
+      toneHint.set(q > 0 && q >= corner.current ? covered : null);
     }
   });
 
@@ -92,7 +95,7 @@ export function HeartCover() {
 
   return (
     <div style={{ position: "absolute", inset: 0 }}>
-      <HeartHole ref={hole} tone="cream" />
+      <HeartHole ref={hole} tone={tone} />
     </div>
   );
 }

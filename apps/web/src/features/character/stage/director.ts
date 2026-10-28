@@ -4,6 +4,7 @@ import {
   LEAD_FRAMES,
   skipRate,
   skipWallMs,
+  tooFar,
   triggerFrames,
   waitFrames,
   wrapFrame,
@@ -548,12 +549,13 @@ export class StageDirector {
       const frame = frameAt(t, this.n, this.fps);
       const pending = this.pending;
       if (pending && this.state.mode === "queued") {
-        const phases = isPage(pending)
-          ? this.tl.pages[pending].in.startPhases
-          : this.tl.shorts[pending].startPhases;
+        const timing = isPage(pending) ? this.tl.pages[pending].in : this.tl.shorts[pending];
+        const triggers = triggerFrames(timing.startPhases, this.n);
+        // A video that does not make the visitor wait a whole loop starts at once when the loop
+        // is far from its frame (see `maxWait`).
         const hit =
-          this.prevFrame !== null &&
-          crossed(this.prevFrame, frame, triggerFrames(phases, this.n), this.n);
+          tooFar(frame, triggers, timing.maxWait, this.n) ||
+          (this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, this.n));
         if (hit) {
           if (
             this.keysOf(pending)
@@ -574,14 +576,11 @@ export class StageDirector {
   private idleWait(scene: SceneName): number | null {
     const idle = this.els.idle;
     if (idle.paused || idle.error) return null;
-    const phases = isPage(scene)
-      ? this.tl.pages[scene].in.startPhases
-      : this.tl.shorts[scene].startPhases;
-    const frames = waitFrames(
-      frameAt(idle.currentTime, this.n, this.fps),
-      triggerFrames(phases, this.n),
-      this.n,
-    );
+    const timing = isPage(scene) ? this.tl.pages[scene].in : this.tl.shorts[scene];
+    const now = frameAt(idle.currentTime, this.n, this.fps);
+    const triggers = triggerFrames(timing.startPhases, this.n);
+    if (tooFar(now, triggers, timing.maxWait, this.n)) return 0;
+    const frames = waitFrames(now, triggers, this.n);
     return skipWallMs(frames, this.fps, this.skipOptions());
   }
 
@@ -637,15 +636,17 @@ export class StageDirector {
     const exit = this.exit;
     if (!exit) return null;
     const { clip, back } = exit;
-    const phases = isPage(scene)
-      ? this.tl.pages[scene].in.startPhases
-      : this.tl.shorts[scene].startPhases;
+    const timing = isPage(scene) ? this.tl.pages[scene].in : this.tl.shorts[scene];
+    const phases = timing.startPhases;
     // The video plays on to the frame the hand-over starts at, then the idle loop dissolves in.
     const toSync = Math.max(0, back.syncFrame - LEAD_FRAMES - clip.currentTime * this.fps);
     const blend = (((this.opts.reduced ? 380 : back.blendMs) + 40) / 1000) * this.fps;
     // The idle loop starts a few frames after the matching phase, and runs while it dissolves in.
     const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend, this.n);
-    const wait = waitFrames(phase, triggerFrames(phases, this.n), this.n);
+    const triggers = triggerFrames(phases, this.n);
+    const wait = tooFar(phase, triggers, timing.maxWait, this.n)
+      ? 0
+      : waitFrames(phase, triggers, this.n);
     // Measured: the entrance starts about 0.15 s after the idle loop reaches its frame.
     return (
       ((toSync + blend) / this.fps) * 1000 + skipWallMs(wait, this.fps, this.skipOptions()) + 150
@@ -814,7 +815,8 @@ export class StageDirector {
     }
     const n = page.loop.frames;
     const triggers = triggerFrames([page.out.startPhase], n);
-    const frames = waitFrames(frameAt(loop.currentTime, n, this.fps), triggers, n);
+    const here = frameAt(loop.currentTime, n, this.fps);
+    const frames = tooFar(here, triggers, page.out.maxWait, n) ? 0 : waitFrames(here, triggers, n);
     this.set({
       mode: "leaving",
       leaving: true,
@@ -825,7 +827,9 @@ export class StageDirector {
     this.prevFrame = null;
     this.stopWatch = watchFrames(loop, (t) => {
       const frame = frameAt(t, n, this.fps);
-      const hit = this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, n);
+      const hit =
+        tooFar(frame, triggers, page.out.maxWait, n) ||
+        (this.prevFrame !== null && crossed(this.prevFrame, frame, triggers, n));
       this.prevFrame = frame;
       if (hit && isReady(out)) void this.startOutro(scene);
     });
