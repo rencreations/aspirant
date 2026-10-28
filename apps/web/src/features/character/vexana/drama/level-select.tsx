@@ -52,12 +52,27 @@ export function LevelSelect({ save, here, onBack, onPlayFrom }: LevelSelectProps
   const edges = useMemo(() => graphEdges(), []);
   const [selected, setSelected] = useState(here ?? DRAMA_START);
   const cards = useRef(new Map<string, HTMLButtonElement>());
+  const board = useRef<HTMLDivElement>(null);
   const moved = useRef(false);
   const pos = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
   // The focus follows the keys.
   useEffect(() => {
     if (moved.current) cards.current.get(selected)?.focus({ preventScroll: true });
+  }, [selected]);
+
+  // On a narrow screen the tree is wider than the screen and slides sideways: the chosen episode
+  // is kept in the middle. (Only the board moves, never the page.)
+  const first = useRef(true);
+  useEffect(() => {
+    const el = cards.current.get(selected);
+    const box = board.current;
+    if (!el || !box) return;
+    const a = el.getBoundingClientRect();
+    const b = box.getBoundingClientRect();
+    const left = box.scrollLeft + (a.left + a.width / 2) - (b.left + b.width / 2);
+    box.scrollTo({ left, behavior: first.current ? "instant" : "smooth" });
+    first.current = false;
   }, [selected]);
 
   // On opening, the focus is on the card that is selected.
@@ -72,9 +87,18 @@ export function LevelSelect({ save, here, onBack, onPlayFrom }: LevelSelectProps
       onBack();
       return;
     }
+    const target = e.target as HTMLElement;
+    // Enter on an episode that is open plays from it (a mouse or a finger has the button for that).
+    if (e.key === "Enter" && target.closest("[data-card]")) {
+      if (isUnlocked(save, selected)) {
+        e.preventDefault();
+        e.stopPropagation();
+        onPlayFrom(selected);
+      }
+      return;
+    }
     const move = MOVES[e.key];
     if (!move) return;
-    const target = e.target as HTMLElement;
     if (!target.closest("[data-card]")) return;
     e.preventDefault();
     e.stopPropagation();
@@ -90,124 +114,140 @@ export function LevelSelect({ save, here, onBack, onPlayFrom }: LevelSelectProps
   const seen = hasSeenEnding(save, selected);
 
   return (
-    <div className={styles.levels} role="group" aria-label="Level select" onKeyDown={onKeyDown}>
-      <div className={styles.board}>
-        <div className={styles.captions} aria-hidden="true">
-          {CHAPTERS.map((c) => (
-            <span key={c.number}>
-              <b>{c.number}</b>
-              {c.title}
-            </span>
-          ))}
-        </div>
-        <div className={styles.graph}>
-          <svg
-            className={styles.edges}
-            viewBox={`0 0 ${String(GRAPH_COLUMNS * COL)} ${String(GRAPH_ROWS * ROW)}`}
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
+    <div
+      className={styles.levels}
+      role="group"
+      aria-label="Level select"
+      tabIndex={-1}
+      onKeyDown={onKeyDown}
+    >
+      <div ref={board} className={styles.board}>
+        <div className={styles.sheet}>
+          <div className={styles.captions} aria-hidden="true">
+            {CHAPTERS.map((c) => (
+              <span key={c.number}>
+                <b>{c.number}</b>
+                {c.title}
+              </span>
+            ))}
+          </div>
+          <div className={styles.graph}>
+            <svg
+              className={styles.edges}
+              viewBox={`0 0 ${String(GRAPH_COLUMNS * COL)} ${String(GRAPH_ROWS * ROW)}`}
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {edges.map((e) => {
+                const a = pos.get(e.from);
+                const b = pos.get(e.to);
+                if (!a || !b) return null;
+                const from = { x: (a.col + 0.5) * COL + HALF_CARD, y: (a.row + 0.5) * ROW };
+                const to = { x: (b.col + 0.5) * COL - HALF_CARD, y: (b.row + 0.5) * ROW };
+                const crossed = isCrossed(save, e.from, e.choice);
+                const state = crossed ? "crossed" : isUnlocked(save, e.from) ? "open" : "far";
+                return (
+                  <path
+                    key={`${e.from}:${String(e.choice)}`}
+                    d={edgePath(from, to, e.skip, BELOW)}
+                    className={styles.edge}
+                    data-state={state}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                );
+              })}
+            </svg>
             {edges.map((e) => {
               const a = pos.get(e.from);
               const b = pos.get(e.to);
               if (!a || !b) return null;
+              // Tags are only written on the answers that touch the episode that is chosen: all of them
+              // at once would run into the cards.
+              if (e.from !== selected && e.to !== selected) return null;
+              const crossed = isCrossed(save, e.from, e.choice);
+              const known = isUnlocked(save, e.from);
+              if (!crossed && !known) return null;
               const from = { x: (a.col + 0.5) * COL + HALF_CARD, y: (a.row + 0.5) * ROW };
               const to = { x: (b.col + 0.5) * COL - HALF_CARD, y: (b.row + 0.5) * ROW };
-              const crossed = isCrossed(save, e.from, e.choice);
-              const state = crossed ? "crossed" : isUnlocked(save, e.from) ? "open" : "far";
+              const mid = edgeMiddle(from, to, e.skip, BELOW);
+              const choice = nodeById(e.from).choices[e.choice];
               return (
-                <path
+                <span
                   key={`${e.from}:${String(e.choice)}`}
-                  d={edgePath(from, to, e.skip, BELOW)}
-                  className={styles.edge}
-                  data-state={state}
-                  vectorEffect="non-scaling-stroke"
-                />
+                  className={styles.tag}
+                  data-crossed={crossed}
+                  style={{
+                    left: pct(mid.x, GRAPH_COLUMNS * COL),
+                    top: pct(mid.y, GRAPH_ROWS * ROW),
+                  }}
+                  title={crossed ? choice?.label : undefined}
+                >
+                  {crossed ? choice?.tag : "?"}
+                </span>
               );
             })}
-          </svg>
-          {edges.map((e) => {
-            const a = pos.get(e.from);
-            const b = pos.get(e.to);
-            if (!a || !b) return null;
-            // Tags are only written on the answers that touch the episode that is chosen: all of them
-            // at once would run into the cards.
-            if (e.from !== selected && e.to !== selected) return null;
-            const crossed = isCrossed(save, e.from, e.choice);
-            const known = isUnlocked(save, e.from);
-            if (!crossed && !known) return null;
-            const from = { x: (a.col + 0.5) * COL + HALF_CARD, y: (a.row + 0.5) * ROW };
-            const to = { x: (b.col + 0.5) * COL - HALF_CARD, y: (b.row + 0.5) * ROW };
-            const mid = edgeMiddle(from, to, e.skip, BELOW);
-            const choice = nodeById(e.from).choices[e.choice];
-            return (
-              <span
-                key={`${e.from}:${String(e.choice)}`}
-                className={styles.tag}
-                data-crossed={crossed}
-                style={{ left: pct(mid.x, GRAPH_COLUMNS * COL), top: pct(mid.y, GRAPH_ROWS * ROW) }}
-                title={crossed ? choice?.label : undefined}
-              >
-                {crossed ? choice?.tag : "?"}
-              </span>
-            );
-          })}
-          {DRAMA_NODES.map((n) => {
-            const p = pos.get(n.id);
-            if (!p) return null;
-            const isOpen = isUnlocked(save, n.id);
-            const state = isOpen ? (hasSeenEnding(save, n.id) ? "ending" : "open") : "locked";
-            return (
-              <button
-                key={n.id}
-                ref={(el) => {
-                  if (el) cards.current.set(n.id, el);
-                  else cards.current.delete(n.id);
-                }}
-                type="button"
-                data-card
-                className={styles.card}
-                data-state={state}
-                data-selected={selected === n.id}
-                data-here={here === n.id}
-                aria-pressed={selected === n.id}
-                aria-label={
-                  isOpen
-                    ? `Chapter ${String(n.chapter)}, ${n.title}`
-                    : `Chapter ${String(n.chapter)}, locked`
-                }
-                style={{
-                  left: pct((p.col + 0.5) * COL, GRAPH_COLUMNS * COL),
-                  top: pct((p.row + 0.5) * ROW, GRAPH_ROWS * ROW),
-                  width: pct(HALF_CARD * 2, GRAPH_COLUMNS * COL),
-                }}
-                onClick={() => {
-                  setSelected(n.id);
-                }}
-                onFocus={() => {
-                  setSelected(n.id);
-                }}
-              >
-                <span className={styles.thumb}>
-                  {isOpen ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={asset(dramaThumb(n.file))} alt="" draggable={false} loading="lazy" />
-                  ) : (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
+            {DRAMA_NODES.map((n) => {
+              const p = pos.get(n.id);
+              if (!p) return null;
+              const isOpen = isUnlocked(save, n.id);
+              const state = isOpen ? (hasSeenEnding(save, n.id) ? "ending" : "open") : "locked";
+              return (
+                <button
+                  key={n.id}
+                  ref={(el) => {
+                    if (el) cards.current.set(n.id, el);
+                    else cards.current.delete(n.id);
+                  }}
+                  type="button"
+                  data-card
+                  className={styles.card}
+                  data-state={state}
+                  data-selected={selected === n.id}
+                  data-here={here === n.id}
+                  aria-pressed={selected === n.id}
+                  aria-label={
+                    isOpen
+                      ? `Chapter ${String(n.chapter)}, ${n.title}`
+                      : `Chapter ${String(n.chapter)}, locked`
+                  }
+                  style={{
+                    left: pct((p.col + 0.5) * COL, GRAPH_COLUMNS * COL),
+                    top: pct((p.row + 0.5) * ROW, GRAPH_ROWS * ROW),
+                    width: pct(HALF_CARD * 2, GRAPH_COLUMNS * COL),
+                  }}
+                  onClick={() => {
+                    setSelected(n.id);
+                  }}
+                  onFocus={() => {
+                    setSelected(n.id);
+                  }}
+                >
+                  <span className={styles.thumb}>
+                    {isOpen ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={asset(dramaThumb(n.file))}
+                        alt=""
+                        draggable={false}
+                        loading="lazy"
                       />
-                    </svg>
-                  )}
-                </span>
-                <span className={styles.name}>{isOpen ? n.title : "???"}</span>
-              </button>
-            );
-          })}
+                    ) : (
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                  <span className={styles.name}>{isOpen ? n.title : "???"}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -232,7 +272,10 @@ export function LevelSelect({ save, here, onBack, onPlayFrom }: LevelSelectProps
                       <span>leads to {nodeById(c.to).title}</span>
                     </>
                   ) : (
-                    <b>?</b>
+                    <>
+                      <b>?</b>
+                      <span>Not chosen yet</span>
+                    </>
                   )}
                 </li>
               );
@@ -240,6 +283,13 @@ export function LevelSelect({ save, here, onBack, onPlayFrom }: LevelSelectProps
           </ul>
         ) : null}
         <div className={styles.actions}>
+          {open && here !== null ? (
+            <p className={styles.warn}>
+              {here === node.id
+                ? "This episode starts again from its beginning."
+                : "Your run in progress is replaced. What you unlocked stays."}
+            </p>
+          ) : null}
           <button
             type="button"
             className={styles.play}

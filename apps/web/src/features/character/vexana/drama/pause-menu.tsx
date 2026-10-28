@@ -6,6 +6,11 @@ import type { DramaLine } from "./drama.generated";
 
 export type PausePanel = "pause" | "logs" | "tutorial";
 
+/** The page that opens takes the focus, so the keys scroll it and Esc goes back (a stable ref: it runs once). */
+const takeFocus = (el: HTMLElement | null): void => {
+  el?.focus({ preventScroll: true });
+};
+
 interface PauseMenuProps {
   panel: PausePanel;
   onPanel: (panel: PausePanel) => void;
@@ -46,7 +51,7 @@ export function PauseMenu({
     return (
       <div className={styles.page}>
         <h3 className={styles.heading}>Logs</h3>
-        <div className={styles.scroll} tabIndex={0} role="region" aria-label="Logs">
+        <div ref={takeFocus} className={styles.scroll} tabIndex={0} role="region" aria-label="Logs">
           <h4 className={styles.sub}>Your answers</h4>
           {route.length === 0 ? (
             <p className={styles.none}>None yet.</p>

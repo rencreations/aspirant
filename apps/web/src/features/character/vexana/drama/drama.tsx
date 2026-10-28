@@ -58,6 +58,8 @@ export function Drama() {
   const [levels, setLevels] = useState<Screen | null>(null);
   const [runId, setRunId] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  /** The visitor has touched the game. Until then no menu takes the focus (it would pull the page here). */
+  const [engaged, setEngaged] = useState(false);
   const canFullscreen = useFullscreenSupport();
   const [fullscreenExit, setFullscreenExit] = useState(0);
   const was = useRef(false);
@@ -146,7 +148,18 @@ export function Drama() {
       </header>
 
       <div className={styles.stage}>
-        <div ref={cab} className={styles.cab} data-ready={ready} data-reduced={reduced}>
+        <div
+          ref={cab}
+          className={styles.cab}
+          data-ready={ready}
+          data-reduced={reduced}
+          onPointerDownCapture={() => {
+            setEngaged(true);
+          }}
+          onKeyDownCapture={() => {
+            setEngaged(true);
+          }}
+        >
           {showTitle ? (
             <>
               {/* Plain <img>: static export, art already sized. */}
@@ -169,6 +182,7 @@ export function Drama() {
                   onLevels={() => {
                     setLevels("title");
                   }}
+                  autoFocus={engaged}
                 />
               ) : null}
               {canFullscreen && levels === null ? (

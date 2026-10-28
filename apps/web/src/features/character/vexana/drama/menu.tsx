@@ -18,13 +18,15 @@ interface MenuProps {
  */
 export function Menu({ label, autoFocus = true, children }: MenuProps) {
   const root = useRef<HTMLDivElement>(null);
+  // Only when the menu appears: a later change of the prop must not move the focus.
+  const focusFirst = useRef(autoFocus);
 
   useEffect(() => {
-    if (!autoFocus) return;
+    if (!focusFirst.current) return;
     root.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus({
       preventScroll: true,
     });
-  }, [autoFocus]);
+  }, []);
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const keys = ["ArrowDown", "ArrowUp", "Home", "End"];

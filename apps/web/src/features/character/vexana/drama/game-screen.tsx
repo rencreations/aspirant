@@ -32,6 +32,9 @@ interface GameScreenProps {
   onEnding: () => void;
 }
 
+/** How long the answers ignore a press after they come up (the last tap on the picture is still landing). */
+const CHOICE_GRACE_MS = 450;
+
 const FullscreenIcon = () => (
   <svg viewBox="0 0 24 24" width="1.1em" height="1.1em" aria-hidden="true">
     <path
@@ -116,7 +119,13 @@ export function GameScreen({
       duck(playing && !useSiteStore.getState().muted);
     },
   });
-  const { load, setHeld, seek, play, time: now } = deck;
+  const { load, setHeld, seek, play, time: now, ready: filmReady } = deck;
+
+  // The answers are up: "Continue" comes back to them, not to the line before.
+  const choiceAt = info.choiceAt;
+  useEffect(() => {
+    if (choicesOpen && choiceAt !== null) dispatch({ type: "advance", at: choiceAt });
+  }, [choicesOpen, choiceAt, dispatch]);
 
   // A new episode: load it, from where the run is, and warm the two it can lead to. (A new run is a
   // new screen: the shell gives it a new key, so everything here starts again.)
@@ -171,29 +180,36 @@ export function GameScreen({
 
   const skip = useCallback(() => {
     const { info: inf, panel: p, choicesOpen: open } = live.current;
-    if (p !== null || open) return;
+    if (p !== null || open || !filmReady()) return;
     const step = nextStep(inf, now());
     if (step.kind === "none") return;
     seek(step.at);
     setTime(step.at);
     if (step.kind === "choices") setChoicesOpen(true);
-  }, [now, seek]);
+  }, [filmReady, now, seek]);
 
   const back = useCallback(() => {
     const { info: inf, panel: p } = live.current;
-    if (p !== null) return;
+    if (p !== null || !filmReady()) return;
     const to = previousMark(inf.marks, now());
     seek(to);
     setTime(to);
     setChoicesOpen(false);
     // A film that had ended starts again from the line it was sent back to.
     play();
-  }, [now, play, seek]);
+  }, [filmReady, now, play, seek]);
+
+  // The moment the answers came up: a tap or a key that was meant for the last line must not pick one.
+  const choicesSince = useRef(0);
+  useEffect(() => {
+    if (choicesOpen) choicesSince.current = performance.now();
+  }, [choicesOpen]);
 
   const choose = useCallback(
     (index: number) => {
       const { node: n, panel: p, choicesOpen: open } = live.current;
       if (!open || p !== null || !n.choices[index]) return;
+      if (performance.now() - choicesSince.current < CHOICE_GRACE_MS) return;
       setChoicesOpen(false);
       setSelected(0);
       setTime(0);
@@ -340,6 +356,13 @@ export function GameScreen({
       {deck.status === "loading" ? (
         <div className={styles.wait} role="status" aria-label="Loading the next episode">
           <span className={styles.spinner} />
+        </div>
+      ) : null}
+      {deck.status === "blocked" ? (
+        <div className={styles.wait} role="alert">
+          <button type="button" className={styles.retry} onClick={deck.unblock}>
+            Tap to play
+          </button>
         </div>
       ) : null}
       {deck.status === "failed" ? (

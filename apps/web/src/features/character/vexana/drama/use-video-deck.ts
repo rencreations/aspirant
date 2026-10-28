@@ -11,8 +11,12 @@ import { DRAMA_FILES, type DramaFileName } from "./drama.generated";
 /** How long the picture of the new episode takes to replace the old one (see drama.module.css). */
 const FADE_MS = 360;
 
-/** "failed" is a film that did not load, or a browser that refused to start it: a retry button shows. */
-export type DeckStatus = "idle" | "loading" | "ready" | "failed";
+/**
+ * "failed" is a film that did not load: a retry button shows. "blocked" is a film that is ready but
+ * the browser wants a tap before it plays with sound (a phone that lost the tap while the film
+ * loaded): a play button shows.
+ */
+export type DeckStatus = "idle" | "loading" | "ready" | "failed" | "blocked";
 
 type Slot = 0 | 1;
 
@@ -55,6 +59,8 @@ export function useVideoDeck(options: DeckOptions) {
   /** The game is paused or covered: nothing may start playing. */
   const held = useRef(false);
   const spin = useRef(0);
+  /** The film that is waiting for a tap. */
+  const blocked = useRef<HTMLVideoElement | null>(null);
   const opts = useRef(options);
 
   useEffect(() => {
@@ -95,6 +101,7 @@ export function useVideoDeck(options: DeckOptions) {
   const load = useCallback(
     (file: DramaFileName, at: number) => {
       const t = ++token.current;
+      blocked.current = null;
       request.current = { file, at };
       const back = (1 - frontRef.current) as Slot;
       const el = els.current[back];
@@ -132,7 +139,15 @@ export function useVideoDeck(options: DeckOptions) {
       });
       on("canplay", () => {
         if (token.current !== t) return;
-        el.play().catch(fail);
+        el.play().catch((e: unknown) => {
+          if (token.current !== t) return;
+          if (e instanceof DOMException && e.name === "NotAllowedError") {
+            // Ready, but the browser wants a tap first: wait for it, keep the listeners.
+            blocked.current = el;
+            window.clearTimeout(spin.current);
+            setStatus("blocked");
+          } else fail();
+        });
       });
       on("playing", () => {
         done();
@@ -172,14 +187,29 @@ export function useVideoDeck(options: DeckOptions) {
 
   const time = useCallback(() => els.current[frontRef.current]?.currentTime ?? 0, []);
 
+  /** A film is in front and no other one is on its way: what the player sees is the episode. */
+  const ready = useCallback(() => frontFile.current !== null && !pending.current, []);
+
   const stop = useCallback(() => {
     token.current++;
     pending.current = false;
+    blocked.current = null;
     frontFile.current = null;
     window.clearTimeout(spin.current);
     for (const el of els.current) if (el) free(el);
     setStatus("idle");
     opts.current.onPlaying(false);
+  }, []);
+
+  /** The tap the browser wanted: the film that was ready starts now. */
+  const unblock = useCallback(() => {
+    const el = blocked.current;
+    blocked.current = null;
+    if (!el) return;
+    setStatus("ready");
+    void el.play().catch(() => {
+      setStatus("failed");
+    });
   }, []);
 
   const retry = useCallback(() => {
@@ -222,7 +252,7 @@ export function useVideoDeck(options: DeckOptions) {
     },
   });
 
-  return { slot, front, status, load, play, setHeld, seek, time, stop, retry };
+  return { slot, front, status, load, play, setHeld, seek, time, ready, stop, retry, unblock };
 }
 
 /**
