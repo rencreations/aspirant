@@ -7,7 +7,8 @@ the head is drawn.
 Output: apps/web/public/img/menu/<page>-<side>.webp.
 
 Every figure is scaled so the distance from the eye to the chin is the same (UNIT px on the
-canvas, so heads, shoulders and the body below them all share one size) and placed on a fixed
+canvas, so heads, shoulders and the body below them all share one size; `SIZE` makes a few of
+them a little smaller, around the eye) and placed on a fixed
 canvas with the eye at the same height. Both eyes of a pair therefore sit on one horizontal line
 when the two canvases are placed at the same top. "left" art faces right and stands on the left of
 the menu, "right" art faces left and stands on the right, so the eye is placed near the inner edge
@@ -58,6 +59,14 @@ PORTRAITS = {
 }
 
 
+# Figures drawn bigger than the others are drawn smaller, around the eye, so the eye line stays.
+SIZE = {
+    ("experience", "left"): 0.93,
+    ("story", "right"): 0.78,
+    ("character", "right"): 0.93,
+}
+
+
 def smooth(t: np.ndarray) -> np.ndarray:
     t = np.clip(t, 0.0, 1.0)
     return t * t * (3 - 2 * t)
@@ -80,10 +89,10 @@ def source_cuts(im: Image.Image) -> dict[str, bool]:
     }
 
 
-def build_one(src: Path, side: str, ex: int, ey: int, cy: int) -> Image.Image:
+def build_one(src: Path, side: str, ex: int, ey: int, cy: int, size: float = 1.0) -> Image.Image:
     im = Image.open(src).convert("RGBA")
     cuts = source_cuts(im)
-    k = UNIT / (cy - ey)
+    k = UNIT * size / (cy - ey)
     scaled = scale(im, k)
     canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), (0, 0, 0, 0))
     ox = round(EYE_X[side] - ex * k)
@@ -123,7 +132,7 @@ def build_one(src: Path, side: str, ex: int, ey: int, cy: int) -> Image.Image:
 def build(src_dir: Path, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     for (page, side), (file, ex, ey, cy) in PORTRAITS.items():
-        out = build_one(src_dir / file, side, ex, ey, cy)
+        out = build_one(src_dir / file, side, ex, ey, cy, SIZE.get((page, side), 1.0))
         target = out_dir / f"{page}-{side}.webp"
         out.save(target, "WEBP", quality=82, method=6)
         print(f"{page:11} {side:5} {out.width}x{out.height} {target.stat().st_size // 1024} KB")

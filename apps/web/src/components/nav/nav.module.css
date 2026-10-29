@@ -488,7 +488,7 @@
    height, so both pairs of eyes sit on one line. */
 .stage {
   --u: 8vh;
-  --eye-y: 40vh;
+  --eye-y: 35vh;
   /* From the middle of the screen to an eye: half a title, the nose, and a little air. */
   --eye-d: calc(min(41vh, 32vw) + var(--u) * 1.5);
   position: absolute;
