@@ -33,7 +33,7 @@ The logo is a vector (`components/logo/`, traced from the bitmap by `scripts/log
 
 ## Navbar and menu
 
-The bar is sticky and always visible. Pages open from the full-screen menu (`components/nav/`), not from links in the bar. Each page has a pair of aspirants shown as art only, never with names. The menu art is built by `scripts/menu/build.py` so every figure has the same size and the eyes sit on one line. If you add or change a portrait, rebuild with that script. The art is warmed after the site opens and is not part of the loading bar.
+The bar is sticky and always visible. Pages open from the full-screen menu (`components/nav/`), not from links in the bar. Each page has a pair of aspirants shown as art only, never with names, big on the empty left and right of the menu, where they stay (they do not follow the titles) and swap when another page is hovered. The menu art is built by `scripts/menu/build.py` so every figure has the same size, the eyes of both sit on one horizontal line, and no cut of the source shows (it fades out). If you add or change a portrait, rebuild with that script. The art is warmed after the site opens and is not part of the loading bar.
 
 ## Video
 

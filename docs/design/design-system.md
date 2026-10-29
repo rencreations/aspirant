@@ -425,13 +425,13 @@ Primitives that page engineers added to shared code. One line each.
 - The page colour blooms from the pointer behind the menu (tints in `menu-pairs.ts`).
 - An ink plate wipes in behind the title and the text turns white.
 - The other titles fade back.
-- Two aspirants appear either side of the title, art only, no names. They drift a little with the pointer.
+- The two aspirants of that page swap in on the empty left and right of the menu. They are big, they stay where they are (they do not follow the titles), they drift a little with the pointer, and they are art only, no names. With nothing hovered, the pair of the page the visitor is on stays up.
 
-The pairs: Home is Fanny (left) and Layla (right), Experience is Angela and Ruby, Story is Chang'e and Lesley, Characters is Guinevere and Vexana, Collection is Selena and Obsidia. Left art faces right, right art faces left.
+The pairs are the files of the five pages: `home`, `experience`, `story`, `character`, `collection`, each with a left and a right art. Left art faces right and stands on the left, right art faces left and stands on the right.
 
-**Portrait art** (`scripts/menu/build.py`, output `public/img/menu/<slug>.webp`). The source busts differ in crop and scale, so the script scales each one until the eye-to-chin distance is the same and places the eye at the same height on a fixed canvas. All ten figures end up the same size and both eyes of a pair sit on one line, which is also the centre line of the title. The eye and chin points are measured by hand on the sources and stored in the script. In the source folder `vexana-left.png` is Selena. Rebuild with `python -I scripts/menu/build.py "<source folder>"`.
+**Portrait art** (`scripts/menu/build.py`, output `public/img/menu/<page>-<side>.webp`, 1300 x 1547 each). The sources differ in size, crop and head size, so the script scales each one until the eye-to-chin distance (a "unit", 130 px) is the same, which also makes the bodies the same size, and places the eye at the same height on a canvas that runs 4.4 units above the eye and 7.5 below it. Both canvases of a pair are set at the same height in the menu, so the two pairs of eyes sit on one horizontal line and the faces look at each other. No cut shows: the lower body, the outer edge and any edge of a source that is itself a cut (the top of the Character page's left art) fade to transparent inside the file. The eye and chin points are measured by hand on the sources and stored in the script. Rebuild with `python -I scripts/menu/build.py "<source folder>"` (the anaconda Python, Pillow and numpy).
 
-On narrow or tall screens nothing hovers and the title fills the width, so the pair of the current page stands at the bottom of the menu instead. The art is warmed after the site opens (it is not in the loading bar, because the menu is not first paint).
+In the menu (`nav.module.css`, `.stage`) a unit is `8vh`, the eyes are at `40vh`, and each eye stands half a title plus a nose's length from the middle, so the figures grow with the screen's height and leave the titles clear. On a portrait screen (taller than 4:5) the figures are smaller and stand low, behind the last titles, the pair of the current page. The art is warmed after the site opens (it is not in the loading bar, because the menu is not first paint).
 
 ## Video player
 

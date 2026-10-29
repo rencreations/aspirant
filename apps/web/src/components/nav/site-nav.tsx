@@ -33,8 +33,9 @@ interface Tint {
  * The bar is sticky and always visible: the menu button and the sound button on the left, the
  * large logo in the middle, the current page on the right. The menu button opens a screen-wide
  * menu with the five pages, big and centred. Hovering or focusing a page blooms its colour
- * behind the menu, highlights the title and shows its two aspirants beside it (no names, art
- * only). On narrow screens, where nothing hovers, the pair of the current page is shown.
+ * behind the menu, highlights the title and swaps in its two aspirants, big on the empty left and
+ * right of the screen (no names, art only; they stay put and do not follow the titles). With
+ * nothing hovered, and on screens where nothing hovers, the pair of the current page is shown.
  * The menu traps focus, Esc closes it and focus returns to the button.
  */
 export function SiteNav() {
@@ -51,6 +52,8 @@ export function SiteNav() {
 
   const currentIndex = navItems.findIndex((item) => isActiveRoute(pathname, item.href));
   const current = currentIndex >= 0 ? navItems[currentIndex] : undefined;
+  /** The pair on show: the page being hovered, else the page the visitor is on, else the first. */
+  const shownIndex = active ?? (currentIndex >= 0 ? currentIndex : 0);
 
   useEffect(() => {
     let raf = 0;
@@ -204,6 +207,24 @@ export function SiteNav() {
               ))}
             </div>
 
+            {/* The two aspirants of the page that is hovered, or of the current one, big on the
+                empty left and right of the menu. They do not follow the titles. */}
+            <div className={styles.stage} aria-hidden="true">
+              {navItems.map((item, i) => {
+                const pair = MENU_PAIRS[item.href];
+                if (!pair) return null;
+                return (
+                  <div key={item.href} className={styles.pair} data-shown={i === shownIndex}>
+                    {/* Plain <img>: static export, art already sized and cropped. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img className={styles.figL} src={asset(pair.left)} alt="" draggable={false} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img className={styles.figR} src={asset(pair.right)} alt="" draggable={false} />
+                  </div>
+                );
+              })}
+            </div>
+
             <div className={styles.menuHead}>
               <div className={styles.left}>
                 <Dialog.Close className={styles.menuButton} aria-label="Close menu">
@@ -230,9 +251,7 @@ export function SiteNav() {
                 onPointerLeave={settle}
               >
                 {navItems.map((item, i) => {
-                  const pair = MENU_PAIRS[item.href];
                   const isCurrent = isActiveRoute(pathname, item.href);
-                  const shown = active === i ? "hover" : isCurrent ? "current" : "off";
                   return (
                     <li
                       key={item.href}
@@ -269,15 +288,6 @@ export function SiteNav() {
                         <span className={styles.menuMask}>
                           <span className={styles.menuLabel}>{item.label}</span>
                         </span>
-                        {pair ? (
-                          <span className={styles.pair} data-shown={shown} aria-hidden="true">
-                            {/* Plain <img>: static export, art already sized and cropped. */}
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img className={styles.figL} src={asset(pair.left)} alt="" />
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img className={styles.figR} src={asset(pair.right)} alt="" />
-                          </span>
-                        ) : null}
                       </TLink>
                     </li>
                   );

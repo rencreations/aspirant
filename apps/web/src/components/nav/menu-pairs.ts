@@ -2,9 +2,10 @@ import { imageItem, runPreload } from "@/lib/preload";
 import { routes } from "@/lib/site";
 
 /**
- * The two aspirants shown beside each menu title. Art is built by `scripts/menu/build.py`: every
- * figure has the same size and the eyes of a pair sit on one line. The left figure faces right
- * and stands left of the title, the right figure faces left and stands right of it.
+ * The two aspirants of each page, shown large on the left and right of the menu while the page is
+ * hovered (or is the current one). Art is built by `scripts/menu/build.py`: every figure has the
+ * same size and the eyes of a pair sit on one line. The left figure faces right and stands on the
+ * left of the screen, the right figure faces left and stands on the right.
  */
 export interface MenuPair {
   left: string;
@@ -13,14 +14,26 @@ export interface MenuPair {
   tint: string;
 }
 
-const path = (slug: string) => `/img/menu/${slug}.webp`;
+const path = (page: string, side: "left" | "right") => `/img/menu/${page}-${side}.webp`;
 
 export const MENU_PAIRS: Readonly<Record<string, MenuPair>> = {
-  [routes.home]: { left: path("fanny"), right: path("layla"), tint: "#ffdcc8" },
-  [routes.experience]: { left: path("angela"), right: path("ruby"), tint: "#ffd0e0" },
-  [routes.story]: { left: path("change"), right: path("lesley"), tint: "#ffeeb3" },
-  [routes.characters]: { left: path("guinevere"), right: path("vexana"), tint: "#dcd3ff" },
-  [routes.collection]: { left: path("selena"), right: path("obsidia"), tint: "#cfe8ff" },
+  [routes.home]: { left: path("home", "left"), right: path("home", "right"), tint: "#ffdcc8" },
+  [routes.experience]: {
+    left: path("experience", "left"),
+    right: path("experience", "right"),
+    tint: "#ffd0e0",
+  },
+  [routes.story]: { left: path("story", "left"), right: path("story", "right"), tint: "#ffeeb3" },
+  [routes.characters]: {
+    left: path("character", "left"),
+    right: path("character", "right"),
+    tint: "#dcd3ff",
+  },
+  [routes.collection]: {
+    left: path("collection", "left"),
+    right: path("collection", "right"),
+    tint: "#cfe8ff",
+  },
 };
 
 /** Warm the cache for these routes' portraits so the menu never shows an empty pair. */
