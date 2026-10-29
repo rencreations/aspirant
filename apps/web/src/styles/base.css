@@ -133,6 +133,101 @@ html[data-gate="on"] .gate-cover {
   background: #f4f6f9;
 }
 
+/* What the cover says while the scripts are on their way: the plain text of the page is never shown. */
+.gate-cover-inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: #140e26;
+  font-family: var(--font-mono-stack, ui-monospace, monospace);
+}
+
+.gate-cover-mark {
+  margin: 0;
+  font-family: var(--font-display-stack, inherit);
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.gate-cover-bar {
+  position: relative;
+  display: block;
+  width: min(16rem, 60vw);
+  height: 2px;
+  overflow: hidden;
+  background: rgb(20 14 38 / 0.15);
+}
+
+.gate-cover-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #e040a0;
+  transform: translateX(-100%);
+  animation: gate-sweep 1.4s ease-in-out infinite;
+}
+
+.gate-cover-notes {
+  display: grid;
+  justify-items: center;
+}
+
+.gate-cover-note {
+  grid-area: 1 / 1;
+  margin: 0;
+  max-width: 26rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+}
+
+.gate-cover-first {
+  animation: gate-fade-out 0.4s 15s both;
+}
+
+.gate-cover-slow {
+  opacity: 0;
+  animation: gate-fade-in 0.4s 15s both;
+}
+
+.gate-cover-stuck {
+  opacity: 0;
+  animation: gate-fade-in 0.4s 90s both;
+}
+
+.gate-cover-stuck a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+@keyframes gate-sweep {
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes gate-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gate-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
 html[data-gate="on"] body {
   overflow: hidden;
 }

@@ -136,13 +136,13 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
   );
 }
 
-/** The scene may run unless the visitor saves data, or the device has very little memory. */
+/**
+ * The scene may run unless the device has very little memory. Data saving does not stop it: the
+ * loading screen already waits for its files, and a page without it is the plain picture.
+ */
 function glAllowed(): boolean {
-  const nav = navigator as Navigator & {
-    deviceMemory?: number;
-    connection?: { saveData?: boolean };
-  };
-  return nav.connection?.saveData !== true && (nav.deviceMemory ?? 8) > 2;
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  return (nav.deviceMemory ?? 8) > 2;
 }
 
 /**

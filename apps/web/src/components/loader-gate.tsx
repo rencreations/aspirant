@@ -20,10 +20,16 @@ declare global {
 /** Element id of the wrapper around nav, HUD and <main>. It is made inert while loading. */
 export const SHELL_ID = "site-shell";
 
-/** After this long a visitor who is still waiting is offered a way in (a slow connection). */
-const SKIP_AFTER_MS = 12_000;
-/** The longest the first visit waits. What is still arriving then arrives late, and the page copes. */
-const BOOT_MAX_WAIT_MS = 60_000;
+/** After this long the loading screen says the connection is slow. Nobody is let in yet. */
+const SLOW_AFTER_MS = 15_000;
+/** After this long a visitor who is still waiting is offered a way in (a very slow connection). */
+const SKIP_AFTER_MS = 45_000;
+/**
+ * The longest the first visit waits. The page is built to open with everything it needs for its
+ * animations, so the wait is long: a slow connection waits here, behind the loading screen, and
+ * not on a page that is half there. What is still arriving after this arrives late, and the page copes.
+ */
+const BOOT_MAX_WAIT_MS = 240_000;
 
 /**
  * The first visit of a browser session: shows the logo loading screen, loads everything the
@@ -43,6 +49,7 @@ export function LoaderGate() {
   const { boot } = useTransitionRouter();
   const started = useRef(false);
   const [canSkip, setCanSkip] = useState(false);
+  const [slow, setSlow] = useState(false);
   const skip = useRef<() => void>(() => undefined);
   const statusRef = useRef<HTMLParagraphElement>(null);
   const say = (text: string) => {
@@ -66,6 +73,8 @@ export function LoaderGate() {
     if (!mounted || started.current) return;
     const root = document.documentElement;
     const shell = document.getElementById(SHELL_ID);
+    // The boot script's cover stays until this is set (the scripts have started).
+    window.__aspirantsGate = true;
     if (entered || readEntered()) {
       delete root.dataset.gate;
       if (shell) shell.inert = false;
@@ -73,7 +82,6 @@ export function LoaderGate() {
       return;
     }
     started.current = true;
-    window.__aspirantsGate = true;
     if (shell) shell.inert = true;
     say("Loading the site");
     // The visitor can open the page early: the files that are still on their way go on arriving.
@@ -83,6 +91,9 @@ export function LoaderGate() {
     const offer = window.setTimeout(() => {
       setCanSkip(true);
     }, SKIP_AFTER_MS);
+    const warn = window.setTimeout(() => {
+      setSlow(true);
+    }, SLOW_AFTER_MS);
     const run = boot((report) => {
       // Once the page is on its way open (the visitor's choice, or the cap), the files that are
       // still arriving must not move the curtain's bar any more: the curtain is already running
@@ -104,7 +115,9 @@ export function LoaderGate() {
     });
     void run.finally(() => {
       window.clearTimeout(offer);
+      window.clearTimeout(warn);
       setCanSkip(false);
+      setSlow(false);
       delete root.dataset.gate;
       if (shell) shell.inert = false;
       setEntered(true);
@@ -116,6 +129,12 @@ export function LoaderGate() {
   return (
     <>
       <p ref={statusRef} role="status" aria-live="polite" className="sr-only" />
+      {slow ? (
+        <p className="pointer-events-none fixed bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] left-1/2 z-[2000] w-[min(26rem,calc(100vw-2rem))] -translate-x-1/2 text-center text-[0.75rem] leading-relaxed tracking-[0.04em] text-[#140e26]">
+          Slow connection. The page opens when everything is loaded, so it shows with all its
+          animations.
+        </p>
+      ) : null}
       {canSkip ? (
         <button
           type="button"

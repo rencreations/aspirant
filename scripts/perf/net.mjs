@@ -239,7 +239,7 @@ async function enterNow(url) {
   const s = await gateState(page).catch(() => ({}));
   const btnAfter = await btn.count().catch(() => -1);
   console.log(
-    `[enter-now] ${url} buttonShownAfterMs=${shownAt} (expect ~12000) gateOpenMsAfterClick=${openAfter} state=${JSON.stringify(s)} buttonAfter=${btnAfter} ${sum(log)}`,
+    `[enter-now] ${url} buttonShownAfterMs=${shownAt} (expect ~45000) gateOpenMsAfterClick=${openAfter} state=${JSON.stringify(s)} buttonAfter=${btnAfter} ${sum(log)}`,
   );
   await ctx.close();
 }

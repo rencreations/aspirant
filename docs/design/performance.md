@@ -119,7 +119,7 @@ limited), before and after the fixes:
 
 | Case                                    | Before                              | After                                                           |
 | --------------------------------------- | ----------------------------------- | --------------------------------------------------------------- |
-| 1.5 Mbit/s, Vexana's first visit        | the loading screen holds 83 seconds | "Enter now" after 12 seconds, the wait ends at 60               |
+| 1.5 Mbit/s, Vexana's first visit        | the loading screen holds 83 seconds | the screen says it is slow at 15 seconds, "Enter now" at 45     |
 | 400 kbit/s, the home page               | 77 seconds                          | 42 seconds, and "Enter now" is there                            |
 | The connection drops while loading      | home page empty, console errors     | the page text stays, a calm notice says the device is offline   |
 | Offline, a click on a page never opened | a nearly blank page                 | the page stays, the notice shows, "Back online" when it returns |
@@ -127,11 +127,17 @@ limited), before and after the fixes:
 
 How it is built:
 
-- `components/loader-gate.tsx`: "Enter now" after 12 seconds, a stop at 60. The files still arriving
+- `app/layout.tsx` and `styles/base.css`: the boot script paints a cover (the wordmark, a sweeping
+  line and notes that change after 15 and 90 seconds) the moment the page arrives and keeps it until
+  the scripts have started. Before this the plain server text showed for as long as the scripts took
+  on a slow connection, which looked like a site with no animations. It lets go after three minutes
+  only if the scripts never start.
+- `components/loader-gate.tsx`: the screen says the connection is slow after 15 seconds, "Enter now"
+  after 45, a stop at 240. An item waits at most 60 seconds. The files still arriving
   go on and arrive late, and they must not move the curtain once it has started to open
   (`setBoot` overwrites only its own bar: a plain `overwrite: true` killed the animation that opens
   the page).
-- `lib/preload.ts` (`capWait`) and the transition provider: a page change waits at most 25 seconds.
+- `lib/preload.ts` (`capWait`) and the transition provider: a page change waits at most 90 seconds.
 - `lib/media-store.ts`: a download that gets no byte for 20 seconds, or ends short of the length
   the server gave, is dropped and the plain address is used (the browser streams it); a file that
   failed is asked for again the next time.

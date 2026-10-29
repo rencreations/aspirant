@@ -23,7 +23,7 @@ import { routeItems } from "@/lib/route-preloads";
 
 /** A page that is not ready this long after the click gets the loading state. */
 /** The longest a page change waits for the next page's files (see `capWait`). */
-const TRANSITION_MAX_WAIT_MS = 25_000;
+const TRANSITION_MAX_WAIT_MS = 90_000;
 
 const LOADING_STATE_AFTER_MS = 500;
 

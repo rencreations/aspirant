@@ -50,7 +50,7 @@ export interface PreloadProgress {
   pending: readonly string[];
 }
 
-const ITEM_TIMEOUT_MS = 12_000;
+const ITEM_TIMEOUT_MS = 60_000;
 /** Deferred items download this many at a time, in the order of the list. */
 const DEFERRED_AT_ONCE = 3;
 /** The loading bar is told at most this often. */
