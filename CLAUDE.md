@@ -1,5 +1,7 @@
 # Project rules
 
+**New session? Read `docs/HANDOFF.md` first** (what the project is, how the owner works, the machine's quirks, the systems, the known caveats), then `docs/HISTORY.md` for why things are as they are. Probes for checking a running site are in `scripts/qa/probes/`.
+
 The Aspirants: a static, immersive Next.js site for the Aspirant story series. Read `README.md` and `docs/design/` first. These rules apply to every change.
 
 ## Loading: everything goes in the progress bar

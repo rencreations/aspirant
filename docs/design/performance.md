@@ -152,6 +152,8 @@ How it is built:
 
 ## How to check
 
+`scripts/qa/probes/` has quick looks at a running site in a real Chrome (`routes.cjs`: does every route run animated, `first-visit.cjs`: a first visit on a slow phone connection second by second, `menu-shots.cjs`, `drama-flow.cjs`). The heavier measurements are below.
+
 - `scripts/perf/weak.mjs`: the weak browser. `FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 gpu 4 1366 768 1`
   runs the boot, the welcome, idle, and a press, a page and an exit for each of the three pages, and
   prints the frame rate and the slowest frames of each. `soft` as the second argument turns the GPU

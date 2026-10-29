@@ -1,0 +1,57 @@
+# History
+
+How the site got to its present state, in order, with the owner's requests, what was found, and why things are the way they are. Commit hashes are on `main`; `git show <hash>` has the detail. For the current state and how to work, read [HANDOFF.md](HANDOFF.md) first.
+
+## 2026-10-14 to 10-18: the base
+
+- **10-14 scaffold.** A pnpm and Turborepo monorepo: `apps/web` (Next.js static export), `packages/ui`, `packages/config`.
+- **10-16** Design spec, canon rules and open questions (`docs/design/`, `docs/OPEN-QUESTIONS.md`), the content layer (`src/content`), and the media pipeline (`scripts/assets`). The owner was asleep during the first build, so the open questions carry the defaults that were chosen.
+- **10-17** In one day, several helper sessions built the shell and then the pages in parallel, each in its own worktree and merged: Home (portal hero with depth-map WebGL, manifesto, versus stage, the ten, hall of fame), Experience (the web novel with scenes and set pieces), Story (world explainer, coupling lab, timeline), Collection (the archive), and the first generic character pages with 3D models.
+- **10-18** The vector logo (traced by `scripts/logo/build.py`), the logo curtain page transition and the real preloading screen. README, Dockerfile, CI, container checks, Trivy.
+
+## 2026-10-19 to 10-21: look and feel, Selena, Obsidia, the roster
+
+- **10-19** The owner dropped the custom 3D models and the Blender pipeline, moved to a **light theme** ("daybreak", dark "storm" only where the story needs it) and a flat "plate" design system (no glow or gradient clutter), and added the sticky bar with the large logo and the full-screen menu with a pair of aspirants for each page (`c1e2a92`). GitHub Pages workflow added.
+- **10-19 to 10-20** Selena's page was rebuilt as a live stage made of video recordings (idle loop, poses, touch points), with a custom player, then About, Skills and Gallery pages, performance levels (`full`, `balanced`, `lite`), the media store in Cache Storage, and the governor. Obsidia's page followed on the same engine, which was extracted as `features/character/stage/` (`3a75d7a`).
+- **10-20** The roster wall on `/character` (ten slanted splash panels, scrolling sideways), after several experiments with hover animation (one was reverted in `03e8dca`).
+
+## 2026-10-24 to 10-26: Vexana, then four more pairs
+
+- **Vexana's page** (`5fa6c01` round one, `97eaed0` round two, `ff31c60` round three, `0562014` the room, `1d69cb0` round five and six, `bf13387` audit fixes, `3845d9e` timed joins both ways and the interactive drama). The owner gave long lists of changes in rounds; each round was a set of parallel helpers with separate folders. The decisions that stayed: one long scroll with sections joined by timed scenes that lock the scroll and snap after one second idle; a 3D hero with her normal form and Ender form; a registry, a reel, a craft section with her skills, a faces section with a giant animated STORY word (the first story is titled "Human" on the page, its route slug stays `academic`); a cover film; a comic (Read or Watch halves); a livestream; the **interactive drama**; the 3D process; art and fanart; a music film with a heart-shaped hole transition (`seams/heart-*`); then her own **room** (a recorded video stage with Action 1 to 3, a change-pose button and Back, in four sizes up to 2160).
+- **The performance governor fix.** Round six found that the governor dropped to `lite` after load-time frames and remembered it for a day, which flattened the hero and held back videos. Load-time frames no longer count and a governed level is trusted for 30 minutes only.
+- **10-26 `dd23e85`** The site moved to the custom domain **https://aspirant.cc** (domain root, empty base path in the Pages build).
+- **10-26 evening** Guinevere (`ed941f7`), Layla and Fanny (`aa37af6`), Ruby and Angela (`4bb14f6`) and Lesley and Chang'e (`e48cd41`) got their pair pages, one concept for each pair (see HANDOFF).
+
+## 2026-10-27: the overnight audit
+
+The owner went to sleep and asked for: every Vexana feature re-verified, a deep QA of all character pages (visual, animation, performance, bad internet, errors), Guinevere's page matched to her brief (`guin.md`), every page artistic and pair-specific, and no questions. Five audit helpers ran in parallel (Vexana; Guinevere; Selena, Obsidia and the roster; the other three pairs; repo-wide readiness). Results, pushed in `45bb8d6` and `e65785d`:
+
+- Network resilience: stall detection in the media store (20 s), the stale-deploy reload (`chunk-guard.ts`), the offline notice, "Enter now" on the loading screen, a cap on page-change waits, error pages (`error.tsx`, `global-error.tsx`).
+- Next.js moved from 16.4.0 to **16.4.3** (three advisories) by a plain dependency update through the pnpm catalog.
+- The README was rewritten for a newcomer; canonical URL set to https://aspirant.cc.
+- **Guinevere's room** (`d5b697a`, videos in `bf40cc2` and `92e602c`): recorded video stage in three sizes only (lite, 1080, 1440) because the pack was already past 5 GiB. A runaway auto-advance in the room was fixed (`use-room-scroll` recent-input guard).
+- Reveal-flash fix, and the e2e specs share a `streamsVideo()` wait.
+
+## 2026-10-28
+
+- **Sections 05 to 09 plain** (`183aa71`). The owner asked that the livestream, the drama, the 3D process, the art and the fanart follow each other as one plain smooth scroll, without the scenes between them, and that the browser scrollbar not show on the two long pages. The `Gate`, the scene components and `threshold-progress` were deleted; soft colour "melt" bands were added at the tops of those sections; `BareScrollbar` hides the scrollbar. The joins in front of the livestream and after the fanart stayed.
+- **Guinevere request** (`09aa5d0`): the hero became a seamless loop video (`scripts/guinevere/hero-loop.py`, frames 40 to 120 of her recording with a 14-frame crossfade back into frames 26 to 39, 80 frames, 2.67 s), a written "g" signature traced from her drawing (`signature.py`), the Japanese name beside the English one in the registry, the interlude preview started at 22.4 s of the cover film (`PREVIEW_START`), a warm palette through CSS variables, an ink-coloured friend section, and the room made faster (`maxWait` of 24 frames in the stage timeline: an action starts at once when the loop will not come round to its frame within that many frames; her idle and pose loops are the true period of the picture and cannot be cut shorter).
+- **Report: "the Vexana and Guinevere pages have no animations on aspirant.cc".** First investigation (nothing reproduced in real Chrome and Edge, a phone emulation, throttled networks; static only when reduced motion is on) led to the **stale-page reload guard** in the boot script (`4ef1696`): a tab of an old deploy that lost its own scripts reloads once. The real cause was found later the same day, below.
+- **Interactive drama audit** (`c6c5e0a`). The owner reported many bugs in the level chooser, the save and the gameplay. Playing every route with keyboard, mouse, touch and a failing network found, and fixed:
+  - **The page opened scrolled to section 06.** `TitleMenu` focused its first button on mount; that focus pulled the page 22,000 px down to the drama on load, on both long pages, on the live site too. This is what "no animations" meant on those pages: the visitor landed past the opening. It also meant Space or Enter could press Start New and wipe a run. Fix: menus take focus only after the visitor has touched the game.
+  - Start New had no confirmation; Continue went back to the last line, not the answers; a tap meant for the last line could pick an answer the moment they appeared; Skip and answers worked while the next episode was loading (the visitor could skip an episode that never played); a browser that blocks sound showed "This episode did not start"; the level select tree was unreadable on a phone; Logs lost the focus; Enter did nothing on a card.
+  - Added `e2e/drama.spec.ts` (24 runs over three screen sizes) and the probe `scripts/qa/probes/drama-flow.cjs`.
+
+## 2026-10-30
+
+- **"The page is ALWAYS a normal page with no animation" on aspirant.cc** (`7c8e65e`). Timeline of a first visit on a 1 Mbit phone connection showed the cause: the boot script dropped its blank cover after **9 seconds**, and the server renders the full site underneath, so until the scripts arrived the visitor saw the plain text of the page with no animation (about 16 s at 1 Mbit); the loading screen only appeared after that; items gave up after 12 s; the loader gave up at 60 s; data saving turned off the 3D opening. Fixes: the cover now carries the wordmark, a sweeping line and notes, and stays until the scripts start; the loader waits longer and tells the visitor the connection is slow (15 s), offers "Enter now" at 45 s and stops at 240 s; items wait 60 s; a page change 90 s; data saving no longer disables the opening scene. The limits and the reasoning are in the rules file and performance.md. Reduced motion was considered and left as is (HANDOFF, "Performance levels and motion").
+- **Menu art** (`1704ccb`, `68efb0b`). The owner supplied ten new pictures (`D:\ren\aspirant\media\others\menu`, one left and one right for each of Home, Experience, Story, Characters, Collection) and asked: make them big on the empty left and right of the menu and stay there while another option is hovered; crop and adjust so all figures have the same proportions (body and face); eyes aligned horizontally and the characters facing each other; **no visible cut**, fade or hide any hard edge; and Lesley's and Chang'e's heights must match (in the old art Chang'e came up to Lesley's waist). What was done: every face was measured by hand (eye centre and chin, in `scripts/menu/build.py`; `measure.py` draws the grid), each figure is scaled so eye-to-chin is 130 px on the canvas (which makes heads and bodies match), the canvas runs 4.4 units above the eye and 7.5 below, and the lower body, the outer edge and the source's own cut (the top of `character-left.png`) fade to transparent inside the file. The menu has a fixed stage layer (`.stage`), the pair swaps when another option is hovered, the current page's pair shows when nothing is hovered, and narrow portrait screens get smaller figures low behind the last titles. A second request lifted the eye line from 40vh to 35vh so the figures look centred, and drew Experience left (0.93), Characters right (0.93) and Story right (0.78, "a lot smaller") smaller around the eye. Ten old per-aspirant pictures were deleted. `e2e/menu.spec.ts` checks the pair is level, on the right sides and does not move when another page is hovered.
+- This handoff: `docs/HANDOFF.md`, this file, `scripts/qa/probes/`, `scripts/menu/measure.py`.
+
+## Standing instructions that came from the owner along the way
+
+- No assistant or tool named anywhere in the repo or its history. Conventional commits, lowercase, header under 100 characters, push to `main`. `pnpm check` must pass before a push.
+- `localhost:3000` serves the production build of the latest `main`.
+- Writing rules (short sentences, no dashes, canon spellings, "Aspirant power").
+- Performance rules (animate transform and opacity, gate effects on the level, judge on the production build) and the loading rules in the rules file.
+- When asleep: no questions, keep going, resume helpers after limits, modest token use.
