@@ -2,7 +2,7 @@ import type { Slug } from "@/content/types";
 
 import type { RosterPair } from "./entries";
 import { frameOf, pointsOf, trimOf } from "./frame";
-import { BOARD_W, LEAN, SEAMS, SLOTS } from "./layout";
+import { BOARD_W, SEAMS, SLOTS } from "./layout";
 import styles from "./roster.module.css";
 import { SLASH_ART, SLASH_FROM, SLASH_TO } from "./slash";
 
@@ -122,31 +122,13 @@ export function PanelTrim({ slug }: { slug: Slug }) {
   );
 }
 
-const obsidia = SLOTS.find((s) => s.slug === "obsidia");
-
 /**
- * Everything drawn between and beside the panels, on one layer in board units: the thick pink bar
- * along Obsidia's slanted edge, the red slash between her and Selena, and the thin lines in the
- * colours of the other pairs along the gaps between their panels. It never takes the pointer.
+ * Everything drawn between the panels, on one layer in board units: the red slash between
+ * Obsidia and Selena, and the thin lines in the colours of the other pairs along the gaps between
+ * their panels. It never takes the pointer.
  */
 export function Seams({ pairs }: { pairs: readonly RosterPair[] }) {
   const colours = new Map(pairs.map((p) => [p.id, p.colours]));
-  // The pink bar: along the left edge of Obsidia's panel, a hairline outside it, with a round top.
-  let flank = "";
-  if (obsidia) {
-    const k = LEAN;
-    const edge = (y: number) => obsidia.x1 - k * (y - obsidia.y0);
-    const gap = 1.8;
-    const wide = 9;
-    const y0 = -4;
-    const y1 = obsidia.y1;
-    const r = wide / 2;
-    flank =
-      `M${(edge(y0) - gap - wide).toFixed(1)} ${y0}` +
-      `A${r} ${r} 0 0 1 ${(edge(y0) - gap).toFixed(1)} ${y0}` +
-      `L${(edge(y1) - gap).toFixed(1)} ${y1}` +
-      `L${(edge(y1) - gap - wide).toFixed(1)} ${y1}Z`;
-  }
   const h = SLASH_TO - SLASH_FROM;
   return (
     <svg
@@ -157,10 +139,6 @@ export function Seams({ pairs }: { pairs: readonly RosterPair[] }) {
       focusable="false"
     >
       <defs>
-        <linearGradient id="rosterFlank" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ff3d77" />
-          <stop offset="1" stopColor="#ff9bb9" />
-        </linearGradient>
         {SEAMS.map((s) => {
           const c = colours.get(s.pair) ?? ["#fff", "#fff"];
           return (
@@ -179,8 +157,6 @@ export function Seams({ pairs }: { pairs: readonly RosterPair[] }) {
           );
         })}
       </defs>
-
-      {flank ? <path d={flank} fill="url(#rosterFlank)" /> : null}
 
       {SEAMS.map((s) => {
         const diagonal = s.y1 !== s.y2;

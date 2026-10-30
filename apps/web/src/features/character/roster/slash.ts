@@ -29,15 +29,21 @@ const smooth = (a: number, b: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
+/** The seam between the pictures: where the panels run from and to. */
+const SEAM_FROM = 5;
+const SEAM_TO = 380;
+
 /** The middle of the ribbon at a height. */
 const centre = (y: number) => SLASH.x - LEAN * (y - SLASH.y);
 
 /** Half of how wide the ribbon is at a height. */
 function half(y: number) {
-  const t = (y - SLASH_FROM) / (SLASH_TO - SLASH_FROM);
-  const swell = smooth(0.28, 0.62, t) * (1 - smooth(0.86, 1, t));
-  const ripple = 0.8 + 0.2 * Math.sin(t * 19.5 + 1.3) + 0.12 * Math.sin(t * 47);
-  return (4.2 + 14 * swell) * ripple;
+  // The widest part sits in the middle of the seam between the two pictures (the panels run from
+  // 5 to 380), and the ends are thin, so the curl at the bottom is small.
+  const mid = (SEAM_FROM + SEAM_TO) / 2;
+  const swell = Math.exp(-(((y - mid) / 88) ** 2));
+  const ripple = 0.82 + 0.18 * Math.sin(y * 0.062 + 1.3) + 0.1 * Math.sin(y * 0.15);
+  return (3.4 + 15 * swell) * ripple;
 }
 
 type P = readonly [number, number];
@@ -79,7 +85,7 @@ function crack(rand: () => number, y: number, spread: number): P[] {
 
 function build() {
   const rand = seeded(20261030);
-  const halo = ribbon(rand, 2.5, 0.05, 11);
+  const halo = ribbon(rand, 1.9, 0.05, 11);
   const body = ribbon(rand, 1, 0.55, 5.5);
   const mid = ribbon(rand, 0.62, 0.4, 6.5);
   const core = ribbon(rand, 0.24, 0.3, 5);
@@ -111,7 +117,7 @@ function build() {
 
   // Thin shards that stand out of the edge at the wide part.
   let shards = "";
-  for (let y = 40; y < 430; y += 14 + rand() * 24) {
+  for (let y = 60; y < 330; y += 14 + rand() * 24) {
     const side = rand() < 0.5 ? -1 : 1;
     const x = centre(y) + side * (half(y) * (0.9 + rand() * 0.5));
     const len = 5 + rand() * 11;

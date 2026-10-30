@@ -29,6 +29,7 @@ import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
 import { frameOf, polygonOf } from "./frame";
+import { Decor } from "./decor";
 import { FrameDefs, PanelFrame, PanelTrim, Seams } from "./frame-art";
 import { createHoverFx } from "./hover-fx";
 import { BAYS, BOARD_H, BOARD_W, END, LEAN, mid, SLASH, SLOTS, type Slot } from "./layout";
@@ -77,9 +78,6 @@ interface PanelProps {
 /** The shape of the picture in each frame, as CSS: a slanted box with the sharp corners cut. */
 const FACES = new Map(SLOTS.map((s) => [s.slug, polygonOf(frameOf(s).face)]));
 
-/** The front pair stands in the light. The others sleep behind a thin haze until they are hovered. */
-const FRONT: ReadonlySet<Slug> = new Set<Slug>(["obsidia", "selena"]);
-
 /** One panel. It only draws again when it is chosen, not on every scroll. It is shaded until it is hovered. */
 const PanelView = memo(function PanelView({
   slot: s,
@@ -112,7 +110,6 @@ const PanelView = memo(function PanelView({
       style={style}
       data-slug={c.slug}
       data-roster-panel={c.slug}
-      data-front={FRONT.has(c.slug)}
       data-chosen={chosen}
     >
       <TLink
@@ -645,6 +642,8 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
               />
             </svg>
           </div>
+
+          <Decor pairs={pairs} />
 
           {/* A huge word behind the panels, drifting slower than they do. */}
           <div className={styles.ghost} aria-hidden="true">
