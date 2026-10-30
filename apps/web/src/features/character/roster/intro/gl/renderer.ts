@@ -1,9 +1,22 @@
 import type { Slug } from "@/content/types";
 
 import { clipRect, type Quad, quadOf, slotOf, splashRect, type View } from "../geometry";
-import { BEAM, type BeamKind, PANEL_SLUGS, type Scene } from "../timeline";
 import { type StillName, STILLS } from "../stills";
-import { FLAT, GROUND, PANEL, SPRITE, THIN, VEIL, VERT, WEDGE } from "./shaders";
+import { PANEL_SLUGS, type Scene } from "../timeline";
+import {
+  EMBER_FRAG,
+  EMBER_VERT,
+  FLAT,
+  GLOW,
+  GROUND,
+  HIT,
+  PANEL,
+  SHARD_FRAG,
+  SHARD_VERT,
+  SPRITE,
+  VERT,
+  WEDGE,
+} from "./shaders";
 
 /** A picture the renderer can take as a texture. */
 export type Source = ImageBitmap | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement;
@@ -13,6 +26,8 @@ export interface Assets {
   /** The welcome clips, played by the caller. Absent on `lite`. */
   clips: Partial<Record<Slug, HTMLVideoElement>>;
   stills: Partial<Record<StillName, Source>>;
+  /** Obsidia's cut-out, for the impact frame. */
+  cutout?: Source;
   clipInfo: Partial<Record<Slug, { focus: { x: number; y: number }; aspect: number }>>;
 }
 
@@ -27,9 +42,19 @@ const UNIFORMS = [
   "u_ground",
   "u_color",
   "u_wedge",
-  "u_thin",
-  "u_thin2",
-  "u_thin3",
+  "u_cut",
+  "u_rectH",
+  "u_h",
+  "u_pc",
+  "u_g",
+  "u_gc",
+  "u_g2",
+  "u_P",
+  "u_u",
+  "u_sc",
+  "u_age",
+  "u_crack",
+  "u_dpr",
   "u_rot",
   "u_rectPos",
   "u_rectSize",
@@ -50,14 +75,6 @@ const UNIFORMS = [
   "u_tint",
   "u_hue",
 ] as const;
-
-/** The still each kind of beam draws. */
-const BEAM_STILLS: Record<BeamKind, StillName | null> = {
-  [BEAM.none]: null,
-  [BEAM.pink]: "beam-pink",
-  [BEAM.hold]: "beam-hold",
-  [BEAM.blue]: "beam-blue",
-};
 
 /** Boxes of the real page the layers over it are placed by (CSS pixels). */
 export interface PageBoxes {
@@ -89,6 +106,21 @@ function zoomed(
 /** How far past a panel the quad reaches, so its glow has room (CSS pixels). */
 const PAD = 120;
 
+/** How many embers fly from the boom. */
+const EMBERS = 160;
+
+/** The random numbers each ember keeps for itself (the same every time, so a frame is repeatable). */
+function emberData(): Float32Array {
+  const data = new Float32Array(EMBERS * 4);
+  let seed = 7;
+  const rnd = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+  for (let i = 0; i < data.length; i++) data[i] = rnd();
+  return data;
+}
+
 /**
  * The intro's renderer: one WebGL2 canvas, a handful of small programs, one unit quad. It owns the
  * textures. It allocates nothing per frame.
@@ -96,9 +128,15 @@ const PAD = 120;
 export class IntroRenderer {
   readonly gl: WebGL2RenderingContext;
   private programs: Record<
-    "ground" | "flat" | "wedge" | "thin" | "panel" | "sprite" | "veil",
+    "ground" | "flat" | "wedge" | "panel" | "sprite" | "hit" | "glow" | "shard" | "ember",
     Program
   >;
+  private shardVao: WebGLVertexArrayObject;
+  private shardBuf: WebGLBuffer;
+  private shardCount = 0;
+  private emberVao: WebGLVertexArrayObject;
+  private emberBuf: WebGLBuffer;
+  private cut: { tex: WebGLTexture; aspect: number } | null = null;
   private vao: WebGLVertexArrayObject;
   private buf: WebGLBuffer;
   private splash = new Map<Slug, WebGLTexture>();
@@ -140,10 +178,12 @@ export class IntroRenderer {
       ground: this.program(GROUND),
       flat: this.program(FLAT),
       wedge: this.program(WEDGE),
-      thin: this.program(THIN),
-      veil: this.program(VEIL),
       panel: this.program(PANEL),
       sprite: this.program(SPRITE),
+      hit: this.program(HIT),
+      glow: this.program(GLOW),
+      shard: this.program(SHARD_FRAG, SHARD_VERT),
+      ember: this.program(EMBER_FRAG, EMBER_VERT),
     };
     const vao = gl.createVertexArray();
     const buf = gl.createBuffer();
@@ -158,11 +198,45 @@ export class IntroRenderer {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
+    // The glass (rebuilt when the window changes size) and the embers (fixed).
+    const sv = gl.createVertexArray();
+    const sb = gl.createBuffer();
+    const ev = gl.createVertexArray();
+    const eb = gl.createBuffer();
+    if (!sv || !sb || !ev || !eb) throw new Error("no buffers");
+    this.shardVao = sv;
+    this.shardBuf = sb;
+    this.emberVao = ev;
+    this.emberBuf = eb;
+    gl.bindVertexArray(sv);
+    gl.bindBuffer(gl.ARRAY_BUFFER, sb);
+    const stride = 8 * 4;
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, stride, 0);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, stride, 8);
+    gl.enableVertexAttribArray(2);
+    gl.vertexAttribPointer(2, 3, gl.FLOAT, false, stride, 16);
+    gl.enableVertexAttribArray(3);
+    gl.vertexAttribPointer(3, 1, gl.FLOAT, false, stride, 28);
+    gl.bindVertexArray(ev);
+    gl.bindBuffer(gl.ARRAY_BUFFER, eb);
+    gl.bufferData(gl.ARRAY_BUFFER, emberData(), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(vao);
+
     this.blank = this.texture(null);
     for (const slug of PANEL_SLUGS) {
       const src = assets.splash[slug];
       this.splash.set(slug, src ? this.texture(src, true) : this.blank);
       if (assets.clips[slug]) this.clip.set(slug, this.texture(null));
+    }
+    if (assets.cutout) {
+      const c = assets.cutout;
+      const cw = "naturalWidth" in c ? c.naturalWidth : c.width;
+      const chh = "naturalHeight" in c ? c.naturalHeight : c.height;
+      this.cut = { tex: this.texture(c, false, true), aspect: cw / Math.max(chh, 1) };
     }
     for (const name of Object.keys(assets.stills) as StillName[]) {
       const src = assets.stills[name];
@@ -179,7 +253,7 @@ export class IntroRenderer {
     this.onLost?.();
   };
 
-  private program(frag: string): Program {
+  private program(frag: string, vert: string = VERT): Program {
     const gl = this.gl;
     const compile = (type: number, src: string) => {
       const s = gl.createShader(type);
@@ -192,7 +266,7 @@ export class IntroRenderer {
       return s;
     };
     const prog = gl.createProgram();
-    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
@@ -248,6 +322,68 @@ export class IntroRenderer {
     if (this.canvas.width !== this.cw) this.canvas.width = this.cw;
     if (this.canvas.height !== this.ch) this.canvas.height = this.ch;
     this.gl.viewport(0, 0, this.cw, this.ch);
+    this.buildShards();
+  }
+
+  /** Tile the screen with slanted, jittered triangles (the same lean as the panels). */
+  private buildShards(): void {
+    const gl = this.gl;
+    const cs = Math.max(90, this.ch / 7.5);
+    const lean = 0.64;
+    const rows = Math.ceil(this.ch / cs) + 2;
+    const i0 = -Math.ceil(lean * rows) - 1;
+    const cols = Math.ceil(this.cw / cs) + 2 - i0;
+    const jit = (i: number, j: number, k: number) => {
+      const x = Math.sin(i * 127.1 + j * 311.7 + k * 74.7) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    const vx = (i: number, j: number) =>
+      (i + (jit(i, j, 1) - 0.5) * 0.7) * cs + (j + (jit(i, j, 2) - 0.5) * 0.7) * cs * lean;
+    const vy = (j: number, i: number) => (j + (jit(i, j, 2) - 0.5) * 0.7) * cs - cs;
+    const data = new Float32Array(rows * cols * 2 * 3 * 8);
+    let n = 0;
+    const tri = (
+      a: [number, number],
+      b: [number, number],
+      c: [number, number],
+      r: [number, number, number],
+    ) => {
+      const cx = (a[0] + b[0] + c[0]) / 3;
+      const cy = (a[1] + b[1] + c[1]) / 3;
+      const vs = [a, b, c];
+      for (let k = 0; k < 3; k++) {
+        const v = vs[k]!;
+        data[n++] = v[0];
+        data[n++] = v[1];
+        data[n++] = cx;
+        data[n++] = cy;
+        data[n++] = r[0];
+        data[n++] = r[1];
+        data[n++] = r[2];
+        data[n++] = k;
+      }
+    };
+    for (let j = 0; j < rows; j++) {
+      for (let ii = 0; ii < cols; ii++) {
+        const i = i0 + ii;
+        const p00: [number, number] = [vx(i, j), vy(j, i)];
+        const p10: [number, number] = [vx(i + 1, j), vy(j, i + 1)];
+        const p01: [number, number] = [vx(i, j + 1), vy(j + 1, i)];
+        const p11: [number, number] = [vx(i + 1, j + 1), vy(j + 1, i + 1)];
+        const r1: [number, number, number] = [jit(i, j, 5), jit(i, j, 6), jit(i, j, 7)];
+        const r2: [number, number, number] = [jit(i, j, 8), jit(i, j, 9), jit(i, j, 10)];
+        if (jit(i, j, 11) < 0.5) {
+          tri(p00, p10, p11, r1);
+          tri(p00, p11, p01, r2);
+        } else {
+          tri(p00, p10, p01, r1);
+          tri(p10, p11, p01, r2);
+        }
+      }
+    }
+    this.shardCount = n / 8;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.shardBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, data.subarray(0, n), gl.STATIC_DRAW);
   }
 
   private use(p: Program): void {
@@ -298,6 +434,11 @@ export class IntroRenderer {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     const pr = this.programs;
+    // The impact point, in canvas pixels: the middle of the page's red slash.
+    const sl = this.page?.slash;
+    const px = Math.min(Math.max((sl ? sl.x : this.view.w * 0.45) * dpr, cw * 0.18), cw * 0.82);
+    const py = Math.min(Math.max((sl ? sl.y : this.view.h * 0.5) * dpr, ch * 0.2), ch * 0.8);
+    const slashH = (sl ? sl.height : this.view.h * 0.83) * dpr;
 
     // The ground.
     if (!scene.clear) {
@@ -313,10 +454,10 @@ export class IntroRenderer {
       this.full(pr.wedge);
     }
 
-    // The panels.
+    // The panels (the intro's own, and Obsidia on the real page).
     this.drawPanels(scene);
 
-    // A pale wash over the lineup, one frame before the held beam.
+    // A pale wash over the lineup, one frame before the dark.
     if (scene.wash > 0) {
       this.use(pr.flat);
       const a = scene.wash;
@@ -324,34 +465,167 @@ export class IntroRenderer {
       this.full(pr.flat);
     }
 
-    // The veil over Obsidia's panel (it lies on the page, under the beam).
-    this.drawVeil(scene);
-
-    // The speed lines come first, under the beam.
+    // The charge: a crimson glow at the impact point, thin lines drawn in, a seed of white light.
+    if (scene.charge.glow > 0.001) {
+      this.glow(0, px, py, scene.charge.size * ch, scene.charge.glow, 0.95, 0.12, 0.28, 0);
+    }
     if (scene.speed.on) {
-      this.still(
-        "speed-lines",
-        scene.speed.x * cw,
-        scene.speed.y * ch,
-        0.8 * scene.speed.size,
-        1,
-        scene.speed.rot,
-      );
+      this.still("speed-lines", px, py, scene.speed.size * 0.8, scene.speed.alpha, scene.speed.rot);
+    }
+    if (scene.seed > 0.001) {
+      this.still("energy-slash", px, py, 1, 1, 0, (scene.seed * slashH) / 2048, 0.55);
     }
 
-    // The beam, and the thin line that follows it.
-    const bm = scene.beam;
-    const bs = bm.kind !== 0 ? BEAM_STILLS[bm.kind] : null;
-    if (bs) this.still(bs, bm.x * cw, bm.y * ch, bm.size, bm.alpha, 0);
-    this.drawOverlays(scene);
+    // The impact frame covers everything.
+    if (scene.hit.on) this.drawHit(scene, px, py);
+
+    // The flash.
+    if (scene.flash > 0) {
+      this.use(pr.flat);
+      gl.uniform4f(pr.flat.u.u_color ?? null, 1, 1, 1, 1);
+      this.full(pr.flat);
+    }
+
+    // The boom, under the glass: the slash flares, the fire opens, the core burns.
+    if (scene.flare > 0.001) {
+      this.still("energy-slash", px, py, 1, scene.flare, 0, slashH / 2048, 0.6);
+    }
+    if (scene.fire.on) {
+      const f = scene.fire;
+      const n = f.frame;
+      const wob = 1 + 0.05 * Math.sin(n * 2.1) + 0.03 * Math.sin(n * 0.7);
+      this.still(
+        "fire",
+        px + Math.sin(n * 1.3) * 0.012 * ch,
+        py + Math.cos(n * 1.7) * 0.01 * ch,
+        1,
+        f.alpha,
+        0.07 * Math.sin(n * 1.9),
+        (slashH / 895) * 1.15 * f.scale * wob,
+      );
+    }
+    const b = scene.boom;
+    if (b.core > 0.001) {
+      const r = ch * (0.35 + 0.5 * Math.min(1, b.age / 0.2));
+      this.glow(2, px, py, r, b.core, 1, 0.75, 0.45, 0);
+    }
+
+    // The glass.
+    if (scene.shatter.on) this.drawShards(scene, px, py);
+
+    // The shock waves and the embers go over the glass.
+    if (b.on) {
+      const e1 = 1 - Math.pow(1 - b.ring, 3);
+      if (b.ring > 0 && b.ring < 1) {
+        this.glow(
+          1,
+          px,
+          py,
+          ch * 1.35 * e1,
+          Math.pow(1 - b.ring, 0.7),
+          1,
+          1,
+          1,
+          ch * (0.006 + 0.04 * (1 - b.ring)),
+        );
+      }
+      const e2 = 1 - Math.pow(1 - b.ring2, 3);
+      if (b.ring2 > 0 && b.ring2 < 1) {
+        this.glow(
+          1,
+          px,
+          py,
+          ch * 0.95 * e2,
+          0.7 * (1 - b.ring2),
+          1,
+          1,
+          1,
+          ch * (0.004 + 0.022 * (1 - b.ring2)),
+        );
+      }
+      this.drawEmbers(b.age, px, py);
+    }
+
     if (this.debug) {
       const err = gl.getError();
       if (err !== gl.NO_ERROR) console.warn(`[roster intro] GL error ${err} at t=${scene.t}`);
     }
   }
 
+  /** A glow (kind 0), a ring (1) or a white-hot core added to the picture (2). */
+  private glow(
+    kind: 0 | 1 | 2,
+    x: number,
+    y: number,
+    radius: number,
+    strength: number,
+    r: number,
+    g: number,
+    b: number,
+    thickness: number,
+  ): void {
+    const gl = this.gl;
+    const p = this.programs.glow;
+    this.use(p);
+    gl.uniform4f(p.u.u_g ?? null, x, y, radius, strength);
+    gl.uniform4f(p.u.u_gc ?? null, r, g, b, kind);
+    gl.uniform2f(p.u.u_g2 ?? null, Math.max(thickness, 1), 0);
+    const reach = radius + thickness * 3 + 8;
+    this.rect(p, x - reach, y - reach, reach * 2, reach * 2);
+  }
+
+  /** Obsidia as a hard silhouette, full screen, thrown about (the impact frames). */
+  private drawHit(scene: Scene, px: number, py: number): void {
+    const cut = this.cut;
+    if (!cut) return;
+    const gl = this.gl;
+    const { cw, ch, dpr } = this;
+    const p = this.programs.hit;
+    const h = scene.hit;
+    // Her figure fills the height on a wide screen; on a tall one it is held to the width.
+    const height = Math.min(ch * 0.98, (cw * 1.25) / cut.aspect) * h.zoom;
+    const width = height * cut.aspect;
+    const cx = cw * ((cw < ch ? 0.5 : 0.44) + h.shx);
+    const cy = ch * (0.52 + h.shy);
+    this.use(p);
+    gl.uniform1i(p.u.u_cut ?? null, 0);
+    gl.uniform4f(p.u.u_rectH ?? null, cx - width / 2, cy - height / 2, width, height);
+    gl.uniform4f(p.u.u_h ?? null, h.inv, h.tint, dpr, Math.floor(scene.t * 30) % 97);
+    gl.uniform2f(p.u.u_pc ?? null, px, py);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, cut.tex);
+    this.full(p);
+  }
+
+  private drawShards(scene: Scene, px: number, py: number): void {
+    const gl = this.gl;
+    const p = this.programs.shard;
+    gl.useProgram(p.prog);
+    gl.uniform2f(p.u.u_res ?? null, this.cw, this.ch);
+    gl.uniform2f(p.u.u_P ?? null, px, py);
+    gl.uniform1f(p.u.u_u ?? null, scene.shatter.u);
+    gl.uniform1f(p.u.u_sc ?? null, this.ch / 1080);
+    gl.uniform1f(p.u.u_crack ?? null, scene.shatter.crack);
+    gl.uniform1f(p.u.u_dpr ?? null, this.dpr);
+    gl.bindVertexArray(this.shardVao);
+    gl.drawArrays(gl.TRIANGLES, 0, this.shardCount);
+    gl.bindVertexArray(this.vao);
+  }
+
+  private drawEmbers(age: number, px: number, py: number): void {
+    const gl = this.gl;
+    const p = this.programs.ember;
+    gl.useProgram(p.prog);
+    gl.uniform2f(p.u.u_res ?? null, this.cw, this.ch);
+    gl.uniform2f(p.u.u_P ?? null, px, py);
+    gl.uniform1f(p.u.u_age ?? null, age);
+    gl.uniform1f(p.u.u_sc ?? null, this.ch / 1080);
+    gl.bindVertexArray(this.emberVao);
+    gl.drawArrays(gl.POINTS, 0, EMBERS);
+    gl.bindVertexArray(this.vao);
+  }
+
   private drawPanels(scene: Scene): void {
-    if (scene.lineup <= 0.001) return;
     const gl = this.gl;
     const p = this.programs.panel;
     const { dpr } = this;
@@ -361,10 +635,18 @@ export class IntroRenderer {
     const vw = this.view;
     for (const s of scene.panels) {
       if (!s.on || s.grow <= 0.001) continue;
+      const onPage = s.page > 0.5;
+      if (onPage ? !this.page : scene.lineup <= 0.001) continue;
       const slug = s.slug;
       const slot = slotOf(slug);
-      const q = quadOf(slot, vw, scene.shift, this.quad);
-      q.y1 += s.drop * vw.u;
+      let q: Quad;
+      if (onPage && this.page) {
+        // On the real page: the box of the page's own panel.
+        q = this.page.quad;
+      } else {
+        q = quadOf(slot, vw, scene.shift, this.quad);
+        q.y1 += s.drop * vw.u;
+      }
       const x0 = q.x0 * dpr;
       const x1 = q.x1 * dpr;
       const x2 = q.x2 * dpr;
@@ -387,9 +669,15 @@ export class IntroRenderer {
       gl.uniform4f(p.u.u_picV ?? null, cr[0] * dpr, cr[1] * dpr, cr[2] * dpr, cr[3] * dpr);
       gl.uniform4f(p.u.u_a ?? null, s.mix, s.pale, s.thr, s.inv);
       gl.uniform4f(p.u.u_b ?? null, s.white, s.black, s.glow, s.fringe);
-      gl.uniform4f(p.u.u_c ?? null, s.flare, s.alpha * scene.lineup, s.bevel, s.seed);
+      gl.uniform4f(
+        p.u.u_c ?? null,
+        s.flare,
+        s.alpha * (onPage ? 1 : scene.lineup),
+        s.bevel,
+        s.seed,
+      );
       const hasClip = s.mix < 0.999 && !this.light ? this.feedClip(slug, s.frame) : false;
-      gl.uniform4f(p.u.u_d ?? null, scene.lineart, hasClip ? 1 : 0, Math.floor(scene.t * 30), dpr);
+      gl.uniform4f(p.u.u_d ?? null, 0, hasClip ? 1 : 0, Math.floor(scene.t * 30), dpr);
       gl.uniform4f(p.u.u_e ?? null, s.split, s.stripes, s.bevel * 0.21 * this.cw, 0);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, this.splash.get(slug) ?? this.blank);
@@ -405,9 +693,8 @@ export class IntroRenderer {
   }
 
   /**
-   * Draw a still with its point (`tip`) at (`x`, `y`) pixels, `size` times the size it had in the
-   * recording, turned by `rot`. A still cut at the edge of the frame is made big enough to still
-   * reach that edge on a wider screen.
+   * Draw a still centred on (`x`, `y`) pixels, `size` times the size it had in the recording (or
+   * `absolute` pixels per picture pixel), turned by `rot`. `heat` adds white to it, for a white-hot look.
    */
   private still(
     name: StillName,
@@ -417,112 +704,29 @@ export class IntroRenderer {
     alpha: number,
     rot: number,
     absolute = 0,
+    heat = 0,
   ): void {
     const s = this.stills.get(name);
     if (!s || alpha <= 0.001) return;
     const gl = this.gl;
     const p = this.programs.sprite;
     const meta = STILLS[name];
-    let k = absolute > 0 ? absolute : (this.ch / meta.refH) * size;
-    if (meta.reach) {
-      const need = Math.max(
-        meta.tip.u > 0.5 ? x / (meta.tip.u * s.w) : 0,
-        meta.tip.u < 0.5 ? (this.cw - x) / ((1 - meta.tip.u) * s.w) : 0,
-      );
-      k = Math.max(k, need * 1.01);
-    }
+    const k = absolute > 0 ? absolute : (this.ch / meta.refH) * size;
     const w = s.w * k;
     const h = s.h * k;
     this.use(p);
     gl.uniform1i(p.u.u_tex ?? null, 0);
     gl.uniform4f(p.u.u_tint ?? null, 1, 1, 1, alpha);
-    gl.uniform4f(p.u.u_hue ?? null, 0, 0, 0, 0);
+    gl.uniform4f(p.u.u_hue ?? null, heat, heat, heat, 0);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, s.tex);
     gl.uniform1f(p.u.u_rot ?? null, rot);
     gl.uniform2f(p.u.u_pivot ?? null, x, y);
-    gl.uniform2f(p.u.u_rectPos ?? null, x - meta.tip.u * w, y - meta.tip.v * h);
+    gl.uniform2f(p.u.u_rectPos ?? null, x - w / 2, y - h / 2);
     gl.uniform2f(p.u.u_rectSize ?? null, w, h);
     // Only the part of the screen the turned picture can reach.
-    const rx = x - meta.tip.u * w;
-    const ry = y - meta.tip.v * h;
-    const c = Math.cos(rot);
-    const sn = Math.sin(rot);
-    let x0 = Infinity;
-    let y0 = Infinity;
-    let x1 = -Infinity;
-    let y1 = -Infinity;
-    for (let i = 0; i < 4; i++) {
-      const dx = rx + (i & 1 ? w : 0) - x;
-      const dy = ry + (i & 2 ? h : 0) - y;
-      const px = x + c * dx - sn * dy;
-      const py = y + sn * dx + c * dy;
-      x0 = Math.min(x0, px);
-      x1 = Math.max(x1, px);
-      y0 = Math.min(y0, py);
-      y1 = Math.max(y1, py);
-    }
-    this.rect(p, x0 - 2, y0 - 2, x1 - x0 + 4, y1 - y0 + 4);
-  }
-
-  private drawVeil(scene: Scene): void {
-    const page = this.page;
-    const { dpr } = this;
-    const gl = this.gl;
-    if (scene.veil > 0.001 && page) {
-      const p = this.programs.veil;
-      const q = page.quad;
-      this.use(p);
-      gl.uniform4f(p.u.u_xs ?? null, q.x0 * dpr, q.x1 * dpr, q.x2 * dpr, q.x3 * dpr);
-      gl.uniform2f(p.u.u_ys ?? null, q.y0 * dpr, q.y1 * dpr);
-      gl.uniform4f(p.u.u_color ?? null, 0.5, 0.07, 0.17, scene.veil);
-      const x0 = Math.min(q.x0, q.x1) * dpr;
-      const x1 = Math.max(q.x2, q.x3) * dpr;
-      this.rect(p, x0 - 2, q.y0 * dpr - 2, x1 - x0 + 4, (q.y1 - q.y0) * dpr + 4);
-    }
-  }
-
-  /** The things that run over the page after the flash: the slash, the thin line, the fire, the arcs. */
-  private drawOverlays(scene: Scene): void {
-    const { cw, ch, dpr } = this;
-    const gl = this.gl;
-    const page = this.page;
-    if (scene.slash > 0 && page) {
-      const c = page.slash;
-      this.still("energy-slash", c.x * dpr, c.y * dpr, 1, scene.slash, 0, (c.height * dpr) / 2048);
-    }
-    if (scene.thin.on) {
-      const p = this.programs.thin;
-      this.use(p);
-      const th = scene.thin;
-      gl.uniform4f(p.u.u_thin ?? null, th.x * cw, th.y * ch, th.base * ch, 34 * (ch / 1080));
-      gl.uniform2f(p.u.u_thin2 ?? null, th.phase, th.alpha);
-      gl.uniform1f(p.u.u_thin3 ?? null, dpr);
-      const top = Math.min(th.base, th.y) * ch - 90 * dpr;
-      this.rect(p, 0, top, th.x * cw * 1.03, Math.abs(th.base - th.y) * ch + 180 * dpr);
-    }
-    if (scene.fire.on && page) {
-      const f = scene.fire;
-      const o = page.obsidia;
-      const unit = (o.h * dpr) / 895;
-      // Alive: a little bigger and smaller, turned a little, moved a little, at 20 steps a second.
-      const n = f.frame;
-      const wob = 1 + 0.06 * Math.sin(n * 2.1) + 0.04 * Math.sin(n * 0.7);
-      this.still(
-        "fire",
-        (o.x + o.w * (0.4 + 0.02 * Math.sin(n * 1.3))) * dpr,
-        (o.y + o.h * (0.58 + 0.015 * Math.cos(n * 1.7))) * dpr,
-        1,
-        f.alpha,
-        0.06 * Math.sin(n * 1.9),
-        unit * 1.15 * wob,
-      );
-    }
-    if (scene.arcs > 0 && page) {
-      const o = page.obsidia;
-      const unit = (o.h * dpr) / 895;
-      this.still("ring-arcs", 0, (o.y + o.h * 0.04) * dpr, 1, scene.arcs, 0, unit * 1.1);
-    }
+    const reach = Math.hypot(w, h) / 2 + 2;
+    this.rect(p, x - reach, y - reach, reach * 2, reach * 2);
   }
 
   /** Wait for the GPU to finish what was drawn (used once, after the warm up). */
@@ -543,8 +747,13 @@ export class IntroRenderer {
     for (const s of this.stills.values()) gl.deleteTexture(s.tex);
     gl.deleteTexture(this.blank);
     for (const p of Object.values(this.programs)) gl.deleteProgram(p.prog);
+    if (this.cut) gl.deleteTexture(this.cut.tex);
     gl.deleteBuffer(this.buf);
     gl.deleteVertexArray(this.vao);
+    gl.deleteBuffer(this.shardBuf);
+    gl.deleteVertexArray(this.shardVao);
+    gl.deleteBuffer(this.emberBuf);
+    gl.deleteVertexArray(this.emberVao);
     gl.getExtension("WEBGL_lose_context")?.loseContext();
   }
 }

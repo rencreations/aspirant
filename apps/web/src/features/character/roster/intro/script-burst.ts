@@ -138,6 +138,7 @@ export const BURST: readonly PanelScript[] = [
       { t: 2.65, white: 0.6 },
       { t: 2.683, white: 1, glow: 0.8 },
       { t: 2.8, stripes: 1 },
+      { t: 2.883, stripes: 0 },
     ],
   },
   {
@@ -150,6 +151,35 @@ export const BURST: readonly PanelScript[] = [
       { t: 2.717, grow: 0.75, white: 0, split: 0.55, rate: 0 },
       { t: 2.75, grow: 1 },
       { t: 2.8, stripes: 1, split: -1 },
+      { t: 2.883, stripes: 0 },
+    ],
+  },
+  {
+    // Obsidia, on the real page, in the box of her own panel. When the glass breaks she is white-hot
+    // with a rainbow edge, then her welcome clip plays, then her splash comes in, and the panel is
+    // let go at the end so the page's own frame and name show (4.2 s).
+    slug: "obsidia",
+    beats: [
+      {
+        t: 3.2,
+        grow: 1,
+        page: 1,
+        mix: 0,
+        clip: 0,
+        rate: 1,
+        step: 60,
+        white: 1,
+        glow: 1,
+        fringe: 1,
+        seed: 9,
+      },
+      { t: 3.233, white: 0.6 },
+      { t: 3.267, white: 0.25 },
+      { t: 3.3, white: 0, fringe: 0.6, glow: 0.6 },
+      { t: 3.4, fringe: 0, glow: 0.35 },
+      { t: 3.9, mix: 0, alpha: 1, lerp: true },
+      { t: 4.05, mix: 1, glow: 0, lerp: true },
+      { t: 4.2, alpha: 0 },
     ],
   },
 ];

@@ -135,6 +135,11 @@ await browser.close();
 for (let i = 0; i < pairs.length; i += rows) {
   const group = pairs.slice(i, i + rows);
   const file = path.join(out, `sheet_${String(i / rows).padStart(2, "0")}.png`);
+  if (group.length === 1) {
+    fs.copyFileSync(group[0], file);
+    console.log(file);
+    continue;
+  }
   const inputs = group.flatMap((p) => ["-i", p]);
   execFileSync(
     "ffmpeg",

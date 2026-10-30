@@ -8,30 +8,32 @@ import { BURST } from "./script-burst";
  * seconds, with no side effects, so any frame can be drawn on its own (`?introT=` and the tests
  * do) and the renderer is only a reader of this file.
  *
- * Every time below is read off the owner's recording (`transitions.mov`, 60 fps); the table in
- * `docs/design/roster-intro.md` is the summary and the recording is the truth. To retime a layer
- * change its row here. The panels have their own beats in `script.ts`.
+ * Up to 2.8 s every time is read off the owner's recording (`transitions.mov`, 60 fps). From 2.8 s
+ * the ending is our own: a charge, an impact frame, a boom and the reveal of Obsidia (see
+ * `docs/design/roster-intro-engine.md`). To retime a layer change its row here. The panels have
+ * their own beats in `script.ts` and `script-burst.ts`.
  */
 
 /** The picture is black until this moment, then a hard cut to the page, with the first panel's blue plate already on it. */
 export const T_BLACK = 0.7;
 /** The red wedge grows in from the left. */
 const T_WEDGE = 2.29;
-/** The pink spear tip and the speed lines (a hard cut). */
-const T_BEAM = 2.8;
-/** The held beam on dark maroon (a hard cut). */
-const T_HOLD = 2.883;
-/** The white flash starts and ends. The page is under the picture after it. */
+/** The charge: thin lines are drawn in toward the impact point. */
+const T_CHARGE = 2.8;
+/** A hard cut to dark maroon. A seed of white light grows at the impact point. */
+const T_DARK = 2.883;
+/** The impact frames: Obsidia as a black silhouette, five stepped pictures with shake. */
+const T_HIT = 3.0;
+/** The white flash, with the seams of the glass showing in it. */
 export const T_FLASH = 3.157;
-export const T_PAGE = 3.257;
-/** The thin beam, the fire and the arcs run over the page until here. */
-const T_OVERLAY_END = 4.2;
+/** The boom: the glass breaks, the ring, the fire and the embers leave the impact point. */
+export const T_BOOM = 3.2;
+/** The glass has fallen away. */
+const T_CLEAR = 3.85;
 /** The intro is over and the canvas is removed. */
-export const DURATION = 4.7;
+export const DURATION = 4.3;
 /** The logo block of the page comes in at this time (the page starts its own transition). */
 const T_DONE = 4.2;
-
-/** Panel names in the order the script lists them. */
 
 interface PanelScene extends Params {
   slug: Slug;
@@ -43,10 +45,6 @@ interface PanelScene extends Params {
   frame: number;
 }
 
-export type BeamKind = 0 | 1 | 2 | 3;
-/** none, the pink spear (tip to the left), the held leaf, the blue leaf. */
-export const BEAM = { none: 0, pink: 1, hold: 2, blue: 3 } as const;
-
 export interface Scene {
   t: number;
   /** The picture under everything: 0 black, 1 the page grey, 2 dark maroon, 3 white. */
@@ -55,27 +53,30 @@ export interface Scene {
   clear: number;
   /** Panels move across by this many board units (the camera pans toward the start). */
   shift: number;
-  /** The whole lineup of panels fades to this (the ghost behind the held beam). */
+  /** The whole lineup of panels fades to this (the ghost behind the charge). */
   lineup: number;
-  /** The lineup drawn as pink line art on white (the ghost in the flash). */
-  lineart: number;
   panels: PanelScene[];
   wedge: { on: boolean; edge: number; step: number };
-  /** The burst of thin lines round the tip of the pink spear, redrawn on every step. */
-  speed: { on: boolean; step: number; x: number; y: number; rot: number; size: number };
-  /** A pale pink wash over the panels (the frame before the held beam). */
+  /** The thin lines drawn in toward the impact point, a new picture on every step. */
+  speed: { on: boolean; size: number; rot: number; alpha: number };
+  /** A pale pink wash over the panels (the frame before the dark). */
   wash: number;
-  /** `x` and `y` are where the point of the shape is, as fractions of the screen. */
-  beam: { kind: BeamKind; x: number; y: number; size: number; alpha: number };
-  /** The thin line that crosses the left half at the end (drawn in code). */
-  thin: { on: boolean; x: number; y: number; base: number; phase: number; alpha: number };
+  /** A seed of white-hot light at the impact point (a fraction of the slash height), 0 is off. */
+  seed: number;
+  /** A crimson glow at the impact point: its strength and its size (a fraction of the height). */
+  charge: { glow: number; size: number };
+  /** The impact frame: Obsidia as a silhouette, full screen, shaking. */
+  hit: { on: boolean; inv: number; zoom: number; shx: number; shy: number; tint: number };
   flash: number;
-  /** Over the page: the red slash flashing, the fire, the black arcs. */
-  slash: number;
-  fire: { on: boolean; frame: number; alpha: number };
-  arcs: number;
-  /** A dark red veil over Obsidia's panel, lifted while the fire burns (her splash is revealed). */
-  veil: number;
+  /** The glass over the screen: `u` is how far it has broken (0 whole, 1 gone), `crack` the seams. */
+  shatter: { on: boolean; u: number; crack: number };
+  /** The boom at the impact point. `age` is in seconds, `core` a white-hot glow, the rings run 0 to 1. */
+  boom: { on: boolean; age: number; core: number; ring: number; ring2: number };
+  /** The slash of the page flares up (white-hot, flickering). */
+  flare: number;
+  fire: { on: boolean; frame: number; alpha: number; scale: number };
+  /** The page recoils: a shift in pixels and a scale (applied to the page by the controller). */
+  shake: { x: number; y: number; scale: number };
   /** The page below: hidden or shown (the logo block fades in at the end). */
   page: "play" | "done";
 }
@@ -96,18 +97,19 @@ export function createScene(): Scene {
     clear: 0,
     shift: 0,
     lineup: 1,
-    lineart: 0,
     panels: SCRIPTS.map((s) => ({ ...REST, slug: s.slug, on: false, clipT: 0, frame: 0 })),
     wedge: { on: false, edge: 0, step: 0 },
-    speed: { on: false, step: 0, x: 0.47, y: 0.51, rot: 0, size: 1 },
+    speed: { on: false, size: 1, rot: 0, alpha: 1 },
     wash: 0,
-    beam: { kind: 0, x: 0.5, y: 0.5, size: 1, alpha: 1 },
-    thin: { on: false, x: 0.5, y: 0.5, base: 0.5, phase: 0, alpha: 1 },
+    seed: 0,
+    charge: { glow: 0, size: 0 },
+    hit: { on: false, inv: 0, zoom: 1, shx: 0, shy: 0, tint: 0 },
     flash: 0,
-    slash: 0,
-    fire: { on: false, frame: 0, alpha: 0 },
-    arcs: 0,
-    veil: 0,
+    shatter: { on: false, u: 0, crack: 0 },
+    boom: { on: false, age: 0, core: 0, ring: 0, ring2: 0 },
+    flare: 0,
+    fire: { on: false, frame: 0, alpha: 0, scale: 1 },
+    shake: { x: 0, y: 0, scale: 1 },
     page: "play",
   };
 }
@@ -252,9 +254,9 @@ function evalPanel(beats: readonly ResolvedBeat[], t: number, out: PanelScene): 
 export function sceneAt(t: number, out: Scene = createScene()): Scene {
   out.t = t;
 
-  // The ground: black, then the page's grey, then the maroon behind the held beam, then white.
-  out.ground = t < T_BLACK ? 0 : t < T_HOLD ? 1 : t < T_FLASH ? 2 : 3;
-  out.clear = t >= T_PAGE ? 1 : 0;
+  // The ground: black, the page's grey, dark maroon for the charge, white for the impact.
+  out.ground = t < T_BLACK ? 0 : t < T_DARK ? 1 : t < T_HIT ? 2 : 3;
+  out.clear = t >= T_FLASH ? 1 : 0;
   out.shift = smooth(SHIFT_KEYS, t);
 
   for (let i = 0; i < SCRIPTS.length; i++) {
@@ -262,20 +264,17 @@ export function sceneAt(t: number, out: Scene = createScene()): Scene {
     evalPanel(s.beats, t, out.panels[i]!);
   }
 
-  // The lineup: whole until the held beam, then a faint ghost, then line art in the flash.
+  // The lineup: whole, then half, then a faint ghost in the dark, then gone at the impact.
   out.lineup = steps(
     [
       [0, 1],
       [2.867, 0.55],
-      [T_HOLD, 0.1],
-      [T_FLASH, 0.9],
-      [T_FLASH + 0.035, 0.9],
-      [T_FLASH + 0.07, 0],
+      [T_DARK, 0.12],
+      [T_HIT, 0],
     ],
     t,
   );
-  out.lineart = t >= T_FLASH && t < T_FLASH + 0.07 ? 1 : 0;
-  out.wash = t >= 2.867 && t < T_HOLD ? 0.5 : 0;
+  out.wash = t >= 2.867 && t < T_DARK ? 0.5 : 0;
 
   // The red wedge from the left edge: its edge crosses the picture, then it is gone.
   const wedgeEdge = linear(
@@ -292,150 +291,205 @@ export function sceneAt(t: number, out: Scene = createScene()): Scene {
     ],
     t,
   );
-  out.wedge.on = t >= T_WEDGE && t < T_HOLD;
+  out.wedge.on = t >= T_WEDGE && t < T_DARK;
   out.wedge.edge = wedgeEdge;
   out.wedge.step = Math.floor(t * 30);
 
-  // The speed lines come with the pink spear. They are redrawn every second frame, turned.
-  const burst = t >= T_BEAM && t < 2.867;
+  // The charge (2.8 to 3.0). Thin lines are drawn in toward the impact point, each picture a
+  // little smaller than the last. Then, in the dark, a seed of light grows there and pulses.
   const stepNo = Math.floor(t * 30);
-  out.speed.on = burst;
-  out.speed.step = stepNo;
-  out.speed.x = 0.47;
-  out.speed.y = 0.51;
+  const charging = t >= T_CHARGE && t < T_HIT;
+  out.speed.on = charging;
   out.speed.rot = ((stepNo * 2.399) % 6.2832) * 0.5;
-  out.speed.size = 0.85 + 0.12 * ((stepNo * 7) % 3);
-
-  // The beam: the pink spear (tip to the left), the held leaf, the blue leaf.
-  const beam = out.beam;
-  beam.alpha = 1;
-  beam.size = 1;
-  if (burst) {
-    beam.kind = BEAM.pink;
-    beam.x = steps(
-      [
-        [T_BEAM, 0.486],
-        [2.817, 0.5],
-        [2.85, 0.493],
-      ],
-      t,
-    );
-    beam.y = 0.515;
-  } else if (t >= 2.867 && t < T_FLASH) {
-    beam.kind = BEAM.hold;
-    beam.x = steps(
-      [
-        [2.867, 0.54],
-        [T_HOLD + 0.02, 0.526],
-        [3.0, 0.527],
-        [3.1, 0.528],
-      ],
-      t,
-    );
-    beam.y = steps(
-      [
-        [2.867, 0.53],
-        [T_HOLD + 0.02, 0.51],
-        [3.0, 0.512],
-      ],
-      t,
-    );
-  } else if (t >= T_FLASH && t < 3.45) {
-    beam.kind = BEAM.blue;
-    beam.x = 0.512;
-    beam.y = steps(
-      [
-        [T_FLASH, 0.5],
-        [T_PAGE, 0.525],
-      ],
-      t,
-    );
-  } else {
-    beam.kind = BEAM.none;
-    beam.x = 0.5;
-    beam.y = 0.5;
-  }
-
-  // The thin line: pink, then yellow, then a cyan point, pointing at the fire in Obsidia's panel.
-  out.thin.on = t >= 3.45 && t < T_OVERLAY_END;
-  out.thin.x = 0.51;
-  out.thin.y = 0.52;
-  out.thin.base = linear(
-    [
-      [3.45, 0.43],
-      [3.6, 0.44],
-    ],
-    t,
-  );
-  out.thin.phase = linear(
-    [
-      [3.45, 0],
-      [3.6, 0.5],
-      [3.7, 1],
-    ],
-    t,
-  );
-  out.thin.alpha = linear(
-    [
-      [3.45, 1],
-      [3.95, 1],
-      [T_OVERLAY_END, 0],
-    ],
-    t,
-  );
-
-  // The flash: a hard cut to white for six frames, then the page.
-  out.flash = t >= T_FLASH && t < T_PAGE ? 1 : 0;
-
-  // The layers over the page.
-  out.slash =
-    t >= T_PAGE && t < 3.55
+  out.speed.size =
+    t < T_DARK
       ? steps(
           [
-            [T_PAGE, 1],
-            [3.4, 0.7],
-            [3.5, 0.4],
+            [T_CHARGE, 1.5],
+            [2.833, 1.15],
+            [2.867, 0.85],
           ],
           t,
         )
-      : 0;
-  out.arcs =
-    t >= 3.5 && t < T_OVERLAY_END
-      ? linear(
+      : steps(
           [
-            [3.5, 1],
-            [3.95, 1],
-            [T_OVERLAY_END, 0],
+            [T_DARK, 0.6],
+            [2.95, 0.42],
+            [2.983, 0.3],
           ],
           t,
-        )
-      : 0;
-  out.veil =
-    t >= T_PAGE && t < 4.0
-      ? linear(
+        );
+  out.speed.alpha =
+    t < T_DARK
+      ? 1
+      : steps(
           [
-            [T_PAGE, 0.93],
-            [3.45, 0.9],
-            [3.65, 0.8],
-            [3.8, 0.45],
-            [3.95, 0.1],
-            [4.0, 0],
+            [T_DARK, 0.55],
+            [2.95, 0.8],
+            [2.983, 1],
+          ],
+          t,
+        );
+  out.seed =
+    t >= T_DARK && t < T_HIT
+      ? steps(
+          [
+            [T_DARK, 0.1],
+            [2.917, 0.16],
+            [2.95, 0.16],
+            [2.967, 0.32],
+            [2.983, 0.55],
           ],
           t,
         )
       : 0;
-  out.fire.on = t >= 3.45 && t < 3.95;
-  out.fire.frame = Math.floor(t * 20);
-  out.fire.alpha = linear(
+  out.charge.glow = charging
+    ? steps(
+        [
+          [T_CHARGE, 0.2],
+          [T_DARK, 0.35],
+          [2.9, 0.6],
+          [2.917, 0.35],
+          [2.95, 0.75],
+          [2.967, 0.45],
+          [2.983, 1],
+        ],
+        t,
+      )
+    : 0;
+  out.charge.size = charging
+    ? linear(
+        [
+          [T_CHARGE, 0.15],
+          [T_DARK, 0.25],
+          [T_HIT, 0.6],
+        ],
+        t,
+      )
+    : 0;
+
+  // The impact frames (3.0 to 3.157): Obsidia as a black silhouette on white, then white on black,
+  // each a step of two frames at 60, each bigger than the last and thrown to another side. The
+  // last two come back in crimson.
+  const hit = out.hit;
+  hit.on = t >= T_HIT && t < T_FLASH;
+  hit.inv = steps(
     [
-      [3.45, 0],
-      [3.5, 0.9],
-      [3.62, 1],
-      [3.78, 0.55],
-      [3.95, 0],
+      [T_HIT, 0],
+      [3.033, 1],
+      [3.067, 0],
+      [3.1, 1],
+      [3.133, 0],
     ],
     t,
   );
+  hit.zoom = steps(
+    [
+      [T_HIT, 1],
+      [3.033, 1.06],
+      [3.067, 1.12],
+      [3.1, 1.1],
+      [3.133, 1.18],
+    ],
+    t,
+  );
+  hit.shx = steps(
+    [
+      [T_HIT, 0],
+      [3.033, -0.012],
+      [3.067, 0.011],
+      [3.1, -0.006],
+      [3.133, 0.005],
+    ],
+    t,
+  );
+  hit.shy = steps(
+    [
+      [T_HIT, 0],
+      [3.033, 0.008],
+      [3.067, -0.009],
+      [3.1, 0.004],
+      [3.133, -0.003],
+    ],
+    t,
+  );
+  hit.tint = steps(
+    [
+      [T_HIT, 0],
+      [3.1, 1],
+    ],
+    t,
+  );
+
+  // The flash: a hard cut to white, with the seams of the glass showing in it.
+  out.flash = t >= T_FLASH && t < T_BOOM ? 1 : 0;
+
+  // The glass breaks (3.2 to 3.85) from the impact point outward.
+  out.shatter.on = t >= T_FLASH && t < T_CLEAR;
+  out.shatter.u = clamp01((t - T_BOOM) / (T_CLEAR - T_BOOM));
+  out.shatter.crack = t >= T_FLASH ? clamp01(0.5 + (t - T_FLASH) * 10) : 0;
+
+  // The boom.
+  const age = t - T_BOOM;
+  out.boom.on = age >= 0 && age < 1.0;
+  out.boom.age = age;
+  out.boom.core =
+    age < 0
+      ? 0
+      : linear(
+          [
+            [0, 1],
+            [0.12, 1],
+            [0.45, 0],
+          ],
+          age,
+        );
+  out.boom.ring = age < 0 ? 0 : clamp01(age / 0.75);
+  out.boom.ring2 = age < 0.08 ? 0 : clamp01((age - 0.08) / 0.8);
+
+  // The slash of the page flares up and flickers while the glass falls.
+  out.flare =
+    age < 0
+      ? 0
+      : steps(
+          [
+            [0, 1],
+            [0.033, 0.35],
+            [0.067, 1],
+            [0.1, 0.5],
+            [0.15, 0.85],
+            [0.2, 0.3],
+            [0.27, 0.6],
+            [0.33, 0.15],
+            [0.42, 0.3],
+            [0.5, 0],
+          ],
+          age,
+        );
+
+  // The fire: it opens fast from the impact point, burns, then thins out. Twenty pictures a second.
+  out.fire.on = age >= 0 && age < 0.85;
+  out.fire.frame = Math.floor(t * 20);
+  out.fire.scale = age < 0 ? 0.3 : 0.3 + 0.95 * (1 - Math.pow(1 - clamp01(age / 0.32), 3));
+  out.fire.alpha =
+    age < 0
+      ? 0
+      : linear(
+          [
+            [0, 1],
+            [0.35, 1],
+            [0.6, 0.6],
+            [0.85, 0],
+          ],
+          age,
+        );
+
+  // The page recoils and settles: thrown about at 30 pictures a second, smaller each time.
+  const amp = age < 0 || age > 0.6 ? 0 : Math.pow(1 - age / 0.6, 2);
+  const n = Math.floor(t * 30);
+  out.shake.x = amp * 16 * Math.cos(n * 2.399);
+  out.shake.y = amp * 11 * Math.sin(n * 3.711);
+  out.shake.scale = 1 + amp * 0.012;
 
   out.page = t >= T_DONE ? "done" : "play";
   return out;

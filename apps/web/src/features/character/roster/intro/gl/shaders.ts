@@ -95,25 +95,6 @@ uniform vec4 u_color; // premultiplied by the caller
 void main() { o_col = u_color; }
 `;
 
-/** A slanted panel filled with one colour, with a soft dark edge (the veil over Obsidia's panel). */
-export const VEIL = /* glsl */ `${COMMON}
-uniform vec4 u_xs; // x0 (bottom left), x1 (top left), x2 (top right), x3 (bottom right)
-uniform vec2 u_ys; // y0 (top), y1 (bottom)
-uniform vec4 u_color; // rgb, alpha
-void main() {
-  vec2 p = v_px;
-  float v = (p.y - u_ys.x) / (u_ys.y - u_ys.x);
-  float xl = mix(u_xs.y, u_xs.x, v);
-  float xr = mix(u_xs.z, u_xs.w, v);
-  float cov = clamp(min(p.x - xl, xr - p.x) + 0.5, 0.0, 1.0) * step(u_ys.x, p.y) * step(p.y, u_ys.y);
-  if (cov <= 0.0) discard;
-  // a little lighter toward the right, where the slash is
-  vec3 c = mix(u_color.rgb * 0.8, u_color.rgb * 1.15, v * 0.3 + 0.2);
-  float a = cov * u_color.a;
-  o_col = vec4(c * a, a);
-}
-`;
-
 /**
  * The red wedge that grows in from the left edge: a half plane leaning like the panels, red with a
  * lighter core, a radial glow, a dotted grid, and a thin hot line along its edge.
@@ -154,36 +135,6 @@ void main() {
 `;
 
 /**
- * The thin beam: a long tapering line from the left edge to a point, pink at its base, yellow in the
- * middle and cyan at the tip, with a soft glow round it.
- */
-export const THIN = /* glsl */ `${COMMON}
-uniform vec4 u_thin; // tip x, tip y, base y, base half width (px)
-uniform vec2 u_thin2; // colour phase, alpha
-uniform float u_thin3; // dpr
-void main() {
-  vec2 p = v_px;
-  float L = max(u_thin.x, 1.0);
-  float x = p.x / L;
-  if (x < 0.0 || x > 1.02) discard;
-  float xc = clamp(x, 0.0, 1.0);
-  float cy = mix(u_thin.z, u_thin.y, xc);
-  float hw = max(u_thin.w * pow(1.0 - xc, 1.25), 0.8 * u_thin3);
-  float d = abs(p.y - cy);
-  float core = sstep(hw, hw * 0.55, d);
-  float glow = exp(-d / (hw * 2.2 + 4.0 * u_thin3)) * 0.45;
-  vec3 pink = vec3(1.0, 0.42, 0.68);
-  vec3 yellow = vec3(1.0, 0.92, 0.45);
-  vec3 cyan = vec3(0.45, 0.93, 0.95);
-  float m = clamp(xc * 1.15 + u_thin2.x * 0.5 - 0.15, 0.0, 1.0);
-  vec3 c = m < 0.6 ? mix(pink, yellow, m / 0.6) : mix(yellow, cyan, (m - 0.6) / 0.4);
-  c = mix(c, vec3(1.0), core * 0.35);
-  float a = clamp(core + glow * (1.0 - xc), 0.0, 1.0) * u_thin2.y * sstep(1.02, 0.97, x);
-  o_col = vec4(c * a, a);
-}
-`;
-
-/**
  * One panel: a slanted parallelogram of a welcome clip or the splash art, with the impact frame
  * (a black and white threshold), the white glow outline, the rainbow fringe, the prism flare, the
  * blue bevel and the line art of the flash.
@@ -199,7 +150,7 @@ uniform vec4 u_picV; // clip origin xy, size zw (px)
 uniform vec4 u_a; // mix, pale, thr, inv
 uniform vec4 u_b; // white, black, glow, fringe
 uniform vec4 u_c; // flare, alpha, bevel, seed
-uniform vec4 u_d; // lineart, hasClip, step, dpr
+uniform vec4 u_d; // unused, hasClip, step, dpr
 uniform vec4 u_e; // split, stripes, plate extension (px)
 
 void main() {
@@ -343,18 +294,6 @@ void main() {
       vec3 pl = vec3(62.0, 110.0, 186.0) / 255.0 + sstep(2.5 * dpr, 1.0 * dpr, length(g)) * 0.18;
       col = mix(pl, col, picCov);
     }
-
-    // the line art of the flash: edges of the picture in pink on the white
-    if (u_d.x > 0.5) {
-      vec2 e = vec2(2.0) / u_picS.zw;
-      vec2 uvs = (p - u_picS.xy) / u_picS.zw;
-      float l1 = dot(texture(u_splash, uvs + vec2(e.x, 0.0)).rgb, vec3(0.333));
-      float l2 = dot(texture(u_splash, uvs - vec2(e.x, 0.0)).rgb, vec3(0.333));
-      float l3 = dot(texture(u_splash, uvs + vec2(0.0, e.y)).rgb, vec3(0.333));
-      float l4 = dot(texture(u_splash, uvs - vec2(0.0, e.y)).rgb, vec3(0.333));
-      float ed = clamp(length(vec2(l1 - l2, l3 - l4)) * 4.5, 0.0, 1.0);
-      col = mix(vec3(1.0), vec3(0.96, 0.62, 0.9), ed);
-    }
   }
 
   float a = cov * u_c.y;
@@ -387,5 +326,197 @@ void main() {
   vec4 t = texture(u_tex, uv);
   vec3 col = t.rgb * u_tint.rgb + u_hue.rgb * t.a;
   o_col = vec4(col, t.a) * u_tint.a;
+}
+`;
+
+/**
+ * The impact frame: Obsidia's cut-out as a hard silhouette, full screen. Black on white, or white
+ * on black or crimson, with a ragged inked edge, white strokes inside her where she is light (hair
+ * and skin) and a soft halo round her.
+ */
+export const HIT = /* glsl */ `${COMMON}
+uniform sampler2D u_cut;
+uniform vec4 u_rectH; // the cut-out's place on the canvas: x, y, width, height (px)
+uniform vec4 u_h; // inverted, crimson, dpr, seed
+uniform vec2 u_pc; // the impact point (px)
+void main() {
+  vec2 p = v_px;
+  float dpr = u_h.z;
+  vec2 uv = (p - u_rectH.xy) / u_rectH.zw;
+  float n = vnoise(p / (22.0 * dpr) + u_h.w * 7.0);
+  float n2 = vnoise(p / (6.0 * dpr) + u_h.w * 3.0);
+  vec2 o = vec2(10.0 * dpr) / u_rectH.zw;
+  float a = 0.0;
+  vec3 rgb = vec3(0.0);
+  float halo = 0.0;
+  // a few taps of her alpha: the blur of it, thresholded with noise, gives a ragged inked edge
+  for (int i = 0; i < 5; i++) {
+    vec2 d = i == 0 ? vec2(0.0) : i == 1 ? vec2(o.x, 0.0) : i == 2 ? vec2(-o.x, 0.0) : i == 3 ? vec2(0.0, o.y) : vec2(0.0, -o.y);
+    vec2 q = uv + d + (vec2(n, n2) - 0.5) * 0.01;
+    if (q.x >= 0.0 && q.y >= 0.0 && q.x <= 1.0 && q.y <= 1.0) {
+      vec4 t = texture(u_cut, q);
+      a += t.a * 0.2;
+      if (i == 0) rgb = t.rgb / max(t.a, 0.05);
+    }
+  }
+  vec2 o2 = o * 3.0;
+  for (int i = 0; i < 4; i++) {
+    vec2 d = i == 0 ? vec2(o2.x, 0.0) : i == 1 ? vec2(-o2.x, 0.0) : i == 2 ? vec2(0.0, o2.y) : vec2(0.0, -o2.y);
+    vec2 q = uv + d;
+    if (q.x >= 0.0 && q.y >= 0.0 && q.x <= 1.0 && q.y <= 1.0) halo += texture(u_cut, q).a * 0.25;
+  }
+  float sil = step(0.5 + (n2 - 0.5) * 0.4, a);
+  float lum = dot(rgb, vec3(0.299, 0.587, 0.114));
+  float ink = sil * step(0.87 + (n2 - 0.5) * 0.1, lum);
+  vec3 crimson = vec3(0.86, 0.05, 0.14);
+  bool inv = u_h.x > 0.5;
+  vec3 bg = inv ? mix(vec3(0.0), crimson * 0.85, u_h.y) : vec3(1.0);
+  vec3 fg = inv ? vec3(1.0) : mix(vec3(0.0), crimson, u_h.y);
+  // thin lines streaming out from the impact point, behind her
+  vec2 dd = p - u_pc;
+  float s2 = atan(dd.y, dd.x) / 6.2832 * 110.0;
+  float id = floor(s2);
+  float rnd = hash(vec2(id, u_h.w));
+  float lw = 0.05 + 0.2 * rnd;
+  float line = (1.0 - sstep(lw * 0.5, lw, abs(fract(s2) - 0.5))) * step(0.5, rnd) * sstep(60.0 * dpr, 320.0 * dpr, length(dd));
+  bg = mix(bg, inv ? vec3(0.85) : vec3(0.0), line * 0.85);
+  vec3 col = mix(bg, fg, sil);
+  col = mix(col, bg, ink * 0.92);
+  // the halo: light on a dark ground, a soft shadow on a light one
+  col += (inv ? vec3(1.0) : vec3(-0.3)) * halo * (1.0 - sil) * 0.45;
+  // a little darker toward the corners, like the game's own impact frames
+  col *= 1.0 - 0.1 * length(p / u_res - 0.5);
+  o_col = vec4(clamp(col, 0.0, 1.0), 1.0);
+}
+`;
+
+/**
+ * A soft glow (the crimson charge, the white-hot core of the boom) or a ring (the shock wave).
+ * Round things with one centre: nothing else.
+ */
+export const GLOW = /* glsl */ `${COMMON}
+uniform vec4 u_g; // centre x, y (px), radius (px), strength
+uniform vec4 u_gc; // colour, kind: 0 glow, 1 ring, 2 hot core (added)
+uniform vec2 u_g2; // ring thickness (px), unused
+void main() {
+  float d = length(v_px - u_g.xy);
+  float kind = u_gc.w;
+  if (kind < 0.5) {
+    float a = pow(clamp(1.0 - d / u_g.z, 0.0, 1.0), 2.0) * u_g.w;
+    o_col = vec4(u_gc.rgb * a, a * 0.35);
+  } else if (kind < 1.5) {
+    float s = (d - u_g.z) / u_g2.x;
+    float x = abs(s);
+    float a = (1.0 - sstep(0.0, 1.0, x)) * u_g.w;
+    // red outside, pale cyan inside, a white line in the middle
+    vec3 col = mix(vec3(1.0, 0.45, 0.55), vec3(0.75, 0.95, 1.0), clamp(0.5 - s * 0.5, 0.0, 1.0));
+    col = mix(col, vec3(1.0), (1.0 - sstep(0.0, 0.4, x)));
+    // behind the ring the air is still bright
+    float tail = sstep(u_g2.x * 5.0, 0.0, -(d - u_g.z)) * step(d, u_g.z) * 0.22 * u_g.w;
+    o_col = vec4(col * (a + tail), a * 0.9);
+  } else {
+    float k = clamp(1.0 - d / u_g.z, 0.0, 1.0);
+    float a = (k * k * k) * u_g.w;
+    o_col = vec4(mix(u_gc.rgb, vec3(1.0), k) * a, 0.0);
+  }
+}
+`;
+
+/**
+ * The glass: a few hundred slanted shards that tile the screen (the same lean as the panels). Each
+ * flies out from the impact point, spinning, a little later the farther it is, then falls and fades.
+ * Everything is worked out here from the shard's own centre, so the JavaScript does nothing per frame.
+ */
+export const SHARD_VERT = /* glsl */ `#version 300 es
+precision highp float;
+layout(location = 0) in vec2 a_pos;
+layout(location = 1) in vec2 a_cen;
+layout(location = 2) in vec3 a_rnd;
+layout(location = 3) in float a_k;
+uniform vec2 u_res;
+uniform vec2 u_P;
+uniform float u_u;
+uniform float u_sc;
+out vec3 v_bary;
+out vec3 v_rnd;
+out float v_k;
+void main() {
+  vec2 d = a_cen - u_P;
+  float dist = length(d);
+  vec2 dir = d / max(dist, 1.0);
+  float delay = (dist / length(u_res)) * 0.38 + a_rnd.x * 0.08;
+  float k = clamp((u_u - delay) / 0.5, 0.0, 1.0);
+  float e = k * k;
+  vec2 move = dir * e * (260.0 + 760.0 * a_rnd.y) * u_sc + vec2(0.0, e * e * 820.0 * u_sc);
+  float ang = (a_rnd.z - 0.5) * 6.0 * e;
+  float c = cos(ang);
+  float s = sin(ang);
+  vec2 rel = a_pos - a_cen;
+  rel = vec2(c * rel.x - s * rel.y, s * rel.x + c * rel.y) * (1.0 - 0.3 * k);
+  vec2 p = a_cen + move + rel;
+  gl_Position = vec4(p.x / u_res.x * 2.0 - 1.0, 1.0 - p.y / u_res.y * 2.0, 0.0, 1.0);
+  v_bary = vec3(a_k < 0.5 ? 1.0 : 0.0, a_k > 0.5 && a_k < 1.5 ? 1.0 : 0.0, a_k > 1.5 ? 1.0 : 0.0);
+  v_rnd = a_rnd;
+  v_k = k;
+}
+`;
+
+export const SHARD_FRAG = /* glsl */ `#version 300 es
+precision highp float;
+in vec3 v_bary;
+in vec3 v_rnd;
+in float v_k;
+out vec4 o_col;
+uniform float u_crack;
+uniform float u_dpr;
+void main() {
+  float m = min(min(v_bary.x, v_bary.y), v_bary.z);
+  float w = fwidth(m);
+  // the seams: thin pale pink lines that show first as cracks in the white, then as glass edges
+  float seam = 1.0 - smoothstep(w * 0.5, w * 1.8 + 0.0001, m);
+  vec3 glass = mix(vec3(1.0), vec3(1.0, 0.8, 0.9), v_rnd.x * 0.5 * v_k);
+  // a sweep of light across each shard, brighter on one side
+  glass *= 0.93 + 0.07 * (v_bary.x - v_bary.y);
+  vec3 col = mix(glass, vec3(1.0, 0.45, 0.62), seam * (0.35 + 0.5 * v_k) * u_crack);
+  col = mix(col, vec3(1.0), seam * 0.0);
+  float a = 1.0 - smoothstep(0.55, 1.0, v_k);
+  o_col = vec4(col * a, a);
+}
+`;
+
+/** The embers: glowing points thrown from the impact point. Added to the picture, not over it. */
+export const EMBER_VERT = /* glsl */ `#version 300 es
+precision highp float;
+layout(location = 0) in vec4 a_r;
+uniform vec2 u_res;
+uniform vec2 u_P;
+uniform float u_age;
+uniform float u_sc;
+out float v_life;
+out float v_hot;
+void main() {
+  float life = 0.35 + a_r.x * 0.8;
+  float ang = a_r.y * 6.2832;
+  float spd = (240.0 + 950.0 * a_r.z * a_r.z) * u_sc;
+  vec2 dir = vec2(cos(ang), sin(ang) * 0.85);
+  float s = (1.0 - exp(-3.0 * u_age)) / 3.0;
+  vec2 pos = u_P + dir * spd * s + vec2(0.0, 380.0 * u_sc * u_age * u_age * (0.3 + a_r.w));
+  v_life = clamp(1.0 - u_age / life, 0.0, 1.0);
+  v_hot = a_r.w;
+  gl_PointSize = (2.0 + 8.0 * a_r.w) * u_sc * (0.4 + 0.6 * v_life) * (u_age < 0.0 ? 0.0 : 1.0);
+  gl_Position = vec4(pos.x / u_res.x * 2.0 - 1.0, 1.0 - pos.y / u_res.y * 2.0, 0.0, 1.0);
+}
+`;
+
+export const EMBER_FRAG = /* glsl */ `#version 300 es
+precision highp float;
+in float v_life;
+in float v_hot;
+out vec4 o_col;
+void main() {
+  float d = length(gl_PointCoord - 0.5) * 2.0;
+  float a = pow(clamp(1.0 - d, 0.0, 1.0), 1.5) * v_life;
+  vec3 col = mix(vec3(1.0, 0.2, 0.05), vec3(1.0, 0.9, 0.5), v_life * v_hot + 0.2);
+  o_col = vec4(col * a, 0.0);
 }
 `;

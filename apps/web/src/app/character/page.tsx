@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { characters } from "@/content/characters";
 import { rosterCharacters, rosterPairs } from "@/features/character/roster/entries";
+import { RosterCover } from "@/features/character/roster/intro/roster-cover";
 import { RosterIntroMount } from "@/features/character/roster/intro/roster-intro-lazy";
 import { Roster } from "@/features/character/roster/roster";
 import { routes } from "@/lib/site";
@@ -16,6 +17,8 @@ export default function CharactersPage() {
   const voiceLines = characters.reduce((sum, c) => sum + c.voice.length, 0);
   return (
     <>
+      {/* First in the markup: the browser may paint before the rest of the page has been read. */}
+      <RosterCover />
       <Roster
         characters={rosterCharacters()}
         pairs={rosterPairs()}

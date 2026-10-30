@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 
 import { runIntro, setHandOver } from "./controller";
+import { hideCover } from "./cover";
 import { introMode } from "./mode";
 
 /**
@@ -17,14 +18,16 @@ export default function RosterIntro() {
 
   // The page below hides its logo block and its idle effects while the intro plays.
   useLayoutEffect(() => {
-    if (introMode() !== "off") setHandOver("play");
+    // Played: the page hides its logo block while the intro runs. Not played: it is finished at once.
+    setHandOver(introMode() === "off" ? "off" : "play");
   }, []);
 
   useEffect(() => {
     const el = host.current;
     const mode = introMode();
     if (!el || mode === "off") {
-      setHandOver("done");
+      hideCover();
+      setHandOver("off");
       return;
     }
     return runIntro(el, mode === "light");

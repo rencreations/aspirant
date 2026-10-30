@@ -19,6 +19,7 @@ import { NAVIGATED_EVENT, prefersReducedMotion } from "@/lib/hooks";
 import { OFFLINE_BLOCKED_EVENT, isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
 import { capWait, runPreload, type PreloadProgress } from "@/lib/preload";
+import { noteRoute } from "@/lib/route-history";
 import { routeItems } from "@/lib/route-preloads";
 
 /** A page that is not ready this long after the click gets the loading state. */
@@ -88,6 +89,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     pathRef.current = pathname;
     visited.current.add(normalisePath(pathname));
+    noteRoute(normalisePath(pathname));
     const w = waiter.current;
     if (w?.target === normalisePath(pathname)) {
       waiter.current = null;

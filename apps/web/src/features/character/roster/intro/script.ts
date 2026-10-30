@@ -50,6 +50,8 @@ export interface Beat {
   split?: number;
   /** Black and white bars with a colour fringe (the panels the spear tip meets). */
   stripes?: number;
+  /** 1 puts the panel on the real page, in the box of the page's own panel (Obsidia's reveal). */
+  page?: number;
   /** Board units added to the bottom edge (the first panel runs past the bottom of the screen). */
   drop?: number;
   /** A number the jagged edges read, changed by hand so they differ from panel to panel. */
@@ -78,6 +80,7 @@ export const REST: Params = {
   drop: 0,
   split: -1,
   stripes: 0,
+  page: 0,
   zoom: 1,
   shy: 0,
   seed: 0,

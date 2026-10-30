@@ -110,4 +110,96 @@ test.describe("roster intro", () => {
     await page.waitForTimeout(500);
     expect(new URL(page.url()).pathname).toMatch(/\/character\/$/);
   });
+  test("the page is black from the first paint of a hard load: a cover is in the markup", async ({
+    page,
+  }) => {
+    await page.goto(url("/character/"), { waitUntil: "commit" });
+    // Read as soon as the markup is in: the cover is there and black, under the site bar.
+    await page.waitForSelector("[data-roster-cover]", { state: "attached" });
+    const cover = await page.evaluate(() => {
+      const el = document.querySelector<HTMLElement>("[data-roster-cover]");
+      if (!el) return null;
+      const css = getComputedStyle(el);
+      return { bg: css.backgroundColor, z: Number(css.zIndex), position: css.position };
+    });
+    expect(cover?.bg).toBe("rgb(0, 0, 0)");
+    expect(cover?.position).toBe("fixed");
+    const nav = await page.evaluate(() =>
+      Number(getComputedStyle(document.documentElement).getPropertyValue("--z-nav")),
+    );
+    expect(cover?.z).toBeLessThan(nav);
+  });
+
+  test("reduced motion never gets the cover", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(url("/character/"), { waitUntil: "commit" });
+    await page.waitForSelector("[data-roster-cover]", { state: "attached" });
+    const shown = await page.evaluate(
+      () => getComputedStyle(document.querySelector("[data-roster-cover]")!).display,
+    );
+    expect(shown).toBe("none");
+  });
+
+  test("after the intro the cover is gone as well as the canvas", async ({ page }) => {
+    await page.goto(url("/character/"));
+    test.skip(!(await hasWebGL2(page)), "no WebGL2 in this browser");
+    await expect
+      .poll(() => page.evaluate(() => window.__rosterIntro?.state), { timeout: 20_000 })
+      .toBe("playing");
+    // While it plays the canvas is up and the cover has let go.
+    await expect(
+      page.locator("[data-roster-cover]").evaluate((el) => getComputedStyle(el).display),
+    ).resolves.toBe("none");
+    await expect
+      .poll(() => page.evaluate(() => window.__rosterIntro?.state), { timeout: 15_000 })
+      .toBe("ended");
+  });
+});
+
+/** Open the menu and go to the roster with the logo transition (a page change inside the site). */
+async function openRosterFromMenu(page: Page) {
+  await page.getByRole("button", { name: /open menu/i }).click();
+  await page.locator('a[href$="/character/"]:visible').first().click();
+}
+
+test.describe("roster intro, where it plays", () => {
+  test("arriving from the home page plays it", async ({ page }) => {
+    await skipGate(page, { intro: true });
+    await page.goto(url("/"));
+    test.skip(!(await hasWebGL2(page)), "no WebGL2 in this browser");
+    await openRosterFromMenu(page);
+    await expect
+      .poll(() => page.evaluate(() => window.__rosterIntro?.state), { timeout: 40_000 })
+      .toBe("playing");
+    await expect(page.locator(CANVAS)).toHaveCount(1);
+  });
+
+  test("coming back from a character's page does not play it: no canvas, no cover", async ({
+    page,
+  }) => {
+    await skipGate(page, { intro: true });
+    await page.goto(url("/character/selena/"));
+    await openRosterFromMenu(page);
+    await expect
+      .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+      .toMatch(/\/character\/$/);
+    await expect(
+      page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" }),
+    ).toBeVisible({ timeout: 30_000 });
+    // The roster was made ready, the intro was never started, and nothing covers the page.
+    await page.waitForTimeout(1500);
+    await expect(page.locator(CANVAS)).toHaveCount(0);
+    expect(await page.evaluate(() => window.__rosterIntro?.state ?? "none")).toBe("none");
+    const covered = await page.evaluate(() => {
+      const el = document.querySelector<HTMLElement>("[data-roster-cover]");
+      return el ? getComputedStyle(el).display !== "none" : false;
+    });
+    expect(covered).toBe(false);
+    const state = await page.evaluate(
+      () => document.querySelector("[data-roster-root]")?.getAttribute("data-intro") ?? "none",
+    );
+    expect(["none", "off"]).toContain(state);
+    // The logo block is solid at once: nothing hides it and nothing fades it in.
+    await expect(page.locator('[data-intro-item="logo"]').first()).toHaveCSS("opacity", "1");
+  });
 });

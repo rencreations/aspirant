@@ -2,7 +2,7 @@ import { chunkItem, imageItem, mediaItem, type PreloadItem } from "@/lib/preload
 
 import { INTRO_CLIPS } from "./clips";
 import { introMode } from "./mode";
-import { STILL_NAMES, STILLS } from "./stills";
+import { OBSIDIA_CUTOUT, STILL_NAMES, STILLS } from "./stills";
 
 /** The order the panels need their clips in, so the first ones arrive first. */
 const CLIP_ORDER = [
@@ -15,6 +15,7 @@ const CLIP_ORDER = [
   "guinevere",
   "vexana",
   "selena",
+  "obsidia",
 ] as const;
 
 /**
@@ -29,6 +30,7 @@ export function introItems(): PreloadItem[] {
   const items: PreloadItem[] = [
     chunkItem("roster-intro", "Loading the opening", () => import("./roster-intro"), 2),
     ...STILL_NAMES.map((n) => imageItem(STILLS[n].path, "Loading the opening effects", 1)),
+    imageItem(OBSIDIA_CUTOUT, "Loading the opening effects", 1),
   ];
   if (mode === "full") {
     for (const slug of CLIP_ORDER) {

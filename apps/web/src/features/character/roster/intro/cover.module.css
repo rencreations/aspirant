@@ -1,0 +1,32 @@
+/*
+  The black the visitor sees from the first paint of /character while the intro loads. It sits below
+  the site bar (z-index 45, the bar is 50) like the intro's canvas that takes over from it.
+
+  Failsafe: if the scripts never run, the cover lets go by itself after 25 seconds (no script needed),
+  so the page is never left covered. Reduced motion never gets the cover.
+*/
+.cover {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: #000;
+  animation: coverFailsafe 0.01s linear 25s forwards;
+}
+
+@keyframes coverFailsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+:global(html[data-motion="reduced"]) .cover {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover {
+    display: none;
+  }
+}

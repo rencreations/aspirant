@@ -6,9 +6,10 @@ import { perfLevel, perfReady } from "@/lib/perf";
 
 import { splashPath } from "../splash";
 import { INTRO_CLIPS } from "./clips";
+import { hideCover } from "./cover";
 import { introView, measurePage, panelElement } from "./geometry";
 import { type Assets, IntroRenderer, type Source } from "./gl/renderer";
-import { STILL_NAMES, STILLS } from "./stills";
+import { OBSIDIA_CUTOUT, STILL_NAMES, STILLS } from "./stills";
 import { createScene, DURATION, PANEL_SLUGS, sceneAt } from "./timeline";
 
 declare global {
@@ -34,8 +35,15 @@ const CLIPS_DIR = "/video/roster-intro/";
 /** A clip that has not shown a picture by now is dropped: its panel stands on its splash art. */
 const CLIP_WAIT_MS = 6000;
 const SKIP_FADE_MS = 200;
+/**
+ * The most the pictures and clips may take to arrive. A slow connection never keeps the visitor on
+ * black: past this the intro gives up, the page shows, and nothing pops in late.
+ */
+const ASSET_MAX_MS = 10_000;
+/** From here the page under the picture has settled, so its boxes can be read. */
+const MEASURE_AT = 2.5;
 /** Times that between them use every program of the renderer. */
-const WARM_TIMES = [0.9, 1.7, 2.3, 2.55, 2.82, 2.95, 3.2, 3.3, 3.6] as const;
+const WARM_TIMES = [0.9, 1.7, 2.3, 2.55, 2.82, 2.95, 3.05, 3.17, 3.3, 3.5] as const;
 
 /** Load a picture and shrink it to what the panels can show. */
 async function loadImage(path: string, maxWidth: number): Promise<Source | null> {
@@ -156,14 +164,39 @@ function whenCurtainOpen(stopped: () => boolean): Promise<void> {
 let handOverRoot: HTMLElement | null = null;
 
 /** The page below hides its logo block and idle effects while the intro plays. */
-export function setHandOver(state: "play" | "done"): void {
+export function setHandOver(state: "play" | "done" | "off"): void {
   if (!handOverRoot?.isConnected) {
     const el = panelElement("obsidia");
     handOverRoot =
-      el?.closest<HTMLElement>("[data-intro]") ??
-      document.querySelector<HTMLElement>("[data-intro]");
+      el?.closest<HTMLElement>("[data-roster-root]") ??
+      document.querySelector<HTMLElement>("[data-roster-root]");
   }
   if (handOverRoot && handOverRoot.dataset.intro !== state) handOverRoot.dataset.intro = state;
+}
+
+let lastShake = "";
+
+/**
+ * The page recoils at the boom: the roster's root is thrown a few pixels at 30 pictures a second
+ * and settles. It is a transform only, and it is cleared when it is back to rest.
+ */
+function shakePage(x: number, y: number, scale: number): void {
+  if (!handOverRoot?.isConnected) return;
+  const rest = Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && scale < 1.0001;
+  const value = rest
+    ? ""
+    : `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+  if (value === lastShake) return;
+  lastShake = value;
+  handOverRoot.style.transform = value;
+}
+
+/**
+ * Make the roster's root its own layer a little before the boom (while the picture covers it), so
+ * throwing it about costs the compositor only and the page is not painted again at every step.
+ */
+function promotePage(on: boolean): void {
+  if (handOverRoot?.isConnected) handOverRoot.style.willChange = on ? "transform" : "";
 }
 
 /**
@@ -196,6 +229,7 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     state: "loading",
   };
   window.__rosterIntro = api;
+  const deadline = performance.now() + ASSET_MAX_MS;
 
   const fit = () => {
     if (!renderer) return;
@@ -215,6 +249,8 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     if (freed) return;
     freed = true;
     cancelAnimationFrame(raf);
+    shakePage(0, 0, 1);
+    promotePage(false);
     for (const off of listeners) off();
     listeners.length = 0;
     for (const v of videos.values()) {
@@ -231,11 +267,15 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
   };
 
   /** The intro is over: hand the page over and free everything (after a short fade on a skip). */
-  const end = (fade: boolean) => {
+  const end = (fade: boolean, handOver: "done" | "off" = "done") => {
     if (stopped) return;
     stopped = true;
     cancelAnimationFrame(raf);
-    setHandOver("done");
+    shakePage(0, 0, 1);
+    promotePage(false);
+    // Over for good (it played, it was skipped, or it could not start): the page must not stay covered.
+    hideCover();
+    setHandOver(handOver);
     api.state = "ended";
     if (fade && canvas) {
       canvas.style.opacity = "0";
@@ -245,13 +285,39 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     }
   };
 
+  /** The intro could not start in time (a slow connection, a failure): show the page, as if it were off. */
+  const giveUp = () => {
+    end(false, "off");
+    markReady();
+  };
+
+  // While the pictures load the visitor sees black. A press on it, or Esc, skips at once. (The loading
+  // curtain of a first visit is not the cover, so a press on its button never skips the intro.)
+  const coverEl = document.querySelector<HTMLElement>("[data-roster-cover]");
+  const earlyPress = (e: Event) => {
+    if (canvas) return;
+    e.preventDefault();
+    end(true, "off");
+  };
+  const earlyKey = (e: KeyboardEvent) => {
+    if (e.key !== "Escape" || canvas) return;
+    if (document.querySelector('[data-mode][data-active="true"]')) return;
+    end(true, "off");
+  };
+  coverEl?.addEventListener("pointerdown", earlyPress);
+  window.addEventListener("keydown", earlyKey);
+  listeners.push(() => {
+    coverEl?.removeEventListener("pointerdown", earlyPress);
+    window.removeEventListener("keydown", earlyKey);
+  });
+
   /** Put the clips where the running scene wants them: play, hold or keep in step. */
   const keepClips = () => {
     if (light) return;
     for (const p of scene.panels) {
       const v = videos.get(p.slug);
       if (!v || v.readyState < 1) continue;
-      const want = p.on && p.mix < 0.999 && scene.lineup > 0.05;
+      const want = p.on && p.mix < 0.999 && (scene.lineup > 0.05 || p.page > 0.5);
       const target = Math.min(Math.max(p.clipT, 0), Math.max(0, v.duration - 0.04));
       if (!want) {
         if (!v.paused) v.pause();
@@ -296,14 +362,16 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
       return;
     }
     sceneAt(t, scene);
-    if (!pageMeasured && t > 3.1) {
-      // The page is under the picture now: take its measures for the layers that run over it.
+    if (!pageMeasured && t > MEASURE_AT) {
+      // The roster has settled under the picture: take its measures for the layers that run over it.
       pageMeasured = true;
       renderer?.setPage(measurePage(window.innerWidth, window.innerHeight));
+      promotePage(true);
     }
     const c0 = performance.now();
     keepClips();
     setHandOver(scene.page);
+    shakePage(scene.shake.x, scene.shake.y, scene.shake.scale);
     renderer?.draw(scene);
     if (debug) {
       // Frames whose own work took long (not the browser's): the numbers `?introDebug` collects.
@@ -345,6 +413,11 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
         assets.clipInfo[slug] = { focus: info.focus, aspect: info.width / info.height };
       }
     }
+    jobs.push(
+      loadImage(OBSIDIA_CUTOUT, 1100).then((img) => {
+        if (img) assets.cutout = img;
+      }),
+    );
     for (const name of STILL_NAMES) {
       jobs.push(
         loadImage(STILLS[name].path, 2048).then((img) => {
@@ -352,12 +425,24 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
         }),
       );
     }
-    await Promise.all(jobs);
+    const arrived = await Promise.race([
+      Promise.all(jobs).then(() => true),
+      new Promise<boolean>((resolve) => {
+        window.setTimeout(() => {
+          resolve(false);
+        }, ASSET_MAX_MS);
+      }),
+    ]);
     if (stopped) return;
+    if (!arrived) {
+      giveUp();
+      return;
+    }
 
     // A clip that has no picture soon is left out: its panel shows the splash art.
     if (!light) {
-      await Promise.all(Array.from(videos.values()).map((v) => whenVideoReady(v, CLIP_WAIT_MS)));
+      const wait = Math.max(500, Math.min(CLIP_WAIT_MS, deadline - performance.now()));
+      await Promise.all(Array.from(videos.values()).map((v) => whenVideoReady(v, wait)));
       for (const [slug, v] of Array.from(videos)) {
         if (v.readyState < 2) {
           v.removeAttribute("src");
@@ -369,6 +454,10 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
       await Promise.all(Array.from(videos.values()).map(preroll));
     }
     if (stopped) return;
+    if (performance.now() > deadline + 3000) {
+      giveUp();
+      return;
+    }
 
     const cv = document.createElement("canvas");
     cv.setAttribute("aria-hidden", "true");
@@ -385,14 +474,15 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
         introView(window.innerWidth, window.innerHeight),
         light,
       );
-    } catch {
-      end(false);
-      markReady();
+    } catch (error) {
+      // No WebGL or a shader that did not build: the page shows without the intro.
+      if (debug) console.warn("[roster intro] renderer failed", error);
+      giveUp();
       return;
     }
     renderer.debug = debug;
     renderer.onLost = () => {
-      end(false);
+      end(false, "off");
     };
     fit();
     // Draw every kind of picture once before the start, so no shader is built in the middle of it.
@@ -403,6 +493,8 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     renderer.finish();
     sceneAt(0, scene);
     renderer.draw(scene);
+    // The canvas now shows black itself, so the page's black cover can go.
+    hideCover();
 
     // A click, a tap or Esc skips to the finished page. The click does not reach what is under it.
     const skip = (e: Event) => {
@@ -429,7 +521,11 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
       sceneAt(t, scene);
       await seekClips();
       setHandOver(scene.page);
-      if (t > 3.1) renderer.setPage(measurePage(window.innerWidth, window.innerHeight));
+      if (t > MEASURE_AT) {
+        renderer.setPage(measurePage(window.innerWidth, window.innerHeight));
+        promotePage(true);
+      }
+      shakePage(scene.shake.x, scene.shake.y, scene.shake.scale);
       renderer.draw(scene);
       await nextFrame();
     };

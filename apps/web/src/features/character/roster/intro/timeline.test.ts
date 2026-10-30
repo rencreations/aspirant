@@ -1,16 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { resolve } from "./script";
-import {
-  BEAM,
-  createScene,
-  DURATION,
-  PANEL_SLUGS,
-  sceneAt,
-  T_BLACK,
-  T_FLASH,
-  T_PAGE,
-} from "./timeline";
+import { createScene, DURATION, PANEL_SLUGS, sceneAt, T_BLACK, T_BOOM, T_FLASH } from "./timeline";
 
 const at = (t: number) => sceneAt(t, createScene());
 const panel = (t: number, slug: string) => {
@@ -81,45 +72,94 @@ describe("roster intro timeline", () => {
     expect(panel(1.77, "ruby").thr).toBeGreaterThan(0);
   });
 
-  it("draws the red wedge from 2.4 to the held beam", () => {
+  it("draws the red wedge until the charge ends in the dark", () => {
     expect(at(2.2).wedge.on).toBe(false);
     expect(at(2.5).wedge.on).toBe(true);
     expect(at(2.6).wedge.edge).toBeGreaterThan(at(2.45).wedge.edge);
     expect(at(2.95).wedge.on).toBe(false);
   });
 
-  it("shows the pink spear with speed lines, then the held leaf, then blue, then thin", () => {
-    expect(at(2.82).beam.kind).toBe(BEAM.pink);
+  it("charges: lines are drawn in toward a point, then a seed of light grows in the dark", () => {
+    expect(at(2.7).speed.on).toBe(false);
     expect(at(2.82).speed.on).toBe(true);
-    expect(at(2.7).beam.kind).toBe(BEAM.none);
-    expect(at(2.95).beam.kind).toBe(BEAM.hold);
+    // Each picture of the lines is smaller than the one before.
+    expect(at(2.86).speed.size).toBeLessThan(at(2.82).speed.size);
     expect(at(2.95).ground).toBe(2);
     expect(at(2.95).lineup).toBeLessThan(0.2);
-    expect(at(3.2).beam.kind).toBe(BEAM.blue);
-    expect(at(3.5).beam.kind).toBe(BEAM.none);
-    expect(at(3.5).thin.on).toBe(true);
-    expect(at(4.3).thin.on).toBe(false);
-    expect(at(4.5).beam.kind).toBe(BEAM.none);
+    expect(at(2.82).seed).toBe(0);
+    expect(at(2.99).seed).toBeGreaterThan(at(2.9).seed);
+    expect(at(2.99).charge.glow).toBeGreaterThan(0);
   });
 
-  it("flashes white for six frames and then shows the page under the picture", () => {
+  it("stamps Obsidia in as an impact frame: five pictures, black then white, shaking", () => {
+    expect(at(2.99).hit.on).toBe(false);
+    expect(at(3.01).hit.on).toBe(true);
+    expect(at(3.15).hit.on).toBe(true);
+    expect(at(3.01).hit.inv).toBe(0);
+    expect(at(3.04).hit.inv).toBe(1);
+    expect(at(3.07).hit.inv).toBe(0);
+    // Each is bigger than the first, and the position changes from step to step.
+    expect(at(3.14).hit.zoom).toBeGreaterThan(at(3.01).hit.zoom);
+    expect(at(3.04).hit.shx).not.toBe(at(3.07).hit.shx);
+    // The last pictures come back in crimson.
+    expect(at(3.01).hit.tint).toBe(0);
+    expect(at(3.12).hit.tint).toBe(1);
+    // The lineup is gone: the impact frame stands alone.
+    expect(at(3.01).lineup).toBe(0);
+  });
+
+  it("flashes white with the glass whole, then the glass breaks from the impact point", () => {
     expect(at(T_FLASH - 0.01).flash).toBe(0);
-    expect(at(T_FLASH + 0.04).flash).toBe(1);
-    expect(at(T_FLASH + 0.04).ground).toBe(3);
-    expect(at(T_PAGE - 0.01).clear).toBe(0);
-    expect(at(T_PAGE + 0.01).clear).toBe(1);
-    expect(at(T_PAGE + 0.01).flash).toBe(0);
+    expect(at(T_FLASH + 0.02).flash).toBe(1);
+    expect(at(T_FLASH + 0.02).shatter.u).toBe(0);
+    expect(at(T_FLASH + 0.02).shatter.on).toBe(true);
+    expect(at(T_BOOM + 0.001).flash).toBe(0);
+    expect(at(T_FLASH - 0.01).clear).toBe(0);
+    expect(at(T_FLASH + 0.01).clear).toBe(1);
+    let last = -1;
+    for (let t = T_BOOM; t < 3.9; t += 0.02) {
+      const u = at(t).shatter.u;
+      expect(u).toBeGreaterThanOrEqual(last);
+      last = u;
+    }
+    expect(at(3.9).shatter.on).toBe(false);
   });
 
-  it("runs the fire and the arcs over the page, and hands the page over at 4.2", () => {
-    expect(at(3.0).fire.on).toBe(false);
-    expect(at(3.7).fire.on).toBe(true);
-    expect(at(3.7).arcs).toBeGreaterThan(0);
-    expect(at(3.7).veil).toBeGreaterThan(0);
-    expect(at(4.1).veil).toBe(0);
+  it("booms: core, rings, fire and embers from the impact point, and the page recoils", () => {
+    expect(at(3.1).boom.on).toBe(false);
+    const b = at(T_BOOM + 0.05);
+    expect(b.boom.on).toBe(true);
+    expect(b.boom.core).toBeGreaterThan(0.9);
+    expect(at(T_BOOM + 0.4).boom.ring).toBeGreaterThan(b.boom.ring);
+    expect(at(T_BOOM + 0.05).fire.on).toBe(true);
+    // The fire opens fast.
+    expect(at(T_BOOM + 0.3).fire.scale).toBeGreaterThan(at(T_BOOM + 0.02).fire.scale);
+    // The recoil is thrown at the start and has settled by 0.6 s.
+    const hit = at(T_BOOM + 0.05).shake;
+    expect(Math.abs(hit.x) + Math.abs(hit.y)).toBeGreaterThan(1);
+    for (const t of [T_BOOM + 0.65, 3.1]) {
+      const rest = at(t).shake;
+      expect(Math.abs(rest.x) + Math.abs(rest.y)).toBe(0);
+      expect(rest.scale).toBe(1);
+    }
+  });
+
+  it("reveals Obsidia on the real page, then hands the page over at 4.2", () => {
+    const o = (t: number) => panel(t, "obsidia");
+    expect(o(T_BOOM - 0.01).on).toBe(false);
+    expect(o(T_BOOM + 0.01).on).toBe(true);
+    // She is drawn in the box of the page's own panel, white-hot at first, then her clip plays.
+    expect(o(T_BOOM + 0.01).page).toBe(1);
+    expect(o(T_BOOM + 0.01).white).toBeGreaterThan(0.9);
+    expect(o(3.5).white).toBe(0);
+    expect(o(3.5).mix).toBe(0);
+    expect(o(3.7).clipT).toBeGreaterThan(o(3.5).clipT);
+    // The splash comes in and the canvas panel is let go so the page's frame and name show.
+    expect(o(4.05).mix).toBe(1);
+    expect(o(4.19).alpha).toBeLessThan(0.2);
     expect(at(4.1).page).toBe("play");
     expect(at(4.25).page).toBe("done");
-    expect(at(4.5).fire.on).toBe(false);
+    expect(at(4.25).fire.on).toBe(false);
     expect(DURATION).toBeGreaterThan(4.2);
   });
 
@@ -149,10 +189,10 @@ describe("roster intro timeline", () => {
     expect(a.frame).toBe(b.frame);
   });
 
-  it("covers every panel of the roster that is not on the page when it opens", () => {
+  it("has every panel once, Obsidia last (she is the reveal at the end)", () => {
     expect(new Set(PANEL_SLUGS).size).toBe(PANEL_SLUGS.length);
-    // Obsidia is revealed by the fire, over the page: she is not one of the arriving panels.
-    expect(PANEL_SLUGS).not.toContain("obsidia");
+    expect(PANEL_SLUGS[0]).toBe("fanny");
+    expect(PANEL_SLUGS[PANEL_SLUGS.length - 1]).toBe("obsidia");
   });
 
   it("keeps a clip running across beats that give no clip time", () => {
