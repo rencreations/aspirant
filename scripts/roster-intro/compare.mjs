@@ -1,7 +1,7 @@
 // Frame comparison for the roster intro.
 //
 //   node scripts/roster-intro/compare.mjs [--times 0.7,1.0,...] [--base http://localhost:3100]
-//        [--out DIR] [--ref C:\path\transitions.mov] [--rows 3] [--w 1920] [--h 1080]
+//        [--out DIR] [--ref path\to\transitions.mov] [--rows 3] [--w 1920] [--h 1080]
 //
 // For each time it opens /character/?introT=<t> in Chrome (the page freezes the intro at t), takes
 // a 1920x1080 screenshot, cuts the same moment out of the reference recording with ffmpeg and
@@ -35,7 +35,7 @@ const times = (args.times ? args.times.split(",").map(Number) : DEFAULT_TIMES).f
 );
 const base = (args.base || "http://localhost:3100").replace(/\/$/, "");
 const out = args.out || path.join(os.tmpdir(), "roster-intro-compare");
-const ref = args.ref || "C:\\Users\\muham\\Videos\\transitions.mov";
+const ref = args.ref || path.join(here, "../../docs/design/roster-reference/transitions.mov");
 const rows = Number(args.rows || 3);
 const W = Number(args.w || 1920);
 const H = Number(args.h || 1080);

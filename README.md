@@ -13,7 +13,7 @@ Live at **https://aspirant.cc**.
 | `/`                                          | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame           |
 | `/experience`                                | The story told by scrolling: the whole short story as a web novel, scenes behind the text, hover cards, toys      |
 | `/story`                                     | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
-| `/character`                                 | The roster wall, ten panels that scroll sideways                                                                  |
+| `/character`                                 | The roster wall, ten panels that scroll sideways, opened by a WebGL intro (see `docs/design/roster-intro.md`)     |
 | `/character/{slug}`                          | One page for each of the ten Aspirants. Each pair has its own concept (see below)                                 |
 | `/character/selena/{about,skills,gallery}`   | Selena's three pages, on the same stage as her first screen                                                       |
 | `/character/obsidia/{about,skills,gallery}`  | Obsidia's three pages                                                                                             |

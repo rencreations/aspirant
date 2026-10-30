@@ -45,6 +45,16 @@ Ruby's and Angela's pages are one pair on one view (`features/character/duo/`, r
 
 Lesley's and Chang'e's pages are two ends of one channel (`features/character/lesley-change/`, routes `/character/lesley/` and `/character/change/`): Lesley's first screen is a scope that magnifies her splash art and fires a thread of light (hold to steady, let go to fire), Chang'e's is a bench with guides, pins that measure each other and markers on her gear. Both show their own splash art full bleed, share the order of the sections and a pill that leads to the other end, and use the site's own files in `public/video/lesley-change/` (they play only when the visitor presses play). Nothing is encoded for them: the sources hold no music, no cut-outs and no fan art for this pair.
 
+## The roster page (`/character`)
+
+The wall of ten panels opens with a WebGL intro (`features/character/roster/intro/`, spec in `docs/design/roster-intro.md` and `roster-intro-engine.md`, reference recording in `docs/design/roster-reference/`). Rules:
+
+- The intro plays only on a fresh load or when arriving from another page, never from `/character/*` (`lib/route-history.ts`). The page is black from the first paint (`RosterCover`); a skipped visit must never show black. Click, tap or Esc skips; reduced motion and no WebGL skip it; it must leave no running loop and a failsafe must never leave the page covered.
+- Its chunk, stills and clips are in the `/character` loading list (`introItems()` in `lib/route-preloads.ts`). Only first-paint files go there.
+- Geometry comes from `roster/layout.ts` (SLOTS, BOARD_H, SLASH, SEAMS). Do not hardcode positions in the engine. Do not put a `style` or a transform on `[data-roster-root]`.
+- All ten panels, Obsidia and Selena too, are shaded until hovered. The background decoration (`roster/decor.tsx`) is minimal on purpose, the owner rejected a packed one: do not add to it.
+- Specs that touch the roster use `skipGate` (it turns the intro off); `e2e/roster-intro.spec.ts` plays it on purpose. Compare with the recording using `scripts/roster-intro/compare.mjs`, check the black first paint with `scripts/roster-intro/first-paint.mjs`.
+
 ## Look and feel
 
 Light mode by default (`data-theme="daybreak"`). Dark (`storm`) only where the story needs it. Modern, minimal, futuristic with a mechanical feel: generous spacing, thin lines, few effects, no glow or gradient clutter.

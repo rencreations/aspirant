@@ -17,6 +17,9 @@ It has a home page, a web novel (`/experience`), a world explainer (`/story`), a
 - The owner reads short, plain answers. Say what was done, what was checked, what is not done. Report test failures as failures.
 - Writing on the site (and in docs): short sentences, formal English written like to a friend but business, **no em-dashes or en-dashes anywhere**, "Aspirant power" (the other word is banned, see canon-rules), spell **Terrinia**, **Selrick**, **Storm Citadel**. `node scripts/qa/scan-text.mjs` must report 0 problems. See [canon-rules.md](design/canon-rules.md).
 - Never ask the owner for something that the repository, the sources folder or a test can tell you.
+- **Taste.** The owner wants modern, minimal, futuristic with a mechanical feel, and notices when something is too much. A packed background was rejected within an hour ("too much, reduce it and keep it modern and minimalistic"). When a request says "make it like the reference", copy the reference's structure and feeling, then keep the result clean. When a thing is called "weird", it is fixed by redesigning it creatively, not by tweaking numbers. When they say something is "great", leave it alone.
+- **How they send references.** A screen recording (`transitions.mov`) or pictures from `D:\ren\aspirant\media\...`. Cut frames with `ffmpeg`, read them by eye, and put a copy in the repository if later sessions will need it (this one is in `docs/design/roster-reference/`).
+- **Standing instructions are given once and stay in force** (no AI mention, localhost:3000 serves the latest production build, conventional commits, `pnpm check` before a push, no questions while asleep). They are all in this file and in the rules file, so a new session does not need to be told again.
 
 ## The machine and its quirks
 
@@ -55,7 +58,7 @@ apps/web/                   the site (Next.js 16, App Router, static export, Rea
   public/                   all processed media and data (committed)
 packages/ui, packages/config  shared components and the Tailwind theme; shared tsconfig, ESLint, Prettier
 scripts/                    media and content builders per character, QA and performance scripts
-docs/                       this file, HISTORY, design docs, specs
+docs/                       this file, HISTORY, design docs, specs, the roster reference recording (docs/design/roster-reference)
 .github/workflows/          ci, pages (deploy), lighthouse, security, docker, release
 ```
 
@@ -70,7 +73,7 @@ docs/                       this file, HISTORY, design docs, specs
 | `duo/`                | Ruby (night shift, a blueprint through the pointer) and Angela (first sunrise, a warmth map)                                   |
 | `lesley-change/`      | Lesley (a scope that magnifies her art and fires a thread) and Chang'e (a bench with guides and pins), two ends of one channel |
 | `layla-fanny/`        | Layla and Fanny: a shared line, shots, notes, voice wall and films                                                             |
-| `roster/`             | The roster wall on `/character`: ten slanted splash panels that scroll sideways                                                |
+| `roster/`             | The roster wall on `/character`: ten slanted splash panels that scroll sideways, and its WebGL opening in `roster/intro/`      |
 | `page/`               | Shared pieces of character pages (spoilers)                                                                                    |
 
 Routes of the character pages are under `apps/web/src/app/character/` (the Layla and Fanny pages sit in the route group `(fanny-layla)`). The generic per-slug route was removed on purpose.
@@ -123,28 +126,63 @@ A visual novel of six chapters with branches and three endings, made from the 21
 - The level select slides sideways on a narrow screen and centres the chosen episode; Enter on an open episode plays it; unchosen answers read "Not chosen yet"; a note says what Play from here replaces; Esc works from anywhere inside it.
 - Keys are the game's only while the section is on screen and not covered; Space and the arrows do not scroll the page then.
 
+### The roster wall and its opening (`features/character/roster/`, route `/character`)
+
+The page the owner worked on last (30 Oct 2026). Read [roster-intro.md](design/roster-intro.md) (brief, reference timeline, the owner's later decisions, known gaps) and [roster-intro-engine.md](design/roster-intro-engine.md) (how the engine works and how to tune it). The reference recording is in [`docs/design/roster-reference/`](design/roster-reference/README.md). In short:
+
+- **The page** (`roster.tsx`, `roster.module.css`, `layout.ts`, `frame.ts`, `frame-art.tsx`, `slash.ts`, `decor.tsx`). Ten slanted panels on a board that scrolls sideways (SLOTS, BOARD_H, BOARD_W in `layout.ts` are the single source of geometry; the intro reads them). Red field with a dot grid on the left, silver cut-corner bevel frames (SVG), a red energy slash between Obsidia and Selena with its widest part in the middle of the seam (`SLASH`, `SEAMS`, `slash.ts`), a logo block at the top left (large logo, "04 / Roster", stats, emblem), an idle pulse of about 1.2 s (opacity only, off in `balanced` and `lite`). **All ten panels, Obsidia and Selena included, sleep behind a haze and clear on hover or focus.** `decor.tsx` is the small print and is **minimal on purpose** (the owner found a packed version too much): do not add to it.
+- **The opening** (`roster/intro/`, a lazy chunk). A WebGL2 engine plays about 4.2 s over the page, below the site bar, from a pure timeline (`timeline.ts`, `sceneAt(t)`): black to 0.68 s, then the reference's burst of panels showing each character's welcome clip (`public/video/roster-intro/<slug>.mp4`, 1600x720, 60 fps, cut by `scripts/roster-intro/build.py`), then **our own ending** (charge, impact frames, shattering glass, fire, Obsidia's reveal). At the end the canvas is removed, the clips unloaded, no loop is left running.
+- **Rules of the opening** (all tested): it plays only on a fresh load or when arriving from another page, **not** when coming from `/character/*` (`lib/route-history.ts`, one `noteRoute` line in `components/transition/transition-provider.tsx`); the page is black from the very first paint (`RosterCover`, the first element of the page markup, with a 25 s failsafe; `scripts/roster-intro/first-paint.mjs` records the painted frames and fails on any frame of the page before the cut); click, tap or Esc skips; reduced motion and no WebGL skip it; `lite` plays a lighter version; if its pictures take more than 10 s it gives up cleanly. Its files are in the `/character` loading list (`introItems()` in `lib/route-preloads.ts`; the chunk, the stills and nine clips). `?intro=off` skips it, `?introT=<t>` freezes it at `t` seconds (used by `scripts/roster-intro/compare.mjs`, which puts the site and the reference side by side), `window.__rosterIntro` has `seek`, `play`, `duration`.
+- **Hooks between page and engine:** `data-roster-root` and `data-intro="off|play|done"` on the roster root (set only by the engine; the logo block `[data-intro-item]` is hidden on `play` and eases in on `done`), `data-roster-panel="<slug>"` on every panel. The engine sets an inline `transform` and `will-change` on the root from about 2.5 to 4.3 s: do not put a `style` or a transform on `[data-roster-root]`.
+- **E2E:** `skipGate` in `e2e/helpers.ts` turns the opening off (`sessionStorage "aspirants:intro" = "off"`); `e2e/roster-intro.spec.ts` lets it play on purpose.
+- **Changing it:** the burst beats are in `intro/script.ts` and `script-burst.ts`, the ending is in `timeline.ts` and `gl/shaders.ts`, constants and how to tune them are in the engine doc. Redo a clip with `python -I scripts\roster-intro\build.py <slug>` (the source is `D:\ren\aspirant\media\game\animation\<slug>\welcome.mkv`, table of start times in `scripts/roster-intro/README.md`). A new deploy of a clip under the same address needs the cache-name bump in `lib/media-store.ts`.
+
 ### The pair pages
 
 Each has a short description in the rules file ("Video") and a build script. The shared pattern: first screen only is waited for, the rest loads in the background by priority; videos play only when the visitor presses play (nothing is re-encoded for Ruby and Angela, Lesley and Chang'e). Selena's and Obsidia's pages and the stage engine are documented in full in [design-system.md](design/design-system.md) ("Selena's page", "The stage engine", "Obsidia's page"). Ruby and Angela: `duo/`, art by `scripts/ruby-angela/build.py`. Lesley and Chang'e: `lesley-change/`, files in `public/video/lesley-change/`. Layla and Fanny: `layla-fanny/`.
 
 ## Where things are written
 
-| Question                                  | File                                           |
-| ----------------------------------------- | ---------------------------------------------- |
-| What is the project, how do I run it      | `README.md`                                    |
-| The rules that apply to every change      | `CLAUDE.md` (loaded by itself)                 |
-| Why it was built this way, by date        | `docs/HISTORY.md`                              |
-| Design tokens, components, every page     | `docs/design/design-system.md`                 |
-| Speed, performance levels, bad connection | `docs/design/performance.md`                   |
-| Canon, spellings, writing rules           | `docs/design/canon-rules.md`                   |
-| The media pipeline and sizes              | `docs/design/assets.md`                        |
-| Decisions that were made for the owner    | `docs/OPEN-QUESTIONS.md`                       |
-| Vexana's page design, the drama tree      | `docs/superpowers/specs/`                      |
-| Checking a running site                   | `scripts/qa/probes/README.md`, `scripts/perf/` |
+| Question                                  | File                                                                         |
+| ----------------------------------------- | ---------------------------------------------------------------------------- |
+| What is the project, how do I run it      | `README.md`                                                                  |
+| The rules that apply to every change      | `CLAUDE.md` (loaded by itself)                                               |
+| Why it was built this way, by date        | `docs/HISTORY.md`                                                            |
+| Design tokens, components, every page     | `docs/design/design-system.md`                                               |
+| Speed, performance levels, bad connection | `docs/design/performance.md`                                                 |
+| Canon, spellings, writing rules           | `docs/design/canon-rules.md`                                                 |
+| The media pipeline and sizes              | `docs/design/assets.md`                                                      |
+| Decisions that were made for the owner    | `docs/OPEN-QUESTIONS.md`                                                     |
+| Vexana's page design, the drama tree      | `docs/superpowers/specs/`                                                    |
+| Checking a running site                   | `scripts/qa/probes/README.md`, `scripts/perf/`                               |
+| The roster page and its opening           | `docs/design/roster-intro.md`, `roster-intro-engine.md`, `roster-reference/` |
+| The roster clips and stills               | `scripts/roster-intro/README.md`                                             |
+| What is open right now, what is next      | "Where things stand" below                                                   |
 
 ## Overnight mode (how the long unattended runs were done)
 
 When the owner went to sleep they asked that the work never stop. The pattern: a scheduled prompt arrived every hour ("Overnight heartbeat") asking the session to (1) list helper sessions and resume any that stopped on a rate limit, (2) start the next phase of the plan if all were done, (3) make sure `localhost:3000` serves the latest production build of `main` (rebuild and restart `npx serve out -l 3000 --no-clipboard` from `apps/web` and the e2e server on 3190 if down), (4) push checked work to `main`, (5) append a one-line status to a notes file outside the repository. Helpers were run in parallel for audits of separate areas (each owning a folder) and merged by the main session; shared files (loading, media store, docs) were edited by one owner at a time. This is session machinery, not a feature: a new session has no heartbeat unless the owner sets one up.
+
+## Working with helper sessions (sub-agents)
+
+Large pieces were done by helper sessions started from the main one, each given a written brief (goal, files it owns, files it must not touch, checks to run, "do not commit or push", "report briefly"). What worked:
+
+- One helper per area with separate folders (for example on the roster: assets in `scripts/roster-intro/` and `public/`, the engine in `roster/intro/`, the page in `roster/*.tsx|css|ts`). Shared files (`lib/route-preloads.ts`, `layout.ts`, docs) are edited by one owner at a time and the others are told which names must stay stable.
+- Helpers share one dev server (`localhost:3100`) and each keeps its screenshots in its own folder under the scratchpad. They must not run `pnpm build` (it replaces `apps/web/out`, which `localhost:3000` serves); the main session builds, checks, runs e2e against the build, commits and pushes.
+- A helper that stops on a limit is resumed with a message that says to continue from its saved work. Helpers are told to look at their own screenshots before reporting. The main session still reads the sheets itself before pushing.
+- Never run two helpers on the same file. If a helper's half-done edit breaks types for another, wait and re-run.
+
+## Where things stand (end of the session of 30 Oct 2026)
+
+- `main` is at or after `0285ef5` and deployed (the Pages deploy for it succeeded; the `Security` workflow fails by itself as always; a `Container` workflow run sat pending for over an hour and is not caused by the code as far as was seen). `localhost:3000` served the production build of that commit. No helper session was running and no heartbeat was scheduled.
+- **Done in this session, in order:** the interactive drama audit, the loading cover and slow-connection fixes, the menu redesign, the handoff docs, then the `/character` roster page and its opening (see HISTORY, 30 Oct 2026). Everything is committed and documented.
+- **Not done or not verified** (pick these up when the owner asks, or if a report arrives):
+  - The roster opening was compared with the recording at 1920x1080 only, and measured for speed on one strong laptop only. Check it with `scripts/perf/weak.mjs` and at 1366x768, 1440x900, 2560x1440 and 390x844. Several clips decode at once between 2 and 3 s and the frame time spikes there on the dev build.
+  - The decor text on the roster page at 2560 and on a phone may touch the nav logo and the "04 CHARACTERS" label.
+  - Weak stills made for the first ending (`beam-*.webp`, `ring-arcs.webp`) were deleted, `scripts/roster-intro/stills.py` can still recreate them and could be trimmed.
+  - Pairs of the roster page below Obsidia and Selena were not redesigned beyond the shared frame style.
+  - Firefox, Safari, a real phone, and a weak machine remain untested (see below).
+- **If the owner reports "it looks different from the reference":** open `roster-reference/`, run `node scripts/roster-intro/compare.mjs --base http://localhost:3000` against a production build and read the side by side sheets. Remember the ending after 2.8 s is deliberately not the recording's.
 
 ## Known caveats and open ideas
 

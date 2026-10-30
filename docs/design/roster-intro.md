@@ -1,12 +1,12 @@
 # The roster intro and the redesigned roster page
 
-The owner's brief for `/character` (30 Oct 2026): when a visitor opens the page, play a transition that is **exactly like** the reference recording (`C:\Users\muham\Videos\transitions.mov`, 9.5 s, 1920x1080, 60 fps, a screen recording of the game's collection page) or better, made in the browser with no video of the transition itself; and redesign the roster page to look like the end of that recording (frame outlines, shapes, mecha details, the red slash between Obsidia and Selena, the red Obsidia side, and the logo block with the text under it, which is ugly and badly placed now).
+The owner's brief for `/character` (30 Oct 2026): when a visitor opens the page, play a transition that is **exactly like** the reference recording (copied into the repository as [`roster-reference/transitions.mov`](roster-reference/transitions.mov), originally `C:\Users\muham\Videos\transitions.mov`, 9.5 s, 1920x1080, 60 fps, a screen recording of the game's collection page) or better, made in the browser with no video of the transition itself; and redesign the roster page to look like the end of that recording (frame outlines, shapes, mecha details, the red slash between Obsidia and Selena, the red Obsidia side, and the logo block with the text under it, which is ugly and badly placed now).
 
 This file is the shared spec for the three pieces of work. Read it whole, then [HANDOFF.md](../HANDOFF.md) and the rules file at the repository root.
 
 ## The reference, second by second
 
-Frames: `ffmpeg -ss <t> -i transitions.mov -frames:v 1 f.png`. A 30 fps set of the intro at 960x540 is in `C:\Users\muham\AppData\Local\Temp\claude\D--aspirant\99e6bfa2-8c11-4064-b32b-e3a66299918d\scratchpad\tr\ref\` (`r001.png` is t = 0.60 s, `rN` is `0.6 + (N-1)/30`), full-size frames at 5.3, 7.0 and 9.3 s are `full_*.png` in the folder above it (`...\scratchpad\tr\`). The game's own top bar (back arrow, "The Aspirants", share, sound, full screen, "Brand Story", the two round icons) and the yellow "Full Collection Benefits" bar are the game's interface and are **not** copied: the site keeps its own bar (the sticky nav) and has no benefits bar. Everything else is copied or improved.
+The recording and contact sheets are in [`roster-reference/`](roster-reference/README.md). Frames: `ffmpeg -ss <t> -i docs/design/roster-reference/transitions.mov -frames:v 1 f.png`. `sheet0..3.jpg` and `dsheet0..3.jpg` are contact sheets of the first 4.7 s, `full_5.3.jpg`, `full_7.0.jpg` and `full_9.3.jpg` are full-size frames of the finished page, `welcomes.jpg` shows each character's welcome animation. The game's own top bar (back arrow, "The Aspirants", share, sound, full screen, "Brand Story", the two round icons) and the yellow "Full Collection Benefits" bar are the game's interface and are **not** copied: the site keeps its own bar (the sticky nav) and has no benefits bar. Everything else is copied or improved.
 
 The recording is not smooth on purpose: the animation is cut on twos and threes (many consecutive frames are identical, then a jump), with hard cuts. Keep that stepped feel in the beam and the impact frames; keep the panel movement smooth.
 
@@ -32,6 +32,23 @@ The recording is not smooth on purpose: the animation is cut on twos and threes 
 
 The finished page (5.3 s and later, see `full_5.3.png`): a deep red field with a dot grid over the whole left side; a big slanted Obsidia panel with a thin pink outline and a short bright pink bar on its top left edge; a red jagged energy slash with white-hot edges and darker red cracks on the diagonal that separates her from Selena; Selena's panel in a silver bevel frame; two half-height panels on the right (top: Vexana, bottom: Guinevere) in the same silver frames with a darker inner line; the logo "THE ASPIRANTS" large (about 22 percent of the width) at the top left with a thin outline, and a small tech line, a faint set of stat-like ticks and a small emblem under it.
 
+## State at the end of the first working session (30 Oct 2026)
+
+This file is the original brief and the reference timeline. What was built differs in places; the truth is in the code and in [roster-intro-engine.md](roster-intro-engine.md). Read this block first.
+
+- **Built and pushed:** the redesigned page, the ten welcome clips, the engine, the shatter and impact ending (instead of the laser), the "only from another page" rule, the black first paint, and a minimal background (see below). Commits `8c67ad0` to `0285ef5` on `main`.
+- **The owner's later decisions (they override the table):**
+  1. The opening up to 2.8 s was approved ("great"). The beam ending was judged weird and replaced with a hit: charge, five impact frames of Obsidia, a boom with shattering glass, then her reveal. It does not have to follow the recording.
+  2. It plays only when the visitor arrives from another page (for example `/` to `/character`) and on a fresh load or refresh. It does not play when coming from `/character/*` (`lib/route-history.ts`).
+  3. The page must be black from the first paint, with no flash of the roster before the black.
+  4. The background decoration (rulers, labels, bars, hazard stripes, data columns) was first packed in, then the owner said it was **too much**. It is now minimal: a thin ruler above and below, one line of type per pair, and a calm red side. Do not add more.
+  5. Obsidia and Selena are shaded when not hovered, like the other eight, and clear on hover.
+  6. The red slash between Obsidia and Selena has its widest part in the middle of the seam, not at the bottom.
+  7. The pink line with a square at the top beside Obsidia's frame was removed.
+- **Known gaps:** clip stepping and some panel beats before 2.8 s are estimates (fixed 20 or 30 steps per second per beat), the prism flare is procedural, the black swirl behind the beam at 3.3 to 3.5 s is not reproduced, Selena's panel is wider than in the reference, the decor text at 2560 and on a phone may overlap the nav logo and the "04 CHARACTERS" label (it was faint, and the decor was cut down afterwards, so look again), performance on a weak machine was not measured (the dev build held 60 fps on an RTX 4060 laptop with occasional 33 to 83 ms frames between 2 and 3 s while several clips decode), and the intro was compared against the recording at 1920x1080 only.
+- **Checks that exist:** `roster/intro/timeline.test.ts`, `lib/route-history.test.ts`, `roster/frame.test.ts`, `e2e/roster-intro.spec.ts`, `e2e/character.spec.ts` (roster), `scripts/roster-intro/compare.mjs` (side by side with the recording), `scripts/roster-intro/first-paint.mjs` (no flash before the black).
+- **E2E and the intro:** `skipGate` in `e2e/helpers.ts` sets `sessionStorage "aspirants:intro" = "off"` so the other specs never meet it; pass `{ intro: true }` to let it play. `?intro=off` skips it by hand, `?introT=<t>` freezes it at `t` seconds, `?introDebug` shows debug info.
+
 ## Pieces of work
 
 ### 1. Assets (`scripts/roster-intro/`, `apps/web/public/video/roster-intro/`, `apps/web/public/img/roster-intro/`)
@@ -53,7 +70,7 @@ The finished page (5.3 s and later, see `full_5.3.png`): a deep red field with a
 
   `from` is the time in the _source_ the clip starts at (for the record), `focus` is where the interesting part of the frame is (fractions), used to crop it into a slanted panel.
 
-- Stills taken from the reference and cleaned (the game's top bar removed, background keyed to transparent where the shape stands alone), as WebP with alpha under `public/img/roster-intro/`: the held beam (3.0 s), the pink beam (2.7 s), the blue beam (3.4 s), the thin beam (3.6 s), the red speed-line burst (2.5 s), the red energy slash (from `full_5.3.png`, along the diagonal), the black ring arcs (3.7 s), the fire and embers (3.6 s). Where something stands in front of the part that is needed (the game's bar, a panel), rebuild that part: first try to clone or inpaint it with code; use an image generator only when that is not possible (`codex exec "<prompt>"` is installed and can make a picture; ask for a transparent background and check the alpha before using it). Document every file and where it came from in `scripts/roster-intro/README.md`.
+- Stills taken from the reference and cleaned (the game's top bar removed, background keyed to transparent where the shape stands alone), as WebP with alpha under `public/img/roster-intro/`: the held beam (3.0 s), the pink beam (2.7 s), the blue beam (3.4 s), the thin beam (3.6 s), the red speed-line burst (2.5 s), the red energy slash (from `full_5.3.jpg`, along the diagonal), the black ring arcs (3.7 s), the fire and embers (3.6 s). Where something stands in front of the part that is needed (the game's bar, a panel), rebuild that part: first try to clone or inpaint it with code; use an image generator only when that is not possible (ask for a transparent background and check the alpha before using it). Document every file and where it came from in `scripts/roster-intro/README.md`.
 - Everything the intro needs on the first screen goes into the loading list for `/character` (see the rules file: `lib/route-preloads.ts`). The clips are first paint (the intro starts at once), 10 clips of about 1 MB.
 
 ### 2. The engine (`apps/web/src/features/character/roster/intro/`)
@@ -71,7 +88,7 @@ A component `RosterIntro` mounted by the `/character` page. It plays on every ar
 
 ### 3. The roster page (`apps/web/src/features/character/roster/`)
 
-Redesign the page to look like the end of the reference (`full_5.3.png`, `full_7.0.png`, `full_9.3.png`), keeping everything it does now (sideways scroll and drag, the keys, the hover effects, links, the pair tags, the next-page controls, accessibility, the loading list, the tests; change a test only when the page it checks has really changed):
+Redesign the page to look like the end of the reference (`roster-reference/full_5.3.jpg`, `full_7.0.jpg`, `full_9.3.jpg`), keeping everything it does now (sideways scroll and drag, the keys, the hover effects, links, the pair tags, the next-page controls, accessibility, the loading list, the tests; change a test only when the page it checks has really changed):
 
 - The frame outlines and shapes: slanted panels with a thin outer pink or silver bevel, an inner dark line, short bright bars and small notches at the corners, a **more mecha** look (cut corners, panel seams, small tick marks and screws, thin double lines), the same lean on every shape.
 - The red side: a deep red field with a dot grid on the left, the big Obsidia panel with a thin pink outline and a short bright bar on its top left edge, and the **red energy slash** on the diagonal between Obsidia and Selena (jagged, white-hot at the core, dark red cracks, with a slow pulse; build it with SVG or CSS and `transform` / `opacity`, or a small canvas), and the same kind of separator, in the colour of the pair, between the other panels where it fits.
