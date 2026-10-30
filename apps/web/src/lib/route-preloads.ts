@@ -1,4 +1,5 @@
 import { characters, isSlug } from "@/content/characters";
+import { introItems } from "@/features/character/roster/intro/preload-items";
 import { splashPath } from "@/features/character/roster/splash";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
 import {
@@ -105,6 +106,8 @@ export function routeItems(pathname: string): PreloadItem[] {
     return [
       ...shared,
       ...characters.map((c) => imageItem(splashPath(c.slug), `Loading ${c.name}`, 3)),
+      // The opening: its code, its effects and the welcome clips (nothing for reduced motion).
+      ...introItems(),
     ];
   }
 

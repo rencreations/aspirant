@@ -42,15 +42,20 @@ export function url(path: string): string {
   return path.replace(/^\/+/, "") || "./";
 }
 
-/** Skip the loader gate for this page (as a returning visitor in the same tab). */
-export async function skipGate(page: Page): Promise<void> {
-  await page.addInitScript(() => {
+/**
+ * Skip the loader gate for this page (as a returning visitor in the same tab). The opening of the
+ * roster is skipped too (`aspirants:intro` = "off"), so it never covers the page a spec drives.
+ * Pass `{ intro: true }` to let it play (see roster-intro.spec.ts).
+ */
+export async function skipGate(page: Page, options: { intro?: boolean } = {}): Promise<void> {
+  await page.addInitScript((intro) => {
     try {
       window.sessionStorage.setItem("aspirants:entered", "1");
+      if (!intro) window.sessionStorage.setItem("aspirants:intro", "off");
     } catch {
       /* ignore */
     }
-  });
+  }, options.intro === true);
 }
 
 /** Collect console errors and uncaught exceptions. */

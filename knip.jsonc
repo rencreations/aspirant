@@ -5,6 +5,7 @@
       // Repository scripts (asset pipeline, content builders, QA scans).
       "entry": ["scripts/**/*.{mjs,js,ts}"],
       "project": ["scripts/**/*.{mjs,js,ts}"],
+      "ignoreBinaries": ["ffmpeg"],
     },
     "apps/web": {
       "entry": [
