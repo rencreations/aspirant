@@ -629,19 +629,6 @@
   white-space: pre;
 }
 
-.s_dim {
-  opacity: 0.6;
-}
-
-.s_big::before {
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-style: italic;
-  font-size: calc(var(--u) * 14);
-  letter-spacing: 0.04em;
-  opacity: 0.6;
-}
-
 .s_ghost::before {
   font-family: var(--font-display-stack);
   font-weight: 800;
@@ -673,133 +660,7 @@
   );
 }
 
-.k_ruler2 {
-  background: repeating-linear-gradient(
-    90deg,
-    currentcolor 0 1.5px,
-    transparent 1.5px calc(var(--u) * 25)
-  );
-}
-
-.k_segs {
-  background:
-    repeating-linear-gradient(
-        90deg,
-        transparent 0 calc(var(--u) * 3),
-        rgb(255 255 255 / 0.5) calc(var(--u) * 3) calc(var(--u) * 3.6)
-      )
-      0 0 / 100% 100%,
-    linear-gradient(90deg, currentcolor calc(var(--f) * 100%), transparent 0) 0 0 / 100% 100%;
-  box-shadow: inset 0 0 0 1px currentcolor;
-}
-
-.k_hazard {
-  background: repeating-linear-gradient(
-    135deg,
-    currentcolor 0 calc(var(--u) * 1.6),
-    transparent calc(var(--u) * 1.6) calc(var(--u) * 3.2)
-  );
-  opacity: 0.85;
-}
-
-.k_hazardV {
-  background: repeating-linear-gradient(
-    180deg,
-    currentcolor 0 calc(var(--u) * 2),
-    transparent calc(var(--u) * 2) calc(var(--u) * 5)
-  );
-}
-
-.k_barcode {
-  background: repeating-linear-gradient(
-    90deg,
-    currentcolor 0 1px,
-    transparent 1px 3px,
-    currentcolor 3px 5px,
-    transparent 5px 6px,
-    currentcolor 6px 7px,
-    transparent 7px 11px
-  );
-  opacity: 0.9;
-}
-
-.k_hline {
-  height: 1px;
-  background: linear-gradient(90deg, currentcolor, transparent);
-}
-
-.k_dots {
-  background: radial-gradient(circle, currentcolor 1px, transparent 1.4px) 0 0 / calc(var(--u) * 5)
-    100%;
-}
-
-.k_box,
-.k_plate {
-  box-shadow: inset 0 0 0 1px currentcolor;
-  clip-path: polygon(
-    calc(var(--u) * 2) 0,
-    100% 0,
-    100% calc(100% - var(--u) * 2),
-    calc(100% - var(--u) * 2) 100%,
-    0 100%,
-    0 calc(var(--u) * 2)
-  );
-}
-
-.k_box::before,
-.k_plate::before {
-  content: attr(data-t);
-  position: absolute;
-  left: calc(var(--u) * 3);
-  top: 50%;
-  translate: 0 -50%;
-  font-family: var(--font-mono-stack);
-  font-size: max(7px, calc(var(--u) * 4.2));
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-}
-
-.k_plate {
-  background: linear-gradient(135deg, currentcolor 0 calc(var(--u) * 3), transparent 0);
-}
-
-.k_plate::before {
-  top: auto;
-  bottom: calc(var(--u) * 3);
-  translate: none;
-}
-
-.k_bars {
-  background: repeating-linear-gradient(
-    90deg,
-    currentcolor 0 calc(var(--u) * 3),
-    transparent calc(var(--u) * 3) calc(var(--u) * 6)
-  );
-  clip-path: polygon(
-    0 100%,
-    0 70%,
-    14% 70%,
-    14% 30%,
-    28% 30%,
-    28% 55%,
-    42% 55%,
-    42% 10%,
-    56% 10%,
-    56% 60%,
-    70% 60%,
-    70% 40%,
-    84% 40%,
-    84% 80%,
-    100% 80%,
-    100% 100%
-  );
-}
-
-.blink {
-  animation: twinkle 2.6s steps(2, jump-none) infinite;
-}
-
-/* The thin parts of the red side: rails along the lean, jogs, a gauge, small triangles. */
+/* The thin parts of the red side: a few rails along the lean. */
 .redArt {
   position: absolute;
   left: 0;
@@ -823,25 +684,6 @@
 
 .redBandLight {
   fill: rgb(255 120 160 / 0.1);
-  stroke: none;
-}
-
-.redJog {
-  stroke-width: 0.7;
-  fill: none;
-}
-
-.redGauge {
-  stroke-width: 1.2;
-  stroke-dasharray: 3 2;
-}
-
-.redGauge2 {
-  stroke-width: 0.6;
-}
-
-.redSolid {
-  fill: rgb(255 204 220 / 0.3);
   stroke: none;
 }
 
@@ -1028,8 +870,8 @@
   animation: twinkle 5.2s ease-in-out infinite;
 }
 
-.wall[data-intro="play"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle, .blink),
-.wall[data-chosen="true"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle, .blink) {
+.wall[data-intro="play"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle),
+.wall[data-chosen="true"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle) {
   animation-play-state: paused;
 }
 
@@ -1040,10 +882,9 @@
   animation: dim 7.2s ease-in-out infinite;
 }
 
-:global(:root[data-perf="balanced"]) :is(.fieldTwinkle, .blink),
-:global(:root[data-perf="lite"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide, .blink),
-:global(:root[data-motion="reduced"])
-  :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide, .blink) {
+:global(:root[data-perf="balanced"]) :is(.fieldTwinkle),
+:global(:root[data-perf="lite"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide),
+:global(:root[data-motion="reduced"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide) {
   animation: none;
 }
 
@@ -1516,7 +1357,6 @@
   .fieldTwinkle,
   .slashHot,
   .seamWide,
-  .blink,
   .dim {
     animation: none !important;
   }
