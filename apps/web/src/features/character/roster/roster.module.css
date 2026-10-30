@@ -1,22 +1,27 @@
-/* The roster wall, drawn from the owner's reference strip. One row of slanted panels of splash art
-   on a silver world, each pair laid out its own way, the newest pair at the front on a crimson
-   plate, and a blue plate at the end. Every size is in `--u`, one 404th of the
-   height of the board, so the whole composition scales with the screen. Only transform and
-   opacity move. */
+/* The roster wall, drawn from the owner's reference. One row of slanted panels of splash art in
+   silver bevel frames, each pair laid out its own way. The newest pair stands in front on a deep red
+   field with a dot grid, split by a red energy slash, with the title block on the red. A blue plate
+   leads on at the end. Every size is in `--u`, one 404th of the height of the board, so the whole
+   composition scales with the screen. Only transform and opacity move. */
 
 .wall {
   --avail: max(24rem, calc(100svh - var(--nav-h) - 1.4rem - 4.8rem));
   --u: calc(var(--avail) / 404);
   --pad: clamp(1rem, 3vw, 3.4rem);
+  /* The distance from the top of the screen to the top of the board, and the height of the wall. */
+  --padt: calc(var(--nav-h) + 1.4rem);
+  --H: max(34rem, 100svh);
+  /* The unit of the title block: the board unit, kept small enough that it fits a narrow screen. */
+  --lu: min(var(--u), calc((100vw - var(--pad) * 2) / 238));
   --yellow: linear-gradient(100deg, #ffe45a, #ffc400 55%, #ffb300);
-  --steel: linear-gradient(135deg, #f4f7fd 0%, #aab6cf 35%, #e9eef9 58%, #8997b6 100%);
+  --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M36 32v8M32 36h8' stroke='%23fff' stroke-opacity='.75' stroke-width='1.3'/%3E%3C/svg%3E");
   position: relative;
   height: 100svh;
   min-height: 34rem;
   overflow: hidden;
   isolation: isolate;
   color: #12162a;
-  background: linear-gradient(180deg, #c4ccdb 0%, #d5dbe7 55%, #bcc5d6 100%);
+  background: linear-gradient(180deg, #d4d9e5 0%, #c4cbda 55%, #b6bdcc 100%);
 }
 
 /* The world behind -------------------------------------------------------------------------- */
@@ -31,14 +36,24 @@
 .stripes {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(57deg, rgb(255 255 255 / 0.22) 0 2px, transparent 2px 46px);
+  background: repeating-linear-gradient(57deg, rgb(255 255 255 / 0.2) 0 2px, transparent 2px 9px);
+  opacity: 0.55;
 }
 
 .dots {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgb(70 88 128 / 0.26) 1px, transparent 1.3px);
-  background-size: 20px 20px;
+  background:
+    var(--cross) 0 0 / 72px 72px,
+    radial-gradient(rgb(70 88 128 / 0.22) 1px, transparent 1.3px) 0 0 / 24px 24px;
+}
+
+/* The paints that the frames share (see `FrameDefs`). */
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 /* The row ------------------------------------------------------------------------------------ */
@@ -47,7 +62,7 @@
   inset: 0;
   z-index: 2;
   box-sizing: border-box;
-  padding: calc(var(--nav-h) + 1.4rem) 0 0 var(--pad);
+  padding: var(--padt) 0 0 var(--pad);
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
@@ -77,6 +92,107 @@
   height: var(--avail);
 }
 
+/* The red field ------------------------------------------------------------------------------- */
+/* It starts at the left edge of the screen, at the top of it and at the bottom, and ends on the
+   centre line of the slash. Every layer of it that is drawn clips itself to the same slanted shape,
+   so nothing animated sits inside a clipped parent. */
+.field {
+  --cut: polygon(
+    0 0,
+    calc(var(--u) * var(--sx) + var(--lean) * (var(--padt) + var(--u) * 5) + var(--pad)) 0,
+    calc(var(--u) * var(--sx) - var(--lean) * (var(--H) - var(--padt) - var(--u) * 5) + var(--pad))
+      100%,
+    0 100%
+  );
+  position: absolute;
+  left: calc(var(--pad) * -1);
+  top: calc(var(--padt) * -1);
+  z-index: 0;
+  width: calc(var(--u) * var(--sx) + var(--lean) * (var(--padt) + var(--u) * 5) + var(--pad) + 4px);
+  height: var(--H);
+  pointer-events: none;
+}
+
+.field > * {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--cut);
+}
+
+.fieldBase {
+  background:
+    radial-gradient(60% 50% at 100% 62%, rgb(225 40 78 / 0.5), transparent 72%),
+    radial-gradient(70% 36% at 0% 0%, rgb(20 0 8 / 0.5), transparent 72%),
+    radial-gradient(48% 36% at 6% 100%, rgb(255 60 90 / 0.28), transparent 70%),
+    repeating-linear-gradient(57deg, rgb(255 255 255 / 0.045) 0 2px, transparent 2px 36px),
+    linear-gradient(104deg, #480a1d 0%, #761230 44%, #a8173f 100%);
+}
+
+/* A word in outline, large, behind everything. */
+.fieldWord::before {
+  content: "ASPIRANTS";
+  position: absolute;
+  left: calc(var(--u) * 4);
+  top: calc(var(--padt) - var(--u) * 30);
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  font-size: calc(var(--u) * 118);
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-stroke: 2px rgb(255 255 255 / 0.07);
+  white-space: nowrap;
+}
+
+/* The dot grid: small dots, and a cross at every third. */
+.fieldGrid {
+  background:
+    var(--cross) 0 0 / 72px 72px,
+    radial-gradient(rgb(255 255 255 / 0.2) 1px, transparent 1.4px) 0 0 / 24px 24px;
+  opacity: 0.36;
+}
+
+.fieldTwinkle {
+  background: var(--cross) 36px 36px / 72px 72px;
+  opacity: 0.9;
+}
+
+/* The light that pulses on the red side. */
+.fieldPulse {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 46% at 96% 56%, rgb(255 66 100 / 0.5), transparent 72%),
+    radial-gradient(34% 30% at 72% 104%, rgb(255 40 76 / 0.36), transparent 72%),
+    radial-gradient(40% 24% at 70% 0%, rgb(255 60 96 / 0.22), transparent 72%);
+  clip-path: var(--cut);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.fieldLight {
+  clip-path: none;
+}
+
+/* A little circuit in the corner under the title block. */
+.circuit {
+  inset: auto;
+  left: var(--pad);
+  top: calc(var(--padt) + var(--u) * 218);
+  width: calc(var(--u) * 120);
+  height: calc(var(--u) * 170);
+  clip-path: none;
+  stroke: rgb(255 255 255 / 0.17);
+  stroke-width: 1px;
+  overflow: visible;
+}
+
+.circuitNodes {
+  stroke: rgb(255 140 176 / 0.55);
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+
 /* A huge word under the panels. */
 .ghost {
   position: absolute;
@@ -95,8 +211,8 @@
   font-size: calc(var(--u) * 210);
   line-height: 0.8;
   letter-spacing: -0.02em;
-  color: rgb(255 255 255 / 0.55);
-  -webkit-text-stroke: 2px rgb(140 158 196 / 0.55);
+  color: rgb(255 255 255 / 0.5);
+  -webkit-text-stroke: 2px rgb(140 158 196 / 0.5);
   white-space: nowrap;
 }
 
@@ -113,17 +229,12 @@
 .panel {
   --pw: calc(var(--u) * (var(--x2) - var(--x0)));
   --ph: calc(var(--u) * (var(--y1) - var(--y0)));
+  --lineCol: #3a4262;
   --shape: polygon(
     calc(var(--u) * (var(--x1) - var(--x0))) 0,
     100% 0,
     calc(var(--u) * (var(--x3) - var(--x0))) 100%,
     0 100%
-  );
-  --inner: polygon(
-    calc(var(--u) * (var(--x1) - var(--x0)) + 4px) 3px,
-    calc(100% - 4px) 3px,
-    calc(var(--u) * (var(--x3) - var(--x0)) - 4px) calc(100% - 3px),
-    4px calc(100% - 3px)
   );
   position: absolute;
   list-style: none;
@@ -138,7 +249,16 @@
   pointer-events: none;
 }
 
-/* A panel never rises above the front pair's plate (z 5). */
+/* The front pair has a line of its own inside the bevel: pink for Obsidia, dark for Selena. */
+.panel[data-slug="obsidia"] {
+  --lineCol: #ff5d8f;
+}
+
+.panel[data-slug="selena"] {
+  --lineCol: #2b3354;
+}
+
+/* A panel never rises above the title block (z 5). */
 .panel[data-hover="true"],
 .panel:focus-within {
   z-index: 4;
@@ -181,43 +301,71 @@
   cursor: pointer;
 }
 
-.rim,
-.face {
+.frame,
+.trim {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-/* The silver rim: a steel slant with a hairline of light. */
-.rim {
-  clip-path: var(--shape);
-  background: var(--steel);
+/* The bevel: a light edge on the top and the left, a dark one on the bottom and the right. */
+.bevelLight {
+  stroke: rgb(255 255 255 / 0.95);
+  stroke-width: 1.2px;
+  stroke-linejoin: round;
 }
 
-/* It takes the colour of the Aspirant when the panel is lit. */
-.rim::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--c),
-    color-mix(in srgb, var(--c) 35%, #fff) 55%,
-    var(--c)
-  );
+.bevelDark {
+  stroke: rgb(58 70 108 / 0.6);
+  stroke-width: 1.2px;
+  stroke-linejoin: round;
+}
+
+.notch {
+  fill: #5a658b;
+  opacity: 0.75;
+}
+
+.screw {
+  fill: #8693b4;
+  stroke: rgb(255 255 255 / 0.75);
+  stroke-width: 0.3;
+}
+
+.screwSlot {
+  stroke: #343c5c;
+  stroke-width: 1px;
+}
+
+.line {
+  fill: var(--lineCol);
+}
+
+/* The bevel and the line take the colour of the Aspirant when the panel is lit. */
+.rimTint,
+.lineTint {
+  fill: var(--c);
   opacity: 0;
   transition: opacity 500ms var(--ease-out);
 }
 
-.panel[data-chosen="true"] .rim::before,
-.card:focus-visible .rim::before {
+.panel[data-chosen="true"] :is(.rimTint, .lineTint),
+.card:focus-visible :is(.rimTint, .lineTint),
+.panel[data-hover="true"] :is(.rimTint, .lineTint) {
   opacity: 1;
 }
 
-.panel[data-hover="true"] .rim::before {
-  opacity: 1;
+.panel[data-hover="true"] .rimTint,
+.panel[data-chosen="true"] .rimTint,
+.card:focus-visible .rimTint {
+  opacity: 0.8;
 }
 
 .face {
+  position: absolute;
+  inset: 0;
   clip-path: var(--inner);
   background: #8d99b4;
 }
@@ -245,13 +393,18 @@
   -webkit-user-drag: none;
 }
 
-/* The haze that makes the others sleep. */
+/* The haze that makes the others sleep. The front pair stands in the light, so its haze has no
+   colour; it keeps the same switch (opacity 1 at rest, 0 when hovered). */
 .veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(125deg, rgb(78 92 126 / 0.8), rgb(40 50 84 / 0.66));
+  background: linear-gradient(125deg, rgb(104 118 164 / 0.5), rgb(62 74 120 / 0.4));
   opacity: 1;
   transition: opacity 700ms var(--ease-out);
+}
+
+.panel[data-front="true"] .veil {
+  background: transparent;
 }
 
 .panel[data-chosen="true"] .veil,
@@ -263,18 +416,27 @@
   opacity: 0;
 }
 
+/* The slow dim and return of the panels at the right. It only runs when the page is finished. */
+.dim {
+  position: absolute;
+  inset: 0;
+  background: rgb(16 20 52 / 0.62);
+  opacity: 0;
+}
+
 /* The name, at the top of the panel. It is a parallelogram on the same lean as the frame (0.64 across
    for each 1 down), set so that its left edge runs parallel to the left edge of the frame, and its
    letters lean the same way. */
 .tag {
   --h: 2.1rem;
   --lean: calc(var(--h) * 0.64);
-  --top: 0.9rem;
+  --top: calc(var(--u) * 9.4 + 0.15rem);
   position: absolute;
   top: var(--top);
-  /* The left edge of the frame at this height, and a small gap, less the lean of the tag. */
+  /* The left edge of the picture at this height, and a small gap, less the lean of the tag. */
   left: calc(
-    var(--u) * (var(--x1) - var(--x0)) + 4px - 0.64 * (var(--top) - 3px) + 0.35rem - var(--lean)
+    var(--u) * (var(--x1) - var(--x0)) + var(--u) * 6.4 - 0.64 * (var(--top) - var(--u) * 5.2) +
+      0.35rem - var(--lean)
   );
   display: inline-flex;
   align-items: center;
@@ -300,6 +462,329 @@
   transform: skewX(-16deg);
 }
 
+/* The bright bar along the top of the picture and the brackets at its two blunt corners. */
+.trim {
+  pointer-events: none;
+}
+
+.bar {
+  opacity: 0.55;
+}
+
+.bracket {
+  stroke: rgb(255 255 255 / 0.8);
+  stroke-width: 1.8px;
+  stroke-linejoin: miter;
+  stroke-linecap: square;
+  transition: stroke 500ms var(--ease-out);
+}
+
+.panel[data-slug="obsidia"] .bracket {
+  stroke: #fff;
+  stroke-width: 2.4px;
+}
+
+.panel[data-slug="obsidia"] .bar {
+  opacity: 0.95;
+}
+
+.panel[data-hover="true"] .bracket {
+  stroke: color-mix(in srgb, var(--c) 55%, #fff);
+}
+
+/* The slash and the seams ---------------------------------------------------------------------- */
+/* One layer over the panels, in board units. It takes nothing from the pointer. */
+.seams {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * -112);
+  z-index: 4;
+  width: calc(var(--u) * var(--bw));
+  height: calc(var(--u) * 624);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.slashHalo {
+  fill: rgb(196 16 50 / 0.2);
+}
+
+.slashBody {
+  fill: #8e0b27;
+}
+
+.slashMid {
+  fill: #dc1a42;
+}
+
+.slashCracks {
+  fill: none;
+  stroke: #3a0412;
+  stroke-width: 0.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.slashShards {
+  fill: #cf1239;
+}
+
+.slashEdge {
+  fill: none;
+  stroke: rgb(255 232 238 / 0.95);
+  stroke-width: 0.6;
+  stroke-linejoin: miter;
+}
+
+.slashGlow {
+  fill: rgb(255 56 92 / 0.16);
+}
+
+.slashHotMid {
+  fill: #ff4a72;
+  opacity: 0.8;
+}
+
+.slashSparks {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.9);
+  stroke-width: 0.4;
+}
+
+.slashCore {
+  fill: #ffc3d1;
+}
+
+.slashZig {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 0.8;
+  stroke-linejoin: miter;
+}
+
+.seamWide {
+  opacity: 0.3;
+}
+
+.seamCore {
+  stroke: #fff;
+  opacity: 0.9;
+}
+
+.seamTicks {
+  stroke: #fff;
+  opacity: 0.6;
+}
+
+.seamEnd {
+  opacity: 0.95;
+}
+
+/* The title block ---------------------------------------------------------------------------- */
+.hero {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.block {
+  position: absolute;
+  left: calc(var(--lu) * 14);
+  top: calc(var(--lu) * 12);
+  width: calc(var(--lu) * 216);
+}
+
+.logoWrap {
+  width: fit-content;
+  margin: 0;
+  font: inherit;
+  line-height: 0;
+  pointer-events: auto;
+}
+
+.logo {
+  display: block;
+  width: calc(var(--lu) * 214);
+  height: auto;
+}
+
+.kicker {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: calc(var(--lu) * 6);
+  margin: calc(var(--lu) * 11) 0 0;
+  font-size: calc(var(--lu) * 9.6);
+  letter-spacing: 0.4em;
+  color: #ff7aa5;
+}
+
+.star {
+  width: calc(var(--lu) * 9);
+  height: calc(var(--lu) * 9);
+}
+
+/* A thin line with a short bright piece at its end. */
+.rule {
+  position: relative;
+  display: block;
+  width: calc(var(--lu) * 178);
+  height: 1px;
+  margin-top: calc(var(--lu) * 7);
+  background: rgb(255 190 208 / 0.4);
+}
+
+.rule i {
+  position: absolute;
+  right: 0;
+  top: -1px;
+  width: calc(var(--lu) * 28);
+  height: 3px;
+  background: #ff3d8b;
+}
+
+.readout {
+  position: relative;
+  display: grid;
+  width: fit-content;
+  gap: calc(var(--lu) * 3.4);
+  margin: calc(var(--lu) * 12) 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: calc(var(--lu) * 8.2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.readout > div {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--lu) * 4);
+}
+
+.readout dt {
+  width: calc(var(--lu) * 60);
+  color: rgb(255 200 218 / 0.82);
+}
+
+.readout dd {
+  margin: 0;
+  color: rgb(255 255 255 / 0.92);
+}
+
+/* A short upright tick at the right of the first row and a diamond at the last. */
+.readout > div:first-child dd::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: calc(var(--lu) * 9);
+  margin-left: calc(var(--lu) * 14);
+  vertical-align: middle;
+  background: rgb(255 190 208 / 0.6);
+}
+
+.readout > div:last-child dd::after {
+  content: "";
+  display: inline-block;
+  width: calc(var(--lu) * 5);
+  height: calc(var(--lu) * 5);
+  margin-left: calc(var(--lu) * 12);
+  background: #ff3d8b;
+  transform: rotate(45deg);
+}
+
+.emblem {
+  display: block;
+  width: calc(var(--lu) * 52);
+  height: calc(var(--lu) * 52);
+  margin-top: calc(var(--lu) * 16);
+}
+
+.emblem svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.emblemCorner {
+  fill: none;
+  stroke: #ff4f9a;
+  stroke-width: 2;
+}
+
+.emblemStar {
+  fill: #ffd2e0;
+  opacity: 0.92;
+}
+
+/* What the intro hides while it plays, and what comes in when it is done. The roster root
+   carries `data-intro` (play, done or off); without it the page is finished at once. */
+.block [data-intro-item] {
+  transition:
+    opacity 500ms var(--ease-out),
+    translate 500ms var(--ease-out);
+}
+
+.block [data-intro-item="line"] {
+  transition-delay: 120ms;
+}
+
+.block [data-intro-item="stats"] {
+  transition-delay: 200ms;
+}
+
+.wall[data-intro="play"] .block [data-intro-item] {
+  opacity: 0;
+  translate: calc(var(--lu) * -14) 0;
+  transition: none;
+}
+
+/* The idle effects: the pulse of the red light and of the slash, the dim of the panels at the
+   right, and the twinkle of the grid. They come in when the intro is done. */
+.idle {
+  opacity: 1;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.wall[data-intro="play"] .idle {
+  opacity: 0;
+  transition: none;
+}
+
+.slashHot {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.seamWide {
+  animation: seam 2.4s ease-in-out infinite;
+}
+
+.fieldTwinkle {
+  animation: twinkle 5.2s ease-in-out infinite;
+}
+
+.wall[data-intro="play"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle),
+.wall[data-chosen="true"] :is(.fieldPulse, .slashHot, .seamWide, .fieldTwinkle) {
+  animation-play-state: paused;
+}
+
+:global(:root:not([data-perf="lite"]):not([data-perf="balanced"]):not([data-motion="reduced"]))
+  .wall:not([data-intro="play"]):not([data-chosen="true"])
+  .panel:not([data-front="true"]):not([data-hover="true"])
+  .dim {
+  animation: dim 7.2s ease-in-out infinite;
+}
+
+:global(:root[data-perf="balanced"]) .fieldTwinkle,
+:global(:root[data-perf="lite"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide),
+:global(:root[data-motion="reduced"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide) {
+  animation: none;
+}
+
+:global(:root[data-motion="reduced"]) .fieldPulse {
+  opacity: 0.7;
+}
+
 /* The round badge of the big ribbon on the blue plate. */
 .badge {
   position: absolute;
@@ -320,159 +805,6 @@
 .badge svg {
   width: 1.2rem;
   height: 1.2rem;
-}
-
-/* The front pair ------------------------------------------------------------------------------ */
-.hero {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.plate {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * 5);
-  width: calc(var(--u) * 283);
-  height: calc(var(--u) * 375);
-  background:
-    repeating-linear-gradient(57deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 30px),
-    linear-gradient(
-      105deg,
-      rgb(70 8 36 / 0.96) 0%,
-      rgb(132 14 56 / 0.93) 52%,
-      rgb(196 24 76 / 0.9) 100%
-    );
-  clip-path: polygon(0 0, 100% 0, calc(var(--u) * 43) 100%, 0 100%);
-}
-
-/* The pink line along the slant of the plate. */
-.trim {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * 5);
-  width: calc(var(--u) * 283);
-  height: calc(var(--u) * 375);
-  background: linear-gradient(90deg, #ff4f86, #ff8fb2);
-  clip-path: polygon(
-    calc(var(--u) * 272) 0,
-    calc(var(--u) * 283) 0,
-    calc(var(--u) * 43) 100%,
-    calc(var(--u) * 32) 100%
-  );
-}
-
-.plateText {
-  position: absolute;
-  left: calc(var(--u) * 34);
-  top: calc(var(--u) * 15);
-  width: calc(var(--u) * 200);
-}
-
-.logoWrap {
-  margin: 0;
-  pointer-events: auto;
-}
-
-.logo {
-  display: block;
-  height: calc(var(--u) * 50);
-  width: auto;
-}
-
-.kicker {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  margin: calc(var(--u) * 12) 0 0;
-  font-size: calc(var(--u) * 8.5);
-  letter-spacing: 0.34em;
-  color: #ff6b9a;
-}
-
-.kicker::after {
-  content: "";
-  height: 2px;
-  width: calc(var(--u) * 60);
-  background: #ff6b9a;
-  opacity: 0.7;
-}
-
-.star {
-  width: calc(var(--u) * 9);
-  height: calc(var(--u) * 9);
-}
-
-.title {
-  margin: calc(var(--u) * 8) 0 0;
-  pointer-events: auto;
-}
-
-.line {
-  display: block;
-}
-
-.titleText {
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-style: italic;
-  font-size: calc(var(--u) * 37);
-  line-height: 0.9;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-.readout {
-  display: grid;
-  gap: calc(var(--u) * 3);
-  margin: calc(var(--u) * 14) 0 0;
-  font-family: var(--font-mono-stack);
-  font-size: calc(var(--u) * 8);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.readout > div {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 4);
-}
-
-.readout dt {
-  width: calc(var(--u) * 60);
-  color: rgb(255 140 180 / 0.55);
-}
-
-.readout dd {
-  margin: 0;
-  color: rgb(255 255 255 / 0.55);
-}
-
-.readout > div:last-child dd::after {
-  content: "";
-  display: inline-block;
-  width: calc(var(--u) * 5);
-  height: calc(var(--u) * 5);
-  margin-left: calc(var(--u) * 10);
-  background: #ff6b9a;
-  transform: rotate(45deg);
-}
-
-.emblem {
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 52);
-  height: calc(var(--u) * 52);
-  margin-top: calc(var(--u) * 16);
-  border: 2px solid rgb(255 107 154 / 0.8);
-  color: #ff8fb2;
-  box-shadow: inset 0 0 0 calc(var(--u) * 5) rgb(255 107 154 / 0.14);
-}
-
-.emblem svg {
-  width: 55%;
-  height: 55%;
 }
 
 /* The blue plate at the end of the row ------------------------------------------------------- */
@@ -598,6 +930,7 @@
 /* A click closes the others and opens this one ------------------------------------------------- */
 .wall[data-chosen="true"] .panel:not([data-chosen="true"]),
 .wall[data-chosen="true"] .hero,
+.wall[data-chosen="true"] .seams,
 .wall[data-chosen="true"] .end {
   opacity: 0;
   transform: translate3d(0, 28px, 0) scale(0.97);
@@ -627,15 +960,20 @@
   pointer-events: auto;
 }
 
+/* The pair in front: a small dark plate on the lean of the panels, so it reads on red and on silver. */
 .where {
   position: absolute;
-  top: calc(var(--nav-h) + 0.1rem);
+  top: calc(var(--nav-h) + 0.05rem);
   left: var(--pad);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.5rem;
+  height: 1.5rem;
   margin: 0;
-  color: #2a3350;
+  padding: 0 1.1rem 0 1.2rem;
+  color: #d3daf0;
+  background: rgb(10 14 30 / 0.84);
+  clip-path: polygon(0.55rem 0, 100% 0, calc(100% - 0.55rem) 100%, 0 100%);
   pointer-events: none;
 }
 
@@ -644,15 +982,15 @@
   font-family: var(--font-display-stack);
   font-weight: 800;
   font-style: italic;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   line-height: 1;
-  color: #12162a;
+  color: #fff;
   animation: tick 520ms var(--ease-out) both;
 }
 
 .whereName {
-  margin-left: 0.8rem;
-  color: #a1123f;
+  margin-left: 0.6rem;
+  color: #ff9ab9;
 }
 
 /* The progress bar: a thin track along the bottom that fills as you scroll. */
@@ -661,9 +999,11 @@
   left: 50%;
   bottom: 1.7rem;
   translate: -50% 0;
+  box-sizing: border-box;
   width: min(24rem, 42vw);
-  height: 4px;
-  background: rgb(36 48 84 / 0.22);
+  height: 6px;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  background: rgb(20 24 50 / 0.55);
   overflow: hidden;
   pointer-events: none;
   contain: strict;
@@ -672,7 +1012,7 @@
 .railFill {
   position: absolute;
   inset: 0;
-  background: #e0245e;
+  background: #ff3d6e;
   transform-origin: 0 50%;
   transform: scaleX(0);
   will-change: transform;
@@ -768,7 +1108,8 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #1c2440;
-  background: rgb(240 244 252 / 0.8);
+  background: rgb(240 244 252 / 0.86);
+  clip-path: polygon(0.45rem 0, 100% 0, calc(100% - 0.45rem) 100%, 0 100%);
   pointer-events: none;
   transition: opacity 600ms var(--ease-out);
 }
@@ -807,7 +1148,7 @@
 
   .tag {
     --h: 1.8rem;
-    --top: 0.6rem;
+    --top: calc(var(--u) * 9.4 + 0.1rem);
   }
 
   .tag span {
@@ -835,19 +1176,41 @@
   }
 }
 
-@keyframes flicker {
+@keyframes pulse {
   0%,
   100% {
+    opacity: 0.38;
+  }
+  50% {
     opacity: 1;
   }
-  38% {
-    opacity: 0.78;
+}
+
+@keyframes seam {
+  0%,
+  100% {
+    opacity: 0.18;
   }
-  42% {
-    opacity: 1;
+  50% {
+    opacity: 0.5;
   }
-  71% {
-    opacity: 0.86;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes dim {
+  0%,
+  52%,
+  100% {
+    opacity: 0;
   }
   74% {
     opacity: 1;
@@ -858,18 +1221,6 @@
   from {
     transform: translate3d(0, 0.7rem, 0);
     opacity: 0;
-  }
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.5);
-  }
-  100% {
-    transform: scale(1);
   }
 }
 
@@ -894,8 +1245,19 @@
   }
 
   .hint i,
-  .whereValue {
+  .whereValue,
+  .fieldPulse,
+  .fieldTwinkle,
+  .slashHot,
+  .seamWide,
+  .dim {
     animation: none !important;
+  }
+
+  .block [data-intro-item],
+  .idle {
+    transition-duration: 1ms;
+    transition-delay: 0s;
   }
 
   .lift,

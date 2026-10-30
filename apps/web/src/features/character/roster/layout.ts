@@ -151,9 +151,10 @@ export const BAYS: readonly PairId[] = [
 ];
 
 export const SLOTS: readonly Slot[] = [
-  // The pair at the front: Obsidia next to the crimson plate and Selena beside her, the same size.
+  // The pair at the front: Obsidia on the red field and Selena beside her, the same size. The two
+  // meet along one slanted line (2 units apart) and the red slash is drawn over it.
   slot("obsidia", "selena-obsidia", tall(293, 545), { ty: 0.19, z: 1, dx: -0.035 }),
-  slot("selena", "selena-obsidia", tall(553, 805), { ty: 0.24, z: 1 }),
+  slot("selena", "selena-obsidia", tall(547, 799), { ty: 0.24, z: 1 }),
   // Guinevere and Vexana, one over the other.
   slot("vexana", "guinevere-vexana", top(813, 1049), { ty: 0.38, zoom: 2.4, dx: -0.06 }),
   slot("guinevere", "guinevere-vexana", bottom(693, 918), { ty: 0.45, zoom: 1.7, dx: -0.02 }),
@@ -174,3 +175,64 @@ export const BOARD_W = END.x2;
 
 /** The middle of a panel across its box, for the parallax and for finding the one in front. */
 export const mid = (s: Slot) => (s.x0 + s.x2) / 2;
+
+/** How far a panel edge moves across for each unit down (the lean). */
+export const LEAN = TALL / (380 - 5);
+
+const slotOf = (slug: Slug): Slot => {
+  const s = SLOTS.find((x) => x.slug === slug);
+  if (!s) throw new Error(`no slot for ${slug}`);
+  return s;
+};
+/** Where the left and the right edge of a panel are at a height. */
+const edgeLeft = (s: Slot, y: number) => s.x1 - ((s.x1 - s.x0) / (s.y1 - s.y0)) * (y - s.y0);
+const edgeRight = (s: Slot, y: number) => s.x2 - ((s.x1 - s.x0) / (s.y1 - s.y0)) * (y - s.y0);
+
+/**
+ * The centre line of the red slash that runs between Obsidia and Selena: a point on it at the top
+ * of the panels, and how far across it moves for each unit down.
+ */
+export const SLASH = {
+  x: (edgeRight(slotOf("obsidia"), 5) + edgeLeft(slotOf("selena"), 5)) / 2,
+  y: 5,
+  lean: LEAN,
+} as const;
+
+/** A thin line in the colours of a pair along the gap between its two panels. */
+export interface Seam {
+  readonly pair: PairId;
+  readonly x1: number;
+  readonly y1: number;
+  readonly x2: number;
+  readonly y2: number;
+}
+
+/** One panel over the other: a level line through the gap, as wide as both of them are there. */
+function stacked(pair: PairId, upper: Slug, lower: Slug): Seam {
+  const a = slotOf(upper);
+  const b = slotOf(lower);
+  const y = (a.y1 + b.y0) / 2;
+  return {
+    pair,
+    x1: Math.max(edgeLeft(a, y), edgeLeft(b, y)),
+    y1: y,
+    x2: Math.min(edgeRight(a, y), edgeRight(b, y)),
+    y2: y,
+  };
+}
+
+/** Side by side: a slanted line through the gap, over the heights `from` to `to`. */
+function beside(pair: PairId, left: Slug, right: Slug, from: number, to: number): Seam {
+  const a = slotOf(left);
+  const b = slotOf(right);
+  const at = (y: number) => (edgeRight(a, y) + edgeLeft(b, y)) / 2;
+  return { pair, x1: at(from), y1: from, x2: at(to), y2: to };
+}
+
+/** The separators between the two panels of the pairs that are not the front pair. */
+export const SEAMS: readonly Seam[] = [
+  stacked("guinevere-vexana", "vexana", "guinevere"),
+  beside("lesley-change", "lesley", "change", 197, 380),
+  stacked("ruby-angela", "angela", "ruby"),
+  beside("fanny-layla", "layla", "fanny", 5, 188),
+];

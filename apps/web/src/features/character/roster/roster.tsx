@@ -17,7 +17,6 @@ import {
 import { AspirantLogo } from "@/components/logo/aspirant-logo";
 import { useLenis } from "@/components/smooth-scroll";
 import { StarGlyph } from "@/components/star-glyph";
-import { ScatterText } from "@/components/text/scatter-text";
 import { TLink } from "@/components/transition/t-link";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import type { Slug } from "@/content/types";
@@ -29,8 +28,10 @@ import { startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
+import { frameOf, polygonOf } from "./frame";
+import { FrameDefs, PanelFrame, PanelTrim, Seams } from "./frame-art";
 import { createHoverFx } from "./hover-fx";
-import { BAYS, BOARD_H, BOARD_W, END, mid, SLOTS, type Slot } from "./layout";
+import { BAYS, BOARD_H, BOARD_W, END, LEAN, mid, SLASH, SLOTS, type Slot } from "./layout";
 import styles from "./roster.module.css";
 import { splashPath } from "./splash";
 
@@ -73,6 +74,12 @@ interface PanelProps {
   actions: Actions;
 }
 
+/** The shape of the picture in each frame, as CSS: a slanted box with the sharp corners cut. */
+const FACES = new Map(SLOTS.map((s) => [s.slug, polygonOf(frameOf(s).face)]));
+
+/** The front pair stands in the light. The others sleep behind a thin haze until they are hovered. */
+const FRONT: ReadonlySet<Slug> = new Set<Slug>(["obsidia", "selena"]);
+
 /** One panel. It only draws again when it is chosen, not on every scroll. It is shaded until it is hovered. */
 const PanelView = memo(function PanelView({
   slot: s,
@@ -97,9 +104,17 @@ const PanelView = memo(function PanelView({
     "--ty": s.ty,
     "--c": c.colour,
     "--i": index,
+    "--inner": FACES.get(s.slug),
   } as CSSProperties;
   return (
-    <li className={styles.panel} style={style} data-slug={c.slug} data-chosen={chosen}>
+    <li
+      className={styles.panel}
+      style={style}
+      data-slug={c.slug}
+      data-roster-panel={c.slug}
+      data-front={FRONT.has(c.slug)}
+      data-chosen={chosen}
+    >
       <TLink
         href={characterRoute(c.slug)}
         transitionLabel={c.name}
@@ -118,7 +133,7 @@ const PanelView = memo(function PanelView({
         }}
       >
         <span className={styles.lift}>
-          <span className={styles.rim} aria-hidden="true" />
+          <PanelFrame slug={c.slug} />
           <span className={styles.face}>
             <span className={styles.art} aria-hidden="true">
               <span className={styles.tilt} data-fx="pic">
@@ -135,10 +150,12 @@ const PanelView = memo(function PanelView({
               </span>
             </span>
             <span className={styles.veil} aria-hidden="true" />
+            <span className={styles.dim} aria-hidden="true" />
             <span className={styles.tag}>
               <span>{c.name}</span>
             </span>
           </span>
+          <PanelTrim slug={c.slug} />
         </span>
         {/* The part that answers the pointer: the same slanted shape as the frame, and nothing else. */}
         <span className={styles.hit} aria-hidden="true" />
@@ -577,8 +594,10 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       data-ready={ready}
       data-moved={moved}
       data-chosen={chosen !== null}
+      data-roster-root=""
     >
-      {/* The world behind the panels: silver and blue, slanted stripes. */}
+      <FrameDefs />
+      {/* The world behind the panels: silver with slanted hatching and a grid of small crosses. */}
       <div className={styles.chrome} aria-hidden="true">
         <span className={styles.stripes} />
         <span className={styles.dots} />
@@ -592,7 +611,41 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
         tabIndex={0}
         data-lenis-prevent
       >
-        <div ref={board} className={styles.board} style={{ "--bw": BOARD_W } as CSSProperties}>
+        <div
+          ref={board}
+          className={styles.board}
+          style={{ "--bw": BOARD_W, "--sx": SLASH.x, "--lean": LEAN } as CSSProperties}
+        >
+          {/* The red field behind the front pair. It reaches the edges of the screen on the left,
+              at the top and at the bottom, and ends on the line of the slash. */}
+          <div className={styles.field} aria-hidden="true">
+            <span className={styles.fieldBase} />
+            <span className={styles.fieldWord} />
+            <span className={styles.fieldGrid} />
+            <span className={`${styles.fieldGrid} ${styles.fieldTwinkle}`} />
+            <span className={`${styles.fieldLight} ${styles.idle}`}>
+              <span className={styles.fieldPulse} />
+            </span>
+            <svg
+              className={styles.circuit}
+              viewBox="0 0 120 170"
+              preserveAspectRatio="none"
+              focusable="false"
+            >
+              <path
+                d="M14 0V58L28 72V150M14 100H0M28 112H70L82 124V170M58 150H96M96 150V132M40 72H62"
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+              />
+              <path
+                d="M14 58h0M28 112h0M82 124h0M96 132h0M62 72h0M58 150h0"
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+                className={styles.circuitNodes}
+              />
+            </svg>
+          </div>
+
           {/* A huge word behind the panels, drifting slower than they do. */}
           <div className={styles.ghost} aria-hidden="true">
             <span>ASPIRANTS</span>
@@ -644,46 +697,50 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
             ))}
           </ul>
 
-          {/* The newest pair, at the front: a crimson plate with the logo, a pink trim along its
-              slant. */}
+          <Seams pairs={pairs} />
+
+          {/* The title block of the front pair, on the red field: the logo, a small line under it,
+              the numbers and the emblem. Nothing here reaches Obsidia's panel. */}
           <div className={styles.hero}>
-            <div className={styles.plate}>
-              <div className={styles.plateText}>
-                <p className={styles.logoWrap}>
-                  <AspirantLogo className={styles.logo} decorative />
-                </p>
-                <p className={`${styles.kicker} hud-label`}>
-                  <StarGlyph className={styles.star} />
-                  04 / Roster
-                </p>
-                <h1 className={styles.title}>
-                  <span className={styles.line}>
-                    <ScatterText text="Meet" className={styles.titleText} radius={90} />
-                  </span>{" "}
-                  <span className={styles.line}>
-                    <ScatterText text="the ten" className={styles.titleText} radius={90} />
-                  </span>
-                </h1>
-                <dl className={styles.readout}>
-                  <div>
-                    <dt>Aspirants</dt>
-                    <dd>{pad(count)}</dd>
-                  </div>
-                  <div>
-                    <dt>Pairs</dt>
-                    <dd>{pad(pairs.length)}</dd>
-                  </div>
-                  <div>
-                    <dt>Voices</dt>
-                    <dd>{voiceLines}</dd>
-                  </div>
-                </dl>
-                <span className={styles.emblem} aria-hidden="true">
-                  <StarGlyph />
-                </span>
-              </div>
+            <div className={styles.block}>
+              <h1 className={styles.logoWrap} data-intro-item="logo">
+                <AspirantLogo className={styles.logo} decorative />
+                <span className="sr-only">The Aspirants, meet the ten</span>
+              </h1>
+              <p className={`${styles.kicker} hud-label`} data-intro-item="line">
+                <StarGlyph className={styles.star} />
+                04 / Roster
+              </p>
+              <span className={styles.rule} aria-hidden="true" data-intro-item="line">
+                <i />
+              </span>
+              <dl className={styles.readout} data-intro-item="stats">
+                <div>
+                  <dt>Aspirants</dt>
+                  <dd>{pad(count)}</dd>
+                </div>
+                <div>
+                  <dt>Pairs</dt>
+                  <dd>{pad(pairs.length)}</dd>
+                </div>
+                <div>
+                  <dt>Voices</dt>
+                  <dd>{voiceLines}</dd>
+                </div>
+              </dl>
+              <span className={styles.emblem} aria-hidden="true" data-intro-item="stats">
+                <svg viewBox="0 0 60 60" focusable="false">
+                  <path
+                    className={styles.emblemCorner}
+                    d="M2 14V2h12M46 2h12v12M58 46v12H46M14 58H2V46"
+                  />
+                  <path
+                    className={styles.emblemStar}
+                    d="M30 8c1.6 14 7 20 22 22-15 2-20.400 8-22 22-1.600-14-7-20-22-22 15-2 20.400-8 22-22Z"
+                  />
+                </svg>
+              </span>
             </div>
-            <span className={styles.trim} aria-hidden="true" />
           </div>
         </div>
       </div>
