@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { CONFIG } from "./config";
 import styles from "./hero.module.css";
 import { HERO, type Who } from "./media";
@@ -28,7 +27,6 @@ export function Hero({ who }: { who: Who }) {
   const c = getCharacter(who);
   const cfg = CONFIG[who];
   const art = HERO[who];
-  const reduced = useReducedMotion();
   const stage = useRef<HTMLElement>(null);
   const layer = useRef<HTMLDivElement>(null);
   const parallax = useRef<HTMLDivElement>(null);
@@ -81,16 +79,15 @@ export function Hero({ who }: { who: Who }) {
       beam.style.transform = `${base} scaleX(0)`;
       box.appendChild(beam);
       keep(beam);
-      const grow = reduced ? 1 : 0;
       const done = beam.animate(
         layla
           ? [
-              { transform: `${base} scaleX(${grow})`, opacity: 1 },
+              { transform: `${base} scaleX(0)`, opacity: 1 },
               { transform: `${base} scaleX(1)`, opacity: 1, offset: 0.22 },
               { transform: `${base} scaleX(1)`, opacity: 0 },
             ]
           : [
-              { transform: `${base} scaleX(${grow})`, opacity: 1 },
+              { transform: `${base} scaleX(0)`, opacity: 1 },
               { transform: `${base} scaleX(1)`, opacity: 1, offset: 0.2 },
               { transform: `${base} scaleX(1)`, opacity: 1, offset: 0.7 },
               { transform: `${base} scaleX(1)`, opacity: 0 },
@@ -112,11 +109,11 @@ export function Hero({ who }: { who: Who }) {
       keep(ring);
       const rd = ring.animate(
         [
-          { transform: `${at} scale(${reduced ? 1 : 0.2})`, opacity: 1 },
+          { transform: `${at} scale(0.2)`, opacity: 1 },
           { transform: `${at} scale(1)`, opacity: 1, offset: 0.35 },
           { transform: `${at} scale(${layla ? 1.7 : 1})`, opacity: 0 },
         ],
-        { duration: layla ? 620 : 1000, delay: reduced ? 0 : 90, fill: "backwards" },
+        { duration: layla ? 620 : 1000, delay: 90, fill: "backwards" },
       );
       void rd.finished.then(
         () => {
@@ -125,7 +122,6 @@ export function Hero({ who }: { who: Who }) {
         () => undefined,
       );
 
-      if (reduced) return;
       // Layla's cannon kicks back. Fanny is hauled a little toward the hook and leans into it.
       const mx = layla ? -1.4 : (dx / Math.max(1, b.width)) * 36;
       const my = layla ? 0.4 : (dy / Math.max(1, b.height)) * 36;
@@ -161,7 +157,7 @@ export function Hero({ who }: { who: Who }) {
         const dy = py - o.y;
         aim.current.style.transform = `translate3d(${o.x}px, ${o.y}px, 0) rotate(${Math.atan2(dy, dx)}rad) scaleX(${Math.hypot(dx, dy) / 1000})`;
       }
-      if (!reduced && parallax.current && title.current) {
+      if (parallax.current && title.current) {
         const nx = (pointer.x / window.innerWidth - 0.5) * 2;
         const ny = (pointer.y / window.innerHeight - 0.5) * 2;
         parallax.current.style.transform = `translate3d(${nx * -10}px, ${ny * -6}px, 0)`;
@@ -194,16 +190,14 @@ export function Hero({ who }: { who: Who }) {
       visible = e?.isIntersecting ?? false;
     });
     io.observe(root);
-    const idle = reduced
-      ? 0
-      : window.setInterval(() => {
-          if (!visible || document.hidden || performance.now() - lastInput < 3200) return;
-          const b = root.getBoundingClientRect();
-          fire(
-            b.left + b.width * (0.45 + Math.random() * 0.5),
-            b.top + b.height * (0.15 + Math.random() * 0.6),
-          );
-        }, 4600);
+    const idle = window.setInterval(() => {
+      if (!visible || document.hidden || performance.now() - lastInput < 3200) return;
+      const b = root.getBoundingClientRect();
+      fire(
+        b.left + b.width * (0.45 + Math.random() * 0.5),
+        b.top + b.height * (0.15 + Math.random() * 0.6),
+      );
+    }, 4600);
 
     return () => {
       root.removeEventListener("pointerdown", onDown);
@@ -216,7 +210,7 @@ export function Hero({ who }: { who: Who }) {
         el.remove();
       });
     };
-  }, [who, reduced]);
+  }, [who]);
 
   return (
     <section

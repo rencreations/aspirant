@@ -531,19 +531,3 @@
     display: none;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .art,
-  .letter,
-  .scan,
-  .caret,
-  .beatLine,
-  .tetraFace,
-  .cueLine,
-  .mark {
-    animation: none;
-  }
-  .art {
-    transform: scale(1.04);
-  }
-}

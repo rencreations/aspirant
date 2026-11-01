@@ -1,17 +1,4 @@
-import { prefersReducedMotion } from "@/lib/hooks";
-import { perfLevel } from "@/lib/perf";
 import { routeBefore } from "@/lib/route-history";
-
-/**
- * Whether the intro plays, and how. Kept apart from the renderer so the loading list can ask
- * without carrying it.
- *
- *   off    reduced motion, no WebGL, `?intro=off`, or the visitor came from one of the roster's own
- *          pages (`/character/selena/`): the finished page shows at once
- *   light  the lite performance level: splash art only, no clips
- *   full   everything
- */
-export type IntroMode = "off" | "light" | "full";
 
 let webgl: boolean | null = null;
 
@@ -33,17 +20,21 @@ function cameFromCharacterPage(): boolean {
   return (routeBefore("/character") ?? "").startsWith("/character/");
 }
 
-export function introMode(): IntroMode {
-  if (typeof window === "undefined") return "off";
-  if (new URLSearchParams(window.location.search).get("intro") === "off") return "off";
+/**
+ * Whether the intro plays. It does not when the address says `?intro=off`, when the end to end specs
+ * turn it off, when the visitor came from one of the roster's own pages (`/character/selena/`), or
+ * when the browser has no WebGL 2: the finished page shows at once. Kept apart from the renderer so
+ * the loading list can ask without carrying it.
+ */
+export function introPlays(): boolean {
+  if (typeof window === "undefined") return false;
+  if (new URLSearchParams(window.location.search).get("intro") === "off") return false;
   try {
     // The end to end specs turn the opening off so it never covers the page they drive.
-    if (window.sessionStorage.getItem("aspirants:intro") === "off") return "off";
+    if (window.sessionStorage.getItem("aspirants:intro") === "off") return false;
   } catch {
     // No storage: carry on.
   }
-  if (cameFromCharacterPage()) return "off";
-  if (prefersReducedMotion()) return "off";
-  if (!hasWebGL2()) return "off";
-  return perfLevel() === "lite" ? "light" : "full";
+  if (cameFromCharacterPage()) return false;
+  return hasWebGL2();
 }

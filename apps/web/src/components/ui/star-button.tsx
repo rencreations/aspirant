@@ -15,7 +15,6 @@ import { cn } from "@aspirant/ui/lib/utils";
 import { STAR_PATH, StarGlyph } from "@/components/star-glyph";
 import { TLink } from "@/components/transition/t-link";
 import { audio, type BlipKind } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 
 import styles from "./star-button.module.css";
 
@@ -89,7 +88,7 @@ export const StarButton = forwardRef<HTMLButtonElement, StarButtonProps>(functio
 
   const ripple = (e: MouseEvent<HTMLElement>) => {
     const host = hostRef.current;
-    if (!host || prefersReducedMotion()) return;
+    if (!host) return;
     const r = host.getBoundingClientRect();
     const keyboard = e.detail === 0;
     const x = keyboard ? r.width / 2 : e.clientX - r.left;

@@ -36,10 +36,6 @@
 
 /* The soft shadow is a filter over a layer as big as the drawer. Not on a device that is short of
    speed. */
-:root[data-perf="balanced"] .drawer,
-:root[data-perf="lite"] .drawer {
-  filter: none;
-}
 
 /* Drawn off screen ahead of time (see `warm`), or open. */
 .shell[data-warm="true"] .drawer {
@@ -345,11 +341,6 @@
   filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.5));
 }
 
-:root[data-perf="balanced"] .dock,
-:root[data-perf="lite"] .dock {
-  filter: none;
-}
-
 .shell[data-shown="true"] .dock {
   opacity: 1;
   transform: none;
@@ -429,14 +420,6 @@
     bottom: auto;
     width: clamp(8.5rem, 38vw, 13rem);
     transform: translateY(-14px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .drawer,
-  .dock {
-    transition-duration: 1ms;
-    transition-delay: 0s;
   }
 }
 

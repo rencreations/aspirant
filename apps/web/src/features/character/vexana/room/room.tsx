@@ -7,9 +7,7 @@ import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useHotkey, useReducedMotion } from "@/lib/hooks";
-import { onPerfLevel, startGovernor } from "@/lib/perf";
-import { runPreload } from "@/lib/preload";
+import { useHotkey } from "@/lib/hooks";
 
 import type { StageState } from "../../stage/director";
 import { MenuButton } from "../../stage/menu-button";
@@ -18,7 +16,7 @@ import { ScreenCover, type CoverApi } from "../../stage/screen-cover";
 import { CharacterStage, type StageApi } from "../../stage/stage";
 import type { SceneName, ShortName } from "../../stage/timeline";
 import { WaitFx } from "../../stage/wait-fx";
-import { roomItems, roomMedia } from "./media";
+import { roomMedia } from "./media";
 import { NextBar } from "./next-bar";
 import styles from "./room.module.css";
 import { loadRoomMedia } from "./room-load";
@@ -82,7 +80,6 @@ function skipFor(): SkipOptions {
  */
 export function Room({ next }: { next: NextCharacter }) {
   const router = useTransitionRouter();
-  const reduced = useReducedMotion();
   const { pause, resume } = useLenis();
   const track = useRef<HTMLElement>(null);
   const screen = useRef<HTMLDivElement>(null);
@@ -193,35 +190,20 @@ export function Room({ next }: { next: NextCharacter }) {
   }, [locked, pause, resume]);
 
   // The stage rests while the screen is off the display (a 4K video is a lot to decode for nothing).
-  // A change of the performance level while the room is on show only loads the other size in the
-  // background (the next video uses it): the idle loop is swapped to it later, while the room is
-  // off the display, so nothing is ever drawn over the picture for it.
   const resting = useRef(false);
-  const visibleNow = useRef(false);
-  const retierPending = useRef(false);
-  const modeNow = useRef<StageState["mode"]>("boot");
-  const applyRetier = useCallback(() => {
-    if (!retierPending.current || visibleNow.current || modeNow.current !== "idle") return;
-    retierPending.current = false;
-    void stage.current?.retier().then(() => {
-      if (!visibleNow.current) stage.current?.setHidden(true);
-    });
-  }, []);
   useEffect(() => {
-    visibleNow.current = visible;
     if (!mountStage) return;
     if (!visible && !resting.current) {
       resting.current = true;
       stage.current?.setHidden(true);
-      applyRetier();
     } else if (visible && resting.current) {
       resting.current = false;
       stage.current?.setHidden(false);
     }
-  }, [visible, mountStage, applyRetier]);
+  }, [visible, mountStage]);
 
   // The black screen of the first welcome. It fades a beat after the welcome video is playing.
-  const blackExpected = welcome && !reduced;
+  const blackExpected = welcome;
   const [black, setBlack] = useState<"on" | "fade" | "off">("on");
   useEffect(() => {
     if (!blackExpected || black !== "on" || mode === "boot") return;
@@ -254,42 +236,6 @@ export function Room({ next }: { next: NextCharacter }) {
       window.clearTimeout(timer);
     };
   }, [mountStage]);
-
-  // The performance level steps down when the frame rate stays low while the room plays (not in
-  // the welcome, which is it getting started). The smaller size is then loaded in the background
-  // and used from the next video on; the idle loop gets it while the room is off the display.
-  const judged = useRef(false);
-  const shownNow = useRef(false);
-  useEffect(() => {
-    shownNow.current = visible;
-  }, [visible]);
-  const fastNow = useRef(false);
-  useEffect(() => {
-    judged.current = mode !== "boot" && mode !== "welcome";
-    modeNow.current = mode;
-    fastNow.current = state.fast;
-  }, [mode, state.fast]);
-  useEffect(() => {
-    if (!mountStage) return;
-    const stop = startGovernor({
-      video: () => stage.current?.videoQuality() ?? null,
-      // Not while the picture runs faster to get to its frame, and not off screen.
-      // And only while the room is on the display: the rest of the long page has its own cost, and
-      // a drop caused there is remembered by every page of the site.
-      paused: () => !judged.current || fastNow.current || document.hidden || !shownNow.current,
-    });
-    const off = onPerfLevel(() => {
-      void runPreload(roomItems());
-      void roomMedia.loadCore(false).then(() => {
-        retierPending.current = true;
-        applyRetier();
-      });
-    });
-    return () => {
-      stop();
-      off();
-    };
-  }, [mountStage, applyRetier]);
 
   // What the panel shows, as on Selena's and Obsidia's pages.
   const showMain = state.ui;
@@ -336,7 +282,7 @@ export function Room({ next }: { next: NextCharacter }) {
       scrollTo(top, { duration: 1.6 });
     };
   }, [scrollTo]);
-  const barOpen = useRoomScroll(track, screen, { reduced, go });
+  const barOpen = useRoomScroll(track, screen, { go });
 
   useHotkey(
     "n",
@@ -536,7 +482,7 @@ export function Room({ next }: { next: NextCharacter }) {
           </span>
         </div>
 
-        <NextBar next={next} open={barOpen && showMain} reduced={reduced} onGo={go} />
+        <NextBar next={next} open={barOpen && showMain} onGo={go} />
 
         {mode === "welcome" ? (
           <div className={styles.bar}>

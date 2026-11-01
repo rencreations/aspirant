@@ -118,24 +118,15 @@ test.describe("experience reader", () => {
     await expect(layla).toBeFocused();
   });
 
-  test("reduced motion shows key lines whole and keeps the lit paragraph", async ({ browser }) => {
+  test("the system reduced-motion setting is ignored: the full reader plays", async ({
+    browser,
+  }) => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
     const page = await context.newPage();
     await openReader(page);
     await readTo(page, "c01-p020");
-    const word = page.locator("#c01-p018 [data-w]").first();
-    await expect(word).toBeVisible();
-    const colours = await page.evaluate(() => {
-      const w = document.querySelector<HTMLElement>("#c01-p018 [data-w]");
-      return w ? [getComputedStyle(w).transform, getComputedStyle(w).opacity] : null;
-    });
-    expect(colours).toEqual(["none", "1"]);
+    await expect(page.locator("[data-scenes-layer]")).toBeAttached();
     await expect(page.locator("[data-lit]")).toHaveCount(1);
-    const beat = await page.evaluate(() => {
-      const inner = document.querySelector("[data-unit='beat'] figure");
-      return inner ? getComputedStyle(inner).position : null;
-    });
-    expect(beat).toBe("relative");
     await context.close();
   });
 

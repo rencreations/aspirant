@@ -19,31 +19,25 @@
 
 /*
  * Hidden states apply only when JS runs (html.js from the boot script) and motion is allowed,
- * so crawlers, no-JS visitors and reduced motion always see the content.
+ * so crawlers and no-JS visitors always see the content.
  */
-@media (prefers-reduced-motion: no-preference) {
-  :global(:root.js:not([data-motion="reduced"])) .fadeUp[data-revealed="false"] {
-    opacity: 0;
-    transform: translate3d(0, 28px, 0);
-  }
-
-  :global(:root.js:not([data-motion="reduced"])) .fade[data-revealed="false"] {
-    opacity: 0;
-  }
-
-  :global(:root.js:not([data-motion="reduced"])) .scale[data-revealed="false"] {
-    opacity: 0;
-    transform: scale(0.94);
-    filter: blur(6px);
-  }
-
-  :global(:root.js:not([data-motion="reduced"])) .clip[data-revealed="false"] {
-    clip-path: inset(0 0 100% 0);
-  }
-
-  :global(:root.js:not([data-motion="reduced"])) .maskUp[data-revealed="false"] > .inner {
-    transform: translate3d(0, 105%, 0);
-  }
+:global(:root.js) .fadeUp[data-revealed="false"] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+:global(:root.js) .fade[data-revealed="false"] {
+  opacity: 0;
+}
+:global(:root.js) .scale[data-revealed="false"] {
+  opacity: 0;
+  transform: scale(0.94);
+  filter: blur(6px);
+}
+:global(:root.js) .clip[data-revealed="false"] {
+  clip-path: inset(0 0 100% 0);
+}
+:global(:root.js) .maskUp[data-revealed="false"] > .inner {
+  transform: translate3d(0, 105%, 0);
 }
 
 .clip {

@@ -243,18 +243,3 @@
     transform: translateX(260%);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .scan,
-  .streaks,
-  .corner {
-    display: none;
-  }
-
-  .vignette,
-  .chip,
-  .spin,
-  .dots i {
-    animation: none;
-  }
-}

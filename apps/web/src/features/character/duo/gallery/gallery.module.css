@@ -108,14 +108,3 @@
     grid-column: span 1;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .section[data-armed="true"] [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .tile,
-  .tile img {
-    transition: none;
-  }
-}

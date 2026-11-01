@@ -69,7 +69,7 @@ export function trailerItem(): PreloadItem {
     height: window.innerHeight,
     dpr: window.devicePixelRatio || 1,
   });
-  return mediaItem(pick.src, "Loading the trailer", { type: "video/mp4", timeoutMs: 180_000 });
+  return mediaItem(pick.src, "Loading the trailer", { type: "video/mp4" });
 }
 
 /** Her voice lines (`public/audio/voice/obsidia/NN.m4a`), for the About page. */
@@ -106,6 +106,6 @@ export const FORMS = {
 export function formItems(): PreloadItem[] {
   return FORM_NAMES.flatMap((f) => [
     imageItem(FORMS[f].poster, "Loading the two forms", 1),
-    mediaItem(FORMS[f].src, "Loading the two forms", { type: "video/mp4", timeoutMs: 120_000 }),
+    mediaItem(FORMS[f].src, "Loading the two forms", { type: "video/mp4" }),
   ]);
 }

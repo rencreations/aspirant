@@ -72,7 +72,6 @@ export class PortalController {
     time: 0,
   };
 
-  private reduced = false;
   /** Write the CSS mask variables (no WebGL). */
   private cssMask = true;
   /** Returns true when the textures of a pair are loaded (set by the scene). */
@@ -114,10 +113,6 @@ export class PortalController {
 
   usePointerSource(pointer: { readonly current: PointerState }): void {
     this.pointer = pointer;
-  }
-
-  setReduced(reduced: boolean): void {
-    this.reduced = reduced;
   }
 
   /** Called with the new pair index when the drawn pair changes. */
@@ -196,7 +191,6 @@ export class PortalController {
     f.w = rect.width;
     f.h = rect.height;
     const p = this.pointer?.current;
-    const reduced = this.reduced;
 
     // Pointer to portal ------------------------------------------------------------------
     let inside = false;
@@ -211,9 +205,9 @@ export class PortalController {
       lx = p.clientX - rect.left;
       ly = p.clientY - rect.top;
       inside = p.active && lx >= 0 && ly >= 0 && lx <= rect.width && ly <= rect.height;
-      f.camX = damp(f.camX, reduced ? 0 : clamp(p.x, -1, 1), 2.6, dt);
-      f.camY = damp(f.camY, reduced ? 0 : clamp(p.y, -1, 1), 2.6, dt);
-      f.energy = damp(f.energy, reduced ? 0 : clamp(p.speed / 1800), 4, dt);
+      f.camX = damp(f.camX, clamp(p.x, -1, 1), 2.6, dt);
+      f.camY = damp(f.camY, clamp(p.y, -1, 1), 2.6, dt);
+      f.energy = damp(f.energy, clamp(p.speed / 1800), 4, dt);
     }
 
     const unit = Math.min(f.w, f.h);
@@ -225,7 +219,7 @@ export class PortalController {
       const at = this.face();
       tx = at.x;
       ty = at.y;
-    } else if (!reduced && inside && now - this.lastMove < 1.4 && p) {
+    } else if (inside && now - this.lastMove < 1.4 && p) {
       const s = clamp((p.speed - 30) / 1500);
       const eased = 1 - (1 - s) * (1 - s);
       const dx = Math.max(f.figX - lx, 0, lx - (f.figX + f.figW));
@@ -244,19 +238,15 @@ export class PortalController {
       f.cx = damp(f.cx, tx, follow, dt);
       f.cy = damp(f.cy, ty, follow, dt);
     }
-    if (reduced) f.r = tr;
-    else f.r = tr > f.r ? damp(f.r, tr, 8, dt) : damp(f.r, tr, this.hold ? 6 : 1.7, dt);
+    f.r = tr > f.r ? damp(f.r, tr, 8, dt) : damp(f.r, tr, this.hold ? 6 : 1.7, dt);
     if (tr === 0 && f.r < 1) f.r = 0;
 
     // Form wipe --------------------------------------------------------------------------
-    if (reduced) f.form = this.formTarget;
-    else {
-      const step = dt / 1.15;
-      f.form =
-        this.formTarget > f.form
-          ? Math.min(this.formTarget, f.form + step)
-          : Math.max(this.formTarget, f.form - step);
-    }
+    const step = dt / 1.15;
+    f.form =
+      this.formTarget > f.form
+        ? Math.min(this.formTarget, f.form + step)
+        : Math.max(this.formTarget, f.form - step);
     const far = Math.max(
       Math.hypot(f.fx, f.fy),
       Math.hypot(f.w - f.fx, f.fy),
@@ -268,7 +258,7 @@ export class PortalController {
 
     // Pair dissolve ----------------------------------------------------------------------
     if (this.pairTarget !== f.pair) {
-      f.dissolve = reduced ? 1 : Math.min(1, f.dissolve + dt / 0.42);
+      f.dissolve = Math.min(1, f.dissolve + dt / 0.42);
       if (f.dissolve >= 1 && this.isPairReady(this.pairTarget)) {
         f.pair = this.pairTarget;
         f.form = 0;
@@ -278,15 +268,11 @@ export class PortalController {
         this.onSwap?.(f.pair);
       }
     } else {
-      f.dissolve = reduced ? 0 : Math.max(0, f.dissolve - dt / 0.6);
+      f.dissolve = Math.max(0, f.dissolve - dt / 0.6);
     }
 
     // Intro ------------------------------------------------------------------------------
-    f.intro = reduced
-      ? this.introTarget
-      : this.introTarget > f.intro
-        ? Math.min(1, f.intro + dt / 1.6)
-        : f.intro;
+    f.intro = this.introTarget > f.intro ? Math.min(1, f.intro + dt / 1.6) : f.intro;
 
     if (this.cssMask) this.writeMask();
     if (now - this.mirrorAt > 0.1) {

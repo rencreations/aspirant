@@ -17,7 +17,7 @@ type Hum = NonNullable<ReturnType<typeof hum>>;
  * Press and hold: the sky breaks and everything falls silent; let go and it comes back.
  * c12: Valemont, 978, lanterns on the lake. c18: the Base by the harbour, a lamp on the third floor.
  */
-export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) {
+export default function SkyBreak({ active, chapterId }: SetPieceProps) {
   const base = chapterId === "c18";
   const id = base ? "base-falls" : "sky-breaks-978";
   const holding = useRef(false);
@@ -131,7 +131,7 @@ export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) 
         const lx = ((i * 0.618) % 1) * w;
         const depth = (i % 9) / 9;
         const ly = horizon + h * 0.04 + depth * (h - horizon) * 0.85;
-        const bob = reduced ? 0 : Math.sin(t * 1.2 + i) * 1.5;
+        const bob = Math.sin(t * 1.2 + i) * 1.5;
         glow(ctx, lx, ly + bob, 4 + depth * 12, "rgba(255,170,90,0.9)", lanterns);
       }
     }
@@ -150,12 +150,10 @@ export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) 
       });
       ctx.stroke();
       ctx.shadowBlur = 0;
-      if (!reduced) {
-        ctx.fillStyle = `rgba(230,210,255,${breakK * 0.9})`;
-        for (const s of sparks) {
-          const fall = (t * s.v * 0.25 + s.s) % 1;
-          ctx.fillRect(s.x * w, h * (0.2 + fall * 0.6), 1.2, 6);
-        }
+      ctx.fillStyle = `rgba(230,210,255,${breakK * 0.9})`;
+      for (const s of sparks) {
+        const fall = (t * s.v * 0.25 + s.s) % 1;
+        ctx.fillRect(s.x * w, h * (0.2 + fall * 0.6), 1.2, 6);
       }
     }
 
@@ -166,18 +164,7 @@ export default function SkyBreak({ active, reduced, chapterId }: SetPieceProps) 
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && (held || !reduced));
-
-  useEffect(() => {
-    if (!reduced) return;
-    // Reduced motion: no animation loop; step the crossfade a few times on change.
-    let n = 0;
-    const id2 = window.setInterval(() => {
-      redraw();
-      if (++n > 40) window.clearInterval(id2);
-    }, 100);
-    return () => window.clearInterval(id2);
-  }, [held, reduced, redraw]);
+  useStage(canvasRef, draw, active);
 
   return (
     <SetPieceFrame

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { CONFIG } from "./config";
 import styles from "./hero.module.css";
 import { coverPoint, HERO, MARKERS, parsePosition, SPOTS } from "./media";
@@ -30,7 +29,6 @@ export function BenchHero() {
   const c = getCharacter("change");
   const cfg = CONFIG.change;
   const art = HERO.change;
-  const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const layer = useRef<HTMLDivElement>(null);
   const gx = useRef<HTMLSpanElement>(null);
@@ -94,15 +92,15 @@ export function BenchHero() {
       const dot = document.createElement("span");
       dot.className = styles.pin ?? "";
       dot.textContent = String(n);
-      dot.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${reduced ? 1 : 0.2})`;
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0) scale(0.2)`;
       box.appendChild(dot);
       dot.animate(
         [
-          { transform: `translate3d(${x}px, ${y}px, 0) scale(${reduced ? 1 : 0.2})`, opacity: 0 },
+          { transform: `translate3d(${x}px, ${y}px, 0) scale(0.2)`, opacity: 0 },
           { transform: `translate3d(${x}px, ${y}px, 0) scale(1)`, opacity: 1 },
         ],
         {
-          duration: reduced ? 1 : 260,
+          duration: 260,
           easing: "cubic-bezier(0.2, 0.9, 0.3, 1.4)",
           fill: "forwards",
         },
@@ -222,7 +220,7 @@ export function BenchHero() {
       drop.current = null;
       clear.current = null;
     };
-  }, [reduced, art.height, art.position, art.width]);
+  }, [art.height, art.position, art.width]);
 
   return (
     <section

@@ -6,7 +6,6 @@ import { StarGlyph } from "@/components/star-glyph";
 import { Typewriter } from "@/components/text/typewriter";
 import { ThemeZone } from "@/components/theme-zone";
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 
 import styles from "./archive-header.module.css";
 import { formatRuntime } from "./format";
@@ -24,7 +23,7 @@ function CountUp({ value }: { value: number }) {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || prefersReducedMotion()) return;
+    if (!el) return;
     let raf = 0;
     const io = new IntersectionObserver(
       (entries) => {

@@ -2,9 +2,6 @@
 
 import { useSyncExternalStore } from "react";
 
-import { useDeviceTier, type DeviceTier } from "@/lib/device";
-import { useReducedMotion } from "@/lib/hooks";
-
 let webglCache: boolean | null = null;
 
 /**
@@ -32,24 +29,18 @@ const noopSubscribe = () => () => undefined;
 export interface GLReadyState {
   /** WebGL is available. Null during SSR and the first client render. */
   supported: boolean | null;
-  /** Device capability tier (static guess refined by an FPS probe). */
-  tier: DeviceTier;
-  /** The visitor or OS asked for reduced motion. */
-  reduced: boolean;
-  /** Safe to mount a WebGL scene: supported and not reduced motion. */
+  /** Safe to mount a WebGL scene: WebGL is available. */
   ready: boolean;
 }
 
 /**
  * Everything a page needs to decide between a WebGL scene and its static fallback.
  *
- * const { ready, tier } = useGLReady();
- * return ready ? <Scene quality={tier} /> : <StaticArt />;
+ * const { ready } = useGLReady();
+ * return ready ? <Scene /> : <StaticArt />;
  * @public
  */
 export function useGLReady(): GLReadyState {
   const supported = useSyncExternalStore<boolean | null>(noopSubscribe, hasWebGL, () => null);
-  const tier = useDeviceTier();
-  const reduced = useReducedMotion();
-  return { supported, tier, reduced, ready: supported === true && !reduced };
+  return { supported, ready: supported === true };
 }

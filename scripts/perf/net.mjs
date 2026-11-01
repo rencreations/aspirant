@@ -7,12 +7,18 @@
  * Usage (build first, serve `apps/web/out`, then):
  *   node scripts/perf/net.mjs <base url> [scenarios]
  *   node scripts/perf/net.mjs http://127.0.0.1:3190 guard,nav,fail,stale
- *   node scripts/perf/net.mjs http://127.0.0.1:3190 slow,offline,enter     (a few minutes)
+ *   node scripts/perf/net.mjs http://127.0.0.1:3190 slow,offline,holds    (a few minutes)
  *
- * Scenarios: slow (1.5 Mbit/s and 400 kbit/s), offline (the connection drops while loading),
- * fail (media, audio, data and pictures answer 404 or 500), stale (a file of the page is gone, as
- * after a deploy), nav (offline, a click on a page never opened), guard (the reload guard and the
- * rejection logger), enter (the "Enter now" button of the loading screen on a slow connection).
+ * One version only (owner decision, 1 Nov 2026): the loading screen never lets a visitor in with a
+ * part of the page. It waits for as long as the connection needs, so "gate still on" is the
+ * expected answer of the scenarios that break or slow the connection.
+ *
+ * Scenarios: slow (1.5 Mbit/s and 400 kbit/s: the gate opens, late), offline (the connection drops
+ * while loading: the gate waits with its note, and opens when the connection returns), fail (a
+ * file answers 404, which is skipped, or 500 or a drop, which is tried again for ever), stale (a
+ * file of the page is gone, as after a deploy), nav (offline, a click on a page never opened),
+ * guard (the reload guard and the rejection logger), holds (a very slow connection: no "Enter now"
+ * button, no time after which the gate opens by itself, a note with the real progress).
  */
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
@@ -95,15 +101,21 @@ async function offlineMid(url, atMs, maxMs) {
   await page.goto(base + url, { waitUntil: "commit", timeout: 60000 }).catch(() => {});
   await new Promise((r) => setTimeout(r, atMs));
   await ctx.setOffline(true);
-  const open = await waitGateOpen(page, maxMs);
+  // Offline the gate must keep waiting, with its note, and not open a half-loaded page.
+  const openWhileOffline = await waitGateOpen(page, 20000);
   const s = await gateState(page).catch(() => ({}));
-  const notice = await page
-    .evaluate(() => document.querySelector("[role=status]")?.textContent ?? "")
+  const note = await page
+    .evaluate(
+      () =>
+        [...document.querySelectorAll("p")].find((p) => /Offline\./.test(p.textContent ?? ""))
+          ?.textContent ?? "",
+    )
     .catch(() => "");
-  console.log(
-    `[offline-mid ${url}] offlineAt=${atMs}ms gateOpenAfterMs=${open} (limit ${maxMs}) state=${JSON.stringify(s)} notice="${notice.slice(0, 60)}" ${sum(log)}`,
-  );
   await ctx.setOffline(false);
+  const open = await waitGateOpen(page, maxMs);
+  console.log(
+    `[offline-mid ${url}] offlineAt=${atMs}ms gateOpenedWhileOffline=${openWhileOffline >= 0} (expect false) state=${JSON.stringify(s)} note="${note.slice(0, 70)}" gateOpenAfterBackOnlineMs=${open} (limit ${maxMs}) ${sum(log)}`,
+  );
   await ctx.close();
 }
 
@@ -205,10 +217,10 @@ async function offlineNav() {
   await ctx.close();
 }
 
-async function enterNow(url) {
+async function holds(url) {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
   const page = await ctx.newPage();
-  const log = watch(page, "enter-now");
+  const log = watch(page, "holds");
   const cdp = await ctx.newCDPSession(page);
   await cdp.send("Network.enable");
   await cdp.send("Network.emulateNetworkConditions", {
@@ -220,26 +232,24 @@ async function enterNow(url) {
   const t0 = Date.now();
   await page.goto(base + url, { waitUntil: "commit", timeout: 60000 }).catch(() => {});
   const btn = page.getByRole("button", { name: /Enter now/ });
-  let shownAt = -1;
-  while (Date.now() - t0 < 110000) {
-    if (await btn.count().catch(() => 0)) {
-      shownAt = Date.now() - t0;
-      break;
-    }
-    await new Promise((r) => setTimeout(r, 300));
-  }
-  let openAfter = -1;
-  if (shownAt > 0) {
-    const c0 = Date.now();
-    await btn.click().catch(() => {});
-    openAfter = await waitGateOpen(page, 20000);
-    openAfter = openAfter < 0 ? -1 : openAfter;
-    void c0;
+  let buttonSeen = false;
+  let note = "";
+  while (Date.now() - t0 < 100000) {
+    if (await btn.count().catch(() => 0)) buttonSeen = true;
+    note =
+      (await page
+        .evaluate(
+          () =>
+            [...document.querySelectorAll("p")].find((p) =>
+              /Still loading|Offline\./.test(p.textContent ?? ""),
+            )?.textContent ?? "",
+        )
+        .catch(() => "")) || note;
+    await new Promise((r) => setTimeout(r, 1000));
   }
   const s = await gateState(page).catch(() => ({}));
-  const btnAfter = await btn.count().catch(() => -1);
   console.log(
-    `[enter-now] ${url} buttonShownAfterMs=${shownAt} (expect ~45000) gateOpenMsAfterClick=${openAfter} state=${JSON.stringify(s)} buttonAfter=${btnAfter} ${sum(log)}`,
+    `[holds] ${url} enterNowButton=${buttonSeen} (expect false) after100s state=${JSON.stringify(s)} (gate on, or opened only because all of it arrived) note="${note.slice(0, 140)}" ${sum(log)}`,
   );
   await ctx.close();
 }
@@ -302,9 +312,9 @@ async function guard() {
 
 const run = (name) => !only || only.split(",").includes(name);
 if (run("guard")) await guard();
-if (run("enter")) {
-  await enterNow("/character/vexana/");
-  await enterNow("/");
+if (run("holds")) {
+  await holds("/character/vexana/");
+  await holds("/");
 }
 if (run("slow")) {
   await slow("1.5Mbit", 1500, 150, "/character/vexana/", 120000);
@@ -315,6 +325,10 @@ if (run("offline")) {
   await offlineMid("/", 2000, 60000);
 }
 if (run("fail")) {
+  // A file that is gone (404) is skipped and logged: the gate opens.
+  await failing("audio-404", "/character/vexana/", [["**/audio/**", 404]], 90000);
+  await failing("data-404", "/", [["**/data/**", 404]], 90000);
+  // A file that fails or drops is tried again for ever: the gate stays up (expect gateOpenAfterMs=-1).
   await failing(
     "media-500",
     "/character/vexana/",
@@ -322,11 +336,9 @@ if (run("fail")) {
       ["**/video/**", 500],
       ["**/audio/music/**", 500],
     ],
-    60000,
+    40000,
   );
-  await failing("audio-404", "/character/vexana/", [["**/audio/**", 404]], 60000);
-  await failing("data-404", "/", [["**/data/**", 404]], 60000);
-  await failing("img-abort", "/character/", [["**/img/**", 0]], 60000);
+  await failing("img-abort", "/character/", [["**/img/**", 0]], 40000);
 }
 if (run("stale")) {
   await staleChunks("/character/vexana/");

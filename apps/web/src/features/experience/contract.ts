@@ -56,8 +56,6 @@ export const useExperience = create<ExperienceState>()((set) => ({
 export interface SetPieceProps {
   /** True while the piece is on screen. Pause work when false. */
   readonly active: boolean;
-  /** Reduced motion: render a calm static version that is still operable. */
-  readonly reduced: boolean;
   /** Chapter the piece belongs to. */
   readonly chapterId: string;
 }

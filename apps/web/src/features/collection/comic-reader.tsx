@@ -12,7 +12,6 @@ import {
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 
 import { readComicPage, writeComicPage } from "./comic-progress";
 import styles from "./dialogs.module.css";
@@ -82,7 +81,7 @@ function ReaderBody({ comic, opener }: { comic: ComicItem; opener: HTMLElement |
       const i = Math.min(Math.max(0, index), pages.length - 1);
       scroller.scrollTo({
         top: offsets.current[i] ?? 0,
-        behavior: smooth && !prefersReducedMotion() ? "smooth" : "auto",
+        behavior: smooth ? "smooth" : "auto",
       });
     },
     [pages.length],

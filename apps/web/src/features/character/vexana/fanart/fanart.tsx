@@ -5,7 +5,6 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ImageViewer, type ViewerImage } from "@/components/image-viewer/image-viewer";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { fanartPath, fanartThumb } from "../media";
 import { IMAGES } from "../media.generated";
@@ -97,7 +96,6 @@ const SIZES = "(max-width: 700px) 46vw, (max-width: 1100px) 30vw, 22vw";
  * its pin tilts, and a click opens it in the site's viewer.
  */
 export function Fanart() {
-  const reduced = useReducedMotion();
   const wall = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<number | null>(null);
 
@@ -105,10 +103,6 @@ export function Fanart() {
     const el = wall.current;
     if (!el) return;
     const prints = Array.from(el.querySelectorAll<HTMLElement>("[data-print]"));
-    if (reduced) {
-      for (const p of prints) p.dataset.in = "true";
-      return;
-    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -124,7 +118,7 @@ export function Fanart() {
     return () => {
       io.disconnect();
     };
-  }, [reduced]);
+  }, []);
 
   return (
     <section

@@ -14,7 +14,6 @@ interface Props {
   n: 1 | 2;
   /** The element the section's pointer loop moves (the parallax). */
   parRef?: Ref<HTMLSpanElement>;
-  reduced: boolean;
 }
 
 const HEARTS = 6;
@@ -29,14 +28,14 @@ const HEARTS = 6;
  *   - the section's pointer loop moves it a little, so it sits in front of or behind her with depth.
  * Four layers, one kind of movement each (parallax, bob, hop, spin), so the movements add up.
  */
-export function Drone({ n, parRef, reduced }: Props) {
+export function Drone({ n, parRef }: Props) {
   const hop = useRef<HTMLSpanElement>(null);
   const spin = useRef<HTMLSpanElement>(null);
   const hearts = useRef<HTMLSpanElement>(null);
   const busy = useRef(false);
 
   const hover = (e: { pointerType?: string }) => {
-    if (reduced || busy.current) return;
+    if (busy.current) return;
     if (e.pointerType === "touch") return;
     const el = hop.current;
     if (!el) return;
@@ -62,7 +61,6 @@ export function Drone({ n, parRef, reduced }: Props) {
     e.preventDefault();
     e.stopPropagation();
     audio.blip("click");
-    if (reduced) return;
     spin.current?.animate(
       [
         { transform: "rotateY(0deg) scale(1)" },

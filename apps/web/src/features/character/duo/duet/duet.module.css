@@ -283,16 +283,3 @@
     max-width: 92%;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .pulse,
-  .bubble,
-  .portrait[data-speaking="true"] .face {
-    animation: none;
-  }
-  .section[data-armed="true"] [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}

@@ -11,7 +11,6 @@ import {
   useRef,
 } from "react";
 
-import { perfLevel } from "@/lib/perf";
 import { LogoLayers } from "@/components/logo/logo-art";
 import {
   cameraAt,
@@ -44,15 +43,13 @@ export interface CurtainHandle {
   startIdle: () => void;
   /** The page-transition loading loop (a different, quieter animation). */
   startWaiting: (label: string) => void;
+  /** Change the words of the loading state while it runs (the real percentage, or that it waits for the connection). */
+  setWaitLabel: (label: string) => void;
   stopLoops: () => void;
   setMode: (mode: "boot" | "transition") => void;
   showBoot: (on: boolean) => void;
   setBoot: (progress: number, label: string) => void;
   zoom: () => number;
-  /** A plain light fade layer for reduced motion. */
-  fade: (to: number, duration: number) => Promise<void>;
-  /** Fade the whole curtain out (reduced-motion boot), then restore it. */
-  fadeOut: (duration: number) => Promise<void>;
 }
 
 /**
@@ -71,7 +68,6 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
   const labelRef = useRef<HTMLSpanElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
   const waitRef = useRef<HTMLSpanElement>(null);
-  const fadeRef = useRef<HTMLDivElement>(null);
   const state = useRef({
     u: 1,
     f: 0,
@@ -188,16 +184,18 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
       startIdle: () => {
         const s = state.current;
         s.stop?.();
-        // The loops move SVG attributes on every frame. Only a device that can spare it runs them.
-        if (partsRef.current && perfLevel() === "full") s.stop = idleLoop(partsRef.current);
+        if (partsRef.current) s.stop = idleLoop(partsRef.current);
       },
       startWaiting: (label) => {
         const s = state.current;
         s.stop?.();
         if (waitRef.current) waitRef.current.textContent = label;
-        if (partsRef.current && perfLevel() === "full") s.stop = waitingLoop(partsRef.current);
+        if (partsRef.current) s.stop = waitingLoop(partsRef.current);
         const root = rootRef.current;
         if (root) root.dataset.wait = "on";
+      },
+      setWaitLabel: (label) => {
+        if (waitRef.current) waitRef.current.textContent = label;
       },
       stopLoops: () => {
         const s = state.current;
@@ -233,28 +231,6 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
         barRef.current?.setAttribute("aria-valuenow", String(Math.round(next * 100)));
       },
       zoom: () => state.current.u,
-      fade: (to, duration) => {
-        const el = fadeRef.current;
-        if (!el) return Promise.resolve();
-        return new Promise<void>((resolve) => {
-          gsap.to(el, { opacity: to, duration, ease: "none", onComplete: () => resolve() });
-        });
-      },
-      fadeOut: (duration) => {
-        const el = rootRef.current;
-        if (!el) return Promise.resolve();
-        return new Promise<void>((resolve) => {
-          gsap.to(el, {
-            opacity: 0,
-            duration,
-            ease: "none",
-            onComplete: () => {
-              el.style.opacity = "";
-              resolve();
-            },
-          });
-        });
-      },
     }),
     [render],
   );
@@ -269,7 +245,6 @@ export const LogoCurtain = forwardRef<CurtainHandle>(function LogoCurtain(_props
       data-overlay="transition"
       aria-hidden="true"
     >
-      <div ref={fadeRef} className={styles.fade} />
       <svg className={styles.svg} width="100%" height="100%" focusable="false">
         <g ref={camRef}>
           <path ref={bgRef} className={styles.bg} fillRule="evenodd" d="" />

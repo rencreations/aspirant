@@ -33,10 +33,3 @@
     transform: none;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .film[data-on="true"],
-  .guin[data-on="true"] {
-    animation: none;
-  }
-}

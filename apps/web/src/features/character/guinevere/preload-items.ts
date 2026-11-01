@@ -45,14 +45,16 @@ function videoItem(name: VideoName, label: string, src = videoFile(name)): Prelo
   return mediaItem(src, label, {
     type: "video/mp4",
     bytes: bytes > 0 ? bytes : undefined,
-    timeoutMs: 180_000,
   });
 }
 
 /**
  * What Guinevere's page needs before it opens: the hero loop (a silent recording, 1 to 2 MB) and its
- * first frame, the posters of the two silent videos of the first screens, and the signature short's
- * poster.
+ * first frame, the signature short and her music, and everything that animates or shows on the
+ * sections near the top (the Registry's skin video, the Craft clips and icons, every poster, the
+ * story pictures, the art and fan art thumbnails, the first comic pages). One version only: a slow
+ * connection waits behind the loading screen for all of it (owner decision, 1 Nov 2026). What stays
+ * in the background is the long films, the full size pictures and the room.
  */
 export function guinevereFirstPaint(): PreloadItem[] {
   const hero = heroLoopFile();
@@ -61,19 +63,37 @@ export function guinevereFirstPaint(): PreloadItem[] {
     mediaItem(hero.src, "Loading Guinevere", {
       type: "video/mp4",
       bytes: hero.bytes,
-      timeoutMs: 60_000,
     }),
     imageItem(videoPoster("splash-short"), "Loading the signature", 1),
     imageItem(videoPoster("final2"), "Loading the film", 1),
+    videoItem("splash-short", "Loading the signature"),
+    mediaItem(MUSIC, "Loading the music", { type: "audio/mp4" }),
+    videoItem("skin-showcase", "Loading her registry"),
+    // The story pair: both halves and the two drones.
+    ...Object.values(WEB).map((p) => imageItem(p, "Loading the story")),
+    ...SKILL_ICONS.map((n) => imageItem(skillIcon(n), "Loading the skill icons")),
+    ...SKILL_CLIPS.map((n) => videoItem(n, "Loading the skill clips")),
+    ...SKILL_CLIPS.map((n) => imageItem(videoPoster(n), "Loading the skill clips")),
+    ...ART_NAMES.map((n) => imageItem(artThumb(n), "Loading the art")),
+    imageItem(CHIBI, "Loading the comic"),
+    // The title screen of the interactive drama; its episodes load when they are played.
+    imageItem(dramaPoster("1"), "Loading the interactive drama"),
+    ...COMIC_PAGES.slice(0, 6).map((n) => imageItem(comicPage(n), "Loading the comic")),
+    ...(["heart-dance", "final2", "live-guin", "final", "skin-showcase", "music"] as const).map(
+      (n) => imageItem(videoPoster(n), "Loading the posters"),
+    ),
+    imageItem("/video/vexana/comic-jp-poster.webp", "Loading the posters"),
+    imageItem("/video/vexana/3d-process-poster.webp", "Loading the posters"),
+    ...FANART_NUMBERS.map((n) => imageItem(fanartThumb(n), "Loading the fanart")),
   ];
 }
 
 /**
  * Everything else, in the order the page gets to it. Each group is deferred: the loading bar does
- * not wait for it, and it keeps downloading in the background once the page is open. The long
- * videos (her livestream, the second film with sound, the music video) stream when they are
- * played, so only their posters are fetched. The comic, the interactive drama and the 3D process
- * are Vexana's own sections, so their files are the ones her page loads.
+ * not wait for it, and it keeps downloading in the background once the page is open. These are
+ * the long films, the full size pictures and the room. The long videos (her livestream, the second
+ * film with sound, the music video) stream when they are played. The comic, the interactive drama
+ * and the 3D process are Vexana's own sections, so their files are the ones her page loads.
  */
 export function guinevereLater(): Array<{ priority: number; items: PreloadItem[] }> {
   const pick = autoQuality(FINAL_SOURCES, {
@@ -82,60 +102,10 @@ export function guinevereLater(): Array<{ priority: number; items: PreloadItem[]
     dpr: window.devicePixelRatio || 1,
   });
   const small: VideoName[] = ["heart-dance"];
-  const streamed: VideoName[] = ["final2", "live-guin"];
   return [
-    // The music and the signature short are first in line, right after the page opens, but they are
-    // not waited for: they are 7.7 MB of the 8.5 MB the first screen used to wait for, and a slow
-    // line should open the hero from its two small pictures (the page streams both from the file
-    // until they have arrived).
-    {
-      priority: 2,
-      items: [mediaItem(MUSIC, "Loading the music", { type: "audio/mp4", timeoutMs: 120_000 })],
-    },
-    { priority: 3, items: [videoItem("splash-short", "Loading the signature")] },
     { priority: 20, items: [videoItem("final", "Loading the film", pick.src)] },
-    { priority: 22, items: [videoItem("skin-showcase", "Loading her registry")] },
     { priority: 25, items: [videoItem("final2", "Loading the film")] },
-    {
-      priority: 28,
-      items: [
-        // The story pair: both halves and the two drones.
-        ...Object.values(WEB).map((p) => imageItem(p, "Loading the story")),
-      ],
-    },
-    {
-      priority: 30,
-      items: [
-        ...SKILL_ICONS.map((n) => imageItem(skillIcon(n), "Loading the skill icons")),
-        ...SKILL_CLIPS.map((n) => videoItem(n, "Loading the skill clips")),
-        ...SKILL_CLIPS.map((n) => imageItem(videoPoster(n), "Loading the skill clips")),
-      ],
-    },
-    { priority: 31, items: ART_NAMES.map((n) => imageItem(artThumb(n), "Loading the art")) },
-    {
-      priority: 35,
-      items: [
-        imageItem(CHIBI, "Loading the comic"),
-        // The title screen of the interactive drama; its episodes load when they are played.
-        imageItem(dramaPoster("1"), "Loading the interactive drama"),
-        ...COMIC_PAGES.slice(0, 6).map((n) => imageItem(comicPage(n), "Loading the comic")),
-        ...[...small, ...streamed, "final", "skin-showcase"].map((n) =>
-          imageItem(videoPoster(n as VideoName), "Loading the posters"),
-        ),
-        imageItem("/video/vexana/comic-jp-poster.webp", "Loading the posters"),
-        imageItem("/video/vexana/3d-process-poster.webp", "Loading the posters"),
-      ],
-    },
-    {
-      priority: 36,
-      items: [
-        ...ART_NAMES.map((n) => imageItem(artPath(n), "Loading the art")),
-        ...FANART_NUMBERS.map((n) => imageItem(fanartThumb(n), "Loading the fanart")),
-      ],
-    },
-    // The music video streams (about 78 MB, played muted by itself and with sound in the player), so
-    // only its poster is fetched ahead.
-    { priority: 40, items: [imageItem(videoPoster("music"), "Loading the music video")] },
+    { priority: 36, items: ART_NAMES.map((n) => imageItem(artPath(n), "Loading the art")) },
     {
       priority: 41,
       items: [
@@ -144,7 +114,6 @@ export function guinevereLater(): Array<{ priority: number; items: PreloadItem[]
         mediaItem(vexanaVideoFile("3d-process"), "Loading the videos", {
           type: "video/mp4",
           bytes: VEXANA_VIDEOS["3d-process"].bytes || undefined,
-          timeoutMs: 180_000,
         }),
       ],
     },

@@ -567,14 +567,6 @@
   color: var(--rd-dim);
 }
 
-:root[data-motion="reduced"] [data-state="idle"] .w {
-  color: inherit;
-}
-
-:root[data-motion="reduced"] [data-state="idle"] .hi .w {
-  color: var(--accent);
-}
-
 /* The poem (the old skipping rhyme). */
 .poem {
   margin: 1.6em 0 1.8em;
@@ -830,14 +822,6 @@
   letter-spacing: -0.02em;
   color: var(--text);
   text-wrap: balance;
-}
-
-:root[data-motion="reduced"] .beat {
-  min-height: 100svh;
-}
-
-:root[data-motion="reduced"] .beatInner {
-  position: relative;
 }
 
 /* Inline set pieces ------------------------------------------------------------------- */

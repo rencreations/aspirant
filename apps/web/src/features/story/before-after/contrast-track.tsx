@@ -9,7 +9,6 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "re
 import { ThemeZone } from "@/components/theme-zone";
 import type { Contrast } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 
 import { ChapterLink } from "../chapter-link";
@@ -38,8 +37,6 @@ function splitHeadline(headline: string): { kicker: string | null; claim: string
   return { kicker: headline.slice(0, at), claim: claim.charAt(0).toUpperCase() + claim.slice(1) };
 }
 
-const EDGE_SLANT = 7;
-
 /**
  * One before and after. The stage is pinned with CSS `position: sticky` while the page scrolls
  * through the track, and the scroll position drives a single number, the progress p:
@@ -51,15 +48,13 @@ const EDGE_SLANT = 7;
  *
  * Everything reads `p` through CSS variables, so nothing re-renders while scrolling. A range
  * slider moves p by hand (and is the keyboard and screen reader route), and a button holds
- * the view on "before" (press and hold, tap to latch, Enter or Space to toggle). Under reduced
- * motion there is no pinning and no scrub: the two worlds crossfade.
+ * the view on "before" (press and hold, tap to latch, Enter or Space to toggle).
  */
 export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTrackProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLInputElement>(null);
   const progress = useRef(0);
-  const reduced = useReducedMotion();
   const [held, setHeld] = useState(false);
 
   const c = useRef({
@@ -70,26 +65,20 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
     raf: 0,
     last: 0,
     held: false,
-    reduced: false,
   });
 
   const apply = useCallback((p: number) => {
     const stage = stageRef.current;
     if (!stage) return;
-    const st = c.current;
     const s = clamp((p - 0.28) / 0.14);
     const w = clamp((p - 0.45) / 0.35);
     const d = clamp((p - 0.26) / 0.3);
     const r = clamp((p - 0.62) / 0.25);
     stage.style.setProperty("--s", s.toFixed(3));
     stage.style.setProperty("--d", d.toFixed(3));
-    stage.style.setProperty("--r", st.reduced ? (p > 0.5 ? "1" : "0") : r.toFixed(3));
-    stage.style.setProperty(
-      "--edge",
-      st.reduced ? `${-EDGE_SLANT - 2}%` : `${(112 - w * 124).toFixed(2)}%`,
-    );
-    stage.style.setProperty("--fade", st.reduced ? (p > 0.5 ? "1" : "0") : "1");
-    stage.style.setProperty("--eo", !st.reduced && w > 0.004 && w < 0.996 ? "1" : "0");
+    stage.style.setProperty("--r", r.toFixed(3));
+    stage.style.setProperty("--edge", `${(112 - w * 124).toFixed(2)}%`);
+    stage.style.setProperty("--eo", w > 0.004 && w < 0.996 ? "1" : "0");
     const phase = p < 0.28 ? "before" : p < 0.6 ? "turning" : "after";
     if (stage.dataset.phase !== phase) stage.dataset.phase = phase;
     const slider = sliderRef.current;
@@ -112,8 +101,8 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
     const tick = (now: number) => {
       const dt = Math.min(0.1, (now - st.last) / 1000);
       st.last = now;
-      const target = st.held ? 0 : (st.override ?? (st.reduced ? 1 : st.scroll));
-      if (st.reduced || st.current < 0) st.current = target;
+      const target = st.held ? 0 : (st.override ?? st.scroll);
+      if (st.current < 0) st.current = target;
       else st.current += (target - st.current) * (1 - Math.exp(-9 * dt));
       if (Math.abs(target - st.current) < 0.0008) st.current = target;
       apply(st.current);
@@ -123,10 +112,9 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
   }, [apply]);
 
   useEffect(() => {
-    c.current.reduced = reduced;
     c.current.current = -1;
     kick();
-  }, [reduced, kick]);
+  }, [kick]);
 
   useEffect(() => {
     const st = c.current;
@@ -139,7 +127,7 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
   useGSAP(
     () => {
       const track = trackRef.current;
-      if (!track || reduced) return;
+      if (!track) return;
       const st = c.current;
       const read = (p: number) => {
         st.scroll = p;
@@ -155,7 +143,7 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
       });
       return () => trigger.kill();
     },
-    { scope: trackRef, dependencies: [reduced, kick] },
+    { scope: trackRef, dependencies: [kick] },
   );
 
   const setHold = (v: boolean) => {
@@ -195,7 +183,7 @@ export function ContrastTrack({ contrast, index, total, mode, tone }: ContrastTr
   const num = String(index).padStart(2, "0");
 
   return (
-    <div ref={trackRef} className={styles.track} data-reduced={reduced} data-track={contrast.id}>
+    <div ref={trackRef} className={styles.track} data-track={contrast.id}>
       <div
         ref={stageRef}
         className={styles.stage}

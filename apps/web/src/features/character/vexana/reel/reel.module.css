@@ -616,15 +616,3 @@
     --reel-pad-y: 15px;
   }
 }
-
-/* Reduced motion: the finished big state, in place. No pin travel. */
-@media (prefers-reduced-motion: reduce) {
-  .container {
-    padding-bottom: 0;
-  }
-  .watchFill,
-  .watchIcon {
-    transition-duration: 0.01ms !important;
-    transition-delay: 0s !important;
-  }
-}

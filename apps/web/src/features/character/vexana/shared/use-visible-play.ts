@@ -2,21 +2,18 @@
 
 import { useEffect, type RefObject } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
-
-import { giveSource, mayPlay } from "./autoplay";
+import { giveSource } from "./autoplay";
 
 /**
  * Plays a muted looping video only while its frame is on screen. It gets its source when the
  * frame is first close to the screen (the preloaded copy if there is one), and it pauses when the
- * frame leaves, the tab is hidden, or the visitor asks for reduced motion.
+ * frame leaves, the tab is hidden.
  */
 export function useVisiblePlay(
   video: RefObject<HTMLVideoElement | null>,
   frame: RefObject<HTMLElement | null>,
   file: string,
 ) {
-  const reduced = useReducedMotion();
   useEffect(() => {
     const v = video.current;
     const f = frame.current;
@@ -24,7 +21,7 @@ export function useVisiblePlay(
     let near = false;
     let seen = false;
     const apply = () => {
-      if (near && seen && !reduced && mayPlay()) {
+      if (near && seen) {
         if (v.paused) void v.play().catch(() => undefined);
       } else if (!v.paused) {
         v.pause();
@@ -60,5 +57,5 @@ export function useVisiblePlay(
       view.disconnect();
       document.removeEventListener("visibilitychange", apply);
     };
-  }, [video, frame, file, reduced]);
+  }, [video, frame, file]);
 }

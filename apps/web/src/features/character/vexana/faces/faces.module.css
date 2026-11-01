@@ -594,39 +594,3 @@
     width: 110vw;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .track {
-    --hold: 0px;
-  }
-
-  .img {
-    animation: none;
-  }
-
-  .fig,
-  .ch,
-  .kicker,
-  .text,
-  .hint,
-  .sLean,
-  .sIn,
-  .g2 {
-    transition: none;
-  }
-
-  .sFloat,
-  .g3 {
-    animation: none;
-  }
-}
-
-:root[data-motion="reduced"] .track {
-  --hold: 0px;
-}
-
-:root[data-motion="reduced"] .img,
-:root[data-motion="reduced"] .sFloat,
-:root[data-motion="reduced"] .g3 {
-  animation: none;
-}

@@ -3,7 +3,7 @@ import { TOPO } from "./topo";
 
 /**
  * The background of the opening: contour lines and flat tints in lavender (topo.ts). The CSS look
- * is what weak devices and reduced motion get instead of the shader: daybreak first, ink second.
+ * is what shows before the shader is ready and where WebGL is missing: daybreak first, ink second.
  */
 export const BACKGROUND_CSS = {
   light:

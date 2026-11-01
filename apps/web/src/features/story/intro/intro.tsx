@@ -11,7 +11,6 @@ import { ScatterText } from "@/components/text/scatter-text";
 import { ThemeZone } from "@/components/theme-zone";
 import { whereYouAre } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { ChapterLinks } from "../chapter-link";
 import styles from "./intro.module.css";
@@ -42,7 +41,6 @@ export function Intro() {
   const stageRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const control = useRef<SceneControl>({ focus: null });
-  const reduced = useReducedMotion();
   const [active, setActive] = useState<SceneFocus | null>(null);
   const hover = useRef<SceneFocus | null>(null);
   const api = useRef<SceneApi | null>(null);
@@ -82,7 +80,7 @@ export function Intro() {
     () => {
       const inner = innerRef.current;
       const stage = stageRef.current;
-      if (!inner || !stage || reduced) return;
+      if (!inner || !stage) return;
       gsap.fromTo(
         inner,
         { yPercent: 0, scale: 1.0 },
@@ -94,7 +92,7 @@ export function Intro() {
         },
       );
     },
-    { scope: rootRef, dependencies: [reduced] },
+    { scope: rootRef },
   );
 
   return (

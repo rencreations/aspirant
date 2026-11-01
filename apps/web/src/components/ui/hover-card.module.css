@@ -116,11 +116,6 @@
   }
 }
 
-/* Reduced motion: fade only. */
-:root[data-motion="reduced"] .card {
-  animation: card-fade var(--dur-fast) linear;
-}
-
 @keyframes card-fade {
   from {
     opacity: 0;

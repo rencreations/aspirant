@@ -2,8 +2,6 @@ import { z } from "zod";
 import { create } from "zustand";
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
 
-/** @public */
-export type MotionPreference = "auto" | "reduced";
 export type ThemeName = "storm" | "daybreak";
 
 /** sessionStorage key: set once the visitor has passed the loader in this tab. */
@@ -19,9 +17,6 @@ export interface SiteState {
   muted: boolean;
   setMuted: (value: boolean) => void;
   toggleMute: () => void;
-  /** "auto" follows the OS setting; "reduced" forces reduced motion. Persisted. */
-  motion: MotionPreference;
-  setMotion: (value: MotionPreference) => void;
   /** Theme of the page root (html[data-theme]). Pages set it; not persisted. */
   theme: ThemeName;
   setTheme: (value: ThemeName) => void;
@@ -74,13 +69,12 @@ export function readEntered(): boolean {
 const PrefsSchema = z
   .object({
     muted: z.boolean(),
-    motion: z.enum(["auto", "reduced"]),
     lastChapter: z.string().max(64).nullable(),
   })
   .partial();
 
 /**
- * Global site state. Persisted keys (muted, motion, lastChapter) live in localStorage under
+ * Global site state. Persisted keys (muted, lastChapter) live in localStorage under
  * "aspirants:prefs" and are validated on load. Rehydration is manual (see <SiteProviders>),
  * so server and first client render match.
  */
@@ -96,8 +90,6 @@ export const useSiteStore = create<SiteState>()(
       muted: false,
       setMuted: (value) => set({ muted: value }),
       toggleMute: () => set((s) => ({ muted: !s.muted })),
-      motion: "auto",
-      setMotion: (value) => set({ motion: value }),
       theme: "daybreak",
       setTheme: (value) => set({ theme: value }),
       lastChapter: null,
@@ -108,7 +100,7 @@ export const useSiteStore = create<SiteState>()(
       version: 1,
       storage: createJSONStorage(() => safeStorage("localStorage")),
       skipHydration: true,
-      partialize: (s) => ({ muted: s.muted, motion: s.motion, lastChapter: s.lastChapter }),
+      partialize: (s) => ({ muted: s.muted, lastChapter: s.lastChapter }),
       merge: (persisted, current) => {
         const parsed = PrefsSchema.safeParse(persisted);
         return parsed.success ? { ...current, ...parsed.data } : current;

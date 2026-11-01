@@ -170,15 +170,3 @@
     transform: translateY(400%);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .scanTrack::before {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-:global(:root[data-motion="reduced"]) .scanTrack::before {
-  animation: none;
-  opacity: 0;
-}

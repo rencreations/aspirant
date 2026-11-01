@@ -26,7 +26,7 @@ function label(v: number): string {
 }
 
 /** Oro: the amber lamps of the Dome against the dull red real sun outside. */
-export default function TwoSuns({ active, reduced }: SetPieceProps) {
+export default function TwoSuns({ active }: SetPieceProps) {
   const [value, setValue] = useState(0);
   const shown = useRef(0);
   const buzz = useRef<Hum | null>(null);
@@ -48,7 +48,7 @@ export default function TwoSuns({ active, reduced }: SetPieceProps) {
   };
 
   const draw = (ctx: CanvasRenderingContext2D, { w, h }: StageSize, dt: number, t: number) => {
-    shown.current = reduced ? value : ease(shown.current, value, 6, dt);
+    shown.current = ease(shown.current, value, 6, dt);
     const r = shown.current;
     const lamp = 1 - r;
     const horizon = h * 0.7;
@@ -98,7 +98,7 @@ export default function TwoSuns({ active, reduced }: SetPieceProps) {
         const a = Math.PI + (i / 17) * Math.PI;
         const x = cx + Math.cos(a) * w * 0.48;
         const y = horizon + Math.sin(a) * h * 0.62;
-        const flick = reduced ? 1 : 0.85 + 0.15 * Math.sin(t * 3 + i);
+        const flick = 0.85 + 0.15 * Math.sin(t * 3 + i);
         glow(ctx, x, y, h * 0.09, "rgba(255,179,71,0.85)", lamp * flick);
       }
       // Golden bars of false light on the streets.
@@ -120,10 +120,7 @@ export default function TwoSuns({ active, reduced }: SetPieceProps) {
     ctx.fillRect(0, horizon, w, h - horizon);
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
-  useEffect(() => {
-    if (reduced) redraw();
-  }, [value, reduced, redraw]);
+  useStage(canvasRef, draw, active);
 
   const fromPointer = (e: PointerEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();

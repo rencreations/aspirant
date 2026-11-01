@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useRef, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
-import { prefersReducedMotion, useMounted } from "@/lib/hooks";
+import { useMounted } from "@/lib/hooks";
 
 import styles from "./screen-cover.module.css";
 
@@ -38,7 +38,7 @@ const uncovering = (e: number) =>
 /**
  * A full-screen wipe. Two plates, gold then violet, sweep across and cover everything, the page
  * changes underneath, and they sweep on and uncover it. It sits above the nav so the whole screen
- * is covered. Reduced motion uses a short fade.
+ * is covered.
  */
 export const ScreenCover = forwardRef<CoverApi, { colors?: CoverColors }>(function ScreenCover(
   { colors },
@@ -64,15 +64,6 @@ export const ScreenCover = forwardRef<CoverApi, { colors?: CoverColors }>(functi
         busy.current = true;
         el.dataset.on = "true";
         try {
-          if (prefersReducedMotion()) {
-            await el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, fill: "both" })
-              .finished;
-            b.style.clipPath = "none";
-            await during();
-            await el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "both" })
-              .finished;
-            return;
-          }
           const fwd = { duration: IN_MS, easing: EASE, fill: "both" } as const;
           // The gold edge leads, the plate follows 90 ms behind.
           a.animate([{ clipPath: covering(0) }, { clipPath: covering(100 + SLANT) }], fwd);

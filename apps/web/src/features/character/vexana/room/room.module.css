@@ -528,13 +528,3 @@
     font-size: clamp(1.4rem, 7vw, 2rem);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .item,
-  .end,
-  .nextBar,
-  .blackout {
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-}

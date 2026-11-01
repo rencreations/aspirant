@@ -87,8 +87,6 @@ interface DirectorOptions {
   skip?: () => SkipOptions | null;
   /** Her videos: the frame numbers every hand-over is cut on (`timeline.generated.ts`). */
   timeline: Timeline;
-  /** Reduced motion: nothing starts by itself and nothing loops. */
-  reduced: boolean;
   /** Start on the idle loop with no welcome (the visitor came to one of her pages). */
   skipWelcome?: boolean;
   /** Called once, as the stage begins: the page starts the music here. */
@@ -262,8 +260,8 @@ export class StageDirector {
     this.n = this.tl.loopFrames;
     for (const el of this.all()) el.dataset.layer = "off";
     // Until it plays, the welcome shows its own first frame, so the animation does not pop in
-    // over a different picture. Reduced motion never plays it.
-    if (!opts.reduced && !opts.skipWelcome) this.use("welcome").dataset.layer = "front";
+    // over a different picture.
+    if (!opts.skipWelcome) this.use("welcome").dataset.layer = "front";
     this.use("idle");
   }
 
@@ -343,9 +341,9 @@ export class StageDirector {
     return this.all().find((v) => v.dataset.layer === "front") ?? null;
   }
 
-  /** The speed-up in force, or null when there is none (reduced motion, or the character has none). */
+  /** The speed-up in force, or null when there is none (the character has none). */
   private skipOptions(): SkipOptions | null {
-    return this.opts.reduced ? null : (this.opts.skip?.() ?? null);
+    return this.opts.skip?.() ?? null;
   }
 
   /**
@@ -414,13 +412,6 @@ export class StageDirector {
     };
   }
 
-  /** Frames the video on top has dropped and shown (counters that only grow), or null. */
-  videoQuality(): { dropped: number; total: number } | null {
-    const top = this.topVideo();
-    const q = top?.getVideoPlaybackQuality?.();
-    return q ? { dropped: q.droppedVideoFrames, total: q.totalVideoFrames } : null;
-  }
-
   /**
    * Get a scene's first video ready (the pointer is on its button). Only the entrance is warmed:
    * the rest of a page is attached when the entrance plays, and the one warmed before is let go,
@@ -447,23 +438,16 @@ export class StageDirector {
     // The music comes first. The welcome video starts after the delay, on a black screen that then
     // fades away, so the picture is already moving when it is seen.
     const delay = this.opts.welcomeDelayMs ?? 0;
-    if (delay > 0 && !this.opts.skipWelcome && !this.opts.reduced) {
+    if (delay > 0 && !this.opts.skipWelcome) {
       await sleep(delay);
       if (this.destroyed) return;
     }
-    if (this.opts.skipWelcome && !this.opts.reduced) {
+    if (this.opts.skipWelcome) {
       await this.jumpToIdle();
       return;
     }
     const welcome = this.use("welcome");
-    const idle = this.use("idle");
-    if (this.opts.reduced) {
-      // No motion: the idle loop shows its first frame and stays there.
-      idle.currentTime = 0;
-      await this.swap(idle, null, 0);
-      this.set({ mode: "idle" });
-      return;
-    }
+    this.use("idle");
     const ok = await this.startAt(welcome, 0);
     if (!ok || this.destroyed) {
       await this.handToIdle();
@@ -523,23 +507,11 @@ export class StageDirector {
     }
     this.warmed = null;
     this.zoomNow(idle, 1);
-    if (!this.opts.reduced) await this.startAt(idle, 0);
-    else idle.currentTime = 0;
+    await this.startAt(idle, 0);
     idle.style.setProperty("--xfade", "0ms");
     idle.dataset.layer = "front";
     this.set({ mode: "idle", scene: null, loading: false, next: null, leaving: false, wait: null });
-    if (!this.opts.reduced) this.watchIdle();
-  }
-
-  /**
-   * Give the idle loop the size the device asks for now (the performance level stepped down while
-   * she idles). It restarts from its first frame, so the page covers the screen while this runs
-   * (the same wipe as Skip). Does nothing unless she is idling.
-   */
-  async retier() {
-    if (this.destroyed || this.state.mode !== "idle") return;
-    this.opts.detach?.("idle", this.els.idle);
-    await this.jumpToIdle();
+    this.watchIdle();
   }
 
   private watchIdle() {
@@ -606,8 +578,8 @@ export class StageDirector {
     this.warm(scene);
     this.prime(scene);
     this.pending = scene;
-    // Reduced motion, or an idle loop that cannot play (no codec): there is no frame to wait for.
-    if (this.opts.reduced || this.els.idle.error) {
+    // An idle loop that cannot play (no codec): there is no frame to wait for.
+    if (this.els.idle.error) {
       void this.startScene(scene);
       return;
     }
@@ -640,7 +612,7 @@ export class StageDirector {
     const phases = timing.startPhases;
     // The video plays on to the frame the hand-over starts at, then the idle loop dissolves in.
     const toSync = Math.max(0, back.syncFrame - LEAD_FRAMES - clip.currentTime * this.fps);
-    const blend = (((this.opts.reduced ? 380 : back.blendMs) + 40) / 1000) * this.fps;
+    const blend = ((back.blendMs + 40) / 1000) * this.fps;
     // The idle loop starts a few frames after the matching phase, and runs while it dissolves in.
     const phase = wrapFrame(back.syncPhase + START_LATENCY - LEAD_FRAMES + blend, this.n);
     const triggers = triggerFrames(phases, this.n);
@@ -705,14 +677,6 @@ export class StageDirector {
     if (page) this.use(`${scene}-loop`);
     this.set({ mode: page ? "intro" : "short", scene, loading: false, wait: null });
     this.stopWatch?.();
-    if (this.opts.reduced && page) {
-      // No intro: the page loop shows its first frame.
-      const loop = this.use(`${scene}-loop`);
-      loop.currentTime = 0;
-      await this.swap(loop, idle, 280);
-      this.set({ mode: "page" });
-      return;
-    }
     const ok = await this.startAt(el, 0);
     if (!ok) {
       if (page) {
@@ -726,7 +690,7 @@ export class StageDirector {
       return;
     }
     // The idle picture, still moving under the new one, eases to the new one's camera.
-    const ms = this.opts.reduced ? 280 : timing.blendMs;
+    const ms = timing.blendMs;
     if (timing.align !== 1) this.zoom(idle, 1 / timing.align, ms);
     await this.swap(el, idle, ms);
     this.zoomNow(idle, 1);
@@ -806,13 +770,6 @@ export class StageDirector {
       this.set({ mode: "idle", scene: null, leaving: false });
       return;
     }
-    if (this.opts.reduced) {
-      this.set({ leaving: true });
-      void this.swap(this.els.idle, loop, 380).then(() => {
-        this.set({ mode: "idle", scene: null, leaving: false });
-      });
-      return;
-    }
     const n = page.loop.frames;
     const triggers = triggerFrames([page.out.startPhase], n);
     const here = frameAt(loop.currentTime, n, this.fps);
@@ -876,16 +833,12 @@ export class StageDirector {
     if (this.state.mode === "returning" || this.state.mode === "idle") return;
     this.stopWatch?.();
     this.set({ mode: "returning" });
-    // The idle loop is out of sight and paused: this is where it takes the size the device
-    // asks for now, if the performance level stepped down while the page played.
     const idle = this.use("idle");
-    const reduced = this.opts.reduced;
     const ahead = from.currentTime * this.fps - back.syncFrame + START_LATENCY;
-    const phase = immediate || reduced ? back.syncPhase : wrapFrame(back.syncPhase + ahead, this.n);
-    const ms = reduced ? 380 : back.blendMs;
+    const phase = immediate ? back.syncPhase : wrapFrame(back.syncPhase + ahead, this.n);
+    const ms = back.blendMs;
     this.zoomNow(idle, back.align === 1 ? 1 : 1 / back.align);
-    if (reduced) idle.currentTime = 0;
-    else await this.startAt(idle, phase / this.fps);
+    await this.startAt(idle, phase / this.fps);
     if (back.align !== 1) this.zoom(idle, 1, ms);
     await this.swap(idle, from, ms);
     this.zoomNow(idle, 1);
@@ -894,7 +847,7 @@ export class StageDirector {
     if (this.warmed === scene) this.warmed = null;
     this.poseBack = false;
     this.set({ mode: "idle", scene: null, loading: false, leaving: false, wait: null });
-    if (!reduced) this.watchIdle();
+    this.watchIdle();
     // Something chosen while she was finishing starts now.
     this.exit = null;
     const after = this.after;
@@ -912,7 +865,7 @@ export class StageDirector {
     const top = this.topVideo();
     if (!top || this.state.mode === "boot") return;
     if (hidden) top.pause();
-    else if (!(this.opts.reduced && top === this.els.idle)) void top.play().catch(() => undefined);
+    else void top.play().catch(() => undefined);
   }
 
   destroy() {

@@ -53,7 +53,7 @@ function buildGrid(): Grid {
 }
 
 /** Tanner's Row at dusk: light the thousand little windows. */
-export default function LittleLights({ active, reduced }: SetPieceProps) {
+export default function LittleLights({ active }: SetPieceProps) {
   const grid = useMemo(() => buildGrid(), []);
   const litAt = useRef(new Float32Array(TOTAL).fill(-1));
   const [count, setCount] = useState(0);
@@ -98,7 +98,7 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
     layout.current = { x0, cw, wh, base };
 
     if (wave.current >= 0) {
-      const reached = reduced ? COLS : Math.floor((t - wave.current) * 22);
+      const reached = Math.floor((t - wave.current) * 22);
       for (let c = 0; c < Math.min(COLS, reached); c++) {
         const off = grid.offsets[c] ?? 0;
         for (let r = 0; r < (grid.heights[c] ?? 0); r++) lightIndex(off + r, false, t);
@@ -119,8 +119,8 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
         const at = litAt.current[i]!;
         let k = 0;
         if (at >= 0) {
-          k = reduced ? 1 : Math.min(1, (t - at) * 2.5);
-          if (!reduced) k *= 0.82 + 0.18 * Math.sin(t * (1.1 + (i % 7) * 0.3) + i);
+          k = Math.min(1, (t - at) * 2.5);
+          k *= 0.82 + 0.18 * Math.sin(t * (1.1 + (i % 7) * 0.3) + i);
         }
         ctx.fillStyle =
           k > 0 ? `rgba(255, ${190 + (i % 5) * 8}, 120, ${0.25 + k * 0.75})` : "#1b1a28";
@@ -132,7 +132,7 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
 
     // Every window lit: the green beam of the Trial rises over the terraces.
     if (countRef.current === TOTAL) {
-      beam.current = reduced ? 1 : Math.min(1, beam.current + dt * 0.4);
+      beam.current = Math.min(1, beam.current + dt * 0.4);
       const bx = x0 + (COLS / 2) * cw;
       const bh = h * beam.current;
       const g = ctx.createLinearGradient(bx - cw * 2, 0, bx + cw * 2, 0);
@@ -154,7 +154,7 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const hit = (e: PointerEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -164,7 +164,6 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
     const r = Math.floor((base - (e.clientY - rect.top)) / (wh * 1.55));
     if (r < 0 || r >= (grid.heights[c] ?? 0)) return;
     lightIndex((grid.offsets[c] ?? 0) + r, true, performance.now() / 1000);
-    if (reduced) redraw();
   };
 
   const onKey = (e: KeyboardEvent<HTMLCanvasElement>) => {
@@ -205,10 +204,6 @@ export default function LittleLights({ active, reduced }: SetPieceProps) {
               wake();
               note(pentatonic(0, 392), { gain: 0.05 });
               wave.current = performance.now() / 1000;
-              if (reduced) {
-                wave.current = 0;
-                redraw();
-              }
             }}
           >
             Light the row

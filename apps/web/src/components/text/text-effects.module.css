@@ -23,18 +23,10 @@
  * allowed (the boot script sets html.js before first paint). The failsafe shows them after
  * 2.5 s if the app never hydrates.
  */
-:global(:root.js:not([data-motion="reduced"])) [data-split-pending] .unit,
-:global(:root.js:not([data-motion="reduced"])) [data-typing-pending] .typed {
+:global(:root.js) [data-split-pending] .unit,
+:global(:root.js) [data-typing-pending] .typed {
   opacity: 0;
   animation: pending-failsafe 0.4s 2.5s forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :global(:root.js) [data-split-pending] .unit,
-  :global(:root.js) [data-typing-pending] .typed {
-    opacity: 1;
-    animation: none;
-  }
 }
 
 @keyframes pending-failsafe {

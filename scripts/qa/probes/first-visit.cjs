@@ -1,6 +1,6 @@
 // The first visit on a slow connection, second by second: is the cover or the loading screen up
-// (never the plain page), how many bytes have arrived, when does "Enter now" appear, when does
-// the page open. Screenshots go to OUT (default: the temp folder).
+// (never the plain page), how many bytes have arrived, what the note under the bar says (the real progress),
+// when does the page open. It never opens with a part of the page: there is no "Enter now". Screenshots go to OUT (default: the temp folder).
 //
 //   MSYS_NO_PATHCONV=1 BASE=https://aspirant.cc R=/character/vexana/ SLOW=1 WAIT=90 node scripts/qa/probes/first-visit.cjs
 //
@@ -36,6 +36,10 @@ const { BASE, OUT, PHONE, launch, throttle } = require("./lib.cjs");
           enterNow: [...document.querySelectorAll("button")].some((b) =>
             /enter now/i.test(b.innerText),
           ),
+          note:
+            [...document.querySelectorAll("p")]
+              .find((p) => /Still loading|Offline\./.test(p.textContent || ""))
+              ?.textContent?.slice(0, 90) || "",
           animations: document.getAnimations().length,
         };
       })

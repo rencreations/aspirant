@@ -1,22 +1,12 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/media-store", () => ({
   mediaUrl: (file: string) => `blob:mock${file}`,
 }));
 
-import { giveSource, mayPlay } from "./autoplay";
+import { giveSource } from "./autoplay";
 
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
-
-describe("a muted picture that runs by itself", () => {
-  it("runs unless data saving is on, whatever the performance level says", () => {
-    expect(mayPlay()).toBe(true);
-    vi.stubGlobal("navigator", { connection: { saveData: true } });
-    expect(mayPlay()).toBe(false);
-  });
-
+describe("a video source", () => {
   it("asks for the file when the copy in memory has gone bad", () => {
     const video = document.createElement("video");
     giveSource(video, "/video/vexana/x.mp4");

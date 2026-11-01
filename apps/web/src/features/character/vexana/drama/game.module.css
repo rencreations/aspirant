@@ -43,18 +43,6 @@
   }
 }
 
-:global(html[data-motion="reduced"]) .video,
-:global(html[data-motion="reduced"]) .video[data-front="true"] {
-  transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .video,
-  .video[data-front="true"] {
-    transition: none;
-  }
-}
-
 /* A tick for every line of dialogue, and a fill for how far the film has gone. */
 .strip {
   position: absolute;
@@ -95,12 +83,6 @@
   transform-origin: 0 50%;
   transform: scaleX(0);
   transition: transform 0.3s linear;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .strip b {
-    transition: none;
-  }
 }
 
 .tools {
@@ -211,12 +193,6 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation-duration: 2.4s;
   }
 }
 

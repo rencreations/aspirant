@@ -22,9 +22,8 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import type { Slug } from "@/content/types";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { isTypingTarget, prefersReducedMotion, useHotkey, useIsoLayoutEffect } from "@/lib/hooks";
+import { isTypingTarget, useHotkey, useIsoLayoutEffect } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
-import { startGovernor } from "@/lib/perf";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCharacter, RosterPair } from "./entries";
@@ -281,10 +280,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     const target = clamp(to, 0, e.max);
     const from = el.scrollLeft;
     if (Math.abs(target - from) < 1) return;
-    if (prefersReducedMotion()) {
-      el.scrollLeft = target;
-      return;
-    }
     const dur = clamp(520 + Math.abs(target - from) * 0.4, 560, 1300);
     const t0 = performance.now();
     const step = (now: number) => {
@@ -316,10 +311,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       if (ev.deltaMode === 1) d *= 32;
       else if (ev.deltaMode === 2) d *= e.vw;
       ev.preventDefault();
-      if (prefersReducedMotion()) {
-        el.scrollLeft += d;
-        return;
-      }
       cancelAnimationFrame(e.glideRaf);
       e.glideRaf = 0;
       e.target = clamp((e.wheeling ? e.target : el.scrollLeft) + d * 1.2, 0, e.max);
@@ -424,9 +415,6 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
       stopMotion();
     };
   }, [measure, update, schedule, glide]);
-
-  // A device that cannot keep the frame rate loses effects (lib/perf.ts), here and on the other pages.
-  useEffect(() => startGovernor(), []);
 
   // The page is one wall: nothing scrolls up and down.
   useEffect(() => {
@@ -542,12 +530,9 @@ export function Roster({ characters, pairs, voiceLines, next }: RosterProps) {
     if (chosen) return;
     audio.blip("click");
     setChosen(c.slug);
-    window.setTimeout(
-      () => {
-        router.push(characterRoute(c.slug), { label: c.name });
-      },
-      prefersReducedMotion() ? 0 : CHOOSE_MS,
-    );
+    window.setTimeout(() => {
+      router.push(characterRoute(c.slug), { label: c.name });
+    }, CHOOSE_MS);
   };
 
   // The panels get the same functions on every render, so they do not draw again on a scroll.

@@ -11,7 +11,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { prefersReducedMotion, useMounted } from "@/lib/hooks";
+import { useMounted } from "@/lib/hooks";
 
 import type { CoverApi } from "../../stage/screen-cover";
 import styles from "./board-cover.module.css";
@@ -33,7 +33,7 @@ function gridFor(width: number, height: number): { cols: number; rows: number } 
  * The wipe between her pictures: a chessboard. Squares of black and crimson velvet grow along a
  * diagonal, each with a gold edge that leads it, until the board covers the screen. The picture
  * changes underneath, and the squares shrink away in the same order. It sits above the nav so
- * the whole screen is covered. Reduced motion uses a short fade. Same API as `ScreenCover`.
+ * the whole screen is covered. Same API as `ScreenCover`.
  */
 export const BoardCover = forwardRef<CoverApi>(function BoardCover(_props, ref) {
   const root = useRef<HTMLDivElement>(null);
@@ -65,15 +65,6 @@ export const BoardCover = forwardRef<CoverApi>(function BoardCover(_props, ref) 
         }
         busy.current = true;
         try {
-          if (prefersReducedMotion()) {
-            el.dataset.phase = "fade";
-            await el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, fill: "both" })
-              .finished;
-            await during();
-            await el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "both" })
-              .finished;
-            return;
-          }
           el.dataset.phase = "in";
           await sleep(total);
           await during();

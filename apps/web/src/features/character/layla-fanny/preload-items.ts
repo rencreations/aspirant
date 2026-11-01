@@ -4,8 +4,9 @@ import { imageItem, mediaItem, savedItem, type PreloadItem } from "@/lib/preload
 import { FILMS, HERO, MUSIC, officialArt, type Who } from "./media";
 
 /**
- * What a page of the pair needs before it opens: her picture, the album art for the nav, the
- * posters of the first films and the music.
+ * What a page of the pair needs before it opens (one version only: a slow connection waits for all
+ * of it): her picture, her partner's, the album art for the nav, the posters of every film, the
+ * pictures of the gallery and the music.
  */
 export function lfFirstPaint(who: Who): PreloadItem[] {
   return [
@@ -13,14 +14,19 @@ export function lfFirstPaint(who: Who): PreloadItem[] {
     imageItem(`/img/char/${who}/splash-sm.webp`, "Loading the album art", 1),
     imageItem(FILMS.trailer.poster, "Loading the films", 1),
     imageItem(FILMS.skin.poster, "Loading the films", 1),
-    mediaItem(MUSIC, "Loading the music", { type: "audio/mp4", weight: 3, timeoutMs: 120_000 }),
+    ...[FILMS.short, FILMS.music, FILMS.musicBts, FILMS.producer, FILMS.idea].map((f) =>
+      imageItem(f.poster, "Loading the films", 1),
+    ),
+    ...officialArt(who).map((a) => imageItem(a.src, "Loading the art", 1)),
+    imageItem(HERO[who === "layla" ? "fanny" : "layla"].src, "Loading her partner", 1),
+    mediaItem(MUSIC, "Loading the music", { type: "audio/mp4", weight: 3 }),
   ];
 }
 
 /**
- * The rest, deferred: the loading bar does not wait for it. The voice lines and the pictures of
- * the gallery arrive in the background. The films stream when they are played, so only their
- * posters are fetched here.
+ * The rest, deferred: the loading bar does not wait for it. The voice lines play when the visitor
+ * presses a button, which shows its loading state until its line is in. The films stream when they
+ * are played.
  */
 export function lfLater(who: Who): Array<{ priority: number; items: PreloadItem[] }> {
   const lines = getCharacter(who).voice;
@@ -28,19 +34,6 @@ export function lfLater(who: Who): Array<{ priority: number; items: PreloadItem[
     {
       priority: 20,
       items: lines.map((l) => savedItem(`/${l.file}`, "Loading her voice lines", 1)),
-    },
-    {
-      priority: 28,
-      items: [FILMS.short, FILMS.music, FILMS.musicBts, FILMS.producer, FILMS.idea].map((f) =>
-        imageItem(f.poster, "Loading the films", 1),
-      ),
-    },
-    {
-      priority: 30,
-      items: [
-        ...officialArt(who).map((a) => imageItem(a.src, "Loading the art", 1)),
-        imageItem(HERO[who === "layla" ? "fanny" : "layla"].src, "Loading her partner", 1),
-      ],
     },
   ];
 }

@@ -4,8 +4,8 @@ import { skipGate, url } from "./helpers";
 
 /**
  * The opening of /character. The picture is drawn in one WebGL canvas that covers the page and is
- * removed when it ends. Reduced motion, `?intro=off` and a browser without WebGL show the finished
- * page at once. The frame checks use `?introT=<t>`, which freezes the intro at a time.
+ * removed when it ends. `?intro=off` and a browser without WebGL show the finished page at once. The operating
+ * system's reduced motion setting is ignored: there is one version of the site. The frame checks use `?introT=<t>`, which freezes the intro at a time.
  */
 
 const CANVAS = "canvas[data-roster-intro-canvas]";
@@ -30,14 +30,14 @@ test.describe("roster intro", () => {
     expect(["none", "ended"]).toContain(state);
   });
 
-  test("reduced motion skips the intro", async ({ page }) => {
+  test("the system's reduced motion setting does not skip the intro", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(url("/character/"));
-    await expect(
-      page.getByRole("region", { name: "The ten Aspirants, scrolls sideways" }),
-    ).toBeVisible();
-    await page.waitForTimeout(800);
-    await expect(page.locator(CANVAS)).toHaveCount(0);
+    test.skip(!(await hasWebGL2(page)), "no WebGL2 in this browser");
+    await expect(page.locator(CANVAS)).toHaveCount(1, { timeout: 20_000 });
+    await expect
+      .poll(() => page.evaluate(() => window.__rosterIntro?.state), { timeout: 20_000 })
+      .toBe("playing");
   });
 
   test("?introT freezes the picture: a canvas over the page, below the site bar", async ({
@@ -128,16 +128,6 @@ test.describe("roster intro", () => {
       Number(getComputedStyle(document.documentElement).getPropertyValue("--z-nav")),
     );
     expect(cover?.z).toBeLessThan(nav);
-  });
-
-  test("reduced motion never gets the cover", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto(url("/character/"), { waitUntil: "commit" });
-    await page.waitForSelector("[data-roster-cover]", { state: "attached" });
-    const shown = await page.evaluate(
-      () => getComputedStyle(document.querySelector("[data-roster-cover]")!).display,
-    );
-    expect(shown).toBe("none");
   });
 
   test("after the intro the cover is gone as well as the canvas", async ({ page }) => {

@@ -63,12 +63,11 @@ Both are drawn by one component, the **logo curtain** (`components/curtain/`). T
 
 - **First load.** A light screen. The logo is centred and large and idles in a loop: the letters ripple in a wave, a band of light sweeps across them, a spark runs round the outline, the mascot bobs, blinks and twitches its antennae. Below it a loading bar reports real work (fonts, lazy code chunks, the images and data the landing page needs, from `lib/route-preloads.ts`) with a label for what is still loading. A few hairlines and corner brackets echo the plate. When loading is done there is nothing to click: the white drains from the letters, then the logo zooms into a letter until the page fills the screen.
 - **Page transition.** Click a link and the logo zooms out of the page you are leaving (its letters show that page), the route changes, then the logo zooms in again through a letter onto the new page. If the new page is not ready 500 ms after the click, the letters fill white and a quieter loading state shows (the letters flicker like a scanner, the mascot looks around, a short label and a scanning line). Pages can hold the reveal with `expectReady` (`lib/page-ready.ts`).
-- Reduced motion: no logo movement. A short light fade for transitions and for the first load.
 - Audio starts on the first touch, click or key press anywhere.
 
 ### 4.2 Home (references: landonorris.com, kprverse.com)
 
-1. **Portal hero.** A full-viewport WebGL scene. A character cutout is lifted into pseudo-3D with a depth map. The camera follows the pointer so the face turns in space. Moving the pointer across the face opens a circular **portal** with a warped, glowing rim that reveals the other form underneath. The portal radius follows pointer speed and relaxes when idle. Pairs, cycled by a control: Vexana (Aspirant / Ender form), Selena and Obsidia, Guinevere and Vexana. On touch: drag opens the portal; device tilt is optional. Reduced motion: static art, tap to toggle forms.
+1. **Portal hero.** A full-viewport WebGL scene. A character cutout is lifted into pseudo-3D with a depth map. The camera follows the pointer so the face turns in space. Moving the pointer across the face opens a circular **portal** with a warped, glowing rim that reveals the other form underneath. The portal radius follows pointer speed and relaxes when idle. Pairs, cycled by a control: Vexana (Aspirant / Ender form), Selena and Obsidia, Guinevere and Vexana. On touch: drag opens the portal; device tilt is optional.
 2. **What is Aspirant.** Scroll-scrubbed manifesto: words light up as you scroll, as if lit by a lamp. Plain, warm copy: the series, the ten Aspirants, Selrick Academy, aspirant power ("a heart that holds on to one thing").
 3. **Versus stage** (Off Track / On Track). Two halves split by a diagonal rift. Left: Daybreak (blue). Right: Storm (crimson). Hovering or focusing a side widens it and plays its voice line. Three pairings behind a pinned scroll: Selena and Obsidia (good and evil, blue and red), Vexana and Vexana (Aspirant and Ender form), Layla and Fanny (rivalry).
 4. **Before and after strip.** Two lines, one struck through: "A peaceful world." and "A world that was weighed." Interaction: hover or tap flips them. Links to the full contrast in `/story`.
@@ -97,7 +96,7 @@ The story told by scrolling. It works like Santioni: you scroll, the narrator co
   - Ch 57: twin streams of light.
   - Ch 60: 117 lighthouses; click each to hear its note.
 - **Sound.** One ambient bed per Part and character voice lines at marked beats, from the supplied audio. Off until the visitor enters; toggle always visible.
-- **No scroll-jacking.** Native scroll with Lenis smoothing. Pinned sections are short. Reduced motion: simple fades, no pinning.
+- **No scroll-jacking.** Native scroll with Lenis smoothing. Pinned sections are short.
 
 ### 4.4 Story (reference: why.zero.university)
 
@@ -152,7 +151,7 @@ An archive terminal. Filters: Films, Music, Comics, Art, Fan art, Voice. Items s
 - Fonts: self-hosted through `@fontsource` packages (no network at build). Display: Big Shoulders Display. Narration: Instrument Serif. HUD labels: JetBrains Mono. Body: Hanken Grotesk. Japanese text uses the system CJK fallback.
 - **Base path.** Production is served from the custom domain https://aspirant.cc, a domain root, so the base path is empty (it was `/aspirant` while the site was a GitHub project page). Every URL that is not a Next route (video, audio, image, JSON, GLB, texture) MUST go through the `asset()` helper in `src/lib/asset.ts`, which prefixes `NEXT_PUBLIC_BASE_PATH`. Never hardcode `/media/...`.
 - Dev runs on `http://localhost:3000` with no base path.
-- Heavy scenes load with `next/dynamic` (`ssr: false`), pause when off screen, cap device pixel ratio at 1.75, and drop particle counts on small screens and `prefers-reduced-motion`.
+- Heavy scenes load with `next/dynamic` (`ssr: false`), pause when off screen, cap device pixel ratio at 1.75, and drop particle counts on small screens.
 - All story and character content lives in typed local data under `src/content` and `public/data`. No network calls at runtime.
 
 ### Repository layout
@@ -185,7 +184,7 @@ Originals (`D:\ren\aspirant`) are never copied into the repo. The pipeline reads
 
 - WCAG 2.2 AA. Semantic landmarks, one `h1` per page, skip link, visible focus (star ring), correct names for icon buttons.
 - Every hover effect has tap and keyboard equivalents. No focus traps. Modals trap and restore focus correctly.
-- `prefers-reduced-motion`: no particles, no pinning, no parallax; crossfades only. A visible "Reduce motion" toggle also exists.
+- Reduced motion is not handled: the site has one version and ignores `prefers-reduced-motion` (owner decision, 1 Nov 2026).
 - Contrast: body text on dark at least 7:1; HUD micro-labels at least 4.5:1.
 - Responsive: designed at 360, 768, 1280, 1920 and 2560 widths and checked in portrait and landscape; wide aspect ratios (21:9, 32:9) and tall (9:19.5) get their own composition rules. Use `dvh` units. Safe-area insets respected.
 - Budgets: Lighthouse accessibility 100 (CI hard gate); performance best effort. First load JS per route under about 250 KB excluding lazy 3D chunks.

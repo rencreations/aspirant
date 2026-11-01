@@ -23,7 +23,7 @@ function where(v: number): string {
 }
 
 /** The long white corridor under the tower: walk it to the black gate. */
-export default function Corridor({ active, reduced }: SetPieceProps) {
+export default function Corridor({ active }: SetPieceProps) {
   const [walk, setWalk] = useState(0);
   const shown = useRef(0);
   const song = useRef<Hum | null>(null);
@@ -50,7 +50,7 @@ export default function Corridor({ active, reduced }: SetPieceProps) {
   };
 
   const draw = (ctx: CanvasRenderingContext2D, { w, h }: StageSize, dt: number, t: number) => {
-    shown.current = reduced ? walk : ease(shown.current, walk, 5, dt);
+    shown.current = ease(shown.current, walk, 5, dt);
     const v = shown.current;
     const lightsOut = smoothstep(0.6, 0.78, v);
     const gate = smoothstep(0.66, 0.95, v);
@@ -77,7 +77,7 @@ export default function Corridor({ active, reduced }: SetPieceProps) {
         const lx = cx;
         const ly = cy - hh + 4 * s;
         const on = (1 - lightsOut) * fog;
-        const flick = reduced ? 1 : 0.9 + 0.1 * Math.sin(t * 13 + i);
+        const flick = 0.9 + 0.1 * Math.sin(t * 13 + i);
         ctx.fillStyle = `rgba(111,182,255,${on})`;
         ctx.fillRect(lx - hw * 0.18, ly, hw * 0.36, Math.max(1, 3 * s));
         glow(ctx, lx, ly + 6 * s, hw * 0.6, "rgba(111,182,255,0.25)", on * flick);
@@ -104,22 +104,17 @@ export default function Corridor({ active, reduced }: SetPieceProps) {
       ctx.lineWidth = 1.5;
       ctx.stroke();
       // A cold wind pours out toward you.
-      if (!reduced) {
-        ctx.fillStyle = `rgba(200,215,240,${0.4 * gate})`;
-        for (let i = 0; i < 40; i++) {
-          const u = (t * 0.4 + i / 40) % 1;
-          const a = (i * 2.399) % (Math.PI * 2);
-          const r = u * u * w * 0.6;
-          ctx.fillRect(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.6, 1 + u * 2, 1 + u * 2);
-        }
+      ctx.fillStyle = `rgba(200,215,240,${0.4 * gate})`;
+      for (let i = 0; i < 40; i++) {
+        const u = (t * 0.4 + i / 40) % 1;
+        const a = (i * 2.399) % (Math.PI * 2);
+        const r = u * u * w * 0.6;
+        ctx.fillRect(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.6, 1 + u * 2, 1 + u * 2);
       }
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
-  useEffect(() => {
-    if (reduced) redraw();
-  }, [walk, reduced, redraw]);
+  useStage(canvasRef, draw, active);
 
   const onKey = (e: KeyboardEvent<HTMLCanvasElement>) => {
     const fwd = e.key === "ArrowUp" || e.key === "ArrowRight";

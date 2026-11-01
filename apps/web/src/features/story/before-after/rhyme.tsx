@@ -7,7 +7,6 @@ import { useRef } from "react";
 
 import { ThemeZone } from "@/components/theme-zone";
 import { storyIndex } from "@/content/story";
-import { useReducedMotion } from "@/lib/hooks";
 
 import styles from "./rhyme.module.css";
 
@@ -20,13 +19,12 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
  */
 export function Rhyme() {
   const rootRef = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
   const { lines, attribution } = storyIndex.epigraph;
 
   useGSAP(
     () => {
       const root = rootRef.current;
-      if (!root || reduced) return;
+      if (!root) return;
       const words = Array.from(root.querySelectorAll<HTMLElement>("[data-w]"));
       if (!words.length) return;
       gsap.fromTo(
@@ -51,7 +49,7 @@ export function Rhyme() {
         },
       );
     },
-    { scope: rootRef, dependencies: [reduced] },
+    { scope: rootRef },
   );
 
   return (

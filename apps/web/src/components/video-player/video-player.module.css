@@ -856,11 +856,3 @@
     transform: translate(-50%, calc(-50% + 10px));
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .loaderOuter,
-  .loaderInner,
-  .dots i {
-    animation: none;
-  }
-}

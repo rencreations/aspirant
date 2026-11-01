@@ -228,7 +228,7 @@ test("voice: search by character or text and play a line", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("reduced motion: filters and dialogs still work", async ({ page }) => {
+test("the system reduced-motion setting is ignored: filters and dialogs work", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const errors = await open(page);
   await page.getByRole("button", { name: "Comics 2", exact: true }).click();

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ThemeZone } from "@/components/theme-zone";
 import { hierarchy } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { usePointer, useMediaQuery, useReducedMotion } from "@/lib/hooks";
+import { usePointer, useMediaQuery } from "@/lib/hooks";
 
 import { ChapterLink, ChapterLinks } from "../chapter-link";
 import { SectionHead } from "../section-head";
@@ -38,23 +38,22 @@ export function Hierarchy() {
   const stackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState("will");
   const wide = useMediaQuery("(min-width: 62em)");
-  const reduced = useReducedMotion();
   const pointer = usePointer();
 
   // Depth: plates shift against the pointer by layer.
   useEffect(() => {
     const stack = stackRef.current;
-    if (!stack || reduced || !wide) return;
+    if (!stack || !wide) return;
     return pointer.subscribe((p) => {
       stack.style.setProperty("--px", p.x.toFixed(3));
       stack.style.setProperty("--py", p.y.toFixed(3));
     });
-  }, [pointer, reduced, wide]);
+  }, [pointer, wide]);
 
   useGSAP(
     () => {
       const stack = stackRef.current;
-      if (!stack || reduced) return;
+      if (!stack) return;
       const plates = Array.from(stack.querySelectorAll<HTMLElement>("[data-plate]"));
       gsap.fromTo(
         plates,
@@ -70,7 +69,7 @@ export function Hierarchy() {
         },
       );
     },
-    { scope: rootRef, dependencies: [reduced] },
+    { scope: rootRef },
   );
 
   return (

@@ -316,17 +316,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .overlay,
-  .viewer {
-    animation: none;
-  }
-
-  .picture {
-    transition: none;
-  }
-}
-
 @keyframes fade-in {
   from {
     opacity: 0;

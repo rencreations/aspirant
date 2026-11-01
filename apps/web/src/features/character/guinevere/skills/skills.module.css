@@ -659,20 +659,3 @@
     height: min(72vh, 580px);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .sweep {
-    display: none;
-  }
-
-  .plate {
-    animation: none;
-  }
-
-  .clip,
-  .key,
-  .key::after,
-  .screen {
-    transition: none;
-  }
-}

@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 
-import { giveSource, mayPlay } from "../../vexana/shared/autoplay";
+import { giveSource } from "../../vexana/shared/autoplay";
 import { videoFile, videoPoster } from "../media";
 import { VIDEOS } from "../videos";
 import styles from "./about.module.css";
@@ -15,10 +14,9 @@ const INFO = VIDEOS["skin-showcase"];
 
 /**
  * Her skin showcase, cut to Guinevere only, where her picture used to be: muted, looping, and
- * running only while it is on screen. The poster stays under reduced motion and on the light level.
+ * running only while it is on screen.
  */
 export function SkinFrame() {
-  const reduced = useReducedMotion();
   const frameRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [ratio, setRatio] = useState(INFO.width / INFO.height);
@@ -30,7 +28,7 @@ export function SkinFrame() {
     let near = false;
     let seen = false;
     const apply = () => {
-      if (near && seen && !reduced && mayPlay() && document.visibilityState === "visible") {
+      if (near && seen && document.visibilityState === "visible") {
         if (video.paused) void video.play().catch(() => undefined);
       } else if (!video.paused) {
         video.pause();
@@ -42,7 +40,7 @@ export function SkinFrame() {
         // The last entry is how it is now (several queue up when the page is busy).
         const e = entries[entries.length - 1];
         near = e?.isIntersecting ?? false;
-        if (near && !video.getAttribute("src") && !reduced && mayPlay()) {
+        if (near && !video.getAttribute("src")) {
           giveSource(video, FILE);
           video.preload = "auto";
         }
@@ -67,7 +65,7 @@ export function SkinFrame() {
       view.disconnect();
       document.removeEventListener("visibilitychange", apply);
     };
-  }, [reduced]);
+  }, []);
 
   return (
     <figure className={styles.framewrap}>

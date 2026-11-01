@@ -18,8 +18,8 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
 
 /**
  * The persistent frame: four thin corner brackets and a hairline scroll progress bar along the top
- * edge. Fixed, click-through and decorative. The sound button lives in the nav and the
- * reduce-motion toggle in the menu. The M key toggles sound.
+ * edge. Fixed, click-through and decorative. The sound button lives in the nav. The M key
+ * toggles sound.
  */
 export function HudFrame() {
   const barRef = useRef<HTMLDivElement>(null);

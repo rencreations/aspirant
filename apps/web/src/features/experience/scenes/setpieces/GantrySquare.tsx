@@ -17,7 +17,7 @@ interface End {
 }
 
 /** Gantry Square: threads of light between Chang'e and Lesley; drag one, the other follows. */
-export default function GantrySquare({ active, reduced }: SetPieceProps) {
+export default function GantrySquare({ active }: SetPieceProps) {
   const ends = useRef<[End, End]>([
     { x: 0.22, y: 0.35 },
     { x: 0.8, y: 0.62 },
@@ -45,26 +45,21 @@ export default function GantrySquare({ active, reduced }: SetPieceProps) {
     const [a, b] = ends.current;
     const leader = lead.current === 0 ? a : b;
     const follower = lead.current === 0 ? b : a;
-    leader.x = reduced ? target.current.x : ease(leader.x, target.current.x, 10, dt);
-    leader.y = reduced ? target.current.y : ease(leader.y, target.current.y, 10, dt);
+    leader.x = ease(leader.x, target.current.x, 10, dt);
+    leader.y = ease(leader.y, target.current.y, 10, dt);
     // The other end follows on a soft spring, keeping a little distance.
     const fx = leader.x + (lead.current === 0 ? 0.12 : -0.12);
     const fy = leader.y + 0.05;
     const gap = Math.hypot(follower.x - fx, follower.y - fy);
-    if (reduced) {
-      follower.x = fx;
-      follower.y = fy;
-    } else {
-      const k = gap > 0.02 ? 1.3 : 0;
-      follower.x = ease(follower.x, fx, k, dt);
-      follower.y = ease(follower.y, fy, k, dt);
-    }
+    const k = gap > 0.02 ? 1.3 : 0;
+    follower.x = ease(follower.x, fx, k, dt);
+    follower.y = ease(follower.y, fy, k, dt);
 
     const d = Math.hypot(a.x - b.x, (a.y - b.y) * 0.7);
     const c = clamp(1 - (d - 0.12) / 0.6);
     if (Math.abs(c - coupling) > 0.02) setCoupling(Math.round(c * 100) / 100);
     closeFor.current = d < 0.2 ? closeFor.current + dt : 0;
-    const isSquared = reduced ? d < 0.2 : closeFor.current > 0.6;
+    const isSquared = closeFor.current > 0.6;
     if (isSquared !== squared) {
       setSquared(isSquared);
       if (isSquared) {
@@ -73,11 +68,7 @@ export default function GantrySquare({ active, reduced }: SetPieceProps) {
         announce("Squared. One plus one is more than two.");
       }
     }
-    squaredK.current = reduced
-      ? isSquared
-        ? 1
-        : 0
-      : ease(squaredK.current, isSquared ? 1 : 0, 3, dt);
+    squaredK.current = ease(squaredK.current, isSquared ? 1 : 0, 3, dt);
 
     // Ruined rooftops at dusk.
     const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -109,7 +100,7 @@ export default function GantrySquare({ active, reduced }: SetPieceProps) {
       ctx.quadraticCurveTo(cx, cy, bx, by);
       ctx.stroke();
       // A pearl of light travelling the thread.
-      const u = reduced ? th.ph : (t * th.sp * (1 + sq * 2) + th.ph) % 1;
+      const u = (t * th.sp * (1 + sq * 2) + th.ph) % 1;
       const px = (1 - u) * (1 - u) * ax + 2 * (1 - u) * u * cx + u * u * bx;
       const py = (1 - u) * (1 - u) * ay + 2 * (1 - u) * u * cy + u * u * by;
       glow(ctx, px, py, 6 + sq * 4, "rgba(255,244,210,0.9)");
@@ -140,7 +131,7 @@ export default function GantrySquare({ active, reduced }: SetPieceProps) {
     ctx.fillText("LESLEY", bx + 14, by - 12);
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const grab = (e: PointerEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -211,7 +202,6 @@ export default function GantrySquare({ active, reduced }: SetPieceProps) {
         onPointerMove={(e) => {
           if (!e.buttons) return;
           target.current = grab(e);
-          if (reduced) redraw();
         }}
         onKeyDown={onKey}
         onFocus={() => {

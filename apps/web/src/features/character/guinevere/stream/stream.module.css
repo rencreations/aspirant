@@ -572,15 +572,3 @@
     left: -30vw;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .neon,
-  .badge i,
-  .line {
-    animation: none;
-  }
-
-  .ringGlow {
-    transition: none;
-  }
-}

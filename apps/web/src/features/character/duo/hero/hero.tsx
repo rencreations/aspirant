@@ -4,7 +4,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useIsTouch, useReducedMotion } from "@/lib/hooks";
+import { useIsTouch } from "@/lib/hooks";
 import { withSound } from "@/lib/sound-prompt";
 
 import { crop } from "../crop";
@@ -32,11 +32,10 @@ const BEAT =
   "M0 30 H520 L540 30 L556 4 L578 56 L596 14 L610 30 H1060 L1080 30 L1096 6 L1118 54 L1136 16 L1150 30 H1600";
 
 /** Types the terminal of Ruby's hero, a line at a time, once it is on screen. */
-function Terminal({ reduced }: { reduced: boolean }) {
+function Terminal() {
   const total = RUBY_TERMINAL.reduce((n, l) => n + l.cmd.length + l.out.length, 0);
-  const [typed, setTyped] = useState(reduced ? total : 0);
+  const [typed, setTyped] = useState(0);
   useEffect(() => {
-    if (reduced) return;
     const id = window.setInterval(() => {
       setTyped((n) => {
         if (n >= total) {
@@ -49,7 +48,7 @@ function Terminal({ reduced }: { reduced: boolean }) {
     return () => {
       window.clearInterval(id);
     };
-  }, [reduced, total]);
+  }, [total]);
 
   const starts = RUBY_TERMINAL.map((_, i) =>
     RUBY_TERMINAL.slice(0, i).reduce((n, l) => n + l.cmd.length + l.out.length, 0),
@@ -124,10 +123,9 @@ export function Hero({
   layerName,
   tetra,
 }: HeroProps) {
-  const reduced = useReducedMotion();
   const touch = useIsTouch();
   const root = useReveal<HTMLElement>("0px");
-  const { host, layer, mark } = useHeroPointer({ reduced, flood: who === "angela" });
+  const { host, layer, mark } = useHeroPointer({ flood: who === "angela" });
 
   const letters = name.toUpperCase().split("");
   return (
@@ -163,7 +161,7 @@ export function Hero({
             <span className={`${styles.bracket} ${styles.bl}`} aria-hidden="true" />
             <span className={`${styles.bracket} ${styles.br}`} aria-hidden="true" />
             <span className={styles.scan} aria-hidden="true" />
-            <Terminal reduced={reduced} />
+            <Terminal />
           </>
         ) : (
           <>

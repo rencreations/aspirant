@@ -12,7 +12,6 @@ import {
 
 import { audio, type VoiceState } from "./audio";
 import { clamp, damp } from "./math";
-import { useSiteStore } from "./stores";
 
 /** useLayoutEffect on the client, useEffect on the server (no SSR warning). @public */
 export const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -33,22 +32,6 @@ export function useMediaQuery(query: string, serverValue = false): boolean {
     subscribe,
     () => window.matchMedia(query).matches,
     () => serverValue,
-  );
-}
-
-/** True when the OS asks for reduced motion OR the visitor turned on "Reduce motion". */
-export function useReducedMotion(): boolean {
-  const os = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const pref = useSiteStore((s) => s.motion);
-  return os || pref === "reduced";
-}
-
-/** Non-hook check for event handlers and effects. */
-export function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined") return false;
-  return (
-    document.documentElement.dataset.motion === "reduced" ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
 }
 

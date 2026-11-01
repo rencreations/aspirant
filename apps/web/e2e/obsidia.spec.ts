@@ -9,18 +9,20 @@ import { skipGate, url, watchErrors } from "./helpers";
  * director's state machine have unit tests next to the code.
  */
 
-test.describe.configure({ timeout: 120_000 });
+test.describe.configure({ timeout: 240_000 });
 
 async function open(page: Page, path = "/character/obsidia/") {
   await skipGate(page);
   const errors = watchErrors(page);
   await page.goto(url(path));
-  // The welcome animation can be skipped; without a decodable video the page goes straight on.
+  // The loading screen waits for every file of the first screens, however long that takes (a phone
+  // asks for the biggest size). The welcome animation can then be skipped; without a decodable video
+  // the page goes straight on.
   const skip = page.getByRole("button", { name: "Skip" });
-  await skip.click({ timeout: 4000 }).catch(() => undefined);
-  await expect(page.getByRole("button", { name: "About", exact: true })).toBeVisible({
-    timeout: 45_000,
-  });
+  const about = page.getByRole("button", { name: "About", exact: true });
+  await expect(skip.or(about)).toBeVisible({ timeout: 100_000 });
+  await skip.click({ timeout: 1500 }).catch(() => undefined);
+  await expect(about).toBeVisible({ timeout: 45_000 });
   // The buttons slide in; let them settle.
   await page.waitForTimeout(1300);
   return errors;

@@ -63,8 +63,6 @@ interface HoldProps {
   hold: number;
   /** What is drawn over the held screen: the doors, the liquid. It reads `useHoldProgress`. */
   overlay?: ReactNode;
-  /** False (reduced motion): the section is shown as it is, with no hold. */
-  enabled?: boolean;
   className?: string;
   style?: CSSProperties;
   /**
@@ -82,15 +80,7 @@ interface HoldProps {
  * back plays it backwards). The section is not touched: the hold is made by the layout around it.
  * What follows the wrapper may overlap its spacer (a negative margin) to be revealed under it.
  */
-export function Hold({
-  hold,
-  overlay,
-  enabled = true,
-  className,
-  style,
-  shift = 0,
-  children,
-}: HoldProps) {
+export function Hold({ hold, overlay, className, style, shift = 0, children }: HoldProps) {
   const root = useRef<HTMLDivElement>(null);
   const stick = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -121,7 +111,6 @@ export function Hold({
   );
 
   useEffect(() => {
-    if (!enabled) return;
     const r = root.current;
     const s = stick.current;
     const t = track.current;
@@ -169,9 +158,7 @@ export function Hold({
       s.style.visibility = "";
       emit(0);
     };
-  }, [enabled, shift]);
-
-  if (!enabled) return <div className={className}>{children}</div>;
+  }, [shift]);
 
   return (
     <HoldContext.Provider value={api}>

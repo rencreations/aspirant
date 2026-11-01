@@ -6,8 +6,6 @@ import { useCallback, useEffect, useRef, type CSSProperties } from "react";
 
 import { StarGlyph } from "@/components/star-glyph";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
-import { startGovernor } from "@/lib/perf";
 
 import { videoFile, videoPoster } from "../media";
 import { MARQUEE, STATEMENT, STATEMENT_PLAIN, type Part } from "./copy";
@@ -97,12 +95,8 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
  * see `hero-video.tsx`; her name is in it), the hand-over (the screen closes into a card and the page goes dark), and the signature with
  * her message. One tall track holds a sticky screen; the scroll position drives everything with
  * transforms and opacity only. See `opening-math.ts` for the timeline.
- *
- * With reduced motion the same pieces are laid out in a plain column, nothing pinned.
  */
 export function Opening() {
-  const reduced = useReducedMotion();
-
   const toneRef = useRef(0);
   const activeRef = useRef(true);
   const heroRef = useRef<HTMLVideoElement>(null);
@@ -136,29 +130,12 @@ export function Opening() {
     [],
   );
 
-  // The scene does not depend on the performance level: that level is a guess that is often wrong
-  // (a busy page, a level remembered from another page), and the scene looks after itself (it gives
-  // up pixels and noise first when frames are slow). Only reduced motion, data saving and very
-  // little memory keep the flat version.
-  //
-  // A level that was dropped and remembered can come back: this page looks for a step up while the
-  // hero is on screen (it never steps down on its own; the room at the bottom judges frames only
-  // while it is shown).
-  useEffect(
-    () =>
-      startGovernor({
-        raiseOnly: true,
-        paused: () => document.hidden || !activeRef.current,
-      }),
-    [],
-  );
-
   // The scroll: one trigger over the whole track.
   useEffect(() => {
     const track = trackRef.current;
     const pin = pinRef.current;
     const card = cardRef.current;
-    if (reduced || !track || !pin || !card) return;
+    if (!track || !pin || !card) return;
     const measure: Measure = { vw: 1, vh: 1, cardW: 1, cardH: 1 };
     let signed = false;
     let shimmerOn = true;
@@ -293,29 +270,7 @@ export function Opening() {
       cover.kill();
       signature.reset();
     };
-  }, [reduced, signature]);
-
-  if (reduced) {
-    return (
-      <section id="opening" className={styles.opening} style={TOKENS} data-static="true">
-        <div className={styles.staticHero}>
-          <HeroVideo ref={heroRef} reduced />
-          <PageHeading />
-        </div>
-        <div className={styles.staticSign}>
-          <p className={styles.label}>
-            <StarGlyph className={styles.labelStar} /> A message from Guin
-          </p>
-          <div className={styles.staticCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset(videoPoster("splash-short"))} alt="" />
-            <SignatureSvg done />
-          </div>
-          <Statement />
-        </div>
-      </section>
-    );
-  }
+  }, [signature]);
 
   return (
     <section id="opening" className={styles.opening} style={TOKENS}>
@@ -330,7 +285,7 @@ export function Opening() {
           <div ref={frameRef} className={styles.frame}>
             <div ref={innerRef} className={styles.inner}>
               <div className={styles.flat}>
-                <HeroVideo ref={heroRef} reduced={false} />
+                <HeroVideo ref={heroRef} />
               </div>
             </div>
           </div>

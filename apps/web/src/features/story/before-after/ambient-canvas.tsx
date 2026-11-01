@@ -31,7 +31,7 @@ export default function AmbientCanvas({
     else drawStorm(g, tone, w, h, t);
   });
 
-  // The track calls this whenever the progress moves (reduced motion draws only then).
+  // The track calls this whenever the progress moves.
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;

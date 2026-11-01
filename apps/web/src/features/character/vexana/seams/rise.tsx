@@ -17,21 +17,13 @@ import { useScrollSnap, type SnapRange } from "./snap";
  * left half way: stop in it and, after a moment, it goes on from the half and goes back before it
  * (`useScrollSnap`), in both directions.
  */
-export function Rise({
-  id,
-  enabled = true,
-  children,
-}: {
-  id: string;
-  enabled?: boolean;
-  children: ReactNode;
-}) {
+export function Rise({ id, children }: { id: string; children: ReactNode }) {
   const panel = useRef<HTMLDivElement>(null);
   const span = useRef<SnapRange | null>(null);
 
   useEffect(() => {
     const el = panel.current;
-    if (!el || !enabled) return;
+    if (!el) return;
     const radius = () => Math.min(72, Math.max(24, window.innerWidth * 0.045));
     const st = ScrollTrigger.create({
       trigger: el,
@@ -54,11 +46,10 @@ export function Rise({
       span.current = null;
       el.style.borderRadius = "";
     };
-  }, [enabled]);
+  }, []);
 
-  useScrollSnap(id, () => span.current, { enabled });
+  useScrollSnap(id, () => span.current);
 
-  if (!enabled) return <>{children}</>;
   return (
     <div ref={panel} className={styles.rise} data-rise={id}>
       {children}

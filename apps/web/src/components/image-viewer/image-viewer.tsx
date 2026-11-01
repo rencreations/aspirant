@@ -154,7 +154,7 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
     if (!el) return;
     const v = view.current;
     const b = box.current;
-    if (animated && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (animated) {
       el.dataset.ease = "true";
       window.setTimeout(() => {
         delete el.dataset.ease;

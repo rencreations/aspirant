@@ -1,5 +1,3 @@
-import type { PerfLevel } from "@/lib/perf";
-
 /** Which side of a boundary the page is on while it is at rest. */
 export type Side = "before" | "after";
 
@@ -28,8 +26,3 @@ export const DOOR_TIMES = {
 
 /** The longest the scroll stays locked: a net for a hook that never answers, never a wait. */
 export const DOOR_LOCK_MS = 5200;
-
-/** A weak device plays the scenes a little shorter. */
-export function speedFor(level: PerfLevel): number {
-  return level === "lite" ? 0.7 : 1;
-}

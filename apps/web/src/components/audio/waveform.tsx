@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion, useVoiceState } from "@/lib/hooks";
+import { useVoiceState } from "@/lib/hooks";
 
 export interface WaveformProps {
   /** Only draw while this voice line URL is playing. Omit to follow any voice line. */
@@ -78,8 +78,7 @@ export function Waveform({ url, color, bars = 48, className }: WaveformProps) {
       raf = settled ? 0 : requestAnimationFrame(draw);
     };
 
-    if (prefersReducedMotion() && !active) draw();
-    else raf = requestAnimationFrame(draw);
+    raf = requestAnimationFrame(draw);
     const ro = new ResizeObserver(() => {
       size();
       if (!raf) draw();

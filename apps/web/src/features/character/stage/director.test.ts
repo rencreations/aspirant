@@ -83,7 +83,6 @@ const f = (frame: number) => frame / FPS;
 
 function setup(
   options: {
-    reduced?: boolean;
     skipWelcome?: boolean;
     welcomeDelayMs?: number;
     skip?: SkipOptions;
@@ -111,7 +110,6 @@ function setup(
   const states: StageState[] = [];
   const director = new StageDirector(els as unknown as StageElements, {
     timeline: options.timeline ?? TL,
-    reduced: options.reduced ?? false,
     skipWelcome: options.skipWelcome,
     welcomeDelayMs: options.welcomeDelayMs,
     skip: options.skip ? () => options.skip ?? null : undefined,
@@ -179,7 +177,6 @@ describe("welcome and idle", () => {
     const ctx = setup();
     expect(ctx.els.welcome.dataset.layer).toBe("front");
     expect(ctx.els.idle.dataset.layer).toBe("off");
-    expect(setup({ reduced: true }).els.welcome.dataset.layer).toBe("off");
   });
 
   it("begins at once (the music starts) and starts the welcome video only after the delay", async () => {
@@ -193,16 +190,12 @@ describe("welcome and idle", () => {
     expect(ctx.els.welcome.plays).toBe(1);
   });
 
-  it("does not wait when she goes straight to a page or motion is reduced", async () => {
+  it("does not wait when she goes straight to a page", async () => {
     const page = setup({ welcomeDelayMs: 500, skipWelcome: true });
     void page.director.start();
     await vi.advanceTimersByTimeAsync(50);
     expect(page.begun.count).toBe(1);
     expect(page.els.idle.plays).toBe(1);
-    const still = setup({ welcomeDelayMs: 500, reduced: true });
-    void still.director.start();
-    await vi.advanceTimersByTimeAsync(50);
-    expect(still.director.current.mode).toBe("idle");
   });
 
   it("starts straight on the idle loop when the visitor came to one of her pages", async () => {
@@ -572,7 +565,7 @@ describe("shorts", () => {
   });
 });
 
-describe("failure and reduced motion", () => {
+describe("failure", () => {
   it("opens a page over the still picture when its video cannot play, and closes it again", async () => {
     const ctx = setup();
     await toIdle(ctx);
@@ -640,33 +633,15 @@ describe("failure and reduced motion", () => {
     expect(ctx.director.current.mode).toBe("page");
   });
 
-  it("takes the size of the idle loop that the device asks for when she comes back to it", async () => {
+  it("asks for the idle loop again when she comes back to it", async () => {
     const ctx = setup();
     const out = await toOutro(ctx, "skills");
     const before = ctx.attached.filter((k) => k === "idle").length;
     out.tick(f(SELENA_PAGES.skills.out.syncFrame));
     await settle();
     expect(ctx.director.current.mode).toBe("idle");
-    // The idle loop was asked for again on the way back, so it can be given another size then.
+    // The idle loop was asked for again on the way back.
     expect(ctx.attached.filter((k) => k === "idle").length).toBeGreaterThan(before);
-  });
-
-  it("can swap the idle loop for another size while she idles", async () => {
-    const ctx = setup();
-    await toIdle(ctx);
-    ctx.detached.length = 0;
-    void ctx.director.retier();
-    await settle();
-    ctx.els.idle.tick(0);
-    await settle();
-    expect(ctx.detached).toContain("idle");
-    expect(ctx.director.current.mode).toBe("idle");
-    expect(ctx.els.idle.dataset.layer).toBe("front");
-    // Not while something else is playing.
-    ctx.director.request("about");
-    ctx.detached.length = 0;
-    await ctx.director.retier();
-    expect(ctx.detached).not.toContain("idle");
   });
 
   it("holds only one warmed entrance at a time", async () => {
@@ -689,22 +664,6 @@ describe("failure and reduced motion", () => {
     ctx.director.request(SHORT_NAMES[2]);
     await settle();
     expect(ctx.els[SHORT_NAMES[2]].plays).toBe(1);
-  });
-
-  it("reduced motion: no welcome, a still idle, pages show their loop's first frame", async () => {
-    const ctx = setup({ reduced: true });
-    void ctx.director.start();
-    await settle();
-    expect(ctx.director.current.mode).toBe("idle");
-    expect(ctx.els.welcome.plays).toBe(0);
-    expect(ctx.els.idle.plays).toBe(0);
-    ctx.director.request("about");
-    await settle();
-    expect(ctx.director.current).toMatchObject({ mode: "page", scene: "about" });
-    expect(ctx.els["about-loop"].plays).toBe(0);
-    ctx.director.leave();
-    await settle();
-    expect(ctx.director.current.mode).toBe("idle");
   });
 });
 
@@ -810,17 +769,12 @@ describe("time skip", () => {
     expect(ctx.els.idle.playbackRate).toBeLessThan(1.3);
   });
 
-  it("does not hurry a wait that is already short, nor when motion is reduced", async () => {
+  it("does not hurry a wait that is already short", async () => {
     const ctx = setup({ skip: { maxRate: 2.5, minFrames: 100000 } });
     await toIdle(ctx);
     ctx.director.request("skills");
     await vi.advanceTimersByTimeAsync(1000);
     expect(ctx.els.idle.playbackRate).toBe(1);
-    const calm = setup({ skip: SKIP, reduced: true });
-    await toIdle(calm);
-    calm.director.request("skills");
-    await vi.advanceTimersByTimeAsync(1000);
-    expect(calm.els.idle.playbackRate).toBe(1);
   });
 
   it("hurries the page loop while she leaves, and lets go when the exit starts", async () => {

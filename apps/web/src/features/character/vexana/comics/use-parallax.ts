@@ -7,10 +7,10 @@ import { useEffect, type RefObject } from "react";
  * layers are wrappers that carry no transition of their own, so the loop writes one transform per
  * layer and stops by itself once the layers have caught up with the pointer.
  */
-export function useParallax(stage: RefObject<HTMLElement | null>, on: boolean) {
+export function useParallax(stage: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = stage.current;
-    if (!root || !on) return;
+    if (!root) return;
     const layers = Array.from(root.querySelectorAll<HTMLElement>("[data-depth]"), (el) => ({
       el,
       depth: Number(el.dataset.depth),
@@ -51,5 +51,5 @@ export function useParallax(stage: RefObject<HTMLElement | null>, on: boolean) {
       cancelAnimationFrame(raf);
       for (const l of layers) l.el.style.transform = "";
     };
-  }, [stage, on]);
+  }, [stage]);
 }

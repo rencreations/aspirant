@@ -666,35 +666,3 @@
     height: 2.6rem;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .head,
-  .h1,
-  .kicker,
-  .lede,
-  .warn,
-  .cue,
-  .figure,
-  .line {
-    transition: none;
-  }
-
-  .h1Face::before,
-  .h1Face::after,
-  .title::before,
-  .title::after,
-  .pip,
-  .cue svg,
-  .root[data-exec="true"] .flash,
-  .emblem,
-  .ring {
-    animation: none !important;
-  }
-}
-
-:root[data-motion="reduced"] .h1Face::before,
-:root[data-motion="reduced"] .h1Face::after,
-:root[data-motion="reduced"] .title::before,
-:root[data-motion="reduced"] .title::after {
-  animation: none;
-}

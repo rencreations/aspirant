@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { audio } from "@/lib/audio";
-import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useInView } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
 
 import { videoInfo } from "../shared/info";
@@ -36,7 +36,6 @@ export function Process() {
   const video = useRef<HTMLVideoElement>(null);
   const head = useRef<HTMLSpanElement>(null);
   const readout = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
   const inView = useInView(root, { threshold: 0.25 });
   const [shade, setShade] = useState<Shade>("render");
   const [tool, setTool] = useState<(typeof TOOLS)[number]>("Rotate");
@@ -66,10 +65,10 @@ export function Process() {
     const el = video.current;
     if (!el) return;
     if (held) el.pause();
-    else if (inView && !stopped.current && !reduced && el.paused && el.getAttribute("src")) {
+    else if (inView && !stopped.current && el.paused && el.getAttribute("src")) {
       void el.play().catch(() => undefined);
     }
-  }, [held, inView, reduced]);
+  }, [held, inView]);
 
   // The playhead is moved a frame at a time, on this one element, while the clip plays.
   useEffect(() => {

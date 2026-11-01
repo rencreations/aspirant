@@ -1,5 +1,8 @@
 import { asset } from "@/lib/asset";
-import { cachedFetch, loadMedia } from "@/lib/media-store";
+import { isChunkError, reloadOnce } from "@/lib/chunk-guard";
+import { cachedFetch, fetchWhole, loadMedia, type ByteCount } from "@/lib/media-store";
+import { isOffline } from "@/lib/offline";
+import { PermanentFailure, untilItArrives } from "@/lib/retry";
 
 /**
  * Everything the site must have before a page can show goes through this file, so the loading
@@ -8,7 +11,12 @@ import { cachedFetch, loadMedia } from "@/lib/media-store";
  *  - Every asset or code chunk a page needs on first paint is a `PreloadItem` in
  *    `lib/route-preloads.ts`. If it is not there, it is not in the loading bar.
  *  - Items do real work (a fetch, an image decode, a dynamic import). Never fake progress.
- *  - An item that fails or stalls never blocks the site: it resolves after `ITEM_TIMEOUT_MS`.
+ *  - One version only. An item is never given up on because the connection is slow or bad: a
+ *    download that fails or stalls is tried again until it arrives (`lib/retry.ts`), so the loading
+ *    screen waits as long as it takes and the page opens with everything. The only item that is
+ *    skipped is one the server says is gone (HTTP 404 or 410) or a picture that arrives and cannot
+ *    be decoded again and again: nothing can fix those, and one missing file must not hold every
+ *    visitor for ever. It is logged.
  */
 export interface PreloadItem {
   id: string;
@@ -17,12 +25,14 @@ export interface PreloadItem {
   /** Relative size of the item. Default 1. */
   weight?: number;
   /**
-   * Do the work. Call `report(0..1)` while it runs (a download reports the bytes received) so
-   * the bar moves smoothly instead of jumping when the item ends.
+   * Do the work. Call `report(0..1)` while it runs (a download reports the bytes received, and
+   * the bytes themselves as a second argument) so the bar moves smoothly instead of jumping when
+   * the item ends.
    */
-  run: (report: (fraction: number) => void, context: { background: boolean }) => Promise<unknown>;
-  /** How long to wait for this item before the site goes on without it. Default 12 s. */
-  timeoutMs?: number;
+  run: (
+    report: (fraction: number, bytes?: ByteCount) => void,
+    context: { background: boolean },
+  ) => Promise<unknown>;
   /**
    * Remember the item for the session, so a second list that has it does not run it again.
    * Default true. Media turns it off: it is freed when its page is left, and the next visit
@@ -48,9 +58,15 @@ export interface PreloadProgress {
   label: string;
   /** Every item still running. */
   pending: readonly string[];
+  /**
+   * Bytes received of the bytes expected, over the items that know their size. `partial` is true
+   * while some download has not said how big it is yet, so the total is not the whole yet.
+   */
+  bytes?: ByteCount & { partial: boolean };
 }
 
-const ITEM_TIMEOUT_MS = 60_000;
+/** A picture that arrives whole and still cannot be decoded this many times is skipped. */
+const DECODE_TRIES = 5;
 /** Deferred items download this many at a time, in the order of the list. */
 const DEFERRED_AT_ONCE = 3;
 /** The loading bar is told at most this often. */
@@ -59,7 +75,8 @@ const PROGRESS_EVERY_MS = 100;
 interface Started {
   promise: Promise<void>;
   fraction: number;
-  listeners: Set<(fraction: number) => void>;
+  bytes?: ByteCount;
+  listeners: Set<(fraction: number, bytes?: ByteCount) => void>;
 }
 
 const started = new Map<string, Started>();
@@ -68,17 +85,24 @@ function once(item: PreloadItem, background = false): Started {
   let s = item.memo === false ? undefined : started.get(item.id);
   if (!s) {
     const created: Started = { promise: Promise.resolve(), fraction: 0, listeners: new Set() };
-    const report = (fraction: number) => {
+    const report = (fraction: number, bytes?: ByteCount) => {
       created.fraction = Math.min(1, Math.max(created.fraction, fraction));
+      // A try that starts again counts from nothing: what is shown never goes back.
+      if (bytes && bytes.received >= (created.bytes?.received ?? 0)) created.bytes = bytes;
       created.listeners.forEach((l) => {
-        l(created.fraction);
+        l(created.fraction, created.bytes);
       });
     };
     created.promise = Promise.resolve()
       .then(() => item.run(report, { background }))
       .then(
         () => undefined,
-        () => undefined,
+        (error: unknown) => {
+          // Only a file that is gone for good ends up here (see the top of this file).
+          if (error instanceof PermanentFailure) {
+            console.warn(`[preload] skipped ${item.id}: ${error.message}`);
+          }
+        },
       )
       .then(() => {
         created.fraction = 1;
@@ -89,24 +113,47 @@ function once(item: PreloadItem, background = false): Started {
   return s;
 }
 
-/** Decode an image into the browser cache. `path` is a public path such as "/img/a.webp". */
+/** Load a picture from the address, to put it in the browser cache. Rejects when it cannot be decoded. */
+function decodeImage(url: string): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => {
+      resolve();
+    };
+    img.onerror = () => {
+      reject(new Error(`Cannot decode ${url}`));
+    };
+    img.src = url;
+  });
+}
+
+/**
+ * Fetch a picture whole, with the same care as a video (a stall or a drop is tried again), then
+ * decode it into the browser cache. `path` is a public path such as "/img/a.webp".
+ */
 export function imageItem(path: string, label: string, weight = 1): PreloadItem {
   return {
     id: `img:${path}`,
     label,
     weight,
-    run: () =>
-      new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = "async";
-        img.onload = () => {
-          resolve();
-        };
-        img.onerror = () => {
-          resolve();
-        };
-        img.src = asset(path);
-      }),
+    run: (report) => {
+      const url = asset(path);
+      return untilItArrives(async (n) => {
+        await fetchWhole(url, {
+          onBytes: (received, total) => {
+            report(Math.min(0.95, received / total), { received, total });
+          },
+        });
+        try {
+          await decodeImage(url);
+        } catch (error) {
+          // It arrived whole and will not decode: after a few tries nothing will change.
+          if (n + 1 >= DECODE_TRIES) throw new PermanentFailure(String(error));
+          throw error;
+        }
+      });
+    },
   };
 }
 
@@ -116,7 +163,14 @@ export function dataItem(path: string, label: string, weight = 1): PreloadItem {
     id: `data:${path}`,
     label,
     weight,
-    run: () => fetch(asset(path)).then((r) => r.arrayBuffer()),
+    run: (report) =>
+      untilItArrives(() =>
+        fetchWhole(asset(path), {
+          onBytes: (received, total) => {
+            report(Math.min(0.95, received / total), { received, total });
+          },
+        }),
+      ),
   };
 }
 
@@ -136,7 +190,7 @@ export function savedItem(path: string, label: string, weight = 1): PreloadItem 
 /**
  * Download a big file whole (a video, the music), keep it in memory and save it in the browser.
  * The bar moves with the bytes received. Pass `bytes` when the size is known: it sets the
- * weight, and a saved copy of another size is thrown away.
+ * weight, and a saved copy of another size is thrown away. It waits as long as the download takes.
  */
 export function mediaItem(
   path: string,
@@ -145,7 +199,6 @@ export function mediaItem(
     type: string;
     bytes?: number;
     weight?: number;
-    timeoutMs?: number;
     background?: boolean;
   },
 ): PreloadItem {
@@ -153,7 +206,6 @@ export function mediaItem(
     id: `media:${path}`,
     label,
     weight: options.weight ?? Math.max(1, Math.round((options.bytes ?? 1_000_000) / 1_000_000)),
-    timeoutMs: options.timeoutMs ?? 120_000,
     memo: false,
     run: (report, context) =>
       loadMedia(path, {
@@ -165,9 +217,31 @@ export function mediaItem(
   };
 }
 
-/** Load a code chunk through a dynamic import. */
-export function chunkItem(id: string, label: string, load: () => Promise<unknown>, weight = 2) {
-  return { id: `chunk:${id}`, label, weight, run: load } satisfies PreloadItem;
+/**
+ * Load a code chunk through a dynamic import. A chunk that fails to load is tried again. After a
+ * few tries on a connection that is up, the file is taken as gone (a new deploy replaced it): the
+ * page reloads once to fetch the new one (`lib/chunk-guard.ts` stops a loop).
+ */
+export function chunkItem(
+  id: string,
+  label: string,
+  load: () => Promise<unknown>,
+  weight = 2,
+): PreloadItem {
+  return {
+    id: `chunk:${id}`,
+    label,
+    weight,
+    run: () =>
+      untilItArrives(async (n) => {
+        try {
+          return await load();
+        } catch (error) {
+          if (n >= 2 && !isOffline() && isChunkError(error)) reloadOnce();
+          throw error;
+        }
+      }),
+  };
 }
 
 /** Wait for the web fonts the site uses. */
@@ -187,25 +261,6 @@ export function fontsItem(): PreloadItem {
       await document.fonts.ready;
     },
   };
-}
-
-function withTimeout(p: Promise<void>, ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    const timer = window.setTimeout(resolve, ms);
-    void p.then(() => {
-      window.clearTimeout(timer);
-      resolve();
-    });
-  });
-}
-
-/**
- * Wait for `p` but never longer than `ms`. The work is not stopped: it goes on in the background
- * and what it brings in is simply late. A slow connection must never hold a visitor at a loading
- * screen for minutes.
- */
-export function capWait(p: Promise<void>, ms: number): Promise<void> {
-  return withTimeout(p, ms);
 }
 
 /**
@@ -260,8 +315,8 @@ export function cancelDeferred(group: string): void {
 
 /**
  * Run items in parallel and report progress as bytes arrive and items finish. Resolves when all
- * the items that are not `deferred` are done (or timed out). Items already finished earlier in
- * the session resolve at once. The deferred ones start when the others are in.
+ * the items that are not `deferred` are done, however long that takes. Items already finished
+ * earlier in the session resolve at once. The deferred ones start when the others are in.
  */
 export async function runPreload(
   items: readonly PreloadItem[],
@@ -273,6 +328,7 @@ export async function runPreload(
   const total = unique.reduce((sum, i) => sum + (i.weight ?? 1), 0) || 1;
   const pending = new Map(unique.map((i) => [i.id, i]));
   const fractions = new Map<string, number>();
+  const counts = new Map<string, ByteCount>();
 
   const flush = () => {
     const rest = Array.from(pending.values());
@@ -285,10 +341,20 @@ export async function runPreload(
       (best, i) => ((i.weight ?? 1) > (best?.weight ?? 0) ? i : best),
       undefined,
     );
+    let received = 0;
+    let expected = 0;
+    for (const [id, count] of counts) {
+      expected += count.total;
+      received += pending.has(id) ? count.received : count.total;
+    }
+    // Pictures, data and media say their size once they start (media says it at once when the list
+    // knows it). Until every one of them has, the total is only what is known so far.
+    const partial = rest.some((i) => /^(img|data|media):/.test(i.id) && !counts.has(i.id));
     onProgress?.({
       progress: Math.min(1, done / total),
       label: heaviest?.label ?? "Ready",
       pending: rest.map((i) => i.label),
+      ...(expected > 0 ? { bytes: { received, total: expected, partial } } : {}),
     });
   };
   // Progress arrives with every chunk of every download, thousands of times a second. The bar
@@ -306,12 +372,14 @@ export async function runPreload(
   await Promise.all(
     unique.map((item) => {
       const s = once(item);
-      const listener = (f: number) => {
+      const listener = (f: number, b?: ByteCount) => {
         fractions.set(item.id, f);
+        if (b) counts.set(item.id, b);
         if (pending.has(item.id)) emit();
       };
+      if (s.bytes) counts.set(item.id, s.bytes);
       s.listeners.add(listener);
-      return withTimeout(s.promise, item.timeoutMs ?? ITEM_TIMEOUT_MS).then(() => {
+      return s.promise.then(() => {
         s.listeners.delete(listener);
         pending.delete(item.id);
         emit();

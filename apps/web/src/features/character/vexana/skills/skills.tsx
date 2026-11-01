@@ -11,10 +11,8 @@ import {
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
 
-import { mayPlay } from "../shared/autoplay";
 import { videoFile, videoPoster } from "../media";
 import { SKILLS, type Skill } from "./skill-data";
 import styles from "./skills.module.css";
@@ -24,19 +22,17 @@ const noSubscribe = () => () => undefined;
 /**
  * The screen: one video for each skill, stacked, the open one on top. The clips are short pieces
  * of the game's own footage, muted and looping. They run only while the screen is in view and the
- * visitor has not paused them, and they stay still under reduced motion until the button is
- * pressed. A clip is a file of under a megabyte, and the background queue has usually brought it
+ * visitor has not paused them. A clip is a file of under a megabyte, and the background queue has usually brought it
  * by the time the section is reached.
  */
 function Screen({ active, skill }: { active: number; skill: Skill }) {
-  const reduced = useReducedMotion();
   const frameRef = useRef<HTMLDivElement>(null);
   const videos = useRef<Array<HTMLVideoElement | null>>([]);
   const view = useRef({ near: false, seen: false });
   // Whether the clip may start by itself is decided on the client (the server never plays it).
   const auto = useSyncExternalStore(
     noSubscribe,
-    () => !reduced && mayPlay(),
+    () => true,
     () => false,
   );
   const [pressed, setPressed] = useState<boolean | null>(null);

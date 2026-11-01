@@ -106,7 +106,7 @@ export function routeItems(pathname: string): PreloadItem[] {
     return [
       ...shared,
       ...characters.map((c) => imageItem(splashPath(c.slug), `Loading ${c.name}`, 3)),
-      // The opening: its code, its effects and the welcome clips (nothing for reduced motion).
+      // The opening: its code, its effects and the welcome clips.
       ...introItems(),
     ];
   }
@@ -141,7 +141,6 @@ export function routeItems(pathname: string): PreloadItem[] {
         mediaItem("/audio/music/silverbolt-raiko.m4a", "Loading the music", {
           type: "audio/mp4",
           weight: 3,
-          timeoutMs: 120_000,
         }),
         ...later("about", 20, [
           ...Array.from({ length: SELENA_VOICE_COUNT }, (_, i) =>
@@ -168,7 +167,6 @@ export function routeItems(pathname: string): PreloadItem[] {
         mediaItem(OBSIDIA_MUSIC, "Loading the music", {
           type: "audio/mp4",
           weight: 3,
-          timeoutMs: 120_000,
         }),
         ...later("about", 20, [
           imageItem("/video/obsidia/trailer-poster.webp", "Loading the trailer", 1),

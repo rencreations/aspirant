@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
-import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useInView } from "@/lib/hooks";
 
 import { artThumb } from "../../media";
 import { useActiveSection } from "../active";
@@ -42,10 +42,9 @@ function Emblem() {
 
 function LineView({ line, index }: { line: Line; index: number }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const reduced = useReducedMotion();
   const seen = useInView(ref, { threshold: 0.5, rootMargin: "0px 0px -8% 0px", once: true });
   return (
-    <p ref={ref} className={styles.line} data-voice={line.voice} data-in={seen || reduced}>
+    <p ref={ref} className={styles.line} data-voice={line.voice} data-in={seen}>
       <span className={styles.who} aria-hidden="true">
         {WHO[line.voice]}
       </span>
@@ -58,14 +57,13 @@ function LineView({ line, index }: { line: Line; index: number }) {
 
 function LogView({ log, index, total }: { log: Log; index: number; total: number }) {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
   const seen = useInView(ref, { threshold: 0.12, once: true });
   return (
     <section
       id={log.id}
       ref={ref}
       className={styles.log}
-      data-in={seen || reduced}
+      data-in={seen}
       data-light={log.light}
       aria-labelledby={`${log.id}-title`}
     >
@@ -112,7 +110,6 @@ function LogView({ log, index, total }: { log: Log; index: number; total: number
  * brighter or fainter with how in step the two stars are. The last entry restores the sync.
  */
 export function PartnerStory() {
-  const reduced = useReducedMotion();
   const lenis = useLenis();
   const hero = useRef<HTMLElement>(null);
   const seen = useInView(hero, { threshold: 0.35, once: true });
@@ -146,12 +143,7 @@ export function PartnerStory() {
         <Emblem />
       </div>
 
-      <header
-        ref={hero}
-        className={styles.hero}
-        data-in={seen || reduced}
-        aria-labelledby="partner-title"
-      >
+      <header ref={hero} className={styles.hero} data-in={seen} aria-labelledby="partner-title">
         <div className={styles.heroText}>
           <p className={styles.kicker}>Part two of two</p>
           <h1 id="partner-title" className={styles.h1} data-text="PARTNER">

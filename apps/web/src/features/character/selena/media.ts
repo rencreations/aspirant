@@ -54,7 +54,7 @@ export function trailerItem(): PreloadItem {
     height: window.innerHeight,
     dpr: window.devicePixelRatio || 1,
   });
-  return mediaItem(pick.src, "Loading the trailer", { type: "video/mp4", timeoutMs: 180_000 });
+  return mediaItem(pick.src, "Loading the trailer", { type: "video/mp4" });
 }
 
 /** Her voice lines (`public/audio/voice/selena/NN.m4a`), for the About page. */

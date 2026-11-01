@@ -100,12 +100,3 @@
     display: none;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .sound,
-  .sound::before,
-  .stateOn,
-  .stateOff {
-    transition: none;
-  }
-}

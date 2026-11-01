@@ -139,12 +139,3 @@
     margin-inline: 0;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .entry[data-armed="true"] .lines li,
-  .entry[data-armed="true"] .entryHead {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}

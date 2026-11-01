@@ -1,7 +1,4 @@
-import { perfLevel } from "@/lib/perf";
-
 import type { DoorHooks } from "./door-gate";
-import { speedFor } from "./door-math";
 import { toneHint } from "./gates";
 
 /**
@@ -45,10 +42,7 @@ export function registerComic(api: ComicApi): () => void {
   };
 }
 
-/** The speed of a scene of this device (a weak one plays them shorter). */
-const speed = () => speedFor(perfLevel());
-
-/** The seconds the halves take to slide, before the performance level shortens them. */
+/** The seconds the halves take to slide. */
 const SLIDE_SECONDS = 0.95;
 
 /**
@@ -100,7 +94,7 @@ export const comicStreamHooks: DoorHooks = {
     comic?.show("disc");
     comic?.pin(true);
     void comic?.slideOut(0);
-    await comic?.slideIn(SLIDE_SECONDS * speed());
+    await comic?.slideIn(SLIDE_SECONDS);
   },
   covered: (dir) => {
     // The page has gone to the comic: the stage goes back into the page, in the place it was fixed
@@ -109,7 +103,7 @@ export const comicStreamHooks: DoorHooks = {
   },
   arrival: async (dir) => {
     if (dir === "down") {
-      await comic?.slideOut(SLIDE_SECONDS * speed());
+      await comic?.slideOut(SLIDE_SECONDS);
       comic?.pin(false);
       return;
     }

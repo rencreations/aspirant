@@ -7,7 +7,6 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { TLink } from "@/components/transition/t-link";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { WEB } from "../media";
 import { registerStory } from "../../vexana/seams/story-link";
@@ -86,11 +85,9 @@ function Letters({ text, from }: { text: string; from: number }) {
  * next section (the interlude) rises over the held stage by plain scrolling, with no script involved
  * (it overlaps this track by that screen: see `.cover` in cover.module.css).
  *
- * Only `transform` and `opacity` move. Reduced motion shows the finished picture, and the hold is
- * dropped.
+ * Only `transform` and `opacity` move.
  */
 export function Faces({ gated = false }: { gated?: boolean }) {
-  const reduced = useReducedMotion();
   const track = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const enters = useRef<Array<HTMLSpanElement | null>>([null, null]);
@@ -114,10 +111,6 @@ export function Faces({ gated = false }: { gated?: boolean }) {
     const root = track.current;
     const st = stage.current;
     if (!root || !st) return;
-    if (reduced) {
-      root.dataset.in = "true";
-      return;
-    }
     root.dataset.armed = "1";
     root.dataset.in = "false";
     const e = enters.current;
@@ -316,13 +309,13 @@ export function Faces({ gated = false }: { gated?: boolean }) {
         wd.style.opacity = "";
       }
     };
-  }, [reduced, gated]);
+  }, [gated]);
 
   // The pointer parallax: a loop that runs only while the picture is catching up with the pointer.
   useEffect(() => {
     const p = pointer.current;
     const el = stage.current;
-    if (!el || reduced) return;
+    if (!el) return;
     const apply = () => {
       for (const [i, f] of figs.current.entries()) {
         if (f)
@@ -375,11 +368,10 @@ export function Faces({ gated = false }: { gated?: boolean }) {
       cancelAnimationFrame(p.raf);
       p.raf = 0;
     };
-  }, [reduced]);
+  }, []);
 
   // A press ripples the letters of the big word, one after the other.
   const ripple = () => {
-    if (reduced) return;
     for (const [i, el] of letterRip.current.entries()) {
       el?.animate(
         [
@@ -475,7 +467,6 @@ export function Faces({ gated = false }: { gated?: boolean }) {
                       {f.side === "partner" ? (
                         <Drone
                           n={2}
-                          reduced={reduced}
                           parRef={(el) => {
                             drones.current[1] = el;
                           }}
@@ -495,7 +486,6 @@ export function Faces({ gated = false }: { gated?: boolean }) {
                       {f.side === "partner" ? (
                         <Drone
                           n={1}
-                          reduced={reduced}
                           parRef={(el) => {
                             drones.current[0] = el;
                           }}

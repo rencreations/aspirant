@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
-
 import shared from "./shared.module.css";
 
 const GLYPHS = "#%&*+=<>/01234567ABCDEFXZ";
@@ -23,19 +21,12 @@ export function Resolve({
   delay?: number;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const done = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || !on || done.current) return;
-    if (reduced) {
-      done.current = true;
-      el.textContent = text;
-      el.style.opacity = "1";
-      return;
-    }
     const chars = [...text];
     const span = Math.min(1500, 380 + chars.length * 11);
     let raf = 0;
@@ -65,14 +56,12 @@ export function Resolve({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [on, reduced, text, delay]);
+  }, [on, text, delay]);
 
   return (
     <>
       <span className={shared.sr}>{text}</span>
-      <span ref={ref} className={className} aria-hidden="true" style={{ opacity: reduced ? 1 : 0 }}>
-        {reduced ? text : ""}
-      </span>
+      <span ref={ref} className={className} aria-hidden="true" style={{ opacity: 0 }} />
     </>
   );
 }

@@ -27,7 +27,7 @@ Notes on the owner's references and on patterns common to Awwwards-recognised si
 9. **Marquee and counters.** Slow marquee strips and tabular-number counters give a HUD feel.
 10. **Sound.** Small synthesised blips, a held ambient bed that ducks under voice, voice lines on hover. Muted until the visitor enters.
 11. **Mobile.** Replace hover with tap and long press. Replace pointer parallax with drag or device tilt. Halve particle counts. Cap DPR.
-12. **Reduced motion.** Crossfades only. Do not remove content or interaction.
+12. **Reduced motion.** Not handled on this site: there is one version, with full motion (owner decision, 1 Nov 2026). Never make content or interaction depend on motion alone.
 
 ## Visual vocabulary
 

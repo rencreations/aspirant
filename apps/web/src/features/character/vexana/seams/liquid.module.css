@@ -103,13 +103,6 @@
 }
 
 /* The light levels draw one blob and keep it still. */
-:global(:root[data-perf="lite"]) .blob[data-extra="true"] {
-  display: none;
-}
-
-:global(:root[data-perf="lite"]) .shape {
-  animation: none;
-}
 
 /*
  * Guinevere's page uses the same liquid in her colours: a cream light that ends in the colour of

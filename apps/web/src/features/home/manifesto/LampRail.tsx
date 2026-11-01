@@ -3,14 +3,13 @@
 import { useEffect, useRef } from "react";
 
 import { StarGlyph } from "@/components/star-glyph";
-import { prefersReducedMotion } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 
 import styles from "./manifesto.module.css";
 
 /**
  * A lantern on a rail beside the manifesto. It travels down as the section scrolls past, in
- * step with the words lighting up. Decorative; sits still at the top under reduced motion.
+ * step with the words lighting up. Decorative.
  */
 export function LampRail() {
   const ref = useRef<HTMLDivElement>(null);
@@ -19,7 +18,7 @@ export function LampRail() {
     const el = ref.current;
     const section = el?.closest("section");
     const target = section?.querySelector<HTMLElement>("[data-lamp-target]");
-    if (!el || !section || !target || prefersReducedMotion()) return;
+    if (!el || !section || !target) return;
     let raf = 0;
     const read = () => {
       raf = 0;

@@ -7,8 +7,6 @@
  */
 import gsap from "gsap";
 
-import { prefersReducedMotion } from "@/lib/hooks";
-
 import { useExperience } from "../contract";
 import { ensurePart } from "./book-store";
 import s from "./reader.module.css";
@@ -56,7 +54,7 @@ function pulseBeat(): void {
 
 function reveal(el: HTMLElement, animate: boolean) {
   if (el.dataset.state !== "idle") return;
-  if (!animate || prefersReducedMotion()) {
+  if (!animate) {
     el.dataset.state = "shown";
     return;
   }

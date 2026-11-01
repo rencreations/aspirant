@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
-import { useReducedMotion } from "@/lib/hooks";
 
 /** A stretch of the page, in scroll pixels, over which a transition is drawn. */
 export interface SnapRange {
@@ -14,7 +13,6 @@ export interface SnapRange {
 interface SnapOptions {
   /** Quiet time, in ms, after which the transition finishes by itself. Default 1500. */
   idleMs?: number;
-  enabled?: boolean;
   /** Seconds the page takes to scroll to the end it snaps to. Default 0.9. */
   snapSeconds?: number;
   /**
@@ -44,12 +42,10 @@ function snapSide(range: SnapRange, y: number): "start" | "end" {
  * moving, the page scrolls by itself to the
  * nearer end: the far end when they are half way or more (the transition finishes), the near one
  * otherwise (the transition is taken back). It works the same going down and going up. Any new
- * input stops the snap and starts the wait again. Reduced motion: no snapping.
+ * input stops the snap and starts the wait again.
  */
 export function useScrollSnap(id: string, getRange: () => SnapRange | null, opts?: SnapOptions) {
   const { getLenis } = useLenis();
-  const reduced = useReducedMotion();
-  const enabled = (opts?.enabled ?? true) && !reduced;
   const idleMs = opts?.idleMs ?? 1500;
   const seconds = opts?.snapSeconds ?? SNAP_SECONDS;
   const rangeRef = useRef(getRange);
@@ -62,7 +58,6 @@ export function useScrollSnap(id: string, getRange: () => SnapRange | null, opts
   });
 
   useEffect(() => {
-    if (!enabled) return;
     let timer = 0;
     let snapping = false;
     /** When the page last moved: a snap waits until it has been still for a moment. */
@@ -152,5 +147,5 @@ export function useScrollSnap(id: string, getRange: () => SnapRange | null, opts
       clear();
       stopSnap();
     };
-  }, [enabled, id, idleMs, seconds]);
+  }, [id, idleMs, seconds]);
 }

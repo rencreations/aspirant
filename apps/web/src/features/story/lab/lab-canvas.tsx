@@ -60,7 +60,7 @@ const PARTICLES = Array.from({ length: 26 }, (_, i) => ({
 /**
  * The lab's screen: two crystals on a ruler. Drag either one toward the other. The field
  * between them thickens, and at the thresholds the Emblem of Hope stars wake, link and merge.
- * Paused off screen; static under reduced motion.
+ * Paused off screen.
  */
 export default function LabCanvas({
   view,

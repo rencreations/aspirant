@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 
 interface Options {
-  reduced: boolean;
   /** Pressing and holding floods the picture (Angela's warmth); a press only pulses it otherwise. */
   flood: boolean;
 }
@@ -14,10 +13,9 @@ const ease = (a: number, b: number, k: number) => a + (b - a) * k;
  * The circle that shows the second picture of the hero. It follows the pointer (or a finger),
  * wanders by itself when nobody is there, swells while the pointer is pressed, and only runs while
  * the hero is on screen and the tab is visible. One loop writes three custom properties on one
- * element and one transform on another; nothing on the page root is touched. Reduced motion keeps
- * a still circle that follows the pointer without easing.
+ * element and one transform on another; nothing on the page root is touched.
  */
-export function useHeroPointer({ reduced, flood }: Options) {
+export function useHeroPointer({ flood }: Options) {
   /** The pointer is read on the stage. The second picture gets `--mx`, `--my` and `--r` (px), which its mask reads. */
   const host = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLImageElement>(null);
@@ -29,7 +27,6 @@ export function useHeroPointer({ reduced, flood }: Options) {
     if (!hostEl || !layerEl) return;
     const markEl = mark.current;
 
-    const weak = document.documentElement.dataset.perf === "balanced";
     let flipped = "0";
     let rect = hostEl.getBoundingClientRect();
     const cur = { x: rect.width * 0.5, y: rect.height * 0.45, r: 0 };
@@ -63,13 +60,11 @@ export function useHeroPointer({ reduced, flood }: Options) {
       if (!visible || document.hidden) return;
       const idle = now - lastMove > 2600;
       const t = (now - t0) / 1000;
-      if (idle && !reduced && !weak) {
+      if (idle) {
         // Nobody there: the circle drifts over the picture on a slow loop.
         goal.x = rect.width * (0.5 + 0.26 * Math.sin(t * 0.55));
         goal.y = rect.height * (0.46 + 0.18 * Math.sin(t * 0.83 + 1.1));
         goal.r = base() * (0.8 + 0.2 * Math.sin(t * 1.3));
-      } else if (idle) {
-        goal.r = base() * 0.7;
       }
       if (pressedAt >= 0) {
         const held = (now - pressedAt) / 1000;
@@ -77,10 +72,10 @@ export function useHeroPointer({ reduced, flood }: Options) {
           ? Math.min(Math.hypot(rect.width, rect.height), base() * (1 + held * 2.6))
           : base() * 1.35;
       }
-      const k = reduced ? 1 : 0.14;
+      const k = 0.14;
       cur.x = ease(cur.x, goal.x, k);
       cur.y = ease(cur.y, goal.y, k);
-      cur.r = ease(cur.r, goal.r, reduced ? 1 : flood && pressedAt >= 0 ? 0.08 : 0.12);
+      cur.r = ease(cur.r, goal.r, flood && pressedAt >= 0 ? 0.08 : 0.12);
       write();
       raf = requestAnimationFrame(frame);
     };
@@ -146,6 +141,6 @@ export function useHeroPointer({ reduced, flood }: Options) {
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", start);
     };
-  }, [reduced, flood]);
+  }, [flood]);
   return { host, layer, mark };
 }

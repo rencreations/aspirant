@@ -15,17 +15,14 @@ import {
 import { LogoCurtain, type CurtainHandle } from "@/components/curtain/logo-curtain";
 import { useLenis } from "@/components/smooth-scroll";
 import { audio } from "@/lib/audio";
-import { NAVIGATED_EVENT, prefersReducedMotion } from "@/lib/hooks";
+import { NAVIGATED_EVENT } from "@/lib/hooks";
 import { OFFLINE_BLOCKED_EVENT, isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
-import { capWait, runPreload, type PreloadProgress } from "@/lib/preload";
+import { runPreload, type PreloadProgress } from "@/lib/preload";
 import { noteRoute } from "@/lib/route-history";
 import { routeItems } from "@/lib/route-preloads";
 
 /** A page that is not ready this long after the click gets the loading state. */
-/** The longest a page change waits for the next page's files (see `capWait`). */
-const TRANSITION_MAX_WAIT_MS = 90_000;
-
 const LOADING_STATE_AFTER_MS = 500;
 
 /** The shortest the first loading screen stays up, so the logo is seen. */
@@ -40,7 +37,7 @@ export interface TransitionRouter {
   /**
    * Navigate with the logo transition: the logo zooms out (its letters are windows onto the
    * page you are leaving), the route changes, then the logo zooms in and opens the new page.
-   * If the new page is not ready after 500 ms a loading state shows. Reduced motion: a fade.
+   * If the new page is not ready after 500 ms a loading state shows.
    */
   push: (href: Route, options?: PushOptions) => void;
   /** Prefetch a route. */
@@ -64,6 +61,14 @@ function normalisePath(href: string): string {
 
 function nextFrame(): Promise<void> {
   return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+}
+
+const OFFLINE_WORDS = "Offline. Waiting for the connection";
+
+/** The words under the logo while a page change waits: what it loads and how far it is. */
+function waitingText(label: string, p: PreloadProgress): string {
+  if (isOffline()) return OFFLINE_WORDS;
+  return `${label} ${Math.round(p.progress * 100)}%`;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -106,17 +111,9 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         resolve();
         return;
       }
-      const timer = window.setTimeout(() => {
-        waiter.current = null;
-        resolve();
-      }, 8000);
-      waiter.current = {
-        target,
-        resolve: () => {
-          window.clearTimeout(timer);
-          resolve();
-        },
-      };
+      // No timer: the new page's own files may be slow, and the curtain waits for them. (If the
+      // router cannot fetch the page at all it loads the address as a whole page, which starts over.)
+      waiter.current = { target, resolve };
     });
   }, []);
 
@@ -148,33 +145,19 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       pause();
       const startedAt = performance.now();
       router.prefetch(href);
-      // A slow connection never holds a page change for more than this: the rest arrives late.
-      const assets = capWait(runPreload(routeItems(target)), TRANSITION_MAX_WAIT_MS);
+      // One version only: a slow connection waits here, behind the loading state, until everything
+      // the next page needs has arrived. The words under the logo carry the real percentage.
       const label = options.label ? `Loading ${options.label}` : "Loading";
+      let waitingShown = false;
+      const assets = runPreload(routeItems(target), (p) => {
+        if (waitingShown) c.setWaitLabel(waitingText(label, p));
+      });
 
       const finish = () => {
         c.hide();
         busy.current = false;
         resume();
       };
-
-      if (prefersReducedMotion()) {
-        void (async () => {
-          c.setMode("transition");
-          c.setZoom(1);
-          c.setFill(0);
-          c.show();
-          await c.fade(1, 0.09);
-          router.push(href, { scroll: false });
-          await Promise.all([waitForPath(target), assets]);
-          window.scrollTo(0, 0);
-          await nextFrame();
-          focusMain();
-          await c.fade(0, 0.09);
-          finish();
-        })();
-        return;
-      }
 
       void (async () => {
         c.setMode("transition");
@@ -187,7 +170,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         router.push(href, { scroll: false });
         let ready = false;
         const arrived = Promise.all([waitForPath(target), assets])
-          .then(() => whenPageReady(3500))
+          .then(() => whenPageReady())
           .then(() => nextFrame())
           .then(() => {
             ready = true;
@@ -198,9 +181,20 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         if (!ready) {
           // Still loading after 500 ms: cover the windows and show the loading state.
           waiting = true;
+          waitingShown = true;
           void c.tweenFill(1, 0.3);
           c.startWaiting(label);
+          // The connection may drop while the page waits: say so, and say when it is back.
+          const words = () => {
+            c.setWaitLabel(isOffline() ? OFFLINE_WORDS : label);
+          };
+          window.addEventListener("offline", words);
+          window.addEventListener("online", words);
+          words();
           await arrived;
+          window.removeEventListener("offline", words);
+          window.removeEventListener("online", words);
+          waitingShown = false;
         }
         if (waiting) {
           c.stopLoops();
@@ -230,34 +224,29 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       // would find the page somewhere else when it opens.
       pause();
       try {
-        const reduced = prefersReducedMotion();
         c.setMode("boot");
         c.setZoom(0);
         c.setFill(1);
         c.showBoot(true);
         c.show();
-        if (!reduced) c.startIdle();
+        c.startIdle();
 
         const report = (p: PreloadProgress) => {
           c.setBoot(p.progress, p.label);
         };
-        await Promise.all([load(report), sleep(reduced ? 300 : BOOT_MIN_MS)]);
+        await Promise.all([load(report), sleep(BOOT_MIN_MS)]);
         c.setBoot(1, "Drawing the page");
-        await whenPageReady(5000);
+        await whenPageReady();
         c.setBoot(1, "Ready");
-        await sleep(reduced ? 80 : 380);
+        await sleep(380);
         c.showBoot(false);
         await nextFrame();
 
-        if (reduced) {
-          await c.fadeOut(0.2);
-        } else {
-          // The white of the letters drains away, then the logo zooms in through a letter.
-          await c.tweenFill(0, 0.75);
-          c.stopLoops();
-          audio.blip("star");
-          await c.tweenZoom(1, 1.5, "power3.inOut");
-        }
+        // The white of the letters drains away, then the logo zooms in through a letter.
+        await c.tweenFill(0, 0.75);
+        c.stopLoops();
+        audio.blip("star");
+        await c.tweenZoom(1, 1.5, "power3.inOut");
         c.hide();
         c.setMode("transition");
       } finally {

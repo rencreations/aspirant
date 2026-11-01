@@ -48,7 +48,6 @@ export type ReelFrameState = {
   /** Seconds since the controller started (the ribbon's idle clock). */
   time: number;
   mobile: boolean;
-  reduced: boolean;
   /** Section top on screen, px. */
   secY: number;
   /** Morph progress on screen, 0 thumbnail to 1 big video. */
@@ -214,8 +213,6 @@ function quadMatrix(
 }
 
 export type ReelControllerOptions = {
-  /** True when the visitor prefers reduced motion. */
-  reduced: boolean;
   /** The page scroll is held (the menu or the player is open). */
   isLocked: () => boolean;
   /** Move the page to a scroll position without easing (Lenis, or the window). */
@@ -224,8 +221,6 @@ export type ReelControllerOptions = {
   onPlay: (origin: DOMRect | null, startTime: number) => void;
   /** The section is getting close: start buffering the video. */
   onApproach?: () => void;
-  /** Whether the small picture may play by itself (not on a weak device or with data saving). */
-  mayPlay: () => boolean;
 };
 
 export class ReelController {
@@ -238,7 +233,6 @@ export class ReelController {
   private readonly styles = new StyleWriter();
   private readonly offs: Array<() => void> = [];
   private disposed = false;
-  private reduced: boolean;
   private fine: boolean;
   private syncedFrame = -1;
   private clock = 0;
@@ -341,7 +335,6 @@ export class ReelController {
     this.hasVideo = true;
     this.stripLines = options.stripLines;
     this.coordinates = options.coordinates;
-    this.reduced = options.reduced;
     this.fine = finePointer();
 
     const words = qa(root, "play-word");
@@ -393,7 +386,6 @@ export class ReelController {
       diag: Math.hypot(window.innerWidth, window.innerHeight),
       time: 0,
       mobile: compactLayout(),
-      reduced: this.reduced,
       secY: 0,
       w: 0,
       from: { x: 0, y: 0, w: 0, h: 0 },
@@ -411,7 +403,6 @@ export class ReelController {
     this.measure();
     this.bind();
     this.startIdleState();
-    if (this.reduced) this.applyStatic();
     this.sync(true);
     this.render(0);
     gsap.ticker.add(this.tick);
@@ -449,7 +440,7 @@ export class ReelController {
     this.p = thumbDoc - (vh - this.thumbRel.h) / 2;
     this.g = frameDoc + frameH / 2 - this.marginTop / 2;
 
-    const still = s.mobile || this.reduced;
+    const still = s.mobile;
     s.w = still ? 1 : fit(visible, this.p, this.g, 0, 1);
     const c = still ? 0 : pinOffset(visible - frameDoc + heldY, vh);
     this.pinC = c;
@@ -470,7 +461,7 @@ export class ReelController {
       s.from.h = s.to.h;
     }
 
-    s.lineReveal = this.reduced ? 1 : quadInOut(saturate((0.4 * vh - secY) / (1.3 * vh)));
+    s.lineReveal = quadInOut(saturate((0.4 * vh - secY) / (1.3 * vh)));
     s.lineHalfWidth = lineHalfWidth(s.vw, s.diag);
     return s;
   }
@@ -609,10 +600,7 @@ export class ReelController {
         if (!entry?.isIntersecting) return;
         this.approachIo?.disconnect();
         this.approachIo = null;
-        if (this.video && this.options.mayPlay()) {
-          this.video.preload = this.reduced ? "metadata" : "auto";
-          if (this.reduced) this.showStill();
-        }
+        if (this.video) this.video.preload = "auto";
         this.options.onApproach?.();
       },
       { rootMargin: "150% 0px 150% 0px" },
@@ -635,19 +623,6 @@ export class ReelController {
         document.documentElement.removeEventListener("pointerleave", leave);
       });
     }
-
-    const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onReduced = () => {
-      if (!reducedQuery.matches || this.reduced) return;
-      this.reduced = true;
-      this.state.reduced = true;
-      this.applyStatic();
-      this.updatePlayback();
-    };
-    reducedQuery.addEventListener("change", onReduced);
-    this.offs.push(() => {
-      reducedQuery.removeEventListener("change", onReduced);
-    });
 
     // Keyboard focus in the section finishes the morph toward what it
     // focused: the play button pulls the big video into place, anything
@@ -784,11 +759,11 @@ export class ReelController {
     const secTop = this.root.getBoundingClientRect().top;
     const vh = window.innerHeight;
     // Already on screen (a reload further down): skip the entrances.
-    if (this.reduced || secTop + this.titleRel < vh) {
+    if (secTop + this.titleRel < vh) {
       this.titleT = 2;
       this.titleStarted = true;
     }
-    if (this.reduced || secTop + this.contentRel < vh) {
+    if (secTop + this.contentRel < vh) {
       this.descT = 2;
       this.ctaR = 1;
       this.contentStarted = true;
@@ -796,7 +771,7 @@ export class ReelController {
   }
 
   private resetEntrance() {
-    if (this.reduced || this.state.mobile) return;
+    if (this.state.mobile) return;
     this.titleT = 0;
     this.descT = 0;
     this.ctaR = 0;
@@ -953,7 +928,6 @@ export class ReelController {
     const enabled =
       this.armed &&
       this.fine &&
-      !this.reduced &&
       !s.mobile &&
       !this.options.isLocked() &&
       !this.playerOpen &&
@@ -985,7 +959,6 @@ export class ReelController {
 
   private render(dt: number) {
     const s = this.state;
-    const reduced = this.reduced;
     const mobile = s.mobile;
     const vh = s.vh;
     const put = this.styles;
@@ -1000,7 +973,6 @@ export class ReelController {
 
     this.renderPicture(dt);
     this.renderLine();
-    if (reduced) return;
 
     // Entrances (desktop only) and parallax.
     const titleY = s.secY + this.titleRel;
@@ -1084,7 +1056,6 @@ export class ReelController {
     const pt = this.ptr;
     const overPicture =
       this.fine &&
-      !this.reduced &&
       pt.inside &&
       pt.type !== "touch" &&
       pt.x >= approx.x &&
@@ -1096,12 +1067,12 @@ export class ReelController {
     const k = 1 - Math.exp(-12 * dt);
     this.radialU = mix(this.radialU, targetU, this.state.hover < 0.02 ? 1 : k);
     this.radialV = mix(this.radialV, targetV, this.state.hover < 0.02 ? 1 : k);
-    const hover = this.reduced ? 0 : stepSpring(this.radial, overPicture ? 1 : 0, dt, 60, 12);
+    const hover = stepSpring(this.radial, overPicture ? 1 : 0, dt, 60, 12);
     s.hover = clamp(hover, 0, 1.2);
     s.hoverU = this.radialU;
     s.hoverV = this.radialV;
 
-    if (this.reduced || s.mobile || w >= 1) {
+    if (s.mobile || w >= 1) {
       put.set(visual, "transform", "none");
       put.set(visual, "clip-path", `inset(0 round ${s.radius}px)`);
     } else {
@@ -1148,7 +1119,7 @@ export class ReelController {
 
     // The violet wash: full on the thumbnail, gone on the big video. A plain layer faded by
     // opacity (no blend mode over the live picture).
-    const sweep = this.reduced || s.mobile ? 1 : smoothstep(0.05, 0.92, w);
+    const sweep = s.mobile ? 1 : smoothstep(0.05, 0.92, w);
     put.set(this.tint, "opacity", ((1 - sweep) * 0.62).toFixed(3));
     put.set(this.tint, "display", sweep >= 1 ? "none" : "block");
     const zoom = 1 + 0.035 * Math.max(0, s.hover);
@@ -1485,8 +1456,7 @@ export class ReelController {
   private updatePlayback() {
     const video = this.video;
     if (!video) return;
-    const play =
-      this.near && !document.hidden && !this.playerOpen && !this.reduced && this.options.mayPlay();
+    const play = this.near && !document.hidden && !this.playerOpen;
     if (play) {
       video.muted = true;
       if (video.preload !== "auto") video.preload = "auto";
@@ -1494,22 +1464,6 @@ export class ReelController {
     } else if (!video.paused) {
       video.pause();
     }
-  }
-
-  /** Reduced motion: no loop, but a real frame to look at. */
-  private showStill() {
-    const video = this.video;
-    if (!video) return;
-    const seek = () => {
-      try {
-        // A little way in: first frames are often a black fade.
-        if (video.currentTime < 0.5) video.currentTime = Math.min(8, (video.duration || 2) * 0.1);
-      } catch {
-        // Not seekable yet: the first frame shows instead.
-      }
-    };
-    if (video.readyState >= 1) seek();
-    else video.addEventListener("loadedmetadata", seek, { once: true });
   }
 
   private openPlayer() {
@@ -1534,43 +1488,5 @@ export class ReelController {
       }
     }
     this.updatePlayback();
-  }
-
-  // ------------------------------------------------------------ static
-
-  /** Reduced motion: the finished state, in place, nothing moving. */
-  private applyStatic() {
-    const put = this.styles;
-    for (const word of this.el.titleWords) put.set(word, "transform", "none");
-    for (const word of this.el.descWords) {
-      put.set(word, "transform", "none");
-      put.set(word, "opacity", "1");
-    }
-    put.set(this.el.titleInner, "transform", "none");
-    put.set(this.el.chapter, "transform", "none");
-    put.set(this.el.desc, "transform", "none");
-    put.set(this.el.ctaLift, "transform", "none");
-    put.set(this.el.ctaLift, "opacity", "1");
-    put.set(this.el.pin, "transform", "none");
-    this.pinC = 0;
-    this.pinApplied = 0;
-    for (const slot of this.el.markSlots) put.set(slot, "transform", "none");
-    for (const emerge of this.el.markEmerges) put.set(emerge, "transform", "none");
-    for (const item of this.el.stripItems) {
-      put.set(
-        item,
-        "transform",
-        this.state.mobile ? "none" : `translate3d(0,${(1.2 * this.cross).toFixed(2)}px,0)`,
-      );
-    }
-    for (const strip of this.el.strips) put.set(strip, "transform", "none");
-    for (const track of this.el.charTracks.flat()) put.set(track, "transform", "none");
-    for (const char of this.el.words.flat()) put.set(char, "transform", "none");
-    const reveal = this.el.watch ?? this.el.caption;
-    put.set(reveal, "opacity", "1");
-    put.set(reveal, "transform", "none");
-    put.set(this.el.readout, "opacity", "1");
-    const line = this.el.readoutLines.at(this.readoutFront);
-    if (line) line.textContent = this.coordinates;
   }
 }

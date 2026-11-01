@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DOOR_LOCK_MS, DOOR_TIMES, sideOf, speedFor } from "./door-math";
+import { DOOR_LOCK_MS, DOOR_TIMES, sideOf } from "./door-math";
 
 describe("sideOf", () => {
   it("is before everything above the section and after it from its first screen on", () => {
@@ -21,11 +21,5 @@ describe("door times", () => {
     const longest =
       DOOR_TIMES.leaveMax + DOOR_TIMES.close + DOOR_TIMES.readyMax + DOOR_TIMES.arrivalMax;
     expect(DOOR_LOCK_MS / 1000).toBeGreaterThan(longest - DOOR_TIMES.leaveMax);
-  });
-
-  it("plays shorter on a weak device and the same otherwise", () => {
-    expect(speedFor("full")).toBe(1);
-    expect(speedFor("balanced")).toBe(1);
-    expect(speedFor("lite")).toBeLessThan(1);
   });
 });

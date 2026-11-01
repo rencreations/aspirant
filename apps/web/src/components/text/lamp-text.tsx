@@ -5,8 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
-
 import styles from "./text-effects.module.css";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -27,8 +25,8 @@ const DIM = 0.18;
 
 /**
  * Words light up as the section scrolls, like a lamp moving over the text (ScrollTrigger
- * scrub). The word under the lamp gets a soft glow. Fully lit and static under reduced
- * motion, and in the server HTML. Screen readers read the text once, normally.
+ * scrub). The word under the lamp gets a soft glow. Fully lit
+ * in the server HTML. Screen readers read the text once, normally.
  *
  * <LampText as="p" className="serif text-step-4" text="Aspirant is a story about ..." />
  */
@@ -43,14 +41,12 @@ export function LampText({
   // @react-three/fiber augments JSX.IntrinsicElements.
   const Tag = (as ?? "p") as "span";
   const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
 
   // useGSAP reverts the tween and its ScrollTrigger on unmount and when a dependency changes
-  // (including the in-app reduce motion toggle).
   useGSAP(
     () => {
       const root = ref.current;
-      if (!root || reduced) return;
+      if (!root) return;
       const words = Array.from(root.querySelectorAll<HTMLElement>("[data-word]"));
       if (!words.length) return;
       let current = -1;
@@ -90,7 +86,7 @@ export function LampText({
         gsap.set(words, { clearProps: "opacity" });
       };
     },
-    { dependencies: [text, start, end, reduced], scope: ref },
+    { dependencies: [text, start, end], scope: ref },
   );
 
   const parts = text.split(/(\s+)/);

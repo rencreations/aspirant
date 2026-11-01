@@ -88,12 +88,3 @@
     transform: scale(0);
   }
 }
-
-/* Reduced motion: one plate that fades. */
-.cover[data-phase="fade"] .square b {
-  display: none;
-}
-
-.cover[data-phase="fade"] .square u {
-  transform: scale(1.02);
-}

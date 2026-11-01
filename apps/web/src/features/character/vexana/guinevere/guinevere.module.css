@@ -751,33 +751,6 @@
   }
 }
 
-/* ---------- reduced motion: the finished picture, nothing moves ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .name,
-  .serif,
-  .print,
-  .heartBtn,
-  .body .story,
-  .body .side {
-    transition: none;
-  }
-
-  .heartBtn,
-  .quoteText,
-  .bars i,
-  .threadGold,
-  .threadViolet,
-  .knot,
-  .root[data-in="true"] .sparkle {
-    animation: none;
-  }
-
-  .sparkle {
-    opacity: 0.8;
-    scale: 1;
-  }
-}
-
 .defs {
   position: absolute;
   width: 0;

@@ -181,7 +181,7 @@
   inset: 0;
 }
 
-/* The other form grows from the tap point (the wipe), or crossfades under reduced motion. */
+/* The other form grows from the tap point (the wipe). */
 .view[data-view="alt"] {
   -webkit-mask: radial-gradient(
     circle var(--wipe-r, 0px) at var(--wipe-x, 50%) var(--wipe-y, 30%),
@@ -227,30 +227,6 @@
 
 .view[data-view="alt"] .figShift {
   transform: translate(calc(var(--sx, 0) * 100%), calc(var(--sy, 0) * 100%));
-}
-
-:root[data-motion="reduced"] .view[data-view="alt"] {
-  -webkit-mask: none;
-  mask: none;
-  opacity: 0;
-  transition: opacity 450ms var(--ease-out);
-}
-
-:root[data-motion="reduced"] .hero[data-form="alt"] .view[data-view="alt"] {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .view[data-view="alt"] {
-    -webkit-mask: none;
-    mask: none;
-    opacity: 0;
-    transition: opacity 450ms var(--ease-out);
-  }
-
-  .hero[data-form="alt"] .view[data-view="alt"] {
-    opacity: 1;
-  }
 }
 
 /* WebGL layer: fades in after its first frame, then the static figure steps aside. */
@@ -418,7 +394,7 @@
   will-change: transform;
 }
 
-:global(:root.js:not([data-motion="reduced"])) .title[data-state="pending"] .letterRise {
+:global(:root.js) .title[data-state="pending"] .letterRise {
   opacity: 0;
   animation: hero-failsafe 0.4s 10s forwards;
 }
@@ -760,7 +736,7 @@
   animation: hero-cue 2.2s var(--ease-in-out) infinite;
 }
 
-/* Intro: the type rises after the loader. Visible without JS and under reduced motion. --- */
+/* Intro: the type rises after the loader. Visible without JS. --- */
 
 .rise {
   transition:
@@ -788,18 +764,18 @@
   --d: 1200ms;
 }
 
-:global(:root.js:not([data-motion="reduced"])) .hero[data-intro="pending"] .rise {
+:global(:root.js) .hero[data-intro="pending"] .rise {
   opacity: 0;
   transform: translateY(18px);
   animation: hero-failsafe 0.4s 10s forwards;
 }
 
-:global(:root.js:not([data-motion="reduced"])) .hero[data-intro="pending"] .figure {
+:global(:root.js) .hero[data-intro="pending"] .figure {
   opacity: 0;
   animation: hero-failsafe 0.4s 10s forwards;
 }
 
-:global(:root.js:not([data-motion="reduced"])) .hero[data-intro="pending"][data-gl="on"] .figure {
+:global(:root.js) .hero[data-intro="pending"][data-gl="on"] .figure {
   animation: none;
 }
 

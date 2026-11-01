@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
 
 import { videoFile } from "../media";
@@ -48,7 +47,6 @@ const PREVIEW_START = 22.4;
 const PREVIEW_POSTER = "/video/guinevere/cover-preview-poster.webp";
 
 export function Cover() {
-  const reduced = useReducedMotion();
   const section = useRef<HTMLElement>(null);
   const zoom = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -88,11 +86,11 @@ export function Cover() {
     };
   }, []);
 
-  // Plays only while it is on screen, and never under reduced motion.
+  // Plays only while it is on screen.
   useEffect(() => {
     const el = video.current;
     const root = section.current;
-    if (!el || !root || reduced) return;
+    if (!el || !root) return;
     const state = play.current;
     const sync = () => {
       if (state.visible && document.visibilityState === "visible")
@@ -116,7 +114,7 @@ export function Cover() {
       document.removeEventListener("visibilitychange", sync);
       el.pause();
     };
-  }, [reduced]);
+  }, []);
 
   // The shadow on what is covered, the corners, and the push-in of the picture.
   useEffect(() => {
@@ -138,7 +136,7 @@ export function Cover() {
         },
         onUpdate: (self) => {
           const el = panel.current;
-          if (!el || reduced) return;
+          if (!el) return;
           // The panel comes up narrower than the screen, with a padding at both sides that fills as it
           // rises (a scale about its top middle, so it looks as if it expands and zooms), and its
           // corners sharpen slowly at first and are square from 60 percent of the way. Flat, with no
@@ -151,21 +149,19 @@ export function Cover() {
       }),
     );
 
-    if (!reduced) {
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: root,
-          start: "top bottom",
-          end: at(1.3),
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (zoom.current) {
-              zoom.current.style.transform = `scale(${(1.12 + self.progress * 0.12).toFixed(4)})`;
-            }
-          },
-        }),
-      );
-    }
+    triggers.push(
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top bottom",
+        end: at(1.3),
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          if (zoom.current) {
+            zoom.current.style.transform = `scale(${(1.12 + self.progress * 0.12).toFixed(4)})`;
+          }
+        },
+      }),
+    );
 
     return () => {
       for (const t of triggers) t.kill();
@@ -174,17 +170,16 @@ export function Cover() {
         card.style.borderRadius = "";
       }
     };
-  }, [reduced]);
+  }, []);
 
   // The rise can never be left half way: from half on the page goes on by itself, before it goes back.
-  useScrollSnap("cover-rise", () => spans.current.rise, { enabled: !reduced });
+  useScrollSnap("cover-rise", () => spans.current.rise);
 
   return (
     <section
       ref={section}
       id="cover"
       className={styles.cover}
-      data-plain={reduced}
       data-theme="storm"
       aria-labelledby="cover-title"
     >

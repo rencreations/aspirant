@@ -169,13 +169,3 @@
     grid-template-columns: 1fr;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .section[data-armed="true"] [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .key {
-    transition: none;
-  }
-}

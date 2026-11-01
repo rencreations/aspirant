@@ -15,7 +15,6 @@ import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
 import { mediaUrl } from "@/lib/media-store";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import { CaptionLayer, type CaptionControl } from "./caption-layer";
@@ -231,7 +230,6 @@ function Icon({ name }: { name: IconName }) {
  * the thumbnail.
  */
 export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
-  const reduced = useReducedMotion();
   const { pause: pauseScroll, resume: resumeScroll } = useLenis();
   const rootRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -322,7 +320,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const visible = rect && rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
-    if (reduced || !visible) {
+    if (!visible) {
       root
         .animate([{ opacity: 1 }, { opacity: 0 }], {
           duration: 180,
@@ -355,7 +353,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
         .finished.then(finish, finish);
     };
     window.setTimeout(shrink, 480);
-  }, [getOrigin, onClosed, reduced]);
+  }, [getOrigin, onClosed]);
 
   // Open: grow out of the thumbnail, then play ----------------------------------------------
   useLayoutEffect(() => {
@@ -368,7 +366,7 @@ export function PlayerOverlay({ video, getOrigin, onClosed }: Props) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     let finished: Promise<unknown>;
-    if (reduced || !rect) {
+    if (!rect) {
       finished = root.animate([{ opacity: 0 }, { opacity: 1 }], {
         duration: 160,
         fill: "both",

@@ -5,8 +5,7 @@ import { useEffect, useState, useSyncExternalStore, type CSSProperties } from "r
 
 import { hasWebGL } from "@/components/gl/use-gl-ready";
 import { asset } from "@/lib/asset";
-import { guessDeviceTier, useDeviceTier } from "@/lib/device";
-import { useMounted, usePageVisible, useReducedMotion, useViewport } from "@/lib/hooks";
+import { useMounted, usePageVisible, useViewport } from "@/lib/hooks";
 
 import type { Mood } from "../contract";
 import { driver, onSceneChange, syncDriver } from "./driver";
@@ -96,14 +95,12 @@ function StillBackdrop({ still, mood, drift }: { still: string; mood: Mood; drif
  * on /experience (not inside an element with its own background). It reads `useExperience`
  * and shows the scene, mood and sound for the active Part, chapter and paragraph.
  *
- * Modes: a live WebGL scene; or still art with a slow drift (Calm: reduced motion or a weak
- * device; also the fallback when WebGL is missing or fails). A veil behind the text column
+ * Modes: a live WebGL scene; or still art with a slow drift (the fallback when WebGL is
+ * missing or fails). A veil behind the text column
  * keeps body text at 7:1 in both themes.
  */
 export default function ScenesLayer({ column }: ScenesLayerProps) {
   const mounted = useMounted();
-  const reduced = useReducedMotion();
-  const tier = useDeviceTier();
   const visible = usePageVisible();
   const viewport = useViewport();
   const look = useSyncExternalStore(subscribeLook, getLook, getLook);
@@ -113,11 +110,8 @@ export default function ScenesLayer({ column }: ScenesLayerProps) {
   useEffect(() => syncDriver(), []);
   useSceneAudio();
 
-  // Calm on reduced motion or weak hardware. The FPS probe can dip during first load, so it
-  // only lowers quality; it never switches the scene off.
-  const calm = reduced || (mounted && guessDeviceTier() === "low");
-  const live = mounted && !calm && !glFailed && hasWebGL();
-  const quality = tier !== "low" && viewport.w >= 900 ? 1 : 0.6;
+  const live = mounted && !glFailed && hasWebGL();
+  const quality = viewport.w >= 900 ? 1 : 0.6;
 
   useEffect(() => {
     if (!live) return;
@@ -129,7 +123,7 @@ export default function ScenesLayer({ column }: ScenesLayerProps) {
 
   return (
     <div className={styles.layer} style={style} data-scenes-layer="" data-overlay="" aria-hidden>
-      <StillBackdrop still={look.still} mood={look.mood} drift={calm && !reduced} />
+      <StillBackdrop still={look.still} mood={look.mood} drift={mounted && !live} />
       {live ? (
         <div className={styles.canvas} data-on={glReady && live ? "" : undefined}>
           <SceneCanvas

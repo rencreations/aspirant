@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
-import { MotionToggle, SoundToggle } from "@/components/hud/preference-toggles";
+import { SoundToggle } from "@/components/hud/preference-toggles";
 import { audio } from "@/lib/audio";
 
 import s from "./chrome.module.css";
@@ -12,7 +12,7 @@ import { TEXT_SCALES } from "./prefs";
 import { useReader } from "./reader-context";
 
 /**
- * Reading settings in a small disclosure panel: text size, sound, reduce motion and Calm
+ * Reading settings in a small disclosure panel: text size, sound and Calm
  * reading (the scene backdrop off). Esc or a press outside closes it. No focus trap.
  */
 export function SettingsPanel() {
@@ -103,7 +103,6 @@ export function SettingsPanel() {
         </div>
         <div className={s.toggles}>
           <SoundToggle labeled />
-          <MotionToggle labeled />
           <button
             type="button"
             className={s.calmToggle}

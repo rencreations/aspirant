@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { prefersReducedMotion } from "@/lib/hooks";
-
 import styles from "./text-effects.module.css";
 
 export interface TypewriterProps {
@@ -26,8 +24,7 @@ export interface TypewriterProps {
 
 /**
  * Types text out like a terminal, with a blinking block caret. Screen readers get the full
- * text at once (sr-only copy); the typed copy is aria-hidden. Reduced motion shows the whole
- * text immediately. The rAF loop pauses with the tab and stops when done.
+ * text at once (sr-only copy); the typed copy is aria-hidden. The rAF loop pauses with the tab and stops when done.
  *
  * <Typewriter text="Resonance link established." trigger="mount" />
  */
@@ -63,10 +60,6 @@ export function Typewriter({
       doneRef.current?.();
     };
     root.removeAttribute("data-typing-pending");
-    if (prefersReducedMotion()) {
-      finish();
-      return;
-    }
     typed.textContent = "";
     caretRef.current?.setAttribute("data-done", "false");
 

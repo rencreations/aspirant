@@ -28,7 +28,7 @@ const defaultFormat = (v: number) => v.toFixed(2);
 
 /**
  * Segmented coupling meter (role="meter"). Segments light up to the value, the lit edge
- * glows, and changes animate with a short stagger (static under reduced motion).
+ * glows, and changes animate with a short stagger.
  *
  * <Meter label="Coupling" value={1.62} max={2.5} />
  */

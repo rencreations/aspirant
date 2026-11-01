@@ -1,12 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  cancelDeferred,
-  capWait,
-  runPreload,
-  type PreloadItem,
-  type PreloadProgress,
-} from "./preload";
+import { cancelDeferred, runPreload, type PreloadItem, type PreloadProgress } from "./preload";
 
 const item = (id: string, weight: number, run: () => Promise<unknown>): PreloadItem => ({
   id,
@@ -185,27 +179,61 @@ describe("deferred items", () => {
   });
 });
 
-describe("capWait", () => {
-  it("returns at once when the work is done, and at the cap when it is not", async () => {
+describe("a slow or bad connection", () => {
+  it("waits for an item however long it takes (there is no time cap)", async () => {
     vi.useFakeTimers();
     try {
-      let finish: () => void = () => undefined;
-      const slow = new Promise<void>((resolve) => {
-        finish = resolve;
-      });
-      let capped = false;
-      void capWait(slow, 1000).then(() => {
-        capped = true;
-      });
-      await vi.advanceTimersByTimeAsync(999);
-      expect(capped).toBe(false);
-      await vi.advanceTimersByTimeAsync(2);
-      expect(capped).toBe(true);
-      // The work itself was not cancelled.
-      finish();
-      await slow;
+      let release: () => void = () => undefined;
+      let opened = false;
+      void runPreload([item("very-slow", 1, () => new Promise<void>((r) => (release = r)))]).then(
+        () => {
+          opened = true;
+        },
+      );
+      // An hour later it is still waiting.
+      await vi.advanceTimersByTimeAsync(60 * 60 * 1000);
+      expect(opened).toBe(false);
+      release();
+      await vi.advanceTimersByTimeAsync(10);
+      expect(opened).toBe(true);
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("adds up the bytes the items report, over the items that know their size", async () => {
+    const seen: PreloadProgress[] = [];
+    let release: () => void = () => undefined;
+    const done = runPreload(
+      [
+        {
+          id: "bytes-a",
+          label: "A",
+          weight: 1,
+          run: (report) =>
+            new Promise<void>((resolve) => {
+              report(0.5, { received: 50, total: 100 });
+              release = resolve;
+            }),
+        },
+        {
+          id: "bytes-b",
+          label: "B",
+          weight: 1,
+          run: (report) => {
+            report(1, { received: 300, total: 300 });
+            return Promise.resolve();
+          },
+        },
+        item("bytes-none", 1, () => Promise.resolve()),
+      ],
+      (p) => seen.push(p),
+    );
+    await new Promise((r) => setTimeout(r, 150));
+    expect(seen.at(-1)?.bytes).toEqual({ received: 350, total: 400, partial: false });
+    release();
+    await done;
+    expect(seen.at(-1)?.bytes).toEqual({ received: 400, total: 400, partial: false });
+    expect(seen.at(-1)?.progress).toBe(1);
   });
 });

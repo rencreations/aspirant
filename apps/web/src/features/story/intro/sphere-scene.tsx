@@ -3,7 +3,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 import { audio } from "@/lib/audio";
-import { useInView, usePageVisible, useReducedMotion } from "@/lib/hooks";
+import { useInView, usePageVisible } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 
 import { CITY, makeLayout, type Layout, type SceneFocus } from "./sphere-layout";
@@ -217,13 +217,11 @@ interface SphereSceneProps {
 /**
  * The opening scene, drawn on one canvas: Dawnbreak, Terrinia, the Academy tower and the
  * Defence Sphere. The Sphere is a hex dome that ripples where the pointer moves, where a
- * finger lands or when a legend card is pressed. It breathes on its own while idle. Under
- * reduced motion it draws still and only answers to input.
+ * finger lands or when a legend card is pressed. It breathes on its own while idle.
  */
 export function SphereScene({ control, className, onLayout, onReady }: SphereSceneProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduced = useReducedMotion();
   const inView = useInView(wrapRef, { rootMargin: "120px" });
   const visible = usePageVisible();
   const running = inView && visible;
@@ -241,17 +239,14 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
     idleAt: 0,
     focusLit: { dawnbreak: 0, terrinia: 0, "selrick-academy": 0, "defence-sphere": 0 },
     px01: 0,
-    dirty: true,
     time: 0,
   });
 
   const onLayoutRef = useRef(onLayout);
   const onReadyRef = useRef(onReady);
-  const reducedRef = useRef(reduced);
   useEffect(() => {
     onLayoutRef.current = onLayout;
     onReadyRef.current = onReady;
-    reducedRef.current = reduced;
   });
 
   // Drawing is one closure so the loop and the on-demand redraw share it.
@@ -283,7 +278,6 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
         paintStatic(bctx, layout);
       }
       s.back = back;
-      s.dirty = true;
       onLayoutRef.current?.(layout);
     };
     resize();
@@ -291,13 +285,8 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
     ro.observe(wrap);
 
     const spawn = (x: number, y: number, power = 1) => {
-      if (reducedRef.current) {
-        s.dirty = true;
-        return;
-      }
       s.ripples.push({ x, y, t0: s.time, power });
       if (s.ripples.length > MAX_RIPPLES) s.ripples.shift();
-      s.dirty = true;
     };
 
     const local = (e: PointerEvent) => {
@@ -310,7 +299,6 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
       s.py = y;
       s.px01 = (x / r.width) * 2 - 1;
       s.pointerOn = true;
-      s.dirty = true;
       const d = Math.hypot(x - s.lastSpawnX, y - s.lastSpawnY);
       if (d > 90) {
         s.lastSpawnX = x;
@@ -328,7 +316,6 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
     };
     const onLeave = (e: PointerEvent) => {
       if (e.pointerType === "mouse" || e.type === "pointercancel") s.pointerOn = false;
-      s.dirty = true;
     };
     wrap.addEventListener("pointermove", onMove, { passive: true });
     wrap.addEventListener("pointerdown", onDown, { passive: true });
@@ -372,26 +359,26 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
       });
 
       // Idle breath: a slow ripple from the apex every few seconds.
-      if (!reduced && t > s.idleAt) {
+      if (t > s.idleAt) {
         s.idleAt = t + 5.5;
         s.ripples.push({ x: layout.domeX, y: shoreY - layout.domeRy, t0: t, power: 0.6 });
         if (s.ripples.length > MAX_RIPPLES) s.ripples.shift();
       }
       s.ripples = s.ripples.filter((r) => t - r.t0 < 2.4);
 
-      const parallax = reduced ? 0 : s.px01;
+      const parallax = s.px01;
       ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(back, 0, 0, w, h);
 
-      drawPlanet(ctx, layout, reduced ? 0 : t, s.focusLit.dawnbreak);
+      drawPlanet(ctx, layout, t, s.focusLit.dawnbreak);
 
       // Window flicker over the city, brighter when Terrinia is lit.
       const lit = s.focusLit.terrinia;
       CITY.forEach((b, i) => {
         if (i % 3 !== 0) return;
         const flick = 0.35 + 0.65 * Math.abs(Math.sin(t * (0.6 + (i % 5) * 0.17) + i));
-        ctx.fillStyle = `rgba(255,236,170,${(reduced ? 0.5 : flick * 0.6) + lit * 0.4})`;
+        ctx.fillStyle = `rgba(255,236,170,${flick * 0.6 + lit * 0.4})`;
         ctx.fillRect(b.x * w + b.w * w * 0.4, shoreY - b.h * h * 0.6, 2.4, 3.4);
       });
 
@@ -421,7 +408,7 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
         const ly = shoreY + 6 + ((i * 37) % (h - shoreY - 8));
         const lx = (((i * 131 + 17) % 997) / 997) * w;
         const len = 14 + ((i * 11) % 36);
-        const tw = reduced ? 0.6 : 0.5 + 0.5 * Math.sin(t * 1.3 + i * 1.7);
+        const tw = 0.5 + 0.5 * Math.sin(t * 1.3 + i * 1.7);
         ctx.fillStyle = `rgba(255,244,214,${0.1 + tw * 0.28})`;
         ctx.fillRect(lx + Math.sin(t * 0.4 + i) * 3, ly, len, 1.2);
       }
@@ -455,7 +442,7 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
           const d = Math.hypot(hex.x - s.px, hex.y - s.py);
           if (d < pr) e += (1 - d / pr) ** 2 * 0.9;
         }
-        const idle = reduced ? 0.12 : 0.1 + 0.05 * Math.sin(t * 0.9 - hex.depth * 3);
+        const idle = 0.1 + 0.05 * Math.sin(t * 0.9 - hex.depth * 3);
         const base = (hex.rim ? 0.34 : 0.2) + idle;
         const k = clamp(base + e + sphereLit * 0.35, 0, 1);
         hexPath(ctx, hex.x + offX, hex.y, layout.hexR * 0.94);
@@ -482,30 +469,22 @@ export function SphereScene({ control, className, onLayout, onReady }: SphereSce
       ctx.stroke();
       ctx.lineWidth = 1;
     };
-  }, [control, reduced]);
+  }, [control]);
 
-  // One loop while visible. Under reduced motion it only draws when something changed.
+  // One loop while visible.
   useEffect(() => {
     if (!running) return;
     let raf = 0;
     let last = performance.now();
-    let lastFocus: SceneFocus | null | undefined;
     const tick = (now: number) => {
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
-      const s = live.current;
-      const focus = control.current.focus;
-      const settling = Object.values(s.focusLit).some((v) => v > 0.01 && v < 0.99);
-      if (!reduced || s.dirty || focus !== lastFocus || settling) {
-        drawRef.current(dt, now / 1000);
-        s.dirty = false;
-        lastFocus = focus;
-      }
+      drawRef.current(dt, now / 1000);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [running, reduced, control]);
+  }, [running]);
 
   return (
     <div ref={wrapRef} className={className} style={{ touchAction: "pan-y" }}>

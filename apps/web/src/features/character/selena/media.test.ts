@@ -36,54 +36,27 @@ describe("what her page loads", () => {
   });
 });
 
-describe("the size of video for a display and a device", () => {
-  const full = { level: "full" as const, memory: 8 };
-
+describe("the size of video for a display", () => {
   it("matches the width of the picture in device pixels", () => {
     // The picture covers the screen: a 1920x1080 window at 1x needs about 2400 px of video.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 1 })).toBe("1440");
     // A 2560x1440 (2K) screen gets the 2560 picture, not the 4K one.
-    expect(pickTier({ width: 2560, height: 1440, dpr: 1, ...full })).toBe("1440");
+    expect(pickTier({ width: 2560, height: 1440, dpr: 1 })).toBe("1440");
     // A full HD window with 125 percent scaling also stays at 2560.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 1.25, ...full })).toBe("1440");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 1.25 })).toBe("1440");
     // A sharp screen (4K, or full HD at 200 percent) gets the 4K picture.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("2160");
-    expect(pickTier({ width: 3840, height: 2160, dpr: 1, ...full })).toBe("2160");
-    expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
-    expect(pickTier({ width: 1280, height: 720, dpr: 1, ...full })).toBe("1080");
-    expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 2 })).toBe("2160");
+    expect(pickTier({ width: 3840, height: 2160, dpr: 1 })).toBe("2160");
+    expect(pickTier({ width: 1366, height: 768, dpr: 1 })).toBe("1080");
+    expect(pickTier({ width: 1280, height: 720, dpr: 1 })).toBe("1080");
   });
 
-  it("follows the performance level", () => {
-    const retina = { width: 1920, height: 1080, dpr: 2, memory: 8 };
-    expect(pickTier({ ...retina, level: "balanced" })).toBe("1080");
-    expect(pickTier({ ...retina, level: "lite" })).toBe("lite");
-  });
-
-  it("stops at 1440 on touch devices, and at 1080 with little memory", () => {
-    const phone = { width: 1920, height: 1080, dpr: 2, touch: true, level: "full" as const };
-    expect(pickTier({ ...phone, memory: 8 })).toBe("1440");
-    expect(pickTier({ ...phone, memory: 4 })).toBe("1080");
-  });
-
-  it("is the smallest for data saving and for very little memory", () => {
-    const big = { width: 2560, height: 1440, dpr: 2, level: "full" as const };
-    expect(pickTier({ ...big, saveData: true })).toBe("lite");
-    expect(pickTier({ ...big, memory: 2 })).toBe("lite");
-  });
-
-  it("goes easy on a slow link", () => {
-    const big = { width: 3840, height: 2160, dpr: 1, level: "full" as const, memory: 8 };
-    // No answer from the browser (Safari, Firefox), or a link that says it is fast: nothing changes.
-    expect(pickTier({ ...big })).toBe("2160");
-    expect(pickTier({ ...big, downlink: 10, effectiveType: "4g" })).toBe("2160");
-    // Under 6 Mbit/s the first load must stay small: no bigger than 1080.
-    expect(pickTier({ ...big, downlink: 5.5 })).toBe("1080");
-    // Under 3 Mbit/s, or a link the browser calls 3g or worse: the smallest.
-    expect(pickTier({ ...big, downlink: 2.9 })).toBe("lite");
-    expect(pickTier({ ...big, downlink: 8, effectiveType: "3g" })).toBe("lite");
-    expect(pickTier({ ...big, effectiveType: "2g" })).toBe("lite");
-    // A link of 0 is "unknown", not "slow".
-    expect(pickTier({ ...big, downlink: 0 })).toBe("2160");
+  it("never picks a smaller size because of the device or the connection", () => {
+    // The old light size is not offered, even on a small screen.
+    expect(pickTier({ width: 1024, height: 576, dpr: 1 })).toBe("1080");
+    expect(pickTier({ width: 390, height: 844, dpr: 3 })).not.toBe("lite");
+    // Whatever the browser says about memory, touch, data saving or the link, the size follows the display.
+    const hints = { saveData: true, memory: 1, touch: true, downlink: 0.5, effectiveType: "2g" };
+    expect(pickTier({ width: 3840, height: 2160, dpr: 1, ...hints })).toBe("2160");
   });
 });

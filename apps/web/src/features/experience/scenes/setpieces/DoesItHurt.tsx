@@ -54,7 +54,7 @@ const ANGELA_ASKS = {
 };
 
 /** Ruby and Angela's question, asked every day: the answers so far, and taking turns. */
-export default function DoesItHurt({ active, reduced }: SetPieceProps) {
+export default function DoesItHurt({ active }: SetPieceProps) {
   const [turns, setTurns] = useState(false);
   const [step, setStep] = useState(-1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -80,7 +80,7 @@ export default function DoesItHurt({ active, reduced }: SetPieceProps) {
 
   const draw = (ctx: CanvasRenderingContext2D, { w, h }: StageSize, dt: number, t: number) => {
     const L = light.current;
-    L.r = reduced ? 1 : ease(L.r, 1, 2, dt);
+    L.r = ease(L.r, 1, 2, dt);
     L.beat = Math.max(0, L.beat - dt * 1.5);
     ctx.fillStyle = "#05070c";
     ctx.fillRect(0, 0, w, h);
@@ -98,7 +98,7 @@ export default function DoesItHurt({ active, reduced }: SetPieceProps) {
     star4(ctx, rx, cy, s * 0.035, 0.2);
     ctx.fill();
     // Angela: peach, magenta star specks, a small pump that ticks.
-    const tick = reduced ? 0.5 : Math.max(0, Math.sin(t * 5.2)) ** 8;
+    const tick = Math.max(0, Math.sin(t * 5.2)) ** 8;
     glow(
       ctx,
       ax,
@@ -109,7 +109,7 @@ export default function DoesItHurt({ active, reduced }: SetPieceProps) {
     );
     glow(ctx, ax, cy + s * 0.02, s * (0.05 + tick * 0.03), "rgba(255,120,190,0.95)");
     for (let i = 0; i < 6; i++) {
-      const a = t * (reduced ? 0 : 0.3) + (i / 6) * Math.PI * 2;
+      const a = t * 0.3 + (i / 6) * Math.PI * 2;
       ctx.fillStyle = "#ff6ac8";
       star4(ctx, ax + Math.cos(a) * s * 0.15, cy + Math.sin(a) * s * 0.15, s * 0.012, 0.25);
       ctx.fill();
@@ -131,7 +131,7 @@ export default function DoesItHurt({ active, reduced }: SetPieceProps) {
     ctx.textAlign = "start";
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
   useEffect(() => {
     redraw();
   }, [step, turns, redraw]);

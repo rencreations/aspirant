@@ -5,15 +5,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
-
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 /** @public */
 export interface ScrollToOptions {
   /** Pixels added to the target position (negative to stop above it). */
   offset?: number;
-  /** Jump without animating. Always true under reduced motion. */
+  /** Jump without animating. */
   immediate?: boolean;
   /** Duration in seconds for the smooth scroll. */
   duration?: number;
@@ -26,7 +24,7 @@ export interface SmoothScrollApi {
   pause: () => void;
   /** Undo one `pause()`. */
   resume: () => void;
-  /** The Lenis instance, or null under reduced motion. */
+  /** The Lenis instance, or null before it has started. */
   getLenis: () => Lenis | null;
 }
 
@@ -40,18 +38,13 @@ const SmoothScrollContext = createContext<SmoothScrollApi>({
 
 /**
  * Lenis smooth scrolling on the GSAP ticker, with ScrollTrigger registered once and kept in
- * sync. Native scrolling under reduced motion. Mounted once in the root layout.
+ * sync. Mounted once in the root layout.
  */
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
-  const reduced = useReducedMotion();
   const lenisRef = useRef<Lenis | null>(null);
   const pauses = useRef(0);
 
   useEffect(() => {
-    if (reduced) {
-      ScrollTrigger.refresh();
-      return;
-    }
     const lenis = new Lenis({
       autoRaf: false,
       lerp: 0.12,
@@ -72,7 +65,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reduced]);
+  }, []);
 
   const api = useMemo<SmoothScrollApi>(
     () => ({

@@ -2,7 +2,7 @@ import type { Slug } from "@/content/types";
 import { asset } from "@/lib/asset";
 import { mediaUrl, releaseMedia } from "@/lib/media-store";
 import { expectReady } from "@/lib/page-ready";
-import { perfLevel, perfReady } from "@/lib/perf";
+import { PermanentFailure, untilItArrives } from "@/lib/retry";
 
 import { splashPath } from "../splash";
 import { INTRO_CLIPS } from "./clips";
@@ -32,14 +32,9 @@ interface RosterIntroApi {
 }
 
 const CLIPS_DIR = "/video/roster-intro/";
-/** A clip that has not shown a picture by now is dropped: its panel stands on its splash art. */
-const CLIP_WAIT_MS = 6000;
+/** How often a clip that has not announced itself is looked at again (an event can be missed). */
+const CLIP_POLL_MS = 400;
 const SKIP_FADE_MS = 200;
-/**
- * The most the pictures and clips may take to arrive. A slow connection never keeps the visitor on
- * black: past this the intro gives up, the page shows, and nothing pops in late.
- */
-const ASSET_MAX_MS = 10_000;
 /** From here the page under the picture has settled, so its boxes can be read. */
 const MEASURE_AT = 2.5;
 /** Times that between them use every program of the renderer. */
@@ -48,19 +43,28 @@ const WARM_TIMES = [0.9, 1.7, 2.3, 2.55, 2.82, 2.95, 3.05, 3.17, 3.3, 3.5] as co
 /** Load a picture and shrink it to what the panels can show. */
 async function loadImage(path: string, maxWidth: number): Promise<Source | null> {
   try {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = asset(path);
-    await img.decode();
-    if (typeof createImageBitmap === "function" && img.naturalWidth > maxWidth) {
-      const h = Math.round((img.naturalHeight / img.naturalWidth) * maxWidth);
-      return await createImageBitmap(img, {
-        resizeWidth: maxWidth,
-        resizeHeight: h,
-        resizeQuality: "high",
-      });
-    }
-    return img;
+    // A picture that fails to load is tried again until it arrives (the slow link). One that
+    // arrives and cannot be decoded five times is skipped: its panel shows without it.
+    return await untilItArrives(async (n) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = asset(path);
+      try {
+        await img.decode();
+      } catch (error) {
+        if (n + 1 >= 5) throw new PermanentFailure(String(error));
+        throw error;
+      }
+      if (typeof createImageBitmap === "function" && img.naturalWidth > maxWidth) {
+        const h = Math.round((img.naturalHeight / img.naturalWidth) * maxWidth);
+        return await createImageBitmap(img, {
+          resizeWidth: maxWidth,
+          resizeHeight: h,
+          resizeQuality: "high",
+        });
+      }
+      return img;
+    });
   } catch {
     return null;
   }
@@ -78,7 +82,13 @@ function makeVideo(slug: Slug): HTMLVideoElement {
   return v;
 }
 
-function whenVideoReady(v: HTMLVideoElement, ms: number): Promise<boolean> {
+/**
+ * Resolves true when the clip has a picture to show, false when it cannot be decoded at all. It
+ * waits as long as that takes: the file is already in memory (the loading list holds it), so the
+ * wait is the decoder starting. An event can be missed, so the clip is looked at again now and
+ * then, and a decoder that waits for a play (some phones) is nudged once.
+ */
+function whenVideoReady(v: HTMLVideoElement): Promise<boolean> {
   return new Promise((resolve) => {
     if (v.readyState >= 2) {
       resolve(true);
@@ -88,8 +98,9 @@ function whenVideoReady(v: HTMLVideoElement, ms: number): Promise<boolean> {
       resolve(false);
       return;
     }
+    let looks = 0;
     const done = (ok: boolean) => {
-      window.clearTimeout(timer);
+      window.clearInterval(timer);
       v.removeEventListener("loadeddata", onData);
       v.removeEventListener("error", onError);
       resolve(ok);
@@ -100,9 +111,12 @@ function whenVideoReady(v: HTMLVideoElement, ms: number): Promise<boolean> {
     const onError = () => {
       done(false);
     };
-    const timer = window.setTimeout(() => {
-      done(false);
-    }, ms);
+    const timer = window.setInterval(() => {
+      looks += 1;
+      if (v.readyState >= 2) done(true);
+      else if (v.error) done(false);
+      else if (looks === 3) void v.play().catch(() => undefined);
+    }, CLIP_POLL_MS);
     v.addEventListener("loadeddata", onData);
     v.addEventListener("error", onError);
   });
@@ -206,7 +220,7 @@ function promotePage(on: boolean): void {
  *
  * `?introT=<t>` freezes the picture at `t` instead of playing it.
  */
-export function runIntro(host: HTMLElement, light: boolean): () => void {
+export function runIntro(host: HTMLElement): () => void {
   const params = new URLSearchParams(window.location.search);
   const freeze = params.has("introT") ? Number(params.get("introT")) : null;
   const scene = createScene();
@@ -229,16 +243,13 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     state: "loading",
   };
   window.__rosterIntro = api;
-  const deadline = performance.now() + ASSET_MAX_MS;
 
   const fit = () => {
     if (!renderer) return;
-    const level = perfLevel();
-    const cap = level === "full" ? 1.25 : level === "balanced" ? 1 : 0.75;
     renderer.resize(
       window.innerWidth,
       window.innerHeight,
-      Math.min(window.devicePixelRatio || 1, cap),
+      Math.min(window.devicePixelRatio || 1, 1.25),
     );
     renderer.setView(introView(window.innerWidth, window.innerHeight));
     renderer.setPage(measurePage(window.innerWidth, window.innerHeight));
@@ -285,7 +296,7 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     }
   };
 
-  /** The intro could not start in time (a slow connection, a failure): show the page, as if it were off. */
+  /** The intro cannot run (no WebGL, a shader that did not build): show the page, as if it were off. */
   const giveUp = () => {
     end(false, "off");
     markReady();
@@ -313,7 +324,6 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
 
   /** Put the clips where the running scene wants them: play, hold or keep in step. */
   const keepClips = () => {
-    if (light) return;
     for (const p of scene.panels) {
       const v = videos.get(p.slug);
       if (!v || v.readyState < 1) continue;
@@ -340,7 +350,6 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
 
   /** Put the clips exactly at the scene's picture and wait until they are there. */
   const seekClips = async () => {
-    if (light) return;
     const waits: Array<Promise<void>> = [];
     for (const p of scene.panels) {
       const v = videos.get(p.slug);
@@ -392,11 +401,9 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
   };
 
   void (async () => {
-    await perfReady().catch(() => undefined);
-    if (stopped) return;
-    const maxWidth = perfLevel() === "lite" ? 1024 : 1280;
+    const maxWidth = 1280;
 
-    // The pictures: the splash art of the panels, the stills, and the clips when the device can.
+    // The pictures: the splash art of the panels, the stills, and the clips.
     const assets: Assets = { splash: {}, clips: {}, stills: {}, clipInfo: {} };
     const jobs: Array<Promise<void>> = [];
     for (const slug of PANEL_SLUGS) {
@@ -405,13 +412,11 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
           if (img) assets.splash[slug] = img;
         }),
       );
-      if (!light) {
-        const v = makeVideo(slug);
-        videos.set(slug, v);
-        assets.clips[slug] = v;
-        const info = INTRO_CLIPS[slug];
-        assets.clipInfo[slug] = { focus: info.focus, aspect: info.width / info.height };
-      }
+      const v = makeVideo(slug);
+      videos.set(slug, v);
+      assets.clips[slug] = v;
+      const info = INTRO_CLIPS[slug];
+      assets.clipInfo[slug] = { focus: info.focus, aspect: info.width / info.height };
     }
     jobs.push(
       loadImage(OBSIDIA_CUTOUT, 1100).then((img) => {
@@ -425,39 +430,22 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
         }),
       );
     }
-    const arrived = await Promise.race([
-      Promise.all(jobs).then(() => true),
-      new Promise<boolean>((resolve) => {
-        window.setTimeout(() => {
-          resolve(false);
-        }, ASSET_MAX_MS);
-      }),
-    ]);
+    // Everything is waited for, however long it takes (the loading list has most of it already).
+    await Promise.all(jobs);
     if (stopped) return;
-    if (!arrived) {
-      giveUp();
-      return;
-    }
 
-    // A clip that has no picture soon is left out: its panel shows the splash art.
-    if (!light) {
-      const wait = Math.max(500, Math.min(CLIP_WAIT_MS, deadline - performance.now()));
-      await Promise.all(Array.from(videos.values()).map((v) => whenVideoReady(v, wait)));
-      for (const [slug, v] of Array.from(videos)) {
-        if (v.readyState < 2) {
-          v.removeAttribute("src");
-          v.load();
-          videos.delete(slug);
-          delete assets.clips[slug];
-        }
+    // A clip that cannot be decoded at all is left out: its panel shows the splash art.
+    await Promise.all(Array.from(videos.values()).map((v) => whenVideoReady(v)));
+    for (const [slug, v] of Array.from(videos)) {
+      if (v.readyState < 2) {
+        v.removeAttribute("src");
+        v.load();
+        videos.delete(slug);
+        delete assets.clips[slug];
       }
-      await Promise.all(Array.from(videos.values()).map(preroll));
     }
+    await Promise.all(Array.from(videos.values()).map(preroll));
     if (stopped) return;
-    if (performance.now() > deadline + 3000) {
-      giveUp();
-      return;
-    }
 
     const cv = document.createElement("canvas");
     cv.setAttribute("aria-hidden", "true");
@@ -468,12 +456,7 @@ export function runIntro(host: HTMLElement, light: boolean): () => void {
     host.appendChild(cv);
     canvas = cv;
     try {
-      renderer = new IntroRenderer(
-        cv,
-        assets,
-        introView(window.innerWidth, window.innerHeight),
-        light,
-      );
+      renderer = new IntroRenderer(cv, assets, introView(window.innerWidth, window.innerHeight));
     } catch (error) {
       // No WebGL or a shader that did not build: the page shows without the intro.
       if (debug) console.warn("[roster intro] renderer failed", error);

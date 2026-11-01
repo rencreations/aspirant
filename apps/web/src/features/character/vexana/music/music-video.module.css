@@ -438,26 +438,3 @@
     width: 100%;
   }
 }
-
-/* ---- reduced motion: the finished picture, nothing moves ------------------------------------ */
-@media (prefers-reduced-motion: reduce) {
-  .cross,
-  .serif,
-  .stage,
-  .spotA,
-  .spotB {
-    transition: none;
-  }
-
-  .music[data-in="true"] .spotA,
-  .music[data-in="true"] .spotB,
-  .ctaIcon::after,
-  .disc,
-  .music[data-sound="on"][data-in="true"] .meter i {
-    animation: none;
-  }
-
-  .meter i {
-    transform: scaleY(var(--h));
-  }
-}

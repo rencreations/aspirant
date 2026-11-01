@@ -39,7 +39,7 @@ function trailerItem(): PreloadItem {
   });
   // The trailer is not needed to open the page (the player streams it if it is not here yet), so a
   // slow connection waits for it a minute at most.
-  return mediaItem(pick.src, "Loading the Gallery", { type: "video/mp4", timeoutMs: 60_000 });
+  return mediaItem(pick.src, "Loading the Gallery", { type: "video/mp4" });
 }
 
 /**
@@ -55,14 +55,12 @@ export function galleryItems(): PreloadItem[] {
         type: "image/webp",
         bytes: GALLERY_IMAGES[id].bytes,
         weight: 1,
-        timeoutMs: 60_000,
       }),
     ),
     imageItem(tiktokPosterPath("tiktok-bomboclau"), label, 1),
     mediaItem(tiktokVideoPath("tiktok-bomboclau"), label, {
       type: "video/mp4",
       bytes: GALLERY_VIDEOS["tiktok-bomboclau"].bytes,
-      timeoutMs: 120_000,
     }),
     imageItem(DAY_OF_ENDERS.poster, label, 1),
     ...(typeof window === "undefined" ? [] : [trailerItem()]),

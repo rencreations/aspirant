@@ -1,5 +1,5 @@
 // What does each route look like a few seconds after it opens? Prints the state of <html>
-// (data-motion, data-perf, data-gate), how many animations run, canvases, playing videos and the
+// (data-gate), how many animations run, canvases, playing videos and the
 // scroll position, with the console errors.
 //
 //   node scripts/qa/probes/routes.cjs
@@ -35,8 +35,6 @@ const wait = Number(process.env.WAIT || 12);
         (await page
           .evaluate(() => ({
             gate: document.documentElement.dataset.gate || "",
-            motion: document.documentElement.dataset.motion,
-            perf: document.documentElement.dataset.perf,
             animations: document.getAnimations().length,
             canvases: document.querySelectorAll("canvas").length,
             videosPlaying: [...document.querySelectorAll("video")].filter((v) => !v.paused).length,

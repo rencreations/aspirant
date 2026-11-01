@@ -612,42 +612,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .track {
-    --hold: 0px;
-  }
-
-  .img {
-    animation: none;
-  }
-
-  .fig,
-  .ch,
-  .kicker,
-  .text,
-  .hint,
-  .sLean,
-  .sIn,
-  .g2 {
-    transition: none;
-  }
-
-  .sFloat,
-  .g3 {
-    animation: none;
-  }
-}
-
-:root[data-motion="reduced"] .track {
-  --hold: 0px;
-}
-
-:root[data-motion="reduced"] .img,
-:root[data-motion="reduced"] .sFloat,
-:root[data-motion="reduced"] .g3 {
-  animation: none;
-}
-
 /* ------------------------------------------------------------------ her two drones */
 
 /* Drone 2 floats behind her, drone 1 in front of her, both on the right (where the picture of her
@@ -739,10 +703,4 @@
     "M11 20 C11 20 0 12.4 0 6 C0 2.4 2.7 0 5.6 0 C8 0 10 1.4 11 3.4 C12 1.4 14 0 16.4 0 C19.3 0 22 2.4 22 6 C22 12.4 11 20 11 20 Z"
   );
   will-change: transform, opacity;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .droneBob {
-    animation: none;
-  }
 }

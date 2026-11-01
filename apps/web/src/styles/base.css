@@ -232,25 +232,6 @@ html[data-gate="on"] body {
   overflow: hidden;
 }
 
-/* Reduced motion: the OS preference and the in-app toggle (html[data-motion="reduced"]). */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-html[data-motion="reduced"] *,
-html[data-motion="reduced"] *::before,
-html[data-motion="reduced"] *::after {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  scroll-behavior: auto !important;
-}
-
 /* Lenis */
 html.lenis,
 html.lenis body {

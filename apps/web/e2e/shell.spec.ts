@@ -82,15 +82,6 @@ test("M toggles sound and the toggle reflects it", async ({ page }) => {
   await expect(toggle).toHaveAttribute("aria-pressed", "true");
 });
 
-test("reduced motion is honoured and nothing auto-advances", async ({ page, baseURL }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(url("/"));
-  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await page.waitForTimeout(1200);
-  expect(sitePath(page, baseURL)).toBe("/");
-});
-
 test("scrolling through the footer opens the next page", async ({ page, baseURL }) => {
   await page.goto(url("/collection/"));
   await page.waitForLoadState("networkidle");
@@ -98,15 +89,19 @@ test("scrolling through the footer opens the next page", async ({ page, baseURL 
   await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/");
 });
 
-test("the Reduce motion toggle applies at once and persists across reloads", async ({ page }) => {
+test("the system reduced-motion setting is ignored: the footer still opens the next page", async ({
+  page,
+  baseURL,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto(url("/collection/"));
+  await page.waitForLoadState("networkidle");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/");
+});
+
+test("the menu has no Reduce motion control", async ({ page }) => {
   await page.goto(url("/experience/"));
-  await expect(page.locator("html")).toHaveAttribute("data-motion", "auto");
-  // It lives in the menu, with no control left in the bottom right corner of the page.
-  await expect(page.getByRole("button", { name: "Reduce motion" })).toHaveCount(0);
   await page.getByRole("button", { name: "Open menu" }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Reduce motion" }).click();
-  await page.keyboard.press("Escape");
-  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
+  await expect(page.getByRole("button", { name: "Reduce motion" })).toHaveCount(0);
 });

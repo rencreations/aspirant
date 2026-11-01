@@ -26,7 +26,6 @@ import {
   useIsTouch,
   usePointer,
   useRafLoop,
-  useReducedMotion,
   useVoiceState,
 } from "@/lib/hooks";
 import { routes } from "@/lib/site";
@@ -99,7 +98,7 @@ function FigureImages({
 /**
  * Home hero: a character lifted into pseudo 3D (WebGL, lazy) with a pointer-driven portal to
  * her other form. The static images underneath are the LCP, the no-WebGL fallback (with a CSS
- * mask portal) and the reduced-motion view (crossfade). Controls: three pair tabs, Toggle
+ * mask portal). Controls: three pair tabs, Toggle
  * form, Hold portal open. Tap the figure to toggle; drag to open the portal.
  */
 export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
@@ -118,9 +117,8 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   const [tilt, setTilt] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const reduced = useReducedMotion();
   const touch = useIsTouch();
-  const { ready: glReady, supported, tier } = useGLReady();
+  const { ready: glReady, supported } = useGLReady();
   const markReady = useRef<(() => void) | null>(null);
   const entered = useSiteStore((s) => s.entered);
   const inView = useInView(heroRef, { rootMargin: "120px" });
@@ -143,10 +141,6 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   }, [controller, pointer]);
 
   useEffect(() => {
-    controller.setReduced(reduced);
-  }, [controller, reduced]);
-
-  useEffect(() => {
     controller.setSwapHandler((index) => {
       setShown(index);
       setAlt(false);
@@ -161,15 +155,12 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
   // Play the intro once the loader has gone (or straight away for a returning visitor).
   useEffect(() => {
     if (!entered || intro) return;
-    const t = window.setTimeout(
-      () => {
-        controller.playIntro();
-        setIntro(true);
-      },
-      reduced ? 0 : 420,
-    );
+    const t = window.setTimeout(() => {
+      controller.playIntro();
+      setIntro(true);
+    }, 420);
     return () => window.clearTimeout(t);
-  }, [entered, intro, reduced, controller]);
+  }, [entered, intro, controller]);
 
   useRafLoop((_, t) => controller.tick(t), inView);
 
@@ -260,7 +251,7 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
     "--sx": pair.align[0],
     "--sy": pair.align[1],
   } as CSSProperties;
-  const dpr = tier === "low" ? 1 : tier === "mid" || touch ? 1.4 : 1.75;
+  const dpr = touch ? 1.4 : 1.75;
 
   return (
     <section
@@ -288,7 +279,7 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
       </div>
       <div className={styles.halo} aria-hidden="true" />
 
-      <div className={styles.stage} data-cursor={reduced ? undefined : "FORM"}>
+      <div className={styles.stage} data-cursor="FORM">
         <div ref={figureRef} className={styles.figure}>
           <div className={styles.view} data-view="base">
             <FigureImages pair={pair} view="base" labelled />

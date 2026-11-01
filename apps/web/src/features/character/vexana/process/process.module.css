@@ -670,20 +670,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .gizmo,
-  .wire,
-  .rec i {
-    animation: none;
-  }
-
-  .wire,
-  .clay,
-  .uv {
-    transition: none;
-  }
-}
-
 /* A soft join: the colour the section before ends in melts into this one, so the scroll flows in. */
 .process::before {
   content: "";

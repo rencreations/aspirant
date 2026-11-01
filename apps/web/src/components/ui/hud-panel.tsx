@@ -10,7 +10,7 @@ export interface HudPanelProps {
   label?: string;
   /** Short code on the right of the header, for example "SYNC 1.62". */
   code?: string;
-  /** A slow light band sweeps down the panel (off under reduced motion). */
+  /** A slow light band sweeps down the panel. */
   scan?: boolean;
   /** Accent colour for ticks, label dot and code (any CSS colour). Default: theme accent. */
   accent?: string;

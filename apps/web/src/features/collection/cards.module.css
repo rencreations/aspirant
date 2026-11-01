@@ -298,15 +298,3 @@
   letter-spacing: 0.04em;
   line-height: 1.5;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .eq[data-on="true"] i {
-    animation: none;
-    transform: scaleY(0.7);
-  }
-}
-
-:root[data-motion="reduced"] .eq[data-on="true"] i {
-  animation: none;
-  transform: scaleY(0.7);
-}

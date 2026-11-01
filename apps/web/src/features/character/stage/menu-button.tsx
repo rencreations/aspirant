@@ -42,7 +42,7 @@ interface Props {
  *     follows her and covers the name, the number and the gold line, and says "Loading…".
  *
  * When the clip is still loading and the wait has no length, the sheet closes at once and she
- * hops in place until it is ready. Reduced motion: no jump, stomp or hop, only the sheet.
+ * hops in place until it is ready.
  */
 export function MenuButton({
   label,

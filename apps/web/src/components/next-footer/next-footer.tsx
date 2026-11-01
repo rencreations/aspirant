@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { StarButton } from "@/components/ui/star-button";
 import { asset } from "@/lib/asset";
-import { useHotkey, useReducedMotion } from "@/lib/hooks";
+import { useHotkey } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 
 import styles from "./next-footer.module.css";
@@ -34,7 +34,7 @@ const LOCK_MS = 520;
  * The "next destination" footer (after landonorris.com). A tall region with a sticky stage:
  * keep scrolling and the ring fills; at 98 percent it opens the next page once (scroll back
  * to cancel). Wheel, touch and keyboard scrolling all work, and so do the Continue button
- * and the N key. Reduced motion: no auto-advance, the button and N only.
+ * and the N key.
  *
  * <NextFooter label="Experience" sublabel="The story, told by scrolling." href={routes.experience} />
  */
@@ -49,7 +49,6 @@ export function NextFooter({
   const regionRef = useRef<HTMLElement>(null);
   const valueRef = useRef<HTMLSpanElement>(null);
   const router = useTransitionRouter();
-  const reduced = useReducedMotion();
   const titleId = useId();
   const [announce, setAnnounce] = useState("");
   const fired = useRef(false);
@@ -88,7 +87,7 @@ export function NextFooter({
         announced = true;
         setAnnounce(`Next: ${label}. Press N or use Continue.`);
       }
-      if (reduced || fired.current) return;
+      if (fired.current) return;
       if (p >= ARM_AT && !lockTimer.current) {
         region.dataset.state = "locking";
         lockTimer.current = window.setTimeout(() => {
@@ -115,9 +114,9 @@ export function NextFooter({
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-    // `go` reads refs only; re-run when the destination or motion setting changes.
+    // `go` reads refs only; re-run when the destination changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [href, label, reduced]);
+  }, [href, label]);
 
   const style = accent ? ({ "--accent": accent, "--glow": accent } as CSSProperties) : undefined;
 
@@ -179,7 +178,7 @@ export function NextFooter({
             </svg>
             <span className={styles.ringValue}>
               <span ref={valueRef}>000</span>
-              <small>{reduced ? "Sync" : "Scroll"}</small>
+              <small>Scroll</small>
             </span>
           </div>
         </div>
@@ -203,9 +202,7 @@ export function NextFooter({
             >
               Continue
             </StarButton>
-            <p className={`${styles.hint} hud-label`}>
-              {reduced ? "Press N or Continue" : "Keep scrolling or press N"}
-            </p>
+            <p className={`${styles.hint} hud-label`}>Keep scrolling or press N</p>
           </div>
         </div>
         <p className="sr-only" aria-live="polite">

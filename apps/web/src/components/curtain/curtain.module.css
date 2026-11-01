@@ -39,15 +39,6 @@
   fill: var(--c-bg);
 }
 
-/* Reduced motion: a plain light fade, no logo movement. */
-.fade {
-  position: absolute;
-  inset: 0;
-  background: var(--c-bg);
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* Decor: a few hairlines and brackets that echo the logo plate. Boot screen only. */
 .decor {
   position: absolute;
@@ -273,12 +264,6 @@
   to {
     transform: translateX(400%);
   }
-}
-
-html[data-motion="reduced"] .scan::after {
-  animation: none;
-  width: 100%;
-  opacity: 0.4;
 }
 
 @media (max-width: 520px) {

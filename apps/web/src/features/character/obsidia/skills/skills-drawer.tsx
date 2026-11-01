@@ -6,9 +6,7 @@ import { createPortal } from "react-dom";
 import { PlayerOverlay } from "@/components/video-player/player-overlay";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
-import { perfLevel } from "@/lib/perf";
 
 import base from "../about/about.module.css";
 import { ObsidiaDrawer, type DrawerTab } from "../drawer/drawer";
@@ -334,11 +332,9 @@ function DemoBody({
  * sound, full page, in the custom player in her colours. What is given as children sits below it.
  */
 function ClipDock({ clip, note, children }: { clip: ClipId; note?: string; children?: ReactNode }) {
-  const reduced = useReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  // The light level does not start it by itself (a second video to decode beside the picture).
-  const [playing, setPlaying] = useState(!reduced && perfLevel() !== "lite");
+  const [playing, setPlaying] = useState(true);
   const [inView, setInView] = useState(false);
   const [big, setBig] = useState(false);
   const meta = SKILL_CLIPS[clip];

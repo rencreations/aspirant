@@ -1,10 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { comicStreamHooks, interludeComicHooks, registerComic } from "./comic-link";
 import type { ComicApi } from "./comic-link";
 import { toneHint } from "./gates";
-
-vi.mock("@/lib/perf", () => ({ perfLevel: () => "full" }));
 
 function fakeComic() {
   const calls: string[] = [];

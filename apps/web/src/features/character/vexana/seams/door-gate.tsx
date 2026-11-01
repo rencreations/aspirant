@@ -5,10 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
-import { perfLevel } from "@/lib/perf";
 
 import styles from "./door-gate.module.css";
-import { DOOR_LOCK_MS, DOOR_TIMES, sideOf, speedFor, type Side } from "./door-math";
+import { DOOR_LOCK_MS, DOOR_TIMES, sideOf, type Side } from "./door-math";
 import { Doors, type DoorsApi } from "./doors";
 import { boundary, toneHint, type Dir } from "./gates";
 import { Hold, useHold, useHoldProgress } from "./hold";
@@ -54,8 +53,7 @@ import { useScrollSnap } from "./snap";
  * sections draw the scene themselves, like the comic's halves that open on the livestream) and the
  * nav text follows it while it is in the corner ("clear" leaves the nav to the sections' hooks).
  *
- * Reduced motion (`enabled` false): the sections are shown as they are, with no hold and no scene.
- * A weak device plays the scene a third shorter. Only `transform` and `opacity` move.
+ * Only `transform` and `opacity` move.
  */
 export interface DoorHooks {
   leave?: (dir: Dir) => Promise<void> | void;
@@ -76,8 +74,6 @@ export interface DoorGateProps {
   tone?: "paper" | "comic" | "clear";
   closing?: Partial<Record<Dir, "doors" | "instant">>;
   hooks?: DoorHooks;
-  /** False (reduced motion): plain joint. */
-  enabled?: boolean;
   /** For the wrapper (a negative margin that lets the section overlap the one before it). */
   className?: string;
   style?: CSSProperties;
@@ -217,13 +213,12 @@ function DoorOverlay({
       s.session += 1;
       const token = s.session;
       const alive = () => s.session === token;
-      const speed = speedFor(perfLevel());
       const to = (v: number, seconds: number, ease: string) =>
         new Promise<void>((resolve) => {
           s.tween?.kill();
           s.tween = gsap.to(s, {
             v,
-            duration: seconds * speed,
+            duration: seconds,
             ease,
             onUpdate: draw,
             onComplete: () => {
@@ -359,12 +354,10 @@ export function DoorGate({
   tone = "paper",
   closing,
   hooks,
-  enabled = true,
   className,
   style,
   children,
 }: DoorGateProps) {
-  if (!enabled) return <>{children}</>;
   return (
     <Hold
       hold={hold}

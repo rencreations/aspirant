@@ -13,10 +13,8 @@ import { createPortal } from "react-dom";
 import { PlayerOverlay, type PlayerVideo } from "@/components/video-player/player-overlay";
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { FINAL_SOURCES, videoFile, videoPoster } from "../media";
-import { mayPlay } from "../shared/autoplay";
 import { ReelController } from "./reel-controller";
 import { REEL_COPY, type ReelCopy } from "./reel-copy";
 import styles from "./reel.module.css";
@@ -126,8 +124,8 @@ function PlayWord({ text }: { text: string }) {
  * The film. A small picture that is already moving sits under the title and stretches into the
  * big frame as the page scrolls (pulled into place like cloth), holds there, and a play button
  * opens the site's player out of it. A ribbon draws itself through the section as you go.
- * Phones stack the section and skip the morph and the pin. Reduced motion shows the finished
- * state, still. This is a port of the lab website's reel, without its WebGL layer.
+ * Phones stack the section and skip the morph and the pin.
+ * This is a port of the lab website's reel, without its WebGL layer.
  */
 export function Reel({
   copy = REEL_COPY,
@@ -147,7 +145,6 @@ export function Reel({
   const timeRef = useRef(0);
   const lenisApi = useLenis();
   const lenisRef = useRef(lenisApi);
-  const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -158,10 +155,8 @@ export function Reel({
     const root = rootRef.current;
     if (!root) return;
     const c = new ReelController(root, {
-      reduced,
       stripLines: copy.stripLines,
       coordinates: copy.readout,
-      mayPlay,
       isLocked: () => lenisRef.current.getLenis()?.isStopped ?? false,
       scrollTo: (y) => {
         const lenis = lenisRef.current.getLenis();

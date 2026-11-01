@@ -194,12 +194,3 @@
     transform: rotate(45deg) scale(2.6);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .poster,
-  .crystal,
-  .ring {
-    transition: none;
-  }
-}

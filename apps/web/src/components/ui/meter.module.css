@@ -75,13 +75,3 @@
   transform: skewY(-18deg);
   min-height: 3px;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .segment {
-    transition: none;
-  }
-}
-
-:global(:root[data-motion="reduced"]) .segment {
-  transition: none;
-}

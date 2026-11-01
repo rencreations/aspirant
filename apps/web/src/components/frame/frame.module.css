@@ -162,16 +162,3 @@
 .frame[data-glow="true"]:focus-within .glow,
 .frame[data-glow="true"][data-active="true"] .glow {
 }
-
-/* Reduced motion: a static, full outline (no draw-in) and no tilt. */
-:root[data-motion="reduced"] .outlineDraw {
-  stroke-dashoffset: 0;
-  transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .outlineDraw {
-    stroke-dashoffset: 0;
-    transition: none;
-  }
-}

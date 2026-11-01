@@ -284,10 +284,6 @@
   stroke-dashoffset: 1;
 }
 
-.stroke[data-done="true"] {
-  stroke-dashoffset: 0;
-}
-
 /* The pen tip, the sparkles and the band of light rest invisible until the signature plays. */
 .tip,
 .spark {
@@ -361,54 +357,6 @@
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
-}
-
-/* ------------------------------------------------------------------ reduced motion: a plain column */
-
-.staticHero {
-  position: relative;
-  height: 100svh;
-  overflow: hidden;
-  background: var(--vx-paper);
-}
-
-.staticSign {
-  display: grid;
-  justify-items: center;
-  gap: clamp(2rem, 6vw, 4rem);
-  padding: clamp(5rem, 14svh, 9rem) 5vw;
-  background: var(--vx-ink);
-}
-
-.staticCard {
-  position: relative;
-  width: min(60vw, 22rem);
-  aspect-ratio: 4 / 5;
-  background: #180f07;
-}
-
-.staticCard img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 28%;
-}
-
-.staticCard .sign {
-  position: absolute;
-  left: -20%;
-  top: -12%;
-  width: 140%;
-  max-width: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cue i::after,
-  .caret {
-    animation: none;
-  }
 }
 
 @media (max-width: 640px) {

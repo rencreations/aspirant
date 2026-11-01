@@ -3,11 +3,9 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-import { perfLevel } from "@/lib/perf";
 import { PlayerOverlay } from "@/components/video-player/player-overlay";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
 
 import { DrawerShell } from "../about/drawer-shell";
@@ -212,11 +210,9 @@ function SkillsBody({
 
 /** A clip that loops quietly. A button below it opens the same clip with sound, full page. */
 function Demo({ clip, note, children }: { clip: ClipId; note?: string; children?: ReactNode }) {
-  const reduced = useReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  // The light level does not start it by itself (a second video to decode beside the picture).
-  const [playing, setPlaying] = useState(!reduced && perfLevel() !== "lite");
+  const [playing, setPlaying] = useState(true);
   const [inView, setInView] = useState(false);
   const [big, setBig] = useState(false);
   const meta = SKILL_CLIPS[clip];

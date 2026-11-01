@@ -13,19 +13,15 @@ import styles from "./opening.module.css";
  * `scripts/guinevere/hero-loop.py`) and fills the screen. The recording carries her name, so
  * nothing is laid over it. The page plays and pauses it with the scroll (the opening reads the
  * element through the ref). It starts from the copy the loading bar fetched, or from the file if
- * that has not arrived, and shows its first frame until it plays. With reduced motion it stays on
- * that first frame.
+ * that has not arrived, and shows its first frame until it plays.
  */
-export const HeroVideo = forwardRef<HTMLVideoElement, { reduced: boolean }>(function HeroVideo(
-  { reduced },
-  ref,
-) {
+export const HeroVideo = forwardRef<HTMLVideoElement>(function HeroVideo(_props, ref) {
   useEffect(() => {
     if (typeof ref === "function" || !ref?.current) return;
     const el = ref.current;
     el.src = mediaUrl(heroLoopFile().src);
-    if (!reduced) void el.play().catch(() => undefined);
-  }, [ref, reduced]);
+    void el.play().catch(() => undefined);
+  }, [ref]);
 
   return (
     <video

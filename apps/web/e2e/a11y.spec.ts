@@ -27,9 +27,17 @@ for (const route of ROUTES) {
 }
 
 test("no serious accessibility violations with the loader gate up", async ({ page }) => {
-  await page.goto(url("/"));
-  await page.waitForLoadState("networkidle");
+  // The gate opens by itself as soon as every file has arrived, so hold one picture of the first
+  // screen back to look at the gate while it is up.
+  let release: () => void = () => undefined;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.route("**/img/portal/vexana/depth.webp", async (route) => {
+    await held;
+    await route.continue().catch(() => undefined);
+  });
+  await page.goto(url("/"), { waitUntil: "commit" });
   await expect(page.locator("#site-shell")).toHaveJSProperty("inert", true);
   const serious = await seriousViolations(page);
+  release();
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
 });

@@ -3,7 +3,7 @@
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { audio } from "@/lib/audio";
-import { useMediaQuery, useMounted } from "@/lib/hooks";
+import { useMounted } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import styles from "./toggle.module.css";
@@ -53,45 +53,6 @@ export function SoundToggle({ labeled = false, className }: ToggleProps) {
       <span className={labeled ? undefined : "sr-only"}>
         {labeled ? (on ? "Sound on" : "Sound off") : "Sound"}
       </span>
-    </button>
-  );
-}
-
-/**
- * Reduce motion on/off. Forced on (and disabled) when the operating system asks for it.
- */
-export function MotionToggle({ labeled = false, className }: ToggleProps) {
-  const motion = useSiteStore((s) => s.motion);
-  const setMotion = useSiteStore((s) => s.setMotion);
-  const osReduced = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const mounted = useMounted();
-  const reduced = mounted && (osReduced || motion === "reduced");
-  return (
-    <button
-      type="button"
-      className={cn(styles.toggle, labeled && styles.labeled, className)}
-      aria-pressed={reduced}
-      disabled={mounted && osReduced}
-      data-cursor="MOTION"
-      title={osReduced ? "Reduced motion is set by your system" : "Reduce motion"}
-      onClick={() => {
-        setMotion(motion === "reduced" ? "auto" : "reduced");
-        audio.blip("click");
-      }}
-    >
-      <svg className={styles.icon} viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-        {reduced ? (
-          <path d="M2 9h14" stroke="currentColor" strokeWidth="1.6" fill="none" />
-        ) : (
-          <path
-            d="M1.5 9c1.6-4 3.4-4 5 0s3.4 4 5 0 3.4-4 5 0"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            fill="none"
-          />
-        )}
-      </svg>
-      <span className={labeled ? undefined : "sr-only"}>Reduce motion</span>
     </button>
   );
 }

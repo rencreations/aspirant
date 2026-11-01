@@ -34,36 +34,22 @@ describe("what her page loads", () => {
   });
 });
 
-describe("the size of video for a display and a device", () => {
-  const full = { level: "full" as const, memory: 8 };
-
+describe("the size of video for a display", () => {
   it("gives a 4K screen the 4K size, and smaller screens less", () => {
     // A 3840x2160 screen at 1x: the picture covers it and is 3840 px wide, as is the video.
-    expect(pickTier({ width: 3840, height: 2160, dpr: 1, ...full })).toBe("2160");
+    expect(pickTier({ width: 3840, height: 2160, dpr: 1 })).toBe("2160");
     // A laptop at 3840x2160 with 200 percent scaling shows 1920x1080 in CSS pixels, 4K in device pixels.
-    expect(pickTier({ width: 1920, height: 1080, dpr: 2, ...full })).toBe("2160");
-    expect(pickTier({ width: 1920, height: 1080, dpr: 1, ...full })).toBe("1440");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 2 })).toBe("2160");
+    expect(pickTier({ width: 1920, height: 1080, dpr: 1 })).toBe("1440");
     // A 2560x1440 (2K) screen gets the 2560 picture, not the 4K one.
-    expect(pickTier({ width: 2560, height: 1440, dpr: 1, ...full })).toBe("1440");
-    expect(pickTier({ width: 1366, height: 768, dpr: 1, ...full })).toBe("1080");
-    expect(pickTier({ width: 1024, height: 576, dpr: 1, ...full })).toBe("lite");
+    expect(pickTier({ width: 2560, height: 1440, dpr: 1 })).toBe("1440");
+    expect(pickTier({ width: 1366, height: 768, dpr: 1 })).toBe("1080");
   });
 
-  it("follows the performance level", () => {
-    const retina = { width: 1920, height: 1080, dpr: 2, memory: 8 };
-    expect(pickTier({ ...retina, level: "balanced" })).toBe("1080");
-    expect(pickTier({ ...retina, level: "lite" })).toBe("lite");
-  });
-
-  it("stops at 1440 on touch devices, and at 1080 with little memory", () => {
-    const phone = { width: 1920, height: 1080, dpr: 2, touch: true, level: "full" as const };
-    expect(pickTier({ ...phone, memory: 8 })).toBe("1440");
-    expect(pickTier({ ...phone, memory: 4 })).toBe("1080");
-  });
-
-  it("is the smallest for data saving and for very little memory", () => {
-    const big = { width: 2560, height: 1440, dpr: 2, level: "full" as const };
-    expect(pickTier({ ...big, saveData: true })).toBe("lite");
-    expect(pickTier({ ...big, memory: 2 })).toBe("lite");
+  it("never picks a smaller size because of the device or the connection", () => {
+    // The old light size is not offered, even on a small screen.
+    expect(pickTier({ width: 1024, height: 576, dpr: 1 })).toBe("1080");
+    const hints = { saveData: true, memory: 1, touch: true, downlink: 0.5, effectiveType: "2g" };
+    expect(pickTier({ width: 3840, height: 2160, dpr: 1, ...hints })).toBe("2160");
   });
 });

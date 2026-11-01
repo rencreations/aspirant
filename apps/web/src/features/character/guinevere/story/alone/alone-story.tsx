@@ -4,7 +4,7 @@ import { useEffect, useRef, type CSSProperties } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { asset } from "@/lib/asset";
-import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useInView } from "@/lib/hooks";
 
 import { HERO, artThumb } from "../../media";
 import { useActiveSection } from "../active";
@@ -30,7 +30,6 @@ function Rise({ text, from = 0 }: { text: string; from?: number }) {
 
 function EntryView({ entry, index }: { entry: Entry; index: number }) {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
   const seen = useInView(ref, { threshold: 0.18, once: true });
   const side = index % 2 === 0 ? "left" : "right";
   return (
@@ -38,7 +37,7 @@ function EntryView({ entry, index }: { entry: Entry; index: number }) {
       id={entry.id}
       ref={ref}
       className={styles.entry}
-      data-in={seen || reduced}
+      data-in={seen}
       data-side={side}
       aria-labelledby={`${entry.id}-title`}
     >
@@ -96,7 +95,6 @@ function EntryView({ entry, index }: { entry: Entry; index: number }) {
  * The only things written per scroll are the opacity of two sky layers and the light.
  */
 export function AloneStory() {
-  const reduced = useReducedMotion();
   const lenis = useLenis();
   const root = useRef<HTMLDivElement>(null);
   const hero = useRef<HTMLElement>(null);
@@ -139,12 +137,7 @@ export function AloneStory() {
         <div ref={lamp} className={styles.lamp} />
       </div>
 
-      <header
-        ref={hero}
-        className={styles.hero}
-        data-in={seen || reduced}
-        aria-labelledby="alone-title"
-      >
+      <header ref={hero} className={styles.hero} data-in={seen} aria-labelledby="alone-title">
         <div className={styles.heroText}>
           <p className={styles.kicker}>Part one of two</p>
           <h1 id="alone-title" className={styles.h1}>

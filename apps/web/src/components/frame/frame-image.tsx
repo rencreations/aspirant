@@ -5,7 +5,6 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { asset } from "@/lib/asset";
-import { prefersReducedMotion } from "@/lib/hooks";
 
 export interface FrameImageProps {
   /** Public path (passed through asset()), for example "/img/char/layla/splash-sm.webp". */
@@ -18,7 +17,7 @@ export interface FrameImageProps {
   height: number;
   /**
    * Parallax inside the frame while it scrolls past: true for 6 percent, or a number for a
-   * custom strength in percent. Off under reduced motion.
+   * custom strength in percent.
    */
   parallax?: boolean | number;
   /** Load eagerly with high priority (above the fold). Default false (lazy). */
@@ -55,7 +54,7 @@ export function FrameImage({
 
   useEffect(() => {
     const img = ref.current;
-    if (!img || !strength || prefersReducedMotion()) return;
+    if (!img || !strength) return;
     let raf = 0;
     let listening = false;
     const update = () => {

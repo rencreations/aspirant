@@ -278,24 +278,6 @@
   }
 }
 
-/* ---------- reduced motion: hung and still ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .slot,
-  .print,
-  .pin,
-  .paper,
-  .sheen {
-    transition: none;
-  }
-
-  .slot {
-    opacity: 1;
-    translate: 0 0;
-    rotate: 0deg;
-    scale: 1;
-  }
-}
-
 /* A soft join: the colour the section before ends in melts into this one, so the scroll flows in. */
 .root::before {
   content: "";

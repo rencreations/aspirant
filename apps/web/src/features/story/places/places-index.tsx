@@ -9,7 +9,6 @@ import { StarGlyph } from "@/components/star-glyph";
 import { ThemeZone } from "@/components/theme-zone";
 import { places } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { ChapterLinks } from "../chapter-link";
 import { SectionHead } from "../section-head";
@@ -29,13 +28,12 @@ export function PlacesIndex() {
   const rootRef = useRef<HTMLElement>(null);
   const cellRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [index, setIndex] = useState(0);
-  const reduced = useReducedMotion();
   const place = places[index] ?? places[0];
 
   useGSAP(
     () => {
       const cells = cellRefs.current.filter((c): c is HTMLButtonElement => c !== null);
-      if (reduced || !cells.length) return;
+      if (!cells.length) return;
       gsap.from(cells, {
         scale: 0.6,
         opacity: 0,
@@ -46,7 +44,7 @@ export function PlacesIndex() {
         scrollTrigger: { trigger: rootRef.current, start: "top 70%", once: true },
       });
     },
-    { scope: rootRef, dependencies: [reduced] },
+    { scope: rootRef },
   );
 
   const move = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {

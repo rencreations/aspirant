@@ -589,26 +589,3 @@
     margin: 0.4rem auto 0;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ch,
-  .sheet,
-  .p,
-  .exchange li,
-  .polaroid,
-  .figure,
-  .kicker,
-  .signInk,
-  .signJp,
-  .doodle path {
-    transition: none;
-  }
-
-  .cue svg {
-    animation: none;
-  }
-}
-
-:root[data-motion="reduced"] .cue svg {
-  animation: none;
-}

@@ -59,10 +59,18 @@ The owner went to sleep and asked for: every Vexana feature re-verified, a deep 
   - Known gaps are listed in `docs/design/roster-intro.md` ("State at the end of the first working session").
 - **Documentation for a fresh session** (this commit). The owner asked that everything about this long session be written in the repository so a new session, started with only the repository named, understands everything. `docs/HANDOFF.md` got the roster section, the owner's taste, how helper sessions were run, and "Where things stand". The reference recording was copied in. `CLAUDE.md` got the roster rules.
 
+## 2026-11-01
+
+- **One version.** The owner asked for the low version of the site to go and for the full version to be the only one, always. A slow connection loads behind the loading screen until everything is there. Removed: the performance levels (`full`, `balanced`, `lite`), `lib/perf.ts` with its governor and `?quality=`, `lib/device.ts`, `<html data-perf>`, all the downgrades of the video size (data saving, connection class, memory, cores, touch), the site's own "Reduce motion" toggle, `<html data-motion>`, and every `prefers-reduced-motion` rule and script check. The site now ignores the system's reduced motion setting. The owner accepted the accessibility cost. The video size is chosen from the display only. The `lite` video folders stay on disk and are never chosen. The rules, the handoff and the performance and roster docs were rewritten to say so.
+
 ## Standing instructions that came from the owner along the way
 
 - No assistant or tool named anywhere in the repo or its history. Conventional commits, lowercase, header under 100 characters, push to `main`. `pnpm check` must pass before a push.
 - `localhost:3000` serves the production build of the latest `main`.
 - Writing rules (short sentences, no dashes, canon spellings, "Aspirant power").
-- Performance rules (animate transform and opacity, gate effects on the level, judge on the production build) and the loading rules in the rules file.
+- Performance rules (animate transform and opacity, never gate effects on the device, judge on the production build) and the loading rules in the rules file.
 - When asleep: no questions, keep going, resume helpers after limits, modest token use.
+
+## 2026-11-01
+
+- **One version only.** The owner asked to remove the low version of the site and to always show the one full version, and that a slow connection waits behind the loading screen until everything is loaded. Removed from the loading system: "Enter now" (45 s), the stop at 240 s, the 60 s cap on an item and every per-item `timeoutMs`, the 90 s cap on a page change, the 8 s wait for the router, the cover's three-minute failsafe release, the roster cover's 25 s CSS failsafe and the roster intro's 10 s give-up. A stalled or failed download is now tried again for ever (`lib/retry.ts`) instead of dropped to the plain address; only a 404 or 410 is skipped. Offline, the loading screen waits and says so. The loading note shows the real percentage and bytes. Items that the first sections show or animate moved from deferred to waited on the long pages. See HANDOFF, "Loading, the cover and the bad connection".

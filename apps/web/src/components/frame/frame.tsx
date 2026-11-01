@@ -12,7 +12,6 @@ import {
 
 import { cn } from "@aspirant/ui/lib/utils";
 
-import { prefersReducedMotion } from "@/lib/hooks";
 import { springs, springStep } from "@/lib/motion";
 
 import styles from "./frame.module.css";
@@ -51,8 +50,7 @@ export type FrameProps = FrameOwnProps & {
  * Custom-shaped frame for images and media. The shape clips an inner media layer (never the
  * root, so focus outlines on a linked frame stay visible); an SVG outline follows the shape
  * and draws in on hover and focus; the frame tilts toward the pointer with a spring and
- * glows. Touch: tilt follows the finger while pressed. Reduced motion: no tilt, static
- * outline. Size it from outside (width, aspect ratio) or let the image set the height.
+ * glows. Touch: tilt follows the finger while pressed. Size it from outside (width, aspect ratio) or let the image set the height.
  *
  * <Frame shape="hex" accent="#ff6ac8" label="UNIT 08 / TWILIGHT STAR" className="aspect-[7/8] w-64">
  *   <FrameImage src="/img/char/vexana/splash-sm.webp" alt="Vexana" width={800} height={450} />
@@ -140,7 +138,7 @@ export function Frame({
     const fy = Math.min(1, Math.max(0, (e.clientY - r.top) / Math.max(1, r.height)));
     root.style.setProperty("--fx", `${(fx * 100).toFixed(1)}%`);
     root.style.setProperty("--fy", `${(fy * 100).toFixed(1)}%`);
-    if (!tilt || prefersReducedMotion()) return;
+    if (!tilt) return;
     const m = motion.current;
     m.ty = (fx * 2 - 1) * maxTilt;
     m.tx = -(fy * 2 - 1) * maxTilt;

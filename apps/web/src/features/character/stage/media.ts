@@ -1,5 +1,4 @@
 import { loadMedia } from "@/lib/media-store";
-import { onPerfLevel, perfLevel, perfReady, type PerfLevel } from "@/lib/perf";
 import type { PreloadItem } from "@/lib/preload";
 
 export interface DisplayInfo {
@@ -8,21 +7,6 @@ export interface DisplayInfo {
   height: number;
   /** Device pixel ratio. */
   dpr: number;
-  /** The visitor asked for less data. */
-  saveData?: boolean;
-  /**
-   * The connection, where the browser says (Chrome): the estimated speed in Mbit/s (it stops at 10,
-   * so 10 means "fast enough") and the class of the link. A slow link is told apart from a fast one
-   * so the page does not ask it for a hundred megabytes before it opens.
-   */
-  downlink?: number;
-  effectiveType?: string;
-  /** GB of memory the device reports (Chrome only). */
-  memory?: number;
-  /** A touch-first device: phones and tablets. */
-  touch?: boolean;
-  /** The performance level of the device (see `lib/perf.ts`). Default `full`. */
-  level?: PerfLevel;
 }
 
 export interface StageMediaConfig<T extends string> {
@@ -54,116 +38,58 @@ export interface StageMediaConfig<T extends string> {
 
 /**
  * Everything about choosing, loading and addressing the videos of one character's stage. The
- * tiers are named by their width (`lite`, `1080`, `1440`, `2160`): the smallest is the light one
- * (half the frame rate), `1080` is where a device that has to go easy stops, `1440` is where a
- * touch device stops.
+ * tiers are named by their width (`1080`, `1440`, `2160`). The size is chosen by the display and
+ * nothing else: the device and the connection never lower it. (A tier named `lite`, the old
+ * half-rate cut, still exists on disk for some pages and is never chosen.)
  */
 export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
   /** The tiers, smallest first. (Object keys that look like numbers come first, so sort by width.) */
-  const tierIds = (Object.keys(cfg.tiers) as T[]).sort(
-    (a, b) => cfg.tiers[a].width - cfg.tiers[b].width,
-  );
-  const index = (id: string) => tierIds.indexOf(id as T);
-  const named = (id: string) => tierIds.find((t) => t === id);
+  const tierIds = (Object.keys(cfg.tiers) as T[])
+    .filter((id) => id !== "lite")
+    .sort((a, b) => cfg.tiers[a].width - cfg.tiers[b].width);
 
   /**
-   * The size of video for this display and this device. The picture covers the screen, so a video
-   * as wide as the picture appears in device pixels is as sharp as it can be, and a tier is taken
-   * when it reaches 82 percent of that (76 percent for 2560 and above) (a little softness is better than a much bigger download).
-   * Then the device holds it back:
-   *
-   *  - the performance level: `lite` is the smallest tier (half the frame rate), `balanced` is at
-   *    most 1080;
-   *  - touch devices stop at 1440, and with little memory at 1080; data saving and very little
-   *    memory get the smallest;
-   *  - a slow link (under 3 Mbit/s, or a link the browser calls 3g or worse) gets the smallest and
-   *    one under 6 Mbit/s stops at 1080, so the first load does not take minutes.
+   * The size of video for this display. The picture covers the screen, so a video as wide as the
+   * picture appears in device pixels is as sharp as it can be, and a tier is taken when it reaches
+   * 82 percent of that (76 percent for 2560 and above): a little softness is better than a much
+   * bigger download. A slow connection waits behind the loading screen for it.
    */
   function pickTier(d: DisplayInfo): T {
-    const slowClass =
-      d.effectiveType === "slow-2g" || d.effectiveType === "2g" || d.effectiveType === "3g";
-    const known = d.downlink !== undefined && d.downlink > 0;
-    if (
-      d.level === "lite" ||
-      d.saveData ||
-      slowClass ||
-      (known && d.downlink! < 3) ||
-      (d.memory !== undefined && d.memory <= 2)
-    ) {
-      return tierIds[0]!;
-    }
     const cover = Math.max(d.width / cfg.source.width, d.height / cfg.source.height);
     const need = cfg.source.width * cover * d.dpr;
     // A size of 2560 or more is taken when it reaches 76 percent of the need: a QHD screen, or a full
-    // HD one with a little scaling, gets the 2560 picture and not the 4K one (a third of the bytes,
-    // and much easier to decode at 60 frames a second).
+    // HD one with a little scaling, gets the 2560 picture and not the 4K one (a third of the bytes).
     const enough = (id: T) =>
       cfg.tiers[id].width >= need * (cfg.tiers[id].width >= 2560 ? 0.76 : 0.82);
-    let tier = tierIds.find(enough) ?? tierIds.at(-1)!;
-    const cap = (max: string) => {
-      const m = named(max);
-      if (m && index(tier) > index(m)) tier = m;
-    };
-    if (d.touch) cap("1440");
-    if (d.touch && d.memory !== undefined && d.memory <= 4) cap("1080");
-    if (d.level === "balanced") cap("1080");
-    if (known && d.downlink! < 6) cap("1080");
-    return tier;
+    return tierIds.find(enough) ?? tierIds.at(-1)!;
   }
 
-  /** Read the current display and device (browser only). */
+  /** Read the current display (browser only). */
   function currentDisplay(): DisplayInfo {
-    const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean; downlink?: number; effectiveType?: string };
-      deviceMemory?: number;
-    };
     return {
       width: window.innerWidth,
       height: window.innerHeight,
       dpr: window.devicePixelRatio || 1,
-      saveData: nav.connection?.saveData === true,
-      downlink: nav.connection?.downlink,
-      effectiveType: nav.connection?.effectiveType,
-      memory: nav.deviceMemory,
-      touch: window.matchMedia("(pointer: coarse)").matches,
-      level: perfLevel(),
     };
   }
 
-  /**
-   * The size for this visit, so the loading bar and the page agree. It follows the performance
-   * level: when the device steps down, the next video that is attached is of the smaller size.
-   */
+  /** The size for this visit, so the loading bar and the page agree. */
   let chosen: T | null = null;
-  let following = false;
   function tier(): T {
-    if (!following && typeof window !== "undefined") {
-      following = true;
-      onPerfLevel(() => {
-        chosen = pickTier(currentDisplay());
-      });
-    }
     chosen ??= pickTier(currentDisplay());
     return chosen;
   }
 
-  /**
-   * Resolves with the size for this visit once the device has been asked (whether it decodes in
-   * hardware). Everything that loads or plays the videos waits for it, so they use the same size.
-   */
+  /** Resolves with the size for this visit. Everything that loads or plays the videos waits for it. */
   function tierReady(): Promise<T> {
-    return perfReady().then(() => {
-      chosen = pickTier(currentDisplay());
-      return chosen;
-    });
+    chosen = pickTier(currentDisplay());
+    return Promise.resolve(chosen);
   }
 
   const path = (t: string, file: string) => `${cfg.dir}/${t}/${file}`;
 
   /** Every video of the page in the chosen size, for the loading bar (weighted by bytes). */
   function items(options: { page?: string } = {}): PreloadItem[] {
-    // The weights follow the size that suits the display. The files loaded are those of the size
-    // the device can decode (`tierReady`), which is the same unless the device is slower.
     const t = tier();
     // The videos the stage starts with come first, so they arrive first.
     const first = (file: string) => (file === "idle.mp4" ? 0 : file === "welcome.mp4" ? 1 : 2);
@@ -186,7 +112,6 @@ export function createStageMedia<T extends string>(cfg: StageMediaConfig<T>) {
             ? "Loading the welcome animation"
             : `Loading ${cfg.name} in ${cfg.tierNames[t]}`,
         weight: Math.max(1, Math.round(size / 1_000_000)),
-        timeoutMs: 120_000,
         memo: false,
         deferred: later,
         priority: priority(file),

@@ -1,4 +1,3 @@
-import { prefersReducedMotion } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 
 /**
@@ -37,8 +36,6 @@ export function createHoverFx() {
   let fx: Fx | null = null;
   let leaving: Fx | null = null;
   let raf = 0;
-
-  const moves = () => !prefersReducedMotion();
 
   const write = (f: Fx) => {
     if (!f.pic) return;
@@ -83,7 +80,6 @@ export function createHoverFx() {
       if (fx) this.leave();
       // The frame is lit at once, whatever the device.
       li.dataset.hover = "true";
-      if (!moves()) return;
       if (leaving?.li === li) {
         fx = leaving;
         leaving = null;

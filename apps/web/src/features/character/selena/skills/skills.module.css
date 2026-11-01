@@ -497,13 +497,6 @@
   grid-template-columns: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .icon,
-  .chevron {
-    transition-duration: 1ms;
-  }
-}
-
 /* The picker under the clip: the form switch and the skill icons of that form. */
 .picker {
   display: grid;

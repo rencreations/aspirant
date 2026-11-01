@@ -16,10 +16,9 @@ import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { asset } from "@/lib/asset";
-import { useHotkey, useReducedMotion } from "@/lib/hooks";
+import { useHotkey } from "@/lib/hooks";
 import { startMusic, type Track } from "@/lib/now-playing";
 import { expectReady } from "@/lib/page-ready";
-import { onPerfLevel, startGovernor } from "@/lib/perf";
 import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
@@ -36,7 +35,7 @@ import { WaitFx } from "../stage/wait-fx";
 import { AboutDrawer } from "./about/about-drawer";
 import { GalleryDrawer } from "./gallery/gallery-drawer";
 import { SkillsDrawer } from "./skills/skills-drawer";
-import { loadCore, MENU_ICON, OBSIDIA_MUSIC, obsidiaItems, obsidiaMedia } from "./media";
+import { loadCore, MENU_ICON, OBSIDIA_MUSIC, obsidiaMedia } from "./media";
 import styles from "./obsidia.module.css";
 import { obsidiaPageFromPath, OBSIDIA_ROUTES } from "./routes";
 import { BoardCover } from "./ui/board-cover";
@@ -179,8 +178,7 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
   // The black screen of the first welcome. It is there from the first frame and starts to fade a
   // beat after the welcome video is playing (or at once if the welcome does not play at all).
-  const reducedMotion = useReducedMotion();
-  const blackExpected = initial === null && !reducedMotion;
+  const blackExpected = initial === null;
   const [black, setBlack] = useState<"on" | "fade" | "off">("on");
   useEffect(() => {
     if (!blackExpected || black !== "on") return;
@@ -267,40 +265,6 @@ export function ObsidiaPage({ next }: { next: ObsidiaNext }) {
 
   // Her address follows the page that is open, and the other way round.
   useStageUrl({ state, stage, initial, routes: OBSIDIA_ROUTES });
-
-  // The performance level (lib/perf.ts) steps down when the frame rate stays low while the page
-  // plays: in idle, in the presses and the entrances, on a page. Not during the boot and the
-  // welcome, which are the page getting started. When the level steps down, the videos of the
-  // smaller size are loaded in the background and used from the next video on.
-  const judged = useRef(false);
-  const modeNow = useRef<StageState["mode"]>("boot");
-  const fastNow = useRef(false);
-  useEffect(() => {
-    judged.current = state.mode !== "boot" && state.mode !== "welcome";
-    modeNow.current = state.mode;
-    fastNow.current = state.fast;
-  }, [state.mode, state.fast]);
-  useEffect(() => {
-    if (!tierReady) return;
-    const stop = startGovernor({
-      video: () => stage.current?.videoQuality() ?? null,
-      // Not while the picture runs faster to get to its frame: that is not the device.
-      paused: () => !judged.current || fastNow.current,
-    });
-    const off = onPerfLevel(() => {
-      void runPreload(obsidiaItems());
-      // While she idles the idle loop is on screen, so it is swapped for the smaller size under
-      // the cover wipe, once the smaller size has arrived. In any other state the next return to
-      // the idle loop does it.
-      void loadCore(false).then(() => {
-        if (modeNow.current === "idle") void cover.current?.run(() => stage.current?.retier());
-      });
-    });
-    return () => {
-      stop();
-      off();
-    };
-  }, [tierReady]);
 
   // The loading screen has loaded all of the rest. Coming back by the browser's Back button, or
   // after the page was left, skips that screen: top it up from the saved copies. It waits until

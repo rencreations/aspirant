@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl } from "@/lib/media-store";
-
-import { mayPlay } from "./autoplay";
 
 interface Options {
   /** Let it play by itself while it is on screen (muted). Off, the caller starts it. */
@@ -38,7 +35,6 @@ export function useVideoSlot(
   file: string,
   { auto, stopped, muted, onSoundBlocked }: Options,
 ) {
-  const reduced = useReducedMotion();
   // The latest callbacks, so the observers below are not rebuilt on every render.
   const mutedNow = useRef(muted);
   const blocked = useRef(onSoundBlocked);
@@ -139,7 +135,7 @@ export function useVideoSlot(
         if (!v.paused) v.pause();
         return;
       }
-      const allowed = auto && !stopped.current && !reduced && mayPlay();
+      const allowed = auto && !stopped.current;
       if (near && allowed && v.paused) void play();
     };
 
@@ -196,5 +192,5 @@ export function useVideoSlot(
       document.removeEventListener("visibilitychange", onVisibility);
       v.removeEventListener("error", onError);
     };
-  }, [video, frame, file, auto, stopped, reduced]);
+  }, [video, frame, file, auto, stopped]);
 }

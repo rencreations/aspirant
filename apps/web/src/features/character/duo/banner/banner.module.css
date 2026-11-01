@@ -57,9 +57,3 @@
 .band[data-who="angela"] .mark {
   color: var(--ink);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .track {
-    animation: none;
-  }
-}

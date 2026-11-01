@@ -15,8 +15,6 @@ interface UpZoneProps {
   hold: number;
   /** The share of the hold at which the transition back starts by itself. */
   at: number;
-  /** False (reduced motion): the section is shown as it is. */
-  enabled?: boolean;
   /** Quiet time, in ms, after which a stop in the stretch snaps. Default: the page's 1500. */
   idleMs?: number;
   children: ReactNode;
@@ -30,7 +28,7 @@ interface UpZoneProps {
  * the scene of the boundary plays again and the page goes back to the last screen of the
  * section before, which has no threshold above it.
  */
-export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZoneProps) {
+export function UpZone({ id, hold, at, idleMs, children }: UpZoneProps) {
   const root = useRef<HTMLDivElement>(null);
   const stick = useRef<HTMLDivElement>(null);
   const backdrop = useRef<HTMLDivElement>(null);
@@ -38,7 +36,6 @@ export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZon
   const state = useRef({ armed: true, last: 1 });
 
   useEffect(() => {
-    if (!enabled) return;
     const r = root.current;
     const s = stick.current;
     const back = backdrop.current;
@@ -90,7 +87,7 @@ export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZon
       span.current = null;
       if (b.up?.held === s) b.up = null;
     };
-  }, [enabled, id, hold, at]);
+  }, [id, hold, at]);
 
   // Stopping in the stretch: from the half on the way back goes on by itself, before it the page
   // returns to the first screen. The range runs backwards: it starts at the section's own start.
@@ -101,7 +98,6 @@ export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZon
       return r && !boundary(id).busy ? { start: r.end, end: r.start } : null;
     },
     {
-      enabled,
       idleMs,
       onSnap: (side) => {
         if (side !== "end") return false;
@@ -113,8 +109,6 @@ export function UpZone({ id, hold, at, enabled = true, idleMs, children }: UpZon
       },
     },
   );
-
-  if (!enabled) return <>{children}</>;
 
   return (
     <div ref={root} className={styles.root} style={{ ["--hold" as string]: hold }}>

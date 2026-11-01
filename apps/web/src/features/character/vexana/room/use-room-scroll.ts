@@ -8,8 +8,6 @@ import { ARM_AT, CANCEL_BELOW, meters, recentInput, trackProgress } from "./scro
 const LOCK_MS = 520;
 
 interface Options {
-  /** Reduced motion: the meters show, but nothing goes on by itself. */
-  reduced: boolean;
   /** The page goes on (to the next character). */
   go: () => void;
 }
@@ -24,7 +22,7 @@ interface Options {
 export function useRoomScroll(
   track: RefObject<HTMLElement | null>,
   screen: RefObject<HTMLElement | null>,
-  { reduced, go }: Options,
+  { go }: Options,
 ): boolean {
   const [bar, setBar] = useState(false);
   const goRef = useRef(go);
@@ -58,7 +56,6 @@ export function useRoomScroll(
         open = m.bar;
         setBar(open);
       }
-      if (reduced) return;
       if (p >= ARM_AT && !lock) {
         lock = window.setTimeout(() => {
           lock = 0;
@@ -85,7 +82,7 @@ export function useRoomScroll(
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, [track, screen, reduced]);
+  }, [track, screen]);
 
   return bar;
 }

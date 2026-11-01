@@ -15,5 +15,5 @@
 - [ ] `pnpm check` passes locally (format, types, lint, tests, knip)
 - [ ] E2E updated or not needed (`pnpm test:e2e`)
 - [ ] No new `eslint-disable` without a comment explaining why
-- [ ] Accessibility considered (keyboard, labels, contrast, reduced motion)
+- [ ] Accessibility considered (keyboard, labels, contrast)
 - [ ] Commits follow Conventional Commits

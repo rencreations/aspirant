@@ -251,8 +251,3 @@
     font-size: var(--step-3);
   }
 }
-
-:root[data-motion="reduced"] .tile:hover,
-:root[data-motion="reduced"] .tile:focus-visible {
-  transform: none;
-}

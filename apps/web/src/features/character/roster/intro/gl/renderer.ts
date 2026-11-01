@@ -23,7 +23,7 @@ export type Source = ImageBitmap | HTMLImageElement | HTMLVideoElement | HTMLCan
 
 export interface Assets {
   splash: Partial<Record<Slug, Source>>;
-  /** The welcome clips, played by the caller. Absent on `lite`. */
+  /** The welcome clips, played by the caller. */
   clips: Partial<Record<Slug, HTMLVideoElement>>;
   stills: Partial<Record<StillName, Source>>;
   /** Obsidia's cut-out, for the impact frame. */
@@ -160,7 +160,6 @@ export class IntroRenderer {
     private canvas: HTMLCanvasElement,
     private assets: Assets,
     view: View,
-    private light = false,
   ) {
     const gl = canvas.getContext("webgl2", {
       alpha: true,
@@ -314,7 +313,7 @@ export class IntroRenderer {
     this.view = view;
   }
 
-  /** Size the canvas to the window. `dpr` is the render scale (1 on a light level). */
+  /** Size the canvas to the window. `dpr` is the render scale. */
   resize(w: number, h: number, dpr: number): void {
     this.dpr = dpr;
     this.cw = Math.max(2, Math.round(w * dpr));
@@ -676,7 +675,7 @@ export class IntroRenderer {
         s.bevel,
         s.seed,
       );
-      const hasClip = s.mix < 0.999 && !this.light ? this.feedClip(slug, s.frame) : false;
+      const hasClip = s.mix < 0.999 ? this.feedClip(slug, s.frame) : false;
       gl.uniform4f(p.u.u_d ?? null, 0, hasClip ? 1 : 0, Math.floor(scene.t * 30), dpr);
       gl.uniform4f(p.u.u_e ?? null, s.split, s.stripes, s.bevel * 0.21 * this.cw, 0);
       gl.activeTexture(gl.TEXTURE0);

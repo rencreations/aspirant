@@ -112,10 +112,3 @@
 .section[data-who="angela"] .name {
   color: var(--a);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .knob,
-  .name {
-    transition: none;
-  }
-}

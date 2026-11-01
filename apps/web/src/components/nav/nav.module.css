@@ -655,23 +655,3 @@
     opacity: 0;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .menu[data-state="open"],
-  .menu[data-state="closed"] {
-    animation: fade-in 200ms ease both;
-  }
-
-  .wipe {
-    display: none;
-  }
-
-  .menuLabel {
-    transform: none;
-    animation: none;
-  }
-
-  .tint {
-    animation: none;
-  }
-}

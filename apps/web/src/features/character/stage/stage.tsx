@@ -4,7 +4,6 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { mediaUrl, promoteMedia, releaseMedia } from "@/lib/media-store";
 import { cancelDeferred } from "@/lib/preload";
 import { expectReady } from "@/lib/page-ready";
@@ -33,10 +32,6 @@ export interface StageApi {
   jumpToIdle: () => Promise<void>;
   /** The clock of the idle loop, so touch points can follow its picture. Null until it can play. */
   idleClock: () => { time: number; playing: boolean; rate: number } | null;
-  /** Video frames dropped and shown so far by the picture on top (counters), for the governor. */
-  videoQuality: () => { dropped: number; total: number } | null;
-  /** Give the idle loop the size the device asks for now. The caller covers the screen. */
-  retier: () => Promise<void>;
   /** Pause the picture (the stage is off screen) or carry on. Hidden tabs are handled already. */
   setHidden: (hidden: boolean) => void;
 }
@@ -66,7 +61,6 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
   { timeline, media, skip, onState, welcome: playWelcome, onBegin },
   ref,
 ) {
-  const reduced = useReducedMotion();
   const router = useTransitionRouter();
   const refs = useRef<Partial<Record<VideoKey, HTMLVideoElement | null>>>({});
   const director = useRef<StageDirector | null>(null);
@@ -90,8 +84,6 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
       leave: () => director.current?.leave(),
       jumpToIdle: () => director.current?.jumpToIdle() ?? Promise.resolve(),
       idleClock: () => director.current?.idleClock() ?? null,
-      videoQuality: () => director.current?.videoQuality() ?? null,
-      retier: () => director.current?.retier() ?? Promise.resolve(),
       setHidden: (hidden) => director.current?.setHidden(hidden),
     }),
     [],
@@ -106,7 +98,6 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
     const d = new StageDirector(els as StageElements, {
       timeline,
       skip: () => skipRef.current?.() ?? null,
-      reduced,
       skipWelcome: !playWelcome,
       welcomeDelayMs: WELCOME_DELAY_MS,
       onBegin: () => {
@@ -126,11 +117,6 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
       attach: (key, el) => {
         const tier = media.tier();
         if (el.dataset.attached === tier) return;
-        // What is on screen keeps its size. It gets the new one the next time it is attached, which
-        // is when it is out of sight (the performance level can step down while the page plays).
-        if (el.dataset.attached && (el.dataset.layer === "front" || el.dataset.layer === "back")) {
-          return;
-        }
         el.dataset.attached = tier;
         // No video has sound, so every one is muted for good and the browser lets it autoplay.
         el.defaultMuted = true;
@@ -153,11 +139,11 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
     // A video that fails to load (no codec) counts as playable: the still picture stays.
     const canPlay = (v: HTMLVideoElement) => v.readyState >= 3 || v.error !== null;
     const check = () => {
-      if (!reduced && playWelcome && !canPlay(welcome)) return;
+      if (playWelcome && !canPlay(welcome)) return;
       if (!canPlay(idle)) return;
       mark();
     };
-    const targets = reduced || !playWelcome ? [idle] : [welcome, idle];
+    const targets = !playWelcome ? [idle] : [welcome, idle];
     for (const v of targets) {
       v.addEventListener("canplay", check);
       v.addEventListener("loadeddata", check);
@@ -211,7 +197,7 @@ export const CharacterStage = forwardRef<StageApi, Props>(function CharacterStag
         cancelDeferred(media.dir.split("/").pop() ?? "");
       }, 1500);
     };
-    // The stage is built once per mount; `reduced` is read at that moment.
+    // The stage is built once per mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

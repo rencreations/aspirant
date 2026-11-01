@@ -13,8 +13,6 @@ interface Props {
   next: NextCharacter;
   /** The strength meter is full: the bar is up. */
   open: boolean;
-  /** Reduced motion: the meter does not move the page, the button does. */
-  reduced: boolean;
   onGo: () => void;
 }
 
@@ -24,7 +22,7 @@ interface Props {
  * her picture, her name and a meter that fills as the visitor keeps scrolling (`--ahead`, set by
  * `useRoomScroll`). The Continue button and the N key do the same without scrolling.
  */
-export function NextBar({ next, open, reduced, onGo }: Props) {
+export function NextBar({ next, open, onGo }: Props) {
   const preview = next.image.replace(/splash\.webp$/, "splash-sm.webp");
   return (
     <aside
@@ -46,9 +44,7 @@ export function NextBar({ next, open, reduced, onGo }: Props) {
         <p className={styles.nextSub}>{next.aspirantName}</p>
       </div>
       <div className={styles.nextAhead}>
-        <p className={styles.nextHint}>
-          {reduced ? "Press N or use Continue" : `Keep scrolling to meet ${next.name}`}
-        </p>
+        <p className={styles.nextHint}>Keep scrolling to meet {next.name}</p>
         <span className={styles.nextMeter} aria-hidden="true">
           <span className={styles.nextFill} />
         </span>

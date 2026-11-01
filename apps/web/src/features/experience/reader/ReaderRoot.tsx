@@ -9,7 +9,6 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
-import { prefersReducedMotion } from "@/lib/hooks";
 
 import { ensurePart } from "./book-store";
 import { ChapterRail } from "./ChapterRail";
@@ -108,12 +107,11 @@ export function ReaderRoot({ children }: { children: ReactNode }) {
           ? -Math.round(window.innerHeight * READING_LINE) + 6
           : -chromeHeight();
       const distance = Math.abs(el.getBoundingClientRect().top + offset);
-      const reduced = prefersReducedMotion();
-      if (smooth && !reduced && distance < window.innerHeight * 3) {
+      if (smooth && distance < window.innerHeight * 3) {
         scrollTo(el, { offset, duration: Math.min(1.6, 0.6 + distance / 4000) });
       } else {
         const veil = veilRef.current;
-        if (veil && !reduced) {
+        if (veil) {
           veil.dataset.on = "true";
           await wait(150);
         }

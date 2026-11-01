@@ -3,7 +3,6 @@
 import gsap from "gsap";
 import { useEffect, useRef, type PointerEvent } from "react";
 
-import { prefersReducedMotion } from "@/lib/hooks";
 import { springs, springStep } from "@/lib/motion";
 
 import styles from "./hero.module.css";
@@ -28,7 +27,7 @@ const RADIUS = 120;
  * The page's h1. Letters rise from a mask when `play` turns true (after the loader), and
  * scatter away from the pointer or finger and spring back. Two layers per letter so the
  * reveal (outer span, GSAP) and the scatter (inner span, springs) never fight. Screen
- * readers get "The Aspirants" once. Static under reduced motion.
+ * readers get "The Aspirants" once.
  */
 export function HeroTitle({ id, play }: { id: string; play: boolean }) {
   const rootRef = useRef<HTMLHeadingElement>(null);
@@ -40,10 +39,6 @@ export function HeroTitle({ id, play }: { id: string; play: boolean }) {
     const root = rootRef.current;
     if (!root || !play) return;
     const outers = root.querySelectorAll<HTMLElement>("[data-rise]");
-    if (prefersReducedMotion()) {
-      root.dataset.state = "done";
-      return;
-    }
     root.dataset.state = "revealing";
     const tween = gsap.fromTo(
       outers,
@@ -128,7 +123,6 @@ export function HeroTitle({ id, play }: { id: string; play: boolean }) {
   };
 
   const onMove = (e: PointerEvent<HTMLHeadingElement>) => {
-    if (prefersReducedMotion()) return;
     const root = rootRef.current;
     if (!root) return;
     if (!raf.current || !letters.current.length) measure();

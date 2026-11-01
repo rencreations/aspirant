@@ -206,14 +206,16 @@ test("ends with one Next footer to the characters", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2, name: /^Next:/ })).toHaveCount(1);
 });
 
-test("reduced motion: content and controls still work", async ({ page }) => {
+test("the system reduced-motion setting is ignored: the controls work", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const errors = await open(page);
   expect(await overflow(page)).toBeLessThanOrEqual(0);
   await scrollTo(page, '[data-track="dawnbreak-978"]', 0);
   const stage = page.locator('[data-track="dawnbreak-978"] [role=group]');
+  const slider = page.locator('[data-track="dawnbreak-978"] input[type=range]');
+  await slider.focus();
+  await page.keyboard.press("End");
   await expect.poll(async () => stage.getAttribute("data-phase")).toBe("after");
-  await page.locator('[data-track="dawnbreak-978"] input[type=range]').focus();
   await page.keyboard.press("Home");
   await expect.poll(async () => stage.getAttribute("data-phase")).toBe("before");
   expect(errors).toEqual([]);

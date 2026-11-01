@@ -15,7 +15,7 @@ const GOLD = "255,211,107";
 const ROSE = "255,143,176";
 
 /** Twin streams of light: steer two ribbons that twist round each other and rise. */
-export default function TwinStreams({ active, reduced }: SetPieceProps) {
+export default function TwinStreams({ active }: SetPieceProps) {
   const aim = useRef({ x: 0.5, y: 0.6 });
   const state = useRef({ x: 0.5, climb: 0.25, braid: 0, top: 0, auto: -1 });
   const chimed = useRef(false);
@@ -30,12 +30,11 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
       aim.current = { x: 0.5, y: Math.max(0.02, 0.9 - s.auto * 0.25) };
       if (s.auto > 4.5) s.auto = -1;
     }
-    const k = reduced ? 1 : 4;
-    s.x = reduced ? aim.current.x : ease(s.x, aim.current.x, k, dt);
+    s.x = ease(s.x, aim.current.x, 4, dt);
     const targetClimb = clamp(1 - aim.current.y);
-    s.climb = reduced ? targetClimb : ease(s.climb, targetClimb, 2, dt);
+    s.climb = ease(s.climb, targetClimb, 2, dt);
     const centred = 1 - Math.min(1, Math.abs(s.x - 0.5) * 3);
-    s.braid = reduced ? centred : ease(s.braid, centred, 2.5, dt);
+    s.braid = ease(s.braid, centred, 2.5, dt);
     s.top =
       s.climb > 0.92 && s.braid > 0.7
         ? Math.min(1, s.top + dt * 0.8)
@@ -87,7 +86,7 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
       const steps = 90;
       for (let i = 0; i <= steps; i++) {
         const u = i / steps;
-        const a = u * Math.PI * 7 + phase + (reduced ? 0 : t * 1.4);
+        const a = u * Math.PI * 7 + phase + t * 1.4;
         const x = cx + Math.cos(a) * radius * (1 - u * 0.4);
         const y = base - u * height;
         if (i === 0) ctx.moveTo(x, y);
@@ -106,7 +105,7 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
     // At the top they turn, and come down like snow.
     if (s.top > 0.01) {
       for (let i = 0; i < 70; i++) {
-        const u = reduced ? (i * 0.137) % 1 : (t * 0.08 + i * 0.137) % 1;
+        const u = (t * 0.08 + i * 0.137) % 1;
         const x = cx + Math.sin(i * 12.9 + u * 6) * w * 0.3;
         const y = h * 0.05 + u * h * 0.9;
         ctx.fillStyle = i % 2 ? `rgba(${GOLD},${0.7 * s.top})` : `rgba(${ROSE},${0.7 * s.top})`;
@@ -115,7 +114,7 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const steer = (e: PointerEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -123,7 +122,6 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
       x: clamp((e.clientX - r.left) / r.width),
       y: clamp((e.clientY - r.top) / r.height),
     };
-    if (reduced) redraw();
   };
 
   const onKey = (e: KeyboardEvent<HTMLCanvasElement>) => {
@@ -154,12 +152,6 @@ export default function TwinStreams({ active, reduced }: SetPieceProps) {
             onClick={() => {
               wake();
               state.current.auto = 0;
-              if (reduced) {
-                aim.current = { x: 0.5, y: 0.02 };
-                state.current.auto = -1;
-                state.current.top = 1;
-                redraw();
-              }
             }}
           >
             Let them rise

@@ -3,7 +3,6 @@
 import { createElement, lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import { HudPanel } from "@/components/ui/hud-panel";
-import { useReducedMotion } from "@/lib/hooks";
 
 import type { SetPieceAnchor } from "../contract";
 import { setPieceRegistry } from "../scenes/setpieces";
@@ -16,13 +15,11 @@ const PIECES = new Map(
 
 /**
  * Frames an inline set piece after its paragraph: a HUD panel with the caption, skip links
- * before and after for keyboard users, an `active` flag from an IntersectionObserver and the
- * reduced-motion flag. Renders nothing for ids the scene library does not register.
+ * before and after for keyboard users, and an `active` flag from an IntersectionObserver. Renders nothing for ids the scene library does not register.
  */
 export function SetPieceHost({ anchor }: { anchor: SetPieceAnchor }) {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
-  const reduced = useReducedMotion();
   const known = PIECES.has(anchor.id);
 
   useEffect(() => {
@@ -48,17 +45,11 @@ export function SetPieceHost({ anchor }: { anchor: SetPieceAnchor }) {
         Skip the scene: {anchor.caption}
       </a>
       <div ref={ref}>
-        <HudPanel
-          as="figure"
-          label={anchor.caption}
-          code="Interactive"
-          tone="glass"
-          scan={!reduced}
-        >
+        <HudPanel as="figure" label={anchor.caption} code="Interactive" tone="glass" scan>
           <div role="group" aria-label={anchor.label} className={s.setPieceStage}>
             <Suspense fallback={<p className={s.setPieceWait}>{anchor.caption}</p>}>
               {/* `Piece` comes from the module-level PIECES map, so its identity is stable. */}
-              {createElement(Piece, { active, reduced, chapterId: anchor.chapterId })}
+              {createElement(Piece, { active, chapterId: anchor.chapterId })}
             </Suspense>
           </div>
         </HudPanel>

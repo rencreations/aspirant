@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
 import { audio } from "@/lib/audio";
-import { useMounted, useReducedMotion } from "@/lib/hooks";
+import { useMounted } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import styles from "./sound-button.module.css";
@@ -41,7 +41,6 @@ export function SoundButton({ className }: { className?: string }) {
   const muted = useSiteStore((s) => s.muted);
   const toggleMute = useSiteStore((s) => s.toggleMute);
   const mounted = useMounted();
-  const reduced = useReducedMotion();
   const on = mounted && !muted;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -92,10 +91,10 @@ export function SoundButton({ className }: { className?: string }) {
     gsap.to(s, {
       amp: target,
       speed: on ? (hover.current ? 1.7 : 1) : 0.6,
-      duration: reduced ? 0 : on ? 0.6 : 0.5,
+      duration: on ? 0.6 : 0.5,
       ease: on ? "elastic.out(1, 0.6)" : "power3.out",
       overwrite: "auto",
-      onUpdate: reduced ? undefined : draw,
+      onUpdate: draw,
       onComplete: draw,
     });
   };
@@ -104,14 +103,10 @@ export function SoundButton({ className }: { className?: string }) {
   useEffect(() => {
     aim();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, reduced]);
+  }, [on]);
 
   // The wave itself, on the GSAP ticker, only while something moves.
   useEffect(() => {
-    if (reduced) {
-      draw();
-      return;
-    }
     const s = sim.current;
     const tick = (_t: number, dtMs: number) => {
       const dt = dtMs / 1000;
@@ -124,11 +119,11 @@ export function SoundButton({ className }: { className?: string }) {
     return () => {
       gsap.ticker.remove(tick);
     };
-  }, [reduced]);
+  }, []);
 
   const ring = () => {
     const el = ringRef.current;
-    if (!el || reduced) return;
+    if (!el) return;
     gsap.fromTo(
       el,
       { scale: 0.7, opacity: 0.7 },

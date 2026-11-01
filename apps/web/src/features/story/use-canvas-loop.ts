@@ -2,20 +2,20 @@
 
 import { useCallback, useEffect, useRef, type RefObject } from "react";
 
-import { useInView, usePageVisible, useReducedMotion } from "@/lib/hooks";
+import { useInView, usePageVisible } from "@/lib/hooks";
 
 type Draw = (g: CanvasRenderingContext2D, w: number, h: number, t: number, dt: number) => void;
 
 export interface CanvasLoop {
   wrapRef: RefObject<HTMLDivElement | null>;
   canvasRef: RefObject<HTMLCanvasElement | null>;
-  /** Ask for one more frame (used under reduced motion, where nothing animates on its own). */
+  /** Ask for one more frame (for a canvas that does not animate on its own). */
   markDirty: () => void;
 }
 
 /**
  * A 2D canvas that fills its wrapper, with the site's rules built in: DPR capped at 1.75,
- * paused off screen and in hidden tabs, and under reduced motion it only draws when
+ * paused off screen and in hidden tabs, and a canvas with `animate: false` only draws when
  * `markDirty()` is called (on resize and on input). `draw` receives CSS pixels; the transform
  * is already scaled.
  */
@@ -25,7 +25,6 @@ export function useCanvasLoop(
 ): CanvasLoop {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduced = useReducedMotion();
   const inView = useInView(wrapRef, { rootMargin: "160px" });
   const visible = usePageVisible();
   const drawRef = useRef(draw);
@@ -71,17 +70,17 @@ export function useCanvasLoop(
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
       const { w, h, dpr } = size.current;
-      if (w > 0 && (dirty.current || (animate && !reduced))) {
+      if (w > 0 && (dirty.current || animate)) {
         g.setTransform(dpr, 0, 0, dpr, 0, 0);
         g.clearRect(0, 0, w, h);
-        drawRef.current(g, w, h, reduced ? 0 : now / 1000, dt);
+        drawRef.current(g, w, h, now / 1000, dt);
         dirty.current = false;
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [running, animate, reduced]);
+  }, [running, animate]);
 
   return { wrapRef, canvasRef, markDirty };
 }

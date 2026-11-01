@@ -19,7 +19,7 @@ const LOCK = 0.05;
 type Hum = NonNullable<ReturnType<typeof hum>>;
 
 /** The two Emblem stars: bring them together until they sing one note. */
-export default function TwoStars({ active, reduced }: SetPieceProps) {
+export default function TwoStars({ active }: SetPieceProps) {
   const stars = useRef([
     { x: 0.28, y: 0.55 },
     { x: 0.74, y: 0.42 },
@@ -89,12 +89,12 @@ export default function TwoStars({ active, reduced }: SetPieceProps) {
 
     const d = distance();
     const locked = d <= LOCK;
-    glowK.current = reduced ? (locked ? 1 : 0) : ease(glowK.current, locked ? 1 : 0, 3, dt);
+    glowK.current = ease(glowK.current, locked ? 1 : 0, 3, dt);
     const s = Math.min(w, h);
     stars.current.forEach((p, i) => {
       const x = p.x * w;
       const y = p.y * h;
-      const beat = reduced ? 1 : 0.85 + 0.15 * Math.sin(t * (locked ? 2.4 : 2.4 + i * (d * 9)));
+      const beat = 0.85 + 0.15 * Math.sin(t * (locked ? 2.4 : 2.4 + i * (d * 9)));
       const color = glowK.current > 0.5 ? "rgba(255,236,190,0.9)" : "rgba(255,210,110,0.85)";
       glow(ctx, x, y, s * (0.16 + glowK.current * 0.14), "rgba(255,215,120,0.45)", beat);
       ctx.fillStyle = color;
@@ -122,7 +122,7 @@ export default function TwoStars({ active, reduced }: SetPieceProps) {
     });
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const moveTo = (i: number, x: number, y: number) => {
     const p = stars.current[i];

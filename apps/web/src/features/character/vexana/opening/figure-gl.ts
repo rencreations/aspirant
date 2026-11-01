@@ -56,8 +56,6 @@ const SLIDE_Y = 0.011;
 export interface FigureGLOptions {
   normalUrl: string;
   enderUrl: string;
-  /** `full` renders at up to 1.5 times the pixels and with the full noise; `balanced` less. */
-  quality: "full" | "balanced";
 }
 
 export interface FigureGL {
@@ -330,13 +328,12 @@ export async function createFigureGL(
 
   // The background: one full-screen quad.
   const bgGeo = new PlaneGeometry(2, 2);
-  const octaves = { value: options.quality === "full" ? 4 : 2 };
   const shared = {
     uTime: { value: 0 },
     uRes: { value: [1, 1] },
     uMouse: { value: [0.5, 0.5] },
     uTone: { value: 0 },
-    uOct: octaves,
+    uOct: { value: 4 },
     uGlow: { value: [0.5, 0.6, 0] },
     uPan: { value: [0, 0] },
   };
@@ -359,7 +356,7 @@ export async function createFigureGL(
   let figW = 1;
   let figH = 1;
   let baseY = 0;
-  let pr = Math.min(window.devicePixelRatio || 1, options.quality === "full" ? 1.5 : 1);
+  const pr = Math.min(window.devicePixelRatio || 1, 1.5);
 
   const layout = () => {
     const portrait = w / h < 0.85;
@@ -460,23 +457,12 @@ export async function createFigureGL(
   let fade = 0;
   let showing = false;
   let formCb: ((ender: boolean) => void) | null = null;
-  let slowFor = 0;
-  let slowEma = 1 / 60;
 
   const u = figureMat.uniforms;
-
-  // On a device that already runs at the middle level, half the frames are enough while nothing
-  // moves but the slow background and the sway.
-  let calm = false;
-  const canRest = options.quality !== "full";
 
   const frame = (now: number) => {
     raf = 0;
     if (disposed || !active || document.hidden) return;
-    if (canRest && calm && now - last < 30) {
-      raf = requestAnimationFrame(frame);
-      return;
-    }
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     time += dt;
@@ -491,12 +477,6 @@ export async function createFigureGL(
 
     const f = idle.step(dt, curS > 0.08);
     const reveal = Math.max(curS, f.env);
-    calm =
-      reveal < 0.01 &&
-      curTarget === 0 &&
-      Math.abs(tiltX - tiltTx) < 0.003 &&
-      Math.abs(tiltY - tiltTy) < 0.003 &&
-      fade >= 1;
     if (!showing && reveal > 0.4) {
       showing = true;
       formCb?.(true);
@@ -547,21 +527,6 @@ export async function createFigureGL(
     ];
 
     renderer.render(scene, camera);
-
-    // A device that cannot keep up gives up pixels first, then noise.
-    slowEma = slowEma * 0.94 + dt * 0.06;
-    if (time > 2 && slowEma > 1 / 38) {
-      slowFor += dt;
-      if (slowFor > 1.5) {
-        slowFor = 0;
-        if (pr > 1) {
-          pr = 1;
-          resize();
-        } else if (octaves.value > 2) {
-          octaves.value = 2;
-        }
-      }
-    } else slowFor = 0;
 
     raf = requestAnimationFrame(frame);
   };

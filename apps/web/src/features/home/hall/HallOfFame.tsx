@@ -10,7 +10,6 @@ import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
 import type { LightboxItem } from "@/components/ui/lightbox";
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 import { routes } from "@/lib/site";
 
 import type { FanArtView } from "../types";
@@ -67,7 +66,7 @@ export function HallOfFame({ art, total }: { art: readonly FanArtView[]; total: 
   // Float: each tile drifts at its own depth while the hall is on screen.
   useEffect(() => {
     const grid = gridRef.current;
-    if (!grid || prefersReducedMotion()) return;
+    if (!grid) return;
     const tiles = Array.from(grid.querySelectorAll<HTMLElement>("[data-depth]"));
     let raf = 0;
     let on = false;

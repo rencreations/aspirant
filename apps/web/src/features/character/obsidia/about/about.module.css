@@ -597,16 +597,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .voiceButton {
-    transition-duration: 1ms;
-  }
-
-  .voice[data-playing="true"] .voiceButton::after {
-    animation: none;
-  }
-}
-
 /* The two forms: a photo and a silent clip each, side by side where there is room. */
 .forms {
   display: grid;

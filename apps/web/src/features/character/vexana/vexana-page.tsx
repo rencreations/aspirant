@@ -3,8 +3,6 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
-import { useReducedMotion } from "@/lib/hooks";
-
 import { About } from "./about/about";
 import { ArtShowcase } from "./art/art";
 import { Comics } from "./comics/comics";
@@ -132,10 +130,9 @@ const ROOM_HOLD = 1;
  *                               heart the other way
  */
 export function VexanaPage({ next }: { next: NextCharacter }) {
-  const reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   useFreshStart();
-  useBackScale(reduced);
+  useBackScale();
 
   // The joins read the position of the sections, so they are measured again when the page grows
   // or shrinks (pictures arriving, a drawer opening).
@@ -159,7 +156,6 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
     };
   }, []);
 
-  const on = !reduced;
   return (
     <div ref={root} data-vexana className={styles.page}>
       <NavTone />
@@ -171,34 +167,32 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
       <Opening />
       <Hold
         hold={HOLD_SCREENS}
-        enabled={on}
         overlay={<Liquid />}
-        className={on ? styles.aboutHold : undefined}
-        style={on ? { zIndex: 3 } : undefined}
+        className={styles.aboutHold}
+        style={{ zIndex: 3 }}
       >
         <About covers={false} />
       </Hold>
-      <Under open={FILM_OPEN} enabled={on}>
-        <Hold hold={1} shift={FILM_OPEN} enabled={on} overlay={<Veil />}>
+      <Under open={FILM_OPEN}>
+        <Hold hold={1} shift={FILM_OPEN} overlay={<Veil />}>
           <FilmArrive>
             <Reel />
           </FilmArrive>
         </Hold>
       </Under>
-      <Paper overlap={1} enabled={on}>
+      <Paper overlap={1}>
         <DoorGate
           id="craft-story"
           hold={STORY_HOLD}
           at={STORY_AT}
           closing={{ up: "instant" }}
           hooks={storyHooks}
-          enabled={on}
         >
           <Skills />
         </DoorGate>
       </Paper>
-      <UpZone id="craft-story" hold={STORY_HOLD} at={STORY_AT} idleMs={1000} enabled={on}>
-        <Faces gated={on} />
+      <UpZone id="craft-story" hold={STORY_HOLD} at={STORY_AT} idleMs={1000}>
+        <Faces gated />
       </UpZone>
       <DoorGate
         id="interlude-comic"
@@ -206,13 +200,12 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
         at={COMIC_AT}
         tone="comic"
         hooks={interludeComicHooks}
-        enabled={on}
-        className={on ? styles.coverGate : undefined}
-        style={on ? { marginTop: "calc(var(--lvh) * -1)" } : undefined}
+        className={styles.coverGate}
+        style={{ marginTop: "calc(var(--lvh) * -1)" }}
       >
         <Cover />
       </DoorGate>
-      <UpZone id="interlude-comic" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
+      <UpZone id="interlude-comic" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000}>
         <DoorGate
           id="comic-stream"
           hold={COMIC_HOLD}
@@ -220,27 +213,26 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
           tone="clear"
           closing={{ down: "instant", up: "instant" }}
           hooks={comicStreamHooks}
-          enabled={on}
         >
           <Comics />
         </DoorGate>
       </UpZone>
-      <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000} enabled={on}>
+      <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000}>
         <Stream />
       </UpZone>
       <Drama />
       <Process />
       <ArtShowcase />
-      <Hold hold={1} enabled={on}>
+      <Hold hold={1}>
         <Fanart />
       </Hold>
-      <Rise id="fanart-music" enabled={on}>
-        <Hold hold={MUSIC_HOLD} enabled={on} overlay={<HeartCover />}>
+      <Rise id="fanart-music">
+        <Hold hold={MUSIC_HOLD} overlay={<HeartCover />}>
           <MusicVideo />
         </Hold>
       </Rise>
-      <Under open={GUINEVERE_OPEN} enabled={on}>
-        <Hold hold={ROOM_HOLD} shift={GUINEVERE_OPEN} enabled={on} overlay={<RoomHeart />}>
+      <Under open={GUINEVERE_OPEN}>
+        <Hold hold={ROOM_HOLD} shift={GUINEVERE_OPEN} overlay={<RoomHeart />}>
           <GuinevereArrive>
             <Guinevere />
           </GuinevereArrive>

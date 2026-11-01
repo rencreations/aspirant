@@ -9,7 +9,7 @@ import { ImageViewer, type ViewerImage } from "@/components/image-viewer/image-v
 import { getCharacter, keyVoiceLines } from "@/content/characters";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion, useVoiceState } from "@/lib/hooks";
+import { useVoiceState } from "@/lib/hooks";
 import { withSound } from "@/lib/sound-prompt";
 
 import { artPath, artThumb, videoPoster, videoFile } from "../media";
@@ -121,7 +121,6 @@ function threadPaths(a: Point, b: Point, w: number, h: number): Threads {
  * viewer, a line of hers plays when asked, and the play button opens the dance in the site's player.
  */
 export function Friend() {
-  const reduced = useReducedMotion();
   const v = getCharacter("vexana");
   const quotes = keyVoiceLines("vexana");
   const root = useRef<HTMLElement>(null);
@@ -139,10 +138,6 @@ export function Friend() {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    if (reduced) {
-      el.dataset.in = "true";
-      return;
-    }
     const io = new IntersectionObserver(
       (entries) => {
         // The last entry is how it is now (several queue up when the page is busy).
@@ -158,7 +153,7 @@ export function Friend() {
     return () => {
       io.disconnect();
     };
-  }, [reduced]);
+  }, []);
 
   // The two threads run from the tape on the print to the top of the heart. They are measured once
   // the pieces have landed (and again when the stage changes size), so they never cross a face.
@@ -187,7 +182,7 @@ export function Friend() {
     };
     const start = () => {
       window.clearTimeout(timer);
-      timer = window.setTimeout(measure, reduced ? 0 : 1500);
+      timer = window.setTimeout(measure, 1500);
     };
     const ro = new ResizeObserver(start);
     ro.observe(st);
@@ -196,12 +191,12 @@ export function Friend() {
       window.clearTimeout(timer);
       ro.disconnect();
     };
-  }, [reduced]);
+  }, []);
 
   // The splash art drifts inside its frame as the page scrolls (the frame itself holds still).
   useEffect(() => {
     const st = stage.current;
-    if (!st || reduced) return;
+    if (!st) return;
     const things = Array.from(st.querySelectorAll<HTMLElement>("[data-drift]"));
     const trigger = ScrollTrigger.create({
       trigger: st,
@@ -218,7 +213,7 @@ export function Friend() {
     return () => {
       trigger.kill();
     };
-  }, [reduced]);
+  }, []);
 
   const q = quotes[quote % Math.max(1, quotes.length)];
   const quoteUrl = q ? asset(`/${q.file}`) : null;

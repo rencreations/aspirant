@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { MotionToggle } from "@/components/hud/preference-toggles";
 import { AspirantLogo } from "@/components/logo/aspirant-logo";
 import { useLenis } from "@/components/smooth-scroll";
 import { TLink } from "@/components/transition/t-link";
@@ -297,7 +296,6 @@ export function SiteNav() {
 
             <div className={styles.menuFoot}>
               <p className="m-0 hud-label">Selrick Academy / Resonance terminal</p>
-              <MotionToggle labeled />
             </div>
           </Dialog.Content>
         </Dialog.Portal>

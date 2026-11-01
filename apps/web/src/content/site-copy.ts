@@ -35,8 +35,6 @@ export const siteCopy = {
     skipToContent: "Skip to content",
     soundOn: "Sound on",
     soundOff: "Sound off",
-    reduceMotion: "Reduce motion",
-    fullMotion: "Full motion",
     play: "Play",
     pause: "Pause",
     stop: "Stop",

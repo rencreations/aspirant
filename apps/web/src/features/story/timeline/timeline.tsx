@@ -21,7 +21,7 @@ import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
 import { timeOrder } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { useMediaQuery, useReducedMotion } from "@/lib/hooks";
+import { useMediaQuery } from "@/lib/hooks";
 import { clamp } from "@/lib/math";
 import { routes } from "@/lib/site";
 
@@ -45,8 +45,7 @@ function chipIds(ids: readonly string[]): readonly string[] {
 /**
  * The story in time order. On a wide screen the page pins and scrolling moves the timeline
  * sideways (one page pixel is one timeline pixel), and you can also drag it, use the arrow
- * keys or the previous and next buttons. On a phone the stops stack. With reduced motion the
- * timeline is an ordinary sideways scroller with the same buttons.
+ * keys or the previous and next buttons. On a phone the stops stack.
  */
 export function Timeline() {
   const pinRef = useRef<HTMLDivElement>(null);
@@ -55,9 +54,8 @@ export function Timeline() {
   const stopRefs = useRef<Array<HTMLLIElement | null>>([]);
   const { scrollTo } = useLenis();
   const wide = useMediaQuery("(min-width: 48em)");
-  const reduced = useReducedMotion();
   const short = useMediaQuery("(max-height: 34rem)");
-  const mode = !wide ? "stack" : reduced || short ? "native" : "pinned";
+  const mode = !wide ? "stack" : short ? "native" : "pinned";
   const [active, setActive] = useState(0);
   const travel = useRef(0);
   const drag = useRef({ on: false, x: 0, moved: 0 });
@@ -146,9 +144,9 @@ export function Timeline() {
       const top = pin.getBoundingClientRect().top + window.scrollY;
       scrollTo(top + left, { duration: 0.9 });
     } else if (mode === "native") {
-      scroller.scrollTo({ left: stop.offsetLeft - 24, behavior: reduced ? "auto" : "smooth" });
+      scroller.scrollTo({ left: stop.offsetLeft - 24, behavior: "smooth" });
     } else {
-      stop.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+      stop.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     setActive(i);
   };

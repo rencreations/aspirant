@@ -73,12 +73,3 @@
   transform: scaleX(1);
   transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .head[data-armed="true"] [data-reveal],
-  .head[data-armed="true"] .rule {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}

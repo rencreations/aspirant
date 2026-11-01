@@ -30,11 +30,6 @@
   }
 }
 
-/* No scroll tricks: the comic is one screen and nothing is held. */
-.comics[data-plain="true"] {
-  background: var(--vx-140e26, #140e26);
-}
-
 .sticky {
   position: relative;
   height: max(540px, var(--sh));
@@ -886,26 +881,5 @@
     left: 5cqw;
     width: 14cqh;
     height: 21cqh;
-  }
-}
-
-/* ---- Reduced motion: the final picture, no movement ---- */
-@media (prefers-reduced-motion: reduce) {
-  .comics *,
-  .comics *::before,
-  .comics *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  .comics[data-seen="false"] .rise,
-  .comics[data-seen="false"] .pop,
-  .comics[data-seen="false"] .chibiPos {
-    opacity: 1;
-    transform: none;
-  }
-
-  .half {
-    --enter: 0%;
   }
 }

@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { skipGate, url, watchErrors } from "./helpers";
 
 /*
- * Home page: the portal hero (pointer, touch, keyboard, reduced motion), the versus stage,
+ * Home page: the portal hero (pointer, touch, keyboard), the versus stage,
  * before and after, the rail of ten, the hall of fame lightbox and accessibility.
  * Chromium runs with SwiftShader so the WebGL portal renders headless.
  */
@@ -139,15 +139,11 @@ test.describe("portal hero", () => {
     await expect(hero(page)).toHaveAttribute("data-form", "alt");
   });
 
-  test("reduced motion: static art, the form toggle crossfades", async ({ page }) => {
+  test("the system reduced-motion setting is ignored: the form toggle works", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await open(page);
-    await expect(hero(page)).toHaveAttribute("data-gl", "off");
-    await expect(page.locator("section[data-portal-radius] canvas")).toHaveCount(0);
     await page.getByRole("button", { name: "Toggle form" }).click();
     await expect(hero(page)).toHaveAttribute("data-form", "alt");
-    const altView = page.locator("section[data-portal-radius] [data-view='alt']");
-    await expect.poll(() => altView.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
   });
 });
 

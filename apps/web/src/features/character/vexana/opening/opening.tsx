@@ -13,9 +13,7 @@ import {
 
 import { StarGlyph } from "@/components/star-glyph";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { expectReady } from "@/lib/page-ready";
-import { perfLevel, startGovernor } from "@/lib/perf";
 
 import { FIGURES, videoFile, videoPoster } from "../media";
 import { BACKGROUND_CSS } from "./backgrounds/background";
@@ -137,15 +135,6 @@ function MarqueeRows({ setRow }: { setRow?: (i: number) => (el: HTMLElement | nu
 }
 
 /**
- * The scene may run unless the device has very little memory. Data saving does not stop it: the
- * loading screen already waits for its files, and a page without it is the plain picture.
- */
-function glAllowed(): boolean {
-  const nav = navigator as Navigator & { deviceMemory?: number };
-  return (nav.deviceMemory ?? 8) > 2;
-}
-
-/**
  * The script of the WebGL scene. On a poor connection it can fail to arrive: it is asked for again
  * a few times, a little later each time, and when it never comes the flat picture stays (the visitor
  * is never shown an error, and nothing is left rejected without a handler).
@@ -167,11 +156,8 @@ async function loadFigureGL(stopped: () => boolean) {
  * the hand-over (the screen closes into a card and the page goes dark), and the signature with
  * her message. One tall track holds a sticky screen; the scroll position drives everything with
  * transforms and opacity only. See `opening-math.ts` for the timeline.
- *
- * With reduced motion the same pieces are laid out in a plain column, nothing pinned.
  */
 export function Opening() {
-  const reduced = useReducedMotion();
   const [ender, setEnder] = useState(false);
   const [gl, setGl] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -211,31 +197,13 @@ export function Opening() {
     [],
   );
 
-  // The scene does not depend on the performance level: that level is a guess that is often wrong
-  // (a busy page, a level remembered from another page), and the scene looks after itself (it gives
-  // up pixels and noise first when frames are slow). Only reduced motion, data saving and very
-  // little memory keep the flat version.
-  //
-  // A level that was dropped and remembered can come back: this page looks for a step up while the
-  // hero is on screen (it never steps down on its own; the room at the bottom judges frames only
-  // while it is shown).
-  useEffect(
-    () =>
-      startGovernor({
-        raiseOnly: true,
-        paused: () => document.hidden || !activeRef.current,
-      }),
-    [],
-  );
-
   // The scene. Built after mount, from a canvas made here (a lost context cannot be reused). It is
   // tried again if the first attempts fail, and built again if the browser takes the context away
   // (a GPU reset, too many contexts, a tab that was discarded).
   const rebuilds = useRef(0);
   useEffect(() => {
     const host = glHostRef.current;
-    if (reduced || !host || !glAllowed()) return;
-    const level = perfLevel();
+    if (!host) return;
     const mark = expectReady("opening");
     const canvas = document.createElement("canvas");
     canvas.className = styles.canvas ?? "";
@@ -268,7 +236,6 @@ export function Opening() {
             const made = await createFigureGL(canvas, {
               normalUrl: asset(FIGURES.normalFront),
               enderUrl: asset(FIGURES.enderFront),
-              quality: level === "full" ? "full" : "balanced",
             });
             if (cancelled) {
               made.dispose();
@@ -310,13 +277,13 @@ export function Opening() {
       scene?.dispose();
       canvas.remove();
     };
-  }, [reduced, attempt]);
+  }, [attempt]);
 
   // The flat version moves too: the Ender form shows while the pointer is on the hero, and now
   // and then by itself.
   const [flatEnder, setFlatEnder] = useState(false);
   useEffect(() => {
-    if (gl || reduced) return;
+    if (gl) return;
     let timer = 0;
     let off = 0;
     const loop = () => {
@@ -331,7 +298,7 @@ export function Opening() {
       window.clearTimeout(timer);
       window.clearTimeout(off);
     };
-  }, [gl, reduced]);
+  }, [gl]);
   const shownEnder = gl ? ender : flatEnder;
 
   // The scroll: one trigger over the whole track.
@@ -339,7 +306,7 @@ export function Opening() {
     const track = trackRef.current;
     const pin = pinRef.current;
     const card = cardRef.current;
-    if (reduced || !track || !pin || !card) return;
+    if (!track || !pin || !card) return;
     const measure: Measure = { vw: 1, vh: 1, cardW: 1, cardH: 1 };
     let signed = false;
     let shimmerOn = true;
@@ -468,7 +435,7 @@ export function Opening() {
       cover.kill();
       signature.reset();
     };
-  }, [reduced, signature]);
+  }, [signature]);
 
   const flat = (
     <>
@@ -481,39 +448,6 @@ export function Opening() {
       <HeroFigures ender={shownEnder} />
     </>
   );
-
-  if (reduced) {
-    return (
-      <section id="opening" className={styles.opening} style={TOKENS} data-static="true">
-        <div className={styles.staticHero}>
-          <div className={styles.dBg} style={{ background: BACKGROUND_CSS.light }} />
-          <div
-            className={styles.staticFigure}
-            onPointerEnter={() => {
-              setEnder(true);
-            }}
-            onPointerLeave={() => {
-              setEnder(false);
-            }}
-          >
-            <HeroFigures ender={ender} />
-          </div>
-          <NameCard />
-        </div>
-        <div className={styles.staticSign}>
-          <p className={styles.label}>
-            <StarGlyph className={styles.labelStar} /> A message from Sana
-          </p>
-          <div className={styles.staticCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset(videoPoster("splash-short"))} alt="" onError={hideBroken} />
-            <SignatureSvg done />
-          </div>
-          <Statement />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="opening" className={styles.opening} style={TOKENS}>

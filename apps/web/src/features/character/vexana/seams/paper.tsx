@@ -25,20 +25,12 @@ export function Veil() {
  * rim along the top edge, a shadow thrown up onto what it covers, and a slight tilt that settles
  * flat by the time the sheet reaches the top, like a page being put down.
  */
-export function Paper({
-  overlap,
-  enabled = true,
-  children,
-}: {
-  overlap: number;
-  enabled?: boolean;
-  children: ReactNode;
-}) {
+export function Paper({ overlap, children }: { overlap: number; children: ReactNode }) {
   const sheet = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = sheet.current;
-    if (!el || !enabled) return;
+    if (!el) return;
     const st = ScrollTrigger.create({
       trigger: el,
       start: "top bottom",
@@ -57,9 +49,8 @@ export function Paper({
       st.kill();
       el.style.transform = "";
     };
-  }, [enabled]);
+  }, []);
 
-  if (!enabled) return <>{children}</>;
   return (
     <div ref={sheet} className={styles.paper} style={{ ["--overlap" as string]: overlap }}>
       {children}

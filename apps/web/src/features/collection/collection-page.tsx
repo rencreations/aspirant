@@ -1,13 +1,12 @@
 "use client";
 
-import { LazyMotion, MotionConfig } from "motion/react";
+import { LazyMotion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { ThemeZone } from "@/components/theme-zone";
 import { HudPanel } from "@/components/ui/hud-panel";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { ArchiveHeader } from "./archive-header";
 import { FilterBar, type SectionFilter } from "./filter-bar";
@@ -100,7 +99,6 @@ interface CollectionPageProps {
  * visible sections, and owns the dialogs: the cinema, the art viewer and the comic reader.
  */
 export function CollectionPage({ catalog }: CollectionPageProps) {
-  const reduced = useReducedMotion();
   const { scrollTo } = useLenis();
   const [section, setSection] = useState<SectionFilter>("all");
   const [who, setWho] = useState<WhoFilter>({ type: "all" });
@@ -229,10 +227,10 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
       const stickyTop = bar ? parseFloat(getComputedStyle(bar).top) || 0 : 0;
       const offset = stickyTop + (bar?.offsetHeight ?? 0);
       if (force || el.getBoundingClientRect().top < offset) {
-        scrollTo(el, { offset: -offset + 8, ...(reduced ? { immediate: true } : {}) });
+        scrollTo(el, { offset: -offset + 8 });
       }
     },
-    [reduced, scrollTo],
+    [scrollTo],
   );
 
   const select = useCallback(
@@ -327,187 +325,183 @@ export function CollectionPage({ catalog }: CollectionPageProps) {
 
   return (
     <LazyMotion features={loadFeatures} strict>
-      <MotionConfig reducedMotion={reduced ? "always" : "never"}>
-        <ThemeZone theme="daybreak" surface={false} as="div" className="relative">
-          <ArchiveHeader stats={catalog.stats} onJump={(id) => select(id, true)} />
+      <ThemeZone theme="daybreak" surface={false} as="div" className="relative">
+        <ArchiveHeader stats={catalog.stats} onJump={(id) => select(id, true)} />
 
-          <FilterBar
-            section={section}
-            onSection={(next) => select(next)}
-            counts={counts}
-            query={query}
-            onQuery={(value) => {
-              setQuery(value);
-              setVoiceLimit(VOICE_PAGE);
-            }}
-            who={who}
-            onWho={(next) => {
-              setWho(next);
-              setVoiceLimit(VOICE_PAGE);
-            }}
-            summary={summary}
-            onClear={clearAll}
-          />
+        <FilterBar
+          section={section}
+          onSection={(next) => select(next)}
+          counts={counts}
+          query={query}
+          onQuery={(value) => {
+            setQuery(value);
+            setVoiceLimit(VOICE_PAGE);
+          }}
+          who={who}
+          onWho={(next) => {
+            setWho(next);
+            setVoiceLimit(VOICE_PAGE);
+          }}
+          summary={summary}
+          onClear={clearAll}
+        />
 
-          <div ref={resultsRef} id="collection-results">
-            {showing("films") && (
-              <SectionShell
-                meta={meta("films")}
-                theme="daybreak"
-                count={counts.films}
-                seeAllTotal={hiddenTotal("films", filmsShown)}
-                onSeeAll={() => select("films", true)}
-              >
-                {films.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  <FilmsContent
-                    wide={wideShown}
-                    vertical={verticalShown}
-                    order={orders.films}
-                    onOpen={openFilm}
-                  />
-                )}
-              </SectionShell>
-            )}
+        <div ref={resultsRef} id="collection-results">
+          {showing("films") && (
+            <SectionShell
+              meta={meta("films")}
+              theme="daybreak"
+              count={counts.films}
+              seeAllTotal={hiddenTotal("films", filmsShown)}
+              onSeeAll={() => select("films", true)}
+            >
+              {films.length === 0 ? (
+                <EmptySection onClear={clearAll} />
+              ) : (
+                <FilmsContent
+                  wide={wideShown}
+                  vertical={verticalShown}
+                  order={orders.films}
+                  onOpen={openFilm}
+                />
+              )}
+            </SectionShell>
+          )}
 
-            {showing("music") && (
-              <SectionShell meta={meta("music")} theme="daybreak" count={counts.music}>
-                {music.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  <MusicContent tracks={music} order={orders.music} />
-                )}
-              </SectionShell>
-            )}
+          {showing("music") && (
+            <SectionShell meta={meta("music")} theme="daybreak" count={counts.music}>
+              {music.length === 0 ? (
+                <EmptySection onClear={clearAll} />
+              ) : (
+                <MusicContent tracks={music} order={orders.music} />
+              )}
+            </SectionShell>
+          )}
 
-            {showing("comics") && (
-              <SectionShell meta={meta("comics")} theme="daybreak" count={counts.comics}>
-                {comics.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  <ComicsContent comics={comics} onOpen={openComic} />
-                )}
-              </SectionShell>
-            )}
+          {showing("comics") && (
+            <SectionShell meta={meta("comics")} theme="daybreak" count={counts.comics}>
+              {comics.length === 0 ? (
+                <EmptySection onClear={clearAll} />
+              ) : (
+                <ComicsContent comics={comics} onOpen={openComic} />
+              )}
+            </SectionShell>
+          )}
 
-            {showing("art") && (
-              <SectionShell
-                meta={meta("art")}
-                theme="daybreak"
-                count={counts.art}
-                seeAllTotal={hiddenTotal("art", artShown.length)}
-                onSeeAll={() => select("art", true)}
-              >
-                {art.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  <GalleryContent
-                    items={artShown}
-                    order={orders.art}
-                    label="Official art"
-                    onOpen={openArt}
-                  />
-                )}
-              </SectionShell>
-            )}
+          {showing("art") && (
+            <SectionShell
+              meta={meta("art")}
+              theme="daybreak"
+              count={counts.art}
+              seeAllTotal={hiddenTotal("art", artShown.length)}
+              onSeeAll={() => select("art", true)}
+            >
+              {art.length === 0 ? (
+                <EmptySection onClear={clearAll} />
+              ) : (
+                <GalleryContent
+                  items={artShown}
+                  order={orders.art}
+                  label="Official art"
+                  onOpen={openArt}
+                />
+              )}
+            </SectionShell>
+          )}
 
-            {showing("fanart") && (
-              <SectionShell
-                meta={meta("fanart")}
-                theme="daybreak"
-                count={counts.fanart}
-                seeAllTotal={hiddenTotal("fanart", fanShown.length)}
-                onSeeAll={() => select("fanart", true)}
-              >
-                {fan.length === 0 ? (
-                  <EmptySection onClear={clearAll} />
-                ) : (
-                  fanShownGroups.map((group, i) => (
-                    <div key={group.id}>
-                      {!digest && fanShownGroups.length > 1 && (
-                        <h3 className={styles.sub} style={i === 0 ? { marginTop: 0 } : undefined}>
-                          {group.label} <span>{group.items.length}</span>
-                        </h3>
-                      )}
-                      <GalleryContent
-                        items={group.items}
-                        order={orders.fanart}
-                        label={`Fan art, ${group.label}`}
-                        onOpen={openArt}
-                        caption={(piece) => <FanCredit piece={piece} />}
-                      />
-                    </div>
-                  ))
-                )}
-              </SectionShell>
-            )}
+          {showing("fanart") && (
+            <SectionShell
+              meta={meta("fanart")}
+              theme="daybreak"
+              count={counts.fanart}
+              seeAllTotal={hiddenTotal("fanart", fanShown.length)}
+              onSeeAll={() => select("fanart", true)}
+            >
+              {fan.length === 0 ? (
+                <EmptySection onClear={clearAll} />
+              ) : (
+                fanShownGroups.map((group, i) => (
+                  <div key={group.id}>
+                    {!digest && fanShownGroups.length > 1 && (
+                      <h3 className={styles.sub} style={i === 0 ? { marginTop: 0 } : undefined}>
+                        {group.label} <span>{group.items.length}</span>
+                      </h3>
+                    )}
+                    <GalleryContent
+                      items={group.items}
+                      order={orders.fanart}
+                      label={`Fan art, ${group.label}`}
+                      onOpen={openArt}
+                      caption={(piece) => <FanCredit piece={piece} />}
+                    />
+                  </div>
+                ))
+              )}
+            </SectionShell>
+          )}
 
-            {showing("voice") && (
-              <SectionShell
-                meta={meta("voice")}
-                theme="daybreak"
-                count={counts.voice}
-                seeAllTotal={hiddenTotal("voice", voiceShown.length)}
-                onSeeAll={() => select("voice", true)}
-              >
-                {voice === null ? (
-                  <p className={styles.blurb}>Loading the voice lines.</p>
-                ) : (
-                  <VoiceArchive
-                    rows={voiceShown}
-                    limit={digest ? DIGEST.voice : voiceLimit}
-                    matches={digest ? voiceShown.length : voice.length}
-                    paged={!digest}
-                    onMore={() => setVoiceLimit((n) => n + VOICE_PAGE)}
-                  />
-                )}
-              </SectionShell>
-            )}
-          </div>
+          {showing("voice") && (
+            <SectionShell
+              meta={meta("voice")}
+              theme="daybreak"
+              count={counts.voice}
+              seeAllTotal={hiddenTotal("voice", voiceShown.length)}
+              onSeeAll={() => select("voice", true)}
+            >
+              {voice === null ? (
+                <p className={styles.blurb}>Loading the voice lines.</p>
+              ) : (
+                <VoiceArchive
+                  rows={voiceShown}
+                  limit={digest ? DIGEST.voice : voiceLimit}
+                  matches={digest ? voiceShown.length : voice.length}
+                  paged={!digest}
+                  onMore={() => setVoiceLimit((n) => n + VOICE_PAGE)}
+                />
+              )}
+            </SectionShell>
+          )}
+        </div>
 
-          <section className={`${styles.note} shell`} aria-labelledby="not-hosted-title">
-            <HudPanel label="Not hosted" code="3 recordings" tone="glass" bodyClassName="p-sp-m">
-              <div className={styles.noteBody}>
-                <h2 id="not-hosted-title" className="m-0 display text-step-3">
-                  Not on this site
-                </h2>
-                <p>
-                  Three recordings are left out. One is a live-action parody, which is{" "}
-                  <strong>non-canon</strong>. Two are long livestream recordings that are too large
-                  to host. The story does not depend on any of them.
-                </p>
-              </div>
-            </HudPanel>
-          </section>
-          <div className={styles.pad} aria-hidden="true" />
-        </ThemeZone>
+        <section className={`${styles.note} shell`} aria-labelledby="not-hosted-title">
+          <HudPanel label="Not hosted" code="3 recordings" tone="glass" bodyClassName="p-sp-m">
+            <div className={styles.noteBody}>
+              <h2 id="not-hosted-title" className="m-0 display text-step-3">
+                Not on this site
+              </h2>
+              <p>
+                Three recordings are left out. One is a live-action parody, which is{" "}
+                <strong>non-canon</strong>. Two are long livestream recordings that are too large to
+                host. The story does not depend on any of them.
+              </p>
+            </div>
+          </HudPanel>
+        </section>
+        <div className={styles.pad} aria-hidden="true" />
+      </ThemeZone>
 
-        <MiniPlayer />
+      <MiniPlayer />
 
-        {armed.cinema && (
-          <CinemaDialog
-            films={films}
-            index={cinemaIndex}
-            onIndexChange={setCinemaIndex}
-            opener={opener}
-          />
-        )}
-        {armed.viewer && (
-          <ArtViewer
-            items={viewerItems}
-            index={viewer ? viewer.index : null}
-            onIndexChange={(i) =>
-              setViewer((v) => (i === null || !v ? null : { kind: v.kind, index: i }))
-            }
-            label={viewer?.kind === "fanart" ? "Fan art" : "Official art"}
-            opener={opener}
-          />
-        )}
-        {armed.comic && (
-          <ComicReader comic={comic} opener={opener} onClose={() => setComic(null)} />
-        )}
-      </MotionConfig>
+      {armed.cinema && (
+        <CinemaDialog
+          films={films}
+          index={cinemaIndex}
+          onIndexChange={setCinemaIndex}
+          opener={opener}
+        />
+      )}
+      {armed.viewer && (
+        <ArtViewer
+          items={viewerItems}
+          index={viewer ? viewer.index : null}
+          onIndexChange={(i) =>
+            setViewer((v) => (i === null || !v ? null : { kind: v.kind, index: i }))
+          }
+          label={viewer?.kind === "fanart" ? "Fan art" : "Official art"}
+          opener={opener}
+        />
+      )}
+      {armed.comic && <ComicReader comic={comic} opener={opener} onClose={() => setComic(null)} />}
     </LazyMotion>
   );
 }

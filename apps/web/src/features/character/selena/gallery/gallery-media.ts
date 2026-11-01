@@ -42,7 +42,7 @@ function trailerItem(): PreloadItem {
   });
   // The trailer is not needed to open the page (the player streams it if it is not here yet), so a
   // slow connection waits for it a minute at most.
-  return mediaItem(pick.src, "Loading the Gallery", { type: "video/mp4", timeoutMs: 60_000 });
+  return mediaItem(pick.src, "Loading the Gallery", { type: "video/mp4" });
 }
 
 /**
@@ -58,7 +58,6 @@ export function galleryItems(): PreloadItem[] {
         type: "image/webp",
         bytes: GALLERY_IMAGES[id].bytes,
         weight: 1,
-        timeoutMs: 60_000,
       }),
     ),
     ...TIKTOKS.flatMap(({ id }) => [
@@ -66,7 +65,6 @@ export function galleryItems(): PreloadItem[] {
       mediaItem(galleryVideoPath(id), label, {
         type: "video/mp4",
         bytes: GALLERY_VIDEOS[id].bytes,
-        timeoutMs: 120_000,
       }),
     ]),
     imageItem(DAY_OF_ENDERS.poster, label, 1),

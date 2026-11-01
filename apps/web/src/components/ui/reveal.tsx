@@ -29,7 +29,7 @@ const VARIANT_CLASS = {
 
 /**
  * Reveal content as it scrolls into view (IntersectionObserver, CSS transitions, no
- * per-frame JS). Content is visible without JS, to crawlers and under reduced motion.
+ * per-frame JS). Content is visible without JS, to crawlers.
  *
  * <Reveal variant="mask-up" delay={120}><h2>The Cycle</h2></Reveal>
  */

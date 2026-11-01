@@ -212,19 +212,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .slot {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .frame,
-  .frame img,
-  .sheen {
-    transition: none;
-  }
-}
-
 /* A soft join: the colour the section before ends in melts into this one, so the scroll flows in. */
 .art::before {
   content: "";

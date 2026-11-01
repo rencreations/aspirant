@@ -10,7 +10,7 @@ import { HudPanel } from "@/components/ui/hud-panel";
 import { cycle } from "@/content/world";
 import { getEntity } from "@/content/entities";
 import { audio } from "@/lib/audio";
-import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useInView } from "@/lib/hooks";
 import { wrap } from "@/lib/math";
 
 import { ChapterLink } from "../chapter-link";
@@ -48,7 +48,6 @@ export function Cycle() {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [index, setIndex] = useState(0);
   const [turns, setTurns] = useState(0);
-  const reduced = useReducedMotion();
   const inView = useInView(rootRef, { rootMargin: "80px" });
   const stages = cycle.stages;
   const stage = stages[index] ?? stages[0];
@@ -77,7 +76,7 @@ export function Cycle() {
   useGSAP(
     () => {
       const outer = outerRef.current;
-      if (!outer || reduced) return;
+      if (!outer) return;
       gsap.fromTo(
         outer,
         { rotation: -50 },
@@ -93,7 +92,7 @@ export function Cycle() {
         },
       );
     },
-    { scope: rootRef, dependencies: [reduced] },
+    { scope: rootRef },
   );
 
   if (!stage) return null;

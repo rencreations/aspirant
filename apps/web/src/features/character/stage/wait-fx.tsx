@@ -24,8 +24,7 @@ const CORNERS = ["tl", "tr", "bl", "br"] as const;
  *
  * It sits under the panel and the buttons and is only decoration: everything in it is hidden from
  * assistive technology (a status line says what is happening), and everything moves with
- * `transform` and `opacity`, so it costs the main thread nothing. Reduced motion: the vignette,
- * the chip and the rail only.
+ * `transform` and `opacity`, so it costs the main thread nothing.
  */
 export function WaitFx({ label, ms, railKey = 0 }: Props) {
   const style = ms === null ? undefined : ({ "--wait": `${Math.max(ms, 300)}ms` } as CSSProperties);

@@ -10,7 +10,7 @@ import { note, wake } from "./synth";
 import { useStage, type StageSize } from "./useStage";
 
 /** The Academy tower at night, and an ordinary lamp in the third-floor window. */
-export default function ThirdFloorLamp({ active, reduced }: SetPieceProps) {
+export default function ThirdFloorLamp({ active }: SetPieceProps) {
   const [on, setOn] = useState(false);
   const k = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,7 +28,7 @@ export default function ThirdFloorLamp({ active, reduced }: SetPieceProps) {
   };
 
   const draw = (ctx: CanvasRenderingContext2D, { w, h }: StageSize, dt: number, t: number) => {
-    k.current = reduced ? (on ? 1 : 0) : ease(k.current, on ? 1 : 0, 2.5, dt);
+    k.current = ease(k.current, on ? 1 : 0, 2.5, dt);
     const lamp = k.current;
     const sky = ctx.createLinearGradient(0, 0, 0, h);
     sky.addColorStop(0, "#04060e");
@@ -37,7 +37,7 @@ export default function ThirdFloorLamp({ active, reduced }: SetPieceProps) {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
     for (let i = 0; i < 90; i++) {
-      const tw = reduced ? 0.6 : 0.4 + 0.6 * Math.abs(Math.sin(t * 0.7 + i * 1.7));
+      const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.7 + i * 1.7));
       ctx.fillStyle = `rgba(210,220,255,${0.25 * tw})`;
       ctx.fillRect((((i * 113) % 100) / 100) * w, (((i * 37) % 60) / 100) * h, 1.3, 1.3);
     }
@@ -63,14 +63,7 @@ export default function ThirdFloorLamp({ active, reduced }: SetPieceProps) {
     ctx.fillRect(tx - tw2 / 2, top, tw2, ground - top);
     ctx.strokeStyle = "rgba(150,190,230,0.25)";
     ctx.strokeRect(tx - tw2 / 2, top, tw2, ground - top);
-    glow(
-      ctx,
-      tx,
-      top - 6,
-      tw2 * 1.6,
-      "rgba(127,255,190,0.6)",
-      reduced ? 1 : 0.85 + 0.15 * Math.sin(t),
-    );
+    glow(ctx, tx, top - 6, tw2 * 1.6, "rgba(127,255,190,0.6)", 0.85 + 0.15 * Math.sin(t));
     ctx.fillStyle = "#bff3ff";
     ctx.fillRect(tx - 3, top - 10, 6, 8);
 
@@ -98,7 +91,7 @@ export default function ThirdFloorLamp({ active, reduced }: SetPieceProps) {
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
   useEffect(() => {
     redraw();
   }, [on, redraw]);

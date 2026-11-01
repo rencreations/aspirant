@@ -4,14 +4,12 @@ describe("site store", () => {
   beforeEach(() => {
     window.localStorage.clear();
     window.sessionStorage.clear();
-    useSiteStore.setState({ entered: false, muted: false, motion: "auto", lastChapter: null });
+    useSiteStore.setState({ entered: false, muted: false, lastChapter: null });
   });
 
-  it("toggles mute and sets motion", () => {
+  it("toggles mute", () => {
     useSiteStore.getState().toggleMute();
     expect(useSiteStore.getState().muted).toBe(true);
-    useSiteStore.getState().setMotion("reduced");
-    expect(useSiteStore.getState().motion).toBe("reduced");
   });
 
   it("persists only the preference keys", () => {
@@ -21,7 +19,7 @@ describe("site store", () => {
     const saved = JSON.parse(window.localStorage.getItem(PREFS_KEY) ?? "{}") as {
       state: Record<string, unknown>;
     };
-    expect(saved.state).toEqual({ muted: true, motion: "auto", lastChapter: "c12" });
+    expect(saved.state).toEqual({ muted: true, lastChapter: "c12" });
   });
 
   it("writes the session flag when entering", () => {
@@ -34,21 +32,21 @@ describe("site store", () => {
   it("ignores corrupt or invalid saved data", async () => {
     window.localStorage.setItem(
       PREFS_KEY,
-      JSON.stringify({ state: { muted: "yes", motion: "fast" }, version: 1 }),
+      JSON.stringify({ state: { muted: "yes", lastChapter: 7 }, version: 1 }),
     );
     await hydrateSiteStore();
     expect(useSiteStore.getState().muted).toBe(false);
-    expect(useSiteStore.getState().motion).toBe("auto");
+    expect(useSiteStore.getState().lastChapter).toBeNull();
   });
 
   it("restores valid saved preferences", async () => {
     window.localStorage.setItem(
       PREFS_KEY,
-      JSON.stringify({ state: { muted: true, motion: "reduced", lastChapter: "c03" }, version: 1 }),
+      JSON.stringify({ state: { muted: true, lastChapter: "c03" }, version: 1 }),
     );
     window.sessionStorage.setItem(ENTERED_KEY, "1");
     await hydrateSiteStore();
     const s = useSiteStore.getState();
-    expect([s.muted, s.motion, s.lastChapter, s.entered]).toEqual([true, "reduced", "c03", true]);
+    expect([s.muted, s.lastChapter, s.entered]).toEqual([true, "c03", true]);
   });
 });

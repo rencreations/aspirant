@@ -14,7 +14,6 @@ import {
 
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { CHIBI, comicPage, videoPoster } from "../media";
 import { registerComic } from "../seams/comic-link";
@@ -133,18 +132,16 @@ export function Comics() {
   const doorB = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
   const sparks = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  useParallax(stage, !reduced);
+  useParallax(stage);
 
   const film = videoInfo("comic-jp");
 
   // The words, the disc and the chibi arrive once the doors in front of the section open.
   const gate = useSyncExternalStore(comicsGate.subscribe, comicsGate.get, () => false);
-  const seen = gate || reduced;
+  const seen = gate;
 
   // What the joins around the comic ask of it (`seams/comic-link.ts`).
   useEffect(() => {
-    if (reduced) return;
     const el = root.current;
     if (!el) return;
     const move = { v: 0 };
@@ -277,7 +274,7 @@ export function Comics() {
       slide(0);
       pin(false);
     };
-  }, [reduced]);
+  }, []);
 
   const choose = useCallback((next: Hot) => {
     setHot((prev) => {
@@ -316,7 +313,6 @@ export function Comics() {
       ref={root}
       id="comics"
       className={styles.comics}
-      data-plain={reduced}
       data-theme="storm"
       data-seen={seen}
       data-disc={disc}

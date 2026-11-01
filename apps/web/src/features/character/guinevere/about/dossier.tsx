@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { StarGlyph } from "@/components/star-glyph";
 import { getCharacter } from "@/content/characters";
-import { useReducedMotion } from "@/lib/hooks";
 
 import styles from "./about.module.css";
 
@@ -71,7 +70,6 @@ function Words({ text, from = 0 }: { text: string; from?: number }) {
  * walks through the stars itself, and stops for good at the first choice.
  */
 export function Dossier() {
-  const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -82,7 +80,7 @@ export function Dossier() {
   // Walk through the stars by itself while the sky is on screen and nobody has chosen.
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || reduced) return;
+    if (!root) return;
     const io = new IntersectionObserver(
       (entries) => {
         // The last entry is how it is now (several queue up when the page is busy).
@@ -100,7 +98,7 @@ export function Dossier() {
       io.disconnect();
       window.clearInterval(id);
     };
-  }, [reduced]);
+  }, []);
 
   const choose = (i: number, focus = false) => {
     touched.current = true;

@@ -3,10 +3,6 @@
   height: calc(100svh + var(--dist, 140svh));
 }
 
-.track[data-reduced="true"] {
-  height: auto;
-}
-
 .stage {
   position: sticky;
   top: 0;
@@ -19,12 +15,6 @@
   --edge: 112%;
   --fade: 1;
   --eo: 0;
-}
-
-.track[data-reduced="true"] .stage {
-  position: relative;
-  height: min(100svh, 56rem);
-  min-height: 34rem;
 }
 
 .calm,

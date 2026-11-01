@@ -3,8 +3,6 @@
 import { useEffect, useId, useRef } from "react";
 
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
-import { perfLevel } from "@/lib/perf";
 
 import { LogoLayers } from "./logo-art";
 import { LOGO_H, LOGO_W } from "./logo-geometry";
@@ -39,11 +37,8 @@ export function AspirantLogo({
     if (!svg || variant !== "interactive") return;
     const parts = queryLogoParts(svg);
     const host = svg.closest<HTMLElement>("[data-logo-host]") ?? svg;
-    // The flourish moves SVG attributes, so it only runs on a device that can spare it.
-    const still = () => prefersReducedMotion() || perfLevel() !== "full";
-    let stopAmbient = still() ? () => undefined : ambientLoop(parts);
+    let stopAmbient = ambientLoop(parts);
     const over = (e: Event) => {
-      if (prefersReducedMotion()) return;
       if (e instanceof PointerEvent && e.pointerType === "touch") return;
       hoverIn(parts);
     };
@@ -52,7 +47,7 @@ export function AspirantLogo({
     };
     const click = () => {
       audio.blip("star");
-      if (!prefersReducedMotion()) clickPop(parts);
+      clickPop(parts);
     };
     host.addEventListener("pointerenter", over);
     host.addEventListener("focusin", over);
@@ -61,7 +56,7 @@ export function AspirantLogo({
     host.addEventListener("click", click);
     const onVisibility = () => {
       stopAmbient();
-      stopAmbient = document.hidden || still() ? () => undefined : ambientLoop(parts);
+      stopAmbient = document.hidden ? () => undefined : ambientLoop(parts);
     };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {

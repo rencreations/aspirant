@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { ImageViewer, type ViewerImage } from "@/components/image-viewer/image-viewer";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { useReducedMotion } from "@/lib/hooks";
 
 import { ART_NAMES, artPath, artThumb, type ArtName } from "../media";
 import styles from "./art.module.css";
@@ -81,14 +80,13 @@ const SIZES = "(max-width: 800px) 92vw, 56vw";
  * rises under it. A click opens the full size in the site's viewer.
  */
 export function ArtShowcase() {
-  const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const wall = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
     const el = wall.current;
-    if (!el || reduced) return;
+    if (!el) return;
     const frames = Array.from(el.querySelectorAll<HTMLElement>("[data-drift]"));
     const trigger = ScrollTrigger.create({
       trigger: el,
@@ -121,7 +119,7 @@ export function ArtShowcase() {
       trigger.kill();
       io.disconnect();
     };
-  }, [reduced]);
+  }, []);
 
   return (
     <section
@@ -129,7 +127,6 @@ export function ArtShowcase() {
       id="art"
       className={styles.art}
       data-theme="storm"
-      data-reduced={reduced}
       aria-labelledby="art-title"
     >
       <div className={styles.lamp} aria-hidden="true" />
@@ -147,7 +144,7 @@ export function ArtShowcase() {
         {ART_NAMES.map((n, i) => {
           const p = PIECES[n];
           return (
-            <figure key={n} className={styles.slot} data-slot={i + 1} data-hang data-in={reduced}>
+            <figure key={n} className={styles.slot} data-slot={i + 1} data-hang>
               <div className={styles.drift} data-drift={p.drift}>
                 <button
                   type="button"

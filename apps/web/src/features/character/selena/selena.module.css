@@ -288,14 +288,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .menu li,
-  .trailer {
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-}
-
 /* A choice is answered at once ------------------------------------------------------------- */
 
 /* Everything else on the panel steps out of the way as soon as a button is pressed. */

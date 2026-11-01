@@ -875,21 +875,11 @@
   animation-play-state: paused;
 }
 
-:global(:root:not([data-perf="lite"]):not([data-perf="balanced"]):not([data-motion="reduced"]))
+:global(:root)
   .wall:not([data-intro="play"]):not([data-chosen="true"])
   .panel:not([data-hover="true"])
   .dim {
   animation: dim 7.2s ease-in-out infinite;
-}
-
-:global(:root[data-perf="balanced"]) :is(.fieldTwinkle),
-:global(:root[data-perf="lite"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide),
-:global(:root[data-motion="reduced"]) :is(.fieldTwinkle, .fieldPulse, .slashHot, .seamWide) {
-  animation: none;
-}
-
-:global(:root[data-motion="reduced"]) .fieldPulse {
-  opacity: 0.7;
 }
 
 /* The round badge of the big ribbon on the blue plate. */
@@ -1340,39 +1330,5 @@
   50% {
     opacity: 1;
     translate: 3px 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel,
-  .wall[data-ready="true"] .panel {
-    translate: 0 0;
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-
-  .hint i,
-  .whereValue,
-  .fieldPulse,
-  .fieldTwinkle,
-  .slashHot,
-  .seamWide,
-  .dim {
-    animation: none !important;
-  }
-
-  .block [data-intro-item],
-  .idle {
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-
-  .lift,
-  .tilt,
-  .veil,
-  .arrow,
-  .next {
-    transition-duration: 1ms;
-    transition-delay: 0s;
   }
 }

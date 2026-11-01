@@ -6,7 +6,7 @@
  * Usage (build first, serve `apps/web/out`, then):
  *   FULL=1 node scripts/perf/weak.mjs <base url> <gpu|soft> <cpu slowdown> <width> <height> <dpr> [route]
  *   FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 gpu 4 1366 768 1
- *   FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 soft 4 1366 768 1 "character/selena/?quality=lite"
+ *   FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 soft 4 1366 768 1 "character/selena/"
  *
  * `soft` turns the GPU and the video acceleration off (every frame is decoded and composed by the
  * processor). Without FULL=1 the loading screen is skipped. Needs Microsoft Edge (H.264).

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { useMediaQuery, useMounted, useReducedMotion } from "@/lib/hooks";
+import { useMediaQuery, useMounted } from "@/lib/hooks";
 import { damp } from "@/lib/math";
 
 import styles from "./lantern-cursor.module.css";
@@ -16,7 +16,7 @@ const INTERACTIVE =
  * a short label, `data-cursor-theme="light|dark"` forces the ring colour. An element with
  * `data-snap` pulls the ring to its centre while the pointer is over it, and keeps it there if
  * the element moves. `data-state` on the root says what the cursor is doing: idle, hover, snap
- * or pressed. The native cursor stays visible. Off for touch-first devices and reduced motion.
+ * or pressed. The native cursor stays visible. Off for touch-first devices.
  *
  * It also publishes the light position as --mx/--my (local px) on every in-view element
  * with `data-lantern`, for `lantern-mask` reveals. Nothing is written to <html> per frame.
@@ -24,9 +24,8 @@ const INTERACTIVE =
  */
 export function LanternCursor() {
   const fine = useMediaQuery("(hover: hover) and (pointer: fine)");
-  const reduced = useReducedMotion();
   const mounted = useMounted();
-  if (!mounted || !fine || reduced) return null;
+  if (!mounted || !fine) return null;
   return <Lantern />;
 }
 

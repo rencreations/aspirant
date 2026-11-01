@@ -9,7 +9,6 @@ import { HudPanel } from "@/components/ui/hud-panel";
 import { Meter } from "@/components/ui/meter";
 import { couplingLab, couplingScores, pairs } from "@/content/world";
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 import { clamp, lerp } from "@/lib/math";
 import { CHARACTER_NAMES } from "@/lib/slugs";
 
@@ -128,10 +127,6 @@ export function CouplingLab() {
 
   const glideTo = (target: number) => {
     cancelAnimationFrame(tween.current);
-    if (prefersReducedMotion()) {
-      apply(target);
-      return;
-    }
     const from = view.current.closeness;
     const start = performance.now();
     const run = (now: number) => {

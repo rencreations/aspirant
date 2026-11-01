@@ -1,7 +1,8 @@
 # Performance
 
-The site must not lag on an ordinary laptop, and it must degrade by itself on a weak one. This is
-what that means, how it is kept, and how to check it. Selena's page is the heaviest page (a 60
+The site must not lag on an ordinary laptop. It does not degrade on a weak one: there is one version
+of the site (see "One version" below). This is what the budget means, how it is kept, and how to
+check it. Selena's page is the heaviest page (a 60
 frames a second picture, drawers with long text, many animations), so it sets the budget.
 
 ## The budget
@@ -76,79 +77,74 @@ on the same machine (a press frame of 1,000 ms against 300 ms). Judge speed on `
 - Long lists and long text: `content-visibility: auto`, built in small slices, off the critical frames.
 - Heavy work (building drawers, laying out text, decoding) waits for a moment nothing else moves.
 
-## Performance levels
+## One version
 
-`lib/perf.ts`. Three levels, written on `<html data-perf>` for the CSS: `full`, `balanced`, `lite`.
+There are no performance levels. Since 1 Nov 2026 (owner decision) the site is the same full version
+on every device and every connection. Removed: `lib/perf.ts` (the levels `full`, `balanced` and
+`lite`, the governor that stepped them down, the remembered level, `?quality=`), `lib/device.ts`
+(the device tier), `<html data-perf>` and every stylesheet rule and script branch that depended on
+it.
 
-- **At the start**, from the device: hardware video decoding (`mediaCapabilities`, `powerEfficient`),
-  cores, memory, data saving. A device that decodes in software gets `lite` with fewer than 6 cores,
-  `balanced` with fewer than 12.
-- **Remembered** (`localStorage`, `aspirants:perf`): a level the governor chose for half an hour (a drop is often a busy page, not the device, and it must not flatten every page for a day), any other for five days. Vexana's page does not step down on its own (`raiseOnly`): its hero is always built (the scene gives up pixels and noise first when frames are slow), and a remembered drop can come back up after half a minute of smooth frames. Its muted pictures run on every level except with data saving on.
-- **Overridden** with `?quality=full|balanced|lite`. `?quality=auto` forgets what was remembered.
-  The tests pin a level this way.
-- **Lowered by a governor** (`startGovernor`) that watches the real frame rate and the video's
-  dropped frames while she plays, from the end of the welcome. Two bad stretches of two seconds in
-  a row lower it one step, then it waits six seconds. It ignores hidden tabs, and it does not judge
-  the frame rate while the picture runs faster to get to a frame (time skip). The same governor
-  raises the level: a device that sits below what its hardware suggests (`levelFor`) and plays
-  smoothly for twelve stretches in a row (24 seconds) tries one step up, and one bad stretch after
-  that sends it back down and stops it trying again (`failedUp` in the memory) until the memory
-  expires. A level lowered in a visit is never raised in that visit. This was added because a step
-  down used to stick for five days, so one busy moment could keep a fast laptop on a smaller,
-  softer picture. When it lowers the level, the smaller videos load in the background, and
-  the idle loop is swapped under the cover wipe if she is idling (otherwise the next time she
-  returns to it).
-
-What a level changes:
-
-| Level      | Video                                             | Effects                                                                                                                                            |
-| ---------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `full`     | the size the display needs, up to 2160            | everything                                                                                                                                         |
-| `balanced` | at most 1080                                      | no light disc blend on the cursor, no drift or ripple on the touch points, no bobbing, no drawer shadow, no logo flourish, no loading screen loops |
-| `lite`     | the light tier: 1280 by 576 at 30 frames a second | also a press without the jump and the stomp, no breathing on the touch points, the small skill loop does not start by itself                       |
-
-The light tier (`scripts/selena/build.py`, tier `lite`) keeps every other frame of the 60 fps
-timeline, so its loops and seams, which are measured in time, work unchanged (the director is tested
-with a video that shows every other frame).
+- **Video size** comes from the display alone (`pickTier` in `stage/media.ts`: the width the picture
+  needs in device pixels, taken when a tier reaches 82 percent of it, 76 percent from 2560). Data
+  saving, the connection class, the memory, the cores and touch never lower it. The 1280 by 576
+  tier at 30 frames a second (`lite` in `scripts/*/build.py`) is never chosen.
+- **Muted pictures** on Vexana's and Guinevere's pages play by themselves on every device.
+- **Reduced motion** is ignored (no `prefers-reduced-motion` rule, no toggle). This costs
+  accessibility for visitors who ask their system for less motion. It was weighed and accepted by the
+  owner.
+- **A weak device or a slow link waits behind the loading screen** until everything is loaded (see
+  below). It is never given less.
+- Because nothing is switched off, every effect has to be cheap for everyone: transform and opacity
+  only, the compositor for anything that follows a video, `content-visibility: auto` for long
+  content. Judge it with `scripts/perf/weak.mjs`, which makes the browser weak on purpose.
 
 ## Bad connections
 
-The site is several gigabytes of media, so a poor connection is the normal hard case, not an edge
-case. What was measured with `scripts/perf/net.mjs` (the production build, Chromium with the network
-limited), before and after the fixes:
+**One version only. A slow connection waits behind the loading screen** (owner decision, 1 Nov 2026). The site is several gigabytes of media, so a poor connection is the normal hard case. It is never given a cut, plain or partial page. The first loading screen and every page change wait until everything the page needs has arrived, however long that takes, and show the real progress while they do.
 
-| Case                                    | Before                              | After                                                           |
-| --------------------------------------- | ----------------------------------- | --------------------------------------------------------------- |
-| 1.5 Mbit/s, Vexana's first visit        | the loading screen holds 83 seconds | the screen says it is slow at 15 seconds, "Enter now" at 45     |
-| 400 kbit/s, the home page               | 77 seconds                          | 42 seconds, and "Enter now" is there                            |
-| The connection drops while loading      | home page empty, console errors     | the page text stays, a calm notice says the device is offline   |
-| Offline, a click on a page never opened | a nearly blank page                 | the page stays, the notice shows, "Back online" when it returns |
-| A file of an old deploy is gone         | a silent half-working page          | one reload by itself, never a loop, never while offline         |
+What a visitor meets:
+
+| Case                                    | What happens                                                                                                                                                    |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A slow connection                       | The loading screen stays up. After 15 seconds a note says the connection is slow and shows the real percentage and bytes. There is no "Enter now" and no limit. |
+| A download stalls or drops              | It is started again after a short wait (1 s growing to 10 s), for as long as it takes. The bar never goes back.                                                 |
+| The connection is lost while loading    | The loading screen keeps waiting, says "Offline. Waiting for the connection.", and goes on by itself when it returns.                                           |
+| Offline, a click on a page never opened | The page stays, a calm notice shows, "Back online" when it returns.                                                                                             |
+| A file the server says is gone (404)    | Skipped and logged: nothing can fix it, and it must not hold every visitor for ever.                                                                            |
+| A file of an old deploy is gone         | One reload by itself, never a loop, never while offline.                                                                                                        |
 
 How it is built:
 
 - `app/layout.tsx` and `styles/base.css`: the boot script paints a cover (the wordmark, a sweeping
   line and notes that change after 15 and 90 seconds) the moment the page arrives and keeps it until
   the scripts have started. Before this the plain server text showed for as long as the scripts took
-  on a slow connection, which looked like a site with no animations. It lets go after three minutes
-  only if the scripts never start.
-- `components/loader-gate.tsx`: the screen says the connection is slow after 15 seconds, "Enter now"
-  after 45, a stop at 240. An item waits at most 60 seconds. The files still arriving
-  go on and arrive late, and they must not move the curtain once it has started to open
-  (`setBoot` overwrites only its own bar: a plain `overwrite: true` killed the animation that opens
-  the page).
-- `lib/preload.ts` (`capWait`) and the transition provider: a page change waits at most 90 seconds.
-- `lib/media-store.ts`: a download that gets no byte for 20 seconds, or ends short of the length
-  the server gave, is dropped and the plain address is used (the browser streams it); a file that
-  failed is asked for again the next time.
+  on a slow connection, which looked like a site with no animations. No timer lets it go. Its
+  only exit is the reload link it shows after 90 seconds, for a visitor whose scripts have failed.
+- `components/loader-gate.tsx`: waits for the whole list. After 15 seconds a note shows the real
+  percentage and bytes (`lib/loading-note.ts`); offline it says it is waiting for the connection.
+  The files still arriving after the page opens are the deferred ones only, and they must not move
+  the curtain once it has started to open (`setBoot` overwrites only its own bar: a plain
+  `overwrite: true` killed the animation that opens the page).
+- `lib/preload.ts` and the transition provider: an item and a page change wait as long as the files
+  need. A page change that takes more than 500 ms shows the loading state with the real percentage.
+  `lib/page-ready.ts` has the only time limit left: 30 seconds for a component to say it has drawn,
+  counted after every file is in.
+- `lib/retry.ts`: a failed or stalled download is tried again after 1, 2, 4, 8, then 10 seconds, and
+  waits for the `online` event while the device is offline. Only a 404 or 410 (or a picture that
+  arrives and will not decode five times) is skipped and logged.
+- `lib/media-store.ts`: a download that gets no byte for 20 seconds, or ends short of the length the
+  server gave, is dropped and tried again; the bytes already in are kept and the rest is asked for
+  with a range request (the whole file again if the server cannot give a range). The plain address
+  is given only for a file that is gone. Until a file has arrived the browser streams the plain
+  address, so a clip asked for early still plays.
 - `components/offline-notice.tsx`, `lib/offline.ts`: the notice, and no navigation to a page that
   was never opened while offline.
 - `lib/chunk-guard.ts`, `components/runtime-guard.tsx`: one reload for a stale tab (after a deploy
   the file names change), once a minute at most, and only when online; promises nobody caught are
   logged once each.
 - `app/error.tsx`, `app/global-error.tsx`: a page that throws shows a way back, not a blank screen.
-- Every page degrades without its media: posters and text stay when the videos, the audio, the data
-  or the pictures fail (tested with 404 and 500 answers).
+- A page still stands on its posters and text if a file turns out to be gone (tested with 404 answers).
 
 ## How to check
 
@@ -160,7 +156,7 @@ How it is built:
   and the video acceleration off.
 - `scripts/perf/trace.mjs`: a Chromium trace of a press with the style invalidation tracking, and a
   count of the style recalculations by what caused them. This is how the cursor was found.
-- `scripts/perf/net.mjs`: bad connections (slow, offline, failing files, a stale tab, the "Enter now" button).
+- `scripts/perf/net.mjs`: bad connections (slow, offline, failing files, a stale tab, and `holds`: the loading screen must keep waiting).
 - Serve the production build (`pnpm build`, then `node apps/web/e2e/static-server.mjs --port 3190`).
 
 ## What was measured about video
@@ -176,8 +172,9 @@ CPU, so every number is a lower bound for a weak laptop):
 | 1280 by 576, 60 fps  | 0.22              | 0.52              |
 | 1280 by 576, 30 fps  | 0.18              | 0.30              |
 
-With hardware decoding the size hardly matters. Without it the size and the frame rate decide, so
-the level follows hardware decoding, and the light tier halves the frame rate.
+With hardware decoding the size hardly matters. Without it the size and the frame rate decide. The
+site still sends the size the display needs to every device (see "One version"), so a device that
+decodes in software pays the cost on the biggest sizes. That is accepted.
 
 ## Ideas that were weighed and left out
 

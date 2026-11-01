@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { asset } from "@/lib/asset";
-import { useInView, useReducedMotion } from "@/lib/hooks";
+import { useInView } from "@/lib/hooks";
 
 import { DRAMA_START, nodeById } from "./drama-graph";
 import { dramaPoster } from "./drama-media";
@@ -50,7 +50,6 @@ const FullscreenIcon = () => (
 export function Drama() {
   const root = useRef<HTMLElement>(null);
   const cab = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
   const visible = useInView(root, { threshold: 0.5 });
   const { save, ready, dispatch } = useDramaSave();
   const [screen, setScreen] = useState<Screen>("title");
@@ -152,7 +151,6 @@ export function Drama() {
           ref={cab}
           className={styles.cab}
           data-ready={ready}
-          data-reduced={reduced}
           onPointerDownCapture={() => {
             setEngaged(true);
           }}

@@ -58,14 +58,14 @@ describe("paths and preloads", () => {
     expect(voicePath("ruby", 7)).toBe("/audio/voice/ruby/07.m4a");
   });
 
-  it("waits for the hero only and defers the rest", () => {
+  it("waits for the first screens and defers the films", () => {
     for (const who of WHO) {
-      expect(duoFirstPaint(who).length).toBeLessThanOrEqual(3);
+      expect(duoFirstPaint(who).length).toBeGreaterThan(0);
       const later = duoLater(who);
       expect(later.map((g) => g.priority)).toEqual(
         [...later.map((g) => g.priority)].sort((a, b) => a - b),
       );
-      expect(later.flatMap((g) => g.items).length).toBeGreaterThan(40);
+      expect(later.flatMap((g) => g.items).length).toBeGreaterThan(20);
     }
   });
 });

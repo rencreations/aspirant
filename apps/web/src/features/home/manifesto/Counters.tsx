@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { prefersReducedMotion } from "@/lib/hooks";
-
 import type { CounterView } from "../types";
 import styles from "./manifesto.module.css";
 
@@ -19,7 +17,7 @@ export function Counters({ items }: { items: readonly CounterView[] }) {
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || prefersReducedMotion() || typeof IntersectionObserver === "undefined") return;
+    if (!root || typeof IntersectionObserver === "undefined") return;
     const digits = Array.from(root.querySelectorAll<HTMLElement>("[data-count]"));
     for (const el of digits) el.textContent = "00";
     let raf = 0;

@@ -15,7 +15,7 @@ const N = 117;
 const LINE = "A hundred and seventeen voices began to sing.";
 
 /** A hundred and seventeen lighthouses on the far shore: light each one and hear its note. */
-export default function Lighthouses({ active, reduced }: SetPieceProps) {
+export default function Lighthouses({ active }: SetPieceProps) {
   const litAt = useRef(new Float32Array(N).fill(-1));
   const [count, setCount] = useState(0);
   const countRef = useRef(0);
@@ -53,8 +53,8 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
   const draw = (ctx: CanvasRenderingContext2D, { w, h }: StageSize, _dt: number) => {
     const t = performance.now() / 1000;
     if (wave.current >= 0) {
-      const reach = reduced ? N : Math.floor((t - wave.current) * 16);
-      for (let i = 0; i < Math.min(N, reach); i++) sing(i, !reduced && i === reach - 1);
+      const reach = Math.floor((t - wave.current) * 16);
+      for (let i = 0; i < Math.min(N, reach); i++) sing(i, i === reach - 1);
       if (reach >= N) wave.current = -1;
     }
     // A calm dawn: pale sky, snow peaks far in the north, the harbour.
@@ -85,8 +85,8 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
       ctx.fillRect(x - 1.2, y - tall, 2.4, tall);
       const at = litAt.current[i]!;
       if (at >= 0) {
-        const k = reduced ? 1 : Math.min(1, (t - at) * 3);
-        const breathe = reduced ? 1 : 0.75 + 0.25 * Math.sin(t * 1.4 - i * 0.2);
+        const k = Math.min(1, (t - at) * 3);
+        const breathe = 0.75 + 0.25 * Math.sin(t * 1.4 - i * 0.2);
         glow(ctx, x, y - tall, 9, "rgba(255,217,160,0.95)", k * breathe);
       } else {
         ctx.fillStyle = "rgba(120,130,150,0.8)";
@@ -100,7 +100,7 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
     }
 
     if (finishedAt.current >= 0) {
-      const k = reduced ? 1 : Math.min(1, (t - finishedAt.current) / 1.5);
+      const k = Math.min(1, (t - finishedAt.current) / 1.5);
       ctx.globalAlpha = k;
       ctx.font = `italic ${Math.round(Math.min(w, h) * 0.055)}px "Instrument Serif", serif`;
       ctx.textAlign = "center";
@@ -111,7 +111,7 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const nearest = (e: PointerEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -146,7 +146,7 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
             className={styles.button}
             onClick={() => {
               wake();
-              wave.current = reduced ? 0 : performance.now() / 1000;
+              wave.current = performance.now() / 1000;
               redraw();
             }}
           >
@@ -170,12 +170,10 @@ export default function Lighthouses({ active, reduced }: SetPieceProps) {
           wake();
           e.currentTarget.setPointerCapture(e.pointerId);
           sing(nearest(e), true);
-          if (reduced) redraw();
         }}
         onPointerMove={(e) => {
           if (e.buttons || e.pointerType === "mouse") {
             sing(nearest(e), audio.unlocked);
-            if (reduced) redraw();
           }
         }}
         onKeyDown={onKey}

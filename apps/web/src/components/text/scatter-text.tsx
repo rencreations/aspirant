@@ -4,7 +4,6 @@ import { useRef, type CSSProperties, type PointerEvent } from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
-import { prefersReducedMotion } from "@/lib/hooks";
 import { springs, springStep } from "@/lib/motion";
 
 export interface ScatterTextProps {
@@ -33,8 +32,7 @@ interface Letter {
 
 /**
  * Letters scatter away from the pointer (mouse, pen or touch drag) and spring back. The
- * full text stays readable to screen readers; the letter spans are aria-hidden. Static under
- * reduced motion. Runs a rAF loop only while active.
+ * full text stays readable to screen readers; the letter spans are aria-hidden. Runs a rAF loop only while active.
  */
 export function ScatterText({
   text,
@@ -103,7 +101,6 @@ export function ScatterText({
   };
 
   const onMove = (e: PointerEvent<HTMLElement>) => {
-    if (prefersReducedMotion()) return;
     const root = rootRef.current;
     if (!root) return;
     if (!letters.current.length || !raf.current) measure();

@@ -69,9 +69,3 @@
 .caption[data-bg="solid"] {
   background: #000;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .caption {
-    transition: none;
-  }
-}

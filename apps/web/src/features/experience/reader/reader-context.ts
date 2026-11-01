@@ -3,7 +3,7 @@
 import { createContext, useContext } from "react";
 
 export interface JumpOptions {
-  /** Glide there when it is close (never under reduced motion). Default false: a cut. */
+  /** Glide there when it is close. Default false: a cut. */
   smooth?: boolean;
   /** Move keyboard focus to the target heading. Default true. */
   focus?: boolean;

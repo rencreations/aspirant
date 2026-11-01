@@ -174,15 +174,3 @@
     margin-left: 0;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ring,
-  .ring2 {
-    animation: none;
-  }
-  .section[data-armed="true"] [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}

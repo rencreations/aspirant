@@ -16,7 +16,7 @@ const ROWS = 7;
 const AWAKE = ROWS * COLS - Math.floor(COLS * 2.5) - 7;
 
 /** The Twilight Orb breaks into the Matrix; among the sleepers, one does not move. */
-export default function OrbBreaks({ active, reduced }: SetPieceProps) {
+export default function OrbBreaks({ active }: SetPieceProps) {
   const broken = useRef(false);
   const [state, setState] = useState<"whole" | "broken">("whole");
   const brokeAt = useRef(-10);
@@ -57,7 +57,7 @@ export default function OrbBreaks({ active, reduced }: SetPieceProps) {
       ctx.fillRect((((i * 97) % 100) / 100) * w, (((i * 61) % 100) / 100) * h, 1.2, 1.2);
     }
     const since = performance.now() / 1000 - brokeAt.current;
-    const k = broken.current ? (reduced ? 1 : smoothstep(0, 1.6, since)) : 0;
+    const k = broken.current ? smoothstep(0, 1.6, since) : 0;
     const cx = w / 2;
     const cy = h * 0.38;
     const R = Math.min(w, h) * 0.16;
@@ -73,7 +73,7 @@ export default function OrbBreaks({ active, reduced }: SetPieceProps) {
       }
       ctx.stroke();
       // Rows of sleepers. An order pulse lifts them all, except one.
-      const pulse = reduced ? 0 : Math.max(0, Math.sin(t * 1.4)) ** 6;
+      const pulse = Math.max(0, Math.sin(t * 1.4)) ** 6;
       for (let i = 0; i < ROWS * COLS; i++) {
         const p = place(i, w, h);
         const lift = i === AWAKE ? 0 : pulse * p.s * 0.6;
@@ -117,9 +117,9 @@ export default function OrbBreaks({ active, reduced }: SetPieceProps) {
         g.addColorStop(1, "#2a1550");
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(cx, cy, R * (reduced ? 1 : 1 + Math.sin(t * 1.5) * 0.015), 0, Math.PI * 2);
+        ctx.arc(cx, cy, R * (1 + Math.sin(t * 1.5) * 0.015), 0, Math.PI * 2);
         ctx.fill();
-      } else if (!reduced) {
+      } else {
         for (const s of shards) {
           const d = R * (0.4 + since * s.v * 2.2);
           ctx.save();
@@ -135,7 +135,7 @@ export default function OrbBreaks({ active, reduced }: SetPieceProps) {
     }
   };
 
-  const { redraw } = useStage(canvasRef, draw, active && !reduced);
+  const { redraw } = useStage(canvasRef, draw, active);
 
   const breakOrb = () => {
     wake();

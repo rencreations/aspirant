@@ -22,10 +22,6 @@
   }
 }
 
-.cover[data-plain="true"] .panel {
-  border-radius: 0;
-}
-
 .pin {
   position: sticky;
   top: 0;
@@ -191,15 +187,5 @@
   }
   .veil {
     background: linear-gradient(to top, rgb(38 25 14 / 0.9), rgb(38 25 14 / 0.25) 70%);
-  }
-}
-
-:root[data-perf="lite"] .ring {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ring {
-    animation: none;
   }
 }

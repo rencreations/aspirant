@@ -138,10 +138,3 @@
     translate: -50% -46%;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .overlay,
-  .panel {
-    animation: none;
-  }
-}

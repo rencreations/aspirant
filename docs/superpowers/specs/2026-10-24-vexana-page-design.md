@@ -15,7 +15,7 @@ Obsidia's and Selena's pages are not touched.
 - The hero, the hand-over to the signature, the signature, the On Track and Off Track pair and the cover-up
   behave like the reference (cursor reveal, 3D tilt, idle reveals, shrink and colour change on scroll).
 - Everything else is original and specific to Vexana.
-- Real work in the loading bar, big media deferred and prioritised, 60 fps on an ordinary laptop, lighter on a weak one.
+- Real work in the loading bar, big media deferred and prioritised, 60 fps on an ordinary laptop (since 1 Nov 2026 there is one version, no lighter one for a weak device).
 
 ## Non-goals and anti-goals
 
@@ -68,7 +68,7 @@ Where the reference uses lime, Vexana uses violet and magenta.
 
 - `CLAUDE.md` is the law: first paint in `lib/route-preloads.ts`, videos deferred with priorities, no per-frame
   writes to `<html>` or `<body>`, animate `transform` and `opacity` only, no `filter` or `mix-blend-mode` over live
-  video, effects gated on the perf level (`lib/perf.ts`), reduced motion respected, `content-visibility: auto` for
+  video, no effect gated on the device (the levels and reduced motion handling were removed on 1 Nov 2026), `content-visibility: auto` for
   long lists.
 - Smooth scrolling is the site's Lenis plus GSAP ScrollTrigger (`components/smooth-scroll.tsx`). Use `useLenis`.
 - Writing: short sentences, no em or en dashes, Terrinia, Selrick, Storm Citadel, "Aspirant power". Run

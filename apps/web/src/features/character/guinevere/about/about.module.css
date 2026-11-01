@@ -244,12 +244,6 @@
   animation: pulse 3.6s ease-in-out infinite;
 }
 
-:global(:root[data-perf="lite"]) .ringA,
-:global(:root[data-perf="lite"]) .ringB,
-:global(:root[data-perf="lite"]) .ringStar {
-  animation: none;
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -330,10 +324,6 @@
   100% {
     transform: translate3d(120%, 0, 0);
   }
-}
-
-:global(:root[data-perf="lite"]) .frameSheen {
-  animation: none;
 }
 
 .cap {
@@ -857,11 +847,6 @@
   color: var(--acc);
 }
 
-:global(:root[data-perf="lite"]) .starHalo,
-:global(:root[data-perf="lite"]) .hubHalo {
-  animation: none;
-}
-
 .note {
   min-height: 15rem;
   padding: 1.3rem 1.4rem 1.4rem;
@@ -1270,37 +1255,6 @@
   }
   .note {
     min-height: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .letter,
-  .framewrap,
-  .face,
-  .stripe,
-  .stand,
-  .stamp,
-  .beam,
-  .starGlyph {
-    transition-duration: 0.01ms !important;
-    transition-delay: 0s !important;
-  }
-  .ringA,
-  .ringB,
-  .ringStar,
-  .frameSheen,
-  .capDot,
-  .missingDot,
-  .hubHalo,
-  .starHalo,
-  .noteHead,
-  .voiceBars i {
-    animation: none;
-  }
-  .word {
-    animation: none;
-    opacity: 1;
-    transform: none;
   }
 }
 

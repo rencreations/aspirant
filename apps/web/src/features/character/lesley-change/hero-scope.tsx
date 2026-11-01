@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 
 import { getCharacter } from "@/content/characters";
 import { asset } from "@/lib/asset";
-import { useReducedMotion } from "@/lib/hooks";
 import { CONFIG } from "./config";
 import styles from "./hero.module.css";
 import { coverPoint, HERO, parsePosition, SPOTS } from "./media";
@@ -29,7 +28,6 @@ export function ScopeHero() {
   const c = getCharacter("lesley");
   const cfg = CONFIG.lesley;
   const art = HERO.lesley;
-  const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const layer = useRef<HTMLDivElement>(null);
   const scope = useRef<HTMLDivElement>(null);
@@ -144,17 +142,16 @@ export function ScopeHero() {
       const dy = ty - m.y;
       const len = Math.max(24, Math.hypot(dx, dy));
       const base = `translate3d(${m.x}px, ${m.y}px, 0) rotate(${Math.atan2(dy, dx)}rad)`;
-      const from = reduced ? 1 : 0;
 
       const tracer = document.createElement("span");
       tracer.className = styles.tracer ?? "";
       tracer.style.width = `${len}px`;
-      tracer.style.transform = `${base} scaleX(${from})`;
+      tracer.style.transform = `${base} scaleX(0)`;
       box0.appendChild(tracer);
       keep(tracer);
       const ta = tracer.animate(
         [
-          { transform: `${base} scaleX(${from})`, opacity: 1 },
+          { transform: `${base} scaleX(0)`, opacity: 1 },
           { transform: `${base} scaleX(1)`, opacity: 1, offset: 0.2 },
           { transform: `${base} scaleX(1)`, opacity: 0 },
         ],
@@ -194,12 +191,12 @@ export function ScopeHero() {
       keep(hit);
       const ha = hit.animate(
         [
-          { transform: `${pos} scale(${reduced ? 1 : 0.2})`, opacity: 1 },
+          { transform: `${pos} scale(0.2)`, opacity: 1 },
           { transform: `${pos} scale(1)`, opacity: 1, offset: 0.3 },
           { transform: `${pos} scale(1)`, opacity: 1, offset: 0.75 },
           { transform: `${pos} scale(1.15)`, opacity: 0 },
         ],
-        { duration: 1900, delay: reduced ? 0 : 120, fill: "backwards" },
+        { duration: 1900, delay: 120, fill: "backwards" },
       );
       void ha.finished.then(
         () => {
@@ -211,7 +208,7 @@ export function ScopeHero() {
       shots += 1;
       if (count.current) count.current.textContent = pad(shots % 100);
 
-      if (!reduced && artWrap.current) {
+      if (artWrap.current) {
         artWrap.current.animate(
           [
             { transform: "translate3d(0, 0, 0) scale(1.01)" },
@@ -251,12 +248,6 @@ export function ScopeHero() {
 
     const glide = (nx: number, ny: number, ms: number, done: () => void) => {
       stopGlide();
-      if (reduced) {
-        at = { x: nx, y: ny };
-        place();
-        done();
-        return;
-      }
       const a = styleAt(at.x * w, at.y * h);
       const b = styleAt(nx * w, ny * h);
       const opts = {
@@ -345,13 +336,11 @@ export function ScopeHero() {
     io.observe(el);
 
     // By itself: the scope drifts to a new point every few seconds and takes a clean shot.
-    const idle = reduced
-      ? 0
-      : window.setInterval(() => {
-          if (!visible || document.hidden || holdAt || performance.now() - lastInput < 3400) return;
-          const p = randomPoint();
-          glide(p.x, p.y, 1100, clean);
-        }, 5600);
+    const idle = window.setInterval(() => {
+      if (!visible || document.hidden || holdAt || performance.now() - lastInput < 3400) return;
+      const p = randomPoint();
+      glide(p.x, p.y, 1100, clean);
+    }, 5600);
 
     return () => {
       ro.disconnect();
@@ -372,7 +361,7 @@ export function ScopeHero() {
       });
       shoot.current = null;
     };
-  }, [reduced, art.height, art.position, art.width]);
+  }, [art.height, art.position, art.width]);
 
   return (
     <section

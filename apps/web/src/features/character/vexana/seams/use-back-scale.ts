@@ -4,8 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
 
-import { perfLevel } from "@/lib/perf";
-
 import { easeInOut, put } from "./scroll-kit";
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
@@ -18,9 +16,8 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
  * picture, and the beams of colour keep matching what is beside the interlude's panel while the
  * panel is still narrower than the screen. Plain scale, driven by scroll alone.
  */
-export function useBackScale(reduced: boolean) {
+export function useBackScale() {
   useEffect(() => {
-    if (reduced || perfLevel() === "lite") return;
     const cover = document.getElementById("cover");
     const stage = document.querySelector<HTMLElement>("#faces [data-depth]");
     if (!cover || !stage) return;
@@ -37,5 +34,5 @@ export function useBackScale(reduced: boolean) {
       st.kill();
       stage.style.removeProperty("transform");
     };
-  }, [reduced]);
+  }, []);
 }

@@ -184,13 +184,3 @@ a.inner:hover .go {
     grid-template-columns: 4.4rem 1fr;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .section[data-armed="true"] [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .inner {
-    transition: none;
-  }
-}

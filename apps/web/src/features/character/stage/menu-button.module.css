@@ -620,33 +620,3 @@
     translate: 0 -2px;
   }
 }
-
-/* Reduced motion: no jump, stomp, hop or wobble. The sheet still shows how long the wait is. */
-@media (prefers-reduced-motion: reduce) {
-  .button,
-  .text,
-  .trim {
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-
-  .icon img,
-  .button:not(:disabled):hover .icon img,
-  .button:not(:disabled):focus-visible .icon img,
-  .button[data-mode],
-  .leap,
-  .hop,
-  .pulse,
-  .dust,
-  .dust::before,
-  .dust::after,
-  .sheet::before,
-  .dots i {
-    animation: none;
-  }
-
-  .pulse,
-  .dust {
-    display: none;
-  }
-}

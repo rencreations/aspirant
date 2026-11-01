@@ -18,7 +18,6 @@ import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
-import { prefersReducedMotion } from "@/lib/hooks";
 import { characterRoute } from "@/lib/site";
 
 import type { RosterCard } from "../types";
@@ -87,7 +86,7 @@ export function TheTen({ cards }: { cards: readonly RosterCard[] }) {
     audio.blip("click");
     rail.scrollBy({
       left: dir * rail.clientWidth * 0.8,
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
+      behavior: "smooth",
     });
   };
 
@@ -130,7 +129,7 @@ export function TheTen({ cards }: { cards: readonly RosterCard[] }) {
     if (d.id !== e.pointerId || !rail) return;
     d.id = -1;
     delete rail.dataset.dragging;
-    if (!d.moved || prefersReducedMotion()) return;
+    if (!d.moved) return;
     let last = performance.now();
     const glide = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
@@ -154,7 +153,7 @@ export function TheTen({ cards }: { cards: readonly RosterCard[] }) {
       links[Math.min(links.length - 1, Math.max(0, current + (e.key === "ArrowRight" ? 1 : -1)))];
     next?.focus({ preventScroll: true });
     next?.scrollIntoView({
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
+      behavior: "smooth",
       inline: "center",
       block: "nearest",
     });

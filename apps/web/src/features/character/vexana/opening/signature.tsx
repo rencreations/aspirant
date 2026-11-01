@@ -20,8 +20,6 @@ export type SignatureKind = "mask" | "tip" | "spark" | "shine";
 interface Props {
   /** Ref callback for the animated parts (from `useSignature`). */
   reg?: (kind: SignatureKind, i: number) => RefCallback<SVGElement>;
-  /** Show it written, without the animation. */
-  done?: boolean;
 }
 
 /**
@@ -31,7 +29,7 @@ interface Props {
  * ink now and then. `useSignature` plays all of it with Web Animations (no frame loop). Strokes
  * start blank (the stylesheet).
  */
-export function SignatureSvg({ reg, done = false }: Props) {
+export function SignatureSvg({ reg }: Props) {
   const id = useId().replace(/:/g, "");
   const w = SIGNATURE_BOX.w;
   const h = SIGNATURE_BOX.h;
@@ -78,7 +76,6 @@ export function SignatureSvg({ reg, done = false }: Props) {
               strokeLinecap="round"
               strokeLinejoin="round"
               className={styles.stroke}
-              data-done={done}
             />
           </mask>
         ))}
