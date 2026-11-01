@@ -1,3 +1,5 @@
+import { Blob as NodeBlob } from "node:buffer";
+
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 
 /** A Cache Storage that keeps its answers in a map, like the browser's. */
@@ -34,6 +36,9 @@ beforeEach(() => {
   vi.resetModules();
   fetchMock = vi.fn(() => Promise.resolve(respond(100)));
   vi.stubGlobal("fetch", fetchMock);
+  // jsdom's Blob is not one Node 22's Response accepts as a body (a browser's is), so the saved
+  // copy would silently fail to be written. Use Node's own.
+  vi.stubGlobal("Blob", NodeBlob);
   URL.createObjectURL = vi.fn(() => "blob:test");
   URL.revokeObjectURL = vi.fn();
 });
