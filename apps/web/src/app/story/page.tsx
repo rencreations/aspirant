@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
-import { StoryPage } from "@/features/story/story-page";
+import { StoryLanding } from "@/features/story/landing/story-landing";
 
 export const metadata: Metadata = {
   title: "Story",
   description:
-    "The world of Aspirant explained: Dawnbreak, Selrick Academy, the Cycle, the Enders and what the story leaves open.",
+    "Read the whole Aspirant story: sixty chapters in twelve parts, one Part to a page, with your place kept.",
 };
 
 export default function Page() {
-  return <StoryPage />;
+  return <StoryLanding />;
 }

@@ -20,7 +20,7 @@ export const siteConfig = {
 /** Top level routes. Use these instead of string literals. */
 export const routes = {
   home: "/",
-  experience: "/experience",
+  about: "/about",
   story: "/story",
   characters: "/character",
   collection: "/collection",
@@ -44,7 +44,7 @@ export interface NavItem {
 /** The five main destinations, in nav order. */
 export const navItems: readonly NavItem[] = [
   { href: routes.home, label: "Home", index: "01" },
-  { href: routes.experience, label: "Experience", index: "02" },
+  { href: routes.about, label: "About", index: "02" },
   { href: routes.story, label: "Story", index: "03" },
   { href: routes.characters, label: "Characters", index: "04" },
   { href: routes.collection, label: "Collection", index: "05" },

@@ -317,7 +317,7 @@ export function PortalHero({ pairs }: { pairs: readonly PortalPair[] }) {
           <HeroTitle id={TITLE_ID} play={intro} />
           <p className={cn(styles.line, styles.rise)}>Someone is always waiting.</p>
           <div className={cn(styles.cta, styles.rise)}>
-            <StarButton pulse size="lg" href={routes.experience} transitionLabel="Experience">
+            <StarButton pulse size="lg" href={routes.story} transitionLabel="Story">
               Begin the story
             </StarButton>
           </div>

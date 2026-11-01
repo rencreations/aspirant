@@ -18,7 +18,7 @@ const path = (page: string, side: "left" | "right") => `/img/menu/${page}-${side
 
 export const MENU_PAIRS: Readonly<Record<string, MenuPair>> = {
   [routes.home]: { left: path("home", "left"), right: path("home", "right"), tint: "#ffdcc8" },
-  [routes.experience]: {
+  [routes.about]: {
     left: path("experience", "left"),
     right: path("experience", "right"),
     tint: "#ffd0e0",

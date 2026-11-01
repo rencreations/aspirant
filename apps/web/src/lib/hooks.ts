@@ -451,6 +451,13 @@ export function useScrollProgress(onProgress: (progress: number) => void): void 
 /** Fired on window after a page transition reveals the new page. */
 export const NAVIGATED_EVENT = "aspirants:navigated";
 
+/**
+ * Fired on window by a page transition when the new page is ready and the scroll has been put back
+ * at the top, just before the curtain opens on it. A page that scrolls to a place named in the
+ * address (a chapter, a paragraph) does it again then, because the transition has just reset it.
+ */
+export const REVEAL_EVENT = "aspirants:reveal";
+
 type ThemeName = "storm" | "daybreak";
 
 /**

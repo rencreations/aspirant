@@ -15,7 +15,7 @@ import {
 import { LogoCurtain, type CurtainHandle } from "@/components/curtain/logo-curtain";
 import { useLenis } from "@/components/smooth-scroll";
 import { audio } from "@/lib/audio";
-import { NAVIGATED_EVENT } from "@/lib/hooks";
+import { NAVIGATED_EVENT, REVEAL_EVENT } from "@/lib/hooks";
 import { OFFLINE_BLOCKED_EVENT, isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
 import { runPreload, type PreloadProgress } from "@/lib/preload";
@@ -29,7 +29,7 @@ const LOADING_STATE_AFTER_MS = 500;
 const BOOT_MIN_MS = 1500;
 
 export interface PushOptions {
-  /** Short name of the destination, for example "Experience". Shown in the loading state. */
+  /** Short name of the destination, for example "Story". Shown in the loading state. */
   label?: string;
 }
 
@@ -202,6 +202,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         }
         scrollTo(0, { immediate: true });
         window.scrollTo(0, 0);
+        window.dispatchEvent(new Event(REVEAL_EVENT));
         focusMain();
         audio.blip("star");
         // Zoom in: a letter window grows until it fills the screen with the new page.

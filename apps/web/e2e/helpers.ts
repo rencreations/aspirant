@@ -3,8 +3,10 @@ import { expect, type Page } from "@playwright/test";
 /** Routes covered by the smoke and accessibility specs (trailing slash, no base path). */
 export const ROUTES = [
   "/",
-  "/experience/",
+  "/about/",
   "/story/",
+  "/story/part-01/",
+  "/story/part-12/",
   "/character/",
   "/character/ruby/",
   "/character/angela/",
@@ -34,7 +36,7 @@ export const ROUTES = [
  * there: wait for `load` and a moment instead of `networkidle`.
  */
 export function streamsVideo(route: string): boolean {
-  return /^\/character\/(selena|obsidia|vexana|guinevere)\//.test(route);
+  return /^\/(character\/(selena|obsidia|vexana|guinevere)\/|story\/$)/.test(route);
 }
 
 /** Resolve a site path against the baseURL (which may include a base path). */

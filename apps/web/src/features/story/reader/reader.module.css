@@ -1,0 +1,576 @@
+/*
+ * The reader: the story as plain text on one plain colour. White in the light theme, near black in
+ * the dark one, the same for every Part and every chapter; the visitor picks the theme in the
+ * reading settings. Narration in Instrument Serif at a fluid size with a measure of about 62
+ * characters. Nothing sits behind the text and nothing follows the reader down the page.
+ */
+
+.reader {
+  --rd-scale: 1;
+  --rd-fs: calc(var(--rd-scale) * clamp(1.1875rem, 1.02rem + 0.62vw, 1.625rem));
+  --rd-lh: 1.6;
+  --rd-measure: 26.5em;
+  --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0C53.6 33.2 66.8 46.4 100 50C66.8 53.6 53.6 66.8 50 100C46.4 66.8 33.2 53.6 0 50C33.2 46.4 46.4 33.2 50 0Z'/%3E%3C/svg%3E");
+  position: relative;
+  min-height: 100vh;
+  background: var(--rd-bg);
+  color: var(--text);
+  /* Clip anything that bleeds sideways without making a scroll container. */
+  overflow-x: clip;
+}
+
+/* The two themes of the reader: plain white, or the site's void black. */
+.reader[data-theme="daybreak"] {
+  --rd-bg: #fff;
+}
+
+.reader[data-theme="storm"] {
+  --rd-bg: var(--ink);
+}
+
+/* The text column ----------------------------------------------------------------------- */
+.column {
+  --col-pad: var(--gutter);
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  margin-inline: auto;
+  padding-inline: var(--col-pad);
+  font-family: var(--font-serif-stack);
+  font-size: var(--rd-fs);
+  line-height: var(--rd-lh);
+  letter-spacing: 0.002em;
+}
+
+@media (min-width: 56.3125em) {
+  .column {
+    --col-pad: 2.25em;
+  }
+}
+
+/* The heading of a Part ------------------------------------------------------------------ */
+.partHead {
+  padding-block: calc(var(--nav-h) + clamp(3.5rem, 12vh, 7rem)) clamp(2rem, 6vh, 4rem);
+}
+
+.partLabel,
+.frontKicker,
+.headLabel {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.partTitle,
+.frontTitle,
+.headTitle {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.partTitle {
+  font-size: calc(var(--rd-scale) * clamp(2.75rem, 1.6rem + 5.4vw, 6.5rem));
+}
+
+.partTitle:focus,
+.headTitle:focus {
+  outline: none;
+}
+
+.headTitle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 6px;
+}
+
+.partSetting,
+.timeNote {
+  margin: 1rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.15em;
+  line-height: 1.35;
+  color: var(--text-dim);
+  text-wrap: balance;
+}
+
+.epigraph {
+  margin: 2rem 0 0;
+  padding: 1.2rem 0;
+  border-block: 1px solid var(--line);
+}
+
+.epigraph blockquote {
+  margin: 0;
+}
+
+.epigraph p {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.epigraph figcaption {
+  margin-top: 0.8rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.partMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.5rem 0 0;
+}
+
+/* Before you begin ----------------------------------------------------------------------- */
+.front {
+  padding-block: 0 clamp(2rem, 6vh, 4rem);
+}
+
+.frontTitle {
+  font-size: calc(var(--rd-scale) * clamp(1.75rem, 1.2rem + 2.2vw, 3rem));
+}
+
+.frontItem {
+  margin-top: 2rem;
+}
+
+.frontItemTitle {
+  margin: 0;
+  font-family: var(--font-body-stack);
+  font-weight: 600;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.frontText {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1em;
+  color: var(--text);
+}
+
+.people {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.personArt {
+  flex: none;
+  width: 4.25rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.personArt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.personText {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  font-family: var(--font-body-stack);
+}
+
+.personName {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.personLine {
+  font-size: var(--step-0);
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+/* Chapters ------------------------------------------------------------------------------- */
+.chapter {
+  position: relative;
+  scroll-margin-top: calc(var(--nav-h) + 3.5rem);
+}
+
+.head {
+  padding-block: clamp(3rem, 9vh, 6rem) 1.4em;
+  font-family: var(--font-body-stack);
+}
+
+.chapter + .chapter .head {
+  margin-top: clamp(2.5rem, 8vh, 5rem);
+  border-top: 1px solid var(--line);
+}
+
+.headTitle {
+  font-size: calc(var(--rd-scale) * clamp(2rem, 1.4rem + 2.8vw, 4rem));
+}
+
+/* An interlude is the same page in italics: a short transmission between two chapters. */
+.interlude .p {
+  font-style: italic;
+}
+
+/* Paragraphs ---------------------------------------------------------------------------- */
+.body {
+  padding-bottom: 1.5em;
+}
+
+.p {
+  margin: 0 0 0.95em;
+  color: var(--text);
+  hanging-punctuation: first;
+}
+
+.p em {
+  font-style: italic;
+}
+
+.p strong {
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  -webkit-text-stroke: 0.025em currentColor;
+}
+
+.seg {
+  display: inline;
+}
+
+/* Entity triggers: shared HoverCard look, tuned for running serif text. */
+.ent {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  border-radius: 0;
+}
+
+/* The poem (the old skipping rhyme). */
+.poem {
+  margin: 1.6em 0 1.8em;
+  padding: 0.2em 0 0.2em 1.4em;
+  border-left: 1px solid var(--line-strong);
+  font-style: italic;
+}
+
+.poemLine {
+  display: inline;
+}
+
+/* Scene break: a four-pointed star between hairlines. */
+.sceneBreak {
+  position: relative;
+  height: 1em;
+  margin: 2.2em auto;
+  border: 0;
+  background:
+    linear-gradient(var(--line-strong), var(--line-strong)) left center / calc(50% - 1.4em) 1px
+      no-repeat,
+    linear-gradient(var(--line-strong), var(--line-strong)) right center / calc(50% - 1.4em) 1px
+      no-repeat;
+  overflow: visible;
+}
+
+.sceneBreak::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.8em;
+  height: 0.8em;
+  translate: -50% -50%;
+  background: var(--text-dim);
+  mask: var(--star) center / contain no-repeat;
+}
+
+/* The end of the story ------------------------------------------------------------------- */
+.end {
+  margin-top: clamp(3rem, 8vh, 5rem);
+  padding-block: clamp(3rem, 8vh, 5rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.end:focus {
+  outline: none;
+}
+
+.sealed {
+  display: grid;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.file {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fileQuestion {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: 0.6rem;
+  font-family: var(--font-serif-stack);
+  font-size: 1.1em;
+  line-height: 1.35;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.fileBody {
+  margin: 0.2rem 0 0.8rem;
+  color: var(--text);
+}
+
+.fileStatus {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.theEnd {
+  margin: clamp(3rem, 8vh, 5rem) 0 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: calc(var(--rd-scale) * clamp(2rem, 1.4rem + 2.8vw, 4rem));
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* The way on, at the end of a Part --------------------------------------------------------- */
+.partNav {
+  margin-top: clamp(3rem, 8vh, 5rem);
+  padding-block: clamp(3rem, 8vh, 5rem) clamp(4rem, 12vh, 8rem);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-body-stack);
+}
+
+.partNext {
+  display: grid;
+  gap: 0.35rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.partNext:hover,
+.partNext:focus-visible {
+  border-color: var(--text);
+  transform: translateY(-2px);
+}
+
+.partNavKicker {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.partNavLabel {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.4rem + 2.8vw, 4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.partNavTitle {
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  color: var(--text-dim);
+}
+
+.partNavRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.partNavLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.partNavLink:hover,
+.partNavLink:focus-visible {
+  color: var(--text);
+}
+
+/* The shared entity card (extends the shell HoverCard) ----------------------------------- */
+.entCard {
+  width: min(21rem, calc(100vw - 16px));
+  padding: 0 0 1rem;
+}
+
+.cardArt {
+  display: grid;
+  place-items: center;
+  height: 7.25rem;
+  margin: 1px 1px 0.9rem;
+  overflow: hidden;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  clip-path: polygon(11px 0, 100% 0, 100% 100%, 0 100%, 0 11px);
+}
+
+.cardArt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardArt:has(svg) {
+  height: 4.75rem;
+}
+
+.cardArt svg {
+  width: 3.25rem;
+  height: 3.25rem;
+}
+
+.cardText {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0 1.05rem;
+}
+
+.cardKicker {
+  color: var(--accent);
+}
+
+.cardName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.cardShort {
+  color: var(--text-dim);
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin-top: 0.8rem;
+  padding: 0 1.05rem;
+}
+
+.cardVoice {
+  display: grid;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.cardButton {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.45rem 0.9rem 0.45rem 0.7rem;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cardButton svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent);
+}
+
+.cardButton[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.cardButton[aria-pressed="true"] svg {
+  color: inherit;
+}
+
+.cardCaption {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.cardHint {
+  font-family: var(--font-mono-stack);
+  font-style: normal;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--step--1);
+  font-weight: 600;
+}

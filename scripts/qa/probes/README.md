@@ -5,7 +5,7 @@ Small scripts that open the real site in a real Chrome and print or photograph w
 - Run them with plain `node`, from the repository root, against a running site. `BASE` is the address (default `http://localhost:3000`, so serve the production build first: `pnpm build`, then `pnpm start`). Use `BASE=https://aspirant.cc` for the live site.
 - They need Chrome installed (Playwright's bundled Chromium cannot play H.264) and Playwright from `apps/web` (`pnpm install` is enough).
 - Git Bash turns a lone `/` argument into a Windows path: put `MSYS_NO_PATHCONV=1` in front of the command when a route is passed in an environment variable.
-- `serve` (what `pnpm start` uses) answers 404 for a Next prefetch file such as `/experience/__next.experience.__PAGE__.txt`. That one console error is local-only noise (the live site and the e2e server do not have it).
+- `serve` (what `pnpm start` uses) answers 404 for a Next prefetch file such as `/story/__next.story.__PAGE__.txt`. That one console error is local-only noise (the live site and the e2e server do not have it).
 - Files they write (screenshots) go to `OUT`, by default the `aspirant-probes` folder in the temp folder.
 
 | Script            | Answers                                                                              |

@@ -1,0 +1,195 @@
+/*
+ * The first screen of the story page: a film that fills the display, a subtle shade over it, the
+ * title in the middle, the ways in below it and a cue to scroll. Only transform and opacity move.
+ * Nothing here uses a filter, a blend mode or a backdrop blur over the film.
+ */
+.hero {
+  position: relative;
+  height: var(--lvh, 100vh);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ink);
+  color: #fff;
+}
+
+.film {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  background: var(--ink);
+}
+
+/* A subtle shade: even over the whole picture, a little deeper behind the title and at the bottom. */
+.shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 48%, rgb(5 7 12 / 0.38), transparent 75%),
+    linear-gradient(to bottom, rgb(5 7 12 / 0.34), rgb(5 7 12 / 0.12) 32%, rgb(5 7 12 / 0.5));
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(1.5rem, 5vh, 3.5rem);
+  padding: calc(var(--nav-h) + 1rem) var(--gutter) 5.5rem;
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+/* The title ------------------------------------------------------------------------------- */
+.title {
+  --fs: clamp(3rem, min(12vw, 28vh), 17rem);
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: var(--fs);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0 0.28em;
+}
+
+.word {
+  display: inline-flex;
+}
+
+@media (max-width: 40em) {
+  .title {
+    --fs: clamp(3rem, min(25vw, 22vh), 9rem);
+  }
+
+  .words {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.letter {
+  display: inline-block;
+}
+
+.glyph {
+  display: inline-block;
+  will-change: transform;
+  text-shadow:
+    0 0 0.4em rgb(5 7 12 / 0.55),
+    0 0.02em 0.07em rgb(5 7 12 / 0.45);
+}
+
+/* The letters come in one after the other (only when scripts run, so the title never hides without them). */
+:global(html.js) .title[data-play="false"] .letter {
+  opacity: 0;
+  transform: translateY(0.32em);
+}
+
+:global(html.js) .title .letter {
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-out);
+  transition-delay: calc(var(--i) * 45ms);
+}
+
+/* The ways in ------------------------------------------------------------------------------ */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem 1.1rem;
+  transition:
+    opacity 0.8s var(--ease-out) 0.5s,
+    transform 0.8s var(--ease-out) 0.5s;
+}
+
+/* Hidden until the saved place has been read, so a fresh button never turns into Continue. */
+:global(html.js) .actions[data-ready="false"],
+:global(html.js) .actions[data-play="false"] {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+}
+
+/* The cue ------------------------------------------------------------------------------------ */
+.cue {
+  position: absolute;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.25rem 1rem;
+  border: 0;
+  background: none;
+  translate: -50% 0;
+  color: rgb(255 255 255 / 0.85);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.9em rgb(5 7 12 / 0.7);
+}
+
+.cue:hover,
+.cue:focus-visible {
+  color: #fff;
+}
+
+.cueLine {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 2.25rem;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.3);
+}
+
+.cueLine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: translateY(-100%);
+  animation: cue-run 2.2s var(--ease-in-out) infinite;
+}
+
+@keyframes cue-run {
+  0% {
+    transform: translateY(-100%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}

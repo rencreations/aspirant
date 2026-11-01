@@ -37,10 +37,10 @@ export default function HomePage() {
       <TwoDoors />
       <NextFooter
         eyebrow="Next"
-        label="Experience"
-        sublabel="The whole story, told as you scroll."
-        href={routes.experience}
-        image="/img/hero-stills/fanny-layla-01.webp"
+        label="About"
+        sublabel="The world: its places, the Cycle, the Enders and what is left open."
+        href={routes.about}
+        image="/img/hero-stills/selena-obsidia-01.webp"
       />
     </>
   );

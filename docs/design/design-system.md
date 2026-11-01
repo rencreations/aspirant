@@ -105,7 +105,7 @@ There is no site footer: every page ends with a `NextFooter`.
 
 ### Routes and the next chain
 
-`/` → `/experience/` → `/story/` → `/character/` → `/collection/` → `/`. Character pages loop in queue order (`fanny` ... `selena` → `fanny`). The static export uses trailing slashes; write hrefs without them (`routes.story` is `"/story"`), Next adds them.
+`/` → `/about/` → `/story/` → `/character/` → `/collection/` → `/`. Character pages loop in queue order (`fanny` ... `selena` → `fanny`). The static export uses trailing slashes; write hrefs without them (`routes.story` is `"/story"`), Next adds them.
 
 ```ts
 import { routes, characterRoute, navItems } from "@/lib/site";
@@ -171,7 +171,7 @@ router.push(routes.collection, { label: "Collection", origin: { x: e.clientX, y:
 <StarButton emblem size="sm" aria-label="Play line 3" aria-pressed={playing} data-cursor="PLAY" />
 ```
 
-**`SoundToggle`**, **`MotionToggle`** `@/components/hud/preference-toggles`: `{ labeled?: boolean; className? }`. `MotionToggle` is in the HUD and the menu. The nav has its own `SoundButton` (below); use these toggles in a page only for an in-context control.
+The nav has its own `SoundButton` (the one switch for sound, in the bar at the top of every page); there is no in-page sound toggle.
 
 ### Text
 
@@ -425,7 +425,7 @@ Primitives that page engineers added to shared code. One line each.
 - The other titles fade back.
 - The two aspirants of that page swap in on the empty left and right of the menu. They are big, they stay where they are (they do not follow the titles), they drift a little with the pointer, and they are art only, no names. With nothing hovered, the pair of the page the visitor is on stays up.
 
-The pairs are the files of the five pages: `home`, `experience`, `story`, `character`, `collection`, each with a left and a right art. Left art faces right and stands on the left, right art faces left and stands on the right.
+The pairs are the files of the five pages: `home`, `experience`, `story`, `character`, `collection`, each with a left and a right art (the art stays with its slot: the second slot, About, shows the `experience-*` pictures, the third, Story, the `story-*` ones). Left art faces right and stands on the left, right art faces left and stands on the right.
 
 **Portrait art** (`scripts/menu/build.py`, output `public/img/menu/<page>-<side>.webp`, 1300 x 1547 each). The sources differ in size, crop and head size, so the script scales each one until the eye-to-chin distance (a "unit", 130 px) is the same, which also makes the bodies the same size (three figures are drawn a little smaller on purpose, around the eye: `SIZE` in the script), and places the eye at the same height on a canvas that runs 4.4 units above the eye and 7.5 below it. Both canvases of a pair are set at the same height in the menu, so the two pairs of eyes sit on one horizontal line and the faces look at each other. No cut shows: the lower body, the outer edge and any edge of a source that is itself a cut (the top of the Character page's left art) fade to transparent inside the file. The eye and chin points are measured by hand on the sources and stored in the script. Rebuild with `python -I scripts/menu/build.py "<source folder>"` (the anaconda Python, Pillow and numpy).
 

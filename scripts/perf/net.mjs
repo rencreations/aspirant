@@ -184,7 +184,7 @@ async function offlineNav() {
   const before = await page.evaluate(() => location.pathname);
   const href = await page.evaluate(() => {
     const a = [...document.querySelectorAll("a[href]")].find((x) =>
-      /\/(experience|story|collection)\/?$/.test(x.getAttribute("href") ?? ""),
+      /\/(about|story|collection)\/?$/.test(x.getAttribute("href") ?? ""),
     );
     return a?.getAttribute("href") ?? null;
   });

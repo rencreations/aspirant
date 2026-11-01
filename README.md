@@ -11,8 +11,9 @@ Live at **https://aspirant.cc**.
 | Route                                        | What it is                                                                                                        |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `/`                                          | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame           |
-| `/experience`                                | The story told by scrolling: the whole short story as a web novel, scenes behind the text, hover cards, toys      |
-| `/story`                                     | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
+| `/about`                                     | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
+| `/story`                                     | Promotes the story: a film and the title, Continue or Start reading, a short description, the chapters, the ten   |
+| `/story/part-01` to `/story/part-12`         | The story itself, one Part to a page, plain text on white (or black), hover cards, the place kept                 |
 | `/character`                                 | The roster wall, ten panels that scroll sideways, opened by a WebGL intro (see `docs/design/roster-intro.md`)     |
 | `/character/{slug}`                          | One page for each of the ten Aspirants. Each pair has its own concept (see below)                                 |
 | `/character/selena/{about,skills,gallery}`   | Selena's three pages, on the same stage as her first screen                                                       |
@@ -93,7 +94,7 @@ The base path is empty because the site is served from the root of its own domai
 ```
 apps/web/src/app/            routes, error pages, sitemap, robots, manifest
 apps/web/src/components/     shared UI: HUD, frames, cursor, audio, transitions, loading and offline guards
-apps/web/src/features/       per-page code: loader, home, experience, story, character (one folder per pair), collection
+apps/web/src/features/       per-page code: loader, home, about, story, character (one folder per pair), collection
 apps/web/src/lib/            loading and media store, audio, hooks
 apps/web/src/content/        typed content: characters, entities, world data, site copy
 apps/web/public/             processed media and data (committed)

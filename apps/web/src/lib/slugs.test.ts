@@ -63,7 +63,7 @@ describe("routes", () => {
   it("lists the five destinations in order", () => {
     expect(navItems.map((n) => n.label)).toEqual([
       "Home",
-      "Experience",
+      "About",
       "Story",
       "Characters",
       "Collection",

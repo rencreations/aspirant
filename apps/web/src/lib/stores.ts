@@ -20,7 +20,7 @@ export interface SiteState {
   /** Theme of the page root (html[data-theme]). Pages set it; not persisted. */
   theme: ThemeName;
   setTheme: (value: ThemeName) => void;
-  /** Last chapter id read in /experience, for "resume where you left off". Persisted. */
+  /** Last chapter id read in /story, for "resume where you left off". Persisted. */
   lastChapter: string | null;
   setLastChapter: (value: string | null) => void;
 }

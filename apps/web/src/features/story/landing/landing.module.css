@@ -1,0 +1,385 @@
+/*
+ * The page that rises over the hero: a short description of the story, the chapter selection and
+ * the ten Aspirants. Plain colour (white in the light theme, the site's black in the dark one, the
+ * same theme as the reader), thin lines and type. Only transform and opacity ever move.
+ */
+.wrap {
+  width: 100%;
+  max-width: 62rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: clamp(4rem, 12vh, 8rem);
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.heading {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 5rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+/* The short description ------------------------------------------------------------------ */
+.brief {
+  padding-top: clamp(5rem, 16vh, 10rem);
+}
+
+.briefText {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 38rem;
+  margin-top: 1.6rem;
+}
+
+.lead {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.9rem);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 1.25rem 1.5rem;
+  margin: clamp(2rem, 6vh, 3.5rem) 0 0;
+  padding: 1.4rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.fact {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.fact dt {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.fact dd {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
+  line-height: 1;
+  color: var(--text);
+}
+
+/* The chapter selection ------------------------------------------------------------------- */
+.chapters {
+  padding-block: clamp(2rem, 6vh, 4rem) clamp(4rem, 12vh, 8rem);
+  scroll-margin-top: 5rem;
+}
+
+/* The place the visitor stopped, pinned above the list with some air below it. */
+.pinned {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  margin: 2rem 0 clamp(2.5rem, 7vh, 4.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--text);
+}
+
+.pinnedKicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.pinnedTitle {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.pinnedLabel {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+
+.pinnedMeta {
+  margin: 0 0 1rem;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+}
+
+.listHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-top: 2rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.listTitle {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.order {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.orderButton {
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line-strong);
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.orderButton:hover {
+  border-color: var(--text);
+}
+
+.orderButton[aria-pressed="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--page-bg);
+}
+
+.listWrap {
+  position: relative;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 4.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.rowLink {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 0.8rem 0.25rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.rowLink:hover,
+.rowLink:focus-visible {
+  transform: translateX(6px);
+}
+
+.rowNum {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--text-dim);
+}
+
+.rowText {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.rowMeta {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.rowArrow {
+  font-family: var(--font-mono-stack);
+  color: var(--text-dim);
+}
+
+.rowLink[data-current="true"] .rowNum,
+.rowLink[data-current="true"] .rowTitle {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+/* Folded: the last rows fade into the page, and a button opens the rest. */
+.fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: min(14rem, 60%);
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--page-bg) 92%);
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* The ten Aspirants ------------------------------------------------------------------------ */
+.characters {
+  padding-block: clamp(2rem, 6vh, 4rem) clamp(4rem, 12vh, 8rem);
+}
+
+.charLead {
+  max-width: 34rem;
+  margin: 1.4rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem) clamp(0.9rem, 2vw, 1.5rem);
+  margin: clamp(2rem, 6vh, 3.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40em) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64em) {
+  .cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .wrap[data-wide="true"] {
+    max-width: 78rem;
+  }
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.cardArt {
+  display: block;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.cardArt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.card:hover .cardArt img,
+.card:focus-visible .cardArt img {
+  transform: scale(1.05);
+}
+
+.cardName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cardAka {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.cardLine {
+  margin-top: 0.3rem;
+  font-family: var(--font-serif-stack);
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--text-dim);
+}
+
+.card:hover .cardName,
+.card:focus-visible .cardName {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}

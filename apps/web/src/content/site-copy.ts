@@ -22,7 +22,7 @@ export const siteCopy = {
 
   nav: {
     home: "Home",
-    experience: "Experience",
+    about: "About",
     story: "Story",
     characters: "Characters",
     collection: "Collection",
@@ -92,12 +92,12 @@ export const siteCopy = {
     theTen: "The ten",
     hallOfFame: "Hall of fame",
     doors: {
-      experience: "Read the whole story",
+      story: "Read the whole story",
       collection: "Open the collection",
     },
   },
 
-  experience: {
+  story: {
     title: "The story",
     part: "Part",
     chapter: "Chapter",
@@ -109,7 +109,7 @@ export const siteCopy = {
     theEnd: "The end, for now.",
   },
 
-  story: {
+  about: {
     title: "The world",
     whereYouAre: "Where you are",
     beforeAndAfter: "Before and after",
@@ -185,8 +185,8 @@ export const siteCopy = {
 
   meta: {
     home: "Ten Aspirants, one academy, and a world that keeps a lamp lit.",
-    experience: "The whole story of Aspirant, told by scrolling, in twelve parts.",
-    story: "Where the story happens, who sends the Enders, and what the story leaves open.",
+    about: "Where the story happens, who sends the Enders, and what the story leaves open.",
+    story: "Read the whole Aspirant story: sixty chapters in twelve parts, one Part to a page.",
     characters: "Meet the ten Aspirants of Selrick Academy.",
     collection: "Films, music, comics, art, fan art and every voice line.",
   },

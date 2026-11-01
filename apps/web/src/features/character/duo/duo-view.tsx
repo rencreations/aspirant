@@ -13,7 +13,7 @@ import { characterRoute } from "@/lib/site";
 
 import { ART } from "../art";
 import { BrokenImages } from "../broken-images";
-import { experienceHref } from "../links";
+import { storyChapterHref } from "@/features/story/chapter-href";
 import { videosFor, voiceDurations } from "../media";
 import type { SpoilerFact } from "../page/spoilers";
 import { Contacts, type ChapterLink, type Contact } from "./contacts/contacts";
@@ -81,7 +81,7 @@ export function DuoView({ who, next }: { who: Who; next: NextCharacter }) {
     const info = chapterInfo(fact.chapterId);
     return {
       text: fact.text,
-      href: experienceHref(fact.chapterId),
+      href: storyChapterHref(fact.chapterId),
       label: info.label,
       title: info.title,
     };
@@ -112,7 +112,7 @@ export function DuoView({ who, next }: { who: Who; next: NextCharacter }) {
     const info = chapterInfo(id);
     return {
       id,
-      href: experienceHref(id),
+      href: storyChapterHref(id),
       number: info.number,
       title: info.title,
       part: info.part,

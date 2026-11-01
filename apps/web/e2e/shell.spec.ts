@@ -24,7 +24,7 @@ test("the menu links navigate and mark the current page", async ({ page, baseURL
   await menu.getByRole("link", { name: /Story/ }).click();
   await settled(page);
   await expect.poll(() => sitePath(page, baseURL)).toBe("/story/");
-  await expect(page.getByRole("heading", { level: 1, name: "Story" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Aspirant Story" })).toBeAttached();
 });
 
 test("the bar stays put while scrolling", async ({ page }) => {
@@ -41,7 +41,7 @@ test("the bar stays put while scrolling", async ({ page }) => {
 });
 
 test("menu keeps focus inside, closes on Escape, restores focus", async ({ page }) => {
-  await page.goto(url("/experience/"));
+  await page.goto(url("/about/"));
   const button = page.getByRole("button", { name: "Open menu" });
   await button.click();
   const menu = page.getByRole("dialog");
@@ -54,7 +54,7 @@ test("menu keeps focus inside, closes on Escape, restores focus", async ({ page 
 });
 
 test("the next-destination chain goes all the way round", async ({ page, baseURL }) => {
-  const chain = ["/", "/experience/", "/story/", "/character/", "/collection/", "/"];
+  const chain = ["/", "/about/", "/story/", "/character/", "/collection/", "/"];
   await page.goto(url("/"));
   for (const next of chain.slice(1)) {
     await page.getByRole("button", { name: /^Continue to/ }).click();
@@ -101,7 +101,7 @@ test("the system reduced-motion setting is ignored: the footer still opens the n
 });
 
 test("the menu has no Reduce motion control", async ({ page }) => {
-  await page.goto(url("/experience/"));
+  await page.goto(url("/about/"));
   await page.getByRole("button", { name: "Open menu" }).click();
   await expect(page.getByRole("button", { name: "Reduce motion" })).toHaveCount(0);
 });

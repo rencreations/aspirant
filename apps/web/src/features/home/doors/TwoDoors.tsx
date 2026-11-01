@@ -8,11 +8,11 @@ import styles from "./doors.module.css";
 
 const DOORS = [
   {
-    href: routes.experience,
+    href: routes.story,
     code: "07 / Door A",
-    label: "Experience",
-    title: siteCopy.home.doors.experience,
-    line: "Sixty chapters in twelve parts, told as you scroll.",
+    label: "Story",
+    title: siteCopy.home.doors.story,
+    line: "Sixty chapters in twelve parts, one Part to a page.",
     image: "/img/hero-stills/fanny-layla-02.webp",
     tone: "daybreak",
   },
@@ -27,7 +27,7 @@ const DOORS = [
   },
 ] as const;
 
-/** Two doors: big portal links to the Experience and the Collection, with a hover reveal. */
+/** Two doors: big portal links to the Story and the Collection, with a hover reveal. */
 export function TwoDoors() {
   return (
     <ThemeZone theme="daybreak" aria-labelledby="doors-title" className={styles.section}>

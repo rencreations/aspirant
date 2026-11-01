@@ -31,6 +31,8 @@ import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinev
 import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
 import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
+import { storyLandingItems } from "@/features/story/landing/preload-items";
+import { readerItems } from "@/features/story/reader/preload-items";
 import {
   chunkItem,
   dataItem,
@@ -78,18 +80,16 @@ export function routeItems(pathname: string): PreloadItem[] {
     ];
   }
 
-  if (path === "/experience") {
-    return [
-      ...shared,
-      chunkItem(
-        "scenes",
-        "Loading the scenes",
-        () => import("@/features/experience/scenes/ScenesLayer"),
-        4,
-      ),
-      dataItem("/data/story/index.json", "Opening the story index", 1),
-      dataItem("/data/story/part-01.json", "Opening Part One", 2),
-    ];
+  if (path === "/story") {
+    // The film behind the title is on the first screen and plays by itself, so it is waited for,
+    // whole. The pictures of the characters far down the page wait in the background.
+    return [...shared, ...storyLandingItems()];
+  }
+
+  if (path.startsWith("/story/")) {
+    // One Part of the story: its text is in the page itself, so only the fonts are waited for. The
+    // small portraits of "Before you begin" (Part One) arrive in the background.
+    return [...shared, ...(path === "/story/part-01" ? readerItems() : [])];
   }
 
   if (path === "/collection") {

@@ -96,7 +96,7 @@ export function BeforeAfter({ contrast }: { contrast: ContrastView }) {
           <figcaption className={styles.cite}>{side.chapter}</figcaption>
         </figure>
 
-        <TLink href={routes.story} className={styles.more} transitionLabel="Story">
+        <TLink href={routes.about} className={styles.more} transitionLabel="About">
           See the world
           <span aria-hidden="true" className={styles.arrow}>
             &rarr;

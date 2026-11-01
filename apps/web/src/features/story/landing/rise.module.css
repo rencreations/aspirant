@@ -1,0 +1,30 @@
+/*
+ * The page that rises over the hero (see rise.tsx). It overlaps the hero's last screen, is above it,
+ * and throws a soft shadow up onto it. It rises narrower than the screen (a scale about its top
+ * middle, written by the script) and is square and full width once it has come.
+ */
+.rise {
+  --lvh: 100vh;
+  --page-bg: #fff;
+  position: relative;
+  z-index: 4;
+  margin-top: calc(-1 * var(--lvh));
+  background: var(--page-bg);
+  color: var(--text);
+  transform-origin: 50% 0;
+  /* The shadow is wanted above the top edge only: a clip region that reaches up and stops at the
+     bottom edge keeps it from spilling over what follows. */
+  box-shadow: 0 -22px 70px rgb(20 14 38 / 0.32);
+  clip-path: inset(-120px 0 0 0);
+  overflow-x: clip;
+}
+
+.rise[data-theme="storm"] {
+  --page-bg: var(--ink);
+}
+
+@supports (height: 100lvh) {
+  .rise {
+    --lvh: 100lvh;
+  }
+}

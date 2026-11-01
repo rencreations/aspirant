@@ -170,7 +170,7 @@ test("before and after: the line is struck on scroll and flips on press", async 
   await expect(strip).toHaveAttribute("data-state", "before");
   await expect(strip.getByRole("link", { name: /See the world/ })).toHaveAttribute(
     "href",
-    /story\/$/,
+    /about\/$/,
   );
 });
 

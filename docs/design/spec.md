@@ -45,8 +45,8 @@ Sections flip between the two, and a pointer can tear a portal from one to the o
 | Route               | Job                                                                                                                                                  |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/`                 | Loader, interactive title, Home: portal-face hero, what Aspirant is, versus stage, roster, hall of fame (fanart), doors to the rest, "next" footer   |
-| `/experience`       | The story, told by scrolling. Narrator, pinned scenes, the whole of `short-v2.md` as a web novel with hover cards                                    |
-| `/story`            | The world explained: places, the Cycle, the Enders hierarchy, before and after contrast, coupling lab, time-order timeline, open questions, glossary |
+| `/story`            | Promotes the story (film, title, Continue or Start reading, chapters, the ten); the story is read one Part to a page at `/story/part-NN`             |
+| `/about`            | The world explained: places, the Cycle, the Enders hierarchy, before and after contrast, coupling lab, time-order timeline, open questions, glossary |
 | `/character`        | Roster of the ten                                                                                                                                    |
 | `/character/[slug]` | One page per Aspirant (10 static pages). Footer shows the next in queue                                                                              |
 | `/collection`       | Archive of films, music, comics, art, fan art, voice lines                                                                                           |
@@ -73,10 +73,12 @@ Both are drawn by one component, the **logo curtain** (`components/curtain/`). T
 4. **Before and after strip.** Two lines, one struck through: "A peaceful world." and "A world that was weighed." Interaction: hover or tap flips them. Links to the full contrast in `/story`.
 5. **The ten.** A horizontal, draggable rail of ten custom frames. Hover tilts and plays a voice line. Link to each page.
 6. **Hall of fame.** Fan art in varied frames, floating with parallax. Click opens a lightbox with artist credit and link. Always credit.
-7. **Two doors.** Experience and Collection as big portals.
-8. **Next footer.** "Next: Experience". Keep scrolling and a ring fills, then the page transitions. Also a visible button and the `N` key.
+7. **Two doors.** Story and Collection as big portals.
+8. **Next footer.** "Next: About". Keep scrolling and a ring fills, then the page transitions. Also a visible button and the `N` key.
 
 ### 4.3 Experience (references: santionispirits.com, oryzo.ai, 2019.makemepulse.com)
+
+> Superseded on 1 Nov 2026: the story is now `/story` (a landing page) and `/story/part-NN` (the text, one Part to a page, plain text with no scenes, one light or dark theme). The scenes, set pieces, narrator effects and the chapter rail described below were removed. See HANDOFF, "The story".
 
 The story told by scrolling. It works like Santioni: you scroll, the narrator continues, scenes change behind the words, and you understand the story without reading anything else.
 

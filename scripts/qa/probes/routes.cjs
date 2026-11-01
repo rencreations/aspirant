@@ -10,7 +10,7 @@ const { BASE, PHONE, launch, throttle } = require("./lib.cjs");
 
 const routes = (
   process.env.ROUTES ||
-  "/,/story/,/character/,/character/vexana/,/character/guinevere/,/character/selena/,/character/obsidia/,/character/ruby/,/character/lesley/,/character/fanny/,/experience/,/collection/"
+  "/,/about/,/story/,/story/part-01/,/character/,/character/vexana/,/character/guinevere/,/character/selena/,/character/obsidia/,/character/ruby/,/character/lesley/,/character/fanny/,/collection/"
 ).split(",");
 const wait = Number(process.env.WAIT || 12);
 

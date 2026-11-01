@@ -12,7 +12,7 @@ import {
 import { TLink } from "@/components/transition/t-link";
 import { VideoCard } from "@/components/video-player/video-card";
 import { getCharacter } from "@/content/characters";
-import { experienceHref } from "@/features/character/links";
+import { storyChapterHref } from "@/features/story/chapter-href";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 
@@ -342,14 +342,14 @@ function StoryBody({ scroller }: { scroller: RefObject<HTMLDivElement | null> })
           {i < built ? s.blocks.map((b, k) => <Block key={k} block={b} />) : null}
           {i < built && s.chapters.length > 0 ? (
             <p className={styles.read}>
-              Read it in the Experience:{" "}
+              Read it in the Story:{" "}
               {s.chapters.map((id, k) => (
                 <span key={id}>
                   {k > 0 ? ", " : ""}
                   <TLink
-                    href={experienceHref(id)}
+                    href={storyChapterHref(id)}
                     className={styles.readLink}
-                    transitionLabel="Experience"
+                    transitionLabel="Story"
                   >
                     {id.startsWith("i-")
                       ? `interlude ${id.slice(-1)}`

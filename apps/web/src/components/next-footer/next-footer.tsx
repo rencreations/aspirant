@@ -14,7 +14,7 @@ import styles from "./next-footer.module.css";
 export interface NextFooterProps {
   /** Small label above the title. Default "Next destination". */
   eyebrow?: string;
-  /** The destination, set huge. For example "Experience" or "Layla". */
+  /** The destination, set huge. For example "Story" or "Layla". */
   label: string;
   /** One line under the title. */
   sublabel?: string;
@@ -36,7 +36,7 @@ const LOCK_MS = 520;
  * to cancel). Wheel, touch and keyboard scrolling all work, and so do the Continue button
  * and the N key.
  *
- * <NextFooter label="Experience" sublabel="The story, told by scrolling." href={routes.experience} />
+ * <NextFooter label="Story" sublabel="Ten Aspirants, sixty chapters." href={routes.story} />
  */
 export function NextFooter({
   eyebrow = "Next destination",
