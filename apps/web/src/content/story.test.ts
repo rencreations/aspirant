@@ -104,13 +104,24 @@ describe("the chapter files", () => {
     }
   });
 
-  it("carry every one of the 88 voice lines of the book", () => {
-    let count = 0;
+  it("carry the lines of the voice tables, and the lines of the films", () => {
+    let tables = 0;
+    let films = 0;
     for (const entry of chapters) {
       const chapter = read<Chapter>(`${entry.id}.json`);
-      count += chapter.blocks.filter((b) => b.t === "p" && b.voice).length;
+      tables += chapter.blocks.filter((b) => b.t === "p" && b.voice).length;
+      for (const b of chapter.blocks) {
+        if (b.t !== "insert" || b.kind !== "voice") continue;
+        films += 1;
+        expect(b.voice, `${entry.id} voice insert`).toBeDefined();
+        expect(exists(b.voice?.src ?? ""), `${entry.id} ${b.voice?.src}`).toBe(true);
+        expect(b.voice?.dur ?? 0, entry.id).toBeGreaterThan(0.3);
+        expect(b.voice?.dur ?? 99, entry.id).toBeLessThanOrEqual(15.5);
+      }
     }
-    expect(count).toBe(88);
+    // The 88 of the first draft, and the few the rewritten scenes use besides.
+    expect(tables).toBeGreaterThanOrEqual(88);
+    expect(films).toBeGreaterThan(0);
   });
 
   it("have no em or en dash anywhere", () => {

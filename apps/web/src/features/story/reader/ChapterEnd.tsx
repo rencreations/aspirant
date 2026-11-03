@@ -25,7 +25,6 @@ export function ChapterEnd({ entry }: { entry: ChapterEntry }) {
           href={chapterHref(next.id)}
           transitionLabel={chapterLabel(next)}
           className={s.endNext}
-          data-theme="storm"
           style={{ "--tint": next.color } as CSSProperties}
           data-cursor="NEXT"
         >
@@ -54,7 +53,6 @@ export function ChapterEnd({ entry }: { entry: ChapterEntry }) {
           href={END_HREF}
           transitionLabel="The end"
           className={s.endNext}
-          data-theme="storm"
           style={{ "--tint": entry.color } as CSSProperties}
           data-cursor="NEXT"
         >

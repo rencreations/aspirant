@@ -24,6 +24,21 @@
   opacity: 1;
 }
 
+/* A page that locks the bar (the story): the bar is either not there at all, over the opening
+   picture, or a plain solid bar in the reading theme. It never fades and never follows the
+   picture behind it. */
+.nav[data-lock="true"]::before {
+  transition: none;
+  background: var(--bg);
+  backdrop-filter: none;
+}
+
+/* Over the opening picture the page name sits on a light plate, like the buttons beside it. */
+.nav[data-lock="true"][data-bare="true"][data-theme="daybreak"] .here {
+  padding: 0.4rem 0.7rem;
+  background: rgb(244 246 249 / 0.88);
+}
+
 /* Vexana's page: no bar at all. Only the buttons, the logo and the text on the right remain, and
    the text takes the tone of whatever is behind it (`NavTone` writes `data-vx-tone`). */
 :global(body:has([data-vexana])) .nav::before {

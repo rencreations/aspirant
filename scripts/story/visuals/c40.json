@@ -22,14 +22,17 @@
     {
       "after": 9,
       "anchor": "We once became",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/relink/footages/00m27s000ms-00m43s000ms/footage.mp4",
-        "t": 12.2,
         "crop": [0, 150, 2560, 930],
         "alt": "Vexana and Guinevere fly side by side through a bright sky, wings and hair streaming behind them.",
-        "credit": "Relink, official film"
+        "credit": "Relink, official film",
+        "type": "clip",
+        "start": 10.84,
+        "end": 12.76,
+        "sound": false,
+        "poster": 1.36
       },
       "caption": "Twin streams of light, soaring toward the heavens."
     },
@@ -92,13 +95,16 @@
     {
       "after": 50,
       "anchor": "A hand found",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/02m45s920ms-02m55s800ms/footage.mp4",
-        "t": 3.7,
         "alt": "In the dark, Vexana holds Guinevere's hand and draws her toward the light.",
-        "credit": "Connection Lost, official film"
+        "credit": "Connection Lost, official film",
+        "type": "clip",
+        "start": 3.0,
+        "end": 4.4,
+        "sound": false,
+        "poster": 0.7
       }
     }
   ]

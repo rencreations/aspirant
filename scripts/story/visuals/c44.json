@@ -42,13 +42,16 @@
     {
       "after": 20,
       "anchor": "Mr. Bunny hung at",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/teaser/footages/00m00s000ms-00m14s040ms/footage.mp4",
-        "t": 2.63,
         "alt": "Chang'e laughs and holds Mr. Bunny up to Lesley, who leans down to look at him.",
-        "credit": "Official teaser, Rekindled Light"
+        "credit": "Official teaser, Rekindled Light",
+        "type": "clip",
+        "start": 2.04,
+        "end": 4.96,
+        "sound": false,
+        "poster": 0.59
       },
       "caption": "Mr. Bunny at the base, before it fell."
     },
@@ -63,6 +66,16 @@
         "alt": "Lesley's eye narrows over the stock of her rifle as she takes aim.",
         "credit": "Official trailer, Rekindled Light"
       }
+    },
+    {
+      "after": 32,
+      "anchor": "\"Over here, Ender!\"",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 95.7,
+      "end": 97.6,
+      "line": "Over here, Ender!"
     }
   ]
 }

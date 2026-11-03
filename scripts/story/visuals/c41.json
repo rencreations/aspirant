@@ -37,28 +37,44 @@
     {
       "after": 22,
       "anchor": "The Storm Citadel came",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 12.95,
         "crop": [0, 136, 1920, 734],
         "alt": "Broken stones lift off a ruined street and hang in the air, the city glowing red beyond.",
-        "credit": "Selena and Obsidia, official trailer"
+        "credit": "Selena and Obsidia, official trailer",
+        "type": "clip",
+        "start": 12.04,
+        "end": 13.46,
+        "sound": false,
+        "poster": 0.91
       }
     },
     {
       "after": 39,
       "anchor": "Obsidia stood at the",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 11.7,
         "crop": [0, 136, 1920, 720],
         "alt": "Obsidia's eyes, one blue and one red, look down.",
-        "credit": "Selena and Obsidia, official trailer"
+        "credit": "Selena and Obsidia, official trailer",
+        "type": "clip",
+        "start": 8.96,
+        "end": 11.96,
+        "sound": false,
+        "poster": 2.74
       }
+    },
+    {
+      "after": 41,
+      "anchor": "\"Shall we begin?\"",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 26.2,
+      "end": 27.5,
+      "line": "Shall we begin?"
     },
     {
       "after": 43,
@@ -77,14 +93,17 @@
     {
       "after": 48,
       "anchor": "She lifted one finger",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 13.0,
         "crop": [0, 136, 1920, 808],
         "alt": "Obsidia stretches out one clawed hand, two small black holes burning at her sides.",
-        "credit": "Selena and Obsidia, official trailer"
+        "credit": "Selena and Obsidia, official trailer",
+        "type": "clip",
+        "start": 12.04,
+        "end": 13.46,
+        "sound": false,
+        "poster": 0.96
       }
     }
   ]

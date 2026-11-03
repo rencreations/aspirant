@@ -43,26 +43,32 @@
     {
       "after": 24,
       "anchor": "Guinevere turned and looked",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m00s000ms-00m14s600ms/footage.webm",
-        "t": 0.9,
         "alt": "Guinevere stands in a bright Academy corridor, one hand out, speaking up for herself.",
-        "credit": "Official interactive drama, Guinevere and Vexana"
+        "credit": "Official interactive drama, Guinevere and Vexana",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.86
       }
     },
     {
       "after": 34,
       "anchor": "For once she did",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
-        "t": 24.0,
         "crop": [160, 0, 1600, 700],
         "alt": "Guinevere stands in the Academy courtyard, frowning a little, the gold star of her Emblem held at her collar.",
-        "credit": "Official interactive drama, Guinevere and Vexana"
+        "credit": "Official interactive drama, Guinevere and Vexana",
+        "type": "clip",
+        "start": 22.8,
+        "end": 25.8,
+        "sound": false,
+        "poster": 1.2
       }
     }
   ]

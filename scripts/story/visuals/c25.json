@@ -18,14 +18,17 @@
     {
       "after": 7,
       "anchor": "Then Selena sat up,",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
-        "t": 5.4,
         "crop": [120, 0, 1680, 945],
         "alt": "Selena's design on a grid: a full suit of armor with a visor, plated joints and blades, notes pinned around it.",
-        "credit": "Official film, Selena"
+        "credit": "Official film, Selena",
+        "type": "clip",
+        "start": 4.11,
+        "end": 6.66,
+        "sound": false,
+        "poster": 1.29
       },
       "caption": "Ender plating, my own design."
     },
@@ -48,14 +51,20 @@
     {
       "after": 19,
       "anchor": "That afternoon they sat",
-      "kind": "place",
-      "label": "The Academy roof",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m34s300ms-00m48s833ms/footage.webm",
-        "t": 8.0,
         "alt": "The empty rooftop of an Academy building, its guardrail against a blue sky with drifting clouds.",
-        "credit": "Official interactive drama, Guinevere and Vexana"
+        "credit": "Official interactive drama, Guinevere and Vexana",
+        "type": "clip",
+        "start": 6.8,
+        "end": 9.8,
+        "sound": false,
+        "poster": 1.2
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Academy roof"
       }
     }
   ]

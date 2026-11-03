@@ -2,12 +2,15 @@
   "chapter": "c35",
   "mood": "Alone on the platforms above the bay, Guinevere finally sees the face she was chasing.",
   "hero": {
-    "type": "frame",
     "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-    "t": 3.6,
     "crop": [0, 0, 2560, 940],
     "alt": "Guinevere glares ahead, a gold star at her collar, the ruined city gray behind her.",
-    "credit": "Official video: Connection Lost"
+    "credit": "Official video: Connection Lost",
+    "type": "clip",
+    "start": 2.4,
+    "end": 5.4,
+    "sound": false,
+    "poster": 1.2
   },
   "heroFocus": "50% 40%",
   "spoiler": false,
@@ -16,26 +19,32 @@
     {
       "after": 3,
       "anchor": "She went in fists",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m00s000ms-00m08s640ms/footage.mp4",
-        "t": 6.3,
         "alt": "Under a storm sky Guinevere fights on a wide stone platform, her two drones at her shoulders, broken towers behind her.",
-        "credit": "Official video: Connection Lost"
+        "credit": "Official video: Connection Lost",
+        "type": "clip",
+        "start": 5.12,
+        "end": 7.32,
+        "sound": false,
+        "poster": 1.18
       }
     },
     {
       "after": 10,
       "anchor": "When the smoke tore,",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
-        "t": 25.3,
         "crop": [0, 0, 2560, 950],
         "alt": "A close view of the woman's face: silver-white hair with a violet streak, violet eyes, a violet mark on her cheek and a small mole beside her mouth.",
-        "credit": "Official video: Connection Lost"
+        "credit": "Official video: Connection Lost",
+        "type": "clip",
+        "start": 24.64,
+        "end": 26.44,
+        "sound": false,
+        "poster": 0.66
       }
     },
     {
@@ -55,6 +64,26 @@
       }
     },
     {
+      "after": 14,
+      "anchor": "\"It can't be.\"",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 24.75,
+      "end": 26.65,
+      "line": "It can't be."
+    },
+    {
+      "after": 16,
+      "anchor": "\"You would never betray",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 29.4,
+      "end": 32.05,
+      "line": "You would never betray us."
+    },
+    {
       "after": 19,
       "anchor": "Light burst out of",
       "kind": "plate",
@@ -65,6 +94,46 @@
         "alt": "Blue lightning bursts out from Guinevere across the platform and throws the Enders around her into the air.",
         "credit": "Official video: Connection Lost"
       }
+    },
+    {
+      "after": 21,
+      "anchor": "\"You haven't changed at",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 33.2,
+      "end": 35.25,
+      "line": "You haven't changed at all."
+    },
+    {
+      "after": 24,
+      "anchor": "\"Have you really forgotten",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 41.8,
+      "end": 45.4,
+      "line": "Have you really forgotten everything, Vexana!"
+    },
+    {
+      "after": 25,
+      "anchor": "\"We made a promise",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 46.2,
+      "end": 49.75,
+      "line": "We made a promise to protect this world."
+    },
+    {
+      "after": 27,
+      "anchor": "\"You were always there",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 59.0,
+      "end": 61.85,
+      "line": "You were always there to pick me up."
     },
     {
       "after": 28,
@@ -81,26 +150,45 @@
     {
       "after": 31,
       "anchor": "Vexana's scream rang off",
-      "kind": "place",
-      "label": "The lower platform",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
-        "t": 1.0,
         "alt": "On a wide platform under a storm, Vexana stands with a wall of Enders at her back, facing Guinevere alone.",
-        "credit": "Official video: Connection Lost"
+        "credit": "Official video: Connection Lost",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.76,
+        "sound": false,
+        "poster": 0.96
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The lower platform"
       }
+    },
+    {
+      "after": 33,
+      "anchor": "\"Why, Vexana...\" Her voice",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 75.2,
+      "end": 78.5,
+      "line": "Why, Vexana... Your emblem is still..."
     },
     {
       "after": 35,
       "anchor": "Over the half-ruined city",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
-        "t": 6.6,
         "alt": "A huge star-shaped tear burns violet across the storm sky while a small figure below looks up at it.",
-        "credit": "Official video: Connection Lost"
+        "credit": "Official video: Connection Lost",
+        "type": "clip",
+        "start": 6.24,
+        "end": 9.24,
+        "sound": false,
+        "poster": 0.36
       }
     }
   ]

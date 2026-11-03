@@ -42,15 +42,38 @@
       }
     },
     {
+      "after": 12,
+      "anchor": "\"You must be what",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 34.85,
+      "end": 39.8,
+      "line": "You must be what humans call 'a friend'! You are now Angela's friend!"
+    },
+    {
+      "after": 13,
+      "anchor": "\"A friend?!...\" Ruby froze.",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 40.58,
+      "end": 42.12,
+      "line": "A friend?!..."
+    },
+    {
       "after": 14,
       "anchor": "Angela held out both",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
-        "t": 23.2,
         "alt": "Angela reaches out to Ruby with a happy smile, and Ruby looks back, caught off guard.",
-        "credit": "Official video, Ruby"
+        "credit": "Official video, Ruby",
+        "type": "clip",
+        "start": 21.88,
+        "end": 24.88,
+        "sound": false,
+        "poster": 1.32
       }
     },
     {
@@ -83,13 +106,16 @@
     {
       "after": 29,
       "anchor": "A month later the",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
-        "t": 0.6,
         "alt": "Angela flies through the air above the training droid amid a burst of pink flame.",
-        "credit": "Official video, Angela"
+        "credit": "Official video, Angela",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.56
       }
     },
     {
@@ -108,27 +134,63 @@
       }
     },
     {
+      "after": 37,
+      "anchor": "\"Does it hurt?\"",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 50.35,
+      "end": 51.3,
+      "line": "Does it hurt?"
+    },
+    {
+      "after": 38,
+      "anchor": "\"What does hurt mean?\"",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 51.5,
+      "end": 53.75,
+      "line": "What does hurt mean?"
+    },
+    {
       "after": 44,
       "anchor": "You're my friend, so",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
-        "t": 15.6,
         "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
-        "credit": "Official video, Angela"
+        "credit": "Official video, Angela",
+        "type": "clip",
+        "start": 14.0,
+        "end": 17.0,
+        "sound": false,
+        "poster": 1.6
       }
+    },
+    {
+      "after": 48,
+      "anchor": "Later, thinking Angela was",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 56.55,
+      "end": 58.85,
+      "line": "What if they find out one day?"
     },
     {
       "after": 52,
       "anchor": "After the sixth return",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
-        "t": 4.4,
         "alt": "A white daisy losing its petals beside a screen that shows Angela and Ruby in the garden.",
-        "credit": "Official video, Ruby"
+        "credit": "Official video, Ruby",
+        "type": "clip",
+        "start": 2.52,
+        "end": 5.52,
+        "sound": false,
+        "poster": 1.88
       }
     }
   ]

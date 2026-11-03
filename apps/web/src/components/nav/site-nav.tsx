@@ -10,6 +10,7 @@ import { TLink } from "@/components/transition/t-link";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useThemeAt } from "@/lib/hooks";
+import { useNavLock } from "@/lib/nav-lock";
 import { isActiveRoute, navItems, routes, siteConfig } from "@/lib/site";
 import { useSiteStore } from "@/lib/stores";
 
@@ -44,7 +45,11 @@ export function SiteNav() {
   const [active, setActive] = useState<number | null>(null);
   const [tints, setTints] = useState<Tint[]>([]);
   const { pause, resume } = useLenis();
-  const theme = useThemeAt((w) => ({ x: w / 2, y: 4 }));
+  const sampled = useThemeAt((w) => ({ x: w / 2, y: 4 }));
+  const lock = useNavLock();
+  // A page can fix the bar's look (the story): then it does not follow what is behind it.
+  const theme = lock.theme ?? sampled;
+  const barShown = lock.theme ? !lock.bare : scrolled;
   const entered = useSiteStore((s) => s.entered);
   const tintId = useRef(0);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -132,7 +137,14 @@ export function SiteNav() {
   };
 
   return (
-    <header className={styles.nav} data-scrolled={scrolled} data-theme={theme} data-overlay="nav">
+    <header
+      className={styles.nav}
+      data-scrolled={barShown}
+      data-theme={theme}
+      data-lock={lock.theme ? "true" : undefined}
+      data-bare={lock.bare ? "true" : undefined}
+      data-overlay="nav"
+    >
       <Dialog.Root
         open={open}
         onOpenChange={(next) => {

@@ -17,52 +17,107 @@
     {
       "after": 2,
       "anchor": "Oro's three powers ruled",
-      "kind": "place",
-      "label": "The Council",
+      "kind": "clip",
       "caption": "Where Oro's three powers cast their votes",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
-        "t": 1.5,
         "alt": "A ring of tall pillars lights up blue around an empty circle under a shaft of light.",
-        "credit": "Ruby character film"
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 0.04,
+        "end": 1.88,
+        "sound": false,
+        "poster": 1.46
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Council"
       }
     },
     {
       "after": 5,
       "anchor": "They make weapons from",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
-        "t": 3.1,
         "alt": "Ruby's father stands in a shaft of light in a dark hall, a fur-collared coat on his shoulders.",
-        "credit": "Ruby character film"
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 1.96,
+        "end": 4.96,
+        "sound": false,
+        "poster": 1.14
       },
       "caption": "Ruby's father"
     },
     {
       "after": 11,
       "anchor": "Forty lines of code",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
-        "t": 11.4,
         "alt": "A red warning square with an android's outline and the word DANGER glows on a dark screen.",
-        "credit": "Ruby character film"
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 10.36,
+        "end": 12.04,
+        "sound": false,
+        "poster": 1.04
       }
+    },
+    {
+      "after": 12,
+      "anchor": "\"The long-awaited moment has",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 67.25,
+      "end": 70.32,
+      "line": "The long-awaited moment has finally come."
+    },
+    {
+      "after": 13,
+      "anchor": "Her fingers were already",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 70.35,
+      "end": 76.8,
+      "line": "Now I just need to activate the trojan in Angela and wait for her to wreak havoc in the android troops."
+    },
+    {
+      "after": 16,
+      "anchor": "\"It might be my",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 76.85,
+      "end": 83.7,
+      "line": "It might be my only chance to leave Oro. They'd need me, Angela's creator, to shut her down."
+    },
+    {
+      "after": 17,
+      "anchor": "\"But what will happen",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 84.1,
+      "end": 87.0,
+      "line": "But what will happen to Angela?"
     },
     {
       "after": 19,
       "anchor": "The hangar was cold.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
-        "t": 7.0,
         "alt": "A line of androids with magenta eyes stands in profile; among them one girl has blue eyes.",
-        "credit": "Ruby character film"
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 5.8,
+        "end": 8.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
@@ -81,17 +136,40 @@
       }
     },
     {
+      "after": 24,
+      "anchor": "Angela looked at her",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/angela/angela-final.mp4",
+      "start": 16.0,
+      "end": 16.85,
+      "line": "Ruby..."
+    },
+    {
       "after": 27,
       "anchor": "It was a doll",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
-        "t": 9.3,
         "alt": "Angela laughs with her hands out as a small doll in her likeness hangs in the air between her and Ruby.",
-        "credit": "Ruby character film"
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 7.0,
+        "end": 10.0,
+        "sound": false,
+        "poster": 2.3
       },
       "caption": "Tetra"
+    },
+    {
+      "after": 28,
+      "anchor": "Angela hugged her hard.",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 92.4,
+      "end": 95.4,
+      "line": "Are we really... friends?!"
     }
   ]
 }

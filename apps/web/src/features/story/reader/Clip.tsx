@@ -16,7 +16,15 @@ import { useAutoplay } from "./use-autoplay";
  * screen, and rests (on its still) otherwise. A clip that kept its own sound has a button that
  * turns it on for as long as the visitor wants; the chapter's music steps back meanwhile.
  */
-export function Clip({ media, caption }: { media: ClipMedia; caption?: string }) {
+export function Clip({
+  media,
+  caption,
+  overlay,
+}: {
+  media: ClipMedia;
+  caption?: string | undefined;
+  overlay?: { kicker?: string; title: string } | undefined;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
   const [heard, setHeard] = useState(false);
   useAutoplay(ref);
@@ -50,7 +58,7 @@ export function Clip({ media, caption }: { media: ClipMedia; caption?: string })
         } as CSSProperties
       }
     >
-      <div className={s.frame} data-theme="storm">
+      <div className={s.frame}>
         <video
           ref={ref}
           className={s.frameVideo}
@@ -65,6 +73,12 @@ export function Clip({ media, caption }: { media: ClipMedia; caption?: string })
         >
           <source src={asset(`/${media.src}`)} type="video/mp4" />
         </video>
+        {overlay && (
+          <p className={s.clipOverlay}>
+            {overlay.kicker && <span className={s.clipOverlayKicker}>{overlay.kicker}</span>}
+            <span className={s.clipOverlayTitle}>{overlay.title}</span>
+          </p>
+        )}
         {media.sound && (
           <button
             type="button"

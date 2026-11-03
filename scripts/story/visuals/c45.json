@@ -24,57 +24,122 @@
   "score": "obsidia-theme",
   "inserts": [
     {
+      "after": 9,
+      "anchor": "\"Even on the path",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/selena/video.mp4",
+      "start": 57.5,
+      "end": 62.85,
+      "line": "Even on the path to destruction, I'm taking the scenic route!"
+    },
+    {
       "after": 13,
       "anchor": "A throne grew out",
-      "kind": "place",
-      "label": "The throne hall",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
-        "t": 1.5,
         "crop": [0, 136, 1920, 734],
         "alt": "A vast dark hall with a throne of pale ribbed plates rising from floor to roof, and one small figure at its foot.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 0.3,
+        "end": 3.3,
+        "sound": false,
+        "poster": 1.2
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The throne hall"
       }
     },
     {
       "after": 22,
       "anchor": "Obsidia came to her",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "t": 8.75,
         "crop": [0, 136, 1920, 734],
         "alt": "Obsidia lays one gloved finger on Selena's cheek while Selena looks back at her.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 8.41,
+        "end": 10.0,
+        "sound": false,
+        "poster": 0.34
       }
+    },
+    {
+      "after": 23,
+      "anchor": "\"Destruction gives rise to",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 47.6,
+      "end": 52.15,
+      "line": "Destruction gives rise to new life. That is the meaning of purification."
+    },
+    {
+      "after": 25,
+      "anchor": "\"Ah... so what should",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 52.9,
+      "end": 57.25,
+      "line": "Ah... so what should I destroy next?"
     },
     {
       "after": 25,
       "anchor": "Ah so what should",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "t": 15.75,
         "crop": [0, 136, 1920, 734],
         "alt": "Selena spreads her arms behind Obsidia's back with a playful smile while Obsidia stares ahead.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 14.55,
+        "end": 17.55,
+        "sound": false,
+        "poster": 1.2
       }
+    },
+    {
+      "after": 27,
+      "anchor": "\"A pawn with no",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 57.35,
+      "end": 61.85,
+      "line": "A pawn with no surprises left, of course."
     },
     {
       "after": 30,
       "anchor": "The chains wrapped Selena's",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "t": 22.62,
         "crop": [0, 136, 1920, 734],
         "alt": "Spiked chains of bone coil around Selena and hold her in the air.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 21.91,
+        "end": 24.91,
+        "sound": false,
+        "poster": 0.71
       }
+    },
+    {
+      "after": 34,
+      "anchor": "\"I'll never be your",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 68.6,
+      "end": 72.65,
+      "line": "I'll never be your puppet again."
     },
     {
       "after": 35,
@@ -92,16 +157,39 @@
       }
     },
     {
+      "after": 36,
+      "anchor": "\"You've grown, Selena.\"",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 76.0,
+      "end": 78.55,
+      "line": "You've grown, Selena."
+    },
+    {
+      "after": 37,
+      "anchor": "\"Did I surprise you?\"",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 79.2,
+      "end": 81.85,
+      "line": "Did I surprise you?"
+    },
+    {
       "after": 38,
       "anchor": "She went in close.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
-        "t": 25.65,
         "crop": [0, 136, 1920, 808],
         "alt": "Obsidia holds Selena off at the length of her long silver and pink weapon.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 24.45,
+        "end": 27.45,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {

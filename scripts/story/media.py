@@ -152,6 +152,26 @@ def make_clip(spec: dict, cid: str, role: str, size_key: str) -> dict:
     }
 
 
+def make_audio(spec: dict, cid: str, role: str) -> dict:
+    """The sound of a stretch of a video (a spoken line), as a small mono AAC file."""
+    key = _key(spec, "audio")
+    rel = f"audio/story/{cid}/{role}-{key}.m4a"
+    out = PUBLIC / rel
+    start, end = float(spec["start"]), float(spec["end"])
+    dur = end - start
+    if not out.exists():
+        out.parent.mkdir(parents=True, exist_ok=True)
+        tmp = out.with_suffix(".part.m4a")
+        af = f"afade=t=in:d=0.02,afade=t=out:st={max(dur - 0.05, 0):.3f}:d=0.05,loudnorm=I=-18:TP=-2:LRA=7"
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.3f}", "-t", f"{dur:.3f}", "-i", str(MEDIA / spec["src"]),
+             "-vn", "-ac", "1", "-ar", "24000", "-af", af, "-c:a", "aac", "-b:a", "40k", str(tmp)],
+            check=True,
+        )
+        tmp.replace(out)
+    return {"slug": spec["speaker"], "n": 0, "src": rel, "dur": round(dur, 2)}
+
+
 def make_thumb(source_im: Image.Image, cid: str, tag: str, sealed_too: bool) -> tuple[str, str]:
     """A 640 wide card picture and its sealed (blurred, dark) twin. Returns both URLs."""
     key = _key(tag, "thumb")

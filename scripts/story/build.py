@@ -124,6 +124,11 @@ class Plan:
         self.futures.append(f)
         return f
 
+    def audio(self, spec, cid, role):
+        f = self.pool.submit(media.make_audio, spec, cid, role)
+        self.futures.append(f)
+        return f
+
     def one(self, spec, cid, role, still_key, clip_key):
         return self.clip(spec, cid, role, clip_key) if spec["type"] == "clip" else self.still(spec, cid, role, still_key)
 
@@ -155,8 +160,15 @@ def build_chapter(ch: storytext.Chapter, vis: dict, plan: Plan, durations: dict)
         for k in ("caption", "label", "character", "title"):
             if ins.get(k):
                 item[k] = plain(ins[k]) if k in ("caption", "label", "title") else ins[k]
+        if ins.get("overlay"):
+            ov = ins["overlay"]
+            item["overlay"] = {k: plain(ov[k]) for k in ("kicker", "title") if ov.get(k)}
         media_f = None
-        if kind == "panels":
+        if kind == "voice":
+            item["_voice"] = plan.audio(ins, cid, f"v{n}")
+            if ins.get("line"):
+                item["caption"] = plain(ins["line"])
+        elif kind == "panels":
             ms = ins["media"] if isinstance(ins["media"], list) else [ins["media"]]
             key = "panel1" if len(ms) == 1 else "panel"
             media_f = [plan.still(m, cid, f"p{n}-{j}", key) for j, m in enumerate(ms)]
@@ -204,6 +216,8 @@ def assemble_chapter(job: dict, durations: dict) -> tuple[dict, dict]:
         rec = resolve(mf)
         if rec is not None:
             item["media"] = rec
+        if "_voice" in item:
+            item["voice"] = item.pop("_voice").result()
         by_after.setdefault(item.pop("after"), []).append(item)
     blocks: list[dict] = []
     for b in ch.blocks:
@@ -284,12 +298,14 @@ def prune(entries: list[dict]) -> None:
         data = json.loads((OUT / f"{e['id']}.json").read_text(encoding="utf-8"))
         add(data["hero"])
         for blk in data["blocks"]:
+            if blk["t"] == "insert" and blk.get("voice"):
+                keep.add(blk["voice"]["src"])
             media_ = blk.get("media") if blk["t"] == "insert" else None
             if media_:
                 for m in media_ if isinstance(media_, list) else [media_]:
                     add(m)
     removed = 0
-    for folder in (PUBLIC / "img" / "story", PUBLIC / "video" / "story"):
+    for folder in (PUBLIC / "img" / "story", PUBLIC / "video" / "story", PUBLIC / "audio" / "story"):
         for f in folder.rglob("*"):
             if f.is_file() and f.parent != folder:  # files directly in video/story belong to hero.py
                 rel = f.relative_to(PUBLIC).as_posix()
@@ -359,7 +375,7 @@ def main() -> int:
     counts = {"images": 0, "clips": 0, "voices": 0}
     for f in sorted(OUT.glob("c[0-9][0-9].json")):
         for blk in json.loads(f.read_text(encoding="utf-8"))["blocks"]:
-            if blk["t"] == "p" and blk.get("voice"):
+            if blk.get("voice"):
                 counts["voices"] += 1
             if blk["t"] == "insert" and blk.get("media"):
                 for m in blk["media"] if isinstance(blk["media"], list) else [blk["media"]]:

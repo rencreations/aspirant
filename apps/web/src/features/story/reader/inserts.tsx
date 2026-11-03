@@ -13,27 +13,15 @@ import { asset } from "@/lib/asset";
 
 import { Clip } from "./Clip";
 import { Credit } from "./Credit";
+import { VoiceLine } from "./VoiceLine";
+import { ZoomImage } from "./viewer";
 import { FilmInsert } from "./FilmInsert";
 import { PORTRAIT_LINES } from "./portrait-copy";
 import { ASPIRANT_NAMES, portraitFor } from "./portraits";
 import s from "./reader.module.css";
 
 function Img({ media, eager = false }: { media: ImageMedia; eager?: boolean }) {
-  return (
-    <>
-      {/* Plain <img>: static export, art already sized. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={asset(`/${media.src}`)}
-        alt={media.alt}
-        width={media.w}
-        height={media.h}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-        draggable={false}
-      />
-    </>
-  );
+  return <ZoomImage media={media} eager={eager} />;
 }
 
 function asImage(media: Media | readonly Media[] | undefined): ImageMedia | null {
@@ -57,7 +45,7 @@ function Plate({ block }: { block: InsertBlock }) {
         } as CSSProperties
       }
     >
-      <div className={s.frame} data-theme="storm">
+      <div className={s.frame}>
         <Img media={media} />
       </div>
       <Credit caption={block.caption} credit={media.credit} />
@@ -70,7 +58,7 @@ function Place({ block }: { block: InsertBlock }) {
   if (!media) return null;
   return (
     <figure className={s.place} style={{ "--tint": media.color } as CSSProperties}>
-      <div className={s.placeFrame} data-theme="storm">
+      <div className={s.placeFrame}>
         <Img media={media} />
         <p className={s.placeName}>
           <span className={s.placeKicker}>The place</span>
@@ -85,14 +73,26 @@ function Place({ block }: { block: InsertBlock }) {
 function Panels({ block }: { block: InsertBlock }) {
   const list = mediaList(block.media).filter((m): m is ImageMedia => m.kind === "image");
   if (!list.length) return null;
+  // The panels of a row share one height (each is as wide as its own shape asks), so a short panel
+  // never sits beside a tall one. The row is as wide as its height allows, and stacks on a phone.
+  const sum = list.reduce((total, m) => total + m.w / m.h, 0);
   return (
-    <figure className={s.panels} data-count={list.length}>
+    <figure
+      className={s.panels}
+      data-count={list.length}
+      style={{ "--sum": sum.toFixed(3) } as CSSProperties}
+    >
       <div className={s.panelRow}>
-        {list.map((m, i) => (
+        {list.map((m) => (
           <div
             key={m.src}
             className={s.panel}
-            style={{ "--ar": `${m.w} / ${m.h}`, "--i": i } as CSSProperties}
+            style={
+              {
+                "--ar": `${m.w} / ${m.h}`,
+                "--ratio": (m.w / m.h).toFixed(3),
+              } as CSSProperties
+            }
           >
             <Img media={m} />
           </div>
@@ -156,7 +156,12 @@ export function Insert({ block }: { block: InsertBlock }) {
       return <FilmInsert block={block} />;
     case "clip": {
       const m = mediaList(block.media)[0];
-      return m?.kind === "clip" ? <Clip media={m} caption={block.caption} /> : null;
+      return m?.kind === "clip" ? (
+        <Clip media={m} caption={block.caption} overlay={block.overlay} />
+      ) : null;
+    }
+    case "voice": {
+      return block.voice ? <VoiceLine voice={block.voice} /> : null;
     }
     default:
       return null;

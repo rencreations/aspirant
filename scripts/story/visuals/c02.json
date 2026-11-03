@@ -1,15 +1,15 @@
 {
   "chapter": "c02",
-  "mood": "Second place for the first time. Layla works through the night to find out how.",
+  "mood": "Second place for the first time. Layla works in secret through the night, then races Fanny for drones.",
   "hero": {
     "type": "frame",
-    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m15s875ms-00m21s875ms/footage.webm",
-    "t": 4.9,
+    "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+    "t": 39.78,
     "crop": [0, 134, 1920, 812],
-    "alt": "Seen from above, Layla bends over her long white cannon on a desk of drawings, working on it with a small tool.",
+    "alt": "Layla aims her long white cannon down a white corridor, a counter glowing by her head.",
     "credit": "Official Layla and Fanny trailer"
   },
-  "heroFocus": "55% 40%",
+  "heroFocus": "28% 45%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
@@ -19,9 +19,9 @@
       "kind": "clip",
       "media": {
         "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-        "start": 2.95,
-        "end": 6.35,
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 25.02,
+        "end": 28.2,
         "crop": [0, 134, 1920, 812],
         "sound": false,
         "poster": 0.6,
@@ -42,45 +42,180 @@
       }
     },
     {
-      "after": 13,
-      "anchor": "Fanny drilled alone in",
-      "kind": "plate",
+      "after": 30,
+      "anchor": "Her blades lit cyan,",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m00s000ms-00m06s750ms/footage.webm",
-        "t": 5.75,
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 28.96,
+        "end": 30.14,
         "crop": [0, 134, 1920, 812],
-        "alt": "Fanny stands in a narrow, bright doorway with both blades raised, her back to a dark hall.",
+        "sound": false,
+        "poster": 0.6,
+        "alt": "Fanny smiles over her glowing blade in a white corridor while the counter by her head ticks from 0150 to 0151.",
+        "credit": "Official Layla and Fanny trailer"
+      },
+      "caption": "Fanny's counter: 150 drones destroyed, then 151."
+    },
+    {
+      "after": 31,
+      "anchor": "She shot down the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 30.16,
+        "end": 33.04,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 1.3,
+        "alt": "Fanny darts off and flies the white corridor upside down, then two thin cables pull her up and she spins with both blades out.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
-      "after": 23,
-      "anchor": "At the week's end",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m28s250ms-00m44s583ms/footage.webm",
-        "t": 1.0,
-        "crop": [0, 134, 1920, 812],
-        "alt": "Fanny smiles over a glowing blade in a white hall, a counter reading 0150 above her.",
-        "credit": "Official Layla and Fanny trailer"
-      },
-      "caption": "0150: the seconds they had."
-    },
-    {
-      "after": 29,
-      "anchor": "The shot pulled left.",
+      "after": 32,
+      "anchor": "Layla's counter read 0148.",
       "kind": "clip",
       "media": {
         "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m28s250ms-00m44s583ms/footage.webm",
-        "start": 6.3,
-        "end": 10.2,
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 33.44,
+        "end": 35.28,
         "crop": [0, 134, 1920, 812],
         "sound": false,
-        "poster": 1.8,
-        "alt": "Layla narrows her eyes, swings up her cannon and fires a crackling full charge down the white hall as Fanny flies in, blade first.",
+        "poster": 1.5,
+        "alt": "A big counter reads 0148, then 0149, as small drones fly down the corridor, then Layla narrows her eyes.",
+        "credit": "Official Layla and Fanny trailer"
+      },
+      "caption": "Layla's counter: 148, then 149."
+    },
+    {
+      "after": 35,
+      "anchor": "She swung the cannon",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 35.3,
+        "end": 36.54,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 0.85,
+        "alt": "Layla swings her long white cannon up and charges it until a ball of light and lightning bursts from the muzzle.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 40,
+      "anchor": "Fanny launched at the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 36.69,
+        "end": 38.22,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 1.0,
+        "alt": "Fanny stands in the corridor with her blades low, then takes off with her rig spread like wings and spins through a burst of orange sparks.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 41,
+      "anchor": "She rose to the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 38.28,
+        "end": 39.52,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 1.0,
+        "alt": "Fanny rises to the ceiling and cuts the small blue drones that fly up at her.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 42,
+      "anchor": "Layla aimed again, low",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 39.92,
+        "end": 41.0,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 0.5,
+        "alt": "Layla runs sideways along the corridor with her cannon raised and spins as drones fly past her.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 43,
+      "anchor": "From the ceiling Fanny",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 41.11,
+        "end": 42.23,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 1.0,
+        "alt": "In a wide shot Fanny drops from the ceiling down the corridor, cutting drones, and slashes a big one as her counter reaches 0157.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 44,
+      "anchor": "Layla tossed her cannon",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 42.36,
+        "end": 43.24,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 0.25,
+        "alt": "Seen from behind, Layla tosses her cannon into the air, catches it with one hand and plants it in a flash of light.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 45,
+      "anchor": "She walked to the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 43.26,
+        "end": 44.54,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 0.75,
+        "alt": "Layla walks to the middle of the corridor, clenches a fist at her chest, then lifts her cannon overhead and brings it down level.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 50,
+      "anchor": "Fanny opened her eyes",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 44.62,
+        "end": 50.62,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 5.7,
+        "alt": "Seen from far above, Fanny lies alone in a sunny green field as birds fly over, then, close up, she opens her eyes and reaches a hand toward the sky.",
         "credit": "Official Layla and Fanny trailer"
       }
     }

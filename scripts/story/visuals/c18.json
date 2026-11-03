@@ -2,11 +2,14 @@
   "chapter": "c18",
   "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
   "hero": {
-    "type": "frame",
     "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
-    "t": 11.6,
     "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
-    "credit": "Official Ruby lore video"
+    "credit": "Official Ruby lore video",
+    "type": "clip",
+    "start": 10.4,
+    "end": 13.4,
+    "sound": false,
+    "poster": 1.2
   },
   "heroFocus": "57% 35%",
   "score": "we-believe",
@@ -14,13 +17,16 @@
     {
       "after": 13,
       "anchor": "The small one spoke,",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
-        "t": 14.9,
         "alt": "A small pink-haired girl looks straight ahead with wide blue eyes.",
-        "credit": "Official Angela lore video"
+        "credit": "Official Angela lore video",
+        "type": "clip",
+        "start": 13.92,
+        "end": 15.84,
+        "sound": false,
+        "poster": 0.98
       },
       "caption": "Angela, small and pink-haired."
     },
@@ -40,13 +46,16 @@
     {
       "after": 25,
       "anchor": "Then it will annex",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
-        "t": 1.6,
         "alt": "A ring of tall lit pillars stands in a dark council chamber.",
-        "credit": "Official Ruby lore video"
+        "credit": "Official Ruby lore video",
+        "type": "clip",
+        "start": 0.04,
+        "end": 1.88,
+        "sound": false,
+        "poster": 1.56
       },
       "caption": "The chamber of Oro's Council."
     },

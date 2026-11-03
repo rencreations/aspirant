@@ -2,16 +2,39 @@
   "chapter": "c32",
   "mood": "A small star flashes above the storm. Guinevere is sure it means Vexana, and nobody else will say so.",
   "hero": {
-    "type": "frame",
     "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
-    "t": 11.4,
     "alt": "In a glass-walled lab over a stormy city, Guinevere holds a telescope to her eye between Ruby and Angela.",
-    "credit": "Official interactive drama: Guinevere and Vexana"
+    "credit": "Official interactive drama: Guinevere and Vexana",
+    "type": "clip",
+    "start": 10.2,
+    "end": 13.2,
+    "sound": false,
+    "poster": 1.2
   },
   "heroFocus": "50% 35%",
   "spoiler": false,
   "score": "guinevere-theme",
   "inserts": [
+    {
+      "after": 2,
+      "anchor": "Angela knelt at an",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+      "start": 3.7,
+      "end": 10.2,
+      "line": "Ruby, the energy readings here are still unstable. The repair process is going slowly."
+    },
+    {
+      "after": 5,
+      "anchor": "\"It's flashing...\" She did",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+      "start": 16.75,
+      "end": 22.15,
+      "line": "It's flashing... Could it be Vexana?"
+    },
     {
       "after": 5,
       "anchor": "It's flashing... She did",
@@ -29,54 +52,96 @@
       }
     },
     {
+      "after": 7,
+      "anchor": "\"Based on the energy",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+      "start": 24.9,
+      "end": 37.0,
+      "line": "Based on the energy waveform, it's likely an Ender. The energy fluctuation from the chest area... is exceptionally powerful. I think it's trying to lure us in."
+    },
+    {
       "after": 8,
       "anchor": "Guinevere touched her collar.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
-        "t": 42.0,
         "alt": "Ruby, Guinevere and Angela stand in the observation lab; Guinevere holds the gold star at her collar.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
+        "credit": "Official interactive drama: Guinevere and Vexana",
+        "type": "clip",
+        "start": 40.8,
+        "end": 43.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 16,
+      "anchor": "\"If the world ends",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/selena/video.mp4",
+      "start": 49.95,
+      "end": 55.7,
+      "line": "If the world ends now, what about my graduation?!"
+    },
+    {
+      "after": 16,
       "anchor": "If the world ends",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-        "t": 0.75,
         "alt": "Selena stares at her sideways phone in class, mouth open, as her papers fly off the desk.",
-        "credit": "Official video: Selena"
+        "credit": "Official video: Selena",
+        "type": "clip",
+        "start": 0.37,
+        "end": 3.37,
+        "sound": false,
+        "poster": 0.38
       }
     },
     {
       "after": 19,
       "anchor": "Detecting an abnormal signal",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m00s000ms-00m14s600ms/footage.webm",
-        "t": 9.6,
         "crop": [0, 0, 1920, 700],
         "alt": "Guinevere stands among students in uniform in an Academy corridor while a boy reads out the news.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
+        "credit": "Official interactive drama: Guinevere and Vexana",
+        "type": "clip",
+        "start": 8.4,
+        "end": 11.4,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 22,
       "anchor": "The wall showed the",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m14s600ms-00m45s867ms/footage.webm",
-        "t": 4.9,
         "crop": [846, 100, 1000, 880],
         "alt": "A glowing panel on the hologram wall reads Vexana: Absent above a line graph.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
+        "credit": "Official interactive drama: Guinevere and Vexana",
+        "type": "clip",
+        "start": 2.13,
+        "end": 5.13,
+        "sound": false,
+        "poster": 2.77
       }
+    },
+    {
+      "after": 24,
+      "anchor": "\"The emblem... it's flashing.",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/3B1.webm",
+      "start": 20.3,
+      "end": 27.8,
+      "line": "The emblem... it's flashing. It's Vexana... she must be at the Singularity. I have to go find her."
     }
   ]
 }

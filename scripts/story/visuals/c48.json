@@ -2,68 +2,123 @@
   "chapter": "c48",
   "mood": "A burning hall, a tilting floor, and a duel that neither side means to lose.",
   "hero": {
-    "type": "frame",
     "src": "selena-and-obsidia/video/trailer/footages/01m45s792ms-02m00s000ms/footage.mp4",
-    "t": 4.4,
     "crop": [0, 136, 1920, 734],
     "alt": "Obsidia stands calm in her burning hall, her weapon and its bone chains coiled around her.",
-    "credit": "Official trailer, Day of Enders"
+    "credit": "Official trailer, Day of Enders",
+    "type": "clip",
+    "start": 1.83,
+    "end": 4.83,
+    "sound": false,
+    "poster": 2.57
   },
   "heroFocus": "52% 35%",
   "spoiler": false,
   "score": "silverbolt-raiko",
   "inserts": [
     {
+      "after": 2,
+      "anchor": "\"Purification is not the",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 109.2,
+      "end": 113.35,
+      "line": "Purification is not the end, it is where everything begins."
+    },
+    {
+      "after": 4,
+      "anchor": "\"I don't care about",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 113.35,
+      "end": 120.15,
+      "line": "I don't care about that! Give me back my freedom!"
+    },
+    {
       "after": 4,
       "anchor": "I dont care about",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/01m45s792ms-02m00s000ms/footage.mp4",
-        "t": 7.8,
         "crop": [0, 136, 1920, 734],
         "alt": "Selena in white and gold armor drives in at Obsidia across the burning hall.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 6.6,
+        "end": 9.6,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 12,
       "anchor": "Obsidia touched the cut.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/02m00s000ms-02m25s125ms/footage.mp4",
-        "t": 0.9,
         "crop": [0, 200, 1920, 670],
         "alt": "Obsidia's face up close, a thin cut across her cheek, the calm gone from her eyes.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.86
       }
     },
     {
       "after": 16,
       "anchor": "Blade met weapon, face",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/02m00s000ms-02m25s125ms/footage.mp4",
-        "t": 17.8,
         "crop": [0, 200, 1920, 670],
         "alt": "Selena's visored face close to Obsidia's shoulder, her glowing blade held fast.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 17.08,
+        "end": 19.0,
+        "sound": false,
+        "poster": 0.72
       }
     },
     {
       "after": 20,
+      "anchor": "\"You do not understand",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 145.5,
+      "end": 149.35,
+      "line": "You do not understand the true power of 'Destruction'..."
+    },
+    {
+      "after": 20,
       "anchor": "You do not understand",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/02m25s125ms-02m38s958ms/footage.mp4",
-        "t": 2.25,
         "crop": [0, 200, 1920, 670],
         "alt": "Obsidia streaks after her through a dark purple sky, trailing chains of light.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 0.67,
+        "end": 3.67,
+        "sound": false,
+        "poster": 1.58
       }
+    },
+    {
+      "after": 22,
+      "anchor": "\"Destruction and faith share",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 150.5,
+      "end": 154.25,
+      "line": "Destruction and faith share the same origin."
     },
     {
       "after": 24,
@@ -81,17 +136,50 @@
       }
     },
     {
+      "after": 25,
+      "anchor": "\"You cannot save humanity.\"",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 155.5,
+      "end": 157.45,
+      "line": "You cannot save humanity."
+    },
+    {
       "after": 28,
       "anchor": "Obsidia held out one",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/02m25s125ms-02m38s958ms/footage.mp4",
-        "t": 10.9,
         "crop": [0, 200, 1920, 670],
         "alt": "A clawed hand of dark plate reaches out through golden light.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 10.54,
+        "end": 13.54,
+        "sound": false,
+        "poster": 0.36
       }
+    },
+    {
+      "after": 29,
+      "anchor": "\"Come back, my puppet.\"",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 162.2,
+      "end": 164.55,
+      "line": "Come back, my puppet."
+    },
+    {
+      "after": 30,
+      "anchor": "\"Sorry, ma'am, but I",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 164.55,
+      "end": 169.35,
+      "line": "Sorry, ma'am, but I still prefer life at the academy!"
     },
     {
       "after": 32,

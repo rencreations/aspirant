@@ -38,42 +38,54 @@
     {
       "after": 11,
       "anchor": "On nights without orders",
-      "kind": "place",
-      "label": "Selrick Academy",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/comic/footages/01m52s800ms-02m06s800ms/footage.mp4",
-        "t": 1.0,
         "crop": [0, 270, 1080, 1500],
         "alt": "At night a tall tower with a lit ring stands over the glowing lights of the city.",
-        "credit": "Official motion comic, Guinevere and Vexana"
+        "credit": "Official motion comic, Guinevere and Vexana",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.26,
+        "sound": false,
+        "poster": 0.96
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Selrick Academy"
       }
     },
     {
       "after": 21,
       "anchor": "Selena sat on the",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
-        "t": 0.9,
         "crop": [0, 136, 1920, 724],
         "alt": "Close on Selena in her school shirt and choker, a lollipop stick between her lips.",
-        "credit": "Official trailer, Selena and Obsidia"
+        "credit": "Official trailer, Selena and Obsidia",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.86
       },
       "caption": "It's not half price."
     },
     {
       "after": 39,
       "anchor": "The suit's eyes lit.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/comic/footages/01m36s600ms-01m52s800ms/footage.mp4",
-        "t": 6.6,
         "crop": [0, 80, 1080, 1200],
         "alt": "Vexana stands with her black-orb staff before a towering Ender mecha suit, its heart-shaped core glowing.",
-        "credit": "Official motion comic, Guinevere and Vexana"
+        "credit": "Official motion comic, Guinevere and Vexana",
+        "type": "clip",
+        "start": 5.4,
+        "end": 8.4,
+        "sound": false,
+        "poster": 1.2
       }
     }
   ]

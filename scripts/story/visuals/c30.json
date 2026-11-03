@@ -2,12 +2,15 @@
   "chapter": "c30",
   "mood": "A raid goes wrong for Fanny and Layla. Ruby holds the last lock on Angela, and lets her choose.",
   "hero": {
-    "type": "frame",
     "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
-    "t": 4.6,
     "crop": [300, 0, 1920, 1080],
     "alt": "A small white flower stands in front of a photo of Ruby and Angela in a sunny field, one petal fallen beside it.",
-    "credit": "Official video: Ruby"
+    "credit": "Official video: Ruby",
+    "type": "clip",
+    "start": 2.52,
+    "end": 5.52,
+    "sound": false,
+    "poster": 2.08
   },
   "heroFocus": "22% 45%",
   "spoiler": false,
@@ -33,40 +36,52 @@
     {
       "after": 21,
       "anchor": "Chocolate isn't a roof.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/footages/01m23s500ms-01m30s708ms/footage.webm",
-        "t": 2.1,
         "crop": [0, 136, 1920, 808],
         "alt": "Fanny looks on with a small smile against an orange evening sky.",
-        "credit": "Official trailer: Layla and Fanny"
+        "credit": "Official trailer: Layla and Fanny",
+        "type": "clip",
+        "start": 0.9,
+        "end": 3.9,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 38,
       "anchor": "In Chang'e's lab, at",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
-        "t": 11.7,
         "crop": [320, 0, 1920, 1080],
         "alt": "Angela's icon glows red inside a square on a dark screen, over the word DANGER and a small triangle.",
-        "credit": "Official video: Ruby"
+        "credit": "Official video: Ruby",
+        "type": "clip",
+        "start": 10.36,
+        "end": 12.04,
+        "sound": false,
+        "poster": 1.34
       }
     },
     {
       "after": 64,
       "anchor": "It rained until the",
-      "kind": "place",
-      "label": "Selrick Academy",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
-        "t": 1.4,
         "alt": "A tall Academy tower rises into dark storm clouds.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
+        "credit": "Official interactive drama: Guinevere and Vexana",
+        "type": "clip",
+        "start": 0.2,
+        "end": 3.2,
+        "sound": false,
+        "poster": 1.2
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Selrick Academy"
       }
     }
   ]

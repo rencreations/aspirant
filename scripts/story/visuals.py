@@ -24,7 +24,7 @@ VISUALS = HERE / "visuals"
 MEDIA = Path(__import__("os").environ.get("ASPIRANT_MEDIA", "D:/ren/aspirant/media"))
 WEB_PUBLIC = HERE.parent.parent / "apps" / "web" / "public"
 
-KINDS = {"plate", "clip", "panels", "place", "portrait", "film"}
+KINDS = {"plate", "clip", "panels", "place", "portrait", "film", "voice"}
 STILL_TYPES = {"image", "frame", "site"}
 SCORES = {
     "we-believe", "guinevere-theme", "vexana-theme", "silverbolt-raiko",
@@ -206,6 +206,29 @@ def validate_chapter(path: Path, chapters: dict[str, storytext.Chapter]) -> tupl
         if len(ins.get("caption", "")) > CAPTION_MAX:
             errors.append(f"{where}: caption longer than {CAPTION_MAX} characters")
         media = ins.get("media")
+        if kind == "voice":
+            if ins.get("speaker") not in SLUGS:
+                errors.append(f"{where}: voice needs speaker in {sorted(SLUGS)}")
+            src = ins.get("src", "")
+            low = str(src).lower()
+            for bad in FORBIDDEN:
+                if bad in low:
+                    errors.append(f"{where}: source not allowed ({bad}): {src}")
+            p = MEDIA / str(src)
+            if not src or not p.exists():
+                errors.append(f"{where}: voice file not found: {src!r}")
+            else:
+                _w, _h, dur = video_info(str(p))
+                s0, e0 = ins.get("start"), ins.get("end")
+                if not isinstance(s0, (int, float)) or not isinstance(e0, (int, float)) or not (0 <= s0 < e0 <= dur + 0.05):
+                    errors.append(f"{where}: voice start/end {s0!r}/{e0!r} outside the file (0 to {dur:.2f})")
+                elif e0 - s0 > 15:
+                    errors.append(f"{where}: voice is {e0 - s0:.1f}s, the limit is 15s")
+            continue
+        if ins.get("overlay") is not None:
+            ov = ins["overlay"]
+            if kind != "clip" or not isinstance(ov, dict) or not str(ov.get("title", "")).strip():
+                errors.append(f"{where}: overlay is only for clips and needs a title")
         if kind == "film":
             pub = ins.get("public")
             if not pub or not (WEB_PUBLIC / pub).exists():

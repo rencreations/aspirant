@@ -55,6 +55,16 @@
       "caption": "Ruby's father, who leads the Decisionmakers of Oro."
     },
     {
+      "after": 22,
+      "anchor": "\"But I have a",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 14.6,
+      "end": 16.4,
+      "line": "But I have a plan..."
+    },
+    {
       "after": 26,
       "anchor": "These were the Council's",
       "kind": "plate",
@@ -70,13 +80,16 @@
     {
       "after": 29,
       "anchor": "So I can hide",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
-        "t": 3.6,
         "alt": "An android girl with pink hair sleeps upright in a cradle of cables, surrounded by glowing screens.",
-        "credit": "Official video, Ruby"
+        "credit": "Official video, Ruby",
+        "type": "clip",
+        "start": 2.4,
+        "end": 5.4,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {

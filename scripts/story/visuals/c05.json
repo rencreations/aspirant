@@ -1,99 +1,188 @@
 {
   "chapter": "c05",
-  "mood": "A gold giant outside the dome, a three-second gap, and one shot that has to land.",
+  "mood": "A gold giant through the dome, a reckless jump, and one shot that has to land.",
   "hero": {
     "type": "clip",
-    "src": "layla-and-fanny/video/official/lore/trailer/footages/01m16s375ms-01m23s500ms/footage.webm",
-    "start": 2.5,
-    "end": 7.1,
-    "crop": [0, 134, 1920, 812],
+    "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+    "start": 88.85,
+    "end": 90.68,
+    "crop": [0, 136, 1920, 808],
     "sound": false,
-    "poster": 1.9,
-    "alt": "Layla and Fanny strike together in a glare of fire and lightning, and a huge blue-white fireball bursts.",
+    "poster": 0.75,
+    "alt": "On the sand at dusk two small figures stand back to back while long-limbed Enders and a tall gray giant close in, the city behind.",
     "credit": "Official Layla and Fanny trailer"
   },
-  "heroFocus": "60% 45%",
+  "heroFocus": "50% 55%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
     {
-      "after": 10,
-      "anchor": "The cannon whined, and",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/28.jpg",
-        "crop": [0, 30, 1000, 2700],
-        "alt": "Layla shouts as her cannon blasts a dark Ender point blank.",
-        "credit": "Official Aspirant comic, page 28"
-      }
-    },
-    {
-      "after": 15,
-      "anchor": "The low sun lit",
+      "after": 5,
+      "anchor": "Behind them the giant",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/01m04s833ms-01m16s375ms/footage.webm",
-        "t": 10.0,
-        "crop": [0, 134, 1920, 812],
-        "alt": "The gold giant's head glows in the low evening sun while Fanny, tiny beside it, flies in with her blades.",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "t": 70.72,
+        "crop": [0, 136, 1920, 808],
+        "alt": "A beam of gold fire blasts out of the giant's armored body.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
-      "after": 23,
-      "anchor": "The seam parted. Fanny",
-      "kind": "plate",
+      "after": 11,
+      "anchor": "The cannon whined, and",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/28.jpg",
+          "crop": [0, 20, 1000, 720],
+          "alt": "Layla shouts as her cannon fires, a green glare filling the frame.",
+          "credit": "Official Aspirant comic, page 28"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/28.jpg",
+          "crop": [0, 760, 1000, 900],
+          "alt": "The shot hits a dark Ender with a blast of light.",
+          "credit": "Official Aspirant comic, page 28"
+        }
+      ]
+    },
+    {
+      "after": 16,
+      "anchor": "Enders stood between her",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/01m04s833ms-01m16s375ms/footage.webm",
-        "t": 4.85,
-        "crop": [0, 134, 1920, 812],
-        "alt": "The gold giant spreads its long arms against the clouds, white light blazing from its chest.",
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 71.0,
+        "end": 72.81,
+        "crop": [0, 136, 1920, 808],
+        "sound": false,
+        "poster": 1.1,
+        "alt": "Fanny races low across the orange sand, blade out, as blasts burst in the ground around her.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 26,
+      "anchor": "Fanny went straight up",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 72.86,
+        "end": 76.35,
+        "crop": [0, 136, 1920, 808],
+        "sound": false,
+        "poster": 2.44,
+        "alt": "Fanny charges and leaps, then hangs tiny in the air before the gold giant's glowing head.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "The chest opened, and",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 76.4,
+        "end": 77.88,
+        "crop": [0, 136, 1920, 808],
+        "sound": false,
+        "poster": 0.4,
+        "alt": "Light flares in the giant's chest and a huge white beam fires.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 28,
+      "anchor": "Something hit Fanny from",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 77.95,
+        "end": 81.6,
+        "crop": [0, 136, 1920, 808],
+        "sound": false,
+        "poster": 2.75,
+        "alt": "Layla, her cannon charging on her shoulder, shoves Fanny aside with one arm and fires a blue-white shot.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
       "after": 29,
-      "anchor": "Of course it was.",
+      "anchor": "Layla fired the full",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/32.jpg",
+        "crop": [0, 560, 1000, 1560],
+        "alt": "Layla fires with a shout, Fanny right beside her, both of them glaring ahead.",
+        "credit": "Official Aspirant comic, page 32"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "Then everything the giant",
       "kind": "clip",
       "media": {
         "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/01m23s500ms-01m30s708ms/footage.webm",
-        "start": 1.5,
-        "end": 4.98,
-        "crop": [0, 134, 1920, 812],
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 81.66,
+        "end": 83.47,
+        "crop": [0, 136, 1920, 808],
         "sound": false,
-        "poster": 0.8,
-        "alt": "At dusk Fanny looks out calmly, then Layla turns her head and gazes over the sand.",
+        "poster": 0.34,
+        "alt": "Two small figures are caught inside a huge fireball that swirls, then bursts in blue-white light.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
-      "after": 32,
-      "anchor": "Each wave tore the",
+      "after": 41,
+      "anchor": "Fanny put her back",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 83.52,
+        "end": 88.52,
+        "crop": [0, 136, 1920, 808],
+        "sound": false,
+        "poster": 2.38,
+        "alt": "Against the dusk sky the two stand back to back; Fanny smiles, and Layla looks out, ready.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 43,
+      "anchor": "They fought back to",
       "kind": "panels",
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/30.jpg",
-        "crop": [0, 40, 1000, 2530],
-        "alt": "Fanny and Layla fight back to back as an Ender's fist smashes down beside them.",
+        "crop": [0, 60, 1000, 1500],
+        "alt": "Layla and Fanny fight shoulder to shoulder as an Ender's huge fist smashes down beside them.",
         "credit": "Official Aspirant comic, page 30"
       }
     },
     {
-      "after": 35,
+      "after": 45,
       "anchor": "They went back in",
       "kind": "place",
       "label": "Energy System",
       "media": {
         "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/16.jpg",
-        "crop": [330, 36, 670, 784],
-        "alt": "The Academy's tall tower, ringed with turning bands, sends a white beam crackling into the evening sky.",
-        "credit": "Official Aspirant comic, page 16"
-      }
+        "src": "_others/places/energy-system.png",
+        "crop": [0, 180, 1280, 362],
+        "alt": "Design of the Energy System: glowing rings turn around a white-cyan beam that rises from the top of the Academy's tallest tower.",
+        "credit": "Official design art"
+      },
+      "caption": "The Energy System feeds the dome."
     }
   ]
 }

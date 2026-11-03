@@ -2,12 +2,15 @@
   "chapter": "c23",
   "mood": "Two handmade gold stars, a summer of firsts, and fireworks from a roof.",
   "hero": {
-    "type": "frame",
     "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-    "t": 15.2,
     "crop": [0, 0, 2560, 900],
     "alt": "On a sunny rooftop Guinevere pins a small gold star to Vexana's collar.",
-    "credit": "Official Connection Lost film"
+    "credit": "Official Connection Lost film",
+    "type": "clip",
+    "start": 13.24,
+    "end": 16.24,
+    "sound": false,
+    "poster": 1.96
   },
   "heroFocus": "45% 35%",
   "score": "guinevere-theme",
@@ -26,17 +29,50 @@
       "caption": "Ears up again."
     },
     {
+      "after": 12,
+      "anchor": "Guinevere dug in her",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 52.0,
+      "end": 54.4,
+      "line": "Here! I made 'em myself, ya know!"
+    },
+    {
+      "after": 14,
+      "anchor": "Guinevere held out her",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 54.8,
+      "end": 58.3,
+      "line": "Look, they light up when our powers are in sync."
+    },
+    {
       "after": 20,
       "anchor": "Weeks later a swarm",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
-        "t": 3.95,
         "crop": [0, 0, 2560, 900],
         "alt": "Guinevere, hurt and swaying, holds her arm under a gray sky in a ruined street.",
-        "credit": "Official Connection Lost film"
+        "credit": "Official Connection Lost film",
+        "type": "clip",
+        "start": 3.72,
+        "end": 6.72,
+        "sound": false,
+        "poster": 0.23
       }
+    },
+    {
+      "after": 22,
+      "anchor": "\"Stay with me, Guinevere.\"",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 64.85,
+      "end": 66.5,
+      "line": "Stay with me, Guinevere."
     },
     {
       "after": 23,
@@ -53,6 +89,16 @@
         "credit": "Official Connection Lost film"
       },
       "caption": "Stay with me, Guinevere."
+    },
+    {
+      "after": 31,
+      "anchor": "\"We'll be just like",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 52.85,
+      "end": 56.7,
+      "line": "We'll be just like fireworks, shining at our absolute brightest!"
     },
     {
       "after": 32,

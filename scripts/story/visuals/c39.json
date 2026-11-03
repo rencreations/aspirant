@@ -38,14 +38,17 @@
     {
       "after": 17,
       "anchor": "Understood, said Fanny",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m38s800ms-01m03s733ms/footage.webm",
-        "t": 13.0,
         "crop": [0, 0, 1920, 705],
         "alt": "Four faces side by side, Layla, Fanny, Ruby and Angela, all calling out at once.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 11.8,
+        "end": 14.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
@@ -64,26 +67,32 @@
     {
       "after": 24,
       "anchor": "They struck the open",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/relink/footages/00m53s400ms-01m00s080ms/footage.mp4",
-        "t": 6.4,
         "crop": [0, 150, 2560, 930],
         "alt": "The two streaks, red-gold and violet, close on the dark giant at the heart of the rift.",
-        "credit": "Relink, official film"
+        "credit": "Relink, official film",
+        "type": "clip",
+        "start": 4.2,
+        "end": 6.64,
+        "sound": false,
+        "poster": 2.2
       }
     },
     {
       "after": 27,
       "anchor": "The Singularity burned on",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 23.0,
         "alt": "The Mother Matrix looms close, crowned and clawed, lightning crawling over its armor.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 22.74,
+        "end": 24.23,
+        "sound": false,
+        "poster": 0.26
       }
     },
     {

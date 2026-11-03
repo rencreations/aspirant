@@ -124,7 +124,7 @@ export interface BreakBlock {
   readonly t: "break";
 }
 
-export type InsertKind = "plate" | "clip" | "panels" | "place" | "portrait" | "film";
+export type InsertKind = "plate" | "clip" | "panels" | "place" | "portrait" | "film" | "voice";
 
 export interface InsertBlock {
   readonly t: "insert";
@@ -138,6 +138,10 @@ export interface InsertBlock {
   readonly public?: string;
   readonly poster?: string;
   readonly title?: string;
+  /** A clip only: text laid over the picture, for example "Meet Obsidia". */
+  readonly overlay?: { readonly kicker?: string; readonly title: string };
+  /** `voice` only: a spoken line taken from the sound of an official film. */
+  readonly voice?: VoiceRef;
   /** `film` only: picture height of the file and its length in seconds. */
   readonly height?: number;
   readonly duration?: number;

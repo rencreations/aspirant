@@ -29,14 +29,17 @@
     {
       "after": 19,
       "anchor": "Something came up in",
-      "kind": "plate",
+      "kind": "clip",
       "caption": "The burning avenue, once before.",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
-        "t": 5.4,
         "alt": "Ruby stands with her scythe in a burning street, a boy behind her.",
-        "credit": "Official trailer, Ruby and Angela"
+        "credit": "Official trailer, Ruby and Angela",
+        "type": "clip",
+        "start": 2.96,
+        "end": 5.96,
+        "sound": false,
+        "poster": 2.44
       }
     },
     {
@@ -57,13 +60,16 @@
     {
       "after": 34,
       "anchor": "Through the gap at",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "ruby-and-angela/video/trailer/footages/02m36s160ms-03m00s760ms/footage.mp4",
-        "t": 19.3,
         "alt": "Ruby's face in the firelight, her visible eye clear and blue.",
-        "credit": "Official trailer, Ruby and Angela"
+        "credit": "Official trailer, Ruby and Angela",
+        "type": "clip",
+        "start": 18.1,
+        "end": 21.1,
+        "sound": false,
+        "poster": 1.2
       }
     }
   ]

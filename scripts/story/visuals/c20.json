@@ -43,30 +43,39 @@
     {
       "after": 27,
       "anchor": "Mr. Bunny is my",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "t": 6.4,
         "alt": "A round white robot with long ears and a black screen face, smiling.",
-        "credit": "Official Lesley and Chang'e trailer"
+        "credit": "Official Lesley and Chang'e trailer",
+        "type": "clip",
+        "start": 5.2,
+        "end": 8.2,
+        "sound": false,
+        "poster": 1.2
       },
       "caption": "Mr. Bunny."
     },
     {
       "after": 36,
       "anchor": "Vexana waited by the",
-      "kind": "place",
-      "label": "The Academy hall",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-        "t": 7.9,
         "crop": [0, 0, 2560, 930],
         "alt": "In a hall of stained glass and great stars, Vexana waits by the wall while Guinevere waves, and Lesley addresses four Aspirants at the altar.",
-        "credit": "Official Connection Lost film"
+        "credit": "Official Connection Lost film",
+        "type": "clip",
+        "start": 6.08,
+        "end": 8.36,
+        "sound": false,
+        "poster": 1.82
       },
-      "caption": "Vexana by the door, Guinevere waving with her whole arm."
+      "caption": "Vexana by the door, Guinevere waving with her whole arm.",
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Academy hall"
+      }
     }
   ]
 }

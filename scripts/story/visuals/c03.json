@@ -5,7 +5,7 @@
     "type": "image",
     "src": "layla-and-fanny/art/comic/official-aspirant-comic/13.jpg",
     "crop": [0, 1325, 1000, 440],
-    "alt": "Fanny, furious, grabs Layla by the collar, the two face to face as sparks fly between them.",
+    "alt": "Fanny, furious, holds Layla by the tie, the two face to face as sparks fly between them.",
     "credit": "Official Aspirant comic, page 13"
   },
   "heroFocus": "62% 50%",
@@ -41,46 +41,112 @@
     {
       "after": 19,
       "anchor": "The last slide was",
-      "kind": "place",
-      "label": "Storm Citadel",
+      "kind": "clip",
+      "overlay": { "kicker": "Joe's last slide", "title": "The Storm Citadel" },
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "start": 0.0,
+        "end": 3.1,
+        "crop": [0, 138, 1920, 804],
+        "sound": false,
+        "poster": 0.6,
+        "alt": "A huge ship of dark blades hangs in a red sky over a city, smaller ships swarming around it.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 25,
+      "anchor": "The VR drill copied",
+      "kind": "panels",
       "media": {
         "type": "image",
-        "src": "_others/places/storm-citadel.png",
-        "crop": [8, 18, 950, 400],
-        "alt": "A vast ship of dark, glowing blocks hangs upside down in the sky above a city.",
-        "credit": "Official art"
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/11.jpg",
+        "crop": [0, 30, 1000, 1530],
+        "alt": "Far off, a girl with long twin tails stands black against a bright doorway, her cannon in hand.",
+        "credit": "Official Aspirant comic, page 11"
       }
     },
     {
       "after": 27,
-      "anchor": "A thin white shot",
+      "anchor": "Gah! He went down",
       "kind": "panels",
       "media": [
         {
           "type": "image",
           "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
-          "crop": [200, 0, 710, 800],
-          "alt": "Roger trips and tumbles to the ground with a cry.",
+          "crop": [230, 30, 760, 1020],
+          "alt": "Roger cries out as he trips and tumbles onto his back.",
           "credit": "Official Aspirant comic, page 4"
         },
         {
           "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/6.jpg",
-          "crop": [0, 155, 760, 1080],
-          "alt": "A shining blue cable wraps the raised arm of a gray Ender and holds it back.",
-          "credit": "Official Aspirant comic, page 6"
-        },
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/10.jpg",
-          "crop": [0, 1150, 1000, 1330],
-          "alt": "A thin white shot streaks past Fanny into the Ender, which bursts into light.",
-          "credit": "Official Aspirant comic, page 10"
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
+          "crop": [0, 1880, 1000, 1550],
+          "alt": "A clawed gray machine rears over Roger as he screams.",
+          "credit": "Official Aspirant comic, page 4"
         }
       ]
     },
     {
-      "after": 34,
+      "after": 28,
+      "anchor": "Fanny's cable shot out",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/5.jpg",
+          "crop": [0, 1900, 1000, 1470],
+          "alt": "A shining blue cable whips around the Ender's raised claw.",
+          "credit": "Official Aspirant comic, page 5"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/6.jpg",
+          "crop": [0, 30, 1000, 1420],
+          "alt": "The cable pulls tight around the Ender's arm and holds it back.",
+          "credit": "Official Aspirant comic, page 6"
+        }
+      ]
+    },
+    {
+      "after": 30,
+      "anchor": "A thin white shot",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/10.jpg",
+        "crop": [0, 1000, 1000, 1500],
+        "alt": "A white streak of cannon fire flashes past Fanny and bursts the Ender apart.",
+        "credit": "Official Aspirant comic, page 10"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "In the doorway Layla",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/12.jpg",
+        "crop": [0, 30, 1000, 1500],
+        "alt": "Layla holds her long cannon up and grins: if you'd led them over earlier, I could've killed them all even faster.",
+        "credit": "Official Aspirant comic, page 12"
+      }
+    },
+    {
+      "after": 38,
+      "anchor": "Dangerous? Layla knocked her",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/13.jpg",
+        "crop": [0, 1880, 1000, 1450],
+        "alt": "Layla slaps Fanny's hand away: Dangerous? What, you doubt my judgment, is that it?",
+        "credit": "Official Aspirant comic, page 13"
+      }
+    },
+    {
+      "after": 41,
       "anchor": "Enough arguing, guys... said",
       "kind": "panels",
       "media": {
@@ -92,14 +158,68 @@
       }
     },
     {
-      "after": 40,
+      "after": 43,
+      "anchor": "Of these 33: Fanny",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/16.jpg",
+          "crop": [0, 30, 1000, 1600],
+          "alt": "The Academy's tallest tower against the evening sky, with the score: 33 enemies taken out within 10 minutes.",
+          "credit": "Official Aspirant comic, page 16"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/17.jpg",
+          "crop": [0, 280, 1000, 1650],
+          "alt": "Giant screens replay the drill above the crowd: Fanny defeated 15, Roger 2, and Layla 16.",
+          "credit": "Official Aspirant comic, page 17"
+        }
+      ]
+    },
+    {
+      "after": 47,
+      "anchor": "Shut it! said",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/18.jpg",
+          "crop": [0, 120, 1000, 700],
+          "alt": "Layla crows that she won while Fanny, beside her, sighs.",
+          "credit": "Official Aspirant comic, page 18"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/18.jpg",
+          "crop": [0, 2330, 1000, 820],
+          "alt": "Among balloons and cheering classmates, Layla snaps: Shut it!",
+          "credit": "Official Aspirant comic, page 18"
+        }
+      ]
+    },
+    {
+      "after": 49,
       "anchor": "The siren began. Ultra",
       "kind": "panels",
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
-        "crop": [0, 30, 1000, 1812],
+        "crop": [0, 30, 1000, 1830],
         "alt": "Red alarms flash across the Academy as students run, a screen warning that Ultra Enders are attacking the Northeastern sector.",
+        "credit": "Official Aspirant comic, page 19"
+      }
+    },
+    {
+      "after": 56,
+      "anchor": "Hey, that's my line",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
+        "crop": [0, 2600, 1000, 834],
+        "alt": "Running under the red alarm lights, Fanny says it is their time to shine and Layla protests that it is her line.",
         "credit": "Official Aspirant comic, page 19"
       }
     }

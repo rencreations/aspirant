@@ -22,15 +22,21 @@
     {
       "after": 15,
       "anchor": "A banner hung over",
-      "kind": "place",
-      "label": "Selrick Academy",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
-        "t": 1.0,
         "crop": [0, 0, 1920, 700],
         "alt": "Students in dark uniforms cross the Academy courtyard under a wide pale blue screen hung on the main building.",
-        "credit": "Official interactive drama, Guinevere and Vexana"
+        "credit": "Official interactive drama, Guinevere and Vexana",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.96
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Selrick Academy"
       }
     },
     {

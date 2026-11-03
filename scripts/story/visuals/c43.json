@@ -26,41 +26,60 @@
     {
       "after": 2,
       "anchor": "Her drones lay beside",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
-        "t": 5.0,
         "crop": [0, 136, 1920, 724],
         "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 3.8,
+        "end": 6.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 13,
       "anchor": "Guinevere knew the face.",
-      "kind": "plate",
+      "kind": "clip",
       "caption": "The Academy stairs, before.",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-        "t": 5.0,
         "crop": [0, 0, 1920, 960],
         "alt": "Selena in uniform leaps down the Academy stairs beside Silverbolt while two classmates come down behind her.",
-        "credit": "Official character film, The Pawn's Gambit"
+        "credit": "Official character film, The Pawn's Gambit",
+        "type": "clip",
+        "start": 3.8,
+        "end": 6.8,
+        "sound": false,
+        "poster": 1.2
       }
+    },
+    {
+      "after": 16,
+      "anchor": "\"Take a good look.",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 34.5,
+      "end": 38.6,
+      "line": "Take a good look. This is the real me."
     },
     {
       "after": 17,
       "anchor": "For a breath, Guinevere",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
-        "t": 5.9,
         "crop": [0, 136, 1920, 724],
         "alt": "Guinevere's face up close, her eyes fixed on someone she knows.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 4.7,
+        "end": 7.7,
+        "sound": false,
+        "poster": 1.2
       }
     }
   ]

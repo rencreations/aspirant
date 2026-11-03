@@ -65,6 +65,16 @@
       ]
     },
     {
+      "after": 26,
+      "anchor": "\"I'm prepared to enter",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+      "start": 4.1,
+      "end": 6.55,
+      "line": "I'm prepared to enter the Singularity."
+    },
+    {
       "after": 27,
       "anchor": "The map went red.",
       "kind": "clip",
@@ -80,15 +90,48 @@
       }
     },
     {
+      "after": 28,
+      "anchor": "Angela stood at the",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+      "start": 19.8,
+      "end": 28.7,
+      "line": "According to the readings, the Singularity's energy signature is spiking rapidly. The Enders are mobilizing. What is our course of action?"
+    },
+    {
+      "after": 29,
+      "anchor": "\"So many hostiles! She",
+      "kind": "voice",
+      "speaker": "fanny",
+      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+      "start": 29.75,
+      "end": 32.7,
+      "line": "So many hostiles! She must be in danger!"
+    },
+    {
+      "after": 30,
+      "anchor": "\"I've already identified several",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+      "start": 33.65,
+      "end": 39.8,
+      "line": "I've already identified several weak points in their defenses. This rescue operation is ready to go!"
+    },
+    {
       "after": 30,
       "anchor": "I've already identified several",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m18s600ms-00m51s700ms/footage.webm",
-        "t": 24.0,
         "alt": "Fanny, Layla and Angela stand together, Layla in the middle with a hand on her chest, ready to go.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
+        "credit": "Official interactive drama: Guinevere and Vexana",
+        "type": "clip",
+        "start": 22.8,
+        "end": 25.8,
+        "sound": false,
+        "poster": 1.2
       }
     }
   ]

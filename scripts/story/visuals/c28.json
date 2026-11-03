@@ -15,6 +15,16 @@
   "score": "we-believe",
   "inserts": [
     {
+      "after": 1,
+      "anchor": "One night Lesley woke",
+      "kind": "voice",
+      "speaker": "change",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 68.8,
+      "end": 70.0,
+      "line": "Leave me alone..."
+    },
+    {
       "after": 6,
       "anchor": "She took the rifle",
       "kind": "plate",
@@ -57,6 +67,16 @@
       "caption": "Where are you now?"
     },
     {
+      "after": 14,
+      "anchor": "\"Over here, Ender!\"",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 95.7,
+      "end": 97.6,
+      "line": "Over here, Ender!"
+    },
+    {
       "after": 17,
       "anchor": "Lesley came down off",
       "kind": "plate",
@@ -68,6 +88,16 @@
         "credit": "Official trailer, Chang'e and Lesley"
       },
       "caption": "Side by side, and the big ones too."
+    },
+    {
+      "after": 18,
+      "anchor": "At dawn Chang'e sat",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 65.95,
+      "end": 66.95,
+      "line": "I'm... sorry."
     },
     {
       "after": 21,

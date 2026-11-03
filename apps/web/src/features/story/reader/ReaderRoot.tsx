@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, type CSSProperties, type React
 
 import { useLenis } from "@/components/smooth-scroll";
 import { NAVIGATED_EVENT, REVEAL_EVENT, useIsoLayoutEffect } from "@/lib/hooks";
+import { useNavLock } from "@/lib/nav-lock";
 
 import { READING_LINE, useReadingEngine } from "./engine";
 import { MiniBar } from "./MiniBar";
@@ -17,6 +18,7 @@ import { loadReaderPrefs, useReaderPrefs, writePrefs, type ReaderTheme } from ".
 import { ReaderContext, type JumpOptions, type ReaderApi } from "./reader-context";
 import s from "./reader.module.css";
 import { releaseScore, startScore } from "./score";
+import { ViewerProvider } from "./viewer";
 
 const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
@@ -80,8 +82,42 @@ export function ReaderRoot({
     loadReaderPrefs();
   }, []);
 
-  // The bar at the top and the rest of the fixed chrome follow the world under them: tell them
-  // the theme has changed once it is on the page.
+  // The bar at the top keeps the reading theme and does not follow the pictures behind it. It has
+  // no background over the chapter's opening picture and is a plain bar from the text on.
+  useIsoLayoutEffect(() => {
+    useNavLock.setState({ theme });
+  }, [theme]);
+
+  useIsoLayoutEffect(() => {
+    const card = rootRef.current?.querySelector<HTMLElement>("[data-card]");
+    if (!card) {
+      useNavLock.setState({ bare: false });
+      return;
+    }
+    const navH =
+      document.querySelector<HTMLElement>('header[data-overlay="nav"]')?.offsetHeight ?? 64;
+    useNavLock.setState({ bare: card.getBoundingClientRect().bottom > navH });
+    const io = new IntersectionObserver(
+      (entries) => {
+        useNavLock.setState({ bare: entries[entries.length - 1]?.isIntersecting ?? false });
+      },
+      { rootMargin: `-${navH}px 0px 0px 0px` },
+    );
+    io.observe(card);
+    return () => {
+      io.disconnect();
+    };
+  }, []);
+
+  useEffect(
+    () => () => {
+      useNavLock.setState({ theme: null, bare: false });
+    },
+    [],
+  );
+
+  // The rest of the fixed chrome follows the world under it: tell it the theme has changed once
+  // it is on the page.
   useEffect(() => {
     window.dispatchEvent(new Event(NAVIGATED_EVENT));
   }, [theme]);
@@ -121,7 +157,7 @@ export function ReaderRoot({
         data-theme={theme}
         style={{ "--rd-scale": textScale } as CSSProperties}
       >
-        {children}
+        <ViewerProvider>{children}</ViewerProvider>
       </div>
       <MiniBar />
     </ReaderContext.Provider>

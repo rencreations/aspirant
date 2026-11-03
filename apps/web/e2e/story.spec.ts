@@ -302,6 +302,67 @@ test.describe("a chapter of the story", () => {
     expect(errors).toEqual([]);
   });
 
+  test("the top bar keeps the reading theme: bare over the title card, solid from the text on", async ({
+    page,
+  }) => {
+    await openChapter(page, "chapter-06");
+    const nav = page.locator('header[data-overlay="nav"]');
+    await expect(nav).toHaveAttribute("data-lock", "true");
+    await expect(nav).toHaveAttribute("data-bare", "true");
+    await expect(nav).toHaveAttribute("data-theme", "daybreak");
+    await expect(nav).toHaveAttribute("data-scrolled", "false");
+    await readTo(page, "c06-p003");
+    await expect(nav).not.toHaveAttribute("data-bare", "true");
+    await expect(nav).toHaveAttribute("data-scrolled", "true");
+    await expect(nav).toHaveAttribute("data-theme", "daybreak");
+    // Over a dark picture it does not turn dark by itself.
+    const dark = page.locator("figure img, figure video").first();
+    await dark.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+    await expect(nav).toHaveAttribute("data-theme", "daybreak");
+    // It follows the visitor's own choice of theme.
+    await page.evaluate(() =>
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, theme: "storm" })),
+    );
+    await page.reload();
+    await expect(page.locator("h1")).toBeVisible();
+    await expect(nav).toHaveAttribute("data-theme", "storm");
+  });
+
+  test("a picture opens in the viewer: press to zoom in, press again to zoom out, outside closes", async ({
+    page,
+  }) => {
+    await openChapter(page, "chapter-06");
+    const open = page.locator("button[aria-label^='View larger']").first();
+    await open.scrollIntoViewIfNeeded();
+    await open.click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    const image = dialog.locator("img");
+    await expect(image).toHaveAttribute("data-zoomed", "false");
+    const box = await image.boundingBox();
+    if (!box) throw new Error("no picture box");
+    await page.mouse.click(box.x + box.width * 0.4, box.y + box.height * 0.4);
+    await expect(image).toHaveAttribute("data-zoomed", "true");
+    // Dragging moves the picture and does not zoom out.
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 80, box.y + box.height / 2 - 60, { steps: 5 });
+    await page.mouse.up();
+    await expect(image).toHaveAttribute("data-zoomed", "true");
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(image).toHaveAttribute("data-zoomed", "false");
+    // The empty space beside the picture closes it; so does Escape.
+    await page.waitForTimeout(700); // the picture is still shrinking back for a moment
+    const height = page.viewportSize()?.height ?? 600;
+    await page.mouse.click(4, Math.round(height / 2));
+    await expect(dialog).toBeHidden();
+    await open.click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+  });
+
   test("the way on at the end: the next chapter", async ({ page, baseURL }) => {
     await openChapter(page, "chapter-05");
     const next = page.locator('nav[aria-label="Chapters"]').getByRole("link").first();

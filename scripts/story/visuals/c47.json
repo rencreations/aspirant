@@ -2,11 +2,14 @@
   "chapter": "c47",
   "mood": "The storm thins, the power stirs, and two old partners on a terrace say what they never said.",
   "hero": {
-    "type": "frame",
     "src": "lesley-and-change/video/official/trailer/footages/01m05s520ms-01m11s000ms/footage.webm",
-    "t": 1.2,
     "alt": "Lesley holds Chang'e close on the stones, and Chang'e, tears behind her glasses, looks out over her shoulder.",
-    "credit": "Official trailer, Rekindled Light"
+    "credit": "Official trailer, Rekindled Light",
+    "type": "clip",
+    "start": 0.04,
+    "end": 3.04,
+    "sound": false,
+    "poster": 1.16
   },
   "heroFocus": "55% 45%",
   "spoiler": false,
@@ -23,6 +26,16 @@
         "alt": "Chang'e sits in a ring of glowing crescents, her hands spread inside a lattice of light.",
         "credit": "Official trailer, Rekindled Light"
       }
+    },
+    {
+      "after": 11,
+      "anchor": "\"Ever since that day,",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/short-trailer/001_3655463914612092690.mp4",
+      "start": 38.45,
+      "end": 41.3,
+      "line": "Ever since that day, I vowed to keep you safe."
     },
     {
       "after": 11,
@@ -52,14 +65,17 @@
     {
       "after": 29,
       "anchor": "Up in the burning",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/02m00s000ms-02m25s125ms/footage.mp4",
-        "t": 21.4,
         "crop": [0, 200, 1920, 670],
         "alt": "Two small figures far apart in the dark, a beam of gold and a storm of magenta lightning meeting between them.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 20.96,
+        "end": 23.96,
+        "sound": false,
+        "poster": 0.44
       }
     }
   ]

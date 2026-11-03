@@ -19,14 +19,17 @@
     {
       "after": 3,
       "anchor": "Once humanity has been",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/obsidia/footages/01m01s000ms-01m14s633ms/footage.mp4",
-        "t": 7.4,
         "crop": [0, 0, 1920, 960],
         "alt": "Obsidia stands in a dark storm with her wings half open, a faint smile on her face.",
-        "credit": "Official video: Obsidia"
+        "credit": "Official video: Obsidia",
+        "type": "clip",
+        "start": 6.2,
+        "end": 9.2,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
@@ -49,29 +52,48 @@
     {
       "after": 9,
       "anchor": "And one pawn in",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/obsidia/footages/00m26s000ms-00m44s100ms/footage.mp4",
-        "t": 3.9,
         "crop": [0, 0, 1920, 960],
         "alt": "A close view of Obsidia's eyes, one violet and one pink, glowing under her hair.",
-        "credit": "Official video: Obsidia"
+        "credit": "Official video: Obsidia",
+        "type": "clip",
+        "start": 2.7,
+        "end": 5.7,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 12,
       "anchor": "The Storm Citadel, the",
-      "kind": "place",
-      "label": "The throne hall",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
-        "t": 0.5,
         "crop": [0, 132, 1920, 728],
         "alt": "A pale throne shaped like a spine rises in a dark hall; a small figure stands at its foot as a long weapon crawls toward her.",
-        "credit": "Official trailer: Selena and Obsidia"
+        "credit": "Official trailer: Selena and Obsidia",
+        "type": "clip",
+        "start": 0.04,
+        "end": 3.04,
+        "sound": false,
+        "poster": 0.46
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The throne hall"
       }
+    },
+    {
+      "after": 15,
+      "anchor": "\"Destruction is mine to",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 0.3,
+      "end": 7.4,
+      "line": "Destruction is mine to command, yet my finest creation... has gone off-script."
     },
     {
       "after": 15,

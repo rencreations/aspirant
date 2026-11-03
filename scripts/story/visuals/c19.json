@@ -16,13 +16,16 @@
     {
       "after": 2,
       "anchor": "Behind her the first",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "t": 9.1,
         "alt": "A framed photo of two scientists holding up a small girl stands on a desk beside a white bunny robot.",
-        "credit": "Official Lesley and Chang'e trailer"
+        "credit": "Official Lesley and Chang'e trailer",
+        "type": "clip",
+        "start": 7.9,
+        "end": 10.9,
+        "sound": false,
+        "poster": 1.2
       },
       "caption": "The photograph on the desk, and Mr. Bunny beside it."
     },
@@ -43,14 +46,37 @@
     {
       "after": 12,
       "anchor": "She knelt at its",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/00m55s480ms-01m05s520ms/footage.webm",
-        "t": 1.6,
         "alt": "Chang'e kneels alone in burning rubble, staring ahead.",
-        "credit": "Official Lesley and Chang'e trailer"
+        "credit": "Official Lesley and Chang'e trailer",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.24,
+        "sound": false,
+        "poster": 1.56
       }
+    },
+    {
+      "after": 16,
+      "anchor": "Chang'e had always held",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 65.9,
+      "end": 67.15,
+      "line": "I'm... sorry."
+    },
+    {
+      "after": 17,
+      "anchor": "\"Leave me alone...\"",
+      "kind": "voice",
+      "speaker": "change",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 68.4,
+      "end": 70.2,
+      "line": "Leave me alone..."
     },
     {
       "after": 17,
@@ -70,26 +96,32 @@
     {
       "after": 25,
       "anchor": "Twice she read it.",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/teaser/footages/00m14s040ms-00m29s720ms/footage.mp4",
-        "t": 13.6,
         "alt": "A page from Chang'e's log: I'll never forgive you, Lesley. You were not here when we needed your protection. They died because of you!",
-        "credit": "Official Lesley and Chang'e teaser"
+        "credit": "Official Lesley and Chang'e teaser",
+        "type": "clip",
+        "start": 12.4,
+        "end": 15.4,
+        "sound": false,
+        "poster": 1.2
       },
       "caption": "The letter she saved and never sent."
     },
     {
       "after": 28,
       "anchor": "He turned his lens",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "t": 18.0,
         "alt": "Lesley stands on a high rooftop with her rifle, looking down at the burning city.",
-        "credit": "Official Lesley and Chang'e trailer"
+        "credit": "Official Lesley and Chang'e trailer",
+        "type": "clip",
+        "start": 15.73,
+        "end": 18.73,
+        "sound": false,
+        "poster": 2.27
       },
       "caption": "Lesley, on a far rooftop, night after night."
     }

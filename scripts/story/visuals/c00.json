@@ -2,46 +2,103 @@
   "chapter": "c00",
   "mood": "Terrinia, 983. A black storm kills the city's lights, and someone watches from inside it.",
   "hero": {
-    "type": "frame",
+    "type": "clip",
     "src": "selena-and-obsidia/video/obsidia/footages/00m17s033ms-00m26s000ms/footage.mp4",
-    "t": 1.05,
-    "crop": [0, 0, 1920, 940],
-    "alt": "Rows of tall, spiked Enders stand under a purple storm full of lightning, a winged shape hanging in the sky above them.",
+    "start": 0.1,
+    "end": 7.6,
+    "crop": [0, 0, 1920, 930],
+    "sound": false,
+    "poster": 1.0,
+    "alt": "Rows of tall, spiked Enders march under a purple storm, a winged figure and a huge black ship above them; then red stars split the sky over a city.",
     "credit": "Official Obsidia film"
   },
-  "heroFocus": "7% 40%",
+  "heroFocus": "35% 45%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/footages/00m17s033ms-00m26s000ms/footage.mp4",
+    "t": 1.1,
+    "crop": [0, 0, 1920, 930],
+    "alt": "Rows of tall, spiked Enders stand under a purple storm full of lightning, a winged shape in the sky above them.",
+    "credit": "Official Obsidia film"
+  },
   "spoiler": false,
   "score": "obsidia-theme",
   "inserts": [
     {
-      "after": 2,
-      "anchor": "The strike had come after midnight",
-      "kind": "portrait",
-      "character": "obsidia"
+      "after": 1,
+      "anchor": "Obsidia watched from the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/obsidia/footages/00m26s000ms-00m44s100ms/footage.mp4",
+        "start": 10.1,
+        "end": 18.05,
+        "crop": [0, 0, 1920, 930],
+        "sound": false,
+        "poster": 3.4,
+        "alt": "A pale-haired woman with dark wings sits in the air over a ruined city, then holds a small black sun of red light in her clawed hand and looks straight out.",
+        "credit": "Official Obsidia film"
+      },
+      "overlay": {
+        "kicker": "Imperatrix Arashi",
+        "title": "Meet Obsidia"
+      }
     },
     {
-      "after": 5,
-      "anchor": "After that, she watched",
-      "kind": "plate",
+      "after": 3,
+      "anchor": "We do not destroy",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+      "start": 17.5,
+      "end": 26.0,
+      "line": "We do not destroy; we merely purge the parasites from the host."
+    },
+    {
+      "after": 4,
+      "anchor": "Her Enders walked the",
+      "kind": "clip",
       "media": {
-        "type": "frame",
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 11.72,
+        "end": 13.9,
+        "crop": [0, 135, 1920, 810],
+        "sound": false,
+        "poster": 1.6,
+        "alt": "Tall black Enders stand against a burning red sky, and one drops down close, its eyes glowing.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 6,
+      "anchor": "After that, she watched",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
         "src": "selena-and-obsidia/video/trailer/footages/02m25s125ms-02m38s958ms/footage.mp4",
-        "t": 3.95,
-        "crop": [240, 200, 1440, 660],
-        "alt": "A lone figure stands on a red, rock-strewn plain before the vast white blaze of a dying star.",
+        "start": 3.75,
+        "end": 6.45,
+        "crop": [240, 205, 1440, 650],
+        "sound": false,
+        "poster": 0.4,
+        "alt": "A lone figure stands before a dying white star, a woman with pale hair and a horned crown looks back, and light spirals into the dark.",
         "credit": "Official Selena and Obsidia trailer"
       },
       "caption": "She watched stars collapse."
     },
     {
-      "after": 14,
-      "anchor": "Obsidia leaned into the rain.",
-      "kind": "plate",
+      "after": 15,
+      "anchor": "Obsidia leaned into the",
+      "kind": "clip",
       "media": {
-        "type": "frame",
+        "type": "clip",
         "src": "selena-and-obsidia/video/obsidia/footages/01m01s000ms-01m14s633ms/footage.mp4",
-        "t": 6.4,
-        "crop": [0, 0, 1671, 940],
+        "start": 5.7,
+        "end": 9.0,
+        "crop": [0, 0, 1920, 930],
+        "sound": false,
+        "poster": 1.0,
         "alt": "Obsidia looks down through the storm and smiles faintly, the wind tearing at her pale hair and dark wings.",
         "credit": "Official Obsidia film"
       }

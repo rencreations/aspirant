@@ -2,12 +2,15 @@
   "chapter": "c08",
   "mood": "Five days into the rebuilding, Layla unlocks a door at midnight and shows Fanny what she has been hiding.",
   "hero": {
-    "type": "frame",
     "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-    "t": 3.0,
     "crop": [0, 132, 1920, 816],
     "alt": "Layla works at a cluttered console in a dark room while small black drones with scowling cyan faces hover around her.",
-    "credit": "Official trailer, Layla and Fanny"
+    "credit": "Official trailer, Layla and Fanny",
+    "type": "clip",
+    "start": 3.0,
+    "end": 6.0,
+    "sound": false,
+    "poster": 0.0
   },
   "heroFocus": "35% 50%",
   "spoiler": false,
@@ -16,14 +19,17 @@
     {
       "after": 24,
       "anchor": "The cannon lay across",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-        "t": 3.15,
         "crop": [1000, 200, 920, 700],
         "alt": "A gold trophy beside a glowing screen, a scowling drone, and a seedling under a glass dome.",
-        "credit": "Official trailer, Layla and Fanny"
+        "credit": "Official trailer, Layla and Fanny",
+        "type": "clip",
+        "start": 3.0,
+        "end": 6.0,
+        "sound": false,
+        "poster": 0.15
       }
     },
     {

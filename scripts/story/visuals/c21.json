@@ -16,30 +16,46 @@
     {
       "after": 10,
       "anchor": "Fanny sighed and hauled",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/footages/00m06s750ms-00m15s875ms/footage.webm",
-        "t": 0.86,
         "crop": [0, 135, 1920, 810],
         "alt": "Seen from above, two girls tumble down a white spiral stairwell.",
-        "credit": "Official Layla and Fanny lore trailer"
+        "credit": "Official Layla and Fanny lore trailer",
+        "type": "clip",
+        "start": 0.04,
+        "end": 1.63,
+        "sound": false,
+        "poster": 0.82
       },
       "caption": "The white spiral stairwell, at a dead run."
     },
     {
       "after": 22,
       "anchor": "Layla was off before",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-        "t": 1.33,
         "crop": [0, 135, 1920, 810],
         "alt": "Fanny and Layla push mops across a shining floor in a sunlit corridor.",
-        "credit": "Official Layla and Fanny lore trailer"
+        "credit": "Official Layla and Fanny lore trailer",
+        "type": "clip",
+        "start": 0.04,
+        "end": 1.58,
+        "sound": false,
+        "poster": 1.29
       },
       "caption": "Detention, at full speed."
+    },
+    {
+      "after": 28,
+      "anchor": "\"Great job, guys!\" she",
+      "kind": "voice",
+      "speaker": "change",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 148.75,
+      "end": 150.55,
+      "line": "Great job, guys!"
     },
     {
       "after": 28,
@@ -59,27 +75,36 @@
     {
       "after": 34,
       "anchor": "I wonder if there's",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/teaser/001_2753027083653666852.mp4",
-        "t": 6.75,
         "crop": [0, 90, 1280, 540],
         "alt": "Fanny lies in the sunny grass and spreads her fingers against the light.",
-        "credit": "Official Layla and Fanny teaser"
+        "credit": "Official Layla and Fanny teaser",
+        "type": "clip",
+        "start": 5.34,
+        "end": 6.99,
+        "sound": false,
+        "poster": 1.41
       }
     },
     {
       "after": 39,
       "anchor": "The Storm Citadel crossed",
-      "kind": "place",
-      "label": "The sea of stars",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
-        "t": 9.4,
         "alt": "Pale planets drift through the dark among cold stars, linked by thin glowing threads.",
-        "credit": "Official Obsidia lore video"
+        "credit": "Official Obsidia lore video",
+        "type": "clip",
+        "start": 8.2,
+        "end": 11.2,
+        "sound": false,
+        "poster": 1.2
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The sea of stars"
       }
     }
   ]

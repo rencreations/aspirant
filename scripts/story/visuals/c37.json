@@ -23,6 +23,16 @@
   "score": "vexana-theme",
   "inserts": [
     {
+      "after": 5,
+      "anchor": "\"The pain, the hate,",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+      "start": 3.2,
+      "end": 7.5,
+      "line": "The pain, the hate, I will bear it all."
+    },
+    {
       "after": 8,
       "anchor": "She fought with one",
       "kind": "clip",
@@ -38,13 +48,16 @@
     {
       "after": 12,
       "anchor": "White light gathered behind",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/relink/footages/00m18s400ms-00m27s000ms/footage.mp4",
-        "t": 1.4,
         "alt": "Vexana lies thrown across the scorched stone among burning rubble, her staff beside her.",
-        "credit": "Relink, official film"
+        "credit": "Relink, official film",
+        "type": "clip",
+        "start": 0.2,
+        "end": 3.2,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
@@ -63,65 +76,113 @@
     {
       "after": 18,
       "anchor": "Enders pressed on it",
-      "kind": "place",
-      "label": "The waterfront",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 1.82,
         "alt": "Four small figures stand on a ruined waterfront under a huge star-shaped rift that lights the whole sky violet.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.56,
+        "sound": false,
+        "poster": 1.78
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The waterfront"
       }
+    },
+    {
+      "after": 20,
+      "anchor": "\"I've locked on to",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 2.8,
+      "end": 4.5,
+      "line": "I've locked on to the enemies!"
     },
     {
       "after": 22,
       "anchor": "Ruby's scythe swung through",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 3.6,
         "crop": [0, 0, 1920, 730],
         "alt": "Fanny and Layla fight back to back, Fanny's blade raised and Layla's cannon leveled.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 2.64,
+        "end": 5.23,
+        "sound": false,
+        "poster": 0.96
       }
     },
     {
       "after": 27,
       "anchor": "Guinevere skidded in on",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 9.6,
         "alt": "Guinevere, battered, crouches on the broken stone and glares up toward the platforms.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 8.4,
+        "end": 11.4,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 33,
+      "anchor": "\"We escaped from this",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 10.65,
+      "end": 14.6,
+      "line": "We escaped from this cage. We can also destroy it!"
+    },
+    {
+      "after": 33,
       "anchor": "We escaped from this",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 13.0,
         "crop": [0, 0, 1920, 710],
         "alt": "Ruby swings her scythe with a fierce look, Angela holding the shield behind her.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 11.8,
+        "end": 14.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 36,
+      "anchor": "\"Go, Guinevere, pursue your",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 15.95,
+      "end": 19.15,
+      "line": "Go, Guinevere, pursue your light."
+    },
+    {
+      "after": 36,
       "anchor": "Go, Guinevere, pursue your",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "t": 17.6,
         "crop": [0, 0, 1920, 710],
         "alt": "Angela looks back over her shoulder, both hands glowing as she holds the shield, her doll Tetra above her.",
-        "credit": "Official interactive drama"
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 16.4,
+        "end": 19.4,
+        "sound": false,
+        "poster": 1.2
       },
       "caption": "Go, Guinevere, pursue your light."
     }

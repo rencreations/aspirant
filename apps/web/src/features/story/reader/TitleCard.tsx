@@ -18,7 +18,7 @@ export function TitleCard({ chapter, entry }: { chapter: Chapter; entry: Chapter
   return (
     <header
       className={s.card}
-      data-theme="storm"
+      data-card=""
       style={{ "--tint": chapter.hero.color } as CSSProperties}
     >
       <div className={s.cardPicture}>

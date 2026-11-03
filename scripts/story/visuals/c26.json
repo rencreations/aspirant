@@ -26,6 +26,26 @@
       ]
     },
     {
+      "after": 9,
+      "anchor": "Vexana's hand was already",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 36.35,
+      "end": 37.95,
+      "line": "Careful, Guinevere!"
+    },
+    {
+      "after": 11,
+      "anchor": "\"No! Vexana!\" Guinevere lunged.",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 38.8,
+      "end": 40.3,
+      "line": "No! Vexana!"
+    },
+    {
       "after": 11,
       "anchor": "No! Vexana! Guinevere lunged.",
       "kind": "panels",
@@ -110,6 +130,16 @@
           "credit": "Official comic, Guinevere and Vexana, page 7"
         }
       ]
+    },
+    {
+      "after": 34,
+      "anchor": "\"The only way to",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 92.3,
+      "end": 96.5,
+      "line": "Is this... the only way to protect Guinevere?"
     },
     {
       "after": 34,

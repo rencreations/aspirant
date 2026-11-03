@@ -16,43 +16,65 @@
   "score": "silverbolt-raiko",
   "inserts": [
     {
+      "after": 4,
+      "anchor": "She had climbed up",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 8.2,
+      "end": 10.9,
+      "line": "Finally, the fun part begins."
+    },
+    {
       "after": 10,
       "anchor": "She held herself on",
-      "kind": "place",
-      "label": "Terrinia",
+      "kind": "clip",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
-        "t": 6.3,
         "crop": [0, 136, 1920, 808],
         "alt": "Selena sits small on a roof edge while a red rift burns open in the sky over the city.",
-        "credit": "Official trailer, Day of Enders"
+        "credit": "Official trailer, Day of Enders",
+        "type": "clip",
+        "start": 5.0,
+        "end": 6.88,
+        "sound": false,
+        "poster": 1.3
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Terrinia"
       }
     },
     {
       "after": 13,
       "anchor": "Above the Academy, something",
-      "kind": "plate",
+      "kind": "clip",
       "caption": "The sea of stars.",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/obsidia/footages/00m07s133ms-00m17s033ms/footage.mp4",
-        "t": 2.0,
         "alt": "Dark planets strung on glowing threads drift across a field of stars.",
-        "credit": "Official character film, The Queen's Endgame"
+        "credit": "Official character film, The Queen's Endgame",
+        "type": "clip",
+        "start": 0.8,
+        "end": 3.8,
+        "sound": false,
+        "poster": 1.2
       }
     },
     {
       "after": 18,
       "anchor": "Everything since had been",
-      "kind": "plate",
+      "kind": "clip",
       "caption": "The dangerous things in her head, praised as talent.",
       "media": {
-        "type": "frame",
         "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
-        "t": 2.6,
         "alt": "Selena in her school uniform smiles at her desk, a star-tipped pen in hand, struck by an idea.",
-        "credit": "Official character film, The Pawn's Gambit"
+        "credit": "Official character film, The Pawn's Gambit",
+        "type": "clip",
+        "start": 1.03,
+        "end": 4.03,
+        "sound": false,
+        "poster": 1.57
       }
     },
     {
