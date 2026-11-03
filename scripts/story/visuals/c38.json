@@ -87,15 +87,6 @@
         "alt": "Vexana and Guinevere stand side by side and shout, the orb of Vexana's staff glowing.",
         "credit": "Official interactive drama"
       }
-    },
-    {
-      "after": 37,
-      "anchor": "Guinevere's wings opened",
-      "kind": "film",
-      "public": "video/guinevere-vexana/relink.mp4",
-      "poster": "video/guinevere-vexana/relink.jpg",
-      "title": "Relink",
-      "caption": "The official film of Vexana's stand and Guinevere's return."
     }
   ]
 }

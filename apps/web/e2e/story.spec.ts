@@ -16,7 +16,7 @@ interface IndexEntry {
 }
 
 const INDEX = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "../public/data/story/index.json"), "utf8"),
+  fs.readFileSync(path.resolve(process.cwd(), "public/data/story/index.json"), "utf8"),
 ) as { chapters: IndexEntry[] };
 const SEALED = INDEX.chapters.filter((c) => c.sealed).length;
 
@@ -330,7 +330,7 @@ test.describe("a chapter of the story", () => {
     await page.waitForLoadState("networkidle");
     await expect(reader(page)).toHaveAttribute("data-theme", "storm");
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await expect(page.locator("h1")).toBeVisible();
     await expect(reader(page)).toHaveAttribute("data-theme", "storm");
     await readTo(page, "c02-p003");
     await page.getByRole("button", { name: "Settings" }).click();

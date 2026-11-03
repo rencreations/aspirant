@@ -5,7 +5,7 @@
     "type": "frame",
     "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
     "t": 6.0,
-    "crop": [0, 132, 1280, 720],
+    "crop": [0, 136, 1280, 720],
     "alt": "A huge four-pointed rift glows red over a city of towers, a black ship hanging at its center.",
     "credit": "Official trailer: Selena and Obsidia"
   },
@@ -22,7 +22,7 @@
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
         "start": 0.0,
         "end": 4.4,
-        "crop": [0, 132, 1920, 816],
+        "crop": [0, 136, 1920, 808],
         "sound": false,
         "poster": 0.6,
         "alt": "A black spired ship hangs in the burning rift with smaller ships around it, and Enders stalk into the streets below.",
@@ -37,6 +37,7 @@
       "media": {
         "type": "image",
         "src": "_others/places/storm-citadel.png",
+        "crop": [8, 18, 950, 404],
         "alt": "The Storm Citadel, a mass of black blocks lit red from inside, hangs upside down above a city.",
         "credit": "Official world art"
       }

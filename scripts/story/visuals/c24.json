@@ -33,12 +33,12 @@
       "media": {
         "type": "clip",
         "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
-        "start": 3.0,
-        "end": 6.0,
+        "start": 4.15,
+        "end": 6.05,
         "crop": [120, 0, 1680, 945],
         "sound": false,
-        "poster": 2.4,
-        "alt": "Selena leans on her desk with an idea, then a pen draws an armored suit on a grid, plate by plate.",
+        "poster": 1.7,
+        "alt": "A pen draws an armored suit on a grid, plate by plate, until it stands in color with notes pinned around it.",
         "credit": "Official film, Selena"
       },
       "caption": "ENDER MECHA SUIT, said the corner."
@@ -51,8 +51,8 @@
         "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
         "t": 6.8,
-        "crop": [380, 0, 1920, 1080],
-        "alt": "Chang'e, small, in round glasses, smiles with a tablet in her hands, Lesley standing behind her.",
+        "crop": [400, 0, 1140, 1080],
+        "alt": "Chang'e, small, in round glasses, smiles over a tablet in her hands.",
         "credit": "Official trailer, Chang'e and Lesley"
       },
       "caption": "Teacher Chang'e."

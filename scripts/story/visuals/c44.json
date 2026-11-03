@@ -25,19 +25,6 @@
       }
     },
     {
-      "after": 5,
-      "anchor": "In her scope, four",
-      "kind": "place",
-      "label": "The hall's back terrace",
-      "media": {
-        "type": "frame",
-        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
-        "t": 5.5,
-        "alt": "Chang'e on a terrace behind a railing, reading two glowing screens, a crescent turning at her back.",
-        "credit": "Official trailer, Rekindled Light"
-      }
-    },
-    {
       "after": 11,
       "anchor": "Lesley's finger was already",
       "kind": "clip",
@@ -66,15 +53,15 @@
       "caption": "Mr. Bunny at the base, before it fell."
     },
     {
-      "after": 37,
-      "anchor": "On the terrace, Chang'e",
+      "after": 24,
+      "anchor": "She asked, thought Lesley.",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "lesley-and-change/video/official/teaser/footages/00m36s400ms-00m44s760ms/footage.mp4",
-        "t": 2.6,
-        "alt": "Chang'e looks straight up through her glasses, one hand raised, the city burning behind her.",
-        "credit": "Official teaser, Rekindled Light"
+        "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
+        "t": 15.95,
+        "alt": "Lesley's eye narrows over the stock of her rifle as she takes aim.",
+        "credit": "Official trailer, Rekindled Light"
       }
     }
   ]

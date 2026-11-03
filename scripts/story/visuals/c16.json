@@ -13,19 +13,6 @@
   "score": "we-believe",
   "inserts": [
     {
-      "after": 2,
-      "anchor": "An officer read the",
-      "kind": "place",
-      "label": "Planet Oro",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
-        "t": 12.4,
-        "alt": "Pointed towers stand against a violet dusk sky over a flat, glowing horizon.",
-        "credit": "Ruby character film"
-      }
-    },
-    {
       "after": 12,
       "anchor": "Angela closed her arm",
       "kind": "plate",

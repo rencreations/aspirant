@@ -73,8 +73,8 @@
         "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m14s600ms-00m45s867ms/footage.webm",
         "t": 4.9,
-        "crop": [90, 100, 1750, 880],
-        "alt": "A glowing panel on the hologram wall reads Attendance Record, Vexana: Absent.",
+        "crop": [846, 100, 1000, 880],
+        "alt": "A glowing panel on the hologram wall reads Vexana: Absent above a line graph.",
         "credit": "Official interactive drama: Guinevere and Vexana"
       }
     }

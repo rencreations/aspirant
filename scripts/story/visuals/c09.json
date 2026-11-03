@@ -88,7 +88,7 @@
         "type": "clip",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
         "start": 7.0,
-        "end": 10.15,
+        "end": 9.95,
         "crop": [160, 0, 2240, 910],
         "poster": 2.3,
         "sound": false,

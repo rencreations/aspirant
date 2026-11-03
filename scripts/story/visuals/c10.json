@@ -5,7 +5,7 @@
     "type": "clip",
     "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
     "start": 0.4,
-    "end": 4.35,
+    "end": 4.3,
     "poster": 3.0,
     "sound": false,
     "alt": "A dark, towering hall of pillars and violet windows, with one small figure standing in a circle of light on the floor.",
@@ -62,7 +62,7 @@
         "type": "image",
         "src": "_others/character/androids.png",
         "crop": [0, 70, 960, 398],
-        "alt": "Rows of identical androids with animal ears and glowing magenta eyes stand in the dark.",
+        "alt": "Rows of androids with animal ears and glowing magenta eyes stand in the dark.",
         "credit": "Official character art"
       },
       "caption": "The Council's androids of Project Angel."

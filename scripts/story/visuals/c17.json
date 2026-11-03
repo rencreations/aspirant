@@ -72,9 +72,10 @@
         "type": "frame",
         "src": "lesley-and-change/video/official/trailer/footages/00m40s640ms-00m55s480ms/footage.webm",
         "t": 0.9,
-        "alt": "Lesley shouts and throws out her arm in a burning street as soldiers fall back around her.",
+        "alt": "Lesley shouts and throws out her arm against the burning city as soldiers run past her.",
         "credit": "Rekindled Light trailer"
-      }
+      },
+      "caption": "No! It's a decoy!"
     }
   ]
 }

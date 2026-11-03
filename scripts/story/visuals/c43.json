@@ -6,7 +6,7 @@
     "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
     "start": 6.2,
     "end": 10.4,
-    "crop": [0, 136, 1920, 734],
+    "crop": [0, 136, 1920, 724],
     "poster": 2.2,
     "alt": "Selena in dark plate trimmed with silver walks out of the smoke with four Enders at her back.",
     "credit": "Official trailer, Day of Enders"
@@ -16,7 +16,7 @@
     "type": "frame",
     "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
     "t": 5.0,
-    "crop": [0, 136, 1920, 734],
+    "crop": [0, 136, 1920, 724],
     "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
     "credit": "Official trailer, Day of Enders"
   },
@@ -31,7 +31,7 @@
         "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
         "t": 5.0,
-        "crop": [0, 136, 1920, 734],
+        "crop": [0, 136, 1920, 724],
         "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
         "credit": "Official trailer, Day of Enders"
       }
@@ -58,24 +58,10 @@
         "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
         "t": 5.9,
-        "crop": [0, 136, 1920, 734],
-        "alt": "Guinevere's face up close, eyes wide, staring up at someone she knows.",
+        "crop": [0, 136, 1920, 724],
+        "alt": "Guinevere's face up close, her eyes fixed on someone she knows.",
         "credit": "Official trailer, Day of Enders"
       }
-    },
-    {
-      "after": 22,
-      "anchor": "Elbow in. Hip first.",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/10.jpg",
-          "crop": [150, 3200, 2350, 1340],
-          "alt": "Guinevere draws back her gloved fist, teeth bared, ready to hit.",
-          "credit": "Official comic, Guinevere and Vexana, page 10"
-        }
-      ]
     }
   ]
 }

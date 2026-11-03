@@ -18,9 +18,10 @@
       "kind": "plate",
       "media": {
         "type": "image",
-        "src": "_others/web/page/guinevere/drone-2.png",
-        "alt": "A round white drone with cat ears, its black face squinting happily, red orbs at its sides.",
-        "credit": "Official web art"
+        "src": "vexana-and-guinevere/art/official/guinevere-splash-art.jpg",
+        "crop": [330, 0, 760, 680],
+        "alt": "A round silver drone with cat ears, narrowed yellow eyes glowing in its black face, two red orbs floating beside it.",
+        "credit": "Official splash art"
       },
       "caption": "Ears up again."
     },

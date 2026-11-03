@@ -41,11 +41,12 @@
       "kind": "place",
       "label": "Selrick Academy",
       "media": {
-        "type": "image",
-        "src": "_others/places/selrick-academy-barrier-view-from-above.png",
-        "crop": [0, 16, 950, 405],
-        "alt": "Selrick Academy and its city seen from far above, under the shining curve of the dome.",
-        "credit": "Official art"
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/comic/footages/01m52s800ms-02m06s800ms/footage.mp4",
+        "t": 1.0,
+        "crop": [0, 270, 1080, 1500],
+        "alt": "At night a tall tower with a lit ring stands over the glowing lights of the city.",
+        "credit": "Official motion comic, Guinevere and Vexana"
       }
     },
     {
@@ -54,11 +55,11 @@
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
-        "t": 2.3,
-        "crop": [0, 0, 1920, 960],
-        "alt": "Selena, eyes closed and smiling, licks a pink lollipop.",
-        "credit": "Official film, Selena"
+        "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
+        "t": 0.9,
+        "crop": [0, 136, 1920, 724],
+        "alt": "Close on Selena in her school shirt and choker, a lollipop stick between her lips.",
+        "credit": "Official trailer, Selena and Obsidia"
       },
       "caption": "It's not half price."
     },

@@ -10,7 +10,7 @@ import { Insert } from "./inserts";
 import s from "./reader.module.css";
 import { VoiceLine } from "./VoiceLine";
 
-export function paragraphId(chapterId: string, i: number): string {
+function paragraphId(chapterId: string, i: number): string {
   return `${chapterId}-p${String(i).padStart(3, "0")}`;
 }
 

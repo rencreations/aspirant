@@ -59,7 +59,7 @@
         "type": "clip",
         "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
         "start": 27.0,
-        "end": 32.4,
+        "end": 31.8,
         "alt": "Vexana swings her staff, and a giant Ender drops out of the sky and slams its sword into the platform in a burst of violet light.",
         "credit": "Connection Lost, official film"
       }
@@ -96,9 +96,8 @@
       "media": {
         "type": "frame",
         "src": "vexana-and-guinevere/video/connection-lost/footages/02m17s160ms-02m45s920ms/footage.mp4",
-        "t": 25.3,
-        "crop": [0, 140, 2560, 940],
-        "alt": "Over the ruined towers, a flare of orange light and a streak of violet race toward each other across the storm sky.",
+        "t": 28.2,
+        "alt": "A blinding burst of white and pink light breaks open over the ruined towers.",
         "credit": "Connection Lost, official film"
       }
     },

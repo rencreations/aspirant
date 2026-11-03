@@ -37,14 +37,13 @@
     {
       "after": 22,
       "anchor": "The Storm Citadel came",
-      "kind": "place",
-      "label": "The Storm Citadel",
+      "kind": "plate",
       "media": {
         "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 14.3,
-        "crop": [0, 136, 1920, 808],
-        "alt": "The Storm Citadel, a vast spired ship, hangs in a burning rift over the city, smaller ships around it.",
+        "t": 12.95,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Broken stones lift off a ruined street and hang in the air, the city glowing red beyond.",
         "credit": "Selena and Obsidia, official trailer"
       }
     },

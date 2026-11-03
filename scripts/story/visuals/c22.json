@@ -23,34 +23,19 @@
       "after": 15,
       "anchor": "A banner hung over",
       "kind": "place",
-      "label": "Team-Up Day",
+      "label": "Selrick Academy",
       "media": {
         "type": "frame",
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/3A1/00m00s000ms-00m22s500ms/footage.webm",
-        "t": 6.3,
-        "alt": "A big screen at the Academy reads THE ASPIRANTS TEAM-UP DAY.",
-        "credit": "Official interactive drama"
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
+        "t": 1.0,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Students in dark uniforms cross the Academy courtyard under a wide pale blue screen hung on the main building.",
+        "credit": "Official interactive drama, Guinevere and Vexana"
       }
     },
     {
       "after": 22,
       "anchor": "The voice came from",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/3A1/00m00s000ms-00m22s500ms/footage.webm",
-        "start": 13.3,
-        "end": 17.3,
-        "crop": [0, 0, 1920, 700],
-        "poster": 2.6,
-        "alt": "Students crowd under the banner while Guinevere stands apart; the crowd fades and a black-haired girl remains by the wall.",
-        "credit": "Official interactive drama"
-      },
-      "caption": "You are strong, Guinevere."
-    },
-    {
-      "after": 34,
-      "anchor": "Vexana looked at her",
       "kind": "plate",
       "media": {
         "type": "frame",
@@ -59,7 +44,8 @@
         "crop": [0, 0, 2560, 930],
         "alt": "Vexana, black-haired, looks back over her shoulder with a quiet face.",
         "credit": "Official Connection Lost film"
-      }
+      },
+      "caption": "You are strong, Guinevere."
     },
     {
       "after": 38,

@@ -3,12 +3,12 @@
   "mood": "Night on a broken roof. Two rivals, too tired to fight, finally say what they mean.",
   "hero": {
     "type": "image",
-    "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
-    "crop": [222, 370, 778, 438],
-    "alt": "Layla on a rooftop at night, her face smudged, her pink twin tails blowing in the wind.",
-    "credit": "Official comic, page 38"
+    "src": "layla-and-fanny/art/comic/official-aspirant-comic/37.jpg",
+    "crop": [0, 380, 1000, 560],
+    "alt": "Two small silhouettes on the corner of a ruined rooftop under a purple night sky, one sitting on the edge with her long hair blowing.",
+    "credit": "Official comic, page 37"
   },
-  "heroFocus": "20% 50%",
+  "heroFocus": "56% 62%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
@@ -17,6 +17,13 @@
       "anchor": "Layla opened her mouth",
       "kind": "panels",
       "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
+          "crop": [222, 370, 778, 438],
+          "alt": "Layla on a rooftop at night, her face smudged, her pink twin tails blowing in the wind.",
+          "credit": "Official comic, page 38"
+        },
         {
           "type": "image",
           "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
@@ -70,7 +77,7 @@
         {
           "type": "image",
           "src": "layla-and-fanny/art/comic/official-aspirant-comic/41.jpg",
-          "crop": [0, 600, 1000, 333],
+          "crop": [345, 600, 655, 333],
           "alt": "Layla, with a small smile: All rested up?",
           "credit": "Official comic, page 41"
         }

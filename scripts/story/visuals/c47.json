@@ -4,11 +4,11 @@
   "hero": {
     "type": "frame",
     "src": "lesley-and-change/video/official/trailer/footages/01m05s520ms-01m11s000ms/footage.webm",
-    "t": 3.9,
-    "alt": "Chang'e and Lesley side by side in the glow of a fire, both looking down.",
+    "t": 1.2,
+    "alt": "Lesley holds Chang'e close on the stones, and Chang'e, tears behind her glasses, looks out over her shoulder.",
     "credit": "Official trailer, Rekindled Light"
   },
-  "heroFocus": "15% 45%",
+  "heroFocus": "55% 45%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [

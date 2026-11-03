@@ -4,11 +4,11 @@
   "hero": {
     "type": "clip",
     "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-    "start": 1.3,
+    "start": 1.6,
     "end": 4.6,
     "crop": [110, 0, 1712, 963],
     "sound": false,
-    "poster": 0.35,
+    "poster": 0.25,
     "alt": "Selena naps on her desk until a paper plane from Layla wakes her, then she shows classmates her drawing of an armored suit.",
     "credit": "Official film, Selena"
   },
@@ -46,29 +46,16 @@
       }
     },
     {
-      "after": 16,
-      "anchor": "One day, when the",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
-        "t": 6.2,
-        "crop": [640, 0, 600, 960],
-        "alt": "Selena smiles with one finger on her lips, as if keeping a secret.",
-        "credit": "Official film, Selena"
-      }
-    },
-    {
       "after": 19,
       "anchor": "That afternoon they sat",
       "kind": "place",
-      "label": "Selrick Academy",
+      "label": "The Academy roof",
       "media": {
-        "type": "image",
-        "src": "_others/places/selrick-academy-cloudy.png",
-        "crop": [0, 16, 950, 405],
-        "alt": "The tower of Selrick Academy rises above the clouds, a ring of light turning around it.",
-        "credit": "Official art"
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m34s300ms-00m48s833ms/footage.webm",
+        "t": 8.0,
+        "alt": "The empty rooftop of an Academy building, its guardrail against a blue sky with drifting clouds.",
+        "credit": "Official interactive drama, Guinevere and Vexana"
       }
     }
   ]

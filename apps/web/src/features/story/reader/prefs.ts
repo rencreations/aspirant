@@ -79,7 +79,7 @@ const DEFAULTS: ReaderPrefs = {
 };
 
 /** `c05` or `c05-p012`. */
-export const PLACE_ID = /^(c\d{2})(-p\d{3})?$/u;
+const PLACE_ID = /^(c\d{2})(-p\d{3})?$/u;
 
 function readPrefs(): ReaderPrefs {
   try {

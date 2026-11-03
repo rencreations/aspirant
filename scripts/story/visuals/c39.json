@@ -31,7 +31,7 @@
         "end": 4.6,
         "crop": [0, 150, 2560, 930],
         "poster": 2.0,
-        "alt": "Guinevere and Vexana stand small beneath the giant, then rise as two streaks of light, red-gold and violet.",
+        "alt": "Guinevere and Vexana stand small beneath the giant, then side by side, and a red streak of light shoots up past them.",
         "credit": "Relink, official film"
       }
     },
@@ -85,6 +85,15 @@
         "alt": "The Mother Matrix looms close, crowned and clawed, lightning crawling over its armor.",
         "credit": "Official interactive drama"
       }
+    },
+    {
+      "after": 31,
+      "anchor": "In the sudden quiet",
+      "kind": "film",
+      "public": "video/guinevere-vexana/relink.mp4",
+      "poster": "video/guinevere-vexana/relink.jpg",
+      "title": "Relink",
+      "caption": "The official film of Vexana's stand and Guinevere's return."
     }
   ]
 }

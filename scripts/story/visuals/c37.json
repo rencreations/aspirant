@@ -5,7 +5,7 @@
     "type": "clip",
     "src": "vexana-and-guinevere/video/relink/footages/00m03s680ms-00m18s400ms/footage.mp4",
     "start": 0.3,
-    "end": 4.2,
+    "end": 4.0,
     "crop": [0, 0, 2560, 965],
     "poster": 1.2,
     "alt": "Vexana stands alone in the ruined city with her staff raised, the Enders' long legs all around her.",
@@ -56,7 +56,7 @@
         "src": "vexana-and-guinevere/video/relink/footages/00m18s400ms-00m27s000ms/footage.mp4",
         "start": 3.7,
         "end": 6.8,
-        "alt": "Vexana rises to one knee on her staff, and the giant winged shape above her gathers a blazing charge of light.",
+        "alt": "Vexana rises to one knee on her staff under the giant winged shape, and a blazing charge of pink light swells.",
         "credit": "Relink, official film"
       }
     },

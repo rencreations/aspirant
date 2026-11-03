@@ -116,6 +116,18 @@ Note for the page builders: the Vexana "fighting stance" cut-out already shows t
 
 Depth: `depth.webp` belongs to `base`, and `depth-alt.webp` (extra) belongs to `alt`, because the alt silhouettes differ. 8-bit grayscale, near is white. **Method used: a real monocular depth model, Depth-Anything-V2-Small (`depth-anything/Depth-Anything-V2-Small-hf`, transformers on CPU, in a throwaway venv under the scratch folder), run by `scripts/assets/depth.py`.** The venv build took a few minutes and each image about 2 s. Post-processing in Node: transparent images are flattened on mid grey for the model, depth is stretched between the 2nd and 98th percentile inside the silhouette, blurred (sigma 2.5) and multiplied by a feathered alpha so the background is 0; the opaque alt is stretched and blurred only. Caveat: the model sees a flat illustration, so it reads the torso as nearest and thin hair strands as flat; expect a gentle parallax, not a sculpted face. If `DEPTH_PYTHON` is not set, `portal.mjs` builds a pseudo-depth (blurred alpha silhouette times a luminance term) instead.
 
+## The story's own media (`scripts/story/build.py`)
+
+Made from the originals by `scripts/story/build.py` (see `scripts/story/README.md`), never by hand. The last full run: 240 pictures (WebP, at most 1920 wide for a title card, 1600 for a plate or place, 1000 to 1280 for panels, quality 78), 71 clips (H.264 High, 24 fps, 1600 wide for a title card and 1280 for an inline clip, CRF 27 to 28, muted unless the script keeps the sound, a WebP still for each), 49 card pictures (640 wide) and the sealed twin of those flagged `spoiler`. About 18 MB of pictures and 45 MB of clips (the hero film `video/story/hero.mp4`, 9 MB, is older and made by `scripts/story/hero.py`).
+
+| Folder             | Contents                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `img/story/cNN/`   | `hero-*`, `iN-*` (inserts), `pN-J-*` (comic panels), `thumb-*` (and `-sealed`), clip stills `*-poster` |
+| `video/story/cNN/` | `hero-*.mp4`, `iN-*.mp4`                                                                               |
+| `data/story/`      | `index.json` (chapters, acts, stats), `cNN.json` (a chapter), `end.json` (cast and timeline)           |
+
+Names carry a hash of what they were made from, so a changed script makes a new file; a full run removes the files nothing refers to any more. `data/story/` is excluded from Prettier (it is generated).
+
 ## Skipped, and why
 
 - `media/layla-and-fanny/video/live-action` (video and SRT): non-canon parody.

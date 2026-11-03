@@ -81,20 +81,6 @@
         "alt": "Pale planets drift through the dark among cold stars, linked by thin glowing threads.",
         "credit": "Official Obsidia lore video"
       }
-    },
-    {
-      "after": 46,
-      "anchor": "Heh... even their defiance",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
-        "t": 29.6,
-        "crop": [0, 140, 1920, 800],
-        "alt": "A close view of Obsidia's eyes, one violet, one red, half hidden by pale hair.",
-        "credit": "Official Obsidia lore video"
-      },
-      "caption": "Even their defiance is within my predictions."
     }
   ]
 }

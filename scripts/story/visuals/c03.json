@@ -59,8 +59,8 @@
         {
           "type": "image",
           "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
-          "crop": [0, 20, 860, 720],
-          "alt": "Roger trips and slams onto his back with a cry.",
+          "crop": [200, 0, 710, 800],
+          "alt": "Roger trips and tumbles to the ground with a cry.",
           "credit": "Official Aspirant comic, page 4"
         },
         {
@@ -98,7 +98,7 @@
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
-        "crop": [0, 30, 1000, 1830],
+        "crop": [0, 30, 1000, 1812],
         "alt": "Red alarms flash across the Academy as students run, a screen warning that Ultra Enders are attacking the Northeastern sector.",
         "credit": "Official Aspirant comic, page 19"
       }

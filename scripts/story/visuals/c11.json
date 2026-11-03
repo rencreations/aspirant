@@ -73,7 +73,7 @@
         "type": "clip",
         "src": "ruby-and-angela/video/angela/footages/00m34s000ms-00m46s160ms/footage.mp4",
         "start": 2.1,
-        "end": 5.35,
+        "end": 5.25,
         "poster": 2.6,
         "sound": false,
         "alt": "Angela stands before a huge armored training droid with a blade, then lifts her face, blue eyes set.",
@@ -88,7 +88,7 @@
         "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
         "t": 0.6,
-        "alt": "Angela is flung back through a burst of pink flame in front of the training droid.",
+        "alt": "Angela flies through the air above the training droid amid a burst of pink flame.",
         "credit": "Official video, Angela"
       }
     },
