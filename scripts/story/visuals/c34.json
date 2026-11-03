@@ -1,0 +1,105 @@
+{
+  "chapter": "c34",
+  "mood": "A beep on a rooftop and a beep in the courtyard. Guinevere runs, and Fanny has to decide who leads.",
+  "hero": {
+    "type": "clip",
+    "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
+    "start": 0.0,
+    "end": 3.7,
+    "sound": false,
+    "poster": 0.7,
+    "alt": "Students watch a big screen showing a ragged star-shaped rift, and a small winged figure flying straight at it.",
+    "credit": "Official interactive drama: Guinevere and Vexana"
+  },
+  "heroFocus": "62% 40%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "She could have struck",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/43.jpg",
+          "crop": [0, 2630, 2500, 2250],
+          "alt": "A dark figure with a glowing staff stands at the edge of a rooftop, wind rushing past.",
+          "credit": "Official comic: Guinevere and Vexana, page 43"
+        }
+      ]
+    },
+    {
+      "after": 8,
+      "anchor": "But to protect",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/44.jpg",
+          "crop": [0, 255, 2500, 2295],
+          "alt": "Vexana, her hair gone pale, looks down with tired eyes: Betray her...",
+          "credit": "Official comic: Guinevere and Vexana, page 44"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/44.jpg",
+          "crop": [0, 2565, 2500, 4075],
+          "alt": "Vexana stands with her staff before her towering purple and gold suit, a heart-shaped crest on its chest: But to protect her...",
+          "credit": "Official comic: Guinevere and Vexana, page 44"
+        }
+      ]
+    },
+    {
+      "after": 15,
+      "anchor": "It came from Guinevere's",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/45.jpg",
+          "crop": [0, 350, 2500, 2600],
+          "alt": "Guinevere, tears in her eyes, presses her hand over the gold star at her collar.",
+          "credit": "Official comic: Guinevere and Vexana, page 45"
+        }
+      ]
+    },
+    {
+      "after": 22,
+      "anchor": "Fanny looked up, for",
+      "kind": "plate",
+      "media": {
+        "type": "site",
+        "src": "img/selena/roof-storm.webp",
+        "alt": "Selena sits on a high ledge under a storm sky, boots over the edge, her dragon-shaped machine hovering beside her."
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "The map went red.",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
+        "start": 8.2,
+        "end": 12.6,
+        "sound": false,
+        "poster": 2.5,
+        "alt": "On the big screen a map of the city glows red, a warning sign flashes, and red zones spread across it.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    },
+    {
+      "after": 30,
+      "anchor": "I've already identified several",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m18s600ms-00m51s700ms/footage.webm",
+        "t": 24.0,
+        "alt": "Fanny, Layla and Angela stand together, Layla in the middle with a hand on her chest, ready to go.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    }
+  ]
+}

@@ -66,8 +66,8 @@ test("places: choosing a hex shows its line and chapter links", async ({ page })
   await page.getByRole("button", { name: /Underhill/ }).click();
   const inspector = page.locator("[aria-live=polite]", { hasText: "Place 06 of 09" });
   await expect(inspector).toContainText("A black market in forgotten cellars");
-  const link = inspector.getByRole("link", { name: "Read Chapter 50" });
-  await expect(link).toHaveAttribute("href", /story\/part-\d{2}\/#c50$/);
+  const link = inspector.getByRole("link", { name: /^Read (Prologue|Chapter \d+)$/ });
+  await expect(link).toHaveAttribute("href", /story\/(prologue|chapter-\d{2})\/?$/);
   // Keyboard: arrow keys move between hexes.
   await page.getByRole("button", { name: /Valemont/ }).focus();
   await page.keyboard.press("ArrowRight");
@@ -146,8 +146,8 @@ test("the lab: presets set the story's real scores", async ({ page }) => {
 test("the timeline: stops link to chapters and the buttons move", async ({ page }, info) => {
   await open(page);
   await scrollTo(page, "#timeline-title", 40);
-  const first = page.getByRole("link", { name: "Read Chapter 24" }).first();
-  await expect(first).toHaveAttribute("href", /story\/part-\d{2}\/#c24$/);
+  const first = page.getByRole("link", { name: /^Read (Prologue|Chapter \d+)$/ }).first();
+  await expect(first).toHaveAttribute("href", /story\/(prologue|chapter-\d{2})\/?$/);
   if (info.project.name === "phone") {
     await expect(page.getByRole("button", { name: "Next stop" })).toBeHidden();
     return;

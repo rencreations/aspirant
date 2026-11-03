@@ -1,0 +1,249 @@
+{
+  "id": "c47",
+  "number": 47,
+  "slug": "chapter-47",
+  "title": "Ever Since That Day",
+  "dateline": null,
+  "mood": "The storm thins, the power stirs, and two old partners on a terrace say what they never said.",
+  "words": 463,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c47/hero-db2d8c31.webp",
+    "w": 1920,
+    "h": 810,
+    "color": "#725346",
+    "alt": "Chang'e and Lesley side by side in the glow of a fire, both looking down.",
+    "credit": "Official trailer, Rekindled Light"
+  },
+  "heroFocus": "15% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [{ "t": "Chang’e sat on the terrace stones with Mr. Bunny in her lap." }]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "His screen was black. A crack ran across his casing where the claw had struck, from one ear to his chin. She had tried every switch she had built into him. None of them did anything."
+        }
+      ]
+    },
+    { "t": "p", "i": 2, "segs": [{ "t": "Then the power came back." }] },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "The crescents on the stones flickered. One by one they lifted and began to turn around her again."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c47/i0-78e58699.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#8292b9",
+        "alt": "Chang'e sits in a ring of glowing crescents, her hands spread inside a lattice of light.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "Mr. Bunny did not wake. He had never run on aspirant power. The claw had broken him, and nothing coming back through the air could mend a crack."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        { "t": "I sent him in front,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "I knew.", "em": 1 }
+      ]
+    },
+    { "t": "p", "i": 6, "segs": [{ "t": "“I’ll fix him,” she told the crescents." }] },
+    { "t": "p", "i": 7, "segs": [{ "t": "Boots came up the terrace steps, two at a time." }] },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "Lesley was breathing hard. The rifle hung on her back, its coil lit again. She stopped a step away, the way she always stopped."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "Then she knelt on the wet stones and put her arms around Chang’e and the robot both."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [{ "t": "Chang’e did not push her away. Her hands stayed on Mr. Bunny." }]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [{ "t": "“Ever since that day, I vowed to keep you safe, Chang’e.”" }]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c47/i1-f2cd06db.webp",
+        "w": 838,
+        "h": 838,
+        "color": "#616786",
+        "alt": "Lesley holds her long rifle at night, under the words: Ever since that day, I vowed to keep you safe, Chang'e.",
+        "credit": "Official lore card, Lesley"
+      }
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [{ "t": "Lesley had never said it aloud. Not once, in all the years." }]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "“I know.” It came out small. “Mr. Bunny showed me. A roof and a rifle, that night, and the next, and the next. I told him to turn around.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 14, "segs": [{ "t": "She swallowed. “I looked anyway.”" }] },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "A roof and a rifle, that night, and the next.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c47/i2-9bcfb6cb.webp",
+        "w": 1280,
+        "h": 720,
+        "color": "#897b76",
+        "alt": "Lesley stands alone on a high roof edge with her rifle, looking down over a burning city.",
+        "credit": "Official teaser, Rekindled Light"
+      }
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "Lesley’s arms tightened." }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [{ "t": "“You held fire,” said Chang’e. “I asked, and you did it.”" }]
+    },
+    { "t": "p", "i": 17, "segs": [{ "t": "“You called it.”" }] },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "“I chose him.” Her thumb moved over the crack. “He’s my best friend. I chose him anyway.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 19, "segs": [{ "t": "Lesley said nothing. She did not let go either." }] },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "Chang’e was supposed to be a grown-up. She let herself be held, in the open, where anyone could see."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [{ "t": "“You owe me a pudding,” she said into Lesley’s coat. “Caramel.”" }]
+    },
+    { "t": "p", "i": 22, "segs": [{ "t": "“Two.”" }] },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [{ "t": "Neither of them said anything after that for a while." }]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [{ "t": "Over Lesley’s shoulder, Chang’e read the sky the way she read a console." }]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "The Storm Citadel hung over the Academy, listing and burning. Pieces kept breaking off it. Its storm was thinning to rags. It was still in the sky."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Out over the bay the Singularity flickered, torn at the edges, still open. The Mother Matrix had been driven back into the Singularity’s light. Her console still read its signature in there, faint. It had not been destroyed."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "There was no Control Core on any screen. The second trace from the morning sat at the edge of her panel, thin and gray. It still had no name."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "In the streets below, the Enders were still coming, and the Aspirants’ lights were back among them."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "Up in the burning Citadel, through the holes in its hull, two lights met, broke apart, and met again."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c47/i3-c7cb59eb.webp",
+        "w": 1600,
+        "h": 558,
+        "color": "#4f263f",
+        "alt": "Two small figures far apart in the dark, a beam of gold and a storm of magenta lightning meeting between them.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    }
+  ]
+}

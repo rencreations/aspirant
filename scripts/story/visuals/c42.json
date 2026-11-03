@@ -1,0 +1,74 @@
+{
+  "chapter": "c42",
+  "mood": "A storm, a bell tower, a third lollipop, and a call she has ignored for months.",
+  "hero": {
+    "type": "clip",
+    "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
+    "start": 0.5,
+    "end": 4.9,
+    "crop": [0, 136, 1920, 734],
+    "poster": 3.6,
+    "alt": "Selena in her school uniform sucks a lollipop, then sits on a high roof edge beside Silverbolt under storm clouds.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "heroFocus": "62% 50%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": [
+    {
+      "after": 10,
+      "anchor": "She held herself on",
+      "kind": "place",
+      "label": "Terrinia",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
+        "t": 6.3,
+        "crop": [0, 136, 1920, 808],
+        "alt": "Selena sits small on a roof edge while a red rift burns open in the sky over the city.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Above the Academy, something",
+      "kind": "plate",
+      "caption": "The sea of stars.",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/obsidia/footages/00m07s133ms-00m17s033ms/footage.mp4",
+        "t": 2.0,
+        "alt": "Dark planets strung on glowing threads drift across a field of stars.",
+        "credit": "Official character film, The Queen's Endgame"
+      }
+    },
+    {
+      "after": 18,
+      "anchor": "Everything since had been",
+      "kind": "plate",
+      "caption": "The dangerous things in her head, praised as talent.",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
+        "t": 2.6,
+        "alt": "Selena in her school uniform smiles at her desk, a star-tipped pen in hand, struck by an idea.",
+        "credit": "Official character film, The Pawn's Gambit"
+      }
+    },
+    {
+      "after": 30,
+      "anchor": "The horns everyone had",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/selena/footages/00m56s500ms-01m03s633ms/footage.mp4",
+        "start": 0.1,
+        "end": 4.6,
+        "crop": [0, 0, 1920, 960],
+        "poster": 3.3,
+        "alt": "Selena's school self in a mirror glitches away, and a close face with red eyes and a fanged smile takes its place.",
+        "credit": "Official character film, The Pawn's Gambit"
+      }
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "chapter": "c36",
+  "mood": "At noon the sky over the platforms splits open, and two old friends rise to meet each other in the air.",
+  "hero": {
+    "type": "clip",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+    "start": 11.0,
+    "end": 16.6,
+    "poster": 4.0,
+    "alt": "A huge clawed hand pushes through a tear in the storm sky, and a crowned, winged giant follows it.",
+    "credit": "Connection Lost, official film"
+  },
+  "heroFocus": "46% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+    "t": 17.6,
+    "crop": [0, 0, 2560, 900],
+    "alt": "The city seen from high above, its towers broken and smoking under a gray storm.",
+    "credit": "Connection Lost, official film"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "A hand came through",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/35.jpg",
+          "crop": [950, 110, 1550, 1700],
+          "alt": "A clawed metal hand tears through a crack in a sunny memory of Guinevere.",
+          "credit": "Official comic"
+        }
+      ],
+      "caption": "It had reached through a crack in a memory."
+    },
+    {
+      "after": 5,
+      "anchor": "It was the giant's",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+        "t": 21.0,
+        "crop": [0, 0, 2560, 890],
+        "alt": "The Mother Matrix, crowned in spikes and lit violet, hangs half out of the tear with its wings spread.",
+        "credit": "Connection Lost, official film"
+      },
+      "caption": "Only half of it was through."
+    },
+    {
+      "after": 10,
+      "anchor": "She raised the staff",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+        "start": 27.0,
+        "end": 32.4,
+        "alt": "Vexana swings her staff, and a giant Ender drops out of the sky and slams its sword into the platform in a burst of violet light.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "after": 14,
+      "anchor": "The shot left her",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/01m45s000ms-02m05s000ms/footage.mp4",
+        "t": 13.0,
+        "alt": "Vexana, seen from behind, fires a ring of violet light from her staff.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "after": 18,
+      "anchor": "You are strong",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/02m05s000ms-02m17s160ms/footage.mp4",
+        "t": 9.8,
+        "crop": [0, 140, 2560, 800],
+        "alt": "Guinevere, down on the stone, lifts her head with her jaw set.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "after": 21,
+      "anchor": "Guinevere's fist went past",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/02m17s160ms-02m45s920ms/footage.mp4",
+        "t": 25.3,
+        "crop": [0, 140, 2560, 940],
+        "alt": "Over the ruined towers, a flare of orange light and a streak of violet race toward each other across the storm sky.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "Vexana heard it.",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/02m45s920ms-02m55s800ms/footage.mp4",
+        "start": 4.48,
+        "end": 9.6,
+        "crop": [0, 0, 2560, 955],
+        "alt": "Guinevere falls with her eyes shut and one hand reaching up, while Vexana hangs in the clouds above her.",
+        "credit": "Connection Lost, official film"
+      }
+    }
+  ]
+}

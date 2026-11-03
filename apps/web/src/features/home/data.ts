@@ -7,10 +7,11 @@ import fanartFile from "../../../public/data/fanart.json";
 
 import { characters, getCharacter } from "@/content/characters";
 import { pairs } from "@/content/pairs";
-import { chapterLabel, chapters, getChapterMeta, parts } from "@/content/story";
+import { acts, storyIndex } from "@/content/story";
 import type { Slug } from "@/content/types";
 import { contrasts } from "@/content/world";
 import { siteCopy } from "@/content/site-copy";
+import { chapterName as legacyChapterName } from "@/features/story/chapter-href";
 import type { ExternalHref } from "@/lib/site";
 
 import type {
@@ -331,8 +332,7 @@ export function getRoster(): readonly RosterCard[] {
 }
 
 function chapterName(id: string): string {
-  const meta = getChapterMeta(id);
-  return meta ? chapterLabel(meta) : "";
+  return legacyChapterName(id);
 }
 
 /** The Dawnbreak 978 contrast, with our two headlines. */
@@ -359,8 +359,8 @@ export function getCounters(): readonly CounterView[] {
   return [
     { value: characters.length, label: "Aspirants" },
     { value: pairs.length, label: "Pairs" },
-    { value: chapters.filter((c) => c.number !== null).length, label: "Chapters" },
-    { value: parts.length, label: "Parts" },
+    { value: storyIndex.stats.chapters, label: "Chapters" },
+    { value: acts.length, label: "Acts" },
   ];
 }
 

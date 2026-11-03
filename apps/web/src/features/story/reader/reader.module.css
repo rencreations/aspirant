@@ -1,15 +1,19 @@
 /*
- * The reader: the story as plain text on one plain colour. White in the light theme, near black in
- * the dark one, the same for every Part and every chapter; the visitor picks the theme in the
- * reading settings. Narration in Instrument Serif at a fluid size with a measure of about 62
- * characters. Nothing sits behind the text and nothing follows the reader down the page.
+ * The reader: the story as a visual novel. Each chapter opens on a full-screen title card (a still
+ * or a muted loop under a shade), then runs as one column of text on a plain surface (white in the
+ * light theme, near black in the dark one, the visitor's pick). Pictures, comic panels, clips,
+ * place shots and character cards are set between paragraphs; voice lines play from a small
+ * player under the line. Everything that moves is transform or opacity; scroll-linked motion uses
+ * CSS scroll-driven animations where the browser has them and is simply still where it does not.
  */
 
 .reader {
   --rd-scale: 1;
   --rd-fs: calc(var(--rd-scale) * clamp(1.1875rem, 1.02rem + 0.62vw, 1.625rem));
   --rd-lh: 1.6;
-  --rd-measure: 26.5em;
+  /* In units of the reading size, not of the element: a small label must not shrink the column. */
+  --rd-measure: calc(var(--rd-fs) * 26.5);
+  --col-pad: var(--gutter);
   --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 0C53.6 33.2 66.8 46.4 100 50C66.8 53.6 53.6 66.8 50 100C46.4 66.8 33.2 53.6 0 50C33.2 46.4 46.4 33.2 50 0Z'/%3E%3C/svg%3E");
   position: relative;
   min-height: 100vh;
@@ -19,7 +23,6 @@
   overflow-x: clip;
 }
 
-/* The two themes of the reader: plain white, or the site's void black. */
 .reader[data-theme="daybreak"] {
   --rd-bg: #fff;
 }
@@ -28,34 +31,74 @@
   --rd-bg: var(--ink);
 }
 
-/* The text column ----------------------------------------------------------------------- */
-.column {
-  --col-pad: var(--gutter);
-  position: relative;
-  width: 100%;
-  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
-  margin-inline: auto;
-  padding-inline: var(--col-pad);
-  font-family: var(--font-serif-stack);
-  font-size: var(--rd-fs);
-  line-height: var(--rd-lh);
-  letter-spacing: 0.002em;
-}
-
 @media (min-width: 56.3125em) {
-  .column {
-    --col-pad: 2.25em;
+  .reader {
+    --col-pad: calc(var(--rd-fs) * 2.25);
   }
 }
 
-/* The heading of a Part ------------------------------------------------------------------ */
-.partHead {
-  padding-block: calc(var(--nav-h) + clamp(3.5rem, 12vh, 7rem)) clamp(2rem, 6vh, 4rem);
+.chapter {
+  position: relative;
 }
 
-.partLabel,
-.frontKicker,
-.headLabel {
+/* The title card ------------------------------------------------------------------------- */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100svh;
+  min-height: 30rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--tint, #0a0c12);
+  color: #fff;
+}
+
+.cardPicture {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.cardMedia {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 55%;
+  animation: card-push 30s ease-out both;
+}
+
+@keyframes card-push {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.cardShade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to top, rgb(5 7 12 / 0.94) 0%, rgb(5 7 12 / 0.6) 34%, rgb(5 7 12 / 0.1) 68%),
+    linear-gradient(to bottom, rgb(5 7 12 / 0.55), transparent 24%);
+}
+
+.cardText {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + 3rem) var(--gutter) clamp(4.5rem, 12vh, 8rem);
+}
+
+.cardKicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
   margin: 0;
   font-family: var(--font-mono-stack);
   font-size: var(--step--1);
@@ -63,342 +106,655 @@
   letter-spacing: 0.18em;
   line-height: 1.4;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: rgb(255 255 255 / 0.82);
 }
 
-.partTitle,
-.frontTitle,
-.headTitle {
-  margin: 0.6rem 0 0;
+.cardTitle {
+  margin: 0.7rem 0 0;
   font-family: var(--font-display-stack);
+  font-size: clamp(3rem, 1.4rem + 7vw, 8.5rem);
   font-weight: 800;
-  line-height: 0.92;
+  line-height: 0.9;
   text-transform: uppercase;
-  color: var(--text);
-  overflow-wrap: anywhere;
   text-wrap: balance;
+  overflow-wrap: anywhere;
+  color: #fff;
 }
 
-.partTitle {
-  font-size: calc(var(--rd-scale) * clamp(2.75rem, 1.6rem + 5.4vw, 6.5rem));
-}
-
-.partTitle:focus,
-.headTitle:focus {
+.cardTitle:focus {
   outline: none;
 }
 
-.headTitle:focus-visible {
+.cardTitle:focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 6px;
+  outline-offset: 8px;
 }
 
-.partSetting,
-.timeNote {
-  margin: 1rem 0 0;
+.cardDateline {
+  margin: 1.1rem 0 0;
   font-family: var(--font-serif-stack);
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.55rem);
   font-style: italic;
-  font-size: 1.15em;
   line-height: 1.35;
-  color: var(--text-dim);
-  text-wrap: balance;
+  color: rgb(255 255 255 / 0.92);
 }
 
-.epigraph {
-  margin: 2rem 0 0;
-  padding: 1.2rem 0;
-  border-block: 1px solid var(--line);
-}
-
-.epigraph blockquote {
-  margin: 0;
-}
-
-.epigraph p {
-  margin: 0;
+.cardMood {
+  max-width: 34rem;
+  margin: 0.7rem 0 0;
   font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: 1.1em;
-  line-height: 1.5;
-  color: var(--text);
+  font-size: clamp(1.05rem, 0.95rem + 0.35vw, 1.3rem);
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.78);
 }
 
-.epigraph figcaption {
-  margin-top: 0.8rem;
+.cardCue {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
   font-family: var(--font-mono-stack);
   font-size: var(--step--2);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: rgb(255 255 255 / 0.7);
+  pointer-events: none;
 }
 
-.partMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 1.5rem 0 0;
+.cardCue::after {
+  content: "";
+  width: 1px;
+  height: 2.2rem;
+  background: currentColor;
+  transform-origin: top;
+  animation: cue 2.4s var(--ease-in-out) infinite;
 }
 
-/* Before you begin ----------------------------------------------------------------------- */
-.front {
-  padding-block: 0 clamp(2rem, 6vh, 4rem);
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
 }
 
-.frontTitle {
-  font-size: calc(var(--rd-scale) * clamp(1.75rem, 1.2rem + 2.2vw, 3rem));
-}
-
-.frontItem {
-  margin-top: 2rem;
-}
-
-.frontItemTitle {
-  margin: 0;
-  font-family: var(--font-body-stack);
-  font-weight: 600;
-  font-size: var(--step-1);
-  line-height: 1.2;
-  color: var(--text);
-}
-
-.frontText {
-  margin: 0.6rem 0 0;
-  font-family: var(--font-serif-stack);
-  font-size: 1em;
-  color: var(--text);
-}
-
-.people {
-  display: grid;
-  gap: 1rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.person {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.personArt {
-  flex: none;
-  width: 4.25rem;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--bg-2);
-}
-
-.personArt img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.personText {
-  display: grid;
-  gap: 0.15rem;
-  min-width: 0;
-  font-family: var(--font-body-stack);
-}
-
-.personName {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.personLine {
-  font-size: var(--step-0);
-  line-height: 1.4;
-  color: var(--text-dim);
-}
-
-/* Chapters ------------------------------------------------------------------------------- */
-.chapter {
-  position: relative;
-  scroll-margin-top: calc(var(--nav-h) + 3.5rem);
-}
-
-.head {
-  padding-block: clamp(3rem, 9vh, 6rem) 1.4em;
-  font-family: var(--font-body-stack);
-}
-
-.chapter + .chapter .head {
-  margin-top: clamp(2.5rem, 8vh, 5rem);
-  border-top: 1px solid var(--line);
-}
-
-.headTitle {
-  font-size: calc(var(--rd-scale) * clamp(2rem, 1.4rem + 2.8vw, 4rem));
-}
-
-/* An interlude is the same page in italics: a short transmission between two chapters. */
-.interlude .p {
-  font-style: italic;
-}
-
-/* Paragraphs ---------------------------------------------------------------------------- */
+/* The body: one column of text, with wide things set in it -------------------------------- */
 .body {
-  padding-bottom: 1.5em;
+  display: flow-root;
+  padding-block: clamp(2.5rem, 8vh, 5.5rem) clamp(2rem, 6vh, 4rem);
+  font-family: var(--font-serif-stack);
+  font-size: var(--rd-fs);
+  line-height: var(--rd-lh);
+  letter-spacing: 0.002em;
+}
+
+.p,
+.voice,
+.sceneBreak,
+.credit,
+.portrait {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  margin-inline: auto;
+  padding-inline: var(--col-pad);
 }
 
 .p {
-  margin: 0 0 0.95em;
-  color: var(--text);
-  hanging-punctuation: first;
+  margin-block: 0 0.95em;
+  text-wrap: pretty;
 }
 
 .p em {
   font-style: italic;
 }
 
-.p strong {
-  font-weight: 400;
-  letter-spacing: 0.015em;
-  -webkit-text-stroke: 0.025em currentColor;
-}
-
-.seg {
-  display: inline;
-}
-
-/* Entity triggers: shared HoverCard look, tuned for running serif text. */
-.ent {
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  border-radius: 0;
-}
-
-/* The poem (the old skipping rhyme). */
-.poem {
-  margin: 1.6em 0 1.8em;
-  padding: 0.2em 0 0.2em 1.4em;
-  border-left: 1px solid var(--line-strong);
-  font-style: italic;
-}
-
-.poemLine {
-  display: inline;
-}
-
-/* Scene break: a four-pointed star between hairlines. */
 .sceneBreak {
-  position: relative;
-  height: 1em;
-  margin: 2.2em auto;
+  height: 1.1rem;
+  margin-block: 2.4rem;
   border: 0;
-  background:
-    linear-gradient(var(--line-strong), var(--line-strong)) left center / calc(50% - 1.4em) 1px
-      no-repeat,
-    linear-gradient(var(--line-strong), var(--line-strong)) right center / calc(50% - 1.4em) 1px
-      no-repeat;
-  overflow: visible;
+  background: none;
+  position: relative;
 }
 
 .sceneBreak::after {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0.8em;
-  height: 0.8em;
-  translate: -50% -50%;
+  inset: 0;
+  margin-inline: auto;
+  width: 1.1rem;
   background: var(--text-dim);
+  opacity: 0.6;
   mask: var(--star) center / contain no-repeat;
 }
 
-/* The end of the story ------------------------------------------------------------------- */
-.end {
-  margin-top: clamp(3rem, 8vh, 5rem);
-  padding-block: clamp(3rem, 8vh, 5rem) 0;
-  border-top: 1px solid var(--line);
+/* Under a line of speech that is also a recording: the player. ------------------------------ */
+.voice {
+  margin-block: -0.35em 1.15em;
 }
 
-.end:focus {
-  outline: none;
-}
-
-.sealed {
-  display: grid;
-  margin: 2rem 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--line);
-}
-
-.file {
-  padding: 0.25rem 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.fileQuestion {
+.voiceButton {
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: 44px;
-  padding-block: 0.6rem;
-  font-family: var(--font-serif-stack);
-  font-size: 1.1em;
-  line-height: 1.35;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 25rem;
+  min-height: 3.1rem;
+  padding: 0.35rem 1rem 0.35rem 0.35rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
   color: var(--text);
+  text-align: left;
+  font-family: var(--font-mono-stack);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.voiceButton:hover,
+.voice[data-playing="true"] .voiceButton {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.voiceFace {
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  overflow: hidden;
+  background: var(--accent);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 0.45rem) 0,
+    100% 0.45rem,
+    100% 100%,
+    0.45rem 100%,
+    0 calc(100% - 0.45rem)
+  );
+}
+
+.voiceFace img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.voiceIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.voice[data-playing="true"] .voiceIcon {
+  background: var(--accent);
+  color: var(--on-accent, #fff);
+}
+
+.voiceText {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.voiceName {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.voiceKind {
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  line-height: 1.1;
+}
+
+.voiceWave {
+  flex: 1;
+  min-width: 3rem;
+  height: 1.6rem;
+  color: var(--accent);
+}
+
+/* Plates and clips: wide pictures that break out of the column. ------------------------------ */
+.plate,
+.clip,
+.place {
+  margin-block: clamp(2.2rem, 7vh, 4.5rem);
+  margin-inline: 0;
+}
+
+.frame,
+.placeFrame {
+  position: relative;
+  width: 100%;
+  max-width: 94rem;
+  margin-inline: auto;
+  overflow: hidden;
+  background: var(--tint, #10131b);
+}
+
+.frame {
+  aspect-ratio: var(--ar, 16 / 9);
+  max-height: 86svh;
+}
+
+.frame img,
+.frame video,
+.placeFrame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.frameVideo {
+  background: var(--tint, #10131b);
+}
+
+/* A picture that is not wide (a comic panel, a portrait clip) is shown whole, not cropped to a
+   band: its width follows the screen's height. */
+.plate[data-shape="tall"] .frame,
+.clip[data-shape="tall"] .frame {
+  width: min(100% - 2 * var(--gutter), 46rem, calc(86svh * var(--ratio)));
+  max-height: none;
+  border: 1px solid var(--line-strong);
+}
+
+.soundButton {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.9rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(5 7 12 / 0.62);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
-.fileBody {
-  margin: 0.2rem 0 0.8rem;
-  color: var(--text);
+.soundButton[aria-pressed="true"] {
+  border-color: var(--light-gold, #ffd479);
+  color: var(--light-gold, #ffd479);
 }
 
-.fileStatus {
-  margin: 0 0 0.8rem;
+.placeFrame {
+  aspect-ratio: 21 / 9;
+  max-height: 70svh;
+}
+
+.placeFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(5 7 12 / 0.7), transparent 50%);
+  pointer-events: none;
+}
+
+.placeName {
+  position: absolute;
+  left: clamp(1rem, 4vw, 2.6rem);
+  bottom: clamp(0.9rem, 3vw, 2rem);
+  z-index: 1;
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  color: #fff;
+}
+
+.placeKicker {
   font-family: var(--font-mono-stack);
   font-size: var(--step--2);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.78);
+}
+
+.placeLabel {
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.8rem, 1rem + 3.4vw, 4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+/* Comic panels. ----------------------------------------------------------------------------- */
+.panels {
+  width: min(100% - 2 * var(--gutter), 74rem);
+  margin: clamp(2.2rem, 7vh, 4.5rem) auto;
+}
+
+.panels[data-count="1"] {
+  max-width: 40rem;
+}
+
+.panels[data-count="2"] {
+  max-width: 56rem;
+}
+
+.panelRow {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.4vw, 1.1rem);
+  align-items: start;
+}
+
+.panels[data-count="2"] .panelRow {
+  --n: 2;
+}
+
+.panels[data-count="3"] .panelRow {
+  --n: 3;
+}
+
+.panel {
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  aspect-ratio: var(--ar);
+}
+
+.panel:nth-child(2) {
+  margin-top: clamp(0.8rem, 2.4vw, 1.8rem);
+}
+
+.panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 40em) {
+  .panelRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panels[data-count="2"] .panelRow,
+  .panels[data-count="3"] .panelRow {
+    --n: 1;
+  }
+
+  .panel:nth-child(2) {
+    margin-top: 0;
+  }
+}
+
+.panels .credit,
+.plate .credit,
+.clip .credit,
+.place .credit {
+  margin-top: 0.8rem;
+}
+
+/* Under comic panels the line runs the width of the panels, not of the text column. */
+.panels .credit {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/* Under a picture: caption in the book's voice, and where the picture is from. ---------------- */
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.2rem 1rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
   text-transform: uppercase;
   color: var(--text-dim);
 }
 
-.theEnd {
-  margin: clamp(3rem, 8vh, 5rem) 0 0;
+.creditCaption {
+  font-family: var(--font-serif-stack);
+  font-size: 1.15rem;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+
+.creditSource {
+  margin-left: auto;
+}
+
+/* The card that introduces an Aspirant. ---------------------------------------------------- */
+.portrait {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 10.5rem) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 1.7rem);
+  align-items: center;
+  margin-block: clamp(2rem, 6vh, 3.4rem);
+}
+
+.portraitArt {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--accent);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 1.1rem) 0,
+    100% 1.1rem,
+    100% 100%,
+    1.1rem 100%,
+    0 calc(100% - 1.1rem)
+  );
+}
+
+.portraitArt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portraitText {
+  display: grid;
+  gap: 0.15rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--accent);
+}
+
+.portraitKicker {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.portraitName {
+  margin: 0;
   font-family: var(--font-display-stack);
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.6rem);
   font-weight: 800;
-  font-size: calc(var(--rd-scale) * clamp(2rem, 1.4rem + 2.8vw, 4rem));
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-align: center;
+  line-height: 0.95;
   text-transform: uppercase;
   color: var(--text);
 }
 
-/* The way on, at the end of a Part --------------------------------------------------------- */
-.partNav {
-  margin-top: clamp(3rem, 8vh, 5rem);
-  padding-block: clamp(3rem, 8vh, 5rem) clamp(4rem, 12vh, 8rem);
-  border-top: 1px solid var(--line);
-  font-family: var(--font-body-stack);
+.portraitAka {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
-.partNext {
+.portraitLine {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1.12em;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* A whole film in the site's own player. ---------------------------------------------------- */
+.film {
+  width: min(100% - 2 * var(--gutter), 60rem);
+  margin: clamp(2.2rem, 7vh, 4.5rem) auto;
+}
+
+.filmCard {
+  width: 100%;
+}
+
+.film .credit {
+  padding-inline: 0;
+  margin-top: 0.8rem;
+}
+
+/* The way on at the end of a chapter. ------------------------------------------------------- */
+.end {
   display: grid;
-  gap: 0.35rem;
-  padding: clamp(1.25rem, 3vw, 2rem);
-  border: 1px solid var(--line-strong);
+  gap: 1.2rem;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: clamp(2.5rem, 9vh, 5.5rem) var(--gutter) clamp(4rem, 12vh, 8rem);
+}
+
+.endNext {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(15rem, 40vh, 26rem);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--tint, #10131b);
+  color: #fff;
+  text-decoration: none;
+}
+
+.endPicture {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slower) var(--ease-out);
+}
+
+.endNext:hover .endPicture,
+.endNext:focus-visible .endPicture {
+  transform: scale(1.05);
+}
+
+.endShade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgb(5 7 12 / 0.9), rgb(5 7 12 / 0.15) 70%);
+}
+
+.endText {
+  display: grid;
+  gap: 0.25rem;
+  padding: clamp(1.1rem, 3vw, 2rem);
+}
+
+.endKicker,
+.endDate {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.8);
+}
+
+.endDate {
+  font-family: var(--font-serif-stack);
+  font-size: 1.1rem;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.endLabel {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.endTitle {
+  font-family: var(--font-display-stack);
+  font-size: clamp(2rem, 1.2rem + 3.6vw, 4.2rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.endRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem 1.6rem;
+}
+
+.endLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--text);
   text-decoration: none;
-  transition:
-    border-color var(--dur-base) var(--ease-out),
-    transform var(--dur-base) var(--ease-out);
+  border-bottom: 1px solid var(--line-strong);
 }
 
-.partNext:hover,
-.partNext:focus-visible {
-  border-color: var(--text);
-  transform: translateY(-2px);
+.endLink:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
-.partNavKicker {
+/* The end page: the cast and the timeline. ----------------------------------------------------- */
+.finish {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + clamp(3rem, 10vh, 6rem)) var(--col-pad) 2rem;
+  font-family: var(--font-serif-stack);
+  font-size: var(--rd-fs);
+  line-height: var(--rd-lh);
+}
+
+.finishKicker {
+  margin: 0;
   font-family: var(--font-mono-stack);
   font-size: var(--step--1);
   letter-spacing: 0.18em;
@@ -406,171 +762,178 @@
   color: var(--text-dim);
 }
 
-.partNavLabel {
+.finishTitle {
+  margin: 0.6rem 0 0;
   font-family: var(--font-display-stack);
+  font-size: clamp(2.6rem, 1.4rem + 5vw, 6rem);
   font-weight: 800;
-  font-size: clamp(2rem, 1.4rem + 2.8vw, 4rem);
-  line-height: 0.95;
+  line-height: 0.92;
   text-transform: uppercase;
-}
-
-.partNavTitle {
-  font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: var(--step-1);
-  color: var(--text-dim);
-}
-
-.partNavRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1.5rem;
-  margin-top: 1rem;
-}
-
-.partNavLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--1);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-decoration: none;
-}
-
-.partNavLink:hover,
-.partNavLink:focus-visible {
+  text-wrap: balance;
   color: var(--text);
 }
 
-/* The shared entity card (extends the shell HoverCard) ----------------------------------- */
-.entCard {
-  width: min(21rem, calc(100vw - 16px));
-  padding: 0 0 1rem;
+.finishLead {
+  margin: 1.2rem 0 0;
+  font-style: italic;
+  color: var(--text-dim);
 }
 
-.cardArt {
+.castList {
   display: grid;
-  place-items: center;
-  height: 7.25rem;
-  margin: 1px 1px 0.9rem;
-  overflow: hidden;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
-  clip-path: polygon(11px 0, 100% 0, 100% 100%, 0 100%, 0 11px);
+  gap: 1.6rem;
+  margin: 2.4rem auto 0;
+  padding: 0 var(--col-pad);
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  list-style: none;
 }
 
-.cardArt img {
+.castItem {
+  display: grid;
+  grid-template-columns: 5.2rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.castArt {
+  width: 5.2rem;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--accent);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 0.7rem) 0,
+    100% 0.7rem,
+    100% 100%,
+    0.7rem 100%,
+    0 calc(100% - 0.7rem)
+  );
+}
+
+.castArt img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.cardArt:has(svg) {
-  height: 4.75rem;
-}
-
-.cardArt svg {
-  width: 3.25rem;
-  height: 3.25rem;
-}
-
-.cardText {
-  display: grid;
-  gap: 0.3rem;
-  padding: 0 1.05rem;
-}
-
-.cardKicker {
-  color: var(--accent);
-}
-
-.cardName {
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: 1.6rem;
-  line-height: 0.95;
-  text-transform: uppercase;
-  color: var(--text);
-}
-
-.cardShort {
-  color: var(--text-dim);
-}
-
-.cardActions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 1rem;
-  margin-top: 0.8rem;
-  padding: 0 1.05rem;
-}
-
-.cardVoice {
-  display: grid;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.cardButton {
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.45rem 0.9rem 0.45rem 0.7rem;
-  border: 1px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--text);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.cardButton svg {
-  width: 1rem;
-  height: 1rem;
-  color: var(--accent);
-}
-
-.cardButton[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
-.cardButton[aria-pressed="true"] svg {
-  color: inherit;
-}
-
-.cardCaption {
-  display: grid;
-  gap: 0.3rem;
+.castText {
   margin: 0;
-  font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.3;
-  color: var(--text);
+  font-size: 0.95em;
+  line-height: 1.5;
 }
 
-.cardHint {
+.castName {
+  display: block;
+  font-family: var(--font-display-stack);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.timeline {
+  display: grid;
+  gap: 1.1rem;
+  margin: 2rem auto 0;
+  padding: 0 var(--col-pad);
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  list-style: none;
+  border-left: 1px solid var(--line-strong);
+  margin-left: max(var(--col-pad), calc((100% - var(--rd-measure)) / 2));
+}
+
+.timelineItem {
+  position: relative;
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.timelineItem::before {
+  content: "";
+  position: absolute;
+  left: -0.3rem;
+  top: 0.6em;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--accent, var(--text));
+}
+
+.sectionHead {
+  max-width: calc(var(--rd-measure) + 2 * var(--col-pad));
+  margin: 3.2rem auto 0;
+  padding-inline: var(--col-pad);
   font-family: var(--font-mono-stack);
-  font-style: normal;
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--text-dim);
 }
 
-.cardLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: var(--step--1);
-  font-weight: 600;
+/* Scroll-linked motion, where the browser has it (transform and opacity only). ---------------- */
+@supports (animation-timeline: view()) {
+  .cardPicture {
+    animation: card-drift linear both;
+    animation-timeline: view();
+    animation-range: exit;
+  }
+
+  .cardText {
+    animation: card-lift linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 55%;
+  }
+
+  .plate .frame,
+  .clip .frame,
+  .placeFrame,
+  .panel,
+  .portrait {
+    animation: pic-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+
+  /* Only wide pictures drift inside their frame; a comic panel is never zoomed or cut. */
+  .plate[data-shape="wide"] .frame img,
+  .placeFrame img {
+    animation: pic-float linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+
+  @keyframes card-drift {
+    to {
+      transform: translateY(16%);
+    }
+  }
+
+  @keyframes card-lift {
+    to {
+      transform: translateY(-3.5rem);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pic-rise {
+    from {
+      opacity: 0;
+      transform: translateY(2.2rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pic-float {
+    from {
+      transform: translateY(-5%) scale(1.1);
+    }
+    to {
+      transform: translateY(5%) scale(1.1);
+    }
+  }
 }

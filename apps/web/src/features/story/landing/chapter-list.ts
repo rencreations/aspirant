@@ -1,25 +1,47 @@
-import type { ChapterMeta } from "@/content/story-types";
+import type { ActMeta, ChapterEntry } from "@/content/story-types";
 
-/** How many rows of the chapter list show before "Show all". */
-export const COLLAPSED_ROWS = 8;
+/** How many preview cards show before "Show all". */
+export const COLLAPSED_CARDS = 9;
 
-export type ChapterOrder = "first" | "latest";
-
-/** The chapters and interludes in the order the visitor chose: book order, or the latest first. */
-export function orderUnits(units: readonly ChapterMeta[], order: ChapterOrder): ChapterMeta[] {
-  return order === "first" ? [...units] : [...units].reverse();
+export interface ActGroup {
+  readonly act: ActMeta;
+  readonly chapters: readonly ChapterEntry[];
 }
 
-/** The rows that show: all of them, or only the first `limit` while the list is folded. */
-export function visibleUnits(
-  units: readonly ChapterMeta[],
+/** The chapters gathered under their acts, in book order. */
+export function groupByAct(
+  acts: readonly ActMeta[],
+  chapters: readonly ChapterEntry[],
+): ActGroup[] {
+  return acts
+    .map((act) => ({
+      act,
+      chapters: chapters.filter((c) => c.number >= act.from && c.number <= act.to),
+    }))
+    .filter((g) => g.chapters.length > 0);
+}
+
+/**
+ * Cut the groups to the first `limit` cards while the list is folded (an act that loses all its
+ * cards disappears with its heading). Unfolded, everything shows.
+ */
+export function visibleGroups(
+  groups: readonly ActGroup[],
   expanded: boolean,
-  limit = COLLAPSED_ROWS,
-): ChapterMeta[] {
-  return expanded || units.length <= limit ? [...units] : units.slice(0, limit);
+  limit = COLLAPSED_CARDS,
+): ActGroup[] {
+  if (expanded) return [...groups];
+  const out: ActGroup[] = [];
+  let left = limit;
+  for (const g of groups) {
+    if (left <= 0) break;
+    out.push({ act: g.act, chapters: g.chapters.slice(0, left) });
+    left -= g.chapters.length;
+  }
+  return out;
 }
 
-/** "About 4 min" of reading for a chapter of this many words (230 words a minute). */
-export function readingMinutes(words: number): number {
-  return Math.max(1, Math.round(words / 230));
+/** The number of cards in the groups. */
+export function countCards(groups: readonly ActGroup[]): number {
+  return groups.reduce((sum, g) => sum + g.chapters.length, 0);
 }

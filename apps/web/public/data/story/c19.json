@@ -1,0 +1,302 @@
+{
+  "id": "c19",
+  "number": 19,
+  "slug": "chapter-19",
+  "title": "Leave Me Alone",
+  "dateline": "Terrinia’s research base. The day it fell.",
+  "mood": "The day the research base fell, and the letter Chang’e wrote that night and never sent.",
+  "words": 570,
+  "score": null,
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c19/hero-c422bd63.mp4",
+    "poster": "img/story/c19/hero-c422bd63-poster.webp",
+    "w": 1600,
+    "h": 676,
+    "dur": 5.35,
+    "bytes": 600667,
+    "sound": false,
+    "color": "#53161d",
+    "alt": "An alarm floods a lab corridor with red light, and Chang'e looks out from the doorway.",
+    "credit": "Official Lesley and Chang'e trailer"
+  },
+  "heroFocus": "50% 45%",
+  "blocks": [
+    { "t": "p", "i": 0, "segs": [{ "t": "The alarm turned the lab red." }] },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "Chang’e stood at the window with Mr. Bunny at her shoulder. A minute ago her mother had been laughing at his new face. Now half the city was burning. Small flying craft, shaped like cars, swept over the base’s grounds and fired on a building."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Behind her the first suit stood half built on its steel frame. On the desk lay a photograph of her mother and father holding her up between them."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "The photograph on the desk, and Mr. Bunny beside it.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c19/i0-c2e1a87b.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#5f6a8a",
+        "alt": "A framed photo of two scientists holding up a small girl stands on a desk beside a white bunny robot.",
+        "credit": "Official Lesley and Chang'e trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [{ "t": "“Stay close, Chang’e.” Her father’s voice was calm. It was always calm." }]
+    },
+    { "t": "p", "i": 4, "segs": [{ "t": "Her mother took her hand." }] },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "They ran. Chang’e kept her eyes shut and let the hand pull her. Doors banged. The air tasted of burning plastic. Every few seconds the street jumped under her feet, and each jump was closer."
+        }
+      ]
+    },
+    { "t": "p", "i": 6, "segs": [{ "t": "She opened her eyes." }] },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "A giant Ender was walking through the middle of the city. It stood hundreds of meters tall. Smoke curled around its knees. It did not hurry and it did not look around. It walked like a machine doing what it was told."
+        }
+      ]
+    },
+    { "t": "p", "i": 8, "segs": [{ "t": "Light gathered in its chest." }] },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c19/i1-43cc4b31.mp4",
+        "poster": "img/story/c19/i1-43cc4b31-poster.webp",
+        "w": 1280,
+        "h": 720,
+        "dur": 3.8,
+        "bytes": 505637,
+        "sound": false,
+        "color": "#5d576c",
+        "alt": "Chang'e runs with her parents through a burning street as a giant Ender looms behind, light gathering in its chest.",
+        "credit": "Official Lesley and Chang'e teaser"
+      }
+    },
+    { "t": "p", "i": 9, "segs": [{ "t": "“Chang’e!”" }] },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "Hands shoved her, one pair from each side, hard. She fell and rolled across the road. The light came down where they had been standing."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [{ "t": "When she could see again, there was a crater. There was nothing in it." }]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "She knelt at its edge in the ash, black with soot. Her legs would not move. A moment ago her mother’s hand had been in hers. She looked at her fingers."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c19/i2-ffc41b1d.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#785a40",
+        "alt": "Chang'e kneels alone in burning rubble, staring ahead.",
+        "credit": "Official Lesley and Chang'e trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [{ "t": "A shot cracked close by. An Ender at the crater’s rim fell." }]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "Someone broke through the fleeing crowd and dropped to her knees. Lesley. Her hair hung loose, and one glove was burned through at the palm. She pulled Chang’e against her coat. It smelled of smoke."
+        }
+      ]
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "“I’m... sorry.”" }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        { "t": "Chang’e had always held on to that coat. Now she shoved at it with both hands." }
+      ]
+    },
+    { "t": "p", "i": 17, "segs": [{ "t": "“Leave me alone...”" }] },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "I’m... sorry. Leave me alone...",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c19/i3-3ec17004.mp4",
+        "poster": "img/story/c19/i3-3ec17004-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 5.1,
+        "bytes": 426005,
+        "sound": false,
+        "color": "#755548",
+        "alt": "Chang'e is held against Lesley's shoulder in the firelight, then the two stand turned away from each other.",
+        "credit": "Official Lesley and Chang'e trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "Lesley’s hands stayed open in the air. She did not argue. After a moment she stood, brought her rifle up and turned to the Enders still coming down the street. She did not look back."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        { "t": "The rest Chang’e did not say aloud. " },
+        { "t": "You were not here.", "em": 1 }
+      ]
+    },
+    { "t": "break" },
+    { "t": "p", "i": 20, "segs": [{ "t": "That night.", "em": 1 }] },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "The lab was cold. The frame of the first suit stood where it had always stood. Mr. Bunny’s screen was dark."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "Chang’e climbed into her father’s chair at the console, and her feet hung off the floor. She opened her design log and a blank line. Then she typed a name and a comma."
+        }
+      ]
+    },
+    { "t": "p", "i": 23, "segs": [{ "t": "Lesley,", "em": 1 }] },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "I’ll never forgive you, Lesley. You were not here when we needed your protection. They died because of you!",
+          "em": 1
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "Twice she read it. She did not send it. She saved it in a folder and closed the file."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "The letter she saved and never sent.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c19/i4-a2db74eb.webp",
+        "w": 1280,
+        "h": 720,
+        "color": "#d6d4e1",
+        "alt": "A page from Chang'e's log: I'll never forgive you, Lesley. You were not here when we needed your protection. They died because of you!",
+        "credit": "Official Lesley and Chang'e teaser"
+      }
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Mr. Bunny’s screen lit. He had turned to the window, and his lens showed what it saw: a far rooftop against the red sky, and a small figure on it with a long rifle, looking at the lab."
+        }
+      ]
+    },
+    { "t": "p", "i": 27, "segs": [{ "t": "Chang’e did not look up. “Turn around,” she said." }] },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "He turned his lens back to the console. The figure was there the next night, and the next."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Lesley, on a far rooftop, night after night.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c19/i5-7fe8c4b8.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#655d5f",
+        "alt": "Lesley stands on a high rooftop with her rifle, looking down at the burning city.",
+        "credit": "Official Lesley and Chang'e trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "Her parents’ notes lay open beside the console, unfinished, in her mother’s quick hand. She opened the suit’s file and began to type."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "The console was the only light in the lab. She worked alone beside the frame until the windows went gray."
+        }
+      ]
+    }
+  ]
+}

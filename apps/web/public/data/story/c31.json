@@ -1,0 +1,233 @@
+{
+  "id": "c31",
+  "number": 31,
+  "slug": "chapter-31",
+  "title": "The Sea of Stars",
+  "dateline": "The dark beyond Dawnbreak. May 997.",
+  "mood": "Far out in the dark, the Storm Citadel turns toward Dawnbreak, and its queen asks a question.",
+  "words": 416,
+  "score": "obsidia-theme",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c31/hero-ecbc8068.mp4",
+    "poster": "img/story/c31/hero-ecbc8068-poster.webp",
+    "w": 1600,
+    "h": 900,
+    "dur": 4.1,
+    "bytes": 1985799,
+    "sound": false,
+    "color": "#785a7f",
+    "alt": "A flash of pink light opens, and Obsidia floats in the dark among drifting rocks, two black suns burning at her shoulders.",
+    "credit": "Official video: Obsidia"
+  },
+  "heroFocus": "50% 35%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "The Storm Citadel came out of the last of the dark with its storm drawn tight against the hull. It was the Enders’ mothership, a city of black ribs. In its holds stood thousands of Enders, gray and still."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "Obsidia stood at the prow. Far ahead, a young galaxy turned its pale arms. Somewhere in it hung Dawnbreak, one small world, with a dome of light over its last city."
+        }
+      ]
+    },
+    { "t": "p", "i": 2, "segs": [{ "t": "She spoke to the empty dark." }] },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [{ "t": "“Once humanity has been purged, what will become of us?”" }],
+      "voice": { "slug": "obsidia", "n": 20, "src": "audio/voice/obsidia/20.m4a", "dur": 4.61 }
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c31/i0-b2c21d3c.webp",
+        "w": 1600,
+        "h": 800,
+        "color": "#68455c",
+        "alt": "Obsidia stands in a dark storm with her wings half open, a faint smile on her face.",
+        "credit": "Official video: Obsidia"
+      }
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "Nothing answered. Nothing in the holds could. The Mother Matrix, which had made her kind, had never answered either."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [{ "t": "She knew what the answer looked like. She had lived it." }]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "On a dead planet under a gray sky she had watched a singularity open: a tear in the dark that leads somewhere else. The Mother Matrix had come through it. On another world, six star-shaped portals had opened over a city. She had counted them. Under them nothing was left standing."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "She had counted them.",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c31/i1-41871a19.mp4",
+        "poster": "img/story/c31/i1-41871a19-poster.webp",
+        "w": 1280,
+        "h": 640,
+        "dur": 3.6,
+        "bytes": 742119,
+        "sound": false,
+        "color": "#8e7682",
+        "alt": "Six star-shaped portals open over a city, pour down light, and the city vanishes in a blast.",
+        "credit": "Official video: Obsidia"
+      }
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "Then came the long sleep in the void, after the last city fell. That was the answer so far. A world ended, and the Enders slept, until another world grew."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "On that small world lay the next such city. Its children wore uniforms and learned to fight her kind. She found it touching."
+        }
+      ]
+    },
+    { "t": "p", "i": 9, "segs": [{ "t": "And one pawn in it was hers." }] },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c31/i2-85511454.webp",
+        "w": 1600,
+        "h": 800,
+        "color": "#593a4d",
+        "alt": "A close view of Obsidia's eyes, one violet and one pink, glowing under her hair.",
+        "credit": "Official video: Obsidia"
+      }
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "The purge was only the work. What came after was the question, and the pawn was her way to find out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [{ "t": "“Someday, when this story nears its end, she too will return to me.”" }],
+      "voice": { "slug": "obsidia", "n": 15, "src": "audio/voice/obsidia/15.m4a", "dur": 8.32 }
+    },
+    { "t": "break" },
+    { "t": "p", "i": 12, "segs": [{ "t": "The Storm Citadel, the throne hall.", "em": 1 }] },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "The throne hall",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c31/i3-ef2f30ca.webp",
+        "w": 1600,
+        "h": 607,
+        "color": "#14192d",
+        "alt": "A pale throne shaped like a spine rises in a dark hall; a small figure stands at its foot as a long weapon crawls toward her.",
+        "credit": "Official trailer: Selena and Obsidia"
+      }
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "The throne rose from the floor like a spine. Pale plate after plate climbed from the keel to the roof. Every rib of the ship hung from it. If it broke, the Citadel would be crippled."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "Obsidia sat where a neck would be. Her weapon crossed the hall and settled under her hand, long and silver-pink. She stroked it as one strokes a pet."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [
+        { "t": "“Destruction is mine to command, yet my finest creation... has gone off-script.”" }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c31/i4-9c726ee5.mp4",
+        "poster": "img/story/c31/i4-9c726ee5-poster.webp",
+        "w": 1280,
+        "h": 486,
+        "dur": 4.1,
+        "bytes": 472901,
+        "sound": false,
+        "color": "#2d1f32",
+        "alt": "Obsidia's long silver-pink weapon coils through the dark, and she reaches out a hand to it.",
+        "credit": "Official trailer: Selena and Obsidia"
+      }
+    },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "She was not angry. Every move her creation could make, she had already planned. She hoped it would find one she had not."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "The hall faced forward, into the dark. Far ahead, a small light flashed. It was a rift in the shape of a four-pointed star, magenta, opening and shutting. On its far side lay the city."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [{ "t": "The Citadel turned toward it and began to close the distance." }]
+    }
+  ]
+}

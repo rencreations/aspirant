@@ -1,0 +1,100 @@
+{
+  "chapter": "c09",
+  "mood": "Two rivals become one team, one score. On a storm night far from the Academy, something fast crosses the rooftops.",
+  "hero": {
+    "type": "clip",
+    "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+    "start": 76.4,
+    "end": 82.4,
+    "poster": 5.0,
+    "sound": false,
+    "alt": "Fanny smiles and speaks to Layla, and Layla sits flustered at her desk with a wrapped gift.",
+    "credit": "Official short animation, Layla and Fanny"
+  },
+  "heroFocus": "50% 40%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "It isn't a vote.",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/joe.jpg",
+        "crop": [140, 0, 360, 672],
+        "alt": "Character sheet of Professor Joe: a dark-haired man with a monocle in a dark blue uniform.",
+        "credit": "Official character art"
+      },
+      "caption": "Professor Joe, instructor of the Layla-Fanny Team."
+    },
+    {
+      "after": 10,
+      "anchor": "Fanny, down beside her",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "start": 14.6,
+        "end": 18.5,
+        "poster": 2.8,
+        "sound": false,
+        "alt": "Layla sulks among wrecked training drones, and Fanny, not a scratch on her, peers at her puzzled.",
+        "credit": "Official short animation, Layla and Fanny"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Humph. She set her",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "t": 60.9,
+        "alt": "Fanny stands behind a pile of wrapped gifts while Layla stares at it in silence.",
+        "credit": "Official short animation, Layla and Fanny"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "The raid that mattered",
+      "kind": "place",
+      "label": "Terrinia's shore wards",
+      "media": {
+        "type": "image",
+        "src": "_others/places/planet-dawnbreak.jpg",
+        "alt": "Terrinia from high above: towers around a blue bay that opens to the sea, a great tower sending light into the sky.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "Enders dropped onto the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "t": 10.6,
+        "crop": [160, 0, 2240, 910],
+        "alt": "Guinevere and Vexana fight back to back among Enders, Vexana with her staff and Guinevere's two drones circling.",
+        "credit": "Official film, Connection Lost"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "She dropped past the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "start": 7.0,
+        "end": 10.15,
+        "crop": [160, 0, 2240, 910],
+        "poster": 2.3,
+        "sound": false,
+        "alt": "Vexana, in her school uniform with her staff, reaches out a hand.",
+        "credit": "Official film, Connection Lost"
+      }
+    }
+  ]
+}

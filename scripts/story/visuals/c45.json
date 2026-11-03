@@ -1,0 +1,123 @@
+{
+  "chapter": "c45",
+  "mood": "A recall that has said one thing for months, and a girl who finally answers it her own way.",
+  "hero": {
+    "type": "clip",
+    "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
+    "start": 2.4,
+    "end": 6.2,
+    "crop": [0, 136, 1920, 808],
+    "poster": 2.8,
+    "alt": "Selena walks down a dark hall toward a towering throne, where a woman with long gold and pink hair waits with a floating weapon.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "heroFocus": "64% 45%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
+    "t": 5.3,
+    "crop": [0, 136, 1920, 808],
+    "alt": "Obsidia stands at the foot of her throne, her weapon hanging in the air beside her.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 13,
+      "anchor": "A throne grew out",
+      "kind": "place",
+      "label": "The throne hall",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
+        "t": 1.5,
+        "crop": [0, 136, 1920, 734],
+        "alt": "A vast dark hall with a throne of pale ribbed plates rising from floor to roof, and one small figure at its foot.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "Obsidia came to her",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
+        "t": 8.75,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Obsidia lays one gloved finger on Selena's cheek while Selena looks back at her.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 25,
+      "anchor": "Ah so what should",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
+        "t": 15.75,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Selena spreads her arms behind Obsidia's back with a playful smile while Obsidia stares ahead.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 30,
+      "anchor": "The chains wrapped Selena's",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
+        "t": 22.62,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Spiked chains of bone coil around Selena and hold her in the air.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 35,
+      "anchor": "Lightning burst out of",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
+        "start": 11.9,
+        "end": 15.4,
+        "crop": [0, 136, 1920, 734],
+        "poster": 1.2,
+        "alt": "Plates of white, blue and gold close over Selena in a storm of lightning, and her blade meets Obsidia's lightning across the hall.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 38,
+      "anchor": "She went in close.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
+        "t": 25.65,
+        "crop": [0, 136, 1920, 808],
+        "alt": "Obsidia holds Selena off at the length of her long silver and pink weapon.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 42,
+      "anchor": "Deep in the ship,",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
+        "start": 33.2,
+        "end": 37.6,
+        "crop": [0, 136, 1920, 808],
+        "poster": 1.6,
+        "alt": "Selena's blade cuts through the throne at its base, and the hall erupts in fire.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    }
+  ]
+}

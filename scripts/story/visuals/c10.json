@@ -1,0 +1,112 @@
+{
+  "chapter": "c10",
+  "mood": "On Planet Oro the heir may have no friends and no feelings. So she builds herself a way out.",
+  "hero": {
+    "type": "clip",
+    "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+    "start": 0.4,
+    "end": 4.35,
+    "poster": 3.0,
+    "sound": false,
+    "alt": "A dark, towering hall of pillars and violet windows, with one small figure standing in a circle of light on the floor.",
+    "credit": "Official video, Ruby"
+  },
+  "heroFocus": "45% 60%",
+  "spoiler": false,
+  "score": null,
+  "inserts": [
+    {
+      "after": 4,
+      "anchor": "The tutor stood in",
+      "kind": "portrait",
+      "character": "ruby",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+        "t": 6.0,
+        "crop": [1000, 0, 1040, 1080],
+        "alt": "Ruby as a small girl, dark hair over one eye, hugging a pink doll.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Behind him, a dark",
+      "kind": "place",
+      "label": "Planet Oro",
+      "media": {
+        "type": "image",
+        "src": "_others/places/planet-oro.jpg",
+        "alt": "A dark ship with cyan lights crosses a violet sky above the towers of Oro.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "You cannot allow yourself",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/rubyfather.png",
+        "crop": [350, 0, 750, 816],
+        "alt": "Ruby's father, the Decisionmaker: a tall man in a dark coat with a fur collar and a long cape.",
+        "credit": "Official character art"
+      },
+      "caption": "Ruby's father, who leads the Decisionmakers of Oro."
+    },
+    {
+      "after": 26,
+      "anchor": "These were the Council's",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/androids.png",
+        "crop": [0, 70, 960, 398],
+        "alt": "Rows of identical androids with animal ears and glowing magenta eyes stand in the dark.",
+        "credit": "Official character art"
+      },
+      "caption": "The Council's androids of Project Angel."
+    },
+    {
+      "after": 29,
+      "anchor": "So I can hide",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
+        "t": 3.6,
+        "alt": "An android girl with pink hair sleeps upright in a cradle of cables, surrounded by glowing screens.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 34,
+      "anchor": "On the last night",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
+        "start": 10.1,
+        "end": 16.25,
+        "poster": 5.8,
+        "sound": false,
+        "alt": "SUCCESS lights up on a screen, a hand presses the key, and the android in the cradle opens bright blue eyes.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 37,
+      "anchor": "The smile was so",
+      "kind": "portrait",
+      "character": "angela",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
+        "t": 16.0,
+        "crop": [830, 0, 900, 1080],
+        "alt": "Angela, just woken, with pink hair, white ear pieces and blue eyes, smiling brightly.",
+        "credit": "Official video, Ruby"
+      }
+    }
+  ]
+}

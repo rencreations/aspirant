@@ -1,0 +1,81 @@
+{
+  "chapter": "c44",
+  "mood": "Her rifle has lost its power, an Ender is on the steps, and Chang'e has a plan Lesley hates.",
+  "hero": {
+    "type": "frame",
+    "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
+    "t": 5.6,
+    "alt": "Lesley kneels on a rooftop at night and aims her long rifle across the city.",
+    "credit": "Official trailer, Rekindled Light"
+  },
+  "heroFocus": "56% 45%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Her artificial left eye",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
+        "t": 10.6,
+        "alt": "Lesley's face up close, a teal visor over one eye, the other glowing red as she takes aim.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "after": 5,
+      "anchor": "In her scope, four",
+      "kind": "place",
+      "label": "The hall's back terrace",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
+        "t": 5.5,
+        "alt": "Chang'e on a terrace behind a railing, reading two glowing screens, a crescent turning at her back.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "after": 11,
+      "anchor": "Lesley's finger was already",
+      "kind": "clip",
+      "caption": "Years ago, another roof, another shot.",
+      "media": {
+        "type": "clip",
+        "src": "lesley-and-change/video/official/trailer/footages/01m27s000ms-01m37s760ms/footage.webm",
+        "start": 4.8,
+        "end": 7.8,
+        "poster": 2.3,
+        "alt": "Chang'e looks up from the ground as an Ender looms over her, and a shot from far off strikes it.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "after": 20,
+      "anchor": "Mr. Bunny hung at",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/teaser/footages/00m00s000ms-00m14s040ms/footage.mp4",
+        "t": 2.63,
+        "alt": "Chang'e laughs and holds Mr. Bunny up to Lesley, who leans down to look at him.",
+        "credit": "Official teaser, Rekindled Light"
+      },
+      "caption": "Mr. Bunny at the base, before it fell."
+    },
+    {
+      "after": 37,
+      "anchor": "On the terrace, Chang'e",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/teaser/footages/00m36s400ms-00m44s760ms/footage.mp4",
+        "t": 2.6,
+        "alt": "Chang'e looks straight up through her glasses, one hand raised, the city burning behind her.",
+        "credit": "Official teaser, Rekindled Light"
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "chapter": "c03",
+  "mood": "A lesson on where Enders break, a drill that goes wrong, and then the siren.",
+  "hero": {
+    "type": "image",
+    "src": "layla-and-fanny/art/comic/official-aspirant-comic/13.jpg",
+    "crop": [0, 1325, 1000, 440],
+    "alt": "Fanny, furious, grabs Layla by the collar, the two face to face as sparks fly between them.",
+    "credit": "Official Aspirant comic, page 13"
+  },
+  "heroFocus": "62% 50%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 7,
+      "anchor": "It was Fanny's first",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/joe.jpg",
+        "crop": [290, 0, 904, 670],
+        "alt": "Design sheet of Professor Joe, a young instructor with a monocle, in uniform with a long sword.",
+        "credit": "Official character art"
+      },
+      "caption": "Professor Joe"
+    },
+    {
+      "after": 14,
+      "anchor": "Joe opened a gold-covered",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/the-enders.png",
+        "crop": [40, 150, 1170, 420],
+        "alt": "Design sheet of gray, clawed Enders drawn to scale beside a small human figure, one torso split open on a glowing core.",
+        "credit": "Official Ender designs"
+      },
+      "caption": "Enders, drawn to scale beside a person. The core sits behind the chest plates."
+    },
+    {
+      "after": 19,
+      "anchor": "The last slide was",
+      "kind": "place",
+      "label": "Storm Citadel",
+      "media": {
+        "type": "image",
+        "src": "_others/places/storm-citadel.png",
+        "crop": [8, 18, 950, 400],
+        "alt": "A vast ship of dark, glowing blocks hangs upside down in the sky above a city.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "A thin white shot",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
+          "crop": [0, 20, 860, 720],
+          "alt": "Roger trips and slams onto his back with a cry.",
+          "credit": "Official Aspirant comic, page 4"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/6.jpg",
+          "crop": [0, 155, 760, 1080],
+          "alt": "A shining blue cable wraps the raised arm of a gray Ender and holds it back.",
+          "credit": "Official Aspirant comic, page 6"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/10.jpg",
+          "crop": [0, 1150, 1000, 1330],
+          "alt": "A thin white shot streaks past Fanny into the Ender, which bursts into light.",
+          "credit": "Official Aspirant comic, page 10"
+        }
+      ]
+    },
+    {
+      "after": 34,
+      "anchor": "Enough arguing, guys... said",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/14.jpg",
+        "crop": [0, 960, 1000, 1960],
+        "alt": "Layla turns away with her cannon, saying she saved a life, while Roger lifts a hand and asks them to stop arguing.",
+        "credit": "Official Aspirant comic, page 14"
+      }
+    },
+    {
+      "after": 40,
+      "anchor": "The siren began. Ultra",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
+        "crop": [0, 30, 1000, 1830],
+        "alt": "Red alarms flash across the Academy as students run, a screen warning that Ultra Enders are attacking the Northeastern sector.",
+        "credit": "Official Aspirant comic, page 19"
+      }
+    }
+  ]
+}

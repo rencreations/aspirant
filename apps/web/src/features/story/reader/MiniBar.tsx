@@ -4,20 +4,21 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
+import { actOf, chapterLabel, getChapter } from "@/content/story";
+
 import { ContentsSheet } from "./ContentsSheet";
+import s from "./chrome.module.css";
 import { useReadingPosition } from "./position";
 import { useReader } from "./reader-context";
-import s from "./chrome.module.css";
 import { SettingsPanel } from "./SettingsPanel";
-import { getPartMeta, getUnit, unitLabel } from "./story-data";
 
 /**
  * The slim bar under the site nav (it moves up when the nav hides): where you are, Contents and
- * the reading settings, with a hairline for progress through the whole story.
+ * the reading settings, with a hairline for progress through the whole story. It comes in once
+ * the title card has scrolled away.
  */
 export function MiniBar() {
-  const chapterId = useReadingPosition((st) => st.chapterId);
-  const { part: partNumber, theme } = useReader();
+  const { chapterId, theme } = useReader();
   const [navShown, setNavShown] = useState(true);
   const [visible, setVisible] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -58,8 +59,8 @@ export function MiniBar() {
     };
   }, []);
 
-  const unit = chapterId ? getUnit(chapterId) : undefined;
-  const part = getPartMeta(partNumber);
+  const entry = getChapter(chapterId);
+  const act = entry ? actOf(entry) : undefined;
 
   return (
     <div
@@ -73,11 +74,11 @@ export function MiniBar() {
     >
       <div className={s.minibarInner}>
         <p className={s.where}>
-          <span className={cn(s.wherePart, "hud-label")}>{part?.label}</span>
-          {unit && (
+          {act && <span className={cn(s.wherePart, "hud-label")}>{`Act ${act.roman}`}</span>}
+          {entry && (
             <span className={s.whereChapter}>
-              <span className={s.whereLabel}>{unitLabel(unit)}</span>
-              <span className={s.whereTitle}>{unit.title}</span>
+              <span className={s.whereLabel}>{chapterLabel(entry)}</span>
+              <span className={s.whereTitle}>{entry.number === 0 ? "" : entry.title}</span>
             </span>
           )}
         </p>

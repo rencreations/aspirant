@@ -1,0 +1,334 @@
+{
+  "id": "c18",
+  "number": 18,
+  "slug": "chapter-18",
+  "title": "Newcomers",
+  "dateline": "Selrick Academy, days after the ship landed.",
+  "mood": "A black ship lands at the city’s edge, and two armed girls walk down the ramp asking for refuge.",
+  "words": 714,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c18/hero-fb814bb2.webp",
+    "w": 1920,
+    "h": 810,
+    "color": "#393b50",
+    "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
+    "credit": "Official Ruby lore video"
+  },
+  "heroFocus": "57% 35%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        { "t": "The black ships had not come back. The city had stopped flinching at the sky." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "In the drill hall Fanny’s flight rig, the thruster pack from her hips, lay in pieces on a bench. Layla had taken it apart without being asked. She held up a bent coupling and glared at it."
+        }
+      ]
+    },
+    { "t": "p", "i": 2, "segs": [{ "t": "“Is it just me, or are those two funny in the head?”" }] },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "She meant the girl with the scythe and the girl with the shield. Everyone knew the ships had come from beyond the sky. Nobody knew more."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "“Perhaps,” said Fanny. “But I have faith in them, and in their resolve. It will give them strength and carry them to victory.” She turned a bolt over in her fingers. “However, should they ever require it, we should be available to lend our assistance.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "Layla’s eyes went wide. “Wait. Are you saying we can have more battles on other planets?”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [{ "t": "“That’s no fun.” Fanny pushed Layla’s face away with one hand." }]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "The siren cut in. A flat voice said, “Unknown craft descending at the city’s edge.”"
+        }
+      ]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "The gate portal dropped them at a cleared lot by the dome’s foot. Soldiers in gray armor were already forming a line. Guinevere stood at its end with her drones up, and Vexana beside her with her staff. Across the lot, on a roof, a long rifle lay on the parapet. Lesley."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        { "t": "A black ship settled on the dirt. The ramp fell. Two girls walked down it." }
+      ]
+    },
+    { "t": "p", "i": 10, "segs": [{ "t": "“Newcomers,” said Fanny." }] },
+    { "t": "p", "i": 11, "segs": [{ "t": "“Armed newcomers,” said Layla." }] },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "One carried a white-and-orange scythe taller than she was. The other was small and pink-haired, with a doll in the crook of her arm. The soldiers closed in, rifles up."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [{ "t": "The small one spoke, softly. “Do you intend to take me back with you?”" }],
+      "voice": { "slug": "angela", "n": 38, "src": "audio/voice/angela/38.m4a", "dur": 2.75 }
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Angela, small and pink-haired.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c18/i0-f7786500.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#f2e2e5",
+        "alt": "A small pink-haired girl looks straight ahead with wide blue eyes.",
+        "credit": "Official Angela lore video"
+      }
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [{ "t": "The soldiers hesitated. Fanny stepped in front of them." }]
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [
+        {
+          "t": "“I watched them fight a giant for this city,” she said. “Then they went with the soldiers so nobody else got hurt. I’ll answer for them.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 16, "segs": [{ "t": "“On whose word?” said a sergeant." }] },
+    { "t": "p", "i": 17, "segs": [{ "t": "“Mine.”" }] },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "“Hers, apparently,” said Layla. She sighed. “And mine. Don’t look at me like that. I only said they were funny in the head.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "Lesley came down off the roof and across the lot, her rifle on her shoulder. The soldiers opened a way for her."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "The scythe girl planted her weapon point-down and bowed. Her voice was perfect and polished, as if she had practiced it from birth."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "“I am Ruby, heir to the Decisionmaker of Planet Oro. Oro is far from here, in another galaxy. This is Angela. Your students wore the mark S·L·K on their jackets. We ask refuge of their school.”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "caption": "Oro, far away in another galaxy.",
+      "label": "Planet Oro",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c18/i1-65df4bac.webp",
+        "w": 960,
+        "h": 540,
+        "color": "#5f546f",
+        "alt": "A dark ship flies over a city of towers at dusk.",
+        "credit": "Official place art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [{ "t": "Oro.", "em": 1 }, { "t": " Fanny had never heard the word aloud." }]
+    },
+    { "t": "p", "i": 23, "segs": [{ "t": "“Why here?” said Lesley." }] },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "“Oro’s Council has voted to cleanse Dawnbreak. That means to remove everyone who will not live by its Balance, its order.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "“Then it will annex you, take you over. The androids were the start.” Ruby did not blink. “I followed them. I could not let it go on.”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "The chamber of Oro’s Council.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c18/i2-1fe42eda.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#364b75",
+        "alt": "A ring of tall lit pillars stands in a dark council chamber.",
+        "credit": "Official Ruby lore video"
+      }
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "“I have watched the record of the landing,” said Lesley. “A scythe, raised over a child in a barrel.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "Ruby’s smile stayed where it was. The rest of her face went still, like a soldier’s at inspection."
+        }
+      ]
+    },
+    { "t": "p", "i": 28, "segs": [{ "t": "“I lowered it myself,” she said." }] },
+    { "t": "p", "i": 29, "segs": [{ "t": "“I saw that too.”" }] },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "The record Lesley had watched.",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c18/i3-69becd57.mp4",
+        "poster": "img/story/c18/i3-69becd57-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 4.6,
+        "bytes": 582525,
+        "sound": false,
+        "color": "#965640",
+        "alt": "In a burning ruin, a girl with a scythe walks toward a crying child, her eyes red.",
+        "credit": "Official Ruby and Angela trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "Small footsteps ran across the lot. Chang’e arrived with Mr. Bunny bobbing behind her. “You’re letting them in?”"
+        }
+      ]
+    },
+    { "t": "p", "i": 31, "segs": [{ "t": "“Under watch.”" }] },
+    { "t": "p", "i": 32, "segs": [{ "t": "“Why?”" }] },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        {
+          "t": "Lesley spoke low, but Fanny stood close enough to hear. “If Oro sends more, I want the one person who can shut them down where my rifle can reach her.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [
+        { "t": "Chang’e looked at Angela for a long moment. Then she held up four fingers." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "“Conditions. The android comes to my lab for an examination.” Angela’s arm tightened around her doll. “The heir takes the entrance assessment. An AI droid follows them everywhere. And they sit in the third-year class, beside the two who vouched.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 36, "segs": [{ "t": "“Beside us?” said Layla." }] },
+    { "t": "p", "i": 37, "segs": [{ "t": "“You vouched,” said Chang’e." }] },
+    { "t": "p", "i": 38, "segs": [{ "t": "“That’s fair,” said Fanny. Layla stared at her." }] },
+    { "t": "p", "i": 39, "segs": [{ "t": "“We accept,” said Ruby, and bowed again." }] },
+    {
+      "t": "p",
+      "i": 40,
+      "segs": [
+        {
+          "t": "A slim white droid with one orange eye glided across the lot and stopped one step behind her. Ruby nodded to it politely. The smile stopped before it reached her eyes."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "An AI droid, the kind that would follow Ruby everywhere.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c18/i4-82c047e8.webp",
+        "w": 610,
+        "h": 725,
+        "color": "#ddddde",
+        "alt": "Design sheet of a slim white droid with one orange eye.",
+        "credit": "Official character art"
+      }
+    }
+  ]
+}

@@ -1,0 +1,350 @@
+{
+  "id": "c44",
+  "number": 44,
+  "slug": "chapter-44",
+  "title": "Hold Fire",
+  "dateline": "A rooftop over the rear line.",
+  "mood": "Her rifle has lost its power, an Ender is on the steps, and Chang’e has a plan Lesley hates.",
+  "words": 703,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c44/hero-93e4b295.webp",
+    "w": 1920,
+    "h": 810,
+    "color": "#5a5065",
+    "alt": "Lesley kneels on a rooftop at night and aims her long rifle across the city.",
+    "credit": "Official trailer, Rekindled Light"
+  },
+  "heroFocus": "56% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "When the field passed over the dormitory roof, the cannon form of Lesley’s rifle died in her hands."
+        }
+      ]
+    },
+    { "t": "p", "i": 1, "segs": [{ "t": "The coil Chang’e had built on top of it went cold." }] },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Her artificial left eye still laid its teal lines over the world. Chang’e had built the eye and the rifle before there were any suits. Nothing in either ran on aspirant power."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c44/i0-ffa09fde.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#987273",
+        "alt": "Lesley's face up close, a teal visor over one eye, the other glowing red as she takes aim.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        { "t": "She worked the bolt by hand. Under the dead coil, the old action still moved." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        { "t": "A plain round would not go through Ender plate. It would go through an open core." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "In her scope, four hundred meters off, the hall’s back terrace sat small and gray: the top of its steps, and one small figure at a console. The hall itself hid the courtyard beyond."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "The hall’s back terrace",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c44/i1-443eb1fd.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#546386",
+        "alt": "Chang'e on a terrace behind a railing, reading two glowing screens, a crescent turning at her back.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "She was its only cover. Ruby and Angela had gone with the rescue at her own word. "
+        },
+        { "t": "I have the rear line,", "em": 1 },
+        { "t": " she had said." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "Since Angela left with her shield, Chang’e’s own crescents had turned around the console. Under the field they dropped out of the air and rang on the stones. The ring broke, as it had broken once before, in an empty street. Chang’e stumbled and sat down hard among them."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "“Big Sis.” Her voice came small and exact on the channel. “Something’s on the steps.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "Lesley could not see the foot of the steps. Chang’e had the eyes. Lesley had the gun."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "An Ender came up over the top step, gray, three times Chang’e’s height. Its chest was plated shut. It looked down at the small girl on the stones and did not strike. They never struck easily."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        { "t": "Lesley’s finger was already on the trigger. " },
+        { "t": "Fire. Draw it off her.", "em": 1 },
+        {
+          "t": " Years ago she had shouted from a roof and fired, and it had worked. That core had stood open. This one was shut. A round would only ring off the plate."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "Years ago, another roof, another shot.",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c44/i2-a1b3e6fc.mp4",
+        "poster": "img/story/c44/i2-a1b3e6fc-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 3.0,
+        "bytes": 397944,
+        "sound": false,
+        "color": "#5e5261",
+        "alt": "Chang'e looks up from the ground as an Ender looms over her, and a shot from far off strikes it.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "“It won’t open till it strikes,” said Chang’e. “My crescents used to make them swing. They’re dead.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [{ "t": "“Being weak can’t be helped, but not being smart... well.”" }],
+      "voice": { "slug": "change", "n": 19, "src": "audio/voice/change/19.m4a", "dur": 4.72 }
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [{ "t": "“I hold still. It strikes at me. The core opens. You fire.”" }]
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "“Get behind the console.”" }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "“Then it strikes when it likes, where you can’t see.” A breath. “Mr. Bunny takes the hit. You take the shot.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "Lesley knew the word that went with that. She had heard it once already today, and seen the machine that obeyed it."
+        }
+      ]
+    },
+    { "t": "p", "i": 18, "segs": [{ "t": "“That will break him.”" }] },
+    { "t": "p", "i": 19, "segs": [{ "t": "“I know.”" }] },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "Mr. Bunny hung at Chang’e’s shoulder, ears up. He had filmed Lesley’s birthday at the base. Of everything she had kept from before the base fell, he mattered most."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Mr. Bunny at the base, before it fell.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c44/i3-0f1fa3c7.webp",
+        "w": 1280,
+        "h": 720,
+        "color": "#9d858d",
+        "alt": "Chang'e laughs and holds Mr. Bunny up to Lesley, who leans down to look at him.",
+        "credit": "Official teaser, Rekindled Light"
+      }
+    },
+    { "t": "p", "i": 21, "segs": [{ "t": "“Don’t fire early, Big Sis. Wait till it’s open.”" }] },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "Once, in an empty street, Chang’e had asked nobody where Lesley was. She was not asking now. She knew which roof."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "For years Lesley had kept one rule. Nothing reached Chang’e while Lesley could see it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        { "t": "She asked,", "em": 1 },
+        { "t": " thought Lesley. She laid her cheek to the stock." }
+      ]
+    },
+    { "t": "p", "i": 25, "segs": [{ "t": "“On your call.”" }] },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Chang’e sat still on the stones. Rain ran down her glasses. She did not wipe them."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [{ "t": "The Ender raised its arm. As the claw came down, its chest plates split." }]
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "Every year of Lesley’s life told her finger to fire. The gap was a sliver. The claw was falling on a child. She held for one heartbeat."
+        }
+      ]
+    },
+    { "t": "p", "i": 29, "segs": [{ "t": "“Front,” said Chang’e." }] },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "Mr. Bunny swung in front of her face. The claw struck his casing with a crack that came through the channel. His ears folded. His screen went black."
+        }
+      ]
+    },
+    { "t": "p", "i": 31, "segs": [{ "t": "The plates stood wide. The core glowed inside." }] },
+    { "t": "p", "i": 32, "segs": [{ "t": "“Over here, Ender!”" }] },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        { "t": "Her round went into the open core. The Ender went over backward down the steps." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [
+        {
+          "t": "Beyond the terrace, more Enders still moved in the streets. One shot had bought one moment."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "Lightning split the clouds over the Academy. A bolt went up from somewhere behind the hall, where she could not see, into the storm around the Storm Citadel. The clouds tore open around the black hulk, and the whole sky over Terrinia roared."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 36,
+      "segs": [
+        {
+          "t": "The Academy’s oldest records held no storm like it. Lesley did not watch. She put her eye back to the scope."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "On the terrace, Chang’e sat holding Mr. Bunny, dark. She was looking straight back up at the roof."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c44/i4-cff5603a.webp",
+        "w": 1280,
+        "h": 720,
+        "color": "#785193",
+        "alt": "Chang'e looks straight up through her glasses, one hand raised, the city burning behind her.",
+        "credit": "Official teaser, Rekindled Light"
+      }
+    }
+  ]
+}

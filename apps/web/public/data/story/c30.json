@@ -1,0 +1,451 @@
+{
+  "id": "c30",
+  "number": 30,
+  "slug": "chapter-30",
+  "title": "Now You’re Free",
+  "dateline": "Terrinia, weeks after Vexana was taken.",
+  "mood": "A raid goes wrong for Fanny and Layla. Ruby holds the last lock on Angela, and lets her choose.",
+  "words": 1010,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c30/hero-e5cdfc69.webp",
+    "w": 1920,
+    "h": 1080,
+    "color": "#6393ac",
+    "alt": "A small white flower stands in front of a photo of Ruby and Angela in a sunny field, one petal fallen beside it.",
+    "credit": "Official video: Ruby"
+  },
+  "heroFocus": "22% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "Fanny stood at the mouth of a gap between two sheds in the eastern wards, blades out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "The plan was hers. Hold the gap. The swarm would have to come through one at a time, the way the soldiers had taught her."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        { "t": "Layla was meant to cover the corner. She was on the cannery roof, climbing." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [{ "t": "Third time this week,", "em": 1 }, { "t": " thought Fanny." }]
+    },
+    { "t": "p", "i": 4, "segs": [{ "t": "“Layla. Corner. Now.”" }] },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "“I can see the whole street from up here!” Layla was out of breath and delighted. “One roof, one shot, one dead swarm. Watch.”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "One roof, one shot.",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c30/i0-da02741c.mp4",
+        "poster": "img/story/c30/i0-da02741c-poster.webp",
+        "w": 1280,
+        "h": 538,
+        "dur": 3.75,
+        "bytes": 540717,
+        "sound": false,
+        "color": "#996960",
+        "alt": "The view dives between towers at sunset and finds Layla alone on a rooftop, raising her cannon.",
+        "credit": "Official trailer: Layla and Fanny"
+      }
+    },
+    { "t": "p", "i": 6, "segs": [{ "t": "It was a good plan. It was not Fanny’s." }] },
+    { "t": "p", "i": 7, "segs": [{ "t": "“Back to the corner. That’s an order.”" }] },
+    { "t": "p", "i": 8, "segs": [{ "t": "“It’s a better plan!”" }] },
+    { "t": "p", "i": 9, "segs": [{ "t": "“Layla.”" }] },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "Fanny waited. Then the dark shape on the roof came back down in four slow, furious steps."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "By the time she reached the corner, the swarm had stopped waiting for the gap. It poured over the roof she had just left. Claws came down on the sheds from above."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "“Fall back!” Fanny took the first claw on her left forearm and dragged Layla clear by the collar. They lost the roof. They lost the street under it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "The Shield’s line held at the next corner. Fanny and Layla sat on a heap of bricks behind it."
+        }
+      ]
+    },
+    { "t": "p", "i": 14, "segs": [{ "t": "“I had that roof,” said Layla." }] },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [{ "t": "“You had half a roof. I had half a street. The Enders had both.”" }]
+    },
+    { "t": "p", "i": 16, "segs": [{ "t": "Layla’s eyes dropped to Fanny’s arm." }] },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [{ "t": "“You owe me a roof,” said Layla. “You made me come down.”" }]
+    },
+    { "t": "p", "i": 18, "segs": [{ "t": "“Then you owe me a street.”" }] },
+    { "t": "p", "i": 19, "segs": [{ "t": "“Then we’re even.”" }] },
+    { "t": "p", "i": 20, "segs": [{ "t": "“I’m still up seven boxes of chocolate.”" }] },
+    { "t": "p", "i": 21, "segs": [{ "t": "“Chocolate isn’t a roof.”" }] },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c30/i1-e28172a4.webp",
+        "w": 1600,
+        "h": 673,
+        "color": "#844a3a",
+        "alt": "Fanny looks on with a small smile against an orange evening sky.",
+        "credit": "Official trailer: Layla and Fanny"
+      }
+    },
+    { "t": "p", "i": 22, "segs": [{ "t": "“It counts.”" }] },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "Layla pulled a bandage from her belt. “Hold still.” She wrapped the arm hard enough to hurt, taking charge of it as she took charge of everything."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "A street over, the tail of the swarm was coming down the next road. Ruby and Angela stood in its way. Angela’s shield rose exactly where Ruby’s scythe needed it and dropped when the swing was done. Neither said a word."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        { "t": "Fanny watched longer than she should have. " },
+        { "t": "Nobody gives the orders there,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "Nobody has to.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [{ "t": "“Fanny,” said Layla, tying the knot. “You’re doing the face.”" }]
+    },
+    { "t": "p", "i": 27, "segs": [{ "t": "“What face?”" }] },
+    { "t": "p", "i": 28, "segs": [{ "t": "“The one before you tell me to do something.”" }] },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [{ "t": "Fanny shut her mouth. She had been about to tell Layla to stay down." }]
+    },
+    { "t": "break" },
+    { "t": "p", "i": 30, "segs": [{ "t": "Selrick Academy.", "em": 1 }] },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "Two trainees from the landing sat on infirmary cots with training scrapes. Angela knelt in front of one with a swab. He knew whose hands they were. They had struck him once, with red eyes."
+        }
+      ]
+    },
+    { "t": "p", "i": 32, "segs": [{ "t": "He held out his elbow." }] },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [{ "t": "“I’m sorry if that hurt,” said Angela." }],
+      "voice": { "slug": "angela", "n": 26, "src": "audio/voice/angela/26.m4a", "dur": 1.77 }
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [{ "t": "The boy looked at her face. “It didn’t.” He held out the other elbow." }]
+    },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "Ruby watched from the doorway, the watch droid at her shoulder. Her hands wanted to carry the tray. Angela had not asked her to."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 36,
+      "segs": [
+        {
+          "t": "In class, a red alert flashed on Selena’s phone. Selena groaned, swiped it away unread and went back to doodling."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "Ruby, a seat behind, nearly applauded. In all her life she had never swiped away a summons. She had answered every one, perfectly polite. She decided she liked Selena very much."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 38,
+      "segs": [
+        {
+          "t": "In Chang’e’s lab, at the weekly check, Ruby laid her gloved hand on the table beside Angela. Green lines ran up the screen. A red square came up, and a triangle marked DANGER."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c30/i2-b5bdbc16.webp",
+        "w": 1600,
+        "h": 900,
+        "color": "#27344c",
+        "alt": "Angela's icon glows red inside a square on a dark screen, over the word DANGER and a small triangle.",
+        "credit": "Official video: Ruby"
+      }
+    },
+    {
+      "t": "p",
+      "i": 39,
+      "segs": [
+        {
+          "t": "“If Oro ever takes you again,” she said, “this lets me stop you.” She said it flat, as she had said it to Chang’e. “If I delete it, nothing does.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 40,
+      "segs": [
+        { "t": "Ruby remembered a night on Oro, and a girl who had just opened blue eyes. " },
+        { "t": "You belong to me, and no one else.", "em": 1 },
+        { "t": " She had thought it without moving her lips." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 41,
+      "segs": [{ "t": "“You’re the one who controls yourself. What to do is yours to decide.”" }],
+      "voice": { "slug": "ruby", "n": 38, "src": "audio/voice/ruby/38.m4a", "dur": 6.29 }
+    },
+    { "t": "p", "i": 42, "segs": [{ "t": "She did not say which answer she wanted." }] },
+    {
+      "t": "p",
+      "i": 43,
+      "segs": [{ "t": "Angela looked at the red square for a long time. Then she nodded." }]
+    },
+    {
+      "t": "p",
+      "i": 44,
+      "segs": [
+        {
+          "t": "The lock opened under Ruby’s hand. Forty lines scrolled down the screen and blinked out one by one, until nothing was left under Angela’s walking routines but walking."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 45,
+      "segs": [{ "t": "“Now you’re free. Forever.”" }],
+      "voice": { "slug": "ruby", "n": 39, "src": "audio/voice/ruby/39.m4a", "dur": 3.14 }
+    },
+    {
+      "t": "p",
+      "i": 46,
+      "segs": [
+        {
+          "t": "Chang’e drew a line through the last entry on her list. “Neat code,” she said. “Shame to delete it.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 47, "segs": [{ "t": "“Not really.”" }] },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 48,
+      "segs": [
+        {
+          "t": "Angela had nodded before she finished thinking. Now she checked herself the way she checked a repair, from top to bottom."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 49,
+      "segs": [
+        {
+          "t": "The Council’s plate was gone. The lock was gone. Nobody held a key to her now, not even Ruby. "
+        },
+        { "t": "If something goes wrong in me, no one can stop it,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "Then it is my job to see that nothing does.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 50,
+      "segs": [{ "t": "Ruby leaned on the table. “My turn. Angela, what do you want the most?”" }]
+    },
+    {
+      "t": "p",
+      "i": 51,
+      "segs": [
+        {
+          "t": "It was Angela’s own question. On Oro she had asked it again and again, and Ruby had looked at the sky. Angela looked at Ruby."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 52,
+      "segs": [{ "t": "“I want to protect everyone!”" }],
+      "voice": { "slug": "angela", "n": 6, "src": "audio/voice/angela/06.m4a", "dur": 2.19 }
+    },
+    {
+      "t": "p",
+      "i": 53,
+      "segs": [{ "t": "Ruby laughed once and pushed off the table. “Come outside.”" }]
+    },
+    {
+      "t": "p",
+      "i": 54,
+      "segs": [
+        {
+          "t": "Beyond the Academy wall, a road ran past a weedy strip. The first drop hit Angela’s ear sensor like a tapped key. Then there were thousands, each with its own small sound."
+        }
+      ]
+    },
+    { "t": "p", "i": 55, "segs": [{ "t": "Angela turned her face up and laughed." }] },
+    { "t": "p", "i": 56, "segs": [{ "t": "“It’s rain!” she said. “Is it always this loud?”" }] },
+    { "t": "p", "i": 57, "segs": [{ "t": "“To me it’s quiet,” said Ruby." }] },
+    { "t": "p", "i": 58, "segs": [{ "t": "“To me it’s applause.”" }] },
+    {
+      "t": "p",
+      "i": 59,
+      "segs": [
+        {
+          "t": "Ruby crouched at the strip and picked a small white flower, rooted in dirt with nothing above it but sky. She held it out."
+        }
+      ]
+    },
+    { "t": "p", "i": 60, "segs": [{ "t": "“For you.”" }] },
+    {
+      "t": "p",
+      "i": 61,
+      "segs": [
+        {
+          "t": "Angela took it with both hands. Ruby had given her two things in her life. The first had been a camera. This one had no lens."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 62,
+      "segs": [
+        {
+          "t": "She held up Tetra and turned its left eye toward them both. “Say cheese! Ahahaha!”"
+        }
+      ],
+      "voice": { "slug": "angela", "n": 3, "src": "audio/voice/angela/03.m4a", "dur": 3 }
+    },
+    { "t": "p", "i": 63, "segs": [{ "t": "The lens clicked. Ruby was caught mid-blink." }] },
+    {
+      "t": "p",
+      "i": 64,
+      "segs": [
+        {
+          "t": "It rained until the lamps came on. By then black thunderheads stood over the dome. Ruby looked at them for a long moment."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Selrick Academy",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c30/i3-f6ac5c4f.webp",
+        "w": 1600,
+        "h": 900,
+        "color": "#63717d",
+        "alt": "A tall Academy tower rises into dark storm clouds.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    },
+    {
+      "t": "p",
+      "i": 65,
+      "segs": [
+        { "t": "“The dawn will surely come, so there’s nothing to worry about!” said Angela." }
+      ],
+      "voice": { "slug": "angela", "n": 24, "src": "audio/voice/angela/24.m4a", "dur": 4.5 }
+    },
+    {
+      "t": "p",
+      "i": 66,
+      "segs": [{ "t": "“Let’s go home,” said Ruby." }],
+      "voice": { "slug": "ruby", "n": 40, "src": "audio/voice/ruby/40.m4a", "dur": 1.39 }
+    },
+    {
+      "t": "p",
+      "i": 67,
+      "segs": [
+        { "t": "The first thunder rolled over the dome as they walked back through the gate." }
+      ]
+    }
+  ]
+}

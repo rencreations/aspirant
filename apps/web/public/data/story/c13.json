@@ -1,0 +1,339 @@
+{
+  "id": "c13",
+  "number": 13,
+  "slug": "chapter-13",
+  "title": "Rioters",
+  "dateline": "Above Planet Dawnbreak.",
+  "mood": "Angela is sent to save the Rioters. From far away, Ruby watches what the order really means.",
+  "words": 656,
+  "score": null,
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c13/hero-ed911ea9.webp",
+    "w": 1920,
+    "h": 810,
+    "color": "#565c73",
+    "alt": "Seen from behind, a small pink-haired android stands between rows of others with gray hair and pink ears.",
+    "credit": "Angela character film"
+  },
+  "heroFocus": "50% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "Angela hung in the air above a city. The ship’s hatch stood open behind her. The other androids hovered in rows on either side, and Tetra was pressed to her chest."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [{ "t": "The city lay under a dome of light. The sun was low and gold." }]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Red marks glowed in the corner of her sight, one on each young man and woman in the streets. The mission list called them the Rioters. She looked for a riot."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "A woman beat a rug over a balcony rail. A boy carried bread. Two girls sat on a step with one pair of earphones between them. Each wore a red mark, and none looked up."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "Far off, smoke stood over the dome’s western edge. Sirens rang there, and a giant shape moved in the smoke. Here the sun was out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        { "t": "These are the Rioters?", "em": 1 },
+        { "t": " thought Angela. " },
+        { "t": "They’re only living.", "em": 1 }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c13/i0-a0c10f07.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#f2e3e5",
+        "alt": "Close on Angela's face, pink hair and calm blue eyes against white light.",
+        "credit": "Angela character film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "A loud, resounding beep rang through her. Every thought stopped, and none of them finished. The edges of her sight turned red."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [{ "t": "No one was left inside to be afraid. The body hung in the air and waited." }]
+    },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        { "t": "Voices came from the ship, flat and many. “Carry out the mission, Angela.”" }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        { "t": "Her arm rose. Halfway up it shook and stopped, as if something in her held it." }
+      ]
+    },
+    { "t": "p", "i": 10, "segs": [{ "t": "“I repeat, carry out...”" }] },
+    { "t": "p", "i": 11, "segs": [{ "t": "The dark came down." }] },
+    { "t": "break" },
+    { "t": "p", "i": 12, "segs": [{ "t": "Planet Oro.", "em": 1 }] },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "Ruby had not left her bench since the ship lifted. Tetra’s feed still lit the monitor from below: Angela’s chin, her face tipped down at a city."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "A beep came out of the speaker. Angela’s face went still. A red glow rose over her cheeks, from her eyes. They had been blue."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c13/i1-ac029b99.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#645061",
+        "alt": "A lab monitor framed in red WARNING bars shows Angela's face, beside a drooping white daisy.",
+        "credit": "Ruby character film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [{ "t": "“Angela?” said Ruby. Nothing answered. The feed ran one way only." }]
+    },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [{ "t": "Then the picture jumped. When it steadied, the sun was gone." }]
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "It was evening, and Terrinia was burning. Another giant Ender stood over the roofs, taller than any tower, against an orange sky. Below it, Oro’s black ship had opened its hatch onto a street. Rows of androids walked out, their eyes magenta."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c13/i2-e124a0b6.mp4",
+        "poster": "img/story/c13/i2-e124a0b6-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 3.6,
+        "bytes": 282846,
+        "sound": false,
+        "color": "#866a5a",
+        "alt": "A ship flies over a burning city at sunset while giant Enders stand among the towers.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "Students in matching jackets, stamped S·L·K, ran down the street. The androids struck at them. Angela was in the middle of it. Her arm came up into the frame a beat late. Every time."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "“Carry out the mission, Angela,” said the speaker. A pause. “I repeat, carry out...”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "Ruby watched a student fall, and another. Her hands lay flat on the bench to keep them still."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c13/i3-4c2c1dfd.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#574e39",
+        "alt": "Seen past an android's outstretched hands, two students sit in the dust of a ruined street at sunset.",
+        "credit": "Angela character film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "The Council had taken Angela’s mind. It had done it through the plate on her back, the one Ruby was never allowed to open. Now she knew what the plate was for."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "Then she saw the late arm for what it was. Her trojan had woken. It was meant to turn Angela on the other androids. But the Council’s hold was stronger than her lock. The trojan could only jam the link a little, so Angela lagged. That means she answered each order late, like a screen that freezes."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "Half the plan had worked. The Council could not find the fault. The other half had failed. Angela was still held. She was only slower."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        { "t": "I built her,", "em": 1 },
+        { "t": " thought Ruby. " },
+        { "t": "I knew what “save the Rioters” meant. I let her go.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "Someone knocked once and opened the door. Two soldiers stood there in black-gray armor, with horned helmets and blue visors."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "A soldier of Oro",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c13/i4-1dda8009.webp",
+        "w": 1040,
+        "h": 590,
+        "color": "#c4c5c5",
+        "alt": "A soldier of Oro in black-gray armor, with a horned helmet and a blue visor, holding a long rifle.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "“Heir. The Council reports a technical bug in its secret weapon. Its engineers cannot find it. Only her creator can fix it.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 27, "segs": [{ "t": "“Yes,” said Ruby. “Only I can.”" }] },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "It was the summons she had planned for. She felt no joy. On the monitor, Angela’s arm came up late again."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "For years Ruby had wanted a ship off Oro. Now she did not think about leaving. She thought about the arm. It was decided."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "Soldiers filled the benches along both walls of the ship. Their visors glowed blue. A voice spoke from the ceiling."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [{ "t": "“Engine ignition successful. Destination: Planet Dawnbreak.”" }]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Planet Dawnbreak",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c13/i5-69c302b6.webp",
+        "w": 1144,
+        "h": 644,
+        "color": "#8f9ca9",
+        "alt": "A white city curves around a blue bay, with a tall tower beaming green light into the sky.",
+        "credit": "Official art"
+      }
+    }
+  ]
+}

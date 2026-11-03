@@ -1,0 +1,83 @@
+{
+  "chapter": "c24",
+  "mood": "The best duo of the year learns what sends the Enders, and where the thing that steers them hides.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/32.jpg",
+    "crop": [0, 1000, 1720, 968],
+    "alt": "Vexana, dark hair falling over her face, looks worried at Guinevere, who grins under a blue sky.",
+    "credit": "Official comic, Guinevere and Vexana, page 32"
+  },
+  "heroFocus": "42% 45%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "Chang'e watched from a",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/25.jpg",
+          "crop": [0, 640, 1270, 1406],
+          "alt": "Lesley smiles down at Vexana, who touches the new badge of honor on her chest.",
+          "credit": "Official comic, Guinevere and Vexana, page 25"
+        }
+      ],
+      "caption": "Lesley smiles at the best Aspirant Duo of the year."
+    },
+    {
+      "after": 7,
+      "anchor": "Chang'e passed her desk",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
+        "start": 3.0,
+        "end": 6.0,
+        "crop": [120, 0, 1680, 945],
+        "sound": false,
+        "poster": 2.4,
+        "alt": "Selena leans on her desk with an idea, then a pen draws an armored suit on a grid, plate by plate.",
+        "credit": "Official film, Selena"
+      },
+      "caption": "ENDER MECHA SUIT, said the corner."
+    },
+    {
+      "after": 20,
+      "anchor": "She hopped off the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
+        "t": 6.8,
+        "crop": [380, 0, 1920, 1080],
+        "alt": "Chang'e, small, in round glasses, smiles with a tablet in her hands, Lesley standing behind her.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      },
+      "caption": "Teacher Chang'e."
+    },
+    {
+      "after": 24,
+      "anchor": "It sounds better out",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/30.jpg",
+          "crop": [150, 100, 2220, 1750],
+          "alt": "Small drawings of Guinevere and Vexana; Guinevere says, Teacher Chang'e told us.",
+          "credit": "Official comic, Guinevere and Vexana, page 30"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/31.jpg",
+          "crop": [0, 480, 2500, 3180],
+          "alt": "Guinevere lies with her head in Vexana's lap on the grass, reciting the lesson about the Control Core.",
+          "credit": "Official comic, Guinevere and Vexana, page 31"
+        }
+      ],
+      "caption": "Under the shady tree, the lesson said out loud."
+    }
+  ]
+}

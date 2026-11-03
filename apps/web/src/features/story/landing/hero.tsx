@@ -10,7 +10,7 @@ import { expectReady } from "@/lib/page-ready";
 import { mediaUrl } from "@/lib/media-store";
 import { useSiteStore } from "@/lib/stores";
 
-import { partHref } from "../chapter-href";
+import { chapterHref } from "../chapter-href";
 import { HeroTitle } from "./hero-title";
 import styles from "./hero.module.css";
 import { HERO_POSTER, HERO_VIDEO } from "./media";
@@ -166,12 +166,17 @@ export function StoryHero({
               >
                 Continue
               </StarButton>
-              <StarButton variant="ghost" size="lg" href={partHref(1)} transitionLabel="Part One">
+              <StarButton
+                variant="ghost"
+                size="lg"
+                href={chapterHref("c00")}
+                transitionLabel="Prologue"
+              >
                 Start reading
               </StarButton>
             </>
           ) : (
-            <StarButton pulse size="lg" href={partHref(1)} transitionLabel="Part One">
+            <StarButton pulse size="lg" href={chapterHref("c00")} transitionLabel="Prologue">
               Start reading
             </StarButton>
           )}

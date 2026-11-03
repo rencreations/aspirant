@@ -1,0 +1,92 @@
+{
+  "chapter": "c41",
+  "mood": "Fanny fights through the streets beside an unlikely ally, until the storm overhead comes down.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/official/fighting-stance.jpg",
+    "crop": [0, 170, 2560, 1270],
+    "alt": "Vexana in her Ender robe with her staff, and Guinevere beside her with both drones blazing, back in the fight together.",
+    "credit": "Official art"
+  },
+  "heroFocus": "35% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+    "t": 14.3,
+    "crop": [0, 136, 1920, 808],
+    "alt": "The Storm Citadel, a vast spired ship, hangs in a burning rift over the city, smaller ships around it.",
+    "credit": "Selena and Obsidia, official trailer"
+  },
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 11,
+      "anchor": "They fought down off",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "start": 5.3,
+        "end": 9.0,
+        "crop": [0, 136, 1920, 808],
+        "alt": "Guinevere and Vexana fight their way through the ruined streets, drones and staff tearing into the Enders.",
+        "credit": "Selena and Obsidia, official trailer"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "The Storm Citadel came",
+      "kind": "place",
+      "label": "The Storm Citadel",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 14.3,
+        "crop": [0, 136, 1920, 808],
+        "alt": "The Storm Citadel, a vast spired ship, hangs in a burning rift over the city, smaller ships around it.",
+        "credit": "Selena and Obsidia, official trailer"
+      }
+    },
+    {
+      "after": 39,
+      "anchor": "Obsidia stood at the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 11.7,
+        "crop": [0, 136, 1920, 720],
+        "alt": "Obsidia's eyes, one blue and one red, look down.",
+        "credit": "Selena and Obsidia, official trailer"
+      }
+    },
+    {
+      "after": 43,
+      "anchor": "She counted the lights",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
+        "start": 0.5,
+        "end": 4.6,
+        "crop": [0, 136, 1920, 808],
+        "alt": "In a street washed with magenta light, Guinevere's drones spark and fail, and she drops out of the air and crashes to the ground.",
+        "credit": "Selena and Obsidia, official trailer"
+      }
+    },
+    {
+      "after": 48,
+      "anchor": "She lifted one finger",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 13.0,
+        "crop": [0, 136, 1920, 808],
+        "alt": "Obsidia stretches out one clawed hand, two small black holes burning at her sides.",
+        "credit": "Selena and Obsidia, official trailer"
+      }
+    }
+  ]
+}

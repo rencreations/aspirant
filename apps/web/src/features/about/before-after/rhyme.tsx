@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 
 import { ThemeZone } from "@/components/theme-zone";
-import { storyIndex } from "@/content/story";
+import { epigraph } from "@/content/story-epigraph";
 
 import styles from "./rhyme.module.css";
 
@@ -19,7 +19,7 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger, useGSAP);
  */
 export function Rhyme() {
   const rootRef = useRef<HTMLElement>(null);
-  const { lines, attribution } = storyIndex.epigraph;
+  const { lines, attribution } = epigraph;
 
   useGSAP(
     () => {

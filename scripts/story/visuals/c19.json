@@ -1,0 +1,97 @@
+{
+  "chapter": "c19",
+  "mood": "The day the research base fell, and the letter Chang'e wrote that night and never sent.",
+  "hero": {
+    "type": "clip",
+    "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+    "start": 0.0,
+    "end": 5.35,
+    "poster": 4.6,
+    "alt": "An alarm floods a lab corridor with red light, and Chang'e looks out from the doorway.",
+    "credit": "Official Lesley and Chang'e trailer"
+  },
+  "heroFocus": "50% 45%",
+  "score": null,
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Behind her the first",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+        "t": 9.1,
+        "alt": "A framed photo of two scientists holding up a small girl stands on a desk beside a white bunny robot.",
+        "credit": "Official Lesley and Chang'e trailer"
+      },
+      "caption": "The photograph on the desk, and Mr. Bunny beside it."
+    },
+    {
+      "after": 8,
+      "anchor": "Light gathered in its",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "lesley-and-change/video/official/teaser/footages/00m14s040ms-00m29s720ms/footage.mp4",
+        "start": 1.8,
+        "end": 5.6,
+        "poster": 1.6,
+        "alt": "Chang'e runs with her parents through a burning street as a giant Ender looms behind, light gathering in its chest.",
+        "credit": "Official Lesley and Chang'e teaser"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "She knelt at its",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/00m55s480ms-01m05s520ms/footage.webm",
+        "t": 1.6,
+        "alt": "Chang'e kneels alone in burning rubble, staring ahead.",
+        "credit": "Official Lesley and Chang'e trailer"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "Leave me alone...",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "lesley-and-change/video/official/trailer/footages/01m05s520ms-01m11s000ms/footage.webm",
+        "start": 0.0,
+        "end": 5.1,
+        "poster": 3.5,
+        "alt": "Chang'e is held against Lesley's shoulder in the firelight, then the two stand turned away from each other.",
+        "credit": "Official Lesley and Chang'e trailer"
+      },
+      "caption": "I'm... sorry. Leave me alone..."
+    },
+    {
+      "after": 25,
+      "anchor": "Twice she read it.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/teaser/footages/00m14s040ms-00m29s720ms/footage.mp4",
+        "t": 13.6,
+        "alt": "A page from Chang'e's log: I'll never forgive you, Lesley. You were not here when we needed your protection. They died because of you!",
+        "credit": "Official Lesley and Chang'e teaser"
+      },
+      "caption": "The letter she saved and never sent."
+    },
+    {
+      "after": 28,
+      "anchor": "He turned his lens",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+        "t": 18.0,
+        "alt": "Lesley stands on a high rooftop with her rifle, looking down at the burning city.",
+        "credit": "Official Lesley and Chang'e trailer"
+      },
+      "caption": "Lesley, on a far rooftop, night after night."
+    }
+  ]
+}

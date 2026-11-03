@@ -1,0 +1,371 @@
+{
+  "id": "c36",
+  "number": 36,
+  "slug": "chapter-36",
+  "title": "Purge Protocol",
+  "dateline": null,
+  "mood": "At noon the sky over the platforms splits open, and two old friends rise to meet each other in the air.",
+  "words": 685,
+  "score": "vexana-theme",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c36/hero-eb39da70.mp4",
+    "poster": "img/story/c36/hero-eb39da70-poster.webp",
+    "w": 1600,
+    "h": 676,
+    "dur": 5.6,
+    "bytes": 1822542,
+    "sound": false,
+    "color": "#5f2d7a",
+    "alt": "A huge clawed hand pushes through a tear in the storm sky, and a crowned, winged giant follows it.",
+    "credit": "Connection Lost, official film"
+  },
+  "heroFocus": "46% 40%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "By the Academy’s clocks it was noon. The storm had kept the sun out all morning. Over the platforms the Singularity’s lowest point stood wide open, and something was coming through it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "Vexana kept her right wrist at her side. Her hand wanted to close over the Emblem. She did not let it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "A hand came through the tear first, huge and clawed, plated in violet. She knew that hand. It had reached through a crack in a memory. Then came a crowned head, and wings wide as a ward."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "caption": "It had reached through a crack in a memory.",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c36/p0-0-1b8c9f20.webp",
+          "w": 1280,
+          "h": 1404,
+          "color": "#d1dedb",
+          "alt": "A clawed metal hand tears through a crack in a sunny memory of Guinevere.",
+          "credit": "Official comic"
+        }
+      ]
+    },
+    { "t": "p", "i": 3, "segs": [{ "t": "The Will had a body now. The Mother Matrix." }] },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [{ "t": "“The gateway is near completion. Soon, you Aspirants will meet your end.”" }]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        { "t": "It was the giant’s voice, the one from the vision. Only half of it was through. " },
+        { "t": "Not yet,", "em": 1 },
+        {
+          "t": " thought Vexana. When it stood whole, she would be close enough to blow it up, and herself with it. That was the plan she had made in the dark."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Only half of it was through.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c36/i1-c71b95ea.webp",
+        "w": 1600,
+        "h": 556,
+        "color": "#5f3278",
+        "alt": "The Mother Matrix, crowned in spikes and lit violet, hangs half out of the tear with its wings spread.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "She searched the light behind it for the Core. The voice had said the Core came with the Matrix. She saw only light."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "She closed her fist and called, as she had planned. Somewhere across the city, the suit began to come."
+        }
+      ]
+    },
+    { "t": "p", "i": 8, "segs": [{ "t": "“Vexana. Execute purge protocol.”" }] },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "She had been about to speak to Guinevere. Her face went cold instead, like a door shutting. "
+        },
+        { "t": "It is watching.", "em": 1 },
+        { "t": " Purge meant what it had always meant: destroy what stands before you." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "She raised the staff. A giant Ender dropped onto the platform with a sword taller than a house and brought it down. Stone burst. Guinevere leapt back."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c36/i2-ed712dbe.mp4",
+        "poster": "img/story/c36/i2-ed712dbe-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 5.4,
+        "bytes": 1079772,
+        "sound": false,
+        "color": "#3c3358",
+        "alt": "Vexana swings her staff, and a giant Ender drops out of the sky and slams its sword into the platform in a burst of violet light.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    { "t": "p", "i": 11, "segs": [{ "t": "“You... give her back to me!”" }] },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        { "t": "Guinevere looked past Vexana, at the Matrix. " },
+        { "t": "She thinks it took me,", "em": 1 },
+        {
+          "t": " thought Vexana. Guinevere’s wings of light opened, and she flew straight at it through the Enders."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        { "t": "Don’t,", "em": 1 },
+        { "t": " thought Vexana. " },
+        { "t": "Please.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "The shot left her staff anyway. It took Guinevere from below and drove her through the wall of a tower. Dust rolled out. The Matrix was watching."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c36/i3-08327bb7.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#443971",
+        "alt": "Vexana, seen from behind, fires a ring of violet light from her staff.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [{ "t": "Guinevere climbed out of the rubble, blood at her lip." }]
+    },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [{ "t": "“Give up, Guinevere. Hope is an illusion. Its ‘Will’ is absolute.”" }]
+    },
+    { "t": "p", "i": 17, "segs": [{ "t": "“I refuse.”" }] },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        { "t": "You are strong, Guinevere.", "em": 1 },
+        { "t": " Vexana had said that once, to shut a crowd up. It was still true." }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c36/i4-f3c66079.webp",
+        "w": 1600,
+        "h": 500,
+        "color": "#795f73",
+        "alt": "Guinevere, down on the stone, lifts her head with her jaw set.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "She called the big Enders. Two more giants rose out of the smoke. Guinevere came on anyway."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "Wings opened on both of them. Under the Enders’ robe, Vexana’s own power was still hers. They rose at each other across the broken air. At the last meter, she turned the staff aside."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "Guinevere’s fist went past her shoulder. The staff went past Guinevere’s ear. They passed side by side, close enough to touch, and their wings burst into white light between them."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c36/i5-5b46e4ad.webp",
+        "w": 1600,
+        "h": 588,
+        "color": "#313a59",
+        "alt": "Over the ruined towers, a flare of orange light and a streak of violet race toward each other across the storm sky.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "Vexana turned in the glare. Guinevere hung with her eyes shut. Spent. Then she fell, into the gap below the platforms, where the stone had split all the way down to the bay."
+        }
+      ]
+    },
+    { "t": "p", "i": 23, "segs": [{ "t": "“Don’t let me be alone in this world.”" }] },
+    { "t": "p", "i": 24, "segs": [{ "t": "Vexana heard it." }] },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c36/i6-8428cf19.mp4",
+        "poster": "img/story/c36/i6-8428cf19-poster.webp",
+        "w": 1280,
+        "h": 478,
+        "dur": 5.12,
+        "bytes": 559882,
+        "sound": false,
+        "color": "#776777",
+        "alt": "Guinevere falls with her eyes shut and one hand reaching up, while Vexana hangs in the clouds above her.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "Behind her, light was gathering in the Matrix’s chest. It was aimed at the falling girl."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        { "t": "Not whole yet,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "Wait.", "em": 1 },
+        { "t": " The plan said wait. The plan had been made for Guinevere’s sake." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "She dove. Behind her, plate rang on stone. The suit vaulted the rail with its chest open, and she flew into it without slowing. The plates closed. Its eyes lit."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [{ "t": "Its hand shot into the gap and closed on Guinevere in mid-fall." }]
+    },
+    { "t": "p", "i": 29, "segs": [{ "t": "“Hold on to me!”" }] },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "Guinevere’s eyes cracked open. They did not see. Her fingers found the suit’s thumb and held."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "Vexana set her down on a lower platform behind a wall. She had to peel the fingers away one by one."
+        }
+      ]
+    },
+    { "t": "p", "i": 32, "segs": [{ "t": "The Matrix fired." }] },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        {
+          "t": "She turned and raised both arms. The light broke over the suit and ran across the platforms, melting stone. The magenta heart on its chest blazed. Plates screamed. Fire got through the seams and tore down her left arm. She held."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [
+        {
+          "t": "When it ended, every Ender on the platforms had turned its head. Her cover was gone, and so was the plan."
+        }
+      ]
+    },
+    { "t": "p", "i": 35, "segs": [{ "t": "Beyond them, the Mother Matrix looked at her." }] }
+  ]
+}

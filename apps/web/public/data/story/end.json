@@ -1,0 +1,149 @@
+{
+  "cast": [
+    {
+      "slug": "layla",
+      "name": "Layla",
+      "aka": "Miss Hikari",
+      "text": [
+        {
+          "t": "A proud top student with a cannon she built herself. She hides how hard she works."
+        }
+      ]
+    },
+    {
+      "slug": "fanny",
+      "name": "Fanny",
+      "aka": "Blade of Kibou",
+      "text": [
+        {
+          "t": "A soldier-trained transfer student who flies with blades and a cable. Layla’s rival, then her teammate."
+        }
+      ]
+    },
+    {
+      "slug": "ruby",
+      "name": "Ruby",
+      "aka": "Mecha Maiden",
+      "text": [
+        { "t": "The heir of a ruling house on Oro. She builds Angela, then runs away with her." }
+      ]
+    },
+    {
+      "slug": "angela",
+      "name": "Angela",
+      "aka": "Cyber Cherubin",
+      "text": [{ "t": "An android built by Ruby. She learns what warmth, pain and friends are." }]
+    },
+    {
+      "slug": "lesley",
+      "name": "Lesley",
+      "aka": "Deadeye Spectre",
+      "text": [
+        {
+          "t": "The Academy’s Chief Combat Instructor and a sniper. She lost her family and her left eye as a child."
+        }
+      ]
+    },
+    {
+      "slug": "change",
+      "name": "Chang'e",
+      "aka": "Tech Tensai",
+      "text": [
+        {
+          "t": "The director of the Science Division and the youngest Chief Scientist in Terrinia. Mr. Bunny, a floating robot, is her best friend."
+        }
+      ]
+    },
+    {
+      "slug": "guinevere",
+      "name": "Guinevere",
+      "aka": "Daybreak Halo",
+      "text": [{ "t": "A proud, rich, loyal fighter who never gives up on Vexana." }]
+    },
+    {
+      "slug": "vexana",
+      "name": "Vexana",
+      "aka": "Twilight Star",
+      "text": [
+        {
+          "t": "A quiet fighter who carries a deep guilt. She takes the Enders’ side to protect Guinevere."
+        }
+      ]
+    },
+    {
+      "slug": "selena",
+      "name": "Selena",
+      "aka": "Silverbolt Raiko",
+      "text": [
+        {
+          "t": "A Science Division student who rides a dragon-like machine, Silverbolt. She is an Ender who grew up among humans."
+        }
+      ]
+    },
+    {
+      "slug": "obsidia",
+      "name": "Obsidia",
+      "aka": "Imperatrix Arashi",
+      "text": [{ "t": "The first Ender to wake. She commands the Storm Citadel." }]
+    }
+  ],
+  "also": [
+    [
+      {
+        "t": "Also: Joe, the Combat Division professor. Roger, the thin boy on Joe’s team. Hester, the chief of Guinevere’s security detail. Karina, a rescue worker who raised Selena. Tetra, Angela’s doll and camera."
+      }
+    ]
+  ],
+  "timeline": [
+    {
+      "when": "978",
+      "text": [
+        {
+          "t": "The Catastrophe. In the years after it, the Enders are everywhere, and the Shield of Dawnbreak fights them."
+        }
+      ]
+    },
+    {
+      "when": "983",
+      "text": [
+        { "t": "The Storm Citadel strikes Terrinia. Obsidia sets a child among the survivors." }
+      ]
+    },
+    {
+      "when": "After the first Aspirant suit",
+      "text": [{ "t": "Selrick Academy is officially founded." }]
+    },
+    {
+      "when": "The year before Fanny came",
+      "text": [
+        {
+          "t": "Guinevere and Vexana team up and win Best Aspirant Duo. Chang’e teaches the Core lesson."
+        }
+      ]
+    },
+    {
+      "when": "Fourteen years after 983",
+      "text": [
+        {
+          "t": "Fanny arrives at the Academy. Layla loses first place. The Enders break the dome, and Layla and Fanny become a team."
+        }
+      ]
+    },
+    {
+      "when": "Soon after",
+      "text": [{ "t": "Ruby and Angela arrive from Oro, escape their cell, and join the Academy." }]
+    },
+    {
+      "when": "In the weeks before the Crisis",
+      "text": [{ "t": "Vexana is dragged into the void and takes the Enders’ side." }]
+    },
+    {
+      "when": "May 997",
+      "text": [
+        {
+          "t": "The Singularity Crisis. The Storm Citadel arrives, and the Mother Matrix comes through the Singularity. Guinevere and Vexana are swept into a black hole and return. Obsidia’s field cancels aspirant power. Selena goes up to face Obsidia, and the duel is still going when the story stops."
+        }
+      ]
+    }
+  ]
+}

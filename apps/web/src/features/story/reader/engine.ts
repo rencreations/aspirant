@@ -2,19 +2,18 @@
 
 /**
  * The reader's position on the page. One rAF-throttled scroll handler (no React state) that finds
- * the chapter under the reading line by binary search over cached offsets, then the paragraph
- * inside it, writes the position into `useReadingPosition` only when a value changes, and saves
- * the place (the chapter and the paragraph) so the story can be continued from it. Nothing on the
- * page changes with the position: the text stays plain.
- * Offsets are measured again when the page changes size (ResizeObserver), never per frame.
+ * the paragraph under the reading line by binary search over cached offsets, writes the position
+ * into `useReadingPosition` only when a value changes, and saves the place (the chapter and the
+ * paragraph) so the story can be continued from it. Offsets are measured again when the page
+ * changes size (ResizeObserver), never per frame.
  */
 import { useEffect, type RefObject } from "react";
 
+import { chapters, getChapter } from "@/content/story";
 import { useSiteStore } from "@/lib/stores";
 
 import { useReadingPosition, type ReadingPosition } from "./position";
 import { writePrefs } from "./prefs";
-import { getUnit, TOTAL_PARAGRAPHS } from "./story-data";
 
 /** The reading line, as a fraction of the viewport height from the top. */
 export const READING_LINE = 0.46;
@@ -22,16 +21,16 @@ export const READING_LINE = 0.46;
 /** The place is saved this long (ms) after the visitor stops on a paragraph. */
 const SAVE_AFTER_MS = 1200;
 
-interface ChapterBox {
-  readonly el: HTMLElement;
-  readonly chapterId: string;
-  top: number;
-  bottom: number;
-}
+const TOTAL_WORDS = chapters.reduce((sum, c) => sum + c.words, 0);
 
-interface ParaCache {
-  readonly els: HTMLElement[];
-  readonly tops: number[];
+/** Words of the book before a chapter, for the progress of the whole story. */
+function wordsBefore(id: string): number {
+  let sum = 0;
+  for (const c of chapters) {
+    if (c.id === id) return sum;
+    sum += c.words;
+  }
+  return 0;
 }
 
 function lastAtOrBefore(values: readonly number[], y: number): number {
@@ -50,38 +49,32 @@ function lastAtOrBefore(values: readonly number[], y: number): number {
 
 type PositionPatch = Parameters<ReadingPosition["setPosition"]>[0];
 
-export function useReadingEngine(rootRef: RefObject<HTMLElement | null>) {
+export function useReadingEngine(rootRef: RefObject<HTMLElement | null>, chapterId: string) {
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    const article = root?.querySelector<HTMLElement>("[data-chapter]");
+    if (!root || !article) return;
+    const entry = getChapter(chapterId);
+    const before = wordsBefore(chapterId);
+    const words = entry?.words ?? 1;
 
-    let boxes: ChapterBox[] = [];
+    let els: HTMLElement[] = [];
     let tops: number[] = [];
+    let top = 0;
+    let bottom = 1;
     let dirty = true;
     let raf = 0;
     let saveTimer = 0;
-    let lastChapter: string | null = null;
-    const paraCache = new Map<string, ParaCache>();
+    let announced = false;
 
     const measure = () => {
       dirty = false;
-      paraCache.clear();
       const y0 = window.scrollY;
-      boxes = Array.from(root.querySelectorAll<HTMLElement>("[data-chapter]")).map((el) => {
-        const r = el.getBoundingClientRect();
-        return { el, chapterId: el.dataset.chapter ?? "", top: r.top + y0, bottom: r.bottom + y0 };
-      });
-      tops = boxes.map((b) => b.top);
-    };
-
-    const paragraphsOf = (box: ChapterBox): ParaCache => {
-      const hit = paraCache.get(box.chapterId);
-      if (hit) return hit;
-      const y0 = window.scrollY;
-      const els = Array.from(box.el.querySelectorAll<HTMLElement>("[data-p]"));
-      const cache = { els, tops: els.map((el) => el.getBoundingClientRect().top + y0) };
-      paraCache.set(box.chapterId, cache);
-      return cache;
+      els = Array.from(article.querySelectorAll<HTMLElement>("[data-p]"));
+      tops = els.map((el) => el.getBoundingClientRect().top + y0);
+      const r = article.getBoundingClientRect();
+      top = r.top + y0;
+      bottom = r.bottom + y0;
     };
 
     const save = () => {
@@ -102,35 +95,19 @@ export function useReadingEngine(rootRef: RefObject<HTMLElement | null>) {
     const frame = () => {
       raf = 0;
       if (dirty) measure();
-      if (!boxes.length) return;
+      if (!els.length) return;
       const y = window.scrollY + window.innerHeight * READING_LINE;
-      const index = lastAtOrBefore(tops, y);
-      const box = index >= 0 ? boxes[index] : undefined;
-      if (!box) {
-        // Above the first chapter: the Part's own heading.
-        write({ chapterId: null, paragraphId: null });
-        return;
-      }
-      const inside = y <= box.bottom;
-      const cache = paragraphsOf(box);
-      const at = inside ? lastAtOrBefore(cache.tops, y) : -1;
-      const paragraph = cache.els[at] ?? null;
-      const progress = Math.min(1, Math.max(0, (y - box.top) / Math.max(1, box.bottom - box.top)));
-      const meta = getUnit(box.chapterId);
-      const storyProgress = meta
-        ? Math.min(
-            1,
-            (meta.firstParagraphIndex + progress * meta.paragraphCount) / TOTAL_PARAGRAPHS,
-          )
-        : 0;
+      const at = lastAtOrBefore(tops, y);
+      const paragraph = at >= 0 ? (els[at] ?? null) : null;
+      const progress = Math.min(1, Math.max(0, (y - top) / Math.max(1, bottom - top)));
       write({
-        chapterId: box.chapterId,
+        chapterId,
         paragraphId: paragraph?.id ?? null,
-        storyProgress: Math.round(storyProgress * 10000) / 10000,
+        storyProgress: Math.round(((before + progress * words) / TOTAL_WORDS) * 10000) / 10000,
       });
-      if (box.chapterId !== lastChapter) {
-        lastChapter = box.chapterId;
-        useSiteStore.getState().setLastChapter(box.chapterId);
+      if (!announced) {
+        announced = true;
+        useSiteStore.getState().setLastChapter(chapterId);
       }
       if (paragraph && !saveTimer) saveTimer = window.setTimeout(save, SAVE_AFTER_MS);
     };
@@ -151,7 +128,7 @@ export function useReadingEngine(rootRef: RefObject<HTMLElement | null>) {
     };
 
     const ro = new ResizeObserver(invalidate);
-    ro.observe(root);
+    ro.observe(article);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", invalidate, { passive: true });
     document.addEventListener("visibilitychange", flush);
@@ -169,5 +146,5 @@ export function useReadingEngine(rootRef: RefObject<HTMLElement | null>) {
       window.removeEventListener("resize", invalidate);
       document.removeEventListener("visibilitychange", flush);
     };
-  }, [rootRef]);
+  }, [rootRef, chapterId]);
 }

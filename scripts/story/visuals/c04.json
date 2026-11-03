@@ -1,0 +1,119 @@
+{
+  "chapter": "c04",
+  "mood": "The dome is torn, a teacher falls, and two rivals have to fight side by side.",
+  "hero": {
+    "type": "frame",
+    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m50s667ms-01m04s833ms/footage.webm",
+    "t": 0.45,
+    "crop": [0, 134, 1920, 812],
+    "alt": "A huge gray Ender lifts its head against an orange evening sky, more Enders drifting down behind it.",
+    "credit": "Official Layla and Fanny trailer"
+  },
+  "heroFocus": "45% 40%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "An Ender was forcing",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/20.jpg",
+        "crop": [0, 1700, 1000, 1580],
+        "alt": "Giant black claws rake through the glowing hexagons of the dome above the city skyline.",
+        "credit": "Official Aspirant comic, page 20"
+      }
+    },
+    {
+      "after": 9,
+      "anchor": "Don't be scared kiddo,",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/21.jpg",
+          "crop": [0, 1000, 1000, 1150],
+          "alt": "Under the cracking dome, Professor Joe waves the crowd back while a little girl in a red dress runs past him.",
+          "credit": "Official Aspirant comic, page 21"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/23.jpg",
+          "crop": [0, 1880, 1000, 470],
+          "alt": "Joe kneels to the crying girl and her pink rabbit and tells her not to be scared.",
+          "credit": "Official Aspirant comic, page 23"
+        }
+      ]
+    },
+    {
+      "after": 13,
+      "anchor": "You take Professor Joe",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/24.jpg",
+        "crop": [0, 30, 1000, 2060],
+        "alt": "Layla, furious, raises her cannon and says she will kill this freak.",
+        "credit": "Official Aspirant comic, page 24"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "The numbers looked right.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m50s667ms-01m04s833ms/footage.webm",
+        "t": 7.3,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Layla swings her long white cannon up to her shoulder among the towers, the evening sun behind her.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 30,
+      "anchor": "They went in to",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/27.jpg",
+        "crop": [0, 30, 1000, 2800],
+        "alt": "Under a caption about the first time the two joined forces, Fanny drives in with blades and cable while Layla fires her cannon.",
+        "credit": "Official Aspirant comic, page 27"
+      }
+    },
+    {
+      "after": 33,
+      "anchor": "That's Guinevere and Vexana!",
+      "kind": "portrait",
+      "character": "guinevere"
+    },
+    {
+      "after": 34,
+      "anchor": "I know who they",
+      "kind": "portrait",
+      "character": "vexana",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/10.jpg",
+        "crop": [0, 340, 1050, 1400],
+        "alt": "Vexana, a girl with long black hair and violet eyes in the Selrick uniform, frowns as she fights.",
+        "credit": "Official Guinevere and Vexana comic"
+      }
+    },
+    {
+      "after": 37,
+      "anchor": "None of Joe's three",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/01m04s833ms-01m16s375ms/footage.webm",
+        "t": 2.7,
+        "crop": [0, 134, 1920, 812],
+        "alt": "A gold giant's head and glowing eyes loom behind the dome's blue hexagons.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    }
+  ]
+}

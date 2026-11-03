@@ -1,0 +1,129 @@
+{
+  "chapter": "c37",
+  "mood": "One of them fights alone on the scorched platforms. Far below, the other needs a way back up.",
+  "hero": {
+    "type": "clip",
+    "src": "vexana-and-guinevere/video/relink/footages/00m03s680ms-00m18s400ms/footage.mp4",
+    "start": 0.3,
+    "end": 4.2,
+    "crop": [0, 0, 2560, 965],
+    "poster": 1.2,
+    "alt": "Vexana stands alone in the ruined city with her staff raised, the Enders' long legs all around her.",
+    "credit": "Relink, official film"
+  },
+  "heroFocus": "48% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+    "t": 0.61,
+    "alt": "Four Aspirants stand with their backs to us on a ruined waterfront, facing a vast rift of violet light.",
+    "credit": "Official interactive drama"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 8,
+      "anchor": "She fought with one",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/relink/footages/00m03s680ms-00m18s400ms/footage.mp4",
+        "start": 6.2,
+        "end": 11.0,
+        "alt": "Vexana fights the Enders that turn on her, firing blasts of violet light from her staff through the ruins.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "White light gathered behind",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/footages/00m18s400ms-00m27s000ms/footage.mp4",
+        "t": 1.4,
+        "alt": "Vexana lies thrown across the scorched stone among burning rubble, her staff beside her.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 15,
+      "anchor": "Above her, white light",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/relink/footages/00m18s400ms-00m27s000ms/footage.mp4",
+        "start": 3.7,
+        "end": 6.8,
+        "alt": "Vexana rises to one knee on her staff, and the giant winged shape above her gathers a blazing charge of light.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 18,
+      "anchor": "Enders pressed on it",
+      "kind": "place",
+      "label": "The waterfront",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 1.82,
+        "alt": "Four small figures stand on a ruined waterfront under a huge star-shaped rift that lights the whole sky violet.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "Ruby's scythe swung through",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 3.6,
+        "crop": [0, 0, 1920, 730],
+        "alt": "Fanny and Layla fight back to back, Fanny's blade raised and Layla's cannon leveled.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "Guinevere skidded in on",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 9.6,
+        "alt": "Guinevere, battered, crouches on the broken stone and glares up toward the platforms.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 33,
+      "anchor": "We escaped from this",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 13.0,
+        "crop": [0, 0, 1920, 710],
+        "alt": "Ruby swings her scythe with a fierce look, Angela holding the shield behind her.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 36,
+      "anchor": "Go, Guinevere, pursue your",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 17.6,
+        "crop": [0, 0, 1920, 710],
+        "alt": "Angela looks back over her shoulder, both hands glowing as she holds the shield, her doll Tetra above her.",
+        "credit": "Official interactive drama"
+      },
+      "caption": "Go, Guinevere, pursue your light."
+    }
+  ]
+}

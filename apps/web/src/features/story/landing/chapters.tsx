@@ -1,44 +1,41 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 import { cn } from "@aspirant/ui/lib/utils";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { TLink } from "@/components/transition/t-link";
 import { StarButton } from "@/components/ui/star-button";
-import { chapters } from "@/content/story";
-import { audio } from "@/lib/audio";
+import { acts, chapterLabel, chapters, getChapter } from "@/content/story";
+import { asset } from "@/lib/asset";
 
-import { storyChapterHref } from "../chapter-href";
-import { getPartMeta, unitLabel } from "../reader/story-data";
-import { orderUnits, readingMinutes, visibleUnits, type ChapterOrder } from "./chapter-list";
+import { chapterHref } from "../chapter-href";
+import { isRevealed } from "../reader/prefs";
+import { countCards, groupByAct, visibleGroups } from "./chapter-list";
 import { layoutTop } from "./hero";
 import s from "./landing.module.css";
+import p from "./preview.module.css";
 import type { StoryProgress } from "./progress";
 
-const ORDERS: ReadonlyArray<{ value: ChapterOrder; label: string }> = [
-  { value: "first", label: "From Chapter 1" },
-  { value: "latest", label: "Latest first" },
-];
+const GROUPS = groupByAct(acts, chapters);
 
 /**
- * The chapter selection. The place the visitor stopped is pinned on top, with Continue. Below it
- * the chapters, from Chapter 1 or from the latest one, folded to a few rows with a fade and a
- * "Show all" button until the visitor opens the whole list. Every row opens its chapter on the page
- * of its Part.
+ * The chapter preview: every chapter as a card with its picture, number, title, the time and
+ * place line and the reading time, grouped under the six acts. The place the visitor stopped is
+ * pinned on top with Continue. A chapter whose picture would give something away shows a sealed
+ * (blurred, dark) picture until the visitor has reached it. The list is folded to a few cards
+ * with a fade and a "Show all" button until the visitor opens the whole of it.
  */
 export function ChapterSelect({ progress }: { progress: StoryProgress }) {
-  const [order, setOrder] = useState<ChapterOrder>("first");
   const [expanded, setExpanded] = useState(false);
   const section = useRef<HTMLElement>(null);
   const { scrollTo } = useLenis();
 
-  const all = orderUnits(chapters, order);
-  const rows = visibleUnits(all, expanded);
-  const folded = rows.length < all.length;
-  const saved = progress.resume ? chapters.find((c) => c.id === progress.resume?.chapterId) : null;
-  const savedPart = saved ? getPartMeta(saved.part) : null;
+  const shown = visibleGroups(GROUPS, expanded);
+  const total = chapters.length;
+  const folded = countCards(shown) < total;
+  const saved = progress.resume ? getChapter(progress.resume.chapterId) : undefined;
 
   const fold = () => {
     setExpanded(false);
@@ -48,7 +45,7 @@ export function ChapterSelect({ progress }: { progress: StoryProgress }) {
 
   return (
     <section ref={section} id="chapters" className={s.chapters} aria-labelledby="chapters-title">
-      <div className={s.wrap}>
+      <div className={p.wide}>
         <p className={s.kicker}>Chapters</p>
         <h2 id="chapters-title" className={s.heading}>
           Choose a chapter
@@ -58,79 +55,89 @@ export function ChapterSelect({ progress }: { progress: StoryProgress }) {
           <div className={s.pinned}>
             <p className={s.pinnedKicker}>Continue</p>
             <p className={s.pinnedTitle}>
-              <span className={s.pinnedLabel}>{unitLabel(saved)}</span>
-              {saved.title}
+              <span className={s.pinnedLabel}>{chapterLabel(saved)}</span>
+              {saved.number === 0 ? "Prologue" : saved.title}
             </p>
-            <p className={s.pinnedMeta}>
-              {savedPart ? `${savedPart.label}: ${savedPart.title}` : null}
-            </p>
+            <p className={s.pinnedMeta}>{saved.dateline ?? ""}</p>
             <StarButton
               pulse
               href={progress.resume.href}
-              transitionLabel={unitLabel(saved)}
-              aria-label={`Continue ${unitLabel(saved)}, ${saved.title}`}
+              transitionLabel={chapterLabel(saved)}
+              aria-label={`Continue ${chapterLabel(saved)}${saved.number === 0 ? "" : `, ${saved.title}`}`}
             >
               Continue reading
             </StarButton>
           </div>
         )}
 
-        <div className={s.listHead}>
-          <p className={s.listTitle}>All chapters</p>
-          <div className={s.order} role="group" aria-label="Order of the chapters">
-            {ORDERS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={s.orderButton}
-                aria-pressed={order === option.value}
-                onClick={() => {
-                  if (order === option.value) return;
-                  setOrder(option.value);
-                  audio.blip("click");
-                }}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className={cn(s.listWrap, folded && s.folded)}>
-          <ol className={s.list}>
-            {rows.map((unit) => {
-              const part = getPartMeta(unit.part);
-              const interlude = unit.number === null;
-              return (
-                <li key={unit.id} className={s.row}>
-                  <TLink
-                    href={storyChapterHref(unit.id)}
-                    transitionLabel={unitLabel(unit)}
-                    className={s.rowLink}
-                    aria-label={`${unitLabel(unit)}: ${unit.title}`}
-                    data-current={progress.resume?.chapterId === unit.id ? "true" : undefined}
-                  >
-                    <span className={s.rowNum} aria-hidden="true">
-                      {interlude ? "IN" : String(unit.number).padStart(2, "0")}
-                    </span>
-                    <span className={s.rowText}>
-                      <span className={s.rowTitle} aria-hidden="true">
-                        {unit.title}
-                      </span>
-                      <span className={s.rowMeta} aria-hidden="true">
-                        {part?.label}
-                        {interlude ? " / Interlude" : ""} / {readingMinutes(unit.wordCount)} min
-                      </span>
-                    </span>
-                    <span className={s.rowArrow} aria-hidden="true">
-                      &rarr;
-                    </span>
-                  </TLink>
-                </li>
-              );
-            })}
-          </ol>
-          {folded && <div className={s.fade} aria-hidden="true" />}
+        <div className={cn(p.listWrap, folded && p.folded)}>
+          {shown.map((group) => (
+            <section key={group.act.roman} className={p.act} aria-label={`Act ${group.act.roman}`}>
+              <h3 className={p.actHead}>
+                <span className={p.actRoman}>{`Act ${group.act.roman}`}</span>
+                <span className={p.actTitle}>{group.act.title}</span>
+              </h3>
+              <ol className={p.grid}>
+                {group.chapters.map((c) => {
+                  const open = isRevealed(c.number, progress.furthest);
+                  const sealed = c.sealed !== null && !open;
+                  return (
+                    <li key={c.id} className={p.cardItem}>
+                      <TLink
+                        href={chapterHref(c.id)}
+                        transitionLabel={chapterLabel(c)}
+                        className={p.card}
+                        aria-label={`${chapterLabel(c)}${c.number === 0 ? "" : `: ${c.title}`}`}
+                        data-current={progress.resume?.chapterId === c.id ? "true" : undefined}
+                        style={{ "--tint": c.color } as CSSProperties}
+                      >
+                        <span className={p.picture}>
+                          {/* Plain <img>: static export, art already sized. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={asset(`/${sealed && c.sealed ? c.sealed : c.thumb}`)}
+                            alt=""
+                            width={640}
+                            height={360}
+                            loading="lazy"
+                            decoding="async"
+                            draggable={false}
+                          />
+                          <span className={p.number} aria-hidden="true">
+                            {c.number === 0 ? "PR" : String(c.number).padStart(2, "0")}
+                          </span>
+                          {sealed && (
+                            <span className={p.sealed} aria-hidden="true">
+                              Sealed
+                            </span>
+                          )}
+                        </span>
+                        <span className={p.info}>
+                          <span className={p.title} aria-hidden="true">
+                            {c.number === 0 ? "Prologue" : c.title}
+                          </span>
+                          {c.dateline && (
+                            <span className={p.dateline} aria-hidden="true">
+                              {c.dateline}
+                            </span>
+                          )}
+                          {c.mood && (
+                            <span className={p.mood} aria-hidden="true">
+                              {c.mood}
+                            </span>
+                          )}
+                          <span className={p.meta} aria-hidden="true">
+                            {c.minutes} min read
+                          </span>
+                        </span>
+                      </TLink>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          ))}
+          {folded && <div className={p.fade} aria-hidden="true" />}
         </div>
 
         <div className={s.more}>
@@ -139,7 +146,7 @@ export function ChapterSelect({ progress }: { progress: StoryProgress }) {
               variant="ghost"
               arrow={false}
               onClick={() => setExpanded(true)}
-              aria-label={`Show all ${all.length} chapters`}
+              aria-label={`Show all ${total} chapters`}
             >
               Show all chapters
             </StarButton>

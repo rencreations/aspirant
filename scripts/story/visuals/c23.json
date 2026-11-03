@@ -1,0 +1,71 @@
+{
+  "chapter": "c23",
+  "mood": "Two handmade gold stars, a summer of firsts, and fireworks from a roof.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+    "t": 15.2,
+    "crop": [0, 0, 2560, 900],
+    "alt": "On a sunny rooftop Guinevere pins a small gold star to Vexana's collar.",
+    "credit": "Official Connection Lost film"
+  },
+  "heroFocus": "45% 35%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 8,
+      "anchor": "Vexana held out her",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/web/page/guinevere/drone-2.png",
+        "alt": "A round white drone with cat ears, its black face squinting happily, red orbs at its sides.",
+        "credit": "Official web art"
+      },
+      "caption": "Ears up again."
+    },
+    {
+      "after": 20,
+      "anchor": "Weeks later a swarm",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "t": 3.95,
+        "crop": [0, 0, 2560, 900],
+        "alt": "Guinevere, hurt and swaying, holds her arm under a gray sky in a ruined street.",
+        "credit": "Official Connection Lost film"
+      }
+    },
+    {
+      "after": 23,
+      "anchor": "Guinevere took it and",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "start": 7.4,
+        "end": 12.6,
+        "crop": [0, 0, 2560, 900],
+        "poster": 2.1,
+        "alt": "Vexana reaches out a hand, then the two fight back to back against dark claws.",
+        "credit": "Official Connection Lost film"
+      },
+      "caption": "Stay with me, Guinevere."
+    },
+    {
+      "after": 32,
+      "anchor": "A burst lit the",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/22.jpg",
+          "crop": [0, 2400, 2500, 3304],
+          "alt": "Holding hands under bursting fireworks, Guinevere points at the sky while Vexana looks at her.",
+          "credit": "Official Guinevere and Vexana comic"
+        }
+      ]
+    }
+  ]
+}

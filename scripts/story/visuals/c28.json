@@ -1,0 +1,81 @@
+{
+  "chapter": "c28",
+  "mood": "Years of silence end with one shot from a far roof. Later, a cup of medicine and a question finally asked.",
+  "hero": {
+    "type": "clip",
+    "src": "lesley-and-change/video/official/trailer/footages/01m27s000ms-01m37s760ms/footage.webm",
+    "start": 6.2,
+    "end": 10.7,
+    "sound": false,
+    "poster": 3.6,
+    "alt": "A towering Ender raises its arm over the burning city, a shot strikes it, and Lesley stands in a window with her rifle.",
+    "credit": "Official trailer, Chang'e and Lesley"
+  },
+  "heroFocus": "55% 40%",
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 6,
+      "anchor": "She took the rifle",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/01m11s000ms-01m27s000ms/footage.webm",
+        "t": 7.6,
+        "alt": "Chang'e, in round glasses, spreads her hands inside a turning ring of bright crescents.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      },
+      "caption": "A weapon Lesley had never seen."
+    },
+    {
+      "after": 9,
+      "anchor": "I have finally developed",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "lesley-and-change/video/official/trailer/footages/01m11s000ms-01m27s000ms/footage.webm",
+        "start": 10.4,
+        "end": 14.3,
+        "sound": false,
+        "poster": 2.5,
+        "alt": "Chang'e flies over a burning street inside a ring of light while Ender fire streaks past and explodes around her.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      },
+      "caption": "Her new weapon, against too many."
+    },
+    {
+      "after": 12,
+      "anchor": "She said it to",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/01m27s000ms-01m37s760ms/footage.webm",
+        "t": 0.8,
+        "alt": "Chang'e, fallen, looks up through round glasses and reaches out one hand.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      },
+      "caption": "Where are you now?"
+    },
+    {
+      "after": 17,
+      "anchor": "Lesley came down off",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
+        "t": 13.6,
+        "alt": "Chang'e on her crescent weapon and Lesley with her rifle face a giant golden Ender in the night city.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      },
+      "caption": "Side by side, and the big ones too."
+    },
+    {
+      "after": 21,
+      "anchor": "After that the suits",
+      "kind": "film",
+      "public": "video/lesley-change/trailer.mp4",
+      "poster": "video/lesley-change/trailer.jpg",
+      "title": "Rekindled Light, the story of Chang'e and Lesley"
+    }
+  ]
+}

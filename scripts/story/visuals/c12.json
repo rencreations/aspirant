@@ -1,0 +1,97 @@
+{
+  "chapter": "c12",
+  "mood": "The Council has voted. Ruby finally makes her move, and says goodbye to the only friend she has.",
+  "hero": {
+    "type": "clip",
+    "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
+    "start": 0.4,
+    "end": 5.6,
+    "poster": 1.8,
+    "alt": "In a dark laboratory Ruby stands among floating screens, then works a console under red light.",
+    "credit": "Ruby character film"
+  },
+  "heroFocus": "64% 55%",
+  "spoiler": false,
+  "score": null,
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Oro's three powers ruled",
+      "kind": "place",
+      "label": "The Council",
+      "caption": "Where Oro's three powers cast their votes",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 1.5,
+        "alt": "A ring of tall pillars lights up blue around an empty circle under a shaft of light.",
+        "credit": "Ruby character film"
+      }
+    },
+    {
+      "after": 5,
+      "anchor": "They make weapons from",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 3.1,
+        "alt": "Ruby's father stands in a shaft of light in a dark hall, a fur-collared coat on his shoulders.",
+        "credit": "Ruby character film"
+      },
+      "caption": "Ruby's father"
+    },
+    {
+      "after": 11,
+      "anchor": "Forty lines of code",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
+        "t": 11.4,
+        "alt": "A red warning square with an android's outline and the word DANGER glows on a dark screen.",
+        "credit": "Ruby character film"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "The hangar was cold.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 7.0,
+        "alt": "A line of androids with magenta eyes stands in profile; among them one girl has blue eyes.",
+        "credit": "Ruby character film"
+      }
+    },
+    {
+      "after": 23,
+      "anchor": "Ruby knew what that",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/angela/footages/01m03s200ms-01m11s720ms/footage.mp4",
+        "start": 3.8,
+        "end": 8.4,
+        "poster": 3.4,
+        "sound": false,
+        "alt": "Ruby faces Angela and will not meet her eyes; a tear runs down Ruby's cheek.",
+        "credit": "Angela character film"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "It was a doll",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 9.3,
+        "alt": "Angela laughs with her hands out as a small doll in her likeness hangs in the air between her and Ruby.",
+        "credit": "Ruby character film"
+      },
+      "caption": "Tetra"
+    }
+  ]
+}

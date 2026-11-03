@@ -1,0 +1,314 @@
+{
+  "id": "c24",
+  "number": 24,
+  "slug": "chapter-24",
+  "title": "The Void",
+  "dateline": "Selrick Academy. The end of that year.",
+  "mood": "The best duo of the year learns what sends the Enders, and where the thing that steers them hides.",
+  "words": 614,
+  "score": "guinevere-theme",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c24/hero-4fd82530.webp",
+    "w": 1720,
+    "h": 968,
+    "color": "#7c6e74",
+    "alt": "Vexana, dark hair falling over her face, looks worried at Guinevere, who grins under a blue sky.",
+    "credit": "Official comic, Guinevere and Vexana, page 32"
+  },
+  "heroFocus": "42% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "Guinevere held her badge of honor over her head with one hand. Vexana held hers at her side, as if it might go off."
+        }
+      ]
+    },
+    { "t": "p", "i": 1, "segs": [{ "t": "“We’re the best partners in The Aspirants!”" }] },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "The hall cheered. They had just been named the best Aspirant Duo of the year, and they were holding hands."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "Chang’e watched from a box at the side, where she could see over the crowd. Mr. Bunny held her tablet. Beside her, Lesley smiled."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "caption": "Lesley smiles at the best Aspirant Duo of the year.",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c24/p0-0-89ea0ef6.webp",
+          "w": 1270,
+          "h": 1406,
+          "color": "#90878a",
+          "alt": "Lesley smiles down at Vexana, who touches the new badge of honor on her chest.",
+          "credit": "Official comic, Guinevere and Vexana, page 25"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "It was a small smile. Chang’e noted it, the third that year, because she noted everything. She looked away before Lesley caught her counting."
+        }
+      ]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "That afternoon she taught the Core lesson. Layla sat at the front. Guinevere and Vexana sat at the back, badges still pinned on."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "Selena slid in late on Silverbolt, grumbling about mornings. A red danger alert flashed on her phone. She swiped it away without a glance and began to sketch."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "Chang’e passed her desk and looked down. It was a suit of armor, drawn to fit a person. Plates, a visor, a weapon on one arm, joints like an Ender’s. ENDER MECHA SUIT, said the corner. "
+        },
+        { "t": "Brilliant,", "em": 1 },
+        {
+          "t": " Chang’e thought. Every Aspirant suit was built from Ender wreckage, so Ender plates on a drawing were excellent homework."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "caption": "ENDER MECHA SUIT, said the corner.",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c24/i1-a7359db0.mp4",
+        "poster": "img/story/c24/i1-a7359db0-poster.webp",
+        "w": 1280,
+        "h": 720,
+        "dur": 3.0,
+        "bytes": 452909,
+        "sound": false,
+        "color": "#d3d0d6",
+        "alt": "Selena leans on her desk with an idea, then a pen draws an armored suit on a grid, plate by plate.",
+        "credit": "Official film, Selena"
+      }
+    },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "She climbed onto her stool beside the screen. Nobody laughed at the stool anymore."
+        }
+      ]
+    },
+    { "t": "p", "i": 9, "segs": [{ "t": "“Who sends the Enders?”" }] },
+    { "t": "p", "i": 10, "segs": [{ "t": "“Nobody knows,” said Layla." }] },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "“Somebody does.” The screen showed a black circle. “The Will of the Planet. It is a mind. It judges a people, and when it decides they have grown too strong, it sends the Enders to cut them down.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "She tapped the circle. “Its body is the Mother Matrix. The Enders are what it sends.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "“Hidden in the Will’s dark void is the Enders’ Control Core. It steers them. Destroy the Core and the Will is beaten.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "“Hurt the Enders badly enough and the Will falls into a coma. That is why they go quiet for weeks. That is a lull. Then it wakes and sends more.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "Guinevere’s hand went up. “How do you know?”" }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "“Years ago Lesley shot a core component out of a living Ender. It picked up the Enders’ signals. Whenever a lull begins, every signal goes silent in the same instant. Something is switching them off.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 17, "segs": [{ "t": "“So how do we get to the void?” asked Layla." }] },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "“I don’t know yet.” Chang’e said it flat. Saying it to a class cost her something. “Nobody can get near it. I’m working on it.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "“I have one idea, in a paper on black holes. It’s untested, and I don’t teach untested things. I won’t send a student anywhere I can’t bring them back from.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        { "t": "She hopped off the stool. “Don’t look so grim. The Aspirant power is strong.”" }
+      ],
+      "voice": { "slug": "change", "n": 24, "src": "audio/voice/change/24.m4a", "dur": 2.32 }
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Teacher Chang’e.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c24/i2-ede6b338.webp",
+        "w": 1600,
+        "h": 900,
+        "color": "#82788b",
+        "alt": "Chang'e, small, in round glasses, smiles with a tablet in her hands, Lesley standing behind her.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      }
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "Under a shady tree on the Academy lawn, Guinevere lay with her head in Vexana’s lap. Vexana patted her hair."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "“Teacher Chang’e told us,” Guinevere recited to the leaves, “to defeat the Will of the Planet, we must destroy the Enders’ Control Core hidden in its dark void.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 23, "segs": [{ "t": "“I was there,” said Vexana." }] },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "“It sounds better out loud.” Guinevere stared up through the branches. “It sounds heroic.”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "caption": "Under the shady tree, the lesson said out loud.",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c24/p3-0-3a21aba9.webp",
+          "w": 1000,
+          "h": 788,
+          "color": "#e5dedf",
+          "alt": "Small drawings of Guinevere and Vexana; Guinevere says, Teacher Chang'e told us.",
+          "credit": "Official comic, Guinevere and Vexana, page 30"
+        },
+        {
+          "kind": "image",
+          "src": "img/story/c24/p3-1-dbb2b7a0.webp",
+          "w": 1000,
+          "h": 1272,
+          "color": "#9f9787",
+          "alt": "Guinevere lies with her head in Vexana's lap on the grass, reciting the lesson about the Control Core.",
+          "credit": "Official comic, Guinevere and Vexana, page 31"
+        }
+      ]
+    },
+    { "t": "p", "i": 25, "segs": [{ "t": "“But we can’t get near the void.”" }] },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Guinevere sat up so fast she almost hit Vexana’s chin. “Don’t worry! I will definitely find a way to destroy it.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 27, "segs": [{ "t": "Vexana did not answer." }] },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "That evening she went to the library alone and asked the library droid for anything on the void. It listed three papers. Two were old. The third bore Chang’e’s name."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "On Aspirant Power and the Black Hole. A theory of the void. Status: untested.",
+          "em": 1
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        { "t": "She read the first page twice. Her finger stopped on one line and stayed there." }
+      ]
+    }
+  ]
+}

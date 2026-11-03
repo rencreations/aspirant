@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * The reader's client shell around the server-rendered Part: one theme for the whole story (light
- * or dark, the visitor's choice), the text size, the reading engine, the shared entity card, the
- * chrome (mini-bar, contents, settings) and `jumpTo`, which moves to a chapter or a paragraph of
- * this page. The page behind the text is one plain colour.
+ * The reader's client shell around the server-rendered chapter: the theme (light or dark, the
+ * visitor's choice, one for the whole story), the text size, the reading engine, the music under
+ * the chapter, the chrome (mini-bar, contents, settings) and `jumpTo`, which moves to a paragraph
+ * of this page.
  */
 import { useCallback, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 
@@ -12,16 +12,16 @@ import { useLenis } from "@/components/smooth-scroll";
 import { NAVIGATED_EVENT, REVEAL_EVENT, useIsoLayoutEffect } from "@/lib/hooks";
 
 import { READING_LINE, useReadingEngine } from "./engine";
-import { EntityCards } from "./EntityCards";
 import { MiniBar } from "./MiniBar";
 import { loadReaderPrefs, useReaderPrefs, writePrefs, type ReaderTheme } from "./prefs";
 import { ReaderContext, type JumpOptions, type ReaderApi } from "./reader-context";
 import s from "./reader.module.css";
+import { releaseScore, startScore } from "./score";
 
 const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
-/** Ids the address may name: a chapter, a paragraph, or the end. */
-const ID = /^(?:c\d{2}|i-far-above-\d)(?:-p\d{3})?$|^the-end$/u;
+/** Ids the address may name: a paragraph of this chapter (`c05-p012`). */
+const PARAGRAPH = /^c\d{2}-p\d{3}$/u;
 
 function chromeHeight(): number {
   const nav = document.querySelector<HTMLElement>('header[data-overlay="nav"]')?.offsetHeight ?? 56;
@@ -29,13 +29,21 @@ function chromeHeight(): number {
   return nav + bar + 12;
 }
 
-export function ReaderRoot({ part, children }: { part: number; children: ReactNode }) {
+export function ReaderRoot({
+  chapterId,
+  score,
+  children,
+}: {
+  chapterId: string;
+  score: string | null;
+  children: ReactNode;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const { scrollTo } = useLenis();
   const textScale = useReaderPrefs((st) => st.textScale);
   const theme = useReaderPrefs((st) => st.theme);
 
-  useReadingEngine(rootRef);
+  useReadingEngine(rootRef, chapterId);
 
   const jumpTo = useCallback(
     async (id: string, { smooth = false, focus = true }: JumpOptions = {}) => {
@@ -52,7 +60,7 @@ export function ReaderRoot({ part, children }: { part: number; children: ReactNo
       } else {
         scrollTo(el, { offset, immediate: true });
       }
-      if (focus) el.querySelector<HTMLElement>("h2[tabindex]")?.focus({ preventScroll: true });
+      if (focus) el.querySelector<HTMLElement>("h1[tabindex]")?.focus({ preventScroll: true });
     },
     [scrollTo],
   );
@@ -72,17 +80,23 @@ export function ReaderRoot({ part, children }: { part: number; children: ReactNo
     loadReaderPrefs();
   }, []);
 
-  // The bar at the top and the rest of the fixed chrome follow the world under them: tell them the
-  // theme has changed once it is on the page.
+  // The bar at the top and the rest of the fixed chrome follow the world under them: tell them
+  // the theme has changed once it is on the page.
   useEffect(() => {
     window.dispatchEvent(new Event(NAVIGATED_EVENT));
   }, [theme]);
 
-  // Deep links (#c30, #c30-p012, #the-end) land with the text under the reading line.
+  // The music under this chapter, and its release when the story is left.
+  useEffect(() => {
+    startScore(score);
+    return releaseScore;
+  }, [score]);
+
+  // Deep links (#c05-p012) land with the paragraph under the reading line.
   useEffect(() => {
     const fromHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
-      if (ID.test(id)) void jumpTo(id, { focus: false });
+      if (PARAGRAPH.test(id)) void jumpTo(id, { focus: false });
     };
     fromHash();
     window.addEventListener("hashchange", fromHash);
@@ -95,8 +109,8 @@ export function ReaderRoot({ part, children }: { part: number; children: ReactNo
   }, [jumpTo]);
 
   const api = useMemo<ReaderApi>(
-    () => ({ part, jumpTo, textScale, setTextScale, theme, setTheme }),
-    [part, jumpTo, textScale, setTextScale, theme, setTheme],
+    () => ({ chapterId, jumpTo, textScale, setTextScale, theme, setTheme }),
+    [chapterId, jumpTo, textScale, setTextScale, theme, setTheme],
   );
 
   return (
@@ -108,7 +122,6 @@ export function ReaderRoot({ part, children }: { part: number; children: ReactNo
         style={{ "--rd-scale": textScale } as CSSProperties}
       >
         {children}
-        <EntityCards rootRef={rootRef} />
       </div>
       <MiniBar />
     </ReaderContext.Provider>

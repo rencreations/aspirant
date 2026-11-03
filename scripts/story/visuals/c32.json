@@ -1,0 +1,82 @@
+{
+  "chapter": "c32",
+  "mood": "A small star flashes above the storm. Guinevere is sure it means Vexana, and nobody else will say so.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
+    "t": 11.4,
+    "alt": "In a glass-walled lab over a stormy city, Guinevere holds a telescope to her eye between Ruby and Angela.",
+    "credit": "Official interactive drama: Guinevere and Vexana"
+  },
+  "heroFocus": "50% 35%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 5,
+      "anchor": "It's flashing... She did",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
+        "start": 13.9,
+        "end": 17.75,
+        "crop": [0, 0, 1920, 690],
+        "sound": false,
+        "poster": 3.4,
+        "alt": "Guinevere peers through the telescope, and in its lens a small magenta star with four points flashes above the storm clouds.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    },
+    {
+      "after": 8,
+      "anchor": "Guinevere touched her collar.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
+        "t": 42.0,
+        "alt": "Ruby, Guinevere and Angela stand in the observation lab; Guinevere holds the gold star at her collar.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    },
+    {
+      "after": 16,
+      "anchor": "If the world ends",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
+        "t": 0.75,
+        "alt": "Selena stares at her sideways phone in class, mouth open, as her papers fly off the desk.",
+        "credit": "Official video: Selena"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "Detecting an abnormal signal",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m00s000ms-00m14s600ms/footage.webm",
+        "t": 9.6,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Guinevere stands among students in uniform in an Academy corridor while a boy reads out the news.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "The wall showed the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m14s600ms-00m45s867ms/footage.webm",
+        "t": 4.9,
+        "crop": [90, 100, 1750, 880],
+        "alt": "A glowing panel on the hologram wall reads Attendance Record, Vexana: Absent.",
+        "credit": "Official interactive drama: Guinevere and Vexana"
+      }
+    }
+  ]
+}

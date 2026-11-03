@@ -1,30 +1,37 @@
-import { describe, expect, it } from "vitest";
+import type { ActMeta, ChapterEntry } from "@/content/story-types";
 
-import { chapters } from "@/content/story";
+import { COLLAPSED_CARDS, countCards, groupByAct, visibleGroups } from "./chapter-list";
 
-import { COLLAPSED_ROWS, orderUnits, readingMinutes, visibleUnits } from "./chapter-list";
+const acts: ActMeta[] = [
+  { roman: "I", title: "One", from: 0, to: 4 },
+  { roman: "II", title: "Two", from: 5, to: 12 },
+  { roman: "III", title: "Three", from: 13, to: 14 },
+];
 
-describe("chapter list", () => {
-  it("starts from chapter 1 or from the latest chapter", () => {
-    expect(orderUnits(chapters, "first")[0]?.id).toBe("c01");
-    expect(orderUnits(chapters, "latest")[0]?.id).toBe(chapters.at(-1)?.id);
-    expect(orderUnits(chapters, "latest")).toHaveLength(chapters.length);
+const chapters = Array.from({ length: 15 }, (_, number) => ({ number })) as ChapterEntry[];
+
+describe("chapter preview groups", () => {
+  it("gathers the chapters under their acts, in book order", () => {
+    const groups = groupByAct(acts, chapters);
+    expect(groups.map((g) => g.chapters.length)).toEqual([5, 8, 2]);
+    expect(groups[1]?.chapters[0]?.number).toBe(5);
   });
 
-  it("does not change the list it is given", () => {
-    const before = chapters.map((c) => c.id).join();
-    orderUnits(chapters, "latest");
-    expect(chapters.map((c) => c.id).join()).toBe(before);
+  it("drops an act with no chapters", () => {
+    const more = [...acts, { roman: "IV", title: "Empty", from: 40, to: 48 }];
+    expect(groupByAct(more, chapters)).toHaveLength(3);
   });
 
-  it("shows only some rows until the list is opened", () => {
-    expect(visibleUnits(chapters, false)).toHaveLength(COLLAPSED_ROWS);
-    expect(visibleUnits(chapters, true)).toHaveLength(chapters.length);
-    expect(visibleUnits(chapters.slice(0, 3), false)).toHaveLength(3);
+  it("folds the list to the first cards, and an act that loses all its cards goes too", () => {
+    const groups = groupByAct(acts, chapters);
+    const folded = visibleGroups(groups, false);
+    expect(countCards(folded)).toBe(COLLAPSED_CARDS);
+    expect(folded.map((g) => g.act.roman)).toEqual(["I", "II"]);
+    expect(visibleGroups(groups, false, 5)).toHaveLength(1);
   });
 
-  it("rounds the reading time and never says zero", () => {
-    expect(readingMinutes(0)).toBe(1);
-    expect(readingMinutes(1150)).toBe(5);
+  it("shows everything when it is open", () => {
+    const groups = groupByAct(acts, chapters);
+    expect(countCards(visibleGroups(groups, true))).toBe(15);
   });
 });

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 import { OBSIDIA_PAGE_NAMES, obsidiaRoute } from "@/features/character/obsidia/routes";
 import { SELENA_PAGE_NAMES, selenaRoute } from "@/features/character/selena/routes";
-import { parts } from "@/content/story";
-import { partHref } from "@/features/story/chapter-href";
+import { chapters } from "@/content/story";
+import { chapterHref, END_HREF } from "@/features/story/chapter-href";
 import { characterRoute, navItems, siteConfig } from "@/lib/site";
 import { CHARACTER_SLUGS } from "@/lib/slugs";
 
@@ -30,12 +30,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       priority: href === "/" ? 1 : 0.8,
     })),
-    // The story is read one Part to a page.
-    ...parts.map((part) => ({
-      url: absolute(partHref(part.number)),
+    // The story is read one chapter to a page, and ends on a page of its own.
+    ...chapters.map((chapter) => ({
+      url: absolute(chapterHref(chapter.id)),
       lastModified,
       priority: 0.6,
     })),
+    { url: absolute(END_HREF), lastModified, priority: 0.5 },
     ...CHARACTER_SLUGS.map((slug) => ({
       url: absolute(characterRoute(slug)),
       lastModified,

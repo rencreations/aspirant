@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { LEGACY_CHAPTER_IDS } from "@/features/story/chapter-href";
+
 import {
   characters,
   findCharacter,
@@ -14,52 +16,13 @@ import {
 import { entities, getEntity } from "./entities";
 import { pairs } from "./pairs";
 import { siteCopy } from "./site-copy";
-import {
-  chapterForParagraph,
-  chapters,
-  getChapterMeta,
-  partFileFor,
-  parts,
-  storyIndex,
-} from "./story";
-import type { Block, PartFile, Segment, StoryIndex } from "./story-types";
+import { storyIndex } from "./story";
 import { SLUGS, type Slug } from "./types";
 import { voiceLines } from "./voice.generated";
 import * as world from "./world";
+import { worldSource } from "./world-source.generated";
 
 const STORY_DIR = path.resolve(__dirname, "../../public/data/story") + path.sep;
-
-function readJson<T>(file: string): T {
-  return JSON.parse(fs.readFileSync(STORY_DIR + file, "utf8")) as T;
-}
-
-const index = readJson<StoryIndex>("index.json");
-const partFiles = index.parts.map((part) =>
-  readJson<PartFile>(part.file.replace("data/story/", "")),
-);
-const storyChapters = partFiles.flatMap((file) => file.chapters);
-
-function segmentsOf(block: Block): readonly Segment[] {
-  if (block.type === "p") return block.segments;
-  if (block.type === "poem") return block.lines.flat();
-  return [];
-}
-
-function chapterText(id: string): string {
-  const chapter = storyChapters.find((candidate) => candidate.id === id);
-  if (!chapter) return "";
-  const body = chapter.blocks
-    .map((block) =>
-      block.type === "poem"
-        ? block.lines.map((line) => line.map((segment) => segment.text).join("")).join(" ")
-        : segmentsOf(block)
-            .map((segment) => segment.text)
-            .join(""),
-    )
-    .filter(Boolean)
-    .join(" ");
-  return [chapter.timeNote ?? "", body].join(" ");
-}
 
 function collectStrings(value: unknown, out: string[] = []): string[] {
   if (typeof value === "string") out.push(value);
@@ -84,7 +47,8 @@ const BANNED = new RegExp(
   "iu",
 );
 
-const knownChapterIds = new Set<string>(chapters.map((chapter) => chapter.id));
+// The other pages still name chapters of the older story; the story pages map them (legacy-map.json).
+const knownChapterIds = new Set<string>(LEGACY_CHAPTER_IDS);
 
 describe("characters", () => {
   it("has the ten in queue order", () => {
@@ -241,111 +205,9 @@ describe("entities", () => {
       );
     }
   });
-
-  it("matches firstChapter to the first annotation in the story", () => {
-    const first = new Map<string, string>();
-    for (const chapter of storyChapters) {
-      for (const block of chapter.blocks) {
-        for (const segment of segmentsOf(block)) {
-          if (segment.t === "ent" && !first.has(segment.id)) first.set(segment.id, chapter.id);
-        }
-      }
-    }
-    for (const entity of entities) {
-      expect(first.get(entity.id), entity.id).toBe(entity.firstChapter);
-    }
-  });
-
-  it("annotates only known entities, and never inside a heading", () => {
-    for (const chapter of storyChapters) {
-      for (const block of chapter.blocks) {
-        for (const segment of segmentsOf(block)) {
-          if (segment.t === "ent") expect(getEntity(segment.id), segment.id).toBeDefined();
-        }
-      }
-      expect(typeof chapter.title).toBe("string");
-    }
-  });
-});
-
-describe("story JSON", () => {
-  it("has 12 parts and 60 numbered chapters, plus two interludes", () => {
-    expect(index.parts).toHaveLength(12);
-    const numbered = index.chapters.filter((chapter) => chapter.kind === "chapter");
-    expect(numbered.map((chapter) => chapter.number)).toEqual(
-      Array.from({ length: 60 }, (_, i) => i + 1),
-    );
-    expect(numbered.map((chapter) => chapter.id)).toEqual(
-      Array.from({ length: 60 }, (_, i) => `c${String(i + 1).padStart(2, "0")}`),
-    );
-    expect(
-      index.chapters.filter((chapter) => chapter.kind === "interlude").map((c) => c.id),
-    ).toEqual(["i-far-above-1", "i-far-above-2"]);
-    expect(index.stats.chapters).toBe(60);
-  });
-
-  it("gives every chapter at least one paragraph", () => {
-    expect(storyChapters).toHaveLength(62);
-    for (const chapter of storyChapters) {
-      expect(
-        chapter.blocks.filter((block) => block.type === "p").length,
-        chapter.id,
-      ).toBeGreaterThan(0);
-    }
-  });
-
-  it("numbers paragraphs globally without gaps", () => {
-    let expected = 0;
-    for (const chapter of storyChapters) {
-      expect(chapter.firstParagraphIndex).toBe(expected);
-      for (const block of chapter.blocks) {
-        if (block.type === "scene-break") continue;
-        expect(block.i).toBe(expected);
-        expected += 1;
-      }
-    }
-    expect(expected).toBe(index.stats.paragraphs);
-    expect(chapterForParagraph(0)?.id).toBe("c01");
-  });
-
-  it("keeps each part file in step with the index", () => {
-    partFiles.forEach((file, i) => {
-      expect(file.part).toEqual(index.parts[i]);
-      expect(file.chapters.map((chapter) => chapter.id)).toEqual(file.part.chapterIds);
-    });
-    expect(partFileFor("c47")).toBe("data/story/part-10.json");
-  });
-
-  it("matches the generated index module", () => {
-    const { beforeYouBegin: _front, ...lite } = index;
-    expect(storyIndex).toEqual(lite);
-    expect(parts).toHaveLength(12);
-    expect(getChapterMeta("c01")?.title).toBe("The Student Who Was Always First");
-  });
-
-  it("keeps the three open questions and a valid time order", () => {
-    expect(index.backMatter.openQuestions.items).toHaveLength(3);
-    for (const row of index.backMatter.timeOrder.rows) {
-      expect(row.chapterIds.length).toBeGreaterThan(0);
-      for (const id of row.chapterIds) expect(knownChapterIds.has(id)).toBe(true);
-    }
-  });
 });
 
 describe("world data", () => {
-  it("quotes the story word for word", () => {
-    const quotes: Array<[string, string]> = [
-      [world.cycle.quote, world.cycle.chapterId],
-      ...world.cycle.stages.map((stage): [string, string] => [stage.quote, stage.chapterId]),
-      ...world.couplingScores.map((score): [string, string] => [score.quote, score.chapterId]),
-      ...world.contrasts.flatMap((contrast): Array<[string, string]> => [
-        [contrast.before.quote, contrast.before.chapterId],
-        [contrast.after.quote, contrast.after.chapterId],
-      ]),
-    ];
-    for (const [quote, chapterId] of quotes) expect(chapterText(chapterId), quote).toContain(quote);
-  });
-
   it("points every card and layer at real chapters and entities", () => {
     for (const card of [...world.whereYouAre, ...world.places]) {
       expect(getEntity(card.entityId)).toBeDefined();
@@ -371,6 +233,7 @@ describe("text rules", () => {
     siteCopy,
     voiceLines,
     storyIndex,
+    worldSource,
     world,
   ]);
 

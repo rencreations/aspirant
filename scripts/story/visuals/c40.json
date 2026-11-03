@@ -1,0 +1,104 @@
+{
+  "chapter": "c40",
+  "mood": "In the dark beyond the sky, two friends finally say what they never said aloud.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/18.jpg",
+    "crop": [0, 600, 2500, 1406],
+    "alt": "Total darkness, broken only by a few pale flecks of light.",
+    "credit": "Official comic"
+  },
+  "heroFocus": "53% 25%",
+  "thumb": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/28.jpg",
+    "crop": [362, 2387, 1913, 875],
+    "alt": "An Emblem of Hope blazes white.",
+    "credit": "Official comic"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 9,
+      "anchor": "We once became",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/footages/00m27s000ms-00m43s000ms/footage.mp4",
+        "t": 12.2,
+        "crop": [0, 150, 2560, 930],
+        "alt": "Vexana and Guinevere fly side by side through a bright sky, wings and hair streaming behind them.",
+        "credit": "Relink, official film"
+      },
+      "caption": "Twin streams of light, soaring toward the heavens."
+    },
+    {
+      "after": 13,
+      "anchor": "In the corridor she",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/15.jpg",
+          "crop": [0, 5830, 2500, 2560],
+          "alt": "Guinevere reaches out in shock as Vexana, in tears, shouts at her to stay back.",
+          "credit": "Official comic"
+        }
+      ]
+    },
+    {
+      "after": 16,
+      "anchor": "The Emblem of",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+        "start": 13.0,
+        "end": 18.9,
+        "crop": [0, 0, 2560, 960],
+        "alt": "A memory on a sunny rooftop: Guinevere pins a gold star to Vexana's collar, then takes a selfie of the two of them.",
+        "credit": "Connection Lost, official film"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "You should have",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/footages/00m43s000ms-00m53s400ms/footage.mp4",
+        "t": 1.73,
+        "crop": [0, 150, 2560, 930],
+        "alt": "A gloved hand holds a phone showing the two friends together, beside an open box of keepsakes and two little dolls.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 42,
+      "anchor": "Far off in",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/28.jpg",
+          "crop": [362, 2387, 1913, 875],
+          "alt": "An Emblem of Hope blazes with white light.",
+          "credit": "Official comic"
+        }
+      ]
+    },
+    {
+      "after": 50,
+      "anchor": "A hand found",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/02m45s920ms-02m55s800ms/footage.mp4",
+        "t": 3.7,
+        "alt": "In the dark, Vexana holds Guinevere's hand and draws her toward the light.",
+        "credit": "Connection Lost, official film"
+      }
+    }
+  ]
+}

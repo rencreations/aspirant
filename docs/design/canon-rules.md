@@ -4,7 +4,8 @@ Every contributor follows these. They come from the author's own notes in the so
 
 ## Sources
 
-- `story/short-v2.md` is the text of the web novel (first-time-reader order). `story/novel.md` wins if they differ, but we ship `short-v2.md`.
+- `story/main.md` of the source folder (`D:
+enspirant\story\main.md`) is the text of the novel the story pages show (a prologue and 48 chapters), built from `story/main-build/chapters/`. The older `short-v2.md` is no longer shipped; the About page and the character pages still carry text written from it.
 - `story/CANON-NOTES.md`, `story/characters.md`, `audio/<name>/voice.md` for character facts.
 - If a source does not say it, write "Not specified" or leave it out. Do not invent lore.
 

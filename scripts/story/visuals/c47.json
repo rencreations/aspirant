@@ -1,0 +1,66 @@
+{
+  "chapter": "c47",
+  "mood": "The storm thins, the power stirs, and two old partners on a terrace say what they never said.",
+  "hero": {
+    "type": "frame",
+    "src": "lesley-and-change/video/official/trailer/footages/01m05s520ms-01m11s000ms/footage.webm",
+    "t": 3.9,
+    "alt": "Chang'e and Lesley side by side in the glow of a fire, both looking down.",
+    "credit": "Official trailer, Rekindled Light"
+  },
+  "heroFocus": "15% 45%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "The crescents on the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/01m11s000ms-01m27s000ms/footage.webm",
+        "t": 7.4,
+        "alt": "Chang'e sits in a ring of glowing crescents, her hands spread inside a lattice of light.",
+        "credit": "Official trailer, Rekindled Light"
+      }
+    },
+    {
+      "after": 11,
+      "anchor": "Ever since that day,",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "lesley-and-change/art/lore/3 - lesley holding weapon.jpg",
+        "crop": [30, 30, 838, 838],
+        "alt": "Lesley holds her long rifle at night, under the words: Ever since that day, I vowed to keep you safe, Chang'e.",
+        "credit": "Official lore card, Lesley"
+      }
+    },
+    {
+      "after": 14,
+      "anchor": "She swallowed. I looked",
+      "kind": "plate",
+      "caption": "A roof and a rifle, that night, and the next.",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/teaser/footages/00m36s400ms-00m44s760ms/footage.mp4",
+        "t": 3.66,
+        "alt": "Lesley stands alone on a high roof edge with her rifle, looking down over a burning city.",
+        "credit": "Official teaser, Rekindled Light"
+      }
+    },
+    {
+      "after": 29,
+      "anchor": "Up in the burning",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/02m00s000ms-02m25s125ms/footage.mp4",
+        "t": 21.4,
+        "crop": [0, 200, 1920, 670],
+        "alt": "Two small figures far apart in the dark, a beam of gold and a storm of magenta lightning meeting between them.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    }
+  ]
+}

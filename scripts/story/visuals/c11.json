@@ -1,0 +1,135 @@
+{
+  "chapter": "c11",
+  "mood": "An android who has never seen the sun steps into a secret garden and makes her first friend.",
+  "hero": {
+    "type": "clip",
+    "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
+    "start": 16.6,
+    "end": 22.0,
+    "poster": 1.6,
+    "sound": false,
+    "alt": "Angela spreads her arms in the sunlit grass of a garden under a glass dome, and Ruby watches her.",
+    "credit": "Official video, Ruby"
+  },
+  "heroFocus": "50% 40%",
+  "spoiler": false,
+  "score": null,
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Keep it hidden. If",
+      "kind": "place",
+      "label": "The Laboratory",
+      "media": {
+        "type": "image",
+        "src": "_others/places/laboratory.png",
+        "crop": [0, 182, 2560, 1076],
+        "alt": "A blue-lit laboratory where an android stands on a pedestal, held by cables, before a window full of stars.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 10,
+      "anchor": "This was the Gardens,",
+      "kind": "place",
+      "label": "The Gardens",
+      "media": {
+        "type": "image",
+        "src": "_others/places/the-garden.png",
+        "crop": [0, 46, 640, 268],
+        "alt": "Green hills and a stream under a roof of glass hexagons, white flowers in the grass, two small figures walking.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 14,
+      "anchor": "Angela held out both",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
+        "t": 23.2,
+        "alt": "Angela reaches out to Ruby with a happy smile, and Ruby looks back, caught off guard.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "Android Angela, said a",
+      "kind": "place",
+      "label": "The Training Field",
+      "media": {
+        "type": "image",
+        "src": "_others/places/training-fields.png",
+        "alt": "A glowing training display: a wireframe arena, a marked square, and Angela's picture on the side panel.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 21,
+      "anchor": "The other androids struck",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/angela/footages/00m34s000ms-00m46s160ms/footage.mp4",
+        "start": 2.1,
+        "end": 5.35,
+        "poster": 2.6,
+        "sound": false,
+        "alt": "Angela stands before a huge armored training droid with a blade, then lifts her face, blue eyes set.",
+        "credit": "Official video, Angela"
+      }
+    },
+    {
+      "after": 29,
+      "anchor": "A month later the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 0.6,
+        "alt": "Angela is flung back through a burst of pink flame in front of the training droid.",
+        "credit": "Official video, Angela"
+      }
+    },
+    {
+      "after": 33,
+      "anchor": "Ruby, the Gardens. Are",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/ruby/footages/00m44s920ms-00m59s280ms/footage.mp4",
+        "start": 4.6,
+        "end": 8.8,
+        "poster": 3.0,
+        "sound": false,
+        "alt": "Ruby works at a glowing console in the Laboratory, and Angela, held by cables, opens her eyes.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 44,
+      "anchor": "You're my friend, so",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 15.6,
+        "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
+        "credit": "Official video, Angela"
+      }
+    },
+    {
+      "after": 52,
+      "anchor": "After the sixth return",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 4.4,
+        "alt": "A white daisy losing its petals beside a screen that shows Angela and Ruby in the garden.",
+        "credit": "Official video, Ruby"
+      }
+    }
+  ]
+}

@@ -1,14 +1,33 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 import { sitePath, skipGate, url, watchErrors } from "./helpers";
 
-/** A reader who stopped in Chapter 12 (Part Three), as the reader saves it. */
+interface IndexEntry {
+  id: string;
+  slug: string;
+  number: number;
+  title: string;
+  sealed: string | null;
+  first: Array<{ kind: string }>;
+}
+
+const INDEX = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "../public/data/story/index.json"), "utf8"),
+) as { chapters: IndexEntry[] };
+const SEALED = INDEX.chapters.filter((c) => c.sealed).length;
+
+/** A reader who stopped in Chapter 12, as the reader saves it (and who has reached it). */
 const SAVED = JSON.stringify({
+  v: 2,
   chapterId: "c12",
   paragraphId: "c12-p004",
   textScale: 1,
   theme: "daybreak",
+  furthest: 12,
 });
 
 async function inViewport(page: Page, selector: string) {
@@ -26,12 +45,12 @@ async function readTo(page: Page, id: string) {
     const el = document.getElementById(target);
     if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - innerHeight * 0.4);
   }, id);
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(500);
 }
 
-async function openPart(page: Page, part: string, hash = "") {
+async function openChapter(page: Page, slug: string, hash = "") {
   await skipGate(page);
-  await page.goto(url(`/story/part-${part}/${hash}`));
+  await page.goto(url(`/story/${slug}/${hash}`));
   await page.waitForLoadState("networkidle");
 }
 
@@ -41,6 +60,8 @@ async function overflow(page: Page) {
     return el.scrollWidth - window.innerWidth;
   });
 }
+
+const reader = (page: Page) => page.locator("div[data-theme]:has(h1)").first();
 
 test.describe("the story page", () => {
   test("a fresh visitor: one h1, the film, Start reading is the call, no errors", async ({
@@ -55,7 +76,7 @@ test.describe("the story page", () => {
     await expect(page.locator("video")).toHaveCount(1);
     await expect(page.getByRole("link", { name: "Start reading" })).toHaveAttribute(
       "href",
-      /story\/part-01\/?$/,
+      /story\/prologue\/?$/,
     );
     await expect(page.getByRole("button", { name: "Select Chapter" })).toBeVisible();
     await expect(page.getByRole("link", { name: /^Continue/ })).toHaveCount(0);
@@ -85,11 +106,25 @@ test.describe("the story page", () => {
     await page.waitForLoadState("networkidle");
     const cont = page.getByRole("link", { name: /Continue reading where you stopped/ });
     await expect(cont).toBeVisible();
-    await expect(cont).toHaveAttribute("href", /story\/part-03\/#c12-p004$/);
+    await expect(cont).toHaveAttribute("href", /story\/chapter-12\/?#c12-p004$/);
     await expect(page.getByRole("link", { name: "Start reading" })).toBeVisible();
     // Pinned on top of the chapter list, with its own Continue.
     const pinned = page.locator("#chapters").getByRole("link", { name: /^Continue Chapter 12/ });
-    await expect(pinned).toHaveAttribute("href", /story\/part-03\/#c12-p004$/);
+    await expect(pinned).toHaveAttribute("href", /story\/chapter-12\/?#c12-p004$/);
+  });
+
+  test("a place saved in the older story is not offered", async ({ page }) => {
+    await skipGate(page);
+    await page.addInitScript(() =>
+      localStorage.setItem(
+        "aspirants:reader",
+        JSON.stringify({ chapterId: "c30", paragraphId: "c30-p010", textScale: 1 }),
+      ),
+    );
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByRole("link", { name: /^Continue/ })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Start reading" })).toBeVisible();
   });
 
   test("Select Chapter takes the page to the chapter list", async ({ page }) => {
@@ -122,28 +157,54 @@ test.describe("the story page", () => {
     expect(transform).toBe("none");
   });
 
-  test("the chapter list folds, opens, and sorts from the latest chapter", async ({ page }) => {
+  test("the chapter preview: a card with a picture for every chapter, folded and opened", async ({
+    page,
+  }) => {
     await skipGate(page);
     await page.goto(url("/story/"));
     await page.waitForLoadState("networkidle");
-    const rows = page.locator("#chapters ol > li");
-    await expect(rows).toHaveCount(8);
-    await expect(rows.first()).toContainText("The Student Who Was Always First");
-    await page.getByRole("button", { name: /Show all 62 chapters/ }).click();
-    await expect(rows).toHaveCount(62);
-    await page.getByRole("button", { name: "Latest first" }).click();
-    await expect(rows.first().getByRole("link")).toHaveAttribute("aria-label", /Chapter 60:/);
+    const cards = page.locator("#chapters ol > li");
+    await expect(cards).toHaveCount(9);
+    await expect(cards.first()).toContainText("Prologue");
+    await expect(cards.nth(1)).toContainText("First Place");
+    await expect(cards.nth(1).getByRole("link")).toHaveAttribute("href", /story\/chapter-01\/?$/);
+    await expect(cards.first().locator("img")).toHaveCount(1);
+    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
+    await expect(cards).toHaveCount(49);
+    await expect(page.locator("#chapters h3")).toHaveCount(6);
+    await expect(cards.last()).toContainText("Give Me Back My Freedom");
     await page.getByRole("button", { name: "Show fewer" }).click();
-    await expect(rows).toHaveCount(8);
+    await expect(cards).toHaveCount(9);
   });
 
-  test("a chapter row opens its chapter on the page of its Part", async ({ page, baseURL }) => {
+  test("pictures that would give the story away are sealed until the chapter is reached", async ({
+    page,
+  }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
+    await expect(page.locator("#chapters").getByText("Sealed", { exact: true })).toHaveCount(
+      SEALED,
+    );
+    await page.evaluate(() =>
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, furthest: 48 })),
+    );
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
+    await expect(page.locator("#chapters").getByText("Sealed", { exact: true })).toHaveCount(0);
+  });
+
+  test("a chapter card opens its chapter", async ({ page, baseURL }) => {
     await skipGate(page);
     await page.goto(url("/story/"));
     await page.waitForLoadState("networkidle");
     await page.locator("#chapters ol > li").nth(1).getByRole("link").click();
-    await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/part-01/");
-    await expect.poll(() => inViewport(page, "#c02-title")).toBe(true);
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
+      .toBe("/story/chapter-01/");
+    await expect(page.locator("h1")).toContainText("First Place");
   });
 
   test("the ten Aspirants open their own pages", async ({ page }) => {
@@ -185,152 +246,159 @@ test.describe("the story page", () => {
   });
 });
 
-test.describe("a Part of the story", () => {
-  test("Part One: one h1, its chapters in order, plain text, no errors, no overflow", async ({
+test.describe("a chapter of the story", () => {
+  test("Chapter 5: one h1, a title card, text first, pictures set in it, no errors, no overflow", async ({
     page,
   }) => {
     const errors = watchErrors(page);
-    await openPart(page, "01");
+    await openChapter(page, "chapter-05");
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("The Secret Base");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Cover Me");
     // The text is in the page itself, before any script has fetched anything.
-    await expect(page.locator("#c01-p000")).toBeAttached();
-    await expect(page.locator("article[data-chapter]")).toHaveCount(4);
-    await expect(
-      page.getByRole("heading", { level: 2, name: /Before you begin|Three things/ }),
-    ).toBeAttached();
-    // Nothing behind the text, nothing that follows the reader, no rail.
-    await expect(page.locator("main canvas, [data-scenes-layer]")).toHaveCount(0);
-    await expect(page.locator("[data-lit]")).toHaveCount(0);
-    await expect(page.locator('nav[aria-label="Chapters"], [role="slider"]')).toHaveCount(0);
-    const bg = await page.evaluate(
-      () => getComputedStyle(document.querySelector("div[data-theme]:has(h1)")!).backgroundColor,
+    await expect(page.locator("#c05-p000")).toBeAttached();
+    await expect(page.locator("article[data-chapter]")).toHaveCount(1);
+    // The title card has a picture or a loop, and the book's own pictures sit in the text.
+    await expect(page.locator("article header").locator("img, video")).toHaveCount(1);
+    expect(await page.locator("article figure img, article figure video").count()).toBeGreaterThan(
+      1,
     );
+    const bg = await reader(page).evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(bg).toBe("rgb(255, 255, 255)");
     expect(await overflow(page)).toBeLessThanOrEqual(0);
     expect(errors).toEqual([]);
   });
 
-  test("every Part has a page, with Next and Previous", async ({ page }) => {
-    await openPart(page, "05");
-    await expect(page.locator("h1")).toContainText(/./);
-    await expect(page.getByRole("link", { name: /Previous: Part Four/ })).toBeAttached();
-    await expect(page.locator('nav[aria-label="Parts of the story"]')).toContainText("Part Six");
-    await openPart(page, "12");
-    await expect(page.locator("#the-end details")).toHaveCount(3);
-    await expect(page.locator('nav[aria-label="Parts of the story"]')).toContainText(
-      "Meet the ten",
-    );
+  test("the Prologue opens the book, and the last chapter leads to the end page", async ({
+    page,
+    baseURL,
+  }) => {
+    await openChapter(page, "prologue");
+    await expect(page.locator("h1")).toContainText("Prologue");
+    await expect(page.locator("article header")).toContainText("Terrinia, 983.");
+    await openChapter(page, "chapter-48");
+    await page.getByRole("link", { name: /After the last page/ }).click();
+    await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/the-end/");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Who is who");
+    await expect(page.locator("main li").filter({ hasText: "Miss Hikari" })).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 2, name: "Timeline" })).toBeAttached();
+  });
+
+  test("a recorded line has its player under it, and pressing it does not break the page", async ({
+    page,
+  }) => {
+    const errors = watchErrors(page);
+    await skipGate(page);
+    await page.addInitScript(() => localStorage.setItem("aspirants:soundPrompt", "never"));
+    await page.goto(url("/story/chapter-05/"));
+    await page.waitForLoadState("networkidle");
+    const play = page.getByRole("button", { name: "Play the voice line of Fanny" });
+    await expect(play).toBeAttached();
+    await play.scrollIntoViewIfNeeded();
+    await play.click();
+    await page.waitForTimeout(500);
+    await expect(
+      page.getByRole("button", { name: /(Play|Stop) the voice line of Fanny/ }),
+    ).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+
+  test("the way on at the end: the next chapter", async ({ page, baseURL }) => {
+    await openChapter(page, "chapter-05");
+    const next = page.locator('nav[aria-label="Chapters"]').getByRole("link").first();
+    await expect(next).toContainText("Chapter 6");
+    await next.click();
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
+      .toBe("/story/chapter-06/");
+    await expect(page.locator("h1")).toContainText("All Rested Up?");
   });
 
   test("settings: text size and theme only, and the theme is kept for every chapter", async ({
     page,
   }) => {
-    await openPart(page, "01");
+    await openChapter(page, "chapter-01");
     await readTo(page, "c01-p003");
     await page.getByRole("button", { name: "Settings" }).click();
     const panel = page.getByRole("group", { name: "Reading settings" });
     await expect(panel).toBeVisible();
     await expect(panel.getByText("Text size")).toBeVisible();
     await expect(panel.getByRole("button", { name: /sound/i })).toHaveCount(0);
-    await expect(panel.getByRole("button", { name: /calm/i })).toHaveCount(0);
     await panel.getByRole("button", { name: "Dark" }).click();
-    const reader = page.locator("div[data-theme]:has(h1)");
-    await expect(reader).toHaveAttribute("data-theme", "storm");
-    // No chapter or Part switches the theme on its own.
-    await expect(page.locator("[data-mood]")).toHaveCount(0);
-    expect(await page.locator("article[data-chapter][data-theme]").count()).toBe(0);
-    // It is kept on another Part, and after a reload.
-    await page.goto(url("/story/part-02/"));
+    await expect(reader(page)).toHaveAttribute("data-theme", "storm");
+    // It is kept on another chapter, and after a reload.
+    await page.goto(url("/story/chapter-02/"));
     await page.waitForLoadState("networkidle");
-    await expect(page.locator("div[data-theme]:has(h1)")).toHaveAttribute("data-theme", "storm");
+    await expect(reader(page)).toHaveAttribute("data-theme", "storm");
     await page.reload();
     await page.waitForLoadState("networkidle");
-    await expect(page.locator("div[data-theme]:has(h1)")).toHaveAttribute("data-theme", "storm");
-    await readTo(page, "c04-p003");
+    await expect(reader(page)).toHaveAttribute("data-theme", "storm");
+    await readTo(page, "c02-p003");
     await page.getByRole("button", { name: "Settings" }).click();
     await page.getByRole("button", { name: "Light" }).click();
-    await expect(page.locator("div[data-theme]:has(h1)")).toHaveAttribute("data-theme", "daybreak");
+    await expect(reader(page)).toHaveAttribute("data-theme", "daybreak");
   });
 
-  test("the contents: a chapter of this Part, and a chapter of another Part", async ({
+  test("the contents: this chapter, another chapter, and the people met so far", async ({
     page,
     baseURL,
   }) => {
-    await openPart(page, "01");
-    await readTo(page, "c01-p003");
+    await openChapter(page, "chapter-06");
+    await readTo(page, "c06-p003");
     await page.locator("[data-contents]").click();
     const sheet = page.getByRole("dialog", { name: "Contents" });
     await expect(sheet).toBeVisible();
-    await sheet.getByRole("button", { name: /Chapter 3:/ }).click();
-    await expect(sheet).toBeHidden();
-    await expect.poll(() => inViewport(page, "#c03-title")).toBe(true);
-    await page.locator("[data-contents]").click();
-    await sheet.getByText("Forty Days").click();
-    await sheet.getByRole("link", { name: /Chapter 30:/ }).click();
+    await expect(sheet.getByRole("button", { name: /Chapter 6:/ })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+    // Six chapters in, the reader has met these five and no one else.
+    await expect(sheet.locator("section[aria-labelledby='sheet-cast-title'] li")).toHaveCount(5);
+    await sheet.getByText("The Free Land").click();
+    await sheet.getByRole("link", { name: /Chapter 24:/ }).click();
     await expect
       .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
-      .toMatch(/^\/story\/part-\d{2}\/$/);
-    await expect.poll(() => inViewport(page, "#c30-title"), { timeout: 10_000 }).toBe(true);
+      .toBe("/story/chapter-24/");
+    await expect(page.locator("h1")).toContainText("The Void");
   });
 
-  test("All chapters at the end of a Part opens the chapter list", async ({ page, baseURL }) => {
-    await openPart(page, "02");
+  test("All chapters at the end of a chapter opens the chapter list", async ({ page, baseURL }) => {
+    await openChapter(page, "chapter-02");
     await page.getByRole("link", { name: "All chapters" }).click();
     await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/");
     await expect.poll(() => inViewport(page, "#chapters-title"), { timeout: 10_000 }).toBe(true);
   });
 
   test("a saved place goes to its paragraph", async ({ page }) => {
-    await openPart(page, "03", "#c12-p004");
+    await openChapter(page, "chapter-12", "#c12-p004");
     await expect.poll(() => inViewport(page, "#c12-p004")).toBe(true);
   });
 
-  test("the place is saved as the visitor reads", async ({ page }) => {
-    await openPart(page, "01");
+  test("the place is saved as the visitor reads, with the furthest chapter", async ({ page }) => {
+    await openChapter(page, "chapter-02");
     await readTo(page, "c02-p010");
     await expect
       .poll(
         () =>
-          page.evaluate(
-            () =>
-              (
-                JSON.parse(localStorage.getItem("aspirants:reader") ?? "{}") as {
-                  chapterId?: string;
-                }
-              ).chapterId,
-          ),
+          page.evaluate(() => {
+            const saved = JSON.parse(localStorage.getItem("aspirants:reader") ?? "{}") as {
+              chapterId?: string;
+              furthest?: number;
+              v?: number;
+            };
+            return `${saved.chapterId}:${saved.furthest}:${saved.v}`;
+          }),
         { timeout: 6000 },
       )
-      .toBe("c02");
+      .toBe("c02:2:2");
   });
 
-  test("an entity opens the shared card by pointer, and by keyboard", async ({ page }, info) => {
-    await openPart(page, "01");
-    await readTo(page, "c01-p003");
-    const name = page.locator("#c01-p003 button[data-ent='layla']");
-    if (info.project.name === "desktop") await name.hover();
-    else await name.tap();
-    const card = page.locator("#reader-entity-card");
-    await expect(card).toBeVisible();
-    await expect(card).toContainText("Miss Hikari");
-    await page.keyboard.press("Escape");
-    await expect(card).toBeHidden();
-
-    await name.focus();
-    await page.keyboard.press("Enter");
-    await expect(card).toHaveAttribute("role", "dialog");
-    await page.keyboard.press("Escape");
-    await expect(card).toBeHidden();
-    await expect(name).toBeFocused();
-  });
-
-  test("the end keeps three questions open", async ({ page }) => {
-    await openPart(page, "12", "#the-end");
-    const files = page.locator("#the-end ol > li");
-    await expect(files).toHaveCount(3);
-    await files.first().locator("summary").click();
-    await expect(files.first()).toContainText("Unresolved");
+  test("an old Part address opens a chapter of the new book", async ({ page, baseURL }) => {
+    await skipGate(page);
+    await page.goto(url("/story/part-03/"));
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
+      .toMatch(/^\/story\/(prologue|chapter-\d{2})\/$/);
+    await expect(page.locator("h1")).toBeVisible();
   });
 
   test("the system reduced-motion setting is ignored: nothing on the page changes", async ({
@@ -338,26 +406,36 @@ test.describe("a Part of the story", () => {
   }) => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
     const page = await context.newPage();
-    await openPart(page, "01");
-    await readTo(page, "c01-p020");
-    await expect(page.locator("#c01-p020")).toBeVisible();
+    await openChapter(page, "chapter-05");
+    await readTo(page, "c05-p020");
+    await expect(page.locator("#c05-p020")).toBeVisible();
     await context.close();
   });
 
-  test("no serious accessibility violations while reading", async ({ page }) => {
-    await openPart(page, "01");
-    await readTo(page, "c01-p010");
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
-      .analyze();
-    const serious = results.violations
-      .filter((v) => v.impact === "serious" || v.impact === "critical")
-      .map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 3).map((n) => n.target.join(" ")) }));
-    expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+  test("no serious accessibility violations while reading, in both themes", async ({ page }) => {
+    test.setTimeout(150_000);
+    await openChapter(page, "chapter-12");
+    await readTo(page, "c12-p010");
+    const run = async () => {
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
+        .analyze();
+      return results.violations
+        .filter((v) => v.impact === "serious" || v.impact === "critical")
+        .map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 3).map((n) => n.target.join(" ")) }));
+    };
+    expect(await run(), "light").toEqual([]);
+    await page.evaluate(() =>
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, theme: "storm" })),
+    );
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await readTo(page, "c12-p010");
+    expect(await run(), "dark").toEqual([]);
   });
 });
 
-test("an old /experience/ address goes to the story, and a chapter link to its Part", async ({
+test("an old /experience/ address goes to the story, and a chapter link to a chapter", async ({
   page,
   baseURL,
 }) => {
@@ -365,5 +443,7 @@ test("an old /experience/ address goes to the story, and a chapter link to its P
   await page.goto(url("/experience/"));
   await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/");
   await page.goto(url("/experience/#c12"));
-  await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/part-03/");
+  await expect
+    .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
+    .toMatch(/^\/story\/(prologue|chapter-\d{2})\/$/);
 });

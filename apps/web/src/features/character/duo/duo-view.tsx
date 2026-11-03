@@ -7,13 +7,12 @@ import type { Route } from "next";
 import { NextFooter } from "@/components/next-footer/next-footer";
 import { ThemeZone } from "@/components/theme-zone";
 import { getCharacter, partnerOf } from "@/content/characters";
-import { chapterLabel, getChapterMeta, getPart } from "@/content/story";
 import type { ChapterId } from "@/content/types";
 import { characterRoute } from "@/lib/site";
 
 import { ART } from "../art";
 import { BrokenImages } from "../broken-images";
-import { storyChapterHref } from "@/features/story/chapter-href";
+import { legacyChapterInfo, storyChapterHref } from "@/features/story/chapter-href";
 import { videosFor, voiceDurations } from "../media";
 import type { SpoilerFact } from "../page/spoilers";
 import { Contacts, type ChapterLink, type Contact } from "./contacts/contacts";
@@ -49,13 +48,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const EXCLUDED = new Set(["Roger", "Professor Joe"]);
 
 function chapterInfo(id: ChapterId) {
-  const meta = getChapterMeta(id);
-  return {
-    label: meta ? chapterLabel(meta) : "Chapter",
-    number: meta?.number == null ? "Interlude" : pad(meta.number),
-    title: meta?.title ?? id,
-    part: meta ? (getPart(meta.part)?.label ?? "") : "",
-  };
+  return legacyChapterInfo(id);
 }
 
 export function DuoView({ who, next }: { who: Who; next: NextCharacter }) {

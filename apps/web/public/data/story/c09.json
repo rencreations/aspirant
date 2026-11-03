@@ -1,0 +1,425 @@
+{
+  "id": "c09",
+  "number": 9,
+  "slug": "chapter-09",
+  "title": "My Teammate",
+  "dateline": null,
+  "mood": "Two rivals become one team, one score. On a storm night far from the Academy, something fast crosses the rooftops.",
+  "words": 964,
+  "score": "we-believe",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c09/hero-1f28a44a.mp4",
+    "poster": "img/story/c09/hero-1f28a44a-poster.webp",
+    "w": 1600,
+    "h": 900,
+    "dur": 6.0,
+    "bytes": 945437,
+    "sound": false,
+    "color": "#c6b1b6",
+    "alt": "Fanny smiles and speaks to Layla, and Layla sits flustered at her desk with a wrapped gift.",
+    "credit": "Official short animation, Layla and Fanny"
+  },
+  "heroFocus": "50% 40%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "On the tenth morning, Layla and Fanny were both in the drill hall by half past four when Professor Joe walked in on a cane. His shoulder was strapped, and his two ribs made him stand stiffly."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "“Team B3 is dissolved,” he said. “Roger has gone to another pair. He reports that he falls down less. You two are the Layla-Fanny Team. Mine. Exclusive.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Layla had refused eleven partnership offers in two years. “I didn’t agree to that.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "“It isn’t a vote. Aspirants fight in pairs. The suits decided that, not the Academy. Two who trust each other pull more out of a suit than the same two apart, and nobody has ever explained why.”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Professor Joe, instructor of the Layla-Fanny Team.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c09/i0-468989f0.webp",
+        "w": 360,
+        "h": 672,
+        "color": "#bbbcbd",
+        "alt": "Character sheet of Professor Joe: a dark-haired man with a monocle in a dark blue uniform.",
+        "credit": "Official character art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "“From today you share one score. A kill is a point. A civilian carried clear is ten.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [{ "t": "One score meant nobody on the team to beat. Fanny said “Understood.”" }]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "Joe ticked both names on the pairing sheet with his stylus, two small marks with the same slant. “I pair on hours, not scores. You two put in the most hours in my year.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [{ "t": "Layla took that to mean the drill hall’s sign-in sheets." }]
+    },
+    { "t": "p", "i": 8, "segs": [{ "t": "In jump training, Layla landed badly." }] },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [{ "t": "“Why am I always the one getting hurt...?” she asked nobody." }]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [{ "t": "Fanny, down beside her without a scratch, offered a hand." }]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c09/i1-4d89e602.mp4",
+        "poster": "img/story/c09/i1-4d89e602-poster.webp",
+        "w": 1280,
+        "h": 720,
+        "dur": 3.9,
+        "bytes": 534786,
+        "sound": false,
+        "color": "#b0868e",
+        "alt": "Layla sulks among wrecked training drones, and Fanny, not a scratch on her, peers at her puzzled.",
+        "credit": "Official short animation, Layla and Fanny"
+      }
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "Then came the day the whole Academy traded chocolate. Layla walked into the hall with nineteen boxes in her arms and crossed to Fanny’s bench. “Fanny, did you get any chocolate? I’ve received tons!”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [{ "t": "Behind Fanny, boxes stood stacked in a wall. Layla counted twenty-six." }]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "“Humph.” She set her nineteen down with great care. “I’ll win next time for sure!”"
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c09/i2-9e59c20e.webp",
+        "w": 1600,
+        "h": 900,
+        "color": "#cfa6a9",
+        "alt": "Fanny stands behind a pile of wrapped gifts while Layla stares at it in silence.",
+        "credit": "Official short animation, Layla and Fanny"
+      }
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "“Win what?” Fanny held out a gold box with a red ribbon. “This is for you, my teammate!”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [{ "t": "“For me? Well..... It’d sure be rude of me not to accept your kind gift!”" }]
+    },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "That night, in the lab, Layla set the box on the top shelf beside the trophy, ribbon facing the room."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "The Enders no longer came in waves, only handfuls. The third years went through the gate portal day after day. Layla took charge, because somebody had to, and went first, so that Fanny would be covered. Fanny followed with a frown."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        { "t": "She wants to go first,", "em": 1 },
+        { "t": " thought Layla. She let her have the frown." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "The raid that mattered was on a shore ward. At the portal, a pink-haired girl stopped in front of Layla with her chin up."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Terrinia’s shore wards",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c09/i3-055e2d9f.webp",
+        "w": 1144,
+        "h": 644,
+        "color": "#8f9ca9",
+        "alt": "Terrinia from high above: towers around a blue bay that opens to the sea, a great tower sending light into the sky.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [{ "t": "“You’re Layla. I’m the great lady Guinevere. Nobody’s introduced us.”" }]
+    },
+    { "t": "p", "i": 21, "segs": [{ "t": "“You’re on a billboard.”" }] },
+    { "t": "p", "i": 22, "segs": [{ "t": "“Yes,” said Guinevere, delighted. “That’s me.”" }] },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "“Vexana,” said the black-haired girl beside her, in case it was needed. Her eyes were violet, and a small mole sat beside her mouth."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "Enders dropped onto the market stalls through a tear in the dome. Layla called the lines and went first. Guinevere rose on wings of light, two gray drones circling her shoulders, and Vexana’s staff took whatever she left."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c09/i4-48f00252.webp",
+        "w": 1600,
+        "h": 650,
+        "color": "#474852",
+        "alt": "Guinevere and Vexana fight back to back among Enders, Vexana with her staff and Guinevere's two drones circling.",
+        "credit": "Official film, Connection Lost"
+      }
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [
+        {
+          "t": "Around the thirtieth minute, Layla saw the drones begin to fail. The yellow rings of their eyes dimmed a shade each pass, and they flew a hand lower. A pilot’s drones ran on her aspirant power. Sagging drones meant she was running dry."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [{ "t": "Guinevere’s back stayed straight. Then her wings went out like a switch." }]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "She dropped past the roofline. Vexana leaned from the edge, caught her wrist, and hauled her up without a word. The drones hung dark. Guinevere raised her chin."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c09/i5-727bf4f3.mp4",
+        "poster": "img/story/c09/i5-727bf4f3-poster.webp",
+        "w": 1280,
+        "h": 520,
+        "dur": 3.15,
+        "bytes": 206753,
+        "sound": false,
+        "color": "#70707c",
+        "alt": "Vexana, in her school uniform with her staff, reaches out a hand.",
+        "credit": "Official film, Connection Lost"
+      }
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "“Ngh... this is a lady’s refinement. It’s the way to regain your elegance in three seconds.”"
+        }
+      ],
+      "voice": { "slug": "guinevere", "n": 38, "src": "audio/voice/guinevere/38.m4a", "dur": 8.01 }
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "Layla counted. It took four. Then one ring lit, and the other. Two roofs over, Fanny was frowning at her again. Layla went first."
+        }
+      ]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [{ "t": "The outskirts, a storm night, weeks after the breach.", "em": 1 }]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "Karina crawled under a fallen slab, rain running in sheets through the gap. Somebody was tapping, three and three."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 32,
+      "segs": [
+        {
+          "t": "She was a rescue worker. When the Enders left, her team dug out whoever lay under the rubble."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        {
+          "t": "She brought out an old man and two children. In her pocket she carried fruit drops, each in its own twist of paper. A child who had been under a slab needed something to hold that was not a wall."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [
+        {
+          "t": "The boy came out last and said nothing. He looked at his empty hands. She put a fruit drop in one. He closed his fist and did not open the paper."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "“Karina!” called the team lead from the truck. “The Shield is nine minutes out! A stray Ender’s through the east tear!”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 36,
+      "segs": [
+        {
+          "t": "At the street’s end, a tear in the dome’s foot hung open, edges snapping in the rain. The stray crossed the street in four strides. Karina was dragging the boy back by his hood when its chest came open and it raised an arm."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "Lightning lit the street white. Something that was not lightning crossed the rooftops, low and fast, over the gaps between buildings and not around them. It landed on the Ender’s back and drove both hands into the plates at its neck. The Ender went backward off the street, into the dark between two buildings."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 38,
+      "segs": [
+        {
+          "t": "In one flash Karina saw its forearms, wet and purple, like tissue that had no business outside a body. In the next there was only the empty street and a long scrape of metal going away into the dark."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 39,
+      "segs": [
+        {
+          "t": "The Shield squad came at exactly nine minutes, in gray armor. A sergeant looked at the scrape on the road. “Where’s the stray?”"
+        }
+      ]
+    },
+    { "t": "p", "i": 40, "segs": [{ "t": "“Something took it,” said Karina. “It was fast.”" }] },
+    {
+      "t": "p",
+      "i": 41,
+      "segs": [
+        {
+          "t": "The boy sat in the truck under a blanket, the fruit drop still in his fist, in its paper. He was looking past the tailgate at the roof line, at the place where there was nothing. He did not open his hand."
+        }
+      ]
+    }
+  ]
+}

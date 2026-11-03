@@ -477,3 +477,68 @@
 .sheetPartLink:focus-visible {
   color: var(--text);
 }
+
+/* A small picture for each chapter in the contents. */
+.sheetThumb {
+  flex: none;
+  align-self: center;
+  width: 4rem;
+  height: 2.25rem;
+  object-fit: cover;
+  background: var(--panel, #10131b);
+}
+
+/* The people the reader has met so far, under the contents. */
+.sheetCast {
+  margin-top: 1.6rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.sheetCastTitle {
+  margin: 0 0 0.8rem;
+}
+
+.sheetCastList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheetCastItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sheetCastFace {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  background: var(--panel, #10131b);
+}
+
+.sheetCastText {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.sheetCastName {
+  font-family: var(--font-display-stack);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.sheetCastLine {
+  font-family: var(--font-serif-stack);
+  font-size: 0.98rem;
+  line-height: 1.3;
+  color: var(--text-dim);
+}

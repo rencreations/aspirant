@@ -1,0 +1,320 @@
+{
+  "id": "c01",
+  "number": 1,
+  "slug": "chapter-01",
+  "title": "First Place",
+  "dateline": "Selrick Academy, Terrinia. Fourteen years later.",
+  "mood": "A transfer student breaks a record on her first day, and the girl she beat walks out.",
+  "words": 656,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c01/hero-f3a09de9.webp",
+    "w": 1920,
+    "h": 812,
+    "color": "#786666",
+    "alt": "Dawn breaks over the towers of Terrinia, a beam of light rising from the tall spire at its center.",
+    "credit": "Official Layla and Fanny trailer"
+  },
+  "heroFocus": "58% 50%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "Fanny stopped inside the Academy gate and looked up at the dome of light over Terrinia. Above the western wards one patch shone brighter than the rest: new light over a tear from the last attack."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "In 978 the Catastrophe came. In the years after it, the Enders were everywhere. These huge living machines came from the sky with one purpose: to wipe out humanity. They nearly did."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Soldiers formed the Shield of Dawnbreak, named for their planet, Dawnbreak, to fight them. The survivors drew back to Terrinia, humanity’s final bastion. Its dome, the Defensive Bubble, kept the Enders out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "Then people learned to rebuild dead Enders into armored mecha suits. The suits ran on belief. Everyone called that belief aspirant power. Those with enough of it to pilot a suit were called Aspirants."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "When the first suits were born, Selrick Academy was founded to train Aspirants. It took children of about fourteen."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "caption": "The Enders came. The survivors drew back to Terrinia and trained the Aspirants.",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c01/p0-0-e3be4840.webp",
+          "w": 1000,
+          "h": 1820,
+          "color": "#4a3f40",
+          "alt": "A huge black Ender with glowing orange eyes looms over a burning world.",
+          "credit": "Official Aspirant comic, page 1"
+        },
+        {
+          "kind": "image",
+          "src": "img/story/c01/p0-1-19e0147c.webp",
+          "w": 1000,
+          "h": 580,
+          "color": "#a0bad1",
+          "alt": "Terrinia seen from above, a shore city under a shining wall of hexagons, a beam rising from its tower.",
+          "credit": "Official Aspirant comic, page 2"
+        },
+        {
+          "kind": "image",
+          "src": "img/story/c01/p0-2-681a4f11.webp",
+          "w": 1000,
+          "h": 1268,
+          "color": "#6b7b91",
+          "alt": "Rows of students in uniform stand behind one who holds a glowing weapon.",
+          "credit": "Official Aspirant comic, page 2"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [{ "t": "Fanny was eighteen, a third-year transfer, two years late." }]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "Her family were Shield soldiers and had trained her from the start. Her hands were callused. At sixteen she had asked for real battle instead of school. "
+        },
+        { "t": "I’m not good enough for an elite school,", "em": 1 },
+        { "t": " she had thought. " },
+        { "t": "Battle is faster.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "The Shield kept her off the front. For two years, soldiers without suits taught her how to hold ground. Now she had passed the entrance exam. She meant to get strong enough to beat the Enders."
+        }
+      ]
+    },
+    { "t": "insert", "kind": "portrait", "character": "fanny" },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        { "t": "In the courtyard, half the students wore headgear: ears, horns, visors. " },
+        { "t": "An Aspirant thing,", "em": 1 },
+        { "t": " Fanny decided." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "A billboard covered one wall: two girls back to back, one with a long pink ponytail and a red bow, one with long black hair. Big letters named them: GUINEVERE and VEXANA. “Their undefeated record has made them legends even among the Aspirants!”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        {
+          "t": "A machine shaped like a dragon came through the gate. A blonde girl rode it in late, a lollipop in her mouth and a horned crest on her headgear."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "“She built that herself,” said a girl beside Fanny. “Nobody else can even get it to move.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "A bell tower of white stone rose over it all. Fanny marked it as soldiers do: high ground."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Selrick Academy",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c01/i2-3186bf49.webp",
+        "w": 1274,
+        "h": 717,
+        "color": "#9784b2",
+        "alt": "A wide plaza at Selrick Academy under a violet sky, a white clock tower and a twisted spire rising over it.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "The assessment was in the VR Battlefield, where students fought simulated Enders. The Chief Combat Instructor, head of all combat training, signed her in. She was young and cold, with a dark visor over her left eye."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [{ "t": "“Fanny. Transfer. Two years with the Shield. You asked for the front.”" }]
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "“Yes, ma’am.”" }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "“And they didn’t give it to you.” Her one visible eye went to Fanny’s hands. “One without the Aspirant spirit is like a gun without bullets.”"
+        }
+      ],
+      "voice": { "slug": "lesley", "n": 20, "src": "audio/voice/lesley/20.m4a", "dur": 4 }
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "Inside a VR pod, the hall vanished. Fanny stood in a broken street, in her suit, blades at her hips."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "A man shouted under a fallen sign. “Simulated civilians are not scored,” said a voice."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [{ "t": "“Understood.” She pulled him clear first. It cost eleven seconds." }]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "Then she fought the soldiers’ way, her back to a narrow alley. The Enders had to come one or two at a time, and they fell that way."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        {
+          "t": "When she climbed out, a crowd stood under the rankings board. At the top it said LAYLA, 3:41."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        {
+          "t": "A girl stood in front with her arms folded. She had long pink-red twin-tails and a frilled black uniform nobody had issued her."
+        }
+      ]
+    },
+    { "t": "insert", "kind": "portrait", "character": "layla" },
+    { "t": "p", "i": 23, "segs": [{ "t": "“Layla, you rock! You’re always No. 1!”" }] },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [{ "t": "The board blinked. A new line slid in above hers: FANNY, 3:39." }]
+    },
+    { "t": "p", "i": 25, "segs": [{ "t": "“Look! The rankings just changed!”" }] },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Nobody cheered. A thin boy at Fanny’s elbow said, “She’s never been second. Not once, since first year.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        { "t": "The twin-tailed girl looked at the board, then at Fanny. “Humph!” She walked out." }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Humph!",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c01/i4-0b08f08e.webp",
+        "w": 1600,
+        "h": 900,
+        "color": "#bcb2bf",
+        "alt": "A cartoon Layla puffs out her cheeks in a huff in front of the crowd.",
+        "credit": "Official short animation"
+      }
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        { "t": "What’s wrong with her?", "em": 1 },
+        { "t": " thought Fanny. She shouted at the closing doors." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        { "t": "“Hey! Layla! If you want, I’ll show you the alley thing. It saves a lot of time!”" }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [{ "t": "The doors shut. The thin boy opened his mouth, then closed it." }]
+    }
+  ]
+}

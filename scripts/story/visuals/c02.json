@@ -1,0 +1,88 @@
+{
+  "chapter": "c02",
+  "mood": "Second place for the first time. Layla works through the night to find out how.",
+  "hero": {
+    "type": "frame",
+    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m15s875ms-00m21s875ms/footage.webm",
+    "t": 4.9,
+    "crop": [0, 134, 1920, 812],
+    "alt": "Seen from above, Layla bends over her long white cannon on a desk of drawings, working on it with a small tool.",
+    "credit": "Official Layla and Fanny trailer"
+  },
+  "heroFocus": "55% 40%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 5,
+      "anchor": "ERROR, said the console",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
+        "start": 2.95,
+        "end": 6.35,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 0.6,
+        "alt": "Layla types at her lab console while her drones hover, until the screens flash red with warnings and a drone glares at the camera.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 9,
+      "anchor": "At home, talent had",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/15.jpg",
+        "crop": [0, 45, 1000, 1205],
+        "alt": "Fanny and Layla glare past a nervous Roger, under boxes saying Layla acts as if she does not care, though it leaves her bitter.",
+        "credit": "Official Aspirant comic, page 15"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Fanny drilled alone in",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m00s000ms-00m06s750ms/footage.webm",
+        "t": 5.75,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Fanny stands in a narrow, bright doorway with both blades raised, her back to a dark hall.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "after": 23,
+      "anchor": "At the week's end",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m28s250ms-00m44s583ms/footage.webm",
+        "t": 1.0,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Fanny smiles over a glowing blade in a white hall, a counter reading 0150 above her.",
+        "credit": "Official Layla and Fanny trailer"
+      },
+      "caption": "0150: the seconds they had."
+    },
+    {
+      "after": 29,
+      "anchor": "The shot pulled left.",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m28s250ms-00m44s583ms/footage.webm",
+        "start": 6.3,
+        "end": 10.2,
+        "crop": [0, 134, 1920, 812],
+        "sound": false,
+        "poster": 1.8,
+        "alt": "Layla narrows her eyes, swings up her cannon and fires a crackling full charge down the white hall as Fanny flies in, blade first.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    }
+  ]
+}

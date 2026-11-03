@@ -8,8 +8,8 @@ describe("legacyTarget", () => {
     expect(legacyTarget("#nonsense")).toBe("/story/");
   });
 
-  it("sends an old chapter link to the chapter's Part", () => {
-    expect(legacyTarget("#c12")).toBe("/story/part-03/#c12");
-    expect(legacyTarget("#c12-p034")).toBe("/story/part-03/#c12-p034");
+  it("sends an old chapter link to a chapter of the new book", () => {
+    expect(legacyTarget("#c12")).toMatch(/^\/story\/(prologue|chapter-\d{2})$/u);
+    expect(legacyTarget("#c12-p034")).toBe(legacyTarget("#c12"));
   });
 });

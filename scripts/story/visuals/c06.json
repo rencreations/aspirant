@@ -1,0 +1,105 @@
+{
+  "chapter": "c06",
+  "mood": "Night on a broken roof. Two rivals, too tired to fight, finally say what they mean.",
+  "hero": {
+    "type": "image",
+    "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
+    "crop": [222, 370, 778, 438],
+    "alt": "Layla on a rooftop at night, her face smudged, her pink twin tails blowing in the wind.",
+    "credit": "Official comic, page 38"
+  },
+  "heroFocus": "20% 50%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 13,
+      "anchor": "Layla opened her mouth",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
+          "crop": [0, 2140, 1000, 595],
+          "alt": "Fanny in profile against the dark city, her cheek smudged: I could say the same of you.",
+          "credit": "Official comic, page 38"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
+          "crop": [0, 2770, 1000, 315],
+          "alt": "Close on Layla's eye, narrowed in annoyance.",
+          "credit": "Official comic, page 38"
+        }
+      ]
+    },
+    {
+      "after": 17,
+      "anchor": "Fanny's taped hand closed",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/39.jpg",
+          "crop": [0, 15, 1000, 1750],
+          "alt": "Fanny stands at the edge of the roof with her blade, looking away, while Layla sits below her: I have an elder brother.",
+          "credit": "Official comic, page 39"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/40.jpg",
+          "crop": [0, 92, 1000, 1740],
+          "alt": "Fanny, a hand at her cheek, before the dark outline of her elder brother.",
+          "credit": "Official comic, page 40"
+        }
+      ],
+      "caption": "His name is Tigreal."
+    },
+    {
+      "after": 23,
+      "anchor": "All rested up?",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/41.jpg",
+          "crop": [0, 53, 1000, 503],
+          "alt": "Layla looks back over her shoulder at Fanny, saying nothing.",
+          "credit": "Official comic, page 41"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/41.jpg",
+          "crop": [0, 600, 1000, 333],
+          "alt": "Layla, with a small smile: All rested up?",
+          "credit": "Official comic, page 41"
+        }
+      ]
+    },
+    {
+      "after": 26,
+      "anchor": "Huh? Fanny stared.",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/41.jpg",
+        "crop": [0, 937, 1000, 1278],
+        "alt": "On the ruined rooftop Layla stands by the parapet with her cannon while Fanny faces her, arms crossed.",
+        "credit": "Official comic, page 41"
+      }
+    },
+    {
+      "after": 29,
+      "anchor": "Neither had planned it.",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/42.jpg",
+        "crop": [0, 1090, 1000, 1200],
+        "alt": "Layla raises her cannon to the night sky with a smile, and Fanny smiles behind her.",
+        "credit": "Official comic, page 42"
+      },
+      "caption": "The protectors of all humanity."
+    }
+  ]
+}

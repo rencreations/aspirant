@@ -1,0 +1,78 @@
+{
+  "chapter": "c22",
+  "mood": "Guinevere waits all day outside her father's door. A year later, a quiet girl tells her she is strong.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/official/guin-father-silhouette.png",
+    "crop": [0, 0, 1334, 750],
+    "alt": "The dark silhouette of a tall man in a fur-collared coat, holding a paper, a gold question mark on his chest.",
+    "credit": "Official character art"
+  },
+  "heroFocus": "45% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+    "t": 10.2,
+    "crop": [0, 0, 2560, 930],
+    "alt": "Guinevere throws one arm up against a blue sky, grinning.",
+    "credit": "Official Connection Lost film"
+  },
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 15,
+      "anchor": "A banner hung over",
+      "kind": "place",
+      "label": "Team-Up Day",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/3A1/00m00s000ms-00m22s500ms/footage.webm",
+        "t": 6.3,
+        "alt": "A big screen at the Academy reads THE ASPIRANTS TEAM-UP DAY.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "The voice came from",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/3A1/00m00s000ms-00m22s500ms/footage.webm",
+        "start": 13.3,
+        "end": 17.3,
+        "crop": [0, 0, 1920, 700],
+        "poster": 2.6,
+        "alt": "Students crowd under the banner while Guinevere stands apart; the crowd fades and a black-haired girl remains by the wall.",
+        "credit": "Official interactive drama"
+      },
+      "caption": "You are strong, Guinevere."
+    },
+    {
+      "after": 34,
+      "anchor": "Vexana looked at her",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+        "t": 9.2,
+        "crop": [0, 0, 2560, 930],
+        "alt": "Vexana, black-haired, looks back over her shoulder with a quiet face.",
+        "credit": "Official Connection Lost film"
+      }
+    },
+    {
+      "after": 38,
+      "anchor": "The grin came anyway.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+        "t": 10.2,
+        "crop": [0, 0, 2560, 930],
+        "alt": "Guinevere throws one arm up against a blue sky, grinning.",
+        "credit": "Official Connection Lost film"
+      }
+    }
+  ]
+}

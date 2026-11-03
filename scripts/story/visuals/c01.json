@@ -1,0 +1,83 @@
+{
+  "chapter": "c01",
+  "mood": "A transfer student breaks a record on her first day, and the girl she beat walks out.",
+  "hero": {
+    "type": "frame",
+    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m15s875ms-00m21s875ms/footage.webm",
+    "t": 2.6,
+    "crop": [0, 134, 1920, 812],
+    "alt": "Dawn breaks over the towers of Terrinia, a beam of light rising from the tall spire at its center.",
+    "credit": "Official Layla and Fanny trailer"
+  },
+  "heroFocus": "58% 50%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 4,
+      "anchor": "When the first suits",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/1.jpg",
+          "crop": [0, 800, 1000, 1820],
+          "alt": "A huge black Ender with glowing orange eyes looms over a burning world.",
+          "credit": "Official Aspirant comic, page 1"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/2.jpg",
+          "crop": [0, 395, 1000, 580],
+          "alt": "Terrinia seen from above, a shore city under a shining wall of hexagons, a beam rising from its tower.",
+          "credit": "Official Aspirant comic, page 2"
+        },
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/2.jpg",
+          "crop": [0, 1505, 1000, 1268],
+          "alt": "Rows of students in uniform stand behind one who holds a glowing weapon.",
+          "credit": "Official Aspirant comic, page 2"
+        }
+      ],
+      "caption": "The Enders came. The survivors drew back to Terrinia and trained the Aspirants."
+    },
+    {
+      "after": 7,
+      "anchor": "The Shield kept her",
+      "kind": "portrait",
+      "character": "fanny"
+    },
+    {
+      "after": 12,
+      "anchor": "A bell tower of",
+      "kind": "place",
+      "label": "Selrick Academy",
+      "media": {
+        "type": "image",
+        "src": "_others/places/selrick-academy.jpg",
+        "alt": "A wide plaza at Selrick Academy under a violet sky, a white clock tower and a twisted spire rising over it.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "A girl stood in",
+      "kind": "portrait",
+      "character": "layla"
+    },
+    {
+      "after": 27,
+      "anchor": "The twin-tailed girl looked",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "t": 45.3,
+        "alt": "A cartoon Layla puffs out her cheeks in a huff in front of the crowd.",
+        "credit": "Official short animation"
+      },
+      "caption": "Humph!"
+    }
+  ]
+}

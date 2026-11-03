@@ -12,9 +12,9 @@ export interface JumpOptions {
 }
 
 export interface ReaderApi {
-  /** The Part this page holds (1 to 12). */
-  part: number;
-  /** Go to a chapter (`c30`), paragraph (`c30-p012`) or any element id on this page. */
+  /** The chapter this page holds (`c05`). */
+  chapterId: string;
+  /** Go to a paragraph (`c05-p012`) or any element id on this page. */
   jumpTo: (id: string, options?: JumpOptions) => Promise<void>;
   textScale: number;
   setTextScale: (value: number) => void;
@@ -25,7 +25,7 @@ export interface ReaderApi {
 const noop = () => undefined;
 
 export const ReaderContext = createContext<ReaderApi>({
-  part: 1,
+  chapterId: "c00",
   jumpTo: () => Promise.resolve(),
   textScale: 1,
   setTextScale: noop,

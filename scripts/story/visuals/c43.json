@@ -1,0 +1,81 @@
+{
+  "chapter": "c43",
+  "mood": "Her drones go dark, she hits the street, and a familiar face drops out of the storm.",
+  "hero": {
+    "type": "clip",
+    "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
+    "start": 6.2,
+    "end": 10.4,
+    "crop": [0, 136, 1920, 734],
+    "poster": 2.2,
+    "alt": "Selena in dark plate trimmed with silver walks out of the smoke with four Enders at her back.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "heroFocus": "50% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
+    "t": 5.0,
+    "crop": [0, 136, 1920, 734],
+    "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Her drones lay beside",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
+        "t": 5.0,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Guinevere knew the face.",
+      "kind": "plate",
+      "caption": "The Academy stairs, before.",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
+        "t": 5.0,
+        "crop": [0, 0, 1920, 960],
+        "alt": "Selena in uniform leaps down the Academy stairs beside Silverbolt while two classmates come down behind her.",
+        "credit": "Official character film, The Pawn's Gambit"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "For a breath, Guinevere",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
+        "t": 5.9,
+        "crop": [0, 136, 1920, 734],
+        "alt": "Guinevere's face up close, eyes wide, staring up at someone she knows.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "Elbow in. Hip first.",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/10.jpg",
+          "crop": [150, 3200, 2350, 1340],
+          "alt": "Guinevere draws back her gloved fist, teeth bared, ready to hit.",
+          "credit": "Official comic, Guinevere and Vexana, page 10"
+        }
+      ]
+    }
+  ]
+}

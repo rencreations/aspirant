@@ -32,7 +32,7 @@ import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-
 import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import { storyLandingItems } from "@/features/story/landing/preload-items";
-import { readerItems } from "@/features/story/reader/preload-items";
+import { chapterItems } from "@/features/story/reader/preload-items";
 import {
   chunkItem,
   dataItem,
@@ -87,9 +87,11 @@ export function routeItems(pathname: string): PreloadItem[] {
   }
 
   if (path.startsWith("/story/")) {
-    // One Part of the story: its text is in the page itself, so only the fonts are waited for. The
-    // small portraits of "Before you begin" (Part One) arrive in the background.
-    return [...shared, ...(path === "/story/part-01" ? readerItems() : [])];
+    // One chapter of the story: its text is in the page itself, so the fonts and the title card
+    // (the picture, or the loop and its still) are waited for. The first pictures set into the
+    // text arrive in the background; the rest are lazy in the page.
+    const slug = path.slice("/story/".length).split("/")[0] ?? "";
+    return [...shared, ...chapterItems(slug)];
   }
 
   if (path === "/collection") {

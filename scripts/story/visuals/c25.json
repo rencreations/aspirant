@@ -1,0 +1,75 @@
+{
+  "chapter": "c25",
+  "mood": "A nap in class, a paper plane, a dangerous design, and on the roof, a plan for coming home.",
+  "hero": {
+    "type": "clip",
+    "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
+    "start": 1.3,
+    "end": 4.6,
+    "crop": [110, 0, 1712, 963],
+    "sound": false,
+    "poster": 0.35,
+    "alt": "Selena naps on her desk until a paper plane from Layla wakes her, then she shows classmates her drawing of an armored suit.",
+    "credit": "Official film, Selena"
+  },
+  "heroFocus": "50% 55%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 7,
+      "anchor": "Then Selena sat up,",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
+        "t": 5.4,
+        "crop": [120, 0, 1680, 945],
+        "alt": "Selena's design on a grid: a full suit of armor with a visor, plated joints and blades, notes pinned around it.",
+        "credit": "Official film, Selena"
+      },
+      "caption": "Ender plating, my own design."
+    },
+    {
+      "after": 13,
+      "anchor": "Afterward Selena went down",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
+        "start": 7.4,
+        "end": 10.3,
+        "crop": [0, 0, 1920, 960],
+        "sound": false,
+        "poster": 2.6,
+        "alt": "Selena hops off a rail and skids into an Academy hallway, Silverbolt crackling at her side.",
+        "credit": "Official film, Selena"
+      }
+    },
+    {
+      "after": 16,
+      "anchor": "One day, when the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
+        "t": 6.2,
+        "crop": [640, 0, 600, 960],
+        "alt": "Selena smiles with one finger on her lips, as if keeping a secret.",
+        "credit": "Official film, Selena"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "That afternoon they sat",
+      "kind": "place",
+      "label": "Selrick Academy",
+      "media": {
+        "type": "image",
+        "src": "_others/places/selrick-academy-cloudy.png",
+        "crop": [0, 16, 950, 405],
+        "alt": "The tower of Selrick Academy rises above the clouds, a ring of light turning around it.",
+        "credit": "Official art"
+      }
+    }
+  ]
+}

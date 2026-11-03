@@ -1,1370 +1,1255 @@
 {
-  "title": "ASPIRANT",
-  "subtitle": "The Short Story",
-  "intro": "The whole Aspirant story, in short and simple English. It starts small and grows wider. Some chapters go back in time, and each one says so at the top.",
-  "epigraph": {
-    "lines": [
-      "When the towers grow high and the wheels grow loud,",
-      "When the people forget they are small,",
-      "The sky will break, and the Enders come,",
-      "To end the world, and begin it all."
-    ],
-    "attribution": "An old skipping rhyme from Dawnbreak"
-  },
-  "beforeYouBegin": [
-    {
-      "id": "where-you-are",
-      "title": "Where you are",
-      "blocks": [
-        {
-          "type": "p",
-          "segments": [
-            { "t": "text", "text": "This story takes place on a planet called " },
-            { "t": "ent", "id": "dawnbreak", "text": "Dawnbreak", "strong": true },
-            { "t": "text", "text": ". It is green and bright, with a blue lake and a wide sea." }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            { "t": "text", "text": "On the shore of the lake stands a city called " },
-            { "t": "ent", "id": "terrinia", "text": "Terrinia", "strong": true },
-            {
-              "t": "text",
-              "text": ". It is the last great city that is left. Over it hangs a web of pale light, like a glass roof. It is called the "
-            },
-            { "t": "ent", "id": "defence-sphere", "text": "Defence Sphere", "strong": true },
-            { "t": "text", "text": ". It keeps out the monsters." }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            { "t": "text", "text": "The monsters are called " },
-            { "t": "ent", "id": "enders", "text": "Enders", "strong": true },
-            {
-              "t": "text",
-              "text": ". They fell out of the sky in the year 978 and broke much of the world. They have come back since."
-            }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            { "t": "text", "text": "In Terrinia there is a school called " },
-            { "t": "ent", "id": "selrick-academy", "text": "Selrick Academy", "strong": true },
-            {
-              "t": "text",
-              "text": ". It teaches young women to fight the Enders. They fight with a strange power called "
-            },
-            { "t": "ent", "id": "aspirant-power", "text": "aspirant power", "strong": true },
-            {
-              "t": "text",
-              "text": ". It comes to a person who holds on to one thing and will not let it go. The young women who have it are called "
-            },
-            { "t": "ent", "id": "aspirants", "text": "Aspirants", "strong": true },
-            { "t": "text", "text": "." }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            { "t": "text", "text": "The story starts at that school, on an ordinary morning." }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "who-you-will-meet-first",
-      "title": "Who you will meet first",
-      "blocks": [
-        {
-          "type": "people",
-          "rows": [
-            {
-              "entityId": "layla",
-              "name": "Layla",
-              "text": "A small, proud top student. She has a cannon as tall as she is, and a secret hiding place high on a tower."
-            },
-            {
-              "entityId": "fanny",
-              "name": "Fanny",
-              "text": "A new student. She is warm, careful and polite. She flies with folding wings and a steel cable."
-            },
-            {
-              "entityId": "guinevere",
-              "name": "Guinevere",
-              "text": "A rich girl who left her grand house to fight. She calls herself \"the Queen\"."
-            },
-            {
-              "entityId": "vexana",
-              "name": "Vexana",
-              "text": "A quiet girl who hides in a cupboard. She can hear things other people cannot."
-            },
-            {
-              "entityId": "change",
-              "name": "Chang'e",
-              "text": "The Academy's Chief Scientist. She is very small, very clever and very proud. Her robot friend is Mr. Bunny."
-            },
-            {
-              "entityId": "lesley",
-              "name": "Lesley",
-              "text": "Head of combat training. A quiet, steady sniper with a cover over one eye."
-            },
-            {
-              "entityId": "selena",
-              "name": "Selena",
-              "text": "The Academy's best young mechanic. She has red eyes, a lazy smile and a friend for everyone."
-            }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            {
-              "t": "text",
-              "text": "More people come later. You will meet each one when the story needs her."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "how-this-book-is-told",
-      "title": "How this book is told",
-      "blocks": [
-        {
-          "type": "p",
-          "segments": [
-            {
-              "t": "text",
-              "text": "This book does not run in time order. It begins in the middle of the story, at the "
-            },
-            { "t": "ent", "id": "selrick-academy", "text": "Academy" },
-            {
-              "t": "text",
-              "text": ". Then it goes back to find out how the school began, who the "
-            },
-            { "t": "ent", "id": "enders", "text": "Enders" },
-            { "t": "text", "text": " are, and where the strangers came from." }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            {
-              "t": "text",
-              "text": "Each time the story goes back in time, the top of the chapter says so. You will learn things a little at a time, the way the people in the story do. By the end, you will know everything the story knows. Three questions are left open on purpose. The last page names them."
-            }
-          ]
-        },
-        {
-          "type": "p",
-          "segments": [
-            {
-              "t": "text",
-              "text": "If you ever get lost, turn to the back. A timeline there puts every event in order."
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "parts": [
-    {
-      "number": 1,
-      "label": "Part One",
-      "title": "The Secret Base",
-      "setting": "A morning at Selrick Academy, in the city of Terrinia.",
-      "chapterIds": ["c01", "c02", "c03", "i-far-above-1"],
-      "file": "data/story/part-01.json",
-      "wordCount": 3597
-    },
-    {
-      "number": 2,
-      "label": "Part Two",
-      "title": "Daybreak and Twilight",
-      "setting": "The same year, at the Academy.",
-      "chapterIds": ["c04", "c05", "c06", "c07", "c08", "c09", "c10"],
-      "file": "data/story/part-02.json",
-      "wordCount": 8250
-    },
-    {
-      "number": 3,
-      "label": "Part Three",
-      "title": "The Girl in the Cap",
-      "setting": "Back in time. This is how Selrick Academy began. It starts in the year 978.",
-      "chapterIds": ["c11", "c12", "c13", "c14", "c15", "c16", "c17"],
-      "file": "data/story/part-03.json",
-      "wordCount": 5484
-    },
-    {
-      "number": 4,
-      "label": "Part Four",
-      "title": "The Night the Base Fell",
-      "setting": "Still back in time.",
-      "chapterIds": ["c18", "c19", "c20", "c21", "c22"],
-      "file": "data/story/part-04.json",
-      "wordCount": 5853
-    },
-    {
-      "number": 5,
-      "label": "Part Five",
-      "title": "The One Who Asked",
-      "setting": "Back at the Academy. Then back, much further, to the beginning of everything.",
-      "chapterIds": ["c23", "c24", "c25", "c26", "c27"],
-      "file": "data/story/part-05.json",
-      "wordCount": 4588
-    },
-    {
-      "number": 6,
-      "label": "Part Six",
-      "title": "Forty Days",
-      "setting": "The present again, at the Academy.",
-      "chapterIds": ["c28", "c29", "c30", "c31", "c32"],
-      "file": "data/story/part-06.json",
-      "wordCount": 4034
-    },
-    {
-      "number": 7,
-      "label": "Part Seven",
-      "title": "The Golden Cage",
-      "setting": "Back in time. Before the Breach, on the planet Oro.",
-      "chapterIds": ["c33", "c34", "c35", "c36", "c37", "c38"],
-      "file": "data/story/part-07.json",
-      "wordCount": 4514
-    },
-    {
-      "number": 8,
-      "label": "Part Eight",
-      "title": "Beginning!",
-      "setting": "The Day of the Breach, continued.",
-      "chapterIds": ["c39", "c40", "c41", "c42"],
-      "file": "data/story/part-08.json",
-      "wordCount": 3660
-    },
-    {
-      "number": 9,
-      "label": "Part Nine",
-      "title": "The Newcomers",
-      "setting": "After the Breach.",
-      "chapterIds": ["i-far-above-2", "c43", "c44", "c45", "c46"],
-      "file": "data/story/part-09.json",
-      "wordCount": 3063
-    },
-    {
-      "number": 10,
-      "label": "Part Ten",
-      "title": "The One Who Was Taken",
-      "setting": "The next spring.",
-      "chapterIds": ["c47", "c48", "c49", "c50"],
-      "file": "data/story/part-10.json",
-      "wordCount": 4775
-    },
-    {
-      "number": 11,
-      "label": "Part Eleven",
-      "title": "The Storm",
-      "setting": "Summer, and the first week of September.",
-      "chapterIds": ["c51", "c52", "c53"],
-      "file": "data/story/part-11.json",
-      "wordCount": 4110
-    },
-    {
-      "number": 12,
-      "label": "Part Twelve",
-      "title": "Dawn",
-      "setting": "Graduation day, and after.",
-      "chapterIds": ["c54", "c55", "c56", "c57", "c58", "c59", "c60"],
-      "file": "data/story/part-12.json",
-      "wordCount": 7077
-    }
+  "title": "Aspirant",
+  "acts": [
+    { "roman": "I", "title": "The Record", "from": 0, "to": 9 },
+    { "roman": "II", "title": "The Free Land", "from": 10, "to": 30 },
+    { "roman": "III", "title": "Vexana: Absent", "from": 31, "to": 34 },
+    { "roman": "IV", "title": "Connection Lost", "from": 35, "to": 38 },
+    { "roman": "V", "title": "The Black Hole", "from": 39, "to": 40 },
+    { "roman": "VI", "title": "The Storm Citadel", "from": 41, "to": 48 }
   ],
   "chapters": [
     {
+      "id": "c00",
+      "slug": "prologue",
+      "number": 0,
+      "title": "Prologue",
+      "dateline": "Terrinia, 983.",
+      "mood": "Terrinia, 983. A black storm kills the city’s lights, and someone watches from inside it.",
+      "words": 450,
+      "minutes": 2,
+      "paragraphs": 19,
+      "act": "I",
+      "thumb": "img/story/c00/thumb-c7609ff2.webp",
+      "sealed": null,
+      "color": "#83677f",
+      "score": "obsidia-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c00/hero-5c259eb9.webp" },
+        { "kind": "image", "src": "img/story/c00/i1-e19d9e41.webp" },
+        { "kind": "image", "src": "img/story/c00/i2-d447afa2.webp" }
+      ]
+    },
+    {
       "id": "c01",
-      "kind": "chapter",
+      "slug": "chapter-01",
       "number": 1,
-      "title": "The Student Who Was Always First",
-      "part": 1,
-      "timeNote": null,
-      "wordCount": 983,
-      "paragraphCount": 42,
-      "firstParagraphIndex": 0
+      "title": "First Place",
+      "dateline": "Selrick Academy, Terrinia. Fourteen years later.",
+      "mood": "A transfer student breaks a record on her first day, and the girl she beat walks out.",
+      "words": 656,
+      "minutes": 3,
+      "paragraphs": 31,
+      "act": "I",
+      "thumb": "img/story/c01/thumb-3f5d4c15.webp",
+      "sealed": null,
+      "color": "#786666",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c01/hero-f3a09de9.webp" },
+        { "kind": "image", "src": "img/story/c01/i2-3186bf49.webp" },
+        { "kind": "image", "src": "img/story/c01/i4-0b08f08e.webp" }
+      ]
     },
     {
       "id": "c02",
-      "kind": "chapter",
+      "slug": "chapter-02",
       "number": 2,
-      "title": "The Transfer Student",
-      "part": 1,
-      "timeNote": null,
-      "wordCount": 1155,
-      "paragraphCount": 51,
-      "firstParagraphIndex": 42
+      "title": "After Midnight",
+      "dateline": null,
+      "mood": "Second place for the first time. Layla works through the night to find out how.",
+      "words": 615,
+      "minutes": 3,
+      "paragraphs": 33,
+      "act": "I",
+      "thumb": "img/story/c02/thumb-6a9ecf88.webp",
+      "sealed": null,
+      "color": "#96979e",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c02/hero-5e877667.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c02/i0-2a841e56.mp4",
+          "poster": "img/story/c02/i0-2a841e56-poster.webp",
+          "bytes": 360942
+        },
+        { "kind": "image", "src": "img/story/c02/i2-b007591d.webp" }
+      ]
     },
     {
       "id": "c03",
-      "kind": "chapter",
+      "slug": "chapter-03",
       "number": 3,
-      "title": "Two Stars, One Sky",
-      "part": 1,
-      "timeNote": null,
-      "wordCount": 1321,
-      "paragraphCount": 64,
-      "firstParagraphIndex": 93
-    },
-    {
-      "id": "i-far-above-1",
-      "kind": "interlude",
-      "number": null,
-      "title": "Far Above",
-      "part": 1,
-      "timeNote": null,
-      "wordCount": 138,
-      "paragraphCount": 7,
-      "firstParagraphIndex": 157
+      "title": "Weak Spots",
+      "dateline": null,
+      "mood": "A lesson on where Enders break, a drill that goes wrong, and then the siren.",
+      "words": 831,
+      "minutes": 4,
+      "paragraphs": 49,
+      "act": "I",
+      "thumb": "img/story/c03/thumb-9cf79eef.webp",
+      "sealed": null,
+      "color": "#be8d86",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c03/hero-c9d0c13e.webp" },
+        { "kind": "image", "src": "img/story/c03/i0-422d836b.webp" },
+        { "kind": "image", "src": "img/story/c03/i1-303f136d.webp" }
+      ]
     },
     {
       "id": "c04",
-      "kind": "chapter",
+      "slug": "chapter-04",
       "number": 4,
-      "title": "The Daughter of Gold",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1170,
-      "paragraphCount": 53,
-      "firstParagraphIndex": 164
+      "title": "The Northeastern Sector",
+      "dateline": "The Northeastern sector.",
+      "mood": "The dome is torn, a teacher falls, and two rivals have to fight side by side.",
+      "words": 691,
+      "minutes": 3,
+      "paragraphs": 40,
+      "act": "I",
+      "thumb": "img/story/c04/thumb-e9f4ed87.webp",
+      "sealed": null,
+      "color": "#815348",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c04/hero-86665ddd.webp" },
+        { "kind": "image", "src": "img/story/c04/i3-66284ce1.webp" },
+        { "kind": "image", "src": "img/story/c04/i6-9d11049c.webp" }
+      ]
     },
     {
       "id": "c05",
-      "kind": "chapter",
+      "slug": "chapter-05",
       "number": 5,
-      "title": "The Girl Who Hid",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1281,
-      "paragraphCount": 55,
-      "firstParagraphIndex": 217
+      "title": "Cover Me",
+      "dateline": null,
+      "mood": "A gold giant outside the dome, a three-second gap, and one shot that has to land.",
+      "words": 696,
+      "minutes": 3,
+      "paragraphs": 38,
+      "act": "I",
+      "thumb": "img/story/c05/thumb-ddd13690.webp",
+      "sealed": null,
+      "color": "#c2783b",
+      "score": "we-believe",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c05/hero-0d36a251.mp4",
+          "poster": "img/story/c05/hero-0d36a251-poster.webp",
+          "bytes": 1261424
+        },
+        { "kind": "image", "src": "img/story/c05/i1-76604a9c.webp" },
+        { "kind": "image", "src": "img/story/c05/i2-1bf09aff.webp" }
+      ]
     },
     {
       "id": "c06",
-      "kind": "chapter",
+      "slug": "chapter-06",
       "number": 6,
-      "title": "You Are Strong",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1398,
-      "paragraphCount": 60,
-      "firstParagraphIndex": 272
+      "title": "All Rested Up?",
+      "dateline": "A ruined rooftop, the same night.",
+      "mood": "Night on a broken roof. Two rivals, too tired to fight, finally say what they mean.",
+      "words": 601,
+      "minutes": 3,
+      "paragraphs": 31,
+      "act": "I",
+      "thumb": "img/story/c06/thumb-1d2f30f7.webp",
+      "sealed": null,
+      "color": "#8d5b79",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c06/hero-1fe05e38.webp" },
+        { "kind": "image", "src": "img/story/c06/i3-7e5f7fdb.webp" },
+        { "kind": "image", "src": "img/story/c06/i4-888a4397.webp" }
+      ]
     },
     {
       "id": "c07",
-      "kind": "chapter",
+      "slug": "chapter-07",
       "number": 7,
-      "title": "The Chapel",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1138,
-      "paragraphCount": 54,
-      "firstParagraphIndex": 332
+      "title": "A New Product from R&D",
+      "dateline": "The Science Division, in the days of rebuilding.",
+      "mood": "The youngest Chief Scientist in Terrinia mends everyone’s machines. She wants one thing more, and Lesley says no.",
+      "words": 743,
+      "minutes": 3,
+      "paragraphs": 41,
+      "act": "I",
+      "thumb": "img/story/c07/thumb-4a018f11.webp",
+      "sealed": null,
+      "color": "#819bb0",
+      "score": null,
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c07/hero-a5fe4801.mp4",
+          "poster": "img/story/c07/hero-a5fe4801-poster.webp",
+          "bytes": 938549
+        },
+        { "kind": "image", "src": "img/story/c07/i0-29b4807f.webp" },
+        { "kind": "image", "src": "img/story/c07/i1-8ca79e0a.webp" }
+      ]
     },
     {
       "id": "c08",
-      "kind": "chapter",
+      "slug": "chapter-08",
       "number": 8,
-      "title": "Best Partners",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1033,
-      "paragraphCount": 47,
-      "firstParagraphIndex": 386
+      "title": "Secret Base",
+      "dateline": null,
+      "mood": "Five days into the rebuilding, Layla unlocks a door at midnight and shows Fanny what she has been hiding.",
+      "words": 760,
+      "minutes": 3,
+      "paragraphs": 45,
+      "act": "I",
+      "thumb": "img/story/c08/thumb-c7c1dffd.webp",
+      "sealed": null,
+      "color": "#4c5a6b",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c08/hero-144f3412.webp" },
+        { "kind": "image", "src": "img/story/c08/i0-b2ee3faf.webp" },
+        { "kind": "image", "src": "img/story/c08/i1-9da04a73.webp" }
+      ]
     },
     {
       "id": "c09",
-      "kind": "chapter",
+      "slug": "chapter-09",
       "number": 9,
-      "title": "Like Fireworks",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 702,
-      "paragraphCount": 26,
-      "firstParagraphIndex": 433
+      "title": "My Teammate",
+      "dateline": null,
+      "mood": "Two rivals become one team, one score. On a storm night far from the Academy, something fast crosses the rooftops.",
+      "words": 964,
+      "minutes": 4,
+      "paragraphs": 42,
+      "act": "I",
+      "thumb": "img/story/c09/thumb-29871853.webp",
+      "sealed": null,
+      "color": "#c6b1b6",
+      "score": "we-believe",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c09/hero-1f28a44a.mp4",
+          "poster": "img/story/c09/hero-1f28a44a-poster.webp",
+          "bytes": 945437
+        },
+        { "kind": "image", "src": "img/story/c09/i0-468989f0.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c09/i1-4d89e602.mp4",
+          "poster": "img/story/c09/i1-4d89e602-poster.webp",
+          "bytes": 534786
+        }
+      ]
     },
     {
       "id": "c10",
-      "kind": "chapter",
+      "slug": "chapter-10",
       "number": 10,
-      "title": "The Emblem of Hope",
-      "part": 2,
-      "timeNote": null,
-      "wordCount": 1528,
-      "paragraphCount": 62,
-      "firstParagraphIndex": 459
+      "title": "The Heir",
+      "dateline": "Planet Oro. Years earlier.",
+      "mood": "On Planet Oro the heir may have no friends and no feelings. So she builds herself a way out.",
+      "words": 724,
+      "minutes": 3,
+      "paragraphs": 39,
+      "act": "II",
+      "thumb": "img/story/c10/thumb-24784b99.webp",
+      "sealed": null,
+      "color": "#2e2c44",
+      "score": null,
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c10/hero-c2e28fd6.mp4",
+          "poster": "img/story/c10/hero-c2e28fd6-poster.webp",
+          "bytes": 339590
+        },
+        { "kind": "image", "src": "img/story/c10/i0-cf9476fb.webp" },
+        { "kind": "image", "src": "img/story/c10/i1-c86f44cc.webp" }
+      ]
     },
     {
       "id": "c11",
-      "kind": "chapter",
+      "slug": "chapter-11",
       "number": 11,
-      "title": "A Peaceful World",
-      "part": 3,
-      "timeNote": "Terrinia and the town of Valemont, in the year 978.",
-      "wordCount": 755,
-      "paragraphCount": 36,
-      "firstParagraphIndex": 521
+      "title": "What Does Hurt Mean?",
+      "dateline": "Planet Oro, the Laboratory and the Gardens.",
+      "mood": "An android who has never seen the sun steps into a secret garden and makes her first friend.",
+      "words": 831,
+      "minutes": 4,
+      "paragraphs": 55,
+      "act": "II",
+      "thumb": "img/story/c11/thumb-9b1df66c.webp",
+      "sealed": null,
+      "color": "#acccc0",
+      "score": null,
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c11/hero-fa0d13f5.mp4",
+          "poster": "img/story/c11/hero-fa0d13f5-poster.webp",
+          "bytes": 569795
+        },
+        { "kind": "image", "src": "img/story/c11/i0-5a107885.webp" },
+        { "kind": "image", "src": "img/story/c11/i1-3ebbe02c.webp" }
+      ]
     },
     {
       "id": "c12",
-      "kind": "chapter",
+      "slug": "chapter-12",
       "number": 12,
-      "title": "Year 978",
-      "part": 3,
-      "timeNote": "The night of the ninth of September, 978.",
-      "wordCount": 923,
-      "paragraphCount": 40,
-      "firstParagraphIndex": 557
+      "title": "The Long-Awaited Moment",
+      "dateline": "Planet Oro. While Terrinia rebuilt.",
+      "mood": "The Council has voted. Ruby finally makes her move, and says goodbye to the only friend she has.",
+      "words": 743,
+      "minutes": 3,
+      "paragraphs": 33,
+      "act": "II",
+      "thumb": "img/story/c12/thumb-708165a0.webp",
+      "sealed": null,
+      "color": "#263c52",
+      "score": null,
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c12/hero-229199f8.mp4",
+          "poster": "img/story/c12/hero-229199f8-poster.webp",
+          "bytes": 866457
+        },
+        { "kind": "image", "src": "img/story/c12/i0-3a4a7ed4.webp" },
+        { "kind": "image", "src": "img/story/c12/i1-1f12651c.webp" }
+      ]
     },
     {
       "id": "c13",
-      "kind": "chapter",
+      "slug": "chapter-13",
       "number": 13,
-      "title": "The Name of the Monsters",
-      "part": 3,
-      "timeNote": "The months and years after the catastrophe.",
-      "wordCount": 681,
-      "paragraphCount": 21,
-      "firstParagraphIndex": 597
+      "title": "Rioters",
+      "dateline": "Above Planet Dawnbreak.",
+      "mood": "Angela is sent to save the Rioters. From far away, Ruby watches what the order really means.",
+      "words": 656,
+      "minutes": 3,
+      "paragraphs": 32,
+      "act": "II",
+      "thumb": "img/story/c13/thumb-c1905d4d.webp",
+      "sealed": null,
+      "color": "#565c73",
+      "score": null,
+      "first": [
+        { "kind": "image", "src": "img/story/c13/hero-ed911ea9.webp" },
+        { "kind": "image", "src": "img/story/c13/i0-a0c10f07.webp" },
+        { "kind": "image", "src": "img/story/c13/i1-ac029b99.webp" }
+      ]
     },
     {
       "id": "c14",
-      "kind": "chapter",
+      "slug": "chapter-14",
       "number": 14,
-      "title": "The Girl Who Learned to Aim",
-      "part": 3,
-      "timeNote": null,
-      "wordCount": 823,
-      "paragraphCount": 39,
-      "firstParagraphIndex": 618
+      "title": "Angela, Stop!",
+      "dateline": "Terrinia, the same evening.",
+      "mood": "Ruby lands in a burning city and finds Angela fighting for Oro. She will not let her go.",
+      "words": 732,
+      "minutes": 3,
+      "paragraphs": 39,
+      "act": "II",
+      "thumb": "img/story/c14/thumb-d54cae44.webp",
+      "sealed": null,
+      "color": "#655147",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c14/hero-57d9b99b.webp" },
+        { "kind": "image", "src": "img/story/c14/i0-999860af.webp" },
+        { "kind": "image", "src": "img/story/c14/i1-63363052.webp" }
+      ]
     },
     {
       "id": "c15",
-      "kind": "chapter",
+      "slug": "chapter-15",
       "number": 15,
-      "title": "The Child of the Laboratory",
-      "part": 3,
-      "timeNote": "Selrick Base, some years later.",
-      "wordCount": 668,
-      "paragraphCount": 33,
-      "firstParagraphIndex": 657
+      "title": "Ruby!",
+      "dateline": null,
+      "mood": "Angela wakes in a burning street, and only she can stop what Ruby is about to do.",
+      "words": 849,
+      "minutes": 4,
+      "paragraphs": 43,
+      "act": "II",
+      "thumb": "img/story/c15/thumb-f98d2204.webp",
+      "sealed": null,
+      "color": "#87494b",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c15/hero-36a4ec7c.webp" },
+        { "kind": "image", "src": "img/story/c15/i0-a5057f9a.webp" },
+        { "kind": "image", "src": "img/story/c15/i1-2f95d41f.webp" }
+      ]
     },
     {
       "id": "c16",
-      "kind": "chapter",
+      "slug": "chapter-16",
       "number": 16,
-      "title": "Sis",
-      "part": 3,
-      "timeNote": null,
-      "wordCount": 712,
-      "paragraphCount": 40,
-      "firstParagraphIndex": 690
+      "title": "All Normal",
+      "dateline": "Planet Oro, a secret facility.",
+      "mood": "Locked in a cell with no window, Ruby tells Angela the truth. Somewhere above them, her father is watching.",
+      "words": 697,
+      "minutes": 3,
+      "paragraphs": 38,
+      "act": "II",
+      "thumb": "img/story/c16/thumb-6b10d112.webp",
+      "sealed": null,
+      "color": "#716e6c",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c16/hero-24efd4f2.webp" },
+        { "kind": "image", "src": "img/story/c16/i0-54e98a41.webp" },
+        { "kind": "image", "src": "img/story/c16/i1-aeae7ac3.webp" }
+      ]
     },
     {
       "id": "c17",
-      "kind": "chapter",
+      "slug": "chapter-17",
       "number": 17,
-      "title": "The Smallest Party in the World",
-      "part": 3,
-      "timeNote": null,
-      "wordCount": 922,
-      "paragraphCount": 33,
-      "firstParagraphIndex": 730
+      "title": "Sis",
+      "dateline": "Terrinia’s research base, before the Academy.",
+      "mood": "A child gives Lesley her first birthday present in years. Then the city catches fire.",
+      "words": 866,
+      "minutes": 4,
+      "paragraphs": 42,
+      "act": "II",
+      "thumb": "img/story/c17/thumb-37a438be.webp",
+      "sealed": null,
+      "color": "#93a4ac",
+      "score": null,
+      "first": [
+        { "kind": "image", "src": "img/story/c17/hero-66d400b0.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c17/i0-f043782a.mp4",
+          "poster": "img/story/c17/i0-f043782a-poster.webp",
+          "bytes": 471838
+        },
+        { "kind": "image", "src": "img/story/c17/i1-e38444c6.webp" }
+      ]
     },
     {
       "id": "c18",
-      "kind": "chapter",
+      "slug": "chapter-18",
       "number": 18,
-      "title": "Silence",
-      "part": 4,
-      "timeNote": "Selrick Base, in the days before it fell.",
-      "wordCount": 1234,
-      "paragraphCount": 43,
-      "firstParagraphIndex": 763
+      "title": "Newcomers",
+      "dateline": "Selrick Academy, days after the ship landed.",
+      "mood": "A black ship lands at the city’s edge, and two armed girls walk down the ramp asking for refuge.",
+      "words": 714,
+      "minutes": 3,
+      "paragraphs": 41,
+      "act": "II",
+      "thumb": "img/story/c18/thumb-ad6defab.webp",
+      "sealed": null,
+      "color": "#393b50",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c18/hero-fb814bb2.webp" },
+        { "kind": "image", "src": "img/story/c18/i0-f7786500.webp" },
+        { "kind": "image", "src": "img/story/c18/i1-65df4bac.webp" }
+      ]
     },
     {
       "id": "c19",
-      "kind": "chapter",
+      "slug": "chapter-19",
       "number": 19,
-      "title": "Go Away",
-      "part": 4,
-      "timeNote": "The same night, and after.",
-      "wordCount": 835,
-      "paragraphCount": 29,
-      "firstParagraphIndex": 806
+      "title": "Leave Me Alone",
+      "dateline": "Terrinia’s research base. The day it fell.",
+      "mood": "The day the research base fell, and the letter Chang’e wrote that night and never sent.",
+      "words": 570,
+      "minutes": 2,
+      "paragraphs": 31,
+      "act": "II",
+      "thumb": "img/story/c19/thumb-01de991c.webp",
+      "sealed": null,
+      "color": "#53161d",
+      "score": null,
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c19/hero-c422bd63.mp4",
+          "poster": "img/story/c19/hero-c422bd63-poster.webp",
+          "bytes": 600667
+        },
+        { "kind": "image", "src": "img/story/c19/i0-c2e1a87b.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c19/i1-43cc4b31.mp4",
+          "poster": "img/story/c19/i1-43cc4b31-poster.webp",
+          "bytes": 505637
+        }
+      ]
     },
     {
       "id": "c20",
-      "kind": "chapter",
+      "slug": "chapter-20",
       "number": 20,
-      "title": "The Years of Ash",
-      "part": 4,
-      "timeNote": "The years after.",
-      "wordCount": 941,
-      "paragraphCount": 29,
-      "firstParagraphIndex": 835
+      "title": "Five Stars",
+      "dateline": "Selrick Academy, the Science Division.",
+      "mood": "Angela on Chang’e’s lab table, a locked box of code nobody else can open, and two new Aspirants in the hall.",
+      "words": 839,
+      "minutes": 4,
+      "paragraphs": 45,
+      "act": "II",
+      "thumb": "img/story/c20/thumb-51a948b4.webp",
+      "sealed": null,
+      "color": "#817cb9",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c20/hero-b35f68f2.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c20/i0-9e8f71eb.mp4",
+          "poster": "img/story/c20/i0-9e8f71eb-poster.webp",
+          "bytes": 598639
+        },
+        { "kind": "image", "src": "img/story/c20/i1-ac0fd881.webp" }
+      ]
     },
     {
       "id": "c21",
-      "kind": "chapter",
+      "slug": "chapter-21",
       "number": 21,
-      "title": "The Return",
-      "part": 4,
-      "timeNote": "Some years after the Base fell.",
-      "wordCount": 1560,
-      "paragraphCount": 61,
-      "firstParagraphIndex": 864
+      "title": "Detention",
+      "dateline": null,
+      "mood": "Caught on the roof, sentenced to mop the Academy hall, and one quiet afternoon in the grass.",
+      "words": 903,
+      "minutes": 4,
+      "paragraphs": 51,
+      "act": "II",
+      "thumb": "img/story/c21/thumb-b8167828.webp",
+      "sealed": null,
+      "color": "#676a7f",
+      "score": "we-believe",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c21/hero-4a991a5a.mp4",
+          "poster": "img/story/c21/hero-4a991a5a-poster.webp",
+          "bytes": 421464
+        },
+        { "kind": "image", "src": "img/story/c21/i0-208daf30.webp" },
+        { "kind": "image", "src": "img/story/c21/i1-70895405.webp" }
+      ]
     },
     {
       "id": "c22",
-      "kind": "chapter",
+      "slug": "chapter-22",
       "number": 22,
-      "title": "On the Ruins",
-      "part": 4,
-      "timeNote": null,
-      "wordCount": 1283,
-      "paragraphCount": 41,
-      "firstParagraphIndex": 925
+      "title": "The Office Door",
+      "dateline": "House Baroque, Terrinia. Two years earlier.",
+      "mood": "Guinevere waits all day outside her father’s door. A year later, a quiet girl tells her she is strong.",
+      "words": 611,
+      "minutes": 3,
+      "paragraphs": 39,
+      "act": "II",
+      "thumb": "img/story/c22/thumb-32462bb9.webp",
+      "sealed": null,
+      "color": "#060503",
+      "score": "guinevere-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c22/hero-410f91b4.webp" },
+        { "kind": "image", "src": "img/story/c22/i0-140bb70c.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c22/i1-81bcf754.mp4",
+          "poster": "img/story/c22/i1-81bcf754-poster.webp",
+          "bytes": 427416
+        }
+      ]
     },
     {
       "id": "c23",
-      "kind": "chapter",
+      "slug": "chapter-23",
       "number": 23,
-      "title": "Silverbolt",
-      "part": 5,
-      "timeNote": "Selrick Academy, in its first year.",
-      "wordCount": 1475,
-      "paragraphCount": 68,
-      "firstParagraphIndex": 966
+      "title": "Made ’Em Myself",
+      "dateline": "Selrick Academy. The year before Fanny came.",
+      "mood": "Two handmade gold stars, a summer of firsts, and fireworks from a roof.",
+      "words": 649,
+      "minutes": 3,
+      "paragraphs": 35,
+      "act": "II",
+      "thumb": "img/story/c23/thumb-d49f7ba5.webp",
+      "sealed": null,
+      "color": "#bab7c8",
+      "score": "guinevere-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c23/hero-ee3643d7.webp" },
+        { "kind": "image", "src": "img/story/c23/i0-2d1de6e4.webp" },
+        { "kind": "image", "src": "img/story/c23/i1-dccdc56b.webp" }
+      ]
     },
     {
       "id": "c24",
-      "kind": "chapter",
+      "slug": "chapter-24",
       "number": 24,
-      "title": "The Orb",
-      "part": 5,
-      "timeNote": "Long ago, in another universe.",
-      "wordCount": 430,
-      "paragraphCount": 21,
-      "firstParagraphIndex": 1034
+      "title": "The Void",
+      "dateline": "Selrick Academy. The end of that year.",
+      "mood": "The best duo of the year learns what sends the Enders, and where the thing that steers them hides.",
+      "words": 614,
+      "minutes": 3,
+      "paragraphs": 31,
+      "act": "II",
+      "thumb": "img/story/c24/thumb-8de92896.webp",
+      "sealed": null,
+      "color": "#7c6e74",
+      "score": "guinevere-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c24/hero-4fd82530.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c24/i1-a7359db0.mp4",
+          "poster": "img/story/c24/i1-a7359db0-poster.webp",
+          "bytes": 452909
+        },
+        { "kind": "image", "src": "img/story/c24/i2-ede6b338.webp" }
+      ]
     },
     {
       "id": "c25",
-      "kind": "chapter",
+      "slug": "chapter-25",
       "number": 25,
-      "title": "The First Awakening",
-      "part": 5,
-      "timeNote": "Ages later.",
-      "wordCount": 627,
-      "paragraphCount": 36,
-      "firstParagraphIndex": 1055
+      "title": "Plan B",
+      "dateline": "Selrick Academy. After Ruby and Angela came.",
+      "mood": "A nap in class, a paper plane, a dangerous design, and on the roof, a plan for coming home.",
+      "words": 661,
+      "minutes": 3,
+      "paragraphs": 45,
+      "act": "II",
+      "thumb": "img/story/c25/thumb-6ce30c45.webp",
+      "sealed": null,
+      "color": "#cfcdd3",
+      "score": "guinevere-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c25/hero-589c7357.mp4",
+          "poster": "img/story/c25/hero-589c7357-poster.webp",
+          "bytes": 1277035
+        },
+        { "kind": "image", "src": "img/story/c25/i0-d6a01f4d.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c25/i1-5cc1de1b.mp4",
+          "poster": "img/story/c25/i1-5cc1de1b-poster.webp",
+          "bytes": 777403
+        }
+      ]
     },
     {
       "id": "c26",
-      "kind": "chapter",
+      "slug": "chapter-26",
       "number": 26,
-      "title": "Likeness",
-      "part": 5,
-      "timeNote": null,
-      "wordCount": 833,
-      "paragraphCount": 43,
-      "firstParagraphIndex": 1091
+      "title": "Careful, Guinevere",
+      "dateline": "The Academy Investigation Room Corridor.",
+      "mood": "A fight in an Academy corridor, a portal opening at the wrong back, and a choice made in one second.",
+      "words": 722,
+      "minutes": 3,
+      "paragraphs": 41,
+      "act": "II",
+      "thumb": "img/story/c26/thumb-706cbddc.webp",
+      "sealed": null,
+      "color": "#6a495b",
+      "score": "vexana-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c26/hero-fe989992.webp" },
+        { "kind": "image", "src": "img/story/c26/i2-8b4787c2.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c26/i4-75037475.mp4",
+          "poster": "img/story/c26/i4-75037475-poster.webp",
+          "bytes": 405729
+        }
+      ]
     },
     {
       "id": "c27",
-      "kind": "chapter",
+      "slug": "chapter-27",
       "number": 27,
-      "title": "The Seed in the Rain",
-      "part": 5,
-      "timeNote": "Some years before 978.",
-      "wordCount": 1223,
-      "paragraphCount": 59,
-      "firstParagraphIndex": 1134
+      "title": "Missing",
+      "dateline": null,
+      "mood": "A word on a board, a whisper in the halls, and one gold star that will not go dark.",
+      "words": 566,
+      "minutes": 2,
+      "paragraphs": 38,
+      "act": "II",
+      "thumb": "img/story/c27/thumb-fcac20c5.webp",
+      "sealed": null,
+      "color": "#c49798",
+      "score": "guinevere-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c27/hero-4eea0317.webp" },
+        { "kind": "image", "src": "img/story/c27/i0-aec3ae25.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c27/i1-7533bd28.mp4",
+          "poster": "img/story/c27/i1-7533bd28-poster.webp",
+          "bytes": 604722
+        }
+      ]
     },
     {
       "id": "c28",
-      "kind": "chapter",
+      "slug": "chapter-28",
       "number": 28,
-      "title": "The Quiet Mission",
-      "part": 6,
-      "timeNote": null,
-      "wordCount": 950,
-      "paragraphCount": 34,
-      "firstParagraphIndex": 1193
+      "title": "Over Here, Ender!",
+      "dateline": "Terrinia. Years after the base fell.",
+      "mood": "Years of silence end with one shot from a far roof. Later, a cup of medicine and a question finally asked.",
+      "words": 808,
+      "minutes": 3,
+      "paragraphs": 50,
+      "act": "II",
+      "thumb": "img/story/c28/thumb-7adc7066.webp",
+      "sealed": null,
+      "color": "#505b7b",
+      "score": "we-believe",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c28/hero-e855f221.mp4",
+          "poster": "img/story/c28/hero-e855f221-poster.webp",
+          "bytes": 718583
+        },
+        { "kind": "image", "src": "img/story/c28/i0-acec7d30.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c28/i1-a1880a59.mp4",
+          "poster": "img/story/c28/i1-a1880a59-poster.webp",
+          "bytes": 694812
+        }
+      ]
     },
     {
       "id": "c29",
-      "kind": "chapter",
+      "slug": "chapter-29",
       "number": 29,
-      "title": "Inside the Institute",
-      "part": 6,
-      "timeNote": null,
-      "wordCount": 1077,
-      "paragraphCount": 47,
-      "firstParagraphIndex": 1227
+      "title": "Wreckage",
+      "dateline": "Among the Enders.",
+      "mood": "A lamp over a stall at the dome’s foot, a sack of Ender plating, and a plan nobody ordered.",
+      "words": 706,
+      "minutes": 3,
+      "paragraphs": 41,
+      "act": "II",
+      "thumb": "img/story/c29/thumb-dc5a66b2.webp",
+      "sealed": null,
+      "color": "#3d4552",
+      "score": "vexana-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c29/hero-8498dbc5.mp4",
+          "poster": "img/story/c29/hero-8498dbc5-poster.webp",
+          "bytes": 601983
+        },
+        { "kind": "image", "src": "img/story/c29/i1-d76a4d36.webp" },
+        { "kind": "image", "src": "img/story/c29/i2-ad8c2fbb.webp" }
+      ]
     },
     {
       "id": "c30",
-      "kind": "chapter",
+      "slug": "chapter-30",
       "number": 30,
-      "title": "Team B3",
-      "part": 6,
-      "timeNote": null,
-      "wordCount": 641,
-      "paragraphCount": 29,
-      "firstParagraphIndex": 1274
+      "title": "Now You’re Free",
+      "dateline": "Terrinia, weeks after Vexana was taken.",
+      "mood": "A raid goes wrong for Fanny and Layla. Ruby holds the last lock on Angela, and lets her choose.",
+      "words": 1010,
+      "minutes": 4,
+      "paragraphs": 68,
+      "act": "II",
+      "thumb": "img/story/c30/thumb-b3be2ab0.webp",
+      "sealed": null,
+      "color": "#6393ac",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c30/hero-e5cdfc69.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c30/i0-da02741c.mp4",
+          "poster": "img/story/c30/i0-da02741c-poster.webp",
+          "bytes": 540717
+        },
+        { "kind": "image", "src": "img/story/c30/i1-e28172a4.webp" }
+      ]
     },
     {
       "id": "c31",
-      "kind": "chapter",
+      "slug": "chapter-31",
       "number": 31,
-      "title": "Alert",
-      "part": 6,
-      "timeNote": null,
-      "wordCount": 688,
-      "paragraphCount": 42,
-      "firstParagraphIndex": 1303
+      "title": "The Sea of Stars",
+      "dateline": "The dark beyond Dawnbreak. May 997.",
+      "mood": "Far out in the dark, the Storm Citadel turns toward Dawnbreak, and its queen asks a question.",
+      "words": 416,
+      "minutes": 2,
+      "paragraphs": 19,
+      "act": "III",
+      "thumb": "img/story/c31/thumb-de887002.webp",
+      "sealed": null,
+      "color": "#785a7f",
+      "score": "obsidia-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c31/hero-ecbc8068.mp4",
+          "poster": "img/story/c31/hero-ecbc8068-poster.webp",
+          "bytes": 1985799
+        },
+        { "kind": "image", "src": "img/story/c31/i0-b2c21d3c.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c31/i1-41871a19.mp4",
+          "poster": "img/story/c31/i1-41871a19-poster.webp",
+          "bytes": 742119
+        }
+      ]
     },
     {
       "id": "c32",
-      "kind": "chapter",
+      "slug": "chapter-32",
       "number": 32,
-      "title": "Cover Me",
-      "part": 6,
-      "timeNote": null,
-      "wordCount": 678,
-      "paragraphCount": 36,
-      "firstParagraphIndex": 1345
+      "title": "Vexana: Absent",
+      "dateline": "Selrick Academy. Before dawn, the same day.",
+      "mood": "A small star flashes above the storm. Guinevere is sure it means Vexana, and nobody else will say so.",
+      "words": 492,
+      "minutes": 2,
+      "paragraphs": 27,
+      "act": "III",
+      "thumb": "img/story/c32/thumb-f8228526.webp",
+      "sealed": null,
+      "color": "#8d888f",
+      "score": "guinevere-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c32/hero-813640d8.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c32/i0-89c26591.mp4",
+          "poster": "img/story/c32/i0-89c26591-poster.webp",
+          "bytes": 180150
+        },
+        { "kind": "image", "src": "img/story/c32/i1-d17a4347.webp" }
+      ]
     },
     {
       "id": "c33",
-      "kind": "chapter",
+      "slug": "chapter-33",
       "number": 33,
-      "title": "The Planet of Gold",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 535,
-      "paragraphCount": 20,
-      "firstParagraphIndex": 1381
+      "title": "The Sky Opens",
+      "dateline": "Selrick Academy, the command deck. Morning, the same day.",
+      "mood": "The star over the bay tears open. Lesley gives out the roles, and Chang’e asks for the front line.",
+      "words": 808,
+      "minutes": 3,
+      "paragraphs": 57,
+      "act": "III",
+      "thumb": "img/story/c33/thumb-264682bf.webp",
+      "sealed": null,
+      "color": "#563155",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c33/hero-f47256b2.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c33/i0-dc889849.mp4",
+          "poster": "img/story/c33/i0-dc889849-poster.webp",
+          "bytes": 562077
+        },
+        { "kind": "image", "src": "img/story/c33/i1-a28973f9.webp" }
+      ]
     },
     {
       "id": "c34",
-      "kind": "chapter",
+      "slug": "chapter-34",
       "number": 34,
-      "title": "The Veil of Counsel",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 469,
-      "paragraphCount": 13,
-      "firstParagraphIndex": 1401
+      "title": "Rescue Operation",
+      "dateline": "A rooftop over the storm-dark city.",
+      "mood": "A beep on a rooftop and a beep in the courtyard. Guinevere runs, and Fanny has to decide who leads.",
+      "words": 736,
+      "minutes": 3,
+      "paragraphs": 38,
+      "act": "III",
+      "thumb": "img/story/c34/thumb-0bcbe4a3.webp",
+      "sealed": null,
+      "color": "#4771a7",
+      "score": "vexana-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c34/hero-3d1ba05f.mp4",
+          "poster": "img/story/c34/hero-3d1ba05f-poster.webp",
+          "bytes": 429855
+        },
+        { "kind": "image", "src": "img/selena/roof-storm.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c34/i4-28283d9f.mp4",
+          "poster": "img/story/c34/i4-28283d9f-poster.webp",
+          "bytes": 604285
+        }
+      ]
     },
     {
       "id": "c35",
-      "kind": "chapter",
+      "slug": "chapter-35",
       "number": 35,
-      "title": "A Friend Under the Sun",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 1124,
-      "paragraphCount": 42,
-      "firstParagraphIndex": 1414
+      "title": "Connection Lost",
+      "dateline": "The city platforms. Still morning.",
+      "mood": "Alone on the platforms above the bay, Guinevere finally sees the face she was chasing.",
+      "words": 632,
+      "minutes": 3,
+      "paragraphs": 36,
+      "act": "IV",
+      "thumb": "img/story/c35/thumb-a0f63066.webp",
+      "sealed": null,
+      "color": "#615966",
+      "score": "vexana-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c35/hero-0b0e674c.webp" },
+        { "kind": "image", "src": "img/story/c35/i0-987deb8d.webp" },
+        { "kind": "image", "src": "img/story/c35/i1-b28a103a.webp" }
+      ]
     },
     {
       "id": "c36",
-      "kind": "chapter",
+      "slug": "chapter-36",
       "number": 36,
-      "title": "The Cleansing of Oro",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 598,
-      "paragraphCount": 21,
-      "firstParagraphIndex": 1456
+      "title": "Purge Protocol",
+      "dateline": null,
+      "mood": "At noon the sky over the platforms splits open, and two old friends rise to meet each other in the air.",
+      "words": 685,
+      "minutes": 3,
+      "paragraphs": 36,
+      "act": "IV",
+      "thumb": "img/story/c36/thumb-6a154fcc.webp",
+      "sealed": null,
+      "color": "#5f2d7a",
+      "score": "vexana-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c36/hero-eb39da70.mp4",
+          "poster": "img/story/c36/hero-eb39da70-poster.webp",
+          "bytes": 1822542
+        },
+        { "kind": "image", "src": "img/story/c36/i1-c71b95ea.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c36/i2-ed712dbe.mp4",
+          "poster": "img/story/c36/i2-ed712dbe-poster.webp",
+          "bytes": 1079772
+        }
+      ]
     },
     {
       "id": "c37",
-      "kind": "chapter",
+      "slug": "chapter-37",
       "number": 37,
-      "title": "The Leash",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 893,
-      "paragraphCount": 32,
-      "firstParagraphIndex": 1477
+      "title": "Pursue Your Light",
+      "dateline": null,
+      "mood": "One of them fights alone on the scorched platforms. Far below, the other needs a way back up.",
+      "words": 801,
+      "minutes": 3,
+      "paragraphs": 39,
+      "act": "IV",
+      "thumb": "img/story/c37/thumb-b54a206e.webp",
+      "sealed": null,
+      "color": "#4b4f6c",
+      "score": "vexana-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c37/hero-3a926c4e.mp4",
+          "poster": "img/story/c37/hero-3a926c4e-poster.webp",
+          "bytes": 427394
+        },
+        {
+          "kind": "clip",
+          "src": "video/story/c37/i0-afcae19e.mp4",
+          "poster": "img/story/c37/i0-afcae19e-poster.webp",
+          "bytes": 1180955
+        },
+        { "kind": "image", "src": "img/story/c37/i1-7d0d4467.webp" }
+      ]
     },
     {
       "id": "c38",
-      "kind": "chapter",
+      "slug": "chapter-38",
       "number": 38,
-      "title": "The Trojan",
-      "part": 7,
-      "timeNote": null,
-      "wordCount": 895,
-      "paragraphCount": 33,
-      "firstParagraphIndex": 1509
+      "title": "Think Again",
+      "dateline": null,
+      "mood": "Guinevere drops between her friend and the light, and will not let her carry it alone.",
+      "words": 614,
+      "minutes": 3,
+      "paragraphs": 38,
+      "act": "IV",
+      "thumb": "img/story/c38/thumb-a8b68c46.webp",
+      "sealed": null,
+      "color": "#735073",
+      "score": "vexana-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c38/hero-b5cab2f4.mp4",
+          "poster": "img/story/c38/hero-b5cab2f4-poster.webp",
+          "bytes": 1653333
+        },
+        { "kind": "image", "src": "img/story/c38/i0-060e89dd.webp" },
+        { "kind": "image", "src": "img/story/c38/i1-5b210bc7.webp" }
+      ]
     },
     {
       "id": "c39",
-      "kind": "chapter",
+      "slug": "chapter-39",
       "number": 39,
-      "title": "Beginning!",
-      "part": 8,
-      "timeNote": null,
-      "wordCount": 915,
-      "paragraphCount": 44,
-      "firstParagraphIndex": 1542
+      "title": "Two Crossing Stars",
+      "dateline": null,
+      "mood": "Layla counts angles on the platform while two lights climb the sky together.",
+      "words": 533,
+      "minutes": 2,
+      "paragraphs": 32,
+      "act": "V",
+      "thumb": "img/story/c39/thumb-47ecfcad.webp",
+      "sealed": null,
+      "color": "#7e5a9b",
+      "score": "vexana-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c39/hero-bd9f6e68.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c39/i0-348eaaf9.mp4",
+          "poster": "img/story/c39/i0-348eaaf9-poster.webp",
+          "bytes": 642763
+        },
+        { "kind": "image", "src": "img/story/c39/i1-d7d91155.webp" }
+      ]
     },
     {
       "id": "c40",
-      "kind": "chapter",
+      "slug": "chapter-40",
       "number": 40,
-      "title": "The Weak Spot",
-      "part": 8,
-      "timeNote": null,
-      "wordCount": 981,
-      "paragraphCount": 38,
-      "firstParagraphIndex": 1586
+      "title": "Can You Hear Me?",
+      "dateline": "Inside the black hole.",
+      "mood": "In the dark beyond the sky, two friends finally say what they never said aloud.",
+      "words": 866,
+      "minutes": 4,
+      "paragraphs": 53,
+      "act": "V",
+      "thumb": "img/story/c40/thumb-4740d6ef.webp",
+      "sealed": null,
+      "color": "#050302",
+      "score": "vexana-theme",
+      "first": [
+        { "kind": "image", "src": "img/story/c40/hero-18f2b8e1.webp" },
+        { "kind": "image", "src": "img/story/c40/i0-2c89fba4.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c40/i2-f4958a24.mp4",
+          "poster": "img/story/c40/i2-f4958a24-poster.webp",
+          "bytes": 544087
+        }
+      ]
     },
     {
       "id": "c41",
-      "kind": "chapter",
+      "slug": "chapter-41",
       "number": 41,
-      "title": "The Harbour Front",
-      "part": 8,
-      "timeNote": null,
-      "wordCount": 463,
-      "paragraphCount": 23,
-      "firstParagraphIndex": 1624
+      "title": "Beside an Ender",
+      "dateline": null,
+      "mood": "Fanny fights through the streets beside an unlikely ally, until the storm overhead comes down.",
+      "words": 948,
+      "minutes": 4,
+      "paragraphs": 49,
+      "act": "VI",
+      "thumb": "img/story/c41/thumb-8a921c2b.webp",
+      "sealed": null,
+      "color": "#756076",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c41/hero-64fa4497.webp" },
+        {
+          "kind": "clip",
+          "src": "video/story/c41/i0-e20b518a.mp4",
+          "poster": "img/story/c41/i0-e20b518a-poster.webp",
+          "bytes": 1043858
+        },
+        { "kind": "image", "src": "img/story/c41/i1-29373810.webp" }
+      ]
     },
     {
       "id": "c42",
-      "kind": "chapter",
+      "slug": "chapter-42",
       "number": 42,
-      "title": "What Hurt Means",
-      "part": 8,
-      "timeNote": null,
-      "wordCount": 1301,
-      "paragraphCount": 65,
-      "firstParagraphIndex": 1647
-    },
-    {
-      "id": "i-far-above-2",
-      "kind": "interlude",
-      "number": null,
-      "title": "Far Above",
-      "part": 9,
-      "timeNote": null,
-      "wordCount": 208,
-      "paragraphCount": 11,
-      "firstParagraphIndex": 1712
+      "title": "The Scent of Mud",
+      "dateline": "The bell tower, Selrick Academy.",
+      "mood": "A storm, a bell tower, a third lollipop, and a call she has ignored for months.",
+      "words": 806,
+      "minutes": 3,
+      "paragraphs": 33,
+      "act": "VI",
+      "thumb": "img/story/c42/thumb-2df700cb.webp",
+      "sealed": null,
+      "color": "#5c5872",
+      "score": "silverbolt-raiko",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c42/hero-9cb85562.mp4",
+          "poster": "img/story/c42/hero-9cb85562-poster.webp",
+          "bytes": 989871
+        },
+        { "kind": "image", "src": "img/story/c42/i0-60ff33dd.webp" },
+        { "kind": "image", "src": "img/story/c42/i1-92b3b6cd.webp" }
+      ]
     },
     {
       "id": "c43",
-      "kind": "chapter",
+      "slug": "chapter-43",
       "number": 43,
-      "title": "Newcomers",
-      "part": 9,
-      "timeNote": null,
-      "wordCount": 899,
-      "paragraphCount": 38,
-      "firstParagraphIndex": 1723
+      "title": "This Is the Real Me",
+      "dateline": "A street below the Academy.",
+      "mood": "Her drones go dark, she hits the street, and a familiar face drops out of the storm.",
+      "words": 504,
+      "minutes": 2,
+      "paragraphs": 30,
+      "act": "VI",
+      "thumb": "img/story/c43/thumb-8b71f1ef.webp",
+      "sealed": null,
+      "color": "#553956",
+      "score": "silverbolt-raiko",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c43/hero-48798d3f.mp4",
+          "poster": "img/story/c43/hero-48798d3f-poster.webp",
+          "bytes": 841553
+        },
+        { "kind": "image", "src": "img/story/c43/i0-89c47ba1.webp" },
+        { "kind": "image", "src": "img/story/c43/i1-ff463bf3.webp" }
+      ]
     },
     {
       "id": "c44",
-      "kind": "chapter",
+      "slug": "chapter-44",
       "number": 44,
-      "title": "Badges of Honour",
-      "part": 9,
-      "timeNote": null,
-      "wordCount": 905,
-      "paragraphCount": 41,
-      "firstParagraphIndex": 1761
+      "title": "Hold Fire",
+      "dateline": "A rooftop over the rear line.",
+      "mood": "Her rifle has lost its power, an Ender is on the steps, and Chang’e has a plan Lesley hates.",
+      "words": 703,
+      "minutes": 3,
+      "paragraphs": 38,
+      "act": "VI",
+      "thumb": "img/story/c44/thumb-add53dcd.webp",
+      "sealed": null,
+      "color": "#5a5065",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c44/hero-93e4b295.webp" },
+        { "kind": "image", "src": "img/story/c44/i0-ffa09fde.webp" },
+        { "kind": "image", "src": "img/story/c44/i1-443eb1fd.webp" }
+      ]
     },
     {
       "id": "c45",
-      "kind": "chapter",
+      "slug": "chapter-45",
       "number": 45,
-      "title": "The Horizon",
-      "part": 9,
-      "timeNote": null,
-      "wordCount": 700,
-      "paragraphCount": 30,
-      "firstParagraphIndex": 1802
+      "title": "The Scenic Route",
+      "dateline": null,
+      "mood": "A recall that has said one thing for months, and a girl who finally answers it her own way.",
+      "words": 785,
+      "minutes": 3,
+      "paragraphs": 45,
+      "act": "VI",
+      "thumb": "img/story/c45/thumb-0f2e9356.webp",
+      "sealed": null,
+      "color": "#433255",
+      "score": "obsidia-theme",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c45/hero-d5328330.mp4",
+          "poster": "img/story/c45/hero-d5328330-poster.webp",
+          "bytes": 712920
+        },
+        { "kind": "image", "src": "img/story/c45/i0-34aa399c.webp" },
+        { "kind": "image", "src": "img/story/c45/i1-730f47c4.webp" }
+      ]
     },
     {
       "id": "c46",
-      "kind": "chapter",
+      "slug": "chapter-46",
       "number": 46,
-      "title": "Names",
-      "part": 9,
-      "timeNote": null,
-      "wordCount": 351,
-      "paragraphCount": 15,
-      "firstParagraphIndex": 1832
+      "title": "Back to Back",
+      "dateline": "A street a few blocks from the Academy.",
+      "mood": "No power, no flight, one rubble wall, and a crying boy holding on to Layla’s coat.",
+      "words": 685,
+      "minutes": 3,
+      "paragraphs": 39,
+      "act": "VI",
+      "thumb": "img/story/c46/thumb-2ea589e2.webp",
+      "sealed": null,
+      "color": "#925348",
+      "score": "we-believe",
+      "first": [
+        {
+          "kind": "clip",
+          "src": "video/story/c46/hero-b23e4b0c.mp4",
+          "poster": "img/story/c46/hero-b23e4b0c-poster.webp",
+          "bytes": 743731
+        },
+        { "kind": "image", "src": "img/story/c46/i0-bb68ee19.webp" },
+        { "kind": "image", "src": "img/story/c46/i2-8efc6e0c.webp" }
+      ]
     },
     {
       "id": "c47",
-      "kind": "chapter",
+      "slug": "chapter-47",
       "number": 47,
-      "title": "The Corridor",
-      "part": 10,
-      "timeNote": null,
-      "wordCount": 995,
-      "paragraphCount": 49,
-      "firstParagraphIndex": 1847
+      "title": "Ever Since That Day",
+      "dateline": null,
+      "mood": "The storm thins, the power stirs, and two old partners on a terrace say what they never said.",
+      "words": 463,
+      "minutes": 2,
+      "paragraphs": 30,
+      "act": "VI",
+      "thumb": "img/story/c47/thumb-8e85cee2.webp",
+      "sealed": null,
+      "color": "#725346",
+      "score": "we-believe",
+      "first": [
+        { "kind": "image", "src": "img/story/c47/hero-db2d8c31.webp" },
+        { "kind": "image", "src": "img/story/c47/i0-78e58699.webp" },
+        { "kind": "image", "src": "img/story/c47/i1-f2cd06db.webp" }
+      ]
     },
     {
       "id": "c48",
-      "kind": "chapter",
+      "slug": "chapter-48",
       "number": 48,
-      "title": "The Edge of the Void",
-      "part": 10,
-      "timeNote": null,
-      "wordCount": 1295,
-      "paragraphCount": 59,
-      "firstParagraphIndex": 1896
-    },
-    {
-      "id": "c49",
-      "kind": "chapter",
-      "number": 49,
-      "title": "Where Vexana Was Not",
-      "part": 10,
-      "timeNote": null,
-      "wordCount": 1031,
-      "paragraphCount": 44,
-      "firstParagraphIndex": 1955
-    },
-    {
-      "id": "c50",
-      "kind": "chapter",
-      "number": 50,
-      "title": "Twilight Star",
-      "part": 10,
-      "timeNote": null,
-      "wordCount": 1454,
-      "paragraphCount": 55,
-      "firstParagraphIndex": 1999
-    },
-    {
-      "id": "c51",
-      "kind": "chapter",
-      "number": 51,
-      "title": "A Different Ending",
-      "part": 11,
-      "timeNote": null,
-      "wordCount": 1278,
-      "paragraphCount": 59,
-      "firstParagraphIndex": 2054
-    },
-    {
-      "id": "c52",
-      "kind": "chapter",
-      "number": 52,
-      "title": "Graduation Season",
-      "part": 11,
-      "timeNote": null,
-      "wordCount": 1404,
-      "paragraphCount": 70,
-      "firstParagraphIndex": 2113
-    },
-    {
-      "id": "c53",
-      "kind": "chapter",
-      "number": 53,
-      "title": "The Matrix Transmits",
-      "part": 11,
-      "timeNote": null,
-      "wordCount": 1428,
-      "paragraphCount": 83,
-      "firstParagraphIndex": 2183
-    },
-    {
-      "id": "c54",
-      "kind": "chapter",
-      "number": 54,
-      "title": "Terrinia Stands",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 786,
-      "paragraphCount": 43,
-      "firstParagraphIndex": 2266
-    },
-    {
-      "id": "c55",
-      "kind": "chapter",
-      "number": 55,
-      "title": "The Emblem Flashes",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 705,
-      "paragraphCount": 31,
-      "firstParagraphIndex": 2309
-    },
-    {
-      "id": "c56",
-      "kind": "chapter",
-      "number": 56,
-      "title": "Why, Vexana?",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 985,
-      "paragraphCount": 36,
-      "firstParagraphIndex": 2340
-    },
-    {
-      "id": "c57",
-      "kind": "chapter",
-      "number": 57,
-      "title": "Twin Streams of Light",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 930,
-      "paragraphCount": 41,
-      "firstParagraphIndex": 2376
-    },
-    {
-      "id": "c58",
-      "kind": "chapter",
-      "number": 58,
-      "title": "The Bell Tower",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 1009,
-      "paragraphCount": 44,
-      "firstParagraphIndex": 2417
-    },
-    {
-      "id": "c59",
-      "kind": "chapter",
-      "number": 59,
-      "title": "Even on the Path to Destruction",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 1147,
-      "paragraphCount": 53,
-      "firstParagraphIndex": 2461
-    },
-    {
-      "id": "c60",
-      "kind": "chapter",
-      "number": 60,
-      "title": "Dawn",
-      "part": 12,
-      "timeNote": null,
-      "wordCount": 1515,
-      "paragraphCount": 55,
-      "firstParagraphIndex": 2514
+      "title": "Give Me Back My Freedom",
+      "dateline": "The Storm Citadel, burning.",
+      "mood": "A burning hall, a tilting floor, and a duel that neither side means to lose.",
+      "words": 505,
+      "minutes": 2,
+      "paragraphs": 33,
+      "act": "VI",
+      "thumb": "img/story/c48/thumb-1a1801f3.webp",
+      "sealed": null,
+      "color": "#55254b",
+      "score": "silverbolt-raiko",
+      "first": [
+        { "kind": "image", "src": "img/story/c48/hero-18815417.webp" },
+        { "kind": "image", "src": "img/story/c48/i0-7da1b2ca.webp" },
+        { "kind": "image", "src": "img/story/c48/i1-20676ad7.webp" }
+      ]
     }
   ],
-  "backMatter": {
-    "openQuestions": {
-      "title": "What this story leaves open",
-      "intro": "The story ends with hope, not with an answer. Three questions are still open:",
-      "items": [
-        {
-          "question": "Has the Matrix's invasion been stopped?",
-          "answer": "Guinevere believes it has. The story does not say so. The silver net still hangs over Terrinia."
-        },
-        {
-          "question": "Where is the Ender Control Core now, and can it be broken?",
-          "answer": "The Will took it back into its own dark void. Nobody knows where it is."
-        },
-        {
-          "question": "What happened to Selena and Obsidia?",
-          "answer": "Nobody saw how their fight ended. A woman keeps a lamp lit on an old bell tower."
-        }
-      ]
-    },
-    "closing": "THE END",
-    "reference": {
-      "title": "For reference",
-      "intro": "Now that you know the whole story, here are three pages to keep beside you."
-    },
-    "whoIsWho": {
-      "title": "Now you know: who is who",
-      "rows": [
-        {
-          "entityId": "lesley",
-          "name": "Lesley",
-          "title": "Deadeye Spectre",
-          "text": "A quiet, steady soldier and sniper. She lost her family and her left eye when she was a child. With Chang'e, she started Selrick Academy."
-        },
-        {
-          "entityId": "change",
-          "name": "Chang'e",
-          "title": "Tech Tensai",
-          "text": "A tiny, proud genius scientist. She calls Lesley \"Big Sis\". Her robot friend is Mr. Bunny."
-        },
-        {
-          "entityId": "layla",
-          "name": "Layla",
-          "title": "Miss Hikari",
-          "text": "A proud, ambitious top student with a huge cannon. Sharp on the outside, caring inside."
-        },
-        {
-          "entityId": "fanny",
-          "name": "Fanny",
-          "title": "Blade of Kibou",
-          "text": "A warm, careful, well-organised fighter who flies with wings and cables. Her older brother is Tigreal."
-        },
-        {
-          "entityId": "guinevere",
-          "name": "Guinevere",
-          "title": "Daybreak Halo",
-          "text": "A bright, brave, rich girl who calls herself \"the Queen\". She never gives up on a friend."
-        },
-        {
-          "entityId": "vexana",
-          "name": "Vexana",
-          "title": "Twilight Star",
-          "text": "A quiet girl who can hear Enders from far away. She carries a deep guilt."
-        },
-        {
-          "entityId": "ruby",
-          "name": "Ruby",
-          "title": "Mecha Maiden",
-          "text": "The heir of a ruling family on the planet Oro. She builds Angela. She looks cold, but she loves to laugh and sing."
-        },
-        {
-          "entityId": "angela",
-          "name": "Angela",
-          "title": "Cyber Cherubin",
-          "text": "An android with a gentle heart, built by Ruby. She learns what feelings are."
-        },
-        {
-          "entityId": "selena",
-          "name": "Selena",
-          "title": "Silverbolt Raiko",
-          "text": "An Ender who lives as a human. Playful, clever and rebellious. Karina Voss raised her."
-        },
-        {
-          "entityId": "obsidia",
-          "name": "Obsidia",
-          "title": "Imperatrix Arashi",
-          "text": "The first Ender who woke up. She commands the Storm Citadel. Cold, calm and very clever."
-        }
-      ],
-      "also": [
-        {
-          "entityId": "karina-voss",
-          "name": "Karina Voss",
-          "text": "the rescue worker who raised Selena."
-        },
-        {
-          "entityId": "harlan",
-          "name": "Harlan",
-          "text": "Guinevere's old guard, now the Academy's night porter."
-        },
-        {
-          "entityId": "tigreal",
-          "name": "Tigreal",
-          "text": "Fanny's elder brother, a soldier of the Shield."
-        },
-        { "entityId": "roger", "name": "Roger", "text": "a trainee medic." },
-        { "entityId": "tetra", "name": "Tetra", "text": "Angela's tiny twin." },
-        { "entityId": "mr-bunny", "name": "Mr. Bunny", "text": "Chang'e's robot." },
-        {
-          "entityId": "will-of-the-planet",
-          "name": "The Will of the Planet",
-          "text": "the huge mind that sends the Enders."
-        }
-      ]
-    },
-    "timeOrder": {
-      "title": "The story in time order",
-      "rows": [
-        {
-          "when": "Long ago, in another universe",
-          "what": "The Twilight Orb breaks. Some of its energy leaks into this universe and wakes up as the Will of the Planet.",
-          "chapters": "24",
-          "chapterIds": ["c24"]
-        },
-        {
-          "when": "Ages later",
-          "what": "One Ender wakes up and asks \"Why?\" The Will makes her its commander, the Imperatrix. She is Obsidia.",
-          "chapters": "25",
-          "chapterIds": ["c25"]
-        },
-        {
-          "when": "Ages later still",
-          "what": "Obsidia makes herself a human body. She makes a child who can pass as human, and sets her down in the rain on Dawnbreak.",
-          "chapters": "26, 27",
-          "chapterIds": ["c26", "c27"]
-        },
-        {
-          "when": "Some years before 978",
-          "what": "Karina Voss finds the child in the rain. The child chooses the name Selena.",
-          "chapters": "27",
-          "chapterIds": ["c27"]
-        },
-        {
-          "when": "The year 978",
-          "what": "The festival of First Light. Selena meets Lesley. The first catastrophe: the Enders come. Lesley loses her family and her left eye.",
-          "chapters": "11, 12",
-          "chapterIds": ["c11", "c12"]
-        },
-        {
-          "when": "After 978",
-          "what": "Terrinia becomes the last great city. The Defence Sphere, the Shield and Selrick Base are built. Chang'e is adopted by the Chief Scientists.",
-          "chapters": "13",
-          "chapterIds": ["c13"]
-        },
-        {
-          "when": "Lesley's cadet years",
-          "what": "Lesley trains with Sergeant Brandt and joins the Shield.",
-          "chapters": "14",
-          "chapterIds": ["c14"]
-        },
-        {
-          "when": "Life at Selrick Base",
-          "what": "Lesley guards Chang'e and her parents. Chang'e calls her \"Sis\". Chang'e builds her an eye and a rifle.",
-          "chapters": "15 to 17",
-          "chapterIds": ["c15", "c16", "c17"]
-        },
-        {
-          "when": "The day Selrick Base falls",
-          "what": "The Enders strike the Base at dusk. Chang'e's parents die. Vexana's father dies. Obsidia spares Chang'e.",
-          "chapters": "18, 19, 5",
-          "chapterIds": ["c18", "c19", "c05"]
-        },
-        {
-          "when": "The years after",
-          "what": "Chang'e tells Lesley to go away. Lesley watches over her from a distance. Chang'e finds aspirant power.",
-          "chapters": "19, 20",
-          "chapterIds": ["c19", "c20"]
-        },
-        {
-          "when": "Gantry Square",
-          "what": "Chang'e and Lesley fight the Enders together for the first time. They make up.",
-          "chapters": "21",
-          "chapterIds": ["c21"]
-        },
-        {
-          "when": "The Academy is founded",
-          "what": "Selrick Academy is built on the ruins of the Base. Selena comes to it as a spy.",
-          "chapters": "22",
-          "chapterIds": ["c22"]
-        },
-        {
-          "when": "The Academy's first year",
-          "what": "Layla, Fanny, Guinevere and Vexana meet and become partners. Guinevere makes the Emblems of Hope. Selena disobeys her creator.",
-          "chapters": "1 to 10, 23",
-          "chapterIds": [
-            "c01",
-            "c02",
-            "c03",
-            "c04",
-            "c05",
-            "c06",
-            "c07",
-            "c08",
-            "c09",
-            "c10",
-            "c23"
-          ]
-        },
-        {
-          "when": "Oro, before the Breach",
-          "what": "Ruby grows up in the golden cage of Oro and builds Angela. Enders destroy much of Oro. Oro seizes the Core and plans to take Dawnbreak.",
-          "chapters": "33 to 38",
-          "chapterIds": ["c33", "c34", "c35", "c36", "c37", "c38"]
-        },
-        {
-          "when": "Late summer",
-          "what": "A scout from Oro falls in a barley field. Lesley goes through the Aperture to Oro, meets Ruby and cuts the Spine.",
-          "chapters": "28, 29",
-          "chapterIds": ["c28", "c29"]
-        },
-        {
-          "when": "The Day of the Breach",
-          "what": "Oro's army attacks Terrinia. Angela and Ruby break free. The Will recalls the Core. The Enders withdraw.",
-          "chapters": "30 to 32, 39 to 42",
-          "chapterIds": ["c30", "c31", "c32", "c39", "c40", "c41", "c42"]
-        },
-        {
-          "when": "After the Breach",
-          "what": "Obsidia destroys Oro. The Will plans a reset. Ruby and Angela become Aspirants.",
-          "chapters": "Part Nine (the \"Far Above\" page, then 43 to 46)",
-          "chapterIds": ["i-far-above-2", "c43", "c44", "c45", "c46"]
-        },
-        {
-          "when": "The next spring",
-          "what": "Enders wake under the Academy. Vexana is taken into the void.",
-          "chapters": "47, 48",
-          "chapterIds": ["c47", "c48"]
-        },
-        {
-          "when": "The months after",
-          "what": "Guinevere waits and hopes. Vexana pretends to serve the Will. She gets Selena's needle.",
-          "chapters": "49, 50",
-          "chapterIds": ["c49", "c50"]
-        },
-        {
-          "when": "Summer",
-          "what": "The Matrix wakes. Obsidia makes her plan. Selena says goodbye.",
-          "chapters": "51, 52",
-          "chapterIds": ["c51", "c52"]
-        },
-        {
-          "when": "Graduation day",
-          "what": "The sky opens. The Matrix transmits. Guinevere and Vexana fight. Selena goes to the Storm Citadel.",
-          "chapters": "53 to 59",
-          "chapterIds": ["c53", "c54", "c55", "c56", "c57", "c58", "c59"]
-        },
-        {
-          "when": "That night, and after",
-          "what": "The Enders stop. Nobody knows if it is over.",
-          "chapters": "60",
-          "chapterIds": ["c60"]
-        }
-      ]
-    },
-    "wordsToKnow": {
-      "title": "Words to know",
-      "items": [
-        {
-          "term": "Dawnbreak",
-          "entityId": "dawnbreak",
-          "text": "the planet of the Aspirants. Its last great city is Terrinia.",
-          "segments": [
-            { "t": "text", "text": "the planet of the Aspirants. Its last great city is " },
-            { "t": "text", "text": "Terrinia", "strong": true },
-            { "t": "text", "text": "." }
-          ]
-        },
-        {
-          "term": "Selrick Academy",
-          "entityId": "selrick-academy",
-          "text": "the school in Terrinia where young women learn to fight the Enders.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "the school in Terrinia where young women learn to fight the Enders."
-            }
-          ]
-        },
-        {
-          "term": "The Defence Sphere",
-          "entityId": "defence-sphere",
-          "text": "the web of light that covers Terrinia.",
-          "segments": [{ "t": "text", "text": "the web of light that covers Terrinia." }]
-        },
-        {
-          "term": "Aspirant",
-          "entityId": "aspirants",
-          "text": "a young woman who can use aspirant power. Aspirants fight in pairs.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "a young woman who can use aspirant power. Aspirants fight in "
-            },
-            { "t": "text", "text": "pairs", "strong": true },
-            { "t": "text", "text": "." }
-          ]
-        },
-        {
-          "term": "Aspirant power",
-          "entityId": "aspirant-power",
-          "text": "the power of a heart that is whole and holds on to one thing. Two partners together make it stronger. How strongly two hearts link is called coupling.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "the power of a heart that is whole and holds on to one thing. Two partners together make it stronger. How strongly two hearts link is called "
-            },
-            { "t": "text", "text": "coupling", "strong": true },
-            { "t": "text", "text": "." }
-          ]
-        },
-        {
-          "term": "Emblem of Hope",
-          "entityId": "emblem-of-hope",
-          "text": "a small gold star that glows when two partners' powers are in sync.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "a small gold star that glows when two partners' powers are in sync."
-            }
-          ]
-        },
-        {
-          "term": "Enders",
-          "entityId": "enders",
-          "text": "living weapons. They come to destroy.",
-          "segments": [{ "t": "text", "text": "living weapons. They come to destroy." }]
-        },
-        {
-          "term": "The Will of the Planet",
-          "entityId": "will-of-the-planet",
-          "text": "a huge mind that keeps the worlds in balance. It sends the Enders.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "a huge mind that keeps the worlds in balance. It sends the Enders."
-            }
-          ]
-        },
-        {
-          "term": "The Mother Matrix",
-          "entityId": "mother-matrix",
-          "text": "the Will's body. It makes Enders and sends them orders.",
-          "segments": [
-            { "t": "text", "text": "the Will's body. It makes Enders and sends them orders." }
-          ]
-        },
-        {
-          "term": "The Cycle",
-          "entityId": "the-cycle",
-          "text": "the Will's law. A world grows too advanced. A catastrophe comes. Most is destroyed, and a few people, called embers, are spared. Then the survivors rebuild, and it all starts again.",
-          "segments": [
-            {
-              "t": "text",
-              "text": "the Will's law. A world grows too advanced. A catastrophe comes. Most is destroyed, and a few people, called "
-            },
-            { "t": "text", "text": "embers", "strong": true },
-            {
-              "t": "text",
-              "text": ", are spared. Then the survivors rebuild, and it all starts again."
-            }
-          ]
-        },
-        {
-          "term": "The Storm Citadel",
-          "entityId": "storm-citadel",
-          "text": "Obsidia's giant flying fortress.",
-          "segments": [{ "t": "text", "text": "Obsidia's giant flying fortress." }]
-        },
-        {
-          "term": "Oro",
-          "entityId": "oro",
-          "text": "an old golden planet, ruled by cold, clever people.",
-          "segments": [
-            { "t": "text", "text": "an old golden planet, ruled by cold, clever people." }
-          ]
-        },
-        {
-          "term": "The Legion",
-          "entityId": "legion",
-          "text": "the android soldiers of Oro.",
-          "segments": [{ "t": "text", "text": "the android soldiers of Oro." }]
-        },
-        {
-          "term": "The Ender Control Core",
-          "entityId": "ender-control-core",
-          "text": "a device that lets its holder control ordinary Enders.",
-          "segments": [
-            { "t": "text", "text": "a device that lets its holder control ordinary Enders." }
-          ]
-        }
-      ]
-    }
-  },
-  "stats": { "parts": 12, "chapters": 60, "interludes": 2, "paragraphs": 2569, "words": 59005 }
+  "stats": {
+    "chapters": 48,
+    "words": 34460,
+    "minutes": 147,
+    "images": 245,
+    "clips": 73,
+    "voices": 88
+  }
 }

@@ -7,25 +7,31 @@ import { cn } from "@aspirant/ui/lib/utils";
 
 import { TLink } from "@/components/transition/t-link";
 import { useLenis } from "@/components/smooth-scroll";
+import { characters } from "@/content/characters";
+import { acts, chapterLabel, chaptersOfAct, getChapter } from "@/content/story";
+import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 
-import { partHref, storyChapterHref } from "../chapter-href";
+import { chapterHref } from "../chapter-href";
 import s from "./chrome.module.css";
-import { useReadingPosition } from "./position";
+import { FIRST_CHAPTER, PORTRAIT_LINES } from "./portrait-copy";
+import { portraitFor } from "./portraits";
+import { isRevealed, useReaderPrefs } from "./prefs";
 import { useReader } from "./reader-context";
-import { getUnit, PARTS, unitShort } from "./story-data";
 
 /**
  * The table of contents: a bottom sheet on phones and a side panel on larger screens, with one
- * accordion per Part (the Part of this page open). A chapter of this page is reached by moving
- * to it; a chapter of another Part opens that Part's page. Focus lands on the chapter heading.
+ * accordion per act (the act of this page open) and a small picture for each chapter. The chapter
+ * of this page is reached by scrolling to its top; any other opens its own page.
  */
 export function ContentsSheet() {
   const [open, setOpen] = useState(false);
-  const chapterId = useReadingPosition((st) => st.chapterId);
-  const { part: here, jumpTo, theme } = useReader();
-  const { pause, resume } = useLenis();
-  const jumped = useRef(false);
+  const { chapterId, theme } = useReader();
+  const { pause, resume, scrollTo } = useLenis();
+  const stay = useRef(false);
+  const here = getChapter(chapterId);
+  const furthest = useReaderPrefs((st) => st.furthest);
+  const reached = Math.max(furthest, here?.number ?? -1);
 
   useEffect(() => {
     if (!open) return;
@@ -33,18 +39,18 @@ export function ContentsSheet() {
     return resume;
   }, [open, pause, resume]);
 
-  const goHere = (id: string) => {
-    jumped.current = true;
+  const toTop = () => {
+    stay.current = true;
     setOpen(false);
     audio.blip("confirm");
-    void jumpTo(id);
+    scrollTo(0, { immediate: false });
   };
 
   return (
     <Dialog.Root
       open={open}
       onOpenChange={(next) => {
-        jumped.current = false;
+        stay.current = false;
         setOpen(next);
         audio.blip(next ? "click" : "hover");
       }}
@@ -62,7 +68,7 @@ export function ContentsSheet() {
           data-theme={theme}
           data-lenis-prevent=""
           onCloseAutoFocus={(e) => {
-            if (jumped.current) e.preventDefault();
+            if (stay.current) e.preventDefault();
           }}
         >
           <div className={s.sheetHead}>
@@ -75,52 +81,63 @@ export function ContentsSheet() {
             </Dialog.Close>
           </div>
           <Dialog.Description className="sr-only">
-            Twelve Parts. Open a Part and choose a chapter to go there.
+            Six acts. Open an act and choose a chapter to go there.
           </Dialog.Description>
           <ol className={s.sheetParts}>
-            {PARTS.map((part) => (
-              <li key={part.number}>
-                <details className={s.sheetPart} open={part.number === here || undefined}>
+            {acts.map((act) => (
+              <li key={act.roman}>
+                <details className={s.sheetPart} open={here?.act === act.roman || undefined}>
                   <summary className={s.sheetSummary}>
                     <span className={s.sheetNum} aria-hidden="true">
-                      {String(part.number).padStart(2, "0")}
+                      {act.roman}
                     </span>
                     <span className={s.sheetPartText}>
-                      <span className="hud-label">{part.label}</span>
-                      <span className={s.sheetPartTitle}>{part.title}</span>
+                      <span className="hud-label">{`Act ${act.roman}`}</span>
+                      <span className={s.sheetPartTitle}>{act.title}</span>
                     </span>
                   </summary>
                   <ol className={s.sheetChapters}>
-                    {part.chapterIds.map((id) => {
-                      const unit = getUnit(id);
-                      if (!unit) return null;
-                      const label = unit.number === null ? "Interlude" : `Chapter ${unit.number}`;
+                    {chaptersOfAct(act).map((c) => {
                       const inner = (
                         <>
+                          {/* Plain <img>: static export. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            className={s.sheetThumb}
+                            src={asset(
+                              `/${c.sealed && !isRevealed(c.number, reached) ? c.sealed : c.thumb}`,
+                            )}
+                            alt=""
+                            width={64}
+                            height={36}
+                            loading="lazy"
+                            decoding="async"
+                            draggable={false}
+                          />
                           <span className={s.sheetChapterNum} aria-hidden="true">
-                            {unitShort(unit)}
+                            {c.number === 0 ? "PR" : String(c.number).padStart(2, "0")}
                           </span>
                           <span>
-                            <span className="sr-only">{label}: </span>
-                            {unit.title}
+                            <span className="sr-only">{chapterLabel(c)}: </span>
+                            {c.number === 0 ? "Prologue" : c.title}
                           </span>
                         </>
                       );
                       return (
-                        <li key={id}>
-                          {part.number === here ? (
+                        <li key={c.id}>
+                          {c.id === chapterId ? (
                             <button
                               type="button"
                               className={s.sheetChapter}
-                              aria-current={id === chapterId ? "location" : undefined}
-                              onClick={() => goHere(id)}
+                              aria-current="location"
+                              onClick={toTop}
                             >
                               {inner}
                             </button>
                           ) : (
                             <TLink
-                              href={storyChapterHref(id)}
-                              transitionLabel={part.label}
+                              href={chapterHref(c.id)}
+                              transitionLabel={chapterLabel(c)}
                               className={s.sheetChapter}
                             >
                               {inner}
@@ -130,19 +147,47 @@ export function ContentsSheet() {
                       );
                     })}
                   </ol>
-                  {part.number !== here && (
-                    <TLink
-                      href={partHref(part.number)}
-                      transitionLabel={part.label}
-                      className={s.sheetPartLink}
-                    >
-                      Open {part.label}
-                    </TLink>
-                  )}
                 </details>
               </li>
             ))}
           </ol>
+          <section className={s.sheetCast} aria-labelledby="sheet-cast-title">
+            <h2 id="sheet-cast-title" className={cn(s.sheetCastTitle, "hud-label")}>
+              People so far
+            </h2>
+            <ul className={s.sheetCastList}>
+              {FIRST_CHAPTER.filter(([, first]) => first <= reached).map(([slug]) => {
+                const person = characters.find((c) => c.slug === slug);
+                const face = portraitFor(slug);
+                if (!person) return null;
+                return (
+                  <li key={slug} className={s.sheetCastItem}>
+                    {face && (
+                      <>
+                        {/* Plain <img>: static export. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          className={s.sheetCastFace}
+                          src={asset(face.src)}
+                          alt=""
+                          width={40}
+                          height={40}
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
+                          style={{ objectPosition: face.position }}
+                        />
+                      </>
+                    )}
+                    <span className={s.sheetCastText}>
+                      <span className={s.sheetCastName}>{person.name}</span>
+                      <span className={s.sheetCastLine}>{PORTRAIT_LINES[slug]}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -1,0 +1,107 @@
+{
+  "chapter": "c35",
+  "mood": "Alone on the platforms above the bay, Guinevere finally sees the face she was chasing.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+    "t": 3.6,
+    "crop": [0, 0, 2560, 940],
+    "alt": "Guinevere glares ahead, a gold star at her collar, the ruined city gray behind her.",
+    "credit": "Official video: Connection Lost"
+  },
+  "heroFocus": "50% 40%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "She went in fists",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m00s000ms-00m08s640ms/footage.mp4",
+        "t": 6.3,
+        "alt": "Under a storm sky Guinevere fights on a wide stone platform, her two drones at her shoulders, broken towers behind her.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 10,
+      "anchor": "When the smoke tore,",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
+        "t": 25.3,
+        "crop": [0, 0, 2560, 950],
+        "alt": "A close view of the woman's face: pale lavender hair with a violet streak, violet eyes and a small mole beside her mouth.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 13,
+      "anchor": "Vexana raised the staff",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
+        "start": 11.8,
+        "end": 16.25,
+        "crop": [0, 0, 2560, 950],
+        "sound": false,
+        "poster": 2.4,
+        "alt": "Vexana fires a dark orb from her staff, and Guinevere dodges through the smoke and runs at her.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "Light burst out of",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
+        "t": 23.8,
+        "alt": "Blue lightning bursts out from Guinevere across the platform and throws the Enders around her into the air.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 28,
+      "anchor": "On the upper platform",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+        "t": 12.0,
+        "alt": "Vexana turns her head and looks back over her shoulder, violet spikes of light around her.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "Vexana's scream rang off",
+      "kind": "place",
+      "label": "The lower platform",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+        "t": 1.0,
+        "alt": "On a wide platform under a storm, Vexana stands with a wall of Enders at her back, facing Guinevere alone.",
+        "credit": "Official video: Connection Lost"
+      }
+    },
+    {
+      "after": 35,
+      "anchor": "Over the half-ruined city",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/01m12s480ms-01m45s000ms/footage.mp4",
+        "t": 6.6,
+        "alt": "A huge star-shaped tear burns violet across the storm sky while a small figure below looks up at it.",
+        "credit": "Official video: Connection Lost"
+      }
+    }
+  ]
+}

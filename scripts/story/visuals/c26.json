@@ -1,0 +1,129 @@
+{
+  "chapter": "c26",
+  "mood": "A fight in an Academy corridor, a portal opening at the wrong back, and a choice made in one second.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/9.jpg",
+    "crop": [150, 2290, 2200, 1237],
+    "alt": "Guinevere punches and Vexana fires her staff, back to back, among the long clawed legs of Enders in a corridor.",
+    "credit": "Official comic, Guinevere and Vexana, page 9"
+  },
+  "heroFocus": "48% 55%",
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 7,
+      "anchor": "Behind Guinevere the air",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/12.jpg",
+          "crop": [0, 0, 2500, 2200],
+          "alt": "Guinevere lunges forward while an armored Ender climbs out of a dark purple tear in the air behind her.",
+          "credit": "Official comic, Guinevere and Vexana, page 12"
+        }
+      ]
+    },
+    {
+      "after": 11,
+      "anchor": "No! Vexana! Guinevere lunged.",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/15.jpg",
+          "crop": [0, 1060, 2500, 3240],
+          "alt": "Ender claws drag Vexana backward into the dark portal as Guinevere's gloved hand reaches for her.",
+          "credit": "Official comic, Guinevere and Vexana, page 15"
+        }
+      ]
+    },
+    {
+      "after": 16,
+      "anchor": "Then there was no",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/24.jpg",
+        "crop": [300, 250, 1900, 1550],
+        "alt": "Vexana falls head first through endless dark, a small light breaking at her chest.",
+        "credit": "Official comic, Guinevere and Vexana, page 24"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "Under the tree, Guinevere's",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/35.jpg",
+          "crop": [0, 0, 1750, 1450],
+          "alt": "Guinevere laughs, To destroy it, as a sharp armored claw tears through the blue sky above her.",
+          "credit": "Official comic, Guinevere and Vexana, page 35"
+        }
+      ],
+      "caption": "The sky of the memory splits like paper."
+    },
+    {
+      "after": 22,
+      "anchor": "It showed her the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/comic/footages/01m26s900ms-01m36s600ms/footage.mp4",
+        "start": 0.0,
+        "end": 5.0,
+        "crop": [0, 380, 1080, 608],
+        "sound": false,
+        "poster": 1.0,
+        "alt": "A giant in violet armor looks down with burning eyes, then Vexana stares up at it, shaking.",
+        "credit": "Official motion comic, Guinevere and Vexana"
+      },
+      "caption": "The Will of the Planet."
+    },
+    {
+      "after": 25,
+      "anchor": "Vexana held the Emblem",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/4.jpg",
+          "crop": [0, 300, 2500, 3300],
+          "alt": "Vexana kneels hurt in a torn uniform on a burning plain, tears in her eyes, the star held in her hands.",
+          "credit": "Official comic, Guinevere and Vexana, page 4"
+        }
+      ]
+    },
+    {
+      "after": 29,
+      "anchor": "The star split down",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/7.jpg",
+          "crop": [200, 50, 1800, 1200],
+          "alt": "The gold star cracks apart in Vexana's cupped hands, shards of light flying.",
+          "credit": "Official comic, Guinevere and Vexana, page 7"
+        }
+      ]
+    },
+    {
+      "after": 34,
+      "anchor": "The only way to",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/38.jpg",
+          "crop": [0, 100, 2500, 3500],
+          "alt": "Close on Vexana's eye, wide, then closing: Is this the only way to protect Guinevere?",
+          "credit": "Official comic, Guinevere and Vexana, page 38"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,351 @@
+{
+  "id": "c05",
+  "number": 5,
+  "slug": "chapter-05",
+  "title": "Cover Me",
+  "dateline": null,
+  "mood": "A gold giant outside the dome, a three-second gap, and one shot that has to land.",
+  "words": 696,
+  "score": "we-believe",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c05/hero-0d36a251.mp4",
+    "poster": "img/story/c05/hero-0d36a251-poster.webp",
+    "w": 1600,
+    "h": 676,
+    "dur": 4.6,
+    "bytes": 1261424,
+    "sound": false,
+    "color": "#c2783b",
+    "alt": "Layla and Fanny strike together in a glare of fire and lightning, and a huge blue-white fireball bursts.",
+    "credit": "Official Layla and Fanny trailer"
+  },
+  "heroFocus": "60% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "The girl had walked out of the crowd. Fanny saw her from the air: a red dress, a pink rabbit, alone in the avenue with her face turned up."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        { "t": "Beyond the dome the giant’s chest hummed, and the light inside grew brighter." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Fanny dropped and scooped the girl onto her left hip, the Shield’s way. The rabbit fell."
+        }
+      ]
+    },
+    { "t": "p", "i": 3, "segs": [{ "t": "“I’m flying!” said the girl." }] },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        { "t": "“Flying feels great.” It was out before the Shield part of Fanny could stop it." }
+      ],
+      "voice": { "slug": "fanny", "n": 4, "src": "audio/voice/fanny/04.m4a", "dur": 1.79 }
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "In three leaps she reached a side street and set the girl down. “Stay here.” Then she went back, flat out."
+        }
+      ]
+    },
+    { "t": "p", "i": 6, "segs": [{ "t": "“Cover me!”" }] },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [{ "t": "At the hole Layla had three Enders down and a fourth coming." }]
+    },
+    { "t": "p", "i": 8, "segs": [{ "t": "“Oh, you can’t handle this on your own?”" }] },
+    { "t": "p", "i": 9, "segs": [{ "t": "“No!” said Fanny." }] },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [{ "t": "The cannon whined, and the fourth Ender folded. No argument came." }]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c05/p0-0-2f29fa4a.webp",
+          "w": 1000,
+          "h": 2700,
+          "color": "#5b776f",
+          "alt": "Layla shouts as her cannon blasts a dark Ender point blank.",
+          "credit": "Official Aspirant comic, page 28"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "“Right,” said Layla, flat and quick, the voice she used on scoreboards. “I counted. The glow doubles every four seconds. It opens in fourteen. If it’s like Joe’s, the seam stays open one second. I need three seconds.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "“Put both blades in it and hold it. Take the right edge. Stay right of the center line, because I’ll be using it.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "Fanny remembered the test match, and a shot a hand’s width from her shoulder. She trusted the aim anyway."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [
+        {
+          "t": "She went out through the hole. All her life she had wanted to see what lay past the dome. It was sand."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [
+        {
+          "t": "The low sun lit one side of the giant orange. A black seam ran down its gold chest from throat to belt, and the hum shook her blades."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c05/i1-76604a9c.webp",
+        "w": 1600,
+        "h": 677,
+        "color": "#9e6345",
+        "alt": "The gold giant's head glows in the low evening sun while Fanny, tiny beside it, flies in with her blades.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    { "t": "p", "i": 16, "segs": [{ "t": "“Eleven,” said the channel. “Ten.”" }] },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        {
+          "t": "She climbed its front and set both blades against the seam. The heat cracked her lips. Nine. Eight. Seven. Six."
+        }
+      ]
+    },
+    { "t": "p", "i": 18, "segs": [{ "t": "The count stopped." }] },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        { "t": "Fanny counted on, the way artillery crews do. Five. “Layla? Count!” Four. Three." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [{ "t": "“Shh. I’m lining up my aim. Don’t get in my way!”" }],
+      "voice": { "slug": "layla", "n": 10, "src": "audio/voice/layla/10.m4a", "dur": 4.54 }
+    },
+    { "t": "p", "i": 21, "segs": [{ "t": "“I’m the one in the way!”" }] },
+    { "t": "p", "i": 22, "segs": [{ "t": "“Then stay on the right!” Two. One." }] },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "The seam parted. Fanny drove in both blades. The plates fought her, and white light poured out. Her arms shook, and she held."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c05/i2-1bf09aff.webp",
+        "w": 1600,
+        "h": 677,
+        "color": "#c7a298",
+        "alt": "The gold giant spreads its long arms against the clouds, white light blazing from its chest.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "The shot came on her left, so close her hair stood up: a blue-white line, lightning spreading off it like wings. It went into the light and did not come out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [{ "t": "Then everything the giant had gathered went off inside it." }]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "The blast threw her. She slid on her shoulder across the sand until her blades dug in. The giant lay in burning pieces."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "Fanny ran for the dome. Layla stood in the hole, looking at the cells on her cannon instead of the wreck. Then she turned the dial all the way down."
+        }
+      ]
+    },
+    { "t": "p", "i": 28, "segs": [{ "t": "“That was a good shot,” said Fanny." }] },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [{ "t": "“Of course it was.” It came late. “Don’t say it like it’s a surprise.”" }]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c05/i3-77934642.mp4",
+        "poster": "img/story/c05/i3-77934642-poster.webp",
+        "w": 1280,
+        "h": 542,
+        "dur": 3.48,
+        "bytes": 427477,
+        "sound": false,
+        "color": "#814839",
+        "alt": "At dusk Fanny looks out calmly, then Layla turns her head and gazes over the sand.",
+        "credit": "Official Layla and Fanny trailer"
+      }
+    },
+    { "t": "p", "i": 30, "segs": [{ "t": "“I didn’t.”" }] },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "A swarm came over the dunes, black things with too many limbs. Fanny pulled Layla in beside her at the lip of the hole, the narrowest place for a kilometer. The swarm had to take turns."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 32,
+      "segs": [
+        {
+          "t": "Each wave tore the gap wider. “Out,” said Fanny. They stepped onto the sand together and fought side by side in the open."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c05/p4-0-91435680.webp",
+          "w": 1000,
+          "h": 2530,
+          "color": "#ad8b95",
+          "alt": "Fanny and Layla fight back to back as an Ender's fist smashes down beside them.",
+          "credit": "Official Aspirant comic, page 30"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        {
+          "t": "Some time after the second wave, Fanny realized she had stopped counting. Nobody was counting kills now."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 34,
+      "segs": [
+        {
+          "t": "As the sun sank behind the dome, the swarm drew back. Most of it was still out there. It had only gone quiet."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "They went back in through the hole, wide enough now for a truck. Over the Academy, the Energy System’s beam leaned across the sky. That tower fed the dome. Its white-cyan light ran into the dark hexagons one by one, and each came back pale."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Energy System",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c05/i5-c19ba477.webp",
+        "w": 670,
+        "h": 784,
+        "color": "#797e99",
+        "alt": "The Academy's tall tower, ringed with turning bands, sends a white beam crackling into the evening sky.",
+        "credit": "Official Aspirant comic, page 16"
+      }
+    },
+    {
+      "t": "p",
+      "i": 36,
+      "segs": [
+        {
+          "t": "Ash lay over the avenue. Coats covered some of the shapes along the wall. From the side street came a thin sound that did not stop. Fanny decided not to hear it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "One pink ear stuck out of the ash in the avenue. Fanny pulled the rabbit free and beat the ash off it against her thigh. She set it on the broken wall at the side street’s mouth, facing the avenue, where a mother coming back would see it."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "id": "c43",
+  "number": 43,
+  "slug": "chapter-43",
+  "title": "This Is the Real Me",
+  "dateline": "A street below the Academy.",
+  "mood": "Her drones go dark, she hits the street, and a familiar face drops out of the storm.",
+  "words": 504,
+  "score": "silverbolt-raiko",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c43/hero-48798d3f.mp4",
+    "poster": "img/story/c43/hero-48798d3f-poster.webp",
+    "w": 1600,
+    "h": 612,
+    "dur": 4.2,
+    "bytes": 841553,
+    "sound": false,
+    "color": "#553956",
+    "alt": "Selena in dark plate trimmed with silver walks out of the smoke with four Enders at her back.",
+    "credit": "Official trailer, Day of Enders"
+  },
+  "heroFocus": "50% 40%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [{ "t": "When the light went out of her drones, Guinevere fell." }]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "She hit an awning, then the street. Now she lay on wet stones in the smoke and could not get her breath back. Something in her side stabbed when she tried."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Her drones lay beside her, gray and dark. Her wings were gone. She reached for her power the way she always did, and nothing came."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c43/i0-89c47ba1.webp",
+        "w": 1600,
+        "h": 612,
+        "color": "#43304c",
+        "alt": "Guinevere kneels on a smoking street, her fallen drones and gloves scattered around her.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        { "t": "Lightning cracked over the roofs. Above the smoke, the Citadel hung low and huge." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "A few streets back, the swarm had torn her and Vexana apart. One moment Vexana’s back had been against hers. The next there were only Enders."
+        }
+      ]
+    },
+    { "t": "p", "i": 5, "segs": [{ "t": "She got up on one elbow." }] },
+    { "t": "p", "i": 6, "segs": [{ "t": "“Vexana!”" }] },
+    { "t": "p", "i": 7, "segs": [{ "t": "The smoke swallowed it. Nothing answered." }] },
+    { "t": "p", "i": 8, "segs": [{ "t": "“Vexana!”" }] },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "She turned her head, up the street and down it. Her hand went to her collar, to the Emblem."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [{ "t": "Before she could look down at it, four Enders stepped out of the smoke." }]
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [{ "t": "Something dropped out of the sky and landed between them and her." }]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "It was a girl in armor, dark plate trimmed with silver. Blonde hair, and horns. Red eyes. The four Enders stood at her back and did not touch her."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "Guinevere knew the face. She had walked down the Academy stairs behind it while a lollipop waved over a shoulder. "
+        },
+        { "t": "One day, when the haze clears...", "em": 1 },
+        { "t": " The whole stairwell had laughed. Guinevere had laughed loudest." }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "The Academy stairs, before.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c43/i1-ff463bf3.webp",
+        "w": 1600,
+        "h": 800,
+        "color": "#a2a6ba",
+        "alt": "Selena in uniform leaps down the Academy stairs beside Silverbolt while two classmates come down behind her.",
+        "credit": "Official character film, The Pawn's Gambit"
+      }
+    },
+    { "t": "p", "i": 14, "segs": [{ "t": "“Selena?”" }] },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [{ "t": "Selena looked down at her. When she smiled, she showed fangs." }]
+    },
+    { "t": "p", "i": 16, "segs": [{ "t": "“Take a good look. This is the real me.”" }] },
+    { "t": "p", "i": 17, "segs": [{ "t": "For a breath, Guinevere could not move." }] },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c43/i2-c98f13ec.webp",
+        "w": 1600,
+        "h": 612,
+        "color": "#663b4c",
+        "alt": "Guinevere's face up close, eyes wide, staring up at someone she knows.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "Then she looked at Selena the way she had looked at Vexana on the platform: through the Ender shape, for the girl inside it. "
+        },
+        { "t": "Vexana wore their shape too,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "And Vexana was ours.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "Lightning split the sky overhead. In the glare, smoke rolled between them, and Guinevere could no longer see her."
+        }
+      ]
+    },
+    { "t": "p", "i": 20, "segs": [{ "t": "The Enders charged." }] },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [
+        { "t": "She got to her feet. Her side screamed. No drones, no wings. Only her hands." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [
+        { "t": "Elbow in. Hip first.", "em": 1 },
+        { "t": " Hester’s voice, from long before she had any aspirant power." }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "panels",
+      "media": [
+        {
+          "kind": "image",
+          "src": "img/story/c43/p3-0-ee860d69.webp",
+          "w": 1280,
+          "h": 730,
+          "color": "#a6666d",
+          "alt": "Guinevere draws back her gloved fist, teeth bared, ready to hit.",
+          "credit": "Official comic, Guinevere and Vexana, page 10"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "The first Ender swung. She ducked under the claw, and it tore through the awning post behind her. Her fist hit its plate, and her knuckles split. The plate did not care."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        { "t": "They don’t strike easily,", "em": 1 },
+        { "t": " Joe had said. " },
+        { "t": "When one does, that is how long you get.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [{ "t": "It swung again. Its chest plates split apart, and the core glowed inside." }]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "She stepped in under the arm and drove her fist into the open chest, everything she had behind it. The core cracked. The Ender fell across the street and blocked half of it."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "The other three had to climb over it. She put her back in the gap between the fallen post and the wall, the narrowest place on the street. "
+        },
+        { "t": "Fanny’s alley.", "em": 1 },
+        { "t": " They would have to come one at a time." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [{ "t": "The next one came over the body. Its arm went up. She was already moving." }]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        { "t": "Her split knuckles were inside the core. Then the smoke closed over everything." }
+      ]
+    }
+  ]
+}

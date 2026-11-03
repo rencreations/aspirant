@@ -1,0 +1,312 @@
+{
+  "id": "c25",
+  "number": 25,
+  "slug": "chapter-25",
+  "title": "Plan B",
+  "dateline": "Selrick Academy. After Ruby and Angela came.",
+  "mood": "A nap in class, a paper plane, a dangerous design, and on the roof, a plan for coming home.",
+  "words": 661,
+  "score": "guinevere-theme",
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c25/hero-589c7357.mp4",
+    "poster": "img/story/c25/hero-589c7357-poster.webp",
+    "w": 1600,
+    "h": 900,
+    "dur": 3.3,
+    "bytes": 1277035,
+    "sound": false,
+    "color": "#cfcdd3",
+    "alt": "Selena naps on her desk until a paper plane from Layla wakes her, then she shows classmates her drawing of an armored suit.",
+    "credit": "Official film, Selena"
+  },
+  "heroFocus": "50% 55%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [{ "t": "Selena laid her head on her arms before the lesson began." }]
+    },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [{ "t": "“I’m taking a little nap. You all just keep going.”" }],
+      "voice": { "slug": "selena", "n": 6, "src": "audio/voice/selena/06.m4a", "dur": 4.57 }
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Guinevere sat in the second row, Vexana beside her. The teacher looked at the sleeping head and let it go."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "A paper plane crossed the room and hit Selena on the head. Every face turned to Layla, who was copying the board with great care. The board was blank."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [{ "t": "“Mmm... just five more minutes...”" }],
+      "voice": { "slug": "selena", "n": 4, "src": "audio/voice/selena/04.m4a", "dur": 4.04 }
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [{ "t": "“Selena,” said the teacher. “You were late again this morning.”" }]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "“My guardian Karina already called it in.” Selena did not lift her head. The teacher checked a tablet and sighed. The note was there."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 7,
+      "segs": [
+        {
+          "t": "Then Selena sat up, wide awake, and spread her fingers over her desk. A suit of armor rose from the screen and turned in the air. It had plates and a visor, and a weapon along one arm. A label under it read ENDER MECHA SUIT."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "Ender plating, my own design.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c25/i0-d6a01f4d.webp",
+        "w": 1600,
+        "h": 899,
+        "color": "#d4d1d5",
+        "alt": "Selena's design on a grid: a full suit of armor with a visor, plated joints and blades, notes pinned around it.",
+        "credit": "Official film, Selena"
+      }
+    },
+    { "t": "p", "i": 8, "segs": [{ "t": "“Ender plating, my own design.”" }] },
+    {
+      "t": "p",
+      "i": 9,
+      "segs": [
+        {
+          "t": "Fanny leaned over from the next row, pleased. “Those joints would take a hit.” Angela crossed the room with her doll and stood very still. Ruby leaned in from her seat by the wall."
+        }
+      ]
+    },
+    { "t": "p", "i": 10, "segs": [{ "t": "“Does it come in my size?”" }] },
+    { "t": "p", "i": 11, "segs": [{ "t": "“Everything does,” said Selena. “For a price.”" }] },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        { "t": "Guinevere studied the suit. It was good. She decided to find the fault later." }
+      ]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [
+        {
+          "t": "Afterward Selena went down the stairs with Silverbolt clicking beside her, and Guinevere and Vexana followed a few steps behind. A boy leaned over the rail."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c25/i1-5cc1de1b.mp4",
+        "poster": "img/story/c25/i1-5cc1de1b-poster.webp",
+        "w": 1280,
+        "h": 640,
+        "dur": 2.9,
+        "bytes": 777403,
+        "sound": false,
+        "color": "#617a91",
+        "alt": "Selena hops off a rail and skids into an Academy hallway, Silverbolt crackling at her side.",
+        "credit": "Official film, Selena"
+      }
+    },
+    { "t": "p", "i": 14, "segs": [{ "t": "“Selena! The things in your head. Dangerous!”" }] },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [
+        {
+          "t": "He meant it as praise. The teachers called it talent. Selena waved her lollipop over her shoulder without turning."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [{ "t": "“One day, when the haze clears, you’ll come to know the real me.”" }],
+      "voice": { "slug": "selena", "n": 17, "src": "audio/voice/selena/17.m4a", "dur": 5.33 }
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c25/i2-1b2bb13f.webp",
+        "w": 600,
+        "h": 960,
+        "color": "#d5c9c3",
+        "alt": "Selena smiles with one finger on her lips, as if keeping a secret.",
+        "credit": "Official film, Selena"
+      }
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [{ "t": "The whole stairwell laughed. Guinevere laughed loudest." }]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [
+        {
+          "t": "The attacks had grown fiercer. Every week the Aspirants held them back, and every week the ace duo stood at the front. Guinevere liked the front."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "That afternoon they sat on the roof with the green guardrails. Guinevere swung her boots from the rail. Vexana sat against it with a page folded small in her fingers."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "place",
+      "label": "Selrick Academy",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c25/i3-a85dd69d.webp",
+        "w": 950,
+        "h": 405,
+        "color": "#968dba",
+        "alt": "The tower of Selrick Academy rises above the clouds, a ring of light turning around it.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [{ "t": "“I read Chang’e’s paper,” said Vexana. “The one on black holes.”" }]
+    },
+    { "t": "p", "i": 21, "segs": [{ "t": "“The untested one?” The boots stopped. “When?”" }] },
+    { "t": "p", "i": 22, "segs": [{ "t": "“The day of the tree. I should have said.”" }] },
+    { "t": "p", "i": 23, "segs": [{ "t": "“You went to the library without me?”" }] },
+    { "t": "p", "i": 24, "segs": [{ "t": "“You would have talked.”" }] },
+    { "t": "p", "i": 25, "segs": [{ "t": "“I would not have talked! Fine. What does it say?”" }] },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Vexana did not unfold the page. “I’ve read about this. A black hole pulls in everything and tears it apart. The body goes first.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 27, "segs": [{ "t": "“Lovely.”" }] },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "“The paper says an Aspirant is different. Not the body. The consciousness, the part that is you. It would shine. It could pierce its way out and return to the human world.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "“It came up when I searched for the void. The paper says a black hole opens onto the void, and it is the way back out.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "She touched the Emblem at her collar. It glowed soft gold, and Guinevere’s glowed back. “The paper never says two. But I think two would shine brighter.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "Guinevere sat still for a moment. Then she slapped the rail. “So we can’t get near the void. Fine! At least we know the way back out of it.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 32, "segs": [{ "t": "“It’s untested. The paper says would, not will.”" }] },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        {
+          "t": "“Plan A, I smash the Core and we win. Plan B, we come home.” She stabbed a finger at the sky. “Say it.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 34, "segs": [{ "t": "“No.”" }] },
+    { "t": "p", "i": 35, "segs": [{ "t": "“Say ‘Plan B.’”" }] },
+    { "t": "p", "i": 36, "segs": [{ "t": "Vexana looked at the page. “Plan B.”" }] },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "“Two of us, shining out of the dark and home!” Guinevere sang it in her ceremony voice. “I’ll never forget it. You’ve given me a song.”"
+        }
+      ]
+    },
+    { "t": "p", "i": 38, "segs": [{ "t": "“Stop that.”" }] },
+    {
+      "t": "p",
+      "i": 39,
+      "segs": [{ "t": "Guinevere propped her chin on her fist. “Why tell me now?”" }]
+    },
+    {
+      "t": "p",
+      "i": 40,
+      "segs": [{ "t": "Vexana folded the page into a smaller square. “In case.”" }]
+    },
+    { "t": "p", "i": 41, "segs": [{ "t": "“In case of what?”" }] },
+    { "t": "p", "i": 42, "segs": [{ "t": "“In case.”" }] },
+    {
+      "t": "p",
+      "i": 43,
+      "segs": [
+        {
+          "t": "A siren cut across the roof. Guinevere was on her feet before the first note ended. She caught Vexana’s hand and hauled her up."
+        }
+      ]
+    },
+    { "t": "p", "i": 44, "segs": [{ "t": "“Plan A first.”" }] }
+  ]
+}

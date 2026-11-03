@@ -1,0 +1,93 @@
+{
+  "chapter": "c31",
+  "mood": "Far out in the dark, the Storm Citadel turns toward Dawnbreak, and its queen asks a question.",
+  "hero": {
+    "type": "clip",
+    "src": "selena-and-obsidia/video/obsidia/footages/00m00s000ms-00m07s133ms/footage.mp4",
+    "start": 3.0,
+    "end": 7.1,
+    "crop": [107, 0, 1706, 960],
+    "sound": false,
+    "poster": 1.7,
+    "alt": "A flash of pink light opens, and Obsidia floats in the dark among drifting rocks, two black suns burning at her shoulders.",
+    "credit": "Official video: Obsidia"
+  },
+  "heroFocus": "50% 35%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "Once humanity has been",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/obsidia/footages/01m01s000ms-01m14s633ms/footage.mp4",
+        "t": 7.4,
+        "crop": [0, 0, 1920, 960],
+        "alt": "Obsidia stands in a dark storm with her wings half open, a faint smile on her face.",
+        "credit": "Official video: Obsidia"
+      }
+    },
+    {
+      "after": 6,
+      "anchor": "On a dead planet",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/obsidia/footages/00m17s033ms-00m26s000ms/footage.mp4",
+        "start": 4.0,
+        "end": 7.6,
+        "crop": [0, 0, 1920, 960],
+        "sound": false,
+        "poster": 0.3,
+        "alt": "Six star-shaped portals open over a city, pour down light, and the city vanishes in a blast.",
+        "credit": "Official video: Obsidia"
+      },
+      "caption": "She had counted them."
+    },
+    {
+      "after": 9,
+      "anchor": "And one pawn in",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/obsidia/footages/00m26s000ms-00m44s100ms/footage.mp4",
+        "t": 3.9,
+        "crop": [0, 0, 1920, 960],
+        "alt": "A close view of Obsidia's eyes, one violet and one pink, glowing under her hair.",
+        "credit": "Official video: Obsidia"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "The Storm Citadel, the",
+      "kind": "place",
+      "label": "The throne hall",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
+        "t": 0.5,
+        "crop": [0, 132, 1920, 728],
+        "alt": "A pale throne shaped like a spine rises in a dark hall; a small figure stands at its foot as a long weapon crawls toward her.",
+        "credit": "Official trailer: Selena and Obsidia"
+      }
+    },
+    {
+      "after": 15,
+      "anchor": "Destruction is mine to",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
+        "start": 3.8,
+        "end": 7.9,
+        "crop": [0, 132, 1920, 728],
+        "sound": false,
+        "poster": 2.5,
+        "alt": "Obsidia's long silver-pink weapon coils through the dark, and she reaches out a hand to it.",
+        "credit": "Official trailer: Selena and Obsidia"
+      }
+    }
+  ]
+}

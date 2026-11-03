@@ -7,8 +7,8 @@
  * wording of what the story says. Nothing here adds lore.
  */
 import { pairs, type Pair } from "./pairs";
-import { storyIndex } from "./story-index.generated";
-import type { OpenQuestion, TimeOrderRow, WhoRow, AlsoRow, WordToKnow } from "./story-types";
+import { worldSource } from "./world-source.generated";
+import type { OpenQuestion, TimeOrderRow, WhoRow, AlsoRow, WordToKnow } from "./world-source-types";
 import type { ChapterId, PairId } from "./types";
 
 export { pairs, type Pair };
@@ -415,14 +415,14 @@ export const contrasts: readonly Contrast[] = [
 ];
 
 /** The three questions the story leaves open, word for word from its last pages. */
-export const openQuestions: readonly OpenQuestion[] = storyIndex.backMatter.openQuestions.items;
+export const openQuestions: readonly OpenQuestion[] = worldSource.backMatter.openQuestions.items;
 
 /** The story in time order, from the back matter. Chapter ids are in the order printed. */
-export const timeOrder: readonly TimeOrderRow[] = storyIndex.backMatter.timeOrder.rows;
+export const timeOrder: readonly TimeOrderRow[] = worldSource.backMatter.timeOrder.rows;
 
 /** "Words to know", from the back matter. */
-export const wordsToKnow: readonly WordToKnow[] = storyIndex.backMatter.wordsToKnow.items;
+export const wordsToKnow: readonly WordToKnow[] = worldSource.backMatter.wordsToKnow.items;
 
 /** "Now you know: who is who", from the back matter. */
 export const whoIsWho: { readonly rows: readonly WhoRow[]; readonly also: readonly AlsoRow[] } =
-  storyIndex.backMatter.whoIsWho;
+  worldSource.backMatter.whoIsWho;

@@ -1,0 +1,119 @@
+{
+  "chapter": "c14",
+  "mood": "Ruby lands in a burning city and finds Angela fighting for Oro. She will not let her go.",
+  "hero": {
+    "type": "frame",
+    "src": "ruby-and-angela/video/trailer/footages/00m09s960ms-00m44s080ms/footage.mp4",
+    "t": 19.4,
+    "alt": "Angela stands between two androids in a smoking city, her eyes glowing magenta.",
+    "credit": "The Aspirants: Awakening trailer"
+  },
+  "heroFocus": "52% 40%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "Ruby looked past him.",
+      "kind": "place",
+      "label": "Terrinia",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/00m00s000ms-00m09s960ms/footage.mp4",
+        "t": 4.6,
+        "alt": "A ship hovers low over a ruined street between broken towers, smoke rolling around it.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 6,
+      "anchor": "Two students lay in",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/00m09s960ms-00m44s080ms/footage.mp4",
+        "t": 17.3,
+        "alt": "Ruby throws out a hand in front of two students on the ground, her weapon over her shoulder.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "I'm Ruby! Don't you",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/00m44s080ms-01m10s240ms/footage.mp4",
+        "t": 2.0,
+        "alt": "Ruby calls out on a broken bridge against a burning evening sky.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "Blood ran into her",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/01m10s240ms-01m27s480ms/footage.mp4",
+        "t": 3.3,
+        "alt": "Close on Ruby shouting, with the ruined city behind her.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "Sparks burst from Angela's",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/01m27s480ms-01m43s720ms/footage.mp4",
+        "start": 3.0,
+        "end": 7.8,
+        "poster": 3.8,
+        "sound": false,
+        "alt": "Ruby's hand pulls a glowing chip from Angela's back; close on Angela's eye as it fades from magenta to gray.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 28,
+      "anchor": "Then her eyes closed.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/01m43s720ms-02m11s360ms/footage.mp4",
+        "t": 0.7,
+        "alt": "Ruby holds Angela close, her eyes shut and tears on her cheek.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 33,
+      "anchor": "The rest of the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/01m43s720ms-02m11s360ms/footage.mp4",
+        "start": 4.8,
+        "end": 7.9,
+        "poster": 1.5,
+        "sound": false,
+        "alt": "Seen from behind, Ruby stands with her scythe as androids leap at her through the flames.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 37,
+      "anchor": "She shoved him aside",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
+        "t": 7.2,
+        "alt": "Ruby knocks a student aside with her weapon; behind him a small child crouches in the rubble.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    }
+  ]
+}

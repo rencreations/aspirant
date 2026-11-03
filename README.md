@@ -8,19 +8,19 @@ Live at **https://aspirant.cc**.
 
 ## Pages
 
-| Route                                        | What it is                                                                                                        |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `/`                                          | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame           |
-| `/about`                                     | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions |
-| `/story`                                     | Promotes the story: a film and the title, Continue or Start reading, a short description, the chapters, the ten   |
-| `/story/part-01` to `/story/part-12`         | The story itself, one Part to a page, plain text on white (or black), hover cards, the place kept                 |
-| `/character`                                 | The roster wall, ten panels that scroll sideways, opened by a WebGL intro (see `docs/design/roster-intro.md`)     |
-| `/character/{slug}`                          | One page for each of the ten Aspirants. Each pair has its own concept (see below)                                 |
-| `/character/selena/{about,skills,gallery}`   | Selena's three pages, on the same stage as her first screen                                                       |
-| `/character/obsidia/{about,skills,gallery}`  | Obsidia's three pages                                                                                             |
-| `/character/vexana/story/{academic,ender}`   | Vexana's two stories (the first is titled "Human" on the page)                                                    |
-| `/character/guinevere/story/{alone,partner}` | Guinevere's two stories                                                                                           |
-| `/collection`                                | Films, music, comics, art, fan art and every voice line                                                           |
+| Route                                                                           | What it is                                                                                                                              |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                                                             | Logo loading screen, then Home: portal-face hero, what Aspirant is, versus stage, the ten, hall of fame                                 |
+| `/about`                                                                        | The world explained: places, before and after, the Cycle, the hierarchy, coupling lab, time order, open questions                       |
+| `/story`                                                                        | Promotes the story: a film and the title, Continue or Start reading, a short description, the chapter preview, the ten                  |
+| `/story/prologue`, `/story/chapter-01` to `/story/chapter-48`, `/story/the-end` | The story itself, one chapter to a page, with pictures, comic panels, film clips, voice lines and music set in the text, the place kept |
+| `/character`                                                                    | The roster wall, ten panels that scroll sideways, opened by a WebGL intro (see `docs/design/roster-intro.md`)                           |
+| `/character/{slug}`                                                             | One page for each of the ten Aspirants. Each pair has its own concept (see below)                                                       |
+| `/character/selena/{about,skills,gallery}`                                      | Selena's three pages, on the same stage as her first screen                                                                             |
+| `/character/obsidia/{about,skills,gallery}`                                     | Obsidia's three pages                                                                                                                   |
+| `/character/vexana/story/{academic,ender}`                                      | Vexana's two stories (the first is titled "Human" on the page)                                                                          |
+| `/character/guinevere/story/{alone,partner}`                                    | Guinevere's two stories                                                                                                                 |
+| `/collection`                                                                   | Films, music, comics, art, fan art and every voice line                                                                                 |
 
 The pairs, from the newest to the oldest: Selena and Obsidia (a live stage with video poses), Guinevere and Vexana (one long scroll with timed transitions between its sections), Lesley and Chang'e (a scope and a bench), Ruby and Angela (night shift and first sunrise), Fanny and Layla (a shared line, shots and notes).
 
@@ -67,16 +67,16 @@ pnpm test:e2e                  # Playwright against apps/web/out (phone, tablet,
 
 ## Commands
 
-| Command                                | What it does                                                    |
-| -------------------------------------- | --------------------------------------------------------------- |
-| `pnpm dev`                             | Next.js dev server (port 3000, or `PORT`)                       |
-| `pnpm build`                           | Static export to `apps/web/out`                                 |
-| `pnpm start`                           | Serve the export locally on port 3000                           |
-| `pnpm check`                           | The CI gate                                                     |
-| `pnpm test:e2e`                        | Playwright against the static export                            |
-| `pnpm test:e2e:install`                | Install the Playwright Chromium build                           |
-| `pnpm assets`                          | Rebuild the optimised media of the shared pages (needs sources) |
-| `node scripts/content/build-story.mjs` | Rebuild the story JSON from `short-v2.md`                       |
+| Command                         | What it does                                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `pnpm dev`                      | Next.js dev server (port 3000, or `PORT`)                                                  |
+| `pnpm build`                    | Static export to `apps/web/out`                                                            |
+| `pnpm start`                    | Serve the export locally on port 3000                                                      |
+| `pnpm check`                    | The CI gate                                                                                |
+| `pnpm test:e2e`                 | Playwright against the static export                                                       |
+| `pnpm test:e2e:install`         | Install the Playwright Chromium build                                                      |
+| `pnpm assets`                   | Rebuild the optimised media of the shared pages (needs sources)                            |
+| `python scripts/story/build.py` | Rebuild the story data and media from the novel and the visual scripts (needs the sources) |
 
 ## Environment
 
@@ -115,7 +115,8 @@ The finished media is committed, so a newcomer never has to rebuild it. The orig
 | Script                                            | Builds                                                                                              |
 | ------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `scripts/assets/build.mjs` (`pnpm assets`)        | Shared images, comics, videos, audio and the home portal faces                                      |
-| `scripts/content/*.mjs`                           | The story JSON and the voice line lists                                                             |
+| `scripts/content/*.mjs`                           | The voice line lists                                                                                |
+| `scripts/story/build.py`                          | The story: chapter data, pictures, clips and card pictures (see `scripts/story/README.md`)          |
 | `scripts/logo/build.py`                           | The vector logo and the icon                                                                        |
 | `scripts/menu/build.py`                           | The portraits of the full-screen menu                                                               |
 | `scripts/selena/*.py`, `scripts/obsidia/*.py`     | The stage videos in four sizes, skill clips, about and gallery media                                |

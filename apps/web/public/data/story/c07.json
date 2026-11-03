@@ -1,0 +1,341 @@
+{
+  "id": "c07",
+  "number": 7,
+  "slug": "chapter-07",
+  "title": "A New Product from R&D",
+  "dateline": "The Science Division, in the days of rebuilding.",
+  "mood": "The youngest Chief Scientist in Terrinia mends everyone’s machines. She wants one thing more, and Lesley says no.",
+  "words": 743,
+  "score": null,
+  "hero": {
+    "kind": "clip",
+    "src": "video/story/c07/hero-a5fe4801.mp4",
+    "poster": "img/story/c07/hero-a5fe4801-poster.webp",
+    "w": 1600,
+    "h": 900,
+    "dur": 4.7,
+    "bytes": 938549,
+    "sound": false,
+    "color": "#819bb0",
+    "alt": "Chang'e in her lab coat carries a box of tools across a bright laboratory while Mr. Bunny floats by the bench.",
+    "credit": "Official trailer, Chang'e and Lesley"
+  },
+  "heroFocus": "40% 45%",
+  "blocks": [
+    {
+      "t": "p",
+      "i": 0,
+      "segs": [
+        {
+          "t": "Every nine minutes the building thumped, as demolition crews dropped another wall in the Northeastern sector. Each thump walked a tray of tools closer to the edge of a shelf."
+        }
+      ]
+    },
+    { "t": "p", "i": 1, "segs": [{ "t": "Chang’e watched it and left it." }] },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "She directed the Science Division, which designed the Academy’s suits and mended its machines. She was also the youngest Chief Scientist in Terrinia. Her coat was child-sized. Adult coats were inefficient, she said."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "Her wall screen listed the repair queue: AI droids, slim white helpers with one orange eye. Half served the Combat Division, which trained students to fight Enders. Half served the Support Division, which mended Aspirants and their suits."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "caption": "An AI droid, one of the Academy’s helpers.",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c07/i0-29b4807f.webp",
+        "w": 640,
+        "h": 725,
+        "color": "#dededf",
+        "alt": "Design sheet of an AI droid: a slim white machine with long arms and a single orange eye.",
+        "credit": "Official character art"
+      }
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "Mr. Bunny, her best friend, floated at her shoulder: a white ball with long ears and a black screen for a face."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "On the bench lay a new coil for the cannon form of Lesley’s rifle. Lesley was the Chief Combat Instructor. On the screen, a file called VOID NOTES sat marked "
+        },
+        { "t": "working on it", "em": 1 },
+        { "t": ". Beside it was a message: " },
+        { "t": "Lesley, the coil runs cooler now.", "em": 1 },
+        { "t": " It stopped there. Forty-three drafts like it sat unsent in a folder." }
+      ]
+    },
+    { "t": "p", "i": 6, "segs": [{ "t": "The tray tipped." }] },
+    { "t": "p", "i": 7, "segs": [{ "t": "“Front,” said Chang’e, not looking up." }] },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "It was the first word she had taught him. Mr. Bunny swung in front of her face. The tray clanged off his casing and bounced once between his ears. His screen showed a smile with the eyes shut."
+        }
+      ]
+    },
+    { "t": "p", "i": 9, "segs": [{ "t": "Chang’e laughed until she nearly fell off her stool." }] },
+    {
+      "t": "insert",
+      "kind": "portrait",
+      "character": "change",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c07/i1-8ca79e0a.webp",
+        "w": 480,
+        "h": 552,
+        "color": "#968cb2",
+        "alt": "Chang'e laughing, with round glasses, pink hair and white bunny-ear clips.",
+        "credit": "Official art"
+      }
+    },
+    { "t": "p", "i": 10, "segs": [{ "t": "“Teacher Chang’e?”" }] },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "Selena stood in the door with a lollipop in her cheek, her uniform jacket open over a shirt stamped S·L·K, the mark of Selrick. Behind her waited Silverbolt, a dragon-like machine with blue light along its seams."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 12,
+      "segs": [
+        {
+          "t": "Chang’e flipped the photograph on her desk face down. It showed three people, two tall and one small."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c07/i2-770ce17c.mp4",
+        "poster": "img/story/c07/i2-770ce17c-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 3.9,
+        "bytes": 273143,
+        "sound": false,
+        "color": "#5f6a8b",
+        "alt": "Mr. Bunny sits on a desk, and beside him stands a framed photograph of two tall people holding a small girl.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      }
+    },
+    {
+      "t": "p",
+      "i": 13,
+      "segs": [{ "t": "“Please, just pretend you didn’t see anything.”" }],
+      "voice": { "slug": "change", "n": 4, "src": "audio/voice/change/04.m4a", "dur": 3.08 }
+    },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [{ "t": "“See what?” Selena held out a form. “One signature and I’m gone.”" }]
+    },
+    {
+      "t": "p",
+      "i": 15,
+      "segs": [
+        {
+          "t": "Chang’e’s rule: no change to a registered mecha without a field-test report and her mark. Selena’s report listed a new stabilizer, and one fence, replaced."
+        }
+      ]
+    },
+    { "t": "p", "i": 16, "segs": [{ "t": "“It was in the way.”" }] },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [
+        { "t": "One line on the form glowed red: " },
+        { "t": "Family name.", "em": 1 },
+        { "t": " The box was empty." }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [{ "t": "“Just Selena,” said Selena. “It gives in eventually.”" }]
+    },
+    {
+      "t": "insert",
+      "kind": "portrait",
+      "character": "selena",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c07/i3-dab2013d.webp",
+        "w": 580,
+        "h": 540,
+        "color": "#dad1bf",
+        "alt": "Selena, a blonde student with a horned crest, naps with her head on her desk, smiling.",
+        "credit": "Official video, Selena"
+      }
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [
+        {
+          "t": "Chang’e overrode the flag with her thumb. Sweets changed hands, as always: a lollipop for two jelly candies."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        { "t": "“Nobody else can run it,” said Chang’e. “I couldn’t even make it turn its head.”" }
+      ]
+    },
+    { "t": "p", "i": 21, "segs": [{ "t": "“It’s shy.”" }] },
+    {
+      "t": "p",
+      "i": 22,
+      "segs": [{ "t": "The professors marveled at Selena’s feel for mechas. Chang’e signed." }]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "Lesley’s room held a made-up cot that nobody had ever slept on, and one hard chair. Lesley slept sitting up, boots on, a young woman in a white officer’s coat with a gold star. Her gold hair, streaked with red, had slipped from its clip. Her rifle leaned within reach of her right hand."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "A dark visor covered her left eye, and the teal light behind it had dropped to a glow. Chang’e had built that eye."
+        }
+      ]
+    },
+    { "t": "insert", "kind": "portrait", "character": "lesley" },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [{ "t": "“What a weird way to sleep,” she told Mr. Bunny." }],
+      "voice": { "slug": "change", "n": 32, "src": "audio/voice/change/32.m4a", "dur": 1.36 }
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [
+        {
+          "t": "Lesley’s right eye opened. She was asleep, and then she was not, and her hand was on the rifle. “A new product from R&D?”"
+        }
+      ],
+      "voice": { "slug": "lesley", "n": 8, "src": "audio/voice/lesley/08.m4a", "dur": 2.25 }
+    },
+    {
+      "t": "p",
+      "i": 27,
+      "segs": [
+        {
+          "t": "“A better one.” Chang’e set the coil on the cot. “It runs on aspirant power alone, so I left out the old firing action.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "Lesley drew the bolt back by hand. Clack. The old action was a spring, a pin and a bolt. It ran on nothing but a hand."
+        }
+      ]
+    },
+    { "t": "p", "i": 29, "segs": [{ "t": "“That stays. The coil goes on top of it.”" }] },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [{ "t": "“Fine,” said Chang’e brightly. “Put me on the rotation.”" }]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        {
+          "t": "The field roster over the cot named the instructors who fought Enders outside the dome. The breach had taken four off it."
+        }
+      ]
+    },
+    { "t": "p", "i": 32, "segs": [{ "t": "“We need everyone.”" }] },
+    { "t": "p", "i": 33, "segs": [{ "t": "“No.”" }] },
+    { "t": "p", "i": 34, "segs": [{ "t": "“Give me a reason.”" }] },
+    {
+      "t": "p",
+      "i": 35,
+      "segs": [
+        {
+          "t": "Lesley took up a cleaning cloth and began on the bolt. She gave no reason. She never had."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 36,
+      "segs": [{ "t": "“I’m already a grown-up. Don’t treat me like a kid.”" }],
+      "voice": { "slug": "change", "n": 12, "src": "audio/voice/change/12.m4a", "dur": 4.13 }
+    },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "Lesley’s hand stopped on the bolt, then went on. “Leave the coil. Go back to the lab.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 38,
+      "segs": [
+        { "t": "Chang’e shut the door without a sound, so no one could say she had slammed it." }
+      ]
+    },
+    { "t": "break" },
+    {
+      "t": "p",
+      "i": 39,
+      "segs": [
+        {
+          "t": "A pudding cup stood outside the lab door, the spoon laid across the lid at a right angle. There was no note. She did not need one. It was caramel, the right flavor, which was the irritating part."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 40,
+      "segs": [{ "t": "She ate it beside the unsent line. Mr. Bunny watched the cursor blink." }]
+    }
+  ]
+}

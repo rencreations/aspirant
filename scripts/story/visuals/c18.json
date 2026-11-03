@@ -1,0 +1,82 @@
+{
+  "chapter": "c18",
+  "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
+  "hero": {
+    "type": "frame",
+    "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+    "t": 11.6,
+    "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
+    "credit": "Official Ruby lore video"
+  },
+  "heroFocus": "57% 35%",
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 13,
+      "anchor": "The small one spoke,",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
+        "t": 14.9,
+        "alt": "A small pink-haired girl looks straight ahead with wide blue eyes.",
+        "credit": "Official Angela lore video"
+      },
+      "caption": "Angela, small and pink-haired."
+    },
+    {
+      "after": 21,
+      "anchor": "I am Ruby, heir",
+      "kind": "place",
+      "label": "Planet Oro",
+      "media": {
+        "type": "image",
+        "src": "_others/places/planet-oro.jpg",
+        "alt": "A dark ship flies over a city of towers at dusk.",
+        "credit": "Official place art"
+      },
+      "caption": "Oro, far away in another galaxy."
+    },
+    {
+      "after": 25,
+      "anchor": "Then it will annex",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 1.6,
+        "alt": "A ring of tall lit pillars stands in a dark council chamber.",
+        "credit": "Official Ruby lore video"
+      },
+      "caption": "The chamber of Oro's Council."
+    },
+    {
+      "after": 29,
+      "anchor": "I saw that",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
+        "start": 11.4,
+        "end": 16.0,
+        "poster": 1.7,
+        "alt": "In a burning ruin, a girl with a scythe walks toward a crying child, her eyes red.",
+        "credit": "Official Ruby and Angela trailer"
+      },
+      "caption": "The record Lesley had watched."
+    },
+    {
+      "after": 40,
+      "anchor": "A slim white droid",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/ai-droids.png",
+        "crop": [160, 0, 610, 725],
+        "alt": "Design sheet of a slim white droid with one orange eye.",
+        "credit": "Official character art"
+      },
+      "caption": "An AI droid, the kind that would follow Ruby everywhere."
+    }
+  ]
+}

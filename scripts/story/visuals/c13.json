@@ -1,0 +1,92 @@
+{
+  "chapter": "c13",
+  "mood": "Angela is sent to save the Rioters. From far away, Ruby watches what the order really means.",
+  "hero": {
+    "type": "frame",
+    "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
+    "t": 12.8,
+    "alt": "Seen from behind, a small pink-haired android stands between rows of others with gray hair and pink ears.",
+    "credit": "Angela character film"
+  },
+  "heroFocus": "50% 45%",
+  "spoiler": false,
+  "score": null,
+  "inserts": [
+    {
+      "after": 5,
+      "anchor": "These are the Rioters",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
+        "t": 15.4,
+        "alt": "Close on Angela's face, pink hair and calm blue eyes against white light.",
+        "credit": "Angela character film"
+      }
+    },
+    {
+      "after": 14,
+      "anchor": "A beep came out",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m40s320ms-01m49s440ms/footage.mp4",
+        "t": 1.5,
+        "alt": "A lab monitor framed in red WARNING bars shows Angela's face, beside a drooping white daisy.",
+        "credit": "Ruby character film"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "It was evening, and",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/00m00s000ms-00m09s960ms/footage.mp4",
+        "start": 0.0,
+        "end": 3.6,
+        "poster": 1.6,
+        "sound": false,
+        "alt": "A ship flies over a burning city at sunset while giant Enders stand among the towers.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 20,
+      "anchor": "Ruby watched a student",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/footages/01m11s720ms-01m27s320ms/footage.mp4",
+        "t": 12.5,
+        "alt": "Seen past an android's outstretched hands, two students sit in the dust of a ruined street at sunset.",
+        "credit": "Angela character film"
+      }
+    },
+    {
+      "after": 25,
+      "anchor": "Someone knocked once and",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/soldiers-of-planet-oro.png",
+        "crop": [570, 30, 1040, 590],
+        "alt": "A soldier of Oro in black-gray armor, with a horned helmet and a blue visor, holding a long rifle.",
+        "credit": "Official art"
+      },
+      "caption": "A soldier of Oro"
+    },
+    {
+      "after": 31,
+      "anchor": "Engine ignition successful. Destination:",
+      "kind": "place",
+      "label": "Planet Dawnbreak",
+      "media": {
+        "type": "image",
+        "src": "_others/places/planet-dawnbreak.jpg",
+        "alt": "A white city curves around a blue bay, with a tall tower beaming green light into the sky.",
+        "credit": "Official art"
+      }
+    }
+  ]
+}

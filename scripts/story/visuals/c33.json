@@ -1,0 +1,84 @@
+{
+  "chapter": "c33",
+  "mood": "The star over the bay tears open. Lesley gives out the roles, and Chang'e asks for the front line.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
+    "t": 6.0,
+    "crop": [0, 132, 1280, 720],
+    "alt": "A huge four-pointed rift glows red over a city of towers, a black ship hanging at its center.",
+    "credit": "Official trailer: Selena and Obsidia"
+  },
+  "heroFocus": "48% 25%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Something slid out upside",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "start": 0.0,
+        "end": 4.4,
+        "crop": [0, 132, 1920, 816],
+        "sound": false,
+        "poster": 0.6,
+        "alt": "A black spired ship hangs in the burning rift with smaller ships around it, and Enders stalk into the streets below.",
+        "credit": "Official trailer: Selena and Obsidia"
+      }
+    },
+    {
+      "after": 5,
+      "anchor": "The records said that",
+      "kind": "place",
+      "label": "Storm Citadel",
+      "media": {
+        "type": "image",
+        "src": "_others/places/storm-citadel.png",
+        "alt": "The Storm Citadel, a mass of black blocks lit red from inside, hangs upside down above a city.",
+        "credit": "Official world art"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "I can't keep hiding",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/01m11s000ms-01m27s000ms/footage.webm",
+        "t": 2.0,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "Seen from behind, Chang'e stands small at the foot of a tall stairway and looks up.",
+        "credit": "Official trailer: Lesley and Chang'e"
+      }
+    },
+    {
+      "after": 32,
+      "anchor": "She took a dormitory",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
+        "t": 23.2,
+        "crop": [250, 0, 1920, 1080],
+        "alt": "Lesley stands on a rooftop among tall towers, her long rifle in her hands.",
+        "credit": "Official trailer: Lesley and Chang'e"
+      }
+    },
+    {
+      "after": 46,
+      "anchor": "Chang'e's console showed a",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
+        "t": 5.5,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "Chang'e reads two glowing screens in the middle of the fighting, fires burning behind her.",
+        "credit": "Official trailer: Lesley and Chang'e"
+      }
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "chapter": "c15",
+  "mood": "Angela wakes in a burning street, and only she can stop what Ruby is about to do.",
+  "hero": {
+    "type": "frame",
+    "src": "ruby-and-angela/video/trailer/footages/02m36s160ms-03m00s760ms/footage.mp4",
+    "t": 23.4,
+    "alt": "Close on Angela, blue eyes wide, reaching out a gloved hand.",
+    "credit": "The Aspirants: Awakening trailer"
+  },
+  "heroFocus": "52% 45%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 3,
+      "anchor": "She opened her eyes.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
+        "t": 18.0,
+        "alt": "A broken android slumps in the foreground; far down the burning street, Ruby stands alone.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 6,
+      "anchor": "At the avenue's end",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
+        "t": 21.0,
+        "alt": "Seen from above, a small child sits crying in the rubble as a long shadow falls across the ground.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 10,
+      "anchor": "Ruby's head turned. The",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/02m36s160ms-03m00s760ms/footage.mp4",
+        "start": 12.9,
+        "end": 20.4,
+        "poster": 6.5,
+        "sound": false,
+        "alt": "A shield of light opens around the child; then close on Ruby, whose eye fades from red to blue.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 32,
+      "anchor": "The giant fell. Soldiers",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/03m00s760ms-03m11s520ms/footage.mp4",
+        "t": 5.5,
+        "alt": "Between the shoulders of two watching girls, a wall screen shows soldiers leading two small figures into a ship.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 35,
+      "anchor": "Layla stared at her.",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/trailer/footages/03m00s760ms-03m11s520ms/footage.mp4",
+        "start": 6.7,
+        "end": 10.6,
+        "poster": 1.5,
+        "sound": false,
+        "alt": "Layla and Fanny stand with folded arms in a white room, smiling to themselves.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 39,
+      "anchor": "The record ran without",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/footages/00m09s960ms-00m44s080ms/footage.mp4",
+        "t": 4.3,
+        "alt": "Angela walks through smoke in a burning street, light gathering in her hand, a giant Ender behind her.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "after": 42,
+      "anchor": "On the screen, a",
+      "kind": "film",
+      "public": "video/ruby-angela/trailer.mp4",
+      "poster": "video/ruby-angela/trailer.jpg",
+      "title": "The Aspirants: Awakening, official trailer"
+    }
+  ]
+}

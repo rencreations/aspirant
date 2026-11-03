@@ -1,0 +1,374 @@
+{
+  "id": "c15",
+  "number": 15,
+  "slug": "chapter-15",
+  "title": "Ruby!",
+  "dateline": null,
+  "mood": "Angela wakes in a burning street, and only she can stop what Ruby is about to do.",
+  "words": 849,
+  "score": "we-believe",
+  "hero": {
+    "kind": "image",
+    "src": "img/story/c15/hero-36a4ec7c.webp",
+    "w": 1920,
+    "h": 810,
+    "color": "#87494b",
+    "alt": "Close on Angela, blue eyes wide, reaching out a gloved hand.",
+    "credit": "The Aspirants: Awakening trailer"
+  },
+  "heroFocus": "52% 45%",
+  "blocks": [
+    { "t": "p", "i": 0, "segs": [{ "t": "Somewhere in the dark, a child was crying." }] },
+    {
+      "t": "p",
+      "i": 1,
+      "segs": [
+        {
+          "t": "Angela heard it before anything else came back. It was thin and far off. Then, nearer, came ragged breathing. She knew that breath. It was Ruby’s."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 2,
+      "segs": [
+        {
+          "t": "Her repair ran, and her reboot ran. They ran on her own power cell, as they always had. Nothing else answered. Something that had always sat at her back was gone."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 3,
+      "segs": [
+        {
+          "t": "She opened her eyes. She lay on stones in a burning avenue, with Tetra by her hand. Around her lay the other androids, cut apart, their eyes dark. They all had her face. Her chest clicked, once, wrongly."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c15/i0-a5057f9a.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#673c3a",
+        "alt": "A broken android slumps in the foreground; far down the burning street, Ruby stands alone.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 4,
+      "segs": [
+        {
+          "t": "The last thing she remembered was a city in the sun, and red closing in at the edges of her sight."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 5,
+      "segs": [
+        {
+          "t": "Beside her lay a broken plate, its Council seal scratched away, its pieces ground flat by a boot. "
+        },
+        { "t": "Someone was driving me,", "em": 1 },
+        { "t": " she thought. " },
+        { "t": "Someone took it out.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 6,
+      "segs": [
+        {
+          "t": "At the avenue’s end stood Ruby, her scythe raised over a barrel. The crying came from the barrel. Ruby’s eye was red. It was the red that had closed in on her sight."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c15/i1-2f95d41f.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#5a3522",
+        "alt": "Seen from above, a small child sits crying in the rubble as a long shadow falls across the ground.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    { "t": "p", "i": 7, "segs": [{ "t": "The scythe reached the top of its swing." }] },
+    {
+      "t": "p",
+      "i": 8,
+      "segs": [
+        {
+          "t": "Angela was thirty meters away. She could not cross it in time. She flung out her hand. The shield flew from her palm, a pane of pale light, and opened over the barrel."
+        }
+      ]
+    },
+    { "t": "p", "i": 9, "segs": [{ "t": "“Ruby!”" }] },
+    {
+      "t": "p",
+      "i": 10,
+      "segs": [
+        { "t": "Ruby’s head turned. The red went out of her eye. It was blue again, and wide." }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c15/i2-42589362.mp4",
+        "poster": "img/story/c15/i2-42589362-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 7.5,
+        "bytes": 717304,
+        "sound": false,
+        "color": "#6e4236",
+        "alt": "A shield of light opens around the child; then close on Ruby, whose eye fades from red to blue.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 11,
+      "segs": [
+        {
+          "t": "The scythe had not fallen. Ruby’s arms shook. She lowered it herself, a little at a time, until the point touched the stones. The shield hung over the barrel, untouched."
+        }
+      ]
+    },
+    { "t": "p", "i": 12, "segs": [{ "t": "Angela walked to her through the smoke." }] },
+    { "t": "p", "i": 13, "segs": [{ "t": "“I thought I’d killed you,” said Ruby." }] },
+    {
+      "t": "p",
+      "i": 14,
+      "segs": [{ "t": "“I came back.” Angela took her hands. “You created me. You set me free.”" }]
+    },
+    { "t": "p", "i": 15, "segs": [{ "t": "Ruby’s mouth shook. She said nothing." }] },
+    {
+      "t": "p",
+      "i": 16,
+      "segs": [
+        {
+          "t": "“I can’t let you become the way I used to be. There’s only one thing in this world that I know is real, and that’s how I feel about you.” Her grip tightened. “From this point on, no more shall we part.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 17,
+      "segs": [{ "t": "Then Angela asked the old question. “Ruby, what do you want the most?”" }]
+    },
+    {
+      "t": "p",
+      "i": 18,
+      "segs": [{ "t": "For years Ruby had looked at the sky. She did not look up now." }]
+    },
+    {
+      "t": "p",
+      "i": 19,
+      "segs": [{ "t": "“What I want... is to stay in this free land, with you!”" }]
+    },
+    {
+      "t": "p",
+      "i": 20,
+      "segs": [
+        {
+          "t": "The ground shook. Over the roofs, a giant Ender took a step down the avenue. Angela raised her shield. Ruby swung. They fought it together, shield and scythe, until it went down."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 21,
+      "segs": [{ "t": "“If we get separated,” said Ruby, “wait for me at the end of the world.”" }]
+    },
+    { "t": "p", "i": 22, "segs": [{ "t": "“I will,” said Angela. “You wait for me, too.”" }] },
+    {
+      "t": "p",
+      "i": 23,
+      "segs": [
+        {
+          "t": "Soldiers came down the avenue with long rifles and blue visors. One stepped forward. “In the name of the Decisionmakers, you will come with us.”"
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 24,
+      "segs": [
+        {
+          "t": "Ruby looked at the windows. People were hiding behind every wall. A fight here would burn what was left."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 25,
+      "segs": [{ "t": "She set down her scythe. A soldier carried it up the ramp. “We’ll go.”" }]
+    },
+    {
+      "t": "p",
+      "i": 26,
+      "segs": [{ "t": "Angela took her hand. The ramp rose, and the doors closed on the fire." }]
+    },
+    { "t": "break" },
+    { "t": "p", "i": 27, "segs": [{ "t": "Selrick Academy, after the battle.", "em": 1 }] },
+    {
+      "t": "p",
+      "i": 28,
+      "segs": [
+        {
+          "t": "Selrick’s cameras watched every ward and kept every minute. That was how the Academy studied its battles."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 29,
+      "segs": [
+        {
+          "t": "Fanny and Layla had held a ward on the far side of the city against a giant. They had not seen what landed on the near side. They came to the monitor room still in their suits, smelling of smoke, to find out."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 30,
+      "segs": [
+        {
+          "t": "The wall screen showed an avenue. A girl with a scythe and a smaller girl with a shield stood back to back against a giant Ender. They fought as if they had done it for years."
+        }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 31,
+      "segs": [
+        { "t": "Like us,", "em": 1 },
+        { "t": " thought Fanny. " },
+        { "t": "Nearly.", "em": 1 }
+      ]
+    },
+    {
+      "t": "p",
+      "i": 32,
+      "segs": [
+        {
+          "t": "The giant fell. Soldiers in black-gray armor closed in. The girl with the scythe set her blade on the stones. The two walked up a ramp into a dark ship, hand in hand, and the doors shut."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c15/i3-33f51e9f.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#8896a8",
+        "alt": "Between the shoulders of two watching girls, a wall screen shows soldiers leading two small figures into a ship.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 33,
+      "segs": [
+        { "t": "Nobody fights that hard for a city and then stays gone,", "em": 1 },
+        { "t": " thought Fanny. " },
+        { "t": "This is the start of something. I’d bet they come back.", "em": 1 }
+      ]
+    },
+    { "t": "p", "i": 34, "segs": [{ "t": "“Looks like we got a few newcomers!”" }] },
+    { "t": "p", "i": 35, "segs": [{ "t": "Layla stared at her. “They’re being arrested.”" }] },
+    {
+      "t": "insert",
+      "kind": "clip",
+      "media": {
+        "kind": "clip",
+        "src": "video/story/c15/i4-6c9dfeba.mp4",
+        "poster": "img/story/c15/i4-6c9dfeba-poster.webp",
+        "w": 1280,
+        "h": 540,
+        "dur": 3.9,
+        "bytes": 340825,
+        "sound": false,
+        "color": "#918f9d",
+        "alt": "Layla and Fanny stand with folded arms in a white room, smiling to themselves.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    { "t": "p", "i": 36, "segs": [{ "t": "“For now.”" }] },
+    {
+      "t": "p",
+      "i": 37,
+      "segs": [
+        {
+          "t": "The door slid open. Lesley came in from the giants’ front, white coat scorched at the hem, dark visor. Chang’e came from the command room, small in her child-sized coat, Mr. Bunny floating at her shoulder. She told two technicians to clear the screen. They did."
+        }
+      ]
+    },
+    { "t": "p", "i": 38, "segs": [{ "t": "“From the landing,” said Lesley." }] },
+    {
+      "t": "p",
+      "i": 39,
+      "segs": [
+        {
+          "t": "The record ran without sound. A hatch opened onto a street. Rows of androids walked out. One, small and pink-haired, struck at students a beat late. Chang’e watched that one longest. She, who always had a remark, said nothing."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "plate",
+      "media": {
+        "kind": "image",
+        "src": "img/story/c15/i5-670f9327.webp",
+        "w": 1600,
+        "h": 675,
+        "color": "#82614e",
+        "alt": "Angela walks through smoke in a burning street, light gathering in her hand, a giant Ender behind her.",
+        "credit": "The Aspirants: Awakening trailer"
+      }
+    },
+    {
+      "t": "p",
+      "i": 40,
+      "segs": [
+        {
+          "t": "The girl with the scythe cut the androids down. After that came a barrel, and the scythe over it, and her eye red. Last, a pale shield spread over the child."
+        }
+      ]
+    },
+    { "t": "p", "i": 41, "segs": [{ "t": "“There,” said Lesley, and froze the frame." }] },
+    {
+      "t": "p",
+      "i": 42,
+      "segs": [
+        {
+          "t": "On the screen, a red-eyed girl held a scythe over a child. Lesley’s hand stayed on the control."
+        }
+      ]
+    },
+    {
+      "t": "insert",
+      "kind": "film",
+      "title": "The Aspirants: Awakening, official trailer",
+      "public": "video/ruby-angela/trailer.mp4",
+      "poster": "video/ruby-angela/trailer.jpg",
+      "height": 540,
+      "duration": 201
+    }
+  ]
+}
