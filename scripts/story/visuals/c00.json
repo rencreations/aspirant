@@ -36,7 +36,7 @@
         "crop": [0, 0, 1920, 930],
         "sound": false,
         "poster": 3.4,
-        "alt": "A pale-haired woman with dark wings sits in the air over a ruined city, then holds a small black sun of red light in her clawed hand and looks straight out.",
+        "alt": "A pale-haired woman in a dark crown sits in the air over a ruined city beside a red-eyed machine serpent, then holds a small black sun of red light in her clawed hand and looks straight out.",
         "credit": "Official Obsidia film"
       },
       "overlay": {
@@ -77,11 +77,11 @@
       "media": {
         "type": "clip",
         "src": "selena-and-obsidia/video/trailer/footages/02m25s125ms-02m38s958ms/footage.mp4",
-        "start": 3.75,
+        "start": 3.82,
         "end": 6.45,
         "crop": [240, 205, 1440, 650],
         "sound": false,
-        "poster": 0.4,
+        "poster": 0.35,
         "alt": "A lone figure stands before a dying white star, a woman with pale hair and a horned crown looks back, and light spirals into the dark.",
         "credit": "Official Selena and Obsidia trailer"
       },

@@ -6,10 +6,10 @@
     "alt": "Angela stands between two androids in a smoking city, her eyes glowing magenta.",
     "credit": "The Aspirants: Awakening trailer",
     "type": "clip",
-    "start": 18.4,
-    "end": 21.36,
+    "start": 18.6,
+    "end": 20.55,
     "sound": false,
-    "poster": 1.0
+    "poster": 0.9
   },
   "heroFocus": "52% 40%",
   "spoiler": false,
@@ -66,7 +66,7 @@
       "speaker": "ruby",
       "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
       "start": 44.25,
-      "end": 49.1,
+      "end": 50.45,
       "line": "I'm Ruby! Don't you remember? We had been together since the very beginning!"
     },
     {
@@ -101,7 +101,7 @@
       "speaker": "ruby",
       "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
       "start": 77.45,
-      "end": 79.35,
+      "end": 79.65,
       "line": "Wake up, Angela!"
     },
     {
@@ -160,7 +160,7 @@
       "kind": "clip",
       "media": {
         "src": "ruby-and-angela/video/trailer/footages/01m43s720ms-02m11s360ms/footage.mp4",
-        "alt": "Ruby holds Angela close, her eyes shut and tears on her cheek.",
+        "alt": "Ruby holds Angela close, tears on her cheek, then opens her eyes.",
         "credit": "The Aspirants: Awakening trailer",
         "type": "clip",
         "start": 0.04,
@@ -214,7 +214,7 @@
         "credit": "The Aspirants: Awakening trailer",
         "type": "clip",
         "start": 6.04,
-        "end": 9.04,
+        "end": 8.35,
         "sound": false,
         "poster": 1.16
       }

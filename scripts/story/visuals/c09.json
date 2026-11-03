@@ -62,9 +62,9 @@
       "media": {
         "type": "clip",
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 22.7,
+        "start": 22.8,
         "end": 28.1,
-        "poster": 2.1,
+        "poster": 2.0,
         "sound": false,
         "alt": "Layla smirks, leaps the gap between roofs and lands with her arms spread, scoring 10 points.",
         "credit": "Official short animation, Layla and Fanny"
@@ -103,7 +103,7 @@
         "type": "clip",
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
         "start": 0.3,
-        "end": 6.8,
+        "end": 6.5,
         "poster": 1.0,
         "sound": false,
         "alt": "Layla beams over a tall stack of wrapped gift boxes, then smiles a smug little smile.",
@@ -131,7 +131,7 @@
       "kind": "voice",
       "speaker": "layla",
       "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-      "start": 50.6,
+      "start": 49.65,
       "end": 52.9,
       "line": "Ah, she didn't get chocolate, did she?"
     },
@@ -152,9 +152,9 @@
       "media": {
         "type": "clip",
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 58.6,
+        "start": 58.9,
         "end": 65.4,
-        "poster": 2.0,
+        "poster": 1.9,
         "sound": false,
         "alt": "A wall of gift boxes appears beside Fanny, and Layla stares, then turns her back in a huff.",
         "credit": "Official short animation, Layla and Fanny"
@@ -187,11 +187,11 @@
       "media": {
         "type": "clip",
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 68.0,
+        "start": 69.75,
         "end": 74.4,
-        "poster": 3.0,
+        "poster": 1.5,
         "sound": false,
-        "alt": "Layla sulks at her desk, arms folded, until Fanny sets a pink box with a teal ribbon in front of her.",
+        "alt": "Fanny sets a pink box with a teal ribbon on Layla's desk, and Layla stares at it.",
         "credit": "Official short animation, Layla and Fanny"
       }
     },
@@ -201,8 +201,8 @@
       "kind": "voice",
       "speaker": "fanny",
       "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-      "start": 76.55,
-      "end": 79.5,
+      "start": 76.5,
+      "end": 79.2,
       "line": "This is for you, my teammate!"
     },
     {
@@ -211,7 +211,7 @@
       "kind": "voice",
       "speaker": "layla",
       "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-      "start": 79.65,
+      "start": 79.3,
       "end": 85.95,
       "line": "For me? Well..... It'd sure be rude of me not to accept your kind gift!"
     },
@@ -223,7 +223,7 @@
         "type": "clip",
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
         "start": 79.9,
-        "end": 85.8,
+        "end": 85.72,
         "poster": 1.9,
         "sound": false,
         "alt": "Layla jumps in surprise at her desk, then pouts and keeps the box while Fanny stands beside her.",

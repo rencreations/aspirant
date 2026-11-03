@@ -4,12 +4,12 @@
   "hero": {
     "type": "clip",
     "src": "selena-and-obsidia/video/obsidia/footages/00m00s000ms-00m07s133ms/footage.mp4",
-    "start": 3.0,
-    "end": 7.1,
+    "start": 3.5,
+    "end": 6.9,
     "crop": [107, 0, 1706, 960],
     "sound": false,
-    "poster": 1.7,
-    "alt": "A flash of pink light opens, and Obsidia floats in the dark among drifting rocks, two black suns burning at her shoulders.",
+    "poster": 1.2,
+    "alt": "Obsidia floats in the dark among drifting rocks, two black suns burning at her shoulders.",
     "credit": "Official video: Obsidia"
   },
   "heroFocus": "50% 35%",
@@ -40,7 +40,7 @@
         "type": "clip",
         "src": "selena-and-obsidia/video/obsidia/footages/00m17s033ms-00m26s000ms/footage.mp4",
         "start": 4.0,
-        "end": 7.6,
+        "end": 7.35,
         "crop": [0, 0, 1920, 960],
         "sound": false,
         "poster": 0.3,
@@ -60,9 +60,9 @@
         "credit": "Official video: Obsidia",
         "type": "clip",
         "start": 2.7,
-        "end": 5.7,
+        "end": 4.1,
         "sound": false,
-        "poster": 1.2
+        "poster": 0.7
       }
     },
     {

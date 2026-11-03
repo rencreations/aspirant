@@ -6,10 +6,10 @@
     "alt": "In a glass-walled lab over a stormy city, Guinevere holds a telescope to her eye between Ruby and Angela.",
     "credit": "Official interactive drama: Guinevere and Vexana",
     "type": "clip",
-    "start": 10.2,
+    "start": 11.4,
     "end": 13.2,
     "sound": false,
-    "poster": 1.2
+    "poster": 0.8
   },
   "heroFocus": "50% 35%",
   "spoiler": false,
@@ -42,12 +42,12 @@
       "media": {
         "type": "clip",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/2B/00m00s000ms-00m48s833ms/footage.webm",
-        "start": 13.9,
+        "start": 15.95,
         "end": 17.75,
         "crop": [0, 0, 1920, 690],
         "sound": false,
-        "poster": 3.4,
-        "alt": "Guinevere peers through the telescope, and in its lens a small magenta star with four points flashes above the storm clouds.",
+        "poster": 1.0,
+        "alt": "In the telescope's lens, a small magenta star with four points flashes above the storm clouds.",
         "credit": "Official interactive drama: Guinevere and Vexana"
       }
     },
@@ -87,21 +87,6 @@
       "line": "If the world ends now, what about my graduation?!"
     },
     {
-      "after": 16,
-      "anchor": "If the world ends",
-      "kind": "clip",
-      "media": {
-        "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-        "alt": "Selena stares at her sideways phone in class, mouth open, as her papers fly off the desk.",
-        "credit": "Official video: Selena",
-        "type": "clip",
-        "start": 0.37,
-        "end": 3.37,
-        "sound": false,
-        "poster": 0.38
-      }
-    },
-    {
       "after": 19,
       "anchor": "Detecting an abnormal signal",
       "kind": "clip",
@@ -123,14 +108,14 @@
       "kind": "clip",
       "media": {
         "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m14s600ms-00m45s867ms/footage.webm",
-        "crop": [846, 100, 1000, 880],
-        "alt": "A glowing panel on the hologram wall reads Vexana: Absent above a line graph.",
+        "crop": [90, 80, 1760, 990],
+        "alt": "A glowing panel on the hologram wall reads Attendance Record, Vexana: Absent, above a line graph.",
         "credit": "Official interactive drama: Guinevere and Vexana",
         "type": "clip",
-        "start": 2.13,
-        "end": 5.13,
+        "start": 3.45,
+        "end": 5.1,
         "sound": false,
-        "poster": 2.77
+        "poster": 0.8
       }
     },
     {

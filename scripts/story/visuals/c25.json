@@ -2,14 +2,11 @@
   "chapter": "c25",
   "mood": "A nap in class, a paper plane, a dangerous design, and on the roof, a plan for coming home.",
   "hero": {
-    "type": "clip",
+    "type": "frame",
     "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-    "start": 1.6,
-    "end": 4.6,
+    "t": 1.8,
     "crop": [110, 0, 1712, 963],
-    "sound": false,
-    "poster": 0.25,
-    "alt": "Selena naps on her desk until a paper plane from Layla wakes her, then she shows classmates her drawing of an armored suit.",
+    "alt": "Selena sleeps on her desk, dreaming of a cupcake, while behind her Layla grins and throws a paper plane.",
     "credit": "Official film, Selena"
   },
   "heroFocus": "50% 55%",
@@ -39,12 +36,12 @@
       "media": {
         "type": "clip",
         "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
-        "start": 7.4,
-        "end": 10.3,
+        "start": 7.12,
+        "end": 7.95,
         "crop": [0, 0, 1920, 960],
         "sound": false,
-        "poster": 2.6,
-        "alt": "Selena hops off a rail and skids into an Academy hallway, Silverbolt crackling at her side.",
+        "poster": 0.4,
+        "alt": "Small against the sky, Selena kicks off a rail at the Academy, Silverbolt crackling at her side.",
         "credit": "Official film, Selena"
       }
     },

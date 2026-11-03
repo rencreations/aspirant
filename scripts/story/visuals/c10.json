@@ -4,9 +4,9 @@
   "hero": {
     "type": "clip",
     "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
-    "start": 0.4,
+    "start": 0.9,
     "end": 4.3,
-    "poster": 3.0,
+    "poster": 2.5,
     "sound": false,
     "alt": "A dark, towering hall of pillars and violet windows, with one small figure standing in a circle of light on the floor.",
     "credit": "Official video, Ruby"
@@ -61,7 +61,7 @@
       "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
       "start": 14.6,
-      "end": 16.4,
+      "end": 16.7,
       "line": "But I have a plan..."
     },
     {
@@ -87,7 +87,7 @@
         "credit": "Official video, Ruby",
         "type": "clip",
         "start": 2.4,
-        "end": 5.4,
+        "end": 5.0,
         "sound": false,
         "poster": 1.2
       }
@@ -100,7 +100,7 @@
         "type": "clip",
         "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
         "start": 10.1,
-        "end": 16.25,
+        "end": 16.15,
         "poster": 5.8,
         "sound": false,
         "alt": "SUCCESS lights up on a screen, a hand presses the key, and the android in the cradle opens bright blue eyes.",

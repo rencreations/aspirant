@@ -83,16 +83,13 @@
     {
       "after": 27,
       "anchor": "The Singularity burned on",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 23.3,
         "alt": "The Mother Matrix looms close, crowned and clawed, lightning crawling over its armor.",
-        "credit": "Official interactive drama",
-        "type": "clip",
-        "start": 22.74,
-        "end": 24.23,
-        "sound": false,
-        "poster": 0.26
+        "credit": "Official interactive drama"
       }
     },
     {

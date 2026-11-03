@@ -43,10 +43,10 @@
         "alt": "Fanny looks on with a small smile against an orange evening sky.",
         "credit": "Official trailer: Layla and Fanny",
         "type": "clip",
-        "start": 0.9,
-        "end": 3.9,
+        "start": 1.5,
+        "end": 2.9,
         "sound": false,
-        "poster": 1.2
+        "poster": 0.6
       }
     },
     {
@@ -75,7 +75,7 @@
         "credit": "Official interactive drama: Guinevere and Vexana",
         "type": "clip",
         "start": 0.2,
-        "end": 3.2,
+        "end": 2.5,
         "sound": false,
         "poster": 1.2
       },

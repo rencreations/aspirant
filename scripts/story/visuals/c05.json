@@ -58,7 +58,7 @@
         "type": "clip",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
         "start": 71.0,
-        "end": 72.81,
+        "end": 72.7,
         "crop": [0, 136, 1920, 808],
         "sound": false,
         "poster": 1.1,
@@ -121,7 +121,7 @@
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/32.jpg",
-        "crop": [0, 560, 1000, 1560],
+        "crop": [0, 0, 1000, 2120],
         "alt": "Layla fires with a shout, Fanny right beside her, both of them glaring ahead.",
         "credit": "Official Aspirant comic, page 32"
       }
@@ -165,7 +165,7 @@
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/30.jpg",
-        "crop": [0, 60, 1000, 1500],
+        "crop": [0, 60, 1000, 1720],
         "alt": "Layla and Fanny fight shoulder to shoulder as an Ender's huge fist smashes down beside them.",
         "credit": "Official Aspirant comic, page 30"
       }
@@ -173,16 +173,15 @@
     {
       "after": 45,
       "anchor": "They went back in",
-      "kind": "place",
-      "label": "Energy System",
+      "kind": "panels",
       "media": {
         "type": "image",
-        "src": "_others/places/energy-system.png",
-        "crop": [0, 180, 1280, 362],
-        "alt": "Design of the Energy System: glowing rings turn around a white-cyan beam that rises from the top of the Academy's tallest tower.",
-        "credit": "Official design art"
+        "src": "layla-and-fanny/art/comic/official-aspirant-comic/16.jpg",
+        "crop": [330, 30, 670, 790],
+        "alt": "The Academy's tallest tower against the evening sky, glowing rings turning around the bright beam that rises from its top.",
+        "credit": "Official Aspirant comic, page 16"
       },
-      "caption": "The Energy System feeds the dome."
+      "caption": "The Energy System, on the Academy's tallest tower, feeds the dome."
     }
   ]
 }

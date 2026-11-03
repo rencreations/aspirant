@@ -4,9 +4,9 @@
   "hero": {
     "type": "clip",
     "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
-    "start": 16.6,
+    "start": 16.65,
     "end": 22.0,
-    "poster": 1.6,
+    "poster": 1.55,
     "sound": false,
     "alt": "Angela spreads her arms in the sunlit grass of a garden under a glass dome, and Ruby watches her.",
     "credit": "Official video, Ruby"
@@ -71,7 +71,7 @@
         "credit": "Official video, Ruby",
         "type": "clip",
         "start": 21.88,
-        "end": 24.88,
+        "end": 24.6,
         "sound": false,
         "poster": 1.32
       }
@@ -95,9 +95,9 @@
       "media": {
         "type": "clip",
         "src": "ruby-and-angela/video/angela/footages/00m34s000ms-00m46s160ms/footage.mp4",
-        "start": 2.1,
+        "start": 2.25,
         "end": 5.25,
-        "poster": 2.6,
+        "poster": 2.45,
         "sound": false,
         "alt": "Angela stands before a huge armored training droid with a blade, then lifts her face, blue eyes set.",
         "credit": "Official video, Angela"
@@ -113,7 +113,7 @@
         "credit": "Official video, Angela",
         "type": "clip",
         "start": 0.04,
-        "end": 3.04,
+        "end": 1.72,
         "sound": false,
         "poster": 0.56
       }
@@ -162,10 +162,10 @@
         "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
         "credit": "Official video, Angela",
         "type": "clip",
-        "start": 14.0,
-        "end": 17.0,
+        "start": 15.0,
+        "end": 16.35,
         "sound": false,
-        "poster": 1.6
+        "poster": 0.6
       }
     },
     {

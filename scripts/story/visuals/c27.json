@@ -31,11 +31,11 @@
       "media": {
         "type": "clip",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
-        "start": 0.4,
-        "end": 4.2,
+        "start": 2.6,
+        "end": 4.15,
         "sound": false,
-        "poster": 3.2,
-        "alt": "Seen only from behind, a figure in a purple robe walks across a ruined plaza and raises a staff with a dark ring at its tip.",
+        "poster": 1.0,
+        "alt": "Over a figure's shoulder, a flash of purple hair and a staff with a dark ring at its tip, above a ruined plaza.",
         "credit": "Official film, Connection Lost"
       },
       "caption": "No face. Only a staff."
@@ -50,7 +50,7 @@
         "credit": "Official interactive drama, Guinevere and Vexana",
         "type": "clip",
         "start": 0.04,
-        "end": 3.04,
+        "end": 2.0,
         "sound": false,
         "poster": 0.86
       }

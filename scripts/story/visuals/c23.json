@@ -8,7 +8,7 @@
     "credit": "Official Connection Lost film",
     "type": "clip",
     "start": 13.24,
-    "end": 16.24,
+    "end": 15.5,
     "sound": false,
     "poster": 1.96
   },
@@ -55,13 +55,13 @@
       "media": {
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
         "crop": [0, 0, 2560, 900],
-        "alt": "Guinevere, hurt and swaying, holds her arm under a gray sky in a ruined street.",
+        "alt": "Guinevere, hurt, holds her arm under a gray sky, then sways and falls.",
         "credit": "Official Connection Lost film",
         "type": "clip",
-        "start": 3.72,
-        "end": 6.72,
+        "start": 3.75,
+        "end": 5.0,
         "sound": false,
-        "poster": 0.23
+        "poster": 0.4
       }
     },
     {
@@ -70,8 +70,8 @@
       "kind": "voice",
       "speaker": "vexana",
       "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
-      "start": 64.85,
-      "end": 66.5,
+      "start": 64.95,
+      "end": 66.75,
       "line": "Stay with me, Guinevere."
     },
     {
@@ -81,14 +81,14 @@
       "media": {
         "type": "clip",
         "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
-        "start": 7.4,
-        "end": 12.6,
+        "start": 11.4,
+        "end": 12.7,
         "crop": [0, 0, 2560, 900],
-        "poster": 2.1,
-        "alt": "Vexana reaches out a hand, then the two fight back to back against dark claws.",
+        "poster": 0.6,
+        "alt": "Vexana and Guinevere stand back to back in a ruined street as dark claws reach for them.",
         "credit": "Official Connection Lost film"
       },
-      "caption": "Stay with me, Guinevere."
+      "caption": "Back to back."
     },
     {
       "after": 31,

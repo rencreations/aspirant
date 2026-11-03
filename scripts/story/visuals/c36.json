@@ -83,7 +83,7 @@
       "kind": "clip",
       "media": {
         "src": "vexana-and-guinevere/video/connection-lost/footages/01m45s000ms-02m05s000ms/footage.mp4",
-        "alt": "Vexana, seen from behind, fires a ring of violet light from her staff.",
+        "alt": "Guinevere flies high over the platforms, then Vexana, seen from behind, fires a ring of violet light from her staff.",
         "credit": "Connection Lost, official film",
         "type": "clip",
         "start": 10.68,
@@ -100,7 +100,7 @@
       "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
       "start": 127.3,
       "end": 132.65,
-      "line": "Hope is an illusion. Its 'Will' is absolute."
+      "line": "Give up, Guinevere. Hope is an illusion. Its 'Will' is absolute."
     },
     {
       "after": 18,
@@ -124,6 +124,7 @@
       "kind": "clip",
       "media": {
         "src": "vexana-and-guinevere/video/connection-lost/footages/02m17s160ms-02m45s920ms/footage.mp4",
+        "crop": [0, 150, 2560, 930],
         "alt": "A blinding burst of white and pink light breaks open over the ruined towers.",
         "credit": "Connection Lost, official film",
         "type": "clip",

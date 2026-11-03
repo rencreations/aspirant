@@ -4,11 +4,11 @@
   "hero": {
     "type": "clip",
     "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
-    "start": 1.0,
-    "end": 3.35,
+    "start": 3.46,
+    "end": 4.86,
     "crop": [0, 136, 1920, 734],
-    "poster": 2.1,
-    "alt": "Selena in her school uniform, a lollipop stick in her fingers, turns to Silverbolt as it rises beside her under storm clouds.",
+    "poster": 0.7,
+    "alt": "Selena in her school uniform sits on a high ledge under storm clouds, Silverbolt crouched beside her.",
     "credit": "Official trailer, Day of Enders"
   },
   "heroFocus": "62% 50%",
@@ -56,7 +56,7 @@
         "credit": "Official character film, The Queen's Endgame",
         "type": "clip",
         "start": 0.8,
-        "end": 3.8,
+        "end": 3.0,
         "sound": false,
         "poster": 1.2
       }
@@ -64,17 +64,14 @@
     {
       "after": 18,
       "anchor": "Everything since had been",
-      "kind": "clip",
+      "kind": "plate",
       "caption": "The dangerous things in her head, praised as talent.",
       "media": {
+        "type": "frame",
         "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
-        "alt": "Selena in her school uniform smiles at her desk, a star-tipped pen in hand, struck by an idea.",
-        "credit": "Official character film, The Pawn's Gambit",
-        "type": "clip",
-        "start": 1.03,
-        "end": 4.03,
-        "sound": false,
-        "poster": 1.57
+        "t": 0.75,
+        "alt": "A pen sketches glowing shapes across a dark grid.",
+        "credit": "Official character film, The Pawn's Gambit"
       }
     },
     {

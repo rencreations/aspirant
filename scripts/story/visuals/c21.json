@@ -4,9 +4,9 @@
   "hero": {
     "type": "clip",
     "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
-    "start": 0.45,
-    "end": 4.35,
-    "poster": 2.2,
+    "start": 0.85,
+    "end": 4.15,
+    "poster": 1.8,
     "alt": "Seen through a window, Ruby wrings out a cloth while Layla and Fanny scrub the floor behind her and Angela watches from the side.",
     "credit": "Official Lesley and Chang'e trailer"
   },
@@ -64,8 +64,8 @@
       "media": {
         "type": "clip",
         "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
-        "start": 5.0,
-        "end": 8.0,
+        "start": 5.05,
+        "end": 7.9,
         "poster": 1.6,
         "alt": "Chang'e steps into a doorway with a clipboard and smiles, Lesley standing behind her.",
         "credit": "Official Lesley and Chang'e trailer"
@@ -83,7 +83,7 @@
         "credit": "Official Layla and Fanny teaser",
         "type": "clip",
         "start": 5.34,
-        "end": 6.99,
+        "end": 6.85,
         "sound": false,
         "poster": 1.41
       }
@@ -97,10 +97,10 @@
         "alt": "Pale planets drift through the dark among cold stars, linked by thin glowing threads.",
         "credit": "Official Obsidia lore video",
         "type": "clip",
-        "start": 8.2,
-        "end": 11.2,
+        "start": 8.55,
+        "end": 10.0,
         "sound": false,
-        "poster": 1.2
+        "poster": 0.8
       },
       "overlay": {
         "kicker": "The place",

@@ -23,12 +23,12 @@
       "media": {
         "type": "clip",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "start": 0.0,
-        "end": 4.4,
+        "start": 0.04,
+        "end": 1.36,
         "crop": [0, 136, 1920, 808],
         "sound": false,
         "poster": 0.6,
-        "alt": "A black spired ship hangs in the burning rift with smaller ships around it, and Enders stalk into the streets below.",
+        "alt": "A black spired ship hangs in the burning rift, smaller ships around it.",
         "credit": "Official trailer: Selena and Obsidia"
       }
     },
@@ -55,10 +55,10 @@
         "alt": "Seen from behind, Chang'e stands small at the foot of a tall stairway and looks up.",
         "credit": "Official trailer: Lesley and Chang'e",
         "type": "clip",
-        "start": 0.4,
-        "end": 3.4,
+        "start": 0.1,
+        "end": 2.0,
         "sound": false,
-        "poster": 1.6
+        "poster": 1.4
       }
     },
     {
@@ -74,7 +74,7 @@
         "start": 23.16,
         "end": 24.68,
         "sound": false,
-        "poster": 0.04
+        "poster": 0.8
       }
     },
     {
@@ -87,10 +87,10 @@
         "alt": "Chang'e reads two glowing screens in the middle of the fighting, fires burning behind her.",
         "credit": "Official trailer: Lesley and Chang'e",
         "type": "clip",
-        "start": 4.28,
-        "end": 7.28,
+        "start": 4.6,
+        "end": 6.35,
         "sound": false,
-        "poster": 1.22
+        "poster": 0.8
       }
     }
   ]

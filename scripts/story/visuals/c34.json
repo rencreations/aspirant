@@ -4,7 +4,7 @@
   "hero": {
     "type": "clip",
     "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
-    "start": 0.0,
+    "start": 0.04,
     "end": 3.7,
     "sound": false,
     "poster": 0.7,
@@ -82,10 +82,10 @@
         "type": "clip",
         "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
         "start": 8.2,
-        "end": 12.6,
+        "end": 11.05,
         "sound": false,
-        "poster": 2.5,
-        "alt": "On the big screen a map of the city glows red, a warning sign flashes, and red zones spread across it.",
+        "poster": 0.6,
+        "alt": "On the big screen a map of the city glows red, and a warning sign flashes on it.",
         "credit": "Official interactive drama: Guinevere and Vexana"
       }
     },

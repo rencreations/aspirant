@@ -6,8 +6,8 @@
     "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
     "credit": "Official Ruby lore video",
     "type": "clip",
-    "start": 10.4,
-    "end": 13.4,
+    "start": 10.0,
+    "end": 12.45,
     "sound": false,
     "poster": 1.2
   },
@@ -23,10 +23,10 @@
         "alt": "A small pink-haired girl looks straight ahead with wide blue eyes.",
         "credit": "Official Angela lore video",
         "type": "clip",
-        "start": 13.92,
+        "start": 14.45,
         "end": 15.84,
         "sound": false,
-        "poster": 0.98
+        "poster": 0.7
       },
       "caption": "Angela, small and pink-haired."
     },
@@ -52,10 +52,10 @@
         "alt": "A ring of tall lit pillars stands in a dark council chamber.",
         "credit": "Official Ruby lore video",
         "type": "clip",
-        "start": 0.04,
-        "end": 1.88,
+        "start": 0.45,
+        "end": 1.84,
         "sound": false,
-        "poster": 1.56
+        "poster": 0.9
       },
       "caption": "The chamber of Oro's Council."
     },

@@ -27,8 +27,8 @@
       "media": {
         "type": "clip",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "start": 5.3,
-        "end": 9.0,
+        "start": 7.0,
+        "end": 10.95,
         "crop": [0, 136, 1920, 808],
         "alt": "Guinevere and Vexana fight their way through the ruined streets, drones and staff tearing into the Enders.",
         "credit": "Selena and Obsidia, official trailer"
@@ -37,33 +37,27 @@
     {
       "after": 22,
       "anchor": "The Storm Citadel came",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 12.65,
         "crop": [0, 136, 1920, 734],
-        "alt": "Broken stones lift off a ruined street and hang in the air, the city glowing red beyond.",
-        "credit": "Selena and Obsidia, official trailer",
-        "type": "clip",
-        "start": 12.04,
-        "end": 13.46,
-        "sound": false,
-        "poster": 0.91
+        "alt": "Broken stones and rubble across a dark street, the ruins glowing red beyond.",
+        "credit": "Selena and Obsidia, official trailer"
       }
     },
     {
       "after": 39,
       "anchor": "Obsidia stood at the",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 11.7,
         "crop": [0, 136, 1920, 720],
         "alt": "Obsidia's eyes, one blue and one red, look down.",
-        "credit": "Selena and Obsidia, official trailer",
-        "type": "clip",
-        "start": 8.96,
-        "end": 11.96,
-        "sound": false,
-        "poster": 2.74
+        "credit": "Selena and Obsidia, official trailer"
       }
     },
     {
@@ -93,17 +87,14 @@
     {
       "after": 48,
       "anchor": "She lifted one finger",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
+        "t": 13.1,
         "crop": [0, 136, 1920, 808],
         "alt": "Obsidia stretches out one clawed hand, two small black holes burning at her sides.",
-        "credit": "Selena and Obsidia, official trailer",
-        "type": "clip",
-        "start": 12.04,
-        "end": 13.46,
-        "sound": false,
-        "poster": 0.96
+        "credit": "Selena and Obsidia, official trailer"
       }
     }
   ]

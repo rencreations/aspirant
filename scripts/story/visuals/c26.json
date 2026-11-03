@@ -93,7 +93,7 @@
       "media": {
         "type": "clip",
         "src": "vexana-and-guinevere/video/comic/footages/01m26s900ms-01m36s600ms/footage.mp4",
-        "start": 0.0,
+        "start": 0.5,
         "end": 5.0,
         "crop": [0, 380, 1080, 608],
         "sound": false,

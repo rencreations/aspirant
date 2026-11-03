@@ -55,7 +55,7 @@
         "credit": "Relink, official film",
         "type": "clip",
         "start": 0.2,
-        "end": 3.2,
+        "end": 2.15,
         "sound": false,
         "poster": 1.2
       }
@@ -67,9 +67,9 @@
       "media": {
         "type": "clip",
         "src": "vexana-and-guinevere/video/relink/footages/00m18s400ms-00m27s000ms/footage.mp4",
-        "start": 3.7,
-        "end": 6.8,
-        "alt": "Vexana rises to one knee on her staff under the giant winged shape, and a blazing charge of pink light swells.",
+        "start": 4.1,
+        "end": 7.38,
+        "alt": "Vexana rises to one knee on her staff, then the giant winged shape gathers a blazing ring of pink light over the ruins.",
         "credit": "Relink, official film"
       }
     },
@@ -124,13 +124,13 @@
       "kind": "clip",
       "media": {
         "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
-        "alt": "Guinevere, battered, crouches on the broken stone and glares up toward the platforms.",
+        "alt": "Guinevere lands hard and sprawls on the broken stone, then crouches, battered, and glares up toward the platforms.",
         "credit": "Official interactive drama",
         "type": "clip",
-        "start": 8.4,
-        "end": 11.4,
+        "start": 7.62,
+        "end": 10.48,
         "sound": false,
-        "poster": 1.2
+        "poster": 2.0
       }
     },
     {

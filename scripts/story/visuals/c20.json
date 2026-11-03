@@ -19,9 +19,9 @@
       "media": {
         "type": "clip",
         "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
-        "start": 8.0,
-        "end": 12.0,
-        "poster": 3.5,
+        "start": 8.4,
+        "end": 11.95,
+        "poster": 3.2,
         "alt": "Lines of code scroll past, a loading bar fills, and a red icon flashes the word DANGER.",
         "credit": "Official Ruby lore video"
       },
@@ -49,10 +49,10 @@
         "alt": "A round white robot with long ears and a black screen face, smiling.",
         "credit": "Official Lesley and Chang'e trailer",
         "type": "clip",
-        "start": 5.2,
-        "end": 8.2,
+        "start": 5.75,
+        "end": 7.5,
         "sound": false,
-        "poster": 1.2
+        "poster": 1.0
       },
       "caption": "Mr. Bunny."
     },
@@ -66,10 +66,10 @@
         "alt": "In a hall of stained glass and great stars, Vexana waits by the wall while Guinevere waves, and Lesley addresses four Aspirants at the altar.",
         "credit": "Official Connection Lost film",
         "type": "clip",
-        "start": 6.08,
+        "start": 6.6,
         "end": 8.36,
         "sound": false,
-        "poster": 1.82
+        "poster": 1.3
       },
       "caption": "Vexana by the door, Guinevere waving with her whole arm.",
       "overlay": {

@@ -65,11 +65,11 @@
       "media": {
         "type": "clip",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 30.16,
+        "start": 30.21,
         "end": 33.04,
         "crop": [0, 134, 1920, 812],
         "sound": false,
-        "poster": 1.3,
+        "poster": 1.25,
         "alt": "Fanny darts off and flies the white corridor upside down, then two thin cables pull her up and she spins with both blades out.",
         "credit": "Official Layla and Fanny trailer"
       }

@@ -4,10 +4,10 @@
   "hero": {
     "type": "clip",
     "src": "vexana-and-guinevere/video/relink/footages/00m27s000ms-00m43s000ms/footage.mp4",
-    "start": 0.0,
+    "start": 0.25,
     "end": 5.6,
     "crop": [0, 150, 2560, 820],
-    "poster": 4.6,
+    "poster": 4.35,
     "alt": "In a burst of light Guinevere arrives and stands with her back to Vexana, who kneels on the scorched stone behind her.",
     "credit": "Relink, official film"
   },
@@ -39,7 +39,7 @@
       "speaker": "guinevere",
       "src": "vexana-and-guinevere/video/interactive-drama/5C.webm",
       "start": 17.95,
-      "end": 20.2,
+      "end": 20.5,
       "line": "You're the one who needs my protection!"
     },
     {

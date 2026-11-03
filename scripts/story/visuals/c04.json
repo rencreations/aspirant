@@ -79,7 +79,7 @@
       "media": {
         "type": "image",
         "src": "layla-and-fanny/art/comic/official-aspirant-comic/26.jpg",
-        "crop": [0, 30, 1000, 1650],
+        "crop": [0, 30, 1000, 1575],
         "alt": "Fanny draws both blades, their cables glowing blue: Whatever, let's do this!",
         "credit": "Official Aspirant comic, page 26"
       }
@@ -120,7 +120,7 @@
         "type": "clip",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
         "start": 58.62,
-        "end": 64.68,
+        "end": 64.45,
         "crop": [0, 136, 1920, 808],
         "sound": false,
         "poster": 2.98,
@@ -175,11 +175,11 @@
       "media": {
         "type": "clip",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 64.74,
+        "start": 64.81,
         "end": 67.18,
         "crop": [0, 136, 1920, 808],
         "sound": false,
-        "poster": 1.56,
+        "poster": 1.49,
         "alt": "Layla stands alone before a wall of fire, then the view closes on her face, still and sad.",
         "credit": "Official Layla and Fanny trailer"
       }

@@ -24,10 +24,10 @@
         "alt": "A ring of tall pillars lights up blue around an empty circle under a shaft of light.",
         "credit": "Ruby character film",
         "type": "clip",
-        "start": 0.04,
-        "end": 1.88,
+        "start": 0.45,
+        "end": 1.84,
         "sound": false,
-        "poster": 1.46
+        "poster": 0.9
       },
       "overlay": {
         "kicker": "The place",
@@ -43,10 +43,10 @@
         "alt": "Ruby's father stands in a shaft of light in a dark hall, a fur-collared coat on his shoulders.",
         "credit": "Ruby character film",
         "type": "clip",
-        "start": 1.96,
-        "end": 4.96,
+        "start": 2.05,
+        "end": 3.9,
         "sound": false,
-        "poster": 1.14
+        "poster": 1.0
       },
       "caption": "Ruby's father"
     },
@@ -59,10 +59,10 @@
         "alt": "A red warning square with an android's outline and the word DANGER glows on a dark screen.",
         "credit": "Ruby character film",
         "type": "clip",
-        "start": 10.36,
-        "end": 12.04,
+        "start": 10.5,
+        "end": 11.95,
         "sound": false,
-        "poster": 1.04
+        "poster": 1.1
       }
     },
     {
@@ -102,7 +102,7 @@
       "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
       "start": 84.1,
-      "end": 87.0,
+      "end": 88.2,
       "line": "But what will happen to Angela?"
     },
     {
@@ -114,8 +114,8 @@
         "alt": "A line of androids with magenta eyes stands in profile; among them one girl has blue eyes.",
         "credit": "Ruby character film",
         "type": "clip",
-        "start": 5.8,
-        "end": 8.8,
+        "start": 5.9,
+        "end": 8.4,
         "sound": false,
         "poster": 1.2
       }
@@ -127,9 +127,9 @@
       "media": {
         "type": "clip",
         "src": "ruby-and-angela/video/angela/footages/01m03s200ms-01m11s720ms/footage.mp4",
-        "start": 3.8,
+        "start": 3.9,
         "end": 8.4,
-        "poster": 3.4,
+        "poster": 3.3,
         "sound": false,
         "alt": "Ruby faces Angela and will not meet her eyes; a tear runs down Ruby's cheek.",
         "credit": "Angela character film"
@@ -154,10 +154,10 @@
         "alt": "Angela laughs with her hands out as a small doll in her likeness hangs in the air between her and Ruby.",
         "credit": "Ruby character film",
         "type": "clip",
-        "start": 7.0,
-        "end": 10.0,
+        "start": 8.55,
+        "end": 9.98,
         "sound": false,
-        "poster": 2.3
+        "poster": 1.0
       },
       "caption": "Tetra"
     },
