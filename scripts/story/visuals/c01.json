@@ -105,14 +105,28 @@
     {
       "after": 16,
       "anchor": "A girl with long",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "t": 4.25,
-        "crop": [0, 134, 1920, 812],
-        "alt": "In a white corridor marked SELRICK, a girl with long pink-red twin-tails aims a long cannon, its muzzle burning blue.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In the dark a gloved hand takes up a long white cannon; in a white corridor marked SELRICK a girl with long pink-red twin-tails swings it to her shoulder and charges it until the muzzle burns blue; then she crouches in a ruined street behind the same cannon, smiling.",
+        "credit": "Official Layla and Fanny trailer and We Believe music video",
+        "poster": 1.62,
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 2.1,
+            "end": 4.64,
+            "crop": [0, 134, 1920, 812],
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/music-video/music.webm",
+            "start": 200.3,
+            "end": 204.1,
+            "crop": [0, 90, 1920, 812]
+          }
+        ]
       }
     },
     {
@@ -137,21 +151,15 @@
       "kind": "clip",
       "media": {
         "type": "sequence",
-        "xfade": 0.4,
-        "alt": "Seen from a dark corridor, Fanny stands alone in a narrow lit doorway and lights a blade in each hand; then, seen from above, Fanny and Layla race up a white spiral stair, and Layla leaps past her on the inside.",
+        "xfade": 0.2,
+        "alt": "Seen from a dark corridor, Fanny stands alone in a narrow lit doorway and lights a blade in each hand; then, seen from above, she climbs a white spiral stair and Layla leaps past her on the inside.",
         "credit": "Official Layla and Fanny trailer",
-        "poster": 0.9,
+        "poster": 0.6,
         "parts": [
           {
             "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
             "start": 4.86,
             "end": 6.64,
-            "crop": [0, 134, 1920, 812]
-          },
-          {
-            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-            "start": 6.86,
-            "end": 8.3,
             "crop": [0, 134, 1920, 812]
           },
           {
@@ -166,14 +174,28 @@
     {
       "after": 44,
       "anchor": "So Fanny mopped faster",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "t": 24.1,
-        "crop": [0, 134, 1920, 812],
-        "alt": "Seen from above through a window, Layla and Fanny race down a shining hall bent double, each pushing a floor cloth with both hands.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Layla strides into a shining hall where Fanny is mopping and starts mopping beside her, fast; seen from above through a window, the two race down the hall bent double, pushing floor cloths; then, seen from above, they race each other round a white spiral stair.",
+        "credit": "Official Layla and Fanny trailer",
+        "poster": 1.5,
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 22.2,
+            "end": 24.72,
+            "crop": [0, 134, 1920, 812],
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 6.86,
+            "end": 8.3,
+            "crop": [0, 134, 1920, 812]
+          }
+        ]
       },
       "caption": "They competed even in the smallest things."
     },

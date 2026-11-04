@@ -1,129 +1,70 @@
 {
   "chapter": "c17",
-  "mood": "A child gives Lesley her first birthday present in years. Then the city catches fire.",
+  "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
   "hero": {
-    "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
-    "alt": "Close on Lesley in a bright corridor, her hair falling over the left side of her face.",
-    "credit": "Rekindled Light trailer",
+    "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+    "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
+    "credit": "Official Ruby lore video",
     "type": "clip",
-    "start": 11.6,
-    "end": 14.6,
+    "start": 10.0,
+    "end": 12.45,
     "sound": false,
     "poster": 1.2
   },
-  "heroFocus": "50% 35%",
-  "spoiler": false,
-  "score": null,
+  "heroFocus": "57% 35%",
+  "score": "we-believe",
   "inserts": [
     {
-      "after": 7,
-      "anchor": "She had also pushed",
-      "kind": "voice",
-      "speaker": "change",
-      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
-      "start": 18.75,
-      "end": 21.7,
-      "line": "Lesley, Lesley! Meet Mr. Bunny!"
-    },
-    {
-      "after": 7,
-      "anchor": "She had also pushed",
-      "kind": "clip",
+      "after": 21,
+      "anchor": "I am Ruby, heir",
+      "kind": "place",
+      "label": "Planet Oro",
       "media": {
-        "type": "clip",
-        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "start": 11.95,
-        "end": 14.85,
-        "poster": 1.0,
-        "sound": false,
-        "alt": "Chang'e pushes a small floating robot with bunny ears at Lesley, who bends down, while two scientists watch.",
-        "credit": "Rekindled Light trailer"
-      }
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 82.36,
+        "alt": "A dark ship with blue engines flies over the towers of Oro at dusk, the sky violet above a bright horizon.",
+        "credit": "Official Ruby lore video"
+      },
+      "caption": "Oro, far away in another galaxy."
     },
     {
-      "after": 28,
-      "anchor": "She yanked a cloth",
-      "kind": "voice",
-      "speaker": "change",
-      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
-      "start": 34.55,
-      "end": 38.65,
-      "line": "Ta-da! Now you'll be the BEST sniper ever!"
+      "after": 25,
+      "anchor": "Then it will annex",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 60.8,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "A ring of tall lit pillars stands on a glowing circle in a dark council chamber, under a single beam of light.",
+        "credit": "Official Ruby lore video"
+      },
+      "caption": "The chamber of Oro's Council."
     },
     {
       "after": 29,
-      "anchor": "A rifle lay there,",
+      "anchor": "I saw that",
       "kind": "clip",
       "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
-        "alt": "In a bright lab Chang'e waves at a long red rifle hanging over a wide workbench.",
-        "credit": "Rekindled Light trailer",
-        "type": "clip",
-        "start": 7.84,
-        "end": 10.84,
-        "sound": false,
-        "poster": 0.56
-      }
-    },
-    {
-      "after": 34,
-      "anchor": "She came back to",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/00m00s000ms-00m07s200ms/footage.webm",
-        "alt": "Seen from high above at night, a city by the sea burns in several places.",
-        "credit": "Rekindled Light trailer",
-        "type": "clip",
-        "start": 1.28,
-        "end": 4.12,
-        "sound": false,
-        "poster": 1.02
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a burning ruin, a small child sits in the dust as a scythe swings into view; then the girl who holds it stands over the child, her eyes red.",
+        "credit": "Official Ruby and Angela trailer",
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 142.86,
+            "end": 144.54
+          },
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 144.74,
+            "end": 147.44
+          }
+        ]
       },
-      "overlay": {
-        "kicker": "The place",
-        "title": "Terrinia"
-      }
-    },
-    {
-      "after": 37,
-      "anchor": "From the roof she",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/00m40s640ms-00m55s480ms/footage.webm",
-        "alt": "A giant armored Ender walks between the towers of the city, flames pouring around it.",
-        "credit": "Rekindled Light trailer",
-        "type": "clip",
-        "start": 5.24,
-        "end": 7.92,
-        "sound": false,
-        "poster": 1.76
-      }
-    },
-    {
-      "after": 39,
-      "anchor": "\"No! It's a decoy!\"",
-      "kind": "voice",
-      "speaker": "lesley",
-      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
-      "start": 40.9,
-      "end": 42.75,
-      "line": "No! It's a decoy!"
-    },
-    {
-      "after": 40,
-      "anchor": "The swarms were pinning",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/00m40s640ms-00m55s480ms/footage.webm",
-        "alt": "Lesley shouts and throws out her arm against the burning city as soldiers run past her.",
-        "credit": "Rekindled Light trailer",
-        "type": "clip",
-        "start": 0.04,
-        "end": 2.24,
-        "sound": false,
-        "poster": 0.86
-      },
-      "caption": "No! It's a decoy!"
+      "caption": "The record Lesley had watched."
     }
   ]
 }

@@ -17,6 +17,7 @@ import { VoiceLine } from "./VoiceLine";
 import { ZoomImage } from "./viewer";
 import { FilmInsert } from "./FilmInsert";
 import { PORTRAIT_LINES } from "./portrait-copy";
+import { PortraitVideo } from "./PortraitVideo";
 import { ASPIRANT_NAMES, portraitFor } from "./portraits";
 import s from "./reader.module.css";
 
@@ -37,6 +38,7 @@ function Plate({ block }: { block: InsertBlock }) {
     <figure
       className={s.plate}
       data-shape={ratio >= 1.45 ? "wide" : "tall"}
+      data-alpha={media.alpha ? "true" : undefined}
       style={
         {
           "--ar": `${media.w} / ${media.h}`,
@@ -107,6 +109,18 @@ function Portrait({ block }: { block: InsertBlock }) {
   const slug = block.character ?? "";
   const person = characters.find((c) => c.slug === slug);
   if (!person) return null;
+  const film = mediaList(block.media)[0];
+  if (film?.kind === "clip") {
+    return (
+      <PortraitVideo
+        media={film}
+        name={person.name}
+        aka={ASPIRANT_NAMES[slug] ?? person.aspirantName}
+        line={PORTRAIT_LINES[slug] ?? person.tagline}
+        accent={person.palette.primary}
+      />
+    );
+  }
   const override = asImage(block.media);
   const face = portraitFor(slug);
   const src = override ? override.src : face?.src;

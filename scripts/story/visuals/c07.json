@@ -23,8 +23,7 @@
       "media": {
         "type": "image",
         "src": "extra/ai.png",
-        "crop": [180, 0, 790, 941],
-        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye.",
+        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye, drawn beside close views of its head and arm and a blue line sketch of the whole machine.",
         "credit": "Official character art"
       },
       "caption": "An AI droid, one of the Academy's helpers."
@@ -65,8 +64,8 @@
       "media": {
         "type": "image",
         "src": "extra/s.png",
-        "crop": [244, 196, 232, 290],
-        "alt": "Selena, a blonde student in a white uniform shirt, rests her chin on her hand and smiles at her desk.",
+        "crop": [40, 12, 644, 805],
+        "alt": "Selena, a blonde student with small red horns and a white uniform shirt, rests her chin on her hand and smiles at her desk, a pen in her other hand.",
         "credit": "Official video, Selena"
       }
     },

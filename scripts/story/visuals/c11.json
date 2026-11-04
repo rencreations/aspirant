@@ -2,16 +2,17 @@
   "chapter": "c11",
   "mood": "An android who has never seen the sun steps into a secret garden and makes her first friend.",
   "hero": {
-    "type": "clip",
-    "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
-    "start": 16.65,
-    "end": 22.0,
-    "poster": 1.55,
-    "sound": false,
-    "alt": "Angela spreads her arms in the sunlit grass of a garden under a glass dome, and Ruby watches her.",
-    "credit": "Official video, Ruby"
+    "type": "sequence",
+    "xfade": 0.4,
+    "poster": 1.0,
+    "alt": "In the Laboratory, Ruby and Angela drink water face to face, then Ruby works at a glowing console while Angela stands in her cables behind her.",
+    "credit": "Official trailer",
+    "parts": [
+      { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 51.42, "end": 53.26 },
+      { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 53.54, "end": 56.88 }
+    ]
   },
-  "heroFocus": "50% 40%",
+  "heroFocus": "25% 40%",
   "spoiler": false,
   "score": null,
   "inserts": [
@@ -21,24 +22,36 @@
       "kind": "place",
       "label": "The Laboratory",
       "media": {
-        "type": "image",
-        "src": "_others/places/laboratory.png",
-        "crop": [0, 182, 2560, 1076],
-        "alt": "A blue-lit laboratory where an android stands on a pedestal, held by cables, before a window full of stars.",
-        "credit": "Official art"
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "t": 58.68,
+        "alt": "Angela stands awake on her pedestal in the Laboratory, held by cables and robot arms, before a window full of stars.",
+        "credit": "Official trailer"
       }
     },
     {
       "after": 10,
       "anchor": "This was the Gardens,",
-      "kind": "place",
-      "label": "The Gardens",
+      "kind": "clip",
       "media": {
-        "type": "image",
-        "src": "_others/places/the-garden.png",
-        "crop": [0, 46, 640, 268],
-        "alt": "Green hills and a stream under a roof of glass hexagons, white flowers in the grass, two small figures walking.",
-        "credit": "Official art"
+        "type": "sequence",
+        "xfade": 0.4,
+        "poster": 2.0,
+        "alt": "Angela's hand reaches for the sun through a roof of glass hexagons, she and Ruby walk by a stream between green hills, then Angela holds out her hand to Ruby in the meadow.",
+        "credit": "Angela character film and official trailer",
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 26.9,
+            "end": 32.74,
+            "spanCuts": true
+          },
+          { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 64.68, "end": 70.12 }
+        ]
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Gardens"
       }
     },
     {
@@ -66,41 +79,36 @@
       "anchor": "Angela held out both",
       "kind": "clip",
       "media": {
-        "src": "ruby-and-angela/video/ruby/footages/00m20s000ms-00m44s920ms/footage.mp4",
-        "alt": "Angela reaches out to Ruby with a happy smile, and Ruby looks back, caught off guard.",
+        "type": "sequence",
+        "xfade": 0.4,
+        "poster": 1.0,
+        "alt": "Angela spreads her arms and turns in the sunny grass of the Gardens, Ruby looks on, caught off guard, then Angela runs to her and takes her hand.",
         "credit": "Official video, Ruby",
-        "type": "clip",
-        "start": 21.88,
-        "end": 24.6,
-        "sound": false,
-        "poster": 1.32
+        "parts": [
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 36.7, "end": 39.25 },
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 39.95, "end": 44.6 }
+        ]
       }
     },
     {
       "after": 17,
       "anchor": "Android Angela, said a",
-      "kind": "place",
-      "label": "The Training Field",
-      "media": {
-        "type": "image",
-        "src": "_others/places/training-fields.png",
-        "alt": "A glowing training display: a wireframe arena, a marked square, and Angela's picture on the side panel.",
-        "credit": "Official art"
-      }
-    },
-    {
-      "after": 21,
-      "anchor": "The other androids struck",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "ruby-and-angela/video/angela/footages/00m34s000ms-00m46s160ms/footage.mp4",
-        "start": 2.25,
-        "end": 5.25,
-        "poster": 2.45,
-        "sound": false,
-        "alt": "Angela stands before a huge armored training droid with a blade, then lifts her face, blue eyes set.",
-        "credit": "Official video, Angela"
+        "type": "sequence",
+        "xfade": 0.3,
+        "poster": 0.5,
+        "alt": "A glowing display maps the training arena with Angela's picture on its panel, then Angela stands before a huge armored droid with a blade and lifts her face, blue eyes set.",
+        "credit": "Official video, Angela",
+        "parts": [
+          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 34.5, "end": 35.92 },
+          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 36.16, "end": 37.64 },
+          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 37.92, "end": 39.2 }
+        ]
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Training Field"
       }
     },
     {

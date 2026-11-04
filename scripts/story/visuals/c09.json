@@ -3,14 +3,14 @@
   "mood": "Two rivals made one team, a contest over chocolate, and a gift with a teal ribbon.",
   "hero": {
     "type": "sequence",
-    "xfade": 0.4,
-    "alt": "Fanny smiles warmly as she speaks, in her white shirt and red bow tie; then Layla sits at her desk with a pink gift box, blushing and looking away.",
+    "xfade": 0.3,
+    "alt": "Layla beams, eyes shut, over the tall stack of gift boxes in her arms; then she sits at her desk with a pink gift box, blushing and looking away.",
     "credit": "Official short animation, Layla and Fanny",
     "parts": [
       {
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 76.0,
-        "end": 78.55
+        "start": 0.3,
+        "end": 2.4
       },
       {
         "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
@@ -39,19 +39,22 @@
       "kind": "clip",
       "media": {
         "type": "sequence",
-        "xfade": 0.3,
-        "alt": "Fanny's blade flashes through the last drones, and Layla glares at the heap of wrecks with crosses for eyes; then Fanny looks on, puzzled, beside a scowling Layla.",
+        "xfade": 0.4,
+        "alt": "Under a FREEFORM TRAINING banner Layla aims her cannon and fires; one drone is hit and drops at her feet with crosses for eyes. Then Fanny cuts through the flock in a flash of blades, Layla stands by her one drone while Fanny stands in a heap of wrecks, and Fanny looks on, puzzled, beside a scowling Layla.",
         "credit": "Official short animation, Layla and Fanny",
+        "poster": 7.8,
         "parts": [
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 14.05,
-            "end": 15.5
+            "start": 8.16,
+            "end": 11.74,
+            "spanCuts": true
           },
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 16.25,
-            "end": 18.5
+            "start": 12.02,
+            "end": 18.46,
+            "spanCuts": true
           }
         ]
       }
@@ -63,28 +66,21 @@
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "Layla smirks, leaps the gap between roofs and lands with her arms spread, scoring 10 points; then Fanny flies up past her onto a much higher roof while Layla gapes from below.",
+        "alt": "Under a JUMP TRAINING banner Layla sets herself on the roof, smirks and leaps the gap in a burst of light, lands in a puff of dust and spreads her arms as 10 POINTS flashes up; then wind hits her, Fanny streaks past and lands on a roof far higher, and Layla gapes from the rail below.",
         "credit": "Official short animation, Layla and Fanny",
+        "poster": 7.3,
         "parts": [
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 22.82,
-            "end": 24.5
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 24.76,
-            "end": 26.02
+            "start": 19.32,
+            "end": 26.0,
+            "spanCuts": true
           },
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
             "start": 26.24,
-            "end": 28.06
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 30.92,
-            "end": 33.18
+            "end": 33.15,
+            "spanCuts": true
           }
         ]
       }
@@ -136,28 +132,20 @@
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "Layla beams over a tall stack of gift boxes and watches Fanny walk in at the door with empty hands; beside Fanny she hides a smile behind her hand until a wall of boxes appears, and she turns her back in a huff.",
+        "alt": "Layla, her arms full of gift boxes, watches Fanny walk in at the door with empty hands; beside Fanny she hides a smile behind her hand until boxes tumble down into a heap beside Fanny, and Layla turns her back in a huff.",
         "credit": "Official short animation, Layla and Fanny",
         "parts": [
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 0.3,
-            "end": 2.38
+            "start": 48.0,
+            "end": 53.78,
+            "spanCuts": true
           },
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 47.95,
-            "end": 49.58
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 57.2,
-            "end": 62.0
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 62.22,
-            "end": 65.3
+            "start": 54.08,
+            "end": 65.3,
+            "spanCuts": true
           }
         ]
       }
@@ -199,28 +187,20 @@
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "Layla glares at her desk with her arms folded until Fanny sets a pink box with a teal ribbon on it; Layla stares, then jumps in surprise and pouts as she keeps the box, Fanny beside her.",
+        "alt": "In class Layla glares at her desk with her arms folded until Fanny sets a pink box with a teal ribbon in front of her; Layla stares, Fanny smiles as she speaks, Layla jumps in surprise, then pouts and keeps the box while Fanny shuts her eyes and smiles.",
         "credit": "Official short animation, Layla and Fanny",
         "parts": [
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 66.0,
-            "end": 68.6
+            "start": 65.6,
+            "end": 72.5,
+            "spanCuts": true
           },
           {
             "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 69.8,
-            "end": 72.52
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 72.95,
-            "end": 74.8
-          },
-          {
-            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-            "start": 79.7,
-            "end": 83.36
+            "start": 72.82,
+            "end": 85.7,
+            "spanCuts": true
           }
         ]
       }

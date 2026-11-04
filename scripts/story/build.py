@@ -180,7 +180,7 @@ def build_chapter(ch: storytext.Chapter, vis: dict, plan: Plan, durations: dict)
         elif kind in ("plate", "place"):
             media_f = plan.still(ins["media"], cid, f"i{n}", kind)
         elif kind == "portrait" and ins.get("media"):
-            media_f = plan.still(ins["media"], cid, f"i{n}", "portrait")
+            media_f = plan.one(ins["media"], cid, f"i{n}", "portrait", "clip")
         elif kind == "film":
             item["public"] = ins["public"]
             item["poster"] = ins.get("poster") or re.sub(r"\.mp4$", ".jpg", ins["public"])

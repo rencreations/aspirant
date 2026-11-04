@@ -66,26 +66,23 @@
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "Fanny races low across the orange sand as blasts burst around her, charges and leaps until she hangs tiny before the gold giant's glowing head; then Layla, her cannon charging on her shoulder, shoves Fanny aside and fires a blue-white shot.",
+        "alt": "Fanny races low across the orange sand through bursts of fire, cuts past an Ender and charges on her blades until she hangs tiny before the gold giant's glowing head; the giant's chest flares and a beam of gold fire floods the screen. Then Layla, her cannon charging on her shoulder, shoves Fanny aside, aims and fires a blue-white shot into the beam, and the giant bursts in a ball of fire around a blue-white core.",
         "credit": "Official Layla and Fanny trailer",
+        "poster": 3.0,
         "parts": [
           {
             "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
             "start": 71.08,
-            "end": 72.58,
-            "crop": [0, 136, 1920, 808]
-          },
-          {
-            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-            "start": 73.04,
-            "end": 76.25,
-            "crop": [0, 136, 1920, 808]
+            "end": 77.75,
+            "crop": [0, 136, 1920, 808],
+            "spanCuts": true
           },
           {
             "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
             "start": 78.04,
-            "end": 81.5,
-            "crop": [0, 136, 1920, 808]
+            "end": 83.3,
+            "crop": [0, 136, 1920, 808],
+            "spanCuts": true
           }
         ]
       }

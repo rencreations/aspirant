@@ -35,7 +35,7 @@ SCORES = {
 SLUGS = {"fanny", "layla", "ruby", "angela", "lesley", "change", "guinevere", "vexana", "obsidia", "selena"}
 FORBIDDEN = ("fanart", "cosplay", "fanmade", "_edits", "_gameplay", "in-game-animation", "live-action", "_backup")
 MAX_CLIP_SECONDS = 8.5
-MAX_SEQUENCE_SECONDS = 24.0
+MAX_SEQUENCE_SECONDS = 30.0
 MIN_PART_SECONDS = 1.2
 CUT_MARGIN = 0.1
 # The chapters of the Layla and Fanny arc, where the owner wants real text between pictures.
@@ -144,9 +144,16 @@ def check_sequence(m: dict, where: str, errors: list[str], clip_s: list[float]) 
                 cx, cy, cw, ch_ = crop
                 if cx < 0 or cy < 0 or cw < 16 or ch_ < 16 or cx + cw > vw or cy + ch_ > vh:
                     errors.append(f"{w}: crop {crop} outside the source ({vw}x{vh})")
-        inner = inside_a_shot(str(src), s, e)
-        if inner:
-            errors.append(f"{w}: a cut at {inner[0]:.2f}s lies inside {s:.2f} to {e:.2f}: the next shot would show; end the part before the cut (with {CUT_MARGIN}s to spare)")
+        if part.get("spanCuts"):
+            # The part keeps the film's own cuts on purpose; its first and last frame must still be inside a shot.
+            for edge, label in ((s, "start"), (e, "end")):
+                near = inside_a_shot(str(src), edge, edge)
+                if near:
+                    errors.append(f"{w}: the {label} ({edge:.2f}s) is within {CUT_MARGIN}s of a cut at {near[0]:.2f}s; move it into the shot")
+        else:
+            inner = inside_a_shot(str(src), s, e)
+            if inner:
+                errors.append(f"{w}: a cut at {inner[0]:.2f}s lies inside {s:.2f} to {e:.2f}: the next shot would show; end the part before the cut (with {CUT_MARGIN}s to spare), or set \"spanCuts\": true on the part if the film's own cuts are meant to play")
         total += (e - s)
     total -= x * (len(parts))  # the dissolves between the parts and back into the first
     clip_s.append(max(total, 0))
@@ -329,7 +336,7 @@ def validate_chapter(path: Path, chapters: dict[str, storytext.Chapter]) -> tupl
             if ins.get("character") not in SLUGS:
                 errors.append(f"{where}: portrait needs character in {sorted(SLUGS)}")
             if media is not None:
-                check_media(media, f"{where} media", errors, allow=STILL_TYPES, clip_s=clip_s)
+                check_media(media, f"{where} media", errors, allow=STILL_TYPES | {"clip", "sequence"}, clip_s=clip_s)
             continue
         if media is None:
             errors.append(f"{where}: media is required")

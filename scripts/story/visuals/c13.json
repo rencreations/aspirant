@@ -2,47 +2,49 @@
   "chapter": "c13",
   "mood": "Angela is sent to save the Rioters. From far away, Ruby watches what the order really means.",
   "hero": {
-    "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
-    "alt": "Seen from behind, a small pink-haired android stands between rows of others with gray hair and pink ears.",
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "Lights come on in the dark hold of Oro's ship, among the legs of white androids; Angela hugs Tetra, a small doll of herself; seen from behind, she stands among rows of gray-haired androids; then her face, calm, with blue eyes.",
     "credit": "Angela character film",
-    "type": "clip",
-    "start": 11.04,
-    "end": 13.6,
-    "sound": false,
-    "poster": 1.76
+    "poster": 4.5,
+    "parts": [
+      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 6.8, "end": 9.26 },
+      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 9.46, "end": 10.9 },
+      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 11.1, "end": 13.78 },
+      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 14.0, "end": 15.78 }
+    ]
   },
   "heroFocus": "50% 45%",
   "spoiler": false,
   "score": null,
   "inserts": [
     {
-      "after": 5,
-      "anchor": "These are the Rioters",
-      "kind": "clip",
+      "after": 0,
+      "anchor": "Angela hung in the",
+      "kind": "plate",
       "media": {
-        "src": "ruby-and-angela/video/angela/footages/00m00s000ms-00m15s880ms/footage.mp4",
-        "alt": "Close on Angela's face, pink hair and calm blue eyes against white light.",
-        "credit": "Angela character film",
-        "type": "clip",
-        "start": 14.45,
-        "end": 15.84,
-        "sound": false,
-        "poster": 0.7
-      }
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "t": 10.64,
+        "crop": [200, 0, 1840, 1080],
+        "alt": "In the dark hold of the ship, Angela hugs Tetra to her chest: a small doll of her with pink hair, white ear pieces and wide amber eyes.",
+        "credit": "Angela character film"
+      },
+      "caption": "Tetra, pressed to Angela's chest."
     },
     {
       "after": 14,
       "anchor": "A beep came out",
       "kind": "clip",
       "media": {
-        "src": "ruby-and-angela/video/ruby/footages/01m40s320ms-01m49s440ms/footage.mp4",
-        "alt": "A lab monitor framed in red WARNING bars shows Angela's face, beside a drooping white daisy.",
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A white daisy stands before a lab screen that shows Ruby and Angela together in a sunny meadow; then the screen glows red, WARNING bars framing Angela's pictures, the daisy drooping beside it.",
         "credit": "Ruby character film",
-        "type": "clip",
-        "start": 0.5,
-        "end": 3.2,
-        "sound": false,
-        "poster": 1.0
+        "parts": [
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 86.36, "end": 89.5 },
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 100.9, "end": 103.46 }
+        ]
       }
     },
     {
@@ -63,41 +65,28 @@
     {
       "after": 20,
       "anchor": "Ruby watched a student",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "src": "ruby-and-angela/video/angela/footages/01m11s720ms-01m27s320ms/footage.mp4",
-        "alt": "Seen past an android's outstretched hands, two students sit in the dust of a ruined street at sunset.",
-        "credit": "Angela character film",
-        "type": "clip",
-        "start": 11.3,
-        "end": 14.3,
-        "sound": false,
-        "poster": 1.2
+        "type": "frame",
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "t": 84.4,
+        "alt": "Seen past an android's reaching metal hands, two Selrick students sit in the dust of a ruined street at sunset, one staring up in fear.",
+        "credit": "Angela character film"
       }
     },
     {
-      "after": 25,
-      "anchor": "Someone knocked once and",
-      "kind": "plate",
+      "after": 26,
+      "anchor": "\"Heir. The Council",
+      "kind": "clip",
       "media": {
-        "type": "image",
-        "src": "_others/character/soldiers-of-planet-oro.png",
-        "crop": [570, 30, 1040, 590],
-        "alt": "A soldier of Oro in black-gray armor, with a horned helmet and a blue visor, holding a long rifle.",
-        "credit": "Official art"
-      },
-      "caption": "A soldier of Oro"
-    },
-    {
-      "after": 31,
-      "anchor": "Engine ignition successful. Destination:",
-      "kind": "place",
-      "label": "Planet Dawnbreak",
-      "media": {
-        "type": "image",
-        "src": "_others/places/planet-dawnbreak.jpg",
-        "alt": "A white city curves around a blue bay, with a tall tower beaming green light into the sky.",
-        "credit": "Official art"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Ruby, lit red and blue, works at glowing screens marked ANGELA; then, seen from behind, she stands before a wall of screens in her dark laboratory.",
+        "credit": "Ruby character film",
+        "parts": [
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 70.7, "end": 72.94 },
+          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 73.2, "end": 75.42 }
+        ]
       }
     }
   ]

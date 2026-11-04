@@ -74,6 +74,8 @@ export interface ImageMedia {
   readonly w: number;
   readonly h: number;
   readonly color: string;
+  /** The picture has a transparent background (a cut-out): shown with no frame and no backdrop. */
+  readonly alpha?: true;
   readonly alt: string;
   readonly credit: string;
 }

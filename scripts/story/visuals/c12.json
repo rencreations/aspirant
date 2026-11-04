@@ -125,14 +125,20 @@
       "anchor": "Ruby knew what that",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "ruby-and-angela/video/angela/footages/01m03s200ms-01m11s720ms/footage.mp4",
-        "start": 3.9,
-        "end": 8.4,
-        "poster": 3.3,
-        "sound": false,
-        "alt": "Ruby faces Angela and will not meet her eyes; a tear runs down Ruby's cheek.",
-        "credit": "Angela character film"
+        "type": "sequence",
+        "xfade": 0.4,
+        "poster": 3.0,
+        "alt": "Ruby faces Angela and will not meet her eyes, a tear runs down her cheek, falls, and splashes in the dark.",
+        "credit": "Angela character film",
+        "parts": [
+          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 67.12, "end": 68.7 },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 69.19,
+            "end": 75.8,
+            "spanCuts": true
+          }
+        ]
       }
     },
     {
@@ -148,16 +154,13 @@
     {
       "after": 27,
       "anchor": "It was a doll",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 94.0,
         "alt": "Angela laughs with her hands out as a small doll in her likeness hangs in the air between her and Ruby.",
-        "credit": "Ruby character film",
-        "type": "clip",
-        "start": 8.55,
-        "end": 9.98,
-        "sound": false,
-        "poster": 1.0
+        "credit": "Ruby character film"
       },
       "caption": "Tetra"
     },

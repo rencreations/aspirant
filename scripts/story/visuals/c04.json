@@ -155,27 +155,43 @@
     {
       "after": 46,
       "anchor": "Layla came down to",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "t": 65.36,
-        "crop": [0, 136, 1920, 808],
-        "alt": "Layla stands alone and small in front of a wall of fire, her cannon at her side.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.3,
+        "poster": 1.6,
+        "alt": "High in the orange sky, Fanny sweeps her long blade through the last black Enders in a flash of light; then Layla stands alone and small in front of a wall of fire, and the view rushes in to her stricken face, the flames behind her.",
+        "credit": "Official Layla and Fanny trailer",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 63.5,
+            "end": 67.05,
+            "crop": [0, 136, 1920, 808],
+            "spanCuts": true
+          }
+        ]
       }
     },
     {
       "after": 52,
       "anchor": "Through the dome, out",
-      "kind": "plate",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "t": 69.77,
-        "crop": [0, 136, 1920, 808],
-        "alt": "A gold giant spreads its long arms as the dome shatters around it in a ring of light, a glow kindling in its chest.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.3,
+        "poster": 1.97,
+        "alt": "A gold giant pushes its long head through the dome's glowing blue hexagons; then it spreads its arms and the dome shatters around it in a ring of light; a glow kindles in its chest and bursts out in a blaze of fire.",
+        "credit": "Official Layla and Fanny trailer",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 67.33,
+            "end": 70.96,
+            "crop": [0, 136, 1920, 808],
+            "spanCuts": true
+          }
+        ]
       }
     }
   ]

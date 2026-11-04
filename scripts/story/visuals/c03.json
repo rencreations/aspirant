@@ -19,7 +19,6 @@
       "media": {
         "type": "image",
         "src": "extra/joe-hd.png",
-        "crop": [100, 0, 880, 1448],
         "alt": "Professor Joe, a young instructor with neat brown hair and a monocle, in a dark blue uniform with a white sash and a blue armband.",
         "credit": "Official character art"
       },

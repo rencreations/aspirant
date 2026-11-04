@@ -43,6 +43,10 @@ def _key(*parts) -> str:
 
 
 def _color(im: Image.Image) -> str:
+    if im.mode == "RGBA":  # judge a cut-out by what is drawn, not by the empty background
+        flat = Image.new("RGBA", im.size, (90, 90, 90, 255))
+        flat.alpha_composite(im)
+        im = flat
     small = im.convert("RGB").resize((24, 24), Image.BILINEAR)
     px = list(small.getdata())
     r = sum(p[0] for p in px) // len(px)
@@ -72,7 +76,13 @@ def _open_still(spec: dict) -> Image.Image:
     """Source image of a spec: an image file (cropped) or a video frame (cropped)."""
     t = spec["type"]
     if t == "image":
-        im = Image.open(src_path(spec["src"])).convert("RGB")
+        raw = Image.open(src_path(spec["src"]))
+        # A picture with real transparency keeps it (a cut-out has no background and no frame).
+        has_alpha = raw.mode in ("RGBA", "LA", "PA") or (raw.mode == "P" and "transparency" in raw.info)
+        if has_alpha:
+            rgba = raw.convert("RGBA")
+            has_alpha = rgba.getchannel("A").getextrema()[0] < 250
+        im = raw.convert("RGBA") if has_alpha else raw.convert("RGB")
         if spec.get("crop"):
             x, y, w, h = spec["crop"]
             im = im.crop((x, y, x + w, y + h))
@@ -106,11 +116,12 @@ def make_still(spec: dict, cid: str, role: str, size_key: str) -> dict:
     out = PUBLIC / rel
     if out.exists():
         with Image.open(out) as im:
-            return {"kind": "image", "src": rel, "w": im.width, "h": im.height, "color": _color(im), **base}
+            alpha = {"alpha": True} if im.mode == "RGBA" else {}
+            return {"kind": "image", "src": rel, "w": im.width, "h": im.height, "color": _color(im), **alpha, **base}
     im = _open_still(spec)
     color = _color(im)
     w, h = _save_webp(im, out, STILL_W[size_key], STILL_Q)
-    return {"kind": "image", "src": rel, "w": w, "h": h, "color": color, **base}
+    return {"kind": "image", "src": rel, "w": w, "h": h, "color": color, **({"alpha": True} if im.mode == "RGBA" else {}), **base}
 
 
 def make_clip(spec: dict, cid: str, role: str, size_key: str) -> dict:
