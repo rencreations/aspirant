@@ -11,6 +11,7 @@ import { asset } from "@/lib/asset";
 import { routes } from "@/lib/site";
 
 import { chapterHref } from "../chapter-href";
+import { END_KICKER, END_LEAD, END_TITLE } from "./end-copy";
 import { portraitFor } from "./portraits";
 import s from "./reader.module.css";
 import { ReaderRoot } from "./ReaderRoot";
@@ -24,13 +25,11 @@ export function EndPage({ end }: { end: EndFile }) {
     <ReaderRoot chapterId="c48" score={null}>
       <article className={s.chapter} data-chapter="c48" aria-labelledby="the-end-title">
         <header className={s.finish}>
-          <p className={s.finishKicker}>After the last page</p>
-          <h1 id="the-end-title" className={s.finishTitle}>
-            Who is who
+          <p className={s.finishKicker}>{END_KICKER}</p>
+          <h1 id="the-end-title" className={s.finishTitle} tabIndex={-1}>
+            {END_TITLE}
           </h1>
-          <p className={s.finishLead}>
-            The story stops where it stops. Here are the people in it, and when it all happened.
-          </p>
+          <p className={s.finishLead}>{END_LEAD}</p>
         </header>
         <ul className={s.castList}>
           {end.cast.map((c) => {

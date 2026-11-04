@@ -703,6 +703,7 @@
 .endRow {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 0.8rem 1.6rem;
 }
@@ -755,6 +756,16 @@
   text-transform: uppercase;
   text-wrap: balance;
   color: var(--text);
+}
+
+/* Focused when the page opens (as a chapter's title is), with no ring for a pointer. */
+.finishTitle:focus {
+  outline: none;
+}
+
+.finishTitle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 8px;
 }
 
 .finishLead {

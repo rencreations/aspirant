@@ -250,6 +250,12 @@ html.lenis body {
   overflow: clip;
 }
 
+/* A chapter page with a way back at its top: pulling down there is the story's pull to the chapter
+   before, not the browser's reload. */
+html:has([data-pull="up"]) {
+  overscroll-behavior-y: none;
+}
+
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }

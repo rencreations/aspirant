@@ -49,6 +49,8 @@ export interface ChapterEntry {
   readonly sealed: string | null;
   /** The hero's average colour. */
   readonly color: string;
+  /** The title card's focus (`heroFocus`, a CSS object-position such as "60% 40%"). */
+  readonly focus: string;
   readonly score: string | null;
   readonly first: readonly FirstFile[];
 }

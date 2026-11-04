@@ -45,6 +45,13 @@ export interface TransitionRouter {
   /** True while a transition is running. */
   isTransitioning: () => boolean;
   /**
+   * Hold the router for another page change that draws itself (the story's chapter morph): no
+   * logo transition starts until the returned release is called. Null when one is running.
+   */
+  claim: () => (() => void) | null;
+  /** False when the device is offline and the page was never opened in this tab. */
+  canOpen: (href: Route) => boolean;
+  /**
    * The first loading screen. Shows the logo and a real loading bar, runs `load` (which reports
    * progress), then opens the page through the letters of the logo. Resolves when the page is
    * fully visible.
@@ -258,14 +265,32 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     [pause, resume],
   );
 
+  const claim = useCallback(() => {
+    if (busy.current) return null;
+    busy.current = true;
+    let held = true;
+    return () => {
+      if (!held) return;
+      held = false;
+      busy.current = false;
+    };
+  }, []);
+
+  const canOpen = useCallback(
+    (href: Route) => !(isOffline() && !visited.current.has(normalisePath(href))),
+    [],
+  );
+
   const api = useMemo<TransitionRouter>(
     () => ({
       push,
       prefetch: (href) => router.prefetch(href),
       isTransitioning: () => busy.current,
+      claim,
+      canOpen,
       boot,
     }),
-    [boot, push, router],
+    [boot, canOpen, claim, push, router],
   );
 
   return (
@@ -286,6 +311,8 @@ export function useTransitionRouter(): TransitionRouter {
         push: (href: Route) => router.push(href),
         prefetch: (href: Route) => router.prefetch(href),
         isTransitioning: () => false,
+        claim: () => () => undefined,
+        canOpen: () => !isOffline(),
         boot: (load) => load(() => undefined),
       },
     [ctx, router],

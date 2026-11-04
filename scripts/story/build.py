@@ -279,6 +279,9 @@ def assemble_chapter(job: dict, durations: dict) -> tuple[dict, dict]:
         "thumb": thumb,
         "sealed": sealed if vis.get("spoiler") else None,
         "color": hero["color"],
+        # The title card's object-position, so the card at the foot of the chapter before can show
+        # the same crop of the same picture (the chapter morph opens it without a jump).
+        "focus": data["heroFocus"],
         "score": vis.get("score"),
         "first": first,
     }
@@ -348,6 +351,15 @@ def main() -> int:
     if bad:
         print(f"{bad} problems, nothing built")
         return 1
+
+    # What the last build said about the stills it made, so a rebuild writes the same records.
+    for f in sorted(OUT.glob("c[0-9][0-9].json")):
+        old = json.loads(f.read_text(encoding="utf-8"))
+        recs = [old["hero"]]
+        for blk in old["blocks"]:
+            m = blk.get("media")
+            recs.extend(m if isinstance(m, list) else [m] if m else [])
+        media.remember(recs)
 
     plan = Plan(args.jobs)
     jobs: dict[str, dict] = {}

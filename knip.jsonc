@@ -17,10 +17,9 @@
       ],
       "project": ["src/**/*.{ts,tsx}", "e2e/**/*.{ts,mjs}"],
       "ignoreDependencies": [
-        // Toolkit kept for page work (design brief): Motion for UI animation, cva for
-        // variants, lucide icons. Remove an entry once a page imports it.
+        // Toolkit kept for page work (design brief): cva for variants. Remove an entry once a
+        // page imports it (lucide icons are used by the story's chapter morph).
         "class-variance-authority",
-        "lucide-react",
       ],
     },
     "packages/ui": {

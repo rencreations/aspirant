@@ -496,6 +496,161 @@ test.describe("a chapter of the story", () => {
   });
 });
 
+/** At the very end of the page, at rest. */
+async function toEnd(page: Page) {
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => Math.ceil(window.scrollY + innerHeight) >= document.documentElement.scrollHeight - 1,
+      ),
+    )
+    .toBe(true);
+  await page.waitForTimeout(400);
+}
+
+/**
+ * Wheel steps over the middle of the screen, close together (one gesture). A step is 100 device
+ * pixels, so 50 page pixels on the phone (pixel ratio 2): the counts allow for that.
+ */
+async function wheel(page: Page, dy: number, steps: number) {
+  const size = page.viewportSize() ?? { width: 1280, height: 720 };
+  await page.mouse.move(size.width / 2, size.height / 2);
+  for (let i = 0; i < steps; i += 1) {
+    await page.mouse.wheel(0, dy);
+    await page.waitForTimeout(40);
+  }
+}
+
+/**
+ * Notes when the pull indicator comes on (the page sets its opacity to 1). It drains again soon
+ * after the wheel stops, and on a busy machine a poll of its opacity can miss it.
+ */
+async function watchPull(page: Page, which: "up" | "down") {
+  await page.evaluate((w) => {
+    const el = document.querySelector<HTMLElement>(`[data-pull="${w}"]`);
+    const flag = window as unknown as { __pullShown?: boolean };
+    flag.__pullShown = false;
+    if (!el) return;
+    new MutationObserver(() => {
+      if (el.style.opacity === "1") flag.__pullShown = true;
+    }).observe(el, { attributes: true, attributeFilter: ["style"] });
+  }, which);
+}
+
+const pullShown = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __pullShown?: boolean }).__pullShown === true);
+
+/** The page has landed: no morph layer is left, the scroll is free again. */
+async function landed(page: Page) {
+  await expect(page.locator("[data-morph]")).toHaveCount(0, { timeout: 15_000 });
+}
+
+const door = (page: Page) => page.locator('nav[aria-label="Chapters"]').getByRole("link").first();
+
+test.describe("moving between chapters (the chapter morph)", () => {
+  test("the card opens the next chapter: at its top, its heading focused, the bar bare", async ({
+    page,
+    baseURL,
+  }) => {
+    const errors = watchErrors(page);
+    await openChapter(page, "chapter-05");
+    await toEnd(page);
+    await door(page).click();
+    // The layer takes over the screen (the logo curtain does not).
+    await expect(page.locator("[data-morph]")).toBeAttached();
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 15_000 })
+      .toBe("/story/chapter-06/");
+    await landed(page);
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.locator("h1")).toContainText("All Rested Up?");
+    await expect(page.locator("h1")).toBeFocused();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    const nav = page.locator('header[data-overlay="nav"]');
+    await expect(nav).toHaveAttribute("data-bare", "true");
+    await expect(nav).toHaveAttribute("data-lock", "true");
+    expect(errors).toEqual([]);
+  });
+
+  test("the wheel at the bottom shows the pull, and past it opens the next chapter", async ({
+    page,
+    baseURL,
+  }) => {
+    await openChapter(page, "chapter-05");
+    await toEnd(page);
+    await watchPull(page, "down");
+    await wheel(page, 100, 3);
+    await expect.poll(() => pullShown(page)).toBe(true);
+    await expect(page.locator('[data-pull="down"]')).toContainText("Chapter 6");
+    // Big steps, so the pull fills even when the steps come slowly and it drains between them.
+    await wheel(page, 300, 8);
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 15_000 })
+      .toBe("/story/chapter-06/");
+    await landed(page);
+    await expect(page.locator("h1")).toContainText("All Rested Up?");
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  test("the wheel up at the top opens the chapter before at its end, with its card on screen", async ({
+    page,
+    baseURL,
+  }) => {
+    await openChapter(page, "chapter-06");
+    await page.waitForTimeout(400);
+    await watchPull(page, "up");
+    await wheel(page, -100, 3);
+    await expect.poll(() => pullShown(page)).toBe(true);
+    await wheel(page, -300, 8);
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 15_000 })
+      .toBe("/story/chapter-05/");
+    await landed(page);
+    await expect(page.locator("h1")).toContainText("Cover Me");
+    await expect(door(page)).toContainText("Chapter 6");
+    await expect.poll(() => inViewport(page, 'nav[aria-label="Chapters"] a')).toBe(true);
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    await expect(page.locator('header[data-overlay="nav"]')).not.toHaveAttribute(
+      "data-bare",
+      "true",
+    );
+  });
+
+  test("Before opens the chapter before at its top", async ({ page, baseURL }) => {
+    await openChapter(page, "chapter-06");
+    await toEnd(page);
+    await page.getByRole("link", { name: "Before: Cover Me" }).click();
+    await expect
+      .poll(() => sitePath(page, baseURL), { timeout: 15_000 })
+      .toBe("/story/chapter-05/");
+    await landed(page);
+    await expect(page.locator("h1")).toContainText("Cover Me");
+    await expect(page.locator("h1")).toBeFocused();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page.locator('header[data-overlay="nav"]')).toHaveAttribute("data-bare", "true");
+  });
+
+  test("a modified click on the card opens the plain link, and nothing moves here", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await openChapter(page, "chapter-05");
+    await toEnd(page);
+    const [opened] = await Promise.all([
+      context.waitForEvent("page"),
+      door(page).click({ modifiers: ["ControlOrMeta"] }),
+    ]);
+    await expect
+      .poll(() => sitePath(opened, baseURL), { timeout: 15_000 })
+      .toBe("/story/chapter-06/");
+    await opened.close();
+    expect(sitePath(page, baseURL)).toBe("/story/chapter-05/");
+    await expect(page.locator("[data-morph]")).toHaveCount(0);
+  });
+});
+
 test("an old /experience/ address goes to the story, and a chapter link to a chapter", async ({
   page,
   baseURL,

@@ -14,6 +14,7 @@ import { LanternCursor } from "@/components/lantern-cursor";
 import { LoaderGate, SHELL_ID } from "@/components/loader-gate";
 import { SiteNav } from "@/components/nav/site-nav";
 import { SiteProviders } from "@/components/site-providers";
+import { MorphLayer } from "@/features/story/morph/morph-layer";
 import { RELOAD_KEY, RELOAD_WINDOW_MS } from "@/lib/chunk-guard";
 import { ENTERED_KEY } from "@/lib/stores";
 import { siteConfig } from "@/lib/site";
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               {children}
             </main>
           </div>
+          <MorphLayer />
           <LanternCursor />
           <FocusStar />
           <LoaderGate />

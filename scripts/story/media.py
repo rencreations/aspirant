@@ -30,6 +30,19 @@ CLIP_CRF = {"hero": 27, "clip": 28}
 THUMB_W = 640
 
 
+# Facts about stills already made (their color, whether they are cut-outs), read from the data the
+# last build wrote (`remember`). A still that exists is not made again, and its file alone cannot
+# say all of it: a cut-out cropped to opaque pixels is saved without transparency.
+KNOWN: dict[str, dict] = {}
+
+
+def remember(records: list[dict]) -> None:
+    """Keep the color and the cut-out flag of the stills the last build wrote."""
+    for rec in records:
+        if rec.get("kind") == "image" and rec.get("src", "").startswith("img/story/") and rec.get("color"):
+            KNOWN[rec["src"]] = {"color": rec["color"], "alpha": bool(rec.get("alpha"))}
+
+
 @dataclass
 class Made:
     """What a media spec became: URLs relative to `public/` plus facts the page needs."""
@@ -115,7 +128,13 @@ def make_still(spec: dict, cid: str, role: str, size_key: str) -> dict:
     rel = f"img/story/{cid}/{role}-{key}.webp"
     out = PUBLIC / rel
     if out.exists():
+        known = KNOWN.get(rel)
         with Image.open(out) as im:
+            if known:
+                # What the build that made the file said about it (its color and whether it is a
+                # cut-out), so building again changes nothing.
+                alpha = {"alpha": True} if known.get("alpha") else {}
+                return {"kind": "image", "src": rel, "w": im.width, "h": im.height, "color": known["color"], **alpha, **base}
             alpha = {"alpha": True} if im.mode == "RGBA" else {}
             return {"kind": "image", "src": rel, "w": im.width, "h": im.height, "color": _color(im), **alpha, **base}
     im = _open_still(spec)

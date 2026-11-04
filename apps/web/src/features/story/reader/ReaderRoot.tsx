@@ -34,10 +34,13 @@ function chromeHeight(): number {
 export function ReaderRoot({
   chapterId,
   score,
+  aside,
   children,
 }: {
   chapterId: string;
   score: string | null;
+  /** Fixed things that sit over the page, outside the moving column (the pulls of a chapter). */
+  aside?: ReactNode;
   children: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -109,7 +112,9 @@ export function ReaderRoot({
     };
   }, []);
 
-  useEffect(
+  // Let the bar go when the story is left. A layout cleanup: from one chapter to the next it runs
+  // before the new chapter sets the lock again (a passive cleanup would run after, and clear it).
+  useIsoLayoutEffect(
     () => () => {
       useNavLock.setState({ theme: null, bare: false });
     },
@@ -154,12 +159,14 @@ export function ReaderRoot({
       <div
         ref={rootRef}
         className={s.reader}
+        data-reader=""
         data-theme={theme}
         style={{ "--rd-scale": textScale } as CSSProperties}
       >
         <ViewerProvider>{children}</ViewerProvider>
       </div>
       <MiniBar />
+      {aside}
     </ReaderContext.Provider>
   );
 }
