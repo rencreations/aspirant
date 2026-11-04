@@ -39,7 +39,7 @@ MAX_SEQUENCE_SECONDS = 30.0
 MIN_PART_SECONDS = 1.2
 CUT_MARGIN = 0.1
 # The chapters of the Layla and Fanny arc, where the owner wants real text between pictures.
-STRICT_SPACING = {"c00", "c01", "c02", "c03", "c04", "c05", "c09"}
+STRICT_SPACING = {"c00", "c01", "c02", "c03", "c04", "c05", "c08"}
 MIN_WORDS_BETWEEN = 45
 EXTRA = HERE / "extra"
 

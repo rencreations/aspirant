@@ -8,10 +8,26 @@
     "credit": "Angela character film",
     "poster": 4.5,
     "parts": [
-      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 6.8, "end": 9.26 },
-      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 9.46, "end": 10.9 },
-      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 11.1, "end": 13.78 },
-      { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 14.0, "end": 15.78 }
+      {
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "start": 6.8,
+        "end": 9.26
+      },
+      {
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "start": 9.46,
+        "end": 10.9
+      },
+      {
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "start": 11.1,
+        "end": 13.78
+      },
+      {
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "start": 14.0,
+        "end": 15.78
+      }
     ]
   },
   "heroFocus": "50% 45%",
@@ -42,22 +58,27 @@
         "alt": "A white daisy stands before a lab screen that shows Ruby and Angela together in a sunny meadow; then the screen glows red, WARNING bars framing Angela's pictures, the daisy drooping beside it.",
         "credit": "Ruby character film",
         "parts": [
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 86.36, "end": 89.5 },
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 100.9, "end": 103.46 }
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 86.36,
+            "end": 89.5
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 100.9,
+            "end": 103.46
+          }
         ]
       }
     },
     {
       "after": 17,
       "anchor": "It was evening, and",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "ruby-and-angela/video/trailer/footages/00m00s000ms-00m09s960ms/footage.mp4",
-        "start": 0.0,
-        "end": 3.6,
-        "poster": 1.6,
-        "sound": false,
+        "t": 1.6,
         "alt": "A ship flies over a burning city at sunset while giant Enders stand among the towers.",
         "credit": "The Aspirants: Awakening trailer"
       }
@@ -84,8 +105,16 @@
         "alt": "Ruby, lit red and blue, works at glowing screens marked ANGELA; then, seen from behind, she stands before a wall of screens in her dark laboratory.",
         "credit": "Ruby character film",
         "parts": [
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 70.7, "end": 72.94 },
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 73.2, "end": 75.42 }
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 70.7,
+            "end": 72.94
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 73.2,
+            "end": 75.42
+          }
         ]
       }
     }

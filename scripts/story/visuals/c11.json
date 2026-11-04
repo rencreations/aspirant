@@ -8,8 +8,16 @@
     "alt": "In the Laboratory, Ruby and Angela drink water face to face, then Ruby works at a glowing console while Angela stands in her cables behind her.",
     "credit": "Official trailer",
     "parts": [
-      { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 51.42, "end": 53.26 },
-      { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 53.54, "end": 56.88 }
+      {
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "start": 51.42,
+        "end": 53.26
+      },
+      {
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "start": 53.54,
+        "end": 56.88
+      }
     ]
   },
   "heroFocus": "25% 40%",
@@ -46,7 +54,11 @@
             "end": 32.74,
             "spanCuts": true
           },
-          { "src": "ruby-and-angela/video/trailer/trailer-final.mp4", "start": 64.68, "end": 70.12 }
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 64.68,
+            "end": 70.12
+          }
         ]
       },
       "overlay": {
@@ -85,8 +97,16 @@
         "alt": "Angela spreads her arms and turns in the sunny grass of the Gardens, Ruby looks on, caught off guard, then Angela runs to her and takes her hand.",
         "credit": "Official video, Ruby",
         "parts": [
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 36.7, "end": 39.25 },
-          { "src": "ruby-and-angela/video/ruby/ruby-final.mp4", "start": 39.95, "end": 44.6 }
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 36.7,
+            "end": 39.25
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 39.95,
+            "end": 44.6
+          }
         ]
       }
     },
@@ -101,9 +121,21 @@
         "alt": "A glowing display maps the training arena with Angela's picture on its panel, then Angela stands before a huge armored droid with a blade and lifts her face, blue eyes set.",
         "credit": "Official video, Angela",
         "parts": [
-          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 34.5, "end": 35.92 },
-          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 36.16, "end": 37.64 },
-          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 37.92, "end": 39.2 }
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 34.5,
+            "end": 35.92
+          },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 36.16,
+            "end": 37.64
+          },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 37.92,
+            "end": 39.2
+          }
         ]
       },
       "overlay": {
@@ -114,16 +146,13 @@
     {
       "after": 29,
       "anchor": "A month later the",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 0.88,
         "alt": "Angela flies through the air above the training droid amid a burst of pink flame.",
-        "credit": "Official video, Angela",
-        "type": "clip",
-        "start": 0.04,
-        "end": 1.72,
-        "sound": false,
-        "poster": 0.56
+        "credit": "Official video, Angela"
       }
     },
     {
@@ -164,16 +193,13 @@
     {
       "after": 44,
       "anchor": "You're my friend, so",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 15.68,
         "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
-        "credit": "Official video, Angela",
-        "type": "clip",
-        "start": 15.0,
-        "end": 16.35,
-        "sound": false,
-        "poster": 0.6
+        "credit": "Official video, Angela"
       }
     },
     {
@@ -189,16 +215,13 @@
     {
       "after": 52,
       "anchor": "After the sixth return",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 4.02,
         "alt": "A white daisy losing its petals beside a screen that shows Angela and Ruby in the garden.",
-        "credit": "Official video, Ruby",
-        "type": "clip",
-        "start": 2.52,
-        "end": 5.52,
-        "sound": false,
-        "poster": 1.88
+        "credit": "Official video, Ruby"
       }
     }
   ]

@@ -125,7 +125,7 @@ describe("the chapter files", () => {
   });
 
   it("keep real text between the pictures of the Layla and Fanny arc, and no video under 3 seconds", () => {
-    const ARC = ["c00", "c01", "c02", "c03", "c04", "c05", "c09"];
+    const ARC = ["c00", "c01", "c02", "c03", "c04", "c05", "c08"];
     for (const id of ARC) {
       const chapter = read<Chapter>(`${id}.json`);
       if (chapter.hero.kind === "clip")

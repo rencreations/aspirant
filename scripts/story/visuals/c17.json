@@ -2,16 +2,13 @@
   "chapter": "c17",
   "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
   "hero": {
+    "type": "frame",
     "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+    "t": 11.22,
     "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
-    "credit": "Official Ruby lore video",
-    "type": "clip",
-    "start": 10.0,
-    "end": 12.45,
-    "sound": false,
-    "poster": 1.2
+    "credit": "Official Ruby lore video"
   },
-  "heroFocus": "57% 35%",
+  "heroFocus": "75% 62%",
   "score": "we-believe",
   "inserts": [
     {

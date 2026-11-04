@@ -20,19 +20,14 @@
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "A small dark-haired girl hugs a pink doll in a dark hall of pillars while squares of light drift past her; a glowing cube sweeps over her, and she stands in the same hall older, in white and gold with a red bow.",
+        "alt": "A small dark-haired girl hugs a pink doll in a dark hall of pillars while squares of light drift past her; a glowing cube sweeps over her, and she stands in the same hall older, in white and gold with a red bow, until a dark shape slides across in front of her and the hall goes dark.",
         "credit": "Official video, Ruby",
         "poster": 1.6,
         "parts": [
           {
             "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
             "start": 4.48,
-            "end": 8.45
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 10.05,
-            "end": 12.15
+            "end": 13.74
           }
         ]
       }

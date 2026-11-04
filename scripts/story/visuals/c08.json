@@ -1,47 +1,208 @@
 {
   "chapter": "c08",
-  "mood": "Five days into the rebuilding, Layla unlocks a door at midnight and shows Fanny what she has been hiding.",
+  "mood": "Two rivals made one team, a contest over chocolate, and a gift with a teal ribbon.",
   "hero": {
-    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-    "crop": [0, 132, 1920, 816],
-    "alt": "Layla works at a cluttered console in a dark room as its screen flashes red with warnings, and small black drones with scowling faces hover around her.",
-    "credit": "Official trailer, Layla and Fanny",
-    "type": "clip",
-    "start": 3.0,
-    "end": 6.0,
-    "sound": false,
-    "poster": 0.0
+    "type": "sequence",
+    "xfade": 0.3,
+    "alt": "Layla beams, eyes shut, over the tall stack of gift boxes in her arms; then she sits at her desk with a pink gift box, blushing and looking away.",
+    "credit": "Official short animation, Layla and Fanny",
+    "parts": [
+      {
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "start": 0.3,
+        "end": 2.4
+      },
+      {
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "start": 90.15,
+        "end": 92.05
+      }
+    ]
   },
-  "heroFocus": "35% 50%",
+  "heroFocus": "50% 40%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
     {
-      "after": 24,
-      "anchor": "The cannon lay across",
+      "after": 12,
+      "anchor": "Why am I",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 16.05,
+      "end": 18.9,
+      "line": "Why am I always the one getting hurt...?"
+    },
+    {
+      "after": 13,
+      "anchor": "Fanny looked at her,",
       "kind": "clip",
       "media": {
-        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
-        "crop": [1000, 200, 920, 700],
-        "alt": "A gold trophy beside a screen that flashes red with warnings, a scowling drone, and a seedling under a glass dome.",
-        "credit": "Official trailer, Layla and Fanny",
-        "type": "clip",
-        "start": 3.0,
-        "end": 6.0,
-        "sound": false,
-        "poster": 0.15
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Under a FREEFORM TRAINING banner Layla aims her cannon and fires; one drone is hit and drops at her feet with crosses for eyes. Then Fanny cuts through the flock in a flash of blades, Layla stands by her one drone while Fanny stands in a heap of wrecks, and Fanny looks on, puzzled, beside a scowling Layla.",
+        "credit": "Official short animation, Layla and Fanny",
+        "poster": 7.8,
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 8.16,
+            "end": 11.74,
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 12.02,
+            "end": 18.46,
+            "spanCuts": true
+          }
+        ]
       }
     },
     {
-      "after": 41,
-      "anchor": "Fanny sat alone on",
-      "kind": "place",
-      "label": "Selrick Academy",
+      "after": 16,
+      "anchor": "Layla stood there with",
+      "kind": "clip",
       "media": {
-        "type": "image",
-        "src": "_others/places/selrick-academy.jpg",
-        "alt": "The plaza in front of Selrick Academy under a violet evening sky, with a tall spire and empty benches.",
-        "credit": "Official art"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Under a JUMP TRAINING banner Layla sets herself on the roof, smirks and leaps the gap in a burst of light, lands in a puff of dust and spreads her arms as 10 POINTS flashes up; then wind hits her, Fanny streaks past and lands on a roof far higher, and Layla gapes from the rail below.",
+        "credit": "Official short animation, Layla and Fanny",
+        "poster": 7.3,
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 19.32,
+            "end": 26.0,
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 26.24,
+            "end": 33.15,
+            "spanCuts": true
+          }
+        ]
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "Then came the day",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 4.95,
+      "end": 7.3,
+      "line": "Hah, you won't be beating me this time!"
+    },
+    {
+      "after": 19,
+      "anchor": "Ah, she didn't",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 49.65,
+      "end": 52.9,
+      "line": "Ah, she didn't get chocolate, did she?"
+    },
+    {
+      "after": 20,
+      "anchor": "Layla hid her smile",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 54.3,
+      "end": 59.7,
+      "line": "Fanny, did you get any chocolate? I've received tons!"
+    },
+    {
+      "after": 22,
+      "anchor": "Humph. She turned",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 63.1,
+      "end": 64.2,
+      "line": "Humph."
+    },
+    {
+      "after": 22,
+      "anchor": "Humph. She turned",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Layla, her arms full of gift boxes, watches Fanny walk in at the door with empty hands; beside Fanny she hides a smile behind her hand until boxes tumble down into a heap beside Fanny, and Layla turns her back in a huff.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 48.0,
+            "end": 53.78,
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 54.08,
+            "end": 65.3,
+            "spanCuts": true
+          }
+        ]
+      }
+    },
+    {
+      "after": 23,
+      "anchor": "In class she sat",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 67.6,
+      "end": 70.0,
+      "line": "I'll win next time for sure!"
+    },
+    {
+      "after": 25,
+      "anchor": "This is for you,",
+      "kind": "voice",
+      "speaker": "fanny",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 76.5,
+      "end": 79.2,
+      "line": "This is for you, my teammate!"
+    },
+    {
+      "after": 26,
+      "anchor": "For me? Well.....",
+      "kind": "voice",
+      "speaker": "layla",
+      "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+      "start": 79.3,
+      "end": 85.95,
+      "line": "For me? Well..... It'd sure be rude of me not to accept your kind gift!"
+    },
+    {
+      "after": 26,
+      "anchor": "For me? Well.....",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In class Layla glares at her desk with her arms folded until Fanny sets a pink box with a teal ribbon in front of her; Layla stares, Fanny smiles as she speaks, Layla jumps in surprise, then pouts and keeps the box while Fanny shuts her eyes and smiles.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 65.6,
+            "end": 72.5,
+            "spanCuts": true
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 72.82,
+            "end": 85.7,
+            "spanCuts": true
+          }
+        ]
       }
     }
   ]

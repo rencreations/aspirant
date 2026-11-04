@@ -13,19 +13,6 @@
   "score": "we-believe",
   "inserts": [
     {
-      "after": 12,
-      "anchor": "Angela closed her arm",
-      "kind": "plate",
-      "media": {
-        "type": "image",
-        "src": "_others/character/tetra.png",
-        "crop": [410, 30, 846, 860],
-        "alt": "Tetra, a small doll of Angela with pink hair, rabbit-like ears and a white coat with a pink star.",
-        "credit": "Official art"
-      },
-      "caption": "Tetra"
-    },
-    {
       "after": 21,
       "anchor": "He could not remember",
       "kind": "plate",

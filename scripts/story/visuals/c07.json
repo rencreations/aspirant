@@ -1,85 +1,47 @@
 {
   "chapter": "c07",
-  "mood": "The youngest Chief Scientist in Terrinia mends everyone's machines. She wants one thing more, and Lesley says no.",
+  "mood": "Five days into the rebuilding, Layla unlocks a door at midnight and shows Fanny what she has been hiding.",
   "hero": {
+    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
+    "crop": [0, 132, 1920, 816],
+    "alt": "Layla works at a cluttered console in a dark room as its screen flashes red with warnings, and small black drones with scowling faces hover around her.",
+    "credit": "Official trailer, Layla and Fanny",
     "type": "clip",
-    "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
-    "start": 0.3,
-    "end": 5.0,
-    "crop": [320, 0, 1920, 1080],
-    "poster": 2.7,
+    "start": 3.0,
+    "end": 6.0,
     "sound": false,
-    "alt": "Chang'e in her lab coat carries a box of tools across a bright laboratory while Mr. Bunny floats by the bench.",
-    "credit": "Official trailer, Chang'e and Lesley"
+    "poster": 0.0
   },
-  "heroFocus": "40% 45%",
+  "heroFocus": "35% 50%",
   "spoiler": false,
-  "score": null,
+  "score": "we-believe",
   "inserts": [
     {
-      "after": 3,
-      "anchor": "Her wall screen listed",
-      "kind": "plate",
-      "media": {
-        "type": "image",
-        "src": "extra/ai.png",
-        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye, drawn beside close views of its head and arm and a blue line sketch of the whole machine.",
-        "credit": "Official character art"
-      },
-      "caption": "An AI droid, one of the Academy's helpers."
-    },
-    {
-      "after": 9,
-      "anchor": "Chang'e laughed until she",
-      "kind": "portrait",
-      "character": "change",
-      "media": {
-        "type": "image",
-        "src": "lesley-and-change/art/lore/5 - end.jpg",
-        "crop": [244, 152, 400, 500],
-        "alt": "Chang'e laughing, with round glasses, pink hair and white bunny-ear clips.",
-        "credit": "Official art"
-      }
-    },
-    {
-      "after": 12,
-      "anchor": "Chang'e flipped the photograph",
+      "after": 24,
+      "anchor": "The cannon lay across",
       "kind": "clip",
       "media": {
+        "src": "layla-and-fanny/video/official/lore/trailer/footages/00m21s875ms-00m28s250ms/footage.webm",
+        "crop": [1000, 200, 920, 700],
+        "alt": "A gold trophy beside a screen that flashes red with warnings, a scowling drone, and a seedling under a glass dome.",
+        "credit": "Official trailer, Layla and Fanny",
         "type": "clip",
-        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "start": 5.7,
-        "end": 9.6,
-        "poster": 3.3,
+        "start": 3.0,
+        "end": 6.0,
         "sound": false,
-        "alt": "Mr. Bunny sits on a desk, and beside him stands a framed photograph of two tall people holding a small girl.",
-        "credit": "Official trailer, Chang'e and Lesley"
+        "poster": 0.15
       }
     },
     {
-      "after": 18,
-      "anchor": "Just Selena, said Selena.",
-      "kind": "portrait",
-      "character": "selena",
+      "after": 41,
+      "anchor": "Fanny sat alone on",
+      "kind": "place",
+      "label": "Selrick Academy",
       "media": {
         "type": "image",
-        "src": "extra/s.png",
-        "crop": [40, 12, 644, 805],
-        "alt": "Selena, a blonde student with small red horns and a white uniform shirt, rests her chin on her hand and smiles at her desk, a pen in her other hand.",
-        "credit": "Official video, Selena"
-      }
-    },
-    {
-      "after": 24,
-      "anchor": "A dark visor covered",
-      "kind": "portrait",
-      "character": "lesley",
-      "media": {
-        "type": "image",
-        "src": "lesley-and-change/art/official/lesley-splash-art.jpg",
-        "crop": [929, 0, 1152, 1440],
-        "alt": "Lesley in her white officer's coat leaps across a steel beam above the city, her long rifle in her hand.",
-        "credit": "Official splash art"
+        "src": "_others/places/selrick-academy.jpg",
+        "alt": "The plaza in front of Selrick Academy under a violet evening sky, with a tall spire and empty benches.",
+        "credit": "Official art"
       }
     }
   ]

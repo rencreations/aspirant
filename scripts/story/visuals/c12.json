@@ -17,36 +17,27 @@
     {
       "after": 2,
       "anchor": "Oro's three powers ruled",
-      "kind": "clip",
-      "caption": "Where Oro's three powers cast their votes",
+      "kind": "place",
+      "label": "The Council",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 1.15,
         "alt": "A ring of tall pillars lights up blue around an empty circle under a shaft of light.",
-        "credit": "Ruby character film",
-        "type": "clip",
-        "start": 0.45,
-        "end": 1.84,
-        "sound": false,
-        "poster": 0.9
+        "credit": "Ruby character film"
       },
-      "overlay": {
-        "kicker": "The place",
-        "title": "The Council"
-      }
+      "caption": "Where Oro's three powers cast their votes"
     },
     {
       "after": 5,
       "anchor": "They make weapons from",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 2.97,
         "alt": "Ruby's father stands in a shaft of light in a dark hall, a fur-collared coat on his shoulders.",
-        "credit": "Ruby character film",
-        "type": "clip",
-        "start": 2.05,
-        "end": 3.9,
-        "sound": false,
-        "poster": 1.0
+        "credit": "Ruby character film"
       },
       "caption": "Ruby's father"
     },
@@ -108,16 +99,13 @@
     {
       "after": 19,
       "anchor": "The hangar was cold.",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
+        "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 7.15,
         "alt": "A line of androids with magenta eyes stands in profile; among them one girl has blue eyes.",
-        "credit": "Ruby character film",
-        "type": "clip",
-        "start": 5.9,
-        "end": 8.4,
-        "sound": false,
-        "poster": 1.2
+        "credit": "Ruby character film"
       }
     },
     {
@@ -131,7 +119,11 @@
         "alt": "Ruby faces Angela and will not meet her eyes, a tear runs down her cheek, falls, and splashes in the dark.",
         "credit": "Angela character film",
         "parts": [
-          { "src": "ruby-and-angela/video/angela/angela-final.mp4", "start": 67.12, "end": 68.7 },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 67.12,
+            "end": 68.7
+          },
           {
             "src": "ruby-and-angela/video/angela/angela-final.mp4",
             "start": 69.19,

@@ -92,22 +92,17 @@
       "kind": "clip",
       "media": {
         "type": "sequence",
-        "xfade": 0.2,
-        "poster": 2.4,
-        "alt": "A burning hole in a Welcome to Terrinia billboard, the shot's path running on between the walls of a tower, then Layla on a far rooftop at sunset, her long cannon at her shoulder.",
+        "xfade": 0.3,
+        "poster": 3.2,
+        "alt": "A tall gray Ender rises against an orange sky full of falling Enders and turns its glowing yellow eyes; a white-blue bolt strikes its head and blows out in light; the view rushes back along the shot, out through a burning ring, through the hole in a Welcome to Terrinia billboard and between the towers, to Layla on a far rooftop at sunset, her long cannon at her shoulder.",
         "credit": "Official Layla and Fanny trailer",
         "parts": [
           {
             "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-            "start": 53.94,
-            "end": 55.98,
-            "crop": [0, 136, 1920, 808]
-          },
-          {
-            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-            "start": 57.06,
+            "start": 50.77,
             "end": 58.48,
-            "crop": [0, 136, 1920, 808]
+            "crop": [0, 136, 1920, 808],
+            "spanCuts": true
           }
         ]
       }
@@ -155,22 +150,14 @@
     {
       "after": 46,
       "anchor": "Layla came down to",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "sequence",
-        "xfade": 0.3,
-        "poster": 1.6,
-        "alt": "High in the orange sky, Fanny sweeps her long blade through the last black Enders in a flash of light; then Layla stands alone and small in front of a wall of fire, and the view rushes in to her stricken face, the flames behind her.",
-        "credit": "Official Layla and Fanny trailer",
-        "parts": [
-          {
-            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-            "start": 63.5,
-            "end": 67.05,
-            "crop": [0, 136, 1920, 808],
-            "spanCuts": true
-          }
-        ]
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "t": 65.53,
+        "crop": [320, 136, 1280, 808],
+        "alt": "Layla stands alone on the broken street in front of a towering wall of fire, her long red twin tails hanging and her white cannon hanging from one hand.",
+        "credit": "Official Layla and Fanny trailer"
       }
     },
     {
