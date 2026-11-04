@@ -20,6 +20,8 @@ from PIL import Image
 import storytext
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE / "tools"))
+from shots import cuts as shot_cuts  # noqa: E402
 VISUALS = HERE / "visuals"
 MEDIA = Path(__import__("os").environ.get("ASPIRANT_MEDIA", "D:/ren/aspirant/media"))
 WEB_PUBLIC = HERE.parent.parent / "apps" / "web" / "public"
@@ -33,6 +35,31 @@ SCORES = {
 SLUGS = {"fanny", "layla", "ruby", "angela", "lesley", "change", "guinevere", "vexana", "obsidia", "selena"}
 FORBIDDEN = ("fanart", "cosplay", "fanmade", "_edits", "_gameplay", "in-game-animation", "live-action", "_backup")
 MAX_CLIP_SECONDS = 8.5
+MAX_SEQUENCE_SECONDS = 24.0
+MIN_PART_SECONDS = 1.2
+CUT_MARGIN = 0.1
+# The chapters of the Layla and Fanny arc, where the owner wants real text between pictures.
+STRICT_SPACING = {"c00", "c01", "c02", "c03", "c04", "c05", "c09"}
+MIN_WORDS_BETWEEN = 45
+EXTRA = HERE / "extra"
+
+
+def media_src(src: str) -> Path:
+    """`extra/<name>` is a picture the owner supplied (kept in scripts/story/extra), an absolute path is
+    itself, anything else is relative to the media folder."""
+    if src.startswith("extra/"):
+        return EXTRA / src[len("extra/") :]
+    p = Path(src)
+    return p if p.is_absolute() else MEDIA / src
+
+
+def inside_a_shot(src: str, start: float, end: float) -> list[float]:
+    """Cuts of the film that fall inside [start, end] (with a margin), so the stretch is not one shot."""
+    try:
+        found = shot_cuts(str(media_src(src)), 0.2)
+    except SystemExit:
+        return []
+    return [c for c in found if start - CUT_MARGIN < c < end + CUT_MARGIN]
 CAPTION_MAX = 90
 
 
@@ -78,18 +105,76 @@ def source_key(m: dict) -> str | None:
     return None
 
 
+cut_notes: list[str] = []
+
+
+def check_sequence(m: dict, where: str, errors: list[str], clip_s: list[float]) -> None:
+    """A sequence: two or more shots joined with dissolves, looping without a seam."""
+    parts = m.get("parts")
+    if not isinstance(parts, list) or not (1 <= len(parts) <= 6):
+        errors.append(f"{where}: sequence needs 1 to 6 parts")
+        return
+    x = float(m.get("xfade", 0.4))
+    if not (0.15 <= x <= 1.0):
+        errors.append(f"{where}: xfade must be between 0.15 and 1.0")
+    total = 0.0
+    for j, part in enumerate(parts):
+        w = f"{where} part {j}"
+        src = part.get("src")
+        low = str(src).lower()
+        for bad in FORBIDDEN:
+            if bad in low:
+                errors.append(f"{w}: source not allowed ({bad}): {src}")
+        p = media_src(str(src))
+        if not src or not p.exists():
+            errors.append(f"{w}: file not found: {src!r}")
+            continue
+        vw, vh, dur = video_info(str(p))
+        s, e = part.get("start"), part.get("end")
+        if not isinstance(s, (int, float)) or not isinstance(e, (int, float)) or not (0 <= s < e <= dur + 0.05):
+            errors.append(f"{w}: start/end {s!r}/{e!r} outside the video (0 to {dur:.2f})")
+            continue
+        if e - s < max(MIN_PART_SECONDS, 3 * x):
+            errors.append(f"{w}: part is {e - s:.2f}s, it needs at least {max(MIN_PART_SECONDS, 3 * x):.2f}s")
+        crop = part.get("crop")
+        if crop is not None:
+            if not (isinstance(crop, list) and len(crop) == 4 and all(isinstance(v, int) for v in crop)):
+                errors.append(f"{w}: crop must be [x, y, w, h] integers")
+            else:
+                cx, cy, cw, ch_ = crop
+                if cx < 0 or cy < 0 or cw < 16 or ch_ < 16 or cx + cw > vw or cy + ch_ > vh:
+                    errors.append(f"{w}: crop {crop} outside the source ({vw}x{vh})")
+        inner = inside_a_shot(str(src), s, e)
+        if inner:
+            errors.append(f"{w}: a cut at {inner[0]:.2f}s lies inside {s:.2f} to {e:.2f}: the next shot would show; end the part before the cut (with {CUT_MARGIN}s to spare)")
+        total += (e - s)
+    total -= x * (len(parts))  # the dissolves between the parts and back into the first
+    clip_s.append(max(total, 0))
+    if total < 3.0:
+        errors.append(f"{where}: the sequence is {total:.1f}s long, the minimum is 3s")
+    if total > MAX_SEQUENCE_SECONDS:
+        errors.append(f"{where}: the sequence is {total:.1f}s long, the limit is {MAX_SEQUENCE_SECONDS}s")
+    if len(parts) < 2:
+        cut_notes.append(f"{where}: a sequence of one shot only (the owner wants two or more shots)")
+    if not str(m.get("alt", "")).strip():
+        errors.append(f"{where}: alt text is required")
+
+
 def check_media(m, where: str, errors: list[str], *, allow: set[str], clip_s: list[float]) -> None:
     if not isinstance(m, dict):
         errors.append(f"{where}: media must be an object")
         return
     t = m.get("type")
-    if t not in {"image", "frame", "clip", "site"}:
+    if t not in {"image", "frame", "clip", "site", "sequence"}:
         errors.append(f"{where}: bad media type {t!r}")
         return
     if t not in allow:
         errors.append(f"{where}: media type {t} not allowed here (allowed: {sorted(allow)})")
     if not str(m.get("alt", "")).strip():
         errors.append(f"{where}: alt text is required")
+    if t == "sequence":
+        check_sequence(m, where, errors, clip_s)
+        return
     src = m.get("src")
     if not isinstance(src, str) or not src:
         errors.append(f"{where}: src is required")
@@ -102,7 +187,7 @@ def check_media(m, where: str, errors: list[str], *, allow: set[str], clip_s: li
     for bad in FORBIDDEN:
         if bad in low:
             errors.append(f"{where}: source not allowed ({bad}): {src}")
-    p = MEDIA / src
+    p = media_src(src)
     if not p.exists():
         errors.append(f"{where}: file not found: {src}")
         return
@@ -125,6 +210,10 @@ def check_media(m, where: str, errors: list[str], *, allow: set[str], clip_s: li
                 clip_s.append(e - s)
                 if e - s > MAX_CLIP_SECONDS:
                     errors.append(f"{where}: clip is {e - s:.1f}s, the limit is {MAX_CLIP_SECONDS}s")
+                else:
+                    inner = inside_a_shot(src, s, e)
+                    if inner:
+                        cut_notes.append(f"{where}: a cut at {inner[0]:.2f}s lies inside this clip ({s:.2f} to {e:.2f}); the next shot may show")
             if "poster" in m and isinstance(s, (int, float)) and isinstance(e, (int, float)):
                 if not (0 <= m["poster"] <= e - s):
                     errors.append(f"{where}: poster time must be inside the clip (0 to {e - s:.1f})")
@@ -160,7 +249,7 @@ def validate_chapter(path: Path, chapters: dict[str, storytext.Chapter]) -> tupl
     if "hero" not in data:
         errors.append("hero is required")
     else:
-        check_media(data["hero"], "hero", errors, allow={"image", "frame", "clip", "site"}, clip_s=clip_s)
+        check_media(data["hero"], "hero", errors, allow={"image", "frame", "clip", "sequence", "site"}, clip_s=clip_s)
         if isinstance(data["hero"], dict) and (k := source_key(data["hero"])):
             keys.append(k)
     if data.get("thumb"):
@@ -214,7 +303,7 @@ def validate_chapter(path: Path, chapters: dict[str, storytext.Chapter]) -> tupl
             for bad in FORBIDDEN:
                 if bad in low:
                     errors.append(f"{where}: source not allowed ({bad}): {src}")
-            p = MEDIA / str(src)
+            p = media_src(str(src))
             if not src or not p.exists():
                 errors.append(f"{where}: voice file not found: {src!r}")
             else:
@@ -259,13 +348,36 @@ def validate_chapter(path: Path, chapters: dict[str, storytext.Chapter]) -> tupl
             continue
         if kind == "clip":
             clip_count += 1
-            check_media(media, where, errors, allow={"clip"}, clip_s=clip_s)
+            check_media(media, where, errors, allow={"clip", "sequence"}, clip_s=clip_s)
         else:
             check_media(media, where, errors, allow=STILL_TYPES, clip_s=clip_s)
         if kind == "place" and not ins.get("label"):
             errors.append(f"{where}: place needs a label")
         if isinstance(media, dict) and (k := source_key(media)):
             keys.append(k)
+    warnings.extend(cut_notes)
+    cut_notes.clear()
+    # Text between the pictures: the owner wants real text between visuals (two or three sentences).
+    visual_after = sorted(
+        {ins["after"] for ins in inserts if isinstance(ins.get("after"), int) and ins.get("kind") != "voice"}
+    )
+    words = [len(re.findall(r"[A-Za-z0-9']+", p.text)) for p in paras]
+    problems: list[str] = []
+    prev = -1
+    for a in visual_after:
+        between = sum(words[prev + 1 : a + 1])
+        if between < MIN_WORDS_BETWEEN:
+            where_ = "the title card" if prev < 0 else f"the picture after paragraph {prev}"
+            problems.append(f"only {between} words of text between {where_} and the picture after paragraph {a} (want {MIN_WORDS_BETWEEN} or more)")
+        prev = a
+    if visual_after:
+        tail = sum(words[visual_after[-1] + 1 :])
+        if tail < MIN_WORDS_BETWEEN:
+            problems.append(f"only {tail} words of text after the last picture (want {MIN_WORDS_BETWEEN} or more before the next-chapter button)")
+    if path.stem in STRICT_SPACING:
+        errors.extend(problems)
+    else:
+        warnings.extend(problems)
     if clip_count > 2:
         warnings.append(f"{clip_count} clip inserts (limit 2)")
     if sum(clip_s) > 40:

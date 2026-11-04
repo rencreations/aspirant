@@ -124,6 +124,35 @@ describe("the chapter files", () => {
     expect(films).toBeGreaterThan(0);
   });
 
+  it("keep real text between the pictures of the Layla and Fanny arc, and no video under 3 seconds", () => {
+    const ARC = ["c00", "c01", "c02", "c03", "c04", "c05", "c09"];
+    for (const id of ARC) {
+      const chapter = read<Chapter>(`${id}.json`);
+      if (chapter.hero.kind === "clip")
+        expect(chapter.hero.dur, `${id} hero`).toBeGreaterThanOrEqual(3);
+      let words = 0;
+      let sawPicture = false;
+      for (const b of chapter.blocks) {
+        if (b.t === "p") {
+          words += b.segs
+            .map((seg) => seg.t)
+            .join("")
+            .split(/\s+/u)
+            .filter(Boolean).length;
+        } else if (b.t === "insert" && b.kind !== "voice") {
+          expect(words, `${id}: text before a picture (${b.kind})`).toBeGreaterThanOrEqual(45);
+          words = 0;
+          sawPicture = true;
+          for (const m of mediaList(b.media)) {
+            if (m.kind === "clip") expect(m.dur, `${id} clip`).toBeGreaterThanOrEqual(3);
+          }
+        }
+      }
+      if (sawPicture)
+        expect(words, `${id}: text after the last picture`).toBeGreaterThanOrEqual(45);
+    }
+  });
+
   it("have no em or en dash anywhere", () => {
     for (const file of fs.readdirSync(STORY)) {
       expect(fs.readFileSync(path.join(STORY, file), "utf8"), file).not.toMatch(DASHES);

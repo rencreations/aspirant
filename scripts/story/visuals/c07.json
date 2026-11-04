@@ -22,9 +22,9 @@
       "kind": "plate",
       "media": {
         "type": "image",
-        "src": "_others/character/ai-droids.png",
-        "crop": [160, 0, 640, 725],
-        "alt": "Design sheet of an AI droid: a slim white machine with long arms and a single orange eye.",
+        "src": "extra/ai.png",
+        "crop": [180, 0, 790, 941],
+        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye.",
         "credit": "Official character art"
       },
       "caption": "An AI droid, one of the Academy's helpers."
@@ -37,7 +37,7 @@
       "media": {
         "type": "image",
         "src": "lesley-and-change/art/lore/5 - end.jpg",
-        "crop": [175, 100, 480, 552],
+        "crop": [244, 152, 400, 500],
         "alt": "Chang'e laughing, with round glasses, pink hair and white bunny-ear clips.",
         "credit": "Official art"
       }
@@ -63,11 +63,10 @@
       "kind": "portrait",
       "character": "selena",
       "media": {
-        "type": "frame",
-        "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
-        "t": 1.8,
-        "crop": [580, 442, 580, 528],
-        "alt": "Selena, a blonde student with a horned crest, naps with her head on her desk, smiling.",
+        "type": "image",
+        "src": "extra/s.png",
+        "crop": [244, 196, 232, 290],
+        "alt": "Selena, a blonde student in a white uniform shirt, rests her chin on her hand and smiles at her desk.",
         "credit": "Official video, Selena"
       }
     },
@@ -75,7 +74,14 @@
       "after": 24,
       "anchor": "A dark visor covered",
       "kind": "portrait",
-      "character": "lesley"
+      "character": "lesley",
+      "media": {
+        "type": "image",
+        "src": "lesley-and-change/art/official/lesley-splash-art.jpg",
+        "crop": [929, 0, 1152, 1440],
+        "alt": "Lesley in her white officer's coat leaps across a steel beam above the city, her long rifle in her hand.",
+        "credit": "Official splash art"
+      }
     }
   ]
 }

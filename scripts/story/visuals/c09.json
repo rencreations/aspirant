@@ -1,35 +1,28 @@
 {
   "chapter": "c09",
-  "mood": "Rivals made one team, a box of chocolate, and a raid by the sea beside the Academy's famous pair.",
+  "mood": "Two rivals made one team, a contest over chocolate, and a gift with a teal ribbon.",
   "hero": {
-    "type": "clip",
-    "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-    "start": 76.1,
-    "end": 79.0,
-    "poster": 1.5,
-    "sound": false,
-    "alt": "Fanny smiles warmly as she speaks, in her white shirt and red bow tie.",
-    "credit": "Official short animation, Layla and Fanny"
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "Fanny smiles warmly as she speaks, in her white shirt and red bow tie; then Layla sits at her desk with a pink gift box, blushing and looking away.",
+    "credit": "Official short animation, Layla and Fanny",
+    "parts": [
+      {
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "start": 76.0,
+        "end": 78.55
+      },
+      {
+        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+        "start": 90.15,
+        "end": 92.05
+      }
+    ]
   },
   "heroFocus": "50% 40%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
-    {
-      "after": 9,
-      "anchor": "In freeform training, the",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 8.0,
-        "end": 11.85,
-        "poster": 0.7,
-        "sound": false,
-        "alt": "In freeform training Layla fires her cannon, and one drone drops at her feet with crosses for eyes.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
-    },
     {
       "after": 12,
       "anchor": "Why am I",
@@ -45,29 +38,22 @@
       "anchor": "Fanny looked at her,",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 11.9,
-        "end": 18.55,
-        "poster": 1.6,
-        "sound": false,
-        "alt": "Fanny slashes through a flock of drones, then stands puzzled beside a scowling Layla and a heap of wrecks.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
-    },
-    {
-      "after": 14,
-      "anchor": "Jump training was on",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 22.8,
-        "end": 28.1,
-        "poster": 2.0,
-        "sound": false,
-        "alt": "Layla smirks, leaps the gap between roofs and lands with her arms spread, scoring 10 points.",
-        "credit": "Official short animation, Layla and Fanny"
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "Fanny's blade flashes through the last drones, and Layla glares at the heap of wrecks with crosses for eyes; then Fanny looks on, puzzled, beside a scowling Layla.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 14.05,
+            "end": 15.5
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 16.25,
+            "end": 18.5
+          }
+        ]
       }
     },
     {
@@ -75,14 +61,32 @@
       "anchor": "Layla stood there with",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 28.2,
-        "end": 33.25,
-        "poster": 1.7,
-        "sound": false,
-        "alt": "Fanny streaks past on her cables and lands on a much higher roof while Layla gapes from below.",
-        "credit": "Official short animation, Layla and Fanny"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Layla smirks, leaps the gap between roofs and lands with her arms spread, scoring 10 points; then Fanny flies up past her onto a much higher roof while Layla gapes from below.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 22.82,
+            "end": 24.5
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 24.76,
+            "end": 26.02
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 26.24,
+            "end": 28.06
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 30.92,
+            "end": 33.18
+          }
+        ]
       }
     },
     {
@@ -94,36 +98,6 @@
       "start": 4.95,
       "end": 7.3,
       "line": "Hah, you won't be beating me this time!"
-    },
-    {
-      "after": 17,
-      "anchor": "Then came the day",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 0.3,
-        "end": 6.5,
-        "poster": 1.0,
-        "sound": false,
-        "alt": "Layla beams over a tall stack of wrapped gift boxes, then smiles a smug little smile.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
-    },
-    {
-      "after": 18,
-      "anchor": "Fanny came in at",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 47.9,
-        "end": 53.85,
-        "poster": 3.0,
-        "sound": false,
-        "alt": "Layla holds a gift box and watches Fanny walk in through a door with nothing in her hands.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
     },
     {
       "after": 19,
@@ -148,27 +122,45 @@
     {
       "after": 22,
       "anchor": "Humph. She turned",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 58.9,
-        "end": 65.4,
-        "poster": 1.9,
-        "sound": false,
-        "alt": "A wall of gift boxes appears beside Fanny, and Layla stares, then turns her back in a huff.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
-    },
-    {
-      "after": 22,
-      "anchor": "Humph. She turned",
       "kind": "voice",
       "speaker": "layla",
       "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
       "start": 63.1,
       "end": 64.2,
       "line": "Humph."
+    },
+    {
+      "after": 22,
+      "anchor": "Humph. She turned",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Layla beams over a tall stack of gift boxes and watches Fanny walk in at the door with empty hands; beside Fanny she hides a smile behind her hand until a wall of boxes appears, and she turns her back in a huff.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 0.3,
+            "end": 2.38
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 47.95,
+            "end": 49.58
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 57.2,
+            "end": 62.0
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 62.22,
+            "end": 65.3
+          }
+        ]
+      }
     },
     {
       "after": 23,
@@ -179,21 +171,6 @@
       "start": 67.6,
       "end": 70.0,
       "line": "I'll win next time for sure!"
-    },
-    {
-      "after": 24,
-      "anchor": "A pink box with",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 69.75,
-        "end": 74.4,
-        "poster": 1.5,
-        "sound": false,
-        "alt": "Fanny sets a pink box with a teal ribbon on Layla's desk, and Layla stares at it.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
     },
     {
       "after": 25,
@@ -220,54 +197,32 @@
       "anchor": "For me? Well.....",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
-        "start": 79.9,
-        "end": 85.72,
-        "poster": 1.9,
-        "sound": false,
-        "alt": "Layla jumps in surprise at her desk, then pouts and keeps the box while Fanny stands beside her.",
-        "credit": "Official short animation, Layla and Fanny"
-      }
-    },
-    {
-      "after": 30,
-      "anchor": "The raid that mattered",
-      "kind": "place",
-      "label": "Terrinia's shore wards",
-      "media": {
-        "type": "image",
-        "src": "_others/places/planet-dawnbreak.jpg",
-        "alt": "Terrinia from high above: towers around a blue bay that opens to the sea, a great tower sending light into the sky.",
-        "credit": "Official art"
-      }
-    },
-    {
-      "after": 34,
-      "anchor": "Vexana, said the",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/46.jpg",
-          "crop": [500, 620, 1500, 1750],
-          "alt": "A small drawing of the pair: black-haired Vexana smiling faintly behind pink-haired Guinevere, who cheers with a fist up.",
-          "credit": "Official comic, Guinevere and Vexana"
-        }
-      ],
-      "caption": "Guinevere and Vexana, the Academy's undefeated pair."
-    },
-    {
-      "after": 44,
-      "anchor": "She met the Enders",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
-        "t": 10.6,
-        "crop": [160, 0, 2240, 900],
-        "alt": "Guinevere and Vexana fight back to back among Enders, Guinevere with her fists up and two cat-eared drones, Vexana with her staff.",
-        "credit": "Official film, Connection Lost"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Layla glares at her desk with her arms folded until Fanny sets a pink box with a teal ribbon on it; Layla stares, then jumps in surprise and pouts as she keeps the box, Fanny beside her.",
+        "credit": "Official short animation, Layla and Fanny",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 66.0,
+            "end": 68.6
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 69.8,
+            "end": 72.52
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 72.95,
+            "end": 74.8
+          },
+          {
+            "src": "layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4",
+            "start": 79.7,
+            "end": 83.36
+          }
+        ]
       }
     }
   ]

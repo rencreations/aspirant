@@ -2,15 +2,25 @@
   "chapter": "c01",
   "mood": "A transfer student breaks a record on her first day, and the girl she beat starts racing her at everything.",
   "hero": {
-    "type": "clip",
-    "src": "layla-and-fanny/video/official/lore/trailer/footages/00m15s875ms-00m21s875ms/footage.webm",
-    "start": 0.0,
-    "end": 3.0,
-    "crop": [0, 134, 1920, 812],
-    "sound": false,
-    "poster": 2.6,
-    "alt": "Dawn breaks over the towers of Terrinia, a beam of light rising from the tall spire at its center.",
-    "credit": "Official Layla and Fanny trailer"
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "Dawn breaks over the towers of Terrinia, a beam of light rising from the tall spire at its center; then a girl with long red twin-tails sits alone on a sofa, holding down a slat of the blinds in the sunset light.",
+    "credit": "Official Layla and Fanny trailer",
+    "poster": 1.6,
+    "parts": [
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 16.0,
+        "end": 19.0,
+        "crop": [0, 134, 1920, 812]
+      },
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 9.9,
+        "end": 11.64,
+        "crop": [0, 134, 1920, 812]
+      }
+    ]
   },
   "heroFocus": "58% 50%",
   "spoiler": false,
@@ -49,15 +59,25 @@
       "anchor": "A machine shaped like",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/selena/video.mp4",
-        "start": 6.95,
-        "end": 10.2,
-        "crop": [0, 0, 1920, 960],
-        "sound": false,
-        "poster": 0.6,
-        "alt": "A blonde girl with a horned crest walks the top of a wall beside a dragon-shaped machine crackling with blue light, then jumps down into a school corridor.",
-        "credit": "Official Selena film"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A blonde girl with a horned crest walks the top of a wall beside a dragon-shaped machine crackling with blue light, jumps, and lands in a school corridor; then, close, she shades her eyes from the sun and laughs.",
+        "credit": "Official Selena film",
+        "poster": 0.8,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/selena/video.mp4",
+            "start": 7.05,
+            "end": 10.1,
+            "crop": [0, 0, 1920, 960]
+          },
+          {
+            "src": "selena-and-obsidia/video/selena/video.mp4",
+            "start": 4.5,
+            "end": 6.45,
+            "crop": [0, 0, 1920, 960]
+          }
+        ]
       }
     },
     {
@@ -85,43 +105,24 @@
     {
       "after": 16,
       "anchor": "A girl with long",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 2.05,
-        "end": 4.68,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 1.9,
-        "alt": "A gloved hand takes up a long cannon in the dark, then a girl with long pink-red twin-tails swings it round in a white corridor and charges a blue shot.",
+        "t": 4.25,
+        "crop": [0, 134, 1920, 812],
+        "alt": "In a white corridor marked SELRICK, a girl with long pink-red twin-tails aims a long cannon, its muzzle burning blue.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
-      "after": 17,
-      "anchor": "Then she was flying,",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 8.45,
-        "end": 9.74,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 0.9,
-        "alt": "A small figure flies straight out of a huge fireball.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 27,
+      "after": 26,
       "anchor": "The girl from the",
       "kind": "portrait",
       "character": "layla"
     },
     {
-      "after": 32,
+      "after": 31,
       "anchor": "The twin-tailed girl looked",
       "kind": "voice",
       "speaker": "layla",
@@ -131,99 +132,61 @@
       "line": "Humph!"
     },
     {
-      "after": 36,
+      "after": 35,
       "anchor": "Fanny kept the Shield's",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 4.76,
-        "end": 6.72,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 1.0,
-        "alt": "Seen from a dark corridor, Fanny stands in a narrow lit doorway, a glowing blade in each hand.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Seen from a dark corridor, Fanny stands alone in a narrow lit doorway and lights a blade in each hand; then, seen from above, Fanny and Layla race up a white spiral stair, and Layla leaps past her on the inside.",
+        "credit": "Official Layla and Fanny trailer",
+        "poster": 0.9,
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 4.86,
+            "end": 6.64,
+            "crop": [0, 134, 1920, 812]
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 6.86,
+            "end": 8.3,
+            "crop": [0, 134, 1920, 812]
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 14.07,
+            "end": 15.76,
+            "crop": [0, 134, 1920, 812]
+          }
+        ]
       }
     },
     {
-      "after": 37,
-      "anchor": "At seven she took",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 13.97,
-        "end": 15.82,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 0.6,
-        "alt": "Seen from above, Layla leaps past Fanny on a white spiral stair.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 39,
-      "anchor": "The next morning Fanny",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 6.78,
-        "end": 8.38,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 0.8,
-        "alt": "Seen from above, Fanny and Layla race around a white spiral stair.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 45,
+      "after": 44,
       "anchor": "So Fanny mopped faster",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 22.12,
-        "end": 24.8,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 1.0,
-        "alt": "Fanny and Layla mop a shining hall side by side, then race down it bent double, pushing floor cloths.",
+        "t": 24.1,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Seen from above through a window, Layla and Fanny race down a shining hall bent double, each pushing a floor cloth with both hands.",
         "credit": "Official Layla and Fanny trailer"
       },
       "caption": "They competed even in the smallest things."
     },
     {
       "after": 46,
-      "anchor": "Even the weapons bench",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 19.52,
-        "end": 21.78,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 1.0,
-        "alt": "Seen from above, Layla's gloved hands work on her long white cannon with a small hot tool.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 47,
       "anchor": "That evening Fanny passed",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 9.84,
-        "end": 11.62,
-        "crop": [0, 135, 1920, 810],
-        "sound": false,
-        "poster": 0.8,
-        "alt": "Layla sits alone on a sofa at sunset, one finger holding down a slat of the blinds.",
+        "t": 10.8,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Layla sits alone on a sofa in the sunset, knees drawn up, one finger holding down a slat of the blinds.",
         "credit": "Official Layla and Fanny trailer"
       }
     }

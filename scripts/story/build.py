@@ -120,7 +120,8 @@ class Plan:
         return f
 
     def clip(self, spec, cid, role, size_key):
-        f = self.pool.submit(media.make_clip, spec, cid, role, size_key)
+        make = media.make_sequence if spec["type"] == "sequence" else media.make_clip
+        f = self.pool.submit(make, spec, cid, role, size_key)
         self.futures.append(f)
         return f
 
@@ -130,7 +131,9 @@ class Plan:
         return f
 
     def one(self, spec, cid, role, still_key, clip_key):
-        return self.clip(spec, cid, role, clip_key) if spec["type"] == "clip" else self.still(spec, cid, role, still_key)
+        if spec["type"] in ("clip", "sequence"):
+            return self.clip(spec, cid, role, clip_key)
+        return self.still(spec, cid, role, still_key)
 
 
 def voice_record(v: storytext.Voice, durations: dict) -> dict:

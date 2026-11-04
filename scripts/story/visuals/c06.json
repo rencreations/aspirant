@@ -13,34 +13,6 @@
   "score": "we-believe",
   "inserts": [
     {
-      "after": 13,
-      "anchor": "Layla opened her mouth",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
-          "crop": [222, 370, 778, 438],
-          "alt": "Layla on a rooftop at night, her face smudged, her pink twin tails blowing in the wind.",
-          "credit": "Official comic, page 38"
-        },
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
-          "crop": [0, 2140, 1000, 595],
-          "alt": "Fanny in profile against the dark city, her cheek smudged: I could say the same of you.",
-          "credit": "Official comic, page 38"
-        },
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/38.jpg",
-          "crop": [0, 2770, 1000, 315],
-          "alt": "Close on Layla's eye, narrowed in annoyance.",
-          "credit": "Official comic, page 38"
-        }
-      ]
-    },
-    {
       "after": 17,
       "anchor": "Fanny's taped hand closed",
       "kind": "panels",
@@ -82,18 +54,6 @@
           "credit": "Official comic, page 41"
         }
       ]
-    },
-    {
-      "after": 26,
-      "anchor": "Huh? Fanny stared.",
-      "kind": "plate",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/41.jpg",
-        "crop": [0, 937, 1000, 1278],
-        "alt": "On the ruined rooftop Layla stands by the parapet with her cannon while Fanny faces her, arms crossed.",
-        "credit": "Official comic, page 41"
-      }
     },
     {
       "after": 29,

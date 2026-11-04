@@ -2,15 +2,24 @@
   "chapter": "c05",
   "mood": "A gold giant through the dome, a reckless jump, and one shot that has to land.",
   "hero": {
-    "type": "clip",
-    "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-    "start": 88.85,
-    "end": 90.68,
-    "crop": [0, 136, 1920, 808],
-    "sound": false,
-    "poster": 0.75,
-    "alt": "On the sand at dusk two small figures stand back to back while long-limbed Enders and a tall gray giant close in, the city behind.",
-    "credit": "Official Layla and Fanny trailer"
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "On the sand at dusk two small figures stand back to back while long-limbed Enders and a tall gray giant close in; then, close up, Fanny smiles and Layla looks out, ready.",
+    "credit": "Official Layla and Fanny trailer",
+    "parts": [
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 88.85,
+        "end": 90.6,
+        "crop": [0, 136, 1920, 808]
+      },
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 84.95,
+        "end": 88.45,
+        "crop": [0, 136, 1920, 808]
+      }
+    ]
   },
   "heroFocus": "50% 55%",
   "spoiler": false,
@@ -51,123 +60,34 @@
       ]
     },
     {
-      "after": 16,
-      "anchor": "Enders stood between her",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 71.0,
-        "end": 72.7,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 1.1,
-        "alt": "Fanny races low across the orange sand, blade out, as blasts burst in the ground around her.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 26,
-      "anchor": "Fanny went straight up",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 72.86,
-        "end": 76.35,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 2.44,
-        "alt": "Fanny charges and leaps, then hangs tiny in the air before the gold giant's glowing head.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 27,
-      "anchor": "The chest opened, and",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 76.4,
-        "end": 77.88,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 0.4,
-        "alt": "Light flares in the giant's chest and a huge white beam fires.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 28,
-      "anchor": "Something hit Fanny from",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 77.95,
-        "end": 81.6,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 2.75,
-        "alt": "Layla, her cannon charging on her shoulder, shoves Fanny aside with one arm and fires a blue-white shot.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
       "after": 29,
       "anchor": "Layla fired the full",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/32.jpg",
-        "crop": [0, 0, 1000, 2120],
-        "alt": "Layla fires with a shout, Fanny right beside her, both of them glaring ahead.",
-        "credit": "Official Aspirant comic, page 32"
-      }
-    },
-    {
-      "after": 31,
-      "anchor": "Then everything the giant",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 81.66,
-        "end": 83.47,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 0.34,
-        "alt": "Two small figures are caught inside a huge fireball that swirls, then bursts in blue-white light.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 41,
-      "anchor": "Fanny put her back",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 83.52,
-        "end": 88.52,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 2.38,
-        "alt": "Against the dusk sky the two stand back to back; Fanny smiles, and Layla looks out, ready.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 43,
-      "anchor": "They fought back to",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/30.jpg",
-        "crop": [0, 60, 1000, 1720],
-        "alt": "Layla and Fanny fight shoulder to shoulder as an Ender's huge fist smashes down beside them.",
-        "credit": "Official Aspirant comic, page 30"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Fanny races low across the orange sand as blasts burst around her, charges and leaps until she hangs tiny before the gold giant's glowing head; then Layla, her cannon charging on her shoulder, shoves Fanny aside and fires a blue-white shot.",
+        "credit": "Official Layla and Fanny trailer",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 71.08,
+            "end": 72.58,
+            "crop": [0, 136, 1920, 808]
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 73.04,
+            "end": 76.25,
+            "crop": [0, 136, 1920, 808]
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 78.04,
+            "end": 81.5,
+            "crop": [0, 136, 1920, 808]
+          }
+        ]
       }
     },
     {

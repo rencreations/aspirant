@@ -18,9 +18,9 @@
       "kind": "plate",
       "media": {
         "type": "image",
-        "src": "_others/character/joe.jpg",
-        "crop": [290, 0, 904, 670],
-        "alt": "Design sheet of Professor Joe, a young instructor with a monocle, in uniform with a long sword.",
+        "src": "extra/joe-hd.png",
+        "crop": [100, 0, 880, 1448],
+        "alt": "Professor Joe, a young instructor with neat brown hair and a monocle, in a dark blue uniform with a white sash and a blue armband.",
         "credit": "Official character art"
       },
       "caption": "Professor Joe"
@@ -41,58 +41,30 @@
     {
       "after": 19,
       "anchor": "The last slide was",
-      "kind": "clip",
-      "overlay": { "kicker": "Joe's last slide", "title": "The Storm Citadel" },
+      "kind": "place",
+      "label": "Storm Citadel",
+      "caption": "Joe's last slide",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "start": 0.0,
-        "end": 3.1,
+        "t": 0.8,
         "crop": [0, 138, 1920, 804],
-        "sound": false,
-        "poster": 0.6,
-        "alt": "A huge ship of dark blades hangs in a red sky over a city, smaller ships swarming around it, and tall Enders stand in a great arch above the rooftops.",
+        "alt": "A huge ship of dark blades hangs in a torn red sky, smaller ships swarming around it above the towers of a city.",
         "credit": "Official Selena and Obsidia trailer"
       }
-    },
-    {
-      "after": 25,
-      "anchor": "The VR drill copied",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/11.jpg",
-        "crop": [0, 30, 1000, 1530],
-        "alt": "Far off, a girl with long twin tails stands black against a bright doorway, her cannon in hand.",
-        "credit": "Official Aspirant comic, page 11"
-      }
-    },
-    {
-      "after": 27,
-      "anchor": "Gah! He went down",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
-          "crop": [230, 30, 760, 1020],
-          "alt": "Roger cries out as he trips and tumbles onto his back.",
-          "credit": "Official Aspirant comic, page 4"
-        },
-        {
-          "type": "image",
-          "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
-          "crop": [0, 1880, 1000, 1550],
-          "alt": "A clawed gray machine rears over Roger as he screams.",
-          "credit": "Official Aspirant comic, page 4"
-        }
-      ]
     },
     {
       "after": 28,
       "anchor": "Fanny's cable shot out",
       "kind": "panels",
       "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/4.jpg",
+          "crop": [0, 1880, 1000, 1550],
+          "alt": "A clawed gray machine rears over Roger as he screams.",
+          "credit": "Official Aspirant comic, pages 4 to 6"
+        },
         {
           "type": "image",
           "src": "layla-and-fanny/art/comic/official-aspirant-comic/5.jpg",
@@ -122,54 +94,6 @@
       }
     },
     {
-      "after": 31,
-      "anchor": "In the doorway Layla",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/12.jpg",
-        "crop": [0, 30, 1000, 1500],
-        "alt": "Layla holds her long cannon up and grins: if you'd led them over earlier, I could've killed them all even faster.",
-        "credit": "Official Aspirant comic, page 12"
-      }
-    },
-    {
-      "after": 38,
-      "anchor": "Dangerous? Layla knocked her",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/13.jpg",
-        "crop": [0, 1880, 1000, 1450],
-        "alt": "Layla slaps Fanny's hand away: Dangerous? What, you doubt my judgment, is that it?",
-        "credit": "Official Aspirant comic, page 13"
-      }
-    },
-    {
-      "after": 41,
-      "anchor": "Enough arguing, guys... said",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/14.jpg",
-        "crop": [0, 960, 1000, 1960],
-        "alt": "Layla turns away with her cannon, saying she saved a life, while Roger lifts a hand and asks them to stop arguing.",
-        "credit": "Official Aspirant comic, page 14"
-      }
-    },
-    {
-      "after": 43,
-      "anchor": "Of these 33: Fanny",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/17.jpg",
-        "crop": [0, 1090, 1000, 1250],
-        "alt": "Giant screens replay the drill, Layla's beaming face on the biggest one, marked rank 1.",
-        "credit": "Official Aspirant comic, page 17"
-      }
-    },
-    {
       "after": 47,
       "anchor": "Shut it! said",
       "kind": "panels",
@@ -189,30 +113,6 @@
           "credit": "Official Aspirant comic, page 18"
         }
       ]
-    },
-    {
-      "after": 49,
-      "anchor": "The siren began. Ultra",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
-        "crop": [0, 870, 1000, 968],
-        "alt": "Students run under red alarm lights while small warning drones flash around them and someone shouts Alert!",
-        "credit": "Official Aspirant comic, page 19"
-      }
-    },
-    {
-      "after": 56,
-      "anchor": "Hey, that's my line",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/19.jpg",
-        "crop": [0, 2600, 1000, 834],
-        "alt": "Running under the red alarm lights, Fanny says it is their time to shine and Layla protests that it is her line.",
-        "credit": "Official Aspirant comic, page 19"
-      }
     }
   ]
 }

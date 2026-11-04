@@ -2,13 +2,27 @@
   "chapter": "c04",
   "mood": "The dome is torn, a teacher falls, and two rivals have to fight side by side.",
   "hero": {
-    "type": "image",
-    "src": "layla-and-fanny/art/comic/official-aspirant-comic/21.jpg",
-    "crop": [0, 380, 1000, 1000],
-    "alt": "The shadow of a huge claw scrapes across the glowing hexagons of the dome above the city's towers.",
-    "credit": "Official Aspirant comic, page 21"
+    "type": "sequence",
+    "xfade": 0.4,
+    "poster": 1.2,
+    "alt": "Dark Enders stand against a burning sunset sky as one drops from above, then Fanny flies among long-limbed Enders over the clouds, slashing with her glowing blades.",
+    "credit": "Official Layla and Fanny trailer",
+    "parts": [
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 12.48,
+        "end": 13.85,
+        "crop": [0, 136, 1920, 808]
+      },
+      {
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "start": 60.4,
+        "end": 63.05,
+        "crop": [0, 136, 1920, 808]
+      }
+    ]
   },
-  "heroFocus": "50% 45%",
+  "heroFocus": "50% 50%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
@@ -26,7 +40,7 @@
     },
     {
       "after": 9,
-      "anchor": "Don't be scared kiddo,",
+      "anchor": "Joe did. He picked",
       "kind": "panels",
       "media": {
         "type": "image",
@@ -49,18 +63,6 @@
       }
     },
     {
-      "after": 13,
-      "anchor": "You take Professor Joe",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/24.jpg",
-        "crop": [0, 40, 1000, 1780],
-        "alt": "Layla, furious, grips her cannon: You take Professor Joe somewhere safe, I'll kill this freak!",
-        "credit": "Official Aspirant comic, page 24"
-      }
-    },
-    {
       "after": 18,
       "anchor": "No way! You cover",
       "kind": "panels",
@@ -70,18 +72,6 @@
         "crop": [0, 1580, 1000, 1140],
         "alt": "Fanny, in her flight gear, says she will look for a weak spot at its neck; Layla raises her cannon: you cover me instead!",
         "credit": "Official Aspirant comic, page 25"
-      }
-    },
-    {
-      "after": 19,
-      "anchor": "Fanny looked at her",
-      "kind": "panels",
-      "media": {
-        "type": "image",
-        "src": "layla-and-fanny/art/comic/official-aspirant-comic/26.jpg",
-        "crop": [0, 30, 1000, 1575],
-        "alt": "Fanny draws both blades, their cables glowing blue: Whatever, let's do this!",
-        "credit": "Official Aspirant comic, page 26"
       }
     },
     {
@@ -101,31 +91,25 @@
       "anchor": "Layla fired. The thin",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 50.7,
-        "end": 58.55,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 7.28,
-        "alt": "A gray Ender is struck in the chest; the shot's path runs back through a burning hole in a Welcome to Terrinia billboard and a tower, to Layla on a far roof.",
-        "credit": "Official Layla and Fanny trailer"
-      }
-    },
-    {
-      "after": 35,
-      "anchor": "More came. Black Enders",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 58.62,
-        "end": 64.45,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 2.98,
-        "alt": "Fanny flies alone among long-limbed black Enders above the sunset clouds, slashing with her glowing blades.",
-        "credit": "Official Layla and Fanny trailer"
+        "type": "sequence",
+        "xfade": 0.2,
+        "poster": 2.4,
+        "alt": "A burning hole in a Welcome to Terrinia billboard, the shot's path running on between the walls of a tower, then Layla on a far rooftop at sunset, her long cannon at her shoulder.",
+        "credit": "Official Layla and Fanny trailer",
+        "parts": [
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 53.94,
+            "end": 55.98,
+            "crop": [0, 136, 1920, 808]
+          },
+          {
+            "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+            "start": 57.06,
+            "end": 58.48,
+            "crop": [0, 136, 1920, 808]
+          }
+        ]
       }
     },
     {
@@ -156,8 +140,8 @@
       "character": "guinevere"
     },
     {
-      "after": 42,
-      "anchor": "Everyone did. Their undefeated",
+      "after": 44,
+      "anchor": "Whatever reached for Guinevere's",
       "kind": "portrait",
       "character": "vexana",
       "media": {
@@ -169,34 +153,28 @@
       }
     },
     {
-      "after": 43,
+      "after": 46,
       "anchor": "Layla came down to",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 64.81,
-        "end": 67.18,
+        "t": 65.36,
         "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 1.49,
-        "alt": "Layla stands alone before a wall of fire, then the view closes on her face, still and sad.",
+        "alt": "Layla stands alone and small in front of a wall of fire, her cannon at her side.",
         "credit": "Official Layla and Fanny trailer"
       }
     },
     {
-      "after": 45,
+      "after": 52,
       "anchor": "Through the dome, out",
-      "kind": "clip",
+      "kind": "plate",
       "media": {
-        "type": "clip",
+        "type": "frame",
         "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
-        "start": 67.25,
-        "end": 69.92,
+        "t": 69.77,
         "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 2.3,
-        "alt": "A gold giant's head pushes through the dome's glowing hexagons, then it spreads its long arms as the dome shatters around it.",
+        "alt": "A gold giant spreads its long arms as the dome shatters around it in a ring of light, a glow kindling in its chest.",
         "credit": "Official Layla and Fanny trailer"
       }
     }
