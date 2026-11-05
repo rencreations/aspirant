@@ -1,0 +1,186 @@
+.panel {
+  display: none;
+  min-height: 0;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+}
+
+.panel[data-open="true"] {
+  display: flex;
+  animation: show var(--dur-base) var(--ease-out) both;
+}
+
+@keyframes show {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* On a phone the text is a drawer over the foot of the page. */
+@media (max-width: 70em) {
+  .panel {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    max-height: 56%;
+    border-top: 1px solid var(--line-strong);
+    border-left: 0;
+    box-shadow: 0 -10px 30px rgb(0 0 0 / 0.35);
+  }
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--text-faint);
+}
+
+.range {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+  color: var(--lib-colour, var(--accent));
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.close:hover {
+  transform: translateY(-1px);
+}
+
+.body {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 1rem;
+  min-height: 0;
+  padding: 1rem 1.1rem 2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: swap var(--dur-base) var(--ease-out) both;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.block {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.say,
+.caption {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.say p,
+.caption p {
+  margin: 0;
+  font-size: var(--step-0);
+  line-height: 1.4;
+}
+
+.say {
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--lib-colour, var(--accent));
+}
+
+.who {
+  color: var(--text-faint);
+}
+
+.caption {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+}
+
+.caption p {
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+}
+
+.scene,
+.note {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.scene span,
+.note span {
+  display: inline-block;
+  margin-right: 0.35rem;
+  color: var(--text-faint);
+}
+
+.note {
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-2);
+}
+
+.empty p {
+  margin: 0 0 0.4rem;
+}
+
+.dim {
+  color: var(--text-dim);
+  font-size: var(--step--1);
+}
+
+.jumps {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+
+.jumps button {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.jumps button:hover {
+  background: var(--bg-2);
+}

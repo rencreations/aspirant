@@ -1,0 +1,355 @@
+/* Official webtoons: two large books. */
+.official {
+  --book-w: clamp(9rem, 15vw, 14rem);
+  --book-h: calc(var(--book-w) * 4 / 3);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-s);
+  align-items: stretch;
+  padding: var(--space-s);
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+  );
+  animation: rise 700ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 90ms);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.official:hover,
+.official:focus-visible {
+  transform: translateY(-4px);
+}
+
+.official:focus-visible,
+.fanOpen:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+.book {
+  position: relative;
+  width: var(--book-w);
+  height: var(--book-h);
+  perspective: 900px;
+}
+
+/* The edges of the pages, behind the cover. They slide out as the cover tilts. */
+.stack {
+  position: absolute;
+  inset: 0;
+}
+
+.stack i {
+  position: absolute;
+  inset: 2% 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.official:hover .stack i:nth-child(1),
+.official:focus-visible .stack i:nth-child(1),
+.fan:hover .stack i:nth-child(1),
+.fan:focus-within .stack i:nth-child(1) {
+  transform: translateX(6px);
+}
+
+.official:hover .stack i:nth-child(2),
+.official:focus-visible .stack i:nth-child(2),
+.fan:hover .stack i:nth-child(2),
+.fan:focus-within .stack i:nth-child(2) {
+  transform: translateX(12px);
+}
+
+.official:hover .stack i:nth-child(3),
+.official:focus-visible .stack i:nth-child(3) {
+  transform: translateX(18px);
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transform-origin: left center;
+  transition: transform var(--dur-slower) var(--ease-out);
+}
+
+.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.official:hover .cover,
+.official:focus-visible .cover {
+  transform: rotateY(-24deg);
+}
+
+.spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  width: 1.7rem;
+  place-items: center;
+  background: var(--lib-colour);
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.text {
+  display: grid;
+  align-content: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.kicker {
+  color: var(--lib-ink);
+}
+
+.name {
+  font-size: clamp(2.2rem, 1.4rem + 2.4vw, 4.2rem);
+  line-height: 0.9;
+}
+
+.desc {
+  max-width: 34rem;
+  font-size: var(--step-0);
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1rem;
+  color: var(--text-faint);
+}
+
+.count {
+  display: inline-block;
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--lib-ink);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.5rem 0.9rem;
+  background: var(--lib-colour);
+  color: var(--ink);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.cta svg {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.official:hover .cta svg,
+.official:focus-visible .cta svg {
+  transform: translateX(4px);
+}
+
+/* The first page as a strip of panels. It runs upward while the card is hovered. */
+.panels {
+  position: relative;
+  width: 5.5rem;
+  height: var(--book-h);
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.panels img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  object-fit: cover;
+  transition: transform 500ms var(--ease-out);
+}
+
+.official:hover .panels img,
+.official:focus-visible .panels img {
+  transform: translateY(min(0px, calc(var(--book-h) - 100%)));
+  transition: transform 7s linear;
+}
+
+/* Fan comics: a grid of smaller books with the credit under each. */
+.fan {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 0.9rem 0.9rem 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 28rem;
+  animation: rise 600ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i), 8) * 45ms);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-fast) linear;
+}
+
+.fan:hover,
+.fan:focus-within {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+}
+
+.fanOpen {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.fanBook {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  perspective: 800px;
+}
+
+.fanCover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.fanCover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 0.7rem;
+  background: var(--lib-colour);
+}
+
+.fanCover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fan:hover .fanCover,
+.fan:focus-within .fanCover {
+  transform: rotateY(-16deg);
+}
+
+.fanBadge {
+  position: absolute;
+  top: 0.5rem;
+  left: 1.2rem;
+  z-index: 2;
+  background: var(--panel);
+}
+
+.fanPages {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  z-index: 2;
+  padding: 0.2rem 0.5rem;
+  background: rgb(5 7 12 / 0.75);
+  color: #fff;
+}
+
+.fanPages span {
+  display: inline-block;
+  min-width: 1.4ch;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.fanTitle {
+  font-size: var(--step-2);
+  line-height: 0.95;
+}
+
+.fanDesc {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--text-dim);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.resume {
+  color: var(--lib-ink);
+}
+
+.fanFoot {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 52em) {
+  .official {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .panels {
+    display: none;
+  }
+}
+
+@media (max-width: 34em) {
+  .official {
+    --book-w: 7.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .book {
+    justify-self: center;
+  }
+}
