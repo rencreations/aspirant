@@ -1,0 +1,369 @@
+.wall {
+  --rail: 8.6rem;
+  --pad: 1.7rem;
+  --gap: 10px;
+  --chamfer: 10px;
+  padding-bottom: var(--space-l);
+}
+
+/* ---- the timeline: a year rail, a spine and a node for every campaign ---- */
+
+.year {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.rail {
+  position: relative;
+}
+
+.yearLabel {
+  position: sticky;
+  top: calc(var(--nav-h) + 7.5rem);
+  display: block;
+  font-size: clamp(2.6rem, 3vw, 4.2rem);
+  line-height: 0.9;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--lib-ink);
+}
+
+.campaigns {
+  min-width: 0;
+}
+
+.probe {
+  height: 0;
+  margin-left: var(--pad);
+}
+
+.campaign {
+  position: relative;
+  padding: 0 0 var(--space-l) var(--pad);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
+}
+
+/* The spine: one line per campaign, so the paint of a hidden one can be skipped. */
+.campaign::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.head {
+  position: relative;
+  max-width: 46rem;
+  margin-bottom: var(--space-s);
+}
+
+.node {
+  position: absolute;
+  top: 0.2rem;
+  left: calc(1px - var(--pad));
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--lib-colour);
+  background: var(--bg);
+  transform: scale(0.6);
+  transition:
+    transform var(--dur-slow) var(--ease-spring),
+    background-color var(--dur-base) linear;
+}
+
+.campaign[data-seen="true"] .node {
+  background: var(--lib-colour);
+  transform: scale(1);
+}
+
+.span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background: var(--lib-colour);
+}
+
+.title {
+  margin: 0.35rem 0 0;
+  font-size: var(--step-4);
+  line-height: 0.92;
+  color: var(--text);
+}
+
+.line {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  color: var(--text-dim);
+}
+
+.colours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.colours li {
+  width: 1.5rem;
+  height: 0.45rem;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/* ---- as posted: rows of posters that keep their true shape ---- */
+
+.rows {
+  display: block;
+}
+
+.row {
+  display: flex;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.cell {
+  position: relative;
+  flex: none;
+}
+
+.campaign[data-seen="false"] .cell,
+.campaign[data-seen="false"] .card {
+  opacity: 0;
+}
+
+.campaign[data-seen="true"] .cell,
+.campaign[data-seen="true"] .card {
+  animation: rise 640ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.tile {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  cursor: pointer;
+  clip-path: polygon(
+    var(--chamfer) 0,
+    100% 0,
+    100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%,
+    0 100%,
+    0 var(--chamfer)
+  );
+  transition: transform 280ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -4px;
+}
+
+.tile[data-active="true"]::after,
+.card[data-active="true"] .mat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--lib-colour);
+  pointer-events: none;
+}
+
+/* The title slides up from the foot of the poster. */
+.cap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.75rem 0.65rem;
+  text-align: left;
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
+  border-top: 2px solid var(--lib-colour);
+  transform: translateY(101%);
+  transition: transform 300ms var(--ease-out);
+}
+
+.tile:hover .cap,
+.tile:focus-visible .cap {
+  transform: none;
+}
+
+.capTitle {
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.capMeta {
+  color: var(--text-dim);
+}
+
+.badges {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  pointer-events: none;
+}
+
+.chip {
+  padding: 0.12rem 0.4rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---- details: the designer's view ---- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+  gap: var(--space-s);
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.mat {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 15rem;
+  padding: 1rem;
+  border: 0;
+  background: color-mix(in srgb, var(--mat) 14%, var(--bg-2));
+  cursor: pointer;
+}
+
+.mat img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 13rem;
+  box-shadow:
+    0 0 0 1px rgb(11 11 14 / 0.1),
+    0 10px 22px rgb(11 11 14 / 0.16);
+  transition: transform 320ms var(--ease-out);
+}
+
+.mat:hover img,
+.mat:focus-visible img {
+  transform: translateY(-4px) scale(1.025);
+}
+
+.mat:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -4px;
+}
+
+.spec {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem 1rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-body-stack);
+  font-size: var(--step-0);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 0.5rem 0.7rem;
+  margin: 0;
+}
+
+.facts > div:last-child {
+  grid-column: 1 / -1;
+}
+
+.facts dt {
+  margin: 0;
+}
+
+.facts dd {
+  margin: 0.05rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+@media (max-width: 52em) {
+  .wall {
+    --rail: 0px;
+    --pad: 1.1rem;
+  }
+
+  .year {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .yearLabel {
+    position: static;
+    margin: var(--space-s) 0 var(--space-2xs);
+    font-size: var(--step-5);
+  }
+
+  .title {
+    font-size: var(--step-3);
+  }
+
+  .mat {
+    height: 13rem;
+  }
+
+  .mat img {
+    max-height: 11rem;
+  }
+}

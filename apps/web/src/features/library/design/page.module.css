@@ -1,0 +1,26 @@
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-s);
+  padding-block: var(--space-xl);
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  color: var(--text-dim);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.reset {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--lib-colour);
+  background: var(--lib-colour);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
