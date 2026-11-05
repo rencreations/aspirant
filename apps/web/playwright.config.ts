@@ -23,7 +23,9 @@ function detectBasePath(): string {
 }
 
 const basePath = detectBasePath();
-const baseURL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}${basePath}/`;
+// `localhost`, not `127.0.0.1`: the collection's files come from the R2 bucket, whose CORS policy lists
+// `http://localhost:3190` (see scripts/library/r2-cors.json) and not the numeric address.
+const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}${basePath}/`;
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 
 export default defineConfig({

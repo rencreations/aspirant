@@ -47,3 +47,12 @@ Lead's own to do after the helpers report: commit their work in groups; run `pyt
 5 Nov 2026 (about 16:10): the Claude Code session ended while the helpers were running and all twelve were stopped (several had stalled earlier on commands longer than 10 minutes). Work on disk was intact (six data files, 3.7 GB in the mirror). The dev servers died with the session and were restarted detached with PowerShell Start-Process (mirror server :3300 `npx serve D:
 enspirant-r2 -l 3300 --cors --no-clipboard`; dev site :3100 `next dev -p 3100` with NEXT_PUBLIC_LIBRARY_ORIGIN=http://localhost:3300; logs in D:
 enspirant-work). All helpers were resumed with SendMessage and told to keep each tool call under 5 minutes and run long jobs in the background. Do not commit while helpers are editing (the commit hook reformats files and can race with their edits): commit in groups after each helper reports.
+
+## State on the morning of 6 Nov 2026
+
+- **All twelve helpers finished and were committed in groups on the branch `collection-library`** (14 commits ahead of `main`, which is unchanged at `e111957`; a fast forward merge).
+- **Everything is uploaded.** The mirror `D:\ren\aspirant-r2` and the bucket `aspirant` both hold 5,844 files, 4.7 GB (`python scripts/library/r2.py status` says MATCH). `D:\ren\aspirant-r2\README.md` explains how to replicate it; the bucket's CORS policy is saved as `scripts/library/r2-cors.json`.
+- **Checks:** `pnpm check` (format, typecheck, lint, 90 test files, knip) passes; `scan-text` 0 problems; `node scripts/qa/probes/library.cjs` against the production build with the live bucket is clean for all 11 pages at 1440, 1920 and 390 (no console errors, no broken pictures, no sideways overflow).
+- **Counts:** arts 966 (34 official and 932 scene stills), films 57, music 9, voicelines 406, fanart 179, comic 23, lore 52, design 117 (99 posts), animation 63 clips for ten characters, others 80.
+- **Left for the owner** (also in `docs/OPEN-QUESTIONS.md` 15 to 21): revoke the old account wide token "DANGEROUS" in the Cloudflare dashboard; confirm the labels of the six new animation stages; the takedown contact is the project's issues page; cosplay, one left out fan comic, the wording fixes in the lore texts.
+- **Not done:** Firefox and Safari were not tested; the 2160 tier of the six new stages was skipped to keep the bucket small; the story reader and the Selena and Obsidia pages still call two themes by their old names.

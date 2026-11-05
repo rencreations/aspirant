@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ThemeZone } from "@/components/theme-zone";
 import { useGLReady } from "@/components/gl/use-gl-ready";
 
+import { ContinueHome } from "./continue-home";
 import { ShelfFallback } from "./shelf-fallback";
 import styles from "./shelf.module.css";
 
@@ -28,6 +29,7 @@ export function ShelfPage() {
       <div className={styles.fallback} inert={live}>
         <ShelfFallback />
       </div>
+      <ContinueHome />
       {live ? (
         <ShelfScene
           onFail={() => {

@@ -83,10 +83,10 @@ test("M toggles sound and the toggle reflects it", async ({ page }) => {
 });
 
 test("scrolling through the footer opens the next page", async ({ page, baseURL }) => {
-  await page.goto(url("/collection/"));
+  await page.goto(url("/about/"));
   await page.waitForLoadState("networkidle");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/");
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/story/");
 });
 
 test("the system reduced-motion setting is ignored: the footer still opens the next page", async ({
@@ -94,10 +94,10 @@ test("the system reduced-motion setting is ignored: the footer still opens the n
   baseURL,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(url("/collection/"));
+  await page.goto(url("/about/"));
   await page.waitForLoadState("networkidle");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/");
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/story/");
 });
 
 test("the menu has no Reduce motion control", async ({ page }) => {

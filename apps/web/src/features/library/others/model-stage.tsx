@@ -11,15 +11,16 @@ import {
 
 import { hasWebGL } from "@/components/gl/use-gl-ready";
 import { audio } from "@/lib/audio";
+import { CHARACTER_NAMES, isCharacterSlug } from "@/lib/slugs";
 import { usePageVisible } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
 import { expectReady } from "@/lib/page-ready";
 
-import type { Layer, ModelViewer } from "./engine";
+import type { ModelViewer } from "./engine";
 import { azimuthDegrees, count, humanBytes } from "./filters";
 import { loadBundle, loadFaceSheet } from "./model-bundle";
 import styles from "./stage.module.css";
-import type { ModelItem } from "./types";
+import type { ModelItem, ModelLayer } from "./types";
 import { useOnScreen } from "./use-in-view";
 
 interface ModelStageProps {
@@ -31,7 +32,7 @@ interface ModelStageProps {
 
 type Status = "loading" | "ready" | "nogl" | "failed";
 
-const LAYERS: Array<{ id: Layer; label: string }> = [
+const LAYERS: Array<{ id: ModelLayer; label: string }> = [
   { id: "body", label: "Body, face and hair" },
   { id: "weapon", label: "Weapon" },
   { id: "robot", label: "Robot" },
@@ -39,6 +40,12 @@ const LAYERS: Array<{ id: Layer; label: string }> = [
 
 const noopSubscribe = () => () => undefined;
 const ROBOT_FACE = "jiqirenbiaoqing_skin09_d";
+const ALL_ON: Record<ModelLayer, boolean> = { body: true, weapon: true, robot: true };
+
+const whoOf = (m: ModelItem) => {
+  const slug = m.chars[0] ?? "";
+  return isCharacterSlug(slug) ? CHARACTER_NAMES[slug] : m.title;
+};
 const pad3 = (n: number) => String(n).padStart(3, "0");
 
 /**
@@ -52,21 +59,19 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
   const model = models.find((m) => m.id === selected) ?? models[0];
   const hostRef = useRef<HTMLDivElement>(null);
   const plateRef = useRef<HTMLDivElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<ModelViewer | null>(null);
   const markRef = useRef<(() => void) | null>(null);
   const azRef = useRef<HTMLSpanElement>(null);
   const zoomRef = useRef<HTMLSpanElement>(null);
-  const layersRef = useRef<Record<Layer, boolean>>({ body: true, weapon: true, robot: true });
+  const layersRef = useRef<Record<ModelLayer, boolean>>({ ...ALL_ON });
 
   const supported = useSyncExternalStore(noopSubscribe, hasWebGL, () => true);
   const [state, setStatus] = useState<Status>("loading");
   const status: Status = supported ? state : "nogl";
   const [engineReady, setEngineReady] = useState(false);
-  const [layers, setLayers] = useState<Record<Layer, boolean>>({
-    body: true,
-    weapon: true,
-    robot: true,
-  });
+  const [layers, setLayers] = useState<Record<ModelLayer, boolean>>({ ...ALL_ON });
+  const [loaded, setLoaded] = useState(0);
   const [face, setFace] = useState(-1);
   const [spin, setSpin] = useState(true);
   const [all, setAll] = useState(false);
@@ -133,11 +138,16 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
     let live = true;
     setStatus("loading");
     setFace(-1);
-    loadBundle(model)
+    setLoaded(0);
+    layersRef.current = { ...ALL_ON };
+    setLayers({ ...ALL_ON });
+    loadBundle(model, (fraction) => {
+      if (live) setLoaded(Math.round(fraction * 100));
+    })
       .then(async (bundle) => {
         await viewer.show(bundle, model.model);
         if (!live) return;
-        (Object.keys(layersRef.current) as Layer[]).forEach((l) => {
+        (Object.keys(layersRef.current) as ModelLayer[]).forEach((l) => {
           viewer.setLayer(l, layersRef.current[l]);
         });
         viewer.setFrameAll(false);
@@ -160,12 +170,23 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engineReady, modelId]);
 
+  // Keep the chosen model's button in view inside the row of nine (the row scrolls, the page does not).
+  useEffect(() => {
+    const row = pickerRef.current;
+    const chosen = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (!row || !chosen) return;
+    row.scrollTo({
+      left: chosen.offsetLeft - (row.clientWidth - chosen.offsetWidth) / 2,
+      behavior: "smooth",
+    });
+  }, [modelId]);
+
   // The loop runs only while the stage is on screen and the tab is in front.
   useEffect(() => {
     viewerRef.current?.setRunning(status === "ready" && onScreen && visible);
   }, [status, onScreen, visible]);
 
-  const toggleLayer = useCallback((layer: Layer) => {
+  const toggleLayer = useCallback((layer: ModelLayer) => {
     audio.blip("click");
     setLayers((prev) => {
       const next = { ...prev, [layer]: !prev[layer] };
@@ -241,13 +262,20 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
   return (
     <div className={styles.deck}>
       <div className={styles.main}>
-        <div className={styles.picker} role="group" aria-label="Choose a model">
+        <div
+          ref={pickerRef}
+          className={styles.picker}
+          role="group"
+          aria-label="Choose a model"
+          data-testid="model-picker"
+        >
           {models.map((it, i) => (
             <button
               key={it.id}
               type="button"
               className={styles.pick}
               aria-pressed={it.id === model.id}
+              aria-label={`${it.title}, ${count(it.model.verts)} points`}
               onClick={() => {
                 audio.blip("click");
                 onSelect(it.id);
@@ -263,9 +291,13 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
                   height={48}
                 />
               ) : null}
-              <span className={styles.pickNo}>0{i + 1}</span>
-              <span className={styles.pickName}>{it.title}</span>
-              <span className={styles.pickMeta}>{count(it.model.verts)} points</span>
+              <span className={styles.pickText}>
+                <span className={styles.pickNo}>{String(i + 1).padStart(2, "0")}</span>
+                <span className={styles.pickName}>{whoOf(it)}</span>
+                <span className={styles.pickMeta}>
+                  {it.skin ?? `${count(it.model.verts)} points`}
+                </span>
+              </span>
             </button>
           ))}
         </div>
@@ -323,8 +355,12 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
                 ? "Scroll to zoom. Drag to turn."
                 : "Drag to turn. Press, then scroll to zoom."}
             </p>
-            <p className={`${styles.loading} hud-label`} data-gone={ready || status !== "loading"}>
-              Loading the model
+            <p
+              className={`${styles.loading} hud-label`}
+              data-gone={ready || status !== "loading"}
+              role="status"
+            >
+              Loading the model{loaded > 0 && loaded < 100 ? `, ${loaded}%` : ""}
             </p>
           </div>
         </div>
@@ -401,7 +437,7 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
         <div>
           <p className={`${styles.panelHead} hud-label`}>Layers</p>
           <div className={styles.switches}>
-            {LAYERS.map((l) => (
+            {LAYERS.filter((l) => m.layers.includes(l.id)).map((l) => (
               <button
                 key={l.id}
                 type="button"
@@ -420,34 +456,36 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
           </div>
         </div>
 
-        <div>
-          <p className={`${styles.panelHead} hud-label`}>Robot face, 9 sheets</p>
-          <div className={styles.faces} role="group" aria-label="Robot face">
-            {[-1, 0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-              <button
-                key={i}
-                type="button"
-                className={styles.face}
-                aria-pressed={face === i}
-                aria-label={i < 0 ? "Robot face, original sheet" : `Robot face, sheet ${i + 1}`}
-                disabled={!ready}
-                onClick={() => {
-                  pickFace(i);
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={libUrl(faceKey(i))}
-                  alt=""
-                  crossOrigin="anonymous"
-                  loading="lazy"
-                  draggable={false}
-                />
-                <span className={styles.faceNo}>{i + 2}</span>
-              </button>
-            ))}
+        {m.faces.length > 0 ? (
+          <div>
+            <p className={`${styles.panelHead} hud-label`}>Robot face, 9 sheets</p>
+            <div className={styles.faces} role="group" aria-label="Robot face">
+              {[-1, 0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={styles.face}
+                  aria-pressed={face === i}
+                  aria-label={i < 0 ? "Robot face, original sheet" : `Robot face, sheet ${i + 1}`}
+                  disabled={!ready}
+                  onClick={() => {
+                    pickFace(i);
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={libUrl(faceKey(i))}
+                    alt=""
+                    crossOrigin="anonymous"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                  <span className={styles.faceNo}>{i + 2}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <dl className={styles.facts}>
           <dt>Points</dt>
@@ -456,16 +494,22 @@ export function ModelStage({ models, selected, onSelect }: ModelStageProps) {
           <dd>{count(m.tris)}</dd>
           <dt>Model file</dt>
           <dd>{humanBytes(m.bytes)}</dd>
+          <dt>Format</dt>
+          <dd>{m.format.toUpperCase()}</dd>
           <dt>Textures</dt>
           <dd>
-            {new Set(Object.values(m.maps)).size} x 512 px, {humanBytes(m.texBytes)}
+            {new Set(Object.values(m.maps)).size} maps, {humanBytes(m.texBytes)}
           </dd>
+          <dt>Files</dt>
+          <dd>{m.files}</dd>
         </dl>
+
+        {model.credit ? <p className={`${styles.supplied} hud-label`}>{model.credit.by}</p> : null}
 
         <p className={styles.notice}>
           These are 3D models taken from the game client, shown here as a visual reference and not
-          as story art. The parts sit as the client file stores them, so the weapon lies beside the
-          body.
+          as story art. The parts sit as the client file stores them, so a weapon or a little robot
+          may lie beside the body. Seven of the nine models were supplied by the site&apos;s owner.
         </p>
       </aside>
     </div>

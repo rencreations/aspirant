@@ -69,11 +69,9 @@ test("filters narrow the wall, keep the address and clear", async ({ page }) => 
   expect(count).toBeGreaterThan(0);
   expect(count).toBeLessThan(100);
 
-  await page
-    .getByRole("group", { name: "Kind" })
-    .getByRole("button", { name: /^Cosplay/ })
-    .click();
-  await expect(page.getByRole("heading", { name: "Nothing matches." })).toBeVisible();
+  // A chip with no matches is disabled (Selena has no cosplay), so narrow it with a search instead.
+  await page.getByRole("searchbox").fill("zzzzqq");
+  await expect(page.getByText("Nothing matches.")).toBeVisible();
   await page.getByRole("button", { name: "Clear the filters" }).first().click();
   await expect(summary(page)).toContainText("161 pictures and 18 videos");
   expect(new URL(page.url()).search).toBe("");

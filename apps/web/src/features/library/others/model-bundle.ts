@@ -11,7 +11,10 @@ import type { ModelItem } from "./types";
  * the way WebGL needs it).
  */
 export interface ModelBundle {
-  obj: string;
+  /** The .obj text (format "obj"). */
+  obj?: string;
+  /** The .fbx bytes (format "fbx"). */
+  fbx?: ArrayBuffer;
   /** Material name to the texture picture. */
   maps: Map<string, Blob>;
 }
@@ -64,7 +67,9 @@ export function loadBundle(
       const blob = byFile.get(file);
       if (blob) maps.set(material, blob);
     }
-    return { obj: await objBlob.text(), maps };
+    return item.model.format === "fbx"
+      ? { fbx: await objBlob.arrayBuffer(), maps }
+      : { obj: await objBlob.text(), maps };
   })();
   promise.catch(() => bundles.delete(item.id));
   bundles.set(item.id, promise);

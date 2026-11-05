@@ -13,13 +13,20 @@
   gap: var(--space-2xs);
 }
 
+/* One row of nine models that scrolls sideways, so the stage stays near the top of the page. */
 .picker {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
   gap: 0.4rem;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
 }
 
 .pick {
+  flex: none;
+  scroll-snap-align: start;
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
@@ -61,7 +68,27 @@
   opacity: 0.75;
 }
 
+.pickText {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "no name"
+    "no meta";
+  column-gap: 0.55rem;
+  align-items: center;
+  text-align: left;
+}
+
+.pickNo {
+  grid-area: no;
+}
+
+.pickMeta {
+  grid-area: meta;
+}
+
 .pickName {
+  grid-area: name;
   font-family: var(--font-display-stack);
   font-size: var(--step-2);
   font-weight: 800;
@@ -228,8 +255,10 @@
   z-index: 3;
   display: grid;
   place-items: center;
+  margin: 0;
   pointer-events: none;
   color: var(--lib-ink);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
   transition: opacity var(--dur-base) linear;
 }
 
@@ -413,6 +442,11 @@
   margin: 0;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.supplied {
+  margin: 0;
+  color: var(--lib-ink);
 }
 
 .notice {

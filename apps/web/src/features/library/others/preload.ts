@@ -17,8 +17,10 @@ function pickFirst(models: ModelItem[]): ModelItem | undefined {
 
 /**
  * What the others room needs on first paint: its data, its code, the viewer's code and the first
- * model (the .obj and its textures, about 4.4 MB). The second model is not shown until the visitor
- * asks for it, so it is `deferred`. Posters, clips and pictures further down load lazily.
+ * model (the .obj and its textures, about 4.4 MB). The other eight models are not shown until the
+ * visitor picks one: the stage loads it then and says so (it is not in the loading bar, and it is
+ * not downloaded in the background, since together they are about 60 MB). Posters, clips and
+ * pictures further down load lazily.
  */
 export function items(): PreloadItem[] {
   return [
@@ -32,18 +34,6 @@ export function items(): PreloadItem[] {
       run: async (report) => {
         const first = pickFirst(await modelsOf());
         if (first) await loadBundle(first, report);
-      },
-    },
-    {
-      id: "others:model-other",
-      label: "Loading the other 3D model",
-      weight: 4,
-      deferred: true,
-      priority: 20,
-      run: async () => {
-        const models = await modelsOf();
-        const first = pickFirst(models);
-        for (const m of models) if (m !== first) await loadBundle(m);
       },
     },
   ];

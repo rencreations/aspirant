@@ -69,7 +69,7 @@ export default function OthersPage() {
   const stat = useMemo(() => {
     let bytes = 0;
     for (const it of items) {
-      if (it.kind === "model") bytes += it.model.bytes + it.model.texBytes;
+      if (it.kind === "model") bytes += it.model.totalBytes;
       if (it.kind === "emote" || it.kind === "gameplay") bytes += it.video.bytes;
     }
     return bytes ? `${humanBytes(bytes)} of models and clips` : undefined;

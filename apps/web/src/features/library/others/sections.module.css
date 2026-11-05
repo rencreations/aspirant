@@ -83,7 +83,8 @@
   transform: translateX(-36px);
 }
 .section[data-reveal="slide"] .content {
-  transform: translateX(48px);
+  /* Not sideways: a transform that leaves the page's edge makes the page scroll sideways. */
+  transform: translateY(24px) scale(0.985);
 }
 .section[data-reveal="fade"] .head,
 .section[data-reveal="fade"] .content {

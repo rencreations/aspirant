@@ -44,6 +44,7 @@ TYPES = {
     ".mtl": "text/plain; charset=utf-8",
     ".glb": "model/gltf-binary",
     ".gltf": "model/gltf+json",
+    ".fbx": "application/octet-stream",
 }
 
 
@@ -130,7 +131,8 @@ if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
     cmd = args[0] if args else "status"
-    sub = args[1] if len(args) > 1 else ""
+    # The library lives under library/<version>; other files in the mirror root (the README) are not part of the bucket.
+    sub = args[1] if len(args) > 1 else common.PREFIX
     if cmd == "sync":
         sys.exit(sync(sub, delete="--delete" in flags))
     if cmd == "status":

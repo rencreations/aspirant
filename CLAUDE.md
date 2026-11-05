@@ -79,6 +79,7 @@ Lesley's and Chang'e's pages are two ends of one channel (`features/character/le
 - **Each room owns its folder** (`page.tsx`, `preload.ts`, its own components) and wraps itself in `LibraryShell` (`features/library/shell/`). Its loading list is `<room>/preload.ts`; only the first screen is waited for. The shelf is `shelfItems()`. Filters live in the address (`useQueryState`), an item opens from `?i=<id>`, and the library search (`features/library/search/`, the slash key) opens items the same way.
 - **Labels:** fan work shows `CanonBadge` and `CreditLine` (`shell/credit.tsx`). The live-action parody is titled "Live-action parody" (never its on-screen academy name: `scan-text` bans it) and is labelled non-canon. The scene stills come from the full films, never from the GIFs. `scripts/library/ignored.json` lists every source file that is not shipped, with the reason.
 - **Every page ends with a takedown line** that points to the project's issues page (`TAKEDOWN_URL` in `shell/library-shell.tsx`).
+- The shelf is one screen with nothing to scroll, so it has no next destination footer: a "Continue to Home" button (`shelf/continue-home.tsx`, and the N key) keeps the queue Home, About, Story, Characters, Collection, Home going round. The last room's footer leads to the first room.
 - `/collections` and `/collections/<room>` only redirect to the real routes.
 
 ## The roster page (`/character`)

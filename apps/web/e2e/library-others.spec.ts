@@ -16,6 +16,9 @@ async function open(page: Page, query = "") {
   const errors = watchErrors(page);
   await page.goto(url(`/collection/others/${query}`));
   await expect(page.locator("h1")).toHaveText("Others", { timeout: 60_000 });
+  // The heading is in the server's HTML; the summary says "Loading" until the browser has the
+  // data, so it shows that the page is hydrated and the controls take input.
+  await expect(page.getByText(/items in \d+ sections?/)).toBeVisible({ timeout: 60_000 });
   return errors;
 }
 
@@ -67,6 +70,44 @@ test("the 3D stage draws a model, switches layers and changes model", async ({ p
   await expect(page.getByText("taken from the game client")).toBeVisible();
 });
 
+test("the picker holds nine models and each one loads when it is picked", async ({ page }) => {
+  await open(page);
+  await stageReady(page);
+  const picker = page.getByTestId("model-picker").getByRole("button");
+  await expect(picker).toHaveCount(9);
+
+  // Fanny and Layla have a robot with a face screen, so their stage has the robot switch and nine face sheets.
+  await expect(page.getByRole("switch", { name: "Robot" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Robot face" })).toBeVisible();
+
+  // Ruby is a plain OBJ with a weapon and no robot: only the switches that mean something are there.
+  await page.getByRole("button", { name: /Ruby/ }).click();
+  await expect(page).toHaveURL(/i=others-3d-ruby/);
+  await stageReady(page);
+  await expect(page.getByRole("switch")).toHaveCount(2);
+  await expect(page.getByRole("switch", { name: "Weapon" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Robot face" })).toHaveCount(0);
+
+  // Angela is an FBX with a robot but no weapon.
+  await page.getByRole("button", { name: /Angela/ }).click();
+  await stageReady(page);
+  await expect(page.getByRole("switch", { name: "Robot" })).toBeVisible();
+  await expect(page.getByRole("switch", { name: "Weapon" })).toHaveCount(0);
+
+  // The second Vexana model is titled Eternal Guard.
+  await page.getByRole("button", { name: /Eternal Guard/ }).click();
+  await expect(page).toHaveURL(/i=others-3d-vexana-eternal-guard/);
+  await stageReady(page);
+});
+
+test("a link to a model opens the stage on it", async ({ page }) => {
+  await open(page, "?i=others-3d-guinevere");
+  await stageReady(page);
+  await expect(
+    page.getByTestId("model-picker").getByRole("button", { name: /Guinevere/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
 test("the stage turns with the keys and the wheel zooms once it is pressed", async ({ page }) => {
   await open(page);
   await stageReady(page);
@@ -95,7 +136,7 @@ test("search narrows the items and hides the sections with no match", async ({ p
   await page.getByRole("searchbox").fill("selena");
   await expect(page.getByRole("heading", { name: "Skill icons" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Emotes" })).toHaveCount(0);
-  await expect(page.getByText(/of 74 items in/)).toBeVisible();
+  await expect(page.getByText(/of 81 items in/)).toBeVisible();
   await page.getByRole("searchbox").fill("zzzz");
   await expect(page.getByText("Nothing matches that search")).toBeVisible();
 });
@@ -149,9 +190,11 @@ test("the links lead to the novel, the drama and the ten character pages", async
 test("no horizontal scroll on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page);
+  await stageReady(page);
+  // Every section is in its first (not yet revealed) state: a reveal must never push the page sideways.
   const over = await page.evaluate(() => {
     const el = document.scrollingElement ?? document.documentElement;
-    return el.scrollWidth - window.innerWidth;
+    return el.scrollWidth - el.clientWidth;
   });
   expect(over).toBeLessThanOrEqual(0);
 });

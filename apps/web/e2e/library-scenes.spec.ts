@@ -144,9 +144,13 @@ test("the scrubber moves with the scroll and a press on the rail goes to a film"
     .first()
     .click();
   const section = page.locator(`[data-film="${second.id}"]`);
+  // On a wide screen the film comes up near the top; on a narrow one the rail and the header take
+  // more of the screen, so "in view" is the test.
+  const view = page.viewportSize() ?? { width: 1440, height: 900 };
+  const limit = view.width < 900 ? view.height * 0.95 : 400;
   await expect
     .poll(async () => (await section.boundingBox())?.y ?? 9999, { timeout: 10_000 })
-    .toBeLessThan(400);
+    .toBeLessThan(limit);
   // Scroll down inside the film: the readout moves on.
   const read = section.locator("[data-read]");
   const before = (await read.textContent()) ?? "";

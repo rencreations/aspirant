@@ -11,6 +11,7 @@ import {
   LineBasicMaterial,
   LineLoop,
   LineSegments,
+  LoadingManager,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
@@ -18,6 +19,7 @@ import {
   RepeatWrapping,
   Scene,
   Spherical,
+  type SkinnedMesh,
   SRGBColorSpace,
   Texture,
   Vector3,
@@ -29,7 +31,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 
 import type { ModelBundle } from "./model-bundle";
-import type { ModelInfo, ModelPart } from "./types";
+import type { ModelInfo, ModelLayer, ModelPart } from "./types";
 
 /** What the stage reports back to the page. */
 interface ViewerHooks {
@@ -37,15 +39,21 @@ interface ViewerHooks {
   onView?: (azimuth: number, zoom: number) => void;
 }
 
-/** The three switches of the stage. The robot's face screen follows the robot. */
-export type Layer = "body" | "weapon" | "robot";
+/** The switches of the stage. The robot's face screen follows the robot. */
+export type Layer = ModelLayer;
 
-const LAYER_OF: Record<ModelPart, Layer> = {
+const LAYER_OF: Record<ModelPart, Layer | null> = {
   body: "body",
   weapon: "weapon",
   robot: "robot",
   robotFace: "robot",
+  hidden: null,
 };
+
+/** Every model is scaled so that its body stands this tall (the files come in very different units). */
+const BODY_HEIGHT = 1.85;
+/** A one pixel picture: the FBX loader asks for its own textures, the viewer uses the ones it fetched itself. */
+const PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 const FOV = 30;
 const HOME_AZIMUTH = 0.5;
@@ -77,6 +85,7 @@ function disposeObject(root: Object3D): void {
   root.traverse((obj) => {
     const mesh = obj as Partial<Mesh>;
     mesh.geometry?.dispose();
+    (obj as Partial<SkinnedMesh>).skeleton?.dispose();
     const mats = Array.isArray(mesh.material)
       ? mesh.material
       : mesh.material
@@ -87,6 +96,69 @@ function disposeObject(root: Object3D): void {
       m.dispose();
     }
   });
+}
+
+/** The part a piece belongs to, by the model's rules (the same rules the build used to list the layers). */
+function partOf(
+  rules: ReadonlyArray<[string, ModelPart]>,
+  objectName: string,
+  material: string,
+): ModelPart {
+  const text = `${objectName} ${material}`.toLowerCase();
+  for (const [pattern, part] of rules) {
+    if (new RegExp(pattern).test(text)) return part;
+  }
+  return "body";
+}
+
+const partOfMesh = (mesh: Object3D): ModelPart =>
+  (mesh.userData.part as ModelPart | undefined) ?? "body";
+
+type AnyMesh = Mesh<BufferGeometry, Material | Material[]>;
+
+/**
+ * A mesh that has several materials (the .obj loader makes one mesh per object) becomes one mesh
+ * per material, so each piece can be a layer of its own. Only plain (not indexed, not skinned) meshes.
+ */
+function splitByMaterial(mesh: AnyMesh): AnyMesh[] {
+  const mats = mesh.material;
+  const geo = mesh.geometry;
+  if (
+    !Array.isArray(mats) ||
+    mats.length < 2 ||
+    geo.index ||
+    (mesh as unknown as SkinnedMesh).isSkinnedMesh
+  ) {
+    return [mesh];
+  }
+  const out: AnyMesh[] = [];
+  for (const g of geo.groups) {
+    const sub = new BufferGeometry();
+    for (const [name, attr] of Object.entries(geo.attributes)) {
+      const a = attr as {
+        array: ArrayLike<number> & { slice: (a: number, b: number) => ArrayLike<number> };
+        itemSize: number;
+      };
+      sub.setAttribute(
+        name,
+        new Float32BufferAttribute(
+          Array.from(a.array.slice(g.start * a.itemSize, (g.start + g.count) * a.itemSize)),
+          a.itemSize,
+        ),
+      );
+    }
+    const piece = new Mesh(sub, mats[g.materialIndex ?? 0]) as AnyMesh;
+    piece.name = mesh.name;
+    out.push(piece);
+  }
+  if (out.length === 0) return [mesh];
+  const parent = mesh.parent;
+  if (parent) {
+    out.forEach((p) => parent.add(p));
+    parent.remove(mesh);
+  }
+  geo.dispose();
+  return out;
 }
 
 interface Tween {
@@ -177,7 +249,17 @@ export class ModelViewer {
   async show(bundle: ModelBundle, info: ModelInfo): Promise<void> {
     const token = ++this.loadToken;
     this.clearModel();
-    const group = new OBJLoader().parse(bundle.obj);
+    let group: Group;
+    if (bundle.fbx) {
+      // The FBX loader is its own chunk, fetched only when an FBX model is chosen. It looks for
+      // textures by name; the viewer already has the ones it needs, so it is given a blank pixel.
+      const { FBXLoader } = await import("three/examples/jsm/loaders/FBXLoader.js");
+      const manager = new LoadingManager();
+      manager.setURLModifier(() => PIXEL);
+      group = new FBXLoader(manager).parse(bundle.fbx, "");
+    } else {
+      group = new OBJLoader().parse(bundle.obj ?? "");
+    }
     const aniso = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
     const textures = new Map<string, Texture>();
     await Promise.all(
@@ -194,36 +276,57 @@ export class ModelViewer {
     }
 
     const made = new Map<string, MeshLambertMaterial>();
-    group.traverse((obj) => {
-      if (!(obj instanceof Mesh)) return;
-      const mesh = obj as Mesh<BufferGeometry, Material | Material[]>;
-      const old: Material | undefined = Array.isArray(mesh.material)
-        ? mesh.material[0]
-        : mesh.material;
-      const name = old?.name ?? "";
+    const materialFor = (name: string): MeshLambertMaterial => {
       let mat = made.get(name);
       if (!mat) {
         const map = textures.get(name);
+        const opacity = info.opacity?.[name];
         mat = new MeshLambertMaterial({
           side: DoubleSide,
           ...(map ? { map } : { color: 0xcccccc }),
+          ...(opacity !== undefined ? { transparent: true, opacity, depthWrite: false } : {}),
         });
         mat.name = name;
         made.set(name, mat);
       }
-      const olds: Material[] = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      olds.forEach((m) => {
-        m.dispose();
-      });
-      mesh.material = mat;
-      const part: ModelPart = info.parts[name] ?? "body";
-      (mesh.userData as Record<string, unknown>).part = part;
-      if (part === "robotFace") {
-        this.faceMaterial = mat;
-        if (mat.map) this.faceTextures.set(-1, mat.map);
-      }
-      this.meshes.push(mesh);
+      return mat;
+    };
+
+    const found: AnyMesh[] = [];
+    group.traverse((obj) => {
+      if (obj instanceof Mesh) found.push(obj as AnyMesh);
     });
+    for (const original of found) {
+      for (const mesh of splitByMaterial(original)) {
+        const olds: Material[] = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        const name = olds[0]?.name ?? "";
+        const mat = materialFor(name);
+        olds.forEach((m) => {
+          m.dispose();
+        });
+        mesh.material = mat;
+        const part = partOf(info.rules, mesh.name, name);
+        (mesh.userData as Record<string, unknown>).part = part;
+        if ((mesh as unknown as SkinnedMesh).isSkinnedMesh) mesh.frustumCulled = false;
+        if (part === "robotFace") {
+          this.faceMaterial = mat;
+          if (mat.map) this.faceTextures.set(-1, mat.map);
+        }
+        this.meshes.push(mesh);
+      }
+    }
+
+    // Scale the whole model so the body stands BODY_HEIGHT tall, whatever unit the file uses.
+    group.updateMatrixWorld(true);
+    const bodyBox = new Box3();
+    for (const mesh of this.meshes) {
+      if (partOfMesh(mesh) === "body") bodyBox.expandByObject(mesh);
+    }
+    const height = bodyBox.getSize(new Vector3()).y;
+    if (height > 0) {
+      group.scale.multiplyScalar(BODY_HEIGHT / height);
+      group.updateMatrixWorld(true);
+    }
 
     this.model = group;
     this.scene.add(group);
@@ -404,8 +507,8 @@ export class ModelViewer {
 
   private applyLayers(): void {
     for (const mesh of this.meshes) {
-      const part = (mesh.userData.part as ModelPart | undefined) ?? "body";
-      mesh.visible = this.layers[LAYER_OF[part]];
+      const layer = LAYER_OF[partOfMesh(mesh)];
+      mesh.visible = layer ? this.layers[layer] : false;
     }
   }
 
@@ -414,7 +517,8 @@ export class ModelViewer {
     this.bodyBox = new Box3();
     this.allBox = new Box3();
     for (const mesh of this.meshes) {
-      const part = (mesh.userData.part as ModelPart | undefined) ?? "body";
+      const part = partOfMesh(mesh);
+      if (part === "hidden") continue;
       this.allBox.expandByObject(mesh);
       if (part === "body") this.bodyBox.expandByObject(mesh);
     }

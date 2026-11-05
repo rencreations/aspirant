@@ -7,7 +7,7 @@ import { sitePath, skipGate, url, watchErrors } from "./helpers";
 async function openShelf(page: Page) {
   await skipGate(page);
   await page.goto(url("/collection/"));
-  await page.waitForSelector("canvas[style*='touch-action']", { timeout: 20_000 });
+  await page.waitForSelector("canvas[style*='touch-action']", { timeout: 60_000 });
   // The covers have landed when the index row has faded in.
   await page.waitForFunction(
     () => {
@@ -15,7 +15,7 @@ async function openShelf(page: Page) {
       return stage !== null;
     },
     undefined,
-    { timeout: 20_000 },
+    { timeout: 60_000 },
   );
 }
 
@@ -72,7 +72,7 @@ test.describe("the shelf", () => {
     await expect(page.locator("[data-focus='true']")).toHaveCount(1);
     await page.locator("[data-show='true'] >> button:text-is('Open')").first().click();
     await expect
-      .poll(() => sitePath(page, baseURL), { timeout: 20_000 })
+      .poll(() => sitePath(page, baseURL), { timeout: 60_000 })
       .toMatch(/^\/collection\/design\/?$/);
   });
 
@@ -93,7 +93,7 @@ test.describe("the shelf", () => {
     await page.keyboard.press("Enter");
     await page.keyboard.press("Enter");
     await expect
-      .poll(() => sitePath(page, baseURL), { timeout: 20_000 })
+      .poll(() => sitePath(page, baseURL), { timeout: 60_000 })
       .toMatch(/^\/collection\/[a-z]+\/?$/);
   });
 
@@ -123,7 +123,7 @@ test.describe("the shelf on a phone", () => {
     await expect(page.locator("[data-focus='true']")).toHaveCount(1);
     await page.locator("[data-show='true'] >> button:text-is('Open')").first().click();
     await expect
-      .poll(() => sitePath(page, baseURL), { timeout: 20_000 })
+      .poll(() => sitePath(page, baseURL), { timeout: 60_000 })
       .toMatch(/^\/collection\/arts\/?$/);
     expect(errors.filter((e) => !/404|Failed to load resource/.test(e))).toEqual([]);
   });

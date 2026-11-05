@@ -67,16 +67,25 @@ const pages = [
       const errors = [];
       page.on("pageerror", (e) => errors.push("pageerror: " + e.message.slice(0, 160)));
       page.on("console", (m) => {
-        if (m.type() === "error") errors.push("console: " + m.text().slice(0, 160));
+        // A 404 is reported with its address by the response listener below (minus the local
+        // prefetch noise), so the bare browser line is skipped.
+        if (m.type() === "error" && !/status of 404/.test(m.text()))
+          errors.push("console: " + m.text().slice(0, 160));
       });
-      page.on("requestfailed", (r) => errors.push("failed: " + r.url().slice(0, 120)));
+      page.on("requestfailed", (r) => {
+        // An aborted request is a navigation or a prefetch that was replaced: not a failure.
+        if (/ERR_ABORTED/.test(r.failure()?.errorText ?? "")) return;
+        errors.push("failed: " + r.url().slice(0, 120));
+      });
       page.on("response", (r) => {
-        if (r.status() >= 400) errors.push(`http ${r.status()}: ${r.url().slice(0, 120)}`);
+        // `serve` answers 404 for Next's prefetch files (`__next.*.txt`): local only, see README.
+        if (r.status() >= 400 && !/__next[^/]*\.txt/.test(r.url()))
+          errors.push(`http ${r.status()}: ${r.url().slice(0, 120)}`);
       });
       let line = `${p.id.padEnd(11)} ${s.name.padEnd(5)}`;
       try {
         await page.goto(p.url, { waitUntil: "domcontentloaded", timeout: 90000 });
-        await page.waitForTimeout(7000);
+        await page.waitForTimeout(11000);
         const info = await page.evaluate(() => {
           const imgs = [...document.images];
           const broken = imgs

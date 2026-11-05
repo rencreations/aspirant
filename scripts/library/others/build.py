@@ -82,100 +82,322 @@ def note_bytes(path: Path) -> None:
 # 3D models
 # ---------------------------------------------------------------------------------------------
 
+OWNER_DIR = common.WORK / "3d" / "x"  # the models the owner supplied, unpacked (read only, never run)
+
+# Which part of the model a piece belongs to. A rule is [regex, part]; the regex is tried on the
+# lower case text "<object name> <material name>", the first match wins, no match means "body".
+# The viewer applies the same rules, so the layer switches only exist where a part is really there.
+ROBOT_RULES = [["jiqirenbiaoqing", "robotFace"], ["jiqi", "robot"], ["wuqi|weapon", "weapon"]]
+
 MODELS = [
     {
-        "slug": "fanny",
-        "title": "Fanny",
-        "pair": "fanny-layla",
-        "obj": "hero_fanny_skin09_high_add.obj",
-        "mtl": "hero_fanny_skin09_high_add.mtl",
-        "weapon_note": "Her cable weapon is stored flat and laid out to one side of the body.",
+        "slug": "fanny", "title": "Fanny", "chars": ["fanny"], "pair": "fanny-layla", "format": "obj",
+        "src": common.MEDIA / "layla-and-fanny" / "3d" / "fanny", "obj": "hero_fanny_skin09_high_add.obj",
+        "mtl": "hero_fanny_skin09_high_add.mtl", "rename": False, "rules": ROBOT_RULES, "faces": True,
+        "note": "A model taken from the game client, used here as a visual reference. Her cable weapon is stored flat and laid out to one side of the body. The little robot beside the body has a face screen that can show eight other expressions.",
     },
     {
-        "slug": "layla",
-        "title": "Layla",
-        "pair": "fanny-layla",
-        "obj": "hero_shooter_skin08_high_add.obj",
-        "mtl": "hero_shooter_skin08_high_add.mtl",
-        "weapon_note": "Her rifle is stored separate from the body and laid out to one side.",
+        "slug": "layla", "title": "Layla", "chars": ["layla"], "pair": "fanny-layla", "format": "obj",
+        "src": common.MEDIA / "layla-and-fanny" / "3d" / "layla", "obj": "hero_shooter_skin08_high_add.obj",
+        "mtl": "hero_shooter_skin08_high_add.mtl", "rename": False, "rules": ROBOT_RULES, "faces": True,
+        "note": "A model taken from the game client, used here as a visual reference. Her rifle is stored separate from the body and laid out to one side. The little robot beside the body has a face screen that can show eight other expressions.",
+    },
+    {
+        "slug": "ruby", "title": "Ruby, Mecha Maiden", "skin": "Mecha Maiden", "chars": ["ruby"], "pair": "ruby-angela",
+        "format": "obj", "src": OWNER_DIR / "ruby", "obj": "Ruby-Mecha Maiden.obj", "mtl": "Ruby-Mecha Maiden.mtl",
+        "rename": True, "rules": [["material\\.001$", "weapon"]], "owner": True,
+    },
+    {
+        "slug": "angela", "title": "Angela, Cyber Cherubin", "skin": "Cyber Cherubin", "chars": ["angela"], "pair": "ruby-angela",
+        "format": "fbx", "src": OWNER_DIR / "angela" / "08 Angela THE ASPIRANTS Cyber Cherubin",
+        "obj": "hero_angela_skin08_high_add.fbx", "mtl": "", "rename": False,
+        "rules": [["cylinder|cityaction", "hidden"], ["jiqi", "robot"]], "owner": True,
+        "maps": {
+            "body": "Angela_skin08_body.png", "body_A": "Angela_skin08_body.png", "hair": "Angela_skin08_hair.png",
+            "face": "Angela_skin08_face.png", "jiqiren_skin09_high_body": "jiqiren_skin09_d.png",
+            "jiqiren_skin09_high_face": "jiqirenbiaoqing_skin09_1.png",
+        },
+    },
+    {
+        "slug": "lesley", "title": "Lesley, Deadeye Spectre", "skin": "Deadeye Spectre", "chars": ["lesley"], "pair": "lesley-change",
+        "format": "obj", "src": OWNER_DIR / "lesley", "obj": "Lesley - Deadeye Spectre.obj", "mtl": "Lesley - Deadeye Spectre.mtl",
+        "rename": True, "rules": [["weapon|npc", "weapon"]], "owner": True,
+    },
+    {
+        "slug": "change", "title": "Chang'e, Tech Tensai", "skin": "Tech Tensai", "chars": ["change"], "pair": "lesley-change",
+        "format": "obj", "src": OWNER_DIR / "change", "obj": "Change - Tech Tensai .obj", "mtl": "Change - Tech Tensai .mtl",
+        "rename": True, "rules": [["\\snone$", "hidden"], ["jiqi", "robot"], ["weapon", "weapon"]], "owner": True,
+    },
+    {
+        "slug": "guinevere", "title": "Guinevere, Daybreak Halo", "skin": "Daybreak Halo", "chars": ["guinevere"], "pair": "guinevere-vexana",
+        "format": "obj", "src": OWNER_DIR / "guinevere", "obj": "GUINEVERE - Daybreak Halo.obj", "mtl": "GUINEVERE - Daybreak Halo.mtl",
+        "rename": True, "rules": [["weapon", "weapon"]], "owner": True,
+    },
+    {
+        "slug": "vexana", "title": "Vexana, Twilight Star", "skin": "Twilight Star", "chars": ["vexana"], "pair": "guinevere-vexana",
+        "format": "obj", "src": OWNER_DIR / "vexana", "obj": "VEXANA - Twilight Star .obj", "mtl": "VEXANA - Twilight Star .mtl",
+        "rename": True, "rules": [["material\\.010$", "hidden"], ["high_body02_mat$", "weapon"]], "owner": True,
+    },
+    {
+        "slug": "vexana-eternal-guard", "title": "Eternal Guard", "skin": "Eternal Guard", "chars": ["vexana"], "pair": "guinevere-vexana",
+        "format": "obj", "src": OWNER_DIR / "vexana-eternal-guard", "obj": "Eternal Guard.obj", "mtl": "Eternal Guard.mtl",
+        "rename": True, "rules": [["weapon", "weapon"]], "owner": True,
     },
 ]
 
+SKIP_FILES = {"undefined-dawn-savanna.jpg"}  # a stray preview picture that came with each download
 
-def part_of(material: str) -> str:
-    if material == "jiqiren_skin09_d":
-        return "robot"
-    if material == "jiqirenbiaoqing_skin09_d":
-        return "robotFace"
-    if material.endswith("_wuqi_d") or material.endswith("_weapon_d"):
-        return "weapon"
+
+def unquote(name: str) -> str:
+    return name.strip().strip('"').strip()
+
+
+def parse_mtl(path: Path) -> tuple[dict[str, str], dict[str, float]]:
+    """Material name to the texture of map_Kd, and to its opacity when it is below 1."""
+    maps: dict[str, str] = {}
+    opacity: dict[str, float] = {}
+    cur = None
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        line = line.strip()
+        if line.startswith("newmtl "):
+            cur = line.split(None, 1)[1].strip()
+        elif cur and line.startswith("map_Kd "):
+            maps[cur] = unquote(line.split(None, 1)[1])
+        elif cur and (line.startswith("d ") or line.startswith("Tr ")):
+            try:
+                v = float(line.split()[1])
+            except ValueError:
+                continue
+            if line.startswith("Tr "):
+                v = 1.0 - v
+            if v < 0.999:
+                opacity[cur] = round(v, 3)
+    return maps, opacity
+
+
+def obj_segments(path: Path) -> tuple[int, int, list[tuple[str, str]]]:
+    """(vertices, triangles, [(object name, material name)]) the way the viewer's loader splits it."""
+    verts = tris = 0
+    segs: set[tuple[str, str]] = set()
+    obj = ""
+    mat = ""
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if line.startswith("v "):
+            verts += 1
+        elif line.startswith("f "):
+            tris += max(1, len(line.split()) - 3)
+            segs.add((obj, mat))
+        elif line.startswith(("o ", "g ")):
+            obj = line[2:].strip()
+        elif line.startswith("usemtl"):
+            mat = line.split(None, 1)[1].strip()
+    return verts, tris, sorted(segs)
+
+
+def fbx_counts(path: Path) -> tuple[int, int]:
+    """Vertices and triangles of a binary FBX (version 7.x), read from its geometry nodes. Nothing is run."""
+    import struct
+    import zlib
+
+    d = path.read_bytes()
+    ver = struct.unpack("<I", d[23:27])[0]
+    wide = ver >= 7500
+
+    def prop(p: int):
+        t = chr(d[p])
+        p += 1
+        if t in "YCIFDL":
+            size = {"Y": 2, "C": 1, "I": 4, "F": 4, "D": 8, "L": 8}[t]
+            return None, p + size
+        if t in "fdilb":
+            n, enc, cl = struct.unpack("<III", d[p : p + 12])
+            p += 12
+            raw = d[p : p + cl]
+            return (t, n, zlib.decompress(raw) if enc else raw), p + cl
+        n = struct.unpack("<I", d[p : p + 4])[0]
+        return None, p + 4 + n
+
+    def node(p: int):
+        if wide:
+            end, npr, pl = struct.unpack("<QQQ", d[p : p + 24])
+            p += 24
+        else:
+            end, npr, pl = struct.unpack("<III", d[p : p + 12])
+            p += 12
+        nl = d[p]
+        p += 1
+        name = d[p : p + nl].decode()
+        p += nl
+        if end == 0:
+            return None, p
+        props = []
+        q = p
+        for _ in range(npr):
+            v, q = prop(q)
+            props.append(v)
+        p += pl
+        kids = []
+        while p < end:
+            k, p = node(p)
+            if k is None:
+                break
+            kids.append(k)
+        return (name, props, kids), end
+
+    p = 27
+    verts = tris = 0
+    while p < len(d) - 200:
+        n, p = node(p)
+        if n is None:
+            break
+        if n[0] != "Objects":
+            continue
+        for g in n[2]:
+            if g[0] != "Geometry":
+                continue
+            for k in g[2]:
+                if k[0] == "Vertices" and k[1] and k[1][0]:
+                    verts += k[1][0][1] // 3
+                if k[0] == "PolygonVertexIndex" and k[1] and k[1][0]:
+                    _t, cnt, raw = k[1][0]
+                    idx = struct.unpack(f"<{cnt}i", raw)
+                    polys = sum(1 for i in idx if i < 0)
+                    tris += cnt - 2 * polys
+    return verts, tris
+
+
+def part_of(rules: list[list[str]], obj: str, mat: str) -> str:
+    text = f"{obj} {mat}".lower()
+    for pattern, part in rules:
+        if re.search(pattern, text):
+            return part
     return "body"
 
 
 def build_models() -> list[dict]:
+    global written
     items = []
     for m in MODELS:
-        src_dir = common.MEDIA / "layla-and-fanny" / "3d" / m["slug"]
-        base = f"others/3d/{m['slug']}"
-        obj_src, mtl_src = src_dir / m["obj"], src_dir / m["mtl"]
-        put(obj_src, f"{base}/{m['obj']}")
-        put(mtl_src, f"{base}/{m['mtl']}")
+        slug = m["slug"]
+        src_dir: Path = m["src"]
+        base = f"others/3d/{slug}"
+        if m["format"] == "fbx":
+            main_name = m["obj"]
+            put(src_dir / main_name, f"{base}/{main_name}")
+            mtl_name = ""
+        elif m["rename"]:
+            # The downloaded names hold spaces (one has a space before the dot): clean names, and the
+            # line in the .obj that names the .mtl follows. Nothing else in the file is touched.
+            main_name, mtl_name = f"{slug}.obj", f"{slug}.mtl"
+            raw = (src_dir / m["obj"]).read_bytes()
+            out = common.key_path(f"{base}/{main_name}")
+            lines = raw.split(b"\n", 12)
+            for i, ln in enumerate(lines[:12]):
+                if ln.lstrip().startswith(b"mtllib"):
+                    eol = b"\r" if ln.endswith(b"\r") else b""
+                    lines[i] = b"mtllib " + mtl_name.encode() + eol
+            patched = b"\n".join(lines)
+            if FORCE or not out.exists() or out.read_bytes() != patched:
+                out.write_bytes(patched)
+                written += len(patched)
+            put(src_dir / m["mtl"], f"{base}/{mtl_name}")
+        else:
+            main_name, mtl_name = m["obj"], m["mtl"]
+            put(src_dir / main_name, f"{base}/{main_name}")
+            put(src_dir / mtl_name, f"{base}/{mtl_name}")
 
-        # The .mtl names the texture of each material: copy exactly those files, same names.
-        maps: dict[str, str] = {}
-        cur = None
-        for line in mtl_src.read_text(encoding="utf-8", errors="replace").splitlines():
-            line = line.strip()
-            if line.startswith("newmtl "):
-                cur = line.split(None, 1)[1]
-            elif line.startswith("map_Kd ") and cur:
-                maps[cur] = line.split(None, 1)[1].strip()
-        for tex in sorted(set(maps.values())):
-            put(src_dir / tex, f"{base}/{tex}")
-        # The eight expression sheets of the robot's face. The folder is lower case in the mirror
-        # (the keys are case sensitive on R2). Nothing in the .mtl points at them.
+        # Every other file of the model goes in as it came (the PNG textures), except the stray preview.
+        main_src = {m["obj"], m.get("mtl", "")}
+        all_files = []
+        for f in sorted(src_dir.iterdir()):
+            if f.is_dir() or f.name in SKIP_FILES or f.name in main_src:
+                continue
+            put(f, f"{base}/{f.name}")
+            all_files.append(f.name)
+
+        opacity: dict[str, float] = {}
+        missing: list[str] = []
+        if m["format"] == "obj":
+            maps_raw, opacity = parse_mtl(src_dir / m["mtl"])
+            maps = {}
+            for mat, tex in maps_raw.items():
+                if (src_dir / tex).exists():
+                    maps[mat] = tex
+                else:
+                    missing.append(f"{mat} -> {tex}")
+            verts, tris, segs = obj_segments(src_dir / m["obj"])
+            parts = {part_of(m["rules"], o, mt) for o, mt in segs}
+        else:
+            maps = dict(m["maps"])
+            for tex in maps.values():
+                assert (src_dir / tex).exists(), tex
+            verts, tris = fbx_counts(src_dir / m["obj"])
+            parts = {"body", "robot"}
+
         faces = []
-        for p in sorted((src_dir / "Emote").glob("*.png")):
-            put(p, f"{base}/emote/{p.name}")
-            faces.append(f"{base}/emote/{p.name}")
+        if m.get("faces"):
+            for p in sorted((src_dir / "Emote").glob("*.png")):
+                put(p, f"{base}/emote/{p.name}")
+                faces.append(f"emote/{p.name}")
 
-        verts = tris = 0
-        for line in obj_src.read_text(encoding="utf-8", errors="replace").splitlines():
-            if line.startswith("v "):
-                verts += 1
-            elif line.startswith("f "):
-                tris += max(1, len(line.split()) - 3)
-
-        parts = {mat: part_of(mat) for mat in maps}
+        layers = [layer for layer in ("body", "weapon", "robot") if layer in parts or (layer == "robot" and "robotFace" in parts)]
+        tex_files = sorted(set(maps.values()))
+        info = {
+            "format": m["format"],
+            "dir": base,
+            "obj": main_name,
+            "mtl": mtl_name,
+            "verts": verts,
+            "tris": tris,
+            "bytes": size_of(f"{base}/{main_name}"),
+            "maps": maps,
+            "rules": m["rules"],
+            "layers": layers,
+            "faces": faces,
+            "texBytes": sum(size_of(f"{base}/{t}") for t in tex_files),
+            "files": len(all_files) + (2 if mtl_name else 1) + len(faces),
+        }
+        info["totalBytes"] = (
+            sum(size_of(f"{base}/{n}") for n in all_files)
+            + info["bytes"]
+            + (size_of(f"{base}/{mtl_name}") if mtl_name else 0)
+            + sum(size_of(f"{base}/{f}") for f in faces)
+        )
+        if opacity:
+            info["opacity"] = opacity
         item = {
-            "id": f"others-3d-{m['slug']}",
+            "id": f"others-3d-{slug}",
             "kind": "model",
             "group": "models",
             "title": m["title"],
             "collection": "others",
-            "chars": [m["slug"]],
+            "chars": m["chars"],
             "pair": m["pair"],
             "canon": "official",
-            "tags": ["3d", "model", "game client", m["slug"], "visual reference"],
-            "note": f"A model taken from the game client, used here as a visual reference. {m['weapon_note']} The little robot beside the body has a face screen that can show eight other expressions.",
-            "model": {
-                "dir": base,
-                "obj": m["obj"],
-                "mtl": m["mtl"],
-                "verts": verts,
-                "tris": tris,
-                "bytes": size_of(f"{base}/{m['obj']}"),
-                "maps": {mat: f"{tex}" for mat, tex in maps.items()},
-                "parts": parts,
-                "faces": [f.split("/", 3)[-1] for f in faces],
-                "texBytes": sum(size_of(f"{base}/{t}") for t in set(maps.values())),
-            },
+            "tags": ["3d", "model", "game client", *m["chars"], "visual reference", *([m["skin"].lower()] if m.get("skin") else [])],
+            "note": m.get("note")
+            or "A game client model supplied by the site's owner, used here as a visual reference. The parts sit as the client file stores them.",
+            "model": info,
         }
-        render = RENDERS / f"{m['slug']}.png"
+        if m.get("skin"):
+            item["skin"] = m["skin"]
+        if m.get("owner"):
+            item["credit"] = {
+                "by": "Supplied by the site's owner",
+                "platform": None,
+                "url": None,
+                "note": "A game client model, used as a visual reference.",
+            }
+        render = RENDERS / f"{slug}.png"
         if render.exists():
             item["img"] = common.image_set(render, f"{base}/preview", full_max=1600, force=FORCE)
         items.append(item)
-        print(f"model {m['slug']}: {verts} vertices, {tris} triangles, {len(maps)} materials, {len(faces)} face sheets")
+        total = sum(size_of(f"{base}/{n}") for n in all_files)
+        print(
+            f"model {slug}: {m['format']}, {verts} vertices, {tris} triangles, layers {layers}, "
+            f"{len(maps)} mapped materials, {len(all_files)} extra files, {common.human(total + info['bytes'])}"
+            + (f", MISSING textures: {missing}" if missing else "")
+        )
     return items
 
 
@@ -559,7 +781,7 @@ def update_ignored() -> None:
 
 
 GROUPS = [
-    {"id": "models", "title": "3D models", "line": "Two game client models, Fanny and Layla. Drag to turn them, scroll to come closer.", "kind": "models"},
+    {"id": "models", "title": "3D models", "line": "Nine game client models of the Aspirants. Pick one, drag to turn it, scroll to come closer.", "kind": "models"},
     {"id": "emotes", "title": "Emotes", "line": "Eight chibi stickers of Fanny and Layla. They loop while you look.", "kind": "stickers"},
     {"id": "gameplay", "title": "Gameplay clips (not part of the story)", "line": "Ten short clips of the game itself, posted by the official account.", "kind": "clips"},
     {"id": "skills", "title": "Skill icons", "line": "Game interface icons for Guinevere, Obsidia, Selena and Vexana, shown at their real size.", "kind": "icons"},

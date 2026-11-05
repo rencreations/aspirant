@@ -1,0 +1,55 @@
+.button {
+  position: fixed;
+  z-index: var(--z-hud);
+  top: calc(var(--nav-h) + 0.9rem);
+  right: var(--gutter);
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "name key";
+  align-items: center;
+  gap: 0.15rem 0.6rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-fast) linear;
+}
+
+.button:hover {
+  transform: translateX(-4px);
+  border-color: var(--text);
+}
+
+.eyebrow {
+  grid-area: eyebrow;
+  color: var(--text-faint);
+}
+
+.name {
+  grid-area: name;
+}
+
+.key {
+  grid-area: key;
+  padding: 0 0.3rem;
+  border: 1px solid var(--line-strong);
+  font: inherit;
+  color: var(--text-dim);
+}
+
+@media (max-width: 52em) {
+  .eyebrow {
+    display: none;
+  }
+
+  .button {
+    top: calc(var(--nav-h) + 0.6rem);
+    grid-template-areas: "name key";
+  }
+}

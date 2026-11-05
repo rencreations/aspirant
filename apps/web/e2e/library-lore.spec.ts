@@ -28,7 +28,10 @@ async function open(page: Page, query = "") {
   await skipGate(page);
   const errors = watch(page);
   await page.goto(url(`/collection/lore/${query}`));
-  await expect(page.getByRole("tablist", { name: "Views of the lore room" })).toBeVisible();
+  // With a plate open (`a=`) the page behind the dialog is hidden from assistive technology.
+  if (!query.includes("a=")) {
+    await expect(page.getByRole("tablist", { name: "Views of the lore room" })).toBeVisible();
+  }
   return errors;
 }
 
@@ -139,6 +142,10 @@ test("the atlas holds 14 places and 10 entities, and a plate opens in full", asy
   await expect(page).toHaveURL(/a=lore-place-terrinia/);
   // The picture is shown at its own size, never enlarged.
   const pic = dialog.locator("img").first();
+  // The picture comes from the bucket: wait for it to arrive before measuring it.
+  await expect
+    .poll(() => pic.evaluate((el) => (el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
   const natural = await pic.evaluate((el) => (el as HTMLImageElement).naturalWidth);
   const shown = (await pic.boundingBox())?.width ?? 0;
   expect(shown).toBeLessThanOrEqual(natural + 1);
