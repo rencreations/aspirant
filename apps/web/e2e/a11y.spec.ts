@@ -21,6 +21,11 @@ for (const route of ROUTES) {
       await page.waitForLoadState("load");
       await page.waitForTimeout(1500);
     } else await page.waitForLoadState("networkidle");
+    if (route === "/collection/") {
+      // The shelf fades its controls in once the covers have landed: scan the finished page.
+      await page.waitForSelector("[data-entered='true']", { timeout: 60_000 });
+      await page.waitForTimeout(1500);
+    }
     const serious = await seriousViolations(page);
     expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
   });

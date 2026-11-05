@@ -27,7 +27,7 @@ export function ShelfPage() {
   return (
     <ThemeZone theme="daybreak" as="div" className={styles.root} data-shelf={state}>
       <div className={styles.fallback} inert={live}>
-        <ShelfFallback />
+        <ShelfFallback heading={!live} />
       </div>
       <ContinueHome />
       {live ? (

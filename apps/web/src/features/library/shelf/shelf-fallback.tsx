@@ -10,12 +10,17 @@ import styles from "./shelf-fallback.module.css";
 /**
  * The ten covers as a plain grid of links. It is always in the page HTML (crawlers, keyboards,
  * screen readers) and it is what a visitor sees when WebGL is missing. The shelf scene draws
- * over it.
+ * over it. While the scene is live it has its own heading, so this one is a paragraph (`heading`
+ * false): the page has one h1.
  */
-export function ShelfFallback() {
+export function ShelfFallback({ heading = true }: { heading?: boolean }) {
   return (
     <nav aria-label="The ten collections" className={`${styles.grid} shell below-nav`}>
-      <h1 className={`${styles.title} display`}>Collection</h1>
+      {heading ? (
+        <h1 className={`${styles.title} display`}>Collection</h1>
+      ) : (
+        <p className={`${styles.title} display`}>Collection</p>
+      )}
       <ul className={styles.list}>
         {COLLECTIONS.map((c) => (
           <li key={c.slug}>
