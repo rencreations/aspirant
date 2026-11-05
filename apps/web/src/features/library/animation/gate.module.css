@@ -1,0 +1,394 @@
+/* The film gate: a dark plate, an aperture with corner marks, and a shutter of two blades. Every
+   moving part is a transform or an opacity. The colours come from the character: --ink, --accent. */
+.gate {
+  position: relative;
+  padding: 0.7rem clamp(0.6rem, 1.6vw, 1.2rem) 0;
+  background: var(--ink);
+  color: var(--on-plate);
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.rail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.55rem;
+}
+
+.rail :global(.hud-label) {
+  color: color-mix(in srgb, var(--on-plate) 62%, transparent);
+  white-space: nowrap;
+}
+
+/* Sprocket holes: small squares in a row. */
+.holes {
+  flex: 1;
+  height: 0.5rem;
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--on-plate) 26%, transparent) 0 0.7rem,
+    transparent 0.7rem 1.4rem
+  );
+}
+
+.aperture {
+  position: relative;
+  aspect-ratio: 3840 / 1728;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 80%, #000);
+  outline: 1px solid color-mix(in srgb, var(--on-plate) 26%, transparent);
+  outline-offset: 3px;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus);
+  user-select: none;
+}
+
+/* Corner marks, drawn inside the aperture. */
+.corner {
+  position: absolute;
+  z-index: 3;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 0 solid var(--accent);
+  pointer-events: none;
+}
+
+.corner[data-c="tl"] {
+  top: 0.6rem;
+  left: 0.6rem;
+  border-width: 2px 0 0 2px;
+}
+
+.corner[data-c="tr"] {
+  top: 0.6rem;
+  right: 0.6rem;
+  border-width: 2px 2px 0 0;
+}
+
+.corner[data-c="bl"] {
+  bottom: 0.6rem;
+  left: 0.6rem;
+  border-width: 0 0 2px 2px;
+}
+
+.corner[data-c="br"] {
+  right: 0.6rem;
+  bottom: 0.6rem;
+  border-width: 0 2px 2px 0;
+}
+
+.hud {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  will-change: transform;
+}
+
+.hudA {
+  top: 1.5rem;
+  left: 1.6rem;
+  padding: 0.3rem 0.7rem 0.3rem 0.5rem;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+.number {
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.name {
+  font-size: clamp(1.1rem, 1.6vw, 1.7rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--on-plate);
+}
+
+.hudB {
+  top: 1.5rem;
+  right: 1.6rem;
+}
+
+.page {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  color: var(--on-plate);
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.page i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  transform: rotate(45deg);
+}
+
+.page:hover {
+  transform: translateX(3px);
+}
+
+.hudC {
+  bottom: 1.5rem;
+  left: 1.6rem;
+  right: 1.6rem;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.now {
+  padding: 0.35rem 0.7rem;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.skip {
+  order: 2;
+  margin-left: auto;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--accent);
+  background: var(--ink);
+  color: var(--on-plate);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.skip:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* A queued clip: what it is and a rail that fills for exactly as long as the wait. */
+.wait {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 4rem;
+  display: grid;
+  gap: 0.35rem;
+  min-width: 12rem;
+  padding: 0.5rem 0.8rem;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  animation: rise 260ms var(--ease-out) both;
+}
+
+.waitRail {
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--on-plate) 20%, transparent);
+}
+
+.waitRail i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  animation: fill var(--wait) linear both;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+.prep {
+  position: absolute;
+  z-index: 4;
+  inset: auto 1.6rem 1.5rem auto;
+  display: grid;
+  gap: 0.4rem;
+  max-width: 22rem;
+  padding: 0.8rem 1rem;
+  background: color-mix(in srgb, var(--ink) 90%, transparent);
+  border-left: 3px solid var(--accent);
+}
+
+.prep p {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.35;
+}
+
+/* The shutter: two blades that meet in the middle. Closing is quick, opening settles with a spring. */
+.shutter {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  pointer-events: none;
+}
+
+.blade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--ink);
+  transition: transform 760ms linear(0, 0.09 6%, 0.4 14%, 0.74 23%, 0.94 33%, 1.02 43%, 1.01 55%, 1);
+  will-change: transform;
+}
+
+.top {
+  top: 0;
+  transform: translateY(-101%);
+  border-bottom: 2px solid var(--accent);
+}
+
+.bottom {
+  bottom: 0;
+  transform: translateY(101%);
+  border-top: 2px solid var(--accent);
+}
+
+.shutter[data-closed="true"] {
+  pointer-events: auto;
+}
+
+.shutter[data-closed="true"] .blade {
+  transform: none;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+.core {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  gap: 0.5rem;
+  min-width: 14rem;
+  justify-items: center;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--dur-base) linear;
+}
+
+.core[data-show="true"] {
+  opacity: 1;
+  transition-delay: 280ms;
+}
+
+.coreName {
+  font-family: var(--font-display-stack);
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--on-plate);
+}
+
+.coreLine {
+  color: color-mix(in srgb, var(--on-plate) 70%, transparent);
+}
+
+.coreRail {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--on-plate) 20%, transparent);
+}
+
+.coreRail i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 140ms linear;
+}
+
+@media (max-width: 52em) {
+  .aperture {
+    aspect-ratio: 4 / 5;
+  }
+
+  .rail .holes {
+    display: none;
+  }
+
+  .rail {
+    justify-content: space-between;
+  }
+
+  .hudA {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .hudB {
+    top: auto;
+    bottom: 3.4rem;
+    right: 1rem;
+  }
+
+  .hudC {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .wait {
+    bottom: 5.5rem;
+  }
+
+  .prep {
+    inset: auto 1rem 1rem 1rem;
+  }
+}

@@ -1,0 +1,561 @@
+/* The frame of each section, the reveals, and the boards of the sections after the 3D block. */
+
+.section {
+  position: relative;
+  padding-block: var(--space-l);
+  border-top: 1px solid var(--line);
+  scroll-margin-top: calc(var(--nav-h) + 9rem);
+}
+
+.section:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.head {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: var(--space-m);
+  max-width: 46rem;
+}
+
+.no {
+  margin: 0;
+  color: var(--lib-ink);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 1.2rem + 4.2vw, 5.6rem);
+  line-height: 0.92;
+  color: var(--text);
+}
+
+.section[data-long="true"] .title {
+  font-size: clamp(2rem, 1rem + 3.4vw, 4.4rem);
+}
+
+.lead {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.25;
+  color: var(--text-dim);
+}
+
+/* Reveals: each section comes in its own way. Only transform and opacity move. */
+.head,
+.content {
+  opacity: 0;
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 800ms var(--ease-out);
+}
+
+.content {
+  transition-delay: 120ms;
+}
+
+.section[data-reveal="stage"] .head {
+  transform: translateX(-24px);
+}
+.section[data-reveal="stage"] .content {
+  transform: translateY(28px) scale(0.985);
+}
+.section[data-reveal="pop"] .head {
+  transform: translateY(18px);
+}
+.section[data-reveal="pop"] .content {
+  transform: translateY(8px);
+}
+.section[data-reveal="rise"] .head,
+.section[data-reveal="rise"] .content {
+  transform: translateY(36px);
+}
+.section[data-reveal="scale"] .head {
+  transform: translateX(-24px);
+}
+.section[data-reveal="scale"] .content {
+  transform: scale(0.96);
+}
+.section[data-reveal="slide"] .head {
+  transform: translateX(-36px);
+}
+.section[data-reveal="slide"] .content {
+  transform: translateX(48px);
+}
+.section[data-reveal="fade"] .head,
+.section[data-reveal="fade"] .content {
+  transform: translateY(12px);
+}
+
+/* After the reveals, so it wins at equal weight. */
+.section[data-seen="true"] .head,
+.section[data-seen="true"] .content {
+  opacity: 1;
+  transform: none;
+}
+
+/* Items inside a section arrive one after another (the --i index is set by each board). */
+.item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 700ms var(--ease-out);
+  transition-delay: calc(min(var(--i, 0), 14) * 45ms + 140ms);
+}
+
+.section[data-seen="true"] .item {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ the sticker wall */
+
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin: 0 0 var(--space-s);
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: var(--space-s) var(--space-xs);
+  padding: var(--space-xs) 0 var(--space-s);
+}
+
+/* A sticker lies on the board with a small tilt of its own, and straightens when you touch it. */
+.sticker {
+  --tilt: 0deg;
+  position: relative;
+  margin: 0;
+  transform: rotate(var(--tilt));
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+
+.sticker:hover,
+.sticker:focus-within {
+  transform: rotate(0deg) translateY(-6px) scale(1.05);
+  z-index: 2;
+}
+
+/* The die cut: a white margin round the picture, a thin line round that, chamfered corners. */
+.cut {
+  --cut: 18px;
+  padding: 1px;
+  background: var(--line-strong);
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.cutInner {
+  display: block;
+  padding: 8px;
+  background: #fff;
+}
+
+.sticker video,
+.sticker img.still {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #fff;
+}
+
+.stickerLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.35rem 0.2rem 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.stickerFan {
+  color: #a24a00;
+}
+
+.stickerPreview {
+  grid-column: span 2;
+}
+
+/* ------------------------------------------------------------------ the gameplay clips */
+
+.clips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--space-s);
+  align-items: start;
+}
+
+.clip {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.clipWide {
+  grid-column: span 2;
+}
+
+.clipCard {
+  aspect-ratio: 9 / 16 !important;
+  --card-accent-colour: var(--lib-colour);
+}
+
+.clipWide .clipCard {
+  aspect-ratio: 16 / 9 !important;
+}
+
+.clipTag {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--lib-ink);
+  color: var(--lib-ink);
+}
+
+.clipTitle {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.05;
+}
+
+.clipText {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.clipMeta {
+  margin: 0;
+  color: var(--text-faint);
+}
+
+.note {
+  margin: 0 0 var(--space-s);
+  padding: 0.7rem 0.9rem;
+  max-width: 46rem;
+  border-left: 3px solid var(--lib-colour);
+  background: color-mix(in srgb, var(--lib-colour) 8%, transparent);
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+/* ------------------------------------------------------------------ the skill icons */
+
+.skillRow {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: var(--space-xs);
+  align-items: center;
+  padding-block: var(--space-xs);
+  border-bottom: 1px solid var(--line);
+}
+
+.skillRow:last-child {
+  border-bottom: 0;
+}
+
+.skillWho {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.skillName {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-3);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.95;
+}
+
+.icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.icon {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  width: 100px;
+}
+
+.iconImg {
+  display: block;
+  width: 100px;
+  height: 100px;
+  image-rendering: pixelated;
+  background: color-mix(in srgb, var(--lib-ink) 14%, var(--bg-2));
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.icon:hover .iconImg {
+  transform: translateY(-4px) scale(1.06);
+}
+
+.iconLabel {
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--text-dim);
+}
+
+/* ------------------------------------------------------------------ made for this site */
+
+.setBlock {
+  display: grid;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-m);
+}
+
+.setHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  margin: 0;
+}
+
+.setTitle {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 800;
+  font-style: italic;
+}
+
+.art {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--space-xs);
+}
+
+.artWide {
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.artBtn {
+  --cut: 14px;
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  aspect-ratio: 3 / 4;
+  background: color-mix(in srgb, var(--lib-ink) 12%, var(--bg-2));
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  cursor: zoom-in;
+  overflow: hidden;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.artWide .artBtn {
+  aspect-ratio: 16 / 9;
+}
+
+.artBtn:hover,
+.artBtn:focus-visible {
+  transform: translateY(-3px);
+}
+
+/* A checkerboard under the picture shows that it has a clear background. */
+.artBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      45deg,
+      rgb(0 0 0 / 0.05) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgb(0 0 0 / 0.05) 75%
+    ),
+    linear-gradient(
+      45deg,
+      rgb(0 0 0 / 0.05) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgb(0 0 0 / 0.05) 75%
+    );
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    8px 8px;
+}
+
+.artBtn img {
+  position: absolute;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
+
+.artCap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 0.35rem 0.6rem;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.05em;
+  text-align: left;
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------------ more of the world */
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--space-xs);
+}
+
+.linkBig {
+  grid-column: span 2;
+}
+
+.link {
+  --cut: 16px;
+  position: relative;
+  display: grid;
+  align-content: end;
+  min-height: 11rem;
+  padding: var(--space-xs);
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  background: var(--lib-ink);
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  transform: translateY(-4px);
+}
+
+.link img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 900ms var(--ease-out);
+}
+
+.link:hover img,
+.link:focus-visible img {
+  transform: scale(1.06);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(10 14 22 / 0.82), transparent 62%);
+}
+
+.linkText {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.linkTitle {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-3);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.95;
+}
+
+.linkLine {
+  font-size: var(--step--1);
+  opacity: 0.9;
+}
+
+.empty {
+  margin: var(--space-l) 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  color: var(--text-dim);
+}
+
+@media (max-width: 40em) {
+  .skillRow {
+    grid-template-columns: 1fr;
+  }
+
+  .stickerPreview {
+    grid-column: 1 / -1;
+  }
+
+  .clipWide,
+  .linkBig {
+    grid-column: 1 / -1;
+  }
+
+  .wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .clips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .art {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .artWide {
+    grid-template-columns: 1fr;
+  }
+
+  .links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

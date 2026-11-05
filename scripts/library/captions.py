@@ -108,13 +108,25 @@ def credit(e: dict[str, Any] | None) -> dict[str, Any] | None:
 
 
 def caption_text(e: dict[str, Any] | None) -> str:
-    """The post's caption without hashtags and account tags at the end, cleaned for the site."""
+    """The post's caption without hashtags and credit lines, cleaned for the site.
+
+    Hashtags are removed wherever they are, a line that is only a credit ("MGL Creator @name") or
+    only account tags is dropped, and everything else is kept.
+    """
     if not e or not e.get("caption"):
         return ""
-    text = e["caption"]
-    text = re.sub(r"(?m)^[\s#@\w.]*(?:#\w+[\s#\w]*)$", "", text)  # lines that are only hashtags
-    text = re.sub(r"\s#\w+", "", text)
-    return common.clean_text(re.sub(r"\n{3,}", "\n\n", text))
+    credit_line = re.compile(
+        r"\s*(?:mgl\s*creators?|creator|artist|art\s*by|credits?)?\s*[:\-]?\s*(?:@\s*[\w.]+\s*)*",
+        re.I,
+    )
+    lines = []
+    for line in e["caption"].splitlines():
+        line = re.sub(r"#\w+", " ", line)
+        if credit_line.fullmatch(line):
+            line = ""
+        lines.append(re.sub(r"[ \t]+", " ", line).strip())
+    text = re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+    return common.clean_text(text)
 
 
 def is_official_post(e: dict[str, Any] | None) -> bool:

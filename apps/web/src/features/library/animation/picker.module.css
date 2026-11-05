@@ -1,0 +1,156 @@
+/* The picker: ten slanted portrait tabs in a bar under the site's bar. */
+.bar {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: var(--z-hud);
+  padding-block: 0.6rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+}
+
+.tabs {
+  --slant: 14px;
+  /* A slow spring: it settles with a small overshoot. */
+  --spring: linear(
+    0,
+    0.18 4%,
+    0.56 9%,
+    0.88 14%,
+    1.03 19%,
+    1.05 23%,
+    1.03 28%,
+    1.01 34%,
+    0.995 42%,
+    1 55%,
+    1
+  );
+  --tab-w: calc(100% / var(--n));
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  height: 4.2rem;
+}
+
+.plate {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--tab-w);
+  background: var(--sel);
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform 620ms var(--spring);
+}
+
+.tab {
+  position: relative;
+  display: block;
+  min-width: 0;
+  margin: 3px 2px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--text) 8%, var(--bg));
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.tab:hover {
+  transform: translateY(-3px);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -4px;
+}
+
+/* The face: the art is cut to the head and zoomed. The art is still, only its opacity changes. */
+.art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.5;
+  transition: opacity var(--dur-base) linear;
+}
+
+.art img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--zoom) * 100%);
+  max-width: none;
+  height: auto;
+  transform: translate(calc(var(--fx) * -1), calc(var(--fy) * -1));
+}
+
+.tab[aria-selected="true"] .art,
+.tab:hover .art,
+.tab:focus-visible .art {
+  opacity: 1;
+}
+
+.meta {
+  position: absolute;
+  left: calc(var(--slant) + 0.15rem);
+  bottom: 0.3rem;
+  display: grid;
+  gap: 0.05rem;
+  padding: 0.2rem 0.4rem 0.25rem;
+  background: color-mix(in srgb, #0b0b0e 78%, transparent);
+  color: #fff;
+  line-height: 1;
+}
+
+.index {
+  font-family: var(--font-mono-stack);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: var(--tab-c);
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.soon {
+  position: absolute;
+  top: 0.3rem;
+  right: calc(var(--slant) + 0.1rem);
+  padding: 0.15rem 0.35rem;
+  background: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+@media (max-width: 52em) {
+  .tabs {
+    --tab-w: 7.2rem;
+    display: flex;
+    padding-block: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    flex: 0 0 var(--tab-w);
+  }
+
+  .plate {
+    inset-block: 3px;
+  }
+}

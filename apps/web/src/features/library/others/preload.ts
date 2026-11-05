@@ -1,11 +1,50 @@
 import { chunkItem, type PreloadItem } from "@/lib/preload";
 
-import { libraryDataItem } from "../data";
+import { fetchLibraryJson, libraryDataItem, libraryDataPath } from "../data";
+import { loadBundle } from "./model-bundle";
+import type { ModelItem, OthersFile } from "./types";
 
-/** What the others room needs on first paint. Only the first screen is waited for: mark the rest `deferred`. */
+/** The model the page opens on: the one named by `?i=`, else the first. */
+async function modelsOf(): Promise<ModelItem[]> {
+  const file = await fetchLibraryJson<OthersFile>(libraryDataPath("others"));
+  return file.items.filter((i): i is ModelItem => i.kind === "model");
+}
+
+function pickFirst(models: ModelItem[]): ModelItem | undefined {
+  const wanted = new URLSearchParams(window.location.search).get("i");
+  return models.find((m) => m.id === wanted) ?? models[0];
+}
+
+/**
+ * What the others room needs on first paint: its data, its code, the viewer's code and the first
+ * model (the .obj and its textures, about 4.4 MB). The second model is not shown until the visitor
+ * asks for it, so it is `deferred`. Posters, clips and pictures further down load lazily.
+ */
 export function items(): PreloadItem[] {
   return [
     libraryDataItem("others"),
     chunkItem("library-others", "Opening the others room", () => import("./page"), 2),
+    chunkItem("library-others-engine", "Loading the 3D viewer", () => import("./engine"), 3),
+    {
+      id: "others:model-first",
+      label: "Loading the 3D model",
+      weight: 5,
+      run: async (report) => {
+        const first = pickFirst(await modelsOf());
+        if (first) await loadBundle(first, report);
+      },
+    },
+    {
+      id: "others:model-other",
+      label: "Loading the other 3D model",
+      weight: 4,
+      deferred: true,
+      priority: 20,
+      run: async () => {
+        const models = await modelsOf();
+        const first = pickFirst(models);
+        for (const m of models) if (m !== first) await loadBundle(m);
+      },
+    },
   ];
 }

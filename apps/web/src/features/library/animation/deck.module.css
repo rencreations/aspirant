@@ -1,0 +1,271 @@
+/* The deck: the ruler, the words and the buttons, on the same dark plate as the gate. */
+.deck {
+  display: grid;
+  gap: 1rem;
+  padding: 0.7rem 0 1.2rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: 1.2rem clamp(1.2rem, 3vw, 3rem);
+  align-items: start;
+}
+
+.info {
+  display: grid;
+  gap: 0.3rem;
+  min-height: 11rem;
+  align-content: start;
+}
+
+.kicker,
+.meta {
+  margin: 0;
+  color: color-mix(in srgb, var(--on-plate) 62%, transparent);
+}
+
+.kicker {
+  color: var(--accent);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 3.4vw, 3.8rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--on-plate);
+}
+
+.line {
+  margin: 0.2rem 0 0;
+  max-width: 24rem;
+  min-height: 2.6em;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--on-plate) 82%, transparent);
+}
+
+.hint {
+  margin: 0.3rem 0 0;
+  max-width: 24rem;
+  font-size: var(--step--1);
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--on-plate) 72%, transparent);
+}
+
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+}
+
+.group {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+}
+
+.groupLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--on-plate) 52%, transparent);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "glyph key"
+    "label label"
+    "sub sub";
+  align-items: center;
+  gap: 0.15rem 0.5rem;
+  width: clamp(8.6rem, 11vw, 11rem);
+  min-height: 5.6rem;
+  padding: 0.55rem 0.7rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--on-plate) 34%, transparent);
+  background: color-mix(in srgb, var(--on-plate) 6%, var(--ink));
+  color: var(--on-plate);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-fast) linear,
+    border-color var(--dur-fast) linear;
+  animation: in 520ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 50ms);
+}
+
+@keyframes in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.btn[data-status="loading"] {
+  opacity: 0.8;
+}
+
+.btn[data-status="playing"],
+.btn[data-status="here"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn[data-status="queued"],
+.btn[data-status="wanted"] {
+  border-color: var(--accent);
+}
+
+.glyph {
+  grid-area: glyph;
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.btn[data-kind="welcome"] .glyph {
+  fill: currentColor;
+}
+
+.key {
+  grid-area: key;
+  justify-self: end;
+  min-width: 1.3rem;
+  padding: 0.1rem 0.3rem;
+  border: 1px solid color-mix(in srgb, currentColor 50%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.label {
+  grid-area: label;
+  font-size: 1.45rem;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sub {
+  grid-area: sub;
+  color: inherit;
+  opacity: 0.78;
+  white-space: nowrap;
+}
+
+.bar {
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 140ms linear;
+}
+
+.bar .run {
+  transition: none;
+  animation: fill var(--wait) linear both;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.caption {
+  margin: 0;
+  max-width: 60rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid color-mix(in srgb, var(--on-plate) 22%, transparent);
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--on-plate) 78%, transparent);
+}
+
+.caption :global(.hud-label) {
+  margin-right: 0.6rem;
+  color: var(--accent);
+}
+
+@media (max-width: 52em) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .info {
+    min-height: 0;
+  }
+
+  .groups {
+    flex-direction: column;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .btn {
+    width: auto;
+  }
+}

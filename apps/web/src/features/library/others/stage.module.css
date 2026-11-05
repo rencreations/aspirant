@@ -1,0 +1,444 @@
+/* The 3D block: a turntable stage with a plinth (drawn in the scene) and rulers along its edges. */
+
+.deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 21rem);
+  gap: var(--space-m);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.9rem 0.5rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.pick:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
+}
+
+.pick[aria-pressed="true"] {
+  background: var(--lib-colour);
+  border-color: var(--lib-colour);
+  color: #fff;
+}
+
+.pickImg {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  object-position: 42% 14%;
+  background: color-mix(in srgb, var(--lib-ink) 10%, var(--bg-2));
+}
+
+.pickNo {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+}
+
+.pickName {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+}
+
+.pickMeta {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.frame {
+  --cut: 22px;
+  padding: 1px;
+  background: var(--line-strong);
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+.plate {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 21rem;
+  max-height: 44rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--lib-colour) 7%, var(--bg-2));
+  outline: none;
+}
+
+.plate:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--lib-colour);
+}
+
+.plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--lib-ink) 9%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--lib-ink) 9%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+  background-position: center;
+}
+
+/* Rulers: a tick every 8px, a long one every 40px, along the bottom and left edges. */
+.rulerX,
+.rulerY {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.rulerX {
+  inset: auto 0 0 0;
+  height: 14px;
+  background:
+    repeating-linear-gradient(to right, var(--lib-ink) 0 1px, transparent 1px 40px) bottom / 100%
+      14px no-repeat,
+    repeating-linear-gradient(to right, var(--lib-ink) 0 1px, transparent 1px 8px) bottom / 100% 6px
+      no-repeat;
+}
+
+.rulerY {
+  inset: 0 auto 0 0;
+  width: 14px;
+  background:
+    repeating-linear-gradient(to bottom, var(--lib-ink) 0 1px, transparent 1px 40px) left / 14px
+      100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--lib-ink) 0 1px, transparent 1px 8px) left / 6px 100%
+      no-repeat;
+}
+
+.host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+  padding: var(--space-m);
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.fallback img {
+  max-height: 70%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.tag,
+.read,
+.hint {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  pointer-events: none;
+  color: var(--lib-ink);
+}
+
+.tag {
+  top: 1rem;
+  left: 1.6rem;
+}
+
+.read {
+  top: 1rem;
+  right: 1.2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  bottom: 1.4rem;
+  left: 1.6rem;
+  right: 1.2rem;
+  color: var(--text-dim);
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  color: var(--lib-ink);
+  transition: opacity var(--dur-base) linear;
+}
+
+.loading[data-gone="true"] {
+  opacity: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: var(--space-3xs);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
+}
+
+.btn[aria-pressed="true"] {
+  background: var(--lib-ink);
+  border-color: var(--lib-ink);
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-s);
+  padding: var(--space-s);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+
+.panelHead {
+  margin: 0 0 0.5rem;
+  color: var(--text-faint);
+}
+
+.switches {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--dur-fast) linear;
+}
+
+.switch:hover {
+  background: color-mix(in srgb, var(--lib-colour) 8%, var(--bg));
+}
+
+.switchBox {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 0.9rem;
+  border: 1px solid var(--lib-ink);
+}
+
+.switchBox::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  background: var(--lib-ink);
+  transform: translateX(0);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.switch[aria-checked="true"] .switchBox {
+  background: color-mix(in srgb, var(--lib-colour) 28%, transparent);
+}
+
+.switch[aria-checked="true"] .switchBox::after {
+  transform: translateX(100%);
+}
+
+.faces {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.face {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  background: #0a1019;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.face:hover {
+  transform: translateY(-2px);
+}
+
+.face[aria-pressed="true"] {
+  outline: 2px solid var(--lib-colour);
+  outline-offset: 1px;
+}
+
+/* Each sheet holds nine small pictures in a 3 by 3 grid. The robot's screen shows the top middle one. */
+.face img {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: auto;
+  max-width: none;
+  image-rendering: auto;
+  pointer-events: none;
+}
+
+.faceNo {
+  position: absolute;
+  left: 3px;
+  bottom: 2px;
+  z-index: 1;
+  font-family: var(--font-mono-stack);
+  font-size: 0.65rem;
+  color: #9fe7f2;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  font-size: var(--step--1);
+}
+
+.facts dt {
+  color: var(--text-faint);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+.facts dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.notice {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border-left: 3px solid var(--lib-colour);
+  background: color-mix(in srgb, var(--lib-colour) 8%, transparent);
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+@media (max-width: 60em) {
+  .deck {
+    grid-template-columns: 1fr;
+  }
+
+  .plate {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+
+  .faces {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .read {
+    display: none;
+  }
+}
