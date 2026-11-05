@@ -86,9 +86,9 @@
 }
 
 .room[aria-pressed="true"] {
-  border-color: var(--room);
-  background: var(--room);
-  color: #fff;
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg, #fff);
 }
 
 .n {
@@ -150,7 +150,7 @@
 }
 
 .tag {
-  color: var(--room);
+  color: color-mix(in srgb, var(--room) 55%, #000);
 }
 
 @keyframes fadeIn {

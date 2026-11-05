@@ -1,0 +1,478 @@
+/* The shared picture viewer. Dark, because the picture is the light. No blur and no filters: the
+   picture moves with one transform and the rest stays still. Colours are set here, so the viewer
+   looks the same whatever theme the page behind it has. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: #090b12;
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+.viewer {
+  --lb-ink: #eef3fa;
+  --lb-dim: #aab6c8;
+  --lb-line: rgb(190 214 250 / 0.28);
+  --lb-hot: var(--lib-colour, #e0245e);
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  color: var(--lb-ink);
+  outline: none;
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+.viewer[data-info="true"] {
+  grid-template-columns: minmax(0, 1fr) min(23rem, 34vw);
+}
+
+.bar {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: max(env(safe-area-inset-top), 0.5rem) 0.75rem 0.5rem
+    max(env(safe-area-inset-left), 0.75rem);
+}
+
+.count {
+  margin: 0;
+  color: var(--lb-dim);
+  white-space: nowrap;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tools button,
+.close {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 44px;
+  height: 44px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--lb-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.tools button:hover,
+.close:hover {
+  border-color: rgb(190 214 250 / 0.5);
+  background: rgb(255 255 255 / 0.08);
+}
+
+.tools button:active,
+.close:active {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.tools button[aria-pressed="true"] {
+  border-color: rgb(190 214 250 / 0.5);
+  background: rgb(255 255 255 / 0.12);
+}
+
+.tools button:focus-visible,
+.close:focus-visible,
+.nav:focus-visible,
+.cta:focus-visible,
+.textLink:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+
+.readout {
+  min-width: 3.4rem;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--lb-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.natural {
+  font-weight: 600;
+}
+
+.stage {
+  position: relative;
+  grid-column: 1;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  /* The ground around the picture: a click there closes the viewer. */
+  cursor: default;
+}
+
+/* A new picture slides in from the side it came from. This wrapper moves; the sheet inside it is
+   the one the gestures move and scale. */
+.slide {
+  position: absolute;
+  inset: 0;
+  animation: slide-next 300ms var(--ease-out) both;
+}
+
+.slide[data-dir="-1"] {
+  animation-name: slide-prev;
+}
+
+.sheet {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  cursor: zoom-in;
+}
+
+.stage[data-zoomed="true"] .sheet {
+  cursor: grab;
+}
+
+.stage[data-zoomed="true"]:active .sheet {
+  cursor: grabbing;
+}
+
+.sheet[data-ease="true"] {
+  transition: transform 260ms var(--ease-out);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+/* The preview and the full picture fade in over the one below when they have arrived. */
+.layer[data-in] {
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+.layer[data-in="true"] {
+  opacity: 1;
+}
+
+.quality {
+  position: absolute;
+  left: max(env(safe-area-inset-left), 0.75rem);
+  bottom: 0.6rem;
+  z-index: 1;
+  margin: 0;
+  color: var(--lb-dim);
+  pointer-events: none;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border: 1px solid var(--lb-line);
+  background: rgb(14 20 31 / 0.72);
+  color: var(--lb-ink);
+  cursor: pointer;
+}
+
+.nav[data-side="left"] {
+  left: max(env(safe-area-inset-left), 0.75rem);
+}
+
+.nav[data-side="right"] {
+  right: 0.75rem;
+}
+
+.nav:hover:not(:disabled) {
+  border-color: #fff;
+  background: rgb(255 255 255 / 0.14);
+}
+
+.nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* The details panel: a column at the right of the picture. */
+.panel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-height: 0;
+  padding: max(env(safe-area-inset-top), 1rem) max(env(safe-area-inset-right), 1.25rem)
+    max(env(safe-area-inset-bottom), 1.25rem) 1.25rem;
+  overflow-y: auto;
+  border-left: 1px solid var(--lb-line);
+  background: #0e1220;
+  overscroll-behavior: contain;
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.8rem;
+  margin: 0;
+  color: var(--lb-dim);
+}
+
+.canon {
+  padding: 0.12rem 0.45rem;
+  border: 1px solid currentColor;
+}
+
+.canon[data-canon="fan"] {
+  color: #ffb36b;
+}
+
+.canon[data-canon="non-canon"] {
+  color: #ff8a9b;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.9rem, 1.2rem + 1.6vw, 2.9rem);
+  line-height: 0.95;
+  color: #fff;
+  /* A solid bar under the name in the room's colour. */
+}
+
+.title::after {
+  content: "";
+  display: block;
+  width: 3.2rem;
+  height: 3px;
+  margin-top: 0.7rem;
+  background: var(--lb-hot);
+}
+
+.note {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  color: #d7e0ee;
+}
+
+.facts {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+  grid-template-columns: 6.2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: baseline;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--lb-line);
+}
+
+.facts dt {
+  margin: 0;
+  color: var(--lb-dim);
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--lb-ink);
+}
+
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--lb-dim);
+}
+
+.textLink {
+  color: #8fd8ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.actions {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--lb-line);
+  background: transparent;
+  color: var(--lb-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.cta:first-child {
+  border-color: var(--lb-hot);
+  background: var(--lb-hot);
+  color: #fff;
+}
+
+.cta:hover {
+  transform: translate3d(0, -2px, 0);
+  background: rgb(255 255 255 / 0.1);
+}
+
+.cta:first-child:hover {
+  background: var(--lb-hot);
+}
+
+.status {
+  min-height: 1.2em;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: #9be7b4;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 52em) {
+  .viewer[data-info="true"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .panel {
+    grid-column: 1;
+    grid-row: 3;
+    max-height: 44dvh;
+    gap: 0.6rem;
+    padding: 0.8rem max(env(safe-area-inset-right), 1rem) max(env(safe-area-inset-bottom), 1rem)
+      max(env(safe-area-inset-left), 1rem);
+    border-top: 1px solid var(--lb-line);
+    border-left: 0;
+  }
+
+  .title {
+    font-size: 1.7rem;
+  }
+
+  .note {
+    font-size: 1rem;
+  }
+
+  .facts div {
+    grid-template-columns: 5.2rem minmax(0, 1fr);
+  }
+
+  .actions {
+    margin-top: 0;
+  }
+
+  .tools button,
+  .close {
+    min-width: 40px;
+  }
+
+  /* Phones have no full screen for a page, and the picture already fills the width. */
+  .full {
+    display: none;
+  }
+
+  .nav {
+    top: auto;
+    bottom: 0.6rem;
+    margin-top: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .readout {
+    min-width: 2.8rem;
+  }
+
+  .quality {
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-next {
+  from {
+    opacity: 0;
+    transform: translate3d(28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-prev {
+  from {
+    opacity: 0;
+    transform: translate3d(-28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

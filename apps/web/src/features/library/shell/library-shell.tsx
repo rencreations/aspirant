@@ -98,7 +98,7 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
                 transitionLabel={c.name}
                 className={styles.pill}
                 aria-current={c.slug === slug ? "page" : undefined}
-                style={{ "--pill-colour": c.colour } as CSSProperties}
+                style={{ "--pill-colour": c.colour, "--pill-ink": c.ink } as CSSProperties}
               >
                 <span className={styles.pillIndex}>{c.index}</span>
                 <span>{c.name}</span>
@@ -126,7 +126,7 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
           href={collectionRoute(next.slug)}
           transitionLabel={next.name}
           className={styles.next}
-          style={{ "--pill-colour": next.colour } as CSSProperties}
+          style={{ "--pill-colour": next.colour, "--pill-ink": next.ink } as CSSProperties}
         >
           <span className="hud-label">Next room, {next.index}</span>
           <span className={`${styles.nextName} display`}>{next.name}</span>

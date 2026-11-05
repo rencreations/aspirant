@@ -1,0 +1,131 @@
+/* The splash ribbon: ten slanted panels. Everything that moves is a transform, set through the
+   custom properties --sc, --tx, --ty and --ix that the component writes on each slot. */
+.wrap {
+  --slant: clamp(1rem, 2.2vw, 2.6rem);
+  --h: clamp(17rem, 31vw, 28rem);
+  padding: var(--space-m) 0 var(--space-s);
+  border-bottom: 1px solid var(--line);
+}
+
+.ribbon {
+  display: flex;
+  height: var(--h);
+  margin: 0;
+  padding: 1.8rem 0 0.6rem;
+  list-style: none;
+  box-sizing: content-box;
+  /* The lift of a panel must not be cut off at the top. */
+  overflow: visible;
+}
+
+.slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: calc(var(--slant) * -1 + 7px);
+  transform: translate3d(var(--tx, 0), var(--ty, 0), 0) scale(var(--sc, 1));
+  transition:
+    transform 420ms var(--ease-out),
+    opacity 360ms var(--ease-out);
+  /* A panel near the pointer sits above its neighbours. */
+  z-index: 0;
+}
+
+.slot:first-child {
+  margin-left: 0;
+}
+
+.slot:hover,
+.slot:focus-within {
+  z-index: 2;
+}
+
+.slot[data-dim] {
+  opacity: 0.42;
+}
+
+.panel {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--lib-colour, var(--accent));
+  outline-offset: 4px;
+}
+
+/* The slanted shape: both long edges lean the same way. */
+.cut {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  transform: translate3d(var(--ix, 0), 0, 0) scale(1.2);
+  transition: transform 520ms var(--ease-out);
+  -webkit-user-drag: none;
+}
+
+.index {
+  position: absolute;
+  top: 0.55rem;
+  left: calc(var(--slant) + 0.2rem);
+  padding: 0.1rem 0.35rem;
+  background: rgb(8 10 18 / 0.78);
+  color: #fff;
+}
+
+.name {
+  position: absolute;
+  right: calc(var(--slant) * 0.5);
+  bottom: 0.7rem;
+  left: calc(var(--slant) * 0.5 + 0.3rem);
+  padding: 0.25rem 0.45rem;
+  background: rgb(8 10 18 / 0.78);
+  font-size: clamp(0.95rem, 0.6rem + 0.7vw, 1.5rem);
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slot:hover .name,
+.panel:focus-visible .name {
+  background: var(--lib-colour, var(--accent));
+}
+
+/* A phone: a strip that scrolls sideways, one thumb at a time. */
+@media (max-width: 52em) {
+  .wrap {
+    --h: 19rem;
+  }
+
+  .ribbon {
+    overflow-x: auto;
+    padding-top: 1.2rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .slot {
+    flex: 0 0 min(42vw, 13rem);
+    scroll-snap-align: center;
+  }
+}

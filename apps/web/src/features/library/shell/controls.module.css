@@ -87,8 +87,8 @@
 }
 
 .chip[aria-pressed="true"] {
-  background: var(--lib-colour);
-  border-color: var(--lib-colour);
+  background: var(--lib-ink);
+  border-color: var(--lib-ink);
   color: #fff;
 }
 

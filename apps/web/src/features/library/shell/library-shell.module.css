@@ -212,7 +212,7 @@
 }
 
 .pillIndex {
-  color: var(--pill-colour);
+  color: var(--pill-ink, var(--lib-ink));
 }
 
 .pill:hover {
@@ -221,8 +221,8 @@
 }
 
 .pill[aria-current="page"] {
-  background: var(--pill-colour);
-  border-color: var(--pill-colour);
+  background: var(--pill-ink, var(--lib-ink));
+  border-color: var(--pill-ink, var(--lib-ink));
   color: #fff;
 }
 
@@ -269,7 +269,7 @@
 .nextName {
   font-size: var(--step-4);
   line-height: 0.9;
-  color: var(--pill-colour);
+  color: var(--pill-ink, var(--lib-ink));
 }
 
 .nextLine {

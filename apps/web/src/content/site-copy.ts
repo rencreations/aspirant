@@ -188,7 +188,8 @@ export const siteCopy = {
     about: "Where the story happens, who sends the Enders, and what the story leaves open.",
     story: "Read the whole Aspirant story: sixty chapters in twelve parts, one Part to a page.",
     characters: "Meet the ten Aspirants of Selrick Academy.",
-    collection: "Films, music, comics, art, fan art and every voice line.",
+    collection:
+      "The whole library in ten rooms: arts, films, music, voice lines, fan art, comics, lore, design, animation and more.",
   },
 } as const;
 

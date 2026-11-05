@@ -1,0 +1,894 @@
+{
+  "v": 1,
+  "slug": "arts",
+  "items": [
+    {
+      "id": "arts-official-fanny-splash",
+      "title": "Fanny, splash art",
+      "collection": "arts",
+      "chars": ["fanny"],
+      "pair": "fanny-layla",
+      "canon": "official",
+      "tags": ["splash art", "art", "fanny"],
+      "kind": "splash",
+      "alt": "Fanny with orange hair leaps through the air with her steel cables out, over a blue sky and a glass city.",
+      "img": {
+        "t": "arts/official/fanny-splash/t.webp",
+        "p": "arts/official/fanny-splash/p.webp",
+        "f": "arts/official/fanny-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#8e98b9"
+      },
+      "download": {
+        "key": "arts/official/fanny-splash/o.jpg",
+        "name": "aspirant-fanny-splash.jpg",
+        "bytes": 989427
+      }
+    },
+    {
+      "id": "arts-official-layla-splash",
+      "title": "Layla, splash art",
+      "collection": "arts",
+      "chars": ["layla"],
+      "pair": "fanny-layla",
+      "canon": "official",
+      "tags": ["splash art", "art", "layla"],
+      "kind": "splash",
+      "alt": "Layla with long pink twin tails kneels behind a large white cannon, a round black droid beside her, in a bright city.",
+      "img": {
+        "t": "arts/official/layla-splash/t.webp",
+        "p": "arts/official/layla-splash/p.webp",
+        "f": "arts/official/layla-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#918ea5"
+      },
+      "download": {
+        "key": "arts/official/layla-splash/o.jpg",
+        "name": "aspirant-layla-splash.jpg",
+        "bytes": 873108
+      }
+    },
+    {
+      "id": "arts-official-fanny-layla-fighting-together",
+      "title": "Fanny and Layla, fighting together",
+      "collection": "arts",
+      "chars": ["fanny", "layla"],
+      "pair": "fanny-layla",
+      "canon": "official",
+      "tags": ["pair art", "art", "fanny", "layla"],
+      "kind": "pair",
+      "alt": "Fanny and Layla fight side by side in a bright city, Layla's cannon aimed ahead and Fanny diving beside her.",
+      "img": {
+        "t": "arts/official/fanny-layla-fighting-together/t.webp",
+        "p": "arts/official/fanny-layla-fighting-together/p.webp",
+        "f": "arts/official/fanny-layla-fighting-together/f.webp",
+        "w": 3840,
+        "h": 2160,
+        "c": "#9c9aa9"
+      },
+      "download": {
+        "key": "arts/official/fanny-layla-fighting-together/o.jpg",
+        "name": "aspirant-fanny-layla-fighting-together.jpg",
+        "bytes": 1884864
+      }
+    },
+    {
+      "id": "arts-official-fanny-and-layla",
+      "title": "Fanny and Layla",
+      "collection": "arts",
+      "chars": ["fanny", "layla"],
+      "pair": "fanny-layla",
+      "canon": "official",
+      "tags": ["pair art", "art", "fanny", "layla"],
+      "kind": "pair",
+      "alt": "Fanny and Layla stand together under a blue sky with white clouds and a city behind them.",
+      "img": {
+        "t": "arts/official/fanny-and-layla/t.webp",
+        "p": "arts/official/fanny-and-layla/p.webp",
+        "f": "arts/official/fanny-and-layla/f.webp",
+        "w": 1000,
+        "h": 563,
+        "c": "#9da7be"
+      },
+      "download": {
+        "key": "arts/official/fanny-and-layla/o.webp",
+        "name": "aspirant-fanny-and-layla.webp",
+        "bytes": 139630
+      }
+    },
+    {
+      "id": "arts-official-ruby-splash",
+      "title": "Ruby, splash art",
+      "collection": "arts",
+      "chars": ["ruby"],
+      "pair": "ruby-angela",
+      "canon": "official",
+      "tags": ["splash art", "art", "ruby"],
+      "kind": "splash",
+      "alt": "Ruby with dark hair swings a large white blade over a blue city, dark droids reaching in from the right.",
+      "img": {
+        "t": "arts/official/ruby-splash/t.webp",
+        "p": "arts/official/ruby-splash/p.webp",
+        "f": "arts/official/ruby-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#677997"
+      },
+      "download": {
+        "key": "arts/official/ruby-splash/o.jpg",
+        "name": "aspirant-ruby-splash.jpg",
+        "bytes": 1028635
+      }
+    },
+    {
+      "id": "arts-official-angela-splash",
+      "title": "Angela, splash art",
+      "collection": "arts",
+      "chars": ["angela"],
+      "pair": "ruby-angela",
+      "canon": "official",
+      "tags": ["splash art", "art", "angela"],
+      "kind": "splash",
+      "alt": "Angela with pink hair and bunny ear headphones sits at a window desk with a small droid, a tiny copy of herself beside her.",
+      "img": {
+        "t": "arts/official/angela-splash/t.webp",
+        "p": "arts/official/angela-splash/p.webp",
+        "f": "arts/official/angela-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#999bb7"
+      },
+      "download": {
+        "key": "arts/official/angela-splash/o.jpg",
+        "name": "aspirant-angela-splash.jpg",
+        "bytes": 1037065
+      }
+    },
+    {
+      "id": "arts-official-ruby-father",
+      "title": "Ruby's father",
+      "collection": "arts",
+      "chars": ["ruby"],
+      "pair": "ruby-angela",
+      "canon": "official",
+      "tags": ["official art", "ruby"],
+      "kind": "official",
+      "alt": "Ruby's father in a long dark coat with a fur collar, one hand on his hip, cut out on a plain background.",
+      "img": {
+        "t": "arts/official/ruby-father/t.webp",
+        "p": "arts/official/ruby-father/p.webp",
+        "f": "arts/official/ruby-father/f.webp",
+        "w": 1920,
+        "h": 750,
+        "c": "#56607c"
+      },
+      "download": {
+        "key": "arts/official/ruby-father/o.png",
+        "name": "aspirant-ruby-father.png",
+        "bytes": 143054
+      },
+      "note": "The ruler of Planet Oro."
+    },
+    {
+      "id": "arts-official-lesley-splash",
+      "title": "Lesley, splash art",
+      "collection": "arts",
+      "chars": ["lesley"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["splash art", "art", "lesley"],
+      "kind": "splash",
+      "alt": "Lesley with long blonde hair aims a large orange and gold cannon high above a pale city.",
+      "img": {
+        "t": "arts/official/lesley-splash/t.webp",
+        "p": "arts/official/lesley-splash/p.webp",
+        "f": "arts/official/lesley-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#a59ba9"
+      },
+      "download": {
+        "key": "arts/official/lesley-splash/o.jpg",
+        "name": "aspirant-lesley-splash.jpg",
+        "bytes": 975152
+      }
+    },
+    {
+      "id": "arts-official-change-splash",
+      "title": "Chang'e, splash art",
+      "collection": "arts",
+      "chars": ["change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["splash art", "art", "change"],
+      "kind": "splash",
+      "alt": "Chang'e with pink twin tails and bunny ears rides a white mecha in front of a glowing ring, a city behind her.",
+      "img": {
+        "t": "arts/official/change-splash/t.webp",
+        "p": "arts/official/change-splash/p.webp",
+        "f": "arts/official/change-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#949ab6"
+      },
+      "download": {
+        "key": "arts/official/change-splash/o.jpg",
+        "name": "aspirant-change-splash.jpg",
+        "bytes": 1100371
+      }
+    },
+    {
+      "id": "arts-official-change-father",
+      "title": "Chang'e's father",
+      "collection": "arts",
+      "chars": ["change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["official art", "change"],
+      "kind": "official",
+      "alt": "A man with glasses in a white lab coat stands in a laboratory beside a framed family photo.",
+      "img": {
+        "t": "arts/official/change-father/t.webp",
+        "p": "arts/official/change-father/p.webp",
+        "f": "arts/official/change-father/f.webp",
+        "w": 969,
+        "h": 750,
+        "c": "#838fa1"
+      },
+      "download": {
+        "key": "arts/official/change-father/o.png",
+        "name": "aspirant-change-father.png",
+        "bytes": 660822
+      },
+      "note": "A chief scientist who built the Aspirant mecha suit with Chang'e."
+    },
+    {
+      "id": "arts-official-change-mother",
+      "title": "Chang'e's mother",
+      "collection": "arts",
+      "chars": ["change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["official art", "change"],
+      "kind": "official",
+      "alt": "A woman with short pink hair and glasses in a white lab coat stands in a laboratory beside a framed family photo.",
+      "img": {
+        "t": "arts/official/change-mother/t.webp",
+        "p": "arts/official/change-mother/p.webp",
+        "f": "arts/official/change-mother/f.webp",
+        "w": 1039,
+        "h": 750,
+        "c": "#828e9f"
+      },
+      "download": {
+        "key": "arts/official/change-mother/o.png",
+        "name": "aspirant-change-mother.png",
+        "bytes": 664175
+      },
+      "note": "A chief scientist who built the Aspirant mecha suit with Chang'e."
+    },
+    {
+      "id": "arts-official-lesley-change-lore-1",
+      "title": "Form-altering weapons, lore card 1",
+      "collection": "arts",
+      "chars": ["lesley", "change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["lore card", "card", "lesley", "change"],
+      "kind": "lore",
+      "alt": "Lore card titled Form-altering weapons, with Chang'e in the middle and the weapons of Lesley and Chang'e around her.",
+      "img": {
+        "t": "arts/official/lesley-change-lore-1/t.webp",
+        "p": "arts/official/lesley-change-lore-1/p.webp",
+        "f": "arts/official/lesley-change-lore-1/f.webp",
+        "w": 898,
+        "h": 898,
+        "c": "#6e7bac"
+      },
+      "download": {
+        "key": "arts/official/lesley-change-lore-1/o.jpg",
+        "name": "aspirant-lesley-change-lore-1.jpg",
+        "bytes": 308324
+      },
+      "note": "The cover card: the weapons Chang'e built for Lesley and for herself."
+    },
+    {
+      "id": "arts-official-lesley-change-lore-2",
+      "title": "Lesley's weapon, lore card 2",
+      "collection": "arts",
+      "chars": ["lesley", "change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["lore card", "card", "lesley", "change"],
+      "kind": "lore",
+      "alt": "Lore card of Lesley's orange sniper weapon, with the notes: creator Chang'e, wielder Lesley, transforms into cannon form during Ultimate.",
+      "img": {
+        "t": "arts/official/lesley-change-lore-2/t.webp",
+        "p": "arts/official/lesley-change-lore-2/p.webp",
+        "f": "arts/official/lesley-change-lore-2/f.webp",
+        "w": 898,
+        "h": 898,
+        "c": "#b8bad0"
+      },
+      "download": {
+        "key": "arts/official/lesley-change-lore-2/o.jpg",
+        "name": "aspirant-lesley-change-lore-2.jpg",
+        "bytes": 272529
+      },
+      "note": "Made by Chang'e, wielded by Lesley. It turns into a cannon during her ultimate. Its goal: make Lesley the most deadly sniper."
+    },
+    {
+      "id": "arts-official-lesley-change-lore-3",
+      "title": "Lesley's vow, lore card 3",
+      "collection": "arts",
+      "chars": ["lesley", "change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["lore card", "card", "lesley", "change"],
+      "kind": "lore",
+      "alt": "Lore card of Lesley holding her weapon, with the line: Ever since that day, I vowed to keep you safe, Chang'e.",
+      "img": {
+        "t": "arts/official/lesley-change-lore-3/t.webp",
+        "p": "arts/official/lesley-change-lore-3/p.webp",
+        "f": "arts/official/lesley-change-lore-3/f.webp",
+        "w": 898,
+        "h": 898,
+        "c": "#606689"
+      },
+      "download": {
+        "key": "arts/official/lesley-change-lore-3/o.jpg",
+        "name": "aspirant-lesley-change-lore-3.jpg",
+        "bytes": 271746
+      },
+      "note": "\"Ever since that day, I vowed to keep you safe, Chang'e.\""
+    },
+    {
+      "id": "arts-official-lesley-change-lore-4",
+      "title": "Chang'e's gear, lore card 4",
+      "collection": "arts",
+      "chars": ["lesley", "change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["lore card", "card", "lesley", "change"],
+      "kind": "lore",
+      "alt": "Lore card of Chang'e's glowing ring weapon, with the note: alter weapon form during Ultimate in Crescent Moon state.",
+      "img": {
+        "t": "arts/official/lesley-change-lore-4/t.webp",
+        "p": "arts/official/lesley-change-lore-4/p.webp",
+        "f": "arts/official/lesley-change-lore-4/f.webp",
+        "w": 898,
+        "h": 898,
+        "c": "#bdc4de"
+      },
+      "download": {
+        "key": "arts/official/lesley-change-lore-4/o.jpg",
+        "name": "aspirant-lesley-change-lore-4.jpg",
+        "bytes": 237563
+      },
+      "note": "Made by Chang'e for herself. Its goal: keep herself safe."
+    },
+    {
+      "id": "arts-official-lesley-change-lore-5",
+      "title": "Lesley and Chang'e, end card",
+      "collection": "arts",
+      "chars": ["lesley", "change"],
+      "pair": "lesley-change",
+      "canon": "official",
+      "tags": ["lore card", "card", "lesley", "change"],
+      "kind": "lore",
+      "alt": "The end card of the set: a smiling Chang'e with Lesley beside her and the line: Please stay tuned! Can't wait to meet you!",
+      "img": {
+        "t": "arts/official/lesley-change-lore-5/t.webp",
+        "p": "arts/official/lesley-change-lore-5/p.webp",
+        "f": "arts/official/lesley-change-lore-5/f.webp",
+        "w": 898,
+        "h": 898,
+        "c": "#8285aa"
+      },
+      "download": {
+        "key": "arts/official/lesley-change-lore-5/o.jpg",
+        "name": "aspirant-lesley-change-lore-5.jpg",
+        "bytes": 270076
+      },
+      "note": "The last card: Please stay tuned! Can't wait to meet you!"
+    },
+    {
+      "id": "arts-official-guinevere-splash",
+      "title": "Guinevere, splash art",
+      "collection": "arts",
+      "chars": ["guinevere"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["splash art", "art", "guinevere"],
+      "kind": "splash",
+      "alt": "Guinevere with long blonde hair and red ribbons leaps among floating droids and bright shards in the sky.",
+      "img": {
+        "t": "arts/official/guinevere-splash/t.webp",
+        "p": "arts/official/guinevere-splash/p.webp",
+        "f": "arts/official/guinevere-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#a894a9"
+      },
+      "download": {
+        "key": "arts/official/guinevere-splash/o.jpg",
+        "name": "aspirant-guinevere-splash.jpg",
+        "bytes": 1304756
+      }
+    },
+    {
+      "id": "arts-official-vexana-splash",
+      "title": "Vexana, splash art",
+      "collection": "arts",
+      "chars": ["vexana"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["splash art", "art", "vexana"],
+      "kind": "splash",
+      "alt": "Vexana with violet hair stands before a huge dark armored figure with great blades, over a ruined city.",
+      "img": {
+        "t": "arts/official/vexana-splash/t.webp",
+        "p": "arts/official/vexana-splash/p.webp",
+        "f": "arts/official/vexana-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#725c83"
+      },
+      "download": {
+        "key": "arts/official/vexana-splash/o.jpg",
+        "name": "aspirant-vexana-splash.jpg",
+        "bytes": 1299119
+      }
+    },
+    {
+      "id": "arts-official-guinevere-vexana-both",
+      "title": "Guinevere and Vexana, splash art",
+      "collection": "arts",
+      "chars": ["guinevere", "vexana"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["pair art", "art", "guinevere", "vexana"],
+      "kind": "pair",
+      "alt": "Vexana's face large at the left in violet light, Guinevere flying toward the right with her droids.",
+      "img": {
+        "t": "arts/official/guinevere-vexana-both/t.webp",
+        "p": "arts/official/guinevere-vexana-both/p.webp",
+        "f": "arts/official/guinevere-vexana-both/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#b8a7bf"
+      },
+      "download": {
+        "key": "arts/official/guinevere-vexana-both/o.jpg",
+        "name": "aspirant-guinevere-vexana-both.jpg",
+        "bytes": 971699
+      }
+    },
+    {
+      "id": "arts-official-guinevere-vexana-fighting-moment",
+      "title": "Guinevere and Vexana, fighting moment",
+      "collection": "arts",
+      "chars": ["guinevere", "vexana"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["pair art", "art", "guinevere", "vexana"],
+      "kind": "pair",
+      "alt": "Vexana and Guinevere in mid fight inside a dark spiked shell of violet energy.",
+      "img": {
+        "t": "arts/official/guinevere-vexana-fighting-moment/t.webp",
+        "p": "arts/official/guinevere-vexana-fighting-moment/p.webp",
+        "f": "arts/official/guinevere-vexana-fighting-moment/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#715392"
+      },
+      "download": {
+        "key": "arts/official/guinevere-vexana-fighting-moment/o.jpg",
+        "name": "aspirant-guinevere-vexana-fighting-moment.jpg",
+        "bytes": 875361
+      }
+    },
+    {
+      "id": "arts-official-guinevere-vexana-fighting-stance",
+      "title": "Guinevere and Vexana, fighting stance",
+      "collection": "arts",
+      "chars": ["guinevere", "vexana"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["pair art", "art", "guinevere", "vexana"],
+      "kind": "pair",
+      "alt": "Vexana and Guinevere stand ready in a dark violet storm, Guinevere in red and gold with floating droids around her.",
+      "img": {
+        "t": "arts/official/guinevere-vexana-fighting-stance/t.webp",
+        "p": "arts/official/guinevere-vexana-fighting-stance/p.webp",
+        "f": "arts/official/guinevere-vexana-fighting-stance/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#776277"
+      },
+      "download": {
+        "key": "arts/official/guinevere-vexana-fighting-stance/o.jpg",
+        "name": "aspirant-guinevere-vexana-fighting-stance.jpg",
+        "bytes": 1169138
+      }
+    },
+    {
+      "id": "arts-official-guinevere-father",
+      "title": "Guinevere's father, silhouette",
+      "collection": "arts",
+      "chars": ["guinevere"],
+      "pair": "guinevere-vexana",
+      "canon": "official",
+      "tags": ["official art", "guinevere"],
+      "kind": "official",
+      "alt": "A black silhouette of a man in a long coat with a fur collar, holding papers, with a glowing gold question mark on his chest.",
+      "img": {
+        "t": "arts/official/guinevere-father/t.webp",
+        "p": "arts/official/guinevere-father/p.webp",
+        "f": "arts/official/guinevere-father/f.webp",
+        "w": 1920,
+        "h": 750,
+        "c": "#56607c"
+      },
+      "download": {
+        "key": "arts/official/guinevere-father/o.png",
+        "name": "aspirant-guinevere-father.png",
+        "bytes": 78025
+      },
+      "note": "The head of House Baroque. He has not appeared in the main story yet."
+    },
+    {
+      "id": "arts-official-obsidia-splash",
+      "title": "Obsidia, splash art",
+      "collection": "arts",
+      "chars": ["obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["splash art", "art", "obsidia"],
+      "kind": "splash",
+      "alt": "Obsidia in a black and gold gown with long red and gold hair leaps with a spiked blade of red light before a dark sun.",
+      "img": {
+        "t": "arts/official/obsidia-splash/t.webp",
+        "p": "arts/official/obsidia-splash/p.webp",
+        "f": "arts/official/obsidia-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#7a5863"
+      },
+      "download": {
+        "key": "arts/official/obsidia-splash/o.png",
+        "name": "aspirant-obsidia-splash.png",
+        "bytes": 4837623
+      }
+    },
+    {
+      "id": "arts-official-selena-splash",
+      "title": "Selena, splash art",
+      "collection": "arts",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["splash art", "art", "selena"],
+      "kind": "splash",
+      "alt": "Selena with long golden hair and small horns flies forward in a blue and silver mecha suit, two fox eared droids above her.",
+      "img": {
+        "t": "arts/official/selena-splash/t.webp",
+        "p": "arts/official/selena-splash/p.webp",
+        "f": "arts/official/selena-splash/f.webp",
+        "w": 2560,
+        "h": 1440,
+        "c": "#9b9cb7"
+      },
+      "download": {
+        "key": "arts/official/selena-splash/o.png",
+        "name": "aspirant-selena-splash.png",
+        "bytes": 4627902
+      }
+    },
+    {
+      "id": "arts-official-day-of-enders",
+      "title": "Day of Enders, trailer card",
+      "collection": "arts",
+      "chars": ["selena", "obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["official art", "selena", "obsidia"],
+      "kind": "official",
+      "alt": "Obsidia at the left and Selena at the right face each other as their weapons cross in a burst of light, under the title Day of Enders.",
+      "img": {
+        "t": "arts/official/day-of-enders/t.webp",
+        "p": "arts/official/day-of-enders/p.webp",
+        "f": "arts/official/day-of-enders/f.webp",
+        "w": 1280,
+        "h": 720,
+        "c": "#765978"
+      },
+      "download": {
+        "key": "arts/official/day-of-enders/o.jpg",
+        "name": "aspirant-day-of-enders.jpg",
+        "bytes": 254334
+      },
+      "note": "The title card of the Day of Enders trailer."
+    },
+    {
+      "id": "arts-official-the-pawns-gambit",
+      "title": "The Pawn's Gambit, trailer card",
+      "collection": "arts",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["official art", "selena"],
+      "kind": "official",
+      "alt": "Selena with long golden hair and horns, a finger at her lips, under the title The Pawn's Gambit.",
+      "img": {
+        "t": "arts/official/the-pawns-gambit/t.webp",
+        "p": "arts/official/the-pawns-gambit/p.webp",
+        "f": "arts/official/the-pawns-gambit/f.webp",
+        "w": 1280,
+        "h": 720,
+        "c": "#413964"
+      },
+      "download": {
+        "key": "arts/official/the-pawns-gambit/o.jpg",
+        "name": "aspirant-the-pawns-gambit.jpg",
+        "bytes": 236689
+      },
+      "note": "The title card of Selena's character trailer."
+    },
+    {
+      "id": "arts-official-the-queens-endgame",
+      "title": "The Queen's Endgame, trailer card",
+      "collection": "arts",
+      "chars": ["obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["official art", "obsidia"],
+      "kind": "official",
+      "alt": "Obsidia with short white hair looks down beside a black sun, under the title The Queen's Endgame.",
+      "img": {
+        "t": "arts/official/the-queens-endgame/t.webp",
+        "p": "arts/official/the-queens-endgame/p.webp",
+        "f": "arts/official/the-queens-endgame/f.webp",
+        "w": 1280,
+        "h": 720,
+        "c": "#533852"
+      },
+      "download": {
+        "key": "arts/official/the-queens-endgame/o.jpg",
+        "name": "aspirant-the-queens-endgame.jpg",
+        "bytes": 218238
+      },
+      "note": "The title card of Obsidia's character trailer."
+    },
+    {
+      "id": "arts-official-selrick-archives-card",
+      "title": "Selrick Archives, announcement card",
+      "collection": "arts",
+      "chars": ["selena", "obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "selena", "obsidia"],
+      "kind": "lore",
+      "alt": "Card titled Selrick Archives with Selena and Obsidia and small portraits of the other Aspirants, new skins coming 10/09.",
+      "img": {
+        "t": "arts/official/selrick-archives-card/t.webp",
+        "p": "arts/official/selrick-archives-card/p.webp",
+        "f": "arts/official/selrick-archives-card/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#60457f"
+      },
+      "download": {
+        "key": "arts/official/selrick-archives-card/o.jpg",
+        "name": "aspirant-selrick-archives-card.jpg",
+        "bytes": 140037
+      },
+      "note": "The card that opened the Selrick Academy Archives.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-relationship-chart",
+      "title": "The Aspirants, relationship chart",
+      "collection": "arts",
+      "chars": [
+        "fanny",
+        "layla",
+        "ruby",
+        "angela",
+        "lesley",
+        "change",
+        "guinevere",
+        "vexana",
+        "obsidia",
+        "selena"
+      ],
+      "pair": null,
+      "canon": "official",
+      "tags": ["lore card", "card"],
+      "kind": "lore",
+      "alt": "A chart of the Aspirants with lines between them: teammates, classmates, rivals, creators, confidants and teachers.",
+      "img": {
+        "t": "arts/official/relationship-chart/t.webp",
+        "p": "arts/official/relationship-chart/p.webp",
+        "f": "arts/official/relationship-chart/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#b1a6cb"
+      },
+      "download": {
+        "key": "arts/official/relationship-chart/o.jpg",
+        "name": "aspirant-relationship-chart.jpg",
+        "bytes": 133032
+      },
+      "note": "Who is teacher, teammate, rival or confidant to whom.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-obsidia-enders-file",
+      "title": "The Enders Archives, Obsidia",
+      "collection": "arts",
+      "chars": ["obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "obsidia"],
+      "kind": "lore",
+      "alt": "An archive file for Obsidia, code name Imperatrix Arashi, with her portrait and a list of confirmed intel.",
+      "img": {
+        "t": "arts/official/obsidia-enders-file/t.webp",
+        "p": "arts/official/obsidia-enders-file/p.webp",
+        "f": "arts/official/obsidia-enders-file/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#a5839a"
+      },
+      "download": {
+        "key": "arts/official/obsidia-enders-file/o.jpg",
+        "name": "aspirant-obsidia-enders-file.jpg",
+        "bytes": 135449
+      },
+      "note": "Her file in the Enders Archives: code name Imperatrix Arashi, commander-type Ender.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-obsidia-observation-record",
+      "title": "Observation record, Obsidia",
+      "collection": "arts",
+      "chars": ["obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "obsidia"],
+      "kind": "lore",
+      "alt": "An observation record for Obsidia in a pink panel: four dated entries and her armored Ender mecha suit.",
+      "img": {
+        "t": "arts/official/obsidia-observation-record/t.webp",
+        "p": "arts/official/obsidia-observation-record/p.webp",
+        "f": "arts/official/obsidia-observation-record/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#cb9cc4"
+      },
+      "download": {
+        "key": "arts/official/obsidia-observation-record/o.jpg",
+        "name": "aspirant-obsidia-observation-record.jpg",
+        "bytes": 120926
+      },
+      "note": "Her record from the previous civilization to May 997, and her Ender mecha suit.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-selena-enders-file",
+      "title": "The Enders Archives, Selena",
+      "collection": "arts",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "selena"],
+      "kind": "lore",
+      "alt": "An archive file for Selena, code name Silverbolt Raiko, with her portrait and a list of confirmed intel.",
+      "img": {
+        "t": "arts/official/selena-enders-file/t.webp",
+        "p": "arts/official/selena-enders-file/p.webp",
+        "f": "arts/official/selena-enders-file/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#a8a2be"
+      },
+      "download": {
+        "key": "arts/official/selena-enders-file/o.jpg",
+        "name": "aspirant-selena-enders-file.jpg",
+        "bytes": 144655
+      },
+      "note": "Her file: code name Silverbolt Raiko, mobile-type Ender, cover identity a Selrick Academy student.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-selena-observation-record",
+      "title": "Observation record, Selena",
+      "collection": "arts",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "selena"],
+      "kind": "lore",
+      "alt": "An observation record for Selena in a blue panel: four dated entries and her armored Ender mecha suit.",
+      "img": {
+        "t": "arts/official/selena-observation-record/t.webp",
+        "p": "arts/official/selena-observation-record/p.webp",
+        "f": "arts/official/selena-observation-record/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#a1a7d4"
+      },
+      "download": {
+        "key": "arts/official/selena-observation-record/o.jpg",
+        "name": "aspirant-selena-observation-record.jpg",
+        "bytes": 125202
+      },
+      "note": "Her record from year 978 to May 997, and her Ender mecha suit.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "arts-official-singularity-timeline",
+      "title": "Singularity, battle report timeline",
+      "collection": "arts",
+      "chars": ["selena", "obsidia"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["lore card", "card", "selena", "obsidia"],
+      "kind": "lore",
+      "alt": "A battle report timeline of the Singularity crisis, one pink panel after another with the Aspirants' portraits.",
+      "img": {
+        "t": "arts/official/singularity-timeline/t.webp",
+        "p": "arts/official/singularity-timeline/p.webp",
+        "f": "arts/official/singularity-timeline/f.webp",
+        "w": 720,
+        "h": 720,
+        "c": "#cebdd5"
+      },
+      "download": {
+        "key": "arts/official/singularity-timeline/o.jpg",
+        "name": "aspirant-singularity-timeline.jpg",
+        "bytes": 121586
+      },
+      "note": "What happened on the day of the Singularity, step by step. The outcome remains undecided.",
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27"
+      }
+    }
+  ]
+}
