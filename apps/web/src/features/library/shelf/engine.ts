@@ -19,7 +19,6 @@ import {
   WebGLRenderer,
   WebGLRenderTarget,
   type Material,
-  type Texture,
 } from "three";
 
 import {
@@ -1100,5 +1099,3 @@ export class ShelfEngine {
     canvas.remove();
   }
 }
-
-export type { Texture };

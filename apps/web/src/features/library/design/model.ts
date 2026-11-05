@@ -4,7 +4,7 @@ import type { LibImage } from "../types";
 import type { DesignCampaign, DesignPost, DesignVideo, Swatch } from "./types";
 
 /** The members of each pair, so a mixed post (all ten, or four) still answers a pair filter. */
-export const PAIR_MEMBERS: Readonly<Record<PairId, readonly Slug[]>> = {
+const PAIR_MEMBERS: Readonly<Record<PairId, readonly Slug[]>> = {
   "fanny-layla": ["fanny", "layla"],
   "ruby-angela": ["ruby", "angela"],
   "lesley-change": ["lesley", "change"],
@@ -12,7 +12,7 @@ export const PAIR_MEMBERS: Readonly<Record<PairId, readonly Slug[]>> = {
   "selena-obsidia": ["selena", "obsidia"],
 };
 
-export const PAIR_IDS = Object.keys(PAIR_MEMBERS) as PairId[];
+const PAIR_IDS = Object.keys(PAIR_MEMBERS) as PairId[];
 
 /** Every pair that one of the post's characters belongs to. */
 export function pairsOf(post: Pick<DesignPost, "chars">): PairId[] {
@@ -192,7 +192,7 @@ export function activeCount(f: Filters): number {
 // The wall: rows of equal height that keep every picture's true shape
 // ---------------------------------------------------------------------------------------------
 
-export interface RowItem {
+interface RowItem {
   index: number;
   w: number;
 }

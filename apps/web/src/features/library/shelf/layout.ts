@@ -45,7 +45,7 @@ export interface Pose {
   yaw: number;
 }
 
-export function lerp(a: number, b: number, t: number): number {
+function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
@@ -69,7 +69,7 @@ export function damp(current: number, target: number, rate: number, dt: number):
   return target + (current - target) * Math.exp(-rate * dt);
 }
 
-export const easeOutCubic = (t: number) => 1 - (1 - clamp(t, 0, 1)) ** 3;
+const easeOutCubic = (t: number) => 1 - (1 - clamp(t, 0, 1)) ** 3;
 export const easeInOutCubic = (t: number) => {
   const x = clamp(t, 0, 1);
   return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2;
@@ -83,7 +83,7 @@ function linear(c: number): number {
 }
 
 /** Relative luminance of `#rrggbb`. */
-export function luminance(hex: string): number {
+function luminance(hex: string): number {
   const h = hex.replace("#", "");
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
@@ -177,12 +177,6 @@ export function focusPose(w: number, h: number, size: number): Pose {
   const centreY = phone ? h * 0.1 : h * 0.03;
   const s = target / size;
   return { x: 0, y: centreY - target / 2, z: 0, s, lean: 0, yaw: 0 };
-}
-
-/** Where the Open pill sits under the focused cover, from the middle of the screen (y up). */
-export function focusOpenY(w: number, h: number, size: number): number {
-  const p = focusPose(w, h, size);
-  return p.y - 34;
 }
 
 // Entrance --------------------------------------------------------------------------------

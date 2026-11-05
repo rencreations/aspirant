@@ -154,7 +154,10 @@ async function seekBarTo(page: Page, seconds: number) {
     .getByRole("slider", { name: "Seek" })
     .evaluate((el, value) => {
       const input = el as HTMLInputElement;
-      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+      // The native setter is the way to change a React controlled input from a test.
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set as
+        ((this: HTMLInputElement, value: string) => void) | undefined;
       set?.call(input, String(value));
       input.dispatchEvent(new Event("input", { bubbles: true }));
     }, seconds);

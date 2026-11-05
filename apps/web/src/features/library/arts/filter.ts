@@ -21,7 +21,7 @@ export const NO_FILTERS: ArtFilters = { q: "", who: "", kind: "", pair: "" };
 
 const PAIR_NAMES = new Map(pairs.map((p) => [p.id as string, p.names]));
 
-export function pairName(id: string | null): string {
+function pairName(id: string | null): string {
   return id ? (PAIR_NAMES.get(id) ?? "") : "";
 }
 
@@ -30,7 +30,7 @@ export function charName(slug: string): string {
 }
 
 /** Everything a search can match, in lower case: the title, the words, the names, the kind. */
-export function haystack(item: ArtItem): string {
+function haystack(item: ArtItem): string {
   return [
     item.title,
     item.alt,
@@ -59,7 +59,7 @@ export function matchesText(item: ArtItem, q: string): boolean {
 type Facet = "who" | "kind" | "pair";
 
 /** True when the item passes the filters. `skip` leaves one facet out (to count its chips). */
-export function matches(item: ArtItem, f: ArtFilters, skip?: Facet): boolean {
+function matches(item: ArtItem, f: ArtFilters, skip?: Facet): boolean {
   if (skip !== "who" && f.who && !item.chars.includes(f.who as ArtItem["chars"][number]))
     return false;
   if (skip !== "kind" && f.kind && item.kind !== f.kind) return false;
@@ -105,7 +105,7 @@ export function splashRibbon(items: readonly ArtItem[]): ArtItem[] {
 }
 
 /** The ribbon shows previews (it is taller than a thumbnail is sharp). */
-export function ribbonKeys(items: readonly ArtItem[]): string[] {
+function ribbonKeys(items: readonly ArtItem[]): string[] {
   return splashRibbon(items).map((it) => it.img.p);
 }
 

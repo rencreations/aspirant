@@ -6,7 +6,7 @@ export interface Scored {
 }
 
 /** Lower case and fold width variants, so Japanese and Latin text match without fuss. */
-export function normalise(text: string): string {
+function normalise(text: string): string {
   return text.normalize("NFKC").toLowerCase();
 }
 

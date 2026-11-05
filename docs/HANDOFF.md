@@ -51,7 +51,7 @@ The owner's machine is Windows 11; the repository is `D:\aspirant`. Facts that c
 apps/web/                   the site (Next.js 16, App Router, static export, React 19, Tailwind v4)
   src/app/                  routes, error pages, sitemap, robots, manifest, the boot script (layout.tsx)
   src/components/           shared UI: nav and menu, HUD, curtain and transition, loader, logo, video player, audio
-  src/features/             one folder per page group: home, about, story, collection, character/*
+  src/features/             one folder per page group: home, about, story, library (the collection), character/*
   src/lib/                  loading (preload, route-preloads, media-store, page-ready), hooks, stores, audio
   src/content/              typed content: characters, entities, world, site copy
   e2e/                      Playwright specs and the static server
@@ -161,6 +161,17 @@ enspirant\story\main-build\chapters`, see `revision-report.md` there); the Kari
 ### The pair pages
 
 Each has a short description in the rules file ("Video") and a build script. The shared pattern: first screen only is waited for, the rest loads in the background by priority; videos play only when the visitor presses play (nothing is re-encoded for Ruby and Angela, Lesley and Chang'e). Selena's and Obsidia's pages and the stage engine are documented in full in [design-system.md](design/design-system.md) ("Selena's page", "The stage engine", "Obsidia's page"). Ruby and Angela: `duo/`, art by `scripts/ruby-angela/build.py`. Lesley and Chang'e: `lesley-change/`, files in `public/video/lesley-change/`. Layla and Fanny: `layla-fanny/`.
+
+## The collection library (`/collection`)
+
+Built overnight on 4 and 5 Nov 2026 from the owner's brief ("the complete library, a shelf like shopify.com/editions, ten pages, everything in `D:\ren\aspirant`, assets in R2"). Read the rules in `CLAUDE.md` ("The collection"), the design in [`superpowers/specs/2026-11-04-collection-library-design.md`](superpowers/specs/2026-11-04-collection-library-design.md), the pipeline contract in `scripts/library/README.md` and the build log in [`superpowers/plans/2026-11-04-collection-library-progress.md`](superpowers/plans/2026-11-04-collection-library-progress.md).
+
+- **The shelf** (`features/library/shelf/`): raw three.js in one lazy chunk, render on demand (zero draw calls when idle), a half size render target with two gaussian passes for the focus blur (never CSS blur), real links in the index row, `ShelfFallback` (a plain grid, always in the HTML, `inert` while the scene runs) when WebGL is missing, a vertical stack on phones. The ten covers are made by `scripts/library/covers.py` from official art; the browser draws the number and the name over them.
+- **The rooms** (`features/library/<room>/`): Arts (official art with a lightbox, and a still for every scene of every official animated film, cut by shot detection from the full films), Films (57 films, chapters from the scene notes, captions, the parody labelled), Music (9 tracks, one player that stays), Voicelines (380 lines in Japanese and English, lossless FLAC links), Fanart (179 pieces with credits and a by artist view), Comic (both webtoons with transcripts, fan comics), Lore (the 28 official texts, an atlas), Design (99 promotional posts by campaign), Animation (all ten characters on the stage engine; the six that had no stage were built by `scripts/library/animation/stage.py`), Others (a 3D viewer for the Fanny and Layla models, emotes, gameplay clips, skill icons, site art, links).
+- **Shared code:** `features/library/shell/` (header, switcher, controls, credit), `shared/gallery/` (masonry and lightbox), `search/` (the overlay and `search-match.ts`), `data.ts` (`useLibraryData`), `registry.ts` (names, colours, covers), `types.ts`.
+- **Pipelines:** `scripts/library/<room>/` plus `common.py` (keys, text rules, `image_set`), `captions.py` (credits and captions from `media/_captions/captions.json`, joined on the post key), `r2.py` (mirror and bucket), `build_index.py`. Re-running is cheap (idempotent).
+- **Check it:** `node scripts/qa/probes/library.cjs` (all eleven pages at 1440, 1920 and 390), the e2e specs `e2e/library-*.spec.ts`.
+- **Judgement calls made while the owner slept** (in `docs/OPEN-QUESTIONS.md` 15 to 21): the takedown contact is the issues page, cosplay is included only where the post is identified and credited, one fan comic about Layla was left out because she is a minor, the official `_edits` reels are labelled "Official reel, not story", the gameplay clips carry a "not story" tag, the changed words in the lore texts (see `scripts/library/lore/fixes.py`), and the labels of the six new animation stages.
 
 ## Where things are written
 

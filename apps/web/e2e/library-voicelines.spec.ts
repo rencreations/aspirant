@@ -187,7 +187,10 @@ test("a compilation that ends can be played again from the start", async ({ page
     .getByRole("slider", { name: "Position in the compilation of Fanny" })
     .evaluate((el) => {
       const input = el as HTMLInputElement;
-      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+      // The native setter is the way to change a React controlled input from a test.
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set as
+        ((this: HTMLInputElement, value: string) => void) | undefined;
       set?.call(input, "125");
       input.dispatchEvent(new Event("input", { bubbles: true }));
     });

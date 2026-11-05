@@ -8,7 +8,6 @@ import {
   clampPan,
   clampZoom,
   fitScale,
-  maxZoom,
   naturalZoom,
   wheelZoom,
   zoomAround,
@@ -21,7 +20,6 @@ export {
   clampPan,
   clampZoom,
   fitScale,
-  maxZoom,
   naturalZoom,
   wheelZoom,
   zoomAround,
@@ -36,10 +34,10 @@ export const FIT: View = { z: 1, x: 0, y: 0 };
 /** A press that moves less than this many pixels is a tap, not a drag. */
 export const TAP_SLOP = 10;
 /** A swipe has to travel at least this far sideways. */
-export const SWIPE_MIN = 56;
+const SWIPE_MIN = 56;
 /** Two taps this close in time (ms) and place (px) are a double tap. */
-export const DOUBLE_TAP_MS = 320;
-export const DOUBLE_TAP_PX = 32;
+const DOUBLE_TAP_MS = 320;
+const DOUBLE_TAP_PX = 32;
 
 export interface Tap {
   t: number;

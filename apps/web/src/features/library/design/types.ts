@@ -28,7 +28,7 @@ export interface DesignVideo {
   kb: number;
 }
 
-export type DesignKind = "poster" | "carousel" | "reel";
+type DesignKind = "poster" | "carousel" | "reel";
 
 /** One promotional post of an official account. */
 export interface DesignPost extends ItemBase {

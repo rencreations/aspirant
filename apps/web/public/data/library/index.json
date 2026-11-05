@@ -1,16 +1,1 @@
-{
-  "v": 1,
-  "counts": {
-    "arts": 1012,
-    "films": 57,
-    "music": 9,
-    "voicelines": 406,
-    "fanart": 179,
-    "comic": 23,
-    "lore": 52,
-    "design": 117,
-    "animation": 63,
-    "others": 80
-  },
-  "total": 1998
-}
+{"v":1,"counts":{"arts":966,"films":57,"music":9,"voicelines":406,"fanart":179,"comic":23,"lore":52,"design":117,"animation":63,"others":80},"total":1952}

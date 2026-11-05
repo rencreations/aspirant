@@ -38,7 +38,7 @@ export interface LoreText {
   places: string[];
 }
 
-export interface Passage {
+interface Passage {
   text: string;
   /** Id of the text it is taken from. */
   from: string;

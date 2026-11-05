@@ -1,7 +1,7 @@
 import type { CollectionFile, ItemBase, LibImage } from "../types";
 
 /** One piece of a tall page, cut at a plain row so the pieces stack with no seam. */
-export interface ComicSlice {
+interface ComicSlice {
   /** Full width piece, a library key. */
   f: string;
   /** 1000 wide piece, a library key. */

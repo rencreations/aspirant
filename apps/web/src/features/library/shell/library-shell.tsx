@@ -25,7 +25,7 @@ export interface LibraryShellProps {
 }
 
 /** Where a takedown request goes. */
-export const TAKEDOWN_URL = "https://github.com/rencreations/aspirant/issues";
+const TAKEDOWN_URL = "https://github.com/rencreations/aspirant/issues";
 
 /**
  * The frame of every collection page: the header (breadcrumb, the name, one sentence, the

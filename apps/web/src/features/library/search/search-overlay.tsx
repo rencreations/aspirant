@@ -75,10 +75,6 @@ export default function SearchOverlay() {
   );
 
   useEffect(() => {
-    setActive(0);
-  }, [query, room]);
-
-  useEffect(() => {
     listRef.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({
       block: "nearest",
     });
@@ -138,6 +134,7 @@ export default function SearchOverlay() {
           aria-label="Search"
           onChange={(e) => {
             setQuery(e.target.value);
+            setActive(0);
           }}
         />
         <div className={styles.rooms} role="group" aria-label="Limit to one room">
@@ -147,6 +144,7 @@ export default function SearchOverlay() {
             aria-pressed={room === ""}
             onClick={() => {
               setRoom("");
+              setActive(0);
             }}
           >
             All
@@ -160,6 +158,7 @@ export default function SearchOverlay() {
               style={{ "--room": c.colour } as CSSProperties}
               onClick={() => {
                 setRoom(room === c.slug ? "" : c.slug);
+                setActive(0);
               }}
             >
               {c.name}

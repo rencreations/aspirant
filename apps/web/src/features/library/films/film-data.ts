@@ -160,7 +160,7 @@ function haystack(film: Film): string {
 }
 
 /** Does a film pass the filters? `skip` leaves one group out, to count how many each choice would leave. */
-export function matches(film: Film, f: FilmFilters, skip?: "who" | "pair" | "kind"): boolean {
+function matches(film: Film, f: FilmFilters, skip?: "who" | "pair" | "kind"): boolean {
   if (skip !== "who" && f.who && !film.chars.includes(f.who as never)) return false;
   if (skip !== "pair" && f.pair && film.pair !== f.pair) return false;
   if (skip !== "kind" && f.kind && rowOf(film.kind).id !== f.kind) return false;

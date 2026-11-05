@@ -3,7 +3,7 @@ import { CHARACTER_NAMES } from "@/lib/slugs";
 
 import type { FanItem, FanPicture, Filters, KindFilter } from "./types";
 
-export const SEVERAL = "Several artists";
+const SEVERAL = "Several artists";
 const NOT_NAMED = "Artist not named";
 
 /** The kind chip a piece belongs to. */
@@ -12,7 +12,7 @@ export function kindOf(item: FanItem): Exclude<KindFilter, ""> {
 }
 
 /** Lower case words a search looks in: title, artist, characters, medium, platform. */
-export function searchText(item: FanItem): string {
+function searchText(item: FanItem): string {
   const names = item.chars.map((c) => CHARACTER_NAMES[c]);
   return [
     item.title,
@@ -35,7 +35,7 @@ export function matchesQuery(item: FanItem, q: string): boolean {
   return words.every((w) => hay.includes(w));
 }
 
-export function matches(item: FanItem, f: Filters): boolean {
+function matches(item: FanItem, f: Filters): boolean {
   if (f.pair && !item.pairs.includes(f.pair as FanItem["pairs"][number])) return false;
   if (f.who && !item.chars.includes(f.who as FanItem["chars"][number])) return false;
   if (f.platform && item.platform !== f.platform) return false;

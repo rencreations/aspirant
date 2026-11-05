@@ -10,12 +10,12 @@
  *
  * See scripts/library/README.md.
  */
-export const LIBRARY_VERSION = "v1";
+const LIBRARY_VERSION = "v1";
 
 const DEFAULT_ORIGIN = "https://s3.aspirant.cc";
 
 /** The origin that serves the bucket, without a trailing slash. */
-export const libraryOrigin = (process.env.NEXT_PUBLIC_LIBRARY_ORIGIN ?? DEFAULT_ORIGIN).replace(
+const libraryOrigin = (process.env.NEXT_PUBLIC_LIBRARY_ORIGIN ?? DEFAULT_ORIGIN).replace(
   /\/+$/u,
   "",
 );

@@ -56,13 +56,6 @@ export interface LibVideo {
   local?: string;
 }
 
-/** An audio file, a library key. */
-export interface LibAudio {
-  src: string;
-  /** Seconds. */
-  dur: number;
-}
-
 /** Who made an item, and where it was first posted. Every fan item has one. */
 export interface Credit {
   /** The artist or account, or null when the sources do not name one. */

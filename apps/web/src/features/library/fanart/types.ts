@@ -3,7 +3,7 @@ import type { PairId } from "@/content/types";
 import type { GalleryItem } from "../shared/gallery";
 import type { ItemBase, LibImage, LibVideo } from "../types";
 
-export type FanKind = "image" | "video" | "cosplay";
+type FanKind = "image" | "video" | "cosplay";
 
 /** One piece in `public/data/library/fanart.json`. */
 export interface FanItem extends ItemBase {

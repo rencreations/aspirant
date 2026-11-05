@@ -12,8 +12,7 @@
  * fields: characters, pair, canon, credit, original file, extra facts). Keep the list in one
  * order for both components: the viewer's arrow keys follow it.
  */
-export { Gallery, type GalleryProps } from "./gallery";
-export { Lightbox, type LightboxProps } from "./lightbox";
+export { Gallery } from "./gallery";
+export { Lightbox } from "./lightbox";
 export { useLightboxParam, type LightboxParam } from "./use-lightbox-param";
 export type { Download, GalleryItem } from "./types";
-export type { GalleryLayout } from "./layout";

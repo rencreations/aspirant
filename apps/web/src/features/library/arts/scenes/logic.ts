@@ -29,7 +29,7 @@ function tokens(q: string): string[] {
 }
 
 /** Does a still match the words of the search? Every word must be found in the film, the note or the time. */
-export function sceneMatches(film: SceneFilm, scene: Scene, words: readonly string[]): boolean {
+function sceneMatches(film: SceneFilm, scene: Scene, words: readonly string[]): boolean {
   if (words.length === 0) return true;
   const hay = `${film.title} ${film.kind} ${scene.note} ${scene.time}`.toLowerCase();
   return words.every((w) => hay.includes(w));
@@ -181,7 +181,7 @@ export function columnsFor(width: number, min: number, gap: number): number {
 }
 
 /** Sizes the style sheet uses, in pixels at 16 px to the rem. They only feed the height estimate. */
-export const LAYOUT = {
+const LAYOUT = {
   strips: { min: 176, gap: 0, chrome: 30, rowGap: 22, group: 28 },
   sheet: { min: 104, gap: 0, chrome: 18, rowGap: 8, group: 24 },
   head: 170,
