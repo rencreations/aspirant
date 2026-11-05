@@ -49,6 +49,32 @@
   text-decoration: none;
 }
 
+.search {
+  margin-left: auto;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.search kbd {
+  margin-left: 0.4rem;
+  padding: 0 0.3rem;
+  border: 1px solid var(--line-strong);
+  font: inherit;
+  color: var(--text-dim);
+}
+
+.search:hover {
+  border-color: var(--lib-colour);
+  color: var(--lib-ink);
+}
+
 .back:hover {
   color: var(--lib-colour);
 }

@@ -9,6 +9,7 @@ import { libUrl } from "@/lib/library";
 import { collectionRoute, routes } from "@/lib/site";
 
 import { COLLECTIONS, getCollection, nextCollection } from "../registry";
+import { SearchButton } from "../search/search-host";
 import type { CollectionSlug } from "../types";
 import styles from "./library-shell.module.css";
 
@@ -53,6 +54,7 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
             <span>
               {meta.index} {meta.name}
             </span>
+            <SearchButton className={styles.search} />
           </p>
 
           <div className={styles.row}>

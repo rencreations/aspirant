@@ -40,4 +40,6 @@ Read this first when resuming. Design: `docs/superpowers/specs/2026-11-04-collec
 
 ## Notes for the next session
 
-(append dated notes here)
+5 Nov 2026 (afternoon): twelve helpers launched, each owns one room (see `helper-context.md`). Agent ids, for SendMessage follow ups: shelf aef3db38bb6d8aad4, arts a66860db734bde8e2, scenes a6ce77011c3f3a396, films a2cacae430ac800e8, audio (voicelines+music) a43da607c5f962341, fanart ace132bd6658031f6, comic a1b82f2ddb67c9b35, lore a6b6b9cf6ef5ab0b9, design a7563d197bf0a5cbc, animation builder a49502962a1fb40ea, animation page a4b152e2619620c10, others a39f2a4183bcd1318.
+
+Lead's own to do after the helpers report: commit their work in groups; run `python scripts/library/build_index.py`; add the Search button to the shelf if the shelf helper did not; remove the old `features/collection` (copy anything still used) and its e2e spec, `knip`, `scan-text`, `pnpm check`; production build and look at all eleven pages at 1440, 1920, 390; `python scripts/library/r2.py sync` then `status`; fix the old About and home text that points at `/collection` if needed; update docs (HANDOFF, design-system, README, canon notes); merge to main, push, watch the deploy; serve the production build on :3000.
