@@ -1,5 +1,5 @@
 .grid {
-  padding-block: var(--space-l) var(--space-2xl);
+  padding-block: calc(var(--nav-h) + var(--space-m)) var(--space-2xl);
 }
 
 .title {

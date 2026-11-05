@@ -26,7 +26,14 @@ export function ShelfFallback() {
               style={{ "--cover-colour": c.colour } as CSSProperties}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={libUrl(c.cover)} alt="" width={512} height={512} loading="lazy" />
+              <img
+                src={libUrl(c.cover)}
+                alt=""
+                width={512}
+                height={512}
+                loading="lazy"
+                crossOrigin="anonymous"
+              />
               <span className="hud-label">{c.index}</span>
               <span className={`${styles.name} display`}>{c.name}</span>
               <span className={styles.line}>{c.tagline}</span>

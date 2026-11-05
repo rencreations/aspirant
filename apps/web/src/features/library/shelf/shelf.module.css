@@ -1,0 +1,482 @@
+/* The shelf of `/collection`: one screen, no page scroll. The WebGL scene fills `.stage`; the words
+   and the buttons are real HTML laid over it. Everything that moves is transform or opacity. */
+
+.root {
+  position: relative;
+  min-height: 100svh;
+}
+
+/* The plain list: the page itself when WebGL is missing, kept in the HTML for crawlers and
+   visitors without scripts, and taken out of sight (and out of reach, `inert`) when the scene runs. */
+.fallback {
+  position: relative;
+}
+
+:global(html.js) .root[data-shelf="pending"] .fallback {
+  visibility: hidden;
+}
+
+.root[data-shelf="live"] {
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.root[data-shelf="live"] .fallback {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gl {
+  position: absolute;
+  inset: 0;
+}
+
+/* The words and the index row arrive after the last cover has landed. */
+.top,
+.index {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity var(--dur-slower) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out);
+}
+
+.stage[data-entered="true"] .top,
+.stage[data-entered="true"] .index {
+  opacity: 1;
+  transform: none;
+}
+
+/* Top left: two grey lines and the search button. */
+.top {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--nav-h) + 0.5rem);
+  left: var(--gutter);
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  pointer-events: none;
+}
+
+.tagline {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.search {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out);
+}
+
+.search:hover,
+.search:focus-visible {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.search kbd {
+  font: inherit;
+  opacity: 0.6;
+}
+
+/* Pills ------------------------------------------------------------------------------------------ */
+.pill {
+  height: 2.3rem;
+  padding: 0 1.05rem;
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--font-body-stack);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.pill:hover {
+  transform: translate3d(0, -1px, 0);
+}
+
+.pill:active {
+  transform: scale(0.97);
+}
+
+.light {
+  background: rgb(255 255 255 / 0.95);
+  color: #0b0b0e;
+  box-shadow:
+    0 1px 0 rgb(11 11 14 / 0.06),
+    0 6px 18px rgb(11 11 14 / 0.14);
+}
+
+.dark {
+  background: #0b0b0e;
+  color: #fff;
+  box-shadow: 0 6px 18px rgb(11 11 14 / 0.22);
+}
+
+/* Over the hovered cover, on its lower edge. The scene moves it (transform written per frame). */
+.pills,
+.openWrap {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  display: flex;
+  gap: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    visibility 0s linear var(--dur-fast);
+}
+
+.pills[data-show="true"],
+.openWrap[data-show="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.pills[data-show="true"] .pill,
+.openWrap[data-show="true"] .pill {
+  pointer-events: auto;
+}
+
+.openWrap[data-show="true"] {
+  transition:
+    opacity var(--dur-slow) var(--ease-out) 0.28s,
+    visibility 0s;
+}
+
+/* The focus view: the name and the line on the left. ----------------------------------------------- */
+.copy {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  top: 50%;
+  width: min(19rem, 26vw);
+  display: grid;
+  gap: 0.6rem;
+  opacity: 0;
+  transform: translate3d(-12px, -50%, 0);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out);
+}
+
+.copy[data-show="true"] {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+  transition-delay: 0.14s;
+}
+
+.copy > * {
+  margin: 0;
+}
+
+.copyNum {
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+
+.copyName {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-4);
+  font-weight: 800;
+  font-style: italic;
+  font-synthesis: style;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.copyLine {
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.25;
+  color: var(--text-dim);
+}
+
+.copyCount {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* The index row at the foot: number, name, count. ----------------------------------------------------- */
+.index {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem var(--gutter) 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.entries {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.6rem, 2.1vw, 2.6rem);
+  margin: 0 auto;
+  padding: 0;
+  max-width: 82rem;
+  list-style: none;
+}
+
+.entries li {
+  min-width: 0;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  gap: 0.18rem;
+  padding-top: 0.55rem;
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: clamp(0.6875rem, 0.62rem + 0.2vw, 0.8125rem);
+  line-height: 1.25;
+}
+
+.entry::before {
+  content: "";
+  position: absolute;
+  top: -1.05rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--room);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.entry[data-active="true"]::before,
+.entry:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.entryNum,
+.entryCount {
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  min-height: 0.8rem;
+}
+
+.entryName {
+  font-weight: 500;
+  color: color-mix(in srgb, var(--text) 78%, transparent);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.entry[data-active="true"] .entryName,
+.entry:focus-visible .entryName {
+  color: var(--text);
+}
+
+.entry:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* Phone ---------------------------------------------------------------------------------------------- */
+.bar,
+.track {
+  display: none;
+}
+
+@media (max-width: 43.6875em) {
+  .top {
+    top: calc(var(--nav-h) + 0.25rem);
+  }
+
+  /* The index row stays for keyboards and screen readers, out of sight. */
+  .index[data-phone="true"] {
+    position: absolute;
+    inset: auto auto 0 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    padding: 0;
+    border: 0;
+    pointer-events: none;
+  }
+
+  .bar {
+    position: absolute;
+    z-index: 3;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    opacity: 0;
+    transition: opacity var(--dur-slower) var(--ease-out);
+  }
+
+  .stage[data-entered="true"] .bar {
+    opacity: 1;
+  }
+
+  .barText {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .barNum,
+  .barLine {
+    font-family: var(--font-mono-stack);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+  }
+
+  .barLine {
+    font-family: var(--font-serif-stack);
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 0;
+    color: var(--text-dim);
+  }
+
+  .barName {
+    font-family: var(--font-display-stack);
+    font-size: 2.1rem;
+    font-weight: 800;
+    font-style: italic;
+    font-synthesis: style;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .barActions {
+    display: flex;
+    gap: 0.4rem;
+    flex: none;
+  }
+
+  .stage[data-focus="true"] .barActions {
+    display: none;
+  }
+
+  .copy {
+    display: none;
+  }
+
+  .track {
+    position: absolute;
+    z-index: 2;
+    right: 0.35rem;
+    top: 28%;
+    bottom: 22%;
+    width: 1.4rem;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    touch-action: none;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+  }
+
+  .track[data-show="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .track::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: rgb(11 11 14 / 0.14);
+  }
+
+  .thumb {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 2.6rem;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #0b0b0e;
+    will-change: transform;
+  }
+}
+
+/* Between a phone and a wide screen the focus copy sits low on the left so it never meets the cover. */
+@media (min-width: 43.75em) and (max-width: 68em) {
+  .copy {
+    top: auto;
+    bottom: 7rem;
+    width: min(20rem, 40vw);
+    transform: translate3d(-12px, 0, 0);
+  }
+
+  .copy[data-show="true"] {
+    transform: none;
+  }
+}
+
+@media (min-width: 43.75em) {
+  .entry {
+    min-width: 3.4rem;
+  }
+}
