@@ -249,6 +249,8 @@ def ffprobe(path: Path) -> dict[str, Any]:
         ["ffprobe", "-v", "error", "-show_format", "-show_streams", "-of", "json", str(path)],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=120,
     ).stdout
     j = json.loads(out or "{}")

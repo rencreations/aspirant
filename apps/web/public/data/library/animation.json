@@ -147,7 +147,7 @@
       "scene": null,
       "label": "Welcome",
       "line": "The opening animation of the in-game showcase. It plays once, then the idle loop takes over.",
-      "dur": null,
+      "dur": 13.7,
       "order": 0,
       "src": "media/_others/in-game-animation/fanny/welcome.mkv"
     },
@@ -163,7 +163,7 @@
       "scene": null,
       "label": "Idle",
       "line": "The loop she returns to between clips.",
-      "dur": null,
+      "dur": 5.4,
       "order": 1,
       "src": "media/_others/in-game-animation/fanny/idle.mkv"
     },
@@ -179,7 +179,7 @@
       "scene": "gallery",
       "label": "Pose",
       "line": "The camera moves in on a close pose and she holds it, then it cuts back to idle.",
-      "dur": null,
+      "dur": 9.6,
       "order": 2,
       "src": "media/_others/in-game-animation/fanny/zoom.mkv"
     },
@@ -195,7 +195,7 @@
       "scene": "short-1",
       "label": "Blade",
       "line": "A short clip that follows her blade.",
-      "dur": null,
+      "dur": 4.5,
       "order": 3,
       "src": "media/_others/in-game-animation/fanny/blade.mkv"
     },
@@ -211,7 +211,7 @@
       "scene": "short-2",
       "label": "Face",
       "line": "A short clip that moves in on her face.",
-      "dur": null,
+      "dur": 5.5,
       "order": 4,
       "src": "media/_others/in-game-animation/fanny/face.mkv"
     },
@@ -227,7 +227,7 @@
       "scene": "short-3",
       "label": "Waist",
       "line": "A short clip that moves in on her waist.",
-      "dur": null,
+      "dur": 5.7,
       "order": 5,
       "src": "media/_others/in-game-animation/fanny/stomach.mkv"
     },
@@ -371,7 +371,7 @@
       "scene": "gallery",
       "label": "Pose",
       "line": "The camera moves in on a close pose and she holds it, then it cuts back to idle.",
-      "dur": null,
+      "dur": 10.2,
       "order": 2,
       "src": "media/_others/in-game-animation/ruby/zoom.mkv"
     },
@@ -387,7 +387,7 @@
       "scene": "short-1",
       "label": "Face",
       "line": "A short clip that moves in on her face.",
-      "dur": null,
+      "dur": 8.6,
       "order": 3,
       "src": "media/_others/in-game-animation/ruby/face.mkv"
     },
@@ -403,7 +403,7 @@
       "scene": "short-2",
       "label": "Hand",
       "line": "A short clip that follows her hand.",
-      "dur": null,
+      "dur": 8.6,
       "order": 4,
       "src": "media/_others/in-game-animation/ruby/hand.mkv"
     },
@@ -419,7 +419,7 @@
       "scene": "short-3",
       "label": "Scythe",
       "line": "A short clip that follows her scythe.",
-      "dur": null,
+      "dur": 7.9,
       "order": 5,
       "src": "media/_others/in-game-animation/ruby/scythe.mkv"
     },
@@ -531,7 +531,7 @@
       "scene": null,
       "label": "Welcome",
       "line": "The opening animation of the in-game showcase. It plays once, then the idle loop takes over.",
-      "dur": null,
+      "dur": 13.9,
       "order": 0,
       "src": "media/_others/in-game-animation/lesley/welcome.mkv"
     },
@@ -547,7 +547,7 @@
       "scene": null,
       "label": "Idle",
       "line": "The loop she returns to between clips.",
-      "dur": null,
+      "dur": 6.1,
       "order": 1,
       "src": "media/_others/in-game-animation/lesley/idle.mkv"
     },
@@ -563,7 +563,7 @@
       "scene": "gallery",
       "label": "Pose",
       "line": "The camera moves in on a close pose and she holds it, then it cuts back to idle.",
-      "dur": null,
+      "dur": 32.1,
       "order": 2,
       "src": "media/_others/in-game-animation/lesley/zoom.mkv"
     },
@@ -579,7 +579,7 @@
       "scene": "short-1",
       "label": "Head",
       "line": "A short clip that moves in on her head.",
-      "dur": null,
+      "dur": 7.2,
       "order": 3,
       "src": "media/_others/in-game-animation/lesley/head.mkv"
     },
@@ -595,7 +595,7 @@
       "scene": "short-2",
       "label": "Gun",
       "line": "A short clip that follows her gun.",
-      "dur": null,
+      "dur": 9.3,
       "order": 4,
       "src": "media/_others/in-game-animation/lesley/gun.mkv"
     },
@@ -611,7 +611,7 @@
       "scene": "short-3",
       "label": "Foot",
       "line": "A short clip that looks down at her foot.",
-      "dur": null,
+      "dur": 8.1,
       "order": 5,
       "src": "media/_others/in-game-animation/lesley/foot.mkv"
     },
@@ -627,7 +627,7 @@
       "scene": null,
       "label": "Welcome",
       "line": "The opening animation of the in-game showcase. It plays once, then the idle loop takes over.",
-      "dur": null,
+      "dur": 13.8,
       "order": 0,
       "src": "media/_others/in-game-animation/change/welcome.mkv"
     },
@@ -643,7 +643,7 @@
       "scene": null,
       "label": "Idle",
       "line": "The loop she returns to between clips.",
-      "dur": null,
+      "dur": 9.0,
       "order": 1,
       "src": "media/_others/in-game-animation/change/idle.mkv"
     },
@@ -659,7 +659,7 @@
       "scene": "gallery",
       "label": "Pose",
       "line": "The camera moves in on a close pose and she holds it, then it cuts back to idle.",
-      "dur": null,
+      "dur": 29.1,
       "order": 2,
       "src": "media/_others/in-game-animation/change/zoom.mkv"
     },
@@ -675,7 +675,7 @@
       "scene": "short-1",
       "label": "Body",
       "line": "A short clip that shows her whole body.",
-      "dur": null,
+      "dur": 16.5,
       "order": 3,
       "src": "media/_others/in-game-animation/change/body.mkv"
     },
@@ -691,7 +691,7 @@
       "scene": "short-2",
       "label": "Moon",
       "line": "A short clip that follows the moon.",
-      "dur": null,
+      "dur": 6.6,
       "order": 4,
       "src": "media/_others/in-game-animation/change/moon.mkv"
     },

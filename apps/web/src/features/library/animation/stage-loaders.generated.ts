@@ -3,5 +3,9 @@
 /** A lazy import for every character whose stage data is in `stage-data/`. */
 export const STAGE_LOADERS: Readonly<Record<string, () => Promise<unknown>>> = {
   angela: () => import("./stage-data/angela.generated"),
+  change: () => import("./stage-data/change.generated"),
+  fanny: () => import("./stage-data/fanny.generated"),
   layla: () => import("./stage-data/layla.generated"),
+  lesley: () => import("./stage-data/lesley.generated"),
+  ruby: () => import("./stage-data/ruby.generated"),
 };

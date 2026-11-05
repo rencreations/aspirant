@@ -1,0 +1,351 @@
+/* The cinema view of one film: a dark panel over the page. Only transform and opacity move. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) - 1);
+  display: grid;
+  place-items: center;
+  background: rgb(5 7 12 / 0.9);
+  animation: fade var(--dur-base) var(--ease-out) both;
+}
+
+.panel {
+  --ink: #eef3fa;
+  --dim: #aab6c8;
+  --faint: #8a97ad;
+  --line: rgb(190 214 250 / 0.22);
+  --lib-light: color-mix(in srgb, var(--lib-colour) 55%, #fff);
+  --rule-minor: rgb(238 243 250 / 0.4);
+  --rule-major: var(--lib-light);
+  --rule-on: #fff;
+  --rule-text: var(--faint);
+  --cut: 24px;
+  position: relative;
+  width: min(78rem, 100%);
+  max-height: 100dvh;
+  padding: clamp(1rem, 2.4vw, 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #0b0e15;
+  color: var(--ink);
+  outline: none;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  animation: rise var(--dur-slower) var(--ease-out) both;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: var(--space-s);
+}
+
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.6rem;
+  margin: 0;
+  color: var(--faint);
+}
+
+.counter {
+  padding-left: 0.8rem;
+  margin-left: 0.2rem;
+  border-left: 1px solid var(--line);
+  color: var(--lib-light);
+}
+
+.buttons {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.square {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.square:hover {
+  background: var(--lib-colour);
+  border-color: var(--lib-colour);
+  transform: translateY(-1px);
+}
+
+.square:focus-visible,
+.scene:focus-visible,
+.startNote button:focus-visible,
+.moreLink:focus-visible {
+  outline: 2px solid var(--lib-light);
+  outline-offset: 2px;
+}
+
+.stageWrap {
+  display: grid;
+  justify-items: center;
+}
+
+.stage {
+  width: min(100%, calc(64dvh * var(--ar)));
+  min-width: 14rem;
+  background: var(--field);
+}
+
+.stage .card {
+  --card-edge-colour: #05070c;
+  --card-accent-colour: var(--lib-light);
+  --card-play-colour: var(--lib-colour);
+  aspect-ratio: var(--ar);
+}
+
+.ruleBox {
+  width: min(100%, calc(64dvh * var(--ar)));
+  min-width: 14rem;
+  margin-top: 0.9rem;
+}
+
+.startNote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  width: min(100%, calc(64dvh * var(--ar)));
+  margin: 0;
+  color: var(--lib-light);
+}
+
+.startNote button {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.startNote button:hover {
+  background: var(--lib-colour);
+  border-color: var(--lib-colour);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: var(--space-l);
+  margin-top: var(--space-m);
+  padding-top: var(--space-m);
+  border-top: 1px solid var(--line);
+}
+
+.info {
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 1.4rem + 3vw, 4.6rem);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.lead {
+  max-width: 38rem;
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.25;
+  color: var(--dim);
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--line);
+}
+
+.notice p {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--ink);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.8rem;
+  margin: var(--space-2xs) 0 0;
+}
+
+.facts div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.facts dt {
+  color: var(--faint);
+}
+
+.facts dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.moreLink {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.7rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.moreLink .hud-label {
+  color: inherit;
+}
+
+.moreLink:hover {
+  background: var(--lib-colour);
+  border-color: var(--lib-colour);
+  transform: translateX(4px);
+}
+
+.scenes {
+  min-width: 0;
+}
+
+.scenesTitle {
+  margin: 0 0 var(--space-2xs);
+  color: var(--lib-light);
+}
+
+.sceneList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 26rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.scene {
+  display: grid;
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.65rem 0.6rem;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: var(--dim);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) linear,
+    color var(--dur-fast) linear,
+    transform var(--dur-base) var(--ease-out);
+}
+
+.scene:hover {
+  background: rgb(238 243 250 / 0.06);
+  color: var(--ink);
+  transform: translateX(3px);
+}
+
+.scene[aria-current="true"] {
+  border-left-color: var(--lib-light);
+  background: rgb(238 243 250 / 0.07);
+  color: var(--ink);
+}
+
+.sceneTime {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--lib-light);
+  font-variant-numeric: tabular-nums;
+}
+
+.sceneLabel {
+  font-size: var(--step--1);
+  line-height: 1.35;
+}
+
+.noScenes {
+  margin: 0;
+  color: var(--dim);
+  font-size: var(--step--1);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@media (max-width: 52em) {
+  .cols {
+    grid-template-columns: 1fr;
+  }
+
+  .sceneList {
+    max-height: none;
+  }
+}
+
+@media (max-width: 40em) {
+  .panel {
+    --cut: 14px;
+    padding: 0.8rem;
+  }
+
+  .stage,
+  .ruleBox,
+  .startNote {
+    min-width: 0;
+  }
+}

@@ -83,6 +83,7 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
                 width={512}
                 height={512}
                 decoding="async"
+                crossOrigin="anonymous"
                 onError={(e) => {
                   e.currentTarget.style.visibility = "hidden";
                 }}
