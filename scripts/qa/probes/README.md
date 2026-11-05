@@ -8,11 +8,12 @@ Small scripts that open the real site in a real Chrome and print or photograph w
 - `serve` (what `pnpm start` uses) answers 404 for a Next prefetch file such as `/story/__next.story.__PAGE__.txt`. That one console error is local-only noise (the live site and the e2e server do not have it).
 - Files they write (screenshots) go to `OUT`, by default the `aspirant-probes` folder in the temp folder.
 
-| Script            | Answers                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| `routes.cjs`      | Does every route run animated after a few seconds? (`data-gate`, animations, errors) |
-| `first-visit.cjs` | What does a first visit on a slow phone connection show, second by second?           |
-| `menu-shots.cjs`  | How does the full-screen menu look at each size with each page hovered?              |
-| `drama-flow.cjs`  | Does the interactive drama save, continue, level select and play as it should?       |
+| Script            | Answers                                                                                                                          |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `routes.cjs`      | Does every route run animated after a few seconds? (`data-gate`, animations, errors)                                             |
+| `first-visit.cjs` | What does a first visit on a slow phone connection show, second by second?                                                       |
+| `menu-shots.cjs`  | How does the full-screen menu look at each size with each page hovered?                                                          |
+| `drama-flow.cjs`  | Does the interactive drama save, continue, level select and play as it should?                                                   |
+| `library.cjs`     | Do the shelf and the ten rooms of `/collection` load at 1440, 1920 and 390 with no errors, broken pictures or sideways overflow? |
 
 `scripts/perf/` has the heavier measuring scripts (`weak.mjs`: a weak device, `net.mjs`: bad connections, `trace.mjs`) and `scripts/qa/scan-text.mjs` scans the shipped text.

@@ -1,0 +1,149 @@
+.section {
+  padding-block: clamp(1.5rem, 3vw, 2.6rem) clamp(1rem, 2vw, 1.6rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.2rem;
+  margin-bottom: 1.1rem;
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--step-4);
+  line-height: 0.95;
+  color: var(--lib-ink);
+}
+
+.count {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.arrows {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out);
+}
+
+.arrow:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--lib-colour) 14%, var(--bg));
+}
+
+.arrow:focus-visible {
+  outline: 2px solid var(--lib-colour);
+  outline-offset: 2px;
+}
+
+/* One row that scrolls sideways and snaps. It bleeds to the edge of the screen on the right. */
+.bleed {
+  padding-inline-start: max(var(--gutter), calc((100vw - var(--content-max)) / 2 + var(--gutter)));
+}
+
+.track {
+  display: flex;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0 var(--gutter) 0.8rem 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1.4rem 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  flex: 0 0 min(78vw, 22rem);
+  scroll-snap-align: start;
+  animation: rise 640ms var(--ease-out) calc(var(--i, 0) * 70ms) both;
+}
+
+.grid .item {
+  flex: none;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.entry {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.card {
+  width: 100%;
+}
+
+.meta {
+  display: grid;
+  gap: 0.3rem;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--c, var(--lib-colour));
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-1);
+  line-height: 1.05;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.8rem;
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.reel {
+  padding: 0.15rem 0.45rem;
+  border: 1px solid currentColor;
+  color: #5a5f6e;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.who {
+  margin: 0;
+  color: var(--text-faint);
+}

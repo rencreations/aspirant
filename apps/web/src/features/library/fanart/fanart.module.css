@@ -1,0 +1,98 @@
+.filters {
+  display: grid;
+  gap: 0.5rem;
+  padding-block: 1.1rem 0.4rem;
+}
+
+.views {
+  display: flex;
+  margin-left: auto;
+  border: 1px solid var(--line-strong);
+}
+
+.view {
+  padding: 0.45rem 0.9rem;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+.view:hover {
+  background: color-mix(in srgb, var(--lib-colour) 12%, var(--bg));
+}
+
+.view[aria-pressed="true"] {
+  background: var(--lib-ink);
+  color: #fff;
+}
+
+.view:focus-visible {
+  outline: 2px solid var(--lib-colour);
+  outline-offset: 2px;
+}
+
+.clear {
+  justify-self: start;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--lib-ink);
+  background: transparent;
+  color: var(--lib-ink);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.clear:hover {
+  background: var(--lib-ink);
+  color: #fff;
+}
+
+.wallBox {
+  padding-block: 1.2rem 3rem;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  padding-block: 3rem 4rem;
+  color: var(--text-dim);
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: var(--step-4);
+  color: var(--lib-ink);
+}
+
+/* On a narrow screen each filter row is one line that scrolls sideways, so the wall starts sooner. */
+@media (max-width: 40em) {
+  .filters {
+    gap: 0.35rem;
+    padding-block: 0.8rem 0.2rem;
+  }
+
+  .filters > div {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+    scrollbar-width: thin;
+  }
+
+  .filters > div > * {
+    flex: none;
+  }
+
+  .filters > div > span {
+    width: auto;
+    min-width: 4.8rem;
+  }
+}
