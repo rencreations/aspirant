@@ -31,6 +31,7 @@ import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinev
 import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
 import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
+import { libraryPageItems, shelfItems } from "@/features/library/preloads";
 import { storyLandingItems } from "@/features/story/landing/preload-items";
 import { chapterItems } from "@/features/story/reader/preload-items";
 import {
@@ -95,12 +96,15 @@ export function routeItems(pathname: string): PreloadItem[] {
   }
 
   if (path === "/collection") {
-    return [
-      ...shared,
-      dataItem("/data/manifest.json", "Reading the archive index", 2),
-      dataItem("/data/comics.json", "Reading the comic index", 1),
-      dataItem("/data/fanart.json", "Reading the fan art credits", 1),
-    ];
+    // The shelf: its ten covers and the scene's code (see `features/library/shelf/preload.ts`).
+    return [...shared, ...shelfItems()];
+  }
+
+  if (path.startsWith("/collection/")) {
+    // One room of the library: its data file, its chunk and its first screen. Each room owns its
+    // list in `features/library/<room>/preload.ts`.
+    const room = path.slice("/collection/".length).split("/")[0] ?? "";
+    return [...shared, ...libraryPageItems(room)];
   }
 
   if (path === "/character") {

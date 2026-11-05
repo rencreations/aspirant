@@ -34,6 +34,11 @@ export function characterRoute(slug: CharacterSlug): Route {
   return `/character/${slug}` as Route;
 }
 
+/** Route for one room of the collection, for example `/collection/arts`. */
+export function collectionRoute(slug: string): Route {
+  return `/collection/${slug}` as Route;
+}
+
 export interface NavItem {
   readonly href: Route;
   readonly label: string;

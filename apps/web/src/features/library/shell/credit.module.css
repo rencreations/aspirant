@@ -1,0 +1,22 @@
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid currentColor;
+}
+
+.fan {
+  color: #a24a00;
+}
+
+.non {
+  color: #a3182f;
+}
+
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}

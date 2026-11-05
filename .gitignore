@@ -53,3 +53,8 @@ __pycache__/
 # scratch output of scripts/vexana/comments.py (crops and scans)
 scripts/vexana/_comments*/
 scripts/guinevere/_comments*/
+
+# Library pipeline caches (scripts/library)
+scripts/library/.cache/
+scripts/library/__pycache__/
+scripts/library/**/__pycache__/
