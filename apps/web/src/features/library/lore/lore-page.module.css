@@ -1,0 +1,25 @@
+.panel {
+  min-height: 24rem;
+  animation: panelIn 520ms var(--ease-out) both;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.note {
+  margin: var(--space-l) 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-2);
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.note:global(.hud-label) {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-style: normal;
+}

@@ -1,0 +1,262 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--scrim);
+  animation: fade 320ms linear both;
+}
+
+.sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-modal) + 1);
+  width: min(100vw, 76rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--text);
+  animation: slide 520ms var(--ease-out) both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-s);
+  padding: clamp(1rem, 3vw, 2.6rem);
+  animation: swap 460ms var(--ease-out) both;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.top p {
+  margin: 0;
+}
+
+.close {
+  position: relative;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.close:hover {
+  transform: rotate(90deg);
+  border-color: var(--lib-colour);
+}
+
+.close span::before,
+.close span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.1rem;
+  height: 1.5px;
+  background: currentColor;
+}
+
+.close span::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close span::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.6rem, 1.2rem + 5.4vw, 6.4rem);
+  line-height: 0.88;
+  overflow-wrap: anywhere;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-m);
+  align-items: start;
+}
+
+.figure {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  min-width: 0;
+}
+
+.pic {
+  width: 100%;
+  background: var(--ground, var(--bg-2));
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+.pic[data-alpha="1"] {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--lib-colour) 16%, transparent) 0 1px,
+      transparent 1px 10px
+    ),
+    var(--bg-2);
+}
+
+.pic img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.figure figcaption {
+  margin: 0;
+}
+
+.text {
+  display: grid;
+  gap: var(--space-s);
+  min-width: 0;
+}
+
+.text section {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.text p {
+  margin: 0;
+}
+
+.src {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--lib-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.quote {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--lib-colour);
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.quoteMore {
+  font-size: var(--step-0);
+  border-left-color: var(--line-strong);
+  color: var(--text-dim);
+}
+
+.mentions {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.mention {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.55rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.mention:hover {
+  transform: translateX(6px);
+  color: var(--lib-ink);
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xs);
+  padding-top: var(--space-s);
+  border-top: 1px solid var(--line);
+}
+
+.step {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  text-align: left;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.step:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--lib-colour);
+}
+
+.step:disabled {
+  opacity: 0.4;
+}
+
+.stepNext {
+  text-align: right;
+}
+
+.stepName {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+@media (min-width: 56em) {
+  .grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+
+  .figure {
+    position: sticky;
+    top: 1rem;
+  }
+}

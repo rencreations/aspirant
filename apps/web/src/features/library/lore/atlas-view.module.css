@@ -1,0 +1,482 @@
+/* The atlas: a survey sheet of numbered plates. Hairlines, ticks and registration crosses only index
+   the plates. Nothing here claims where anything is. */
+
+.wrap {
+  position: relative;
+}
+
+.sheet {
+  --grid: 2rem;
+  --hair: color-mix(in srgb, var(--lib-colour) 11%, transparent);
+  --hair-major: color-mix(in srgb, var(--lib-colour) 20%, transparent);
+  position: relative;
+  padding: clamp(1.6rem, 3.2vw, 3.4rem) clamp(1rem, 3vw, 3.2rem) var(--space-m);
+  border: 1px solid var(--line-strong);
+  background-color: var(--panel);
+  background-image:
+    linear-gradient(to right, var(--hair-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hair-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--hair) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hair) 1px, transparent 1px);
+  background-size:
+    calc(var(--grid) * 4) calc(var(--grid) * 4),
+    calc(var(--grid) * 4) calc(var(--grid) * 4),
+    var(--grid) var(--grid),
+    var(--grid) var(--grid);
+  animation: sheetIn 700ms var(--ease-out) both;
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.rulerTop,
+.rulerLeft {
+  position: absolute;
+  pointer-events: none;
+  background-repeat: repeat;
+}
+
+.rulerTop {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0.8rem;
+  background-image:
+    linear-gradient(90deg, var(--line-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--text-faint) 1px, transparent 1px);
+  background-size:
+    1rem 0.4rem,
+    8rem 0.8rem;
+  background-repeat: repeat-x;
+}
+
+.rulerLeft {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0.8rem;
+  background-image:
+    linear-gradient(0deg, var(--line-strong) 1px, transparent 1px),
+    linear-gradient(0deg, var(--text-faint) 1px, transparent 1px);
+  background-size:
+    0.4rem 1rem,
+    0.8rem 8rem;
+  background-repeat: repeat-y;
+}
+
+.reg {
+  position: absolute;
+  width: 1.1rem;
+  height: 1.1rem;
+  pointer-events: none;
+}
+
+.reg::before,
+.reg::after {
+  content: "";
+  position: absolute;
+  background: var(--lib-colour);
+}
+
+.reg::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+}
+
+.reg::after {
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+}
+
+.regA {
+  top: 0.9rem;
+  left: 0.9rem;
+}
+
+.regB {
+  top: 0.9rem;
+  right: 0.9rem;
+}
+
+.regC {
+  bottom: 0.9rem;
+  left: 0.9rem;
+}
+
+.regD {
+  right: 0.9rem;
+  bottom: 0.9rem;
+}
+
+/* Head */
+.head {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-s) var(--space-l);
+  padding: 0 0 var(--space-s);
+  margin-bottom: var(--space-s);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.title {
+  margin: 0.2rem 0 0;
+  font-size: clamp(3.4rem, 1.4rem + 7vw, 9rem);
+  color: var(--text);
+}
+
+.lead {
+  max-width: 40rem;
+  margin: var(--space-2xs) 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--text-dim);
+}
+
+.layers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  max-width: 34rem;
+}
+
+.layerBtn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.layerBtn span {
+  opacity: 0.6;
+}
+
+.layerBtn:hover {
+  transform: translateY(-2px);
+}
+
+.layerBtn[aria-pressed="true"] {
+  border-color: var(--lib-colour);
+  background: var(--lib-colour);
+  color: #fff;
+}
+
+/* A layer */
+.layer {
+  position: relative;
+  margin-top: var(--space-m);
+}
+
+.layerHead {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 var(--space-xs);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.layerName {
+  color: var(--lib-ink);
+  font-weight: 700;
+}
+
+.layerFrom {
+  color: var(--text-faint);
+}
+
+.layerRule {
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19.5rem), 1fr));
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cell {
+  --i: 0;
+  min-width: 0;
+  animation: plateIn 640ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i), 14) * 45ms);
+}
+
+@keyframes plateIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* A plate */
+.plate {
+  position: relative;
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.7rem 0.7rem 0.85rem;
+  border: 0;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  box-shadow: 0 0 0 1px var(--line);
+  text-align: left;
+  color: inherit;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.plate::before,
+.plate::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0 solid var(--lib-colour);
+  transition: transform var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.plate::before {
+  top: -1px;
+  left: -1px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  transform-origin: top left;
+}
+
+.plate::after {
+  right: -1px;
+  bottom: -1px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  transform-origin: bottom right;
+}
+
+.plate:hover,
+.plate:focus-visible {
+  transform: translateY(-4px);
+}
+
+.plate:hover::before,
+.plate:hover::after,
+.plate:focus-visible::before,
+.plate:focus-visible::after {
+  transform: scale(1.7);
+}
+
+.code {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  z-index: 2;
+  padding: 0.18rem 0.5rem;
+  background: var(--panel);
+  color: var(--lib-ink);
+}
+
+.frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--ground, var(--bg-2));
+  --cut-frame: 12px;
+  clip-path: polygon(
+    var(--cut-frame) 0,
+    100% 0,
+    100% calc(100% - var(--cut-frame)),
+    calc(100% - var(--cut-frame)) 100%,
+    0 100%,
+    0 var(--cut-frame)
+  );
+}
+
+.plate[data-alpha="1"] .frame {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--lib-colour) 16%, transparent) 0 1px,
+      transparent 1px 9px
+    ),
+    var(--bg-2);
+}
+
+.pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--ease-out);
+}
+
+.plate[data-alpha="1"] .pic {
+  padding: 0.5rem;
+  object-fit: contain;
+}
+
+.plate:hover .pic,
+.plate:focus-visible .pic {
+  transform: scale(1.05);
+}
+
+/* The official words rise over the picture. */
+.passage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: end;
+  gap: 0.5rem;
+  padding: 0.9rem;
+  background: color-mix(in srgb, var(--panel) 95%, transparent);
+  transform: translateY(102%);
+  transition: transform 460ms var(--ease-out);
+}
+
+.plate:hover .passage,
+.plate:focus-visible .passage {
+  transform: translateY(0);
+}
+
+.passageText {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--step--1);
+  line-height: 1.42;
+  color: var(--text);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
+}
+
+.passageHint {
+  color: var(--lib-ink);
+}
+
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.name {
+  font-size: clamp(1.4rem, 1.1rem + 0.7vw, 1.9rem);
+  line-height: 0.95;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.kind {
+  flex: none;
+}
+
+.empty {
+  margin: var(--space-l) 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-2);
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+/* The title block, as on a drawing */
+.titleBlock {
+  margin-top: var(--space-l);
+  border-top: 1px solid var(--line-strong);
+}
+
+.titleBlock dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+}
+
+.titleBlock div {
+  padding: 0.7rem 1rem 0.2rem 0;
+}
+
+.titleBlock div + div {
+  padding-left: 1rem;
+  border-left: 1px solid var(--line);
+}
+
+.titleBlock dt {
+  margin: 0;
+}
+
+.titleBlock dd {
+  margin: 0.15rem 0 0;
+  font-size: var(--step--1);
+  color: var(--text);
+}
+
+@media (max-width: 52em) {
+  .head {
+    grid-template-columns: 1fr;
+  }
+
+  .layers {
+    justify-content: flex-start;
+  }
+
+  .titleBlock dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .titleBlock div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .layerFrom {
+    display: none;
+  }
+}
+
+@media (max-width: 40em) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xs);
+  }
+
+  .plate {
+    padding: 0.45rem 0.45rem 0.6rem;
+  }
+
+  .code {
+    top: 0.8rem;
+    left: 0.8rem;
+  }
+
+  .nameRow {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .name {
+    font-size: 1.25rem;
+  }
+}
