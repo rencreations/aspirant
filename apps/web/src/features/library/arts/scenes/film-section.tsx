@@ -14,10 +14,8 @@ import {
 import { TLink } from "@/components/transition/t-link";
 import { pairs } from "@/content/pairs";
 import { libUrl } from "@/lib/library";
-import { collectionRoute } from "@/lib/site";
 
-import type { Route } from "next";
-
+import { videoHref } from "../../video/links";
 import { formatDuration, fractionOf, nearestIndex, sceneFocus } from "./logic";
 import styles from "./scenes.module.css";
 import type { Scene, SceneBeat, SceneFilm, SceneGroup, SceneView } from "./types";
@@ -283,11 +281,7 @@ export const FilmSection = memo(
               {film.beats.length > 0 ? <span>{film.beats.length} scenes noted</span> : null}
             </p>
           </div>
-          <TLink
-            href={`${collectionRoute("films")}?i=${encodeURIComponent(film.id)}` as Route}
-            transitionLabel="Films"
-            className={styles.watchFilm}
-          >
+          <TLink href={videoHref(film.id)} transitionLabel="Films" className={styles.watchFilm}>
             Watch the film
           </TLink>
         </header>

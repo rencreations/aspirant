@@ -309,3 +309,211 @@ export function frontIndex(s: number): number {
 export function formatCount(n: number | undefined): string {
   return typeof n === "number" && Number.isFinite(n) ? n.toLocaleString("en-US") : "";
 }
+
+// The Video split ------------------------------------------------------------------------------
+//
+// The Video cover is a gatefold sleeve: a front panel hinged on the back panel. Opened, the inside
+// of the front panel is Films and the face of the back panel is Others. On a wide screen the front
+// panel swings open on its left edge, toward the viewer, and the pair ends side by side; on a
+// phone it flips up on its top edge and the pair ends one above the other. One number, `p` (0 shut,
+// 1 open), drives the whole motion; it moves at a constant speed toward its target, so a reversal
+// half way runs back from where it is. Each part of the motion eases inside its own window of `p`.
+
+/** Time of a full opening and of a full closing, at the constant speed of `p`. */
+export const SPLIT_OPEN_MS = 980;
+export const SPLIT_CLOSE_MS = 640;
+
+/** While `p` is above this the cover holds the focus; below it, it may fly back to the shelf. */
+export const SPLIT_RELEASE = 0.1;
+
+/** The windows of `p`: the pair grows and moves into place, the panel swings, the halves part. */
+const GROW: [number, number] = [0, 0.66];
+const SWING: [number, number] = [0.1, 0.86];
+const PART: [number, number] = [0.74, 1];
+
+/** Room the split leaves on a wide screen, in CSS px. */
+export const SPLIT_ROOM = {
+  /** Under the top bar: the tagline and the search button on the left, Continue on the right. */
+  top: 104,
+  /** The index row at the foot. */
+  bottom: 104,
+  /** The line and the Open button under each half, and the Back button under them. */
+  caption: 112,
+  back: 52,
+  side: 48,
+} as const;
+
+/** Room the split leaves on a phone, in CSS px. */
+export const SPLIT_ROOM_PHONE = {
+  /** Under the top bar and the Continue button (the tagline hides while the cover is open). */
+  top: 64,
+  /** The bar with the name and Back at the foot. */
+  bottom: 120,
+  /** The line and the Open button under each half. */
+  caption: 66,
+  side: 24,
+} as const;
+
+export interface SplitGeometry {
+  /** Side of each half when open. */
+  size: number;
+  /**
+   * Distance between the two halves when open. Side by side it is a narrow seam; stacked it holds
+   * the line and the Open button of the upper half.
+   */
+  gap: number;
+  /** Centre of the two squares when open (y up, from the middle of the screen). */
+  cx: number;
+  cy: number;
+  /** A phone: Films above Others. Otherwise Films on the left. */
+  vertical: boolean;
+}
+
+/** Where the two halves stand when the cover is open, for a stage of `w` by `h` with a top bar `navH` high. */
+export function splitGeometry(w: number, h: number, navH = w >= 901 ? 80 : 64): SplitGeometry {
+  if (isPhone(w)) {
+    const r = SPLIT_ROOM_PHONE;
+    const top = navH + r.top;
+    const room = h - top - r.bottom;
+    const seam = 16;
+    // One above the other (a tall phone), or side by side when that gives the larger squares (a
+    // short one). Side by side, each line wraps under a narrow half, so it gets twice the room.
+    const tall = Math.floor(Math.min(w - r.side * 2, (room - r.caption * 2 - seam) / 2));
+    const wideGap = 14;
+    const wide = Math.floor(Math.min((w - r.side * 2 - wideGap) / 2, room - r.caption * 2));
+    if (tall >= wide) {
+      const size = Math.max(80, tall);
+      const gap = r.caption + seam;
+      const block = size * 2 + gap + r.caption;
+      const blockTop = top + Math.max(0, (room - block) / 2);
+      // From the top of the screen to the middle of the two squares.
+      const mid = blockTop + size + gap / 2;
+      return { size, gap, cx: 0, cy: h / 2 - mid, vertical: true };
+    }
+    const size = Math.max(80, wide);
+    const block = size + r.caption * 2;
+    const blockTop = top + Math.max(0, (room - block) / 2);
+    return { size, gap: wideGap, cx: 0, cy: h / 2 - (blockTop + size / 2), vertical: false };
+  }
+  const r = SPLIT_ROOM;
+  const top = navH + r.top;
+  const room = h - top - r.bottom;
+  const gap = Math.round(clamp(w * 0.014, 14, 28));
+  const size = Math.floor(
+    Math.max(80, Math.min(h * 0.4, room - r.caption - r.back, (w - r.side * 2 - gap) / 2)),
+  );
+  const block = size + r.caption + r.back;
+  const blockTop = top + Math.max(0, (room - block) / 2);
+  const mid = blockTop + size / 2;
+  return { size, gap, cx: 0, cy: h / 2 - mid, vertical: false };
+}
+
+function seg(p: number, [a, b]: [number, number]): number {
+  return clamp((p - a) / (b - a), 0, 1);
+}
+
+/**
+ * A swing that lands with a little weight: ease in and out, then a soft swing past flat by about
+ * two degrees that settles. The bump is a squared sine, so the speed has no jump anywhere.
+ */
+export function swingEase(t: number): number {
+  const x = clamp(t, 0, 1);
+  const u = clamp((x - 0.72) / 0.28, 0, 1);
+  return easeInOutCubic(x) + 0.022 * Math.sin(Math.PI * u) ** 2;
+}
+
+export interface SplitFrame {
+  /** Side of each half now. */
+  size: number;
+  /** Centre of the back panel (Others). */
+  leaf: { x: number; y: number };
+  /**
+   * The hinge of the front panel: the line its inner edge turns about. Side by side it is the
+   * vertical line at `hinge.x`; stacked, the horizontal line at `hinge.y`.
+   */
+  hinge: { x: number; y: number };
+  /** How far the front panel has turned: 0 shut, PI open. */
+  angle: number;
+  /** 0 to 1, how far the halves have moved apart. */
+  part: number;
+}
+
+/**
+ * The gatefold at progress `p`. `from` is the shut cover (centre and side); `to` is where the open
+ * pair stands (`splitGeometry`, in the same units). The pair is kept centred while it opens: the back
+ * panel slides by half a side as the front one swings over.
+ */
+export function splitFrame(
+  p: number,
+  from: { x: number; y: number; size: number },
+  to: { cx: number; cy: number; size: number; gap: number; vertical: boolean },
+): SplitFrame {
+  const grow = easeInOutCubic(seg(p, GROW));
+  const swing = swingEase(seg(p, SWING));
+  const part = easeOutCubic(seg(p, PART));
+  const size = lerp(from.size, to.size, grow);
+  const angle = Math.PI * swing;
+  // The share of the slide that keeps the pair centred: 0 shut, 1 open (smooth through the turn).
+  const r = (1 - Math.cos(Math.PI * clamp(swing, 0, 1))) / 2;
+  const cx = lerp(from.x, to.cx, grow);
+  const cy = lerp(from.y, to.cy, grow);
+  const gap = to.gap * part;
+  if (to.vertical) {
+    const leafY = cy - (size / 2) * r - gap / 2;
+    return {
+      size,
+      leaf: { x: cx, y: leafY },
+      hinge: { x: cx, y: leafY + size / 2 + gap },
+      angle,
+      part,
+    };
+  }
+  const leafX = cx + (size / 2) * r + gap / 2;
+  return {
+    size,
+    leaf: { x: leafX, y: cy },
+    hinge: { x: leafX - size / 2 - gap, y: cy },
+    angle,
+    part,
+  };
+}
+
+/**
+ * Depth of the two panels. Before the split starts the front panel is the whole cover and the back
+ * panel is hidden, so on the shelf the Video cover is one box exactly like the other nine. Once it
+ * starts, each panel is half as thick and the hinge sits between them. The front face stays at 0.
+ */
+export function gatefoldDepth(
+  thick: number,
+  started: boolean,
+): { flap: number; leaf: number; hingeZ: number } {
+  return started
+    ? { flap: thick / 2, leaf: thick / 2, hingeZ: -thick / 2 }
+    : { flap: thick, leaf: 0, hingeZ: -thick };
+}
+
+/** Centre of the front panel (Films) once it has turned by `angle` about its hinge. */
+export function flapCentre(f: SplitFrame, vertical: boolean): { x: number; y: number } {
+  const c = Math.cos(f.angle) * (f.size / 2);
+  return vertical ? { x: f.hinge.x, y: f.hinge.y - c } : { x: f.hinge.x + c, y: f.hinge.y };
+}
+
+/** The half an arrow key moves to inside the open Video cover: 0 Films, 1 Others. */
+export function moveHalf(current: 0 | 1 | null, key: ArrowKey, vertical: boolean): 0 | 1 {
+  const back = vertical ? key === "ArrowUp" : key === "ArrowLeft";
+  const forward = vertical ? key === "ArrowDown" : key === "ArrowRight";
+  if (back) return 0;
+  if (forward) return 1;
+  // The other axis toggles.
+  return current === 0 ? 1 : 0;
+}
+
+/** Brightness of the two faces of the front panel as it turns (no lights in the scene). */
+export function flapShade(angle: number): { front: number; back: number } {
+  const t = clamp(angle / Math.PI, 0, 1);
+  const s = Math.sin(Math.PI * t);
+  return {
+    front: 1 - 0.42 * clamp(t * 2, 0, 1) ** 1.5,
+    back: 0.6 + 0.4 * clamp((t - 0.5) * 2, 0, 1) ** 0.8 - 0.06 * s,
+  };
+}

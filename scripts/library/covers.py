@@ -9,6 +9,11 @@ thin grid lines, crop marks. The bottom third is left EMPTY on purpose: the brow
 and the name there, in Big Shoulders Display, after the fonts load (features/library/shelf/layout.ts,
 COVER_TEXT). Keep TITLE_RECT below in step with that file.
 
+The Video cover opens in two on the shelf (a gatefold). Building `video` also builds its two inside
+pictures, covers/video-films.webp and covers/video-others.webp, in the same style; their field
+colours are read from features/library/shelf/video-halves.ts. Every frame comes from an official
+film or video (never fan work, edits or gameplay).
+
 Output: the mirror, key covers/<slug>.webp (common.key_path), quality 88.
 """
 
@@ -223,29 +228,148 @@ def cover_arts(colour):
     return base
 
 
-def cover_films(colour):
+# ---------------------------------------------------------------------------------------------
+# Video: a clapperboard that opens. The shelf splits this cover in two (a gatefold, see
+# features/library/shelf/engine.ts): the inside of the front panel is Films, the inside of the
+# back panel is Others. The two inside pictures are covers/video-films.webp and
+# covers/video-others.webp; their names, lines and colours are in shelf/video-halves.ts.
+# ---------------------------------------------------------------------------------------------
+
+HALVES = common.REPO / "apps" / "web" / "src" / "features" / "library" / "shelf" / "video-halves.ts"
+
+
+def halves() -> dict[str, tuple[int, int, int]]:
+    """Field colours of the two halves, read from video-halves.ts (room -> colour)."""
+    text = HALVES.read_text(encoding="utf-8")
+    pairs = re.findall(r'room: "(\w+)",.*?colour: "(#[0-9a-fA-F]{6})"', text, re.S)
+    return {room: hex_rgb(col) for room, col in pairs}
+
+
+def shade(colour: tuple[int, int, int], k: float) -> tuple[int, int, int]:
+    return tuple(max(0, min(255, round(c * k))) for c in colour)  # type: ignore[return-value]
+
+
+def sprockets(d: ImageDraw.ImageDraw, x0: int, x1: int, y0: int, y1: int, colour, pitch: int = 64) -> None:
+    """Sprocket holes along the top and the bottom of a strip that runs from y0 to y1."""
+    hole_w, hole_h = 34, 22
+    for x in range(x0, x1, pitch):
+        for yy in (y0 + 13, y1 - 13 - hole_h):
+            d.rounded_rectangle([x, yy, x + hole_w, yy + hole_h], radius=6, fill=colour)
+
+
+def clapper_stick(colour: tuple[int, int, int], w: int, h: int) -> Image.Image:
+    """The striped stick of a clapperboard (RGBA), white and ink diagonals, with its hinge pin."""
+    stick = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(stick)
+    d.rectangle([0, 0, w, h], fill=(*INK, 255))
+    band = 92
+    for i in range(-2, w // band + 3):
+        x = i * band
+        d.polygon([(x, h), (x + band // 2, h), (x + band // 2 + h, 0), (x + h, 0)], fill=(*WHITE, 255))
+    # The hinge pin at the left end.
+    r = h // 2 - 9
+    d.ellipse([12, h // 2 - r, 12 + r * 2, h // 2 + r], fill=(*colour, 255), outline=(*INK, 255), width=4)
+    return stick
+
+
+# The film inside: one frame of the Ruby film (Ruby at the console). The front shows its edge.
+FILMS_FRAME = ("ruby-and-angela/video/ruby/ruby-final.mp4", 28.8)
+
+
+def trim_bars(im: Image.Image, level: int = 14) -> Image.Image:
+    """Drop the black letterbox rows a film frame may carry at its top and bottom."""
+    g = np.asarray(im.convert("L"), dtype=np.float32)
+    rows = np.where(g.mean(axis=1) > level)[0]
+    if len(rows) == 0:
+        return im
+    return im.crop((0, int(rows[0]), im.width, int(rows[-1]) + 1))
+
+
+def cover_video(colour):
+    ink = ink_for(colour)
+    base = base_sleeve(colour).convert("RGBA")
+    frame = trim_bars(frame_at(MEDIA / "layla-and-fanny/video/official/lore/trailer/trailer.webm", 11.2, "film-layla"))
+    inside = trim_bars(frame_at(MEDIA / FILMS_FRAME[0], FILMS_FRAME[1], "film-ruby-console"))
+    # The slate: an ink board holding one frame, sprockets along its edges, and the next frame
+    # running off the right edge (there is more inside).
+    sx0, sy0, sx1, sy1 = 40, 172, S, 612
+    lay, d = overlay()
+    d.rectangle([sx0, sy0, sx1, sy1], fill=(*INK, 255))
+    base.alpha_composite(lay)
+    fw, fh = 760, 344
+    fy = (sy0 + sy1) // 2 - fh // 2
+    base.paste(cover_crop(frame, fw, fh, fx=0.5, fy=0.5), (sx0 + 28, fy))
+    nx = sx0 + 28 + fw + 28
+    base.paste(cover_crop(inside, 420, fh, fx=0.62, fy=0.45), (nx, fy))
+    lay, d = overlay()
+    sprockets(d, sx0 + 18, S, sy0, sy1, (*colour, 255))
+    base.alpha_composite(lay)
+    # The stick, open a little on its hinge at the left: the cover is something that opens.
+    sw, sh_ = S - 80, 66
+    pad = 160
+    holder = Image.new("RGBA", (S, sh_ + pad * 2), (0, 0, 0, 0))
+    holder.alpha_composite(clapper_stick(colour, sw, sh_), (40, pad))
+    pin = (40 + 12 + sh_ // 2 - 9, pad + sh_ // 2)
+    holder = holder.rotate(3.6, resample=Image.BICUBIC, center=pin)
+    top = sy0 - 12 - sh_ - pad
+    shadow, off = shadow_of(holder, blur=10, alpha=90, offset=(4, 10))
+    blend(base, shadow, off[0], top + off[1])
+    blend(base, holder, 0, top)
+    return frame_grid(base.convert("RGB"), ink)
+
+
+def cover_video_films(colour):
+    """Inside of the front panel: one film, wide, on a strip. The Films room is one film at a time."""
     ink = ink_for(colour)
     base = base_sleeve(colour)
-    frame = frame_at(MEDIA / "layla-and-fanny/video/official/lore/trailer/trailer.webm", 11.2, "film-layla")
-    strip_y0, strip_y1 = 64, 612
+    frame = trim_bars(frame_at(MEDIA / FILMS_FRAME[0], FILMS_FRAME[1], "film-ruby-console"))
+    sy0, sy1 = 64, 612
     lay, d = overlay()
-    d.rectangle([0, strip_y0, S, strip_y1], fill=(11, 11, 14, 255))
+    d.rectangle([0, sy0, S, sy1], fill=(4, 6, 14, 255))
     base = composite(base, lay)
-    fr_w, fr_h = 944, 400
-    fy0 = (strip_y0 + strip_y1) // 2 - fr_h // 2
-    win = cover_crop(frame, fr_w, fr_h, fx=0.5, fy=0.5, zoom=1.0)
-    base.paste(win, (40, fy0))
-    # Sprocket holes, top and bottom of the strip, in the field colour (the strip is cut through).
+    fw, fh = 944, 404
+    fy = (sy0 + sy1) // 2 - fh // 2
+    base.paste(cover_crop(frame, fw, fh, fx=0.55, fy=0.4), (40, fy))
     lay, d = overlay()
-    hole_w, hole_h, pitch = 36, 24, 64
-    for x in range(-8, S, pitch):
-        for yy in (strip_y0 + 14, strip_y1 - 14 - hole_h):
-            d.rounded_rectangle([x, yy, x + hole_w, yy + hole_h], radius=6, fill=(*colour, 255))
-    # Frame lines: the neighbouring frames' edges.
-    d.line([(40, strip_y0 + 52), (40, strip_y1 - 52)], fill=(255, 255, 255, 70), width=2)
-    d.line([(984, strip_y0 + 52), (984, strip_y1 - 52)], fill=(255, 255, 255, 70), width=2)
+    sprockets(d, -8, S, sy0, sy1, (*colour, 255))
     base = composite(base, lay)
-    return frame_grid(base, ink)
+    base = frame_grid(base, ink, alpha=26)
+    return crop_marks(base, (40, fy, S - 40, fy + fh), WHITE, inset=10, out=26, alpha=210)
+
+
+# Official videos that are not one of the ten films, at a moment that reads well small.
+OTHERS_FRAMES = [
+    ("selena-and-obsidia/video/skin-showcase/001_3999520529387107465.mp4", 10.6, 0.5),
+    ("vexana-and-guinevere/video/skin-showcase/skin-showcase.webm", 41.8, 0.5),
+    ("layla-and-fanny/video/official/other/music-video/music.webm", 27.1, 0.5),
+    ("lesley-and-change/video/official/teaser/001_3307542160288522496.mp4", 15.1, 0.5),
+    ("ruby-and-angela/video/skin-showcase/skin-final.mp4", 15.7, 0.45),
+    ("layla-and-fanny/video/official/other/short-animation/short-animation-final.mp4", 61.1, 0.5),
+    ("lesley-and-change/video/official/skin-showcase/final.mp4", 10.9, 0.5),
+    ("ruby-and-angela/video/revamp/revamp-final.mp4", 26.2, 0.3),
+    ("selena-and-obsidia/video/music-collection/001_4013351897154849593.mp4", 213.9, 0.62),
+]
+
+
+def cover_video_others(colour):
+    """Inside of the back panel: a contact sheet of many official videos. Others is for browsing."""
+    ink = ink_for(colour)
+    base = base_sleeve(colour)
+    cols, rows = 3, 3
+    x0, y0, x1, y1 = 40, 40, S - 40, 612
+    gut = 14
+    cw = (x1 - x0 - gut * (cols - 1)) // cols
+    ch = (y1 - y0 - gut * (rows - 1)) // rows
+    lay, d = overlay()
+    for i, (rel, t, fx) in enumerate(OTHERS_FRAMES[: cols * rows]):
+        im = frame_at(MEDIA / rel, t, f"others-{i}", width=960)
+        cx = x0 + (i % cols) * (cw + gut)
+        cy = y0 + (i // cols) * (ch + gut)
+        base.paste(cover_crop(im, cw, ch, fx=fx, fy=0.5), (cx, cy))
+        d.rectangle([cx, cy, cx + cw - 1, cy + ch - 1], outline=(255, 255, 255, 120), width=2)
+    base = composite(base, lay)
+    base = frame_grid(base, ink, alpha=26)
+    return crop_marks(base, (x0, y0, x1, y1), WHITE, inset=10, out=26, alpha=210)
 
 
 def cover_music(colour):
@@ -446,7 +570,7 @@ def cover_others(colour):
 
 BUILDERS = {
     "arts": cover_arts,
-    "films": cover_films,
+    "video": cover_video,
     "music": cover_music,
     "voicelines": cover_voicelines,
     "fanart": cover_fanart,
@@ -458,21 +582,35 @@ BUILDERS = {
 }
 
 
+# The two halves of the Video cover: made with it, keyed covers/video-<room>.webp.
+HALF_BUILDERS = {
+    "video-films": ("films", cover_video_films),
+    "video-others": ("others", cover_video_others),
+}
+
+
 def main(argv: list[str]) -> int:
     force = "--force" in argv
     wanted = [a for a in argv if not a.startswith("--")] or common.SLUGS
+    if "video" in wanted:
+        wanted += [h for h in HALF_BUILDERS if h not in wanted]
     colours = registry()
     missing = [s for s in common.SLUGS if s not in colours]
     if missing:
         raise SystemExit(f"registry.ts has no colour for {missing}")
+    half_colours = halves()
     total = 0
     for slug in wanted:
         out = common.key_path(f"covers/{slug}.webp")
-        if not force and common.fresh(out, Path(__file__), REGISTRY):
+        if not force and common.fresh(out, Path(__file__), REGISTRY, HALVES):
             print(f"  {slug}: fresh")
             total += out.stat().st_size
             continue
-        im = BUILDERS[slug](colours[slug])
+        if slug in HALF_BUILDERS:
+            room, build = HALF_BUILDERS[slug]
+            im = build(half_colours[room])
+        else:
+            im = BUILDERS[slug](colours[slug])
         assert im.size == (S, S), (slug, im.size)
         im.save(out, "WEBP", quality=88, method=6)
         im.save(WORK / f"{slug}.png")

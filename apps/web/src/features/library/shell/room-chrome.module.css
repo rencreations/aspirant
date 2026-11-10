@@ -1,0 +1,46 @@
+/* The back button of a redesigned room. Fixed under the top bar, on the left. Transform and
+   opacity only in motion. */
+.back {
+  position: fixed;
+  z-index: calc(var(--z-nav) - 1);
+  left: var(--gutter, 1.25rem);
+  top: calc(var(--nav-h) + 0.75rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem 0.55rem 0.8rem;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text);
+  background: transparent;
+  transition:
+    transform var(--dur-base, 240ms) var(--ease-out),
+    opacity var(--dur-base, 240ms) var(--ease-out);
+}
+
+.back[data-tone="light"] {
+  color: #fff;
+}
+
+.back[data-tone="dark"] {
+  color: #10131a;
+}
+
+.arrow {
+  transition: transform var(--dur-base, 240ms) var(--ease-out);
+}
+
+.back:hover .arrow,
+.back:focus-visible .arrow {
+  transform: translateX(-3px);
+}
+
+.back:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 3px;
+}

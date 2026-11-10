@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { FILM_IDS } from "../../video/links";
 import {
   clock,
   columnsFor,
@@ -131,7 +132,9 @@ describe("summary and formats", () => {
     expect(formatDuration(100.4)).toBe("1:40");
     expect(formatDuration(9)).toBe("0:09");
     expect(clock(75.9)).toBe("01:15");
-    expect(watchHref("film-a", 75.9)).toBe("/collection/films?i=film-a&t=75");
+    // A film that is not one of the ten goes to the Others room, one of the ten to Films.
+    expect(watchHref("film-a", 75.9)).toBe("/collection/video/others?i=film-a&t=75");
+    expect(watchHref(FILM_IDS[3], 12)).toBe(`/collection/video/films?i=${FILM_IDS[3]}&t=12`);
   });
 });
 

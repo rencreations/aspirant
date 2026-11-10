@@ -3,6 +3,8 @@ import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
 
+import { videoRoomOf } from "../src/features/library/video/links";
+
 import { skipGate, url } from "./helpers";
 
 /**
@@ -77,9 +79,12 @@ test("a press on a still opens the viewer with a link that watches that moment",
   await expect(dialog).toBeVisible();
   await expect(page).toHaveURL(new RegExp(`i=${first.id}`));
   const link = dialog.getByRole("link", { name: "Watch this scene" });
+  // The film is in Films when it is one of the ten, else in Others. A time of 0 is left out.
+  const room = videoRoomOf(FIRST.id);
+  const at = Math.floor(first.t) > 0 ? `&t=${Math.floor(first.t)}` : "";
   await expect(link).toHaveAttribute(
     "href",
-    new RegExp(`/collection/films/?\\?i=${FIRST.id}&t=${Math.floor(first.t)}`),
+    new RegExp(`/collection/video/${room}/?\\?i=${FIRST.id}${at}`),
   );
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();

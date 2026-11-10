@@ -3,7 +3,7 @@ import type { PairId, Slug } from "@/content/types";
 /** The ten collections, in shelf order (row one: the first five, row two: the last five). */
 export const COLLECTION_SLUGS = [
   "arts",
-  "films",
+  "video",
   "music",
   "voicelines",
   "fanart",
@@ -18,6 +18,19 @@ export type CollectionSlug = (typeof COLLECTION_SLUGS)[number];
 
 export function isCollectionSlug(value: string): value is CollectionSlug {
   return (COLLECTION_SLUGS as readonly string[]).includes(value);
+}
+
+/**
+ * The Video collection holds two rooms: Films (the ten official films, shown one by one) and Others
+ * (every other video). Routes: `/collection/video` (the choice), `/collection/video/films` and
+ * `/collection/video/others`.
+ */
+export const VIDEO_ROOMS = ["films", "others"] as const;
+
+export type VideoRoom = (typeof VIDEO_ROOMS)[number];
+
+export function isVideoRoom(value: string): value is VideoRoom {
+  return (VIDEO_ROOMS as readonly string[]).includes(value);
 }
 
 /**

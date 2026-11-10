@@ -1,10 +1,10 @@
-// Visits the shelf and the ten rooms of the collection at three sizes in real Chrome and reports
+// Visits the shelf and the rooms of the collection at three sizes in real Chrome and reports
 // console errors, failed requests, broken pictures and sideways overflow. Writes screenshots.
 //
 //   BASE=http://localhost:3000 OUT=D:/ren/aspirant-work/probe-library node scripts/qa/probes/library.cjs [room ...]
 //
 // Run it against the production build (`pnpm build`, then `pnpm start`). With no room names it
-// visits all eleven pages.
+// visits the shelf and every room (fourteen pages).
 const { createRequire } = require("module");
 const path = require("path");
 const fs = require("fs");
@@ -16,7 +16,9 @@ const BASE = (process.env.BASE || "http://localhost:3000").replace(/\/+$/, "");
 const OUT = process.env.OUT || path.join(require("os").tmpdir(), "aspirant-probes", "library");
 const ROOMS = [
   "arts",
-  "films",
+  "video",
+  "video/films",
+  "video/others",
   "music",
   "voicelines",
   "fanart",
@@ -24,6 +26,7 @@ const ROOMS = [
   "lore",
   "design",
   "animation",
+  "animation/selena",
   "others",
 ];
 const SIZES = [
@@ -35,7 +38,7 @@ const SIZES = [
 const wanted = process.argv.slice(2);
 const pages = [
   { id: "shelf", url: `${BASE}/collection/` },
-  ...ROOMS.map((r) => ({ id: r, url: `${BASE}/collection/${r}/` })),
+  ...ROOMS.map((r) => ({ id: r.replace("/", "-"), url: `${BASE}/collection/${r}/` })),
 ].filter((p) => wanted.length === 0 || wanted.includes(p.id));
 
 (async () => {
@@ -82,7 +85,7 @@ const pages = [
         if (r.status() >= 400 && !/__next[^/]*\.txt/.test(r.url()))
           errors.push(`http ${r.status()}: ${r.url().slice(0, 120)}`);
       });
-      let line = `${p.id.padEnd(11)} ${s.name.padEnd(5)}`;
+      let line = `${p.id.padEnd(16)} ${s.name.padEnd(5)}`;
       try {
         await page.goto(p.url, { waitUntil: "domcontentloaded", timeout: 90000 });
         await page.waitForTimeout(11000);

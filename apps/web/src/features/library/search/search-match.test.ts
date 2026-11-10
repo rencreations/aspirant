@@ -5,7 +5,7 @@ import { countByCollection, searchEntries } from "./search-match";
 
 const entries: SearchEntry[] = [
   { id: "a", c: "arts", t: "Layla, splash art", w: ["layla"], k: "splash official" },
-  { id: "b", c: "films", t: "Awakening trailer", w: ["ruby", "angela"], k: "trailer official" },
+  { id: "b", c: "video", t: "Awakening trailer", w: ["ruby", "angela"], k: "trailer official" },
   {
     id: "c",
     c: "voicelines",

@@ -9,14 +9,26 @@ import { dataItem, type PreloadItem } from "@/lib/preload";
 import { getCollection } from "./registry";
 import type { CollectionFile, CollectionSlug, ItemBase } from "./types";
 
-/** The path in `public/` of one collection's data file (go through `asset()` to fetch it). */
-export function libraryDataPath(slug: CollectionSlug | "search"): string {
-  return `/data/library/${slug}.json`;
+/**
+ * The data files of the library. One per collection, except Video, which has two (one per room):
+ * `video-films` (the ten official films) and `video-others` (every other video).
+ */
+export type LibraryDataName = Exclude<CollectionSlug, "video"> | "video-films" | "video-others";
+
+/** The path in `public/` of one data file (go through `asset()` to fetch it). */
+export function libraryDataPath(name: LibraryDataName | "search"): string {
+  return `/data/library/${name}.json`;
 }
 
-/** The loading list entry for a collection's data file. */
-export function libraryDataItem(slug: CollectionSlug): PreloadItem {
-  return dataItem(libraryDataPath(slug), `Reading ${getCollection(slug).name.toLowerCase()}`, 2);
+/** The loading list entry for a data file. */
+export function libraryDataItem(name: LibraryDataName, label?: string): PreloadItem {
+  const what =
+    name === "video-films"
+      ? "films"
+      : name === "video-others"
+        ? "videos"
+        : getCollection(name).name.toLowerCase();
+  return dataItem(libraryDataPath(name), label ?? `Reading ${what}`, 2);
 }
 
 const cache = new Map<string, Promise<unknown>>();
@@ -40,7 +52,7 @@ export function fetchLibraryJson<T>(path: string): Promise<T> {
  * arrives at once. The page tells the curtain to wait until the data has drawn.
  */
 export function useLibraryData<T extends ItemBase = ItemBase>(
-  slug: CollectionSlug,
+  slug: LibraryDataName,
 ): { data: CollectionFile<T> | null; failed: boolean } {
   const [state, setState] = useState<{ data: CollectionFile<T> | null; failed: boolean }>({
     data: null,

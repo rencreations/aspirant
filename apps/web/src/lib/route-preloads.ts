@@ -103,7 +103,7 @@ export function routeItems(pathname: string): PreloadItem[] {
   if (path.startsWith("/collection/")) {
     // One room of the library: its data file, its chunk and its first screen. Each room owns its
     // list in `features/library/<room>/preload.ts`.
-    const room = path.slice("/collection/".length).split("/")[0] ?? "";
+    const room = path.slice("/collection/".length);
     return [...shared, ...libraryPageItems(room)];
   }
 

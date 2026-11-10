@@ -39,3 +39,14 @@ python scripts/library/r2.py sync    mirror  ->  R2 bucket "aspirant"  ->  https
 | `<slug>/`      | one folder per collection, owned by whoever builds that collection |
 | `ignored.json` | source files that are deliberately not shipped, with the reason    |
 | `.cache/`      | per pipeline caches (git ignored)                                  |
+
+## Rooms rebuilt on 10 Nov 2026
+
+| Folder            | What                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `video_films/`    | The ten Films, encoded once at full size (H.264, CRF 18), posters, backdrops and captions into `video/films/<id>/`; writes `video-films.json`                 |
+| `films/`          | Others: a fresh scan of every non-footage video, reusing what is in the mirror, writes `video-others.json` (the old Films pipeline; `catalog.py`, `reuse.py`) |
+| `music/discs.py`  | The nine disc faces (`music/discs/*.webp`) and the loudness line (`wave`) of each track, run by `music/build.py`                                              |
+| `covers.py video` | The Video cover and its two halves (`covers/video.webp`, `video-films.webp`, `video-others.webp`)                                                             |
+
+Video has two data files, `video-films.json` and `video-others.json`; `build_index.py` reads both into the Video count and `index.json` `rooms`. See `docs/design/collection-rooms.md`.

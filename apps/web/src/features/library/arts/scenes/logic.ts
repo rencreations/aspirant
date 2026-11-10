@@ -1,3 +1,4 @@
+import { videoHref } from "../../video/links";
 import type {
   Scene,
   SceneBeat,
@@ -131,9 +132,9 @@ export function clock(seconds: number): string {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
-/** The address that opens a film at a second in the Films room. */
+/** The address that opens a film at a second (in the Films room, or in Others for the rest). */
 export function watchHref(filmId: string, t: number): string {
-  return `/collection/films?i=${encodeURIComponent(filmId)}&t=${Math.max(0, Math.floor(t))}`;
+  return videoHref(filmId, Math.max(0, Math.floor(t)));
 }
 
 /** Where a time sits on the film, 0 to 1. */

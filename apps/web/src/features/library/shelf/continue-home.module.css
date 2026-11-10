@@ -48,8 +48,10 @@
     display: none;
   }
 
+  /* On a phone the tagline fills the left of the first line: the button sits on the row of the
+     Search button instead, so the two never overlap. */
   .button {
-    top: calc(var(--nav-h) + 0.6rem);
+    top: calc(var(--nav-h) + 3.3rem);
     grid-template-areas: "name key";
   }
 }

@@ -1,14 +1,13 @@
 "use client";
 
-import type { Route } from "next";
 import { memo, type CSSProperties } from "react";
 
 import { Waveform } from "@/components/audio/waveform";
 import { TLink } from "@/components/transition/t-link";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
-import { collectionRoute } from "@/lib/site";
 
+import { videoHref } from "../video/links";
 import { downloadFile } from "./download";
 import { Icon } from "./icons";
 import { clock, downloadName, shortLength } from "./logic";
@@ -106,9 +105,7 @@ export const LineRow = memo(function LineRow({
         <span className={styles.links}>
           {trailer && item.film ? (
             <TLink
-              href={
-                `${collectionRoute("films")}?i=${item.film}&t=${Math.floor(item.t ?? 0)}` as Route
-              }
+              href={videoHref(item.film, Math.floor(item.t ?? 0))}
               transitionLabel="Films"
               className={styles.linkBtn}
               aria-label={`Watch this moment in the trailer, at ${clock(item.t ?? 0)}`}

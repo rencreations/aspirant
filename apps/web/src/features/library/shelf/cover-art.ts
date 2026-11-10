@@ -3,8 +3,16 @@ import { fetchWhole } from "@/lib/media-store";
 import type { PreloadItem } from "@/lib/preload";
 import { PermanentFailure, untilItArrives } from "@/lib/retry";
 
-import type { CollectionMeta } from "../registry";
 import { COVER_PX, COVER_TEXT, fitFontSize, textOn } from "./layout";
+
+/** What a cover says: a shelf collection, or one half of the Video cover. */
+export interface CoverFace {
+  /** The small mono line (`01`, `02.1  VIDEO`). */
+  index: string;
+  name: string;
+  /** The field colour, also what the ink is chosen for. */
+  colour: string;
+}
 
 /**
  * The cover pictures reach the scene as decoded bitmaps, never as plain <img> elements: a bitmap
@@ -99,7 +107,7 @@ const ITALIC = -0.2;
  * Draw one cover: the picture (or the room colour when the file is missing), then the number and
  * the name in the title area the picture leaves empty. Returns the canvas the scene uploads.
  */
-export function drawCover(meta: CollectionMeta, bitmap: ImageBitmap | null): HTMLCanvasElement {
+export function drawCover(meta: CoverFace, bitmap: ImageBitmap | null): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = COVER_PX;
   const ctx = canvas.getContext("2d");

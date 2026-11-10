@@ -7,8 +7,11 @@ import { COLLECTION_SLUGS, isCollectionSlug } from "@/features/library/types";
 
 export const dynamicParams = false;
 
+const OWN_ROUTES: ReadonlySet<string> = new Set(["video", "animation"]);
+
 export function generateStaticParams() {
-  return COLLECTION_SLUGS.map((slug) => ({ slug }));
+  // Video and Animation have their own routes (`app/collection/video/`, `.../animation/`).
+  return COLLECTION_SLUGS.filter((slug) => !OWN_ROUTES.has(slug)).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -24,6 +27,6 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  if (!isCollectionSlug(slug)) notFound();
+  if (!isCollectionSlug(slug) || OWN_ROUTES.has(slug)) notFound();
   return <LibraryRoom slug={slug} />;
 }

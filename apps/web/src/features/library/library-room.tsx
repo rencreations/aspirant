@@ -8,7 +8,7 @@ import type { CollectionSlug } from "./types";
 // One chunk per room. The loading list (`preload.ts` of each room) fetches the chunk first.
 const ROOMS: Record<CollectionSlug, ComponentType> = {
   arts: dynamic(() => import("./arts/page")),
-  films: dynamic(() => import("./films/page")),
+  video: dynamic(() => import("./video/chooser")),
   music: dynamic(() => import("./music/page")),
   voicelines: dynamic(() => import("./voicelines/page")),
   fanart: dynamic(() => import("./fanart/page")),

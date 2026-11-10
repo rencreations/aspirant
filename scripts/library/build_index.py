@@ -82,30 +82,42 @@ def main() -> None:
     counts: dict[str, int] = {}
     entries: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
+    # Video has two data files, one per room (Films and Others). Every other collection has one.
+    files = {"video": ["video-films", "video-others"]}
+    rooms: dict[str, int] = {}
     for slug in common.SLUGS:
-        path = common.DATA_DIR / f"{slug}.json"
-        if not path.exists():
+        datas: list[tuple[str, Any]] = []
+        for name in files.get(slug, [slug]):
+            path = common.DATA_DIR / f"{name}.json"
+            if path.exists():
+                datas.append((name, json.loads(path.read_text(encoding="utf-8"))))
+        if not datas:
             continue
-        data = json.loads(path.read_text(encoding="utf-8"))
         n = 0
-        for item in walk_items(data):
-            iid = str(item["id"])
-            title = str(item.get("title") or item.get("name") or "")
-            if not title or (slug, iid) in seen:
-                continue
-            seen.add((slug, iid))
-            n += 1
-            e: dict[str, Any] = {
-                "id": iid,
-                "c": slug,
-                "t": common.clean_text(title),
-                "w": [c for c in item.get("chars", []) if isinstance(c, str)] if isinstance(item.get("chars"), list) else [],
-                "k": common.clean_text(keywords(item)),
-            }
-            t = thumb_key(item)
-            if t:
-                e["i"] = t
-            entries.append(e)
+        for name, data in datas:
+            room_n = 0
+            for item in walk_items(data):
+                iid = str(item["id"])
+                title = str(item.get("title") or item.get("name") or "")
+                if not title or (slug, iid) in seen:
+                    continue
+                seen.add((slug, iid))
+                n += 1
+                room_n += 1
+                e: dict[str, Any] = {
+                    "id": iid,
+                    "c": slug,
+                    "t": common.clean_text(title),
+                    "w": [c for c in item.get("chars", []) if isinstance(c, str)] if isinstance(item.get("chars"), list) else [],
+                    "k": common.clean_text(keywords(item)),
+                }
+                t = thumb_key(item)
+                if t:
+                    e["i"] = t
+                entries.append(e)
+            if slug in files:
+                # A collection with more than one room: count each room, as `video/films`.
+                rooms[f"{slug}/{name.removeprefix(slug + '-')}"] = room_n
         counts[slug] = n
         # The scene stills are a second file of the Arts room: count them in the Arts total.
     scenes = common.DATA_DIR / "arts-scenes.json"
@@ -126,6 +138,8 @@ def main() -> None:
         counts["arts"] = counts.get("arts", 0) + scene_total
 
     index = {"v": 1, "counts": {s: counts.get(s, 0) for s in common.SLUGS}, "total": sum(counts.values())}
+    if rooms:
+        index["rooms"] = rooms
     common.write_json("index", index)
     common.write_json("search", entries)
     print("counts:", index["counts"], "| search entries:", len(entries))
