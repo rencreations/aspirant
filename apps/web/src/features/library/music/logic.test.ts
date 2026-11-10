@@ -3,15 +3,16 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { rimWords, titleLines } from "./disc-art";
 import {
   append,
   clock,
+  counter,
   creditSummary,
   downloadName,
-  filterTracks,
-  insertNext,
+  indexOfId,
+  infoRows,
   stepIn,
-  totalLength,
 } from "./logic";
 import type { MusicFile, MusicItem } from "./types";
 
@@ -48,18 +49,14 @@ describe("queue helpers", () => {
   const b = track("b");
   const c = track("c");
 
-  it("steps forward and back, and stops at the ends", () => {
+  it("steps forward and back, and goes round at the ends like the field", () => {
     expect(stepIn([a, b, c], "a", 1)?.id).toBe("b");
     expect(stepIn([a, b, c], "b", -1)?.id).toBe("a");
-    expect(stepIn([a, b, c], "c", 1)).toBeNull();
-    expect(stepIn([a, b, c], "a", -1)).toBeNull();
+    expect(stepIn([a, b, c], "c", 1)?.id).toBe("a");
+    expect(stepIn([a, b, c], "a", -1)?.id).toBe("c");
+    expect(stepIn([a], "a", 1)?.id).toBe("a");
     expect(stepIn([a, b, c], "zzz", 1)).toBeNull();
-  });
-
-  it("puts a track right after the current one, once", () => {
-    expect(insertNext([a, b, c], c, "a").map((t) => t.id)).toEqual(["a", "c", "b"]);
-    expect(insertNext([a, b], c, null).map((t) => t.id)).toEqual(["a", "b", "c"]);
-    expect(insertNext([a, b, c], b, "a").map((t) => t.id)).toEqual(["a", "b", "c"]);
+    expect(stepIn([], "a", 1)).toBeNull();
   });
 
   it("appends a track unless it is queued", () => {
@@ -68,28 +65,17 @@ describe("queue helpers", () => {
   });
 });
 
-describe("filter and labels", () => {
+describe("labels", () => {
   const items = [
     track("we-believe", {
       title: "We Believe",
       chars: ["fanny", "layla"],
       credits: [{ role: "Music", name: "Yasuharu Takanashi" }],
+      released: "01/2022",
     }),
     track("lullaby", { title: "Lullaby of Oblivion", kind: "song", chars: ["selena", "obsidia"] }),
     track("piece", { title: "Obsidia: Solo", kind: "piece", chars: ["obsidia"] }),
   ];
-
-  it("filters by kind, by word and by character", () => {
-    expect(filterTracks(items, { q: "", kind: "piece", who: "" }).map((t) => t.id)).toEqual([
-      "piece",
-    ]);
-    expect(filterTracks(items, { q: "takanashi", kind: "", who: "" }).map((t) => t.id)).toEqual([
-      "we-believe",
-    ]);
-    expect(filterTracks(items, { q: "", kind: "", who: "obsidia" })).toHaveLength(2);
-    expect(filterTracks(items, { q: "lullaby oblivion", kind: "", who: "" })).toHaveLength(1);
-    expect(filterTracks(items, { q: "nothing", kind: "", who: "" })).toHaveLength(0);
-  });
 
   it("writes the credit line, the clock and the download name", () => {
     expect(creditSummary(items[0]!)).toBe("Music: Yasuharu Takanashi");
@@ -105,13 +91,41 @@ describe("filter and labels", () => {
       ),
     ).toBe("Vocals: B");
     expect(clock(855.5)).toBe("14:16");
-    expect(totalLength(1996)).toBe("33 min");
     expect(downloadName(track("x", { title: "CROSS×CREDO: Vexana Version" }))).toBe(
       "CROSS×CREDO Vexana Version.m4a",
     );
     expect(
       downloadName(track("y", { title: "Obsidia: Solo", orig: "music/original/obsidia-solo.mp3" })),
     ).toBe("Obsidia Solo.mp3");
+  });
+
+  it("lists the credits and the release in the title block", () => {
+    expect(infoRows(items[0]!)).toEqual([
+      { label: "Music", value: "Yasuharu Takanashi" },
+      { label: "Released", value: "01/2022" },
+    ]);
+    expect(infoRows(items[2]!)).toEqual([
+      { label: "Credit", value: "Not named in the sources" },
+      { label: "Released", value: "Not dated" },
+    ]);
+    expect(counter(4, 9)).toBe("05 / 09");
+  });
+
+  it("finds the disc a link names, or starts at the first", () => {
+    expect(indexOfId(items, "piece")).toBe(2);
+    expect(indexOfId(items, "nothing")).toBe(0);
+    expect(indexOfId(items, null)).toBe(0);
+  });
+
+  it("prints the words of a disc without dashes", () => {
+    const words = rimWords(items[0]!);
+    expect(words).toContain("WE BELIEVE");
+    expect(words).toContain("MUSIC YASUHARU TAKANASHI");
+    expect(words).not.toMatch(
+      new RegExp(`[${String.fromCharCode(0x2013)}${String.fromCharCode(0x2014)}]`, "u"),
+    );
+    expect(titleLines("We Believe")).toEqual(["WE BELIEVE"]);
+    expect(titleLines("Chang'e and Lesley, display background music")).toHaveLength(2);
   });
 });
 
@@ -160,16 +174,27 @@ describe("music.json", () => {
     }
   });
 
-  it("links to films that exist in films.json (when the Films room has been built)", () => {
-    const films = path.resolve(__dirname, "../../../../public/data/library/films.json");
-    if (!fs.existsSync(films)) return;
+  it("links to films that exist in the Video rooms (when they have been built)", () => {
+    const dir = path.resolve(__dirname, "../../../../public/data/library");
+    const files = ["video-films.json", "video-others.json"].map((f) => path.join(dir, f));
+    if (!files.every((f) => fs.existsSync(f))) return;
     const ids = new Set(
-      (JSON.parse(fs.readFileSync(films, "utf8")) as { items: Array<{ id: string }> }).items.map(
-        (i) => i.id,
+      files.flatMap((f) =>
+        (JSON.parse(fs.readFileSync(f, "utf8")) as { items: Array<{ id: string }> }).items.map(
+          (i) => i.id,
+        ),
       ),
     );
     for (const i of data.items)
       for (const f of i.films) expect(ids.has(f.id), `${i.id}: ${f.id}`).toBe(true);
+  });
+
+  it("gives every track a disc face and the shape of its sound", () => {
+    for (const i of data.items) {
+      expect(i.disc, i.id).toMatch(/^music\/discs\/[a-z0-9-]+\.webp$/u);
+      expect(i.wave, i.id).toMatch(/^[0-9a-z]{240}$/u);
+    }
+    expect(new Set(data.items.map((i) => i.disc)).size).toBe(data.items.length);
   });
 
   it("uses no dashes and no banned word", () => {

@@ -49,6 +49,10 @@ export interface MusicItem extends ItemBase {
   /** Library key of the original file, for the download. */
   orig?: string;
   chapters?: MusicChapter[];
+  /** Library key of the face of the track's disc (a square picture, `discs.py`). */
+  disc?: string;
+  /** The loudness of the track in equal steps, one base 36 digit each (`discs.py`). */
+  wave?: string;
 }
 
 export interface MusicFile extends CollectionFile<MusicItem> {

@@ -12,7 +12,7 @@ import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 import { withSound } from "@/lib/sound-prompt";
 
-import { append, insertNext, stepIn } from "./logic";
+import { append, stepIn } from "./logic";
 import type { MusicItem } from "./types";
 
 interface PlayerState {
@@ -48,6 +48,7 @@ function begin(item: MusicItem, queue: readonly MusicItem[]): void {
   if (!el) return;
   const onEnded = () => {
     if (get().track?.id !== item.id) return;
+    // The next track of the queue, the first one after the last.
     const next = stepIn(get().queue, item.id, 1);
     if (next) startTrack(next);
     else set({ playing: false });
@@ -111,33 +112,9 @@ export function stepTrack(direction: 1 | -1): void {
     el.currentTime = 0;
     return;
   }
+  // The queue has no end, like the field of discs: after the last track comes the first.
   const next = stepIn(queue, track.id, direction);
   if (next) startTrack(next);
-  else if (direction === 1 && el) {
-    // The end of the queue: stop on the last track, ready to play again.
-    audio.pauseMusic();
-    set({ playing: false });
-  }
-}
-
-/** Add a track after the one that plays. With nothing playing it only joins the queue. */
-export function playNext(item: MusicItem): void {
-  set({ queue: insertNext(get().queue, item, get().track?.id ?? null) });
-}
-
-export function addToQueue(item: MusicItem): void {
-  set({ queue: append(get().queue, item) });
-}
-
-export function removeFromQueue(id: string): void {
-  if (get().track?.id === id) return;
-  set({ queue: get().queue.filter((t) => t.id !== id) });
-}
-
-/** Keep the current track and drop the rest of the queue. */
-export function clearQueue(): void {
-  const { track } = get();
-  set({ queue: track ? [track] : [] });
 }
 
 export function seekTo(seconds: number): void {

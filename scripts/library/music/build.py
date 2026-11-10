@@ -16,6 +16,8 @@ Writes
     <mirror>/library/v1/music/<id>.m4a        the stream of each track
     <mirror>/library/v1/music/original/...    the file as the studio made it, for the download link
     <mirror>/library/v1/music/covers/<id>/    cover pictures (t, p, f)
+    <mirror>/library/v1/music/discs/<id>.webp the face of each disc of the room (discs.py), and the
+                                              shape of each track's sound (`wave`, in the data)
     apps/web/public/data/library/music.json
 
 Which source wins for a track the film and the site both have: the film's own audio, cut at the
@@ -35,7 +37,9 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common  # noqa: E402
+import discs  # noqa: E402
 
 WORK = common.WORK / "music"
 WORK.mkdir(parents=True, exist_ok=True)
@@ -175,6 +179,8 @@ def main() -> None:
             item["orig"] = orig
         if chapters:
             item["chapters"] = chapters
+        # The disc of the room: its face and the shape of its sound.
+        item.update(discs.disc_fields(slug_id, src_key))
         items.append(item)
 
     # 3. We Believe, the full song (EP 01).
