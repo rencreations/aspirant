@@ -1,0 +1,41 @@
+{
+  "chapter": "c54",
+  "mood": "Far out in the dark a great ship arrives, and Obsidia remembers the long watch that brought her here.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+    "t": 5.3,
+    "crop": [107, 0, 1706, 960],
+    "alt": "A pale-haired woman with wings like dark burning stars stands in the void among drifting stones, one black-gloved arm held out.",
+    "credit": "Official Obsidia film"
+  },
+  "heroFocus": "50% 40%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "No ship of her",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/places/storm-citadel.png",
+        "crop": [0, 16, 995, 160],
+        "alt": "Black blocks with blade-sharp edges hang upside down around a burning red-orange heart, red circuit lines glowing across them.",
+        "credit": "Official world art, Storm Citadel"
+      }
+    },
+    {
+      "after": 49,
+      "anchor": "Far ahead lay the",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/places/universe.jpg",
+        "crop": [0, 0, 2040, 1080],
+        "alt": "A bright blue world glows against the dark, a white star flaring at its edge and broken stones drifting past.",
+        "credit": "Official world art, the universe"
+      }
+    }
+  ]
+}

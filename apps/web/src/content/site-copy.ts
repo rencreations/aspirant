@@ -186,7 +186,8 @@ export const siteCopy = {
   meta: {
     home: "Ten Aspirants, one academy, and a world that keeps a lamp lit.",
     about: "Where the story happens, who sends the Enders, and what the story leaves open.",
-    story: "Read the whole Aspirant story: sixty chapters in twelve parts, one Part to a page.",
+    story:
+      "Read the whole Aspirant story: a prologue and 87 chapters in six acts, one chapter to a page.",
     characters: "Meet the ten Aspirants of Selrick Academy.",
     collection:
       "The whole library in ten rooms: arts, films, music, voice lines, fan art, comics, lore, design, animation and more.",

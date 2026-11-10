@@ -1,5 +1,5 @@
 /**
- * Helpers over the story index: the chapters (the Prologue and 48 chapters) in book order, the
+ * Helpers over the story index: the chapters (the Prologue and 87 chapters) in book order, the
  * six acts, and the neighbours of a chapter. The index is written by `scripts/story/build.py`.
  * The text of a chapter lives in its own file (`public/data/story/cNN.json`), read at build time.
  */
@@ -9,7 +9,7 @@ import type { ActMeta, ChapterEntry, Media, StoryChapterId, StoryIndex } from ".
 
 export const storyIndex = raw as unknown as StoryIndex;
 
-/** The Prologue and chapters 1 to 48 in book order. */
+/** The Prologue and chapters 1 to 87 in book order. */
 export const chapters: readonly ChapterEntry[] = storyIndex.chapters;
 
 export const acts: readonly ActMeta[] = storyIndex.acts;

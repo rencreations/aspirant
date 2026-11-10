@@ -1,0 +1,75 @@
+{
+  "chapter": "c29",
+  "mood": "A lamp over a stall at the dome's foot, a sack of Ender plating, and a plan nobody ordered.",
+  "hero": {
+    "type": "clip",
+    "src": "vexana-and-guinevere/video/connection-lost/footages/00m00s000ms-00m08s640ms/footage.mp4",
+    "start": 0.45,
+    "end": 4.9,
+    "sound": false,
+    "poster": 3.5,
+    "alt": "Purple star-shaped portals open in a storm sky over the city, and tall gray Enders stride out through the fog.",
+    "credit": "Official film, Connection Lost"
+  },
+  "heroFocus": "60% 50%",
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "The Enders ran at",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/39.jpg",
+          "crop": [0, 400, 2500, 2450],
+          "alt": "An armored boot taps down into a pool of light in the dark.",
+          "credit": "Official comic, Guinevere and Vexana, page 39"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/39.jpg",
+          "crop": [0, 4900, 2500, 1406],
+          "alt": "A horned figure in Ender armor lifts a staff whose orb is a black hole ringed in violet light.",
+          "credit": "Official comic, Guinevere and Vexana, page 39"
+        }
+      ]
+    },
+    {
+      "after": 11,
+      "anchor": "On nights without orders",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/comic/footages/01m52s800ms-02m06s800ms/footage.mp4",
+        "crop": [0, 860, 1080, 608],
+        "alt": "At night the lights of the city glow below a tall dark tower.",
+        "credit": "Official motion comic, Guinevere and Vexana",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.26,
+        "sound": false,
+        "poster": 0.96
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Selrick Academy"
+      }
+    },
+    {
+      "after": 39,
+      "anchor": "The suit's eyes lit.",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/comic/footages/01m36s600ms-01m52s800ms/footage.mp4",
+        "crop": [0, 300, 1080, 608],
+        "alt": "A towering Ender mecha suit in pale and black plates, a heart-shaped core glowing violet on its chest.",
+        "credit": "Official motion comic, Guinevere and Vexana",
+        "type": "clip",
+        "start": 5.3,
+        "end": 7.6,
+        "sound": false,
+        "poster": 1.2
+      }
+    }
+  ]
+}

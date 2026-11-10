@@ -1,0 +1,40 @@
+{
+  "chapter": "c66",
+  "mood": "The day before, Obsidia sits alone in her throne hall and goes over every move she has planned.",
+  "hero": {
+    "type": "image",
+    "src": "selena-and-obsidia/art/official/obsidia/obsidia-splash-art.png",
+    "crop": [0, 100, 1850, 1040],
+    "alt": "Obsidia floats in a black gown with one clawed glove raised, a pink star glowing at her chest and her silver-pink weapon hanging in the air beside her.",
+    "credit": "Official Obsidia splash art"
+  },
+  "heroFocus": "60% 30%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 5,
+      "anchor": "She lifted one hand,",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/video/obsidia/thumbnail-veretical.jpg",
+        "crop": [0, 420, 1080, 940],
+        "alt": "Obsidia sits back with one clawed glove stretched out, thin red threads hanging from its fingers, lightning in the storm behind her.",
+        "credit": "Official Obsidia film key art"
+      }
+    },
+    {
+      "after": 39,
+      "anchor": "Every move her creation",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/art/promotion/instagram_p_Dd8G74gCTKW/001_3998101072593367702.jpg",
+        "crop": [0, 175, 1080, 800],
+        "alt": "Obsidia looks back over her shoulder among floating shards of glass, a pink star burning at her chest.",
+        "credit": "Official Obsidia character bio art, A Game of Storms"
+      }
+    }
+  ]
+}

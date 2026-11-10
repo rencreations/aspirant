@@ -1,0 +1,80 @@
+{
+  "chapter": "c74",
+  "mood": "Guinevere wakes in a street she never fell into, while Angela holds a bell of pink light against the dark.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+    "t": 9.6,
+    "alt": "Guinevere on her feet in a ruined street, blood at her lip and her pink hair blowing, one of her drones at her hand.",
+    "credit": "Official Guinevere and Vexana interactive drama"
+  },
+  "heroFocus": "43% 35%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 17,
+      "anchor": "She took one step",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 23.1,
+        "alt": "On the scorched platform among the ruins, Vexana gets her staff under her and rises to one knee.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "I've locked on to",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Four girls stand on a ruined waterfront below a vast four-pointed tear of violet light in the sky; then Fanny and Layla take aim side by side, blade and cannon ready.",
+        "credit": "Official Guinevere and Vexana interactive drama",
+        "poster": 1.6,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+            "start": 0.15,
+            "end": 2.5,
+            "crop": [0, 215, 1920, 730]
+          },
+          {
+            "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+            "start": 2.75,
+            "end": 5.15,
+            "crop": [0, 0, 1920, 730]
+          }
+        ]
+      }
+    },
+    {
+      "after": 57,
+      "anchor": "We escaped from this",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+        "t": 12.9,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Ruby, her scythe raised, shouts at the Enders, while behind her Angela holds the shield open with light in both hands.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    },
+    {
+      "after": 69,
+      "anchor": "Go, Guinevere, pursue your",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+        "t": 17.5,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Angela holds out both hands, pink light glowing in her palms, her small drone Tetra floating above her.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    }
+  ]
+}

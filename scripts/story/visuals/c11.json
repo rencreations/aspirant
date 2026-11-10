@@ -1,228 +1,170 @@
 {
   "chapter": "c11",
-  "mood": "An android who has never seen the sun steps into a secret garden and makes her first friend.",
+  "mood": "The Council has voted. Ruby finally makes her move, and says goodbye to the only friend she has.",
   "hero": {
-    "type": "sequence",
-    "xfade": 0.4,
-    "poster": 1.0,
-    "alt": "In the Laboratory, Ruby and Angela drink water face to face, then Ruby works at a glowing console while Angela stands in her cables behind her.",
-    "credit": "Official trailer",
-    "parts": [
-      {
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "start": 51.42,
-        "end": 53.26
-      },
-      {
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "start": 53.54,
-        "end": 56.88
-      }
-    ]
+    "type": "clip",
+    "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
+    "start": 0.4,
+    "end": 5.6,
+    "poster": 1.8,
+    "alt": "In a dark laboratory Ruby stands among floating screens, then works a console under red light.",
+    "credit": "Ruby character film"
   },
-  "heroFocus": "25% 40%",
+  "heroFocus": "64% 55%",
   "spoiler": false,
   "score": null,
   "inserts": [
     {
       "after": 2,
-      "anchor": "Keep it hidden. If",
+      "anchor": "Oro's three powers ruled",
       "kind": "place",
-      "label": "The Laboratory",
+      "label": "The Council",
       "media": {
         "type": "frame",
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "t": 58.68,
-        "alt": "Angela stands awake on her pedestal in the Laboratory, held by cables and robot arms, before a window full of stars.",
-        "credit": "Official trailer"
-      }
+        "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 1.15,
+        "alt": "A ring of tall pillars lights up blue around an empty circle under a shaft of light.",
+        "credit": "Ruby character film"
+      },
+      "caption": "Where Oro's three powers cast their votes"
     },
     {
-      "after": 10,
-      "anchor": "This was the Gardens,",
+      "after": 5,
+      "anchor": "They make weapons from",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/00m59s280ms-01m07s200ms/footage.mp4",
+        "t": 2.97,
+        "alt": "Ruby's father stands in a shaft of light in a dark hall, a fur-collared coat on his shoulders.",
+        "credit": "Ruby character film"
+      },
+      "caption": "Ruby's father"
+    },
+    {
+      "after": 11,
+      "anchor": "Forty lines of code",
       "kind": "clip",
       "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "poster": 2.0,
-        "alt": "Angela's hand reaches for the sun through a roof of glass hexagons, she and Ruby walk by a stream between green hills, then Angela holds out her hand to Ruby in the meadow.",
-        "credit": "Angela character film and official trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/angela/angela-final.mp4",
-            "start": 26.9,
-            "end": 32.74,
-            "spanCuts": true
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 64.68,
-            "end": 70.12
-          }
-        ]
-      },
-      "overlay": {
-        "kicker": "The place",
-        "title": "The Gardens"
+        "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
+        "alt": "A red warning square with an android's outline and the word DANGER glows on a dark screen.",
+        "credit": "Ruby character film",
+        "type": "clip",
+        "start": 10.5,
+        "end": 11.95,
+        "sound": false,
+        "poster": 1.1
       }
     },
     {
       "after": 12,
-      "anchor": "\"You must be what",
+      "anchor": "\"The long-awaited moment has",
       "kind": "voice",
-      "speaker": "angela",
+      "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 34.85,
-      "end": 39.8,
-      "line": "You must be what humans call 'a friend'! You are now Angela's friend!"
+      "start": 67.25,
+      "end": 70.32,
+      "line": "The long-awaited moment has finally come."
     },
     {
       "after": 13,
-      "anchor": "\"A friend?!...\" Ruby froze.",
+      "anchor": "Her fingers were already",
       "kind": "voice",
       "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 40.58,
-      "end": 42.12,
-      "line": "A friend?!..."
+      "start": 70.35,
+      "end": 76.8,
+      "line": "Now I just need to activate the trojan in Angela and wait for her to wreak havoc in the android troops."
     },
     {
-      "after": 14,
-      "anchor": "Angela held out both",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "poster": 1.0,
-        "alt": "Angela spreads her arms and turns in the sunny grass of the Gardens, Ruby looks on, caught off guard, then Angela runs to her and takes her hand.",
-        "credit": "Official video, Ruby",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 36.7,
-            "end": 39.25
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 39.95,
-            "end": 44.6
-          }
-        ]
-      }
+      "after": 16,
+      "anchor": "\"It might be my",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 76.85,
+      "end": 83.7,
+      "line": "It might be my only chance to leave Oro. They'd need me, Angela's creator, to shut her down."
     },
     {
       "after": 17,
-      "anchor": "Android Angela, said a",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.3,
-        "poster": 0.5,
-        "alt": "A glowing display maps the training arena with Angela's picture on its panel, then Angela stands before a huge armored droid with a blade and lifts her face, blue eyes set.",
-        "credit": "Official video, Angela",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/angela/angela-final.mp4",
-            "start": 34.5,
-            "end": 35.92
-          },
-          {
-            "src": "ruby-and-angela/video/angela/angela-final.mp4",
-            "start": 36.16,
-            "end": 37.64
-          },
-          {
-            "src": "ruby-and-angela/video/angela/angela-final.mp4",
-            "start": 37.92,
-            "end": 39.2
-          }
-        ]
-      },
-      "overlay": {
-        "kicker": "The place",
-        "title": "The Training Field"
-      }
-    },
-    {
-      "after": 29,
-      "anchor": "A month later the",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
-        "t": 0.88,
-        "alt": "Angela flies through the air above the training droid amid a burst of pink flame.",
-        "credit": "Official video, Angela"
-      }
-    },
-    {
-      "after": 33,
-      "anchor": "Ruby, the Gardens. Are",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "ruby-and-angela/video/ruby/footages/00m44s920ms-00m59s280ms/footage.mp4",
-        "start": 4.6,
-        "end": 8.8,
-        "poster": 3.0,
-        "sound": false,
-        "alt": "Ruby works at a glowing console in the Laboratory, and Angela, held by cables, opens her eyes.",
-        "credit": "Official video, Ruby"
-      }
-    },
-    {
-      "after": 37,
-      "anchor": "\"Does it hurt?\"",
+      "anchor": "\"But what will happen",
       "kind": "voice",
       "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 50.35,
-      "end": 51.3,
-      "line": "Does it hurt?"
+      "start": 84.1,
+      "end": 88.2,
+      "line": "But what will happen to Angela?"
     },
     {
-      "after": 38,
-      "anchor": "\"What does hurt mean?\"",
-      "kind": "voice",
-      "speaker": "angela",
-      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 51.5,
-      "end": 53.75,
-      "line": "What does hurt mean?"
-    },
-    {
-      "after": 44,
-      "anchor": "You're my friend, so",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
-        "t": 15.68,
-        "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
-        "credit": "Official video, Angela"
-      }
-    },
-    {
-      "after": 48,
-      "anchor": "Later, thinking Angela was",
-      "kind": "voice",
-      "speaker": "ruby",
-      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 56.55,
-      "end": 58.85,
-      "line": "What if they find out one day?"
-    },
-    {
-      "after": 52,
-      "anchor": "After the sixth return",
+      "after": 19,
+      "anchor": "The hangar was cold.",
       "kind": "plate",
       "media": {
         "type": "frame",
         "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
-        "t": 4.02,
-        "alt": "A white daisy losing its petals beside a screen that shows Angela and Ruby in the garden.",
-        "credit": "Official video, Ruby"
+        "t": 7.15,
+        "alt": "A line of androids with magenta eyes stands in profile; among them one girl has blue eyes.",
+        "credit": "Ruby character film"
       }
+    },
+    {
+      "after": 23,
+      "anchor": "Ruby knew what that",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "poster": 3.0,
+        "alt": "Ruby faces Angela and will not meet her eyes, a tear runs down her cheek, falls, and splashes in the dark.",
+        "credit": "Angela character film",
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 67.12,
+            "end": 68.7
+          },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 69.19,
+            "end": 75.8,
+            "spanCuts": true
+          }
+        ]
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "Angela looked at her",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/angela/angela-final.mp4",
+      "start": 16.0,
+      "end": 16.85,
+      "line": "Ruby..."
+    },
+    {
+      "after": 27,
+      "anchor": "It was a doll",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 94.0,
+        "alt": "Angela laughs with her hands out as a small doll in her likeness hangs in the air between her and Ruby.",
+        "credit": "Ruby character film"
+      },
+      "caption": "Tetra"
+    },
+    {
+      "after": 28,
+      "anchor": "Angela hugged her hard.",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 92.4,
+      "end": 95.4,
+      "line": "Are we really... friends?!"
     }
   ]
 }

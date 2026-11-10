@@ -1,0 +1,15 @@
+{
+  "chapter": "c52",
+  "mood": "At the hour she used to call, Vexana watches one lit window across the city.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/28.jpg",
+    "crop": [410, 2420, 1830, 790],
+    "alt": "A small four-pointed star badge blazes with pale blue light.",
+    "credit": "Official Guinevere and Vexana comic, page 28"
+  },
+  "heroFocus": "50% 45%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": []
+}

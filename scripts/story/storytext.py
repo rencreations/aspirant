@@ -47,7 +47,7 @@ class Block:
 
 @dataclass
 class Chapter:
-    id: str  # c00 .. c48
+    id: str  # c00 .. c87
     number: int  # 0 for the prologue
     title: str
     dateline: str | None

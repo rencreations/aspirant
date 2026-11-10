@@ -1,0 +1,140 @@
+{
+  "chapter": "c85",
+  "mood": "On the bell tower a girl bites her lollipop and takes the scenic route up into the storm.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.3,
+    "alt": "Close on Selena's face, black claws over her mouth and a sly smile in her red eyes; then, seen past her heels, a woman with long pink hair and floating fiery blades stands far ahead on a broken, frozen plain.",
+    "credit": "Official Selena film",
+    "poster": 1.0,
+    "parts": [
+      {
+        "src": "selena-and-obsidia/video/selena/video.mp4",
+        "start": 58.95,
+        "end": 61.0,
+        "crop": [0, 0, 1920, 940]
+      },
+      {
+        "src": "selena-and-obsidia/video/selena/video.mp4",
+        "start": 61.7,
+        "end": 63.5,
+        "crop": [0, 0, 1920, 940]
+      }
+    ]
+  },
+  "heroFocus": "50% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 45.0,
+    "crop": [0, 138, 1920, 804],
+    "alt": "Obsidia, long pink and gold hair, looks back over her shoulder at the foot of a tall jointed column lit violet.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 31,
+      "anchor": "At the top stood",
+      "kind": "place",
+      "label": "The throne hall",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 43.9,
+        "crop": [0, 138, 1920, 804],
+        "alt": "Seen past Selena's long blonde hair, wide dark stairs climb to a jointed column lit violet, a small figure waiting at its foot.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 49,
+      "anchor": "She put out one",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 50.0,
+        "crop": [0, 138, 1920, 722],
+        "alt": "Obsidia, pink and gold hair, looks down at Selena and holds her chin up with one red-gloved finger; Selena, small red horns in her blonde hair, looks back without a smile.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 64,
+      "anchor": "The points rose toward",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 67.1,
+        "crop": [0, 138, 1920, 804],
+        "alt": "Bound in jointed chains of bone, Selena hangs high against the tall column while Obsidia floats below her, long weapon in hand, fiery blades hovering at her back.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 75,
+      "anchor": "I'll never be your",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 68.55,
+      "end": 72.65,
+      "line": "I'll never be your puppet again!"
+    },
+    {
+      "after": 85,
+      "anchor": "Did I surprise you",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "Lightning bursts from Selena's dark armor and tears the chains apart; plates and claws close over her face; Obsidia, close, smiles; then Selena stands in a storm of blue light in her full armor of white, blue and gold, blades floating around her.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 4.2,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 70.65,
+            "end": 72.15,
+            "crop": [0, 138, 1920, 722]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 72.45,
+            "end": 74.42,
+            "crop": [0, 138, 1920, 722],
+            "spanCuts": true
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 77.45,
+            "end": 78.68,
+            "crop": [0, 138, 1920, 722]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 80.1,
+            "end": 81.6,
+            "crop": [0, 138, 1920, 722]
+          }
+        ]
+      }
+    },
+    {
+      "after": 92,
+      "anchor": "She turned and cut",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 101.1,
+        "crop": [0, 138, 1920, 804],
+        "alt": "Selena, in armor of white, blue and gold, stands at the foot of the tall dark column as glowing red cuts split it at the base.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    }
+  ]
+}

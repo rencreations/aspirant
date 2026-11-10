@@ -12,7 +12,7 @@ const DOORS = [
     code: "07 / Door A",
     label: "Story",
     title: siteCopy.home.doors.story,
-    line: "Sixty chapters in twelve parts, one Part to a page.",
+    line: "Eighty-seven chapters in six acts, one chapter to a page.",
     image: "/img/hero-stills/fanny-layla-02.webp",
     tone: "daybreak",
   },

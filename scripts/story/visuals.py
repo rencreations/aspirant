@@ -38,8 +38,8 @@ MAX_CLIP_SECONDS = 8.5
 MAX_SEQUENCE_SECONDS = 30.0
 MIN_PART_SECONDS = 1.2
 CUT_MARGIN = 0.1
-# The chapters of the Layla and Fanny arc, where the owner wants real text between pictures.
-STRICT_SPACING = {"c00", "c01", "c02", "c03", "c04", "c05", "c08"}
+# The chapters of the Layla and Fanny arc, and every chapter of Acts III to VI (18 to 87), where the owner wants real text between pictures.
+STRICT_SPACING = {"c00", "c01", "c02", "c03", "c04", "c05", "c08"} | {f"c{n:02d}" for n in range(18, 88)}
 MIN_WORDS_BETWEEN = 45
 EXTRA = HERE / "extra"
 

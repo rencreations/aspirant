@@ -1,0 +1,98 @@
+{
+  "chapter": "c73",
+  "mood": "Hurt and alone in a ring of enemies, she says she will bear it all, and means every word.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+    "t": 5.5,
+    "crop": [0, 0, 2560, 950],
+    "alt": "Vexana stands alone on a ruined platform under a storm sky, her staff raised and a crown of violet blades behind her head, tall gray Enders all around her.",
+    "credit": "Official Re:Link animation"
+  },
+  "heroFocus": "38% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+    "t": 8.4,
+    "crop": [0, 0, 2560, 950],
+    "alt": "Tall gray Enders with clawed arms and yellow eyes stalk across a ruined city under a storm sky.",
+    "credit": "Official Re:Link animation"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 33,
+      "anchor": "In all that dark",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 9.3,
+        "alt": "Close on Vexana's face in the fight, a bruise on her cheek, her violet eye narrowed and hard.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 47,
+      "anchor": "She fought with one",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Vexana fights the Enders alone across the ruined platform, firing her staff from the ground, leaping and striking; then bursts of violet light break around her as she fires into them.",
+        "credit": "Official Re:Link animation",
+        "poster": 1.2,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 10.65,
+            "end": 13.76,
+            "spanCuts": true
+          },
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 14.08,
+            "end": 15.3
+          }
+        ]
+      }
+    },
+    {
+      "after": 66,
+      "anchor": "Now she saw all",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 23.55,
+        "alt": "A vast dark armored shape towers against violet light and storm cloud, its crowned head high in the glare, huge clawed wings spread wide and its chest shut.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 73,
+      "anchor": "She flew back across",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.35,
+        "alt": "Through violet smoke a ring of magenta light swells in the sky above Vexana; then she is hurled backward and lies small among the broken stone of the ruined city.",
+        "credit": "Official Re:Link animation",
+        "poster": 2.6,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 15.4,
+            "end": 17.75
+          },
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 18.92,
+            "end": 20.45
+          }
+        ]
+      }
+    }
+  ]
+}

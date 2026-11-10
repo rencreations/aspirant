@@ -1,97 +1,15 @@
 {
   "chapter": "c33",
-  "mood": "The star over the bay tears open. Lesley gives out the roles, and Chang'e asks for the front line.",
+  "mood": "A bent drone under a lamp, an old soldier's screwdriver, and the two words her father always said.",
   "hero": {
-    "src": "selena-and-obsidia/video/trailer/footages/00m08s208ms-00m15s125ms/footage.mp4",
-    "crop": [0, 136, 1280, 720],
-    "alt": "A huge four-pointed rift glows red over a city of towers, a black ship hanging at its center.",
-    "credit": "Official trailer: Selena and Obsidia",
-    "type": "clip",
-    "start": 5.0,
-    "end": 6.88,
-    "sound": false,
-    "poster": 1.0
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/31.jpg",
+    "crop": [0, 880, 1070, 1120],
+    "alt": "Vexana, her long black hair loose over her Academy uniform, glances out at the viewer with a small, quiet smile.",
+    "credit": "Official Guinevere and Vexana comic, page 31"
   },
-  "heroFocus": "48% 25%",
+  "heroFocus": "68% 40%",
   "spoiler": false,
-  "score": "we-believe",
-  "inserts": [
-    {
-      "after": 2,
-      "anchor": "Something slid out upside",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "start": 0.04,
-        "end": 1.36,
-        "crop": [0, 136, 1920, 808],
-        "sound": false,
-        "poster": 0.6,
-        "alt": "A black spired ship hangs in the burning rift, smaller ships around it.",
-        "credit": "Official trailer: Selena and Obsidia"
-      }
-    },
-    {
-      "after": 5,
-      "anchor": "The records said that",
-      "kind": "place",
-      "label": "Storm Citadel",
-      "media": {
-        "type": "image",
-        "src": "_others/places/storm-citadel.png",
-        "crop": [8, 18, 950, 404],
-        "alt": "The Storm Citadel, a mass of black blocks lit red from inside, hangs upside down above a city.",
-        "credit": "Official world art"
-      }
-    },
-    {
-      "after": 17,
-      "anchor": "I can't keep hiding",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/01m11s000ms-01m27s000ms/footage.webm",
-        "crop": [320, 0, 1920, 1080],
-        "alt": "Seen from behind, Chang'e stands small at the foot of a tall stairway and looks up.",
-        "credit": "Official trailer: Lesley and Chang'e",
-        "type": "clip",
-        "start": 0.1,
-        "end": 2.0,
-        "sound": false,
-        "poster": 1.4
-      }
-    },
-    {
-      "after": 32,
-      "anchor": "She took a dormitory",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
-        "crop": [250, 0, 1920, 1080],
-        "alt": "Lesley stands on a rooftop among tall towers, her long rifle in her hands.",
-        "credit": "Official trailer: Lesley and Chang'e",
-        "type": "clip",
-        "start": 23.16,
-        "end": 24.68,
-        "sound": false,
-        "poster": 0.8
-      }
-    },
-    {
-      "after": 46,
-      "anchor": "Chang'e's console showed a",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
-        "crop": [320, 0, 1920, 1080],
-        "alt": "Chang'e reads two glowing screens in the middle of the fighting, fires burning behind her.",
-        "credit": "Official trailer: Lesley and Chang'e",
-        "type": "clip",
-        "start": 4.6,
-        "end": 6.35,
-        "sound": false,
-        "poster": 0.8
-      }
-    }
-  ]
+  "score": "vexana-theme",
+  "inserts": []
 }

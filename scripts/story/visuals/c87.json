@@ -1,0 +1,153 @@
+{
+  "chapter": "c87",
+  "mood": "High above the storm, a maker calls her creation home, and gets her answer.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.3,
+    "alt": "In a hall lit by fires on the floor, Selena in armor of white, blue and gold clashes with Obsidia, whose long jointed weapon lashes across the hall like a chain; then Selena drives a spear of lightning across the burning floor.",
+    "credit": "Official Selena and Obsidia trailer",
+    "poster": 1.0,
+    "parts": [
+      {
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "start": 113.48,
+        "end": 116.95,
+        "crop": [0, 138, 1920, 722],
+        "spanCuts": true
+      },
+      {
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "start": 118.65,
+        "end": 119.88,
+        "crop": [0, 138, 1920, 722]
+      }
+    ]
+  },
+  "heroFocus": "60% 45%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 110.2,
+    "crop": [0, 138, 1920, 722],
+    "alt": "Obsidia, pink and gold hair, stands in a burning hall with her long jointed weapon coiled around her.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 15,
+      "anchor": "Obsidia touched the cut",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 120.7,
+        "crop": [0, 208, 1920, 652],
+        "alt": "Close on Obsidia, her eyes wide, a thin dark cut across her cheek.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 23,
+      "anchor": "Selena flew backward across",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "Obsidia's weapon fires and Selena runs ahead of the bolts along a curved wall; blade meets weapon, face to face; a beam of gold blasts from the weapon's tip at point-blank range; then, outside, the dark ship hangs against a red tear in the sky as a blast bursts from it.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 2.0,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 130.62,
+            "end": 132.05,
+            "crop": [0, 208, 1920, 652],
+            "spanCuts": true
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 137.15,
+            "end": 138.9,
+            "crop": [0, 208, 1920, 652]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 141.05,
+            "end": 142.6,
+            "crop": [0, 208, 1920, 652]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 142.93,
+            "end": 144.14,
+            "crop": [0, 208, 1920, 652]
+          }
+        ]
+      }
+    },
+    {
+      "after": 32,
+      "anchor": "She had always stood",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 149.1,
+        "crop": [0, 208, 1920, 652],
+        "alt": "A lone figure stands on a broken plain among drifting stones before a vast disc of white fire ringed in red.",
+        "credit": "Official Selena and Obsidia trailer"
+      }
+    },
+    {
+      "after": 53,
+      "anchor": "Come back, my puppet.",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "Inside a column of golden fire a new armored shape forms; it rises into a starry violet sky, a tall figure of silver plate with magenta light in its joints; it spreads vast magenta wings marked with dark eyes and opens its arms, a long weapon trailing from one hand; last, close on Selena's gold-crested helm.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 4.5,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 157.645,
+            "end": 158.855,
+            "crop": [0, 208, 1920, 652]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 159.06,
+            "end": 161.0,
+            "crop": [0, 208, 1920, 652]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 162.5,
+            "end": 165.25,
+            "crop": [0, 208, 1920, 652],
+            "spanCuts": true
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 165.48,
+            "end": 166.77,
+            "crop": [0, 208, 1920, 652]
+          }
+        ]
+      }
+    },
+    {
+      "after": 66,
+      "anchor": "But I still prefer",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 164.45,
+      "end": 169.2,
+      "line": "Sorry, ma'am, but I still prefer life at the academy!"
+    }
+  ]
+}

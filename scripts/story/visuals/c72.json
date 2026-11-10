@@ -1,0 +1,118 @@
+{
+  "chapter": "c72",
+  "mood": "Something vast comes through the sky over the bay, and Guinevere spends everything she has left.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+    "t": 90.4,
+    "crop": [0, 0, 2560, 900],
+    "alt": "Seen from high above, a city of dark towers lies broken and burning under smoke.",
+    "credit": "Official Connection Lost animation"
+  },
+  "heroFocus": "45% 50%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 30,
+      "anchor": "Only half of it",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A star-shaped tear burns open in a violet sky over the city; a huge clawed hand pushes out of it; then a horned, crowned head and vast glowing wings push through.",
+        "credit": "Official Connection Lost animation",
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 78.85,
+            "end": 81.15
+          },
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 81.42,
+            "end": 84.6
+          },
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 86.05,
+            "end": 89.15
+          }
+        ]
+      }
+    },
+    {
+      "after": 37,
+      "anchor": "Vexana. Execute purge protocol.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "t": 96.3,
+        "crop": [0, 0, 2560, 960],
+        "alt": "Close on Vexana's face, washed in violet light between two gold stars, her eyes glowing and cold.",
+        "credit": "Official Connection Lost animation"
+      }
+    },
+    {
+      "after": 49,
+      "anchor": "She lay in glass",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A giant armored figure drops out of the sky and smashes down in a burst of violet light; Guinevere flies low through the towers and over a dark Ender; below, Vexana fires her staff; Guinevere is driven through a tower and crashes into the rubble.",
+        "credit": "Official Connection Lost animation",
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 101.66,
+            "end": 104.22,
+            "spanCuts": true
+          },
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 108.95,
+            "end": 110.52
+          },
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 117.35,
+            "end": 118.6
+          },
+          {
+            "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+            "start": 122.94,
+            "end": 126.22,
+            "spanCuts": true
+          }
+        ]
+      }
+    },
+    {
+      "after": 57,
+      "anchor": "Wings opened on both",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "t": 158.3,
+        "crop": [0, 150, 1800, 900],
+        "alt": "Guinevere rises over the ruined platforms on a tall wing of red and gold light, her two drones blazing beside her.",
+        "credit": "Official Connection Lost animation"
+      }
+    },
+    {
+      "after": 61,
+      "anchor": "Her wings had gone",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "t": 167.3,
+        "alt": "Under a shaft of pale light, Guinevere falls headfirst between the towers of the city, her pink hair streaming below her.",
+        "credit": "Official Connection Lost animation"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "chapter": "c58",
+  "mood": "Obsidia finds the one place Vexana thought was hers, then leads her to where the Enders are made.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+    "t": 66.9,
+    "crop": [0, 0, 1920, 960],
+    "alt": "Obsidia looks back over her shoulder under a dark violet sky, a faint smile on her face and a pink star glowing at her chest.",
+    "credit": "Official Obsidia film"
+  },
+  "heroFocus": "50% 35%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 115,
+      "anchor": "I have watched many",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "On a dead gray world under a dark sky, a winged woman raises one hand as red stars burn open overhead; then red four-pointed stars open in a storm sky over a city of towers, and the city vanishes in a blinding pink blast.",
+        "credit": "Official Obsidia film",
+        "poster": 1.0,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+            "start": 11.55,
+            "end": 13.7,
+            "crop": [0, 0, 1920, 930]
+          },
+          {
+            "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+            "start": 21.05,
+            "end": 24.2,
+            "crop": [0, 0, 1920, 930]
+          }
+        ]
+      }
+    }
+  ]
+}

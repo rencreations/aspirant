@@ -1,41 +1,67 @@
 {
   "chapter": "c16",
-  "mood": "Locked in a cell with no window, Ruby tells Angela the truth. Somewhere above them, her father is watching.",
+  "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
   "hero": {
     "type": "frame",
-    "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-    "t": 183.72,
-    "alt": "Armored soldiers with long rifles wait in a bright hall by a ship's open hatch, as two more lead a small pink-haired prisoner in.",
-    "credit": "The Aspirants: Awakening trailer"
+    "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
+    "t": 11.22,
+    "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
+    "credit": "Official Ruby lore video"
   },
-  "heroFocus": "42% 85%",
-  "spoiler": false,
+  "heroFocus": "75% 62%",
   "score": "we-believe",
   "inserts": [
     {
       "after": 21,
-      "anchor": "He could not remember",
-      "kind": "plate",
+      "anchor": "I am Ruby, heir",
+      "kind": "place",
+      "label": "Planet Oro",
       "media": {
-        "type": "image",
-        "src": "extra/fathe.png",
-        "crop": [0, 8, 828, 718],
-        "alt": "Ruby's father seen close in cold blue light, his face above the mouth out of frame: a hard chin, dark hair and a high collar of gray fur.",
-        "credit": "Official character art"
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 82.36,
+        "alt": "A dark ship with blue engines flies over the towers of Oro at dusk, the sky violet above a bright horizon.",
+        "credit": "Official Ruby lore video"
       },
-      "caption": "Ruby's father, the Decisionmaker"
+      "caption": "Oro, far away in another galaxy."
     },
     {
-      "after": 34,
-      "anchor": "The ship rose. Oro",
+      "after": 25,
+      "anchor": "Then it will annex",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "ruby-and-angela/video/angela/angela-final.mp4",
-        "t": 5.92,
-        "alt": "A small ship trails blue light through the stars beside the glowing edge of a planet.",
-        "credit": "Angela character film"
-      }
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 60.8,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "A ring of tall lit pillars stands on a glowing circle in a dark council chamber, under a single beam of light.",
+        "credit": "Official Ruby lore video"
+      },
+      "caption": "The chamber of Oro's Council."
+    },
+    {
+      "after": 29,
+      "anchor": "I saw that",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a burning ruin, a small child sits in the dust as a scythe swings into view; then the girl who holds it stands over the child, her eyes red.",
+        "credit": "Official Ruby and Angela trailer",
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 142.86,
+            "end": 144.54
+          },
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 144.74,
+            "end": 147.44
+          }
+        ]
+      },
+      "caption": "The record Lesley had watched."
     }
   ]
 }

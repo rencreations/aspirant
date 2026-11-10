@@ -1,173 +1,40 @@
 {
   "chapter": "c15",
-  "mood": "Angela wakes in a burning street, and only she can stop what Ruby is about to do.",
+  "mood": "Locked in a cell with no window, Ruby tells Angela the truth. Somewhere above them, her father is watching.",
   "hero": {
-    "type": "sequence",
-    "xfade": 0.4,
-    "alt": "Close on Ruby in the burning street, her red eye fading to blue; the view drifts past her to Angela, who rises from her knees and reaches out a gloved hand, her eyes blue.",
-    "credit": "The Aspirants: Awakening trailer",
-    "poster": 1.5,
-    "parts": [
-      {
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "start": 172.56,
-        "end": 180.0
-      }
-    ]
+    "type": "frame",
+    "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+    "t": 183.72,
+    "alt": "Armored soldiers with long rifles wait in a bright hall by a ship's open hatch, as two more lead a small pink-haired prisoner in.",
+    "credit": "The Aspirants: Awakening trailer"
   },
-  "heroFocus": "45% 45%",
+  "heroFocus": "42% 85%",
   "spoiler": false,
   "score": "we-believe",
   "inserts": [
     {
-      "after": 4,
-      "anchor": "Far down the avenue,",
-      "kind": "clip",
+      "after": 21,
+      "anchor": "He could not remember",
+      "kind": "plate",
       "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "Ruby walks through the fire with her scythe, long hair streaming and one eye red; then, past a broken android in the foreground, she stands small at the far end of the burning street.",
-        "credit": "The Aspirants: Awakening trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 145.0,
-            "end": 147.52
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 148.0,
-            "end": 150.4
-          }
-        ]
-      }
+        "type": "image",
+        "src": "extra/fathe.png",
+        "crop": [0, 8, 828, 718],
+        "alt": "Ruby's father seen close in cold blue light, his face above the mouth out of frame: a hard chin, dark hair and a high collar of gray fur.",
+        "credit": "Official character art"
+      },
+      "caption": "Ruby's father, the Decisionmaker"
     },
     {
-      "after": 7,
-      "anchor": "Ruby stopped at the",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "Seen from above, a small child sits crying in the rubble beside a barrel as a long shadow falls across her; then a scythe rises against the smoky sky and starts down.",
-        "credit": "The Aspirants: Awakening trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 151.0,
-            "end": 153.8
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 154.08,
-            "end": 156.04,
-            "spanCuts": true
-          }
-        ]
-      }
-    },
-    {
-      "after": 13,
-      "anchor": "Ruby's head turned. The",
-      "kind": "voice",
-      "speaker": "angela",
-      "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-      "start": 173.75,
-      "end": 174.65,
-      "line": "Ruby!"
-    },
-    {
-      "after": 13,
-      "anchor": "Ruby's head turned. The",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.3,
-        "alt": "A sunny meadow shines inside Angela's eye as the view pulls back from it; a glowing ring with cat ears lifts the child into the air, Tetra floating above; then close on Ruby, her red eye turning blue, and on Angela reaching out.",
-        "credit": "The Aspirants: Awakening trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 165.72,
-            "end": 167.2,
-            "spanCuts": true
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 168.68,
-            "end": 172.32
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 172.56,
-            "end": 180.0
-          }
-        ]
-      }
-    },
-    {
-      "after": 36,
-      "anchor": "Then a camera looked",
+      "after": 34,
+      "anchor": "The ship rose. Oro",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "t": 187.08,
-        "alt": "Seen from behind Fanny and Layla, a wall screen shows soldiers walking Angela and Ruby into the white hold of a ship, a soldier carrying the scythe.",
-        "credit": "The Aspirants: Awakening trailer"
-      },
-      "caption": "Fanny and Layla watch the two girls being taken aboard."
-    },
-    {
-      "after": 38,
-      "anchor": "\"Looks like we got",
-      "kind": "voice",
-      "speaker": "fanny",
-      "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-      "start": 187.7,
-      "end": 190.4,
-      "line": "Looks like we got a few newcomers!"
-    },
-    {
-      "after": 39,
-      "anchor": "Layla folded her arms.",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-        "t": 187.4,
-        "crop": [250, 0, 2080, 1080],
-        "alt": "Layla, arms folded, and Fanny, a hand on her hip, stand side by side in a white room, both smiling.",
-        "credit": "The Aspirants: Awakening trailer"
-      },
-      "caption": "Layla and Fanny in the monitor room."
-    },
-    {
-      "after": 45,
-      "anchor": "Chang'e watched the small",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.3,
-        "alt": "A tower bursts under fire; a small pink-haired android walks through the smoke firing bolts of light, and a student goes down in a blast; then armored androids reach with glowing hands for two students fallen in the dust.",
-        "credit": "The Aspirants: Awakening trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 10.64,
-            "end": 16.88
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 17.12,
-            "end": 18.88
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 19.12,
-            "end": 20.84
-          }
-        ]
+        "src": "ruby-and-angela/video/angela/angela-final.mp4",
+        "t": 5.92,
+        "alt": "A small ship trails blue light through the stars beside the glowing edge of a planet.",
+        "credit": "Angela character film"
       }
     }
   ]

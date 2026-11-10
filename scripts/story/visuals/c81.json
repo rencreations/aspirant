@@ -1,0 +1,41 @@
+{
+  "chapter": "c81",
+  "mood": "A gray shape climbs the tower toward the console, and Lesley has to wait for Chang'e's word.",
+  "hero": {
+    "type": "image",
+    "src": "lesley-and-change/art/official/lesley-splash-art.jpg",
+    "crop": [520, 0, 2040, 1148],
+    "alt": "Official art: Lesley, blonde hair tied high, stands on a steel girder high above a city with her long orange rifle resting on her shoulder.",
+    "credit": "Official Lesley art"
+  },
+  "heroFocus": "53% 30%",
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 24,
+      "anchor": "She said it to",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "lesley-and-change/art/promotional/instagram_p_C34jltRPISN/001_3312554048787088525.jpg",
+        "crop": [20, 340, 1020, 425],
+        "alt": "Official art: young Chang'e, with glasses and big headphones, and Lesley stand back to back in warm light, each looking away in profile.",
+        "credit": "Official Lesley and Chang'e art, Renewed Hope"
+      }
+    },
+    {
+      "after": 83,
+      "anchor": "Lesley's arms tightened. Mr.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/video.webm",
+        "t": 97.2,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "Lesley stands in a high window at night, her long rifle across her body, the moon over the city behind the glass.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      }
+    }
+  ]
+}

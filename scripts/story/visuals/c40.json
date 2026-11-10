@@ -1,111 +1,15 @@
 {
   "chapter": "c40",
-  "mood": "In the dark beyond the sky, two friends finally say what they never said aloud.",
+  "mood": "Eleven cakes, a teacup that spins, a box nobody knows about, and a curfew broken for the summer fireworks.",
   "hero": {
     "type": "image",
-    "src": "vexana-and-guinevere/art/comic/18.jpg",
-    "crop": [0, 0, 2500, 1406],
-    "alt": "Deep darkness under a faint glow from above, broken only by a few pale flecks of light.",
-    "credit": "Official comic"
+    "src": "vexana-and-guinevere/art/comic/22.jpg",
+    "crop": [0, 2925, 2500, 1406],
+    "alt": "Comic panel at night: two girls in school uniform, seen from behind, hold hands under bursting fireworks; the one with red bows and a red skirt points at the sky, and the long dark-haired girl beside her watches her face instead.",
+    "credit": "Official Guinevere and Vexana comic, page 22"
   },
-  "heroFocus": "53% 55%",
-  "thumb": {
-    "type": "image",
-    "src": "vexana-and-guinevere/art/comic/28.jpg",
-    "crop": [410, 2415, 1840, 765],
-    "alt": "An Emblem of Hope blazes white.",
-    "credit": "Official comic"
-  },
+  "heroFocus": "30% 55%",
   "spoiler": false,
-  "score": "vexana-theme",
-  "inserts": [
-    {
-      "after": 9,
-      "anchor": "We once became",
-      "kind": "clip",
-      "media": {
-        "src": "vexana-and-guinevere/video/relink/footages/00m27s000ms-00m43s000ms/footage.mp4",
-        "crop": [0, 150, 2560, 930],
-        "alt": "Vexana and Guinevere fly side by side through a bright sky, wings and hair streaming behind them.",
-        "credit": "Relink, official film",
-        "type": "clip",
-        "start": 10.84,
-        "end": 12.76,
-        "sound": false,
-        "poster": 1.36
-      },
-      "caption": "Twin streams of light, soaring toward the heavens."
-    },
-    {
-      "after": 13,
-      "anchor": "In the corridor she",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/15.jpg",
-          "crop": [0, 5830, 2500, 2560],
-          "alt": "Guinevere reaches out in shock as Vexana, in tears, shouts at her to stay back.",
-          "credit": "Official comic"
-        }
-      ]
-    },
-    {
-      "after": 16,
-      "anchor": "The Emblem of",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-        "start": 13.0,
-        "end": 18.9,
-        "crop": [0, 0, 2560, 960],
-        "poster": 1.2,
-        "alt": "A memory on a sunny rooftop: Guinevere pins a gold star to Vexana's collar, then takes a selfie of the two of them.",
-        "credit": "Connection Lost, official film"
-      }
-    },
-    {
-      "after": 31,
-      "anchor": "You should have",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "vexana-and-guinevere/video/relink/footages/00m43s000ms-00m53s400ms/footage.mp4",
-        "t": 1.73,
-        "crop": [0, 150, 2560, 930],
-        "alt": "A gloved hand holds a phone showing the two friends together, beside an open box of keepsakes and two little dolls.",
-        "credit": "Relink, official film"
-      }
-    },
-    {
-      "after": 42,
-      "anchor": "Far off in",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/28.jpg",
-          "crop": [410, 2415, 1840, 765],
-          "alt": "An Emblem of Hope blazes with white light.",
-          "credit": "Official comic"
-        }
-      ]
-    },
-    {
-      "after": 50,
-      "anchor": "A hand found",
-      "kind": "clip",
-      "media": {
-        "src": "vexana-and-guinevere/video/connection-lost/footages/02m45s920ms-02m55s800ms/footage.mp4",
-        "alt": "Vexana, black-haired in her school uniform, holds Guinevere's hand and pulls her out of the dark toward the light.",
-        "credit": "Connection Lost, official film",
-        "type": "clip",
-        "start": 3.0,
-        "end": 4.4,
-        "sound": false,
-        "poster": 0.7
-      }
-    }
-  ]
+  "score": "guinevere-theme",
+  "inserts": []
 }

@@ -1,0 +1,16 @@
+{
+  "chapter": "c63",
+  "mood": "A red message, a pull in every cell, and a trade Selena is sure she controls.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/selena/video.mp4",
+    "t": 7.35,
+    "crop": [0, 0, 1920, 940],
+    "alt": "On a bright morning Selena, a blonde student in uniform with small red horns, kicks one foot up on a ledge by a railing, past a no-climbing sign and a CAUTION sign, her silver dragon machine Silverbolt crackling with blue light beside her.",
+    "credit": "Official Selena film"
+  },
+  "heroFocus": "52% 45%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

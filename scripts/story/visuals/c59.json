@@ -1,0 +1,16 @@
+{
+  "chapter": "c59",
+  "mood": "Rain over the Academy, a red alert with no sender, and a name nobody gave her. Selena chose it herself.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/character-preview/001_4018546186318517193.mp4",
+    "t": 2.02,
+    "crop": [0, 140, 1920, 800],
+    "alt": "Selena, a blonde student in a white school shirt and a dark choker, smiles with her eyes closed under a gray storm sky, a lollipop stick between her fingers, a gray copy of herself behind her.",
+    "credit": "Official Selena character preview"
+  },
+  "heroFocus": "75% 35%",
+  "spoiler": true,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

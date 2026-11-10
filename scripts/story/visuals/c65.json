@@ -1,0 +1,15 @@
+{
+  "chapter": "c65",
+  "mood": "The pull has a direction now. Selena hunts it, faces a dark window, and leaves Karina's door at dawn.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/selena/video.mp4",
+    "t": 57.4,
+    "alt": "Framed in a pane of pale glass against the dark, Selena in her school uniform touches her fingers to her chin and smiles at her own reflection.",
+    "credit": "Official Selena film"
+  },
+  "heroFocus": "50% 35%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

@@ -1,0 +1,126 @@
+{
+  "chapter": "c24",
+  "mood": "The best duo of the year learns what sends the Enders, and where the thing that steers them hides.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/32.jpg",
+    "crop": [0, 1000, 1720, 968],
+    "alt": "Vexana, dark hair falling over her face, looks worried at Guinevere, who grins under a blue sky.",
+    "credit": "Official comic, Guinevere and Vexana, page 32"
+  },
+  "heroFocus": "42% 45%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 1,
+      "anchor": "\"We're the best partners",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 64.6,
+      "end": 67.7,
+      "line": "We're the best partners in The Aspirants!"
+    },
+    {
+      "after": 3,
+      "anchor": "Chang'e watched from a",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/25.jpg",
+          "crop": [0, 640, 1270, 1406],
+          "alt": "Lesley smiles down at Vexana, who touches the new badge of honor on her chest.",
+          "credit": "Official comic, Guinevere and Vexana, page 25"
+        }
+      ],
+      "caption": "Lesley smiles at the best Aspirant Duo of the year."
+    },
+    {
+      "after": 7,
+      "anchor": "Chang'e passed her desk",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
+        "start": 4.15,
+        "end": 6.05,
+        "crop": [120, 0, 1680, 945],
+        "sound": false,
+        "poster": 1.7,
+        "alt": "A pen draws an armored suit on a grid, plate by plate, until it stands in color with notes pinned around it.",
+        "credit": "Official film, Selena"
+      },
+      "caption": "ENDER MECHA SUIT, said the corner."
+    },
+    {
+      "after": 20,
+      "anchor": "She hopped off the",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
+        "crop": [400, 0, 1140, 1080],
+        "alt": "Chang'e, small, in round glasses, smiles over a tablet in her hands.",
+        "credit": "Official trailer, Chang'e and Lesley",
+        "type": "clip",
+        "start": 5.57,
+        "end": 7.95,
+        "sound": false,
+        "poster": 1.23
+      },
+      "caption": "Teacher Chang'e."
+    },
+    {
+      "after": 22,
+      "anchor": "\"Teacher Chang'e told us,\"",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 72.05,
+      "end": 79.8,
+      "line": "Teacher Chang'e told us, to defeat the Will of the Planet, we must destroy the Enders' Control Core hidden in its dark void."
+    },
+    {
+      "after": 24,
+      "anchor": "It sounds better out",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/30.jpg",
+          "crop": [150, 100, 2220, 1750],
+          "alt": "Small drawings of Guinevere and Vexana; Guinevere says, Teacher Chang'e told us.",
+          "credit": "Official comic, Guinevere and Vexana, page 30"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/31.jpg",
+          "crop": [0, 480, 2500, 3180],
+          "alt": "Guinevere lies with her head in Vexana's lap on the grass, reciting the lesson about the Control Core.",
+          "credit": "Official comic, Guinevere and Vexana, page 31"
+        }
+      ],
+      "caption": "Under the shady tree, the lesson said out loud."
+    },
+    {
+      "after": 25,
+      "anchor": "\"But we can't get",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 79.85,
+      "end": 82.2,
+      "line": "But we can't get near the void."
+    },
+    {
+      "after": 26,
+      "anchor": "Guinevere sat up so",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 82.4,
+      "end": 86.65,
+      "line": "Don't worry! I will definitely find a way to destroy it."
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "chapter": "c18",
+  "mood": "A child gives Lesley her first birthday present in years. Then the city catches fire.",
+  "hero": {
+    "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
+    "alt": "Close on Lesley in a bright corridor, her hair falling over the left side of her face.",
+    "credit": "Rekindled Light trailer",
+    "type": "clip",
+    "start": 11.6,
+    "end": 14.6,
+    "sound": false,
+    "poster": 1.2
+  },
+  "heroFocus": "50% 35%",
+  "spoiler": false,
+  "score": null,
+  "inserts": [
+    {
+      "after": 7,
+      "anchor": "She had also pushed",
+      "kind": "voice",
+      "speaker": "change",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 18.75,
+      "end": 21.7,
+      "line": "Lesley, Lesley! Meet Mr. Bunny!"
+    },
+    {
+      "after": 7,
+      "anchor": "She had also pushed",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+        "start": 11.95,
+        "end": 14.85,
+        "poster": 1.0,
+        "sound": false,
+        "alt": "Chang'e pushes a small floating robot with bunny ears at Lesley, who bends down, while two scientists watch.",
+        "credit": "Rekindled Light trailer"
+      }
+    },
+    {
+      "after": 28,
+      "anchor": "She yanked a cloth",
+      "kind": "voice",
+      "speaker": "change",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 34.55,
+      "end": 38.65,
+      "line": "Ta-da! Now you'll be the BEST sniper ever!"
+    },
+    {
+      "after": 29,
+      "anchor": "A rifle lay there,",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
+        "alt": "In a bright lab Chang'e waves at a long red rifle hanging over a wide workbench.",
+        "credit": "Rekindled Light trailer",
+        "type": "clip",
+        "start": 7.84,
+        "end": 10.84,
+        "sound": false,
+        "poster": 0.56
+      }
+    },
+    {
+      "after": 34,
+      "anchor": "She came back to",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/00m00s000ms-00m07s200ms/footage.webm",
+        "alt": "Seen from high above at night, a city by the sea burns in several places.",
+        "credit": "Rekindled Light trailer",
+        "type": "clip",
+        "start": 1.28,
+        "end": 4.12,
+        "sound": false,
+        "poster": 1.02
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "Terrinia"
+      }
+    },
+    {
+      "after": 37,
+      "anchor": "From the roof she",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/00m40s640ms-00m55s480ms/footage.webm",
+        "alt": "A giant armored Ender walks between the towers of the city, flames pouring around it.",
+        "credit": "Rekindled Light trailer",
+        "type": "clip",
+        "start": 5.24,
+        "end": 7.92,
+        "sound": false,
+        "poster": 1.76
+      }
+    },
+    {
+      "after": 39,
+      "anchor": "\"No! It's a decoy!\"",
+      "kind": "voice",
+      "speaker": "lesley",
+      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
+      "start": 40.9,
+      "end": 42.75,
+      "line": "No! It's a decoy!"
+    },
+    {
+      "after": 40,
+      "anchor": "The swarms were pinning",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/00m40s640ms-00m55s480ms/footage.webm",
+        "alt": "Lesley shouts and throws out her arm against the burning city as soldiers run past her.",
+        "credit": "Rekindled Light trailer",
+        "type": "clip",
+        "start": 0.04,
+        "end": 2.24,
+        "sound": false,
+        "poster": 0.86
+      },
+      "caption": "No! It's a decoy!"
+    }
+  ]
+}

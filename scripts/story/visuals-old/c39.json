@@ -1,0 +1,105 @@
+{
+  "chapter": "c39",
+  "mood": "Layla counts angles on the platform while two lights climb the sky together.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/official/fighting-moment.jpg",
+    "crop": [330, 0, 2230, 1254],
+    "alt": "Vexana and Guinevere charge side by side through the violet sky, a vast dark winged shape behind them.",
+    "credit": "Official art"
+  },
+  "heroFocus": "80% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+    "t": 4.25,
+    "crop": [0, 0, 1920, 730],
+    "alt": "Fanny and Layla fight back to back, weapons up.",
+    "credit": "Official interactive drama"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 2,
+      "anchor": "Two girls rose",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/relink/footages/00m53s400ms-01m00s080ms/footage.mp4",
+        "start": 1.0,
+        "end": 4.6,
+        "crop": [0, 150, 2560, 930],
+        "poster": 2.0,
+        "alt": "Guinevere and Vexana stand small beneath the giant, then side by side, and a red streak of light shoots up past them.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "Understood, said Fanny",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m38s800ms-01m03s733ms/footage.webm",
+        "crop": [0, 0, 1920, 705],
+        "alt": "Four faces side by side, Layla, Fanny, Ruby and Angela, all calling out at once.",
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 11.8,
+        "end": 14.8,
+        "sound": false,
+        "poster": 1.2
+      }
+    },
+    {
+      "after": 20,
+      "anchor": "Light went up from",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m38s800ms-01m03s733ms/footage.webm",
+        "start": 16.3,
+        "end": 22.3,
+        "alt": "Streaks of light in several colors rise from below and meet on the giant winged figure in the violet sky.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "They struck the open",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/relink/footages/00m53s400ms-01m00s080ms/footage.mp4",
+        "crop": [0, 150, 2560, 930],
+        "alt": "The two streaks, red-gold and violet, close on the dark giant at the heart of the rift.",
+        "credit": "Relink, official film",
+        "type": "clip",
+        "start": 4.2,
+        "end": 6.64,
+        "sound": false,
+        "poster": 2.2
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "The Singularity burned on",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m00s000ms-00m24s267ms/footage.webm",
+        "t": 23.3,
+        "alt": "The Mother Matrix looms close, crowned and clawed, lightning crawling over its armor.",
+        "credit": "Official interactive drama"
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "In the sudden quiet",
+      "kind": "film",
+      "public": "video/guinevere-vexana/relink.mp4",
+      "poster": "video/guinevere-vexana/relink.jpg",
+      "title": "Relink",
+      "caption": "The official film of Vexana's stand and Guinevere's return."
+    }
+  ]
+}

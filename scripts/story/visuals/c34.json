@@ -1,137 +1,52 @@
 {
   "chapter": "c34",
-  "mood": "A beep on a rooftop and a beep in the courtyard. Guinevere runs, and Fanny has to decide who leads.",
+  "mood": "One needle, one year of split knuckles, and a seat in the stand that stays empty.",
   "hero": {
-    "type": "clip",
-    "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
-    "start": 0.04,
-    "end": 3.7,
-    "sound": false,
-    "poster": 0.7,
-    "alt": "Students watch a big screen showing a ragged star-shaped rift, and a small winged figure flying straight at it.",
-    "credit": "Official interactive drama: Guinevere and Vexana"
+    "type": "frame",
+    "src": "lesley-and-change/video/official/trailer/footages/02m23s600ms-02m32s200ms/footage.webm",
+    "t": 6.4,
+    "crop": [380, 0, 1920, 1080],
+    "alt": "Chang'e, small, in round glasses and a white coat, holds a pen and a board in a doorway; Lesley stands behind her in a white officer's coat, her blonde hair falling over one eye.",
+    "credit": "Official Lesley and Chang'e trailer"
   },
-  "heroFocus": "62% 40%",
+  "heroFocus": "40% 35%",
   "spoiler": false,
-  "score": "vexana-theme",
+  "score": "guinevere-theme",
   "inserts": [
     {
-      "after": 3,
-      "anchor": "She could have struck",
+      "after": 6,
+      "anchor": "A needle past the",
       "kind": "panels",
+      "caption": "A Combat Division trainee, and the Support Division's long coat.",
       "media": [
         {
           "type": "image",
-          "src": "vexana-and-guinevere/art/comic/43.jpg",
-          "crop": [0, 2630, 2500, 2250],
-          "alt": "A dark figure with a glowing staff stands at the edge of a rooftop, wind rushing past.",
-          "credit": "Official comic: Guinevere and Vexana, page 43"
-        }
-      ]
-    },
-    {
-      "after": 8,
-      "anchor": "But to protect",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/44.jpg",
-          "crop": [0, 320, 2500, 2230],
-          "alt": "Vexana, her hair gone pale, looks down with tired eyes: Betray her...",
-          "credit": "Official comic: Guinevere and Vexana, page 44"
+          "src": "_others/character/combat-division-trainee.png",
+          "crop": [315, 24, 440, 488],
+          "alt": "Design sheet of two Combat Division trainees, a pink-haired girl seen front and back and a dark-haired boy, in fitted dark uniforms with blue trim and white boots.",
+          "credit": "Official character art, the Academy's divisions"
         },
         {
           "type": "image",
-          "src": "vexana-and-guinevere/art/comic/44.jpg",
-          "crop": [0, 2565, 2500, 4075],
-          "alt": "Vexana stands with her staff before her towering purple and gold suit, a heart-shaped crest on its chest: But to protect her...",
-          "credit": "Official comic: Guinevere and Vexana, page 44"
-        }
-      ]
-    },
-    {
-      "after": 15,
-      "anchor": "It came from Guinevere's",
-      "kind": "panels",
-      "media": [
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/45.jpg",
-          "crop": [0, 350, 2500, 2600],
-          "alt": "Guinevere, tears in her eyes, presses her hand over the gold star at her collar.",
-          "credit": "Official comic: Guinevere and Vexana, page 45"
+          "src": "_others/character/support-division.png",
+          "crop": [225, 26, 470, 485],
+          "alt": "Design sheet of a Support Division trainee in a long dark hooded coat with blue trim, seen from three sides.",
+          "credit": "Official character art, the Academy's divisions"
         }
       ]
     },
     {
       "after": 26,
-      "anchor": "\"I'm prepared to enter",
-      "kind": "voice",
-      "speaker": "guinevere",
-      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
-      "start": 4.1,
-      "end": 6.55,
-      "line": "I'm prepared to enter the Singularity."
-    },
-    {
-      "after": 27,
-      "anchor": "The map went red.",
-      "kind": "clip",
+      "anchor": "In her first week",
+      "kind": "place",
+      "label": "Selrick Academy",
       "media": {
-        "type": "clip",
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m00s000ms-00m18s600ms/footage.webm",
-        "start": 8.2,
-        "end": 11.05,
-        "sound": false,
-        "poster": 0.6,
-        "alt": "On the big screen a map of the city glows red, and a warning sign flashes on it.",
-        "credit": "Official interactive drama: Guinevere and Vexana"
-      }
-    },
-    {
-      "after": 28,
-      "anchor": "Angela stood at the",
-      "kind": "voice",
-      "speaker": "angela",
-      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
-      "start": 19.8,
-      "end": 28.7,
-      "line": "According to the readings, the Singularity's energy signature is spiking rapidly. The Enders are mobilizing. What is our course of action?"
-    },
-    {
-      "after": 29,
-      "anchor": "\"So many hostiles! She",
-      "kind": "voice",
-      "speaker": "fanny",
-      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
-      "start": 29.75,
-      "end": 32.7,
-      "line": "So many hostiles! She must be in danger!"
-    },
-    {
-      "after": 30,
-      "anchor": "\"I've already identified several",
-      "kind": "voice",
-      "speaker": "layla",
-      "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
-      "start": 33.65,
-      "end": 39.8,
-      "line": "I've already identified several weak points in their defenses. This rescue operation is ready to go!"
-    },
-    {
-      "after": 30,
-      "anchor": "I've already identified several",
-      "kind": "clip",
-      "media": {
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/4B1/00m18s600ms-00m51s700ms/footage.webm",
-        "alt": "Fanny, Layla and Angela stand together, Layla in the middle with a hand on her chest, ready to go.",
-        "credit": "Official interactive drama: Guinevere and Vexana",
-        "type": "clip",
-        "start": 22.8,
-        "end": 25.8,
-        "sound": false,
-        "poster": 1.2
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
+        "t": 2.0,
+        "crop": [320, 0, 1600, 700],
+        "alt": "Two cadets in dark uniforms walk across the courtyard toward the Academy's tall white main building under a clear blue sky.",
+        "credit": "Official interactive drama, Guinevere and Vexana"
       }
     }
   ]

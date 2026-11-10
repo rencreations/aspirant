@@ -1,101 +1,29 @@
 {
   "chapter": "c41",
-  "mood": "Fanny fights through the streets beside an unlikely ally, until the storm overhead comes down.",
+  "mood": "An empty chair, two small blue badges, a photo taken three times, and a lesson about who sends the Enders.",
   "hero": {
     "type": "image",
-    "src": "vexana-and-guinevere/art/official/fighting-stance.jpg",
-    "crop": [0, 170, 2560, 1270],
-    "alt": "Vexana in her Ender robe with her staff, and Guinevere beside her with both drones blazing, back in the fight together.",
-    "credit": "Official art"
+    "src": "vexana-and-guinevere/art/comic/25.jpg",
+    "crop": [0, 560, 2500, 1406],
+    "alt": "Comic panel of the ceremony: black-haired Vexana smiles toward their teacher, seen from the side at the left, and pink-haired Guinevere laughs with her eyes shut, both with small blue shield badges pinned below the gold stars at their collars, while other students cheer behind them.",
+    "credit": "Official Guinevere and Vexana comic, page 25"
   },
-  "heroFocus": "35% 40%",
-  "thumb": {
-    "type": "frame",
-    "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-    "t": 14.3,
-    "crop": [0, 136, 1920, 808],
-    "alt": "The Storm Citadel, a vast spired ship, hangs in a burning rift over the city, smaller ships around it.",
-    "credit": "Selena and Obsidia, official trailer"
-  },
+  "heroFocus": "40% 40%",
   "spoiler": false,
-  "score": "we-believe",
+  "score": "guinevere-theme",
   "inserts": [
     {
-      "after": 11,
-      "anchor": "They fought down off",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "start": 7.0,
-        "end": 10.95,
-        "crop": [0, 136, 1920, 808],
-        "alt": "Guinevere and Vexana fight their way through the ruined streets, drones and staff tearing into the Enders.",
-        "credit": "Selena and Obsidia, official trailer"
-      }
-    },
-    {
-      "after": 22,
-      "anchor": "The Storm Citadel came",
+      "after": 49,
+      "anchor": "The door opened. A",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 12.65,
-        "crop": [0, 136, 1920, 734],
-        "alt": "Broken stones and rubble across a dark street, the ruins glowing red beyond.",
-        "credit": "Selena and Obsidia, official trailer"
-      }
-    },
-    {
-      "after": 39,
-      "anchor": "Obsidia stood at the",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 11.7,
-        "crop": [0, 136, 1920, 720],
-        "alt": "Obsidia's eyes, one blue and one red, look down.",
-        "credit": "Selena and Obsidia, official trailer"
-      }
-    },
-    {
-      "after": 41,
-      "anchor": "\"Shall we begin?\"",
-      "kind": "voice",
-      "speaker": "obsidia",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 26.2,
-      "end": 27.5,
-      "line": "Shall we begin?"
-    },
-    {
-      "after": 43,
-      "anchor": "She counted the lights",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/trailer/footages/00m29s708ms-00m40s667ms/footage.mp4",
-        "start": 0.5,
-        "end": 4.6,
-        "crop": [0, 136, 1920, 808],
-        "alt": "In a street washed with magenta light, Guinevere's drones spark and fail, and she drops out of the air and crashes to the ground.",
-        "credit": "Selena and Obsidia, official trailer"
-      }
-    },
-    {
-      "after": 48,
-      "anchor": "She lifted one finger",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "selena-and-obsidia/video/trailer/footages/00m15s125ms-00m29s708ms/footage.mp4",
-        "t": 13.1,
-        "crop": [0, 136, 1920, 808],
-        "alt": "Obsidia stretches out one clawed hand, two small black holes burning at her sides.",
-        "credit": "Selena and Obsidia, official trailer"
-      }
+        "src": "selena-and-obsidia/video/selena/video.mp4",
+        "t": 9.75,
+        "alt": "In a sunlit Academy corridor a blonde girl in uniform, small red horns in her hair, gives a lazy salute as a silver dragon-shaped machine crackling with blue light swoops past at her side.",
+        "credit": "Official Selena film"
+      },
+      "caption": "Late, on foot, with a silver dragon at her heel."
     }
   ]
 }

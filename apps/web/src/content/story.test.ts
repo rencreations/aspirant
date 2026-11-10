@@ -34,13 +34,13 @@ function mediaOf(chapter: Chapter): Media[] {
 }
 
 describe("the story index", () => {
-  it("has the Prologue and 48 chapters, in order, with one slug each", () => {
-    expect(chapters).toHaveLength(49);
-    expect(chapters.map((c) => c.number)).toEqual(Array.from({ length: 49 }, (_, i) => i));
+  it("has the Prologue and 87 chapters, in order, with one slug each", () => {
+    expect(chapters).toHaveLength(88);
+    expect(chapters.map((c) => c.number)).toEqual(Array.from({ length: 88 }, (_, i) => i));
     expect(chapters.map((c) => c.id)).toEqual(
-      Array.from({ length: 49 }, (_, i) => `c${String(i).padStart(2, "0")}`),
+      Array.from({ length: 88 }, (_, i) => `c${String(i).padStart(2, "0")}`),
     );
-    expect(new Set(chapters.map((c) => c.slug)).size).toBe(49);
+    expect(new Set(chapters.map((c) => c.slug)).size).toBe(88);
     expect(chapters[0]?.slug).toBe("prologue");
     expect(chapters[7]?.slug).toBe("chapter-07");
   });
@@ -55,7 +55,7 @@ describe("the story index", () => {
   it("finds chapters by slug and walks from one to the next", () => {
     expect(chapterBySlug("chapter-12")?.id).toBe("c12");
     expect(previousChapter("c00")).toBeUndefined();
-    expect(nextChapter("c48")).toBeUndefined();
+    expect(nextChapter("c87")).toBeUndefined();
     expect(nextChapter("c00")?.id).toBe("c01");
     expect(previousChapter("c10")?.id).toBe("c09");
   });
@@ -119,8 +119,8 @@ describe("the chapter files", () => {
         expect(b.voice?.dur ?? 99, entry.id).toBeLessThanOrEqual(15.5);
       }
     }
-    // The 88 of the first draft, and the few the rewritten scenes use besides.
-    expect(tables).toBeGreaterThanOrEqual(88);
+    // The 88 of the first edition, and the many more the six-act book marks.
+    expect(tables).toBeGreaterThanOrEqual(150);
     expect(films).toBeGreaterThan(0);
   });
 

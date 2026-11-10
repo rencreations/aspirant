@@ -36,7 +36,7 @@ const LOCK_MS = 520;
  * to cancel). Wheel, touch and keyboard scrolling all work, and so do the Continue button
  * and the N key.
  *
- * <NextFooter label="Story" sublabel="Ten Aspirants, sixty chapters." href={routes.story} />
+ * <NextFooter label="Story" sublabel="Ten Aspirants, eighty-seven chapters." href={routes.story} />
  */
 export function NextFooter({
   eyebrow = "Next destination",

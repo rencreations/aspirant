@@ -286,7 +286,9 @@ def make_thumb(source_im: Image.Image, cid: str, tag: str, sealed_too: bool) -> 
     key = _key(tag, "thumb")
     rel = f"img/story/{cid}/thumb-{key}.webp"
     sealed = f"img/story/{cid}/thumb-{key}-sealed.webp"
-    if not (PUBLIC / rel).exists():
+    need_thumb = not (PUBLIC / rel).exists()
+    need_sealed = sealed_too and not (PUBLIC / sealed).exists()
+    if need_thumb or need_sealed:
         im = source_im.convert("RGB")
         target_h = round(THUMB_W * 9 / 16)
         # cover crop to 16:9
@@ -294,8 +296,9 @@ def make_thumb(source_im: Image.Image, cid: str, tag: str, sealed_too: bool) -> 
         im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
         left, top = (im.width - THUMB_W) // 2, (im.height - target_h) // 2
         im = im.crop((left, top, left + THUMB_W, top + target_h))
-        _save_webp(im, PUBLIC / rel, THUMB_W, 74)
-        if sealed_too:
+        if need_thumb:
+            _save_webp(im, PUBLIC / rel, THUMB_W, 74)
+        if need_sealed:
             small = im.resize((96, round(96 * 9 / 16)), Image.BILINEAR).filter(ImageFilter.GaussianBlur(3))
             small = small.resize((THUMB_W, target_h), Image.BICUBIC)
             dark = Image.eval(small, lambda v: int(v * 0.55))

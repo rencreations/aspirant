@@ -1,0 +1,15 @@
+{
+  "chapter": "c53",
+  "mood": "Night after night in the dark, Vexana fits salvaged plates together, until something stands up.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/44.jpg",
+    "crop": [0, 2850, 2500, 1240],
+    "alt": "In the dark, a glowing gold crest, a cross over a crescent, rises above the head of a tall unlit shape, with violet star-shaped plates on either side.",
+    "credit": "Official Guinevere and Vexana comic, page 44"
+  },
+  "heroFocus": "46% 55%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": []
+}

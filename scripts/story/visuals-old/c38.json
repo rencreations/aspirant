@@ -1,0 +1,171 @@
+{
+  "chapter": "c38",
+  "mood": "Guinevere drops between her friend and the light, and will not let her carry it alone.",
+  "hero": {
+    "type": "clip",
+    "src": "vexana-and-guinevere/video/relink/footages/00m27s000ms-00m43s000ms/footage.mp4",
+    "start": 0.25,
+    "end": 5.6,
+    "crop": [0, 150, 2560, 820],
+    "poster": 4.35,
+    "alt": "In a burst of light Guinevere arrives and stands with her back to Vexana, who kneels on the scorched stone behind her.",
+    "credit": "Relink, official film"
+  },
+  "heroFocus": "22% 50%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/interactive-drama/footages/5C/00m18s000ms-00m30s967ms/footage.webm",
+    "t": 4.0,
+    "alt": "Guinevere stands with a hand on her hip in front of a star-shaped rift over the ruined city.",
+    "credit": "Official interactive drama"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 6,
+      "anchor": "\"There you go again,\"",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+      "start": 29.6,
+      "end": 34.0,
+      "line": "There you go again, taking on everything by yourself."
+    },
+    {
+      "after": 13,
+      "anchor": "\"You're the one who",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/5C.webm",
+      "start": 17.95,
+      "end": 20.5,
+      "line": "You're the one who needs my protection!"
+    },
+    {
+      "after": 14,
+      "anchor": "Guinevere. Vexana's voice",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m24s267ms-00m38s800ms/footage.webm",
+        "crop": [0, 0, 1920, 705],
+        "alt": "Vexana in profile against the dark sky, her eyes lowered.",
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 1.8,
+        "end": 4.8,
+        "sound": false,
+        "poster": 1.2
+      }
+    },
+    {
+      "after": 15,
+      "anchor": "\"Vexana, if you think",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 31.85,
+      "end": 38.55,
+      "line": "Vexana, if you think I'm going to let you sacrifice yourself for some greater good, think again!"
+    },
+    {
+      "after": 17,
+      "anchor": "This destiny is",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m24s267ms-00m38s800ms/footage.webm",
+        "crop": [0, 0, 1920, 705],
+        "alt": "Guinevere in profile, lit from one side, speaking straight ahead.",
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 7.8,
+        "end": 10.8,
+        "sound": false,
+        "poster": 1.2
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "You pulled me",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/footages/00m43s000ms-00m53s400ms/footage.mp4",
+        "t": 1.04,
+        "crop": [0, 150, 2560, 930],
+        "alt": "A memory: Guinevere takes Vexana's hand and pulls her out of the shadows into the light.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "\"There may be no",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+      "start": 45.3,
+      "end": 47.9,
+      "line": "There may be no going back this time."
+    },
+    {
+      "after": 26,
+      "anchor": "\"As long as we're",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+      "start": 48.9,
+      "end": 51.05,
+      "line": "As long as we're together!"
+    },
+    {
+      "after": 26,
+      "anchor": "As long as",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/relink/footages/00m43s000ms-00m53s400ms/footage.mp4",
+        "start": 3.05,
+        "end": 7.9,
+        "crop": [0, 155, 2560, 815],
+        "alt": "Vexana lifts her eyes with a small smile, and Guinevere glances back at her and smiles too.",
+        "credit": "Relink, official film"
+      }
+    },
+    {
+      "after": 33,
+      "anchor": "\"Aspirants! Today, our light",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 41.9,
+      "end": 47.3,
+      "line": "Aspirants! Today, our light shall pierce the Singularity!"
+    },
+    {
+      "after": 34,
+      "anchor": "\"Hope never dies!\" said",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+      "start": 47.85,
+      "end": 49.95,
+      "line": "Hope never dies!"
+    },
+    {
+      "after": 34,
+      "anchor": "Hope never dies",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/6C1/00m38s800ms-01m03s733ms/footage.webm",
+        "crop": [0, 0, 1920, 705],
+        "alt": "Vexana and Guinevere stand side by side and shout, the orb of Vexana's staff glowing.",
+        "credit": "Official interactive drama",
+        "type": "clip",
+        "start": 8.49,
+        "end": 11.49,
+        "sound": false,
+        "poster": 1.51
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "chapter": "c83",
+  "mood": "On the wet stones of the cut, Guinevere looks up at someone she thought she knew.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 35.5,
+    "crop": [200, 138, 1280, 720],
+    "alt": "Close on Guinevere's face in a dark street, a smudge on her cheek, her eyes narrowed as she looks up.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "heroFocus": "55% 45%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": [
+    {
+      "after": 34,
+      "anchor": "Take a good look",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 34.6,
+      "end": 38.6,
+      "line": "Take a good look. This is the real me."
+    },
+    {
+      "after": 37,
+      "anchor": "She told us, thought",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "Guinevere kneels on the stones among her fallen, sparking drones; then, in a smoky ruined street, Selena walks forward in dark armor and a long purple cloak, tall Enders on jointed legs standing behind her, and lifts a clawed hand to her face.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 3.0,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 33.6,
+            "end": 34.85,
+            "crop": [0, 138, 1920, 722]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 35.85,
+            "end": 39.1,
+            "crop": [0, 138, 1920, 722],
+            "spanCuts": true
+          }
+        ]
+      }
+    }
+  ]
+}

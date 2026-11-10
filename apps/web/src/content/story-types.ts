@@ -3,10 +3,10 @@
  * the novel `story/main.md` and the visual scripts in `scripts/story/visuals/`).
  *
  * `index.json` lists the chapters (the landing, the contents and the loading lists read it),
- * `c00.json` to `c48.json` hold one chapter each, `end.json` holds the back matter.
+ * `c00.json` to `c87.json` hold one chapter each, `end.json` holds the back matter.
  */
 
-/** `c00` is the Prologue, `c01` to `c48` the chapters. */
+/** `c00` is the Prologue, `c01` to `c87` the chapters. */
 export type StoryChapterId = `c${number}`;
 
 export interface ActMeta {

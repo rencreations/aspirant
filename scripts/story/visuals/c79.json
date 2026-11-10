@@ -1,0 +1,104 @@
+{
+  "chapter": "c79",
+  "mood": "Behind the torn sky something vast wakes, and on the bell tower a girl with a lollipop starts to smile.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.3,
+    "alt": "Selena in her school uniform holds a lollipop under a storm sky and lifts one hand lazily, her dragon-shaped machine Silverbolt rising beside her; then she sits on the edge of a high roof with her legs over the drop, Silverbolt crouched at her side.",
+    "credit": "Official Selena and Obsidia trailer",
+    "poster": 1.9,
+    "parts": [
+      {
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "start": 9.03,
+        "end": 11.55,
+        "crop": [0, 138, 1920, 722]
+      },
+      {
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "start": 11.78,
+        "end": 13.05,
+        "crop": [0, 138, 1920, 722]
+      }
+    ]
+  },
+  "heroFocus": "68% 40%",
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 14,
+      "anchor": "Her weapon came gliding",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a dark hall a tall jointed column climbs out of sight above a figure on a dais while a long, bladed weapon crawls across the floor to her; then, close, she reaches back and runs her claws along the creature of a weapon at her side.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 4.0,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 0.15,
+            "end": 3.45,
+            "crop": [0, 138, 1920, 722]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 3.7,
+            "end": 7.55,
+            "crop": [0, 138, 1920, 722]
+          }
+        ]
+      }
+    },
+    {
+      "after": 16,
+      "anchor": "Destruction is mine to",
+      "kind": "voice",
+      "speaker": "obsidia",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 0.6,
+      "end": 8.2,
+      "line": "Destruction is mine to command, yet my finest creation... has gone off-script."
+    },
+    {
+      "after": 36,
+      "anchor": "Finally the fun part",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+      "start": 8.3,
+      "end": 10.95,
+      "line": "Finally... the fun part begins."
+    },
+    {
+      "after": 42,
+      "anchor": "Over the bay their",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Over a city of towers a red four-pointed tear burns open in the sky while Selena and Silverbolt watch from a rooftop; then a huge dark ship of blade-edged towers hangs inside the red tear among smaller ships, and Enders leap from its lower edges and drop past its burning underside.",
+        "credit": "Official Selena and Obsidia trailer",
+        "poster": 2.2,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 13.28,
+            "end": 15.01,
+            "crop": [0, 138, 1920, 804]
+          },
+          {
+            "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+            "start": 15.23,
+            "end": 18.15,
+            "crop": [0, 138, 1920, 804],
+            "spanCuts": true
+          }
+        ]
+      },
+      "caption": "No portals this time. A ship, and smaller ships around it."
+    }
+  ]
+}

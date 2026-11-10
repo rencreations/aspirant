@@ -1,74 +1,55 @@
 {
   "chapter": "c29",
-  "mood": "A lamp over a stall at the dome's foot, a sack of Ender plating, and a plan nobody ordered.",
+  "mood": "Checks in the lab, a race down the stairs, a mop race in the hall, and a warm word from the door.",
   "hero": {
-    "type": "clip",
-    "src": "vexana-and-guinevere/video/connection-lost/footages/00m00s000ms-00m08s640ms/footage.mp4",
-    "start": 0.45,
-    "end": 4.9,
-    "sound": false,
-    "poster": 3.5,
-    "alt": "Purple star-shaped portals open in a storm sky over the city, and tall gray Enders stride out through the fog.",
-    "credit": "Official film, Connection Lost"
+    "type": "frame",
+    "src": "lesley-and-change/video/official/trailer/video.webm",
+    "t": 145.6,
+    "alt": "Seen through the window of a door, Ruby wipes the glass with a cloth while Angela watches from the side and Layla and Fanny sprawl on the shining floor of the hall behind her.",
+    "credit": "Official trailer, Chang'e and Lesley"
   },
-  "heroFocus": "60% 50%",
-  "score": "vexana-theme",
+  "heroFocus": "35% 60%",
+  "spoiler": false,
+  "score": "we-believe",
   "inserts": [
     {
-      "after": 2,
-      "anchor": "The Enders ran at",
+      "after": 23,
+      "anchor": "And the doll. Chang'e",
       "kind": "panels",
       "media": [
         {
           "type": "image",
-          "src": "vexana-and-guinevere/art/comic/39.jpg",
-          "crop": [0, 400, 2500, 2450],
-          "alt": "An armored boot taps down into a pool of light in the dark.",
-          "credit": "Official comic, Guinevere and Vexana, page 39"
-        },
-        {
-          "type": "image",
-          "src": "vexana-and-guinevere/art/comic/39.jpg",
-          "crop": [0, 4900, 2500, 1406],
-          "alt": "A horned figure in Ender armor lifts a staff whose orb is a black hole ringed in violet light.",
-          "credit": "Official comic, Guinevere and Vexana, page 39"
+          "src": "_others/character/tetra.png",
+          "crop": [480, 20, 710, 900],
+          "alt": "A small doll with pink hair, rabbit-like ears and wide yellow eyes, dressed in a white coat with pink cuffs.",
+          "credit": "Official character art, Tetra"
         }
-      ]
+      ],
+      "caption": "Tetra, Angela's doll."
     },
     {
-      "after": 11,
-      "anchor": "On nights without orders",
-      "kind": "clip",
+      "after": 75,
+      "anchor": "Great job, guys! she",
+      "kind": "plate",
       "media": {
-        "src": "vexana-and-guinevere/video/comic/footages/01m52s800ms-02m06s800ms/footage.mp4",
-        "crop": [0, 860, 1080, 608],
-        "alt": "At night the lights of the city glow below a tall dark tower.",
-        "credit": "Official motion comic, Guinevere and Vexana",
-        "type": "clip",
-        "start": 0.04,
-        "end": 2.26,
-        "sound": false,
-        "poster": 0.96
-      },
-      "overlay": {
-        "kicker": "The place",
-        "title": "Selrick Academy"
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/video.webm",
+        "t": 149.3,
+        "alt": "Chang'e grins wide in the doorway with a tablet in her arms, and Lesley stands a step behind her in her white officer's coat.",
+        "credit": "Official trailer, Chang'e and Lesley"
       }
     },
     {
-      "after": 39,
-      "anchor": "The suit's eyes lit.",
-      "kind": "clip",
+      "after": 84,
+      "anchor": "The bell ended detention.",
+      "kind": "plate",
       "media": {
-        "src": "vexana-and-guinevere/video/comic/footages/01m36s600ms-01m52s800ms/footage.mp4",
-        "crop": [0, 300, 1080, 608],
-        "alt": "A towering Ender mecha suit in pale and black plates, a heart-shaped core glowing violet on its chest.",
-        "credit": "Official motion comic, Guinevere and Vexana",
-        "type": "clip",
-        "start": 5.3,
-        "end": 7.6,
-        "sound": false,
-        "poster": 1.2
+        "type": "frame",
+        "src": "layla-and-fanny/video/official/lore/trailer/trailer.webm",
+        "t": 47.6,
+        "crop": [0, 134, 1920, 812],
+        "alt": "Fanny lies on her back in the sunny grass in her school uniform, her eyes shut.",
+        "credit": "Official Layla and Fanny lore trailer"
       }
     }
   ]

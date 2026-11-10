@@ -1,0 +1,76 @@
+{
+  "chapter": "c46",
+  "mood": "No power, no flight, one rubble wall, and a crying boy holding on to Layla's coat.",
+  "hero": {
+    "type": "image",
+    "src": "layla-and-fanny/art/official/fighting-together-splash-art.jpg",
+    "crop": [0, 0, 3840, 1640],
+    "alt": "Layla with her long cannon and Fanny with her blades fight back to back among the city towers.",
+    "credit": "Official art"
+  },
+  "heroFocus": "68% 35%",
+  "spoiler": false,
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 9,
+      "anchor": "Joe's words, from the",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "layla-and-fanny/art/comic/official-aspirant-comic/23.jpg",
+          "crop": [0, 1880, 1000, 438],
+          "alt": "Professor Joe hands a crying girl her pink rabbit: Don't be scared kiddo, everything's gonna be alright.",
+          "credit": "Official comic, The Aspirants, page 23"
+        }
+      ]
+    },
+    {
+      "after": 19,
+      "anchor": "Something came up in",
+      "kind": "clip",
+      "caption": "The burning avenue, once before.",
+      "media": {
+        "src": "ruby-and-angela/video/trailer/footages/02m11s360ms-02m36s160ms/footage.mp4",
+        "alt": "Ruby stands with her scythe in a burning street, a boy behind her.",
+        "credit": "Official trailer, Ruby and Angela",
+        "type": "clip",
+        "start": 2.96,
+        "end": 5.96,
+        "sound": false,
+        "poster": 2.44
+      }
+    },
+    {
+      "after": 31,
+      "anchor": "Far off, below the",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/trailer/footages/01m45s792ms-02m00s000ms/footage.mp4",
+        "start": 0.1,
+        "end": 3.4,
+        "crop": [0, 136, 1920, 808],
+        "poster": 1.0,
+        "alt": "Guinevere and one of her cat drones look up from the ruins at the burning Citadel in a red sky.",
+        "credit": "Official trailer, Day of Enders"
+      }
+    },
+    {
+      "after": 34,
+      "anchor": "Through the gap at",
+      "kind": "clip",
+      "media": {
+        "src": "ruby-and-angela/video/trailer/footages/02m36s160ms-03m00s760ms/footage.mp4",
+        "alt": "Ruby's face in the firelight, the red glow in her visible eye fading to clear blue.",
+        "credit": "Official trailer, Ruby and Angela",
+        "type": "clip",
+        "start": 18.1,
+        "end": 21.1,
+        "sound": false,
+        "poster": 1.2
+      }
+    }
+  ]
+}

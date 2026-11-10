@@ -1,0 +1,72 @@
+{
+  "chapter": "c70",
+  "mood": "A small gold star beeps for the first time in weeks, and Guinevere flies off alone to follow it.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/43.jpg",
+    "crop": [0, 450, 2500, 1406],
+    "alt": "Seen from high above, a column of dark violet smoke rises over a city of lit towers beside the water, past a tall tower crowned with a ring.",
+    "credit": "Official Guinevere and Vexana comic, page 43"
+  },
+  "heroFocus": "60% 45%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 19,
+      "anchor": "She said the rest",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/44.jpg",
+          "crop": [0, 320, 2500, 2230],
+          "alt": "Vexana, her hair pale lavender and her violet eyes wet, looks down from the roof; a caption reads: Betray her...",
+          "credit": "Official Guinevere and Vexana comic, page 44"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/44.jpg",
+          "crop": [0, 3450, 2500, 3170],
+          "alt": "Vexana stands with her staff, its orb dark as a hole; a tall purple and gold machine with a magenta heart crest looms behind her; a caption reads: But to protect her...",
+          "credit": "Official Guinevere and Vexana comic, page 44"
+        }
+      ]
+    },
+    {
+      "after": 28,
+      "anchor": "It came from Guinevere's",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/45.jpg",
+        "crop": [400, 450, 1800, 2450],
+        "alt": "Guinevere, tears in her eyes, presses her gloved hand to the gold star at her collar.",
+        "credit": "Official Guinevere and Vexana comic, page 45"
+      }
+    },
+    {
+      "after": 51,
+      "anchor": "The display switched to",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a dark hall, students watch a big display: a four-pointed rift in a swirl of pink and violet, a small figure flying at it; then a map of the city washed in red, with a warning sign.",
+        "credit": "Official Guinevere and Vexana interactive drama",
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+            "start": 0.2,
+            "end": 3.6
+          },
+          {
+            "src": "vexana-and-guinevere/video/interactive-drama/4B1.webm",
+            "start": 8.1,
+            "end": 10.9
+          }
+        ]
+      }
+    }
+  ]
+}

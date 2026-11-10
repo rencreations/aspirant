@@ -1,0 +1,59 @@
+{
+  "chapter": "c77",
+  "mood": "In a dark with no up and no down, two voices finally say what they kept hidden.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/official/both-splash-art.jpg",
+    "crop": [320, 0, 2240, 1260],
+    "alt": "Official art: Vexana's face in profile, blue-lavender hair over a violet eye, beside Guinevere flying past with her fist out and her pink hair streaming.",
+    "credit": "Official Guinevere and Vexana art"
+  },
+  "heroFocus": "28% 40%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 16,
+      "anchor": "But that day, your",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 43.68,
+        "crop": [240, 0, 2080, 1080],
+        "alt": "In the dark, a black-haired girl in school uniform with a staff in one hand takes the hand of a pink-haired girl standing in warm light.",
+        "credit": "Official Re:Link animation"
+      },
+      "caption": "Out of the shadows, a hand held out without hesitation."
+    },
+    {
+      "after": 69,
+      "anchor": "I took you to",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/22.jpg",
+          "crop": [0, 2350, 2500, 2950],
+          "alt": "Comic panel: two girls seen from behind hold hands under bursting fireworks, the pink-haired one pointing up and saying they will shine like fireworks.",
+          "credit": "Official Guinevere and Vexana comic"
+        }
+      ],
+      "caption": "The summer fireworks."
+    },
+    {
+      "after": 72,
+      "anchor": "That Emblem of Hope",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+        "t": 61.0,
+        "crop": [0, 120, 1080, 1010],
+        "alt": "Comic panel: Guinevere holds up a small gold star at Vexana's collar and tells her she made it, so they can fight side by side forever.",
+        "credit": "Official Guinevere and Vexana comic"
+      },
+      "caption": "A gift made by hand."
+    }
+  ]
+}

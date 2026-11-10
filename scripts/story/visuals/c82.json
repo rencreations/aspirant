@@ -1,0 +1,36 @@
+{
+  "chapter": "c82",
+  "mood": "High on the bell tower, the girl with the lollipop finally makes up her mind.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 29.5,
+    "crop": [245, 138, 1430, 804],
+    "alt": "The huge dark ship hangs inside a four-pointed tear of red light above the clouds, smaller ships around it, the light along the edges flaring outward.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "heroFocus": "50% 45%",
+  "thumb": {
+    "type": "image",
+    "src": "selena-and-obsidia/video/selena/thumbnail-vertical.jpg",
+    "crop": [345, 525, 410, 560],
+    "alt": "Official art: Selena in her white school uniform, small red horns and a heart clip in her blonde hair, smiles with one finger on her lips.",
+    "credit": "Official Selena film poster"
+  },
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": [
+    {
+      "after": 52,
+      "anchor": "She still wore her",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/video/selena/thumbnail-vertical.jpg",
+        "crop": [340, 525, 415, 660],
+        "alt": "Official art: Selena in her white school uniform and blue tie, small red horns and a heart clip in her blonde hair, smiles with one finger on her lips.",
+        "credit": "Official Selena film poster"
+      }
+    }
+  ]
+}

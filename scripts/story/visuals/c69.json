@@ -1,0 +1,55 @@
+{
+  "chapter": "c69",
+  "mood": "The sky over the bay tears open, Enders pour into the city, and one post on the channel never answers.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "Purple four-pointed portals open across a dark storm sky over the city's towers; then a tall gray Ender, landed from the sky, rises close in front of the towers.",
+    "credit": "Official Connection Lost animation",
+    "poster": 1.2,
+    "parts": [
+      {
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "start": 0.25,
+        "end": 2.3
+      },
+      {
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "start": 2.95,
+        "end": 4.8
+      }
+    ]
+  },
+  "heroFocus": "45% 40%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 42,
+      "anchor": "The names went out",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/art/lore/instagram_p_Ddxz3PUI3if/007_3995202392573558292.jpg",
+        "crop": [30, 92, 660, 173],
+        "alt": "A battle report card: the Singularity opens and the alarm sounds; small portraits mark Lesley and Chang'e at command, Selena on mobile support, Fanny, Layla and Guinevere on the frontline, and Ruby and Angela in rear support.",
+        "credit": "Official Selrick Archives, Singularity battle report"
+      },
+      "caption": "The posts, as the Academy's battle report logs them."
+    },
+    {
+      "after": 56,
+      "anchor": "She had come up",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+        "t": 12.4,
+        "crop": [0, 138, 1920, 800],
+        "alt": "Selena in her school uniform sits on the edge of a high ledge under a storm sky, her boots over the drop, her dragon-shaped machine Silverbolt crouched beside her.",
+        "credit": "Official Selena and Obsidia trailer"
+      },
+      "caption": "Selena on the bell tower, Silverbolt beside her."
+    }
+  ]
+}

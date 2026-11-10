@@ -22,7 +22,7 @@ const SEALED = INDEX.chapters.filter((c) => c.sealed).length;
 
 /** A reader who stopped in Chapter 12, as the reader saves it (and who has reached it). */
 const SAVED = JSON.stringify({
-  v: 2,
+  v: 3,
   chapterId: "c12",
   paragraphId: "c12-p004",
   textScale: 1,
@@ -169,8 +169,8 @@ test.describe("the story page", () => {
     await expect(cards.nth(1)).toContainText("First Place");
     await expect(cards.nth(1).getByRole("link")).toHaveAttribute("href", /story\/chapter-01\/?$/);
     await expect(cards.first().locator("img")).toHaveCount(1);
-    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
-    await expect(cards).toHaveCount(49);
+    await page.getByRole("button", { name: /Show all \d+ chapters/ }).click();
+    await expect(cards).toHaveCount(INDEX.chapters.length);
     await expect(page.locator("#chapters h3")).toHaveCount(6);
     await expect(cards.last()).toContainText("Give Me Back My Freedom");
     await page.getByRole("button", { name: "Show fewer" }).click();
@@ -183,16 +183,16 @@ test.describe("the story page", () => {
     await skipGate(page);
     await page.goto(url("/story/"));
     await page.waitForLoadState("networkidle");
-    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
+    await page.getByRole("button", { name: /Show all \d+ chapters/ }).click();
     await expect(page.locator("#chapters").getByText("Sealed", { exact: true })).toHaveCount(
       SEALED,
     );
     await page.evaluate(() =>
-      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, furthest: 48 })),
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 3, furthest: 87 })),
     );
     await page.reload();
     await page.waitForLoadState("networkidle");
-    await page.getByRole("button", { name: /Show all 49 chapters/ }).click();
+    await page.getByRole("button", { name: /Show all \d+ chapters/ }).click();
     await expect(page.locator("#chapters").getByText("Sealed", { exact: true })).toHaveCount(0);
   });
 
@@ -275,7 +275,7 @@ test.describe("a chapter of the story", () => {
     await openChapter(page, "prologue");
     await expect(page.locator("h1")).toContainText("Prologue");
     await expect(page.locator("article header")).toContainText("Terrinia, 983.");
-    await openChapter(page, "chapter-48");
+    await openChapter(page, "chapter-87");
     await page.getByRole("link", { name: /After the last page/ }).click();
     await expect.poll(() => sitePath(page, baseURL), { timeout: 10_000 }).toBe("/story/the-end/");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Who is who");
@@ -322,7 +322,7 @@ test.describe("a chapter of the story", () => {
     await expect(nav).toHaveAttribute("data-theme", "daybreak");
     // It follows the visitor's own choice of theme.
     await page.evaluate(() =>
-      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, theme: "storm" })),
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 3, theme: "storm" })),
     );
     await page.reload();
     await expect(page.locator("h1")).toBeVisible();
@@ -414,12 +414,12 @@ test.describe("a chapter of the story", () => {
     );
     // Six chapters in, the reader has met these five and no one else.
     await expect(sheet.locator("section[aria-labelledby='sheet-cast-title'] li")).toHaveCount(5);
-    await sheet.getByText("The Free Land").click();
+    await sheet.getByText("The First Aspirants").click();
     await sheet.getByRole("link", { name: /Chapter 24:/ }).click();
     await expect
       .poll(() => sitePath(page, baseURL), { timeout: 10_000 })
       .toBe("/story/chapter-24/");
-    await expect(page.locator("h1")).toContainText("The Void");
+    await expect(page.locator("h1")).toContainText("The First Light");
   });
 
   test("All chapters at the end of a chapter opens the chapter list", async ({ page, baseURL }) => {
@@ -450,7 +450,7 @@ test.describe("a chapter of the story", () => {
           }),
         { timeout: 6000 },
       )
-      .toBe("c02:2:2");
+      .toBe("c02:2:3");
   });
 
   test("an old Part address opens a chapter of the new book", async ({ page, baseURL }) => {
@@ -487,7 +487,7 @@ test.describe("a chapter of the story", () => {
     };
     expect(await run(), "light").toEqual([]);
     await page.evaluate(() =>
-      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 2, theme: "storm" })),
+      localStorage.setItem("aspirants:reader", JSON.stringify({ v: 3, theme: "storm" })),
     );
     await page.reload();
     await page.waitForLoadState("networkidle");

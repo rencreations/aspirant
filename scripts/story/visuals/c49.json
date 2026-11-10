@@ -1,0 +1,93 @@
+{
+  "chapter": "c49",
+  "mood": "Torn from her happiest memory, Vexana is shown a future, and makes a choice she will tell no one.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/36.jpg",
+    "crop": [0, 300, 2500, 1406],
+    "alt": "A huge head armored in dark violet, crowned with spikes and horns, looks out through a tear in a blue sky, its eyes glowing violet.",
+    "credit": "Official Guinevere and Vexana comic, page 36"
+  },
+  "heroFocus": "55% 50%",
+  "thumb": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/4.jpg",
+    "crop": [0, 900, 2500, 1406],
+    "alt": "Vexana in her Academy uniform looks up through smoke and fire, tears on her face.",
+    "credit": "Official Guinevere and Vexana comic, page 4"
+  },
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 4,
+      "anchor": "Vexana had fallen back",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/37.jpg",
+        "crop": [0, 80, 2500, 1770],
+        "alt": "Vexana has fallen back on her hands in the grass, staring up in terror as a dark shadow drains the green around her.",
+        "credit": "Official Guinevere and Vexana comic, page 37"
+      }
+    },
+    {
+      "after": 17,
+      "anchor": "Guinevere's arm was flung",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.25,
+        "alt": "Blasts burst around the ring at the top of the Academy's tower under a smoky sky; then Guinevere lies face down among broken stones, the others fallen beyond her.",
+        "credit": "Official Guinevere and Vexana motion comic",
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/comic/footages/00m00s000ms-00m27s000ms/footage.mp4",
+            "start": 0.62,
+            "end": 2.1,
+            "crop": [0, 60, 1080, 690]
+          },
+          {
+            "src": "vexana-and-guinevere/video/comic/footages/00m00s000ms-00m27s000ms/footage.mp4",
+            "start": 2.36,
+            "end": 4.5,
+            "crop": [0, 300, 1080, 720]
+          }
+        ]
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "It lit only when",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/5.jpg",
+        "crop": [0, 0, 2500, 1250],
+        "alt": "Bruised hands in dusty white gloves cup a small star badge in her lap, a tear falling onto it.",
+        "credit": "Official Guinevere and Vexana comic, page 5"
+      }
+    },
+    {
+      "after": 41,
+      "anchor": "...the only way to protect",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/38.jpg",
+          "crop": [0, 430, 2500, 970],
+          "alt": "Close on one of Vexana's violet eyes, wide open in the dark.",
+          "credit": "Official Guinevere and Vexana comic, page 38"
+        },
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/38.jpg",
+          "crop": [0, 1850, 2500, 1100],
+          "alt": "The same eye, closed.",
+          "credit": "Official Guinevere and Vexana comic, page 38"
+        }
+      ]
+    }
+  ]
+}

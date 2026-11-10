@@ -1,0 +1,26 @@
+{
+  "chapter": "c84",
+  "mood": "One narrow street, a wall of doors and shop signs, and a frontline that holds together.",
+  "hero": {
+    "type": "image",
+    "src": "layla-and-fanny/art/official/fighting-together-splash-art.jpg",
+    "alt": "Official art: Layla, long pink twin tails, swings her great white cannon one way while Fanny, short orange hair, cuts with her blade the other way, the two of them back to back.",
+    "credit": "Official Layla and Fanny art"
+  },
+  "heroFocus": "73% 30%",
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 36,
+      "anchor": "Fanny looked down at",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/official/fanny-and-layla.webp",
+        "alt": "Official art: Fanny, short orange hair and a red scarf, and Layla, long pink twin tails and a black dress, stand side by side under a blue sky, Layla grinning.",
+        "credit": "Official Layla and Fanny art"
+      }
+    }
+  ]
+}

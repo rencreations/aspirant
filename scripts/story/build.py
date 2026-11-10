@@ -7,7 +7,7 @@
 
 Reads   story/main.md (ASPIRANT_STORY), scripts/story/visuals/cNN.json, the originals (ASPIRANT_MEDIA)
 Writes  apps/web/public/img/story/**, apps/web/public/video/story/**,
-        apps/web/public/data/story/{index,end,c00..c48}.json
+        apps/web/public/data/story/{index,end,c00..c87}.json
 
 Stops on any validation error (see visuals.py). Run with the anaconda Python, ffmpeg on the PATH.
 """
@@ -30,12 +30,12 @@ PUBLIC = media.PUBLIC
 OUT = PUBLIC / "data" / "story"
 
 ACTS = [
-    ("I", "The Record", 0, 9),
-    ("II", "The Free Land", 10, 30),
-    ("III", "Vexana: Absent", 31, 34),
-    ("IV", "Connection Lost", 35, 38),
-    ("V", "The Black Hole", 39, 40),
-    ("VI", "The Storm Citadel", 41, 48),
+    ("I", "The Record", 0, 8),
+    ("II", "The Free Land", 9, 16),
+    ("III", "The First Aspirants", 17, 30),
+    ("IV", "The Emblem of Hope", 31, 47),
+    ("V", "Behind the Sky", 48, 67),
+    ("VI", "The Singularity Crisis", 68, 87),
 ]
 WPM = 235
 CAST_SLUGS = {

@@ -1,0 +1,37 @@
+{
+  "chapter": "c86",
+  "mood": "The power comes back to the street all at once, and nobody has time to rest.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 107.6,
+    "crop": [0, 138, 1920, 804],
+    "alt": "Under a sky streaked with red fire, Guinevere kneels in a ruined street as her two round cat-eared drones float up beside her, and above the towers a huge dark ship burns.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "heroFocus": "65% 55%",
+  "thumb": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
+    "t": 107.6,
+    "crop": [1000, 400, 920, 538],
+    "alt": "Guinevere, head bowed and eyes closed, kneels beside one of her round cat-eared drones.",
+    "credit": "Official Selena and Obsidia trailer"
+  },
+  "spoiler": false,
+  "score": "obsidia-aspirant",
+  "inserts": [
+    {
+      "after": 46,
+      "anchor": "Fanny's straight face broke",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "layla-and-fanny/art/official/969a9185060671723ac4bb4ebdb1d5df.jpg",
+        "crop": [30, 92, 1140, 520],
+        "alt": "Official art: Fanny, short orange hair and a red scarf, and Layla, long pink twin tails, charge forward side by side, Fanny's blades and Layla's great cannon raised.",
+        "credit": "Official Layla and Fanny art"
+      }
+    }
+  ]
+}

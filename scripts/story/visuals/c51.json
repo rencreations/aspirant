@@ -1,0 +1,15 @@
+{
+  "chapter": "c51",
+  "mood": "The first weeks, alone. Then Vexana needs something only one classmate sells, and Selena names her price.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/44.jpg",
+    "crop": [0, 330, 2500, 1406],
+    "alt": "In the dark, Vexana looks down with wet violet eyes, her hair gone pale lavender, two dark horns rising behind her head and star-shaped blades glowing at her shoulders.",
+    "credit": "Official Guinevere and Vexana comic, page 44"
+  },
+  "heroFocus": "50% 45%",
+  "spoiler": true,
+  "score": "vexana-theme",
+  "inserts": []
+}

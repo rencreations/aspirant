@@ -1,81 +1,16 @@
 {
   "chapter": "c44",
-  "mood": "Her rifle has lost its power, an Ender is on the steps, and Chang'e has a plan Lesley hates.",
+  "mood": "A cut kept secret, a match fought with one arm, a new rule between partners, and two felt dolls finished at last.",
   "hero": {
     "type": "frame",
-    "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
-    "t": 5.6,
-    "alt": "Lesley kneels on a rooftop at night and aims her long rifle across the city.",
-    "credit": "Official trailer, Rekindled Light"
+    "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+    "t": 70.42,
+    "crop": [200, 0, 1800, 900],
+    "alt": "Under a smoky gray sky, pink-haired Guinevere and black-haired Vexana in school uniform stand back to back, Guinevere's gloved fist raised, Vexana's violet eyes fixed ahead.",
+    "credit": "Official Connection Lost animation"
   },
-  "heroFocus": "56% 45%",
+  "heroFocus": "60% 45%",
   "spoiler": false,
-  "score": "we-believe",
-  "inserts": [
-    {
-      "after": 2,
-      "anchor": "Her artificial left eye",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "lesley-and-change/video/official/trailer/footages/02m06s200ms-02m23s600ms/footage.webm",
-        "t": 10.6,
-        "alt": "Lesley's face up close, a teal visor over one eye, the other glowing red as she takes aim.",
-        "credit": "Official trailer, Rekindled Light"
-      }
-    },
-    {
-      "after": 11,
-      "anchor": "Lesley's finger was already",
-      "kind": "clip",
-      "caption": "Years ago, another roof, another shot.",
-      "media": {
-        "type": "clip",
-        "src": "lesley-and-change/video/official/trailer/footages/01m27s000ms-01m37s760ms/footage.webm",
-        "start": 4.8,
-        "end": 7.8,
-        "poster": 2.3,
-        "alt": "Chang'e looks up from the ground as an Ender looms over her, and a shot from far off strikes it.",
-        "credit": "Official trailer, Rekindled Light"
-      }
-    },
-    {
-      "after": 20,
-      "anchor": "Mr. Bunny hung at",
-      "kind": "clip",
-      "media": {
-        "src": "lesley-and-change/video/official/teaser/footages/00m00s000ms-00m14s040ms/footage.mp4",
-        "alt": "Chang'e laughs and holds Mr. Bunny up to Lesley, who leans down to look at him.",
-        "credit": "Official teaser, Rekindled Light",
-        "type": "clip",
-        "start": 2.04,
-        "end": 4.96,
-        "sound": false,
-        "poster": 0.59
-      },
-      "caption": "Mr. Bunny at the base, before it fell."
-    },
-    {
-      "after": 24,
-      "anchor": "She asked, thought Lesley.",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "lesley-and-change/video/official/trailer/footages/01m37s760ms-02m06s200ms/footage.webm",
-        "t": 15.95,
-        "alt": "Lesley's eye narrows over the stock of her rifle as she takes aim.",
-        "credit": "Official trailer, Rekindled Light"
-      }
-    },
-    {
-      "after": 32,
-      "anchor": "\"Over here, Ender!\"",
-      "kind": "voice",
-      "speaker": "lesley",
-      "src": "lesley-and-change/video/official/trailer/燃え上がる光 ｜ 意力者スキン ｜ モバイルレジェンド [o3rYhIxWOfw].webm",
-      "start": 95.7,
-      "end": 97.6,
-      "line": "Over here, Ender!"
-    }
-  ]
+  "score": "guinevere-theme",
+  "inserts": []
 }

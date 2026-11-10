@@ -1,205 +1,226 @@
 {
   "chapter": "c10",
-  "mood": "On Planet Oro the heir may have no friends and no feelings. So she builds herself a way out.",
+  "mood": "An android who has never seen the sun steps into a secret garden and makes her first friend.",
   "hero": {
-    "type": "frame",
-    "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-    "t": 79.6,
-    "alt": "The pointed towers of Oro stand against a violet dusk sky, with small ships drifting far off.",
-    "credit": "Official video, Ruby"
+    "type": "sequence",
+    "xfade": 0.4,
+    "poster": 1.0,
+    "alt": "In the Laboratory, Ruby and Angela drink water face to face, then Ruby works at a glowing console while Angela stands in her cables behind her.",
+    "credit": "Official trailer",
+    "parts": [
+      {
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "start": 51.42,
+        "end": 53.26
+      },
+      {
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "start": 53.54,
+        "end": 56.88
+      }
+    ]
   },
-  "heroFocus": "20% 60%",
+  "heroFocus": "25% 40%",
   "spoiler": false,
   "score": null,
   "inserts": [
     {
-      "after": 14,
-      "anchor": "The lessons went on,",
-      "kind": "portrait",
-      "character": "ruby",
+      "after": 2,
+      "anchor": "Keep it hidden. If",
+      "kind": "place",
+      "label": "The Laboratory",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+        "t": 58.68,
+        "alt": "Angela stands awake on her pedestal in the Laboratory, held by cables and robot arms, before a window full of stars.",
+        "credit": "Official trailer"
+      }
+    },
+    {
+      "after": 10,
+      "anchor": "This was the Gardens,",
+      "kind": "clip",
       "media": {
         "type": "sequence",
         "xfade": 0.4,
-        "alt": "A small dark-haired girl hugs a pink doll in a dark hall of pillars while squares of light drift past her; a glowing cube sweeps over her, and she stands in the same hall older, in white and gold with a red bow, until a dark shape slides across in front of her and the hall goes dark.",
+        "poster": 2.0,
+        "alt": "Angela's hand reaches for the sun through a roof of glass hexagons, she and Ruby walk by a stream between green hills, then Angela holds out her hand to Ruby in the meadow.",
+        "credit": "Angela character film and official trailer",
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 26.9,
+            "end": 32.74,
+            "spanCuts": true
+          },
+          {
+            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
+            "start": 64.68,
+            "end": 70.12
+          }
+        ]
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Gardens"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "\"You must be what",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 34.85,
+      "end": 39.8,
+      "line": "You must be what humans call 'a friend'! You are now Angela's friend!"
+    },
+    {
+      "after": 13,
+      "anchor": "\"A friend?!...\" Ruby froze.",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 40.58,
+      "end": 42.12,
+      "line": "A friend?!..."
+    },
+    {
+      "after": 14,
+      "anchor": "Angela held out both",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "poster": 1.0,
+        "alt": "Angela spreads her arms and turns in the sunny grass of the Gardens, Ruby looks on, caught off guard, then Angela runs to her and takes her hand.",
         "credit": "Official video, Ruby",
-        "poster": 1.6,
         "parts": [
           {
             "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 4.48,
-            "end": 13.74
+            "start": 36.7,
+            "end": 39.25
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 39.95,
+            "end": 44.6
           }
         ]
       }
     },
     {
       "after": 17,
-      "anchor": "To her the whole",
-      "kind": "place",
-      "label": "Planet Oro",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 82.25,
-        "alt": "A dark ship with cyan thrusters crosses a violet sky above the pointed towers of Oro.",
-        "credit": "Official video, Ruby"
-      }
-    },
-    {
-      "after": 20,
-      "anchor": "The Council hall was",
+      "anchor": "Android Angela, said a",
       "kind": "clip",
       "media": {
         "type": "sequence",
-        "xfade": 0.4,
-        "alt": "In a vast dark hall of pillars and violet windows, light falls on one small figure standing in a glowing circle on the floor.",
-        "credit": "Official video, Ruby",
-        "poster": 2.4,
+        "xfade": 0.3,
+        "poster": 0.5,
+        "alt": "A glowing display maps the training arena with Angela's picture on its panel, then Angela stands before a huge armored droid with a blade and lifts her face, blue eyes set.",
+        "credit": "Official video, Angela",
         "parts": [
           {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 0.5,
-            "end": 4.24
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 34.5,
+            "end": 35.92
+          },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 36.16,
+            "end": 37.64
+          },
+          {
+            "src": "ruby-and-angela/video/angela/angela-final.mp4",
+            "start": 37.92,
+            "end": 39.2
           }
         ]
       },
-      "caption": "The Council hall"
-    },
-    {
-      "after": 24,
-      "anchor": "\"You cannot allow yourself",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 15.9,
-        "alt": "Ruby, older now, stands in profile looking away, beside her father in his dark fur-collared coat.",
-        "credit": "Official video, Ruby"
-      },
-      "caption": "Ruby and her father, the Decisionmaker of Planet Oro."
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Training Field"
+      }
     },
     {
       "after": 29,
-      "anchor": "\"But I have a",
-      "kind": "voice",
-      "speaker": "ruby",
-      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 14.6,
-      "end": 16.7,
-      "line": "But I have a plan..."
-    },
-    {
-      "after": 30,
-      "anchor": "She had no plan",
+      "anchor": "A month later the",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 18.0,
-        "alt": "Ruby faces forward in the dark hall while, far behind her, her father walks out through a bright doorway.",
-        "credit": "Official video, Ruby"
+        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 0.88,
+        "alt": "Angela flies through the air above the training droid amid a burst of pink flame.",
+        "credit": "Official video, Angela"
       }
     },
     {
       "after": 33,
-      "anchor": "These were the Council's",
+      "anchor": "Ruby, the Gardens. Are",
       "kind": "clip",
       "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "Out of the dark the view sweeps back through rows of identical androids with animal ears, standing still in a hall of tall white windows.",
-        "credit": "Official video, Ruby",
-        "poster": 2.4,
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 63.64,
-            "end": 67.08,
-            "spanCuts": true
-          }
-        ]
-      },
-      "caption": "The androids of Project Angel"
+        "type": "clip",
+        "src": "ruby-and-angela/video/ruby/footages/00m44s920ms-00m59s280ms/footage.mp4",
+        "start": 4.6,
+        "end": 8.8,
+        "poster": 3.0,
+        "sound": false,
+        "alt": "Ruby works at a glowing console in the Laboratory, and Angela, held by cables, opens her eyes.",
+        "credit": "Official video, Ruby"
+      }
     },
     {
-      "after": 36,
-      "anchor": "So I can hide",
+      "after": 37,
+      "anchor": "\"Does it hurt?\"",
       "kind": "voice",
       "speaker": "ruby",
       "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-      "start": 25.3,
-      "end": 27.3,
-      "line": "She might be my way out of here."
+      "start": 50.35,
+      "end": 51.3,
+      "line": "Does it hurt?"
     },
     {
-      "after": 36,
-      "anchor": "So I can hide",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "In a dark laboratory an android girl hangs asleep in a frame of cables, and screens light up around her closed eyes.",
-        "credit": "Official video, Ruby",
-        "poster": 2.6,
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 20.45,
-            "end": 22.24
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 22.48,
-            "end": 24.78
-          }
-        ]
-      }
+      "after": 38,
+      "anchor": "\"What does hurt mean?\"",
+      "kind": "voice",
+      "speaker": "angela",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 51.5,
+      "end": 53.75,
+      "line": "What does hurt mean?"
     },
     {
-      "after": 42,
-      "anchor": "In the frame of",
-      "kind": "clip",
-      "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "A loading bar fills beside the name ANGELA; Ruby works at a ring of screens until SUCCESS shows; a gloved hand presses the key; in her frame of cables, the pink-haired android opens blue eyes and smiles.",
-        "credit": "Official video, Ruby",
-        "poster": 5.8,
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 26.8,
-            "end": 28.08
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 28.55,
-            "end": 31.0
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 31.25,
-            "end": 33.02
-          },
-          {
-            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-            "start": 33.26,
-            "end": 36.18
-          }
-        ]
-      }
-    },
-    {
-      "after": 46,
-      "anchor": "The smile was so",
-      "kind": "portrait",
-      "character": "angela",
+      "after": 44,
+      "anchor": "You're my friend, so",
+      "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 36.0,
-        "crop": [850, 0, 900, 1080],
-        "alt": "Angela, just woken, with pink hair, white ear pieces and blue eyes, smiling brightly.",
+        "src": "ruby-and-angela/video/angela/footages/00m46s160ms-01m03s200ms/footage.mp4",
+        "t": 15.68,
+        "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower.",
+        "credit": "Official video, Angela"
+      }
+    },
+    {
+      "after": 48,
+      "anchor": "Later, thinking Angela was",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 56.55,
+      "end": 58.85,
+      "line": "What if they find out one day?"
+    },
+    {
+      "after": 52,
+      "anchor": "After the sixth return",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/footages/01m24s080ms-01m35s840ms/footage.mp4",
+        "t": 4.02,
+        "alt": "A white daisy losing its petals beside a screen that shows Angela and Ruby in the garden.",
         "credit": "Official video, Ruby"
       }
     }

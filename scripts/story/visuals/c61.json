@@ -1,0 +1,15 @@
+{
+  "chapter": "c61",
+  "mood": "A mended servo, a stall at the city's edge, and a small director who wants to watch Selena work.",
+  "hero": {
+    "type": "image",
+    "src": "extra/ai.png",
+    "crop": [140, 0, 880, 941],
+    "alt": "Design sheet of one of the Academy's AI droids: a slim white machine with a single orange eye and long jointed arms, a spare arm and close views of its head drawn beside it.",
+    "credit": "Official character art"
+  },
+  "heroFocus": "60% 30%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

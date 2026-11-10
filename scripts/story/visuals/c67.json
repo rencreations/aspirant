@@ -1,0 +1,15 @@
+{
+  "chapter": "c67",
+  "mood": "The night before, Vexana keeps watch from a ruined tower over one lit window.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/28.jpg",
+    "crop": [822, 1160, 1066, 600],
+    "alt": "A small gold star badge glows in a wash of pale light.",
+    "credit": "Official Guinevere and Vexana comic, page 28"
+  },
+  "heroFocus": "50% 50%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": []
+}

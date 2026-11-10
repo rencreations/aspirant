@@ -1,0 +1,68 @@
+{
+  "chapter": "c25",
+  "mood": "A nap in class, a paper plane, a dangerous design, and on the roof, a plan for coming home.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/selena/footages/00m49s633ms-00m56s500ms/footage.mp4",
+    "t": 1.8,
+    "crop": [110, 0, 1712, 963],
+    "alt": "Selena sleeps on her desk, dreaming of a cupcake, while behind her Layla grins and throws a paper plane.",
+    "credit": "Official film, Selena"
+  },
+  "heroFocus": "50% 55%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 7,
+      "anchor": "Then Selena sat up,",
+      "kind": "clip",
+      "media": {
+        "src": "selena-and-obsidia/video/selena/footages/00m10s333ms-00m17s033ms/footage.mp4",
+        "crop": [120, 0, 1680, 945],
+        "alt": "Selena's design on a grid: a full suit of armor with a visor, plated joints and blades, notes pinned around it.",
+        "credit": "Official film, Selena",
+        "type": "clip",
+        "start": 4.11,
+        "end": 6.66,
+        "sound": false,
+        "poster": 1.29
+      },
+      "caption": "Ender plating, my own design."
+    },
+    {
+      "after": 13,
+      "anchor": "Afterward Selena went down",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "selena-and-obsidia/video/selena/footages/00m00s000ms-00m10s333ms/footage.mp4",
+        "start": 7.12,
+        "end": 7.95,
+        "crop": [0, 0, 1920, 960],
+        "sound": false,
+        "poster": 0.4,
+        "alt": "Small against the sky, Selena kicks off a rail at the Academy, Silverbolt crackling at her side.",
+        "credit": "Official film, Selena"
+      }
+    },
+    {
+      "after": 19,
+      "anchor": "That afternoon they sat",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m34s300ms-00m48s833ms/footage.webm",
+        "alt": "The empty rooftop of an Academy building, its guardrail against a blue sky with drifting clouds.",
+        "credit": "Official interactive drama, Guinevere and Vexana",
+        "type": "clip",
+        "start": 6.8,
+        "end": 9.8,
+        "sound": false,
+        "poster": 1.2
+      },
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Academy roof"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "chapter": "c56",
+  "mood": "Aboard the enemy's ship, Vexana asks its commander for answers, and gets more than she came for.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+    "t": 8.9,
+    "alt": "Dark planets hang in a long row in the void beside a bursting white star, pink threads of light running between them.",
+    "credit": "Official Obsidia film"
+  },
+  "heroFocus": "38% 45%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": []
+}

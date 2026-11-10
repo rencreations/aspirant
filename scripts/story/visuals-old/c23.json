@@ -1,0 +1,118 @@
+{
+  "chapter": "c23",
+  "mood": "Two handmade gold stars, a summer of firsts, and fireworks from a roof.",
+  "hero": {
+    "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+    "crop": [0, 0, 2560, 900],
+    "alt": "On a sunny rooftop Guinevere pins a small gold star to Vexana's collar.",
+    "credit": "Official Connection Lost film",
+    "type": "clip",
+    "start": 13.24,
+    "end": 15.5,
+    "sound": false,
+    "poster": 1.96
+  },
+  "heroFocus": "45% 35%",
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 8,
+      "anchor": "Vexana held out her",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/official/guinevere-splash-art.jpg",
+        "crop": [330, 0, 760, 680],
+        "alt": "A round silver drone with cat ears, narrowed yellow eyes glowing in its black face, two red orbs floating beside it.",
+        "credit": "Official splash art"
+      },
+      "caption": "Ears up again."
+    },
+    {
+      "after": 12,
+      "anchor": "Guinevere dug in her",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 52.0,
+      "end": 54.4,
+      "line": "Here! I made 'em myself, ya know!"
+    },
+    {
+      "after": 14,
+      "anchor": "Guinevere held out her",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 54.8,
+      "end": 58.3,
+      "line": "Look, they light up when our powers are in sync."
+    },
+    {
+      "after": 20,
+      "anchor": "Weeks later a swarm",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "crop": [0, 0, 2560, 900],
+        "alt": "Guinevere, hurt, holds her arm under a gray sky, then sways and falls.",
+        "credit": "Official Connection Lost film",
+        "type": "clip",
+        "start": 3.75,
+        "end": 5.0,
+        "sound": false,
+        "poster": 0.4
+      }
+    },
+    {
+      "after": 22,
+      "anchor": "\"Stay with me, Guinevere.\"",
+      "kind": "voice",
+      "speaker": "vexana",
+      "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+      "start": 64.95,
+      "end": 66.75,
+      "line": "Stay with me, Guinevere."
+    },
+    {
+      "after": 23,
+      "anchor": "Guinevere took it and",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m58s440ms-01m12s480ms/footage.mp4",
+        "start": 11.4,
+        "end": 12.7,
+        "crop": [0, 0, 2560, 900],
+        "poster": 0.6,
+        "alt": "Vexana and Guinevere stand back to back in a ruined street as dark claws reach for them.",
+        "credit": "Official Connection Lost film"
+      },
+      "caption": "Back to back."
+    },
+    {
+      "after": 31,
+      "anchor": "\"We'll be just like",
+      "kind": "voice",
+      "speaker": "guinevere",
+      "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+      "start": 52.85,
+      "end": 56.7,
+      "line": "We'll be just like fireworks, shining at our absolute brightest!"
+    },
+    {
+      "after": 32,
+      "anchor": "A burst lit the",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/22.jpg",
+          "crop": [0, 2400, 2500, 3304],
+          "alt": "Holding hands under bursting fireworks, Guinevere points at the sky while Vexana looks at her.",
+          "credit": "Official Guinevere and Vexana comic"
+        }
+      ]
+    }
+  ]
+}

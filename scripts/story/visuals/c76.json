@@ -1,0 +1,89 @@
+{
+  "chapter": "c76",
+  "mood": "Two lights climb toward the chest of something vast, crossing and crossing again like fireworks.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "Guinevere and Vexana stand side by side under a storm sky, her two drones up with their red fists and the staff glowing in Vexana's hand; then a vast dark winged shape spreads over the ruined city, two small figures facing it below.",
+    "credit": "Official Re:Link animation",
+    "poster": 1.2,
+    "parts": [
+      {
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "start": 51.25,
+        "end": 53.28,
+        "crop": [0, 160, 2560, 760]
+      },
+      {
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "start": 53.52,
+        "end": 55.84,
+        "crop": [0, 160, 2560, 760]
+      }
+    ]
+  },
+  "heroFocus": "45% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+    "t": 52.2,
+    "crop": [0, 160, 1250, 760],
+    "alt": "Guinevere stands ready under a storm sky, one cat-eared drone hovering beside her with its red fists up.",
+    "credit": "Official Re:Link animation"
+  },
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 13,
+      "anchor": "The Matrix hung right",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 57.64,
+        "crop": [0, 160, 2560, 760],
+        "alt": "A dark winged shape hangs in front of a vast four-pointed tear of violet light above the ruined city, the tear's edges burning bright.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 56,
+      "anchor": "Ready said Angela",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+        "t": 51.5,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Four faces side by side, the team on the platform, every one of them shouting, ready.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    },
+    {
+      "after": 66,
+      "anchor": "They dived in under",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Streaks of cyan, gold and red light from below meet on the crowned head of a vast winged shape; then a red-gold light and a violet one sweep in from both sides and cross as they dive at it.",
+        "credit": "Official Guinevere and Vexana interactive drama and Re:Link animation",
+        "poster": 2.6,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/interactive-drama/6C1.webm",
+            "start": 55.2,
+            "end": 57.4,
+            "crop": [0, 0, 1920, 810]
+          },
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 58.2,
+            "end": 60.0
+          }
+        ]
+      }
+    }
+  ]
+}

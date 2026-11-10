@@ -1,0 +1,40 @@
+{
+  "chapter": "c55",
+  "mood": "Summoned to the vast body in the dark, Vexana meets the only other mind in the void.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+    "t": 0.6,
+    "alt": "A pale-haired woman floats with her eyes closed, wrapped in violet light and thin red threads.",
+    "credit": "Official Obsidia film"
+  },
+  "heroFocus": "48% 30%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 16,
+      "anchor": "*The same face,* she",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/36.jpg",
+        "crop": [632, 614, 1590, 1525],
+        "alt": "Comic panel: a vast armored head of dark violet, crowned with spikes, its eyes glowing violet and a thin streak of light running from one of them.",
+        "credit": "Official Guinevere and Vexana comic, page 36"
+      }
+    },
+    {
+      "after": 27,
+      "anchor": "A long weapon of",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/art/official/obsidia/obsidia.jpg",
+        "crop": [290, 80, 650, 455],
+        "alt": "A woman with long pale blonde hair and violet and blue eyes reaches out with a clawed black glove, a pink star blazing at her chest and a dark sun burning behind her.",
+        "credit": "Official Obsidia film key art"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "chapter": "c62",
+  "mood": "A gray training frame, a year of salvage and one storm night: how Selena built the machine only she can ride.",
+  "hero": {
+    "type": "image",
+    "src": "selena-and-obsidia/art/official/selena/selena-splash-art.png",
+    "crop": [0, 60, 945, 532],
+    "alt": "The silver head of Selena's dragon-shaped machine Silverbolt, a tall crest above blue crystal eyes, blue light in its seams.",
+    "credit": "Official Selena splash art"
+  },
+  "heroFocus": "72% 55%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": [
+    {
+      "after": 68,
+      "anchor": "Silverbolt, she thought.",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/music-collection/001_4013351897154849593.mp4",
+        "t": 60.0,
+        "crop": [100, 76, 420, 404],
+        "alt": "Silverbolt's silver dragon head, jaws open and one eye glowing blue, wreathed in blue lightning against a cloudy sky.",
+        "credit": "Official Aspirants Music Collection, Lullaby of Oblivion art"
+      },
+      "caption": "Silver from nose to tail."
+    },
+    {
+      "after": 80,
+      "anchor": "Her pen had a",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "alt": "A pen draws a blue line across a dark grid and a hand twirls a pen with a gold star on its end; then on graph paper a pale armored suit grows line by line, a crested helmet, a purple mane and four blades floating beside its arms.",
+        "credit": "Official Selena film",
+        "poster": 2.3,
+        "parts": [
+          {
+            "src": "selena-and-obsidia/video/selena/video.mp4",
+            "start": 10.72,
+            "end": 11.98,
+            "crop": [0, 0, 1920, 960]
+          },
+          {
+            "src": "selena-and-obsidia/video/selena/video.mp4",
+            "start": 14.51,
+            "end": 16.9,
+            "crop": [0, 0, 1920, 960]
+          }
+        ]
+      },
+      "caption": "Line by line, over months."
+    }
+  ]
+}

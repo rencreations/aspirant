@@ -1,85 +1,206 @@
 {
   "chapter": "c09",
-  "mood": "The youngest Chief Scientist in Terrinia mends everyone's machines. She wants one thing more, and Lesley says no.",
+  "mood": "On Planet Oro the heir may have no friends and no feelings. So she builds herself a way out.",
   "hero": {
-    "type": "clip",
-    "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
-    "start": 0.3,
-    "end": 5.0,
-    "crop": [320, 0, 1920, 1080],
-    "poster": 2.7,
-    "sound": false,
-    "alt": "Chang'e in her lab coat carries a box of tools across a bright laboratory while Mr. Bunny floats by the bench.",
-    "credit": "Official trailer, Chang'e and Lesley"
+    "type": "frame",
+    "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+    "t": 79.6,
+    "alt": "The pointed towers of Oro stand against a violet dusk sky, with small ships drifting far off.",
+    "credit": "Official video, Ruby"
   },
-  "heroFocus": "40% 45%",
+  "heroFocus": "20% 60%",
   "spoiler": false,
   "score": null,
   "inserts": [
     {
-      "after": 3,
-      "anchor": "Her wall screen listed",
-      "kind": "plate",
-      "media": {
-        "type": "image",
-        "src": "extra/ai.png",
-        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye, drawn beside close views of its head and arm and a blue line sketch of the whole machine.",
-        "credit": "Official character art"
-      },
-      "caption": "An AI droid, one of the Academy's helpers."
-    },
-    {
-      "after": 9,
-      "anchor": "Chang'e laughed until she",
+      "after": 15,
+      "anchor": "The lessons went on,",
       "kind": "portrait",
-      "character": "change",
+      "character": "ruby",
       "media": {
-        "type": "image",
-        "src": "lesley-and-change/art/lore/5 - end.jpg",
-        "crop": [244, 152, 400, 500],
-        "alt": "Chang'e laughing, with round glasses, pink hair and white bunny-ear clips.",
-        "credit": "Official art"
-      }
-    },
-    {
-      "after": 12,
-      "anchor": "Chang'e flipped the photograph",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
-        "start": 5.7,
-        "end": 9.6,
-        "poster": 3.3,
-        "sound": false,
-        "alt": "Mr. Bunny sits on a desk, and beside him stands a framed photograph of two tall people holding a small girl.",
-        "credit": "Official trailer, Chang'e and Lesley"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A small dark-haired girl hugs a pink doll in a dark hall of pillars while squares of light drift past her; a glowing cube sweeps over her, and she stands in the same hall older, in white and gold with a red bow, until a dark shape slides across in front of her and the hall goes dark.",
+        "credit": "Official video, Ruby",
+        "poster": 1.6,
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 4.48,
+            "end": 13.74
+          }
+        ]
       }
     },
     {
       "after": 18,
-      "anchor": "Just Selena, said Selena.",
-      "kind": "portrait",
-      "character": "selena",
+      "anchor": "To her the whole",
+      "kind": "place",
+      "label": "Planet Oro",
       "media": {
-        "type": "image",
-        "src": "extra/s.png",
-        "crop": [40, 12, 644, 805],
-        "alt": "Selena, a blonde student with small red horns and a white uniform shirt, rests her chin on her hand and smiles at her desk, a pen in her other hand.",
-        "credit": "Official video, Selena"
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 82.25,
+        "alt": "A dark ship with cyan thrusters crosses a violet sky above the pointed towers of Oro.",
+        "credit": "Official video, Ruby"
       }
     },
     {
-      "after": 24,
-      "anchor": "A dark visor covered",
-      "kind": "portrait",
-      "character": "lesley",
+      "after": 21,
+      "anchor": "The Council hall was",
+      "kind": "clip",
       "media": {
-        "type": "image",
-        "src": "lesley-and-change/art/official/lesley-splash-art.jpg",
-        "crop": [929, 0, 1152, 1440],
-        "alt": "Lesley in her white officer's coat leaps across a steel beam above the city, her long rifle in her hand.",
-        "credit": "Official splash art"
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a vast dark hall of pillars and violet windows, light falls on one small figure standing in a glowing circle on the floor.",
+        "credit": "Official video, Ruby",
+        "poster": 2.4,
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 0.5,
+            "end": 4.24
+          }
+        ]
+      },
+      "caption": "The Council hall"
+    },
+    {
+      "after": 25,
+      "anchor": "\"You cannot allow yourself",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 15.9,
+        "alt": "Ruby, older now, stands in profile looking away, beside her father in his dark fur-collared coat.",
+        "credit": "Official video, Ruby"
+      },
+      "caption": "Ruby and her father, the Decisionmaker of Planet Oro."
+    },
+    {
+      "after": 30,
+      "anchor": "\"But I have a",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 14.6,
+      "end": 16.7,
+      "line": "But I have a plan..."
+    },
+    {
+      "after": 31,
+      "anchor": "She had no plan",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 18.0,
+        "alt": "Ruby faces forward in the dark hall while, far behind her, her father walks out through a bright doorway.",
+        "credit": "Official video, Ruby"
+      }
+    },
+    {
+      "after": 34,
+      "anchor": "These were the Council's",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Out of the dark the view sweeps back through rows of identical androids with animal ears, standing still in a hall of tall white windows.",
+        "credit": "Official video, Ruby",
+        "poster": 2.4,
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 63.64,
+            "end": 67.08,
+            "spanCuts": true
+          }
+        ]
+      },
+      "caption": "The androids of Project Angel"
+    },
+    {
+      "after": 37,
+      "anchor": "So I can hide",
+      "kind": "voice",
+      "speaker": "ruby",
+      "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+      "start": 25.3,
+      "end": 27.3,
+      "line": "She might be my way out of here."
+    },
+    {
+      "after": 37,
+      "anchor": "So I can hide",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "In a dark laboratory an android girl hangs asleep in a frame of cables, and screens light up around her closed eyes.",
+        "credit": "Official video, Ruby",
+        "poster": 2.6,
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 20.45,
+            "end": 22.24
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 22.48,
+            "end": 24.78
+          }
+        ]
+      }
+    },
+    {
+      "after": 43,
+      "anchor": "In the frame of",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A loading bar fills beside the name ANGELA; Ruby works at a ring of screens until SUCCESS shows; a gloved hand presses the key; in her frame of cables, the pink-haired android opens blue eyes and smiles.",
+        "credit": "Official video, Ruby",
+        "poster": 5.8,
+        "parts": [
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 26.8,
+            "end": 28.08
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 28.55,
+            "end": 31.0
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 31.25,
+            "end": 33.02
+          },
+          {
+            "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+            "start": 33.26,
+            "end": 36.18
+          }
+        ]
+      }
+    },
+    {
+      "after": 47,
+      "anchor": "The smile was so",
+      "kind": "portrait",
+      "character": "angela",
+      "media": {
+        "type": "frame",
+        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
+        "t": 36.0,
+        "crop": [850, 0, 900, 1080],
+        "alt": "Angela, just woken, with pink hair, white ear pieces and blue eyes, smiling brightly.",
+        "credit": "Official video, Ruby"
       }
     }
   ]

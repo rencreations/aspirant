@@ -1,211 +1,57 @@
 {
   "chapter": "c45",
-  "mood": "A recall that has said one thing for months, and a girl who finally answers it her own way.",
+  "mood": "One ordinary morning, one week of watch duty, and a corridor of tall windows where everything changes.",
   "hero": {
-    "type": "clip",
-    "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-    "start": 2.4,
-    "end": 6.2,
-    "crop": [0, 136, 1920, 808],
-    "poster": 2.8,
-    "alt": "Selena walks down a dark hall toward a towering throne, where a woman with long gold and pink hair waits with a floating weapon.",
-    "credit": "Official trailer, Day of Enders"
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/9.jpg",
+    "crop": [300, 2440, 2200, 1160],
+    "alt": "Comic panel in a dim corridor: pink-haired Guinevere leaps with her fist thrown at a clawed Ender while black-haired Vexana, back to back with her, fires a bolt of light from her staff into another.",
+    "credit": "Official Guinevere and Vexana comic, page 9"
   },
-  "heroFocus": "64% 45%",
-  "thumb": {
-    "type": "frame",
-    "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-    "t": 5.3,
-    "crop": [0, 136, 1920, 808],
-    "alt": "Obsidia stands at the foot of her throne, her weapon hanging in the air beside her.",
-    "credit": "Official trailer, Day of Enders"
-  },
+  "heroFocus": "45% 50%",
   "spoiler": false,
-  "score": "obsidia-theme",
+  "score": "guinevere-theme",
   "inserts": [
     {
-      "after": 9,
-      "anchor": "\"Even on the path",
-      "kind": "voice",
-      "speaker": "selena",
-      "src": "selena-and-obsidia/video/selena/video.mp4",
-      "start": 57.5,
-      "end": 62.85,
-      "line": "Even on the path to destruction, I'm taking the scenic route!"
-    },
-    {
-      "after": 13,
-      "anchor": "A throne grew out",
-      "kind": "clip",
-      "media": {
-        "src": "selena-and-obsidia/video/trailer/footages/00m00s000ms-00m08s208ms/footage.mp4",
-        "crop": [0, 136, 1920, 734],
-        "alt": "A vast dark hall with a throne of pale ribbed plates rising from floor to roof, and one small figure at its foot.",
-        "credit": "Official trailer, Day of Enders",
-        "type": "clip",
-        "start": 0.3,
-        "end": 3.3,
-        "sound": false,
-        "poster": 1.2
-      },
-      "overlay": {
-        "kicker": "The place",
-        "title": "The throne hall"
-      }
-    },
-    {
-      "after": 22,
-      "anchor": "Obsidia came to her",
-      "kind": "clip",
-      "media": {
-        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "crop": [0, 136, 1920, 734],
-        "alt": "Obsidia lays one gloved finger on Selena's cheek while Selena looks back at her.",
-        "credit": "Official trailer, Day of Enders",
-        "type": "clip",
-        "start": 8.41,
-        "end": 10.0,
-        "sound": false,
-        "poster": 0.34
-      }
-    },
-    {
-      "after": 23,
-      "anchor": "\"Destruction gives rise to",
-      "kind": "voice",
-      "speaker": "obsidia",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 47.6,
-      "end": 52.15,
-      "line": "Destruction gives rise to new life. That is the meaning of purification."
-    },
-    {
-      "after": 25,
-      "anchor": "\"Ah... so what should",
-      "kind": "voice",
-      "speaker": "selena",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 52.9,
-      "end": 57.25,
-      "line": "Ah... so what should I destroy next?"
-    },
-    {
-      "after": 25,
-      "anchor": "Ah so what should",
-      "kind": "clip",
-      "media": {
-        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "crop": [0, 136, 1920, 734],
-        "alt": "Selena spreads her arms behind Obsidia's back with a playful smile while Obsidia stares ahead.",
-        "credit": "Official trailer, Day of Enders",
-        "type": "clip",
-        "start": 14.55,
-        "end": 17.55,
-        "sound": false,
-        "poster": 1.2
-      }
-    },
-    {
-      "after": 27,
-      "anchor": "\"A pawn with no",
-      "kind": "voice",
-      "speaker": "obsidia",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 57.35,
-      "end": 61.85,
-      "line": "A pawn with no surprises left, of course."
-    },
-    {
-      "after": 30,
-      "anchor": "The chains wrapped Selena's",
-      "kind": "clip",
-      "media": {
-        "src": "selena-and-obsidia/video/trailer/footages/00m40s667ms-01m07s792ms/footage.mp4",
-        "crop": [0, 136, 1920, 734],
-        "alt": "Spiked chains of bone coil around Selena and hold her fast, and she glares out through them.",
-        "credit": "Official trailer, Day of Enders",
-        "type": "clip",
-        "start": 22.08,
-        "end": 24.26,
-        "sound": false,
-        "poster": 0.4
-      }
-    },
-    {
-      "after": 34,
-      "anchor": "\"I'll never be your",
-      "kind": "voice",
-      "speaker": "selena",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 68.6,
-      "end": 72.65,
-      "line": "I'll never be your puppet again."
-    },
-    {
-      "after": 35,
-      "anchor": "Lightning burst out of",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
-        "start": 11.9,
-        "end": 15.4,
-        "crop": [0, 136, 1920, 734],
-        "poster": 1.2,
-        "alt": "Plates of white, blue and gold close over Selena in a storm of lightning, and her blade meets Obsidia's lightning across the hall.",
-        "credit": "Official trailer, Day of Enders"
-      }
-    },
-    {
       "after": 36,
-      "anchor": "\"You've grown, Selena.\"",
-      "kind": "voice",
-      "speaker": "obsidia",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 76.0,
-      "end": 78.55,
-      "line": "You've grown, Selena."
+      "anchor": "Guinevere grinned and was",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/11.jpg",
+          "crop": [460, 420, 2040, 1880],
+          "alt": "Comic panel: Guinevere springs forward through the window light, fists ready, toward a tall gray Ender with a yellow eye.",
+          "credit": "Official Guinevere and Vexana comic, page 11"
+        }
+      ],
+      "caption": "Three long strides ahead, toward the windows."
     },
     {
-      "after": 37,
-      "anchor": "\"Did I surprise you?\"",
-      "kind": "voice",
-      "speaker": "selena",
-      "src": "selena-and-obsidia/video/trailer/001_3994447231709070185.mp4",
-      "start": 79.2,
-      "end": 81.85,
-      "line": "Did I surprise you?"
-    },
-    {
-      "after": 38,
-      "anchor": "She went in close.",
+      "after": 70,
+      "anchor": "The door shrank to",
       "kind": "clip",
       "media": {
-        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
-        "crop": [0, 136, 1920, 808],
-        "alt": "Obsidia holds Selena off at the length of her long silver and pink weapon.",
-        "credit": "Official trailer, Day of Enders",
-        "type": "clip",
-        "start": 24.45,
-        "end": 27.45,
-        "sound": false,
-        "poster": 1.2
-      }
-    },
-    {
-      "after": 42,
-      "anchor": "Deep in the ship,",
-      "kind": "clip",
-      "media": {
-        "type": "clip",
-        "src": "selena-and-obsidia/video/trailer/footages/01m07s792ms-01m45s792ms/footage.mp4",
-        "start": 33.2,
-        "end": 37.6,
-        "crop": [0, 136, 1920, 808],
-        "poster": 1.6,
-        "alt": "Selena's blade cuts through the throne at its base, and the hall erupts in fire.",
-        "credit": "Official trailer, Day of Enders"
-      }
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Motion comic: black-haired Vexana is dragged backward into the dark, one hand reaching out; then her tearful face sinks into the closing dark, and only a thin black crack is left on the pale wall.",
+        "credit": "Official Guinevere and Vexana motion comic",
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+            "start": 39.1,
+            "end": 40.38,
+            "crop": [0, 0, 1080, 1080]
+          },
+          {
+            "src": "vexana-and-guinevere/video/comic/comic-jp.mp4",
+            "start": 42.2,
+            "end": 45.3,
+            "crop": [0, 60, 1080, 1080]
+          }
+        ]
+      },
+      "caption": "The dark took her, and then there was only the wall."
     }
   ]
 }

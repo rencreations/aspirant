@@ -31,7 +31,7 @@ export function AboutPage() {
       <NextFooter
         eyebrow="Next"
         label="Story"
-        sublabel="Sixty chapters in twelve parts, one Part to a page."
+        sublabel="Eighty-seven chapters in six acts, one chapter to a page."
         href={routes.story}
         image="/img/hero-stills/fanny-layla-01.webp"
       />

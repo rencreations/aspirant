@@ -1,0 +1,44 @@
+{
+  "chapter": "c78",
+  "mood": "The frontline waits at the rail, counting, for anything to come back out of the dark.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/official/fighting-stance.jpg",
+    "crop": [330, 0, 2230, 1254],
+    "alt": "Official art: Vexana in her robe with her staff and a crown of violet blades, beside Guinevere in the air with two cat-eared drones burning at her shoulders.",
+    "credit": "Official Guinevere and Vexana art"
+  },
+  "heroFocus": "62% 35%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 14,
+      "anchor": "Pushed back, thought Fanny",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "selena-and-obsidia/art/lore/instagram_p_Ddxz3PUI3if/007_3995202392573558292.jpg",
+        "crop": [28, 362, 664, 64],
+        "alt": "A row of the Academy's battle report: small portraits of Vexana and Guinevere, joined forces, temporarily knocking back the Enders' Mother Matrix.",
+        "credit": "Official Selrick Archives, Singularity battle report"
+      },
+      "caption": "The battle report: temporarily knocked back."
+    },
+    {
+      "after": 46,
+      "anchor": "Vexana lifted it to",
+      "kind": "panels",
+      "media": [
+        {
+          "type": "image",
+          "src": "vexana-and-guinevere/art/comic/46.jpg",
+          "crop": [500, 700, 1500, 1650],
+          "alt": "Comic art: tiny doll-like versions of the two girls, black-haired Vexana hugging pink-haired Guinevere, who waves.",
+          "credit": "Official Guinevere and Vexana comic"
+        }
+      ],
+      "caption": "Each carries a little doll of the other."
+    }
+  ]
+}

@@ -18,7 +18,7 @@ describe("chapter links", () => {
   it("gives every chapter a page of its own", () => {
     expect(chapterHref("c00")).toBe("/story/prologue");
     expect(chapterHref("c07")).toBe("/story/chapter-07");
-    expect(chapterHref("c48")).toBe("/story/chapter-48");
+    expect(chapterHref("c87")).toBe("/story/chapter-87");
   });
 
   it("keeps a paragraph as the hash of its chapter's page", () => {

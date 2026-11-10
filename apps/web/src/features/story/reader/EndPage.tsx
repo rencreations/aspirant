@@ -6,6 +6,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { TLink } from "@/components/transition/t-link";
 import { characters } from "@/content/characters";
+import { chapters } from "@/content/story";
 import type { EndFile, Seg } from "@/content/story-types";
 import { asset } from "@/lib/asset";
 import { routes } from "@/lib/site";
@@ -21,9 +22,11 @@ function Inline({ segs }: { segs: readonly Seg[] }): ReactNode {
 }
 
 export function EndPage({ end }: { end: EndFile }) {
+  const last = chapters[chapters.length - 1];
+  const lastId = last?.id ?? "c00";
   return (
-    <ReaderRoot chapterId="c48" score={null}>
-      <article className={s.chapter} data-chapter="c48" aria-labelledby="the-end-title">
+    <ReaderRoot chapterId={lastId} score={null}>
+      <article className={s.chapter} data-chapter={lastId} aria-labelledby="the-end-title">
         <header className={s.finish}>
           <p className={s.finishKicker}>{END_KICKER}</p>
           <h1 id="the-end-title" className={s.finishTitle} tabIndex={-1}>
@@ -109,7 +112,11 @@ export function EndPage({ end }: { end: EndFile }) {
             </span>
           </TLink>
           <div className={s.endRow}>
-            <TLink href={chapterHref("c48")} transitionLabel="Chapter 48" className={s.endLink}>
+            <TLink
+              href={chapterHref(lastId)}
+              transitionLabel={`Chapter ${last?.number ?? 0}`}
+              className={s.endLink}
+            >
               Back to the last chapter
             </TLink>
             <TLink href={chapterHref("c00")} transitionLabel="Prologue" className={s.endLink}>

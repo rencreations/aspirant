@@ -1,0 +1,28 @@
+{
+  "chapter": "c50",
+  "mood": "The way home stands open. Vexana looks at one lit window for a long time.",
+  "hero": {
+    "type": "image",
+    "src": "vexana-and-guinevere/art/comic/39.jpg",
+    "crop": [0, 1450, 2500, 1550],
+    "alt": "A pale armored boot with a high heel steps down into a pool of light in the dark.",
+    "credit": "Official Guinevere and Vexana comic, page 39"
+  },
+  "heroFocus": "62% 50%",
+  "spoiler": false,
+  "score": "vexana-theme",
+  "inserts": [
+    {
+      "after": 45,
+      "anchor": "She caught the strand",
+      "kind": "panels",
+      "media": {
+        "type": "image",
+        "src": "vexana-and-guinevere/art/comic/39.jpg",
+        "crop": [0, 4900, 2500, 1966],
+        "alt": "A staff whose orb has gone black as the void, beside star-shaped blades glowing violet at a cloaked shoulder; a dark horn rises through pale hair.",
+        "credit": "Official Guinevere and Vexana comic, page 39"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "chapter": "c57",
+  "mood": "At the edge of the widening crack, Obsidia shows Vexana a broken suit and the storm she rides.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/obsidia/001_3997406762701005025.mp4",
+    "t": 31.4,
+    "crop": [0, 0, 1920, 960],
+    "alt": "Obsidia's pale hair streams sideways in a storm wind, a fork of lightning splitting the dark behind her.",
+    "credit": "Official Obsidia film"
+  },
+  "heroFocus": "72% 35%",
+  "spoiler": false,
+  "score": "obsidia-theme",
+  "inserts": [
+    {
+      "after": 6,
+      "anchor": "At the middle of",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/connection-lost/final_video.mp4",
+        "t": 80.3,
+        "crop": [0, 0, 2240, 830],
+        "alt": "A four-pointed tear of violet light hangs open across a dark, clouded sky, its points running off out of sight and its middle black.",
+        "credit": "Official Connection Lost animation"
+      }
+    }
+  ]
+}

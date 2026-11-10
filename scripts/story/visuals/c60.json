@@ -1,0 +1,16 @@
+{
+  "chapter": "c60",
+  "mood": "Selena copies smiles, mends radios and never cries. One night in a raid she finds out why she is different.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/selena/video.mp4",
+    "t": 2.12,
+    "crop": [380, 0, 1138, 640],
+    "alt": "Selena, a blonde student with small red horns and a dark horned headband, smirks at the viewer with a round pink lollipop at her lips, blue shelves behind her.",
+    "credit": "Official Selena film"
+  },
+  "heroFocus": "45% 40%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

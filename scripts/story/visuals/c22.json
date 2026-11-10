@@ -1,69 +1,51 @@
 {
   "chapter": "c22",
-  "mood": "Guinevere waits all day outside her father's door. A year later, a quiet girl tells her she is strong.",
+  "mood": "Behind a wall of crates marked NO SIS, Chang'e builds Lesley a birthday present all by herself.",
   "hero": {
-    "type": "image",
-    "src": "vexana-and-guinevere/art/official/guin-father-silhouette.png",
-    "crop": [0, 0, 1334, 750],
-    "alt": "The dark silhouette of a tall man in a fur-collared coat, holding a paper, a gold question mark on his chest.",
-    "credit": "Official character art"
-  },
-  "heroFocus": "45% 40%",
-  "thumb": {
     "type": "frame",
-    "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-    "t": 10.2,
-    "crop": [0, 0, 2560, 930],
-    "alt": "Guinevere throws one arm up against a blue sky, grinning.",
-    "credit": "Official Connection Lost film"
+    "src": "lesley-and-change/video/official/trailer/video.webm",
+    "t": 33.3,
+    "alt": "Chang'e works alone at a cluttered lab bench with her tongue between her teeth, a tool in her hand, the parts of a long red and gold rifle laid out before her, robot arms overhead and Mr. Bunny peeking up behind the bench.",
+    "credit": "Official trailer, Chang'e and Lesley"
   },
-  "score": "guinevere-theme",
+  "heroFocus": "58% 45%",
+  "spoiler": false,
+  "score": "we-believe",
   "inserts": [
     {
-      "after": 15,
-      "anchor": "A banner hung over",
-      "kind": "clip",
+      "after": 37,
+      "anchor": "Inside the wall, she",
+      "kind": "plate",
       "media": {
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
-        "crop": [0, 0, 1920, 700],
-        "alt": "Students in dark uniforms cross the Academy courtyard under a wide pale blue screen hung on the main building.",
-        "credit": "Official interactive drama, Guinevere and Vexana",
-        "type": "clip",
-        "start": 0.04,
-        "end": 3.04,
-        "sound": false,
-        "poster": 0.96
-      },
-      "overlay": {
-        "kicker": "The place",
-        "title": "Selrick Academy"
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/video.webm",
+        "t": 29.4,
+        "alt": "Chang'e carries a box of parts and tools across the bright lab, frowning with effort, while Mr. Bunny hovers behind her and an open notebook lies on the bench in front.",
+        "credit": "Official trailer, Chang'e and Lesley"
       }
     },
     {
-      "after": 22,
-      "anchor": "The voice came from",
-      "kind": "plate",
+      "after": 58,
+      "anchor": "Ta-da! Now you'll be",
+      "kind": "clip",
       "media": {
-        "type": "frame",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-        "t": 9.2,
-        "crop": [0, 0, 2560, 930],
-        "alt": "Vexana, black-haired, looks back over her shoulder with a quiet face.",
-        "credit": "Official Connection Lost film"
-      },
-      "caption": "You are strong, Guinevere."
-    },
-    {
-      "after": 38,
-      "anchor": "The grin came anyway.",
-      "kind": "plate",
-      "media": {
-        "type": "frame",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
-        "t": 10.2,
-        "crop": [0, 0, 2560, 930],
-        "alt": "Guinevere throws one arm up against a blue sky, grinning.",
-        "credit": "Official Connection Lost film"
+        "type": "sequence",
+        "xfade": 0.35,
+        "poster": 1.6,
+        "alt": "In a bright lab a red and gold rifle hangs in the jointed arms of a tall steel ring, and small Chang'e flings both arms out toward it; then Lesley, her gold hair over one eye, stares at it without a word.",
+        "credit": "Official trailer, Chang'e and Lesley",
+        "parts": [
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 33.88,
+            "end": 36.7
+          },
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 37.35,
+            "end": 39.38
+          }
+        ]
       }
     }
   ]

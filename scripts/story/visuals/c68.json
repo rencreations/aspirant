@@ -1,0 +1,88 @@
+{
+  "chapter": "c68",
+  "mood": "Before dawn a far star over the bay begins to flash, and so does the small gold star at Guinevere's collar.",
+  "hero": {
+    "type": "sequence",
+    "xfade": 0.4,
+    "alt": "A tall tower with a long glass lab across its top stands under heavy storm clouds; then, inside the glass lab, Guinevere has her eye to a telescope while Ruby and Angela wait behind her.",
+    "credit": "Official Guinevere and Vexana interactive drama",
+    "poster": 1.2,
+    "parts": [
+      {
+        "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+        "start": 0.1,
+        "end": 2.6
+      },
+      {
+        "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+        "start": 13.6,
+        "end": 15.25
+      }
+    ]
+  },
+  "heroFocus": "62% 40%",
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 12,
+      "anchor": "In the lens, the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/2B.webm",
+        "t": 16.0,
+        "alt": "Through the round lens of the telescope, a four-pointed star of magenta light burns in the storm clouds above a dark ridge.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    },
+    {
+      "after": 29,
+      "anchor": "In the front row,",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "selena-and-obsidia/video/selena/video.mp4",
+        "t": 50.3,
+        "alt": "Selena in her school uniform starts back from the phone she holds sideways, her mouth open, her pen dropping and her papers flying around her desk.",
+        "credit": "Official Selena film"
+      }
+    },
+    {
+      "after": 30,
+      "anchor": "If the world ends",
+      "kind": "voice",
+      "speaker": "selena",
+      "src": "selena-and-obsidia/video/selena/video.mp4",
+      "start": 50.2,
+      "end": 56.0,
+      "line": "If the world ends now, what about my graduation?!"
+    },
+    {
+      "after": 34,
+      "anchor": "Detecting an abnormal signal",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/3B1.webm",
+        "t": 8.6,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Students in navy blazers crowd a bright corridor between classes; Guinevere stands among them beside a black-haired boy.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    },
+    {
+      "after": 43,
+      "anchor": "She stood in the",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/3B1.webm",
+        "t": 20.0,
+        "crop": [395, 0, 1200, 840],
+        "alt": "Guinevere stands before the glowing hologram wall, which reads Vexana: Absent, the small gold star at her collar shining.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    }
+  ]
+}

@@ -1,74 +1,87 @@
 {
   "chapter": "c27",
-  "mood": "A word on a board, a whisper in the halls, and one gold star that will not go dark.",
+  "mood": "The Enders come back, and Chang'e stands alone in front of a shelter door. Across the water, one window is lit.",
   "hero": {
-    "type": "image",
-    "src": "vexana-and-guinevere/art/comic/45.jpg",
-    "crop": [0, 1000, 2500, 1600],
-    "alt": "Guinevere, eyes wet with tears, presses a gloved hand beside the gold star glowing at her collar.",
-    "credit": "Official comic, Guinevere and Vexana, page 45"
+    "type": "frame",
+    "src": "lesley-and-change/video/official/trailer/video.webm",
+    "t": 121.5,
+    "alt": "Lesley stands on a rooftop with her long rifle while white crescents wheel through the smoky sky above the burning towers.",
+    "credit": "Official trailer, Chang'e and Lesley"
   },
-  "heroFocus": "55% 45%",
-  "score": "guinevere-theme",
+  "heroFocus": "48% 60%",
+  "spoiler": false,
+  "score": "we-believe",
   "inserts": [
     {
-      "after": 2,
-      "anchor": "I will find her,",
+      "after": 27,
+      "anchor": "For years she had",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.3,
+        "poster": 2.0,
+        "alt": "Chang'e falls with her gloved hand reaching out; then, in a white light, two figures in white coats walk away from her side by side while her hand reaches after them.",
+        "credit": "Official trailer, Chang'e and Lesley",
+        "parts": [
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 87.0,
+            "end": 88.34
+          },
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 88.56,
+            "end": 91.3
+          }
+        ]
+      }
+    },
+    {
+      "after": 47,
+      "anchor": "Lesley stayed in the",
       "kind": "plate",
       "media": {
         "type": "frame",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
-        "t": 4.5,
-        "crop": [1000, 0, 1560, 1080],
-        "alt": "Guinevere under a dark, stormy sky, jaw set, the gold star at her collar.",
-        "credit": "Official film, Connection Lost"
+        "src": "lesley-and-change/video/official/trailer/video.webm",
+        "t": 96.5,
+        "alt": "Lesley stands in a high window at night, the moon over the city behind the glass, her long rifle across her body and her face set.",
+        "credit": "Official trailer, Chang'e and Lesley"
       }
     },
     {
-      "after": 8,
-      "anchor": "That is all we",
+      "after": 76,
+      "anchor": "Panels of light opened",
       "kind": "clip",
       "media": {
-        "type": "clip",
-        "src": "vexana-and-guinevere/video/connection-lost/footages/00m08s640ms-00m39s280ms/footage.mp4",
-        "start": 2.6,
-        "end": 4.15,
-        "sound": false,
-        "poster": 1.0,
-        "alt": "Over a figure's shoulder, a flash of purple hair and a staff with a dark ring at its tip, above a ruined plaza.",
-        "credit": "Official film, Connection Lost"
-      },
-      "caption": "No face. Only a staff."
-    },
-    {
-      "after": 24,
-      "anchor": "Guinevere turned and looked",
-      "kind": "clip",
-      "media": {
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/3B1/00m00s000ms-00m14s600ms/footage.webm",
-        "alt": "Guinevere stands in a bright Academy corridor, one hand out, speaking up for herself.",
-        "credit": "Official interactive drama, Guinevere and Vexana",
-        "type": "clip",
-        "start": 0.04,
-        "end": 2.0,
-        "sound": false,
-        "poster": 0.86
+        "type": "sequence",
+        "xfade": 0.3,
+        "poster": 1.6,
+        "alt": "A gold and black giant with long curved blades stands over the night city as light gathers in its chest and small figures rise toward it; then Chang'e sits on a rooftop rail behind glowing panels of light, reading them.",
+        "credit": "Official trailer, Chang'e and Lesley",
+        "parts": [
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 127.1,
+            "end": 129.7
+          },
+          {
+            "src": "lesley-and-change/video/official/trailer/video.webm",
+            "start": 130.24,
+            "end": 132.35
+          }
+        ]
       }
     },
     {
-      "after": 34,
-      "anchor": "For once she did",
-      "kind": "clip",
+      "after": 82,
+      "anchor": "The giant's chest burst",
+      "kind": "plate",
       "media": {
-        "src": "vexana-and-guinevere/video/interactive-drama/footages/1/00m00s000ms-00m34s300ms/footage.webm",
-        "crop": [160, 0, 1600, 700],
-        "alt": "Guinevere stands in the Academy courtyard, frowning a little, the gold star of her Emblem held at her collar.",
-        "credit": "Official interactive drama, Guinevere and Vexana",
-        "type": "clip",
-        "start": 22.8,
-        "end": 25.8,
-        "sound": false,
-        "poster": 1.2
+        "type": "frame",
+        "src": "lesley-and-change/video/official/trailer/video.webm",
+        "t": 139.44,
+        "alt": "Chang'e on her pink crescents and Lesley with her rifle leap together at the gold and black giant over the night city.",
+        "credit": "Official trailer, Chang'e and Lesley"
       }
     }
   ]

@@ -67,13 +67,33 @@ describe("reader preferences", () => {
     expect(state.textScale).toBe(1.125);
   });
 
+  it("ignores a place saved in the first edition of the book (version 2)", () => {
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        v: 2,
+        chapterId: "c30",
+        paragraphId: "c30-p010",
+        textScale: 1.25,
+        theme: "storm",
+        furthest: 40,
+      }),
+    );
+    loadReaderPrefs();
+    const state = useReaderPrefs.getState();
+    expect(state.resume).toBeNull();
+    expect(state.furthest).toBe(-1);
+    expect(state.theme).toBe("storm");
+    expect(state.textScale).toBe(1.25);
+  });
+
   it("falls back to the defaults for a damaged value", () => {
     window.localStorage.setItem(KEY, "{not json");
     loadReaderPrefs();
     expect(useReaderPrefs.getState().resume).toBeNull();
     window.localStorage.setItem(
       KEY,
-      JSON.stringify({ v: 2, chapterId: "nonsense", textScale: 9, theme: "neon" }),
+      JSON.stringify({ v: 3, chapterId: "nonsense", textScale: 9, theme: "neon" }),
     );
     loadReaderPrefs();
     const state = useReaderPrefs.getState();

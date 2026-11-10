@@ -1,0 +1,116 @@
+{
+  "chapter": "c75",
+  "mood": "A light comes down between the blast and its target, and two old partners face what they kept hidden.",
+  "hero": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+    "t": 29.6,
+    "alt": "Guinevere stands guard in the smoke, arms crossed and eyes hard, while behind her Vexana kneels on the scorched stone with her staff.",
+    "credit": "Official Re:Link animation"
+  },
+  "heroFocus": "22% 40%",
+  "thumb": {
+    "type": "frame",
+    "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+    "t": 29.6,
+    "crop": [0, 0, 1300, 1080],
+    "alt": "Guinevere stands guard in the smoke, arms crossed and eyes hard.",
+    "credit": "Official Re:Link animation"
+  },
+  "spoiler": false,
+  "score": "guinevere-theme",
+  "inserts": [
+    {
+      "after": 30,
+      "anchor": "Light burst white where",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "A memory: a red-gold streak and a violet one rush at each other over the city, Vexana's face close as she flies; then the two sweep past each other side by side, staff and open hand reaching past.",
+        "credit": "Official Re:Link animation",
+        "poster": 3.2,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 34.2,
+            "end": 36.95,
+            "crop": [0, 170, 2560, 740],
+            "spanCuts": true
+          },
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 37.92,
+            "end": 39.66,
+            "crop": [0, 170, 2560, 740]
+          }
+        ]
+      }
+    },
+    {
+      "after": 40,
+      "anchor": "Guinevere could not hold",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/interactive-drama/5C.webm",
+        "t": 12.0,
+        "crop": [0, 0, 1920, 700],
+        "alt": "Vexana, her hair pale and her eyes wide, cries out and throws her hand toward Guinevere, who reaches back for it.",
+        "credit": "Official Guinevere and Vexana interactive drama"
+      }
+    },
+    {
+      "after": 58,
+      "anchor": "Under a shaded tree",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 43.52,
+        "crop": [320, 0, 1920, 1080],
+        "alt": "A memory in sunlight: black-haired Vexana sits in the grass under a tree, patting the hair of Guinevere, who lies with her head in her lap, laughing and waving one hand.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 61,
+      "anchor": "Beside the photo frame",
+      "kind": "plate",
+      "media": {
+        "type": "frame",
+        "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+        "t": 45.05,
+        "crop": [0, 150, 2400, 930],
+        "alt": "A gloved hand holds a phone whose wallpaper is a photo of the two girls together, above an open box of keepsakes; two felt dolls and a photo frame stand on the desk behind.",
+        "credit": "Official Re:Link animation"
+      }
+    },
+    {
+      "after": 74,
+      "anchor": "For a moment nothing",
+      "kind": "clip",
+      "media": {
+        "type": "sequence",
+        "xfade": 0.4,
+        "alt": "Close on Vexana, her head bowed; she opens her eyes and a small smile comes; then Guinevere turns to her, smiling, a drone rising at her side.",
+        "credit": "Official Re:Link animation",
+        "poster": 2.6,
+        "parts": [
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 45.35,
+            "end": 48.6,
+            "crop": [640, 170, 1920, 790]
+          },
+          {
+            "src": "vexana-and-guinevere/video/relink/final_video2.mp4",
+            "start": 48.84,
+            "end": 51.0,
+            "crop": [640, 170, 1920, 790]
+          }
+        ]
+      }
+    }
+  ]
+}

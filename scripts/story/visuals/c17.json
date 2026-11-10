@@ -1,67 +1,86 @@
 {
   "chapter": "c17",
-  "mood": "A black ship lands at the city's edge, and two armed girls walk down the ramp asking for refuge.",
+  "mood": "The youngest Chief Scientist in Terrinia mends everyone's machines. She wants one thing more, and Lesley says no.",
   "hero": {
-    "type": "frame",
-    "src": "ruby-and-angela/video/ruby/footages/00m00s000ms-00m20s000ms/footage.mp4",
-    "t": 11.22,
-    "alt": "Ruby stands in a dark hall of tall columns, her face polite and still.",
-    "credit": "Official Ruby lore video"
+    "type": "clip",
+    "src": "lesley-and-change/video/official/trailer/footages/00m25s960ms-00m40s640ms/footage.webm",
+    "start": 0.3,
+    "end": 5.0,
+    "crop": [320, 0, 1920, 1080],
+    "poster": 2.7,
+    "sound": false,
+    "alt": "Chang'e in her lab coat carries a box of tools across a bright laboratory while Mr. Bunny floats by the bench.",
+    "credit": "Official trailer, Chang'e and Lesley"
   },
-  "heroFocus": "75% 62%",
-  "score": "we-believe",
+  "heroFocus": "40% 45%",
+  "spoiler": false,
+  "score": null,
   "inserts": [
     {
-      "after": 21,
-      "anchor": "I am Ruby, heir",
-      "kind": "place",
-      "label": "Planet Oro",
-      "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 82.36,
-        "alt": "A dark ship with blue engines flies over the towers of Oro at dusk, the sky violet above a bright horizon.",
-        "credit": "Official Ruby lore video"
-      },
-      "caption": "Oro, far away in another galaxy."
-    },
-    {
-      "after": 25,
-      "anchor": "Then it will annex",
+      "after": 3,
+      "anchor": "Her wall screen listed",
       "kind": "plate",
       "media": {
-        "type": "frame",
-        "src": "ruby-and-angela/video/ruby/ruby-final.mp4",
-        "t": 60.8,
-        "crop": [320, 0, 1920, 1080],
-        "alt": "A ring of tall lit pillars stands on a glowing circle in a dark council chamber, under a single beam of light.",
-        "credit": "Official Ruby lore video"
+        "type": "image",
+        "src": "extra/ai.png",
+        "alt": "Design sheet of an AI droid: a slim white machine with long jointed arms, clawed hands and a single orange eye, drawn beside close views of its head and arm and a blue line sketch of the whole machine.",
+        "credit": "Official character art"
       },
-      "caption": "The chamber of Oro's Council."
+      "caption": "An AI droid, one of the Academy's helpers."
     },
     {
-      "after": 29,
-      "anchor": "I saw that",
+      "after": 9,
+      "anchor": "Chang'e laughed until she",
+      "kind": "portrait",
+      "character": "change",
+      "media": {
+        "type": "image",
+        "src": "lesley-and-change/art/lore/5 - end.jpg",
+        "crop": [244, 152, 400, 500],
+        "alt": "Chang'e laughing, with round glasses, pink hair and white bunny-ear clips.",
+        "credit": "Official art"
+      }
+    },
+    {
+      "after": 12,
+      "anchor": "Chang'e flipped the photograph",
       "kind": "clip",
       "media": {
-        "type": "sequence",
-        "xfade": 0.4,
-        "alt": "In a burning ruin, a small child sits in the dust as a scythe swings into view; then the girl who holds it stands over the child, her eyes red.",
-        "credit": "Official Ruby and Angela trailer",
-        "parts": [
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 142.86,
-            "end": 144.54
-          },
-          {
-            "src": "ruby-and-angela/video/trailer/trailer-final.mp4",
-            "start": 144.74,
-            "end": 147.44
-          }
-        ]
-      },
-      "caption": "The record Lesley had watched."
+        "type": "clip",
+        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+        "start": 5.7,
+        "end": 9.6,
+        "poster": 3.3,
+        "sound": false,
+        "alt": "Mr. Bunny sits on a desk, and beside him stands a framed photograph of two tall people holding a small girl.",
+        "credit": "Official trailer, Chang'e and Lesley"
+      }
+    },
+    {
+      "after": 18,
+      "anchor": "Just Selena, said Selena.",
+      "kind": "portrait",
+      "character": "selena",
+      "media": {
+        "type": "image",
+        "src": "extra/s.png",
+        "crop": [40, 12, 644, 805],
+        "alt": "Selena, a blonde student with small red horns and a white uniform shirt, rests her chin on her hand and smiles at her desk, a pen in her other hand.",
+        "credit": "Official video, Selena"
+      }
+    },
+    {
+      "after": 24,
+      "anchor": "A dark visor covered",
+      "kind": "portrait",
+      "character": "lesley",
+      "media": {
+        "type": "image",
+        "src": "lesley-and-change/art/official/lesley-splash-art.jpg",
+        "crop": [929, 0, 1152, 1440],
+        "alt": "Lesley in her white officer's coat leaps across a steel beam above the city, her long rifle in her hand.",
+        "credit": "Official splash art"
+      }
     }
   ]
 }

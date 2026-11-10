@@ -1,0 +1,81 @@
+{
+  "chapter": "c20",
+  "mood": "Angela on Chang'e's lab table, a locked box of code nobody else can open, and two new Aspirants in the hall.",
+  "hero": {
+    "type": "frame",
+    "src": "lesley-and-change/video/official/teaser/footages/00m29s720ms-00m36s400ms/footage.mp4",
+    "t": 0.3,
+    "crop": [0, 6, 1280, 714],
+    "alt": "Chang'e reads a glowing screen through her round glasses, Mr. Bunny at her shoulder.",
+    "credit": "Official Lesley and Chang'e teaser"
+  },
+  "heroFocus": "62% 40%",
+  "score": "we-believe",
+  "inserts": [
+    {
+      "after": 9,
+      "anchor": "A red square blinked",
+      "kind": "clip",
+      "media": {
+        "type": "clip",
+        "src": "ruby-and-angela/video/ruby/footages/01m07s200ms-01m24s080ms/footage.mp4",
+        "start": 8.4,
+        "end": 11.95,
+        "poster": 3.2,
+        "alt": "Lines of code scroll past, a loading bar fills, and a red icon flashes the word DANGER.",
+        "credit": "Official Ruby lore video"
+      },
+      "caption": "Hidden lines, behind a lock marked DANGER."
+    },
+    {
+      "after": 15,
+      "anchor": "And the doll. Chang'e",
+      "kind": "plate",
+      "media": {
+        "type": "image",
+        "src": "_others/character/tetra.png",
+        "crop": [480, 20, 710, 900],
+        "alt": "A small doll with pink hair, rabbit ears and wide yellow eyes, dressed in white.",
+        "credit": "Official character art"
+      },
+      "caption": "Tetra, Angela's doll. Its left eye is a camera."
+    },
+    {
+      "after": 27,
+      "anchor": "Mr. Bunny is my",
+      "kind": "clip",
+      "media": {
+        "src": "lesley-and-change/video/official/trailer/footages/00m07s200ms-00m25s960ms/footage.webm",
+        "alt": "A round white robot with long ears and a black screen face, smiling.",
+        "credit": "Official Lesley and Chang'e trailer",
+        "type": "clip",
+        "start": 5.75,
+        "end": 7.5,
+        "sound": false,
+        "poster": 1.0
+      },
+      "caption": "Mr. Bunny."
+    },
+    {
+      "after": 36,
+      "anchor": "Vexana waited by the",
+      "kind": "clip",
+      "media": {
+        "src": "vexana-and-guinevere/video/connection-lost/footages/00m39s280ms-00m58s440ms/footage.mp4",
+        "crop": [0, 0, 2560, 930],
+        "alt": "In a hall of stained glass and great stars, Vexana waits by the wall while Guinevere waves, and Lesley addresses four Aspirants at the altar.",
+        "credit": "Official Connection Lost film",
+        "type": "clip",
+        "start": 6.6,
+        "end": 8.36,
+        "sound": false,
+        "poster": 1.3
+      },
+      "caption": "Vexana by the door, Guinevere waving with her whole arm.",
+      "overlay": {
+        "kicker": "The place",
+        "title": "The Academy hall"
+      }
+    }
+  ]
+}

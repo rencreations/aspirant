@@ -1,0 +1,16 @@
+{
+  "chapter": "c64",
+  "mood": "On the bell tower at night, Selena counts what she has seen this year and keeps every secret.",
+  "hero": {
+    "type": "frame",
+    "src": "selena-and-obsidia/video/selena/video.mp4",
+    "t": 53.3,
+    "crop": [0, 0, 1920, 940],
+    "alt": "In a bright classroom Selena grins as she holds up her drawing, red-haired Fanny laughs beside her with a V sign, and pink-haired Angela leans in from the right to look.",
+    "credit": "Official Selena film"
+  },
+  "heroFocus": "48% 40%",
+  "spoiler": false,
+  "score": "silverbolt-raiko",
+  "inserts": []
+}

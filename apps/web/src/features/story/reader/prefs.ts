@@ -10,7 +10,7 @@ import { getChapter } from "@/content/story";
 
 const KEY = "aspirants:reader";
 /** Bumped when the book changes, so an old saved place never points into the wrong story. */
-const BOOK_VERSION = 2;
+const BOOK_VERSION = 3;
 
 /** Light is "daybreak", dark is "storm" (the two worlds of the site's tokens). */
 export type ReaderTheme = "daybreak" | "storm";
