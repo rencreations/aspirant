@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
+import { TLink } from "@/components/transition/t-link";
 import { asset } from "@/lib/asset";
 import { useInView } from "@/lib/hooks";
+import { routes } from "@/lib/site";
 
 import { DRAMA_START, nodeById } from "./drama-graph";
 import { dramaPoster } from "./drama-media";
@@ -42,7 +44,7 @@ const FullscreenIcon = () => (
 );
 
 /**
- * 06, the interactive drama: a visual novel of six chapters with branches and three endings, made
+ * The interactive drama (page `/story/interactive-drama/`): a visual novel of six chapters with branches and three endings, made
  * from the episodes of "Become The Aspirants". One screen tall, so the title, the game and the line
  * under it are all in view. Nothing plays until the player presses Continue, Start New or Play
  * from here (the episodes then play with sound, and the page's music steps aside).
@@ -137,7 +139,11 @@ export function Drama() {
       <header className={styles.top}>
         <div className={styles.title}>
           <p className={styles.eyebrow}>
-            <b>06</b>
+            <b>
+              <TLink href={routes.story} transitionLabel="Story">
+                Story
+              </TLink>
+            </b>
             <i />
           </p>
           <h2 id="drama-title" className={styles.heading}>

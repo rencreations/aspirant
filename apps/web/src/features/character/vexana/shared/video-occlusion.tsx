@@ -9,7 +9,7 @@ const TICK_MS = 250;
 /** A video must look covered this many times in a row before it is paused (a scene passing over). */
 const COVERED_TICKS = 2;
 /** The game and the room run their own videos and their own rest. */
-const SKIP = "#drama, #room, [role='dialog']";
+const SKIP = "#room, [role='dialog']";
 
 /**
  * Pauses a video that another section lies over and starts it again when it is uncovered. It only

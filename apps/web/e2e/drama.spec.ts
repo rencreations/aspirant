@@ -38,13 +38,10 @@ const saved = (page: Page) =>
     return raw ? (JSON.parse(raw) as { run: { node: string } | null; unlocked: string[] }) : null;
   }, KEY);
 
-async function openDrama(page: Page, slug = "vexana") {
-  await page.goto(url(`/character/${slug}/`));
+async function openDrama(page: Page) {
+  await page.goto(url("/story/interactive-drama/"));
   const drama = page.locator("#drama");
   await drama.waitFor({ state: "attached" });
-  await drama.evaluate((el) => {
-    el.scrollIntoView({ block: "center" });
-  });
   await expect(drama.getByRole("button", { name: /level select/i })).toBeVisible();
   return drama;
 }
@@ -54,16 +51,25 @@ test.describe("interactive drama", () => {
     await skipGate(page);
   });
 
+  test("the page opens at the top and the game takes nothing", async ({ page }) => {
+    await page.goto(url("/story/interactive-drama/"));
+    await page.waitForLoadState("load");
+    await page.waitForTimeout(1500);
+    expect(await page.evaluate(() => window.scrollY)).toBeLessThan(50);
+    const inside = await page.evaluate(
+      () => document.activeElement?.closest("#drama") !== null && document.activeElement !== null,
+    );
+    expect(inside).toBe(false);
+  });
+
   for (const slug of ["vexana", "guinevere"]) {
-    test(`${slug}: the page opens at the top and the game takes nothing`, async ({ page }) => {
+    test(`${slug}: the character page has no drama in it`, async ({ page }) => {
       await page.goto(url(`/character/${slug}/`));
       await page.waitForLoadState("load");
-      await page.waitForTimeout(1500);
-      expect(await page.evaluate(() => window.scrollY)).toBeLessThan(50);
-      const inside = await page.evaluate(
-        () => document.activeElement?.closest("#drama") !== null && document.activeElement !== null,
-      );
-      expect(inside).toBe(false);
+      await page.waitForTimeout(1000);
+      await expect(page.locator("#drama")).toHaveCount(0);
+      const text = (await page.locator("body").innerText()).toLowerCase();
+      expect(text).not.toContain("interactive drama");
     });
   }
 

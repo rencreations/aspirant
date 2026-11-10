@@ -459,7 +459,7 @@ def plan() -> list[dict[str, Any]]:
                 "poster_t": None,
                 "extra": {},
                 "also": also,
-                "link": {"href": "/character/vexana/", "label": "Play the drama on Vexana's page"},
+                "link": {"href": "/story/interactive-drama/", "label": "Play the interactive drama"},
                 "group": ep["chapter"],
                 "date": None,
                 "credit": None,

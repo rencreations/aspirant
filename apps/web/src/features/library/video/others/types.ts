@@ -52,7 +52,7 @@ export interface OtherVideo extends ItemBase {
   date?: string;
   /** Ids of other files that are the same video (the drama is posted under two or three ids). */
   also?: string[];
-  /** A page that holds more of the same, for example Vexana's page for the drama. */
+  /** A page that holds more of the same, for example the page of the interactive drama. */
   link?: { href: string; label: string };
   /** The drama chapter, 1 to 6. */
   group?: number;

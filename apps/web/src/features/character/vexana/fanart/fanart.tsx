@@ -129,7 +129,7 @@ export function Fanart() {
     >
       <header className={styles.head}>
         <p className={styles.eyebrow}>
-          <b>09</b>
+          <b>08</b>
           <span className={styles.bar} aria-hidden="true" />
           <span>Fanart</span>
         </p>

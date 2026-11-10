@@ -7,7 +7,6 @@ import { About } from "./about/about";
 import { ArtShowcase } from "./art/art";
 import { Comics } from "./comics/comics";
 import { Cover } from "./cover/cover";
-import { Drama } from "./drama/drama";
 import { Faces } from "./faces/faces";
 import { Fanart } from "./fanart/fanart";
 import { NavTone } from "./nav-tone";
@@ -78,7 +77,7 @@ const ROOM_HOLD = 1;
  * Vexana's page: one long scroll, every section its own design (see
  * docs/superpowers/specs/2026-10-24-vexana-page-design.md). The order here is the order on screen:
  * Opening, 01 Registry (About), 02 The film (Reel), 03 Craft (Skills), Faces, the interlude
- * (Cover), the comic, the livestream, the game, the 3D process, the art, the fanart, the music video,
+ * (Cover), the comic, the livestream, the 3D process, the art, the fanart, the music video,
  * Guinevere and, at the very bottom, the interactive room (which also leads on to the next character).
  *
  * The joins are made by the layout, not by anything laid over a section (`seams/`). The ones that
@@ -220,7 +219,6 @@ export function VexanaPage({ next }: { next: NextCharacter }) {
       <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000}>
         <Stream />
       </UpZone>
-      <Drama />
       <Process />
       <ArtShowcase />
       <Hold hold={1}>

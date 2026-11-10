@@ -22,7 +22,6 @@ const TONES: Record<string, "light" | "dark" | "auto"> = {
   cover: "dark",
   comics: "auto",
   stream: "dark",
-  drama: "dark",
   process: "dark",
   guinevere: "light",
   art: "dark",

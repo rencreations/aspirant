@@ -21,7 +21,6 @@ import {
   type VideoName,
 } from "./media";
 import { COMIC_PAGES, VIDEOS } from "./media.generated";
-import { dramaPoster } from "./drama/drama-media";
 import { roomItems } from "./room/media";
 
 const FANART_NUMBERS = Array.from({ length: FANART_COUNT }, (_, i) => i + 1);
@@ -71,8 +70,6 @@ export function vexanaFirstPaint(): PreloadItem[] {
     ...SKILL_CLIPS.map((n) => imageItem(videoPoster(n), "Loading the skill clips")),
     ...ART_NAMES.map((n) => imageItem(artThumb(n), "Loading the art")),
     imageItem(CHIBI, "Loading the comic"),
-    // The title screen of the interactive drama; its episodes load when they are played.
-    imageItem(dramaPoster("1"), "Loading the interactive drama"),
     ...COMIC_PAGES.slice(0, 6).map((n) => imageItem(comicPage(n), "Loading the comic")),
     ...POSTERS.map((n) => imageItem(videoPoster(n), "Loading the posters")),
     ...FANART_NUMBERS.map((n) => imageItem(fanartThumb(n), "Loading the fanart")),

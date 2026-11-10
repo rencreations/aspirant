@@ -92,7 +92,7 @@ export const SHELVES: readonly ShelfDef[] = [
     id: "drama",
     title: "Interactive drama",
     chip: "Drama",
-    note: "The episodes of the drama, in chapter order. Play it on Vexana's page.",
+    note: "The episodes of the drama, in chapter order. Play it on its own page in the story.",
     kinds: ["drama"],
   },
   {

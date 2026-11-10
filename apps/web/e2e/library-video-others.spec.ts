@@ -112,7 +112,7 @@ test("has one way out to the collection and no link to another room", async ({ p
   await expect(back).toHaveAttribute("href", /\/collection\/?$/);
   await expect(page.getByRole("navigation", { name: "Rooms of the collection" })).toHaveCount(0);
 
-  // Every link of the page: the takedown page, the way back, the top bar, and Vexana's page for the drama.
+  // Every link of the page: the takedown page, the way back, the top bar, and the drama's own page.
   const hrefs = await page
     .locator("main a[href], footer a[href], header a[href]")
     .evaluateAll((els) => els.map((e) => e.getAttribute("href") ?? ""));
@@ -257,9 +257,9 @@ test("a video posted under a second id opens through that id", async ({ page }) 
   await open(page, `?i=${DRAMA_3A2}`);
   await expect(dialog(page)).toBeVisible();
   await expect(dialog(page).getByRole("heading", { level: 2 })).toContainText("Where They Met");
-  await expect(dialog(page).getByRole("link", { name: /Vexana/ })).toHaveAttribute(
+  await expect(dialog(page).getByRole("link", { name: /interactive drama/i })).toHaveAttribute(
     "href",
-    /\/character\/vexana\/?$/,
+    /\/story\/interactive-drama\/?$/,
   );
 });
 

@@ -258,7 +258,7 @@ export function Friend() {
 
       <header className={styles.head}>
         <p className={styles.eyebrow}>
-          <b>10</b>
+          <b>09</b>
           <span className={styles.bar} aria-hidden="true" />
           <span>Her best friend</span>
         </p>

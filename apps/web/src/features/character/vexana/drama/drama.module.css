@@ -67,6 +67,17 @@
   font-weight: 600;
 }
 
+.eyebrow b a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.eyebrow b a:hover,
+.eyebrow b a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
 .eyebrow i {
   width: 32px;
   height: 1px;

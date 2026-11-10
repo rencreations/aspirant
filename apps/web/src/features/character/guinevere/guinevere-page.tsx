@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
 import { Comics } from "../vexana/comics/comics";
-import { Drama } from "../vexana/drama/drama";
 import { Process } from "../vexana/process/process";
 import { Reel } from "../vexana/reel/reel";
 import { comicStreamHooks, interludeComicHooks } from "../vexana/seams/comic-link";
@@ -76,10 +75,10 @@ export interface NextCharacter {
  * Guinevere's page: the same long scroll and the same joins as Vexana's (`../vexana/vexana-page.tsx`
  * lists them one by one, and `../vexana/seams/` makes them), with every section her own: the
  * opening with one photo of her, 01 the registry, 02 the film, 03 the craft, the pair of Alone and
- * Partner with her drones, the interlude, the comic, the livestream, the game, the 3D process, the
+ * Partner with her drones, the interlude, the comic, the livestream, the 3D process, the
  * art with hers first, the fanart, her theme, her best friend (Vexana) and, at the very bottom, her
- * interactive room (the same idea as Vexana's), which also leads on to the next character. The comic, the interactive drama and the 3D process are Vexana's own
- * sections, unchanged, since the story in them belongs to both.
+ * interactive room (the same idea as Vexana's), which also leads on to the next character. The comic and the 3D process are Vexana's own sections, unchanged,
+ * since the story in them belongs to both.
  */
 export function GuinevereRoot({ next }: { next: NextCharacter }) {
   const root = useRef<HTMLDivElement>(null);
@@ -169,7 +168,6 @@ export function GuinevereRoot({ next }: { next: NextCharacter }) {
       <UpZone id="comic-stream" hold={COMIC_HOLD} at={COMIC_AT} idleMs={1000}>
         <Stream />
       </UpZone>
-      <Drama />
       <Process />
       <ArtShowcase />
       <Hold hold={1}>

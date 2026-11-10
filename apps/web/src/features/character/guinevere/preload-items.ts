@@ -2,7 +2,6 @@ import { autoQuality } from "@/components/video-player/player-math";
 import { nextCharacter } from "@/content/characters";
 import { imageItem, mediaItem, type PreloadItem } from "@/lib/preload";
 
-import { dramaPoster } from "../vexana/drama/drama-media";
 import { CHIBI, comicPage, videoFile as vexanaVideoFile } from "../vexana/media";
 import { COMIC_PAGES, VIDEOS as VEXANA_VIDEOS } from "../vexana/media.generated";
 import {
@@ -76,8 +75,6 @@ export function guinevereFirstPaint(): PreloadItem[] {
     ...SKILL_CLIPS.map((n) => imageItem(videoPoster(n), "Loading the skill clips")),
     ...ART_NAMES.map((n) => imageItem(artThumb(n), "Loading the art")),
     imageItem(CHIBI, "Loading the comic"),
-    // The title screen of the interactive drama; its episodes load when they are played.
-    imageItem(dramaPoster("1"), "Loading the interactive drama"),
     ...COMIC_PAGES.slice(0, 6).map((n) => imageItem(comicPage(n), "Loading the comic")),
     ...(["heart-dance", "final2", "live-guin", "final", "skin-showcase", "music"] as const).map(
       (n) => imageItem(videoPoster(n), "Loading the posters"),
@@ -92,8 +89,8 @@ export function guinevereFirstPaint(): PreloadItem[] {
  * Everything else, in the order the page gets to it. Each group is deferred: the loading bar does
  * not wait for it, and it keeps downloading in the background once the page is open. These are
  * the long films, the full size pictures and the room. The long videos (her livestream, the second
- * film with sound, the music video) stream when they are played. The comic, the interactive drama
- * and the 3D process are Vexana's own sections, so their files are the ones her page loads.
+ * film with sound, the music video) stream when they are played. The comic and the 3D process
+ * are Vexana's own sections, so their files are the ones her page loads.
  */
 export function guinevereLater(): Array<{ priority: number; items: PreloadItem[] }> {
   const pick = autoQuality(FINAL_SOURCES, {

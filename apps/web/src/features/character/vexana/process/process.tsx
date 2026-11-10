@@ -23,7 +23,7 @@ const ICONS: Record<(typeof TOOLS)[number], string> = {
 const frame = (t: number) => String(Math.round(t * FPS)).padStart(3, "0");
 
 /**
- * 07, the 3D process. The model's making-of clip in a modeller's workspace: a viewport with a
+ * 06, the 3D process. The model's making-of clip in a modeller's workspace: a viewport with a
  * grid, an axis gizmo and shading modes, a toolbar, an outliner of the three passes the clip is
  * made of (clay, render, effects), a properties panel and a timeline that really scrubs the video.
  * The clip plays muted and loops while it is on screen. The shading modes and the figures in the
@@ -118,7 +118,7 @@ export function Process() {
     >
       <header className={styles.head}>
         <p className={styles.eyebrow}>
-          <b>07</b>
+          <b>06</b>
           <i />
           <span>Behind the model</span>
         </p>

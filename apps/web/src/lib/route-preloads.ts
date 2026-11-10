@@ -32,6 +32,7 @@ import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-
 import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
 import { libraryPageItems, shelfItems } from "@/features/library/preloads";
+import { dramaPageItems } from "@/features/story/interactive-drama/preload-items";
 import { storyLandingItems } from "@/features/story/landing/preload-items";
 import { chapterItems } from "@/features/story/reader/preload-items";
 import {
@@ -85,6 +86,11 @@ export function routeItems(pathname: string): PreloadItem[] {
     // The film behind the title is on the first screen and plays by itself, so it is waited for,
     // whole. The pictures of the characters far down the page wait in the background.
     return [...shared, ...storyLandingItems()];
+  }
+
+  if (path === "/story/interactive-drama") {
+    // The drama's title picture; its episodes load when they are played.
+    return [...shared, ...dramaPageItems()];
   }
 
   if (path.startsWith("/story/")) {
