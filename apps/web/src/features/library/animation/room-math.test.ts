@@ -1,21 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import type { StageState } from "@/features/character/stage/director";
 import { SELENA_TIMELINE } from "@/features/character/selena/timeline.generated";
-import { VEXANA_STAGE_TIMELINE } from "@/features/character/vexana/room/timeline.generated";
 
-import {
-  accentOf,
-  buildButtons,
-  buttonForDigit,
-  contrast,
-  formatSeconds,
-  hintFor,
-  nowPlaying,
-  sceneProgress,
-  sceneSeconds,
-  stepIndex,
-} from "./room-math";
+import { fieldColors, mixHex } from "./colors";
+import { contourPaths } from "./contours";
+import { describeClips, pairOf } from "./copy";
+import { contrast, optionButtons, sceneProgress } from "./room-math";
 import type { AnimClip } from "./types";
 
 function clip(partial: Partial<AnimClip> & Pick<AnimClip, "kind" | "label" | "order">): AnimClip {
@@ -43,23 +33,11 @@ const CLIPS: AnimClip[] = [
   clip({ kind: "short", label: "Arm", order: 4, scene: "short-3" }),
 ];
 
-const STATE: StageState = {
-  mode: "idle",
-  scene: null,
-  loading: false,
-  ui: true,
-  next: null,
-  leaving: false,
-  fast: false,
-  wait: null,
-};
-
-describe("buildButtons", () => {
-  it("gives the digits to everything but the welcome, in order", () => {
-    const buttons = buildButtons(CLIPS, SELENA_TIMELINE);
+describe("optionButtons", () => {
+  it("gives the digits in order and leaves the idle loop out", () => {
+    const buttons = optionButtons(CLIPS, SELENA_TIMELINE);
     expect(buttons.map((b) => [b.clip.label, b.key])).toEqual([
-      ["Welcome", null],
-      ["Idle", 1],
+      ["Welcome", 1],
       ["Pose", 2],
       ["Badge", 3],
       ["Arm", 4],
@@ -67,32 +45,18 @@ describe("buildButtons", () => {
   });
 
   it("lists the files a scene needs", () => {
-    const buttons = buildButtons(CLIPS, SELENA_TIMELINE);
+    const buttons = optionButtons(CLIPS, SELENA_TIMELINE);
     expect(buttons.find((b) => b.clip.label === "Pose")?.files).toEqual([
       "gallery-in.mp4",
       "gallery-loop.mp4",
       "gallery-out.mp4",
     ]);
     expect(buttons.find((b) => b.clip.label === "Badge")?.files).toEqual(["short-2.mp4"]);
-    expect(buttons.find((b) => b.clip.kind === "idle")?.files).toEqual([]);
-  });
-
-  it("finds a button from a digit", () => {
-    const buttons = buildButtons(CLIPS, SELENA_TIMELINE);
-    expect(buttonForDigit(buttons, 3)?.clip.label).toBe("Badge");
-    expect(buttonForDigit(buttons, 9)).toBeNull();
+    expect(buttons.find((b) => b.clip.kind === "welcome")?.files).toEqual([]);
   });
 
   it("keeps every button while the timeline is not known", () => {
-    expect(buildButtons(CLIPS, null)).toHaveLength(5);
-  });
-});
-
-describe("stepIndex", () => {
-  it("wraps at both ends", () => {
-    expect(stepIndex(9, 1, 10)).toBe(0);
-    expect(stepIndex(0, -1, 10)).toBe(9);
-    expect(stepIndex(3, 1, 10)).toBe(4);
+    expect(optionButtons(CLIPS, null)).toHaveLength(4);
   });
 });
 
@@ -104,79 +68,45 @@ describe("sceneProgress", () => {
   });
 });
 
-describe("sceneSeconds", () => {
-  it("counts a short by its frames and a pose by its three parts", () => {
-    const short = SELENA_TIMELINE.shorts["short-1"];
-    expect(sceneSeconds(SELENA_TIMELINE, "short-1")).toBeCloseTo(short.frames / 60);
-    const page = VEXANA_STAGE_TIMELINE.pages.gallery;
-    expect(sceneSeconds(VEXANA_STAGE_TIMELINE, "gallery")).toBeCloseTo(
-      (page.in.frames + page.loop.frames + page.out.frames) / 60,
-    );
+describe("colours", () => {
+  it("mixes two colours", () => {
+    expect(mixHex("#000000", "#ffffff", 0.5)).toBe("#808080");
+    expect(mixHex("#ff0000", "#0000ff", 0)).toBe("#ff0000");
+  });
+
+  it("gives every field a colour white type reads on", () => {
+    const palettes = [
+      { primary: "#A6DCFF", secondary: "#C7D0DD", glow: "#8B5CF6", ink: "#0D1424" },
+      { primary: "#FF7F7A", secondary: "#14B3A6", glow: "#7DF7EC", ink: "#14222B" },
+      { primary: "#1E2A57", secondary: "#E0388E", glow: "#F2B83B", ink: "#0A0F24" },
+      { primary: "#F6B98A", secondary: "#E1322E", glow: "#2ED3C5", ink: "#24110E" },
+    ];
+    for (const p of palettes) {
+      const { main, deep } = fieldColors(p);
+      expect(contrast(main, "#ffffff")).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(deep, "#ffffff")).toBeGreaterThan(contrast(main, "#ffffff"));
+      // Her own colour, not a grey: the field keeps the hue of her primary.
+      expect(main).not.toBe(p.ink.toLowerCase());
+    }
   });
 });
 
-describe("formatSeconds", () => {
-  it("writes one decimal, and says so when the length is not known", () => {
-    expect(formatSeconds(4.25)).toBe("4.3 s");
-    expect(formatSeconds(null)).toBe("length not known yet");
+describe("copy", () => {
+  it("names the pair, the character first", () => {
+    expect(pairOf("obsidia")).toEqual(["obsidia", "selena"]);
+    expect(pairOf("layla")).toEqual(["layla", "fanny"]);
+  });
+
+  it("says what a character's animation holds, in words", () => {
+    expect(describeClips(CLIPS)).toBe("A welcome, an idle loop, a close pose and two clips.");
+    expect(describeClips(CLIPS.slice(0, 2))).toBe("A welcome and an idle loop.");
   });
 });
 
-describe("nowPlaying", () => {
-  const buttons = buildButtons(CLIPS, SELENA_TIMELINE);
-
-  it("is empty before the stage begins", () => {
-    expect(nowPlaying({ ...STATE, mode: "boot" }, SELENA_TIMELINE, buttons).key).toBeNull();
-  });
-
-  it("describes the idle loop as a loop of the timeline's length", () => {
-    const now = nowPlaying(STATE, SELENA_TIMELINE, buttons);
-    expect(now).toMatchObject({ key: "idle", loop: true });
-    expect(now.durMs).toBeCloseTo((SELENA_TIMELINE.loopFrames / SELENA_TIMELINE.fps) * 1000);
-  });
-
-  it("follows a short, and the three parts of a pose", () => {
-    expect(
-      nowPlaying({ ...STATE, mode: "short", scene: "short-2" }, SELENA_TIMELINE, buttons),
-    ).toMatchObject({
-      key: "short-2",
-      label: "Badge",
-      loop: false,
-    });
-    const keys = (["intro", "page", "outro"] as const).map(
-      (mode) => nowPlaying({ ...STATE, mode, scene: "gallery" }, SELENA_TIMELINE, buttons).key,
-    );
-    expect(keys).toEqual(["gallery-in", "gallery-loop", "gallery-out"]);
-  });
-});
-
-describe("hintFor", () => {
-  const base = "Press a button.";
-  it("says what is happening", () => {
-    expect(
-      hintFor({ phase: "preparing", state: STATE, label: null, waitSeconds: null, base }),
-    ).toContain("Preparing");
-    expect(hintFor({ phase: "ready", state: STATE, label: null, waitSeconds: null, base })).toBe(
-      base,
-    );
-    expect(
-      hintFor({
-        phase: "ready",
-        state: { ...STATE, mode: "queued", scene: "short-1" },
-        label: "Face",
-        waitSeconds: 2.04,
-        base,
-      }),
-    ).toContain("2.0 s");
-  });
-});
-
-describe("accentOf", () => {
-  it("keeps a primary that reads on its ink, and swaps one that does not", () => {
-    const layla = { primary: "#FF7F7A", secondary: "#14B3A6", glow: "#7DF7EC", ink: "#14222B" };
-    expect(accentOf(layla)).toBe(layla.primary);
-    const ruby = { primary: "#1E2A57", secondary: "#E0388E", glow: "#F2B83B", ink: "#0A0F24" };
-    expect(contrast(ruby.primary, ruby.ink)).toBeLessThan(4.5);
-    expect(accentOf(ruby)).toBe(ruby.secondary);
+describe("contourPaths", () => {
+  it("draws closed lines from the panel out past the corners of the screen", () => {
+    const paths = contourPaths({ cx: 720, cy: 420, hw: 440, hh: 280 }, { w: 1440, h: 900 }, 50);
+    expect(paths.length).toBeGreaterThan(8);
+    expect(paths.every((d) => d.startsWith("M") && d.endsWith("Z"))).toBe(true);
   });
 });

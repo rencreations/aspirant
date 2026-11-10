@@ -1,4 +1,5 @@
-import { CHARACTER_NAMES, CHARACTER_SLUGS, type CharacterSlug } from "@/lib/slugs";
+import { libUrl } from "@/lib/library";
+import { CHARACTER_NAMES, type CharacterSlug } from "@/lib/slugs";
 
 import { readStageData, libraryBundle, timeSkip, type StageBundle } from "./bundle";
 import { STAGE_LOADERS } from "./stage-loaders.generated";
@@ -68,17 +69,49 @@ const SITE: Partial<Record<CharacterSlug, Loader>> = {
   },
 };
 
-/** The ten, in the order of the picker. */
-export const ROOM_ORDER: readonly CharacterSlug[] = CHARACTER_SLUGS;
+/**
+ * The ten, in the order of the carousel: by pair, as the roster is (Selena and Obsidia, Guinevere
+ * and Vexana, Lesley and Chang'e, Ruby and Angela, Layla and Fanny).
+ */
+export const ORDER: readonly CharacterSlug[] = [
+  "selena",
+  "obsidia",
+  "guinevere",
+  "vexana",
+  "lesley",
+  "change",
+  "ruby",
+  "angela",
+  "layla",
+  "fanny",
+];
 
-/** True when the character's stage can be built now. */
-export function hasStage(slug: CharacterSlug): boolean {
-  return slug in SITE || slug in STAGE_LOADERS;
+/** The folder of the four stages that are the site's own. */
+const SITE_DIRS: Partial<Record<CharacterSlug, string>> = {
+  selena: "/video/selena",
+  obsidia: "/video/obsidia",
+  guinevere: "/video/guinevere-stage",
+  vexana: "/video/vexana-stage",
+};
+
+/**
+ * The picture of a panel: the first frame of the character's idle pose, the picture the stage
+ * shows under its videos. The six library stages have a 1280 copy of it, which is enough for a
+ * panel; the site's own four have their 2560 still only.
+ */
+export function panelStill(slug: CharacterSlug): string {
+  const dir = SITE_DIRS[slug];
+  return dir ? `${dir}/still.webp` : libUrl(`animation/${slug}/poster/p.webp`);
 }
 
-/** The first character of the picker that can play, which the room opens on. */
-export function firstReady(): CharacterSlug {
-  return ROOM_ORDER.find(hasStage) ?? ROOM_ORDER[0]!;
+/** The still the stage itself draws under its videos (2560 wide), until the welcome's first frame. */
+export function stageStill(slug: CharacterSlug): string {
+  return `${SITE_DIRS[slug] ?? libUrl(`animation/${slug}`)}/still.webp`;
+}
+
+/** The place of a slug in the order of the ring, or -1. */
+export function orderIndex(slug: string | null | undefined): number {
+  return slug ? ORDER.indexOf(slug as CharacterSlug) : -1;
 }
 
 const cache = new Map<CharacterSlug, Promise<StageBundle | null>>();
