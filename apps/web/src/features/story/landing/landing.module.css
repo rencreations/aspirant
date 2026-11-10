@@ -56,69 +56,121 @@
   color: var(--text);
 }
 
-.text {
-  margin: 0;
-  font-family: var(--font-serif-stack);
-  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
-  line-height: 1.55;
-  color: var(--text-dim);
-}
-
-.facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(6.25rem, 1fr));
-  gap: 1.25rem 1.25rem;
-  margin: clamp(2rem, 6vh, 3.5rem) 0 0;
-  padding: 1.4rem 0 0;
-  border-top: 1px solid var(--line);
-}
-
-.fact {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.fact dt {
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.fact dd {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
-  line-height: 1;
-  color: var(--text);
-}
-
 /* The chapter selection ------------------------------------------------------------------- */
 .chapters {
   padding-block: clamp(2rem, 6vh, 4rem) clamp(4rem, 12vh, 8rem);
   scroll-margin-top: 5rem;
 }
 
-/* The place the visitor stopped, pinned above the list with some air below it. */
+/* The place the visitor stopped: a dark, lit card on the white page, so it cannot be missed. */
 .pinned {
+  --pin-bg: var(--ink);
+  --pin-text: #eef3fa;
+  --pin-dim: #aab6c8;
+  --pin-accent: #ffb338;
+  position: relative;
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+  margin: 2rem 0 clamp(2.5rem, 7vh, 4.5rem);
+  padding: clamp(1.1rem, 3vw, 1.75rem) clamp(1.1rem, 3vw, 1.75rem) clamp(1.1rem, 3vw, 1.75rem)
+    clamp(1.6rem, 3.6vw, 2.25rem);
+  background: var(--pin-bg);
+  color: var(--pin-text);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% 100%,
+    22px 100%,
+    0 calc(100% - 22px)
+  );
+}
+
+/* The accent bar down the left edge. */
+.pinned::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.4rem;
+  background: var(--pin-accent);
+}
+
+@media (min-width: 40em) {
+  .pinned {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+@media (min-width: 64em) {
+  .pinned {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  }
+}
+
+.pinnedPicture {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: 0 0 0 1px rgb(238 243 250 / 0.28);
+}
+
+.pinnedPicture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pinnedBody {
   display: grid;
   justify-items: start;
   gap: 0.35rem;
-  margin: 2rem 0 clamp(2.5rem, 7vh, 4.5rem);
-  padding: clamp(1.25rem, 3vw, 2rem);
-  border: 1px solid var(--text);
+  min-width: 0;
 }
 
 .pinnedKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   margin: 0;
   font-family: var(--font-mono-stack);
   font-size: var(--step--1);
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-weight: 700;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--pin-accent);
+}
+
+/* A small live dot: a ring that grows and fades (transform and opacity only). */
+.pinnedDot {
+  position: relative;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--pin-accent);
+}
+
+.pinnedDot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--pin-accent);
+  animation: pinned-ring 2s var(--ease-out) infinite;
+}
+
+@keyframes pinned-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
 }
 
 .pinnedTitle {
@@ -130,7 +182,7 @@
   font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
   line-height: 0.95;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--pin-text);
 }
 
 .pinnedLabel {
@@ -138,7 +190,20 @@
   font-size: var(--step--1);
   font-weight: 500;
   letter-spacing: 0.16em;
-  color: var(--text-dim);
+  color: var(--pin-dim);
+}
+
+/* The house button is a black plate, which would vanish on the dark card, so here it is gold. */
+.pinned .pinnedButton {
+  --sb-ink: #05070c;
+}
+
+.pinned .pinnedButton::after {
+  background-color: var(--pin-accent);
+}
+
+.pinned .pinnedButton:hover::before {
+  background: #ffffff;
 }
 
 .pinnedMeta {
@@ -146,7 +211,7 @@
   font-family: var(--font-serif-stack);
   font-style: italic;
   font-size: 1.1rem;
-  color: var(--text-dim);
+  color: var(--pin-dim);
 }
 
 .listHead {

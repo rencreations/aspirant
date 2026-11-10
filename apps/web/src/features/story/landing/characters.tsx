@@ -21,7 +21,7 @@ export function Characters() {
         <p className={s.charLead}>Each Aspirant has a page of their own. Choose one to open it.</p>
         <ul className={s.cards}>
           {characters.map((c) => {
-            const art = portraitFor(c.slug);
+            const art = portraitFor(c.slug, "card");
             return (
               <li key={c.slug}>
                 <TLink

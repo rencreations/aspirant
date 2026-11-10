@@ -53,20 +53,39 @@ export function ChapterSelect({ progress }: { progress: StoryProgress }) {
 
         {progress.resume && saved && (
           <div className={s.pinned}>
-            <p className={s.pinnedKicker}>Continue</p>
-            <p className={s.pinnedTitle}>
-              <span className={s.pinnedLabel}>{chapterLabel(saved)}</span>
-              {saved.number === 0 ? "Prologue" : saved.title}
-            </p>
-            <p className={s.pinnedMeta}>{saved.dateline ?? ""}</p>
-            <StarButton
-              pulse
-              href={progress.resume.href}
-              transitionLabel={chapterLabel(saved)}
-              aria-label={`Continue ${chapterLabel(saved)}${saved.number === 0 ? "" : `, ${saved.title}`}`}
-            >
-              Continue reading
-            </StarButton>
+            <span className={s.pinnedPicture} aria-hidden="true">
+              {/* Plain <img>: static export, art already sized. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset(`/${saved.thumb}`)}
+                alt=""
+                width={640}
+                height={360}
+                decoding="async"
+                draggable={false}
+              />
+            </span>
+            <div className={s.pinnedBody}>
+              <p className={s.pinnedKicker}>
+                <span className={s.pinnedDot} aria-hidden="true" />
+                Where you stopped
+              </p>
+              <p className={s.pinnedTitle}>
+                <span className={s.pinnedLabel}>{chapterLabel(saved)}</span>
+                {saved.number === 0 ? "Prologue" : saved.title}
+              </p>
+              <p className={s.pinnedMeta}>{saved.dateline ?? ""}</p>
+              <StarButton
+                pulse
+                size="lg"
+                className={s.pinnedButton}
+                href={progress.resume.href}
+                transitionLabel={chapterLabel(saved)}
+                aria-label={`Continue ${chapterLabel(saved)}${saved.number === 0 ? "" : `, ${saved.title}`}`}
+              >
+                Continue reading
+              </StarButton>
+            </div>
           </div>
         )}
 

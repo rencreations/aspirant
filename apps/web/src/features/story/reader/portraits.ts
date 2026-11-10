@@ -15,17 +15,32 @@ const FACES: Readonly<Record<string, readonly [number, number]>> = {
   selena: [70, 22],
 };
 
+/**
+ * Where the subject sits across a tall 4:5 card cut from the 16:9 splash (only the horizontal
+ * position matters there, because the card shows the whole height). Slugs left out use `FACES`.
+ */
+const CARD_X: Readonly<Record<string, number>> = {
+  angela: 66,
+  lesley: 68,
+  change: 74,
+  obsidia: 44,
+};
+
 export interface Portrait {
   readonly src: string;
   /** CSS object-position. */
   readonly position: string;
 }
 
-export function portraitFor(slug: string | null | undefined): Portrait | null {
+export function portraitFor(
+  slug: string | null | undefined,
+  shape: "face" | "card" = "face",
+): Portrait | null {
   if (!slug) return null;
   const face = FACES[slug];
   if (!face) return null;
-  return { src: `/img/char/${slug}/splash-sm.webp`, position: `${face[0]}% ${face[1]}%` };
+  const x = shape === "card" ? (CARD_X[slug] ?? face[0]) : face[0];
+  return { src: `/img/char/${slug}/splash-sm.webp`, position: `${x}% ${face[1]}%` };
 }
 
 /** Aspirant names (canon rules, rule 7). */
