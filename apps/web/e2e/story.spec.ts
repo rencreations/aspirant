@@ -217,6 +217,134 @@ test.describe("the story page", () => {
     await expect(cards.last()).toHaveAttribute("href", /character\/selena\/$/);
   });
 
+  test("the brief is one paragraph with no counts", async ({ page }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    const brief = page.locator("section[aria-labelledby='brief-title']");
+    await expect(brief.locator("p")).toHaveCount(2); // the kicker and the paragraph
+    await expect(brief).toContainText("Selrick Academy stands in Terrinia");
+    await expect(brief.locator("dl")).toHaveCount(0);
+    await expect(brief).not.toContainText(/words|reading time|film clips|voice lines/i);
+  });
+
+  test("a returning reader's Continue card stands out on the chapter list", async ({ page }) => {
+    await skipGate(page);
+    await page.addInitScript((saved) => localStorage.setItem("aspirants:reader", saved), SAVED);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    const card = page.locator("#chapters").getByText("Where you stopped");
+    await expect(card).toBeAttached();
+    const link = page.locator("#chapters").getByRole("link", { name: /^Continue Chapter 12/ });
+    await expect(link).toHaveAttribute("href", /story\/chapter-12\/?#c12-p004$/);
+    // A dark card on the page: the text on it is light.
+    const dark = await card.evaluate((el) => {
+      const box = el.closest("div");
+      const bg = box ? getComputedStyle(box).backgroundColor : "";
+      const m = /rgba?\((\d+), (\d+), (\d+)/.exec(bg);
+      return m ? Number(m[1]) + Number(m[2]) + Number(m[3]) < 120 : false;
+    });
+    expect(dark).toBe(true);
+  });
+
+  test("the story page has no footer that leads on, and no scrollbar", async ({ page }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByText("Meet the ten Aspirants, starting with Fanny.")).toHaveCount(0);
+    expect(
+      await page.evaluate(() => document.documentElement.hasAttribute("data-bare-scroll")),
+    ).toBe(true);
+    // A classic scrollbar would take width from the page.
+    expect(
+      await page.evaluate(() => window.innerWidth - document.documentElement.clientWidth),
+    ).toBe(0);
+  });
+
+  test("the interactive drama, the canon comics and the lore each have their section", async ({
+    page,
+  }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    const drama = page.locator("section[aria-labelledby='drama-title']");
+    await expect(drama).toContainText("Part of the lore");
+    await expect(drama.getByRole("link", { name: /Play the drama/ })).toHaveAttribute(
+      "href",
+      /story\/interactive-drama\/?$/,
+    );
+    const comics = page.locator("section[aria-labelledby='comics-title']");
+    await expect(comics.getByRole("link", { name: /Read the comic/ })).toHaveCount(2);
+    await expect(comics.getByRole("link", { name: /Read the comic/ }).first()).toHaveAttribute(
+      "href",
+      /collection\/comic\/\?i=comic-the-aspirant$/,
+    );
+    await expect(comics.getByRole("button", { name: /voiced in Japanese/ })).toBeAttached();
+    const lore = page.locator("section[aria-labelledby='lore-title']");
+    await expect(lore.getByRole("link", { name: "Open the lore" })).toHaveAttribute(
+      "href",
+      /collection\/lore\/?$/,
+    );
+  });
+
+  test("the page has no end: past the last section the hero comes back and the page starts over", async ({
+    page,
+  }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    await page.mouse.move(700, 450);
+    const state = () =>
+      page.evaluate(() => ({
+        y: Math.round(window.scrollY),
+        max: Math.round(document.documentElement.scrollHeight - window.innerHeight),
+      }));
+    const { max } = await state();
+    expect(max).toBeGreaterThan(3 * (await page.evaluate(() => innerHeight)));
+    // Wheel all the way down. The scroll must come back to the top at the end, not stop there.
+    let wrapped = false;
+    let last = 0;
+    for (let i = 0; i < 80 && !wrapped; i += 1) {
+      await page.mouse.wheel(0, 700);
+      await page.waitForTimeout(90);
+      const { y } = await state();
+      if (y < last - 1000) wrapped = true;
+      last = y;
+    }
+    expect(wrapped).toBe(true);
+    // Back at the top, the hero is in front with its buttons live.
+    await expect.poll(async () => (await state()).y, { timeout: 4000 }).toBeLessThan(400);
+  });
+
+  test("at the very end the hero is on screen with a live button, as at the top", async ({
+    page,
+  }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    const hit = () =>
+      page.evaluate(() => {
+        const link = [...document.querySelectorAll("a")].find((a) =>
+          (a.textContent ?? "").startsWith("Start reading"),
+        );
+        const r = link?.getBoundingClientRect();
+        if (!link || !r) return "none";
+        const at = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        return at && link.contains(at) ? "live" : "covered";
+      });
+    expect(await hit()).toBe("live");
+    // A few pixels short of the end, where the page has left and has not started over yet.
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight - window.innerHeight - 8),
+    );
+    await page.waitForTimeout(300);
+    expect(await hit()).toBe("live");
+    // In the middle the hero is under the page: out of reach.
+    await page.evaluate(() => window.scrollTo(0, innerHeight * 3));
+    await page.waitForTimeout(300);
+    expect(await hit()).toBe("covered");
+  });
+
   test("no serious accessibility violations, in the light theme and the dark one", async ({
     page,
   }) => {

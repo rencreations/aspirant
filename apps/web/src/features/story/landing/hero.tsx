@@ -108,7 +108,9 @@ export function StoryHero({
   // As the page rises over the hero: the title and the buttons lift away and fade, the cue goes first,
   // the film comes a little closer. Transform and opacity only. Once covered, the film rests.
   useEffect(() => {
-    progressRef.current = (p) => {
+    progressRef.current = (raw) => {
+      // A hair of cover is none: the hero at the very top and at the very end of the page is one picture.
+      const p = raw < 0.012 ? 0 : raw;
       put(content.current, "opacity", String(Number((1 - clamp01(p * 1.5)).toFixed(3))));
       put(content.current, "transform", `translate3d(0, ${(-p * 7).toFixed(2)}vh, 0)`);
       put(cue.current, "opacity", String(Number((1 - clamp01(p * 10)).toFixed(3))));
@@ -116,6 +118,8 @@ export function StoryHero({
       const covered = p >= 1;
       if (covered !== state.current.covered) {
         state.current.covered = covered;
+        // Out of reach while the page is over it: no focus can land on a button nobody can see.
+        if (section.current) section.current.inert = covered;
         sync.current();
       }
     };

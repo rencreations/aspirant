@@ -1,0 +1,326 @@
+/*
+ * The interactive drama on the story page: a dark console on the white page. A violet glow, a badge
+ * that says it is part of the lore, the drama's own title in pink offset type, and the decision tree
+ * with the story's route in gold. Only opacity and transform move.
+ */
+.drama {
+  --violet: #b79cf2;
+  --magenta: #e040a0;
+  --gold: #ffb338;
+  --deep: #0a0614;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: clamp(4rem, 11vh, 7.5rem);
+  color: #f1ecfb;
+  background:
+    linear-gradient(rgb(183 156 242 / 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgb(183 156 242 / 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(120% 90% at 20% 0%, #1e1240 0%, var(--deep) 62%);
+}
+
+/* The section's own edge, in gold and pink: a thin line along the top and the bottom. */
+.drama::before,
+.drama::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--magenta) 80%, transparent);
+  opacity: 0.8;
+}
+
+.drama::before {
+  top: 0;
+}
+
+.drama::after {
+  bottom: 0;
+}
+
+.glow {
+  position: absolute;
+  z-index: -1;
+  width: min(70vw, 52rem);
+  aspect-ratio: 1;
+  right: -12%;
+  top: 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(224 64 160 / 0.28),
+    rgb(122 79 214 / 0.14) 55%,
+    transparent
+  );
+  animation: breathe 7s var(--ease-in-out) infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.inner {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  align-items: center;
+}
+
+@media (min-width: 64em) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+}
+
+.copy {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.45rem 0.9rem 0.45rem 0.7rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #05070c;
+  background: var(--gold);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.live {
+  position: relative;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #05070c;
+}
+
+.live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #05070c;
+  animation: ring 2s var(--ease-out) infinite;
+}
+
+@keyframes ring {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+.kicker {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 1.4rem + 4.8vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--magenta);
+  text-wrap: balance;
+}
+
+.title span {
+  display: block;
+  color: var(--gold);
+}
+
+.lead {
+  max-width: 34rem;
+  margin: 0.4rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  line-height: 1.45;
+  color: #d9d5f5;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  padding: 0.35rem 0.8rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--violet);
+  border: 1px solid rgb(183 156 242 / 0.5);
+}
+
+.cta {
+  margin-top: 1rem;
+}
+
+/* The house button is a black plate; on this dark section it is gold. */
+.drama .play {
+  --sb-ink: #05070c;
+}
+
+.drama .play::after {
+  background-color: var(--gold);
+}
+
+/* The console ---------------------------------------------------------------------------------- */
+.console {
+  position: relative;
+  margin: 0;
+  padding: clamp(1rem, 2.4vw, 1.75rem) clamp(0.75rem, 2vw, 1.5rem) 0.9rem;
+  background: rgb(10 6 20 / 0.72);
+  border: 1px solid rgb(183 156 242 / 0.45);
+  box-shadow:
+    0 0 0 4px rgb(10 6 20 / 0.6),
+    0 0 0 5px rgb(224 64 160 / 0.5);
+}
+
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--gold);
+  pointer-events: none;
+}
+
+.tl {
+  top: -7px;
+  left: -7px;
+  border-width: 3px 0 0 3px;
+}
+
+.tr {
+  top: -7px;
+  right: -7px;
+  border-width: 3px 3px 0 0;
+}
+
+.bl {
+  bottom: -7px;
+  left: -7px;
+  border-width: 0 0 3px 3px;
+}
+
+.br {
+  right: -7px;
+  bottom: -7px;
+  border-width: 0 3px 3px 0;
+}
+
+.tree {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.edge {
+  fill: none;
+  stroke: rgb(183 156 242 / 0.4);
+  stroke-width: 1.6;
+}
+
+.edgeGold {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.node {
+  fill: rgb(30 18 64 / 0.9);
+  stroke: rgb(183 156 242 / 0.55);
+  stroke-width: 1.4;
+}
+
+.nodeGold {
+  fill: var(--gold);
+  stroke: #fff;
+  stroke-width: 1.4;
+  animation: lit 4.2s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--i) * 0.45s);
+}
+
+@keyframes lit {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  25% {
+    opacity: 1;
+  }
+}
+
+.nodeLabel {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 700;
+  fill: #05070c;
+  pointer-events: none;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #d9d5f5;
+}
+
+.key {
+  width: 1.6rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gold);
+}

@@ -1,0 +1,29 @@
+/*
+ * The story page as a loop (see story-landing.tsx). The hero is one fixed layer. The page in front of
+ * it is: a screen of nothing, the white page, a screen of nothing. The two empty screens do not take
+ * a click, so the hero's buttons work through them.
+ */
+.loop {
+  --lvh: 100vh;
+  position: relative;
+}
+
+@supports (height: 100lvh) {
+  .loop {
+    --lvh: 100lvh;
+  }
+}
+
+.heroLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: var(--lvh);
+}
+
+.gap {
+  height: var(--lvh);
+  pointer-events: none;
+}

@@ -1,21 +1,18 @@
 /*
- * The page that rises over the hero (see rise.tsx). It overlaps the hero's last screen, is above it,
- * and throws a soft shadow up onto it. It rises narrower than the screen (a scale about its top
- * middle, written by the script) and is square and full width once it has come.
+ * The page that rises over the hero and leaves again at its end (see rise.tsx). The hero is a fixed
+ * layer behind it. The panel is above the hero, has one screen of empty page before it and one after
+ * it, rises narrower than the screen (a scale about its top middle, written by the script) and is
+ * square and full width once it has come. At its end it goes the same way backwards, about its bottom
+ * middle. Two soft shadows lie along its top and bottom edges, outside it, and fade in as the edge
+ * comes onto the screen, so the start and the end of the page look the same.
  */
 .rise {
-  --lvh: 100vh;
   --page-bg: #fff;
   position: relative;
   z-index: 4;
-  margin-top: calc(-1 * var(--lvh));
   background: var(--page-bg);
   color: var(--text);
   transform-origin: 50% 0;
-  /* The shadow is wanted above the top edge only: a clip region that reaches up and stops at the
-     bottom edge keeps it from spilling over what follows. */
-  box-shadow: 0 -22px 70px rgb(20 14 38 / 0.32);
-  clip-path: inset(-120px 0 0 0);
   overflow-x: clip;
 }
 
@@ -23,8 +20,21 @@
   --page-bg: var(--ink);
 }
 
-@supports (height: 100lvh) {
-  .rise {
-    --lvh: 100lvh;
-  }
+.shadow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 96px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shadowTop {
+  bottom: 100%;
+  background: linear-gradient(to top, rgb(20 14 38 / 0.3), rgb(20 14 38 / 0.1) 45%, transparent);
+}
+
+.shadowBottom {
+  top: 100%;
+  background: linear-gradient(to bottom, rgb(20 14 38 / 0.3), rgb(20 14 38 / 0.1) 45%, transparent);
 }
