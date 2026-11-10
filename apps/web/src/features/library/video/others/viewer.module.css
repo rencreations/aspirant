@@ -1,0 +1,385 @@
+/* The viewer of the Others room: a light sheet over the page. The picture grows out of its tile with
+   a transform (Web Animations from the code), the sheet and the words fade. No filter, no backdrop
+   blur. The page behind keeps its scrollbar. */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  color: var(--text);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  overscroll-behavior: contain;
+  background: var(--bg);
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem var(--gutter);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.6rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.counter {
+  margin-left: 0.2rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--line-strong);
+  color: var(--lib-colour);
+}
+
+.buttons {
+  display: flex;
+  flex: none;
+  gap: 0.35rem;
+}
+
+.square {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.square:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
+}
+
+.square:focus-visible,
+.scene:focus-visible,
+.miniHit:focus-visible,
+.moreLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 25rem);
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  align-items: start;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: clamp(1rem, 2.4vw, 2rem) var(--gutter) clamp(2rem, 4vw, 3.5rem);
+}
+
+.stageCol {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: clamp(0.75rem, 2.6vw, 2.2rem);
+  isolation: isolate;
+}
+
+/* The tint behind the picture, in the colour of the poster. It fades in with the sheet. */
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--field) 14%, var(--bg-2));
+}
+
+.stage {
+  --stage-h: min(66vh, 46rem);
+  width: min(100%, calc(var(--stage-h) * var(--ar)));
+}
+
+/* The site's card is 16 by 9. The stage has the shape of the picture. */
+.stage .card {
+  aspect-ratio: var(--ar);
+}
+
+.stage .card > :not(img) {
+  transition: opacity var(--dur-base) linear;
+}
+
+/* While the picture is on the move, the play button waits: it would be squeezed with the picture. */
+.stage[data-morph] .card > :not(img) {
+  opacity: 0;
+  transition: none;
+}
+
+.startNote {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.startNote button {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentcolor;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.info {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+.kind {
+  margin: 0;
+  color: var(--lib-colour);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-5);
+  line-height: 0.95;
+}
+
+.lead {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--step-0);
+}
+
+.notice {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  padding: 0.7rem 0 0.7rem 0.9rem;
+  border-left: 3px solid var(--lib-colour);
+  background: color-mix(in srgb, var(--lib-colour) 6%, transparent);
+  font-size: var(--step--1);
+}
+
+.notice p {
+  margin: 0;
+  color: var(--text);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 1rem;
+  margin: 0.3rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.facts dt {
+  color: var(--text-faint);
+}
+
+.facts dd {
+  margin: 0.15rem 0 0;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.moreLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.scenes {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.scenesTitle {
+  margin: 0;
+}
+
+.sceneList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scene {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--step--1);
+  text-align: left;
+  cursor: pointer;
+}
+
+.scene:hover,
+.scene[aria-current="true"] {
+  color: var(--text);
+}
+
+.scene[aria-current="true"] .sceneTime {
+  color: var(--lib-colour);
+}
+
+.sceneTime {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  color: var(--text-faint);
+}
+
+.more {
+  border-top: 1px solid var(--line);
+}
+
+.moreInner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: 1.2rem var(--gutter) 2.4rem;
+}
+
+.moreTitle {
+  margin: 0 0 0.8rem;
+}
+
+.moreList {
+  display: flex;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0 0 0.4rem;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.moreList li {
+  flex: none;
+  width: clamp(9.5rem, 14vw, 13rem);
+}
+
+.miniHit {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mini {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--field);
+}
+
+.mini img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.miniHit:hover .mini img {
+  transform: scale(1.04);
+}
+
+.miniLength {
+  position: absolute;
+  right: 0.3rem;
+  bottom: 0.3rem;
+  padding: 0.1rem 0.32rem;
+  background: rgb(8 10 16 / 0.74);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+}
+
+.miniTitle {
+  display: -webkit-box;
+  margin-top: 0.4rem;
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+@media (max-width: 64em) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stage {
+    --stage-h: min(56vh, 40rem);
+  }
+}
+
+@media (max-width: 40em) {
+  .counter {
+    display: none;
+  }
+
+  .square {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

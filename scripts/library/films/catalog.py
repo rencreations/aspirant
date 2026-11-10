@@ -1,4 +1,8 @@
-"""The list of films of the Films room: what each one is, where it comes from and how it is made.
+"""The catalog of the Others room (Video, Others): what each video is, where it comes from and how it is made.
+
+The ten official films (`FILM_IDS` in `features/library/video/links.ts`) are not here: they belong to
+the Films room. The videos that other rooms already encode (promo reels, emotes, gameplay clips,
+official edits and fan videos) are in `reuse.py`.
 
 Every entry names a source video under `media/` (`src`, a path that may hold one `*` when the file
 name is long or in Japanese) and a plan:
@@ -72,17 +76,6 @@ def film(
 
 FILMS: list[dict[str, Any]] = [
     # ---------------------------------------------------------------- Layla and Fanny
-    film(
-        f"{V}/lore/trailer/trailer.webm",
-        "We Believe!",
-        "trailer",
-        "fanny-layla",
-        "The Aspirants cinematic trailer. Layla and Fanny meet at Selrick Academy, grow closer in training and ride out in Aspirant mecha suits to fight the Enders.",
-        captions=f"{V}/lore/trailer/subtitle/en.en.srt",
-        manifest=f"{V}/lore/trailer",
-        poster_t=86,
-        tags=["we believe", "cinematic", "song"],
-    ),
     film(
         f"{V}/lore/teaser/001_2753027083653666852.mp4",
         "We Believe!, teaser",
@@ -178,40 +171,6 @@ FILMS: list[dict[str, Any]] = [
     ),
     # ---------------------------------------------------------------- Ruby and Angela
     film(
-        f"{R}/trailer/trailer-final.mp4",
-        "Awakening",
-        "trailer",
-        "ruby-angela",
-        "On Planet Dawnbreak, androids from Planet Oro attack under Angela's lead. Ruby, who opposes the conquest, fights to awaken the android she once called her friend.",
-        chars=["ruby", "angela", "fanny", "layla"],
-        mode="copy",
-        captions=f"{R}/trailer/english.srt",
-        manifest=f"{R}/trailer",
-        tags=["trailer", "cinematic"],
-    ),
-    film(
-        f"{R}/ruby/ruby-final.mp4",
-        "Ruby",
-        "character",
-        "ruby-angela",
-        "Ruby tells her own story: the heir of Planet Oro, the council that rules her life, and the android Angela she builds as a way out. The plan turns into a friendship she did not expect.",
-        mode="copy",
-        captions=f"{R}/ruby/english.srt",
-        manifest=f"{R}/ruby",
-        tags=["character film", "oro"],
-    ),
-    film(
-        f"{R}/angela/angela-final.mp4",
-        "Angela",
-        "character",
-        "ruby-angela",
-        "Angela tells it from her side: the lab where Ruby made her, the Gardens, the daily training, and the word hurt, which she does not yet understand.",
-        mode="copy",
-        captions=f"{R}/angela/english.srt",
-        manifest=f"{R}/angela",
-        tags=["character film", "oro"],
-    ),
-    film(
         f"{R}/qna/qna-final.mp4",
         "Angela and Ruby, event introduction",
         "event",
@@ -275,16 +234,6 @@ FILMS: list[dict[str, Any]] = [
     ),
     # ---------------------------------------------------------------- Lesley and Chang'e
     film(
-        f"{L}/trailer/*.webm",
-        "Rekindled Light",
-        "trailer",
-        "lesley-change",
-        "The sharpshooter Lesley captures a core component from the Enders, and the first ray of hope for a counterattack is lit. The film follows Lesley and Chang'e from a warm lab memory to the night the Enders attacked.",
-        captions=f"{L}/trailer/subtitles/NA.en.srt",
-        manifest=f"{L}/trailer",
-        tags=["trailer", "cinematic"],
-    ),
-    film(
         f"{L}/teaser/001_3307542160288522496.mp4",
         "Rekindled Light, teaser",
         "teaser",
@@ -314,28 +263,6 @@ FILMS: list[dict[str, Any]] = [
         tags=["skin", "tech tensai", "deadeye spectre"],
     ),
     # ---------------------------------------------------------------- Guinevere and Vexana
-    film(
-        f"{G}/connection-lost/final_video.mp4",
-        "Connection Lost",
-        "trailer",
-        "guinevere-vexana",
-        "Vexana, once Guinevere's most trusted partner, now fights beside the Enders. Guinevere refuses to believe that the partner she chose would betray humanity.",
-        mode="local",
-        local="/video/vexana/final.mp4",
-        manifest=f"{G}/connection-lost",
-        tags=["trailer", "cinematic"],
-    ),
-    film(
-        f"{G}/relink/final_video2.mp4",
-        "Re:Link",
-        "lore",
-        "guinevere-vexana",
-        "Vexana is ready to sacrifice herself to destroy the Mother Matrix, but she cannot watch Guinevere fall. She blocks an attack meant for Guinevere and gives herself away, and Guinevere then stands in front of her.",
-        mode="local",
-        local="/video/vexana/final2.mp4",
-        manifest=f"{G}/relink",
-        tags=["short film", "mother matrix"],
-    ),
     film(
         f"{G}/comic/comic-jp.mp4",
         "Guinevere and Vexana, comic film",
@@ -414,40 +341,6 @@ FILMS: list[dict[str, Any]] = [
         tags=["splash art", "short"],
     ),
     # ---------------------------------------------------------------- Selena and Obsidia
-    film(
-        f"{S}/trailer/001_3994447231709070185.mp4",
-        "Day of Enders",
-        "trailer",
-        "selena-obsidia",
-        "The crisis in the Singularity is far from over. Obsidia, the mastermind behind the Enders, quietly reveals herself while the Aspirants fight with all their might, and Selena watches from a rooftop in her school uniform.",
-        chars=["selena", "obsidia", "guinevere", "vexana", "layla", "fanny"],
-        crop="1920:808:0:136",
-        manifest=f"{S}/trailer",
-        poster_t=50,
-        tags=["trailer", "cinematic", "singularity"],
-    ),
-    film(
-        f"{S}/selena/video.mp4",
-        "Selena",
-        "character",
-        "selena-obsidia",
-        "Selena is a student at Selrick Academy who cannot stand early mornings, the sun in her eyes or taking orders. She says she is no one's doll.",
-        mode="local",
-        local="/video/selena/trailer-1080.mp4",
-        manifest=f"{S}/selena",
-        tags=["character film"],
-    ),
-    film(
-        f"{S}/obsidia/001_3997406762701005025.mp4",
-        "Obsidia",
-        "character",
-        "selena-obsidia",
-        "Obsidia calls herself the Will that ends civilizations. She says she does not destroy, she purges the parasites from the host, and a chained Selena appears before her.",
-        mode="local",
-        local="/video/obsidia/trailer-1080.mp4",
-        manifest=f"{S}/obsidia",
-        tags=["character film", "ender"],
-    ),
     film(
         f"{S}/character-preview/001_4018546186318517193.mp4",
         "Selena and Obsidia, character preview",
@@ -614,29 +507,34 @@ DRAMA: list[dict[str, Any]] = [
     },
 ]
 
-# Where the films go in the room, in order. A row is a list of kinds.
+# The shelves of the Others room, in order. A shelf holds the kinds it lists. The same list is
+# `SHELVES` in `apps/web/src/features/library/video/others/video-data.ts`, and a unit test reads the
+# data file to make sure every kind has a shelf.
 ROWS = [
-    ("trailers", "Trailers and teasers", ["trailer", "teaser"]),
-    ("characters", "Character films", ["character"]),
-    ("lore", "Lore and story films", ["lore"]),
-    ("shorts", "Shorts", ["short", "social"]),
+    ("trailers", "Trailers and short films", ["trailer", "teaser", "lore"]),
+    ("shorts", "Shorts and cards", ["short", "social"]),
     ("showcases", "Skin showcases", ["showcase"]),
-    ("music", "Music and behind the scenes", ["music", "behind-the-scenes"]),
+    ("music", "Music and making of", ["music", "behind-the-scenes"]),
     ("interviews", "Interviews and events", ["interview", "event"]),
     ("drama", "Interactive drama", ["drama"]),
-    ("live", "Livestreams and matches", ["livestream", "match"]),
+    ("live", "Streams and the match", ["livestream", "match"]),
+    ("reels", "Promo reels", ["reel"]),
+    ("gameplay", "Gameplay clips", ["gameplay"]),
+    ("emotes", "Emotes", ["emote"]),
+    ("edits", "Official edits", ["edit"]),
+    ("fan", "Fan videos", ["fan"]),
     ("parody", "Live-action parody", ["parody"]),
 ]
 
 # Source videos that are in the library but are deliberately not films of their own.
 IGNORED: dict[str, str] = {
     "ruby-and-angela/video/revamp/video.mp4": "Lower quality copy of revamp/revamp-final.mp4 (same film, same length).",
-    f"{DRAMA_DIR}/3A2.webm": "Same film as 3A1 posted under a second id; the Films room carries it as an alias of the 3A1 film.",
-    f"{DRAMA_DIR}/3B2.webm": "Same film as 3B1 posted under a second id; the Films room carries it as an alias of the 3B1 film.",
-    f"{DRAMA_DIR}/4A2.webm": "Same film as 4A1 posted under a second id; the Films room carries it as an alias of the 4A1 film.",
-    f"{DRAMA_DIR}/4B2.webm": "Same film as 4B1 posted under a second id; the Films room carries it as an alias of the 4B1 film.",
-    f"{DRAMA_DIR}/6A2.webm": "Same film as 6A1 posted under a second id; the Films room carries it as an alias of the 6A1 film.",
-    f"{DRAMA_DIR}/6B2.webm": "Same film as 6B1 posted under a second id; the Films room carries it as an alias of the 6B1 film.",
-    f"{DRAMA_DIR}/6C2.webm": "Same film as 6C1 posted under a second id; the Films room carries it as an alias of the 6C1 film.",
-    f"{DRAMA_DIR}/6C3.webm": "Same film as 6C1 posted under a third id; the Films room carries it as an alias of the 6C1 film.",
+    f"{DRAMA_DIR}/3A2.webm": "Same film as 3A1 posted under a second id; the Others room carries it as an alias of the 3A1 film.",
+    f"{DRAMA_DIR}/3B2.webm": "Same film as 3B1 posted under a second id; the Others room carries it as an alias of the 3B1 film.",
+    f"{DRAMA_DIR}/4A2.webm": "Same film as 4A1 posted under a second id; the Others room carries it as an alias of the 4A1 film.",
+    f"{DRAMA_DIR}/4B2.webm": "Same film as 4B1 posted under a second id; the Others room carries it as an alias of the 4B1 film.",
+    f"{DRAMA_DIR}/6A2.webm": "Same film as 6A1 posted under a second id; the Others room carries it as an alias of the 6A1 film.",
+    f"{DRAMA_DIR}/6B2.webm": "Same film as 6B1 posted under a second id; the Others room carries it as an alias of the 6B1 film.",
+    f"{DRAMA_DIR}/6C2.webm": "Same film as 6C1 posted under a second id; the Others room carries it as an alias of the 6C1 film.",
+    f"{DRAMA_DIR}/6C3.webm": "Same film as 6C1 posted under a third id; the Others room carries it as an alias of the 6C1 film.",
 }

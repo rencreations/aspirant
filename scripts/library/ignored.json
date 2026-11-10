@@ -41,12 +41,12 @@
   "media/ruby-and-angela/video/trailer/voicelines/clip_manifest.csv": "Read into voicelines.json (speaker and time of each clip).",
   "media/selena-and-obsidia/art/official/obsidia/aspirant.jpg": "duplicate of selena-and-obsidia/art/official/selena/aspirant.jpg (kept as an arts item)",
   "media/vexana-and-guinevere/art/comic": "Byte identical copy of story/official/guinevere-vexana-comic, which the Comic room ships.",
-  "media/vexana-and-guinevere/video/interactive-drama/3A2.webm": "Same film as 3A1 posted under a second id; the Films room carries it as an alias of the 3A1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/3B2.webm": "Same film as 3B1 posted under a second id; the Films room carries it as an alias of the 3B1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/4A2.webm": "Same film as 4A1 posted under a second id; the Films room carries it as an alias of the 4A1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/4B2.webm": "Same film as 4B1 posted under a second id; the Films room carries it as an alias of the 4B1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/6A2.webm": "Same film as 6A1 posted under a second id; the Films room carries it as an alias of the 6A1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/6B2.webm": "Same film as 6B1 posted under a second id; the Films room carries it as an alias of the 6B1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/6C2.webm": "Same film as 6C1 posted under a second id; the Films room carries it as an alias of the 6C1 film.",
-  "media/vexana-and-guinevere/video/interactive-drama/6C3.webm": "Same film as 6C1 posted under a third id; the Films room carries it as an alias of the 6C1 film."
+  "media/vexana-and-guinevere/video/interactive-drama/3A2.webm": "Same film as 3A1 posted under a second id; the Others room carries it as an alias of the 3A1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/3B2.webm": "Same film as 3B1 posted under a second id; the Others room carries it as an alias of the 3B1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/4A2.webm": "Same film as 4A1 posted under a second id; the Others room carries it as an alias of the 4A1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/4B2.webm": "Same film as 4B1 posted under a second id; the Others room carries it as an alias of the 4B1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/6A2.webm": "Same film as 6A1 posted under a second id; the Others room carries it as an alias of the 6A1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/6B2.webm": "Same film as 6B1 posted under a second id; the Others room carries it as an alias of the 6B1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/6C2.webm": "Same film as 6C1 posted under a second id; the Others room carries it as an alias of the 6C1 film.",
+  "media/vexana-and-guinevere/video/interactive-drama/6C3.webm": "Same film as 6C1 posted under a third id; the Others room carries it as an alias of the 6C1 film."
 }

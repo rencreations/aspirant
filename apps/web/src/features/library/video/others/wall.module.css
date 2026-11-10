@@ -1,0 +1,275 @@
+/* The wall of the Others room: shelves of tiles. A tile has the shape of its picture, and a row is
+   one row height tall, so rows end flush whatever the mix of wide and vertical videos. Motion is
+   transform and opacity only. No filter over a picture. */
+
+.shelf {
+  padding-top: clamp(2.25rem, 4.5vw, 4rem);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--est, 34rem);
+}
+
+.shelfHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "no title stats"
+    "no note stats";
+  column-gap: clamp(0.9rem, 2vw, 1.75rem);
+  align-items: baseline;
+  margin-bottom: clamp(1rem, 2vw, 1.6rem);
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.shelfNo {
+  grid-area: no;
+  align-self: start;
+  padding-top: 0.55rem;
+  color: var(--lib-colour);
+}
+
+.shelfTitle {
+  grid-area: title;
+  margin: 0;
+  font-size: var(--step-4);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.shelfNote {
+  grid-area: note;
+  margin: 0.45rem 0 0;
+  max-width: 52ch;
+  color: var(--text-dim);
+  font-size: var(--step--1);
+}
+
+.shelfStats {
+  grid-area: stats;
+  align-self: start;
+  margin: 0;
+  padding-top: 0.55rem;
+  white-space: nowrap;
+  color: var(--text-faint);
+}
+
+.pending {
+  width: 100%;
+}
+
+/* A row's height and gap, read by script to estimate the height of a shelf that is not drawn. */
+.probe {
+  position: absolute;
+  width: var(--gap);
+  height: var(--row-h);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.1rem, 2vw, 1.6rem) var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The last row keeps the size of the others instead of stretching its few tiles. */
+.row::after {
+  content: "";
+  flex: 1000 1 0;
+}
+
+.tile {
+  flex: calc(var(--ar) * 100) 1 calc(var(--ar) * var(--row-h));
+  min-width: 0;
+}
+
+.hit {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hit:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.figure {
+  position: relative;
+  display: block;
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  background: var(--field);
+}
+
+.tile[data-open] .figure {
+  visibility: hidden;
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.hit:hover .poster,
+.hit:focus-visible .poster {
+  transform: scale(1.035);
+}
+
+/* The hover preview: eight frames side by side, stepped across with a transform animation. */
+.strip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 140ms linear;
+  pointer-events: none;
+}
+
+.strip img {
+  display: block;
+  width: calc(var(--n) * 100%);
+  max-width: none;
+  height: 100%;
+  object-fit: fill;
+  animation: step calc(var(--n) * 0.45s) steps(var(--n), jump-none) infinite paused;
+}
+
+.hit[data-hover] .strip {
+  opacity: 1;
+}
+
+.hit[data-hover] .strip img {
+  animation-play-state: running;
+  will-change: transform;
+}
+
+@keyframes step {
+  to {
+    transform: translate3d(calc(-100% * (var(--n) - 1) / var(--n)), 0, 0);
+  }
+}
+
+.crystal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: -1.3rem 0 0 -1.3rem;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  border-radius: 50%;
+  color: #fff;
+  background: rgb(8 10 16 / 0.5);
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity var(--dur-fast) linear,
+    transform var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.hit:hover .crystal,
+.hit:focus-visible .crystal {
+  opacity: 1;
+  transform: none;
+}
+
+.length {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  padding: 0.12rem 0.38rem;
+  background: rgb(8 10 16 / 0.74);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+}
+
+.flag {
+  position: absolute;
+  left: 0.4rem;
+  top: 0.4rem;
+  max-width: calc(100% - 0.8rem);
+  background: rgb(244 246 249 / 0.94);
+}
+
+.note {
+  display: block;
+  padding: 0.15rem 0.45rem;
+  color: #1c2230;
+  font-size: 0.6rem;
+}
+
+.seen {
+  position: absolute;
+  right: 0.4rem;
+  top: 0.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--lib-colour);
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.92);
+  opacity: 0;
+}
+
+.tile[data-seen] .seen {
+  opacity: 1;
+}
+
+.caption {
+  display: block;
+  padding-top: 0.55rem;
+}
+
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.meta {
+  display: block;
+  margin-top: 0.3rem;
+  overflow: hidden;
+  color: var(--text-faint);
+  font-size: 0.62rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 40em) {
+  .shelfHead {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "no title"
+      "no note"
+      "no stats";
+  }
+
+  .shelfStats {
+    padding-top: 0.4rem;
+  }
+}

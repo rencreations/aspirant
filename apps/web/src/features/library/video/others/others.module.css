@@ -1,0 +1,243 @@
+/* The Others room: the page, its header, the wall and the foot. Light "daybreak" world with the
+   collection colour. Motion is transform and opacity only. */
+
+.page {
+  /* One row of the wall is this tall. A tile is as wide as its picture makes it at this height. */
+  --row-h: clamp(10.25rem, 13.2vw, 15.5rem);
+  --gap: clamp(0.6rem, 1.1vw, 1rem);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header {
+  position: relative;
+  padding-bottom: clamp(1.4rem, 2.6vw, 2.2rem);
+  overflow: hidden;
+}
+
+.gridArt {
+  position: absolute;
+  inset: 0;
+  --grid-color: color-mix(in srgb, var(--lib-colour) 14%, transparent);
+  opacity: 0.8;
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: end;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-7);
+  line-height: 0.88;
+  letter-spacing: 0.005em;
+}
+
+.lead {
+  max-width: 44ch;
+  margin: clamp(0.8rem, 1.6vw, 1.2rem) 0 0;
+  color: var(--text-dim);
+  font-size: var(--step-0);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.7rem;
+  margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+}
+
+.count {
+  color: var(--lib-ink);
+  font-family: var(--font-display-stack);
+  font-size: var(--step-3);
+  line-height: 1;
+}
+
+.dot {
+  width: 0.28rem;
+  height: 0.28rem;
+  background: var(--lib-colour);
+}
+
+/* A contact sheet of the first video of eight shelves. Pictures only, no links. */
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.3rem, 0.6vw, 0.5rem);
+}
+
+.mosaicCell {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--field);
+  outline: 1px solid var(--line);
+  outline-offset: -1px;
+}
+
+.mosaicCell img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wall {
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  padding-block: clamp(3rem, 8vw, 6rem);
+  color: var(--text-dim);
+  font-size: var(--step-1);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.clear {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.foot {
+  display: grid;
+  gap: 0.8rem;
+  padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 4.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.footLine {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--step-0);
+}
+
+.note {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--step--1);
+}
+
+/* "Continue where you stopped": a quiet bar at the foot of the screen, offered at the top of the wall. */
+.resume {
+  position: fixed;
+  z-index: var(--z-hud);
+  bottom: 1.25rem;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(36rem, calc(100vw - 2rem));
+  padding: 0.7rem 0.7rem 0.7rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  box-shadow: 0 0.8rem 2rem rgb(11 11 14 / 0.14);
+  translate: -50% 0;
+  animation: rise var(--dur-slow) var(--ease-out) both;
+}
+
+.resume p {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.resume p > span:first-child {
+  white-space: nowrap;
+}
+
+.resumeTitle {
+  overflow: hidden;
+  font-size: var(--step--1);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resumeGo {
+  flex: none;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  background: var(--lib-ink);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.resumeX {
+  display: grid;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 52em) {
+  .headGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: 30rem;
+  }
+}
+
+/* On a phone the wall comes first: the contact sheet is left out of the header. */
+@media (max-width: 40em) {
+  .mosaic {
+    display: none;
+  }
+
+  .lead {
+    font-size: var(--step--1);
+  }
+}
