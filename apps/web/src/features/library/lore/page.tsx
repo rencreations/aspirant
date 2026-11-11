@@ -5,6 +5,12 @@ import { useCallback, useMemo, useState, type CSSProperties } from "react";
 import { LibraryShell } from "../shell/library-shell";
 import { useQueryState } from "../use-query-state";
 import { AtlasView } from "./atlas-view";
+import { CodexView } from "./codex/codex-view";
+import { EntryWindow } from "./codex/entry-window";
+import { parseTerms as parseCodexTerms } from "./codex/model";
+import { useReach } from "./codex/reach";
+import { useLoreSlug, useOpenLore } from "./codex/route";
+import { useCodex } from "./codex/use-codex";
 import { LoreBar } from "./lore-bar";
 import styles from "./lore-page.module.css";
 import { atlasMatches, parseTerms, searchTexts } from "./search";
@@ -29,7 +35,11 @@ function setHash(heading: string): void {
  */
 export default function LorePage() {
   const { lore, failed } = useLore();
-  const [viewParam, setViewParam] = useQueryState("view", "texts");
+  const { codex, failed: codexFailed } = useCodex();
+  const reach = useReach();
+  const slug = useLoreSlug();
+  const { open: openLore, close: closeLore } = useOpenLore();
+  const [viewParam, setViewParam] = useQueryState("view", "codex");
   const [q, setQ] = useQueryState("q", "");
   const [openId, setOpenId] = useQueryState("i", "");
   const [plate, setPlate] = useQueryState("a", "");
@@ -37,7 +47,7 @@ export default function LorePage() {
   const [who, setWho] = useQueryState("c", "");
   const [barH, setBarH] = useState(84);
 
-  const view: LoreView = isLoreView(viewParam) ? viewParam : "texts";
+  const view: LoreView = isLoreView(viewParam) ? viewParam : "codex";
   const layer = (LAYERS as readonly string[]).includes(layerParam) ? layerParam : "";
   const terms = useMemo(() => parseTerms(q), [q]);
 
@@ -86,7 +96,14 @@ export default function LorePage() {
     [openId, q, setOpenId, setQ],
   );
 
+  const codexTerms = useMemo(() => parseCodexTerms(q), [q]);
+
   const summary = useMemo(() => {
+    if (view === "codex") {
+      return codex
+        ? `${String(codex.file.entries.length)} entries and ${String(codex.file.pairs.length)} relationships`
+        : "Reading the lore";
+    }
     if (!lore) return "Reading the lore";
     if (view === "texts") {
       const open = openId ? lore.texts.find((t) => t.id === openId) : undefined;
@@ -103,7 +120,7 @@ export default function LorePage() {
       return `${n} of ${lore.atlas.length} plates`;
     }
     return "The ten Aspirants";
-  }, [lore, view, openId, terms, q, layer]);
+  }, [lore, codex, view, openId, terms, q, layer]);
 
   const places = lore ? lore.atlas.filter((a) => a.kind === "place").length : 0;
   const entities = lore ? lore.atlas.length - places : 0;
@@ -111,8 +128,14 @@ export default function LorePage() {
   return (
     <LibraryShell
       slug="lore"
-      count={lore ? lore.texts.length : null}
-      stat={lore ? `${places} places, ${entities} entities` : undefined}
+      count={codex ? codex.file.entries.length : lore ? lore.texts.length : null}
+      stat={
+        codex
+          ? `${String(codex.file.pairs.length)} relationships, ${String(lore?.texts.length ?? 28)} texts`
+          : lore
+            ? `${places} places, ${entities} entities`
+            : undefined
+      }
       controls={
         <LoreBar
           view={view}
@@ -128,11 +151,29 @@ export default function LorePage() {
         <div
           id="lore-panel"
           role="tabpanel"
-          aria-label={view === "texts" ? "Texts" : view === "atlas" ? "Atlas" : "Who is who"}
+          aria-label={
+            view === "codex"
+              ? "Codex"
+              : view === "texts"
+                ? "Texts"
+                : view === "atlas"
+                  ? "Atlas"
+                  : "Who is who"
+          }
           className={styles.panel}
           key={view}
         >
-          {failed ? (
+          {view === "codex" ? (
+            codexFailed ? (
+              <p className={styles.note}>
+                The lore could not be loaded. Check the connection and reload the page.
+              </p>
+            ) : !codex ? (
+              <p className={`${styles.note} hud-label`}>Reading the lore</p>
+            ) : (
+              <CodexView codex={codex} terms={codexTerms} reach={reach} onOpen={openLore} />
+            )
+          ) : failed ? (
             <p className={styles.note}>
               The lore could not be loaded. Check the connection and reload the page.
             </p>
@@ -163,6 +204,14 @@ export default function LorePage() {
           )}
         </div>
       </div>
+      <EntryWindow
+        codex={codex}
+        failed={codexFailed}
+        slug={slug}
+        reach={reach}
+        onOpen={openLore}
+        onClose={closeLore}
+      />
     </LibraryShell>
   );
 }

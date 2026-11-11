@@ -1,0 +1,120 @@
+{
+  "selena": {
+    "line": "A blonde Academy student who hates orders and built a dragon-shaped machine.",
+    "short": "A blonde student at Selrick Academy who hates early mornings and orders. She built Silverbolt, a dragon-shaped machine nobody else can make move.",
+    "summary": "A girl Obsidia grew in the nest and left in the mud of Terrinia in 983, the first of her kind with a perfect human form. Karina found her and raised her, and she hid the Ender in her blood, named herself Selena, rebuilt Silverbolt from salvage and joined the Science Division, where nobody hunts for an Ender. She ignored every recall and sold Academy numbers to Obsidia and Ender plating to Vexana, but never a name or a place where people die. When Obsidia's field put out the Aspirants, she showed her real face, rode her lightning up into the Storm Citadel, cut the throne down instead of taking it, and charged her maker rather than go back as her puppet.",
+    "sub": "Science Division student",
+    "rows": [
+      [
+        "Kind",
+        "An Ender, the first of Obsidia's making to hold a perfect human form. Ender cells run in her blood, and she keeps it secret from everyone.",
+        60
+      ],
+      [
+        "Made by",
+        "Obsidia, who grew her in the nest, changed her face again and again until it was right, and carried her down on the storm night.",
+        66
+      ],
+      [
+        "Guardian",
+        "Karina, the woman with the lamp who found her in the rain on her first night. Selena grew up in Karina's flat in Terrinia.",
+        60
+      ],
+      [
+        "Name",
+        "Selena, a name she chose for herself. It was her first spoken word. The family-name box on her forms stays empty.",
+        61
+      ],
+      [
+        "Division",
+        "Science Division of Selrick Academy. In the attack Chang'e posts her as mobile support, and she answers no call.",
+        69
+      ],
+      [
+        "Appearance",
+        "Blonde, with two small horns she lets up through her hair in front of a horned headband. Uniform jacket open over an S·L·K shirt.",
+        62
+      ],
+      [
+        "Ender signs",
+        "Her cuts heal purple, and storms calm her bones. She feels where current stops inside a machine, and as a girl lifted a shutter two grown men could not.",
+        61
+      ],
+      [
+        "Trade",
+        "Mends and sells salvage and Ender wreckage at the city's edge. She sold Obsidia Academy information, never a name and never a place where people die.",
+        63
+      ],
+      [
+        "Friends",
+        "Chang'e, her teacher, who marks her reports and trades sweets with her. Ruby says good morning to her every day.",
+        64
+      ],
+      [
+        "Habits",
+        "Late every morning with her guardian's note. Naps in class. Lets every lollipop melt to the stick. Does her thinking on the bell tower.",
+        85
+      ],
+      [
+        "Wants",
+        "Her freedom. She will not go back to the Mother Matrix, will not die for humanity, and will not take Obsidia's seat: same board, better chair.",
+        85
+      ],
+      [
+        "First seen",
+        "Prologue",
+        59
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Silverbolt",
+        "note": "A small dragon-shaped mecha she rebuilt from an Academy training frame, every part from her own Ender salvage. No core lights for her, so her purple lit it. Only she can make it move."
+      },
+      {
+        "name": "Silverbolt's overload",
+        "note": "Pushed into overload, its seams go from blue to white and its lightning surges into her, closing Ender plate over her arms. It starts her change."
+      },
+      {
+        "name": "True form",
+        "note": "Her full Ender shape: plate of white, blue and gold and a large pale mane. It is the Ender Mecha Suit she once showed the class as her own design."
+      },
+      {
+        "name": "Four blades",
+        "note": "Four black-and-gold blades that hang in the air around her and swing in with every cut."
+      },
+      {
+        "name": "Arm blade",
+        "note": "A blade of crackling light along one arm. With it she cut Obsidia's throne through at the base, and later cut Obsidia's cheek."
+      },
+      {
+        "name": "Claws and fangs",
+        "note": "In her own shape she has red eyes, pointed ears, fangs and black claws. Her claws tore apart the point of a bone chain at her throat."
+      },
+      {
+        "name": "Lightning",
+        "note": "Lightning bursts out of her. It broke Obsidia's bone chains, split the clouds open toward the Storm Citadel, and carries her up the sky."
+      },
+      {
+        "name": "Horned headband",
+        "note": "A dark headband shaped like a horned crest. At the Academy she wears it in front of her real horns so they pass for part of it."
+      },
+      {
+        "name": "Lollipop",
+        "note": "Nearly always melting in her cheek. She never bites one, except once, on the bell tower before she goes up to the Storm Citadel."
+      },
+      {
+        "name": "Fruit drop",
+        "note": "A fruit drop from Karina in a twist of paper. She keeps it wrapped in her pocket instead of letting it melt."
+      },
+      {
+        "name": "Phone",
+        "note": "Shows the Academy feed, and buzzes red with alerts that have no sender: the Enders' recall. She swipes them away."
+      },
+      {
+        "name": "Salvage stall",
+        "note": "A crate, later a trestle table under a tarp at the city's edge, where she sells mended salvage."
+      }
+    ]
+  }
+}

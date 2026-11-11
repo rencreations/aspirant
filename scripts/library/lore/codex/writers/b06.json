@@ -1,0 +1,1016 @@
+{
+  "defensive-bubble": {
+    "line": "The dome of light over Terrinia that keeps the Enders out.",
+    "short": "A dome of light over the city of Terrinia. It keeps the Enders out. A brighter patch of new light covers a tear from the last attack.",
+    "summary": "The Defensive Bubble is the dome of light over all of Terrinia. The Energy System on the Academy's tallest tower feeds it, paid for with loans from House Baroque. Where it meets the ground it is a wall of pale hexagons that crack white under claws. Enders keep tearing breaches in it, and each is mended with a brighter patch of new light. On the day of the attack the Singularity tears it open over the waterfront, and the hole does not close.",
+    "sub": "energy dome over Terrinia",
+    "rows": [
+      [
+        "Covers",
+        "All of Terrinia"
+      ],
+      [
+        "Powered by",
+        "The Energy System on Selrick Academy's tallest tower"
+      ],
+      [
+        "Paid for by",
+        "Loans from House Baroque"
+      ],
+      [
+        "Look",
+        "Pale light; a wall of pale hexagons where it meets the ground"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "doors-of-the-void": {
+    "line": "The portals the Enders come out of, outside Terrinia's dome.",
+    "short": "Portals the Enders come out of, outside the dome. At their edge every reading drops to nothing, and what lies past it is called the void.",
+    "summary": "The doors of the void are the portals the Enders come through, and every one of them is the Will's. Obsidia says every door into the void opens from this side, and that in a purge small doors open near the people. A door inside the humans' dome costs the Will dearly. On the day of the attack they open out of thin air over the waterfront. For weeks they opened for Vexana only where the Will sent her, until she opens one herself, no wider than her arms, under the falling Guinevere.",
+    "sub": "portals out of the void",
+    "rows": [
+      [
+        "Owner",
+        "The Will of the Planet"
+      ],
+      [
+        "First seen",
+        "Chapter 41"
+      ]
+    ]
+  },
+  "emblems-of-hope": {
+    "line": "Two gold stars Guinevere made by hand for herself and Vexana.",
+    "short": "Two gold stars Guinevere cut and soldered by hand, one for her collar and one for Vexana's. They glow gold when the partners' powers are in sync.",
+    "summary": "The Emblems of Hope are two five-pointed stars Guinevere cut from thin gold plate and soldered herself, burning her fingertips. One is pinned at her collar and one at Vexana's, and Vexana's has one seam a hair crooked. They glow when the two are in sync and beep when they come back near each other. While Vexana is missing, Guinevere's lit star is her only proof that Vexana is alive, and Vexana hides hers inside her sleeve so the Will goes on believing it went dark. Inside the black hole the two stars flare together, and their light pierces the void.",
+    "rows": [
+      [
+        "Made by",
+        "Guinevere"
+      ],
+      [
+        "Made of",
+        "Thin gold plate, soldered by hand"
+      ],
+      [
+        "Worn by",
+        "Guinevere at her collar; Vexana at her collar, later inside her right sleeve"
+      ],
+      [
+        "First seen",
+        "Chapter 39"
+      ]
+    ]
+  },
+  "ender-core": {
+    "line": "The glowing core inside an Ender's chest.",
+    "short": "The glowing heart inside an Ender's chest. It shows only when the chest plates split for a strike, and a shot into it kills the Ender.",
+    "summary": "An Ender's core sits in its chest, under the metal shell. It shows only for the moment the chest plates split open to strike, and one round into it puts the glow out and kills the Ender. A dead core is black and split, like a coal gone out, and Chang'e's mother calls it slag. Every suit has a core at its heart, and a pilot's aspirant power lights it. Selena sells Vexana four cracked cores, though a suit takes only one.",
+    "rows": [
+      [
+        "Location",
+        "Inside an Ender's chest"
+      ],
+      [
+        "Dead form",
+        "Black and split through, called slag"
+      ],
+      [
+        "First seen",
+        "Chapter 3"
+      ]
+    ]
+  },
+  "ender-mecha-suit": {
+    "line": "A suit of armor Selena shows on her desk screen.",
+    "short": "A suit of armor Selena raises from her desk screen, with a visor and a weapon along one arm. She says it is Ender plating, her own design.",
+    "summary": "The Ender Mecha Suit is a suit of armor Selena drew over months with a star-tipped pen on the clear screen of her desk: a pale shell, a mane like a crest, four blades floating free of the arms, and joints that bend like an Ender's. She shows it in class as Ender plating of her own design, for sale in any size. It is really the shape she feels folded small under her skin, which she knows plate by plate from inside. When she lets that shape all the way out, it is her true form.",
+    "rows": [
+      [
+        "Designed by",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 43"
+      ]
+    ]
+  },
+  "ender-plating": {
+    "line": "The gray metal plates of an Ender's shell.",
+    "short": "Gray plates from dead Enders, tagged and numbered on the research base's benches. So far they have told the scientists nothing.",
+    "summary": "Ender plating is the gray metal shell of an Ender, which comes apart in plates when it strikes. Its edges are made to catch on one another, and that is how an Ender's joints hold. Every Academy suit is built of it, and reports list every changed part as salvage plating. Selena sorts it in her workshop and sells it as genuine Ender plating. She sold plates to Vexana too, and one now sits as a gray shoulder on one of the Eternal Guards.",
+    "rows": [
+      [
+        "Source",
+        "Dead Enders"
+      ],
+      [
+        "Used for",
+        "Every Academy suit"
+      ],
+      [
+        "First seen",
+        "Chapter 19"
+      ]
+    ]
+  },
+  "energy-system": {
+    "line": "The beam on the Academy's tallest tower that feeds the dome.",
+    "short": "A white-cyan beam inside turning rings on the Academy's tallest tower. It feeds the dome and turns its dark hexagons pale again.",
+    "summary": "The Energy System stands on the tallest tower of Selrick Academy. Rings turn around a white-cyan beam that leans across the sky and feeds the Defensive Bubble, turning its dark hexagons pale again. House Baroque lent the city the money for it. On the day of the attack its rings spin faster, but the hole the Singularity tears over the water does not close.",
+    "rows": [
+      [
+        "Location",
+        "The tallest tower of Selrick Academy"
+      ],
+      [
+        "Feeds",
+        "The Defensive Bubble"
+      ],
+      [
+        "Paid for by",
+        "Loans from House Baroque"
+      ],
+      [
+        "First seen",
+        "Chapter 5"
+      ]
+    ]
+  },
+  "fannys-blades": {
+    "line": "Two long blades carried in the cases of Fanny's rig.",
+    "short": "Two long blades, one in each case of Fanny's rig. They light cyan, and every drone they touch bursts.",
+    "summary": "Fanny carries two long blades, one in each of the two cases on her rig. They light cyan, and their edges brighten as her rig hums. She drives both into the gold giant's open chest, and later sweeps them into Ender cores. Under Obsidia's field the cyan leaves them and they are plain steel. When the field dies, light runs down both blades again and arcs jump off their edges.",
+    "rows": [
+      [
+        "Owner",
+        "Fanny"
+      ],
+      [
+        "Kept in",
+        "The two cases of her rig"
+      ],
+      [
+        "First seen",
+        "Chapter 2"
+      ]
+    ]
+  },
+  "fannys-cables": {
+    "line": "Thin shining cables that pull Fanny through the air.",
+    "short": "Two thin shining cables that run from Fanny's rig and pull her through the air.",
+    "summary": "Fanny's cables are two thin shining lines that run from her rig and pull her through the air. She swings on them across roof gaps and flies on them at an Ender's neck. One once wrapped an Ender's claw and held it a meter above Roger's face. Under Obsidia's field the cable goes slack and dark.",
+    "rows": [
+      [
+        "Owner",
+        "Fanny"
+      ],
+      [
+        "Runs from",
+        "Her rig"
+      ],
+      [
+        "First seen",
+        "Chapter 2"
+      ]
+    ]
+  },
+  "fannys-rig": {
+    "line": "The thruster pack Fanny wears at her hips.",
+    "short": "Fanny's flight rig, the thruster pack she wears at her hips. Layla once took it apart without being asked and found a bent coupling.",
+    "summary": "Fanny's rig is the thruster pack at her hips that lifts her, and its cable can catch a lamppost and swing her. Layla took it apart without being asked and found a bent coupling. When the word traitor went down the channel it went thin and quiet, and later it hummed louder than it had all morning. Under Obsidia's field it coughs once and goes silent. When the field dies it coughs and catches again.",
+    "rows": [
+      [
+        "Owner",
+        "Fanny"
+      ],
+      [
+        "Worn",
+        "At her hips"
+      ],
+      [
+        "First seen",
+        "Chapter 16"
+      ]
+    ]
+  },
+  "fannys-suit": {
+    "line": "Fanny's white mecha suit, with a rig at the hips like folded wings.",
+    "short": "Fanny's white armor, with a rig of two long cases at her hips like folded wings. Each case holds a blade, and thrusters in them lift her.",
+    "summary": "Fanny's suit is white armor with a rig of two long cases at the hips, like folded wings. Each case holds a blade, and thrusters inside them lift her. The rig spreads open like wings when she launches. After the battle with the gold giant it is drained, with one thruster burst left.",
+    "rows": [
+      [
+        "Owner",
+        "Fanny"
+      ],
+      [
+        "Color",
+        "White"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Rig",
+        "note": "Two long cases at the hips like folded wings, with thrusters inside that lift her."
+      },
+      {
+        "name": "Blades",
+        "note": "One long blade in each case of the rig. They light cyan."
+      },
+      {
+        "name": "Cables",
+        "note": "Two thin shining cables that run from the rig and pull her through the air."
+      }
+    ]
+  },
+  "felt-dolls": {
+    "line": "Pink and black felt that Vexana buys for someone else.",
+    "short": "Squares of felt Vexana buys at a fabric stall, one the pink of Guinevere's hair and one black. They are for someone else, so she keeps them.",
+    "summary": "Vexana bought a square of felt the pink of Guinevere's hair, and a black one beside it. A few stitches at a time she sewed two small dolls: a pink-haired Guinevere with two bows of red thread, and a black-haired Vexana, each with a tiny yellow star at the collar. She meant to give them at the fireworks. She finished them but never gave them, and they still stand beside the photo on her desk, with a card under them.",
+    "rows": [
+      [
+        "Made by",
+        "Vexana"
+      ],
+      [
+        "Location",
+        "Vexana's desk, beside the photo"
+      ],
+      [
+        "First seen",
+        "Chapter 39"
+      ]
+    ]
+  },
+  "first-place-trophy": {
+    "line": "A gold FIRST PLACE trophy on the top shelf of Layla's lab.",
+    "short": "A gold FIRST PLACE trophy on the top shelf of Layla's lab. Ranked second now, Layla turns it to face the wall.",
+    "summary": "A gold FIRST PLACE trophy stands behind spare capacitors on the top shelf of Layla's lab. On the day a message from home tells her second is still wonderful, Layla turns it to face the wall, and it stays that way. Later she sets Fanny's chocolate box beside it, with the ribbon facing the room. At the end it still stands on that shelf beside a pink box.",
+    "rows": [
+      [
+        "Owner",
+        "Layla"
+      ],
+      [
+        "Location",
+        "The top shelf of Layla's lab"
+      ],
+      [
+        "First seen",
+        "Chapter 2"
+      ]
+    ]
+  },
+  "fruit-drop": {
+    "line": "A sweet in a twist of paper from Karina's coat pocket.",
+    "short": "A sweet in a twist of paper. Karina keeps them in her coat for the children she carries out, and one is the first thing Selena ever accepts.",
+    "summary": "Karina keeps fruit drops in a twist of paper in her coat pocket for the children she carries out of the ruins. One is the first thing the child Selena ever accepts. She does not bite it but lets it melt slowly away, and she lets every sweet after it melt too. Karina gives her more for a new smile and when she gets into the Science Division. On the day before the attack Karina presses one more into her palm, and this one Selena keeps wrapped in her pocket.",
+    "rows": [
+      [
+        "Given by",
+        "Karina"
+      ],
+      [
+        "First seen",
+        "Chapter 59"
+      ]
+    ]
+  },
+  "guineveres-drones": {
+    "line": "Two round gray drones with cat ears that fly at Guinevere's shoulders.",
+    "short": "Two round gray drones with cat ears and yellow ring eyes. They circle Guinevere, fight beside her and run on her aspirant power.",
+    "summary": "Guinevere's drones are two round gray drones with cat ears and yellow ring eyes. They run on her aspirant power, so when she tires their rings dim and they sink. Their ears go flat when she is sad. They light her way, strike Enders for her and once threw themselves in front of the Matrix's beam. One broke on a fish-market roof, and Vexana mended it and slipped it back onto its charger at night. Under Obsidia's field they drop out of the sky, and when it dies they are the first things to light again.",
+    "rows": [
+      [
+        "Owner",
+        "Guinevere"
+      ],
+      [
+        "Power",
+        "Guinevere's aspirant power"
+      ],
+      [
+        "Look",
+        "Round and gray, with cat ears and yellow ring eyes"
+      ],
+      [
+        "First seen",
+        "Chapter 3"
+      ]
+    ]
+  },
+  "guineveres-plans": {
+    "line": "Written training plans Guinevere slips under Vexana's door.",
+    "short": "Training plans Guinevere slips under Vexana's door in three colors: pink for her, violet for Vexana, gold for the rest. Vexana does all of it.",
+    "summary": "Guinevere writes training plans and slips them under Vexana's door before the bells, in pink for her own lines, violet for Vexana's and gold for the rest. The first carries her phone number, underlined twice. She writes extra so she will at least do half, and Vexana does all of it. After a quarrel one said only: \"The roof. Noon. (Please.)\" Later a whole month of plans came, headed in gold: Partners tell each other first.",
+    "rows": [
+      [
+        "Written by",
+        "Guinevere"
+      ],
+      [
+        "Colors",
+        "Pink for Guinevere, violet for Vexana, gold for the rest"
+      ],
+      [
+        "First seen",
+        "Chapter 38"
+      ]
+    ]
+  },
+  "guineveres-red-bows": {
+    "line": "The two red bows Guinevere wears in her pink hair.",
+    "short": "The red bows in Guinevere's pink hair. Even after a fall, she straightens her bow.",
+    "summary": "Guinevere's two red bows came from her mother's dressing table. Hester kept them back when the House cleared her mother's rooms, and tied them in Guinevere's hair the first morning it was long enough. After that Guinevere tied them herself, and for years nobody else touched them. The left one always slips by evening, and from the ceremony on Vexana set it straight every morning. Without her it comes out crooked however Guinevere ties it.",
+    "rows": [
+      [
+        "Owner",
+        "Guinevere"
+      ],
+      [
+        "Came from",
+        "Guinevere's mother"
+      ],
+      [
+        "First tied by",
+        "Hester"
+      ],
+      [
+        "First seen",
+        "Chapter 31"
+      ]
+    ]
+  },
+  "horned-headband": {
+    "line": "A dark headband shaped like a horned crest.",
+    "short": "A dark headband shaped like a horned crest. Selena pins it on and lets her own horns grow up through her hair in front of it.",
+    "summary": "Selena buys a dark headband shaped like a horned crest after she sees students at the Academy in cat ears and horns. She pins it on and lets her own two horns grow up through her hair in front of it, so they pass as part of it. Before Karina's stair she draws the horns back in and puts the headband in her bag. Guinevere took Selena's horns for part of the headband, until the day the headband was gone.",
+    "rows": [
+      [
+        "Owner",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 62"
+      ]
+    ]
+  },
+  "karinas-coat": {
+    "line": "Karina's coat, with sweets in its mended pocket.",
+    "short": "The coat Karina wears on rescues. She keeps sweets in its pocket for the children she carries out, and the child holds its hem in her fist.",
+    "summary": "Karina wears her coat when she carries survivors out of the ruins, and keeps sweets in its pocket for the children. At the shelter the child Selena keeps one fist closed in its hem, and does it again before she says her first word. Karina mends its torn pocket at the table. Years later, on the day before the attack, Karina takes the last fruit drop from that pocket. Selena's hand closes in the hem without her knowing, then lets it go one finger at a time.",
+    "rows": [
+      [
+        "Owner",
+        "Karina"
+      ],
+      [
+        "First seen",
+        "Chapter 59"
+      ]
+    ]
+  },
+  "karinas-lamp": {
+    "line": "A lamp with a flame behind glass, carried through dark streets.",
+    "short": "A lamp with a flame behind glass. Obsidia's storm cannot kill a flame, and its light finds a child in the street.",
+    "summary": "Karina carries a lamp with a flame behind glass on her rescues. On the night of the mud, Obsidia's storm killed every other light in the street, but it could not kill a flame. The lamp swung and squeaked down the dark street and found the child Selena in the mud. Then it went back out, doorway by doorway, to look for more survivors. On the night of the attack Karina carries it again from door to door in the flooded wards.",
+    "rows": [
+      [
+        "Owner",
+        "Karina"
+      ],
+      [
+        "First seen",
+        "Prologue"
+      ]
+    ]
+  },
+  "laylas-cannon": {
+    "line": "The tall cannon Layla built herself.",
+    "short": "The cannon Layla built, as tall as she is, white with a teal strip. Cyan cells on its stock fill as it charges. She calls it her magic gun.",
+    "summary": "Layla built her cannon herself. It is as tall as she is, white with a teal strip, with a row of cyan cells on the stock that shows the charge and a dial that sets it. Its full charge pulled left until she made the faster half of the charge wait nine thousandths of a second. A full shot is a blue-white line with lightning spreading off it like wings. Under Obsidia's field its cells go dark one by one, and when the field dies they light again from the bottom up.",
+    "rows": [
+      [
+        "Owner",
+        "Layla"
+      ],
+      [
+        "Made by",
+        "Layla"
+      ],
+      [
+        "Look",
+        "As tall as Layla, white with a teal strip, cyan cells on the stock"
+      ],
+      [
+        "Also called",
+        "Her magic gun"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "laylas-drones": {
+    "line": "Three black drones with angry faces Layla drew in cyan.",
+    "short": "Three black drones in Layla's lab, each with an angry face drawn in cyan marker. One films Fanny's dawn drills, and Fanny thinks it is lost.",
+    "summary": "Layla keeps three black drones in her lab, each with an angry face she drew in cyan marker. For three mornings one filmed Fanny's drills from the gallery, rising over the rail to keep her in frame. Fanny told it kindly that it must be lost, and Layla called it home with two taps. When Fanny later comes to the lab, the drones rise to meet her, and she knows the one from the gallery.",
+    "rows": [
+      [
+        "Owner",
+        "Layla"
+      ],
+      [
+        "First seen",
+        "Chapter 2"
+      ]
+    ]
+  },
+  "lesleys-comm": {
+    "line": "The radio at Lesley's collar.",
+    "short": "The radio at Lesley's collar, with a small green light. Both the base and the Shield can reach her on it.",
+    "summary": "Lesley's comm sits at her collar with a small green light, and it has two channels, the base's and the Shield's. On the road out she switched to stealth mode and turned it off, so no word came home. At the city's edge it could not reach the base, so she turned it to the Shield's channel through the fight. Before dawn she turned it back to the base's channel, and nobody called. Years later it is still on that channel, her thumb resting on the call switch.",
+    "rows": [
+      [
+        "Owner",
+        "Lesley"
+      ],
+      [
+        "Channels",
+        "The base's and the Shield's"
+      ],
+      [
+        "First seen",
+        "Chapter 23"
+      ]
+    ]
+  },
+  "lesleys-eye": {
+    "line": "The teal machine eye in Lesley's left socket.",
+    "short": "A machine eye behind the dark visor on Lesley's left side, glowing teal. Chang'e built it.",
+    "summary": "Lesley's left eye is a small metal eye with a teal light, built by Chang'e after she read that Lesley lost her eye in the Ender attack. Chang'e's father set its smallest parts with tweezers, and the eighth try worked. It draws what it sees in thin teal lines and keeps what it sees, but it cannot see Lesley, so Chang'e loaded a birthday recording into it. Nothing in it runs on aspirant power, so it still works under Obsidia's field.",
+    "rows": [
+      [
+        "Owner",
+        "Lesley"
+      ],
+      [
+        "Made by",
+        "Chang'e, with her father setting the smallest parts"
+      ],
+      [
+        "Location",
+        "Lesley's left socket, behind a dark visor"
+      ],
+      [
+        "First seen",
+        "Chapter 17"
+      ]
+    ]
+  },
+  "lesleys-rifle": {
+    "line": "The long rifle Lesley carries on her back.",
+    "short": "Lesley's long rifle. Its old firing action is a spring, a pin and a bolt that run on nothing but a hand, and she wants the new coil fitted on top.",
+    "summary": "Chang'e built Lesley's long rifle as a birthday gift, red and gold, with a barrel longer than Chang'e was tall. It has no cell and no cable: a spring, a pin and a bolt, cocked by hand and fired by finger, and Lesley thought it would still work in the dark. Years later Lesley has a new coil fitted on top but keeps the old action because Chang'e built it. Under Obsidia's field the coil dies, and the old action still puts a plain round into an Ender's open core.",
+    "rows": [
+      [
+        "Owner",
+        "Lesley"
+      ],
+      [
+        "Made by",
+        "Chang'e, for Lesley's birthday"
+      ],
+      [
+        "Colors",
+        "Red and gold"
+      ],
+      [
+        "First seen",
+        "Chapter 14"
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Old action",
+        "note": "A spring, a pin and a bolt, cocked by hand and fired by finger. It needs no power at all."
+      },
+      {
+        "name": "Coil",
+        "note": "A newer part fitted on top of the old action. It runs on aspirant power and dies under Obsidia's field."
+      }
+    ]
+  },
+  "lollipop": {
+    "line": "The lollipop Selena always lets melt.",
+    "short": "A lollipop melting slowly in Selena's cheek as she sits on the bell tower.",
+    "summary": "Selena always has a lollipop. She never bites one but lets it melt down to the stick. She waves one at a boy who calls her dangerous, and trades one for Chang'e's jelly candies. On the day of the attack she makes one last and tells it, not yet. When it is worn to a sliver she bites it at last, and it cracks between her fangs.",
+    "rows": [
+      [
+        "Owner",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 59"
+      ]
+    ]
+  },
+  "obsidias-field": {
+    "line": "A field Obsidia built to put out aspirant power.",
+    "short": "A field Obsidia built, asleep under her throne. Let out over the city, it would put out aspirant power wherever it reached, and nothing else.",
+    "summary": "Obsidia built the field because her storm could not touch cores lit by belief. It grew from the light her Enders died of, from Selena's reports and from a dead suit on her prow, and Selena's numbers told her how hard it must press. It sleeps in the throne's hum until she wakes it, then spreads under the ship as a magenta sphere. Suits, drones, shields and cannons die under it, but comms still work, and nothing that runs without aspirant power is touched. When Selena cuts the throne, it dies at its source.",
+    "rows": [
+      [
+        "Made by",
+        "Obsidia"
+      ],
+      [
+        "Kept in",
+        "Obsidia's throne"
+      ],
+      [
+        "Look",
+        "A magenta sphere, its edge crawling with flickering squares"
+      ],
+      [
+        "First seen",
+        "Chapter 66"
+      ]
+    ]
+  },
+  "obsidias-new-form": {
+    "line": "The taller shape Obsidia takes in gold fire.",
+    "short": "A taller figure of silver and gold plate that Obsidia becomes in gold fire, with a crown of silver points and wings of energy wider than the storm.",
+    "summary": "In her duel with Selena, gold fire breaks out of Obsidia and wraps her as her shape changes. She becomes a taller figure of silver and gold plate, with a crown of silver points and magenta light in its joints. Wings of purple and yellow energy, wider than the storm, spread from her, each with a dark eye ringed in gold. Selena thinks it is the strongest thing she has ever seen. Obsidia's voice does not change.",
+    "rows": [
+      [
+        "Of",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 87"
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Wings of energy",
+        "note": "Purple and yellow wings wider than the storm, each with a dark eye ringed in gold."
+      },
+      {
+        "name": "Crown",
+        "note": "A crown of silver points."
+      }
+    ]
+  },
+  "obsidias-storm": {
+    "line": "A black storm cloud with violet light moving inside it.",
+    "short": "A black cloud over the bay with violet light moving inside it, and something in it too big for any cloud.",
+    "summary": "Obsidia's storm is the black cloud with violet light inside that hangs around the Storm Citadel. Loosed on a city, it kills every machine that runs on current while it hangs over them, but it cannot touch a core lit by belief. Lesley saw it once from a windowsill, long ago, the night the radio stopped in the middle of a word. Before the attack it comes through the crack ahead of the ship and looks like any other storm, yet this time the city's lamps and screens keep working. At the end it thins to rags, and without it the ship sinks.",
+    "rows": [
+      [
+        "Made by",
+        "Obsidia"
+      ],
+      [
+        "Surrounds",
+        "The Storm Citadel"
+      ],
+      [
+        "Effect",
+        "Kills machines that run on current"
+      ],
+      [
+        "First seen",
+        "Chapter 18"
+      ]
+    ]
+  },
+  "obsidias-throne": {
+    "line": "A gray cord under the Storm Citadel that breathes like flesh.",
+    "short": "The Storm Citadel's spine, a humming column every block of the ship hangs from. Obsidia sits on it where a neck would be and moves the ship by touch.",
+    "summary": "Obsidia's throne is the spine of the Storm Citadel, a column of joints that the body grew for her when she woke. Every block of the ship hangs from it, and it breathes and hums like something alive. Obsidia sits where a neck would be and moves the ship with her palm on it, and her field sleeps in its bone. It cannot feed the storm and the field at once. Selena cuts it through at the base with the blade on her arm, it falls into a heap of pale plates, and the hum stops.",
+    "rows": [
+      [
+        "Owner",
+        "Obsidia"
+      ],
+      [
+        "Grown by",
+        "The body, the Mother Matrix"
+      ],
+      [
+        "Location",
+        "The throne hall of the Storm Citadel"
+      ],
+      [
+        "First seen",
+        "Chapter 56"
+      ]
+    ]
+  },
+  "obsidias-weapon": {
+    "line": "A long weapon of silver and pink that comes to Obsidia's hand.",
+    "short": "Obsidia's long silver-pink weapon. It comes to her hand out of the dark, and at the lift of one finger it lashes out across the hall.",
+    "summary": "Obsidia's weapon is long and silver-pink. It comes out of the dark to her hand, hangs at her shoulder untouched, and goes still when she strokes it, as someone strokes a cat. She talks to it. At the lift of one finger it lashes out, and where it meets Selena's blade the hall flashes white. In the duel it goes through Selena's side and fires bolt after bolt, and at last its tip flares gold and fires once more, point-blank.",
+    "rows": [
+      [
+        "Owner",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 55"
+      ]
+    ]
+  },
+  "changes-paper": {
+    "line": "Chang'e's untested paper on aspirant power and the void.",
+    "short": "Chang'e's paper, marked Status: untested. It says an Aspirant's light would shine on inside a black hole and find its way home.",
+    "summary": "On Aspirant Power and the Black Hole is Chang'e's theory of the void, marked Status: untested. Most of it is readings and numbers. It says a black hole tears apart whatever falls in, the body first, but that an Aspirant's light would shine on inside it and find its way home. It says would, not will. Vexana found it in the Academy library and knows it by heart. After she and Guinevere come home through the black hole, Chang'e says it was only a guess, and Lesley tells her it is tested now and to log it.",
+    "rows": [
+      [
+        "Written by",
+        "Chang'e"
+      ],
+      [
+        "Status",
+        "Untested, until the black hole"
+      ],
+      [
+        "Found in",
+        "The Academy library"
+      ],
+      [
+        "First seen",
+        "Chapter 41"
+      ]
+    ]
+  },
+  "pink-haired-keychain": {
+    "line": "A little pink-haired keychain doll Vexana wears at her belt.",
+    "short": "A little pink-haired keychain doll of Guinevere. Guinevere pressed it into Vexana's palm at a stall: \"Now you have me on yours.\"",
+    "summary": "The pink-haired keychain is a little doll of Guinevere with a small face. Guinevere pressed it into Vexana's palm at a stall: \"Now you have me on yours.\" Each girl wore a keychain doll of the other at her belt, and every night Vexana put hers in the white box on her desk with her star. She wore it into the corridor the day she was taken. In the void it lies on her folded uniform, and on the eve of the attack she clips it inside her sleeve beside the star.",
+    "rows": [
+      [
+        "Owner",
+        "Vexana"
+      ],
+      [
+        "Given by",
+        "Guinevere"
+      ],
+      [
+        "First seen",
+        "Chapter 45"
+      ]
+    ]
+  },
+  "project-angel": {
+    "line": "Oro's program of android bodies.",
+    "short": "Oro's android program. Its androids stand in rows in a hall below the Laboratory, and Ruby builds Angela on one of its bodies.",
+    "summary": "Project Angel is an android program on Oro. Its androids stand in rows in a hall below the Laboratory. Every Project Angel body carries a sealed plate between the shoulder blades, with the Council's seal burned in. Ruby builds Angela on one of these bodies.",
+    "rows": [
+      [
+        "Home",
+        "Oro, in a hall below the Laboratory"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "rubys-scythe": {
+    "line": "Ruby's white and orange scythe, taller than she is.",
+    "short": "Ruby's scythe, white and orange and taller than she is. Lightning crawls along its blade, and one swing cuts through a row of androids.",
+    "summary": "Ruby's scythe is white and orange and taller than she is, and she can hook it across her back. Lightning crawls along its blade, and one swing cuts through a row of androids or splits a ring of Enders. She set it down to surrender, and later planted it point-down when she bowed at the lot. Oro built it, and nothing in it runs on aspirant power, so under Obsidia's field it is the one weapon still lit.",
+    "rows": [
+      [
+        "Owner",
+        "Ruby"
+      ],
+      [
+        "Made by",
+        "Oro"
+      ],
+      [
+        "Colors",
+        "White and orange"
+      ],
+      [
+        "First seen",
+        "Chapter 13"
+      ]
+    ]
+  },
+  "selenas-blades": {
+    "line": "Four black-and-gold blades that hang in the air around Selena.",
+    "short": "Four black-and-gold blades hang in the air around Selena, and a blade of crackling light runs along one arm.",
+    "summary": "In her full true form Selena has four black-and-gold blades hanging in the air around her, and a blade of crackling light along one arm. With the arm blade she cuts Obsidia's throne through at the base. In the duel the four blades swing in with every cut, tumble after her when she falls, and come back to hang around her.",
+    "rows": [
+      [
+        "Owner",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 85"
+      ]
+    ]
+  },
+  "selenas-true-form": {
+    "line": "The Ender shape Selena has kept folded under her skin.",
+    "short": "Selena's own shape: dark plate trimmed with silver, pale shards at her shoulders, horns, pointed ears, claws and fangs. She calls it the real her.",
+    "summary": "Selena's true form is the shape she feels folded small under her skin. When it comes out, dark plate edged in silver closes over her, pale shards stand off her shoulders, and two small horns, pointed ears, black claws and fangs show. In full it is plate of white, blue and gold with a large pale mane, four black-and-gold blades in the air and a blade of light along one arm. It is the suit she once showed the class as Ender plating, her own design. She had never let it all out before, and it fits.",
+    "rows": [
+      [
+        "Of",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 82"
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Four floating blades",
+        "note": "Black-and-gold blades that hang in the air around her and swing in with every cut."
+      },
+      {
+        "name": "Arm blade",
+        "note": "A blade of crackling light along one arm. It cuts Obsidia's throne through at the base."
+      }
+    ]
+  },
+  "silverbolt": {
+    "line": "A dragon-shaped machine with blue sparks along its seams.",
+    "short": "Selena's dragon-like machine, with blue light along its seams. Nobody else can run it, and Selena says it is shy.",
+    "summary": "Silverbolt is Selena's dragon-shaped machine, with blue light along its seams. It began as Frame Nine, a gray Academy training frame, and over her first year she rebuilt it from Ender salvage into a small low dragon just long enough to ride. Its core stayed dark until she let the purple run into it, and lightning that turned its plates silver gave it its name. It has no mind and no voice, and it moves only when part of her means it to. Everyone thought it a weapon built to defend the city, but in truth it was a weapon of the Enders.",
+    "rows": [
+      [
+        "Owner",
+        "Selena"
+      ],
+      [
+        "Made by",
+        "Selena, rebuilt from an Academy training frame"
+      ],
+      [
+        "Former name",
+        "Frame Nine"
+      ],
+      [
+        "Built from",
+        "Ender salvage"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ],
+    "weapons": [
+      {
+        "name": "Overload",
+        "note": "Pushed past its limit, its seams go from blue to white, it shrieks, and lightning pours out of its seams."
+      },
+      {
+        "name": "Phone socket",
+        "note": "A socket under its seat where Selena plugs in her phone to send her reports."
+      }
+    ]
+  },
+  "slk": {
+    "line": "The mark stamped on Selrick students' jackets.",
+    "short": "The mark of Selrick, stamped on the students' jackets and shirts.",
+    "summary": "S·L·K is the mark of Selrick, stamped on the students' matching jackets and shirts. Ruby saw it on their jackets and came to their school to ask for refuge. It is also stamped on the shoulder plate of a scorched Aspirant suit that lies on the prow of the Storm Citadel.",
+    "rows": [
+      [
+        "Of",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 12"
+      ]
+    ]
+  },
+  "telescope": {
+    "line": "A long telescope at the glass of the observation lab.",
+    "short": "A long telescope at the glass of the observation lab. Guinevere moves it across the sky one small piece at a time until dawn.",
+    "summary": "A long telescope stands at the glass of the observation lab. After Vexana was taken, Guinevere began moving it across the sky one small piece at a time. From the ruined tower Vexana sees it turning and knows someone is searching the sky. It points out over the bay toward the crack, and through it Guinevere sees the far light burn magenta and flash. It is linked to a screen at Ruby's console.",
+    "rows": [
+      [
+        "Location",
+        "The observation lab"
+      ],
+      [
+        "First seen",
+        "Chapter 47"
+      ]
+    ]
+  },
+  "tetra": {
+    "line": "A hand-sized doll of Angela that Angela carries.",
+    "short": "A doll no longer than a hand, a copy of Angela with pink hair and rabbit ears. Its left eye is a camera that feeds a monitor on Ruby's bench.",
+    "summary": "Tetra is a doll no longer than a hand, a copy of Angela in white with pink hair, rabbit ears and a four-pointed star. Its left eye is a camera, and Ruby never told Angela that its feed lit a monitor on her bench. Angela kept it after she learned. At the Academy Chang'e wanted it kept for checks, but Angela refused, and Ruby cut its link to Oro so it only sees for Angela now. It rides at her shoulder in the fight.",
+    "rows": [
+      [
+        "Owner",
+        "Angela"
+      ],
+      [
+        "Look",
+        "A copy of Angela in white, with pink hair, rabbit ears and a four-pointed star"
+      ],
+      [
+        "Camera",
+        "Its left eye, once linked to Oro"
+      ],
+      [
+        "First seen",
+        "Chapter 11"
+      ]
+    ]
+  },
+  "barricade-in-the-cut": {
+    "line": "A street barricade dragged across the cut.",
+    "short": "A barricade of a door, a shop sign and a tipped car across the narrowest place in the cut, with a gap wide enough for one Ender at a time.",
+    "summary": "Fanny, Layla and a few soldiers build the barricade across the narrowest place in the cut, from a door, a shop sign and a car tipped on its side. Fanny built it the way suitless soldiers taught her, with one gap just wide enough for one Ender at a time. Dead Enders heap up in front of the gap, so the rest must climb over one at a time. The soldiers lay their rifles across the stack, but its weak end, where the sign meets a house front, slides.",
+    "rows": [
+      [
+        "Built by",
+        "Fanny, Layla and a few soldiers"
+      ],
+      [
+        "Location",
+        "The bay road cut"
+      ],
+      [
+        "First seen",
+        "Chapter 82"
+      ]
+    ]
+  },
+  "birthday-recording": {
+    "line": "An old recording kept in Lesley's machine eye.",
+    "short": "A recording from years ago that opens in Lesley's eye when she touches her visor. In it a small Chang'e sets an eye in Lesley's palm.",
+    "summary": "The birthday recording is a film from years ago, kept in Lesley's eye, that opens when she touches her visor. Chang'e told Mr. Bunny to film everything on Sis's birthday. In it Chang'e, barely up to Lesley's waist, sets an eye with a teal light in Lesley's palm, and it ends with two small warm hands pressing Lesley's cheeks. Chang'e loaded it into the eye because the eye cannot see Lesley, so that Lesley would have a picture.",
+    "rows": [
+      [
+        "Filmed by",
+        "Mr. Bunny"
+      ],
+      [
+        "Stored in",
+        "Lesley's eye"
+      ],
+      [
+        "First seen",
+        "Chapter 18"
+      ]
+    ]
+  },
+  "blue-badges": {
+    "line": "Small blue shields for the year's best Aspirant pair.",
+    "short": "Small blue shields with the Academy's crest, given once a year to the best Aspirant Duo. Guinevere and Vexana win them.",
+    "summary": "The blue badges are small blue shields with the Academy's crest, given once a year to the best Aspirant Duo. Guinevere and Vexana won the first ones the Academy ever gave. Guinevere held hers over her head all the way out of the hall and pinned it back on crooked, while Vexana's never came off. They are new in the hand-in-hand photo.",
+    "rows": [
+      [
+        "Given to",
+        "The best Aspirant Duo of the year"
+      ],
+      [
+        "Won by",
+        "Guinevere and Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 41"
+      ]
+    ]
+  },
+  "cloth-tape": {
+    "line": "A roll of gray cloth tape left on Guinevere's jacket.",
+    "short": "A roll of gray cloth tape, the kind Vexana winds on her staff's grip. She leaves it on Guinevere's jacket without a sound.",
+    "summary": "The cloth tape is a roll of the gray tape Vexana winds on her staff's grip. The night Guinevere waited at her father's office, Vexana left it on her jacket without a sound. Guinevere taped her knuckles with it and did not know who had left it, until she saw the same gray tape on Vexana's practice staff.",
+    "rows": [
+      [
+        "Left by",
+        "Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 35"
+      ]
+    ]
+  },
+  "command-channel": {
+    "line": "The radio channel the Academy's defense runs on.",
+    "short": "The radio channel Lesley uses to order every post. It holds under the storm, and she does not know why.",
+    "summary": "The command channel carries Lesley's orders and every post's report during the attack. It holds under the storm, and under Obsidia's field too: comms hold while suits do not. The word traitor went down it faster than any order, and it went silent when Guinevere's signal was lost. Guinevere's line stayed open, so Vexana's farewell came into Fanny's ear, and later Guinevere lent Vexana the comm from her own ear. Guinevere loses her earpiece, and the channel with it, in her fall.",
+    "rows": [
+      [
+        "Used by",
+        "Lesley and every post"
+      ],
+      [
+        "First seen",
+        "Chapter 69"
+      ]
+    ]
+  },
+  "core-component": {
+    "line": "A whole piece of an Ender's core that Lesley brings back.",
+    "short": "A piece that split off whole when Lesley's round cracked an Ender's core at the edge. Nobody had thought it could be done.",
+    "summary": "The core component is a piece from deep inside an Ender's core. Lesley's round cracked a core at the edge, and this piece split away before the burn reached it. For eleven days it stayed dull under every test, until on the twelfth evening, held in Chang'e's bare hands, a small pale light woke in it. It responds to what Chang'e believes, and only while she holds on. Set in a wire cage in the frame's chest, it makes Lesley the Shield's most valuable shot.",
+    "rows": [
+      [
+        "Found by",
+        "Lesley"
+      ],
+      [
+        "Lit by",
+        "Chang'e"
+      ],
+      [
+        "Set in",
+        "A wire cage in the frame's chest"
+      ],
+      [
+        "First seen",
+        "Chapter 23"
+      ]
+    ]
+  },
+  "councils-control-unit": {
+    "line": "A sealed plate on the back of every Project Angel body.",
+    "short": "A sealed plate between the shoulder blades of every Project Angel body, with the Council's seal burned in. Ruby is never allowed to open it.",
+    "summary": "Every Project Angel body carries a sealed plate between the shoulder blades, the size of Ruby's palm, with the Council's seal burned in and one small dark light. Ruby was never allowed to open it, so she built Angela around it. On Dawnbreak its light burns red, and through it the Council takes Angela's mind, its orders outranking anything Ruby writes. Ruby tears it out with her hands and stamps on it until the seal is gone.",
+    "rows": [
+      [
+        "Owner",
+        "The Council"
+      ],
+      [
+        "Location",
+        "Between Angela's shoulder blades, until Ruby tore it out"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "courtyard-billboard": {
+    "line": "A billboard of Guinevere and Vexana back to back in the Academy courtyard.",
+    "short": "A billboard on a courtyard wall: Guinevere and Vexana back to back, legends even among the Aspirants for their undefeated record.",
+    "summary": "The billboard covers one wall of the Academy courtyard. It shows Guinevere, with her long pink ponytail and red bow, and Vexana, with her long black hair, back to back, and says their undefeated record has made them legends even among the Aspirants. Guinevere salutes it every morning: \"Morning, legends.\" After Vexana is taken she stops saluting and touches her collar instead.",
+    "rows": [
+      [
+        "Location",
+        "The Academy courtyard"
+      ],
+      [
+        "Shows",
+        "Guinevere and Vexana back to back"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "design-log": {
+    "line": "The log Chang'e keeps, every entry written to Lesley.",
+    "short": "Chang'e's design log. It begins the night Lesley came back muddy, and every entry is written to Lesley.",
+    "summary": "Chang'e's design log begins the night Lesley came back muddy from the city's edge. Its first page reads: Lesley, my dear, dear protector, I want to make her the best sniper ever! Every entry after it is written to Lesley. On the night of the fall Chang'e adds that she will never forgive her, and saves it unsent. Years on the log still runs, every entry to the same name, and a folder holds forty-three one-line drafts to Lesley, none of them sent.",
+    "rows": [
+      [
+        "Kept by",
+        "Chang'e"
+      ],
+      [
+        "Written to",
+        "Lesley"
+      ],
+      [
+        "First seen",
+        "Chapter 22"
+      ]
+    ]
+  }
+}

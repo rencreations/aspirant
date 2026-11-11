@@ -1,0 +1,123 @@
+{
+ "change": {
+  "line": "The small director of the Science Division, with her robot Mr. Bunny at her shoulder.",
+  "short": "The director of the Science Division, small in a child-sized coat, with her robot Mr. Bunny floating at her shoulder. She always has a remark.",
+  "summary": "The youngest Chief Scientist Terrinia has ever had, and director of Selrick's Science Division since its first day. Raised at the research base by its two chief scientists, she built Mr. Bunny and Lesley's eye and rifle, and found that an Ender core lights for what its holder believes. Her parents died pushing her clear the night the base fell; she blamed Lesley for years while she finished the Aspirant suits and her crescents, until Lesley saved her and the two became the First Aspirants. She proposed the Academy, and in the Storm Citadel's attack she sits still under an Ender's claw so Lesley can make the shot, and this time does not push Lesley away.",
+  "rows": [
+   [
+    "Known as",
+    "Teacher Chang'e. The Chief Scientist. The director.",
+    17
+   ],
+   [
+    "Academy post",
+    "Director of the Science Division since its first day. She proposed the Academy and drove the hall's first stake into the crater.",
+    28
+   ],
+   [
+    "Appearance",
+    "Smaller than every child in the Academy's entrance queue, in a white lab coat cut to her size, with glasses.",
+    28
+   ],
+   [
+    "Family",
+    "Raised at Terrinia's research base by its two chief scientists, whom she called Mom and Dad. She has never asked who her first parents were.",
+    20
+   ],
+   [
+    "Partner",
+    "Lesley, her Big Sis. Together they are the First Aspirants.",
+    27
+   ],
+   [
+    "Best friend",
+    "Mr. Bunny, the robot she built because there were no other children on the base.",
+    20
+   ],
+   [
+    "Built",
+    "Mr. Bunny, Lesley's eye, rifle and new coil, the Aspirant suits, her crescents, and the glove and dial that read aspirant power.",
+    28
+   ],
+   [
+    "Discovery",
+    "An Ender core lights for what its holder believes, not what they know. She named that power aspirant power: belief sits still, and this reaches.",
+    26
+   ],
+   [
+    "Teaches",
+    "That a mind, the Will of the Planet, sends the Enders, and that its body may be the Mother Matrix. Balance she marks as only a theory.",
+    41
+   ],
+   [
+    "Rules",
+    "No change to a registered mecha without a field-test report and her mark. No student sent anywhere she cannot bring them back from.",
+    41
+   ],
+   [
+    "Works in",
+    "Her lab in the Science Division, the same lab her parents worked in. She often falls asleep at its console.",
+    26
+   ],
+   [
+    "Sweets",
+    "Caramel pudding and jelly candies. She trades Selena two jelly candies for a lollipop, as always.",
+    17
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Mr. Bunny",
+    "note": "Her floating robot and best friend, a white ball with long ears and a screen face. At 'Front' he swings in front of her face; once he grew into a giant rabbit-head machine."
+   },
+   {
+    "name": "The crescents",
+    "note": "White crescents edged with pink that circle her in a ring and strike into an Ender's chest the moment it opens. She built them so nobody would have to push her clear again."
+   },
+   {
+    "name": "Panels of light",
+    "note": "Panels she calls up in the air with \"Console! Activate!\" to read a target and lock on."
+   },
+   {
+    "name": "Glove and dial",
+    "note": "A glove wired to a dial that reads aspirant power. It hums and lights for a hand, and she reads its needle at the entrance assessment."
+   },
+   {
+    "name": "Chang'e's console",
+    "note": "Her console on the command deck. It reads the storm and the Singularity, and shows a thin line for the power of every suit in the city."
+   },
+   {
+    "name": "Chang'e's screens",
+    "note": "Screens in her lab that pick up every Ender signal near the dome. On them she finds the singularity."
+   },
+   {
+    "name": "Design log",
+    "note": "Her log, where she writes every entry to Lesley. For years she saved them all unsent."
+   },
+   {
+    "name": "VOID NOTES",
+    "note": "Her file on the void, the dark behind the world where the Enders come from. It stays marked working on it."
+   },
+   {
+    "name": "On Aspirant Power and the Black Hole",
+    "note": "Her untested paper on the void. It says an Aspirant's light would go on shining inside a black hole and find its way home."
+   },
+   {
+    "name": "Scanner",
+    "note": "A scanner as long as her arm. She runs it up the white wall where the small door opened."
+   },
+   {
+    "name": "Tablet",
+    "note": "A tablet half her size that holds her check list."
+   },
+   {
+    "name": "Child-sized coat",
+    "note": "A white lab coat cut to her size; her mother cut down the first one. Adult coats, she says, are inefficient."
+   },
+   {
+    "name": "Glasses",
+    "note": "She pushes them up her nose. Rain runs down them while she sits still under the claw."
+   }
+  ]
+ }
+}

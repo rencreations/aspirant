@@ -1,0 +1,852 @@
+{
+  "council-hall": {
+    "line": "The towering hall on Oro where its rulers agree their orders.",
+    "short": "The tall hall on Oro where its rulers agree their orders. Ruby has her lessons there, and nobody is called there to be praised.",
+    "summary": "The Council hall stands on Oro. Its pillars go up into the dark, and its narrow windows are far too high to reach. Oro's rulers agree their orders there, and Ruby's lessons go on there year after year. Nobody is called there to be praised: Ruby stands in a circle of light on its floor while her father stands outside it.",
+    "rows": [
+      [
+        "Location",
+        "Planet Oro"
+      ],
+      [
+        "Used by",
+        "Oro's rulers"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "courtyard": {
+    "line": "The Academy's open courtyard, under the billboard of Guinevere and Vexana.",
+    "short": "The Academy's courtyard. Half the students there wear headgear, and a billboard of Guinevere and Vexana covers one wall.",
+    "summary": "The courtyard of Selrick Academy. A billboard of Guinevere and Vexana back to back covers one wall, and a fountain stands under the patrons' brass plaque. On Team-Up Day a banner hangs across it, and Guinevere crossed it in six strides to ask Vexana to be her partner. On the day of the attack the frontline forms there in ranks of Shield soldiers and students in suits.",
+    "rows": [
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "Features",
+        "The billboard of Guinevere and Vexana, a fountain under the patrons' plaque, an upper walk, flower beds"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "crater": {
+    "line": "A bare black crater in the research base's yard.",
+    "short": "A crater left by the giant's light, with nothing in it. It is where Chang'e's parents stood.",
+    "summary": "The crater lies in the research base's yard, twenty steps short of the shelter. The giant's light made it where Chang'e's parents stood, and left only a bare black floor. Years on, with grass grown over it, Chang'e drove the Academy hall's first stake into its floor. The hall's boards now lie over it.",
+    "sub": "blast crater in the base's yard",
+    "rows": [
+      [
+        "Location",
+        "The research base's yard, now under the Academy hall"
+      ],
+      [
+        "First seen",
+        "Chapter 24"
+      ]
+    ]
+  },
+  "crews-yard": {
+    "line": "A salvage yard at the city's edge, outside the outer fence.",
+    "short": "A yard far down the outer fence, where salvage crews sort their finds by day. After dark Selena sells salvage there under one lamp.",
+    "summary": "The crews' yard lies at the city's edge, outside the outer fence and far from any gate. By day salvage crews sort what they drag in. At night only one lamp burns, swinging over a trestle table under a tarp, where Selena sells salvage. Vexana steps into that lamp's light not long after she goes missing.",
+    "rows": [
+      [
+        "Location",
+        "The city's edge, outside the outer ward's fence"
+      ],
+      [
+        "Used by",
+        "Salvage crews by day, Selena after dark"
+      ],
+      [
+        "First seen",
+        "Chapter 51"
+      ]
+    ]
+  },
+  "dead-ground": {
+    "line": "The ruined, empty streets outside the dome.",
+    "short": "The ruins outside the dome. Its streets have stood empty since the Catastrophe: doorways with no doors, weeds in every crack.",
+    "summary": "The dead ground is the ruin outside the dome, empty since the Catastrophe. Its fallen houses give up girders to the feeders, and a ruined tower stands on a rise past the dome's landward edge. While Vexana is missing the Will sends her out over it, and Selena sells her a gray shoulder plate there one night. Vexana's father used to point out over it from the wall stair on her birthdays.",
+    "rows": [
+      [
+        "Location",
+        "Outside the dome, past its landward edge"
+      ],
+      [
+        "Landmarks",
+        "The ruined tower, ditches where downed Enders lie"
+      ],
+      [
+        "First seen",
+        "Chapter 48"
+      ]
+    ]
+  },
+  "domes-edge": {
+    "line": "Open dark grass at the edge of the dome, far from the crowds.",
+    "short": "Open dark grass past the last houses, running to the edge of the dome. Guinevere wants to watch the summer fireworks there.",
+    "summary": "Past the city's last houses, open dark grass runs to the edge of the dome, far from the crowds at the bay front. Guinevere and Vexana watched the summer fireworks there, and Guinevere held Vexana's hand and pointed at the sky. While Vexana is missing, the Will orders her there before dawn, and again on the night before the attack.",
+    "rows": [
+      [
+        "Location",
+        "Past the last houses of Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 40"
+      ]
+    ]
+  },
+  "domes-foot": {
+    "line": "A ward of warehouses where the dome's curve meets the ground.",
+    "short": "A ward of warehouses at the city's edge, where the dome's curve meets the ground at the end of the main road.",
+    "summary": "The dome's foot is a ward of warehouses at the city's edge, at the end of the main road. In the raid there, the pairs went up the main road while an instructor held the singles at the corner. One side street runs straight to the split in the dome. Guinevere remembers a claw raking her arm in a street there.",
+    "sub": "warehouse ward at the city's edge",
+    "rows": [
+      [
+        "Location",
+        "Terrinia's edge, at the end of the main road"
+      ],
+      [
+        "First seen",
+        "Chapter 37"
+      ]
+    ]
+  },
+  "dormitory-roof": {
+    "line": "The flat dormitory roof with green guardrails, looking over the city to the bay.",
+    "short": "The flat, hot roof of the Academy dormitory, with washing lines and green guardrails. It looks out over the city to the bay.",
+    "summary": "The dormitory roof is flat and hot, with washing lines and green guardrails, and it looks over the city to the bay. Guinevere and Vexana take tea up there at sunset, and there Guinevere lays out Plan A and Plan B until a siren cuts in. In the sun by the rail, Guinevere gave Vexana a gold star she made herself, and the two promised to protect the world together. Vexana walked to the far rail and back to hear how far the star could beep.",
+    "rows": [
+      [
+        "Location",
+        "Top of the Academy dormitory"
+      ],
+      [
+        "Features",
+        "Washing lines, green guardrails, a siren"
+      ],
+      [
+        "First seen",
+        "Chapter 39"
+      ]
+    ]
+  },
+  "drill-hall": {
+    "line": "The Academy hall where Fanny drills alone before dawn.",
+    "short": "A training hall at the Academy with one narrow doorway. Fanny drills there alone at a quarter past five each morning, blades lit.",
+    "summary": "The drill hall has one narrow doorway, so anything that comes at Fanny there has to take turns. She drills in it alone at a quarter past five each morning, until she invites Layla to train with her. By the tenth morning both are there by half past four. Later Layla works on Fanny's flight rig there, laid out in pieces on a bench.",
+    "rows": [
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "Used by",
+        "Fanny, then Fanny and Layla"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "east-corridor": {
+    "line": "A storage corridor of the research base, lined with steel shelving.",
+    "short": "A corridor of the research base where researchers stack what they have no room for, on steel shelving strapped to the wall.",
+    "summary": "The east corridor runs through the research base. Researchers stack whatever they have no room for on steel shelving strapped along its wall. Lesley walks it at midnight, and one night a rack crashes down there. It is also where Chang'e secretly measures Lesley's face with a ruler.",
+    "rows": [
+      [
+        "Location",
+        "The research base"
+      ],
+      [
+        "First seen",
+        "Chapter 20"
+      ]
+    ]
+  },
+  "far-stations": {
+    "line": "Shield forts guarding the last towns beyond Terrinia.",
+    "short": "Shield forts guarding the last towns beyond the city. Trucks leave Terrinia for them after the attack.",
+    "summary": "The far stations were the Shield's forts guarding the last towns beyond Terrinia. After the attack the last trucks left the city for them, and Lesley rode out on one and served at a station for years. As the last towns emptied, the stations closed one by one.",
+    "rows": [
+      [
+        "Owner",
+        "Shield of Dawnbreak"
+      ],
+      [
+        "Location",
+        "Beyond Terrinia, by the last towns"
+      ],
+      [
+        "Status",
+        "Closed one by one"
+      ],
+      [
+        "First seen",
+        "Chapter 19"
+      ]
+    ]
+  },
+  "fish-market": {
+    "line": "A market on a shore ward, where the dome tore over the stalls.",
+    "short": "A fish market on a shore ward. The dome is torn over its stalls, and Enders drop through the tear.",
+    "summary": "The fish market stands on a shore ward, its cobbles wet and smelling of fish and salt. When the dome tears over its stalls, the keepers run at the siren and leave their aprons on the hooks. Enders drop through the tear and burst the crates under their feet. When the fight ends, the last of them lies among the fish.",
+    "rows": [
+      [
+        "Location",
+        "A shore ward of Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 31"
+      ]
+    ]
+  },
+  "fountain": {
+    "line": "A fountain against the courtyard wall, under the patrons' plaque.",
+    "short": "A fountain in the Academy courtyard, under the brass plaque that thanks the patrons. Cadets whisper about Baroque money there.",
+    "summary": "The fountain stands against the courtyard wall under the patrons' brass plaque, where House Baroque's name comes first. Cadets fill their flasks there and whisper about Baroque money. The morning run passes it, and Guinevere once nearly ran into it while talking. Vexana remembers that the word at the fountain was \"bought,\" and that it was a lie.",
+    "rows": [
+      [
+        "Location",
+        "The Academy courtyard"
+      ],
+      [
+        "First seen",
+        "Chapter 34"
+      ]
+    ]
+  },
+  "gap": {
+    "line": "A split in the stone platforms that runs down to the bay.",
+    "short": "A split in the stone platforms over the bay. It opens under the falling Guinevere and runs all the way down to the water.",
+    "summary": "The gap is where the platforms split under the falling Guinevere, all the way down to the bay. Enders fill the air over it, more every moment. Guinevere goes up it from the water instead, and a stair climbs its side from the seawall to the platform.",
+    "rows": [
+      [
+        "Location",
+        "The platforms above the bay"
+      ],
+      [
+        "First seen",
+        "Chapter 72"
+      ]
+    ]
+  },
+  "gardens": {
+    "line": "Ruby's secret base on Oro: a stream and white flowers under glass.",
+    "short": "Ruby's secret base on Oro: a stream between two hills under a roof of glass hexagons, with white flowers in the grass.",
+    "summary": "The Gardens lie behind a plain gray door on Oro. A stream runs between two hills under a roof of glass hexagons, and white flowers grow in the grass. There sunlight gives Angela her first warmth, and she sits beside Ruby in the evenings. Angela keeps the memory of the Gardens in the sun, Ruby's hand in hers, and every promise they made there.",
+    "rows": [
+      [
+        "Location",
+        "Planet Oro"
+      ],
+      [
+        "Owner",
+        "Ruby"
+      ],
+      [
+        "First seen",
+        "Chapter 10"
+      ]
+    ]
+  },
+  "girls-house": {
+    "line": "A cake shop under a pink awning, halfway down the hill from the Academy.",
+    "short": "A cake shop halfway down the hill from the Academy, under a pink awning. Only girls go in, and they all know what to order.",
+    "summary": "The girls' house is a cake shop under a pink awning, halfway down the hill from the Academy. Only girls go in, and half the girls at the Academy go there on rest days. Guinevere took Vexana there, and a white box of eight cakes came out of it. Later Guinevere says she took Vexana to all the best girl hangout spots.",
+    "rows": [
+      [
+        "Location",
+        "Halfway down the hill from Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 40"
+      ]
+    ]
+  },
+  "girls-wing": {
+    "line": "The girls' dormitory wing of the Academy.",
+    "short": "The Academy's dormitory wing for girls. Guinevere's and Vexana's rooms lie along one corridor in it.",
+    "summary": "The girls' wing is the Academy's dormitory for girls, and Guinevere's and Vexana's rooms lie along one of its corridors. Vexana used to wait at its corridor window in her running things. While she is missing she watches it from the ruined tower, and often Guinevere's window is the only one lit. On the night before the attack every window in it is dark.",
+    "rows": [
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 45"
+      ]
+    ]
+  },
+  "hanging-streets": {
+    "line": "Upside-down streets of the Storm Citadel.",
+    "short": "The Storm Citadel's streets, which hang upside down. Vexana walks them with her boots on the paving and towers over her head.",
+    "summary": "The hanging streets are the streets of the Storm Citadel, and they hang upside down. Vexana walks them with her boots on the paving and the towers reaching over her head. One of their blocks is the street with doors her height. She walks back out through them after meeting Obsidia.",
+    "rows": [
+      [
+        "Location",
+        "The Storm Citadel"
+      ],
+      [
+        "First seen",
+        "Chapter 56"
+      ]
+    ]
+  },
+  "hollow": {
+    "line": "Vexana's hiding place, a fold of the dark that no Ender crosses.",
+    "short": "A fold of the dark that no line of Enders ever crosses. Vexana stays there, keeps her school clothes there and trains alone.",
+    "summary": "The hollow is a fold of the void that no Ender is ever sent into. While she is missing, Vexana keeps her school clothes there, with the pink-haired keychain on top. She trains there and builds her machines, with her four Guards behind her. Obsidia says she marked the fold the night her ship came through.",
+    "rows": [
+      [
+        "Location",
+        "The void, far out past the body"
+      ],
+      [
+        "Used by",
+        "Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 51"
+      ]
+    ]
+  },
+  "house-on-the-hill": {
+    "line": "The home of House Baroque, on a hill above the city.",
+    "short": "The home of House Baroque, on a hill above the city. Guinevere grows up there and never leaves it without guards.",
+    "summary": "The House stands on a hill above Terrinia, the home of House Baroque. On one storm night every lamp in it went out, and everything that ran on current died. Guinevere's mother was down in the city that night and did not come home. Guinevere grew up there under guard, and Hester drilled her in its yard at dawn.",
+    "rows": [
+      [
+        "Owner",
+        "House Baroque"
+      ],
+      [
+        "Location",
+        "A hill above Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 32"
+      ]
+    ]
+  },
+  "investigation-room": {
+    "line": "The Science Division wing where Ender wreckage is taken apart.",
+    "short": "The Science Division's wing, where Ender wreckage is taken apart to learn how it works.",
+    "summary": "The Investigation Room is the Science Division's wing, where Ender wreckage is taken apart to learn how it works. Guinevere and Vexana draw a week of guarding it, which Guinevere calls a week of guarding broken Enders. She decides to name every dead Ender in it. Then the alarm reports live Enders in its wing.",
+    "rows": [
+      [
+        "Owner",
+        "Science Division"
+      ],
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 44"
+      ]
+    ]
+  },
+  "investigation-room-corridor": {
+    "line": "A long pale corridor in the Investigation Room wing.",
+    "short": "A long pale corridor in the Investigation Room wing, with tall windows down one side. Two of them are smashed in.",
+    "summary": "The corridor runs through the Investigation Room wing, long and pale, with tall windows down one side. On the morning of the alarm two windows are smashed in, and a burning purple door opens in its white inner wall. Two black scuffs run from where Vexana stood to the foot of the wall and stop there. When the door closes the wall is white and whole, and Guinevere's blows do not even crack its paint.",
+    "sub": "corridor in the Investigation wing",
+    "rows": [
+      [
+        "Location",
+        "The Investigation Room wing, Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 45"
+      ]
+    ]
+  },
+  "laboratory": {
+    "line": "Ruby's lab on Oro, with one wall of glass and only stars behind it.",
+    "short": "Ruby's lab on Oro. One wall is glass, with only stars behind it.",
+    "summary": "The Laboratory is Ruby's lab on Oro. One wall is glass, with only stars behind it. The Decisionmakers keep Angela hidden there, where she first woke. Later Ruby keeps its light off, with Angela's white flower gone brown in a glass on her bench.",
+    "rows": [
+      [
+        "Location",
+        "Planet Oro"
+      ],
+      [
+        "Used by",
+        "Ruby and Angela"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "library": {
+    "line": "The Academy library, empty at night but for its droid.",
+    "short": "The Academy's library. Ruby once fed her droid a recording of herself walking there, over and over.",
+    "summary": "The Academy library is empty at night except for the droid at its front desk. Alone there, Vexana asked for anything on the void, and the third paper had Teacher Chang'e's name on it. She read its first page twice at a table under a lamp. Guinevere is upset that Vexana went without her, and calls it the first thing Vexana did alone.",
+    "rows": [
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 29"
+      ]
+    ]
+  },
+  "long-hall": {
+    "line": "The marble hall of the House, with Guinevere's mother's portrait.",
+    "short": "A marble hall in the House where Guinevere's mother's portrait hangs. Her father's office opens off it, and the guards never come in.",
+    "summary": "The long hall belongs to the master of the House, and the guards never come in. Tall windows line one side, Guinevere's mother's portrait hangs at the far end, and her father's office opens off it. Across from the office door stands the bench where Guinevere once did her sums. A square of sun crawls across its marble through the day, and at dusk a servant lights its lamps down to the portrait.",
+    "rows": [
+      [
+        "Location",
+        "The House on the hill"
+      ],
+      [
+        "First seen",
+        "Chapter 32"
+      ]
+    ]
+  },
+  "nest": {
+    "line": "The place where Obsidia's kind sleep until they are needed.",
+    "short": "The place where Obsidia's kind sleep until they are needed. Obsidia grew a thing of her own there that looks like a little girl.",
+    "summary": "The nest is where the body grows new Enders and keeps them in rows until they are sent, Obsidia says. Thousands of gray Enders lie there, sunk to the shoulders in purple tissue, and every one has eyes. New shells swell at the near end on long purple ropes. Obsidia grew Selena there, curled at the end of a row of shells that never held.",
+    "rows": [
+      [
+        "Location",
+        "The void, in the Mother Matrix's tissue"
+      ],
+      [
+        "First seen",
+        "Prologue"
+      ]
+    ]
+  },
+  "northeastern-sector": {
+    "line": "A district of Terrinia where Ultra Enders tore the dome open.",
+    "short": "A sector of Terrinia. Ultra Enders attack the dome over it and rip a breach eight meters by two.",
+    "summary": "The Northeastern sector is a district of Terrinia. Ultra Enders tore a breach eight meters by two in the dome over it, and the tutors came through the portal into its smoke. Guinevere and Vexana fought there too, and held their end until the last Ender fell. Afterward crews rebuilt its ruined buildings, and the new patch of dome over it shines brighter than the rest.",
+    "rows": [
+      [
+        "Location",
+        "Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 3"
+      ]
+    ]
+  },
+  "observation-lab": {
+    "line": "The glass lab with a telescope at the top of the Academy's tower.",
+    "short": "A glass room at the top of the Academy's tower, with a long telescope. Ruby and Angela keep the tower's sensor array running there.",
+    "summary": "The observation lab is a glass room under the beam at the top of the Academy's tower, with a long telescope at the glass. Ruby and Angela keep the tower's sensor array running there. After Vexana is taken, Guinevere searches the sky with its telescope, and its lamp burns most nights. Through the storm on the morning of the attack, not one of its screens flickers.",
+    "rows": [
+      [
+        "Location",
+        "Top of the Academy tower, above the command deck"
+      ],
+      [
+        "Used by",
+        "Ruby and Angela, and Guinevere at night"
+      ],
+      [
+        "First seen",
+        "Chapter 47"
+      ]
+    ]
+  },
+  "old-rail-yard": {
+    "line": "An old rail yard at the city's edge, with rusted wagons and a signal tower.",
+    "short": "An old rail yard at the city's edge, with rusted wagons and a signal tower. Lesley fights Enders there.",
+    "summary": "The old rail yard lies at the city's edge, with rusted wagons and a signal tower. When Enders walked in among the wagons, Lesley stood up on the signal tower so one would come for her instead of the squad. Its blow hit the tower, and the steel jumped under her. Afterward a gray-bearded officer knew her by the rail yard.",
+    "rows": [
+      [
+        "Location",
+        "Terrinia's edge"
+      ],
+      [
+        "First seen",
+        "Chapter 23"
+      ]
+    ]
+  },
+  "old-tower": {
+    "line": "An old tower across the water, where Lesley keeps a room.",
+    "short": "An old tower across the water. Lesley asks the Shield for its cold top room, because its window faces the lab's.",
+    "summary": "The old tower stands up the curve of the bay, across the water from the lab. Its top room is cold and nobody wants it, but Lesley asks the Shield for it because its window faces the lab's. Lesley once thought her vow there with the rifle in her hands. On the night the Enders came back, Chang'e looked straight up at its lit window from the avenue and knew which one it was.",
+    "rows": [
+      [
+        "Location",
+        "Up the curve of the bay, across the water from the lab"
+      ],
+      [
+        "Used by",
+        "Lesley"
+      ],
+      [
+        "First seen",
+        "Chapter 26"
+      ]
+    ]
+  },
+  "outer-wards-fence": {
+    "line": "A wire fence at the city's edge, where the dome meets the dead ground.",
+    "short": "A wire fence twice Guinevere's height, with one lamp over its gate. Past it the dome comes down to the dead ground.",
+    "summary": "The outer ward's fence is wire, twice Guinevere's height, with one lamp over its gate. Past it the dome comes down to the dead ground, and Selena sells salvage at the crews' yard outside it. While Vexana is missing, she knows one word at its gate would bring Guinevere over the fence by morning.",
+    "rows": [
+      [
+        "Location",
+        "The outer ward, where the dome meets the dead ground"
+      ],
+      [
+        "First seen",
+        "Chapter 47"
+      ]
+    ]
+  },
+  "platforms": {
+    "line": "Broad stone tiers that join the city's wards above the bay.",
+    "short": "The broad stone tiers that join the city's wards above the bay. Three giants wait on the high ledges over them.",
+    "summary": "The platforms are the broad stone tiers that join Terrinia's wards above the bay. In the attack they split under Guinevere, and a gap opens down to the water. Where she and Vexana met in the air, the stone is scorched black in a wide ring, and gray wreckage lies heaped on black glass. Later the frontline turns there to meet the Citadel's Enders.",
+    "rows": [
+      [
+        "Location",
+        "Above the bay, Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 70"
+      ]
+    ]
+  },
+  "prison-cell": {
+    "line": "A cell on Oro with no window and no vent.",
+    "short": "A cell in a secret facility on Oro, with no window and no vent. Ruby and Angela are shut in it for treason.",
+    "summary": "The cell lies inside a secret facility on Oro. It has no window and no vent, and when the door closes all sound from the hall stops. Ruby and Angela are shut in it, but the lock's wires lie inside the door's seam, and an alarm rings when the door opens. Ruby later tells the story of her childhood once, to its floor.",
+    "rows": [
+      [
+        "Location",
+        "The secret facility, Planet Oro"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "prow": {
+    "line": "The foremost black block of the Storm Citadel.",
+    "short": "The foremost of the Storm Citadel's black blocks, reaching out of the storm. A scorched Aspirant suit lies on a slab in its middle.",
+    "summary": "The prow is the front of the Storm Citadel, reaching out of the storm toward the gateway. A low hum comes up through it. In its middle a scorched Aspirant suit lies on a slab of black plate, and Obsidia tests her field on it. There she told Vexana about the black hole, and that nothing made of matter ever comes back out.",
+    "rows": [
+      [
+        "Location",
+        "Front of the Storm Citadel"
+      ],
+      [
+        "First seen",
+        "Chapter 57"
+      ]
+    ]
+  },
+  "research-base": {
+    "line": "Terrinia's research base by the water, where Chang'e grew up.",
+    "short": "A research base that stood before the Academy. Chang'e and her parents lived there, and later Lesley stood at its door.",
+    "summary": "Terrinia's research base lay down by the water, far behind the city's edge. Two chief scientists ran it with a child they had taken in, Chang'e, and Lesley was posted there to keep them alive. One night, while every defender ran to the swarms, a giant walked straight to it, and Lesley never found out why. Years later a new hall rose on its ruins, named Selrick Academy.",
+    "rows": [
+      [
+        "Location",
+        "Down by the water, Terrinia"
+      ],
+      [
+        "People",
+        "Two chief scientists, Chang'e, and Lesley at the gate"
+      ],
+      [
+        "Status",
+        "Fell to a giant, then rebuilt as Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 17"
+      ]
+    ]
+  },
+  "ruined-rooftop": {
+    "line": "A battle-scarred roof above the dark avenue.",
+    "short": "A roof that has lost its north parapet, above the dark avenue after the battle. Layla sits on its south edge, Fanny at the broken one.",
+    "summary": "The ruined rooftop looks over the dark avenue after the battle in the Northeastern sector. It has lost its north parapet. Layla sits on the south one with her boots over a two-story drop, while Fanny stands at the broken edge. At last Layla drops from the parapet into the dark street, and Fanny jumps after her.",
+    "rows": [
+      [
+        "Location",
+        "The Northeastern sector"
+      ],
+      [
+        "First seen",
+        "Chapter 6"
+      ]
+    ]
+  },
+  "ruined-tower": {
+    "line": "A roofless tower on a rise in the dead ground, facing the Academy.",
+    "short": "A tower in the dead ground that lost its roof long ago. Its top floor ends in broken stone high above the ruins.",
+    "summary": "The ruined tower stands roofless on a rise in the dead ground, past the dome's landward edge. While she is missing, Vexana climbs its broken stair to watch the girls' wing at the hour she used to call. She spends the whole night before the attack there. One storm night Selena saw a figure with a staff on its top floor, facing the Academy.",
+    "rows": [
+      [
+        "Location",
+        "The dead ground, past the dome's landward edge"
+      ],
+      [
+        "First seen",
+        "Chapter 48"
+      ]
+    ]
+  },
+  "sand-outside-the-dome": {
+    "line": "The open desert of sand and dunes beyond Terrinia's dome.",
+    "short": "The open sand beyond the dome. Something gold and giant stands up out there.",
+    "summary": "Beyond the dome lies sand. All her life Fanny had wanted to see what lay past the dome, and it was this. The heat cracks her lips, and when a swarm comes over the dunes there is no narrow place to hold. There Fanny first fought back to back with Layla and told her which side was hers.",
+    "rows": [
+      [
+        "Location",
+        "Outside Terrinia's dome"
+      ],
+      [
+        "First seen",
+        "Chapter 4"
+      ]
+    ]
+  },
+  "science-division-workshop": {
+    "line": "A late-night workshop with one lamp over its long bench.",
+    "short": "The Science Division's workshop. Its last lamp hangs over a long bench, where Selena sorts salvage plates late at night.",
+    "summary": "The workshop belongs to the Science Division, and its last lamp hangs over the long bench. Late at night Selena sorts salvage plates there for the night's sale. The first night it emptied, she laid her palm on Frame Nine's core. Long past midnight one night it stands empty and dark, and in one black window a girl in a wet uniform stops and looks back.",
+    "rows": [
+      [
+        "Owner",
+        "Science Division"
+      ],
+      [
+        "Location",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 60"
+      ]
+    ]
+  },
+  "seawall": {
+    "line": "The broken wall along the bay's waterfront.",
+    "short": "The broken wall along the waterfront. Angela holds her shield there around the four of them while Enders climb out of the bay.",
+    "summary": "The seawall runs along the waterfront, broken in the attack. Angela's shield stands on it around the four of them while Enders climb up out of the bay. There Layla called Vexana a traitor to Guinevere's face, and Guinevere told her, chin up, \"Her name is Vexana.\"",
+    "rows": [
+      [
+        "Location",
+        "The waterfront of Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 74"
+      ]
+    ]
+  },
+  "seawall-shelter": {
+    "line": "A shelter behind iron doors in the seawall.",
+    "short": "A shelter behind a pair of iron doors in the seawall, at the foot of the avenue. A warden stands at one door.",
+    "summary": "The seawall shelter lies behind a pair of iron doors at the foot of the avenue. On the night the Enders came back, Chang'e took her place in front of the doors as they banged shut and the bar dropped. Everyone from the nearby streets was behind them when the giant fell. At dawn the doors opened, and people came out, blinking.",
+    "rows": [
+      [
+        "Location",
+        "The seawall, at the foot of the avenue"
+      ],
+      [
+        "First seen",
+        "Chapter 27"
+      ]
+    ]
+  },
+  "secret-facility": {
+    "line": "A prison base of gray halls on Oro, beside a launch bay.",
+    "short": "A place of gray halls on Oro, with a wide window onto a launch bay. Ruby and Angela are held in its cell.",
+    "summary": "The secret facility is a place of gray halls on Oro, with a wide window onto a launch bay. From the bay to its cell the way runs left at the third door, down the long hall, then right. Its security wall shows the halls and the cell on small screens. When the cell door opens, a red lamp turns and an alarm rings through it.",
+    "rows": [
+      [
+        "Location",
+        "Planet Oro"
+      ],
+      [
+        "First seen",
+        "Chapter 15"
+      ]
+    ]
+  },
+  "shelter-by-the-wall": {
+    "line": "The shelter at the end of the Shield houses by the city wall.",
+    "short": "A shelter at the end of the row of Shield houses, with a bench by its door. On the night of the attack it fills with strangers.",
+    "summary": "The shelter stands at the end of the row of Shield houses by the city wall. On the night of the attack it was full of strangers, and dust fell at every boom. Vexana's father had told her to stay back, but she slipped out to be with him, and he came back for her. She dates her debt of a life from that night.",
+    "rows": [
+      [
+        "Location",
+        "End of the Shield houses, by the city wall"
+      ],
+      [
+        "First seen",
+        "Chapter 33"
+      ]
+    ]
+  },
+  "shield-houses": {
+    "line": "A row of soldiers' houses in the shadow of the city wall.",
+    "short": "A row of houses for Shield soldiers in the shadow of the city wall. Vexana lived there with her father.",
+    "summary": "The Shield houses are a row of homes for Shield soldiers in the shadow of the city wall. Vexana lived there with her father. The wall houses had drills, with a drill bell, and a shelter at the end of the row. On the night of the attack, strangers from the streets along the wall crowded into it.",
+    "rows": [
+      [
+        "Location",
+        "By the city wall, Terrinia"
+      ],
+      [
+        "Residents",
+        "Shield soldiers, among them Vexana and her father"
+      ],
+      [
+        "First seen",
+        "Chapter 33"
+      ]
+    ]
+  },
+  "shield-station": {
+    "line": "A Shield fort of earth walls on a plain of gray grass.",
+    "short": "A Shield fort three days' drive from Terrinia: a ring of earth walls and gun pits on a plain of gray grass.",
+    "summary": "The Shield station lies where the road from Terrinia ends, three days out. It is a ring of earth walls and gun pits on a plain of gray grass, and it has no clocks. Lesley arrives hidden in its storeroom, and later hides under its armory floorboards to escape the convoy home. It was among the last of the far stations to close.",
+    "rows": [
+      [
+        "Owner",
+        "Shield of Dawnbreak"
+      ],
+      [
+        "Location",
+        "Three days by road from Terrinia"
+      ],
+      [
+        "Status",
+        "Closed"
+      ],
+      [
+        "First seen",
+        "Chapter 19"
+      ]
+    ]
+  },
+  "shields-home": {
+    "line": "The Shield's home for soldiers' children, behind its barracks.",
+    "short": "The Shield's home for soldiers' children, behind its barracks. It runs on bells, and most children there lost someone to the Enders.",
+    "summary": "The Shield's home stands behind the Shield's barracks and runs on bells. Most of its children have lost someone to the Enders. Food comes on a tray when the bell rings, the children mend their own clothes, and nobody touches anyone's hair except to cut it. Vexana had a cot there beside her father's toolbox, and she trained at dawn in its yard while Lesley watched from the railings.",
+    "rows": [
+      [
+        "Owner",
+        "Shield of Dawnbreak"
+      ],
+      [
+        "Location",
+        "Behind the Shield's barracks"
+      ],
+      [
+        "First seen",
+        "Chapter 33"
+      ]
+    ]
+  },
+  "singularity": {
+    "line": "A four-pointed tear between the dark and the sky over the bay.",
+    "short": "A tear shaped like a four-pointed star, showing night sky over the bay. The Enders are widening it into a door to Vexana's world.",
+    "summary": "The Singularity is the Mother Matrix's gateway, a four-pointed tear between the void and the sky over Terrinia's bay. The body widens it week by week, and from the city it shows as a faint point that Chang'e calls a singularity. It tears the dome open, and the Mother Matrix and then the Storm Citadel come through it. The Citadel blows up inside it, but Vexana says it is torn, not closed.",
+    "rows": [
+      [
+        "Location",
+        "Over Terrinia's bay, past the dome's seaward edge"
+      ],
+      [
+        "Widened by",
+        "The Mother Matrix"
+      ],
+      [
+        "Status",
+        "Torn but not closed, Vexana says"
+      ],
+      [
+        "First seen",
+        "Chapter 51"
+      ]
+    ]
+  },
+  "street-at-the-domes-foot": {
+    "line": "Where Vexana first held out a hand to the fallen Guinevere.",
+    "short": "A street at the dome's foot where a claw raked Guinevere's arm, and Vexana stood over her holding out a hand.",
+    "summary": "Guinevere took this street at the dome's foot alone, and a claw raked her right arm. When she opened her eyes, Vexana stood over her holding out a hand, and said, \"Stay with me, Guinevere.\" There they fought back to back for the first time, and the street held. Guinevere repeats those words on the platform.",
+    "rows": [
+      [
+        "Location",
+        "The dome's foot, Terrinia"
+      ],
+      [
+        "First seen",
+        "Chapter 71"
+      ]
+    ]
+  },
+  "street-of-repair-shops": {
+    "line": "Lesley's childhood street, running downhill to the bay.",
+    "short": "A narrow street of repair shops running downhill to the bay, where Lesley grew up. Someone mends things at each shop's window.",
+    "summary": "A narrow street of repair shops runs downhill to the bay in Terrinia. Each shop had a bench in its window and someone at it mending something, and Lesley's house stood on it. After the attack, smoke rose from every house on it. Years later Lesley walked it once: most of it was new, and a clock ticked in one window.",
+    "rows": [
+      [
+        "Location",
+        "Terrinia, running down to the bay"
+      ],
+      [
+        "First seen",
+        "Chapter 18"
+      ]
+    ]
+  },
+  "street-with-doors-her-height": {
+    "line": "A block of the Storm Citadel taken from a lost people's city.",
+    "short": "A street in the Storm Citadel with doors cut for Vexana's height. Obsidia says it belonged to a people much like hers, whom she helped end.",
+    "summary": "This street is a block of the Storm Citadel. Its doors are cut for Vexana's height, and each worn stair fits her stride. Over one shop hangs a sign in letters she can almost read. Obsidia says it came from a people much like Vexana's, under the same sky, whom she helped end.",
+    "sub": "Citadel block from a lost city",
+    "rows": [
+      [
+        "Location",
+        "The Storm Citadel"
+      ],
+      [
+        "First seen",
+        "Chapter 56"
+      ]
+    ]
+  }
+}

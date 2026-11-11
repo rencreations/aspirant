@@ -1,0 +1,34 @@
+{
+ "merge": [
+  {
+   "keep": "will-of-the-planet",
+   "drop": [
+    "a-worlds-will"
+   ]
+  },
+  {
+   "keep": "aspirants",
+   "drop": [
+    "aspirant"
+   ]
+  },
+  {
+   "keep": "defensive-bubble",
+   "drop": [
+    "dome"
+   ]
+  },
+  {
+   "keep": "salvage-stall",
+   "drop": [
+    "selenas-salvage-table"
+   ]
+  },
+  {
+   "keep": "vr-battlefield",
+   "drop": [
+    "the-vr"
+   ]
+  }
+ ]
+}

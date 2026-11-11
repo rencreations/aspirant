@@ -1,0 +1,127 @@
+{
+ "vexana": {
+  "line": "A black-haired Aspirant, Guinevere's partner in a legendary undefeated pair.",
+  "short": "A black-haired girl who fights from above with a staff. Her magic hits whatever reaches for Guinevere's back. Together they have never lost.",
+  "summary": "A black-haired Aspirant who fights from above with an orb staff, Guinevere's partner in an undefeated pair. Her father, a Shield soldier, died standing between her and an Ender; she blamed herself and kept everyone away, until Guinevere would not take no. Dragged into the void in Guinevere's place, she says the Will of the Planet showed her the end; she took its orders as cover, wore Ender armor, built the Eternal Guards and meant to die striking the Mother Matrix's open chest. Guinevere would not give her up: they struck it together, came back out of the black hole, and Vexana fought on the frontline beside her with her three giants.",
+  "rows": [
+   [
+    "Appearance",
+    "Long black hair, violet eyes with a hard light far back in them, and a small mole beside her mouth. She always wears white gloves.",
+    36
+   ],
+   [
+    "Family",
+    "Her father, a Shield of Dawnbreak soldier who kept the big guns on the city wall working, died standing between her and an Ender. Her mother died of an illness before she could remember her.",
+    33
+   ],
+   [
+    "Home",
+    "As a child, the Shield houses in the shadow of the city wall, then the Shield's home for soldiers' children. At the Academy, a nearly bare room in the girls' wing.",
+    46
+   ],
+   [
+    "Partner",
+    "Guinevere. Undefeated together, and named the best partners of the year.",
+    41
+   ],
+   [
+    "Found by",
+    "Lesley, who found her at the Shield's home and told her to come to the Academy's first intake.",
+    33
+   ],
+   [
+    "Goal",
+    "\"To destroy the Enders,\" she told Lesley at the entrance assessment.",
+    34
+   ],
+   [
+    "Fighting style",
+    "From above, or from a roof's edge where she sees the whole street. Her bolts finish what Guinevere knocks down and hit whatever reaches for Guinevere's back.",
+    31
+   ],
+   [
+    "Skills",
+    "Mends machines with her father's tools. She pressed a bent drone bracket straight and fitted her own cracked staff with a brass collar.",
+    38
+   ],
+   [
+    "Taught by",
+    "Her father, at his gun on the city wall. At the Academy, Professor Joe and Teacher Chang'e.",
+    41
+   ],
+   [
+    "Habits",
+    "Follows a written plan to the letter. Does fifty forms every morning. When the training hall stays lit late, she phones Guinevere to tell her to go to bed.",
+    44
+   ],
+   [
+    "Sayings",
+    "\"Good.\" \"Go to bed.\" \"It says fifty.\"",
+    44
+   ],
+   [
+    "First seen",
+    "Chapter 1, on the courtyard billboard.",
+    1
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Staff",
+    "note": "Her weapon, with an orb above the grip. It spits bolts at Enders and can call a great arrow of violet light down from high above."
+   },
+   {
+    "name": "Wings",
+    "note": "Wings of aspirant power. On them she hangs in the air above Guinevere, where she can hit whatever reaches for Guinevere's back."
+   },
+   {
+    "name": "The practice staff",
+    "note": "Her training staff, its grip wound in gray cloth tape. She does fifty forms with it every morning, and stops at fifty."
+   },
+   {
+    "name": "The brass collar",
+    "note": "A spare from her father's toolbox, kept for the gun sights on the city wall. She fitted it over her staff's cracked grip, and it still holds the grip together."
+   },
+   {
+    "name": "White gloves",
+    "note": "She always wears them. Under them her palms are ridged and hard from years of the drill pole."
+   },
+   {
+    "name": "The wooden drill pole",
+    "note": "The pole she trained with alone at dawn at the Shield's home, telling herself she would pay her father back in Enders."
+   },
+   {
+    "name": "Toolbox",
+    "note": "Her father's old soldier's toolbox, smelling of gun oil, with his small screwdriver inside. A soldier brought it to her at the home. She carries it everywhere in a cloth bag."
+   },
+   {
+    "name": "Chibi keychain",
+    "note": "A little doll keychain of pink-haired Guinevere at her belt. Guinevere wears its twin."
+   },
+   {
+    "name": "Emblems of Hope",
+    "note": "The gold star Guinevere made for her and pinned at her collar, one seam a hair crooked. It glows when their powers are in sync and beeps when the two come near after being apart."
+   },
+   {
+    "name": "The white box",
+    "note": "A cake box where she keeps her summer keepsakes: ticket stubs, a paper fan, even the napkin from a doughnut. Each night her star and keychain go in it too."
+   },
+   {
+    "name": "Vexana's Ender armor",
+    "note": "Purple-black plates cut like an Ender's shell, a purple cloak, two horns and star blades at her shoulders. It closed over her in the void; her hair turned blue-lavender and her staff's orb black."
+   },
+   {
+    "name": "Hammer",
+    "note": "She beat the edges of Ender plates with it until they caught, to build her machines in the void."
+   },
+   {
+    "name": "Eternal Guards",
+    "note": "Four machines she built from Ender plate and cracked cores, to stand over Guinevere when she could not. They run on her power and wake under her palm. Three giants carry swords longer than a house."
+   },
+   {
+    "name": "Lead Guard",
+    "note": "The first Guard: purple plate edged in gold, yellow eyes and a magenta heart on its chest. Behind the heart is room for her, and inside it she sees through its eyes."
+   }
+  ]
+ }
+}

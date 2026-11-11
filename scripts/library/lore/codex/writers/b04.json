@@ -1,0 +1,760 @@
+{
+ "tarp-shelter": {
+  "line": "A tarp between two broken walls, where the living lie after a strike.",
+  "short": "A tarp lashed between two broken walls after the night strike. A woman lays the living under it, with a child alone at the end of the row.",
+  "summary": "A tarp lashed between two broken walls in the ruined streets of Terrinia, on the night of a strike. The woman with the lamp lays the living under it in a row while rain drums on it, then takes her lamp back out to look for more. The child she found in the mud lies at the end of the row, curled up alone on the wet ground. The woman is Karina, and the child is Selena.",
+  "rows": [
+   [
+    "Location",
+    "The ruined streets of Terrinia, between two broken walls"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "third-year-classroom": {
+  "line": "The classroom of the Academy's third-year students.",
+  "short": "The third-year class at Selrick Academy. Chang'e seats Ruby and Angela in it, beside Layla and Fanny, the two who vouched for them.",
+  "summary": "A classroom at Selrick Academy, under one of its roofs. Chang'e had Ruby and Angela sit in the third-year class beside Layla and Fanny. Every desk has its own glass screen, lit faintly from underneath, that can raise a turning model into the air. Selena sits in the front row, comes in late with her guardian's note and sleeps on her arms until Layla's paper plane hits her head; once she showed the class her suit turning above her desk. After Vexana goes missing, Guinevere sits in the second row beside the empty desk and watches the window.",
+  "rows": [
+   [
+    "Location",
+    "Selrick Academy"
+   ],
+   [
+    "Features",
+    "A glass screen in every desk that can raise a turning model into the air"
+   ],
+   [
+    "Seats",
+    "Selena in the front row; Guinevere and Vexana side by side in the second row"
+   ],
+   [
+    "First seen",
+    "Chapter 29"
+   ]
+  ]
+ },
+ "throne-hall": {
+  "line": "Obsidia's hidden seat of command inside the Storm Citadel.",
+  "short": "Obsidia's hall deep among the Storm Citadel's hanging blocks, with no way in from outside. It is dark and huge, with wide stairs up into violet light.",
+  "summary": "Obsidia's throne hall lies deep among the Storm Citadel's hanging blocks, with no way in from outside. She tells Vexana it is where no one finds her unless she calls them. It is dark and very large, with wide stairs running up into violet light, and her weapon hangs across the hall from her. Selena slips in through a gap between two black ribs to face her there. Once the throne is cut, the ribs burn, the whole hall drops a step, the stairs lean like a roof as the ship tilts, and Obsidia's shot throws Selena out between two ribs.",
+  "rows": [
+   [
+    "Location",
+    "Deep among the Storm Citadel's hanging blocks"
+   ],
+   [
+    "Owner",
+    "Obsidia"
+   ],
+   [
+    "Way in",
+    "None from outside; Selena slips in through a gap between two black ribs"
+   ],
+   [
+    "First seen",
+    "Chapter 57"
+   ]
+  ]
+ },
+ "training-field": {
+  "line": "Oro's training ground, where androids face a giant Training Droid.",
+  "short": "A training ground on Oro. Angela trains there every day while a trainer gives orders from the gallery and a Training Droid waits at the far end.",
+  "summary": "The Training Field is on Oro. Angela trains there every day beside the other androids, while a trainer gives orders from its gallery and a Training Droid waits at its far end. Because she only blocks and will not strike, the trainers keep raising the droid's setting until its fist cracks her shield. One morning she carries a flower through it, pressed flat in her skirt armor.",
+  "rows": [
+   [
+    "Location",
+    "Planet Oro"
+   ],
+   [
+    "Used by",
+    "Angela and the Council's other androids"
+   ],
+   [
+    "Features",
+    "A gallery for the trainer, a Training Droid at the far end"
+   ],
+   [
+    "First seen",
+    "Chapter 10"
+   ]
+  ]
+ },
+ "training-hall": {
+  "line": "The Academy's sparring hall, lit at night by one lamp over the heavy bag.",
+  "short": "The Academy's sparring hall. At night it is dark but for one lamp on a chain over the heavy bag, and a gallery runs high above its door.",
+  "summary": "The training hall stands on the Academy grounds, with high windows, a bench by the door and a repair room behind it. At night it is dark except for one lamp on a chain over the heavy bag, and a gallery runs high above the door where the lamp never reaches. Every night Guinevere trained there, fists first, then drones. Later she and Vexana spar in it as partners, and when it stays lit late, Vexana phones her. After Vexana is taken, Guinevere lights every lamp in it and waits for a call that does not come.",
+  "rows": [
+   [
+    "Location",
+    "Selrick Academy grounds"
+   ],
+   [
+    "Features",
+    "High windows, one lamp on a chain over the heavy bag, a gallery above the door, a bench by the door, a repair room behind it"
+   ],
+   [
+    "Used by",
+    "Guinevere and Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "training-hall-gallery": {
+  "line": "A dark gallery high above the training hall's door.",
+  "short": "A dark gallery high above the training hall's door, where the lamp never reaches. Vexana trains up there every night.",
+  "summary": "The gallery runs high above the training hall's door, where the lamp over the heavy bag never reaches. Vexana trained up there every night without a sound, and from up there you can see every punch thrown at the bag. A stair runs down from it toward the lamp. Guinevere climbed that stair for the first time on the night after a raid.",
+  "rows": [
+   [
+    "Location",
+    "High above the training hall's door"
+   ],
+   [
+    "Used by",
+    "Vexana, for her night training"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "tree-on-the-academy-lawn": {
+  "line": "A shady tree on the Academy lawn.",
+  "short": "A shady tree on the Academy lawn. In Vexana's memory, yellow leaves drift down while Guinevere lies with her head in her lap.",
+  "summary": "A shady tree on the Academy lawn. On the day of the badges Guinevere lay under it with her head in Vexana's lap, told a story and swore to find a way to destroy the Control Core. Vexana told her nobody could get near the dark, and said only that her father liked the stars. In the void, the Will broke into that one memory just as Guinevere swore, and a thin black line ran down the blue sky. Vexana later realizes the Will had seen the tree in her memories. In her memory now, the sky stays blue.",
+  "rows": [
+   [
+    "Location",
+    "The Academy lawn"
+   ]
+  ]
+ },
+ "void": {
+  "line": "The empty dark beyond the world, where Obsidia slept for ages.",
+  "short": "The dark past the edge of the Enders' portals, where every reading drops to nothing. Nobody can get near it.",
+  "summary": "The void is the dark behind the world, where the Enders came from. It has no floor, no wall and no light but an Ender's own, and it takes a shout and gives nothing back. Enders move in it by leaning toward where they mean to go. Obsidia says every door into it opens from inside, so no human device reaches it, and that it slows whatever waits there; she calls it a cradle, what there was before Balance, and Vexana calls it a grave. Chang'e says the Enders' Control Core is hidden in it. Vexana lives there for weeks, and the Mother Matrix lies there as a cold bulk.",
+  "rows": [
+   [
+    "Holds",
+    "The Storm Citadel, the Mother Matrix, rows of waiting Enders"
+   ],
+   [
+    "Doors",
+    "Obsidia says they open only from inside, by the Will or by her"
+   ],
+   [
+    "Effect",
+    "It slows the body: Vexana is rarely hungry there and sleeps little"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "vr-battlefield": {
+  "line": "The Academy's simulator hall, where students fight simulated Enders.",
+  "short": "The Academy hall where students fight simulated Enders inside pods. A big screen above the pods shows each run, and a board ranks the times.",
+  "summary": "The VR Battlefield is the Academy hall where students fight simulated Enders. Inside a pod the hall vanishes and the fighter stands in a broken street, while a big screen above the pods shows each run. On Fanny's first day her 3:39 knocked Layla's 3:41 to second on its board, and Selena laughed so hard she sat down on Silverbolt. Layla came back after midnight, signed the night log, and her grudge kept her there until two in the morning. One VR drill there copies the Academy grounds.",
+  "rows": [
+   [
+    "Location",
+    "Selrick Academy"
+   ],
+   [
+    "Features",
+    "Pods, a big screen above them, a rankings board, a night log"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "wards": {
+  "line": "The districts of Terrinia.",
+  "short": "The districts of the city of Terrinia. Selrick's cameras watch every ward.",
+  "summary": "The wards are the districts of Terrinia, and platforms join them above the bay. Selrick's cameras watch every one. When the alarm sounds, sirens answer in every ward, and Lesley tells the Shield reserves to hold their own. In the last battle the west ward's wall guns ask to fire, Enders land in the wards past the old market, and rescue lamps move through the flooded streets. Karina carries a lamp from door to door there.",
+  "rows": [
+   [
+    "Location",
+    "Terrinia"
+   ],
+   [
+    "Named wards",
+    "The west ward, the shore ward, the wards past the old market"
+   ],
+   [
+    "First seen",
+    "Chapter 14"
+   ]
+  ]
+ },
+ "waterfront": {
+  "line": "Terrinia's shore district of warehouses on the bay.",
+  "short": "Terrinia's shore district of warehouses. A merchant there pays Selena for a warning, and the next night a raid takes his warehouse roof.",
+  "summary": "The waterfront is Terrinia's shore, lined with warehouses. A merchant there paid Selena for one word of warning, and the night after, a raid took his warehouse roof. On the morning the sky opens, purple portals appear over it and Enders drop onto the warehouse roofs; on the map they come in there, where the dome is torn. Vexana brought that first wave down on warehouses the alarm had already emptied. Later it lies ruined, its roofs still smoking when the Storm Citadel's Enders land.",
+  "rows": [
+   [
+    "Location",
+    "Terrinia's shore, on the bay"
+   ],
+   [
+    "Features",
+    "Warehouses, the seawall"
+   ],
+   [
+    "First seen",
+    "Chapter 63"
+   ]
+  ]
+ },
+ "white-training-corridor": {
+  "line": "A long, locker-lined Academy corridor for drone practice.",
+  "short": "A long, narrow Academy corridor with lockers down both walls. Practice drones fly out of a dark doorway at its far end.",
+  "summary": "The white training corridor is a long, narrow hall at the Academy, with lockers down both walls and a dark doorway at the far end. The practice drones come out of that doorway. It is the only place on school grounds where flying is allowed. Layla and Fanny fight a test match there in Fanny's first week.",
+  "rows": [
+   [
+    "Location",
+    "Selrick Academy"
+   ],
+   [
+    "Features",
+    "Lockers down both walls, a dark doorway the drones come out of"
+   ],
+   [
+    "First seen",
+    "Chapter 2"
+   ]
+  ]
+ },
+ "vexanas-room": {
+  "line": "Vexana's nearly bare room at the Academy.",
+  "short": "Vexana's room at the Academy, nearly bare: oil, screws, two tactics books and her toolbox. Guinevere has never been inside.",
+  "summary": "Vexana's room lies down the girls' wing corridor. It is nearly bare: a tin of oil, a jar of screws, two tactics books stacked square, a bed made tight and her old toolbox. From its window she can see the training hall. Later its desk holds a framed photo, two felt dolls with a card, and a white box. Vexana always shut its door, and Guinevere had never been past it until she followed the ringing of the phone Vexana left behind and found the box.",
+  "rows": [
+   [
+    "Location",
+    "Selrick Academy, down the girls' wing corridor"
+   ],
+   [
+    "Contents",
+    "Oil, screws, two tactics books, the toolbox with her father's screwdriver, a framed photo, felt dolls, a card, a white box"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "angelas-awakening": {
+  "line": "The night the android Ruby built first opens her eyes.",
+  "short": "The night the android Ruby built opens her eyes. Every other android woke magenta; hers are blue. Ruby names her Angela.",
+  "summary": "On the last night of work in the Laboratory on Oro, a bar crosses the screen beside the name Ruby chose, SUCCESS comes up, and Ruby presses the key. The android opens her eyes. Every other android woke with magenta eyes; hers are blue. Ruby names her Angela.",
+  "rows": [
+   [
+    "Place",
+    "The Laboratory, Planet Oro"
+   ],
+   [
+    "Involved",
+    "Ruby and Angela"
+   ]
+  ]
+ },
+ "changes-glass-chamber-test": {
+  "line": "Chang'e's test of a lit core in a glass chamber with no air.",
+  "short": "Chang'e sealed a lit core in a glass chamber and pumped out the air. Every needle on her dials fell to nothing, but the light held.",
+  "summary": "A test Chang'e reports in her paper On Aspirant Power and the Black Hole. She sealed a lit core in a glass chamber and pumped out the air. Every needle on her dials fell to nothing, but the light held. From it the paper argues that an Aspirant's light would shine on even inside a black hole and find its way home.",
+  "rows": [
+   [
+    "Done by",
+    "Chang'e"
+   ],
+   [
+    "Reported in",
+    "On Aspirant Power and the Black Hole"
+   ]
+  ]
+ },
+ "changes-lesson-on-the-will": {
+  "line": "Chang'e's class on who sends the Enders.",
+  "short": "Chang'e's class on who sends the Enders: the Will of the Planet, Balance, the Mother Matrix, the Control Core, the portals and the void.",
+  "summary": "Chang'e opened the lesson by asking who sends the Enders. She taught the theory of the Will of the Planet, which they think is a mind with a body they call the Mother Matrix, along with Balance and the Enders' Control Core. She explained the portals and the void, admitted nobody can get near the void, and refused to explain her untested black hole idea. She ended with \"The Aspirant power is strong.\" Guinevere and Vexana sat at the back with their new badges, and Selena thought the dark had got near her fine that morning, at a bus stop.",
+  "rows": [
+   [
+    "Teacher",
+    "Chang'e"
+   ],
+   [
+    "Place",
+    "Chang'e's classroom"
+   ]
+  ]
+ },
+ "fannys-assessment": {
+  "line": "Fanny's first run in the VR Battlefield.",
+  "short": "Fanny's entrance run in the VR Battlefield. She saves a simulated civilian first, and her 3:39 still beats Layla's 3:41 on the board.",
+  "summary": "Fanny's assessment was held in the VR Battlefield. She pulled a simulated civilian clear first, at a cost of eleven seconds, and fought with her back to a narrow alley. Her time, 3:39, went above Layla's 3:41 on the rankings board. Layla reran it five times without saving the civilian, and her best was 3:40; she worked out that without the civilian Fanny had done it in 3:28. Roger said Fanny broke a record nobody had ever broken, on her first day.",
+  "rows": [
+   [
+    "Place",
+    "The VR Battlefield"
+   ],
+   [
+    "Time",
+    "3:39, with eleven seconds spent saving a civilian"
+   ]
+  ]
+ },
+ "guineveres-block": {
+  "line": "Guinevere takes the Mother Matrix's light to shield Vexana.",
+  "short": "Guinevere drops between Vexana and the Mother Matrix and takes its light, her drones first and herself second. Her boots slide back, but she holds.",
+  "summary": "When the Mother Matrix's chest opened over the kneeling Vexana, Guinevere dropped between them and crossed her arms, and her drones flung themselves in front of her. The light hit the drones first and her second. Her boots slid back and stopped, and she held. Then the light died and the Matrix's plates closed. Vexana's chance at the open chest, the moment her plan was made for, passed while Guinevere's back stood between them.",
+  "sub": "Guinevere stops the Matrix's shot"
+ },
+ "joes-lecture-on-enders": {
+  "line": "Professor Joe's Combat Division class on how Enders fight.",
+  "short": "Professor Joe's class on Enders: they show their weak spots only when they attack, come in three ranks, and go quiet for a lull when badly hurt.",
+  "summary": "Professor Joe opened a gold-covered book, and a life-size VR Ender filled the wall. He taught that Enders show their weak spots only when they attack, that they come in three ranks, and that hurting them badly brings a lull. His last slide was a shaking recording of the Storm Citadel, a ship of black blades over a city in a red sky. Vexana watched it with Guinevere beside her.",
+  "rows": [
+   [
+    "Teacher",
+    "Professor Joe"
+   ]
+  ]
+ },
+ "lesleys-birthday": {
+  "line": "Lesley's birthdays, and the gifts Chang'e gave her on them.",
+  "short": "A birthday from Lesley's past. After her dream she still plays its recording: Chang'e, small and beaming, setting an eye in her palm.",
+  "summary": "Lesley told Chang'e she did not have a birthday, so Chang'e decided to find it. On the night there were no decorations, only two chairs, a lamp and a robot with a lens; Chang'e gave Lesley the eye and said \"Happy Birthday, Lesley!\" Lesley had not known it was her birthday, and the eye lit. A year later Lesley knew her date and told nobody. At dusk Chang'e took her sleeve and unveiled a rifle she had finished the night before, saying Lesley would be the best sniper ever, and Lesley's answer made her laugh so hard she sat down on the floor. Years later Lesley still plays the recording of the first one.",
+  "rows": [
+   [
+    "Gifts",
+    "An eye, then a year later a rifle"
+   ],
+   [
+    "Given by",
+    "Chang'e"
+   ],
+   [
+    "Place",
+    "The lab at the research base"
+   ]
+  ]
+ },
+ "lesleys-secret-mission": {
+  "line": "A top secret Shield mission Lesley is sent on, with no radio and no letters.",
+  "short": "A top secret Shield mission for Lesley, now its most valuable shot. It has no radio and no letters: the Shield thinks the Enders can hear its signals.",
+  "summary": "Because Lesley brought in a core piece whole, the Shield calls her its most valuable shot and sends her on a top secret mission; she will learn where on the road. It has no radio and no letters, since the Shield thinks the Enders can hear its signals. For nine days no word comes from her. It is over when she rides back, and she will never tell anyone what it was. Years later she still cannot tell Chang'e.",
+  "rows": [
+   [
+    "Sent by",
+    "The Shield of Dawnbreak"
+   ],
+   [
+    "Length",
+    "Nine days"
+   ]
+  ]
+ },
+ "oros-war-with-the-enders": {
+  "line": "A terrible war Oro fought with the Enders long ago.",
+  "short": "Ruby's lesson says Oro once fought a terrible war with the Enders. Since then nobody on Oro may grow strong enough to upset the order.",
+  "summary": "Ruby's lessons say that long ago Oro fought a terrible war with the Enders. Since then nobody on Oro may grow strong enough to upset the order, and her tutor reminds her that this includes the heir. That, the lesson says, is why the Enders never came back.",
+  "rows": [
+   [
+    "Fought by",
+    "Oro"
+   ],
+   [
+    "Told in",
+    "Ruby's lessons"
+   ]
+  ]
+ },
+ "rubys-summons": {
+  "line": "Ruby is called to the Council hall and rebuked by her father.",
+  "short": "The morning after Ruby watches a dark ship cross the windows, she is called to the Council hall. Her father rebukes her for laughing alone.",
+  "summary": "The summons came the morning after Ruby watched a dark ship cross the high windows, and she knew nobody is called to the Council hall to be praised. She stood in a circle of light while her father stood outside it and rebuked her for laughing alone. When her tears fell, his boot came down on them. After he left, she whispered that she had a plan, though she had none yet.",
+  "sub": "Ruby rebuked by her father",
+  "rows": [
+   [
+    "Place",
+    "The Council hall, Planet Oro"
+   ],
+   [
+    "Involved",
+    "Ruby and her father"
+   ]
+  ]
+ },
+ "selenas-naming": {
+  "line": "The day Selena chose her own name.",
+  "short": "Selena chose her own name. Days after Karina found her, at a rainy window, she said it, and Karina said \"Selena it is.\"",
+  "summary": "Selena is a name she chose for herself. Days after the night of the mud, at a window running with rain, she gave herself the name, and Karina said \"Selena it is.\" She would rather live by that name than remain someone else's pawn. In Obsidia's mouth the name sounds owned.",
+  "rows": [
+   [
+    "Named by",
+    "Selena herself"
+   ],
+   [
+    "Witness",
+    "Karina"
+   ]
+  ]
+ },
+ "selenas-sales-to-vexana": {
+  "line": "Selena sells Ender salvage to the missing Vexana, paid in places.",
+  "short": "The missing Vexana steps into Selena's lamp at the crews' yard. Selena sells her Ender parts, and Vexana pays in places where whole Enders lie.",
+  "summary": "Not long after the missing board went up, Vexana stepped out of the dark into Selena's lamp at the crews' yard. Selena sold to her openly, since Vexana could not tell on her without telling on herself, and Vexana paid in places. The sacks held a knee and a shoulder, then the other knee and a thigh, then two forearms and a hip, then cores. Four cracked cores came over the weeks, and Selena never asked what the other three were for. She told Vexana most people thought she was dead but her partner did not, only to watch her face. All she said about the changed hair was \"Nice hair.\"",
+  "rows": [
+   [
+    "Place",
+    "The crews' yard"
+   ],
+   [
+    "Seller",
+    "Selena"
+   ],
+   [
+    "Buyer",
+    "Vexana"
+   ],
+   [
+    "Price",
+    "Places where whole downed Enders lie, where no crew has been yet"
+   ]
+  ]
+ },
+ "selenas-trade-with-the-enders": {
+  "line": "Selena sells what she knows of the Academy, up the pull in her cells.",
+  "short": "Unable to cut or outrun the pull in her cells, Selena sends it Academy secrets. In answer, a place where a downed Ender lies comes into her head.",
+  "summary": "Unable to cut or outrun the pull, Selena decided it had a price, like everything else in the city. Her first message read \"Not coming back. Let's trade.\" Under it went the Academy's dull routines, last year's suit specifications, how aspirant power drives a suit and how strong suits run by kind and rank. She deleted the shore ward's watch hour, named no one, and told herself the rest was stale. In answer a ditch with a downed Ender came into her head, which she stripped and sold. Put together, what she sold shows every Academy suit from the inside. Then her reports got nothing back, and she stopped sending.",
+  "rows": [
+   [
+    "Trader",
+    "Selena"
+   ],
+   [
+    "Paid in",
+    "Places where downed Enders lie"
+   ]
+  ]
+ },
+ "silverbolts-first-run": {
+  "line": "Selena's first storm ride on her rebuilt machine.",
+  "short": "In the first big storm after the rebuild, Selena rides her machine over roofless blocks, laughing, and names it Silverbolt in a lightning flash.",
+  "summary": "The first big storm after the rebuild came in off the bay at dusk. Selena rode the frame past the last lit streets into roofless blocks, and it cleared a gap between two roofs; the rebuilt hind leg held. A laugh came out of her that she never had to copy, and she thought nobody could call her back. In a lightning flash she named the machine Silverbolt. Later, with the pull in her cells, she remembers that run and that thought.",
+  "rows": [
+   [
+    "Rider",
+    "Selena"
+   ],
+   [
+    "Machine",
+    "Silverbolt"
+   ]
+  ]
+ },
+ "team-up-day": {
+  "line": "The day the preparatory course ends and cadets choose partners.",
+  "short": "The day the preparatory course ends, when cadets ask each other to be partners. A banner over the courtyard reads THE ASPIRANTS TEAM-UP DAY.",
+  "summary": "The Aspirants Team-Up Day ends the preparatory course, and cadets ask each other to be partners under a banner over the courtyard. All morning nobody asked Guinevere, and Layla turned a boy away from the upper walk. Then Guinevere crossed the courtyard in six strides and asked Vexana. Vexana told her she was strong, but said no. Guinevere asked again the next day on the stairs, and kept asking until the answer changed.",
+  "rows": [
+   [
+    "Place",
+    "The Academy courtyard"
+   ]
+  ]
+ },
+ "best-aspirant-duo-ceremony": {
+  "line": "The ceremony where the Academy gives its first Best Aspirant Duo badges.",
+  "short": "The Academy's first Best Aspirant Duo badges go to Guinevere and Vexana. Lesley's whole speech is \"Undefeated.\"",
+  "summary": "The Academy's first Best Aspirant Duo badges went to Guinevere and Vexana in the hall. The patrons had the front row, the HOUSE BAROQUE chair stayed empty, and Hester sat two rows behind it. Lesley's whole speech was \"Undefeated.\" Guinevere shouted \"We're the best partners in The Aspirants!\" Before the photo Vexana straightened Guinevere's bow, and the camera droid took the hand-in-hand picture they kept. Since then Vexana sets the bow straight every morning. Selena missed the ceremony, and kept both girls out of her report.",
+  "rows": [
+   [
+    "Place",
+    "The Academy hall"
+   ],
+   [
+    "Winners",
+    "Guinevere and Vexana"
+   ],
+   [
+    "Given by",
+    "Lesley"
+   ]
+  ]
+ },
+ "breaking-of-angelas-shield": {
+  "line": "The day the Training Droid's fist cracks Angela's shield.",
+  "short": "Because Angela will not strike, the trainers keep raising the Training Droid's setting. At nine, its fist cracks her shield from edge to edge.",
+  "summary": "Angela would only block, never strike, so the trainers raised the Training Droid's setting from four to six. A month later it stood at nine, and the fist cracked her shield from edge to edge. As she went down, she said the warmth was disappearing. She woke face down on the Laboratory table with her back panel open and rebooted. Afterward her left shoulder threw blue sparks.",
+  "rows": [
+   [
+    "Place",
+    "The Training Field, Planet Oro"
+   ]
+  ]
+ },
+ "catastrophe": {
+  "line": "The great Ender onslaught of 978.",
+  "short": "The disaster of 978. In the years after it the Enders were everywhere, and they nearly wiped out humanity.",
+  "summary": "The Catastrophe came in 978. In the years after it the Enders were everywhere, and nobody has lived in the streets of the dead ground since. Obsidia tells Vexana it is the humans' name for one stage of the purge, when small doors open near a people and Enders come through. She says the Enders die in numbers and the Will goes dark for a while, then sends more.",
+  "rows": [
+   [
+    "Year",
+    "978"
+   ]
+  ]
+ },
+ "chocolate-day": {
+  "line": "The day the whole Academy trades chocolate.",
+  "short": "The day the whole Academy trades chocolate. Layla carries nineteen boxes; Fanny has twenty-six.",
+  "summary": "On the chocolate day the whole Academy trades chocolate. Layla carried nineteen boxes, and Fanny had twenty-six stacked behind her. Fanny gave Layla a pink box with a teal ribbon, for her teammate. That night Layla put it beside her trophy, ribbon facing the room.",
+  "rows": [
+   [
+    "Place",
+    "Selrick Academy"
+   ]
+  ]
+ },
+ "citadels-crossing": {
+  "line": "The Storm Citadel's voyage across the dark to the crack of sky.",
+  "short": "The Storm Citadel's voyage across the dark to the crack of sky. The journey wears Obsidia's shell into fine cracks.",
+  "summary": "When the Mother Matrix called its commander in, the storm drew in around the Storm Citadel and the crossing began. The ship crossed the dark while stars slid past, far apart and cold. It ended before the crack of sky, and it wore Obsidia's shell into fine cracks.",
+  "rows": [
+   [
+    "Ship",
+    "The Storm Citadel"
+   ],
+   [
+    "Ends at",
+    "The crack of sky"
+   ]
+  ]
+ },
+ "dawn-raid": {
+  "line": "The raid at dawn when Lesley kills her first Ender.",
+  "short": "One dawn an Ender crosses the station wall in one stride. Lesley, lying on the wall walk, kills it with one shot into its core.",
+  "summary": "One dawn an Ender crossed the station wall in one stride. The soldiers fell back to the bunker line while Lesley lay flat on the wall walk and loaded. She fired once into its core and killed it, saving the youngest soldier. Asked to report, she said \"Another threat eliminated.\" That night she chalked her own stroke on the armory door.",
+  "rows": [
+   [
+    "Place",
+    "The station wall"
+   ]
+  ]
+ },
+ "day-at-the-office-door": {
+  "line": "Guinevere's day waiting outside her father's office door.",
+  "short": "On the rest day after the trial, Guinevere waits all day outside her father's half-open office door to tell him she took the top score.",
+  "summary": "On the rest day after the final trial, Hester drove Guinevere home at first light. She waited all day on the bench across from her father's half-open office door, the paper on her knee, while men with ledgers went in and out. At dusk she held the paper up and said \"Father. I took the top score.\" He answered only \"Stop being so stubborn and focus more on the family business!\" and left. Guinevere asked Hester to take her back to the Academy.",
+  "rows": [
+   [
+    "Place",
+    "The House on the hill"
+   ],
+   [
+    "Involved",
+    "Guinevere, her father, Hester"
+   ]
+  ]
+ },
+ "day-of-the-tree": {
+  "line": "An afternoon under a tree on the Academy lawn.",
+  "short": "On the day of the ceremony, Guinevere and Vexana rest under a yellowing tree on the lawn. Guinevere tells the story of the wings of light.",
+  "summary": "On the day of the ceremony Guinevere lay with her head in Vexana's lap under a yellowing tree on the Academy lawn. She told the story of the wings of light, Vexana spoke of her father for the first time, and Guinevere vowed to find a way to destroy the Control Core. That evening Vexana went alone to the library and found Chang'e's paper. Vexana calls it the day of the tree.",
+  "rows": [
+   [
+    "Place",
+    "The Academy lawn"
+   ]
+  ]
+ },
+ "day-the-newcomers-became-aspirants": {
+  "line": "The day Lesley names Ruby and Angela Aspirants in the Academy hall.",
+  "short": "In the Academy hall, Lesley declares Ruby and Angela Aspirants and says the four in combat suits stand together.",
+  "summary": "In the Academy hall, under the five great stars, Layla, Fanny, Ruby and Angela stood at the front in combat suits while the other students lined the walls. Ruby held her scythe point-down before Lesley. Lesley declared Ruby and Angela Aspirants as of that day, said the four stand together, and spoke of trusting each other to gain limitless strength; at dawn she had rehearsed it under her breath, twice. On the last words Guinevere waved at Vexana by the door with her whole arm, and Layla answered her wave with two fingers. Afterward Guinevere towed Vexana out by the sleeve.",
+  "rows": [
+   [
+    "Place",
+    "The Academy hall"
+   ],
+   [
+    "Speaker",
+    "Lesley"
+   ],
+   [
+    "New Aspirants",
+    "Ruby and Angela"
+   ]
+  ]
+ },
+ "death-of-vexanas-father": {
+  "line": "The evening an Ender came over the wall and Vexana's father stood in its way.",
+  "short": "One evening every gun on the city wall fires at once. Vexana slips out of the shelter, and her father stands between her and an Ender.",
+  "summary": "One evening the bell rang and every gun on the city wall began to fire. Vexana's father carried her to the shelter, told her to stay back and ran to his gun. When he did not come, she slipped out through the smoke toward the wall stair, and an Ender stepped out of a side lane a few steps from her. Her father came down the stair and stood between them, and a soldier carried her away while he stayed. His gun went quiet, and he was recorded as killed in action; a soldier said the Ender never got past him while he stood. Vexana blames her own foolishness, and has wished ever since it had been her instead.",
+  "rows": [
+   [
+    "Place",
+    "The city wall and the Shield houses"
+   ],
+   [
+    "Last words",
+    "\"Stay back.\""
+   ]
+  ]
+ },
+ "defense-of-the-bay-road-cut": {
+  "line": "The frontline's stand in the narrow bay road cut.",
+  "short": "With the frontline's power gone, Lesley orders it back into one narrow street, the bay road cut, to hold it.",
+  "summary": "When the frontline lost its power, Lesley ordered it back into the bay road cut and told it to hold. Fanny built a wall across the street with one gap, so the Enders had to come through one at a time. Soldiers and Aspirants struck on Layla's count, and they held the street for minutes. After the field died they fought on: Vexana's giants on the road, Guinevere's drones high, Fanny's blades and Layla's cannon from the heap. The Enders kept coming up out of the water.",
+  "rows": [
+   [
+    "Place",
+    "The bay road cut, below the Academy"
+   ],
+   [
+    "Ordered by",
+    "Lesley"
+   ]
+  ]
+ },
+ "destruction-of-the-storm-citadel": {
+  "line": "The fall of Obsidia's ship, the Storm Citadel.",
+  "short": "After Selena cuts the throne, explosions go off deep in the Storm Citadel and the whole ship tilts.",
+  "summary": "After Selena cut the throne, explosions went off deep in the Storm Citadel and it tilted. Its storm thinned, it sank, and the wind carried it back out over the bay. It drifted into the mouth and blew up inside, and light tore across the portal. Nothing of it came down on the city. From above, Selena saw it drawn into the dark and burst."
+ },
+ "duel-in-the-throne-hall": {
+  "line": "Selena's fight against her maker, Obsidia, in the Storm Citadel.",
+  "short": "In the throne hall Selena turns on her maker. Obsidia keeps her at her weapon's length and drives her up the stairs.",
+  "summary": "In the throne hall Selena's face made a declaration of war on her maker. Obsidia kept her at her weapon's length and drove her up the stairs, and Selena cut the throne instead of taking it. Selena cut Obsidia's cheek. Obsidia's weapon went through Selena's side, and a point-blank shot blasted Selena out of the Citadel; Obsidia followed. From the street two lights were seen meeting in the burning hull, then climbing into the sky over the bay. It ends with Selena charging Obsidia's open arms. The book does not tell who wins.",
+  "rows": [
+   [
+    "Place",
+    "The throne hall, Storm Citadel, then the sky over the bay"
+   ],
+   [
+    "Fighters",
+    "Selena and Obsidia"
+   ],
+   [
+    "Outcome",
+    "Not told"
+   ]
+  ]
+ },
+ "dusk-raid": {
+  "line": "The first raid Lesley saw, at dusk.",
+  "short": "The first raid Lesley saw: three Enders taller than the wall walk out of the grass at dusk, and rounds spark off them.",
+  "summary": "The first raid Lesley saw came at dusk. Three Enders walked out of the grass, taller than the wall, and rounds sparked off them. A gunner shot one through its open core, and the other two drew back. From it Lesley learned that an Ender's chest opens only when it hits."
+ },
+ "entrance-assessment": {
+  "line": "The Academy's admission test for new students.",
+  "short": "The Academy's test for new students. Chang'e makes Ruby, the heir, take it as one of her conditions for letting the newcomers in.",
+  "summary": "The entrance assessment is the Academy's admission test. It tests children for aspirant power, and nobody can buy a pass. When Ruby and Angela ask the school for refuge, Chang'e sets four conditions, and one of them is that the heir, Ruby, takes the entrance assessment.",
+  "rows": [
+   [
+    "Set by",
+    "Chang'e, as one of her four conditions"
+   ]
+  ]
+ },
+ "escape-from-oro": {
+  "line": "Ruby and Angela's breakout from their cell on Oro.",
+  "short": "Charged with treason against Oro, Ruby and Angela break out of their cell, reach the launch bay and leave Oro behind in their ship.",
+  "summary": "Charged with treason against Oro, Ruby and Angela were locked up to await the Council's sentence. Angela pried the cell door's seam open and plugged her wrist into the lock's wires, and Ruby's code ran down her arm until the lock clicked. An alarm rang as they slipped out, but Ruby's father told the Council \"All normal\" and stopped it with his hand on the panel; Angela counted to eleven, and no boots came. At the empty launch bay Ruby took her scythe, her code opened the doors, and their ship left Oro behind. Ruby wonders why the alarm stopped.",
+  "rows": [
+   [
+    "Place",
+    "Planet Oro"
+   ],
+   [
+    "Involved",
+    "Ruby, Angela, Ruby's father"
+   ]
+  ]
+ },
+ "fall-of-the-research-base": {
+  "line": "The night half of Terrinia burned and the research base fell.",
+  "short": "On the evening of the first light the alarm sounds and half the city burns. Small flying craft set the research base's storehouse on fire.",
+  "summary": "On the evening of the first light the alarm sounded and half of Terrinia was burning. Small flying craft set the base's storehouse on fire, while swarms of Enders held the Shield at the city's edge: a decoy, Lesley saw, so a black and gold giant could walk in. The giant's light killed Chang'e's parents as they stood between it and her, and it fired on the base's yard and walked away. Lesley arrived minutes late and saved Chang'e from an Ender at the crater. Nobody ever found out why the giant went for the base. Years later scaffolds went up on its ruins.",
+  "rows": [
+   [
+    "Place",
+    "The research base, Terrinia"
+   ],
+   [
+    "Dead",
+    "Chang'e's parents"
+   ]
+  ]
+ },
+ "falling-rack": {
+  "line": "The day Lesley pulls Chang'e clear of a falling rack.",
+  "short": "Hiding from Lesley, Chang'e bumps the shelving and a strap snaps. Lesley pulls her clear of a falling rack, and Chang'e calls her Sis.",
+  "summary": "For weeks Chang'e followed Lesley's rounds, lately hiding as if waiting to be looked for. One day, hiding, she bumped the shelving and the strap snapped. Lesley caught a fistful of her coat and pulled her clear of a rack taller than Lesley. Chang'e held Lesley's arm and called her Sis, and Lesley did not pull her arm away."
+ },
+ "fight-over-the-gap": {
+  "line": "Guinevere and Vexana meet in the air above the gap.",
+  "short": "Over the gap in the platforms, Guinevere and Vexana rise at each other on wings of aspirant power. Light bursts between them, and Guinevere falls.",
+  "summary": "Over the gap in the platforms, Guinevere and Vexana rose at each other on wings of aspirant power, and light burst white and gold between them. Guinevere fell with her wings gone out, saying \"Don't let me be alone in this world.\" At the last meter Vexana had turned her staff aside; Guinevere's hand was open, never a fist, and no blow landed on either of them. Vexana dived, opened a door of the void under Guinevere, caught her wrist and laid her behind a low wall three streets west. Guinevere later realizes Vexana missed on purpose.",
+  "rows": [
+   [
+    "Place",
+    "Above the gap in the platforms"
+   ]
+  ]
+ },
+ "final-combat-trial": {
+  "line": "The last trial of the preparatory course.",
+  "short": "The last trial of the preparatory course, scored by the instructors. It never goes on the rankings board and decides nothing but pride.",
+  "summary": "The final combat trial ends the preparatory course. It is scored by the instructors, never goes on the rankings board and decides nothing but pride. Steel dummies ran at the cadets on rails, one cadet at a time, while three instructors marked score sheets. Guinevere wrote asking her father to come and watch, but the seat marked HOUSE BAROQUE stayed empty, with Hester two rows behind it. Guinevere got the top score, and Vexana, who ran it too, saw her win.",
+  "rows": [
+   [
+    "Place",
+    "The training field, Selrick Academy"
+   ],
+   [
+    "Top score",
+    "Guinevere"
+   ]
+  ]
+ },
+ "final-purge": {
+  "line": "Obsidia's attack on Terrinia in person, with the Storm Citadel.",
+  "short": "Obsidia's own attack. She opens it with \"Let us begin the final purge,\" and Enders drop over the bay by the hundred.",
+  "summary": "Obsidia had planned to go in herself once the mouth was clear, if the Mother Matrix failed. She opened the attack with \"Let us begin the final purge.\" Enders dropped over the bay by the hundred, onto the waterfront, the bay road, the wards and inland towers near the dome's edge. When the landings stopped and the frontline pushed them back toward the water, the Storm Citadel came down over the Academy. Lesley thinks of it as the second front."
+ },
+ "first-entrance-assessment": {
+  "line": "The Academy's first intake test, which reads children's aspirant power.",
+  "short": "The Academy's first entrance test. It reads the aspirant power of children Guinevere's age, and nobody can buy a pass.",
+  "summary": "For the Academy's first intake, Lesley walked the city's children's homes with stamped sheets, and about a hundred children queued the length of the yard across the old fifty steps. Each put a hand in a glove wired to a dial that read aspirant power; Chang'e read the needle, and Lesley asked each child's name and why they were there. A needle past the line sent a child to the Combat Division's preparatory course, the rest to the Support Division, and nobody could buy a pass. Layla's needle hit the stop. The Combat Division's first intake listed Layla, Guinevere of House Baroque and Vexana.",
+  "rows": [
+   [
+    "Place",
+    "The Academy yard"
+   ],
+   [
+    "Needle read by",
+    "Chang'e"
+   ],
+   [
+    "Questions asked by",
+    "Lesley"
+   ],
+   [
+    "First intake",
+    "Layla, Guinevere of House Baroque, Vexana and others"
+   ]
+  ]
+ }
+}

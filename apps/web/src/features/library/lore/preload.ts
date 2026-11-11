@@ -1,8 +1,9 @@
 import { libUrl } from "@/lib/library";
-import { chunkItem, imageItem, type PreloadItem } from "@/lib/preload";
+import { chunkItem, dataItem, imageItem, type PreloadItem } from "@/lib/preload";
 import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 import { libraryDataItem } from "../data";
+import { CODEX_PATH } from "./codex/use-codex";
 import { ATLAS_THUMBS } from "./atlas-thumbs.generated";
 
 /**
@@ -26,6 +27,7 @@ export function items(): PreloadItem[] {
   }));
   return [
     libraryDataItem("lore"),
+    dataItem(CODEX_PATH, "Reading the codex", 3),
     chunkItem("library-lore", "Opening the lore room", () => import("./page"), 2),
     ...thumbs,
     ...faces,

@@ -285,6 +285,25 @@ test.describe("the story page", () => {
       "href",
       /collection\/lore\/?$/,
     );
+    // Every example is a real entry of the codex.
+    const known = new Set(
+      (
+        JSON.parse(
+          fs.readFileSync(
+            path.resolve(process.cwd(), "public/data/library/lore-codex.json"),
+            "utf8",
+          ),
+        ) as { entries: Array<{ slug: string }> }
+      ).entries.map((e) => e.slug),
+    );
+    const hrefs = await lore
+      .locator("ul ul a")
+      .evaluateAll((els) => els.map((e) => e.getAttribute("href") ?? ""));
+    expect(hrefs.length).toBeGreaterThanOrEqual(12);
+    for (const href of hrefs) {
+      const slug = /\/collection\/lore\/([a-z0-9-]+)\/?$/.exec(href)?.[1] ?? "";
+      expect(known.has(slug), href).toBe(true);
+    }
   });
 
   test("the page has no end: past the last section the hero comes back and the page starts over", async ({

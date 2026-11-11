@@ -1,0 +1,109 @@
+{
+ "dawnbreak": {
+  "atlas": [
+   "lore-place-planet-dawnbreak"
+  ]
+ },
+ "oro": {
+  "atlas": [
+   "lore-place-planet-oro"
+  ]
+ },
+ "storm-citadel": {
+  "atlas": [
+   "lore-place-storm-citadel"
+  ]
+ },
+ "terrinia": {
+  "atlas": [
+   "lore-place-terrinia"
+  ]
+ },
+ "selrick-academy": {
+  "atlas": [
+   "lore-place-selrick-academy",
+   "lore-place-selrick-academy-barrier",
+   "lore-place-selrick-academy-cloudy"
+  ]
+ },
+ "aspirants": {
+  "atlas": [
+   "lore-place-aspirants"
+  ]
+ },
+ "council": {
+  "atlas": [
+   "lore-place-the-council"
+  ]
+ },
+ "training-field": {
+  "atlas": [
+   "lore-place-training-field"
+  ]
+ },
+ "energy-system": {
+  "atlas": [
+   "lore-place-energy-system"
+  ]
+ },
+ "laboratory": {
+  "atlas": [
+   "lore-place-laboratory"
+  ]
+ },
+ "gardens": {
+  "atlas": [
+   "lore-place-the-garden"
+  ]
+ },
+ "androids": {
+  "atlas": [
+   "lore-entity-androids"
+  ]
+ },
+ "enders": {
+  "atlas": [
+   "lore-entity-the-enders"
+  ]
+ },
+ "professor-joe": {
+  "atlas": [
+   "lore-entity-joe"
+  ]
+ },
+ "rubys-father": {
+  "atlas": [
+   "lore-entity-rubys-father"
+  ]
+ },
+ "ai-droids": {
+  "atlas": [
+   "lore-entity-ai-droids"
+  ]
+ },
+ "combat-division": {
+  "atlas": [
+   "lore-entity-combat-division-trainee"
+  ]
+ },
+ "support-division": {
+  "atlas": [
+   "lore-entity-support-division-trainee"
+  ]
+ },
+ "training-droid": {
+  "atlas": [
+   "lore-entity-training-droids"
+  ]
+ },
+ "oros-soldiers": {
+  "atlas": [
+   "lore-entity-soldier-of-planet-oro"
+  ]
+ },
+ "tetra": {
+  "atlas": [
+   "lore-entity-tetra"
+  ]
+ }
+}

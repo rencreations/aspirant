@@ -1,0 +1,1280 @@
+{
+ "changes-father": {
+  "line": "The quiet scientist who raised Chang'e at the research base.",
+  "short": "One of the research base's two chief scientists. He brought Chang'e to the base and raised her. He says little and counts things by ear.",
+  "summary": "One of the two chief scientists of the research base, and the quiet man who raised Chang'e. He counts by ear, pushes his amber glasses up his nose and keeps Lesley's numbers for a soldier's load on a folded napkin. His hands set the smallest parts of Lesley's eye, and he bends the steel tube of the frame. When the black-and-gold giant comes for the base, he and Chang'e's mother shove her clear of its light, and the crater where they stood is empty.",
+  "rows": [
+   [
+    "Role",
+    "One of the research base's two chief scientists"
+   ],
+   [
+    "Family",
+    "Raised Chang'e as his daughter, with Chang'e's mother"
+   ],
+   [
+    "Appearance",
+    "A white coat, amber glasses and a small blue vial clipped at his chest"
+   ],
+   [
+    "Home",
+    "The research base"
+   ],
+   [
+    "Known for",
+    "Setting the smallest parts of Lesley's eye and bending the frame's steel tube"
+   ],
+   [
+    "Status",
+    "Killed by the black-and-gold giant's light while shielding Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 17, in a photograph"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Folded napkin",
+    "note": "Lesley's numbers for a soldier's load, written at supper. He keeps it in his pocket and lays it beside Chang'e's bowl when she plans the frame."
+   },
+   {
+    "name": "Tongs",
+    "note": "He lifts cores out of the raid crate with them and bins the burned ones."
+   }
+  ]
+ },
+ "changes-mother": {
+  "line": "The laughing scientist who raised Chang'e at the research base.",
+  "short": "One of the research base's two chief scientists, who raised Chang'e. She wears round glasses and laughs with her whole face, eyes shut.",
+  "summary": "One of the two chief scientists of the research base, and the warm, laughing woman who raised Chang'e. She begins every project by writing who it is for, and her notes for the frame begin: For whoever has to stand in front. She sets a fourth plate at supper for Lesley and promises at the gate to keep setting it. When the black-and-gold giant fires on the base, she and Chang'e's father shove Chang'e clear and stand in its light, and her last notebook entry stops at the word \"Next.\"",
+  "rows": [
+   [
+    "Role",
+    "One of the research base's two chief scientists"
+   ],
+   [
+    "Family",
+    "Raised Chang'e as her daughter, with Chang'e's father"
+   ],
+   [
+    "Appearance",
+    "A white coat and round glasses; she laughs with her whole face, eyes shut"
+   ],
+   [
+    "Home",
+    "The research base"
+   ],
+   [
+    "Known for",
+    "Writing who each project is for; her notes for the frame"
+   ],
+   [
+    "Status",
+    "Killed by the black-and-gold giant's light while shielding Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 17, in a photograph"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Notebook",
+    "note": "Her project notes. Each begins with who the work is for, and the last entry stops at the word \"Next.\""
+   },
+   {
+    "name": "Tea mug",
+    "note": "She writes with it in her free hand and wins every medicine war by waiting in the doorway with her tea."
+   }
+  ]
+ },
+ "guineveres-father": {
+  "line": "Head of House Baroque and Guinevere's distant father.",
+  "short": "Guinevere's father, head of the board of House Baroque. He lost his wife to the Enders and speaks to his daughter through his office door.",
+  "summary": "Guinevere's father holds the head seat on the board that runs House Baroque. He lost his wife to the Enders, and Guinevere thinks he answers everything with money: he lost her mother and bought walls. He speaks to her only through his office door, never answers her weekly letters, leaves his seat empty at her trial and meets her top score with \"Stop being so stubborn and focus more on the family business!\" When she is reported at a closed fence, he sends word through Hester: come home, or lose her place in the House.",
+  "rows": [
+   [
+    "Role",
+    "Head seat on the board that runs House Baroque"
+   ],
+   [
+    "Family",
+    "Guinevere's father; husband of Guinevere's late mother"
+   ],
+   [
+    "Home",
+    "The House on the hill, behind his office door"
+   ],
+   [
+    "Appearance",
+    "A dark sleeve with a fur cuff; a fur collar over his chair at board meetings"
+   ],
+   [
+    "Plans for Guinevere",
+    "A junior seat when she comes of age, and his seat after him"
+   ],
+   [
+    "First seen",
+    "Chapter 32"
+   ]
+  ]
+ },
+ "guineveres-mother": {
+  "line": "Guinevere's mother, whose portrait hangs in the long hall.",
+  "short": "Guinevere's mother. On a storm night she worked late at the House's bank by the harbor and never came home. The Enders took her.",
+  "summary": "Guinevere's mother, whose portrait hangs at the far end of the long hall in the House, with a lamp burning under it. On the storm night she was working late at the House's bank by the harbor, and she did not come home: her husband lost her to the Enders. When the House cleared her rooms, Hester kept back the two red bows from her dressing table, and Guinevere wears them in her hair.",
+  "rows": [
+   [
+    "Family",
+    "Guinevere's mother; wife of the head of House Baroque"
+   ],
+   [
+    "Fate",
+    "Lost to the Enders on the storm night, at the House's bank by the harbor"
+   ],
+   [
+    "Remembered by",
+    "Her portrait in the long hall and her two red bows"
+   ],
+   [
+    "First seen",
+    "Chapter 32"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Two red bows",
+    "note": "From her dressing table. Hester kept them back and ties them in Guinevere's hair."
+   }
+  ]
+ },
+ "hester": {
+  "line": "The woman in the gray coat who counts for Guinevere when she falls.",
+  "short": "The gray-coated head of Guinevere's guard, who never laughs. Whenever Guinevere falls, she counts: \"Up, miss. One. Two. Three.\"",
+  "summary": "Hester is the gray-coated head of the House guard detail around Guinevere, and the first person who ever counted for her. As the newest guard she carried baby Guinevere down to the cellar on the storm night, counting the steps so she would not cry, and later tied her mother's red bows in her hair. She learned to fight from an old Shield sergeant and taught Guinevere elbow in, hip first, hands home. She carries the father's orders without softening them, yet she clapped alone in her row when Guinevere took the top score.",
+  "rows": [
+   [
+    "Role",
+    "Head of Guinevere's guard detail"
+   ],
+   [
+    "Affiliation",
+    "House Baroque"
+   ],
+   [
+    "Appearance",
+    "A gray coat; she never laughs"
+   ],
+   [
+    "Trained by",
+    "An old Shield sergeant, before the House hired her"
+   ],
+   [
+    "Taught Guinevere",
+    "To punch: elbow in, hip first, hands home after every punch"
+   ],
+   [
+    "Known for",
+    "Counting three at every fall of Guinevere's"
+   ],
+   [
+    "First seen",
+    "Chapter 31"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "The long car",
+    "note": "The House car she drives Guinevere in, to the Academy gate and home again."
+   },
+   {
+    "name": "Gray coat",
+    "note": "She always wears it."
+   }
+  ]
+ },
+ "karina": {
+  "line": "A rescue worker whose lamp the storm cannot put out.",
+  "short": "A rescue worker who carries survivors out of the ruins. On the storm night of 983 she found young Selena in the mud and kept her.",
+  "summary": "Karina is on the rescue team, the people who go into the ruins after a strike and carry out whoever is still alive. On the storm night of 983 her lamp found a small child in the mud, and when nobody came for her she kept her: \"You don't put down someone you carried out.\" She raises Selena in a two-room flat with the team radio always on, calls it nothing but duty, and on the morning of the attack tells her, \"Come home after,\" because she still wants to see her graduate. During the battle she carries a lamp from door to door in the flooded wards.",
+  "rows": [
+   [
+    "Role",
+    "Rescue worker who carries survivors out of the ruins"
+   ],
+   [
+    "Guardian of",
+    "Selena, whom she found in the mud in 983 and kept"
+   ],
+   [
+    "Home",
+    "A two-room flat at the top of a narrow stair"
+   ],
+   [
+    "Known for",
+    "Sweets in her coat pocket for the children she carries out"
+   ],
+   [
+    "Her rule",
+    "\"You don't put down someone you carried out.\""
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Lamp",
+    "note": "A small flame behind glass. Obsidia's storm cannot kill a flame, so it stays lit when every other light dies."
+   },
+   {
+    "name": "Coat",
+    "note": "Wet through on the storm night, with a pocket of sweets for the children she carries out."
+   },
+   {
+    "name": "Rescue helmet",
+    "note": "Carried under her arm at dawn. After the base fell she fell asleep at the table with it on."
+   },
+   {
+    "name": "Team radio",
+    "note": "Kept on the shelf of her flat and never switched off."
+   }
+  ]
+ },
+ "lesleys-brother": {
+  "line": "Lesley's little brother, who called her Sis.",
+  "short": "Lesley's little brother. He followed her from room to room, called her Sis and nothing else, and fell asleep holding her sleeve.",
+  "summary": "Lesley's little brother followed her everywhere, held on to her leg and called her Sis and nothing else. Every night he held her sleeve and asked if Enders were real and what would happen if one came, and she told him, \"Then I'll stand in front.\" On the night an Ender broke the house, his last word in the dark was \"Sis?\", and Lesley found his hand under a beam; it did not hold on. She kept her promise, and he died anyway.",
+  "rows": [
+   [
+    "Family",
+    "Lesley's little brother"
+   ],
+   [
+    "Known for",
+    "Calling Lesley Sis and holding her sleeve every night"
+   ],
+   [
+    "Last word",
+    "\"Sis?\""
+   ],
+   [
+    "Status",
+    "Died when an Ender broke the family's house"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ]
+ },
+ "lesleys-father": {
+  "line": "Lesley's father, who mended clocks in his shop.",
+  "short": "Lesley's father, who mended small machines, mostly clocks, and hung them on every wall of his shop. He let Lesley hold the parts at his bench.",
+  "summary": "Lesley's father mended small machines, mostly clocks, hung them on every wall of the shop and told stubborn ones, \"Don't sulk.\" He let Lesley stand on a crate at his bench, made her a tin bird that hops and clicks its beak, and turned the radio down when it spoke of Enders. On the night of the attack he told the children to stay put and shouted Lesley's name from the doorway as the roof fell. He died where the doorway had been, and the clocks he wound by hand kept ticking.",
+  "rows": [
+   [
+    "Trade",
+    "Mended small machines, mostly clocks"
+   ],
+   [
+    "Family",
+    "Father of Lesley and her little brother"
+   ],
+   [
+    "Made",
+    "A tin bird for Lesley's last birthday"
+   ],
+   [
+    "Status",
+    "Died when the roof fell in the Ender attack"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Tin bird",
+    "note": "Made for Lesley's last birthday. It hops and clicks its beak."
+   },
+   {
+    "name": "Hand-wound clocks",
+    "note": "The clocks on every wall of his shop. They kept ticking the night the roof came down."
+   }
+  ]
+ },
+ "lesleys-mother": {
+  "line": "Lesley's mother, who kept a candle stub for birthdays.",
+  "short": "Lesley's mother. She decided who had had the worst day, and on birthdays she lit one candle stub on whatever there was.",
+  "summary": "Lesley's mother laughed at her husband talking to his clocks and decided who had had the worst day, so that person got the biggest piece. She kept one candle stub in the kitchen drawer for birthdays, told Lesley to wish fast and wish small, and called her sensible. On the night of the attack she brought the lit candle upstairs, saying it was for seeing. She died beside Lesley's father, one hand still out toward the children's bed.",
+  "rows": [
+   [
+    "Family",
+    "Mother of Lesley and her little brother"
+   ],
+   [
+    "Known for",
+    "The birthday candle stub, and \"wish fast and wish small\""
+   ],
+   [
+    "Status",
+    "Died in the Ender attack on the family's house"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Candle stub",
+    "note": "Kept in the kitchen drawer and lit on birthdays, once on a boiled egg."
+   }
+  ]
+ },
+ "mr-bunny": {
+  "line": "Chang'e's floating robot friend, with long ears and a screen for a face.",
+  "short": "Chang'e's robot: a floating white ball with long ears and a black screen for a face. At the word \"Front\" he swings in front of her.",
+  "summary": "Mr. Bunny is the floating white robot Chang'e built as a friend, named for his long ears, with a screen face so he can make faces; his shut-eyed smile copies her mother's laugh. He fetches, films with a small lens on his side, and comes in front of Chang'e when she is sad. Once, at her call, he came back as a great white rabbit-head machine taller than the storefronts, and the Enders broke against him. On the command deck he takes an Ender's claw meant for her and comes back dented, one ear crooked, until his screen finds its smile.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e, at the end of the bench, as a friend"
+   ],
+   [
+    "Appearance",
+    "A floating white ball with long ears and a black screen for a face"
+   ],
+   [
+    "Ability",
+    "Once grew into a giant rabbit-head machine taller than the storefronts"
+   ],
+   [
+    "Companion of",
+    "Chang'e, at whose shoulder he floats"
+   ],
+   [
+    "Status",
+    "Dented, one ear crooked, after taking a claw for Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Screen face",
+    "note": "Shows his faces: a shut-eyed smile, a frown, a yawn, a count of days, a homecoming face."
+   },
+   {
+    "name": "Side lens",
+    "note": "A small lens Chang'e fits so he can film. It records Lesley's birthday and shows her on the rooftops at night."
+   },
+   {
+    "name": "Giant form",
+    "note": "A great white rabbit-head machine, its screen as big as a door. The Enders break against it."
+   }
+  ]
+ },
+ "professor-joe": {
+  "line": "The monocled Combat Division teacher who leads Team B3.",
+  "short": "Combat Division teacher with a monocle and a dry voice. Team B3 is his: Layla, Roger and now Fanny.",
+  "summary": "Professor Joe teaches the Combat Division at Selrick Academy. Years before, as a young Shield soldier with a monocle, he passed Lesley's dial test and became one of the first instructors. At the breach he covered a crying girl and her pink rabbit from a falling slab, which struck him across the shoulders, and he walks on a cane after. He dissolved Team B3 and formed the Layla-Fanny Team with one shared score: a kill is a point, a civilian carried clear is ten.",
+  "rows": [
+   [
+    "Role",
+    "Combat Division teacher and one of the Academy's first instructors"
+   ],
+   [
+    "Before the Academy",
+    "A young Shield soldier who fought beside Lesley"
+   ],
+   [
+    "Appearance",
+    "A monocle and a dry voice; a cane after the breach"
+   ],
+   [
+    "Team",
+    "Team B3, then the Layla-Fanny Team, which he calls his"
+   ],
+   [
+    "Teaches",
+    "Enders show their weak spots only when they attack; the three Ender ranks; a lull always ends"
+   ],
+   [
+    "Injury",
+    "Two ribs and the shoulder, from the slab at the breach"
+   ],
+   [
+    "First seen",
+    "Chapter 3"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Monocle",
+    "note": "He always wears it."
+   },
+   {
+    "name": "Gold-covered book",
+    "note": "Opened in class, it fills the wall with a life-size VR Ender."
+   },
+   {
+    "name": "Sword",
+    "note": "He has it drawn and is at the door the moment the siren sounds."
+   },
+   {
+    "name": "Cane",
+    "note": "He walks on it after the breach and points with it."
+   },
+   {
+    "name": "Stylus",
+    "note": "He ticks the names on the pairing sheet with it."
+   }
+  ]
+ },
+ "roger": {
+  "line": "A thin boy in Professor Joe's Team B3.",
+  "short": "A thin boy on Team B3 with Layla and Fanny. He holds the pads while Fanny punches and tries to stop their arguing.",
+  "summary": "Roger is the thin boy on Professor Joe's Team B3 with Layla and Fanny, who holds the pads and says \"Enough arguing, guys...\" when nobody hears him. In his first drill with Fanny he runs open ground for the spot behind Layla and falls under a rearing Ender, and he scores 2 kills. At the breach he gets an arm under Joe's shoulders and drags him toward a side street. When Joe forms the Layla-Fanny Team, Roger goes to another pair, and Joe reports he falls down less.",
+  "rows": [
+   [
+    "Role",
+    "Combat Division student"
+   ],
+   [
+    "Team",
+    "Team B3 with Layla and Fanny, then another pair"
+   ],
+   [
+    "Appearance",
+    "Thin"
+   ],
+   [
+    "Known for",
+    "Dragging the hurt Professor Joe out of the street at the breach"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "rubys-father": {
+  "line": "Ruby's father, leader of Oro's Decisionmakers.",
+  "short": "Ruby's father, who leads the Decisionmakers that give Oro's orders. He tells Ruby she must be strong and unyielding, never weak.",
+  "summary": "Ruby's father leads the Decisionmakers, who give Oro's orders, and grown-ups bow low to him. He tells Ruby that Oro's rulers do not bend and that she cannot allow herself to be so weak, and he brings word that Oro's three powers have voted to cleanse Dawnbreak. On sleepless nights he asks if he robbed her of her childhood, and each time duty to Oro answers. When she and Angela break out of the secret facility, he tells the Council \"All normal\" and stops the alarm with his hand on the panel, letting them escape.",
+  "rows": [
+   [
+    "Role",
+    "Leader of the Decisionmakers, who give Oro's orders"
+   ],
+   [
+    "Family",
+    "Ruby's father"
+   ],
+   [
+    "Home",
+    "Oro"
+   ],
+   [
+    "Belief",
+    "One's duty to Oro is everything"
+   ],
+   [
+    "Known for",
+    "Stopping the alarm so Ruby and Angela could escape"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "child-in-the-barrel": {
+  "line": "A small child hiding in a barrel in burning Terrinia.",
+  "short": "A small child hiding in a barrel at the end of an avenue in burning Terrinia, where a boy in a red tie stood guard in front of it.",
+  "summary": "A small child who hides in a barrel at the end of an avenue in burning Terrinia, while a Selrick boy in a red tie stands guard in front of it. When Ruby knocks the boy aside, the child crouches in the dust and cries, and looks up at her, face wet, as she raises the scythe. Angela's ring of light lifts it out of the blade's path, and it is unhurt. Lesley brings up that raised scythe when Ruby asks for refuge.",
+  "rows": [
+   [
+    "Saved by",
+    "Angela's ring of light"
+   ],
+   [
+    "First seen",
+    "Chapter 13"
+   ]
+  ]
+ },
+ "girl-in-the-red-dress": {
+  "line": "A little girl with a pink rabbit, caught in the street at the breach.",
+  "short": "A little girl in a red dress crying in the street at the breach, her pink rabbit at her feet. Professor Joe covers her from a falling slab.",
+  "summary": "A little girl in a red dress who stands crying on the pavement at the breach while people run around her. Professor Joe gives back her pink rabbit and covers her from a falling slab, which strikes him instead. When the gold giant comes she walks out into the avenue alone, and Fanny scoops her onto her hip just before its beam burns the place where she stood; \"I'm flying!\" she says. Fanny leaves her behind a van, and her mother runs to her.",
+  "rows": [
+   [
+    "Appearance",
+    "A red dress, with a pink rabbit"
+   ],
+   [
+    "Saved by",
+    "Professor Joe, then Fanny"
+   ],
+   [
+    "First seen",
+    "Chapter 4"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Pink rabbit",
+    "note": "Her toy. Joe kneels to give it back, and it falls when Fanny lifts her."
+   }
+  ]
+ },
+ "officer-with-gray-in-his-beard": {
+  "line": "A Shield officer with gray in his beard and a rank armband.",
+  "short": "A Shield officer with gray in his beard whom nobody on the channel listens to. He hands Lesley his radio, and the squads answer her.",
+  "summary": "A Shield officer with gray in his beard and a rank armband on his sleeve. On the night the base fell nobody on the channel listened to him, so he handed Lesley his radio handset, and the squads answered her. Months later he brought her the armband that made her a commander of the Shield's combat division, because the squads had asked for her. He leads the officers who come to see Chang'e's suits and asks the hard questions: who could lift an arm in them, and who will keep them running.",
+  "rows": [
+   [
+    "Affiliation",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "Appearance",
+    "Gray in his beard and a rank armband on his sleeve"
+   ],
+   [
+    "Known for",
+    "Giving Lesley command on the night the base fell"
+   ],
+   [
+    "First seen",
+    "Chapter 25"
+   ]
+  ]
+ },
+ "researcher": {
+  "line": "A researcher at the base who keeps the big bench for grown-ups.",
+  "short": "A researcher at the base. He tells Chang'e the big bench is for grown-ups and sends her back to her corner.",
+  "summary": "A researcher at the base who once sent Chang'e back to her corner, saying the big bench was for grown-ups, and who gave it to her after he saw the frame's first light. On the night the base fell he carried her in from the yard in his own coat. He brought her soup and stopped saying home after her answer, though he warned that finishing the frame would not bring her parents back. He never left the base, and Chang'e made him the first of the Science Division's professors.",
+  "rows": [
+   [
+    "Role",
+    "Researcher at the base, later the first professor of the Science Division"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "small-boy": {
+  "line": "A small boy crying in a shelter doorway during the battle.",
+  "short": "A small boy crying in a shelter doorway up the cut while the battle goes on below.",
+  "summary": "A small boy who cries in a shelter doorway up the cut during the battle. He comes down the street looking for someone and finds Layla holding it instead, takes a fistful of the back of her uniform and holds on. He asks Layla whether Fanny is her friend. A soldier with his arm in a sling walks him back up the street, and Ruby makes herself hear his crying to keep hold of herself.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 80"
+   ]
+  ]
+ },
+ "soldier-who-brought-the-toolbox": {
+  "line": "A soldier from the city wall who came to Vexana's cot.",
+  "short": "A soldier from the city wall. On Vexana's second day at the home he brought her father's toolbox and set it by her cot.",
+  "summary": "A soldier from the city wall who came to the Shield's home on Vexana's second day there. He set her father's toolbox beside her cot and told her, \"That Ender never got past him. Not while he stood.\" Years later Vexana still remembers his words beside her cot.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "station-sergeant": {
+  "line": "A heavy Shield sergeant with a burned hand.",
+  "short": "A heavy Shield sergeant with a burned hand who finds Lesley hiding at the station. If she is staying, he tells her, she works.",
+  "summary": "A heavy man with a burned hand who gives the orders at the Shield station where Lesley hides. He has a boy her size in the city and says the station is no place for either of them, but when she stays he puts her to work and lets her fire one round a week at a fence post, and in time five. The first time she climbed the wall in a raid he carried her down; after that he only looked. After her first kill he held out the chalk so she could make her own stroke.",
+  "rows": [
+   [
+    "Affiliation",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "Role",
+    "Gives the orders at the Shield station"
+   ],
+   [
+    "Appearance",
+    "A heavy man with a burned hand"
+   ],
+   [
+    "Family",
+    "A boy Lesley's size in the city who still cannot tie his boots"
+   ],
+   [
+    "First seen",
+    "Chapter 19"
+   ]
+  ]
+ },
+ "youngest-soldier": {
+  "line": "The youngest Shield soldier at the station, counting the days to his leave.",
+  "short": "The youngest soldier at the station. He stands the dawn watch beside Lesley, counting out loud the days to his leave.",
+  "summary": "The youngest soldier at the Shield station, who stands the dawn watch beside Lesley and counts out loud the days to his leave. He asks her why she never talks and asks her to play cards, and she goes back to the rifles. When he slips at the foot of the ladder and an Ender turns to him, Lesley's shot kills it and its arm strikes the mud beside him. With twelve days left before he goes, he asks her again for one game.",
+  "rows": [
+   [
+    "Affiliation",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "Saved by",
+    "Lesley's shot"
+   ],
+   [
+    "First seen",
+    "Chapter 19"
+   ]
+  ]
+ },
+ "tigreal": {
+  "line": "Fanny's elder brother, a fighter she looks up to.",
+  "short": "Fanny's elder brother, an incredible fighter she respects above anyone else. She has longed to fight beside him since she was a child.",
+  "summary": "Tigreal is Fanny's elder brother, an incredible fighter she respects above anyone else. Since she was a child she has longed to join him on the battlefield, and she feels she could never quite reach his level. During the battle Fanny says her brother would have held the street alone, and then that she does not care what Tigreal would have done.",
+  "rows": [
+   [
+    "Family",
+    "Fanny's elder brother"
+   ],
+   [
+    "Known for",
+    "Being an incredible fighter"
+   ],
+   [
+    "First seen",
+    "Chapter 6"
+   ]
+  ]
+ },
+ "vexanas-father": {
+  "line": "Vexana's father, a Shield soldier who kept the guns on the city wall working.",
+  "short": "Vexana's father, a Shield soldier who kept the big guns on the city wall working. He hummed an old march and always stopped in the same place.",
+  "summary": "Vexana's father was a Shield soldier who kept the big guns on the city wall working and raised her in the Shield houses under it. He stewed soldier's tea, hummed a march he said he would finish when the war did, taught her to press a bent bracket straight with two fingers and gave her a small star of her own on her birthdays. When an Ender came over the wall, he stood between it and her and told her \"Stay back,\" the last thing he ever said to her. A soldier said it never got past him while he stood; the record lists him killed in action, and his toolbox is all of him that came back.",
+  "rows": [
+   [
+    "Role",
+    "Shield soldier who kept the big guns on the city wall working"
+   ],
+   [
+    "Family",
+    "Vexana's father; he raised her alone"
+   ],
+   [
+    "Home",
+    "The Shield houses in the shadow of the city wall"
+   ],
+   [
+    "Known for",
+    "Soldier's tea, and a march he would finish when the war did"
+   ],
+   [
+    "Last words to Vexana",
+    "\"Stay back.\""
+   ],
+   [
+    "Status",
+    "Killed in action, standing between Vexana and an Ender"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Toolbox",
+    "note": "Holds spare brass collars for the wall's gun sights and still smells of gun oil. It came back to Vexana after him."
+   },
+   {
+    "name": "Small screwdriver",
+    "note": "His. Vexana uses it and keeps it wiped clean in its place in the toolbox."
+   },
+   {
+    "name": "Wall guns",
+    "note": "The big guns on the city wall. He kept them working and tried each sight with his fingers."
+   }
+  ]
+ },
+ "will-of-the-planet": {
+  "line": "The will some worlds grow of their own as they age.",
+  "short": "Ruby's lesson says some worlds grow a will of their own as they age, even far ones like Dawnbreak. Oro's will, it says, is Balance.",
+  "summary": "Chang'e says the Academy thinks it is a mind, the planet's own, behind the Enders, and that the readings suggest it has a body, the Mother Matrix. Obsidia says it is one being that serves every world that holds Balance, sees through every Ender's eyes, and sent for them because it found its humans too prosperous. It marks Vexana, shows her a vision of the end in which it appears as a giant in dark violet armor, and gives her orders through a cold point in her chest: a place and a time, never a reason. In the end Vexana sees it never needed her loyal, only used.",
+  "rows": [
+   [
+    "Nature",
+    "A mind, Chang'e says; Obsidia says the Mother Matrix is its body"
+   ],
+   [
+    "Commands",
+    "The Enders, which hear only the Will, Obsidia says"
+   ],
+   [
+    "Speaks through",
+    "A cold point in Vexana's chest, and a voice from everywhere"
+   ],
+   [
+    "In the vision",
+    "A giant armored in dark violet, crowned with spikes and horns, with two violet eyes"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "androids": {
+  "line": "Machines built like people.",
+  "short": "Machines built like people. On Oro they stand in rows: hundreds of the same girl.",
+  "summary": "Androids are machines built like people, and Angela is one. Oro's Cosmic Reapers, the androids of Project Angel, are hundreds of the same girl. On the avenue, androids with Angela's face lay around her in the smoke; they had come to fire on the city, and so had she."
+ },
+ "cosmic-reapers": {
+  "line": "Oro's android soldiers, hundreds of the same girl.",
+  "short": "Oro's android soldiers from Project Angel: hundreds of the same girl, with animal ears and magenta eyes. They do only what they are told.",
+  "summary": "The Cosmic Reapers are the androids of Project Angel, hundreds of the same girl with animal ears, standing in rows below Oro's Laboratory. Woken, their eyes glow magenta; they strike when told, take their blows and do nothing else. Oro's black ship carries them to burning Terrinia, where they strike at Selrick's students with pink blades at their wrists until Ruby cuts down every one. They all have Angela's face, and Ruby calls them the start of Oro's plan to take over Dawnbreak.",
+  "rows": [
+   [
+    "Part of",
+    "Project Angel, the Council's androids"
+   ],
+   [
+    "Appearance",
+    "Hundreds of the same girl, with animal ears and glowing magenta eyes"
+   ],
+   [
+    "Home",
+    "A long hall of tall white windows below the Laboratory"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Wrist blades",
+    "note": "Pink blades they carry at their wrists."
+   },
+   {
+    "name": "Palm light",
+    "note": "Pink light that crackles in their open palms."
+   }
+  ]
+ },
+ "enders": {
+  "line": "Tall gray living machines made to destroy.",
+  "short": "Living machines, tall and gray, made to destroy. They do not think; something vast and cold made them to kill on instinct.",
+  "summary": "Enders are huge living machines that came from the sky after the Catastrophe of 978 to wipe out humanity, and nearly did. Under a gray metal shell they have living purple tissue and a core in the chest, which shows only when they strike: then a round or a fist can go in. Chang'e says the Will of the Planet sends them; Obsidia says each is a limb of the Mother Matrix, made in the nest, hearing only the Will. People learned to rebuild dead Enders into mecha suits, and every suit at the Academy was built from them.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e says the Will sends them; Obsidia says the Mother Matrix makes them in the nest"
+   ],
+   [
+    "Body",
+    "A gray metal shell over living purple tissue, with a core in the chest"
+   ],
+   [
+    "Weak spot",
+    "The core, open only while they strike"
+   ],
+   [
+    "Ranks",
+    "Joe teaches three: plain Enders, Super Enders and Ultimate Enders"
+   ],
+   [
+    "Home",
+    "The void, the dark behind the world"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Claws",
+    "note": "Claws as long as an arm."
+   },
+   {
+    "name": "Chest core",
+    "note": "Burns behind plates that split open only when they strike. A round in the middle kills them and burns the core black."
+   }
+  ]
+ },
+ "feeders": {
+  "line": "Enders that carry metal home through the door.",
+  "short": "Vexana's name for gray Enders that tear girders and dead Enders out of the ruins and carry the metal back through the door.",
+  "summary": "Feeders are gray Enders that tear girders out of fallen houses, cable out of an old pumping station and dead Enders out of the weeds, and carry it all back through the door; two of them once hauled off an empty Aspirant suit by the legs. Vexana names them and works beside them on her errands, and none of them looks up at the sky. In the nest she learns where their metal goes: it comes back as new Enders. On the eve of the attack none come out with her, because the Will wants only her eyes."
+ },
+ "giant-enders": {
+  "line": "Enders taller than towers.",
+  "short": "Enders of giant size. One stands over the roofs of burning Terrinia, taller than any tower.",
+  "summary": "Giant Enders are Enders taller than any tower, and their steps shake the ground. In burning Terrinia, Ruby and Angela fight one together until it goes down, while Fanny and Layla hold a ward against another. On the day the black ships landed, Guinevere and Vexana held the giants' front beside Lesley's squads until dark."
+ },
+ "mother-matrix": {
+  "line": "The vast, cold thing that made the Enders.",
+  "short": "Chang'e's name for the body the readings suggest the Will of the Planet has: something vast, far out where nobody can see.",
+  "summary": "The Mother Matrix is the Will of the Planet's body, Obsidia says: it bears the Enders and carries the Will's command, with no wants and no after. It lies vast and still in the void, horned and crowned with spikes, purple wings folded, its chest shut behind great plates over a magenta core. When it comes half through the gateway over the bay, its chest splits to fire white beams across the city, and Enders drop off its wings. Struck in the open chest by two human girls, it goes back into the star's light and into the dark to heal: not dead, only gone back.",
+  "rows": [
+   [
+    "Nature",
+    "The Will's body, by Chang'e's readings and Obsidia's word"
+   ],
+   [
+    "Made",
+    "The Enders and Obsidia's kind; the living part of the Storm Citadel and Obsidia's throne"
+   ],
+   [
+    "Appearance",
+    "A horned head crowned with spikes, two violet eyes, purple wings and a chest shut plate over plate"
+   ],
+   [
+    "Weak spot",
+    "Its chest, open only when it fires"
+   ],
+   [
+    "Home",
+    "The void, beside the crack"
+   ],
+   [
+    "Status",
+    "Pushed back into the Singularity's light; not dead, only gone back to heal"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Chest beam",
+    "note": "Its chest plates split and a white beam crosses the city. After each shot its plates close and it needs time to gather again."
+   },
+   {
+    "name": "Hand",
+    "note": "A clawed hand plated in violet, bigger than the platform, swept across the sky."
+   },
+   {
+    "name": "Wings",
+    "note": "Each as wide as a ward. Enders peel off them by the dozen and drop into the fight."
+   },
+   {
+    "name": "Living tissue",
+    "note": "Strands of violet tissue that come out of its seam to heal Obsidia."
+   }
+  ]
+ },
+ "super-enders": {
+  "line": "The middle rank of Enders.",
+  "short": "The middle of the three Ender ranks Professor Joe teaches, above plain Enders and below Ultimate Enders.",
+  "summary": "Super Enders are the middle of the three Ender ranks Professor Joe teaches, below the Ultimate Enders. Layla runs through the ranks when the gold giant appears and finds it fits none of them. In the nest Vexana names them among the growing shells, which get larger along the rows, first twice the height of the gray ones."
+ },
+ "black-and-gold-giant": {
+  "line": "A black-and-gold giant Ender with blades on its arms.",
+  "short": "A giant Ender hundreds of meters tall, black and gold, on tall thin legs, with huge curved blades hanging from its arms. It walks without hurry.",
+  "summary": "A giant Ender hundreds of meters tall, black and gold, on tall thin legs, with huge curved blades hanging from its arms. On the night the base fell it walked through the middle of the city, killed Chang'e's parents with the light from its chest and fired a white beam down on the base's yard. Years later a black-and-gold giant, which Chang'e thinks is the same one, stops at the top of the avenue, and Lesley's round and Chang'e's crescent go into its open chest together, so it bursts white from inside. Lesley never finds out why it went for the base.",
+  "rows": [
+   [
+    "Appearance",
+    "Black and gold, hundreds of meters tall, on tall thin legs, with curved blades hanging from its arms"
+   ],
+   [
+    "Killed",
+    "Chang'e's parents, on the night the base fell"
+   ],
+   [
+    "Brought down by",
+    "Lesley's round and Chang'e's crescent, together"
+   ],
+   [
+    "First seen",
+    "Chapter 24"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Arm blades",
+    "note": "Huge curved blades hanging from its arms."
+   },
+   {
+    "name": "Chest light",
+    "note": "Gathers gold, then white, behind its opening chest plates and fires down. It cannot fire with the plates shut."
+   }
+  ]
+ },
+ "ender-at-the-breach": {
+  "line": "The Ender that forced its way through the hole in the dome.",
+  "short": "An Ender forcing its head and shoulders through the hole in the dome, tall enough to look into a second-floor window.",
+  "summary": "A gray Ender that forced its head and shoulders through the hole in the dome, tall enough to look into a second-floor window, its plates grinding. When it heaved, the front of a corner building came down on Professor Joe, though it never even looked at him. Its chest was plated shut, but as it swung at Fanny its plates split and its core glowed, and Layla's bolt went in and blew its chest open.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 4"
+   ]
+  ]
+ },
+ "ender-at-the-wall": {
+  "line": "The Ender that came over the city wall in Vexana's childhood.",
+  "short": "A tall gray Ender that came over the city wall in the attack, a torn line of washing hanging from one claw. It raised that claw at young Vexana.",
+  "summary": "A tall gray Ender that came over the city wall in the attack of Vexana's childhood, smoke running off its shoulders and a torn line of washing hanging from one claw. It did not look at young Vexana the way a person looks; it only stopped, and raised its claw. Her father stood between them, and a soldier later said it never got past him while he stood.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "ender-on-the-deck": {
+  "line": "An Ender that climbs the tower to the command deck.",
+  "short": "An Ender that climbs the tower's face hand over hand and bursts into the command deck, three times Chang'e's height.",
+  "summary": "An Ender three times Chang'e's height that climbed the tower's face hand over hand, burst the glass and hauled itself half into the command deck. It bent toward Chang'e but did not strike at once. When it did, its claw hit Mr. Bunny instead of her, and Lesley's round went into its open core, so it fell away down the tower.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 81"
+   ]
+  ]
+ },
+ "ender-that-took-vexana": {
+  "line": "The Ender that reached out of a burning purple door in the wall.",
+  "short": "An Ender that reaches without a sound out of a burning purple door in the wall, claw raised at Guinevere's back, and closes it on Vexana's hand.",
+  "summary": "An Ender that came without any sound out of a burning purple door in the white wall, a long gray leg and a claw of long blades, reaching for Guinevere's open back. It missed, and its claw closed on Vexana's hand, the hand that had pushed Guinevere. It dragged Vexana a long way through the void without loosening its grip, then let go and left without looking back, its violet glow shrinking to a point.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 45"
+   ]
+  ]
+ },
+ "gold-giant": {
+  "line": "A gold giant that broke the dome apart in a ring.",
+  "short": "Something gold that stands up on the sand and breaks the dome apart in a ring. It is taller than the towers and fits none of Joe's ranks.",
+  "summary": "A gold giant, taller than the towers, that stood up on the sand, leaned its long head into the dome and broke it apart in a ring, leaving a gap wide enough for a truck. None of Professor Joe's three Ender ranks had been gold. It fired a gold beam from its chest down the avenue, and Layla worked out that its chest opens when it fires and its glow doubles every four seconds. Her full charge split its beam and went into its open chest, everything it had gathered went off inside it, and it lay in burning pieces on the sand.",
+  "rows": [
+   [
+    "Appearance",
+    "Gold, with a long head, taller than the towers"
+   ],
+   [
+    "Brought down by",
+    "Layla's full charge, into its open chest"
+   ],
+   [
+    "First seen",
+    "Chapter 4"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Gold beam",
+    "note": "Fired from its chest, it burns a line down the avenue. Its glow doubles every four seconds as it gathers."
+   }
+  ]
+ },
+ "human-faced-shells": {
+  "line": "A row of Ender shells with human faces in the nest.",
+  "short": "A short row of shells in the nest that are not gray. They have smooth human faces with shut eyes, and Obsidia shaped them.",
+  "summary": "A short row in the nest, past the largest shells and apart from the rest. The shells are not gray: they have smooth human faces with shut eyes, some no bigger than a child, one with folded hands, one split open from the inside and empty. Obsidia says she shaped them toward human likeness, that some broke when the body first moved them, and that none held a self.",
+  "rows": [
+   [
+    "Made by",
+    "Obsidia"
+   ],
+   [
+    "Location",
+    "A row of the nest, past the largest shells"
+   ],
+   [
+    "First seen",
+    "Chapter 58"
+   ]
+  ]
+ },
+ "ultimate-enders": {
+  "line": "The highest and deadliest rank of Enders.",
+  "short": "The deadliest of the three Ender ranks Professor Joe teaches. They release the other two.",
+  "summary": "Ultimate Enders are the deadliest of Joe's three Ender ranks, and they release the other two. In the nest their shells grow as tall as towers, with open chests holding smaller folded shapes; Obsidia says they carry the others in and let them out where the fighting is. In the Storm Citadel's holds they stand packed with lesser Enders under new, heavier plate, and their chests swing shut when Obsidia approves the augmentation."
+ },
+ "academy-students": {
+  "line": "The students of Selrick Academy.",
+  "short": "The young people who study at Selrick Academy. They train against simulated Enders and wear matching jackets stamped S·L·K.",
+  "summary": "The students of Selrick Academy fight simulated Enders in the VR Battlefield, and half of them wear headgear: ears, horns, visors. They cheer Layla as always No. 1, and they run from Oro's androids when the black ship comes to Terrinia. They are quick to talk: they write Vexana off as dead, whisper that Daddy will buy Guinevere a new partner, and name the point over the bay the Singularity. On the day of the attack some stand in the frontline ranks in suits, and in the hall the word \"Traitor\" comes first from them.",
+  "rows": [
+   [
+    "School",
+    "Selrick Academy"
+   ],
+   [
+    "Uniform",
+    "Matching jackets stamped S·L·K"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "aspirants": {
+  "line": "People with enough aspirant power to pilot a mecha suit.",
+  "short": "Those with enough aspirant power to pilot a mecha suit. Selrick Academy was founded to train them.",
+  "summary": "Aspirants are those with enough aspirant power to pilot a mecha suit, and Selrick Academy was founded to train them. They fight in pairs, because the suits decided it, Joe says, and newcomers become Aspirants in a week of ceremony in the hall. An aspirant is a person reaching for something with everything in them, and Chang'e's paper holds that an Aspirant's light would go on shining even inside a black hole. Their saying is \"The Aspirants always stand united!\"",
+  "rows": [
+   [
+    "Trained at",
+    "Selrick Academy"
+   ],
+   [
+    "Fight in",
+    "Pairs, because the suits decided it"
+   ],
+   [
+    "Saying",
+    "\"The Aspirants always stand united!\""
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "balance-keepers": {
+  "line": "Oro's special forces.",
+  "short": "Oro's special forces. They go from planet to planet to keep things in \"balance,\" and they want a blade sharper than any they have.",
+  "summary": "The Balance Keepers are Oro's special forces, who go from planet to planet in black ships to keep things in \"balance.\" They wanted a blade sharper than any they had, and they took Angela from planet to planet with them. With her in their ranks they have not lost a landing.",
+  "rows": [
+   [
+    "Serves",
+    "Oro"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Black ships",
+    "note": "The ships that carry them, and Angela, from planet to planet."
+   }
+  ]
+ },
+ "combat-division": {
+  "line": "The Academy division that trains students to fight Enders.",
+  "short": "The division of Selrick Academy whose students are trained to fight Enders at the front. Professor Joe teaches it.",
+  "summary": "The Combat Division is the part of Selrick Academy that trains students to fight Enders at the front, and half the AI droids serve it. Lesley heads it as Chief Combat Instructor, and Professor Joe teaches in it. Children whose needle passes the line go through the far door to its preparatory course, a year of training before any real fight; its first intake listed Layla, Guinevere of House Baroque and Vexana. The board outside its office posts the new pairs, and later reads VEXANA: MISSING.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy"
+   ],
+   [
+    "Head",
+    "Lesley, Chief Combat Instructor"
+   ],
+   [
+    "Teacher",
+    "Professor Joe"
+   ],
+   [
+    "Entry",
+    "A needle that passes the line, then a year's preparatory course"
+   ],
+   [
+    "First seen",
+    "Chapter 3"
+   ]
+  ]
+ },
+ "decisionmakers": {
+  "line": "One of Oro's three powers, led by Ruby's father.",
+  "short": "The Decisionmakers give the orders that Oro's Council agrees. Ruby's father leads them.",
+  "summary": "The Decisionmakers are one of Oro's three powers, which rule through the Council; they give the orders the Council agrees, and Ruby's father leads them. They kept Angela hidden in the Laboratory. Oro's soldiers arrest Ruby and Angela in their name.",
+  "rows": [
+   [
+    "Leader",
+    "Ruby's father"
+   ],
+   [
+    "Rules through",
+    "The Council, with Oro's two other powers"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "eternal-guards": {
+  "line": "Giant machines Vexana builds alone from Ender plate.",
+  "short": "Giant machines Vexana builds from Ender plate and cracked cores. They run on her power, and she means them to stand over Guinevere.",
+  "summary": "The Eternal Guards are four machines Vexana built in the hollow from Ender plate and cracked cores: a lead Guard of purple plate edged in gold with a magenta heart crest, and three giants with swords longer than a house. They run on her power without a break and go dark when she sleeps; she named them Guards because they would stand over Guinevere when she could not. In the attack the lead Guard takes the Mother Matrix's shot meant for Guinevere and holds. After the Matrix is pushed back, the three giants rise again at Vexana's palm and hold the bay road in the last fight.",
+  "rows": [
+   [
+    "Made by",
+    "Vexana, in the hollow in the void"
+   ],
+   [
+    "Made of",
+    "Ender plate and cracked cores, every plate carried home in a sack"
+   ],
+   [
+    "Number",
+    "Four: a lead Guard and three giants"
+   ],
+   [
+    "Power",
+    "Vexana's own, poured in without a break; they go dark when she sleeps"
+   ],
+   [
+    "Answer to",
+    "Vexana, and they would never turn on her"
+   ],
+   [
+    "First seen",
+    "Chapter 53"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Ender-blade swords",
+    "note": "Fitted length by length, longer than a house. When they fall together they send light along the road that knocks the Enders flat."
+   },
+   {
+    "name": "Lead Guard",
+    "note": "Purple plate edged in gold, with a magenta heart crest on its chest. It lands between the wall and the Mother Matrix's beam and holds."
+   }
+  ]
+ },
+ "fannys-family": {
+  "line": "Fanny's family of Shield soldiers.",
+  "short": "Fanny's family. They were Shield soldiers and trained her from the start.",
+  "summary": "Fanny's family were soldiers of the Shield of Dawnbreak, and they trained her from the start. Her elder brother Tigreal is an incredible fighter she respects above anyone else.",
+  "rows": [
+   [
+    "Affiliation",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "Members",
+    "Fanny and her elder brother Tigreal"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "frontline": {
+  "line": "The frontline assault group in the battle for the Academy.",
+  "short": "Chang'e's frontline assault: Fanny, Layla and Guinevere, with Shield soldiers, students in suits and a long cannon, to meet the Enders head on.",
+  "summary": "The frontline is the assault group that meets the Enders head on in the battle for the Academy district, from the bay road up to the hall. Chang'e posts Fanny, Layla and Guinevere to it, and it forms in the courtyard with Shield soldiers, students in suits and a long cannon; Lesley later puts Vexana on it beside Guinevere. Fanny calls it to land when the field comes, and Lesley orders it back into the bay road cut to hold one street.",
+  "rows": [
+   [
+    "Members",
+    "Fanny, Layla, Guinevere and later Vexana, with Shield soldiers and students in suits"
+   ],
+   [
+    "Ground",
+    "The Academy district, from the bay road up to the hall"
+   ],
+   [
+    "Orders from",
+    "Chang'e and Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 69"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Long cannon",
+    "note": "The big gun that forms up with it in the courtyard."
+   }
+  ]
+ },
+ "guineveres-guards": {
+  "line": "The House Baroque guards who never leave Guinevere's side.",
+  "short": "The detail of House guards around Guinevere, led by Hester. They play hide and seek with her and always win, because finding her is their job.",
+  "summary": "Guinevere's father puts a detail of House guards around her, with Hester at its head, and she never leaves the House without them. They are her only company: they play hide and seek and always win, because finding her is their job, and she carries cakes out to them at the gate. They drill in the yard at dawn and never come into the long hall. They cannot follow her into the Academy, which guards itself, but two still follow her at a shop's distance in the city.",
+  "rows": [
+   [
+    "Leader",
+    "Hester"
+   ],
+   [
+    "Serves",
+    "House Baroque"
+   ],
+   [
+    "First seen",
+    "Chapter 32"
+   ]
+  ]
+ },
+ "house-baroque": {
+  "line": "Guinevere's family House in Terrinia.",
+  "short": "One of Terrinia's great money houses, run by a board with Guinevere's father in the head seat. It lent the city money for the dome's power.",
+  "summary": "House Baroque is one of the great money houses of Terrinia, run by a board of elders and partners with Guinevere's father in the head seat. It lent the city money for the Energy System that powers the dome and for rebuilding each ward after a raid, and its money helped pay for Selrick Academy, whose plaque of patrons it heads. Guinevere is named heir to her father's seat, but he warns that her place in the House is gone if she does not come home.",
+  "rows": [
+   [
+    "Kind",
+    "One of Terrinia's great money houses"
+   ],
+   [
+    "Head",
+    "Guinevere's father"
+   ],
+   [
+    "Run by",
+    "A board of the House's elders and partners"
+   ],
+   [
+    "Heir",
+    "Guinevere"
+   ],
+   [
+    "Seat",
+    "The House on the hill"
+   ],
+   [
+    "Crest",
+    "A small gold crest, on Guinevere's black card"
+   ],
+   [
+    "First seen",
+    "Chapter 28"
+   ]
+  ]
+ },
+ "humanity": {
+  "line": "The people of the planet, whom Obsidia calls the parasites.",
+  "short": "The people of the planet. Obsidia calls them the parasites, and her strike came while they slept.",
+  "summary": "Humanity is the people of the planet, whom the Enders came to wipe out after the Catastrophe of 978; the survivors drew back to Terrinia, their final bastion. Obsidia calls them the parasites and says the planet found them too prosperous. Yet, she says, they began to fight back with what they believed, which no people on any world she watched end had done, and year by year they kill her Enders faster.",
+  "rows": [
+   [
+    "Last refuge",
+    "Terrinia, humanity's final bastion"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ }
+}

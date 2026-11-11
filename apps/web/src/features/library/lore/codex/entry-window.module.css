@@ -1,0 +1,164 @@
+/*
+ * The window of the codex: a centred sheet over a dimmed room (a full screen sheet on a phone),
+ * the way a post opens over a feed. The room is not moved or blurred; only the sheet and the dim
+ * come in, with opacity and transform.
+ */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--scrim);
+  animation: fade 260ms linear both;
+}
+
+.window {
+  --k: var(--accent);
+  position: fixed;
+  z-index: calc(var(--z-modal) + 1);
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  color: var(--text);
+  animation: rise 380ms var(--ease-out) both;
+}
+
+@media (min-width: 52em) {
+  .window {
+    inset: 4vh auto 4vh 50%;
+    width: min(66rem, 94vw);
+    margin-left: calc(min(66rem, 94vw) / -2);
+    border: 1px solid var(--line-strong);
+    border-top: 4px solid var(--k);
+    box-shadow: 0 30px 80px rgb(3 5 9 / 0.45);
+  }
+}
+
+.window[data-kind="person"] {
+  --k: var(--magenta);
+}
+
+.window[data-kind="place"] {
+  --k: var(--cyan);
+}
+
+.window[data-kind="thing"] {
+  --k: var(--amber);
+}
+
+.window[data-kind="group"] {
+  --k: var(--violet);
+}
+
+.window[data-kind="creature"] {
+  --k: var(--crimson);
+}
+
+.window[data-kind="idea"] {
+  --k: var(--gold);
+}
+
+.window[data-kind="event"] {
+  --k: var(--crimson);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.inner {
+  display: grid;
+  gap: 0.9rem;
+  padding: clamp(1rem, 3vw, 2.4rem);
+  animation: swap 360ms var(--ease-out) both;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.top p {
+  margin: 0;
+  color: var(--k);
+}
+
+.close {
+  position: relative;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.close:hover {
+  transform: rotate(90deg);
+  border-color: var(--k);
+}
+
+.close span::before,
+.close span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.1rem;
+  height: 2px;
+  background: currentColor;
+}
+
+.close span::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close span::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 1.2rem + 3.6vw, 4.2rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.aka {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.first {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.note {
+  margin: 2rem 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  color: var(--text-dim);
+}

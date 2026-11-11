@@ -57,7 +57,8 @@
   list-style: none;
 }
 
-.samples li {
+.sample {
+  display: inline-block;
   padding: 0.25rem 0.6rem;
   font-family: var(--font-mono-stack);
   font-size: var(--step--1);
@@ -65,6 +66,15 @@
   color: var(--text);
   border: 1px solid var(--line-strong);
   background: var(--bg);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.sample:hover,
+.sample:focus-visible {
+  color: var(--bg);
+  background: var(--text);
 }
 
 .cta {

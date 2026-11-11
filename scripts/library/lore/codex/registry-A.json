@@ -1,0 +1,2479 @@
+{
+ "set": "A",
+ "entries": [
+  {
+   "slug": "androids",
+   "name": "androids",
+   "kind": "creature",
+   "sub": "humanlike machines",
+   "aka": [],
+   "members": [
+    "m0001"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-and-gold-giant",
+   "name": "the black-and-gold giant",
+   "kind": "creature",
+   "sub": "giant Ender",
+   "aka": [
+    "the giant",
+    "the black and gold giant",
+    "the gold and black giant"
+   ],
+   "members": [
+    "m0011",
+    "m0002"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-enders",
+   "name": "black Enders",
+   "kind": "creature",
+   "sub": "long-limbed Ender kind",
+   "aka": [
+    "black Ender"
+   ],
+   "members": [
+    "m0003"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cosmic-reapers",
+   "name": "Cosmic Reapers",
+   "kind": "creature",
+   "sub": "Oro's android soldiers",
+   "aka": [
+    "Cosmic Reaper",
+    "the Council's androids",
+    "Project Angel androids",
+    "the androids of Project Angel",
+    "android troops",
+    "android company",
+    "the android company",
+    "Oro's androids"
+   ],
+   "members": [
+    "m0004",
+    "m0139"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-at-the-breach",
+   "name": "the Ender at the breach",
+   "kind": "creature",
+   "sub": "Ender that hurt Joe",
+   "aka": [],
+   "members": [
+    "m0005"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-at-the-wall",
+   "name": "the Ender at the wall",
+   "kind": "creature",
+   "sub": "Ender of Vexana's childhood",
+   "aka": [],
+   "members": [
+    "m0006"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-on-the-deck",
+   "name": "the Ender on the deck",
+   "kind": "creature",
+   "sub": "tower-climbing Ender",
+   "aka": [],
+   "members": [
+    "m0007"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-that-took-vexana",
+   "name": "the Ender that took Vexana",
+   "kind": "creature",
+   "sub": "portal Ender",
+   "aka": [],
+   "members": [
+    "m0008"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "enders",
+   "name": "Enders",
+   "kind": "creature",
+   "sub": "living machine race",
+   "aka": [
+    "Ender",
+    "the Enders",
+    "plain Enders",
+    "the big ones",
+    "her kind",
+    "Obsidia's kind",
+    "gray Enders"
+   ],
+   "members": [
+    "m0009"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "feeders",
+   "name": "feeders",
+   "kind": "creature",
+   "sub": "metal-carrying Enders",
+   "aka": [
+    "feeder"
+   ],
+   "members": [
+    "m0010"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "giant-enders",
+   "name": "giant Enders",
+   "kind": "creature",
+   "sub": "giant Ender kind",
+   "aka": [
+    "giant Ender",
+    "a giant Ender",
+    "giants",
+    "the giants"
+   ],
+   "members": [
+    "m0012",
+    "m0013"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gold-giant",
+   "name": "the gold giant",
+   "kind": "creature",
+   "sub": "gold Ender giant",
+   "aka": [
+    "something gold"
+   ],
+   "members": [
+    "m0014"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "human-faced-shells",
+   "name": "the human-faced shells",
+   "kind": "creature",
+   "sub": "Obsidia's failed makings",
+   "aka": [
+    "human-faced shells"
+   ],
+   "members": [
+    "m0015"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "long-legged-enders",
+   "name": "long-legged Enders",
+   "kind": "creature",
+   "sub": "spider-like Ender kind",
+   "aka": [],
+   "members": [
+    "m0016"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "super-enders",
+   "name": "Super Enders",
+   "kind": "creature",
+   "sub": "middle Ender rank",
+   "aka": [
+    "Super Ender"
+   ],
+   "members": [
+    "m0017"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "tall-gray-ender",
+   "name": "the tall gray Ender",
+   "kind": "creature",
+   "sub": "single Ender",
+   "aka": [],
+   "members": [
+    "m0018"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "ultimate-enders",
+   "name": "Ultimate Enders",
+   "kind": "creature",
+   "sub": "highest Ender rank",
+   "aka": [
+    "Ultimate Ender"
+   ],
+   "members": [
+    "m0019"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ultra-enders",
+   "name": "Ultra Enders",
+   "kind": "creature",
+   "sub": "Ender rank named by siren",
+   "aka": [
+    "Ultra"
+   ],
+   "members": [
+    "m0020"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "mother-matrix",
+   "name": "Mother Matrix",
+   "kind": "creature",
+   "sub": "the Will's body",
+   "aka": [
+    "the Matrix",
+    "the body",
+    "the Will's body",
+    "something vast and cold",
+    "the thing that made her",
+    "the maker of the Enders"
+   ],
+   "members": [
+    "m0379",
+    "m0374"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-students",
+   "name": "Academy students",
+   "kind": "group",
+   "sub": "Selrick students",
+   "aka": [
+    "students",
+    "the students",
+    "Selrick students",
+    "a boy and a girl",
+    "the class"
+   ],
+   "members": [
+    "m0138",
+    "m0194",
+    "m0200"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "cadets",
+   "name": "cadets",
+   "kind": "group",
+   "sub": "Academy trainees",
+   "aka": [
+    "cadet"
+   ],
+   "members": [
+    "m0144"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cadets-at-the-fountain",
+   "name": "the cadets at the fountain",
+   "kind": "group",
+   "sub": "whispering cadets",
+   "aka": [
+    "cadets at the fountain",
+    "the whisperers"
+   ],
+   "members": [
+    "m0145"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "aspirants",
+   "name": "Aspirants",
+   "kind": "group",
+   "sub": "suit pilots",
+   "aka": [
+    "Aspirant",
+    "the Aspirants",
+    "The Aspirants",
+    "the ten fighters"
+   ],
+   "members": [
+    "m0140"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Aspirant"
+   ]
+  },
+  {
+   "slug": "balance-keepers",
+   "name": "Balance Keepers",
+   "kind": "group",
+   "sub": "Oro special forces",
+   "aka": [
+    "the Balance Keepers"
+   ],
+   "members": [
+    "m0141"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "beau-monde",
+   "name": "the Beau Monde",
+   "kind": "group",
+   "sub": "power of Oro",
+   "aka": [
+    "Beau Monde"
+   ],
+   "members": [
+    "m0142"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "board-of-house-baroque",
+   "name": "the board of House Baroque",
+   "kind": "group",
+   "sub": "House governing board",
+   "aka": [
+    "the board"
+   ],
+   "members": [
+    "m0143"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "changes-first-parents",
+   "name": "Chang'e's first parents",
+   "kind": "group",
+   "sub": "Chang'e's unknown birth parents",
+   "aka": [
+    "her first parents"
+   ],
+   "members": [
+    "m0146"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "changes-parents",
+   "name": "Chang'e's parents",
+   "kind": "group",
+   "sub": "Chang'e's adoptive parents",
+   "aka": [
+    "her parents"
+   ],
+   "members": [
+    "m0341"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "children-of-the-shields-home",
+   "name": "the children of the Shield's home",
+   "kind": "group",
+   "sub": "soldiers' orphans",
+   "aka": [
+    "the other children",
+    "children of the Shield's home"
+   ],
+   "members": [
+    "m0147"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "citys-scientists",
+   "name": "the city's scientists",
+   "kind": "group",
+   "sub": "Terrinia's scientists",
+   "aka": [
+    "the scientists"
+   ],
+   "members": [
+    "m0148"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "combat-division",
+   "name": "Combat Division",
+   "kind": "group",
+   "sub": "Academy fighting division",
+   "aka": [
+    "the Combat Division",
+    "the Combat Division's preparatory course"
+   ],
+   "members": [
+    "m0149"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "council",
+   "name": "the Council",
+   "kind": "group",
+   "sub": "Oro's ruling council",
+   "aka": [
+    "Council",
+    "Oro's Council",
+    "Oro's rulers"
+   ],
+   "members": [
+    "m0150"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "councils-checkers",
+   "name": "the Council's checkers",
+   "kind": "group",
+   "sub": "Oro code inspectors",
+   "aka": [],
+   "members": [
+    "m0151"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "councils-engineers",
+   "name": "the Council's engineers",
+   "kind": "group",
+   "sub": "Oro engineers",
+   "aka": [],
+   "members": [
+    "m0152"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "counseling-section",
+   "name": "counseling section",
+   "kind": "group",
+   "sub": "Academy counseling office",
+   "aka": [
+    "the counseling section"
+   ],
+   "members": [
+    "m0153"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "decisionmakers",
+   "name": "Decisionmakers",
+   "kind": "group",
+   "sub": "power of Oro",
+   "aka": [
+    "the Decisionmakers"
+   ],
+   "members": [
+    "m0154"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "demolition-crews",
+   "name": "demolition crews",
+   "kind": "group",
+   "sub": "city workers",
+   "aka": [],
+   "members": [
+    "m0155"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "eternal-guards",
+   "name": "Eternal Guards",
+   "kind": "group",
+   "sub": "Vexana's giant machines",
+   "aka": [
+    "Eternal Guard",
+    "Guards",
+    "the Guards",
+    "her Guards",
+    "the four Guards",
+    "the three giants",
+    "Vexana's giants"
+   ],
+   "members": [
+    "m0156",
+    "m0210"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-family",
+   "name": "Fanny's family",
+   "kind": "group",
+   "sub": "Fanny's Shield family",
+   "aka": [],
+   "members": [
+    "m0157"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "frontline",
+   "name": "frontline",
+   "kind": "group",
+   "sub": "frontline assault group",
+   "aka": [
+    "frontline assault",
+    "the frontline"
+   ],
+   "members": [
+    "m0158"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gate-guards",
+   "name": "the gate guards",
+   "kind": "group",
+   "sub": "research base guards",
+   "aka": [],
+   "members": [
+    "m0159"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "gray-armored-soldiers",
+   "name": "the gray-armored soldiers",
+   "kind": "group",
+   "sub": "Shield soldiers at the lot",
+   "aka": [],
+   "members": [
+    "m0160"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-tutors",
+   "name": "Guinevere's tutors",
+   "kind": "group",
+   "sub": "House tutors",
+   "aka": [],
+   "members": [
+    "m0161"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "house-baroque",
+   "name": "House Baroque",
+   "kind": "group",
+   "sub": "Guinevere's family House",
+   "aka": [
+    "the House",
+    "the House of Baroque"
+   ],
+   "members": [
+    "m0163",
+    "m0162"
+   ],
+   "tier": "A",
+   "see_also": [
+    "the House",
+    "the House on the hill"
+   ]
+  },
+  {
+   "slug": "guineveres-guards",
+   "name": "Guinevere's guards",
+   "kind": "group",
+   "sub": "House Baroque guard detail",
+   "aka": [
+    "House guards",
+    "the House's guard",
+    "the detail",
+    "security detail",
+    "guard detail"
+   ],
+   "members": [
+    "m0165",
+    "m0164",
+    "m0193"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "humanity",
+   "name": "humanity",
+   "kind": "group",
+   "sub": "the human people",
+   "aka": [
+    "humans",
+    "the parasites",
+    "human survivors",
+    "a people in the rain",
+    "the people in the rain"
+   ],
+   "members": [
+    "m0166",
+    "m0167",
+    "m0178"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "institute-of-technology",
+   "name": "the Institute of Technology",
+   "kind": "group",
+   "sub": "power of Oro",
+   "aka": [
+    "Institute of Technology"
+   ],
+   "members": [
+    "m0168"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "instructors",
+   "name": "the instructors",
+   "kind": "group",
+   "sub": "Academy instructors",
+   "aka": [
+    "instructors",
+    "the instructor",
+    "Academy instructors"
+   ],
+   "members": [
+    "m0169"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "layla-fanny-team",
+   "name": "Layla-Fanny Team",
+   "kind": "group",
+   "sub": "Aspirant pair",
+   "aka": [
+    "the Layla-Fanny Team"
+   ],
+   "members": [
+    "m0170"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "laylas-family",
+   "name": "Layla's family",
+   "kind": "group",
+   "sub": "family of scientists",
+   "aka": [],
+   "members": [
+    "m0171"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-squad",
+   "name": "Lesley's squad",
+   "kind": "group",
+   "sub": "squad in the corridor",
+   "aka": [],
+   "members": [
+    "m0172"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-squads",
+   "name": "Lesley's squads",
+   "kind": "group",
+   "sub": "soldiers under Lesley",
+   "aka": [],
+   "members": [
+    "m0173"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "oros-officers",
+   "name": "Oro's officers",
+   "kind": "group",
+   "sub": "Oro officers",
+   "aka": [
+    "the officer"
+   ],
+   "members": [
+    "m0175"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "oros-soldiers",
+   "name": "Oro's soldiers",
+   "kind": "group",
+   "sub": "Oro troops",
+   "aka": [
+    "Oro's troops"
+   ],
+   "members": [
+    "m0176"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "patrons-of-selrick-academy",
+   "name": "patrons of Selrick Academy",
+   "kind": "group",
+   "sub": "Academy donor families",
+   "aka": [
+    "the patrons"
+   ],
+   "members": [
+    "m0177"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "earlier-people",
+   "name": "the earlier people",
+   "kind": "group",
+   "sub": "civilization Obsidia ended",
+   "aka": [
+    "the people of the street",
+    "a people much like yours"
+   ],
+   "members": [
+    "m0179"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "posts",
+   "name": "the posts",
+   "kind": "group",
+   "sub": "Academy defense stations",
+   "aka": [
+    "all posts"
+   ],
+   "members": [
+    "m0180"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "professors",
+   "name": "professors",
+   "kind": "group",
+   "sub": "Science Division teachers",
+   "aka": [
+    "the professors"
+   ],
+   "members": [
+    "m0181"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rear-support",
+   "name": "rear support",
+   "kind": "group",
+   "sub": "support group",
+   "aka": [],
+   "members": [
+    "m0182"
+   ],
+   "tier": "B",
+   "see_also": [
+    "rear support"
+   ]
+  },
+  {
+   "slug": "records-office",
+   "name": "records office",
+   "kind": "group",
+   "sub": "Academy records office",
+   "aka": [
+    "the records office"
+   ],
+   "members": [
+    "m0183"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rescue-teams",
+   "name": "rescue teams",
+   "kind": "group",
+   "sub": "Terrinia rescue workers",
+   "aka": [
+    "rescue team",
+    "the rescue team",
+    "rescue crews",
+    "rescue workers"
+   ],
+   "members": [
+    "m0185",
+    "m0184",
+    "m0186"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "researchers",
+   "name": "the researchers",
+   "kind": "group",
+   "sub": "base research staff",
+   "aka": [
+    "the night shift",
+    "her parents' old team"
+   ],
+   "members": [
+    "m0187"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "reserve",
+   "name": "the reserve",
+   "kind": "group",
+   "sub": "partnerless cadets",
+   "aka": [
+    "reserve",
+    "RESERVE"
+   ],
+   "members": [
+    "m0188"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rioters",
+   "name": "the Rioters",
+   "kind": "group",
+   "sub": "Council's target label",
+   "aka": [
+    "Rioters",
+    "Rioter"
+   ],
+   "members": [
+    "m0189"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "salvage-crews",
+   "name": "salvage crews",
+   "kind": "group",
+   "sub": "Ender wreck strippers",
+   "aka": [
+    "the crews",
+    "salvage crew"
+   ],
+   "members": [
+    "m0190"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "scavengers",
+   "name": "scavengers",
+   "kind": "group",
+   "sub": "ruin pickers",
+   "aka": [],
+   "members": [
+    "m0191"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "science-division",
+   "name": "Science Division",
+   "kind": "group",
+   "sub": "Academy science division",
+   "aka": [
+    "the Science Division",
+    "R&D",
+    "Chang'e's division"
+   ],
+   "members": [
+    "m0192"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shield-of-dawnbreak",
+   "name": "Shield of Dawnbreak",
+   "kind": "group",
+   "sub": "Terrinia's army",
+   "aka": [
+    "the Shield",
+    "Shield",
+    "Shield soldiers",
+    "Shield squad",
+    "Shield reserves",
+    "the soldiers"
+   ],
+   "members": [
+    "m0197",
+    "m0195"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shield-headquarters",
+   "name": "Shield headquarters",
+   "kind": "group",
+   "sub": "Shield command",
+   "aka": [
+    "Headquarters"
+   ],
+   "members": [
+    "m0196"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shields-combat-division",
+   "name": "the Shield's combat division",
+   "kind": "group",
+   "sub": "Shield fighting arm",
+   "aka": [],
+   "members": [
+    "m0198"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shield-squads",
+   "name": "the Shield squads",
+   "kind": "group",
+   "sub": "Shield squads",
+   "aka": [
+    "the squads",
+    "Second squad",
+    "Third squad",
+    "Fourth squad"
+   ],
+   "members": [
+    "m0199"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "students-in-costume",
+   "name": "the students in costume",
+   "kind": "group",
+   "sub": "students in ears and horns",
+   "aka": [],
+   "members": [
+    "m0201"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "support-division",
+   "name": "Support Division",
+   "kind": "group",
+   "sub": "Academy support division",
+   "aka": [
+    "the Support Division"
+   ],
+   "members": [
+    "m0202"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "team-b3",
+   "name": "Team B3",
+   "kind": "group",
+   "sub": "Joe's student team",
+   "aka": [],
+   "members": [
+    "m0203"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "technicians",
+   "name": "the technicians",
+   "kind": "group",
+   "sub": "lab technicians",
+   "aka": [],
+   "members": [
+    "m0204"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "third-years",
+   "name": "third years",
+   "kind": "group",
+   "sub": "Academy year group",
+   "aka": [
+    "third-years",
+    "the third years",
+    "the third-year class",
+    "third-year class"
+   ],
+   "members": [
+    "m0206",
+    "m0205"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "trainers",
+   "name": "the trainers",
+   "kind": "group",
+   "sub": "Training Field trainers",
+   "aka": [],
+   "members": [
+    "m0207"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "tutors",
+   "name": "tutors",
+   "kind": "group",
+   "sub": "Academy teachers",
+   "aka": [],
+   "members": [
+    "m0208"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "two-students-in-dark-cloaks",
+   "name": "the two students in dark cloaks",
+   "kind": "group",
+   "sub": "fallen Selrick students",
+   "aka": [
+    "two girls in dark cloaks"
+   ],
+   "members": [
+    "m0209"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "wall-guns",
+   "name": "wall guns",
+   "kind": "group",
+   "sub": "west ward gun crews",
+   "aka": [
+    "the wall guns"
+   ],
+   "members": [
+    "m0211"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "wounded",
+   "name": "the wounded",
+   "kind": "group",
+   "sub": "hurt soldiers",
+   "aka": [
+    "wounded soldiers"
+   ],
+   "members": [
+    "m0212"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "mobile-support",
+   "name": "mobile support",
+   "kind": "idea",
+   "sub": "Selena's battle post",
+   "aka": [],
+   "members": [
+    "m0174"
+   ],
+   "tier": "A",
+   "see_also": [
+    "mobile support"
+   ]
+  },
+  {
+   "slug": "silverbolt",
+   "name": "Silverbolt",
+   "kind": "thing",
+   "sub": "Selena's dragon machine",
+   "aka": [
+    "the dragon machine",
+    "Frame Nine",
+    "Selena's frame"
+   ],
+   "members": [
+    "m0408"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Silverbolt"
+   ]
+  },
+  {
+   "slug": "tetra",
+   "name": "Tetra",
+   "kind": "thing",
+   "sub": "Angela's camera doll",
+   "aka": [
+    "the doll",
+    "Angela's doll",
+    "her little doll"
+   ],
+   "members": [
+    "m0421"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Tetra",
+    "Angela's doll"
+   ]
+  },
+  {
+   "slug": "angela",
+   "name": "Angela",
+   "kind": "person",
+   "sub": "android Aspirant",
+   "aka": [
+    "the android",
+    "the Council's secret weapon",
+    "Android Angela"
+   ],
+   "members": [
+    "m0322"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "change",
+   "name": "Chang'e",
+   "kind": "person",
+   "sub": "Chief Scientist and Aspirant",
+   "aka": [
+    "Teacher Chang'e",
+    "Chief Scientist",
+    "the director"
+   ],
+   "members": [
+    "m0338"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fanny",
+   "name": "Fanny",
+   "kind": "person",
+   "sub": "Aspirant blade fighter",
+   "aka": [],
+   "members": [
+    "m0349"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guinevere",
+   "name": "Guinevere",
+   "kind": "person",
+   "sub": "Baroque heiress and Aspirant",
+   "aka": [
+    "the pink-haired girl",
+    "the pink one",
+    "the pink-haired one",
+    "Guinevere of House Baroque",
+    "the great lady Guinevere",
+    "the heiress",
+    "Baroque"
+   ],
+   "members": [
+    "m0358"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "layla",
+   "name": "Layla",
+   "kind": "person",
+   "sub": "Aspirant cannon fighter",
+   "aka": [
+    "the twin-tailed girl",
+    "the girl with the pink-red twin-tails"
+   ],
+   "members": [
+    "m0367"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesley",
+   "name": "Lesley",
+   "kind": "person",
+   "sub": "Chief Combat Instructor",
+   "aka": [
+    "the Chief Combat Instructor",
+    "Sis",
+    "Big Sis",
+    "the commander"
+   ],
+   "members": [
+    "m0368"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "obsidia",
+   "name": "Obsidia",
+   "kind": "person",
+   "sub": "first awakened Ender",
+   "aka": [
+    "the Will's commander",
+    "the huntress",
+    "her maker",
+    "Imperatrix",
+    "the empress"
+   ],
+   "members": [
+    "m0382",
+    "m0364"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ruby",
+   "name": "Ruby",
+   "kind": "person",
+   "sub": "heir of Oro, Aspirant",
+   "aka": [
+    "the heir",
+    "the girl with the scythe"
+   ],
+   "members": [
+    "m0394"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selena",
+   "name": "Selena",
+   "kind": "person",
+   "sub": "Aspirant made by Obsidia",
+   "aka": [
+    "the sleeping thing",
+    "the blonde girl",
+    "the pawn",
+    "Obsidia's pawn",
+    "the seed",
+    "Obsidia's finest making",
+    "her finest creation"
+   ],
+   "members": [
+    "m0399",
+    "m0384",
+    "m0383"
+   ],
+   "tier": "A",
+   "see_also": [
+    "pawn",
+    "Selena's true form"
+   ]
+  },
+  {
+   "slug": "vexana",
+   "name": "Vexana",
+   "kind": "person",
+   "sub": "Aspirant, Guinevere's partner",
+   "aka": [
+    "the black-haired girl",
+    "Vexana of The Aspirants",
+    "the human girl",
+    "the woman in the robe",
+    "the girl in the robe"
+   ],
+   "members": [
+    "m0425"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "will-of-the-planet",
+   "name": "Will of the Planet",
+   "kind": "person",
+   "sub": "mind behind the Enders",
+   "aka": [
+    "the Will",
+    "the mind behind the Enders",
+    "this world's mind"
+   ],
+   "members": [
+    "m0430"
+   ],
+   "tier": "A",
+   "see_also": [
+    "will of the planet"
+   ]
+  },
+  {
+   "slug": "mr-bunny",
+   "name": "Mr. Bunny",
+   "kind": "person",
+   "sub": "Chang'e's robot companion",
+   "aka": [
+    "Bunny",
+    "round white robot",
+    "the rabbit"
+   ],
+   "members": [
+    "m0380"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "professor-joe",
+   "name": "Professor Joe",
+   "kind": "person",
+   "sub": "Combat Division teacher",
+   "aka": [
+    "Joe",
+    "Prof. Joe"
+   ],
+   "members": [
+    "m0365",
+    "m0389"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "karina",
+   "name": "Karina",
+   "kind": "person",
+   "sub": "rescue worker, Selena's guardian",
+   "aka": [
+    "the woman with the lamp",
+    "the soaked woman",
+    "Selena's guardian"
+   ],
+   "members": [
+    "m0366",
+    "m0400"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "hester",
+   "name": "Hester",
+   "kind": "person",
+   "sub": "head of Guinevere's guard",
+   "aka": [
+    "the woman in the gray coat"
+   ],
+   "members": [
+    "m0362"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "roger",
+   "name": "Roger",
+   "kind": "person",
+   "sub": "Team B3 student",
+   "aka": [
+    "the thin boy"
+   ],
+   "members": [
+    "m0393"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "tigreal",
+   "name": "Tigreal",
+   "kind": "person",
+   "sub": "Fanny's elder brother",
+   "aka": [],
+   "members": [
+    "m0423"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-father",
+   "name": "Chang'e's father",
+   "kind": "person",
+   "sub": "Chang'e's adoptive father",
+   "aka": [
+    "Dad"
+   ],
+   "members": [
+    "m0339"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-mother",
+   "name": "Chang'e's mother",
+   "kind": "person",
+   "sub": "Chang'e's adoptive mother",
+   "aka": [
+    "Mom"
+   ],
+   "members": [
+    "m0340"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-father",
+   "name": "Guinevere's father",
+   "kind": "person",
+   "sub": "head of House Baroque",
+   "aka": [
+    "the master"
+   ],
+   "members": [
+    "m0359"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-mother",
+   "name": "Guinevere's mother",
+   "kind": "person",
+   "sub": "Guinevere's late mother",
+   "aka": [],
+   "members": [
+    "m0360"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-brother",
+   "name": "Lesley's brother",
+   "kind": "person",
+   "sub": "Lesley's late brother",
+   "aka": [
+    "Lesley's little brother"
+   ],
+   "members": [
+    "m0369",
+    "m0371"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-father",
+   "name": "Lesley's father",
+   "kind": "person",
+   "sub": "Lesley's late father",
+   "aka": [],
+   "members": [
+    "m0370"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-mother",
+   "name": "Lesley's mother",
+   "kind": "person",
+   "sub": "Lesley's late mother",
+   "aka": [],
+   "members": [
+    "m0372"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rubys-father",
+   "name": "Ruby's father",
+   "kind": "person",
+   "sub": "Decisionmaker of Oro",
+   "aka": [
+    "the Decisionmaker of Planet Oro",
+    "the Decisionmaker"
+   ],
+   "members": [
+    "m0395"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rubys-tutor",
+   "name": "Ruby's tutor",
+   "kind": "person",
+   "sub": "Ruby's tutor on Oro",
+   "aka": [],
+   "members": [
+    "m0396"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-father",
+   "name": "Vexana's father",
+   "kind": "person",
+   "sub": "Shield wall gunsmith",
+   "aka": [
+    "her father"
+   ],
+   "members": [
+    "m0426"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-mother",
+   "name": "Vexana's mother",
+   "kind": "person",
+   "sub": "Vexana's late mother",
+   "aka": [],
+   "members": [
+    "m0427"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "girl-in-the-red-dress",
+   "name": "the girl in the red dress",
+   "kind": "person",
+   "sub": "child at the breach",
+   "aka": [
+    "the girl with the pink rabbit",
+    "a little girl on her hip",
+    "the little girl"
+   ],
+   "members": [
+    "m0352",
+    "m0353"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "girls-mother",
+   "name": "the girl's mother",
+   "kind": "person",
+   "sub": "mother at the breach",
+   "aka": [],
+   "members": [
+    "m0355"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "child-in-the-barrel",
+   "name": "the child in the barrel",
+   "kind": "person",
+   "sub": "child in Terrinia",
+   "aka": [],
+   "members": [
+    "m0342"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "boy-with-the-red-tie",
+   "name": "the boy with the red tie",
+   "kind": "person",
+   "sub": "Selrick student",
+   "aka": [],
+   "members": [
+    "m0335"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "researcher",
+   "name": "the researcher",
+   "kind": "person",
+   "sub": "base researcher, later professor",
+   "aka": [
+    "the researcher who gave her the big bench"
+   ],
+   "members": [
+    "m0392"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "night-shift-researcher",
+   "name": "the night-shift researcher",
+   "kind": "person",
+   "sub": "base researcher",
+   "aka": [],
+   "members": [
+    "m0381"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "oldest-of-the-scientists",
+   "name": "the oldest of the scientists",
+   "kind": "person",
+   "sub": "Terrinia scientist",
+   "aka": [],
+   "members": [
+    "m0388"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "station-sergeant",
+   "name": "the station sergeant",
+   "kind": "person",
+   "sub": "Shield sergeant",
+   "aka": [
+    "the sergeant"
+   ],
+   "members": [
+    "m0420"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "youngest-soldier",
+   "name": "the youngest soldier",
+   "kind": "person",
+   "sub": "Shield soldier",
+   "aka": [],
+   "members": [
+    "m0433"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gunner",
+   "name": "the gunner",
+   "kind": "person",
+   "sub": "Shield gunner",
+   "aka": [],
+   "members": [
+    "m0361"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "station-medic",
+   "name": "the station medic",
+   "kind": "person",
+   "sub": "Shield medic",
+   "aka": [],
+   "members": [
+    "m0419"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shield-soldier-on-the-hill",
+   "name": "the Shield soldier on the hill",
+   "kind": "person",
+   "sub": "Shield soldier",
+   "aka": [],
+   "members": [
+    "m0407"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shield-clerk",
+   "name": "the Shield clerk",
+   "kind": "person",
+   "sub": "Shield enlistment clerk",
+   "aka": [
+    "the clerk"
+   ],
+   "members": [
+    "m0344"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "officer-who-posted-lesley",
+   "name": "the officer who posted Lesley",
+   "kind": "person",
+   "sub": "Shield officer",
+   "aka": [
+    "the Shield officer"
+   ],
+   "members": [
+    "m0385",
+    "m0405"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "officer-with-gray-in-his-beard",
+   "name": "the officer with gray in his beard",
+   "kind": "person",
+   "sub": "Shield officer",
+   "aka": [],
+   "members": [
+    "m0386"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "sergeant-at-the-rail-yard",
+   "name": "the sergeant at the rail yard",
+   "kind": "person",
+   "sub": "Shield squad sergeant",
+   "aka": [],
+   "members": [
+    "m0403"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "truck-driver",
+   "name": "the truck driver",
+   "kind": "person",
+   "sub": "Shield driver",
+   "aka": [],
+   "members": [
+    "m0424"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "quartermaster",
+   "name": "the quartermaster",
+   "kind": "person",
+   "sub": "Shield quartermaster",
+   "aka": [],
+   "members": [
+    "m0390"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "warden",
+   "name": "the warden",
+   "kind": "person",
+   "sub": "seawall shelter warden",
+   "aka": [],
+   "members": [
+    "m0428"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-girl-at-the-shelter",
+   "name": "the small girl at the shelter",
+   "kind": "person",
+   "sub": "child at the seawall",
+   "aka": [],
+   "members": [
+    "m0410"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "old-shield-sergeant",
+   "name": "the old Shield sergeant",
+   "kind": "person",
+   "sub": "Hester's fighting teacher",
+   "aka": [],
+   "members": [
+    "m0387"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "house-servant",
+   "name": "the House servant",
+   "kind": "person",
+   "sub": "servant of House Baroque",
+   "aka": [],
+   "members": [
+    "m0363"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "manners-tutor",
+   "name": "the manners tutor",
+   "kind": "person",
+   "sub": "Guinevere's manners tutor",
+   "aka": [],
+   "members": [
+    "m0377"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-gate-guard",
+   "name": "the Academy gate guard",
+   "kind": "person",
+   "sub": "Academy guard",
+   "aka": [
+    "the guard"
+   ],
+   "members": [
+    "m0321"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-from-the-drill-line",
+   "name": "the boy from the drill line",
+   "kind": "person",
+   "sub": "drill line cadet",
+   "aka": [],
+   "members": [
+    "m0329"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "girl-with-two-braids",
+   "name": "the girl with two braids",
+   "kind": "person",
+   "sub": "girl at the home",
+   "aka": [],
+   "members": [
+    "m0354"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "soldier-who-brought-the-toolbox",
+   "name": "the soldier who brought the toolbox",
+   "kind": "person",
+   "sub": "soldier from the wall",
+   "aka": [
+    "the soldier from the wall",
+    "the soldier at the cot"
+   ],
+   "members": [
+    "m0412",
+    "m0411",
+    "m0414"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "soldier-who-carried-vexana",
+   "name": "the soldier who carried Vexana",
+   "kind": "person",
+   "sub": "soldier in the attack",
+   "aka": [
+    "the soldier who carried Vexana off"
+   ],
+   "members": [
+    "m0415",
+    "m0416"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "stallholder",
+   "name": "the stallholder",
+   "kind": "person",
+   "sub": "fabric stall keeper",
+   "aka": [],
+   "members": [
+    "m0418"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "girl-at-the-cake-counter",
+   "name": "the girl at the cake counter",
+   "kind": "person",
+   "sub": "cake shop worker",
+   "aka": [],
+   "members": [
+    "m0350"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "medic",
+   "name": "the medic",
+   "kind": "person",
+   "sub": "Academy field medic",
+   "aka": [],
+   "members": [
+    "m0378"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "camera-droid",
+   "name": "the camera droid",
+   "kind": "person",
+   "sub": "photographer droid",
+   "aka": [
+    "the droid"
+   ],
+   "members": [
+    "m0337"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "library-droid",
+   "name": "the library droid",
+   "kind": "person",
+   "sub": "library desk droid",
+   "aka": [],
+   "members": [
+    "m0373"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-in-the-second-row",
+   "name": "the boy in the second row",
+   "kind": "person",
+   "sub": "student in Chang'e's class",
+   "aka": [
+    "the same boy"
+   ],
+   "members": [
+    "m0330"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "records-clerk",
+   "name": "the records clerk",
+   "kind": "person",
+   "sub": "records office clerk",
+   "aka": [
+    "a clerk from the records office"
+   ],
+   "members": [
+    "m0391"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "counseling-woman",
+   "name": "the counseling woman",
+   "kind": "person",
+   "sub": "Academy counselor",
+   "aka": [
+    "an older woman"
+   ],
+   "members": [
+    "m0346"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "sergeant-at-the-fence",
+   "name": "the sergeant at the fence",
+   "kind": "person",
+   "sub": "Shield sergeant",
+   "aka": [
+    "the Shield sergeant"
+   ],
+   "members": [
+    "m0406"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "sergeant-at-the-lot",
+   "name": "the sergeant at the lot",
+   "kind": "person",
+   "sub": "Shield sergeant",
+   "aka": [],
+   "members": [
+    "m0402",
+    "m0401"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "courier",
+   "name": "the courier",
+   "kind": "person",
+   "sub": "Council messenger",
+   "aka": [],
+   "members": [
+    "m0347"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "man-under-the-sign",
+   "name": "the man under the sign",
+   "kind": "person",
+   "sub": "simulated civilian",
+   "aka": [],
+   "members": [
+    "m0376"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "third-year-teacher",
+   "name": "the third-year teacher",
+   "kind": "person",
+   "sub": "third-year class teacher",
+   "aka": [
+    "the class teacher",
+    "the teacher"
+   ],
+   "members": [
+    "m0343",
+    "m0422"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-on-the-stairs",
+   "name": "the boy on the stairs",
+   "kind": "person",
+   "sub": "Academy student",
+   "aka": [
+    "the boy at the rail",
+    "the boy on the Academy stairs"
+   ],
+   "members": [
+    "m0332",
+    "m0331",
+    "m0328"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "attendance-clerk",
+   "name": "the attendance clerk",
+   "kind": "person",
+   "sub": "Academy clerk",
+   "aka": [],
+   "members": [
+    "m0323"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "baker",
+   "name": "the baker",
+   "kind": "person",
+   "sub": "Terrinia baker",
+   "aka": [],
+   "members": [
+    "m0324"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "big-man-at-the-crews-yard",
+   "name": "the big man at the crews' yard",
+   "kind": "person",
+   "sub": "salvage buyer",
+   "aka": [
+    "the big man"
+   ],
+   "members": [
+    "m0326",
+    "m0325"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-at-the-gate",
+   "name": "the boy at the gate",
+   "kind": "person",
+   "sub": "Academy student",
+   "aka": [],
+   "members": [
+    "m0327"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-under-the-shutter",
+   "name": "the boy under the shutter",
+   "kind": "person",
+   "sub": "boy Selena rescued",
+   "aka": [],
+   "members": [
+    "m0333"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-with-a-hook",
+   "name": "the boy with a hook",
+   "kind": "person",
+   "sub": "young scavenger",
+   "aka": [],
+   "members": [
+    "m0334"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "boy-with-the-skinned-knee",
+   "name": "the boy with the skinned knee",
+   "kind": "person",
+   "sub": "Selena's schoolmate",
+   "aka": [],
+   "members": [
+    "m0336"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "combat-division-boy",
+   "name": "the Combat Division boy",
+   "kind": "person",
+   "sub": "student at the showing",
+   "aka": [],
+   "members": [
+    "m0345"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "examiner",
+   "name": "the examiner",
+   "kind": "person",
+   "sub": "Science Division examiner",
+   "aka": [],
+   "members": [
+    "m0348"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "girl-at-the-next-desk",
+   "name": "the girl at the next desk",
+   "kind": "person",
+   "sub": "Selena's classmate",
+   "aka": [],
+   "members": [
+    "m0351"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "gray-haired-professor",
+   "name": "the gray-haired professor",
+   "kind": "person",
+   "sub": "Science Division professor",
+   "aka": [],
+   "members": [
+    "m0356"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "grumbling-classmate",
+   "name": "the grumbling classmate",
+   "kind": "person",
+   "sub": "Science Division classmate",
+   "aka": [],
+   "members": [
+    "m0357"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "man-at-the-fence",
+   "name": "the man at the fence",
+   "kind": "person",
+   "sub": "onlooker at the opening",
+   "aka": [],
+   "members": [
+    "m0375"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "schoolteacher",
+   "name": "the schoolteacher",
+   "kind": "person",
+   "sub": "Selena's childhood teacher",
+   "aka": [],
+   "members": [
+    "m0397"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "scorched-suits-pilot",
+   "name": "the scorched suit's pilot",
+   "kind": "person",
+   "sub": "dead Academy pilot",
+   "aka": [],
+   "members": [
+    "m0398"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shelter-clerk",
+   "name": "the shelter clerk",
+   "kind": "person",
+   "sub": "clerk at the shelter",
+   "aka": [],
+   "members": [
+    "m0404"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-boy",
+   "name": "the small boy",
+   "kind": "person",
+   "sub": "child at the shelters",
+   "aka": [],
+   "members": [
+    "m0409"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "soldier-under-the-slab",
+   "name": "the soldier under the slab",
+   "kind": "person",
+   "sub": "wounded soldier",
+   "aka": [],
+   "members": [
+    "m0413"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "soldier-with-the-sling",
+   "name": "the soldier with the sling",
+   "kind": "person",
+   "sub": "wounded soldier",
+   "aka": [],
+   "members": [
+    "m0417"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "waterfront-merchant",
+   "name": "the waterfront merchant",
+   "kind": "person",
+   "sub": "merchant buying a warning",
+   "aka": [],
+   "members": [
+    "m0429"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "woman-downstairs",
+   "name": "the woman downstairs",
+   "kind": "person",
+   "sub": "Karina's neighbor",
+   "aka": [],
+   "members": [
+    "m0431"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "workshop-man",
+   "name": "the workshop man",
+   "kind": "person",
+   "sub": "plate buyer",
+   "aka": [],
+   "members": [
+    "m0432"
+   ],
+   "tier": "B",
+   "see_also": []
+  }
+ ],
+ "dropped": []
+}

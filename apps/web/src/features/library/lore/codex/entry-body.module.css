@@ -1,0 +1,423 @@
+/* The page of an entry or of a relationship, inside the window of the codex. */
+.body {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+  min-width: 0;
+}
+
+.lead {
+  margin: 0;
+  max-width: 46rem;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.55rem);
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--k, var(--accent));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.cta {
+  margin: 0;
+}
+
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #05070c;
+  background: var(--k, var(--accent));
+}
+
+.ctaLink:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.cols {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 40em) {
+  .cols {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  }
+}
+
+.figures {
+  display: grid;
+  gap: 1rem;
+}
+
+.figure {
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+}
+
+.figure figcaption {
+  color: var(--text-dim);
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.5rem 1.2rem;
+  margin: 0;
+  align-content: start;
+}
+
+.rows dt {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.rows dd {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.section {
+  display: grid;
+  gap: 0.8rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.h {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.gear {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gear li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.9rem;
+  border-left: 4px solid var(--k, var(--accent));
+  background: var(--bg-2);
+}
+
+.gear b {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gear span {
+  font-family: var(--font-serif-stack);
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.act {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.actTitle {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--k, var(--accent));
+}
+
+.facts {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.2rem 0.8rem;
+  align-items: baseline;
+  font-family: var(--font-serif-stack);
+  font-size: 1.12rem;
+  line-height: 1.45;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.chip:hover,
+.chip:focus-visible {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.shut {
+  margin: 0.4rem 0 0;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  border: 1px dashed var(--line-strong);
+}
+
+.shutButton {
+  font: inherit;
+  color: var(--text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.relList {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rel {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+
+.relHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.8rem;
+}
+
+.relName {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--k, var(--accent));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+.relTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.relTag {
+  padding: 0.1rem 0.55rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--tag, #556);
+}
+
+.relTag[data-family="kin"] {
+  --tag: #c42c82;
+}
+
+.relTag[data-family="bond"] {
+  --tag: #0b7f5f;
+}
+
+.relTag[data-family="power"] {
+  --tag: #6240c8;
+}
+
+.relTag[data-family="make"] {
+  --tag: #a86400;
+}
+
+.relTag[data-family="foe"] {
+  --tag: #c02840;
+}
+
+.relNote {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1.08rem;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.relMore {
+  justify-self: start;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The gate of an entry the reader has not met. */
+.gate {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: start;
+  padding: 1.4rem;
+  border: 2px dashed var(--line-strong);
+  background: var(--bg-2);
+}
+
+.gateLine {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: 1.3rem;
+}
+
+.gateNote {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.gateButton {
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--text);
+  border: 0;
+  cursor: pointer;
+}
+
+/* The page of a relationship. */
+.pairHeads {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40em) {
+  .pairHeads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pairHead {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+}
+
+.pairSub {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.pairRole {
+  font-family: var(--font-serif-stack);
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+/* An official passage, word for word. */
+.quote {
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.quote blockquote {
+  margin: 0;
+  padding: 0.2rem 0 0.2rem 1rem;
+  border-left: 4px solid var(--k, var(--accent));
+  font-family: var(--font-serif-stack);
+  font-size: 1.12rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.quote figcaption {
+  color: var(--text-dim);
+}

@@ -18,6 +18,13 @@ export interface LoreBarProps {
   onHeight: (px: number) => void;
 }
 
+const PLACEHOLDER: Readonly<Record<LoreView, string>> = {
+  codex: "A name, a place, a thing",
+  texts: "Titles and words in every text",
+  atlas: "Titles and words in every text",
+  who: "Titles and words in every text",
+};
+
 /** The sticky bar: the three views as tabs, the search field and a live summary. */
 export function LoreBar({ view, onView, q, onQuery, summary, onHeight }: LoreBarProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -81,7 +88,7 @@ export function LoreBar({ view, onView, q, onQuery, summary, onHeight }: LoreBar
             <input
               type="search"
               value={q}
-              placeholder="Titles and words in every text"
+              placeholder={PLACEHOLDER[view]}
               autoComplete="off"
               spellCheck={false}
               onChange={(e) => {

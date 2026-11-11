@@ -1,0 +1,119 @@
+{
+ "layla": {
+  "line": "A proud third-year cannon fighter who had topped the VR rankings since her first year.",
+  "short": "A third-year with pink-red twin-tails and a long cannon. She had topped the VR rankings since her first year and never once been second.",
+  "summary": "A third-year who built her own cannon, from a long line of scientists, and had never been second until Fanny, a new transfer, beat her time on day one. She raced Fanny at everything until a real breach of the dome showed her the Enders were not target practice, and Professor Joe made them the Layla-Fanny Team. From then on she planned the attacks and went first on raids to cover Fanny, and her plan drew the Mother Matrix's fire so its chest opened for Guinevere. When the Storm Citadel's field killed her cannon, she held the wall in the bay road cut by counting each Ender's strike, told a crying boy Fanny was her teammate, and fought on back to back with her.",
+  "rows": [
+   [
+    "Appearance",
+    "Long pink-red twin-tails and a frilled black uniform nobody issued her.",
+    1
+   ],
+   [
+    "Family",
+    "Scientists for generations. A message from home calls her the hope of the family. She leaves their messages unanswered.",
+    2
+   ],
+   [
+    "School",
+    "Selrick Academy, Combat Division, third year. Her name headed the division's first intake list.",
+    28
+   ],
+   [
+    "Entrance reading",
+    "Her needle hit the stop, the best reading of the day. Lesley noted that she never looked back, which is bad in a pair.",
+    28
+   ],
+   [
+    "Teams",
+    "Team B3 under Professor Joe, with Roger and later Fanny. Then the Layla-Fanny Team, after she had refused eleven partnership offers in two years.",
+    8
+   ],
+   [
+    "Teachers",
+    "Professor Joe, Chang'e and Lesley. She sits alone at the front of Chang'e's class and always asks the first question.",
+    41
+   ],
+   [
+    "Post",
+    "Frontline. She takes charge, marks the weak points and goes first on raids so that Fanny is covered.",
+    70
+   ],
+   [
+    "VR record",
+    "3:41, top of the board since her first year, until Fanny's 3:39 knocked her to second. Her best rerun of Fanny's run was 3:40.",
+    2
+   ],
+   [
+    "Lab",
+    "An abandoned classroom she took against the rules. Her cannon, her drones, her trophy and a seedling live there.",
+    2
+   ],
+   [
+    "Habits",
+    "Trains in secret and tells everyone the exams are easy. Counts everything. Watches the sunset and the stars past the dome longer than she means to.",
+    78
+   ],
+   [
+    "Rivals",
+    "Fanny at first, at everything. She keeps score against Vexana, and neither she nor Guinevere will cross a courtyard to the other.",
+    36
+   ],
+   [
+    "First seen",
+    "Chapter 1",
+    1
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Layla's cannon",
+    "note": "A long cannon she built herself, as tall as she is, white with a teal strip. She rebuilt its barrel and sight twice. Cyan cells on its stock fill as it charges, and a dial sets the power."
+   },
+   {
+    "name": "Full charge",
+    "note": "Her strongest shot, a blue-white line after three seconds of charge. It split a giant's beam. It drifted left until she made the faster half of the charge wait nine thousandths of a second."
+   },
+   {
+    "name": "Low-charge shot",
+    "note": "Turned down two notches, it fired a thin white bolt through a billboard and two walls of glass into an Ender's core."
+   },
+   {
+    "name": "Combat suit",
+    "note": "Her Aspirant suit. Its thrusters let her fly, and on them she shoved Fanny out of a giant's beam. It was drained after that battle."
+   },
+   {
+    "name": "Three black drones",
+    "note": "Drones in her lab with angry faces she drew on in cyan marker. For three mornings one filmed Fanny drilling while she watched from a dark gallery."
+   },
+   {
+    "name": "Tablet",
+    "note": "She builds battle maps on it. For the rescue she marked the weak points in the Enders' defenses in green and flicked the map to the command deck."
+   },
+   {
+    "name": "Wristband",
+    "note": "It buzzes with messages. On it she read Roger's news of Professor Joe and sent a reply."
+   },
+   {
+    "name": "Hot pen",
+    "note": "A tool she works at her cannon's cells at gear check. She has the cannon open and shut again before Fanny has oiled her second blade."
+   },
+   {
+    "name": "FIRST PLACE trophy",
+    "note": "A gold trophy on her lab's top shelf. The night Fanny took first place, she turned it to face the wall."
+   },
+   {
+    "name": "Pink box",
+    "note": "The chocolate box with a teal ribbon that Fanny gave her as her teammate. It stands on the top shelf beside her trophy."
+   },
+   {
+    "name": "Seedling",
+    "note": "A seedling with three small leaves under a glass dome. It is the only thing in her lab she did not build."
+   },
+   {
+    "name": "Cannon under the field",
+    "note": "Under the Storm Citadel's field its cells went dark one by one and it would not fire. Later it woke on her back, its cells lighting cyan from the bottom up."
+   }
+  ]
+ }
+}

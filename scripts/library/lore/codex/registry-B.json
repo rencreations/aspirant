@@ -1,0 +1,3717 @@
+{
+ "set": "B",
+ "entries": [
+  {
+   "slug": "angelas-awakening",
+   "name": "Angela's awakening",
+   "kind": "event",
+   "sub": "Angela first wakes",
+   "aka": [],
+   "members": [
+    "m0021"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "northeastern-sector-breach",
+   "name": "the Northeastern sector breach",
+   "kind": "event",
+   "sub": "great dome breach battle",
+   "aka": [
+    "the breach",
+    "the attack on the Northeastern sector",
+    "the Ender army's breach of the dome",
+    "the Northeastern breach",
+    "the day of the breach"
+   ],
+   "members": [
+    "m0092",
+    "m0022",
+    "m0031",
+    "m0053"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "death-of-vexanas-father",
+   "name": "the death of Vexana's father",
+   "kind": "event",
+   "sub": "Vexana's father's last stand",
+   "aka": [
+    "death of Vexana's father",
+    "that day at the wall",
+    "the attack on the wall houses",
+    "the stand in the street by the wall",
+    "the attack on the Shield houses"
+   ],
+   "members": [
+    "m0048",
+    "m0023",
+    "m0117"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "mother-matrixs-attack",
+   "name": "the Mother Matrix's attack",
+   "kind": "event",
+   "sub": "attack through the Singularity",
+   "aka": [
+    "the attack through the Singularity",
+    "the first wave",
+    "the Matrix's attack"
+   ],
+   "members": [
+    "m0024",
+    "m0069"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "augmentation",
+   "name": "the augmentation",
+   "kind": "event",
+   "sub": "Ultimate Ender upgrade",
+   "aka": [],
+   "members": [
+    "m0025"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "best-aspirant-duo-ceremony",
+   "name": "the Best Aspirant Duo ceremony",
+   "kind": "event",
+   "sub": "Academy award ceremony",
+   "aka": [
+    "the badge ceremony",
+    "the ceremony",
+    "the day of the badges",
+    "the badges ceremony"
+   ],
+   "members": [
+    "m0029",
+    "m0026",
+    "m0043"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "balance-keepers-landings",
+   "name": "the Balance Keepers' landings",
+   "kind": "event",
+   "sub": "Angela's missions for Oro",
+   "aka": [],
+   "members": [
+    "m0027"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "strike-on-the-mother-matrix",
+   "name": "the strike on the Mother Matrix",
+   "kind": "event",
+   "sub": "Guinevere and Vexana's strike",
+   "aka": [
+    "the strike on the open chest",
+    "the charge at the Mother Matrix",
+    "the charge",
+    "the strike",
+    "the black hole takes them",
+    "the double strike",
+    "the strike on the Matrix"
+   ],
+   "members": [
+    "m0120",
+    "m0037",
+    "m0030"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "breaking-of-angelas-shield",
+   "name": "the breaking of Angela's shield",
+   "kind": "event",
+   "sub": "Angela's first fall",
+   "aka": [],
+   "members": [
+    "m0032"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "catastrophe",
+   "name": "the Catastrophe",
+   "kind": "event",
+   "sub": "first great Ender onslaught",
+   "aka": [
+    "Catastrophe"
+   ],
+   "members": [
+    "m0033"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-glass-chamber-test",
+   "name": "Chang'e's glass chamber test",
+   "kind": "event",
+   "sub": "test of Aspirant light",
+   "aka": [
+    "the glass chamber test"
+   ],
+   "members": [
+    "m0034"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-lesson-on-the-will",
+   "name": "Chang'e's lesson on the Will",
+   "kind": "event",
+   "sub": "class on the Will",
+   "aka": [
+    "Chang'e's lesson on the Enders",
+    "Chang'e's lesson"
+   ],
+   "members": [
+    "m0036",
+    "m0035"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "chocolate-day",
+   "name": "the chocolate day",
+   "kind": "event",
+   "sub": "Academy chocolate exchange",
+   "aka": [],
+   "members": [
+    "m0038"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "citadels-crossing",
+   "name": "the Citadel's crossing",
+   "kind": "event",
+   "sub": "Storm Citadel's voyage",
+   "aka": [
+    "the crossing"
+   ],
+   "members": [
+    "m0039"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dawn-raid",
+   "name": "the dawn raid",
+   "kind": "event",
+   "sub": "Lesley's first kill",
+   "aka": [],
+   "members": [
+    "m0041"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "day-at-the-office-door",
+   "name": "the day at the office door",
+   "kind": "event",
+   "sub": "Guinevere's visit home",
+   "aka": [],
+   "members": [
+    "m0042"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "day-of-the-tree",
+   "name": "the day of the tree",
+   "kind": "event",
+   "sub": "afternoon on the lawn",
+   "aka": [],
+   "members": [
+    "m0044"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "founding-of-selrick-academy",
+   "name": "the founding of Selrick Academy",
+   "kind": "event",
+   "sub": "Academy's opening day",
+   "aka": [
+    "the founding",
+    "the day the Academy opened",
+    "the opening of Selrick Academy",
+    "the Academy's opening"
+   ],
+   "members": [
+    "m0072",
+    "m0071",
+    "m0045",
+    "m0094"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "landing-in-terrinia",
+   "name": "the landing in Terrinia",
+   "kind": "event",
+   "sub": "Oro's android attack",
+   "aka": [
+    "the landing",
+    "the Dawnbreak mission",
+    "the day the black ships landed"
+   ],
+   "members": [
+    "m0079",
+    "m0046"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "day-the-newcomers-became-aspirants",
+   "name": "the day the newcomers became Aspirants",
+   "kind": "event",
+   "sub": "Ruby and Angela's induction",
+   "aka": [
+    "the week the newcomers became Aspirants",
+    "Lesley's speech about trust"
+   ],
+   "members": [
+    "m0047",
+    "m0135",
+    "m0083"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "defense-of-the-bay-road-cut",
+   "name": "the defense of the bay road cut",
+   "kind": "event",
+   "sub": "stand in the cut",
+   "aka": [
+    "defense of the bay road cut"
+   ],
+   "members": [
+    "m0049"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "destruction-of-the-storm-citadel",
+   "name": "the destruction of the Storm Citadel",
+   "kind": "event",
+   "sub": "fall of the ship",
+   "aka": [
+    "destruction of the Storm Citadel"
+   ],
+   "members": [
+    "m0050"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "duel-in-the-throne-hall",
+   "name": "the duel in the throne hall",
+   "kind": "event",
+   "sub": "Selena against Obsidia",
+   "aka": [
+    "the duel",
+    "the duel of Selena and Obsidia"
+   ],
+   "members": [
+    "m0051"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dusk-raid",
+   "name": "the dusk raid",
+   "kind": "event",
+   "sub": "first raid Lesley saw",
+   "aka": [
+    "the first raid"
+   ],
+   "members": [
+    "m0052"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "storm-night-of-983",
+   "name": "the storm night of 983",
+   "kind": "event",
+   "sub": "Obsidia's night strike",
+   "aka": [
+    "the storm night",
+    "the night strike of 983",
+    "the night of the mud",
+    "the Ender attack of 983",
+    "the night the roof came down"
+   ],
+   "members": [
+    "m0118",
+    "m0119",
+    "m0088",
+    "m0086",
+    "m0054",
+    "m0091"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "first-entrance-assessment",
+   "name": "the first entrance assessment",
+   "kind": "event",
+   "sub": "first Academy intake",
+   "aka": [
+    "the first intake",
+    "the entrance assessment",
+    "the assessment"
+   ],
+   "members": [
+    "m0066",
+    "m0055"
+   ],
+   "tier": "A",
+   "see_also": [
+    "entrance assessment"
+   ]
+  },
+  {
+   "slug": "escape-from-oro",
+   "name": "the escape from Oro",
+   "kind": "event",
+   "sub": "prison break",
+   "aka": [],
+   "members": [
+    "m0056"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fall-of-the-research-base",
+   "name": "the fall of the research base",
+   "kind": "event",
+   "sub": "night the base burned",
+   "aka": [
+    "the night the base fell",
+    "the fall",
+    "the night of the fall",
+    "the night of the crater"
+   ],
+   "members": [
+    "m0089",
+    "m0057",
+    "m0085"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "falling-rack",
+   "name": "the falling rack",
+   "kind": "event",
+   "sub": "accident at the base",
+   "aka": [],
+   "members": [
+    "m0058"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-assessment",
+   "name": "Fanny's assessment",
+   "kind": "event",
+   "sub": "Fanny's VR entrance run",
+   "aka": [],
+   "members": [
+    "m0059"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fight-over-the-gap",
+   "name": "the fight over the gap",
+   "kind": "event",
+   "sub": "Guinevere against Vexana",
+   "aka": [],
+   "members": [
+    "m0060"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "final-combat-trial",
+   "name": "the final combat trial",
+   "kind": "event",
+   "sub": "preparatory course final trial",
+   "aka": [
+    "the trial",
+    "the final trial"
+   ],
+   "members": [
+    "m0061",
+    "m0063"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "final-purge",
+   "name": "the final purge",
+   "kind": "event",
+   "sub": "Obsidia's city attack",
+   "aka": [
+    "the second front"
+   ],
+   "members": [
+    "m0062"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "summer-fireworks",
+   "name": "the summer fireworks",
+   "kind": "event",
+   "sub": "the pair's fireworks night",
+   "aka": [
+    "the night of the summer fireworks",
+    "the fireworks",
+    "the fireworks at the dome's edge",
+    "summer fireworks",
+    "the corridor after curfew"
+   ],
+   "members": [
+    "m0087",
+    "m0064",
+    "m0065",
+    "m0121",
+    "m0040"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "first-light",
+   "name": "the first light",
+   "kind": "event",
+   "sub": "first lasting core light",
+   "aka": [],
+   "members": [
+    "m0067"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fish-market-raid",
+   "name": "the fish-market raid",
+   "kind": "event",
+   "sub": "shore ward raid",
+   "aka": [
+    "the fish market"
+   ],
+   "members": [
+    "m0070"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guards-block",
+   "name": "the Guard's block",
+   "kind": "event",
+   "sub": "Eternal Guard shields Guinevere",
+   "aka": [],
+   "members": [
+    "m0073"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-block",
+   "name": "Guinevere's block",
+   "kind": "event",
+   "sub": "Guinevere stops Matrix's shot",
+   "aka": [],
+   "members": [
+    "m0074"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "taking-of-vexana",
+   "name": "the taking of Vexana",
+   "kind": "event",
+   "sub": "Vexana's abduction",
+   "aka": [
+    "the Investigation Room attack",
+    "the day of the corridor",
+    "Vexana's capture",
+    "the capture",
+    "the day Vexana was taken"
+   ],
+   "members": [
+    "m0123",
+    "m0075",
+    "m0129"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "joes-lecture-on-enders",
+   "name": "Joe's lecture on Enders",
+   "kind": "event",
+   "sub": "Combat Division class",
+   "aka": [
+    "Joe's lesson on weak spots",
+    "the lesson on weak spots"
+   ],
+   "members": [
+    "m0076",
+    "m0077"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "newcomers-arrival",
+   "name": "the newcomers' arrival",
+   "kind": "event",
+   "sub": "Ruby and Angela land",
+   "aka": [
+    "the landing at the cleared lot"
+   ],
+   "members": [
+    "m0084",
+    "m0078"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "late-night-calls",
+   "name": "the late-night calls",
+   "kind": "event",
+   "sub": "the pair's nightly calls",
+   "aka": [
+    "the first night"
+   ],
+   "members": [
+    "m0080",
+    "m0068"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Go to bed"
+   ]
+  },
+  {
+   "slug": "lesleys-birthday",
+   "name": "Lesley's birthday",
+   "kind": "event",
+   "sub": "eye and rifle gifts",
+   "aka": [],
+   "members": [
+    "m0081"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-secret-mission",
+   "name": "Lesley's secret mission",
+   "kind": "event",
+   "sub": "top secret Shield mission",
+   "aka": [
+    "the mission"
+   ],
+   "members": [
+    "m0082"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "night-the-enders-came-back",
+   "name": "the night the Enders came back",
+   "kind": "event",
+   "sub": "Enders' return attack",
+   "aka": [],
+   "members": [
+    "m0090"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "one-arm-match",
+   "name": "the one-arm match",
+   "kind": "event",
+   "sub": "partners' night duel",
+   "aka": [
+    "the match",
+    "the bandage in sparring"
+   ],
+   "members": [
+    "m0093",
+    "m0028"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "oros-war-with-the-enders",
+   "name": "Oro's war with the Enders",
+   "kind": "event",
+   "sub": "ancient war on Oro",
+   "aka": [],
+   "members": [
+    "m0095"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "promise-on-the-roof",
+   "name": "the promise on the roof",
+   "kind": "event",
+   "sub": "gift of the stars",
+   "aka": [
+    "the promise"
+   ],
+   "members": [
+    "m0096"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "quarrel-over-the-gifts",
+   "name": "the quarrel over the gifts",
+   "kind": "event",
+   "sub": "Guinevere and Vexana's fight",
+   "aka": [],
+   "members": [
+    "m0097"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "raid-at-the-domes-foot",
+   "name": "the raid at the dome's foot",
+   "kind": "event",
+   "sub": "the reserve's first fight",
+   "aka": [],
+   "members": [
+    "m0098"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "raid-of-selenas-childhood",
+   "name": "the raid of Selena's childhood",
+   "kind": "event",
+   "sub": "night raid in rain",
+   "aka": [],
+   "members": [
+    "m0099"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rail-yard-shot",
+   "name": "the rail yard shot",
+   "kind": "event",
+   "sub": "first whole core piece",
+   "aka": [
+    "the rail yard"
+   ],
+   "members": [
+    "m0100"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rebuilding",
+   "name": "the rebuilding",
+   "kind": "event",
+   "sub": "Northeastern sector repair",
+   "aka": [],
+   "members": [
+    "m0101"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rescue-operation",
+   "name": "the rescue operation",
+   "kind": "event",
+   "sub": "Layla's plan for Guinevere",
+   "aka": [],
+   "members": [
+    "m0102"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "return-from-the-black-hole",
+   "name": "the return from the black hole",
+   "kind": "event",
+   "sub": "the pair's return",
+   "aka": [],
+   "members": [
+    "m0103"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "reunion-on-the-platform",
+   "name": "the reunion on the platform",
+   "kind": "event",
+   "sub": "Guinevere and Vexana reunite",
+   "aka": [],
+   "members": [
+    "m0104"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rooftop-talk",
+   "name": "the rooftop talk",
+   "kind": "event",
+   "sub": "Layla and Fanny's talk",
+   "aka": [],
+   "members": [
+    "m0105"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rubys-summons",
+   "name": "Ruby's summons",
+   "kind": "event",
+   "sub": "Ruby rebuked by father",
+   "aka": [],
+   "members": [
+    "m0106"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "science-division-entry",
+   "name": "the Science Division entry",
+   "kind": "event",
+   "sub": "Selena's admission",
+   "aka": [],
+   "members": [
+    "m0107"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "search-for-vexana",
+   "name": "the search for Vexana",
+   "kind": "event",
+   "sub": "Guinevere's search",
+   "aka": [
+    "the search"
+   ],
+   "members": [
+    "m0108"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "seawall-raid",
+   "name": "the seawall raid",
+   "kind": "event",
+   "sub": "Ender raid by seawall",
+   "aka": [],
+   "members": [
+    "m0109"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-naming",
+   "name": "Selena's naming",
+   "kind": "event",
+   "sub": "Selena names herself",
+   "aka": [],
+   "members": [
+    "m0110"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-sales-to-vexana",
+   "name": "Selena's sales to Vexana",
+   "kind": "event",
+   "sub": "salvage traded for places",
+   "aka": [],
+   "members": [
+    "m0111"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-trade-with-the-enders",
+   "name": "Selena's trade with the Enders",
+   "kind": "event",
+   "sub": "Selena selling information",
+   "aka": [],
+   "members": [
+    "m0112"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shopping-trip",
+   "name": "the shopping trip",
+   "kind": "event",
+   "sub": "day in the arcade",
+   "aka": [],
+   "members": [
+    "m0113"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "silverbolts-first-run",
+   "name": "Silverbolt's first run",
+   "kind": "event",
+   "sub": "Selena's first storm ride",
+   "aka": [],
+   "members": [
+    "m0114"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "siren-in-the-third-week",
+   "name": "the siren in the third week",
+   "kind": "event",
+   "sub": "cadets' first real siren",
+   "aka": [],
+   "members": [
+    "m0115"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-light-in-the-void",
+   "name": "the small light in the void",
+   "kind": "event",
+   "sub": "Obsidia finds a light",
+   "aka": [],
+   "members": [
+    "m0116"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "summer-outing",
+   "name": "the summer outing",
+   "kind": "event",
+   "sub": "cake shop and park",
+   "aka": [],
+   "members": [
+    "m0122"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "team-b3-drill",
+   "name": "the Team B3 drill",
+   "kind": "event",
+   "sub": "VR weak-spot drill",
+   "aka": [],
+   "members": [
+    "m0124"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "team-test",
+   "name": "the team test",
+   "kind": "event",
+   "sub": "Academy pair test",
+   "aka": [],
+   "members": [
+    "m0125"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "team-up-day",
+   "name": "Team-Up Day",
+   "kind": "event",
+   "sub": "partner choosing day",
+   "aka": [
+    "The Aspirants Team-Up Day"
+   ],
+   "members": [
+    "m0126"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "test-match",
+   "name": "the test match",
+   "kind": "event",
+   "sub": "corridor drone match",
+   "aka": [],
+   "members": [
+    "m0127"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-birthday",
+   "name": "Vexana's birthday",
+   "kind": "event",
+   "sub": "birthday in the void",
+   "aka": [],
+   "members": [
+    "m0128"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-stand-in-the-ring",
+   "name": "Vexana's stand in the ring",
+   "kind": "event",
+   "sub": "Vexana alone against Enders",
+   "aka": [],
+   "members": [
+    "m0130"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-transformation",
+   "name": "Vexana's transformation",
+   "kind": "event",
+   "sub": "Vexana's change in void",
+   "aka": [],
+   "members": [
+    "m0131"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "wills-vision",
+   "name": "the Will's vision",
+   "kind": "event",
+   "sub": "vision shown to Vexana",
+   "aka": [
+    "the vision",
+    "the vision of the end"
+   ],
+   "members": [
+    "m0136",
+    "m0133",
+    "m0132"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "way-home",
+   "name": "the way home",
+   "kind": "event",
+   "sub": "Vexana's chance to return",
+   "aka": [],
+   "members": [
+    "m0134"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "years-showing",
+   "name": "the year's showing",
+   "kind": "event",
+   "sub": "Academy exhibition",
+   "aka": [],
+   "members": [
+    "m0137"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "a-19",
+   "name": "A-19",
+   "kind": "place",
+   "sub": "young galaxy",
+   "aka": [],
+   "members": [
+    "m0434"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "a-20",
+   "name": "A-20",
+   "kind": "place",
+   "sub": "galaxy of Oro",
+   "aka": [],
+   "members": [
+    "m0435"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-district",
+   "name": "the Academy district",
+   "kind": "place",
+   "sub": "district below the Academy",
+   "aka": [
+    "Academy district",
+    "the district"
+   ],
+   "members": [
+    "m0436"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-front-steps",
+   "name": "the Academy front steps",
+   "kind": "place",
+   "sub": "Academy entrance steps",
+   "aka": [
+    "Academy front steps"
+   ],
+   "members": [
+    "m0437"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-gate",
+   "name": "the Academy gate",
+   "kind": "place",
+   "sub": "gate of Selrick Academy",
+   "aka": [
+    "the gate",
+    "the old gate",
+    "main gate",
+    "the base gate",
+    "the base's gate"
+   ],
+   "members": [
+    "m0517",
+    "m0438",
+    "m0567"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-hall",
+   "name": "the Academy hall",
+   "kind": "place",
+   "sub": "ceremony and school hall",
+   "aka": [
+    "the hall",
+    "hall under the five great stars",
+    "the ceremony hall"
+   ],
+   "members": [
+    "m0439",
+    "m0532",
+    "m0534"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-lawn",
+   "name": "the Academy lawn",
+   "kind": "place",
+   "sub": "lawn with a tree",
+   "aka": [
+    "the lawn"
+   ],
+   "members": [
+    "m0440"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-roofs",
+   "name": "the Academy roofs",
+   "kind": "place",
+   "sub": "jump training ground",
+   "aka": [
+    "Academy roofs"
+   ],
+   "members": [
+    "m0441"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "main-stairs",
+   "name": "the main stairs",
+   "kind": "place",
+   "sub": "Academy main stairway",
+   "aka": [
+    "the Academy stairs",
+    "the stairs"
+   ],
+   "members": [
+    "m0568",
+    "m0442"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-tower",
+   "name": "the Academy tower",
+   "kind": "place",
+   "sub": "Academy beacon tower",
+   "aka": [
+    "Academy tower",
+    "the Academy's tower"
+   ],
+   "members": [
+    "m0443",
+    "m0445"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "amusement-park",
+   "name": "the amusement park",
+   "kind": "place",
+   "sub": "city fun park",
+   "aka": [
+    "amusement park",
+    "the park"
+   ],
+   "members": [
+    "m0446",
+    "m0585"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "arcade",
+   "name": "the arcade",
+   "kind": "place",
+   "sub": "shopping arcade",
+   "aka": [],
+   "members": [
+    "m0447"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "armory",
+   "name": "the armory",
+   "kind": "place",
+   "sub": "station armory",
+   "aka": [],
+   "members": [
+    "m0448"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "avenue",
+   "name": "the avenue",
+   "kind": "place",
+   "sub": "street at the breach",
+   "aka": [],
+   "members": [
+    "m0449"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bakers",
+   "name": "the baker's",
+   "kind": "place",
+   "sub": "shop on Lesley's street",
+   "aka": [],
+   "members": [
+    "m0450"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "bay",
+   "name": "the bay",
+   "kind": "place",
+   "sub": "Terrinia's bay",
+   "aka": [
+    "the water",
+    "the shore",
+    "the bay front"
+   ],
+   "members": [
+    "m0452"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bay-road",
+   "name": "the bay road",
+   "kind": "place",
+   "sub": "road along the bay",
+   "aka": [],
+   "members": [
+    "m0453"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bay-road-cut",
+   "name": "the bay road cut",
+   "kind": "place",
+   "sub": "narrow shelter street",
+   "aka": [
+    "bay road cut",
+    "the cut"
+   ],
+   "members": [
+    "m0454"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bell-tower",
+   "name": "the bell tower",
+   "kind": "place",
+   "sub": "Academy bell tower",
+   "aka": [
+    "bell tower",
+    "the tower"
+   ],
+   "members": [
+    "m0455"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-hole",
+   "name": "the black hole",
+   "kind": "place",
+   "sub": "drain at Singularity's center",
+   "aka": [
+    "black hole",
+    "the drain",
+    "the black point"
+   ],
+   "members": [
+    "m0456"
+   ],
+   "tier": "A",
+   "see_also": [
+    "black hole"
+   ]
+  },
+  {
+   "slug": "boards-long-room",
+   "name": "the board's long room",
+   "kind": "place",
+   "sub": "House board room",
+   "aka": [],
+   "members": [
+    "m0457"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "broken-bridge",
+   "name": "the broken bridge",
+   "kind": "place",
+   "sub": "bridge over the avenue",
+   "aka": [],
+   "members": [
+    "m0458"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "broken-wall",
+   "name": "the broken wall",
+   "kind": "place",
+   "sub": "Selena's thinking spot",
+   "aka": [],
+   "members": [
+    "m0459"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bunker",
+   "name": "the bunker",
+   "kind": "place",
+   "sub": "station raid shelter",
+   "aka": [
+    "the bunker line"
+   ],
+   "members": [
+    "m0460"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "burning-avenue",
+   "name": "the burning avenue",
+   "kind": "place",
+   "sub": "street of Ruby's rage",
+   "aka": [
+    "the avenue"
+   ],
+   "members": [
+    "m0461"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bus-stop",
+   "name": "the bus stop",
+   "kind": "place",
+   "sub": "Selena's bus stop",
+   "aka": [],
+   "members": [
+    "m0462"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "canal",
+   "name": "the canal",
+   "kind": "place",
+   "sub": "city canal",
+   "aka": [
+    "the canal bridge"
+   ],
+   "members": [
+    "m0463"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "prison-cell",
+   "name": "the prison cell",
+   "kind": "place",
+   "sub": "Ruby's cell on Oro",
+   "aka": [
+    "the cell",
+    "the cell with no window"
+   ],
+   "members": [
+    "m0464",
+    "m0465"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "house-cellar",
+   "name": "the House cellar",
+   "kind": "place",
+   "sub": "cellar under the House",
+   "aka": [
+    "the cellar",
+    "the cellar stairs"
+   ],
+   "members": [
+    "m0466",
+    "m0467"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "changes-classroom",
+   "name": "Chang'e's classroom",
+   "kind": "place",
+   "sub": "Academy classroom",
+   "aka": [],
+   "members": [
+    "m0468"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "changes-lab",
+   "name": "Chang'e's lab",
+   "kind": "place",
+   "sub": "Science Division lab",
+   "aka": [
+    "the lab",
+    "the Science Division lab",
+    "the base lab",
+    "the base laboratory"
+   ],
+   "members": [
+    "m0469",
+    "m0552"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "childrens-homes",
+   "name": "the children's homes",
+   "kind": "place",
+   "sub": "homes for orphans",
+   "aka": [
+    "children's homes",
+    "a home in the city"
+   ],
+   "members": [
+    "m0470"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cistern",
+   "name": "the cistern",
+   "kind": "place",
+   "sub": "water cistern",
+   "aka": [],
+   "members": [
+    "m0471"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "citadels-highest-deck",
+   "name": "the Citadel's highest deck",
+   "kind": "place",
+   "sub": "Citadel top deck",
+   "aka": [],
+   "members": [
+    "m0472"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "citadels-holds",
+   "name": "the Citadel's holds",
+   "kind": "place",
+   "sub": "Citadel cargo holds",
+   "aka": [
+    "the holds"
+   ],
+   "members": [
+    "m0473"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "terrinia",
+   "name": "Terrinia",
+   "kind": "place",
+   "sub": "humanity's last city",
+   "aka": [
+    "the city",
+    "the last city"
+   ],
+   "members": [
+    "m0635",
+    "m0474"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "city-library",
+   "name": "the city library",
+   "kind": "place",
+   "sub": "Terrinia's library",
+   "aka": [
+    "city library"
+   ],
+   "members": [
+    "m0475"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "city-wall",
+   "name": "the city wall",
+   "kind": "place",
+   "sub": "Terrinia's defensive wall",
+   "aka": [
+    "city wall",
+    "the wall",
+    "the wall stair"
+   ],
+   "members": [
+    "m0476",
+    "m0648"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "city-where-six-stars-opened",
+   "name": "the city where six stars opened",
+   "kind": "place",
+   "sub": "city Obsidia remembers",
+   "aka": [],
+   "members": [
+    "m0477"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "citys-edge",
+   "name": "the city's edge",
+   "kind": "place",
+   "sub": "Terrinia's edge districts",
+   "aka": [
+    "the outskirts"
+   ],
+   "members": [
+    "m0478",
+    "m0584"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "third-year-classroom",
+   "name": "the third-year classroom",
+   "kind": "place",
+   "sub": "Academy classroom",
+   "aka": [
+    "the classroom",
+    "classroom",
+    "the front row",
+    "class"
+   ],
+   "members": [
+    "m0479",
+    "m0637"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "cleared-lot",
+   "name": "the cleared lot",
+   "kind": "place",
+   "sub": "landing lot by dome",
+   "aka": [
+    "the landing lot",
+    "the lot at the dome's foot"
+   ],
+   "members": [
+    "m0480",
+    "m0554",
+    "m0566"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "cliff-above-the-water",
+   "name": "the cliff above the water",
+   "kind": "place",
+   "sub": "watch post over bay",
+   "aka": [
+    "the cliff watch"
+   ],
+   "members": [
+    "m0481"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "climbing-wall",
+   "name": "the climbing wall",
+   "kind": "place",
+   "sub": "training wall",
+   "aka": [
+    "climbing wall"
+   ],
+   "members": [
+    "m0482"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "combat-office",
+   "name": "the Combat office",
+   "kind": "place",
+   "sub": "Combat Division office",
+   "aka": [
+    "Combat office",
+    "the board outside the Combat office"
+   ],
+   "members": [
+    "m0483"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "command-deck",
+   "name": "the command deck",
+   "kind": "place",
+   "sub": "Academy command post",
+   "aka": [
+    "command deck",
+    "the deck"
+   ],
+   "members": [
+    "m0484"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "command-room",
+   "name": "the command room",
+   "kind": "place",
+   "sub": "room under the deck",
+   "aka": [
+    "command room"
+   ],
+   "members": [
+    "m0485"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "concrete-shelter",
+   "name": "the concrete shelter",
+   "kind": "place",
+   "sub": "Academy siren shelter",
+   "aka": [],
+   "members": [
+    "m0486"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "corner-building",
+   "name": "the corner building",
+   "kind": "place",
+   "sub": "building at the breach",
+   "aka": [],
+   "members": [
+    "m0487"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "investigation-room-corridor",
+   "name": "the Investigation Room corridor",
+   "kind": "place",
+   "sub": "where Vexana was taken",
+   "aka": [
+    "the corridor",
+    "The Academy Investigation Room Corridor"
+   ],
+   "members": [
+    "m0547",
+    "m0488"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "council-hall",
+   "name": "the Council hall",
+   "kind": "place",
+   "sub": "hall of Oro's rulers",
+   "aka": [
+    "Council hall"
+   ],
+   "members": [
+    "m0489"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "counseling-room",
+   "name": "the counseling room",
+   "kind": "place",
+   "sub": "Academy counseling room",
+   "aka": [
+    "counseling room"
+   ],
+   "members": [
+    "m0490"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "courtyard",
+   "name": "the courtyard",
+   "kind": "place",
+   "sub": "Academy courtyard",
+   "aka": [
+    "courtyard"
+   ],
+   "members": [
+    "m0491"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "crater",
+   "name": "the crater",
+   "kind": "place",
+   "sub": "blast crater at base",
+   "aka": [],
+   "members": [
+    "m0492"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "crews-yard",
+   "name": "the crews' yard",
+   "kind": "place",
+   "sub": "salvage sorting yard",
+   "aka": [
+    "crews' yard"
+   ],
+   "members": [
+    "m0493"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dark-street",
+   "name": "the dark street",
+   "kind": "place",
+   "sub": "street in Selena's memory",
+   "aka": [],
+   "members": [
+    "m0495"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "dawnbreak",
+   "name": "Dawnbreak",
+   "kind": "place",
+   "sub": "humanity's home planet",
+   "aka": [
+    "Planet Dawnbreak",
+    "that world",
+    "that small world",
+    "the small bright world"
+   ],
+   "members": [
+    "m0496"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dead-ground",
+   "name": "the dead ground",
+   "kind": "place",
+   "sub": "wasteland outside the dome",
+   "aka": [
+    "dead ground",
+    "the ruins",
+    "dead shore"
+   ],
+   "members": [
+    "m0497"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dead-workshop",
+   "name": "the dead workshop",
+   "kind": "place",
+   "sub": "ruined workshop",
+   "aka": [],
+   "members": [
+    "m0498"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "dead-world-under-a-gray-sky",
+   "name": "the dead world under a gray sky",
+   "kind": "place",
+   "sub": "world Obsidia remembers",
+   "aka": [],
+   "members": [
+    "m0499"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "dome",
+   "name": "the dome",
+   "kind": "place",
+   "sub": "Terrinia's shell of light",
+   "aka": [
+    "Defensive Bubble",
+    "dome of light"
+   ],
+   "members": [
+    "m0500"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Defensive Bubble",
+    "the dome"
+   ]
+  },
+  {
+   "slug": "domes-edge",
+   "name": "the dome's edge",
+   "kind": "place",
+   "sub": "open ground near dome",
+   "aka": [
+    "the edge of the dome"
+   ],
+   "members": [
+    "m0501"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "domes-foot",
+   "name": "the dome's foot",
+   "kind": "place",
+   "sub": "warehouse ward at edge",
+   "aka": [],
+   "members": [
+    "m0502"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dormitory-corridor",
+   "name": "the dormitory corridor",
+   "kind": "place",
+   "sub": "girls' dormitory corridor",
+   "aka": [],
+   "members": [
+    "m0503"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "dormitory-roof",
+   "name": "the dormitory roof",
+   "kind": "place",
+   "sub": "Academy dormitory rooftop",
+   "aka": [
+    "the roof",
+    "the rooftop",
+    "green-railed roof",
+    "the roof with green guardrails"
+   ],
+   "members": [
+    "m0504",
+    "m0526"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "drill-hall",
+   "name": "the drill hall",
+   "kind": "place",
+   "sub": "Fanny's training hall",
+   "aka": [
+    "drill hall"
+   ],
+   "members": [
+    "m0505"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "drill-hall-gallery",
+   "name": "the drill hall gallery",
+   "kind": "place",
+   "sub": "gallery above drill hall",
+   "aka": [
+    "drill hall gallery",
+    "dark gallery",
+    "the gallery"
+   ],
+   "members": [
+    "m0506",
+    "m0494"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "east-corridor",
+   "name": "the east corridor",
+   "kind": "place",
+   "sub": "base storage corridor",
+   "aka": [],
+   "members": [
+    "m0507"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fallen-depot",
+   "name": "the fallen depot",
+   "kind": "place",
+   "sub": "ruined depot",
+   "aka": [],
+   "members": [
+    "m0508"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "far-stations",
+   "name": "the far stations",
+   "kind": "place",
+   "sub": "Shield forts",
+   "aka": [],
+   "members": [
+    "m0509"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "far-ward",
+   "name": "the far ward",
+   "kind": "place",
+   "sub": "city ward",
+   "aka": [],
+   "members": [
+    "m0510"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "fish-market",
+   "name": "the fish market",
+   "kind": "place",
+   "sub": "market on shore ward",
+   "aka": [],
+   "members": [
+    "m0511"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fountain",
+   "name": "the fountain",
+   "kind": "place",
+   "sub": "courtyard fountain",
+   "aka": [],
+   "members": [
+    "m0512"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "training-hall-gallery",
+   "name": "the training hall gallery",
+   "kind": "place",
+   "sub": "Vexana's night training spot",
+   "aka": [
+    "the gallery"
+   ],
+   "members": [
+    "m0513"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gap",
+   "name": "the gap",
+   "kind": "place",
+   "sub": "split in the platforms",
+   "aka": [],
+   "members": [
+    "m0514"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "garden-stair",
+   "name": "the garden stair",
+   "kind": "place",
+   "sub": "House garden steps",
+   "aka": [],
+   "members": [
+    "m0515"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "gardens",
+   "name": "the Gardens",
+   "kind": "place",
+   "sub": "Ruby's secret base",
+   "aka": [
+    "Gardens"
+   ],
+   "members": [
+    "m0516"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gate-office",
+   "name": "the gate office",
+   "kind": "place",
+   "sub": "base gate office",
+   "aka": [],
+   "members": [
+    "m0518"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "gate-portal",
+   "name": "the gate portal",
+   "kind": "thing",
+   "sub": "Academy teleport portal",
+   "aka": [
+    "the portal",
+    "gate portal",
+    "the Academy portal"
+   ],
+   "members": [
+    "m0519"
+   ],
+   "tier": "A",
+   "see_also": [
+    "gate portal"
+   ]
+  },
+  {
+   "slug": "singularity",
+   "name": "the Singularity",
+   "kind": "place",
+   "sub": "Mother Matrix's gateway",
+   "aka": [
+    "Singularity",
+    "the faint point",
+    "the crack",
+    "the mouth",
+    "the gateway",
+    "the rift",
+    "the portal",
+    "the star",
+    "the crack of sky",
+    "crack of human sky",
+    "the Mother Matrix's gateway",
+    "the body's door"
+   ],
+   "members": [
+    "m0622",
+    "m0520"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "giants-front",
+   "name": "the giants' front",
+   "kind": "place",
+   "sub": "battle front",
+   "aka": [],
+   "members": [
+    "m0521"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "girls-house",
+   "name": "the girls' house",
+   "kind": "place",
+   "sub": "girls' cake shop",
+   "aka": [
+    "the cake shop",
+    "girl hangout spots"
+   ],
+   "members": [
+    "m0522"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "girls-wing",
+   "name": "the girls' wing",
+   "kind": "place",
+   "sub": "Academy dormitory wing",
+   "aka": [
+    "girls' wing"
+   ],
+   "members": [
+    "m0523"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "grass-behind-the-hall",
+   "name": "the grass behind the hall",
+   "kind": "place",
+   "sub": "field behind the hall",
+   "aka": [],
+   "members": [
+    "m0524"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "great-door",
+   "name": "the great door",
+   "kind": "place",
+   "sub": "door Obsidia guarded",
+   "aka": [],
+   "members": [
+    "m0525"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-bedroom",
+   "name": "Guinevere's bedroom",
+   "kind": "place",
+   "sub": "bedroom at the House",
+   "aka": [],
+   "members": [
+    "m0527"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-fathers-office",
+   "name": "Guinevere's father's office",
+   "kind": "place",
+   "sub": "office in the House",
+   "aka": [
+    "his office",
+    "the office",
+    "his office door"
+   ],
+   "members": [
+    "m0528"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-room",
+   "name": "Guinevere's room",
+   "kind": "place",
+   "sub": "Guinevere's dormitory room",
+   "aka": [
+    "Guinevere's room at the Academy"
+   ],
+   "members": [
+    "m0529",
+    "m0530"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gun-pit",
+   "name": "the gun pit",
+   "kind": "place",
+   "sub": "Vexana's father's post",
+   "aka": [],
+   "members": [
+    "m0531"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hall-of-white-windows",
+   "name": "the hall of white windows",
+   "kind": "place",
+   "sub": "android storage hall",
+   "aka": [],
+   "members": [
+    "m0533"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hangar",
+   "name": "the hangar",
+   "kind": "place",
+   "sub": "Oro ship hangar",
+   "aka": [],
+   "members": [
+    "m0535"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hanging-streets",
+   "name": "the hanging streets",
+   "kind": "place",
+   "sub": "upside-down Citadel streets",
+   "aka": [],
+   "members": [
+    "m0536"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-hill",
+   "name": "the Academy hill",
+   "kind": "place",
+   "sub": "hill below the Academy",
+   "aka": [
+    "the hill"
+   ],
+   "members": [
+    "m0537"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hollow",
+   "name": "the hollow",
+   "kind": "place",
+   "sub": "Vexana's hiding fold",
+   "aka": [
+    "Vexana's hollow"
+   ],
+   "members": [
+    "m0538",
+    "m0644"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "house-on-the-hill",
+   "name": "the House on the hill",
+   "kind": "place",
+   "sub": "House Baroque mansion",
+   "aka": [
+    "the House"
+   ],
+   "members": [
+    "m0540",
+    "m0539"
+   ],
+   "tier": "A",
+   "see_also": [
+    "the House",
+    "House Baroque"
+   ]
+  },
+  {
+   "slug": "houses-bank",
+   "name": "the House's bank",
+   "kind": "place",
+   "sub": "bank by the harbor",
+   "aka": [],
+   "members": [
+    "m0541"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "houses-dining-room",
+   "name": "the House's dining room",
+   "kind": "place",
+   "sub": "House dining room",
+   "aka": [],
+   "members": [
+    "m0542"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "houses-terrace",
+   "name": "the House's terrace",
+   "kind": "place",
+   "sub": "terrace of the House",
+   "aka": [
+    "the terrace"
+   ],
+   "members": [
+    "m0543",
+    "m0634"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "houses-yard",
+   "name": "the House's yard",
+   "kind": "place",
+   "sub": "guards' drill yard",
+   "aka": [],
+   "members": [
+    "m0544"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "infirmary",
+   "name": "the infirmary",
+   "kind": "place",
+   "sub": "Academy infirmary",
+   "aka": [
+    "infirmary"
+   ],
+   "members": [
+    "m0545"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "investigation-room",
+   "name": "the Investigation Room",
+   "kind": "place",
+   "sub": "Science Division wing",
+   "aka": [
+    "Investigation Room",
+    "the Investigation Room wing"
+   ],
+   "members": [
+    "m0546"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "karinas-flat",
+   "name": "Karina's flat",
+   "kind": "place",
+   "sub": "Selena's childhood home",
+   "aka": [],
+   "members": [
+    "m0548"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "karinas-roof",
+   "name": "Karina's roof",
+   "kind": "place",
+   "sub": "roof with water tank",
+   "aka": [],
+   "members": [
+    "m0549"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-family-kitchen",
+   "name": "Lesley's family kitchen",
+   "kind": "place",
+   "sub": "kitchen of Lesley's home",
+   "aka": [
+    "the kitchen"
+   ],
+   "members": [
+    "m0550"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "kitchen-yard",
+   "name": "the kitchen yard",
+   "kind": "place",
+   "sub": "Academy kitchen yard",
+   "aka": [],
+   "members": [
+    "m0551"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "laboratory",
+   "name": "the Laboratory",
+   "kind": "place",
+   "sub": "Ruby's lab on Oro",
+   "aka": [
+    "Ruby's laboratory",
+    "Ruby's lab"
+   ],
+   "members": [
+    "m0553"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "last-towns",
+   "name": "the last towns",
+   "kind": "place",
+   "sub": "outlying towns",
+   "aka": [],
+   "members": [
+    "m0555"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "launch-bay",
+   "name": "the launch bay",
+   "kind": "place",
+   "sub": "Oro ship bay",
+   "aka": [],
+   "members": [
+    "m0556"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "laylas-lab",
+   "name": "Layla's lab",
+   "kind": "place",
+   "sub": "Layla's secret workshop",
+   "aka": [
+    "Layla's secret base"
+   ],
+   "members": [
+    "m0557"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lecture-block",
+   "name": "the lecture block",
+   "kind": "place",
+   "sub": "Academy building",
+   "aka": [
+    "lecture block"
+   ],
+   "members": [
+    "m0558"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-house",
+   "name": "Lesley's house",
+   "kind": "place",
+   "sub": "Lesley's childhood home",
+   "aka": [
+    "the house",
+    "Lesley's family house"
+   ],
+   "members": [
+    "m0560",
+    "m0559"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-room",
+   "name": "Lesley's room",
+   "kind": "place",
+   "sub": "Lesley's Academy room",
+   "aka": [],
+   "members": [
+    "m0561"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "old-tower",
+   "name": "the old tower",
+   "kind": "place",
+   "sub": "Lesley's tower room",
+   "aka": [
+    "the tower room",
+    "Lesley's tower window"
+   ],
+   "members": [
+    "m0579",
+    "m0562"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "library",
+   "name": "the library",
+   "kind": "place",
+   "sub": "Academy library",
+   "aka": [
+    "the Academy library"
+   ],
+   "members": [
+    "m0563"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "long-hall",
+   "name": "the long hall",
+   "kind": "place",
+   "sub": "hall in the House",
+   "aka": [],
+   "members": [
+    "m0564"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "long-table",
+   "name": "the long table",
+   "kind": "place",
+   "sub": "where the team eats",
+   "aka": [],
+   "members": [
+    "m0565"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "monitor-room",
+   "name": "the monitor room",
+   "kind": "place",
+   "sub": "Academy screen room",
+   "aka": [],
+   "members": [
+    "m0569"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "nest",
+   "name": "the nest",
+   "kind": "place",
+   "sub": "Ender nursery",
+   "aka": [
+    "the rows"
+   ],
+   "members": [
+    "m0570"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "northeastern-sector",
+   "name": "the Northeastern sector",
+   "kind": "place",
+   "sub": "district of Terrinia",
+   "aka": [
+    "Northeastern sector"
+   ],
+   "members": [
+    "m0571"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "observation-lab",
+   "name": "the observation lab",
+   "kind": "place",
+   "sub": "glass lab atop tower",
+   "aka": [
+    "observation lab",
+    "the glass lab",
+    "the lab's glass room"
+   ],
+   "members": [
+    "m0572"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "office-tower",
+   "name": "the office tower",
+   "kind": "place",
+   "sub": "tower by the breach",
+   "aka": [],
+   "members": [
+    "m0574"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "old-market",
+   "name": "the old market",
+   "kind": "place",
+   "sub": "market district",
+   "aka": [
+    "old market"
+   ],
+   "members": [
+    "m0576"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "old-pumping-station",
+   "name": "the old pumping station",
+   "kind": "place",
+   "sub": "ruined pumping station",
+   "aka": [],
+   "members": [
+    "m0577"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "old-rail-yard",
+   "name": "the old rail yard",
+   "kind": "place",
+   "sub": "rail yard at edge",
+   "aka": [
+    "the rail yard",
+    "the signal tower"
+   ],
+   "members": [
+    "m0578"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "old-water-tower",
+   "name": "the old water tower",
+   "kind": "place",
+   "sub": "tower in roofless blocks",
+   "aka": [],
+   "members": [
+    "m0580"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "oro",
+   "name": "Oro",
+   "kind": "place",
+   "sub": "Ruby's home world",
+   "aka": [
+    "Planet Oro"
+   ],
+   "members": [
+    "m0581",
+    "m0586"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bases-outer-fence",
+   "name": "the base's outer fence",
+   "kind": "place",
+   "sub": "base perimeter fence",
+   "aka": [
+    "the outer fence"
+   ],
+   "members": [
+    "m0582"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "outer-wards-fence",
+   "name": "the outer ward's fence",
+   "kind": "place",
+   "sub": "fence at dome's edge",
+   "aka": [
+    "the outer fence"
+   ],
+   "members": [
+    "m0583"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "platforms",
+   "name": "the platforms",
+   "kind": "place",
+   "sub": "stone tiers above bay",
+   "aka": [
+    "the ledges",
+    "the platform",
+    "the rail"
+   ],
+   "members": [
+    "m0587"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "prow",
+   "name": "the prow",
+   "kind": "place",
+   "sub": "front of the Citadel",
+   "aka": [],
+   "members": [
+    "m0588"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rail-yards-north-of-the-dome",
+   "name": "the rail yards north of the dome",
+   "kind": "place",
+   "sub": "ruined rail yard",
+   "aka": [
+    "the rail yards"
+   ],
+   "members": [
+    "m0589"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "railroad-cut",
+   "name": "the railroad cut",
+   "kind": "place",
+   "sub": "rail cutting",
+   "aka": [
+    "the railroad cut north of the old bridge"
+   ],
+   "members": [
+    "m0590"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "repair-room",
+   "name": "the repair room",
+   "kind": "place",
+   "sub": "Academy repair workshop",
+   "aka": [],
+   "members": [
+    "m0591"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "research-base",
+   "name": "the research base",
+   "kind": "place",
+   "sub": "base before the Academy",
+   "aka": [
+    "Terrinia's research base",
+    "the base",
+    "the ruins of the base",
+    "research base",
+    "the base by the water",
+    "the old base"
+   ],
+   "members": [
+    "m0592",
+    "m0451",
+    "m0575"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ruined-rooftop",
+   "name": "the ruined rooftop",
+   "kind": "place",
+   "sub": "rooftop after the battle",
+   "aka": [],
+   "members": [
+    "m0594"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ruined-tower",
+   "name": "the ruined tower",
+   "kind": "place",
+   "sub": "tower in dead ground",
+   "aka": [
+    "ruined tower"
+   ],
+   "members": [
+    "m0595"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ruins-east-of-the-dome",
+   "name": "the ruins east of the dome",
+   "kind": "place",
+   "sub": "ruins outside the city",
+   "aka": [
+    "ruins east of the dome"
+   ],
+   "members": [
+    "m0596"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "salvage-stall",
+   "name": "the salvage stall",
+   "kind": "place",
+   "sub": "Selena's trestle table",
+   "aka": [
+    "the trestle table"
+   ],
+   "members": [
+    "m0597"
+   ],
+   "tier": "B",
+   "see_also": [
+    "Selena's salvage table"
+   ]
+  },
+  {
+   "slug": "sand-outside-the-dome",
+   "name": "the sand outside the dome",
+   "kind": "place",
+   "sub": "desert beyond Terrinia",
+   "aka": [
+    "the dunes"
+   ],
+   "members": [
+    "m0598"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "school-roof",
+   "name": "the school roof",
+   "kind": "place",
+   "sub": "Academy rooftop",
+   "aka": [],
+   "members": [
+    "m0599"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "science-division-workshop",
+   "name": "the Science Division workshop",
+   "kind": "place",
+   "sub": "workshop with long bench",
+   "aka": [
+    "Science Division workshop"
+   ],
+   "members": [
+    "m0600"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "sea-in-angelas-memory",
+   "name": "the sea in Angela's memory",
+   "kind": "place",
+   "sub": "remembered seashore",
+   "aka": [],
+   "members": [
+    "m0601"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "sea-of-stars",
+   "name": "the sea of stars",
+   "kind": "place",
+   "sub": "far open space",
+   "aka": [],
+   "members": [
+    "m0602"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "seawall",
+   "name": "the seawall",
+   "kind": "place",
+   "sub": "wall along the bay",
+   "aka": [
+    "seawall"
+   ],
+   "members": [
+    "m0603"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "seawall-shelter",
+   "name": "the seawall shelter",
+   "kind": "place",
+   "sub": "shelter in the seawall",
+   "aka": [
+    "the iron doors"
+   ],
+   "members": [
+    "m0604"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "seawall-street",
+   "name": "the seawall street",
+   "kind": "place",
+   "sub": "street by the seawall",
+   "aka": [
+    "the street by the seawall"
+   ],
+   "members": [
+    "m0605"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "secret-facility",
+   "name": "the secret facility",
+   "kind": "place",
+   "sub": "Oro prison base",
+   "aka": [],
+   "members": [
+    "m0606"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-school",
+   "name": "Selena's school",
+   "kind": "place",
+   "sub": "Selena's childhood school",
+   "aka": [],
+   "members": [
+    "m0607"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "selrick-academy",
+   "name": "Selrick Academy",
+   "kind": "place",
+   "sub": "Aspirant training school",
+   "aka": [
+    "the Academy",
+    "Academy",
+    "Selrick"
+   ],
+   "members": [
+    "m0608"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "tree-on-the-academy-lawn",
+   "name": "the tree on the Academy lawn",
+   "kind": "place",
+   "sub": "shady lawn tree",
+   "aka": [
+    "the tree",
+    "the shaded tree",
+    "the shady tree"
+   ],
+   "members": [
+    "m0643",
+    "m0609",
+    "m0610",
+    "m0642"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "base-shelter",
+   "name": "the base shelter",
+   "kind": "place",
+   "sub": "base raid shelter",
+   "aka": [
+    "the shelter"
+   ],
+   "members": [
+    "m0611"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shelter-by-the-wall",
+   "name": "the shelter by the wall",
+   "kind": "place",
+   "sub": "wall houses' shelter",
+   "aka": [
+    "the shelter",
+    "the shelter door"
+   ],
+   "members": [
+    "m0612",
+    "m0613"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shelters-above-the-cut",
+   "name": "the shelters above the cut",
+   "kind": "place",
+   "sub": "shelters behind the frontline",
+   "aka": [
+    "the shelters"
+   ],
+   "members": [
+    "m0614"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shield-houses",
+   "name": "the Shield houses",
+   "kind": "place",
+   "sub": "soldiers' row houses",
+   "aka": [
+    "the wall houses",
+    "the Shield's houses by the city wall"
+   ],
+   "members": [
+    "m0615"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shield-station",
+   "name": "the Shield station",
+   "kind": "place",
+   "sub": "Lesley's Shield fort",
+   "aka": [
+    "the station"
+   ],
+   "members": [
+    "m0616"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shields-barracks",
+   "name": "the Shield's barracks",
+   "kind": "place",
+   "sub": "Shield military barracks",
+   "aka": [],
+   "members": [
+    "m0617"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shields-home",
+   "name": "the Shield's home",
+   "kind": "place",
+   "sub": "home for soldiers' children",
+   "aka": [
+    "the Shield's home for soldiers' children",
+    "the home",
+    "Shield's home"
+   ],
+   "members": [
+    "m0619",
+    "m0618"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shore-ward",
+   "name": "the shore ward",
+   "kind": "place",
+   "sub": "district on the shore",
+   "aka": [
+    "shore ward"
+   ],
+   "members": [
+    "m0620"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "side-street",
+   "name": "the side street",
+   "kind": "place",
+   "sub": "street off the avenue",
+   "aka": [],
+   "members": [
+    "m0621"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-room-where-the-family-ate",
+   "name": "the small room where the family ate",
+   "kind": "place",
+   "sub": "base family dining room",
+   "aka": [],
+   "members": [
+    "m0623"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "station-wall",
+   "name": "the station wall",
+   "kind": "place",
+   "sub": "Lesley's old post",
+   "aka": [],
+   "members": [
+    "m0624"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "storehouse",
+   "name": "the storehouse",
+   "kind": "place",
+   "sub": "base storehouse",
+   "aka": [
+    "the roofless storehouse"
+   ],
+   "members": [
+    "m0625",
+    "m0593"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "storeroom",
+   "name": "the storeroom",
+   "kind": "place",
+   "sub": "station storeroom",
+   "aka": [],
+   "members": [
+    "m0626"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "stores",
+   "name": "the stores",
+   "kind": "place",
+   "sub": "base storeroom",
+   "aka": [],
+   "members": [
+    "m0627"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "storm-citadel",
+   "name": "Storm Citadel",
+   "kind": "place",
+   "sub": "Obsidia's flying fortress",
+   "aka": [
+    "Obsidia's ship",
+    "the Citadel",
+    "the ship",
+    "her ship",
+    "the Storm Citadel"
+   ],
+   "members": [
+    "m0628"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "street-at-the-domes-foot",
+   "name": "the street at the dome's foot",
+   "kind": "place",
+   "sub": "street of first rescue",
+   "aka": [],
+   "members": [
+    "m0629"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "street-of-repair-shops",
+   "name": "the street of repair shops",
+   "kind": "place",
+   "sub": "Lesley's childhood street",
+   "aka": [],
+   "members": [
+    "m0630"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "street-three-streets-west",
+   "name": "the street three streets west",
+   "kind": "place",
+   "sub": "road west of platforms",
+   "aka": [],
+   "members": [
+    "m0631"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "street-with-doors-her-height",
+   "name": "the street with doors her height",
+   "kind": "place",
+   "sub": "block from ended people",
+   "aka": [],
+   "members": [
+    "m0632"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "tarp-shelter",
+   "name": "the tarp shelter",
+   "kind": "place",
+   "sub": "survivors' shelter",
+   "aka": [],
+   "members": [
+    "m0633"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "test-floor",
+   "name": "the test floor",
+   "kind": "place",
+   "sub": "Science Division test area",
+   "aka": [
+    "test floor"
+   ],
+   "members": [
+    "m0636"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "third-year-lounge",
+   "name": "the third-year lounge",
+   "kind": "place",
+   "sub": "student lounge",
+   "aka": [
+    "third-year lounge",
+    "the lounge"
+   ],
+   "members": [
+    "m0638"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "throne-hall",
+   "name": "the throne hall",
+   "kind": "place",
+   "sub": "Obsidia's Citadel hall",
+   "aka": [
+    "throne hall",
+    "Obsidia's command seat"
+   ],
+   "members": [
+    "m0639",
+    "m0573"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "training-field",
+   "name": "the Training Field",
+   "kind": "place",
+   "sub": "training ground",
+   "aka": [
+    "Training Field",
+    "the field"
+   ],
+   "members": [
+    "m0640"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "training-hall",
+   "name": "the training hall",
+   "kind": "place",
+   "sub": "Academy sparring hall",
+   "aka": [
+    "training hall"
+   ],
+   "members": [
+    "m0641"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-room",
+   "name": "Vexana's room",
+   "kind": "place",
+   "sub": "Vexana's dormitory room",
+   "aka": [],
+   "members": [
+    "m0645"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "void",
+   "name": "the void",
+   "kind": "place",
+   "sub": "dark beyond the worlds",
+   "aka": [
+    "the dark void",
+    "the Enders' dark",
+    "the dark",
+    "this dark"
+   ],
+   "members": [
+    "m0646"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vr-battlefield",
+   "name": "the VR Battlefield",
+   "kind": "place",
+   "sub": "combat simulator hall",
+   "aka": [
+    "VR Battlefield"
+   ],
+   "members": [
+    "m0647"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "wards",
+   "name": "the wards",
+   "kind": "place",
+   "sub": "city districts",
+   "aka": [
+    "wards",
+    "ward",
+    "west ward",
+    "the flooded wards",
+    "wards past the old market"
+   ],
+   "members": [
+    "m0649"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "waterfront",
+   "name": "the waterfront",
+   "kind": "place",
+   "sub": "Terrinia's shore district",
+   "aka": [
+    "waterfront warehouses"
+   ],
+   "members": [
+    "m0650"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "western-wards",
+   "name": "the western wards",
+   "kind": "place",
+   "sub": "district of Terrinia",
+   "aka": [
+    "western wards"
+   ],
+   "members": [
+    "m0651"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "white-spiral-stair",
+   "name": "the white spiral stair",
+   "kind": "place",
+   "sub": "Academy staircase",
+   "aka": [
+    "white spiral stair",
+    "the white spiral stairwell"
+   ],
+   "members": [
+    "m0652",
+    "m0653"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "white-training-corridor",
+   "name": "the white training corridor",
+   "kind": "place",
+   "sub": "drone practice hall",
+   "aka": [
+    "white training corridor"
+   ],
+   "members": [
+    "m0654"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "world-where-obsidia-woke",
+   "name": "the world where Obsidia woke",
+   "kind": "place",
+   "sub": "world of Obsidia's waking",
+   "aka": [],
+   "members": [
+    "m0656"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "worlds-obsidia-helped-end",
+   "name": "the worlds Obsidia helped end",
+   "kind": "place",
+   "sub": "earlier ended worlds",
+   "aka": [
+    "worlds Obsidia helped end"
+   ],
+   "members": [
+    "m0657"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-yard",
+   "name": "the Academy yard",
+   "kind": "place",
+   "sub": "yard inside the gate",
+   "aka": [
+    "the yard",
+    "the base yard",
+    "the base's yard"
+   ],
+   "members": [
+    "m0658",
+    "m0444"
+   ],
+   "tier": "A",
+   "see_also": []
+  }
+ ],
+ "dropped": [
+  {
+   "id": "m0655",
+   "why": "a workshop bench named only in a simile, with no role"
+  }
+ ]
+}

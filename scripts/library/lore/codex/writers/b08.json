@@ -1,0 +1,839 @@
+{
+  "ender-signal": {
+    "line": "The jagged readings Academy screens take off every Ender near the dome.",
+    "short": "A reading Academy screens take off every Ender near the dome, shown as rows of jagged lines. When a lull begins, they all stop at once.",
+    "summary": "Academy screens read a signal off every Ender near the dome and show it as rows of jagged lines. When a lull begins, every signal stops in the same moment. Chang'e says this shows that something switches all the Enders off at once. Selena knows the screens too: a signal sent up through Ender parts would spike on them in clear weather, so she sends hers only in storms, when the lightning buries it.",
+    "sub": "Academy readings of Enders",
+    "rows": [
+      [
+        "Read by",
+        "Academy screens, watched by Chang'e"
+      ],
+      [
+        "First seen",
+        "Chapter 41"
+      ]
+    ]
+  },
+  "first-aspirants": {
+    "line": "The title the Academy later gives Lesley and Chang'e.",
+    "short": "The name the Academy later gives Lesley and Chang'e, after the night the two of them bring down three giant Enders over Terrinia.",
+    "summary": "An honorary title. Years after the research base fell, Lesley and Chang'e fought side by side in Terrinia. They brought down a giant Ender over the avenue, and before dawn two more of the big ones. Later the Academy called the two of them the First Aspirants.",
+    "rows": [
+      [
+        "Held by",
+        "Lesley and Chang'e"
+      ],
+      [
+        "Given by",
+        "Selrick Academy"
+      ],
+      [
+        "First seen",
+        "Chapter 27"
+      ]
+    ]
+  },
+  "free-will": {
+    "line": "What the Enders' maker treats as a flaw to be corrected.",
+    "short": "Obsidia says the body made the Enders and mends her by one rule: free will is a flaw that must be corrected. She calls herself the flaw.",
+    "summary": "Obsidia says the body made the Enders, and mends her by one rule: free will is a flaw that must be corrected. Each healing sets a made thing back to what it was made for, so she stops it before it is done. \"I am the flaw,\" she says. Vexana watches her stop her maker with one hand, and thinks that if a made thing can turn on its maker, \"predetermined\" is only a word.",
+    "rows": [
+      [
+        "Claimed by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 55"
+      ]
+    ]
+  },
+  "go-to-bed": {
+    "line": "What Vexana says when she phones Guinevere late at night.",
+    "short": "What Vexana says when she phones Guinevere at two in the morning, because the training hall is still lit.",
+    "summary": "In their first weeks as partners, Vexana phones Guinevere at two in the morning because the training hall is still lit, and says only \"Go to bed.\" The number was for emergencies. Vexana says it was one. After that she phones whenever the hall stays lit late, and Guinevere stops pretending to be asleep and bargains for ten more. One night the hall is dark, and Vexana phones anyway.",
+    "rows": [
+      [
+        "Said by",
+        "Vexana"
+      ],
+      [
+        "Said to",
+        "Guinevere"
+      ],
+      [
+        "First seen",
+        "Chapter 38"
+      ]
+    ]
+  },
+  "heir": {
+    "line": "Ruby's title on Planet Oro: heir to the Decisionmaker.",
+    "short": "Ruby's title: heir to the Decisionmaker of Planet Oro. Heirs can have no friends and no feelings.",
+    "summary": "Ruby is the heir to the Decisionmaker of Planet Oro, and has been told since before she could read that heirs can have no friends and no feelings. Her tutor and Oro's soldiers call her \"Heir,\" and Oro's rule that nobody may grow strong enough to upset the order includes her. The Council orders the heir to build its new blade, and when Angela calls her a friend, she freezes. Charged with treason, she still names herself heir when she asks Selrick for refuge.",
+    "rows": [
+      [
+        "Held by",
+        "Ruby"
+      ],
+      [
+        "Heir to",
+        "Her father, who leads Oro's Decisionmakers"
+      ],
+      [
+        "First seen",
+        "Chapter 9"
+      ]
+    ]
+  },
+  "hesters-count": {
+    "line": "Counting to three to get up after a fall.",
+    "short": "Hester, of the House's guard, counted \"One. Two. Three.\" whenever little Guinevere fell, and Guinevere stood up on three.",
+    "summary": "When little Guinevere fell, Hester of the House's guard knelt and counted \"One. Two. Three,\" and Guinevere stood on three. Soon Guinevere counted with her. On the storm night Hester, then the newest guard, carried the baby to the cellar and counted the steps aloud so she would not cry. When nobody comes, Guinevere counts herself up, and years later she still counts under her breath in bed. When Guinevere claims she can regain her elegance in three seconds, Vexana counts, and says four.",
+    "sub": "Guinevere's counting habit",
+    "rows": [
+      [
+        "Started by",
+        "Hester, of the House's guard"
+      ],
+      [
+        "Used by",
+        "Guinevere"
+      ],
+      [
+        "First seen",
+        "Chapter 31"
+      ]
+    ]
+  },
+  "host": {
+    "line": "Obsidia's word for the planet a people lives on.",
+    "short": "Obsidia's word for a people's planet. She says a people that outgrows its host uses it up, while a purge leaves the host alive.",
+    "summary": "Obsidia's word for the planet a people lives on. She says every civilization tries to transcend its own host: a people that outgrows it uses it up, reaches for other worlds and leaves a dead world behind. A purge, she says, leaves the host alive to begin again. After the last people she helped end, the Enders slept until the host grew a new one.",
+    "rows": [
+      [
+        "Used by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 56"
+      ]
+    ]
+  },
+  "imperatrix": {
+    "line": "Obsidia's title as ruler of the Storm Citadel.",
+    "short": "Obsidia's title. She is the Storm Citadel's Imperatrix, its empress, and the ship answers to her and to no one else.",
+    "summary": "Imperatrix means empress. It is Obsidia's title as ruler of the Storm Citadel, the largest ship of her kind, which answers to her and to no one else.",
+    "rows": [
+      [
+        "Held by",
+        "Obsidia"
+      ],
+      [
+        "Rules",
+        "The Storm Citadel"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "karinas-rule": {
+    "line": "Karina's rule for the people she carries out of the ruins.",
+    "short": "Karina's own rule, said over the shelter's log: \"You don't put down someone you carried out.\" She calls it duty.",
+    "summary": "Karina is on the rescue team that carries the living out of the ruins. On the second night after the storm, she signs the nameless girl she carried out into her care again, and when the clerk objects she says, \"You don't put down someone you carried out.\" He says it is no rule. She says it is hers, and duty. Selena keeps those words for years, and comes to think Karina never asked what she is because then she might have to put her down.",
+    "rows": [
+      [
+        "Made by",
+        "Karina"
+      ],
+      [
+        "Kept by",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 59"
+      ]
+    ]
+  },
+  "lag": {
+    "line": "Why Angela answers every order a beat late.",
+    "short": "Angela answers each order a beat late. Ruby's trojan jams the Council's link to her a little, like a screen that freezes.",
+    "summary": "On the feed from Tetra, the doll camera Angela carries, her arm comes up a beat late, every time. Ruby sees why: her trojan has woken but cannot break the Council's hold, so it only jams the link a little, and Angela answers each order late, like a screen that freezes. When Angela fights Ruby, every blow comes a beat late, so Ruby could dodge them all. Selrick's record later shows the small android firing at students a beat late.",
+    "sub": "Angela's delayed response",
+    "rows": [
+      [
+        "Caused by",
+        "Ruby's trojan"
+      ],
+      [
+        "First seen",
+        "Chapter 12"
+      ]
+    ]
+  },
+  "laylas-count": {
+    "line": "Layla's count of three from an Ender's raised arm to its open chest.",
+    "short": "Layla's count: from an Ender's arm lift to the split of its chest plates is always three. She calls it along the wall.",
+    "summary": "At the bay road wall, Layla timed the first Enders: from the lift of an Ender's arm to the split of its chest plates is always a count of three. She calls \"Three! Two! Now!\" along the wall, and the Shield's soldiers begin to fire on her count. Fanny strikes on it too. Back to back with Fanny, she counts in silence and drops on now, so Fanny's blade can sweep over her into the open chest. Later her cannon fires on her own count.",
+    "rows": [
+      [
+        "Used by",
+        "Layla"
+      ],
+      [
+        "First seen",
+        "Chapter 84"
+      ]
+    ]
+  },
+  "lesleys-dream": {
+    "line": "Lesley's recurring nightmare, which always ends on a child's voice.",
+    "short": "Lesley's recurring nightmare: screams, the Enders' roar, and running the wrong way through a crowd. It always ends on a child's voice.",
+    "summary": "Lesley's recurring nightmare replays the night the base fell: screams, crying, metal scraping on metal, the endless roar of the Enders, and Lesley running the wrong way through a crowd. It never reaches back as far as the house she grew up in. It always ends on a child's voice: \"Go away! Leave me alone!\" That night Chang'e said it so low Lesley hardly heard it. In the dream it became a shout. After the dream, Lesley always touches her visor.",
+    "rows": [
+      [
+        "Dreamer",
+        "Lesley"
+      ],
+      [
+        "First seen",
+        "Chapter 18"
+      ]
+    ]
+  },
+  "lull": {
+    "line": "The weeks the Enders go quiet after they are badly hurt.",
+    "short": "Joe's word for the weeks the Enders go quiet after they are badly hurt. A lull always ends.",
+    "summary": "When Enders are hurt badly, they go quiet for weeks. Joe calls it a lull, and says a lull always ends. When one begins, every Ender signal on the Academy's screens stops in the same moment. Vexana thinks every win only buys a lull. Obsidia says that when Enders die in numbers the Will goes dark for a while, then stirs again and sends more.",
+    "sub": "Ender quiet spell",
+    "rows": [
+      [
+        "Named by",
+        "Joe"
+      ],
+      [
+        "First seen",
+        "Chapter 3"
+      ]
+    ]
+  },
+  "missing": {
+    "line": "The status written on a file when someone vanishes with no trace.",
+    "short": "The status on a file when someone is lost with no trace. A student says Missing is what they write first.",
+    "summary": "Missing is the status on a file when someone is lost with no trace. After Vexana vanishes, a sheet on the board reads VEXANA: MISSING, and a student says Missing is what they write first. Weeks later a records clerk says that after this long, the form says Killed in action. Lesley rules no body, no finding, and Vexana's file stays Missing. At the crews' yard, Vexana learns from Selena that Missing is the word for her now, and that Missing people draw no stipend.",
+    "rows": [
+      [
+        "Given to",
+        "Vexana"
+      ],
+      [
+        "Ruled on by",
+        "Lesley"
+      ],
+      [
+        "First seen",
+        "Chapter 46"
+      ]
+    ]
+  },
+  "mobile-support": {
+    "line": "Selena's post in the battle: wherever the fight bends.",
+    "short": "Selena's battle post, set by Chang'e. Mobile support goes wherever the fight bends.",
+    "summary": "Chang'e posts Selena to mobile support, because Silverbolt is the fastest machine in her division. Mobile support goes wherever the fight bends. Selena sits on the bell tower and lets every call to report go by, and the light for mobile support on Chang'e's console keeps blinking all day, even after the ship's field dies. Fanny takes her for a spotter in the best seat in the city.",
+    "rows": [
+      [
+        "Held by",
+        "Selena"
+      ],
+      [
+        "Set by",
+        "Chang'e"
+      ],
+      [
+        "First seen",
+        "Chapter 69"
+      ]
+    ]
+  },
+  "obsidias-experiment": {
+    "line": "Obsidia's long plan, and the want under it.",
+    "short": "Obsidia calls the day of the attack the final stage of her experiment. Under every plan lies one want: to see a different ending.",
+    "summary": "Obsidia calls the day of the attack the final stage of her experiment. If the body finishes the humans, she will watch the old ending hold. If not, she will go in herself. The pawn she made is her way to find out what comes after a purge. Under every plan lies one want she never wrote into any: to see a different ending.",
+    "rows": [
+      [
+        "Planned by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 66"
+      ]
+    ]
+  },
+  "partners-tell-each-other-first": {
+    "line": "Guinevere and Vexana's rule of telling each other first.",
+    "short": "A rule Guinevere and Vexana make after a drawn match: partners tell each other first, both of them.",
+    "summary": "Guinevere stakes it on a one-armed match: if she wins, Vexana tells her first, every cut, every paper. The match ends in a draw, so they both make the rule: partners tell each other first. It heads Guinevere's new month plan in gold, and when Vexana tells her first that her arm aches, Guinevere shouts her thanks. Vexana decides a present does not count. After the corridor she remembers her promise and decides she cannot tell this.",
+    "rows": [
+      [
+        "Made by",
+        "Guinevere and Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 44"
+      ]
+    ]
+  },
+  "pawn": {
+    "line": "Obsidia's word for the one of hers living among the humans.",
+    "short": "Obsidia's word for the one of hers among the humans. The Will lets a pawn move freely for a while. If it slips beyond control, there is one outcome.",
+    "summary": "Obsidia's word for Selena, the thing she made and set loose among the humans. She says the Will lets a pawn move freely for a while, but if it ever slips beyond control there is only one outcome: termination. Selena's body knows that rule, and she sells to Vexana to see how another pawn might escape the game. Obsidia calls her her finest creation, gone off-script. In the throne hall she greets her as her little doll, and Selena says she will never be her puppet again.",
+    "rows": [
+      [
+        "Used by",
+        "Obsidia"
+      ],
+      [
+        "Said of",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "payment-in-places": {
+    "line": "Wreck sites used as money: where a downed Ender lies.",
+    "short": "How Vexana pays Selena for salvage: she tells her where wreckage lies, before the crews find it.",
+    "summary": "A place is a wreck site: where a downed Ender lies, before any crew has found it. Vexana pays Selena in places for Ender plates and cores, at three places a core. Obsidia pays Selena the same way for her reports, setting the place of a fallen Ender in her head, and by nightfall the plates are sold. Selena thinks it beats money. When Obsidia stops paying, Selena's head stays empty at the sink.",
+    "sub": "wreck sites as currency",
+    "rows": [
+      [
+        "Paid by",
+        "Vexana and Obsidia"
+      ],
+      [
+        "Paid to",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 51"
+      ]
+    ]
+  },
+  "plan-a-and-plan-b": {
+    "line": "Guinevere's two plans: win, or come home.",
+    "short": "Guinevere's two plans. Plan A: she smashes the Core and they win. Plan B: they come home. She makes Vexana say it.",
+    "summary": "On the green-railed roof, Guinevere lays out her two plans. Plan A, she smashes the Core and they win. Plan B, they come home. She makes Vexana say \"Plan B\" out loud, sings about it, and when a siren sounds says \"Plan A first.\" On the day of the attack the Core is never found, and Vexana says only \"This is Plan A.\" Guinevere notices she did not say Plan B. As the black hole takes them, Vexana says it without being asked, and Guinevere's light flares gold.",
+    "rows": [
+      [
+        "Made by",
+        "Guinevere"
+      ],
+      [
+        "First seen",
+        "Chapter 43"
+      ]
+    ]
+  },
+  "preparatory-course": {
+    "line": "The Combat Division's year of training before any real fight.",
+    "short": "The Combat Division's year of training before any real fight. Cadets whose needle passes the line at the assessment go there.",
+    "summary": "A cadet whose needle passes the line at the entrance assessment goes on to the Combat Division's preparatory course: a year of training before any real fight. The rest go to the Support Division. The course ends with a final combat trial scored by the instructors, which never goes on the rankings board, and then Team-Up Day, when cadets ask each other to be partners.",
+    "rows": [
+      [
+        "Part of",
+        "The Combat Division"
+      ],
+      [
+        "Length",
+        "One year"
+      ],
+      [
+        "Ends with",
+        "The final combat trial, then Team-Up Day"
+      ],
+      [
+        "First seen",
+        "Chapter 34"
+      ]
+    ]
+  },
+  "protectors-of-all-humanity": {
+    "line": "The words Layla and Fanny say together on a ruined rooftop.",
+    "short": "What Layla and Fanny say together, without planning to: \"We've gotta get stronger. After all, we're the protectors of all humanity.\"",
+    "summary": "On a ruined rooftop, the night of their battle outside the dome, Layla and Fanny say it together: \"We've gotta get stronger. After all, we're the protectors of all humanity.\" Neither had planned it. Then they drop into the dark street and go back to training.",
+    "rows": [
+      [
+        "Said by",
+        "Layla and Fanny"
+      ],
+      [
+        "First seen",
+        "Chapter 6"
+      ]
+    ]
+  },
+  "purge-protocol": {
+    "line": "The order the Will gives Vexana in front of Guinevere.",
+    "short": "An order from a voice everywhere: \"Vexana. Execute purge protocol.\" To purge a place is to wipe it clean.",
+    "summary": "On the day of the attack, a voice from everywhere orders, \"Vexana. Execute purge protocol.\" To purge a place is to wipe it clean, and Guinevere takes it as an order to kill her. Vexana sees it as the Will's trap: kill her partner, or show her side, and either way the Will wins. She wanted the Will to think the purge was done, so it would go on trusting her until the Matrix stood whole and close.",
+    "rows": [
+      [
+        "Given by",
+        "The Will of the Planet"
+      ],
+      [
+        "Given to",
+        "Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 72"
+      ]
+    ]
+  },
+  "purification": {
+    "line": "Obsidia's word for destruction that makes way for new life.",
+    "short": "Obsidia's word for destruction. She says destruction gives rise to new life, and that is the meaning of purification.",
+    "summary": "Obsidia's name for destruction. In the throne hall she tells Selena that destruction gives rise to new life, and that is the meaning of purification. Later, on the leaning stairs of her burning ship, she says purification is not the end but where everything begins. Selena answers that she does not care about it, and demands her freedom back.",
+    "rows": [
+      [
+        "Used by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 85"
+      ]
+    ]
+  },
+  "recalibration": {
+    "line": "The body's healing, which sets a made thing back to what it was made for.",
+    "short": "The body's healing. Living violet strands close cracks in Obsidia's shell, and set a made thing back to what it was made for.",
+    "summary": "Strands of living violet tissue come from the body's seam and close the cracks in Obsidia's shell. Obsidia stops them before they are done: \"That's enough recalibration.\" She says it mends more than the shell: it sets a made thing back to what it was made for. Before she woke it cost her nothing. Now each healing smooths some of her away, so she takes it only when she must.",
+    "rows": [
+      [
+        "Done by",
+        "The Mother Matrix"
+      ],
+      [
+        "First seen",
+        "Chapter 55"
+      ]
+    ]
+  },
+  "registration-rule": {
+    "line": "Chang'e's rule for any change to a registered mecha.",
+    "short": "Chang'e's rule: no change to a registered mecha without a field-test report and her mark. Any change, even paint.",
+    "summary": "When a training frame comes to Selena's bench, registered to her, Chang'e gives her the rule: no change to a registered mecha without a field-test report and Chang'e's mark. It covers any change, paint included. After her first run on the rebuilt frame, Selena files a report for its name, because a name is a change: Frame Nine, Name: Silverbolt. Chang'e reads it twice and makes her mark.",
+    "rows": [
+      [
+        "Made by",
+        "Chang'e"
+      ],
+      [
+        "First seen",
+        "Chapter 62"
+      ]
+    ]
+  },
+  "regulation": {
+    "line": "The Shield's standard, and Lesley's reason for handing gifts back.",
+    "short": "Lesley hands back anything that is not Shield regulation, like the rifle lamp and heated gloves Chang'e built for her.",
+    "summary": "Regulation is the Shield's standard. Lesley hands back Chang'e's rifle lamp and heated gloves because they are not regulation, and Chang'e decides she will make it regulation. Asked what is under the cloth on her bench, she answers, \"Nothing regulation.\" She reads the Shield's rulebook cover to cover, learns that a Shield rifle is worked by hand and needs nothing else, and builds one. \"It's regulation,\" she tells Lesley, and Lesley does not hand it back.",
+    "rows": [
+      [
+        "Set by",
+        "The Shield of Dawnbreak"
+      ],
+      [
+        "First seen",
+        "Chapter 20"
+      ]
+    ]
+  },
+  "rubys-rage": {
+    "line": "The blind fury that comes up in Ruby when Angela is hurt.",
+    "short": "A fury that comes up in Ruby when Angela is hurt. Everything goes quiet and hot, and she cuts down everything in front of her.",
+    "summary": "Something comes up in Ruby when Angela is hurt. The first time, in a burning avenue, everything went quiet and hot. She cut down everything in front of her, the lamp post and the wall too, and raised her scythe over a crying child, and it took Angela's shout to bring her back. The rage makes crying sound far away, and it never cared what it hit. At the bay road it comes again, and this time Ruby makes herself hear the crying and holds it to one cut, into the core.",
+    "rows": [
+      [
+        "Felt by",
+        "Ruby"
+      ],
+      [
+        "Set off by",
+        "Angela being hurt"
+      ],
+      [
+        "First seen",
+        "Chapter 84"
+      ]
+    ]
+  },
+  "selenas-thread": {
+    "line": "A thin secret line from Obsidia's pawn back up to her.",
+    "short": "A thin thread Obsidia's pawn opened beside her recall. Reports come up it only on storm nights, when lightning hides it.",
+    "summary": "A thin line Selena opened beside the recall. Lines run both ways, she reasoned, so she pushed through Silverbolt's core and the Ender plates on it until a thread of her own gave. It tells her nothing of where it ends. She sends reports up it only on storm nights, when lightning hides it from Chang'e's screens. Obsidia could close it with a thought but leaves it open, and pays for each report. When she stops paying, two more reports come up unpaid, then it goes still.",
+    "rows": [
+      [
+        "Opened by",
+        "Selena"
+      ],
+      [
+        "Read by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "sis": {
+    "line": "What Lesley's little brother called her.",
+    "short": "What Lesley's little brother called her. She was Sis to him, and he never called her anything else.",
+    "summary": "Lesley's little brother called her Sis and nothing else. It was the last word he said, as a question, behind her in the dark. Later Chang'e asks her mother what to call a girl who protects you, if she isn't your mom. \"A big sister,\" her mother says, so Chang'e shortens it to Big Sis, then to Sis, for when there is no time. When Chang'e first calls her Sis, Lesley goes still: it is her brother's word.",
+    "rows": [
+      [
+        "Said by",
+        "Lesley's brother, then Chang'e"
+      ],
+      [
+        "Said to",
+        "Lesley"
+      ],
+      [
+        "First seen",
+        "Chapter 18"
+      ]
+    ]
+  },
+  "stay-back": {
+    "line": "The two words Vexana's father said whenever the drill bell rang.",
+    "short": "The two words Vexana's father said whenever the drill bell rang, before he went up to his gun.",
+    "summary": "Vexana's father served a Shield gun on the wall. Whenever the drill bell rang he said two words, \"Stay back,\" and went up to his gun while she ran to the shelter. One evening every gun on the wall fired at once. That night he said them as he left her at the shelter door, and a last time standing between her and the Ender. Years later, as she starts down the gallery stair toward Guinevere, the words come back, and she stops.",
+    "rows": [
+      [
+        "Said by",
+        "Vexana's father"
+      ],
+      [
+        "Said to",
+        "Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 33"
+      ]
+    ]
+  },
+  "alley-thing": {
+    "line": "Fanny's way of fighting with her back to a narrow place.",
+    "short": "Fanny's tactic: fight with your back to a narrow alley, so the Enders must come at you one or two at a time.",
+    "summary": "In her assessment Fanny fights the soldiers' way, her back to a narrow alley, so the Enders have to come one or two at a time. Layla spies on her drilling in the drill hall's one narrow doorway, and finds it so simple it makes her angry. In the test match Layla turns it around: the drones come down one narrow line, so one full charge could take the row. At the bay road Fanny builds the wall across the narrowest place, with one gap, and steel goes into each core as it opens.",
+    "rows": [
+      [
+        "Used by",
+        "Fanny"
+      ],
+      [
+        "Learned from",
+        "Soldiers without suits"
+      ],
+      [
+        "First seen",
+        "Chapter 1"
+      ]
+    ]
+  },
+  "aspirants-always-stand-united": {
+    "line": "The words every Aspirant shouted together on the platforms.",
+    "short": "The Aspirants' shout. Everyone said it on the platforms, even Fanny, and the thought of it lights Guinevere's star.",
+    "summary": "On the platforms, after Guinevere's call to the Aspirants, everyone said it together: \"The Aspirants always stand united!\" Fanny said it too, with her blades still raised at Vexana. Inside the black hole, with her star almost dark, Guinevere remembers that even Fanny said it, and the star lights. Afterward she tells Fanny she held on to it in there.",
+    "rows": [
+      [
+        "Said by",
+        "Every Aspirant on the platforms"
+      ],
+      [
+        "First seen",
+        "Chapter 75"
+      ]
+    ]
+  },
+  "cycle": {
+    "line": "Obsidia's view of history: destruction, then a new beginning.",
+    "short": "Obsidia's view of history: peoples rise, are ended and begin again. She says destruction is merely the beginning of a new cycle.",
+    "summary": "Obsidia asks how many times humanity has walked the same path. She says the world's life began under falling stones, that the children of a purge's few survivors built again and remembered nothing, and that destruction is merely the beginning of a new cycle. After each people ends, the Enders sleep until the host grows a new one. To her every raid on the humans was the cycle at work. If the body finishes them, she will watch the old ending hold, but she wants a different ending.",
+    "rows": [
+      [
+        "Claimed by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 56"
+      ]
+    ]
+  },
+  "end-of-the-world": {
+    "line": "Where Ruby and Angela promise to wait for each other.",
+    "short": "Where Ruby asks Angela to wait for her if they are separated. Angela promises, and asks Ruby to wait for her too.",
+    "summary": "After they bring down a giant Ender together, shield and scythe, Ruby asks Angela to wait for her at the end of the world if they are separated. Angela promises she will, and asks Ruby to wait for her too. Moments later soldiers come down the avenue to take them.",
+    "sub": "Ruby and Angela's meeting place",
+    "rows": [
+      [
+        "Promised by",
+        "Ruby and Angela"
+      ],
+      [
+        "First seen",
+        "Chapter 14"
+      ]
+    ]
+  },
+  "ender-hum": {
+    "line": "The deep hum Selena feels in her bones near Enders.",
+    "short": "The deep hum of the Enders that Selena feels in her bones. Every Ender carries a small piece of it. The Storm Citadel carries the whole.",
+    "summary": "Selena has felt the Enders hum in her bones all her life. On the storm night it came down from a black cloud over the bay, felt like home, and went out of her when the cloud left. Giants ring in her bones across the city, and she feels the hum gather a day before a raid. Every Ender carries a small piece of it, and the Storm Citadel carries the whole. She knows somebody made it. In the throne hall the ship's note and the field's lower note come from one place.",
+    "rows": [
+      [
+        "Felt by",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 59"
+      ]
+    ]
+  },
+  "first-rule-of-enders": {
+    "line": "Enders show their weak spot only when they strike.",
+    "short": "Joe's lesson: Enders show their weak spot only when they attack. The chest plates split, the core glows, and that moment is all you get.",
+    "summary": "Every Academy student learns it from Joe: Enders expose their weak spot only when they launch an attack. The chest plates split, the core shows, and that brief moment is all the time you get. Layla calls it obvious, and uses it on the breach Ender and the gold giant. Vexana calls it the first rule of Enders, and means to meet the Mother Matrix with it: \"It opens when it fires. Only then.\"",
+    "sub": "Ender weak point rule",
+    "rows": [
+      [
+        "Taught by",
+        "Joe"
+      ],
+      [
+        "First seen",
+        "Chapter 3"
+      ]
+    ]
+  },
+  "four-conditions": {
+    "line": "Chang'e's four terms for letting Ruby and Angela stay.",
+    "short": "Chang'e's four terms for Ruby and Angela's refuge: a lab exam, the entrance assessment, a droid escort and seats beside Layla and Fanny.",
+    "summary": "When Lesley lets Ruby and Angela in under watch, Chang'e holds up four fingers. The android comes to her lab for an examination. The heir takes the entrance assessment. An AI droid follows them everywhere. And they sit in the third-year class beside the two who vouched for them, Layla and Fanny. Ruby accepts, and a slim white droid with one orange eye takes its place one step behind her.",
+    "rows": [
+      [
+        "Set by",
+        "Chang'e"
+      ],
+      [
+        "Accepted by",
+        "Ruby"
+      ],
+      [
+        "First seen",
+        "Chapter 16"
+      ]
+    ]
+  },
+  "leftward-drift": {
+    "line": "The fault that pulls Layla's full-charge shot to the left.",
+    "short": "A fault in Layla's cannon: at full charge the shot pulls left, a hand's width at two hundred meters. Each test ends in ERROR.",
+    "summary": "At full charge Layla's cannon pulled left, a hand's width at two hundred meters, and each test ended in ERROR. The log went back months: a hundred and nineteen red lines, all LEFT, nine to eleven centimeters. In the test match the drift sent her shot past Fanny's shoulder. Layla found the cause: the two halves of the charge came up at different speeds, and the shot leaned toward the faster half. She made the faster half wait, and kept Fanny on her right, where a miss could not reach her.",
+    "rows": [
+      [
+        "Fault in",
+        "Layla's cannon"
+      ],
+      [
+        "Size",
+        "Nine to eleven centimeters left at two hundred meters"
+      ],
+      [
+        "Cause",
+        "The two halves of the charge came up at different speeds"
+      ],
+      [
+        "First seen",
+        "Chapter 2"
+      ]
+    ]
+  },
+  "the-march": {
+    "line": "An old march Vexana's father hummed and never finished.",
+    "short": "An old march Vexana's father hummed while he worked, always stopping in the same place. He would finish it when the war did.",
+    "summary": "Vexana's father hummed the same old march while he worked in his gun pit, and always stopped in the same place. He said he would finish it when the war did. Later, at the home, Vexana hummed it under her blanket and stopped where he stopped. Nobody knows the rest.",
+    "rows": [
+      [
+        "Hummed by",
+        "Vexana's father, then Vexana"
+      ],
+      [
+        "First seen",
+        "Chapter 33"
+      ]
+    ]
+  },
+  "pulse": {
+    "line": "The body's signal to every Ender, felt in every cell at once.",
+    "short": "The body's signal: one line down to every Ender, felt at once in every cell. It tells them where to go and what to do.",
+    "summary": "The pulse is the body's signal, one line down to every Ender, felt at once in every cell. It tells them where to go and what to do, even far out in the sea of stars. Obsidia calls it the Will's voice. She was made to shape it for the Enders that cannot think, which hear it and nothing else. A thing with a self closes its own end. Obsidia sends her recalls down it, reads back along it to learn the Will's moves, and finds even Vexana's vision and memories there.",
+    "rows": [
+      [
+        "Sent by",
+        "The Mother Matrix, as the Will's voice"
+      ],
+      [
+        "Shaped by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "purge": {
+    "line": "Obsidia's word for the Enders ending a people's civilization.",
+    "short": "Obsidia's word for the Enders ending a people's civilization. She says it begins when a host finds its people too prosperous.",
+    "summary": "Obsidia says a purge ends a civilization, not every life. It begins when a host finds its people too prosperous: the Will stirs, the body rises in the void and the nest fills. The commander wakes from the long sleep and small doors open near the people. If they fight until it stalls, the body opens a great door and comes down itself, its commander following when she chooses. She says a purge leaves the host alive to begin again. To her it is only the work.",
+    "rows": [
+      [
+        "Described by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "recall": {
+    "line": "Obsidia's summons, written into the cells: come back.",
+    "short": "An order written into the cells of one creature that says one thing: come back. Obsidia sends them to her pawn, and none is obeyed.",
+    "summary": "A recall is an order written into the cells of one creature. It says one thing: come back. Obsidia sent the first to Selena late in the year before, soon after she learned her name. Selena feels it as a pull from far past the sky, with a red alert on her phone from no sender, and never obeys. By reading it from two roofs she finds where it comes from. Once she shows her own form, Obsidia sends the last call, which carries where she stands, and in the throne hall says it to her face: \"Come back, my puppet.\"",
+    "sub": "Obsidia's summons to Selena",
+    "rows": [
+      [
+        "Sent by",
+        "Obsidia"
+      ],
+      [
+        "Sent to",
+        "Selena"
+      ],
+      [
+        "First seen",
+        "Chapter 54"
+      ]
+    ]
+  },
+  "sergeants-line": {
+    "line": "The Shield sergeants' saying Fanny opens every session with.",
+    "short": "The Shield sergeants' saying, which Fanny opens every session with: \"There is no place for mercy on the battlefield.\"",
+    "summary": "\"There is no place for mercy on the battlefield.\" Fanny opens every training session with it. At first Layla mouths it along, rolling her eyes. By the fifth day she does not. When Fanny says it while Layla hears the wails from the avenue, it comes out flat, and Fanny hears how wrong it is. She knows she gave Layla the line after a hundred and nineteen failures, and still has no better one.",
+    "rows": [
+      [
+        "Said by",
+        "Fanny"
+      ],
+      [
+        "From",
+        "The Shield's sergeants"
+      ],
+      [
+        "First seen",
+        "Chapter 7"
+      ]
+    ]
+  },
+  "shared-score": {
+    "line": "One team score for Layla and Fanny: a point a kill, ten a civilian.",
+    "short": "Layla and Fanny's single team score from the day they are paired. A kill is a point. A civilian carried clear is ten.",
+    "summary": "From the day Joe pairs them, Layla and Fanny share one score. A kill is a point, and a civilian carried clear is ten. One score means nobody on the team to beat. Layla keeps her own score anyway.",
+    "rows": [
+      [
+        "Set by",
+        "Joe"
+      ],
+      [
+        "Used by",
+        "Layla and Fanny"
+      ],
+      [
+        "First seen",
+        "Chapter 8"
+      ]
+    ]
+  },
+  "termination-rule": {
+    "line": "Obsidia's rule for a made thing that slips beyond control.",
+    "short": "Obsidia's rule for a thing she made: if it ever slips beyond control, there is only one outcome. Vexana named it: termination.",
+    "summary": "Walking the rows of Ender shells in the nest, Obsidia said of something she had made, \"If it ever slips beyond control, there is only one outcome.\" Vexana answered, \"Termination,\" and even then heard it about herself. The day before the attack, Obsidia thinks the rule will do the rest once the Will has used Vexana.",
+    "rows": [
+      [
+        "Spoken by",
+        "Obsidia"
+      ],
+      [
+        "First seen",
+        "Chapter 58"
+      ]
+    ]
+  },
+  "wills-thread": {
+    "line": "The line that runs from the Will to the core of each Ender.",
+    "short": "Obsidia says each Ender's core is where the Will's thread ends. What an Ender sees runs back up the line to the Will.",
+    "summary": "Obsidia says each Ender's core is where the Will's thread ends. What an Ender sees runs back up the line, so the Will sees through every one of them. When an Ender dies its thread snaps and the Will feels it, and when too many snap at once, the wound is more than it can carry. The threads to every Ender meet in the Core. Obsidia says her own end of the line shut the day she woke.",
+    "rows": [
+      [
+        "Runs from",
+        "The Will of the Planet"
+      ],
+      [
+        "Ends in",
+        "Each Ender's core"
+      ],
+      [
+        "First seen",
+        "Chapter 55"
+      ]
+    ]
+  },
+  "treason": {
+    "line": "The charge Oro lays on Ruby and Angela.",
+    "short": "The charge an Oro officer reads against Ruby and the android Angela. The Council will pass sentence.",
+    "summary": "An officer charges Ruby, heir to the Decisionmaker, and the android Angela with treason against Oro, and shuts them in a cell with no window to wait for the Council's sentence. Ruby's father fears it could be death, and will not accept that. Soon after, the cell door stands open, and two small figures slip out.",
+    "sub": "Oro's criminal charge",
+    "rows": [
+      [
+        "Charged",
+        "Ruby and Angela"
+      ],
+      [
+        "Judged by",
+        "Oro's Council"
+      ],
+      [
+        "First seen",
+        "Chapter 15"
+      ]
+    ]
+  }
+}

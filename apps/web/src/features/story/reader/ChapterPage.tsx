@@ -7,6 +7,8 @@ import type { Chapter, ChapterEntry } from "@/content/story-types";
 
 import { ChapterPull } from "../morph/ChapterPull";
 import { Blocks } from "./Blocks";
+import { marksOf } from "./marks";
+import { MarkTips } from "./MarkTips";
 import { ChapterEnd } from "./ChapterEnd";
 import s from "./reader.module.css";
 import { ReaderRoot } from "./ReaderRoot";
@@ -35,6 +37,7 @@ export function ChapterPage({ chapter, entry }: { chapter: Chapter; entry: Chapt
         <div className={s.body}>
           <Blocks chapter={chapter} />
         </div>
+        {marksOf(chapter.id).size > 0 ? <MarkTips chapterId={chapter.id} /> : null}
       </article>
       <ChapterEnd entry={entry} />
     </ReaderRoot>

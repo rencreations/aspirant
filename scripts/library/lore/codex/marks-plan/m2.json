@@ -1,0 +1,331 @@
+[
+ {
+  "n": 22,
+  "p": 37,
+  "phrase": "design log",
+  "slug": "design-log",
+  "why": "the log is opened and its first page explained here"
+ },
+ {
+  "n": 22,
+  "p": 40,
+  "phrase": "Not regulation",
+  "slug": "regulation",
+  "why": "the book explains regulation here"
+ },
+ {
+  "n": 23,
+  "p": 19,
+  "phrase": "a core component",
+  "slug": "core-component",
+  "why": "the piece splits off whole here"
+ },
+ {
+  "n": 23,
+  "p": 72,
+  "phrase": "the frame",
+  "slug": "the-frame",
+  "why": "the frame is built here, the first suit"
+ },
+ {
+  "n": 23,
+  "p": 96,
+  "phrase": "the first light",
+  "slug": "first-light",
+  "why": "Chang'e gives the name first light here"
+ },
+ {
+  "n": 24,
+  "p": 77,
+  "phrase": "A giant Ender",
+  "slug": "black-and-gold-giant",
+  "why": "the giant is first described here"
+ },
+ {
+  "n": 25,
+  "p": 5,
+  "phrase": "The comm at her collar",
+  "slug": "lesleys-comm",
+  "why": "the comm matters in this chapter, explained at 23:5"
+ },
+ {
+  "n": 26,
+  "p": 80,
+  "phrase": "aspirant power",
+  "slug": "aspirant-power",
+  "why": "Chang'e coins the term here, refresher after a long gap"
+ },
+ {
+  "n": 26,
+  "p": 90,
+  "phrase": "crescents",
+  "slug": "crescents",
+  "why": "the crescents are built here"
+ },
+ {
+  "n": 27,
+  "p": 76,
+  "phrase": "Panels of light",
+  "slug": "panels-of-light",
+  "why": "the panels open here for the first time"
+ },
+ {
+  "n": 27,
+  "p": 86,
+  "phrase": "the First Aspirants",
+  "slug": "first-aspirants",
+  "why": "the name is given here"
+ },
+ {
+  "n": 28,
+  "p": 39,
+  "phrase": "a glove wired to a dial",
+  "slug": "glove-and-dial",
+  "why": "the dial is built here"
+ },
+ {
+  "n": 28,
+  "p": 50,
+  "phrase": "Wings of light",
+  "slug": "wings-of-light",
+  "why": "first wings of light in the book"
+ },
+ {
+  "n": 29,
+  "p": 15,
+  "phrase": "on checks",
+  "slug": "checks",
+  "why": "Chang'e explains checks here"
+ },
+ {
+  "n": 29,
+  "p": 17,
+  "phrase": "Forty lines",
+  "slug": "trojan",
+  "why": "the trojan comes back after a long gap"
+ },
+ {
+  "n": 30,
+  "p": 68,
+  "phrase": "the field roster",
+  "slug": "field-roster",
+  "why": "refresher, the rotation is argued over here"
+ },
+ {
+  "n": 30,
+  "p": 90,
+  "phrase": "The Academy hall",
+  "slug": "academy-hall",
+  "why": "the hall is described in the next paragraph"
+ },
+ {
+  "n": 30,
+  "p": 99,
+  "phrase": "chibi keychain",
+  "slug": "chibi-keychains",
+  "why": "the keychains are explained here"
+ },
+ {
+  "n": 31,
+  "p": 11,
+  "phrase": "the gate portal",
+  "slug": "gate-portal",
+  "why": "refresher after a long gap, explained at 31:14"
+ },
+ {
+  "n": 31,
+  "p": 18,
+  "phrase": "Her two drones",
+  "slug": "guineveres-drones",
+  "why": "the drones are explained here"
+ },
+ {
+  "n": 32,
+  "p": 3,
+  "phrase": "One. Two. Three.",
+  "slug": "hesters-count",
+  "why": "Hester's count starts here"
+ },
+ {
+  "n": 32,
+  "p": 32,
+  "phrase": "House Baroque",
+  "slug": "house-baroque",
+  "why": "the House is explained here"
+ },
+ {
+  "n": 32,
+  "p": 46,
+  "phrase": "a lady’s refinement",
+  "slug": "ladys-refinement",
+  "why": "the phrase is explained here"
+ },
+ {
+  "n": 33,
+  "p": 13,
+  "phrase": "old march",
+  "slug": "the-march",
+  "why": "the march is explained here"
+ },
+ {
+  "n": 33,
+  "p": 27,
+  "phrase": "Stay back",
+  "slug": "stay-back",
+  "why": "the two words are explained here"
+ },
+ {
+  "n": 33,
+  "p": 53,
+  "phrase": "The Shield’s home",
+  "slug": "shields-home",
+  "why": "the home is explained in the next paragraph"
+ },
+ {
+  "n": 34,
+  "p": 6,
+  "phrase": "preparatory course",
+  "slug": "preparatory-course",
+  "why": "the course is explained here"
+ },
+ {
+  "n": 34,
+  "p": 58,
+  "phrase": "final combat trial",
+  "slug": "final-combat-trial",
+  "why": "the trial is explained here"
+ },
+ {
+  "n": 35,
+  "p": 62,
+  "phrase": "The training hall",
+  "slug": "training-hall",
+  "why": "the night hall that the next chapters use"
+ },
+ {
+  "n": 36,
+  "p": 0,
+  "phrase": "THE ASPIRANTS TEAM-UP DAY",
+  "slug": "team-up-day",
+  "why": "the banner names the day, explained next"
+ },
+ {
+  "n": 36,
+  "p": 1,
+  "phrase": "Aspirants fought in pairs",
+  "slug": "aspirant-pairs",
+  "why": "refresher, the pairs rule is restated here"
+ },
+ {
+  "n": 37,
+  "p": 2,
+  "phrase": "The reserve",
+  "slug": "reserve",
+  "why": "the reserve is explained here"
+ },
+ {
+  "n": 37,
+  "p": 8,
+  "phrase": "the dome’s foot",
+  "slug": "domes-foot",
+  "why": "the place is explained here"
+ },
+ {
+  "n": 38,
+  "p": 0,
+  "phrase": "The first plan",
+  "slug": "guineveres-plans",
+  "why": "the plans are explained here"
+ },
+ {
+  "n": 38,
+  "p": 59,
+  "phrase": "Team test",
+  "slug": "team-test",
+  "why": "the test is explained in the next paragraph"
+ },
+ {
+  "n": 39,
+  "p": 26,
+  "phrase": "a debt",
+  "slug": "debts",
+  "why": "Vexana's belief about debts is explained here"
+ },
+ {
+  "n": 39,
+  "p": 82,
+  "phrase": "Emblems of Hope",
+  "slug": "emblems-of-hope",
+  "why": "Guinevere names the stars here"
+ },
+ {
+  "n": 40,
+  "p": 1,
+  "phrase": "The girls’ house",
+  "slug": "girls-house",
+  "why": "the cake shop is explained here"
+ },
+ {
+  "n": 40,
+  "p": 39,
+  "phrase": "the white box",
+  "slug": "white-box",
+  "why": "the box becomes a keepsake box here"
+ },
+ {
+  "n": 41,
+  "p": 8,
+  "phrase": "best Aspirant Duo",
+  "slug": "best-aspirant-duo",
+  "why": "the award is explained here"
+ },
+ {
+  "n": 41,
+  "p": 50,
+  "phrase": "The Will of the Planet",
+  "slug": "will-of-the-planet",
+  "why": "Chang'e's lesson names the Will here"
+ },
+ {
+  "n": 41,
+  "p": 58,
+  "phrase": "the Mother Matrix",
+  "slug": "mother-matrix",
+  "why": "Chang'e's lesson names the Matrix here"
+ },
+ {
+  "n": 42,
+  "p": 52,
+  "phrase": "Control Core",
+  "slug": "control-core",
+  "why": "Guinevere repeats the lesson, explained at 41:64"
+ },
+ {
+  "n": 42,
+  "p": 74,
+  "phrase": "the void",
+  "slug": "void",
+  "why": "Vexana looks for the void, explained at 41:72"
+ },
+ {
+  "n": 42,
+  "p": 79,
+  "phrase": "a black hole",
+  "slug": "black-hole",
+  "why": "the paper's black hole, explained here"
+ },
+ {
+  "n": 43,
+  "p": 70,
+  "phrase": "An Aspirant’s light",
+  "slug": "an-aspirants-light",
+  "why": "the key line, explained at 43:74"
+ },
+ {
+  "n": 43,
+  "p": 83,
+  "phrase": "Plan B",
+  "slug": "plan-a-and-plan-b",
+  "why": "the two plans are made here"
+ }
+]

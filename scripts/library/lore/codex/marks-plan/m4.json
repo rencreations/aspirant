@@ -1,0 +1,310 @@
+[
+ {
+  "n": 66,
+  "p": 3,
+  "phrase": "The throne",
+  "slug": "obsidias-throne",
+  "why": "The book explains the throne as the ship's spine here"
+ },
+ {
+  "n": 66,
+  "p": 10,
+  "phrase": "the cycle",
+  "slug": "cycle",
+  "why": "Obsidia's idea of the cycle, explained here"
+ },
+ {
+  "n": 66,
+  "p": 17,
+  "phrase": "a field",
+  "slug": "obsidias-field",
+  "why": "First mention of the field she built; explained in the next paragraph"
+ },
+ {
+  "n": 67,
+  "p": 7,
+  "phrase": "Her storm",
+  "slug": "obsidias-storm",
+  "why": "First sight of the storm in Act VI, a refresher"
+ },
+ {
+  "n": 67,
+  "p": 17,
+  "phrase": "pink-haired keychain",
+  "slug": "pink-haired-keychain",
+  "why": "The keychain goes into her sleeve here; refresher after a long gap"
+ },
+ {
+  "n": 68,
+  "p": 3,
+  "phrase": "the Emblem of Hope",
+  "slug": "emblems-of-hope",
+  "why": "Named in full; refresher long after its making"
+ },
+ {
+  "n": 69,
+  "p": 7,
+  "phrase": "the Defensive Bubble",
+  "slug": "defensive-bubble",
+  "why": "The dome is named and explained again here"
+ },
+ {
+  "n": 69,
+  "p": 35,
+  "phrase": "frontline assault",
+  "slug": "frontline",
+  "why": "First use of the battle post"
+ },
+ {
+  "n": 69,
+  "p": 39,
+  "phrase": "Mobile support",
+  "slug": "mobile-support",
+  "why": "The text defines Selena's post here"
+ },
+ {
+  "n": 70,
+  "p": 5,
+  "phrase": "Eternal Guards",
+  "slug": "eternal-guards",
+  "why": "Vexana names her machines here; refresher"
+ },
+ {
+  "n": 70,
+  "p": 6,
+  "phrase": "the platforms",
+  "slug": "platforms",
+  "why": "The platforms are explained here"
+ },
+ {
+  "n": 71,
+  "p": 17,
+  "phrase": "the team test",
+  "slug": "team-test",
+  "why": "Refresher of the team test, long ago"
+ },
+ {
+  "n": 72,
+  "p": 31,
+  "phrase": "the Mother Matrix",
+  "slug": "mother-matrix",
+  "why": "The body is seen and named; refresher"
+ },
+ {
+  "n": 72,
+  "p": 37,
+  "phrase": "purge protocol",
+  "slug": "purge-protocol",
+  "why": "The order is given and explained next"
+ },
+ {
+  "n": 72,
+  "p": 57,
+  "phrase": "wings of aspirant power",
+  "slug": "wings-of-light",
+  "why": "The book explains the wings here"
+ },
+ {
+  "n": 73,
+  "p": 27,
+  "phrase": "the Will’s mark",
+  "slug": "wills-mark",
+  "why": "The mark lets go; reminder of what it was"
+ },
+ {
+  "n": 73,
+  "p": 43,
+  "phrase": "Termination",
+  "slug": "termination-rule",
+  "why": "The termination rule is recalled and named"
+ },
+ {
+  "n": 74,
+  "p": 30,
+  "phrase": "Tetra",
+  "slug": "tetra",
+  "why": "Refresher after a long gap"
+ },
+ {
+  "n": 74,
+  "p": 60,
+  "phrase": "Androids",
+  "slug": "androids",
+  "why": "Angela recalls the androids of Oro; refresher"
+ },
+ {
+  "n": 75,
+  "p": 46,
+  "phrase": "her lead Guard",
+  "slug": "lead-guard",
+  "why": "Reveals the machine that took the beam"
+ },
+ {
+  "n": 76,
+  "p": 14,
+  "phrase": "a black hole",
+  "slug": "black-hole",
+  "why": "Obsidia's explanation of the drain is recalled"
+ },
+ {
+  "n": 76,
+  "p": 22,
+  "phrase": "the Core",
+  "slug": "control-core",
+  "why": "Refresher of the Control Core, still never found"
+ },
+ {
+  "n": 77,
+  "p": 2,
+  "phrase": "Chang’e’s paper",
+  "slug": "changes-paper",
+  "why": "Calm opening before the monologue; the paper's idea matters here"
+ },
+ {
+  "n": 78,
+  "p": 7,
+  "phrase": "The Aspirants always stand united",
+  "slug": "aspirants-always-stand-united",
+  "why": "The shout recalled by Fanny"
+ },
+ {
+  "n": 78,
+  "p": 83,
+  "phrase": "The recall",
+  "slug": "recall",
+  "why": "Refresher of the recall in Selena's cells"
+ },
+ {
+  "n": 79,
+  "p": 28,
+  "phrase": "The hum",
+  "slug": "ender-hum",
+  "why": "The Ender hum, explained two paragraphs later"
+ },
+ {
+  "n": 79,
+  "p": 45,
+  "phrase": "The Storm Citadel",
+  "slug": "storm-citadel",
+  "why": "The ship arrives and is named; refresher"
+ },
+ {
+  "n": 80,
+  "p": 12,
+  "phrase": "the bay road cut",
+  "slug": "bay-road-cut",
+  "why": "The cut is explained here"
+ },
+ {
+  "n": 80,
+  "p": 36,
+  "phrase": "the field",
+  "slug": "obsidias-field",
+  "why": "The field wakes; refresher of what it does"
+ },
+ {
+  "n": 81,
+  "p": 15,
+  "phrase": "this rifle",
+  "slug": "lesleys-rifle",
+  "why": "Why the rifle still works, explained here"
+ },
+ {
+  "n": 81,
+  "p": 21,
+  "phrase": "Rear support",
+  "slug": "rear-support",
+  "why": "Refresher of the post"
+ },
+ {
+  "n": 82,
+  "p": 11,
+  "phrase": "table of suits",
+  "slug": "table-of-suits",
+  "why": "The table of suits is explained here"
+ },
+ {
+  "n": 82,
+  "p": 37,
+  "phrase": "Rescue teams",
+  "slug": "rescue-teams",
+  "why": "Rescue teams explained here; refresher"
+ },
+ {
+  "n": 83,
+  "p": 12,
+  "phrase": "a wall",
+  "slug": "barricade-in-the-cut",
+  "why": "Fanny builds the barricade here"
+ },
+ {
+  "n": 84,
+  "p": 5,
+  "phrase": "The alley thing",
+  "slug": "alley-thing",
+  "why": "Refresher of Fanny's tactic from the first chapters"
+ },
+ {
+  "n": 84,
+  "p": 66,
+  "phrase": "her own cell",
+  "slug": "angelas-cell",
+  "why": "Why Angela still works under the field"
+ },
+ {
+  "n": 85,
+  "p": 29,
+  "phrase": "the throne hall",
+  "slug": "throne-hall",
+  "why": "Selena lands in the hall; described next"
+ },
+ {
+  "n": 85,
+  "p": 52,
+  "phrase": "purification",
+  "slug": "purification",
+  "why": "Obsidia explains purification here"
+ },
+ {
+  "n": 85,
+  "p": 78,
+  "phrase": "Her true form",
+  "slug": "selenas-true-form",
+  "why": "Selena's true form closes over her"
+ },
+ {
+  "n": 86,
+  "p": 51,
+  "phrase": "the crescents",
+  "slug": "crescents",
+  "why": "The crescents rise again; explained here"
+ },
+ {
+  "n": 86,
+  "p": 65,
+  "phrase": "pudding",
+  "slug": "caramel-pudding",
+  "why": "Refresher of the pudding cups, long ago"
+ },
+ {
+  "n": 87,
+  "p": 5,
+  "phrase": "the long weapon",
+  "slug": "obsidias-weapon",
+  "why": "Obsidia's weapon in the duel"
+ },
+ {
+  "n": 87,
+  "p": 33,
+  "phrase": "the nest",
+  "slug": "nest",
+  "why": "Obsidia remembers Selena in the nest; refresher"
+ },
+ {
+  "n": 87,
+  "p": 47,
+  "phrase": "a figure of silver and gold",
+  "slug": "obsidias-new-form",
+  "why": "Obsidia's new form is described here"
+ }
+]

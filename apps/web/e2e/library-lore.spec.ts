@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { skipGate, url } from "./helpers";
 
 /**
- * The Lore room of the collection (`/collection/lore/`): the library of 28 texts by group, the
+ * The Lore room of the collection (`/collection/lore/`; the codex has its own spec, `library-codex.spec.ts`): the library of 28 texts by group, the
  * reading room (contents rail, text size, deep links to a heading, next and previous), the
  * search with marked words, the atlas of 14 places and 10 entities (a plate opens in full), and
  * the Who is who view.
@@ -24,7 +24,7 @@ function watch(page: Page): string[] {
   return errors;
 }
 
-async function open(page: Page, query = "") {
+async function open(page: Page, query = "?view=texts") {
   await skipGate(page);
   const errors = watch(page);
   await page.goto(url(`/collection/lore/${query}`));
@@ -183,10 +183,10 @@ test("Who is who lists the ten, links to the pages and shows who sees whom", asy
   await expect(page.locator("tbody tr")).toHaveCount(10);
 });
 
-test("the three views fit a phone without sideways scrolling", async ({ page }) => {
+test("the four views fit a phone without sideways scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page);
-  for (const view of ["texts", "atlas", "who"]) {
+  for (const view of ["codex", "texts", "atlas", "who"]) {
     await page.goto(url(`/collection/lore/?view=${view}`));
     await expect(page.getByRole("tablist", { name: "Views of the lore room" })).toBeVisible();
     const over = await page.evaluate(() => {

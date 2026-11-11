@@ -1,0 +1,104 @@
+{
+ "ruby": {
+  "line": "Heir to the Decisionmaker of Planet Oro, who builds the android Angela.",
+  "short": "The heir to the Decisionmaker of Planet Oro. Taught that heirs can have no friends and no feelings, she feels the whole planet is a prison.",
+  "summary": "Ruby, heir to the Decisionmaker of Planet Oro, builds the android Angela for the Council and hides a trojan in her as her way out. When the Council turns Angela on Terrinia, Ruby tears out its control unit and falls into a red-eyed rage, which Angela's cry stops short of a child. They escape Oro and become Aspirants at Selrick, and Ruby deletes the trojan when Angela chooses. In the last battle her Oro-built scythe stays lit under Obsidia's field, and when the rage comes back she makes one cut and her eyes stay blue.",
+  "sub": "heir of Oro, Aspirant",
+  "rows": [
+   [
+    "Home",
+    "Planet Oro, in the galaxy A-20, which she calls a golden birdcage. Later Selrick Academy in Terrinia.",
+    29
+   ],
+   [
+    "Family",
+    "Her father, who leads the Decisionmakers on Oro's Council",
+    9
+   ],
+   [
+    "Taught by",
+    "A tutor in the Council hall, and the Council's engineers, who taught her to program",
+    9
+   ],
+   [
+    "Secret base",
+    "The Gardens on Oro: a stream and white flowers under a roof of glass hexagons",
+    10
+   ],
+   [
+    "Created",
+    "Angela, on a Project Angel body, with a mind Ruby wrote herself and a few locked lines hidden under her walking routines",
+    9
+   ],
+   [
+    "Closest to",
+    "Angela. They promise to wait for each other at the end of the world.",
+    14
+   ],
+   [
+    "Appearance",
+    "Long hair and blue eyes, gloves, shoulder armor and a visor over one eye. In her rage one eye burns red.",
+    68
+   ],
+   [
+    "Manner",
+    "A perfect, polished voice and a face kept blank since she could walk. She still laughs when she thinks nobody is around.",
+    16
+   ],
+   [
+    "Wants most",
+    "To stay in this free land, with Angela",
+    14
+   ],
+   [
+    "At Selrick",
+    "Let in under watch: an AI droid follows her everywhere, and she sits in the third-year class beside Fanny and Layla.",
+    16
+   ],
+   [
+    "Aspirant",
+    "Made one by Lesley, with Angela, in the Academy hall. Her needle passes the line on Chang'e's dial with room to spare.",
+    30
+   ],
+   [
+    "Battle post",
+    "Rear support with Angela: the wounded and the way out, just behind the frontline",
+    69
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Ruby's scythe",
+    "note": "A white and orange scythe, taller than she is. Lightning crawls along the blade when she swings, and one swing can cut down a row of androids."
+   },
+   {
+    "name": "Glove",
+    "note": "Her Code Override runs from it: green lines of code that rewrite a machine's orders. On Angela's plate they reach the Council's seal and are denied."
+   },
+   {
+    "name": "The trojan",
+    "note": "A few lines she hid under Angela's walking routines as her way off Oro, with a lock that opens to her hand alone."
+   },
+   {
+    "name": "The pink doll",
+    "note": "A pink doll she hugs as a small child. She makes it bow, low and crooked, the way grown-ups bow to her father. It is put away as she grows."
+   },
+   {
+    "name": "Slate",
+    "note": "A slate she works on in the Gardens, her secret base on Oro."
+   },
+   {
+    "name": "Shoulder armor",
+    "note": "Armor on her shoulders. One of Angela's late blows cracks it, and she steps in again."
+   },
+   {
+    "name": "Combat suit",
+    "note": "The suit she wears at the ceremony where she becomes an Aspirant."
+   },
+   {
+    "name": "Visor",
+    "note": "A visor over one eye. She bends to the screen with it to read the telescope's trace."
+   }
+  ]
+ }
+}

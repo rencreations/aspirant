@@ -1,0 +1,800 @@
+{
+ "laylas-family": {
+  "line": "Layla's family, scientists for generations.",
+  "short": "Layla's family, scientists for generations. They tell her second is still wonderful and call her the hope of the family.",
+  "summary": "Layla's family have been scientists for generations. When she comes second, their message says second is still wonderful and calls her the hope of the family. At home, talent had been enough for her. She says that there an Ender alert meant the shutters came down and somebody made tea.",
+  "rows": [
+   [
+    "Known member",
+    "Layla"
+   ],
+   [
+    "Calling",
+    "Scientists, for generations"
+   ]
+  ]
+ },
+ "layla-fanny-team": {
+  "line": "Professor Joe's pair of Layla and Fanny.",
+  "short": "Joe's name for Layla and Fanny as a pair. Aspirants fight in pairs, and the two share one score.",
+  "summary": "Professor Joe pairs Layla and Fanny as the Layla-Fanny Team, his and exclusive, because they put in the most hours in his year. Aspirants fight in pairs, and the two share one score: a kill is a point, a civilian carried clear is ten. On raids Layla takes charge and goes first so Fanny is covered, and Fanny follows with a frown. Joe later sends the team to the west end of the fish market.",
+  "rows": [
+   [
+    "Members",
+    "Layla and Fanny"
+   ],
+   [
+    "Formed by",
+    "Professor Joe"
+   ],
+   [
+    "Division",
+    "Combat Division"
+   ],
+   [
+    "Score",
+    "A kill is one point; a civilian carried clear is ten"
+   ],
+   [
+    "First seen",
+    "Chapter 8"
+   ]
+  ]
+ },
+ "oros-soldiers": {
+  "line": "Oro's troops in black-gray armor and horned helmets.",
+  "short": "Oro's troops, in black-gray armor, horned helmets and blue visors. They fill the ship that takes Ruby to Dawnbreak.",
+  "summary": "Oro's troops wear black-gray armor, horned helmets and blue visors, and fill the benches of the ship that takes Ruby to Dawnbreak. One bars the ramp and tells her to stay aboard while they bring the weapon to her. On the burning avenue they arrest Ruby and Angela with long rifles, in the name of the Decisionmakers. They march the two girls apart through their ship and down a gray hall of the secret facility.",
+  "sub": "Oro's troops",
+  "rows": [
+   [
+    "Serves",
+    "The Decisionmakers of Oro"
+   ],
+   [
+    "Appearance",
+    "Black-gray armor, horned helmets, blue visors"
+   ],
+   [
+    "First seen",
+    "Chapter 12"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Long rifles",
+    "note": "Carried when they come down the avenue to arrest Ruby and Angela."
+   }
+  ]
+ },
+ "rear-support": {
+  "line": "The post just behind the frontline, with the wounded.",
+  "short": "The post just behind the frontline: Angela's shield, the wounded and the way out. Chang'e posts Ruby and Angela there.",
+  "summary": "Rear support holds the ground just behind the frontline: Angela's shield, the wounded and the way out. In the attack on the Academy, Chang'e posts Ruby and Angela to it, and Lesley tells it to stay on the frontline's heels. When the line falls back into the bay road cut, Lesley puts it with the wounded, who have nothing else.",
+  "sub": "frontline support post",
+  "rows": [
+   [
+    "Members",
+    "Ruby and Angela"
+   ],
+   [
+    "Posted by",
+    "Chang'e"
+   ],
+   [
+    "Orders from",
+    "Lesley"
+   ],
+   [
+    "Holds",
+    "Angela's shield, the wounded, the way out"
+   ]
+  ]
+ },
+ "rescue-teams": {
+  "line": "Crews who search Terrinia's rubble by floodlight.",
+  "short": "The people who go into the ruins after a strike and carry out whoever is still alive.",
+  "summary": "Terrinia's rescue teams go into the ruins after a strike and carry out whoever is still alive. After the breach their floodlights go up the dark avenue in pairs and stop at each heap of rubble. Karina is one of them, and keeps a team radio on her shelf. On the day of the great attack every team is out, their small lamps stopping at every doorway of the flooded wards.",
+  "rows": [
+   [
+    "Known member",
+    "Karina"
+   ],
+   [
+    "Work",
+    "Carrying survivors out of the ruins after a strike"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Floodlights and lamps",
+    "note": "Carried up dark streets in pairs, stopping at every heap of rubble and every doorway."
+   },
+   {
+    "name": "Team radio",
+    "note": "Reports which blocks are clear. Karina keeps one on her shelf."
+   }
+  ]
+ },
+ "salvage-crews": {
+  "line": "Crews who salvage Ender wreckage.",
+  "short": "Crews who salvage Ender wreckage and sort their finds at the crews' yard by day.",
+  "summary": "The salvage crews strip the metal shells from Ender wrecks, drag their finds to the city's edge and sort them by day at the crews' yard. Selena beats them to a downed Ender and sells its plates at twice their price. From the void Vexana knows where wreckage lies before the crews do, and she pays Selena with places where whole Enders lie before any crew has been.",
+  "rows": [
+   [
+    "Works at",
+    "The crews' yard"
+   ],
+   [
+    "Trade",
+    "Metal stripped from Ender wrecks"
+   ]
+  ]
+ },
+ "science-division": {
+  "line": "The Academy division Chang'e directs.",
+  "short": "The Academy division that designs its suits and mends its machines. Chang'e is its director.",
+  "summary": "The Science Division designs the Academy's suits, mends its machines and takes Ender wreckage apart in the Investigation Room wing to learn how it works. Chang'e has directed it since the Academy's first day, with her parents' old team from the research base as its first professors. It takes an entry each year, and Chang'e invites Selena, the girl from the salvage stall. Selena thinks it has the best tools in the city and the biggest pile of Ender wreck.",
+  "rows": [
+   [
+    "Director",
+    "Chang'e"
+   ],
+   [
+    "Part of",
+    "Selrick Academy"
+   ],
+   [
+    "Wing",
+    "The Investigation Room"
+   ],
+   [
+    "First professors",
+    "Chang'e's parents' old team"
+   ],
+   [
+    "Known member",
+    "Selena"
+   ]
+  ]
+ },
+ "shield-of-dawnbreak": {
+  "line": "Terrinia's army against the Enders.",
+  "short": "The army soldiers formed to fight the Enders, named for their planet, Dawnbreak. Fanny's family were Shield soldiers.",
+  "summary": "The Shield of Dawnbreak is the army that fights the Enders, named for the planet. Its soldiers keep the big guns on the city wall, hold forts that guard the last towns beyond the city, and live in Shield houses in the wall's shadow. It took Lesley as a child soldier, its soldiers without suits taught Fanny to hold ground, and it gave the Academy its first instructors. In the great attack its reserves hold their wards, and its soldiers fire only into open chests, on Layla's count.",
+  "rows": [
+   [
+    "Named for",
+    "The planet Dawnbreak"
+   ],
+   [
+    "Fights",
+    "The Enders"
+   ],
+   [
+    "Posts",
+    "Big guns on the city wall; forts called the far stations"
+   ],
+   [
+    "Uniform",
+    "The Shield coat"
+   ],
+   [
+    "Known members",
+    "Fanny's family, Lesley, Vexana's father"
+   ],
+   [
+    "Also runs",
+    "A home for soldiers' children behind its barracks"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Wall guns",
+    "note": "Big guns on the city wall that fire on the Enders."
+   },
+   {
+    "name": "Rifles",
+    "note": "Its soldiers' arms. In the great attack they fire only into open chests, on Layla's count."
+   }
+  ]
+ },
+ "support-division": {
+  "line": "The Academy division that mends Aspirants and their suits.",
+  "short": "The Academy division that mends Aspirants and their suits. Half the AI droids serve it.",
+  "summary": "The Support Division mends Aspirants and their suits, and half the Academy's AI droids serve it. At the entrance assessment, children whose needle stops short of the line go through the left door to it, to learn that work.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy"
+   ],
+   [
+    "Intake",
+    "Cadets whose needle stays below the line"
+   ],
+   [
+    "Helpers",
+    "Half the Academy's AI droids"
+   ]
+  ]
+ },
+ "team-b3": {
+  "line": "Professor Joe's student team.",
+  "short": "Joe's student team: Layla, Roger and now Fanny. It drills the Ender weak spot in VR.",
+  "summary": "Team B3 is Professor Joe's student team in the Combat Division: Layla, Roger and now Fanny. It drills the Ender weak spot in VR and takes out 33 enemies in ten minutes, Layla 16, Fanny 15 and Roger 2. Joe takes it with him to the breach, and later dissolves it to pair Layla and Fanny.",
+  "rows": [
+   [
+    "Members",
+    "Layla, Roger, Fanny"
+   ],
+   [
+    "Leader",
+    "Professor Joe"
+   ],
+   [
+    "VR score",
+    "33 enemies in 10 minutes"
+   ],
+   [
+    "Status",
+    "Dissolved by Joe"
+   ]
+  ]
+ },
+ "citys-scientists": {
+  "line": "Terrinia's scientists, who make Chang'e Chief Scientist.",
+  "short": "The scientists of Terrinia. They come to see Chang'e's suits and make her Chief Scientist.",
+  "summary": "Terrinia's scientists come to see the suits Chang'e built after the base fell, and make her the youngest Chief Scientist the city has ever had. Later they come with the Shield's officers to hear her plan, and the oldest of them calls it a school, not a regiment."
+ },
+ "council": {
+  "line": "The ruling council of Oro.",
+  "short": "Oro's rulers, who agree their orders in the Council hall. Angela was built on its order as its weapon.",
+  "summary": "The Council is how Oro's three powers rule: the Decisionmakers, the Institute of Technology and the Beau Monde. It calls Dawnbreak's war with the Enders unrest, and all three powers vote to cleanse Dawnbreak and annex it. Angela was built on its order as its secret weapon, with its seal on her plate and its control unit between her shoulder blades, which drove her body against her will until Ruby pulled it out. When Ruby and Angela turn on its mission, it means to pass sentence on them for treason against Oro.",
+  "rows": [
+   [
+    "Rules",
+    "Oro"
+   ],
+   [
+    "Powers",
+    "The Decisionmakers, the Institute of Technology, the Beau Monde"
+   ],
+   [
+    "Meets in",
+    "The Council hall"
+   ],
+   [
+    "Weapon",
+    "Angela, built on its order"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Project Angel androids",
+    "note": "Hundreds of the same android girl, built for the Council. Its seal is burned into the plate on every body."
+   },
+   {
+    "name": "Control unit",
+    "note": "Fitted between Angela's shoulder blades, it drove her body against her will until Ruby pulled it out."
+   }
+  ]
+ },
+ "earlier-people": {
+  "line": "A people Obsidia says she helped end, long ago.",
+  "short": "A people Obsidia says were much like Vexana's, under the same sky. She says she helped end them.",
+  "summary": "Obsidia tells Vexana of a people much like hers, who lived under the same sky, and says she helped end them. She says the few who lived kept no cities and no records, and their children built again and remembered nothing.",
+  "rows": [
+   [
+    "Ended by",
+    "Obsidia, by her own account"
+   ]
+  ]
+ },
+ "instructors": {
+  "line": "The Academy's teachers, first drawn from the Shield.",
+  "short": "The Academy's first teachers: Shield soldiers Lesley fought beside, picked with the dial, who fly the first suits.",
+  "summary": "The Academy's instructors teach, command and score the cadets. Lesley picked the first ones with the dial from Shield soldiers she fought beside, and on the founding day they opened wings of light and flew in a line over the gate and the roofs. In a real siren they herd the cadets into the shelter, and once a year they give the Best Aspirant Duo badges to one pair.",
+  "rows": [
+   [
+    "Chosen by",
+    "Lesley, with the dial"
+   ],
+   [
+    "Drawn from",
+    "Shield of Dawnbreak soldiers"
+   ],
+   [
+    "Award",
+    "The Best Aspirant Duo badges, once a year"
+   ]
+  ]
+ },
+ "researchers": {
+  "line": "The research staff of the old base.",
+  "short": "The grown-ups who work at the research base with Chang'e's parents, studying plates from dead Enders.",
+  "summary": "The researchers worked at the research base for Chang'e's parents, studying plates from dead Enders. Young Chang'e told one he sorted screws too slowly, and the whole lab sang badly to another on his birthday. When the base fell they ran down the red corridor with their arms full, and afterward two of them brought Chang'e bread and blankets. She called them back as the Science Division's first professors.",
+  "rows": [
+   [
+    "Worked at",
+    "The research base"
+   ],
+   [
+    "Led by",
+    "Chang'e's parents"
+   ],
+   [
+    "Later",
+    "The Science Division's first professors"
+   ]
+  ]
+ },
+ "reserve": {
+  "line": "The sheet for cadets with no partner.",
+  "short": "A short sheet for cadets with no partner. They go out as singles behind the pairs and clear up after them.",
+  "summary": "The reserve is a short sheet headed RESERVE on the Combat office board, for cadets with no partner. They go out as singles behind the pairs and clear up after them. Guinevere signs it first, in large letters, and Vexana last, in small square letters. On the third day a siren sends the reserve to the dome's foot.",
+  "rows": [
+   [
+    "Posted on",
+    "The board outside the Combat office"
+   ],
+   [
+    "First to sign",
+    "Guinevere"
+   ],
+   [
+    "Last to sign",
+    "Vexana"
+   ]
+  ]
+ },
+ "rioters": {
+  "line": "Oro's name for the people it is sent to save.",
+  "short": "What Oro's mission order calls the people it is sent to save. Ruby knows what saving them really means.",
+  "summary": "Oro's mission order is to save the Rioters and restore balance, and Angela's sight marks every young man and woman in Terrinia's streets as one, in red. They are ordinary people: a woman beating a rug, a boy carrying bread, two girls sharing earphones. Angela thinks they are only living. Ruby knows what saving them really means, and cries.",
+  "rows": [
+   [
+    "Named by",
+    "Oro's mission order"
+   ],
+   [
+    "Who",
+    "Ordinary people in Terrinia's streets"
+   ]
+  ]
+ },
+ "third-years": {
+  "line": "The Academy's third-year class.",
+  "short": "Fanny's year group at the Academy. She joins them as a third-year transfer, two years late.",
+  "summary": "The third years are an Academy class that has been together since first year, with Layla in it. Fanny joins as a transfer two years late, and day after day they go through the gate portal to fight a handful of Enders. Chang'e seats Ruby and Angela in the class beside Layla and Fanny, who vouched for them.",
+  "rows": [
+   [
+    "Known members",
+    "Layla and Fanny; later Ruby and Angela"
+   ]
+  ]
+ },
+ "changes-lab": {
+  "line": "Chang'e's lab in the Science Division.",
+  "short": "Chang'e's lab in the Academy's Science Division, where she wants Angela brought for an examination.",
+  "summary": "Before the Academy, Chang'e's lab belonged to the research base: her parents, the two Doctors, worked at its bench, and her family photograph was taken there. It survives the night the base fell, and the plate on its door, CHIEF SCIENTISTS, loses its last S. Chang'e works late there, Angela has her checks on its bench, and Selena mends machines and bets puddings with Chang'e. Since the founding a caramel pudding cup has turned up outside its door after every long night, the spoon laid across the lid at a right angle.",
+  "rows": [
+   [
+    "Owner",
+    "Chang'e"
+   ],
+   [
+    "Part of",
+    "Science Division"
+   ],
+   [
+    "Before",
+    "The research base's lab"
+   ],
+   [
+    "Door plate",
+    "CHIEF SCIENTIST"
+   ]
+  ]
+ },
+ "dawnbreak": {
+  "line": "The planet humanity lives on.",
+  "short": "The planet humanity lives on. The Shield of Dawnbreak, the army that fights the Enders, is named for it.",
+  "summary": "Dawnbreak is a planet in A-19, a young galaxy, and Terrinia is its last city, at war with the Enders again. Oro's Council votes to cleanse it, bring it into Balance and annex it. Obsidia calls it the host and its people parasites. She says it grew a will of its own long after it was born, found its humans too prosperous once they had filled it with cities, and sent for the Enders.",
+  "rows": [
+   [
+    "Galaxy",
+    "A-19, a young galaxy"
+   ],
+   [
+    "Last city",
+    "Terrinia"
+   ],
+   [
+    "Army",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "guineveres-fathers-office": {
+  "line": "Her father's office in the House.",
+  "short": "Guinevere's father's office in the House. Nobody goes in until he calls, and he speaks to her through its door.",
+  "summary": "Guinevere's father works behind a door off the long hall of the House, and nobody goes in until he calls. Guinevere waits all day on the bench outside with her accounts and her top scores, and holds papers up to the gap in his door while his pen scratches on. She once left his birthday cake on that bench, and the plate came back washed. Men with ledgers use a side door, and he leaves by a door behind his desk.",
+  "rows": [
+   [
+    "Location",
+    "Off the long hall of the House"
+   ]
+  ]
+ },
+ "guineveres-room": {
+  "line": "Guinevere's dormitory room at the Academy.",
+  "short": "Guinevere's room at the Academy: a lamp, a bed full of stuffed animals and a drone charger. She keeps the door open a hand's width.",
+  "summary": "Guinevere's room in the Academy's girls' wing has a lamp, a bed crowded with stuffed animals and a drone charger on the shelf. She keeps its door open a hand's width, so Vexana can put the drone back at night, and after their quarrel she shuts it all the way, which she never did. While Vexana is missing, her search map covers the bed, and she leaves her lamp burning on the sill all night.",
+  "rows": [
+   [
+    "Location",
+    "The girls' wing, Selrick Academy"
+   ]
+  ]
+ },
+ "karinas-flat": {
+  "line": "Karina's flat in Terrinia, Selena's childhood home.",
+  "short": "Karina's flat in Terrinia, where the child Selena kneels on a chair at the window to watch the rain.",
+  "summary": "Karina's flat is two rooms at the top of a narrow stair, with her work boots by the door and the team radio on the shelf. Selena grows up there, kneeling at the window to watch the rain and setting her boots beside Karina's. She pulls her horns in before Karina's stair, and Silverbolt waits at its foot. On the day before the attack she is up first, for the first time in all her years there.",
+  "rows": [
+   [
+    "Owner",
+    "Karina"
+   ],
+   [
+    "Lived in by",
+    "Karina and Selena"
+   ]
+  ]
+ },
+ "laylas-lab": {
+  "line": "Layla's secret workshop in an abandoned classroom.",
+  "short": "An abandoned classroom Layla took for herself against the rules. Her trophy stands on its top shelf.",
+  "summary": "Layla's lab is an abandoned classroom she took against the rules, four flights up in the Academy's oldest wing, at the end of a dead-end corridor of stacked desks. The lock on its door is not the Academy's, and it smells of solder. She calls it her secret base and brings Fanny there at midnight. Her trophy stands on the top shelf, and she sets Fanny's chocolate box beside it, pink with a teal ribbon.",
+  "rows": [
+   [
+    "Owner",
+    "Layla"
+   ],
+   [
+    "Location",
+    "Four flights up in the Academy's oldest wing"
+   ]
+  ]
+ },
+ "lesleys-house": {
+  "line": "Lesley's childhood home, full of ticking clocks.",
+  "short": "Lesley's childhood home, on a street running down to the bay. Her father's clocks hung on every wall and ticked day and night.",
+  "summary": "Lesley's family house stood on a narrow street of repair shops running downhill to the bay. Her father's clocks hung on every wall, each out of step, so it ticked day and night, and the family of four ate at one table in the kitchen; to Lesley it was the whole world. In 983 an Ender came: the wall went all at once, the roof came down and every lamp died, but the clocks her father wound by hand kept ticking. Afterward there was nothing in it she could carry.",
+  "rows": [
+   [
+    "Location",
+    "A street of repair shops running down to the bay"
+   ],
+   [
+    "Lost",
+    "In 983, the night an Ender came"
+   ]
+  ]
+ },
+ "lesleys-room": {
+  "line": "Lesley's bare room at the Academy.",
+  "short": "Lesley's room at the Academy: a made-up cot nobody has ever slept on and one hard chair.",
+  "summary": "Lesley's room at the Academy is down the corridor from Chang'e's lab, with a cot and one hard chair facing the door. The cot is made, its blanket folded square, and nobody has ever slept on it. The field roster hangs over it, and the door is never locked.",
+  "rows": [
+   [
+    "Location",
+    "Down the corridor from Chang'e's lab"
+   ]
+  ]
+ },
+ "oro": {
+  "line": "Ruby's home world, under a violet sky in another galaxy.",
+  "short": "Ruby's home world, in another galaxy under a violet sky. Its will is Balance, and nobody there may grow strong enough to upset the order.",
+  "summary": "Oro is Ruby's home world, at A-20 in another galaxy, under a violet sky. Its will is Balance: after a terrible war with the Enders long ago, nobody there may grow strong enough to upset the order, and its three powers rule through the Council. To Ruby it is a prison, a golden birdcage where every post was chosen for her, so she flees it with Angela. Oro built her scythe, and she fears it may take Angela again.",
+  "rows": [
+   [
+    "Location",
+    "A-20, another galaxy"
+   ],
+   [
+    "Sky",
+    "Violet"
+   ],
+   [
+    "Rulers",
+    "The Council"
+   ],
+   [
+    "Its will",
+    "Balance"
+   ],
+   [
+    "Home of",
+    "Ruby"
+   ]
+  ]
+ },
+ "selrick-academy": {
+  "line": "The school in Terrinia that trains Aspirants.",
+  "short": "The school in Terrinia that trains Aspirants. It was founded when the first suits were born and takes children of about fourteen.",
+  "summary": "Selrick Academy trains Aspirants, taking children of about fourteen and testing them for aspirant power, and nobody can buy a pass. It rose on the ruins of the research base and opened on a bright morning with new letters over the old gate, Lesley heading its Combat Division and Chang'e its Science Division. Its cameras watch every ward, and Selena hides inside it, since nobody hunts for an Ender in the place built to fight them. In the great attack the Storm Citadel turns inland and fills the sky over it.",
+  "rows": [
+   [
+    "Location",
+    "Terrinia, on the ruins of the research base"
+   ],
+   [
+    "Divisions",
+    "Combat, Science, Support"
+   ],
+   [
+    "Heads",
+    "Lesley (Combat Division), Chang'e (Science Division)"
+   ],
+   [
+    "Intake",
+    "Children of about fourteen, tested for aspirant power"
+   ],
+   [
+    "Mark",
+    "S·L·K on its suits' shoulder plates"
+   ],
+   [
+    "Patrons",
+    "House Baroque first"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "storm-citadel": {
+  "line": "Obsidia's ship, hidden in its own black cloud.",
+  "short": "Obsidia's ship. It hangs over the bay inside its own black cloud, and wherever its violet storm reaches, human machines die.",
+  "summary": "Obsidia's ship, the largest of its kind: black blocks with blade-sharp edges, each from a city, hang upside down from one living spine around a red-orange heart, inside a violet storm that kills human machines. Obsidia says the Mother Matrix grew its living part, she built the rest from what she ended, and the storm carries it across the stars. It struck Terrinia in 983, then waited beside the Matrix and came through the gateway to the Academy. When Selena cuts the throne it burns, drifts into the black hole and breaks apart, and none of it falls on the city.",
+  "rows": [
+   [
+    "Owner",
+    "Obsidia, and no one else"
+   ],
+   [
+    "Made by",
+    "Obsidia says the Mother Matrix grew its living part and she built the rest"
+   ],
+   [
+    "Size",
+    "The largest of its kind; each block is as big as a district of Terrinia"
+   ],
+   [
+    "Crew",
+    "Thousands of still gray Enders, and the Ultimate Enders in its holds"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ],
+   [
+    "Fate",
+    "Drifts into the black hole and blows up"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Violet storm",
+    "note": "Kills every human machine it reaches. Obsidia says it lifts, carries and hides the ship."
+   },
+   {
+    "name": "Throne",
+    "note": "The ship's spine, rising from the floor of the throne hall. Every block hangs from it, and Obsidia wakes the ship by gripping it."
+   },
+   {
+    "name": "Hanging blocks",
+    "note": "Black blocks with blade-sharp edges, each from a city, hanging roofs first. They grind aside at Obsidia's call."
+   },
+   {
+    "name": "Red-orange heart",
+    "note": "Burns on the spine at the ship's middle, glowing far down between the blocks."
+   },
+   {
+    "name": "Holds",
+    "note": "Carry thousands of still gray Enders and the Ultimate Enders."
+   },
+   {
+    "name": "Prow",
+    "note": "The foremost black block, reaching out of the storm."
+   },
+   {
+    "name": "Smaller ships",
+    "note": "Swarm around it and drop Enders onto the roofs."
+   }
+  ]
+ },
+ "terrinia": {
+  "line": "Humanity's last city.",
+  "short": "Humanity's last city, where the survivors of the Ender attacks drew back. Its dome of light, the Defensive Bubble, keeps the Enders out.",
+  "summary": "Terrinia is Dawnbreak's last city, humanity's final bastion, sheltered by the Defensive Bubble, a dome of light, its streets running down to the bay. In 983 Obsidia's strike put out its lights street by street. Raid after raid tears the dome, and the city holds the research base, later Selrick Academy, and House Baroque on a hill above it. In the great attack nearly half the city becomes rubble, but nothing of the burning Citadel falls on it.",
+  "rows": [
+   [
+    "Planet",
+    "Dawnbreak"
+   ],
+   [
+    "Dome",
+    "The Defensive Bubble, a dome of light"
+   ],
+   [
+    "Defenders",
+    "Shield of Dawnbreak, Selrick Academy"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "academy-district": {
+  "line": "The district below the Academy hill.",
+  "short": "The district below the Academy hill, from the bay road up to the hall, with full shelters at the frontline's back.",
+  "summary": "The Academy district runs below the hill, from the bay road up to the hall, with full shelters at the frontline's back. In the attack Lesley judges that a powerless line spread over it would be a dead line. When the field lifts, gold and cyan come back into its streets."
+ },
+ "academy-gate": {
+  "line": "The old research base gate, now the Academy's main gate.",
+  "short": "The gate of the research base, on the ground where the Academy now stands. Lesley signs its gate log every morning.",
+  "summary": "The gate of the research base, where Lesley signed the log every morning and the two Doctors saw her off at dawn. After the base fell it hung crooked on one hinge, and on the founding morning it opened on new hinges under new letters: SELRICK ACADEMY. The Academy guards itself, so outside guards cannot follow children in, and Hester waits outside its bars for Guinevere. In the great attack the frontline runs for it and the gate portal beside it.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy, once the research base"
+   ],
+   [
+    "Sign",
+    "SELRICK ACADEMY"
+   ]
+  ]
+ },
+ "academy-hall": {
+  "line": "The Academy's great hall, built over the crater.",
+  "short": "The Academy's ceremony hall. Rows of chairs face an altar with five great stars above it, and a tall window throws colored light.",
+  "summary": "The Academy hall rose wall by wall over the crater, which lies under its boards. Rows of chairs face an altar with five great stars above it, and a tall window throws colored light across the floor. Newcomers become Aspirants there, Lesley pins the Best Aspirant Duo badges on its stage, and detention is cleaning it. In the attack students pack the dark under its big display, and the hall goes silent when Guinevere's signal is lost.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy"
+   ],
+   [
+    "Built over",
+    "The crater"
+   ]
+  ]
+ },
+ "academy-tower": {
+  "line": "The Academy's tall tower.",
+  "short": "The Academy's tower. Guinevere climbs its stairs to the top at night.",
+  "summary": "The Academy's tower stands on its cliff, its white-cyan beam climbing into the night. The observation lab, a glass room, sits at its top, with the command deck below it over the command room. Guinevere climbs it at night during the search, and in the Will's vision blasts go off around the ring at its top.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy"
+   ],
+   [
+    "Holds",
+    "The observation lab, the command deck, the command room"
+   ]
+  ]
+ },
+ "academy-yard": {
+  "line": "The yard inside the old base gate, now the Academy's.",
+  "short": "The yard inside the research base's gate, on the ground where the Academy now stands. Chang'e crosses it at dusk.",
+  "summary": "The yard lies inside the gate, first of the research base and then of the Academy. On the night the base fell, Chang'e's family ran across it toward the shelter, and the giant's white beam came down on it. Later Chang'e tested her crescents there at night, at the crater's edge, while suits stood among scaffolds. About a hundred children queued its length for the first entrance assessment."
+ },
+ "amusement-park": {
+  "line": "A fun park in the city with a teacup ride.",
+  "short": "A fun park in the city, with a teacup ride. Guinevere buys a strip of ride tickets at its gate.",
+  "summary": "A fun park in the city with a teacup ride, where Guinevere takes Vexana one summer afternoon, Hester two steps behind. Guinevere buys a strip of ride tickets at the gate, and a cart sells paper fans painted with goldfish. At a stall near the way out she presses a doll keychain into Vexana's palm and keeps a black-haired one herself. Every night after, Vexana puts the pink keychain in her white box."
+ },
+ "avenue": {
+  "line": "The street at the Northeastern breach.",
+  "short": "The street in the Northeastern sector where the dome comes down to the ground. A little girl stands crying on its pavement.",
+  "summary": "The avenue in the Northeastern sector runs to where the dome comes down to the ground. On the day of the breach a little girl stands crying on its pavement, and Joe kneels over her and her pink rabbit before a slab comes down on him. The gold giant's beam burns a line down it, and afterward ash lies over it and coats cover some of the shapes along the wall. That night rescue crews' floodlights go up it in pairs."
+ },
+ "base-shelter": {
+  "line": "The research base's raid shelter.",
+  "short": "The research base's raid shelter, fifty steps from the lab door.",
+  "summary": "The research base's shelter lies fifty steps from the lab door, and Lesley paced them herself on her first morning. On the night the base fell, twenty steps short of it the ground was gone, and Chang'e's mother never reached it. Weeks later Lesley walks the old line, and at thirty steps the ground falls away. The Academy's first intake queue runs across those fifty steps."
+ },
+ "bay": {
+  "line": "The bay at the foot of Terrinia.",
+  "short": "The bay beside Terrinia. In the prologue the Storm Citadel hangs over it inside its own black cloud.",
+  "summary": "The bay lies at the foot of Terrinia's streets, below the Academy, where boats go out at first light and crowds watch the summer fireworks. In 983 the Storm Citadel hung over it in a black cloud with violet light inside. From the void a hidden crack looks out on it, and in the great attack the Singularity opens over it and the Mother Matrix fills its sky. At the end the wind carries the burning Citadel back out over it."
+ },
+ "bay-road": {
+  "line": "The road along Terrinia's bay.",
+  "short": "The road that runs along Terrinia's bay. In the attack, Enders come down along it.",
+  "summary": "The bay road runs along the water at the foot of the Academy district. In the attack Enders come down along it, Fanny takes it at roof height, and slabs hang turning in the air over it until the hum stops. In the last fight Vexana's giants hold it."
+ },
+ "bay-road-cut": {
+  "line": "A narrow street climbing from the bay to the shelters.",
+  "short": "A narrow street that climbs from the water to the shelters.",
+  "summary": "The bay road cut is a narrow street that climbs from the water to the shelters, and Guinevere falls at its mouth. With aspirant power gone, Lesley orders the frontline back into it, since people on foot can hold one narrow street with the shelters at their back. Fanny builds a wall where its houses stand closest, and four long-legged Enders tangle their legs at its mouth. They hold it for minutes, and fight on at its mouth."
+ },
+ "bell-tower": {
+  "line": "The white stone bell tower over the Academy.",
+  "short": "The white stone bell tower over the Academy's roofs. Selena climbs out on its tiles to do her thinking.",
+  "summary": "A bell tower of white stone rises high and clear over the Academy's roofs, and from its tiles the whole city lies below, out to the bay. A stair nobody uses climbs past the bell to a hatch, and there Selena always does her thinking, in storms too, with Silverbolt beside her. She watches the great attack from its edge and steps off it when the Citadel hangs overhead. After the throne is cut its roof is empty.",
+  "rows": [
+   [
+    "Part of",
+    "Selrick Academy"
+   ]
+  ]
+ },
+ "black-hole": {
+  "line": "A place in space that swallows everything, even light.",
+  "short": "A place in space so heavy it swallows whatever comes too near. Nothing seen falling in has come back out, not even light.",
+  "summary": "Chang'e teaches that a black hole swallows whatever comes too near and lets nothing out, not even light, and her untested paper says an Aspirant's light would shine on inside one and find its way home. Obsidia says a door held wide for long grows one at its center, that it unmakes whatever crosses its middle, and that she woke at the edge of one. One opens at the middle of the Singularity and takes Guinevere and Vexana into a void with no up, no down and no sound. Then two lights come back out, and at the end it takes the wrecked Citadel.",
+  "sub": "place in space that swallows light",
+  "rows": [
+   [
+    "Location",
+    "The middle of the Singularity"
+   ]
+  ]
+ },
+ "broken-wall": {
+  "line": "A broken wall where Selena sits out a storm.",
+  "sub": "Selena's storm-night perch",
+  "short": "A broken wall where Selena and Silverbolt sit until the storm moves off after their first run.",
+  "summary": "A broken wall in Terrinia's outskirts, where Selena and Silverbolt sit until the storm moves off after their first run. On storm nights there she opens her thread to the Enders, sends her reports through the rain and lays out in her head everything she has sold. There she once thought she would break the field herself if anyone pointed it at the Academy."
+ },
+ "burning-avenue": {
+  "line": "The burning street where Ruby's ship comes down.",
+  "short": "A burning street in Terrinia where Ruby's ship comes down, with Oro's first ship hanging low between broken towers.",
+  "summary": "Ruby's ship comes down in the middle of this burning avenue, with Oro's first ship hanging low between broken towers. Ruby's rage comes there: she cuts down the androids, her last swing lights the street white, and Angela wakes on its stones and calls her name to bring her back. Oro's soldiers come down it to arrest them while people hide behind every wall. There Angela asks how to stop the rage, and Ruby has no answer."
+ },
+ "city-wall": {
+  "line": "Terrinia's wall of big guns.",
+  "short": "Terrinia's wall, where the Shield's big guns fight the Enders. Shield soldiers' houses stand in its shadow.",
+  "summary": "The city wall runs along the foot of the dome, with big guns in gun pits that fight the Enders and Shield houses in its shadow. A steep stair, worn into dips by Shield boots, climbs past the guns to look out over the dead ground. Vexana's father oiled the guns before dawn and carried her up the stair on her birthdays. On the night of the attack all its guns fired at once, an Ender came over the wall, and her father died there."
+ },
+ "citys-edge": {
+  "line": "Terrinia's outskirts, where the Shield sends Lesley to fight.",
+  "short": "The edge districts of Terrinia, where the Shield calls Lesley out to fight.",
+  "summary": "The city's edge is Terrinia's outskirts, where sirens start most weeks and the Shield calls Lesley out to fight; on the night the base fell it burned its whole length. Selena's salvage table stood there, and she sold what she mended to its workshops. On storm nights she runs the roofs of its shady streets, and at its far end, where the lit streets give out, she reads the pull. Beyond lie blocks the raids left without roofs."
+ },
+ "cleared-lot": {
+  "line": "A landing lot by the dome's foot at the city's edge.",
+  "short": "A cleared lot by the dome's foot at the city's edge, where the gate portal drops the students.",
+  "summary": "A cleared lot by the dome's foot at the city's edge, where the gate portal drops students and soldiers. Ruby and Angela's black ship settles on its dirt, and soldiers hold rifles up at the two girls, with Guinevere and Vexana in the line. Lesley asks Ruby her entry question there. Fanny tells the soldiers she watched the two fight a giant for the city and will answer for them, and when a sergeant asks on whose word, she says: mine."
+ },
+ "combat-office": {
+  "line": "The Combat Division's office and notice board.",
+  "short": "The Combat Division's office. A board outside it holds the list of new pairs and the reserve sheet.",
+  "summary": "The Combat office is Lesley's office in the Combat Division. The board outside it holds the list of new pairs, the reserve sheet and later the new watch sheet. When Vexana is gone, Lesley pins VEXANA: MISSING on it, and when the records clerk brings his form, she goes into her office and shuts the door."
+ },
+ "command-deck": {
+  "line": "The Academy's command post high in its tower.",
+  "short": "The Academy's command post, high in its tower under the glass lab, with a long window facing the bay.",
+  "summary": "The command deck sits high in the Academy's tower, over the command room and under the glass lab, its long window facing the bay. In the great attack Lesley keeps it in case a second front comes there, and watches the fight on the feed with Chang'e at the console. Through its window the Citadel hangs over the Academy, until an Ender bursts the glass and hauls itself in. Afterward rain comes in through the empty frame.",
+  "rows": [
+   [
+    "Location",
+    "High in the Academy tower, under the glass lab"
+   ]
+  ]
+ }
+}

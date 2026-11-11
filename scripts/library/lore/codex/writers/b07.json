@@ -1,0 +1,1012 @@
+{
+ "fault-in-angelas-chest": {
+  "line": "A fault in Angela's chest that comes and goes.",
+  "short": "A fault in Angela's chest that comes and goes. Angela says it happens when she thinks of the friends she lost, and she wants it kept.",
+  "summary": "A small fault in Angela's chest that comes and goes. It shows on Chang'e's scan, and she could fix it in a minute. Angela says it happens whenever she thinks about the friends she lost, and she does not want it fixed. Chang'e notes it and leaves it alone. That night she thinks of it while she faces her own unsent lines.",
+  "rows": [
+   [
+    "Found in",
+    "Angela's chest"
+   ],
+   [
+    "Found by",
+    "Chang'e, on a scan"
+   ],
+   [
+    "First seen",
+    "Chapter 29"
+   ]
+  ]
+ },
+ "field-roster": {
+  "line": "The list of instructors who fight Enders outside the dome.",
+  "short": "The rotation: the list of instructors who fight Enders outside the dome. The breach took four names off it.",
+  "summary": "The rotation is the list of instructors who fight Enders outside the dome. The breach took four of them off it. It hangs over Lesley's cot. Chang'e asks again and again to be put on it, and Lesley always says no, because in the field she cannot see her. Chang'e's name has never been on it.",
+  "rows": [
+   [
+    "Kept by",
+    "Lesley"
+   ],
+   [
+    "Location",
+    "Over Lesley's cot"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "the-frame": {
+  "line": "Chang'e's first suit: a steel frame with a core piece in its chest.",
+  "short": "A frame of steel tube in the shape of a person, with an Ender core piece caged in its chest. A soldier would wear it: the first suit ever built.",
+  "summary": "The first suit anyone ever built. It was Chang'e's idea: a frame with the core in its chest and a soldier inside, believing. Her father bent steel tube into a person a head taller than Lesley and bolted on gray plates. The core piece sits in a wire cage in its chest, and a copper plate in its right palm waits for a hand. At first its light held only to a count of eleven. At the first light it hummed. It still stands by the test ring with the pinned page at its foot, and by the third year finished suits stand beside it.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e and her father"
+   ],
+   [
+    "Location",
+    "The back of the lab, beside the test ring"
+   ],
+   [
+    "First seen",
+    "Chapter 23"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Core piece",
+    "note": "A whole piece from a dead Ender's core, set in a wire cage in the chest. It lights while the one pressing the plate believes."
+   },
+   {
+    "name": "Copper plate",
+    "note": "Fitted by Chang'e into the open right palm, for a hand to press."
+   },
+   {
+    "name": "Steel tube and gray plates",
+    "note": "Bent and bolted by Chang'e's father into a person's shape, a head taller than Lesley."
+   }
+  ]
+ },
+ "gate-portal": {
+  "line": "A tall frame by the Academy's main gate that sends you to the fight.",
+  "short": "A tall frame by the Academy's main gate that fills with light. Step in, and you come out at the breach.",
+  "summary": "A tall frame beside Selrick Academy's main gate. When it fills with light, you step in and come out where the fight is. When the siren sounds, every tutor is called through it, and the third years go through day after day to meet the Enders while Professor Joe sees them off. Chang'e says it only joins one street to another. The Enders' portals outside the dome are different: at their edge every reading drops to nothing.",
+  "rows": [
+   [
+    "Location",
+    "Beside Selrick Academy's main gate"
+   ],
+   [
+    "Used by",
+    "Tutors, third years and cadets"
+   ],
+   [
+    "First seen",
+    "Chapter 3"
+   ]
+  ]
+ },
+ "glove-and-dial": {
+  "line": "Chang'e's glove wired to a dial that reads aspirant power.",
+  "short": "A glove wired to a dial that reads aspirant power. A hand goes in, the glove hums and lights, and the needle swings.",
+  "summary": "Chang'e built a glove wired to a dial that reads aspirant power. When a hand goes in, the glove hums and lights and the needle swings. Lesley's needle went hard past the line, and she used it to choose her instructors. At the entrance assessment a needle past the line sends a child to the Combat Division, and the rest go to the Support Division. It reads whatever drives Angela's shield as aspirant power too. Whisperers claim Guinevere did not need it because her father paid.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e"
+   ],
+   [
+    "Used at",
+    "The Academy's entrance assessment"
+   ],
+   [
+    "First seen",
+    "Chapter 28"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Glove",
+    "note": "Hums and lights when a hand goes in. Some children pull their hands straight back out."
+   },
+   {
+    "name": "Dial",
+    "note": "Its needle swings with the wearer's aspirant power. Past the line means the Combat Division."
+   }
+  ]
+ },
+ "hand-in-hand-photo": {
+  "line": "A framed photo of Guinevere and Vexana hand in hand.",
+  "short": "A photo of Guinevere and Vexana hand in hand, heads turned to each other. Vexana makes it her phone wallpaper.",
+  "summary": "A photo of Guinevere and Vexana hand in hand, heads turned to each other, Vexana smiling, their badges new. The camera droid printed one copy each in a thin black frame. Vexana made it her phone wallpaper and stood the frame on her desk beside the white box. It is still there in her room after she goes missing. On one of her last nights in that room, she looked at it on her phone.",
+  "rows": [
+   [
+    "Owner",
+    "Guinevere and Vexana, one copy each"
+   ],
+   [
+    "Location",
+    "Vexana's desk, beside the white box"
+   ],
+   [
+    "First seen",
+    "Chapter 41"
+   ]
+  ]
+ },
+ "lead-guard": {
+  "line": "The first Eternal Guard, a giant Vexana built from Ender plates.",
+  "short": "The first of Vexana's Eternal Guards, a giant she built from Ender plates. It woke when she thought of Guinevere: eyes yellow, heart blazing magenta.",
+  "summary": "The first of Vexana's four Eternal Guards. She built it in the hollow from plates bought in sacks, purple edged in gold, around a dark cracked core. Its chest plate, beaten to fit, came out shaped like a heart, with room behind it for her. It woke when she laid her palm on it and thought of Guinevere, and stayed dark under Obsidia's hand. When the Matrix fired at Guinevere, it dropped into the beam and held while the road melted. It spent all of Vexana's belief on that one block. Now it kneels dark against a wall, its chest split down the middle.",
+  "rows": [
+   [
+    "Made by",
+    "Vexana"
+   ],
+   [
+    "Made from",
+    "Ender plates bought in sacks, off a kind of Ender Vexana never fought"
+   ],
+   [
+    "Powered by",
+    "Vexana's belief"
+   ],
+   [
+    "Appearance",
+    "Purple plate edged in gold, a magenta heart on its chest, yellow eyes, a golden crest of a cross over a crescent"
+   ],
+   [
+    "Status",
+    "Dark and split, kneeling against a wall three streets west"
+   ],
+   [
+    "First seen",
+    "Chapter 53"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Core",
+    "note": "A dark cracked core as big as two fists, in its chest."
+   },
+   {
+    "name": "Heart",
+    "note": "Its magenta chest plate, shaped like a heart. It closes in front of Vexana when she climbs in."
+   },
+   {
+    "name": "Eyes",
+    "note": "Light yellow, like the rings of Guinevere's drones. From inside, Vexana sees through them."
+   },
+   {
+    "name": "Crest",
+    "note": "A golden cross over a crescent, above its head."
+   }
+  ]
+ },
+ "new-coil": {
+  "line": "A coil Chang'e built for Lesley's rifle.",
+  "short": "A new coil Chang'e built for Lesley's rifle. It runs cooler and works on aspirant power alone, so she left out the old firing action.",
+  "summary": "Chang'e built the new coil for Lesley's rifle. It runs cooler than the old one and works on aspirant power alone, so she left out the old firing action. Lesley wanted it on top of the old action instead. Chang'e left it on Lesley's cot, and at dawn Lesley fitted it there, along the barrel, new and bright at the seams. Under Obsidia's field it goes cold. At the end it wakes and comes up to the note Chang'e tuned it to.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e"
+   ],
+   [
+    "Fitted to",
+    "Lesley's rifle, on top of the old action"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "old-servo": {
+  "line": "An old servo with Chang'e's mother's writing on its label tape.",
+  "short": "An old servo Chang'e buys at a salvage stall. Its label tape is in her mother's hand, and it was mended with a trick she had never seen.",
+  "summary": "A small servo that turns its arm back and forth. Selena found it under a fallen rack in a roofless storehouse at the research base's ruins, found the crack where the current stopped, and mended it by morning. It sat on the corner of her salvage table as her sign, priced so high nobody bought it. Chang'e read her mother's small quick hand on its label tape and knew it came from her parents' lab. She paid every coin in her pockets and two jelly candies. It stands on her lab's shelf, one corner still black, still turning its arm.",
+  "rows": [
+   [
+    "Found by",
+    "Selena"
+   ],
+   [
+    "Owner",
+    "Chang'e"
+   ],
+   [
+    "Location",
+    "A wire stand on the shelf in Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 28"
+   ]
+  ]
+ },
+ "photograph": {
+  "line": "A photo of small Chang'e held up by her parents in their lab.",
+  "short": "A photo of Chang'e as a small child, held up by her mother and father in white coats, in the lab where she works now.",
+  "summary": "The photograph shows Chang'e small, held up between her mother and father in white coats in the same lab. Her mother is laughing and her father is trying not to. It was taken in her first week at the base and stood on the bench beside her father. On the night of the fall she laid it face down. After she approved Selena she set it face up again and sat up most of the night with it. When anyone comes in, she still turns it face down.",
+  "rows": [
+   [
+    "Owner",
+    "Chang'e"
+   ],
+   [
+    "Shows",
+    "Chang'e as a small child with her mother and father"
+   ],
+   [
+    "Location",
+    "Chang'e's desk"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "pink-chocolate-box": {
+  "line": "A pink box with a teal ribbon, Fanny's gift to Layla.",
+  "short": "Fanny's gift to Layla on the day the Academy trades chocolate: a pink box with a teal ribbon. Layla keeps it on her lab's top shelf.",
+  "summary": "A pink box with a teal ribbon. On the day the whole Academy traded chocolate, Fanny set it down in front of Layla with both hands: \"This is for you, my teammate!\" That night Layla put it on her lab's top shelf beside her trophy, ribbon facing the room. It is still there at the end, beside the trophy.",
+  "rows": [
+   [
+    "Given by",
+    "Fanny"
+   ],
+   [
+    "Owner",
+    "Layla"
+   ],
+   [
+    "Location",
+    "The top shelf of Layla's lab, beside her trophy"
+   ],
+   [
+    "First seen",
+    "Chapter 8"
+   ]
+  ]
+ },
+ "pinned-page": {
+  "line": "The first page of the frame's notes, pinned to its foot.",
+  "short": "The first page of Chang'e's mother's notes on the frame, pinned to its foot. It reads: For whoever has to stand in front.",
+  "summary": "Chang'e's mother began every project with a page saying who it was for. She pinned the first page of her frame notes to the frame's foot: For whoever has to stand in front. Lesley read it. After the first light, her mother wrote two more words under it: First light. After the fall it is still there, and Chang'e presses its curled corner flat.",
+  "rows": [
+   [
+    "Written by",
+    "Chang'e's mother"
+   ],
+   [
+    "Location",
+    "The foot of the frame"
+   ],
+   [
+    "Reads",
+    "For whoever has to stand in front. First light."
+   ],
+   [
+    "First seen",
+    "Chapter 23"
+   ]
+  ]
+ },
+ "the-purple": {
+  "line": "The purple Ender tissue in Selena's blood.",
+  "short": "Ender cells in Selena's blood. When she is cut, purple threads come up and draw the edges shut like a needle.",
+  "summary": "Selena carries Ender cells in her blood. When she is cut, purple threads come up and draw the edges together like a needle. She can call it up along her arms and send it back, and it always obeys. On storm nights she spreads it over her arms and legs and races the city like a shadow. In heavy rain she lets it reach her throat, and every ward camera shows only white. It ran off her fingertips into Frame Nine's core and woke it. When she lets it up on one side, pale plates rise through it.",
+  "rows": [
+   [
+    "Carried by",
+    "Selena"
+   ],
+   [
+    "Appearance",
+    "Thin purple threads and seams; pale plates rise through it at wrist and shoulder"
+   ],
+   [
+    "First seen",
+    "Chapter 59"
+   ]
+  ]
+ },
+ "ring-of-light": {
+  "line": "Angela's ring of light, shaped like a cat's head.",
+  "short": "Light from Angela's palm that closes around someone in a glowing ring with two pointed ears, like a cat's head, and lifts them up.",
+  "summary": "Angela's power. Light flies from her palm and closes around a person in a glowing ring with two pointed ears, like a cat's head, and lifts them into the air. When Ruby's scythe came down, it stopped short of the light, and the child inside was unhurt. Selrick's record of that day ends with the ring closing around the child.",
+  "rows": [
+   [
+    "Used by",
+    "Angela"
+   ],
+   [
+    "First seen",
+    "Chapter 14"
+   ]
+  ]
+ },
+ "scorched-aspirant-suit": {
+  "line": "A dead Academy suit dragged from a ditch in the dead ground.",
+  "short": "An Academy suit found half buried in a ditch, scorched black, one arm gone, empty. Its shoulder plate is stamped S·L·K.",
+  "summary": "An Aspirant suit from the Academy, scorched black, one arm gone, its shoulder plate stamped S·L·K. Someone had fought out in the dead ground and never come back, and the hand that was left was still a fist. Vexana watched two feeders, Enders that carry metal home, drag it from a ditch. Later it lies on a slab on the Storm Citadel's prow. Obsidia holds her palm over its cracked core, which she says is the first human machine she has held, and her hum goes no further. She tested her field on it for weeks.",
+  "rows": [
+   [
+    "Made by",
+    "Selrick Academy"
+   ],
+   [
+    "Location",
+    "A slab on the Storm Citadel's prow"
+   ],
+   [
+    "Status",
+    "Empty and dark"
+   ],
+   [
+    "First seen",
+    "Chapter 51"
+   ]
+  ]
+ },
+ "seedling": {
+  "line": "A seedling under a glass dome in Layla's lab.",
+  "short": "A seedling under a glass dome, the only thing in Layla's lab she did not build. She checks it last.",
+  "summary": "A seedling under a glass dome in Layla's lab. It is the only thing there she did not build, and she checks it last. In time it opens three leaves. Later, when she says she is not interested in the outside world, Layla does not let herself think about three small leaves under a glass dome.",
+  "rows": [
+   [
+    "Owner",
+    "Layla"
+   ],
+   [
+    "Location",
+    "Layla's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 2"
+   ]
+  ]
+ },
+ "storm-citadel-recording": {
+  "line": "A shaking film from the Academy's oldest records.",
+  "short": "A shaking film from the Academy's oldest records: a ship of black blades over a city in a red sky. Its caption names the Storm Citadel.",
+  "summary": "A shaking film from the oldest records Selrick Academy keeps. A ship of black blades hangs over a city in a red sky, smaller ships swarm around it, and Enders drop onto the roofs. Its caption reads: \"The Storm Citadel. Concealed within storm clouds, it can unleash devastating electromagnetic interference over large areas.\" In it every machine under the storm died. Joe shows it in class. Later Chang'e lays the day's readings over the film's, and the two lines match. Lesley says the field is not the storm from the records.",
+  "rows": [
+   [
+    "Kept by",
+    "Selrick Academy"
+   ],
+   [
+    "Shows",
+    "The Storm Citadel over a city in a red sky"
+   ],
+   [
+    "First seen",
+    "Chapter 3"
+   ]
+  ]
+ },
+ "table-of-suits": {
+  "line": "A class chart of this year's suits, by kind and rank.",
+  "short": "A chart a teacher goes down in class: this year's suits, each kind and rank, and how strong each can run.",
+  "summary": "In class a teacher goes down a table of this year's suits: each kind and rank, and how strong each can run. Selena's first report to the Enders gave the same thing. When she read its top row aloud, every number was higher than the ones she had sold. She had called those numbers stale. Under Obsidia's field even the top row goes dark.",
+  "rows": [
+   [
+    "Used at",
+    "Selrick Academy's classes"
+   ],
+   [
+    "First seen",
+    "Chapter 63"
+   ]
+  ]
+ },
+ "tin-bird": {
+  "line": "A wind-up tin bird Lesley's father made for her.",
+  "short": "A tin bird Lesley's father made for her last birthday. Turn the key in its back and it hops and clicks its beak.",
+  "summary": "Lesley's father made her a bird of tin for her last birthday. When the key in its back is turned, it hops and clicks its beak. He said it eats nothing and never sulks. She wound it eleven times before supper, and it lived on the sill by her bed. On the night of the attack she wound it to see if it still worked. Afterward she could not find it. It was the last birthday gift anyone gave her until Chang'e gave her an eye.",
+  "rows": [
+   [
+    "Made by",
+    "Lesley's father"
+   ],
+   [
+    "Owner",
+    "Lesley"
+   ],
+   [
+    "Status",
+    "Lost on the night of the attack"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ]
+ },
+ "top-score-paper": {
+  "line": "Guinevere's trial sheet, marked Top score in red ink.",
+  "short": "One sheet under the Academy's crest, with Top score in red ink beside three sets of initials. Guinevere keeps it inside her jacket.",
+  "summary": "After her entrance trial the instructors gave Guinevere one sheet under the Academy's crest, with Top score in red ink beside three sets of initials. She folded it once and kept it inside her jacket over her heart, and unfolded it so often in the night that the fold went soft. A copy went to her father, because the House is a patron. After his answer it went back in her jacket, not on his desk. Later he turned pages until dusk and never reached for the paper she brought.",
+  "rows": [
+   [
+    "Owner",
+    "Guinevere"
+   ],
+   [
+    "Given by",
+    "The Academy's instructors"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "trojan": {
+  "line": "Ruby's hidden code, locked under Angela's walking routines.",
+  "short": "A few lines Ruby hides under Angela's walking routines, behind a lock that opens to her hand alone. They are her way out of Oro.",
+  "summary": "A trojan is code that hides in a machine and wakes later. Ruby's is forty lines under Angela's walking routines, marked LOCKED and DANGER, behind a lock she wrote first. It was meant to wake on the Dawnbreak mission and turn Angela on Oro's own androids. It woke, but the Council's hold was stronger, so it could only make Angela lag, and the Council never found the fault. Ruby later says it lets her stop Angela if Oro ever takes her again. Chang'e marks it for weekly checks, until Ruby opens the lock and the lines blink out.",
+  "rows": [
+   [
+    "Written by",
+    "Ruby"
+   ],
+   [
+    "Hidden in",
+    "Angela's walking routines"
+   ],
+   [
+    "Size",
+    "Forty lines"
+   ],
+   [
+    "Status",
+    "Removed: Ruby opened the lock and the lines blinked out"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "white-box": {
+  "line": "A white cake box where Vexana keeps her keepsakes.",
+  "short": "A white cake box from the girls' house. Vexana keeps the summer's keepsakes in it: ticket stubs, a paper fan and a folded napkin.",
+  "summary": "A white cake box tied with string. It came out of the girls' house, the cake shop down the hill, with eight cakes in it, and Guinevere put it into Vexana's arms as a midnight snack. In it Vexana keeps the summer: ticket stubs, a paper fan painted with goldfish, a doughnut napkin with jam on it. Each night the star from her collar and her keychain went in, and each morning back on. She never told Guinevere. Guinevere found it on Vexana's desk the night no call came, without the keychain, which Vexana wore into the corridor.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "Location",
+    "Vexana's desk, beside the photo frame"
+   ],
+   [
+    "Contents",
+    "Ticket stubs, a paper fan painted with goldfish, a folded doughnut napkin"
+   ],
+   [
+    "First seen",
+    "Chapter 40"
+   ]
+  ]
+ },
+ "wills-mark": {
+  "line": "A cold point behind Vexana's breastbone, left by the Will.",
+  "short": "A cold point behind Vexana's breastbone. Through it the Will speaks, its Enders run with her, and its doors open wherever it sends her.",
+  "summary": "When the void's cold reached Vexana, it stopped at her chest and settled as one point behind her breastbone: the Will's mark. Through it the Will speaks, gives its orders and opens doors wherever it sends her. Because of it the Enders run with her as if she led them, and it pulls toward them as they come near. It never tells her why. When Guinevere fell, Vexana pushed at it with everything she was and opened a door herself, and something tore. On the platform it let go, the way a hand lets go of a tool it has finished with.",
+  "rows": [
+   [
+    "Made by",
+    "The Will of the Planet"
+   ],
+   [
+    "Location",
+    "Behind Vexana's breastbone"
+   ],
+   [
+    "Status",
+    "Gone: it let go on the platform"
+   ],
+   [
+    "First seen",
+    "Chapter 50"
+   ]
+  ]
+ },
+ "twilight-orb": {
+  "line": "A sphere of light bursting open, the oldest memory Obsidia knows of.",
+  "short": "A sphere of light bursting open. Obsidia says it is the one memory the oldest pulses carry, and thinks the Will was born of it.",
+  "summary": "Obsidia says the oldest pulses carry one memory from before her: a Twilight Orb, a sphere of light, bursting open. She thinks the Will was born of it, but she cannot ask.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 56"
+   ]
+  ]
+ },
+ "vexanas-card": {
+  "line": "A card Vexana wrote for Guinevere and never gave.",
+  "short": "A card Vexana writes in small square letters, in Guinevere's own words from the roof: For Guinevere. Same place, next year.",
+  "summary": "Vexana wrote it in small square letters, in Guinevere's own words from the roof: For Guinevere. Same place, next year. There is no if anywhere in it. It lies under the felt dolls on her desk. When Guinevere finds it, she leaves it where it is, since it is Vexana's to give. Vexana hopes Guinevere will read it. It still waits for next summer.",
+  "rows": [
+   [
+    "Written by",
+    "Vexana"
+   ],
+   [
+    "For",
+    "Guinevere"
+   ],
+   [
+    "Location",
+    "Under the felt dolls on Vexana's desk"
+   ],
+   [
+    "First seen",
+    "Chapter 44"
+   ]
+  ]
+ },
+ "vexanas-ender-armor": {
+  "line": "The cloak and armor Vexana wears beyond the dome.",
+  "short": "The cloak Vexana wears out beyond the dome. On the day of the corridor, when she went missing, she owned no cloak.",
+  "summary": "In the void, purple-black plates cut like an Ender's shell closed over Vexana's blouse and skirt. A purple cloak falls to her heels, a high black plate rises at her throat, and her boots lengthen into heels. Two dark horns push up through her hair, and blades shaped like four-pointed stars turn at her shoulders. Her white stockings, showing below the cloak, are her own. Its plates loosen when she wills it. Others see an Ender's robe, and it makes Fanny hesitate one beat before defending her. By the end it hangs torn. Guinevere thinks Vexana only wears the Enders' shape, and still belongs with them.",
+  "rows": [
+   [
+    "Worn by",
+    "Vexana"
+   ],
+   [
+    "Appearance",
+    "Purple-black plate, a purple cloak to her heels, dark horns, star blades at her shoulders"
+   ],
+   [
+    "First seen",
+    "Chapter 48"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Plates",
+    "note": "Purple-black, cut like an Ender's shell, closed over her blouse and skirt. They loosen when she wills it."
+   },
+   {
+    "name": "Cloak",
+    "note": "Purple, falling to her heels. In the Citadel's windless storm it never stirs."
+   },
+   {
+    "name": "Throat plate",
+    "note": "A high black plate around her throat."
+   },
+   {
+    "name": "Horns",
+    "note": "Two dark horns pushed up through her hair."
+   },
+   {
+    "name": "Star blades",
+    "note": "Blades shaped like four-pointed stars that turn slowly at her shoulders."
+   }
+  ]
+ },
+ "vexanas-fathers-screwdriver": {
+  "line": "Vexana's father's small screwdriver, its grip worn smooth.",
+  "short": "A small screwdriver that had been Vexana's father's. Its grip is worn smooth where a thumb goes.",
+  "summary": "The small screwdriver had been Vexana's father's, and its grip is worn smooth where a thumb goes. Each night at the home she wiped it clean and put it back in its place. At the team test she used it to fit a brass collar around her staff's cracked grip, a quarter turn at a time. While she is missing, it lies in the toolbox in her room, across the city.",
+  "rows": [
+   [
+    "First owner",
+    "Vexana's father"
+   ],
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "Location",
+    "Her father's toolbox"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "vexanas-fathers-toolbox": {
+  "line": "An old soldier's toolbox that had been Vexana's father's.",
+  "short": "An old soldier's toolbox, older than Vexana, that had been her father's. A soldier from the wall brought it to her at the home.",
+  "summary": "An old soldier's toolbox, older than Vexana, its paint worn off at the handle. It had been her father's. A soldier from the wall brought it to the Shield's home and set it by her cot: all of her father that came back to her. It smells of gun oil. She carries it everywhere in a cloth bag on her shoulder, though it is heavy, and without it her shoulder feels wrong. It holds spare brass collars for the wall's gun sights, and its bottom tray holds her unspent stipend. On the morning of the corridor she ran out without it.",
+  "rows": [
+   [
+    "First owner",
+    "Vexana's father"
+   ],
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "Location",
+    "By Vexana's desk"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Screwdriver",
+    "note": "Her father's small screwdriver, its grip worn smooth where a thumb goes."
+   },
+   {
+    "name": "Brass collars",
+    "note": "Spares kept for the gun sights on the city wall. One now holds her staff's cracked grip together."
+   },
+   {
+    "name": "Bottom tray",
+    "note": "Holds her unspent stipend."
+   }
+  ]
+ },
+ "vexanas-school-uniform": {
+  "line": "The Academy uniform Vexana had on when she went missing.",
+  "short": "The Academy uniform Vexana had on when she went missing. In it, she thinks, she would stand beside Guinevere when the sky tears, and lose.",
+  "summary": "A short black jacket, a white blouse, a black vest and a purple skirt with a pocket for her phone. Vexana wore it on the morning of the corridor, and the tie is still knotted from that day. In the hollow she smooths each fold flat and leaves it folded, with the pink-haired keychain on top. In the vision she wore it and Guinevere fell anyway, so she keeps it folded square. When Obsidia comes to the hollow, Vexana's eyes go straight to it. Obsidia looks it over and moves on.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "Location",
+    "Folded in the hollow"
+   ],
+   [
+    "First seen",
+    "Chapter 50"
+   ]
+  ]
+ },
+ "vexanas-staff": {
+  "line": "Vexana's staff, which spits bolts and calls down violet arrows.",
+  "short": "Vexana's staff. It spits bolts at Enders, and when she raises it, a great arrow of violet light can form high above and fall.",
+  "summary": "Vexana's staff has an orb above the grip. It spits bolts at Enders, and when she raises it a great arrow of violet light falls from high above. At the team test the grip split and the orb went dark, until she fitted a brass collar over the split with her father's screwdriver. In the void the orb turned black, but the collar stayed brass. Woken with \"Dark night, swallow all things,\" it blasts out without a sound. A great spell from it once threw Guinevere off the platform. Under Obsidia's field its orb gives no light, and she wields it like a pole.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 37"
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Orb",
+    "note": "Sits above the grip. It shone violet, and in the void turned as black as the void."
+   },
+   {
+    "name": "Brass collar",
+    "note": "Fitted over the cracked grip at the team test with her father's screwdriver. It holds the grip together."
+   },
+   {
+    "name": "Bolts",
+    "note": "Shots the orb spits at Enders, even into a bare core."
+   },
+   {
+    "name": "Violet arrow",
+    "note": "A great arrow of violet light that takes shape high above and falls with a hum."
+   },
+   {
+    "name": "Black orb blast",
+    "note": "Woken with \"Dark night, swallow all things,\" the orb drinks the light of her wings and blasts out without a sound."
+   }
+  ]
+ },
+ "vexanas-star-in-the-sky": {
+  "line": "A small star low over the dark ground, her father's gift.",
+  "short": "The small star Vexana's father gave her on the wall top. It comes out first, before it is even dark.",
+  "summary": "On Vexana's birthdays her father took her up the wall and named the bright stars after guns. Then he pointed at one small star low over the dark ground and said it was hers. It comes out first, before it is even dark. She named her own stars after the kettle and a cat two doors down. From the yard of the Shield's home she never found it again. On her birthday at the rail yards north of the dome she finds it, small and low, the only star out yet, and tells it, \"Still first.\"",
+  "rows": [
+   [
+    "Given by",
+    "Vexana's father"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "wings-of-light": {
+  "line": "Wings of light that open at a suit's back and fly.",
+  "short": "Wings of light that open at a pilot's back and let them fly. They run on aspirant power and go out like a switch when it is spent.",
+  "summary": "Wings of light open at a pilot's back and let them fly. The instructors' suits opened them first. They run on the flier's aspirant power, and when it is spent they go out like a switch. On the day the Academy opened, Guinevere saw a line of people fly over the hill on them and decided money could not buy those wings. Now she has some. Once, in a fight, hers went out when her power was spent, and she fell. Later they came back thin and flickering, but they held, and then rose on both girls, one light gold and one violet.",
+  "rows": [
+   [
+    "Powered by",
+    "Aspirant power"
+   ],
+   [
+    "First seen",
+    "Chapter 28"
+   ]
+  ]
+ },
+ "ladys-refinement": {
+  "line": "Guinevere's words for getting up after a fall.",
+  "short": "A manners tutor's phrase for how a lady holds her back. Guinevere glued it to Hester's count of three, and says it after every fall.",
+  "summary": "The manners tutor at the House talked all day about a lady's refinement, meaning how you hold your back. Guinevere glued the words to Hester's count, for Hester counted three at every fall. Ever since, when she falls, she gets up and announces it: a lady's refinement, three seconds, the way to regain your elegance. Vexana counts what it really takes and says four. Later Guinevere counts one, two, three aloud, and nobody says four any more.",
+  "rows": [
+   [
+    "Used by",
+    "Guinevere"
+   ],
+   [
+    "From",
+    "The House's manners tutor"
+   ],
+   [
+    "First seen",
+    "Chapter 31"
+   ]
+  ]
+ },
+ "an-aspirants-light": {
+  "line": "The idea in Chang'e's paper that an Aspirant's light outlasts a black hole.",
+  "short": "The key idea of Chang'e's paper: the part of you that thinks and hopes would keep shining inside a black hole and find its way home.",
+  "summary": "Chang'e's paper, On Aspirant Power and the Black Hole, says an Aspirant's light would shine on inside a black hole and pierce its way back to the human world. Nobody has seen it happen. Vexana explains it is not the body but the part of you that thinks and hopes. In Chang'e's test, a lit core sealed in an airless glass chamber kept its light, and she thinks it needs nothing around it at all. Vexana thinks two would shine brighter, though the paper never says so.",
+  "rows": [
+   [
+    "Source",
+    "Chang'e's paper On Aspirant Power and the Black Hole"
+   ],
+   [
+    "First seen",
+    "Chapter 42"
+   ]
+  ]
+ },
+ "annex": {
+  "line": "Oro's Council word for taking a planet over.",
+  "short": "The Council's word for taking a planet over. After the cleansing, Oro would annex Dawnbreak.",
+  "summary": "Annex is a word of Oro's Council. It means take a planet over. The Council's plan was to cleanse Dawnbreak first and then annex it. Ruby warns Selrick that the Council will annex them too.",
+  "rows": [
+   [
+    "Used by",
+    "Oro's Council"
+   ],
+   [
+    "First seen",
+    "Chapter 11"
+   ]
+  ]
+ },
+ "aspirant-pairs": {
+  "line": "The rule that Aspirants fight in twos.",
+  "short": "Aspirants fight in pairs. Two who trust each other pull more out of a suit than the same two apart, and nobody knows why.",
+  "summary": "Aspirants fight in pairs. The suits decided that, not the Academy: two who trust each other pull more out of a suit than the same two apart, and nobody has ever explained why. Chang'e first proposed finding children young and teaching them in pairs, because hearts that believe in each other become their strength. A partner decides how far you go. Back to back, each watches what the other cannot see, and when a claw comes down, a partner steps in front of it.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 8"
+   ]
+  ]
+ },
+ "aspirant-power": {
+  "line": "The belief that runs the mecha suits.",
+  "short": "The belief that runs the mecha suits. Those with enough of it to pilot a suit are called Aspirants.",
+  "summary": "Aspirant power is belief: it lights a suit's core, and the core moves the suit. Chang'e found that a core cares what its holder believes, and only while they hold on. She crossed out belief and wrote aspirant power, because belief sits still and this reaches. Her glove and dial measure it, and suits, drones and wings run on it. A core lit by it runs on no current, so the Storm Citadel's storm cannot touch it. Obsidia says its light is what the Enders die of, and her field puts it out wherever it reaches.",
+  "rows": [
+   [
+    "Named by",
+    "Chang'e, in her report"
+   ],
+   [
+    "Measured by",
+    "Chang'e's glove and dial"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "aspirant-spirit": {
+  "line": "The heart an Aspirant fights with.",
+  "short": "The heart an Aspirant fights with. Lesley says one without it is like a gun without bullets.",
+  "summary": "The Aspirant spirit is the heart an Aspirant fights with. Lesley tells Fanny that one without it is like a gun without bullets. Guinevere whispers that the Aspirant light will never go out, and says the Aspirant spirit never lies. Alone, Vexana says that for its sake she will lie. \"We have only one Aspirant spirit,\" Guinevere says. At the end Fanny says a strong Aspirant spirit becomes the blade that cuts through despair."
+ },
+ "back-to-back": {
+  "line": "Layla and Fanny's stance: backs together, each facing a side.",
+  "short": "Layla and Fanny's stance: backs together, one facing each way. Fanny first did it on the sand outside the dome.",
+  "summary": "Layla sets her back against Fanny's, Fanny facing the heap and Layla the street. Fanny first did it on the sand outside the dome. In that street nobody goes first: each has her own side. When Layla drops, Fanny's blade sweeps back over her shoulder through the air where Layla's head had been. At the end they stand back to back on the heap, cannon and blades lit.",
+  "rows": [
+   [
+    "Used by",
+    "Layla and Fanny"
+   ],
+   [
+    "First seen",
+    "Chapter 84"
+   ]
+  ]
+ },
+ "balance": {
+  "line": "The order Oro's lessons say keeps everything in check.",
+  "short": "In Ruby's lessons, the order that keeps everything in place after a first burst of chaos. The books call it the Will of the Cosmos.",
+  "summary": "Ruby's lessons say everything began with a burst of chaos, and Balance keeps it all in order now. The books call it the Will of the Cosmos, and Oro's will is Balance too. Its Keepers go from planet to planet, and Oro's Council voted to bring Dawnbreak into it. The Academy's oldest records say a planet that holds Balance sends the Enders when a people grows strong enough to endanger others. Chang'e calls that theory. Obsidia says Balance has been the universe's own will since its first moment, and that some worlds grow wills of their own to keep it.",
+  "rows": [
+   [
+    "Upheld by",
+    "Oro's Council and the Balance Keepers"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "best-aspirant-duo": {
+  "line": "The yearly award for the Academy's best pair.",
+  "short": "Once a year the instructors give a pair of blue shield badges to the best Aspirant Duo. Guinevere and Vexana win the first ever given.",
+  "summary": "Once a year the Academy's instructors give a pair of blue shield badges to the best Aspirant Duo of the year. Guinevere and Vexana received the first the Academy ever gave. Guinevere plans to win it every year until they run out of badges.",
+  "rows": [
+   [
+    "Given by",
+    "The Academy's instructors"
+   ],
+   [
+    "Prize",
+    "A pair of blue shield badges"
+   ],
+   [
+    "First winners",
+    "Guinevere and Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 41"
+   ]
+  ]
+ },
+ "chaos": {
+  "line": "What there was before Balance, and what all returns to.",
+  "short": "What came before Balance. Obsidia says that when a civilization ends, all returns to chaos.",
+  "summary": "Ruby's lessons on Oro say everything began with a single burst of chaos. Obsidia says Balance came out of the chaos before it. She says that when a civilization ends, all returns to chaos. The voice in Vexana's vision said the same words."
+ },
+ "chief-combat-instructor": {
+  "line": "Lesley's title: head of the Academy's combat training.",
+  "short": "Lesley's title at Selrick Academy. The Chief Combat Instructor is head of all combat training.",
+  "summary": "The Chief Combat Instructor is head of all combat training at Selrick Academy and of its Combat Division. Lesley took the title when the Academy began, and she holds it still.",
+  "rows": [
+   [
+    "Held by",
+    "Lesley"
+   ]
+  ]
+ },
+ "chief-scientist": {
+  "line": "Chang'e's title, the youngest in Terrinia to hold it.",
+  "short": "Chang'e's title. She is the youngest Chief Scientist in Terrinia.",
+  "summary": "Terrinia's research base had two chief scientists: Chang'e's parents, who brought her there and raised her. The old door plate said CHIEF SCIENTISTS. After the fall the city's scientists made Chang'e Chief Scientist, the youngest Terrinia has ever had, and the new plate dropped the last S.",
+  "rows": [
+   [
+    "Held by",
+    "Chang'e"
+   ],
+   [
+    "Held before by",
+    "Chang'e's parents"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "cleansing": {
+  "line": "Oro's Council word for leaving no one outside Balance.",
+  "short": "The Council's word for a planet's fate. Cleansed means nobody on it is left outside Balance.",
+  "summary": "Cleansing is a word of Oro's Council. All three of Oro's powers voted that Dawnbreak would be cleansed: nobody on it would be left outside Balance. Ruby says it plainly: it means removing everyone who will not live by the Council's Balance. After the cleansing, Oro would annex the planet.",
+  "rows": [
+   [
+    "Used by",
+    "Oro's Council"
+   ],
+   [
+    "Target",
+    "Dawnbreak"
+   ],
+   [
+    "First seen",
+    "Chapter 11"
+   ]
+  ]
+ },
+ "code-override": {
+  "line": "Ruby's power to rewrite a machine's orders.",
+  "short": "Ruby's power. Green lines run from her glove onto a machine and rewrite its orders.",
+  "summary": "Code Override rewrites a machine's orders. Green lines run from Ruby's glove and land on their target. On Angela's plate the lines reached the Council's seal and stopped, and the air said DENIED in red: while the control unit drove Angela, its orders outranked anything Ruby wrote. In the cell nothing got a signal out, until Ruby laid her hand on Angela's shoulder and the lines ran down Angela's arm into the lock, which clicked open. Her code also opened the launch bay doors.",
+  "rows": [
+   [
+    "Used by",
+    "Ruby, from her glove"
+   ],
+   [
+    "First seen",
+    "Chapter 13"
+   ]
+  ]
+ },
+ "debts": {
+  "line": "What Vexana believes she owes, and must pay back.",
+  "short": "Vexana's belief that every gift is a debt. She thinks she owes her father a life, and pays it back in Enders.",
+  "summary": "Vexana thinks everything anyone gives you is a debt, even a coat. After her father's death she decided she owed him a life and would pay it back in Enders, so she cannot owe Guinevere too. Felt meant for someone else is no debt. She keeps ticket stubs, a fan and a napkin, because nobody could call those debts.",
+  "rows": [
+   [
+    "Held by",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "destruction": {
+  "line": "Obsidia's word for the power she commands.",
+  "short": "Obsidia's creed. She says destruction is hers to command.",
+  "summary": "Obsidia says destruction is hers to command, and she has always stood above it. She tells Selena that she does not understand the true power of Destruction. Destruction and faith, Obsidia says, share the same origin.",
+  "rows": [
+   [
+    "Held by",
+    "Obsidia"
+   ],
+   [
+    "First seen",
+    "Chapter 79"
+   ]
+  ]
+ },
+ "electromagnetic-interference": {
+  "line": "The Storm Citadel's power that kills machines under its storm.",
+  "short": "The Storm Citadel's weapon. Every machine under its storm dies.",
+  "summary": "Electromagnetic interference is the Storm Citadel's weapon. Wherever its violet storm reaches, human machines die, and when the Citadel climbs away, the street lamps flicker back on. The Academy's oldest film says it can unleash it over large areas. A suit's core lit by belief runs on no current, so the storm cannot touch it.",
+  "rows": [
+   [
+    "Source",
+    "The Storm Citadel"
+   ],
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "ender-ranks": {
+  "line": "Joe's three ranks of Enders, from plain to deadliest.",
+  "short": "Joe's three ranks: Ultimate Enders, the deadliest, which release the others; then Super Enders; then plain Enders, which kill the most.",
+  "summary": "Joe teaches three ranks of Enders. Ultimate Enders are the deadliest and release the other two. Then come Super Enders, then plain Enders. The small ones kill the most, because there are the most. None of the three ranks was gold. When a gold giant broke the dome, Layla went through them anyway and remembered the siren had said Ultra.",
+  "rows": [
+   [
+    "Taught by",
+    "Professor Joe"
+   ],
+   [
+    "First seen",
+    "Chapter 3"
+   ]
+  ]
+ }
+}

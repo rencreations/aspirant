@@ -58,3 +58,10 @@ scripts/guinevere/_comments*/
 scripts/library/.cache/
 scripts/library/__pycache__/
 scripts/library/**/__pycache__/
+
+# derived inputs of the lore codex (scripts/library/lore/codex; made by merge_candidates.py, make_batches.py and the like)
+scripts/library/lore/codex/merged.json
+scripts/library/lore/codex/names-*.tsv
+scripts/library/lore/codex/marks-in.tsv
+scripts/library/lore/codex/writers-in/
+scripts/library/lore/codex/pairs-in/

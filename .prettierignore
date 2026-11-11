@@ -22,6 +22,4 @@ apps/web/public/data/story
 apps/web/public/data/library
 
 # intermediate lists of the lore codex (scripts/library/lore/codex)
-scripts/library/lore/codex/candidates
-scripts/library/lore/codex/entries
-scripts/library/lore/codex/registry.json
+scripts/library/lore/codex/**/*.json

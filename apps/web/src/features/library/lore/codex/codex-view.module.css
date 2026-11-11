@@ -1,0 +1,208 @@
+/* The codex view of the lore room: a spoiler line, the kinds, and a grid of cards. */
+.codex {
+  display: grid;
+  gap: 1rem;
+  padding-block: 1.2rem 3rem;
+}
+
+.shield {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+}
+
+.shieldButton {
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  padding: 0 0.9rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.tab:hover {
+  background: var(--bg-2);
+}
+
+.tab[aria-pressed="true"] {
+  color: var(--bg);
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.count {
+  font-size: var(--step--2);
+  opacity: 0.7;
+}
+
+.summary {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.none {
+  margin: 2rem 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 7rem;
+}
+
+.card {
+  --k: var(--accent);
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.8rem;
+  height: 100%;
+  padding: 0.7rem;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--k);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.card:hover,
+.card:focus-visible {
+  background: var(--bg-2);
+  transform: translateY(-2px);
+}
+
+.card[data-kind="person"] {
+  --k: var(--magenta);
+}
+
+.card[data-kind="place"] {
+  --k: var(--cyan);
+}
+
+.card[data-kind="thing"] {
+  --k: var(--amber);
+}
+
+.card[data-kind="group"] {
+  --k: var(--violet);
+}
+
+.card[data-kind="creature"],
+.card[data-kind="event"] {
+  --k: var(--crimson);
+}
+
+.card[data-kind="idea"] {
+  --k: var(--gold);
+}
+
+.card[data-unmet="1"] {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.thumb {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 25%;
+}
+
+.glyph {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--k);
+}
+
+.text {
+  display: grid;
+  align-content: start;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.sub {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.line {
+  font-family: var(--font-serif-stack);
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--text-dim);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

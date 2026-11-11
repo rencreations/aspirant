@@ -1,0 +1,91 @@
+{
+ "fanny": {
+  "line": "An eighteen-year-old transfer raised by Shield soldiers, with two blades at her hips.",
+  "short": "An eighteen-year-old transfer from a family of Shield soldiers. She joins the third year two years late, to get strong enough to beat the Enders.",
+  "summary": "An Aspirant from a family of Shield soldiers and the younger sister of Tigreal, she came to Selrick Academy two years late and beat Layla's record on her first day. She fights the way suitless soldiers taught her to hold ground, with two lit blades, shining cables and hip thrusters, and she vouched for Ruby and Angela on her own word. She and Layla went from rivals to the Layla-Fanny Team, and when Guinevere flew off alone, she dropped the Shield's way for Layla's map and told her, \"Lead.\" When the Storm Citadel's field killed every suit, she raised plain steel, built a wall across the bay road cut and held it back to back with Layla, no longer trying to fight alone.",
+  "rows": [
+   [
+    "Age",
+    "Eighteen when she transfers in.",
+    1
+   ],
+   [
+    "Appearance",
+    "Callused hands. In battle, white armor with two long cases at her hips like folded wings.",
+    2
+   ],
+   [
+    "Family",
+    "Shield soldiers who trained her from the start. Her elder brother Tigreal is the fighter she respects above anyone.",
+    6
+   ],
+   [
+    "Background",
+    "At sixteen she asked for real battle instead of school. The Shield kept her off the front, and for two years soldiers without suits taught her to hold ground.",
+    1
+   ],
+   [
+    "School",
+    "Selrick Academy, a third-year transfer, two years late. She joined Professor Joe's Team B3, then became half of the Layla-Fanny Team.",
+    8
+   ],
+   [
+    "Post",
+    "Frontline. Out in front is her place. In a fight she speaks in her command voice.",
+    70
+   ],
+   [
+    "Scores",
+    "VR assessment 3:39, above Layla's 3:41, with eleven seconds spent pulling a civilian clear. Test match: 157 drones to Layla's 151. Drill count: 15 to Layla's 16.",
+    3
+   ],
+   [
+    "Fighting style",
+    "The soldiers' way: her back to a narrow place, so Enders come one or two at a time. Cable on a limb, swing, a blade into a joint. Nobody swings until an Ender swings.",
+    84
+   ],
+   [
+    "Habits",
+    "Keeps the Shield's hours, drilling alone at a quarter past five in the drill hall's one narrow doorway. Opens every session with the sergeants' line.",
+    7
+   ],
+   [
+    "Hopes",
+    "To fight beside her brother one day, to beat the Enders, and to leave Terrinia freely.",
+    6
+   ],
+   [
+    "Sayings",
+    "\"Protecting Terrinia is our duty.\" \"As humanity's last hope, I can't afford to give up.\"",
+    80
+   ],
+   [
+    "First seen",
+    "Chapter 1",
+    1
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Fanny's blades",
+    "note": "Two long blades kept in the cases at her hips. Their edges light cyan and throw arcs of power through the air. Under the Storm Citadel's field they were plain steel."
+   },
+   {
+    "name": "Fanny's cables",
+    "note": "Two thin shining cables from her rig. They pull her through the air and wrap an Ender's limb. One stopped a claw a meter above Roger's face."
+   },
+   {
+    "name": "Fanny's suit",
+    "note": "White armor with a rig of two long cases at her hips, like folded wings. Each case holds a blade."
+   },
+   {
+    "name": "Flight rig",
+    "note": "The thruster pack at her hips that lifts her. Layla once took it apart over a bent coupling. Its hum went thin when Vexana was called a traitor and grew louder when Guinevere and Vexana came back."
+   },
+   {
+    "name": "Rig under the field",
+    "note": "Under the Storm Citadel's field the rig coughed and went silent, her cable went slack, and she dropped two stories onto the road. Later it caught again and light ran down her blades."
+   }
+  ]
+ }
+}

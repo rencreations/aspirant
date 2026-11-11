@@ -1,0 +1,1315 @@
+{
+ "selenas-sketchbook": {
+  "line": "The sketchbook Selena draws armor in.",
+  "short": "Selena's sketchbook. She draws armor in it by the wall during Chang'e's lesson.",
+  "summary": "Selena's drawing book. She slips into Chang'e's lesson late, sits by the wall, opens it and draws armor. Her pen keeps moving the whole time Chang'e talks about the Mother Matrix.",
+  "rows": [
+   [
+    "Owner",
+    "Selena"
+   ],
+   [
+    "First seen",
+    "Chapter 41"
+   ]
+  ]
+ },
+ "sensor-array": {
+  "line": "The sensor array in the Academy tower.",
+  "short": "The sensor array in the Academy tower. Ruby and Angela keep it running at night.",
+  "summary": "The sensor array of the Academy tower. Ruby and Angela keep it running through the nights. Once a faint point of light comes out over the bay, its readings there never hold still. Angela kneels at an open panel to repair it, but the energy readings stay unstable and the repair goes slowly.",
+  "rows": [
+   [
+    "Location",
+    "The Academy tower"
+   ],
+   [
+    "Kept by",
+    "Ruby and Angela"
+   ],
+   [
+    "First seen",
+    "Chapter 47"
+   ]
+  ]
+ },
+ "shield-coat": {
+  "line": "The coat of a Shield soldier, worn by Vexana's father.",
+  "short": "A Shield soldier's coat. When the Ender came, all young Vexana could see was her father's back in his.",
+  "summary": "The uniform coat of a soldier of the Shield of Dawnbreak. Vexana's father wore one. On the evening the drill bell was real, he stood between her and the Ender, and all she could see was his back in his Shield coat. Years later she still remembers that back between her and the raised claw.",
+  "rows": [
+   [
+    "Worn by",
+    "Vexana's father"
+   ],
+   [
+    "Affiliation",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "small-black-spheres": {
+  "line": "Two small black spheres ringed with fire, woken over Obsidia's palms.",
+  "short": "Two small black spheres, ringed with fire, that wake over Obsidia's palms. Laid against her throne, they send a new hum down the spine.",
+  "summary": "Two small black spheres that wake over Obsidia's open palms, each ringed with fire. She lays them against the throne behind her, and a new hum runs down the spine of the Storm Citadel into every block. Soon a magenta sphere of light swells under the ship, and wherever its edge reaches, the Aspirants' power goes out.",
+  "rows": [
+   [
+    "Used by",
+    "Obsidia"
+   ],
+   [
+    "Location",
+    "Obsidia's throne, in the Storm Citadel"
+   ],
+   [
+    "First seen",
+    "Chapter 80"
+   ]
+  ]
+ },
+ "soldiers-tea": {
+  "line": "Black stewed tea, the way Vexana's father made it.",
+  "short": "Tea stewed until it is black. Vexana's father calls it soldier's tea: that is how you know it is working.",
+  "summary": "Vexana's father made tea when he came home at dusk and let it stew until it was black. Vexana tasted it once, spat it back into the cup and said it tasted like boots. He called it soldier's tea: that is how you know it is working. On the evening of the attack the tea was still stewing when the bell rang."
+ },
+ "star-clip": {
+  "line": "A star-shaped hair clip from a shop counter.",
+  "short": "A hair clip shaped like a star. Guinevere holds it against Vexana's black hair, and the little star looks lit.",
+  "summary": "A hair clip shaped like a star, from a counter of hair things. Guinevere held it against Vexana's black hair, and the little star looked lit. Vexana went very still over it, then sent it back with every other gift, on its little card, holding it a moment longer than the rest. That stillness gave Guinevere the idea for stars, and she cut two out of gold plate herself.",
+  "rows": [
+   [
+    "Bought by",
+    "Guinevere"
+   ],
+   [
+    "First seen",
+    "Chapter 39"
+   ]
+  ]
+ },
+ "steel-dummies": {
+  "line": "Steel training dummies built like Enders, run on rails.",
+  "short": "Steel dummies built like Enders that run at cadets on rails. When one swings, its chest plates open like a real Ender's.",
+  "summary": "Steel dummies built like Enders, used in the Academy's trials. They run at the cadets on rails, and when one swings, its chest plates open as a real Ender's do. At her trial Guinevere went under a dummy's arm and put her fist into its open chest. In the team test they came down all six rails at once, and a pair was out the moment a steel arm touched either of them. By the end of that test every dummy hung dead on its rail.",
+  "rows": [
+   [
+    "Used at",
+    "Selrick Academy's training field"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "strawberry-jam-doughnut": {
+  "line": "A strawberry-jam doughnut from the cake shop.",
+  "short": "A strawberry-jam doughnut. Guinevere says nothing can resist one, not even robots, and splits it with Vexana.",
+  "summary": "A strawberry-jam doughnut at the cake shop. Guinevere held one up to her mended drone, which circled it twice, and said nothing can resist one, not even robots. Then she tore it in two and gave Vexana half in its paper napkin. Vexana kept the napkin."
+ },
+ "tactics-books": {
+  "line": "Two tactics books in Vexana's room.",
+  "short": "Two tactics books, stacked square in Vexana's nearly bare room.",
+  "summary": "Vexana owns two tactics books. They stand stacked square in her nearly bare room, beside a tin of oil and a jar of spare screws. One morning she stands reading one at the corridor window, turning pages as if she had been there for hours.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "team-radio": {
+  "line": "The rescue team's radio on Karina's shelf.",
+  "short": "The rescue team's radio on the shelf in Karina's flat. It is never off, and all night it hisses street names and counts.",
+  "summary": "The rescue team's radio sits on the shelf in Karina's flat and is never switched off. All night it hisses street names and counts, and Karina sleeps through it, still in her coat. On the day before the attack it reports the cliff watch doubled, no change at the point over the bay, and all teams on standby.",
+  "rows": [
+   [
+    "Owner",
+    "Karina's rescue team"
+   ],
+   [
+    "Location",
+    "Karina's flat"
+   ],
+   [
+    "First seen",
+    "Chapter 60"
+   ]
+  ]
+ },
+ "teams-log": {
+  "line": "The rescue team's record book.",
+  "short": "The rescue team's log. Karina signs it to keep a child she carried out with her for one night.",
+  "summary": "The record book of the rescue team. When nobody comes for the child she carried out, Karina signs it to keep her for one night, then signs again the next evening. The clerk tells her she cannot keep doing that. After a week nobody has claimed the child, the clerk stops asking, and Karina stops signing.",
+  "rows": [
+   [
+    "Kept by",
+    "The rescue team"
+   ],
+   [
+    "First seen",
+    "Chapter 59"
+   ]
+  ]
+ },
+ "test-press": {
+  "line": "A testing press in Chang'e's lab.",
+  "short": "A testing press in Chang'e's lab. Chang'e and Selena bet on whether a knee joint of Selena's will crack in it.",
+  "summary": "A testing press in Chang'e's lab. Chang'e bet that a knee joint Selena made would crack in it, and Selena bet two puddings it would not. The press climbed past the mark and the joint held. Selena held out both hands: she had won again.",
+  "rows": [
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 64"
+   ]
+  ]
+ },
+ "academys-lists": {
+  "line": "The lists Selrick Academy publishes.",
+  "short": "The lists Selrick Academy puts out: the rankings, and the one with the dead.",
+  "summary": "Selrick Academy publishes its lists. Hester tells Guinevere that her father reads them every morning. She does not say which list: the rankings, or the one with the dead.",
+  "rows": [
+   [
+    "Published by",
+    "Selrick Academy"
+   ],
+   [
+    "First seen",
+    "Chapter 47"
+   ]
+  ]
+ },
+ "armband": {
+  "line": "A Shield rank armband.",
+  "short": "A rank armband of the Shield, worn on the sleeve of the gray-bearded officer.",
+  "summary": "A rank armband of the Shield of Dawnbreak. The gray-bearded officer wears one on his sleeve. Months after the base falls, he brings one to Lesley: it makes her a commander of the Shield's combat division, because the squads asked for her. She thinks she held the wrong place, and puts it on.",
+  "rows": [
+   [
+    "Worn by",
+    "Lesley"
+   ],
+   [
+    "Given by",
+    "The gray-bearded officer"
+   ],
+   [
+    "First seen",
+    "Chapter 25"
+   ]
+  ]
+ },
+ "armory-door": {
+  "line": "The armory door of a far Shield station, chalked with strokes.",
+  "short": "The armory door at a far Shield station. The station keeps its count of dead Enders on it in chalk strokes.",
+  "summary": "The door of the armory at a far station of the Shield. The station keeps its count of dead Enders on it in chalk strokes. After her first kill, the sergeant held out the chalk and Lesley made her own stroke. When the station closed, the door stayed behind, and a long row of the strokes on it was hers.",
+  "rows": [
+   [
+    "Location",
+    "A far Shield station"
+   ],
+   [
+    "First seen",
+    "Chapter 19"
+   ]
+  ]
+ },
+ "base-alarm": {
+  "line": "The siren of the research base.",
+  "short": "The research base's alarm. When it goes, every lamp in the lab turns red.",
+  "summary": "The research base's own alarm. It is tested every week, so Lesley knows its note. On the night the giant came it started while she was halfway back to the base, and every lamp in the lab turned red. The red lamps died with it. Years later it went again, when the Enders returned.",
+  "rows": [
+   [
+    "Location",
+    "The research base"
+   ],
+   [
+    "First seen",
+    "Chapter 24"
+   ]
+  ]
+ },
+ "big-bench": {
+  "line": "The big workbench in Chang'e's lab.",
+  "short": "The big bench in the lab. A researcher tells young Chang'e it is for grown-ups.",
+  "summary": "The big workbench in the research base's lab. A researcher once found Chang'e at it, standing on a box, and sent her back to her corner: the bench was for grown-ups. She fell asleep at it anyway with her soldering iron in her hand. After the first light, the same researcher told her the big bench was hers.",
+  "rows": [
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "birthday-candle": {
+  "line": "One candle stub, lit for every birthday in Lesley's house.",
+  "short": "The one candle stub Lesley's mother keeps in the kitchen drawer, lit on birthdays on whatever there is.",
+  "summary": "Lesley's mother kept one candle stub in the kitchen drawer. On a birthday she lit it on whatever there was, once a boiled egg, and the family blew it out quickly so it would last. On the night of the attack she lit it again, not for a birthday but for seeing. It went out when the wall fell.",
+  "rows": [
+   [
+    "Owner",
+    "Lesley's mother"
+   ],
+   [
+    "Location",
+    "Lesley's house"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ]
+ },
+ "black-card": {
+  "line": "Guinevere's black card with the House Baroque crest.",
+  "short": "A black card with a small gold House Baroque crest in its corner. Guinevere pays for Vexana's gifts with it.",
+  "summary": "Guinevere's black card, with a small gold House Baroque crest in its corner. She paid for Vexana's gifts with it before Vexana could speak. That night she turned it over and thought that her father had paid for every gift she ever gave. At the cake shop she stopped with it halfway out, and offered to treat Vexana instead, with the next one on Vexana.",
+  "rows": [
+   [
+    "Owner",
+    "Guinevere"
+   ],
+   [
+    "First seen",
+    "Chapter 39"
+   ]
+  ]
+ },
+ "black-patch": {
+  "line": "The black patch over Lesley's left eye.",
+  "short": "The black patch the station medic ties over Lesley's eye, in place of her dressing.",
+  "summary": "A black patch over Lesley's left eye. The medic at the far station swapped her dressing for it, and she still wore it when she came to the research base. Nobody saw under it from the day it was tied on until she took it off for Chang'e, so that Chang'e could give her the eye she had built.",
+  "rows": [
+   [
+    "Worn by",
+    "Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 19"
+   ]
+  ]
+ },
+ "bodys-seam": {
+  "line": "The long seam down the chest of the Mother Matrix.",
+  "short": "The seam where the plates of the body's chest meet. It is longer than the Academy's tower is tall, with a dim magenta glow.",
+  "summary": "The plates of the Mother Matrix's chest meet in one seam, longer than the Academy's tower is tall, with a dim magenta glow along it. Vexana follows it from top to bottom twice, the way she studies an Ender's chest before it fires. Healing strands come out of it and draw back into it. Before she goes, she looks up at the seam once more and thinks: There.",
+  "rows": [
+   [
+    "Part of",
+    "The Mother Matrix"
+   ],
+   [
+    "First seen",
+    "Chapter 55"
+   ]
+  ]
+ },
+ "brass-plaque": {
+  "line": "The patrons' plaque above the Academy fountain.",
+  "short": "A brass plaque over the courtyard fountain: WITH THANKS TO THE PATRONS OF SELRICK ACADEMY. HOUSE BAROQUE comes first.",
+  "summary": "A brass plaque on the wall above the fountain in the Academy courtyard. It reads WITH THANKS TO THE PATRONS OF SELRICK ACADEMY and lists the families who gave money, with HOUSE BAROQUE first. Guinevere sees it in her first week and thinks her father paid for this too. Under it, two cadets once said her score was bought.",
+  "rows": [
+   [
+    "Location",
+    "Above the fountain in the Academy courtyard"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "clocks": {
+  "line": "The clocks that filled Lesley's childhood home.",
+  "short": "The clocks Lesley's father mends. They hang on every wall of his shop, each out of step, so the house ticks day and night.",
+  "summary": "Lesley's father mended small machines, mostly clocks. They hung on every wall of his shop, each out of step with the next, so the house ticked day and night. When the power went out on the night of the attack, the ones he wound by hand kept ticking and struck one o'clock out of step. After the roof fell, one still ticked under the beams, and Lesley could not find it. At the station she lay awake listening for ticking.",
+  "rows": [
+   [
+    "Location",
+    "Lesley's house"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ]
+ },
+ "cloth-bag": {
+  "line": "Vexana's shoulder bag, with her father's toolbox inside.",
+  "short": "The cloth bag on Vexana's shoulder. Her father's old toolbox rides in it.",
+  "summary": "A cloth bag Vexana carries on her shoulder. Her father's old soldier's toolbox rides in it, heavy, and it clinks when she sets it down. Guinevere notices she carries it everywhere. Vexana only says it holds tools.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "cloth-over-the-bench": {
+  "line": "The cloth Chang'e throws over her bench to hide her work.",
+  "short": "A cloth Chang'e keeps by her bench, so Lesley never sees what she is building.",
+  "summary": "After her mother hid the eye drawings from Lesley under a mug, Chang'e kept a cloth by her bench. When Lesley's footsteps came early one night, Chang'e threw it over the bench and folded her hands on top. Lesley asked what was under it, and Chang'e said nothing regulation. When Lesley received her new eye, she understood that the eye was what had lain under the cloth.",
+  "rows": [
+   [
+    "Owner",
+    "Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 21"
+   ]
+  ]
+ },
+ "coat": {
+  "line": "The coat Guinevere bought for Vexana.",
+  "short": "A coat Guinevere buys for Vexana, whose own coat is worn shiny at the cuffs.",
+  "summary": "Guinevere came out of the third shop with a coat over her arm and put it in Vexana's hands, because Vexana's own coat was worn shiny at the cuffs. To Vexana a coat was a debt, and so was everything anyone gave you. She sent it back with the other gifts. Later, on the roof, Guinevere admitted the coat she picked was very ugly.",
+  "rows": [
+   [
+    "Bought by",
+    "Guinevere"
+   ],
+   [
+    "First seen",
+    "Chapter 39"
+   ]
+  ]
+ },
+ "combat-office-board": {
+  "line": "The roster board outside the Combat office.",
+  "short": "The board outside the Combat office. After Vexana is taken, it says VEXANA: MISSING in the same type as a roster.",
+  "summary": "The board that hangs outside the Combat office, where rosters and duty sheets go up. The watch sheet for the Investigation Room once hung there. By the evening Vexana was taken, it said VEXANA: MISSING in the same type as a roster, and Guinevere stood in front of it with two fingers at her collar.",
+  "rows": [
+   [
+    "Location",
+    "Outside the Combat office"
+   ],
+   [
+    "First seen",
+    "Chapter 64"
+   ]
+  ]
+ },
+ "convoy": {
+  "line": "The Shield's supply trucks between the city and its far stations.",
+  "short": "The Shield's trucks to the far stations. After the attack Lesley hides on the last one out of the city.",
+  "summary": "The Shield's convoys link the city with its far stations. After the attack on her street, Lesley hid on the last truck out. The sergeant said the next convoy back was months away. When it came at the turn of the season with the soldiers' letters, she hid under the armory floor so it left without her. Later her new badges came to her by convoy.",
+  "rows": [
+   [
+    "Run by",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "First seen",
+    "Chapter 19"
+   ]
+  ]
+ },
+ "dark-ship": {
+  "line": "A dark ship with cyan lights, seen from the Council hall.",
+  "short": "A dark ship with cyan lights that crosses the Council hall's high windows one evening. Ruby watches it until it is gone.",
+  "summary": "In the years of Ruby's lessons, one evening, a dark ship with cyan lights crossed the high windows of the Council hall on Oro. Ruby watched it until it was gone.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "desk-map": {
+  "line": "The map inside Ruby's father's black glass desk.",
+  "short": "Ruby's father's desk is black glass with a map inside. Touching a light shows its name, such as ORO, A-20 or DAWNBREAK in A-19.",
+  "summary": "Ruby's father's desk is black glass with a map inside it. Touching one of its lights shows a name: ORO, A-20, DAWNBREAK in A-19. The map has no scale. When he overrules Ruby, he switches it off.",
+  "rows": [
+   [
+    "Owner",
+    "Ruby's father"
+   ],
+   [
+    "First seen",
+    "Chapter 11"
+   ]
+  ]
+ },
+ "doctors-bench": {
+  "line": "The workbench of Chang'e's parents, the two Doctors.",
+  "short": "The bench in the lab where Chang'e's parents, the two Doctors, work.",
+  "summary": "The old bench in the lab where Chang'e's parents, the two Doctors, worked. They sat at it with their backs to the room while Chang'e gave Lesley her rifle. Lesley set the whole core piece on it past midnight. A cold box of caramel puddings stood under it, the family photograph stood on it, and Chang'e's mother handed the puddings round there.",
+  "rows": [
+   [
+    "Used by",
+    "Chang'e's parents"
+   ],
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "drone-charger": {
+  "line": "The charging cradle for Guinevere's drones.",
+  "short": "The charger inside Guinevere's door, where her drones rest with their rings glowing.",
+  "summary": "The drone charger stands on the shelf inside Guinevere's door, with a cradle for each of her drones. A drone's ring glows while it rests there. One morning the cradle that had been empty was full: her lost drone sat in it, mended, its ring lit.",
+  "rows": [
+   [
+    "Owner",
+    "Guinevere"
+   ],
+   [
+    "Location",
+    "Guinevere's room"
+   ],
+   [
+    "First seen",
+    "Chapter 39"
+   ]
+  ]
+ },
+ "fourth-plate": {
+  "line": "The plate set for Lesley at the family's table.",
+  "short": "The fourth plate Chang'e's mother sets for Lesley at supper. Its chair faces the door.",
+  "summary": "Chang'e's mother set a fourth plate for Lesley at supper, at a chair that faced the door. Lesley counted the plates: four, as there had been at her house. When Lesley went away, the mother promised to set her plate, and she set it every night of the nine days Lesley was gone. Riding home, Lesley thought of it waiting by the chair.",
+  "rows": [
+   [
+    "Set by",
+    "Chang'e's mother"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "fourth-stool": {
+  "line": "The stool set for Lesley beside the suit frame.",
+  "short": "A fourth stool Chang'e's mother puts by the frame in the lab. Lesley comes in at midnight and sits on it.",
+  "summary": "Chang'e's mother put a fourth stool by the frame at the back of the lab. At midnight Lesley's round stopped at the lab door, and she came in and sat on it. At the first light it stood empty.",
+  "rows": [
+   [
+    "Set by",
+    "Chang'e's mother"
+   ],
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 23"
+   ]
+  ]
+ },
+ "gate-log": {
+  "line": "The sign-in book at the research base's gate.",
+  "short": "The book at the base's gate. Lesley signs it with the date every morning.",
+  "summary": "The sign-in book kept at the research base's gate. Lesley signs it with the date every morning, and she tells nobody which date is hers. On her birthday her pen stops on the date for a moment, then goes on.",
+  "rows": [
+   [
+    "Location",
+    "The research base's gate"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "glass-chamber": {
+  "line": "The glass chamber where Chang'e tests a core without air.",
+  "short": "A glass chamber in the lab, with a copper plate in its wall. Chang'e seals a core inside it to test it.",
+  "summary": "A glass chamber with a copper plate set into its wall. In the second year, Chang'e sealed a core for the next suit inside it, laid her palm on the plate, and the core lit. When she pumped out the air, the hum died and the needles fell, but the light held. She wrote it down without yet knowing what the finding was good for.",
+  "rows": [
+   [
+    "Used by",
+    "Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 26"
+   ]
+  ]
+ },
+ "goldfish-fan": {
+  "line": "A paper fan painted with goldfish, a gift to Vexana.",
+  "short": "A paper fan painted with goldfish. Guinevere buys it from a cart to fan Vexana, then pushes it into her hand.",
+  "summary": "A paper fan painted with goldfish. At the amusement park Guinevere bought it from a cart to fan Vexana, whose black hair was hot to the touch, then gave it to her. Vexana kept it in her white box with the ticket stubs and the napkin. Guinevere finds it there after Vexana goes missing, and later Vexana tells her she kept it.",
+  "rows": [
+   [
+    "Given by",
+    "Guinevere"
+   ],
+   [
+    "Kept in",
+    "Vexana's white box"
+   ],
+   [
+    "First seen",
+    "Chapter 40"
+   ]
+  ]
+ },
+ "hammer": {
+  "line": "A hammer Vexana took from a dead workshop.",
+  "short": "A hammer Vexana took from a dead workshop on a feeder run. She beats plate edges with it until they catch.",
+  "summary": "Vexana took a hammer and an iron bar from a dead workshop on a feeder run, since her father's screwdriver lay in her room across the city. With no bolts and no drill, she beat the edges of Ender plates with the hammer until they caught on one another. Its blows made no echo, and she felt every one in her wrists.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 53"
+   ]
+  ]
+ },
+ "hard-chair": {
+  "line": "The one hard chair Lesley sleeps in.",
+  "short": "The single hard chair Lesley carries up to her tower room and sets facing the window, its back to the door.",
+  "summary": "After the base fell, Lesley carried one hard chair up to a cold tower room and set it facing the window, its back to the door. She slept in it. She kicked it over getting up when the Enders returned. In her Academy room the hard chair faces the door, and she sleeps in it upright with her boots on, beside a cot nobody has slept on.",
+  "rows": [
+   [
+    "Owner",
+    "Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 26"
+   ]
+  ]
+ },
+ "heated-gloves": {
+  "line": "Gloves with a heater in every finger, built by Chang'e.",
+  "short": "Gloves with a heater in every finger, which Chang'e builds for Lesley. Lesley gives them back: not regulation.",
+  "summary": "Gloves with a heater in every finger, Chang'e's second gift for Lesley after the rifle lamp. Lesley turned them over and gave them back: not regulation. So Chang'e read the Shield's rulebook, to build a gift Lesley could not hand back.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e"
+   ],
+   [
+    "Made for",
+    "Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 20"
+   ]
+  ]
+ },
+ "heavy-bag": {
+  "line": "The punching bag in the Academy training hall.",
+  "short": "A heavy bag hanging on a chain under the training hall's one lamp.",
+  "summary": "A heavy bag hanging on a chain under the one lamp of the training hall. Guinevere trains on it alone at night. After her father's answer she hit it bare-handed until there was red on its canvas. The floor in front of it is worn.",
+  "rows": [
+   [
+    "Location",
+    "The training hall"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "helper-droid": {
+  "line": "One of the Academy's slim white helper droids.",
+  "short": "One of the Academy's helpers, slim and white, with one orange eye. Its right arm is dead from the shoulder down.",
+  "summary": "A slim white helper droid of the Academy, with one orange eye. Its right arm was dead from the shoulder down. Selena laid two fingers on the casing, found a wire cracked finer than a hair inside a sleeve and bridged it, and the arm flexed and the eye blinked on. Chang'e says three of them spent two days on that arm.",
+  "rows": [
+   [
+    "Owner",
+    "Selrick Academy"
+   ],
+   [
+    "First seen",
+    "Chapter 61"
+   ]
+  ]
+ },
+ "iron-bar": {
+  "line": "Vexana's iron bar, scratched with a line for each dawn.",
+  "short": "An iron bar Vexana took from a dead workshop. She scratches a line on it each time the crack of sky goes pale with dawn.",
+  "summary": "Vexana took the bar and a hammer from a dead workshop on a feeder run. Once she held out her hand for it without looking, as she used to for her father in the gun pit, and nothing came. Each time the crack of sky went pale with dawn, she scratched a line on it. By its lines she reckons her birthday.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 53"
+   ]
+  ]
+ },
+ "jam-napkin": {
+  "line": "The paper napkin from a shared doughnut, kept by Vexana.",
+  "short": "The paper napkin from the half doughnut Guinevere gave Vexana. Vexana folds it small and keeps it, jam and all.",
+  "summary": "The paper napkin that held Guinevere's half doughnut at the cake shop. Vexana folded it into a small square and kept it, jam and all, in her white box. Guinevere finds it there after Vexana goes missing, a red smear of jam still on it: Vexana sent back a whole coat, but kept the napkin. Later Vexana tells her she even kept that.",
+  "rows": [
+   [
+    "Kept by",
+    "Vexana"
+   ],
+   [
+    "Kept in",
+    "Vexana's white box"
+   ],
+   [
+    "First seen",
+    "Chapter 40"
+   ]
+  ]
+ },
+ "lab-console": {
+  "line": "The console in Chang'e's lab.",
+  "short": "The console in the lab. Chang'e climbs up to it to write in her design log.",
+  "summary": "The console in Chang'e's lab. She climbs up to it to write in her design log, and from far off Lesley sees its pale glow in a lab window. After the base fell, it was the only thing still glowing in the lab. Chang'e sat at it in her father's chair, her feet off the floor, and woke with her cheek on it.",
+  "rows": [
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 24"
+   ]
+  ]
+ },
+ "landing-record": {
+  "line": "Selrick's silent camera record of the landing.",
+  "short": "The Academy's camera record of the landing, without sound: androids walk out of a hatch, and a tower splits under their fire.",
+  "summary": "Selrick's cameras watch every ward and keep every minute, and this is their record of the landing. It runs without sound. Androids walk out of a hatch and a tower splits under their fire. Then the girl with the scythe cuts the androids down, and the record shows the barrel, the scythe over a child with her eye red, and a ring of light closing around the child. Lesley freezes it on the red-eyed girl, and later tells Ruby she has watched it.",
+  "rows": [
+   [
+    "Made by",
+    "Selrick Academy's cameras"
+   ],
+   [
+    "First seen",
+    "Chapter 14"
+   ]
+  ]
+ },
+ "long-car": {
+  "line": "House Baroque's long car, driven by Hester.",
+  "short": "A long car driven by Hester in her gray coat. It brings Guinevere to the Academy gate.",
+  "summary": "The long car of House Baroque, driven by Hester in her gray coat. It brought Guinevere to the Academy gate on the morning of the assessment, and Hester drove her back in it in silence after her father's answer. When Hester comes with word that Guinevere must come home, the car waits behind her with its back door open. Guinevere walks away, and no car door shuts and no engine starts.",
+  "rows": [
+   [
+    "Owner",
+    "House Baroque"
+   ],
+   [
+    "Driven by",
+    "Hester"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "missing-sheet": {
+  "line": "The notice VEXANA: MISSING on the Combat office board.",
+  "short": "The notice Lesley pins up on the board: VEXANA: MISSING, in the same square type as a roster.",
+  "summary": "After Vexana is taken, Lesley pins up a sheet that reads VEXANA: MISSING, in the same square type as a roster. It hangs on the board outside the Combat office, under the old watch sheet. Weeks later, when the clerk comes, it still hangs there.",
+  "rows": [
+   [
+    "Put up by",
+    "Lesley"
+   ],
+   [
+    "Location",
+    "The board outside the Combat office"
+   ],
+   [
+    "First seen",
+    "Chapter 46"
+   ]
+  ]
+ },
+ "load-napkin": {
+  "line": "A napkin with Lesley's load numbers in Chang'e's father's hand.",
+  "short": "The napkin Chang'e's father writes on at supper: how much Lesley says a soldier can carry and still run.",
+  "summary": "At supper Chang'e's father asked Lesley how much a soldier can carry and still run. She said thirty kilos, twenty if she has to run far. He wrote it on his napkin and folded it into his pocket, and he kept it. While he built the first suit frame, it hung on a nail above the scale where he weighed every plate.",
+  "rows": [
+   [
+    "Written by",
+    "Chang'e's father"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "nightgown": {
+  "line": "A dead woman's nightgown, put on a sleeping child.",
+  "short": "A nightgown Obsidia takes from a dead woman to dress the sleeping child. Its hem falls past the child's bare feet.",
+  "summary": "A nightgown Obsidia took from a dead woman on the night of the strike. With her own hands she dressed the sleeping child she had made in it, and its hem fell past the child's bare feet. Then she laid the child on the scorched ground and left before the rain could wake her.",
+  "rows": [
+   [
+    "First seen",
+    "Prologue"
+   ]
+  ]
+ },
+ "old-shield-rifle": {
+  "line": "Lesley's old Shield rifle, before Chang'e built her a new one.",
+  "short": "Lesley's old Shield rifle. The tape on its stock hangs in strips when she comes back muddy from the city's edge.",
+  "summary": "The rifle Lesley carried as a Shield soldier before Chang'e built her a new one. One night she came back from the city's edge with mud to her knees, and the tape on its stock hung in strips. Watching her, Chang'e thought that if Lesley could hit them from farther away, the Enders could not reach her.",
+  "rows": [
+   [
+    "Owner",
+    "Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "panels-of-light": {
+  "line": "The panels of light Chang'e calls up with her Console.",
+  "short": "Panels of light that open in the air around Chang'e when she says \"Console! Activate!\" She reads Enders through them.",
+  "summary": "Chang'e's console of light. She calls it up with \"Console! Activate!\" and panels of light open in the air around her. Through them she read the giant's shut chest and saw that the light behind its plates was the door in. A red ring on her panel closed over the glow as Lesley locked on.",
+  "rows": [
+   [
+    "Used by",
+    "Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 27"
+   ]
+  ]
+ },
+ "pink-doll": {
+  "line": "The pink doll small Ruby carried in the Council hall.",
+  "short": "A pink doll that small Ruby hugs to her chest in the Council hall.",
+  "summary": "When Ruby was small, she hugged a pink doll to her chest in the Council hall. She made it bow, low and crooked, to the empty floor. As she grew taller, the doll was put away.",
+  "rows": [
+   [
+    "Owner",
+    "Ruby"
+   ],
+   [
+    "First seen",
+    "Chapter 9"
+   ]
+  ]
+ },
+ "pink-rabbit": {
+  "line": "A crying girl's pink toy rabbit in the Northeastern sector.",
+  "short": "A little girl's pink rabbit, dropped at her feet as she cries in the street. Joe picks it up and puts it back in her arms.",
+  "summary": "A little girl in a red dress stood crying in the street while an Ender broke into the Northeastern sector, her pink rabbit at her feet. Joe picked it up and put it back in her arms, and it fell when Fanny scooped the girl up. That evening Fanny pulled it out of the ash, beat it clean and set it on the broken wall facing the avenue, where a mother coming back would see it.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 4"
+   ]
+  ]
+ },
+ "portrait-of-guineveres-mother": {
+  "line": "The portrait of Guinevere's mother in the long hall.",
+  "short": "A picture of a lady in the long hall. Hester tells small Guinevere it is her mother.",
+  "summary": "A portrait hangs at the far end of the long hall in Guinevere's home. When Guinevere was small, Hester told her the lady in it was her mother. A lamp hangs under it and burns on into the night, and for a while each afternoon the sun lights it. Guinevere once slipped and fell on the marble beneath it.",
+  "rows": [
+   [
+    "Location",
+    "The long hall of Guinevere's home"
+   ],
+   [
+    "First seen",
+    "Chapter 32"
+   ]
+  ]
+ },
+ "practice-staff": {
+  "line": "Vexana's training staff, its grip wound in gray tape.",
+  "short": "The staff Vexana trains with at night, alone in the gallery above the training hall.",
+  "summary": "Vexana's practice staff, its grip wound in gray cloth tape. She trains with it every night without a sound, up in the gallery of the training hall where the lamp never reaches. She does fifty forms with it and lowers it at the fiftieth.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 34"
+   ]
+  ]
+ },
+ "radio": {
+  "line": "The radio on Lesley's father's bench.",
+  "short": "The radio on Lesley's father's bench, where she first hears the word Enders.",
+  "summary": "The radio stood on Lesley's father's bench in the shop. The first time she heard the word Enders, it came out of it: giants, far away, that came in groups and broke cities. Her father began leaving it on low at night, saying it was for the weather. On the night of the attack it stopped in the middle of a word.",
+  "rows": [
+   [
+    "Owner",
+    "Lesley's father"
+   ],
+   [
+    "Location",
+    "Lesley's house"
+   ],
+   [
+    "First seen",
+    "Chapter 18"
+   ]
+  ]
+ },
+ "returned-shopping-bags": {
+  "line": "The gifts Vexana sent back, every bag folded.",
+  "short": "The pile of shopping bags Vexana sends back, with a note in small square letters: I cannot repay this.",
+  "summary": "After their day of shopping, Vexana folded every gift back the way the shop had folded it and sent the whole pile back, coat and all. On top she left a note in small square letters: I cannot repay this. To her a coat was a debt, and so was everything anyone gave you.",
+  "rows": [
+   [
+    "Returned by",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 46"
+   ]
+  ]
+ },
+ "rifle-lamp": {
+  "line": "A rifle lamp Chang'e built for Lesley.",
+  "short": "A lamp Chang'e builds to clip on a rifle. Lesley turns it over and gives it back: not regulation.",
+  "summary": "A lamp Chang'e built to clip onto a rifle, her first gift for Lesley. Lesley turned it over in her hand and gave it back: not regulation. Chang'e decided she would make it regulation.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e"
+   ],
+   [
+    "Made for",
+    "Lesley"
+   ],
+   [
+    "First seen",
+    "Chapter 20"
+   ]
+  ]
+ },
+ "shields-notice": {
+  "line": "A Shield notice in the city library on what to do in a raid.",
+  "short": "A notice from the Shield of Dawnbreak in the library: Enders are living machines, and they do not attack each other.",
+  "summary": "A notice from the Shield of Dawnbreak on the wall inside the city library, on what to do in a raid. It says Enders are living machines, a gray metal shell over living purple tissue. It warns people not to hide behind a downed Ender, since Enders do not attack each other and will walk around their own. Reading it, young Selena learns the rule: they do not hit their own.",
+  "rows": [
+   [
+    "Put up by",
+    "Shield of Dawnbreak"
+   ],
+   [
+    "Location",
+    "The city library"
+   ],
+   [
+    "First seen",
+    "Chapter 60"
+   ]
+  ]
+ },
+ "shields-rulebook": {
+  "line": "The Shield's book of regulations.",
+  "short": "The Shield's rulebook. Chang'e borrows it from the gate office to learn what counts as regulation.",
+  "summary": "The Shield's rulebook, kept at the base's gate office. After Lesley handed back her gifts as not regulation, Chang'e borrowed it and read it cover to cover, twice. It says a Shield rifle is worked by hand and needs nothing else, so Chang'e built Lesley a rifle she could not hand back.",
+  "rows": [
+   [
+    "Kept at",
+    "The base's gate office"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "small-empty-dent": {
+  "line": "An empty dent at the end of the row of faces in the nest.",
+  "short": "One more shape pressed into the tissue at the end of the row, small and curled. Nothing lies in it.",
+  "summary": "At the end of the row of faces in the nest, the tissue is pressed into one more shape, small and curled, no longer than the smallest shell. Nothing lies in it. Obsidia rests her clawed glove on its edge and says nothing about it. Vexana takes it for one more shell that broke and was cleared away.",
+  "rows": [
+   [
+    "Location",
+    "The nest"
+   ],
+   [
+    "First seen",
+    "Chapter 58"
+   ]
+  ]
+ },
+ "small-flying-craft": {
+  "line": "Small flying attack craft shaped like cars.",
+  "short": "Small flying craft shaped like cars that sweep low over the research base and fire on it.",
+  "summary": "Small flying craft shaped like cars. On the night the base fell, they swept low over its grounds and fired while the giant walked in, and one set the storehouse roof aflame. When the Enders returned years later, they lifted off the roofs and fired at Lesley's lit window.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 24"
+   ]
+  ]
+ },
+ "test-ring": {
+  "line": "The steel work ring at the back of Chang'e's lab.",
+  "short": "A steel hoop taller than Chang'e's father at the back of the lab, with jointed arms that hold work in the air.",
+  "summary": "A steel hoop taller than Chang'e's father, at the back of the lab, with jointed arms that hold work up in the air. Chang'e walled it off with crates and a NO SIS sign while she built Lesley's rifle in it. On Lesley's birthday its arms opened and let the finished rifle down into her hands. Later Chang'e built her crescents in it, its arms holding the pieces while she welded.",
+  "rows": [
+   [
+    "Location",
+    "Chang'e's lab"
+   ],
+   [
+    "First seen",
+    "Chapter 22"
+   ]
+  ]
+ },
+ "unnamed-trace": {
+  "line": "A thin trace on Chang'e's screen that nobody has named.",
+  "short": "A thin trace from the morning that still runs at the bottom of Chang'e's screen. It still has no name.",
+  "summary": "When the fighting is over, a thin trace from the morning still runs at the bottom of Chang'e's screen. Nobody has named it. Beside it the light for mobile support still blinks.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 86"
+   ]
+  ]
+ },
+ "unsent-message": {
+  "line": "Chang'e's unfinished message to Lesley, one of forty-three.",
+  "short": "A message on Chang'e's screen: 'Lesley, the coil runs cooler now.' It stops there. Forty-three drafts like it sit unsent.",
+  "summary": "A message on Chang'e's screen that reads: Lesley, the coil runs cooler now. It stops there. Forty-three drafts like it sit unsent in a folder, every one addressed to Lesley and every one a single line about work, such as: Lesley, your visor seal is fixed. Chang'e eats her pudding beside the unsent line while Mr. Bunny watches the cursor blink.",
+  "rows": [
+   [
+    "Written by",
+    "Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "visor": {
+  "line": "The visor Lesley wears over her eye.",
+  "short": "The visor Lesley wears over her eye. She touches it every time she wakes from the dream.",
+  "summary": "The visor Lesley wears over her eye. Every time she wakes from the old dream, her hand goes to it. One of Chang'e's unsent work messages says only that Lesley's visor seal is fixed.",
+  "rows": [
+   [
+    "Worn by",
+    "Lesley"
+   ]
+  ]
+ },
+ "watch-droid": {
+  "line": "A white droid that follows Ruby everywhere.",
+  "short": "A white droid with one orange eye that follows Ruby everywhere and keeps that eye on her.",
+  "summary": "A white droid that follows Ruby everywhere, its orange eye on her. It glides in behind her and stops by the door. Ruby once looped ten minutes of recording into its camera, and it watched that for an hour. When Lesley and Ruby talk, its lens swings between them.",
+  "rows": [
+   [
+    "Watches",
+    "Ruby"
+   ],
+   [
+    "First seen",
+    "Chapter 29"
+   ]
+  ]
+ },
+ "wooden-drill-pole": {
+  "line": "The wooden pole Vexana trained with at dawn.",
+  "short": "A wooden drill pole Vexana trains with alone at dawn in the yard of the Shield's home: strike, turn, strike.",
+  "summary": "A wooden drill pole. At dawn, before the bells, Vexana trained with it alone in the yard of the Shield's home: strike, turn, strike, while the other children slept. It made her hands bleed, then left her palms ridged and hard.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "First seen",
+    "Chapter 33"
+   ]
+  ]
+ },
+ "ticket-stubs": {
+  "line": "The ride ticket stubs Vexana kept from the amusement park.",
+  "short": "The stubs of the amusement park ride tickets. Guinevere hands each one to Vexana without looking.",
+  "summary": "At the amusement park Guinevere bought a strip of ride tickets and put each torn stub into Vexana's hand without looking. Vexana kept them in her white box with the fan and the napkin, because nobody could call those debts. Guinevere finds a whole strip's worth there after Vexana goes missing; she had never asked where they went. Later Vexana tells her she kept them.",
+  "rows": [
+   [
+    "Given by",
+    "Guinevere"
+   ],
+   [
+    "Kept in",
+    "Vexana's white box"
+   ],
+   [
+    "First seen",
+    "Chapter 40"
+   ]
+  ]
+ },
+ "training-droid": {
+  "line": "The giant Training Droid on Oro's Training Field.",
+  "short": "A Training Droid five times Angela's height at the far end of Oro's Training Field. Its fist comes down on her.",
+  "summary": "A Training Droid five times Angela's height, waiting at the far end of the Training Field on Oro. Its fist came down on her day after day, and she only blocked it with her shield. To make her strike, the trainers raised its setting from four to six. A month later it stood at nine, and its fist cracked her shield from edge to edge.",
+  "rows": [
+   [
+    "Location",
+    "The Training Field, Oro"
+   ],
+   [
+    "First seen",
+    "Chapter 10"
+   ]
+  ]
+ },
+ "vexanas-file": {
+  "line": "Vexana's Academy record, marked Missing.",
+  "short": "The Academy's file on Vexana. It says Missing, while the attendance wall says only Absent.",
+  "summary": "Vexana's record at the Academy. Every morning since the capture, Lesley has entered the word beside her name on the morning list herself. The file says Missing, while the attendance wall says only Absent. When Chang'e points it out, Lesley rules that it stays Missing, since a file says what she can prove. When Vexana stands with the frontline again, Lesley tells Chang'e to change it.",
+  "rows": [
+   [
+    "Kept by",
+    "Selrick Academy"
+   ],
+   [
+    "First seen",
+    "Chapter 68"
+   ]
+  ]
+ },
+ "vexanas-phone": {
+  "line": "Vexana's phone, left on her desk.",
+  "short": "Vexana's phone. It rings behind her shut door when Guinevere calls.",
+  "summary": "Vexana's phone. When Guinevere calls after Vexana is taken, it rings behind her shut door, on the desk where she left it when the alarm went. Guinevere goes in and leaves it beside the dolls. Far away, Vexana has nothing to call with, and her hand still goes to her side for it.",
+  "rows": [
+   [
+    "Owner",
+    "Vexana"
+   ],
+   [
+    "Location",
+    "Vexana's room"
+   ],
+   [
+    "First seen",
+    "Chapter 46"
+   ]
+  ]
+ },
+ "void-notes": {
+  "line": "Chang'e's working file on the void.",
+  "short": "A file called VOID NOTES on Chang'e's wall screen, marked working on it.",
+  "summary": "Chang'e's own file on the void, always marked working on it. When a large line comes in on her screens, it matches the notes at three points, while a faint trace beside it matches nothing, not even these notes. Later that same big slow line goes off the top of the scale, and Chang'e says: It's here.",
+  "rows": [
+   [
+    "Made by",
+    "Chang'e"
+   ],
+   [
+    "First seen",
+    "Chapter 17"
+   ]
+  ]
+ },
+ "vr-enders": {
+  "line": "The simulated Enders of the VR Battlefield.",
+  "short": "Simulated Enders that students fight in the VR Battlefield.",
+  "summary": "Simulated Enders that students fight in the VR Battlefield. Joe shows a life-size one in class: when it raises an arm to strike, its chest plates split and a core glows inside. They stand three meters tall, much smaller than the real Ender at the breach. Layla says that in VR there is a clock on top of their open chests. The real ones have no clock.",
+  "rows": [
+   [
+    "Location",
+    "The VR Battlefield"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "vr-night-log": {
+  "line": "The night sign-in log of the VR Battlefield.",
+  "short": "The VR Battlefield's night log. Layla's name fills it, at lunch hours and late nights, back to her first year.",
+  "summary": "The night log of the VR Battlefield. Layla signs it after midnight, and her name fills the page, at lunch hours and late nights, back to her first year. Beside every line someone has made a small stylus tick, the same slant each time. Layla assumes the system ticks everything. She has never checked.",
+  "rows": [
+   [
+    "Location",
+    "The VR Battlefield"
+   ],
+   [
+    "First seen",
+    "Chapter 2"
+   ]
+  ]
+ },
+ "vr-pods": {
+  "line": "The simulator pods of the VR Battlefield.",
+  "short": "Pods under the big screen of the VR Battlefield. Inside one, students fight simulated Enders.",
+  "summary": "Students fight simulated Enders from pods under the big screen of the VR Battlefield. Inside a pod the hall vanishes, and Fanny stands in a broken street in her suit. After one drill she is out of her pod first. The pods never smelled of anything, unlike the real breach.",
+  "rows": [
+   [
+    "Location",
+    "The VR Battlefield"
+   ],
+   [
+    "First seen",
+    "Chapter 1"
+   ]
+  ]
+ },
+ "ward-cameras": {
+  "line": "The cameras that watch the city's wards.",
+  "short": "The cameras that watch the city's wards. In heavy rain every one shows only white.",
+  "summary": "Cameras that watch the city's wards. In heavy rain every one shows only white, which hides Selena's purple. On their feed Lesley and Chang'e watch Guinevere and Vexana face each other, until it goes white when the two clash. Then a street camera three streets west shows a machine drop out of the smoke into the Mother Matrix's beam, and a long scream of plate comes out of the feed's speaker.",
+  "rows": [
+   [
+    "First seen",
+    "Chapter 62"
+   ]
+  ]
+ },
+ "watch-sheet": {
+  "line": "A duty sheet on the Combat office board.",
+  "short": "The watch sheet outside the Combat office. It gives Guinevere and Vexana a week's watch on the Investigation Room.",
+  "summary": "A duty sheet on the board outside the Combat office. It gave Guinevere and Vexana the Investigation Room watch for a week, guarding the wing where the Science Division takes Ender wreckage apart. It read INVESTIGATION ROOM WATCH, with their two names in square type like a roster, and Guinevere pressed a finger to hers. After Vexana went missing it still hung above the MISSING sheet.",
+  "rows": [
+   [
+    "Location",
+    "The board outside the Combat office"
+   ],
+   [
+    "First seen",
+    "Chapter 44"
+   ]
+  ]
+ },
+ "welcome-to-terrinia-billboard": {
+  "line": "A big city billboard reading WELCOME TO TERRINIA.",
+  "short": "A big billboard reading WELCOME TO TERRINIA, in front of a tower in the Northeastern sector.",
+  "summary": "A big billboard reading WELCOME TO TERRINIA stands in front of an office tower near the breach in the Northeastern sector. When the Ender's chest opens, Layla's bolt punches through the billboard and both walls of the tower's glass into its core.",
+  "rows": [
+   [
+    "Location",
+    "The Northeastern sector"
+   ],
+   [
+    "First seen",
+    "Chapter 4"
+   ]
+  ]
+ },
+ "backlash": {
+  "line": "When people dislike something and do something about it.",
+  "short": "Ruby's meaning for it: when people do not like something and do something about it.",
+  "summary": "Oro's technicians say that if people saw an android like Angela, there would be a backlash, so she must be kept hidden. Angela repeats the word without understanding it. Ruby explains: a backlash is when people do not like something and do something about it."
+ },
+ "checks": {
+  "line": "The Science Division's regular checks on Angela.",
+  "short": "Chang'e's inspections of Angela. Anything that can receive can be told what to do, so Angela stays on checks.",
+  "summary": "The checks the Science Division keeps Angela on. Chang'e checks her the way she checks a machine: joint torque, sensor reach, cooling. She rules that anything that can receive can be told what to do, so Angela stays on checks, and what Chang'e cannot open goes on her list; beside the lock of Ruby's safeguard she writes WEEKLY. Later she admits it is the same as Lesley keeping her off the rotation."
+ },
+ "curfew": {
+  "line": "The Academy rule that keeps everyone inside after the bell.",
+  "short": "After the curfew bell, nobody goes out of the Academy grounds.",
+  "summary": "After the curfew bell, nobody goes out of the Academy grounds, and the summer fireworks only start after it. Vexana keeps every rule, so when Guinevere asks her out to see the fireworks, she warns they will be caught. Guinevere answers that rules are for keeping safe what matters, not for locking you up."
+ },
+ "detention": {
+  "line": "The Academy's punishment for students who skip class.",
+  "short": "The punishment for skipping class: cleaning the Academy hall, sometimes all day.",
+  "summary": "Students caught skipping class can be kept in detention all day. Detention means cleaning the Academy hall. It is Fanny's first. Angela comes too, though nobody sentenced her, and the bell ends it."
+ },
+ "drills": {
+  "line": "Practice alarms at the Shield's wall houses.",
+  "short": "Practice alarms at the wall houses. At the drill bell soldiers go to their guns and families to the shelter.",
+  "summary": "The Shield's houses by the city wall held drills. At the drill bell Vexana's father went up to his gun, she ran to the shelter, and when the all-clear sounded he came to find her. To young Vexana it was a game in which nothing bad ever happened, until one evening the bell rang and it was not a drill. At the Shield's home she kept still through every drill, but nobody came to find her after."
+ },
+ "errands": {
+  "line": "The tasks the Will sends Vexana on in the dark.",
+  "short": "The tasks the Will of the Planet gives Vexana in the dark. Its orders come from a cold point under her breastbone.",
+  "summary": "The tasks the Will sends Vexana on while she lives in the dark. Each order comes out of a cold point under her breastbone, such as the rail yards north of the dome at dusk. On errand nights she eats from tins in dead kitchens. When Obsidia meets her under the body, she tells Vexana to go back to her errands. Later Vexana goes to the Storm Citadel between errands, on her own, with no order."
+ },
+ "fine-tuning": {
+  "line": "How a machine is tuned to answer one pilot only.",
+  "short": "A machine tuned to one pilot answers no one else. Silverbolt is fine tuned, and so is the director's gear.",
+  "summary": "Some machines are fine tuned: made to answer one pilot only. When Chang'e climbs onto Silverbolt and tells it to walk, not even its tail twitches. The gray-haired professor explains that Silverbolt is fine tuned to one pilot, and that the director's gear is the same."
+ },
+ "nobody-goes-alone": {
+  "line": "The order given to the single cadets in a raid.",
+  "short": "The instructor's order to the cadets without partners at the dome's foot: take the side streets, and nobody goes alone.",
+  "summary": "An instructor's order to the singles, the cadets without partners, when the reserve is sent to the dome's foot: Singles, the side streets. Nobody goes alone. When Guinevere ran up a side street toward the Enders by herself, Vexana followed her because of it, a street's length back, near enough to shoot."
+ },
+ "outstanding-student": {
+  "line": "An honor written into an Academy student's file.",
+  "short": "A line added to a student's Academy file. Selena's file gains it after the year's showing.",
+  "summary": "An honor written into a student's file at the Academy. After the year's showing, where Silverbolt stood on a plinth behind a rope, Selena's file gained the line Outstanding Student. Only Selena knew that Silverbolt was, in every sense, a weapon of the Enders."
+ },
+ "raids": {
+  "line": "Ender attacks on the city, and the fights against them.",
+  "short": "Ender attacks and the fights against them. After a raid, Ender cores come back to the lab in a crate.",
+  "summary": "Raids are the Enders' attacks and the fights against them. After one, cores come back to the lab in a raid crate. Lesley led her first raid in command as a Shield commander. After the base fell the raids thinned, then stopped for a long time. Later Guinevere and Vexana fought raids together as cadets, and House Baroque lent money to rebuild each ward after one."
+ },
+ "selenas-graduation": {
+  "line": "Selena's graduation from the Academy, still to come.",
+  "short": "Selena's graduation from the Academy, still ahead. She jokes about it in class, and Karina still wants to see it.",
+  "summary": "Selena's graduation from the Academy, still to come. She joked about it in class, and one morning her papers flew as she cried: what about my graduation?! Karina still wants to see it. High over the city, Selena thinks that somebody down there still wants to see her graduate."
+ },
+ "sergeants-throw": {
+  "line": "The Shield throw Fanny uses to lay Layla flat.",
+  "short": "A throw from Fanny's Shield training. She lays Layla flat with it, then offers to teach it: it saves a lot of time.",
+  "summary": "A throw Fanny learned in the Shield. When Layla needles her, Fanny lays her flat with it and offers to teach it, saying it saves a lot of time. Layla filed the throw, and the promise to teach it, as an insult. Later she sees that it was an offer."
+ },
+ "stipend": {
+  "line": "The small allowance the Academy pays each cadet.",
+  "short": "A small allowance the Academy pays every cadet. Vexana's lies unspent in paper bands in her toolbox.",
+  "summary": "The Academy pays every cadet a small stipend. Vexana's lay unspent in paper bands in her toolbox, until she broke the first band to buy felt for Guinevere. She paid for a second pot of tea from the same band. Later Selena says she would take stipend money, but Missing people do not draw a stipend."
+ },
+ "technical-bug": {
+  "line": "The cover story for the trojan in Angela.",
+  "short": "What Ruby expects Oro's officers to call the trojan's fault: a technical bug only the one who wrote the code can mend.",
+  "summary": "Ruby hides a trojan in Angela that will wake on the Dawnbreak mission. She expects Oro's officers to see a fault they cannot locate and call it a technical bug, one only the code's writer could mend. It goes that way: soldiers tell Ruby the Council reports a technical bug in its secret weapon that its engineers cannot find, and only her creator can fix it."
+ },
+ "flying-ban": {
+  "line": "The Academy rule against flying on school grounds.",
+  "short": "Flying is banned on school grounds, except in the white training corridor.",
+  "summary": "Flying is banned on the grounds of Selrick Academy. The one exception is the white training corridor, where Fanny meets the drones in the air in her suit."
+ },
+ "obsidias-line": {
+  "line": "Obsidia's trace of where Selena goes.",
+  "short": "A trace that shows Obsidia where her pawn, Selena, goes in the city.",
+  "summary": "A trace that lets Obsidia follow where Selena goes. One morning it showed her Selena crossing the city to the humans' Academy, alive and not obeying. On the next storm night it put Selena on her tower over the Academy, then on a roof at the far edge of the city, then back. Obsidia knew a bearing when she saw one."
+ },
+ "training-power": {
+  "line": "The low weapon setting used in Academy test matches.",
+  "short": "The weapon setting for test matches: enough to burst a drone and bruise a girl.",
+  "summary": "In the Academy's test matches, weapons are set to training power: enough to burst a practice drone and bruise a girl. Layla and Fanny fight their test match in the white training corridor at that setting."
+ }
+}

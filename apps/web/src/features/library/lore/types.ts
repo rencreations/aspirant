@@ -92,9 +92,10 @@ export interface LoreFile extends CollectionFile<ItemBase> {
   people: Person[];
 }
 
-export type LoreView = "texts" | "atlas" | "who";
+export type LoreView = "codex" | "texts" | "atlas" | "who";
 
 export const LORE_VIEWS: ReadonlyArray<{ id: LoreView; label: string }> = [
+  { id: "codex", label: "Codex" },
   { id: "texts", label: "Texts" },
   { id: "atlas", label: "Atlas" },
   { id: "who", label: "Who is who" },

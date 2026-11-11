@@ -1,0 +1,104 @@
+/*
+ * The relationship picture: the entry in the middle, its neighbours round it, a line and a label
+ * for each tie. The colour of a line says what sort of tie it is (kin, bond, power, making, foe).
+ */
+.graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 34rem;
+  --kin: #d6358f;
+  --bond: #0d8f6b;
+  --power: #6e4bd8;
+  --make: #c47a00;
+  --foe: #cf2f45;
+}
+
+[data-theme="storm"] .graph {
+  --kin: #ff6ac8;
+  --bond: #4fe0b0;
+  --power: #b59cff;
+  --make: #ffb338;
+  --foe: #ff5468;
+}
+
+.graph [data-family="kin"] {
+  --c: var(--kin);
+}
+
+.graph [data-family="bond"] {
+  --c: var(--bond);
+}
+
+.graph [data-family="power"] {
+  --c: var(--power);
+}
+
+.graph [data-family="make"] {
+  --c: var(--make);
+}
+
+.graph [data-family="foe"] {
+  --c: var(--foe);
+}
+
+.edge {
+  stroke: var(--c);
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.hubBox {
+  fill: var(--text);
+}
+
+.hubText {
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  fill: var(--bg);
+}
+
+.node,
+.tag {
+  cursor: pointer;
+}
+
+.nodeBox {
+  fill: var(--bg);
+  stroke: var(--c);
+  stroke-width: 2;
+  transition: fill var(--dur-fast) var(--ease-out);
+}
+
+.node:hover .nodeBox {
+  fill: var(--bg-2);
+}
+
+.nodeText {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  fill: var(--text);
+  pointer-events: none;
+}
+
+.tagBox {
+  fill: var(--c);
+}
+
+.tagText {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: #fff;
+  pointer-events: none;
+}
+
+.tag:hover .tagBox {
+  fill: var(--text);
+}

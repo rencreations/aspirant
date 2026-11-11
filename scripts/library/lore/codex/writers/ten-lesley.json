@@ -1,0 +1,111 @@
+{
+ "lesley": {
+  "line": "Selrick Academy's young, cold Chief Combat Instructor, with a dark visor over one eye.",
+  "short": "The Chief Combat Instructor, head of all combat training at Selrick Academy. She is young and cold, with a dark visor over her left eye.",
+  "summary": "The Chief Combat Instructor of Selrick Academy, a sniper with a long rifle and a teal machine eye. In 983 an Ender took her left eye and her whole family, and she grew up at a far Shield station, sworn to kill every last Ender. Sent to guard a research base, she became Sis to its small genius Chang'e, who built her eye and her rifle, but on the night the base fell she came back from a secret mission too late, and Chang'e's parents died. Years of silence ended when she fired from a lit window to save Chang'e: they became the First Aspirants, and in the Storm Citadel's attack she holds her fire for Chang'e's call and at last says her vow aloud.",
+  "rows": [
+   [
+    "Known as",
+    "Sis, to her little brother and later to Chang'e. Big Sis. The commander.",
+    74
+   ],
+   [
+    "Academy post",
+    "Chief Combat Instructor and head of the Combat Division since the founding. She picked children for its first intake from the city's children's homes.",
+    28
+   ],
+   [
+    "Appearance",
+    "A young woman with gold hair streaked with red, in a white officer's coat with a gold star, a long rifle on her back and a dark visor over her left eye.",
+    17
+   ],
+   [
+    "Left eye",
+    "Lost to an Ender's blow in 983. Behind the visor is a machine eye Chang'e built, which glows teal.",
+    18
+   ],
+   [
+    "Childhood home",
+    "A ticking house on a street of repair shops running down to the bay in Terrinia, where her father mended clocks.",
+    18
+   ],
+   [
+    "Family",
+    "Her father, her mother and her little brother. All three died in the Ender attack of 983.",
+    18
+   ],
+   [
+    "Service",
+    "The Shield of Dawnbreak: a soldier while still a child, then the youngest in its upper ranks, then a commander of its combat division.",
+    26
+   ],
+   [
+    "Partner",
+    "Chang'e. Together they are the First Aspirants.",
+    27
+   ],
+   [
+    "Vows",
+    "In 983, to kill every last Ender. From the night of the crater, to keep Chang'e safe; she says that one aloud only years later.",
+    81
+   ],
+   [
+    "First Ender",
+    "Killed at a far station with one shot into its open core, saving the youngest soldier. She had taught herself to wait for that opening.",
+    19
+   ],
+   [
+    "Known for",
+    "Shooting the edge of an Ender's core at the rail yard and bringing a core piece back whole, which nobody had thought could be done.",
+    23
+   ],
+   [
+    "Habits",
+    "Sleeps sitting up in a hard chair, boots on, rifle in reach of her right hand, never on her cot. Leaves a caramel pudding at Chang'e's lab door after long nights.",
+    28
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Lesley's rifle",
+    "note": "A long red and gold bolt rifle Chang'e built for her birthday: a spring, a pin and a bolt, with no cell and no cable. It fires by hand, so it still works in the dark."
+   },
+   {
+    "name": "New coil",
+    "note": "Chang'e's coil for the rifle, built to run on aspirant power alone. Lesley fits it on top of the old hand-worked action, which she keeps because Chang'e built it."
+   },
+   {
+    "name": "Lesley's eye",
+    "note": "The machine eye Chang'e built for her empty left socket. It draws what it sees in thin teal lines, gives her range and keeps what it sees. It uses no aspirant power."
+   },
+   {
+    "name": "Dark visor",
+    "note": "Covers her left eye and the teal light behind it. After her recurring dream she touches it and plays the recording of her birthday."
+   },
+   {
+    "name": "Black patch",
+    "note": "The patch the station medic tied over her lost eye. Nobody saw under it until she took it off for Chang'e's eye."
+   },
+   {
+    "name": "Old Shield rifle",
+    "note": "Her rifle before Chang'e's, worked by hand like every Shield rifle. The tape on its stock hung in strips."
+   },
+   {
+    "name": "White officer's coat",
+    "note": "White, with a gold star. She comes in from the giants' front with its hem scorched."
+   },
+   {
+    "name": "Comm",
+    "note": "A comm at her collar with a small green light and two channels, the base's and the Shield's."
+   },
+   {
+    "name": "Armband",
+    "note": "The armband that made her a commander of the Shield's combat division, months after the base fell."
+   },
+   {
+    "name": "Notebook",
+    "note": "A notebook and pen she carries in her coat. She hands them to Guinevere to write down everything she saw while she still remembers it."
+   }
+  ]
+ }
+}

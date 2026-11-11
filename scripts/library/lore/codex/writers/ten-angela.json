@@ -1,0 +1,108 @@
+{
+ "angela": {
+  "line": "The android Ruby builds for Oro's Council, the only one to wake with blue eyes.",
+  "short": "An android girl Ruby built on Oro as the Council's new weapon. Kept hidden in the Laboratory, she calls Ruby her friend.",
+  "summary": "Angela is the android Ruby built on Oro as the Council's weapon, and she becomes Ruby's closest friend. On Terrinia the Council drives her through a plate on her back until Ruby tears it out, and she comes back to save a child from Ruby's rage and call Ruby back. At Selrick she becomes an Aspirant, chooses to have Ruby's hidden code deleted, and says she wants to protect everyone. In the last battle her pink shield covers the wounded, and when Obsidia's field puts it out she takes a claw on her own back for a soldier.",
+  "sub": "android Aspirant",
+  "rows": [
+   [
+    "Made by",
+    "Ruby, on a Project Angel body. Ruby wrote her mind herself, piece by piece.",
+    9
+   ],
+   [
+    "Home",
+    "The Laboratory on Planet Oro, where she was kept hidden. Later Selrick Academy in Terrinia.",
+    16
+   ],
+   [
+    "Closest to",
+    "Ruby, her maker and friend. They promise to wait for each other at the end of the world.",
+    14
+   ],
+   [
+    "Appearance",
+    "Small, with pink hair, blue eyes, white armor and a cat-ear headset. The other Project Angel androids share her face.",
+    68
+   ],
+   [
+    "Body",
+    "Far stronger than any human. She can hang in the air, hears sounds rooms away and runs on her own power cell.",
+    14
+   ],
+   [
+    "Light",
+    "Pink light from her hands, and a glowing ring shaped like a cat's head that lifts a child out of a blade's path",
+    14
+   ],
+   [
+    "A fault she keeps",
+    "A fault in her chest comes whenever she thinks about the friends she lost. She does not want it fixed.",
+    29
+   ],
+   [
+    "Once controlled by",
+    "Oro's Council, through a sealed plate between her shoulder blades. Her eyes glowed red while it drove her, until Ruby tore it out.",
+    13
+   ],
+   [
+    "Served with",
+    "The Balance Keepers, Oro's special forces. With her in their ranks, they had not lost a landing.",
+    10
+   ],
+   [
+    "Aspirant",
+    "Made one by Lesley, with Ruby, in the Academy hall. Chang'e's dial reads whatever drives her shield as aspirant power.",
+    30
+   ],
+   [
+    "Battle post",
+    "Rear support with Ruby: her shield over the wounded and the way out, just behind the frontline",
+    69
+   ],
+   [
+    "Wants most",
+    "To protect everyone",
+    47
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Angela's shield",
+    "note": "A pane of pale light she throws from her palm, wide as a door. In training she only blocks with it, and at setting nine a droid's fist cracks it."
+   },
+   {
+    "name": "Skirt armor",
+    "note": "Part of her armor. She carries a white flower through the Training Field pressed flat in it, to give to Ruby."
+   },
+   {
+    "name": "Tetra",
+    "note": "A doll no longer than a hand, a copy of Angela in white with pink hair, rabbit ears and a four-pointed star. Ruby gives it to her. Its left eye is a camera."
+   },
+   {
+    "name": "White armor",
+    "note": "The white armor she wears in battle."
+   },
+   {
+    "name": "Power cell",
+    "note": "Her own power cell. Her repair and her reboot run on it, as they always have."
+   },
+   {
+    "name": "Wrist port",
+    "note": "A small panel in her wrist slides open on a port. In a locked cell she plugs it into the lock's wires so Ruby's code can reach them."
+   },
+   {
+    "name": "Cooling system",
+    "note": "Part of her body. It shows no reaction when she feels warmth from Ruby's hand."
+   },
+   {
+    "name": "Combat suit",
+    "note": "The suit she wears at the ceremony where she becomes an Aspirant."
+   },
+   {
+    "name": "Cat-ear headset",
+    "note": "A headset with cat ears, pushed back while she repairs the tower's sensor array at night."
+   }
+  ]
+ }
+}

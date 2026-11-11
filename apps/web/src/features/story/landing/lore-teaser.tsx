@@ -1,13 +1,20 @@
+import { TLink } from "@/components/transition/t-link";
 import { StarButton } from "@/components/ui/star-button";
 import { collectionRoute } from "@/lib/site";
 
 import s from "./landing.module.css";
 import t from "./lore-teaser.module.css";
 
+interface Sample {
+  readonly label: string;
+  /** The entry of the codex it opens: `/collection/lore/<slug>/`. */
+  readonly slug: string;
+}
+
 interface Group {
   readonly label: string;
   readonly line: string;
-  readonly samples: readonly string[];
+  readonly samples: readonly Sample[];
 }
 
 /** What the lore room holds, with names a reader already met on this page or in the prologue. */
@@ -15,17 +22,32 @@ const GROUPS: readonly Group[] = [
   {
     label: "Places",
     line: "Every place in the story, from the past to the present.",
-    samples: ["Selrick Academy", "The Gardens", "Oro", "Terrinia"],
+    samples: [
+      { label: "Selrick Academy", slug: "selrick-academy" },
+      { label: "The Gardens", slug: "gardens" },
+      { label: "Oro", slug: "oro" },
+      { label: "Terrinia", slug: "terrinia" },
+    ],
   },
   {
     label: "People",
     line: "Everyone who matters, family and strangers, and how they are tied.",
-    samples: ["Karina", "Chang'e's parents", "Roger", "Ruby's father"],
+    samples: [
+      { label: "Karina", slug: "karina" },
+      { label: "Chang'e's parents", slug: "changes-parents" },
+      { label: "Roger", slug: "roger" },
+      { label: "Ruby's father", slug: "rubys-father" },
+    ],
   },
   {
     label: "Things",
     line: "Machines, weapons, drones and ideas, with what the book says of each.",
-    samples: ["Tetra", "Guinevere's drones", "Aspirant power", "The Enders"],
+    samples: [
+      { label: "Tetra", slug: "tetra" },
+      { label: "Guinevere's drones", slug: "guineveres-drones" },
+      { label: "Aspirant power", slug: "aspirant-power" },
+      { label: "The Enders", slug: "enders" },
+    ],
   },
 ];
 
@@ -54,7 +76,15 @@ export function LoreTeaser() {
               <p className={t.line}>{g.line}</p>
               <ul className={t.samples} aria-label={`Examples of ${g.label.toLowerCase()}`}>
                 {g.samples.map((x) => (
-                  <li key={x}>{x}</li>
+                  <li key={x.slug}>
+                    <TLink
+                      href={collectionRoute(`lore/${x.slug}`)}
+                      transitionLabel={x.label}
+                      className={t.sample}
+                    >
+                      {x.label}
+                    </TLink>
+                  </li>
                 ))}
               </ul>
             </li>

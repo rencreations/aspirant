@@ -1,0 +1,4327 @@
+{
+ "set": "C",
+ "entries": [
+  {
+   "slug": "alley-thing",
+   "name": "the alley thing",
+   "kind": "idea",
+   "sub": "Fanny's narrow-place tactic",
+   "aka": [
+    "alley thing"
+   ],
+   "members": [
+    "m0213"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "annex",
+   "name": "annex",
+   "kind": "idea",
+   "sub": "Council term",
+   "aka": [
+    "annexation"
+   ],
+   "members": [
+    "m0214"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "aspirant",
+   "name": "Aspirant",
+   "kind": "idea",
+   "sub": "rank and title",
+   "aka": [
+    "an aspirant",
+    "Aspirants"
+   ],
+   "members": [
+    "m0215"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Aspirants"
+   ]
+  },
+  {
+   "slug": "aspirant-power",
+   "name": "aspirant power",
+   "kind": "idea",
+   "sub": "power of belief",
+   "aka": [
+    "Aspirant power",
+    "Aspirant's power",
+    "belief",
+    "power"
+   ],
+   "members": [
+    "m0216"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "aspirant-spirit",
+   "name": "Aspirant spirit",
+   "kind": "idea",
+   "sub": "Aspirants' fighting ideal",
+   "aka": [
+    "the Aspirant spirit",
+    "the Aspirant light"
+   ],
+   "members": [
+    "m0217"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "an-aspirants-light",
+   "name": "an Aspirant's light",
+   "kind": "idea",
+   "sub": "theory in Chang'e's paper",
+   "aka": [
+    "our light",
+    "consciousness of the Aspirants"
+   ],
+   "members": [
+    "m0218",
+    "m0232"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "aspirants-always-stand-united",
+   "name": "The Aspirants always stand united",
+   "kind": "idea",
+   "sub": "Aspirant saying",
+   "aka": [],
+   "members": [
+    "m0219"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "back-to-back",
+   "name": "back to back",
+   "kind": "idea",
+   "sub": "Layla and Fanny's stance",
+   "aka": [],
+   "members": [
+    "m0220"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "backlash",
+   "name": "backlash",
+   "kind": "idea",
+   "sub": "public reaction",
+   "aka": [],
+   "members": [
+    "m0221"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "balance",
+   "name": "Balance",
+   "kind": "idea",
+   "sub": "Oro's cosmic order",
+   "aka": [
+    "the Will of the Cosmos",
+    "balance"
+   ],
+   "members": [
+    "m0222"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "flying-ban",
+   "name": "the flying ban",
+   "kind": "idea",
+   "sub": "Academy rule",
+   "aka": [
+    "the ban on flying",
+    "flying ban"
+   ],
+   "members": [
+    "m0223",
+    "m0251"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "best-aspirant-duo",
+   "name": "Best Aspirant Duo",
+   "kind": "idea",
+   "sub": "yearly Academy award",
+   "aka": [
+    "best Aspirant Duo"
+   ],
+   "members": [
+    "m0224"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-hole",
+   "name": "black hole",
+   "kind": "idea",
+   "sub": "place in space",
+   "aka": [
+    "black holes"
+   ],
+   "members": [
+    "m0225"
+   ],
+   "tier": "A",
+   "see_also": [
+    "black hole"
+   ]
+  },
+  {
+   "slug": "chaos",
+   "name": "chaos",
+   "kind": "idea",
+   "sub": "state before Balance",
+   "aka": [],
+   "members": [
+    "m0226"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "checks",
+   "name": "checks",
+   "kind": "idea",
+   "sub": "Science Division inspections",
+   "aka": [
+    "the list",
+    "on checks"
+   ],
+   "members": [
+    "m0227"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "chief-combat-instructor",
+   "name": "Chief Combat Instructor",
+   "kind": "idea",
+   "sub": "Academy title",
+   "aka": [],
+   "members": [
+    "m0228"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "chief-scientist",
+   "name": "Chief Scientist",
+   "kind": "idea",
+   "sub": "science title",
+   "aka": [
+    "chief scientists",
+    "Chief Scientists",
+    "CHIEF SCIENTISTS"
+   ],
+   "members": [
+    "m0229"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "cleansing",
+   "name": "cleansing",
+   "kind": "idea",
+   "sub": "Council term",
+   "aka": [
+    "cleansed",
+    "cleanse"
+   ],
+   "members": [
+    "m0230"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "code-override",
+   "name": "Code Override",
+   "kind": "idea",
+   "sub": "Ruby's coding power",
+   "aka": [],
+   "members": [
+    "m0231"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "curfew",
+   "name": "curfew",
+   "kind": "idea",
+   "sub": "Academy rule",
+   "aka": [
+    "curfew bell"
+   ],
+   "members": [
+    "m0233"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cycle",
+   "name": "the cycle",
+   "kind": "idea",
+   "sub": "Obsidia's view of history",
+   "aka": [
+    "cycle",
+    "the old ending"
+   ],
+   "members": [
+    "m0234"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "debts",
+   "name": "debts",
+   "kind": "idea",
+   "sub": "Vexana's belief about gifts",
+   "aka": [
+    "debt"
+   ],
+   "members": [
+    "m0235"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "destruction",
+   "name": "Destruction",
+   "kind": "idea",
+   "sub": "Obsidia's creed",
+   "aka": [
+    "destruction"
+   ],
+   "members": [
+    "m0236"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "detention",
+   "name": "detention",
+   "kind": "idea",
+   "sub": "school punishment",
+   "aka": [],
+   "members": [
+    "m0237"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "doors-of-the-void",
+   "name": "doors of the void",
+   "kind": "thing",
+   "sub": "openings between worlds",
+   "aka": [
+    "door of the void",
+    "the doors",
+    "the door",
+    "a door",
+    "Ender portals",
+    "portals",
+    "purple portals"
+   ],
+   "members": [
+    "m0238",
+    "m0730",
+    "m0740",
+    "m0842"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Singularity"
+   ]
+  },
+  {
+   "slug": "drills",
+   "name": "drills",
+   "kind": "idea",
+   "sub": "practice alarms",
+   "aka": [
+    "drill",
+    "drill bell"
+   ],
+   "members": [
+    "m0239"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "electromagnetic-interference",
+   "name": "electromagnetic interference",
+   "kind": "idea",
+   "sub": "Storm Citadel's power",
+   "aka": [
+    "interference"
+   ],
+   "members": [
+    "m0240"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "end-of-the-world",
+   "name": "the end of the world",
+   "kind": "idea",
+   "sub": "promised meeting place",
+   "aka": [],
+   "members": [
+    "m0241"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-hum",
+   "name": "the Ender hum",
+   "kind": "idea",
+   "sub": "sound of the Enders",
+   "aka": [
+    "the hum",
+    "hum"
+   ],
+   "members": [
+    "m0242",
+    "m0259"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-ranks",
+   "name": "Ender ranks",
+   "kind": "idea",
+   "sub": "Ender classification",
+   "aka": [
+    "Joe's three ranks",
+    "three ranks"
+   ],
+   "members": [
+    "m0243"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-signal",
+   "name": "Ender signal",
+   "kind": "idea",
+   "sub": "readings of Enders",
+   "aka": [
+    "Ender signals",
+    "signal"
+   ],
+   "members": [
+    "m0244"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "entrance-assessment",
+   "name": "the entrance assessment",
+   "kind": "event",
+   "sub": "Academy admission test",
+   "aka": [
+    "entrance assessment",
+    "the assessment"
+   ],
+   "members": [
+    "m0245"
+   ],
+   "tier": "A",
+   "see_also": [
+    "the entrance assessment"
+   ]
+  },
+  {
+   "slug": "errands",
+   "name": "errands",
+   "kind": "idea",
+   "sub": "Vexana's void orders",
+   "aka": [
+    "errand"
+   ],
+   "members": [
+    "m0246"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "aspirant-pairs",
+   "name": "Aspirant pairs",
+   "kind": "idea",
+   "sub": "Aspirant pairing rule",
+   "aka": [
+    "fighting in pairs",
+    "Aspirants fight in pairs",
+    "pairs",
+    "partners",
+    "partner"
+   ],
+   "members": [
+    "m0247",
+    "m0276",
+    "m0277"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fine-tuning",
+   "name": "fine tuning",
+   "kind": "idea",
+   "sub": "mecha tuned to pilot",
+   "aka": [
+    "fine tuned"
+   ],
+   "members": [
+    "m0248"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "first-aspirants",
+   "name": "First Aspirants",
+   "kind": "idea",
+   "sub": "honorary title",
+   "aka": [],
+   "members": [
+    "m0249"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "first-rule-of-enders",
+   "name": "the first rule of Enders",
+   "kind": "idea",
+   "sub": "Ender weak point rule",
+   "aka": [
+    "weak spot",
+    "weak spots",
+    "Joe's rule",
+    "It opens when it strikes",
+    "It opens when it fires"
+   ],
+   "members": [
+    "m0250",
+    "m0316"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "four-conditions",
+   "name": "the four conditions",
+   "kind": "idea",
+   "sub": "Chang'e's terms of refuge",
+   "aka": [
+    "Conditions",
+    "conditions"
+   ],
+   "members": [
+    "m0252"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "free-will",
+   "name": "free will",
+   "kind": "idea",
+   "sub": "flaw the body corrects",
+   "aka": [],
+   "members": [
+    "m0253"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "go-to-bed",
+   "name": "Go to bed",
+   "kind": "idea",
+   "sub": "Vexana's nightly phone call",
+   "aka": [],
+   "members": [
+    "m0254"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "heir",
+   "name": "heir to the Decisionmaker",
+   "kind": "idea",
+   "sub": "Ruby's title on Oro",
+   "aka": [
+    "Heir",
+    "the heir",
+    "heir to the Decisionmaker of Planet Oro",
+    "heirs"
+   ],
+   "members": [
+    "m0255",
+    "m0256"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "hesters-count",
+   "name": "Hester's count",
+   "kind": "idea",
+   "sub": "counting habit",
+   "aka": [
+    "One. Two. Three."
+   ],
+   "members": [
+    "m0257"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "host",
+   "name": "host",
+   "kind": "idea",
+   "sub": "a people's planet",
+   "aka": [
+    "the host"
+   ],
+   "members": [
+    "m0258"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "imperatrix",
+   "name": "Imperatrix",
+   "kind": "idea",
+   "sub": "Obsidia's title",
+   "aka": [
+    "empress"
+   ],
+   "members": [
+    "m0260"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "karinas-rule",
+   "name": "Karina's rule",
+   "kind": "idea",
+   "sub": "Karina's rescue rule",
+   "aka": [
+    "You don't put down someone you carried out"
+   ],
+   "members": [
+    "m0261"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ladys-refinement",
+   "name": "a lady's refinement",
+   "kind": "idea",
+   "sub": "Guinevere's motto",
+   "aka": [
+    "a lady's refinement, three seconds"
+   ],
+   "members": [
+    "m0262"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lag",
+   "name": "lag",
+   "kind": "idea",
+   "sub": "Angela's delayed response",
+   "aka": [
+    "a beat late"
+   ],
+   "members": [
+    "m0263"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "laylas-count",
+   "name": "Layla's count",
+   "kind": "idea",
+   "sub": "Layla's three count",
+   "aka": [
+    "the count"
+   ],
+   "members": [
+    "m0264"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "leftward-drift",
+   "name": "the leftward drift",
+   "kind": "idea",
+   "sub": "fault in Layla's cannon",
+   "aka": [
+    "the drift"
+   ],
+   "members": [
+    "m0265"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-dream",
+   "name": "Lesley's dream",
+   "kind": "idea",
+   "sub": "recurring nightmare",
+   "aka": [
+    "the dream"
+   ],
+   "members": [
+    "m0266"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lull",
+   "name": "lull",
+   "kind": "idea",
+   "sub": "Ender quiet spell",
+   "aka": [
+    "lulls",
+    "the lull",
+    "the lulls"
+   ],
+   "members": [
+    "m0267",
+    "m0268"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "the-march",
+   "name": "the march",
+   "kind": "idea",
+   "sub": "father's unfinished song",
+   "aka": [
+    "his march"
+   ],
+   "members": [
+    "m0269"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "missing",
+   "name": "Missing",
+   "kind": "idea",
+   "sub": "status in a file",
+   "aka": [
+    "MISSING"
+   ],
+   "members": [
+    "m0271"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "mobile-support",
+   "name": "mobile support",
+   "kind": "idea",
+   "sub": "battle post",
+   "aka": [],
+   "members": [
+    "m0272"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "nobody-goes-alone",
+   "name": "Nobody goes alone",
+   "kind": "idea",
+   "sub": "raid order",
+   "aka": [],
+   "members": [
+    "m0273"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-experiment",
+   "name": "Obsidia's experiment",
+   "kind": "idea",
+   "sub": "Obsidia's long plan",
+   "aka": [
+    "her experiment"
+   ],
+   "members": [
+    "m0274"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "outstanding-student",
+   "name": "Outstanding Student",
+   "kind": "idea",
+   "sub": "Academy file honor",
+   "aka": [],
+   "members": [
+    "m0275"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "partners-tell-each-other-first",
+   "name": "Partners tell each other first",
+   "kind": "idea",
+   "sub": "partners' rule",
+   "aka": [],
+   "members": [
+    "m0278"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pawn",
+   "name": "pawn",
+   "kind": "idea",
+   "sub": "Obsidia's word for Selena",
+   "aka": [
+    "the pawn",
+    "puppet",
+    "doll",
+    "finest creation",
+    "the seed"
+   ],
+   "members": [
+    "m0279",
+    "m0301"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Obsidia's pawn",
+    "Obsidia's finest making"
+   ]
+  },
+  {
+   "slug": "payment-in-places",
+   "name": "payment in places",
+   "kind": "idea",
+   "sub": "wreck sites as currency",
+   "aka": [
+    "paying in places",
+    "places"
+   ],
+   "members": [
+    "m0280",
+    "m0281"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "plan-a-and-plan-b",
+   "name": "Plan A and Plan B",
+   "kind": "idea",
+   "sub": "Guinevere's two plans",
+   "aka": [
+    "Plan A",
+    "Plan B",
+    "the plan to come home"
+   ],
+   "members": [
+    "m0282",
+    "m0283"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "preparatory-course",
+   "name": "preparatory course",
+   "kind": "idea",
+   "sub": "first Combat Division year",
+   "aka": [
+    "the preparatory course",
+    "the preparatory year"
+   ],
+   "members": [
+    "m0284"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Combat Division"
+   ]
+  },
+  {
+   "slug": "protectors-of-all-humanity",
+   "name": "protectors of all humanity",
+   "kind": "idea",
+   "sub": "Layla and Fanny's vow",
+   "aka": [],
+   "members": [
+    "m0285"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pulse",
+   "name": "the pulse",
+   "kind": "idea",
+   "sub": "the body's signal",
+   "aka": [
+    "pulse",
+    "pulses"
+   ],
+   "members": [
+    "m0286"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "purge",
+   "name": "the purge",
+   "kind": "idea",
+   "sub": "ending of a civilization",
+   "aka": [
+    "purge",
+    "a purge"
+   ],
+   "members": [
+    "m0287"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "purge-protocol",
+   "name": "purge protocol",
+   "kind": "idea",
+   "sub": "the Will's order",
+   "aka": [
+    "the purge order"
+   ],
+   "members": [
+    "m0288"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "purification",
+   "name": "purification",
+   "kind": "idea",
+   "sub": "Obsidia's word for destruction",
+   "aka": [],
+   "members": [
+    "m0289"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "the-purple",
+   "name": "the purple",
+   "kind": "thing",
+   "sub": "Selena's Ender tissue",
+   "aka": [
+    "Ender cells",
+    "purple threads"
+   ],
+   "members": [
+    "m0290"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "raids",
+   "name": "raids",
+   "kind": "idea",
+   "sub": "fights with Enders",
+   "aka": [
+    "raid"
+   ],
+   "members": [
+    "m0291"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rear-support",
+   "name": "rear support",
+   "kind": "idea",
+   "sub": "battle post",
+   "aka": [],
+   "members": [
+    "m0292"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "recalibration",
+   "name": "recalibration",
+   "kind": "idea",
+   "sub": "the body's healing",
+   "aka": [],
+   "members": [
+    "m0293"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "recall",
+   "name": "the recall",
+   "kind": "idea",
+   "sub": "Obsidia's summons to Selena",
+   "aka": [
+    "recall",
+    "recalls",
+    "the pull",
+    "red alert",
+    "red alerts",
+    "the call",
+    "the last call"
+   ],
+   "members": [
+    "m0294",
+    "m0845"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "registration-rule",
+   "name": "registration rule",
+   "kind": "idea",
+   "sub": "rule for registered mecha",
+   "aka": [],
+   "members": [
+    "m0295"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "regulation",
+   "name": "regulation",
+   "kind": "idea",
+   "sub": "Shield rule standard",
+   "aka": [
+    "not regulation",
+    "Nothing regulation"
+   ],
+   "members": [
+    "m0296"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ring-of-light",
+   "name": "the ring of light",
+   "kind": "thing",
+   "sub": "Angela's power",
+   "aka": [
+    "ring of light"
+   ],
+   "members": [
+    "m0297"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "field-roster",
+   "name": "the field roster",
+   "kind": "thing",
+   "sub": "field duty list",
+   "aka": [
+    "the rotation",
+    "rotation"
+   ],
+   "members": [
+    "m0755",
+    "m0298"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "rubys-rage",
+   "name": "Ruby's rage",
+   "kind": "idea",
+   "sub": "Ruby's blind fury",
+   "aka": [
+    "the rage"
+   ],
+   "members": [
+    "m0299"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "slk",
+   "name": "S·L·K",
+   "kind": "thing",
+   "sub": "Selrick mark",
+   "aka": [
+    "the mark of Selrick",
+    "SLK"
+   ],
+   "members": [
+    "m0300",
+    "m0854"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-graduation",
+   "name": "Selena's graduation",
+   "kind": "idea",
+   "sub": "Selena's future graduation",
+   "aka": [
+    "graduation",
+    "my graduation"
+   ],
+   "members": [
+    "m0302"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-thread",
+   "name": "Selena's thread",
+   "kind": "idea",
+   "sub": "Selena's report line",
+   "aka": [
+    "the thread"
+   ],
+   "members": [
+    "m0303",
+    "m0892"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "sergeants-throw",
+   "name": "sergeant's throw",
+   "kind": "idea",
+   "sub": "Shield throw",
+   "aka": [],
+   "members": [
+    "m0304"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "sergeants-line",
+   "name": "the sergeants' line",
+   "kind": "idea",
+   "sub": "Shield saying",
+   "aka": [
+    "There is no place for mercy on the battlefield"
+   ],
+   "members": [
+    "m0305"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "shared-score",
+   "name": "the shared score",
+   "kind": "idea",
+   "sub": "team scoring rule",
+   "aka": [
+    "one score"
+   ],
+   "members": [
+    "m0306"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "sis",
+   "name": "Sis",
+   "kind": "idea",
+   "sub": "name for Lesley",
+   "aka": [
+    "Big Sis",
+    "big sister"
+   ],
+   "members": [
+    "m0307"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Lesley"
+   ]
+  },
+  {
+   "slug": "stay-back",
+   "name": "Stay back",
+   "kind": "idea",
+   "sub": "Vexana's father's words",
+   "aka": [],
+   "members": [
+    "m0308"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "stipend",
+   "name": "stipend",
+   "kind": "idea",
+   "sub": "cadet allowance",
+   "aka": [],
+   "members": [
+    "m0309"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "table-of-suits",
+   "name": "the table of suits",
+   "kind": "thing",
+   "sub": "Academy chart of suits",
+   "aka": [
+    "suit kinds and ranks",
+    "the top row"
+   ],
+   "members": [
+    "m0310",
+    "m0882"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "technical-bug",
+   "name": "technical bug",
+   "kind": "idea",
+   "sub": "cover for the trojan",
+   "aka": [],
+   "members": [
+    "m0311"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "termination-rule",
+   "name": "the termination rule",
+   "kind": "idea",
+   "sub": "rule for made things",
+   "aka": [
+    "Termination",
+    "termination"
+   ],
+   "members": [
+    "m0312"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "training-power",
+   "name": "training power",
+   "kind": "idea",
+   "sub": "safe weapon setting",
+   "aka": [],
+   "members": [
+    "m0313"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "treason",
+   "name": "treason against Oro",
+   "kind": "idea",
+   "sub": "criminal charge",
+   "aka": [
+    "treason"
+   ],
+   "members": [
+    "m0314"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "trojan",
+   "name": "the trojan",
+   "kind": "thing",
+   "sub": "hidden code in Angela",
+   "aka": [
+    "trojan",
+    "Ruby's hidden lines",
+    "the safeguard",
+    "the forty lines",
+    "the lock"
+   ],
+   "members": [
+    "m0315",
+    "m0852",
+    "m0855",
+    "m0900"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "a-worlds-will",
+   "name": "a world's will",
+   "kind": "idea",
+   "sub": "a planet's own will",
+   "aka": [
+    "will of the planet",
+    "a world's own will"
+   ],
+   "members": [
+    "m0317"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Will of the Planet"
+   ]
+  },
+  {
+   "slug": "wills-mark",
+   "name": "the Will's mark",
+   "kind": "thing",
+   "sub": "cold point in Vexana",
+   "aka": [
+    "the mark",
+    "the cold point"
+   ],
+   "members": [
+    "m0318",
+    "m0932"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "wills-thread",
+   "name": "the Will's thread",
+   "kind": "idea",
+   "sub": "Will's link to Enders",
+   "aka": [
+    "threads",
+    "the Will's threads"
+   ],
+   "members": [
+    "m0319"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "wings-of-light",
+   "name": "wings of light",
+   "kind": "thing",
+   "sub": "flight by aspirant power",
+   "aka": [
+    "wings of aspirant power",
+    "wings"
+   ],
+   "members": [
+    "m0320",
+    "m0933"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "academy-feed",
+   "name": "Academy feed",
+   "kind": "thing",
+   "sub": "Academy news feed",
+   "aka": [],
+   "members": [
+    "m0659"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academy-uniform",
+   "name": "Academy uniform",
+   "kind": "thing",
+   "sub": "school uniform",
+   "aka": [
+    "school uniform",
+    "uniform"
+   ],
+   "members": [
+    "m0660"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "academys-lists",
+   "name": "the Academy's lists",
+   "kind": "thing",
+   "sub": "rankings and casualty lists",
+   "aka": [
+    "the lists"
+   ],
+   "members": [
+    "m0661"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "ai-droids",
+   "name": "AI droids",
+   "kind": "thing",
+   "sub": "Academy helper robots",
+   "aka": [
+    "AI droid",
+    "droid",
+    "droids"
+   ],
+   "members": [
+    "m0662"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "angelas-cell",
+   "name": "Angela's cell",
+   "kind": "thing",
+   "sub": "Angela's power cell",
+   "aka": [
+    "her own cell"
+   ],
+   "members": [
+    "m0663"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "tetra",
+   "name": "Tetra",
+   "kind": "thing",
+   "sub": "Angela's camera doll",
+   "aka": [
+    "Angela's doll",
+    "the doll",
+    "her little doll"
+   ],
+   "members": [
+    "m0664",
+    "m0891"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Tetra"
+   ]
+  },
+  {
+   "slug": "angelas-shield",
+   "name": "Angela's shield",
+   "kind": "thing",
+   "sub": "shield of pink light",
+   "aka": [
+    "the shield",
+    "shield of light"
+   ],
+   "members": [
+    "m0665"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "angelas-white-flower",
+   "name": "Angela's white flower",
+   "kind": "thing",
+   "sub": "gift to Ruby",
+   "aka": [
+    "the white flower"
+   ],
+   "members": [
+    "m0666",
+    "m0931"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "armband",
+   "name": "the armband",
+   "kind": "thing",
+   "sub": "Shield rank armband",
+   "aka": [],
+   "members": [
+    "m0667"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "armory-door",
+   "name": "the armory door",
+   "kind": "thing",
+   "sub": "Shield station kill tally",
+   "aka": [],
+   "members": [
+    "m0668"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "aspirant-suits",
+   "name": "Aspirant suits",
+   "kind": "thing",
+   "sub": "aspirant-powered battle armor",
+   "aka": [
+    "Aspirant suit",
+    "suits",
+    "suit",
+    "the suits",
+    "Aspirant mecha",
+    "Aspirant mechas",
+    "combat suits",
+    "combat suit",
+    "mecha suit",
+    "mecha suits",
+    "mecha",
+    "mechas",
+    "registered mecha"
+   ],
+   "members": [
+    "m0669",
+    "m0670",
+    "m0710",
+    "m0808",
+    "m0881",
+    "m0270"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "blue-badges",
+   "name": "the blue badges",
+   "kind": "thing",
+   "sub": "Best Aspirant Duo badges",
+   "aka": [
+    "badges of honor",
+    "their badges",
+    "badge",
+    "small blue shields"
+   ],
+   "members": [
+    "m0688",
+    "m0672"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "band-aids",
+   "name": "band-aids",
+   "kind": "thing",
+   "sub": "Guinevere's first aid",
+   "aka": [],
+   "members": [
+    "m0673"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "base-alarm",
+   "name": "the base's alarm",
+   "kind": "thing",
+   "sub": "research base siren",
+   "aka": [
+    "the alarm"
+   ],
+   "members": [
+    "m0674"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "beginners-medal",
+   "name": "beginner's medal",
+   "kind": "thing",
+   "sub": "final trial medal",
+   "aka": [
+    "the medal"
+   ],
+   "members": [
+    "m0675"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "big-bench",
+   "name": "the big bench",
+   "kind": "thing",
+   "sub": "lab workbench",
+   "aka": [],
+   "members": [
+    "m0676"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "big-display",
+   "name": "big display",
+   "kind": "thing",
+   "sub": "screen in the hall",
+   "aka": [],
+   "members": [
+    "m0677"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "courtyard-billboard",
+   "name": "the courtyard billboard",
+   "kind": "thing",
+   "sub": "Guinevere and Vexana poster",
+   "aka": [
+    "billboard",
+    "the billboard",
+    "courtyard billboard",
+    "Guinevere and Vexana billboard",
+    "the back-to-back picture"
+   ],
+   "members": [
+    "m0678",
+    "m0721",
+    "m0770",
+    "m0671"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "birthday-candle",
+   "name": "the birthday candle",
+   "kind": "thing",
+   "sub": "candle stub",
+   "aka": [],
+   "members": [
+    "m0679"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "birthday-recording",
+   "name": "the birthday recording",
+   "kind": "thing",
+   "sub": "recording in Lesley's eye",
+   "aka": [
+    "the recording"
+   ],
+   "members": [
+    "m0680"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-card",
+   "name": "the black card",
+   "kind": "thing",
+   "sub": "House Baroque payment card",
+   "aka": [],
+   "members": [
+    "m0681"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "black-haired-keychain",
+   "name": "black-haired keychain",
+   "kind": "thing",
+   "sub": "chibi Vexana keychain",
+   "aka": [
+    "black-haired doll"
+   ],
+   "members": [
+    "m0684",
+    "m0683"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "black-patch",
+   "name": "the black patch",
+   "kind": "thing",
+   "sub": "Lesley's eye patch",
+   "aka": [
+    "the patch"
+   ],
+   "members": [
+    "m0685"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "black-ships",
+   "name": "black ships",
+   "kind": "thing",
+   "sub": "Oro starships",
+   "aka": [
+    "the black ships",
+    "Oro's black ships",
+    "the black ship",
+    "a black ship",
+    "the ship"
+   ],
+   "members": [
+    "m0687",
+    "m0686"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "bodys-seam",
+   "name": "the body's seam",
+   "kind": "thing",
+   "sub": "seam of the Matrix",
+   "aka": [],
+   "members": [
+    "m0689"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "bone-chains",
+   "name": "bone chains",
+   "kind": "thing",
+   "sub": "Obsidia's spiked chains",
+   "aka": [],
+   "members": [
+    "m0690"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "brass-collar",
+   "name": "brass collar",
+   "kind": "thing",
+   "sub": "band on Vexana's staff",
+   "aka": [
+    "the brass collar"
+   ],
+   "members": [
+    "m0691"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "brass-plaque",
+   "name": "the brass plaque",
+   "kind": "thing",
+   "sub": "patrons' plaque",
+   "aka": [
+    "the plaque"
+   ],
+   "members": [
+    "m0692"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "caramel-pudding",
+   "name": "caramel pudding",
+   "kind": "thing",
+   "sub": "shared dessert",
+   "aka": [
+    "pudding",
+    "puddings",
+    "pudding cup",
+    "the pudding cup",
+    "the SIS cup",
+    "a cup"
+   ],
+   "members": [
+    "m0693",
+    "m0840",
+    "m0841"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-card",
+   "name": "Vexana's card",
+   "kind": "thing",
+   "sub": "Vexana's ungiven card",
+   "aka": [
+    "the card",
+    "Same place, next year"
+   ],
+   "members": [
+    "m0694"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-console",
+   "name": "Chang'e's console",
+   "kind": "thing",
+   "sub": "command deck console",
+   "aka": [
+    "the console",
+    "the board",
+    "the screen"
+   ],
+   "members": [
+    "m0695"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-mothers-notebook",
+   "name": "Chang'e's mother's notebook",
+   "kind": "thing",
+   "sub": "research notebook",
+   "aka": [],
+   "members": [
+    "m0696"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-paper",
+   "name": "On Aspirant Power and the Black Hole",
+   "kind": "thing",
+   "sub": "Chang'e's theory paper",
+   "aka": [
+    "Chang'e's paper",
+    "the paper on black holes",
+    "Teacher Chang'e's paper",
+    "my paper",
+    "the paper"
+   ],
+   "members": [
+    "m0697",
+    "m0823",
+    "m0884"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "changes-screens",
+   "name": "Chang'e's screens",
+   "kind": "thing",
+   "sub": "Ender signal readers",
+   "aka": [],
+   "members": [
+    "m0698"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "command-channel",
+   "name": "the command channel",
+   "kind": "thing",
+   "sub": "Academy radio channel",
+   "aka": [
+    "command channel",
+    "the channel",
+    "the open channel",
+    "the open line",
+    "comm",
+    "earpiece"
+   ],
+   "members": [
+    "m0712",
+    "m0699"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "chibi-keychains",
+   "name": "chibi keychains",
+   "kind": "thing",
+   "sub": "pair of doll keychains",
+   "aka": [
+    "chibi keychain",
+    "the keychains",
+    "doll keychains"
+   ],
+   "members": [
+    "m0700",
+    "m0796"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-storm",
+   "name": "Obsidia's storm",
+   "kind": "thing",
+   "sub": "machine-killing storm",
+   "aka": [
+    "the Storm Citadel's storm",
+    "the Citadel's storm",
+    "her storm",
+    "the violet storm",
+    "the storm",
+    "black cloud",
+    "the black cloud"
+   ],
+   "members": [
+    "m0817",
+    "m0701",
+    "m0682"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "clawed-glove",
+   "name": "clawed glove",
+   "kind": "thing",
+   "sub": "Obsidia's black glove",
+   "aka": [],
+   "members": [
+    "m0702"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "clocks",
+   "name": "the clocks",
+   "kind": "thing",
+   "sub": "clocks of Lesley's house",
+   "aka": [],
+   "members": [
+    "m0703"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cloth-bag",
+   "name": "the cloth bag",
+   "kind": "thing",
+   "sub": "Vexana's shoulder bag",
+   "aka": [],
+   "members": [
+    "m0704"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cloth-over-the-bench",
+   "name": "the cloth over the bench",
+   "kind": "thing",
+   "sub": "Chang'e's work cover",
+   "aka": [
+    "the cloth"
+   ],
+   "members": [
+    "m0705"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "cloth-tape",
+   "name": "the cloth tape",
+   "kind": "thing",
+   "sub": "gray grip tape",
+   "aka": [
+    "the roll of tape",
+    "roll of tape",
+    "gray tape",
+    "tape"
+   ],
+   "members": [
+    "m0706",
+    "m0851"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "coat",
+   "name": "the coat",
+   "kind": "thing",
+   "sub": "coat Guinevere bought Vexana",
+   "aka": [],
+   "members": [
+    "m0707"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "new-coil",
+   "name": "the new coil",
+   "kind": "thing",
+   "sub": "rifle coil",
+   "aka": [
+    "the coil",
+    "coil"
+   ],
+   "members": [
+    "m0811",
+    "m0708"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "combat-office-board",
+   "name": "the Combat office board",
+   "kind": "thing",
+   "sub": "roster board",
+   "aka": [
+    "the board outside the Combat office"
+   ],
+   "members": [
+    "m0709"
+   ],
+   "tier": "B",
+   "see_also": [
+    "Combat office"
+   ]
+  },
+  {
+   "slug": "lesleys-comm",
+   "name": "Lesley's comm",
+   "kind": "thing",
+   "sub": "collar radio",
+   "aka": [
+    "the comm",
+    "the comm at her collar"
+   ],
+   "members": [
+    "m0711"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lab-console",
+   "name": "the lab console",
+   "kind": "thing",
+   "sub": "Chang'e's lab computer",
+   "aka": [
+    "the console"
+   ],
+   "members": [
+    "m0713"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "control-core",
+   "name": "Control Core",
+   "kind": "thing",
+   "sub": "Ender steering core",
+   "aka": [
+    "the Control Core",
+    "the Enders' Control Core",
+    "Ender Control Core",
+    "the Core"
+   ],
+   "members": [
+    "m0714"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "councils-control-unit",
+   "name": "the Council's control unit",
+   "kind": "thing",
+   "sub": "Council control plate",
+   "aka": [
+    "control unit",
+    "the control unit",
+    "the plate",
+    "the plate on her back",
+    "the Council's plate",
+    "the sealed plate"
+   ],
+   "members": [
+    "m0715",
+    "m0719",
+    "m0720"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "convoy",
+   "name": "the convoy",
+   "kind": "thing",
+   "sub": "Shield supply trucks",
+   "aka": [
+    "convoy"
+   ],
+   "members": [
+    "m0716"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "ender-core",
+   "name": "Ender core",
+   "kind": "thing",
+   "sub": "Ender power core",
+   "aka": [
+    "core",
+    "the core",
+    "cores",
+    "slag"
+   ],
+   "members": [
+    "m0717",
+    "m0736"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "core-component",
+   "name": "the core component",
+   "kind": "thing",
+   "sub": "first lit core piece",
+   "aka": [
+    "core component",
+    "the piece",
+    "the core piece"
+   ],
+   "members": [
+    "m0718"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "crescents",
+   "name": "crescents",
+   "kind": "thing",
+   "sub": "Chang'e's floating weapon",
+   "aka": [
+    "the crescents"
+   ],
+   "members": [
+    "m0722"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "dark-ship",
+   "name": "the dark ship",
+   "kind": "thing",
+   "sub": "ship with cyan lights",
+   "aka": [],
+   "members": [
+    "m0723"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "scorched-aspirant-suit",
+   "name": "the scorched Aspirant suit",
+   "kind": "thing",
+   "sub": "dead Academy suit",
+   "aka": [
+    "the dead suit",
+    "the empty suit in the ditch"
+   ],
+   "members": [
+    "m0856",
+    "m0724",
+    "m0735"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "defensive-bubble",
+   "name": "Defensive Bubble",
+   "kind": "thing",
+   "sub": "energy dome over Terrinia",
+   "aka": [
+    "the dome",
+    "defense sphere",
+    "dome of light"
+   ],
+   "members": [
+    "m0725",
+    "m0729"
+   ],
+   "tier": "A",
+   "see_also": [
+    "the dome"
+   ]
+  },
+  {
+   "slug": "design-log",
+   "name": "the design log",
+   "kind": "thing",
+   "sub": "Chang'e's log to Lesley",
+   "aka": [
+    "the log"
+   ],
+   "members": [
+    "m0726"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "desk-map",
+   "name": "the desk map",
+   "kind": "thing",
+   "sub": "star map desk",
+   "aka": [],
+   "members": [
+    "m0727"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "doctors-bench",
+   "name": "the Doctors' bench",
+   "kind": "thing",
+   "sub": "parents' workbench",
+   "aka": [
+    "the old bench"
+   ],
+   "members": [
+    "m0728"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "jam-napkin",
+   "name": "the jam napkin",
+   "kind": "thing",
+   "sub": "keepsake napkin",
+   "aka": [
+    "the napkin",
+    "doughnut napkin"
+   ],
+   "members": [
+    "m0792",
+    "m0731"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "drone-charger",
+   "name": "the drone charger",
+   "kind": "thing",
+   "sub": "charging cradle",
+   "aka": [
+    "charger"
+   ],
+   "members": [
+    "m0732"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "emblems-of-hope",
+   "name": "Emblems of Hope",
+   "kind": "thing",
+   "sub": "paired gold star badges",
+   "aka": [
+    "Emblem of Hope",
+    "the Emblem",
+    "the Aspirant emblem",
+    "the star",
+    "the stars",
+    "the gold star",
+    "the gold stars",
+    "gold star",
+    "Guinevere's star"
+   ],
+   "members": [
+    "m0733",
+    "m0734"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-mecha-suit",
+   "name": "Ender Mecha Suit",
+   "kind": "thing",
+   "sub": "Selena's armor design",
+   "aka": [
+    "Selena's suit design",
+    "the sketch",
+    "the suit"
+   ],
+   "members": [
+    "m0737",
+    "m0864"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-plating",
+   "name": "Ender plating",
+   "kind": "thing",
+   "sub": "salvaged Ender metal",
+   "aka": [
+    "Ender plates",
+    "plates",
+    "the plates",
+    "plating",
+    "salvage plating",
+    "salvage plates",
+    "gray shoulder"
+   ],
+   "members": [
+    "m0739",
+    "m0738"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ender-ships",
+   "name": "Ender ships",
+   "kind": "thing",
+   "sub": "Citadel's small black ships",
+   "aka": [
+    "smaller ships",
+    "small black ships"
+   ],
+   "members": [
+    "m0742"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "energy-system",
+   "name": "Energy System",
+   "kind": "thing",
+   "sub": "dome power tower",
+   "aka": [
+    "the Energy System",
+    "the Academy's beam"
+   ],
+   "members": [
+    "m0743"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-blades",
+   "name": "Fanny's blades",
+   "kind": "thing",
+   "sub": "Fanny's twin blades",
+   "aka": [
+    "the blades"
+   ],
+   "members": [
+    "m0744"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-cables",
+   "name": "Fanny's cables",
+   "kind": "thing",
+   "sub": "grappling cables",
+   "aka": [
+    "cable",
+    "cables"
+   ],
+   "members": [
+    "m0745"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-rig",
+   "name": "Fanny's rig",
+   "kind": "thing",
+   "sub": "hip thruster rig",
+   "aka": [
+    "the rig",
+    "flight rig",
+    "Fanny's flight rig",
+    "thruster pack",
+    "thrusters"
+   ],
+   "members": [
+    "m0747",
+    "m0746"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fannys-suit",
+   "name": "Fanny's suit",
+   "kind": "thing",
+   "sub": "Fanny's mecha suit",
+   "aka": [],
+   "members": [
+    "m0748"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-fathers-toolbox",
+   "name": "Vexana's father's toolbox",
+   "kind": "thing",
+   "sub": "inherited soldier's toolbox",
+   "aka": [
+    "the toolbox",
+    "the old toolbox",
+    "her father's toolbox",
+    "father's toolbox",
+    "an old soldier's toolbox"
+   ],
+   "members": [
+    "m0897",
+    "m0911",
+    "m0749"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fault-in-angelas-chest",
+   "name": "the fault in Angela's chest",
+   "kind": "thing",
+   "sub": "recurring malfunction",
+   "aka": [
+    "a malfunction"
+   ],
+   "members": [
+    "m0750"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "ward-cameras",
+   "name": "ward cameras",
+   "kind": "thing",
+   "sub": "city watch cameras",
+   "aka": [
+    "the feed",
+    "ward camera"
+   ],
+   "members": [
+    "m0751",
+    "m0926"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "felt-dolls",
+   "name": "felt dolls",
+   "kind": "thing",
+   "sub": "Vexana's handmade dolls",
+   "aka": [
+    "the felt dolls",
+    "two felt dolls",
+    "the felt",
+    "felt"
+   ],
+   "members": [
+    "m0753",
+    "m0752"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-field",
+   "name": "Obsidia's field",
+   "kind": "thing",
+   "sub": "field against aspirant power",
+   "aka": [
+    "the field",
+    "the light",
+    "the sphere"
+   ],
+   "members": [
+    "m0814",
+    "m0754"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "field-test-report",
+   "name": "field-test report",
+   "kind": "thing",
+   "sub": "change report for mecha",
+   "aka": [],
+   "members": [
+    "m0756"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lead-guard",
+   "name": "the lead Guard",
+   "kind": "thing",
+   "sub": "Vexana's first Eternal Guard",
+   "aka": [
+    "lead Guard",
+    "the lead one",
+    "the cracked machine",
+    "the first Eternal Guard",
+    "the first one"
+   ],
+   "members": [
+    "m0800",
+    "m0757"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "first-place-trophy",
+   "name": "FIRST PLACE trophy",
+   "kind": "thing",
+   "sub": "Layla's gold trophy",
+   "aka": [
+    "the trophy"
+   ],
+   "members": [
+    "m0758",
+    "m0901"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fourth-plate",
+   "name": "the fourth plate",
+   "kind": "thing",
+   "sub": "Lesley's table place",
+   "aka": [
+    "the fourth place"
+   ],
+   "members": [
+    "m0759"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "fourth-stool",
+   "name": "the fourth stool",
+   "kind": "thing",
+   "sub": "Lesley's lab stool",
+   "aka": [],
+   "members": [
+    "m0760"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "the-frame",
+   "name": "the frame",
+   "kind": "thing",
+   "sub": "first suit prototype",
+   "aka": [
+    "the old frame",
+    "the first suit"
+   ],
+   "members": [
+    "m0761"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "fruit-drop",
+   "name": "fruit drop",
+   "kind": "thing",
+   "sub": "Karina's sweets",
+   "aka": [
+    "fruit drops"
+   ],
+   "members": [
+    "m0762"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "gate-log",
+   "name": "the gate log",
+   "kind": "thing",
+   "sub": "base gate sign-in book",
+   "aka": [],
+   "members": [
+    "m0763"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "gate-portal",
+   "name": "gate portal",
+   "kind": "thing",
+   "sub": "Academy teleport frame",
+   "aka": [
+    "academy gate portal",
+    "the gate portal",
+    "the portal"
+   ],
+   "members": [
+    "m0764"
+   ],
+   "tier": "A",
+   "see_also": [
+    "the gate portal"
+   ]
+  },
+  {
+   "slug": "glass-chamber",
+   "name": "the glass chamber",
+   "kind": "thing",
+   "sub": "vacuum test chamber",
+   "aka": [],
+   "members": [
+    "m0765"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "glove-and-dial",
+   "name": "the glove and dial",
+   "kind": "thing",
+   "sub": "aspirant power gauge",
+   "aka": [
+    "the glove",
+    "the dial"
+   ],
+   "members": [
+    "m0767",
+    "m0766"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "goldfish-fan",
+   "name": "the goldfish fan",
+   "kind": "thing",
+   "sub": "painted paper fan",
+   "aka": [
+    "the paper fan",
+    "paper fan"
+   ],
+   "members": [
+    "m0768",
+    "m0826"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-account",
+   "name": "Guinevere's account",
+   "kind": "thing",
+   "sub": "written witness account",
+   "aka": [
+    "the notebook"
+   ],
+   "members": [
+    "m0771"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-arm-guards",
+   "name": "Guinevere's arm guards",
+   "kind": "thing",
+   "sub": "Guinevere's arm armor",
+   "aka": [
+    "arm guard"
+   ],
+   "members": [
+    "m0772"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-red-bows",
+   "name": "Guinevere's red bows",
+   "kind": "thing",
+   "sub": "her mother's hair bows",
+   "aka": [
+    "the red bows",
+    "red bows",
+    "two red bows",
+    "the two red bows",
+    "the bows",
+    "her bow",
+    "her left bow",
+    "Guinevere's bows"
+   ],
+   "members": [
+    "m0779",
+    "m0846",
+    "m0903",
+    "m0773"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-drones",
+   "name": "Guinevere's drones",
+   "kind": "thing",
+   "sub": "cat-eared combat drones",
+   "aka": [
+    "cat-eared drones",
+    "her drones",
+    "her two drones",
+    "the drones",
+    "drone",
+    "the fish-market drone",
+    "the right drone"
+   ],
+   "members": [
+    "m0774"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-letters",
+   "name": "Guinevere's letters",
+   "kind": "thing",
+   "sub": "letters to her father",
+   "aka": [
+    "her letters"
+   ],
+   "members": [
+    "m0775"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-map",
+   "name": "Guinevere's map",
+   "kind": "thing",
+   "sub": "search grid map",
+   "aka": [],
+   "members": [
+    "m0776"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "guineveres-plans",
+   "name": "Guinevere's plans",
+   "kind": "thing",
+   "sub": "written training plans",
+   "aka": [
+    "the plan",
+    "the plans",
+    "Guinevere's month plan",
+    "the month's plan"
+   ],
+   "members": [
+    "m0835",
+    "m0777"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "top-score-paper",
+   "name": "the top score paper",
+   "kind": "thing",
+   "sub": "trial result sheet",
+   "aka": [
+    "the paper",
+    "the report",
+    "Top score",
+    "Guinevere's paper"
+   ],
+   "members": [
+    "m0898",
+    "m0778"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "hammer",
+   "name": "the hammer",
+   "kind": "thing",
+   "sub": "Vexana's work hammer",
+   "aka": [],
+   "members": [
+    "m0780"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hand-in-hand-photo",
+   "name": "the hand-in-hand photo",
+   "kind": "thing",
+   "sub": "framed partner photo",
+   "aka": [
+    "the photo",
+    "the photo frame",
+    "the hand-in-hand picture"
+   ],
+   "members": [
+    "m0781",
+    "m0782",
+    "m0827"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "hard-chair",
+   "name": "the hard chair",
+   "kind": "thing",
+   "sub": "Lesley's chair",
+   "aka": [],
+   "members": [
+    "m0783"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "headgear",
+   "name": "headgear",
+   "kind": "thing",
+   "sub": "Aspirant head gear",
+   "aka": [],
+   "members": [
+    "m0784"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "heated-gloves",
+   "name": "the heated gloves",
+   "kind": "thing",
+   "sub": "Chang'e's gift for Lesley",
+   "aka": [],
+   "members": [
+    "m0785"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "heavy-bag",
+   "name": "the heavy bag",
+   "kind": "thing",
+   "sub": "punching bag",
+   "aka": [
+    "the bag"
+   ],
+   "members": [
+    "m0786"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "helper-droid",
+   "name": "the helper droid",
+   "kind": "thing",
+   "sub": "Academy helper droid",
+   "aka": [],
+   "members": [
+    "m0787"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "hologram-wall",
+   "name": "hologram wall",
+   "kind": "thing",
+   "sub": "corridor attendance wall",
+   "aka": [],
+   "members": [
+    "m0788"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "horned-headband",
+   "name": "horned headband",
+   "kind": "thing",
+   "sub": "Selena's horn disguise",
+   "aka": [
+    "Selena's headband",
+    "the headband",
+    "dark headband"
+   ],
+   "members": [
+    "m0789",
+    "m0860"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "i-cannot-repay-this",
+   "name": "I cannot repay this",
+   "kind": "thing",
+   "sub": "Vexana's note",
+   "aka": [
+    "the note"
+   ],
+   "members": [
+    "m0790"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "iron-bar",
+   "name": "the iron bar",
+   "kind": "thing",
+   "sub": "Vexana's tally bar",
+   "aka": [],
+   "members": [
+    "m0791"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "jelly-candies",
+   "name": "jelly candies",
+   "kind": "thing",
+   "sub": "Chang'e's candies",
+   "aka": [],
+   "members": [
+    "m0793"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "karinas-coat",
+   "name": "Karina's coat",
+   "kind": "thing",
+   "sub": "coat with mended pocket",
+   "aka": [],
+   "members": [
+    "m0794"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "karinas-lamp",
+   "name": "Karina's lamp",
+   "kind": "thing",
+   "sub": "rescue lamp",
+   "aka": [
+    "the lamp",
+    "lamp with a flame"
+   ],
+   "members": [
+    "m0795"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "landing-record",
+   "name": "the landing record",
+   "kind": "thing",
+   "sub": "landing camera recording",
+   "aka": [
+    "the record"
+   ],
+   "members": [
+    "m0797"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "laylas-cannon",
+   "name": "Layla's cannon",
+   "kind": "thing",
+   "sub": "Layla's handmade cannon",
+   "aka": [
+    "the cannon",
+    "magic gun"
+   ],
+   "members": [
+    "m0798"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "laylas-drones",
+   "name": "Layla's drones",
+   "kind": "thing",
+   "sub": "Layla's three drones",
+   "aka": [
+    "the lost drone"
+   ],
+   "members": [
+    "m0799"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-eye",
+   "name": "Lesley's eye",
+   "kind": "thing",
+   "sub": "built machine eye",
+   "aka": [
+    "the eye",
+    "machine eye",
+    "the teal eye",
+    "the teal one"
+   ],
+   "members": [
+    "m0801",
+    "m0807",
+    "m0885"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-file",
+   "name": "Lesley's file",
+   "kind": "thing",
+   "sub": "base record",
+   "aka": [],
+   "members": [
+    "m0802"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lesleys-rifle",
+   "name": "Lesley's rifle",
+   "kind": "thing",
+   "sub": "long bolt-action rifle",
+   "aka": [
+    "the long rifle",
+    "the rifle",
+    "the rifle Chang'e had built her"
+   ],
+   "members": [
+    "m0803"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-line",
+   "name": "the line",
+   "kind": "idea",
+   "sub": "Obsidia's trace of Selena",
+   "aka": [],
+   "members": [
+    "m0804"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "lollipop",
+   "name": "lollipop",
+   "kind": "thing",
+   "sub": "Selena's candy",
+   "aka": [
+    "lollipops"
+   ],
+   "members": [
+    "m0805"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "long-car",
+   "name": "the long car",
+   "kind": "thing",
+   "sub": "House Baroque car",
+   "aka": [
+    "Hester's car"
+   ],
+   "members": [
+    "m0806"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "missing-sheet",
+   "name": "the MISSING sheet",
+   "kind": "thing",
+   "sub": "notice on the board",
+   "aka": [
+    "VEXANA: MISSING"
+   ],
+   "members": [
+    "m0809"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "load-napkin",
+   "name": "the napkin of load numbers",
+   "kind": "thing",
+   "sub": "load numbers note",
+   "aka": [
+    "the napkin"
+   ],
+   "members": [
+    "m0810"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "night-log",
+   "name": "night log",
+   "kind": "thing",
+   "sub": "Guinevere's lab log",
+   "aka": [
+    "the night log"
+   ],
+   "members": [
+    "m0812"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "nightgown",
+   "name": "the nightgown",
+   "kind": "thing",
+   "sub": "dead woman's nightgown",
+   "aka": [],
+   "members": [
+    "m0813"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-new-form",
+   "name": "Obsidia's new form",
+   "kind": "thing",
+   "sub": "Obsidia's changed shape",
+   "aka": [],
+   "members": [
+    "m0815"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Obsidia"
+   ]
+  },
+  {
+   "slug": "obsidias-pink-star",
+   "name": "Obsidia's pink star",
+   "kind": "thing",
+   "sub": "star at Obsidia's chest",
+   "aka": [],
+   "members": [
+    "m0816"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-weapon",
+   "name": "Obsidia's weapon",
+   "kind": "thing",
+   "sub": "long silver-pink weapon",
+   "aka": [
+    "the long weapon",
+    "her weapon"
+   ],
+   "members": [
+    "m0818"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "old-servo",
+   "name": "the old servo",
+   "kind": "thing",
+   "sub": "servo from the base",
+   "aka": [
+    "the servo"
+   ],
+   "members": [
+    "m0819"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "old-shield-rifle",
+   "name": "the old Shield rifle",
+   "kind": "thing",
+   "sub": "Lesley's earlier rifle",
+   "aka": [],
+   "members": [
+    "m0820"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "storm-citadel-recording",
+   "name": "the Storm Citadel recording",
+   "kind": "thing",
+   "sub": "oldest Academy film",
+   "aka": [
+    "old storm film",
+    "the oldest records",
+    "the oldest record",
+    "the old record",
+    "the records",
+    "a shaking film"
+   ],
+   "members": [
+    "m0879",
+    "m0821",
+    "m0822"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pairing-sheet",
+   "name": "pairing sheet",
+   "kind": "thing",
+   "sub": "Joe's team list",
+   "aka": [],
+   "members": [
+    "m0824"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "panels-of-light",
+   "name": "the panels of light",
+   "kind": "thing",
+   "sub": "Chang'e's light console",
+   "aka": [
+    "Console"
+   ],
+   "members": [
+    "m0825"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "photograph",
+   "name": "the photograph",
+   "kind": "thing",
+   "sub": "Chang'e's family photograph",
+   "aka": [
+    "family photograph"
+   ],
+   "members": [
+    "m0828"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pink-chocolate-box",
+   "name": "the pink chocolate box",
+   "kind": "thing",
+   "sub": "Fanny's gift to Layla",
+   "aka": [
+    "pink box with a teal ribbon"
+   ],
+   "members": [
+    "m0830",
+    "m0829"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pink-doll",
+   "name": "the pink doll",
+   "kind": "thing",
+   "sub": "Ruby's childhood doll",
+   "aka": [],
+   "members": [
+    "m0831"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "pink-haired-keychain",
+   "name": "pink-haired keychain",
+   "kind": "thing",
+   "sub": "chibi Guinevere keychain",
+   "aka": [
+    "the keychain",
+    "pink-haired doll",
+    "the pink keychain"
+   ],
+   "members": [
+    "m0832"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "pink-rabbit",
+   "name": "the pink rabbit",
+   "kind": "thing",
+   "sub": "girl's toy rabbit",
+   "aka": [],
+   "members": [
+    "m0833"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "pinned-page",
+   "name": "the pinned page",
+   "kind": "thing",
+   "sub": "dedication page",
+   "aka": [],
+   "members": [
+    "m0834"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "portrait-of-guineveres-mother",
+   "name": "the portrait of Guinevere's mother",
+   "kind": "thing",
+   "sub": "portrait in the hall",
+   "aka": [
+    "the picture",
+    "her mother's portrait"
+   ],
+   "members": [
+    "m0836"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "practice-drones",
+   "name": "practice drones",
+   "kind": "thing",
+   "sub": "training targets",
+   "aka": [],
+   "members": [
+    "m0837"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "practice-staff",
+   "name": "the practice staff",
+   "kind": "thing",
+   "sub": "training staff",
+   "aka": [],
+   "members": [
+    "m0838"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "project-angel",
+   "name": "Project Angel",
+   "kind": "thing",
+   "sub": "Oro android program",
+   "aka": [
+    "Project \"Angel\""
+   ],
+   "members": [
+    "m0839"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Cosmic Reapers"
+   ]
+  },
+  {
+   "slug": "radio",
+   "name": "the radio",
+   "kind": "thing",
+   "sub": "Lesley's father's radio",
+   "aka": [],
+   "members": [
+    "m0843"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rankings-board",
+   "name": "rankings board",
+   "kind": "thing",
+   "sub": "Academy ranking list",
+   "aka": [
+    "the rankings board"
+   ],
+   "members": [
+    "m0844"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "red-heart",
+   "name": "red heart",
+   "kind": "thing",
+   "sub": "Citadel's burning heart",
+   "aka": [],
+   "members": [
+    "m0847"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rescue-helmet",
+   "name": "rescue helmet",
+   "kind": "thing",
+   "sub": "Karina's helmet",
+   "aka": [],
+   "members": [
+    "m0848"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "returned-shopping-bags",
+   "name": "the returned shopping bags",
+   "kind": "thing",
+   "sub": "returned gifts",
+   "aka": [],
+   "members": [
+    "m0849"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rifle-lamp",
+   "name": "the rifle lamp",
+   "kind": "thing",
+   "sub": "Chang'e's gift for Lesley",
+   "aka": [],
+   "members": [
+    "m0850"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "rubys-scythe",
+   "name": "Ruby's scythe",
+   "kind": "thing",
+   "sub": "Ruby's weapon",
+   "aka": [
+    "the scythe"
+   ],
+   "members": [
+    "m0853"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-fathers-screwdriver",
+   "name": "Vexana's father's screwdriver",
+   "kind": "thing",
+   "sub": "inherited screwdriver",
+   "aka": [
+    "the small screwdriver",
+    "the screwdriver",
+    "her father's screwdriver"
+   ],
+   "members": [
+    "m0874",
+    "m0910"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-screwdriver",
+   "name": "Selena's screwdriver",
+   "kind": "thing",
+   "sub": "Selena's work tool",
+   "aka": [
+    "screwdriver"
+   ],
+   "members": [
+    "m0857"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "seedling",
+   "name": "the seedling",
+   "kind": "thing",
+   "sub": "plant in Layla's lab",
+   "aka": [
+    "three leaves under a glass dome"
+   ],
+   "members": [
+    "m0858",
+    "m0893"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-blades",
+   "name": "Selena's blades",
+   "kind": "thing",
+   "sub": "Selena's floating blades",
+   "aka": [
+    "four blades"
+   ],
+   "members": [
+    "m0859"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-phone",
+   "name": "Selena's phone",
+   "kind": "thing",
+   "sub": "phone with red alerts",
+   "aka": [],
+   "members": [
+    "m0861"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-salvage-table",
+   "name": "Selena's salvage table",
+   "kind": "place",
+   "sub": "Selena's market stall",
+   "aka": [
+    "Selena's crate",
+    "the salvage stall",
+    "the trestle table"
+   ],
+   "members": [
+    "m0862"
+   ],
+   "tier": "B",
+   "see_also": [
+    "the salvage stall"
+   ]
+  },
+  {
+   "slug": "selenas-sketchbook",
+   "name": "Selena's sketchbook",
+   "kind": "thing",
+   "sub": "Selena's drawing book",
+   "aka": [],
+   "members": [
+    "m0863"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "selenas-true-form",
+   "name": "Selena's true form",
+   "kind": "thing",
+   "sub": "Selena's Ender shape",
+   "aka": [
+    "the real me"
+   ],
+   "members": [
+    "m0865"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Selena"
+   ]
+  },
+  {
+   "slug": "sensor-array",
+   "name": "sensor array",
+   "kind": "thing",
+   "sub": "tower sensor array",
+   "aka": [
+    "the array"
+   ],
+   "members": [
+    "m0866"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shield-coat",
+   "name": "Shield coat",
+   "kind": "thing",
+   "sub": "Shield uniform coat",
+   "aka": [],
+   "members": [
+    "m0867"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shields-notice",
+   "name": "the Shield's notice",
+   "kind": "thing",
+   "sub": "raid notice in library",
+   "aka": [],
+   "members": [
+    "m0868"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "shields-rulebook",
+   "name": "the Shield's rulebook",
+   "kind": "thing",
+   "sub": "Shield regulations book",
+   "aka": [
+    "the book"
+   ],
+   "members": [
+    "m0869"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "silverbolt",
+   "name": "Silverbolt",
+   "kind": "thing",
+   "sub": "Selena's dragon mecha",
+   "aka": [
+    "the dragon machine",
+    "Frame Nine"
+   ],
+   "members": [
+    "m0870"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Silverbolt"
+   ]
+  },
+  {
+   "slug": "small-black-spheres",
+   "name": "small black spheres",
+   "kind": "thing",
+   "sub": "field triggers",
+   "aka": [],
+   "members": [
+    "m0871"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-empty-dent",
+   "name": "the small empty dent",
+   "kind": "thing",
+   "sub": "empty mold in tissue",
+   "aka": [],
+   "members": [
+    "m0872"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "small-flying-craft",
+   "name": "the small flying craft",
+   "kind": "thing",
+   "sub": "car-sized attack craft",
+   "aka": [
+    "small craft"
+   ],
+   "members": [
+    "m0873"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "soldiers-tea",
+   "name": "soldier's tea",
+   "kind": "thing",
+   "sub": "black stewed tea",
+   "aka": [],
+   "members": [
+    "m0875"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "star-clip",
+   "name": "star clip",
+   "kind": "thing",
+   "sub": "star hair clip",
+   "aka": [
+    "the star clip"
+   ],
+   "members": [
+    "m0877"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "steel-dummies",
+   "name": "steel dummies",
+   "kind": "thing",
+   "sub": "Ender training targets",
+   "aka": [
+    "the dummies"
+   ],
+   "members": [
+    "m0878"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "strawberry-jam-doughnut",
+   "name": "strawberry-jam doughnut",
+   "kind": "thing",
+   "sub": "cake shop treat",
+   "aka": [],
+   "members": [
+    "m0880"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "tactics-books",
+   "name": "tactics books",
+   "kind": "thing",
+   "sub": "Vexana's books",
+   "aka": [
+    "a tactics book"
+   ],
+   "members": [
+    "m0883"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "team-radio",
+   "name": "team radio",
+   "kind": "thing",
+   "sub": "rescue team radio",
+   "aka": [],
+   "members": [
+    "m0886"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "teams-log",
+   "name": "team's log",
+   "kind": "thing",
+   "sub": "rescue team record",
+   "aka": [],
+   "members": [
+    "m0887"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "telescope",
+   "name": "telescope",
+   "kind": "thing",
+   "sub": "observation lab telescope",
+   "aka": [
+    "the telescope"
+   ],
+   "members": [
+    "m0888"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "test-press",
+   "name": "test press",
+   "kind": "thing",
+   "sub": "lab testing press",
+   "aka": [],
+   "members": [
+    "m0889"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "test-ring",
+   "name": "the test ring",
+   "kind": "thing",
+   "sub": "lab work stand",
+   "aka": [
+    "the ring"
+   ],
+   "members": [
+    "m0890"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "ticket-stubs",
+   "name": "ticket stubs",
+   "kind": "thing",
+   "sub": "ride ticket keepsakes",
+   "aka": [
+    "stubs"
+   ],
+   "members": [
+    "m0895"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "tin-bird",
+   "name": "the tin bird",
+   "kind": "thing",
+   "sub": "wind-up toy",
+   "aka": [],
+   "members": [
+    "m0896"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "training-droid",
+   "name": "Training Droid",
+   "kind": "thing",
+   "sub": "Oro training machine",
+   "aka": [],
+   "members": [
+    "m0899"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "twilight-orb",
+   "name": "Twilight Orb",
+   "kind": "thing",
+   "sub": "bursting sphere of light",
+   "aka": [],
+   "members": [
+    "m0902"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "unnamed-trace",
+   "name": "the unnamed trace",
+   "kind": "thing",
+   "sub": "unexplained signal",
+   "aka": [],
+   "members": [
+    "m0904"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "unsent-message",
+   "name": "the unsent message",
+   "kind": "thing",
+   "sub": "Chang'e's draft message",
+   "aka": [],
+   "members": [
+    "m0905"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-star-in-the-sky",
+   "name": "Vexana's star in the sky",
+   "kind": "thing",
+   "sub": "star from her father",
+   "aka": [
+    "Vexana's star",
+    "Vexana's birthday star",
+    "her star in the sky"
+   ],
+   "members": [
+    "m0917",
+    "m0906"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "white-box",
+   "name": "the white box",
+   "kind": "thing",
+   "sub": "Vexana's keepsake box",
+   "aka": [
+    "Vexana's box",
+    "the box",
+    "keepsake box"
+   ],
+   "members": [
+    "m0930",
+    "m0907"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-ender-armor",
+   "name": "Vexana's Ender armor",
+   "kind": "thing",
+   "sub": "Vexana's void armor",
+   "aka": [
+    "Ender plate",
+    "Ender robe",
+    "the robe",
+    "Vexana's Ender robe"
+   ],
+   "members": [
+    "m0908",
+    "m0909",
+    "m0741"
+   ],
+   "tier": "A",
+   "see_also": [
+    "Vexana"
+   ]
+  },
+  {
+   "slug": "vexanas-file",
+   "name": "Vexana's file",
+   "kind": "thing",
+   "sub": "Academy record",
+   "aka": [
+    "the morning list"
+   ],
+   "members": [
+    "m0912"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-school-uniform",
+   "name": "Vexana's school uniform",
+   "kind": "thing",
+   "sub": "Vexana's Academy uniform",
+   "aka": [
+    "her uniform",
+    "school clothes",
+    "the uniform",
+    "Vexana's folded uniform"
+   ],
+   "members": [
+    "m0915",
+    "m0913"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-phone",
+   "name": "Vexana's phone",
+   "kind": "thing",
+   "sub": "Vexana's phone",
+   "aka": [],
+   "members": [
+    "m0914"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vexanas-staff",
+   "name": "Vexana's staff",
+   "kind": "thing",
+   "sub": "Vexana's orb staff",
+   "aka": [
+    "her staff",
+    "the staff",
+    "the black orb"
+   ],
+   "members": [
+    "m0916"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "visor",
+   "name": "the visor",
+   "kind": "thing",
+   "sub": "Lesley's eye visor",
+   "aka": [],
+   "members": [
+    "m0918"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "void-notes",
+   "name": "VOID NOTES",
+   "kind": "thing",
+   "sub": "Chang'e's file on void",
+   "aka": [],
+   "members": [
+    "m0919"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "the-vr",
+   "name": "the VR",
+   "kind": "place",
+   "sub": "virtual reality",
+   "aka": [],
+   "members": [
+    "m0920"
+   ],
+   "tier": "B",
+   "see_also": [
+    "VR Battlefield"
+   ]
+  },
+  {
+   "slug": "vr-enders",
+   "name": "VR Enders",
+   "kind": "thing",
+   "sub": "simulated Enders",
+   "aka": [
+    "simulated Enders",
+    "VR Ender"
+   ],
+   "members": [
+    "m0921"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vr-night-log",
+   "name": "VR night log",
+   "kind": "thing",
+   "sub": "VR sign-in log",
+   "aka": [
+    "the night log"
+   ],
+   "members": [
+    "m0922"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "vr-pods",
+   "name": "VR pods",
+   "kind": "thing",
+   "sub": "simulator pods",
+   "aka": [
+    "VR pod"
+   ],
+   "members": [
+    "m0923"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "barricade-in-the-cut",
+   "name": "the barricade in the cut",
+   "kind": "thing",
+   "sub": "Fanny's street barricade",
+   "aka": [
+    "the wall",
+    "the gap",
+    "the heap"
+   ],
+   "members": [
+    "m0924"
+   ],
+   "tier": "A",
+   "see_also": []
+  },
+  {
+   "slug": "wall-guns",
+   "name": "the wall guns",
+   "kind": "thing",
+   "sub": "city wall guns",
+   "aka": [
+    "the big guns",
+    "the guns"
+   ],
+   "members": [
+    "m0925"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "watch-droid",
+   "name": "the watch droid",
+   "kind": "thing",
+   "sub": "white droid following Ruby",
+   "aka": [
+    "the white droid",
+    "the droid"
+   ],
+   "members": [
+    "m0927"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "watch-sheet",
+   "name": "watch sheet",
+   "kind": "thing",
+   "sub": "duty roster sheet",
+   "aka": [
+    "the watch sheet"
+   ],
+   "members": [
+    "m0928"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "welcome-to-terrinia-billboard",
+   "name": "WELCOME TO TERRINIA billboard",
+   "kind": "thing",
+   "sub": "city billboard",
+   "aka": [],
+   "members": [
+    "m0929"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "wooden-drill-pole",
+   "name": "the wooden drill pole",
+   "kind": "thing",
+   "sub": "training pole",
+   "aka": [
+    "the drill pole"
+   ],
+   "members": [
+    "m0934"
+   ],
+   "tier": "B",
+   "see_also": []
+  },
+  {
+   "slug": "obsidias-throne",
+   "name": "Obsidia's throne",
+   "kind": "thing",
+   "sub": "Citadel's living spine",
+   "aka": [
+    "the throne",
+    "throne",
+    "the spine",
+    "the gray cord",
+    "the huntress's seat",
+    "the seat",
+    "the chair"
+   ],
+   "members": [
+    "m0894",
+    "m0876",
+    "m0769"
+   ],
+   "tier": "A",
+   "see_also": []
+  }
+ ],
+ "dropped": []
+}

@@ -1,0 +1,127 @@
+{
+ "guinevere": {
+  "line": "A pink-haired Aspirant with a red bow, half of a legendary undefeated pair.",
+  "short": "A pink-haired girl from Joe's class who fights up close with her fists, two cat-eared drones circling her. With Vexana, she has never lost.",
+  "summary": "The heiress of House Baroque, a pink-haired Aspirant who fights with her fists, two cat-eared drones and wings of light. She came to Selrick Academy to win what her father's money could not buy, and with Vexana she never lost a fight. When Vexana pushed her clear of a claw and was dragged into the dark in her place, Guinevere refused her father's order to come home, kept searching, and at the Singularity would not give her up. Together they struck the Mother Matrix's open chest and came back out of the black hole; when the field killed her drones and wings, she fought on with her bare fists.",
+  "rows": [
+   [
+    "Full name",
+    "Guinevere of House Baroque.",
+    28
+   ],
+   [
+    "Appearance",
+    "A long pink ponytail with two red bows that were her mother's. She fights in black gloves and arm guards.",
+    46
+   ],
+   [
+    "Family",
+    "Her father holds the head seat on the board of House Baroque. Her mother was lost to the Enders on a storm night when Guinevere was a baby.",
+    32
+   ],
+   [
+    "Home",
+    "House Baroque, one of the great money houses of Terrinia. At the Academy, a room in the girls' wing.",
+    46
+   ],
+   [
+    "Partner",
+    "Vexana. Undefeated together, and named the best partners of the year.",
+    41
+   ],
+   [
+    "Taught by",
+    "Hester, head of her guard, who taught her to punch. At the Academy, Professor Joe and Teacher Chang'e.",
+    41
+   ],
+   [
+    "Fighting style",
+    "Up close, fists first: elbow in, hip first, hands home after every punch. Her drones take whatever her hands leave.",
+    71
+   ],
+   [
+    "Goal",
+    "To become the top Aspirant with none of her father's money, and to hear him say \"Well done, Guinevere.\"",
+    34
+   ],
+   [
+    "Academy",
+    "Selrick Academy's first intake. Top score in the final combat trial of the preparatory course.",
+    34
+   ],
+   [
+    "Habits",
+    "Carries band-aids in every pocket. Writes training plans in three colors. Sleeps with her door open a hand's width.",
+    38
+   ],
+   [
+    "Sayings",
+    "\"A lady's refinement. Three seconds.\" \"A great lady does not land early.\"",
+    35
+   ],
+   [
+    "First seen",
+    "Chapter 1, on the courtyard billboard.",
+    1
+   ]
+  ],
+  "weapons": [
+   {
+    "name": "Fists",
+    "note": "Her own weapon. She fights up close, bare-knuckled, and her guard comes back to her chin after every punch. Somebody taught her that long before she had drones."
+   },
+   {
+    "name": "Guinevere's drones",
+    "note": "Two round gray drones with cat ears and yellow ring eyes. They run on her aspirant power, circle her as she fights and take whatever her hands leave. Their rings dim when her power runs low."
+   },
+   {
+    "name": "Wings of light",
+    "note": "Wings that run on her aspirant power and hold her in the air. When she tires too far, they go out like a switch."
+   },
+   {
+    "name": "Light of the stars",
+    "note": "Her great strike. She cries \"Light of the stars, tear through the darkness,\" and gold and white light sweeps the Enders away."
+   },
+   {
+    "name": "The two red bows",
+    "note": "Two red bows in her pink hair that were her mother's. Hester tied them first. After that Guinevere tied them herself and let nobody else touch them."
+   },
+   {
+    "name": "Band-aids",
+    "note": "She carries them in every pocket, for herself and for anyone else."
+   },
+   {
+    "name": "The top score paper",
+    "note": "Her sheet from the final combat trial of the preparatory course, marked Top score. She keeps it inside her jacket."
+   },
+   {
+    "name": "Emblems of Hope",
+    "note": "A small gold star at her collar. She cut it and its twin for Vexana from thin gold plate and soldered them, burning her fingers. They glow when the two are in sync and beep when they meet again."
+   },
+   {
+    "name": "The black card",
+    "note": "A black card with the small gold crest of House Baroque. She pays with it."
+   },
+   {
+    "name": "Chibi keychain",
+    "note": "A little doll keychain of black-haired Vexana. Vexana wears its twin, a pink-haired Guinevere."
+   },
+   {
+    "name": "The blue badges",
+    "note": "Her Best Aspirant Duo badge, from the ceremony that named her and Vexana the best partners of the year."
+   },
+   {
+    "name": "Black gloves",
+    "note": "Her fighting gloves. In them she still punches the way she was drilled: elbow in, hip first, hands home."
+   },
+   {
+    "name": "Guinevere's arm guards",
+    "note": "Guards she buckles on her forearms to train and fight. She clipped the black-haired keychain of Vexana to one, so it goes in front of her fist."
+   },
+   {
+    "name": "Guinevere's map",
+    "note": "A map of Terrinia under a red grid. She flies every sector she is cleared for, waiting for her star to beep."
+   }
+  ]
+ }
+}

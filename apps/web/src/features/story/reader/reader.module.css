@@ -1131,3 +1131,59 @@
   animation: none;
   transform: none;
 }
+
+/* Marks: words that explain themselves (see marks.ts and MarkTips.tsx). A dotted line under them
+   and a small star after them; a star that pulses once when the words first come into view. */
+.mark {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.22em;
+  border-radius: 2px;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--accent) 16%, transparent) 38%,
+    transparent 38%
+  );
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.mark::after {
+  content: "";
+  display: inline-block;
+  width: 0.42em;
+  height: 0.42em;
+  margin-left: 0.16em;
+  vertical-align: 0.5em;
+  background: var(--accent);
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
+}
+
+.mark:hover,
+.mark[aria-expanded="true"] {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--accent) 34%, transparent) 62%,
+    transparent 62%
+  );
+}
+
+.mark[data-pulse]::after {
+  animation: mark-star 1.9s var(--ease-out) 1;
+}
+
+@keyframes mark-star {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(2.6) rotate(45deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(90deg);
+  }
+}
