@@ -69,6 +69,7 @@ export function EntryWindow({ codex, failed, slug, reach, onOpen, onClose }: Ent
         <Dialog.Overlay className={styles.scrim} />
         <Dialog.Content
           className={styles.window}
+          data-lenis-prevent
           data-kind={entry?.kind ?? "pair"}
           aria-describedby={undefined}
         >

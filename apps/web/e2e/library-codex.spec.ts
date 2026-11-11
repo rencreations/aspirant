@@ -186,6 +186,24 @@ test("the spoiler shield keeps a reader's unread chapters shut, and one press op
   await expect(win(page).getByRole("heading", { level: 2, name: LATE?.name ?? "" })).toBeVisible();
 });
 
+test("the wheel scrolls inside the window and not the room behind it", async ({ page }) => {
+  await skipGate(page);
+  await page.goto(url("/collection/lore/selena/"));
+  const sheet = win(page);
+  await expect(sheet.getByRole("heading", { level: 3, name: "What the story says" })).toBeVisible();
+  const box = await sheet.boundingBox();
+  expect(box).not.toBeNull();
+  await page.mouse.move(
+    (box?.x ?? 0) + (box?.width ?? 0) / 2,
+    (box?.y ?? 0) + (box?.height ?? 0) / 2,
+  );
+  await page.mouse.wheel(0, 700);
+  await expect
+    .poll(() => sheet.evaluate((el) => el.scrollTop), { timeout: 5000 })
+    .toBeGreaterThan(100);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
 test("the window fits a phone: no sideways scroll, full screen", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await skipGate(page);

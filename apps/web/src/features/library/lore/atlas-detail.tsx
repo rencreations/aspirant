@@ -82,7 +82,12 @@ export function AtlasDetail({
     >
       <Dialog.Portal>
         <Dialog.Overlay className={styles.scrim} />
-        <Dialog.Content className={styles.sheet} style={VARS} aria-describedby={undefined}>
+        <Dialog.Content
+          className={styles.sheet}
+          style={VARS}
+          aria-describedby={undefined}
+          data-lenis-prevent
+        >
           {item ? (
             <div key={item.id} className={styles.inner}>
               <header className={styles.top}>
