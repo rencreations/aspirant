@@ -1,0 +1,30 @@
+{
+ "blue-badges": [
+  {
+   "id": "c41-hero",
+   "alt": "Vexana and Guinevere at the ceremony, each with a small blue shield badge pinned below the gold star at the collar, as other students cheer."
+  }
+ ],
+ "selenas-true-form": [
+  {
+   "id": "c85-p92-0",
+   "alt": "Selena in her full armor of white, blue and gold, with a pale mane and blades in the air, stands before a dark column split by red cuts."
+  },
+  {
+   "id": "c83-p37-0",
+   "alt": "Selena, with small horns and pointed ears, in armor and a long cloak, lifts a clawed hand to her face as tall Enders stand behind her."
+  }
+ ],
+ "void": [
+  {
+   "id": "c54-hero",
+   "alt": "Obsidia stands in the void among drifting stones and a dark planet, one black-gloved arm held out."
+  }
+ ],
+ "big-bench": [
+  {
+   "id": "c22-hero",
+   "alt": "Small Chang'e works at a cluttered lab bench with a tool in her hand, the parts of a long red and gold rifle laid out before her."
+  }
+ ]
+}

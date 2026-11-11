@@ -1,204 +1,204 @@
 {
-  "academy-tower": [
-    {
-      "id": "arts-comic-the-selrick-academy-tower-729ca3",
-      "alt": "The tall spire of Selrick Academy rises above a plaza at sunset, a thin cyan beam of light climbing from its tip."
-    }
-  ],
-  "bay": [
-    {
-      "id": "c70-hero",
-      "alt": "From high above at night, lit towers line the water of Terrinia's bay, with a ring-crowned tower and dark violet smoke over the city."
-    }
-  ],
-  "gold-giant": [
-    {
-      "id": "c04-p52-0",
-      "alt": "The gold giant spreads its arms before the broken dome, a ring of light around it and a glow kindling in its chest."
-    },
-    {
-      "id": "c05-p29-0",
-      "alt": "The gold giant's glowing head fills an orange sunset sky while Fanny hangs tiny before it."
-    }
-  ],
-  "guineveres-red-bows": [
-    {
-      "id": "c40-hero",
-      "alt": "Guinevere, her hair tied with red bows, points up at the fireworks while she holds Vexana's hand."
-    }
-  ],
-  "laylas-lab": [
-    {
-      "id": "arts-scene-layla-s-lab-desk-dcd4db",
-      "alt": "Layla at her cluttered lab desk among monitors, small drones, a gold trophy and a seedling under a glass dome."
-    }
-  ],
-  "mother-matrix": [
-    {
-      "id": "arts-scene-mother-matrix-looms-over-the-city-78ea83",
-      "alt": "The Mother Matrix spreads huge dark wings over a purple ruined city, two tiny figures standing far below it."
-    },
-    {
-      "id": "arts-scene-mother-matrix-spreads-its-wings-1edada",
-      "alt": "The Mother Matrix spreads across a purple sky, its dark armored head crowned with spikes and its claws held out."
-    },
-    {
-      "id": "arts-comic-the-mother-matrix-43b9f1",
-      "alt": "A close view of the Mother Matrix's dark armored head, crowned with spikes, its eyes glowing purple."
-    }
-  ],
-  "obsidias-weapon": [
-    {
-      "id": "c85-p64-0",
-      "alt": "Obsidia floats in the dark with her long weapon trailing from her hand, fiery blades at her back, while Selena hangs bound above."
-    },
-    {
-      "id": "arts-scene-obsidia-and-her-weapon-84fc42",
-      "alt": "Obsidia beside her weapon, a spiked beast helm with a long jointed chain behind it, gold blades floating around her."
-    }
-  ],
-  "research-base": [
-    {
-      "id": "arts-scene-chang-e-shows-lesley-mr-bunny-5f69d0",
-      "alt": "Lesley leans toward small Chang'e and Mr. Bunny in the bright lab of the research base, Chang'e's parents behind them."
-    },
-    {
-      "id": "arts-scene-chang-e-builds-lesley-s-rifle-267b16",
-      "alt": "Chang'e stands at a bench in the bright research base lab, with a glass case and rifle parts spread out before her."
-    },
-    {
-      "id": "arts-scene-chang-e-climbs-the-lab-stairs-3595a7",
-      "alt": "Seen from behind, Chang'e climbs a steep blue stair in the research base."
-    }
-  ],
-  "seedling": [
-    {
-      "id": "c07-p24-0",
-      "alt": "A small seedling grows under a glass dome on Layla's lab desk, beside a gold trophy and a hovering drone."
-    }
-  ],
-  "summer-fireworks": [
-    {
-      "id": "c40-hero",
-      "alt": "Guinevere and Vexana hold hands under bursting fireworks, Guinevere pointing at the sky."
-    },
-    {
-      "id": "arts-comic-fireworks-over-the-hill-5eebcb",
-      "alt": "Guinevere and Vexana hold hands on a dark hill and look up at pink and gold fireworks."
-    }
-  ],
-  "third-year-classroom": [
-    {
-      "id": "c43-p43-0",
-      "alt": "In the bright classroom Selena sleeps on her arms at her desk, dreaming of a cupcake, while Layla holds up a paper plane behind her."
-    },
-    {
-      "id": "arts-scene-selena-wakes-in-class-300c79",
-      "alt": "Selena lifts her head from her desk in the classroom, with a glass screen on the desk and Layla waving from the back."
-    }
-  ],
-  "academys-lists": [
-    {
-      "id": "arts-scene-layla-reads-the-scoreboard-4626a2",
-      "alt": "A ranking board lists four chibi portraits by score, from 1800 down to 900, while chibi Layla watches among a crowd of silhouettes."
-    }
-  ],
-  "clawed-glove": [
-    {
-      "id": "c66-hero",
-      "alt": "Obsidia floats in a black gown with one clawed black glove raised, her silver-pink weapon hanging in the air beside her."
-    },
-    {
-      "id": "c66-p5-0",
-      "alt": "Obsidia sits back with a clawed black glove stretched out, thin red threads hanging from its fingers."
-    }
-  ],
-  "hangar": [
-    {
-      "id": "arts-scene-oro-soldiers-in-the-hangar-5ece3b",
-      "alt": "Armored Oro soldiers stand in a bright hangar, with a small pink-haired girl between two of them at the bottom edge."
-    }
-  ],
-  "throne-hall": [
-    {
-      "id": "c85-p31-0",
-      "alt": "Wide dark stairs climb to a jointed column lit violet in the throne hall, a small figure waiting at its foot, seen past Selena's long hair."
-    }
-  ],
-  "landing-in-terrinia": [
-    {
-      "id": "c12-p17-0",
-      "alt": "A ship flies over burning Terrinia at sunset while giant Enders stand among the towers."
-    },
-    {
-      "id": "c12-p20-0",
-      "alt": "Two Selrick students sit in the dust of a ruined street at sunset, seen past the reaching metal hands of an android."
-    },
-    {
-      "id": "c14-p45-0",
-      "alt": "An android fires a bolt of purple light before a giant Ender among the burning ruins of Terrinia."
-    }
-  ],
-  "protectors-of-all-humanity": [
-    {
-      "id": "c06-p29-0",
-      "alt": "Layla raises her cannon to the night sky with a smile, and Fanny smiles beside her."
-    }
-  ],
-  "rubys-summons": [
-    {
-      "id": "c09-p21-0",
-      "alt": "In a vast dark hall of pillars with violet windows, a small figure stands in a circle of light on the floor."
-    },
-    {
-      "id": "c09-p25-0",
-      "alt": "Ruby stands in profile looking away, beside her father in his dark fur-collared coat."
-    },
-    {
-      "id": "c09-p31-0",
-      "alt": "Ruby faces forward in the dark hall while her father walks out through a bright doorway far behind her."
-    }
-  ],
-  "seawall-raid": [
-    {
-      "id": "c44-hero",
-      "alt": "Guinevere and Vexana stand back to back under a smoky gray sky, Guinevere's gloved fist raised and Vexana's violet eyes fixed ahead."
-    }
-  ],
-  "taking-of-vexana": [
-    {
-      "id": "c45-p70-0",
-      "alt": "Vexana's tearful face sinks into a closing dark crack in the pale wall as she is dragged away."
-    }
-  ],
-  "vexanas-transformation": [
-    {
-      "id": "c50-p45-0",
-      "alt": "After the change, a dark horn rises through Vexana's pale hair and violet star-shaped blades glow at her cloaked shoulder."
-    }
-  ],
-  "wills-vision": [
-    {
-      "id": "c49-p22-0",
-      "alt": "Dusty gloved hands cup a small star badge that glows and sheds sparks."
-    }
-  ],
-  "boy-with-the-red-tie": [
-    {
-      "id": "c13-p40-0",
-      "alt": "Ruby walks through the burning ruins with her scythe toward a boy in a Selrick uniform who stands in her way."
-    }
-  ],
-  "grass-behind-the-hall": [
-    {
-      "id": "c29-p84-0",
-      "alt": "Fanny lies on her back in the sunny grass in her school uniform, her eyes shut."
-    }
-  ],
-  "helper-droid": [
-    {
-      "id": "c61-hero",
-      "alt": "Design sheet of an Academy helper droid: a slim white machine with an orange eye, long jointed arms, a spare arm and a head drawn beside it."
-    }
-  ]
+ "academy-tower": [
+  {
+   "id": "arts-comic-the-selrick-academy-tower-729ca3",
+   "alt": "The tall spire of Selrick Academy rises above a plaza at sunset, a thin cyan beam of light climbing from its tip."
+  }
+ ],
+ "bay": [
+  {
+   "id": "c70-hero",
+   "alt": "From high above at night, lit towers line the water of Terrinia's bay, with a ring-crowned tower and dark violet smoke over the city."
+  }
+ ],
+ "gold-giant": [
+  {
+   "id": "c04-p52-0",
+   "alt": "The gold giant spreads its arms before the broken dome, a ring of light around it and a glow kindling in its chest."
+  },
+  {
+   "id": "c05-p29-0",
+   "alt": "The gold giant's glowing head fills an orange sunset sky while Fanny hangs tiny before it."
+  }
+ ],
+ "guineveres-red-bows": [
+  {
+   "id": "c40-hero",
+   "alt": "Guinevere, her hair tied with red bows, points up at the fireworks while she holds Vexana's hand."
+  }
+ ],
+ "laylas-lab": [
+  {
+   "id": "arts-scene-layla-s-lab-desk-dcd4db",
+   "alt": "Layla at her cluttered lab desk among monitors, small drones, a gold trophy and a seedling under a glass dome."
+  }
+ ],
+ "mother-matrix": [
+  {
+   "id": "arts-scene-mother-matrix-looms-over-the-city-78ea83",
+   "alt": "The Mother Matrix spreads huge dark wings over a purple ruined city, two tiny figures standing far below it."
+  },
+  {
+   "id": "arts-scene-mother-matrix-spreads-its-wings-1edada",
+   "alt": "The Mother Matrix spreads across a purple sky, its dark armored head crowned with spikes and its claws held out."
+  },
+  {
+   "id": "arts-comic-the-mother-matrix-43b9f1",
+   "alt": "A close view of the Mother Matrix's dark armored head, crowned with spikes, its eyes glowing purple."
+  }
+ ],
+ "obsidias-weapon": [
+  {
+   "id": "c85-p64-0",
+   "alt": "Obsidia floats in the dark with her long weapon trailing from her hand, fiery blades at her back, while Selena hangs bound above."
+  },
+  {
+   "id": "arts-scene-obsidia-and-her-weapon-84fc42",
+   "alt": "Obsidia beside her weapon, a spiked beast helm with a long jointed chain behind it, gold blades floating around her."
+  }
+ ],
+ "research-base": [
+  {
+   "id": "arts-scene-chang-e-shows-lesley-mr-bunny-5f69d0",
+   "alt": "Lesley leans toward small Chang'e and Mr. Bunny in the bright lab of the research base, Chang'e's parents behind them."
+  },
+  {
+   "id": "arts-scene-chang-e-builds-lesley-s-rifle-267b16",
+   "alt": "Chang'e stands at a bench in the bright research base lab, with a glass case and rifle parts spread out before her."
+  },
+  {
+   "id": "arts-scene-chang-e-climbs-the-lab-stairs-3595a7",
+   "alt": "Seen from behind, Chang'e climbs a steep blue stair in the research base."
+  }
+ ],
+ "seedling": [
+  {
+   "id": "c07-p24-0",
+   "alt": "A small seedling grows under a glass dome on Layla's lab desk, beside a gold trophy and a hovering drone."
+  }
+ ],
+ "summer-fireworks": [
+  {
+   "id": "c40-hero",
+   "alt": "Guinevere and Vexana hold hands under bursting fireworks, Guinevere pointing at the sky."
+  },
+  {
+   "id": "arts-comic-fireworks-over-the-hill-5eebcb",
+   "alt": "Guinevere and Vexana hold hands on a dark hill and look up at pink and gold fireworks."
+  }
+ ],
+ "third-year-classroom": [
+  {
+   "id": "c43-p43-0",
+   "alt": "In the bright classroom Selena sleeps on her arms at her desk, dreaming of a cupcake, while Layla holds up a paper plane behind her."
+  },
+  {
+   "id": "arts-scene-selena-wakes-in-class-300c79",
+   "alt": "Selena lifts her head from her desk in the classroom, with a glass screen on the desk and Layla waving from the back."
+  }
+ ],
+ "academys-lists": [
+  {
+   "id": "arts-scene-layla-reads-the-scoreboard-4626a2",
+   "alt": "A ranking board lists four chibi portraits by score, from 1800 down to 900, while chibi Layla watches among a crowd of silhouettes."
+  }
+ ],
+ "clawed-glove": [
+  {
+   "id": "c66-hero",
+   "alt": "Obsidia floats in a black gown with one clawed black glove raised, her silver-pink weapon hanging in the air beside her."
+  },
+  {
+   "id": "c66-p5-0",
+   "alt": "Obsidia sits back with a clawed black glove stretched out, thin red threads hanging from its fingers."
+  }
+ ],
+ "hangar": [
+  {
+   "id": "arts-scene-oro-soldiers-in-the-hangar-5ece3b",
+   "alt": "Armored Oro soldiers stand in a bright hangar, with a small pink-haired girl between two of them at the bottom edge."
+  }
+ ],
+ "throne-hall": [
+  {
+   "id": "c85-p31-0",
+   "alt": "Wide dark stairs climb to a jointed column lit violet in the throne hall, a small figure waiting at its foot, seen past Selena's long hair."
+  }
+ ],
+ "landing-in-terrinia": [
+  {
+   "id": "c12-p17-0",
+   "alt": "A ship flies over burning Terrinia at sunset while giant Enders stand among the towers."
+  },
+  {
+   "id": "c12-p20-0",
+   "alt": "Two Selrick students sit in the dust of a ruined street at sunset, seen past the reaching metal hands of an android."
+  },
+  {
+   "id": "c14-p45-0",
+   "alt": "An android fires a bolt of purple light before a giant Ender among the burning ruins of Terrinia."
+  }
+ ],
+ "protectors-of-all-humanity": [
+  {
+   "id": "c06-p29-0",
+   "alt": "Layla raises her cannon to the night sky with a smile, and Fanny smiles beside her."
+  }
+ ],
+ "rubys-summons": [
+  {
+   "id": "c09-p21-0",
+   "alt": "In a vast dark hall of pillars with violet windows, a small figure stands in a circle of light on the floor."
+  },
+  {
+   "id": "c09-p25-0",
+   "alt": "Ruby stands in profile looking away, beside her father in his dark fur-collared coat."
+  },
+  {
+   "id": "c09-p31-0",
+   "alt": "Ruby faces forward in the dark hall while her father walks out through a bright doorway far behind her."
+  }
+ ],
+ "seawall-raid": [
+  {
+   "id": "c44-hero",
+   "alt": "Guinevere and Vexana stand back to back under a smoky gray sky, Guinevere's gloved fist raised and Vexana's violet eyes fixed ahead."
+  }
+ ],
+ "taking-of-vexana": [
+  {
+   "id": "c45-p70-0",
+   "alt": "Vexana's tearful face sinks into a closing dark crack in the pale wall as she is dragged away."
+  }
+ ],
+ "vexanas-transformation": [
+  {
+   "id": "c50-p45-0",
+   "alt": "After the change, a dark horn rises through Vexana's pale hair and violet star-shaped blades glow at her cloaked shoulder."
+  }
+ ],
+ "wills-vision": [
+  {
+   "id": "c49-p22-0",
+   "alt": "Dusty gloved hands cup a small star badge that glows and sheds sparks."
+  }
+ ],
+ "boy-with-the-red-tie": [
+  {
+   "id": "c13-p40-0",
+   "alt": "Ruby walks through the burning ruins with her scythe toward a boy in a Selrick uniform who stands in her way."
+  }
+ ],
+ "grass-behind-the-hall": [
+  {
+   "id": "c29-p84-0",
+   "alt": "Fanny lies on her back in the sunny grass in her school uniform, her eyes shut."
+  }
+ ],
+ "helper-droid": [
+  {
+   "id": "c61-hero",
+   "alt": "Design sheet of an Academy helper droid: a slim white machine with an orange eye, long jointed arms, a spare arm and a head drawn beside it."
+  }
+ ]
 }
