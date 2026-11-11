@@ -31,7 +31,7 @@ async function fetchBitmap(
 
 /**
  * One loading list item for every face: it reads the room's data file (already in the browser
- * cache from the item before it), then fetches the nine faces at once, and the bar counts their
+ * cache from the item before it), then fetches every face at once, and the bar counts their
  * bytes together.
  */
 export function discFacesItem(): PreloadItem {

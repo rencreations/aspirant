@@ -10,6 +10,8 @@ import { downloadFile } from "../voicelines/download";
 import { Icon } from "../voicelines/icons";
 import { clock, discUrl, downloadName, infoRows, KIND_LABEL } from "./logic";
 import styles from "./music.module.css";
+import { writePlace } from "./place";
+import { PlatformLinks } from "./platform-links";
 import { playAt, playTrack, usePlayer } from "./player-store";
 import type { MusicItem } from "./types";
 
@@ -71,16 +73,21 @@ function Row({ item, list }: { item: MusicItem; list: readonly MusicItem[] }) {
           </a>
           {item.films.map((f) => (
             <TLink
-              key={f.id}
-              href={videoHref(f.id, f.t)}
+              key={`${f.id}-${f.t ?? 0}`}
+              href={videoHref(f.id, f.t, "music")}
               transitionLabel="Video"
               className={styles.pill}
+              onClick={() => {
+                writePlace(item.id);
+              }}
             >
               <Icon name="film" />
               <span>{f.label}</span>
+              {f.t ? <span className={styles.pillTime}>{clock(f.t)}</span> : null}
             </TLink>
           ))}
         </div>
+        <PlatformLinks links={item.links} className={styles.plainPlatforms} />
         {item.chapters ? (
           <ol className={styles.plainChapters} aria-label="Tracks in this listen">
             {item.chapters.map((c) => (
@@ -130,7 +137,7 @@ export function TrackList({ items, failed, heading }: Props) {
         </h2>
       )}
       <p className={styles.plainLead}>
-        The songs, the page themes and the long listens of The Aspirants, with their credits.
+        The songs and the page themes of The Aspirants, with their credits.
       </p>
       {items ? (
         <ol className={styles.plainList}>

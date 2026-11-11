@@ -25,6 +25,14 @@ export interface MusicCover {
   site?: string;
 }
 
+/** The track's pages on the streaming services. `more` opens a page with every platform. */
+export interface MusicLinks {
+  spotify?: string;
+  apple?: string;
+  youtube?: string;
+  more?: string;
+}
+
 interface MusicChapter {
   t: number;
   title: string;
@@ -48,6 +56,8 @@ export interface MusicItem extends ItemBase {
   quality: string;
   /** Library key of the original file, for the download. */
   orig?: string;
+  /** Where to listen elsewhere (only the tracks that are released on the platforms). */
+  links?: MusicLinks;
   chapters?: MusicChapter[];
   /** Library key of the face of the track's disc (a square picture, `discs.py`). */
   disc?: string;

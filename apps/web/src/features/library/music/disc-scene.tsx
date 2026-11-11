@@ -17,6 +17,8 @@ import { DiscField, type Playback } from "./engine";
 import { getFaceBitmap, holdFaceBitmaps } from "./faces";
 import { clock, counter, downloadName, infoRows, KIND_LABEL } from "./logic";
 import styles from "./music.module.css";
+import { writePlace } from "./place";
+import { PlatformLinks } from "./platform-links";
 import { playAt, playTrack, togglePlayback, usePlayer } from "./player-store";
 import { PopMenu } from "./pop-menu";
 import { hideWords, showWords } from "./reveal";
@@ -54,6 +56,41 @@ function Line({ children, className }: { children: ReactNode; className?: string
         {children}
       </span>
     </span>
+  );
+}
+
+/**
+ * The films a track links to. A link carries `from=music`, so closing the video (or its back
+ * button) comes back here, and the room opens on this track again (`place.ts`).
+ */
+function WatchMenu({ item, below }: { item: MusicItem; below?: boolean }) {
+  return (
+    <PopMenu
+      label={item.films.length > 1 ? `Watch, ${item.films.length}` : "Watch"}
+      short={item.films.length > 1 ? String(item.films.length) : ""}
+      icon={<Icon name="film" />}
+      below={below}
+    >
+      <p className={styles.popHead}>Watch</p>
+      <ul className={styles.popItems}>
+        {item.films.map((f) => (
+          <li key={`${f.id}-${f.t ?? 0}`}>
+            <TLink
+              href={videoHref(f.id, f.t, "music")}
+              transitionLabel="Video"
+              className={styles.popItem}
+              onClick={() => {
+                writePlace(item.id);
+              }}
+            >
+              <Icon name="film" />
+              <span>{f.label}</span>
+              {f.t ? <span className={styles.popTime}>{clock(f.t)}</span> : null}
+            </TLink>
+          </li>
+        ))}
+      </ul>
+    </PopMenu>
   );
 }
 
@@ -175,6 +212,11 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
         engineRef.current = engine;
         if (process.env.NODE_ENV !== "production")
           (window as unknown as { __musicField?: DiscField }).__musicField = engine;
+        // A read-only look at the discs for the probes and the specs (like `__filmsRoom`).
+        const made = engine;
+        (window as Window & { __musicRoom?: unknown }).__musicRoom = {
+          snapshot: () => made.snapshot(),
+        };
         setRow(engine.isRow);
         // The first frame is drawn (the discs wait, hidden): the curtain may open.
         mark();
@@ -208,11 +250,33 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
       offPlayer();
       engine?.dispose();
       engineRef.current = null;
+      delete (window as Window & { __musicRoom?: unknown }).__musicRoom;
       release();
       mark();
     };
     // The scene is built once; the callbacks read the latest values through refs and the store.
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // On narrow screens Watch sits at the top, just right of the Collection button (which belongs to
+  // the shared room chrome): its right edge is measured, on resize only, into `--back-right`.
+  useEffect(() => {
+    const stage = stageRef.current;
+    const back = document.querySelector<HTMLElement>("[data-room-back]");
+    if (!stage || !back) return;
+    const measure = () => {
+      const r = back.getBoundingClientRect();
+      stage.style.setProperty("--back-right", `${Math.round(r.right)}px`);
+      stage.style.setProperty("--back-h", `${Math.round(r.height)}px`);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(back);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
   // When the player moves to another track by itself (the end of a track, N or P), the field
@@ -379,6 +443,15 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
 
       {item ? (
         <div ref={infoRef} className={styles.info}>
+          {/* Narrow screens only: Watch at the top, beside the Collection button (first in the
+              tab order, where it is seen). */}
+          {item.films.length > 0 ? (
+            <div className={styles.watchTop} data-group="">
+              <Rise>
+                <WatchMenu key={`watch-top-${item.id}`} item={item} below />
+              </Rise>
+            </div>
+          ) : null}
           <p className={styles.kicker} data-group="">
             <Line>{[item.ep, KIND_LABEL[item.kind]].filter(Boolean).join("  ·  ")}</Line>
             <Line className={styles.count}>{counter(shown, count)}</Line>
@@ -404,6 +477,11 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
             ))}
             <span data-rule="" className={styles.rule} />
           </dl>
+          <PlatformLinks
+            key={`links-${item.id}`}
+            links={item.links}
+            wrap={(node) => <Rise>{node}</Rise>}
+          />
         </div>
       ) : null}
 
@@ -455,31 +533,11 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
               </a>
             </Rise>
             {item.films.length > 0 ? (
-              <Rise>
-                <PopMenu
-                  key={`watch-${item.id}`}
-                  label={item.films.length > 1 ? `Watch, ${item.films.length}` : "Watch"}
-                  short={item.films.length > 1 ? String(item.films.length) : ""}
-                  icon={<Icon name="film" />}
-                >
-                  <p className={styles.popHead}>Watch</p>
-                  <ul className={styles.popItems}>
-                    {item.films.map((f) => (
-                      <li key={f.id}>
-                        <TLink
-                          href={videoHref(f.id, f.t)}
-                          transitionLabel="Video"
-                          className={styles.popItem}
-                        >
-                          <Icon name="film" />
-                          <span>{f.label}</span>
-                          {f.t ? <span className={styles.popTime}>{clock(f.t)}</span> : null}
-                        </TLink>
-                      </li>
-                    ))}
-                  </ul>
-                </PopMenu>
-              </Rise>
+              <span className={styles.watchRow}>
+                <Rise>
+                  <WatchMenu key={`watch-${item.id}`} item={item} />
+                </Rise>
+              </span>
             ) : null}
             {item.chapters ? (
               <Rise>

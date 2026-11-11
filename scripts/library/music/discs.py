@@ -50,9 +50,8 @@ FACES: dict[str, tuple[str, float, float, float]] = {
     "cross-credo-guinevere": ("vexana-and-guinevere/art/official/guinevere-splash-art.jpg", 0.5, 0.56, 0.88),
     "gray-new-world": ("selena-and-obsidia/video/music-collection/selena-cover.jpg", 0.58, 0.47, 0.72),
     "lullaby-of-oblivion": ("selena-and-obsidia/video/music-collection/obsidia-cover.jpg", 0.6, 0.47, 0.72),
-    "obsidia-aspirant": ("selena-and-obsidia/art/official/obsidia/obsidia-splash-art.png", 0.47, 0.42, 0.8),
-    "obsidia-solo": ("selena-and-obsidia/art/official/obsidia/obsidia.jpg", 0.6, 0.44, 0.6),
-    "soundtrack-full": ("selena-and-obsidia/video/music-collection/thumbnail-vertical.jpg", 0.52, 0.385, 0.64),
+    # Angela's splash art: she is named first in the track's title and her face sits above the hole.
+    "angela-ruby": ("ruby-and-angela/art/official/angela-splash-art.jpg", 0.6, 0.42, 0.85),
 }
 
 
@@ -83,11 +82,14 @@ def face_image(slug: str) -> Image.Image:
 
 
 def make_face(slug: str) -> str:
-    """Write the face of one disc into the mirror and return its library key."""
+    """Write the face of one disc into the mirror and return its library key.
+
+    A face that is already in the mirror is never written again: its key is cached for 30 days, so
+    a new crop of an existing face needs a new key (a new slug in FACES, for example `<slug>-2`).
+    """
     key = disc_key(slug)
     out = common.key_path(key)
-    src = common.MEDIA / FACES[slug][0]
-    if not common.fresh(out, src, Path(__file__)):
+    if not out.exists():
         out.parent.mkdir(parents=True, exist_ok=True)
         tmp = out.with_suffix(".tmp.webp")
         face_image(slug).save(tmp, "WEBP", quality=QUALITY, method=6)

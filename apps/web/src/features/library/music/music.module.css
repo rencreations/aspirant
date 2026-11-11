@@ -183,6 +183,91 @@
   color: var(--text);
 }
 
+/* Where to listen elsewhere: the platforms' marks under the details, each a round button. */
+.platforms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.platforms li {
+  display: block;
+}
+
+.platform {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  height: 2.3rem;
+  min-width: 2.3rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  text-decoration: none;
+  pointer-events: auto;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) linear;
+}
+
+.platform svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentcolor;
+}
+
+/* The brands' own colours. */
+.platform[data-platform="spotify"] {
+  color: #1ed760;
+}
+
+.platform[data-platform="apple"] {
+  color: #fa243c;
+}
+
+.platform[data-platform="youtube"] {
+  color: #ff0000;
+}
+
+.platform:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink);
+}
+
+.platform:focus-visible {
+  outline: 2px solid var(--music);
+  outline-offset: 2px;
+}
+
+.platformMore {
+  padding: 0 0.85rem 0 0.7rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.platformMore svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: none;
+}
+
+.plainPlatforms {
+  margin-top: 0.8rem;
+}
+
+/* Watch beside the Collection button: on narrow screens only (see the media query below). */
+.watchTop {
+  display: none;
+}
+
 /* ---- The way to play (under the disc) ------------------------------------------------------- */
 
 .actions {
@@ -326,6 +411,15 @@
   transform: rotate(180deg);
 }
 
+/* A pill at the top opens its list under itself, its caret pointing down until it is open. */
+.pop[data-below="true"] .popCaret {
+  transform: rotate(180deg);
+}
+
+.pop[data-below="true"][data-open="true"] .popCaret {
+  transform: none;
+}
+
 .popList {
   position: absolute;
   z-index: 3;
@@ -342,6 +436,21 @@
 
 .popList[hidden] {
   display: none;
+}
+
+.pop[data-below="true"] .popList {
+  top: calc(100% + 0.6rem);
+  bottom: auto;
+  left: 0;
+  transform: none;
+  animation-name: pop-down;
+}
+
+@keyframes pop-down {
+  from {
+    transform: translateY(-0.4rem);
+    opacity: 0;
+  }
 }
 
 @keyframes pop-in {
@@ -476,12 +585,6 @@
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes blink {
   50% {
     opacity: 0.25;
@@ -523,17 +626,12 @@
   box-shadow: 0 0 0 1px var(--line-strong);
 }
 
+/* It turns while the track plays and comes to rest upright when it pauses (`record-spin.ts`). */
 .playerDisc img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: spin 3s linear infinite;
-  animation-play-state: paused;
-}
-
-.player[data-playing="true"] .playerDisc img {
-  animation-play-state: running;
 }
 
 .playerText {
@@ -619,6 +717,12 @@
 
 .iconBtn[aria-pressed="true"] {
   border-color: var(--music);
+}
+
+/* The loop: lit in the music violet while it repeats the track. */
+.loopBtn[aria-pressed="true"] {
+  color: var(--music);
+  background: color-mix(in srgb, var(--music) 14%, transparent);
 }
 
 .mainBtn {
@@ -963,6 +1067,30 @@
     display: none;
   }
 
+  .platforms {
+    margin-top: 0.6rem;
+  }
+
+  /* Watch leaves the row under the disc and sits at the top, right of the Collection button. */
+  .watchRow {
+    display: none;
+  }
+
+  .watchTop {
+    position: fixed;
+    z-index: calc(var(--z-nav) - 1);
+    top: calc(var(--nav-h) + 0.75rem);
+    left: calc(var(--back-right, 8.6rem) + 0.5rem);
+    display: block;
+    pointer-events: auto;
+  }
+
+  .watchTop .pill {
+    height: var(--back-h, 2.3rem);
+    border-color: #10131a;
+    color: #10131a;
+  }
+
   .actions {
     bottom: calc(var(--player-h) + 2.6rem);
     left: 50%;
@@ -1043,5 +1171,14 @@
 
   .pill:not(.primary) {
     padding: 0 0.75rem;
+  }
+
+  /* At the top there is room for the word. */
+  .watchTop .pill .pillLabel {
+    display: inline;
+  }
+
+  .watchTop .pill .pillShort {
+    display: none;
   }
 }

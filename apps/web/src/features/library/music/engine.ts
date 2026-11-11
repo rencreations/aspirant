@@ -40,6 +40,7 @@ import {
   type GlideSource,
   type Pose,
 } from "./field";
+import { isUpright, nearestTurn, planRest, restAt, TURN, type RestPlan } from "./spin";
 import { TraceMesh, type TraceTarget } from "./trace-mesh";
 import { WheelSteps, wheelDelta } from "./wheel";
 
@@ -109,10 +110,14 @@ interface Rig {
   push: Push;
   tiltX: number;
   tiltY: number;
-  /** The turn going back to rest after a drag. */
-  settle: { x: number; y: number; at: number } | null;
+  /** The turn going back to rest after a drag: from where, to which whole turn, since when. */
+  settle: { x: number; y: number; toX: number; toY: number; at: number } | null;
+  /** The record's own turn (radians; it falls as the record turns clockwise). */
   angle: number;
+  /** How fast it turns, radians a second, clockwise. */
   omega: number;
+  /** The way back to an upright picture once its track stops (see `spin.ts`), and since when. */
+  rest: (RestPlan & { at: number }) | null;
   /** When it was last pressed (ms), for the small press. */
   pressAt: number;
   visible: boolean;
@@ -355,9 +360,24 @@ export class DiscField {
       settle: null,
       angle: 0,
       omega: 0,
+      rest: null,
       pressAt: -1,
       visible: false,
     };
+  }
+
+  /**
+   * A disc that leaves its slot forgets its turns. A disc is pooled and shows another track when it
+   * comes back, so a turn it kept would show that track turned (or upside down).
+   */
+  private clearTurns(rig: Rig): void {
+    rig.tiltX = rig.tiltY = 0;
+    rig.settle = null;
+    rig.angle = 0;
+    rig.omega = 0;
+    rig.rest = null;
+    rig.spin.rotation.z = 0;
+    rig.turn.rotation.set(0, 0, 0);
   }
 
   /** Compile every program now, behind the curtain, so the first frames do not stall. */
@@ -428,6 +448,49 @@ export class DiscField {
   /** For looking at the scene while it is tuned (development only). */
   get parts(): { kit: DiscKit; renderer: WebGLRenderer; scene: Scene } {
     return { kit: this.kit, renderer: this.renderer, scene: this.scene };
+  }
+
+  /**
+   * A read-only look at the discs on screen, for the probes and the specs: which track each shows,
+   * whether it is in front, and its turns (radians). `upright` is true when every turn is a whole
+   * number of turns and nothing is still moving it back.
+   */
+  snapshot(): {
+    pos: number;
+    discs: Array<{
+      slot: number;
+      track: number;
+      front: boolean;
+      spin: number;
+      tiltX: number;
+      tiltY: number;
+      settling: boolean;
+      upright: boolean;
+    }>;
+  } {
+    const fs = frontSlot(this.pos);
+    const whole = (a: number) => isUpright(a, 1e-4);
+    const discs = this.rigs
+      .filter((r) => r.slot !== null && r.visible)
+      .map((r) => {
+        const slot = r.slot ?? 0;
+        const spin = r.spin.rotation.z;
+        const tiltX = r.turn.rotation.x;
+        const tiltY = r.turn.rotation.y;
+        const settling = r.rest !== null || r.settle !== null || r.omega !== 0;
+        return {
+          slot,
+          track: mod(slot, this.count),
+          front: slot === fs,
+          spin,
+          tiltX,
+          tiltY,
+          settling,
+          upright: !settling && whole(spin) && whole(tiltX) && whole(tiltY),
+        };
+      })
+      .sort((a, b) => a.slot - b.slot);
+    return { pos: this.pos, discs };
   }
 
   dispose(): void {
@@ -597,7 +660,15 @@ export class DiscField {
       this.setCursor(this.hovered !== null ? "pointer" : "grab");
       if (d.dragging === "disc") {
         const rig = this.bySlot.get(d.disc ?? NaN);
-        if (rig) rig.settle = { x: rig.tiltX, y: rig.tiltY, at: performance.now() };
+        // Back to the nearest whole turn on each axis, so the face comes back upright.
+        if (rig)
+          rig.settle = {
+            x: rig.tiltX,
+            y: rig.tiltY,
+            toX: nearestTurn(rig.tiltX),
+            toY: nearestTurn(rig.tiltY),
+            at: performance.now(),
+          };
         this.clickBlockUntil = performance.now() + 140;
         this.wake();
         return;
@@ -805,10 +876,8 @@ export class DiscField {
       rig.visible = false;
       rig.hover = 0;
       rig.push = freshPush();
-      rig.tiltX = rig.tiltY = 0;
-      rig.settle = null;
       rig.pressAt = -1;
-      rig.omega = 0;
+      this.clearTurns(rig);
     }
     const moving = this.glide !== null || this.inertia !== 0 || this.down?.dragging === "field";
     for (const slot of want) {
@@ -816,6 +885,7 @@ export class DiscField {
       const rig = this.rigs.find((r) => r.slot === null);
       if (!rig) break;
       rig.slot = slot;
+      this.clearTurns(rig);
       rig.fresh = true;
       rig.enter = moving ? Math.sign(slot - this.pos) || 1 : 0;
       rig.root.visible = true;
@@ -1043,27 +1113,39 @@ export class DiscField {
       // The turn of a drag, and its way back to rest.
       const dragged = this.down?.dragging === "disc" && this.down.disc === slot;
       if (rig.settle && !dragged) {
-        const k = clamp((now - rig.settle.at) / 1200, 0, 1);
+        const st = rig.settle;
+        const k = clamp((now - st.at) / 1200, 0, 1);
         const e = easeOutCubic(k);
-        rig.tiltX = rig.settle.x * (1 - e);
-        rig.tiltY = rig.settle.y * (1 - e);
+        rig.tiltX = st.x + (st.toX - st.x) * e;
+        rig.tiltY = st.y + (st.toY - st.y) * e;
         if (k >= 1) {
           rig.settle = null;
           rig.tiltX = rig.tiltY = 0;
         }
         moving += 1;
       }
-      rig.turn.rotation.set(rig.tiltX + p.rx, rig.tiltY + p.ry, 0);
+      rig.turn.rotation.set(rig.tiltX + rig.push.rx, rig.tiltY + rig.push.ry, 0);
       if (dragged) moving += 1;
 
-      // The record turns while its track plays, starts softly and runs down slowly.
+      // The record turns while its track plays and starts softly. When the track pauses, stops or
+      // changes, it slows down onto a whole turn, so its picture comes to rest upright.
       const spinning = play.playing && play.track === mod(slot, this.count);
-      const want = spinning ? SPIN : 0;
-      const rate = spinning ? 1 / 0.7 : 1 / 1.4;
-      rig.omega += (want - rig.omega) * Math.min(1, dt * rate * 2.2);
-      if (!spinning && rig.omega < 0.002) rig.omega = 0;
-      if (rig.omega > 0) {
-        rig.angle = (rig.angle - rig.omega * dt) % (Math.PI * 2);
+      if (spinning) {
+        rig.rest = null;
+        rig.omega += (SPIN - rig.omega) * Math.min(1, dt * (1 / 0.7) * 2.2);
+        rig.angle = (rig.angle - rig.omega * dt) % TURN;
+        rig.spin.rotation.z = rig.angle;
+        moving += 1;
+      } else if (rig.rest || rig.omega !== 0 || rig.angle !== 0) {
+        rig.rest ??= { ...planRest(rig.angle, -rig.omega), at: now };
+        const at = restAt(rig.rest, (now - rig.rest.at) / 1000);
+        rig.angle = at.angle;
+        rig.omega = -at.velocity;
+        if (at.done) {
+          rig.angle = 0;
+          rig.omega = 0;
+          rig.rest = null;
+        }
         rig.spin.rotation.z = rig.angle;
         moving += 1;
       }

@@ -85,6 +85,25 @@ export function stepIn(
   return queue[(((i + direction) % n) + n) % n] ?? null;
 }
 
+/**
+ * The loop of the player belongs to the track it was set on (`loopId`): it repeats that track for
+ * ever, and it is off for any other track.
+ */
+export function loopOn(loopId: string | null, trackId: string | null): boolean {
+  return loopId !== null && loopId === trackId;
+}
+
+/** The loop after the loop button is pressed while `trackId` plays. */
+export function toggleLoopOf(loopId: string | null, trackId: string | null): string | null {
+  if (!trackId) return null;
+  return loopId === trackId ? null : trackId;
+}
+
+/** The loop once the player moves to `nextId`: it stays only if that is the track it was set on. */
+export function loopAfter(loopId: string | null, nextId: string): string | null {
+  return loopId === nextId ? loopId : null;
+}
+
 /** Add `item` at the end unless it is already queued. */
 export function append(queue: readonly MusicItem[], item: MusicItem): MusicItem[] {
   return queue.some((t) => t.id === item.id) ? [...queue] : [...queue, item];

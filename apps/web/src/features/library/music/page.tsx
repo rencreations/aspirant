@@ -12,6 +12,7 @@ import { BackToCollection, useTransparentNav } from "../shell/room-chrome";
 import DiscScene from "./disc-scene";
 import { indexOfId } from "./logic";
 import styles from "./music.module.css";
+import { readPlace, writePlace } from "./place";
 import { PlayerBar } from "./player-bar";
 import {
   changeVolume,
@@ -31,10 +32,13 @@ function isTyping(target: EventTarget | null): boolean {
   return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
 }
 
-/** The track a link names (`?i=`), read once. */
+/**
+ * The track a link names (`?i=`), read once. Without one, the track the visitor was on in this tab
+ * (a film opened from Watch comes back to `/collection/music` with no `?i=`).
+ */
 function linkedId(): string | null {
   if (typeof window === "undefined") return null;
-  return new URLSearchParams(window.location.search).get("i");
+  return new URLSearchParams(window.location.search).get("i") ?? readPlace();
 }
 
 /**
@@ -73,6 +77,7 @@ export default function MusicPage() {
     (index: number) => {
       const item = items?.[index];
       if (!item) return;
+      writePlace(item.id);
       if (!moved.current && index === startIndex && !start) return;
       moved.current = true;
       const url = new URL(window.location.href);

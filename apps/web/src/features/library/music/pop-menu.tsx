@@ -10,15 +10,18 @@ interface Props {
   /** What the button says on a narrow screen (the icon stays). */
   short?: string;
   icon: ReactNode;
+  /** Open the list under the pill (a pill at the top of the screen). By default it opens above. */
+  below?: boolean;
   /** The items of the list, each a link or a button. A press on any of them closes the list. */
   children: ReactNode;
 }
 
 /**
- * A pill that opens a short list above itself (the films of a track, the chapters of the long
- * listen). Esc, a press outside or a choice closes it. Opacity and transform only.
+ * A pill that opens a short list above itself, or under itself with `below` (the films of a track,
+ * the chapters of the long listen). Esc, a press outside or a choice closes it. Opacity and
+ * transform only.
  */
-export function PopMenu({ label, short, icon, children }: Props) {
+export function PopMenu({ label, short, icon, below = false, children }: Props) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
@@ -44,7 +47,12 @@ export function PopMenu({ label, short, icon, children }: Props) {
   }, [open]);
 
   return (
-    <div ref={root} className={styles.pop} data-open={open ? "true" : undefined}>
+    <div
+      ref={root}
+      className={styles.pop}
+      data-open={open ? "true" : undefined}
+      data-below={below ? "true" : undefined}
+    >
       <button
         ref={button}
         type="button"

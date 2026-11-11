@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { FILM_IDS } from "../video/links";
 import { rimWords, titleLines } from "./disc-art";
 import {
   append,
@@ -12,7 +13,10 @@ import {
   downloadName,
   indexOfId,
   infoRows,
+  loopAfter,
+  loopOn,
   stepIn,
+  toggleLoopOf,
 } from "./logic";
 import type { MusicFile, MusicItem } from "./types";
 
@@ -62,6 +66,31 @@ describe("queue helpers", () => {
   it("appends a track unless it is queued", () => {
     expect(append([a], b).map((t) => t.id)).toEqual(["a", "b"]);
     expect(append([a, b], a).map((t) => t.id)).toEqual(["a", "b"]);
+  });
+});
+
+describe("the loop", () => {
+  it("is on only for the track it was set on", () => {
+    expect(loopOn(null, "a")).toBe(false);
+    expect(loopOn("a", "a")).toBe(true);
+    expect(loopOn("a", "b")).toBe(false);
+    expect(loopOn("a", null)).toBe(false);
+  });
+
+  it("turns on and off with the button, and needs a track", () => {
+    expect(toggleLoopOf(null, "a")).toBe("a");
+    expect(toggleLoopOf("a", "a")).toBeNull();
+    // Set on another track before: the press sets it on this one.
+    expect(toggleLoopOf("b", "a")).toBe("a");
+    expect(toggleLoopOf("a", null)).toBeNull();
+  });
+
+  it("is off for the next track the visitor chooses, and stays on a restart of its own", () => {
+    expect(loopAfter("a", "b")).toBeNull();
+    expect(loopAfter("a", "a")).toBe("a");
+    expect(loopAfter(null, "a")).toBeNull();
+    // Gone once the player moved on: coming back to the track later does not bring it back.
+    expect(loopAfter(loopAfter("a", "b"), "a")).toBeNull();
   });
 });
 
@@ -124,8 +153,8 @@ describe("labels", () => {
     expect(words).not.toMatch(
       new RegExp(`[${String.fromCharCode(0x2013)}${String.fromCharCode(0x2014)}]`, "u"),
     );
-    expect(titleLines("We Believe")).toEqual(["WE BELIEVE"]);
-    expect(titleLines("Chang'e and Lesley, display background music")).toHaveLength(2);
+    expect(titleLines("We Believe!")).toEqual(["WE BELIEVE!"]);
+    expect(titleLines("Chang'e & Lesley Music")).toEqual(["CHANG'E &", "LESLEY MUSIC"]);
   });
 });
 
@@ -152,20 +181,71 @@ describe("music.json", () => {
     expect(JSON.stringify(data)).not.toContain("Aino");
   });
 
-  it("names the soundtrack film's tracks as its title cards do", () => {
-    const titles = data.items.map((i) => i.title);
-    expect(titles).toContain("Lullaby of Oblivion");
-    expect(titles).toContain("Gray New World");
-    expect(titles).toContain("CROSS×CREDO: Vexana Version");
-    expect(titles).toContain("CROSS×CREDO: Guinevere Version");
+  it("has the owner's seven tracks, in the owner's order and spelling", () => {
+    expect(data.items.map((i) => [i.id, i.title])).toEqual([
+      ["music-gray-new-world", "Gray New World"],
+      ["music-lullaby-of-oblivion", "Lullaby of Oblivion"],
+      ["music-cross-credo-vexana", "Cross x Credo: Vexana version"],
+      ["music-cross-credo-guinevere", "Cross x Credo: Guinevere version"],
+      ["music-change-lesley-display", "Chang'e & Lesley Music"],
+      ["music-angela-ruby", "Angela & Ruby Music"],
+      ["music-we-believe", "We Believe!"],
+    ]);
+    expect(JSON.stringify(data)).not.toContain(String.fromCharCode(0xd7));
   });
 
-  it("gives the long listen a chapter for each track, in time order", () => {
-    const full = data.items.find((i) => i.id === "music-soundtrack-full");
-    expect(full?.chapters).toHaveLength(6);
-    const times = full?.chapters?.map((c) => c.t) ?? [];
-    expect(times).toEqual([...times].sort((x, y) => x - y));
-    expect(times.every((t) => t < (full?.dur ?? 0))).toBe(true);
+  it("cuts Angela & Ruby Music on its own, credited as the soundtrack's title card says", () => {
+    const ar = data.items.find((i) => i.id === "music-angela-ruby");
+    expect(ar?.credits).toEqual([{ role: "Music", name: "Steven Song" }]);
+    expect(ar?.ep).toBe("EP 02");
+    expect(ar?.released).toBe("12/2022");
+    expect(ar?.src).toBe("music/angela-ruby.m4a");
+    expect(ar?.dur).toBeGreaterThan(70);
+    expect(ar?.dur).toBeLessThan(85);
+    // Chang'e & Lesley no longer runs into it (a new key: the old one is cached).
+    const cl = data.items.find((i) => i.id === "music-change-lesley-display");
+    expect(cl?.src).toBe("music/change-lesley-display-v2.m4a");
+    expect(cl?.dur).toBeLessThan(70);
+  });
+
+  it("opens the soundtrack video at each track's own time, as the owner timed it", () => {
+    const at = (id: string) =>
+      data.items
+        .find((i) => i.id === id)
+        ?.films.find(
+          (f) => f.id === "film-selena-and-obsidia-video-music-collection-001-4013351897154849593",
+        )?.t;
+    expect(at("music-gray-new-world")).toBe(191);
+    expect(at("music-lullaby-of-oblivion")).toBe(2);
+    expect(at("music-cross-credo-vexana")).toBe(368);
+    expect(at("music-cross-credo-guinevere")).toBe(474);
+    expect(at("music-change-lesley-display")).toBe(580);
+    expect(at("music-angela-ruby")).toBe(644);
+  });
+
+  it("links each track to the owner's films", () => {
+    const films = (id: string) => data.items.find((i) => i.id === id)?.films.map((f) => f.id) ?? [];
+    const soundtrack = "film-selena-and-obsidia-video-music-collection-001-4013351897154849593";
+    expect(films("music-gray-new-world")).toEqual([FILM_IDS[1], FILM_IDS[0], soundtrack]);
+    expect(films("music-lullaby-of-oblivion")).toEqual([FILM_IDS[2], FILM_IDS[0], soundtrack]);
+    expect(films("music-cross-credo-vexana")).toEqual([FILM_IDS[3], FILM_IDS[4], soundtrack]);
+    expect(films("music-cross-credo-guinevere")).toEqual([FILM_IDS[3], FILM_IDS[4], soundtrack]);
+    expect(films("music-change-lesley-display")).toEqual([FILM_IDS[5], soundtrack]);
+    expect(films("music-angela-ruby")).toEqual([FILM_IDS[8], FILM_IDS[6], FILM_IDS[7], soundtrack]);
+    // We Believe! keeps its five films.
+    expect(films("music-we-believe")).toHaveLength(5);
+  });
+
+  it("gives the platform links to the two released singles only", () => {
+    for (const i of data.items) {
+      const released = ["music-gray-new-world", "music-lullaby-of-oblivion"].includes(i.id);
+      expect(Boolean(i.links), i.id).toBe(released);
+      if (!i.links) continue;
+      expect(i.links.spotify).toMatch(/^https:\/\/open\.spotify\.com\/album\//u);
+      expect(i.links.apple).toMatch(/^https:\/\/music\.apple\.com\//u);
+      expect(i.links.youtube).toMatch(/^https:\/\/www\.youtube\.com\/playlist\?list=/u);
+      expect(i.links.more).toMatch(/^https:\/\/sndo\.ffm\.to\//u);
+    }
   });
 
   it("links only to films by the Films room's id rule", () => {

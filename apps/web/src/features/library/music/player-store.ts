@@ -12,7 +12,7 @@ import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 import { withSound } from "@/lib/sound-prompt";
 
-import { append, stepIn } from "./logic";
+import { append, loopAfter, loopOn, stepIn, toggleLoopOf } from "./logic";
 import type { MusicItem } from "./types";
 
 interface PlayerState {
@@ -23,6 +23,8 @@ interface PlayerState {
   volume: number;
   /** The queue list above the player bar is open. */
   queueOpen: boolean;
+  /** The track the loop was set on (it repeats for ever), or null. See `loopOn`. */
+  loopId: string | null;
 }
 
 export const usePlayer = create<PlayerState>(() => ({
@@ -31,6 +33,7 @@ export const usePlayer = create<PlayerState>(() => ({
   queue: [],
   volume: 0.8,
   queueOpen: false,
+  loopId: null,
 }));
 
 const get = usePlayer.getState;
@@ -40,12 +43,15 @@ const set = usePlayer.setState;
 let offEnded: (() => void) | null = null;
 
 function begin(item: MusicItem, queue: readonly MusicItem[]): void {
+  // The loop stays only on the track it was set on: the next track the visitor chooses plays once.
+  const loopId = loopAfter(get().loopId, item.id);
   audio.playMusic(libUrl(item.src), { loop: false, volume: get().volume, fadeMs: 250 });
-  set({ track: item, playing: true, queue });
+  set({ track: item, playing: true, queue, loopId });
   offEnded?.();
   offEnded = null;
   const el = audio.getMusicElement();
   if (!el) return;
+  el.loop = loopOn(loopId, item.id);
   const onEnded = () => {
     if (get().track?.id !== item.id) return;
     // The next track of the queue, the first one after the last.
@@ -144,6 +150,15 @@ export function playAt(item: MusicItem, seconds: number, list?: readonly MusicIt
   }
 }
 
+/** Repeat the current track for ever, or stop repeating it. A looping track never ends, so the queue waits. */
+export function toggleLoop(): void {
+  const { track, loopId } = get();
+  const next = toggleLoopOf(loopId, track?.id ?? null);
+  set({ loopId: next });
+  const el = audio.getMusicElement();
+  if (el && track) el.loop = loopOn(next, track.id);
+}
+
 export function changeVolume(volume: number): void {
   const v = Math.min(1, Math.max(0, volume));
   set({ volume: v });
@@ -159,7 +174,7 @@ export function closePlayer(): void {
   offEnded?.();
   offEnded = null;
   audio.stopMusic(400);
-  set({ track: null, playing: false, queue: [], queueOpen: false });
+  set({ track: null, playing: false, queue: [], queueOpen: false, loopId: null });
 }
 
 /** The player bar tells the store what the element reports, so a refused play is not shown as playing. */

@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { audio } from "@/lib/audio";
-import { libUrl } from "@/lib/library";
 import { useSiteStore } from "@/lib/stores";
 
-import { downloadFile } from "../voicelines/download";
 import { Icon } from "../voicelines/icons";
-import { clock, coverUrl, creditSummary, discUrl, downloadName } from "./logic";
+import { clock, coverUrl, creditSummary, discUrl, loopOn } from "./logic";
 import styles from "./music.module.css";
 import {
   changeVolume,
@@ -17,18 +15,34 @@ import {
   seekTo,
   stepTrack,
   syncPlaying,
+  toggleLoop,
   toggleQueue,
   togglePlayback,
   usePlayer,
 } from "./player-store";
+import { useRecordSpin } from "./record-spin";
 import type { MusicItem } from "./types";
+
+/** Two arrows chasing each other round, with a 1: repeat this one track. */
+function LoopIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H19" />
+      <path d="m16 3 3 3-3 3" />
+      <path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H5" />
+      <path d="m8 21-3-3 3-3" />
+      <path d="M11.2 10.6 12.6 9.6V14.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 /**
  * The small player of the music room. It appears when a track starts and stays in the corner
  * while the visitor turns the field: the disc, the title and the credit, previous, play and next,
- * the time with a seek bar, the volume, the queue, a download and a close button. The sound runs
- * through the shared engine, so the site's sound button and the ducking under voice lines apply.
- * Media keys and the lock screen get the title and the cover.
+ * the time with a seek bar, the volume, the queue, the loop (it repeats the track for ever) and a
+ * close button. The download is under the disc. The sound runs through the shared engine, so the
+ * site's sound button and the ducking under voice lines apply. Media keys and the lock screen get
+ * the title and the cover.
  */
 export function PlayerBar() {
   const track = usePlayer((s) => s.track);
@@ -42,6 +56,9 @@ function Bar({ track }: { track: MusicItem }) {
   const volume = usePlayer((s) => s.volume);
   const queue = usePlayer((s) => s.queue);
   const queueOpen = usePlayer((s) => s.queueOpen);
+  const looping = usePlayer((s) => loopOn(s.loopId, track.id));
+  const discRef = useRef<HTMLImageElement>(null);
+  useRecordSpin(discRef, playing);
   const muted = useSiteStore((s) => s.muted);
   const toggleMute = useSiteStore((s) => s.toggleMute);
   const [time, setTime] = useState(() => audio.getMusicElement()?.currentTime ?? 0);
@@ -184,7 +201,7 @@ function Bar({ track }: { track: MusicItem }) {
       <div className={styles.playerTop}>
         <span className={styles.playerDisc} aria-hidden="true">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={discUrl(track)} alt="" width={48} height={48} />
+          <img ref={discRef} src={discUrl(track)} alt="" width={48} height={48} />
         </span>
         <div className={styles.playerText}>
           <p className={styles.playerKicker}>
@@ -276,18 +293,16 @@ function Bar({ track }: { track: MusicItem }) {
         >
           <Icon name="queue" />
         </button>
-        <a
-          className={styles.iconBtn}
-          href={libUrl(track.orig ?? track.src)}
-          download={downloadName(track)}
-          aria-label={`Download ${track.title}`}
-          onClick={(e) => {
-            e.preventDefault();
-            void downloadFile(libUrl(track.orig ?? track.src), downloadName(track));
-          }}
+        <button
+          type="button"
+          className={`${styles.iconBtn} ${styles.loopBtn}`}
+          aria-label="Loop this track"
+          aria-pressed={looping}
+          title={looping ? "Looping this track" : "Loop this track"}
+          onClick={toggleLoop}
         >
-          <Icon name="download" />
-        </a>
+          <LoopIcon />
+        </button>
         <button
           type="button"
           className={styles.iconBtn}
