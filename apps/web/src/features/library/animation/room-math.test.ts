@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { SELENA_TIMELINE } from "@/features/character/selena/timeline.generated";
 
 import { fieldColors, mixHex } from "./colors";
-import { contourPaths } from "./contours";
 import { describeClips, pairOf } from "./copy";
 import { contrast, optionButtons, sceneProgress } from "./room-math";
 import type { AnimClip } from "./types";
@@ -100,13 +99,5 @@ describe("copy", () => {
   it("says what a character's animation holds, in words", () => {
     expect(describeClips(CLIPS)).toBe("A welcome, an idle loop, a close pose and two clips.");
     expect(describeClips(CLIPS.slice(0, 2))).toBe("A welcome and an idle loop.");
-  });
-});
-
-describe("contourPaths", () => {
-  it("draws closed lines from the panel out past the corners of the screen", () => {
-    const paths = contourPaths({ cx: 720, cy: 420, hw: 440, hh: 280 }, { w: 1440, h: 900 }, 50);
-    expect(paths.length).toBeGreaterThan(8);
-    expect(paths.every((d) => d.startsWith("M") && d.endsWith("Z"))).toBe(true);
   });
 });

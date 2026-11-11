@@ -94,16 +94,6 @@ const SITE_DIRS: Partial<Record<CharacterSlug, string>> = {
   vexana: "/video/vexana-stage",
 };
 
-/**
- * The picture of a panel: the first frame of the character's idle pose, the picture the stage
- * shows under its videos. The six library stages have a 1280 copy of it, which is enough for a
- * panel; the site's own four have their 2560 still only.
- */
-export function panelStill(slug: CharacterSlug): string {
-  const dir = SITE_DIRS[slug];
-  return dir ? `${dir}/still.webp` : libUrl(`animation/${slug}/poster/p.webp`);
-}
-
 /** The still the stage itself draws under its videos (2560 wide), until the welcome's first frame. */
 export function stageStill(slug: CharacterSlug): string {
   return `${SITE_DIRS[slug] ?? libUrl(`animation/${slug}`)}/still.webp`;

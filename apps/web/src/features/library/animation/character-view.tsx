@@ -11,8 +11,8 @@ export function CharacterView({ character }: { character: CharacterSlug }) {
     <>
       <h1 className="sr-only">{name}, animation</h1>
       <p className="sr-only">
-        The in-game animation of {name}, full screen. The buttons on the right play her other
-        animations.
+        The in-game animation of {name}, full screen. Once her welcome is done, the animation
+        buttons play her poses and her other clips. Only the buttons that work at that moment show.
       </p>
     </>
   );

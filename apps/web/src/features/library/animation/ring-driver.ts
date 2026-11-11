@@ -8,16 +8,19 @@ import {
 
 import {
   FLAT,
+  frameBox,
+  frameTransform,
   fullWindow,
   offsetOf,
   placement,
   ringContent,
   visibility,
+  wholeFrame,
   wrapOffset,
   type RingGeometry,
 } from "./ring";
 
-/** The elements of one panel the driver moves. */
+/** The elements of one panel the driver moves, and the point of its picture that stays in view. */
 export interface PanelEls {
   /** The box the size of the screen that carries the 3D placement and the fade. */
   panel: HTMLElement;
@@ -28,7 +31,17 @@ export interface PanelEls {
   inner: HTMLElement;
   counter: HTMLElement;
   content: HTMLElement;
+  /** The splash art under the stage. */
+  splash: HTMLElement;
+  /** The box of the stage, the recording's own shape: it covers the screen, or shows whole. */
+  frame: HTMLElement;
+  /** Holds the live stage: it fades while the ring turns away from it. */
+  live: HTMLElement;
+  /** The point of the recording kept in view, 0 to 1 from the left. */
+  focus: number;
 }
+
+const wholeEase = cubicBezier(0.65, 0, 0.2, 1);
 
 /** How dark a panel is: the back of the ring shows the backs of the panels, in shade. */
 function dimOf(offset: number): number {
@@ -66,6 +79,10 @@ export class RingDriver {
   /** The panel that is the full screen view, or null on the ring. */
   private fullIndex: number | null = null;
   private morphing: Animation[] = [];
+  /** The panel that shows its whole frame (Whole frame), or null. */
+  private wholeIndex: number | null = null;
+  private wholeAnims: Animation[] = [];
+  private liveAnims = new Map<number, Animation>();
   /** Where the ring stands (the panel in front, a fraction while it turns), in [0, count). */
   p = 0;
 
@@ -102,6 +119,69 @@ export class RingDriver {
     els.inner.style.transform = translate(layers.inner);
     els.counter.style.transform = translate(layers.counter);
     els.content.style.transform = place(layers.content);
+    // The stage's box is set once per screen size (no motion), its whole frame by a transform.
+    const box = frameBox(g.view, els.focus);
+    els.frame.style.left = px(box.x);
+    els.frame.style.top = px(box.y);
+    els.frame.style.width = px(box.w);
+    els.frame.style.height = px(box.h);
+    const whole = this.wholeIndex === index;
+    els.frame.style.transform = frameTransform(whole ? wholeFrame(g.view, box) : null);
+    els.splash.style.opacity = whole ? "0" : "1";
+  }
+
+  /**
+   * Whole frame on or off for a panel: the recording moves from covering the screen to fitting it
+   * whole, centred, with black above and below (or back). One transform on the stage's box, and
+   * the splash under it fades, so the bands are plain black.
+   */
+  whole(index: number, on: boolean, ms = 520) {
+    const g = this.g;
+    const els = this.els.get(index);
+    if (!g || !els) return;
+    if (on === (this.wholeIndex === index) && ms > 0) return;
+    const fromFrame = getComputedStyle(els.frame).transform;
+    const fromSplash = getComputedStyle(els.splash).opacity;
+    for (const a of this.wholeAnims) a.cancel();
+    this.wholeAnims = [];
+    if (on) this.wholeIndex = index;
+    else if (this.wholeIndex === index) this.wholeIndex = null;
+    const box = frameBox(g.view, els.focus);
+    const to = frameTransform(on ? wholeFrame(g.view, box) : null);
+    els.frame.style.transform = to;
+    els.splash.style.opacity = on ? "0" : "1";
+    if (ms <= 0) return;
+    const timing: KeyframeAnimationOptions = { duration: ms, easing: wholeEase.css };
+    this.wholeAnims = [
+      els.frame.animate(
+        [{ transform: fromFrame === "none" ? frameTransform(null) : fromFrame }, { transform: to }],
+        timing,
+      ),
+      els.splash.animate([{ opacity: fromSplash }, { opacity: on ? 0 : 1 }], timing),
+    ];
+  }
+
+  get wholeOn(): number | null {
+    return this.wholeIndex;
+  }
+
+  /**
+   * Show or hide the live stage of a panel over its splash: it fades out while the ring turns away
+   * from it, so the panel that leaves the front ends on its splash without a cut.
+   */
+  fadeLive(index: number, on: boolean, ms: number) {
+    const els = this.els.get(index);
+    if (!els) return;
+    const from = getComputedStyle(els.live).opacity;
+    this.liveAnims.get(index)?.cancel();
+    this.liveAnims.delete(index);
+    const to = on ? "1" : "0";
+    els.live.style.opacity = to;
+    if (ms <= 0 || from === to) return;
+    this.liveAnims.set(
+      index,
+      els.live.animate([{ opacity: from }, { opacity: to }], { duration: ms, easing: "ease" }),
+    );
   }
 
   /** Put every panel where it stands for the ring at `p`, at once. */
@@ -128,7 +208,7 @@ export class RingDriver {
     return m.from + (m.to - m.from) * k;
   }
 
-  /** True while the ring turns by itself. */
+  /** True while a turn of the ring runs (a glide, not a drag). */
   get moving(): boolean {
     return this.motion !== null;
   }
@@ -142,19 +222,6 @@ export class RingDriver {
     for (const a of m.anims) a.cancel();
     this.write(at);
     return this.p;
-  }
-
-  /** Pause a turn (the pointer rests on the panel), and carry on. */
-  pause() {
-    this.motion?.anims.forEach((a) => {
-      a.pause();
-    });
-  }
-
-  resume() {
-    this.motion?.anims.forEach((a) => {
-      a.play();
-    });
   }
 
   /** Turn the ring from where it is to `to` (any real number, the turn takes the short way). */
@@ -367,6 +434,10 @@ export class RingDriver {
   destroy() {
     this.halt();
     this.cancelMorph();
+    for (const a of this.wholeAnims) a.cancel();
+    for (const a of this.liveAnims.values()) a.cancel();
+    this.wholeAnims = [];
+    this.liveAnims.clear();
     this.els.clear();
   }
 }

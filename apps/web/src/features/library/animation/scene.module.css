@@ -75,15 +75,48 @@
   pointer-events: none;
 }
 
-.still {
+/* The splash art: what a panel shows until its stage plays. Its own point of focus (the face) is
+   set on the element, so a narrow window keeps the character in view. */
+.splash {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: var(--focus);
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* The stage's box: the recording's own shape, placed by the ring driver so it covers the screen
+   (as object-fit: cover would) or, with Whole frame, scaled to fit whole. Only its transform moves. */
+.frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+.liveBox {
+  position: absolute;
+  inset: 0;
+}
+
+/* A new stage fades in over the splash. */
+.liveIn {
+  position: absolute;
+  inset: 0;
+  animation: live-in 560ms ease both;
+}
+
+@keyframes live-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* The back of the ring is in shade. */

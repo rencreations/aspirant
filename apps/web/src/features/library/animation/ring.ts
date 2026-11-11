@@ -149,14 +149,48 @@ export function fullWindow(g: RingGeometry): { win: Rect; content: Placement } {
   return { win: { x: 0, y: 0, w: g.view.w, h: g.view.h }, content: { x: 0, y: 0, s: 1 } };
 }
 
+// The frame ----------------------------------------------------------------------------------------
+
+/** The shape of the recordings (3840 by 1728, every character, every size). */
+export const FRAME_ASPECT = 3840 / 1728;
+
+/**
+ * The box of the stage inside a picture the size of the screen: the recording covers the screen,
+ * with `focus` (0 to 1 from the left) kept in view, as `object-fit: cover` with that position does.
+ * The box has the recording's own shape, so the videos in it show their whole frame.
+ */
+export function frameBox(view: Box, focus: number): Rect {
+  const w = Math.max(1, view.w);
+  const h = Math.max(1, view.h);
+  if (w / h < FRAME_ASPECT) {
+    const fw = h * FRAME_ASPECT;
+    return { x: (w - fw) * clamp(focus, 0, 1), y: 0, w: fw, h };
+  }
+  const fh = w / FRAME_ASPECT;
+  return { x: 0, y: (h - fh) / 2, w, h: fh };
+}
+
+/** The frame box moved and scaled to fit whole inside the screen, centred (Whole frame). */
+export function wholeFrame(view: Box, box: Rect): Placement {
+  const s = Math.min(1, view.w / box.w, view.h / box.h);
+  return {
+    x: (view.w - box.w * s) / 2 - box.x,
+    y: (view.h - box.h * s) / 2 - box.y,
+    s,
+  };
+}
+
+/** The transform of the frame box, from its place (origin top left). One list, so it animates. */
+export function frameTransform(p: Placement | null): string {
+  const { x, y, s } = p ?? { x: 0, y: 0, s: 1 };
+  return `translate(${px(x)}, ${px(y)}) scale(${Math.round(s * 1e5) / 1e5})`;
+}
+
 // Motion -------------------------------------------------------------------------------------------
 
-/** Time of a step (the reference: 1.15 s for a step on its own, 0.5 s for a press). */
-export const STEP_MS = 1150;
+/** Time of a step made by a press (the reference: 0.5 s; its own step took 1.15 s). */
 export const PRESS_STEP_MS = 650;
 export const SNAP_BACK_MS = 300;
-/** The idle ring creeps this much of a step before it takes the step (as the reference). */
-export const CREEP = 0.125;
 
 /** A drag of the full screen width turns the ring this many panels (the reference: 0.75). */
 const DRAG_PANELS_PER_SCREEN = 0.75;

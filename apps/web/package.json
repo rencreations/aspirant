@@ -36,6 +36,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "three": "catalog:",
+    "ogl": "catalog:",
     "zod": "catalog:",
     "zustand": "catalog:"
   },

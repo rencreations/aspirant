@@ -1,12 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useRef, useState, type RefObject } from "react";
 
 import type { StageState } from "@/features/character/stage/director";
 import type { StageApi } from "@/features/character/stage/stage";
-import type { SceneName } from "@/features/character/stage/timeline";
-
-import type { StageBundle } from "./bundle";
+import { isPage, type SceneName } from "@/features/character/stage/timeline";
 
 const BOOT: StageState = {
   mode: "boot",
@@ -22,74 +20,111 @@ const BOOT: StageState = {
 export interface Controls {
   state: StageState;
   onState: (state: StageState) => void;
-  /** The scene pressed while the welcome still played: it starts when the idle loop is up. */
-  wanted: SceneName | null;
-  play: (scene: SceneName) => void;
+  /** A scene pressed before its files were in memory: it starts when they are. */
+  held: SceneName | null;
+  /**
+   * An option is pressed. A scene whose files are not in memory is held until they are, a second
+   * press on a scene that waits lets it go, and a press on the pose that plays leaves it.
+   */
+  press: (scene: SceneName, ready: boolean) => void;
+  /** The held scene's files are in: the stage plays it. */
+  release: () => void;
+  /** Back to idle from a pose. */
+  leave: () => void;
+  /** Leave whatever is pressed, waiting or posed (the view closes): she goes back to rest. */
+  settle: () => void;
   warm: (scene: SceneName) => void;
   /** A new stage begins (the welcome again, or another character): forget the old state. */
   reset: () => void;
 }
 
-/**
- * What the buttons of the full screen view do to the stage: a press asks for a clip, a second press
- * on a pose that holds takes it back to idle, a press during the welcome waits for its end, and a
- * pose goes back to idle by itself after one loop, so the character always comes back to rest.
- */
-export function useControls(
-  stage: RefObject<StageApi | null>,
-  bundle: StageBundle | null,
-): Controls {
-  const [state, setState] = useState<StageState>(BOOT);
-  const [wanted, setWanted] = useState<SceneName | null>(null);
-  const stateRef = useRef<StageState>(BOOT);
-  const wantedRef = useRef<SceneName | null>(null);
+/** The stage takes a new scene now: she idles, or she is back in her idle pose while she hands back. */
+const accepts = (s: StageState) => s.mode === "idle" || s.mode === "queued" || s.ui;
 
-  const setWantedBoth = useCallback((scene: SceneName | null) => {
-    wantedRef.current = scene;
-    setWanted(scene);
+/**
+ * What the buttons of the full screen view do to the stage. A pose loops until the visitor takes
+ * her back to idle; an action plays once and hands back by itself.
+ */
+export function useControls(stage: RefObject<StageApi | null>): Controls {
+  const [state, setState] = useState<StageState>(BOOT);
+  const [held, setHeld] = useState<SceneName | null>(null);
+  const stateRef = useRef<StageState>(BOOT);
+  const heldRef = useRef<SceneName | null>(null);
+  /** Back to idle was pressed while the entrance handed over to the loop: it leaves once posed. */
+  const leaveAsked = useRef(false);
+
+  const setHeldBoth = useCallback((scene: SceneName | null) => {
+    heldRef.current = scene;
+    setHeld(scene);
   }, []);
 
   const onState = useCallback(
     (next: StageState) => {
       stateRef.current = next;
       setState(next);
-      const scene = wantedRef.current;
-      if (scene && next.mode === "idle" && next.ui) {
-        setWantedBoth(null);
+      if (leaveAsked.current && next.mode === "page") {
+        leaveAsked.current = false;
         window.setTimeout(() => {
-          stage.current?.request(scene);
+          stage.current?.leave();
         }, 0);
       }
     },
-    [setWantedBoth, stage],
+    [stage],
   );
 
   const reset = useCallback(() => {
     stateRef.current = BOOT;
     setState(BOOT);
-    setWantedBoth(null);
-  }, [setWantedBoth]);
+    setHeldBoth(null);
+    leaveAsked.current = false;
+  }, [setHeldBoth]);
 
-  const play = useCallback(
-    (scene: SceneName) => {
+  const leave = useCallback(() => {
+    const s = stateRef.current;
+    if (!s.scene || !isPage(s.scene)) return;
+    if (s.mode === "intro" || s.mode === "page") stage.current?.leave();
+    else if (s.mode === "returning" && !s.leaving && !s.ui) leaveAsked.current = true;
+  }, [stage]);
+
+  const press = useCallback(
+    (scene: SceneName, ready: boolean) => {
       const api = stage.current;
       const s = stateRef.current;
-      if (s.scene === scene && (s.mode === "page" || s.mode === "intro")) {
-        api?.leave();
+      if (heldRef.current === scene) {
+        setHeldBoth(null);
         return;
       }
-      if (s.scene === scene && s.mode === "queued") {
+      if ((s.scene === scene && s.mode === "queued") || s.next === scene) {
         api?.cancel();
         return;
       }
-      if (s.mode === "boot" || s.mode === "welcome") {
-        setWantedBoth(wantedRef.current === scene ? null : scene);
+      const posed = s.mode === "page" || s.mode === "intro" || (s.mode === "returning" && !s.ui);
+      if (s.scene === scene && isPage(scene) && !s.leaving && posed) {
+        leave();
         return;
       }
-      api?.request(scene);
+      if (!ready) {
+        setHeldBoth(scene);
+        return;
+      }
+      if (accepts(s)) api?.request(scene);
     },
-    [setWantedBoth, stage],
+    [leave, setHeldBoth, stage],
   );
+
+  const release = useCallback(() => {
+    const scene = heldRef.current;
+    if (!scene || !accepts(stateRef.current)) return;
+    setHeldBoth(null);
+    stage.current?.request(scene);
+  }, [setHeldBoth, stage]);
+
+  const settle = useCallback(() => {
+    const s = stateRef.current;
+    setHeldBoth(null);
+    if (s.mode === "queued" || s.next) stage.current?.cancel();
+    leave();
+  }, [leave, setHeldBoth, stage]);
 
   const warm = useCallback(
     (scene: SceneName) => {
@@ -98,21 +133,5 @@ export function useControls(
     [stage],
   );
 
-  // A pose is a page of the engine and holds until it is left: it is left after one loop.
-  useEffect(() => {
-    if (state.mode !== "page" || !state.scene || !bundle) return;
-    const page = bundle.timeline.pages[state.scene as keyof typeof bundle.timeline.pages];
-    if (!page) return;
-    const timer = window.setTimeout(
-      () => {
-        stage.current?.leave();
-      },
-      (page.loop.frames / bundle.timeline.fps) * 1000,
-    );
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [state.mode, state.scene, bundle, stage]);
-
-  return { state, onState, wanted, play, warm, reset };
+  return { state, onState, held, press, release, leave, settle, warm, reset };
 }

@@ -107,7 +107,7 @@ const RELEASE_DELAY_MS = 1600;
 
 /**
  * What is kept in memory as the ring turns: the character in front whole, the welcome and idle loop
- * of the two beside it (warmed in the background, the next first, since the ring drifts to it), and
+ * of the two beside it (warmed in the background, the next first, the likeliest turn), and
  * nothing else. A character that moves further away is let go a moment later, unless the ring has
  * come back to it. Leaving the room lets go of everything.
  */

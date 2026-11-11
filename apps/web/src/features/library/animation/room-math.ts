@@ -1,25 +1,19 @@
-import {
-  PAGE_NAMES,
-  SHORT_NAMES,
-  type SceneName,
-  type Timeline,
-} from "@/features/character/stage/timeline";
+import type { Timeline } from "@/features/character/stage/timeline";
 
 import { sceneFiles } from "./bundle";
+import { roleOf, type Role } from "./full-state";
 import type { AnimClip } from "./types";
 
 /** A button of the full screen view: one clip, and the files it needs. */
 export interface RoomButton {
   clip: AnimClip;
+  /** What it plays, by the stage engine's timeline: the welcome, a pose that loops, an action. */
+  role: Role;
   /** The digit that presses it, `1` to `9`, in the order of the data file. */
   key: number | null;
   /** The files that must be in memory before it can play. Empty for the welcome and the idle loop. */
   files: string[];
 }
-
-const isScene = (scene: string): scene is SceneName =>
-  (PAGE_NAMES as readonly string[]).includes(scene) ||
-  (SHORT_NAMES as readonly string[]).includes(scene);
 
 /**
  * The buttons of one character, in the order of the data file: the welcome, the poses, then the
@@ -31,11 +25,12 @@ export function optionButtons(clips: readonly AnimClip[], timeline: Timeline | n
   const out: RoomButton[] = [];
   for (const clip of [...clips].sort((a, b) => a.order - b.order)) {
     if (clip.kind === "idle") continue;
-    const scene = clip.scene;
-    const files = scene && isScene(scene) && timeline ? sceneFiles(timeline, scene) : [];
-    if (scene && timeline && files.length === 0) continue;
+    const role = roleOf(clip.scene, timeline);
+    if (!role) continue;
+    const files = clip.scene && timeline ? sceneFiles(timeline, clip.scene) : [];
+    if (role !== "welcome" && timeline && files.length === 0) continue;
     const key = digit >= 9 ? null : (digit += 1);
-    out.push({ clip, key, files });
+    out.push({ clip, role, key, files });
   }
   return out;
 }

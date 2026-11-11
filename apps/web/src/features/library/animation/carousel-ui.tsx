@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { type MouseEvent, type RefObject } from "react";
+import type { MouseEvent } from "react";
 
 import { BackToCollection } from "@/features/library/shell/room-chrome";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { CHARACTER_NAMES, type CharacterSlug } from "@/lib/slugs";
 
-import { ORDER, panelStill } from "./characters";
+import { ORDER } from "./characters";
 import { describeClips, pairOf, two } from "./copy";
 import styles from "./shell.module.css";
+import { splashFor } from "./splash";
 import type { AnimChar, AnimClip } from "./types";
 
 interface Props {
@@ -22,10 +23,6 @@ interface Props {
   onStep: (dir: 1 | -1) => void;
   onGo: (index: number) => void;
   onLaunch: (e: MouseEvent<HTMLAnchorElement>) => void;
-  /** The pointer rests on the launch button (the drift waits). */
-  onRest: (resting: boolean) => void;
-  /** The hairline under the thumbnail in front that fills while the ring drifts. */
-  driftLine: RefObject<HTMLElement | null>;
 }
 
 /** Where a removal is asked for (the same address as every room of the collection). */
@@ -37,18 +34,10 @@ export const fullHref = (slug: CharacterSlug) => `/collection/animation/${slug}`
 /**
  * Everything over the ring, as the reference lays it out: the way back to the collection at the top
  * left, the title block over the lower left of the panel with its Launch button, two round buttons
- * on the right, and a row of the ten at the lower right.
+ * on the right, and a row of the ten at the lower right (their splash art, on the face). Nothing
+ * here moves the ring by itself.
  */
-export function CarouselUi({
-  chars,
-  clips,
-  target,
-  onStep,
-  onGo,
-  onLaunch,
-  onRest,
-  driftLine,
-}: Props) {
+export function CarouselUi({ chars, clips, target, onStep, onGo, onLaunch }: Props) {
   const slug = ORDER[target]!;
   const char = chars.get(slug);
   const name = char?.name ?? CHARACTER_NAMES[slug];
@@ -81,17 +70,7 @@ export function CarouselUi({
           className={styles.launch}
           onClick={onLaunch}
           onPointerEnter={() => {
-            onRest(true);
             audio.blip("hover");
-          }}
-          onPointerLeave={() => {
-            onRest(false);
-          }}
-          onFocus={() => {
-            onRest(true);
-          }}
-          onBlur={() => {
-            onRest(false);
           }}
           aria-label={`Launch ${name} full screen`}
         >
@@ -133,26 +112,28 @@ export function CarouselUi({
 
       <div className={styles.foot}>
         <nav className={styles.thumbs} aria-label="Characters">
-          {ORDER.map((s, i) => (
-            <button
-              key={s}
-              type="button"
-              className={styles.thumb}
-              aria-current={i === target ? "true" : undefined}
-              aria-label={chars.get(s)?.name ?? CHARACTER_NAMES[s]}
-              onClick={() => {
-                audio.blip("click");
-                onGo(i);
-              }}
-              style={{ ["--focus" as string]: `${chars.get(s)?.focus ?? 50}% 40%` }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset(panelStill(s))} alt="" draggable={false} decoding="async" />
-              {i === target ? (
-                <i ref={driftLine} className={styles.drift} aria-hidden="true" />
-              ) : null}
-            </button>
-          ))}
+          {ORDER.map((s, i) => {
+            const splash = splashFor(s);
+            return (
+              <button
+                key={s}
+                type="button"
+                className={styles.thumb}
+                aria-current={i === target ? "true" : undefined}
+                aria-label={chars.get(s)?.name ?? CHARACTER_NAMES[s]}
+                onClick={() => {
+                  audio.blip("click");
+                  onGo(i);
+                }}
+                style={{
+                  ["--focus" as string]: `${splash.focus.x * 100}% ${splash.focus.y * 100}%`,
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={asset(splash.src)} alt="" draggable={false} decoding="async" />
+              </button>
+            );
+          })}
         </nav>
         <p className={styles.note}>
           In-game animation by Moonton, in a fan archive. To ask for a takedown, open an issue on{" "}

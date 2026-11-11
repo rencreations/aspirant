@@ -1,0 +1,27 @@
+/* The slat field: one canvas the size of the screen. Nothing here moves in CSS: the canvas draws
+   itself. Without WebGL 2 the host shows each character's plain colour field instead, and a change
+   of character is a fade of opacity. */
+
+.host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* An opaque canvas on its own layer: the panels composite over it without repainting it. */
+  contain: strict;
+}
+
+.host canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.plain {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.plain[data-on="true"] {
+  opacity: 1;
+}

@@ -14,6 +14,7 @@ import {
 
 import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
+import type { StageState } from "@/features/character/stage/director";
 import { CharacterStage, type StageApi } from "@/features/character/stage/stage";
 import { useLibrarySearch } from "@/features/library/search/search-store";
 import { useTransparentNav } from "@/features/library/shell/room-chrome";
@@ -25,12 +26,12 @@ import type { CharacterSlug } from "@/lib/slugs";
 import { useLibraryData } from "../data";
 import { Background } from "./background";
 import { CarouselUi, fullHref } from "./carousel-ui";
-import { ORDER, orderIndex, panelStill } from "./characters";
+import { ORDER, orderIndex } from "./characters";
 import { fieldColors } from "./colors";
+import { fullPhase, optionViews, waitOf } from "./full-state";
 import { FullUi } from "./full-ui";
 import { Panel } from "./panel";
 import {
-  CREEP,
   dragTarget,
   dragTurn,
   feedWheel,
@@ -38,27 +39,30 @@ import {
   PRESS_STEP_MS,
   ringGeometry,
   SNAP_BACK_MS,
-  STEP_MS,
   wheelPixels,
   wrapIndex,
   wrapOffset,
   type RingGeometry,
 } from "./ring";
 import { MORPH_MS, RingDriver, type PanelEls } from "./ring-driver";
-import { optionButtons, type RoomButton } from "./room-math";
+import { optionButtons, sceneProgress, type RoomButton } from "./room-math";
 import scene from "./scene.module.css";
 import styles from "./shell.module.css";
+import { splashFor } from "./splash";
 import { rememberActive, slugFromAddress, startSlug } from "./start";
+import { useThemeMusic } from "./theme-music";
 import type { AnimationFile, AnimChar, AnimClip } from "./types";
 import { useControls } from "./use-controls";
 import { useClips, useCore, useWarmth } from "./use-core";
+import { useFullscreen } from "./use-fullscreen";
 
 type View = "ring" | "expanding" | "full" | "collapsing";
 
-/** The ring rests on a character this long in its idle loop before it drifts on (as the reference). */
-const IDLE_MS = 6500;
-const linear = Object.assign((t: number) => t, { css: "linear" });
 const NO_CLIPS: AnimClip[] = [];
+/** The live stage of the panel that leaves the front fades to its splash this fast at most. */
+const LIVE_OUT_MS = 480;
+/** A screen at most this tall gets the small landscape layout of the full screen view. */
+const LOW_PX = 520;
 
 /** The library search or another sheet (the site menu) is open over the room: it owns the keys. */
 function overlayOpen(): boolean {
@@ -73,6 +77,18 @@ function fullOf(pathname: string | null): CharacterSlug | null {
   const m = /\/collection\/animation\/([a-z]+)\/?$/u.exec(pathname ?? "");
   return m && orderIndex(m[1]) >= 0 ? (m[1] as CharacterSlug) : null;
 }
+
+/** Resolve after `n` frames. */
+const frames = (n: number) =>
+  new Promise<void>((resolve) => {
+    let k = 0;
+    const tick = () => {
+      k += 1;
+      if (k >= n) resolve();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
 
 /** Frame sheets: `window.__animMorph = { freeze: true }` before a launch holds it at its start. */
 interface MorphProbe {
@@ -107,7 +123,8 @@ function hold(anims: Animation[]) {
  * apechain.com) and the full screen view of each one (`/collection/animation/<slug>`). It lives in
  * the layout of both routes, so the panel in front and its playing stage stay alive when the
  * address changes: Launch lays the panel flat and opens its window to the screen, Back closes it
- * into its place on the ring, and neither cuts the picture.
+ * into its place on the ring, and neither cuts the picture. The ring moves only when the visitor
+ * moves it.
  */
 export function AnimationShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -131,22 +148,28 @@ export function AnimationShell({ children }: { children: ReactNode }) {
   const targetRef = useRef(active);
   const [arrival, setArrival] = useState(0);
   const [nonce, setNonce] = useState(0);
+  /** The welcome on show was asked for with the Welcome button. */
+  const [replay, setReplay] = useState(false);
+  const [whole, setWhole] = useState(false);
   const [geo, setGeo] = useState<RingGeometry | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [poke, setPoke] = useState(0);
   const driver = useMemo(() => new RingDriver(ORDER.length), []);
+  const roomRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const swayRef = useRef<HTMLDivElement>(null);
-  const driftLine = useRef<HTMLElement | null>(null);
+  const measureRef = useRef<(() => void) | null>(null);
   const stage = useRef<StageApi>(null);
   const claim = useRef<(() => void) | null>(null);
 
   const slug = ORDER[active]!;
   const core = useCore(slug);
-  const controls = useControls(stage, core.bundle);
-  const { reset: resetStage, play: playScene } = controls;
+  const controls = useControls(stage);
+  const { reset: resetStage, press: pressScene, release: releaseHeld, settle } = controls;
   const files = useClips(core.bundle, view === "full");
+  const screen = useFullscreen(roomRef);
   useWarmth(mounted ? active : null);
+  // The song of the character on show: the one the ring turns to, or the one full screen.
+  useThemeMusic(mounted ? (view === "ring" ? ORDER[target]! : slug) : null);
 
   const setViewBoth = useCallback((v: View) => {
     viewRef.current = v;
@@ -189,10 +212,12 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       setGeo(g);
     };
     measure();
+    measureRef.current = measure;
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => {
       ro.disconnect();
+      measureRef.current = null;
     };
   }, [driver, mounted]);
 
@@ -250,52 +275,58 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       targetRef.current = i;
       setTarget(i);
       if (i === activeRef.current) {
-        // Back on the same panel (a drag that sprang back): the idle clock starts again.
-        setPoke((n) => n + 1);
+        // Back on the same panel (a drag that sprang back): its stage shows again.
+        driver.fadeLive(i, true, 300);
         return;
       }
+      driver.fadeLive(i, true, 0);
       activeRef.current = i;
       setActive(i);
       setArrival((n) => n + 1);
+      setReplay(false);
       resetStage();
       rememberActive(ORDER[i]!);
     },
-    [resetStage],
+    [driver, resetStage],
   );
 
-  // The drift --------------------------------------------------------------------------------------
+  // On a page change the router writes the address after the first render, so the character it
+  // names (`?i=` of the library search) is read again once the ring is placed.
+  const addressed = useRef(false);
+  useLayoutEffect(() => {
+    if (!geo || addressed.current) return;
+    addressed.current = true;
+    if (viewRef.current !== "ring") return;
+    const named = slugFromAddress(window.location.pathname, window.location.search);
+    const i = named ? ORDER.indexOf(named) : -1;
+    if (i < 0 || i === activeRef.current) return;
+    driver.write(i);
+    arrive(i);
+  }, [geo, driver, arrive]);
 
-  const drift = useRef<{ on: boolean; line: Animation | null }>({ on: false, line: null });
-  const rest = useRef({ launch: false, panel: false });
-
-  const stopDrift = useCallback(() => {
-    const d = drift.current;
-    if (d.on) {
-      d.on = false;
-      driver.halt();
-    }
-    d.line?.cancel();
-    d.line = null;
-  }, [driver]);
+  // Turns ------------------------------------------------------------------------------------------
 
   const glideTo = useCallback(
     (goal: number, ms: number) => {
-      stopDrift();
       const to = wrapIndex(goal, ORDER.length);
       targetRef.current = to;
       setTarget(to);
+      // The stage in front fades to its splash while the ring turns away from it.
+      const here = activeRef.current;
+      if (to === here) driver.fadeLive(here, true, 300);
+      else driver.fadeLive(here, false, Math.min(LIVE_OUT_MS, ms * 0.7));
       void driver.glide(goal, ms).then((ok) => {
         if (ok) arrive(goal);
       });
     },
-    [arrive, driver, stopDrift],
+    [arrive, driver],
   );
 
   const step = useCallback(
     (dir: 1 | -1, ms = PRESS_STEP_MS) => {
       if (viewRef.current !== "ring") return;
       // From the panel the ring is heading to, so quick presses add up.
-      const from = driver.moving && !drift.current.on ? targetRef.current : activeRef.current;
+      const from = driver.moving ? targetRef.current : activeRef.current;
       const base = driver.current();
       const goal = base + wrapOffset(from + dir - base, ORDER.length);
       glideTo(goal, ms);
@@ -313,78 +344,6 @@ export function AnimationShell({ children }: { children: ReactNode }) {
     [driver, glideTo],
   );
 
-  const idleReached =
-    controls.state.mode === "idle" ||
-    core.phase === "missing" ||
-    controls.state.mode === "returning";
-  const searchOpen = useLibrarySearch((s) => s.open);
-
-  // While the character in front idles and nobody touches the page, the ring creeps a little (a
-  // slow drag), then steps to the next one, as the reference does.
-  useEffect(() => {
-    if (view !== "ring" || !idleReached || dragging || searchOpen) return;
-    if (driver.moving) return;
-    const d = drift.current;
-    const base = activeRef.current;
-    d.on = true;
-    const line = driftLine.current;
-    d.line =
-      line?.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
-        duration: IDLE_MS,
-        easing: "linear",
-        fill: "forwards",
-      }) ?? null;
-    if (rest.current.launch || rest.current.panel || document.hidden) {
-      d.line?.pause();
-    }
-    const creeping = driver.glide(base + CREEP, IDLE_MS, linear);
-    if (rest.current.launch || rest.current.panel || document.hidden) driver.pause();
-    void creeping.then((ok) => {
-      if (!ok || !d.on) return;
-      d.on = false;
-      d.line?.cancel();
-      d.line = null;
-      glideTo(base + 1, STEP_MS);
-    });
-    return () => {
-      if (d.on) stopDrift();
-    };
-    // `arrival` restarts the clock for a new character.
-  }, [view, idleReached, dragging, searchOpen, arrival, poke, driver, glideTo, stopDrift]);
-
-  /** Any input starts the idle clock again, as the reference does. */
-  const nudge = useCallback(() => {
-    if (!drift.current.on) return;
-    stopDrift();
-    setPoke((n) => n + 1);
-  }, [stopDrift]);
-
-  const setRest = useCallback(
-    (key: "launch" | "panel", on: boolean) => {
-      rest.current[key] = on;
-      const still = rest.current.launch || rest.current.panel || document.hidden;
-      if (!drift.current.on) return;
-      if (still) {
-        driver.pause();
-        drift.current.line?.pause();
-      } else {
-        driver.resume();
-        drift.current.line?.play();
-      }
-    },
-    [driver],
-  );
-
-  useEffect(() => {
-    const onVisibility = () => {
-      setRest("panel", rest.current.panel);
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, [setRest]);
-
   // Launch and the way back -------------------------------------------------------------------------
 
   const releaseClaim = useCallback(() => {
@@ -397,7 +356,7 @@ export function AnimationShell({ children }: { children: ReactNode }) {
    * A move that could not run (or never ends) lands here too, so nobody is left under a half move
    * with every link of the site held.
    */
-  const settle = useCallback(
+  const settleView = useCallback(
     (to: "full" | "ring", index: number) => {
       if (to === "full") {
         if (driver.full !== index) driver.setFull(index);
@@ -418,41 +377,53 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       const watchdog = window.setTimeout(() => {
         // A frame probe may hold a move as long as it likes.
         if (moveId.current !== id || window.__animMorph?.freeze) return;
-        if (viewRef.current === "expanding" || viewRef.current === "collapsing") settle(to, index);
+        if (viewRef.current === "expanding" || viewRef.current === "collapsing")
+          settleView(to, index);
       }, MORPH_MS + 6000);
       const ok = await move();
       window.clearTimeout(watchdog);
       if (moveId.current !== id) return false;
-      settle(to, index);
+      settleView(to, index);
       return ok;
     },
-    [settle],
+    [settleView],
   );
 
   const expand = useCallback(
     async (index: number) => {
-      stopDrift();
       setViewBoth("expanding");
       claim.current ??= transition.claim();
       if (swayRef.current) swayRef.current.style.transform = "none";
+      driver.fadeLive(index, true, 0);
       audio.blip("whoosh");
       if (await run("full", index, () => driver.expand(index, hold))) {
         audio.blip("star");
         document.getElementById("main")?.focus({ preventScroll: true });
       }
     },
-    [driver, run, setViewBoth, stopDrift, transition],
+    [driver, run, setViewBoth, transition],
   );
 
+  const exitScreen = screen.exit;
   const collapse = useCallback(
     async (index: number) => {
       setViewBoth("collapsing");
       claim.current ??= transition.claim();
+      // She goes back to rest on the ring: nothing waits, no pose holds.
+      settle();
+      // Out of full screen first, so the move is worked out for the screen it runs on.
+      if (document.fullscreenElement) {
+        await exitScreen();
+        await frames(2);
+        measureRef.current?.();
+      }
+      setWhole(false);
+      if (driver.wholeOn !== null) driver.whole(driver.wholeOn, false, MORPH_MS);
       audio.blip("whoosh");
       // The other panels come back late in the move; a picture still arriving shows when it lands.
       await run("ring", index, () => driver.collapse(index, hold));
     },
-    [driver, run, setViewBoth, transition],
+    [driver, exitScreen, run, setViewBoth, settle, transition],
   );
 
   const launch = useCallback(
@@ -460,8 +431,8 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       if (e && (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) return;
       e?.preventDefault();
       if (viewRef.current !== "ring") return;
-      // A turn that is not the drift must land first.
-      if (driver.moving && !drift.current.on) return;
+      // A turn must land first.
+      if (driver.moving) return;
       const release = transition.claim();
       if (!release) return;
       claim.current = release;
@@ -497,7 +468,7 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       if (v === "ring") {
         const i = ORDER.indexOf(full);
         if (i !== activeRef.current) {
-          stopDrift();
+          driver.halt();
           driver.write(i);
           arrive(i);
         }
@@ -506,7 +477,7 @@ export function AnimationShell({ children }: { children: ReactNode }) {
     } else if (v === "full" || v === "expanding") {
       void collapse(activeRef.current);
     }
-  }, [full, geo, arrive, collapse, driver, expand, stopDrift]);
+  }, [full, geo, arrive, collapse, driver, expand]);
 
   // The library search names a clip (`?i=`): its character comes to the front.
   useEffect(() => {
@@ -577,8 +548,8 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       if (!drag.axis) {
         if (Math.hypot(dx, dy) < 8) return;
         drag.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
-        stopDrift();
         drag.p = driver.halt();
+        driver.fadeLive(activeRef.current, false, 320);
         el.setPointerCapture(e.pointerId);
         setDragging(true);
         lean.held = true;
@@ -626,28 +597,19 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       lean.y = 0;
       writeLean();
     };
-    const onOver = (e: PointerEvent) => {
-      const hit = (e.target as HTMLElement).closest<HTMLElement>("[data-index]");
-      const on = hit !== null && Number(hit.dataset.index) === activeRef.current;
-      if (on !== rest.current.panel) setRest("panel", on);
-    };
     const onWheel = (e: WheelEvent) => {
       if (viewRef.current !== "ring" || overlayOpen()) return;
       const dx = wheelPixels(e.deltaX, e.deltaMode);
       const dy = wheelPixels(e.deltaY, e.deltaMode);
       const s = feedWheel(meter, Math.abs(dy) >= Math.abs(dx) ? dy : dx, performance.now());
       if (s !== 0) step(s, 900);
-      else nudge();
     };
     el.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
     el.addEventListener("pointerleave", onLeave);
-    el.addEventListener("pointerover", onOver);
     window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("pointerdown", nudge);
-    window.addEventListener("keydown", nudge);
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(leanFrame);
@@ -656,27 +618,64 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
       el.removeEventListener("pointerleave", onLeave);
-      el.removeEventListener("pointerover", onOver);
       window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("pointerdown", nudge);
-      window.removeEventListener("keydown", nudge);
     };
-  }, [mounted, geo, driver, glideTo, goTo, launch, nudge, setRest, step, stopDrift]);
+  }, [mounted, geo, driver, glideTo, goTo, launch, step]);
 
-  // Keys.
-  const buttonsRef = useRef<RoomButton[]>([]);
+  // What is drawn ----------------------------------------------------------------------------------
+
+  const chars = useMemo(() => {
+    const map = new Map<CharacterSlug, AnimChar>();
+    for (const c of file?.characters ?? []) map.set(c.slug, c);
+    return map;
+  }, [file]);
+  const clips = file?.items ?? NO_CLIPS;
+  const ownClips = useMemo(() => clips.filter((c) => c.chars[0] === slug), [clips, slug]);
+  const buttons = useMemo(
+    () => (core.phase === "missing" ? [] : optionButtons(ownClips, core.bundle?.timeline ?? null)),
+    [ownClips, core.bundle, core.phase],
+  );
+  const phase = useMemo(
+    () => fullPhase({ core: core.phase, stage: controls.state, replay, held: controls.held }),
+    [core.phase, controls.state, controls.held, replay],
+  );
+  const views = useMemo(() => optionViews(phase, buttons), [phase, buttons]);
+
+  // A press waits for its files: once they are all in memory, the stage plays it.
+  const heldButton = controls.held ? buttons.find((b) => b.clip.scene === controls.held) : null;
+  const heldReady = heldButton ? heldButton.files.every((f) => files.isLoaded(f)) : false;
+  useEffect(() => {
+    if (heldReady) releaseHeld();
+  }, [heldReady, controls.state, releaseHeld]);
+
+  const sizeOf = (f: string) =>
+    core.bundle ? (core.bundle.bytes[core.bundle.media.tier()]?.[f] ?? 1) : 1;
+  const heldProgress = heldButton ? sceneProgress(heldButton.files, files.fractionOf, sizeOf) : 0;
+
   const press = useCallback(
     (b: RoomButton) => {
-      if (b.clip.kind === "welcome") {
-        // A new stage begins with the welcome.
+      if (b.role === "welcome") {
+        // A new stage begins with the welcome. Nothing else shows until it is done.
+        setReplay(true);
         resetStage();
         setNonce((n) => n + 1);
         return;
       }
-      if (b.clip.scene) playScene(b.clip.scene);
+      const scene = b.clip.scene;
+      if (!scene) return;
+      const loaded = b.files.every((f) => files.isLoaded(f));
+      // Wanted now: its files go first.
+      if (!loaded) files.promote(b.files);
+      pressScene(scene, loaded);
     },
-    [playScene, resetStage],
+    [files, pressScene, resetStage],
   );
+
+  // Keys.
+  const viewsRef = useRef(views);
+  useEffect(() => {
+    viewsRef.current = views;
+  }, [views]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || isTypingTarget(e.target))
@@ -698,11 +697,17 @@ export function AnimationShell({ children }: { children: ReactNode }) {
         }
       } else if (v === "full") {
         if (e.key === "Escape") {
+          // In full screen the browser takes Escape to leave it; the next one goes back.
+          if (document.fullscreenElement) return;
           e.preventDefault();
           back();
         } else if (/^[1-9]$/u.test(e.key) && !e.repeat) {
-          const b = buttonsRef.current[Number(e.key) - 1];
-          if (b) press(b);
+          // Only a button that shows can be pressed.
+          const hit = viewsRef.current.find((o) => o.shown && o.button.key === Number(e.key));
+          if (hit) {
+            audio.blip("click");
+            press(hit.button);
+          }
         }
       }
     };
@@ -712,23 +717,21 @@ export function AnimationShell({ children }: { children: ReactNode }) {
     };
   }, [back, launch, press, step]);
 
-  // What is drawn ----------------------------------------------------------------------------------
-
-  const chars = useMemo(() => {
-    const map = new Map<CharacterSlug, AnimChar>();
-    for (const c of file?.characters ?? []) map.set(c.slug, c);
-    return map;
-  }, [file]);
-  const clips = file?.items ?? NO_CLIPS;
-  const ownClips = useMemo(() => clips.filter((c) => c.chars[0] === slug), [clips, slug]);
-  // The digit keys press the buttons of the full screen view.
-  const buttons = useMemo(
-    () => optionButtons(ownClips, core.bundle?.timeline ?? null),
-    [ownClips, core.bundle],
-  );
+  // Whole frame follows the shape of the screen: it is for a tall one, and the full screen view.
+  const tall = geo?.narrow ?? false;
   useEffect(() => {
-    buttonsRef.current = buttons;
-  }, [buttons]);
+    if (!geo) return;
+    const want = whole && viewRef.current === "full" && geo.narrow;
+    const i = activeRef.current;
+    if (want !== (driver.wholeOn === i)) driver.whole(i, want, 0);
+  }, [geo, whole, driver]);
+  const toggleWhole = useCallback(() => {
+    if (viewRef.current !== "full") return;
+    const next = driver.wholeOn !== activeRef.current;
+    driver.whole(activeRef.current, next, 520);
+    setWhole(next);
+  }, [driver]);
+
   const fields = useMemo(
     () =>
       ORDER.map((s) => {
@@ -737,17 +740,42 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       }),
     [chars],
   );
+  const splashes = useMemo(
+    () =>
+      ORDER.map((s) => {
+        const { src, focus } = splashFor(s);
+        return {
+          src,
+          at: `${Math.round(focus.x * 1000) / 10}% ${Math.round(focus.y * 1000) / 10}%`,
+        };
+      }),
+    [],
+  );
 
   const showStage = core.phase === "ready" && core.bundle !== null;
+  const liveKey = `${slug}:${arrival}:${nonce}`;
+  // A stage that was replaced (Welcome again, another character) may still finish a hand over
+  // after it is gone: only the stage on show reports its state.
+  const liveKeyRef = useRef(liveKey);
+  useLayoutEffect(() => {
+    liveKeyRef.current = liveKey;
+  }, [liveKey]);
+  const takeState = controls.onState;
+  const onStageState = useCallback(
+    (s: StageState) => {
+      if (liveKeyRef.current === liveKey) takeState(s);
+    },
+    [liveKey, takeState],
+  );
   const live =
     showStage && core.bundle ? (
       <CharacterStage
-        key={`${slug}:${arrival}:${nonce}`}
+        key={liveKey}
         ref={stage}
         timeline={core.bundle.timeline}
         media={core.bundle.media}
         skip={core.bundle.skip}
-        onState={controls.onState}
+        onState={onStageState}
         welcome
         onBegin={noop}
       />
@@ -755,6 +783,7 @@ export function AnimationShell({ children }: { children: ReactNode }) {
 
   return (
     <div
+      ref={roomRef}
       className={styles.room}
       data-animation-room=""
       data-view={view}
@@ -762,6 +791,11 @@ export function AnimationShell({ children }: { children: ReactNode }) {
       data-target={mounted ? ORDER[target] : undefined}
       data-core={mounted ? core.phase : undefined}
       data-stage={mounted ? controls.state.mode : undefined}
+      data-phase={mounted ? phase.phase : undefined}
+      data-shape={geo ? (tall ? "tall" : "wide") : undefined}
+      data-low={geo ? geo.view.h <= LOW_PX : undefined}
+      data-whole={whole && view === "full" && tall}
+      data-fullscreen={screen.on}
     >
       {mounted ? (
         <>
@@ -781,8 +815,10 @@ export function AnimationShell({ children }: { children: ReactNode }) {
                   index={i}
                   slug={s}
                   focus={chars.get(s)?.focus ?? 50}
-                  still={panelStill(s)}
+                  splash={splashes[i]!.src}
+                  splashAt={splashes[i]!.at}
                   live={i === active ? live : null}
+                  liveKey={liveKey}
                   waiting={i === active && core.phase === "loading"}
                   load={i === active && core.phase === "loading" ? core.load : null}
                   register={register}
@@ -802,26 +838,27 @@ export function AnimationShell({ children }: { children: ReactNode }) {
                   }}
                   onGo={goTo}
                   onLaunch={launch}
-                  onRest={(on) => {
-                    setRest("launch", on);
-                  }}
-                  driftLine={driftLine}
                 />
               </div>
               <div className={styles.layer} data-for="full">
                 {view === "full" || view === "collapsing" ? (
                   <FullUi
-                    char={chars.get(slug) ?? null}
-                    clips={ownClips}
-                    bundle={core.bundle}
-                    state={controls.state}
-                    wanted={controls.wanted}
-                    files={files}
+                    name={chars.get(slug)?.name ?? ""}
+                    phase={phase}
+                    views={views}
+                    wait={waitOf(phase, controls.held)}
+                    progress={heldProgress}
+                    timing={phase.phase === "loading" ? controls.state.wait : null}
+                    tall={tall}
+                    low={geo ? geo.view.h <= LOW_PX : false}
+                    whole={whole && tall}
+                    fullscreen={screen}
                     onBack={back}
                     onPress={press}
+                    onWhole={toggleWhole}
                     onWarm={(b) => {
                       files.promote(b.files);
-                      if (b.clip.scene && files.isLoaded(b.files[0] ?? ""))
+                      if (b.clip.scene && b.files.every((f) => files.isLoaded(f)))
                         controls.warm(b.clip.scene);
                     }}
                   />
@@ -837,5 +874,5 @@ export function AnimationShell({ children }: { children: ReactNode }) {
 }
 
 function noop() {
-  /* The room has no music to start. */
+  /* The room's music is its own (the theme of the character on show). */
 }

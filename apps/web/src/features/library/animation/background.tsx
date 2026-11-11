@@ -1,67 +1,105 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
-import styles from "./shell.module.css";
-import { contourPaths } from "./contours";
+import { slatsLook, type FieldColors } from "./colors";
 import type { RingGeometry } from "./ring";
+import styles from "./shell.module.css";
+import { SlatsEngine, type SlatsSnapshot } from "./slats/engine";
+import own from "./slats/slats.module.css";
 
 interface Props {
   /** The colour field of each character, in the order of the ring. */
-  fields: ReadonlyArray<{ slug: string; main: string; deep: string }>;
+  fields: ReadonlyArray<FieldColors & { slug: string }>;
   /** The character whose field shows. */
   active: number;
+  /** The ring (kept for the shell; the slats measure the screen themselves). */
   geometry: RingGeometry | null;
 }
 
-/**
- * The colour field and its contour lines. Each character has its own field, and the change from
- * one to the next is a fade of opacity (never a change of colour). The lines are drawn once per
- * screen size and breathe out once when a new character comes to the front.
- */
-export const Background = memo(function Background({ fields, active, geometry }: Props) {
-  const lines = useRef<SVGSVGElement>(null);
+declare global {
+  interface Window {
+    /** Frame sheets and specs: the look in front and the cost of the field. */
+    __slats?: {
+      snapshot: () => SlatsSnapshot | null;
+      /** Hold a change of character `ms` after it began, or null to let it run. */
+      holdWash: (ms: number | null) => void;
+    };
+  }
+}
 
-  const paths = useMemo(() => {
-    if (!geometry) return [];
-    const { view, win } = geometry;
-    const cy = geometry.narrow ? 0.36 * view.h : 0.47 * view.h;
-    const gap = Math.max(26, Math.min(view.w, view.h) * 0.055);
-    return contourPaths({ cx: view.w / 2, cy, hw: win.w / 2, hh: win.h / 2 }, view, gap);
-  }, [geometry]);
+/**
+ * The field behind the ring: a sea of slats (React Bits' MicroSlats, ported in `slats/`) in the
+ * colours of the character in front. The cursor or a finger stirs it and a press throws a splash.
+ * A new character rolls her colours in from the horizon. The field rests while the room's full
+ * screen view covers it, and while the tab is hidden. Without WebGL 2 it is her plain colour field.
+ */
+export const Background = memo(function Background({ fields, active }: Props) {
+  const host = useRef<HTMLDivElement>(null);
+  const engine = useRef<SlatsEngine | null>(null);
+  const [plain, setPlain] = useState(false);
+  // A new canvas after the GPU dropped the old one.
+  const [epoch, setEpoch] = useState(0);
+  const looks = useMemo(() => fields.map((f) => slatsLook(f.slug, f)), [fields]);
+  const looksRef = useRef(looks);
+  const activeRef = useRef(active);
+  useEffect(() => {
+    looksRef.current = looks;
+    activeRef.current = active;
+  }, [looks, active]);
 
   useEffect(() => {
-    lines.current?.animate(
-      [
-        { transform: "scale(0.965)", opacity: 0.35 },
-        { transform: "scale(1)", opacity: 1 },
-      ],
-      { duration: 1600, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
-    );
-  }, [active]);
+    const el = host.current;
+    const first = looksRef.current[activeRef.current];
+    if (!el || !first) return;
+    const field = SlatsEngine.create(el, first, () => {
+      setEpoch((n) => n + 1);
+    });
+    if (!field) {
+      setPlain(true);
+      return;
+    }
+    engine.current = field;
+    window.__slats = {
+      snapshot: () => engine.current?.snapshot() ?? null,
+      holdWash: (ms) => engine.current?.holdWash(ms),
+    };
+
+    // While the room hides the field (its full screen view covers it), it draws nothing. Read when
+    // the room changes its view, never per frame.
+    const room = el.closest<HTMLElement>("[data-animation-room]");
+    const follow = () => {
+      field.setActive(getComputedStyle(el).visibility !== "hidden");
+    };
+    follow();
+    const watch = new MutationObserver(follow);
+    if (room) watch.observe(room, { attributes: true, attributeFilter: ["data-view"] });
+    return () => {
+      watch.disconnect();
+      field.destroy();
+      if (engine.current === field) engine.current = null;
+    };
+  }, [epoch]);
+
+  useEffect(() => {
+    const look = looks[active];
+    if (look) engine.current?.setLook(look);
+  }, [looks, active]);
 
   return (
     <div className={styles.field} aria-hidden="true">
-      {fields.map((f, i) => (
-        <i
-          key={f.slug}
-          className={styles.fieldLayer}
-          data-on={i === active}
-          style={{ background: `linear-gradient(160deg, ${f.main} 18%, ${f.deep} 100%)` }}
-        />
-      ))}
-      {geometry ? (
-        <svg
-          ref={lines}
-          className={styles.lines}
-          viewBox={`0 0 ${geometry.view.w} ${geometry.view.h}`}
-          preserveAspectRatio="none"
-        >
-          {paths.map((d, i) => (
-            <path key={i} d={d} />
-          ))}
-        </svg>
-      ) : null}
+      <div ref={host} className={own.host} data-slats="">
+        {plain
+          ? fields.map((f, i) => (
+              <i
+                key={f.slug}
+                className={own.plain}
+                data-on={i === active}
+                style={{ background: `linear-gradient(160deg, ${f.main} 18%, ${f.deep} 100%)` }}
+              />
+            ))
+          : null}
+      </div>
     </div>
   );
 });

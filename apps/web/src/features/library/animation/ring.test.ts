@@ -5,6 +5,9 @@ import {
   dragTurn,
   feedWheel,
   FLAT,
+  FRAME_ASPECT,
+  frameBox,
+  frameTransform,
   fullWindow,
   newWheel,
   offsetOf,
@@ -13,6 +16,7 @@ import {
   ringGeometry,
   visibility,
   WHEEL_GAP_MS,
+  wholeFrame,
   wrapIndex,
   wrapOffset,
 } from "./ring";
@@ -174,6 +178,44 @@ describe("the window of a panel", () => {
       win: { x: 0, y: 0, w: 1440, h: 900 },
       content: { x: 0, y: 0, s: 1 },
     });
+  });
+});
+
+describe("the frame of the stage", () => {
+  it("covers a tall screen with the recording, its focus kept in view", () => {
+    const view = { w: 390, h: 844 };
+    const box = frameBox(view, 0.66);
+    expect(box.h).toBe(844);
+    expect(box.w / box.h).toBeCloseTo(FRAME_ASPECT, 9);
+    // As object-position 66% would place it: the overflow is shared 66 to 34.
+    expect(box.x).toBeCloseTo((390 - box.w) * 0.66, 6);
+    expect(box.x).toBeLessThan(0);
+    expect(box.x + box.w).toBeGreaterThan(390);
+  });
+
+  it("covers a screen wider than the recording by its width, centred", () => {
+    const box = frameBox({ w: 2560, h: 1000 }, 0.3);
+    expect(box.w).toBe(2560);
+    expect(box.y).toBeCloseTo((1000 - 2560 / FRAME_ASPECT) / 2, 6);
+  });
+
+  it("fits the whole frame across the width of a tall screen, in the middle", () => {
+    const view = { w: 390, h: 844 };
+    const box = frameBox(view, 0.5);
+    const p = wholeFrame(view, box);
+    const w = box.w * p.s;
+    const h = box.h * p.s;
+    expect(w).toBeCloseTo(390, 6);
+    expect(box.x + p.x).toBeCloseTo(0, 6);
+    expect(box.y + p.y + h / 2).toBeCloseTo(422, 6);
+  });
+
+  it("has nothing to do on a screen of the recording's shape", () => {
+    const view = { w: 1920, h: 864 };
+    const p = wholeFrame(view, frameBox(view, 0.5));
+    expect(p.s).toBeCloseTo(1, 9);
+    expect(frameTransform(null)).toBe("translate(0px, 0px) scale(1)");
+    expect(frameTransform({ x: 1.234, y: -2, s: 0.5 })).toBe("translate(1.23px, -2px) scale(0.5)");
   });
 });
 
