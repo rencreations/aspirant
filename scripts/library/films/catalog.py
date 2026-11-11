@@ -511,6 +511,7 @@ DRAMA: list[dict[str, Any]] = [
 # `SHELVES` in `apps/web/src/features/library/video/others/video-data.ts`, and a unit test reads the
 # data file to make sure every kind has a shelf.
 ROWS = [
+    ("parody", "Live-action parody", ["parody"]),
     ("trailers", "Trailers and short films", ["trailer", "teaser", "lore"]),
     ("shorts", "Shorts and cards", ["short", "social"]),
     ("showcases", "Skin showcases", ["showcase"]),
@@ -523,7 +524,6 @@ ROWS = [
     ("emotes", "Emotes", ["emote"]),
     ("edits", "Official edits", ["edit"]),
     ("fan", "Fan videos", ["fan"]),
-    ("parody", "Live-action parody", ["parody"]),
 ]
 
 # Source videos that are in the library but are deliberately not films of their own.

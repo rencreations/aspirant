@@ -25,14 +25,16 @@ import { ShelfEngine, type Half, type Rect } from "./engine";
 import {
   COVER_COUNT,
   ENTRANCE_MS,
-  SPLIT_ROOM,
   formatCount,
   isPhone,
+  isShort,
   moveHalf,
   moveIndex,
+  splitCaption,
   splitGeometry,
   type ArrowKey,
 } from "./layout";
+import { measureObstacles } from "./obstacles";
 import styles from "./shelf.module.css";
 import { VIDEO_HALVES, VIDEO_SLUG, halfCounts } from "./video-halves";
 
@@ -126,6 +128,7 @@ export default function ShelfScene({ onFail }: Props) {
   const [half, setHalf] = useState<Half | null>(null);
   const [halfSize, setHalfSize] = useState(0);
   const [stacked, setStacked] = useState(false);
+  const [short, setShort] = useState(false);
 
   // The latest values for the scene's callbacks, which are made once.
   const focusedRef = useRef(focused);
@@ -289,10 +292,17 @@ export default function ShelfScene({ onFail }: Props) {
       const track = trackRef.current;
       const thumb = thumbRef.current;
       travel = track && thumb ? Math.max(0, track.clientHeight - thumb.clientHeight) : 0;
-      const g = splitGeometry(stage.clientWidth, stage.clientHeight);
+      // The controls over the scene (the focused cover and the open Video cover keep clear of
+      // them), measured once per layout, never per frame.
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
+      const o = measureObstacles(stage);
+      engineRef.current?.setObstacles(o);
+      const g = splitGeometry(w, h, o.navH, { short: o.short, above: o.splitAbove });
       verticalRef.current = g.vertical;
       setStacked(g.vertical);
       setHalfSize(g.size);
+      setShort(isShort(h));
     };
 
     void (async () => {
@@ -373,7 +383,7 @@ export default function ShelfScene({ onFail }: Props) {
             place(
               backRef.current,
               (Math.min(films.left, others.left) + Math.max(films.right, others.right)) / 2,
-              below + SPLIT_ROOM.caption,
+              below + splitCaption(stage.clientWidth, stage.clientHeight),
               "translate(-50%, 0)",
             );
           },
@@ -419,6 +429,10 @@ export default function ShelfScene({ onFail }: Props) {
       measure();
     });
     ro.observe(stage);
+    // The words under the bar change size when the site's fonts arrive.
+    void document.fonts?.ready.then(() => {
+      if (!cancelled) measure();
+    });
 
     return () => {
       cancelled = true;
@@ -568,11 +582,12 @@ export default function ShelfScene({ onFail }: Props) {
       data-entered={entered ? "true" : undefined}
       data-split={isSplit ? split : undefined}
       data-stacked={stacked ? "true" : undefined}
+      data-short={short ? "true" : undefined}
     >
       <h1 className="sr-only">Collection</h1>
       <div ref={hostRef} className={styles.gl} aria-hidden="true" />
 
-      <div className={styles.top}>
+      <div className={styles.top} data-shelf-top="">
         <p className={styles.tagline}>
           Everything made for Aspirant.
           <br />
@@ -704,7 +719,7 @@ export default function ShelfScene({ onFail }: Props) {
       </div>
 
       <div className={styles.bar} data-show={phone ? "true" : "false"}>
-        <div className={styles.barText}>
+        <div className={styles.barText} data-shelf-bartext="">
           <span className={styles.barNum}>{meta?.index}</span>
           <strong className={styles.barName}>{meta?.name}</strong>
           <span className={styles.barLine}>
@@ -760,6 +775,7 @@ export default function ShelfScene({ onFail }: Props) {
 
       <nav
         className={styles.index}
+        data-shelf-index=""
         aria-label="The ten collections"
         data-phone={phone ? "true" : undefined}
       >

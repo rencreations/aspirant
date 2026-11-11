@@ -134,7 +134,7 @@ export function clock(seconds: number): string {
 
 /** The address that opens a film at a second (in the Films room, or in Others for the rest). */
 export function watchHref(filmId: string, t: number): string {
-  return videoHref(filmId, Math.max(0, Math.floor(t)));
+  return videoHref(filmId, Math.max(0, Math.floor(t)), "arts");
 }
 
 /** Where a time sits on the film, 0 to 1. */

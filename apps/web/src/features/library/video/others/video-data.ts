@@ -54,6 +54,13 @@ export interface ShelfDef {
  */
 export const SHELVES: readonly ShelfDef[] = [
   {
+    id: "parody",
+    title: "Live-action parody",
+    chip: "Parody",
+    note: "Made outside the story. Nothing in it counts as canon.",
+    kinds: ["parody"],
+  },
+  {
     id: "trailers",
     title: "Trailers and short films",
     chip: "Trailers",
@@ -136,13 +143,6 @@ export const SHELVES: readonly ShelfDef[] = [
     chip: "Fan videos",
     note: "Made by fans. Every one is credited.",
     kinds: ["fan"],
-  },
-  {
-    id: "parody",
-    title: "Live-action parody",
-    chip: "Parody",
-    note: "Made outside the story. Nothing in it counts as canon.",
-    kinds: ["parody"],
   },
 ];
 

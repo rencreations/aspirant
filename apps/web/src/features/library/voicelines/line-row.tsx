@@ -105,7 +105,7 @@ export const LineRow = memo(function LineRow({
         <span className={styles.links}>
           {trailer && item.film ? (
             <TLink
-              href={videoHref(item.film, Math.floor(item.t ?? 0))}
+              href={videoHref(item.film, Math.floor(item.t ?? 0), "voicelines")}
               transitionLabel="Films"
               className={styles.linkBtn}
               aria-label={`Watch this moment in the trailer, at ${clock(item.t ?? 0)}`}

@@ -192,7 +192,9 @@ describe("length bands", () => {
 describe("groups", () => {
   it("group by kind in the order of the shelves and drop the empty ones", () => {
     const groups = groupVideos(VIDEOS, "kind");
+    // The live-action parody is the first shelf of the wall (the owner asked, 11 Nov 2026).
     expect(groups.map((g) => g.id)).toEqual([
+      "parody",
       "trailers",
       "shorts",
       "drama",
@@ -201,9 +203,8 @@ describe("groups", () => {
       "gameplay",
       "emotes",
       "edits",
-      "parody",
     ]);
-    expect(ids(groups[0]!.items)).toEqual(["a", "b"]);
+    expect(ids(groups[1]!.items)).toEqual(["a", "b"]);
   });
 
   it("group by pair, with the videos of no pair last", () => {

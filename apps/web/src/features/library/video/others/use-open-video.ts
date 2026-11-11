@@ -2,6 +2,10 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
+import { useTransitionRouter } from "@/components/transition/transition-provider";
+
+import { returnOf, type ReturnTarget } from "../links";
+
 /**
  * Which video is open in the viewer, kept in the address: `?i=<id>` and `&t=<seconds>`. Other rooms
  * and the library search link to a video this way (`videoHref`).
@@ -9,6 +13,9 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
  * Opening from the wall adds a history entry, so the Back button closes the viewer. Going to the
  * next or the previous video replaces the entry, so Back never walks through them one by one. The
  * library search changes the address by itself and fires `popstate`: this hook follows it too.
+ *
+ * A link from another room carries `&from=<key>` (`returnOf`). Closing a video that was opened by
+ * such a link goes back to that room, not to the wall.
  */
 
 const listeners = new Set<() => void>();
@@ -45,6 +52,8 @@ export interface OpenVideo {
   show: (id: string) => void;
   /** Write the start time (replaces the entry). An empty value removes it. */
   setT: (t: string) => void;
+  /** The room the visitor came from (`&from=`), or null. */
+  from: ReturnTarget | null;
   /** Close the viewer. */
   close: () => void;
 }
@@ -63,10 +72,12 @@ function write(mutate: (url: URL) => void, push: boolean): void {
 
 export function useOpenVideo(): OpenVideo {
   const search = useSyncExternalStore(subscribe, snapshot, serverSnapshot);
+  const router = useTransitionRouter();
   const { id, t } = useMemo(() => {
     const params = new URLSearchParams(search);
     return { id: params.get("i") ?? "", t: params.get("t") ?? "" };
   }, [search]);
+  const from = useMemo(() => returnOf(search), [search]);
 
   const open = useCallback((next: string) => {
     write((url) => {
@@ -96,11 +107,19 @@ export function useOpenVideo(): OpenVideo {
       window.history.back();
       return;
     }
+    if (from) {
+      // Opened by a link from another room: closing goes back to it.
+      router.push(from.href, { label: from.label });
+      return;
+    }
     write((url) => {
       url.searchParams.delete("i");
       url.searchParams.delete("t");
     }, false);
-  }, []);
+  }, [from, router]);
 
-  return useMemo(() => ({ id, t, open, show, setT, close }), [id, t, open, show, setT, close]);
+  return useMemo(
+    () => ({ id, t, open, show, setT, from, close }),
+    [id, t, open, show, setT, from, close],
+  );
 }

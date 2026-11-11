@@ -280,8 +280,12 @@ class AudioEngine {
       slot.el.loop = loop;
       slot.el.src = url;
       slot.el.muted = this.muted && !slot.gain;
-      if (slot.gain && this.ctx) slot.gain.gain.setValueAtTime(0, this.ctx.currentTime);
-      else slot.el.volume = 0;
+      if (slot.gain && this.ctx) {
+        // The slot may still be inside the fade out of its last song, a value curve: setting a
+        // value inside a curve throws, so clear what is scheduled first.
+        slot.gain.gain.cancelScheduledValues(0);
+        slot.gain.gain.setValueAtTime(0, this.ctx.currentTime);
+      } else slot.el.volume = 0;
       void slot.el.play().catch(() => undefined);
       this.fadeSlot(slot, volume, fadeMs);
     } catch {

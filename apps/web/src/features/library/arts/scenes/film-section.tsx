@@ -281,7 +281,11 @@ export const FilmSection = memo(
               {film.beats.length > 0 ? <span>{film.beats.length} scenes noted</span> : null}
             </p>
           </div>
-          <TLink href={videoHref(film.id)} transitionLabel="Films" className={styles.watchFilm}>
+          <TLink
+            href={videoHref(film.id, undefined, "arts")}
+            transitionLabel="Films"
+            className={styles.watchFilm}
+          >
             Watch the film
           </TLink>
         </header>

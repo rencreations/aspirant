@@ -18,6 +18,7 @@ const TEASER = "film-layla-and-fanny-video-official-lore-teaser-001-275302708365
 const LESLEY_TEASER = "film-lesley-and-change-video-official-teaser-001-3307542160288522496";
 const DRAMA_3A2 = "film-vexana-and-guinevere-video-interactive-drama-3a2";
 const SHELVES = [
+  "parody",
   "trailers",
   "shorts",
   "showcases",
@@ -30,7 +31,6 @@ const SHELVES = [
   "emotes",
   "edits",
   "fan",
-  "parody",
 ];
 
 /** Console errors and uncaught exceptions. Files of the library origin belong to the pipeline, not to this code. */
@@ -86,7 +86,7 @@ const dialog = (page: Page) => page.getByRole("dialog").first();
 const tiles = (page: Page) => page.locator("[data-tile]");
 const tile = (page: Page, id: string) => page.locator(`[data-tile="${id}"] button`);
 
-test("shows the wall: one h1, thirteen shelves in order, the parody last, built in slices", async ({
+test("shows the wall: one h1, thirteen shelves in order, the parody first, built in slices", async ({
   page,
 }) => {
   const errors = await open(page);
@@ -103,6 +103,17 @@ test("shows the wall: one h1, thirteen shelves in order, the parody last, built 
   await expect(parody.locator("[data-tile]")).toHaveCount(1);
   await expect(parody).toContainText("Non-canon parody");
   expect(errors).toEqual([]);
+});
+
+test("a video opened by a link from another room closes back to that room", async ({ page }) => {
+  await skipGate(page);
+  const id = "film-selena-and-obsidia-video-music-collection-001-4013351897154849593";
+  await page.goto(url(`/collection/video/others/?i=${id}&t=191&from=music`));
+  await expect(dialog(page)).toBeVisible({ timeout: 60_000 });
+  // The back button names the room the visitor came from.
+  await expect(page.locator("[data-room-back]")).toContainText("Music");
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL(/\/collection\/music\/?(\?|$)/, { timeout: 30_000 });
 });
 
 test("has one way out to the collection and no link to another room", async ({ page }) => {
@@ -210,12 +221,13 @@ test("opens a video in the viewer, steps with the buttons and the arrows, and Es
   const title = await dialog(page).getByRole("heading", { level: 2 }).textContent();
   expect(label).toContain(title ?? "?");
   const counter = dialog(page).locator("[aria-label^='Video ']");
-  await expect(counter).toHaveAttribute("aria-label", /^Video 1 of \d+$/);
+  // The parody is the first shelf (one video), so the first trailer is the second video.
+  await expect(counter).toHaveAttribute("aria-label", /^Video 2 of \d+$/);
   // Nothing plays by itself: no video element exists until play is pressed.
   await expect(page.locator("video")).toHaveCount(0);
 
   await dialog(page).getByRole("button", { name: "Next video" }).click();
-  await expect(counter).toHaveAttribute("aria-label", /^Video 2 of \d+$/);
+  await expect(counter).toHaveAttribute("aria-label", /^Video 3 of \d+$/);
   const second = await dialog(page).getByRole("heading", { level: 2 }).textContent();
   expect(second).not.toBe(title);
 

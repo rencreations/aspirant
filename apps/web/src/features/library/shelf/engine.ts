@@ -35,11 +35,13 @@ import {
   easeInOutCubic,
   flapShade,
   focusPose,
+  focusRoom,
   frontIndex,
   gatefoldDepth,
   hoverPose,
   isPhone,
   lerpPose,
+  noObstacles,
   restPose,
   shelfGeometry,
   snapStack,
@@ -47,6 +49,8 @@ import {
   splitGeometry,
   stackGeometry,
   stackPose,
+  type FocusRoom,
+  type Obstacles,
   type Pose,
   type ShelfGeometry,
   type SplitGeometry,
@@ -81,6 +85,11 @@ interface ShelfDebug {
   hold: (on: boolean) => void;
   /** Jump the split to `p` (hold it first to keep it there). */
   seek: (p: number) => void;
+  /** Where the focused cover is drawn now (CSS px from the top left of the stage), or null. */
+  readonly focus: Rect | null;
+  /** Where the two halves of the open Video cover are drawn now, or null while it is shut. */
+  readonly films: Rect | null;
+  readonly others: Rect | null;
 }
 
 declare global {
@@ -347,6 +356,9 @@ export class ShelfEngine {
   /** The target the scene last said it had come to rest at. */
   private splitSettled = 0;
   private splitG: SplitGeometry = splitGeometry(1440, 900);
+  /** The controls the focused cover and the open Video cover keep clear of (`setObstacles`). */
+  private obstacles: Obstacles | null = null;
+  private room: FocusRoom | null = null;
   private pointerHalf: Half | null = null;
   private forcedHalf: Half | null = null;
   private frames = 0;
@@ -481,6 +493,15 @@ export class ShelfEngine {
       seek: (p: number) => {
         engine.splitP = clamp(p, 0, 1);
         engine.requestRender();
+      },
+      get focus() {
+        return engine.focusNow !== null ? { ...engine.focusRect } : null;
+      },
+      get films() {
+        return engine.splitShown ? { ...engine.filmsRect } : null;
+      },
+      get others() {
+        return engine.splitShown ? { ...engine.othersRect } : null;
       },
     };
   }
@@ -996,6 +1017,26 @@ export class ShelfEngine {
     this.requestRender();
   }
 
+  /**
+   * The boxes of the controls over the scene (measured by the component, once per layout). The
+   * focused cover and the open Video cover are laid out to keep clear of them.
+   */
+  setObstacles(o: Obstacles): void {
+    this.obstacles = o;
+    this.refit();
+    this.requestRender();
+  }
+
+  /** The room of the focused cover and the place of the open pair, from the size and the obstacles. */
+  private refit(): void {
+    const { w, h } = this;
+    const o = this.obstacles ?? noObstacles(w, h);
+    this.room = focusRoom(w, h, o);
+    this.splitG = splitGeometry(w, h, o.navH, { short: o.short, above: o.splitAbove });
+    const gate = this.rigs[this.gateIndex]?.gate;
+    if (gate) gate.films.rotation = this.splitG.vertical ? Math.PI : 0;
+  }
+
   /** The half the keyboard is on (lifted like a hovered one). */
   setHalf(half: Half | null): void {
     this.forcedHalf = half;
@@ -1065,9 +1106,7 @@ export class ShelfEngine {
       rig.body.scale.set(g.size, g.size, g.thick);
       rig.body.position.set(0, g.size / 2, -g.thick / 2);
     });
-    this.splitG = splitGeometry(w, h);
-    const gate = this.rigs[this.gateIndex]?.gate;
-    if (gate) gate.films.rotation = this.splitG.vertical ? Math.PI : 0;
+    this.refit();
     const sg = this.shelfG;
     this.boards.forEach((b, row) => {
       b.visible = !this.phone;
@@ -1164,7 +1203,7 @@ export class ShelfEngine {
     const sg = this.shelfG;
     const stg = this.stackG;
     const g = phone ? stg : sg;
-    const fp = focusPose(this.w, this.h, g.size);
+    const fp = focusPose(this.w, this.h, g.size, this.room ?? undefined);
     const dropH = g.size * 1.7;
     this.world.position.set(-this.px * 9, this.py * 5, 0);
     (this.groundMat.uniforms.uShift!.value as Vector2).set(-this.px * 0.008, this.py * 0.006);

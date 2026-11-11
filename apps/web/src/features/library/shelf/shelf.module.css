@@ -483,6 +483,8 @@
     display: grid;
     gap: 0.15rem;
     min-width: 0;
+    /* Each line is as wide as its own words, so the scene can tell what the bar covers. */
+    justify-items: start;
   }
 
   .barNum,
@@ -642,6 +644,45 @@
     background: #0b0b0e;
     will-change: transform;
   }
+}
+
+/* A short screen (a phone on its side, `SHORT_H` in layout.ts, set as data-short by the scene). There is
+   no room for the index row under a focused cover or the open Video cover, so it steps aside while
+   one is up (it is back the moment the cover shuts). The two halves lose their line, so each has only
+   its count and Open under it. The focus copy sits at the foot of the left column, clear of Search. */
+.stage[data-short="true"][data-focus="true"] .index {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stage[data-short="true"] .halfLine {
+  display: none;
+}
+
+/* A half that is narrower than its count and its Open button side by side keeps only the button. */
+.half {
+  container-type: inline-size;
+}
+
+@container (max-width: 9.5rem) {
+  .stage[data-short="true"] .halfCount {
+    display: none;
+  }
+}
+
+.stage[data-short="true"] .copy {
+  top: auto;
+  bottom: 1.5rem;
+  width: min(16rem, 32vw);
+  transform: translate3d(-12px, 0, 0);
+}
+
+.stage[data-short="true"] .copy[data-show="true"] {
+  transform: none;
+}
+
+.stage[data-short="true"] .copyName {
+  font-size: var(--step-3);
 }
 
 /* Between a phone and a wide screen the focus copy sits low on the left so it never meets the cover. */

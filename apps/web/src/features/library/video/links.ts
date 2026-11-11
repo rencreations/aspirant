@@ -37,10 +37,44 @@ export function videoRoute(room: VideoRoom): Route {
 }
 
 /**
- * A link that opens one video, at a second when `t` is given. Both rooms read `?i=<id>` and
- * `?t=<seconds>`: Films scrolls to that film and seeks, Others opens the video in its player.
+ * Rooms that link to a video and want the visitor back where they were when they close it. The
+ * link carries `&from=<key>`; the video rooms read it (`returnOf`), send a close or a back button
+ * to `href` instead of to their own parent, and say its `label` in the transition. Add a key here
+ * before using it in a link.
  */
-export function videoHref(id: string, t?: number): Route {
+const RETURN_ROUTES = {
+  music: { href: "/collection/music", label: "Music" },
+  voicelines: { href: "/collection/voicelines", label: "Voicelines" },
+  arts: { href: "/collection/arts", label: "Arts" },
+} as const;
+
+export type ReturnKey = keyof typeof RETURN_ROUTES;
+
+function isReturnKey(value: string): value is ReturnKey {
+  return Object.prototype.hasOwnProperty.call(RETURN_ROUTES, value);
+}
+
+export interface ReturnTarget {
+  key: ReturnKey;
+  href: Route;
+  label: string;
+}
+
+/** Where the visitor came from, read from a query string (`?from=music`), or null. */
+export function returnOf(search: string): ReturnTarget | null {
+  const from = new URLSearchParams(search).get("from") ?? "";
+  if (!isReturnKey(from)) return null;
+  const { href, label } = RETURN_ROUTES[from];
+  return { key: from, href: href as Route, label };
+}
+
+/**
+ * A link that opens one video, at a second when `t` is given. Both rooms read `?i=<id>` and
+ * `?t=<seconds>`: Films scrolls to that film and seeks, Others opens the video in its player. When
+ * `from` is given, closing the video (or the room's back button) goes back to that room.
+ */
+export function videoHref(id: string, t?: number, from?: ReturnKey): Route {
   const time = t && t > 0 ? `&t=${Math.floor(t)}` : "";
-  return `${videoRoute(videoRoomOf(id))}?i=${encodeURIComponent(id)}${time}` as Route;
+  const back = from ? `&from=${from}` : "";
+  return `${videoRoute(videoRoomOf(id))}?i=${encodeURIComponent(id)}${time}${back}` as Route;
 }

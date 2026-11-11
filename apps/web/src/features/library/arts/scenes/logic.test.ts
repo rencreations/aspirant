@@ -133,8 +133,10 @@ describe("summary and formats", () => {
     expect(formatDuration(9)).toBe("0:09");
     expect(clock(75.9)).toBe("01:15");
     // A film that is not one of the ten goes to the Others room, one of the ten to Films.
-    expect(watchHref("film-a", 75.9)).toBe("/collection/video/others?i=film-a&t=75");
-    expect(watchHref(FILM_IDS[3], 12)).toBe(`/collection/video/films?i=${FILM_IDS[3]}&t=12`);
+    expect(watchHref("film-a", 75.9)).toBe("/collection/video/others?i=film-a&t=75&from=arts");
+    expect(watchHref(FILM_IDS[3], 12)).toBe(
+      `/collection/video/films?i=${FILM_IDS[3]}&t=12&from=arts`,
+    );
   });
 });
 

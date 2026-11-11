@@ -33,6 +33,7 @@ export function ContinueHome() {
       type="button"
       className={`${styles.button} hud-label`}
       aria-label="Continue to Home"
+      data-shelf-continue=""
       onClick={go}
     >
       <span className={styles.eyebrow}>Next destination</span>

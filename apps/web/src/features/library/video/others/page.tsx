@@ -140,7 +140,15 @@ export default function OthersPage() {
   const [groupParam, setGroupParam] = useQueryState("group");
   const mode = isGroupMode(groupParam) ? groupParam : "kind";
 
-  const { id: openId, t: openT, open: openVideo, show: showVideo, setT, close } = useOpenVideo();
+  const {
+    id: openId,
+    t: openT,
+    open: openVideo,
+    show: showVideo,
+    setT,
+    from,
+    close,
+  } = useOpenVideo();
   const { saved, seen, markSeen, rememberAt, forgetAt } = useRoomMemory();
 
   const filters: VideoFilters = useMemo(
@@ -471,6 +479,8 @@ export default function OthersPage() {
         <div className="relative shell">
           <BackToCollection
             tone="dark"
+            href={from?.href}
+            label={from?.label}
             style={{ position: "static", display: "inline-flex", marginBottom: "1.1rem" }}
           />
           <div className={styles.headGrid}>

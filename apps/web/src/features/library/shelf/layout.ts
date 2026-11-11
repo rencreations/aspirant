@@ -170,13 +170,168 @@ export function hoverPose(index: number, g: ShelfGeometry): Pose {
   return { ...rest, y: rest.y + g.size * 0.13, z: g.size * 0.3, s: 1.035, lean: -0.025, yaw: 0.07 };
 }
 
-/** The pose of the focused cover: scaled up in the middle of the screen. */
-export function focusPose(w: number, h: number, size: number): Pose {
+// Room for the controls -----------------------------------------------------------------------
+//
+// The Search button, the Continue button and the phone's name bar are HTML laid over the scene. On
+// a phone they stand in rows across the screen, and the focused cover (or the open Video cover)
+// must keep clear of them. The component measures them once per layout (`obstacles.ts`) and the
+// pure functions below turn those boxes into room. On a wide screen they flank the cover and
+// nothing changes.
+
+/** A box on the stage, in CSS px from its top left. */
+export interface Box {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
+/**
+ * Below this height (a phone on its side) there is no room under the controls: the focused cover
+ * and the two halves stand between them, the index row steps aside and the halves lose their line.
+ * A wide screen this short is the only one whose layout is different; the standard one holds
+ * down to about 520 px.
+ */
+export const SHORT_H = 540;
+
+export function isShort(h: number): boolean {
+  return h < SHORT_H;
+}
+
+/** The top bar's height: 5rem on a wide screen, 4rem below it (`--nav-h` in tokens.css). */
+export function navHeight(w: number): number {
+  return w >= 901 ? 80 : 64;
+}
+
+/** Air kept between a cover and a control. */
+export const CLEAR_GAP = 16;
+
+/** The Open button hangs under the focused cover: this far below it, and this tall. */
+export const OPEN_BELOW = 20;
+export const OPEN_H = 37;
+
+/** The smallest the focused cover is made to fit a room. */
+const FOCUS_MIN = 120;
+
+/** What the component measured: the boxes the focused cover and the open Video cover must clear. */
+export interface Obstacles {
+  /** The screen is short (`isShort`). */
+  short: boolean;
+  /** Height of the top bar. */
+  navH: number;
+  /** Over the focused cover's columns: the tagline and Search, and Continue. */
+  focusAbove: readonly Box[];
+  /** Under the focused cover's columns: the phone's name bar, or the index row. */
+  focusBelow: readonly Box[];
+  /** Over the open Video cover: Continue, and on a wide screen the tagline and Search too (a phone hides them). */
+  splitAbove: readonly Box[];
+}
+
+export function noObstacles(w: number, h: number): Obstacles {
+  return { short: isShort(h), navH: navHeight(w), focusAbove: [], focusBelow: [], splitAbove: [] };
+}
+
+/** The lowest edge, plus a gap, of the boxes that stand over the columns `from` to `to`. 0 when none does. */
+export function clearBelow(
+  boxes: readonly Box[],
+  from: number,
+  to: number,
+  gap = CLEAR_GAP,
+): number {
+  let y = 0;
+  for (const b of boxes) if (b.right > from && b.left < to) y = Math.max(y, b.bottom + gap);
+  return y;
+}
+
+/** The highest edge, minus a gap, of the boxes that stand under the columns `from` to `to`. `limit` when none does. */
+export function clearAbove(
+  boxes: readonly Box[],
+  from: number,
+  to: number,
+  limit: number,
+  gap = CLEAR_GAP,
+): number {
+  let y = limit;
+  for (const b of boxes) if (b.right > from && b.left < to) y = Math.min(y, b.top - gap);
+  return y;
+}
+
+/**
+ * The free columns between the controls at the two sides of a screen `w` wide: `edge` from each
+ * side, narrowed by the boxes that lean to the left or to the right.
+ */
+export function flank(
+  boxes: readonly Box[],
+  w: number,
+  edge: number,
+): { from: number; to: number } {
+  let from = edge;
+  let to = w - edge;
+  for (const b of boxes) {
+    if (b.left + b.right > w) to = Math.min(to, b.left - CLEAR_GAP);
+    else from = Math.max(from, b.right + CLEAR_GAP);
+  }
+  return { from, to };
+}
+
+/** The offset from the middle of the screen that puts a pair `pair` wide inside `span`, nearest the middle. */
+function centreIn(w: number, span: { from: number; to: number }, pair: number): number {
+  const half = pair / 2;
+  return clamp(0, span.from + half - w / 2, span.to - half - w / 2);
+}
+
+/** The largest side of the focused cover. */
+export function focusTarget(w: number, h: number): number {
+  return isPhone(w) ? Math.min(w * 0.8, h * 0.46) : Math.min(h * 0.46, w * 0.34);
+}
+
+/** The band of the screen the focused cover and its Open button may use, in px from the top. */
+export interface FocusRoom {
+  /** The cover starts below this. */
+  top: number;
+  /** The Open button under the cover ends above this. */
+  foot: number;
+  /** The columns it may use: the whole width, or on a short screen the span between the controls. */
+  from: number;
+  to: number;
+}
+
+export function focusRoom(w: number, h: number, o: Obstacles): FocusRoom {
+  const t = focusTarget(w, h);
+  const from = (w - t) / 2;
+  const to = (w + t) / 2;
+  // A short screen has no room under the controls: they flank the cover.
+  const span = o.short ? flank(o.focusAbove, w, 0) : { from: 0, to: w };
+  return {
+    top: Math.max(o.navH, o.short ? 0 : clearBelow(o.focusAbove, from, to)),
+    foot: clearAbove(o.focusBelow, from, to, h - CLEAR_GAP),
+    from: span.from,
+    to: span.to,
+  };
+}
+
+/**
+ * The pose of the focused cover: scaled up in the middle of the screen. With a `room` it is made
+ * smaller and moved down or up until it, and the Open button under it, stand inside the room.
+ * Where it already does (every wide screen, a tall phone) nothing moves.
+ */
+export function focusPose(w: number, h: number, size: number, room?: FocusRoom): Pose {
   const phone = isPhone(w);
-  const target = phone ? Math.min(w * 0.8, h * 0.46) : Math.min(h * 0.46, w * 0.34);
-  const centreY = phone ? h * 0.1 : h * 0.03;
+  let target = focusTarget(w, h);
+  let centreY = phone ? h * 0.1 : h * 0.03;
+  let x = 0;
+  if (room) {
+    const lo = room.top;
+    const hi = room.foot - OPEN_BELOW - OPEN_H;
+    target = Math.max(FOCUS_MIN, Math.min(target, hi - lo, room.to - room.from));
+    x = centreIn(w, room, target);
+    // Measured from the top of the screen, then back to y up from the middle.
+    const want = h / 2 - centreY;
+    const fromTop = Math.max(lo + target / 2, Math.min(want, hi - target / 2));
+    if (fromTop !== want) centreY = h / 2 - fromTop;
+  }
   const s = target / size;
-  return { x: 0, y: centreY - target / 2, z: 0, s, lean: 0, yaw: 0 };
+  return { x, y: centreY - target / 2, z: 0, s, lean: 0, yaw: 0 };
 }
 
 // Entrance --------------------------------------------------------------------------------
@@ -345,14 +500,45 @@ export const SPLIT_ROOM = {
 
 /** Room the split leaves on a phone, in CSS px. */
 export const SPLIT_ROOM_PHONE = {
-  /** Under the top bar and the Continue button (the tagline hides while the cover is open). */
-  top: 64,
+  /**
+   * Under the top bar and the Continue button, which stands on the row under the tagline (about
+   * 152 px from the top, 88 under a 64 px bar). The tagline hides while the cover is open.
+   */
+  top: 104,
   /** The bar with the name and Back at the foot. */
   bottom: 120,
   /** The line and the Open button under each half. */
   caption: 66,
   side: 24,
 } as const;
+
+/**
+ * Room the split leaves on a short screen (`isShort`: a phone on its side). The index row steps
+ * aside and the halves lose their line, so a half has only its count and Open under it. The pair
+ * stands between the controls at the two sides, not under them.
+ */
+export const SPLIT_ROOM_SHORT = {
+  top: 8,
+  bottom: 16,
+  /** The count and the Open button under each half, and the Back button under them. */
+  caption: 68,
+  back: 52,
+  side: 48,
+} as const;
+
+const SPLIT_ROOM_PHONE_SHORT = {
+  top: 8,
+  bottom: 112,
+  /** The count and the Open button under each half (a phone's Back is in the bar). */
+  caption: 56,
+  side: 24,
+} as const;
+
+/** The room under a half for its caption, and the distance from the foot of the halves to the top of Back. */
+export function splitCaption(w: number, h: number): number {
+  if (isPhone(w)) return isShort(h) ? SPLIT_ROOM_PHONE_SHORT.caption : SPLIT_ROOM_PHONE.caption;
+  return isShort(h) ? SPLIT_ROOM_SHORT.caption : SPLIT_ROOM.caption;
+}
 
 export interface SplitGeometry {
   /** Side of each half when open. */
@@ -369,43 +555,106 @@ export interface SplitGeometry {
   vertical: boolean;
 }
 
-/** Where the two halves stand when the cover is open, for a stage of `w` by `h` with a top bar `navH` high. */
-export function splitGeometry(w: number, h: number, navH = w >= 901 ? 80 : 64): SplitGeometry {
-  if (isPhone(w)) {
-    const r = SPLIT_ROOM_PHONE;
-    const top = navH + r.top;
-    const room = h - top - r.bottom;
-    const seam = 16;
-    // One above the other (a tall phone), or side by side when that gives the larger squares (a
-    // short one). Side by side, each line wraps under a narrow half, so it gets twice the room.
-    const tall = Math.floor(Math.min(w - r.side * 2, (room - r.caption * 2 - seam) / 2));
-    const wideGap = 14;
-    const wide = Math.floor(Math.min((w - r.side * 2 - wideGap) / 2, room - r.caption * 2));
-    if (tall >= wide) {
-      const size = Math.max(80, tall);
-      const gap = r.caption + seam;
-      const block = size * 2 + gap + r.caption;
-      const blockTop = top + Math.max(0, (room - block) / 2);
-      // From the top of the screen to the middle of the two squares.
-      const mid = blockTop + size + gap / 2;
-      return { size, gap, cx: 0, cy: h / 2 - mid, vertical: true };
-    }
-    const size = Math.max(80, wide);
-    const block = size + r.caption * 2;
+/** What `splitGeometry` may be told about the screen. */
+interface SplitInputs {
+  /** The screen is short (`isShort`). Taken from `h` when left out. */
+  short?: boolean;
+  /** The boxes over the open pair that it must clear (`Obstacles.splitAbove`). */
+  above?: readonly Box[];
+}
+
+/**
+ * Where the two halves stand when the cover is open, for a stage of `w` by `h` with a top bar
+ * `navH` high. The pair stands under the controls at the top (the fixed room above, or the boxes
+ * measured if they reach lower), or, on a short screen, between the controls at the two sides.
+ */
+export function splitGeometry(
+  w: number,
+  h: number,
+  navH = navHeight(w),
+  inputs: SplitInputs = {},
+): SplitGeometry {
+  const short = inputs.short ?? isShort(h);
+  const above = inputs.above ?? [];
+  const phone = isPhone(w);
+  const lay = (top: number, span: { from: number; to: number }): SplitGeometry =>
+    phone
+      ? layPhone(w, h, top, short ? SPLIT_ROOM_PHONE_SHORT : SPLIT_ROOM_PHONE, span, short)
+      : layWide(w, h, top, short ? SPLIT_ROOM_SHORT : SPLIT_ROOM, span, short);
+  const r = phone
+    ? short
+      ? SPLIT_ROOM_PHONE_SHORT
+      : SPLIT_ROOM_PHONE
+    : short
+      ? SPLIT_ROOM_SHORT
+      : SPLIT_ROOM;
+  const span = short ? flank(above, w, r.side) : { from: r.side, to: w - r.side };
+  const top0 = navH + r.top;
+  const g = lay(top0, span);
+  if (short) return g;
+  // The columns the pair uses. If a measured control reaches lower than the pair starts, the pair
+  // is laid out again under that control (a pair that already clears it does not move).
+  const half = g.vertical ? g.size / 2 : g.size + g.gap / 2;
+  const reach = g.vertical ? g.size + g.gap / 2 : g.size / 2;
+  const clear = clearBelow(above, w / 2 + g.cx - half, w / 2 + g.cx + half);
+  return clear > h / 2 - g.cy - reach + 0.5 ? lay(Math.max(top0, clear), span) : g;
+}
+
+type SplitRoom = { top: number; bottom: number; caption: number; side: number };
+
+function layPhone(
+  w: number,
+  h: number,
+  top: number,
+  r: SplitRoom,
+  span: { from: number; to: number },
+  short: boolean,
+): SplitGeometry {
+  const room = h - top - r.bottom;
+  const width = span.to - span.from;
+  const seam = 16;
+  // One above the other (a tall phone), or side by side when that gives the larger squares (a
+  // short one). Side by side, each line wraps under a narrow half, so it gets twice the room
+  // (a short screen has no line, so one row).
+  const tall = Math.floor(Math.min(width, (room - r.caption * 2 - seam) / 2));
+  const wideGap = 14;
+  const rows = short ? 1 : 2;
+  const wide = Math.floor(Math.min((width - wideGap) / 2, room - r.caption * rows));
+  if (tall >= wide) {
+    const size = Math.max(80, tall);
+    const gap = r.caption + seam;
+    const block = size * 2 + gap + r.caption;
     const blockTop = top + Math.max(0, (room - block) / 2);
-    return { size, gap: wideGap, cx: 0, cy: h / 2 - (blockTop + size / 2), vertical: false };
+    // From the top of the screen to the middle of the two squares.
+    const mid = blockTop + size + gap / 2;
+    const cx = short ? centreIn(w, span, size) : 0;
+    return { size, gap, cx, cy: h / 2 - mid, vertical: true };
   }
-  const r = SPLIT_ROOM;
-  const top = navH + r.top;
+  const size = Math.max(80, wide);
+  const block = size + r.caption * rows;
+  const blockTop = top + Math.max(0, (room - block) / 2);
+  const cx = short ? centreIn(w, span, size * 2 + wideGap) : 0;
+  return { size, gap: wideGap, cx, cy: h / 2 - (blockTop + size / 2), vertical: false };
+}
+
+function layWide(
+  w: number,
+  h: number,
+  top: number,
+  r: SplitRoom & { back: number },
+  span: { from: number; to: number },
+  short: boolean,
+): SplitGeometry {
   const room = h - top - r.bottom;
   const gap = Math.round(clamp(w * 0.014, 14, 28));
   const size = Math.floor(
-    Math.max(80, Math.min(h * 0.4, room - r.caption - r.back, (w - r.side * 2 - gap) / 2)),
+    Math.max(80, Math.min(h * 0.4, room - r.caption - r.back, (span.to - span.from - gap) / 2)),
   );
   const block = size + r.caption + r.back;
   const blockTop = top + Math.max(0, (room - block) / 2);
   const mid = blockTop + size / 2;
-  return { size, gap, cx: 0, cy: h / 2 - mid, vertical: false };
+  const cx = short ? centreIn(w, span, size * 2 + gap) : 0;
+  return { size, gap, cx, cy: h / 2 - mid, vertical: false };
 }
 
 function seg(p: number, [a, b]: [number, number]): number {
