@@ -54,9 +54,19 @@ test("menu keeps focus inside, closes on Escape, restores focus", async ({ page 
 });
 
 test("the next-destination chain goes all the way round", async ({ page, baseURL }) => {
-  const chain = ["/", "/about/", "/story/", "/character/", "/collection/", "/"];
+  // The story page has no way on: it is a page with no end, and it starts over by itself.
+  const chain = ["/", "/about/", "/story/"];
   await page.goto(url("/"));
   for (const next of chain.slice(1)) {
+    await page.getByRole("button", { name: /^Continue to/ }).click();
+    await settled(page);
+    await expect.poll(() => sitePath(page, baseURL)).toBe(next);
+  }
+  await expect(page.getByRole("button", { name: /^Continue to/ })).toHaveCount(0);
+
+  const rest = ["/collection/", "/"];
+  await page.goto(url("/character/"));
+  for (const next of rest) {
     await page.getByRole("button", { name: /^Continue to/ }).click();
     await settled(page);
     await expect.poll(() => sitePath(page, baseURL)).toBe(next);
