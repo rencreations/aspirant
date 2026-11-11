@@ -141,6 +141,7 @@ export function StoryRise({
       invalidateOnRefresh: true,
       onRefresh: (self) => {
         rise.current = { start: self.start, end: self.end };
+        up = self.progress;
       },
       onUpdate: (self) => {
         up = self.progress;
@@ -154,18 +155,36 @@ export function StoryRise({
       invalidateOnRefresh: true,
       onRefresh: (self) => {
         leave.current = { start: self.start, end: self.end };
+        out = self.progress;
       },
       onUpdate: (self) => {
         out = self.progress;
         apply();
       },
     });
+    // The panel grows and shrinks (the chapter list opens, pictures arrive): the end of the page,
+    // where the leaving is, moves with it, so it is measured again. Without this the leaving
+    // keeps the old end and takes the panel away in the middle of the list.
+    let height = el.offsetHeight;
+    let timer = 0;
+    const ro = new ResizeObserver(() => {
+      if (Math.abs(el.offsetHeight - height) < 1) return;
+      height = el.offsetHeight;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 80);
+    });
+    ro.observe(el);
+
     rise.current = { start: rising.start, end: rising.end };
     leave.current = { start: leaving.start, end: leaving.end };
     up = rising.progress;
     out = leaving.progress;
     apply();
     return () => {
+      window.clearTimeout(timer);
+      ro.disconnect();
       ScrollTrigger.removeEventListener("refreshInit", bare);
       ScrollTrigger.removeEventListener("refresh", apply);
       rising.kill();

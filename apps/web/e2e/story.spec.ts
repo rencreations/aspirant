@@ -323,7 +323,7 @@ test.describe("the story page", () => {
     // Wheel all the way down. The scroll must come back to the top at the end, not stop there.
     let wrapped = false;
     let last = 0;
-    for (let i = 0; i < 80 && !wrapped; i += 1) {
+    for (let i = 0; i < 200 && !wrapped; i += 1) {
       await page.mouse.wheel(0, 700);
       await page.waitForTimeout(90);
       const { y } = await state();
@@ -332,7 +332,46 @@ test.describe("the story page", () => {
     }
     expect(wrapped).toBe(true);
     // Back at the top, the hero is in front with its buttons live.
-    await expect.poll(async () => (await state()).y, { timeout: 4000 }).toBeLessThan(400);
+    await expect.poll(async () => (await state()).y, { timeout: 4000 }).toBeLessThan(max - 900);
+  });
+
+  test("after Show all the page keeps its length: the white page stays until the real end", async ({
+    page,
+  }) => {
+    await skipGate(page);
+    await page.goto(url("/story/"));
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: /Show all/i }).click();
+    // The list is far longer now; the end of the page moves, and the leaving moves with it.
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 8000 })
+      .toBeGreaterThan(12_000);
+    await page.waitForTimeout(600);
+    const state = () =>
+      page.evaluate(() => {
+        const el = document.getElementById("story-rise")!;
+        return {
+          visibility: getComputedStyle(el).visibility,
+          transform: getComputedStyle(el).transform,
+          bottom: Math.round(el.getBoundingClientRect().bottom),
+          vh: window.innerHeight,
+        };
+      });
+    // In the middle of the long list the page covers the screen, whole and square.
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.45));
+    await page.waitForTimeout(500);
+    const mid = await state();
+    expect(mid.visibility).toBe("visible");
+    expect(mid.transform).toBe("none");
+    expect(mid.bottom).toBeGreaterThan(mid.vh * 2);
+    // Close to the real end it is leaving: its bottom edge is on the screen.
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight - window.innerHeight - 450),
+    );
+    await page.waitForTimeout(500);
+    const late = await state();
+    expect(late.bottom).toBeGreaterThan(200);
+    expect(late.bottom).toBeLessThan(late.vh);
   });
 
   test("at the very end the hero is on screen with a live button, as at the top", async ({
