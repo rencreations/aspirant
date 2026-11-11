@@ -1,0 +1,30 @@
+/*
+ * The hover outline of a tile that opens the zoom. The outline is drawn inside the tile (a negative
+ * offset), so a row that clips its track never cuts it, and it takes no room (an outline is not
+ * part of the layout). It grows in from the edge. The ring is white over a dark room and ink over a
+ * light one; a room may set its own with `--zoom-outline`.
+ */
+.tile {
+  --zo: var(--zoom-outline, #fff);
+  outline: 2px solid transparent;
+  outline-offset: 6px;
+  transition:
+    outline-color 180ms linear,
+    outline-offset 360ms var(--ease-out);
+}
+
+.light {
+  --zo: var(--zoom-outline, #0b0e14);
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    outline-color: var(--zo);
+    outline-offset: -4px;
+  }
+}
+
+.tile:focus-visible {
+  outline-color: var(--zo);
+  outline-offset: -4px;
+}

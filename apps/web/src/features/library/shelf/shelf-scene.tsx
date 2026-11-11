@@ -18,45 +18,74 @@ import { fetchLibraryJson } from "../data";
 import { COLLECTIONS } from "../registry";
 import { SearchButton } from "../search/search-host";
 import { useLibrarySearch } from "../search/search-store";
-import type { VideoRoom } from "../types";
-import { FILM_IDS } from "../video/links";
 import { drawCover, getCoverBitmap, holdCoverBitmaps, loadCoverFonts } from "./cover-art";
-import { ShelfEngine, type Half, type Rect } from "./engine";
+import { ShelfEngine, type Rect } from "./engine";
 import {
   COVER_COUNT,
   ENTRANCE_MS,
+  backAt,
+  captionAt,
+  foldGeometry,
   formatCount,
   isPhone,
   isShort,
-  moveHalf,
   moveIndex,
+  movePart,
   splitCaption,
-  splitGeometry,
   type ArrowKey,
+  type FoldGeometry,
 } from "./layout";
 import { measureObstacles } from "./obstacles";
 import styles from "./shelf.module.css";
-import { VIDEO_HALVES, VIDEO_SLUG, halfCounts } from "./video-halves";
+import { SPLITS, partCount, splitIndexOf, type LibraryIndex, type SplitSpec } from "./splits";
 
 const ARROWS: readonly string[] = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 
-/** The cover that opens in two. */
-const VIDEO = Math.max(
-  0,
-  COLLECTIONS.findIndex((c) => c.slug === VIDEO_SLUG),
-);
+/** Every cover that opens into rooms (Arts into three, Video into two), with its place on the shelf. */
+const OPENERS = SPLITS.map((spec) => ({
+  spec,
+  index: splitIndexOf(spec),
+  n: partCount(spec),
+  lineChars: Math.max(...spec.parts.map((p) => p.line.length)),
+}));
 
-/** Where the Video cover is: shut, on its way open, open, or on its way shut. */
+type Opener = (typeof OPENERS)[number];
+
+/** A row (a square with its words beside it) under this side is short: its line and its count are set tighter. */
+const COMPACT_ROW = 128;
+
+/** The opener of the cover at shelf slot `i`, if it opens. */
+const openerAt = (i: number | null): Opener | undefined =>
+  i === null ? undefined : OPENERS.find((o) => o.index === i);
+
+/** Where an opening cover is: shut, on its way open, open, or on its way shut. */
 type SplitState = "shut" | "opening" | "open" | "closing";
 
-/** The address of the shelf with the Video cover open (`?open=video`) or shut. */
-function writeOpen(open: boolean): void {
+/** The address of the shelf with a cover open (`?open=video`, `?open=arts`) or shut. */
+function writeOpen(slug: string | null): void {
   const u = new URL(window.location.href);
-  if (open) u.searchParams.set("open", VIDEO_SLUG);
+  if (slug) u.searchParams.set("open", slug);
   else u.searchParams.delete("open");
   const next = `${u.pathname}${u.search}${u.hash}`;
   const now = `${window.location.pathname}${window.location.search}${window.location.hash}`;
   if (next !== now) window.history.replaceState(window.history.state, "", next);
+}
+
+function sameGeo(a: Record<number, FoldGeometry>, b: Record<number, FoldGeometry>): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/**
+ * Three parts side by side have lines of different lengths. Give their words one height (the
+ * tallest) so the three Open buttons stand on one line. Returns that height, or 0 when there is none.
+ */
+function equalise(els: Array<HTMLElement | null>, on: boolean): number {
+  const live = els.filter((el): el is HTMLElement => el !== null);
+  for (const el of live) el.style.minHeight = "";
+  if (!on) return 0;
+  const tallest = Math.max(0, ...live.map((el) => el.offsetHeight));
+  if (tallest > 0) for (const el of live) el.style.minHeight = `${tallest}px`;
+  return tallest;
 }
 
 /** Wait for the loading curtain to open (the first visit or a page change). Returns the way to stop waiting. */
@@ -87,21 +116,16 @@ interface Props {
   onFail: () => void;
 }
 
-interface LibraryIndex {
-  counts?: Record<string, number>;
-  /** Items in each room of a collection that has more than one (`video/films`, `video/others`). */
-  rooms?: Record<string, number>;
-}
-
 /**
  * The shelf: one full screen WebGL scene (`engine.ts`) with the words and the buttons laid over
  * it as real HTML. The scene draws the covers, the shelves, the shadows and the blur; this
  * component owns what is hovered and what is focused, the keys, the index row and the way into
  * a room. It reports to the loading curtain (`expectReady`) until the first frame is drawn.
  *
- * The Video cover does not lead to a room: it opens in two (a gatefold drawn by the scene), Films
- * and Others, each with its line and its Open button. The open cover is in the address
- * (`?open=video`), so the browser's Back from a Video room comes back to it.
+ * Two covers do not lead to a room: they open into rooms (`splits.ts`). Video is a gatefold of two
+ * panels, Films and Others; Arts is a triptych of three, Official, Fanart and Cosplay. Each part has
+ * its line, its count and its Open button. The open cover is in the address (`?open=video`,
+ * `?open=arts`), so the browser's Back from one of its rooms comes back to it.
  */
 export default function ShelfScene({ onFail }: Props) {
   const router = useTransitionRouter();
@@ -112,8 +136,8 @@ export default function ShelfScene({ onFail }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLSpanElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
-  const halfRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const halfButtons = useRef<Array<HTMLButtonElement | null>>([]);
+  const partRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const partButtons = useRef<Array<HTMLButtonElement | null>>([]);
   const engineRef = useRef<ShelfEngine | null>(null);
   const anchors = useRef<Array<HTMLAnchorElement | null>>([]);
 
@@ -125,9 +149,10 @@ export default function ShelfScene({ onFail }: Props) {
   const [index, setIndex] = useState<LibraryIndex>({});
   const [lastFocused, setLastFocused] = useState(0);
   const [split, setSplit] = useState<SplitState>("shut");
-  const [half, setHalf] = useState<Half | null>(null);
-  const [halfSize, setHalfSize] = useState(0);
-  const [stacked, setStacked] = useState(false);
+  /** The cover that is open or was last open (its parts are the ones on the page). */
+  const [splitCover, setSplitCover] = useState<number | null>(null);
+  const [part, setPart] = useState<number | null>(null);
+  const [geo, setGeo] = useState<Record<number, FoldGeometry>>({});
   const [short, setShort] = useState(false);
 
   // The latest values for the scene's callbacks, which are made once.
@@ -135,15 +160,17 @@ export default function ShelfScene({ onFail }: Props) {
   const activeRef = useRef(active);
   const phoneRef = useRef(phone);
   const frontRef = useRef(front);
-  /** The Video cover is open, or opening (the target, not where the motion is). */
-  const splitRef = useRef(false);
-  /** The half the keyboard chose, and the one the pointer is over. */
-  const keyHalf = useRef<Half | null>(null);
-  const pointerHalf = useRef<Half | null>(null);
-  /** The halves are stacked (a tall phone): the arrows go up and down between them. */
-  const verticalRef = useRef(false);
+  /** The cover that is open or opening (the target, not where the motion is), or null. */
+  const splitRef = useRef<number | null>(null);
+  /** The part the keyboard chose, and the one the pointer is over. */
+  const keyPart = useRef<number | null>(null);
+  const pointerPart = useRef<number | null>(null);
+  /** What the scene last laid out for each opening cover (read by the scene's callbacks). */
+  const geoRef = useRef<Record<number, FoldGeometry>>({});
   /** The cover was opened from the keyboard: the focus moves to its first Open once it has opened. */
   const focusOnOpen = useRef(false);
+  /** The height of the words under three parts side by side (0 when not measured). */
+  const captionH = useRef(0);
   useEffect(() => {
     focusedRef.current = focused;
     activeRef.current = active;
@@ -158,57 +185,60 @@ export default function ShelfScene({ onFail }: Props) {
     if (sound && i !== null) audio.blip("hover");
   }, []);
 
-  const showHalf = useCallback(() => {
-    const h = pointerHalf.current ?? keyHalf.current;
-    setHalf(h);
+  const showPart = useCallback(() => {
+    setPart(pointerPart.current ?? keyPart.current);
   }, []);
 
-  /** Open the Video cover into its two halves. */
-  const openSplit = useCallback((fromKeys = false) => {
+  /** Open the cover at shelf slot `cover` into its parts. Another one that is open shuts first. */
+  const openSplit = useCallback((cover: number, fromKeys = false) => {
+    const opener = openerAt(cover);
+    if (!opener) return;
     const engine = engineRef.current;
-    setFocused(VIDEO);
-    setLastFocused(VIDEO);
-    focusedRef.current = VIDEO;
-    setActive(VIDEO);
-    activeRef.current = VIDEO;
-    engine?.setFocus(VIDEO);
-    if (phoneRef.current) engine?.setStack(VIDEO);
-    if (splitRef.current) return;
-    splitRef.current = true;
-    keyHalf.current = null;
-    pointerHalf.current = null;
-    setHalf(null);
+    setFocused(cover);
+    setLastFocused(cover);
+    focusedRef.current = cover;
+    setActive(cover);
+    activeRef.current = cover;
+    engine?.setFocus(cover);
+    if (phoneRef.current) engine?.setStack(cover);
+    if (splitRef.current === cover) return;
+    splitRef.current = cover;
+    setSplitCover(cover);
+    keyPart.current = null;
+    pointerPart.current = null;
+    setPart(null);
     setSplit("opening");
     focusOnOpen.current = fromKeys;
-    engine?.setHalf(null);
-    engine?.setSplit(true);
-    writeOpen(true);
+    engine?.setPart(null);
+    engine?.setSplit(cover);
+    writeOpen(opener.spec.slug);
     audio.blip("click");
   }, []);
 
-  /** Shut the Video cover (the scene closes it, then lets it fly back to the shelf). */
+  /** Shut the open cover (the scene closes it, then lets it fly back to the shelf). */
   const shutSplit = useCallback(() => {
-    if (!splitRef.current) return false;
-    splitRef.current = false;
-    keyHalf.current = null;
-    pointerHalf.current = null;
-    setHalf(null);
+    const was = splitRef.current;
+    if (was === null) return false;
+    splitRef.current = null;
+    keyPart.current = null;
+    pointerPart.current = null;
+    setPart(null);
     setSplit("closing");
     focusOnOpen.current = false;
-    engineRef.current?.setHalf(null);
-    engineRef.current?.setSplit(false);
-    writeOpen(false);
-    // The focus was on a button of the open cover: give it to the Video entry of the index row.
+    engineRef.current?.setPart(null);
+    engineRef.current?.setSplit(null);
+    writeOpen(null);
+    // The focus was on a button of the open cover: give it to that cover's entry of the index row.
     const el = document.activeElement;
     if (el instanceof HTMLElement && el.closest("[data-split-ui]"))
-      anchors.current[VIDEO]?.focus({ preventScroll: true });
+      anchors.current[was]?.focus({ preventScroll: true });
     return true;
   }, []);
 
   const focusCover = useCallback(
     (i: number, fromKeys = false) => {
-      if (i === VIDEO) {
-        openSplit(fromKeys);
+      if (openerAt(i)) {
+        openSplit(i, fromKeys);
         return;
       }
       shutSplit();
@@ -240,9 +270,9 @@ export default function ShelfScene({ onFail }: Props) {
     (i: number, fromKeys = false) => {
       const meta = COLLECTIONS[i];
       if (!meta) return;
-      // The Video cover opens in two instead of leading to a room.
-      if (i === VIDEO) {
-        openSplit(fromKeys);
+      // A cover that opens in parts opens them instead of leading to a room.
+      if (openerAt(i)) {
+        openSplit(i, fromKeys);
         return;
       }
       audio.blip("click");
@@ -251,23 +281,24 @@ export default function ShelfScene({ onFail }: Props) {
     [openSplit, router],
   );
 
-  const openHalf = useCallback(
-    (h: Half) => {
-      const room = VIDEO_HALVES[h];
+  const openPart = useCallback(
+    (cover: number, k: number) => {
+      const room = openerAt(cover)?.spec.parts[k];
+      if (!room) return;
       audio.blip("click");
       router.push(room.href, { label: room.name });
     },
     [router],
   );
 
-  const chooseHalf = useCallback(
-    (h: Half, fromKeys: boolean) => {
-      keyHalf.current = h;
-      engineRef.current?.setHalf(h);
-      showHalf();
-      if (fromKeys) halfButtons.current[h]?.focus({ preventScroll: true });
+  const choosePart = useCallback(
+    (k: number, fromKeys: boolean) => {
+      keyPart.current = k;
+      engineRef.current?.setPart(k);
+      showPart();
+      if (fromKeys) partButtons.current[k]?.focus({ preventScroll: true });
     },
-    [showHalf],
+    [showPart],
   );
 
   // The scene -------------------------------------------------------------------------------------
@@ -282,8 +313,9 @@ export default function ShelfScene({ onFail }: Props) {
     let timer = 0;
     let curtain: ReturnType<typeof whenCurtainOpen> | null = null;
     let travel = 0;
-    // `/collection?open=video` opens on the two halves (the browser's Back from a Video room).
-    const startOpen = new URLSearchParams(window.location.search).get("open") === VIDEO_SLUG;
+    // `/collection?open=video` or `?open=arts` opens on the parts (the browser's Back from a room).
+    const wanted = new URLSearchParams(window.location.search).get("open");
+    const startOpener = OPENERS.find((op) => op.spec.slug === wanted);
 
     const place = (el: HTMLElement | null, x: number, y: number, anchor: string) => {
       if (el) el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) ${anchor}`;
@@ -292,36 +324,57 @@ export default function ShelfScene({ onFail }: Props) {
       const track = trackRef.current;
       const thumb = thumbRef.current;
       travel = track && thumb ? Math.max(0, track.clientHeight - thumb.clientHeight) : 0;
-      // The controls over the scene (the focused cover and the open Video cover keep clear of
-      // them), measured once per layout, never per frame.
+      // The controls over the scene (the focused cover and the open cover keep clear of them),
+      // measured once per layout, never per frame.
       const w = stage.clientWidth;
       const h = stage.clientHeight;
       const o = measureObstacles(stage);
       engineRef.current?.setObstacles(o);
-      const g = splitGeometry(w, h, o.navH, { short: o.short, above: o.splitAbove });
-      verticalRef.current = g.vertical;
-      setStacked(g.vertical);
-      setHalfSize(g.size);
+      const next: Record<number, FoldGeometry> = {};
+      for (const op of OPENERS) {
+        next[op.index] = foldGeometry(op.n, w, h, o.navH, {
+          short: o.short,
+          above: o.splitAbove,
+          lineChars: op.lineChars,
+        });
+      }
+      geoRef.current = next;
+      setGeo((prev) => (sameGeo(prev, next) ? prev : next));
       setShort(isShort(h));
     };
 
     void (async () => {
       try {
         await loadCoverFonts();
-        const [canvases, halves] = await Promise.all([
+        const [canvases, inside] = await Promise.all([
           Promise.all(
             COLLECTIONS.map(async (c) => ({
               canvas: drawCover(c, await getCoverBitmap(c.cover)),
             })),
           ),
-          Promise.all(VIDEO_HALVES.map(async (h) => drawCover(h, await getCoverBitmap(h.cover)))),
+          Promise.all(
+            OPENERS.map((op) =>
+              Promise.all(
+                op.spec.parts.map(async (p) => ({
+                  id: p.id,
+                  canvas: drawCover(p, await getCoverBitmap(p.cover)),
+                })),
+              ),
+            ),
+          ),
         ]);
         if (cancelled) return;
         engine = new ShelfEngine({
           host,
           pointerTarget: stage,
           covers: canvases,
-          split: { index: VIDEO, halves: [halves[0]!, halves[1]!], open: startOpen },
+          splits: OPENERS.map((op, k) => ({
+            index: op.index,
+            fold: op.spec.fold,
+            parts: inside[k] ?? [],
+            lineChars: op.lineChars,
+            open: op === startOpener,
+          })),
           onHover: (i) => {
             hoverIndex(i);
           },
@@ -359,50 +412,54 @@ export default function ShelfScene({ onFail }: Props) {
                 "translate(-50%, 0)",
               );
           },
-          onHalfHover: (h) => {
-            pointerHalf.current = h;
-            if (h !== null) audio.blip("hover");
-            showHalf();
+          onPartHover: (cover, k) => {
+            if (cover !== splitRef.current) return;
+            pointerPart.current = k;
+            if (k !== null) audio.blip("hover");
+            showPart();
           },
-          onHalfOpen: (h) => {
-            openHalf(h);
+          onPartOpen: (cover, k) => {
+            openPart(cover, k);
           },
-          onSplitLayout: (films, others) => {
-            if (!films || !others) return;
-            // The line and the Open button under each half, and Back under the pair. Side by
-            // side the two lines share one baseline, whichever half is lifted.
-            const below = Math.max(films.bottom, others.bottom);
-            const oneAbove = films.bottom <= others.top;
-            place(
-              halfRefs.current[0] ?? null,
-              films.left,
-              (oneAbove ? films.bottom : below) + 14,
-              "",
-            );
-            place(halfRefs.current[1] ?? null, others.left, below + 14, "");
-            place(
-              backRef.current,
-              (Math.min(films.left, others.left) + Math.max(films.right, others.right)) / 2,
-              below + splitCaption(stage.clientWidth, stage.clientHeight),
-              "translate(-50%, 0)",
-            );
+          onSplitLayout: (cover, rects) => {
+            if (!rects || cover !== splitRef.current) return;
+            const g = geoRef.current[cover];
+            const beside = g?.beside ?? false;
+            // The line and the Open button under each part (or beside it, for rows), and Back under
+            // the parts. Side by side the lines share one baseline, whichever part is lifted.
+            rects.forEach((_, k) => {
+              const at = captionAt(rects, k, beside);
+              place(partRefs.current[k] ?? null, at.x, at.y, "");
+            });
+            // Back stands under the words: where they really end when three of them were measured.
+            const tail =
+              captionH.current > 0 && g && !beside
+                ? 14 + captionH.current + 14
+                : (g?.tail ?? splitCaption(stage.clientWidth, stage.clientHeight));
+            const back = backAt(rects, tail);
+            place(backRef.current, back.x, back.y, "translate(-50%, 0)");
           },
-          onSplitSettled: (open) => {
-            if (open !== splitRef.current) return;
-            setSplit(open ? "open" : "shut");
+          onSplitSettled: (cover, open) => {
+            if (open) {
+              if (cover === splitRef.current) setSplit("open");
+            } else if (splitRef.current === null) {
+              setSplit("shut");
+            }
           },
         });
         engineRef.current = engine;
         setPhone(engine.isPhone);
         measure();
-        if (startOpen) {
-          splitRef.current = true;
-          setFocused(VIDEO);
-          setLastFocused(VIDEO);
-          focusedRef.current = VIDEO;
-          setActive(VIDEO);
-          activeRef.current = VIDEO;
-          setFront(VIDEO);
+        if (startOpener) {
+          const at = startOpener.index;
+          splitRef.current = at;
+          setSplitCover(at);
+          setFocused(at);
+          setLastFocused(at);
+          focusedRef.current = at;
+          setActive(at);
+          activeRef.current = at;
+          setFront(at);
           setSplit("open");
         }
         // The first frame is drawn (the ground and the shelves, the covers waiting above): the curtain may open.
@@ -448,13 +505,13 @@ export default function ShelfScene({ onFail }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Opened from the keyboard: once the halves and their buttons are on screen, the focus goes to
-  // the Open button of the chosen half (Films unless the arrows came from the right).
+  // Opened from the keyboard: once the parts and their buttons are on screen, the focus goes to
+  // the Open button of the chosen part (the first unless the arrows came from the right).
   useEffect(() => {
     if (split !== "open" || !entered || !focusOnOpen.current) return;
     focusOnOpen.current = false;
-    chooseHalf(keyHalf.current ?? 0, true);
-  }, [split, entered, chooseHalf]);
+    choosePart(keyPart.current ?? 0, true);
+  }, [split, entered, choosePart]);
 
   // The counts under the names, when the library index exists. Missing is fine: they stay hidden.
   useEffect(() => {
@@ -488,21 +545,23 @@ export default function ShelfScene({ onFail }: Props) {
         e.preventDefault();
         const key = e.key as ArrowKey;
         let next: number;
-        if (splitRef.current) {
-          // Inside the open Video cover the arrows go between its two halves. Past the first or
-          // the last half they go on to the cover before or after it, as they do between covers.
-          const v = verticalRef.current;
-          const cur = keyHalf.current;
+        const open = openerAt(splitRef.current);
+        if (open) {
+          // Inside an open cover the arrows go between its parts. Past the first or the last part
+          // they go on to the cover before or after it, as they do between covers.
+          const v = geoRef.current[open.index]?.vertical ?? false;
+          const cur = keyPart.current;
           const backward = key === (v ? "ArrowUp" : "ArrowLeft");
           const forward = key === (v ? "ArrowDown" : "ArrowRight");
-          if (backward && cur === 0) next = VIDEO - 1;
-          else if (forward && cur === 1) next = VIDEO + 1;
-          else if (!v && !phoneRef.current && key === "ArrowDown") next = moveIndex(VIDEO, key);
+          if (backward && cur === 0) next = open.index - 1;
+          else if (forward && cur === open.n - 1) next = open.index + 1;
+          else if (!v && !phoneRef.current && key === "ArrowDown")
+            next = moveIndex(open.index, key);
           else {
-            chooseHalf(moveHalf(cur, key, v), true);
+            choosePart(movePart(cur, key, v, open.n), true);
             return;
           }
-          if (next < 0 || next >= COVER_COUNT || next === VIDEO) return;
+          if (next < 0 || next >= COVER_COUNT || next === open.index) return;
         } else {
           const from =
             focusedRef.current ?? activeRef.current ?? (phoneRef.current ? frontRef.current : null);
@@ -514,14 +573,17 @@ export default function ShelfScene({ onFail }: Props) {
             anchors.current[next]?.focus({ preventScroll: true });
             return;
           }
-          if (next === VIDEO && from !== null) {
-            // Into the Video cover from a focused neighbour: it opens on the half nearest to it.
-            focusCover(VIDEO, true);
-            keyHalf.current = from < VIDEO ? 0 : 1;
+          if (openerAt(next) && from !== null) {
+            // Into a cover that opens, from a focused neighbour: it opens on the part nearest to it.
+            focusCover(next, true);
+            keyPart.current = from < next ? 0 : (openerAt(next)?.n ?? 1) - 1;
             return;
           }
         }
         focusCover(next, true);
+        // From inside an open cover into the next one that opens: the part nearest to where we came from.
+        const into = openerAt(next);
+        if (open && into) keyPart.current = open.index < next ? 0 : into.n - 1;
         engineRef.current?.setHover(next);
         anchors.current[next]?.focus({ preventScroll: true });
         return;
@@ -529,8 +591,8 @@ export default function ShelfScene({ onFail }: Props) {
       if (e.key === "Enter") {
         const el = document.activeElement;
         if (el && el !== document.body && el.closest("a, button")) return;
-        if (splitRef.current) {
-          if (keyHalf.current !== null) openHalf(keyHalf.current);
+        if (splitRef.current !== null) {
+          if (keyPart.current !== null) openPart(splitRef.current, keyPart.current);
         } else if (focusedRef.current !== null) openCover(focusedRef.current, true);
         else if (activeRef.current !== null) focusCover(activeRef.current, true);
       }
@@ -539,7 +601,7 @@ export default function ShelfScene({ onFail }: Props) {
     return () => {
       window.removeEventListener("keydown", onKey);
     };
-  }, [chooseHalf, focusCover, hoverIndex, openCover, openHalf, unfocus]);
+  }, [choosePart, focusCover, hoverIndex, openCover, openPart, unfocus]);
 
   // The phone's scroll bar: drag the thumb, or press the track.
   const onTrack = (e: ReactPointerEvent<HTMLDivElement>) => {
@@ -564,14 +626,20 @@ export default function ShelfScene({ onFail }: Props) {
   const pillsOn = active !== null && focused === null && !phone;
   const isSplit = split !== "shut";
   const splitUp = split === "open" && entered;
-  const [filmsCount, othersCount] = halfCounts(counts[VIDEO_SLUG], FILM_IDS.length, {
-    films: index.rooms?.["video/films"],
-    others: index.rooms?.["video/others"],
-  } satisfies Partial<Record<VideoRoom, number>>);
-  const halfCount = [
-    filmsCount !== undefined ? `${formatCount(filmsCount)} films` : "",
-    othersCount !== undefined ? `${formatCount(othersCount)} videos` : "",
-  ];
+  // The cover whose parts are on the page: the open one, or the last one that was open.
+  const shownOpener = openerAt(splitCover) ?? OPENERS[0];
+  const spec: SplitSpec | undefined = shownOpener?.spec;
+  const shownGeo = shownOpener ? geo[shownOpener.index] : undefined;
+  const rows = shownGeo?.beside === true;
+  const partCount3 = shownOpener?.n === 3;
+  const partSize = shownGeo?.size ?? 0;
+  const partWidth = shownGeo?.captionW ?? partSize;
+  const partCounts = spec?.counts(index) ?? [];
+
+  // Three parts side by side: one height for their words, so the Open buttons line up.
+  useEffect(() => {
+    captionH.current = equalise(partRefs.current, shownOpener?.n === 3 && !rows);
+  }, [shownOpener, rows, partWidth, index, short, split]);
 
   return (
     <div
@@ -581,7 +649,10 @@ export default function ShelfScene({ onFail }: Props) {
       data-focus={focused !== null ? "true" : undefined}
       data-entered={entered ? "true" : undefined}
       data-split={isSplit ? split : undefined}
-      data-stacked={stacked ? "true" : undefined}
+      data-parts={isSplit && shownOpener ? shownOpener.n : undefined}
+      data-stacked={isSplit && !partCount3 && shownGeo?.vertical ? "true" : undefined}
+      data-rows={isSplit && rows ? "true" : undefined}
+      data-compact={isSplit && rows && partSize < COMPACT_ROW ? "true" : undefined}
       data-short={short ? "true" : undefined}
     >
       <h1 className="sr-only">Collection</h1>
@@ -653,48 +724,56 @@ export default function ShelfScene({ onFail }: Props) {
         </button>
       </div>
 
-      {/* The open Video cover: under each half its line, its count and its Open button. */}
+      {/* The open cover: under each part (beside it, in rows) its line, its count and its Open button. */}
       <div className="sr-only" aria-live="polite">
-        {splitUp ? "Video is open: Films and Others." : ""}
+        {splitUp && spec ? spec.label : ""}
       </div>
-      {VIDEO_HALVES.map((h, k) => (
-        <div
-          key={h.room}
-          ref={(el) => {
-            halfRefs.current[k] = el;
-          }}
-          className={styles.half}
-          data-ui=""
-          data-split-ui=""
-          data-video-half={h.room}
-          data-show={splitUp ? "true" : "false"}
-          data-active={half === k ? "true" : undefined}
-          style={{ width: halfSize || undefined }}
-        >
-          <p className={styles.halfLine}>{h.line}</p>
-          <div className={styles.halfRow}>
-            <span className={styles.halfCount}>{halfCount[k]}</span>
-            <button
+      {spec && shownOpener
+        ? spec.parts.map((p, k) => (
+            <div
+              key={`${spec.slug}:${p.id}`}
               ref={(el) => {
-                halfButtons.current[k] = el;
+                partRefs.current[k] = el;
               }}
-              type="button"
-              className={`${styles.pill} ${styles.dark}`}
-              tabIndex={splitUp ? 0 : -1}
-              aria-label={`Open Video ${h.name}`}
-              data-video-open={h.room}
-              onClick={() => {
-                openHalf(k as Half);
-              }}
-              onFocus={(e) => {
-                if (e.currentTarget.matches(":focus-visible")) chooseHalf(k as Half, false);
-              }}
+              className={styles.half}
+              data-ui=""
+              data-split-ui=""
+              {...{ [`data-${spec.slug}-half`]: p.id }}
+              data-show={splitUp ? "true" : "false"}
+              data-active={part === k ? "true" : undefined}
+              style={
+                {
+                  width: partWidth || undefined,
+                  height: rows ? partSize : undefined,
+                  "--accent": spec.accent,
+                } as CSSProperties
+              }
             >
-              Open
-            </button>
-          </div>
-        </div>
-      ))}
+              <p className={styles.halfLine}>{p.line}</p>
+              <div className={styles.halfRow}>
+                <span className={styles.halfCount}>{partCounts[k]}</span>
+                <button
+                  ref={(el) => {
+                    partButtons.current[k] = el;
+                  }}
+                  type="button"
+                  className={`${styles.pill} ${styles.dark}`}
+                  tabIndex={splitUp ? 0 : -1}
+                  aria-label={`Open ${COLLECTIONS[shownOpener.index]?.name ?? ""} ${p.name}`}
+                  {...{ [`data-${spec.slug}-open`]: p.id }}
+                  onClick={() => {
+                    openPart(shownOpener.index, k);
+                  }}
+                  onFocus={(e) => {
+                    if (e.currentTarget.matches(":focus-visible")) choosePart(k, false);
+                  }}
+                >
+                  Open
+                </button>
+              </div>
+            </div>
+          ))
+        : null}
       <div
         ref={backRef}
         className={styles.backWrap}
@@ -706,7 +785,7 @@ export default function ShelfScene({ onFail }: Props) {
           type="button"
           className={`${styles.pill} ${styles.ghost}`}
           tabIndex={splitUp && !phone ? 0 : -1}
-          data-video-back=""
+          {...{ [`data-${spec?.slug ?? "video"}-back`]: "" }}
           onClick={() => {
             unfocus();
           }}
@@ -750,7 +829,7 @@ export default function ShelfScene({ onFail }: Props) {
           type="button"
           className={`${styles.pill} ${styles.light} ${styles.barBack}`}
           data-split-ui=""
-          data-video-back=""
+          {...{ [`data-${spec?.slug ?? "video"}-back`]: "" }}
           tabIndex={isSplit && phone ? 0 : -1}
           onClick={() => {
             unfocus();

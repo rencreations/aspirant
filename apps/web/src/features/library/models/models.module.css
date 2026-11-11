@@ -1,0 +1,866 @@
+/* The 3D Models room: one screen, a turntable that fills it, the words of the model on the left, its
+   layers on the right and a row of nine plates at the foot. Everything that moves in the page is
+   transform or opacity. The room's colour is the orange of the shelf (--lib-colour, --lib-ink). */
+
+.root {
+  --lib-colour: #ff7a1a;
+  --lib-ink: #8a3a00;
+  --plate-w: 7.2rem;
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: var(--nav-h) minmax(0, 1fr) auto;
+  height: 100svh;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--lib-colour) 5%, var(--bg-2));
+  color: var(--text);
+}
+
+/* A faint grid, fading towards the edges. It is static: nothing redraws it. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--lib-ink) 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--lib-ink) 8%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse 70% 62% at 50% 48%, #000 30%, transparent 100%);
+}
+
+/* ---- The stage ----------------------------------------------------------------------------- */
+
+.stage {
+  position: relative;
+  z-index: 1;
+  grid-row: 2;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+}
+
+/* The canvas lives in here (the viewer makes it). It fades out while a model loads and in when it is drawn. */
+.host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: transform 520ms var(--ease-out);
+}
+
+.host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  opacity: 1;
+  transition: opacity 420ms var(--ease-out);
+}
+
+.host canvas:active {
+  cursor: grabbing;
+}
+
+.root[data-status="loading"] .host canvas {
+  opacity: 0;
+  transition-duration: 160ms;
+}
+
+/* The name of the model, huge and faint, behind it. */
+.ghost {
+  position: absolute;
+  inset: auto 0 3.2rem 0;
+  z-index: 0;
+  margin: 0;
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+  font-size: min(18rem, 34vh, calc(92vw / (var(--chars, 6) * 0.5)));
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.8;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lib-colour) 9%, transparent);
+  animation: ghost-in 900ms var(--ease-out) both;
+}
+
+@keyframes ghost-in {
+  from {
+    opacity: 0;
+    transform: translateY(2.4rem);
+  }
+}
+
+/* The picture that stands in for the model without WebGL, or when it will not load. */
+.fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  justify-items: center;
+  gap: 0.7rem;
+  padding: 1rem var(--gutter) 2.6rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.fallback img {
+  min-height: 0;
+  max-height: 100%;
+  max-width: min(100%, 60rem);
+  width: auto;
+  object-fit: contain;
+  animation: rise 600ms var(--ease-out) both;
+}
+
+.fallbackNote {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+}
+
+.fallback button {
+  pointer-events: auto;
+}
+
+/* The loading line in the middle of the stage. It shows only if the wait is long enough to notice. */
+.loading {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  pointer-events: none;
+  color: var(--lib-ink);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading[data-on="true"] {
+  visibility: visible;
+  animation: fade-in 300ms linear 250ms both;
+}
+
+.percent {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.loadBar {
+  display: block;
+  width: 12rem;
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--lib-ink) 18%, transparent);
+}
+
+.loadBar > span {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  background: var(--lib-ink);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---- The words (left) and the layers (right) ------------------------------------------------ */
+
+.layout {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr) minmax(0, 15.5rem);
+  grid-template-rows: auto 1fr;
+  column-gap: var(--space-m);
+  align-content: start;
+  padding: 4rem var(--gutter) 2.6rem;
+  pointer-events: none;
+}
+
+.layout button,
+.layout a {
+  pointer-events: auto;
+}
+
+/* The words sit on a soft plate, so a weapon that passes behind them never makes them hard to read. */
+.info,
+.facts,
+.parts {
+  padding: 0.9rem 1rem;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+}
+
+.info {
+  grid-column: 1;
+  grid-row: 1;
+  padding-bottom: 0.4rem;
+}
+
+.kickerRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.kicker {
+  margin: 0;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--lib-ink);
+}
+
+.counter {
+  color: var(--text-faint);
+}
+
+.heading {
+  animation: rise 560ms var(--ease-out) both;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(3rem, 2rem + 3.4vw, 5.6rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.92;
+  color: var(--text);
+}
+
+.skin {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  color: var(--text-dim);
+}
+
+/* On a wide screen the sheet is not a box: its two sections stand in the layout's columns. */
+.sheet {
+  display: contents;
+}
+
+.sheetHead {
+  display: none;
+}
+
+.facts {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  display: grid;
+  gap: 0.9rem;
+  padding-top: 0.4rem;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+  font-size: var(--step--1);
+  border-top: 1px solid var(--line-strong);
+}
+
+.dl dt,
+.dl dd {
+  padding: 0.32rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.dl dt {
+  display: flex;
+  align-items: center;
+  color: var(--text-faint);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dl dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.credit {
+  margin: 0;
+  color: var(--lib-ink);
+}
+
+.parts {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-self: start;
+  display: grid;
+  gap: var(--space-s);
+}
+
+.partsHead {
+  margin: 0 0 0.5rem;
+  color: var(--text-faint);
+}
+
+.switches {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  color: var(--text);
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--dur-fast) linear;
+}
+
+.switch:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
+}
+
+.switch:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.switchBox {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 0.9rem;
+  border: 1px solid var(--lib-ink);
+}
+
+.switchBox::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  background: var(--lib-ink);
+  transform: translateX(0);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.switch[aria-checked="true"] .switchBox {
+  background: color-mix(in srgb, var(--lib-colour) 28%, transparent);
+}
+
+.switch[aria-checked="true"] .switchBox::after {
+  transform: translateX(100%);
+}
+
+.faces {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.face {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  background: #0a1019;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.face:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.face:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.face[aria-pressed="true"] {
+  outline: 2px solid var(--lib-colour);
+  outline-offset: 1px;
+}
+
+/* Each sheet holds nine small pictures in a 3 by 3 grid. The robot's screen shows the top middle one. */
+.face img {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+}
+
+.faceNo {
+  position: absolute;
+  left: 3px;
+  bottom: 2px;
+  z-index: 1;
+  font-family: var(--font-mono-stack);
+  font-size: 0.65rem;
+  color: #9fe7f2;
+}
+
+/* ---- The readout and the hint, at the foot of the stage ------------------------------------- */
+
+.read,
+.hint {
+  position: absolute;
+  z-index: 3;
+  bottom: 0.7rem;
+  margin: 0;
+  pointer-events: none;
+  color: var(--text-faint);
+}
+
+.read {
+  right: var(--gutter);
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  left: var(--gutter);
+}
+
+.read[hidden],
+.hint[hidden] {
+  display: none;
+}
+
+/* ---- The dock: buttons, the nine plates, the takedown line ---------------------------------- */
+
+.dock {
+  position: relative;
+  z-index: 5;
+  grid-row: 3;
+  display: grid;
+  gap: 0.7rem;
+  padding-bottom: 0.8rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  padding-inline: var(--gutter);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) linear;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
+}
+
+.btn[aria-pressed="true"],
+.btn[aria-expanded="true"] {
+  background: var(--lib-ink);
+  border-color: var(--lib-ink);
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn:focus-visible,
+.switch:focus-visible,
+.face:focus-visible,
+.plate:focus-visible,
+.sheetClose:focus-visible {
+  outline: 2px solid var(--lib-ink);
+  outline-offset: 2px;
+}
+
+.onlyNarrow {
+  display: none;
+}
+
+/* The rail of nine plates. It scrolls sideways when they do not fit, and centres when they do. */
+.rail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-height: 7.7rem;
+  padding: 0.5rem var(--gutter) 0.3rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail > :first-child {
+  margin-left: auto;
+}
+
+.rail > :last-child {
+  margin-right: auto;
+}
+
+.plate {
+  flex: none;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 0.3rem;
+  width: var(--plate-w);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    color var(--dur-fast) linear;
+}
+
+.plate:hover {
+  transform: translateY(-3px);
+  color: var(--text);
+}
+
+.plate[aria-pressed="true"] {
+  transform: translateY(-5px);
+  color: var(--lib-ink);
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--lib-ink) 8%, var(--bg-2));
+  transition:
+    border-color var(--dur-fast) linear,
+    box-shadow var(--dur-fast) linear;
+}
+
+.plate[aria-pressed="true"] .thumb {
+  border-color: var(--lib-ink);
+  box-shadow: 0 0 0 1px var(--lib-ink);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;
+  transform: scale(1.7);
+  transform-origin: 50% 14%;
+}
+
+.plateNo {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.3rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--lib-ink);
+}
+
+/* How far the model has come while it downloads in the background. */
+.plateBar {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  transform-origin: left center;
+  background: var(--lib-colour);
+  opacity: 0;
+  transition: opacity 240ms linear;
+}
+
+.plateBar[data-on="true"] {
+  opacity: 1;
+}
+
+.plateName {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-0);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plateMeta {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.takedown {
+  margin: 0;
+  padding-inline: var(--gutter);
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+
+.takedown a {
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.takedown a:hover {
+  color: var(--lib-ink);
+}
+
+.takedown a:focus-visible {
+  outline: 2px solid var(--lib-ink);
+  outline-offset: 2px;
+}
+
+/* ---- Short screens: the note goes, the facts and layers stay -------------------------------- */
+
+@media (min-width: 992px) and (max-height: 780px) {
+  .note {
+    display: none;
+  }
+
+  .layout {
+    padding-top: 3.6rem;
+  }
+}
+
+/* ---- Narrow screens: one stage, a row of buttons, the plates, and a sheet for the details ---- */
+
+@media (max-width: 991px) {
+  .root {
+    --plate-w: 5.2rem;
+  }
+
+  .onlyWide,
+  .wide {
+    display: none;
+  }
+
+  /* The name stands in a band along the top, so the model never runs into it. */
+  .host {
+    inset: 5.6rem 0 0 0;
+  }
+
+  .fallback {
+    padding-top: 5.6rem;
+  }
+
+  .onlyNarrow {
+    display: inline-flex;
+  }
+
+  .word {
+    display: none;
+  }
+
+  .toolbar {
+    gap: 0.3rem;
+  }
+
+  .btn {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .zoomBtn {
+    min-width: 2.4rem;
+    justify-content: center;
+  }
+
+  .rail {
+    min-height: 6.6rem;
+  }
+
+  .layout {
+    display: block;
+    padding: 0;
+  }
+
+  /* The name stands top right, clear of the Collection button on the left. */
+  .info {
+    padding: 0;
+    background: none;
+    position: absolute;
+    top: 0.75rem;
+    right: var(--gutter);
+    max-width: calc(100% - 2 * var(--gutter) - 8.5rem);
+    text-align: right;
+  }
+
+  .kickerRow {
+    justify-content: flex-end;
+    gap: 0.8rem;
+  }
+
+  .name {
+    font-size: clamp(2.2rem, 11vw, 3.4rem);
+  }
+
+  .skin {
+    font-size: var(--step-0);
+  }
+
+  .read {
+    display: none;
+  }
+
+  .sheet {
+    position: fixed;
+    z-index: 8;
+    inset: auto 0 0 0;
+    display: grid;
+    gap: var(--space-s);
+    max-height: 66svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 var(--gutter) 1.2rem;
+    background: var(--bg);
+    border-top: 1px solid var(--line-strong);
+    transform: translateY(104%);
+    transition: transform 460ms var(--ease-out);
+    pointer-events: auto;
+  }
+
+  .sheet[data-open="true"] {
+    transform: none;
+  }
+
+  /* The stage is its own layer, so while the sheet is open the stage as a whole stands above the dock. */
+  .root[data-sheet="open"] .stage {
+    z-index: 6;
+  }
+
+  .sheetHead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0 0.6rem;
+    background: var(--bg);
+  }
+
+  .sheetHead p {
+    margin: 0;
+    color: var(--lib-ink);
+  }
+
+  .sheetClose {
+    min-width: 3.4rem;
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-mono-stack);
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .facts,
+  .parts {
+    grid-column: auto;
+    grid-row: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .faces {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  /* The model rises a little while the sheet is open, so the sheet does not cover it. */
+  .root[data-sheet="open"] .host {
+    transform: translateY(-11svh);
+  }
+
+  .hint {
+    display: none;
+  }
+}

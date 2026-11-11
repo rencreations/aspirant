@@ -1,0 +1,41 @@
+.views {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+}
+
+.view {
+  padding: 0.4rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0.66;
+  transition:
+    opacity var(--dur-fast, 160ms) linear,
+    background-color var(--dur-fast, 160ms) linear,
+    color var(--dur-fast, 160ms) linear;
+}
+
+.view:hover,
+.view:focus-visible {
+  opacity: 1;
+}
+
+.view[aria-pressed="true"] {
+  opacity: 1;
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+.view:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}

@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef } from "react";
 
+import { asset } from "@/lib/asset";
+
 import { useLibraryData } from "../data";
 import { Chips, ControlBar, type ChipOption } from "../shell/controls";
 import { LibraryShell } from "../shell/library-shell";
@@ -11,12 +13,12 @@ import {
   humanBytes,
   isSection,
   itemsByGroup,
+  modelIdOfOldLink,
   SECTION_CHIP_LABEL,
   SECTION_ORDER,
   visibleSections,
 } from "./filters";
 import { GameplayGrid } from "./gameplay-grid";
-import { ModelStage } from "./model-stage";
 import { Section } from "./section";
 import styles from "./sections.module.css";
 import { SiteArt } from "./site-art";
@@ -25,7 +27,6 @@ import type {
   EmoteItem,
   GameplayItem,
   LinkItem,
-  ModelItem,
   OthersFile,
   OthersGroup,
   OthersGroupId,
@@ -36,7 +37,6 @@ import type {
 import { WorldLinks } from "./world-links";
 
 const REVEAL = {
-  models: "stage",
   emotes: "pop",
   gameplay: "rise",
   skills: "scale",
@@ -44,7 +44,7 @@ const REVEAL = {
   more: "fade",
 } as const;
 
-/** The others room: the 3D models, the emotes, the gameplay clips, the skill icons, the art made for the site, and the way out. */
+/** The others room: the emotes, the gameplay clips, the skill icons, the art made for the site, and the way out. */
 export default function OthersPage() {
   const { data } = useLibraryData<OthersItem>("others");
   const file = data as OthersFile | null;
@@ -62,17 +62,13 @@ export default function OthersPage() {
   const active = isSection(section) ? section : "";
   const visible = visibleSections(by, active, query);
 
-  const models = by.models as ModelItem[];
-  const selectedModel = models.some((m) => m.id === openId) ? openId : (models[0]?.id ?? "");
-
   const shown = visible.reduce((sum, id) => sum + by[id].length, 0);
   const stat = useMemo(() => {
     let bytes = 0;
     for (const it of items) {
-      if (it.kind === "model") bytes += it.model.totalBytes;
       if (it.kind === "emote" || it.kind === "gameplay") bytes += it.video.bytes;
     }
-    return bytes ? `${humanBytes(bytes)} of models and clips` : undefined;
+    return bytes ? `${humanBytes(bytes)} of clips` : undefined;
   }, [items]);
 
   const chipOptions: ChipOption[] = SECTION_ORDER.map((id) => ({
@@ -81,13 +77,20 @@ export default function OthersPage() {
     count: by[id].length,
   }));
 
-  // A link to one item (`?i=<id>`) brings that item into view. The 3D models and the art open in
-  // their own viewers instead.
+  // The 3D models moved to their own room (`/collection/models`). A link from before (a bookmark,
+  // an old search result) forwards there.
+  useEffect(() => {
+    const moved = modelIdOfOldLink(openId);
+    if (moved) window.location.replace(`${asset("/collection/models/")}?i=${moved}`);
+  }, [openId]);
+
+  // A link to one item (`?i=<id>`) brings that item into view. The art opens in its own viewer
+  // instead.
   const scrolled = useRef("");
   useEffect(() => {
     if (!openId || scrolled.current === openId || items.length === 0) return;
     const item = items.find((i) => i.id === openId);
-    if (!item || item.kind === "model" || item.kind === "site") return;
+    if (!item || item.kind === "site") return;
     scrolled.current = openId;
     const t = window.setTimeout(() => {
       document.getElementById(openId)?.scrollIntoView({ block: "center" });
@@ -109,17 +112,6 @@ export default function OthersPage() {
     const list = by[id];
     let content = null;
     switch (id) {
-      case "models":
-        content = (
-          <ModelStage
-            models={models}
-            selected={selectedModel}
-            onSelect={(next) => {
-              setOpenId(next === models[0]?.id ? "" : next);
-            }}
-          />
-        );
-        break;
       case "emotes":
         content = <EmoteWall items={list as EmoteItem[]} />;
         break;
@@ -145,10 +137,7 @@ export default function OthersPage() {
         content = <WorldLinks items={list as LinkItem[]} />;
         break;
     }
-    if (list.length === 0 && id !== "models") {
-      content = <p className={styles.empty}>Nothing here matches.</p>;
-    }
-    if (id === "models" && list.length === 0) {
+    if (list.length === 0) {
       content = <p className={styles.empty}>Nothing here matches.</p>;
     }
     return (
@@ -167,7 +156,7 @@ export default function OthersPage() {
         <ControlBar
           query={query}
           onQuery={setQuery}
-          placeholder="Search the 3D models, stickers, clips and icons"
+          placeholder="Search the stickers, clips and icons"
           summary={summary}
         >
           <Chips

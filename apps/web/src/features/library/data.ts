@@ -6,14 +6,30 @@ import { asset } from "@/lib/asset";
 import { expectReady } from "@/lib/page-ready";
 import { dataItem, type PreloadItem } from "@/lib/preload";
 
+import { ARTS_ROOMS, ROOM_LABELS, type ArtsRoom } from "./arts/core/routes";
 import { getCollection } from "./registry";
 import type { CollectionFile, CollectionSlug, ItemBase } from "./types";
 
+/** The data file of one Arts room: `arts-splash`, `arts-scene`, `arts-fanart` ... */
+export type ArtsDataName = `arts-${ArtsRoom}`;
+
 /**
  * The data files of the library. One per collection, except Video, which has two (one per room):
- * `video-films` (the ten official films) and `video-others` (every other video).
+ * `video-films` (the ten official films) and `video-others` (every other video), and Arts, which
+ * has one per room (`arts-splash`, `arts-scene`, `arts-comic`, `arts-game`, `arts-design`,
+ * `arts-others`, `arts-fanart`, `arts-cosplay`).
  */
-export type LibraryDataName = Exclude<CollectionSlug, "video"> | "video-films" | "video-others";
+export type LibraryDataName =
+  Exclude<CollectionSlug, "video" | "arts"> | "video-films" | "video-others" | ArtsDataName;
+
+/** The data file name of one Arts room. */
+export function artsDataName(room: ArtsRoom): ArtsDataName {
+  return `arts-${room}`;
+}
+
+function isArtsDataName(name: string): name is ArtsDataName {
+  return ARTS_ROOMS.some((room) => name === `arts-${room}`);
+}
 
 /** The path in `public/` of one data file (go through `asset()` to fetch it). */
 export function libraryDataPath(name: LibraryDataName | "search"): string {
@@ -22,8 +38,9 @@ export function libraryDataPath(name: LibraryDataName | "search"): string {
 
 /** The loading list entry for a data file. */
 export function libraryDataItem(name: LibraryDataName, label?: string): PreloadItem {
-  const what =
-    name === "video-films"
+  const what = isArtsDataName(name)
+    ? ROOM_LABELS[name.slice("arts-".length) as ArtsRoom].toLowerCase()
+    : name === "video-films"
       ? "films"
       : name === "video-others"
         ? "videos"

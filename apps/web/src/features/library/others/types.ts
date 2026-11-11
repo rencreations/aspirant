@@ -1,67 +1,20 @@
 import type { CollectionFile, ItemBase, LibImage, LibVideo } from "../types";
 
-/** The six sections of the room, in page order. */
-export type OthersGroupId = "models" | "emotes" | "gameplay" | "skills" | "site" | "more";
+/** The five sections of the room, in page order. */
+export type OthersGroupId = "emotes" | "gameplay" | "skills" | "site" | "more";
 
 export interface OthersGroup {
   id: OthersGroupId;
-  title: string;
+  /** The big title of the section. (Not `title`: the library index counts every object that has one as an item.) */
+  heading: string;
   line: string;
-  kind: "models" | "stickers" | "clips" | "icons" | "images" | "links";
+  kind: "stickers" | "clips" | "icons" | "images" | "links";
 }
 
 interface OthersBase extends ItemBase {
   group: OthersGroupId;
   /** One plain sentence about the item. */
   note?: string;
-}
-
-/**
- * What a model part is: the body (with face and hair), the weapon, the robot, the robot's face
- * screen, or a piece that is never drawn (an effect plane that came without its texture).
- */
-export type ModelPart = "body" | "weapon" | "robot" | "robotFace" | "hidden";
-
-/** The switches of the stage. A model has only the ones that are really in its file. */
-export type ModelLayer = "body" | "weapon" | "robot";
-
-export interface ModelInfo {
-  /** Wavefront .obj with a .mtl, or a binary FBX. */
-  format: "obj" | "fbx";
-  /** Folder of the model in the library, a key. */
-  dir: string;
-  /** The model file (the .obj or the .fbx). */
-  obj: string;
-  /** The .mtl, empty for an FBX. */
-  mtl: string;
-  verts: number;
-  tris: number;
-  /** Size of the model file. */
-  bytes: number;
-  /** Size of the texture PNGs the viewer loads. */
-  texBytes: number;
-  /** Material name to the texture file it wears (relative to `dir`). */
-  maps: Record<string, string>;
-  /** Which part a piece belongs to: [regex, part], tried on "<object name> <material name>" in lower case. */
-  rules: Array<[string, ModelPart]>;
-  /** The layer switches that mean something for this model. */
-  layers: ModelLayer[];
-  /** The other expression sheets of the robot's face (Fanny and Layla only), relative to `dir`. */
-  faces: string[];
-  /** Number of files of the model in the library, and their total size. */
-  files: number;
-  totalBytes: number;
-  /** Materials that are see-through in the .mtl, with their opacity. */
-  opacity?: Record<string, number>;
-}
-
-export interface ModelItem extends OthersBase {
-  kind: "model";
-  /** The skin's name from the file name, when the file has one. */
-  skin?: string;
-  model: ModelInfo;
-  /** A picture of the model, used when WebGL is missing and on the picker. */
-  img?: LibImage;
 }
 
 export interface EmoteItem extends OthersBase {
@@ -101,7 +54,7 @@ export interface LinkItem extends OthersBase {
   local: string;
 }
 
-export type OthersItem = ModelItem | EmoteItem | GameplayItem | SkillItem | SiteItem | LinkItem;
+export type OthersItem = EmoteItem | GameplayItem | SkillItem | SiteItem | LinkItem;
 
 export interface OthersFile extends CollectionFile<OthersItem> {
   groups: OthersGroup[];

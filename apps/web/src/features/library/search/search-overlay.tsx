@@ -12,6 +12,7 @@ import { fetchLibraryJson, libraryDataPath } from "../data";
 import { COLLECTIONS, getCollection } from "../registry";
 import type { CollectionSlug, SearchEntry } from "../types";
 import { countByCollection, searchEntries } from "./search-match";
+import { artsRoomHref } from "../arts/core/routes";
 import { videoRoomOf, videoRoute } from "../video/links";
 import styles from "./search-overlay.module.css";
 import { useLibrarySearch } from "./search-store";
@@ -19,7 +20,11 @@ import { useLibrarySearch } from "./search-store";
 /** Open an entry: change the query of the room we are in, or travel to the room. */
 function go(entry: SearchEntry, push: (href: Route, options: { label: string }) => void) {
   const base: string =
-    entry.c === "video" ? videoRoute(videoRoomOf(entry.id)) : collectionRoute(entry.c);
+    entry.c === "video"
+      ? videoRoute(videoRoomOf(entry.id))
+      : entry.c === "arts"
+        ? artsRoomHref(entry.r, entry.w[0])
+        : collectionRoute(entry.c);
   const query = `?i=${encodeURIComponent(entry.id)}`;
   const here = window.location.pathname.replace(/\/+$/u, "");
   if (here.endsWith(base)) {

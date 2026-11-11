@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  azimuthDegrees,
   clock,
   humanBytes,
   itemsByGroup,
   matches,
+  modelIdOfOldLink,
   siteBySet,
   skillsByCharacter,
   stickerTilt,
@@ -30,28 +30,14 @@ const skill = (id: string, who: "selena" | "vexana", label: string): SkillItem =
 const items: OthersItem[] = [
   {
     ...base,
-    id: "m1",
-    kind: "model",
-    group: "models",
-    title: "Fanny",
+    id: "e1",
+    kind: "emote",
+    group: "emotes",
+    title: "Fanny, nod",
     chars: ["fanny"],
-    tags: ["3d"],
-    model: {
-      format: "obj",
-      dir: "d",
-      obj: "a.obj",
-      mtl: "a.mtl",
-      verts: 1,
-      tris: 1,
-      bytes: 1,
-      texBytes: 1,
-      maps: {},
-      rules: [],
-      layers: ["body"],
-      faces: [],
-      files: 2,
-      totalBytes: 2,
-    },
+    tags: ["emote", "sticker"],
+    preview: false,
+    video: { src: "e.mp4", poster: "e.webp", w: 10, h: 10, dur: 3, sound: false, bytes: 1 },
   },
   skill("s1", "selena", "Passive"),
   skill("s2", "vexana", "Skill 1"),
@@ -60,8 +46,8 @@ const items: OthersItem[] = [
 
 describe("matches", () => {
   it("matches every word, in any order, in the title, the tags or the character name", () => {
-    expect(matches(items[0]!, "fanny 3d")).toBe(true);
-    expect(matches(items[0]!, "3d FANNY")).toBe(true);
+    expect(matches(items[0]!, "fanny sticker")).toBe(true);
+    expect(matches(items[0]!, "STICKER fanny")).toBe(true);
     expect(matches(items[0]!, "layla")).toBe(false);
     expect(matches(items[1]!, "selena icon")).toBe(true);
   });
@@ -73,16 +59,27 @@ describe("matches", () => {
 describe("itemsByGroup and visibleSections", () => {
   it("sorts items into sections", () => {
     const by = itemsByGroup(items, "");
-    expect(by.models).toHaveLength(1);
+    expect(by.emotes).toHaveLength(1);
     expect(by.skills).toHaveLength(3);
-    expect(by.emotes).toHaveLength(0);
+    expect(by.gameplay).toHaveLength(0);
   });
   it("shows every section with no filter, only matching sections when searching", () => {
-    expect(visibleSections(itemsByGroup(items, ""), "", "")).toHaveLength(6);
+    expect(visibleSections(itemsByGroup(items, ""), "", "")).toHaveLength(5);
     expect(visibleSections(itemsByGroup(items, "abyssal"), "", "abyssal")).toEqual(["skills"]);
   });
   it("shows a chosen section alone, even when it is empty", () => {
-    expect(visibleSections(itemsByGroup(items, ""), "emotes", "")).toEqual(["emotes"]);
+    expect(visibleSections(itemsByGroup(items, ""), "gameplay", "")).toEqual(["gameplay"]);
+  });
+});
+
+describe("modelIdOfOldLink", () => {
+  it("maps an old 3D model id to the id in the Models room", () => {
+    expect(modelIdOfOldLink("others-3d-fanny")).toBe("models-fanny");
+    expect(modelIdOfOldLink("others-3d-vexana-eternal-guard")).toBe("models-vexana-eternal-guard");
+  });
+  it("leaves every other id alone", () => {
+    expect(modelIdOfOldLink("others-emote-fanny-nod")).toBeNull();
+    expect(modelIdOfOldLink("")).toBeNull();
   });
 });
 
@@ -114,12 +111,6 @@ describe("small helpers", () => {
     expect(humanBytes(512)).toBe("512 B");
     expect(humanBytes(1536)).toBe("1.5 KB");
     expect(humanBytes(4_300_000)).toBe("4.1 MB");
-  });
-  it("wraps the azimuth into 0 to 359", () => {
-    expect(azimuthDegrees(0)).toBe(0);
-    expect(azimuthDegrees(Math.PI)).toBe(180);
-    expect(azimuthDegrees(-Math.PI / 2)).toBe(270);
-    expect(azimuthDegrees(Math.PI * 2)).toBe(0);
   });
   it("formats a clock", () => {
     expect(clock(7.4)).toBe("0:07");

@@ -36,6 +36,7 @@ import {
   flapShade,
   focusPose,
   focusRoom,
+  foldGeometry,
   frontIndex,
   gatefoldDepth,
   hoverPose,
@@ -46,14 +47,15 @@ import {
   shelfGeometry,
   snapStack,
   splitFrame,
-  splitGeometry,
   stackGeometry,
   stackPose,
+  triptychDepth,
+  triptychFrame,
   type FocusRoom,
+  type FoldGeometry,
   type Obstacles,
   type Pose,
   type ShelfGeometry,
-  type SplitGeometry,
   type StackGeometry,
 } from "./layout";
 
@@ -62,18 +64,25 @@ export interface CoverInput {
   canvas: HTMLCanvasElement;
 }
 
-/** The cover that opens in two (Video): a gatefold of two panels. */
+/**
+ * A cover that opens in parts (`splits.ts`): Video is a gatefold of two panels, Arts a triptych of
+ * three. The scene holds one gate per such cover and one open at a time.
+ */
 export interface SplitInput {
   /** Index of the cover on the shelf. */
   index: number;
-  /** The two inside pictures, Films (inside of the front panel) then Others (face of the back panel). */
-  halves: [HTMLCanvasElement, HTMLCanvasElement];
-  /** Start open (the address asked for it). */
+  fold: "gatefold" | "triptych";
+  /**
+   * The inside pictures in the order the parts open. Gatefold: the inside of the front panel, then
+   * the face of the back panel. Triptych: the inside of the front panel, the face of the middle
+   * panel, then the inside of the third panel.
+   */
+  parts: Array<{ id: string; canvas: HTMLCanvasElement }>;
+  /** The longest line under a part, in characters (the room the words need). */
+  lineChars: number;
+  /** Start open (the address asked for it). At most one input may. */
   open: boolean;
 }
-
-/** One half of the open Video cover: 0 Films, 1 Others. */
-export type Half = 0 | 1;
 
 /** Frame sheets and checks: hold the split at a progress and count the frames drawn. */
 interface ShelfDebug {
@@ -87,7 +96,11 @@ interface ShelfDebug {
   seek: (p: number) => void;
   /** Where the focused cover is drawn now (CSS px from the top left of the stage), or null. */
   readonly focus: Rect | null;
-  /** Where the two halves of the open Video cover are drawn now, or null while it is shut. */
+  /** The shelf slot of the cover that is open or moving, or null while every cover is shut. */
+  readonly open: number | null;
+  /** Where the parts of the open cover are drawn now, by id (`films`, `official`), or null while it is shut. */
+  readonly parts: Record<string, Rect> | null;
+  /** Where the two halves of the open Video cover are drawn now, or null while it is shut (or another cover is open). */
   readonly films: Rect | null;
   readonly others: Rect | null;
 }
@@ -125,30 +138,43 @@ export interface EngineOptions {
   onStack: (s: number) => void;
   /** Screen rectangles (CSS px, from the top left of the stage) of the hovered cover and the focused one. */
   onLayout: (hover: Rect | null, focus: Rect | null) => void;
-  /** The Video cover and its two halves. */
-  split: SplitInput;
-  /** The pointer is over one half of the open Video cover (or left both). */
-  onHalfHover: (half: Half | null) => void;
-  /** A click or tap on one half of the open Video cover. */
-  onHalfOpen: (half: Half) => void;
-  /** Screen rectangles of the two halves while the Video cover is open or moving; nulls when shut. */
-  onSplitLayout: (films: Rect | null, others: Rect | null) => void;
-  /** The Video cover came to rest, open or shut. */
-  onSplitSettled: (open: boolean) => void;
+  /** The covers that open in parts (Arts and Video). */
+  splits: SplitInput[];
+  /** The pointer is over one part of an open cover (or left them all). `cover` is its shelf slot. */
+  onPartHover: (cover: number, part: number | null) => void;
+  /** A click or tap on one part of an open cover. */
+  onPartOpen: (cover: number, part: number) => void;
+  /** Screen rectangles of the parts while the cover is open or moving; null when it is shut. */
+  onSplitLayout: (cover: number, rects: Rect[] | null) => void;
+  /** A cover came to rest, open or shut. */
+  onSplitSettled: (cover: number, open: boolean) => void;
 }
 
-/** The two panels of the Video cover. The front panel is the rig's `body`, turning on `hinge`. */
-interface Gatefold {
+/**
+ * The panels of a cover that opens. The front panel is the rig's `body`, turning on `hinge`; the
+ * back panel (gatefold) or the middle panel (triptych) is `leaf`; a triptych has a third panel
+ * folded behind the middle one (`third`).
+ */
+interface Gate {
+  index: number;
+  fold: SplitInput["fold"];
+  /** Number of parts, 2 or 3. */
+  n: 2 | 3;
+  ids: string[];
+  lineChars: number;
   hinge: Group;
-  /** The back panel: Others on its face. */
+  /** The back panel (gatefold) or the middle panel (triptych): the picture of part 1 on its face. */
   leaf: Mesh;
   leafMats: MeshBasicMaterial[];
-  /** The shadow of the front panel as it swings (the rig's own shadow follows the back panel). */
+  /** The shadow of the front panel as it swings (the rig's own shadow follows `leaf`). */
   flapShadow: Mesh;
-  films: CanvasTexture;
-  others: CanvasTexture;
-  /** Hover lift of each half, 0 to 1. */
-  lift: [number, number];
+  third?: { hinge: Group; body: Mesh; mats: MeshBasicMaterial[]; shadow: Mesh };
+  /** The pictures of the parts, in order. */
+  textures: CanvasTexture[];
+  /** Hover lift of each part, 0 to 1. */
+  lift: number[];
+  /** Where the parts stand when open (set by `refit`). */
+  geo: FoldGeometry;
 }
 
 interface Rig {
@@ -164,7 +190,7 @@ interface Rig {
   f: number;
   opacity: number;
   order: number;
-  gate?: Gatefold;
+  gate?: Gate;
 }
 
 const FOV = 28;
@@ -348,19 +374,21 @@ export class ShelfEngine {
   } | null = null;
   private wheelAt = 0;
 
-  /** The Video split: the cover's index, where `p` is going (0 or 1) and where it is. */
-  private readonly gateIndex: number;
-  private splitTarget = 0;
+  /**
+   * The split: only one cover is open at a time. `splitIndex` is the cover whose panels are open,
+   * opening or closing (null when all are shut), `splitTarget` the cover that was asked to be open
+   * (null for none), and `splitP` how far the one in `splitIndex` is open, 0 to 1. Asking for a
+   * different cover shuts the open one first and opens the other when it is shut.
+   */
+  private splitIndex: number | null = null;
+  private splitTarget: number | null = null;
   private splitP = 0;
   private splitHold = false;
-  /** The target the scene last said it had come to rest at. */
-  private splitSettled = 0;
-  private splitG: SplitGeometry = splitGeometry(1440, 900);
-  /** The controls the focused cover and the open Video cover keep clear of (`setObstacles`). */
+  /** The controls the focused cover and the open split cover keep clear of (`setObstacles`). */
   private obstacles: Obstacles | null = null;
   private room: FocusRoom | null = null;
-  private pointerHalf: Half | null = null;
-  private forcedHalf: Half | null = null;
+  private pointerPart: number | null = null;
+  private forcedPart: number | null = null;
   private frames = 0;
   private debug: ShelfDebug | null = null;
 
@@ -373,10 +401,14 @@ export class ShelfEngine {
   private firstFrame = false;
   private hoverRect: Rect = { left: 0, right: 0, top: 0, bottom: 0 };
   private focusRect: Rect = { left: 0, right: 0, top: 0, bottom: 0 };
-  private filmsRect: Rect = { left: 0, right: 0, top: 0, bottom: 0 };
-  private othersRect: Rect = { left: 0, right: 0, top: 0, bottom: 0 };
-  /** The halves' rectangles were last reported (so a shut cover reports nulls once). */
-  private splitShown = false;
+  private readonly partRects: Rect[] = [0, 1, 2].map(() => ({
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  }));
+  /** The cover whose parts were last reported (so a shut cover reports nulls once), or null. */
+  private splitShown: number | null = null;
   private cleanups: Array<() => void> = [];
 
   constructor(opts: EngineOptions) {
@@ -435,12 +467,11 @@ export class ShelfEngine {
     this.scene.add(this.wall, this.world);
     this.buildBoards();
     this.buildCovers(opts.covers);
-    this.gateIndex = opts.split.index;
-    this.buildGatefold(opts.split);
+    for (const split of opts.splits) this.buildGate(split);
 
     const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const textures = this.rigs.flatMap((rig) =>
-      rig.gate ? [rig.texture, rig.gate.films, rig.gate.others] : [rig.texture],
+      rig.gate ? [rig.texture, ...rig.gate.textures] : [rig.texture],
     );
     for (const t of textures) {
       t.colorSpace = SRGBColorSpace;
@@ -455,18 +486,18 @@ export class ShelfEngine {
 
     this.bind();
     this.resize();
-    if (opts.split.open) {
-      // The address asked for the open Video cover: start there, with nothing to animate.
-      const rig = this.rigs[this.gateIndex];
-      this.focus = this.gateIndex;
-      this.splitTarget = 1;
+    const startOpen = opts.splits.find((s) => s.open && this.rigs[s.index]?.gate);
+    if (startOpen) {
+      // The address asked for an open cover: start there, with nothing to animate.
+      const rig = this.rigs[startOpen.index];
+      this.focus = startOpen.index;
+      this.splitIndex = this.splitTarget = startOpen.index;
       this.splitP = 1;
-      this.splitSettled = 1;
       this.blur = 1;
       if (rig) rig.f = 1;
       if (this.phone) {
-        this.stackS = this.stackTarget = this.gateIndex;
-        this.lastFront = this.gateIndex;
+        this.stackS = this.stackTarget = startOpen.index;
+        this.lastFront = startOpen.index;
       }
     }
     this.warmUp();
@@ -497,13 +528,31 @@ export class ShelfEngine {
       get focus() {
         return engine.focusNow !== null ? { ...engine.focusRect } : null;
       },
+      get open() {
+        return engine.splitShown;
+      },
+      get parts() {
+        return engine.shownParts();
+      },
       get films() {
-        return engine.splitShown ? { ...engine.filmsRect } : null;
+        return engine.shownParts()?.films ?? null;
       },
       get others() {
-        return engine.splitShown ? { ...engine.othersRect } : null;
+        return engine.shownParts()?.others ?? null;
       },
     };
+  }
+
+  /** The rectangles of the parts the scene last reported, by part id, or null while no cover is open. */
+  private shownParts(): Record<string, Rect> | null {
+    const gate = this.splitShown !== null ? this.rigs[this.splitShown]?.gate : undefined;
+    if (!gate) return null;
+    const out: Record<string, Rect> = {};
+    gate.ids.forEach((id, k) => {
+      const r = this.partRects[k];
+      if (r) out[id] = { ...r };
+    });
+    return out;
   }
 
   /**
@@ -521,12 +570,18 @@ export class ShelfEngine {
       rig.mats.forEach((m) => {
         m.opacity = 1;
       });
-      // The Video cover's back panel, the swing's shadow, and the inside of the front panel (turned
-      // over, so its Films picture is drawn once now and not on the first opening).
-      if (rig.gate) {
-        rig.gate.leaf.visible = true;
-        rig.gate.flapShadow.visible = true;
-        rig.gate.hinge.rotation.set(0, Math.PI, 0);
+      // A split cover's other panels, the swing's shadows, and the inside of the front and third
+      // panels (turned over, so their pictures are drawn once now and not on the first opening).
+      const gate = rig.gate;
+      if (gate) {
+        gate.leaf.visible = true;
+        gate.flapShadow.visible = true;
+        gate.hinge.rotation.set(0, Math.PI, 0);
+        if (gate.third) {
+          gate.third.body.visible = true;
+          gate.third.shadow.visible = true;
+          gate.third.hinge.rotation.set(0, Math.PI, 0);
+        }
       }
     }
     this.scene.updateMatrixWorld();
@@ -541,10 +596,16 @@ export class ShelfEngine {
       rig.mats.forEach((m) => {
         m.opacity = 0;
       });
-      if (rig.gate) {
-        rig.gate.leaf.visible = false;
-        rig.gate.flapShadow.visible = false;
-        rig.gate.hinge.rotation.set(0, 0, 0);
+      const gate = rig.gate;
+      if (gate) {
+        gate.leaf.visible = false;
+        gate.flapShadow.visible = false;
+        gate.hinge.rotation.set(0, 0, 0);
+        if (gate.third) {
+          gate.third.body.visible = false;
+          gate.third.shadow.visible = false;
+          gate.third.hinge.rotation.set(0, 0, 0);
+        }
       }
     }
 
@@ -700,13 +761,16 @@ export class ShelfEngine {
   }
 
   /**
-   * The Video cover becomes a gatefold: its body is the front panel (the Video picture outside,
-   * Films inside), turning on a hinge, and a second panel behind it carries Others. Until the split
-   * starts the back panel is hidden and the front panel is the whole cover (`gatefoldDepth`).
+   * A cover becomes a fold. Its body is the front panel (the cover outside, the first part inside),
+   * turning on a hinge. A second panel behind it carries the face of the second part (the back panel
+   * of a gatefold, the middle panel of a triptych); a triptych has a third panel folded behind the
+   * middle one that carries the third part inside. Until the split starts the other panels are
+   * hidden and the front panel is the whole cover (`gatefoldDepth`, `triptychDepth`).
    */
-  private buildGatefold(split: SplitInput): void {
+  private buildGate(split: SplitInput): void {
     const rig = this.rigs[split.index];
     if (!rig) return;
+    const n = split.parts.length >= 3 ? 3 : 2;
     const flat = (color: number, map: CanvasTexture | null = null) =>
       new MeshBasicMaterial({
         color,
@@ -716,14 +780,13 @@ export class ShelfEngine {
         depthWrite: false,
         toneMapped: false,
       });
-    const films = new CanvasTexture(split.halves[0]);
-    const others = new CanvasTexture(split.halves[1]);
-    // Stacked on a phone the panel flips over its top edge, which turns its inside upside down:
-    // the picture is turned back by half a turn about its middle (see `resize`).
-    films.center.set(0.5, 0.5);
+    const textures = split.parts.slice(0, n).map((p) => new CanvasTexture(p.canvas));
+    // Stacked on a phone a panel flips over its horizontal edge, which turns its inside upside down:
+    // the picture is turned back by half a turn about its middle (see `refit`).
+    for (const t of textures) t.center.set(0.5, 0.5);
     const inside = rig.mats[5];
     if (inside) {
-      inside.map = films;
+      inside.map = textures[0] ?? null;
       inside.color.setHex(0xffffff);
       inside.needsUpdate = true;
     }
@@ -732,7 +795,7 @@ export class ShelfEngine {
       flat(0xf2f3f6),
       flat(0xf8f9fb),
       flat(0x8f94a0),
-      flat(0xffffff, others),
+      flat(0xffffff, textures[1] ?? null),
       flat(0x9a9fab),
     ];
     const leaf = new Mesh(this.coverGeo, leafMats);
@@ -747,7 +810,46 @@ export class ShelfEngine {
     flapShadow.visible = false;
     rig.root.add(flapShadow);
     rig.mats.push(...leafMats);
-    rig.gate = { hinge, leaf, leafMats, flapShadow, films, others, lift: [0, 0] };
+
+    let third: Gate["third"];
+    if (n === 3) {
+      // Folded behind the middle panel; what shows once it has swung out is its back face.
+      const mats = [
+        flat(0xbfc3cc),
+        flat(0xf2f3f6),
+        flat(0xf8f9fb),
+        flat(0x8f94a0),
+        flat(0x9a9fab),
+        flat(0xffffff, textures[2] ?? null),
+      ];
+      const body = new Mesh(this.coverGeo, mats);
+      body.frustumCulled = false;
+      body.visible = false;
+      const hingeB = new Group();
+      hingeB.add(body);
+      rig.pivot.add(hingeB);
+      const shadow = new Mesh(this.planeGeo, flat(0xffffff, this.rectShadow));
+      shadow.frustumCulled = false;
+      shadow.visible = false;
+      rig.root.add(shadow);
+      rig.mats.push(...mats);
+      third = { hinge: hingeB, body, mats, shadow };
+    }
+    rig.gate = {
+      index: split.index,
+      fold: split.fold,
+      n,
+      ids: split.parts.slice(0, n).map((p) => p.id),
+      lineChars: split.lineChars,
+      hinge,
+      leaf,
+      leafMats,
+      flapShadow,
+      third,
+      textures,
+      lift: new Array<number>(n).fill(0),
+      geo: foldGeometry(n, 1440, 900),
+    };
   }
 
   // Input -------------------------------------------------------------------------------------
@@ -772,7 +874,7 @@ export class ShelfEngine {
       this.tpx = 0;
       this.tpy = 0;
       this.setPointerHover(null);
-      this.setPointerHalf(null);
+      this.setPointerPart(null);
       this.requestRender();
     });
     on(target, "pointerdown", (e) => {
@@ -869,9 +971,9 @@ export class ShelfEngine {
     return best;
   }
 
-  /** The half of the open Video cover under a point of the stage: 0 Films, 1 Others, -1 none. */
-  private pickHalf(x: number, y: number): Half | -1 {
-    const rig = this.rigs[this.gateIndex];
+  /** The part of the open cover under a point of the stage: its order (0 first), or -1 for none. */
+  private pickPart(x: number, y: number): number {
+    const rig = this.splitIndex !== null ? this.rigs[this.splitIndex] : undefined;
     const gate = rig?.gate;
     if (!rig || !gate || this.splitP <= 0 || rig.opacity < 0.5) return -1;
     this.ndc.set((x / this.w) * 2 - 1, -(y / this.h) * 2 + 1);
@@ -879,13 +981,20 @@ export class ShelfEngine {
     this.scene.updateMatrixWorld();
     if (this.raycaster.intersectObject(rig.body, false).length > 0) return 0;
     if (gate.leaf.visible && this.raycaster.intersectObject(gate.leaf, false).length > 0) return 1;
+    const third = gate.third?.body;
+    if (third?.visible && this.raycaster.intersectObject(third, false).length > 0) return 2;
     return -1;
   }
 
-  /** The cover in the focus now. The Video cover keeps it while it is open and until it has shut. */
+  /** The open cover is the one that was asked for (not one on its way shut for another). */
+  private get splitWanted(): boolean {
+    return this.splitIndex !== null && this.splitTarget === this.splitIndex;
+  }
+
+  /** The cover in the focus now. A split cover keeps it while it is open and until it has shut. */
   private get focusNow(): number | null {
-    if (this.rigs[this.gateIndex] && (this.splitTarget === 1 || this.splitP > SPLIT_RELEASE))
-      return this.gateIndex;
+    if (this.splitIndex !== null && (this.splitWanted || this.splitP > SPLIT_RELEASE))
+      return this.splitIndex;
     return this.focus;
   }
 
@@ -905,10 +1014,10 @@ export class ShelfEngine {
         this.stackS = dragToStack(d.startS, p.y - d.startY, this.stackG);
         this.stackTarget = this.stackS;
       }
-    } else if (e.pointerType !== "touch" && this.splitTarget === 1) {
-      // The open Video cover: the pointer lifts the half it is over.
-      const half = this.splitP > 0.9 ? this.pickHalf(p.x, p.y) : -1;
-      this.setPointerHalf(half === -1 ? null : half);
+    } else if (e.pointerType !== "touch" && this.splitWanted) {
+      // The open cover: the pointer lifts the part it is over.
+      const part = this.splitP > 0.9 ? this.pickPart(p.x, p.y) : -1;
+      this.setPointerPart(part === -1 ? null : part);
     } else if (!this.phone && this.focusNow === null && e.pointerType !== "touch") {
       const hit = this.pick(p.x, p.y);
       this.setPointerHover(hit >= 0 ? hit : null);
@@ -923,10 +1032,10 @@ export class ShelfEngine {
     this.requestRender();
   }
 
-  private setPointerHalf(half: Half | null): void {
-    if (this.pointerHalf === half) return;
-    this.pointerHalf = half;
-    this.opts.onHalfHover(half);
+  private setPointerPart(part: number | null): void {
+    if (this.pointerPart === part) return;
+    this.pointerPart = part;
+    if (this.splitIndex !== null) this.opts.onPartHover(this.splitIndex, part);
     this.requestRender();
   }
 
@@ -964,11 +1073,11 @@ export class ShelfEngine {
     }
     if (e.button !== 0 && e.pointerType === "mouse") return;
     // A tap or a click.
-    if (this.splitTarget === 1) {
-      // The open Video cover: a half opens its room (once it has settled), anywhere else shuts it.
-      const half = this.pickHalf(p.x, p.y);
-      if (half === -1) this.opts.onBack();
-      else if (this.splitP > 0.9) this.opts.onHalfOpen(half);
+    if (this.splitWanted && this.splitIndex !== null) {
+      // The open cover: a part opens its room (once it has settled), anywhere else shuts it.
+      const part = this.pickPart(p.x, p.y);
+      if (part === -1) this.opts.onBack();
+      else if (this.splitP > 0.9) this.opts.onPartOpen(this.splitIndex, part);
       return;
     }
     const focus = this.focusNow;
@@ -1003,23 +1112,27 @@ export class ShelfEngine {
   }
 
   /**
-   * Open (true) or shut (false) the Video cover. Give it the focus too (`setFocus`): when it shuts,
-   * the scene keeps it in the focus until the panel has closed, then lets it fly back.
+   * Open the split cover `index` (a shelf slot), or shut whichever is open (null). Give the cover
+   * the focus too (`setFocus`): when it shuts, the scene keeps it in the focus until the panels have
+   * closed, then lets it fly back. Asking for another cover while one is open shuts that one first
+   * and opens the other once it is shut.
    */
-  setSplit(open: boolean): void {
-    const target = open ? 1 : 0;
+  setSplit(index: number | null): void {
+    const target = index !== null && this.rigs[index]?.gate ? index : null;
     if (this.splitTarget === target) return;
     this.splitTarget = target;
-    if (!open) {
-      this.forcedHalf = null;
-      this.setPointerHalf(null);
+    // Nothing is open: the cover takes the split at once (a held scene does not step).
+    if (target !== null && this.splitIndex === null) this.splitIndex = target;
+    if (target === null) {
+      this.forcedPart = null;
+      this.setPointerPart(null);
     }
     this.requestRender();
   }
 
   /**
    * The boxes of the controls over the scene (measured by the component, once per layout). The
-   * focused cover and the open Video cover are laid out to keep clear of them.
+   * focused cover and the open split cover are laid out to keep clear of them.
    */
   setObstacles(o: Obstacles): void {
     this.obstacles = o;
@@ -1027,19 +1140,31 @@ export class ShelfEngine {
     this.requestRender();
   }
 
-  /** The room of the focused cover and the place of the open pair, from the size and the obstacles. */
+  /** The room of the focused cover and the place of the open parts, from the size and the obstacles. */
   private refit(): void {
     const { w, h } = this;
     const o = this.obstacles ?? noObstacles(w, h);
     this.room = focusRoom(w, h, o);
-    this.splitG = splitGeometry(w, h, o.navH, { short: o.short, above: o.splitAbove });
-    const gate = this.rigs[this.gateIndex]?.gate;
-    if (gate) gate.films.rotation = this.splitG.vertical ? Math.PI : 0;
+    for (const rig of this.rigs) {
+      const gate = rig.gate;
+      if (!gate) continue;
+      gate.geo = foldGeometry(gate.n, w, h, o.navH, {
+        short: o.short,
+        above: o.splitAbove,
+        lineChars: gate.lineChars,
+      });
+      // A panel that flips over a horizontal edge shows its inside upside down: turn it back.
+      const flip = gate.geo.vertical ? Math.PI : 0;
+      const first = gate.textures[0];
+      const third = gate.textures[2];
+      if (first) first.rotation = flip;
+      if (third) third.rotation = flip;
+    }
   }
 
-  /** The half the keyboard is on (lifted like a hovered one). */
-  setHalf(half: Half | null): void {
-    this.forcedHalf = half;
+  /** The part the keyboard is on (lifted like a hovered one). */
+  setPart(part: number | null): void {
+    this.forcedPart = part;
     this.requestRender();
   }
 
@@ -1140,6 +1265,30 @@ export class ShelfEngine {
     else this.last = 0;
   }
 
+  /**
+   * Run the split. `p` goes up while the open cover is the one that was asked for, and down
+   * otherwise. A cover that has shut is let go, and the one that was asked for (if another) takes
+   * its place. True while it moves.
+   */
+  private stepSplit(dt: number): boolean {
+    if (this.splitHold || this.splitIndex === null) return false;
+    const index = this.splitIndex;
+    const want = this.splitWanted ? 1 : 0;
+    if (this.splitP !== want) {
+      const by = (dt * 1000) / (want === 1 ? SPLIT_OPEN_MS : SPLIT_CLOSE_MS);
+      this.splitP = want === 1 ? Math.min(1, this.splitP + by) : Math.max(0, this.splitP - by);
+      if (this.splitP !== want) return true;
+      if (want === 1) {
+        this.opts.onSplitSettled(index, true);
+        return false;
+      }
+    }
+    if (want === 1) return false;
+    this.splitIndex = this.splitTarget;
+    this.opts.onSplitSettled(index, false);
+    return this.splitIndex !== null;
+  }
+
   /** Move every animated value toward its target. True while something is still moving. */
   private update(dt: number): boolean {
     const state = { moving: false };
@@ -1150,25 +1299,16 @@ export class ShelfEngine {
       return v;
     };
 
-    // The Video split: `p` runs at a constant speed toward its target (eased per part when read).
-    if (!this.splitHold) {
-      if (this.splitP !== this.splitTarget) {
-        const up = this.splitTarget > this.splitP;
-        const by = (dt * 1000) / (up ? SPLIT_OPEN_MS : SPLIT_CLOSE_MS);
-        this.splitP = up ? Math.min(1, this.splitP + by) : Math.max(0, this.splitP - by);
-        if (this.splitP !== this.splitTarget) state.moving = true;
-      }
-      if (this.splitP === this.splitTarget && this.splitSettled !== this.splitTarget) {
-        this.splitSettled = this.splitTarget;
-        this.opts.onSplitSettled(this.splitTarget === 1);
-      }
-    }
-    const gate = this.rigs[this.gateIndex]?.gate;
-    if (gate) {
-      const half =
-        this.splitTarget === 1 && this.splitP > 0.9 ? (this.pointerHalf ?? this.forcedHalf) : null;
-      gate.lift[0] = step(gate.lift[0], half === 0 ? 1 : 0, 14);
-      gate.lift[1] = step(gate.lift[1], half === 1 ? 1 : 0, 14);
+    // The split: `p` runs at a constant speed toward its target (eased per part when read).
+    if (this.stepSplit(dt)) state.moving = true;
+    for (const rig of this.rigs) {
+      const gate = rig.gate;
+      if (!gate) continue;
+      const live = this.splitWanted && this.splitIndex === gate.index && this.splitP > 0.9;
+      const part = live ? (this.pointerPart ?? this.forcedPart) : null;
+      gate.lift.forEach((v, k) => {
+        gate.lift[k] = step(v, part === k ? 1 : 0, 14);
+      });
     }
 
     const focus = this.focusNow;
@@ -1272,39 +1412,56 @@ export class ShelfEngine {
       sh.renderOrder = base0;
       ct.renderOrder = base0 + 1;
       rig.body.renderOrder = base0 + 2;
-      if (rig.gate) {
-        // Back panel, then the shadow the front panel casts on it, then the front panel.
-        rig.gate.leaf.renderOrder = base0 + 2;
-        rig.gate.flapShadow.renderOrder = base0 + 3;
-        rig.body.renderOrder = base0 + 4;
+      const gate = rig.gate;
+      if (gate) {
         const wallZ = phone ? pose.z + zBase - 1 : -sg.boardDepth - 2;
-        this.applyGate(rig, rig.gate, pose, g, fp, lift, wallZ, opacity);
+        // Only the open cover has progress; the others are shut.
+        const p = this.splitIndex === gate.index ? this.splitP : 0;
+        if (gate.third) {
+          // Third panel and its shadow, back panel, the shadow the front panel casts, front panel.
+          gate.third.shadow.renderOrder = base0 + 2;
+          gate.third.body.renderOrder = base0 + 3;
+          gate.leaf.renderOrder = base0 + 4;
+          gate.flapShadow.renderOrder = base0 + 5;
+          rig.body.renderOrder = base0 + 6;
+          this.applyTriptych(rig, gate, gate.third, pose, g, fp, lift, wallZ, opacity, p);
+        } else {
+          // Back panel, then the shadow the front panel casts on it, then the front panel.
+          gate.leaf.renderOrder = base0 + 2;
+          gate.flapShadow.renderOrder = base0 + 3;
+          rig.body.renderOrder = base0 + 4;
+          this.applyGate(rig, gate, pose, g, fp, lift, wallZ, opacity, p);
+        }
       }
     }
   }
 
   /**
-   * Lay out the two panels of the Video cover inside its pivot (in the pivot's own units, where the
-   * shut cover is `g.size` square), and their shadows on the wall. The open pair's place on screen
-   * (`splitGeometry`) is turned into those units at the focus pose, where the split happens.
+   * Lay out the three panels of a triptych inside its pivot (in the pivot's own units, where the
+   * shut cover is `g.size` square), and their shadows on the wall. The open trio's place on screen
+   * (`triptychGeometry`) is turned into those units at the focus pose, where the split happens. The
+   * middle panel stays where the trio is centred; the front panel swings toward the viewer on one
+   * edge of it, the third swings away from the viewer on the other.
    */
-  private applyGate(
+  private applyTriptych(
     rig: Rig,
-    gate: Gatefold,
+    gate: Gate,
+    third: NonNullable<Gate["third"]>,
     pose: Pose,
     g: { size: number; thick: number },
     fp: Pose,
     liftY: number,
     wallZ: number,
     opacity: number,
+    p: number,
   ): void {
-    const started = this.splitP > 0;
-    const depth = gatefoldDepth(g.thick, started);
-    const sg = this.splitG;
+    const started = p > 0;
+    const depth = triptychDepth(g.thick, started);
+    const sg = gate.geo;
     const v = sg.vertical;
     const k = 1 / fp.s;
-    const f = splitFrame(
-      this.splitP,
+    const f = triptychFrame(
+      p,
       { x: 0, y: g.size / 2, size: g.size },
       {
         cx: (sg.cx - fp.x) * k,
@@ -1315,7 +1472,120 @@ export class ShelfEngine {
       },
     );
     const S = f.size;
-    const [liftA, liftB] = gate.lift;
+    const [liftA = 0, liftM = 0, liftB = 0] = gate.lift;
+
+    // The middle panel.
+    gate.leaf.visible = started;
+    const ls = S * (1 + 0.012 * liftM);
+    gate.leaf.scale.set(ls, ls, Math.max(0.01, depth.leaf));
+    gate.leaf.position.set(f.leaf.x, f.leaf.y, depth.hingeZ - depth.leaf / 2 + liftM * S * 0.035);
+
+    // The front panel (the cover outside, the first part inside) on its hinge, swinging toward the viewer.
+    const fs = S * (1 + 0.012 * liftA);
+    gate.hinge.position.set(f.hinge.x, f.hinge.y, depth.hingeZ + liftA * S * 0.035);
+    if (v) {
+      gate.hinge.rotation.set(-f.angle, 0, 0);
+      rig.body.position.set(0, -S / 2, depth.flap / 2);
+    } else {
+      gate.hinge.rotation.set(0, -f.angle, 0);
+      rig.body.position.set(S / 2, 0, depth.flap / 2);
+    }
+    rig.body.scale.set(fs, fs, depth.flap);
+    const shade = flapShade(f.angle);
+    rig.mats[4]?.color.setScalar(shade.front);
+    rig.mats[5]?.color.setScalar(shade.back);
+
+    // The third panel, folded behind the middle one, swinging away from the viewer on the far edge.
+    third.body.visible = started;
+    const bs = S * (1 + 0.012 * liftB);
+    third.hinge.position.set(f.hinge2.x, f.hinge2.y, depth.hingeZB + liftB * S * 0.035);
+    if (v) {
+      third.hinge.rotation.set(-f.angle2, 0, 0);
+      third.body.position.set(0, S / 2, -depth.flapB / 2);
+    } else {
+      third.hinge.rotation.set(0, -f.angle2, 0);
+      third.body.position.set(-S / 2, 0, -depth.flapB / 2);
+    }
+    third.body.scale.set(bs, bs, Math.max(0.01, depth.flapB));
+    third.mats[5]?.color.setScalar(flapShade(f.angle2).back);
+
+    const fsh = gate.flapShadow;
+    fsh.visible = started;
+    third.shadow.visible = started;
+    if (!started) return;
+
+    // Shadows on the wall, as for the gatefold: the middle panel's, then one for each panel that swings.
+    const s = pose.s;
+    const X = (x: number) => pose.x + x * s;
+    const Y = (y: number) => pose.y + liftY + y * s;
+    const Sw = S * s;
+    const sh = rig.shadow;
+    const lm = liftM * Sw * 0.04;
+    sh.scale.set(Sw * 1.22 + lm, Sw * 1.22 + lm, 1);
+    sh.position.set(X(f.leaf.x) + 18 + lm, Y(f.leaf.y) - 22 - lm, wallZ);
+    (sh.material as MeshBasicMaterial).opacity = 0.19 * opacity;
+
+    const swingShadow = (
+      mesh: Mesh,
+      angle: number,
+      hinge: { x: number; y: number },
+      lifted: number,
+      sign: 1 | -1,
+    ) => {
+      const sin = Math.max(0, Math.sin(angle));
+      const cos = Math.cos(angle);
+      const reach = Math.max(0.1, Math.abs(cos));
+      const la = lifted * Sw * 0.04;
+      const across = Sw * (reach * 1.22 + sin * 0.2) + la;
+      const along = Sw * (1.22 + sin * 0.12) + la;
+      // The panel's middle: `sign` 1 is the front panel (it lies on the near side of its hinge),
+      // -1 the third (on the far side).
+      const cx = v ? X(hinge.x) : X(hinge.x + sign * ((cos * S) / 2));
+      const cy = v ? Y(hinge.y - sign * ((cos * S) / 2)) : Y(hinge.y);
+      mesh.scale.set(v ? along : across, v ? across : along, 1);
+      mesh.position.set(cx + 18 + sin * Sw * 0.1 + la, cy - 22 - sin * Sw * 0.07 - la, wallZ);
+      const appear = clamp(angle / 0.6, 0, 1);
+      (mesh.material as MeshBasicMaterial).opacity =
+        0.19 * appear * appear * (3 - 2 * appear) * (1 - 0.4 * sin) * opacity;
+    };
+    swingShadow(fsh, f.angle, f.hinge, liftA, 1);
+    swingShadow(third.shadow, f.angle2, f.hinge2, liftB, -1);
+  }
+
+  /**
+   * Lay out the two panels of a gatefold cover (Video) inside its pivot (in the pivot's own units,
+   * where the shut cover is `g.size` square), and their shadows on the wall. The open pair's place
+   * on screen (`splitGeometry`) is turned into those units at the focus pose, where the split happens.
+   */
+  private applyGate(
+    rig: Rig,
+    gate: Gate,
+    pose: Pose,
+    g: { size: number; thick: number },
+    fp: Pose,
+    liftY: number,
+    wallZ: number,
+    opacity: number,
+    p: number,
+  ): void {
+    const started = p > 0;
+    const depth = gatefoldDepth(g.thick, started);
+    const sg = gate.geo;
+    const v = sg.vertical;
+    const k = 1 / fp.s;
+    const f = splitFrame(
+      p,
+      { x: 0, y: g.size / 2, size: g.size },
+      {
+        cx: (sg.cx - fp.x) * k,
+        cy: (sg.cy - fp.y) * k,
+        size: sg.size * k,
+        gap: sg.gap * k,
+        vertical: v,
+      },
+    );
+    const S = f.size;
+    const [liftA = 0, liftB = 0] = gate.lift;
 
     // The back panel (Others).
     gate.leaf.visible = started;
@@ -1474,15 +1744,20 @@ export class ShelfEngine {
     if (fr) this.project(fr.body, this.focusRect);
     this.opts.onLayout(hr ? this.hoverRect : null, fr ? this.focusRect : null);
 
-    const gr = this.rigs[this.gateIndex];
-    if (gr?.gate && this.splitP > 0) {
-      this.project(gr.body, this.filmsRect, 0);
-      this.project(gr.gate.leaf, this.othersRect, 0);
-      this.opts.onSplitLayout(this.filmsRect, this.othersRect);
-      this.splitShown = true;
-    } else if (this.splitShown) {
-      this.splitShown = false;
-      this.opts.onSplitLayout(null, null);
+    // The parts of the open cover: the front panel, the second panel and, for a triptych, the third.
+    const gr = this.splitIndex !== null ? this.rigs[this.splitIndex] : undefined;
+    const gate = gr?.gate;
+    if (gr && gate && this.splitP > 0) {
+      const rects = this.partRects.slice(0, gate.n);
+      this.project(gr.body, rects[0]!, 0);
+      this.project(gate.leaf, rects[1]!, 0);
+      if (gate.third) this.project(gate.third.body, rects[2]!, 0);
+      this.splitShown = gate.index;
+      this.opts.onSplitLayout(gate.index, rects);
+    } else if (this.splitShown !== null) {
+      const was = this.splitShown;
+      this.splitShown = null;
+      this.opts.onSplitLayout(was, null);
     }
   }
 
@@ -1509,9 +1784,11 @@ export class ShelfEngine {
       (rig.shadow.material as Material).dispose();
       (rig.contact.material as Material).dispose();
       if (rig.gate) {
-        rig.gate.films.dispose();
-        rig.gate.others.dispose();
+        rig.gate.textures.forEach((t) => {
+          t.dispose();
+        });
         (rig.gate.flapShadow.material as Material).dispose();
+        if (rig.gate.third) (rig.gate.third.shadow.material as Material).dispose();
       }
     }
     if (window.__shelf === this.debug) delete window.__shelf;

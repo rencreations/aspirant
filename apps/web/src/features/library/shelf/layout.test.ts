@@ -18,6 +18,8 @@ import {
   SPLIT_ROOM,
   SPLIT_ROOM_PHONE,
   SPLIT_ROOM_SHORT,
+  backAt,
+  captionAt,
   clamp,
   clearAbove,
   clearBelow,
@@ -26,6 +28,8 @@ import {
   dropState,
   fitFontSize,
   flapCentre,
+  flapCentreB,
+  foldGeometry,
   flank,
   flapShade,
   focusPose,
@@ -38,8 +42,10 @@ import {
   isPhone,
   isShort,
   lerpPose,
+  lineCount,
   moveHalf,
   moveIndex,
+  movePart,
   noObstacles,
   restPose,
   shelfGeometry,
@@ -52,9 +58,16 @@ import {
   stackPose,
   swingEase,
   textOn,
+  tripLineFont,
+  tripTail,
+  triptychDepth,
+  triptychFrame,
+  triptychGeometry,
   type Box,
   type Obstacles,
 } from "./layout";
+import { ARTS_PARTS, artsPartCounts } from "./arts-parts";
+import { ARTS_SPLIT, SPLITS, VIDEO_SPLIT, partCount, splitIndexOf, splitOf } from "./splits";
 import { VIDEO_HALVES, halfCounts } from "./video-halves";
 
 const SIZES: Array<[number, number]> = [
@@ -768,5 +781,393 @@ describe("the open Video cover keeps clear of the controls", () => {
     expect(splitCaption(844, 390)).toBeLessThan(splitCaption(844, 900));
     expect(splitCaption(667, 375)).toBeLessThan(splitCaption(390, 844));
     expect(splitCaption(1440, 900)).toBe(SPLIT_ROOM.caption);
+  });
+});
+
+// The Arts triptych ----------------------------------------------------------------------------
+
+describe("the Arts triptych", () => {
+  /** The screens the owner's brief names, then a spread of others. */
+  const PINNED_SCREENS: Array<[number, number]> = [
+    [390, 844],
+    [375, 667],
+    [360, 640],
+    [414, 896],
+    [844, 390],
+    [820, 1180],
+  ];
+  const OTHER_SCREENS: Array<[number, number]> = [
+    [1440, 900],
+    [1920, 1080],
+    [1280, 720],
+    [1024, 768],
+    [701, 900],
+    [2560, 1440],
+    [667, 375],
+    [568, 320],
+    [740, 360],
+    [390, 664],
+  ];
+  const chars = Math.max(...ARTS_PARTS.map((p) => p.line.length));
+
+  /** The three squares from the geometry, each as a box from the top left of the screen. */
+  function trio(w: number, h: number) {
+    const o = controls(w, h);
+    const g = triptychGeometry(w, h, o.navH, {
+      short: o.short,
+      above: o.splitAbove,
+      lineChars: chars,
+    });
+    const cx = w / 2 + g.cx;
+    const cy = h / 2 - g.cy;
+    const squares: Box[] = [-1, 0, 1].map((k) =>
+      g.vertical
+        ? {
+            left: cx - g.size / 2,
+            right: cx + g.size / 2,
+            top: cy + k * (g.size + g.gap) - g.size / 2,
+            bottom: cy + k * (g.size + g.gap) + g.size / 2,
+          }
+        : {
+            left: cx + k * (g.size + g.gap) - g.size / 2,
+            right: cx + k * (g.size + g.gap) + g.size / 2,
+            top: cy - g.size / 2,
+            bottom: cy + g.size / 2,
+          },
+    );
+    return { o, g, squares };
+  }
+
+  it.each([...PINNED_SCREENS, ...OTHER_SCREENS])(
+    "stands clear of Continue, Search and the foot at %ix%i",
+    (w, h) => {
+      const { o, g, squares } = trio(w, h);
+      const [first, , last] = squares as [Box, Box, Box];
+      const whole: Box = {
+        left: first.left,
+        right: g.vertical ? last.right + 16 + g.captionW : last.right,
+        top: first.top,
+        bottom: last.bottom,
+      };
+      for (const b of o.splitAbove) expect(overlap(whole, b)).toBe(false);
+      for (const sq of squares) {
+        expect(sq.left).toBeGreaterThanOrEqual(0);
+        expect(sq.right).toBeLessThanOrEqual(w);
+        expect(sq.top).toBeGreaterThanOrEqual(o.navH);
+        expect(sq.bottom).toBeLessThanOrEqual(h);
+      }
+      expect(whole.right).toBeLessThanOrEqual(w + 0.5);
+      expect(g.size).toBeGreaterThanOrEqual(80);
+      // The words under the lowest square, and Back under them on a wide screen (a phone has Back in
+      // its bar), end above the foot of the room set aside for them.
+      const room = isPhone(w)
+        ? isShort(h)
+          ? 112
+          : SPLIT_ROOM_PHONE.bottom
+        : isShort(h)
+          ? SPLIT_ROOM_SHORT.bottom
+          : SPLIT_ROOM.bottom;
+      const back = isPhone(w) ? 0 : 37;
+      expect(last.bottom + g.tail + back).toBeLessThanOrEqual(h - room + 0.5);
+    },
+  );
+
+  it.each(PINNED_SCREENS)("is large enough to read at %ix%i", (w, h) => {
+    const { g } = trio(w, h);
+    expect(g.size).toBeGreaterThanOrEqual(Math.min(w, h) * 0.25);
+    expect(g.beside).toBe(w < 700 && h >= 540);
+  });
+
+  it("stands three across on a wide screen, centred, one size, with a seam between", () => {
+    for (const [w, h] of [
+      [1440, 900],
+      [1920, 1080],
+      [1280, 720],
+    ] as const) {
+      const { g, squares } = trio(w, h);
+      expect(g.vertical).toBe(false);
+      expect(g.beside).toBe(false);
+      expect(g.cx).toBe(0);
+      const [a, b, c] = squares as [Box, Box, Box];
+      expect(a.top).toBeCloseTo(b.top, 6);
+      expect(b.top).toBeCloseTo(c.top, 6);
+      expect(b.left - a.right).toBeCloseTo(g.gap, 6);
+      expect(c.left - b.right).toBeCloseTo(g.gap, 6);
+      expect((a.left + c.right) / 2).toBeCloseTo(w / 2, 6);
+    }
+  });
+
+  it("is as large as a gatefold half where the height decides (the room is the same)", () => {
+    const o = controls(1440, 900);
+    const trio3 = triptychGeometry(1440, 900, o.navH, { above: o.splitAbove, lineChars: chars });
+    const pair = splitGeometry(1440, 900, o.navH, { above: o.splitAbove });
+    expect(trio3.size).toBe(pair.size);
+    expect(Math.abs(trio3.cy - pair.cy)).toBeLessThan(12);
+  });
+
+  it("stacks three rows on a phone, the words beside each square", () => {
+    for (const [w, h] of [
+      [390, 844],
+      [414, 896],
+      [375, 667],
+      [360, 640],
+    ] as const) {
+      const { g, squares } = trio(w, h);
+      expect(g.vertical).toBe(true);
+      expect(g.beside).toBe(true);
+      const [a, b, c] = squares as [Box, Box, Box];
+      expect(a.bottom).toBeLessThan(b.top);
+      expect(b.bottom).toBeLessThan(c.top);
+      expect(b.top - a.bottom).toBeCloseTo(g.gap, 6);
+      // The words fit between the square and the right edge.
+      expect(a.right + 16 + g.captionW).toBeLessThanOrEqual(w - 16 + 0.5);
+      expect(g.captionW).toBeGreaterThanOrEqual(132);
+    }
+  });
+
+  it("keeps a tall tablet three across, with the words under each square", () => {
+    const { g } = trio(820, 1180);
+    expect(g.vertical).toBe(false);
+    expect(g.beside).toBe(false);
+    expect(g.size).toBeGreaterThanOrEqual(220);
+    expect(g.lines).toBeGreaterThanOrEqual(2);
+  });
+
+  it("sets the three squares side by side on a short screen, between the controls", () => {
+    for (const [w, h] of [
+      [844, 390],
+      [667, 375],
+    ] as const) {
+      const { g } = trio(w, h);
+      expect(isShort(h)).toBe(true);
+      expect(g.vertical).toBe(false);
+      expect(g.size).toBeGreaterThanOrEqual(100);
+    }
+  });
+
+  it("does not touch the gatefold: two parts give what they always gave", () => {
+    for (const [w, h] of [
+      [1440, 900],
+      [390, 844],
+      [844, 390],
+    ] as const) {
+      const o = controls(w, h);
+      const inputs = { short: o.short, above: o.splitAbove };
+      expect(foldGeometry(2, w, h, o.navH, inputs)).toEqual(splitGeometry(w, h, o.navH, inputs));
+      expect(Object.keys(foldGeometry(2, w, h, o.navH, inputs)).sort()).toEqual(
+        ["cx", "cy", "gap", "size", "vertical"].sort(),
+      );
+    }
+    expect(foldGeometry(3, 1440, 900)).toHaveProperty("parts", 3);
+  });
+
+  it("starts as the shut cover: all three panels lie on it", () => {
+    const g = triptychGeometry(1440, 900);
+    const from = { x: 12, y: 40, size: 400 };
+    const f = triptychFrame(0, from, g);
+    expect(f.size).toBe(400);
+    expect(f.angle).toBe(0);
+    expect(f.angle2).toBe(0);
+    expect(f.part).toBe(0);
+    expect(f.leaf).toEqual({ x: 12, y: 40 });
+    expect(flapCentre(f, false).x).toBeCloseTo(12, 6);
+    expect(flapCentreB(f, false).x).toBeCloseTo(12, 6);
+    expect(flapCentre(f, false).y).toBeCloseTo(40, 6);
+    const v = triptychFrame(0, from, triptychGeometry(390, 844));
+    expect(flapCentre(v, true).y).toBeCloseTo(40, 6);
+    expect(flapCentreB(v, true).y).toBeCloseTo(40, 6);
+  });
+
+  it("ends as three squares with the middle one where the trio is centred", () => {
+    for (const [w, h] of [
+      [1440, 900],
+      [390, 844],
+    ] as const) {
+      const g = triptychGeometry(w, h);
+      const f = triptychFrame(1, { x: 0, y: 0, size: 300 }, g);
+      expect(f.angle).toBeCloseTo(Math.PI, 9);
+      expect(f.angle2).toBeCloseTo(Math.PI, 9);
+      expect(f.part).toBe(1);
+      expect(f.leaf).toEqual({ x: g.cx, y: g.cy });
+      const a = flapCentre(f, g.vertical);
+      const c = flapCentreB(f, g.vertical);
+      const step = g.size + g.gap;
+      if (g.vertical) {
+        expect(a.y - f.leaf.y).toBeCloseTo(step, 6);
+        expect(f.leaf.y - c.y).toBeCloseTo(step, 6);
+        expect(a.x).toBeCloseTo(g.cx, 6);
+      } else {
+        expect(f.leaf.x - a.x).toBeCloseTo(step, 6);
+        expect(c.x - f.leaf.x).toBeCloseTo(step, 6);
+        expect(a.y).toBeCloseTo(g.cy, 6);
+      }
+    }
+  });
+
+  it("moves without a jump at any point, both ways, and never crosses the panels", () => {
+    for (const [w, h] of [
+      [1440, 900],
+      [390, 844],
+    ] as const) {
+      const g = triptychGeometry(w, h);
+      const from = { x: 0, y: 30, size: 300 };
+      let prev = triptychFrame(0, from, g);
+      for (let i = 1; i <= 200; i += 1) {
+        const f = triptychFrame(i / 200, from, g);
+        expect(Math.abs(f.angle - prev.angle)).toBeLessThan(0.075);
+        expect(Math.abs(f.angle2 - prev.angle2)).toBeLessThan(0.075);
+        expect(Math.hypot(f.leaf.x - prev.leaf.x, f.leaf.y - prev.leaf.y)).toBeLessThan(12);
+        const a = flapCentre(f, g.vertical);
+        const pa = flapCentre(prev, g.vertical);
+        const c = flapCentreB(f, g.vertical);
+        const pc = flapCentreB(prev, g.vertical);
+        expect(Math.hypot(a.x - pa.x, a.y - pa.y)).toBeLessThan(16);
+        expect(Math.hypot(c.x - pc.x, c.y - pc.y)).toBeLessThan(16);
+        expect(Math.abs(f.size - prev.size)).toBeLessThan(4);
+        // The front panel is left of the middle one once it is past upright, the third is right of it.
+        if (!g.vertical && f.angle > Math.PI / 2) expect(a.x).toBeLessThanOrEqual(f.leaf.x + 1);
+        if (!g.vertical && f.angle2 > Math.PI / 2) expect(c.x).toBeGreaterThanOrEqual(f.leaf.x - 1);
+        prev = f;
+      }
+    }
+  });
+
+  it("makes the third panel swing a little after the front one, and both end flat together", () => {
+    const g = triptychGeometry(1440, 900);
+    const from = { x: 0, y: 0, size: 300 };
+    const early = triptychFrame(0.3, from, g);
+    expect(early.angle).toBeGreaterThan(early.angle2);
+    const end = triptychFrame(1, from, g);
+    expect(end.angle2).toBeCloseTo(end.angle, 9);
+  });
+
+  it("keeps the shut cover one box as thick as the others", () => {
+    for (const started of [false, true]) {
+      const d = triptychDepth(12, started);
+      expect(d.flap + d.leaf + d.flapB).toBe(12);
+      // The front face of the front panel stays at 0, the panels follow one behind another.
+      expect(d.hingeZ + d.flap).toBe(0);
+      expect(d.hingeZB).toBeLessThanOrEqual(d.hingeZ);
+    }
+    expect(triptychDepth(12, false).leaf).toBe(0);
+    expect(triptychDepth(12, false).flapB).toBe(0);
+    const open = triptychDepth(12, true);
+    expect(open.hingeZ - open.leaf).toBeCloseTo(open.hingeZB, 9);
+  });
+
+  it("moves between the three parts with the arrows, and stays on an end part", () => {
+    expect(movePart(0, "ArrowRight", false, 3)).toBe(1);
+    expect(movePart(1, "ArrowRight", false, 3)).toBe(2);
+    expect(movePart(2, "ArrowRight", false, 3)).toBe(2);
+    expect(movePart(2, "ArrowLeft", false, 3)).toBe(1);
+    expect(movePart(0, "ArrowLeft", false, 3)).toBe(0);
+    expect(movePart(1, "ArrowDown", true, 3)).toBe(2);
+    expect(movePart(1, "ArrowUp", true, 3)).toBe(0);
+    expect(movePart(null, "ArrowRight", false, 3)).toBe(1);
+    expect(movePart(null, "ArrowLeft", false, 3)).toBe(0);
+    // Two parts behave as moveHalf does.
+    for (const key of ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"] as const) {
+      for (const cur of [null, 0, 1] as const) {
+        for (const v of [false, true]) {
+          expect(movePart(cur, key, v, 2)).toBe(moveHalf(cur, key, v));
+        }
+      }
+    }
+  });
+
+  it("estimates the lines a caption takes, and the room under the parts", () => {
+    expect(tripLineFont(1440)).toBeCloseTo(17.2, 6);
+    expect(tripLineFont(300)).toBe(15);
+    expect(tripLineFont(5000)).toBe(19.2);
+    // The longest line in a narrow column takes more lines than in a wide one.
+    expect(lineCount(chars, 360, 17)).toBeLessThan(lineCount(chars, 180, 17));
+    expect(lineCount(1, 1000, 17)).toBe(1);
+    expect(tripTail(3, 17)).toBeGreaterThan(tripTail(2, 17));
+  });
+});
+
+describe("where the words and Back stand", () => {
+  const a: Box = { left: 100, right: 300, top: 100, bottom: 300 };
+  const b: Box = { left: 320, right: 520, top: 100, bottom: 300 };
+  const c: Box = { left: 540, right: 740, top: 100, bottom: 300 };
+
+  it("puts the words of parts side by side on one baseline, even when one is lifted", () => {
+    const lifted: Box = { ...b, top: 92, bottom: 292 };
+    const rects = [a, lifted, c];
+    expect(captionAt(rects, 0, false).y).toBe(314);
+    expect(captionAt(rects, 1, false).y).toBe(314);
+    expect(captionAt(rects, 2, false)).toEqual({ x: 540, y: 314 });
+  });
+
+  it("matches what the gatefold always did for two stacked parts", () => {
+    const top: Box = { left: 100, right: 300, top: 100, bottom: 300 };
+    const under: Box = { left: 100, right: 300, top: 400, bottom: 600 };
+    expect(captionAt([top, under], 0, false)).toEqual({ x: 100, y: 314 });
+    expect(captionAt([top, under], 1, false)).toEqual({ x: 100, y: 614 });
+  });
+
+  it("puts the words of a row to the right of its square, level with its top", () => {
+    expect(captionAt([a, b, c], 1, true)).toEqual({ x: 536, y: 100 });
+  });
+
+  it("puts Back under the middle of the parts", () => {
+    expect(backAt([a, b, c], 140)).toEqual({ x: 420, y: 440 });
+  });
+});
+
+describe("the covers that open", () => {
+  it("lists Arts and Video, in shelf order, with their own folds", () => {
+    expect(SPLITS.map((s) => s.slug)).toEqual(["arts", "video"]);
+    expect(splitIndexOf(ARTS_SPLIT)).toBe(0);
+    expect(splitIndexOf(VIDEO_SPLIT)).toBe(1);
+    expect(partCount(ARTS_SPLIT)).toBe(3);
+    expect(partCount(VIDEO_SPLIT)).toBe(2);
+    expect(splitOf("arts")).toBe(ARTS_SPLIT);
+    expect(splitOf("video")).toBe(VIDEO_SPLIT);
+    expect(splitOf("music")).toBeUndefined();
+    expect(ARTS_SPLIT.fold).toBe("triptych");
+    expect(VIDEO_SPLIT.fold).toBe("gatefold");
+    expect(COLLECTIONS[0]?.slug).toBe("arts");
+  });
+
+  it("makes Arts of Official, Fanart and Cosplay with their rooms, lines and legible inks", () => {
+    expect(ARTS_PARTS.map((p) => p.room)).toEqual(["official", "fanart", "cosplay"]);
+    expect(ARTS_PARTS.map((p) => p.href)).toEqual([
+      "/collection/arts",
+      "/collection/arts/fanart",
+      "/collection/arts/cosplay",
+    ]);
+    expect(ARTS_PARTS[0].line).toBe("Splash art, scenes, comic panels, game, design and more.");
+    expect(ARTS_PARTS[1].line).toBe("Made by readers and players, each piece credited.");
+    expect(ARTS_PARTS[2].line).toBe("The ten Aspirants, a page for each.");
+    const colours = new Set<string>();
+    for (const p of ARTS_PARTS) {
+      expect(p.line).toMatch(/^[A-Z].*\.$/);
+      for (const code of [0x2013, 0x2014]) expect(p.line).not.toContain(String.fromCharCode(code));
+      expect(p.index).toContain("ARTS");
+      expect(["#ffffff", "#0b0b0e"]).toContain(textOn(p.colour));
+      expect(p.cover).toMatch(/^covers\/arts-(official|fanart|cosplay)\.webp$/);
+      colours.add(p.colour);
+    }
+    // Told apart by colour: three fields, not one.
+    expect(colours.size).toBe(3);
+    // A new key never shares one with the cover of the collection itself.
+    expect(ARTS_PARTS.map((p) => p.cover)).not.toContain(COLLECTIONS[0]?.cover);
+  });
+
+  it("counts each Arts room from the index, and shows nothing for a room it does not know", () => {
+    expect(artsPartCounts()).toEqual([undefined, undefined, undefined]);
+    expect(
+      artsPartCounts({ "arts/official": 1200, "arts/fanart": 180, "arts/cosplay": 40 }),
+    ).toEqual([1200, 180, 40]);
+    expect(artsPartCounts({ "arts/official": 1200, "arts/cosplay": 0 })).toEqual([
+      1200,
+      undefined,
+      undefined,
+    ]);
+    expect(ARTS_SPLIT.counts({})).toEqual(["", "", ""]);
+    expect(ARTS_SPLIT.counts({ rooms: { "arts/fanart": 1234 } })).toEqual(["", "1,234 pieces", ""]);
+    // Video still counts the ten films and the rest.
+    expect(VIDEO_SPLIT.counts({ counts: { video: 102 } })).toEqual(["10 films", "92 videos"]);
   });
 });

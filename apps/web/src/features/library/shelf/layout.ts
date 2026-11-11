@@ -766,3 +766,283 @@ export function flapShade(angle: number): { front: number; back: number } {
     back: 0.6 + 0.4 * clamp((t - 0.5) * 2, 0, 1) ** 0.8 - 0.06 * s,
   };
 }
+
+// The triptych (three parts) -------------------------------------------------------------------
+//
+// The Arts cover opens into three rooms: Official, Fanart and Cosplay. It is a Z fold of three
+// panels of one side. The front panel (the cover, Official inside) is hinged on the left edge of the
+// middle panel (Fanart) and swings toward the viewer. The third panel (Cosplay inside) is folded
+// behind the middle one, hinged on its right edge, and swings away from the viewer, out from behind
+// it. The middle panel never moves, so the trio stays centred while it opens, and the panels keep
+// the same order in space and in drawing (front, middle, back), so nothing crosses. On a phone the
+// same fold runs on the horizontal edges: Official above, Fanart in the middle, Cosplay below, each
+// with its words beside it.
+//
+// The two part fold (`splitGeometry`, `splitFrame` and the rest above) is not touched by any of
+// this. A spec says which fold a cover uses (`splits.ts`).
+
+/** The window of `p` in which the third panel swings: a little after the front one. */
+const SWING_B: [number, number] = [0.17, 0.9];
+
+export interface TriptychGeometry extends SplitGeometry {
+  /** Always three. */
+  parts: 3;
+  /** The words stand beside each part (a row each), not under it. */
+  beside: boolean;
+  /** The width the words of a part may use. */
+  captionW: number;
+  /** From the foot of the parts to the top of Back (a wide screen). */
+  tail: number;
+  /** The lines the longest text takes under a part. */
+  lines: number;
+}
+
+/** The size of the line under a part when there are three of them (`.halfLine` in shelf.module.css). */
+export function tripLineFont(w: number): number {
+  return clamp(13.6 + 0.0025 * w, 15, 19.2);
+}
+
+/** Lines a text of `chars` characters takes in a column `width` wide, set in italic at `font` px (a safe guess). */
+export function lineCount(chars: number, width: number, font: number): number {
+  return Math.max(1, Math.ceil((chars * font * 0.5) / Math.max(40, width)));
+}
+
+/**
+ * From the foot of a part to the top of Back: the offset of the words (14), the lines, the rule, the
+ * count and Open row, and a gap.
+ */
+export function tripTail(lines: number, font: number): number {
+  return Math.round(14 + lines * font * 1.2 + 55.4 + 12);
+}
+
+const TRIP_ROW_GAP = 14;
+const TRIP_TEXT_GAP = 16;
+const TRIP_MIN_TEXT = 132;
+
+/** What `triptychGeometry` may be told, on top of `SplitInputs`. */
+interface TripInputs extends SplitInputs {
+  /** The longest line under a part, in characters. */
+  lineChars?: number;
+}
+
+/**
+ * Where the three parts stand when the cover is open: three across (the words under each part), or,
+ * on a phone, three rows (a square on the left and its words on its right). A phone on its side and
+ * every wider screen have the three across.
+ */
+export function triptychGeometry(
+  w: number,
+  h: number,
+  navH = navHeight(w),
+  inputs: TripInputs = {},
+): TriptychGeometry {
+  const short = inputs.short ?? isShort(h);
+  const above = inputs.above ?? [];
+  const chars = inputs.lineChars ?? 56;
+  const phone = isPhone(w);
+  const r: SplitRoom & { back?: number } = phone
+    ? short
+      ? SPLIT_ROOM_PHONE_SHORT
+      : SPLIT_ROOM_PHONE
+    : short
+      ? SPLIT_ROOM_SHORT
+      : SPLIT_ROOM;
+  const back = phone ? 0 : (r.back ?? 0);
+  const span = short ? flank(above, w, r.side) : { from: r.side, to: w - r.side };
+  const font = tripLineFont(w);
+
+  const across = (top: number): TriptychGeometry => {
+    const room = h - top - r.bottom;
+    const gap = Math.round(clamp(w * 0.014, 14, 28));
+    const cap = (span.to - span.from - gap * 2) / 3;
+    // A short screen has no line under a part, only the count and Open.
+    let lines = short ? 0 : 1;
+    let size = 0;
+    for (let i = 0; i < 5; i += 1) {
+      const tail = short ? r.caption : tripTail(lines, font);
+      size = Math.floor(Math.max(80, Math.min(h * 0.4, room - tail - back, cap)));
+      const next = short ? 0 : lineCount(chars, size, font);
+      if (next <= lines) break;
+      lines = next;
+    }
+    const tail = short ? r.caption : tripTail(lines, font);
+    const block = size + tail + back;
+    const blockTop = top + Math.max(0, (room - block) / 2);
+    const cx = short ? centreIn(w, span, size * 3 + gap * 2) : 0;
+    return {
+      size,
+      gap,
+      cx,
+      cy: h / 2 - (blockTop + size / 2),
+      vertical: false,
+      parts: 3,
+      beside: false,
+      captionW: size,
+      tail,
+      lines,
+    };
+  };
+
+  const rows = (top: number): TriptychGeometry => {
+    const room = h - top - r.bottom - back;
+    const width = span.to - span.from;
+    const size = Math.floor(
+      Math.max(80, Math.min((room - TRIP_ROW_GAP * 2) / 3, width - TRIP_TEXT_GAP - TRIP_MIN_TEXT)),
+    );
+    const block = size * 3 + TRIP_ROW_GAP * 2;
+    const blockTop = top + Math.max(0, (room - block) / 2);
+    const captionW = Math.max(TRIP_MIN_TEXT, width - size - TRIP_TEXT_GAP);
+    // The squares and their words are centred as one block.
+    const used = size + TRIP_TEXT_GAP + captionW;
+    const left = span.from + (width - used) / 2;
+    return {
+      size,
+      gap: TRIP_ROW_GAP,
+      cx: left + size / 2 - w / 2,
+      cy: h / 2 - (blockTop + size + TRIP_ROW_GAP + size / 2),
+      vertical: true,
+      parts: 3,
+      beside: true,
+      captionW,
+      // Back (a wide screen) stands a little under the last row.
+      tail: phone ? 0 : 14,
+      lines: lineCount(chars, captionW, font),
+    };
+  };
+
+  // A phone stands in rows (three across would be about 100 px each); every wider screen, a tall
+  // tablet too, stands three across (rows there would leave the words alone in a wide column).
+  const lay = (top: number): TriptychGeometry => (phone && !short ? rows(top) : across(top));
+
+  const top0 = navH + r.top;
+  const g = lay(top0);
+  if (short) return g;
+  // A measured control that reaches lower than the parts start pushes them down, as for two parts.
+  const half = g.vertical ? g.size + (TRIP_TEXT_GAP + g.captionW) / 2 : g.size * 1.5 + g.gap;
+  const reach = g.vertical ? g.size * 1.5 + g.gap : g.size / 2;
+  const clear = clearBelow(above, w / 2 + g.cx - half, w / 2 + g.cx + half);
+  return clear > h / 2 - g.cy - reach + 0.5 ? lay(Math.max(top0, clear)) : g;
+}
+
+export interface TriptychFrame extends SplitFrame {
+  /** The hinge of the third panel and how far it has turned: 0 shut, PI open. */
+  hinge2: { x: number; y: number };
+  angle2: number;
+}
+
+/**
+ * The triptych at progress `p`. `from` is the shut cover; `to` is where the open trio stands
+ * (`triptychGeometry`). `leaf` is the middle panel, which stays at the middle of the trio; `hinge`
+ * and `angle` are the front panel's; `hinge2` and `angle2` the third panel's.
+ */
+export function triptychFrame(
+  p: number,
+  from: { x: number; y: number; size: number },
+  to: { cx: number; cy: number; size: number; gap: number; vertical: boolean },
+): TriptychFrame {
+  const grow = easeInOutCubic(seg(p, GROW));
+  const swing = swingEase(seg(p, SWING));
+  const swing2 = swingEase(seg(p, SWING_B));
+  const part = easeOutCubic(seg(p, PART));
+  const size = lerp(from.size, to.size, grow);
+  const cx = lerp(from.x, to.cx, grow);
+  const cy = lerp(from.y, to.cy, grow);
+  const reach = size / 2 + to.gap * part;
+  const base = {
+    size,
+    leaf: { x: cx, y: cy },
+    angle: Math.PI * swing,
+    angle2: Math.PI * swing2,
+    part,
+  };
+  if (to.vertical) {
+    return { ...base, hinge: { x: cx, y: cy + reach }, hinge2: { x: cx, y: cy - reach } };
+  }
+  return { ...base, hinge: { x: cx - reach, y: cy }, hinge2: { x: cx + reach, y: cy } };
+}
+
+/** Centre of the third panel once it has turned by `angle2` about its hinge. */
+export function flapCentreB(f: TriptychFrame, vertical: boolean): { x: number; y: number } {
+  const c = Math.cos(f.angle2) * (f.size / 2);
+  return vertical ? { x: f.hinge2.x, y: f.hinge2.y + c } : { x: f.hinge2.x - c, y: f.hinge2.y };
+}
+
+/**
+ * Depth of the three panels. Before the fold starts the front panel is the whole cover and the other
+ * two are hidden, so on the shelf the cover is one box like the other nine. Once it starts each
+ * panel is a third as thick: the front panel on top, the middle one under it, the third behind.
+ */
+export function triptychDepth(
+  thick: number,
+  started: boolean,
+): { flap: number; leaf: number; flapB: number; hingeZ: number; hingeZB: number } {
+  return started
+    ? {
+        flap: thick / 3,
+        leaf: thick / 3,
+        flapB: thick / 3,
+        hingeZ: -thick / 3,
+        hingeZB: (-2 * thick) / 3,
+      }
+    : { flap: thick, leaf: 0, flapB: 0, hingeZ: -thick, hingeZB: -thick };
+}
+
+/** What a cover that opens in two or three pieces reports about its open layout. */
+export type FoldGeometry = SplitGeometry &
+  Partial<Pick<TriptychGeometry, "beside" | "captionW" | "tail" | "lines">>;
+
+/** The geometry of a cover that opens in `parts` pieces (`splitGeometry` for two, the triptych for three). */
+export function foldGeometry(
+  parts: 2 | 3,
+  w: number,
+  h: number,
+  navH = navHeight(w),
+  inputs: TripInputs = {},
+): FoldGeometry {
+  return parts === 3 ? triptychGeometry(w, h, navH, inputs) : splitGeometry(w, h, navH, inputs);
+}
+
+/**
+ * The part an arrow key moves to inside an open cover of `n` parts. With two parts it is
+ * `moveHalf`. With three the keys step: up and left go back, down and right go on, and the end
+ * parts stay put (the scene then moves on to the cover before or after).
+ */
+export function movePart(
+  current: number | null,
+  key: ArrowKey,
+  vertical: boolean,
+  n: number,
+): number {
+  if (n <= 2) return moveHalf(current === 0 || current === 1 ? current : null, key, vertical);
+  const back = key === "ArrowLeft" || key === "ArrowUp";
+  if (current === null) return back ? 0 : 1;
+  return clamp(current + (back ? -1 : 1), 0, n - 1);
+}
+
+/**
+ * Where the words of part `k` stand, from the boxes the scene drew: under the part, or, for rows,
+ * beside it. Parts side by side share one baseline whichever is lifted. Stacked parts each take the
+ * words under their own picture, except the last one, which uses the lowest.
+ */
+export function captionAt(
+  rects: readonly Box[],
+  k: number,
+  beside: boolean,
+  offset = 14,
+): { x: number; y: number } {
+  const r = rects[k];
+  if (!r) return { x: 0, y: 0 };
+  if (beside) return { x: r.right + TRIP_TEXT_GAP, y: r.top };
+  const below = Math.max(...rects.map((b) => b.bottom));
+  const next = rects[k + 1];
+  const oneAbove = next !== undefined && r.bottom <= next.top;
+  return { x: r.left, y: (oneAbove ? r.bottom : below) + offset };
+}
+
+/** Where Back stands under the parts (a wide screen): in the middle of them, `tail` under their foot. */
+export function backAt(rects: readonly Box[], tail: number): { x: number; y: number } {
+  const below = Math.max(...rects.map((b) => b.bottom));
+  const left = Math.min(...rects.map((b) => b.left));
+  const right = Math.max(...rects.map((b) => b.right));
+  return { x: (left + right) / 2, y: below + tail };
+}

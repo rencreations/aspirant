@@ -1,0 +1,731 @@
+/* The Splash art room. One fixed screen: a stack of windows, a title list across the middle, a
+   caption under the window in front, and two corners. Only transform and opacity move. The layout
+   numbers (--ww, --wh, --pw, --ph, --padx, --pady, --row) are written once per screen size by the
+   stage from `computeLayout`; the values here are the laptop's, for the first paint. */
+
+.room {
+  --ww: 726px;
+  --wh: 408px;
+  --pw: 908px;
+  --ph: 510px;
+  --padx: 91px;
+  --pady: 51px;
+  --row: 23px;
+  --edge: 20px;
+  --side: max(32px, 3vw);
+  --hole: calc(var(--ww) + 48px);
+  --cap-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-content);
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* The entrance: the layers wait, hidden, until the curtain has opened, then rise (a Web Animation). */
+.layers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.layers[data-stage="hold"] {
+  opacity: 0;
+}
+
+/* The windows ---------------------------------------------------------------------------------- */
+
+.wins {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* The layer is the whole screen: only the windows take a press, the list under it takes the rest. */
+  pointer-events: none;
+}
+
+/* A window is a box of the window's size that clips (never a clip-path: the zoom reads its box).
+   The pane is bigger and moves inside it, the other way from the window. */
+.win {
+  pointer-events: auto;
+  position: absolute;
+  left: calc(50% - var(--ww) / 2);
+  top: calc(50% - var(--wh) / 2);
+  width: var(--ww);
+  height: var(--wh);
+  overflow: clip;
+  display: none;
+}
+
+.win[data-on="true"] {
+  display: block;
+  will-change: transform;
+}
+
+.win[data-zoom="in"] {
+  cursor: pointer;
+}
+
+.win:focus {
+  outline: none;
+}
+
+.win:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 5px;
+}
+
+.pane {
+  position: absolute;
+  left: calc(var(--padx) * -1);
+  top: calc(var(--pady) * -1);
+  width: var(--pw);
+  height: var(--ph);
+  will-change: transform;
+}
+
+.pic {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pic[data-late="true"] {
+  animation: arrive 320ms linear both;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+  }
+}
+
+/* A picture still on its way: the colour of the pane, the real share of its bytes and a thin line
+   that sweeps along the foot of the window. It shows on the front window only, and not for a quick one. */
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(11 11 14 / 0.78);
+}
+
+.win[data-zoom="in"] .loading {
+  opacity: 1;
+  transition: opacity 200ms linear 500ms;
+}
+
+.pane[data-tone="dark"] .loading {
+  color: rgb(255 255 255 / 0.86);
+}
+
+.loading[data-state="gone"] {
+  text-align: center;
+}
+
+.loadText {
+  grid-area: 1 / 1;
+}
+
+.loadTrack {
+  position: absolute;
+  left: var(--padx);
+  bottom: var(--pady);
+  width: var(--ww);
+  height: 2px;
+  overflow: clip;
+}
+
+.loadLine {
+  display: block;
+  width: 30%;
+  height: 100%;
+  background: currentcolor;
+  animation: sweep 1.2s linear infinite;
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(340%);
+  }
+}
+
+/* The title list ---------------------------------------------------------------------------------
+   Ten rows across the middle of the screen, the one in front bright with a small triangle, the others
+   fading away by distance. It is a real list of links in the page's HTML. Under 1024 px it is only for
+   a screen reader and a crawler. */
+
+.list {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  font-family: var(--font-body-stack);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.rowLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rowLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.tri {
+  display: block;
+  width: 7px;
+  height: 8px;
+  background: currentcolor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 400ms var(--ease-out);
+}
+
+.row[data-current="true"] .tri {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 1023px) {
+  .list {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    inset: auto;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 1024px) {
+  .row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - var(--row) / 2);
+    height: var(--row);
+    display: none;
+  }
+
+  .row[data-on="true"] {
+    display: block;
+    will-change: transform, opacity;
+  }
+
+  .rowLink {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--hole) minmax(0, 1fr);
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--side);
+    pointer-events: auto;
+  }
+
+  .tri {
+    position: absolute;
+    left: calc(var(--side) - 22px);
+    top: 50%;
+    margin-top: -4px;
+  }
+
+  .left,
+  .right {
+    display: flex;
+    min-width: 0;
+    gap: 1.2em;
+  }
+
+  .right {
+    grid-column: 3;
+  }
+
+  .no {
+    flex: none;
+    width: 2.2em;
+  }
+
+  .rt,
+  .rc {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rw {
+    flex: none;
+    width: 6.6em;
+    white-space: nowrap;
+  }
+
+  .ry {
+    flex: none;
+    width: 3em;
+    text-align: right;
+  }
+}
+
+/* Under 1360 px the artist column goes, under 1180 the characters too. */
+@media (min-width: 1024px) and (max-width: 1359px) {
+  .rw {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1179px) {
+  .rc {
+    display: none;
+  }
+
+  .room {
+    --side: 28px;
+    --hole: calc(var(--ww) + 36px);
+  }
+
+  .row {
+    font-size: 12px;
+  }
+}
+
+/* The fades --------------------------------------------------------------------------------------- */
+
+.fadeTop,
+.fadeBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Under our top bar: the ground, solid for the bar and then thinning out, so the bar reads on any picture. */
+.fadeTop {
+  top: 0;
+  height: calc(var(--nav-h) + 3.5rem);
+  background: linear-gradient(
+    to bottom,
+    var(--bg) 0%,
+    var(--bg) calc(var(--nav-h) * 0.7),
+    color-mix(in srgb, var(--bg) 55%, transparent) calc(var(--nav-h) + 1.25rem),
+    transparent 100%
+  );
+}
+
+/* The next picture rises out of the ground, under the caption. */
+.fadeBottom {
+  bottom: 0;
+  /* From a little above the foot of the window in front to the foot of the screen. */
+  height: calc(50% - var(--wh) / 2 + 60px);
+  background: linear-gradient(
+    to top,
+    var(--bg) 0%,
+    color-mix(in srgb, var(--bg) 94%, transparent) 36%,
+    color-mix(in srgb, var(--bg) 62%, transparent) 62%,
+    color-mix(in srgb, var(--bg) 22%, transparent) 84%,
+    transparent 100%
+  );
+}
+
+/* The caption ------------------------------------------------------------------------------------- */
+
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--cap-bottom);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.capBody {
+  max-width: 700px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(18px, min(max(3.2vw, 30px), 5.4vh), 46px);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.meta {
+  margin: 0.2em 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(16px, min(1.4vw, 2.2vh), 20px);
+  line-height: 1.75;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.line {
+  display: block;
+  min-height: 0.1px;
+}
+
+/* The letters (made by `caption.ts`, so their classes are plain): each in a mask that clips it, with
+   room above and below for the capitals and the descenders. */
+.capBody :global(.cw) {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.capBody :global(.cm) {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.1em 0 0.2em;
+  margin: -0.1em 0 -0.2em;
+}
+
+.capBody :global(.ci) {
+  display: inline-block;
+}
+
+/* A picture made for this site always says so, in the caption and in the viewer. */
+.mark {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: auto;
+}
+
+.mark[hidden] {
+  display: none;
+}
+
+/* On a screen without a pointer there is no cursor to say Zoom in, so the caption has a button. */
+.zoomButton {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.75rem;
+  padding: 4px 8px;
+  border: 0;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-body-stack);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.zoomButton i {
+  display: block;
+  width: 7px;
+  height: 8px;
+  background: currentcolor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.zoomButton:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .zoomButton {
+    display: inline-flex;
+  }
+
+  .meta {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+/* A wide screen with little height (a 1366 by 768 laptop) has about 130 px between the window and
+   the corner row: the words stand tighter, so the mark of a made picture clears the row. */
+@media (min-width: 1024px) and (max-height: 820px) {
+  .title {
+    line-height: 1.1;
+  }
+
+  .meta {
+    margin-top: 0.1em;
+    line-height: 1.35;
+  }
+
+  .mark {
+    margin-top: 0.25rem;
+  }
+
+  .caption {
+    top: calc(50% + var(--wh) / 2 + 14px);
+  }
+
+  .caption[data-made="true"] {
+    top: calc(50% + var(--wh) / 2 + 8px);
+  }
+}
+
+/* A phone on its side has about 390 px of height: the caption goes to one short block under the
+   window (a tap on the picture zooms), and the corners sit tighter. */
+@media (max-height: 520px) and (min-width: 768px) {
+  .caption {
+    top: calc(50% + var(--wh) / 2 + 12px);
+    bottom: auto;
+  }
+
+  .meta,
+  .zoomButton {
+    display: none;
+  }
+
+  .foot {
+    padding-bottom: 8px;
+  }
+}
+
+/* The corners ------------------------------------------------------------------------------------- */
+
+.foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  /* The corner brackets of the site's frame stand 14 px from the edge: the corners clear them. */
+  padding: 0 max(var(--edge), calc(var(--hud-rail) + 14px))
+    max(var(--edge), env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+
+.foot > * {
+  pointer-events: auto;
+}
+
+.subnav ul {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sub,
+.takedown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body-stack);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.sub {
+  padding-left: 12px;
+}
+
+.sub:focus-visible,
+.takedown:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.triangle {
+  display: block;
+  flex: none;
+  width: 6px;
+  height: 7px;
+  background: currentcolor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.sub .triangle {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -3.5px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.sub[aria-current="page"] .triangle,
+.sub:hover .triangle,
+.sub:focus-visible .triangle {
+  opacity: 1;
+  transform: none;
+}
+
+/* The box at the bottom right: the takedown line, a quiet ink box with its triangle. */
+.takedown {
+  gap: 6px;
+  padding: 4px 8px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+/* The rolling label: each letter in a mask one line high that holds it twice, and both copies move
+   up one line, 0.02 s after the letter before. On leaving they roll back the same way. */
+.roll {
+  display: inline-flex;
+}
+
+.rl {
+  display: inline-block;
+  height: 1.35em;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.rl > span {
+  display: block;
+  height: 1.35em;
+  transition: transform 400ms cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i, 0) * 20ms);
+}
+
+.sub:hover .rl > span,
+.sub:focus-visible .rl > span,
+.takedown:hover .rl > span,
+.takedown:focus-visible .rl > span {
+  transform: translateY(-100%);
+}
+
+/* A wide screen puts the caption under the window in front, so a short one never lays the words
+   over the picture. A tablet and a phone stand it at the foot, over the next picture, as the
+   reference's does, where the fade under it keeps it legible. */
+@media (min-width: 1024px) {
+  .caption {
+    top: calc(50% + var(--wh) / 2 + clamp(28px, 5vh, 56px));
+    bottom: auto;
+  }
+
+  /* The mark of a picture made for this site is one more line: the words stand a little higher. */
+  .caption[data-made="true"] {
+    top: calc(50% + var(--wh) / 2 + clamp(16px, 2.2vh, 24px));
+  }
+}
+
+/* The way back sits under the bar on the left; on a tablet or a phone the picture above runs under it, so it gets a plate. */
+@media (max-width: 1023px) {
+  .room [data-room-back] {
+    background: var(--bg);
+  }
+}
+
+@media (max-width: 767px) {
+  .foot {
+    gap: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+
+  .foot::-webkit-scrollbar {
+    display: none;
+  }
+
+  .subnav {
+    flex: none;
+  }
+
+  .subnav ul {
+    gap: 20px;
+  }
+
+  .takedown {
+    flex: none;
+    margin-left: 24px;
+  }
+}
+
+/* While the viewer is open the rest of the stage goes (0.25 s) and comes back in the last 0.3 s of the close. */
+.room .caption,
+.room .foot,
+.room .list,
+.room [data-room-back] {
+  transition: opacity 300ms linear 260ms;
+}
+
+.room[data-zoom-open="true"] .caption,
+.room[data-zoom-open="true"] .foot,
+.room[data-zoom-open="true"] .list,
+.room[data-zoom-open="true"] [data-room-back] {
+  opacity: 0;
+  transition: opacity 250ms linear;
+}
+
+/* What the viewer says under the picture. */
+.viewerCaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

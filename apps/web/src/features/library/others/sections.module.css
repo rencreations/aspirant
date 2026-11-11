@@ -1,4 +1,4 @@
-/* The frame of each section, the reveals, and the boards of the sections after the 3D block. */
+/* The frame of each section, the reveals, and the boards of the sections. */
 
 .section {
   position: relative;
@@ -57,12 +57,6 @@
   transition-delay: 120ms;
 }
 
-.section[data-reveal="stage"] .head {
-  transform: translateX(-24px);
-}
-.section[data-reveal="stage"] .content {
-  transform: translateY(28px) scale(0.985);
-}
 .section[data-reveal="pop"] .head {
   transform: translateY(18px);
 }

@@ -1,0 +1,388 @@
+/* The flow: rows of pictures that slide sideways with the scroll. Only `transform` and `opacity`
+   move. A row's transform is written by the engine (`engine.ts`), one write per row per scroll. */
+
+.room {
+  position: relative;
+  min-height: 100svh;
+  color: var(--text, #10131a);
+  background: var(--bg, #fff);
+}
+
+/* The head: title, count, search and the filter. It scrolls away with the page. ----------------- */
+.head {
+  display: grid;
+  /* The one column may be narrower than its widest line: a row of chips slides sideways inside it. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  /* Clears the top bar and the back button that stands under it, fixed at the left. */
+  padding: calc(var(--nav-h) + 3.9rem) var(--gutter) 1.6rem;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.heading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-4);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Search ------------------------------------------------------------------------------------- */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min(100%, 17rem);
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  transition: box-shadow var(--dur-base, 240ms) var(--ease-out);
+}
+
+.search:focus-within {
+  box-shadow:
+    0 0 0 2px var(--bg, #fff),
+    0 0 0 3px currentcolor;
+}
+
+.searchIcon {
+  flex: none;
+  margin-left: 0.85rem;
+  opacity: 0.7;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.4rem 0.55rem 0.55rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  outline: none;
+}
+
+.input::placeholder {
+  color: inherit;
+  opacity: 0.5;
+}
+
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--dur-fast, 160ms) linear;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  opacity: 1;
+}
+
+/* Filter ------------------------------------------------------------------------------------- */
+.filter {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.35rem;
+}
+
+.chips {
+  display: contents;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.42rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0.66;
+  transition:
+    opacity var(--dur-fast, 160ms) linear,
+    background-color var(--dur-fast, 160ms) linear,
+    color var(--dur-fast, 160ms) linear;
+}
+
+.chip:hover,
+.chip:focus-visible {
+  opacity: 1;
+  border-color: currentcolor;
+}
+
+.chip[aria-pressed="true"] {
+  opacity: 1;
+  border-color: var(--text, #10131a);
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+.chip:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.num {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.more {
+  border-color: currentcolor;
+  border-style: dashed;
+}
+
+.more[aria-expanded="true"] {
+  opacity: 1;
+  border-style: solid;
+}
+
+.sheet {
+  position: absolute;
+  z-index: var(--z-popover, 75);
+  top: calc(100% + 0.6rem);
+  left: 0;
+  width: min(44rem, calc(100vw - 2 * var(--gutter)));
+  max-height: min(24rem, 50svh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.9rem;
+  border: 1px solid var(--text, #10131a);
+  background: var(--bg, #fff);
+  box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.35rem;
+  animation: sheetIn 200ms var(--ease-out) both;
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The rows ----------------------------------------------------------------------------------- */
+.box {
+  position: relative;
+  width: 100%;
+  /* Rows are wider than the screen. Clip, not hidden: nothing can scroll this sideways. */
+  overflow-x: clip;
+}
+
+.field {
+  position: relative;
+  height: 100%;
+  animation: fieldIn 220ms var(--ease-out) both;
+}
+
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.row {
+  position: absolute;
+  left: 0;
+  display: flex;
+  will-change: transform;
+  contain: layout style;
+}
+
+.tile {
+  position: relative;
+  flex: none;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: #d8dbe3;
+  color: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pic[data-ready] {
+  opacity: 1;
+  transition: opacity 480ms var(--ease-out);
+}
+
+.pic[data-instant] {
+  transition: none;
+}
+
+.pic[data-failed] {
+  opacity: 0;
+}
+
+.tile:focus-visible {
+  /* The zoom's own outline (zoom/tile.module.css) shows the focus. */
+  outline-color: var(--zo);
+}
+
+/* Nothing found. ------------------------------------------------------------------------------ */
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  padding: 3rem var(--gutter) 6rem;
+  font-size: var(--step-0);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.plain {
+  padding: 0.55rem 1rem;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.plain:hover,
+.plain:focus-visible {
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+@media (max-width: 640px) {
+  .filter {
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+  }
+
+  /* One row that slides sideways, with the page's edge fading it out. "See more" stands outside it, so its sheet is not clipped. */
+  .chips {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-inline-end: 1.4rem;
+    mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+  }
+
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .more {
+    flex: none;
+  }
+
+  .sheet {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  .head {
+    padding-top: calc(var(--nav-h) + 3.6rem);
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .tools {
+    width: 100%;
+  }
+}
+
+/* The back button stands over the rows as they slide: it gets a plain ground. */
+.room [data-room-back] {
+  background: var(--bg, #fff);
+}

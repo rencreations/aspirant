@@ -286,7 +286,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #2a5bff;
+  background: var(--accent, #2a5bff);
   transform: scaleX(0);
   transform-origin: 0 50%;
   transition: transform var(--dur-base) var(--ease-out);
@@ -294,6 +294,62 @@
 
 .half[data-active="true"] .halfRow::before {
   transform: scaleX(1);
+}
+
+/* Three parts (the Arts cover): each is narrower than a half, so its line is set a little smaller. */
+.stage[data-parts="3"] .halfLine {
+  font-size: clamp(0.9375rem, 0.85rem + 0.25vw, 1.2rem);
+  line-height: 1.2;
+}
+
+/* Side by side, the three share one height (the scene measures it), the count and Open at the foot. */
+.stage[data-parts="3"] .half {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+/* Rows (a phone, or a tall tablet): the picture is on the left and its words stand beside it, the
+   line on top and the count and Open at the foot. The scene sets the height of a row to its picture. */
+.stage[data-rows="true"] .half {
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+}
+
+.stage[data-rows="true"] .halfRow {
+  align-self: end;
+  flex-wrap: wrap;
+  row-gap: 0.4rem;
+  padding-top: 0.5rem;
+}
+
+.stage[data-rows="true"] .half .pill {
+  height: 2.1rem;
+  padding: 0 0.95rem;
+}
+
+/* A narrow column puts the count on a line of its own over Open. */
+@container (max-width: 15rem) {
+  .stage[data-rows="true"] .halfCount {
+    flex-basis: 100%;
+  }
+}
+
+/* A small row (a short phone) keeps the line, in less room, and the count beside Open on one line. */
+.stage[data-compact="true"] .halfLine {
+  font-size: 0.9375rem;
+  line-height: 1.15;
+}
+
+.stage[data-compact="true"] .halfRow {
+  flex-wrap: nowrap;
+  padding-top: 0.4rem;
+}
+
+.stage[data-compact="true"] .halfCount {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* The focus view: the name and the line on the left. ----------------------------------------------- */

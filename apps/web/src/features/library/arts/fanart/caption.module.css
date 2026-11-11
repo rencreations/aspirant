@@ -1,0 +1,30 @@
+/* The credit under a picture in the zoom and under a video: the label, the day, who made it. */
+.caption {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.8rem;
+  margin: 0;
+}
+
+.reel {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid currentcolor;
+  opacity: 0.85;
+}
+
+.caption p {
+  margin: 0;
+}
+
+.note {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  opacity: 0.78;
+}

@@ -1,0 +1,345 @@
+/*
+ * The viewer of the Arts zoom. One fixed layer over the page. Inside it: the backdrop, the picture
+ * (a window of two clips that only translate, a scroller for a tall strip, the picture's box) and
+ * the chrome (a close button, a counter, the neighbours, a caption, a loading mark). Only transform
+ * and opacity move. The clips use `overflow: clip`, never `hidden`, so a script cannot scroll them.
+ */
+.root {
+  --zv-bg: #080a0f;
+  --zv-ink: #f4f6fa;
+  --zv-soft: rgb(244 246 250 / 0.74);
+  --zv-line: rgb(244 246 250 / 0.3);
+  --zv-plate: rgb(8 10 15 / 0.66);
+  --zv-fill: #f4f6fa;
+  --zv-on-fill: #080a0f;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  overflow: clip;
+  color: var(--zv-ink);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.root[data-tone="light"] {
+  --zv-bg: #f3f5f9;
+  --zv-ink: #0b0e14;
+  --zv-soft: rgb(11 14 20 / 0.72);
+  --zv-line: rgb(11 14 20 / 0.3);
+  --zv-plate: rgb(243 245 249 / 0.78);
+  --zv-fill: #0b0e14;
+  --zv-on-fill: #f3f5f9;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--zv-bg);
+  opacity: 0;
+  touch-action: none;
+}
+
+/* The picture ------------------------------------------------------------------------------- */
+.drag,
+.outer,
+.inner,
+.counter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.outer,
+.inner {
+  overflow: clip;
+}
+
+.drag[data-leaving="true"] {
+  pointer-events: none;
+}
+
+/* The scroller is the whole screen, cut to the window by the clips above it. It scrolls only for a
+   tall strip (`data-scroll="true"`), and never hands the scroll on to the page. */
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  outline: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* The finger is the viewer's own (a swipe closes or moves on), except on a strip, which it reads. The
+   touch action is not set on the layer: an ancestor with `none` would stop the strip's own pan. */
+.scroller[data-scroll="false"] {
+  touch-action: none;
+}
+
+.scroller[data-scroll="true"] {
+  overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.drag[data-leaving="true"] .scroller {
+  pointer-events: none;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+img.face {
+  transition: opacity 280ms linear;
+}
+
+img.face[data-in="false"] {
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scroller,
+  .backdrop {
+    cursor: none;
+  }
+}
+
+/* The chrome --------------------------------------------------------------------------------- */
+.chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+.root[data-phase="open"] .chrome {
+  opacity: 1;
+}
+
+/* The buttons and notes take a press only while they show: during a move the chrome is clear, and
+   a pointer over its place must still meet the picture (and the cursor must still say ZOOM OUT). */
+.root[data-phase="open"] .square,
+.root[data-phase="open"] .caption,
+.root[data-phase="open"] .note {
+  pointer-events: auto;
+}
+
+.top {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  left: max(1rem, env(safe-area-inset-left));
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  max-width: calc(100% - 4rem);
+  padding: 0.55rem 0.8rem;
+  background: var(--zv-plate);
+  box-shadow: inset 0 0 0 1px var(--zv-line);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex: none;
+  color: var(--zv-soft);
+}
+
+.square {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: var(--zv-plate);
+  box-shadow: inset 0 0 0 1px var(--zv-line);
+  color: var(--zv-ink);
+  cursor: pointer;
+  pointer-events: none;
+  transition:
+    background-color 160ms linear,
+    color 160ms linear;
+}
+
+.square:hover,
+.square:focus-visible {
+  background: var(--zv-fill);
+  color: var(--zv-on-fill);
+}
+
+.square:focus-visible {
+  outline: 2px solid var(--zv-ink);
+  outline-offset: 3px;
+}
+
+.square:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.nav {
+  position: absolute;
+  top: calc(50% - 22px);
+}
+
+.nav[data-side="prev"] {
+  left: max(1rem, env(safe-area-inset-left));
+}
+
+.nav[data-side="next"] {
+  right: max(1rem, env(safe-area-inset-right));
+}
+
+/* A touch screen swipes to move and has no room for the side buttons. */
+@media (hover: none) {
+  .nav {
+    display: none;
+  }
+}
+
+.caption {
+  position: absolute;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  max-width: min(34rem, calc(100% - 2rem));
+  padding: 0.6rem 0.85rem;
+  background: var(--zv-plate);
+  box-shadow: inset 0 0 0 1px var(--zv-line);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.caption a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.note {
+  position: absolute;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: calc(100% - 2rem);
+  padding: 0.55rem 0.85rem;
+  background: var(--zv-plate);
+  box-shadow: inset 0 0 0 1px var(--zv-line);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.note button {
+  padding: 0.2rem 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* The full size is still on its way: a thin line sweeps along the top. It stands for a file that is
+   really arriving, and goes the moment it has. It does not appear for a quick one. */
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: clip;
+  opacity: 0;
+}
+
+.loading[data-on="true"] {
+  opacity: 1;
+  transition: opacity 240ms linear 600ms;
+}
+
+.loading i {
+  display: block;
+  width: 30%;
+  height: 100%;
+  background: var(--zv-ink);
+  animation: sweep 1.2s linear infinite;
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(340%);
+  }
+}
+
+/* A tall strip shows how far it has been read: a thin line along the right edge. */
+.progress {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--zv-line);
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+.progress[data-on="true"] {
+  opacity: 1;
+}
+
+.progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--zv-ink);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}

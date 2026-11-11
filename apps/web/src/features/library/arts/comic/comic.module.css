@@ -1,0 +1,210 @@
+/* The Comic room: a head (title, count, search, filter) and the panels in lanes. Every panel stands
+   at the width of its lane, as tall as its own shape makes it. Only `opacity` changes in motion
+   (a picture fades in when it has arrived). The tiles are placed by `layout.ts`. */
+
+.room {
+  position: relative;
+  min-height: 100svh;
+  color: var(--text, #10131a);
+  background: var(--bg, #fff);
+}
+
+/* The head: title, count, search and the filter. It scrolls away with the page. ----------------- */
+.head {
+  display: grid;
+  /* The one column may be narrower than its widest line: the chips slide sideways inside it on a phone. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  /* Clears the top bar and the back button that stands under it, fixed at the left. */
+  padding: calc(var(--nav-h) + 3.9rem) var(--gutter) 1.6rem;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.heading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-4);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* The panels ---------------------------------------------------------------------------------- */
+.stage {
+  padding: 0.6rem var(--gutter) 0;
+  /* The page is always taller than the screen, so its scrollbar is there from the first frame and
+     the box never changes width when the panels arrive and the page grows. */
+  min-height: 100svh;
+}
+
+/* The box is as wide as the lanes need and no wider, in the middle of the page. */
+.box {
+  position: relative;
+  width: 100%;
+  max-width: 1480px;
+  margin-inline: auto;
+}
+
+.field {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: fieldIn 240ms var(--ease-out) both;
+}
+
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.cell {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+}
+
+.tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  /* The average colour of the picture stands in until it arrives. A cut out has none: its corners
+     are transparent, and a block of colour would show where they are not. */
+  background-color: var(--c, #d8dbe3);
+  color: inherit;
+  cursor: zoom-in;
+  overflow: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tile[data-alpha] {
+  background-color: transparent;
+}
+
+.pic {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pic[data-ready] {
+  opacity: 1;
+  transition: opacity 420ms var(--ease-out);
+}
+
+.pic[data-instant] {
+  transition: none;
+}
+
+/* A strip too flat to read at the width of a phone: shown taller, it slides sideways under the finger. */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow-x: auto;
+  overflow-y: clip;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide::-webkit-scrollbar {
+  display: none;
+}
+
+.inner {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+
+/* Nothing found. ------------------------------------------------------------------------------ */
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  padding: 3rem var(--gutter) 6rem;
+  font-size: var(--step-0);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.plain {
+  padding: 0.55rem 1rem;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.plain:hover,
+.plain:focus-visible {
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+@media (max-width: 640px) {
+  .head {
+    padding-top: calc(var(--nav-h) + 3.6rem);
+  }
+
+  .tools {
+    width: 100%;
+  }
+}
+
+/* The back button stands over the panels as they scroll: it gets a plain ground. */
+.room [data-room-back] {
+  background: var(--bg, #fff);
+}

@@ -13,7 +13,7 @@ interface SectionProps {
   /** A short extra line under the lead, for example the figure for the whole group. */
   children: ReactNode;
   /** The reveal this section plays when it comes on screen. */
-  reveal: "stage" | "pop" | "rise" | "scale" | "slide" | "fade";
+  reveal: "pop" | "rise" | "scale" | "slide" | "fade";
 }
 
 /** One section of the page: its number, a big title, a lead line, and a reveal of its own. */
@@ -27,7 +27,7 @@ export function Section({ group, count, children, reveal }: SectionProps) {
       className={styles.section}
       data-reveal={reveal}
       data-seen={seen}
-      data-long={group.title.length > 20}
+      data-long={group.heading.length > 20}
       aria-labelledby={`h-${group.id}`}
       style={{ "--count": count } as CSSProperties}
     >
@@ -36,7 +36,7 @@ export function Section({ group, count, children, reveal }: SectionProps) {
           {no} / {count} {count === 1 ? "item" : "items"}
         </p>
         <h2 id={`h-${group.id}`} className={`${styles.title} display`}>
-          {group.title}
+          {group.heading}
         </h2>
         <p className={styles.lead}>{group.line}</p>
       </header>

@@ -125,7 +125,7 @@ test("has one way out, no way to the other rooms, and a bar without a background
 }) => {
   await open(page);
   await expect(page.locator("[data-room-back]")).toHaveAttribute("href", /\/collection\/?$/);
-  for (const room of ["arts", "voicelines", "fanart", "comic", "lore", "design", "others"]) {
+  for (const room of ["arts", "voicelines", "models", "comic", "lore", "design", "others"]) {
     await expect(page.locator(`main a[href*='/collection/${room}']`)).toHaveCount(0);
   }
   await expect(page.locator("header[data-bare='true']")).toHaveCount(1);

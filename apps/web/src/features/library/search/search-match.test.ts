@@ -13,7 +13,7 @@ const entries: SearchEntry[] = [
     w: ["layla"],
     k: "正義を執行するわよ i'm going to carry out justice",
   },
-  { id: "d", c: "fanart", t: "Fanny and Layla, fan art", w: ["fanny", "layla"], k: "fan" },
+  { id: "d", c: "models", t: "Fanny and Layla, model", w: ["fanny", "layla"], k: "fan" },
 ];
 
 describe("searchEntries", () => {
@@ -36,7 +36,7 @@ describe("searchEntries", () => {
   });
 
   it("filters by collection and counts per collection", () => {
-    expect(searchEntries(entries, "layla", "fanart").map((s) => s.entry.id)).toEqual(["d"]);
-    expect(countByCollection(entries, "layla")).toEqual({ arts: 1, voicelines: 1, fanart: 1 });
+    expect(searchEntries(entries, "layla", "models").map((s) => s.entry.id)).toEqual(["d"]);
+    expect(countByCollection(entries, "layla")).toEqual({ arts: 1, voicelines: 1, models: 1 });
   });
 });

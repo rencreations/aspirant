@@ -4,7 +4,6 @@ import type { OthersGroupId, OthersItem, SkillItem } from "./types";
 
 /** The sections of the page, in the order they are drawn. */
 export const SECTION_ORDER: readonly OthersGroupId[] = [
-  "models",
   "emotes",
   "gameplay",
   "skills",
@@ -14,7 +13,6 @@ export const SECTION_ORDER: readonly OthersGroupId[] = [
 
 /** Short names for the section chips. The long titles are in the data file. */
 export const SECTION_CHIP_LABEL: Readonly<Record<OthersGroupId, string>> = {
-  models: "3D models",
   emotes: "Emotes",
   gameplay: "Gameplay",
   skills: "Skill icons",
@@ -24,6 +22,14 @@ export const SECTION_CHIP_LABEL: Readonly<Record<OthersGroupId, string>> = {
 
 export function isSection(value: string): value is OthersGroupId {
   return (SECTION_ORDER as readonly string[]).includes(value);
+}
+
+/**
+ * The 3D models left this room for `/collection/models` and their ids changed from
+ * `others-3d-<name>` to `models-<name>`. The new id for an old one, or null for any other id.
+ */
+export function modelIdOfOldLink(id: string): string | null {
+  return id.startsWith("others-3d-") ? `models-${id.slice("others-3d-".length)}` : null;
 }
 
 /** Everything a search can match in an item, lower case. */
@@ -49,7 +55,7 @@ type ByGroup = Record<OthersGroupId, OthersItem[]>;
 
 /** The items that match the query, sorted into their sections (the data order is kept). */
 export function itemsByGroup(items: readonly OthersItem[], query: string): ByGroup {
-  const out: ByGroup = { models: [], emotes: [], gameplay: [], skills: [], site: [], more: [] };
+  const out: ByGroup = { emotes: [], gameplay: [], skills: [], site: [], more: [] };
   for (const item of items) {
     if (matches(item, query)) out[item.group].push(item);
   }
@@ -108,17 +114,6 @@ export function humanBytes(n: number): string {
   if (n < 1024) return `${Math.round(n)} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(n < 10 * 1024 ? 1 : 0)} KB`;
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-/** A thousands separated count: 31620 gives "31,620". */
-export function count(n: number): string {
-  return n.toLocaleString("en-US");
-}
-
-/** The camera's angle round the model as whole degrees, 0 to 359 (0 is the front). */
-export function azimuthDegrees(radians: number): number {
-  const deg = Math.round((radians * 180) / Math.PI);
-  return ((deg % 360) + 360) % 360;
 }
 
 /** Seconds as "0:07". */

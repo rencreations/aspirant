@@ -1,0 +1,658 @@
+/* The Design room: 22 sheets, one to a section, on a quiet plate, with the name and notes beside
+   each. Only `transform` and `opacity` move. The numbers that size a sheet (the notes column, the
+   gap, the plate padding, the height cap) are also in `layout.ts`: keep them in step. */
+
+.room {
+  --plate: #e1e5eb;
+  --paper: #f8f9fb;
+  --hair: rgb(11 14 20 / 0.16);
+  --side: 15rem;
+  --colgap: 3rem;
+  --pad: clamp(0.75rem, 2.4vw, 2.25rem);
+  --cap-h: min(72svh, 52rem);
+  position: relative;
+  min-height: 100svh;
+  color: var(--text, #10131a);
+  background: var(--bg, #fff);
+}
+
+/* The head: title, count, search and the filter. It scrolls away with the page. ----------------- */
+.head {
+  display: grid;
+  /* A track that can be as narrow as the screen: the filter rows slide inside it. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  /* Clears the top bar and the back button that stands under it, fixed at the left. */
+  padding: calc(var(--nav-h) + 3.9rem) var(--gutter) 1.6rem;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.heading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-4);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* The filter ---------------------------------------------------------------------------------- */
+.filters {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1.8rem;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.35rem;
+}
+
+.groupLabel {
+  margin-right: 0.3rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.42rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0.66;
+  transition:
+    opacity var(--dur-fast, 160ms) linear,
+    background-color var(--dur-fast, 160ms) linear,
+    color var(--dur-fast, 160ms) linear;
+}
+
+.chip:hover,
+.chip:focus-visible {
+  opacity: 1;
+  border-color: currentcolor;
+}
+
+.chip[aria-pressed="true"] {
+  opacity: 1;
+  border-color: var(--text, #10131a);
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+.chip:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.chip:disabled {
+  opacity: 0.26;
+  cursor: default;
+}
+
+.chip:disabled:hover {
+  border-color: transparent;
+}
+
+.num {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The sections -------------------------------------------------------------------------------- */
+.list {
+  display: grid;
+  gap: clamp(3.5rem, 9vh, 7rem);
+  padding: 1.2rem 0 1rem;
+}
+
+.section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "id"
+    "stage"
+    "notes";
+  gap: 1rem;
+  width: 100%;
+  max-width: 112rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.id {
+  grid-area: id;
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.no {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.no span:last-child {
+  opacity: 0.5;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.facts {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.35rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.facts div {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.facts dt {
+  flex: none;
+  min-width: 5.4rem;
+  opacity: 0.5;
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.notes {
+  grid-area: notes;
+  display: grid;
+  align-content: end;
+  gap: 0.7rem;
+  min-width: 0;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.note {
+  margin: 0;
+  max-width: 36ch;
+}
+
+.hint {
+  display: none;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.source {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.source a {
+  color: var(--text);
+}
+
+.small {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  opacity: 0.8;
+}
+
+/* The plate and the sheet --------------------------------------------------------------------- */
+.stage {
+  grid-area: stage;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  min-width: 0;
+  min-height: min(40svh, 24rem);
+  padding: var(--pad);
+  background: var(--plate);
+  transition:
+    opacity 900ms var(--ease-out),
+    transform 1000ms var(--ease-out);
+}
+
+.sheet {
+  --ar: 1;
+  --nat: 1000px;
+  position: relative;
+  flex: none;
+  display: block;
+  /* The whole sheet, never cut and never above its own pixels: the room it has, the height cap
+     times its shape, or its size, whichever is least. */
+  width: min(100%, var(--nat), calc(var(--cap-h) * var(--ar)));
+  aspect-ratio: var(--ar);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  color: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A hairline round the picture, so a sheet with a see-through ground still shows its edge. */
+.sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  pointer-events: none;
+}
+
+/* On hover and focus the zoom module draws an ink ring inside the tile. A thin white ring on each
+   side of it keeps it readable on a dark picture (the title logo) and costs nothing on a light one. */
+.sheet::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 4px;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms linear;
+}
+
+.sheet::after {
+  z-index: 1;
+  transition: box-shadow 180ms linear;
+}
+
+@media (hover: hover) {
+  .sheet:hover::before {
+    opacity: 1;
+  }
+
+  .sheet:hover::after {
+    box-shadow:
+      inset 0 0 0 2px rgb(255 255 255 / 0.7),
+      inset 0 0 0 1px var(--hair);
+  }
+}
+
+.sheet:focus-visible::before {
+  opacity: 1;
+}
+
+.sheet:focus-visible::after {
+  box-shadow:
+    inset 0 0 0 2px rgb(255 255 255 / 0.7),
+    inset 0 0 0 1px var(--hair);
+}
+
+.pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pic[data-ready] {
+  opacity: 1;
+  transition: opacity 520ms var(--ease-out);
+}
+
+.pic[data-instant] {
+  transition: none;
+}
+
+.failed {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* The sheets come in as they reach the screen: the plate settles and the words follow. A section
+   that has not been seen yet is held a little low and clear. `data-reveal` is set by the room only
+   while its observer works, so a failure leaves every sheet showing. */
+.room[data-reveal="on"] .section:not([data-seen]) .stage {
+  opacity: 0;
+  transform: translate3d(0, 1.6rem, 0);
+}
+
+.room[data-reveal="on"] .section:not([data-seen]) .id,
+.room[data-reveal="on"] .section:not([data-seen]) .notes {
+  opacity: 0;
+  transform: translate3d(0, 0.9rem, 0);
+}
+
+.id {
+  transition:
+    opacity 700ms var(--ease-out) 140ms,
+    transform 800ms var(--ease-out) 140ms;
+}
+
+.notes {
+  transition:
+    opacity 700ms var(--ease-out) 260ms,
+    transform 800ms var(--ease-out) 260ms;
+}
+
+/* Nothing found ------------------------------------------------------------------------------- */
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  padding: 3rem var(--gutter) 6rem;
+  font-size: var(--step-0);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.plain {
+  padding: 0.55rem 1rem;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.plain:hover,
+.plain:focus-visible {
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+/* The index ----------------------------------------------------------------------------------- */
+.rail {
+  display: none;
+}
+
+.railList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.railItem {
+  display: block;
+}
+
+.railButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 2.6rem;
+  height: 1.12rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text, #10131a);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.railTick {
+  display: block;
+  width: 0.7rem;
+  height: 2px;
+  background: currentcolor;
+  opacity: 0.3;
+  transform-origin: right center;
+  transition:
+    transform 320ms var(--ease-out),
+    opacity 200ms linear;
+}
+
+.railButton[aria-current="true"] .railTick {
+  opacity: 1;
+  transform: scaleX(2.4);
+}
+
+.railButton:hover .railTick,
+.railButton:focus-visible .railTick {
+  opacity: 1;
+  transform: scaleX(1.7);
+}
+
+.railButton:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: -2px;
+}
+
+.railNum {
+  position: absolute;
+  right: 2.1rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transform: translate3d(5px, 0, 0);
+  transition:
+    opacity 200ms linear,
+    transform 320ms var(--ease-out);
+}
+
+.railButton[aria-current="true"] .railNum {
+  opacity: 0.7;
+  transform: none;
+}
+
+/* The name of a sheet shows beside its tick while the pointer or the focus is on it. */
+.railName {
+  position: absolute;
+  right: 3.4rem;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid var(--text, #10131a);
+  background: var(--bg, #fff);
+  font-family: var(--font-mono-stack);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(6px, 0, 0);
+  transition:
+    opacity 160ms linear,
+    transform 280ms var(--ease-out);
+}
+
+.railButton:hover .railName,
+.railButton:focus-visible .railName {
+  opacity: 1;
+  transform: none;
+}
+
+.railButton:hover .railNum,
+.railButton:focus-visible .railNum {
+  opacity: 0;
+}
+
+/* The top bar has no ground of its own, so a strip of the page's tone under it keeps the sheets and
+   their words from showing through its buttons as they scroll up. Static: it never moves or
+   repaints. */
+.room::before {
+  content: "";
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--nav-h) + 3rem);
+  background: linear-gradient(to bottom, var(--bg, #fff) 0, var(--bg, #fff) 62%, transparent 100%);
+  pointer-events: none;
+}
+
+/* The back button stands over the sheets as they scroll: it gets a plain ground. */
+.room [data-room-back] {
+  background: var(--bg, #fff);
+}
+
+/* Wide screens: the notes stand beside the sheet. ---------------------------------------------- */
+@media (min-width: 901px) {
+  .section {
+    grid-template-columns: var(--side) minmax(0, 1fr);
+    /* The name and the notes stand together at the foot of the plate, like the label of a print. The
+       top of the column stays clear of the back button that is fixed there. */
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "id stage"
+      "notes stage";
+    column-gap: var(--colgap);
+    row-gap: 1.2rem;
+  }
+
+  .id {
+    align-content: end;
+  }
+
+  .name {
+    font-size: var(--step-2);
+  }
+}
+
+@media (min-width: 1100px) and (min-height: 560px) {
+  .rail {
+    position: fixed;
+    z-index: calc(var(--z-nav) - 2);
+    right: clamp(0.2rem, 1vw, 1rem);
+    top: 50%;
+    display: block;
+    transform: translateY(-50%);
+  }
+}
+
+/* Narrow screens: the notes above and below the sheet, the filter in rows that slide. ---------- */
+@media (max-width: 900px) {
+  /* The plate hugs the sheet. */
+  .stage {
+    min-height: 0;
+  }
+
+  .name {
+    font-size: var(--step-1);
+  }
+
+  .notes {
+    align-content: start;
+  }
+
+  .note {
+    max-width: 46ch;
+  }
+}
+
+/* A wide sheet with writing on a phone held upright is small: the page says so. */
+@media (max-width: 700px) and (orientation: portrait) {
+  .hint {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .head {
+    padding-top: calc(var(--nav-h) + 3.6rem);
+  }
+
+  /* The filter wraps. A row that slides sideways (`overflow-x: auto`) with more chips than the screen
+     holds makes a phone's browser widen the page when it loads, and the zoom's viewer (a fixed layer)
+     is then laid out against the wide page. Smaller chips keep the rows short. */
+  .filters {
+    gap: 0.3rem;
+  }
+
+  .chip {
+    padding: 0.34rem 0.62rem;
+    font-size: 0.66rem;
+  }
+
+  .tools {
+    width: 100%;
+  }
+
+  .list {
+    gap: 3.2rem;
+  }
+}

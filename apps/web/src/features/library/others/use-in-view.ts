@@ -32,24 +32,3 @@ export function useSeen<T extends Element>(
   }, [margin]);
   return [ref, seen];
 }
-
-/** True while the element is on screen (it changes both ways), for something that plays only in view. */
-export function useOnScreen<T extends Element>(margin = "80px"): [RefObject<T | null>, boolean] {
-  const ref = useRef<T>(null);
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        setOn(entries[entries.length - 1]?.isIntersecting ?? false);
-      },
-      { rootMargin: margin },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-    };
-  }, [margin]);
-  return [ref, on];
-}

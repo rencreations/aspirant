@@ -1,0 +1,205 @@
+/*
+ * The zoom cursor. A dark disc with a hairline ring, four small ticks, a plus (or a minus) and a
+ * small accent diamond where the lines cross, as on the lantern's ring. Under it a chip says what a
+ * press does. Only transform and opacity move: the whole mark follows the pointer by the
+ * follower's transform (set by the frame loop), grows in on the mark's, and the vertical bar of the
+ * plus folds away to make the minus.
+ */
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  contain: strict;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .root {
+    display: none;
+  }
+}
+
+.follow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* The disc ---------------------------------------------------------------------------------- */
+.mark {
+  position: absolute;
+  top: -32px;
+  left: -32px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgb(6 8 13 / 0.86);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.35);
+  transition:
+    transform 520ms var(--ease-spring),
+    opacity 140ms linear;
+}
+
+.root:not([data-mode="none"]) .mark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* A press squeezes it. */
+.root[data-pressed="true"]:not([data-mode="none"]) .mark {
+  transform: scale(0.86);
+  transition-duration: 140ms, 140ms;
+  transition-timing-function: var(--ease-out), linear;
+}
+
+/* Ticks at the four sides, one step out from the ring; they slide in as the mark grows and
+   pull in a little on a press. */
+.tick {
+  position: absolute;
+  background: rgb(255 255 255 / 0.55);
+  opacity: 0;
+  transition:
+    transform 520ms var(--ease-spring),
+    opacity 200ms linear;
+}
+
+.tick[data-at="n"],
+.tick[data-at="s"] {
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 6px;
+}
+
+.tick[data-at="e"],
+.tick[data-at="w"] {
+  top: calc(50% - 0.5px);
+  width: 6px;
+  height: 1px;
+}
+
+.tick[data-at="n"] {
+  top: -11px;
+  transform: translateY(-6px);
+}
+
+.tick[data-at="s"] {
+  bottom: -11px;
+  transform: translateY(6px);
+}
+
+.tick[data-at="e"] {
+  right: -11px;
+  transform: translateX(6px);
+}
+
+.tick[data-at="w"] {
+  left: -11px;
+  transform: translateX(-6px);
+}
+
+.root:not([data-mode="none"]) .tick {
+  opacity: 1;
+  transform: none;
+}
+
+.root[data-pressed="true"]:not([data-mode="none"]) .tick[data-at="n"] {
+  transform: translateY(4px);
+}
+
+.root[data-pressed="true"]:not([data-mode="none"]) .tick[data-at="s"] {
+  transform: translateY(-4px);
+}
+
+.root[data-pressed="true"]:not([data-mode="none"]) .tick[data-at="e"] {
+  transform: translateX(-4px);
+}
+
+.root[data-pressed="true"]:not([data-mode="none"]) .tick[data-at="w"] {
+  transform: translateX(4px);
+}
+
+/* The plus and the minus --------------------------------------------------------------------- */
+.glyph {
+  position: absolute;
+  inset: 0;
+}
+
+.bar {
+  position: absolute;
+  background: #fff;
+}
+
+.bar[data-axis="x"] {
+  top: calc(50% - 0.75px);
+  left: calc(50% - 9px);
+  width: 18px;
+  height: 1.5px;
+}
+
+.bar[data-axis="y"] {
+  top: calc(50% - 9px);
+  left: calc(50% - 0.75px);
+  width: 1.5px;
+  height: 18px;
+  transition: transform 360ms var(--ease-out);
+}
+
+/* Zoom out: the vertical bar folds away and leaves the minus. */
+.root[data-mode="out"] .bar[data-axis="y"] {
+  transform: scaleY(0);
+}
+
+.dot {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% - 2px);
+  width: 4px;
+  height: 4px;
+  background: var(--accent, #fff);
+  transform: rotate(45deg);
+}
+
+/* What a press does ---------------------------------------------------------------------------- */
+.label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  padding: 0.34rem 0.6rem;
+  background: rgb(6 8 13 / 0.86);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 52px);
+  transition:
+    transform 520ms var(--ease-spring),
+    opacity 160ms linear;
+}
+
+.root:not([data-mode="none"]) .label {
+  opacity: 1;
+  transform: translate(-50%, 46px);
+}
+
+.word {
+  grid-area: 1 / 1;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 160ms linear;
+}
+
+.root[data-mode="in"] .word[data-for="in"],
+.root[data-mode="out"] .word[data-for="out"] {
+  opacity: 1;
+}

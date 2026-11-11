@@ -1,0 +1,416 @@
+/* The Cosplay rooms: the roster of the ten Aspirants and the page of one. They stand beside the flow
+   rooms (Scene, Game, Others, Fanart), so the head, the title and the chips use the same tokens
+   and the same measures as `core/flow/flow.module.css`. Only `transform` and `opacity` move. */
+
+.room {
+  position: relative;
+  min-height: 100svh;
+  color: var(--text, #10131a);
+  background: var(--bg, #fff);
+}
+
+/* The head: title, count, switcher, art. It scrolls away with the page. ------------------------ */
+.head {
+  display: grid;
+  gap: 1.1rem;
+  /* Clears the top bar and the back button that stands under it, fixed at the left. */
+  padding: calc(var(--nav-h) + 3.9rem) var(--gutter) 1.6rem;
+}
+
+.heading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-4);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+.lede {
+  margin: 0;
+  max-width: 34rem;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  opacity: 0.78;
+}
+
+/* The switcher ------------------------------------------------------------------------------- */
+.switcher {
+  min-width: 0;
+}
+
+.switchList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pick {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.42rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.66;
+  transition:
+    opacity var(--dur-fast, 160ms) linear,
+    background-color var(--dur-fast, 160ms) linear,
+    color var(--dur-fast, 160ms) linear;
+}
+
+.pick:hover,
+.pick:focus-visible {
+  opacity: 1;
+  border-color: currentcolor;
+}
+
+.pick[aria-current="page"] {
+  opacity: 1;
+  border-color: var(--text, #10131a);
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+.pick:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.num {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.num[data-zero] {
+  opacity: 0.4;
+}
+
+/* The art of a character's page ----------------------------------------------------------------
+   Her official splash art with one plain side: the line about the photos, or the calm line. */
+.feature {
+  /* The art grows with the screen, so the head fills most of the first screen and the row of photos
+     peeks in at its foot. */
+  --art-h: clamp(14rem, calc(100svh - clamp(5rem, 7.25vw, 9.4rem) - 24rem), 60svh);
+  display: grid;
+  align-items: end;
+  gap: 1.1rem 2.4rem;
+  margin-top: 0.5rem;
+  /* The art is as high as --art-h says and 16 to 10, and never wider than its column. */
+  grid-template-columns: minmax(0, min(100%, calc(var(--art-h) * 1.6)));
+}
+
+.feature[data-size="large"] {
+  --art-h: 60svh;
+}
+
+.figure {
+  margin: 0;
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.art {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #d8dbe3;
+}
+
+.artImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.cap {
+  font-family: var(--font-mono-stack);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.side {
+  display: grid;
+  gap: 0.9rem;
+  align-content: end;
+  max-width: 26rem;
+  padding-bottom: 1.6rem;
+}
+
+.side p {
+  margin: 0;
+}
+
+.people {
+  font-size: var(--step--1);
+  line-height: 1.55;
+  opacity: 0.82;
+}
+
+/* The calm line of an Aspirant with no photo: a plain sentence, not a headline. */
+.calm {
+  font-size: var(--step-1);
+  line-height: 1.25;
+}
+
+@media (min-width: 1000px) {
+  .art {
+    aspect-ratio: 16 / 10;
+  }
+
+  .feature {
+    /* The line stands beside the art, at its foot. */
+    grid-template-columns:
+      minmax(0, min(calc(100% - 18rem), calc(var(--art-h) * 1.6)))
+      minmax(0, 1fr);
+  }
+}
+
+/* The roster ---------------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  gap: 2rem var(--tile-gap);
+  margin: 0;
+  padding: 0.6rem var(--gutter) 1.5rem;
+  list-style: none;
+  --tile-gap: clamp(0.8rem, 0.4rem + 1.6vw, 1.5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1000px) {
+  .grid {
+    /* One pair to a column: Fanny over Layla, Ruby over Angela, and so on. */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+  }
+}
+
+.tile {
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tileArt {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #d8dbe3;
+}
+
+.tileImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 700ms var(--ease-out);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (hover: hover) {
+  .tile:hover .tileImg {
+    transform: scale(1.045);
+  }
+}
+
+.tile:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 4px;
+}
+
+.tile:focus-visible .tileImg {
+  transform: scale(1.045);
+}
+
+.meta {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-bottom: 0.45rem;
+}
+
+/* A hairline under the name that draws itself on hover and focus. */
+.meta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentcolor;
+  opacity: 0.9;
+  transform: scaleX(0.14);
+  transform-origin: left center;
+  transition: transform 500ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .tile:hover .meta::after {
+    transform: scaleX(1);
+  }
+}
+
+.tile:focus-visible .meta::after {
+  transform: scaleX(1);
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1, 1.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.digits {
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Under the name: up to four small photos, or the calm line. Both stand in a row as tall as one
+   thumbnail, so the tiles of a row are of one height. */
+.under {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+  min-height: 0;
+}
+
+.thumb {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: #d8dbe3;
+}
+
+.thumbImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.more {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid currentcolor;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.spacer {
+  grid-column: 1;
+  grid-row: 1;
+  aspect-ratio: 1;
+  visibility: hidden;
+}
+
+.none {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: center;
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.3;
+  opacity: 0.72;
+}
+
+/* Narrow screens ----------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .head {
+    padding-top: calc(var(--nav-h) + 3.6rem);
+  }
+
+  /* The row of the ten slides sideways and runs out to the edges of the screen. */
+  .switchList {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .switchList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .side {
+    padding-bottom: 0;
+  }
+
+  .name {
+    font-size: 1.05rem;
+  }
+}
+
+/* What the zoom says under a photo. */
+.caption {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.when {
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}

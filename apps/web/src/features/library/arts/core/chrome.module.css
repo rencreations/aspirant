@@ -1,0 +1,109 @@
+/* The common pieces of the Arts rooms: the sub-page buttons and the takedown line. Transform and
+   opacity only in motion. */
+.subnav {
+  position: fixed;
+  z-index: calc(var(--z-nav) - 1);
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 2rem);
+  color: #10131a;
+}
+
+.subnav[data-tone="light"] {
+  color: #fff;
+}
+
+.list {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface, #fff) 82%, transparent);
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.subnav[data-tone="light"] .list {
+  background: color-mix(in srgb, #0b0d12 70%, transparent);
+}
+
+.item {
+  display: block;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: inherit;
+  opacity: 0.62;
+  transition:
+    opacity var(--dur-base, 240ms) var(--ease-out),
+    transform var(--dur-base, 240ms) var(--ease-out);
+}
+
+.item:hover,
+.item:focus-visible {
+  opacity: 1;
+}
+
+.item[aria-current="page"] {
+  opacity: 1;
+  background: currentcolor;
+}
+
+.item[aria-current="page"] {
+  color: #fff;
+  background: #10131a;
+}
+
+.subnav[data-tone="light"] .item[aria-current="page"] {
+  color: #10131a;
+  background: #fff;
+}
+
+.item:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.takedown {
+  margin: 0;
+  max-width: 44rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+.takedown[data-variant="inline"] {
+  padding: 2.5rem var(--gutter, 1.25rem) 6rem;
+}
+
+.takedown[data-variant="fixed"] {
+  position: fixed;
+  z-index: calc(var(--z-nav) - 2);
+  left: var(--gutter, 1.25rem);
+  bottom: 1rem;
+  max-width: 22rem;
+  font-size: 0.68rem;
+}
+
+.takedown[data-tone="light"] {
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .takedown[data-variant="fixed"] {
+    display: none;
+  }
+}

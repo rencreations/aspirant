@@ -1,12 +1,16 @@
 import type { PairId, Slug } from "@/content/types";
 
-/** The ten collections, in shelf order (row one: the first five, row two: the last five). */
+/**
+ * The ten collections, in shelf order (row one: the first five, row two: the last five). Fanart is
+ * not one of them since 11 Nov 2026: it is a room of Arts (`/collection/arts/fanart`), and slot 05
+ * is the 3D Models room.
+ */
 export const COLLECTION_SLUGS = [
   "arts",
   "video",
   "music",
   "voicelines",
-  "fanart",
+  "models",
   "comic",
   "lore",
   "design",
@@ -113,6 +117,8 @@ export interface SearchEntry {
   t: string;
   /** Characters. */
   w: Slug[];
+  /** The room of an Arts picture (`splash`, `scene`, `fanart`, `cosplay` ...): where `?i=<id>` opens it. */
+  r?: string;
   /** Kind or tags, joined, lower case, for matching. */
   k: string;
   /** Small picture key for the result row, when the item has one. */

@@ -1,0 +1,176 @@
+/* The video row of Fanart. It stands in the head of the room, under the filter, and runs to the right
+   edge of the screen. Its cards have one height, a little under a picture row, and their own ratio. */
+
+.strip {
+  /* The head of the room is a grid: the row goes after the filter, whatever the order in the markup. */
+  order: 3;
+  /* A grid item that scrolls inside must be allowed to be narrower than its content. */
+  min-width: 0;
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.4rem;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 1rem;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.count {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+.arrows {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+  align-self: center;
+}
+
+/* A finger swipes the row: the arrows are for a pointer. */
+@media (hover: none) and (pointer: coarse) {
+  .arrows {
+    display: none;
+  }
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.66;
+  transition:
+    opacity var(--dur-fast, 160ms) linear,
+    background-color var(--dur-fast, 160ms) linear,
+    color var(--dur-fast, 160ms) linear;
+}
+
+.arrow:hover,
+.arrow:focus-visible {
+  opacity: 1;
+  background: var(--text, #10131a);
+  color: var(--bg, #fff);
+}
+
+.arrow:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* One row that scrolls sideways by itself. It bleeds to the right edge of the screen. */
+.track {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 1.65vw, 1.7rem);
+  margin: 0 calc(-1 * var(--gutter)) 0 0;
+  /* Room above for the card's lift on hover (the scroller clips). */
+  padding: 6px var(--gutter) 6px 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 0 var(--gutter);
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.entry {
+  /* The height of a card: well under the picture rows (they are 14.5 percent of the width), so a
+     whole row of pictures stands in view under the video row on a laptop. A room can set --card-h. */
+  --h: var(--card-h, clamp(120px, 10.4vw, 220px));
+  --w: calc(var(--h) * var(--ar));
+  --card-meta-display: none;
+  /* The play mark is smaller on a narrow card. */
+  --card-play-scale: min(1, calc(0.5 + var(--ar) * 0.5));
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  /* The text under a narrow card has its own room. */
+  width: max(var(--w), 12rem);
+}
+
+/* The player's thumbnail has its own width and a 16 by 9 ratio: here it has the video's. */
+.entry .card {
+  width: var(--w);
+  height: var(--h);
+  aspect-ratio: auto;
+}
+
+.meta {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* One line: the full title is in its tooltip, and in the player. */
+.title {
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marks {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* A video that the address names: a ring that fades out twice. Opacity only. */
+.entry[data-focus="true"]::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: calc(var(--w) + 8px);
+  height: calc(var(--h) + 8px);
+  border: 2px solid var(--text, #10131a);
+  pointer-events: none;
+  animation: ring 1.4s var(--ease-out, ease-out) 2 both;
+}
+
+@keyframes ring {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
