@@ -37,7 +37,8 @@ def walk_items(node: Any, depth: int = 0) -> Iterator[dict[str, Any]]:
                 yield from walk_items(v, depth + 1)
     elif isinstance(node, dict):
         for k, v in node.items():
-            if k in ("img", "video", "audio", "credit", "slides", "pages", "blocks", "scenes", "chapters"):
+            if k in ("img", "video", "audio", "credit", "slides", "pages", "blocks", "scenes", "chapters",
+                     "facets", "kinds", "characters", "comics", "pairs", "artists", "facts"):
                 continue
             if isinstance(v, (list, dict)):
                 yield from walk_items(v, depth + 1)
@@ -78,12 +79,21 @@ def keywords(item: dict[str, Any]) -> str:
     return text[:MAX_K].lower()
 
 
+# Arts has one data file per room. Official is the first six, Fanart and Cosplay are rooms of their own.
+OFFICIAL_ROOMS = ["splash", "scene", "comic", "game", "design", "others"]
+ARTS_ROOMS = OFFICIAL_ROOMS + ["fanart", "cosplay"]
+
+
 def main() -> None:
     counts: dict[str, int] = {}
     entries: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
-    # Video has two data files, one per room (Films and Others). Every other collection has one.
-    files = {"video": ["video-films", "video-others"]}
+    # Video has two data files, one per room (Films and Others), and Arts one per room. Every other
+    # collection has one.
+    files = {
+        "video": ["video-films", "video-others"],
+        "arts": [f"arts-{r}" for r in ARTS_ROOMS],
+    }
     rooms: dict[str, int] = {}
     for slug in common.SLUGS:
         datas: list[tuple[str, Any]] = []
@@ -96,7 +106,9 @@ def main() -> None:
         n = 0
         for name, data in datas:
             room_n = 0
-            for item in walk_items(data):
+            # An Arts file lists its pictures in `items`; its other lists are filters, not pictures.
+            source = data.get("items", []) if slug == "arts" else data
+            for item in walk_items(source):
                 iid = str(item["id"])
                 title = str(item.get("title") or item.get("name") or "")
                 if not title or (slug, iid) in seen:
@@ -111,6 +123,9 @@ def main() -> None:
                     "w": [c for c in item.get("chars", []) if isinstance(c, str)] if isinstance(item.get("chars"), list) else [],
                     "k": common.clean_text(keywords(item)),
                 }
+                if slug == "arts":
+                    # The room says where the picture opens (`/collection/arts/<room>?i=<id>`).
+                    e["r"] = name.removeprefix("arts-")
                 t = thumb_key(item)
                 if t:
                     e["i"] = t
@@ -119,23 +134,8 @@ def main() -> None:
                 # A collection with more than one room: count each room, as `video/films`.
                 rooms[f"{slug}/{name.removeprefix(slug + '-')}"] = room_n
         counts[slug] = n
-        # The scene stills are a second file of the Arts room: count them in the Arts total.
-    scenes = common.DATA_DIR / "arts-scenes.json"
-    scene_total = 0
-    if scenes.exists():
-        s = json.loads(scenes.read_text(encoding="utf-8"))
-        scene_total = int(s.get("totals", {}).get("scenes", 0))
-        for film in s.get("films", []):
-            entries.append(
-                {
-                    "id": film["id"],
-                    "c": "arts",
-                    "t": common.clean_text(f"{film.get('title', 'Film')}, scene stills"),
-                    "w": film.get("chars", []),
-                    "k": "scene stills film",
-                }
-            )
-        counts["arts"] = counts.get("arts", 0) + scene_total
+    if any(k.startswith("arts/") for k in rooms):
+        rooms["arts/official"] = sum(rooms.get(f"arts/{r}", 0) for r in OFFICIAL_ROOMS)
 
     index = {"v": 1, "counts": {s: counts.get(s, 0) for s in common.SLUGS}, "total": sum(counts.values())}
     if rooms:
@@ -143,6 +143,7 @@ def main() -> None:
     common.write_json("index", index)
     common.write_json("search", entries)
     print("counts:", index["counts"], "| search entries:", len(entries))
+    print("rooms:", rooms)
 
 
 if __name__ == "__main__":

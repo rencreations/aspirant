@@ -1,0 +1,2401 @@
+{
+ "room": "game",
+ "rules": [
+  "Source: media/_all, the game and in-game-animation folders, deduped by content hash (159 different pictures). Nothing else in the source tree is a picture of the game: the in-game-animation recordings under media/_others are videos, the emotes and skill icons are in the Others collection and the 3D model textures belong to the 3D Models room, and the gameplay clips and skin showcase thumbnails are posters of videos.",
+  "Size floor: a picture whose long side is under 480 px (the row thumbnail) is dropped, because nothing is upscaled and it would look soft in a row.",
+  "A picture shows a player's file name burned in at the bottom (idle.mkv, face.mkv, foot.mkv, zoom.mkv, horizontal.mkv, vertical.mkv). The bottom 112 px (the text sits in rows 1048 to 1098 of 1152) are cut away. A black bar of 16 px at the bottom of one drone picture and the transparent margin of 14 px around the round icon are cut away too. No other picture is cropped.",
+  "chars lists the Aspirants that can be seen: a face, a body, a gloved hand or a large chibi shown on a hologram. A face icon in a ranking board, a small badge in a HUD, Tetra alone and a card held in a hand do not count. Where a picture sits in the folders of an Aspirant and nothing contradicts it, the folders decide. places always lists every folder the picture was found in and is never changed.",
+  "A facet counts a picture when the facet id is in its places or in its chars. Character slugs and folder slugs are the same ids.",
+  "Frames of one animation that differ in pose, framing or effect are kept. The closest pair (Guinevere, 204011 and 204016) is two poses of the same moment."
+ ],
+ "credit": {
+  "by": "Mobile Legends: Bang Bang",
+  "animation": "A still from the game's in-game animation, supplied by the site's owner.",
+  "interface": "A game interface image, supplied by the site's owner."
+ },
+ "kept": {
+  "448da244561bd1d9ec8d324142fdb2c2c2bfe835": {
+   "src": "_all/angela/in-game-animation/angela-curious-looking-down-with-tetra.png",
+   "slug": "angela-and-tetra-on-purple",
+   "title": "Angela and Tetra on purple",
+   "kind": "animation",
+   "alt": "Angela raises a gloved hand to her mouth while Tetra, her small companion, peeks beside her on a plain purple background.",
+   "tags": [
+    "animation",
+    "close-up",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "636cf18919e8e3c50510a3bfb34b4992e0dfb121": {
+   "src": "_all/angela/in-game-animation/angela-holding-tetra-in-selrick-academy.png",
+   "slug": "angela-on-the-rooftop",
+   "title": "Angela on the rooftop plaza",
+   "kind": "animation",
+   "alt": "Angela stands on a rooftop plaza at sunset with a city behind her, and Tetra floats at the upper right.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "2e6e350b26be3e4fc873c30d7b9020a01730e673": {
+   "src": "_all/angela/in-game-animation/angela-looking-at-tetra.png",
+   "slug": "angela-looks-at-tetra",
+   "title": "Angela looks at Tetra",
+   "kind": "animation",
+   "alt": "In a close shot Angela looks at Tetra, her small companion, against a plain purple background.",
+   "tags": [
+    "animation",
+    "close-up",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "32892551b623fbd3eef59509eda2b29078755cf1": {
+   "src": "_all/angela/in-game-animation/angela-looking-down.png",
+   "slug": "angela-looks-down-between-wings",
+   "title": "Angela looks down between wings",
+   "kind": "animation",
+   "alt": "Seen from below, Angela holds a dark piece of gear up to her face between two cyan and red wing shapes.",
+   "tags": [
+    "animation",
+    "low angle",
+    "drone"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "75204dd70038246200101ca055330ff5e8880b9c": {
+   "src": "_all/angela/in-game-animation/angela-loving-tetra.png",
+   "slug": "angela-hugs-tetra",
+   "title": "Angela hugs Tetra",
+   "kind": "animation",
+   "alt": "Angela holds Tetra close on the rooftop plaza while two pink hearts float beside them.",
+   "tags": [
+    "animation",
+    "tetra",
+    "hearts"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "5bcd8c9ee8f5e8a2cb3f99ace8c00993018d8a66": {
+   "src": "_all/angela/in-game-animation/angela-posing-with-tetra-2.png",
+   "slug": "angela-and-tetra-strike-a-pose",
+   "title": "Angela and Tetra strike a pose",
+   "kind": "animation",
+   "alt": "Tetra spins inside a yellow ring while Angela stands with her arms out on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "pose",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "4bbc73ab2be40c0d97205ae6d9ce56dff4e4acfe": {
+   "src": "_all/angela/in-game-animation/angela-posing-with-tetra.png",
+   "slug": "angela-and-tetra-in-pink",
+   "title": "Angela and Tetra in pink",
+   "kind": "animation",
+   "alt": "Angela and Tetra pose together against a pink background with soft circles of light.",
+   "tags": [
+    "animation",
+    "pose",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "23b9c7e7cf16d5c29ffd5e4ef65536ae4f10b7d0": {
+   "src": "_all/angela/in-game-animation/angela-protecting-drone-and-tetra.png",
+   "slug": "angela-in-a-pink-cat-shape",
+   "title": "Angela in a pink cat shape",
+   "kind": "animation",
+   "alt": "Inside a pink cat-ear outline, Angela holds a black drone in her arms with her eyes closed, with green speed lines behind.",
+   "tags": [
+    "animation",
+    "drone",
+    "effect"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "1d315b519429d16ab8e616fe35ab98c5ce2bfd32": {
+   "src": "_all/angela/in-game-animation/angela-tetra-and-drone.png",
+   "slug": "angela-a-drone-and-tetra",
+   "title": "Angela, a drone and Tetra",
+   "kind": "animation",
+   "alt": "In a close shot Angela looks at a black drone in the foreground while Tetra floats above them.",
+   "tags": [
+    "animation",
+    "drone",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "95dc40f3ee830e7c406c149798e3504c36d62d36": {
+   "src": "_all/angela/in-game-animation/tetra-flying-in-front-of-angela.png",
+   "slug": "angela-smiles-as-tetra-flies",
+   "title": "Angela smiles as Tetra flies",
+   "kind": "animation",
+   "alt": "Angela smiles with a hand on her chest while Tetra flies beside her through a red swirl and sparkles.",
+   "tags": [
+    "animation",
+    "tetra",
+    "effect"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "110f7cd222a977850e635cebfd878f69bb9019d5": {
+   "src": "_all/angela/in-game-animation/tetra-posing.png",
+   "slug": "tetra-poses-in-front",
+   "title": "Tetra poses in front",
+   "kind": "animation",
+   "alt": "Tetra poses large at the front of the frame while Angela stands small behind her on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "tetra",
+    "rooftop"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "3b2b4f1d06a695268c82ba7cdff72dff487ec0a1": {
+   "src": "_all/change/game/change-finding-ender-weakness.png",
+   "slug": "change-reads-a-target-screen",
+   "title": "Chang'e reads a target screen",
+   "kind": "animation",
+   "alt": "Chang'e, in round glasses, sits at a glowing blue panel with a crosshair while Mr. Bunny floats beside her.",
+   "tags": [
+    "animation",
+    "hologram",
+    "mr bunny"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "5acf9479ec5e9ca1efac1eeae97698dcf6711688": {
+   "src": "_all/change/game/change-finds-ender-weakness-in-battle.png",
+   "slug": "change-and-mr-bunny-scan",
+   "title": "Chang'e and Mr. Bunny scan",
+   "kind": "animation",
+   "alt": "Chang'e sits close to the camera with Mr. Bunny at her side, in front of a blue hologram with a crosshair.",
+   "tags": [
+    "animation",
+    "hologram",
+    "mr bunny"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "6cb181df74fdb7d160ccfcbde91322236ed58396": {
+   "src": "_all/change/game/change-fly-to-the-ender.png",
+   "slug": "change-flies-toward-the-ruins",
+   "title": "Chang'e flies toward the ruins",
+   "kind": "animation",
+   "alt": "Chang'e, a small figure on a crescent craft, flies toward wrecked machines under a stormy sunset sky.",
+   "tags": [
+    "animation",
+    "flying",
+    "ruins"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "428667fc06492c15cc28a55d1a808281b7396324": {
+   "src": "_all/change/game/change-game-statue.png",
+   "slug": "change-portrait-icon",
+   "title": "Chang'e portrait icon",
+   "kind": "interface",
+   "alt": "A round portrait of Chang'e with pink hair and green eyes, used as a game icon.",
+   "tags": [
+    "interface",
+    "icon",
+    "portrait"
+   ],
+   "chars": [
+    "change"
+   ],
+   "crop": {
+    "top": 14,
+    "bottom": 14,
+    "left": 14,
+    "right": 14
+   }
+  },
+  "3a024ffb01c9129fb980de669d423e79bfd9a6ce": {
+   "src": "_all/change/game/change-getting-out-of-the-battlefield-with-big-blast-behind-her.png",
+   "slug": "change-leaves-a-big-blast",
+   "title": "Chang'e leaves a big blast",
+   "kind": "animation",
+   "alt": "Chang'e, small on a crescent craft, speeds away from a huge orange explosion.",
+   "tags": [
+    "animation",
+    "explosion",
+    "flying"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "88086b01c015164304fdcbf62d3bb6765393a01c": {
+   "src": "_all/change/game/change-in-crescent-moon-with-mr-bunny.png",
+   "slug": "change-on-her-crescent-craft",
+   "title": "Chang'e on her crescent craft",
+   "kind": "animation",
+   "alt": "Chang'e sits on a crescent-shaped craft on the rooftop plaza with Mr. Bunny floating beside her.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "mr bunny"
+   ],
+   "chars": [
+    "change"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "9c3d2ee1c4fa796b44211c5f985fa1aeda2accd7": {
+   "src": "_all/change/game/change-scolded-by-lesley-in-battlefield.png",
+   "slug": "lesleys-hologram-scolds-change",
+   "title": "Lesley's hologram scolds Chang'e",
+   "kind": "animation",
+   "alt": "A startled Chang'e fills the right of the frame while a scan-lined hologram of an angry Lesley with a rifle glows at the left.",
+   "tags": [
+    "animation",
+    "hologram",
+    "close-up"
+   ],
+   "chars": [
+    "change",
+    "lesley"
+   ]
+  },
+  "b8435a3d9749ca2e66f9bf2eeccbe6adf2381dae": {
+   "src": "_all/change/game/change-seeing-selrick-student-leaderboard-while-laughing-with-mr-bunny.png",
+   "slug": "change-laughs-at-a-ranking-board",
+   "title": "Chang'e laughs at a ranking board",
+   "kind": "animation",
+   "alt": "Chang'e laughs on her crescent craft next to Mr. Bunny, with a blue board ranking four players at the left.",
+   "tags": [
+    "animation",
+    "leaderboard",
+    "mr bunny"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "e581a8b913b8f62ee2df3c054c68eb819b00744e": {
+   "src": "_all/change/game/change-seeing-selrick-student-leaderboard.png",
+   "slug": "change-reads-the-ranking-board",
+   "title": "Chang'e reads the ranking board",
+   "kind": "animation",
+   "alt": "Chang'e sits on her crescent craft with Mr. Bunny in front of a blue board that ranks four players by score.",
+   "tags": [
+    "animation",
+    "leaderboard",
+    "mr bunny"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "1b7430244fc1d00b37b47e7ef9093e5559fecff0": {
+   "src": "_all/change/game/change-shocked-by-ender-behind-her.png",
+   "slug": "change-looks-shocked",
+   "title": "Chang'e looks shocked",
+   "kind": "animation",
+   "alt": "A close shot of Chang'e with wide eyes and her mouth open, with a blue hologram of gear behind her.",
+   "tags": [
+    "animation",
+    "close-up",
+    "hologram"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "e6df30986233580139362a18c008b0f376721e5c": {
+   "src": "_all/change/game/change-shoots-rocket-to-ender.png",
+   "slug": "change-fires-rockets",
+   "title": "Chang'e fires rockets in the sky",
+   "kind": "animation",
+   "alt": "Rockets and light trails cross a sunset sky as Chang'e on her craft fires at targets marked with rings.",
+   "tags": [
+    "animation",
+    "battle",
+    "rockets"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "fab4475049bdcc0e05fb0e9dc6915f17de080a22": {
+   "src": "_all/change/game/mr-bunny-cracking-screen.png",
+   "slug": "mr-bunnys-screen-cracks",
+   "title": "Mr. Bunny's screen cracks",
+   "kind": "animation",
+   "alt": "Mr. Bunny's screen face cracks into white lines in front of Chang'e on her crescent craft on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "mr bunny",
+    "effect"
+   ],
+   "chars": [
+    "change"
+   ]
+  },
+  "d71835fe295b713c6cf42bb797249b530dc892df": {
+   "src": "_all/drones/game/back-2.png",
+   "slug": "drone-with-wings-spread",
+   "title": "A drone with wings spread",
+   "kind": "animation",
+   "alt": "A black drone with a cyan ring on its back spreads its wings in front of the camera, with a figure in white and pink above it.",
+   "tags": [
+    "animation",
+    "drone",
+    "close-up"
+   ],
+   "chars": [
+    "angela"
+   ],
+   "crop": {
+    "bottom": 16
+   }
+  },
+  "0689617e94254a968f5c73148337cadad8e95d23": {
+   "src": "_all/drones/game/fall-on-ground.png",
+   "slug": "drone-on-cracked-ground",
+   "title": "A drone on cracked ground",
+   "kind": "animation",
+   "alt": "A black drone with two cyan eyes lies on cracked ground with sparks around it.",
+   "tags": [
+    "animation",
+    "drone"
+   ],
+   "chars": []
+  },
+  "6dd6d41604ad97f999d1366025d21270d779ac14": {
+   "src": "_all/drones/game/flying.png",
+   "slug": "drone-with-tetra-behind",
+   "title": "A drone with Tetra behind",
+   "kind": "animation",
+   "alt": "A black drone with a cyan eye fills the frame while Tetra floats in the top right corner.",
+   "tags": [
+    "animation",
+    "drone",
+    "tetra"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "7d60919cc9fc849af250584a9843ea71bcaeda3b": {
+   "src": "_all/drones/game/in-ground.png",
+   "slug": "a-hand-on-the-drone",
+   "title": "A hand on the drone",
+   "kind": "animation",
+   "alt": "A gloved hand rests on a black drone with two cyan eyes, with sparkles and smoke around it.",
+   "tags": [
+    "animation",
+    "drone"
+   ],
+   "chars": [
+    "angela"
+   ]
+  },
+  "f5621b1a9662297e32fabc7219c3e40fe1a62822": {
+   "src": "_all/ender/game/ender-preparing-to-attack.png",
+   "slug": "an-ender-readies-an-attack",
+   "title": "An Ender readies an attack",
+   "kind": "animation",
+   "alt": "An armored Ender with a pointed head raises its clawed arm against a red background.",
+   "tags": [
+    "animation",
+    "ender"
+   ],
+   "chars": []
+  },
+  "2403913d7234505eb5922597321d8f634dbd4d7e": {
+   "src": "_all/fanny/game/flying-while-taking-out-her-sword.png",
+   "slug": "fanny-draws-her-blade-in-flight",
+   "title": "Fanny draws her blade in flight",
+   "kind": "animation",
+   "alt": "Fanny flies across a purple background of speed streaks, drawing a long blade, with a mechanical frame around her.",
+   "tags": [
+    "animation",
+    "blade",
+    "flying"
+   ],
+   "chars": [
+    "fanny"
+   ]
+  },
+  "cc460e4a129611ec89517ab5632883c8a50f18ea": {
+   "src": "_all/fanny/game/holding-sword-in-her-shoulder.png",
+   "slug": "fanny-holds-her-blade-up",
+   "title": "Fanny holds her blade up",
+   "kind": "animation",
+   "alt": "In a close shot Fanny holds a glowing cyan blade across her shoulder against purple speed streaks.",
+   "tags": [
+    "animation",
+    "blade",
+    "close-up"
+   ],
+   "chars": [
+    "fanny"
+   ]
+  },
+  "24151222d0228801d928f746a6bc52eaa9740f62": {
+   "src": "_all/fanny/game/idle.png",
+   "slug": "fanny-stands-ready",
+   "title": "Fanny stands ready",
+   "kind": "animation",
+   "alt": "Fanny stands on the rooftop plaza with a weapon in each hand and a metal frame around her legs.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "pose"
+   ],
+   "chars": [
+    "fanny"
+   ]
+  },
+  "40a6b11496196f0e35749335a11e9592127708c2": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 203921.png",
+   "slug": "guinevere-above-the-clouds",
+   "title": "Guinevere above the clouds",
+   "kind": "animation",
+   "alt": "A small Guinevere floats in the sky above a city of tall towers and clouds.",
+   "tags": [
+    "animation",
+    "city",
+    "wide shot"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "919d1a76d28de6e1c2fbbb90dc777b70d5640076": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 203957.png",
+   "slug": "guinevere-covers-her-mouth",
+   "title": "Guinevere covers her mouth",
+   "kind": "animation",
+   "alt": "Guinevere covers her mouth with a black glove, her eyes closed, against a violet sky and tall towers.",
+   "tags": [
+    "animation",
+    "pose",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "c1c3a54f3c3d3480376fc3c0ceefd59067b75757": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204003.png",
+   "slug": "guinevere-with-a-drone",
+   "title": "Guinevere with a drone",
+   "kind": "animation",
+   "alt": "Guinevere covers her mouth with a black glove and looks at the camera while a cat-eared drone floats beside her.",
+   "tags": [
+    "animation",
+    "drone",
+    "pose"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "70999c1d72503298d5a677bfcdaec0a6eb5ec3c2": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204011.png",
+   "slug": "guinevere-raises-a-fist",
+   "title": "Guinevere raises a fist",
+   "kind": "animation",
+   "alt": "Guinevere stands with her eyes closed and one gloved fist raised against a blue sky and tall towers.",
+   "tags": [
+    "animation",
+    "pose",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "e10a2ba73b3266c0e958de4e51761990feeaabd7": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204016.png",
+   "slug": "guinevere-smiles-at-the-camera",
+   "title": "Guinevere smiles at the camera",
+   "kind": "animation",
+   "alt": "Guinevere smiles with a gloved hand at her shoulder, with a small spark near her, against a blue sky and tall towers.",
+   "tags": [
+    "animation",
+    "pose",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "ae9f31486ef43839cbb133341f18e768241b3311": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204040.png",
+   "slug": "a-drone-serves-guinevere-tea",
+   "title": "A drone serves Guinevere tea",
+   "kind": "animation",
+   "alt": "Guinevere sits with her eyes closed between two drones, one of them carrying a cup on a saucer.",
+   "tags": [
+    "animation",
+    "drone",
+    "cup"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "38fb5d57171ad0b657b06d577843332b399e2fe5": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204046.png",
+   "slug": "guinevere-eyes-the-tea",
+   "title": "Guinevere eyes the tea",
+   "kind": "animation",
+   "alt": "Guinevere sits and looks at a drone that carries a cup on a saucer, with another drone at the left.",
+   "tags": [
+    "animation",
+    "drone",
+    "cup"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "2c251a1e53b87705f522fdb4486d8128cd7718bf": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204113.png",
+   "slug": "guinevere-grits-her-teeth",
+   "title": "Guinevere grits her teeth",
+   "kind": "animation",
+   "alt": "Guinevere grits her teeth with one arm thrown out toward a drone and a white saucer.",
+   "tags": [
+    "animation",
+    "drone",
+    "close-up"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "737badff295b76f37116a119e47a6984d2002d56": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204120.png",
+   "slug": "guinevere-lunges-with-a-sword",
+   "title": "Guinevere lunges with a sword",
+   "kind": "animation",
+   "alt": "Guinevere lunges with a long sword as pink and gold blades spread behind her, with a drone at the lower left.",
+   "tags": [
+    "animation",
+    "sword",
+    "battle",
+    "drone"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "14c07782e70caf85f247dba936d54de5900eb83b": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204124.png",
+   "slug": "guinevere-is-startled",
+   "title": "Guinevere is startled",
+   "kind": "animation",
+   "alt": "Guinevere looks back with her mouth open and an exclamation mark beside her head, in front of tall towers and clouds.",
+   "tags": [
+    "animation",
+    "close-up",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "7adfdf138e5c0a9a6ac7bb6a893d382ae0a54651": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204130.png",
+   "slug": "guinevere-blushes",
+   "title": "Guinevere blushes",
+   "kind": "animation",
+   "alt": "Guinevere raises a black glove to her ear and smiles with a flushed face, in front of tall towers and clouds.",
+   "tags": [
+    "animation",
+    "close-up",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "1549b6e334d09aa260c1a7c3f8445e9034390c47": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204158.png",
+   "slug": "guinevere-holds-up-a-donut",
+   "title": "Guinevere holds up a donut",
+   "kind": "animation",
+   "alt": "Guinevere holds a pink glazed donut up in one hand between two spinning cat-eared drones.",
+   "tags": [
+    "animation",
+    "drone",
+    "donut"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "2c5f64a616c763e80209b4dfb2adabc182282843": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204227.png",
+   "slug": "guinevere-swings-an-arm-out",
+   "title": "Guinevere swings an arm out",
+   "kind": "animation",
+   "alt": "Guinevere swings one arm out among floating drones against a pink and violet sky.",
+   "tags": [
+    "animation",
+    "drone",
+    "pose"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "d046d44b41ffa58db2930beb863741813179e4cd": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204237.png",
+   "slug": "guinevere-with-a-small-donut",
+   "title": "Guinevere with a small donut",
+   "kind": "animation",
+   "alt": "A small Guinevere stands in the middle of a pink and violet sky, one hand at her ear and a ring-shaped donut in the other.",
+   "tags": [
+    "animation",
+    "donut",
+    "wide shot"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "b3507eacf3c4a65d066a694a48f0ff923b410f86": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204257.png",
+   "slug": "guinevere-in-red-evening-light",
+   "title": "Guinevere in red evening light",
+   "kind": "animation",
+   "alt": "Guinevere stands with a gloved hand at her chest in front of towers lit red by evening light.",
+   "tags": [
+    "animation",
+    "city",
+    "pose"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "8c45e768cee0b9fecc2e78e1c5d8af66c2637756": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204302.png",
+   "slug": "guinevere-between-two-drones",
+   "title": "Guinevere between two drones",
+   "kind": "animation",
+   "alt": "Guinevere stands in front of tall towers with a drone at each side, one with an angry face.",
+   "tags": [
+    "animation",
+    "drone",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "2a495c70fe327283861097f68ef9e0d469cf18f0": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204317.png",
+   "slug": "guinevere-flies-through-clouds",
+   "title": "Guinevere flies through clouds",
+   "kind": "animation",
+   "alt": "A small Guinevere flies through clouds and speed lines with two drones near her.",
+   "tags": [
+    "animation",
+    "flying",
+    "drone",
+    "wide shot"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "28ee1b7439827da34842f862cf282cb00695d05d": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204337.png",
+   "slug": "drones-loom-over-guinevere",
+   "title": "Drones loom over Guinevere",
+   "kind": "animation",
+   "alt": "Two large drones fill the frame, one with spiral eyes, while a small Guinevere stands between them above a city.",
+   "tags": [
+    "animation",
+    "drone",
+    "city"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "36e5ec1b38caf1a6d378c5af2c507d2907abfe96": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204359.png",
+   "slug": "guinevere-in-a-burning-city",
+   "title": "Guinevere in a burning city",
+   "kind": "animation",
+   "alt": "Guinevere stands in a ruined city on fire under a dark sky.",
+   "tags": [
+    "animation",
+    "ruins",
+    "fire"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "a7ecda7af9635a16438beb511f1b17c10d3ece65": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204415.png",
+   "slug": "guinevere-in-a-burst-of-light",
+   "title": "Guinevere in a burst of light",
+   "kind": "animation",
+   "alt": "Guinevere, in a pale outfit, stands between two big drones in a burst of violet light, with a blue speech bubble over one drone.",
+   "tags": [
+    "animation",
+    "drone",
+    "effect"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "90cbc8702e9d8e2af489143763004b67d1c5d2dd": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204433.png",
+   "slug": "light-trails-across-the-clouds",
+   "title": "Light trails across the clouds",
+   "kind": "animation",
+   "alt": "Trails of orange and green light cut through a blue sky of clouds, with two small shapes far ahead.",
+   "tags": [
+    "animation",
+    "sky",
+    "effect"
+   ],
+   "chars": []
+  },
+  "b539e0da7b35d21efc1a2ad794a9156084da04f8": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204438.png",
+   "slug": "guinevere-dives-between-fists",
+   "title": "Guinevere dives between fists",
+   "kind": "animation",
+   "alt": "Seen from above, an angry Guinevere dives through the sky between glowing orange fists.",
+   "tags": [
+    "animation",
+    "flying",
+    "drone"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "eb34c50aa18ac001401a8f66c8ac67ebc1ae3a93": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204443.png",
+   "slug": "a-hand-reaches-into-space",
+   "title": "A hand reaches into space",
+   "kind": "animation",
+   "alt": "A black-gloved hand reaches out into a starry blue and violet space, with a faint figure far behind it.",
+   "tags": [
+    "animation",
+    "space",
+    "hand"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "1f79a71e93a0901084ddf41b8dbc2373b0cca591": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204511.png",
+   "slug": "guinevere-reaches-out-in-space",
+   "title": "Guinevere reaches out in space",
+   "kind": "animation",
+   "alt": "Guinevere reaches toward the camera in a starry violet space, with her hair and a rainbow light swirling around her.",
+   "tags": [
+    "animation",
+    "space",
+    "effect"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "e37799b6f917e6b76ea834f8c98560fff65d1753": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204518.png",
+   "slug": "guinevere-and-a-drone-speed-by",
+   "title": "Guinevere and a drone speed by",
+   "kind": "animation",
+   "alt": "Guinevere flies at speed beside a cat-eared drone, with bright pink blades behind her, on an orange background.",
+   "tags": [
+    "animation",
+    "flying",
+    "drone"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "e57488ce87e3d87930c0475f2c91bba1c5cb4095": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204522.png",
+   "slug": "guinevere-races-across-orange",
+   "title": "Guinevere races across orange",
+   "kind": "animation",
+   "alt": "A cat-eared drone and Guinevere race across an orange sky with pink blades trailing behind her.",
+   "tags": [
+    "animation",
+    "flying",
+    "drone"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "4bec4def0b4b3fe8b8a112c1640b1a6e282b24aa": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204530.png",
+   "slug": "an-explosion-fills-the-frame",
+   "title": "An explosion fills the frame",
+   "kind": "animation",
+   "alt": "A large explosion fills the frame, with Guinevere small at the upper left.",
+   "tags": [
+    "animation",
+    "explosion"
+   ],
+   "chars": [
+    "guinevere"
+   ]
+  },
+  "59f494d74288cfbb53243d54836692334cba618f": {
+   "src": "_all/guinevere/game/Screenshot 2026-11-08 204539.png",
+   "slug": "guinevere-and-vexana-in-profile",
+   "title": "Guinevere and Vexana in profile",
+   "kind": "animation",
+   "alt": "Guinevere and Vexana fly in profile, one behind the other, through a burst of orange and pink light.",
+   "tags": [
+    "animation",
+    "flying",
+    "profile"
+   ],
+   "chars": [
+    "guinevere",
+    "vexana"
+   ]
+  },
+  "9e55684144e32f91c95b33ae988df44a5a108651": {
+   "src": "_all/vexana/chibi/Screenshot 2026-11-08 152502.png",
+   "slug": "guinevere-and-vexana-on-stands",
+   "title": "Guinevere and Vexana on stands",
+   "kind": "interface",
+   "alt": "Guinevere and Vexana stand on two round stands against a purple screen, with part of the game logo cut off at the top edge.",
+   "tags": [
+    "interface",
+    "display",
+    "pair"
+   ],
+   "chars": [
+    "guinevere",
+    "vexana"
+   ]
+  },
+  "5b7715942dd5475da82446c5f242f63c1fc09a0b": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204550.png",
+   "slug": "layla-hand-on-her-hip",
+   "title": "Layla, hand on her hip",
+   "kind": "animation",
+   "alt": "Layla stands with a hand on her hip beside a huge white sword on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "weapon"
+   ],
+   "chars": [
+    "layla"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "1e4274186941dc77feacc90a52850d121ef5cbf0": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204600.png",
+   "slug": "layla-frowns-in-speed-lines",
+   "title": "Layla frowns in speed lines",
+   "kind": "animation",
+   "alt": "Layla frowns and holds up a black glove beside a huge white weapon, framed by black speed lines.",
+   "tags": [
+    "animation",
+    "weapon",
+    "close-up"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "5a93a6174eaf0080064c5e485e3f62a241ec9ccf": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204616.png",
+   "slug": "layla-on-the-plaza",
+   "title": "Layla on the plaza",
+   "kind": "animation",
+   "alt": "Layla stands in the middle of the rooftop plaza with a large weapon at her feet and her long red twin tails trailing.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "weapon"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "3831cfc1dc31c2951e03832a93ad381281e972d2": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204628.png",
+   "slug": "layla-beside-her-big-sword",
+   "title": "Layla beside her big sword",
+   "kind": "animation",
+   "alt": "Layla stands with a hand at her side next to a huge white sword on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "weapon"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "c35a1de89ed3505937bca78d53d0614cb465727b": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204650.png",
+   "slug": "layla-blows-a-bubble",
+   "title": "Layla blows a bubble",
+   "kind": "animation",
+   "alt": "Layla leans back on a bench and blows a blue bubble.",
+   "tags": [
+    "animation",
+    "bench",
+    "bubble"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "44bd1c042fa44c12c7fafe4d02a3a0953cbd9be5": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204656.png",
+   "slug": "layla-by-the-ranking-board",
+   "title": "Layla by the ranking board",
+   "kind": "animation",
+   "alt": "Layla sits on a bench beside a blue board ranking four players by score, with her red hair trailing across the frame.",
+   "tags": [
+    "animation",
+    "leaderboard",
+    "bench"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "446acea9209357558888ba23bdd1871737f15432": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204707.png",
+   "slug": "layla-frowns-up-close",
+   "title": "Layla frowns up close",
+   "kind": "animation",
+   "alt": "A close shot of Layla's angry face, with her red hair framing the screen.",
+   "tags": [
+    "animation",
+    "close-up"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "f385329e7f0ae47ddc7a8f37978ca4334c66ea7e": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204713.png",
+   "slug": "layla-looks-calm",
+   "title": "Layla looks calm",
+   "kind": "animation",
+   "alt": "A close shot of Layla's calm face, with a white weapon at the left of the frame.",
+   "tags": [
+    "animation",
+    "close-up",
+    "weapon"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "ba78ec2c7e626d8088ace89ee8ca13947bfc9f36": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204721.png",
+   "slug": "layla-behind-her-cannon",
+   "title": "Layla behind her cannon",
+   "kind": "animation",
+   "alt": "Layla looks out from behind the huge barrel of her white cannon.",
+   "tags": [
+    "animation",
+    "weapon",
+    "close-up"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "a3f4e57be7fd9bdfe4dcb2a21f3676cabf52ad33": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204734.png",
+   "slug": "layla-charges-a-shot",
+   "title": "Layla charges a shot",
+   "kind": "animation",
+   "alt": "A bright cyan orb gathers at the muzzle of Layla's cannon while she watches from the right.",
+   "tags": [
+    "animation",
+    "weapon",
+    "effect"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "bc2cc52382d19a0881d5e53b0f0130582bb37ea8": {
+   "src": "_all/layla/game/Screenshot 2026-11-08 204744.png",
+   "slug": "layla-a-drone-and-the-board",
+   "title": "Layla, a drone and the board",
+   "kind": "animation",
+   "alt": "Layla stands with a white sword while a drone fires a cyan light beside her, in front of a blue ranking board.",
+   "tags": [
+    "animation",
+    "drone",
+    "leaderboard"
+   ],
+   "chars": [
+    "layla"
+   ]
+  },
+  "4ab9eacd4d9b75955343a1e8d904cfafc195f804": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204753.png",
+   "slug": "lesley-holds-her-long-rifle",
+   "title": "Lesley holds her long rifle",
+   "kind": "animation",
+   "alt": "Lesley stands on the rooftop plaza holding a long orange and cyan rifle across her body.",
+   "tags": [
+    "animation",
+    "rifle",
+    "rooftop"
+   ],
+   "chars": [
+    "lesley"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "a647568590fda8ec4364ec50eae5aa8da6b34144": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204807.png",
+   "slug": "lesley-rests-on-her-rifle",
+   "title": "Lesley rests on her rifle",
+   "kind": "animation",
+   "alt": "Seen from a low angle, Lesley folds her arms over her long rifle on the rooftop plaza.",
+   "tags": [
+    "animation",
+    "rifle",
+    "low angle"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "0e247f9c88b7ab23dcec8a4ee8e257cdcd14988c": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204815.png",
+   "slug": "lesley-points-on-purple",
+   "title": "Lesley points on purple",
+   "kind": "animation",
+   "alt": "Lesley points with a raised knee and her rifle held upright, against a plain purple background.",
+   "tags": [
+    "animation",
+    "rifle",
+    "pose"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "79b27f5a8ded3f305f8baaff9c96a4cc357fd5f5": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204849.png",
+   "slug": "lesley-aims-seen-from-below",
+   "title": "Lesley aims, seen from below",
+   "kind": "animation",
+   "alt": "Seen from below, Lesley aims her rifle with a star-shaped target mark at the center.",
+   "tags": [
+    "animation",
+    "rifle",
+    "low angle"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "c9a20348259ff0852e3d3ca038b1f6e8e2c766cd": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204921.png",
+   "slug": "lesley-stands-small",
+   "title": "Lesley stands small",
+   "kind": "animation",
+   "alt": "A small Lesley stands in the middle of the rooftop plaza with her rifle held upright.",
+   "tags": [
+    "animation",
+    "rifle",
+    "wide shot"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "3cfe9d4bfd262886cf3862b749a780a5b1ef5a77": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204929.png",
+   "slug": "lesley-aims-along-her-rifle",
+   "title": "Lesley aims along her rifle",
+   "kind": "animation",
+   "alt": "In a close shot Lesley aims along her long rifle, with a dark red mark across the screen.",
+   "tags": [
+    "animation",
+    "rifle",
+    "close-up"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "8809653c9b24bc7c42d283e886e02512b3de133b": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204935.png",
+   "slug": "lesley-with-her-rifle-level",
+   "title": "Lesley with her rifle level",
+   "kind": "animation",
+   "alt": "Lesley stands on the rooftop plaza with her long rifle held level in front of her.",
+   "tags": [
+    "animation",
+    "rifle",
+    "rooftop"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "d5bdfe9139fbb905e343475f705a19df3782fe78": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204948.png",
+   "slug": "lesley-crouches-by-a-scan-screen",
+   "title": "Lesley crouches by a scan screen",
+   "kind": "animation",
+   "alt": "Lesley crouches with her rifle beside a blue hologram showing a small Chang'e and the outline of a tall figure.",
+   "tags": [
+    "animation",
+    "hologram",
+    "rifle"
+   ],
+   "chars": [
+    "lesley",
+    "change"
+   ]
+  },
+  "218c6605a0e367eef16d7b99489153f0549ce175": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 204959.png",
+   "slug": "lesley-fires-as-change-points",
+   "title": "Lesley fires as Chang'e points",
+   "kind": "animation",
+   "alt": "Lesley crouches in front of a hologram where a small Chang'e points at a target, while a red beam strikes a tall machine at the right.",
+   "tags": [
+    "animation",
+    "hologram",
+    "battle"
+   ],
+   "chars": [
+    "lesley",
+    "change"
+   ]
+  },
+  "4700168e4fc6fdd6a9fc5b61005d9e3bc06c3428": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 205014.png",
+   "slug": "lesley-dives-through-orange-light",
+   "title": "Lesley dives through orange light",
+   "kind": "animation",
+   "alt": "Lesley dives sideways through streaks of orange light with her rifle held out.",
+   "tags": [
+    "animation",
+    "rifle",
+    "effect"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "5501ff338cc8a7b3e7570786ca60547627568c58": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 205035.png",
+   "slug": "lesley-and-a-glowing-rifle",
+   "title": "Lesley and a glowing rifle",
+   "kind": "animation",
+   "alt": "A glowing pink and blue weapon fills the middle of the frame while Lesley stands at the right with her long hair streaming.",
+   "tags": [
+    "animation",
+    "rifle",
+    "city"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "887d182ff8b617f7cdcc5561f35ff68b44a978d7": {
+   "src": "_all/lesley/game/Screenshot 2026-11-08 205041.png",
+   "slug": "lesleys-long-rifle",
+   "title": "Lesley's long rifle",
+   "kind": "animation",
+   "alt": "Lesley's long orange and cyan rifle stretches across the frame, with Lesley small at the left.",
+   "tags": [
+    "animation",
+    "rifle",
+    "city"
+   ],
+   "chars": [
+    "lesley"
+   ]
+  },
+  "740cacd180e8de8d611c843cfd691a82e8ddae05": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205412.png",
+   "slug": "a-dark-giant-behind-chains",
+   "title": "A dark giant behind chains",
+   "kind": "animation",
+   "alt": "A huge dark winged figure with glowing red eyes looms behind two bright chains.",
+   "tags": [
+    "animation",
+    "chains",
+    "giant"
+   ],
+   "chars": []
+  },
+  "6fa1f681ce7f70efc44400cc25d78bdf7755474f": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205420.png",
+   "slug": "armored-figure-among-red-cubes",
+   "title": "Armored figure among red cubes",
+   "kind": "animation",
+   "alt": "A figure in silver horned armor floats among giant red and black cubes, with a purple cloak behind.",
+   "tags": [
+    "animation",
+    "armor",
+    "cubes"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "9628c138f9d70b6aecee78cd80a3884d1215bde2": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205427.png",
+   "slug": "a-small-figure-above-red-cubes",
+   "title": "A small figure above red cubes",
+   "kind": "animation",
+   "alt": "A tiny figure hangs in front of a bright light, with a curved rainbow arc and giant red and black cubes around it.",
+   "tags": [
+    "animation",
+    "cubes",
+    "effect"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "069dc6dfa271e7bf1696744c0996017f64524401": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205458.png",
+   "slug": "an-explosion-over-a-ruined-city",
+   "title": "An explosion over a ruined city",
+   "kind": "animation",
+   "alt": "A huge orange explosion tears through a city while a large winged creature hovers in the red sky at the right.",
+   "tags": [
+    "animation",
+    "explosion",
+    "city"
+   ],
+   "chars": []
+  },
+  "cdeb8056d3e3481304cc5ddb440efb8b952767df": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205435.png",
+   "slug": "a-beam-of-red-light",
+   "title": "A beam of red light",
+   "kind": "animation",
+   "alt": "A figure with long hair stands at the left and faces a huge dark shape across a thick beam of red light.",
+   "tags": [
+    "animation",
+    "beam",
+    "battle"
+   ],
+   "chars": [
+    "obsidia",
+    "selena"
+   ]
+  },
+  "feccdbd83b3663d98b0330888eda7b9004410918": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205448.png",
+   "slug": "a-leap-from-the-rubble",
+   "title": "A leap from the rubble",
+   "kind": "animation",
+   "alt": "A figure with long golden hair leaps up from rubble toward a huge dark shape in a sunset sky, with a target mark beside her.",
+   "tags": [
+    "animation",
+    "battle",
+    "rubble"
+   ],
+   "chars": [
+    "obsidia",
+    "selena"
+   ]
+  },
+  "3ba11bed3ce9602442eeb6364cb0307417e304fb": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205056.png",
+   "slug": "obsidia-leans-back-in-the-air",
+   "title": "Obsidia leans back in the air",
+   "kind": "animation",
+   "alt": "Obsidia leans back in mid-air with her long golden hair streaming and a silver ornament beside her, above a blue city.",
+   "tags": [
+    "animation",
+    "flying",
+    "city"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "415f66f6c13340eeb60f4a4eeedfc020ba2500f5": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205101.png",
+   "slug": "obsidia-sits-in-the-air",
+   "title": "Obsidia sits in the air",
+   "kind": "animation",
+   "alt": "Obsidia sits in mid-air with her long legs crossed, golden blades and burning rings around her, above a blue world.",
+   "tags": [
+    "animation",
+    "pose",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "373a361e992c915e4ff7c6411f7d049a1c175648": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205119.png",
+   "slug": "obsidia-holds-a-dark-orb",
+   "title": "Obsidia holds a dark orb",
+   "kind": "animation",
+   "alt": "Obsidia stands with a dark orb over her hand and red blade shards around her, on a deep red background.",
+   "tags": [
+    "animation",
+    "pose",
+    "effect"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "d54af35985ea720c2952e9963f52ca6ae06c88a3": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205126.png",
+   "slug": "obsidia-under-a-cross-of-light",
+   "title": "Obsidia under a cross of light",
+   "kind": "animation",
+   "alt": "Obsidia floats small beneath a bright cross of red light, with lightning in a dark red sky.",
+   "tags": [
+    "animation",
+    "wide shot",
+    "lightning"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "5f5a66f6a3aa64f6134cddbe51934659b789ec2f": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205134.png",
+   "slug": "obsidia-and-flying-blades",
+   "title": "Obsidia and flying blades",
+   "kind": "animation",
+   "alt": "Obsidia floats under a bright red cross of light while golden blades fly toward the right.",
+   "tags": [
+    "animation",
+    "wide shot",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "5d02d06908e8ac32798afbc8dd9d071ee1ad246f": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205147.png",
+   "slug": "obsidia-and-a-silver-claw",
+   "title": "Obsidia and a silver claw",
+   "kind": "animation",
+   "alt": "Obsidia stands in profile with a clawed silver ornament floating beside her, against red cubes and a blue world below.",
+   "tags": [
+    "animation",
+    "profile",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "37a060b5dafed6feaa2d21cb775c10a8c7448a36": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205156.png",
+   "slug": "obsidia-reaches-out",
+   "title": "Obsidia reaches out",
+   "kind": "animation",
+   "alt": "Obsidia stands with one arm out while a clawed silver ornament hovers beside her.",
+   "tags": [
+    "animation",
+    "pose",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "af0b4e8255ab29fbc6fd32bbdea5ba1b907c3d7c": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205201.png",
+   "slug": "obsidia-up-close",
+   "title": "Obsidia up close",
+   "kind": "animation",
+   "alt": "A close shot of Obsidia with a silver ornament beside her and a red cloth across the frame.",
+   "tags": [
+    "animation",
+    "close-up"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "27fb852879d670cd4333822dcf2a5c668d34859f": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205206.png",
+   "slug": "obsidia-looks-aside",
+   "title": "Obsidia looks aside",
+   "kind": "animation",
+   "alt": "A close shot of Obsidia with a faint smile, with golden blades drifting past her.",
+   "tags": [
+    "animation",
+    "close-up",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "6ad5edcefee385183eab5a7456fa4e0581ad4744": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205229.png",
+   "slug": "obsidia-and-a-sweeping-red-blade",
+   "title": "Obsidia and a sweeping red blade",
+   "kind": "animation",
+   "alt": "Obsidia stands among burning rings and a huge sweeping red blade above a blue world.",
+   "tags": [
+    "animation",
+    "blades",
+    "effect"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "2f08890e14b4cc460820b28b58265f24cb1ede29": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205248.png",
+   "slug": "obsidia-spins-in-the-air",
+   "title": "Obsidia spins in the air",
+   "kind": "animation",
+   "alt": "Obsidia leans back in mid-air with long dark ribbons and a silver ornament spreading around her.",
+   "tags": [
+    "animation",
+    "flying",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "a5b1a5c3e5ecbbc60d8c3be1db4104cdb4a150d3": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205301.png",
+   "slug": "obsidia-reaches-with-a-black-glove",
+   "title": "Obsidia reaches with a black glove",
+   "kind": "animation",
+   "alt": "Obsidia reaches toward the camera with a black glove while a silver ornament and golden blades float around her.",
+   "tags": [
+    "animation",
+    "flying",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "506a83b0133ffcd788514586ea9ce4e83dba5385": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205309.png",
+   "slug": "obsidia-sits-back-among-blades",
+   "title": "Obsidia sits back among blades",
+   "kind": "animation",
+   "alt": "Obsidia leans back with her legs crossed, silver ornaments and burning rings at her sides, above a blue world.",
+   "tags": [
+    "animation",
+    "pose",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "d3cc6d91dac3e1bb8f00e78768fbdac7cc3e9ec4": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205326.png",
+   "slug": "two-ships-near-a-black-star",
+   "title": "Two ships near a black star",
+   "kind": "animation",
+   "alt": "Two small ships fly through red and black cubes toward a black star-shaped opening in the sky.",
+   "tags": [
+    "animation",
+    "ships",
+    "cubes"
+   ],
+   "chars": []
+  },
+  "ff699ebcd86639d3ab48fa0e868f7eaec890f248": {
+   "src": "_all/obsidia/game/Screenshot 2026-11-08 205331.png",
+   "slug": "obsidia-in-profile-in-red",
+   "title": "Obsidia in profile in red",
+   "kind": "animation",
+   "alt": "A close shot of Obsidia in profile with a silver ornament arching over her and golden blades flying in a curve.",
+   "tags": [
+    "animation",
+    "close-up",
+    "blades"
+   ],
+   "chars": [
+    "obsidia"
+   ]
+  },
+  "42ac7d0f0a19a586602d02adbf5a1a92a63a6ccb": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205337.png",
+   "slug": "obsidia-and-selena-in-space",
+   "title": "Obsidia and Selena in space",
+   "kind": "animation",
+   "alt": "Two women with long blonde hair float in a starry blue space, one seated on a golden blade, while a third figure faces away at the right.",
+   "tags": [
+    "animation",
+    "space",
+    "pair"
+   ],
+   "chars": [
+    "obsidia",
+    "selena"
+   ]
+  },
+  "1fd9907ab9eeb3f0157ca08d60ccb2d3699b4e50": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205352.png",
+   "slug": "faces-over-a-starry-sky",
+   "title": "Faces over a starry sky",
+   "kind": "animation",
+   "alt": "A huge pale face fills the left, a woman with pink and golden hair stands at the center, and a ghostly figure reaches in from the right.",
+   "tags": [
+    "animation",
+    "space",
+    "close-up"
+   ],
+   "chars": [
+    "obsidia",
+    "selena"
+   ]
+  },
+  "2a40f1400a07bf5c8ca5bf43467fab20403fc7c0": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205509.png",
+   "slug": "ruby-stands-by-her-scythe",
+   "title": "Ruby stands by her scythe",
+   "kind": "animation",
+   "alt": "Ruby stands on the rooftop plaza beside a huge black and orange weapon.",
+   "tags": [
+    "animation",
+    "scythe",
+    "rooftop"
+   ],
+   "chars": [
+    "ruby"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "c89f285478a78ed84b8c3a28572e23e5366a68f7": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205522.png",
+   "slug": "ruby-holds-a-long-staff",
+   "title": "Ruby holds a long staff",
+   "kind": "animation",
+   "alt": "Ruby grips a long silver staff with a hooked head on the rooftop plaza, smiling.",
+   "tags": [
+    "animation",
+    "rooftop",
+    "weapon"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "4857d302698216ee60d0abb5f2c362c999241a6b": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205532.png",
+   "slug": "ruby-leaps-in-a-flash",
+   "title": "Ruby leaps in a flash",
+   "kind": "animation",
+   "alt": "Ruby leaps with her long weapon in a flash of light over the rooftop plaza.",
+   "tags": [
+    "animation",
+    "effect",
+    "weapon"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "f62f1526187aed4139bdb895586620f14ecf5fef": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205600.png",
+   "slug": "ruby-holds-up-a-card",
+   "title": "Ruby holds up a card",
+   "kind": "animation",
+   "alt": "Ruby stands on the plaza with a huge black and orange weapon at her side and a small card in her raised hand.",
+   "tags": [
+    "animation",
+    "scythe",
+    "card"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "3bc091166f36f972f82cbc2d455da5f0244f49a8": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205624.png",
+   "slug": "ruby-with-her-scythe-planted",
+   "title": "Ruby with her scythe planted",
+   "kind": "animation",
+   "alt": "A small Ruby poses behind her huge scythe, planted in the rooftop plaza.",
+   "tags": [
+    "animation",
+    "scythe",
+    "rooftop"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "7ae20f789184dfb28c0bfa36f1306b4d0f9006d5": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205640.png",
+   "slug": "a-card-on-the-bench",
+   "title": "A card on the bench",
+   "kind": "animation",
+   "alt": "A white-gloved hand sets a small photo card on a bench with wooden slats.",
+   "tags": [
+    "animation",
+    "card",
+    "bench"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "a4fb094c70f5346ee3fc337859cc22418b6a1e5c": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205651.png",
+   "slug": "ruby-sits-on-a-bench",
+   "title": "Ruby sits on a bench",
+   "kind": "animation",
+   "alt": "Seen from above, Ruby sits on a bench beside a planter, her long dark hair down.",
+   "tags": [
+    "animation",
+    "bench",
+    "wide shot"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "77dd3b24d8981e4bdc102b0d4f3982d5d305dbdb": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205705.png",
+   "slug": "ruby-hand-on-her-chest",
+   "title": "Ruby, hand on her chest",
+   "kind": "animation",
+   "alt": "In a close shot Ruby presses a white glove to her chest, with bright sparkles around her.",
+   "tags": [
+    "animation",
+    "close-up"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "03561237d235e281bf608e66c8045dec72f17a0d": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205712.png",
+   "slug": "ruby-smiles-in-gold-light",
+   "title": "Ruby smiles in gold light",
+   "kind": "animation",
+   "alt": "A close shot of Ruby smiling with her head tilted in a warm yellow light.",
+   "tags": [
+    "animation",
+    "close-up"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "2bd46c30982a20c63155aa4439c9167421e27c45": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205716.png",
+   "slug": "ruby-grips-a-silver-weapon",
+   "title": "Ruby grips a silver weapon",
+   "kind": "animation",
+   "alt": "Ruby grips a long silver weapon across the frame in front of a purple starry sky.",
+   "tags": [
+    "animation",
+    "weapon"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "e6e5fbe48f752ca336457afefc88bc1949b2681e": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205723.png",
+   "slug": "ruby-swings-beside-a-card",
+   "title": "Ruby swings beside a card",
+   "kind": "animation",
+   "alt": "Ruby swings her weapon through the air beside a small floating card on a purple background.",
+   "tags": [
+    "animation",
+    "scythe",
+    "card"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "504f6a1f26a30f109617e8bd7364d41a55aaecf8": {
+   "src": "_all/ruby/game/Screenshot 2026-11-08 205729.png",
+   "slug": "ruby-poses-on-orange",
+   "title": "Ruby poses on orange",
+   "kind": "animation",
+   "alt": "Ruby strikes a pose with her arms folded in front of her against an orange background with soft circles of light.",
+   "tags": [
+    "animation",
+    "pose"
+   ],
+   "chars": [
+    "ruby"
+   ]
+  },
+  "8ec63fb857e88f5045dfc590159407722a857d50": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205742.png",
+   "slug": "selena-floats-on-her-back",
+   "title": "Selena floats on her back",
+   "kind": "animation",
+   "alt": "Selena floats on her back across the frame with silver wing blades around her, above a city in the clouds.",
+   "tags": [
+    "animation",
+    "flying",
+    "city"
+   ],
+   "chars": [
+    "selena"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "7c1f3688c0a09cda9addc8ea919b424dbfedd61f": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205746.png",
+   "slug": "selena-leans-in-flight",
+   "title": "Selena leans in flight",
+   "kind": "animation",
+   "alt": "Selena leans in mid-air with black clawed gloves out and silver wing blades around her, above a city of towers.",
+   "tags": [
+    "animation",
+    "flying",
+    "city"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "9ead5a0272c5954e2b9c9695650ad39ecb41a8ad": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205756.png",
+   "slug": "selena-asks-for-quiet",
+   "title": "Selena asks for quiet",
+   "kind": "animation",
+   "alt": "A close shot of Selena with a finger to her lips and a purple phone in her hand.",
+   "tags": [
+    "animation",
+    "close-up",
+    "phone"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "a2b8e9f2a46c64f343e0cc4bd06bfc965a9d4080": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205813.png",
+   "slug": "selena-under-a-dark-sun",
+   "title": "Selena under a dark sun",
+   "kind": "animation",
+   "alt": "Selena stands among silver wing blades under a dark red sun in the sky.",
+   "tags": [
+    "animation",
+    "wide shot",
+    "sky"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "726323112b5d7db16faea40102c5d1ac3d206cf9": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205838.png",
+   "slug": "selena-reaches-toward-the-camera",
+   "title": "Selena reaches toward the camera",
+   "kind": "animation",
+   "alt": "Selena smiles and holds out a clawed black glove toward the camera.",
+   "tags": [
+    "animation",
+    "close-up",
+    "pose"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "485dfbaff7319f1e90780f6d9c1003bb80368751": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205842.png",
+   "slug": "selena-holds-a-candy",
+   "title": "Selena holds a candy",
+   "kind": "animation",
+   "alt": "Selena holds up a swirled candy in a clawed black glove, her mouth open.",
+   "tags": [
+    "animation",
+    "close-up",
+    "candy"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "bff6bb70ebf39a1c2ad5d092c424d6f47e381906": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205848.png",
+   "slug": "selena-covers-her-mouth",
+   "title": "Selena covers her mouth",
+   "kind": "animation",
+   "alt": "Selena stands among silver wing blades with a hand held to her face, above a cloud-covered world with a dark sun.",
+   "tags": [
+    "animation",
+    "pose",
+    "city"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "e4bdf6baae31554e48ac64ad31c471694b8b1968": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205915.png",
+   "slug": "selena-flies-across-a-dark-sky",
+   "title": "Selena flies across a dark sky",
+   "kind": "animation",
+   "alt": "A small figure flies across a dark purple sky, trailing a long blue tail of light, with a huge dark shape looming at the right.",
+   "tags": [
+    "animation",
+    "flying",
+    "wide shot"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "119abf9207b098b0a9008f4ed661f80ad0d53ca2": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205922.png",
+   "slug": "selena-hangs-above-the-clouds",
+   "title": "Selena hangs above the clouds",
+   "kind": "animation",
+   "alt": "Selena hangs in the air with her long blonde hair swept up and silver wing blades behind her, above a city in the clouds.",
+   "tags": [
+    "animation",
+    "flying",
+    "city"
+   ],
+   "chars": [
+    "selena"
+   ],
+   "crop": {
+    "bottom": 112
+   }
+  },
+  "b6bf1a4e591fbded3e1f8b2c8508765cfa419039": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205934.png",
+   "slug": "selena-leaps-over-ruins",
+   "title": "Selena leaps over ruins",
+   "kind": "animation",
+   "alt": "Selena leaps over a burning ruined city with a glowing blue weapon at her side.",
+   "tags": [
+    "animation",
+    "flying",
+    "ruins"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "9b1daef23b77672ffe095728fa6af29e8e163434": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205941.png",
+   "slug": "selena-streams-through-the-sky",
+   "title": "Selena streams through the sky",
+   "kind": "animation",
+   "alt": "Selena flies sideways, her long purple hair streaming behind her, with silver wing blades and dark red shapes in the sky.",
+   "tags": [
+    "animation",
+    "flying",
+    "effect"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "2aed92690a9c07a3e4b92825af6112f8cc296ab8": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 205946.png",
+   "slug": "selena-glides-in-blue-light",
+   "title": "Selena glides in blue light",
+   "kind": "animation",
+   "alt": "Selena glides sideways with her long hair streaming and a blue trail of light, under a red sky with dark shapes.",
+   "tags": [
+    "animation",
+    "flying",
+    "effect"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "491148e25ab6ea6b02f5a5b49fc9e87dd2666362": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210002.png",
+   "slug": "selena-falls-through-a-blue-void",
+   "title": "Selena falls through a blue void",
+   "kind": "animation",
+   "alt": "Selena falls through a blue void of floating stone blocks, her long hair streaming above her.",
+   "tags": [
+    "animation",
+    "flying",
+    "space"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "fcac147ef5a082b48700d2370dc876122d65b7df": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210008.png",
+   "slug": "selena-looks-startled",
+   "title": "Selena looks startled",
+   "kind": "animation",
+   "alt": "A close shot of Selena with her mouth open against a red background with sharp silver shapes.",
+   "tags": [
+    "animation",
+    "close-up"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "3f252b61cc7d34a00762ddaee0d60b304ec550e0": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210015.png",
+   "slug": "selena-in-red-chains",
+   "title": "Selena in red chains",
+   "kind": "animation",
+   "alt": "Selena hangs in the air among red chains, with a huge faded face glowing behind her.",
+   "tags": [
+    "animation",
+    "chains",
+    "effect"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "3eb16b08287044ac69e9a742221bdbf427ad5d79": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210024.png",
+   "slug": "two-golden-stars",
+   "title": "Two golden stars",
+   "kind": "animation",
+   "alt": "Two golden star frames hold glowing crystals with faint portraits of two women, with a bright light between them.",
+   "tags": [
+    "animation",
+    "effect",
+    "stars"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "4e6d2093b3b7e819794936c993d172c6dd036d8d": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210030.png",
+   "slug": "a-figure-with-blue-flame-hair",
+   "title": "A figure with blue flame hair",
+   "kind": "animation",
+   "alt": "A figure in silver armor with a blue flame for hair flies sideways with two red-tipped lances.",
+   "tags": [
+    "animation",
+    "armor",
+    "flying"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "c8e6ab8212590def47229aaf4fb2abd73c5ed99a": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210037.png",
+   "slug": "crossed-beams-of-light",
+   "title": "Crossed beams of light",
+   "kind": "animation",
+   "alt": "A small dark figure floats at the center of a starry space crossed by long red and white lines of light.",
+   "tags": [
+    "animation",
+    "space",
+    "effect"
+   ],
+   "chars": [
+    "selena"
+   ]
+  },
+  "c3229152fdb3b31a77c617e061cef22744d50780": {
+   "src": "_all/selena/game/Screenshot 2026-11-08 210044.png",
+   "slug": "a-flare-among-glass-shards",
+   "title": "A flare among glass shards",
+   "kind": "animation",
+   "alt": "A small winged shape flies toward a bright blue-white light among drifting glass shards.",
+   "tags": [
+    "animation",
+    "space",
+    "effect"
+   ],
+   "chars": []
+  },
+  "72fe483bb64f99bed9a3cc15face273344bc83a1": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210058.png",
+   "slug": "vexana-beside-a-giant-mecha",
+   "title": "Vexana beside a giant mecha",
+   "kind": "animation",
+   "alt": "Vexana floats with a staff above a city at sunset, with a tall silver and purple mecha at her side.",
+   "tags": [
+    "animation",
+    "mecha",
+    "city"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "eade32621b6e8ca4bdeab762892a8cb3d9f9b655": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210107.png",
+   "slug": "vexana-turns-from-the-mecha",
+   "title": "Vexana turns from the mecha",
+   "kind": "animation",
+   "alt": "Vexana stands at the left holding a black round shield while a mecha floats at the right against a dark purple sky.",
+   "tags": [
+    "animation",
+    "mecha",
+    "space"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "0f01a7cbf6c098fa8a73dffa357eb055101cfa20": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210115.png",
+   "slug": "the-mecha-floats-at-dusk",
+   "title": "The mecha floats at dusk",
+   "kind": "animation",
+   "alt": "A silver and purple mecha floats at the center with pink plumes behind its head, above a city at dusk.",
+   "tags": [
+    "animation",
+    "mecha",
+    "city"
+   ],
+   "chars": []
+  },
+  "5c2eb043be2ee01bfcb9bd14da3b35a408e4b6bd": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210128.png",
+   "slug": "vexana-holds-up-a-card",
+   "title": "Vexana holds up a card",
+   "kind": "animation",
+   "alt": "Vexana stands in front of a huge gold and grey mecha, holding up a small card.",
+   "tags": [
+    "animation",
+    "mecha",
+    "card"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "b404d05179a80c2c33a6b851123b1f71939e64bf": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210133.png",
+   "slug": "vexana-beside-the-mecha",
+   "title": "Vexana beside the mecha",
+   "kind": "animation",
+   "alt": "A close shot of Vexana with a card in her hand, a round dark shield at the left and a huge armored shape behind her.",
+   "tags": [
+    "animation",
+    "mecha",
+    "close-up"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "a7199232000bee10ff7e114b99500d5dfb30cd3e": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210156.png",
+   "slug": "vexana-casts-pink-light",
+   "title": "Vexana casts pink light",
+   "kind": "animation",
+   "alt": "Vexana holds out a gold glove wrapped in pink light, with a glowing face of Guinevere inside the light and a dark armored shape behind.",
+   "tags": [
+    "animation",
+    "effect",
+    "close-up"
+   ],
+   "chars": [
+    "vexana",
+    "guinevere"
+   ]
+  },
+  "cc2008f4f8ebac3a0c691a57fde40588241e250f": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210200.png",
+   "slug": "vexana-reaches-out-calmly",
+   "title": "Vexana reaches out calmly",
+   "kind": "animation",
+   "alt": "A close shot of Vexana with one gold glove held out and a dark armored shape behind her.",
+   "tags": [
+    "animation",
+    "close-up",
+    "mecha"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "8538fac861a5a5e5999aa2be379a9e40e57542a5": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210210.png",
+   "slug": "vexana-and-the-mecha-at-dusk",
+   "title": "Vexana and the mecha at dusk",
+   "kind": "animation",
+   "alt": "Vexana, holding a dark orb, stands next to a tall armored mecha under a sunset sky.",
+   "tags": [
+    "animation",
+    "mecha",
+    "pose"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "bf89debc188db5ec48bbf0def902f02eff90067f": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210227.png",
+   "slug": "vexana-opens-her-arms",
+   "title": "Vexana opens her arms",
+   "kind": "animation",
+   "alt": "Vexana smiles with her arms spread and four dark blades floating around her, against a violet sky.",
+   "tags": [
+    "animation",
+    "pose",
+    "blades"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "958f660714279585b97bc448289ce8e7feba3469": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210245.png",
+   "slug": "vexana-with-closed-eyes",
+   "title": "Vexana with closed eyes",
+   "kind": "animation",
+   "alt": "Vexana stands with her eyes closed against a dark starry sky, with sharp blades floating beside her.",
+   "tags": [
+    "animation",
+    "close-up",
+    "blades"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "a42a58e531b1df6d3a1ac34c9a0f3dea7a2202ee": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210255.png",
+   "slug": "the-mecha-rises-in-crystals",
+   "title": "The mecha rises in crystals",
+   "kind": "animation",
+   "alt": "A silver mecha rises in a burst of purple and cyan crystal shards.",
+   "tags": [
+    "animation",
+    "mecha",
+    "effect"
+   ],
+   "chars": []
+  },
+  "f06c52877a2425c991f3346785b1603491242777": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210304.png",
+   "slug": "gold-mecha-up-close",
+   "title": "Gold mecha up close",
+   "kind": "animation",
+   "alt": "A close shot of a gold and pink mecha with a small figure floating far behind it.",
+   "tags": [
+    "animation",
+    "mecha",
+    "close-up"
+   ],
+   "chars": []
+  },
+  "ac37c428394fe47bb92e735becd6430f02600a31": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210309.png",
+   "slug": "vexana-flies-past-the-mecha",
+   "title": "Vexana flies past the mecha",
+   "kind": "animation",
+   "alt": "A small Vexana flies in cyan light beside the huge dark mecha, with an orange cloth streaming above.",
+   "tags": [
+    "animation",
+    "flying",
+    "mecha"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "7d1ffaf0d670d0c4e7b98e41fab2a1ef87c2cd5e": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210313.png",
+   "slug": "vexana-flies-with-the-mecha-behind",
+   "title": "Vexana flies, mecha behind",
+   "kind": "animation",
+   "alt": "Vexana flies in a dark blue sky with dark blades spread around her, and a mecha with a long pink cloth at the right.",
+   "tags": [
+    "animation",
+    "flying",
+    "mecha"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "d32378ed20820bd76db2aa11460d99f838ff29ad": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210318.png",
+   "slug": "vexana-glances-aside",
+   "title": "Vexana glances aside",
+   "kind": "animation",
+   "alt": "Vexana glances aside under a starry blue sky, her long cape flowing, with the mecha at the upper right.",
+   "tags": [
+    "animation",
+    "close-up",
+    "mecha"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "6fde211cd992e6cad3b1ba7515ee16252b2be411": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210325.png",
+   "slug": "a-flare-past-vexana",
+   "title": "A flare past Vexana",
+   "kind": "animation",
+   "alt": "A bright flare of pink and white light bursts in front of Vexana's cape and dark spikes.",
+   "tags": [
+    "animation",
+    "effect",
+    "mecha"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "d6ec1ec9a607596f718dfa8d16cacaa47833b074": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210331.png",
+   "slug": "vexana-and-guinevere-face-right",
+   "title": "Vexana and Guinevere face right",
+   "kind": "animation",
+   "alt": "Vexana, in front, and Guinevere, behind her, face right in profile in a dark violet space with a bright star.",
+   "tags": [
+    "animation",
+    "profile",
+    "space"
+   ],
+   "chars": [
+    "vexana",
+    "guinevere"
+   ]
+  },
+  "989cc7cbbdd80d6446e85a2bd17ce8ae50b353d6": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210339.png",
+   "slug": "vexana-and-guinevere-fade-together",
+   "title": "Vexana and Guinevere fade together",
+   "kind": "animation",
+   "alt": "Faded faces of Vexana and Guinevere overlap in a violet space around a small Vexana on a black star.",
+   "tags": [
+    "animation",
+    "transition",
+    "space"
+   ],
+   "chars": [
+    "vexana",
+    "guinevere"
+   ]
+  },
+  "84b92d2d81ebe3bc6a29c931d6b64c7b6bc7fc69": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210343.png",
+   "slug": "vexana-among-purple-cubes",
+   "title": "Vexana among purple cubes",
+   "kind": "animation",
+   "alt": "A small Vexana stands on a black star shape among purple cubes, with the ghost of a large figure behind her.",
+   "tags": [
+    "animation",
+    "transition",
+    "space"
+   ],
+   "chars": [
+    "vexana"
+   ]
+  },
+  "38f9631eae562d2c6509cf4f3064ea88cdabaf72": {
+   "src": "_all/vexana/game/Screenshot 2026-11-08 210356.png",
+   "slug": "guinevere-fades-in-behind-vexana",
+   "title": "Guinevere fades in behind Vexana",
+   "kind": "animation",
+   "alt": "A large faded Guinevere reaches toward the camera while a small Vexana stands on a black star at the center, with a ghostly hand at the right.",
+   "tags": [
+    "animation",
+    "transition",
+    "space"
+   ],
+   "chars": [
+    "vexana",
+    "guinevere"
+   ]
+  }
+ },
+ "dropped": {
+  "58f27b699afde1ff15935fe3ead9e04b37d827f7": {
+   "reason": "Too small: 357 by 228 px, below the 480 px row thumbnail, and it shows the same drone as three larger frames.",
+   "sources": [
+    "_all/drones/game/flying-2.png"
+   ]
+  },
+  "06947a921e1b3eea43eba5d53cc74ff98aad0fd8": {
+   "reason": "Too small and soft: 403 by 364 px, a low quality re-crop of the Guinevere figure that the larger picture of Guinevere and Vexana on stands already holds, with white bars at its top and bottom.",
+   "sources": [
+    "_all/guinevere/game/Screenshot 2026-11-08 152354.png"
+   ]
+  }
+ }
+}

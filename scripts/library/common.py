@@ -38,7 +38,7 @@ WORK.mkdir(parents=True, exist_ok=True)
 # Scratch files (Python temp files, ffmpeg temp files) must never land on C:.
 os.environ["TEMP"] = os.environ["TMP"] = os.environ["TMPDIR"] = str(WORK / "tmp")
 
-SLUGS = ["arts", "video", "music", "voicelines", "fanart", "comic", "lore", "design", "animation", "others"]
+SLUGS = ["arts", "video", "music", "voicelines", "models", "comic", "lore", "design", "animation", "others"]
 CHAR_SLUGS = ["fanny", "layla", "ruby", "angela", "lesley", "change", "guinevere", "vexana", "obsidia", "selena"]
 PAIRS = {
     "fanny-layla": ["fanny", "layla"],

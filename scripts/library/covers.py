@@ -14,7 +14,17 @@ pictures, covers/video-films.webp and covers/video-others.webp, in the same styl
 colours are read from features/library/shelf/video-halves.ts. Every frame comes from an official
 film or video (never fan work, edits or gameplay).
 
-Output: the mirror, key covers/<slug>.webp (common.key_path), quality 88.
+The Arts cover opens in three (a triptych): covers/arts-official.webp, arts-fanart.webp and
+arts-cosplay.webp. They are built by name, never as part of `arts` (that cover is left as it is);
+their field colours are read from features/library/shelf/arts-parts.ts. They are made from official
+art only: never fan work and never a photograph of a real person. Slot 05 is 3D Models
+(covers/models.webp): an official cut-out on a turntable.
+
+Output: the mirror, key covers/<slug>.webp (common.key_path), quality 88. A key that already exists
+in the mirror is NEVER written again (a changed file is cached for 30 days by the bucket): the script
+skips it, and `--force` is for a new LIBRARY_VERSION only. Run with the names you want, for example
+`covers.py arts-official arts-fanart arts-cosplay models`; with no names it builds the covers that
+are missing.
 """
 
 from __future__ import annotations
@@ -239,10 +249,13 @@ HALVES = common.REPO / "apps" / "web" / "src" / "features" / "library" / "shelf"
 
 
 def halves() -> dict[str, tuple[int, int, int]]:
-    """Field colours of the two halves, read from video-halves.ts (room -> colour)."""
-    text = HALVES.read_text(encoding="utf-8")
-    pairs = re.findall(r'room: "(\w+)",.*?colour: "(#[0-9a-fA-F]{6})"', text, re.S)
-    return {room: hex_rgb(col) for room, col in pairs}
+    """Field colours of the parts of the covers that open, read from video-halves.ts and arts-parts.ts (room -> colour)."""
+    out: dict[str, tuple[int, int, int]] = {}
+    for path in (HALVES, ARTS_PARTS):
+        text = path.read_text(encoding="utf-8")
+        for room, col in re.findall(r'room: "(\w+)",.*?colour: "(#[0-9a-fA-F]{6})"', text, re.S):
+            out[room] = hex_rgb(col)
+    return out
 
 
 def shade(colour: tuple[int, int, int], k: float) -> tuple[int, int, int]:
@@ -418,24 +431,150 @@ def cover_voicelines(colour):
     return frame_grid(base, ink)
 
 
-def cover_fanart(colour):
+# ---------------------------------------------------------------------------------------------
+# Arts: the cover opens in three (a triptych, see features/library/shelf/engine.ts), Official,
+# Fanart and Cosplay. Their pictures are covers/arts-official.webp, arts-fanart.webp and
+# arts-cosplay.webp; their names, lines and field colours are in shelf/arts-parts.ts. All three are
+# made from OFFICIAL art only: never fan work and never a photograph of a real person. The room is
+# told apart by its colour and by the name the browser draws over it.
+# ---------------------------------------------------------------------------------------------
+
+ARTS_PARTS = common.REPO / "apps" / "web" / "src" / "features" / "library" / "shelf" / "arts-parts.ts"
+
+
+def cover_arts_official(colour):
+    """Official: a framed splash art, as on the Arts cover itself, with another character in it."""
+    ink = ink_for(colour)
+    base = base_sleeve(colour)
+    art = load(MEDIA / "ruby-and-angela/art/official/ruby-splash-art.jpg")
+    # Ruby with the blue city behind her; the game logo in the top left corner stays out of the crop.
+    win = cover_crop(art, S, ART_H, fx=0.66, fy=0.52, zoom=1.14)
+    base.paste(win, (0, 0))
+    base = frame_grid(base, ink)
+    lay, d = overlay()
+    d.rectangle([28, 28, S - 29, ART_H - 29], outline=(255, 255, 255, 215), width=3)
+    base = composite(base, lay)
+    return crop_marks(base, (28, 28, S - 29, ART_H - 29), WHITE, inset=0, out=34)
+
+
+def cover_arts_fanart(colour):
+    """Fanart: a print on a card with the construction lines of a drawing behind it, on a dark field."""
     ink = ink_for(colour)
     base = base_sleeve(colour).convert("RGBA")
-    art = load(MEDIA / "ruby-and-angela/art/official/angela-splash-art.jpg")
+    art = load(MEDIA / "selena-and-obsidia/art/official/selena/selena-splash-art.png")
     pw, ph = 700, 470
-    print_ = cover_crop(art, pw, ph, fx=0.55, fy=0.42, zoom=1.0)
+    print_ = cover_crop(art, pw, ph, fx=0.5, fy=0.44, zoom=1.0)
     card = Image.new("RGB", (pw + 36, ph + 36 + 44), (255, 255, 255))
     card.paste(print_, (18, 18))
-    # Construction lines behind the print: a loose frame and a diagonal.
+    # Construction lines behind the print: a loose frame, a diagonal and a circle.
     lay, d = overlay()
-    col = (*INK, 120)
+    col = (*WHITE, 84)
     d.rectangle([92, 60, 932, 600], outline=col, width=2)
     d.line([(92, 600), (932, 60)], fill=col, width=2)
     d.ellipse([452, 285, 572, 405], outline=col, width=2)
     base.alpha_composite(lay)
     paste_card(base, card, (S / 2 + 6, 322), angle=-4.0)
     out = base.convert("RGB")
-    out = crop_marks(out, (68, 40, S - 69, ART_H - 22), INK, inset=0, out=30)
+    out = crop_marks(out, (68, 40, S - 69, ART_H - 22), WHITE, inset=0, out=30, alpha=200)
+    return frame_grid(out, ink)
+
+
+# The ten Aspirants, one official splash art each (Layla and Fanny's shared art is left out).
+ASPIRANT_SPLASH = [
+    "layla-and-fanny/art/official/fanny-splash-art.jpg",
+    "layla-and-fanny/art/official/layla-splash-art.jpg",
+    "ruby-and-angela/art/official/ruby-splash-art.jpg",
+    "ruby-and-angela/art/official/angela-splash-art.jpg",
+    "lesley-and-change/art/official/lesley-splash-art.jpg",
+    "lesley-and-change/art/official/change-splash-art.jpg",
+    "vexana-and-guinevere/art/official/guinevere-splash-art.jpg",
+    "vexana-and-guinevere/art/official/vexana-splash-art.jpg",
+    "selena-and-obsidia/art/official/selena/selena-splash-art.png",
+    "selena-and-obsidia/art/official/obsidia/obsidia-splash-art.png",
+]
+
+
+def cover_arts_cosplay(colour):
+    """Cosplay: the ten Aspirants as a fan of ten cards, one splash art each (the cosplay page of each)."""
+    ink = ink_for(colour)
+    base = base_sleeve(colour).convert("RGBA")
+    cards = []
+    for rel in ASPIRANT_SPLASH:
+        art = load(MEDIA / rel)
+        # Cut the game logo out of the top left corner: 14 % off two sides keeps the 16:9 shape.
+        art = art.crop((round(art.width * 0.14), round(art.height * 0.14), art.width, art.height))
+        cw, ch = 360, 203
+        card = Image.new("RGB", (cw + 12, ch + 12), (255, 255, 255))
+        card.paste(art.resize((cw, ch), Image.LANCZOS), (6, 6))
+        cards.append(card)
+    pivot = (S / 2, 735)
+    radius = 470
+    n = len(cards)
+    spread = 31.0
+    for i, card in enumerate(cards):
+        theta = -spread + 2 * spread * i / (n - 1)
+        rad = np.deg2rad(theta)
+        centre = (pivot[0] + radius * np.sin(rad), pivot[1] - radius * np.cos(rad))
+        # Cards lean the way the fan turns: the top edge points away from the pivot.
+        paste_card(base, card, centre, angle=-theta, shadow=True)
+    out = base.convert("RGB")
+    out = crop_marks(out, (28, 28, S - 29, ART_H - 29), INK, inset=0, out=30, alpha=170)
+    return frame_grid(out, ink)
+
+
+# ---------------------------------------------------------------------------------------------
+# 3D Models (slot 05): an official character cut-out standing on a turntable, on the orange of the slot.
+# ---------------------------------------------------------------------------------------------
+
+
+def alpha_bbox_crop(im: Image.Image) -> Image.Image:
+    """Crop an RGBA picture to the part that is not transparent."""
+    box = im.split()[-1].point(lambda v: 255 if v > 16 else 0).getbbox()
+    return im.crop(box) if box else im
+
+
+def cover_models(colour):
+    ink = ink_for(colour)
+    base = base_sleeve(colour).convert("RGBA")
+    cx, cy = S // 2, 548
+    lay, d = overlay()
+    # The turntable: a lighter top, a darker rim under it, and rings with a scale of ticks round it.
+    light = tuple(min(255, c + 62) for c in colour)
+    dark = tuple(max(0, c - 70) for c in colour)
+    rx, ry, rim = 372, 84, 16
+    d.ellipse([cx - rx, cy - ry + rim, cx + rx, cy + ry + rim], fill=(*dark, 255))
+    d.rectangle([cx - rx, cy, cx + rx, cy + rim], fill=(*dark, 255))
+    d.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(*light, 255))
+    for k, f in enumerate((0.84, 0.62, 0.38)):
+        a = 140 - k * 30
+        d.ellipse([cx - rx * f, cy - ry * f, cx + rx * f, cy + ry * f], outline=(255, 255, 255, a), width=2)
+    for i in range(72):
+        t = 2 * np.pi * i / 72
+        long = i % 6 == 0
+        r0, r1 = rx - 6, rx - (30 if long else 18)
+        x0, y0 = cx + r0 * np.cos(t), cy + (ry / rx) * r0 * np.sin(t)
+        x1, y1 = cx + r1 * np.cos(t), cy + (ry / rx) * r1 * np.sin(t)
+        d.line([(x0, y0), (x1, y1)], fill=(*dark, 255 if long else 170), width=3 if long else 2)
+    base.alpha_composite(lay)
+    # Vexana, as a cut-out from her official splash art, standing in the middle of it.
+    cut = alpha_bbox_crop(Image.open(common.PUBLIC / "img/char/vexana/cutout.webp").convert("RGBA"))
+    target = 530
+    cut = cut.resize((round(cut.width * target / cut.height), target), Image.LANCZOS)
+    shadow = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shadow)
+    sd.ellipse([cx - 150, cy - 18, cx + 150, cy + 30], fill=(*INK, 120))
+    base.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(10)))
+    blend(base, cut, cx - cut.width // 2 + 14, cy + 22 - cut.height)
+    lay, d = overlay()
+    # A thin turning arrow round the front of the turntable: an arc and its head.
+    ax, ay, arx, ary = cx, cy + rim + 6, rx + 44, ry + 34
+    d.arc([ax - arx, ay - ary, ax + arx, ay + ary], 18, 150, fill=(*WHITE, 235), width=4)
+    t = np.deg2rad(150)
+    ex, ey = ax + arx * np.cos(t), ay + ary * np.sin(t)
+    d.polygon([(ex - 4, ey - 20), (ex - 4, ey + 16), (ex - 28, ey - 2)], fill=(*WHITE, 235))
+    base.alpha_composite(lay)
+    out = base.convert("RGB")
+    out = crop_marks(out, (28, 28, S - 29, ART_H - 29), INK, inset=0, out=30, alpha=190)
     return frame_grid(out, ink)
 
 
@@ -573,7 +712,7 @@ BUILDERS = {
     "video": cover_video,
     "music": cover_music,
     "voicelines": cover_voicelines,
-    "fanart": cover_fanart,
+    "models": cover_models,
     "comic": cover_comic,
     "lore": cover_lore,
     "design": cover_design,
@@ -582,34 +721,43 @@ BUILDERS = {
 }
 
 
-# The two halves of the Video cover: made with it, keyed covers/video-<room>.webp.
+# The parts of the covers that open: keyed covers/video-<room>.webp (made with `video`) and
+# covers/arts-<room>.webp (made by name only).
 HALF_BUILDERS = {
     "video-films": ("films", cover_video_films),
     "video-others": ("others", cover_video_others),
+    "arts-official": ("official", cover_arts_official),
+    "arts-fanart": ("fanart", cover_arts_fanart),
+    "arts-cosplay": ("cosplay", cover_arts_cosplay),
 }
 
 
 def main(argv: list[str]) -> int:
     force = "--force" in argv
-    wanted = [a for a in argv if not a.startswith("--")] or common.SLUGS
+    names = [a for a in argv if not a.startswith("--")]
+    known = [*BUILDERS, *HALF_BUILDERS]
+    unknown = [n for n in names if n not in known]
+    if unknown:
+        raise SystemExit(f"unknown covers {unknown}; known: {known}")
+    wanted = names or known
     if "video" in wanted:
-        wanted += [h for h in HALF_BUILDERS if h not in wanted]
+        wanted += [h for h in HALF_BUILDERS if h.startswith("video-") and h not in wanted]
     colours = registry()
-    missing = [s for s in common.SLUGS if s not in colours]
-    if missing:
-        raise SystemExit(f"registry.ts has no colour for {missing}")
     half_colours = halves()
     total = 0
     for slug in wanted:
         out = common.key_path(f"covers/{slug}.webp")
-        if not force and common.fresh(out, Path(__file__), REGISTRY, HALVES):
-            print(f"  {slug}: fresh")
+        if out.exists() and not force:
+            # The bucket caches a key for 30 days: a key is never written twice.
+            print(f"  {slug}: exists, not written again")
             total += out.stat().st_size
             continue
         if slug in HALF_BUILDERS:
             room, build = HALF_BUILDERS[slug]
             im = build(half_colours[room])
         else:
+            if slug not in colours:
+                raise SystemExit(f"registry.ts has no colour for {slug}")
             im = BUILDERS[slug](colours[slug])
         assert im.size == (S, S), (slug, im.size)
         im.save(out, "WEBP", quality=88, method=6)

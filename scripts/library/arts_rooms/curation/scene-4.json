@@ -1,0 +1,23 @@
+{
+  "slice": 4,
+  "items": [
+    {
+      "sha1": "f9ec6080af2bfa8c1d2fc006537fbc074ab2db6a",
+      "keep": true,
+      "title": "Fanny in pink flames",
+      "alt": "Fanny with orange hair seen in profile raises one hand inside swirling pink flames under a dark cloudy sky.",
+      "tags": ["fanny", "flames", "profile", "close up"],
+      "crop": null,
+      "why": "A frame of an official animated film that sat in _all/fanny/splash-art. Splash art keeps only the picture art, so it is a Scene still. 2560 by 1080, soft, no bars, no text."
+    },
+    {
+      "sha1": "1aae89595cd025e38a00540b5cf3311f0a3beaa7",
+      "keep": true,
+      "title": "Fanny prepares to strike",
+      "alt": "Fanny with orange hair and green eyes holds a long blade across her face in a ring of cyan lightning.",
+      "tags": ["fanny", "weapon", "lightning", "close up"],
+      "crop": null,
+      "why": "A frame of the same film (_all/fanny/splash-art/prepare-to-stab.png). A Scene still. 2560 by 1080, soft, no bars, no text."
+    }
+  ]
+}

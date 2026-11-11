@@ -1,0 +1,2468 @@
+{
+ "slice": 3,
+ "items": [
+  {
+   "sha1": "5d66bdbdfc408ae3a57c50c8d74da862b8451759",
+   "keep": true,
+   "title": "Ruby in a dim hall",
+   "alt": "Ruby stands in a dim hall with a shadowy figure in the light behind her and a glowing cube at her side.",
+   "tags": [
+    "interior",
+    "dark",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "377eacf764fe0432822bd148012a05f9ba5b8799",
+   "keep": true,
+   "title": "Oro towers at twilight",
+   "alt": "Tall towers of Planet Oro stand against a purple and orange twilight sky.",
+   "tags": [
+    "city",
+    "twilight",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "13765802633af1b2355b0b644ccd93a2fa977eb1",
+   "keep": true,
+   "title": "A ship leaves Oro",
+   "alt": "A small ship with a blue trail flies past the bright edge of a planet in space.",
+   "tags": [
+    "space",
+    "planet",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "d4812038f046b5584dd5666d09ad585630011c02",
+   "keep": true,
+   "title": "Ruby close up",
+   "alt": "A close up of Ruby's face with a star in her eye and a visor over the other side.",
+   "tags": [
+    "close up",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "85622e9a62b3aef89cc5a19055c5e1da9c05e26d",
+   "keep": true,
+   "title": "Ruby close up, second frame",
+   "alt": "A close up of Ruby's face, a little closer and lower than the frame before.",
+   "tags": [
+    "close up",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e3521a65cfc7d97dabd8c897e3a038e3f5a22431",
+   "keep": true,
+   "title": "Ship over Oro at twilight",
+   "alt": "A dark ship with a blue glow flies over the towers of Planet Oro under a purple and orange sky.",
+   "tags": [
+    "city",
+    "twilight",
+    "wide shot",
+    "low resolution"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "39486df8a8a1076f6f74bfb605280c4a1b05130a",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "near black frame with a faint glow"
+  },
+  {
+   "sha1": "2e0623beaa4717bcbc6316ae0e2400a159a896e2",
+   "keep": true,
+   "title": "A girl among red rocks",
+   "alt": "A small girl in a white dress sits curled up among large orange rocks.",
+   "tags": [
+    "rocks",
+    "wide shot",
+    "orange"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e35fdc3730ba9191275ac255a9cdade87a95de0a",
+   "keep": true,
+   "title": "A girl in the rubble",
+   "alt": "A small girl in a white dress sits alone in orange rubble and broken stone.",
+   "tags": [
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "fde50b27b39417be3be4d3e4f9940c4fc217b154",
+   "keep": true,
+   "title": "Red light in the base",
+   "alt": "A red lamp glows on a dark metal wall inside a research base.",
+   "tags": [
+    "interior",
+    "red",
+    "detail"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5c739b9a4465f46bc61ce51eeff91b5816e95cd6",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "same empty red corridor shot as two earlier pictures of the list that also show a figure; this plate adds nothing"
+  },
+  {
+   "sha1": "520f3a67772dab2225c9396170f64f0ebf2fe8a3",
+   "keep": true,
+   "title": "Ruby's father in the light",
+   "alt": "A man in a dark cloak stands in a shaft of light in a dark room.",
+   "tags": [
+    "dark",
+    "portrait",
+    "interior"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "6bf29336879d28f35c54a8b1c5c228e476ac19ff",
+   "keep": true,
+   "title": "Guinevere with Ruby and Angela",
+   "alt": "Guinevere stands close to the viewer in a bright domed lab while Ruby and Angela stand behind her.",
+   "tags": [
+    "interior",
+    "lab",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3781be9b70623450eee309f1e9eb09546cc9f83d",
+   "keep": true,
+   "title": "Ruby, Guinevere and Angela",
+   "alt": "Ruby, Guinevere and Angela stand in a row in a bright domed lab, and Ruby holds a small scope.",
+   "tags": [
+    "interior",
+    "lab",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b756dec23fbab7b526d426fcac70e50cbbc66bb2",
+   "keep": true,
+   "title": "Selena naps in class",
+   "alt": "Selena sleeps on her desk and dreams of a cupcake while students work around her.",
+   "tags": [
+    "school",
+    "interior",
+    "comedy"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "300c7971393923cdcbe787ce2f74c621e11407c4",
+   "keep": true,
+   "title": "Selena wakes in class",
+   "alt": "Selena lifts her head from her desk in a classroom while Layla waves from the back.",
+   "tags": [
+    "school",
+    "interior",
+    "comedy"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8b436cb6cabd1f34798e8b6f4ef1681a23b94de4",
+   "keep": true,
+   "title": "Ruby at the hologram desk",
+   "alt": "Ruby sits at a glowing console surrounded by holographic panels.",
+   "tags": [
+    "interior",
+    "hologram",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "fabd49c67a1008e5c6ea7479b8af4b5305055a40",
+   "keep": true,
+   "title": "A flower for Ruby",
+   "alt": "A gloved hand holds a daisy in front of Ruby, who works at a hologram panel.",
+   "tags": [
+    "interior",
+    "lab",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "63539aa6f5155a92e3ae78219639079a7b739cfc",
+   "keep": true,
+   "title": "Ruby before the holograms",
+   "alt": "Ruby stands small on a round platform in front of a wall of blue holograms.",
+   "tags": [
+    "interior",
+    "hologram",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "226042e43709fea1957998dc37b3784c57d374a2",
+   "keep": true,
+   "title": "Ruby opens Angela's file",
+   "alt": "Ruby looks at a hologram panel marked with Angela's name in a red lit room.",
+   "tags": [
+    "interior",
+    "hologram",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b03619e3e13a2db566779b9357f0958198660537",
+   "keep": true,
+   "title": "Ruby from behind",
+   "alt": "Ruby seen from behind with her long hair against a wall of holograms.",
+   "tags": [
+    "interior",
+    "hologram",
+    "back view"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "58808bde90d033835cd94d88dd06872d08a4d302",
+   "keep": true,
+   "title": "Ruby types on a panel",
+   "alt": "Ruby works a glowing hologram panel in a pale lab.",
+   "tags": [
+    "interior",
+    "hologram",
+    "lab"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "ac84b331800e120f664b047da361012b9f014715",
+   "keep": true,
+   "title": "A hand at Ruby's visor",
+   "alt": "A gloved hand reaches toward Ruby's face and her visor in a bright lab.",
+   "tags": [
+    "interior",
+    "lab",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "73a791debf0e9928182300dca177076c6c0dbd6b",
+   "keep": true,
+   "title": "Ruby in grayscale",
+   "alt": "A grayscale close up of Ruby looking down, with her visor and bow tie.",
+   "tags": [
+    "close up",
+    "portrait",
+    "monochrome"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c8fe93578757372f971a8fbee0cea9d6b3d3f91b",
+   "keep": true,
+   "title": "A blue figure on a hologram",
+   "alt": "A blue holographic figure appears on a screen with a circular diagram beside it.",
+   "tags": [
+    "interior",
+    "hologram",
+    "detail"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b9da41ac14023558b8196b47ad4d98e2e2f5b5b7",
+   "keep": true,
+   "title": "Ruby behind a hologram",
+   "alt": "Ruby looks out from behind a bright blue hologram screen.",
+   "tags": [
+    "interior",
+    "hologram",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e107ffa835395f44bf9ea128a30d5a85a89f5ae4",
+   "keep": true,
+   "title": "Ruby among flames",
+   "alt": "Ruby stands in orange armor with fire and ruins behind her, seen from the waist down.",
+   "tags": [
+    "fire",
+    "battle",
+    "low angle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "40d13e66049e6f99330d4410d87d7b294bda7849",
+   "keep": true,
+   "title": "Ruby in the burning city",
+   "alt": "Ruby with long hair stands in a burning city, lit orange by the fire.",
+   "tags": [
+    "fire",
+    "city",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "134ad30411af6e4b5dcc5332da3a3cbb69929d0c",
+   "keep": true,
+   "title": "Ruby's blade",
+   "alt": "A curved mechanical blade rises over a burning city at dusk.",
+   "tags": [
+    "fire",
+    "weapon",
+    "detail"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8aa9c2cb0e8954c17827e7734a831f5d934f1165",
+   "keep": true,
+   "title": "Ruby's red eye",
+   "alt": "A close up of Ruby with a red eye and a burning city blurred behind her.",
+   "tags": [
+    "close up",
+    "fire",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "0b697410947309c82cc9b8351722702161e3df80",
+   "keep": true,
+   "title": "Ruby's blue eye",
+   "alt": "A close up of Ruby with a blue eye and a burning city blurred behind her.",
+   "tags": [
+    "close up",
+    "fire",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2e88b5f0aac656821f3de498c50a1cb9e9126afb",
+   "keep": true,
+   "title": "A shadow behind chains",
+   "alt": "A dark figure with glowing blue eyes sits behind red chains and white butterflies.",
+   "tags": [
+    "dark",
+    "chains",
+    "mecha"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e7371556825523a077efc82e5a8e378957d04c42",
+   "keep": true,
+   "title": "Selena's mecha in a burst",
+   "alt": "Selena's mecha spins inside a burst of white and blue feathers of light.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8d4f3303042fa65755a7a35f36d3b8b198facd61",
+   "keep": true,
+   "title": "Selena's mecha strikes",
+   "alt": "Selena's mecha lunges forward in a flash of white and blue light.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "df97d6bdea7f9b80820c8c3f4f35f9a0d269a7c5",
+   "keep": true,
+   "title": "Selena's mecha stands ready",
+   "alt": "Selena's mecha stands in the dark with two blades held out to the sides.",
+   "tags": [
+    "mecha",
+    "dark",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b85bbfc173c98d9a6183e4a334a8685581d2265a",
+   "keep": true,
+   "title": "A pink slash",
+   "alt": "Selena's mecha swings a blade that trails a bright pink and orange slash.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "4fa16b4a80330b65aee967f58ab7ff2c3727836a",
+   "keep": true,
+   "title": "Selena's mecha crouches",
+   "alt": "Selena's mecha crouches with a pink blade in a dark hall.",
+   "tags": [
+    "mecha",
+    "battle",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "417e00fde3f018bf0a550aad0d4790b0120486da",
+   "keep": true,
+   "title": "Sparks in the fight",
+   "alt": "Selena's mecha attacks with orange sparks flying in front of it.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "982494a6f53ea3564c75f7b8323dfbebd7b16e1c",
+   "keep": true,
+   "title": "Selena's mecha helmet",
+   "alt": "A close up of the gold crowned helmet of Selena's mecha with a pink blade glowing.",
+   "tags": [
+    "mecha",
+    "close up",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bf73b376882cdcadb70ab999a411528bea3f439d",
+   "keep": true,
+   "title": "Selena's mecha and a pink creature",
+   "alt": "Selena's mecha faces a long pink segmented creature in a dark sky.",
+   "tags": [
+    "mecha",
+    "battle",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5b79169657a5ba71b80d210bded2eb3f351810b3",
+   "keep": true,
+   "title": "Selena's mecha leaps",
+   "alt": "Selena's mecha leaps across the frame with a long red blade.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b1362398eee8d146f517103e13f06415dbcfcac0",
+   "keep": true,
+   "title": "Selena's mecha in red mist",
+   "alt": "The helmet of Selena's mecha seen in a swirl of pink and red light.",
+   "tags": [
+    "mecha",
+    "close up",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9b2e8322d5763d96412fc472d7186a180ae970e5",
+   "keep": true,
+   "title": "A blade past the helmet",
+   "alt": "The helmet of Selena's mecha sits beside a bright pink blade and a large brown shape.",
+   "tags": [
+    "mecha",
+    "close up",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "214744972a38e45a147311e2f4df82c0378ae206",
+   "keep": true,
+   "title": "Selena's mecha in purple light",
+   "alt": "Selena's mecha spreads its arms in a purple storm of light.",
+   "tags": [
+    "mecha",
+    "battle",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5104f00c313e23f072c98e78496b78b3eda1ce72",
+   "keep": true,
+   "title": "Mecha helmet from below",
+   "alt": "An extreme close up of the gold and blue helmet of Selena's mecha seen from below.",
+   "tags": [
+    "mecha",
+    "close up",
+    "detail"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "90c010c446cda4943f271743470f8fd16b6da411",
+   "keep": true,
+   "title": "Obsidia's mecha rises",
+   "alt": "Obsidia's pink winged mecha rises in the dark while a blue blade crosses the front of the frame.",
+   "tags": [
+    "mecha",
+    "dark",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8ceeef55f15c28a4dfbe324ce37f2366fca522dd",
+   "keep": true,
+   "title": "Mecha fires a pink beam",
+   "alt": "Selena's mecha spins a blue blade and fires a wide pink beam.",
+   "tags": [
+    "mecha",
+    "battle",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1f3c2cadd30c1795b60fab5f61d7921966ed1bd0",
+   "keep": true,
+   "title": "Selena laughs",
+   "alt": "A close up of Selena smiling with her hand at her brow and a bright white grid behind her.",
+   "tags": [
+    "close up",
+    "portrait",
+    "school",
+    "comedy"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "63a002acc6d506e0242b737c8bab9bba26b796ad",
+   "keep": true,
+   "title": "Selena's three faces",
+   "alt": "Selena in a school blouse holds a finger to her lips, with two smaller faces of her at the sides and a warning sign below.",
+   "tags": [
+    "close up",
+    "school",
+    "comedy",
+    "graphic"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bdd7c92a1b707226332cab9e060cdace2db2ab1c",
+   "keep": true,
+   "title": "Selena at her desk",
+   "alt": "Selena sits at a desk in a bright lab and holds a small star wand while an idea bulb glows above her.",
+   "tags": [
+    "school",
+    "interior",
+    "lab"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "92d258608bf7dcdee4bb02bfbd6f7af7638c8a2c",
+   "keep": true,
+   "title": "Selena takes a photo",
+   "alt": "Selena sits at a desk with a startled face and holds up a phone while papers fly around her.",
+   "tags": [
+    "school",
+    "interior",
+    "comedy"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9df7e68f00c55a4e00a9873fcf36c2969ab08cf2",
+   "keep": true,
+   "title": "Selena in a glass door",
+   "alt": "Selena stands in a lit glass frame in a dark room with her hand at her chin.",
+   "tags": [
+    "dark",
+    "portrait",
+    "interior"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "4e29d93cade0bb0b592a8e5e4a5c87075c845e3d",
+   "keep": true,
+   "title": "Selena's eyes glow red",
+   "alt": "Selena stands in a lit glass frame in a dark room with glowing red eyes.",
+   "tags": [
+    "dark",
+    "portrait",
+    "red"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3bc88eefc411352e6bb0699b5a7315c055346b34",
+   "keep": true,
+   "title": "Selena under a stormy sky",
+   "alt": "Selena looks to the side with her hand raised under a heavy gray sky.",
+   "tags": [
+    "outdoor",
+    "sky",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "61b9b13fe1d263054c3a207666fc03338b0932c9",
+   "keep": true,
+   "title": "Selena rests on the roof",
+   "alt": "Selena sits on the edge of a roof with a blue glowing weapon beside her.",
+   "tags": [
+    "outdoor",
+    "wide shot",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a272fd3112a6214d1b2722e92d6a9d9955f290fa",
+   "keep": true,
+   "title": "A bound figure in red wires",
+   "alt": "A pale blue crystal figure hangs in the dark, held by thin red lines.",
+   "tags": [
+    "dark",
+    "chains",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "14d2334c10e794c1934db04fec1346742765e333",
+   "keep": true,
+   "title": "The bound figure in chains",
+   "alt": "A pale blue crystal figure floats in the dark with red chains around it.",
+   "tags": [
+    "dark",
+    "chains",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a22130d3ed7b8287b8e99deee0753ab44dae36d4",
+   "keep": true,
+   "title": "Chains around the figure",
+   "alt": "A glowing blue figure raises a fist inside red chains.",
+   "tags": [
+    "dark",
+    "chains",
+    "mecha"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "7f165daba057746062e78666d7fe49bc21fd5db3",
+   "keep": true,
+   "title": "The figure struggles",
+   "alt": "A pale blue figure with spread wings pulls against thick red chains.",
+   "tags": [
+    "dark",
+    "chains",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "7daa87398a36a902889850746231a31c160ed292",
+   "keep": true,
+   "title": "Red lightning on the chains",
+   "alt": "A close view of the blue figure with red lightning running along its chains.",
+   "tags": [
+    "dark",
+    "chains",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "db3affc221cfe60aabe038858f39cd6ebf21efa9",
+   "keep": true,
+   "title": "Falling in chains",
+   "alt": "The pale blue figure tilts and falls among large red chain links.",
+   "tags": [
+    "dark",
+    "chains",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "ce4f3df7a59b13618ace00a6e05f483b683777ab",
+   "keep": true,
+   "title": "Selena and Obsidia meet",
+   "alt": "Two girls with horns face each other very close in a pink light, one seen from behind and one with glowing eyes.",
+   "tags": [
+    "close up",
+    "portrait",
+    "pink"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c590c542aed31d2790c1fdfc40d7c9511b98cd6b",
+   "keep": true,
+   "title": "Selena in a pink haze",
+   "alt": "A horned girl in dark armor looks at the viewer in a pink haze with a winged shape far behind her.",
+   "tags": [
+    "portrait",
+    "pink",
+    "ruins"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1ca348c85eeb117df3a0432b0c8e0706e5567832",
+   "keep": true,
+   "title": "Selena's pose card",
+   "alt": "Selena smiles and flicks a black gloved hand at the viewer on a blue locker background, with her name in the corner.",
+   "tags": [
+    "portrait",
+    "graphic",
+    "school"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "39f35305029fa42247d8af62754ac80bdec9fe05",
+   "keep": true,
+   "title": "Selena with a stop sign",
+   "alt": "Selena holds a round stop sign candy beside her name in neon letters on a blue school background.",
+   "tags": [
+    "portrait",
+    "graphic",
+    "school"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "685496e4cb9a3b7b0ce744063ad56cbfbfd64f92",
+   "keep": true,
+   "title": "Selena among app windows",
+   "alt": "Selena in her blue suit holds a phone beside floating message windows on a grid background.",
+   "tags": [
+    "graphic",
+    "portrait",
+    "tech"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2cfaa53e92fd8f34e8bc71a5030de1ea357d163f",
+   "keep": true,
+   "title": "Selena in two panels",
+   "alt": "A split frame shows Selena in her blue suit on the left and a smaller Selena with a warning sign on the right.",
+   "tags": [
+    "graphic",
+    "portrait",
+    "tech"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "569bb2e79cb8bf7109696a8556ac968e955d1b29",
+   "keep": true,
+   "title": "A red eye in a frame",
+   "alt": "A close up of one red eye set in a frame, with dark blue crystal patterns around it.",
+   "tags": [
+    "close up",
+    "eye",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "caaf0e8d03114f5e1e04f0ba1479eba08398f21a",
+   "keep": true,
+   "title": "Selena holds a glass card",
+   "alt": "A horned girl in dark armor holds up a glowing glass card that has a blue figure inside it.",
+   "tags": [
+    "portrait",
+    "dark",
+    "tech"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8e5083d4865802493ea493484412e107a2ff4329",
+   "keep": true,
+   "title": "Rows of crystal cases",
+   "alt": "Rows of blue crystal cases fill a hall while a horned girl in armor stands at the right.",
+   "tags": [
+    "interior",
+    "blue",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bd64b87272e11f7577cca3f073c4cab065e9d048",
+   "keep": true,
+   "title": "Red chains and a blue figure",
+   "alt": "A figure in red light is wrapped in chains at the left while a blue crystal figure sits behind glass at the right.",
+   "tags": [
+    "dark",
+    "chains",
+    "red"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8adcc238e84823d4a070193504e813ef7ab2c85a",
+   "keep": true,
+   "title": "A face in blue light",
+   "alt": "A close up of a girl with blue hair and glowing pink eyes, lit blue, with horns at her sides.",
+   "tags": [
+    "close up",
+    "portrait",
+    "blue"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e6cbf92776a38e5ee9a9fc61dcdece0b2f9dd45a",
+   "keep": true,
+   "title": "A blue figure holds an orb",
+   "alt": "A figure with long blue hair and glowing eyes holds a glowing orb while red chains hang around her.",
+   "tags": [
+    "dark",
+    "chains",
+    "portrait",
+    "blue"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1788291784f62a9c45927dfc4e367281b4739642",
+   "keep": true,
+   "title": "Selena's red eye and claws",
+   "alt": "A close up of Selena's red eye with black claws crossing the frame.",
+   "tags": [
+    "close up",
+    "eye",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3e94f4e4cbb4bb874ad7ac29342c1a34827f0405",
+   "keep": true,
+   "title": "Selena hangs in chains",
+   "alt": "Selena hangs in the air in silver light with heavy chains around her limbs.",
+   "tags": [
+    "chains",
+    "wide shot",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c14f040c43e85c288ab4c93693d58e7a43f3112d",
+   "keep": true,
+   "title": "Selena smiles behind claws",
+   "alt": "Selena smiles with her black clawed fingers at her chin against a purple starry sky.",
+   "tags": [
+    "close up",
+    "portrait",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2cbfbe168c2ca611bf42a83f08fcfefb83d08402",
+   "keep": true,
+   "title": "A winged figure across the ruins",
+   "alt": "A winged figure in pink stands far away on broken stone between two giant legs.",
+   "tags": [
+    "ruins",
+    "wide shot",
+    "pink"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "0d10890df37e63eac008e9ade9ae8e02d2190385",
+   "keep": true,
+   "title": "Obsidia and Selena face to face",
+   "alt": "A pink haired girl and a blonde girl with horns look at each other from very close in the dark.",
+   "tags": [
+    "close up",
+    "portrait",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "737e1d2f5bbc25149af09b377e20c671759423be",
+   "keep": true,
+   "title": "Two figures from above",
+   "alt": "Seen from above, a pink haired girl and a blonde girl stand apart on a dark floor.",
+   "tags": [
+    "dark",
+    "wide shot",
+    "high angle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f5664719cecb5c7a43268ad6afeff6ff2510b979",
+   "keep": true,
+   "title": "Selena beside Obsidia",
+   "alt": "Selena in dark armor stands at the left of Obsidia, who wears a gold collar, with a purple orb of light in front of them.",
+   "tags": [
+    "portrait",
+    "dark",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "801a99f50b97dee1a42a1ce374b7fe3d2859a550",
+   "keep": true,
+   "title": "Selena walks away",
+   "alt": "Selena walks away from the viewer on a pale floor between large spiked arms.",
+   "tags": [
+    "back view",
+    "dark",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "404456a6e1a788660cb6bf5a101739cb215d3844",
+   "keep": true,
+   "title": "Selena among spiked chains",
+   "alt": "Selena stands in dark armor with long spiked chains curling around her.",
+   "tags": [
+    "dark",
+    "chains",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1e586aea505a3ff53ad026b6c2a4e6fb416a73a5",
+   "keep": true,
+   "title": "Two figures in a dark hall",
+   "alt": "Selena and a pink haired figure stand far apart in a dark hall with a red light between them.",
+   "tags": [
+    "dark",
+    "wide shot",
+    "hall"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "24b425252ad494df48cd65848f9e8f79ca940fbe",
+   "keep": true,
+   "title": "Selena in black chains",
+   "alt": "Selena stands in the center of a ring of black chains with blue blades at her sides.",
+   "tags": [
+    "dark",
+    "chains",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9dcb6908a0a400740c9e77406644692147ffc155",
+   "keep": true,
+   "title": "Selena's eyes in lightning",
+   "alt": "A close up of Selena's red eyes with blue lightning cutting across her face.",
+   "tags": [
+    "close up",
+    "eye",
+    "lightning"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "cbd34fad82096d0ea69d65f28da09ea56f8bbf22",
+   "keep": true,
+   "title": "Selena in lightning",
+   "alt": "Selena leaps through the dark with blue lightning around her and a chain weapon trailing.",
+   "tags": [
+    "action",
+    "lightning",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e4ba70346b551fc970db6713f5a685227e32bec5",
+   "keep": true,
+   "title": "A claw over her face",
+   "alt": "A black clawed hand covers part of Selena's face against an orange flash.",
+   "tags": [
+    "close up",
+    "action",
+    "orange"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9dedd77fc720d5e4285ddd67a0dc183fb9ae1af2",
+   "keep": true,
+   "title": "Selena in a blue storm",
+   "alt": "Selena stands in dark armor inside a blue rush of wind with two blades floating at her sides.",
+   "tags": [
+    "portrait",
+    "blue",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5fe47ac0b87c3ea3d229c6654f83a84c25cae897",
+   "keep": true,
+   "title": "Obsidia looms over Selena",
+   "alt": "A huge pink haired face looks down at a small blonde figure in dark armor in a purple void.",
+   "tags": [
+    "dark",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "7391a929bc49790d6a9cd0941f596814b4d54149",
+   "keep": true,
+   "title": "Selrick Academy building",
+   "alt": "A white academy building with a rooftop fence stands under a bright blue sky.",
+   "tags": [
+    "school",
+    "exterior",
+    "day"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "61a5890e16edacbeee5300ce2a803e05bf00c5b6",
+   "keep": true,
+   "title": "A tower under storm clouds",
+   "alt": "A tall glass tower with a bar across its top stands under heavy dark clouds.",
+   "tags": [
+    "exterior",
+    "dark",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "cef695d3c465f1375a1de5dc6d93bd7abfa82dba",
+   "keep": true,
+   "title": "A bright academy corridor",
+   "alt": "A clean hexagon shaped corridor with light strips on the ceiling.",
+   "tags": [
+    "interior",
+    "corridor",
+    "tech"
+   ],
+   "crop": {
+    "x": 0,
+    "y": 0,
+    "w": 1,
+    "h": 0.97
+   },
+   "why": "a seek bar time tag (00:01) sits in the bottom left corner; the bottom 3 percent is cut away"
+  },
+  {
+   "sha1": "51b8f006379d20da9e03d3f59d38ddbbd4459e6b",
+   "keep": true,
+   "title": "Students watch an alert map",
+   "alt": "Students sit in rows and watch a large map with a red warning sign.",
+   "tags": [
+    "school",
+    "interior",
+    "hologram"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a19454da496acefe28dbb37711b38daba68807ff",
+   "keep": true,
+   "title": "The alert map spreads",
+   "alt": "Students sit in rows and watch a map where the red warning area has grown.",
+   "tags": [
+    "school",
+    "interior",
+    "hologram"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e7194ef4252d03b65c26a7d26e0cffebbb07619c",
+   "keep": true,
+   "title": "Selrick Academy in pink light",
+   "alt": "The academy stands under pink and orange clouds with city towers behind it.",
+   "tags": [
+    "school",
+    "exterior",
+    "pink sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bbda409ac6a38a112423a01c17f880b31706ff67",
+   "keep": true,
+   "title": "Students walk to the academy",
+   "alt": "Students in uniform walk toward the academy plaza on a bright day.",
+   "tags": [
+    "school",
+    "exterior",
+    "day"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f06007eb06b6be620c1a9d8656e4b1575437a8cc",
+   "keep": true,
+   "title": "Students see a banner",
+   "alt": "Students gather in front of the academy and look at a large banner that shows two Aspirants fighting.",
+   "tags": [
+    "school",
+    "exterior",
+    "crowd"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "0295cde7bd532d1b5a4101f726210061a99ce945",
+   "keep": true,
+   "title": "Guinevere greets the students",
+   "alt": "Guinevere stands on the academy balcony with her hand raised while students watch from below.",
+   "tags": [
+    "school",
+    "exterior",
+    "day"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a691e6d63171db47562b1ccc2780bd4eaf4b6dd4",
+   "keep": true,
+   "title": "Team-Up Day board",
+   "alt": "Students crowd around a glowing board that reads The Aspirants Team-Up Day.",
+   "tags": [
+    "school",
+    "interior",
+    "crowd"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8da2bcab55cf9e941aec0e98e68f682f4e655e6a",
+   "keep": true,
+   "title": "Students talk in the hall",
+   "alt": "A boy in a navy blazer with a red tie talks with other students in a bright corridor.",
+   "tags": [
+    "school",
+    "interior",
+    "corridor"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "0f81c5f7a556dc0af5f6fa05ee17bc89a859a42d",
+   "keep": true,
+   "title": "Guinevere talks with a student",
+   "alt": "Guinevere stands beside a boy in a navy blazer and listens to him in a bright corridor.",
+   "tags": [
+    "school",
+    "interior",
+    "corridor"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5953210d70593ba800146a5b4cc7e3aac7802eb6",
+   "keep": true,
+   "title": "Selena leaps on the rail",
+   "alt": "Selena in a school uniform kicks off a railing while her mecha flies beside her.",
+   "tags": [
+    "school",
+    "exterior",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e5c04cee69c345929e8794af1c4e80eeac9d8fc2",
+   "keep": true,
+   "title": "Selena hurries to school",
+   "alt": "Selena in a school uniform grabs her head while her mecha flies in beside her in a hall.",
+   "tags": [
+    "school",
+    "interior",
+    "comedy"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "55ef4001f18b17052daf911ed232afdf29cb161e",
+   "keep": true,
+   "title": "The red star over the city",
+   "alt": "Selena sits on a roof beside her mecha while a red star shaped tear opens in the sky above a dark city.",
+   "tags": [
+    "city",
+    "night",
+    "red"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "68890c33b69a1dcf32ba387938c64e9f9a1846e6",
+   "keep": true,
+   "title": "Red sky over the ruins",
+   "alt": "A dark crystal structure hangs in a red sky with small dark ships around it.",
+   "tags": [
+    "sky",
+    "red",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5a3035073acf14068e317638dd2c9a6ee499b0a6",
+   "keep": true,
+   "title": "Dark spires in the red sky",
+   "alt": "A low angle view of long dark spires tearing through a red cloudy sky.",
+   "tags": [
+    "sky",
+    "red",
+    "low angle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b2947a407258f52e18c87bb80ea3ae5d97d75869",
+   "keep": true,
+   "title": "The red tear in the sky",
+   "alt": "A huge star shaped tear glows in a red sky over a dark city.",
+   "tags": [
+    "sky",
+    "red",
+    "city"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "453b3b3591ecbd2290fa6ff676ed36a283394203",
+   "keep": true,
+   "title": "The red tear and its ships",
+   "alt": "The same red tear hangs in the sky with dark ships drifting around it.",
+   "tags": [
+    "sky",
+    "red",
+    "city"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "64bee471f37e1fbb378c7beec121326217e825a3",
+   "keep": true,
+   "title": "Red fire in the tear",
+   "alt": "A close view of the glowing red edges of the tear with dark spikes in the middle.",
+   "tags": [
+    "sky",
+    "red",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a8313f84dcf3b769b8b27bbfbebcb32a46a08ac6",
+   "keep": true,
+   "title": "A purple tear in the night",
+   "alt": "A star shaped tear of purple light opens in the dark sky above a ruined street.",
+   "tags": [
+    "sky",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bc6089017dadc560ffb5cdd6dfad711186e9e0fa",
+   "keep": true,
+   "title": "Mother Matrix in purple light",
+   "alt": "A huge dark armored shape with claws fills a sky of purple lightning.",
+   "tags": [
+    "mecha",
+    "purple",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1edada555e2daf6d0cb92e66d1d0f436d43a8661",
+   "keep": true,
+   "title": "Mother Matrix spreads its wings",
+   "alt": "A huge dark winged machine spreads across a purple sky above a ruined city.",
+   "tags": [
+    "mecha",
+    "purple",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "fc8fa965564a49e846711ccd53015319d8b39fd0",
+   "keep": true,
+   "title": "Dark machines in the ruins",
+   "alt": "Dark spider like machines walk through a ruined city under a purple tear while a small figure watches.",
+   "tags": [
+    "city",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "abdec1ced7154d57314942a8fa4250f2bd8b0fd5",
+   "keep": true,
+   "title": "A dark giant strikes",
+   "alt": "A huge dark armored machine swings a clawed arm in purple light.",
+   "tags": [
+    "mecha",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "fbfb1e9def138caa2cccb788a8766a64cf23cbb5",
+   "keep": true,
+   "title": "A giant in the dust",
+   "alt": "A huge dark machine stands in dust and smoke under a purple sky.",
+   "tags": [
+    "mecha",
+    "purple",
+    "city"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2cc120fb9eb3959c76ee95c6ad310f947ddab6f3",
+   "keep": true,
+   "title": "A comet of orange light",
+   "alt": "A bright orange and blue trail of light streaks across the purple sky toward the tear.",
+   "tags": [
+    "sky",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "55474152c41620f2ff88d8a80a510ea0f7019ed2",
+   "keep": true,
+   "title": "A figure on the academy roof",
+   "alt": "A figure in dark armor stands on the academy roof while a black star shaped tear opens in the purple sky.",
+   "tags": [
+    "school",
+    "exterior",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2349e9389ef69e1998877d83a062c3f04bd57c5b",
+   "keep": true,
+   "title": "The tear through a round window",
+   "alt": "A pink star shaped tear glows in a dark cloudy sky, seen through a round window.",
+   "tags": [
+    "sky",
+    "dark",
+    "pink"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "43b4d0dcda5825699afa1018aad82d31172ffb15",
+   "keep": true,
+   "title": "Students watch the tear",
+   "alt": "Students watch a big screen that shows the star shaped tear and a pale figure below it.",
+   "tags": [
+    "school",
+    "interior",
+    "hologram"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b10f406a5f4b51e6e9089973bfade31e53f0aeb7",
+   "keep": true,
+   "title": "Guinevere flies into purple light",
+   "alt": "A tiny figure flies through streaks of purple and blue light at the lower right.",
+   "tags": [
+    "sky",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "559e49a4de2330665d2e93d82ae2abf25caacdb1",
+   "keep": true,
+   "title": "Guinevere faces the tear",
+   "alt": "Guinevere stands in a ruined city and looks up at a star shaped tear in the purple sky.",
+   "tags": [
+    "city",
+    "ruins",
+    "purple",
+    "back view"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2d06635bf064f8eebdc5633fa3b2e5caec1a88e7",
+   "keep": true,
+   "title": "Guinevere in the ruins",
+   "alt": "Guinevere stands with a hand on her hip and a surprised look, with a ruined city behind her.",
+   "tags": [
+    "portrait",
+    "ruins",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "18a34ac8f86c54574dfb0517712b488152d4fe74",
+   "keep": true,
+   "title": "Students watch machines on screen",
+   "alt": "Students watch a big screen that shows spider like machines and a pale figure.",
+   "tags": [
+    "school",
+    "interior",
+    "hologram"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "a8c47dd88565f3ac31375e355a3aea18a4e07808",
+   "keep": true,
+   "title": "Mother Matrix in lightning",
+   "alt": "A huge dark armored head with claws rises in a mass of purple lightning.",
+   "tags": [
+    "mecha",
+    "purple",
+    "lightning"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2c29b30a54a2575d098ba5d81a74e97b6b7713f4",
+   "keep": true,
+   "title": "Students watch the dark giant",
+   "alt": "Students watch a big screen that shows a dark giant and many machines.",
+   "tags": [
+    "school",
+    "interior",
+    "hologram"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c3a0afbf5a5b6b6415cce95e4ac663b5d9acd447",
+   "keep": true,
+   "title": "Vexana in the purple storm",
+   "alt": "Vexana in a long purple cloak holds a staff in a storm of lightning, with a dark machine behind her.",
+   "tags": [
+    "battle",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "71e1dd4510f8d7d3d8817a14ecd70977768e7673",
+   "keep": true,
+   "title": "Orange light past the tear",
+   "alt": "An orange trail of light curves past the glowing edge of the purple tear.",
+   "tags": [
+    "sky",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "74ef864d98bbde475dcdced0c78087ff28f6c28e",
+   "keep": true,
+   "title": "Guinevere before the black star",
+   "alt": "Guinevere floats in the air in front of a huge black star shaped tear.",
+   "tags": [
+    "sky",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9d944fada65a3a4d5fdd07440ec14748fb89f722",
+   "keep": true,
+   "title": "Inside the purple mass",
+   "alt": "A dark purple mass with glowing edges fills the frame, with an orange spark on the right.",
+   "tags": [
+    "purple",
+    "abstract",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "88f7afb7ec408c6f0c473d382bbea21cd55d4691",
+   "keep": true,
+   "title": "A flare in the purple tear",
+   "alt": "A bright white flare burns at the center of the tear while an orange streak crosses the lower left.",
+   "tags": [
+    "purple",
+    "sky",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3e78112d42b49ad35317ab81b7145503b8e0f822",
+   "keep": true,
+   "title": "The dark mass breaks",
+   "alt": "The dark mass of the tear breaks into pieces in a burst of pink and purple light.",
+   "tags": [
+    "purple",
+    "action",
+    "sky"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "da9b33a072f5aaca10bd19cfca94baf986159488",
+   "keep": true,
+   "title": "Mother Matrix reaches out",
+   "alt": "A huge dark armored head with claws reaches forward, closer than the frame before, in purple lightning.",
+   "tags": [
+    "mecha",
+    "purple",
+    "lightning"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c277a0c37f4f1249fe4f6cbd02cf207d86e67eb7",
+   "keep": true,
+   "title": "Three trails of light",
+   "alt": "Three lines of blue, yellow and red light race across the frame toward a huge dark winged machine.",
+   "tags": [
+    "mecha",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9602bd594dec5ead8317bd4deda3babc50e8fe4c",
+   "keep": true,
+   "title": "A white drone past the tear",
+   "alt": "A small white drone shaped like a cat flies in the foreground while a figure fights a dark shape in the tear.",
+   "tags": [
+    "purple",
+    "action",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "19f9004bf4c4b6d4b19ac6eb5b9da0e1191f6df5",
+   "keep": true,
+   "title": "A ruined city in fog",
+   "alt": "A gray city of tall towers lies in fog with small fires burning.",
+   "tags": [
+    "city",
+    "ruins",
+    "gray"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "37d851c464252ca2db1dd331957586e6aa0ca91d",
+   "keep": true,
+   "title": "Vexana and Guinevere fall",
+   "alt": "Vexana with black hair and Guinevere in a red skirt fall together through bright green and yellow light.",
+   "tags": [
+    "portrait",
+    "painted",
+    "day"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b0e3da0de62635208f32368e067bc6513594ef37",
+   "keep": true,
+   "title": "Terrinia under attack",
+   "alt": "A coastal city burns at dusk while ships streak across a glowing blue sea.",
+   "tags": [
+    "city",
+    "exterior",
+    "wide shot",
+    "night"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "908c1c27872fa4864ef8c65211d00105badf2215",
+   "keep": true,
+   "title": "Two people watch a ship",
+   "alt": "Two people in the street of a neon city look up at a huge ship overhead.",
+   "tags": [
+    "city",
+    "night",
+    "back view"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c8fe6f2655bd223f52005e865b1a3c1dc5ae7aaf",
+   "keep": true,
+   "title": "A street burns",
+   "alt": "A neon city street burns and a bridge has collapsed under a cloud of smoke.",
+   "tags": [
+    "city",
+    "fire",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "92029641358d45d876a63864f2c26256889f6be9",
+   "keep": true,
+   "title": "Terrinia skyline, orange sky",
+   "alt": "Orange light falls on a skyline with a tall beam tower and crab like machines on the roofs.",
+   "tags": [
+    "city",
+    "orange sky",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "709ec2307404b1080d0fd994b06d05ab48a009c1",
+   "keep": true,
+   "title": "A ship over burning Terrinia",
+   "alt": "A ship flies over a burning orange skyline with machines climbing the buildings.",
+   "tags": [
+    "city",
+    "orange sky",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8eed9bbc92d4d1a89ec9c43565ff81c0ee3e0f99",
+   "keep": true,
+   "title": "A ship among the towers",
+   "alt": "A ship hovers on blue thrusters between ruined towers in warm light.",
+   "tags": [
+    "city",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "4985fcc8260477e895426ff5aae8b066ab8ef61e",
+   "keep": true,
+   "title": "Terrinia at night",
+   "alt": "The Terrinia skyline sits under a night sky with a thin beam rising from its tower.",
+   "tags": [
+    "city",
+    "night",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f6f63d0699782f6ca74d373f7b07d8293e7c5533",
+   "keep": true,
+   "title": "Golden light over Terrinia",
+   "alt": "The sun glows behind the Terrinia skyline under a sky of orange clouds.",
+   "tags": [
+    "city",
+    "golden light",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "10cc377e05cc7791778278c497bbe992960e27f3",
+   "keep": true,
+   "title": "The Council hall",
+   "alt": "A tall dark hall with purple windows and a round glowing floor, with one tiny figure standing in it.",
+   "tags": [
+    "interior",
+    "hall",
+    "dark",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "583f1d9f507aa4ad4b26e7325db1a1f21de94e6b",
+   "keep": true,
+   "title": "The Council's chamber",
+   "alt": "A round blue stage with glowing pillars stands in a beam of light in a dark chamber.",
+   "tags": [
+    "interior",
+    "hall",
+    "blue",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "d8f822209bc14c84859cd8d8f4254631580a8fdc",
+   "keep": true,
+   "title": "Ruby under a clear sky",
+   "alt": "Ruby stands against a bright blue sky with white clouds and falling leaves.",
+   "tags": [
+    "portrait",
+    "outdoor",
+    "day"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3e9e01812373157dde36b7a87fb7c5565bc5f24b",
+   "keep": true,
+   "title": "Vexana with black hair",
+   "alt": "A close up of Vexana with long black hair and violet eyes looking at the viewer.",
+   "tags": [
+    "close up",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "6aed3a70ff1b5d1657cf872da4122de541b577e4",
+   "keep": true,
+   "title": "Vexana reaches out",
+   "alt": "Vexana in a school uniform reaches toward the viewer with a spear in her other hand, in a cloud of dust.",
+   "tags": [
+    "portrait",
+    "action",
+    "dust"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8e46af75f817dda2f1f7dd2510fac029fc3e9dd7",
+   "keep": true,
+   "title": "A photo on a phone",
+   "alt": "A gloved hand holds a phone that shows a photo of Guinevere and Vexana, with plush toys on the desk.",
+   "tags": [
+    "interior",
+    "close up",
+    "memory"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "8bc7838e8a8e17a9ea28a468cdf5b7f0329ba299",
+   "keep": true,
+   "title": "A room with a city view",
+   "alt": "A tidy room with a desk and a window that looks out on a neon city at night.",
+   "tags": [
+    "interior",
+    "room",
+    "vertical"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "05deebfe71434b9399b2284edeebf289edb05fcd",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "burned in subtitle across the middle of a vertical frame, cannot be cropped away"
+  },
+  {
+   "sha1": "1c49d57de9b419c69d750b6d9c231fe2f5ef7003",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "burned in subtitle across the middle of a vertical frame, cannot be cropped away"
+  },
+  {
+   "sha1": "b670493059f35e219b763765e84426b71965c68d",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "burned in subtitle across the middle of a vertical frame, cannot be cropped away"
+  },
+  {
+   "sha1": "89b9284e8f786e2fe890ff1bb18442c4dd382a73",
+   "keep": true,
+   "title": "A purple blast on the roof",
+   "alt": "Guinevere and Vexana stand on a rooftop at night as a bright purple blast bursts to the left.",
+   "tags": [
+    "battle",
+    "night",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "875420770eb55ec88b02053872e42d3d39f2b4d6",
+   "keep": true,
+   "title": "Guinevere and Vexana on the balcony",
+   "alt": "Guinevere and Vexana lean on a balcony rail with students standing behind them.",
+   "tags": [
+    "school",
+    "exterior",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "e5e6d7d3e3d20600557cca9cf237311cd2d19b1e",
+   "keep": true,
+   "title": "Vexana marked absent",
+   "alt": "Guinevere stands in front of a hologram that shows a chart and a note that Vexana is absent.",
+   "tags": [
+    "interior",
+    "hologram",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "63b9ec27248d7c8cbfd18cb4c89a548f693a7150",
+   "keep": true,
+   "title": "Guinevere faces a purple mecha",
+   "alt": "Guinevere reaches out toward a purple and white mecha that hovers over a ruined city at dusk.",
+   "tags": [
+    "battle",
+    "mecha",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c537bb94f85b0d2babcc2616daad83e6e9a864f5",
+   "keep": true,
+   "title": "Guinevere and Vexana apart",
+   "alt": "Guinevere and Vexana stand facing each other on a ruined plain with star shaped blades behind Vexana.",
+   "tags": [
+    "battle",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "181ced5f98260e5c3eff57f8666146927aeec16d",
+   "keep": true,
+   "title": "Vexana turns away",
+   "alt": "Guinevere looks on as Vexana turns away with purple star blades spread behind her.",
+   "tags": [
+    "battle",
+    "ruins",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "d47262dfd36b9687e22f9297ba0c45ad63645828",
+   "keep": true,
+   "title": "Guinevere and Vexana clash",
+   "alt": "Guinevere leaps back from a purple orb as Vexana reaches toward her on a ruined plain.",
+   "tags": [
+    "battle",
+    "action",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3f36cf9342eb5010af44b5beec2b61ced472fee7",
+   "keep": true,
+   "title": "A blast between them",
+   "alt": "Guinevere and Vexana are caught in a burst of pink light and flying shards.",
+   "tags": [
+    "battle",
+    "action",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f340aeb3f52c9e8edc98874063671c075596284f",
+   "keep": true,
+   "title": "Vexana with star blades",
+   "alt": "Vexana stands with a staff and a ring of glowing star blades behind her on a ruined plain.",
+   "tags": [
+    "portrait",
+    "ruins",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "861f5339bbb352f4cc5401177762b911741b03da",
+   "keep": true,
+   "title": "Vexana's eye in the light",
+   "alt": "A close up of Vexana's violet eye and silver hair with white lines of light around her.",
+   "tags": [
+    "close up",
+    "eye",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "72c4207c7dce57e293f55b4e98220ad5466df252",
+   "keep": true,
+   "title": "Vexana raises her star blades",
+   "alt": "Vexana looks down with glowing purple star blades floating around her in a blue dusk.",
+   "tags": [
+    "portrait",
+    "purple",
+    "blue"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b469521310037550a51040d0321ce29bd3defd46",
+   "keep": true,
+   "title": "Vexana beside Guinevere",
+   "alt": "Vexana stands with her staff and star blades beside Guinevere in a ruined city.",
+   "tags": [
+    "portrait",
+    "ruins",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "aebc0322f0e5edfd8b5b85ceba7132cc7d007c2d",
+   "keep": true,
+   "title": "Vexana, hands at her chest",
+   "alt": "Vexana holds her hands to her chest in front of a fan of glowing star blades.",
+   "tags": [
+    "close up",
+    "portrait",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2e293f978ea5fde1ec7a351e0e613b19e13f7941",
+   "keep": true,
+   "title": "Two figures in the storm",
+   "alt": "Two small figures float far apart in a dark stormy sky.",
+   "tags": [
+    "dark",
+    "sky",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "0c53420fafaba4b145ea3e4237d2c2b4a897a015",
+   "keep": true,
+   "title": "Reaching for each other",
+   "alt": "Vexana and Guinevere reach toward each other across a bright burst of light.",
+   "tags": [
+    "action",
+    "portrait",
+    "light"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f727b13acad548dfb5e3346ebdc81dd4ee625f84",
+   "keep": true,
+   "title": "Vexana and Guinevere, pink sky",
+   "alt": "Vexana and a smiling Guinevere stand side by side under a pink and purple sky.",
+   "tags": [
+    "portrait",
+    "pink sky",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3feda810b50d427fce8d93e7d26cd4b53b5bc89f",
+   "keep": true,
+   "title": "Vexana in profile",
+   "alt": "Vexana in profile with long lavender hair, with ruins in the dusk behind her.",
+   "tags": [
+    "portrait",
+    "dusk",
+    "close up"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "4bce264f99b47c88ee3f3fd3f3066ceb5138cc36",
+   "keep": true,
+   "title": "Two figures among the ruins",
+   "alt": "Vexana in glowing armor stands at the left and Guinevere at the right on a ruined plain at night.",
+   "tags": [
+    "ruins",
+    "night",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "645cc70a3014ddead3eb0777d6b204eeb360d054",
+   "keep": true,
+   "title": "Vexana and Guinevere side by side",
+   "alt": "Vexana and a startled Guinevere stand together in front of ruined buildings.",
+   "tags": [
+    "portrait",
+    "ruins",
+    "group"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "07448da6dc6542d4c5327a0978b3d2a494846354",
+   "keep": true,
+   "title": "Vexana faces a dark machine",
+   "alt": "Vexana with star blades faces a red and black machine in a ruined city lit red.",
+   "tags": [
+    "battle",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2e38883c49b1ee191714345868925688bbafe0f8",
+   "keep": true,
+   "title": "Vexana's staff over the field",
+   "alt": "The glowing head of Vexana's staff is in the foreground of a wide gray field with tiny figures far away.",
+   "tags": [
+    "battle",
+    "wide shot",
+    "fog"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "9b6e2d89f9581e4fc78ec478ccefa6c24fd384c7",
+   "keep": true,
+   "title": "Vexana and the blue ring",
+   "alt": "Vexana stands among star blades with a glowing blue ring in front of her.",
+   "tags": [
+    "battle",
+    "purple",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b882d8fabffa843bcbc0a5f9c6a10366f3c040c9",
+   "keep": true,
+   "title": "A girl and a black ring",
+   "alt": "A girl with pink hair spreads her arms beside a glowing black ring in a streak of purple light.",
+   "tags": [
+    "action",
+    "purple",
+    "ruins"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2c7fc51ed085c18f327fda56cfe34a970694966c",
+   "keep": true,
+   "title": "Vexana points her staff",
+   "alt": "Vexana points her long staff, which ends in a glowing ring, across a foggy city.",
+   "tags": [
+    "battle",
+    "fog",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "f8d86c100e1bcaf73cfcc00e2b97d109eff446b6",
+   "keep": true,
+   "title": "Vexana among dark legs",
+   "alt": "Vexana looks back over her shoulder between the long black legs of the machines.",
+   "tags": [
+    "battle",
+    "ruins",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "67306de12cb954c9def3238962f7e86b8ebcd475",
+   "keep": true,
+   "title": "Vexana close up",
+   "alt": "A close up of Vexana with silver hair and a sad, tense face.",
+   "tags": [
+    "close up",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "6580d7f87f037b91295584110d1a047cf8f7a74a",
+   "keep": true,
+   "title": "Machines march in the fog",
+   "alt": "A long line of tall dark machines walks across a gray plain toward a ruined city.",
+   "tags": [
+    "ruins",
+    "fog",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "b47ae026aedf028f0605e39babc45526517b0677",
+   "keep": true,
+   "title": "Machines close in",
+   "alt": "Tall dark machines with claws close in around a small purple figure in the middle of a road.",
+   "tags": [
+    "battle",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5f7a53aa6b3034cc283fe027ad349c912ce7297c",
+   "keep": true,
+   "title": "Vexana's star blades flare",
+   "alt": "Vexana in profile with glowing star blades spread behind her head.",
+   "tags": [
+    "close up",
+    "purple",
+    "portrait"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "d1c4f14351e9f767363a69f690702136378bbea7",
+   "keep": true,
+   "title": "Vexana looks down",
+   "alt": "Vexana with blue hair looks down and to the side with a gray city behind her.",
+   "tags": [
+    "close up",
+    "portrait",
+    "fog"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "4fb91a6499ee65b88049342ca0be47a0dca2018f",
+   "keep": true,
+   "title": "Two figures across the field",
+   "alt": "Two small figures stand far apart on a ruined gray field under a dark sky, with a wrecked machine at the left.",
+   "tags": [
+    "ruins",
+    "fog",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bbb879a54a2daa45f3a05fd2350a9a071ac48cb7",
+   "keep": true,
+   "title": "Guinevere past a dark leg",
+   "alt": "Guinevere stands in the distance behind the huge dark leg of a machine.",
+   "tags": [
+    "ruins",
+    "wide shot",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3d01d435fbe1f43f5117513e1a740fa53d512207",
+   "keep": true,
+   "title": "Vexana's glowing eyes",
+   "alt": "A close up of Vexana's glowing violet eyes under blue hair, with gold star blades at the sides.",
+   "tags": [
+    "close up",
+    "eye",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "462e8a9e8f7fa16e5256504760b643dada25d7f3",
+   "keep": true,
+   "title": "Vexana holds a glowing ring",
+   "alt": "Vexana stands with star blades behind her and a bright pink ring of light in front of her hand.",
+   "tags": [
+    "battle",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "3067275a57fd83c24a5c00c2094ee6c69c08df6e",
+   "keep": true,
+   "title": "Vexana beside a blade",
+   "alt": "A close up of Vexana's face with a glowing blade tip in front of it.",
+   "tags": [
+    "close up",
+    "portrait",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "7cbc71b294973383b327df225cc690990652b41f",
+   "keep": true,
+   "title": "Vexana in a burst of light",
+   "alt": "Vexana spreads her arms with her ring staff in a burst of purple and white light.",
+   "tags": [
+    "action",
+    "purple",
+    "battle"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "1bce13c4c71a5ed30fcb97da74778a08bc7c4a4b",
+   "keep": true,
+   "title": "Guinevere flies through clouds",
+   "alt": "Guinevere flies low through dark clouds in her red and gold armor, with a small figure high above.",
+   "tags": [
+    "sky",
+    "action",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c5c3bd68090eae80b47885591d1cfc50d19e116f",
+   "keep": false,
+   "title": "",
+   "alt": "",
+   "tags": [],
+   "crop": null,
+   "why": "same moment as 192, the next picture (Vexana on the machine plain); 192 shows her face to the viewer and is kept"
+  },
+  {
+   "sha1": "6d07f08435afc3d544dfa66faded75ee492af957",
+   "keep": true,
+   "title": "Vexana on the machine plain",
+   "alt": "Vexana stands with a tall staff on a gray plain while dark machines and ruins stand around her.",
+   "tags": [
+    "battle",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "ca2cd1b7da325c9ac432aeb6f003b34b95671cef",
+   "keep": true,
+   "title": "Vexana's tense profile",
+   "alt": "A close up of Vexana in profile with violet eyes and a dirty cheek, framed by gold star blades.",
+   "tags": [
+    "close up",
+    "portrait",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "84e71a62e8ede6da0235c75ec23500c14b3f40e0",
+   "keep": true,
+   "title": "Vexana charges through mist",
+   "alt": "Vexana charges through a purple mist with her staff raised and dark machines behind her.",
+   "tags": [
+    "battle",
+    "action",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "22133463edd0ce42bc0e9ab92d2bbcddc24c2cf4",
+   "keep": true,
+   "title": "Vexana leaps from a ledge",
+   "alt": "Seen from below, Vexana leaps from a dark ledge with star blades spread behind her.",
+   "tags": [
+    "action",
+    "low angle",
+    "dark"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "430f7eacf763e832fe40afe9d68761bccb5731cf",
+   "keep": true,
+   "title": "A burst beside Vexana",
+   "alt": "A burst of purple and orange light flashes at the left while Vexana swings her staff at the right.",
+   "tags": [
+    "battle",
+    "action",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "53fdd4cab35eb4a69c7b1eef95e32992bc3a3947",
+   "keep": true,
+   "title": "Vexana beside a pink orb",
+   "alt": "Vexana stands at the right of a large glowing pink orb that fills the wall of a dark tunnel.",
+   "tags": [
+    "battle",
+    "purple",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "75eeec57a09f69da3fdb8173e81974c8113d545a",
+   "keep": true,
+   "title": "Vexana kneels in the ruins",
+   "alt": "Vexana kneels on a broken road with her staff and star blades, with dark towers behind her.",
+   "tags": [
+    "battle",
+    "ruins",
+    "wide shot"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c8d422632c2ceaebdecf5c3ead25d3832f4fde39",
+   "keep": true,
+   "title": "A pink burst of crystals",
+   "alt": "A huge burst of pink crystals and orange light fills the right side of the frame, with Vexana beside it.",
+   "tags": [
+    "battle",
+    "action",
+    "pink"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "2657ad8d5d202b4b5e29a42c6bf155e102d7cdbf",
+   "keep": true,
+   "title": "Guinevere watches Vexana",
+   "alt": "A close up of Guinevere at the left looking sideways while Vexana kneels with her staff at the right.",
+   "tags": [
+    "portrait",
+    "battle",
+    "ruins"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c857ed21fa51de2a2d3444a7afed8e3c42defa52",
+   "keep": true,
+   "title": "Vexana and Guinevere fly together",
+   "alt": "Vexana and Guinevere fly side by side through a bright haze with Vexana's staff in front.",
+   "tags": [
+    "action",
+    "sky",
+    "light"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "594814001020280fe22aa9cc672a5b5b1a083a92",
+   "keep": true,
+   "title": "Vexana in purple lightning",
+   "alt": "A close up of Vexana's violet eyes and long hair with a purple staff and lightning around her.",
+   "tags": [
+    "close up",
+    "portrait",
+    "purple"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "c5d46c5ae3d491535c323bddccf51be6705f5f9e",
+   "keep": true,
+   "title": "Guinevere and Vexana with stickers",
+   "alt": "Guinevere and Vexana stand side by side with a black cat face and red fists drawn around them.",
+   "tags": [
+    "portrait",
+    "graphic",
+    "ruins"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "5b7e0c55ca70eedc5f0a17b95942386a08975e30",
+   "keep": true,
+   "title": "Vexana in a purple swirl",
+   "alt": "Vexana in profile with a swirl of purple energy around her, under a stormy sky.",
+   "tags": [
+    "portrait",
+    "purple",
+    "action"
+   ],
+   "crop": null
+  },
+  {
+   "sha1": "bd7d82c4172246313a725da275edc19a4a57dfa3",
+   "keep": true,
+   "title": "Vexana in a burst of color",
+   "alt": "A close up of Vexana framed by bright blue, yellow and pink burst shapes in a comic style.",
+   "tags": [
+    "close up",
+    "portrait",
+    "graphic"
+   ],
+   "crop": null
+  }
+ ]
+}

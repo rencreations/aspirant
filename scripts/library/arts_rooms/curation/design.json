@@ -1,0 +1,305 @@
+{
+  "about": "Decisions for the Design page of the official Arts (/collection/arts/design). The order of items is the order on the page: the Aspirants first, then their families and weapons by pair order, then the world. Every item is a picture the owner put in a design folder of media/_all (24 different pictures: 22 kept, 2 dropped below). Nothing from other folders was added. The script design.py reads this file and stops if a design picture is neither listed here nor dropped. Change a title or an alt here and run it again. A picture that changes content needs a new key: bump rev.",
+  "kinds": [
+    { "id": "character", "name": "Characters" },
+    { "id": "mecha", "name": "Mecha" },
+    { "id": "weapon", "name": "Weapons" },
+    { "id": "droid", "name": "Droids" },
+    { "id": "other", "name": "Other" }
+  ],
+  "items": [
+    {
+      "sha": "ad5d10",
+      "slug": "selena-mecha-sheet",
+      "title": "Selena's mecha, design sheet",
+      "what": "mecha",
+      "alt": "A design sheet of Selena's blue, white and gold mecha on a grid, with color swatches, detail boxes and a hand drawing with a pencil.",
+      "tags": ["mecha", "design sheet", "selena"],
+      "note": "A frame of an official video, 2560 by 1440, the largest picture of the room."
+    },
+    {
+      "sha": "020fd9",
+      "slug": "selena-mecha-card",
+      "title": "Selena's mecha, Lord of Eclipse card",
+      "what": "mecha",
+      "alt": "Selena's blue, white and gold mecha seen from the front on a blue card that reads Lord of Eclipse.",
+      "tags": ["mecha", "card", "selena", "lord of eclipse"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27",
+        "note": "A detail of the Selena observation record card in this post."
+      }
+    },
+    {
+      "sha": "75c67d",
+      "slug": "selena-mecha-head",
+      "title": "Selena's mecha, head designs",
+      "what": "mecha",
+      "alt": "Three views of a gold crest with a large mass of white and dark violet hair, on a pale violet background.",
+      "tags": ["mecha", "head", "selena"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27",
+        "note": "A detail of the Selena observation record card in this post."
+      }
+    },
+    {
+      "sha": "e6633f",
+      "slug": "obsidia-mecha-card",
+      "title": "Obsidia's mecha, Lord of Eclipse card",
+      "what": "mecha",
+      "alt": "Obsidia's white and silver mecha with pink and gold trim seen from the front on a pink card that reads Lord of Eclipse.",
+      "tags": ["mecha", "card", "obsidia", "lord of eclipse"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27",
+        "note": "A detail of the Obsidia observation record card in this post."
+      }
+    },
+    {
+      "sha": "a7eaf9",
+      "slug": "obsidia-mecha-parts",
+      "title": "Obsidia's mecha, helm and blades",
+      "what": "mecha",
+      "alt": "Four armor pieces in white, gold and pink, two crested helms and two blade shapes, on a pale pink background.",
+      "tags": ["mecha", "helm", "blades", "obsidia"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27",
+        "note": "A detail of the Obsidia observation record card in this post."
+      }
+    },
+    {
+      "sha": "6ae31e",
+      "slug": "ruby-father-full",
+      "title": "Ruby's father, full figure",
+      "what": "character",
+      "alt": "Ruby's father stands in a long black coat with a fur collar and a patterned sash, hands on his hips, cut out on white.",
+      "tags": ["family", "full figure", "ruby"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Ruby's Father)",
+      "copies": ["d76f21", "971569"],
+      "note": "The whole design. d76f21 (_all/ruby-father/design/ruby-father - no backgrond.png) is the same drawing at twice the scale, cut at the knees, and 971569 (ruby-and-angela/art/official/ruby-father.png, the file of the old Arts room) is that same cut on a wider empty canvas (pixel identical, checked). Both are copies of this item and are not shipped. d76f21 has more detail in the face: restore it by adding an item for it if a close view is wanted."
+    },
+    {
+      "sha": "313118",
+      "slug": "lesley-weapon-card",
+      "title": "Lesley's weapon, design card",
+      "what": "weapon",
+      "alt": "A card of Lesley's orange weapon in rifle and cannon form, with notes that Chang'e is its creator and Lesley its wielder.",
+      "tags": ["weapon", "card", "lesley"],
+      "note": "Card 2 of the five card Form-altering weapons set. The same file was card 2 of the old Arts room."
+    },
+    {
+      "sha": "5d7de3",
+      "slug": "change-weapon-card",
+      "title": "Chang'e's weapon, design card",
+      "what": "weapon",
+      "alt": "A card of Chang'e's glowing crescent weapon in two forms, with a note that it alters its form during the Ultimate.",
+      "tags": ["weapon", "card", "change"],
+      "note": "Card 4 of the five card Form-altering weapons set. The same file was card 4 of the old Arts room."
+    },
+    {
+      "sha": "047ebb",
+      "slug": "change-crescent-moon",
+      "title": "Chang'e's crescent weapon",
+      "what": "weapon",
+      "alt": "Chang'e's crescent weapon sits in the middle of a glowing ring machine, with a robotic arm at the right.",
+      "tags": ["weapon", "change", "crescent moon"],
+      "note": "A film frame the owner filed as design (it also sat in the films folder). 2560 by 1080."
+    },
+    {
+      "sha": "fcd11e",
+      "slug": "change-father",
+      "title": "Chang'e's father",
+      "what": "character",
+      "alt": "A man with glasses in a white lab coat stands in a laboratory beside a framed family photo.",
+      "tags": ["family", "change"],
+      "note": "The right edge fades to transparent in the source. The same file was in the old Arts room."
+    },
+    {
+      "sha": "34c2a3",
+      "slug": "change-mother",
+      "title": "Chang'e's mother",
+      "what": "character",
+      "alt": "A woman with short pink hair and glasses in a white lab coat smiles in a laboratory beside a framed family photo.",
+      "tags": ["family", "change"],
+      "note": "The right edge fades to transparent in the source. The same file was in the old Arts room."
+    },
+    {
+      "sha": "1c3ff8",
+      "slug": "guinevere-father-silhouette",
+      "title": "Guinevere's father, silhouette",
+      "what": "character",
+      "alt": "A black silhouette of a man in a long coat with a fur collar, holding papers, with a glowing gold question mark on his chest.",
+      "tags": ["family", "silhouette", "guinevere"],
+      "crop": "transparent",
+      "copies": ["ad07fc"],
+      "note": "A transparent cutout: the Design page needs a plate behind it. ad07fc (vexana-and-guinevere/art/official/guin-father-silhouette.png, the file of the old Arts room) holds the same picture on a wider empty canvas (same 616 by 691 content), so it is a copy of this item."
+    },
+    {
+      "sha": "72a4d8",
+      "slug": "oro-soldier",
+      "title": "Soldier of Planet Oro",
+      "what": "character",
+      "alt": "A soldier of Planet Oro in black armor with blue lights holds a long rifle, cut out on white.",
+      "tags": ["oro", "soldier"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Soldier of Planet Oro)"
+    },
+    {
+      "sha": "b78b1f",
+      "slug": "oro-training-droid",
+      "title": "Oro training droid",
+      "what": "droid",
+      "alt": "A large white and gray combat droid with a huge curved blade, cut out on white.",
+      "tags": ["oro", "droid"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Training Droids)"
+    },
+    {
+      "sha": "baf1c3",
+      "slug": "ai-droid",
+      "title": "AI droid, design sheet",
+      "what": "droid",
+      "alt": "A design sheet of a tall white and gray droid with a flat head, long thin limbs and a sensor beam, beside a pencil sketch of the same droid.",
+      "tags": ["droid", "design sheet"],
+      "crop": "transparent",
+      "also_in": "lore atlas (AI Droids)",
+      "note": "A sliver of another figure shows at the left edge of the source. It is part of the picture and is left in."
+    },
+    {
+      "sha": "38cb13",
+      "slug": "ender-size-chart",
+      "title": "Ender, size chart",
+      "what": "character",
+      "alt": "A size chart of a tall gray and blue Ender in front, back and side views, with a bust and small figures for scale.",
+      "tags": ["ender", "size chart"],
+      "crop": "transparent",
+      "also_in": "lore atlas (The Enders)"
+    },
+    {
+      "sha": "3e18f6",
+      "slug": "mother-matrix-icon",
+      "title": "Mother Matrix, portrait icon",
+      "what": "mecha",
+      "alt": "A white and gray spiked mecha head on a pink card with scan lines.",
+      "tags": ["mother matrix", "portrait"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Ddxz3PUI3if/",
+        "date": "2026-09-27",
+        "note": "The Mother Matrix portrait icon from the relationship chart card in this post."
+      },
+      "note": "396 by 432 and soft. Kept because it is the only clean official picture of Mother Matrix the owner filed as design. Remove this item from the list if the page looks worse with it."
+    },
+    {
+      "sha": "c93496",
+      "slug": "professor-joe-sheet",
+      "title": "Professor Joe, character sheet",
+      "what": "character",
+      "alt": "A character sheet of Professor Joe, a man with short brown hair and glasses, with face studies, three outfits, a sword and small props.",
+      "tags": ["professor joe", "character sheet"],
+      "also_in": "lore atlas (Joe)"
+    },
+    {
+      "sha": "48dbd6",
+      "slug": "combat-division-trainee",
+      "title": "Combat division trainee, sheet",
+      "what": "character",
+      "alt": "A character sheet of a Selrick combat division trainee in a dark blue uniform, three views, with a sword, a rifle, a boot and the S.L.K logo.",
+      "tags": ["selrick", "trainee", "character sheet"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Combat Division Trainee)"
+    },
+    {
+      "sha": "dd5b0f",
+      "slug": "support-division-trainee",
+      "title": "Support division trainee, sheet",
+      "what": "character",
+      "alt": "A character sheet of a support division trainee with pink hair in a dark coat, in three views, one with a hood.",
+      "tags": ["selrick", "trainee", "character sheet"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Support Division Trainee)",
+      "note": "A sliver of a letter shows at the left edge of the source. It is part of the picture and is left in."
+    },
+    {
+      "sha": "6f0395",
+      "slug": "energy-device",
+      "title": "Selrick Academy, energy device",
+      "what": "other",
+      "alt": "A diagram of the energy device: a ring of curved sections around a beam of light, and a tower with a glowing ring at the right.",
+      "tags": ["selrick academy", "energy"],
+      "crop": "transparent",
+      "also_in": "lore atlas (Energy System)"
+    },
+    {
+      "sha": "2406e2",
+      "slug": "title-logo",
+      "title": "The Aspirants, title logo",
+      "what": "other",
+      "alt": "The title logo The Aspirants in white metal letters with pink and blue edges, on a blurred dark blue background.",
+      "tags": ["logo", "title"]
+    }
+  ],
+  "dropped": [
+    {
+      "sha": "1ee08b",
+      "file": "_all/mother-matrix/design/Screenshot 2026-11-08 041237.png",
+      "reason": "A red typed caption (Mother Matrix tru...) is burned across the middle of the art, so it cannot be cut away. It is also 447 by 379. Restore it by adding an item for it if the owner wants it."
+    },
+    {
+      "sha": "d76f21",
+      "file": "_all/ruby-father/design/ruby-father - no backgrond.png",
+      "reason": "The same drawing as 6ae31e (Ruby's father), cut at the knees at twice the scale. A copy, so only the full figure is shown."
+    }
+  ],
+  "copies_not_shipped": [
+    {
+      "sha": "971569",
+      "file": "ruby-and-angela/art/official/ruby-father.png",
+      "reason": "The same picture as d76f21 on a wider empty canvas, so also a copy of ruby-father-full. It was in the old Arts room."
+    },
+    {
+      "sha": "ad07fc",
+      "file": "vexana-and-guinevere/art/official/guin-father-silhouette.png",
+      "reason": "The same picture as 1c3ff8 on a wider empty canvas. Shown as guinevere-father-silhouette. It was in the old Arts room."
+    }
+  ],
+  "left_to_other_rooms": [
+    {
+      "sha": "adc12f",
+      "file": "_others/character/androids.png",
+      "reason": "Not in any design folder of _all. A painted group picture of androids, not a design sheet. It stays in the Lore atlas."
+    },
+    {
+      "sha": "c3125a",
+      "file": "_others/character/tetra.png",
+      "reason": "Chibi art of Tetra on white (the same drawing as _all/angela/chibi/tetra.png). Not a design sheet. It stays in the Lore atlas and the chibi stickers (Others)."
+    },
+    {
+      "sha": "96e396 6ea3ee 0a9ffb",
+      "file": "lesley-and-change/art/lore/1, 3 and 5",
+      "reason": "The cover, the vow card and the end card of the Form-altering weapons set. Cards 2 and 4 are in the owner's design folders and are claimed here. The other three are lore cards for the Others page."
+    },
+    {
+      "sha": "selena and obsidia art cards",
+      "file": "_all/selena/art/Screenshot 2026-11-08 151346.png and _all/obsidia/art/Screenshot 2026-11-08 151352.png",
+      "reason": "Character card art of Selena and Obsidia, filed under art (Others), not design."
+    },
+    {
+      "sha": "the ten Layla and Fanny weapon screenshots",
+      "file": "_all/layla-fanny-weapon/films/*",
+      "reason": "Frames of a music video, filed under films (Scene). Not design sheets."
+    }
+  ]
+}

@@ -1,16 +1,19 @@
-"""The Others room: everything that fits no other room.
+"""The Others room and the 3D Models room.
 
-Builds the mirror assets under library/v1/others/ and apps/web/public/data/library/others.json.
+Builds the mirror assets under library/v1/others/ and two data files in apps/web/public/data/library/:
+models.json (the 3D Models room, shelf slot 05) and others.json (the Others room, slot 10).
 
   3D models   media/layla-and-fanny/3d/{fanny,layla}        copied unchanged (the .obj, the .mtl and the PNG textures)
+              and the nine models the owner supplied        -> models.json. The files stay under others/3d/ in the bucket
+                                                               (a key is never moved), so models.json names them there.
   Emotes      media/layla-and-fanny/art/emotes              remuxed with faststart, posters picked from the frames
   Gameplay    media/selena-and-obsidia/video/_gameplay      VP9 re-encoded to H.264, posters, captions from captions.py
   Skill icons media/_others/web/skills-icon                 copied unchanged (100 px WebP)
   Site art    media/_others/web/{logo,menu,page}            image_set (alpha kept, never upscaled)
   Links       the novel, the ten character pages, the interactive drama
 
-Run:  C:/Users/muham/anaconda3/python.exe scripts/library/others/build.py [--force]
-Safe to run again: finished outputs are skipped.
+Run:  C:/Users/muham/anaconda3/python.exe scripts/library/others/build.py [--force] [--no-ignored]
+Safe to run again: finished outputs are skipped. `--no-ignored` leaves scripts/library/ignored.json alone.
 """
 
 from __future__ import annotations
@@ -29,6 +32,7 @@ import captions  # noqa: E402
 import common  # noqa: E402
 
 FORCE = "--force" in sys.argv
+NO_IGNORED = "--no-ignored" in sys.argv
 SRC = common.SRC
 WEB = common.MEDIA / "_others" / "web"
 SCRATCH = common.WORK / "others"
@@ -342,6 +346,9 @@ def build_models() -> list[dict]:
 
         layers = [layer for layer in ("body", "weapon", "robot") if layer in parts or (layer == "robot" and "robotFace" in parts)]
         tex_files = sorted(set(maps.values()))
+        # The size of every file the viewer fetches (the model, each texture, each face sheet), so the
+        # loader knows the total before the first byte and a saved copy of another size is thrown away.
+        sizes = {name: size_of(f"{base}/{name}") for name in [main_name, *tex_files, *faces]}
         info = {
             "format": m["format"],
             "dir": base,
@@ -354,6 +361,7 @@ def build_models() -> list[dict]:
             "rules": m["rules"],
             "layers": layers,
             "faces": faces,
+            "sizes": sizes,
             "texBytes": sum(size_of(f"{base}/{t}") for t in tex_files),
             "files": len(all_files) + (2 if mtl_name else 1) + len(faces),
         }
@@ -366,11 +374,10 @@ def build_models() -> list[dict]:
         if opacity:
             info["opacity"] = opacity
         item = {
-            "id": f"others-3d-{slug}",
+            "id": f"models-{slug}",
             "kind": "model",
-            "group": "models",
             "title": m["title"],
-            "collection": "others",
+            "collection": "models",
             "chars": m["chars"],
             "pair": m["pair"],
             "canon": "official",
@@ -780,30 +787,33 @@ def update_ignored() -> None:
 # ---------------------------------------------------------------------------------------------
 
 
+# The sections of the Others room, in page order. A section has a `heading`, not a `title`, so that
+# build_index.py (which counts every object with an `id` and a `title`) does not count it as an item.
 GROUPS = [
-    {"id": "models", "title": "3D models", "line": "Nine game client models of the Aspirants. Pick one, drag to turn it, scroll to come closer.", "kind": "models"},
-    {"id": "emotes", "title": "Emotes", "line": "Eight chibi stickers of Fanny and Layla. They loop while you look.", "kind": "stickers"},
-    {"id": "gameplay", "title": "Gameplay clips (not part of the story)", "line": "Ten short clips of the game itself, posted by the official account.", "kind": "clips"},
-    {"id": "skills", "title": "Skill icons", "line": "Game interface icons for Guinevere, Obsidia, Selena and Vexana, shown at their real size.", "kind": "icons"},
-    {"id": "site", "title": "Made for this site", "line": "Art and files made for this site. They are not official art.", "kind": "images"},
-    {"id": "more", "title": "More of the world", "line": "Where else to go.", "kind": "links"},
+    {"id": "emotes", "heading": "Emotes", "line": "Eight chibi stickers of Fanny and Layla. They loop while you look.", "kind": "stickers"},
+    {"id": "gameplay", "heading": "Gameplay clips (not part of the story)", "line": "Ten short clips of the game itself, posted by the official account.", "kind": "clips"},
+    {"id": "skills", "heading": "Skill icons", "line": "Game interface icons for Guinevere, Obsidia, Selena and Vexana, shown at their real size.", "kind": "icons"},
+    {"id": "site", "heading": "Made for this site", "line": "Art and files made for this site. They are not official art.", "kind": "images"},
+    {"id": "more", "heading": "More of the world", "line": "Where else to go.", "kind": "links"},
 ]
 
 
 def main() -> None:
+    models = build_models()
     items: list[dict] = []
-    items += build_models()
     items += build_emotes()
     items += build_gameplay()
     items += build_skills()
     items += build_site()
     items += build_links()
-    for it in items:
+    for it in [*models, *items]:
         it["tags"] = [t.lower() for t in it["tags"]]
+    common.write_json("models", {"v": 1, "slug": "models", "items": models})
     common.write_json("others", {"v": 1, "slug": "others", "groups": GROUPS, "items": items})
-    update_ignored()
+    if not NO_IGNORED:
+        update_ignored()
     total = sum(p.stat().st_size for p in (common.LIB_ROOT / "others").rglob("*") if p.is_file())
-    print(f"items: {len(items)}   mirror others/: {common.human(total)}   written this run: {common.human(written)}")
+    print(f"models: {len(models)}   others items: {len(items)}   mirror others/: {common.human(total)}   written this run: {common.human(written)}")
     for line in left_out:
         print("left out:", line)
 

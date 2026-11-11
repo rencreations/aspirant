@@ -1,0 +1,2151 @@
+{
+ "v": 1,
+ "about": "Decisions for the Comic room of the official Arts. comic.py reads this and nothing else. Items and drops are keyed by the first 10 characters of the picture sha1.",
+ "rules": {
+  "scope": "Official comic art without lettering: the 116 different pictures of the comic folders of _all, plus panels cut from the lettered pages. Fan comics (the instagram_p_* folders) are not here: they carry dialogue and the Comic room has them.",
+  "comic": "A picture of the Layla and Fanny webtoon is 1000 px wide at most, one of Guinevere and Vexana is wider than 1000 px. Checked against the page files by comic.py match.",
+  "page": "page_from says how the page was found: match (the picture was found inside that page of the lettered book files), match, weak (found, but with lettering over it and a transparent shape the score is low, checked by eye), or name (taken from the file name). A file name can be wrong: layla/28-1.png is on page 38 and layla/13-3.png is on page 14.",
+  "panel": "panel_from says how the panel number was found: name (the file name gives the panel and the page agrees) or order on the page (used only where the pictures shown cover the whole page, so the order from the top is the number). Panels count from the top of the page. Empty when it is not known. A cut from a page counts the panels that were not cut.",
+  "cuts": "mode component cuts one panel (a slanted one too) out of a white page by its gutters and leaves the paper corners transparent. mode page takes the whole page. Every cut was looked at for lettering. Candidates looked at: 100 art bands and 21 uncovered panels on the 42 Aspirant pages, and 29 Guinevere and Vexana pages that had parts not in the list. Kept: 5. Almost every other free panel carries a sound effect in lettering (BANG, SCRATCH, BAROOM) or a bubble.",
+  "sizes": "t is 480 px wide, p is at most 1280 px wide, f is the full size (long side at most 3840, or 5000 when the picture is taller than 3840). Never upscaled.",
+  "floor": "A picture under 250,000 pixels (width times height) is left out: it cannot be read when it is shown large. Nothing is upscaled.",
+  "y": "y is the row of the top of the picture in its page file (found by comic.py match). The room is in reading order by comic, page, y."
+ },
+ "items": {
+  "d39e3d0ae6": {
+   "slug": "terrinia-burns",
+   "title": "Terrinia burns",
+   "alt": "Smoke and fire rise around a tall spire as explosions burst across the city.",
+   "comic": "guinevere-vexana",
+   "page": 1,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "terrinia",
+    "fire"
+   ],
+   "src": "terrinia/comic/1.png",
+   "y": 0
+  },
+  "341783d0eb": {
+   "slug": "vexana-kneels-in-the-fire",
+   "title": "Vexana kneels in the fire",
+   "alt": "Vexana kneels in a burning landscape, hurt, with explosions behind her.",
+   "comic": "guinevere-vexana",
+   "page": 4,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "fire",
+    "ruins"
+   ],
+   "src": "vexana-black-hair/comic/4.png",
+   "y": 0
+  },
+  "7bfd9e0203": {
+   "slug": "hands-around-the-emblem",
+   "title": "Hands around the emblem",
+   "alt": "Vexana's hands hold a glowing gold emblem in front of her skirt.",
+   "comic": "guinevere-vexana",
+   "page": 5,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "emblem of hope",
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/5-1.png",
+   "y": 0
+  },
+  "a44cb71a68": {
+   "slug": "vexana-cries",
+   "title": "Vexana cries",
+   "alt": "Vexana's face half hidden by her hair with tears and dust on her cheek and flames behind her.",
+   "comic": "guinevere-vexana",
+   "page": 5,
+   "page_from": "match, weak",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "close-up",
+    "fire"
+   ],
+   "src": "vexana-black-hair/comic/5-2.png",
+   "y": 1416
+  },
+  "3be3468926": {
+   "slug": "vexana-kneels-in-the-ruins",
+   "title": "Vexana kneels in the ruins",
+   "alt": "Vexana kneels among broken rocks under a fiery sky with her hands in her lap.",
+   "comic": "guinevere-vexana",
+   "page": 6,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "ruins",
+    "fire"
+   ],
+   "src": "vexana-black-hair/comic/6.png",
+   "y": 0
+  },
+  "3712e3a140": {
+   "slug": "a-spark-in-her-hands",
+   "title": "A spark in her hands",
+   "alt": "Vexana's hands cup a spark of light at her lap.",
+   "comic": "guinevere-vexana",
+   "page": 7,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "emblem of hope",
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/7.png",
+   "y": 0
+  },
+  "60103895d9": {
+   "slug": "guinevere-and-vexana-fight-enders",
+   "title": "Guinevere and Vexana fight Enders",
+   "alt": "Guinevere and Vexana fight back to back against a swarm of Enders in a pink lit hall.",
+   "comic": "guinevere-vexana",
+   "page": 9,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere",
+    "vexana"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "vexana-black-hair/comic/9.png",
+   "y": 0
+  },
+  "cdaec8e373": {
+   "slug": "vexana-strikes",
+   "title": "Vexana strikes",
+   "alt": "Vexana swings a black armored arm in a slanted pink panel with speed lines.",
+   "comic": "guinevere-vexana",
+   "page": 10,
+   "page_from": "match, weak",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "fight"
+   ],
+   "src": "vexana-black-hair/comic/10-1.png",
+   "y": 176
+  },
+  "047cbc9970": {
+   "slug": "guinevere-punches-an-ender",
+   "title": "Guinevere punches an Ender",
+   "alt": "Guinevere punches an Ender's armored arm in a burst of pink light.",
+   "comic": "guinevere-vexana",
+   "page": 10,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "guinevere/comic/punching-ender.png",
+   "y": 2168
+  },
+  "e845ad9eea": {
+   "slug": "guinevere-dodges-an-ender",
+   "title": "Guinevere dodges an Ender",
+   "alt": "Guinevere leaps away from the swing of a huge Ender in a tall corridor.",
+   "comic": "guinevere-vexana",
+   "page": 11,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "guinevere/comic/dodging-ender-attack.png",
+   "y": 0
+  },
+  "4af2eb62ea": {
+   "slug": "a-portal-opens-behind-guinevere",
+   "title": "A portal opens behind Guinevere",
+   "alt": "Guinevere dashes forward as a dark portal opens behind her with an Ender's helmet inside it.",
+   "comic": "guinevere-vexana",
+   "page": 12,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "portal"
+   ],
+   "src": "guinevere/comic/ender-open-portal-behind-guinevere.png",
+   "y": 0
+  },
+  "39c81271b6": {
+   "slug": "an-ender-reaches-for-guinevere",
+   "title": "An Ender reaches for Guinevere",
+   "alt": "A huge Ender claw reaches down toward Guinevere, who looks back in shock, in a tall slanted panel.",
+   "comic": "guinevere-vexana",
+   "page": 13,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "guinevere/comic/ender-trying-to-grab-guinevere.png",
+   "y": 24
+  },
+  "b34dc21e9d": {
+   "slug": "vexana-pushes-guinevere-away",
+   "title": "Vexana pushes Guinevere away",
+   "alt": "A white gloved hand pushes Guinevere back with a burst of light at her chest in a slanted panel.",
+   "comic": "guinevere-vexana",
+   "page": 13,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere",
+    "vexana"
+   ],
+   "tags": [
+    "fight"
+   ],
+   "src": "guinevere/comic/vexana-push-guinevere-away.png",
+   "y": 3856
+  },
+  "935fb13ce1": {
+   "slug": "vexana-rushes-past-guinevere",
+   "title": "Vexana rushes past Guinevere",
+   "alt": "Vexana runs forward with a white gloved fist while Guinevere stumbles back beside her in a tall slanted panel.",
+   "comic": "guinevere-vexana",
+   "page": 14,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "vexana",
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "vexana-black-hair/comic/14.png",
+   "y": 280
+  },
+  "66c9a96e3d": {
+   "slug": "guinevere-reaches-out",
+   "title": "Guinevere reaches out",
+   "alt": "Guinevere's face fills a slanted panel as she stretches a red gloved hand toward the viewer.",
+   "comic": "guinevere-vexana",
+   "page": 15,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "guinevere/comic/guienvere-trying-to-save-vexana-whos-dragged-by-ender.png",
+   "y": 4832
+  },
+  "52cebc9cc1": {
+   "slug": "a-hand-reaches-for-vexana",
+   "title": "A hand reaches for Vexana",
+   "alt": "Vexana is pulled into a black portal while a dark gloved hand reaches toward her.",
+   "comic": "guinevere-vexana",
+   "page": 15,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "ender",
+    "portal"
+   ],
+   "src": "vexana-black-hair/comic/15-1.png",
+   "y": 112
+  },
+  "7c402ac8d0": {
+   "slug": "vexana-in-tears-smiling",
+   "title": "Vexana in tears, smiling",
+   "alt": "A close-up of Vexana smiling through tears, with wet violet eyes, in a slanted panel with speed lines.",
+   "comic": "guinevere-vexana",
+   "page": 15,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/15-3.png",
+   "y": 5400
+  },
+  "3f86dadb7a": {
+   "slug": "vexana-fades-from-the-wall",
+   "title": "Vexana fades from the wall",
+   "alt": "Vexana's face tears out of a pale wall like paper, her eyes full of sadness.",
+   "comic": "guinevere-vexana",
+   "page": 16,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/16.png",
+   "y": 0
+  },
+  "085a4c48a7": {
+   "slug": "vexana-falls-into-the-dark",
+   "title": "Vexana falls into the dark",
+   "alt": "Vexana falls head first through a starry void with her arms out.",
+   "comic": "guinevere-vexana",
+   "page": 19,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling",
+    "night"
+   ],
+   "src": "vexana-black-hair/comic/19.png",
+   "y": 0
+  },
+  "fe534a3226": {
+   "slug": "the-emblem-lights-up",
+   "title": "The emblem lights up",
+   "alt": "Vexana, upside down, cups her hands around a glowing gold emblem on her chest.",
+   "comic": "guinevere-vexana",
+   "page": 20,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "emblem of hope",
+    "falling"
+   ],
+   "src": "vexana-black-hair/comic/201.png",
+   "y": 72
+  },
+  "66695cf51e": {
+   "slug": "vexana-falls-eyes-closed",
+   "title": "Vexana falls, eyes closed",
+   "alt": "A close-up of Vexana falling upside down with her eyes closed as blue light rushes past.",
+   "comic": "guinevere-vexana",
+   "page": 20,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling",
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/20-2.png",
+   "y": 2064
+  },
+  "e4c1162c46": {
+   "slug": "vexana-falls-in-blue-light",
+   "title": "Vexana falls in blue light",
+   "alt": "Vexana falls upside down in a blue light with a hand on her chest.",
+   "comic": "guinevere-vexana",
+   "page": 21,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling"
+   ],
+   "src": "vexana-black-hair/comic/21.png",
+   "y": 0
+  },
+  "5eebcb7125": {
+   "slug": "fireworks-over-the-hill",
+   "title": "Fireworks over the hill",
+   "alt": "Guinevere and Vexana hold hands on a hill and look up at fireworks in a night sky.",
+   "comic": "guinevere-vexana",
+   "page": 22,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere",
+    "vexana"
+   ],
+   "tags": [
+    "fireworks",
+    "night"
+   ],
+   "src": "vexana-black-hair/comic/22.png",
+   "y": 0
+  },
+  "1e5c17e2e4": {
+   "slug": "vexana-small-in-the-void",
+   "title": "Vexana, small in the void",
+   "alt": "Vexana falls upside down in the dark, small in a slanted panel.",
+   "comic": "guinevere-vexana",
+   "page": 24,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling",
+    "night"
+   ],
+   "src": "vexana-black-hair/comic/24.png",
+   "y": 16
+  },
+  "255cccd513": {
+   "slug": "honor-for-the-best-pair",
+   "title": "Honor for the best pair",
+   "alt": "Vexana and Guinevere stand hand in hand in the sun while a teacher at the left edge and a cheering group look on.",
+   "comic": "guinevere-vexana",
+   "page": 25,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "vexana",
+    "guinevere"
+   ],
+   "tags": [
+    "academy"
+   ],
+   "src": "vexana-black-hair/comic/25.png",
+   "y": 0
+  },
+  "f06d928e5b": {
+   "slug": "vexana-falls-in-light",
+   "title": "Vexana falls in light",
+   "alt": "Vexana falls upside down with her arms over her head as blue light streams past.",
+   "comic": "guinevere-vexana",
+   "page": 26,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling"
+   ],
+   "src": "vexana-black-hair/comic/26.png",
+   "y": 120
+  },
+  "b57bfc1a97": {
+   "slug": "the-bottom-of-the-fall",
+   "title": "The bottom of the fall",
+   "alt": "Vexana plunges down a tunnel of blue light into the dark, small at the foot of the strip.",
+   "comic": "guinevere-vexana",
+   "page": 27,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "falling"
+   ],
+   "src": "vexana-black-hair/comic/27.png",
+   "y": 0
+  },
+  "7379cd2ab3": {
+   "slug": "the-emblem-close-up",
+   "title": "The emblem, close up",
+   "alt": "A gold star shaped emblem glows on Vexana's chest in a white and blue burst.",
+   "comic": "guinevere-vexana",
+   "page": 28,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "emblem of hope"
+   ],
+   "src": "vexana-black-hair/comic/28.png",
+   "y": 56
+  },
+  "f866ed0776": {
+   "slug": "the-emblem-shines",
+   "title": "The emblem shines",
+   "alt": "A blinding white and blue glow spreads from the Emblem of Hope in a wide panel.",
+   "comic": "guinevere-vexana",
+   "page": 28,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "emblem of hope"
+   ],
+   "src": "vexana-black-hair/comic/28-2.png",
+   "y": 2384
+  },
+  "b796016d53": {
+   "slug": "resting-under-a-tree",
+   "title": "Resting under a tree",
+   "alt": "Guinevere lies in Vexana's lap with her fists raised while Vexana rests a hand on her head, among grass and falling leaves.",
+   "comic": "guinevere-vexana",
+   "page": 31,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana",
+    "guinevere"
+   ],
+   "tags": [
+    "sunny"
+   ],
+   "src": "vexana-black-hair/comic/31.png",
+   "y": 0
+  },
+  "20119f4d07": {
+   "slug": "talking-happily",
+   "title": "Talking happily",
+   "alt": "Vexana and Guinevere face each other under a bright blue sky with Guinevere holding a gold charm.",
+   "comic": "guinevere-vexana",
+   "page": 32,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana",
+    "guinevere"
+   ],
+   "tags": [
+    "sunny"
+   ],
+   "src": "vexana-black-hair/comic/32.png",
+   "y": 96
+  },
+  "cc8134c69a": {
+   "slug": "reality-cracks-over-guinevere",
+   "title": "Reality cracks over Guinevere",
+   "alt": "Guinevere sits laughing on a sunny hillside with her eyes closed while a black clawed shard splits the air above her.",
+   "comic": "guinevere-vexana",
+   "page": 35,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "ender",
+    "portal"
+   ],
+   "src": "guinevere/comic/reality-cracks.png",
+   "y": 0
+  },
+  "43b9f16560": {
+   "slug": "the-mother-matrix",
+   "title": "The Mother Matrix",
+   "alt": "A dark armored head with glowing purple eyes fills the panel.",
+   "comic": "guinevere-vexana",
+   "page": 36,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "mother matrix"
+   ],
+   "src": "mother-matrix/comic/36.png",
+   "y": 0
+  },
+  "2312c36110": {
+   "slug": "vexana-in-black-smoke",
+   "title": "Vexana in black smoke",
+   "alt": "Vexana stands with her arms open in a dark mist with a worried look.",
+   "comic": "guinevere-vexana",
+   "page": 37,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "dark"
+   ],
+   "src": "vexana-black-hair/comic/37.png",
+   "y": 24
+  },
+  "9ffe1a4f94": {
+   "slug": "a-violet-eye",
+   "title": "A violet eye",
+   "alt": "A wide dark panel where one violet eye opens.",
+   "comic": "guinevere-vexana",
+   "page": 38,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/38-1.png",
+   "y": 272
+  },
+  "b8bda8482c": {
+   "slug": "a-closing-eye",
+   "title": "A closing eye",
+   "alt": "A wide dark violet panel where an eye closes.",
+   "comic": "guinevere-vexana",
+   "page": 38,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "vexana-black-hair/comic/38-2.png",
+   "y": 1752
+  },
+  "5f42c4cae1": {
+   "slug": "a-step-into-the-light",
+   "title": "A step into the light",
+   "alt": "A white armored boot steps into a pool of light in the dark.",
+   "comic": "guinevere-vexana",
+   "page": 39,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "dark"
+   ],
+   "src": "vexana/comic/39-1.png",
+   "y": 680
+  },
+  "dab24db643": {
+   "slug": "a-dark-figure-turns",
+   "title": "A dark figure turns",
+   "alt": "A figure in dark armor with purple spears stands at the edge of a white flash.",
+   "comic": "guinevere-vexana",
+   "page": 39,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "dark"
+   ],
+   "src": "vexana/comic/39-2.png",
+   "y": 4816
+  },
+  "db106cf3be": {
+   "slug": "a-red-lit-corridor",
+   "title": "A red lit corridor",
+   "alt": "An empty metal corridor lit in red fills a wide slanted panel.",
+   "comic": "guinevere-vexana",
+   "page": 41,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "corridor"
+   ],
+   "src": "selrick-academy/comic/41-1.png",
+   "y": 112
+  },
+  "8c84c227f5": {
+   "slug": "guinevere-sees-the-eternal-guard",
+   "title": "Guinevere sees the Eternal Guard",
+   "alt": "Guinevere watches a wall of screens that show glowing pink hearts beside a warning triangle.",
+   "comic": "guinevere-vexana",
+   "page": 41,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "eternal guard",
+    "screen"
+   ],
+   "src": "selrick-academy/comic/41-2.png",
+   "y": 1096
+  },
+  "9811d89442": {
+   "slug": "an-eternal-guard-s-heart-glows",
+   "title": "An Eternal Guard's heart glows",
+   "alt": "A pink heart shaped emblem pulses on an Eternal Guard's chest while a small figure stands before it.",
+   "comic": "guinevere-vexana",
+   "page": 42,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "eternal guard"
+   ],
+   "src": "guinevere/comic/seeing-eternal-guard-pulsing.png",
+   "y": 2064
+  },
+  "dc6f2798e4": {
+   "slug": "guinevere-shocked",
+   "title": "Guinevere, shocked",
+   "alt": "A close-up of Guinevere's wide red eyes and cat ear headset in a metal corridor.",
+   "comic": "guinevere-vexana",
+   "page": 42,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "guinevere/comic/shocked.png",
+   "y": 80
+  },
+  "e0edd59381": {
+   "slug": "terrinia-at-night",
+   "title": "Terrinia at night",
+   "alt": "An aerial view of a city at night with a ring shaped tower rising above the river.",
+   "comic": "guinevere-vexana",
+   "page": 43,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "terrinia",
+    "city",
+    "night"
+   ],
+   "src": "terrinia/comic/43-1.png",
+   "y": 0
+  },
+  "720ecfd29a": {
+   "slug": "figures-on-the-rooftop",
+   "title": "Figures on the rooftop",
+   "alt": "Glowing purple figures stand on a rooftop under a night sky filled with dust.",
+   "comic": "guinevere-vexana",
+   "page": 43,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "night",
+    "city"
+   ],
+   "src": "vexana/comic/43-2.png",
+   "y": 2624
+  },
+  "dde5f85cbc": {
+   "slug": "vexana-in-dark-armor",
+   "title": "Vexana in dark armor",
+   "alt": "Vexana with pale hair and violet eyes in dark armor, expressionless, with spears behind her.",
+   "comic": "guinevere-vexana",
+   "page": 44,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "dark",
+    "close-up"
+   ],
+   "src": "vexana/comic/44-1.png",
+   "y": 112
+  },
+  "c219893431": {
+   "slug": "vexana-before-the-eternal-guard",
+   "title": "Vexana before the Eternal Guard",
+   "alt": "A great armored giant looms behind Vexana with a violet heart glowing in its chest.",
+   "comic": "guinevere-vexana",
+   "page": 44,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "vexana"
+   ],
+   "tags": [
+    "eternal guard",
+    "dark"
+   ],
+   "src": "vexana/comic/44-2.png",
+   "y": 2608
+  },
+  "e8766a7194": {
+   "slug": "guinevere-in-the-corridor",
+   "title": "Guinevere in the corridor",
+   "alt": "Guinevere stands in a pink lit corridor with a calm look, a cat ear headset and her hands at her collar.",
+   "comic": "guinevere-vexana",
+   "page": 45,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "guinevere"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "guinevere/comic/realizing-that-guinevere-finally-found-vexana.png",
+   "y": 0
+  },
+  "c7fc6c4865": {
+   "slug": "giant-ender-over-a-burning-ruin",
+   "title": "Giant Ender over a burning ruin",
+   "alt": "A giant black Ender with glowing orange eyes stands over a burning ruin in a very tall strip.",
+   "comic": "the-aspirant",
+   "page": 1,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "ender",
+    "fire"
+   ],
+   "src": "ender/comic/big-ender-in-layla-and-fanny-attack.png",
+   "y": 776
+  },
+  "4ef9749476": {
+   "slug": "terrinia-the-last-bastion",
+   "title": "Terrinia, the last bastion",
+   "alt": "A walled island city lies under a hexagon shield with a beam of light rising from a tall tower.",
+   "comic": "the-aspirant",
+   "page": 2,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "terrinia",
+    "city"
+   ],
+   "src": "terrinia/comic/2.png",
+   "y": 352
+  },
+  "014ade4d61": {
+   "slug": "warriors-in-silhouette",
+   "title": "Warriors in silhouette",
+   "alt": "A girl with a long weapon stands in front of a crowd of faceless students in blue.",
+   "comic": "the-aspirant",
+   "page": 2,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "selrick academy",
+    "crowd"
+   ],
+   "src": "selrick-student/comic/2-2.png",
+   "y": 1496
+  },
+  "ddad9beee1": {
+   "slug": "roger-runs",
+   "title": "Roger runs",
+   "alt": "Roger runs along a paved path past hedges and a building, looking back in fear.",
+   "comic": "the-aspirant",
+   "page": 3,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "roger"
+   ],
+   "src": "roger/comic/3.png",
+   "y": 824
+  },
+  "818eae76a4": {
+   "slug": "roger-is-thrown-down",
+   "title": "Roger is thrown down",
+   "alt": "Roger falls head first against a wall as a white burst strikes beside him.",
+   "comic": "the-aspirant",
+   "page": 4,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "roger",
+    "fight"
+   ],
+   "src": "roger/comic/4-1.png",
+   "y": 288
+  },
+  "971890c3a4": {
+   "slug": "roger-looks-up",
+   "title": "Roger looks up",
+   "alt": "Roger looks up, scared, as bright blades stab the ground beside him.",
+   "comic": "the-aspirant",
+   "page": 4,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "roger",
+    "fight"
+   ],
+   "src": "roger/comic/4-2.png",
+   "y": 1200
+  },
+  "725af7b729": {
+   "slug": "an-ai-droid-reaches-for-roger",
+   "title": "An AI droid reaches for Roger",
+   "alt": "A silvery AI droid with electric claws looms over Roger, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 4,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "ai droid",
+    "roger"
+   ],
+   "src": "roger/comic/4-3.png",
+   "y": 2144
+  },
+  "c10ad64eaa": {
+   "slug": "fanny-slashes-a-droid",
+   "title": "Fanny slashes a droid",
+   "alt": "Fanny slashes a droid with a blade of blue light while a large faded copy of her face fills the panel behind her.",
+   "comic": "the-aspirant",
+   "page": 6,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "ai droid",
+    "fight"
+   ],
+   "src": "fanny/comic/kicking-ender-neck.png",
+   "y": 1576
+  },
+  "66fed639b1": {
+   "slug": "a-droid-caught-in-a-cable",
+   "title": "A droid caught in a cable",
+   "alt": "An AI droid with raised claws is wrapped in a glowing blue cable in a slanted panel.",
+   "comic": "the-aspirant",
+   "page": 6,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "ai droid",
+    "fight"
+   ],
+   "src": "ai-droids/comic/wrapped-by-fanny-cable.png",
+   "y": 40
+  },
+  "fb1a2c3af3": {
+   "slug": "ai-droid-back-view",
+   "title": "AI droid, back view",
+   "alt": "An AI droid with a round body and an orange glowing eye seen from behind, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 7,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "ai droid"
+   ],
+   "src": "ai-droids/comic/back.png",
+   "y": 2344
+  },
+  "87d168c631": {
+   "slug": "fanny-drifts-upside-down",
+   "title": "Fanny drifts upside down",
+   "alt": "Fanny, upside down, drifts with her winged blades spread, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 7,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "flying"
+   ],
+   "src": "fanny/comic/flying-elegantly.png",
+   "y": 1064
+  },
+  "2f4935f1ec": {
+   "slug": "fanny-looks-down-in-flight",
+   "title": "Fanny looks down in flight",
+   "alt": "Fanny looks down with her hair over her eyes and a blade in her hand, with clouds behind her.",
+   "comic": "the-aspirant",
+   "page": 8,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "close-up",
+    "flying"
+   ],
+   "src": "fanny/comic/close-up-while-flying.png",
+   "y": 2168
+  },
+  "2dbd9b8708": {
+   "slug": "fanny-turns-in-the-air",
+   "title": "Fanny turns in the air",
+   "alt": "Fanny falls head first through the clouds with pale copies of her winged blades above her.",
+   "comic": "the-aspirant",
+   "page": 8,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "flying",
+    "sky"
+   ],
+   "src": "fanny/comic/manuvering-in-air.png",
+   "y": 48
+  },
+  "4430856b95": {
+   "slug": "ai-droid-front-view",
+   "title": "AI droid, front view",
+   "alt": "A close view of the domed head and shoulders of an AI droid with an orange light, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 9,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "ai droid"
+   ],
+   "src": "ai-droids/comic/front.png",
+   "y": 2192
+  },
+  "43749169aa": {
+   "slug": "fanny-with-her-wings-spread",
+   "title": "Fanny with her wings spread",
+   "alt": "Fanny floats facing the viewer with her arms raised and her winged blades spread against a violet sky.",
+   "comic": "the-aspirant",
+   "page": 9,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "flying",
+    "fight"
+   ],
+   "src": "fanny/comic/striking-from-above.png",
+   "y": 0
+  },
+  "946a5d0919": {
+   "slug": "a-figure-in-the-doorway",
+   "title": "A figure in the doorway",
+   "alt": "A figure with long hair stands in a lit doorway of a tall building, seen from far below with a large shadow on the ground.",
+   "comic": "the-aspirant",
+   "page": 11,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "city",
+    "shadow"
+   ],
+   "src": "layla/comic/11-1.png",
+   "y": 24
+  },
+  "673f56fd65": {
+   "slug": "roger-alarmed",
+   "title": "Roger, alarmed",
+   "alt": "A close-up of Roger with blue eyes and a headset, mouth open in alarm, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 11,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "roger",
+    "close-up"
+   ],
+   "src": "roger/comic/11-2.png",
+   "y": 1592
+  },
+  "e40c52da72": {
+   "slug": "fanny-thinks-on-the-battlefield",
+   "title": "Fanny thinks on the battlefield",
+   "alt": "A close-up of Fanny with green eyes and a drop of sweat, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 11,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "order on the page",
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "fanny/comic/close-up-thinking-face-on-battlefield.png",
+   "y": 2288
+  },
+  "5b01d60ced": {
+   "slug": "layla-raises-her-cannon",
+   "title": "Layla raises her cannon",
+   "alt": "Layla smiles with her long white cannon raised on one shoulder in a bright room.",
+   "comic": "the-aspirant",
+   "page": 12,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "weapon"
+   ],
+   "src": "layla/comic/12-1.png",
+   "y": 40
+  },
+  "5f35e5cd36": {
+   "slug": "layla-boasts",
+   "title": "Layla boasts",
+   "alt": "A chibi Layla with closed eyes holds a hand to her chest while Fanny and Roger stand small beside her.",
+   "comic": "the-aspirant",
+   "page": 12,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "chibi",
+    "roger"
+   ],
+   "src": "layla/comic/12-2.png",
+   "y": 2456
+  },
+  "ebc319f0f9": {
+   "slug": "layla-and-fanny-face-to-face",
+   "title": "Layla and Fanny face to face",
+   "alt": "Layla and Fanny glare at each other in a close-up with sparks between them.",
+   "comic": "the-aspirant",
+   "page": 13,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/13-1.png",
+   "y": 1216
+  },
+  "4984dc984c": {
+   "slug": "layla-looks-uneasy",
+   "title": "Layla looks uneasy",
+   "alt": "Layla raises a gloved hand with an uneasy look, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 13,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [],
+   "src": "layla/comic/13-2.png",
+   "y": 1920
+  },
+  "575692f06f": {
+   "slug": "fanny-walks-away",
+   "title": "Fanny walks away",
+   "alt": "Fanny walks away holding her head while Layla stands at the left and Roger crouches on cracked paving.",
+   "comic": "the-aspirant",
+   "page": 14,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "fanny",
+    "layla"
+   ],
+   "tags": [
+    "roger"
+   ],
+   "src": "layla/comic/13-3.png",
+   "y": 32
+  },
+  "ab75b8661a": {
+   "slug": "fanny-roger-and-layla",
+   "title": "Fanny, Roger and Layla",
+   "alt": "Fanny, Roger and Layla stand side by side facing forward, cut out on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 15,
+   "page_from": "match, weak",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "fanny",
+    "layla"
+   ],
+   "tags": [
+    "roger"
+   ],
+   "src": "layla/comic/15-1.png",
+   "y": 360
+  },
+  "729ca32179": {
+   "slug": "the-selrick-academy-tower",
+   "title": "The Selrick Academy tower",
+   "alt": "The spire of Selrick Academy rises above a plaza at sunset.",
+   "comic": "the-aspirant",
+   "page": 16,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "selrick academy",
+    "city"
+   ],
+   "src": "selrick-academy/comic/16.png",
+   "y": 32
+  },
+  "093d00c7e7": {
+   "slug": "a-screen-of-battle-scenes",
+   "title": "A screen of battle scenes",
+   "alt": "Students watch a huge wall screen that shows a grid of battle scenes.",
+   "comic": "the-aspirant",
+   "page": 17,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "screen",
+    "crowd"
+   ],
+   "src": "layla/comic/17.png",
+   "y": 88
+  },
+  "748c164847": {
+   "slug": "layla-cheers-chibi",
+   "title": "Layla cheers, chibi",
+   "alt": "A chibi Layla smiles with a fist at her cheek while a chibi Fanny stands beside her.",
+   "comic": "the-aspirant",
+   "page": 18,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "chibi"
+   ],
+   "src": "layla/comic/18-1.png",
+   "y": 136
+  },
+  "437ba1f040": {
+   "slug": "a-hall-of-screens",
+   "title": "A hall of screens",
+   "alt": "Layla and other students stand in a blue lit hall with balloons while screens show battles.",
+   "comic": "the-aspirant",
+   "page": 18,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "screen",
+    "crowd"
+   ],
+   "src": "layla/comic/18-2.png",
+   "y": 808
+  },
+  "fb3d0743ab": {
+   "slug": "a-scuffle-chibi-style",
+   "title": "A scuffle, chibi style",
+   "alt": "Chibi Layla with her big sword blushes between chibi Fanny, Roger and a girl with glasses.",
+   "comic": "the-aspirant",
+   "page": 18,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "chibi",
+    "roger"
+   ],
+   "src": "layla/comic/18-3.png",
+   "y": 2432
+  },
+  "ef4201045f": {
+   "slug": "alarm-in-red",
+   "title": "Alarm in red",
+   "alt": "Students run in red light as small round alarm drones fly around a huge dark shape in the background.",
+   "comic": "the-aspirant",
+   "page": 19,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "selrick academy",
+    "alarm"
+   ],
+   "src": "selrick-academy/comic/19-1.png",
+   "y": 16
+  },
+  "41c8fd9774": {
+   "slug": "red-light-at-the-academy",
+   "title": "Red light at the Academy",
+   "alt": "Layla and other students stand in red light while a figure in the foreground rushes away.",
+   "comic": "the-aspirant",
+   "page": 19,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "selrick academy",
+    "alarm"
+   ],
+   "src": "layla/comic/19-2.png",
+   "y": 2816
+  },
+  "4129a667ac": {
+   "slug": "the-shield-cracks-over-terrinia",
+   "title": "The shield cracks over Terrinia",
+   "alt": "A hexagon shield cracks over the city as a dark craft falls from the sky and crowds look up.",
+   "comic": "the-aspirant",
+   "page": 21,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "terrinia",
+    "ender",
+    "city"
+   ],
+   "src": "layla/comic/21-1.png",
+   "y": 120
+  },
+  "66007b66e6": {
+   "slug": "a-man-before-the-ruins",
+   "title": "A man before the ruins",
+   "alt": "A man in a long dark coat and glasses stands in front of ruined buildings with his arms out, in a wide slanted panel.",
+   "comic": "the-aspirant",
+   "page": 21,
+   "page_from": "match, weak",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "ruins"
+   ],
+   "src": "terrinia/comic/21-2.png",
+   "y": 2264
+  },
+  "8f72109032": {
+   "slug": "professor-joe-shouts",
+   "title": "Professor Joe shouts",
+   "alt": "Professor Joe, in round glasses, shouts in a slanted panel with speed lines.",
+   "comic": "the-aspirant",
+   "page": 22,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [],
+   "tags": [
+    "professor joe",
+    "close-up"
+   ],
+   "src": "professor-joe/comic/22.png",
+   "y": 72
+  },
+  "daa7941dd6": {
+   "slug": "a-blast-throws-debris",
+   "title": "A blast throws debris",
+   "alt": "A blast throws a figure and debris across a purple sky in a tall slanted panel.",
+   "comic": "the-aspirant",
+   "page": 23,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "explosion"
+   ],
+   "src": "professor-joe/comic/23-1.png",
+   "y": 16
+  },
+  "df2cb3b939": {
+   "slug": "professor-joe-and-the-toy-rabbit",
+   "title": "Professor Joe and the toy rabbit",
+   "alt": "Professor Joe kneels in armor and hands a pink toy rabbit to a small crying girl in red.",
+   "comic": "the-aspirant",
+   "page": 23,
+   "page_from": "name",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "professor joe"
+   ],
+   "src": "professor-joe/comic/23-2.png",
+   "y": 1793
+  },
+  "60248a6cc0": {
+   "slug": "looking-at-the-red-sky",
+   "title": "Looking at the red sky",
+   "alt": "Two figures in the foreground look toward a burning red sky where two small figures stand in the distance.",
+   "comic": "the-aspirant",
+   "page": 23,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [],
+   "tags": [
+    "sky"
+   ],
+   "src": "layla/comic/23-3.png",
+   "y": 2400
+  },
+  "b5dd2207c2": {
+   "slug": "layla-in-anger",
+   "title": "Layla in anger",
+   "alt": "Layla frowns with a vein mark on her forehead and holds her cannon while sparks of light drift around her.",
+   "comic": "the-aspirant",
+   "page": 24,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "weapon",
+    "close-up"
+   ],
+   "src": "layla/comic/24.png",
+   "y": 232
+  },
+  "d5d93943dd": {
+   "slug": "fanny-focused",
+   "title": "Fanny, focused",
+   "alt": "A close-up of Fanny with narrowed green eyes and red hair in a slanted panel.",
+   "comic": "the-aspirant",
+   "page": 25,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "fanny/comic/focused-on-battle.png",
+   "y": 8
+  },
+  "8671cdf300": {
+   "slug": "layla-looks-aside",
+   "title": "Layla looks aside",
+   "alt": "A tall close-up of Layla looking sideways with a firm mouth in a slanted panel.",
+   "comic": "the-aspirant",
+   "page": 25,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/25-2.png",
+   "y": 648
+  },
+  "68e058c189": {
+   "slug": "layla-and-fanny-rush-in",
+   "title": "Layla and Fanny rush in",
+   "alt": "Layla aims her cannon as she and Fanny rush toward the viewer in a slanted panel with speed lines.",
+   "comic": "the-aspirant",
+   "page": 25,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "fight",
+    "weapon"
+   ],
+   "src": "layla/comic/25-3.png",
+   "y": 1744
+  },
+  "3b8fdcdd19": {
+   "slug": "layla-and-fanny-ready-to-fight",
+   "title": "Layla and Fanny ready to fight",
+   "alt": "Fanny hovers above Layla with both of them holding weapons and ribbons of blue light around them.",
+   "comic": "the-aspirant",
+   "page": 26,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "fight",
+    "weapon"
+   ],
+   "src": "layla/comic/26.png",
+   "y": 192
+  },
+  "a68f2c2f8d": {
+   "slug": "fanny-cuts-down-an-ender",
+   "title": "Fanny cuts down an Ender",
+   "alt": "Fanny dashes through a streak of blue light below a large falling Ender.",
+   "comic": "the-aspirant",
+   "page": 27,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "ender/comic/slain-by-fanny.png",
+   "y": 680
+  },
+  "2515e47a7c": {
+   "slug": "layla-charges",
+   "title": "Layla charges",
+   "alt": "Layla rushes along a blue streak of light with her large sword drawn back in a slanted panel.",
+   "comic": "the-aspirant",
+   "page": 27,
+   "page_from": "match, weak",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "fight",
+    "weapon"
+   ],
+   "src": "layla/comic/27-2.png",
+   "y": 1904
+  },
+  "b23ee2dc71": {
+   "slug": "layla-in-green-light",
+   "title": "Layla in green light",
+   "alt": "Layla looks surprised in a swirl of green light in a wide slanted panel.",
+   "comic": "the-aspirant",
+   "page": 28,
+   "page_from": "match, weak",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/28.png",
+   "y": 152
+  },
+  "5ac0a47f23": {
+   "slug": "a-huge-ender-in-the-city",
+   "title": "A huge Ender in the city",
+   "alt": "A huge horned Ender with a burning head claws through the towers of a city in a tall slanted panel.",
+   "comic": "the-aspirant",
+   "page": 29,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "ender",
+    "city",
+    "fight"
+   ],
+   "src": "ender/comic/big-ender-destroying-city-in-layla-fanny-arc.png",
+   "y": 24
+  },
+  "9c8c355523": {
+   "slug": "behind-the-falling-rock",
+   "title": "Behind the falling rock",
+   "alt": "Layla and Fanny crouch behind a slab of rock as stones break apart around them.",
+   "comic": "the-aspirant",
+   "page": 30,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "fight",
+    "rubble"
+   ],
+   "src": "layla/comic/30.png",
+   "y": 24
+  },
+  "b43525939a": {
+   "slug": "a-small-figure-in-flight",
+   "title": "A small figure in flight",
+   "alt": "A small figure with long pink hair flies along a blue trail beneath giant dark wings and floating rocks.",
+   "comic": "the-aspirant",
+   "page": 31,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "flying",
+    "ender"
+   ],
+   "src": "layla/comic/31.png",
+   "y": 64
+  },
+  "068327eb55": {
+   "slug": "layla-fires-while-flying",
+   "title": "Layla fires while flying",
+   "alt": "Layla and Fanny look shocked in a very tall strip while a pink star of light bursts at the bottom.",
+   "comic": "the-aspirant",
+   "page": 32,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "flying",
+    "fight"
+   ],
+   "src": "layla/comic/32.png",
+   "y": 0
+  },
+  "c59cf93f0f": {
+   "slug": "an-ender-breaks-apart",
+   "title": "An Ender breaks apart",
+   "alt": "An Ender breaks apart in lightning and green light as a golden core burns at its chest.",
+   "comic": "the-aspirant",
+   "page": 34,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "ender",
+    "fight"
+   ],
+   "src": "ender/comic/ender-killed-by-layla-cannon.png",
+   "y": 32
+  },
+  "e11e4e4ff6": {
+   "slug": "a-broken-tower-at-dusk",
+   "title": "A broken tower at dusk",
+   "alt": "Two tiny figures stand on the roof of a broken tower as dust and fire rise in the purple dusk.",
+   "comic": "the-aspirant",
+   "page": 37,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [],
+   "tags": [
+    "ruins",
+    "dusk"
+   ],
+   "src": "layla/comic/37.png",
+   "y": 200
+  },
+  "f9bea6d53b": {
+   "slug": "layla-sits-on-a-ledge",
+   "title": "Layla sits on a ledge",
+   "alt": "Layla sits on a rooftop edge under a purple night sky with her cannon behind her, scuffed and calm.",
+   "comic": "the-aspirant",
+   "page": 38,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "rooftop",
+    "weapon"
+   ],
+   "src": "layla/comic/28-1.png",
+   "y": 72
+  },
+  "51f9632128": {
+   "slug": "fanny-spaces-out",
+   "title": "Fanny spaces out",
+   "alt": "Fanny in profile in front of a dusk city skyline with a blank look.",
+   "comic": "the-aspirant",
+   "page": 38,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "order on the page",
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "city",
+    "close-up"
+   ],
+   "src": "fanny/comic/fanny-spacing-out.png",
+   "y": 2144
+  },
+  "b647776182": {
+   "slug": "a-star-and-an-angry-eye",
+   "title": "A star and an angry eye",
+   "alt": "A wide strip with a small gold star in the dark sky and Layla's angry eye with a vein mark.",
+   "comic": "the-aspirant",
+   "page": 38,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/38-3.png",
+   "y": 2776
+  },
+  "d8a37e13c0": {
+   "slug": "fanny-and-layla-on-the-roof",
+   "title": "Fanny and Layla on the roof",
+   "alt": "Fanny stands holding a blade and looking aside while Layla sits low in the right foreground at dusk.",
+   "comic": "the-aspirant",
+   "page": 39,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "order on the page",
+   "chars": [
+    "fanny",
+    "layla"
+   ],
+   "tags": [
+    "rooftop",
+    "dusk"
+   ],
+   "src": "layla/comic/39.png",
+   "y": 24
+  },
+  "6a4c44d4e3": {
+   "slug": "fanny-stands-hand-at-her-cheek",
+   "title": "Fanny stands, hand at her cheek",
+   "alt": "Fanny stands with a hand at her cheek and her scuffed winged blades behind her, on a transparent background.",
+   "comic": "the-aspirant",
+   "page": 40,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [],
+   "src": "fanny/comic/telling-a-story.png",
+   "y": 1184
+  },
+  "1abfa2fb7f": {
+   "slug": "fanny-after-the-fight",
+   "title": "Fanny after the fight",
+   "alt": "A tall close-up of Fanny from the side with scratches on her cheek against a night sky.",
+   "comic": "the-aspirant",
+   "page": 41,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "fanny"
+   ],
+   "tags": [
+    "close-up",
+    "night"
+   ],
+   "src": "fanny/comic/looks-after-fight-with-scratches.png",
+   "y": 2224
+  },
+  "90d0c73a3d": {
+   "slug": "layla-looks-back",
+   "title": "Layla looks back",
+   "alt": "Layla looks back over her shoulder with a soft look under a night sky.",
+   "comic": "the-aspirant",
+   "page": 41,
+   "page_from": "match",
+   "panel": 1,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up",
+    "night"
+   ],
+   "src": "layla/comic/41-1.png",
+   "y": 56
+  },
+  "ebc68f9cae": {
+   "slug": "layla-smiles",
+   "title": "Layla smiles",
+   "alt": "A narrow strip showing Layla's eye and a small smile as she lowers her head.",
+   "comic": "the-aspirant",
+   "page": 41,
+   "page_from": "match",
+   "panel": 2,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/41-2.png",
+   "y": 608
+  },
+  "e3e3966928": {
+   "slug": "two-on-the-rooftop",
+   "title": "Two on the rooftop",
+   "alt": "Layla and Fanny stand on a rooftop at night, seen from behind with their weapons.",
+   "comic": "the-aspirant",
+   "page": 41,
+   "page_from": "match",
+   "panel": 3,
+   "panel_from": "name",
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "rooftop",
+    "night"
+   ],
+   "src": "layla/comic/41-3.png",
+   "y": 936
+  },
+  "774a334c8d": {
+   "slug": "layla-in-tears",
+   "title": "Layla in tears",
+   "alt": "A tall close-up of Layla with a teary eye, a small smile and dust on her cheek.",
+   "comic": "the-aspirant",
+   "page": 41,
+   "page_from": "match",
+   "panel": 4,
+   "panel_from": "name",
+   "chars": [
+    "layla"
+   ],
+   "tags": [
+    "close-up"
+   ],
+   "src": "layla/comic/41-4.png",
+   "y": 2248
+  },
+  "c6056db1a9": {
+   "slug": "layla-and-fanny-night-sky",
+   "title": "Layla and Fanny, night sky",
+   "alt": "Layla and Fanny stand side by side with their weapons under a dark sky with two pale rings.",
+   "comic": "the-aspirant",
+   "page": 42,
+   "page_from": "match",
+   "panel": null,
+   "panel_from": null,
+   "chars": [
+    "layla",
+    "fanny"
+   ],
+   "tags": [
+    "night",
+    "weapon"
+   ],
+   "src": "layla/comic/42.png",
+   "y": 0
+  }
+ },
+ "drop": {
+  "ae1be7c70e": {
+   "reason": "A screenshot of a video (550 px wide) with a blue channel watermark in the sky. The source page is not in the book files.",
+   "src": "selrick-academy/comic/Screenshot 2026-11-08 032919.png"
+  },
+  "9172b24e51": {
+   "reason": "A screenshot of a video with sound effect lettering (WHOA, WOO) across the art.",
+   "src": "selrick-academy/comic/Screenshot 2026-11-08 033013.png"
+  },
+  "4469ec71cf": {
+   "reason": "A screenshot of a video with a speech bubble over the top left of the art and the heads. A crop would cut the picture.",
+   "src": "selrick-student/comic/Screenshot 2026-11-08 032930.png"
+  },
+  "9bd0e783c5": {
+   "reason": "Too small: 189 by 598 px, under the floor of 250,000 pixels.",
+   "src": "fanny/comic/annoyed-on-battlefield.png"
+  },
+  "8ed884f809": {
+   "reason": "Too small: 333 by 342 px, under the floor of 250,000 pixels. It is a crop of the upper left panel of page 2 of Guinevere and Vexana. The full size copy of that page has a sound effect (BANG) across the art, so no large clean copy exists.",
+   "src": "guinevere/comic/unconcious-on-battlefield.png"
+  },
+  "b2d786486f": {
+   "reason": "Too small: 397 by 407 px, under the floor of 250,000 pixels. It is a crop of the lower right panel of page 2 of Guinevere and Vexana (see the other crop). It also sits in angela/films/normal under the wrong name angela-unconcious-on-ground. It is not a film still, so leaving it out of Scene is right.",
+   "src": "layla/comic/image (16).png"
+  },
+  "dc28f7c140": {
+   "reason": "Too small: 552 by 359 px, under the floor of 250,000 pixels.",
+   "src": "roger/comic/15-2.png"
+  }
+ },
+ "cuts": [
+  {
+   "slug": "a-vortex-of-dust-and-embers",
+   "title": "A vortex of dust and embers",
+   "alt": "A huge brown vortex of dust and embers rises into a purple sky in a tall slanted panel.",
+   "comic": "the-aspirant",
+   "page": 36,
+   "panel": 2,
+   "mode": "component",
+   "rect": [
+    0,
+    196,
+    1000,
+    1855
+   ],
+   "chars": [],
+   "tags": [
+    "ruins",
+    "storm"
+   ],
+   "y": 196
+  },
+  {
+   "slug": "a-fireball-falls-on-the-city",
+   "title": "A fireball falls on the city",
+   "alt": "A fireball falls toward a ruined city seen from above in a wide slanted panel.",
+   "comic": "the-aspirant",
+   "page": 36,
+   "panel": 3,
+   "mode": "component",
+   "rect": [
+    0,
+    1689,
+    1000,
+    2382
+   ],
+   "chars": [],
+   "tags": [
+    "ruins",
+    "fire",
+    "city"
+   ],
+   "y": 1689
+  },
+  {
+   "slug": "ruins-under-smoke",
+   "title": "Ruins under smoke",
+   "alt": "A wide strip of gray ruined city blocks under swirling smoke.",
+   "comic": "the-aspirant",
+   "page": 36,
+   "panel": 4,
+   "mode": "component",
+   "rect": [
+    0,
+    2317,
+    1000,
+    2642
+   ],
+   "chars": [],
+   "tags": [
+    "ruins",
+    "city"
+   ],
+   "y": 2317
+  },
+  {
+   "slug": "a-burst-of-blue-light",
+   "title": "A burst of blue light",
+   "alt": "Black spikes frame a burst of blue light that grows brighter toward the bottom of a tall page.",
+   "comic": "guinevere-vexana",
+   "page": 29,
+   "panel": 1,
+   "mode": "page",
+   "rect": [
+    0,
+    0,
+    2500,
+    3711
+   ],
+   "chars": [],
+   "tags": [
+    "light"
+   ],
+   "y": 0
+  },
+  {
+   "slug": "vexana-and-guinevere-chibi",
+   "title": "Vexana and Guinevere, chibi",
+   "alt": "A chibi Vexana holds a chibi Guinevere, who smiles and raises a hand, on a white page with soft pink light.",
+   "comic": "guinevere-vexana",
+   "page": 46,
+   "panel": 1,
+   "mode": "page",
+   "rect": [
+    0,
+    0,
+    2500,
+    3366
+   ],
+   "chars": [
+    "vexana",
+    "guinevere"
+   ],
+   "tags": [
+    "chibi",
+    "end card"
+   ],
+   "y": 0
+  }
+ ],
+ "drop_cuts": [
+  {
+   "title": "A glyph in a starry sky",
+   "why": "Page 5 of The Aspirant, panel 1. The glow of the glyph spills over the white paper, so a cut leaves a stepped halo on a dark page. Left out."
+  }
+ ]
+}
