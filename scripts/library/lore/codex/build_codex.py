@@ -8,6 +8,7 @@ Inputs (all in this folder):
   writers/*.json         the written texts: {slug: {line, short, summary, rows, weapons, sub?}}
   pairs/*.json           prose for the relationship pages: {"a--b": ["paragraph", ...]}
   official.json          optional: {slug: {atlas: id, person: slug}} to attach official passages
+  pictures/slice-*.json  pictures chosen by looking: {slug: [{id, alt}]} (ids of pictures_candidates.pool())
 
 Output: apps/web/public/data/library/lore-codex.json (see features/library/lore/codex/types.ts).
 With --check nothing is written; the problems are printed and the exit code says whether there are any.
@@ -22,6 +23,9 @@ from collections import defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import pictures_candidates  # noqa: E402
+
 ROOT = HERE.parents[3]
 OUT = ROOT / "apps" / "web" / "public" / "data" / "library" / "lore-codex.json"
 LORE = ROOT / "apps" / "web" / "public" / "data" / "library" / "lore.json"
@@ -279,6 +283,44 @@ def main(argv: list[str]) -> int:
             ]
             entry["official"] = passages
 
+    # ---- pictures chosen by looking, from the official pictures the site already holds ---------------
+    # pictures/slice-*.json: {slug: [{id, alt}]}. The ids are those of pictures_candidates.pool(): a
+    # picture of the Arts rooms (library keys under arts/v2) or one the story pages show beside the text.
+    picks: dict[str, list[dict]] = {}
+    for f in sorted((HERE / "pictures").glob("slice-*.json")):
+        for slug, chosen in json.loads(f.read_text(encoding="utf-8")).items():
+            picks.setdefault(slug, []).extend(chosen)
+    if picks:
+        pool = {i["id"]: i for i in pictures_candidates.pool()}
+        for slug, chosen in picks.items():
+            if slug not in entries:
+                problems.append(f"pictures: no entry {slug}")
+                continue
+            e = entries[slug]
+            if e["media"]:
+                continue  # the official atlas picture or the art of an Aspirant is already there
+            seen_ids: set[str] = set()
+            for c in chosen:
+                if len(e["media"]) >= 3:
+                    break
+                it = pool.get(c["id"])
+                if it is None:
+                    problems.append(f"pictures: {slug} names {c['id']}, which is not in the pool")
+                    continue
+                if c["id"] in seen_ids:
+                    continue
+                seen_ids.add(c["id"])
+                if it["src"] == "story":
+                    if it["chapter"] < e["first"]:
+                        problems.append(f"pictures: {slug} (first in chapter {e['first']}) has a picture of chapter {it['chapter']}")
+                        continue
+                    path = "/" + it["path"].lstrip("/")
+                    e["media"].append({"src": path, "thumb": path, "alt": c["alt"], "credit": it.get("credit") or "Official art"})
+                else:
+                    e["media"].append(
+                        {"src": f"lib:{it['key']}/p.webp", "thumb": f"lib:{it['key']}/t.webp", "alt": c["alt"], "credit": "Official art"}
+                    )
+
     # ---- checks ---------------------------------------------------------------------------------
     def text_ok(label: str, v: object, limit: int | None = None) -> None:
         if not isinstance(v, str) or not v.strip():
@@ -300,6 +342,9 @@ def main(argv: list[str]) -> int:
             text_ok(f"{slug} row {r[0]}", r[1], 240)
             if not isinstance(r[2], int):
                 problems.append(f"{slug} row {r[0]}: no chapter")
+        for m in e["media"]:
+            text_ok(f"{slug} picture", m["alt"], 200)
+            text_ok(f"{slug} picture credit", m["credit"], 80)
         for w in e["weapons"]:
             text_ok(f"{slug} weapon", w["name"], 80)
             text_ok(f"{slug} weapon note", w["note"], 300)

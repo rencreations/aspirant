@@ -1,0 +1,74 @@
+{
+  "council-hall": [
+    { "id": "arts-scene-the-council-hall-10cc37", "alt": "The Council hall: a tall dark hall of pillars with purple windows and a round glowing floor, two tiny figures standing in the light." },
+    { "id": "arts-scene-ruby-in-the-council-hall-e45235", "alt": "Ruby stands with her hands folded before the dark pillars of the Council hall." }
+  ],
+  "dormitory-roof": [
+    { "id": "c39-p104-0", "alt": "At the green rail of the dormitory roof, Guinevere holds her phone out for a selfie with Vexana, a small gold star at each collar." }
+  ],
+  "fannys-cables": [
+    { "id": "c03-p28-2", "alt": "A shining blue cable from Fanny's rig pulls tight around an Ender's arm and holds its claw back." },
+    { "id": "c04-p37-0", "alt": "Fanny swings past a huge dark Ender, a glowing blue line curving from her rig and a blade in her hand." },
+    { "id": "c03-p28-1", "alt": "A shining blue cable whips around an Ender's raised claw." }
+  ],
+  "frontline": [
+    { "id": "c69-p42-0", "alt": "A battle report card that marks Fanny, Layla and Guinevere as the frontline assault group." }
+  ],
+  "guineveres-drones": [
+    { "id": "c38-hero", "alt": "One of Guinevere's drones up close: a round gray shell with cat ears, yellow rings in the ears and yellow eyes." },
+    { "id": "c31-hero", "alt": "Guinevere hangs high above the city with her fists raised, two cat-eared drones with yellow ring eyes beside her." },
+    { "id": "c74-hero", "alt": "Guinevere crouches in a ruined street, one of her cat-eared drones floating at her hand." }
+  ],
+  "guineveres-room": [
+    { "id": "arts-scene-guinevere-in-her-room-01e55c", "alt": "Guinevere stands by her desk in her warm room, with shelves, trophies and a lamp, and the night city outside the window." },
+    { "id": "arts-scene-plush-toys-by-the-bed-f3ea89", "alt": "Plush animals sit on a red patterned rug beside a bed with a floral cover." },
+    { "id": "arts-scene-trophies-on-the-shelf-c03df6", "alt": "Wooden shelves in a warm room hold trophies, books and a teddy bear." }
+  ],
+  "mother-matrixs-attack": [
+    { "id": "arts-scene-enders-in-the-mother-matrix-attack-196c2f", "alt": "A huge gray Ender looks down over a smoky, ruined city while more Enders stand behind it." }
+  ],
+  "photograph": [
+    { "id": "c24-hero", "alt": "The framed photograph on a bright lab bench: two smiling scientists in white coats hold a small pink-haired girl between them." },
+    { "id": "c17-p12-0", "alt": "Mr. Bunny sits on the desk beside the framed photograph of two tall people holding a small girl." }
+  ],
+  "ring-of-light": [
+    { "id": "arts-scene-angela-binds-ruby-with-light-26e832", "alt": "Angela reaches out as a bright pink ring of light circles Ruby in mid air." }
+  ],
+  "team-up-day": [
+    { "id": "arts-scene-team-up-day-board-a691e6", "alt": "Cadets crowd before a large hologram reading The Aspirants Team-Up Day, while Guinevere stands alone at the right." },
+    { "id": "arts-scene-aspirants-team-up-day-ea1fee", "alt": "Vexana and Guinevere stand apart before the large hologram announcing The Aspirants Team-Up Day." }
+  ],
+  "angelas-white-flower": [
+    { "id": "c10-p44-0", "alt": "Angela, her suit scuffed from training, smiles with her eyes shut and holds out a small white flower." }
+  ],
+  "hologram-wall": [
+    { "id": "c68-p43-0", "alt": "Guinevere stands before the glowing hologram wall, which reads Vexana: Absent." }
+  ],
+  "pink-doll": [
+    { "id": "c09-p15-0", "alt": "A small dark-haired Ruby hugs a pink doll to her chest in the dark hall of pillars." }
+  ],
+  "test-ring": [
+    { "id": "c26-p95-0", "alt": "A white crescent hangs in the robot arm of the steel test ring in Chang'e's lab." }
+  ],
+  "cosmic-reapers": [
+    { "id": "c09-p34-0", "alt": "Rows of identical androids with animal ears stand still in a hall of tall white windows, the Cosmic Reapers." },
+    { "id": "c11-p19-0", "alt": "A line of androids with magenta eyes stands in profile, and among them one girl has blue eyes." }
+  ],
+  "drill-hall": [
+    { "id": "c01-p35-0", "alt": "Fanny stands alone in the narrow lit doorway of the drill hall with a blade in each hand, seen from the dark corridor." }
+  ],
+  "fight-over-the-gap": [
+    { "id": "c75-p30-0", "alt": "Vexana and Guinevere sweep past each other in the air, her staff and Guinevere's open hand reaching past." },
+    { "id": "c72-p57-0", "alt": "Guinevere rises over the ruined platforms on a tall wing of red and gold light, her two drones blazing beside her." },
+    { "id": "c72-p61-0", "alt": "Under a shaft of pale light, Guinevere falls headfirst between the towers of the city." }
+  ],
+  "storm-citadel-recording": [
+    { "id": "c03-p19-0", "alt": "The Storm Citadel recording shows a huge ship of dark blades hanging in a torn red sky, smaller ships swarming around it." }
+  ],
+  "dead-world-under-a-gray-sky": [
+    { "id": "c58-p115-0", "alt": "On a dead gray world under a dark sky, a winged woman raises one hand as red stars burn open overhead." }
+  ],
+  "obsidias-pink-star": [
+    { "id": "c55-p27-0", "alt": "Obsidia reaches out with a clawed black glove, a pink star blazing at her chest and a dark sun burning behind her." }
+  ]
+}

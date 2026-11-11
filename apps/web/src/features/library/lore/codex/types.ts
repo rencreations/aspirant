@@ -70,6 +70,8 @@ export interface CodexRel {
 export interface CodexMedia {
   /** A path under `public/` (a local picture) or a library key (starts with `lib:`). */
   src: string;
+  /** A small version for the cards of the codex, in the same form as `src`. Absent: `src` is used. */
+  thumb?: string;
   alt: string;
   credit: string;
 }

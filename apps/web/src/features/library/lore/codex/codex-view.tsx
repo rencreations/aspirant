@@ -24,7 +24,8 @@ export interface CodexViewProps {
 const thumbOf = (e: CodexEntry): string | null => {
   const m = e.media[0];
   if (!m) return null;
-  return m.src.startsWith("lib:") ? libUrl(m.src.slice(4)) : asset(m.src);
+  const src = m.thumb ?? m.src;
+  return src.startsWith("lib:") ? libUrl(src.slice(4)) : asset(src);
 };
 
 function Card({
