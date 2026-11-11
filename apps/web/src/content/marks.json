@@ -1,1 +1,1650 @@
-{}
+{
+  "c00": [
+    {
+      "p": 4,
+      "phrase": "Enders",
+      "slug": "enders",
+      "name": "Enders",
+      "kind": "creature",
+      "tip": "Living machines, tall and gray, made to destroy. They do not think; something vast and cold made them to kill on instinct."
+    },
+    {
+      "p": 8,
+      "phrase": "the nest",
+      "slug": "nest",
+      "name": "the nest",
+      "kind": "place",
+      "tip": "The place where Obsidia's kind sleep until they are needed. Obsidia grew a thing of her own there that looks like a little girl."
+    }
+  ],
+  "c01": [
+    {
+      "p": 1,
+      "phrase": "the Catastrophe",
+      "slug": "catastrophe",
+      "name": "the Catastrophe",
+      "kind": "event",
+      "tip": "The disaster of 978. In the years after it the Enders were everywhere, and they nearly wiped out humanity."
+    },
+    {
+      "p": 3,
+      "phrase": "aspirant power",
+      "slug": "aspirant-power",
+      "name": "aspirant power",
+      "kind": "idea",
+      "tip": "The belief that runs the mecha suits. Those with enough of it to pilot a suit are called Aspirants."
+    },
+    {
+      "p": 15,
+      "phrase": "the VR Battlefield",
+      "slug": "vr-battlefield",
+      "name": "the VR Battlefield",
+      "kind": "place",
+      "tip": "The Academy hall where students fight simulated Enders inside pods. A big screen above the pods shows each run, and a board ranks the times."
+    }
+  ],
+  "c02": [
+    {
+      "p": 4,
+      "phrase": "the cannon",
+      "slug": "laylas-cannon",
+      "name": "Layla's cannon",
+      "kind": "thing",
+      "tip": "The cannon Layla built, as tall as she is, white with a teal strip. Cyan cells on its stock fill as it charges. She calls it her magic gun."
+    },
+    {
+      "p": 14,
+      "phrase": "the alley thing",
+      "slug": "alley-thing",
+      "name": "the alley thing",
+      "kind": "idea",
+      "tip": "Fanny's tactic: fight with your back to a narrow alley, so the Enders must come at you one or two at a time."
+    }
+  ],
+  "c03": [
+    {
+      "p": 17,
+      "phrase": "Three ranks",
+      "slug": "ender-ranks",
+      "name": "Ender ranks",
+      "kind": "idea",
+      "tip": "Joe's three ranks: Ultimate Enders, the deadliest, which release the others; then Super Enders; then plain Enders, which kill the most."
+    },
+    {
+      "p": 20,
+      "phrase": "Storm Citadel",
+      "slug": "storm-citadel",
+      "name": "Storm Citadel",
+      "kind": "place",
+      "tip": "Obsidia's ship. It hangs over the bay inside its own black cloud, and wherever its violet storm reaches, human machines die."
+    },
+    {
+      "p": 48,
+      "phrase": "the lull",
+      "slug": "lull",
+      "name": "lull",
+      "kind": "idea",
+      "tip": "Joe's word for the weeks the Enders go quiet after they are badly hurt. A lull always ends."
+    }
+  ],
+  "c04": [
+    {
+      "p": 1,
+      "phrase": "the dome",
+      "slug": "defensive-bubble",
+      "name": "Defensive Bubble",
+      "kind": "thing",
+      "tip": "A dome of light over the city of Terrinia. It keeps the Enders out. A brighter patch of new light covers a tear from the last attack."
+    },
+    {
+      "p": 17,
+      "phrase": "Joe’s rule",
+      "slug": "first-rule-of-enders",
+      "name": "the first rule of Enders",
+      "kind": "idea",
+      "tip": "Joe's lesson: Enders show their weak spot only when they attack. The chest plates split, the core glows, and that moment is all you get."
+    }
+  ],
+  "c05": [
+    {
+      "p": 45,
+      "phrase": "the Energy System",
+      "slug": "energy-system",
+      "name": "Energy System",
+      "kind": "thing",
+      "tip": "A white-cyan beam inside turning rings on the Academy's tallest tower. It feeds the dome and turns its dark hexagons pale again."
+    }
+  ],
+  "c06": [
+    {
+      "p": 0,
+      "phrase": "rescue crews",
+      "slug": "rescue-teams",
+      "name": "rescue teams",
+      "kind": "group",
+      "tip": "The people who go into the ruins after a strike and carry out whoever is still alive."
+    }
+  ],
+  "c07": [
+    {
+      "p": 2,
+      "phrase": "the sergeants’ line",
+      "slug": "sergeants-line",
+      "name": "the sergeants' line",
+      "kind": "idea",
+      "tip": "The Shield sergeants' saying, which Fanny opens every session with: \"There is no place for mercy on the battlefield.\""
+    },
+    {
+      "p": 25,
+      "phrase": "The drift",
+      "slug": "leftward-drift",
+      "name": "the leftward drift",
+      "kind": "idea",
+      "tip": "A fault in Layla's cannon: at full charge the shot pulls left, a hand's width at two hundred meters. Each test ends in ERROR."
+    }
+  ],
+  "c08": [
+    {
+      "p": 3,
+      "phrase": "Aspirants fight in pairs",
+      "slug": "aspirant-pairs",
+      "name": "Aspirant pairs",
+      "kind": "idea",
+      "tip": "Aspirants fight in pairs. Two who trust each other pull more out of a suit than the same two apart, and nobody knows why."
+    },
+    {
+      "p": 28,
+      "phrase": "the gate portal",
+      "slug": "gate-portal",
+      "name": "the gate portal",
+      "kind": "thing",
+      "tip": "A tall frame by the Academy's main gate that fills with light. Step in, and you come out at the breach."
+    }
+  ],
+  "c09": [
+    {
+      "p": 1,
+      "phrase": "Oro",
+      "slug": "oro",
+      "name": "Oro",
+      "kind": "place",
+      "tip": "Ruby's home world, in another galaxy under a violet sky. Its will is Balance, and nobody there may grow strong enough to upset the order."
+    },
+    {
+      "p": 8,
+      "phrase": "the Will of the Cosmos",
+      "slug": "balance",
+      "name": "Balance",
+      "kind": "idea",
+      "tip": "In Ruby's lessons, the order that keeps everything in place after a first burst of chaos. The books call it the Will of the Cosmos."
+    },
+    {
+      "p": 34,
+      "phrase": "Cosmic Reapers",
+      "slug": "cosmic-reapers",
+      "name": "Cosmic Reapers",
+      "kind": "creature",
+      "tip": "Oro's android soldiers from Project Angel: hundreds of the same girl, with animal ears and magenta eyes. They do only what they are told."
+    }
+  ],
+  "c10": [
+    {
+      "p": 2,
+      "phrase": "the will of the planet",
+      "slug": "will-of-the-planet",
+      "name": "Will of the Planet",
+      "kind": "person",
+      "tip": "Ruby's lesson says some worlds grow a will of their own as they age, even far ones like Dawnbreak. Oro's will, it says, is Balance."
+    },
+    {
+      "p": 20,
+      "phrase": "the shield",
+      "slug": "angelas-shield",
+      "name": "Angela's shield",
+      "kind": "thing",
+      "tip": "A pane of pale light that flies from Angela's palm and opens in front of her, wide as a door. She calls \"Deploying shield!\""
+    },
+    {
+      "p": 50,
+      "phrase": "Balance Keepers",
+      "slug": "balance-keepers",
+      "name": "Balance Keepers",
+      "kind": "group",
+      "tip": "Oro's special forces. They go from planet to planet to keep things in \"balance,\" and they want a blade sharper than any they have."
+    }
+  ],
+  "c11": [
+    {
+      "p": 2,
+      "phrase": "the Council",
+      "slug": "council",
+      "name": "the Council",
+      "kind": "group",
+      "tip": "Oro's rulers, who agree their orders in the Council hall. Angela was built on its order as its weapon."
+    },
+    {
+      "p": 14,
+      "phrase": "trojan",
+      "slug": "trojan",
+      "name": "the trojan",
+      "kind": "thing",
+      "tip": "A few lines Ruby hides under Angela's walking routines, behind a lock that opens to her hand alone. They are her way out of Oro."
+    },
+    {
+      "p": 20,
+      "phrase": "Planet Dawnbreak",
+      "slug": "dawnbreak",
+      "name": "Dawnbreak",
+      "kind": "place",
+      "tip": "The planet humanity lives on. The Shield of Dawnbreak, the army that fights the Enders, is named for it."
+    }
+  ],
+  "c12": [
+    {
+      "p": 2,
+      "phrase": "the Rioters",
+      "slug": "rioters",
+      "name": "the Rioters",
+      "kind": "group",
+      "tip": "What Oro's mission order calls the people it is sent to save. Ruby knows what saving them really means."
+    },
+    {
+      "p": 21,
+      "phrase": "the plate on her back",
+      "slug": "councils-control-unit",
+      "name": "the Council's control unit",
+      "kind": "thing",
+      "tip": "A sealed plate between the shoulder blades of every Project Angel body, with the Council's seal burned in. Ruby is never allowed to open it."
+    }
+  ],
+  "c13": [
+    {
+      "p": 4,
+      "phrase": "S·L·K",
+      "slug": "slk",
+      "name": "S·L·K",
+      "kind": "thing",
+      "tip": "The mark of Selrick, stamped on the students' jackets and shirts."
+    },
+    {
+      "p": 14,
+      "phrase": "Code Override",
+      "slug": "code-override",
+      "name": "Code Override",
+      "kind": "idea",
+      "tip": "Ruby's power. Green lines run from her glove onto a machine and rewrite its orders."
+    }
+  ],
+  "c14": [
+    {
+      "p": 26,
+      "phrase": "the Decisionmakers",
+      "slug": "decisionmakers",
+      "name": "Decisionmakers",
+      "kind": "group",
+      "tip": "The Decisionmakers give the orders that Oro's Council agrees. Ruby's father leads them."
+    },
+    {
+      "p": 33,
+      "phrase": "a giant Ender",
+      "slug": "giant-enders",
+      "name": "giant Enders",
+      "kind": "creature",
+      "tip": "Enders of giant size. One stands over the roofs of burning Terrinia, taller than any tower."
+    }
+  ],
+  "c15": [
+    {
+      "p": 0,
+      "phrase": "Ruby’s scythe",
+      "slug": "rubys-scythe",
+      "name": "Ruby's scythe",
+      "kind": "thing",
+      "tip": "Ruby's scythe, white and orange and taller than she is. Lightning crawls along its blade, and one swing cuts through a row of androids."
+    }
+  ],
+  "c16": [
+    {
+      "p": 24,
+      "phrase": "cleanse",
+      "slug": "cleansing",
+      "name": "cleansing",
+      "kind": "idea",
+      "tip": "The Council's word for a planet's fate. Cleansed means nobody on it is left outside Balance."
+    },
+    {
+      "p": 35,
+      "phrase": "AI droid",
+      "slug": "ai-droids",
+      "name": "AI droids",
+      "kind": "thing",
+      "tip": "Slim white helper robots with one orange eye. Half serve the Combat Division and half the Support Division."
+    }
+  ],
+  "c17": [
+    {
+      "p": 2,
+      "phrase": "the Science Division",
+      "slug": "science-division",
+      "name": "Science Division",
+      "kind": "group",
+      "tip": "The Academy division that designs its suits and mends its machines. Chang'e is its director."
+    },
+    {
+      "p": 24,
+      "phrase": "that eye",
+      "slug": "lesleys-eye",
+      "name": "Lesley's eye",
+      "kind": "thing",
+      "tip": "A machine eye behind the dark visor on Lesley's left side, glowing teal. Chang'e built it."
+    },
+    {
+      "p": 43,
+      "phrase": "a research base",
+      "slug": "research-base",
+      "name": "the research base",
+      "kind": "place",
+      "tip": "A research base that stood before the Academy. Chang'e and her parents lived there, and later Lesley stood at its door."
+    }
+  ],
+  "c18": [
+    {
+      "p": 4,
+      "phrase": "a familiar dream",
+      "slug": "lesleys-dream",
+      "name": "Lesley's dream",
+      "kind": "idea",
+      "tip": "Lesley's recurring nightmare: screams, the Enders' roar, and running the wrong way through a crowd. It always ends on a child's voice."
+    },
+    {
+      "p": 62,
+      "phrase": "a black cloud",
+      "slug": "obsidias-storm",
+      "name": "Obsidia's storm",
+      "kind": "thing",
+      "tip": "A black cloud over the bay with violet light moving inside it, and something in it too big for any cloud."
+    }
+  ],
+  "c19": [
+    {
+      "p": 0,
+      "phrase": "the Shield of Dawnbreak",
+      "slug": "shield-of-dawnbreak",
+      "name": "Shield of Dawnbreak",
+      "kind": "group",
+      "tip": "The army soldiers formed to fight the Enders, named for their planet, Dawnbreak. Fanny's family were Shield soldiers."
+    },
+    {
+      "p": 37,
+      "phrase": "A core",
+      "slug": "ender-core",
+      "name": "Ender core",
+      "kind": "thing",
+      "tip": "The glowing heart inside an Ender's chest. It shows only when the chest plates split for a strike, and a shot into it kills the Ender."
+    },
+    {
+      "p": 74,
+      "phrase": "Terrinia",
+      "slug": "terrinia",
+      "name": "Terrinia",
+      "kind": "place",
+      "tip": "Humanity's last city, where the survivors of the Ender attacks drew back. Its dome of light, the Defensive Bubble, keeps the Enders out."
+    }
+  ],
+  "c20": [
+    {
+      "p": 6,
+      "phrase": "the plates",
+      "slug": "ender-plating",
+      "name": "Ender plating",
+      "kind": "thing",
+      "tip": "Gray plates from dead Enders, tagged and numbered on the research base's benches. So far they have told the scientists nothing."
+    }
+  ],
+  "c21": [
+    {
+      "p": 10,
+      "phrase": "Ender attack",
+      "slug": "storm-night-of-983",
+      "name": "the storm night of 983",
+      "kind": "event",
+      "tip": "In 983 the Storm Citadel's violet storm kills every human machine, and Obsidia's Enders strike the sleeping city after midnight."
+    }
+  ],
+  "c22": [
+    {
+      "p": 37,
+      "phrase": "design log",
+      "slug": "design-log",
+      "name": "the design log",
+      "kind": "thing",
+      "tip": "Chang'e's design log. It begins the night Lesley came back muddy, and every entry is written to Lesley."
+    },
+    {
+      "p": 40,
+      "phrase": "Not regulation",
+      "slug": "regulation",
+      "name": "regulation",
+      "kind": "idea",
+      "tip": "Lesley hands back anything that is not Shield regulation, like the rifle lamp and heated gloves Chang'e built for her."
+    }
+  ],
+  "c23": [
+    {
+      "p": 19,
+      "phrase": "a core component",
+      "slug": "core-component",
+      "name": "the core component",
+      "kind": "thing",
+      "tip": "A piece that split off whole when Lesley's round cracked an Ender's core at the edge. Nobody had thought it could be done."
+    },
+    {
+      "p": 72,
+      "phrase": "the frame",
+      "slug": "the-frame",
+      "name": "the frame",
+      "kind": "thing",
+      "tip": "A frame of steel tube in the shape of a person, with an Ender core piece caged in its chest. A soldier would wear it: the first suit ever built."
+    },
+    {
+      "p": 96,
+      "phrase": "the first light",
+      "slug": "first-light",
+      "name": "the first light",
+      "kind": "event",
+      "tip": "The moment the light in the frame's core holds for good. Chang'e's mother gives it that name."
+    }
+  ],
+  "c24": [
+    {
+      "p": 77,
+      "phrase": "A giant Ender",
+      "slug": "black-and-gold-giant",
+      "name": "the black-and-gold giant",
+      "kind": "creature",
+      "tip": "A giant Ender hundreds of meters tall, black and gold, on tall thin legs, with huge curved blades hanging from its arms. It walks without hurry."
+    }
+  ],
+  "c25": [
+    {
+      "p": 5,
+      "phrase": "The comm at her collar",
+      "slug": "lesleys-comm",
+      "name": "Lesley's comm",
+      "kind": "thing",
+      "tip": "The radio at Lesley's collar, with a small green light. Both the base and the Shield can reach her on it."
+    }
+  ],
+  "c26": [
+    {
+      "p": 80,
+      "phrase": "aspirant power",
+      "slug": "aspirant-power",
+      "name": "aspirant power",
+      "kind": "idea",
+      "tip": "The belief that runs the mecha suits. Those with enough of it to pilot a suit are called Aspirants."
+    },
+    {
+      "p": 90,
+      "phrase": "crescents",
+      "slug": "crescents",
+      "name": "crescents",
+      "kind": "thing",
+      "tip": "Floating crescent pieces Chang'e builds to keep herself safe. White edged with pink, they rise and circle her."
+    }
+  ],
+  "c27": [
+    {
+      "p": 76,
+      "phrase": "Panels of light",
+      "slug": "panels-of-light",
+      "name": "the panels of light",
+      "kind": "thing",
+      "tip": "Panels of light that open in the air around Chang'e when she says \"Console! Activate!\" She reads Enders through them."
+    },
+    {
+      "p": 86,
+      "phrase": "the First Aspirants",
+      "slug": "first-aspirants",
+      "name": "First Aspirants",
+      "kind": "idea",
+      "tip": "The name the Academy later gives Lesley and Chang'e, after the night the two of them bring down three giant Enders over Terrinia."
+    }
+  ],
+  "c28": [
+    {
+      "p": 39,
+      "phrase": "a glove wired to a dial",
+      "slug": "glove-and-dial",
+      "name": "the glove and dial",
+      "kind": "thing",
+      "tip": "A glove wired to a dial that reads aspirant power. A hand goes in, the glove hums and lights, and the needle swings."
+    },
+    {
+      "p": 50,
+      "phrase": "Wings of light",
+      "slug": "wings-of-light",
+      "name": "wings of light",
+      "kind": "thing",
+      "tip": "Wings of light that open at a pilot's back and let them fly. They run on aspirant power and go out like a switch when it is spent."
+    }
+  ],
+  "c29": [
+    {
+      "p": 15,
+      "phrase": "on checks",
+      "slug": "checks",
+      "name": "checks",
+      "kind": "idea",
+      "tip": "Chang'e's inspections of Angela. Anything that can receive can be told what to do, so Angela stays on checks."
+    },
+    {
+      "p": 17,
+      "phrase": "Forty lines",
+      "slug": "trojan",
+      "name": "the trojan",
+      "kind": "thing",
+      "tip": "A few lines Ruby hides under Angela's walking routines, behind a lock that opens to her hand alone. They are her way out of Oro."
+    }
+  ],
+  "c30": [
+    {
+      "p": 68,
+      "phrase": "the field roster",
+      "slug": "field-roster",
+      "name": "the field roster",
+      "kind": "thing",
+      "tip": "The rotation: the list of instructors who fight Enders outside the dome. The breach took four names off it."
+    },
+    {
+      "p": 90,
+      "phrase": "The Academy hall",
+      "slug": "academy-hall",
+      "name": "the Academy hall",
+      "kind": "place",
+      "tip": "The Academy's ceremony hall. Rows of chairs face an altar with five great stars above it, and a tall window throws colored light."
+    },
+    {
+      "p": 99,
+      "phrase": "chibi keychain",
+      "slug": "chibi-keychains",
+      "name": "chibi keychains",
+      "kind": "thing",
+      "tip": "A chibi keychain is a tiny big-headed doll. Guinevere wears a black-haired Vexana, and Vexana a pink-haired Guinevere."
+    }
+  ],
+  "c31": [
+    {
+      "p": 11,
+      "phrase": "the gate portal",
+      "slug": "gate-portal",
+      "name": "the gate portal",
+      "kind": "thing",
+      "tip": "A tall frame by the Academy's main gate that fills with light. Step in, and you come out at the breach."
+    },
+    {
+      "p": 18,
+      "phrase": "Her two drones",
+      "slug": "guineveres-drones",
+      "name": "Guinevere's drones",
+      "kind": "thing",
+      "tip": "Two round gray drones with cat ears and yellow ring eyes. They circle Guinevere, fight beside her and run on her aspirant power."
+    }
+  ],
+  "c32": [
+    {
+      "p": 3,
+      "phrase": "One. Two. Three.",
+      "slug": "hesters-count",
+      "name": "Hester's count",
+      "kind": "idea",
+      "tip": "Hester, of the House's guard, counted \"One. Two. Three.\" whenever little Guinevere fell, and Guinevere stood up on three."
+    },
+    {
+      "p": 32,
+      "phrase": "House Baroque",
+      "slug": "house-baroque",
+      "name": "House Baroque",
+      "kind": "group",
+      "tip": "One of Terrinia's great money houses, run by a board with Guinevere's father in the head seat. It lent the city money for the dome's power."
+    },
+    {
+      "p": 46,
+      "phrase": "a lady’s refinement",
+      "slug": "ladys-refinement",
+      "name": "a lady's refinement",
+      "kind": "idea",
+      "tip": "A manners tutor's phrase for how a lady holds her back. Guinevere glued it to Hester's count of three, and says it after every fall."
+    }
+  ],
+  "c33": [
+    {
+      "p": 13,
+      "phrase": "old march",
+      "slug": "the-march",
+      "name": "the march",
+      "kind": "idea",
+      "tip": "An old march Vexana's father hummed while he worked, always stopping in the same place. He would finish it when the war did."
+    },
+    {
+      "p": 27,
+      "phrase": "Stay back",
+      "slug": "stay-back",
+      "name": "Stay back",
+      "kind": "idea",
+      "tip": "The two words Vexana's father said whenever the drill bell rang, before he went up to his gun."
+    },
+    {
+      "p": 53,
+      "phrase": "The Shield’s home",
+      "slug": "shields-home",
+      "name": "the Shield's home",
+      "kind": "place",
+      "tip": "The Shield's home for soldiers' children, behind its barracks. It runs on bells, and most children there lost someone to the Enders."
+    }
+  ],
+  "c34": [
+    {
+      "p": 6,
+      "phrase": "preparatory course",
+      "slug": "preparatory-course",
+      "name": "preparatory course",
+      "kind": "idea",
+      "tip": "The Combat Division's year of training before any real fight. Cadets whose needle passes the line at the assessment go there."
+    },
+    {
+      "p": 58,
+      "phrase": "final combat trial",
+      "slug": "final-combat-trial",
+      "name": "the final combat trial",
+      "kind": "event",
+      "tip": "The last trial of the preparatory course, scored by the instructors. It never goes on the rankings board and decides nothing but pride."
+    }
+  ],
+  "c35": [
+    {
+      "p": 62,
+      "phrase": "The training hall",
+      "slug": "training-hall",
+      "name": "the training hall",
+      "kind": "place",
+      "tip": "The Academy's sparring hall. At night it is dark but for one lamp on a chain over the heavy bag, and a gallery runs high above its door."
+    }
+  ],
+  "c36": [
+    {
+      "p": 0,
+      "phrase": "THE ASPIRANTS TEAM-UP DAY",
+      "slug": "team-up-day",
+      "name": "Team-Up Day",
+      "kind": "event",
+      "tip": "The day the preparatory course ends, when cadets ask each other to be partners. A banner over the courtyard reads THE ASPIRANTS TEAM-UP DAY."
+    },
+    {
+      "p": 1,
+      "phrase": "Aspirants fought in pairs",
+      "slug": "aspirant-pairs",
+      "name": "Aspirant pairs",
+      "kind": "idea",
+      "tip": "Aspirants fight in pairs. Two who trust each other pull more out of a suit than the same two apart, and nobody knows why."
+    }
+  ],
+  "c37": [
+    {
+      "p": 2,
+      "phrase": "The reserve",
+      "slug": "reserve",
+      "name": "the reserve",
+      "kind": "group",
+      "tip": "A short sheet for cadets with no partner. They go out as singles behind the pairs and clear up after them."
+    },
+    {
+      "p": 8,
+      "phrase": "the dome’s foot",
+      "slug": "domes-foot",
+      "name": "the dome's foot",
+      "kind": "place",
+      "tip": "A ward of warehouses at the city's edge, where the dome's curve meets the ground at the end of the main road."
+    }
+  ],
+  "c38": [
+    {
+      "p": 0,
+      "phrase": "The first plan",
+      "slug": "guineveres-plans",
+      "name": "Guinevere's plans",
+      "kind": "thing",
+      "tip": "Training plans Guinevere slips under Vexana's door in three colors: pink for her, violet for Vexana, gold for the rest. Vexana does all of it."
+    },
+    {
+      "p": 59,
+      "phrase": "Team test",
+      "slug": "team-test",
+      "name": "the team test",
+      "kind": "event",
+      "tip": "A pair test. Two stand in a chalk square while steel dummies come down six rails at once, and a pair is out if a steel arm touches either."
+    }
+  ],
+  "c39": [
+    {
+      "p": 26,
+      "phrase": "a debt",
+      "slug": "debts",
+      "name": "debts",
+      "kind": "idea",
+      "tip": "Vexana's belief that every gift is a debt. She thinks she owes her father a life, and pays it back in Enders."
+    },
+    {
+      "p": 82,
+      "phrase": "Emblems of Hope",
+      "slug": "emblems-of-hope",
+      "name": "Emblems of Hope",
+      "kind": "thing",
+      "tip": "Two gold stars Guinevere cut and soldered by hand, one for her collar and one for Vexana's. They glow gold when the partners' powers are in sync."
+    }
+  ],
+  "c40": [
+    {
+      "p": 1,
+      "phrase": "The girls’ house",
+      "slug": "girls-house",
+      "name": "the girls' house",
+      "kind": "place",
+      "tip": "A cake shop halfway down the hill from the Academy, under a pink awning. Only girls go in, and they all know what to order."
+    },
+    {
+      "p": 39,
+      "phrase": "the white box",
+      "slug": "white-box",
+      "name": "the white box",
+      "kind": "thing",
+      "tip": "A white cake box from the girls' house. Vexana keeps the summer's keepsakes in it: ticket stubs, a paper fan and a folded napkin."
+    }
+  ],
+  "c41": [
+    {
+      "p": 8,
+      "phrase": "best Aspirant Duo",
+      "slug": "best-aspirant-duo",
+      "name": "Best Aspirant Duo",
+      "kind": "idea",
+      "tip": "Once a year the instructors give a pair of blue shield badges to the best Aspirant Duo. Guinevere and Vexana win the first ever given."
+    },
+    {
+      "p": 50,
+      "phrase": "The Will of the Planet",
+      "slug": "will-of-the-planet",
+      "name": "Will of the Planet",
+      "kind": "person",
+      "tip": "Ruby's lesson says some worlds grow a will of their own as they age, even far ones like Dawnbreak. Oro's will, it says, is Balance."
+    },
+    {
+      "p": 58,
+      "phrase": "the Mother Matrix",
+      "slug": "mother-matrix",
+      "name": "Mother Matrix",
+      "kind": "creature",
+      "tip": "Chang'e's name for the body the readings suggest the Will of the Planet has: something vast, far out where nobody can see."
+    }
+  ],
+  "c42": [
+    {
+      "p": 52,
+      "phrase": "Control Core",
+      "slug": "control-core",
+      "name": "Control Core",
+      "kind": "thing",
+      "tip": "Whatever steers all the Enders, Chang'e says. It is hidden in the Will's dark void, and only destroying it can defeat the Will."
+    },
+    {
+      "p": 74,
+      "phrase": "the void",
+      "slug": "void",
+      "name": "the void",
+      "kind": "place",
+      "tip": "The dark past the edge of the Enders' portals, where every reading drops to nothing. Nobody can get near it."
+    },
+    {
+      "p": 79,
+      "phrase": "a black hole",
+      "slug": "black-hole",
+      "name": "the black hole",
+      "kind": "place",
+      "tip": "A place in space so heavy it swallows whatever comes too near. Nothing seen falling in has come back out, not even light."
+    }
+  ],
+  "c43": [
+    {
+      "p": 70,
+      "phrase": "An Aspirant’s light",
+      "slug": "an-aspirants-light",
+      "name": "an Aspirant's light",
+      "kind": "idea",
+      "tip": "The key idea of Chang'e's paper: the part of you that thinks and hopes would keep shining inside a black hole and find its way home."
+    },
+    {
+      "p": 83,
+      "phrase": "Plan B",
+      "slug": "plan-a-and-plan-b",
+      "name": "Plan A and Plan B",
+      "kind": "idea",
+      "tip": "Guinevere's two plans. Plan A: she smashes the Core and they win. Plan B: they come home. She makes Vexana say it."
+    }
+  ],
+  "c44": [
+    {
+      "p": 54,
+      "phrase": "Partners tell each other first",
+      "slug": "partners-tell-each-other-first",
+      "name": "Partners tell each other first",
+      "kind": "idea",
+      "tip": "A rule Guinevere and Vexana make after a drawn match: partners tell each other first, both of them."
+    },
+    {
+      "p": 68,
+      "phrase": "the Investigation Room",
+      "slug": "investigation-room",
+      "name": "the Investigation Room",
+      "kind": "place",
+      "tip": "The Science Division's wing, where Ender wreckage is taken apart to learn how it works."
+    }
+  ],
+  "c45": [
+    {
+      "p": 21,
+      "phrase": "pink-haired keychain",
+      "slug": "pink-haired-keychain",
+      "name": "pink-haired keychain",
+      "kind": "thing",
+      "tip": "A little pink-haired keychain doll of Guinevere. Guinevere pressed it into Vexana's palm at a stall: \"Now you have me on yours.\""
+    },
+    {
+      "p": 24,
+      "phrase": "The Academy Investigation Room Corridor",
+      "slug": "investigation-room-corridor",
+      "name": "the Investigation Room corridor",
+      "kind": "place",
+      "tip": "A long pale corridor in the Investigation Room wing, with tall windows down one side. Two of them are smashed in."
+    }
+  ],
+  "c46": [
+    {
+      "p": 27,
+      "phrase": "Missing",
+      "slug": "missing",
+      "name": "Missing",
+      "kind": "idea",
+      "tip": "The status on a file when someone is lost with no trace. A student says Missing is what they write first."
+    },
+    {
+      "p": 88,
+      "phrase": "the black-haired keychain",
+      "slug": "black-haired-keychain",
+      "name": "black-haired keychain",
+      "kind": "thing",
+      "tip": "A tiny big-headed Vexana with long black hair, from the park. Guinevere clips it to her arm guard, where her fist swings."
+    }
+  ],
+  "c47": [
+    {
+      "p": 62,
+      "phrase": "The observation lab",
+      "slug": "observation-lab",
+      "name": "the observation lab",
+      "kind": "place",
+      "tip": "A glass room at the top of the Academy's tower, with a long telescope. Ruby and Angela keep the tower's sensor array running there."
+    },
+    {
+      "p": 96,
+      "phrase": "the dead ground",
+      "slug": "dead-ground",
+      "name": "the dead ground",
+      "kind": "place",
+      "tip": "The ruins outside the dome. Its streets have stood empty since the Catastrophe: doorways with no doors, weeds in every crack."
+    }
+  ],
+  "c48": [
+    {
+      "p": 1,
+      "phrase": "the Catastrophe",
+      "slug": "catastrophe",
+      "name": "the Catastrophe",
+      "kind": "event",
+      "tip": "The disaster of 978. In the years after it the Enders were everywhere, and they nearly wiped out humanity."
+    },
+    {
+      "p": 39,
+      "phrase": "the Emblem of Hope",
+      "slug": "emblems-of-hope",
+      "name": "Emblems of Hope",
+      "kind": "thing",
+      "tip": "Two gold stars Guinevere cut and soldered by hand, one for her collar and one for Vexana's. They glow gold when the partners' powers are in sync."
+    }
+  ],
+  "c49": [
+    {
+      "p": 14,
+      "phrase": "the Mother Matrix",
+      "slug": "mother-matrix",
+      "name": "Mother Matrix",
+      "kind": "creature",
+      "tip": "Chang'e's name for the body the readings suggest the Will of the Planet has: something vast, far out where nobody can see."
+    },
+    {
+      "p": 37,
+      "phrase": "The void",
+      "slug": "void",
+      "name": "the void",
+      "kind": "place",
+      "tip": "The dark past the edge of the Enders' portals, where every reading drops to nothing. Nobody can get near it."
+    },
+    {
+      "p": 58,
+      "phrase": "the first rule of Enders",
+      "slug": "first-rule-of-enders",
+      "name": "the first rule of Enders",
+      "kind": "idea",
+      "tip": "Joe's lesson: Enders show their weak spot only when they attack. The chest plates split, the core glows, and that moment is all you get."
+    }
+  ],
+  "c50": [
+    {
+      "p": 9,
+      "phrase": "the outer ward’s fence",
+      "slug": "outer-wards-fence",
+      "name": "the outer ward's fence",
+      "kind": "place",
+      "tip": "A wire fence twice Guinevere's height, with one lamp over its gate. Past it the dome comes down to the dead ground."
+    },
+    {
+      "p": 42,
+      "phrase": "the Will’s mark",
+      "slug": "wills-mark",
+      "name": "the Will's mark",
+      "kind": "thing",
+      "tip": "A cold point behind Vexana's breastbone. Through it the Will speaks, its Enders run with her, and its doors open wherever it sends her."
+    }
+  ],
+  "c51": [
+    {
+      "p": 4,
+      "phrase": "that hollow",
+      "slug": "hollow",
+      "name": "the hollow",
+      "kind": "place",
+      "tip": "A fold of the dark that no line of Enders ever crosses. Vexana stays there, keeps her school clothes there and trains alone."
+    },
+    {
+      "p": 12,
+      "phrase": "the gateway",
+      "slug": "singularity",
+      "name": "the Singularity",
+      "kind": "place",
+      "tip": "A tear shaped like a four-pointed star, showing night sky over the bay. The Enders are widening it into a door to Vexana's world."
+    },
+    {
+      "p": 16,
+      "phrase": "feeders",
+      "slug": "feeders",
+      "name": "feeders",
+      "kind": "creature",
+      "tip": "Vexana's name for gray Enders that tear girders and dead Enders out of the ruins and carry the metal back through the door."
+    }
+  ],
+  "c52": [
+    {
+      "p": 45,
+      "phrase": "Team-Up Day",
+      "slug": "team-up-day",
+      "name": "Team-Up Day",
+      "kind": "event",
+      "tip": "The day the preparatory course ends, when cadets ask each other to be partners. A banner over the courtyard reads THE ASPIRANTS TEAM-UP DAY."
+    }
+  ],
+  "c53": [
+    {
+      "p": 71,
+      "phrase": "Eternal Guards",
+      "slug": "eternal-guards",
+      "name": "Eternal Guards",
+      "kind": "group",
+      "tip": "Giant machines Vexana builds from Ender plate and cracked cores. They run on her power, and she means them to stand over Guinevere."
+    },
+    {
+      "p": 78,
+      "phrase": "The Storm Citadel",
+      "slug": "storm-citadel",
+      "name": "Storm Citadel",
+      "kind": "place",
+      "tip": "Obsidia's ship. It hangs over the bay inside its own black cloud, and wherever its violet storm reaches, human machines die."
+    }
+  ],
+  "c54": [
+    {
+      "p": 3,
+      "phrase": "Imperatrix",
+      "slug": "imperatrix",
+      "name": "Imperatrix",
+      "kind": "idea",
+      "tip": "Obsidia's title. She is the Storm Citadel's Imperatrix, its empress, and the ship answers to her and to no one else."
+    },
+    {
+      "p": 11,
+      "phrase": "The pulse",
+      "slug": "pulse",
+      "name": "the pulse",
+      "kind": "idea",
+      "tip": "The body's signal: one line down to every Ender, felt at once in every cell. It tells them where to go and what to do."
+    },
+    {
+      "p": 23,
+      "phrase": "A recall",
+      "slug": "recall",
+      "name": "the recall",
+      "kind": "idea",
+      "tip": "An order written into the cells of one creature that says one thing: come back. Obsidia sends them to her pawn, and none is obeyed."
+    }
+  ],
+  "c55": [
+    {
+      "p": 23,
+      "phrase": "recalibration",
+      "slug": "recalibration",
+      "name": "recalibration",
+      "kind": "idea",
+      "tip": "The body's healing. Living violet strands close cracks in Obsidia's shell, and set a made thing back to what it was made for."
+    },
+    {
+      "p": 82,
+      "phrase": "the Will’s thread",
+      "slug": "wills-thread",
+      "name": "the Will's thread",
+      "kind": "idea",
+      "tip": "Obsidia says each Ender's core is where the Will's thread ends. What an Ender sees runs back up the line to the Will."
+    }
+  ],
+  "c56": [
+    {
+      "p": 44,
+      "phrase": "a Twilight Orb",
+      "slug": "twilight-orb",
+      "name": "Twilight Orb",
+      "kind": "thing",
+      "tip": "A sphere of light bursting open. Obsidia says it is the one memory the oldest pulses carry, and thinks the Will was born of it."
+    },
+    {
+      "p": 53,
+      "phrase": "its host",
+      "slug": "host",
+      "name": "host",
+      "kind": "idea",
+      "tip": "Obsidia's word for a people's planet. She says a people that outgrows its host uses it up, while a purge leaves the host alive."
+    },
+    {
+      "p": 58,
+      "phrase": "The purge",
+      "slug": "purge",
+      "name": "the purge",
+      "kind": "idea",
+      "tip": "Obsidia's word for the Enders ending a people's civilization. She says it begins when a host finds its people too prosperous."
+    }
+  ],
+  "c57": [
+    {
+      "p": 58,
+      "phrase": "A black hole",
+      "slug": "black-hole",
+      "name": "the black hole",
+      "kind": "place",
+      "tip": "A place in space so heavy it swallows whatever comes too near. Nothing seen falling in has come back out, not even light."
+    },
+    {
+      "p": 69,
+      "phrase": "The Core",
+      "slug": "control-core",
+      "name": "Control Core",
+      "kind": "thing",
+      "tip": "Whatever steers all the Enders, Chang'e says. It is hidden in the Will's dark void, and only destroying it can defeat the Will."
+    }
+  ],
+  "c58": [
+    {
+      "p": 52,
+      "phrase": "the nest",
+      "slug": "nest",
+      "name": "the nest",
+      "kind": "place",
+      "tip": "The place where Obsidia's kind sleep until they are needed. Obsidia grew a thing of her own there that looks like a little girl."
+    },
+    {
+      "p": 63,
+      "phrase": "Ultimate Enders",
+      "slug": "ultimate-enders",
+      "name": "Ultimate Enders",
+      "kind": "creature",
+      "tip": "The deadliest of the three Ender ranks Professor Joe teaches. They release the other two."
+    },
+    {
+      "p": 108,
+      "phrase": "a pawn",
+      "slug": "pawn",
+      "name": "pawn",
+      "kind": "idea",
+      "tip": "Obsidia's word for the one of hers among the humans. The Will lets a pawn move freely for a while. If it slips beyond control, there is one outcome."
+    }
+  ],
+  "c59": [
+    {
+      "p": 3,
+      "phrase": "Silverbolt",
+      "slug": "silverbolt",
+      "name": "Silverbolt",
+      "kind": "thing",
+      "tip": "Selena's dragon-like machine, with blue light along its seams. Nobody else can run it, and Selena says it is shy."
+    },
+    {
+      "p": 10,
+      "phrase": "Terrinia, 983",
+      "slug": "storm-night-of-983",
+      "name": "the storm night of 983",
+      "kind": "event",
+      "tip": "In 983 the Storm Citadel's violet storm kills every human machine, and Obsidia's Enders strike the sleeping city after midnight."
+    }
+  ],
+  "c60": [
+    {
+      "p": 51,
+      "phrase": "Purple",
+      "slug": "the-purple",
+      "name": "the purple",
+      "kind": "thing",
+      "tip": "Ender cells in Selena's blood. When she is cut, purple threads come up and draw the edges shut like a needle."
+    },
+    {
+      "p": 95,
+      "phrase": "the research base",
+      "slug": "research-base",
+      "name": "the research base",
+      "kind": "place",
+      "tip": "A research base that stood before the Academy. Chang'e and her parents lived there, and later Lesley stood at its door."
+    }
+  ],
+  "c61": [
+    {
+      "p": 12,
+      "phrase": "The year the base fell",
+      "slug": "fall-of-the-research-base",
+      "name": "the fall of the research base",
+      "kind": "event",
+      "tip": "On the evening of the first light the alarm sounds and half the city burns. Small flying craft set the research base's storehouse on fire."
+    },
+    {
+      "p": 17,
+      "phrase": "black and gold",
+      "slug": "black-and-gold-giant",
+      "name": "the black-and-gold giant",
+      "kind": "creature",
+      "tip": "A giant Ender hundreds of meters tall, black and gold, on tall thin legs, with huge curved blades hanging from its arms. It walks without hurry."
+    }
+  ],
+  "c62": [
+    {
+      "p": 9,
+      "phrase": "No change to a registered mecha",
+      "slug": "registration-rule",
+      "name": "registration rule",
+      "kind": "idea",
+      "tip": "Chang'e's rule: no change to a registered mecha without a field-test report and her mark. Any change, even paint."
+    },
+    {
+      "p": 54,
+      "phrase": "Fine tuning",
+      "slug": "fine-tuning",
+      "name": "fine tuning",
+      "kind": "idea",
+      "tip": "A machine tuned to one pilot answers no one else. Silverbolt is fine tuned, and so is the director's gear."
+    }
+  ],
+  "c63": [
+    {
+      "p": 34,
+      "phrase": "a recall from the Enders",
+      "slug": "recall",
+      "name": "the recall",
+      "kind": "idea",
+      "tip": "An order written into the cells of one creature that says one thing: come back. Obsidia sends them to her pawn, and none is obeyed."
+    },
+    {
+      "p": 55,
+      "phrase": "a thin thread",
+      "slug": "selenas-thread",
+      "name": "Selena's thread",
+      "kind": "idea",
+      "tip": "A thin thread Obsidia's pawn opened beside her recall. Reports come up it only on storm nights, when lightning hides it."
+    }
+  ],
+  "c64": [
+    {
+      "p": 6,
+      "phrase": "the Singularity",
+      "slug": "singularity",
+      "name": "the Singularity",
+      "kind": "place",
+      "tip": "A tear shaped like a four-pointed star, showing night sky over the bay. The Enders are widening it into a door to Vexana's world."
+    },
+    {
+      "p": 47,
+      "phrase": "the crews’ yard",
+      "slug": "crews-yard",
+      "name": "the crews' yard",
+      "kind": "place",
+      "tip": "A yard far down the outer fence, where salvage crews sort their finds by day. After dark Selena sells salvage there under one lamp."
+    }
+  ],
+  "c65": [
+    {
+      "p": 21,
+      "phrase": "the sea of stars",
+      "slug": "sea-of-stars",
+      "name": "the sea of stars",
+      "kind": "place",
+      "tip": "Space far from any world. Obsidia took the Storm Citadel out into it to watch, from there, what grew from her seed."
+    }
+  ],
+  "c66": [
+    {
+      "p": 3,
+      "phrase": "The throne",
+      "slug": "obsidias-throne",
+      "name": "Obsidia's throne",
+      "kind": "thing",
+      "tip": "The Storm Citadel's spine, a humming column every block of the ship hangs from. Obsidia sits on it where a neck would be and moves the ship by touch."
+    },
+    {
+      "p": 10,
+      "phrase": "the cycle",
+      "slug": "cycle",
+      "name": "the cycle",
+      "kind": "idea",
+      "tip": "Obsidia's view of history: peoples rise, are ended and begin again. She says destruction is merely the beginning of a new cycle."
+    },
+    {
+      "p": 17,
+      "phrase": "a field",
+      "slug": "obsidias-field",
+      "name": "Obsidia's field",
+      "kind": "thing",
+      "tip": "A field Obsidia built, asleep under her throne. Let out over the city, it would put out aspirant power wherever it reached, and nothing else."
+    }
+  ],
+  "c67": [
+    {
+      "p": 7,
+      "phrase": "Her storm",
+      "slug": "obsidias-storm",
+      "name": "Obsidia's storm",
+      "kind": "thing",
+      "tip": "A black cloud over the bay with violet light moving inside it, and something in it too big for any cloud."
+    },
+    {
+      "p": 17,
+      "phrase": "pink-haired keychain",
+      "slug": "pink-haired-keychain",
+      "name": "pink-haired keychain",
+      "kind": "thing",
+      "tip": "A little pink-haired keychain doll of Guinevere. Guinevere pressed it into Vexana's palm at a stall: \"Now you have me on yours.\""
+    }
+  ],
+  "c68": [
+    {
+      "p": 3,
+      "phrase": "the Emblem of Hope",
+      "slug": "emblems-of-hope",
+      "name": "Emblems of Hope",
+      "kind": "thing",
+      "tip": "Two gold stars Guinevere cut and soldered by hand, one for her collar and one for Vexana's. They glow gold when the partners' powers are in sync."
+    }
+  ],
+  "c69": [
+    {
+      "p": 7,
+      "phrase": "the Defensive Bubble",
+      "slug": "defensive-bubble",
+      "name": "Defensive Bubble",
+      "kind": "thing",
+      "tip": "A dome of light over the city of Terrinia. It keeps the Enders out. A brighter patch of new light covers a tear from the last attack."
+    },
+    {
+      "p": 35,
+      "phrase": "frontline assault",
+      "slug": "frontline",
+      "name": "frontline",
+      "kind": "group",
+      "tip": "Chang'e's frontline assault: Fanny, Layla and Guinevere, with Shield soldiers, students in suits and a long cannon, to meet the Enders head on."
+    },
+    {
+      "p": 39,
+      "phrase": "Mobile support",
+      "slug": "mobile-support",
+      "name": "mobile support",
+      "kind": "idea",
+      "tip": "Selena's battle post, set by Chang'e. Mobile support goes wherever the fight bends."
+    }
+  ],
+  "c70": [
+    {
+      "p": 5,
+      "phrase": "Eternal Guards",
+      "slug": "eternal-guards",
+      "name": "Eternal Guards",
+      "kind": "group",
+      "tip": "Giant machines Vexana builds from Ender plate and cracked cores. They run on her power, and she means them to stand over Guinevere."
+    },
+    {
+      "p": 6,
+      "phrase": "the platforms",
+      "slug": "platforms",
+      "name": "the platforms",
+      "kind": "place",
+      "tip": "The broad stone tiers that join the city's wards above the bay. Three giants wait on the high ledges over them."
+    }
+  ],
+  "c71": [
+    {
+      "p": 17,
+      "phrase": "the team test",
+      "slug": "team-test",
+      "name": "the team test",
+      "kind": "event",
+      "tip": "A pair test. Two stand in a chalk square while steel dummies come down six rails at once, and a pair is out if a steel arm touches either."
+    }
+  ],
+  "c72": [
+    {
+      "p": 31,
+      "phrase": "the Mother Matrix",
+      "slug": "mother-matrix",
+      "name": "Mother Matrix",
+      "kind": "creature",
+      "tip": "Chang'e's name for the body the readings suggest the Will of the Planet has: something vast, far out where nobody can see."
+    },
+    {
+      "p": 37,
+      "phrase": "purge protocol",
+      "slug": "purge-protocol",
+      "name": "purge protocol",
+      "kind": "idea",
+      "tip": "An order from a voice everywhere: \"Vexana. Execute purge protocol.\" To purge a place is to wipe it clean."
+    },
+    {
+      "p": 57,
+      "phrase": "wings of aspirant power",
+      "slug": "wings-of-light",
+      "name": "wings of light",
+      "kind": "thing",
+      "tip": "Wings of light that open at a pilot's back and let them fly. They run on aspirant power and go out like a switch when it is spent."
+    }
+  ],
+  "c73": [
+    {
+      "p": 27,
+      "phrase": "the Will’s mark",
+      "slug": "wills-mark",
+      "name": "the Will's mark",
+      "kind": "thing",
+      "tip": "A cold point behind Vexana's breastbone. Through it the Will speaks, its Enders run with her, and its doors open wherever it sends her."
+    },
+    {
+      "p": 43,
+      "phrase": "Termination",
+      "slug": "termination-rule",
+      "name": "the termination rule",
+      "kind": "idea",
+      "tip": "Obsidia's rule for a thing she made: if it ever slips beyond control, there is only one outcome. Vexana named it: termination."
+    }
+  ],
+  "c74": [
+    {
+      "p": 30,
+      "phrase": "Tetra",
+      "slug": "tetra",
+      "name": "Tetra",
+      "kind": "thing",
+      "tip": "A doll no longer than a hand, a copy of Angela with pink hair and rabbit ears. Its left eye is a camera that feeds a monitor on Ruby's bench."
+    },
+    {
+      "p": 60,
+      "phrase": "Androids",
+      "slug": "androids",
+      "name": "androids",
+      "kind": "creature",
+      "tip": "Machines built like people. On Oro they stand in rows: hundreds of the same girl."
+    }
+  ],
+  "c75": [
+    {
+      "p": 46,
+      "phrase": "her lead Guard",
+      "slug": "lead-guard",
+      "name": "the lead Guard",
+      "kind": "thing",
+      "tip": "The first of Vexana's Eternal Guards, a giant she built from Ender plates. It woke when she thought of Guinevere: eyes yellow, heart blazing magenta."
+    }
+  ],
+  "c76": [
+    {
+      "p": 14,
+      "phrase": "a black hole",
+      "slug": "black-hole",
+      "name": "the black hole",
+      "kind": "place",
+      "tip": "A place in space so heavy it swallows whatever comes too near. Nothing seen falling in has come back out, not even light."
+    },
+    {
+      "p": 22,
+      "phrase": "the Core",
+      "slug": "control-core",
+      "name": "Control Core",
+      "kind": "thing",
+      "tip": "Whatever steers all the Enders, Chang'e says. It is hidden in the Will's dark void, and only destroying it can defeat the Will."
+    }
+  ],
+  "c77": [
+    {
+      "p": 2,
+      "phrase": "Chang’e’s paper",
+      "slug": "changes-paper",
+      "name": "On Aspirant Power and the Black Hole",
+      "kind": "thing",
+      "tip": "Chang'e's paper, marked Status: untested. It says an Aspirant's light would shine on inside a black hole and find its way home."
+    }
+  ],
+  "c78": [
+    {
+      "p": 7,
+      "phrase": "The Aspirants always stand united",
+      "slug": "aspirants-always-stand-united",
+      "name": "The Aspirants always stand united",
+      "kind": "idea",
+      "tip": "The Aspirants' shout. Everyone said it on the platforms, even Fanny, and the thought of it lights Guinevere's star."
+    },
+    {
+      "p": 83,
+      "phrase": "The recall",
+      "slug": "recall",
+      "name": "the recall",
+      "kind": "idea",
+      "tip": "An order written into the cells of one creature that says one thing: come back. Obsidia sends them to her pawn, and none is obeyed."
+    }
+  ],
+  "c79": [
+    {
+      "p": 28,
+      "phrase": "The hum",
+      "slug": "ender-hum",
+      "name": "the Ender hum",
+      "kind": "idea",
+      "tip": "The deep hum of the Enders that Selena feels in her bones. Every Ender carries a small piece of it. The Storm Citadel carries the whole."
+    },
+    {
+      "p": 45,
+      "phrase": "The Storm Citadel",
+      "slug": "storm-citadel",
+      "name": "Storm Citadel",
+      "kind": "place",
+      "tip": "Obsidia's ship. It hangs over the bay inside its own black cloud, and wherever its violet storm reaches, human machines die."
+    }
+  ],
+  "c80": [
+    {
+      "p": 12,
+      "phrase": "the bay road cut",
+      "slug": "bay-road-cut",
+      "name": "the bay road cut",
+      "kind": "place",
+      "tip": "A narrow street that climbs from the water to the shelters."
+    },
+    {
+      "p": 36,
+      "phrase": "the field",
+      "slug": "obsidias-field",
+      "name": "Obsidia's field",
+      "kind": "thing",
+      "tip": "A field Obsidia built, asleep under her throne. Let out over the city, it would put out aspirant power wherever it reached, and nothing else."
+    }
+  ],
+  "c81": [
+    {
+      "p": 15,
+      "phrase": "this rifle",
+      "slug": "lesleys-rifle",
+      "name": "Lesley's rifle",
+      "kind": "thing",
+      "tip": "Lesley's long rifle. Its old firing action is a spring, a pin and a bolt that run on nothing but a hand, and she wants the new coil fitted on top."
+    },
+    {
+      "p": 21,
+      "phrase": "Rear support",
+      "slug": "rear-support",
+      "name": "rear support",
+      "kind": "group",
+      "tip": "The post just behind the frontline: Angela's shield, the wounded and the way out. Chang'e posts Ruby and Angela there."
+    }
+  ],
+  "c82": [
+    {
+      "p": 11,
+      "phrase": "table of suits",
+      "slug": "table-of-suits",
+      "name": "the table of suits",
+      "kind": "thing",
+      "tip": "A chart a teacher goes down in class: this year's suits, each kind and rank, and how strong each can run."
+    },
+    {
+      "p": 37,
+      "phrase": "Rescue teams",
+      "slug": "rescue-teams",
+      "name": "rescue teams",
+      "kind": "group",
+      "tip": "The people who go into the ruins after a strike and carry out whoever is still alive."
+    }
+  ],
+  "c83": [
+    {
+      "p": 12,
+      "phrase": "a wall",
+      "slug": "barricade-in-the-cut",
+      "name": "the barricade in the cut",
+      "kind": "thing",
+      "tip": "A barricade of a door, a shop sign and a tipped car across the narrowest place in the cut, with a gap wide enough for one Ender at a time."
+    }
+  ],
+  "c84": [
+    {
+      "p": 5,
+      "phrase": "The alley thing",
+      "slug": "alley-thing",
+      "name": "the alley thing",
+      "kind": "idea",
+      "tip": "Fanny's tactic: fight with your back to a narrow alley, so the Enders must come at you one or two at a time."
+    },
+    {
+      "p": 66,
+      "phrase": "her own cell",
+      "slug": "angelas-cell",
+      "name": "Angela's cell",
+      "kind": "thing",
+      "tip": "The cell inside Angela's body. It is her own, so the field that put out the suits does not stop her."
+    }
+  ],
+  "c85": [
+    {
+      "p": 29,
+      "phrase": "the throne hall",
+      "slug": "throne-hall",
+      "name": "the throne hall",
+      "kind": "place",
+      "tip": "Obsidia's hall deep among the Storm Citadel's hanging blocks, with no way in from outside. It is dark and huge, with wide stairs up into violet light."
+    },
+    {
+      "p": 52,
+      "phrase": "purification",
+      "slug": "purification",
+      "name": "purification",
+      "kind": "idea",
+      "tip": "Obsidia's word for destruction. She says destruction gives rise to new life, and that is the meaning of purification."
+    },
+    {
+      "p": 78,
+      "phrase": "Her true form",
+      "slug": "selenas-true-form",
+      "name": "Selena's true form",
+      "kind": "thing",
+      "tip": "Selena's own shape: dark plate trimmed with silver, pale shards at her shoulders, horns, pointed ears, claws and fangs. She calls it the real her."
+    }
+  ],
+  "c86": [
+    {
+      "p": 51,
+      "phrase": "the crescents",
+      "slug": "crescents",
+      "name": "crescents",
+      "kind": "thing",
+      "tip": "Floating crescent pieces Chang'e builds to keep herself safe. White edged with pink, they rise and circle her."
+    },
+    {
+      "p": 65,
+      "phrase": "pudding",
+      "slug": "caramel-pudding",
+      "name": "caramel pudding",
+      "kind": "thing",
+      "tip": "A caramel pudding cup left outside Chang'e's lab door with no note, the spoon laid across the lid. Caramel is the right flavor."
+    }
+  ],
+  "c87": [
+    {
+      "p": 5,
+      "phrase": "the long weapon",
+      "slug": "obsidias-weapon",
+      "name": "Obsidia's weapon",
+      "kind": "thing",
+      "tip": "Obsidia's long silver-pink weapon. It comes to her hand out of the dark, and at the lift of one finger it lashes out across the hall."
+    },
+    {
+      "p": 33,
+      "phrase": "the nest",
+      "slug": "nest",
+      "name": "the nest",
+      "kind": "place",
+      "tip": "The place where Obsidia's kind sleep until they are needed. Obsidia grew a thing of her own there that looks like a little girl."
+    },
+    {
+      "p": 47,
+      "phrase": "a figure of silver and gold",
+      "slug": "obsidias-new-form",
+      "name": "Obsidia's new form",
+      "kind": "thing",
+      "tip": "A taller figure of silver and gold plate that Obsidia becomes in gold fire, with a crown of silver points and wings of energy wider than the storm."
+    }
+  ]
+}

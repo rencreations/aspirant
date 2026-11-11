@@ -61,7 +61,7 @@ One JSON object per entry (`scripts/library/lore/codex/entries/<slug>.json`). Sl
 }
 ```
 
-Relation types (a closed list so the diagram can colour them): `family`, `partner`, `friend`, `rival`, `teacher`, `student`, `ally`, `enemy`, `maker`, `creation`, `guardian`, `ward`, `leader`, `serves`, `member`, `owns`, `lives`, `found`, `part`. A relationship is stored on both entries (A to B and B to A with the mirrored label); the pair page is `rel-<a>-<b>` with the two slugs sorted.
+Relation types (a closed list so the diagram can colour them): `family`, `partner`, `friend`, `rival`, `teacher`, `student`, `ally`, `enemy`, `maker`, `creation`, `guardian`, `ward`, `leader`, `serves`, `member`, `owns`, `lives`, `found`, `part`. A relationship is stored on both entries (A to B and B to A with the mirrored label); the pair page is `<a>--<b>` with the two slugs sorted.
 
 The ten Aspirants are entries too (`kind: person`, `sub: aspirant`), with `character: "<slug>"` pointing at their page `/character/<slug>`; the lore room shows them with a button to it.
 

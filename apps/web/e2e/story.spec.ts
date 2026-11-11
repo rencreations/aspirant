@@ -695,6 +695,46 @@ async function landed(page: Page) {
 
 const door = (page: Page) => page.locator('nav[aria-label="Chapters"]').getByRole("link").first();
 
+test.describe("marks: words that explain themselves", () => {
+  const marks = JSON.parse(
+    fs.readFileSync(path.resolve(process.cwd(), "src/content/marks.json"), "utf8"),
+  ) as Record<string, Array<{ p: number; phrase: string; slug: string; name: string }>>;
+  const id = Object.keys(marks).find((k) => (marks[k]?.length ?? 0) > 0) ?? "";
+  const first = marks[id]?.[0];
+  const slugOf = INDEX.chapters.find((c) => c.id === id)?.slug ?? "";
+
+  test("a marked phrase opens a card with a way to the codex, and the text is unchanged", async ({
+    page,
+  }) => {
+    test.skip(!first, "no marks yet");
+    await openChapter(page, slugOf);
+    const mark = page.locator(`[data-mark='${first?.slug ?? ""}']`).first();
+    await mark.scrollIntoViewIfNeeded();
+    // The paragraph reads exactly as the book has it.
+    const chapter = JSON.parse(
+      fs.readFileSync(path.resolve(process.cwd(), `public/data/story/${id}.json`), "utf8"),
+    ) as { blocks: Array<{ t: string; i?: number; segs?: Array<{ t: string }> }> };
+    const book = (chapter.blocks.find((b) => b.t === "p" && b.i === first?.p)?.segs ?? [])
+      .map((s) => s.t)
+      .join("");
+    const para = page.locator(`#${id}-p${String(first?.p ?? 0).padStart(3, "0")}`);
+    expect(await para.evaluate((el) => el.textContent)).toBe(book);
+    await mark.click();
+    const card = page.getByRole("dialog", { name: `About ${first?.name ?? ""}` });
+    await expect(card).toBeVisible();
+    await expect(card.getByRole("link", { name: "More in the collection" })).toHaveAttribute(
+      "href",
+      new RegExp(`/collection/lore/${first?.slug ?? ""}/?$`),
+    );
+    await page.keyboard.press("Escape");
+    await expect(card).toHaveCount(0);
+  });
+
+  test("marks are few: at most three in a chapter", () => {
+    for (const list of Object.values(marks)) expect(list.length).toBeLessThanOrEqual(3);
+  });
+});
+
 test.describe("moving between chapters (the chapter morph)", () => {
   test("the card opens the next chapter: at its top, its heading focused, the bar bare", async ({
     page,

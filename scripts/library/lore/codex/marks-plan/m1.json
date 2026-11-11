@@ -1,0 +1,324 @@
+[
+ {
+  "n": 0,
+  "p": 4,
+  "phrase": "Enders",
+  "slug": "enders",
+  "why": "the prologue says what Enders are here"
+ },
+ {
+  "n": 0,
+  "p": 8,
+  "phrase": "the nest",
+  "slug": "nest",
+  "why": "the nest is explained here"
+ },
+ {
+  "n": 1,
+  "p": 1,
+  "phrase": "the Catastrophe",
+  "slug": "catastrophe",
+  "why": "the Catastrophe of 978 is explained here"
+ },
+ {
+  "n": 1,
+  "p": 3,
+  "phrase": "aspirant power",
+  "slug": "aspirant-power",
+  "why": "aspirant power and the Aspirants are explained here"
+ },
+ {
+  "n": 1,
+  "p": 15,
+  "phrase": "the VR Battlefield",
+  "slug": "vr-battlefield",
+  "why": "first visit to the VR Battlefield"
+ },
+ {
+  "n": 2,
+  "p": 4,
+  "phrase": "the cannon",
+  "slug": "laylas-cannon",
+  "why": "Layla works on her cannon and its fault"
+ },
+ {
+  "n": 2,
+  "p": 14,
+  "phrase": "the alley thing",
+  "slug": "alley-thing",
+  "why": "Layla sees what the alley thing is"
+ },
+ {
+  "n": 3,
+  "p": 17,
+  "phrase": "Three ranks",
+  "slug": "ender-ranks",
+  "why": "Joe teaches the three Ender ranks"
+ },
+ {
+  "n": 3,
+  "p": 20,
+  "phrase": "Storm Citadel",
+  "slug": "storm-citadel",
+  "why": "Joe explains the Storm Citadel"
+ },
+ {
+  "n": 3,
+  "p": 48,
+  "phrase": "the lull",
+  "slug": "lull",
+  "why": "the lull Joe defined ends here"
+ },
+ {
+  "n": 4,
+  "p": 1,
+  "phrase": "the dome",
+  "slug": "defensive-bubble",
+  "why": "the dome is seen up close for the first time"
+ },
+ {
+  "n": 4,
+  "p": 17,
+  "phrase": "Joe’s rule",
+  "slug": "first-rule-of-enders",
+  "why": "Joe's rule on weak spots is applied here"
+ },
+ {
+  "n": 5,
+  "p": 45,
+  "phrase": "the Energy System",
+  "slug": "energy-system",
+  "why": "the Energy System is explained here"
+ },
+ {
+  "n": 6,
+  "p": 0,
+  "phrase": "rescue crews",
+  "slug": "rescue-teams",
+  "why": "first rescue crews after a battle"
+ },
+ {
+  "n": 7,
+  "p": 2,
+  "phrase": "the sergeants’ line",
+  "slug": "sergeants-line",
+  "why": "Fanny's sergeants' line is explained here"
+ },
+ {
+  "n": 7,
+  "p": 25,
+  "phrase": "The drift",
+  "slug": "leftward-drift",
+  "why": "the drift log in Layla's lab"
+ },
+ {
+  "n": 8,
+  "p": 3,
+  "phrase": "Aspirants fight in pairs",
+  "slug": "aspirant-pairs",
+  "why": "Joe explains why Aspirants fight in pairs"
+ },
+ {
+  "n": 8,
+  "p": 28,
+  "phrase": "the gate portal",
+  "slug": "gate-portal",
+  "why": "refresher on the gate portal from chapter 3"
+ },
+ {
+  "n": 9,
+  "p": 1,
+  "phrase": "Oro",
+  "slug": "oro",
+  "why": "first sight of Planet Oro"
+ },
+ {
+  "n": 9,
+  "p": 8,
+  "phrase": "the Will of the Cosmos",
+  "slug": "balance",
+  "why": "Ruby's lesson defines Balance"
+ },
+ {
+  "n": 9,
+  "p": 34,
+  "phrase": "Cosmic Reapers",
+  "slug": "cosmic-reapers",
+  "why": "the only place the Cosmic Reapers are named"
+ },
+ {
+  "n": 10,
+  "p": 2,
+  "phrase": "the will of the planet",
+  "slug": "will-of-the-planet",
+  "why": "the technicians name the will of the planet"
+ },
+ {
+  "n": 10,
+  "p": 20,
+  "phrase": "the shield",
+  "slug": "angelas-shield",
+  "why": "Angela's shield is first shown here"
+ },
+ {
+  "n": 10,
+  "p": 50,
+  "phrase": "Balance Keepers",
+  "slug": "balance-keepers",
+  "why": "the Balance Keepers are explained here"
+ },
+ {
+  "n": 11,
+  "p": 2,
+  "phrase": "the Council",
+  "slug": "council",
+  "why": "Oro's Council and its powers are explained here"
+ },
+ {
+  "n": 11,
+  "p": 14,
+  "phrase": "trojan",
+  "slug": "trojan",
+  "why": "the trojan is explained here"
+ },
+ {
+  "n": 11,
+  "p": 20,
+  "phrase": "Planet Dawnbreak",
+  "slug": "dawnbreak",
+  "why": "reminder that Dawnbreak is humanity's planet"
+ },
+ {
+  "n": 12,
+  "p": 2,
+  "phrase": "the Rioters",
+  "slug": "rioters",
+  "why": "Angela sees who the Rioters are"
+ },
+ {
+  "n": 12,
+  "p": 21,
+  "phrase": "the plate on her back",
+  "slug": "councils-control-unit",
+  "why": "Ruby learns what the plate does"
+ },
+ {
+  "n": 13,
+  "p": 4,
+  "phrase": "S·L·K",
+  "slug": "slk",
+  "why": "the reader meets S.L.K jackets without a gloss"
+ },
+ {
+  "n": 13,
+  "p": 14,
+  "phrase": "Code Override",
+  "slug": "code-override",
+  "why": "Ruby's Code Override, its only use"
+ },
+ {
+  "n": 14,
+  "p": 26,
+  "phrase": "the Decisionmakers",
+  "slug": "decisionmakers",
+  "why": "reminder of who the Decisionmakers are"
+ },
+ {
+  "n": 14,
+  "p": 33,
+  "phrase": "a giant Ender",
+  "slug": "giant-enders",
+  "why": "giant Enders seen on the monitor"
+ },
+ {
+  "n": 15,
+  "p": 0,
+  "phrase": "Ruby’s scythe",
+  "slug": "rubys-scythe",
+  "why": "Ruby's scythe, after its first fight"
+ },
+ {
+  "n": 16,
+  "p": 24,
+  "phrase": "cleanse",
+  "slug": "cleansing",
+  "why": "Ruby explains cleansing to Terrinia"
+ },
+ {
+  "n": 16,
+  "p": 35,
+  "phrase": "AI droid",
+  "slug": "ai-droids",
+  "why": "first AI droid, sent to watch the newcomers"
+ },
+ {
+  "n": 17,
+  "p": 2,
+  "phrase": "the Science Division",
+  "slug": "science-division",
+  "why": "the Science Division is explained here"
+ },
+ {
+  "n": 17,
+  "p": 24,
+  "phrase": "that eye",
+  "slug": "lesleys-eye",
+  "why": "Lesley's machine eye is explained here"
+ },
+ {
+  "n": 17,
+  "p": 43,
+  "phrase": "a research base",
+  "slug": "research-base",
+  "why": "the research base before the Academy"
+ },
+ {
+  "n": 18,
+  "p": 4,
+  "phrase": "a familiar dream",
+  "slug": "lesleys-dream",
+  "why": "Lesley's recurring dream is explained here"
+ },
+ {
+  "n": 18,
+  "p": 62,
+  "phrase": "a black cloud",
+  "slug": "obsidias-storm",
+  "why": "the storm over the bay in 983"
+ },
+ {
+  "n": 19,
+  "p": 0,
+  "phrase": "the Shield of Dawnbreak",
+  "slug": "shield-of-dawnbreak",
+  "why": "the Shield is explained again in Lesley's story"
+ },
+ {
+  "n": 19,
+  "p": 37,
+  "phrase": "A core",
+  "slug": "ender-core",
+  "why": "Lesley sees an Ender core open in a raid"
+ },
+ {
+  "n": 19,
+  "p": 74,
+  "phrase": "Terrinia",
+  "slug": "terrinia",
+  "why": "the towns draw back to Terrinia, the last city"
+ },
+ {
+  "n": 20,
+  "p": 6,
+  "phrase": "the plates",
+  "slug": "ender-plating",
+  "why": "Ender plates on the base's benches"
+ },
+ {
+  "n": 21,
+  "p": 10,
+  "phrase": "Ender attack",
+  "slug": "storm-night-of-983",
+  "why": "Lesley's file names the attack of 983"
+ }
+]
