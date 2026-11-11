@@ -43,8 +43,8 @@ async function openCharacter(page: Page, slug: string, query = "") {
 }
 
 /**
- * Open a photo from its tile with the keyboard: a tile that stands off the screen sideways (a row
- * slides with the scroll) is brought in by the flow when it takes the focus, then Enter presses it.
+ * Open a photo from its tile with the keyboard: the tile takes the focus (the browser brings it
+ * into view), then Enter presses it.
  */
 async function openTile(page: Page, id?: string) {
   const tile = id

@@ -1,9 +1,10 @@
 import type { ArtsFile, ArtsItem, Facet } from "../core/types";
-import { defaultSearchOf, facetsOfFile } from "../core/flow/facets";
+import { aspirantsFirst, defaultSearchOf, facetsOfFile } from "../core/flow/facets";
 
 /**
- * The filter of Game: who or what the in-game stills show (an Aspirant, the Mother Matrix, drones),
- * the ones with the most pictures first. The data file names them in `places`.
+ * The filter of Game: who or what the in-game stills show. The ten Aspirants come first, in the
+ * order of the pairs, then the Mother Matrix, the drones and the rest with the most pictures
+ * first. The data file names them in `places`.
  */
 export function gameFacetOf(item: ArtsItem): readonly string[] {
   return item.places;
@@ -14,5 +15,5 @@ export const gameSearchOf = defaultSearchOf;
 
 /** The chips of Game, from its data file. */
 export function gameFacets(file: (ArtsFile & { facets?: readonly Facet[] }) | null): Facet[] {
-  return facetsOfFile(file);
+  return aspirantsFirst(facetsOfFile(file));
 }

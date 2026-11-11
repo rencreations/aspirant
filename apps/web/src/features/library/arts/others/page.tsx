@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import { useArtsData } from "../core/data";
 import { FlowRoom } from "../core/flow";
+import { ASPIRANT_SECTIONS } from "../core/flow/sections";
 import {
   othersFacetOf,
   othersFacets,
@@ -12,7 +13,7 @@ import {
   type OthersItem,
 } from "./facets";
 
-/** Others: the official art that fits no other room, and the pictures made for this site, filtered by kind and by Aspirant. */
+/** Others: the official art that fits no other room, and the pictures made for this site, as a still wall grouped by Aspirant and filtered by kind and by Aspirant. */
 export default function OthersPage() {
   const { data, failed } = useArtsData<OthersItem, OthersHead>("others");
   const facets = useMemo(() => othersFacets(data), [data]);
@@ -26,6 +27,7 @@ export default function OthersPage() {
       facetOf={othersFacetOf}
       searchOf={othersSearchOf}
       facetLabel="Kinds and Aspirants"
+      sections={ASPIRANT_SECTIONS}
       searchLabel="Search the others"
     />
   );

@@ -4,10 +4,11 @@ import { useMemo } from "react";
 
 import { useArtsData } from "../core/data";
 import { FlowRoom } from "../core/flow";
+import { ASPIRANT_SECTIONS } from "../core/flow/sections";
 import type { ArtsItem } from "../core/types";
 import { sceneFacetOf, sceneFacets, sceneSearchOf } from "./facets";
 
-/** Scene: the stills of the official films, as a flow of rows filtered by the place they show. */
+/** Scene: the stills of the official films, as a still wall grouped by Aspirant and filtered by who or what they show. */
 export default function ScenePage() {
   const { data, failed } = useArtsData<ArtsItem>("scene");
   const facets = useMemo(() => sceneFacets(data), [data]);
@@ -20,7 +21,9 @@ export default function ScenePage() {
       facets={facets}
       facetOf={sceneFacetOf}
       searchOf={sceneSearchOf}
-      facetLabel="Places"
+      facetLabel="Aspirants and places"
+      sections={ASPIRANT_SECTIONS}
+      leadChips={10}
       nouns={["still", "stills"]}
       searchLabel="Search scenes"
     />

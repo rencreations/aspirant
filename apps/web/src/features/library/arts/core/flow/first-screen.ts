@@ -5,8 +5,9 @@ import { fetchArtsData } from "../data";
 import type { ArtsRoom } from "../routes";
 import type { ArtsFile, ArtsItem, Facet } from "../types";
 import { buildIndex, filterIndexes, searchIndexes } from "./filter";
-import { firstScreenIndexes, pickSize, tileRatio } from "./math";
-import { currentMetrics } from "./viewport";
+import { firstScreenTiles, metricsFor, pickSize, tileRatio } from "./math";
+import { groupBySection, type WallSections } from "./sections";
+import { wallWidth } from "./viewport";
 
 /**
  * The loading list's item for a flow room: the thumbnails of the pictures that show on the first
@@ -19,8 +20,8 @@ import { currentMetrics } from "./viewport";
  */
 
 /** About this many pictures are waited for. */
-const FIRST_PICTURES = 14;
-/** What stands above the rows on the first screen (the top bar, the head and the chips). */
+const FIRST_PICTURES = 18;
+/** What stands above the wall on the first screen (the top bar, the head and the chips). */
 const HEAD_OFFSET = 300;
 
 export interface FlowFirstScreenOptions<T extends ArtsItem, Head = { facets?: Facet[] }> {
@@ -32,6 +33,8 @@ export interface FlowFirstScreenOptions<T extends ArtsItem, Head = { facets?: Fa
   searchOf: (item: T) => string;
   /** The filter of the room, from its data file: the same function the page uses. Default: the file's `facets`. */
   facets?: (file: ArtsFile<T> & Head) => readonly Facet[];
+  /** The groups of the room, when it has some: the same value the page uses. */
+  sections?: WallSections<T>;
   /** The weight of the item in the loading bar. Default 4. */
   weight?: number;
 }
@@ -56,18 +59,30 @@ export function flowFirstScreen<T extends ArtsItem, Head = { facets?: Facet[] }>
       const index = buildIndex(file.items, options.facetOf, options.searchOf, facets);
       const searched = searchIndexes(index, q);
       const known = facets.length === 0 || facets.some((facet) => facet.id === f);
-      const shown = filterIndexes(index, searched, known ? f : "")
+      const chosen = known ? f : "";
+      const shown = filterIndexes(index, searched, chosen)
         .map((i) => file.items[i])
         .filter((item): item is T => item !== undefined);
+      // The page shows groups while nothing is searched or filtered: the same order here.
+      const wall =
+        options.sections && q.trim() === "" && !chosen
+          ? groupBySection(shown, options.sections)
+          : { items: shown, parts: null };
 
-      const m = currentMetrics();
-      const ratios = shown.map((item) => tileRatio(item.img.w, item.img.h));
+      const m = metricsFor(wallWidth());
+      const ratios = wall.items.map((item) => tileRatio(item.img.w, item.img.h));
       const keys: string[] = [];
-      for (const at of firstScreenIndexes(ratios, m, HEAD_OFFSET, FIRST_PICTURES)) {
-        const item = shown[at];
+      for (const tile of firstScreenTiles(
+        ratios,
+        wall.parts,
+        m,
+        HEAD_OFFSET,
+        window.innerHeight,
+        FIRST_PICTURES,
+      )) {
+        const item = wall.items[tile.index];
         if (!item) continue;
-        const w = Math.round((ratios[at] ?? 1) * m.rowH);
-        keys.push(item.img[pickSize(w, m.rowH, window.devicePixelRatio)]);
+        keys.push(item.img[pickSize(tile.w, tile.h, window.devicePixelRatio)]);
       }
       const linked = open ? file.items.find((item) => item.id === open) : undefined;
       if (linked) keys.push(linked.img.p);

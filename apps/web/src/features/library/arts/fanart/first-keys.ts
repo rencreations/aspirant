@@ -1,4 +1,5 @@
-import { firstScreenIndexes, metricsFor, pickSize, tileRatio } from "../core/flow/math";
+import { firstScreenTiles, metricsFor, pickSize, tileRatio } from "../core/flow/math";
+import { ASPIRANT_SECTIONS, groupBySection } from "../core/flow/sections";
 import {
   allNewest,
   artistOrder,
@@ -11,7 +12,7 @@ import {
 import type { FanItem } from "./types";
 
 /** About this many pictures of the rows are waited for. */
-const FIRST_PICTURES = 28;
+const FIRST_PICTURES = 18;
 /** This many posters of the video row. */
 const FIRST_POSTERS = 6;
 /** The first thumbnails of the By artist view. */
@@ -32,6 +33,8 @@ export interface ScreenSize {
   width: number;
   height: number;
   dpr: number;
+  /** The width of the wall (the page less its side margins). Default: `width`. */
+  box?: number;
 }
 
 /**
@@ -58,16 +61,20 @@ export function firstKeys(all: readonly FanItem[], search: string, size: ScreenS
     const facets = fanFacets(pictures);
     const shown = fanFilter(pictures, facets, q, f);
     const videos = fanFilter(videosOrdered(all), facets, q, f);
-    const m = metricsFor(size.width, size.height);
-    const ratios = shown.map((item) => tileRatio(item.img.w, item.img.h));
+    const m = metricsFor(size.box ?? size.width);
+    // The page shows the Aspirants' groups while nothing is searched or filtered: the same order here.
+    const wall =
+      q.trim() === "" && !facets.some((facet) => facet.id === f)
+        ? groupBySection(shown, ASPIRANT_SECTIONS)
+        : { items: shown, parts: null };
+    const ratios = wall.items.map((item) => tileRatio(item.img.w, item.img.h));
     const narrow = size.width <= NARROW;
     const strip = Math.round(m.rowH * STRIP_CARD) + (narrow ? STRIP_NARROW : STRIP_WIDE);
     const head = (narrow ? HEAD_NARROW : HEAD_WIDE) + (videos.length > 0 ? strip : 0);
-    for (const at of firstScreenIndexes(ratios, m, head, FIRST_PICTURES)) {
-      const item = shown[at];
+    for (const tile of firstScreenTiles(ratios, wall.parts, m, head, size.height, FIRST_PICTURES)) {
+      const item = wall.items[tile.index];
       if (!item) continue;
-      const w = Math.round((ratios[at] ?? 1) * m.rowH);
-      keys.push(item.img[pickSize(w, m.rowH, size.dpr)]);
+      keys.push(item.img[pickSize(tile.w, tile.h, size.dpr)]);
     }
     for (const video of videos.slice(0, FIRST_POSTERS)) {
       if (video.video) keys.push(video.video.poster);

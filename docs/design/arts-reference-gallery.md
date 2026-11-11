@@ -1,5 +1,7 @@
 # East64 Gallery rows: how they move and how we build them
 
+> **No longer built (12 Nov 2026).** The owner found the sliding rows too much motion and asked for a still wall instead. This study stays as the record of the first design. What the rooms do now is in [`collection-rooms.md`](collection-rooms.md), "The still walls".
+
 The owner asked (11 Nov 2026) for Scene, Game, Others and Fanart to be "a flow of images": rows that slide sideways with the scroll, one way going down and the other way going up, row after row. The reference is the Gallery section of <https://www.east64films.com/works/hodinkee-x-g-shock/>. This file says exactly how that section works, with measured numbers, and how our page does the same for any number of rows and up to 600 pictures. The owner's words are in `docs/superpowers/specs/2026-11-11-arts-request.md`. The contract for the Flow code is in `2026-11-11-arts-redesign.md`. The frames and charts are in `docs/design/collection-reference/east64-gallery/` (its README lists them). The home page of the same site is studied in `docs/design/arts-reference.md`.
 
 Measured on 11 Nov 2026 in a real Chrome (Playwright, channel `chrome`) at 1440x900, 1920x1080 and 390x844 touch. The reference's code was read to learn the mechanics. Our page is our own code: nothing of the reference is copied, and this file describes it in words.

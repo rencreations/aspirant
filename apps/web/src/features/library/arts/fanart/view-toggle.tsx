@@ -3,7 +3,7 @@
 import { useQueryState } from "../../use-query-state";
 import styles from "./view-toggle.module.css";
 
-/** The two views of Fanart: the flow of rows (the default) and the pieces grouped under their artist. The address keeps it (`?view=artist`). */
+/** The two views of Fanart: the gallery of rows (the default) and the pieces grouped under their artist. The address keeps it (`?view=artist`). */
 export function ViewToggle() {
   const [view, setView] = useQueryState("view");
   const byArtist = view === "artist";
@@ -18,7 +18,7 @@ export function ViewToggle() {
           setView("");
         }}
       >
-        Flow
+        Gallery
       </button>
       <button
         type="button"

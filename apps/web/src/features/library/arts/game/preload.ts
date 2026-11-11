@@ -2,6 +2,7 @@ import { chunkItem, type PreloadItem } from "@/lib/preload";
 
 import { libraryDataItem } from "../../data";
 import { flowFirstScreen } from "../core/flow/first-screen";
+import { ASPIRANT_SECTIONS } from "../core/flow/sections";
 import { gameFacetOf, gameFacets, gameSearchOf } from "./facets";
 
 /**
@@ -20,6 +21,7 @@ export function items(): PreloadItem[] {
       facetOf: gameFacetOf,
       searchOf: gameSearchOf,
       facets: gameFacets,
+      sections: ASPIRANT_SECTIONS,
     }),
   ];
 }

@@ -1,3 +1,5 @@
+import { pairs } from "@/content/pairs";
+
 import type { ArtsItem, Facet } from "../types";
 
 /** The facets in the order the filter shows them: the most pictures first, then by name. Facets with no picture are dropped. */
@@ -5,6 +7,22 @@ export function orderFacets(facets: readonly Facet[]): Facet[] {
   return facets
     .filter((facet) => facet.count > 0)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+/**
+ * The ten Aspirants first, in the order of the five pairs, then the rest in the order they came.
+ * A visitor looking for an Aspirant finds her chip in the same place in every room.
+ */
+export function aspirantsFirst(facets: readonly Facet[]): Facet[] {
+  const roster = pairs.flatMap((pair) => [...pair.members] as string[]);
+  const rank = (id: string) => {
+    const at = roster.indexOf(id);
+    return at < 0 ? roster.length : at;
+  };
+  return facets
+    .map((facet, at) => ({ facet, at }))
+    .sort((a, b) => rank(a.facet.id) - rank(b.facet.id) || a.at - b.at)
+    .map(({ facet }) => facet);
 }
 
 /** Turn an id such as `oro-soldier` into words, for a facet a data file does not name. */

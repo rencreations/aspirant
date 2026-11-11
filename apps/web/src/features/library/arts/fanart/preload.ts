@@ -2,6 +2,7 @@ import { libUrl } from "@/lib/library";
 import { chunkItem, imageItem, type PreloadItem } from "@/lib/preload";
 
 import { fetchLibraryJson, libraryDataItem, libraryDataPath } from "../../data";
+import { wallWidth } from "../core/flow/viewport";
 import type { CollectionFile } from "../../types";
 import { firstKeys } from "./first-keys";
 import { adaptFan, movedTarget } from "./model";
@@ -22,6 +23,7 @@ function firstScreen(): PreloadItem {
         width: document.documentElement.clientWidth,
         height: window.innerHeight,
         dpr: window.devicePixelRatio,
+        box: wallWidth(),
       });
       let done = 0;
       await Promise.all(

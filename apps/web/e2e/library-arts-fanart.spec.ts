@@ -55,8 +55,8 @@ async function openArtists(page: Page, query = "") {
 }
 
 /**
- * Press a picture that stands whole in view, where it stands. The rows slide with the scroll, so a
- * tile that has to be scrolled to is not where it was when it was found. A finger taps, a mouse clicks.
+ * Press a picture that stands whole in view, where it stands. The page may scroll while the tile is
+ * looked for, so a tile that has to be scrolled to is found again afterwards. A finger taps, a mouse clicks.
  */
 async function pressTile(page: Page): Promise<string> {
   const find = () =>
@@ -135,14 +135,15 @@ test.describe("the flow", () => {
     expect(order[0]).toBeLessThan(order[1] ?? 0);
     expect(order[1]).toBeLessThan(order[2] ?? 0);
 
-    // On a laptop the room opens as a flow: a whole row stands in view under the video row. (A
-    // phone's head is taller than its screen allows: there the first row shows in part.)
+    // On a laptop the pictures begin in the first screen: the first group's heading and a good
+    // part of its first row stand in view under the video row. (A phone's head is taller than its
+    // screen allows: there the first row starts at the foot of the screen or below it.)
     const vw = page.viewportSize()?.width ?? 1440;
     const vh = page.viewportSize()?.height ?? 900;
     const first = await page.locator("[data-flow-row='0']").boundingBox();
     expect(first).not.toBeNull();
-    if (vw >= 1000) expect((first?.y ?? 0) + (first?.height ?? 0)).toBeLessThanOrEqual(vh);
-    else expect(first?.y ?? 0).toBeLessThan(vh);
+    if (vw >= 1000) expect((first?.y ?? 0) + 90).toBeLessThanOrEqual(vh);
+    else expect(first?.y ?? 0).toBeLessThan(vh * 2);
 
     // No sideways scroll, and no video element before a press (nothing starts by itself).
     const sw = await page.evaluate(() => [
@@ -272,9 +273,14 @@ test.describe("the loading list", () => {
       width: viewport?.width ?? 1440,
       height: viewport?.height ?? 900,
       dpr: await page.evaluate(() => window.devicePixelRatio),
+      // The width of the wall, which the loading list reads from the page's own margin.
+      box: await page.evaluate(
+        () => document.querySelector<HTMLElement>("[data-flow-rows]")?.clientWidth ?? 0,
+      ),
     });
-    // Every picture in view is one the list waited for. (A tile that stands half in view at the
-    // edge of a sliding row may be one more than the list counted: allow a couple.)
+    // Every picture in view is one the list waited for. (The heading's height is an estimate in
+    // the list: a row that stands half in view at the foot of the screen may be one more than it
+    // counted: allow a couple.)
     const missing = seen.filter((src) => !keys.some((key) => src.endsWith(key)));
     expect(missing.length, missing.join(", ")).toBeLessThanOrEqual(2);
   });
@@ -474,7 +480,7 @@ test.describe("by artist", () => {
     ).toHaveAttribute("href", /^https:\/\//);
 
     // Back to the flow.
-    await page.locator("[data-fanart-views]").getByRole("button", { name: "Flow" }).click();
+    await page.locator("[data-fanart-views]").getByRole("button", { name: "Gallery" }).click();
     await expect(page).not.toHaveURL(/[?&]view=/);
     await expect(rows(page).first()).toBeAttached({ timeout: 30_000 });
   });
@@ -580,10 +586,12 @@ test.describe("on a phone", () => {
       document.documentElement.clientWidth,
     ]);
     expect(sw[0]).toBe(sw[1]);
-    const dirs = await rows(page).evaluateAll((els) =>
-      els.map((el) => Number((el as HTMLElement).dataset.dir)),
+    // The wall is in groups under small headings, and nothing slides: no row has a transform.
+    await expect(page.locator("[data-flow-part] h2").first()).toHaveText("Fanny");
+    const moving = await rows(page).evaluateAll(
+      (els) => els.filter((el) => getComputedStyle(el).transform !== "none").length,
     );
-    expect(dirs.slice(0, 3)).toEqual([1, -1, 1]);
+    expect(moving).toBe(0);
     expect(errors).toEqual([]);
   });
 

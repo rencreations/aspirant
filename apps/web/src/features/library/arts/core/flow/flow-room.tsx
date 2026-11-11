@@ -22,6 +22,7 @@ import {
   splitFacets,
 } from "./filter";
 import styles from "./flow.module.css";
+import { groupBySection, type WallSections } from "./sections";
 import { ZoomProvider, type ZoomPicture } from "../zoom";
 
 /** The rooms that use the flow. The three Official ones carry the sub-page buttons; Fanart and Cosplay do not. */
@@ -45,6 +46,13 @@ interface FlowRoomProps<T extends ArtsItem> {
   searchOf: (item: T) => string;
   /** The name of the filter for a screen reader, for example "Places". */
   facetLabel?: string;
+  /**
+   * Groups with small headings (the Aspirants, the kinds). The wall is in groups while nothing is
+   * searched or filtered; a result is one wall. A stable value (a module constant).
+   */
+  sections?: WallSections<T>;
+  /** At least this many chips show before "See more" (the Aspirants, when they lead the filter). */
+  leadChips?: number;
   /** The word for one picture and for many. Default picture, pictures. */
   nouns?: readonly [string, string];
   /** The search field's label and placeholder. Default "Search". */
@@ -78,10 +86,11 @@ function toZoom<T extends ArtsItem>(item: T, caption: (item: T) => ReactNode): Z
 }
 
 /**
- * A room that is a flow of pictures: rows that slide sideways while the page scrolls, one way
- * down and the other way up, row by row. A search, a filter of the things that appear most (with
- * "See more"), the zoom, the way back and, for the Official rooms, the sub-page buttons. Nothing
- * else. Scene, Game, Others, Fanart and Cosplay are this component with their own data.
+ * A room that is a wall of pictures: rows that fill the page's width and stand still, grouped
+ * under small headings (the Aspirants, the kinds) until something is searched or filtered. A
+ * search, a filter of the things that appear most (with "See more"), the zoom, the way back and,
+ * for the Official rooms, the sub-page buttons. Nothing else. Scene, Game, Others, Fanart and
+ * Cosplay are this component with their own data.
  */
 export function FlowRoom<T extends ArtsItem>({
   room,
@@ -92,6 +101,8 @@ export function FlowRoom<T extends ArtsItem>({
   facetOf,
   searchOf,
   facetLabel = "Filter",
+  sections,
+  leadChips = 0,
   nouns = ["picture", "pictures"],
   searchLabel = "Search",
   controls,
@@ -123,8 +134,19 @@ export function FlowRoom<T extends ArtsItem>({
     () => liveFacets(facets, counts, q.trim() !== "", chosen),
     [facets, counts, q, chosen],
   );
-  const wide = useChipCount();
+  const wide = Math.max(useChipCount(), leadChips);
   const { chips, more } = useMemo(() => splitFacets(live, wide, chosen), [live, wide, chosen]);
+
+  // In groups while nothing is searched or filtered, as one wall otherwise. The zoom steps through
+  // the pictures in the order the page shows them.
+  const searching = q.trim() !== "";
+  const wall = useMemo(
+    () =>
+      sections && !searching && !chosen
+        ? groupBySection(shown, sections)
+        : { items: shown, parts: null },
+    [sections, searching, chosen, shown],
+  );
 
   // A new result starts at the top of the page, where the filter is.
   const first = useRef(true);
@@ -162,7 +184,10 @@ export function FlowRoom<T extends ArtsItem>({
 
   // The zoom.
   const captionOf = (caption ?? defaultCaption) as (item: T) => ReactNode;
-  const pictures = useMemo(() => shown.map((item) => toZoom(item, captionOf)), [shown, captionOf]);
+  const pictures = useMemo(
+    () => wall.items.map((item) => toZoom(item, captionOf)),
+    [wall, captionOf],
+  );
 
   const clear = useCallback(() => {
     setQ("");
@@ -170,7 +195,6 @@ export function FlowRoom<T extends ArtsItem>({
   }, [setQ, setF]);
 
   const total = all.length;
-  const searching = q.trim() !== "";
   const countText =
     items === null
       ? " "
@@ -209,9 +233,10 @@ export function FlowRoom<T extends ArtsItem>({
         </header>
 
         <FlowField
-          // A new result fades in.
+          // A new result is a new wall.
           key={`${q}|${chosen}`}
-          items={shown}
+          items={wall.items}
+          parts={wall.parts}
           overlay={overlay}
           loading={items === null}
           onStanding={onStanding}

@@ -5,7 +5,8 @@ import { isCharacterSlug, type CharacterSlug } from "@/lib/slugs";
 import { splashFor } from "../../animation/splash";
 import { libraryDataItem } from "../../data";
 import { fetchArtsData } from "../core/data";
-import { metricsFor, pickSize, tileRatio } from "../core/flow/math";
+import { metricsFor, pickSize, planWall, tileRatio } from "../core/flow/math";
+import { wallWidth } from "../core/flow/viewport";
 import {
   ROSTER_ORDER,
   THUMBS,
@@ -80,7 +81,7 @@ function rosterThumbs(): PreloadItem {
 }
 
 /**
- * One Aspirant's photos, each at the size its tile asks for (the flow's own maths, `pickSize`), and
+ * One Aspirant's photos, each at the size its tile asks for (the wall's own maths, `pickSize`), and
  * the preview of the photo that `?i=` names.
  */
 function photosOfPage(slug: CharacterSlug): PreloadItem {
@@ -90,11 +91,18 @@ function photosOfPage(slug: CharacterSlug): PreloadItem {
     weight: 3,
     run: async (report, context) => {
       const file = await fetchArtsData<CosplayItem, CosplayHead>("cosplay");
-      const m = metricsFor(document.documentElement.clientWidth, window.innerHeight);
+      const m = metricsFor(wallWidth());
       const keys = new Set<string>();
-      for (const photo of photosOf(file.items, slug)) {
-        const w = Math.round(tileRatio(photo.img.w, photo.img.h) * m.rowH);
-        keys.add(photo.img[pickSize(w, m.rowH, window.devicePixelRatio)]);
+      const photos = photosOf(file.items, slug);
+      const ratios = photos.map((photo) => tileRatio(photo.img.w, photo.img.h));
+      for (const block of planWall(ratios, null, m)) {
+        for (const row of block.rows) {
+          for (let k = 0; k < row.count; k++) {
+            const photo = photos[row.start + k];
+            if (!photo) continue;
+            keys.add(photo.img[pickSize(row.widths[k] ?? 0, row.height, window.devicePixelRatio)]);
+          }
+        }
       }
       const wanted = new URLSearchParams(window.location.search).get("i");
       const linked = wanted ? file.items.find((item) => item.id === wanted) : undefined;

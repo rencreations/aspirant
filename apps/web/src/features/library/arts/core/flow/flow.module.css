@@ -1,5 +1,5 @@
-/* The flow: rows of pictures that slide sideways with the scroll. Only `transform` and `opacity`
-   move. A row's transform is written by the engine (`engine.ts`), one write per row per scroll. */
+/* The wall: rows of pictures that fill the page's width and stand still, in groups under small
+   headings. Nothing moves with the scroll. Only `opacity` changes (a picture arriving). */
 
 .room {
   position: relative;
@@ -226,36 +226,64 @@
   }
 }
 
-/* The rows ----------------------------------------------------------------------------------- */
+/* The wall ----------------------------------------------------------------------------------- */
+/* The page's own side margin on both sides: the rows fill exactly this width. Nothing here moves. */
 .box {
   position: relative;
-  width: 100%;
-  /* Rows are wider than the screen. Clip, not hidden: nothing can scroll this sideways. */
+  margin: 0 var(--gutter) clamp(2.5rem, 5vw, 4.5rem);
+  /* A window dragged narrower leaves rows a moment wider than the box until they are planned again. */
   overflow-x: clip;
 }
 
-.field {
+/* A group: a thin line, a name and how many pictures it holds, then its rows. */
+.part {
   position: relative;
-  height: 100%;
-  animation: fieldIn 220ms var(--ease-out) both;
+  display: grid;
+  gap: 0.9rem;
+  margin-top: clamp(2.4rem, 5vw, 4.5rem);
+  padding-top: 0.9rem;
+  border-top: 1px solid color-mix(in srgb, currentcolor 28%, transparent);
 }
 
-@keyframes fieldIn {
-  from {
-    opacity: 0;
-  }
+/* The first picture's own colour marks the start of the group. */
+.part::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 3.5rem;
+  height: 3px;
+  background: var(--c);
+}
 
-  to {
-    opacity: 1;
-  }
+.part:first-child {
+  margin-top: 1rem;
+}
+
+.whole {
+  display: block;
+}
+
+.partHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.partName {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.rows {
+  display: grid;
 }
 
 .row {
-  position: absolute;
-  left: 0;
   display: flex;
-  will-change: transform;
-  contain: layout style;
 }
 
 .tile {
@@ -382,7 +410,7 @@
   }
 }
 
-/* The back button stands over the rows as they slide: it gets a plain ground. */
+/* The back button stands over the pictures as the page scrolls under it: it gets a plain ground. */
 .room [data-room-back] {
   background: var(--bg, #fff);
 }

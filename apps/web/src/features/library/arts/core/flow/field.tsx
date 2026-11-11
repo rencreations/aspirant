@@ -1,18 +1,25 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, type FocusEvent, type ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef, type ReactNode } from "react";
+
+import { useLenis } from "@/components/smooth-scroll";
 
 import { useQueryState } from "../../../use-query-state";
 import type { ArtsItem } from "../types";
 import { findZoomTile } from "../zoom";
-import { useFlowEngine, useFlowMetrics } from "./engine";
 import styles from "./flow.module.css";
-import { boxHeight, planRows, tileRatio } from "./math";
+import { planWall, tileRatio, type FlowPart } from "./math";
 import { Row } from "./rows";
+import { useFlowMetrics } from "./use-metrics";
+
+/** The first rows are asked for at once (the first screen), the rest as they near it. */
+const EAGER_ROWS = 4;
 
 interface FlowFieldProps<T extends ArtsItem> {
   /** The pictures to show, in order. */
   items: readonly T[];
+  /** The groups, as ranges of `items`, or null for one wall with no headings. */
+  parts: readonly FlowPart[] | null;
   overlay: ((item: T) => ReactNode) | undefined;
   /** The data has not arrived: nothing stands yet, and the room is not ready. */
   loading: boolean;
@@ -21,103 +28,99 @@ interface FlowFieldProps<T extends ArtsItem> {
 }
 
 /**
- * The rows. It holds the engine, so the scroll's work (which rows stand, and where they sit) stays
- * in here: the head of the room does not draw again while the page scrolls. A press on a tile is the
- * zoom's own (`useZoomTile`).
+ * The wall: every picture of the list in rows that fill the page's width and stand still, in groups
+ * under small headings when the list has them. Every tile is in the page from the start (a picture
+ * is asked for when its row nears the screen), so the browser's own scroll, find and focus keys all
+ * work and nothing moves but the page. A press on a tile is the zoom's own (`useZoomTile`).
  */
 function FlowFieldInner<T extends ArtsItem>({
   items,
+  parts,
   overlay,
   loading,
   onStanding,
 }: FlowFieldProps<T>) {
   const boxRef = useRef<HTMLDivElement>(null);
   const metrics = useFlowMetrics(boxRef);
+  const { getLenis } = useLenis();
   const ratios = useMemo(() => items.map((item) => tileRatio(item.img.w, item.img.h)), [items]);
-  const rows = useMemo(() => (metrics ? planRows(ratios, metrics) : []), [ratios, metrics]);
-  const { range, place, reveal, onScreen } = useFlowEngine({ boxRef, rows, metrics });
+  const blocks = useMemo(
+    () => (metrics ? planWall(ratios, parts, metrics) : []),
+    [ratios, parts, metrics],
+  );
   const dpr = typeof window === "undefined" ? 1 : window.devicePixelRatio;
 
-  const indexById = useMemo(() => new Map(items.map((item, i) => [item.id, i])), [items]);
-
-  const [first, last] = range;
-  const standing = useMemo(
-    () => (last >= first ? rows.slice(first, last + 1) : []),
-    [rows, first, last],
-  );
-
-  const ready =
-    !loading && ((last >= first && rows.length > 0) || (metrics !== null && items.length === 0));
+  const rowCount = blocks.reduce((n, block) => n + block.rows.length, 0);
+  const ready = !loading && (rowCount > 0 || (metrics !== null && items.length === 0));
   useEffect(() => {
     if (!ready) return;
     onStanding();
   }, [ready, onStanding]);
 
   // A picture named by the address (a deep link, the library search, the arrow keys in the viewer)
-  // is brought into view, so its tile is there for the viewer to land on.
+  // is brought to the middle of the screen when it is not on it, so its tile is there for the viewer to land on.
   const [wanted] = useQueryState("i");
   useEffect(() => {
     if (!wanted || !metrics) return;
-    const index = indexById.get(wanted);
-    if (index === undefined) return;
     const tile = findZoomTile(wanted);
-    if (tile) {
-      const r = tile.getBoundingClientRect();
-      const seen =
-        r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
-      if (seen) return;
-    }
-    reveal(index);
-  }, [wanted, metrics, indexById, reveal]);
+    if (!tile) return;
+    const r = tile.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < window.innerHeight) return;
+    const y = Math.max(0, window.scrollY + r.top + r.height / 2 - window.innerHeight / 2);
+    const lenis = getLenis();
+    if (lenis) {
+      // Lenis keeps the page's length from its last measure and stops a jump at that.
+      lenis.resize();
+      lenis.scrollTo(y, { immediate: true, force: true });
+    } else window.scrollTo(0, y);
+  }, [wanted, metrics, blocks, getLenis]);
 
-  // A tile that takes the keyboard focus while it is off the screen sideways is brought in by the
-  // same maths (the rows are clipped, so the browser cannot scroll to it).
-  const onFocus = (event: FocusEvent<HTMLElement>) => {
-    const tile =
-      event.target instanceof Element
-        ? event.target.closest<HTMLElement>("[data-flow-tile]")
-        : null;
-    if (!tile?.dataset.id) return;
-    // Only a keyboard focus: a press or a tap on a tile opens the zoom, which clamps its start to the screen.
-    if (!tile.matches(":focus-visible")) return;
-    const index = indexById.get(tile.dataset.id);
-    if (index === undefined) return;
-    const bringIn = () => {
-      const r = tile.getBoundingClientRect();
-      if (r.left >= 0 && r.right <= window.innerWidth) return;
-      reveal(index, true);
-    };
-    bringIn();
-    // The browser scrolls a focused element into view by itself after this event, which moves the
-    // rows under the tile: look again once it has, and bring the tile in if it is off the screen.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(bringIn);
-    });
-  };
-
+  let seen = 0;
   return (
-    <div
-      ref={boxRef}
-      className={styles.box}
-      style={{ height: metrics ? boxHeight(rows.length, metrics) : 0 }}
-      data-flow-rows={rows.length}
-    >
-      {metrics ? (
-        <div className={styles.field} onFocus={onFocus}>
-          {standing.map((row) => (
-            <Row<T>
-              key={row.index}
-              row={row}
-              m={metrics}
-              items={items}
-              dpr={dpr}
-              eager={onScreen(row)}
-              place={place}
-              overlay={overlay}
-            />
-          ))}
-        </div>
-      ) : null}
+    <div ref={boxRef} className={styles.box} data-flow-rows={rowCount}>
+      {metrics
+        ? blocks.map((block) => {
+            const { part } = block;
+            const head = part ? (
+              <header className={styles.partHead}>
+                <h2 id={`flow-part-${part.id}`} className={styles.partName}>
+                  {part.name}
+                </h2>
+              </header>
+            ) : null;
+            const rows = block.rows.map((row) => {
+              const index = seen++;
+              return (
+                <Row<T>
+                  key={row.start}
+                  row={row}
+                  index={index}
+                  m={metrics}
+                  items={items}
+                  dpr={dpr}
+                  eager={index < EAGER_ROWS}
+                  overlay={overlay}
+                />
+              );
+            });
+            return (
+              <section
+                key={part?.id ?? "all"}
+                className={part ? styles.part : styles.whole}
+                aria-labelledby={part ? `flow-part-${part.id}` : undefined}
+                data-flow-part={part?.id}
+                style={
+                  part ? { ["--c" as string]: items[part.start]?.img.c ?? "#888888" } : undefined
+                }
+              >
+                {head}
+                <div className={styles.rows} style={{ gap: metrics.gap }}>
+                  {rows}
+                </div>
+              </section>
+            );
+          })
+        : null}
     </div>
   );
 }
