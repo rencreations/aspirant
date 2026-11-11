@@ -1,0 +1,32 @@
+# The owner's request to rebuild Arts, 11 Nov 2026 (word for word)
+
+Kept as the owner wrote it. How the rooms work today is in [`docs/design/collection-rooms.md`](../../design/collection-rooms.md). The design and the calls made are in [2026-11-11-arts-redesign.md](2026-11-11-arts-redesign.md). Typos are the owner's. The owner went to sleep after sending it and asked for no questions.
+
+> Current website is our aspirant website. Read all documentation first before continuing.
+>
+> I wanted you to change the /collection/arts. First, when in /collection and clicking arts or first options, it will choose again, so like in video > {films, others}. Here, it will be arts > {official, fanart, cosplay} and the fanart is exactly like in /collection/fanart or in 05, now it's in 01 or in arts. For the 05 in collection page, change it to 3D model and put the 3D models in others there. Okay so there's two page, official arts, and fanart. I will explain below.
+>
+> First, see this directory first D:\ren\aspirant\, it contains ALL of the arts that you can put, see it detailly and scan for all content that you can put here.
+>
+> First, let's discuss the Official art page first. For the content, you can scan detailly in D:\ren\aspirant\, but you can focus more in "D:\ren\aspirant\media\_all" but also scan for all content in D:\ren\aspirant\. So in the page, I wanted you to copy https://www.east64films.com/ exactly for the page and fit it into our design system. So it will be one image per section, and as user scroll, it will reveal next image and next image as user scroll. In the page, there will be some section or sub-pages and it will have button to navigate through the sub-pages. The sub-pages are:
+> Splash art
+> Scene
+> Comic
+> Game
+> Design
+> Others
+> You can see in D:\ren\aspirant\media\_all that each folder may have "splash-art" directory, put it in the splash art, then there's "films" directory, you can put it in scene, comic put in comic, game or in-game-animation or anything related put in game, design put in design, and the rest put in other. Splash-art and art directory are different, put art directory in others instead of splash-art. I will explain what each sub-pages do and contains also the design.
+>
+> First, let's discuss /collection/arts/ (splash-art). Here, the page design is exactly like https://www.east64films.com/ and I wanted you to copy it directly 1:1. For the title, text, etc, you can think of it yourself and for the data, you can reverse engineer to find the real data for the image (like date, artist, etc). When user hover to the image shown in the middle, the cursor design will change and will now show "Zoom In" design, you will think for the design. And if user click it, the image fill have morph animations and will be smoothly fill the screen, so it will show in fullscreen (fit width) and make sure there's no cut parts. When in fullscreen, the cursor design will change to "Zoom Out" and if click, it will have smooth animations that will make the image back to normal. Also make sure the list of images are infinite scroll, so it will go back to beginning when it ends and loops. Also in splash art, the default aspect ratio are horizontal and like 16:9 aspect ratio for example (more on width). But some image are like square and not like the desired aspect ratio. For it, I wanted you to crop it and make sure the crop are great and still shows the complete art without cutting important things. Make sure to minimize crop as much as possible.
+>
+> Next, let's discuss /collection/arts/scene. Here, I wanted you to think of a page design that can shows many images but still have filtering. The filtering are based by thing only that ordered by how much they appear. You can see in D:\ren\aspirant\media\_all that there's a lots of directory like selkirk-academy, etc that each of them have it's own /films, so the filtering will based on that, so like oro-soldier, angela, fanny, vexana, mother matrix, etc. Make sure it will look minimalistic and not too bulky and it will only shows the one with many images, and will trail like "See more" to see more options in the filter. For the design itself, I wanted it to be like just a flows of image. So in the screen, there will be image with same padding and it will move based on cursor scroll and alternating. It's a row of image, for example row 1 have 5 images and it scroll to the right when scroll down and left when scroll up. Then next row for example it will have 4/5/6/7/8/9 images and it will scroll left when scroll down and right when up, so the scroll is alternating. You can see reference in https://www.east64films.com/works/:slug like https://www.east64films.com/works/hodinkee-x-g-shock/ and scroll to the "Gallery" section. Since we have lots of image, it will be so many scroll below. Keep the page minimalistic and only shows search, filter and the image, also button to go to other sub pages, and to go back to collection. It will have the same zoom in and zoom out mechanism as splash-art and the cursor will also change and the image have outline highlight when hover. Make sure the animations are smooth. Apply this design also for "Game" and "Others" sub-pages, also apply it also to fanart page.
+>
+> For the comic subpages, I wanted you to think of a design that'll suits. So in this comic, it will NOT show the actual comic, instead it will show the art made for the comic, like the panel, and so much more without the dialogue and just the art used in the comics. The image will have a lots of irregular shapes, for example a ultra long horizontal, like w:h 1:5 for example, and also lots of irregular shapes, so I wanted this subpages to be able to render all of them easily, especially the ultra long horizontal and make sure it's big enough that the user can see what's actually in the panel.
+>
+> I also wanted you to think for the "Design" subpages. This will contain the least image and most of them are just design of a character or character sheet.
+>
+> For the cosplay page, I wanted you to display all the aspirants and the cosplay of it, so the subpages will be the character itself. Put the character even if there's no cosplay picture in it.
+>
+> If uploading to R2 is better, you can upload to R2 for all the assets, but if using local or upload to github is better, you can use it. See previous claude conversation and find the R2 credentials, you can access it.
+>
+> Continue to create without asking question, I will be asleep.

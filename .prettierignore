@@ -23,3 +23,6 @@ apps/web/public/data/library
 
 # intermediate lists of the lore codex (scripts/library/lore/codex)
 scripts/library/lore/codex/**/*.json
+
+# Machine written decisions of the Arts room scripts
+scripts/library/arts_rooms/curation/
