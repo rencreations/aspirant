@@ -134,8 +134,9 @@ function picturesItem(
 
 /**
  * The loading list of `/collection/video/films`. Waited for: the data, the code, and the first film
- * (its poster and its first seconds). In the background: the other posters (nearest first), the
- * blurred backdrops and the small pictures of the contents.
+ * (its poster and its first seconds). In the background: the other posters (nearest first) and the
+ * small pictures of the contents. Around a film that does not fill the screen there is plain black,
+ * so the room has no backdrop pictures.
  */
 export function items(): PreloadItem[] {
   return [
@@ -143,7 +144,6 @@ export function items(): PreloadItem[] {
     chunkItem("library-video-films", "Opening the films", () => import("./page"), 2),
     firstFilmItem(),
     picturesItem("films-posters", "Loading the posters", (f) => f.video.poster, 12, true),
-    picturesItem("films-backdrops", "Loading the posters", (f) => f.backdrop, 20, false),
     picturesItem("films-thumbs", "Loading the contents", (f) => f.thumb, 30, false),
   ];
 }

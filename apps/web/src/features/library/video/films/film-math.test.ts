@@ -4,13 +4,16 @@ import { parseVtt } from "./captions";
 import {
   KIND_LABEL,
   WHEEL,
+  WORDS,
   addressFor,
   bufferGoal,
   bufferedAhead,
+  bufferedSpan,
   clock,
   coverScale,
   defaultFill,
   filmAt,
+  fullscreenWay,
   jumpPlan,
   mod,
   pairNames,
@@ -18,13 +21,17 @@ import {
   placeFilms,
   readDeepLink,
   rebase,
+  scrubFraction,
   releaseSlot,
   settleSlot,
   spokenTime,
   stepFree,
   stepSnap,
+  tipCentre,
   visibleSlots,
   wheelImpulse,
+  wordsAt,
+  wordsTravel,
 } from "./film-math";
 
 const ranges = (...r: Array<[number, number]>) => ({
@@ -211,5 +218,86 @@ describe("captions", () => {
       { start: 0.45, end: 4.28, text: "I am the heir." },
       { start: 64.28, end: 69.54, text: "Two\nlines" },
     ]);
+  });
+});
+
+describe("the words while the strip moves", () => {
+  it("are in place at rest", () => {
+    for (const line of [0, 1, 2]) expect(wordsAt(0, line)).toEqual({ shown: 1, shift: 0 });
+  });
+
+  it("are gone halfway, so two films never overlap", () => {
+    for (const off of [-0.5, -WORDS.gone, 0.5, WORDS.gone]) {
+      for (const line of [0, 1, 2]) expect(wordsAt(off, line).shown).toBe(0);
+    }
+  });
+
+  it("lift as they leave upward and rise as they come up from below", () => {
+    const out = wordsAt(-0.25, 1);
+    expect(out.shown).toBeGreaterThan(0);
+    expect(out.shown).toBeLessThan(1);
+    expect(out.shift).toBeLessThan(0);
+    const into = wordsAt(0.25, 1);
+    expect(into.shift).toBeGreaterThan(0);
+    // The same move both ways: a slide at -x and +x shows a line in mirror.
+    expect(wordsAt(0.25, 0).shown).toBeCloseTo(wordsAt(-0.25, 2).shown, 10);
+  });
+
+  it("ripple the way the edge sweeps", () => {
+    // Coming up from below, the bottom line is ahead of the top one.
+    expect(wordsAt(0.3, 2).shown).toBeGreaterThan(wordsAt(0.3, 0).shown);
+    // Leaving upward, the bottom line goes first.
+    expect(wordsAt(-0.2, 2).shown).toBeLessThan(wordsAt(-0.2, 0).shown);
+  });
+
+  it("move steadily with the strip", () => {
+    let last = 1;
+    for (let off = 0; off <= 0.5; off += 0.01) {
+      const { shown } = wordsAt(-off, 1);
+      expect(shown).toBeLessThanOrEqual(last + 1e-9);
+      last = shown;
+    }
+  });
+
+  it("travel a share of the screen, within bounds", () => {
+    expect(wordsTravel(844)).toBeCloseTo(59.08, 2);
+    expect(wordsTravel(200)).toBe(28);
+    expect(wordsTravel(2000)).toBe(64);
+  });
+});
+
+describe("the time line", () => {
+  it("turns a press into a share of the film", () => {
+    expect(scrubFraction(150, 100, 200)).toBe(0.25);
+    expect(scrubFraction(50, 100, 200)).toBe(0);
+    expect(scrubFraction(900, 100, 200)).toBe(1);
+    expect(scrubFraction(120, 100, 0)).toBe(0);
+  });
+
+  it("shows the buffered stretch around the time", () => {
+    expect(bufferedSpan(ranges([0, 30]), 10, 100)).toEqual([0, 0.3]);
+    expect(bufferedSpan(ranges([0, 10], [50, 80]), 60, 100)).toEqual([0.5, 0.8]);
+    // After a jump into a gap the next stretch shows.
+    expect(bufferedSpan(ranges([0, 10], [50, 80]), 30, 100)).toEqual([0.5, 0.8]);
+    expect(bufferedSpan(ranges(), 30, 100)).toEqual([0, 0]);
+    expect(bufferedSpan(ranges([0, 120]), 30, 100)).toEqual([0, 1]);
+    expect(bufferedSpan(ranges([0, 10]), 5, Number.NaN)).toEqual([0, 0]);
+  });
+
+  it("keeps the time bubble inside the line", () => {
+    expect(tipCentre(5, 300, 50)).toBe(25);
+    expect(tipCentre(150, 300, 50)).toBe(150);
+    expect(tipCentre(299, 300, 50)).toBe(275);
+    expect(tipCentre(10, 40, 50)).toBe(20);
+  });
+});
+
+describe("full screen", () => {
+  it("uses the room, else the film's own player, else nothing", () => {
+    expect(fullscreenWay({ enabled: true, element: true, video: true })).toBe("element");
+    // An iPhone: no element full screen, the video's own player only.
+    expect(fullscreenWay({ enabled: false, element: false, video: true })).toBe("video");
+    expect(fullscreenWay({ enabled: false, element: true, video: true })).toBe("video");
+    expect(fullscreenWay({ enabled: false, element: false, video: false })).toBe("none");
   });
 });

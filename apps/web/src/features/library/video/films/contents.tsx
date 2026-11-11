@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog } from "radix-ui";
-import { useState } from "react";
+import { useRef, useState, type RefObject } from "react";
 
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
@@ -18,15 +18,30 @@ interface ContentsProps {
   active: number;
   /** A film was chosen: the sheet closes and the strip goes to it. */
   onPick: (index: number) => void;
+  /** The Index button: focus goes back to it when the sheet closes. */
+  trigger: RefObject<HTMLButtonElement | null>;
+  /** Where the sheet is drawn: the room while it is full screen (else the page's body). */
+  container: HTMLElement | null;
 }
 
 /**
  * The contents of the room: the ten films in order, each one a button that goes straight to it. On
- * a wide screen the film under the pointer (or the focus) shows big on the right with its words.
- * A plain sheet over the strip (no blur over the film behind it). Esc or Close shuts it.
+ * a wide screen the film under the pointer (or the focus) shows big on the right with its words;
+ * on a narrow one each film is a large card (its picture across the card, the words below) under a
+ * header that stays at the top. A plain sheet over the strip (no blur over the film behind it).
+ * Esc, Close or a press on an empty part of the sheet shuts it, and the focus goes back to Index.
  */
-export function Contents({ open, onOpenChange, films, active, onPick }: ContentsProps) {
+export function Contents({
+  open,
+  onOpenChange,
+  films,
+  active,
+  onPick,
+  trigger,
+  container,
+}: ContentsProps) {
   const [shown, setShown] = useState<number | null>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const focus = shown ?? Math.max(0, active);
   const film = films[focus];
 
@@ -38,27 +53,49 @@ export function Contents({ open, onOpenChange, films, active, onPick }: Contents
         onOpenChange(next);
       }}
     >
-      <Dialog.Portal>
+      <Dialog.Portal container={container}>
         <Dialog.Content
+          ref={sheetRef}
           className={styles.sheet}
           data-theme="storm"
           data-lenis-prevent
           data-films-sheet=""
+          data-blank=""
           aria-describedby={undefined}
+          onOpenAutoFocus={(e) => {
+            // Start on the film on screen, in view (the cards are tall on a phone).
+            e.preventDefault();
+            const row = sheetRef.current?.querySelector<HTMLElement>("[aria-current='true']");
+            row?.focus({ preventScroll: true });
+            // The cards (narrow layout) sit under the header that stays at the top; the short rows
+            // of the wide layout only need to be in view.
+            const cards = window.matchMedia("(max-width: 56.25em)").matches;
+            row?.scrollIntoView({ block: cards ? "start" : "nearest" });
+          }}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            trigger.current?.focus({ preventScroll: true });
+          }}
+          onClick={(e) => {
+            // A press on the sheet's empty space (not on a film, a word or a button) closes it. A
+            // click, not a press: a finger that scrolls the list from a gap does not close it.
+            const target = e.target as HTMLElement;
+            if (target.hasAttribute("data-blank")) onOpenChange(false);
+          }}
         >
-          <div>
-            <div className={styles.sheetHead}>
+          <div data-blank="">
+            <div className={styles.sheetHead} data-blank="">
               <div>
                 <Dialog.Title className={`display ${styles.sheetTitle}`}>Films</Dialog.Title>
                 <p className={styles.sheetLead}>Ten official films, in order</p>
               </div>
               <Dialog.Close className={`${styles.pill} ${styles.close}`}>Close</Dialog.Close>
             </div>
-            <ol className={styles.list}>
+            <ol className={styles.list} data-blank="">
               {films.map((f, i) => {
                 const [a, b] = pairNames(f);
                 return (
-                  <li key={f.id}>
+                  <li key={f.id} data-blank="">
                     <button
                       type="button"
                       className={styles.row}
@@ -82,6 +119,8 @@ export function Contents({ open, onOpenChange, films, active, onPick }: Contents
                       <img
                         className={styles.rowThumb}
                         src={libUrl(f.thumb)}
+                        srcSet={`${libUrl(f.thumb)} 480w, ${libUrl(f.video.poster)} 1280w`}
+                        sizes="(max-width: 56.25em) calc(100vw - 2.5rem), 1px"
                         alt=""
                         loading="lazy"
                         decoding="async"
@@ -96,13 +135,14 @@ export function Contents({ open, onOpenChange, films, active, onPick }: Contents
                         <br />
                         {KIND_LABEL[f.kind]}, {clock(f.video.dur)}
                       </span>
+                      <span className={styles.rowDesc}>{f.desc}</span>
                     </button>
                   </li>
                 );
               })}
             </ol>
           </div>
-          <aside className={styles.preview} aria-hidden="true">
+          <aside className={styles.preview} aria-hidden="true" data-blank="">
             <div className={styles.previewArt}>
               {films.map((f, i) => (
                 // eslint-disable-next-line @next/next/no-img-element

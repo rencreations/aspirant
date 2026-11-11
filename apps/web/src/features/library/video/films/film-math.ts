@@ -157,6 +157,86 @@ export function easeInOut(t: number): number {
   return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2;
 }
 
+/**
+ * How the words of a film move while its slide is on the way in or out. `gone`: how far from its
+ * place (in screens) the slide is when the last of its lines has left. `fade`: the stretch of the
+ * move over which one line fades. `stagger`: how much later each next line goes.
+ */
+export const WORDS = { gone: 0.44, fade: 0.28, stagger: 0.07 } as const;
+
+/**
+ * Line `line` (0 is the top line of `lines`) of the words of a slide that is `off` screens from its
+ * place (+ is below the screen, - above). The lines go in the order the slide's edge sweeps them,
+ * so they ripple the way the strip moves: a slide coming up from below lets its bottom line rise in
+ * first, a slide leaving upward lifts its bottom line out first. `shown` is the opacity, `shift`
+ * the offset as a share of the travel (+ is down). In place: `{ shown: 1, shift: 0 }`.
+ * The same function runs both ways, so a scroll back is the same move played backwards.
+ */
+export function wordsAt(off: number, line: number, lines = 3): { shown: number; shift: number } {
+  const away = Math.abs(off);
+  if (!(away > 1e-6)) return { shown: 1, shift: 0 };
+  const rank = off < 0 ? line : lines - 1 - line;
+  const start = WORDS.gone - rank * WORDS.stagger;
+  const f = Math.max(0, Math.min(1, (start - away) / WORDS.fade));
+  const shown = f * f * (3 - 2 * f);
+  return { shown, shift: Math.sign(off) * (1 - f) };
+}
+
+/** How far, in pixels, a line of words travels as it leaves or arrives on a screen this tall. */
+export function wordsTravel(height: number): number {
+  return Math.max(28, Math.min(64, height * 0.07));
+}
+
+/** Where a press at `clientX` falls on a time line spanning `left` to `left + width`: 0 to 1. */
+export function scrubFraction(clientX: number, left: number, width: number): number {
+  if (!(width > 0)) return 0;
+  return Math.max(0, Math.min(1, (clientX - left) / width));
+}
+
+/**
+ * The buffered stretch around `t` as shares of the film (`[start, end]`, 0 to 1), the range that
+ * holds `t` or, after a jump, the first one that starts after it. `[0, 0]` when none.
+ */
+export function bufferedSpan(ranges: Ranges, t: number, duration: number): [number, number] {
+  if (!(duration > 0)) return [0, 0];
+  let found: [number, number] | null = null;
+  for (let i = 0; i < ranges.length; i += 1) {
+    const start = ranges.start(i);
+    const end = ranges.end(i);
+    if (t >= start - 0.3 && t <= end + 0.01) {
+      found = [start, end];
+      break;
+    }
+    if (!found && start > t) found = [start, end];
+  }
+  if (!found) return [0, 0];
+  const share = (s: number) => Math.max(0, Math.min(1, s / duration));
+  return [share(found[0]), share(found[1])];
+}
+
+/** The centre of a tooltip `tip` wide that follows `x` and stays inside `0..width`. */
+export function tipCentre(x: number, width: number, tip: number): number {
+  const half = tip / 2;
+  if (width <= tip) return width / 2;
+  return Math.max(half, Math.min(width - half, x));
+}
+
+/** How the room goes full screen: the room itself, the film's own player (iPhone), or not at all. */
+export type FullscreenWay = "element" | "video" | "none";
+
+export function fullscreenWay(can: {
+  /** `document.fullscreenEnabled` (or the webkit one). */
+  enabled: boolean;
+  /** An element can ask for full screen (`requestFullscreen` or the webkit one). */
+  element: boolean;
+  /** A video can go full screen in the browser's own player (`webkitEnterFullscreen`). */
+  video: boolean;
+}): FullscreenWay {
+  if (can.enabled && can.element) return "element";
+  if (can.video) return "video";
+  return "none";
+}
+
 /** The scale that makes a picture of aspect `film` (width over height) cover a screen of aspect `view`. */
 export function coverScale(film: number, view: number): number {
   if (!(film > 0) || !(view > 0)) return 1;

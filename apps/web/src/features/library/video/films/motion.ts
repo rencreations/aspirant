@@ -199,6 +199,18 @@ export class FilmMotion {
     this.draw(false);
   }
 
+  /**
+   * For frame sheets only (`window.__filmsRoom`): draw the strip at `pos` without moving it, or
+   * where it really is when `pos` is null. Use it while the strip is at rest.
+   */
+  peek(pos: number | null): void {
+    if (pos === null) {
+      this.draw(false);
+      return;
+    }
+    this.hooks.frame(pos, this.override);
+  }
+
   destroy(): void {
     cancelAnimationFrame(this.raf);
     this.raf = 0;

@@ -1,11 +1,21 @@
 /* The Films room: one film to a screen, full bleed, on an endless strip (after juliencalot.com).
    Motion is transform and opacity only. Nothing filters, blurs or blends over a playing film. The
-   strip writes three transforms per visible slide while it moves and nothing at rest. */
+   strip writes a few transforms per visible slide while it moves and nothing at rest. */
 
 .room {
   --edge: max(1.25rem, 1.4vw);
   --line: rgb(255 255 255 / 0.28);
-  --bar-h: 4.25rem;
+  /* The controls at the foot: the bar, a strip of dead panel, then the thin time line along the
+     very foot of the screen (`--line-h` is its hit area). The bar stands 8 px clear above it. */
+  --line-h: 0.9rem;
+  --pad-b: calc(var(--line-h) + 0.5rem + env(safe-area-inset-bottom, 0px));
+  --bar-h: 2.5rem;
+  --panel-h: calc(var(--pad-b) + var(--bar-h));
+  /* The plain time line row of full screen (`timeline.tsx`), above the bar. */
+  --scrub-h: 1.375rem;
+  --rows-gap: 0.75rem;
+  /* The Index button, in the bar's first place on a wide screen. */
+  --index-w: 6.25rem;
 
   position: fixed;
   inset: 0;
@@ -13,7 +23,7 @@
   height: 100dvh;
   overflow: hidden;
   color: #fff;
-  background: var(--ink);
+  background: #000;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -36,7 +46,7 @@
   overflow: hidden;
   visibility: hidden;
   contain: strict;
-  background: var(--ink);
+  background: #000;
 }
 
 .slide[data-on] {
@@ -44,36 +54,15 @@
   will-change: transform;
 }
 
+/* Around a film that does not fill the screen there is plain black. */
 .media {
   position: absolute;
   inset: 0;
+  background: #000;
 }
 
-.slide[data-on] .media,
-.slide[data-on] .info {
+.slide[data-on] .media {
   will-change: transform;
-}
-
-/* Around a film that fits inside a tall screen: a soft blurred copy of its poster (made blurred by
-   the pipeline, not by a filter here), dimmed. */
-.backdrop {
-  position: absolute;
-  inset: -2%;
-  width: 104%;
-  height: 104%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity var(--dur-slower) var(--ease-out);
-}
-
-.backdropDim {
-  position: absolute;
-  inset: 0;
-  background: rgb(5 7 12 / 0.62);
-}
-
-.room[data-fill="false"] .backdrop {
-  opacity: 1;
 }
 
 /* The film's own frame: its aspect, fitted inside the screen. On a wide screen it is scaled up
@@ -86,19 +75,32 @@
   height: min(100dvh, calc(100vw / var(--ar)));
   transform: scale(1);
   transition: transform 0.8s var(--ease-in-out);
-  background: var(--ink);
+  /* No background: the poster under it shows until the film has a picture (the black around the
+     film is the media's). */
 }
 
 .room[data-fill="true"] .frame {
   transform: scale(var(--cover, 1));
 }
 
+.host {
+  position: absolute;
+  inset: 0;
+}
+
+/* The film shows once it has a picture; until then its poster does. */
 .host > video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out);
+}
+
+.slide[data-frame] .host > video {
+  opacity: 1;
 }
 
 /* The poster (the film's official thumbnail) shows while the film loads. On a wide screen it covers
@@ -122,21 +124,6 @@
   transition: opacity 0.6s var(--ease-out) 0.2s;
 }
 
-.host {
-  position: absolute;
-  inset: 0;
-}
-
-/* The film shows once it has a picture; until then its poster does. */
-.host > video {
-  opacity: 0;
-  transition: opacity 0.45s var(--ease-out);
-}
-
-.slide[data-frame] .host > video {
-  opacity: 1;
-}
-
 /* Fixed shade so the words read on any frame: the top under the bar, the left under the title,
    the foot under the controls. Not a filter. */
 .scrim {
@@ -151,14 +138,36 @@
 }
 
 /* ---------------------------------------------------------------------------------------------
-   The words of a slide: they stay still on the screen and the slide's edge uncovers them
+   The words of a film, in a layer above the strip. Each line has two boxes: the outer one places
+   it (and glides when Whole frame changes the layout), the inner `.line` is moved by the strip.
    --------------------------------------------------------------------------------------------- */
 
-.info {
+.words {
   position: absolute;
   inset: 0;
+  z-index: 1;
   pointer-events: none;
+}
+
+.info {
+  --band: min(100dvh, calc(100vw / var(--ar, 1.7778)));
+
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
   text-shadow: 0 1px 14px rgb(5 7 12 / 0.45);
+}
+
+.info[data-on] {
+  visibility: visible;
+}
+
+.line {
+  display: block;
+}
+
+.info[data-on] .line {
+  will-change: transform, opacity;
 }
 
 .label {
@@ -183,20 +192,28 @@
   opacity: 0.85;
 }
 
-.names {
+.names,
+.meta {
+  margin: 0;
+}
+
+/* Wide: the pair on the left, the title beside it, the length and kind on the right, all on the
+   middle line of the screen. */
+.head {
   position: absolute;
   left: var(--edge);
+  right: 30vw;
   top: 50%;
+  display: grid;
+  grid-template-columns: minmax(calc(max(9.5rem, 10.5vw) - 1rem), max-content) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 1rem;
   transform: translateY(-50%);
+  transition: transform 0.8s var(--ease-in-out);
 }
 
 .title {
-  position: absolute;
-  left: calc(var(--edge) + max(9.5rem, 10.5vw));
-  right: 30vw;
-  top: 50%;
   margin: 0;
-  transform: translateY(-50%);
   font-size: clamp(1.6rem, 0.9rem + 1.25vw, 2.9rem);
   line-height: 0.9;
   color: #fff;
@@ -207,57 +224,161 @@
   right: var(--edge);
   top: 50%;
   transform: translateY(-50%);
+  transition: transform 0.8s var(--ease-in-out);
 }
 
+/* Narrow: centred, the pair over the title, the length and kind under it. The block is placed by a
+   transform from the middle of the screen, so a change of layout glides in step with the frame. */
 @media (max-width: 56.25em) {
-  .names,
-  .title,
-  .meta {
+  .head {
+    --head-y: 1.2rem;
+
     left: 50%;
     right: auto;
+    width: min(86vw, 30rem);
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: 0.95rem;
     text-align: center;
+    transform: translate(-50%, calc(-100% + var(--head-y)));
   }
 
-  .names {
-    top: calc(50% - 2.6rem);
-    transform: translate(-50%, -50%);
+  .head .label {
+    justify-content: center;
   }
 
   .title {
-    width: min(86vw, 30rem);
-    transform: translate(-50%, -50%);
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.6rem);
   }
 
   .meta {
-    top: calc(50% + 2.6rem);
-    transform: translate(-50%, -50%);
+    --meta-y: 2.25rem;
+
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, var(--meta-y));
+  }
+}
+
+/* A tall screen with the whole frame in: the words stand above and below the film, not on it. */
+@media (max-width: 56.25em) and (max-aspect-ratio: 1/1) {
+  .room[data-fill="false"] .head {
+    --head-y: calc(var(--band) / -2 - 1rem);
+  }
+
+  .room[data-fill="false"] .meta {
+    --meta-y: calc(var(--band) / 2 + 1.25rem);
   }
 }
 
 /* ---------------------------------------------------------------------------------------------
-   The bar at the foot: contents, counter, time or loading, captions, frame, sound
+   The way back and Index, at the top left on a phone; on a wider screen Index sits in the bar
    --------------------------------------------------------------------------------------------- */
 
-.bar {
+.top {
   position: absolute;
+  z-index: 3;
+  left: var(--gutter, 1.25rem);
+  top: calc(var(--nav-h) + 0.75rem);
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+/* The shared back button is fixed on its own; here it sits in the row. */
+.top > [data-room-back] {
+  position: relative;
+  left: auto;
+  top: auto;
+}
+
+.room[data-fullscreen] .top {
   left: var(--edge);
-  right: var(--edge);
-  bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+}
+
+.room[data-fullscreen] .top > [data-room-back] {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Full screen: the whole frame in view, no words over it (subtitles stay), and the controls (the
+   bar, the time line, Index) fade out after a moment with nothing done (`idle.ts`, `data-idle`)
+   and fade back in with any action. Opacity only. The pointer hides over the film meanwhile.
+   --------------------------------------------------------------------------------------------- */
+
+/* Not `visibility`: a shown slide's words set it back to visible. */
+.room[data-fullscreen] .words {
+  display: none;
+}
+
+/* The counter and the time are words too; kept for assistive technology. */
+.room[data-fullscreen] .readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.controls,
+.top {
+  transition: opacity 0.45s var(--ease-out);
+}
+
+.room[data-idle] .controls,
+.room[data-idle] .top {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.room[data-idle],
+.room[data-idle] .strip {
+  cursor: none;
+}
+
+/* `.top >` so it outranks `.pill`, which is declared later. */
+.top > .index {
+  position: fixed;
+  left: var(--edge);
+  bottom: var(--pad-b);
+  width: var(--index-w);
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   The controls at the foot. The panel owns its whole area, so a near miss of a button lands on the
+   panel and does nothing; a drag that starts on it still moves the strip (`stage.tsx`).
+   --------------------------------------------------------------------------------------------- */
+
+.controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 2;
+  padding: 0 var(--edge) var(--pad-b);
+  touch-action: none;
+}
+
+.bar {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 0.75rem;
   height: var(--bar-h);
-  pointer-events: none;
 }
 
 .group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  pointer-events: auto;
+  min-width: 0;
+}
+
+.group[data-side="start"] {
+  padding-left: calc(var(--index-w) + 0.5rem);
 }
 
 .group[data-side="end"] {
@@ -347,6 +468,7 @@
   justify-content: center;
 }
 
+/* The counter over the time, beside the buttons on the left. */
 .readout {
   display: grid;
   gap: 0.3rem;
@@ -360,17 +482,8 @@
   white-space: nowrap;
 }
 
-.counter {
-  pointer-events: auto;
-}
-
 .time {
   opacity: 0.8;
-}
-
-.time small {
-  font-size: inherit;
-  text-transform: uppercase;
 }
 
 /* The middle of the bar: the loading percentage only, as the reference's loader writes it. */
@@ -383,6 +496,7 @@
   font-weight: 800;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   pointer-events: none;
 }
 
@@ -396,81 +510,20 @@
   opacity: 0.8;
 }
 
-@media (max-width: 56.25em) {
-  .room {
-    --bar-h: 3rem;
-  }
+/* ---------------------------------------------------------------------------------------------
+   The time line along the very foot of the screen: one thin line over a faint track, a Web
+   Animation of `scaleX` set from the film's own clock (no frame loop). It thickens on hover or
+   focus. Press or drag on it to move in the film. Its hit area is `--line-h` tall; the bar stands
+   clear above it, so a pointer on its way up to a button leaves the line at once.
+   --------------------------------------------------------------------------------------------- */
 
-  .status {
-    grid-area: status;
-  }
-
-  .group[data-side="start"] {
-    grid-area: start;
-  }
-
-  .group[data-side="end"] {
-    grid-area: end;
-  }
-
-  .wide {
-    display: none;
-  }
-
-  /* On a narrow screen the buttons are icons; their words stay for assistive technology. */
-  .pill {
-    width: 2.5rem;
-    padding: 0;
-    justify-content: center;
-  }
-
-  .pillText {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .bar {
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas: "start status end";
-  }
-
-  .status {
-    font-size: 0.95rem;
-  }
-}
-
-/* A tall screen with the whole frame in: the words stand above and below the film, not on it. */
-@media (max-width: 56.25em) {
-  .slide {
-    --band: min(100dvh, calc(100vw / var(--ar)));
-  }
-
-  .room[data-fill="false"] .names {
-    top: calc(50% - var(--band) / 2 - 4.4rem);
-  }
-
-  .room[data-fill="false"] .title {
-    top: calc(50% - var(--band) / 2 - 2.1rem);
-  }
-
-  .room[data-fill="false"] .meta {
-    top: calc(50% + var(--band) / 2 + 1.6rem);
-  }
-}
-
-/* The time line along the foot of the screen: a Web Animation of `scaleX` set from the film's own
-   clock (no frame loop). Press or drag on it to move in the film. */
 .track {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 3;
-  height: 0.9rem;
+  height: var(--line-h);
   cursor: pointer;
   touch-action: none;
 }
@@ -528,13 +581,276 @@
 }
 
 /* ---------------------------------------------------------------------------------------------
+   The time line of full screen: a row of its own above the bar, the time on the left and the
+   length on the right, the buffered part, the played part and a handle. The hit area is the line
+   and a small margin (a little taller while the pointer is on it), never the buttons below.
+   --------------------------------------------------------------------------------------------- */
+
+.room[data-fullscreen] {
+  --pad-b: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  --panel-h: calc(var(--pad-b) + var(--bar-h) + var(--rows-gap) + var(--scrub-h));
+}
+
+.room[data-fullscreen] .controls {
+  display: grid;
+  row-gap: var(--rows-gap);
+}
+
+.room[data-fullscreen] .track {
+  display: none;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.85rem;
+  height: var(--scrub-h);
+}
+
+.timeNow,
+.timeEnd {
+  min-width: 5ch;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.timeEnd {
+  text-align: right;
+  opacity: 0.75;
+}
+
+.scrub {
+  position: relative;
+  height: var(--scrub-h);
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+
+/* The hit area grows by 4 px above and below while the pointer is on the line (still clear of
+   the bar: the rows are 12 px apart). A transform, so nothing is laid out again. */
+.scrub::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -0.25rem;
+  bottom: -0.25rem;
+  transform: scaleY(0.733);
+}
+
+.scrub[data-hover]::after,
+.scrub[data-scrubbing]::after {
+  transform: none;
+}
+
+.scrub:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.24);
+  pointer-events: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.scrub[data-hover] .rail,
+.scrub[data-scrubbing] .rail,
+.scrub:focus-visible .rail {
+  transform: scaleY(1.67);
+}
+
+.buffered,
+.hovered,
+.played {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.buffered {
+  background: rgb(255 255 255 / 0.4);
+}
+
+.hovered {
+  background: rgb(255 255 255 / 0.3);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.scrub[data-hover] .hovered {
+  opacity: 1;
+}
+
+.played {
+  background: #fff;
+}
+
+/* The handle rides on a box as wide as the line, moved from -100 % to 0 on the film's clock. */
+.run {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+.knob {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(5 7 12 / 0.35);
+  transform: scale(0.85);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.scrub[data-hover] .knob,
+.scrub[data-scrubbing] .knob,
+.scrub:focus-visible .knob {
+  transform: scale(1.25);
+}
+
+/* The time under the pointer (a mouse on hover, any pointer while it drags). */
+.tip {
+  position: absolute;
+  left: 0;
+  /* Clear of the cursor's ring (18 px round the pointer). */
+  bottom: calc(50% + 1.4rem);
+  padding: 0.32rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  background: rgb(5 7 12 / 0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast, 160ms) var(--ease-out);
+}
+
+.scrub[data-hover] .tip,
+.scrub[data-scrubbing] .tip {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Narrow screens: icon buttons, no previous and next (a swipe does that)
+   --------------------------------------------------------------------------------------------- */
+
+.indexText {
+  display: inline;
+}
+
+@media (max-width: 56.25em) {
+  .room {
+    --index-w: 2.5rem;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  /* The buttons of the bar are icons; their words stay for assistive technology. */
+  .bar .pill,
+  .top > .index {
+    width: 2.5rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .pillText,
+  .indexText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .status {
+    font-size: 0.95rem;
+  }
+}
+
+/* Phones and smaller screens: Index goes up beside the way back, with its word. The bar has no room
+   left in its middle (the time and four buttons fill it), so the loading percentage stands centred
+   just above it, and the subtitles stand clear above that. */
+@media (max-width: 50em) {
+  .status {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.6rem);
+    transform: translateX(-50%);
+  }
+
+  /* `.room` so it outranks the base rule, which is declared later. */
+  .room .caption {
+    bottom: calc(var(--panel-h) + 2.6rem);
+  }
+
+  .group[data-side="start"] {
+    padding-left: 0;
+  }
+
+  /* Dressed like the way back beside it. */
+  .top > .index {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    padding: 0 0.95rem 0 0.8rem;
+    border-color: currentcolor;
+    font-size: 0.7rem;
+    background: transparent;
+  }
+
+  .indexText {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
    Captions, the failure notice
    --------------------------------------------------------------------------------------------- */
 
 .caption {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--bar-h) + 1.5rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--panel-h) + 1rem);
   z-index: 2;
   width: max-content;
   max-width: min(84vw, 46rem);
@@ -549,16 +865,16 @@
   color: #fff;
   background: rgb(5 7 12 / 0.66);
   pointer-events: none;
+  transition: transform 0.45s var(--ease-out);
 }
 
 .caption:empty {
   display: none;
 }
 
-@media (max-width: 56.25em) {
-  .caption {
-    bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px));
-  }
+/* With the controls hidden, the subtitles settle lower, into the room the bar leaves. */
+.room[data-idle] .caption {
+  transform: translate(-50%, var(--bar-h));
 }
 
 .notice {
@@ -715,7 +1031,8 @@
   opacity: 0.8;
 }
 
-.rowThumb {
+.rowThumb,
+.rowDesc {
   display: none;
 }
 
@@ -760,38 +1077,97 @@
   flex: none;
 }
 
+/* Phones and smaller screens: a header that stays at the top while the list scrolls under it, and
+   each film a large card, its picture across the card and its words below. */
 @media (max-width: 56.25em) {
+  /* Opaque: the cards are pictures, and the room behind must not show through them. */
   .sheet {
     grid-template-columns: minmax(0, 1fr);
+    padding: 0 var(--edge, 1.25rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+    background: #05070c;
+  }
+
+  .sheetHead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    align-items: center;
+    padding: calc(env(safe-area-inset-top, 0px) + 1.1rem) 0 1rem;
+    background: #05070c;
+  }
+
+  .sheetTitle {
+    font-size: 2.25rem;
+  }
+
+  .sheetLead {
+    margin-top: 0.45rem;
+  }
+
+  .close {
+    min-height: 2.75rem;
+    margin-left: 1rem;
+    padding: 0 1.15rem;
   }
 
   .preview {
     display: none;
   }
 
-  .row {
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.85rem;
+  /* One card across a phone; two side by side where a card would be taller than the screen. */
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1.75rem 1.5rem;
+    padding-top: 1.5rem;
   }
 
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 0.65rem;
+    padding: 0 0 1.75rem;
+    scroll-margin-top: 7.5rem;
+  }
+
+  /* The number under the picture (the official pictures carry their own marks in the corners). */
   .rowNumber {
-    display: none;
+    order: 1;
+    margin-top: 0.35rem;
+  }
+
+  .row > :not(.rowThumb, .rowNumber) {
+    order: 2;
   }
 
   .rowThumb {
+    order: 0;
     display: block;
-    width: 5.5rem;
+    width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     background: rgb(255 255 255 / 0.08);
   }
 
-  .rowMeta {
-    grid-column: 2;
-    text-align: left;
+  .rowTitle {
+    font-size: 1.75rem;
   }
 
-  .rowTitle {
-    font-size: 1.45rem;
+  .row:hover .rowTitle,
+  .row:focus-visible .rowTitle {
+    transform: none;
+  }
+
+  .rowMeta {
+    text-align: left;
+    line-height: 1.6;
+  }
+
+  .rowDesc {
+    display: block;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgb(255 255 255 / 0.84);
   }
 }

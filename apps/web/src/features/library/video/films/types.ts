@@ -17,7 +17,7 @@ export interface FilmWork extends ItemBase {
   video: LibVideo;
   /** Key of the 480 wide poster, for the contents sheet. */
   thumb: string;
-  /** Key of a small blurred copy of the poster, shown around a film that fits inside a tall screen. */
+  /** Key of a small blurred copy of the poster. In the data, not used by the room (plain black). */
   backdrop: string;
   /** Average colour of the poster. */
   c: string;
