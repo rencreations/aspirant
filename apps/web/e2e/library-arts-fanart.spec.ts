@@ -116,7 +116,7 @@ test.describe("the flow", () => {
   }) => {
     const errors = await open(page);
     await expect(page.getByRole("heading", { level: 1, name: "Fanart" })).toBeVisible();
-    await expect(count(page)).toContainText("149 pictures");
+    await expect(count(page)).toContainText("236 pictures");
     // The filter: All, the biggest Aspirants and See more.
     const filter = page.locator("[data-flow-filter]");
     await expect(filter).toBeVisible();
@@ -126,8 +126,8 @@ test.describe("the flow", () => {
 
     // The videos are a row of their own, over the picture rows and under the filter.
     await expect(strip(page)).toBeVisible();
-    expect(Number(await strip(page).getAttribute("data-fanart-videos"))).toBe(18);
-    expect(await entries(page).count()).toBe(18);
+    expect(Number(await strip(page).getAttribute("data-fanart-videos"))).toBe(31);
+    expect(await entries(page).count()).toBe(31);
     const order = await page.evaluate(() => {
       const top = (sel: string) => document.querySelector(sel)?.getBoundingClientRect().top ?? -1;
       return [top("[data-flow-filter]"), top("[data-fanart-videos]"), top("[data-flow-row='0']")];
@@ -213,7 +213,7 @@ test.describe("the flow", () => {
     // A filter the room does not know is no filter.
     await page.goto(url("/collection/arts/fanart/?f=c:nobody"));
     await expect(rows(page).first()).toBeAttached({ timeout: 60_000 });
-    await expect(count(page)).toContainText("149 pictures");
+    await expect(count(page)).toContainText("236 pictures");
   });
 
   test("searches the maker, the Aspirant and the kind, and says plainly when nothing matches", async ({
@@ -355,7 +355,7 @@ test.describe("the videos", () => {
     await open(page);
     const list = pieces();
     const videos = list.filter((p) => p.kind === "video");
-    expect(videos).toHaveLength(18);
+    expect(videos).toHaveLength(31);
     for (const v of videos) {
       const entry = page.locator(`[data-video="${v.id}"]`);
       await expect(entry, v.id).toBeAttached();
@@ -455,7 +455,7 @@ test.describe("by artist", () => {
     await expect(page).toHaveURL(/[?&]view=artist/);
     await expect(page.locator("[data-fanart-artists]")).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: "Fanart" })).toBeVisible();
-    await expect(count(page)).toContainText("167 pieces");
+    await expect(count(page)).toContainText("267 pieces");
 
     // The toggle stands where it stood.
     const artists = await page.locator("[data-fanart-views]").boundingBox();
@@ -488,7 +488,7 @@ test.describe("by artist", () => {
   test("shares the search and the filter, and opens the zoom with the credit", async ({ page }) => {
     await openArtists(page, "&f=c:selena");
     await expect(chip(page, "c:selena")).toHaveAttribute("aria-pressed", "true");
-    await expect(count(page)).toContainText(" of 167 pieces");
+    await expect(count(page)).toContainText(" of 267 pieces");
     const tile = page.locator("[data-fanart-tile]").first();
     await tile.scrollIntoViewIfNeeded();
     await tile.click({ force: true });

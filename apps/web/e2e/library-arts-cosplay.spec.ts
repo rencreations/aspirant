@@ -83,12 +83,12 @@ test.describe("the roster", () => {
     }
 
     // The counts arrive with the data.
-    await expect(page.locator('[data-cosplay-tile="fanny"]')).toHaveAttribute("data-count", "8");
-    await expect(page.locator('[data-cosplay-tile="layla"]')).toHaveAttribute("data-count", "8");
-    await expect(page.locator("[data-cosplay-total]")).toContainText("10 Aspirants, 12 photos");
-    // Fanny and Layla show thumbnails; the other eight the calm line.
+    await expect(page.locator('[data-cosplay-tile="fanny"]')).toHaveAttribute("data-count", "22");
+    await expect(page.locator('[data-cosplay-tile="layla"]')).toHaveAttribute("data-count", "69");
+    await expect(page.locator("[data-cosplay-total]")).toContainText("10 Aspirants, 121 photos");
+    // Fanny and Layla show thumbnails; the five with no photo yet show the calm line.
     expect(await page.locator('[data-cosplay-tile="fanny"] img').count()).toBeGreaterThanOrEqual(4);
-    for (const [slug] of ORDER.slice(2)) {
+    for (const [slug] of ORDER.slice(5)) {
       await expect(page.locator(`[data-cosplay-tile="${slug}"]`)).toContainText("No cosplay yet.");
       await expect(page.locator(`[data-cosplay-tile="${slug}"]`)).toHaveAttribute(
         "data-count",
@@ -141,8 +141,8 @@ test.describe("an Aspirant with photos", () => {
     page,
   }) => {
     await openCharacter(page, "fanny");
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
-    await expect(page.locator("[data-flow-count]")).toContainText("8 photos");
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-count]")).toContainText("22 photos");
     await expect(page.locator("[data-cosplay-feature] img")).toBeAttached();
     await expect(page.locator("[data-cosplay-people]")).toContainText("real people");
     await expect(page.locator("[data-cosplay-people]")).toContainText("removal");
@@ -159,7 +159,7 @@ test.describe("an Aspirant with photos", () => {
     await expect(page.locator(`[data-flow-tile][data-id="${DUO}"]`)).toBeAttached({
       timeout: 60_000,
     });
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8);
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(69);
   });
 
   test("the zoom names the person who made the photo, with a link to the post", async ({
@@ -193,10 +193,10 @@ test.describe("an Aspirant with photos", () => {
     page,
   }) => {
     await openCharacter(page, "fanny");
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 60_000 });
     await page.locator("[data-flow-search] input").fill("duo");
     await expect(page.locator("[data-flow-tile]")).toHaveCount(4, { timeout: 15_000 });
-    await expect(page.locator("[data-flow-count]")).toContainText("4 of 8 photos");
+    await expect(page.locator("[data-flow-count]")).toContainText("4 of 22 photos");
 
     // A word that nothing matches: the line that says so stands on the first screen.
     await page.locator("[data-flow-search] input").fill("zzzz");
@@ -207,20 +207,20 @@ test.describe("an Aspirant with photos", () => {
 
     // Clearing brings the photos back.
     await page.locator("[data-flow-search] input").fill("");
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 15_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 15_000 });
   });
 });
 
 test.describe("an Aspirant with no photo", () => {
   test("shows her art large and one calm line, never an empty box", async ({ page }) => {
-    const errors = await openCharacter(page, "ruby");
-    await expect(page.getByRole("heading", { level: 1, name: "Ruby" })).toBeVisible();
+    const errors = await openCharacter(page, "change");
+    await expect(page.getByRole("heading", { level: 1, name: "Chang'e" })).toBeVisible();
     await expect(page.locator("[data-cosplay-empty]")).toHaveText("No cosplay yet.", {
       timeout: 60_000,
     });
     const art = page.locator("[data-cosplay-feature] img");
     await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute("alt", /Ruby/u);
+    await expect(art).toHaveAttribute("alt", /Chang/u);
     const box = await art.boundingBox();
     expect(box?.width ?? 0).toBeGreaterThan(250);
     expect(box?.height ?? 0).toBeGreaterThan(150);
@@ -239,8 +239,9 @@ test.describe("the switcher", () => {
     expect(await links.evaluateAll((els) => els.map((el) => el.getAttribute("data-slug")))).toEqual(
       [null, ...ORDER.map(([slug]) => slug)],
     );
-    await expect(page.locator('[data-cosplay-switcher] [data-slug="fanny"]')).toContainText("8");
-    await expect(page.locator('[data-cosplay-switcher] [data-slug="ruby"]')).toContainText("0");
+    await expect(page.locator('[data-cosplay-switcher] [data-slug="fanny"]')).toContainText("22");
+    await expect(page.locator('[data-cosplay-switcher] [data-slug="ruby"]')).toContainText("23");
+    await expect(page.locator('[data-cosplay-switcher] [data-slug="obsidia"]')).toContainText("0");
     await expect(page.locator("[data-cosplay-switcher] [aria-current='page']")).toHaveCount(1);
     await expect(page.locator("[data-cosplay-all]")).toHaveAttribute(
       "href",
@@ -251,17 +252,17 @@ test.describe("the switcher", () => {
   test("the arrow keys go to the next and the one before", async ({ page }) => {
     await openCharacter(page, "fanny");
     // The photos are drawn by the scripts, so once they stand the page has hydrated and listens.
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 60_000 });
     await page.keyboard.press("ArrowRight");
     await expect(page).toHaveURL(/\/cosplay\/layla\/$/u, { timeout: 30_000 });
     await settled(page);
     await expect(page.getByRole("heading", { level: 1, name: "Layla" })).toBeVisible();
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(69, { timeout: 60_000 });
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/\/cosplay\/fanny\/$/u, { timeout: 30_000 });
     await settled(page);
     await expect(page.getByRole("heading", { level: 1, name: "Fanny" })).toBeVisible();
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 60_000 });
     // Before Fanny comes Obsidia: the ten go round.
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/\/cosplay\/obsidia\/$/u, { timeout: 30_000 });
@@ -269,7 +270,7 @@ test.describe("the switcher", () => {
 
   test("the arrows stay with a field, and with the zoom while it is open", async ({ page }) => {
     await openCharacter(page, "fanny");
-    await expect(page.locator("[data-flow-tile]")).toHaveCount(8, { timeout: 60_000 });
+    await expect(page.locator("[data-flow-tile]")).toHaveCount(22, { timeout: 60_000 });
     await page.locator("[data-flow-search] input").focus();
     await page.keyboard.press("ArrowRight");
     await page.waitForTimeout(1200);

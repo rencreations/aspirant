@@ -174,7 +174,7 @@ The 22 design sheets of the characters, their weapons and mecha, the droids and 
 
 ## Fanart (`/collection/arts/fanart`)
 
-Fan art and fan videos with their makers: 149 pictures and 18 videos. It sits in Arts since 11 Nov 2026, and the twelve cosplay photos moved to Cosplay. The default view is the flow (`arts/core/flow`) with the Splash art zoom (`arts/core/zoom`). It has no sub-page buttons, because Fanart is not part of Official.
+Fan art and fan videos with their makers: 236 pictures and 31 videos (100 of them added on 12 Nov 2026, see the intake in `docs/OPEN-QUESTIONS.md` row 57). It sits in Arts since 11 Nov 2026, and the twelve first cosplay photos moved to Cosplay, which holds 121 photos since the intake. The default view is the flow (`arts/core/flow`) with the Splash art zoom (`arts/core/zoom`). It has no sub-page buttons, because Fanart is not part of Official.
 
 - **Rows.** The pictures run newest first.
 - **Videos.** They are a row of their own under the filter (`video-strip.tsx`), as `VideoCard`s, because the flow's tiles always carry the zoom's press, cursor and neighbour keys. A video opens the site's player on a press and never starts by itself.

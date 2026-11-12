@@ -25,9 +25,9 @@ const PHONE = { width: 390, height: 844, dpr: 2 };
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`, "u");
 
 describe("the data file", () => {
-  it("holds 149 pictures and 18 videos, and no cosplay", () => {
-    expect(all).toHaveLength(167);
-    expect(all.filter((i) => i.kind === "video")).toHaveLength(18);
+  it("holds 236 pictures and 31 videos, and no cosplay photo", () => {
+    expect(all).toHaveLength(267);
+    expect(all.filter((i) => i.kind === "video")).toHaveLength(31);
     expect(all.some((i) => (i.kind as string) === "cosplay")).toBe(false);
     for (const oldId of Object.keys(MOVED_COSPLAY)) {
       expect(all.some((i) => i.id === oldId)).toBe(false);
@@ -37,7 +37,12 @@ describe("the data file", () => {
   it("gives every piece a maker line, a label and a post to look at", () => {
     for (const item of all) {
       expect(item.credit, item.id).toBeDefined();
-      expect(item.credit?.platform ?? item.platform, item.id).toBeTruthy();
+      // A piece names the post it is from. The exception is a piece of the 12 Nov 2026 intake whose file
+      // carried no name: it has no post, no maker and no link, and says so ("Artist not named").
+      if (!(item.credit?.platform ?? item.platform)) {
+        expect(item.src[0], item.id).toMatch(/^intake\//u);
+        expect(item.credit?.url ?? null, item.id).toBeNull();
+      }
       // A fan piece is fan work. The only others are the official account's reels, and they are videos.
       if (item.canon !== "fan") {
         expect(item.kind, item.id).toBe("video");
@@ -76,7 +81,7 @@ describe("the filter on the real data", () => {
 
   it("opens on the Aspirants, the most pictures first, and keeps the other chips behind", () => {
     const names = facets.map((f) => f.name);
-    expect(names.slice(0, 3)).toEqual(["Fanny", "Layla", "Ruby"]);
+    expect(names.slice(0, 3)).toEqual(["Ruby", "Fanny", "Layla"]);
     expect(facets.filter((f) => f.id.startsWith("c:"))).toHaveLength(10);
     // Every chip holds at least one picture, and the ones that are not an Aspirant hold two.
     for (const f of facets)

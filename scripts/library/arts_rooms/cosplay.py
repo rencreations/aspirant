@@ -37,6 +37,8 @@ CURATION = HERE / "curation" / "cosplay.json"
 OLD_FANART = common.DATA_DIR / "fanart.json"
 CAPTIONS = common.MEDIA / "_captions" / "captions.json"
 COSPLAY_DIR = common.MEDIA / "layla-and-fanny" / "art" / "cosplay"
+# The 12 Nov 2026 intake (intake.py): finished items, added after the ones above.
+INTAKE = HERE / "curation" / "intake-items.json"
 
 # The order of the Cosplay roster: the five pairs, as on the site. (common.CHAR_SLUGS puts Obsidia
 # before Selena, which is not the order wanted here.)
@@ -219,11 +221,16 @@ def build_cosplay(cur: dict[str, Any], old: dict[str, Any] | None) -> dict[str, 
     if len(ids) != len(set(ids)):
         fail("duplicate ids")
 
+    characters = cosplay_characters(items)
+    return {"v": 1, "slug": "arts-cosplay", "room": "cosplay", "characters": characters, "items": items, "_moved": moved}
+
+
+def cosplay_characters(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     counts = collections.Counter(c for i in items for c in i["chars"])
     characters = [{"slug": s, "name": n, "pair": common.pair_of_char(s), "count": counts.get(s, 0)} for s, n in ROSTER]
     if sum(c["count"] for c in characters) != sum(len(i["chars"]) for i in items):
         fail("character counts do not add up")
-    return {"v": 1, "slug": "arts-cosplay", "room": "cosplay", "characters": characters, "items": items, "_moved": moved}
+    return characters
 
 
 # ---------------------------------------------------------------------------------------------
@@ -254,6 +261,11 @@ def build_fanart(old: dict[str, Any]) -> dict[str, Any]:
             if not mirror_has(k):
                 fail(f"{it['id']}: {k} is not in the mirror")
 
+    artists, characters = fanart_head(items)
+    return {"v": 1, "slug": "arts-fanart", "room": "fanart", "artists": artists, "characters": characters, "items": items, "_moved": moved}
+
+
+def fanart_head(items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     # By artist. `key` is the item's own `artist` (lower case handle), `name` is how the credit spells it.
     by_artist: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
     unknown = 0
@@ -274,7 +286,31 @@ def build_fanart(old: dict[str, Any]) -> dict[str, Any]:
 
     counts = collections.Counter(c for it in items for c in it["chars"])
     characters = [{"slug": s, "count": counts[s]} for s in sorted(counts, key=lambda s: (-counts[s], ORDER.index(s)))]
-    return {"v": 1, "slug": "arts-fanart", "room": "fanart", "artists": artists, "characters": characters, "items": items, "_moved": moved}
+    return artists, characters
+
+
+def merge_intake(cos: dict[str, Any], fan: dict[str, Any]) -> tuple[int, int]:
+    """Add the items of intake.py: cosplay photos after the others, and the fan art pictures and clips (the clips
+    of cosplayers too: the Cosplay room holds photos, the video row of Fanart holds clips)."""
+    if not INTAKE.exists():
+        return 0, 0
+    data = json.loads(INTAKE.read_text(encoding="utf-8"))
+    have = {i["id"] for i in cos["items"]} | {i["id"] for i in fan["items"]}
+    new_ids = [i["id"] for i in data["cosplay"] + data["fanart"]]
+    if have & set(new_ids) or len(new_ids) != len(set(new_ids)):
+        fail("an intake id is already used")
+    for it in data["cosplay"] + data["fanart"]:
+        keys = [it["img"][k] for k in ("t", "p", "f")]
+        if "video" in it:
+            keys.append(it["video"]["src"])
+        for k in keys:
+            if not mirror_has(k):
+                fail(f"{it['id']}: {k} is not in the mirror")
+    cos["items"] = cos["items"] + data["cosplay"]
+    cos["characters"] = cosplay_characters(cos["items"])
+    fan["items"] = fan["items"] + data["fanart"]
+    fan["artists"], fan["characters"] = fanart_head(fan["items"])
+    return len(data["cosplay"]), len(data["fanart"])
 
 
 # ---------------------------------------------------------------------------------------------
@@ -292,6 +328,14 @@ def main() -> None:
 
     cos = build_cosplay(cur, old)
     moved_pairs = cos.pop("_moved")
+    fan = None
+    if old is not None:
+        fan = build_fanart(old)
+        gone = fan.pop("_moved")
+        if sorted(gone) != sorted(a for a, _ in moved_pairs):
+            fail("the cosplay items taken out of fanart.json are not the ones moved to cosplay")
+        added = merge_intake(cos, fan)
+        print("intake:", added[0], "cosplay photos,", added[1], "fan art pictures and clips")
     common.write_json("arts-cosplay", cos)
 
     print("cosplay items:", len(cos["items"]))
@@ -305,10 +349,7 @@ def main() -> None:
     if old is None:
         print("fanart.json is gone: arts-fanart.json is now the source and is left as it is")
     else:
-        fan = build_fanart(old)
-        gone = fan.pop("_moved")
-        if sorted(gone) != sorted(a for a, _ in moved_pairs):
-            fail("the cosplay items taken out of fanart.json are not the ones moved to cosplay")
+        assert fan is not None
         common.write_json("arts-fanart", fan)
         kinds = collections.Counter(i["kind"] for i in fan["items"])
         print("fanart items:", len(fan["items"]), dict(kinds), "moved to cosplay:", len(gone))
