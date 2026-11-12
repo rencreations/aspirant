@@ -118,7 +118,9 @@ export function VideoStrip({
   if (next !== marked) setMarked(next);
 
   // A new marked video is brought into view: the row onto the screen, then the row sideways to the
-  // card. The page stays where the visitor left it at any other time.
+  // card. The page stays where the visitor left it at any other time. The row lands a quarter of the
+  // screen down, so that on a laptop a whole row of pictures still stands in view under it (the
+  // cards carry a "Copyright or takedown" line, and the row must not push the pictures past the fold).
   const { getLenis } = useLenis();
   useEffect(() => {
     if (!marked) return;
@@ -128,7 +130,7 @@ export function VideoStrip({
     if (!strip || !li) return;
     const r = strip.getBoundingClientRect();
     if (r.top < 90 || r.bottom > window.innerHeight) {
-      const to = Math.max(0, r.top + window.scrollY - window.innerHeight * 0.3);
+      const to = Math.max(0, r.top + window.scrollY - window.innerHeight * 0.24);
       const lenis = getLenis();
       if (lenis) lenis.scrollTo(to);
       else window.scrollTo({ top: to, behavior: "smooth" });
