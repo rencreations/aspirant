@@ -1,5 +1,5 @@
 /**
- * Base-path helpers. Production is served under "/aspirant" (a GitHub project page), so every
+ * Base-path helpers. A build can be served under a sub-path (the base path), so every
  * URL that is not a Next route (image, video, audio, JSON, texture) must go through
  * `asset()`. Next routes rendered with <Link>/<TLink> get the base path from Next itself.
  */

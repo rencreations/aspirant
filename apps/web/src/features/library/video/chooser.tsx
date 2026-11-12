@@ -117,10 +117,9 @@ export default function VideoChooser() {
         <footer className={styles.foot}>
           <p>
             A fan made archive. Aspirant and Mobile Legends: Bang Bang belong to Moonton, and this
-            site is not affiliated with them. To ask for something to be taken down, open an issue
-            at{" "}
+            site is not affiliated with them. To ask for something to be taken down, use the{" "}
             <TLink href={TAKEDOWN_URL} className="link">
-              the project page
+              takedown page
             </TLink>
             .
           </p>

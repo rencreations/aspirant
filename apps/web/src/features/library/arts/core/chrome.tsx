@@ -75,10 +75,9 @@ export function ArtsTakedown({
 }) {
   return (
     <p className={styles.takedown} data-variant={variant} data-tone={tone}>
-      Fan made archive, not affiliated with Moonton. To ask for something to be taken down, open an
-      issue at{" "}
+      Fan made archive, not affiliated with Moonton. To ask for something to be taken down, use the{" "}
       <TLink href={TAKEDOWN_URL} className="link">
-        the project page
+        takedown page
       </TLink>
       .
     </p>

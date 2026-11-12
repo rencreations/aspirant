@@ -6,6 +6,7 @@ import { chapters } from "@/content/story";
 import { chapterHref, END_HREF } from "@/features/story/chapter-href";
 import { ARTS_SEGMENTS } from "@/features/library/arts/core/routes";
 import { COLLECTION_SLUGS, VIDEO_ROOMS } from "@/features/library/types";
+import { LEGAL_ROUTES } from "@/lib/legal";
 import { characterRoute, collectionRoute, navItems, siteConfig } from "@/lib/site";
 import { CHARACTER_SLUGS } from "@/lib/slugs";
 
@@ -86,5 +87,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     // The two story pages of the long-scroll pair have an address of their own too.
     ...STORY_PAGES.map((path) => ({ url: absolute(path), lastModified, priority: 0.5 })),
+    // The terms, the privacy policy and the takedown page.
+    ...Object.values(LEGAL_ROUTES).map((path) => ({
+      url: absolute(path),
+      lastModified,
+      priority: 0.3,
+    })),
   ];
 }

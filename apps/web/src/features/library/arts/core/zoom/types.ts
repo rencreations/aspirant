@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import type { ReportTarget } from "@/features/legal/takedown/prefill";
+
 import type { LibImage } from "../../../types";
 import type { FrameRect } from "../types";
 import type { Rect, ZoomMode } from "./zoom-math";
@@ -17,6 +19,8 @@ export interface ZoomPicture {
   frame?: FrameRect;
   /** Small text beside the picture in the viewer, for example a credit line. */
   caption?: ReactNode;
+  /** Set for a picture that is not Moonton's own: the viewer shows a small "Copyright or takedown" link for it. */
+  report?: ReportTarget;
 }
 
 export interface ZoomOpenOptions {

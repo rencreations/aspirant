@@ -174,3 +174,23 @@
     opacity: 0;
   }
 }
+
+/* "Copyright or takedown": small text under the credit, quiet. */
+.report {
+  display: block;
+  width: fit-content;
+  margin: 0.35rem 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.7;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.report:hover,
+.report:focus-visible {
+  opacity: 1;
+}

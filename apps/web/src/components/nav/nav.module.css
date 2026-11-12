@@ -572,6 +572,33 @@
   animation: fade-in 500ms ease 700ms forwards;
 }
 
+/* The two legal pages and the cookie question: small text at the foot, on the right. */
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem 1.25rem;
+  margin-left: auto;
+}
+
+.legalLink {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text-faint);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.legalLink:hover,
+.legalLink:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* Narrow and tall screens: nothing hovers and the title fills the width, so the pair of the
    current page stands at the bottom, smaller, eyes level, each at its own edge, behind the titles
    (the faces sit low, under most of them). */

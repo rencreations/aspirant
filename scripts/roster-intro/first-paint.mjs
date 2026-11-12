@@ -87,6 +87,10 @@ async function record(label, cpu, entered, run) {
     await ctx.addInitScript(() => {
       try {
         sessionStorage.setItem("aspirants:entered", "1");
+        localStorage.setItem(
+          "aspirants:consent",
+          JSON.stringify({ choice: "rejected", at: Date.now() }),
+        );
       } catch {
         /* ignore */
       }

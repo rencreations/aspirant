@@ -331,9 +331,9 @@ test("every disc comes to rest upright after play, pause, next, previous and a d
 
 test("ends with the takedown line", async ({ page }) => {
   await openField(page);
-  await expect(field(page).getByRole("link", { name: "open an issue" })).toHaveAttribute(
+  await expect(field(page).getByRole("link", { name: "takedown page" })).toHaveAttribute(
     "href",
-    /github\.com\/rencreations\/aspirant\/issues/,
+    /\/takedown\/?$/,
   );
 });
 
@@ -363,8 +363,8 @@ test("without WebGL the room is the plain list, and every track still plays", as
   await play.click();
   await answerSoundPrompt(page);
   await expect(player(page)).toBeVisible();
-  await expect(page.getByRole("link", { name: "open an issue" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "takedown page" })).toHaveAttribute(
     "href",
-    /github\.com\/rencreations\/aspirant\/issues/,
+    /\/takedown\/?$/,
   );
 });

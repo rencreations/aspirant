@@ -85,6 +85,7 @@ const ITEMS: readonly ViewerImage[] = PRINTS.map((p) => {
     set: "fanart",
     setLabel: "Fanart, made by fans",
     credit: { name: "Fans of Vexana", platform: "Fanart" },
+    report: true,
   };
 });
 

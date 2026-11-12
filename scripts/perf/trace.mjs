@@ -28,6 +28,10 @@ const c = await b.newContext({ viewport: { width: 1366, height: 768 }, deviceSca
 await c.addInitScript(() => {
   try {
     sessionStorage.setItem("aspirants:entered", "1");
+    localStorage.setItem(
+      "aspirants:consent",
+      JSON.stringify({ choice: "rejected", at: Date.now() }),
+    );
   } catch {}
 });
 const p = await c.newPage();

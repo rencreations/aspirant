@@ -95,6 +95,7 @@ function toZoom(item: DesignItem): ZoomPicture {
     alt: item.alt,
     title: item.title,
     caption: captionOf(item),
+    ...(item.canon !== "official" ? { report: { id: item.id, title: item.title } } : {}),
   };
 }
 

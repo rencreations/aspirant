@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { Route } from "next";
 import type { MouseEvent } from "react";
 
+import { TLink } from "@/components/transition/t-link";
+import { TAKEDOWN_URL } from "@/features/library/shell/library-shell";
 import { BackToCollection } from "@/features/library/shell/room-chrome";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
@@ -26,7 +28,6 @@ interface Props {
 }
 
 /** Where a removal is asked for (the same address as every room of the collection). */
-const TAKEDOWN_URL = "https://github.com/rencreations/aspirant/issues";
 
 /** The full screen route of a character. */
 export const fullHref = (slug: CharacterSlug) => `/collection/animation/${slug}` as Route;
@@ -136,11 +137,8 @@ export function CarouselUi({ chars, clips, target, onStep, onGo, onLaunch }: Pro
           })}
         </nav>
         <p className={styles.note}>
-          In-game animation by Moonton, in a fan archive. To ask for a takedown, open an issue on{" "}
-          <a href={TAKEDOWN_URL} target="_blank" rel="noopener noreferrer">
-            the project page
-          </a>
-          .
+          In-game animation by Moonton, in a fan archive. To ask for a takedown, use the{" "}
+          <TLink href={TAKEDOWN_URL}>takedown page</TLink>.
         </p>
       </div>
     </div>

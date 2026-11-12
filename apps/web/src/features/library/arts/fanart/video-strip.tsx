@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { VideoCard } from "@/components/video-player/video-card";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { formatTime } from "@/components/video-player/player-math";
 import { useLenis } from "@/components/smooth-scroll";
 import { audio } from "@/lib/audio";
@@ -58,6 +59,9 @@ export function VideoEntry({ item, focused = false }: { item: FanItem; focused?:
           <span className="hud-label">{formatTime(video.dur)}</span>
         </p>
         <CreditLine credit={item.credit} canon={item.canon} />
+        {item.canon !== "official" ? (
+          <ReportLink item={{ id: item.id, title: item.title }} className={styles.report} />
+        ) : null}
       </div>
     </article>
   );

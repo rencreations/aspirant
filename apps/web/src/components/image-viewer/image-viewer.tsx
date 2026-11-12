@@ -26,6 +26,7 @@ import {
   type Box,
   type View,
 } from "./image-viewer-math";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import styles from "./image-viewer.module.css";
 
 /** One picture in the viewer. */
@@ -43,6 +44,8 @@ export interface ViewerImage {
   /** The name of the set, for the info card, for example "Fan art by jlen_ismyname". */
   setLabel: string;
   credit: { name: string; platform: string; href?: string };
+  /** Set for a picture that is not Moonton's own (fan art, art made for this site): the info card shows "Copyright or takedown". */
+  report?: boolean;
 }
 
 interface Props {
@@ -673,6 +676,9 @@ export function ImageViewer({ items, index, onIndexChange, label, skin }: Props)
                     </span>
                   )}
                 </p>
+                {item.report ? (
+                  <ReportLink item={{ title: item.title }} className={styles.report} />
+                ) : null}
               </div>
             ) : null}
           </div>

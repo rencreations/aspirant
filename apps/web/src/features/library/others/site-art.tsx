@@ -35,6 +35,7 @@ export function SiteArt({ items, openId, onOpen, onClose }: SiteArtProps) {
         set: it.set,
         setLabel: it.setLabel,
         credit: { name: "Art supplied by the site's owner", platform: "made for this site" },
+        report: true,
       })),
     [flat],
   );

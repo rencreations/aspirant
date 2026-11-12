@@ -7,9 +7,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AspirantLogo } from "@/components/logo/aspirant-logo";
 import { useLenis } from "@/components/smooth-scroll";
 import { TLink } from "@/components/transition/t-link";
+import { useConsent } from "@/features/legal/consent/use-consent";
 import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useThemeAt } from "@/lib/hooks";
+import { LEGAL_ROUTES } from "@/lib/legal";
 import { useNavLock } from "@/lib/nav-lock";
 import { isActiveRoute, navItems, routes, siteConfig } from "@/lib/site";
 import { useSiteStore } from "@/lib/stores";
@@ -53,6 +55,8 @@ export function SiteNav() {
   const entered = useSiteStore((s) => s.entered);
   const tintId = useRef(0);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  /** "Cookie settings" was pressed: the question opens once the menu has closed and given focus back. */
+  const cookieRequest = useRef(false);
 
   const currentIndex = navItems.findIndex((item) => isActiveRoute(pathname, item.href));
   const current = currentIndex >= 0 ? navItems[currentIndex] : undefined;
@@ -198,6 +202,13 @@ export function SiteNav() {
             aria-describedby={undefined}
             onPointerMove={onMenuMove}
             onCloseAutoFocus={(e) => {
+              if (cookieRequest.current) {
+                // The analytics question takes focus itself, so the menu does not give it back.
+                cookieRequest.current = false;
+                e.preventDefault();
+                useConsent.getState().reopen();
+                return;
+              }
               // Keep focus where the transition put it after navigating.
               if (document.activeElement?.id === "main") e.preventDefault();
             }}
@@ -307,7 +318,39 @@ export function SiteNav() {
             </nav>
 
             <div className={styles.menuFoot}>
-              <p className="m-0 hud-label">Selrick Academy / Resonance terminal</p>
+              <p className="m-0 hud-label">Made by MLBB Community</p>
+              <nav aria-label="Legal" className={styles.legal}>
+                <TLink
+                  href={LEGAL_ROUTES.terms}
+                  className={`${styles.legalLink} hud-label`}
+                  transitionLabel="Terms"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  Terms
+                </TLink>
+                <TLink
+                  href={LEGAL_ROUTES.privacy}
+                  className={`${styles.legalLink} hud-label`}
+                  transitionLabel="Privacy"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  Privacy
+                </TLink>
+                <button
+                  type="button"
+                  className={`${styles.legalLink} hud-label`}
+                  onClick={() => {
+                    cookieRequest.current = true;
+                    setOpen(false);
+                  }}
+                >
+                  Cookie settings
+                </button>
+              </nav>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

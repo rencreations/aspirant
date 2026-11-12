@@ -212,7 +212,7 @@ export const galleryThumbPath = (id: string) => `/img/obsidia/gallery/${id}-t.we
 
 function buildViewerImages(): ViewerImage[] {
   const out: ViewerImage[] = [];
-  const add = (group: ArtGroup, setLabel: string, shared: boolean) => {
+  const add = (group: ArtGroup, setLabel: string, shared: boolean, fan = true) => {
     for (const piece of group.pieces) {
       const meta = GALLERY_IMAGES[piece.id];
       out.push({
@@ -225,10 +225,11 @@ function buildViewerImages(): ViewerImage[] {
         set: shared ? group.id : piece.id,
         setLabel,
         credit: group.credit,
+        ...(fan ? { report: true } : {}),
       });
     }
   };
-  add(OFFICIAL, "Official art", true);
+  add(OFFICIAL, "Official art", true, false);
   for (const g of FAN_ART) add(g, `Fan art by ${g.credit.name.toLowerCase()}`, false);
   return out;
 }

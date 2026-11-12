@@ -587,11 +587,7 @@ export default function DiscScene({ items, start, onFail, onSettle }: Props) {
       ) : null}
       <p className={styles.takedown}>
         A fan made archive. The tracks belong to Moonton and the people who made them. To ask for a
-        takedown,{" "}
-        <a href={TAKEDOWN_URL} target="_blank" rel="noopener noreferrer">
-          open an issue
-        </a>
-        .
+        takedown, use the <TLink href={TAKEDOWN_URL}>takedown page</TLink>.
       </p>
     </div>
   );

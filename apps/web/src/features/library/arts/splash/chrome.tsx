@@ -64,7 +64,7 @@ export const Chrome = memo(function Chrome() {
           <Roll text="Takedown" />
           <span className="sr-only">
             . Fan made archive, not affiliated with Moonton. To ask for something to be taken down,
-            open an issue on the project page.
+            use the takedown page.
           </span>
         </TLink>
       </div>

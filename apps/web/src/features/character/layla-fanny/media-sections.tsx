@@ -116,6 +116,7 @@ export function Gallery({ who, fanart }: { who: Who; fanart: readonly Fan[] }) {
       set: `fan-${f.id}`,
       setLabel: `Fan art by ${creditOf(f).name}`,
       credit: creditOf(f),
+      report: true,
     })),
   ];
 

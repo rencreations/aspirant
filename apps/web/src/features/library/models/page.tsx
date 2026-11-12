@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import { ThemeZone } from "@/components/theme-zone";
+import { TLink } from "@/components/transition/t-link";
 import { audio } from "@/lib/audio";
 import { isTypingTarget, useMediaQuery } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
@@ -292,11 +293,8 @@ export default function ModelsPage() {
         />
         <Rail models={items} selected={model?.id ?? ""} onSelect={setOpenId} />
         <p className={styles.takedown}>
-          A fan made archive. The models belong to Moonton. To ask for a takedown,{" "}
-          <a href={TAKEDOWN_URL} target="_blank" rel="noopener noreferrer">
-            open an issue
-          </a>
-          .
+          A fan made archive. The models belong to Moonton. To ask for a takedown, use the{" "}
+          <TLink href={TAKEDOWN_URL}>takedown page</TLink>.
         </p>
       </div>
     </ThemeZone>

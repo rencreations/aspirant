@@ -5,6 +5,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { StarGlyph } from "@/components/star-glyph";
 import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
+import { LEGAL_ROUTES } from "@/lib/legal";
 import { libUrl } from "@/lib/library";
 import { collectionRoute, routes } from "@/lib/site";
 
@@ -24,8 +25,8 @@ export interface LibraryShellProps {
   children: ReactNode;
 }
 
-/** Where a takedown request goes. */
-export const TAKEDOWN_URL = "https://github.com/rencreations/aspirant/issues";
+/** Where a takedown request goes: the site's own takedown page. */
+export const TAKEDOWN_URL = LEGAL_ROUTES.takedown;
 
 /**
  * The frame of every collection page: the header (breadcrumb, the name, one sentence, the
@@ -118,9 +119,9 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
         <p className={styles.note}>
           A fan made archive. Aspirant and Mobile Legends: Bang Bang belong to Moonton, and this
           site is not affiliated with them. Fan work belongs to the people who made it and is shown
-          with credit. To ask for something to be taken down, open an issue at{" "}
+          with credit. To ask for something to be taken down, use the{" "}
           <TLink href={TAKEDOWN_URL} className="link">
-            the project page
+            takedown page
           </TLink>
           .
         </p>

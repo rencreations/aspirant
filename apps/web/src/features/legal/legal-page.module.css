@@ -1,0 +1,291 @@
+/* The legal pages: plain text on the light page. Nothing moves. */
+.page {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.wrap {
+  padding-bottom: var(--space-2xl);
+}
+
+.head {
+  max-width: 56rem;
+  padding-block: var(--space-l) var(--space-m);
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--step-5);
+  line-height: 0.95;
+}
+
+.lead {
+  max-width: 38ch;
+  margin: var(--space-s) 0 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-2);
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--text-dim);
+}
+
+.meta {
+  margin: var(--space-s) 0 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.cols {
+  display: grid;
+  gap: var(--space-l);
+  padding-top: var(--space-l);
+}
+
+/* The list of sections is only for a wide screen, where it stands still beside the text. */
+.toc {
+  display: none;
+}
+
+@media (min-width: 64em) {
+  .cols {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .toc {
+    display: block;
+    position: sticky;
+    top: calc(var(--nav-h) + 1.5rem);
+    align-self: start;
+  }
+}
+
+.toc ol {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: toc;
+}
+
+.toc li {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  counter-increment: toc;
+}
+
+.toc li::before {
+  content: counter(toc);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  line-height: 1.7;
+  color: var(--text-faint);
+}
+
+.toc a {
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.toc a:hover,
+.toc a:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.body {
+  max-width: 46rem;
+  counter-reset: section;
+}
+
+.summary {
+  margin: 0 0 var(--space-m);
+  padding: var(--space-s) var(--space-s) calc(var(--space-s) - 0.4rem);
+  background: var(--panel);
+  border: var(--hairline) solid var(--line);
+}
+
+.summary h2 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.summary ul {
+  margin: 0;
+  padding-left: 1.1em;
+  list-style: disc;
+}
+
+.summary li {
+  margin-bottom: 0.5em;
+  font-size: var(--step-0);
+  line-height: 1.55;
+}
+
+.section {
+  padding-block: var(--space-m);
+  border-top: var(--hairline) solid var(--line);
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+  counter-increment: section;
+}
+
+.section h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.section h2::before {
+  content: counter(section);
+  min-width: 1.4rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.section h3 {
+  margin: var(--space-s) 0 0.3rem;
+  font-size: var(--step-0);
+  font-weight: 700;
+}
+
+.section p,
+.section li,
+.section dd {
+  font-size: var(--step-0);
+  line-height: 1.7;
+}
+
+.section p {
+  margin: 0 0 0.9em;
+}
+
+.section ul,
+.section ol {
+  margin: 0 0 1em;
+  padding-left: 1.2em;
+}
+
+.section ul {
+  list-style: disc;
+}
+
+.section ol {
+  list-style: decimal;
+}
+
+.section li {
+  margin-bottom: 0.4em;
+}
+
+.section a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.section code {
+  font-family: var(--font-mono-stack);
+  font-size: 0.9em;
+}
+
+/* A record of one tool: what it writes down, what it stores, how long. */
+.facts {
+  display: grid;
+  gap: 0.15rem 1rem;
+  margin: 0 0 var(--space-s);
+  padding: var(--space-xs) var(--space-s);
+  border-left: 2px solid var(--line);
+}
+
+@media (min-width: 40em) {
+  .facts {
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+  }
+}
+
+.facts dt {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+@media (min-width: 40em) {
+  .facts dt {
+    margin-top: 0;
+    padding-top: 0.5em;
+  }
+
+  .facts dd {
+    margin-bottom: 0.6rem;
+  }
+}
+
+.foot {
+  display: grid;
+  gap: var(--space-m);
+  padding-top: var(--space-m);
+  border-top: var(--hairline) solid var(--line);
+}
+
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+}
+
+.pages a {
+  font-size: var(--step--1);
+  color: var(--text-dim);
+  text-underline-offset: 3px;
+}
+
+.pages a[aria-current="page"] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.contact {
+  display: grid;
+  gap: 0.1rem;
+  font-size: var(--step--1);
+  font-style: normal;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.contact strong {
+  color: var(--text);
+}
+
+.contact a {
+  width: fit-content;
+  color: var(--text);
+  text-underline-offset: 3px;
+}

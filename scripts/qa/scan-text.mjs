@@ -4,6 +4,7 @@
 //   node scripts/qa/scan-text.mjs [root ...]
 //
 // Default roots: apps/web/src, apps/web/public/data, docs, and apps/web/out when it exists.
+// Also fails on any mention of the code host or the source code in the text of the site.
 // Fails (exit 1) on any em-dash (U+2014), en-dash (U+2013), the Japanese-version word for
 // aspirant power (the site always says "aspirant power"), or a banned spelling from the canon
 // rules. Prints file:line:column and the context.
@@ -65,6 +66,15 @@ const RULES = [
     re: new RegExp(["Windstorm", " Nest"].join(""), "giu"),
     words: true,
   },
+  {
+    // The owner's rule of 12 Nov 2026: no page of the site names the code host, the project's
+    // repository or the code itself. It applies to what a visitor can read (the site's source
+    // text, its data files and the built pages), not to the docs or to the built scripts.
+    name: "site text must not mention the code host or the source code",
+    re: new RegExp(["git", "hub|ren", "creations|source", " code"].join(""), "giu"),
+    words: false,
+    site: true,
+  },
 ];
 
 /** Files that must quote the banned words to explain them. Dashes are still checked. */
@@ -73,6 +83,13 @@ const WORD_RULE_EXEMPT = new Set([
   "docs/OPEN-QUESTIONS.md",
   "scripts/qa/scan-text.mjs",
 ]);
+
+/** True for text a visitor can read: the site's source text, its data files, and the built pages (not the built scripts). */
+function onSite(repoPath) {
+  if (repoPath.startsWith("apps/web/src/") || repoPath.startsWith("apps/web/public/data/"))
+    return true;
+  return repoPath.startsWith("apps/web/out/") && !repoPath.endsWith(".js");
+}
 
 function toRepoPath(file) {
   return path.relative(REPO_ROOT, file).split(path.sep).join("/");
@@ -122,6 +139,7 @@ for (const root of roots) {
     lines.forEach((line, lineIndex) => {
       for (const rule of RULES) {
         if (rule.words && WORD_RULE_EXEMPT.has(repoPath)) continue;
+        if (rule.site && !onSite(repoPath)) continue;
         rule.re.lastIndex = 0;
         for (const match of line.matchAll(rule.re)) {
           hits.push(

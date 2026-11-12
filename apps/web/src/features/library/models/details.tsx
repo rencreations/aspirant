@@ -2,6 +2,8 @@
 
 import { forwardRef } from "react";
 
+import { ReportLink } from "@/features/legal/takedown/report-link";
+
 import type { ViewerApi } from "./use-viewer";
 import { count, humanBytes } from "./logic";
 import styles from "./models.module.css";
@@ -71,6 +73,7 @@ export const Details = forwardRef<HTMLButtonElement, DetailsProps>(function Deta
         {model.credit?.by ? (
           <p className={`${styles.credit} hud-label`}>{model.credit.by}</p>
         ) : null}
+        <ReportLink item={{ id: model.id, title: model.title }} className={styles.report} />
       </section>
 
       {drawn ? (

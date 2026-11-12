@@ -257,6 +257,25 @@ img.face[data-in="false"] {
   text-decoration: underline;
 }
 
+/* "Copyright or takedown": small text on its own line at the foot of the caption, quieter than it. */
+.caption .report {
+  display: block;
+  width: fit-content;
+  margin-top: 0.4rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--zv-soft);
+  opacity: 0.8;
+  text-underline-offset: 3px;
+}
+
+.caption .report:hover,
+.caption .report:focus-visible {
+  opacity: 1;
+}
+
 .note {
   position: absolute;
   bottom: max(1rem, env(safe-area-inset-bottom));

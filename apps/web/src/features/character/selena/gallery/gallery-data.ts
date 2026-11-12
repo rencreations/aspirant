@@ -310,7 +310,7 @@ export const galleryPosterPath = (id: string) => `/video/selena/gallery/${id}.we
 
 function buildViewerImages(): ViewerImage[] {
   const out: ViewerImage[] = [];
-  const add = (group: ArtGroup, setLabel: string, shared: boolean) => {
+  const add = (group: ArtGroup, setLabel: string, shared: boolean, fan = true) => {
     for (const piece of group.pieces) {
       const meta = GALLERY_IMAGES[piece.id];
       out.push({
@@ -323,10 +323,11 @@ function buildViewerImages(): ViewerImage[] {
         set: shared ? group.id : piece.id,
         setLabel,
         credit: group.credit,
+        ...(fan ? { report: true } : {}),
       });
     }
   };
-  add(OFFICIAL, "Official art", true);
+  add(OFFICIAL, "Official art", true, false);
   for (const g of FAN_ART) add(g, `Fan art by ${g.credit.name.toLowerCase()}`, false);
   for (const g of JLEN_POSTS)
     add(g, `Fan art by ${JLEN}, ${g.label.toLowerCase()}`, g.pieces.length > 1);

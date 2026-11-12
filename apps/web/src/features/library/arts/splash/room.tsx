@@ -104,6 +104,7 @@ export function SplashRoom({ items }: { items: readonly SplashItem[] }) {
           title: item.title,
           frame: visibleFrame(item.frame, view.layout),
           caption: <ViewerCaption item={item} />,
+          ...(item.canon !== "official" ? { report: { id: item.id, title: item.title } } : {}),
         };
       }),
     [items, view.size, view.layout],

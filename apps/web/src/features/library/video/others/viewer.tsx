@@ -15,6 +15,7 @@ import { createPortal } from "react-dom";
 
 import { TLink } from "@/components/transition/t-link";
 import { VideoCard } from "@/components/video-player/video-card";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { audio } from "@/lib/audio";
 
 import { CanonBadge, CreditLine } from "../../shell/credit";
@@ -476,6 +477,9 @@ export function Viewer({
               </div>
             ) : null}
             <CreditLine credit={video.credit} canon={video.canon} />
+            {video.canon !== "official" ? (
+              <ReportLink item={{ id: video.id, title: video.title }} className={styles.report} />
+            ) : null}
             <dl className={`${styles.facts} hud-label`}>
               <div>
                 <dt>Runs</dt>

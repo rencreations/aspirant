@@ -9,6 +9,7 @@ import { TLink } from "@/components/transition/t-link";
 
 import { useLibraryData } from "../../data";
 import { getCollection } from "../../registry";
+import { TAKEDOWN_URL } from "../../shell/library-shell";
 import { BackToCollection } from "../../shell/room-chrome";
 import { useQueryState } from "../../use-query-state";
 import { Finder } from "./finder";
@@ -41,7 +42,6 @@ import { Shelf } from "./wall";
 const NONE: readonly OtherVideo[] = [];
 
 /** Where a takedown request goes (the same page as every other room of the library). */
-const TAKEDOWN_URL = "https://github.com/rencreations/aspirant/issues";
 
 /** How many shelves are built at once. The rest follow while nothing else is happening. */
 const FIRST_SHELVES = 3;
@@ -589,9 +589,9 @@ export default function OthersPage() {
         <p className={styles.note}>
           A fan made archive. Aspirant and Mobile Legends: Bang Bang belong to Moonton, and this
           site is not affiliated with them. Fan work belongs to the people who made it and is shown
-          with credit. To ask for something to be taken down, open an issue at{" "}
+          with credit. To ask for something to be taken down, use the{" "}
           <TLink href={TAKEDOWN_URL} className="link">
-            the project page
+            takedown page
           </TLink>
           .
         </p>

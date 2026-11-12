@@ -64,9 +64,9 @@ test("draws the first model with its name, one h1, nine plates and the way out",
   await expect(stage(page).locator("canvas")).toHaveCount(1);
   await expect(page.getByText("01 / 09")).toBeVisible();
   await expect(page.locator("[data-room-back]")).toHaveAttribute("href", /\/collection\/?$/);
-  await expect(page.getByRole("link", { name: "open an issue" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "takedown page" })).toHaveAttribute(
     "href",
-    /github\.com\/.*\/issues/,
+    /\/takedown\/?$/,
   );
   expect(errors.filter((e) => !e.includes("Failed to load resource"))).toEqual([]);
 });

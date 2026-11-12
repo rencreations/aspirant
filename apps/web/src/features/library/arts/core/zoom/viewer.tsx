@@ -25,6 +25,7 @@ import { createPortal } from "react-dom";
 
 import { SHELL_ID } from "@/components/loader-gate";
 import { useLenis } from "@/components/smooth-scroll";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { useIsoLayoutEffect } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
 
@@ -417,9 +418,12 @@ export function Viewer({
             </button>
           </>
         ) : null}
-        {picture.caption ? (
+        {picture.caption || picture.report ? (
           <div className={styles.caption} data-ui="">
             {picture.caption}
+            {picture.report ? (
+              <ReportLink item={picture.report} className={styles.report} data-ui="" />
+            ) : null}
           </div>
         ) : null}
         {status.failed ? (

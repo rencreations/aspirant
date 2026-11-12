@@ -23,6 +23,10 @@ async function context(browser, options = {}) {
   await ctx.addInitScript(() => {
     try {
       sessionStorage.setItem("aspirants:entered", "1");
+      localStorage.setItem(
+        "aspirants:consent",
+        JSON.stringify({ choice: "rejected", at: Date.now() }),
+      );
     } catch {
       /* ignore */
     }

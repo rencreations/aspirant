@@ -154,10 +154,10 @@ export function TrackList({ items, failed, heading }: Props) {
       )}
       <p className={styles.plainNote}>
         A fan made archive. The tracks belong to Moonton and the people who made them. To ask for a
-        takedown,{" "}
-        <a href={TAKEDOWN_URL} target="_blank" rel="noopener noreferrer" className="link">
-          open an issue
-        </a>
+        takedown, use the{" "}
+        <TLink href={TAKEDOWN_URL} className="link">
+          takedown page
+        </TLink>
         .
       </p>
     </section>

@@ -1,0 +1,94 @@
+/* The analytics question: a small plate at the foot of the screen. Opacity and transform only. */
+.banner {
+  position: fixed;
+  z-index: var(--z-consent);
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: grid;
+  gap: 0.35rem;
+  width: min(22.5rem, calc(100vw - 2rem));
+  padding: 0.85rem 1rem 0.9rem;
+  background: var(--bg);
+  color: var(--text);
+  border: var(--hairline) solid var(--line);
+  animation: consent-in var(--dur-base) var(--ease-out) both;
+}
+
+@media (min-width: 64em) {
+  .banner {
+    left: max(1rem, calc(var(--gutter) * 0.45));
+  }
+}
+
+.ask {
+  margin: 0;
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--step--2);
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.now {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+/* Both buttons are one thing: same size, same weight, same colour. */
+.button {
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: transparent;
+  border: var(--hairline) solid var(--text);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.button:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@keyframes consent-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

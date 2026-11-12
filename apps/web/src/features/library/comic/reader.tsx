@@ -11,6 +11,7 @@ import {
 } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { audio } from "@/lib/audio";
 import { isTypingTarget } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
@@ -420,6 +421,9 @@ export function Reader({
               {comic.canon !== "official" ? <CanonBadge canon={comic.canon} /> : null}
             </p>
             <h2 className={`${styles.title} display`}>{comic.title}</h2>
+            {comic.canon !== "official" ? (
+              <ReportLink item={{ id: comic.id, title: comic.title }} className={styles.report} />
+            ) : null}
           </div>
           <label className={styles.jump}>
             <span className="hud-label">Go to</span>

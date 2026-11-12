@@ -58,6 +58,7 @@ function toZoom(item: FanItem): ZoomPicture {
     alt: item.alt,
     title: item.title,
     caption: fanCaption(item),
+    ...(item.canon !== "official" ? { report: { id: item.id, title: item.title } } : {}),
   };
 }
 

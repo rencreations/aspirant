@@ -30,6 +30,9 @@ export const ROUTES = [
   "/character/vexana/story/academic/",
   "/character/vexana/story/ender/",
   "/collection/",
+  "/terms/",
+  "/privacy/",
+  "/takedown/",
 ] as const;
 
 /**
@@ -48,17 +51,32 @@ export function url(path: string): string {
 /**
  * Skip the loader gate for this page (as a returning visitor in the same tab). The opening of the
  * roster is skipped too (`aspirants:intro` = "off"), so it never covers the page a spec drives.
- * Pass `{ intro: true }` to let it play (see roster-intro.spec.ts).
+ * Pass `{ intro: true }` to let it play (see roster-intro.spec.ts). The analytics question is
+ * answered (rejected) unless `{ asked: false }` is passed (see consent.spec.ts).
  */
-export async function skipGate(page: Page, options: { intro?: boolean } = {}): Promise<void> {
-  await page.addInitScript((intro) => {
-    try {
-      window.sessionStorage.setItem("aspirants:entered", "1");
-      if (!intro) window.sessionStorage.setItem("aspirants:intro", "off");
-    } catch {
-      /* ignore */
-    }
-  }, options.intro === true);
+export async function skipGate(
+  page: Page,
+  options: { intro?: boolean; asked?: boolean } = {},
+): Promise<void> {
+  await page.addInitScript(
+    ({ intro, asked }) => {
+      try {
+        window.sessionStorage.setItem("aspirants:entered", "1");
+        if (!intro) window.sessionStorage.setItem("aspirants:intro", "off");
+        // The analytics question has been answered (no), so its box never stands over a test.
+        // `asked: false` leaves the visitor unasked (consent.spec.ts).
+        if (asked) {
+          window.localStorage.setItem(
+            "aspirants:consent",
+            JSON.stringify({ choice: "rejected", at: Date.now() }),
+          );
+        }
+      } catch {
+        /* ignore */
+      }
+    },
+    { intro: options.intro === true, asked: options.asked !== false },
+  );
 }
 
 /** Collect console errors and uncaught exceptions. */

@@ -82,7 +82,14 @@ function defaultCaption(item: ArtsItem): ReactNode {
 }
 
 function toZoom<T extends ArtsItem>(item: T, caption: (item: T) => ReactNode): ZoomPicture {
-  return { id: item.id, img: item.img, alt: item.alt, title: item.title, caption: caption(item) };
+  return {
+    id: item.id,
+    img: item.img,
+    alt: item.alt,
+    title: item.title,
+    caption: caption(item),
+    ...(item.canon !== "official" ? { report: { id: item.id, title: item.title } } : {}),
+  };
 }
 
 /**

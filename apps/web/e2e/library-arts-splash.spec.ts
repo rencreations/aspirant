@@ -314,10 +314,7 @@ test.describe("the corners", () => {
       "href",
       /\/collection\/\?open=arts/u,
     );
-    await expect(page.locator("[data-takedown]")).toHaveAttribute(
-      "href",
-      /github\.com\/rencreations\/aspirant\/issues/u,
-    );
+    await expect(page.locator("[data-takedown]")).toHaveAttribute("href", /\/takedown\/?$/u);
     await expect(page.locator("[data-takedown]")).toContainText("taken down");
   });
 
