@@ -1,8 +1,10 @@
 "use client";
 
+import type { Route } from "next";
 import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
 
 import { TLink } from "@/components/transition/t-link";
+import { useTransitionRouter } from "@/components/transition/transition-provider";
 
 import { comicPath } from "../route";
 import type { ComicItem, StagePanel } from "../types";
@@ -28,6 +30,7 @@ interface Props {
 export function OfficialSection({ id, comic, first, tone, children }: Props) {
   const pages = comic.pages.length;
   const root = useRef<HTMLElement>(null);
+  const router = useTransitionRouter();
   const href = comicPath(comic.slug);
 
   // Warm the comic's page and the layer's code once the section is on the screen, so a press starts at once.
@@ -49,10 +52,12 @@ export function OfficialSection({ id, comic, first, tone, children }: Props) {
   // A plain press dives into the first panel. A modified press (a new tab) is left to the browser.
   const open = (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    // Offline, or while another change runs, the link behaves as every link does (the router's notice, or nothing).
+    if (!router.canOpen(href as Route) || router.isTransitioning()) return;
     const section = root.current;
     const stage = section?.querySelector<HTMLElement>("[data-stage]");
     const img = section?.querySelector<HTMLImageElement>('[data-part="first"] img');
-    if (!section || !stage || !img || !first) return;
+    if (!section || !stage || !img || !first?.at) return;
     e.preventDefault();
     startComicJob({ kind: "dive", href, comic, section, stage, img, panel: first });
   };
@@ -78,7 +83,7 @@ export function OfficialSection({ id, comic, first, tone, children }: Props) {
             className={styles.cta}
             data-cta={tone}
           >
-            <span className={styles.ctaText}>Read the comic</span>
+            <span className={styles.ctaText}>Read the comics</span>
             <span className={styles.ctaArrow} aria-hidden="true">
               <svg viewBox="0 0 20 20" width="22" height="22">
                 <path

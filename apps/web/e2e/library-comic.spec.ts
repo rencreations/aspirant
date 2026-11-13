@@ -133,9 +133,12 @@ test.describe("collection / comic", () => {
     const section = page.locator("#the-aspirant");
     await section.scrollIntoViewIfNeeded();
     await hydrated(page, "#the-aspirant a");
-    await section.getByRole("link", { name: /Read the comic/ }).click({ force: true });
+    // A press while the loading curtain is still opening is ignored, as for every link: press again.
+    await expect(async () => {
+      await section.getByRole("link", { name: /Read the comic/ }).click({ force: true });
+      await expect(page.locator("[data-comic-dive]")).toBeAttached({ timeout: 1500 });
+    }).toPass({ timeout: 15_000 });
     // The stage holds still and the layer is there while the camera moves.
-    await expect(page.locator("[data-comic-dive]")).toBeAttached();
     await expect(section).toHaveAttribute("data-diving", "true");
     // It ends on the comic's own page, with the first page drawn, and the layer is gone.
     await expect(page).toHaveURL(/\/collection\/comic\/the-aspirant\/$/, { timeout: 20_000 });
@@ -161,6 +164,23 @@ test.describe("collection / comic", () => {
     await expect(page).toHaveURL(/\/collection\/comic\/$/);
   });
 
+  test("offline, a press on a comic that was never opened starts no transition", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openRoom(page);
+    const section = page.locator("#the-aspirant");
+    await section.scrollIntoViewIfNeeded();
+    await hydrated(page, "#the-aspirant a");
+    await page.context().setOffline(true);
+    await section.getByRole("link", { name: /Read the comic/ }).click({ force: true });
+    // The calm notice, as for any page that was never opened; nothing covers the screen.
+    await expect(page.getByText(/You are offline/)).toBeVisible();
+    await expect(page.locator("[data-comic-dive]")).toHaveCount(0);
+    await expect(page).toHaveURL(/\/collection\/comic\/$/);
+    await page.context().setOffline(false);
+  });
+
   test("a fan comic opens through a wipe of halftone dots", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const errors = watchErrors(page);
@@ -171,8 +191,10 @@ test.describe("collection / comic", () => {
     const href = await card.getAttribute("href");
     await hydrated(page, "#fan-comics a");
     // The cards come in with a little motion: wait for the card to be still before pressing it.
-    await card.click();
-    await expect(page.locator("[data-comic-wipe]")).toBeAttached();
+    await expect(async () => {
+      await card.click();
+      await expect(page.locator("[data-comic-wipe]")).toBeAttached({ timeout: 1500 });
+    }).toPass({ timeout: 15_000 });
     await expect(page).toHaveURL(new RegExp(`${href ?? ""}$`), { timeout: 20_000 });
     await expect(page.locator("[data-comic-wipe]")).toHaveCount(0, { timeout: 20_000 });
     await expect(page.locator("[data-comic-bar]")).toBeAttached();

@@ -7,6 +7,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 
 import { REVEAL_EVENT } from "@/lib/hooks";
+import { isOffline } from "@/lib/offline";
+
+/** What the cover says while the comic is slow to arrive: the real percentage, or that the connection is gone. */
+export function waitingWords(title: string, progress?: number): string {
+  if (isOffline()) return "Offline. Waiting for the connection";
+  return progress === undefined
+    ? `Loading ${title}`
+    : `Loading ${title} ${Math.round(progress * 100)}%`;
+}
 
 export function pathOf(href: string): string {
   return (href.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";

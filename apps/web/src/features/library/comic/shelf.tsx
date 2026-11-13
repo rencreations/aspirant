@@ -1,8 +1,10 @@
 "use client";
 
+import type { Route } from "next";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { TLink } from "@/components/transition/t-link";
+import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 
@@ -53,6 +55,7 @@ function pagesLabel(comic: ComicItem): string {
 /** A fan comic: the cover leans open on hover, and the credit is always under it. */
 export function FanCard({ comic, index, resume }: CardProps) {
   const [hot, setHot] = useState(false);
+  const router = useTransitionRouter();
   const showResume = resume !== null && resume > 1;
   return (
     <article className={styles.fan} style={{ "--i": index } as CSSProperties}>
@@ -62,6 +65,8 @@ export function FanCard({ comic, index, resume }: CardProps) {
         className={styles.fanOpen}
         onClick={(e) => {
           if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          // Offline, or while another change runs, the link behaves as every link does.
+          if (!router.canOpen(comicPath(comic.slug) as Route) || router.isTransitioning()) return;
           e.preventDefault();
           // The wipe starts at the press (or at the card, for the keyboard).
           const r = e.currentTarget.getBoundingClientRect();

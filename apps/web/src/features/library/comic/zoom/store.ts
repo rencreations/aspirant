@@ -1,5 +1,5 @@
 /**
- * The change of page into a comic that is running, if any. A press on "Read the comic" of an official
+ * The change of page into a comic that is running, if any. A press on "Read the comics" of an official
  * comic starts a dive into its first panel; a press on a fan comic starts a halftone wipe. The layer
  * in the root layout (`ComicLayer`) draws it and survives the change of page. One at a time: a start
  * while one runs is refused.

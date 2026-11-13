@@ -17,7 +17,7 @@ import { whenPageReady } from "@/lib/page-ready";
 import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
-import { arrive, holdScroll, pathOf, readerFirst, sleep, useGoto } from "./kit";
+import { arrive, holdScroll, pathOf, readerFirst, sleep, useGoto, waitingWords } from "./kit";
 import { vividColour } from "./math";
 import { endComicJob, type ComicJob } from "./store";
 import styles from "./zoom.module.css";
@@ -27,7 +27,7 @@ type WipeJob = Extract<ComicJob, { kind: "wipe" }>;
 const started = new Set<number>();
 
 /** The dots: about this many across the longer side of the screen. */
-const ACROSS = 20;
+const ACROSS = 11;
 /** How long a dot takes, how long the wave takes to cross the screen, and how far the colour trails the ink. */
 const DOT_MS = 380;
 const WAVE_MS = 300;
@@ -106,6 +106,8 @@ export function Wipe({ job }: { job: WipeJob }) {
     const finish = (ok: boolean) => {
       if (over) return;
       over = true;
+      window.removeEventListener("offline", words);
+      window.removeEventListener("online", words);
       for (const a of animations) a.cancel();
       endComicJob(job.id);
       started.delete(job.id);
@@ -123,12 +125,20 @@ export function Wipe({ job }: { job: WipeJob }) {
       el.dataset.on = text ? "true" : "false";
     };
 
+    // The connection may drop while the cover waits: say so, and say when it is back.
+    let waitingNow = false;
+    const words = () => {
+      if (waitingNow) say(waitingWords(job.comic.title));
+    };
+    window.addEventListener("offline", words);
+    window.addEventListener("online", words);
+
     void (async () => {
       try {
         audio.blip("whoosh");
         let waiting = false;
         const assets = runPreload(routeItems(job.href), (p) => {
-          if (waiting) say(`Loading ${job.comic.title} ${Math.round(p.progress * 100)}%`);
+          if (waiting) say(waitingWords(job.comic.title, p.progress));
         });
 
         const cell = Math.round(Math.max(window.innerWidth, window.innerHeight) / ACROSS);
@@ -155,10 +165,12 @@ export function Wipe({ job }: { job: WipeJob }) {
         await Promise.race([assets, sleep(500)]);
         if (!loaded) {
           waiting = true;
-          say(`Loading ${job.comic.title}`);
+          waitingNow = true;
+          say(waitingWords(job.comic.title));
         }
         await assets;
         waiting = false;
+        waitingNow = false;
         say(null);
         await whenPageReady();
         await readerFirst(job.comic.pages[0]?.n ?? 1);

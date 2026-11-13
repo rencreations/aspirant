@@ -21,7 +21,7 @@ import { whenPageReady } from "@/lib/page-ready";
 import { imageItem, runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
 
-import { arrive, holdScroll, pathOf, readerFirst, sleep, useGoto } from "./kit";
+import { arrive, holdScroll, pathOf, readerFirst, sleep, useGoto, waitingWords } from "./kit";
 import {
   centreOf,
   coverCamera,
@@ -68,7 +68,8 @@ export function Dive({ job }: { job: DiveJob }) {
   const sheet = useRef<HTMLDivElement>(null);
   const wait = useRef<HTMLParagraphElement>(null);
 
-  const page = job.comic.pages.find((p) => p.n === job.panel.at.n);
+  const at = job.panel.at;
+  const page = at ? job.comic.pages.find((p) => p.n === at.n) : undefined;
   const pieces = page ? (page.s ?? [{ f: page.f, p: page.p, h: page.h, ph: 0 }]) : [];
   const tops = pieces.map((_, i) => pieces.slice(0, i).reduce((sum, s) => sum + s.h, 0));
   const sliced = page?.s !== undefined;
@@ -78,8 +79,8 @@ export function Dive({ job }: { job: DiveJob }) {
     const layer = finale.current;
     const box = sheet.current;
     if (!layer || !box) return;
-    if (!page) {
-      // The panel names a page the comic does not have: the plain way.
+    if (!page || !at) {
+      // The panel names no page, or one the comic does not have: the plain way.
       started.add(job.id);
       endComicJob(job.id);
       transition.push(job.href as Route, { label: job.comic.title });
@@ -99,6 +100,8 @@ export function Dive({ job }: { job: DiveJob }) {
     const finish = (ok: boolean) => {
       if (over) return;
       over = true;
+      window.removeEventListener("offline", words);
+      window.removeEventListener("online", words);
       for (const a of animations) a.cancel();
       job.stage.removeAttribute("data-diving");
       job.section.removeAttribute("data-diving");
@@ -118,6 +121,14 @@ export function Dive({ job }: { job: DiveJob }) {
       el.dataset.on = text ? "true" : "false";
     };
 
+    // The connection may drop while the cover waits: say so, and say when it is back.
+    let waitingNow = false;
+    const words = () => {
+      if (waitingNow) say(waitingWords(job.comic.title));
+    };
+    window.addEventListener("offline", words);
+    window.addEventListener("online", words);
+
     void (async () => {
       try {
         const view: Box = { x: 0, y: 0, w: window.innerWidth, h: window.innerHeight };
@@ -125,6 +136,8 @@ export function Dive({ job }: { job: DiveJob }) {
         job.section.setAttribute("data-diving", "true");
         job.stage.setAttribute("data-diving", "true");
         audio.blip("whoosh");
+        // The panel is about to fill the screen: ask for its large file (the small one stays until it arrives).
+        job.img.setAttribute("sizes", "100vw");
 
         // What the new page needs, warmed while the dive runs: its data, the reader and the picture
         // of the first page that takes over from the panel.
@@ -135,7 +148,7 @@ export function Dive({ job }: { job: DiveJob }) {
             ...pieces.map((s) => imageItem(libUrl(s.f), "Loading the first page")),
           ],
           (p) => {
-            if (waiting) say(`Loading ${job.comic.title} ${Math.round(p.progress * 100)}%`);
+            if (waiting) say(waitingWords(job.comic.title, p.progress));
           },
         );
 
@@ -155,7 +168,7 @@ export function Dive({ job }: { job: DiveJob }) {
         const fit: PanelFit = {
           box: picture,
           cut: { w: job.panel.w, h: job.panel.h },
-          at: { x: job.panel.at.x, y: job.panel.at.y },
+          at: { x: at.x, y: at.y },
         };
         const { k, pivot } = coverCamera(picture, view);
         const end = pageAfterZoom(fit, pivot, k);
@@ -221,10 +234,12 @@ export function Dive({ job }: { job: DiveJob }) {
         await Promise.race([assets, sleep(1)]);
         if (!loaded) {
           waiting = true;
-          say(`Loading ${job.comic.title}`);
+          waitingNow = true;
+          say(waitingWords(job.comic.title));
         }
         await assets;
         waiting = false;
+        waitingNow = false;
         say(null);
         await Promise.all(
           Array.from(box.querySelectorAll("img")).map((img) => img.decode().catch(() => undefined)),
