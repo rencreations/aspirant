@@ -56,7 +56,7 @@ const GLYPHS: readonly Glyph[] = [
 ];
 
 /** Where each letter stands: one row, or two on a narrow screen. */
-function layout(narrow: boolean): { x: number; y: number }[] {
+function layout(narrow: boolean): Array<{ x: number; y: number }> {
   const gap = 26;
   if (!narrow) {
     let x = 0;
@@ -69,7 +69,7 @@ function layout(narrow: boolean): { x: number; y: number }[] {
   // COM above, IC below, each row centred in the width of the first.
   const row1 = GLYPHS.slice(0, 3).reduce((n, g) => n + g.w + gap, -gap);
   const row2 = GLYPHS.slice(3).reduce((n, g) => n + g.w + gap, -gap);
-  const out: { x: number; y: number }[] = [];
+  const out: Array<{ x: number; y: number }> = [];
   let x = 0;
   for (const g of GLYPHS.slice(0, 3)) {
     out.push({ x, y: 0 });
