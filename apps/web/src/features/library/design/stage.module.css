@@ -1,0 +1,173 @@
+/*
+ * The first screen of the Design room (see stage.tsx). The film is ONE fixed layer. In front of it
+ * are a screen of nothing and the page, whose rounded lip and bar rest at the foot of the first
+ * screen. Only transform and opacity move. No filter, blend mode or backdrop blur over the film.
+ */
+.stage {
+  --lvh: 100vh;
+  /* How much of the page shows at the foot of the first screen: the lip and the bar. */
+  --peek: 5.9rem;
+  position: relative;
+}
+
+@supports (height: 100lvh) {
+  .stage {
+    --lvh: 100lvh;
+  }
+}
+
+/* ---- the film layer ---- */
+
+.layer {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 0;
+  height: var(--lvh);
+  overflow: hidden;
+  isolation: isolate;
+  background: #0b0d12;
+  color: #fff;
+}
+
+.layer[data-hidden="true"] {
+  visibility: hidden;
+}
+
+.film {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;
+  will-change: transform;
+}
+
+.still,
+.video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+
+/* The film is cut at the sides on most displays, so it is centred on the people. */
+.video {
+  opacity: 0;
+  transition: opacity 800ms var(--ease-out);
+}
+
+.video[data-ready="true"] {
+  opacity: 1;
+}
+
+/* A shade that is always there: deeper at the foot (the title) and at the very top (the top bar).
+   The film has white shots (a whiteboard), so the title and the bar need it. */
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgb(6 8 14 / 0.55) 0, rgb(6 8 14 / 0) 24%),
+    linear-gradient(
+      to top,
+      rgb(6 8 14 / 0.84) 0,
+      rgb(6 8 14 / 0.5) 34%,
+      rgb(6 8 14 / 0.12) 68%,
+      rgb(6 8 14 / 0.06) 100%
+    );
+  pointer-events: none;
+}
+
+/* The film goes dark as the page comes up over it (its opacity follows the scroll). */
+.dim {
+  position: absolute;
+  inset: 0;
+  background: #06080e;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* The one way out: a button back to the shelf, on the left under the top bar. It fades with the title. */
+.back {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.back > * {
+  pointer-events: auto;
+}
+
+.copy {
+  position: absolute;
+  right: var(--gutter);
+  bottom: calc(var(--peek) + 2.4rem);
+  left: var(--gutter);
+  will-change: transform, opacity;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(4.6rem, 15vw, 13.5rem);
+  line-height: 0.84;
+  color: #fff;
+}
+
+.line {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  color: rgb(255 255 255 / 0.88);
+}
+
+.count {
+  margin: 1.1rem 0 0;
+  color: rgb(255 255 255 / 0.72);
+}
+
+/* ---- the join: a screen of nothing, then the page ---- */
+
+.spacer {
+  height: calc(var(--lvh) - var(--peek));
+  pointer-events: none;
+}
+
+.sheet {
+  position: relative;
+  z-index: 1;
+}
+
+/* The rounded top of the page. It sits above the bar, scrolls away with the page, and lets a soft
+   shadow fall on the film. */
+.lip {
+  height: 1.75rem;
+  margin-bottom: -1px;
+  border-radius: 1.75rem 1.75rem 0 0;
+  background: var(--bg);
+  box-shadow: 0 -26px 56px rgb(4 6 12 / 0.4);
+}
+
+/* Everything under the lip. No overflow is set here or above: the bar inside it is sticky. */
+.body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+@media (max-width: 40em) {
+  .stage {
+    --peek: 8.5rem;
+  }
+
+  .title {
+    font-size: clamp(4rem, 24vw, 7rem);
+  }
+
+  .lip {
+    height: 1.4rem;
+    border-radius: 1.4rem 1.4rem 0 0;
+  }
+}

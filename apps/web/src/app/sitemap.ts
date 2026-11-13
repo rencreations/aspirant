@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import type { MetadataRoute } from "next";
 
 import { OBSIDIA_PAGE_NAMES, obsidiaRoute } from "@/features/character/obsidia/routes";
@@ -11,6 +14,15 @@ import { characterRoute, collectionRoute, navItems, siteConfig } from "@/lib/sit
 import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 export const dynamic = "force-static";
+
+/** The addresses of the posts of the design room, from its data file. */
+function designSlugs(): string[] {
+  const file = path.join(process.cwd(), "public", "data", "library", "design.json");
+  if (!fs.existsSync(file)) return [];
+  return (
+    JSON.parse(fs.readFileSync(file, "utf8")) as { items: Array<{ slug: string }> }
+  ).items.map((p) => p.slug);
+}
 
 const STORY_PAGES = [
   "/character/vexana/story/academic",
@@ -61,6 +73,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absolute(collectionRoute(`animation/${slug}`)),
       lastModified,
       priority: 0.5,
+    })),
+    // Every post of the design room has its own page.
+    ...designSlugs().map((slug) => ({
+      url: absolute(collectionRoute(`design/${slug}`)),
+      lastModified,
+      priority: 0.4,
     })),
     // The story is read one chapter to a page, and ends on a page of its own.
     ...chapters.map((chapter) => ({

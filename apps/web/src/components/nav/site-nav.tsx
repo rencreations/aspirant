@@ -147,6 +147,7 @@ export function SiteNav() {
       data-theme={theme}
       data-lock={lock.theme ? "true" : undefined}
       data-bare={lock.bare ? "true" : undefined}
+      data-fade={lock.fade ? "true" : undefined}
       data-overlay="nav"
     >
       <Dialog.Root

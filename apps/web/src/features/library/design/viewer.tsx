@@ -12,6 +12,7 @@ import { createPortal } from "react-dom";
 
 import { useLenis } from "@/components/smooth-scroll";
 import { VideoCard } from "@/components/video-player/video-card";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 
@@ -29,7 +30,6 @@ import {
 import { PaletteCard, PaletteStrip } from "./palette";
 import type { DesignCampaign, DesignPost, DesignSlide } from "./types";
 import styles from "./viewer.module.css";
-import type { View } from "./wall";
 
 interface ViewerProps {
   post: DesignPost;
@@ -37,8 +37,6 @@ interface ViewerProps {
   position: number;
   total: number;
   campaign: DesignCampaign | undefined;
-  view: View;
-  onView: (v: View) => void;
   onClose: () => void;
   /** Move to the next (1) or the previous (-1) post on show. */
   onStep: (delta: number) => void;
@@ -51,22 +49,15 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * on the right. A carousel moves slide by slide, a reel plays in the site's player. "Details"
  * puts measuring lines and the palette around the piece.
  */
-export function PostViewer({
-  post,
-  position,
-  total,
-  campaign,
-  view,
-  onView,
-  onClose,
-  onStep,
-}: ViewerProps) {
+export function PostViewer({ post, position, total, campaign, onClose, onStep }: ViewerProps) {
   const meta = getCollection("design");
   const rootRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const { pause, resume } = useLenis();
   const [pos, setPos] = useState({ id: post.id, n: 0 });
+  // The measuring lines and the palette around the piece: a choice of this window, not of the address.
+  const [details, setDetails] = useState(false);
 
   const slides = post.slides ?? [];
   const slide = pos.id === post.id ? Math.min(pos.n, Math.max(0, slides.length - 1)) : 0;
@@ -170,7 +161,6 @@ export function PostViewer({
       ? { w: post.video.w, h: post.video.h }
       : { w: current?.img.w ?? 0, h: current?.img.h ?? 0 };
   const weight = post.kind === "reel" ? (post.video?.kb ?? 0) : (current?.kb ?? 0);
-  const details = view === "details";
   const parts = captionParts(post.caption);
   const vars = { "--lib-colour": meta.colour, "--lib-ink": meta.ink } as CSSProperties;
 
@@ -210,10 +200,10 @@ export function PostViewer({
                 <button
                   key={v}
                   type="button"
-                  aria-pressed={view === v}
+                  aria-pressed={details === (v === "details")}
                   onClick={() => {
                     audio.blip("click");
-                    onView(v);
+                    setDetails(v === "details");
                   }}
                 >
                   {label}
@@ -465,6 +455,9 @@ export function PostViewer({
               >
                 Open the full size picture
               </a>
+            ) : null}
+            {post.canon !== "official" ? (
+              <ReportLink item={{ id: post.id, title: post.title }} className={styles.report} />
             ) : null}
           </div>
 

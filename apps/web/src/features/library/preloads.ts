@@ -69,6 +69,7 @@ function artsRoomItems(path: string): PreloadItem[] {
 export function libraryPageItems(path: string): PreloadItem[] {
   const [slug = "", room] = path.replace(/^\/+|\/+$/gu, "").split("/");
   if (slug === "animation" && room) return animationCharacterItems(room);
+  if (slug === "design" && room) return designItems(room);
   if (slug === "video" && room === "films") return videoFilmsItems();
   if (slug === "video" && room === "others") return videoOthersItems();
   if (slug === "arts") return artsRoomItems(path);

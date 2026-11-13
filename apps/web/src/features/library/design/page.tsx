@@ -1,63 +1,49 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { useLibraryData } from "../data";
-import { LibraryShell } from "../shell/library-shell";
+import { LibraryFooter } from "../shell/library-shell";
 import { useQueryState } from "../use-query-state";
-import { DesignControls, type Counts } from "./controls";
+import { DesignBar, type Counts } from "./bar";
 import {
+  FACETS,
   NO_FILTERS,
-  activeCount,
   groupByYear,
   haystack,
-  pairsOf,
   passes,
+  valuesOf,
   yearOf,
-  type FacetKey,
   type Filters,
 } from "./model";
+import { useDesignRoute } from "./route";
+import { DesignStage } from "./stage";
 import type { DesignFile, DesignPost } from "./types";
 import { PostViewer } from "./viewer";
-import { Wall, type View } from "./wall";
+import { Wall } from "./wall";
 import styles from "./page.module.css";
 
-const FACETS: FacetKey[] = ["pair", "who", "year", "fmt", "canon", "topic"];
-
-/** The promotional posts and graphics, by campaign and year, with a study table for each one. */
+/**
+ * The Design room: the promotional posts and graphics, by campaign and year. A film opens the page,
+ * the wall rises over it, and a post opens as a window over the wall at its own address,
+ * `/collection/design/<slug>/` (see `route.ts`). The room is drawn by `app/collection/design/layout.tsx`.
+ */
 export default function DesignPage() {
   const { data, failed } = useLibraryData<DesignPost>("design");
   const file = data as DesignFile | null;
 
   const [q, setQ] = useQueryState("q");
   const [pair, setPair] = useQueryState("pair");
-  const [who, setWho] = useQueryState("who");
   const [year, setYear] = useQueryState("year");
   const [fmt, setFmt] = useQueryState("fmt");
-  const [canon, setCanon] = useQueryState("canon");
-  const [topic, setTopic] = useQueryState("topic");
-  const [viewParam, setViewParam] = useQueryState("view", "posted");
   const [sort, setSort] = useQueryState("sort", "old");
-  const [openId, setOpenId] = useQueryState("i");
+  const route = useDesignRoute();
 
-  const view: View = viewParam === "details" ? "details" : "posted";
   const newestFirst = sort === "new";
-  const filters: Filters = useMemo(
-    () => ({ q, pair, who, year, fmt, canon, topic }),
-    [q, pair, who, year, fmt, canon, topic],
-  );
-
+  const filters: Filters = useMemo(() => ({ q, pair, year, fmt }), [q, pair, year, fmt]);
   const setters: Record<keyof Filters, (v: string) => void> = useMemo(
-    () => ({
-      q: setQ,
-      pair: setPair,
-      who: setWho,
-      year: setYear,
-      fmt: setFmt,
-      canon: setCanon,
-      topic: setTopic,
-    }),
-    [setQ, setPair, setWho, setYear, setFmt, setCanon, setTopic],
+    () => ({ q: setQ, pair: setPair, year: setYear, fmt: setFmt }),
+    [setQ, setPair, setYear, setFmt],
   );
   const onFilter = useCallback(
     (key: keyof Filters, value: string) => {
@@ -74,10 +60,11 @@ export default function DesignPage() {
   const model = useMemo(() => {
     if (!file) return null;
     const byId = new Map(file.items.map((p) => [p.id, p]));
+    const bySlug = new Map(file.items.map((p) => [p.slug, p]));
     const campaignById = new Map(file.campaigns.map((c) => [c.id, c]));
     const texts = new Map(file.items.map((p) => [p.id, haystack(p, campaignById.get(p.campaign))]));
     const years = [...new Set(file.items.map((p) => yearOf(p.date)))].sort();
-    return { byId, campaignById, texts, years };
+    return { byId, bySlug, campaignById, texts, years };
   }, [file]);
 
   const shown = useMemo(() => {
@@ -87,132 +74,99 @@ export default function DesignPage() {
     );
     const groups = groupByYear(file.campaigns, model.byId, visible, newestFirst);
     const flat = groups.flatMap((y) => y.campaigns.flatMap((c) => c.posts));
-    const counts = Object.fromEntries(
-      FACETS.map((k): [FacetKey, Record<string, number>] => [k, {}]),
-    ) as Counts;
+    // What each choice of a facet would leave, with the other choices kept.
+    const counts = Object.fromEntries(FACETS.map((k) => [k, {}])) as unknown as Counts;
     for (const p of file.items) {
       const text = model.texts.get(p.id) ?? "";
       for (const k of FACETS) {
         if (!passes(p, text, filters, k)) continue;
-        const values =
-          k === "pair"
-            ? pairsOf(p)
-            : k === "who"
-              ? p.chars
-              : k === "year"
-                ? [yearOf(p.date)]
-                : k === "fmt"
-                  ? [p.kind]
-                  : k === "canon"
-                    ? [p.canon]
-                    : p.tags;
-        for (const v of values) counts[k][v] = (counts[k][v] ?? 0) + 1;
+        for (const v of valuesOf(p, k)) counts[k][v] = (counts[k][v] ?? 0) + 1;
       }
     }
-    return {
-      visible,
-      groups,
-      flat,
-      counts,
-      campaignCount: groups.reduce((n, y) => n + y.campaigns.length, 0),
-    };
+    return { visible, groups, flat, counts };
   }, [file, model, filters, newestFirst]);
 
-  const open = openId && model ? model.byId.get(openId) : undefined;
-  const position = open && shown ? shown.flat.findIndex((p) => p.id === open.id) + 1 : 0;
+  // An old link, `/collection/design/?i=<id>`, becomes the address of the post.
+  useEffect(() => {
+    if (!model) return;
+    const id = new URLSearchParams(window.location.search).get("i");
+    if (!id) return;
+    const post = model.byId.get(id);
+    if (post) route.forward(post.slug);
+  }, [model, route]);
+
+  const open = route.slug && model ? model.bySlug.get(route.slug) : undefined;
+  // The window moves through what is on the wall; a post the filters hide still opens, among all.
+  const list = useMemo(() => {
+    if (!shown || !file) return [];
+    return open && !shown.visible.has(open.id) ? [...shown.flat, open] : shown.flat;
+  }, [shown, file, open]);
+  const position = open ? list.findIndex((p) => p.id === open.id) + 1 : 0;
 
   const onStep = useCallback(
     (delta: number) => {
-      if (!shown) return;
-      const idx = shown.flat.findIndex((p) => p.id === openId);
-      const next = shown.flat[idx < 0 ? 0 : idx + delta];
-      if (next) setOpenId(next.id);
+      if (!open) return;
+      const next = list[list.findIndex((p) => p.id === open.id) + delta];
+      if (next) route.step(next.slug);
     },
-    [shown, openId, setOpenId],
+    [list, open, route],
   );
 
   const total = file?.items.length ?? 0;
   const count = shown?.visible.size ?? 0;
-  const reels = file?.items.filter((p) => p.kind === "reel").length ?? 0;
-  const slides = file?.items.reduce((n, p) => n + (p.slides?.length ?? 0), 0) ?? 0;
-  const first = model?.years[0];
-  const last = model?.years[model.years.length - 1];
-  const stat = file
-    ? `${first} to ${last}, ${file.campaigns.length} campaigns, ${slides} pictures, ${reels} reels`
-    : undefined;
-  const summary = !shown
-    ? "Loading"
-    : count === total && activeCount(filters) === 0 && !filters.q
-      ? `${total} posts in ${shown.campaignCount} campaigns`
-      : count === 0
-        ? "No post matches"
-        : `${count} of ${total} posts in ${shown.campaignCount} ${shown.campaignCount === 1 ? "campaign" : "campaigns"}`;
+
+  if (failed) {
+    return (
+      <main className="shell">
+        <p className={styles.empty}>
+          The contents could not be read. Reload the page to try again.
+        </p>
+      </main>
+    );
+  }
+  if (!file || !model || !shown) return null;
 
   return (
-    <LibraryShell
-      slug="design"
-      count={file ? total : null}
-      {...(stat ? { stat } : {})}
-      controls={
-        file && model && shown ? (
-          <DesignControls
-            filters={filters}
-            onFilter={onFilter}
-            onClear={onClear}
-            view={view}
-            onView={(v) => {
-              setViewParam(v);
-            }}
-            newestFirst={newestFirst}
-            onSort={(newest) => {
-              setSort(newest ? "new" : "old");
-            }}
-            summary={summary}
-            counts={shown.counts}
-            years={model.years}
-            topics={file.topics}
-          />
-        ) : undefined
-      }
-    >
-      <div className="shell">
-        {failed ? (
-          <p className={styles.empty}>The posts could not be read. Reload the page to try again.</p>
-        ) : !shown ? null : shown.flat.length === 0 ? (
-          <div className={styles.empty}>
-            <p>No post matches these filters.</p>
-            <button type="button" className={styles.reset} onClick={onClear}>
-              Clear the filters
-            </button>
-          </div>
-        ) : (
-          <Wall
-            years={shown.groups}
-            view={view}
-            activeId={openId}
-            onOpen={(id) => {
-              setOpenId(id);
-            }}
-          />
-        )}
-      </div>
+    <>
+      <DesignStage hero={file.hero} total={total} paused={Boolean(open)}>
+        <DesignBar
+          filters={filters}
+          onFilter={onFilter}
+          onClear={onClear}
+          newestFirst={newestFirst}
+          onSort={(newest) => {
+            setSort(newest ? "new" : "old");
+          }}
+          counts={shown.counts}
+          years={model.years}
+          shown={count}
+          total={total}
+        />
+        <main className={`${styles.wall} shell`}>
+          {shown.flat.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No content matches these choices.</p>
+              <button type="button" className={styles.reset} onClick={onClear}>
+                Clear
+              </button>
+            </div>
+          ) : (
+            <Wall years={shown.groups} activeSlug={route.slug} onOpen={route.open} />
+          )}
+        </main>
+        <LibraryFooter slug="design" />
+      </DesignStage>
 
-      {open && file && model ? (
+      {open ? (
         <PostViewer
           post={open}
           position={position}
-          total={shown?.flat.length ?? 0}
+          total={list.length}
           campaign={model.campaignById.get(open.campaign)}
-          view={view}
-          onView={(v) => {
-            setViewParam(v);
-          }}
-          onClose={() => {
-            setOpenId("");
-          }}
+          onClose={route.close}
           onStep={onStep}
         />
       ) : null}
-    </LibraryShell>
+    </>
   );
 }

@@ -500,6 +500,24 @@
   font-size: var(--step--1);
 }
 
+/* The takedown shortcut, on the page of a post that is not Moonton's own (fan work). */
+.report {
+  width: fit-content;
+  margin-top: 0.25rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.report:hover,
+.report:focus-visible {
+  color: var(--text);
+}
+
 .step {
   display: grid;
   grid-template-columns: 1fr 1fr;

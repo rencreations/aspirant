@@ -10,6 +10,8 @@ import {
   matchesQuery,
   passes,
   pairsOf,
+  activeCount,
+  valuesOf,
   pickSize,
   ratioLabel,
   sizeLabel,
@@ -22,6 +24,7 @@ import type { DesignCampaign, DesignPost } from "./types";
 function post(over: Partial<DesignPost> & { id: string }): DesignPost {
   return {
     title: "T",
+    slug: "t",
     collection: "design",
     chars: ["ruby", "angela"],
     pair: "ruby-angela",
@@ -145,16 +148,24 @@ describe("filters", () => {
     expect(passes(all, "x", { ...NO_FILTERS, pair: "selena-obsidia" })).toBe(false);
   });
 
-  it("filters by character, year, format, canon and topic", () => {
-    expect(passes(hub, "x", { ...NO_FILTERS, who: "selena" })).toBe(true);
-    expect(passes(all, "x", { ...NO_FILTERS, who: "selena" })).toBe(false);
+  it("filters by pair, year and format", () => {
+    expect(passes(hub, "x", { ...NO_FILTERS, pair: "selena-obsidia" })).toBe(true);
     expect(passes(all, "x", { ...NO_FILTERS, year: "2022" })).toBe(true);
     expect(passes(all, "x", { ...NO_FILTERS, year: "2023" })).toBe(false);
     expect(passes(hub, "x", { ...NO_FILTERS, fmt: "reel" })).toBe(true);
     expect(passes(all, "x", { ...NO_FILTERS, fmt: "reel" })).toBe(false);
-    expect(passes(hub, "x", { ...NO_FILTERS, canon: "fan" })).toBe(true);
-    expect(passes(all, "x", { ...NO_FILTERS, canon: "fan" })).toBe(false);
-    expect(passes(hub, "x", { ...NO_FILTERS, topic: "relationship" })).toBe(true);
+  });
+
+  it("counts the choices that are set, not the search", () => {
+    expect(activeCount(NO_FILTERS)).toBe(0);
+    expect(activeCount({ ...NO_FILTERS, q: "draw" })).toBe(0);
+    expect(activeCount({ q: "", pair: "ruby-angela", year: "2022", fmt: "" })).toBe(2);
+  });
+
+  it("lists the values a post has for each choice", () => {
+    expect(valuesOf(all, "pair")).toEqual(["fanny-layla", "ruby-angela"]);
+    expect(valuesOf(all, "year")).toEqual(["2022"]);
+    expect(valuesOf(hub, "fmt")).toEqual(["reel"]);
   });
 
   it("can leave one facet out, to count what its chips would give", () => {

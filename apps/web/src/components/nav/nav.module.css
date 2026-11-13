@@ -33,6 +33,17 @@
   backdrop-filter: none;
 }
 
+/* A locked bar that fades (the Design room): the plate comes and goes with the opacity of its layer,
+   and the ink of the bar changes with it, so the bar is bare over the film and takes its plate as
+   the search and the filters dock under it. Opacity and colour only, and no blur over the film. */
+.nav[data-lock="true"][data-fade="true"] {
+  transition: color var(--dur-slow) var(--ease-out);
+}
+
+.nav[data-lock="true"][data-fade="true"]::before {
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
 /* Over the opening picture the page name sits on a light plate, like the buttons beside it. */
 .nav[data-lock="true"][data-bare="true"][data-theme="daybreak"] .here {
   padding: 0.4rem 0.7rem;

@@ -33,6 +33,8 @@ type DesignKind = "poster" | "carousel" | "reel";
 /** One promotional post of an official account. */
 export interface DesignPost extends ItemBase {
   collection: "design";
+  /** The address of the post: `/collection/design/<slug>/`. */
+  slug: string;
   kind: DesignKind;
   /** The English caption, cleaned. */
   caption: string;
@@ -65,12 +67,29 @@ export interface DesignCampaign {
   posts: string[];
 }
 
-export interface DesignTopic {
-  tag: string;
-  label: string;
+/** One size of the film behind the title. The page takes the one that fits the display. */
+export interface DesignHeroFilm {
+  /** Library key of the film (H.264, no sound). */
+  src: string;
+  w: number;
+  h: number;
+  dur: number;
+  bytes: number;
+}
+
+/** The film behind the title and its still (made by `scripts/library/design/hero.py`). */
+export interface DesignHero {
+  /** Library key of the still: the first frame of the film. */
+  poster: string;
+  pw: number;
+  ph: number;
+  /** The average colour of the still, shown before it arrives. */
+  c: string;
+  /** Largest first. */
+  films: DesignHeroFilm[];
 }
 
 export interface DesignFile extends CollectionFile<DesignPost> {
   campaigns: DesignCampaign[];
-  topics: DesignTopic[];
+  hero: DesignHero;
 }

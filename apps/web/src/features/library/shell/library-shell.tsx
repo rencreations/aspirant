@@ -35,7 +35,6 @@ export const TAKEDOWN_URL = LEGAL_ROUTES.takedown;
  */
 export function LibraryShell({ slug, count, stat, controls, children }: LibraryShellProps) {
   const meta = getCollection(slug);
-  const next = nextCollection(slug);
   const vars = { "--lib-colour": meta.colour, "--lib-ink": meta.ink } as CSSProperties;
 
   return (
@@ -115,27 +114,38 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
 
       <div className={styles.body}>{children}</div>
 
-      <footer className={`${styles.foot} shell`}>
-        <p className={styles.note}>
-          A fan made archive. Aspirant and Mobile Legends: Bang Bang belong to Moonton, and this
-          site is not affiliated with them. Fan work belongs to the people who made it and is shown
-          with credit. To ask for something to be taken down, use the{" "}
-          <TLink href={TAKEDOWN_URL} className="link">
-            takedown page
-          </TLink>
-          .
-        </p>
-        <TLink
-          href={collectionRoute(next.slug)}
-          transitionLabel={next.name}
-          className={styles.next}
-          style={{ "--pill-colour": next.colour, "--pill-ink": next.ink } as CSSProperties}
-        >
-          <span className="hud-label">Next room, {next.index}</span>
-          <span className={`${styles.nextName} display`}>{next.name}</span>
-          <span className={styles.nextLine}>{next.tagline}</span>
-        </TLink>
-      </footer>
+      <LibraryFooter slug={slug} />
     </ThemeZone>
+  );
+}
+
+/**
+ * The foot of a collection page: what this archive is, how to ask for a removal (the site's own
+ * takedown page) and the next room. A room that draws its own header (the Design room) uses it too.
+ */
+export function LibraryFooter({ slug }: { slug: CollectionSlug }) {
+  const next = nextCollection(slug);
+  return (
+    <footer className={`${styles.foot} shell`}>
+      <p className={styles.note}>
+        A fan made archive. Aspirant and Mobile Legends: Bang Bang belong to Moonton, and this site
+        is not affiliated with them. Fan work belongs to the people who made it and is shown with
+        credit. To ask for something to be taken down, use the{" "}
+        <TLink href={TAKEDOWN_URL} className="link">
+          takedown page
+        </TLink>
+        .
+      </p>
+      <TLink
+        href={collectionRoute(next.slug)}
+        transitionLabel={next.name}
+        className={styles.next}
+        style={{ "--pill-colour": next.colour, "--pill-ink": next.ink } as CSSProperties}
+      >
+        <span className="hud-label">Next room, {next.index}</span>
+        <span className={`${styles.nextName} display`}>{next.name}</span>
+        <span className={styles.nextLine}>{next.tagline}</span>
+      </TLink>
+    </footer>
   );
 }

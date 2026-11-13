@@ -1,0 +1,293 @@
+/* The bar of the Design room: the top of the page that rises over the film. It sits just under the
+   top bar once the page has come up (position: sticky, so nothing above it may clip). */
+.bar {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: var(--z-hud);
+  padding-block: 0.7rem 0.8rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.6rem;
+}
+
+/* ---- search ---- */
+
+.search {
+  display: flex;
+  flex: 0 1 17rem;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  height: 2.5rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text);
+  transition: border-color var(--dur-fast) linear;
+}
+
+.search:focus-within {
+  border-color: var(--lib-colour);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+}
+
+.search input::placeholder {
+  color: var(--text-dim);
+}
+
+/* ---- the choices ---- */
+
+.group,
+.end {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.end {
+  margin-left: auto;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.5rem;
+  padding: 0 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) linear,
+    background-color var(--dur-fast) linear;
+}
+
+.trigger:hover {
+  background: color-mix(in srgb, var(--lib-colour) 8%, transparent);
+}
+
+.trigger[data-set="true"] {
+  border-color: var(--lib-colour);
+  background: color-mix(in srgb, var(--lib-colour) 11%, transparent);
+}
+
+.trigger[data-state="open"] {
+  border-color: var(--lib-colour);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chevron {
+  flex: none;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.chevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+/* The order has an icon, which only a phone shows (there it is the whole button). */
+.sortIcon {
+  display: none;
+  flex: none;
+}
+
+.triggerText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clear {
+  padding: 0.3rem 0.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.clear:hover {
+  color: var(--text);
+}
+
+/* One count, and only when something is narrowed. It is always read out. */
+.count {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.count:not([data-narrowed="true"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- the list that opens under a choice (drawn in a portal, outside the page) ---- */
+
+.menu {
+  z-index: var(--z-popover);
+  min-width: max(12.5rem, var(--radix-popover-trigger-width));
+  max-height: min(24rem, var(--radix-popover-content-available-height));
+  overflow-y: auto;
+  padding: 0.35rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 1rem;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 18px 44px rgb(11 11 14 / 0.2);
+  transform-origin: var(--radix-popover-content-transform-origin);
+}
+
+.menu[data-state="open"] {
+  animation: menu-in 170ms var(--ease-out) both;
+}
+
+.menu[data-state="closed"] {
+  animation: menu-out 120ms ease-in both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+@keyframes menu-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.rows {
+  display: grid;
+  gap: 1px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body-stack);
+  font-size: var(--step--1);
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:hover,
+.row:focus-visible {
+  background: color-mix(in srgb, var(--lib-colour) 11%, transparent);
+  outline: 0;
+}
+
+.row[aria-checked="true"] {
+  font-weight: 700;
+}
+
+.row[aria-checked="true"]::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-right: -0.55rem;
+  border-radius: 50%;
+  background: var(--lib-colour);
+}
+
+.row[aria-checked="true"] > span:first-child {
+  margin-right: auto;
+}
+
+.row:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.rowCount {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+/* ---- a phone: the search on its own line, the choices on the next ---- */
+
+@media (max-width: 40em) {
+  .search {
+    flex: 1 1 100%;
+  }
+
+  .group,
+  .end {
+    gap: 0.35rem;
+  }
+
+  .end {
+    margin-left: 0;
+  }
+
+  .trigger {
+    height: 2.3rem;
+    padding-inline: 0.7rem;
+    gap: 0.4rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* The order is an icon on a phone, so the search and the three choices keep two rows. */
+  .trigger[data-plain="true"] {
+    padding-inline: 0.65rem;
+  }
+
+  .trigger[data-plain="true"] .sortIcon {
+    display: block;
+  }
+
+  .trigger[data-plain="true"] .triggerText,
+  .trigger[data-plain="true"] .chevron {
+    display: none;
+  }
+}

@@ -1,7 +1,8 @@
 "use client";
 
-import { Fragment, useMemo, type CSSProperties, type PointerEvent } from "react";
+import { Fragment, useMemo, type CSSProperties, type MouseEvent, type PointerEvent } from "react";
 
+import { withBase } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 
@@ -15,30 +16,23 @@ import {
   formatDate,
   justify,
   kindLabel,
-  paletteOf,
   pickSize,
-  ratioLabel,
-  sizeLabel,
-  sizeOf,
   spanLabel,
   targetHeight,
-  weightOf,
   type CampaignGroup,
   type YearGroup,
 } from "./model";
-import { PaletteStrip } from "./palette";
+import { designPath } from "./route";
 import type { DesignPost } from "./types";
 import styles from "./wall.module.css";
-
-export type View = "posted" | "details";
 
 const GAP = 10;
 
 interface WallProps {
   years: YearGroup[];
-  view: View;
-  activeId: string;
-  onOpen: (id: string) => void;
+  /** The post that is open over the wall, or "". */
+  activeSlug: string;
+  onOpen: (slug: string) => void;
 }
 
 function dpr(): number {
@@ -46,11 +40,11 @@ function dpr(): number {
 }
 
 /** The posts by campaign and year, along a timeline spine. */
-export function Wall({ years, view, activeId, onOpen }: WallProps) {
+export function Wall({ years, activeSlug, onOpen }: WallProps) {
   const [probeRef, width] = useWidth();
   const firstId = years[0]?.campaigns[0]?.campaign.id;
   return (
-    <div className={styles.wall} data-view={view}>
+    <div className={styles.wall}>
       {years.map((y) => (
         <section key={y.year} className={styles.year} aria-label={`Posts that began in ${y.year}`}>
           <div className={styles.rail} aria-hidden="true">
@@ -64,13 +58,7 @@ export function Wall({ years, view, activeId, onOpen }: WallProps) {
                   {probe ? (
                     <div ref={probeRef} className={styles.probe} aria-hidden="true" />
                   ) : null}
-                  <Campaign
-                    group={g}
-                    view={view}
-                    width={width}
-                    activeId={activeId}
-                    onOpen={onOpen}
-                  />
+                  <Campaign group={g} width={width} activeSlug={activeSlug} onOpen={onOpen} />
                 </Fragment>
               );
             })}
@@ -83,26 +71,21 @@ export function Wall({ years, view, activeId, onOpen }: WallProps) {
 
 function Campaign({
   group,
-  view,
   width,
-  activeId,
+  activeSlug,
   onOpen,
 }: {
   group: CampaignGroup;
-  view: View;
   width: number;
-  activeId: string;
-  onOpen: (id: string) => void;
+  activeSlug: string;
+  onOpen: (slug: string) => void;
 }) {
   const { campaign, posts } = group;
   const [ref, seen] = useSeen<HTMLElement>();
   const colours = useMemo(() => campaignColours(posts), [posts]);
   const rows = useMemo(
-    () =>
-      view === "posted" && width > 0
-        ? justify(posts.map(aspectOf), width, targetHeight(width), GAP)
-        : [],
-    [posts, view, width],
+    () => (width > 0 ? justify(posts.map(aspectOf), width, targetHeight(width), GAP) : []),
+    [posts, width],
   );
 
   return (
@@ -131,35 +114,27 @@ function Campaign({
         </ul>
       </header>
 
-      {view === "posted" ? (
-        <div className={styles.rows} role="list">
-          {rows.map((row, r) => (
-            <div key={r} className={styles.row} role="presentation" style={{ height: row.h }}>
-              {row.items.map((it) => {
-                const post = posts[it.index];
-                if (!post) return null;
-                return (
-                  <Tile
-                    key={post.id}
-                    post={post}
-                    w={it.w}
-                    h={row.h}
-                    index={it.index}
-                    active={activeId === post.id}
-                    onOpen={onOpen}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className={styles.cards} role="list">
-          {posts.map((p, i) => (
-            <Card key={p.id} post={p} index={i} active={activeId === p.id} onOpen={onOpen} />
-          ))}
-        </div>
-      )}
+      <div className={styles.rows} role="list">
+        {rows.map((row, r) => (
+          <div key={r} className={styles.row} role="presentation" style={{ height: row.h }}>
+            {row.items.map((it) => {
+              const post = posts[it.index];
+              if (!post) return null;
+              return (
+                <Tile
+                  key={post.id}
+                  post={post}
+                  w={it.w}
+                  h={row.h}
+                  index={it.index}
+                  active={activeSlug === post.slug}
+                  onOpen={onOpen}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -197,12 +172,12 @@ function Tile({
   h: number;
   index: number;
   active: boolean;
-  onOpen: (id: string) => void;
+  onOpen: (slug: string) => void;
 }) {
   const cover = coverOf(post);
   const key = cover[pickSize(w, h, dpr())];
 
-  const tilt = (e: PointerEvent<HTMLButtonElement>) => {
+  const tilt = (e: PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType !== "mouse") return;
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
@@ -210,8 +185,17 @@ function Tile({
     const y = (e.clientY - r.top) / r.height - 0.5;
     el.style.transform = `perspective(900px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateY(-4px)`;
   };
-  const reset = (e: PointerEvent<HTMLButtonElement>) => {
+  const reset = (e: PointerEvent<HTMLAnchorElement>) => {
     e.currentTarget.style.transform = "";
+  };
+  // A plain press opens the window over the wall; a press with a modifier key, or a middle press,
+  // follows the link to the post's own page.
+  const press = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+      return;
+    e.preventDefault();
+    audio.blip("click");
+    onOpen(post.slug);
   };
 
   return (
@@ -220,18 +204,16 @@ function Tile({
       className={styles.cell}
       style={{ width: w, height: h, "--i": Math.min(index, 10) } as CSSProperties}
     >
-      <button
-        type="button"
+      <a
+        href={withBase(designPath(post.slug))}
         className={styles.tile}
         data-id={post.id}
         data-active={active}
         aria-haspopup="dialog"
         aria-label={`${post.title}. ${kindLabel(post)}. ${formatDate(post.date)}. Open.`}
         style={{ backgroundColor: cover.c }}
-        onClick={() => {
-          audio.blip("click");
-          onOpen(post.id);
-        }}
+        draggable={false}
+        onClick={press}
         onPointerEnter={() => {
           audio.blip("hover");
         }}
@@ -254,89 +236,7 @@ function Tile({
           <span className={styles.capTitle}>{post.title}</span>
           <span className={`${styles.capMeta} hud-label`}>{formatDate(post.date)}</span>
         </span>
-      </button>
+      </a>
     </div>
-  );
-}
-
-/** The designer's view: the piece on a mat tinted by its own colour, its palette and its numbers. */
-function Card({
-  post,
-  index,
-  active,
-  onOpen,
-}: {
-  post: DesignPost;
-  index: number;
-  active: boolean;
-  onOpen: (id: string) => void;
-}) {
-  const cover = coverOf(post);
-  const pal = paletteOf(post);
-  const { w, h } = sizeOf(post);
-  const key = cover[pickSize(Math.min(w, 300), Math.min(h, 300), dpr())];
-  const dims = post.kind === "reel" && post.video ? { w: post.video.w, h: post.video.h } : { w, h };
-  return (
-    <article
-      role="listitem"
-      className={styles.card}
-      data-active={active}
-      style={{ "--i": Math.min(index, 10), "--mat": pal[0]?.[0] ?? cover.c } as CSSProperties}
-    >
-      <button
-        type="button"
-        className={styles.mat}
-        data-id={post.id}
-        aria-haspopup="dialog"
-        aria-label={`${post.title}. Open.`}
-        onClick={() => {
-          audio.blip("click");
-          onOpen(post.id);
-        }}
-        onPointerEnter={() => {
-          audio.blip("hover");
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={libUrl(key)}
-          alt=""
-          width={w}
-          height={h}
-          loading={index < 6 ? "eager" : "lazy"}
-          decoding="async"
-          draggable={false}
-        />
-        <Badges post={post} />
-      </button>
-      <div className={styles.spec}>
-        <PaletteStrip pal={pal} />
-        <h3 className={styles.cardTitle}>{post.title}</h3>
-        <dl className={styles.facts}>
-          <div>
-            <dt className="hud-label">Size</dt>
-            <dd>
-              {dims.w} x {dims.h} px
-            </dd>
-          </div>
-          <div>
-            <dt className="hud-label">Ratio</dt>
-            <dd>{ratioLabel(dims.w, dims.h)}</dd>
-          </div>
-          <div>
-            <dt className="hud-label">Format</dt>
-            <dd>{kindLabel(post)}</dd>
-          </div>
-          <div>
-            <dt className="hud-label">File</dt>
-            <dd>{sizeLabel(weightOf(post))}</dd>
-          </div>
-          <div>
-            <dt className="hud-label">Posted</dt>
-            <dd>{formatDate(post.date)}</dd>
-          </div>
-        </dl>
-      </div>
-    </article>
   );
 }

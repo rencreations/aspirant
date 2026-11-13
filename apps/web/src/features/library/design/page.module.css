@@ -1,3 +1,8 @@
+/* The wall, under the bar. */
+.wall {
+  padding-top: var(--space-l);
+}
+
 .empty {
   display: grid;
   justify-items: start;

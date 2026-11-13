@@ -121,3 +121,15 @@ The owner went to sleep after one long message (kept word for word in `docs/supe
 - **Found.** The east64 home is a fixed stepper (no page scroll), not a long page. The `splash-art` folders hold pictures made by an image generator, which are not official: they are labelled "Made for this site" and shown after the 18 official ones. The comic strips are mostly tall, so "ultra long" means tall. Only twelve cosplay photos exist, all of Fanny and Layla. Scene lost 31 of 617 stills (re-takes, subtitles, lyrics, near black frames).
 - **Decisions** are in OPEN-QUESTIONS 43 to 50. The old Arts room, its scene stills and its Fanart data stay in the repository as sources and in the bucket; the site no longer reads them.
 - **Machine notes.** `distDir` (`NEXT_DIST_DIR`) is also where `next build` writes the static export, not `out/`: a build with a private dist dir leaves `out/` stale. A Windows reboot in the middle of a long session stops every dev server and background run.
+
+## 2026-11-13: the Design room, a new first screen and an address for every post
+
+The owner asked for a simpler, more modern first screen for `/collection/design` with the design team's recording (`design.mov`) looping behind the title, a smooth join to the wall, a top bar that is bare over the film and takes its plate as the search and the filters dock, simple filters with dropdowns that close on a press outside, the six reels that are videos moved to Video, Others (one also to Fanart), one button back to the shelf instead of the room switcher, no detailed figures (just "N contents"), and every post at its own address. Request word for word in `docs/superpowers/specs/2026-11-13-design-room-request.md`; calls and how it works in `...-design-room-redesign.md` and `docs/design/collection-rooms.md`.
+
+- The recording had subtitles at y 970 and below, and at y 915 in one scene: found by a scan of 312 frames, not by eye, and the first crop (y 940) was wrong for that scene. The burned-in logo was cropped out as well (it would have been half cut and under the menu button).
+- `films/reuse.py` built Video, Others' promo reels from `design.json`, so taking posts out of Design would have dropped them from Video. They are written to `moved-reels.json` now and the Video data came out identical.
+- The search index counted the 18 campaigns of Design as items (111 instead of 93, results that opened nothing): fixed.
+- The library's outside-press callback for a popover comes after the click, so a click on a post under an open list opened the post. The room guards the press itself.
+- The film played from the streamed address while the whole file downloaded beside it (two requests). The film now takes the in-memory copy once it has arrived.
+- Posts are windows at `/collection/design/<slug>/`, the way Lore's codex works. Old `?i=` links forward. The details view of the wall and the page-level view switch are gone (the window still has Details).
+- Not checked: Firefox, Safari, a real phone, the Cloudflare cache of the data files after deploy.

@@ -30,24 +30,14 @@ export function coverOf(post: DesignPost): LibImage {
   return img;
 }
 
-export function paletteOf(post: DesignPost): Swatch[] {
+function paletteOf(post: DesignPost): Swatch[] {
   return (post.kind === "reel" ? post.video?.pal : post.slides?.[0]?.pal) ?? [];
 }
 
-/** Width and height of the piece as posted (the cover of a reel, the first slide otherwise). */
-export function sizeOf(post: DesignPost): { w: number; h: number } {
-  const c = coverOf(post);
-  return { w: c.w, h: c.h };
-}
-
+/** Width over height of the piece as posted (the cover of a reel, the first slide otherwise). */
 export function aspectOf(post: DesignPost): number {
-  const { w, h } = sizeOf(post);
-  return w / h;
-}
-
-export function weightOf(post: DesignPost): number {
-  if (post.kind === "reel") return post.video?.kb ?? 0;
-  return (post.slides ?? []).reduce((sum, s) => sum + s.kb, 0);
+  const c = coverOf(post);
+  return c.w / c.h;
 }
 
 const COMMON_RATIOS: ReadonlyArray<[number, number]> = [
@@ -130,24 +120,16 @@ export function spanLabel(from: string, to: string): string {
 export interface Filters {
   q: string;
   pair: string;
-  who: string;
   year: string;
   fmt: string;
-  canon: string;
-  topic: string;
 }
 
-export const NO_FILTERS: Filters = {
-  q: "",
-  pair: "",
-  who: "",
-  year: "",
-  fmt: "",
-  canon: "",
-  topic: "",
-};
+export const NO_FILTERS: Filters = { q: "", pair: "", year: "", fmt: "" };
 
 export type FacetKey = Exclude<keyof Filters, "q">;
+
+/** The three choices of the bar, in the order it shows them. */
+export const FACETS: readonly FacetKey[] = ["pair", "year", "fmt"];
 
 /** Words a search looks in: the title, the caption, the campaign, the tags and the account. */
 export function haystack(post: DesignPost, campaign: DesignCampaign | undefined): string {
@@ -170,22 +152,32 @@ export function matchesQuery(text: string, q: string): boolean {
 }
 
 /**
- * Does the post pass the filters? `skip` leaves one facet out, so the counts of that facet's
- * chips show what each choice would give.
+ * Does the post pass the filters? `skip` leaves one facet out, so the options of that facet show
+ * what each choice would give.
  */
 export function passes(post: DesignPost, text: string, f: Filters, skip?: FacetKey | "q"): boolean {
   if (skip !== "q" && f.q.trim() && !matchesQuery(text, f.q)) return false;
   if (skip !== "pair" && f.pair && !pairsOf(post).includes(f.pair as PairId)) return false;
-  if (skip !== "who" && f.who && !post.chars.includes(f.who as Slug)) return false;
   if (skip !== "year" && f.year && yearOf(post.date) !== f.year) return false;
   if (skip !== "fmt" && f.fmt && post.kind !== f.fmt) return false;
-  if (skip !== "canon" && f.canon && post.canon !== f.canon) return false;
-  if (skip !== "topic" && f.topic && !post.tags.includes(f.topic)) return false;
   return true;
 }
 
+/** How many of the three choices are set. */
 export function activeCount(f: Filters): number {
-  return (Object.keys(f) as Array<keyof Filters>).filter((k) => k !== "q" && f[k]).length;
+  return FACETS.filter((k) => f[k]).length;
+}
+
+/** The choices of a post for one facet, to count the options. */
+export function valuesOf(post: DesignPost, key: FacetKey): string[] {
+  switch (key) {
+    case "pair":
+      return pairsOf(post);
+    case "year":
+      return [yearOf(post.date)];
+    case "fmt":
+      return [post.kind];
+  }
 }
 
 // ---------------------------------------------------------------------------------------------

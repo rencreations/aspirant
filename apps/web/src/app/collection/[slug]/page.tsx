@@ -7,10 +7,10 @@ import { COLLECTION_SLUGS, isCollectionSlug } from "@/features/library/types";
 
 export const dynamicParams = false;
 
-const OWN_ROUTES: ReadonlySet<string> = new Set(["arts", "video", "animation", "lore"]);
+const OWN_ROUTES: ReadonlySet<string> = new Set(["arts", "video", "animation", "lore", "design"]);
 
 export function generateStaticParams() {
-  // Arts, Video, Animation and Lore have their own routes (`app/collection/arts/`, `.../video/`, `.../animation/`, `.../lore/`).
+  // Arts, Video, Animation, Lore and Design have their own routes (`app/collection/arts/`, `.../video/`, `.../animation/`, `.../lore/`, `.../design/`).
   return COLLECTION_SLUGS.filter((slug) => !OWN_ROUTES.has(slug)).map((slug) => ({ slug }));
 }
 
