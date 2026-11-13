@@ -169,6 +169,15 @@ The 93 promotional posts and graphics of the official accounts, by campaign and 
 - **Search.** `build_index.py` reads only the `items` of `design.json` (it used to count the 18 campaigns as items too, which opened nothing), and gives each entry its slug (`s`).
 - **Tests.** `e2e/library-design.spec.ts` (39 runs over three viewports) and unit tests in `design/` (`model`, `route`, `hero-media`).
 
+## Comic (`/collection/comic`)
+
+The two official webtoons and the 21 fan comics. Phase 1 of the redesign of 13 Nov 2026 is done (the pages and the reader); the room itself, a shelf in `LibraryShell`, is still the old one. Plan: `docs/superpowers/specs/2026-11-13-comic-room-redesign.md`.
+
+- **Pages.** `app/collection/comic/page.tsx` draws the shelf and `app/collection/comic/[comic]/page.tsx` one comic (23 static pages, the metadata from the data file, a `noscript` with the title and description). The reader chunk is `reader-page.tsx`, loaded through `reader-route.tsx`. The loading list of a comic's page (`readerItems` in `preload.ts`, reached by `comic/<slug>` in `libraryPageItems`) waits for the data, the chunk and the first two pages.
+- **Chrome.** The top bar is locked to `storm` (`useNavLock`: `theme`, `fade`, `away`). The control bar (`[data-comic-bar]`, fixed under the top bar) and the top bar are away while `scrollTop` is over 16 px and come back under 4 px; the scroller starts with a spacer (`.top`) the height of both, and the first page is scroll 0. The small button (`.fold`) appears where the top bar's menu button was, and opens a Radix `Popover`.
+- **Pages of the strip.** Fit width only; `--zoom` multiplies the width (`.page`), and the zoom is held on the page in view. A slice of a tall page is positioned as before. The page in view is still the last whose top passed a line a little below the top; the address follows it (`?p=`, `replaceState`, 450 ms after the visitor stops) and so does the saved place (`aspirants:library:comic:<id>`).
+- **Tests.** `e2e/library-comic.spec.ts` (9 tests over three viewports), `route.test.ts`.
+
 ## Arts, Design (`/collection/arts/design`)
 
 The 22 design sheets of the characters, their weapons and mecha, the droids and the world (`arts-design.json`; kinds Characters, Mecha, Weapons, Droids, Other). The owner said it holds the fewest pictures and mostly character sheets, so it is a gallery, not a flow: one sheet to a section in a calm vertical scroll, big and still.

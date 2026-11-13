@@ -133,3 +133,12 @@ The owner asked for a simpler, more modern first screen for `/collection/design`
 - The film played from the streamed address while the whole file downloaded beside it (two requests). The film now takes the in-memory copy once it has arrived.
 - Posts are windows at `/collection/design/<slug>/`, the way Lore's codex works. Old `?i=` links forward. The details view of the wall and the page-level view switch are gone (the window still has Details).
 - Not checked: Firefox, Safari, a real phone, the Cloudflare cache of the data files after deploy.
+
+## 2026-11-13 and 14: the Comic room, phase 1 (a page for every comic, a quieter reader)
+
+The owner asked for a redesign of `/collection/comic` (request word for word in `docs/superpowers/specs/2026-11-13-comic-room-request.md`). It is a large piece of work, so it is done in phases (`...-comic-room-redesign.md`). Phase 1 is the part that was fully specified and checkable: each comic at its own address, and the reader.
+
+- A comic is a page (`/collection/comic/<slug>/`), not a state of the room. Slugs come from the titles (all 23 are different).
+- The reader's top bar was light on a dark page because it took the colour of the room under the old overlay. It is locked dark now.
+- The first version opened already scrolled by the height of the spacer, so the bars folded away the moment the page opened. The first page is scroll 0 now.
+- Not done yet: the first screen with the big animated COMIC, the two official sections, the fan gallery, the new foot, and the transitions (see the spec).

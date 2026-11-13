@@ -12,6 +12,7 @@
   background: var(--panel);
   color: var(--text);
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   clip-path: polygon(
     0 0,
@@ -242,6 +243,7 @@
   color: var(--text);
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .fanBook {

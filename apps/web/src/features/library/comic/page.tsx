@@ -1,38 +1,40 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
+
+import { withBase } from "@/lib/asset";
 
 import { characterOptions, Chips } from "../shell/controls";
 import { useLibraryData } from "../data";
 import { LibraryShell } from "../shell/library-shell";
 import { useQueryState } from "../use-query-state";
-import {
-  parsePage,
-  parseSnapshot,
-  progressSnapshot,
-  readProgress,
-  subscribeProgress,
-} from "./progress";
-import { Reader } from "./reader";
+import { comicPath } from "./route";
+import { parseSnapshot, progressSnapshot, subscribeProgress } from "./progress";
 import { FanCard, OfficialCard } from "./shelf";
 import styles from "./page.module.css";
 import type { ComicItem } from "./types";
 
 /**
  * The comic room: a shelf (the two official webtoons, then the fan comics under a plain "not
- * canon" heading) and a reader that opens over it. `?i=<comic id>&p=<page>` opens the reader.
+ * canon" heading). Each comic is a page of its own, `/collection/comic/<slug>/`.
  */
 export default function ComicPage() {
   const { data } = useLibraryData<ComicItem>("comic");
-  const [openId, setOpenId] = useQueryState("i");
-  const [pageParam, setPageParam] = useQueryState("p");
   const [who, setWho] = useQueryState("who");
-  const openerRef = useRef<HTMLElement | null>(null);
 
   const comics = useMemo(() => data?.items ?? [], [data]);
+
+  // An old link, `/collection/comic/?i=<id>&p=<page>`, goes to the page of the comic.
+  useEffect(() => {
+    if (!data) return;
+    const params = new URLSearchParams(window.location.search);
+    const found = data.items.find((c) => c.id === params.get("i"));
+    if (!found) return;
+    const p = params.get("p");
+    window.location.replace(withBase(comicPath(found.slug)) + (p ? `?p=${p}` : ""));
+  }, [data]);
   const official = useMemo(() => comics.filter((c) => c.kind === "official"), [comics]);
   const fan = useMemo(() => comics.filter((c) => c.kind === "fan"), [comics]);
-  const open = comics.find((c) => c.id === openId) ?? null;
 
   // The place of every comic. It follows the saves made by the reader, and other tabs.
   const ids = useMemo(() => comics.map((c) => c.id), [comics]);
@@ -43,25 +45,6 @@ export default function ComicPage() {
   );
   const saved = useMemo(() => parseSnapshot(snapshot), [snapshot]);
 
-  const openComic = useCallback(
-    (id: string) => {
-      if (!openerRef.current && document.activeElement instanceof HTMLElement) {
-        openerRef.current = document.activeElement;
-      }
-      setPageParam("");
-      setOpenId(id);
-    },
-    [setOpenId, setPageParam],
-  );
-
-  const closeReader = useCallback(() => {
-    setOpenId("");
-    setPageParam("");
-    const opener = openerRef.current;
-    openerRef.current = null;
-    if (opener?.isConnected) requestAnimationFrame(() => opener.focus({ preventScroll: true }));
-  }, [setOpenId, setPageParam]);
-
   const counts = useMemo(() => {
     const out: Record<string, number> = {};
     for (const c of fan) for (const w of c.chars) out[w] = (out[w] ?? 0) + 1;
@@ -70,9 +53,6 @@ export default function ComicPage() {
   const shownFan = who ? fan.filter((c) => c.chars.some((w) => w === who)) : fan;
   const options = characterOptions(counts).filter((o) => (o.count ?? 0) > 0);
 
-  const index = open ? comics.findIndex((c) => c.id === open.id) : -1;
-  const prev = index > 0 ? (comics[index - 1] ?? null) : null;
-  const next = index >= 0 && index < comics.length - 1 ? (comics[index + 1] ?? null) : null;
   const totalPages = comics.reduce((n, c) => n + c.pages.length, 0);
 
   return (
@@ -95,13 +75,7 @@ export default function ComicPage() {
           </header>
           <div className={styles.officialGrid}>
             {official.map((c, i) => (
-              <OfficialCard
-                key={c.id}
-                comic={c}
-                index={i}
-                resume={saved[c.id] ?? null}
-                onOpen={openComic}
-              />
+              <OfficialCard key={c.id} comic={c} index={i} resume={saved[c.id] ?? null} />
             ))}
           </div>
         </section>
@@ -133,32 +107,11 @@ export default function ComicPage() {
           </p>
           <div className={styles.fanGrid}>
             {shownFan.map((c, i) => (
-              <FanCard
-                key={c.id}
-                comic={c}
-                index={i}
-                resume={saved[c.id] ?? null}
-                onOpen={openComic}
-              />
+              <FanCard key={c.id} comic={c} index={i} resume={saved[c.id] ?? null} />
             ))}
           </div>
         </section>
       </div>
-
-      {open ? (
-        <Reader
-          key={open.id}
-          comic={open}
-          prev={prev}
-          next={next}
-          startPage={parsePage(pageParam) ?? readProgress(open.id)}
-          onClose={closeReader}
-          onOpenComic={openComic}
-          onPage={(n) => {
-            setPageParam(String(n));
-          }}
-        />
-      ) : null}
     </LibraryShell>
   );
 }

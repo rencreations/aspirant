@@ -15,13 +15,12 @@ import { CHARACTER_SLUGS } from "@/lib/slugs";
 
 export const dynamic = "force-static";
 
-/** The addresses of the posts of the design room, from its data file. */
-function designSlugs(): string[] {
-  const file = path.join(process.cwd(), "public", "data", "library", "design.json");
+/** The addresses of the items of a room that gives each one its own page, from its data file. */
+function roomSlugs(room: "design" | "comic"): string[] {
+  const file = path.join(process.cwd(), "public", "data", "library", `${room}.json`);
   if (!fs.existsSync(file)) return [];
-  return (
-    JSON.parse(fs.readFileSync(file, "utf8")) as { items: Array<{ slug: string }> }
-  ).items.map((p) => p.slug);
+  const data = JSON.parse(fs.readFileSync(file, "utf8")) as { items: Array<{ slug: string }> };
+  return data.items.map((p) => p.slug);
 }
 
 const STORY_PAGES = [
@@ -75,10 +74,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     })),
     // Every post of the design room has its own page.
-    ...designSlugs().map((slug) => ({
+    ...roomSlugs("design").map((slug) => ({
       url: absolute(collectionRoute(`design/${slug}`)),
       lastModified,
       priority: 0.4,
+    })),
+    // Every comic has its own page.
+    ...roomSlugs("comic").map((slug) => ({
+      url: absolute(collectionRoute(`comic/${slug}`)),
+      lastModified,
+      priority: 0.5,
     })),
     // The story is read one chapter to a page, and ends on a page of its own.
     ...chapters.map((chapter) => ({

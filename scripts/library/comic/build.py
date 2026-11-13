@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 import time
 from multiprocessing import Pool
@@ -359,6 +360,14 @@ def main() -> None:
     cache.write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
 
     all_items = items["official"] + items["fan"]
+    # Every comic has its own address, /collection/comic/<slug>/, from its title.
+    taken: set[str] = set()
+    for it in all_items:
+        slug = common.slugify(re.sub(r"['’]", "", it["title"]))
+        if slug in taken:
+            raise SystemExit(f"{it['id']}: the title gives the slug {slug!r} twice")
+        taken.add(slug)
+        it["slug"] = slug
     common.write_json("comic", {"v": 1, "slug": "comic", "items": all_items})
 
     ignored = {}

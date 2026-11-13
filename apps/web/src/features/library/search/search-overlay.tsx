@@ -13,6 +13,7 @@ import { COLLECTIONS, getCollection } from "../registry";
 import type { CollectionSlug, SearchEntry } from "../types";
 import { countByCollection, searchEntries } from "./search-match";
 import { artsRoomHref } from "../arts/core/routes";
+import { comicPath } from "../comic/route";
 import { openPost } from "../design/route";
 import { videoRoomOf, videoRoute } from "../video/links";
 import styles from "./search-overlay.module.css";
@@ -20,6 +21,11 @@ import { useLibrarySearch } from "./search-store";
 
 /** Open an entry: change the query of the room we are in, or travel to the room. */
 function go(entry: SearchEntry, push: (href: Route, options: { label: string }) => void) {
+  // A comic is a page of its own: /collection/comic/<slug>/.
+  if (entry.c === "comic" && entry.s) {
+    push(comicPath(entry.s) as Route, { label: getCollection(entry.c).name });
+    return;
+  }
   // A post of Design has its own address: it opens as a window over the room.
   if (entry.c === "design" && entry.s) {
     if (window.location.pathname.startsWith("/collection/design")) {

@@ -127,8 +127,8 @@ def main() -> None:
                 if slug == "arts":
                     # The room says where the picture opens (`/collection/arts/<room>?i=<id>`).
                     e["r"] = name.removeprefix("arts-")
-                if slug == "design" and isinstance(item.get("slug"), str):
-                    # A post of Design has its own address, `/collection/design/<slug>/`.
+                if slug in ("design", "comic") and isinstance(item.get("slug"), str):
+                    # A post of Design and a comic have their own address, `/collection/<room>/<slug>/`.
                     e["s"] = item["slug"]
                 t = thumb_key(item)
                 if t:

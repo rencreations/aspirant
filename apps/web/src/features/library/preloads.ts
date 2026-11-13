@@ -14,7 +14,7 @@ import { items as videoFilmsItems } from "./video/films/preload";
 import { items as videoOthersItems } from "./video/others/preload";
 import { items as musicItems } from "./music/preload";
 import { items as voicelinesItems } from "./voicelines/preload";
-import { items as comicItems } from "./comic/preload";
+import { items as comicItems, readerItems as comicReaderItems } from "./comic/preload";
 import { items as loreItems } from "./lore/preload";
 import { items as designItems } from "./design/preload";
 import {
@@ -70,6 +70,7 @@ export function libraryPageItems(path: string): PreloadItem[] {
   const [slug = "", room] = path.replace(/^\/+|\/+$/gu, "").split("/");
   if (slug === "animation" && room) return animationCharacterItems(room);
   if (slug === "design" && room) return designItems(room);
+  if (slug === "comic" && room) return comicReaderItems(room);
   if (slug === "video" && room === "films") return videoFilmsItems();
   if (slug === "video" && room === "others") return videoOthersItems();
   if (slug === "arts") return artsRoomItems(path);

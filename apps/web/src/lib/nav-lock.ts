@@ -13,6 +13,16 @@ export interface NavLock {
   readonly theme: "storm" | "daybreak" | null;
   readonly bare: boolean;
   readonly fade: boolean;
+  /**
+   * The bar has folded away (the comic reader, once the visitor has scrolled off the very top): it
+   * shrinks toward the top left and fades, and is out of reach until it comes back.
+   */
+  readonly away: boolean;
 }
 
-export const useNavLock = create<NavLock>()(() => ({ theme: null, bare: false, fade: false }));
+export const useNavLock = create<NavLock>()(() => ({
+  theme: null,
+  bare: false,
+  fade: false,
+  away: false,
+}));

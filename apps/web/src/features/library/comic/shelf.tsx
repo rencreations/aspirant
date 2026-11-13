@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
+import { TLink } from "@/components/transition/t-link";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 
 import { CanonBadge, CreditLine } from "../shell/credit";
+import { comicPath } from "./route";
 import styles from "./shelf.module.css";
 import type { ComicItem } from "./types";
 
@@ -39,7 +41,6 @@ interface CardProps {
   index: number;
   /** The page the visitor reached last, when they have started it. */
   resume: number | null;
-  onOpen: (id: string) => void;
 }
 
 function pagesLabel(comic: ComicItem): string {
@@ -49,20 +50,17 @@ function pagesLabel(comic: ComicItem): string {
 }
 
 /** One of the two official webtoons: a book that tilts open, a strip of its first page that runs on hover. */
-export function OfficialCard({ comic, index, resume, onOpen }: CardProps) {
+export function OfficialCard({ comic, index, resume }: CardProps) {
   const first = comic.pages[0];
   const [hot, setHot] = useState(false);
   const showResume = resume !== null && resume > 1;
   return (
-    <button
-      type="button"
+    <TLink
+      href={comicPath(comic.slug) as never}
+      transitionLabel={comic.title}
       className={styles.official}
       style={{ "--i": index } as CSSProperties}
       aria-label={`Read ${comic.title}. ${pagesLabel(comic)}${comic.transcript ? ", with a transcript" : ""}${showResume ? `. Resume at page ${resume}` : ""}`}
-      onClick={() => {
-        audio.blip("click");
-        onOpen(comic.id);
-      }}
       onPointerEnter={() => {
         audio.blip("hover");
         setHot(true);
@@ -135,24 +133,21 @@ export function OfficialCard({ comic, index, resume, onOpen }: CardProps) {
           />
         </span>
       ) : null}
-    </button>
+    </TLink>
   );
 }
 
 /** A fan comic: the cover leans open on hover, and the credit is always under it. */
-export function FanCard({ comic, index, resume, onOpen }: CardProps) {
+export function FanCard({ comic, index, resume }: CardProps) {
   const [hot, setHot] = useState(false);
   const showResume = resume !== null && resume > 1;
   return (
     <article className={styles.fan} style={{ "--i": index } as CSSProperties}>
-      <button
-        type="button"
+      <TLink
+        href={comicPath(comic.slug) as never}
+        transitionLabel={comic.title}
         className={styles.fanOpen}
         aria-label={`Read ${comic.title}, a fan comic. ${pagesLabel(comic)}${showResume ? `. Resume at page ${resume}` : ""}`}
-        onClick={() => {
-          audio.blip("click");
-          onOpen(comic.id);
-        }}
         onPointerEnter={() => {
           audio.blip("hover");
           setHot(true);
@@ -196,7 +191,7 @@ export function FanCard({ comic, index, resume, onOpen }: CardProps) {
         {showResume ? (
           <span className={`${styles.resume} hud-label`}>Resume at page {resume}</span>
         ) : null}
-      </button>
+      </TLink>
       <div className={styles.fanFoot}>
         <CreditLine credit={comic.credit} canon={comic.canon} />
       </div>

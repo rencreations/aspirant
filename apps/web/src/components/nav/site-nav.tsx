@@ -148,6 +148,8 @@ export function SiteNav() {
       data-lock={lock.theme ? "true" : undefined}
       data-bare={lock.bare ? "true" : undefined}
       data-fade={lock.fade ? "true" : undefined}
+      data-away={lock.away ? "true" : undefined}
+      inert={lock.away}
       data-overlay="nav"
     >
       <Dialog.Root

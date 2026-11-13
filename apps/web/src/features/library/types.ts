@@ -119,7 +119,7 @@ export interface SearchEntry {
   w: Slug[];
   /** The room of an Arts picture (`splash`, `scene`, `fanart`, `cosplay` ...): where `?i=<id>` opens it. */
   r?: string;
-  /** The slug of a Design post: its address is `/collection/design/<slug>/`. */
+  /** The slug of a Design post or a comic: its address is `/collection/design/<slug>/` or `/collection/comic/<slug>/`. */
   s?: string;
   /** Kind or tags, joined, lower case, for matching. */
   k: string;

@@ -173,10 +173,11 @@ test("a post opens at its own address, moves by key, and Escape returns to the w
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(new URL(page.url()).pathname).toBe("/collection/design/");
-  // The wall is where it was, and the focus is back on the tile that opened it.
-  expect(Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - before)).toBeLessThan(
-    4,
-  );
+  // The wall is where it was (the browser restores it a moment after the entry changes), and the
+  // focus is back on the tile that opened it.
+  await expect
+    .poll(async () => Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - before))
+    .toBeLessThan(4);
   await expect(tile).toBeFocused();
   expect(errors).toEqual([]);
 });

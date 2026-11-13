@@ -7,7 +7,14 @@ import { COLLECTION_SLUGS, isCollectionSlug } from "@/features/library/types";
 
 export const dynamicParams = false;
 
-const OWN_ROUTES: ReadonlySet<string> = new Set(["arts", "video", "animation", "lore", "design"]);
+const OWN_ROUTES: ReadonlySet<string> = new Set([
+  "arts",
+  "video",
+  "animation",
+  "lore",
+  "design",
+  "comic",
+]);
 
 export function generateStaticParams() {
   // Arts, Video, Animation, Lore and Design have their own routes (`app/collection/arts/`, `.../video/`, `.../animation/`, `.../lore/`, `.../design/`).

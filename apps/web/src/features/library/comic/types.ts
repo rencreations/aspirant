@@ -47,6 +47,8 @@ export interface TranscriptBlock {
 
 export interface ComicItem extends ItemBase {
   collection: "comic";
+  /** The address of the comic: `/collection/comic/<slug>/`. */
+  slug: string;
   kind: "official" | "fan";
   description: string;
   note?: string;
