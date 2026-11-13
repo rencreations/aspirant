@@ -77,10 +77,17 @@ def _date(record: dict[str, Any]) -> str | None:
     return c.get("date") or record.get("date")
 
 
+def _moved_reels() -> list[dict[str, Any]]:
+    """The six reels that were posts of Design until 13 Nov 2026 (design/build.py writes them here)."""
+    path = Path(__file__).resolve().parents[1] / "design" / "moved-reels.json"
+    return json.loads(path.read_text(encoding="utf-8"))["items"] if path.exists() else []
+
+
 def promo_reels() -> list[dict[str, Any]]:
-    """The eight reels of the promotional folder: Design carries them as posts, with the caption."""
+    """The eight reels of the promotional folder: two are still posts of Design, six moved out of it."""
     out: list[dict[str, Any]] = []
-    for item in _load("design")["items"]:
+    reels = sorted([*_load("design")["items"], *_moved_reels()], key=lambda it: (it["date"], it["id"]))
+    for item in reels:
         v = item.get("video") or {}
         if not str(v.get("src", "")).endswith(".mp4"):
             continue

@@ -16,6 +16,9 @@ Writes into the mirror (library/v1/design/<post id>/...):
     poster/{t,p,f}.webp           the poster for the player, when the cover is not the video's shape
     v.mp4                         the reel, H.264 High yuv420p, AAC, faststart
 and apps/web/public/data/library/design.json.
+The reels in posts.TO_VIDEO are built the same way but written to moved-reels.json (read by
+films/reuse.py) and are not part of design.json. The film of the hero comes from hero.py
+(hero.meta.json).
 
 The English captions, dates and accounts come from media/_captions/captions.json through
 scripts/library/captions.py (joined on `ig:<shortcode>`, never on the stale paths).
@@ -52,6 +55,9 @@ ROOTS: list[tuple[str, str | None]] = [
 ]
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic"}
 WORK = common.WORK / "design"
+HERE = Path(__file__).resolve().parent
+MOVED_FILE = HERE / "moved-reels.json"
+HERO_META = HERE / "hero.meta.json"
 FORCE = "--force" in sys.argv
 Q_FULL = 88
 
@@ -403,6 +409,28 @@ def main() -> None:
 
     items.sort(key=lambda it: (it["date"], it["id"]))
 
+    # ---- reels that belong to Video, not Design --------------------------------------------
+    # They were built above exactly as before (so Video, Others keeps the same record and the same
+    # keys). They are written to moved-reels.json for films/reuse.py and are not part of this room.
+    moved = [it for it in items if it["id"].removeprefix("design-") in P.TO_VIDEO]
+    if len(moved) != len(P.TO_VIDEO):
+        raise SystemExit(f"TO_VIDEO names {len(P.TO_VIDEO)} posts, found {len(moved)}")
+    items = [it for it in items if it["id"].removeprefix("design-") not in P.TO_VIDEO]
+    MOVED_FILE.write_text(
+        json.dumps({"v": 1, "note": "Reels moved out of Design. Written by design/build.py, read by films/reuse.py.",
+                    "items": moved}, ensure_ascii=False, indent=1) + "\n",
+        encoding="utf-8",
+    )
+
+    # ---- one address for each post: /collection/design/<slug>/ ------------------------------
+    taken: set[str] = set()
+    for it in items:
+        slug = common.slugify(re.sub(r"['’]", "", it["title"]))
+        if not slug or slug in taken:
+            raise SystemExit(f"{it['id']}: the title gives no usable slug ({slug!r})")
+        taken.add(slug)
+        it["slug"] = slug
+
     # ---- campaigns -------------------------------------------------------------------------
     by_campaign: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for it in items:
@@ -425,13 +453,10 @@ def main() -> None:
         })
     campaigns.sort(key=lambda c: (c["from"], c["id"]))
 
-    topics = [{"tag": t, "label": label} for t, label in P.TOPICS]
-    used_tags = {t for it in items for t in it["tags"]}
-    for t in topics:
-        if t["tag"] not in used_tags:
-            raise SystemExit(f"topic {t['tag']} is not used by any post")
-
-    data = {"v": 1, "slug": "design", "items": items, "campaigns": campaigns, "topics": topics}
+    data: dict[str, Any] = {"v": 1, "slug": "design", "items": items, "campaigns": campaigns}
+    # The film of the hero (made by hero.py, which writes hero.meta.json).
+    if HERO_META.exists():
+        data["hero"] = json.loads(HERO_META.read_text(encoding="utf-8"))
     common.write_json("design", data)
 
     n_img = sum(len(it.get("slides", [])) for it in items)
@@ -440,6 +465,7 @@ def main() -> None:
         kinds[it["kind"]] += 1
     mirror_bytes = sum(p.stat().st_size for p in (common.LIB_ROOT / "design").rglob("*") if p.is_file())
     print(f"posts {len(items)} {dict(kinds)}; image slides {n_img}; reels {kinds['reel']}")
+    print(f"moved to Video: {len(moved)} reels ({', '.join(it['slug'] if 'slug' in it else it['id'] for it in moved)})")
     print(f"duplicates: {dup_images} repeated images, {len(merged_into)} merged posts")
     print(f"campaigns {len(campaigns)}; fan posts {sum(1 for it in items if it['canon'] == 'fan')}")
     print(f"mirror design/: {common.human(mirror_bytes)}")

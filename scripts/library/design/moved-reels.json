@@ -1,0 +1,298 @@
+{
+  "v": 1,
+  "note": "Reels moved out of Design. Written by design/build.py, read by films/reuse.py.",
+  "items": [
+    {
+      "id": "design-DdyIX9wEk_7",
+      "title": "Pick your girl",
+      "collection": "design",
+      "chars": [
+        "fanny",
+        "layla",
+        "ruby",
+        "angela",
+        "lesley",
+        "change",
+        "guinevere",
+        "vexana",
+        "obsidia",
+        "selena"
+      ],
+      "pair": null,
+      "canon": "official",
+      "tags": ["poll", "community"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/DdyIX9wEk_7/",
+        "date": "2026-09-27"
+      },
+      "caption": "Pick your girl!",
+      "date": "2026-09-27",
+      "account": "@mobilelegendsgame",
+      "campaign": "enders-arrive",
+      "url": "https://www.instagram.com/p/DdyIX9wEk_7/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-DdyIX9wEk_7/v.mp4",
+        "poster": "design/design-DdyIX9wEk_7/poster/p.webp",
+        "cover": {
+          "t": "design/design-DdyIX9wEk_7/cover/t.webp",
+          "p": "design/design-DdyIX9wEk_7/cover/p.webp",
+          "f": "design/design-DdyIX9wEk_7/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#862e45"
+        },
+        "pal": [
+          ["#260c15", 27],
+          ["#7a1434", 20],
+          ["#4b1024", 19],
+          ["#a51d48", 19],
+          ["#cd3856", 15]
+        ],
+        "dur": 44.8,
+        "w": 1920,
+        "h": 1080,
+        "kb": 42787
+      },
+      "thumb": "design/design-DdyIX9wEk_7/cover/t.webp"
+    },
+    {
+      "id": "design-Dd0tPihiEpW",
+      "title": "What is Selena up to in class?",
+      "collection": "design",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["short"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Dd0tPihiEpW/",
+        "date": "2026-09-28"
+      },
+      "caption": "What's Selena up to in class?",
+      "date": "2026-09-28",
+      "account": "@mobilelegendsgame",
+      "campaign": "enders-arrive",
+      "url": "https://www.instagram.com/p/Dd0tPihiEpW/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-Dd0tPihiEpW/v.mp4",
+        "poster": "design/design-Dd0tPihiEpW/cover/p.webp",
+        "cover": {
+          "t": "design/design-Dd0tPihiEpW/cover/t.webp",
+          "p": "design/design-Dd0tPihiEpW/cover/p.webp",
+          "f": "design/design-Dd0tPihiEpW/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#b1a08c"
+        },
+        "pal": [
+          ["#cbc1ab", 24],
+          ["#758f7a", 22],
+          ["#bb977e", 22],
+          ["#eddecf", 21],
+          ["#f0c89d", 12]
+        ],
+        "dur": 30.5,
+        "w": 1080,
+        "h": 1920,
+        "kb": 12564
+      },
+      "thumb": "design/design-Dd0tPihiEpW/cover/t.webp"
+    },
+    {
+      "id": "design-Dd6LYQYDdbi",
+      "title": "Obsidia against Selena",
+      "collection": "design",
+      "chars": ["obsidia", "selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["anniversary", "launch", "short"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Dd6LYQYDdbi/",
+        "date": "2026-09-30"
+      },
+      "caption": "A showdown has broken out between Obsidia \"Imperatrix Arashi\" and Selena \"Silverbolt Raiko\"?! Whose side are you on?\nThe all-new Aspirants skins launch on 10/09!",
+      "date": "2026-09-30",
+      "account": "@mobilelegendsgame",
+      "campaign": "enders-arrive",
+      "url": "https://www.instagram.com/p/Dd6LYQYDdbi/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-Dd6LYQYDdbi/v.mp4",
+        "poster": "design/design-Dd6LYQYDdbi/cover/p.webp",
+        "cover": {
+          "t": "design/design-Dd6LYQYDdbi/cover/t.webp",
+          "p": "design/design-Dd6LYQYDdbi/cover/p.webp",
+          "f": "design/design-Dd6LYQYDdbi/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#c5bdc5"
+        },
+        "pal": [
+          ["#e0e6ed", 54],
+          ["#c0cee0", 20],
+          ["#c69f99", 10],
+          ["#ebcbb4", 10],
+          ["#8e848f", 7]
+        ],
+        "dur": 46.0,
+        "w": 1080,
+        "h": 1920,
+        "kb": 24220
+      },
+      "thumb": "design/design-Dd6LYQYDdbi/cover/t.webp"
+    },
+    {
+      "id": "design-Delakn4Cb9E",
+      "title": "Feel the power of the Aspirants",
+      "collection": "design",
+      "chars": [],
+      "pair": null,
+      "canon": "official",
+      "tags": ["gameplay", "short"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/Delakn4Cb9E/",
+        "date": "2026-10-17"
+      },
+      "caption": "Feel the power of the Aspirants once again!",
+      "date": "2026-10-17",
+      "account": "@mobilelegendsgame",
+      "campaign": "unite-selena-obsidia",
+      "url": "https://www.instagram.com/p/Delakn4Cb9E/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-Delakn4Cb9E/v.mp4",
+        "poster": "design/design-Delakn4Cb9E/cover/p.webp",
+        "cover": {
+          "t": "design/design-Delakn4Cb9E/cover/t.webp",
+          "p": "design/design-Delakn4Cb9E/cover/p.webp",
+          "f": "design/design-Delakn4Cb9E/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#4b7078"
+        },
+        "pal": [
+          ["#27444a", 30],
+          ["#82868b", 22],
+          ["#505658", 17],
+          ["#0d242b", 17],
+          ["#3b94ab", 14]
+        ],
+        "dur": 30.6,
+        "w": 1080,
+        "h": 1920,
+        "kb": 26976
+      },
+      "thumb": "design/design-Delakn4Cb9E/cover/t.webp"
+    },
+    {
+      "id": "design-DetJAmclG5M",
+      "title": "Who saw that ending coming?",
+      "collection": "design",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "canon": "official",
+      "tags": ["gameplay", "short"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/DetJAmclG5M/",
+        "date": "2026-10-20"
+      },
+      "caption": "Who saw that ending coming...?",
+      "date": "2026-10-20",
+      "account": "@mobilelegendsgame",
+      "campaign": "unite-selena-obsidia",
+      "url": "https://www.instagram.com/p/DetJAmclG5M/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-DetJAmclG5M/v.mp4",
+        "poster": "design/design-DetJAmclG5M/cover/p.webp",
+        "cover": {
+          "t": "design/design-DetJAmclG5M/cover/t.webp",
+          "p": "design/design-DetJAmclG5M/cover/p.webp",
+          "f": "design/design-DetJAmclG5M/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#585b5d"
+        },
+        "pal": [
+          ["#324334", 34],
+          ["#18261e", 28],
+          ["#596453", 17],
+          ["#8d8079", 11],
+          ["#415199", 10]
+        ],
+        "dur": 26.8,
+        "w": 1080,
+        "h": 1920,
+        "kb": 22768
+      },
+      "thumb": "design/design-DetJAmclG5M/cover/t.webp"
+    },
+    {
+      "id": "design-De6qFyvt0uP",
+      "title": "Maybe we could be...",
+      "collection": "design",
+      "chars": [
+        "fanny",
+        "layla",
+        "ruby",
+        "angela",
+        "lesley",
+        "change",
+        "guinevere",
+        "vexana",
+        "obsidia",
+        "selena"
+      ],
+      "pair": null,
+      "canon": "official",
+      "tags": ["relationship", "short"],
+      "credit": {
+        "by": "Mobile Legends: Bang Bang",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/p/De6qFyvt0uP/",
+        "date": "2026-10-25"
+      },
+      "caption": "Maybe we could be...\nLINK: https://sg-play.mobilelegends.com/events/relationship",
+      "date": "2026-10-25",
+      "account": "@mobilelegendsgame",
+      "campaign": "relationship-hub",
+      "url": "https://www.instagram.com/p/De6qFyvt0uP/",
+      "kind": "reel",
+      "video": {
+        "src": "design/design-De6qFyvt0uP/v.mp4",
+        "poster": "design/design-De6qFyvt0uP/cover/p.webp",
+        "cover": {
+          "t": "design/design-De6qFyvt0uP/cover/t.webp",
+          "p": "design/design-De6qFyvt0uP/cover/p.webp",
+          "f": "design/design-De6qFyvt0uP/cover/f.webp",
+          "w": 1080,
+          "h": 1920,
+          "c": "#c7cfe1"
+        },
+        "pal": [
+          ["#c1cfe5", 63],
+          ["#e0e8f3", 30],
+          ["#d1b5ac", 3],
+          ["#8d93b5", 2],
+          ["#c98582", 2]
+        ],
+        "dur": 18.0,
+        "w": 1080,
+        "h": 1920,
+        "kb": 13710
+      },
+      "thumb": "design/design-De6qFyvt0uP/cover/t.webp"
+    }
+  ]
+}

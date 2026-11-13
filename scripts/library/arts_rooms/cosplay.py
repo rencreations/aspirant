@@ -39,6 +39,9 @@ CAPTIONS = common.MEDIA / "_captions" / "captions.json"
 COSPLAY_DIR = common.MEDIA / "layla-and-fanny" / "art" / "cosplay"
 # The 12 Nov 2026 intake (intake.py): finished items, added after the ones above.
 INTAKE = HERE / "curation" / "intake-items.json"
+# Official reels added to the video row of Fanart (13 Nov 2026), taken from Design's moved reels.
+PROMO = HERE / "curation" / "promo-fanart.json"
+MOVED = HERE.parent / "design" / "moved-reels.json"
 
 # The order of the Cosplay roster: the five pairs, as on the site. (common.CHAR_SLUGS puts Obsidia
 # before Selena, which is not the order wanted here.)
@@ -313,6 +316,48 @@ def merge_intake(cos: dict[str, Any], fan: dict[str, Any]) -> tuple[int, int]:
     return len(data["cosplay"]), len(data["fanart"])
 
 
+def merge_promo(fan: dict[str, Any]) -> int:
+    """Add the reels of curation/promo-fanart.json to the video row of Fanart. Each is a reel that
+    design/build.py moved out of Design (design/moved-reels.json): its film and its cover are the files
+    already in the bucket under design/<post id>/, so nothing is encoded or uploaded."""
+    if not PROMO.exists():
+        return 0
+    spec = json.loads(PROMO.read_text(encoding="utf-8"))["items"]
+    moved = {i["id"]: i for i in json.loads(MOVED.read_text(encoding="utf-8"))["items"]}
+    have = {i["id"] for i in fan["items"]}
+    out: list[dict[str, Any]] = []
+    for s in spec:
+        post = moved.get(s["from_design"])
+        if post is None or "video" not in post:
+            fail(f"{s['id']}: {s['from_design']} is not a reel in moved-reels.json")
+        if s["id"] in have:
+            fail(f"{s['id']} is already in fanart")
+        v, cover = post["video"], post["video"]["cover"]
+        code = post["id"].removeprefix("design-")
+        sources = sorted((common.MEDIA / "_others" / "promotional" / f"instagram_p_{code}").glob("001_*.mp4"))
+        if len(sources) != 1:
+            fail(f"{s['id']}: expected one source film for {code}, found {len(sources)}")
+        chars = order_chars(s["chars"])
+        pairs = [p for p in dict.fromkeys(common.pair_of_char(c) for c in chars) if p]
+        credit = dict(post["credit"])
+        credit["note"] = s["note"]
+        for key in (v["src"], cover["t"], cover["p"], cover["f"]):
+            if not mirror_has(key):
+                fail(f"{s['id']}: {key} is not in the mirror")
+        out.append({
+            "id": s["id"], "kind": "video", "title": s["title"], "collection": "arts", "chars": chars,
+            "pair": pairs[0] if len(pairs) == 1 else None, "pairs": pairs,
+            "canon": s["canon"], "tags": s["tags"], "credit": credit, "platform": credit["platform"],
+            "date": post["date"], "artist": None,
+            "img": {k: cover[k] for k in ("t", "p", "f", "w", "h", "c")},
+            "video": {"src": v["src"], "poster": cover["p"], "w": v["w"], "h": v["h"], "dur": v["dur"]},
+            "src": [sources[0].relative_to(common.MEDIA).as_posix()],
+        })
+    fan["items"] = fan["items"] + out
+    fan["artists"], fan["characters"] = fanart_head(fan["items"])
+    return len(out)
+
+
 # ---------------------------------------------------------------------------------------------
 
 
@@ -336,6 +381,7 @@ def main() -> None:
             fail("the cosplay items taken out of fanart.json are not the ones moved to cosplay")
         added = merge_intake(cos, fan)
         print("intake:", added[0], "cosplay photos,", added[1], "fan art pictures and clips")
+        print("official reels added to the video row:", merge_promo(fan))
     common.write_json("arts-cosplay", cos)
 
     print("cosplay items:", len(cos["items"]))

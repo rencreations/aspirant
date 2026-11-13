@@ -25,9 +25,9 @@ const PHONE = { width: 390, height: 844, dpr: 2 };
 const DASHES = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`, "u");
 
 describe("the data file", () => {
-  it("holds 236 pictures and 31 videos, and no cosplay photo", () => {
-    expect(all).toHaveLength(267);
-    expect(all.filter((i) => i.kind === "video")).toHaveLength(31);
+  it("holds 236 pictures and 32 videos, and no cosplay photo", () => {
+    expect(all).toHaveLength(268);
+    expect(all.filter((i) => i.kind === "video")).toHaveLength(32);
     expect(all.some((i) => (i.kind as string) === "cosplay")).toBe(false);
     for (const oldId of Object.keys(MOVED_COSPLAY)) {
       expect(all.some((i) => i.id === oldId)).toBe(false);

@@ -18,6 +18,19 @@ TEN = [FANNY, LAYLA, RUBY, ANGELA, LESLEY, CHANGE, GUINEVERE, VEXANA, OBSIDIA, S
 # This post lives in the Fanart room (an MGL creator's fan art), not here.
 EXCLUDED = {"C4aPqrho3sW": "Fanart room: MGL creator fan art posted by @mobilelegendsgame"}
 
+# Reels that are videos, not designs (the owner, 13 Nov 2026). They are built as before, but they are
+# written to moved-reels.json instead of design.json. `films/reuse.py` reads that file, so they stay in
+# Video, Others with the same record and the same keys (design/design-<code>/v.mp4, already in the
+# bucket). Dd0tPihiEpW is also in Fanart (arts_rooms/curation/promo-fanart.json).
+TO_VIDEO = {
+    "DdyIX9wEk_7",  # Pick your girl
+    "Dd0tPihiEpW",  # What is Selena up to in class?
+    "Dd6LYQYDdbi",  # Obsidia against Selena
+    "Delakn4Cb9E",  # Feel the power of the Aspirants
+    "DetJAmclG5M",  # Who saw that ending coming?
+    "De6qFyvt0uP",  # Maybe we could be...
+}
+
 # Campaigns, listed in the order they began. `line` is one plain sentence. Every post below
 # names its campaign by id. `from` and `to` are worked out from the posts.
 CAMPAIGNS: list[dict] = [
@@ -253,20 +266,3 @@ META: dict[str, tuple[str, str, list[str], P]] = {
     "De6qFyvt0uP": ("Maybe we could be...", "relationship-hub", ["relationship", "short"], {"chars": TEN}),
     "De8lqz8DNH2": ("Skin relationships, defined by you", "relationship-hub", ["relationship"], {"chars": TEN}),
 }
-
-# What a tag means to a visitor (the page lists these as the "Topic" filter, in this order).
-TOPICS = [
-    ("launch", "Launch"),
-    ("reveal", "Reveal"),
-    ("draw", "Draw event"),
-    ("tokens", "Free tokens"),
-    ("return", "Return"),
-    ("guide", "Guide"),
-    ("contest", "Contest"),
-    ("story", "Story"),
-    ("poll", "Poll"),
-    ("gallery", "Gallery"),
-    ("relationship", "Relationship"),
-    ("anniversary", "Anniversary"),
-    ("short", "Short clip"),
-]

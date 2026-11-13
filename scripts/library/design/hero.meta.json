@@ -1,0 +1,22 @@
+{
+  "poster": "design/hero/v1/poster.webp",
+  "pw": 1920,
+  "ph": 810,
+  "c": "#342d23",
+  "films": [
+    {
+      "src": "design/hero/v1/loop-1920.mp4",
+      "w": 1920,
+      "h": 810,
+      "dur": 76.92,
+      "bytes": 21041805
+    },
+    {
+      "src": "design/hero/v1/loop-1280.mp4",
+      "w": 1280,
+      "h": 540,
+      "dur": 76.92,
+      "bytes": 11839002
+    }
+  ]
+}

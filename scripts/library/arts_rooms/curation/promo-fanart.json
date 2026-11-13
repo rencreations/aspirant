@@ -1,0 +1,14 @@
+{
+  "note": "Reels of the official accounts that the owner wants in the video row of Fanart as well as where they already are (13 Nov 2026). Each one points at a reel in design/moved-reels.json, so the film and the cover are the files already in the bucket (design/design-<code>/): nothing is encoded or uploaded. canon is non-canon, as for the official edits: the clip is posted by the official account and is not part of the story. The maker of the animation is not named anywhere, so no artist is given.",
+  "items": [
+    {
+      "id": "fanart-video-promo-dd0tpihiepw",
+      "from_design": "design-Dd0tPihiEpW",
+      "title": "What is Selena up to in class?",
+      "chars": ["selena"],
+      "tags": ["animation", "reel", "official"],
+      "canon": "non-canon",
+      "note": "A short chibi animation posted by the official account. It is not part of the story."
+    }
+  ]
+}

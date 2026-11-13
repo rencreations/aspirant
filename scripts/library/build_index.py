@@ -106,8 +106,9 @@ def main() -> None:
         n = 0
         for name, data in datas:
             room_n = 0
-            # An Arts file lists its pictures in `items`; its other lists are filters, not pictures.
-            source = data.get("items", []) if slug == "arts" else data
+            # An Arts file lists its pictures in `items`; its other lists are filters, not pictures. The
+            # same goes for Design, whose file also lists the campaigns (not items to search for).
+            source = data.get("items", []) if slug in ("arts", "design") else data
             for item in walk_items(source):
                 iid = str(item["id"])
                 title = str(item.get("title") or item.get("name") or "")
@@ -126,6 +127,9 @@ def main() -> None:
                 if slug == "arts":
                     # The room says where the picture opens (`/collection/arts/<room>?i=<id>`).
                     e["r"] = name.removeprefix("arts-")
+                if slug == "design" and isinstance(item.get("slug"), str):
+                    # A post of Design has its own address, `/collection/design/<slug>/`.
+                    e["s"] = item["slug"]
                 t = thumb_key(item)
                 if t:
                     e["i"] = t
