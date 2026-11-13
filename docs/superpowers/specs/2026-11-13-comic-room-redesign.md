@@ -5,7 +5,7 @@ Request: `2026-11-13-comic-room-request.md` (word for word). The owner asked for
 ## Status
 
 - **Phase 1, done:** every comic is a page of its own, and the reader has the new chrome. See "Phase 1".
-- **Phase 2, not started:** the first screen (the big animated COMIC), the two full-screen official sections, the fan gallery and the new foot. See "Phase 2".
+- **Phase 2, done (14 Nov 2026):** the first screen (the big animated COMIC), the two full-screen official sections, the fan gallery and the new foot. See "Phase 2".
 - **Phase 3, not started:** the transitions between the room and a comic. See "Phase 3".
 
 ## Intent
@@ -28,9 +28,9 @@ A room that feels like opening a comic shop window: a loud, lively first screen,
 - The takedown link of a fan comic is in the list and at the end of the comic, not in the bar.
 - Shelf cards are links now (`TLink`), so a middle click opens a comic in a new tab.
 
-## Phase 2: the room (not started)
+## Phase 2: the room (done)
 
-What is asked, and how I mean to make it:
+What was asked, and how it was made. (The first sketch said the letters were "SVG shapes with a panel drifting inside". That is how they are: a thick round stroke for each of C, O, M, I, C, masked over a panel of a comic.)
 
 - **First screen.** The word COMIC fills the screen. Each letter is its own SVG shape (a custom lettering made for the site, not a font file), drawn thick with an offset shadow, each filled with a cropped panel of the comics that drifts slowly inside the letter. Idle: the letters float on their own rhythm and a halftone field breathes. Hover: the letter under the pointer squashes and springs, and the panel in it speeds up. Press: an ink burst and stars from the pointer, the letter pops. The pointer moves the layers a little (parallax). Over it: the top bar (bare), the one button back to the shelf (sticky), one small line ("2 official, 21 by fans"), and a cue to scroll (a pill with a chevron that bobs; on hover it leans in; on press it scrolls to the next section with Lenis). Nothing else.
 - **One screen for each official comic** (the order: The Aspirant, then Guinevere and Vexana). The design is built from live parts: a card with a thick edge and a second card behind it, panels cut from the pages of the comic (cut by a script into the library, with their own keys) at set angles, a ribbon with the title in the custom lettering, confetti and sparkles, a mascot. Every part moves: idle (a slow drift, a shimmer), hover (the part lifts and the others lean away), press (a small pop, a sound blip). The composition scales with the screen and re-flows for a phone (fewer panels, taller card). Under it, one big button, "Read the comic", in the colours of that section.
@@ -39,6 +39,21 @@ What is asked, and how I mean to make it:
 - **The middle panel** of each composition is the first panel of the comic. It is what the transition (phase 3) zooms into.
 - **The fan gallery** under the two: a calm wall (21 covers, grouped by who is in them, a filter by character), each card a link to its page.
 - **The foot:** the "next room" link is replaced by a button back to the collection.
+
+### What was made in phase 2
+
+- `room/hero.tsx`: the word, a field of dots and slow speed lines behind it, one line ("2 official comics, 21 made by fans"), a button "Scroll to read" that scrolls to the first comic (Lenis), and the one button back (fixed, on every screen). Under 58 rem the word stands in two rows (COM over IC). Idle, hover and press are in the spec above; a press also sends sparks from the pointer.
+- `room/stage.tsx`: the engine of a composition. `room/vg-stage.tsx` copies the banner (ribbon with the coloured S, A, A, T, the subtitle, the card with a yellow edge over a purple one, the seven panels at the banner's angles, the chibi pair with the heart bubble, the cat mascot, the shards, the confetti). `room/as-stage.tsx` is The Aspirant: a cream card with an ink edge and a coral shadow, a black slab for the title and the line under it, seven panels with the first page in the middle, speed lines that turn behind it, a "KA-POW!" starburst, and three chibi stickers of Layla and Fanny floating over the edge.
+- `room/official.tsx`: one whole screen, the stage a little above the middle, one big button ("Read the comic": a pill with a hard shadow and a ball with an arrow; coral and ink for The Aspirant, purple and gold for Guinevere and Vexana; it moves up under the pointer and presses in).
+- `room/gallery.tsx`: a pinboard, the covers as tilted prints with a strip of tape under the pair they are about (the same `FanCard` as before), the character choice kept in the address.
+- `stage.py`: 14 panels cut from the original pages (the boxes were chosen by looking at the pages with a ruler; no word or frame is added) and 8 chibi stickers (a file with no transparent pixel is refused; the ones with a white edge have it baked into the file). Layla's own chibi files are opaque screenshots, so the stickers of Layla are the ones she shares with Fanny.
+
+### Calls in phase 2
+
+- The ribbon words use the site's display face with a stroke and a hard shadow, not a font made from nothing; only the five letters of COMIC are drawn. A full alphabet of custom letters would be a font project of its own.
+- Under 58 rem the stage stands taller (4 by 5) and some parts are left out, so a tablet in portrait gets the taller one too.
+- Tablets and phones have no pointer, so the depth follows nothing there; the idle drift, the pop and the sparks are the same.
+- The nav stays bare over the first three screens. It takes its plate at the fan wall, because the wall would slide under the menu buttons.
 
 ## Phase 3: the transitions (not started)
 

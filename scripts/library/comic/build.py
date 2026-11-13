@@ -368,7 +368,12 @@ def main() -> None:
             raise SystemExit(f"{it['id']}: the title gives the slug {slug!r} twice")
         taken.add(slug)
         it["slug"] = slug
-    common.write_json("comic", {"v": 1, "slug": "comic", "items": all_items})
+    data = {"v": 1, "slug": "comic", "items": all_items}
+    # The pieces of the two official stages (stage.py writes stage.meta.json).
+    stage_meta = Path(__file__).resolve().parent / "stage.meta.json"
+    if stage_meta.exists():
+        data["stage"] = json.loads(stage_meta.read_text(encoding="utf-8"))
+    common.write_json("comic", data)
 
     ignored = {}
     for code, why in fans.EXCLUDED.items():

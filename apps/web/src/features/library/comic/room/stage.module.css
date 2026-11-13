@@ -1,0 +1,195 @@
+/*
+ * The engine of a composition (see stage.tsx). The stage has a fixed shape, wide or taller on a narrow
+ * screen; parts are placed in percent of it and sized in cqw. A part has three layers so that its
+ * transforms never fight: `.part` (its place, its turn, and the way it comes in), `.depth` (the
+ * pointer) and `.inner` (its drift, the rise under the pointer and the pop when pressed). Only
+ * transform properties and opacity change.
+ */
+.stage {
+  --px: 0;
+  --py: 0;
+  --spark: #ffc83d, #ff5a7a, #35d6e0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ar-wide);
+  container-type: inline-size;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 58rem) {
+  .stage {
+    aspect-ratio: var(--ar-narrow);
+  }
+}
+
+.part {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--w);
+  height: var(--h);
+  rotate: var(--r);
+  opacity: 0;
+  translate: 0 7%;
+  scale: 0.88;
+  transition:
+    opacity 520ms var(--ease-out) calc(var(--i) * 70ms),
+    translate 820ms var(--ease-spring) calc(var(--i) * 70ms),
+    scale 820ms var(--ease-spring) calc(var(--i) * 70ms);
+}
+
+.stage[data-in="true"] .part {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+}
+
+@media (max-width: 58rem) {
+  .part {
+    top: var(--ny, var(--y));
+    left: var(--nx, var(--x));
+    width: var(--nw, var(--w));
+    height: var(--nh, var(--h));
+    rotate: var(--nr, var(--r));
+  }
+
+  .part[data-narrow="hide"] {
+    display: none;
+  }
+}
+
+.depth {
+  width: 100%;
+  height: 100%;
+  translate: calc(var(--px) * var(--d, 0) * 1.1cqw) calc(var(--py) * var(--d, 0) * 0.8cqw);
+  transition: translate 380ms var(--ease-out);
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  animation: drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
+  transition: scale 280ms var(--ease-spring);
+}
+
+.part[data-still="true"] .inner {
+  cursor: default;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+
+  50% {
+    translate: 0 calc(var(--amp, 6px) * -1);
+    rotate: 0.7deg;
+  }
+}
+
+/* Under the pointer a part rises. The others do not move. */
+.part:not([data-still="true"]) .inner:hover {
+  scale: 1.07;
+}
+
+.part:not([data-still="true"]) .inner:active {
+  scale: 0.97;
+}
+
+.inner[data-pop="true"] {
+  animation:
+    drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite,
+    pop 560ms var(--ease-spring) 1;
+}
+
+@keyframes pop {
+  0% {
+    scale: 1;
+  }
+
+  22% {
+    scale: 1.16;
+  }
+
+  48% {
+    scale: 0.94;
+  }
+
+  74% {
+    scale: 1.04;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+/* A panel of a comic: a frame in the colours of the stage, the picture cut to fit. */
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: var(--frame-w, 0.55cqw) solid var(--frame, #6a4fd6);
+  border-radius: var(--frame-r, 0.5cqw);
+  box-shadow: var(--frame-shadow, 0 0.6cqw 1.4cqw rgb(30 20 80 / 0.28));
+  background-clip: padding-box;
+}
+
+.frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 700ms var(--ease-out);
+  will-change: scale;
+}
+
+.inner:hover .frame img {
+  scale: 1.08;
+}
+
+.chibi {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ---- sparks (made by the stage when a part is pressed) ---- */
+
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  width: 1.5cqw;
+  aspect-ratio: 1;
+  background: var(--c, #ffc83d);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  pointer-events: none;
+}
+
+.spark:nth-child(3n + 1) {
+  background: #ffc83d;
+}
+
+.spark:nth-child(3n + 2) {
+  background: #ff5a7a;
+}
+
+.spark:nth-child(3n) {
+  background: #35d6e0;
+}

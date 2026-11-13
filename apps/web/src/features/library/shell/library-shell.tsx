@@ -123,8 +123,16 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
  * The foot of a collection page: what this archive is, how to ask for a removal (the site's own
  * takedown page) and the next room. A room that draws its own header (the Design room) uses it too.
  */
-export function LibraryFooter({ slug }: { slug: CollectionSlug }) {
+export function LibraryFooter({
+  slug,
+  variant = "next",
+}: {
+  slug: CollectionSlug;
+  /** `back` ends the page with a button back to the collection instead of the next room. */
+  variant?: "next" | "back";
+}) {
   const next = nextCollection(slug);
+  const meta = getCollection(slug);
   return (
     <footer className={`${styles.foot} shell`}>
       <p className={styles.note}>
@@ -136,16 +144,28 @@ export function LibraryFooter({ slug }: { slug: CollectionSlug }) {
         </TLink>
         .
       </p>
-      <TLink
-        href={collectionRoute(next.slug)}
-        transitionLabel={next.name}
-        className={styles.next}
-        style={{ "--pill-colour": next.colour, "--pill-ink": next.ink } as CSSProperties}
-      >
-        <span className="hud-label">Next room, {next.index}</span>
-        <span className={`${styles.nextName} display`}>{next.name}</span>
-        <span className={styles.nextLine}>{next.tagline}</span>
-      </TLink>
+      {variant === "back" ? (
+        <TLink
+          href={routes.collection}
+          transitionLabel="Collection"
+          className={styles.next}
+          style={{ "--pill-colour": meta.colour, "--pill-ink": meta.ink } as CSSProperties}
+        >
+          <span className="hud-label">The whole collection</span>
+          <span className={`${styles.nextName} display`}>Back to the collection</span>
+        </TLink>
+      ) : (
+        <TLink
+          href={collectionRoute(next.slug)}
+          transitionLabel={next.name}
+          className={styles.next}
+          style={{ "--pill-colour": next.colour, "--pill-ink": next.ink } as CSSProperties}
+        >
+          <span className="hud-label">Next room, {next.index}</span>
+          <span className={`${styles.nextName} display`}>{next.name}</span>
+          <span className={styles.nextLine}>{next.tagline}</span>
+        </TLink>
+      )}
     </footer>
   );
 }

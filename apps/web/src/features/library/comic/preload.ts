@@ -5,16 +5,41 @@ import { fetchLibraryJson, libraryDataItem, libraryDataPath } from "../data";
 import type { ComicFile } from "./types";
 
 /**
- * What the comic room needs on first paint: its data, its code and the two official covers (their
- * keys are fixed by `scripts/library/comic/build.py`). The fan covers, the first-page strips and
- * every page of the reader load lazily as they come on screen.
+ * The pieces of the two stages (the panels and the stickers, about 3 MB): the big word at the top draws
+ * five panels and the next two screens draw the rest, so the curtain waits for all of them.
  */
+function stageItem(): PreloadItem {
+  return {
+    id: "library-comic-stage",
+    label: "Loading the comics",
+    weight: 6,
+    run: async (report, context) => {
+      const file = await fetchLibraryJson<ComicFile>(libraryDataPath("comic"));
+      const keys = [
+        ...Object.values(file.stage.panels).map((p) => p.p),
+        ...Object.values(file.stage.chibi).map((c) => c.src),
+      ];
+      let done = 0;
+      await Promise.all(
+        keys.map((key) =>
+          imageItem(libUrl(key), "Loading the comics")
+            .run(() => undefined, context)
+            .then(() => {
+              done += 1;
+              report(done / keys.length);
+            }),
+        ),
+      );
+    },
+  };
+}
+
+/** What the comic room needs on first paint: its data, its code and the pieces of the stages. */
 export function items(): PreloadItem[] {
   return [
     libraryDataItem("comic"),
     chunkItem("library-comic", "Opening the comic room", () => import("./page"), 2),
-    imageItem(libUrl("comic/the-aspirant/cover/p.webp"), "Loading the first cover", 1),
-    imageItem(libUrl("comic/guinevere-vexana/cover/p.webp"), "Loading the second cover", 1),
+    stageItem(),
   ];
 }
 

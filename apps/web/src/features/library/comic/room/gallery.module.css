@@ -1,0 +1,95 @@
+/* The fan comics: a pinboard (see gallery.tsx). Calm: it is the end of the page, not the show. */
+.section {
+  padding: calc(var(--nav-h) + 4.6rem) var(--gutter) 5rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.head {
+  max-width: 44rem;
+  margin-bottom: 1.6rem;
+}
+
+.title {
+  margin: 0.4rem 0 0;
+  font-size: var(--step-5);
+  line-height: 0.9;
+}
+
+.lede {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.25;
+  color: var(--text-dim);
+}
+
+.filter {
+  margin-top: 1.4rem;
+}
+
+.status {
+  margin: 1rem 0 0;
+  color: var(--text-dim);
+}
+
+.group {
+  margin-top: 3.2rem;
+}
+
+.pair {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1.4rem;
+  font-size: var(--step-2);
+  line-height: 1;
+}
+
+.pair::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--line-strong) 0 6px, transparent 6px 12px);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 2.2rem 1.6rem;
+}
+
+/* A print pinned to the board: tilted a little, with a strip of tape. */
+.pin {
+  position: relative;
+  rotate: var(--t, 0deg);
+  padding: 0.7rem 0.7rem 0.4rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 0.5rem 1.2rem rgb(11 11 14 / 0.1);
+  transition:
+    rotate 360ms var(--ease-spring),
+    translate 360ms var(--ease-spring),
+    box-shadow 360ms var(--ease-out);
+}
+
+.pin:hover,
+.pin:focus-within {
+  rotate: 0deg;
+  translate: 0 -6px;
+  box-shadow: 0 1.1rem 2rem rgb(11 11 14 / 0.18);
+}
+
+.tape {
+  position: absolute;
+  top: -0.7rem;
+  left: 50%;
+  width: 4.4rem;
+  height: 1.3rem;
+  translate: -50% 0;
+  rotate: -3deg;
+  background: rgb(240 177 0 / 0.55);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  pointer-events: none;
+}

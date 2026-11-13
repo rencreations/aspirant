@@ -1,59 +1,11 @@
-.section + .section {
-  margin-top: var(--space-xl);
+.room {
+  position: relative;
 }
 
-.head {
-  display: grid;
-  gap: 0.35rem;
-  margin-bottom: var(--space-m);
-}
-
-.head p {
-  margin: 0;
-}
-
-.head > .hud-label {
-  color: var(--lib-ink);
-}
-
-.h {
-  margin: 0;
-  font-size: var(--step-5);
-  line-height: 0.9;
-}
-
-.lede {
-  max-width: 40rem;
-  font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: var(--step-1);
-  line-height: 1.25;
-  color: var(--text-dim);
-}
-
-.officialGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-m);
-}
-
-.filter {
-  margin-bottom: var(--space-xs);
-}
-
-.status {
-  margin: 0 0 var(--space-s);
-  color: var(--text-faint);
-}
-
-.fanGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
-  gap: var(--space-s);
-}
-
-@media (max-width: 70em) {
-  .officialGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* The one way out, on every screen of the room: a pill with its own ground, so it reads on all of them. */
+.back {
+  background: rgb(255 255 255 / 0.86);
+  color: #14121a;
+  border-color: #14121a;
+  box-shadow: 2px 3px 0 #14121a;
 }

@@ -1,0 +1,169 @@
+/* The Aspirant stage (see as-stage.tsx): a comic page blown open, in coral, orange and cyan, with ink. */
+.stage {
+  --ink: #14121a;
+  --coral: #ff4d6d;
+  --orange: #ff9a3d;
+  --cyan: #35d6e0;
+  --cream: #fff6ea;
+}
+
+/* ---- the card ---- */
+
+.shadow {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.2cqw;
+  background: var(--coral);
+}
+
+.card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0.55cqw solid var(--ink);
+  border-radius: 1.2cqw;
+  background-color: var(--cream);
+  background-image: radial-gradient(circle, rgb(255 154 61 / 0.35) 0.2cqw, transparent 0.26cqw);
+  background-size: 1.3cqw 1.3cqw;
+}
+
+.rays {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: spin 90s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* ---- the title ---- */
+
+.title {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4cqw;
+  border-radius: 0.8cqw;
+  background: var(--ink);
+  box-shadow: 0.6cqw 0.7cqw 0 var(--coral);
+}
+
+.titleText {
+  display: flex;
+  align-items: center;
+  gap: 0.05em;
+  font-family: var(--font-display-stack);
+  font-size: 7.6cqw;
+  font-weight: 800;
+  line-height: 0.95;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.letter {
+  display: inline-block;
+  transition: translate 240ms var(--ease-spring);
+  animation: bob 4.2s ease-in-out infinite;
+  animation-delay: calc(var(--k) * -0.22s);
+}
+
+.letter[data-hot="true"] {
+  color: var(--orange);
+}
+
+.letter:hover {
+  translate: 0 -0.9cqw;
+  rotate: 6deg;
+  color: var(--cyan);
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -0.3cqw;
+  }
+}
+
+.gap {
+  display: inline-block;
+  width: 0.3em;
+}
+
+.tagline {
+  display: block;
+  font-family: var(--font-display-stack);
+  font-size: 1.75cqw;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ffd9b8;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---- the shout ---- */
+
+.burst {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.burstWord {
+  font-family: var(--font-display-stack);
+  font-size: 19px;
+  font-weight: 800;
+  fill: var(--coral);
+  stroke: var(--ink);
+  stroke-width: 0.9px;
+  paint-order: stroke fill;
+}
+
+.spark {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sparkle {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+@media (max-width: 58rem) {
+  .titleText {
+    font-size: 10.4cqw;
+  }
+
+  .tagline {
+    font-size: 2.6cqw;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .card {
+    border-width: 1cqw;
+  }
+}

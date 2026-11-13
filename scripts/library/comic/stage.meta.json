@@ -1,0 +1,158 @@
+{
+  "panels": {
+    "as-first": {
+      "p": "comic/stage/v1/panel/as-first/p.webp",
+      "f": "comic/stage/v1/panel/as-first/f.webp",
+      "w": 1000,
+      "h": 820,
+      "c": "#5c6988",
+      "note": "the first panel of the comic: the planet and the first lines"
+    },
+    "as-layla-sword": {
+      "p": "comic/stage/v1/panel/as-layla-sword/p.webp",
+      "f": "comic/stage/v1/panel/as-layla-sword/f.webp",
+      "w": 1000,
+      "h": 1980,
+      "c": "#af99a0",
+      "note": "Layla with her blade"
+    },
+    "as-fanny-face": {
+      "p": "comic/stage/v1/panel/as-fanny-face/p.webp",
+      "f": "comic/stage/v1/panel/as-fanny-face/f.webp",
+      "w": 580,
+      "h": 920,
+      "c": "#b78787",
+      "note": "Fanny, set"
+    },
+    "as-layla-burst": {
+      "p": "comic/stage/v1/panel/as-layla-burst/p.webp",
+      "f": "comic/stage/v1/panel/as-layla-burst/f.webp",
+      "w": 1000,
+      "h": 1300,
+      "c": "#8098ac",
+      "note": "Layla, a star of light"
+    },
+    "as-both": {
+      "p": "comic/stage/v1/panel/as-both/p.webp",
+      "f": "comic/stage/v1/panel/as-both/f.webp",
+      "w": 1000,
+      "h": 1950,
+      "c": "#835c7b",
+      "note": "the two of them at the end"
+    },
+    "as-duel": {
+      "p": "comic/stage/v1/panel/as-duel/p.webp",
+      "f": "comic/stage/v1/panel/as-duel/f.webp",
+      "w": 1000,
+      "h": 2000,
+      "c": "#91778a",
+      "note": "Fanny above, Layla below"
+    },
+    "as-layla-angry": {
+      "p": "comic/stage/v1/panel/as-layla-angry/p.webp",
+      "f": "comic/stage/v1/panel/as-layla-angry/f.webp",
+      "w": 1000,
+      "h": 1370,
+      "c": "#9e828c",
+      "note": "Layla, furious"
+    },
+    "gv-first": {
+      "p": "comic/stage/v1/panel/gv-first/p.webp",
+      "f": "comic/stage/v1/panel/gv-first/f.webp",
+      "w": 2500,
+      "h": 1250,
+      "c": "#6d4c43",
+      "note": "the first page: fire and the first BANG"
+    },
+    "gv-vexana": {
+      "p": "comic/stage/v1/panel/gv-vexana/p.webp",
+      "f": "comic/stage/v1/panel/gv-vexana/f.webp",
+      "w": 1650,
+      "h": 2400,
+      "c": "#473451",
+      "note": "Vexana in her dark form"
+    },
+    "gv-boom": {
+      "p": "comic/stage/v1/panel/gv-boom/p.webp",
+      "f": "comic/stage/v1/panel/gv-boom/f.webp",
+      "w": 2300,
+      "h": 2100,
+      "c": "#a97077",
+      "note": "Guinevere strikes"
+    },
+    "gv-close": {
+      "p": "comic/stage/v1/panel/gv-close/p.webp",
+      "f": "comic/stage/v1/panel/gv-close/f.webp",
+      "w": 2000,
+      "h": 1700,
+      "c": "#b2adb1",
+      "note": "the two close, Don't worry"
+    },
+    "gv-meadow": {
+      "p": "comic/stage/v1/panel/gv-meadow/p.webp",
+      "f": "comic/stage/v1/panel/gv-meadow/f.webp",
+      "w": 2500,
+      "h": 2200,
+      "c": "#968876",
+      "note": "the two in a meadow"
+    },
+    "gv-gold": {
+      "p": "comic/stage/v1/panel/gv-gold/p.webp",
+      "f": "comic/stage/v1/panel/gv-gold/f.webp",
+      "w": 1360,
+      "h": 2120,
+      "c": "#8d5f4a",
+      "note": "a long haired figure in golden light"
+    },
+    "gv-fall": {
+      "p": "comic/stage/v1/panel/gv-fall/p.webp",
+      "f": "comic/stage/v1/panel/gv-fall/f.webp",
+      "w": 2500,
+      "h": 1400,
+      "c": "#444269",
+      "note": "falling, upside down, in blue light"
+    }
+  },
+  "chibi": {
+    "fl-hearts": {
+      "src": "comic/stage/v1/chibi/fl-hearts.webp",
+      "w": 774,
+      "h": 580
+    },
+    "fl-oval": {
+      "src": "comic/stage/v1/chibi/fl-oval.webp",
+      "w": 774,
+      "h": 606
+    },
+    "fl-camera": {
+      "src": "comic/stage/v1/chibi/fl-camera.webp",
+      "w": 524,
+      "h": 371
+    },
+    "gv-pair": {
+      "src": "comic/stage/v1/chibi/gv-pair.webp",
+      "w": 640,
+      "h": 760
+    },
+    "gv-pair-outlined": {
+      "src": "comic/stage/v1/chibi/gv-pair-outlined.webp",
+      "w": 658,
+      "h": 777
+    },
+    "gv-love": {
+      "src": "comic/stage/v1/chibi/gv-love.webp",
+      "w": 324,
+      "h": 355
+    },
+    "gv-vexana-head": {
+      "src": "comic/stage/v1/chibi/gv-vexana-head.webp",
+      "w": 574,
+      "h": 521
+    },
+    "gv-talking": {
+      "src": "comic/stage/v1/chibi/gv-talking.webp",
+      "w": 574,
+      "h": 568
+    }
+  }
+}

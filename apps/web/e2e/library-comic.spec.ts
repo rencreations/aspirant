@@ -3,7 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 import { skipGate, url, watchErrors } from "./helpers";
 
 /**
- * The comic room and its pages. The room is a shelf; every comic is a page of its own,
+ * The comic room and its pages. The room is a first screen, a screen for each official comic and a
+ * wall of fan comics; every comic is a page of its own,
  * `/collection/comic/<slug>/`. The reader shows its top bar and control bar at the very top only,
  * and folds both into one button the moment the pages move.
  */
@@ -35,26 +36,114 @@ async function scrollTo(page: Page, top: number) {
 }
 
 test.describe("collection / comic", () => {
-  test("the shelf shows the two official comics first and the fan comics under a plain label", async ({
+  test("opens on the big COMIC with one line of facts, one way back and a cue", async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     const errors = watchErrors(page);
     await openRoom(page);
+    const hero = page.locator("#comic-top");
+    await expect(hero.getByRole("img", { name: "COMIC" })).toBeVisible();
+    await expect(hero.getByText("2 official comics")).toBeVisible();
+    await expect(hero.getByText("21 made by fans")).toBeVisible();
+    // One button back to the shelf, and no way to another room above the wall.
+    await expect(page.getByRole("link", { name: "Collection" }).first()).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Rooms of the collection" })).toHaveCount(0);
+    await expect(page.locator("header[data-overlay='nav']")).toHaveAttribute("data-bare", "true");
 
-    // Each comic is a link to its own page.
-    const official = page.getByRole("link", {
-      name: /^Read (The Aspirant|Guinevere and Vexana)\./,
+    // The cue scrolls to the first comic, one whole screen. The button breathes all the time, so it
+    // is never still: press it without waiting for that, and again if the page was not ready yet.
+    const cue = hero.getByRole("button", { name: "Scroll to read" });
+    const top = () =>
+      page.evaluate(() =>
+        Math.round(document.getElementById("the-aspirant")?.getBoundingClientRect().top ?? 999),
+      );
+    await expect(async () => {
+      await cue.click({ force: true });
+      await expect.poll(top, { timeout: 2500 }).toBeLessThan(20);
+    }).toPass({ timeout: 15_000 });
+    expect(realErrors(errors)).toEqual([]);
+  });
+
+  test("each official comic has a whole screen and a button to its own page", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openRoom(page);
+    const first = page.locator("#the-aspirant");
+    const second = page.locator("#guinevere-and-vexana");
+    await expect(first.getByRole("group", { name: "The Aspirant, the comic" })).toBeAttached();
+    await expect(
+      second.getByRole("group", { name: "Guinevere and Vexana, the comic" }),
+    ).toBeAttached();
+    // The Aspirant comes first, then Guinevere and Vexana, each a screen tall.
+    const tops = await page.evaluate(() => [
+      document.getElementById("the-aspirant")!.getBoundingClientRect().top,
+      document.getElementById("guinevere-and-vexana")!.getBoundingClientRect().top,
+    ]);
+    expect(tops[0]).toBeLessThan(tops[1] ?? 0);
+    const heights = await page.evaluate(() => [
+      document.getElementById("the-aspirant")!.getBoundingClientRect().height,
+      document.getElementById("guinevere-and-vexana")!.getBoundingClientRect().height,
+    ]);
+    for (const h of heights) expect(h).toBeGreaterThanOrEqual(880);
+    await expect(first.getByRole("link", { name: /Read the comic/ })).toHaveAttribute(
+      "href",
+      /\/collection\/comic\/the-aspirant\/$/,
+    );
+    await expect(second.getByRole("link", { name: /Read the comic/ })).toHaveAttribute(
+      "href",
+      /\/collection\/comic\/guinevere-and-vexana\/$/,
+    );
+    // The middle panel of each is the first panel of its comic.
+    await expect(first.locator("[data-part='first']")).toBeAttached();
+    await expect(second.locator("[data-part='first']")).toBeAttached();
+  });
+
+  test("a part of a stage pops when it is pressed, and the button opens the comic", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openRoom(page);
+    const stage = page.locator("#guinevere-and-vexana");
+    await stage.scrollIntoViewIfNeeded();
+    const part = stage.locator("[data-part='vexana'] > div > div");
+    // A part drifts all the time, so it is never still: press it without waiting for that.
+    await part.click({ force: true });
+    await expect(part).toHaveAttribute("data-pop", "true");
+    await stage.getByRole("link", { name: /Read the comic/ }).click({ force: true });
+    await expect(page).toHaveURL(/\/collection\/comic\/guinevere-and-vexana\/$/);
+  });
+
+  test("the fan comics are a wall of links, and the foot has one button back", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = watchErrors(page);
+    await openRoom(page);
+    const wall = page.locator("#fan-comics");
+    await expect(wall.getByRole("heading", { name: "Fan comics" })).toBeAttached();
+    const cards = wall.getByRole("link", { name: /^Read .*, a fan comic/ });
+    expect(await cards.count()).toBe(21);
+    await expect(cards.first()).toHaveAttribute("href", /\/collection\/comic\/[a-z0-9-]+\/$/);
+    // Every fan comic names its credit and carries the fan badge.
+    expect(await wall.getByText("Fan work").count()).toBeGreaterThanOrEqual(20);
+    await expect(wall.getByText("View the original").first()).toBeAttached();
+    // A choice narrows the wall.
+    await wall.getByRole("button", { name: /^Obsidia/ }).click();
+    await expect(wall.getByRole("status")).toContainText("1 of 21");
+
+    // The top bar has its plate once the wall reaches it.
+    await wall.scrollIntoViewIfNeeded();
+    await page.evaluate(() => {
+      const el = document.getElementById("fan-comics");
+      if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY + 40);
     });
-    await expect(official).toHaveCount(2);
-    await expect(official.first()).toHaveAttribute("href", /\/collection\/comic\/the-aspirant\/$/);
-    await expect(page.getByRole("heading", { name: "Fan comics (not canon)" })).toBeVisible();
+    await expect(page.locator("header[data-overlay='nav']")).not.toHaveAttribute(
+      "data-bare",
+      "true",
+    );
 
-    // Official comics carry no fan badge. Every fan comic has the badge and a credit.
-    const fanCards = page.locator("article").filter({ hasText: "Fan work" });
-    expect(await fanCards.count()).toBeGreaterThanOrEqual(20);
-    await expect(fanCards.first()).toContainText("on Instagram");
-    await expect(page.getByText("View the original").first()).toBeVisible();
-
+    // The foot: a button back to the collection, and no next room.
+    const foot = page.locator("footer");
+    await expect(foot.getByRole("link", { name: /Back to the collection/ })).toBeVisible();
+    await expect(foot.getByText(/Next room/)).toHaveCount(0);
     expect(realErrors(errors)).toEqual([]);
   });
 
@@ -65,7 +154,10 @@ test.describe("collection / comic", () => {
     const errors = watchErrors(page);
     await openRoom(page);
 
-    await page.getByRole("link", { name: /^Read The Aspirant\./ }).click();
+    await page
+      .locator("#the-aspirant")
+      .getByRole("link", { name: /Read the comic/ })
+      .click();
     await expect(page).toHaveURL(/\/collection\/comic\/the-aspirant\/$/);
     const bar = page.locator("[data-comic-bar]");
     await expect(bar).toContainText("Page 1 of 42");

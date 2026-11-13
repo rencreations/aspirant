@@ -142,3 +142,11 @@ The owner asked for a redesign of `/collection/comic` (request word for word in 
 - The reader's top bar was light on a dark page because it took the colour of the room under the old overlay. It is locked dark now.
 - The first version opened already scrolled by the height of the spacer, so the bars folded away the moment the page opened. The first page is scroll 0 now.
 - Not done yet: the first screen with the big animated COMIC, the two official sections, the fan gallery, the new foot, and the transitions (see the spec).
+
+## 2026-11-14: the Comic room, phase 2 (the big COMIC, two official screens, a fan wall)
+
+The room itself: the word COMIC across the first screen (five drawn letters, each a window onto a comic panel, alive on idle, hover and press), one whole screen for The Aspirant (our own design) and for Guinevere and Vexana (the owner's banner rebuilt from live parts), each with one big button to the comic's page, a pinboard of the fan comics and a foot with one way back. The panels were cut from the original comic pages (`stage.py`) after looking at every page with a ruler; the chibi stickers were checked for a really transparent ground, and the Layla ones the owner named turned out to be opaque screenshots, so only the Layla and Fanny pair stickers are used.
+
+- A tablet in portrait showed the wide composition small in a tall screen; the tall layout now starts at 58 rem.
+- The first picture of the hero showed every letter in one colour: the panels had not been uploaded to the bucket yet (the room was seen through a local copy of it from then on).
+- Not done: phase 3, the transitions (the parallax zoom into the first panel for the two official comics, a halftone wipe for the fan comics).

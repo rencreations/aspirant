@@ -61,7 +61,34 @@ export interface ComicItem extends ItemBase {
   transcript?: TranscriptBlock[];
 }
 
-export type ComicFile = CollectionFile<ComicItem>;
+/** A panel cut from a comic's own page for the stage of an official comic (`stage.py`). */
+export interface StagePanel {
+  /** 720 and 1280 wide at most (library keys). */
+  p: string;
+  f: string;
+  /** The size of the cut at the page's own pixels. */
+  w: number;
+  h: number;
+  /** Average colour, for the box while the picture loads. */
+  c: string;
+  note: string;
+}
+
+/** A chibi sticker with a see-through ground, cut to its edges (a library key). */
+export interface StageChibi {
+  src: string;
+  w: number;
+  h: number;
+}
+
+export interface ComicStageData {
+  panels: Record<string, StagePanel>;
+  chibi: Record<string, StageChibi>;
+}
+
+export interface ComicFile extends CollectionFile<ComicItem> {
+  stage: ComicStageData;
+}
 
 /** One place in the reading order: a page, or a gap where the source has no picture. */
 export type SequenceEntry =
