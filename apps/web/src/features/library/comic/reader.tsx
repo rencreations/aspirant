@@ -603,6 +603,7 @@ export function Reader({ comic, prev, next, startPage }: ReaderProps) {
           role="region"
           aria-label={`${comic.title}, pages`}
           data-lenis-prevent
+          data-comic-scroller="true"
         >
           {/* Room for the top bar and the control bar, which are there at the very top only. */}
           <div className={styles.top} aria-hidden="true" />

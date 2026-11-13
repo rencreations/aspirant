@@ -26,6 +26,17 @@ async function openComic(page: Page, slug: string, query = "") {
   await expect(page.locator("[data-comic-bar]")).toBeAttached();
 }
 
+/**
+ * Wait until React has taken over an element (a press before that is the browser's plain link, which
+ * is a real page load and starts no transition).
+ */
+async function hydrated(page: Page, selector: string) {
+  await page.waitForFunction((sel) => {
+    const el = document.querySelector(sel);
+    return !!el && Object.keys(el).some((k) => k.startsWith("__reactProps"));
+  }, selector);
+}
+
 const scroller = (page: Page) => page.getByRole("region", { name: /, pages$/ });
 
 /** Move the strip, as a reader's wheel would. */
@@ -111,6 +122,61 @@ test.describe("collection / comic", () => {
     await expect(part).toHaveAttribute("data-pop", "true");
     await stage.getByRole("link", { name: /Read the comic/ }).click({ force: true });
     await expect(page).toHaveURL(/\/collection\/comic\/guinevere-and-vexana\/$/);
+  });
+
+  test("an official comic opens by a dive into its first panel and lands on the reader", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = watchErrors(page);
+    await openRoom(page);
+    const section = page.locator("#the-aspirant");
+    await section.scrollIntoViewIfNeeded();
+    await hydrated(page, "#the-aspirant a");
+    await section.getByRole("link", { name: /Read the comic/ }).click({ force: true });
+    // The stage holds still and the layer is there while the camera moves.
+    await expect(page.locator("[data-comic-dive]")).toBeAttached();
+    await expect(section).toHaveAttribute("data-diving", "true");
+    // It ends on the comic's own page, with the first page drawn, and the layer is gone.
+    await expect(page).toHaveURL(/\/collection\/comic\/the-aspirant\/$/, { timeout: 20_000 });
+    await expect(page.locator("[data-comic-dive]")).toHaveCount(0, { timeout: 20_000 });
+    await expect(page.locator("[data-comic-bar]")).toBeAttached();
+    await expect(scroller(page).locator("[data-n]").first()).toBeVisible();
+    expect(realErrors(errors)).toEqual([]);
+  });
+
+  test("a press with a modifier key leaves the link to the browser", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openRoom(page);
+    const section = page.locator("#the-aspirant");
+    await section.scrollIntoViewIfNeeded();
+    const link = section.getByRole("link", { name: /Read the comic/ });
+    await hydrated(page, "#the-aspirant a");
+    await expect(link).toHaveAttribute("href", /\/collection\/comic\/the-aspirant\/$/);
+    // A new tab is the browser's; the dive must not start on this page.
+    const popup = page.context().waitForEvent("page");
+    await link.click({ force: true, modifiers: ["Control"] });
+    await (await popup).close();
+    await expect(page.locator("[data-comic-dive]")).toHaveCount(0);
+    await expect(page).toHaveURL(/\/collection\/comic\/$/);
+  });
+
+  test("a fan comic opens through a wipe of halftone dots", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = watchErrors(page);
+    await openRoom(page);
+    const wall = page.locator("#fan-comics");
+    await wall.scrollIntoViewIfNeeded();
+    const card = wall.getByRole("link", { name: /^Read .*, a fan comic/ }).first();
+    const href = await card.getAttribute("href");
+    await hydrated(page, "#fan-comics a");
+    // The cards come in with a little motion: wait for the card to be still before pressing it.
+    await card.click();
+    await expect(page.locator("[data-comic-wipe]")).toBeAttached();
+    await expect(page).toHaveURL(new RegExp(`${href ?? ""}$`), { timeout: 20_000 });
+    await expect(page.locator("[data-comic-wipe]")).toHaveCount(0, { timeout: 20_000 });
+    await expect(page.locator("[data-comic-bar]")).toBeAttached();
+    expect(realErrors(errors)).toEqual([]);
   });
 
   test("the fan comics are a wall of links, and the foot has one button back", async ({ page }) => {

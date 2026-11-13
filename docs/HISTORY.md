@@ -150,3 +150,12 @@ The room itself: the word COMIC across the first screen (five drawn letters, eac
 - A tablet in portrait showed the wide composition small in a tall screen; the tall layout now starts at 58 rem.
 - The first picture of the hero showed every letter in one colour: the panels had not been uploaded to the bucket yet (the room was seen through a local copy of it from then on).
 - Not done: phase 3, the transitions (the parallax zoom into the first panel for the two official comics, a halftone wipe for the fan comics).
+
+## 2026-11-14: the Comic room, phase 3 (the dive into the first panel, the halftone wipe)
+
+The way into a comic. An official comic opens by a camera move on the live stage into its first panel and then onto the reader's own first page without a seam; a fan comic opens through a wipe of halftone dots. Code in `features/library/comic/zoom/`, the arithmetic tested in `math.test.ts`, the flows in `e2e/library-comic.spec.ts`.
+
+- The first measurement of the hand-over was off by up to three pixels at the far edge: the stage's idle drift tilts a panel by up to 0.7 degrees where it is paused, which widened the box the camera measured. The box is now measured as it is without the tilt and the panel is turned upright during the dive (the line-up is within a pixel or two).
+- `stage.py` now records where each panel was cut from (`at`), which the hand-over needs. `comic/build.py` also rewrote `scripts/library/ignored.json` as a side effect; that was reverted and is not part of the change (the file belongs to the other pipelines).
+- The two first panels of the stages stand upright (the old slight turn was removed for the dive).
+- Not checked: Firefox, Safari, a real phone.

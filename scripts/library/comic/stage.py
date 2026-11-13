@@ -105,6 +105,9 @@ def panel(name: str) -> dict:
         "w": cw,
         "h": ch,
         "c": dominant(crop),
+        # Where the cut sits on its page (page number, left and top in the page's pixels), so the
+        # transition into the reader can line the page up with the panel.
+        "at": {"n": int(Path(file).stem), "x": l, "y": t},
         "note": note,
     }
 

@@ -71,6 +71,8 @@ export interface StagePanel {
   h: number;
   /** Average colour, for the box while the picture loads. */
   c: string;
+  /** Where the cut sits on its page: the page's number, and the cut's left and top in the page's pixels. */
+  at: { n: number; x: number; y: number };
   note: string;
 }
 

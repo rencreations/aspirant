@@ -1,0 +1,80 @@
+/*
+ * The layers of the change of page into a comic (see dive.tsx and wipe.tsx). Only transform and opacity
+ * are animated; the colours are painted once.
+ */
+.dive,
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-transition);
+  pointer-events: none;
+}
+
+.wipe {
+  overflow: hidden;
+}
+
+/* ---- the dive: the comic's first page, laid over the panel and then over the reader ---- */
+
+/* Opaque, in the reader's own ground, and shown by its opacity. */
+.finale {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: color-mix(in srgb, var(--bg) 70%, #000);
+}
+
+.sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.piece {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 100%;
+}
+
+/* ---- the wipe: two grids of dots ---- */
+
+.dots {
+  position: absolute;
+  inset: 0;
+}
+
+.dots i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  transform: scale(0);
+}
+
+/* ---- what is said when the page is slow to arrive ---- */
+
+.wait {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  translate: -50% 0;
+  margin: 0;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  background: rgb(20 18 26 / 0.86);
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 180ms linear;
+}
+
+.wait[data-on="true"] {
+  opacity: 1;
+}
+
+.waitOnColour {
+  z-index: 2;
+}

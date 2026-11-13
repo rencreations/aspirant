@@ -184,6 +184,7 @@ export function Stage({ vars, ratio, className, label, children }: StageProps) {
         className={[styles.stage, className].filter(Boolean).join(" ")}
         style={style}
         role="group"
+        data-stage="true"
         aria-label={label}
         onPointerMove={onMove}
         onPointerLeave={onLeave}

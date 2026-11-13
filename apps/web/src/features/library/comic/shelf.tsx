@@ -10,6 +10,7 @@ import { CanonBadge, CreditLine } from "../shell/credit";
 import { comicPath } from "./route";
 import styles from "./shelf.module.css";
 import type { ComicItem } from "./types";
+import { startComicJob, warmComic } from "./zoom/store";
 
 /**
  * The page-flip count of a cover: while `active` it counts up to `n` in a short run, writing the
@@ -59,9 +60,19 @@ export function FanCard({ comic, index, resume }: CardProps) {
         href={comicPath(comic.slug) as never}
         transitionLabel={comic.title}
         className={styles.fanOpen}
+        onClick={(e) => {
+          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          // The wipe starts at the press (or at the card, for the keyboard).
+          const r = e.currentTarget.getBoundingClientRect();
+          const x = e.detail === 0 ? r.left + r.width / 2 : e.clientX;
+          const y = e.detail === 0 ? r.top + r.height / 2 : e.clientY;
+          startComicJob({ kind: "wipe", href: comicPath(comic.slug), comic, x, y });
+        }}
         aria-label={`Read ${comic.title}, a fan comic. ${pagesLabel(comic)}${showResume ? `. Resume at page ${resume}` : ""}`}
         onPointerEnter={() => {
           audio.blip("hover");
+          warmComic(comicPath(comic.slug));
           setHot(true);
         }}
         onPointerLeave={() => {

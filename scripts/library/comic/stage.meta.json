@@ -6,6 +6,11 @@
       "w": 1000,
       "h": 820,
       "c": "#5c6988",
+      "at": {
+        "n": 1,
+        "x": 0,
+        "y": 0
+      },
       "note": "the first panel of the comic: the planet and the first lines"
     },
     "as-layla-sword": {
@@ -14,6 +19,11 @@
       "w": 1000,
       "h": 1980,
       "c": "#af99a0",
+      "at": {
+        "n": 12,
+        "x": 0,
+        "y": 120
+      },
       "note": "Layla with her blade"
     },
     "as-fanny-face": {
@@ -22,6 +32,11 @@
       "w": 580,
       "h": 920,
       "c": "#b78787",
+      "at": {
+        "n": 25,
+        "x": 0,
+        "y": 80
+      },
       "note": "Fanny, set"
     },
     "as-layla-burst": {
@@ -30,6 +45,11 @@
       "w": 1000,
       "h": 1300,
       "c": "#8098ac",
+      "at": {
+        "n": 32,
+        "x": 0,
+        "y": 1350
+      },
       "note": "Layla, a star of light"
     },
     "as-both": {
@@ -38,6 +58,11 @@
       "w": 1000,
       "h": 1950,
       "c": "#835c7b",
+      "at": {
+        "n": 42,
+        "x": 0,
+        "y": 1350
+      },
       "note": "the two of them at the end"
     },
     "as-duel": {
@@ -46,6 +71,11 @@
       "w": 1000,
       "h": 2000,
       "c": "#91778a",
+      "at": {
+        "n": 26,
+        "x": 0,
+        "y": 850
+      },
       "note": "Fanny above, Layla below"
     },
     "as-layla-angry": {
@@ -54,6 +84,11 @@
       "w": 1000,
       "h": 1370,
       "c": "#9e828c",
+      "at": {
+        "n": 24,
+        "x": 0,
+        "y": 230
+      },
       "note": "Layla, furious"
     },
     "gv-first": {
@@ -62,6 +97,11 @@
       "w": 2500,
       "h": 1250,
       "c": "#6d4c43",
+      "at": {
+        "n": 1,
+        "x": 0,
+        "y": 2250
+      },
       "note": "the first page: fire and the first BANG"
     },
     "gv-vexana": {
@@ -70,6 +110,11 @@
       "w": 1650,
       "h": 2400,
       "c": "#473451",
+      "at": {
+        "n": 44,
+        "x": 500,
+        "y": 3150
+      },
       "note": "Vexana in her dark form"
     },
     "gv-boom": {
@@ -78,6 +123,11 @@
       "w": 2300,
       "h": 2100,
       "c": "#a97077",
+      "at": {
+        "n": 10,
+        "x": 100,
+        "y": 2900
+      },
       "note": "Guinevere strikes"
     },
     "gv-close": {
@@ -86,6 +136,11 @@
       "w": 2000,
       "h": 1700,
       "c": "#b2adb1",
+      "at": {
+        "n": 32,
+        "x": 500,
+        "y": 700
+      },
       "note": "the two close, Don't worry"
     },
     "gv-meadow": {
@@ -94,6 +149,11 @@
       "w": 2500,
       "h": 2200,
       "c": "#968876",
+      "at": {
+        "n": 31,
+        "x": 0,
+        "y": 1400
+      },
       "note": "the two in a meadow"
     },
     "gv-gold": {
@@ -102,6 +162,11 @@
       "w": 1360,
       "h": 2120,
       "c": "#8d5f4a",
+      "at": {
+        "n": 4,
+        "x": 60,
+        "y": 1180
+      },
       "note": "a long haired figure in golden light"
     },
     "gv-fall": {
@@ -110,6 +175,11 @@
       "w": 2500,
       "h": 1400,
       "c": "#444269",
+      "at": {
+        "n": 21,
+        "x": 0,
+        "y": 1900
+      },
       "note": "falling, upside down, in blue light"
     }
   },

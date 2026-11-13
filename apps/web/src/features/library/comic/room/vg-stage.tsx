@@ -319,8 +319,8 @@ export function VgStage({ stage }: Props) {
       <Part
         id="first"
         order={4}
-        wide={R(330, 148, 330, 176, -1)}
-        narrow={N(250, 250, 700, 300, 1)}
+        wide={R(330, 148, 330, 176, 0)}
+        narrow={N(250, 250, 700, 300, 0)}
         z={7}
         amp={6}
         dur={7}

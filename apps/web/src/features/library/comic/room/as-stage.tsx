@@ -244,7 +244,7 @@ export function AsStage({ stage }: Props) {
         id="first"
         order={5}
         wide={R(512, 214, 296, 244, 0)}
-        narrow={N(250, 270, 600, 280, 1)}
+        narrow={N(250, 270, 600, 280, 0)}
         z={10}
         amp={6}
         dur={7}

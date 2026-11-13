@@ -193,3 +193,22 @@
 .spark:nth-child(3n) {
   background: #35d6e0;
 }
+
+/*
+ * The stage is diving into its first panel (see ../zoom/): it holds where it is, so what the dive
+ * measures is what stays. The parts snap to their place of rest and nothing reacts to the pointer.
+ */
+.stage[data-diving="true"] {
+  pointer-events: none;
+}
+
+.stage[data-diving="true"] .part,
+.stage[data-diving="true"] .depth,
+.stage[data-diving="true"] .inner,
+.stage[data-diving="true"] .frame img {
+  transition: none;
+}
+
+.stage[data-diving="true"] .inner {
+  animation-play-state: paused;
+}

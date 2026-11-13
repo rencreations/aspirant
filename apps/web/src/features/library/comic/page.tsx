@@ -109,12 +109,22 @@ export default function ComicPage() {
         onCue={toFirstComic}
       />
       {aspirant ? (
-        <OfficialSection id="the-aspirant" comic={aspirant} tone="as">
+        <OfficialSection
+          id="the-aspirant"
+          comic={aspirant}
+          tone="as"
+          first={file.stage.panels["as-first"]}
+        >
           <AsStage stage={file.stage} />
         </OfficialSection>
       ) : null}
       {guinevere ? (
-        <OfficialSection id="guinevere-and-vexana" comic={guinevere} tone="vg">
+        <OfficialSection
+          id="guinevere-and-vexana"
+          comic={guinevere}
+          tone="vg"
+          first={file.stage.panels["gv-first"]}
+        >
           <VgStage stage={file.stage} />
         </OfficialSection>
       ) : null}

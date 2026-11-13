@@ -6,7 +6,7 @@ Request: `2026-11-13-comic-room-request.md` (word for word). The owner asked for
 
 - **Phase 1, done:** every comic is a page of its own, and the reader has the new chrome. See "Phase 1".
 - **Phase 2, done (14 Nov 2026):** the first screen (the big animated COMIC), the two full-screen official sections, the fan gallery and the new foot. See "Phase 2".
-- **Phase 3, not started:** the transitions between the room and a comic. See "Phase 3".
+- **Phase 3, done (14 Nov 2026):** the transitions between the room and a comic. See "Phase 3".
 
 ## Intent
 
@@ -55,10 +55,13 @@ What was asked, and how it was made. (The first sketch said the letters were "SV
 - Tablets and phones have no pointer, so the depth follows nothing there; the idle drift, the pop and the sparks are the same.
 - The nav stays bare over the first three screens. It takes its plate at the fan wall, because the wall would slide under the menu buttons.
 
-## Phase 3: the transitions (not started)
+## Phase 3: the transitions (done)
 
-- **Official:** a click on "Read the comic" starts a parallax zoom. Every layer of the composition moves at its own depth while the middle panel grows to fill the screen, then the reader's first page takes its place with no cut (the reader opens on that same picture, at the same scale, so there is no seam). It is a morph layer in the root layout, like the story's chapter morph (`features/story/morph/`): it claims the transition router, uses two-keyframe Web Animations on transform and opacity, and removes itself on any failure, opening the page with the curtain.
-- **Fan comics:** a transition of their own, a halftone wipe, not the logo curtain.
+- **Official: a dive.** A press on "Read the comic" starts a parallax zoom on the live stage (Web Animations, transform and opacity). One pivot, one camera scale: the first panel is brought to the middle of the screen covering it, every other part is scaled by `k ** exponent(depth)` (the ones in front rush past and fade out between 34 and 78 percent of the dive, the ones behind hang back), the button and its line let go first. The stage is held still when the dive starts (`[data-diving]`: the drift paused, the pointer ignored, the parts snapped to rest), and the first panel is turned upright on the way in, because the drift may have tilted it a little where it stopped. The dive takes 1.5 s.
+- **Seamless.** When the panel fills the screen, an opaque layer in the reader's own ground fades in over it (260 ms). It holds the comic's own first page, laid out so that the page's pixels sit exactly under the panel's picture (the panel's cut position on its page is in `comic.json` as `stage.panels[].at`, written by `stage.py`; the arithmetic is `pageAfterZoom`). The route changes under it. When the reader is open, the first page's rect is measured on the reader itself (`[data-comic-scroller] [data-n]`) and the layer's page moves and scales to it (650 to 1250 ms, by the distance), then the layer fades out over an identical picture. The Aspirant's first panel is the top of its first page, so the settle is a short pull back; Guinevere and Vexana's is a cut from the middle of a long first page, so the camera rises up the page to its start. Measured at the end of the dive, the two pictures agree to within a pixel or two.
+- **Fan comics: a halftone wipe.** From the press, two grids of round dots (ink, then the loud colour of the cover: its hue, saturation raised) swell until they cover the screen, the page changes, and they shrink away from the middle. About twenty dots across the longer side, one element per dot, transform only.
+- **Safety.** The layer claims the transition router, holds the scroll (wheel, touch, keys), and removes itself on any failure; the page then opens the plain way. A modified press (new tab) is left to the browser. The comic's page, its reader and its first pages are warmed when the section is on screen or the card is hovered; if they are not there when the cover is closed, the real percentage is shown over it and the change waits.
+- **Left as it was:** the way back from a comic to the room, the previous and next cards at the end of a comic and the search sheet keep the logo curtain.
 
 ## Anti-goals
 

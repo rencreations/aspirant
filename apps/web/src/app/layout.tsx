@@ -15,6 +15,7 @@ import { LoaderGate, SHELL_ID } from "@/components/loader-gate";
 import { SiteNav } from "@/components/nav/site-nav";
 import { SiteProviders } from "@/components/site-providers";
 import { ConsentBanner } from "@/features/legal/consent/consent-banner";
+import { ComicLayer } from "@/features/library/comic/zoom/layer";
 import { MorphLayer } from "@/features/story/morph/morph-layer";
 import { RELOAD_KEY, RELOAD_WINDOW_MS } from "@/lib/chunk-guard";
 import { ENTERED_KEY } from "@/lib/stores";
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             </main>
           </div>
           <MorphLayer />
+          <ComicLayer />
           <LanternCursor />
           <FocusStar />
           <LoaderGate />

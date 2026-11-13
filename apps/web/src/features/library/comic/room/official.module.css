@@ -9,6 +9,12 @@
   isolation: isolate;
 }
 
+/* While the stage dives into its first panel it may run over the whole screen, above the sections around it. */
+.section[data-diving="true"] {
+  z-index: 30;
+  overflow: visible;
+}
+
 .section[data-tone="as"] {
   background: #fff0dc;
   color: #14121a;
