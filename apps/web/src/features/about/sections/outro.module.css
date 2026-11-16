@@ -1,0 +1,124 @@
+/* The close of the page: the last line and the two ways on at the left, the ring where the drone
+   rests at the right, and the site's notice under a hairline. */
+.outro {
+  padding-bottom: var(--space-xl);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-l);
+}
+
+/* The accent word: the serif italic of the page's title, in lower case among the capitals. */
+.serif {
+  font-family: var(--font-serif-stack);
+  font-size: 1.04em;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--accent);
+}
+
+.ways {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: var(--space-l);
+}
+
+/* The round pill of the rooms of the collection. It lifts on hover; its arrow steps on. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: 3rem;
+  padding: 0 1.35rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pill[data-primary] {
+  border-color: #0b0b0e;
+  background: #0b0b0e;
+  color: #f4f6f9;
+}
+
+.pill svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.pill:hover svg,
+.pill:focus-visible svg {
+  transform: translate3d(4px, 0, 0);
+}
+
+/* The drone's place: the empty right of the section, in its ring. */
+.rest {
+  margin-right: clamp(0rem, 6vw, 9rem);
+}
+
+.report {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
+  /* A small line of text, but a whole finger of room to press it. */
+  display: inline-block;
+  padding-block: 0.9rem;
+  margin-block: -0.9rem;
+}
+
+.notice {
+  position: relative;
+  grid-column: 1 / -1;
+  margin: clamp(3.5rem, 12vh, 7rem) 0 0;
+  padding-top: 1.25rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.notice > span:first-child {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: var(--line);
+}
+
+.notice > span:last-child {
+  display: block;
+  max-width: 78ch;
+}
+
+@media (max-width: 56.25em) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rest {
+    margin: var(--space-xl) 0 0;
+  }
+}

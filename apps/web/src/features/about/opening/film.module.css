@@ -1,0 +1,452 @@
+/*
+ * The film's stage (see film.tsx): one screen, stuck for the whole track, over the drone's layer.
+ * The big window is laid out here, with the same arithmetic as `windowBox` in film-geometry.ts
+ * (the script reads the result back, so the two cannot drift): as wide as the page between the
+ * gutters, in the reel's shape, in the space under the bar, held to that space on a short screen.
+ * Everything else of the stage is placed from the window. Only transform and opacity move, and
+ * nothing here is a filter or a blend: the picture is a playing film.
+ */
+.stage {
+  --room: calc(var(--lvh) - var(--nav-h));
+  --win-h: min(
+    calc((100vw - 2 * var(--gutter)) / var(--aspect)),
+    max(120px, calc(var(--room) - max(150px, var(--room) * 0.3)))
+  );
+  --win-w: calc(var(--win-h) * var(--aspect));
+  --win-x: calc((100vw - var(--win-w)) / 2);
+  --win-y: calc(var(--nav-h) + (var(--room) - var(--win-h)) * 0.56);
+  --radius: clamp(14px, 1.5vw, 26px);
+  position: sticky;
+  top: 0;
+  z-index: var(--layer);
+  height: var(--lvh);
+  pointer-events: none;
+}
+
+/* Without scripts nothing places the picture on its slot: the slot shows the still instead. */
+:global(:root:not(.js)) .stage {
+  visibility: hidden;
+}
+
+/* ---- the picture ---- */
+
+/* The wrapper: its own box is the big window. The script writes one transform on it. */
+.picture {
+  position: absolute;
+  top: var(--win-y);
+  left: var(--win-x);
+  width: var(--win-w);
+  height: var(--win-h);
+  overflow: hidden;
+  border-radius: var(--radius);
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* The preview's own arrival, when the drone has sat down. */
+.intro {
+  position: absolute;
+  inset: 0;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  /* What stands in until the reel has a picture, and for good if it never has one. */
+  background: #10131a;
+  transition: transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The veil: a flat layer of the page's paper. The outer box takes the scroll, the inner one the
+   pointer, and the two multiply. */
+.veil {
+  position: absolute;
+  inset: -1px;
+  opacity: 0.7;
+}
+
+.tint {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  /* A soft start and a soft end: the veil is lifted, not snapped away. */
+  transition: opacity 620ms cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.stage[data-lift] .tint {
+  opacity: 0;
+}
+
+.stage[data-lift] .media {
+  transform: scale(1.03);
+}
+
+/* ---- the preview's button ---- */
+
+/* As big as the slot, and it rides on the picture while the picture is small. */
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--slot-w, 0);
+  height: var(--slot-h, 0);
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--radius) * 0.4);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.preview[inert] {
+  pointer-events: none;
+}
+
+.tag {
+  position: absolute;
+  bottom: clamp(0.55rem, 0.9vw, 1rem);
+  left: clamp(0.6rem, 1vw, 1.1rem);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono-stack);
+  font-size: max(0.625rem, 0.72 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 560ms var(--ease-out);
+}
+
+.tagMark {
+  display: grid;
+  place-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.tagMark svg {
+  width: 62%;
+  height: 62%;
+}
+
+/* The tag belongs to the veil and goes with it. */
+.stage[data-lift] .tag {
+  opacity: 0;
+  transform: translate3d(0, 30%, 0);
+}
+
+/* ---- the drone's perch: over the top edge of the window, near its right end ---- */
+
+.perch {
+  position: absolute;
+  top: calc(var(--win-y) - var(--perch) * (var(--perch-lift) + 0.5));
+  left: calc(var(--win-x) + var(--win-w) - var(--perch) * (var(--perch-inset) + 0.5));
+  width: var(--perch);
+  height: var(--perch);
+}
+
+/* ---- the big window's controls ---- */
+
+.controls {
+  position: absolute;
+  inset: 0;
+}
+
+.mask {
+  display: inline-block;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.mask > span {
+  display: inline-block;
+  transform: translate3d(0, 125%, 0);
+  transition: transform 420ms var(--ease-in-out);
+}
+
+/* The line over the window: it stops short of the drone. */
+.index {
+  position: absolute;
+  top: calc(var(--win-y) - 2.1rem);
+  left: var(--win-x);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: calc(var(--win-w) - var(--perch) * (var(--perch-inset) + 0.75));
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.indexNo {
+  color: var(--accent);
+}
+
+.indexRule {
+  flex: 1;
+  height: 1px;
+  background: var(--line-strong);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms var(--ease-in-out);
+}
+
+/* The play control, in the middle of the window. */
+.playAt {
+  position: absolute;
+  top: calc(var(--win-y) + var(--win-h) / 2);
+  left: calc(var(--win-x) + var(--win-w) / 2);
+  width: 0;
+  height: 0;
+}
+
+.play {
+  --d: clamp(4.25rem, 6.2vw, 7rem);
+  position: absolute;
+  top: calc(var(--d) / -2);
+  left: calc(var(--d) / -2);
+  display: grid;
+  place-items: center;
+  width: var(--d);
+  height: var(--d);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 360ms var(--ease-in-out);
+}
+
+.playMark {
+  width: 44%;
+  height: 44%;
+  transition: transform 420ms var(--ease-out);
+}
+
+/* The five phases, under the window. */
+.pills {
+  position: absolute;
+  top: calc(var(--win-y) + var(--win-h) + 1.1rem);
+  left: var(--win-x);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  /* To the page's gutter, not to the window's end: on a short, wide screen the window is narrow
+     and the five must still stand in one row. */
+  right: var(--gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pillItem {
+  opacity: 0;
+  transform: translate3d(0, 0.9rem, 0);
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 320ms var(--ease-in-out);
+}
+
+.pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  height: 2.5rem;
+  padding: 0 1.05rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* The hairline in ink, over the pale one. It comes with the pointer, by opacity. */
+.pill::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--text);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.pillNo {
+  color: var(--accent);
+}
+
+.pillYear {
+  display: none;
+}
+
+@media (hover: hover) {
+  .pill:hover {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .pill:hover::after {
+    opacity: 1;
+  }
+
+  .play:hover .playMark {
+    transform: scale(1.18);
+  }
+}
+
+/* The window is complete: its controls arrive, one after the other. They leave faster. */
+.stage[data-complete] .mask > span {
+  transform: none;
+  transition: transform 900ms cubic-bezier(0.32, 0.72, 0, 1) 120ms;
+}
+
+.stage[data-complete] .indexRule {
+  transform: none;
+  transition: transform 1200ms cubic-bezier(0.32, 0.72, 0, 1) 160ms;
+}
+
+.stage[data-complete] .play {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 420ms var(--ease-out) 180ms,
+    transform 900ms var(--ease-spring) 180ms;
+}
+
+.stage[data-complete] .pillItem {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 520ms var(--ease-out) calc(260ms + var(--i) * 55ms),
+    transform 820ms cubic-bezier(0.32, 0.72, 0, 1) calc(260ms + var(--i) * 55ms);
+}
+
+.stage[data-complete] .play,
+.stage[data-complete] .pill {
+  pointer-events: auto;
+}
+
+/* ---- the opening: the preview is not there until the drone sits ---- */
+
+:global(:root.js [data-about-intro="wait"]) .intro,
+:global(:root.js [data-about-intro="title"]) .intro,
+:global(:root.js [data-about-intro="landing"]) .intro {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+:global(:root.js [data-about-intro="wait"]) .tag,
+:global(:root.js [data-about-intro="title"]) .tag,
+:global(:root.js [data-about-intro="landing"]) .tag {
+  opacity: 0;
+  transform: translate3d(0, 60%, 0);
+}
+
+/* The arrival, once: these delays belong to the moment the drone lands. Kept past it they
+   would hold back the tag and the picture when the pointer lifts the veil. */
+:global([data-about-intro="landed"]) .intro {
+  transition:
+    opacity 900ms var(--ease-out) 700ms,
+    transform 1500ms cubic-bezier(0.32, 0.72, 0, 1) 700ms;
+}
+
+:global([data-about-intro="landed"]) .tag {
+  transition:
+    opacity 600ms var(--ease-out) 1500ms,
+    transform 800ms cubic-bezier(0.32, 0.72, 0, 1) 1500ms;
+}
+
+/* ---- the upright composition: the five phases become a list ---- */
+
+@media (max-aspect-ratio: 1/1), (max-width: 47.5rem) {
+  /* The window carries a list of five rows under it here, so it is the whole block (the line
+     above, the window, the list) that stands in the middle of the space under the bar, never
+     closer to the bar than the perched drone needs. */
+  .stage {
+    --win-y: calc(var(--nav-h) + max(4.6rem, (var(--room) - var(--win-h) - 14.7rem) / 2 + 1rem));
+  }
+
+  .index {
+    top: calc(var(--win-y) - 1.9rem);
+  }
+
+  .index .mask:last-child {
+    display: none;
+  }
+
+  .tag {
+    font-size: max(0.5625rem, 2.3 * var(--u));
+  }
+
+  .play {
+    --d: 3.25rem;
+  }
+
+  .pills {
+    top: calc(var(--win-y) + var(--win-h) + 0.9rem);
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+
+  .pillItem:last-child .pill {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pill {
+    width: 100%;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+  }
+
+  .pill::after {
+    content: none;
+  }
+
+  .pillTitle {
+    flex: 1;
+    text-align: left;
+  }
+
+  .pillYear {
+    display: block;
+    color: var(--text-faint);
+  }
+}

@@ -15,5 +15,6 @@ Small scripts that open the real site in a real Chrome and print or photograph w
 | `menu-shots.cjs`  | How does the full-screen menu look at each size with each page hovered?                                                                                                                                              |
 | `drama-flow.cjs`  | Does the interactive drama save, continue, level select and play as it should?                                                                                                                                       |
 | `library.cjs`     | Do the shelf and every room of `/collection` (fourteen pages: the Video choice, Films, Others, an Animation character and the rest) load at 1440, 1920 and 390 with no errors, broken pictures or sideways overflow? |
+| `about.cjs`       | What does `/about` look like at rest, through its opening (held at a row of times) and all the way down the scroll? It also writes the drone's state at every frame (`window.__aboutDrone`).                         |
 
 `scripts/perf/` has the heavier measuring scripts (`weak.mjs`: a weak device, `net.mjs`: bad connections, `trace.mjs`) and `scripts/qa/scan-text.mjs` scans the shipped text.

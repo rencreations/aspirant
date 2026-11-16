@@ -1,0 +1,140 @@
+/*
+ * The title of the About page (see title.tsx). The h1 is a box under the top bar, from the gutter
+ * to the right edge of the page. Its font size is the unit of the first screen, so every measure
+ * of the two words is in `em` and the whole composition scales as one piece.
+ */
+.title {
+  /* The box the two words are composed in, and the air the reveal's rows keep around it (the
+     slant of ABOUT, the tilt of Aspirant and the tail of its p reach outside the box). */
+  --title-h: 27em;
+  --bleed: 1.5em;
+  position: absolute;
+  top: var(--nav-h);
+  right: 0;
+  left: var(--gutter);
+  height: var(--title-h);
+  margin: 0;
+  font-size: var(--u);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+/* The name of the page for a screen reader: the drawn words are decoration. */
+.name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+}
+
+/* ABOUT: the display face, giant, its caps touching the foot of the top bar. */
+.about {
+  position: absolute;
+  top: var(--about-top, -0.04em);
+  left: var(--about-left, -0.02em);
+  font-size: var(--about-size, 18em);
+  line-height: 1;
+  color: var(--text);
+}
+
+/* Aspirant: the serif, pink, across the lower right of ABOUT and in front of it. */
+.aspirant {
+  position: absolute;
+  top: var(--aspirant-top, 0.152em);
+  left: var(--aspirant-left, 1.247em);
+  font-size: var(--aspirant-size, 19.4em);
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  color: var(--accent);
+  transform: rotate(-4.5deg);
+  transform-origin: 46% 62%;
+}
+
+/* ---- the reveal ---- */
+
+/* The rows. Each is a window as wide as the title and a screen more, so it can be drawn past the
+   left end; closed, it waits beyond the right edge of the page. */
+.bands {
+  --pitch: calc((var(--title-h) + 2 * var(--bleed)) / var(--bands));
+  position: absolute;
+  inset: calc(-1 * var(--bleed)) 0 calc(-1 * var(--bleed)) calc(-1 * var(--bleed));
+  pointer-events: none;
+}
+
+.band {
+  position: absolute;
+  top: calc(var(--i) * var(--pitch));
+  right: -100vw;
+  left: 0;
+  /* A pixel of overlap, so no seam shows between two rows. */
+  height: calc(var(--pitch) + 1px);
+  overflow: hidden;
+  transform: translate3d(100vw, 0, 0);
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* The copy of the title inside a row: the whole title, placed so its letters lie on the plain
+   title's. It leans about the same point as its window, so the two lean and counter lean cancel. */
+.copy {
+  position: absolute;
+  top: calc(var(--i) * var(--pitch) * -1);
+  left: 0;
+  width: calc(100% - 100vw);
+  height: calc(var(--pitch) * var(--bands));
+  transform-origin: 0 calc(var(--i) * var(--pitch));
+  will-change: transform;
+}
+
+.copyArt {
+  position: absolute;
+  inset: var(--bleed) 0 var(--bleed) var(--bleed);
+}
+
+/* The leading edge of a row: a thin mark in the drone's own colour. */
+.tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: max(2px, 0.16em);
+  background: var(--light-cyan);
+}
+
+/* Until the pass is over the plain title is not shown: the rows show what the drone has opened. */
+:global(:root.js [data-about-intro="wait"]) .title:not([data-finished]) > .art,
+:global(:root.js [data-about-intro="title"]) .title:not([data-finished]) > .art,
+:global(:root.js [data-about-intro="landing"]) .title:not([data-finished]) > .art,
+:global(:root.js [data-about-intro="landed"]) .title:not([data-finished]) > .art {
+  visibility: hidden;
+}
+
+:global([data-about-intro="done"]) .bands {
+  visibility: hidden;
+}
+
+/* ---- the upright composition (a phone, a tablet held upright) ---- */
+
+@media (max-aspect-ratio: 1/1), (max-width: 47.5rem) {
+  .title {
+    --title-h: 62em;
+    --bleed: 4em;
+    --about-size: 37.5em;
+    --about-top: 0.02em;
+    --aspirant-size: 28.5em;
+    --aspirant-top: 0.88em;
+    --aspirant-left: 0.04em;
+    right: 0;
+  }
+}

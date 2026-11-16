@@ -1,0 +1,675 @@
+/* The five phases. One to a screen or nearly: a timeline of the years across the top, a giant
+   numeral that fills with ink as it arrives, two tall windows of art that open from below, and
+   three hairline rows. Everything that moves is a transform or an opacity. `--house` is the
+   curve of the site's mask reveals. */
+.phases {
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  /* The drone's width at its places in this section. */
+  --d: clamp(72px, 10vw, 190px);
+  /* How much lower the second window of a pair hangs. */
+  --drop: clamp(2.5rem, 10vh, 6.5rem);
+}
+
+.head {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-l);
+}
+
+/* The right of the head: the drone's place, and under it the line about the two wordings. */
+.aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(2rem, 5.5vh, 4rem);
+}
+
+.aside p {
+  margin: 0 0 0.5rem;
+}
+
+.headAnchor {
+  width: clamp(72px, 11vw, 200px);
+  margin-left: clamp(0rem, 6vw, 7rem);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(7rem, 22vh, 15rem);
+  margin: clamp(5rem, 16vh, 11rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "ruler ruler"
+    "top art"
+    "rows art";
+  column-gap: clamp(2rem, 6.5vw, 8rem);
+}
+
+/* Every other phase is mirrored, so the page never reads as five copies of one card. */
+.phase[data-flip="true"] {
+  grid-template-areas:
+    "ruler ruler"
+    "art top"
+    "art rows";
+}
+
+/* The timeline ---------------------------------------------------------------------------------- */
+
+.ruler {
+  --y: 2.2rem;
+  grid-area: ruler;
+  position: relative;
+  height: 4.4rem;
+  margin-bottom: clamp(2.5rem, 7vh, 5rem);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.track,
+.run {
+  position: absolute;
+  top: var(--y);
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: 0 50%;
+}
+
+.track {
+  background: var(--line);
+  transition: transform 1400ms var(--house);
+}
+
+/* The ink runs from the start of 2022 to this phase's day. */
+.run {
+  background: var(--text);
+  transform: scaleX(var(--at));
+  transition: transform 1700ms var(--house) 250ms;
+}
+
+.year {
+  position: absolute;
+  top: var(--y);
+  padding: 0.95rem 0 0 0.5rem;
+  color: var(--text-faint);
+  transition: opacity 700ms var(--ease-out) calc(var(--i) * 110ms + 250ms);
+}
+
+.year::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1.7rem;
+  background: var(--line-strong);
+  content: "";
+}
+
+.year[data-past="true"] {
+  color: var(--text);
+}
+
+/* The other four sale days: ink for those before this phase, hollow for those after. */
+.mark {
+  position: absolute;
+  top: var(--y);
+  width: 7px;
+  height: 7px;
+  margin: -3px 0 0 -3.5px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--bg);
+  transition:
+    opacity 600ms var(--ease-out) 900ms,
+    transform 800ms var(--ease-spring) 900ms;
+}
+
+.mark[data-past="true"] {
+  border-color: var(--text);
+  background: var(--text);
+}
+
+.pin {
+  position: absolute;
+  top: var(--y);
+  color: var(--accent);
+}
+
+.pin::before {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 0.85rem;
+  background: currentcolor;
+  transform-origin: 50% 100%;
+  transition: transform 500ms var(--house) 1500ms;
+  content: "";
+}
+
+.pinDot {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: currentcolor;
+  transition: transform 900ms var(--ease-spring) 1250ms;
+}
+
+.pinDate {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 0;
+  white-space: nowrap;
+  translate: -50% 0;
+  transition:
+    opacity 600ms var(--ease-out) 1650ms,
+    transform 800ms var(--ease-out) 1650ms;
+}
+
+.pin[data-edge="start"] .pinDate {
+  translate: -0.3rem 0;
+}
+
+.pin[data-edge="end"] .pinDate {
+  translate: calc(-100% + 0.3rem) 0;
+}
+
+:global(:root.js) .ruler[data-in="false"] .track,
+:global(:root.js) .ruler[data-in="false"] .run {
+  transform: scaleX(0);
+}
+
+:global(:root.js) .ruler[data-in="false"] .year {
+  opacity: 0;
+}
+
+:global(:root.js) .ruler[data-in="false"] .mark {
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+:global(:root.js) .ruler[data-in="false"] .pin::before {
+  transform: scaleY(0);
+}
+
+:global(:root.js) .ruler[data-in="false"] .pinDot {
+  transform: scale(0);
+}
+
+:global(:root.js) .ruler[data-in="false"] .pinDate {
+  opacity: 0;
+  transform: translate3d(0, 0.5rem, 0);
+}
+
+/* The numeral ----------------------------------------------------------------------------------- */
+
+.top {
+  grid-area: top;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 2.6vw, 3rem);
+}
+
+.phase[data-flip="true"] .top {
+  flex-direction: row-reverse;
+}
+
+/* Mirrored, the figures end on the page's right edge: the slant is pulled back inside it. */
+.phase[data-flip="true"] .numeral {
+  margin: 0 -0.04em 0 0;
+}
+
+/* Two drawings of the same figures on one spot: an outline, and the ink that rises into it. The
+   ink is inside two boxes that slide against each other, so the figures stand still while their
+   edge climbs. The padding gives the slant of the face room inside the box that cuts. */
+.numeral {
+  position: relative;
+  flex: none;
+  margin: 0 0 0 -0.03em;
+  padding: 0 0.1em 0 0.03em;
+  font-size: clamp(8.5rem, 23vw, 27rem);
+}
+
+.numeral .ghost,
+.numeral .fill {
+  display: block;
+  font-size: inherit;
+  line-height: 0.8;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.numeral .ghost {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+
+/* The two boxes of the ink follow the scroll (written by script, so they have no transition). */
+.fillBox,
+.numeral .fill {
+  position: absolute;
+  will-change: transform;
+}
+
+/* The box that cuts is wider and taller than the line, by what the slanted figures overhang. */
+.fillBox {
+  inset: -0.12em -0.2em -0.12em -0.08em;
+  overflow: hidden;
+}
+
+.numeral .fill {
+  inset: 0;
+  padding: 0.12em 0.3em 0.12em 0.11em;
+  color: var(--text);
+}
+
+/* Empty until the script has placed the ink. Without scripts the figures are simply full. */
+:global(:root.js) .fillBox {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .numeral .fill {
+  transform: translate3d(0, -101%, 0);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3.2vh, 2.2rem);
+  min-width: 0;
+  padding-top: 0.5rem;
+}
+
+.phase[data-flip="true"] .side {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* The official word, small beside the figure, and the month the skins went on sale. */
+.tag {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.tag b {
+  margin-bottom: 0.25em;
+  font-size: 1.18em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tag span:last-child {
+  color: var(--text-dim);
+}
+
+/* The drone's place beside the numeral: real empty space, never over a word or a picture. */
+.anchor {
+  width: clamp(72px, 10vw, 190px);
+  margin: clamp(1rem, 2.2vw, 2.6rem) clamp(0.25rem, 1.6vw, 2rem) 0;
+}
+
+/* The rows -------------------------------------------------------------------------------------- */
+
+.rows {
+  grid-area: rows;
+  align-self: end;
+  width: 100%;
+  max-width: 35rem;
+  margin: clamp(2rem, 6vh, 4rem) 0 0;
+}
+
+.phase[data-flip="true"] .rows {
+  justify-self: end;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.95rem 0 1rem;
+}
+
+.row::before,
+.row:last-child::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: 0 50%;
+  transition: transform 1200ms var(--house) calc(var(--i) * 90ms);
+  content: "";
+}
+
+.row::before {
+  top: 0;
+}
+
+.row:last-child::after {
+  bottom: 0;
+  transition-delay: 270ms;
+}
+
+:global(:root.js) .rows[data-in="false"] .row::before,
+:global(:root.js) .rows[data-in="false"] .row:last-child::after {
+  transform: scaleX(0);
+}
+
+.row dt {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.row dd {
+  margin: 0;
+  font-size: var(--step-0);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.item {
+  display: block;
+}
+
+.ep {
+  margin-right: 0.35em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.78em;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+/* The art --------------------------------------------------------------------------------------- */
+
+.art {
+  grid-area: art;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(0.9rem, 2vw, 2.25rem);
+}
+
+.slot {
+  position: relative;
+}
+
+/* The two windows hang at different heights, and which one is lower changes with the phase. */
+.slot[data-lower="true"] {
+  margin-top: var(--drop);
+}
+
+/* The pocket under the higher window: the drone's second place in a phase. It hangs out of the
+   box, into the empty space between two phases, and takes no room itself. */
+.pocket {
+  position: absolute;
+  top: calc(100% + 0.28 * var(--d));
+  left: calc(50% - var(--d) / 2);
+  width: var(--d);
+}
+
+.card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A tall window on a wide picture. It opens from its top edge down, the way it comes up the
+   screen: two boxes slide against each other, so the picture stands still while the edge falls,
+   and the picture comes back from a closer view. */
+.window {
+  position: relative;
+  display: block;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
+}
+
+.shutter,
+.shutterIn,
+.zoom {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.shutter,
+.shutterIn {
+  overflow: hidden;
+  transition: transform 1350ms var(--house);
+}
+
+.zoom {
+  transition: transform 2100ms var(--ease-out);
+}
+
+:global(:root.js) .slot[data-in="false"] .shutter {
+  transform: translate3d(0, -101%, 0);
+}
+
+:global(:root.js) .slot[data-in="false"] .shutterIn {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .slot[data-in="false"] .zoom {
+  transform: scale(1.24);
+}
+
+/* The picture is taller than its window by what it drifts with the scroll (written by script). */
+.drift {
+  position: absolute;
+  inset: -9% 0;
+  display: block;
+  will-change: transform;
+}
+
+.picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1100ms var(--ease-out);
+  user-select: none;
+}
+
+.card:hover .picture,
+.card:focus-visible .picture {
+  transform: scale(1.055);
+}
+
+.caption {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.75rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+}
+
+.caption > * {
+  grid-column: 1;
+}
+
+/* A hairline over the name. On hover a line of ink is drawn over it from the left. */
+.captionRule,
+.captionRule::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: 0 50%;
+}
+
+.captionRule {
+  background: var(--line-strong);
+  transition: transform 1200ms var(--house) 350ms;
+}
+
+.captionRule::after {
+  background: var(--text);
+  transform: scaleX(0);
+  transition: transform 700ms var(--house);
+  content: "";
+}
+
+.card:hover .captionRule::after,
+.card:focus-visible .captionRule::after {
+  transform: scaleX(1);
+}
+
+:global(:root.js) .slot[data-in="false"] .captionRule {
+  transform: scaleX(0);
+}
+
+.index {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  transition: opacity 700ms var(--ease-out) 550ms;
+}
+
+:global(:root.js) .slot[data-in="false"] .index {
+  opacity: 0;
+}
+
+.caption .name {
+  font-size: clamp(1.9rem, 3.6vw, 4.2rem);
+  line-height: 0.9;
+  transition-delay: 400ms;
+}
+
+.skinTitle {
+  margin-top: 0.3rem;
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.1;
+  color: var(--text-dim);
+}
+
+.go {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition: opacity 700ms var(--ease-out) 900ms;
+}
+
+:global(:root.js) .slot[data-in="false"] .go {
+  opacity: 0;
+}
+
+.go svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.card:hover .go svg,
+.card:focus-visible .go svg {
+  transform: translate3d(4px, 0, 0);
+}
+
+/* A narrow screen: one column, the same parts. The numeral and the drone's place stay side by
+   side, then the two windows, then the rows. */
+@media (max-width: 56.25em) {
+  .phases {
+    --drop: 5.75rem;
+  }
+
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The drone's place moves beside the two lines of the title, which are short. */
+  .aside {
+    display: block;
+  }
+
+  .headAnchor {
+    position: absolute;
+    top: calc(2rem + (1.68 * clamp(3.5rem, 11.4vw, 13rem) - var(--d)) / 2);
+    right: clamp(0rem, 4vw, 3rem);
+    width: var(--d);
+    margin: 0;
+  }
+
+  .phase,
+  .phase[data-flip="true"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "ruler"
+      "top"
+      "art"
+      "rows";
+  }
+
+  .numeral {
+    font-size: clamp(8rem, 38vw, 15rem);
+  }
+
+  .art {
+    margin-top: clamp(2rem, 6vh, 3.5rem);
+  }
+
+  .rows,
+  .phase[data-flip="true"] .rows {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .row {
+    grid-template-columns: 6.75rem minmax(0, 1fr);
+  }
+
+  .go {
+    display: none;
+  }
+}

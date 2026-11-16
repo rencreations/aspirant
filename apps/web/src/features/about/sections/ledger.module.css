@@ -1,0 +1,312 @@
+/* The ledger: six large figures in hairline rows, each row one link. `--house` is the curve of
+   the site's mask reveals. Only transform and opacity move. */
+.ledger {
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  /* The drone's width here, and the lane at the right that the words keep out of. */
+  --d: clamp(72px, 11vw, 200px);
+  --lane: calc(var(--d) + 2 * clamp(0.5rem, 1.7vw, 2.25rem));
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--lane);
+}
+
+.head {
+  grid-area: 1 / 1;
+}
+
+/* The rail is as tall as the head and the list. The square inside it starts beside the title and
+   then holds its height on the screen while the rows pass behind it. */
+.rail {
+  grid-area: 1 / 2 / 3 / 3;
+  pointer-events: none;
+}
+
+.anchor {
+  position: sticky;
+  top: calc(44vh - var(--d) / 2);
+  width: var(--d);
+  margin: clamp(3rem, 7.5vw, 9rem) auto 0;
+}
+
+.rows {
+  grid-area: 2 / 1 / 3 / 3;
+  margin: clamp(3.5rem, 11vh, 7rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+}
+
+.item::before,
+.item:last-child::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: 0 50%;
+  transition: transform 1300ms var(--house);
+  content: "";
+}
+
+.item::before {
+  top: 0;
+}
+
+.item:last-child::after {
+  bottom: 0;
+  transition-delay: 200ms;
+}
+
+:global(:root.js) .item[data-in="false"]::before,
+:global(:root.js) .item[data-in="false"]:last-child::after {
+  transform: scaleX(0);
+}
+
+/* The row cuts the ends of the slanted plate, and nothing else: its own outline stays whole. */
+.row {
+  --pad: clamp(0.5rem, 1.6vw, 1.75rem);
+  position: relative;
+  display: block;
+  overflow: clip;
+  color: var(--text);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.row:focus-visible {
+  outline-offset: -3px;
+}
+
+.face {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(8.5rem, 23%) minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: clamp(1rem, 2.4vw, 2.75rem);
+  padding: clamp(1rem, 2.6vh, 1.6rem) calc(var(--pad) + var(--lane)) clamp(1rem, 2.6vh, 1.6rem)
+    var(--pad);
+}
+
+.index {
+  align-self: start;
+  padding-top: 0.55rem;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+/* The figure --------------------------------------------------------------------------------- */
+
+.face .figure {
+  font-size: clamp(4rem, 7.9vw, 9rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.counter {
+  display: inline-flex;
+}
+
+/* One figure tall. It cuts above and below only, so the slant of the face is not shaved. */
+.col {
+  display: block;
+  height: 1em;
+  overflow-x: visible;
+  overflow-y: clip;
+}
+
+.strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate3d(0, calc(var(--to) * -1em), 0);
+  transition: transform calc(1500ms + var(--k) * 260ms) var(--house) calc(var(--k) * 90ms + 150ms);
+}
+
+.cell {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
+:global(:root.js) .item[data-in="false"] .strip {
+  transform: translate3d(0, 0, 0);
+}
+
+/* The words ---------------------------------------------------------------------------------- */
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.text .unit {
+  font-size: clamp(1.5rem, 2.5vw, 3rem);
+  line-height: 0.92;
+  transition-delay: 200ms;
+}
+
+.line {
+  max-width: 54ch;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  opacity: 0.74;
+}
+
+.room {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.go {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+}
+
+.go svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+/* The plate ---------------------------------------------------------------------------------- */
+
+/* A plate of ink, slanted like the logo, wipes in behind the row, and the row's words turn to
+   paper exactly where the plate has reached. It is a second drawing of the row inside two boxes
+   that slide against each other: the outer one is the slanted window, the inner one undoes the
+   slant and the slide, so the words of the two drawings lie on each other at every moment. */
+.plate,
+.plateIn {
+  position: absolute;
+  transition: transform 780ms var(--house);
+}
+
+.plate {
+  inset: 0 -3rem;
+  overflow: hidden;
+  pointer-events: none;
+  transform: skewX(-12deg) translate3d(-101%, 0, 0);
+}
+
+.plateIn {
+  inset: 0;
+  background: #0b0b0e;
+  color: #f4f6f9;
+  transform: translate3d(101%, 0, 0) skewX(12deg);
+}
+
+.plateIn .face {
+  position: absolute;
+  inset: 0 3rem;
+}
+
+.plateIn .index {
+  color: #ff7ab8;
+}
+
+.row:focus-visible .plate {
+  transform: skewX(-12deg) translate3d(0, 0, 0);
+}
+
+.row:focus-visible .plateIn {
+  transform: translate3d(0, 0, 0) skewX(12deg);
+}
+
+.row:focus-visible .go svg {
+  transform: translate3d(5px, 0, 0);
+}
+
+@media (hover: hover) {
+  .row:hover .plate {
+    transform: skewX(-12deg) translate3d(0, 0, 0);
+  }
+
+  .row:hover .plateIn {
+    transform: translate3d(0, 0, 0) skewX(12deg);
+  }
+
+  .row:hover .go svg {
+    transform: translate3d(5px, 0, 0);
+  }
+}
+
+/* Only a wide screen has room for the name of the room: the row says it already. */
+@media (max-width: 100em) {
+  .room {
+    display: none;
+  }
+
+  .face {
+    grid-template-columns: 2.75rem minmax(8.5rem, 23%) minmax(0, 1fr) auto;
+  }
+}
+
+/* A narrow screen: the figure and the arrow on one line, the words under them. The lane stays,
+   and the drone's square starts in the space between the head and the list. */
+@media (max-width: 56.25em) {
+  .ledger {
+    --lane: calc(var(--d) * 1.5);
+  }
+
+  .rail {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+
+  .anchor {
+    top: calc(40vh - var(--d) / 2);
+    margin: 0.5rem auto 0;
+  }
+
+  .face {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "index . go"
+      "figure figure go"
+      "text text text";
+    row-gap: 0.35rem;
+    padding: 1.15rem var(--lane) 1.3rem 0;
+  }
+
+  .index {
+    grid-area: index;
+    padding-top: 0;
+  }
+
+  .face .figure {
+    grid-area: figure;
+    font-size: clamp(4.25rem, 22vw, 7rem);
+  }
+
+  .text {
+    grid-area: text;
+    margin-top: 0.35rem;
+  }
+
+  .go {
+    grid-area: go;
+    align-self: center;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}

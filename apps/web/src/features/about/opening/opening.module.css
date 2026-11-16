@@ -1,0 +1,366 @@
+/*
+ * The opening of the About page: the track, and the first screen laid over the film's stage (see
+ * opening.tsx, hero.tsx). The first screen is composed in one unit, `--u`, taken from the width
+ * and held by the height, so it stays one screen on a short wide display and on a tall one.
+ * Only transform and opacity move.
+ */
+.track {
+  --lvh: 100vh;
+  --u: min(1vw, 1.72vh);
+  /* Where the right half begins, as on the reference. */
+  --col: 49.5%;
+  position: relative;
+  height: calc(var(--screens) * var(--lvh));
+}
+
+/* Without scripts there is no film stage to scroll through: the track is the first screen only. */
+:global(:root:not(.js)) .track {
+  height: var(--lvh);
+}
+
+@supports (height: 100lvh) {
+  .track {
+    --lvh: 100lvh;
+  }
+}
+
+/* One screen, in flow at the top of the track: it is pulled up over the film's stage, which comes
+   first so that it is stuck from the very top of the page. */
+.hero {
+  position: relative;
+  z-index: 1;
+  height: var(--lvh);
+  margin-top: calc(-1 * var(--lvh));
+}
+
+/* The drone's place: big, at the lower left, cut by the left and the bottom edge. Its middle is
+   at 70 percent of the height, and no further under the title than that on a taller display. */
+.anchor {
+  --size: min(46vw, 82vh);
+  position: absolute;
+  top: calc(min(70%, var(--nav-h) + 36 * var(--u)) - var(--size) / 2);
+  left: calc(14% - var(--size) / 2);
+  width: var(--size);
+  height: var(--size);
+  pointer-events: none;
+}
+
+/* Everything of the first screen that is text: the right half, as one column. The film fades it
+   as the page leaves. The reel is held to the foot of the screen and the description stands
+   over it. On a display taller than its width asks for, the spare height is shared out above the
+   description and between the two; on a shorter one the air between them gives way first, and
+   then the description moves up, never the reel down. */
+.copy {
+  position: absolute;
+  inset: 0 var(--gutter) 0 var(--col);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(var(--nav-h) + 20.6 * var(--u)) 0 calc(1.5 * var(--u));
+}
+
+.copy::before,
+.copy::after {
+  content: "";
+  flex: 1.4 1 0;
+}
+
+/* The air between the description and the reel. */
+.copy::after {
+  flex: 1 1 calc(3 * var(--u));
+  order: 2;
+}
+
+/* ---- the three labels, a thin line of facts beside the title ---- */
+
+.labels {
+  position: absolute;
+  top: calc(var(--nav-h) + 1.3 * var(--u));
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: space-between;
+  column-gap: calc(2 * var(--u));
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono-stack);
+  font-size: max(0.6875rem, 0.84 * var(--u));
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.label:last-of-type {
+  text-align: right;
+}
+
+.labelsRule {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-top: calc(0.9 * var(--u));
+  background: var(--line-strong);
+  transform-origin: left center;
+}
+
+/* ---- what the series is ---- */
+
+.text {
+  flex: none;
+  order: 1;
+}
+
+.eyebrow {
+  margin: 0 0 calc(1.1 * var(--u));
+  font-size: max(0.6875rem, 0.8 * var(--u));
+}
+
+.eyebrowNo {
+  color: var(--accent);
+}
+
+.lede {
+  margin: 0;
+  font-size: calc(1.86 * var(--u));
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.022em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.ledeEnd {
+  font-size: 1.1em;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+}
+
+/* ---- the reel's place and the figures beside it ---- */
+
+.reelRow {
+  --slot-w: min(34vw, 60vh);
+  flex: none;
+  order: 3;
+  display: grid;
+  grid-template-columns: var(--slot-w) 1fr;
+  column-gap: calc(2 * var(--u));
+  align-items: end;
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 calc(0.7 * var(--u));
+  font-size: max(0.625rem, 0.72 * var(--u));
+}
+
+.caption > :last-child {
+  color: var(--text-faint);
+}
+
+.caption > :first-child {
+  color: var(--text);
+}
+
+.slot {
+  width: 100%;
+  aspect-ratio: var(--aspect);
+  border-radius: calc(0.36 * var(--u));
+}
+
+/* Without scripts the film is never placed on its slot: its still stands here. */
+:global(:root:not(.js)) .slot {
+  background: var(--poster) center / cover no-repeat;
+}
+
+.figures {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  /* As tall as the slot, so the two stand on one line. */
+  height: calc(var(--slot-w) / var(--aspect));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.figure {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5em;
+  padding-top: calc(0.5 * var(--u));
+}
+
+.figureRule {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: left center;
+}
+
+.figureValue {
+  font-size: calc(3.2 * var(--u));
+  line-height: 0.9;
+  color: var(--text);
+}
+
+.figureLabel {
+  font-size: max(0.625rem, 0.72 * var(--u));
+  white-space: nowrap;
+}
+
+/* ---- the reveal: lines out of masks, rules drawn from the left ---- */
+
+.mask,
+.word {
+  display: inline-block;
+  /* Room for the tails of the letters, taken back so the lines keep their pitch. */
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.mask > span,
+.word > span {
+  display: inline-block;
+}
+
+/* The italic end of the description leans out of its box at the right. */
+.ledeEnd .word {
+  padding-right: 0.12em;
+  margin-right: -0.12em;
+}
+
+/* Hidden until the drone sits. Only here, by the phase on the page root, and only with scripts. */
+:global(:root.js [data-about-intro="wait"]) .mask > span,
+:global(:root.js [data-about-intro="title"]) .mask > span,
+:global(:root.js [data-about-intro="landing"]) .mask > span,
+:global(:root.js [data-about-intro="wait"]) .word > span,
+:global(:root.js [data-about-intro="title"]) .word > span,
+:global(:root.js [data-about-intro="landing"]) .word > span {
+  transform: translate3d(0, 125%, 0);
+}
+
+:global(:root.js [data-about-intro="wait"]) .labelsRule,
+:global(:root.js [data-about-intro="title"]) .labelsRule,
+:global(:root.js [data-about-intro="landing"]) .labelsRule,
+:global(:root.js [data-about-intro="wait"]) .figureRule,
+:global(:root.js [data-about-intro="title"]) .figureRule,
+:global(:root.js [data-about-intro="landing"]) .figureRule {
+  transform: scaleX(0);
+}
+
+/* The reveal itself plays only when the opening was played (see track.tsx). */
+.track[data-played] .mask > span,
+.track[data-played] .word > span {
+  transition: transform 900ms cubic-bezier(0.32, 0.72, 0, 1) calc(var(--d, 0) * 24ms + 80ms);
+}
+
+.track[data-played] .labelsRule,
+.track[data-played] .figureRule {
+  transition: transform 1200ms cubic-bezier(0.32, 0.72, 0, 1) calc(var(--d, 0) * 24ms + 80ms);
+}
+
+/* ---- the upright composition (a phone, a tablet held upright) ---- */
+
+@media (max-aspect-ratio: 1/1), (max-width: 47.5rem) {
+  .track {
+    --u: min(1vw, 0.5vh);
+    --col: var(--gutter);
+  }
+
+  /* Centred under the title, whole, its head in front of the foot of the title. On a short
+     phone it is as big as the room between the title and the labels allows. */
+  .anchor {
+    --size: min(62vw, var(--lvh) - var(--nav-h) - 138 * var(--u));
+    top: auto;
+    bottom: calc(91 * var(--u));
+    left: calc(50% - var(--size) / 2);
+  }
+
+  /* The column is stacked up from the foot of the screen. */
+  .copy {
+    inset: 0 var(--gutter);
+    justify-content: flex-end;
+    padding: 0 0 calc(4 * var(--u));
+  }
+
+  .copy::before,
+  .copy::after {
+    content: none;
+  }
+
+  .labels {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 1.1em;
+    margin-bottom: calc(8 * var(--u));
+    font-size: max(0.625rem, 2.5 * var(--u));
+    letter-spacing: 0.1em;
+  }
+
+  .labelsRule {
+    flex: 1 0 100%;
+    margin-top: calc(1.2 * var(--u));
+  }
+
+  .label:last-of-type {
+    text-align: left;
+  }
+
+  .text {
+    margin-bottom: calc(6 * var(--u));
+  }
+
+  .eyebrow {
+    margin-bottom: calc(1.6 * var(--u));
+    font-size: max(0.625rem, 2.5 * var(--u));
+  }
+
+  .lede {
+    font-size: calc(4.25 * var(--u));
+    line-height: 1.22;
+  }
+
+  .reelRow {
+    --slot-w: calc(60 * var(--u));
+    column-gap: calc(4 * var(--u));
+  }
+
+  .caption {
+    margin-bottom: calc(1.6 * var(--u));
+    font-size: max(0.5625rem, 2.3 * var(--u));
+  }
+
+  .caption > :last-child {
+    display: none;
+  }
+
+  .slot {
+    border-radius: calc(1.2 * var(--u));
+  }
+
+  .figure {
+    padding-top: calc(1 * var(--u));
+  }
+
+  .figureValue {
+    font-size: calc(6.4 * var(--u));
+  }
+
+  .figureLabel {
+    font-size: max(0.5625rem, 2.2 * var(--u));
+  }
+}

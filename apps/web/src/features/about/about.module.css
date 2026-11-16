@@ -1,0 +1,7 @@
+/* The About page's root. Light paper, the site's ink. The page is one plain scroll: nothing here
+   clips it, so the sticky film stage and the fixed drone layer keep working. */
+.root {
+  position: relative;
+  overflow-x: clip;
+  color: var(--text);
+}

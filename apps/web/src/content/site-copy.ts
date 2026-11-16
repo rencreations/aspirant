@@ -110,19 +110,8 @@ export const siteCopy = {
   },
 
   about: {
-    title: "The world",
-    whereYouAre: "Where you are",
-    beforeAndAfter: "Before and after",
-    cycle: "The Cycle",
-    hierarchy: "Who sends the Enders",
-    couplingLab: "Aspirant power lab",
-    couplingHint: "Bring the two crystals together.",
-    timeOrder: "The story in time order",
-    openQuestions: "What the story leaves open",
-    openHint: "Tap to unseal. The story does not answer.",
-    wordsToKnow: "Words to know",
-    whoIsWho: "Who is who",
-    searchGlossary: "Search the glossary",
+    title: "About Aspirant",
+    phases: "From 1.0 to 5.0",
   },
 
   character: {
@@ -185,7 +174,8 @@ export const siteCopy = {
 
   meta: {
     home: "Ten Aspirants, one academy, and a world that keeps a lamp lit.",
-    about: "Where the story happens, who sends the Enders, and what the story leaves open.",
+    about:
+      "What The Aspirants is: the anime skin series of Mobile Legends: Bang Bang, its five phases since 2022 and everything made around the skins.",
     story:
       "Read the whole Aspirant story: a prologue and 87 chapters in six acts, one chapter to a page.",
     characters: "Meet the ten Aspirants of Selrick Academy.",

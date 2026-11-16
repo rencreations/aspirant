@@ -1,0 +1,104 @@
+/*
+ * The drone's layer (see drone-layer.tsx): the whole screen, fixed, between the page's text and
+ * the film. Nothing in it takes the pointer but the one round button that follows the drone. The
+ * script moves the button with a transform and nothing else; the layer's place in the stack is
+ * the only other thing it changes, and only while the drone is clear of the film.
+ */
+.layer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  /* The film is laid out in the large viewport height, so the drone's layer is too: on a phone
+     the two then agree on what a screen is whether the address bar is showing or not. */
+  height: 100vh;
+  z-index: var(--layer);
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout style;
+}
+
+@supports (height: 100lvh) {
+  .layer {
+    height: 100lvh;
+  }
+}
+
+.layer canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Never seen: its box is read for the height of the bar and the width of the gutter. */
+.probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--gutter);
+  height: var(--nav-h);
+  visibility: hidden;
+}
+
+/* The button: a round, empty plate the size of the drone, moved and scaled to it. `--inv` undoes
+   the scale for the ring a key's focus draws, so the ring is the same line at any size. */
+.button {
+  --inv: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  transform-origin: 50% 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.button[data-off] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: calc(2px * var(--inv)) solid var(--accent);
+  outline-offset: calc(6px * var(--inv));
+}
+
+/* The still: the drone as a picture, at its place on the first screen, for a browser that cannot
+   draw the scene. It is laid in the page (it leaves with the first screen), and it comes with the
+   description and the reel, when the drone would have landed. */
+.still {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--layer);
+  display: block;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transition:
+    opacity 900ms var(--ease-out),
+    scale 1200ms var(--ease-out);
+}
+
+:global(:root.js [data-about-intro="wait"]) .still,
+:global(:root.js [data-about-intro="title"]) .still,
+:global(:root.js [data-about-intro="landing"]) .still {
+  opacity: 0;
+  scale: 0.94;
+}

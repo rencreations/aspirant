@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
 import { audio } from "@/lib/audio";
-import { routes } from "@/lib/site";
+import { collectionRoute } from "@/lib/site";
 
 import type { ContrastView } from "../types";
 import styles from "./before-after.module.css";
@@ -96,7 +96,7 @@ export function BeforeAfter({ contrast }: { contrast: ContrastView }) {
           <figcaption className={styles.cite}>{side.chapter}</figcaption>
         </figure>
 
-        <TLink href={routes.about} className={styles.more} transitionLabel="About">
+        <TLink href={collectionRoute("lore")} className={styles.more} transitionLabel="Lore">
           See the world
           <span aria-hidden="true" className={styles.arrow}>
             &rarr;

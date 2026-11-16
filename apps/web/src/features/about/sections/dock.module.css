@@ -1,0 +1,102 @@
+/* The ring the drone rests in. `--d` is the drone's width; the ring is drawn around it with room
+   to spare (the wings reach past the body), so the drone never touches a stroke. */
+.dock {
+  --d: clamp(84px, 8vw, 150px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.dock[data-size="large"] {
+  --d: clamp(96px, 10.5vw, 200px);
+}
+
+.ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--d) * 2.15);
+  aspect-ratio: 1;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.anchor {
+  width: var(--d);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.left,
+.right {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transition:
+    transform 1300ms var(--ease-out) 120ms,
+    opacity 700ms var(--ease-out) 120ms;
+}
+
+.arc,
+.fine,
+.tick {
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The drone's cyan, used only on the marks that belong to it. */
+.arc {
+  stroke: #23d0d8;
+  stroke-width: 1.5px;
+}
+
+.fine,
+.tick {
+  stroke: color-mix(in srgb, var(--text) 30%, transparent);
+  stroke-width: 1px;
+}
+
+:global(:root.js) .dock[data-in="false"] .left {
+  opacity: 0;
+  transform: rotate(-64deg);
+}
+
+:global(:root.js) .dock[data-in="false"] .right {
+  opacity: 0;
+  transform: rotate(64deg);
+}
+
+.caption {
+  max-width: 40ch;
+  text-wrap: balance;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  line-height: 1.55;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition:
+    opacity 800ms var(--ease-out) 500ms,
+    transform 1100ms var(--ease-out) 500ms;
+}
+
+.caption b {
+  display: block;
+  margin-bottom: 0.35em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--text);
+}
+
+:global(:root.js) .dock[data-in="false"] .caption {
+  opacity: 0;
+  transform: translate3d(0, 0.9rem, 0);
+}

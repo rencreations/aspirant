@@ -3,16 +3,46 @@ import { expect, test, type Page } from "@playwright/test";
 
 import { skipGate, url, watchErrors } from "./helpers";
 
-test.beforeEach(async ({ page }) => {
-  await skipGate(page);
-});
+/**
+ * /about: the page of the series, with the drone that flies through it. `skipGate` also turns the
+ * opening off (`aspirants:intro`), so the page stands at rest for these tests. One test lets the
+ * opening play on purpose. The drone is a WebGL layer: where the browser of the test cannot draw
+ * it, the page must stand all the same, so the tests of the drone itself ask first whether it is
+ * there (`window.__aboutDrone.state().engine`).
+ */
 
-async function open(page: Page) {
+interface DroneState {
+  phase: string;
+  engine: "pending" | "ready" | "none";
+  pose: { x: number; y: number; size: number };
+  target: { station: string };
+  trick: string | null;
+}
+
+async function open(page: Page, options: { intro?: boolean } = {}) {
+  await skipGate(page, options);
   const errors = watchErrors(page);
   const response = await page.goto(url("/about/"));
   expect(response?.status()).toBe(200);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   return errors;
+}
+
+async function drone(page: Page): Promise<DroneState | null> {
+  return page.evaluate(() => {
+    const probe = (window as unknown as { __aboutDrone?: { state: () => unknown } }).__aboutDrone;
+    return probe ? (probe.state() as DroneState) : null;
+  });
+}
+
+/** Wait until the scene has drawn the drone, or has said that it never will. */
+async function settledDrone(page: Page): Promise<DroneState> {
+  await expect
+    .poll(async () => (await drone(page))?.engine ?? "pending", { timeout: 30_000 })
+    .not.toBe("pending");
+  const state = await drone(page);
+  if (!state) throw new Error("the drone's probe is missing");
+  return state;
 }
 
 async function overflow(page: Page) {
@@ -22,215 +52,199 @@ async function overflow(page: Page) {
   });
 }
 
-async function scrollTo(page: Page, selector: string, offset = -80) {
-  await page.evaluate(
-    ([sel, off]) => {
-      const el = document.querySelector(sel as string);
-      if (!el) throw new Error(`missing ${String(sel)}`);
-      window.scrollTo({
-        top: el.getBoundingClientRect().top + window.scrollY + Number(off),
-        behavior: "instant",
-      });
-    },
-    [selector, offset],
-  );
-  await page.waitForTimeout(500);
-}
+const root = (page: Page) => page.locator("[data-about]");
 
 test("loads with one h1, every section, no console errors and no horizontal overflow", async ({
   page,
 }) => {
   const errors = await open(page);
-  await expect(page.locator("h1")).toHaveCount(1);
-  await expect(page.getByRole("heading", { level: 1, name: /Story/ })).toBeVisible();
-  for (const id of [
-    "places-title",
-    "before-after-title",
-    "cycle-title",
-    "hierarchy-title",
-    "lab-title",
-    "timeline-title",
-    "who-title",
-    "open-title",
-    "words-title",
-  ]) {
-    await expect(page.locator(`#${id}`)).toHaveCount(1);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  await expect(page.getByRole("heading", { level: 1, name: "About Aspirant" })).toBeVisible();
+  for (const id of ["statement", "phases", "ledger", "label", "outro"]) {
+    await expect(page.locator(`[data-about-section="${id}"]`)).toHaveCount(1);
   }
-  expect(await overflow(page)).toBeLessThanOrEqual(0);
+  await expect(root(page)).toHaveAttribute("data-about-intro", "done");
+  await settledDrone(page);
+  expect(await overflow(page)).toBeLessThanOrEqual(1);
   expect(errors).toEqual([]);
 });
 
-test("places: choosing a hex shows its line and chapter links", async ({ page }) => {
+test("the first screen says what the series is and holds the reel", async ({ page }) => {
   await open(page);
-  await scrollTo(page, "#places-title");
-  await page.getByRole("button", { name: /Underhill/ }).click();
-  const inspector = page.locator("[aria-live=polite]", { hasText: "Place 06 of 09" });
-  await expect(inspector).toContainText("A black market in forgotten cellars");
-  const link = inspector.getByRole("link", { name: /^Read (Prologue|Chapter \d+)$/ });
-  await expect(link).toHaveAttribute("href", /story\/(prologue|chapter-\d{2})\/?$/);
-  // Keyboard: arrow keys move between hexes.
-  await page.getByRole("button", { name: /Valemont/ }).focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("button", { name: /Hollin Reach/ })).toBeFocused();
+  const opening = page.locator("[data-about-track]");
+  await expect(opening.getByText(/anime skin series of Mobile Legends: Bang Bang/)).toBeVisible();
+  await expect(page.locator("[data-about-film] video")).toHaveCount(1);
+  await expect(page.locator('[data-drone-anchor="hero"]')).toHaveCount(1);
 });
 
-test("before and after: the slider and the hold button change the view", async ({ page }) => {
-  await open(page);
-  await scrollTo(page, '[data-track="oro"]', 20);
-  const stage = page.locator('[data-track="oro"] [role=group]');
-  const slider = page.locator('[data-track="oro"] input[type=range]');
-  await slider.focus();
-  await page.keyboard.press("End");
-  await expect.poll(async () => stage.getAttribute("data-phase")).toBe("after");
-  await page.keyboard.press("Home");
-  await expect.poll(async () => stage.getAttribute("data-phase")).toBe("before");
-  const hold = page
-    .locator('[data-track="oro"]')
-    .getByRole("button", { name: /Hold to see before/ });
-  await hold.focus();
-  await page.keyboard.press("Enter");
+test("the opening plays once and ends with everything shown", async ({ page }) => {
+  await open(page, { intro: true });
+  await expect(root(page)).toHaveAttribute("data-about-intro", "done", { timeout: 20_000 });
+  await expect(page.getByRole("heading", { level: 1, name: "About Aspirant" })).toBeVisible();
+  await expect(page.locator("#about-title")).toHaveAttribute("data-finished", "");
   await expect(
-    page.locator('[data-track="oro"]').getByRole("button", { name: /Release for after/ }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await page.keyboard.press("Enter");
-  await expect(hold).toHaveAttribute("aria-pressed", "false");
+    page.locator("[data-about-track]").getByText(/anime skin series of Mobile Legends/),
+  ).toBeVisible();
 });
 
-test("the Cycle: tabs turn the ring and read the stage", async ({ page }) => {
-  await open(page);
-  await scrollTo(page, "#cycle-title");
-  await page.getByRole("tab", { name: /Embers are spared/ }).click();
-  const panel = page.getByRole("tabpanel");
-  await expect(panel).toContainText("Most of it is destroyed, and a few embers are spared.");
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("tab", { name: /The survivors rebuild/ })).toHaveAttribute(
-    "aria-selected",
-    "true",
-  );
+test("a scroll during the opening ends it at once, with the title whole", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "desktop", "The wheel is a desktop input");
+  await open(page, { intro: true });
+  await expect(root(page)).not.toHaveAttribute("data-about-intro", "wait", { timeout: 20_000 });
+  await page.mouse.move(700, 400);
+  await page.mouse.wheel(0, 120);
+  await expect(root(page)).toHaveAttribute("data-about-intro", "done", { timeout: 3000 });
+  await expect(page.locator("#about-title")).toHaveAttribute("data-finished", "");
 });
 
-test("the hierarchy: each layer opens, and the Core is a device", async ({ page }) => {
+test("the reel grows into its window, and a trailer opens in the player", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "desktop", "The wheel is a desktop input");
   await open(page);
-  await scrollTo(page, "#hierarchy-title");
-  const core = page.getByRole("button", { name: /The Ender Control Core/ });
-  await core.click();
-  await expect(core).toHaveAttribute("aria-expanded", "true");
-  const detail = page.getByRole("region", { name: /The Ender Control Core/ });
-  await expect(detail).toContainText("Not a being");
-  await expect(detail).toContainText("left open");
-  await page.getByRole("button", { name: /The Mother Matrix/ }).click();
-  await expect(page.getByRole("region", { name: /The Mother Matrix/ })).toContainText("web");
-});
-
-test("the lab: presets set the story's real scores", async ({ page }) => {
-  await open(page);
-  await scrollTo(page, "#lab-title");
-  await page.getByRole("button", { name: /Fanny and Layla/ }).click();
-  await expect(page.getByRole("meter", { name: "Coupling" })).toHaveAttribute(
-    "aria-valuenow",
-    /^2\.1/,
-    { timeout: 5000 },
-  );
-  await page.getByRole("button", { name: /Guinevere and Vexana/ }).click();
-  await expect(page.getByRole("meter", { name: "Coupling" })).toHaveAttribute(
-    "aria-valuenow",
-    /^1\.62/,
-    { timeout: 5000 },
-  );
-  const slider = page.getByRole("slider", { name: "How close the two crystals are" });
-  await slider.focus();
-  await page.keyboard.press("Home");
-  await expect(page.getByRole("meter", { name: "Coupling" })).toHaveAttribute("aria-valuenow", "0");
-});
-
-test("the timeline: stops link to chapters and the buttons move", async ({ page }, info) => {
-  await open(page);
-  await scrollTo(page, "#timeline-title", 40);
-  const first = page.getByRole("link", { name: /^Read (Prologue|Chapter \d+)$/ }).first();
-  await expect(first).toHaveAttribute("href", /story\/(prologue|chapter-\d{2})\/?$/);
-  if (info.project.name === "phone") {
-    await expect(page.getByRole("button", { name: "Next stop" })).toBeHidden();
-    return;
+  const film = page.locator("[data-about-film]");
+  await expect(film).not.toHaveAttribute("data-complete", "");
+  await page.mouse.move(700, 400);
+  // To the end of the morph and a little into the hold, by the wheel, as a visitor would.
+  for (let i = 0; i < 14; i += 1) {
+    await page.mouse.wheel(0, 80);
+    await page.waitForTimeout(40);
   }
-  await page.getByRole("button", { name: "Next stop" }).click();
-  await expect(page.getByText(/Stop 02 of/)).toBeVisible();
+  await expect(film).toHaveAttribute("data-complete", "", { timeout: 5000 });
+
+  const pills = page.getByRole("list", { name: "The trailer of each phase" }).getByRole("button");
+  await expect(pills).toHaveCount(5);
+  await pills.nth(1).click();
+  const player = page.getByRole("dialog");
+  await expect(player).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(player).toBeHidden();
 });
 
-test("who is who: a slat opens with the partner highlighted", async ({ page }) => {
+test("a stop inside the morph settles to one end after a second", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "The wheel is a desktop input");
   await open(page);
-  await scrollTo(page, "#who-title", 60);
-  const guinevere = page.locator("button[aria-controls=who-guinevere]");
-  await guinevere.click();
-  await expect(guinevere).toHaveAttribute("aria-expanded", "true");
-  const link = page.getByRole("link", { name: "Meet Guinevere" });
-  await expect(link).toHaveAttribute("href", /character\/guinevere\/$/);
-  await expect(page.locator("li[data-partner=true]")).toHaveCount(1);
-  await page.locator("button[aria-controls=who-selena]").click();
-  await expect(page.locator("li[data-partner=true]")).toHaveCount(0);
+  await page.mouse.move(700, 400);
+  for (let i = 0; i < 3; i += 1) {
+    await page.mouse.wheel(0, 80);
+    await page.waitForTimeout(40);
+  }
+  const end = await page.evaluate(() => Math.round(window.innerHeight * 0.9));
+  await expect
+    .poll(() => page.evaluate(() => Math.round(window.scrollY)), { timeout: 6000 })
+    .toBe(0);
+  for (let i = 0; i < 8; i += 1) {
+    await page.mouse.wheel(0, 80);
+    await page.waitForTimeout(40);
+  }
+  await expect
+    .poll(() => page.evaluate(() => Math.round(window.scrollY)), { timeout: 6000 })
+    .toBeGreaterThanOrEqual(end - 2);
 });
 
-test("open questions: seals break and show the story's own text", async ({ page }) => {
+test("the drone keeps to the screen all the way down the first act", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "Measured at the desktop size");
   await open(page);
-  await scrollTo(page, "#open-title", 60);
-  const seal = page.locator("button[aria-controls=open-answer-1]");
-  await expect(seal).toHaveAttribute("aria-expanded", "false");
-  await seal.click();
-  await expect(seal).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator("#open-answer-1")).toContainText(
-    "The Will took it back into its own dark void. Nobody knows where it is.",
+  const first = await settledDrone(page);
+  test.skip(first.engine !== "ready", "This browser cannot draw the scene");
+  expect(first.target.station).toBe("hero");
+
+  const { height, width } = page.viewportSize() ?? { width: 1440, height: 900 };
+  await page.mouse.move(width / 2, height / 2);
+  const seen = new Set<string>();
+  // Past the film and into the statement. A slow machine draws fewer frames, so it is the
+  // stations that end the walk, not a count of steps.
+  for (let i = 0; i < 90 && !seen.has("center"); i += 1) {
+    await page.mouse.wheel(0, 90);
+    await page.waitForTimeout(140);
+    const state = await drone(page);
+    if (!state) continue;
+    seen.add(state.target.station);
+    if (state.target.station === "hero") continue;
+    // Its middle never leaves the screen and never goes under the top bar.
+    expect(state.pose.x).toBeGreaterThan(0);
+    expect(state.pose.x).toBeLessThan(width);
+    expect(state.pose.y).toBeGreaterThan(60);
+    expect(state.pose.y).toBeLessThan(height);
+  }
+  expect(seen.has("perch")).toBe(true);
+  expect(seen.has("center")).toBe(true);
+});
+
+test("a press on the drone gets an answer", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "Measured at the desktop size");
+  await open(page);
+  const state = await settledDrone(page);
+  test.skip(state.engine !== "ready", "This browser cannot draw the scene");
+  const button = page.getByRole("button", { name: /^The drone/ });
+  await expect(button).toBeVisible();
+  // Nothing takes the focus when the page opens.
+  expect(await page.evaluate(() => document.activeElement?.tagName)).toBe("BODY");
+  // It floats, so it never holds still for the click: press where it is.
+  await button.click({ force: true });
+  await expect.poll(async () => (await drone(page))?.trick ?? null).not.toBeNull();
+});
+
+test("the five phases name the ten skins and lead to their pages", async ({ page }) => {
+  await open(page);
+  const phases = page.locator('[data-about-section="phases"]');
+  await phases.scrollIntoViewIfNeeded();
+  for (const numeral of ["1.0", "2.0", "3.0", "4.0", "5.0"]) {
+    await expect(phases.getByText(numeral, { exact: true }).first()).toBeAttached();
+  }
+  const slugs = [
+    "layla",
+    "fanny",
+    "ruby",
+    "angela",
+    "lesley",
+    "change",
+    "guinevere",
+    "vexana",
+    "selena",
+    "obsidia",
+  ];
+  for (const slug of slugs) {
+    await expect(phases.locator(`a[href$="/character/${slug}/"]`)).toHaveCount(1);
+  }
+});
+
+test("the ledger leads to the rooms and the outro carries the notice and the takedown link", async ({
+  page,
+}) => {
+  await open(page);
+  const ledger = page.locator('[data-about-section="ledger"]');
+  for (const end of [
+    "/collection/video/films/",
+    "/collection/music/",
+    "/collection/voicelines/",
+    "/collection/comic/",
+    "/story/interactive-drama/",
+    "/collection/lore/",
+  ]) {
+    await expect(ledger.locator(`a[href$="${end}"]`)).toHaveCount(1);
+  }
+  const outro = page.locator('[data-about-section="outro"]');
+  await expect(outro.getByText(/Not affiliated with/i)).toBeAttached();
+  await expect(outro.getByRole("link", { name: /Copyright or takedown/i })).toHaveAttribute(
+    "href",
+    /\/takedown\/\?/,
   );
 });
 
-test("glossary: search and filters narrow the list and announce the count", async ({ page }) => {
-  await open(page);
-  await scrollTo(page, "#words-title", 60);
-  const status = page.getByRole("status").filter({ hasText: "entries" });
-  const total = (await status.textContent()) ?? "";
-  await page.getByRole("searchbox", { name: "Search the glossary" }).fill("ember");
-  await expect(status).toContainText(/of \d+ entries/);
-  await expect(page.getByRole("heading", { level: 3, name: "Embers" })).toBeVisible();
-  await page.getByRole("searchbox", { name: "Search the glossary" }).fill("");
-  await expect(status).toHaveText(total);
-  await page.getByRole("button", { name: "Places" }).click();
-  await expect(page.getByRole("button", { name: "Places" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  await expect(status).toContainText(/of \d+ entries/);
-});
-
-test("ends with one Next footer to the story", async ({ page }) => {
+test("the page ends with the way to the story", async ({ page }) => {
   await open(page);
   await expect(page.getByRole("heading", { level: 2, name: "Next: Story" })).toBeAttached();
-  await expect(page.getByRole("button", { name: "Continue to Story" })).toBeAttached();
   await expect(page.getByRole("heading", { level: 2, name: /^Next:/ })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Continue to Story" })).toBeAttached();
 });
 
-test("the system reduced-motion setting is ignored: the controls work", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  const errors = await open(page);
-  expect(await overflow(page)).toBeLessThanOrEqual(0);
-  await scrollTo(page, '[data-track="dawnbreak-978"]', 0);
-  const stage = page.locator('[data-track="dawnbreak-978"] [role=group]');
-  const slider = page.locator('[data-track="dawnbreak-978"] input[type=range]');
-  await slider.focus();
-  await page.keyboard.press("End");
-  await expect.poll(async () => stage.getAttribute("data-phase")).toBe("after");
-  await page.keyboard.press("Home");
-  await expect.poll(async () => stage.getAttribute("data-phase")).toBe("before");
-  expect(errors).toEqual([]);
-});
-
-test("no serious accessibility violations", async ({ page }) => {
+test("axe finds no serious or critical violation", async ({ page }) => {
   await open(page);
-  // Open one of each revealable thing so its hidden content is checked too.
-  await scrollTo(page, "#open-title", 60);
-  await page.locator("button[aria-controls=open-answer-0]").click();
-  const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
-    .analyze();
-  const serious = results.violations
-    .filter((v) => v.impact === "serious" || v.impact === "critical")
-    .map((v) => ({ id: v.id, help: v.help, nodes: v.nodes.map((n) => n.target.join(" ")) }));
-  expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+  await settledDrone(page);
+  const results = await new AxeBuilder({ page }).analyze();
+  const bad = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+  expect(bad.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 });

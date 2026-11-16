@@ -42,14 +42,14 @@ Sections flip between the two, and a pointer can tear a portal from one to the o
 
 ## 3. Information architecture
 
-| Route               | Job                                                                                                                                                  |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                 | Loader, interactive title, Home: portal-face hero, what Aspirant is, versus stage, roster, hall of fame (fanart), doors to the rest, "next" footer   |
-| `/story`            | Promotes the story (film, title, Continue or Start reading, chapters, the ten); the story is read one Part to a page at `/story/part-NN`             |
-| `/about`            | The world explained: places, the Cycle, the Enders hierarchy, before and after contrast, coupling lab, time-order timeline, open questions, glossary |
-| `/character`        | Roster of the ten                                                                                                                                    |
-| `/character/[slug]` | One page per Aspirant (10 static pages). Footer shows the next in queue                                                                              |
-| `/collection`       | Archive of films, music, comics, art, fan art, voice lines                                                                                           |
+| Route               | Job                                                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                 | Loader, interactive title, Home: portal-face hero, what Aspirant is, versus stage, roster, hall of fame (fanart), doors to the rest, "next" footer       |
+| `/story`            | Promotes the story (film, title, Continue or Start reading, chapters, the ten); the story is read one Part to a page at `/story/part-NN`                 |
+| `/about`            | The series (rebuilt 15 Nov 2026): what The Aspirants is, the five phases, what was made around the skins, TheMLabel. One 3D drone flies through the page |
+| `/character`        | Roster of the ten                                                                                                                                        |
+| `/character/[slug]` | One page per Aspirant (10 static pages). Footer shows the next in queue                                                                                  |
+| `/collection`       | Archive of films, music, comics, art, fan art, voice lines                                                                                               |
 
 Character order (the queue, looping): fanny, layla, ruby, angela, lesley, change, guinevere, vexana, obsidia, selena. Slugs: `fanny`, `layla`, `ruby`, `angela`, `lesley`, `change`, `guinevere`, `vexana`, `obsidia`, `selena`. (The `characters.md` roster order.)
 

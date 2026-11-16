@@ -38,7 +38,7 @@ export default function HomePage() {
       <NextFooter
         eyebrow="Next"
         label="About"
-        sublabel="The world: its places, the Cycle, the Enders and what is left open."
+        sublabel="The series: ten skins, five phases and everything made around them since 2022."
         href={routes.about}
         image="/img/hero-stills/selena-obsidia-01.webp"
       />

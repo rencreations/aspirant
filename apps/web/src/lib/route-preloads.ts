@@ -1,4 +1,5 @@
 import { characters, isSlug } from "@/content/characters";
+import { aboutItems } from "@/features/about/preload-items";
 import { introItems } from "@/features/character/roster/intro/preload-items";
 import { splashPath } from "@/features/character/roster/splash";
 import { ABOUT_IMAGES, aboutImagePath } from "@/features/character/selena/about/about-images";
@@ -80,6 +81,12 @@ export function routeItems(pathname: string): PreloadItem[] {
       imageItem("/img/char/vexana/splash-sm.webp", "Loading backdrops", 1),
       imageItem("/img/char/vexana/extra-1.webp", "Loading backdrops", 1),
     ];
+  }
+
+  if (path === "/about") {
+    // The drone plays the opening and the reel plays by itself on the first screen, so the scene,
+    // the model and the reel are waited for (see `features/about/preload-items.ts`).
+    return [...shared, ...aboutItems()];
   }
 
   if (path === "/story") {
