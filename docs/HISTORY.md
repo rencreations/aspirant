@@ -172,3 +172,14 @@ The owner asked for `/about` to be emptied and built from nothing (request word 
 - The old page's own parts went with it: `components/ui/{meter,hud-panel,tag,reveal}` and `components/text/scatter-text`. Home's "See the world" now leads to the lore codex, where the world is explained.
 - Measured on the production build: the title is whole 1.65 to 1.75 s after the drone starts, the drone has landed at 3.4 s, a frame of the idle page takes 6 ms on the machine it was built on.
 - Not checked: Firefox, Safari, a real phone, a weak graphics chip. The caption of the drone ("one game model, shared by the skins of Layla, Fanny, Ruby and Angela") rests on the four model files being the same, not on an official statement.
+
+## 2026-11-16: the Voicelines room, rebuilt (eight languages, a page for each Aspirant)
+
+The owner asked for it in one message with a correction of the audio folder (request word for word in `docs/superpowers/specs/2026-11-16-voicelines-request.md`, the calls in `...-voicelines-redesign.md`, how it works in `docs/design/collection-rooms.md`, "Voicelines").
+
+- **What changed.** The room was one long page of ten panels with 380 lines in Japanese and English. It is now a film behind a simple title and the ten Aspirants in the layout of the Cosplay roster, each with a shortcut to eight languages (SVG flag and the name in itself) and a larger button to her page, `/collection/voicelines/<slug>`. The language is a parameter of that page (`?lang=jp`), changed in place with `replaceState`, so Back and the button at the top go to the room.
+- **Seven languages are one list, Japanese is its own.** This was found by checking, not assumed: the clips of English, Arabic, Indonesian, Spanish, Portuguese, Turkish and Russian agree in length line by line for all ten Aspirants, but the Japanese game has its own order and a few other lines (Fanny's Japanese line 1 is not her English line 1). So the translation under a Japanese line is the English that came with it, and the other seven translate each other.
+- **The film is cut, not cropped.** Its subtitle and name card are in one stretch, which a scan at ten frames a second found, so the whole 16:9 frame is kept. The first screen is the Design room's join.
+- **Audio.** 3,046 lines, about 2.8 hours, and no language lacks a recording. A zip of a whole language is written in the browser. The Arabic recording of Selena had her lines 46 and 47 in one clip, so she had 46 lines: it is two clips now (in the owner's audio folder, with a note in its manifest).
+- **A word the site bans** was in one tentative translation of Selena's trailer (the pipeline writes "aspirant power"); three lines have text that comes from the audio, not from a screenshot, and say so.
+- **Not done here.** The bucket does not hold the new files until `python scripts/library/r2.py sync` runs. The search finds the Japanese and the English lines only. Firefox, Safari and a real phone were not tried.
