@@ -14,10 +14,11 @@ const OWN_ROUTES: ReadonlySet<string> = new Set([
   "lore",
   "design",
   "comic",
+  "voicelines",
 ]);
 
 export function generateStaticParams() {
-  // Arts, Video, Animation, Lore and Design have their own routes (`app/collection/arts/`, `.../video/`, `.../animation/`, `.../lore/`, `.../design/`).
+  // Arts, Video, Animation, Lore, Design, Comic and Voicelines have their own routes (`app/collection/arts/`, `.../video/`, `.../animation/`, `.../lore/`, `.../design/`, `.../comic/`, `.../voicelines/`).
   return COLLECTION_SLUGS.filter((slug) => !OWN_ROUTES.has(slug)).map((slug) => ({ slug }));
 }
 

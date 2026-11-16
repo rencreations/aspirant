@@ -7,6 +7,7 @@ import { useTransitionRouter } from "@/components/transition/transition-provider
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 import { collectionRoute } from "@/lib/site";
+import { isCharacterSlug } from "@/lib/slugs";
 
 import { fetchLibraryJson, libraryDataPath } from "../data";
 import { COLLECTIONS, getCollection } from "../registry";
@@ -16,6 +17,7 @@ import { artsRoomHref } from "../arts/core/routes";
 import { comicPath } from "../comic/route";
 import { openPost } from "../design/route";
 import { videoRoomOf, videoRoute } from "../video/links";
+import { pad, targetOfId, voicelinesRoute } from "../voicelines/model";
 import styles from "./search-overlay.module.css";
 import { useLibrarySearch } from "./search-store";
 
@@ -34,6 +36,29 @@ function go(entry: SearchEntry, push: (href: Route, options: { label: string }) 
     }
     push(`/collection/design/${entry.s}/` as Route, { label: getCollection(entry.c).name });
     return;
+  }
+  // The voice lines are one page for each Aspirant: the language and the line are parameters of it.
+  if (entry.c === "voicelines") {
+    const slug = entry.w[0];
+    if (slug && isCharacterSlug(slug)) {
+      const target = targetOfId(entry.id, () => slug);
+      const line = target?.group === "trailer" ? entry.id : target?.line ? pad(target.line) : "";
+      const query = `?lang=${target?.lang ?? "jp"}${line ? `&i=${line}` : ""}`;
+      const base: string = voicelinesRoute(slug);
+      const here = window.location.pathname.replace(/\/+$/u, "");
+      if (here.endsWith(base)) {
+        // The page stays the same page: only its parameters change.
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${window.location.pathname}${query}`,
+        );
+        window.dispatchEvent(new PopStateEvent("popstate"));
+        return;
+      }
+      push(`${base}${query}` as Route, { label: getCollection(entry.c).name });
+      return;
+    }
   }
   const base: string =
     entry.c === "video"

@@ -13,7 +13,10 @@ import { items as modelsItems } from "./models/preload";
 import { items as videoFilmsItems } from "./video/films/preload";
 import { items as videoOthersItems } from "./video/others/preload";
 import { items as musicItems } from "./music/preload";
-import { items as voicelinesItems } from "./voicelines/preload";
+import {
+  characterItems as voicelinesCharacterItems,
+  items as voicelinesItems,
+} from "./voicelines/preload";
 import { items as comicItems, readerItems as comicReaderItems } from "./comic/preload";
 import { items as loreItems } from "./lore/preload";
 import { items as designItems } from "./design/preload";
@@ -69,6 +72,7 @@ function artsRoomItems(path: string): PreloadItem[] {
 export function libraryPageItems(path: string): PreloadItem[] {
   const [slug = "", room] = path.replace(/^\/+|\/+$/gu, "").split("/");
   if (slug === "animation" && room) return animationCharacterItems(room);
+  if (slug === "voicelines" && room) return voicelinesCharacterItems(room);
   if (slug === "design" && room) return designItems(room);
   if (slug === "comic" && room) return comicReaderItems(room);
   if (slug === "video" && room === "films") return videoFilmsItems();

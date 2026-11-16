@@ -1,0 +1,691 @@
+/* The page of one Aspirant in the Voicelines room: her name and art, the eight languages on the side,
+   and every line in the language that is open. It sits beside the Cosplay pages, so the head, the title
+   and the chips use the same tokens. Only `transform` and `opacity` move. */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  color: var(--text);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The head ------------------------------------------------------------------------------------ */
+.head {
+  display: grid;
+  gap: 1.4rem 2.4rem;
+  /* Clears the top bar and the back button that stands under it, fixed at the left. */
+  padding: calc(var(--nav-h) + 3.9rem) var(--gutter) 1.8rem;
+  align-items: end;
+}
+
+@media (min-width: 1000px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, min(46%, 40rem));
+  }
+}
+
+.heading {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.kicker,
+.figures {
+  margin: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3.6rem, 11vw, 9rem);
+  line-height: 0.84;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+
+.subJp {
+  margin-left: 0.4rem;
+  font-style: normal;
+  font-family: var(--font-body-stack, inherit);
+  font-size: 0.85em;
+  color: var(--text-dim);
+}
+
+.art {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #d8dbe3;
+}
+
+.artImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The page: the languages, then the lines ------------------------------------------------------ */
+.layout {
+  display: grid;
+  gap: 1.2rem 2.6rem;
+  padding: 0 var(--gutter) 2rem;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+}
+
+.content {
+  min-width: 0;
+  display: grid;
+  gap: 1.2rem;
+}
+
+/* The language rail ---------------------------------------------------------------------------- */
+.rail {
+  min-width: 0;
+}
+
+.railLabel {
+  margin: 0 0 0.6rem;
+}
+
+.railList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.railList li {
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 960px) {
+  .rail {
+    position: sticky;
+    /* Below the back button, which is fixed under the top bar. */
+    top: calc(var(--nav-h) + 4.4rem);
+  }
+}
+
+/* On a narrow screen the back button scrolls away with the head (a fixed button would stand on the lines). */
+@media (max-width: 959.98px) {
+  .page [data-room-back] {
+    position: absolute;
+  }
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0.45rem 0.7rem 0.45rem 0.6rem;
+  border-left: 3px solid transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .pick:hover {
+    background: color-mix(in srgb, var(--accent, var(--text)) 9%, transparent);
+  }
+}
+
+.pick[aria-current="true"] {
+  border-left-color: var(--accent, var(--text));
+  background: color-mix(in srgb, var(--accent, var(--text)) 14%, transparent);
+}
+
+.pick:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: -2px;
+}
+
+.flag {
+  flex: none;
+  width: 1.7rem;
+  height: 1.13rem;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pickText {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.pickName {
+  font-size: 0.98rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.pickEnglish {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.pickCount {
+  margin-left: auto;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* On a narrow screen the languages are one row that slides sideways, under the top bar. */
+@media (max-width: 959.98px) {
+  .rail {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 3;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 0.5rem var(--gutter);
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .railLabel {
+    display: none;
+  }
+
+  .railList {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    border-top: 0;
+    scrollbar-width: none;
+  }
+
+  .railList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .railList li {
+    flex: none;
+    border-bottom: 0;
+  }
+
+  .pick {
+    min-height: 2.75rem;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--line-strong, var(--line));
+    border-radius: 999px;
+  }
+
+  .pick[aria-current="true"] {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .pickEnglish,
+  .pickCount {
+    display: none;
+  }
+}
+
+/* The tools ------------------------------------------------------------------------------------ */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.search,
+.select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line-strong, var(--line));
+  border-radius: 999px;
+  background: var(--bg);
+}
+
+.search {
+  flex: 1 1 14rem;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.search:focus-within {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.selectLabel {
+  white-space: nowrap;
+}
+
+.select select {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  max-width: 12rem;
+}
+
+.select:focus-within {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.action[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.action:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.action:focus-visible,
+.play:focus-visible,
+.trPlay:focus-visible,
+.save:focus-visible,
+.num:focus-visible,
+.recBtn:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* The full recording (Japanese) -------------------------------------------------------------- */
+.recording {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line-strong, var(--line));
+}
+
+.recBtn {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 1px solid var(--text);
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.recBody {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.recTitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
+  margin: 0;
+}
+
+.recMeta {
+  color: var(--text-dim);
+}
+
+.recSeek {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.recSeek[data-on="false"] input {
+  opacity: 0.5;
+}
+
+.recSeek input[type="range"] {
+  width: 100%;
+  height: 1.5rem;
+  accent-color: var(--accent, var(--text));
+  background: transparent;
+}
+
+.recWave {
+  width: 8rem;
+  height: 2.2rem;
+  color: var(--accent, var(--text));
+}
+
+@media (max-width: 600px) {
+  .recording {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .recWave {
+    display: none;
+  }
+}
+
+/* The lines ----------------------------------------------------------------------------------- */
+.lines {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 3.2rem 2.6rem minmax(0, 1fr) auto;
+  gap: 0.2rem 0.9rem;
+  align-items: start;
+  padding: 1rem 0.6rem 1rem 0.2rem;
+  border-bottom: 1px solid var(--line);
+  /* A long list draws only what is near the screen. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 5.5rem;
+}
+
+.row[data-playing="true"] {
+  background: color-mix(in srgb, var(--accent, var(--text)) 10%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent, var(--text));
+}
+
+.row[data-target="true"] {
+  outline: 2px solid var(--accent, var(--text));
+  outline-offset: -2px;
+}
+
+.play {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.play[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.play:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.num {
+  padding-top: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.text {
+  min-width: 0;
+  padding-top: 0.2rem;
+}
+
+.main {
+  margin: 0;
+  font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.35rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.main:lang(ja) {
+  line-height: 1.65;
+}
+
+.main:lang(ar) {
+  line-height: 1.85;
+}
+
+.tr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--text-dim, inherit);
+}
+
+.trTag {
+  flex: none;
+}
+
+.trPlay {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.9rem 0 -0.9rem -0.4rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.trPlay::before {
+  content: "";
+  position: absolute;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+}
+
+.trPlay[aria-pressed="true"]::before {
+  background: currentcolor;
+  opacity: 0.2;
+}
+
+.trPlay svg {
+  position: relative;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.note {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.side {
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 0.35rem;
+  min-width: 6.6rem;
+  padding-top: 0.45rem;
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}
+
+.wave {
+  width: 6.6rem;
+  height: 1.6rem;
+  color: var(--accent, var(--text));
+}
+
+.links {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: end;
+}
+
+.save {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--line-strong, var(--line));
+  border-radius: 999px;
+  color: inherit;
+  font-family: var(--font-mono-stack);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+@media (hover: hover) {
+  .save:hover {
+    border-color: currentcolor;
+  }
+}
+
+@media (pointer: coarse) {
+  .save {
+    min-height: 2.75rem;
+  }
+}
+
+.empty {
+  margin: 1.5rem 0;
+  font-size: var(--step-0);
+  color: var(--text-dim);
+}
+
+/* The trailer clips (Japanese) --------------------------------------------------------------- */
+.trailer {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--step-3);
+  line-height: 0.95;
+}
+
+.sectionLead {
+  margin: 0 0 0.6rem;
+  max-width: 38rem;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* A narrow screen: the play button and the text, with the length and the download under the text. */
+@media (max-width: 700px) {
+  .row {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    padding: 0.9rem 0;
+  }
+
+  .num {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 0;
+  }
+
+  .play {
+    grid-row: 1 / span 3;
+  }
+
+  .text {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .side {
+    grid-column: 2;
+    grid-row: 3;
+    grid-auto-flow: column;
+    justify-content: space-between;
+    justify-items: start;
+    align-items: center;
+    min-width: 0;
+    padding-top: 0.2rem;
+  }
+
+  .wave {
+    width: 5rem;
+  }
+
+  .links {
+    grid-auto-flow: column;
+  }
+}

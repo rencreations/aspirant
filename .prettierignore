@@ -26,3 +26,6 @@ scripts/library/lore/codex/**/*.json
 
 # Machine written decisions of the Arts room scripts
 scripts/library/arts_rooms/curation/
+
+# Machine written by the Voicelines scripts (carry.json: what the first version shipped, hero.json: the film's numbers)
+scripts/library/voicelines/*.json

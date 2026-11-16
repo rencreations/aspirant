@@ -1,34 +1,33 @@
 import type { PairId, Slug } from "@/content/types";
 
-import type { CollectionFile, ItemBase } from "../types";
+import type { ItemBase } from "../types";
+import type { LangId } from "./languages";
 
-/** A line is one voice line, a compilation is the long recording of one character, a trailer clip is a Japanese clip of the trailer. */
-type VoiceGroup = "line" | "compilation" | "trailer";
-
-export interface VoiceItem extends ItemBase {
+/** A row of the search index (`voicelines.json` `items`): a line, a recording or a trailer clip. */
+interface VoiceItem extends ItemBase {
   slug: Slug;
-  /** Line number in the character's list, 0 for a compilation. */
+  /** Line number in its list, 0 for a recording. */
   n: number;
-  /** The Japanese, exactly as the file is named. Empty for a compilation. */
+  /** The language of the line: `jp` for the Japanese list, `en` for the English line. */
+  lang: LangId;
   jp: string;
-  /** The English translation. Empty for a compilation and for a trailer clip. */
   en: string;
-  /** A trailer clip only: the trailer's own English subtitle for the moment. */
-  sub?: string;
-  /** A trailer clip only: who speaks, for example `Angry Ruby`. */
-  speaker?: string;
   note?: string;
-  /** Library key of the AAC file. */
-  m4a: string;
-  /** Library key of the original lossless file. Compilations have none. */
-  flac?: string;
-  /** Seconds. */
-  dur: number;
-  /** A trailer clip only: where it starts in the trailer, in seconds. */
-  t?: number;
-  /** A trailer clip only: the id of the trailer in the Films room. */
-  film?: string;
-  group: VoiceGroup;
+  group: "line" | "compilation" | "trailer";
+}
+
+interface VoiceLanguageTotals {
+  id: LangId;
+  /** The table of `languages.ts` as the pipeline wrote it (a test keeps the two equal). */
+  native: string;
+  english: string;
+  html: string;
+  dir: "ltr" | "rtl";
+  flag: string;
+  lines: number;
+  seconds: number;
+  /** Lines that have a text but no recording. */
+  noAudio: number;
 }
 
 export interface VoiceCharacter {
@@ -43,18 +42,86 @@ export interface VoiceCharacter {
   palette: { primary: string; secondary: string; glow: string; ink: string };
   /** A path in `public/` (go through `asset()`). */
   splash: string;
-  lines: number;
-  /** Seconds of all the lines together. */
+  /** How many lines each language has. */
+  lines: Record<LangId, number>;
+}
+
+/** The film behind the title (`scripts/library/voicelines/hero.py`): keys of the bucket. */
+export interface VoiceHeroFilm {
+  src: string;
+  w: number;
+  h: number;
   dur: number;
-  /** Id of the character's full compilation. */
-  full: string;
-  fullDur: number;
+  bytes: number;
 }
 
-export interface VoicelinesFile extends CollectionFile<VoiceItem> {
-  totals: { lines: number; compilations: number; trailer: number; seconds: number };
+export interface VoiceHero {
+  poster: string;
+  pw: number;
+  ph: number;
+  /** Average colour of the still. */
+  c: string;
+  films: VoiceHeroFilm[];
+}
+
+/** `public/data/library/voicelines.json`: what the room needs on its first screen. */
+export interface VoiceIndex {
+  v: 2;
+  slug: "voicelines";
+  totals: {
+    lines: number;
+    languages: number;
+    seconds: number;
+    compilations: number;
+    trailer: number;
+  };
+  languages: VoiceLanguageTotals[];
   characters: VoiceCharacter[];
+  hero?: VoiceHero;
+  items: VoiceItem[];
 }
 
-/** Which languages the rows show. An empty string is both. */
-export type VoiceLang = "" | "ja" | "en";
+/** One line of one language. A line with no `d` has a text and no recording. */
+export interface VoiceLine {
+  n: number;
+  /** The text of the line, in its language. */
+  t: string;
+  /** Japanese only: the English translation of the Japanese. */
+  tr?: string;
+  /** Seconds. */
+  d?: number;
+  /** Japanese only: the original file is an mp3 (a trailer line), not a FLAC. */
+  x?: "mp3";
+  note?: string;
+}
+
+/** A Japanese trailer clip: its own recording, with the trailer's subtitle or a tentative translation. */
+export interface VoiceTrailerClip {
+  id: string;
+  n: number;
+  t: string;
+  tr: string;
+  who: string;
+  d: number;
+  /** Library keys. */
+  m4a: string;
+  flac: string;
+  /** The id of the film it was cut from, in the Films room (the first sixteen only). */
+  film?: string;
+  /** Where it starts in that film, in seconds. */
+  at?: number;
+  note?: string;
+}
+
+/** `public/data/library/voicelines-<slug>.json`: every language of one Aspirant. */
+export interface VoiceCharacterFile {
+  v: 2;
+  slug: Slug;
+  name: string;
+  /** What the page of her needs to colour itself and to title her, so it does not read the index. */
+  card: Pick<VoiceCharacter, "jp" | "romaji" | "aspirant" | "palette">;
+  langs: Record<LangId, VoiceLine[]>;
+  /** The long recording of the Japanese lines. */
+  full: { id: string; m4a: string; d: number; note: string };
+  trailer?: VoiceTrailerClip[];
+}

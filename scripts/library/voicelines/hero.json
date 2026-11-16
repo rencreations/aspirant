@@ -1,0 +1,22 @@
+{
+ "poster": "voicelines/hero/v1/poster.webp",
+ "pw": 1920,
+ "ph": 1080,
+ "c": "#715f54",
+ "films": [
+  {
+   "src": "voicelines/hero/v1/loop-1920.mp4",
+   "w": 1920,
+   "h": 1080,
+   "dur": 20.33,
+   "bytes": 3927415
+  },
+  {
+   "src": "voicelines/hero/v1/loop-1280.mp4",
+   "w": 1280,
+   "h": 720,
+   "dur": 20.33,
+   "bytes": 1855956
+  }
+ ]
+}

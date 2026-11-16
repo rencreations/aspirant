@@ -73,6 +73,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       priority: 0.5,
     })),
+    // The page of each Aspirant in the voicelines room (the language is a parameter of it).
+    ...CHARACTER_SLUGS.map((slug) => ({
+      url: absolute(collectionRoute(`voicelines/${slug}`)),
+      lastModified,
+      priority: 0.5,
+    })),
     // Every post of the design room has its own page.
     ...roomSlugs("design").map((slug) => ({
       url: absolute(collectionRoute(`design/${slug}`)),

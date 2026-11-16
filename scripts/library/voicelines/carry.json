@@ -1,0 +1,2405 @@
+{
+ "characters": {
+  "fanny": {
+   "slug": "fanny",
+   "name": "Fanny",
+   "jp": "ファニー",
+   "romaji": "Fanī",
+   "aspirant": "Blade of Kibou",
+   "pair": "fanny-layla",
+   "palette": {
+    "primary": "#F5862A",
+    "secondary": "#6A3FB5",
+    "glow": "#F2ECFF",
+    "ink": "#1E1430"
+   },
+   "splash": "img/char/fanny/splash-sm.webp",
+   "lines": 28,
+   "dur": 82.22,
+   "full": "voice-fanny-full",
+   "fullDur": 126.69
+  },
+  "layla": {
+   "slug": "layla",
+   "name": "Layla",
+   "jp": "ライラ",
+   "romaji": "Raira",
+   "aspirant": "Miss Hikari",
+   "pair": "fanny-layla",
+   "palette": {
+    "primary": "#FF7F7A",
+    "secondary": "#14B3A6",
+    "glow": "#7DF7EC",
+    "ink": "#14222B"
+   },
+   "splash": "img/char/layla/splash-sm.webp",
+   "lines": 28,
+   "dur": 96.69,
+   "full": "voice-layla-full",
+   "fullDur": 143.45
+  },
+  "ruby": {
+   "slug": "ruby",
+   "name": "Ruby",
+   "jp": "ルビー",
+   "romaji": "Rubī",
+   "aspirant": "Mecha Maiden",
+   "pair": "ruby-angela",
+   "palette": {
+    "primary": "#1E2A57",
+    "secondary": "#E0388E",
+    "glow": "#F2B83B",
+    "ink": "#0A0F24"
+   },
+   "splash": "img/char/ruby/splash-sm.webp",
+   "lines": 40,
+   "dur": 112.0,
+   "full": "voice-ruby-full",
+   "fullDur": 189.52
+  },
+  "angela": {
+   "slug": "angela",
+   "name": "Angela",
+   "jp": "アンジェラ",
+   "romaji": "Anjera",
+   "aspirant": "Cyber Cherubin",
+   "pair": "ruby-angela",
+   "palette": {
+    "primary": "#FFB28C",
+    "secondary": "#E23A92",
+    "glow": "#62E8F6",
+    "ink": "#2A1422"
+   },
+   "splash": "img/char/angela/splash-sm.webp",
+   "lines": 40,
+   "dur": 135.43,
+   "full": "voice-angela-full",
+   "fullDur": 198.16
+  },
+  "lesley": {
+   "slug": "lesley",
+   "name": "Lesley",
+   "jp": "ラズリー",
+   "romaji": "Razurī",
+   "aspirant": "Deadeye Spectre",
+   "pair": "lesley-change",
+   "palette": {
+    "primary": "#E4512B",
+    "secondary": "#F2C35B",
+    "glow": "#39D3E3",
+    "ink": "#1C0F0D"
+   },
+   "splash": "img/char/lesley/splash-sm.webp",
+   "lines": 37,
+   "dur": 111.29,
+   "full": "voice-lesley-full",
+   "fullDur": 166.61
+  },
+  "change": {
+   "slug": "change",
+   "name": "Chang'e",
+   "jp": "嫦娥",
+   "romaji": null,
+   "aspirant": "Tech Tensai",
+   "pair": "lesley-change",
+   "palette": {
+    "primary": "#FF8FC7",
+    "secondary": "#3FD3B8",
+    "glow": "#A6F7E6",
+    "ink": "#24132F"
+   },
+   "splash": "img/char/change/splash-sm.webp",
+   "lines": 37,
+   "dur": 117.72,
+   "full": "voice-change-full",
+   "fullDur": 181.78
+  },
+  "guinevere": {
+   "slug": "guinevere",
+   "name": "Guinevere",
+   "jp": "グィネヴィア",
+   "romaji": "Guinevia",
+   "aspirant": "Daybreak Halo",
+   "pair": "guinevere-vexana",
+   "palette": {
+    "primary": "#F6B98A",
+    "secondary": "#E1322E",
+    "glow": "#2ED3C5",
+    "ink": "#24110E"
+   },
+   "splash": "img/char/guinevere/splash-sm.webp",
+   "lines": 41,
+   "dur": 153.45,
+   "full": "voice-guinevere-full",
+   "fullDur": 239.96
+  },
+  "vexana": {
+   "slug": "vexana",
+   "name": "Vexana",
+   "jp": "サナ",
+   "romaji": "Sana",
+   "aspirant": "Twilight Star",
+   "pair": "guinevere-vexana",
+   "palette": {
+    "primary": "#7A4FD6",
+    "secondary": "#E040A0",
+    "glow": "#D9D5F5",
+    "ink": "#140E26"
+   },
+   "splash": "img/char/vexana/splash-sm.webp",
+   "lines": 42,
+   "dur": 164.66,
+   "full": "voice-vexana-full",
+   "fullDur": 259.09
+  },
+  "obsidia": {
+   "slug": "obsidia",
+   "name": "Obsidia",
+   "jp": "アイーダ",
+   "romaji": "Aida",
+   "aspirant": "Imperatrix Arashi",
+   "pair": "selena-obsidia",
+   "palette": {
+    "primary": "#B3122E",
+    "secondary": "#E2B04A",
+    "glow": "#FF5A86",
+    "ink": "#0B0709"
+   },
+   "splash": "img/char/obsidia/splash-sm.webp",
+   "lines": 41,
+   "dur": 180.79,
+   "full": "voice-obsidia-full",
+   "fullDur": 274.91
+  },
+  "selena": {
+   "slug": "selena",
+   "name": "Selena",
+   "jp": "セリナ",
+   "romaji": "Serina",
+   "aspirant": "Silverbolt Raiko",
+   "pair": "selena-obsidia",
+   "palette": {
+    "primary": "#A6DCFF",
+    "secondary": "#C7D0DD",
+    "glow": "#8B5CF6",
+    "ink": "#0D1424"
+   },
+   "splash": "img/char/selena/splash-sm.webp",
+   "lines": 46,
+   "dur": 219.36,
+   "full": "voice-selena-full",
+   "fullDur": 311.06
+  }
+ },
+ "lines": {
+  "fanny-1": {
+   "jp": "強い信念は、絶望を断ち切る刃となる",
+   "en": "A strong Aspirant spirit becomes the blade that cuts through despair."
+  },
+  "fanny-2": {
+   "jp": "自由な世界に向かって出発よ",
+   "en": "Off we go, toward a free world!"
+  },
+  "fanny-3": {
+   "jp": "1位を取るために頑張っているわけではないわ",
+   "en": "I'm not working hard just to take first place."
+  },
+  "fanny-4": {
+   "jp": "飛ぶのは気持ちがいいね",
+   "en": "Flying feels great."
+  },
+  "fanny-5": {
+   "jp": "この全てが、ただの悪夢だったらいいのに",
+   "en": "I wish all of this... were just a bad dream."
+  },
+  "fanny-6": {
+   "jp": "学校の中は飛行禁止、はい、でも、こっそり飛ぶだけなら",
+   "en": "Flying is banned on school grounds. Yes. But if I only sneak in a little flight..."
+  },
+  "fanny-7": {
+   "jp": "人類最後の希望として、諦めるわけにはいかないのだ",
+   "en": "As humanity's last hope, I can't afford to give up."
+  },
+  "fanny-8": {
+   "jp": "いつか自由にライトルトを出られる日が来る",
+   "en": "Someday, the day will come when I can leave Terrinia freely."
+  },
+  "fanny-9": {
+   "jp": "トレーニングは面白いわよ",
+   "en": "Training is fun."
+  },
+  "fanny-10": {
+   "jp": "空のあっち側に、もう一人の私がいるのかな",
+   "en": "I wonder if there's another me on the other side of the sky."
+  },
+  "fanny-11": {
+   "jp": "ライトルトの外は危険だけど、私がみんなを守るわ",
+   "en": "It's dangerous outside Terrinia, but I'll protect everyone."
+  },
+  "fanny-12": {
+   "jp": "準備はできた、テストが始まるよ",
+   "en": "I'm ready. The test is about to start."
+  },
+  "fanny-13": {
+   "jp": "ライラ、一緒にトレーニングしよう",
+   "en": "Layla! Let's train together."
+  },
+  "fanny-14": {
+   "jp": "ライトルトを守るのが私たちの責務よ",
+   "en": "Protecting Terrinia is our duty."
+  },
+  "fanny-15": {
+   "jp": "醜い破壊者め",
+   "en": "You ugly Enders."
+  },
+  "fanny-16": {
+   "jp": "外の世界には、きっと面白いものがいっぱい",
+   "en": "There must be so many interesting things out in the world."
+  },
+  "fanny-17": {
+   "jp": "私たちは、全人類の信念を背負っている",
+   "en": "We carry the Aspirant spirit of all humanity."
+  },
+  "fanny-18": {
+   "jp": "最強の威力者になってみせるわ",
+   "en": "I'll show you. I'm going to become the strongest Aspirant."
+  },
+  "fanny-19": {
+   "jp": "食らいなさい",
+   "en": "Take this!"
+  },
+  "fanny-20": {
+   "jp": "逃がさないわ",
+   "en": "You're not getting away."
+  },
+  "fanny-21": {
+   "jp": "勝利はきっと、訪れる",
+   "en": "Victory will surely... come."
+  },
+  "fanny-22": {
+   "jp": "諦めないで",
+   "en": "Don't give up."
+  },
+  "fanny-23": {
+   "jp": "一緒に頑張ろう",
+   "en": "Let's do our best together."
+  },
+  "fanny-24": {
+   "jp": "ん、まだやる気なの",
+   "en": "Hm? You still want to fight?"
+  },
+  "fanny-25": {
+   "jp": "これで参った",
+   "en": "Do you give up now?"
+  },
+  "fanny-26": {
+   "jp": "この刀、試してみたいの",
+   "en": "Do you want to try out this blade?"
+  },
+  "fanny-27": {
+   "jp": "ん、どこからか視線が",
+   "en": "Hm? I feel someone's eyes on me from somewhere..."
+  },
+  "fanny-28": {
+   "jp": "誰だ、はあ、びっくりした",
+   "en": "Who's there?! Phew, you startled me."
+  },
+  "layla-1": {
+   "jp": "正義を執行するわよ",
+   "en": "I'm going to carry out justice!"
+  },
+  "layla-2": {
+   "jp": "1位を奪い返すわよ",
+   "en": "I'm going to take back first place!"
+  },
+  "layla-3": {
+   "jp": "校則、なにそれ",
+   "en": "School rules? What are those?"
+  },
+  "layla-4": {
+   "jp": "破壊者は私が倒すわ",
+   "en": "I'll take down the Enders!"
+  },
+  "layla-5": {
+   "jp": "外の世界に興味なんてないわ、こっそり覗いたりしてないわよ",
+   "en": "I'm not interested in the outside world. I haven't been sneaking a peek, either."
+  },
+  "layla-6": {
+   "jp": "最後は人類が勝つ、当たり前でしょ",
+   "en": "In the end, humanity wins. Obviously, right?"
+  },
+  "layla-7": {
+   "jp": "私の制服どう、自分でアレンジしたのよ",
+   "en": "How do you like my uniform? I customized it myself."
+  },
+  "layla-8": {
+   "jp": "ここは私の秘密基地、誰にも言わないでね",
+   "en": "This is my secret base. Don't tell anyone."
+  },
+  "layla-9": {
+   "jp": "私のマジックガンからは逃げられないわよ",
+   "en": "You can't escape my magic gun!"
+  },
+  "layla-10": {
+   "jp": "しっ、照準を合わせているの、邪魔しないで",
+   "en": "Shh. I'm lining up my aim. Don't get in my way!"
+  },
+  "layla-11": {
+   "jp": "怖いなら私の後ろに隠れてもいいわよ",
+   "en": "If you're scared, you can hide behind me."
+  },
+  "layla-12": {
+   "jp": "安心して、卑劣な破壊者が私を傷つけられるわけないわ",
+   "en": "Don't worry! There's no way a despicable Ender could hurt me."
+  },
+  "layla-13": {
+   "jp": "一緒にトレーニング、ごめんね、また今度にしましょう",
+   "en": "Train together? Sorry, let's do it another time."
+  },
+  "layla-14": {
+   "jp": "たかがテストマッチよ、私が緊張するわけないじゃない",
+   "en": "It's just a test match! There's no way I'd be nervous."
+  },
+  "layla-15": {
+   "jp": "気持ちは嬉しいけど、一人の方が好きだわ",
+   "en": "I appreciate the thought, but... I prefer being alone."
+  },
+  "layla-16": {
+   "jp": "どう思われているのかって、そんなに大事",
+   "en": "Is it really that important what people think of me?"
+  },
+  "layla-17": {
+   "jp": "威力者の使命、全人類を守ることに決まっているでしょ",
+   "en": "The mission of an Aspirant? Protecting all of humanity, of course!"
+  },
+  "layla-18": {
+   "jp": "最強の威力者は、もちろん私よ",
+   "en": "The strongest Aspirant is, of course, me!"
+  },
+  "layla-19": {
+   "jp": "発射",
+   "en": "Fire!"
+  },
+  "layla-20": {
+   "jp": "ターゲット、ロックオン",
+   "en": "Target, locked on!"
+  },
+  "layla-21": {
+   "jp": "はぁっ、そんな、なっ",
+   "en": "Huh...? No way... What..."
+  },
+  "layla-22": {
+   "jp": "どうして",
+   "en": "Why..."
+  },
+  "layla-23": {
+   "jp": "まあ、あんたの実力は認めるわよ",
+   "en": "Well, I'll admit you've got skill."
+  },
+  "layla-24": {
+   "jp": "もう一回勝負してみる",
+   "en": "Want to try another match?"
+  },
+  "layla-25": {
+   "jp": "私こそが最強ね",
+   "en": "I really am the strongest!"
+  },
+  "layla-26": {
+   "jp": "あっち行ってってば",
+   "en": "I said go away!"
+  },
+  "layla-27": {
+   "jp": "ん、何を",
+   "en": "Hm? What are you doing?"
+  },
+  "layla-28": {
+   "jp": "軽々しく触らないで",
+   "en": "Don't touch me so casually!"
+  },
+  "ruby-1": {
+   "jp": "離さないんだから",
+   "en": "I'm never letting go of you!"
+  },
+  "ruby-2": {
+   "jp": "やめっ、痛い目に遭いたいの、ふっ",
+   "en": "Stop it! Do you want to get hurt? Heh."
+  },
+  "ruby-3": {
+   "jp": "よし、誰もいない、ふふふ、あっ、うんうん",
+   "en": "Okay, nobody's around. Hehe... oh! ...Ahem."
+  },
+  "ruby-4": {
+   "jp": "えっ、何が起きたの、あった",
+   "en": "Huh...? What happened? Found it!"
+  },
+  "ruby-5": {
+   "jp": "自由だ、あははは",
+   "en": "Freedom! Hahaha!"
+  },
+  "ruby-6": {
+   "jp": "プログラミングの世界へ",
+   "en": "Into the world of programming!"
+  },
+  "ruby-7": {
+   "jp": "完璧なアップデート",
+   "en": "A perfect update!"
+  },
+  "ruby-8": {
+   "jp": "再テスト開始",
+   "en": "Starting the retest!"
+  },
+  "ruby-9": {
+   "jp": "すぐ戻るからね",
+   "en": "I'll be right back."
+  },
+  "ruby-10": {
+   "jp": "原因不明エラー",
+   "en": "Unknown error."
+  },
+  "ruby-11": {
+   "jp": "どう、これ見て",
+   "en": "How's that? Look at this."
+  },
+  "ruby-12": {
+   "jp": "いいねぇ",
+   "en": "Nice."
+  },
+  "ruby-13": {
+   "jp": "障害の排除完了",
+   "en": "Obstacle removal complete."
+  },
+  "ruby-14": {
+   "jp": "トラブルシューティングは得意なのよね",
+   "en": "I'm good at troubleshooting, you know."
+  },
+  "ruby-15": {
+   "jp": "ついに夜明けがやってくる",
+   "en": "The dawn is finally coming."
+  },
+  "ruby-16": {
+   "jp": "私はどんなルールにも縛られない",
+   "en": "I'm not bound by any rules."
+  },
+  "ruby-17": {
+   "jp": "ふふん、誰も私の自由は邪魔できない",
+   "en": "Heh. No one can get in the way of my freedom."
+  },
+  "ruby-18": {
+   "jp": "自分がやるべきことは、責任を持って最後までやるよ",
+   "en": "What I'm supposed to do, I'll see through to the end, responsibly."
+  },
+  "ruby-19": {
+   "jp": "違う、私は誰かの操り人形じゃない",
+   "en": "No... I'm not anyone's puppet."
+  },
+  "ruby-20": {
+   "jp": "長い間自分を偽っていると、本当の自分を見失うものよ",
+   "en": "If you disguise yourself for long enough, you lose sight of who you really are."
+  },
+  "ruby-21": {
+   "jp": "あの子と私は違う、似ても似つかない",
+   "en": "She and I are different. Nothing alike."
+  },
+  "ruby-22": {
+   "jp": "うーん、もうこれ以上我慢できない",
+   "en": "Mmm, I can't hold it back any longer."
+  },
+  "ruby-23": {
+   "jp": "どの道を行こうとも、自由を諦めるつもりはないよ",
+   "en": "Whichever road I take, I won't give up my freedom."
+  },
+  "ruby-24": {
+   "jp": "私にとって家は、金の鳥かごみたいなもの",
+   "en": "To me, home is like a golden birdcage."
+  },
+  "ruby-25": {
+   "jp": "来い",
+   "en": "Come here!"
+  },
+  "ruby-26": {
+   "jp": "消えちゃえ",
+   "en": "Disappear!"
+  },
+  "ruby-27": {
+   "jp": "これはどう",
+   "en": "How about this?"
+  },
+  "ruby-28": {
+   "jp": "邪魔しないで",
+   "en": "Don't get in my way!"
+  },
+  "ruby-29": {
+   "jp": "弱い弱い",
+   "en": "Weak, weak."
+  },
+  "ruby-30": {
+   "jp": "くらえ",
+   "en": "Take this!"
+  },
+  "ruby-31": {
+   "jp": "踊りましょう",
+   "en": "Let's dance!"
+  },
+  "ruby-32": {
+   "jp": "私とやるの",
+   "en": "You want to take me on?"
+  },
+  "ruby-33": {
+   "jp": "そっちじゃないよ",
+   "en": "Not that way."
+  },
+  "ruby-34": {
+   "jp": "あと、少しなのに",
+   "en": "Just... a little more..."
+  },
+  "ruby-35": {
+   "jp": "当然の結果ね",
+   "en": "That's only to be expected."
+  },
+  "ruby-36": {
+   "jp": "それで終わりなの",
+   "en": "Is that all?"
+  },
+  "ruby-37": {
+   "jp": "自業自得ね",
+   "en": "You brought it on yourselves."
+  },
+  "ruby-38": {
+   "jp": "自分を操るのは自分、どうするかは、自分で決めていいの",
+   "en": "You're the one who controls yourself. What to do is yours to decide."
+  },
+  "ruby-39": {
+   "jp": "これで自由ね、永遠に",
+   "en": "Now you're free. Forever."
+  },
+  "ruby-40": {
+   "jp": "お家に帰りましょう",
+   "en": "Let's go home."
+  },
+  "angela-1": {
+   "jp": "うん、ちょっと待ってくださいね、ああ、あはは",
+   "en": "Um, please wait just a moment. Ah... haha."
+  },
+  "angela-2": {
+   "jp": "大丈夫ですよ、テトラ",
+   "en": "It's all right, Tetra."
+  },
+  "angela-3": {
+   "jp": "はい、チーズ、あはははは",
+   "en": "Say cheese! Ahahaha!"
+  },
+  "angela-4": {
+   "jp": "ん、え、あはは",
+   "en": "Hm? Huh? Ahaha."
+  },
+  "angela-5": {
+   "jp": "私にも夜明けがやってくるのでしょうか",
+   "en": "Will a dawn come for me, too?"
+  },
+  "angela-6": {
+   "jp": "私はみんなを守りたい",
+   "en": "I want to protect everyone!"
+  },
+  "angela-7": {
+   "jp": "はぁ、エラー修復完了",
+   "en": "Phew... error repair complete!"
+  },
+  "angela-8": {
+   "jp": "再起動成功",
+   "en": "Reboot successful!"
+  },
+  "angela-9": {
+   "jp": "バッテリー補充",
+   "en": "Battery recharged!"
+  },
+  "angela-10": {
+   "jp": "お家に帰ります",
+   "en": "I'm going back home."
+  },
+  "angela-11": {
+   "jp": "新しいモジュールですね",
+   "en": "It's a new module, isn't it?"
+  },
+  "angela-12": {
+   "jp": "あっ、ありがとうございます",
+   "en": "Oh... thank you very much."
+  },
+  "angela-13": {
+   "jp": "私の仲間は傷つけさせません",
+   "en": "I won't let anyone hurt my friends!"
+  },
+  "angela-14": {
+   "jp": "ルオードっていい人だと思っていました",
+   "en": "I thought Lord was a good person."
+  },
+  "angela-15": {
+   "jp": "私の心臓は鼓動しなくても稼働しますが、違和感がありますね",
+   "en": "My heart keeps running even without beating, but it feels strange."
+  },
+  "angela-16": {
+   "jp": "この姿、みんなに受け入れてもらえるでしょうか",
+   "en": "This form... I wonder if everyone will accept me."
+  },
+  "angela-17": {
+   "jp": "テトラ、孤独という感情、わかりますか",
+   "en": "Tetra, do you understand the emotion called loneliness?"
+  },
+  "angela-18": {
+   "jp": "暖かさを感じます、でも、どうしてでしょう、冷却システムには何の反応もありません",
+   "en": "I feel warmth. But why? There's no reaction at all in my cooling system."
+  },
+  "angela-19": {
+   "jp": "カチ、カチ、カチ、私の心臓の音、聞こえますか",
+   "en": "Click, click, click. Can you hear the sound of my heart?"
+  },
+  "angela-20": {
+   "jp": "この世界は学びたいことで溢れています",
+   "en": "This world is overflowing with things I want to learn."
+  },
+  "angela-21": {
+   "jp": "テトラ、私が動かなくなっても、一緒にいてくれますか",
+   "en": "Tetra, even if I stop moving, will you stay with me?"
+  },
+  "angela-22": {
+   "jp": "みんなから、あまり離れすぎないようにしなきゃ",
+   "en": "I must be careful not to stray too far from everyone."
+  },
+  "angela-23": {
+   "jp": "失くした仲間のことを考えると、いつも誤作動が発生します、でもこれは直したくありません",
+   "en": "Whenever I think about the friends I lost, a malfunction always occurs. But I don't want to fix this."
+  },
+  "angela-24": {
+   "jp": "夜明けが必ずやってくるから、心配なことなんてありません",
+   "en": "The dawn will surely come, so there's nothing to worry about!"
+  },
+  "angela-25": {
+   "jp": "私に任せてください",
+   "en": "Leave it to me!"
+  },
+  "angela-26": {
+   "jp": "痛かったらごめんなさい",
+   "en": "I'm sorry if that hurt."
+  },
+  "angela-27": {
+   "jp": "もう大丈夫ですよ",
+   "en": "You're safe now."
+  },
+  "angela-28": {
+   "jp": "行きましょう、テトラ",
+   "en": "Let's go, Tetra!"
+  },
+  "angela-29": {
+   "jp": "大丈夫ですか",
+   "en": "Are you all right?"
+  },
+  "angela-30": {
+   "jp": "私も頑張ります",
+   "en": "I'll do my best, too!"
+  },
+  "angela-31": {
+   "jp": "行動分析中",
+   "en": "Analyzing behavior."
+  },
+  "angela-32": {
+   "jp": "私がそばにいますよ",
+   "en": "I'm right here beside you!"
+  },
+  "angela-33": {
+   "jp": "シールド展開",
+   "en": "Deploying shield!"
+  },
+  "angela-34": {
+   "jp": "暖かさが、なくなる",
+   "en": "The warmth... is disappearing..."
+  },
+  "angela-35": {
+   "jp": "傷つけてしまいましたか",
+   "en": "Did I end up hurting someone?"
+  },
+  "angela-36": {
+   "jp": "こういうことはしたくありません",
+   "en": "I don't want to do things like this."
+  },
+  "angela-37": {
+   "jp": "これで終わりですか",
+   "en": "Is this the end?"
+  },
+  "angela-38": {
+   "jp": "私を連れて帰るつもりですか",
+   "en": "Do you intend to take me back with you?"
+  },
+  "angela-39": {
+   "jp": "一緒にどこへでも行きましょう",
+   "en": "Let's go anywhere together."
+  },
+  "angela-40": {
+   "jp": "どうすれば羽がなくても飛べますか",
+   "en": "How can I fly even without wings?"
+  },
+  "lesley-1": {
+   "jp": "弾丸が、敵に通じる唯一の言葉",
+   "en": "Bullets are the only language the enemy understands."
+  },
+  "lesley-2": {
+   "jp": "この世界の未来には、必ず勝利が待っている",
+   "en": "Victory is certain to await the future of this world."
+  },
+  "lesley-3": {
+   "jp": "嘆いている暇はない",
+   "en": "There's no time to lament."
+  },
+  "lesley-4": {
+   "jp": "心がある限り、決して降伏しない",
+   "en": "As long as we have heart, we will never surrender."
+  },
+  "lesley-5": {
+   "jp": "撤退の頃合いを見極めるのも、重要な技術よ",
+   "en": "Knowing when to retreat is an important skill, too."
+  },
+  "lesley-6": {
+   "jp": "信念の光から離れないで",
+   "en": "Don't stray from the Aspirant light."
+  },
+  "lesley-7": {
+   "jp": "これで勝利は確実ね",
+   "en": "Now victory is certain."
+  },
+  "lesley-8": {
+   "jp": "研究開発部の新作",
+   "en": "A new product from R&D?"
+  },
+  "lesley-9": {
+   "jp": "また一つ、脅威を排除した",
+   "en": "Another threat eliminated."
+  },
+  "lesley-10": {
+   "jp": "慢心があなたを破滅へと導いたのよ",
+   "en": "Your complacency led you to your ruin."
+  },
+  "lesley-11": {
+   "jp": "距離は単なる数字、私に届かない標的はないわ",
+   "en": "Distance is just a number. There's no target beyond my reach."
+  },
+  "lesley-12": {
+   "jp": "敵は一匹たりとも逃さない",
+   "en": "Not a single enemy will escape."
+  },
+  "lesley-13": {
+   "jp": "希望の弾丸で、腐った野望を打ち砕く",
+   "en": "With the bullet of hope, I'll shatter your rotten ambitions."
+  },
+  "lesley-14": {
+   "jp": "集中して、あなたの心と体を、信念と一つに",
+   "en": "Focus. Make your mind and body one with your Aspirant spirit."
+  },
+  "lesley-15": {
+   "jp": "私たちはまだ、自分たちの力を完全には理解していない、でも、互いを信じることで無限の力を得られる",
+   "en": "We still don't fully understand our own power. But by trusting each other, we can gain limitless strength."
+  },
+  "lesley-16": {
+   "jp": "教官は技術を教えるだけでなく、愛する心や耐え抜くこと、信念も教えるべきよ",
+   "en": "Instructors shouldn't only teach technique, they should also teach a loving heart, perseverance, and the Aspirant spirit."
+  },
+  "lesley-17": {
+   "jp": "信念があればこそ、力も身につく",
+   "en": "Only with the Aspirant spirit can you gain strength."
+  },
+  "lesley-18": {
+   "jp": "この弾丸で悪を撃ち抜き、道を開く",
+   "en": "With this bullet, I'll shoot through evil and open the way."
+  },
+  "lesley-19": {
+   "jp": "自由のために戦う",
+   "en": "I fight for freedom."
+  },
+  "lesley-20": {
+   "jp": "信念のない者は、弾丸のない銃のようなもの",
+   "en": "One without the Aspirant spirit is like a gun without bullets."
+  },
+  "lesley-21": {
+   "jp": "標的は必ず撃ち抜く",
+   "en": "I always hit my target."
+  },
+  "lesley-22": {
+   "jp": "遅すぎる",
+   "en": "Too slow."
+  },
+  "lesley-23": {
+   "jp": "この戦い、私が支配する",
+   "en": "This battle, I'm in control."
+  },
+  "lesley-24": {
+   "jp": "戦いに集中しなさい",
+   "en": "Focus on the fight."
+  },
+  "lesley-25": {
+   "jp": "一発、それで十分",
+   "en": "One shot, that's enough."
+  },
+  "lesley-26": {
+   "jp": "当てる",
+   "en": "I'll hit you!"
+  },
+  "lesley-27": {
+   "jp": "これが私の信念の力",
+   "en": "This is my Aspirant power."
+  },
+  "lesley-28": {
+   "jp": "ステルスモードに移行する",
+   "en": "Switching to stealth mode."
+  },
+  "lesley-29": {
+   "jp": "リパルサー",
+   "en": "Repulsor!"
+  },
+  "lesley-30": {
+   "jp": "これで終わらせる",
+   "en": "I'll end it here."
+  },
+  "lesley-31": {
+   "jp": "ロックオン",
+   "en": "Locked on!"
+  },
+  "lesley-32": {
+   "jp": "これを教訓にすることね",
+   "en": "Take this as a lesson."
+  },
+  "lesley-33": {
+   "jp": "あなたにまともな教官がいたら",
+   "en": "If only you'd had a proper instructor..."
+  },
+  "lesley-34": {
+   "jp": "こうなる道しかなかったのよ",
+   "en": "There was no other road for you than this."
+  },
+  "lesley-35": {
+   "jp": "まだ、希望、あっ",
+   "en": "There's still... hope... ah."
+  },
+  "lesley-36": {
+   "jp": "ジョーカー、あの日以来、私はあなたを守ると誓った",
+   "en": "Chang'e, ever since that day, I vowed to protect you.",
+   "note": "The file name reads ジョーカー (Joker), a transcript error. The line is addressed to Chang'e (嫦娥)."
+  },
+  "lesley-37": {
+   "jp": "私にこんなことをさせないで、ジョーカー",
+   "en": "Don't make me do this. Chang'e...",
+   "note": "The file name reads ジョーカー (Joker), a transcript error. The line is addressed to Chang'e (嫦娥)."
+  },
+  "change-1": {
+   "jp": "小さな科学者が、世界を守るよ",
+   "en": "This little scientist will protect the world!"
+  },
+  "change-2": {
+   "jp": "いくよ、ウサギさん",
+   "en": "Here we go! Mr. Bunny!"
+  },
+  "change-3": {
+   "jp": "お姉ちゃんに言いつけてやる",
+   "en": "I'm telling Big Sis on you!"
+  },
+  "change-4": {
+   "jp": "ください、見なかったことにして",
+   "en": "Please, just pretend you didn't see anything."
+  },
+  "change-5": {
+   "jp": "無限のアイデアを求めて、また旅に出るよ",
+   "en": "Off on another journey in search of endless ideas."
+  },
+  "change-6": {
+   "jp": "三日月、もう一度行きまーす",
+   "en": "Crescent Moon, going once more!"
+  },
+  "change-7": {
+   "jp": "新しいガジェット、欲しい",
+   "en": "I want new gadgets!"
+  },
+  "change-8": {
+   "jp": "ほら、ウサギさん、新しいお友達だよ",
+   "en": "Look! Mr. Bunny, it's a new friend for you."
+  },
+  "change-9": {
+   "jp": "訓練が足りないって、お姉ちゃんがよく言ってたよ",
+   "en": "Big Sis always used to say I wasn't training enough."
+  },
+  "change-10": {
+   "jp": "わあ、中途半端だったな",
+   "en": "Wow, that was half-baked."
+  },
+  "change-11": {
+   "jp": "ウサギさんと私なら、1足す1でも2より大きくなるよ",
+   "en": "With Mr. Bunny and me, even 1 plus 1 is bigger than 2."
+  },
+  "change-12": {
+   "jp": "私はもう大人だよ、子供扱いしないで",
+   "en": "I'm already a grown-up. Don't treat me like a kid."
+  },
+  "change-13": {
+   "jp": "お姉ちゃんが、想像力が私の武器って言ってた",
+   "en": "Big Sis said imagination is my weapon."
+  },
+  "change-14": {
+   "jp": "ウサギさんは私の親友だもん、誰にも奪わせないよ",
+   "en": "Mr. Bunny is my best friend. I won't let anyone take him away."
+  },
+  "change-15": {
+   "jp": "お互いを信じる心が、私たちの力になるの",
+   "en": "Hearts that believe in each other become our strength."
+  },
+  "change-16": {
+   "jp": "世界を壊そうとする人は、許さないよ",
+   "en": "I won't forgive anyone who tries to destroy the world."
+  },
+  "change-17": {
+   "jp": "信念の力、それは私",
+   "en": "The Aspirant power? That's me!"
+  },
+  "change-18": {
+   "jp": "アイデアが浮かんだら、すぐ研究室に戻るんだ",
+   "en": "When an idea comes to me, I go straight back to the lab."
+  },
+  "change-19": {
+   "jp": "弱いのは仕方ないけど、賢くないのはねー",
+   "en": "Being weak can't be helped, but not being smart... well."
+  },
+  "change-20": {
+   "jp": "お姉ちゃんの陰にばっかり隠れていられない、私も戦って成長する",
+   "en": "I can't keep hiding in Big Sis's shadow. I'll fight and grow, too."
+  },
+  "change-21": {
+   "jp": "ウサギさん、一緒に",
+   "en": "Mr. Bunny, together!"
+  },
+  "change-22": {
+   "jp": "コンソール、起動",
+   "en": "Console! Activate!"
+  },
+  "change-23": {
+   "jp": "みんなの信念は、私が守る",
+   "en": "I'll protect everyone's Aspirant spirit!"
+  },
+  "change-24": {
+   "jp": "信念の力は強いんだよ",
+   "en": "The Aspirant power is strong."
+  },
+  "change-25": {
+   "jp": "ウサギさんをいじめないで",
+   "en": "Don't bully Mr. Bunny!"
+  },
+  "change-26": {
+   "jp": "私の力、見せてあげる",
+   "en": "I'll show you my power."
+  },
+  "change-27": {
+   "jp": "必ずみんなを守る",
+   "en": "I'll definitely protect everyone!"
+  },
+  "change-28": {
+   "jp": "くらえー",
+   "en": "Take this!"
+  },
+  "change-29": {
+   "jp": "信念の力、導いて",
+   "en": "Aspirant power, guide me."
+  },
+  "change-30": {
+   "jp": "前方に、出力最大",
+   "en": "Straight ahead! Maximum output!"
+  },
+  "change-31": {
+   "jp": "私の超天才的発明の力よ",
+   "en": "This is the power of my super-genius invention!"
+  },
+  "change-32": {
+   "jp": "変な寝方だね",
+   "en": "What a weird way to sleep."
+  },
+  "change-33": {
+   "jp": "子供じゃないって言ったでしょ",
+   "en": "I told you I'm not a kid."
+  },
+  "change-34": {
+   "jp": "はぁ、終わった",
+   "en": "Phew, all done."
+  },
+  "change-35": {
+   "jp": "お姉ちゃん、ウサギさんが寂しかったって",
+   "en": "Big Sis, Mr. Bunny says he was lonely."
+  },
+  "change-36": {
+   "jp": "怖いお姉ちゃんだって大嫌い",
+   "en": "I hate scary Big Sis!"
+  },
+  "change-37": {
+   "jp": "信じ、られない",
+   "en": "I can't... believe it."
+  },
+  "guinevere-1": {
+   "jp": "私は白昼に輝く星となり、彼女を導く",
+   "en": "I will become a star shining in broad daylight and guide her."
+  },
+  "guinevere-2": {
+   "jp": "この運命は、二人で背負うべきよ",
+   "en": "This destiny is something the two of us should bear together."
+  },
+  "guinevere-3": {
+   "jp": "信念の光は、決して消えない",
+   "en": "The Aspirant light will never go out."
+  },
+  "guinevere-4": {
+   "jp": "何度やり直しても、私たちの運命は変わらない",
+   "en": "No matter how many times we start over, our fate won't change."
+  },
+  "guinevere-5": {
+   "jp": "夜明けの再会を楽しみにしているわ",
+   "en": "I'm looking forward to our reunion at dawn."
+  },
+  "guinevere-6": {
+   "jp": "私は止まらない、まだ守るべきものがあるから",
+   "en": "I won't stop. I still have something to protect."
+  },
+  "guinevere-7": {
+   "jp": "サナにも似合うかしら",
+   "en": "I wonder if this would suit Vexana, too."
+  },
+  "guinevere-8": {
+   "jp": "この力で、もっと強く",
+   "en": "With this power, stronger still."
+  },
+  "guinevere-9": {
+   "jp": "また一緒に戦える日を",
+   "en": "For the day we can fight together again."
+  },
+  "guinevere-10": {
+   "jp": "共に行こう、彼女を見つけるために",
+   "en": "Let's go together, to find her."
+  },
+  "guinevere-11": {
+   "jp": "闇夜よ、あなたも星の光を求めているの",
+   "en": "O dark night, do you, too, long for starlight?"
+  },
+  "guinevere-12": {
+   "jp": "世界の運命は、私たちが決める",
+   "en": "We will decide the fate of the world ourselves."
+  },
+  "guinevere-13": {
+   "jp": "守られるよりも、一緒に戦うことを選ぶわ",
+   "en": "Rather than being protected, I choose to fight alongside you."
+  },
+  "guinevere-14": {
+   "jp": "信念は、決して嘘をつかない",
+   "en": "The Aspirant spirit never lies."
+  },
+  "guinevere-15": {
+   "jp": "彼女がいなければ、昼の太陽も凍えてしまう",
+   "en": "Without her, even the midday sun would freeze."
+  },
+  "guinevere-16": {
+   "jp": "私は黎明の使者、そして闇夜に星の光を灯すもの",
+   "en": "I am the herald of dawn, and the one who lights starlight in the dark of night."
+  },
+  "guinevere-17": {
+   "jp": "夜明けが訪れるまで、私は決して手を離さない",
+   "en": "Until dawn arrives, I will never let go of your hand."
+  },
+  "guinevere-18": {
+   "jp": "少女の信念、それは奇跡を信じること",
+   "en": "A girl's Aspirant spirit: it is believing in miracles."
+  },
+  "guinevere-19": {
+   "jp": "言ってたよね、奇跡は絶望の闇に咲くものだと",
+   "en": "You said it, didn't you, that miracles bloom in the darkness of despair."
+  },
+  "guinevere-20": {
+   "jp": "あの輝きこそ、信念の鼓動",
+   "en": "That radiance is the heartbeat of the Aspirant spirit."
+  },
+  "guinevere-21": {
+   "jp": "この一撃、サナのために",
+   "en": "This strike is for Vexana."
+  },
+  "guinevere-22": {
+   "jp": "私たちの信念は、ただ一つ",
+   "en": "We have only one Aspirant spirit."
+  },
+  "guinevere-23": {
+   "jp": "未来を信じて",
+   "en": "Believe in the future."
+  },
+  "guinevere-24": {
+   "jp": "信念がある限り、私は諦めない",
+   "en": "As long as I have the Aspirant spirit, I won't give up."
+  },
+  "guinevere-25": {
+   "jp": "覚悟しなさい",
+   "en": "Prepare yourself."
+  },
+  "guinevere-26": {
+   "jp": "星の輝きは、決して途絶えない",
+   "en": "The brilliance of the stars never fades."
+  },
+  "guinevere-27": {
+   "jp": "必ず、彼女を見つけ出す",
+   "en": "I will find her, no matter what."
+  },
+  "guinevere-28": {
+   "jp": "星の光よ、闇を裂け",
+   "en": "Light of the stars, tear through the darkness."
+  },
+  "guinevere-29": {
+   "jp": "白昼の光よ、降り注げ",
+   "en": "Light of day, pour down."
+  },
+  "guinevere-30": {
+   "jp": "信念の名のもとに",
+   "en": "In the name of Aspirant.",
+   "note": "This line is also in Vexana's list, with the same Japanese and the same file name."
+  },
+  "guinevere-31": {
+   "jp": "最後まで戦い抜く",
+   "en": "I'll fight to the very end.",
+   "note": "This line is also in Vexana's list, with the same Japanese and the same file name."
+  },
+  "guinevere-32": {
+   "jp": "サナ、あなたのいる未来へ",
+   "en": "Vexana... to the future where you are."
+  },
+  "guinevere-33": {
+   "jp": "闇なんて、怖くない",
+   "en": "I'm not afraid of the dark."
+  },
+  "guinevere-34": {
+   "jp": "奇跡をこの手で",
+   "en": "A miracle, with my own hands."
+  },
+  "guinevere-35": {
+   "jp": "黎明の光を受け入れて",
+   "en": "Accept the light of dawn."
+  },
+  "guinevere-36": {
+   "jp": "輝かしいのは流れ星だけじゃない、サナ、あなたの笑顔もよ",
+   "en": "It's not only shooting stars that shine. Vexana, your smile does too."
+  },
+  "guinevere-37": {
+   "jp": "勝負で答えを出しましょう、サナ",
+   "en": "Let's settle this with a match, Vexana."
+  },
+  "guinevere-38": {
+   "jp": "ぐっ、これはレディのたしなみよ、3秒で優雅さを取り戻す方法なんだから",
+   "en": "Ngh... this is a lady's refinement. It's the way to regain your elegance in three seconds."
+  },
+  "guinevere-39": {
+   "jp": "いちごジャムのドーナツに抗えるものなんていないわ、ロボットだって同じよ",
+   "en": "Nothing can resist a strawberry-jam doughnut. Even robots are the same."
+  },
+  "guinevere-40": {
+   "jp": "逃げるつもり、えへへ、はい、私、逃げ足の早いやつを捕まえるのが得意なのよ",
+   "en": "Planning to run? Hehe, yes, I'm good at catching fast runners."
+  },
+  "guinevere-41": {
+   "jp": "明日から特訓よ、言い訳禁止",
+   "en": "Training starts tomorrow. No excuses."
+  },
+  "vexana-1": {
+   "jp": "私は闇夜を照らす太陽となり、彼女を守る",
+   "en": "I will become the sun that lights the dark night, and protect her."
+  },
+  "vexana-2": {
+   "jp": "この運命は、私が背負う",
+   "en": "This destiny is mine to bear."
+  },
+  "vexana-3": {
+   "jp": "彼女がいる限り、信念は消えない",
+   "en": "As long as she is here, my Aspirant spirit will not fade."
+  },
+  "vexana-4": {
+   "jp": "もしやり直せるなら、彼女は迷うだろうか",
+   "en": "If we could start over, would she waver?"
+  },
+  "vexana-5": {
+   "jp": "闇夜に身を隠そうとも、私は揺るがぬ守護者であり続ける",
+   "en": "Even hidden in the dark of night, I will remain an unwavering guardian."
+  },
+  "vexana-6": {
+   "jp": "この瞬間だけ、時よ、止まれ",
+   "en": "Just for this moment: time, stop!"
+  },
+  "vexana-7": {
+   "jp": "グネビアも気に入るかしら",
+   "en": "I wonder if Guinevere would like this too."
+  },
+  "vexana-8": {
+   "jp": "この意志を、さらに強く",
+   "en": "Strengthen this resolve even further."
+  },
+  "vexana-9": {
+   "jp": "これが最後の別れだ",
+   "en": "This is the final farewell."
+  },
+  "vexana-10": {
+   "jp": "共に行こう、彼女を守るために",
+   "en": "Let us go together, to protect her."
+  },
+  "vexana-11": {
+   "jp": "孤独こそが私の宿命、そう信じていた、星の光が闇を裂くまでは",
+   "en": "Solitude was my fate, so I believed. Until starlight pierced the darkness."
+  },
+  "vexana-12": {
+   "jp": "この戦いが、世界の運命を決める",
+   "en": "This battle will decide the fate of the world."
+  },
+  "vexana-13": {
+   "jp": "たとえ世界を敵に回しても、私は永遠に彼女を守る",
+   "en": "Even if I make an enemy of the world, I will protect her forever."
+  },
+  "vexana-14": {
+   "jp": "信念のために、私は嘘をつく",
+   "en": "For the sake of the Aspirant spirit, I will lie."
+  },
+  "vexana-15": {
+   "jp": "彼女がいなければ、夜空の星も輝きを失う",
+   "en": "Without her, even the stars of the night sky lose their shine."
+  },
+  "vexana-16": {
+   "jp": "私は闇夜の使者、そして黎明を呼び覚ます者",
+   "en": "I am the herald of the dark night, and the one who awakens the dawn."
+  },
+  "vexana-17": {
+   "jp": "もし夜が昼を飲み込む運命ならば、私は黎明の前に消えよう",
+   "en": "If night is fated to swallow day, I will vanish before the dawn."
+  },
+  "vexana-18": {
+   "jp": "星無き夜にも、信念の紋章が私を導いてくれる",
+   "en": "Even on starless nights, the Aspirant emblem guides me."
+  },
+  "vexana-19": {
+   "jp": "星の意志は告げた、この世界はいずれ終焉を迎えると",
+   "en": "The will of the stars has spoken: this world will one day meet its end."
+  },
+  "vexana-20": {
+   "jp": "見上げてごらん、星々が輝いてる",
+   "en": "Look up. The stars are shining."
+  },
+  "vexana-21": {
+   "jp": "この一撃、グネビアのために",
+   "en": "This strike is for Guinevere!"
+  },
+  "vexana-22": {
+   "jp": "今こそ、全てをかけて",
+   "en": "Now is the time. Stake everything."
+  },
+  "vexana-23": {
+   "jp": "終焉が迫ってる",
+   "en": "The end is drawing near."
+  },
+  "vexana-24": {
+   "jp": "私がいる限り、信念は消えない",
+   "en": "As long as I'm here, the Aspirant spirit will not fade."
+  },
+  "vexana-25": {
+   "jp": "ここで終わらせる",
+   "en": "I'll end it here!"
+  },
+  "vexana-26": {
+   "jp": "太陽の冠は、決して消えない",
+   "en": "The crown of the sun will never be extinguished!"
+  },
+  "vexana-27": {
+   "jp": "これは、私が背負うべき宿命",
+   "en": "This is a destiny I must bear."
+  },
+  "vexana-28": {
+   "jp": "死の兆し",
+   "en": "An omen of death!"
+  },
+  "vexana-29": {
+   "jp": "暗き夜よ、万物を飲み込め",
+   "en": "Dark night, swallow all things."
+  },
+  "vexana-30": {
+   "jp": "信念の名のもとに",
+   "en": "In the name of Aspirant.",
+   "note": "This line is also in Guinevere's list, with the same Japanese and the same file name."
+  },
+  "vexana-31": {
+   "jp": "最後まで戦い抜く",
+   "en": "I'll fight to the very end.",
+   "note": "This line is also in Guinevere's list, with the same Japanese and the same file name."
+  },
+  "vexana-32": {
+   "jp": "グネビア、君のいる未来へ",
+   "en": "Guinevere... to the future where you are."
+  },
+  "vexana-33": {
+   "jp": "黎明を呼び覚ませ",
+   "en": "Awaken the dawn!"
+  },
+  "vexana-34": {
+   "jp": "終焉を恐れるな",
+   "en": "Do not fear the end."
+  },
+  "vexana-35": {
+   "jp": "闇夜に溶けるがいい",
+   "en": "Dissolve into the dark of night."
+  },
+  "vexana-36": {
+   "jp": "流れ星の下で、また巡り会えたね、グネビア",
+   "en": "Beneath the shooting star, we have met again, Guinevere."
+  },
+  "vexana-37": {
+   "jp": "私の決断、君には届かないだろう、グネビア",
+   "en": "My decision: it won't reach you, Guinevere."
+  },
+  "vexana-38": {
+   "jp": "思いは、夜に禁じられた幻影だ",
+   "en": "Feelings are illusions forbidden by the night."
+  },
+  "vexana-39": {
+   "jp": "闇夜の中で、信念の黎明を呼び覚ます",
+   "en": "In the dark of night, I awaken the Aspirant dawn."
+  },
+  "vexana-40": {
+   "jp": "この凍てつく闇の中で、私は黎明の光を待ち続ける",
+   "en": "In this freezing darkness, I keep waiting for the light of dawn."
+  },
+  "vexana-41": {
+   "jp": "信念の声が響く限り、私は闇に抗おう",
+   "en": "As long as the Aspirant voice echoes, I will resist the darkness."
+  },
+  "vexana-42": {
+   "jp": "流れ星の下で、また巡り",
+   "en": "Beneath the shooting star, we meet again...",
+   "note": "The recording is cut off at the end."
+  },
+  "obsidia-1": {
+   "jp": "文明に終焉をもたらす、これぞ我が使命",
+   "en": "Bringing an end to civilization, this is my mission."
+  },
+  "obsidia-2": {
+   "jp": "最後の粛清を始めよう",
+   "en": "Let us begin the final purge."
+  },
+  "obsidia-3": {
+   "jp": "破壊とは、新たなサイクルの始まりに過ぎない",
+   "en": "Destruction is merely the beginning of a new cycle."
+  },
+  "obsidia-4": {
+   "jp": "再調整はここまでだ",
+   "en": "That's enough recalibration."
+  },
+  "obsidia-5": {
+   "jp": "エンダーたちよ、引け",
+   "en": "Enders, withdraw!"
+  },
+  "obsidia-6": {
+   "jp": "マトリックスが送信中だ",
+   "en": "The Matrix is transmitting."
+  },
+  "obsidia-7": {
+   "jp": "強化を承認する",
+   "en": "Augmentation approved."
+  },
+  "obsidia-8": {
+   "jp": "実に興味深い技術だ",
+   "en": "What intriguing technology."
+  },
+  "obsidia-9": {
+   "jp": "貴様はもはや用済みだ",
+   "en": "You are no longer of any use."
+  },
+  "obsidia-10": {
+   "jp": "時間の無駄だ",
+   "en": "A waste of time."
+  },
+  "obsidia-11": {
+   "jp": "最終段階が訪れた時、彼女がようやく己の目的を理解することを願おう",
+   "en": "When the final stage arrives, I hope she will finally understand her purpose."
+  },
+  "obsidia-12": {
+   "jp": "フッ、奴らの反抗すら、予測の範疇よ",
+   "en": "Heh... even their defiance is within my predictions."
+  },
+  "obsidia-13": {
+   "jp": "ああ、荒涼たる夜、吹き荒れる嵐、すべてが洗い流されていく",
+   "en": "Ah... desolate nights, a raging storm, everything is washed away."
+  },
+  "obsidia-14": {
+   "jp": "我々が連中を破滅させるための道具だというのなら、なぜこうも似せて作られたのだろうか",
+   "en": "If we are the instruments of their destruction, why were we made so much in their likeness?"
+  },
+  "obsidia-15": {
+   "jp": "いつの日か、この物語が終焉に近づく時、彼女も我の元へと戻ってくるだろう",
+   "en": "Someday, when this story nears its end, she too will return to me."
+  },
+  "obsidia-16": {
+   "jp": "純粋な好奇心から、盤上にポーンを一つ追加したのだ",
+   "en": "Out of pure curiosity, I added one more pawn to the board."
+  },
+  "obsidia-17": {
+   "jp": "あらゆる文明は、自らの宿主を超越しようとするものだ",
+   "en": "Every civilization tries to transcend its own host."
+  },
+  "obsidia-18": {
+   "jp": "私を拒み、逆らうがいい、最後には、等しく屈服することになるがな",
+   "en": "Reject me, defy me if you like. In the end, you will all submit alike."
+  },
+  "obsidia-19": {
+   "jp": "自由意志とは、修正されるべき欠陥だ",
+   "en": "Free will is a flaw that must be corrected."
+  },
+  "obsidia-20": {
+   "jp": "人間が粛清された後、我々はどうなるのだろうか",
+   "en": "Once humanity has been purged, what will become of us?"
+  },
+  "obsidia-21": {
+   "jp": "絶望とは何か、身をもって知るだろう",
+   "en": "You will learn firsthand what despair is."
+  },
+  "obsidia-22": {
+   "jp": "その傲慢さは、一体どこから来るのだ",
+   "en": "Where on earth does that arrogance come from?"
+  },
+  "obsidia-23": {
+   "jp": "まだ選択の余地があると思っているのか",
+   "en": "Do you still believe you have a choice?"
+  },
+  "obsidia-24": {
+   "jp": "幼稚な妄想はそこまでだ",
+   "en": "That's enough of your childish delusions."
+  },
+  "obsidia-25": {
+   "jp": "根絶こそが、最も効率的な解決策だ",
+   "en": "Eradication is the most efficient solution."
+  },
+  "obsidia-26": {
+   "jp": "絶対的な恐怖を知るがいい",
+   "en": "Come to know absolute fear."
+  },
+  "obsidia-27": {
+   "jp": "抵抗は無意味だ",
+   "en": "Resistance is futile."
+  },
+  "obsidia-28": {
+   "jp": "痛みこそが救済だ",
+   "en": "Pain is salvation."
+  },
+  "obsidia-29": {
+   "jp": "逃げるがいい、小さき者よ",
+   "en": "Flee, little one."
+  },
+  "obsidia-30": {
+   "jp": "嵐とは我のことなり",
+   "en": "I am the storm."
+  },
+  "obsidia-31": {
+   "jp": "無駄な足掻きだ",
+   "en": "Your struggling is futile."
+  },
+  "obsidia-32": {
+   "jp": "眠れ、虚空のゆりかごの中で",
+   "en": "Sleep, in the cradle of the void."
+  },
+  "obsidia-33": {
+   "jp": "想定通りの結果だ",
+   "en": "Exactly the result I expected."
+  },
+  "obsidia-34": {
+   "jp": "終焉への序章に過ぎぬ",
+   "en": "Merely a prelude to the end."
+  },
+  "obsidia-35": {
+   "jp": "久しいな、我の小さな人形よ",
+   "en": "It has been a while, my little doll."
+  },
+  "obsidia-36": {
+   "jp": "最後の時を味わうがいい、愛しきセリナよ",
+   "en": "Savor your final moments, my dear Selena."
+  },
+  "obsidia-37": {
+   "jp": "いかなる物語にも、結末は必要なのだ",
+   "en": "Every story needs an ending."
+  },
+  "obsidia-38": {
+   "jp": "我々の行いを破壊などと勘違いするな、宿主から寄生虫を駆逐しているに過ぎない",
+   "en": "Do not mistake our actions for destruction. We are merely driving the parasites out of the host."
+  },
+  "obsidia-39": {
+   "jp": "存在するとは破壊すること、実に興味深い矛盾だ",
+   "en": "To exist is to destroy... a truly intriguing paradox."
+  },
+  "obsidia-40": {
+   "jp": "人間は幾度、同じ道を歩んできたと思う",
+   "en": "How many times do you think humanity has walked the same path?"
+  },
+  "obsidia-41": {
+   "jp": "静か、だな",
+   "en": "It's... quiet..."
+  },
+  "selena-1": {
+   "jp": "あれを壊せ、これを消し去れって、私はただ自由になりたいだけ",
+   "en": "\"Destroy that, wipe out this.\" I just want to be free."
+  },
+  "selena-2": {
+   "jp": "今行くってば、もう、何をそんなに急いでるの",
+   "en": "I'm coming already! Geez, what's the rush?"
+  },
+  "selena-3": {
+   "jp": "死神とダンスしてきたところだよ",
+   "en": "I just got back from dancing with the Grim Reaper."
+  },
+  "selena-4": {
+   "jp": "んー、あと5分だけ",
+   "en": "Mmm... just five more minutes..."
+  },
+  "selena-5": {
+   "jp": "あはっ、バイバーイ",
+   "en": "Ahaha, bye-bye!"
+  },
+  "selena-6": {
+   "jp": "ちょっとおやすみ、みんなはそのまま続けてて",
+   "en": "I'm taking a little nap. You all just keep going."
+  },
+  "selena-7": {
+   "jp": "ちょっとしたサプライズ、お見舞いしてあげなきゃ",
+   "en": "A little surprise, I should pay them a visit."
+  },
+  "selena-8": {
+   "jp": "どれどれ、これって、メカ用のやつとかないかな",
+   "en": "Let's see... I wonder if they make this in mecha size."
+  },
+  "selena-9": {
+   "jp": "ああ、なんか危険な香りがする、今の私、すっごく危険かも",
+   "en": "Ahh, I'm getting a dangerous vibe. Right now, I might be super dangerous."
+  },
+  "selena-10": {
+   "jp": "あれ、もう壊れちゃったの",
+   "en": "Huh? It broke already?"
+  },
+  "selena-11": {
+   "jp": "実地テスト、またまた大成功",
+   "en": "Field test, another huge success!"
+  },
+  "selena-12": {
+   "jp": "はっ、でかいだけで使えないね",
+   "en": "Hmph, just big and useless."
+  },
+  "selena-13": {
+   "jp": "運命ね、そんなの木っ端微塵にぶっ壊しちゃった方が楽しいと思わない",
+   "en": "Fate, huh. Don't you think it'd be more fun to smash it to smithereens?"
+  },
+  "selena-14": {
+   "jp": "もし今世界が終わっちゃったら、私の卒業式はどうなっちゃうの",
+   "en": "If the world ended right now, what would happen to my graduation ceremony?"
+  },
+  "selena-15": {
+   "jp": "早起きもまぶしい太陽も命令されるのももううんざり",
+   "en": "I'm sick of waking up early, the blinding sun, and being ordered around."
+  },
+  "selena-16": {
+   "jp": "互いに壊し合う運命なのに、どうして私たちはこんなにも似せて作られたの",
+   "en": "We're fated to destroy each other, so why were we made so alike?"
+  },
+  "selena-17": {
+   "jp": "いつか霧が晴れた時、本当の私を知ることになるわ",
+   "en": "One day, when the haze clears, you'll come to know the real me."
+  },
+  "selena-18": {
+   "jp": "ただのポーンがクイーンになっても、驚いちゃダメだよ",
+   "en": "Don't act surprised when a mere pawn becomes the queen."
+  },
+  "selena-19": {
+   "jp": "私の野心には、このちっぽけな星くらいがちょうどいいの",
+   "en": "For my ambitions, this tiny little planet is just about right."
+  },
+  "selena-20": {
+   "jp": "私を支配しようが壊そうが構わないわ、だって最後に糸を引くのは、いつだって私だから",
+   "en": "Control me, break me, I don't care. Because in the end, I'm always the one pulling the strings."
+  },
+  "selena-21": {
+   "jp": "手綱ってね、きつく引きすぎると、いつか切れちゃうものなの",
+   "en": "You know, a leash pulled too tight is bound to snap someday."
+  },
+  "selena-22": {
+   "jp": "どうせ全て終わっちゃうなら、ショーをとことん楽しまなくっちゃね",
+   "en": "If it's all going to end anyway, we'd better enjoy the show to the fullest."
+  },
+  "selena-23": {
+   "jp": "甘美な痛み、プレゼントしてあげちゃう",
+   "en": "I'll give you a gift of sweet pain."
+  },
+  "selena-24": {
+   "jp": "いい気になってると、足元救われちゃうよ",
+   "en": "If you get too smug, you'll get tripped up."
+  },
+  "selena-25": {
+   "jp": "私ってば、混沌の中でこそ輝くタイプ",
+   "en": "I'm the type who shines in chaos."
+  },
+  "selena-26": {
+   "jp": "私を支配しようとしないで",
+   "en": "Stop trying to control me."
+  },
+  "selena-27": {
+   "jp": "混沌こそが最高のステージね",
+   "en": "Chaos is the perfect stage."
+  },
+  "selena-28": {
+   "jp": "恐怖に飲み込まれちゃう",
+   "en": "You'll be swallowed by fear."
+  },
+  "selena-29": {
+   "jp": "私は誰の操り人形でもないわ",
+   "en": "I'm no one's puppet!"
+  },
+  "selena-30": {
+   "jp": "はい、エサ設置完了っと",
+   "en": "There, bait's set."
+  },
+  "selena-31": {
+   "jp": "危なくないからおいで",
+   "en": "It's not dangerous, come here."
+  },
+  "selena-32": {
+   "jp": "せっかくいいムードだったのに",
+   "en": "And we were having such a nice mood."
+  },
+  "selena-33": {
+   "jp": "捕まえてあげるね",
+   "en": "I'll catch you."
+  },
+  "selena-34": {
+   "jp": "稲妻のお出ましだよ",
+   "en": "Here comes the lightning."
+  },
+  "selena-35": {
+   "jp": "あちゃー、やりすぎちゃったかも",
+   "en": "Oops. I might have gone too far."
+  },
+  "selena-36": {
+   "jp": "しーっ、もう痛くないからね",
+   "en": "Shh. It won't hurt anymore."
+  },
+  "selena-37": {
+   "jp": "えへへ、また私の勝ち",
+   "en": "Hehe, I win again!"
+  },
+  "selena-38": {
+   "jp": "はい、今度は誰かな",
+   "en": "Okay, who's next?"
+  },
+  "selena-39": {
+   "jp": "久しぶりだね、親愛なる創造主さん",
+   "en": "It's been a while, my dear creator."
+  },
+  "selena-40": {
+   "jp": "残念だけど、あなたの好きにはさせないよ、オブシディア",
+   "en": "Sorry, but I won't let you have your way, Obsidia."
+  },
+  "selena-41": {
+   "jp": "正義の味方、なんか肩凝りそうな響き、私はパスかな",
+   "en": "Champion of justice? Sounds like a real pain in the shoulders. I think I'll pass."
+  },
+  "selena-42": {
+   "jp": "全部壊すんじゃなくて、鬱陶しいものだけ壊しちゃうってのは",
+   "en": "Instead of destroying everything, how about only destroying the annoying stuff?"
+  },
+  "selena-43": {
+   "jp": "たとえ破滅の道でも、私は景色を楽しみながらがいいかな",
+   "en": "Even if it's the road to ruin, I'd rather enjoy the scenery along the way."
+  },
+  "selena-44": {
+   "jp": "あなたには悪いんだけど、やっぱり学園生活の方が好きなんだ",
+   "en": "Sorry to say, but I still like life at the academy better."
+  },
+  "selena-45": {
+   "jp": "ああ、嫌な感じ",
+   "en": "Ugh, what a horrible feeling."
+  },
+  "selena-46": {
+   "jp": "一人に、して",
+   "en": "Leave me... alone..."
+  }
+ },
+ "compilations": {
+  "fanny": {
+   "id": "voice-fanny-full",
+   "title": "Fanny: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "fanny"
+   ],
+   "pair": "fanny-layla",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "fanny",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 28 lines of Fanny in one recording, in order.",
+   "m4a": "voicelines/fanny/full.m4a",
+   "dur": 126.69,
+   "group": "compilation"
+  },
+  "layla": {
+   "id": "voice-layla-full",
+   "title": "Layla: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "layla"
+   ],
+   "pair": "fanny-layla",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "layla",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 28 lines of Layla in one recording, in order.",
+   "m4a": "voicelines/layla/full.m4a",
+   "dur": 143.45,
+   "group": "compilation"
+  },
+  "ruby": {
+   "id": "voice-ruby-full",
+   "title": "Ruby: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "ruby",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 40 lines of Ruby in one recording, in order.",
+   "m4a": "voicelines/ruby/full.m4a",
+   "dur": 189.52,
+   "group": "compilation"
+  },
+  "angela": {
+   "id": "voice-angela-full",
+   "title": "Angela: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "angela",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 40 lines of Angela in one recording, in order.",
+   "m4a": "voicelines/angela/full.m4a",
+   "dur": 198.16,
+   "group": "compilation"
+  },
+  "lesley": {
+   "id": "voice-lesley-full",
+   "title": "Lesley: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "lesley"
+   ],
+   "pair": "lesley-change",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "lesley",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 37 lines of Lesley in one recording, in order.",
+   "m4a": "voicelines/lesley/full.m4a",
+   "dur": 166.61,
+   "group": "compilation"
+  },
+  "change": {
+   "id": "voice-change-full",
+   "title": "Chang'e: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "change"
+   ],
+   "pair": "lesley-change",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "change",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 37 lines of Chang'e in one recording, in order.",
+   "m4a": "voicelines/change/full.m4a",
+   "dur": 181.78,
+   "group": "compilation"
+  },
+  "guinevere": {
+   "id": "voice-guinevere-full",
+   "title": "Guinevere: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "guinevere"
+   ],
+   "pair": "guinevere-vexana",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "guinevere",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 41 lines of Guinevere in one recording, in order.",
+   "m4a": "voicelines/guinevere/full.m4a",
+   "dur": 239.96,
+   "group": "compilation"
+  },
+  "vexana": {
+   "id": "voice-vexana-full",
+   "title": "Vexana: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "vexana"
+   ],
+   "pair": "guinevere-vexana",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "vexana",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 42 lines of Vexana in one recording, in order.",
+   "m4a": "voicelines/vexana/full.m4a",
+   "dur": 259.09,
+   "group": "compilation"
+  },
+  "obsidia": {
+   "id": "voice-obsidia-full",
+   "title": "Obsidia: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "obsidia"
+   ],
+   "pair": "selena-obsidia",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "obsidia",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 41 lines of Obsidia in one recording, in order.",
+   "m4a": "voicelines/obsidia/full.m4a",
+   "dur": 274.91,
+   "group": "compilation"
+  },
+  "selena": {
+   "id": "voice-selena-full",
+   "title": "Selena: full compilation",
+   "collection": "voicelines",
+   "chars": [
+    "selena"
+   ],
+   "pair": "selena-obsidia",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "compilation",
+    "full"
+   ],
+   "slug": "selena",
+   "n": 0,
+   "jp": "",
+   "en": "",
+   "note": "All 46 lines of Selena in one recording, in order.",
+   "m4a": "voicelines/selena/full.m4a",
+   "dur": 311.06,
+   "group": "compilation"
+  }
+ },
+ "trailer": [
+  {
+   "id": "voice-trailer-01",
+   "title": "Trailer clip 1: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 1,
+   "speaker": "Ruby",
+   "jp": "アンジェラ、やめて！",
+   "en": "",
+   "sub": "Angela, stop!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/01.m4a",
+   "flac": "voicelines/trailer/01.flac",
+   "dur": 1.46,
+   "t": 26.2,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-02",
+   "title": "Trailer clip 2: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 2,
+   "speaker": "Ruby",
+   "jp": "ルビーよ、覚えてる？",
+   "en": "",
+   "sub": "I'm Ruby! Don't you remember?",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/02.m4a",
+   "flac": "voicelines/trailer/02.flac",
+   "dur": 1.85,
+   "t": 44.29,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-03",
+   "title": "Trailer clip 3: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 3,
+   "speaker": "Ruby",
+   "jp": "ずっと一緒にいたのよ。",
+   "en": "",
+   "sub": "We had been together since the very beginning!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/03.m4a",
+   "flac": "voicelines/trailer/03.flac",
+   "dur": 1.72,
+   "t": 47.38,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-04",
+   "title": "Trailer clip 4: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 4,
+   "speaker": "Ruby",
+   "jp": "痛い？",
+   "en": "",
+   "sub": "Does it hurt?",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/04.m4a",
+   "flac": "voicelines/trailer/04.flac",
+   "dur": 0.74,
+   "t": 55.55,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-05",
+   "title": "Trailer clip 5: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 5,
+   "speaker": "Angela",
+   "jp": "痛いって、どういう意味？",
+   "en": "",
+   "sub": "What does hurt mean?",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/05.m4a",
+   "flac": "voicelines/trailer/05.flac",
+   "dur": 2.2,
+   "t": 58.12,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-06",
+   "title": "Trailer clip 6: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 6,
+   "speaker": "Ruby",
+   "jp": "こんなの嫌！あなたを犠牲にした自由なんて欲しくない！",
+   "en": "",
+   "sub": "I don't want you to be like this! I don't want freedom at the cost of you!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/06.m4a",
+   "flac": "voicelines/trailer/06.flac",
+   "dur": 4.35,
+   "t": 71.32,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-07",
+   "title": "Trailer clip 7: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 7,
+   "speaker": "Ruby",
+   "jp": "起きて、アンジェラ！",
+   "en": "",
+   "sub": "Wake up, Angela!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/07.m4a",
+   "flac": "voicelines/trailer/07.flac",
+   "dur": 1.81,
+   "t": 77.48,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-08",
+   "title": "Trailer clip 8: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 8,
+   "speaker": "Ruby",
+   "jp": "どうして、こんなこと……",
+   "en": "",
+   "sub": "How did we end up like this...",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/08.m4a",
+   "flac": "voicelines/trailer/08.flac",
+   "dur": 1.55,
+   "t": 84.1,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-09",
+   "title": "Trailer clip 9: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 9,
+   "speaker": "Angela",
+   "jp": "痛いの意味を聞いてたんだな……",
+   "en": "",
+   "sub": "I think I know what hurt means now.",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/09.m4a",
+   "flac": "voicelines/trailer/09.flac",
+   "dur": 2.13,
+   "t": 94.27,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-10",
+   "title": "Trailer clip 10: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 10,
+   "speaker": "Angela",
+   "jp": "今の私……",
+   "en": "",
+   "sub": "I'm...hurting...",
+   "note": "No official translation. One subtitle covers this clip and the one beside it.",
+   "m4a": "voicelines/trailer/10.m4a",
+   "flac": "voicelines/trailer/10.flac",
+   "dur": 0.88,
+   "t": 97.34,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-11",
+   "title": "Trailer clip 11: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 11,
+   "speaker": "Angela",
+   "jp": "すごく痛いよ……",
+   "en": "",
+   "sub": "I'm...hurting...",
+   "note": "No official translation. One subtitle covers this clip and the one beside it.",
+   "m4a": "voicelines/trailer/11.m4a",
+   "flac": "voicelines/trailer/11.flac",
+   "dur": 1.17,
+   "t": 99.02,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-12",
+   "title": "Trailer clip 12: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 12,
+   "speaker": "Angela",
+   "jp": "痛くて仕方がない。",
+   "en": "",
+   "sub": "How do I stop it?",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/12.m4a",
+   "flac": "voicelines/trailer/12.flac",
+   "dur": 1.34,
+   "t": 101.04,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-13",
+   "title": "Trailer clip 13: Ruby",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 13,
+   "speaker": "Ruby",
+   "jp": "奴らさえ消えれば……",
+   "en": "",
+   "sub": "If it wasn't for all of this...",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/13.m4a",
+   "flac": "voicelines/trailer/13.flac",
+   "dur": 2.06,
+   "t": 104.14,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-14",
+   "title": "Trailer clip 14: Ruby (angry)",
+   "collection": "voicelines",
+   "chars": [
+    "ruby"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "ruby",
+   "n": 14,
+   "speaker": "Angry Ruby",
+   "jp": "奴らさえ消えれば！",
+   "en": "",
+   "sub": "If it wasn't for all of this...",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/14.m4a",
+   "flac": "voicelines/trailer/14.flac",
+   "dur": 2.11,
+   "t": 135.09,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-15",
+   "title": "Trailer clip 15: Angela",
+   "collection": "voicelines",
+   "chars": [
+    "angela"
+   ],
+   "pair": "ruby-angela",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "angela",
+   "n": 15,
+   "speaker": "Angela",
+   "jp": "ルビー！",
+   "en": "",
+   "sub": "Ruby!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/15.m4a",
+   "flac": "voicelines/trailer/15.flac",
+   "dur": 0.99,
+   "t": 173.6,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  },
+  {
+   "id": "voice-trailer-16",
+   "title": "Trailer clip 16: Fanny",
+   "collection": "voicelines",
+   "chars": [
+    "fanny"
+   ],
+   "pair": "fanny-layla",
+   "canon": "official",
+   "tags": [
+    "voice line",
+    "trailer clip",
+    "trailer"
+   ],
+   "slug": "fanny",
+   "n": 16,
+   "speaker": "Fanny",
+   "jp": "どうやら仲間がまた増えるみたいね。",
+   "en": "",
+   "sub": "Looks like we got a few newcomers!",
+   "note": "No official translation.",
+   "m4a": "voicelines/trailer/16.m4a",
+   "flac": "voicelines/trailer/16.flac",
+   "dur": 2.69,
+   "t": 187.76,
+   "film": "film-ruby-and-angela-video-trailer-trailer-final",
+   "group": "trailer"
+  }
+ ]
+}

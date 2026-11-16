@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { asset } from "@/lib/asset";
 import { expectReady } from "@/lib/page-ready";
 import { dataItem, type PreloadItem } from "@/lib/preload";
+import type { CharacterSlug } from "@/lib/slugs";
 
 import { ARTS_ROOMS, ROOM_LABELS, type ArtsRoom } from "./arts/core/routes";
 import { getCollection } from "./registry";
@@ -13,6 +14,9 @@ import type { CollectionFile, CollectionSlug, ItemBase } from "./types";
 /** The data file of one Arts room: `arts-splash`, `arts-scene`, `arts-fanart` ... */
 export type ArtsDataName = `arts-${ArtsRoom}`;
 
+/** The data file of one Aspirant's voice lines, in every language: `voicelines-layla`. */
+type VoicelinesDataName = `voicelines-${CharacterSlug}`;
+
 /**
  * The data files of the library. One per collection, except Video, which has two (one per room):
  * `video-films` (the ten official films) and `video-others` (every other video), and Arts, which
@@ -20,11 +24,19 @@ export type ArtsDataName = `arts-${ArtsRoom}`;
  * `arts-others`, `arts-fanart`, `arts-cosplay`).
  */
 export type LibraryDataName =
-  Exclude<CollectionSlug, "video" | "arts"> | "video-films" | "video-others" | ArtsDataName;
+  | Exclude<CollectionSlug, "video" | "arts">
+  | "video-films"
+  | "video-others"
+  | ArtsDataName
+  | VoicelinesDataName;
 
 /** The data file name of one Arts room. */
 export function artsDataName(room: ArtsRoom): ArtsDataName {
   return `arts-${room}`;
+}
+
+function isVoicelinesDataName(name: string): name is VoicelinesDataName {
+  return name.startsWith("voicelines-");
 }
 
 function isArtsDataName(name: string): name is ArtsDataName {
@@ -40,11 +52,13 @@ export function libraryDataPath(name: LibraryDataName | "search"): string {
 export function libraryDataItem(name: LibraryDataName, label?: string): PreloadItem {
   const what = isArtsDataName(name)
     ? ROOM_LABELS[name.slice("arts-".length) as ArtsRoom].toLowerCase()
-    : name === "video-films"
-      ? "films"
-      : name === "video-others"
-        ? "videos"
-        : getCollection(name).name.toLowerCase();
+    : isVoicelinesDataName(name)
+      ? "the voice lines"
+      : name === "video-films"
+        ? "films"
+        : name === "video-others"
+          ? "videos"
+          : getCollection(name).name.toLowerCase();
   return dataItem(libraryDataPath(name), label ?? `Reading ${what}`, 2);
 }
 

@@ -1,135 +1,172 @@
 "use client";
 
-import { memo, type CSSProperties } from "react";
+import { memo } from "react";
 
 import { Waveform } from "@/components/audio/waveform";
-import { TLink } from "@/components/transition/t-link";
 import { audio } from "@/lib/audio";
-import { libUrl } from "@/lib/library";
 
-import { videoHref } from "../video/links";
 import { downloadFile } from "./download";
 import { Icon } from "./icons";
-import { clock, downloadName, shortLength } from "./logic";
-import { lineUrl } from "./playback";
-import type { VoiceItem, VoiceLang } from "./types";
-import styles from "./voicelines.module.css";
+import { langInfo, type LangId } from "./languages";
+import {
+  downloadName,
+  lineAudioUrl,
+  lineOriginal,
+  pad,
+  shortLength,
+  type Translation,
+} from "./model";
+import type { VoiceLine } from "./types";
+import styles from "./character.module.css";
 
 interface LineRowProps {
-  item: VoiceItem;
+  slug: string;
+  /** The name of the Aspirant, for the file name and the labels. */
   name: string;
-  lang: VoiceLang;
-  playing: boolean;
-  /** The row a link or the random button pointed at. */
+  lang: LangId;
+  line: VoiceLine;
+  translation: Translation | null;
+  /** The URL that plays now, or null. */
+  playingUrl: string | null;
+  /** The row an address (`?i=`) pointed at. */
   target: boolean;
-  /** Colour of the speaker (a trailer clip row follows who speaks, not the panel). */
-  accent?: string;
-  onToggle: (item: VoiceItem) => void;
+  onPlay: (line: VoiceLine, url: string) => void;
+  onPick: (n: number) => void;
 }
 
-/** One voice line: play button, number, the Japanese and the English, a note, the length and a link to the lossless file. */
+/**
+ * One voice line. A line with no recording still shows its text, and says so.
+ *
+ * Text and translation each carry the `lang` and `dir` of their own language (Arabic reads right to
+ * left) and are never changed to upper case.
+ */
 export const LineRow = memo(function LineRow({
-  item,
+  slug,
   name,
   lang,
-  playing,
+  line,
+  translation,
+  playingUrl,
   target,
-  accent,
-  onToggle,
+  onPlay,
+  onPick,
 }: LineRowProps) {
-  const nn = String(item.n).padStart(2, "0");
-  const trailer = item.group === "trailer";
-  const showJp = lang !== "en";
-  const showEn = lang !== "ja";
-  const label = trailer
-    ? `Play trailer clip ${item.n}, ${item.speaker ?? name}`
-    : `Play ${name}, line ${nn}`;
-  const style = accent ? ({ "--accent": accent } as CSSProperties) : undefined;
+  const info = langInfo(lang);
+  const nn = pad(line.n);
+  const hasAudio = line.d !== undefined;
+  const url = lineAudioUrl(slug, lang, line.n);
+  const playing = playingUrl === url;
+  const original = lineOriginal(slug, lang, line);
+  const file = downloadName(name, lang, line.n, original.ext);
+  const trInfo = translation ? langInfo(translation.lang) : null;
+  const trUrl =
+    translation?.line && translation.lang !== "jp"
+      ? lineAudioUrl(slug, translation.lang, translation.line.n)
+      : null;
+  const trPlaying = trUrl !== null && playingUrl === trUrl;
 
   return (
     <li
-      id={item.id}
+      id={`line-${nn}`}
       className={styles.row}
-      data-playing={playing}
+      data-playing={playing || trPlaying}
       data-target={target}
-      style={style}
+      data-missing={hasAudio ? undefined : ""}
     >
       <button
         type="button"
         className={styles.play}
         data-voice-play
-        aria-label={label}
+        disabled={!hasAudio}
+        aria-label={`Play ${name}, line ${nn}`}
         aria-pressed={playing}
         onClick={() => {
-          onToggle(item);
+          onPlay(line, url);
         }}
         onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") audio.preloadVoice(lineUrl(item));
+          if (e.pointerType === "mouse" && hasAudio) audio.preloadVoice(url);
         }}
         onFocus={() => {
-          audio.preloadVoice(lineUrl(item));
+          if (hasAudio) audio.preloadVoice(url);
         }}
       >
         <Icon name={playing ? "stop" : "play"} />
       </button>
 
-      <span className={`${styles.num} hud-label`}>{trailer ? `${item.speaker ?? name}` : nn}</span>
+      <a
+        href={`?lang=${lang}&i=${nn}`}
+        className={`${styles.num} hud-label`}
+        aria-label={`Line ${nn}, link to it`}
+        onClick={(event) => {
+          if (
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey ||
+            event.button !== 0
+          )
+            return;
+          event.preventDefault();
+          onPick(line.n);
+        }}
+      >
+        {nn}
+      </a>
 
       <div className={styles.text}>
-        {showJp ? (
-          <p className={styles.jp} lang="ja">
-            {item.jp}
+        <p className={styles.main} lang={info.html} dir={info.dir}>
+          {line.t}
+        </p>
+        {translation && trInfo ? (
+          <p className={styles.tr}>
+            <span className={`${styles.trTag} hud-label`}>{trInfo.english}</span>
+            <span lang={trInfo.html} dir={trInfo.dir}>
+              {translation.text}
+            </span>
+            {trUrl ? (
+              <button
+                type="button"
+                className={styles.trPlay}
+                aria-label={`Play this line in ${trInfo.english}`}
+                aria-pressed={trPlaying}
+                onClick={() => {
+                  if (translation.line) onPlay(translation.line, trUrl);
+                }}
+              >
+                <Icon name={trPlaying ? "stop" : "play"} />
+              </button>
+            ) : null}
           </p>
         ) : null}
-        {showEn && item.en ? <p className={styles.en}>{item.en}</p> : null}
-        {trailer && item.sub && showEn ? (
-          <p className={styles.sub}>
-            <span className="hud-label">Trailer subtitle</span> {item.sub}
-          </p>
-        ) : null}
-        {item.note ? (
+        {line.note ? (
           <p className={styles.note}>
-            <span className="hud-label">Note</span> {item.note}
+            <span className="hud-label">Note</span> {line.note}
           </p>
         ) : null}
+        {hasAudio ? null : <p className={styles.note}>No recording of this line yet.</p>}
       </div>
 
       <div className={styles.side}>
-        {playing ? (
-          <Waveform url={lineUrl(item)} bars={26} className={styles.wave} />
-        ) : (
-          <span className={`${styles.time} hud-label`}>
-            {item.dur < 10 ? shortLength(item.dur) : clock(item.dur)}
-          </span>
-        )}
-        <span className={styles.links}>
-          {trailer && item.film ? (
-            <TLink
-              href={videoHref(item.film, Math.floor(item.t ?? 0), "voicelines")}
-              transitionLabel="Films"
-              className={styles.linkBtn}
-              aria-label={`Watch this moment in the trailer, at ${clock(item.t ?? 0)}`}
-            >
-              <Icon name="film" />
-              <span>Trailer {clock(item.t ?? 0)}</span>
-            </TLink>
-          ) : null}
-          {item.flac ? (
-            <a
-              className={styles.linkBtn}
-              href={libUrl(item.flac)}
-              download={downloadName(item)}
-              aria-label={`Download the lossless FLAC of ${trailer ? "trailer clip" : "line"} ${nn}`}
-              onClick={(e) => {
-                e.preventDefault();
-                void downloadFile(libUrl(item.flac ?? ""), downloadName(item));
-              }}
-            >
-              <Icon name="download" />
-              <span>FLAC</span>
-            </a>
-          ) : null}
-        </span>
+        {playing || trPlaying ? (
+          <Waveform url={playing ? url : (trUrl ?? url)} bars={24} className={styles.wave} />
+        ) : hasAudio && line.d !== undefined ? (
+          <span className={`${styles.time} hud-label`}>{shortLength(line.d)}</span>
+        ) : null}
+        {hasAudio ? (
+          <a
+            className={styles.save}
+            href={original.url}
+            download={file}
+            aria-label={`Download line ${nn} as ${original.ext.toUpperCase()}`}
+            onClick={(event) => {
+              event.preventDefault();
+              void downloadFile(original.url, file);
+            }}
+          >
+            <Icon name="download" />
+            <span>{original.ext.toUpperCase()}</span>
+          </a>
+        ) : null}
       </div>
     </li>
   );

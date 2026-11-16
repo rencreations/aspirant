@@ -1,0 +1,249 @@
+/* The Voicelines room under the film: the roster of the ten Aspirants. It is laid out like the Cosplay
+   roster (`arts/cosplay/cosplay.module.css`): one pair to a column on a wide screen, one pair to a row
+   on a narrow one. Under each picture are the shortcuts to the eight languages and one larger button.
+   Only `transform` and `opacity` move. */
+
+.room {
+  position: relative;
+  min-height: 100svh;
+}
+
+.head {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem var(--gutter) 1.6rem;
+}
+
+.kicker {
+  margin: 0;
+}
+
+.lede {
+  margin: 0;
+  max-width: 34rem;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.2;
+  color: var(--text);
+}
+
+/* The roster ---------------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  gap: 2.6rem var(--tile-gap);
+  margin: 0;
+  padding: 0.6rem var(--gutter) 2rem;
+  list-style: none;
+  --tile-gap: clamp(0.8rem, 0.4rem + 1.6vw, 1.5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1000px) {
+  .grid {
+    /* One pair to a column: Fanny over Layla, Ruby over Angela, and so on. */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+  }
+}
+
+.tile {
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  color: var(--text);
+  --accent: var(--text);
+}
+
+.tileArt {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #d8dbe3;
+}
+
+.tileImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 700ms var(--ease-out);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (hover: hover) {
+  .tile:hover .tileImg {
+    transform: scale(1.045);
+  }
+}
+
+.meta {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0;
+  padding-bottom: 0.45rem;
+  font-weight: inherit;
+}
+
+/* A hairline under the name that draws itself on hover. */
+.meta::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0.14);
+  transform-origin: left center;
+  transition: transform 500ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .tile:hover .meta::after {
+    transform: scaleX(1);
+  }
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1, 1.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.digits {
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The shortcuts: one row for each language, its flag, its name in itself, how many lines it has. -- */
+.langs {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.langs li {
+  border-bottom: 1px solid var(--line);
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.35rem;
+  padding: 0.3rem 0.1rem;
+  color: inherit;
+  font-size: 0.84rem;
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+@media (pointer: coarse) {
+  .lang {
+    min-height: 2.75rem;
+  }
+}
+
+.flag {
+  flex: none;
+  width: 1.35rem;
+  height: 0.9rem;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.langName {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.langCount {
+  margin-left: auto;
+  padding-left: 0.4rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+  .lang:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+}
+
+.lang:focus-visible,
+.open:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* The larger button: the whole page of the Aspirant, in Japanese. -------------------------------- */
+.open {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-height: 3.4rem;
+  padding: 0.9rem 1rem;
+  background: var(--text);
+  box-shadow: inset 0 -3px 0 var(--accent);
+  color: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.openHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  opacity: 0.78;
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+.open svg {
+  transition: transform 260ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .open:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+@media (max-width: 600px) {
+  .langCount {
+    display: none;
+  }
+
+  .open {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    padding: 0.8rem 0.8rem 0.9rem;
+    font-size: 0.66rem;
+  }
+}

@@ -1,12 +1,16 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 import { skipGate, url } from "./helpers";
 
 /**
- * The Voicelines room of the collection (`/collection/voicelines/`): ten panels with 380 lines in
- * Japanese and English, a play button and a live waveform, the long compilation of each
- * character, the sixteen trailer clips, search, the language switch, a random line, "play next",
- * the three notes, the keyboard (Up, Down, Enter) and the link to the lossless file.
+ * The Voicelines room of the collection (`/collection/voicelines/`): a film behind the title, the ten
+ * Aspirants in the layout of the Cosplay roster, a shortcut to each of eight languages under every
+ * one of them and a larger button to her page. The page of an Aspirant
+ * (`/collection/voicelines/<slug>/`) shows her lines in one language at a time: the language is the
+ * parameter `?lang=` of the same page (Japanese when there is none), changed in place without a new
+ * history entry, so Back goes to the room. Search, a translation under each line, a download for
+ * each line and for all of them, and the old addresses of the room.
  */
 
 test.describe.configure({ timeout: 120_000 });
@@ -24,181 +28,277 @@ function watch(page: Page): string[] {
   return errors;
 }
 
-async function open(page: Page, query = "") {
+async function openRoom(page: Page, query = "") {
   await skipGate(page);
   const errors = watch(page);
   await page.goto(url(`/collection/voicelines/${query}`));
-  await expect(page.locator("[data-voice-play]").first()).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator("[data-voicelines-tile]").first()).toBeVisible({ timeout: 60_000 });
   return errors;
 }
 
-/** If the site's sound is off, the first press opens a question. Answer it. */
-async function answerSoundPrompt(page: Page) {
-  const turnOn = page.getByRole("button", { name: "Turn sound on" });
-  if (await turnOn.isVisible().catch(() => false)) await turnOn.click();
+async function openPage(page: Page, slug: string, query = "") {
+  await skipGate(page);
+  const errors = watch(page);
+  await page.goto(url(`/collection/voicelines/${slug}/${query}`));
+  await expect(page.locator("[data-voicelines-lines] li").first()).toBeVisible({ timeout: 60_000 });
+  return errors;
 }
 
-/** Type into the search box. Retried, because a value typed before the page has hydrated is lost. */
-async function search(page: Page, text: string) {
-  const box = page.getByRole("searchbox");
-  await expect(async () => {
-    await box.fill(text);
-    const q = new URL(page.url()).searchParams.get("q");
-    expect(q).toBe(text);
-  }).toPass({ timeout: 20_000 });
-}
+const lang = (page: Page) => new URL(page.url()).searchParams.get("lang");
+const firstText = (page: Page) => page.locator("[data-voicelines-lines] li p[lang]").first();
 
-test("shows ten panels, the rail, 396 play buttons and the totals", async ({ page }) => {
-  const errors = await open(page);
-  await expect(page.locator("section[data-slug]")).toHaveCount(11);
-  await expect(page.locator("[data-voice-play]")).toHaveCount(396);
-  await expect(
-    page.getByRole("navigation", { name: "Characters" }).getByRole("button"),
-  ).toHaveCount(11);
-  await expect(page.getByText("380 lines, 10 recordings, 16 trailer clips")).toBeVisible();
+test("the room shows the ten Aspirants, eight shortcuts under each and a larger button", async ({
+  page,
+}) => {
+  const errors = await openRoom(page);
+  await expect(page.getByRole("heading", { level: 1, name: "Voicelines" })).toBeVisible();
+  await expect(page.locator("[data-voicelines-tile]")).toHaveCount(10);
+  for (const slug of [
+    "fanny",
+    "layla",
+    "ruby",
+    "angela",
+    "lesley",
+    "change",
+    "guinevere",
+    "vexana",
+    "selena",
+    "obsidia",
+  ]) {
+    const tile = page.locator(`[data-voicelines-tile=${slug}]`);
+    await expect(tile.locator("[data-lang]")).toHaveCount(8);
+    await expect(tile.locator("[data-voicelines-open]")).toHaveCount(1);
+  }
+  await expect(page.locator("[data-voicelines-figures]")).toContainText("8 languages");
+  // Each shortcut says its language in that language, with a flag.
+  const fanny = page.locator("[data-voicelines-tile=fanny]");
+  for (const name of [
+    "English",
+    "Bahasa Indonesia",
+    "日本語",
+    "اللغة العربية",
+    "español",
+    "português",
+    "türkçe",
+    "русский",
+  ]) {
+    await expect(fanny.locator("[data-lang]", { hasText: name })).toHaveCount(1);
+  }
+  await expect(fanny.locator("[data-lang] svg[data-flag]")).toHaveCount(8);
   expect(errors).toEqual([]);
 });
 
-test("a line plays, shows a pressed state and stops by itself", async ({ page }) => {
-  await open(page);
-  const first = page.getByRole("button", { name: "Play Fanny, line 02" });
-  await first.click();
-  await answerSoundPrompt(page);
-  await expect(first).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
-  await expect(first).toHaveAttribute("aria-pressed", "false", { timeout: 15_000 });
+test("the shortcuts and the button are links to the page of the Aspirant", async ({ page }) => {
+  await openRoom(page);
+  const fanny = page.locator("[data-voicelines-tile=fanny]");
+  await expect(fanny.locator("[data-lang=es]")).toHaveAttribute(
+    "href",
+    /\/collection\/voicelines\/fanny\/?\?lang=es$/u,
+  );
+  await expect(fanny.locator("[data-voicelines-open]")).toHaveAttribute(
+    "href",
+    /\/collection\/voicelines\/fanny\/?$/u,
+  );
+  await expect(fanny.locator("[data-voicelines-open]")).toContainText("日本語");
 });
 
-test("Up and Down move between play buttons and Enter plays", async ({ page }) => {
-  await open(page);
-  const one = page.getByRole("button", { name: "Play Fanny, line 01" });
-  await one.focus();
-  await page.keyboard.press("ArrowDown");
-  const two = page.getByRole("button", { name: "Play Fanny, line 02" });
-  await expect(two).toBeFocused();
-  await page.keyboard.press("Enter");
-  await answerSoundPrompt(page);
-  await expect(two).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
-  await page.keyboard.press("ArrowUp");
-  await expect(one).toBeFocused();
+test("a shortcut opens her page in that language", async ({ page }) => {
+  await openRoom(page);
+  await page.locator("[data-voicelines-tile=fanny] [data-lang=es]").click();
+  await expect(page.locator("[data-voicelines-character=fanny]")).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator("[data-voicelines-character=fanny]")).toHaveAttribute(
+    "data-lang",
+    "es",
+  );
+  await expect(firstText(page)).toContainText("Girar", { timeout: 30_000 });
+  await expect(page.locator("[data-voicelines-rail] a[data-lang=es]")).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
 });
 
-test("random line and play next each start one line", async ({ page }) => {
-  await open(page);
-  await page.getByRole("button", { name: /random line/i }).click();
-  await answerSoundPrompt(page);
-  await expect(page.locator('[data-voice-play][aria-pressed="true"]')).toHaveCount(1, {
-    timeout: 15_000,
-  });
-  await page.getByRole("button", { name: /play next/i }).click();
-  await expect(page.locator('[data-voice-play][aria-pressed="true"]')).toHaveCount(1, {
-    timeout: 15_000,
-  });
-  await expect(page).toHaveURL(/i=voice-/);
-});
-
-test("search covers the English and the Japanese and keeps the address", async ({ page }) => {
-  await open(page);
-  await search(page, "shooting star");
-  await expect(page.getByRole("status").filter({ hasText: /lines? match/ })).toBeVisible();
-  await expect(page.locator("#voice-vexana-42")).toBeVisible();
-  await search(page, "ジョーカー");
-  await expect(page.locator("#voice-lesley-36")).toBeVisible();
-  await expect(page.locator("#voice-lesley-37")).toBeVisible();
-  await search(page, "zzzzqqq");
-  await expect(page.getByText("No voice line matches")).toBeVisible();
-});
-
-test("the language switch hides the other language", async ({ page }) => {
-  await open(page);
-  const row = page.locator("#voice-fanny-02");
-  await expect(row.getByText("Off we go, toward a free world!")).toBeVisible();
-  await page
-    .getByRole("group", { name: "Language" })
-    .getByRole("button", { name: "Japanese" })
-    .click();
-  await expect(row.getByText("Off we go, toward a free world!")).toHaveCount(0);
-  await expect(row.getByText("自由な世界に向かって出発よ")).toBeVisible();
-  await page
-    .getByRole("group", { name: "Language" })
-    .getByRole("button", { name: "English" })
-    .click();
-  await expect(row.getByText("自由な世界に向かって出発よ")).toHaveCount(0);
-  await expect(page).toHaveURL(/lang=en/);
-});
-
-test("the three notes are shown", async ({ page }) => {
-  await open(page);
-  await expect(page.locator("#voice-lesley-36")).toContainText("addressed to Chang'e");
-  await expect(page.locator("#voice-vexana-42")).toContainText("cut off");
-  await expect(page.locator("#voice-guinevere-30")).toContainText("also in Vexana");
-});
-
-test("a deep link scrolls to the line", async ({ page }) => {
-  await open(page, "?i=voice-selena-30");
-  const row = page.locator("#voice-selena-30");
-  await expect(row).toBeInViewport({ timeout: 15_000 });
-  await expect(row).toHaveAttribute("data-target", "true");
-});
-
-test("a compilation plays from the panel header and can be sought", async ({ page }) => {
-  await open(page);
-  // The name flips between Play and Pause, so the button is found by the part that stays.
-  const play = page.getByRole("button", { name: /the full compilation of Layla/ });
-  await play.click();
-  await answerSoundPrompt(page);
-  await expect(play).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
-  const seek = page.getByRole("slider", { name: "Position in the compilation of Layla" });
-  await expect(seek).toBeEnabled();
-  await play.click();
-  await expect(play).toHaveAttribute("aria-pressed", "false");
-});
-
-test("the trailer clips show the Japanese, the trailer's subtitle and the note", async ({
+test("the larger button opens her page in Japanese, with the full recording and the trailer clips", async ({
   page,
 }) => {
-  await open(page);
-  const clip = page.locator("#voice-trailer-01");
-  await clip.scrollIntoViewIfNeeded();
-  await expect(clip).toContainText("アンジェラ、やめて！");
-  await expect(clip).toContainText("Angela, stop!");
-  await expect(clip).toContainText("No official translation");
-  await expect(
-    clip.getByRole("link", { name: /Watch this moment in the trailer/ }),
-  ).toHaveAttribute("href", /i=film-ruby-and-angela-video-trailer-trailer-final&t=26/);
+  await openRoom(page);
+  await page.locator("[data-voicelines-tile=fanny] [data-voicelines-open]").click();
+  await expect(page.locator("[data-voicelines-character=fanny]")).toHaveAttribute(
+    "data-lang",
+    "jp",
+    {
+      timeout: 60_000,
+    },
+  );
+  await expect(page.locator("[data-voicelines-recording]")).toBeVisible();
+  await expect(page.locator("[data-voicelines-trailer]")).toBeVisible();
+  await expect(page.locator("[data-voicelines-lines] li")).toHaveCount(28);
+  await expect(page.locator("[data-voicelines-lines] li [data-voice-play]").first()).toBeEnabled();
 });
 
-test("every line has a link to its lossless file", async ({ page }) => {
-  await open(page);
-  const link = page
-    .locator("#voice-layla-05")
-    .getByRole("link", { name: /Download the lossless FLAC/ });
-  await expect(link).toHaveAttribute("href", /voicelines\/layla\/05\.flac$/);
-  await expect(link).toHaveAttribute("download", /^05_.+\.flac$/);
+test("a language switch changes the address in place, and Back goes to the room", async ({
+  page,
+}) => {
+  await openRoom(page);
+  await page.locator("[data-voicelines-tile=layla] [data-voicelines-open]").click();
+  await expect(page.locator("[data-voicelines-character=layla]")).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator("[data-voicelines-lines] li").first()).toBeVisible();
+  const before = await page.evaluate(() => history.length);
+
+  await page.locator("[data-voicelines-rail] a[data-lang=ru]").click();
+  await expect.poll(() => lang(page)).toBe("ru");
+  await expect(page.locator("[data-voicelines-character=layla]")).toHaveAttribute(
+    "data-lang",
+    "ru",
+  );
+  await expect(firstText(page)).toContainText("Цельсь");
+  await page.locator("[data-voicelines-rail] a[data-lang=en]").click();
+  await expect.poll(() => lang(page)).toBe("en");
+  await expect(firstText(page)).toContainText("Aim");
+  expect(await page.evaluate(() => history.length)).toBe(before);
+
+  await page.goBack();
+  await expect(page.locator("[data-voicelines-roster]")).toBeVisible({ timeout: 30_000 });
+  expect(new URL(page.url()).pathname.replace(/\/$/u, "")).toBe("/collection/voicelines");
 });
 
-test("a compilation that ends can be played again from the start", async ({ page }) => {
-  await open(page);
-  const play = page.getByRole("button", { name: /the full compilation of Fanny/ });
-  await play.click();
-  await answerSoundPrompt(page);
-  await expect(play).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
-  // Fanny's recording is 126.7 s long. Jump to its last two seconds.
-  await page
-    .getByRole("slider", { name: "Position in the compilation of Fanny" })
-    .evaluate((el) => {
-      const input = el as HTMLInputElement;
-      // The native setter is the way to change a React controlled input from a test.
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set as
-        ((this: HTMLInputElement, value: string) => void) | undefined;
-      set?.call(input, "125");
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-  await expect(play).toHaveAttribute("aria-pressed", "false", { timeout: 20_000 });
-  await play.click();
-  await expect(play).toHaveAttribute("aria-pressed", "true", { timeout: 15_000 });
-  const seek = page.getByRole("slider", { name: "Position in the compilation of Fanny" });
-  await expect
-    .poll(async () => Number(await seek.inputValue()), { timeout: 15_000 })
-    .toBeLessThan(20);
+test("the button at the top goes to the room, whatever language is open", async ({ page }) => {
+  await openPage(page, "obsidia", "?lang=tr");
+  await page.locator("[data-room-back]").click();
+  await expect(page.locator("[data-voicelines-roster]")).toBeVisible({ timeout: 30_000 });
+  expect(new URL(page.url()).pathname.replace(/\/$/u, "")).toBe("/collection/voicelines");
 });
+
+test("an address names the language: jp, ja, and anything unknown is Japanese", async ({
+  page,
+}) => {
+  await openPage(page, "ruby", "?lang=pt");
+  await expect(page.locator("[data-voicelines-character=ruby]")).toHaveAttribute("data-lang", "pt");
+  await page.goto(url("/collection/voicelines/ruby/?lang=ja"));
+  await expect(page.locator("[data-voicelines-character=ruby]")).toHaveAttribute(
+    "data-lang",
+    "jp",
+    { timeout: 60_000 },
+  );
+  await page.goto(url("/collection/voicelines/ruby/?lang=zz"));
+  await expect(page.locator("[data-voicelines-character=ruby]")).toHaveAttribute(
+    "data-lang",
+    "jp",
+    { timeout: 60_000 },
+  );
+});
+
+test("Arabic is drawn right to left, with its own language rows", async ({ page }) => {
+  await openPage(page, "layla", "?lang=ar");
+  await expect(firstText(page)).toHaveAttribute("dir", "rtl");
+  await expect(firstText(page)).toHaveAttribute("lang", "ar");
+  await expect(page.locator("[data-voicelines-rail] a[data-lang=ar]")).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
+});
+
+test("search narrows the lines and is kept in the address", async ({ page }) => {
+  await openPage(page, "fanny", "?lang=en");
+  const rows = page.locator("[data-voicelines-lines] li");
+  await expect(rows).toHaveCount(28);
+  const box = page.getByRole("searchbox");
+  await expect(async () => {
+    await box.fill("terrinia");
+    expect(new URL(page.url()).searchParams.get("q")).toBe("terrinia");
+  }).toPass({ timeout: 20_000 });
+  const count = await rows.count();
+  expect(count).toBeGreaterThan(0);
+  expect(count).toBeLessThan(28);
+  await expect(page.locator("[data-voicelines-figures]")).toContainText(`${count} of 28 lines`);
+});
+
+test("the translation under a line can be changed or turned off", async ({ page }) => {
+  await openPage(page, "fanny", "?lang=es");
+  const select = page.getByLabel("Translate");
+  await expect(select).toHaveValue("en");
+  await expect(page.locator("[data-voicelines-lines] li").first()).toContainText("Swivel");
+  await select.selectOption("ru");
+  await expect.poll(() => new URL(page.url()).searchParams.get("tr")).toBe("ru");
+  await expect(page.locator("[data-voicelines-lines] li").first()).toContainText("Поворот");
+  await select.selectOption("off");
+  await expect(page.locator("[data-voicelines-lines] li").first()).not.toContainText("Поворот");
+});
+
+test("the Japanese list carries its own English translation", async ({ page }) => {
+  await openPage(page, "fanny", "?lang=jp");
+  await expect(page.locator("[data-voicelines-lines] li").first()).toContainText(
+    "A strong Aspirant spirit",
+  );
+  await expect(page.getByLabel("Translate").locator("option")).toHaveCount(2);
+});
+
+test("every line has a play button, and a download named after the Aspirant, the language and the line", async ({
+  page,
+}) => {
+  await openPage(page, "selena", "?lang=id");
+  await expect(page.locator("[data-voicelines-lines] li")).toHaveCount(47);
+  await expect(page.locator("[data-voicelines-lines] li [data-voice-play]")).toHaveCount(47);
+  const first = page.locator("[data-voicelines-lines] li a[download]").first();
+  await expect(first).toHaveAttribute("download", "Selena - Indonesian - 01.flac");
+  await expect(first).toHaveAttribute("href", /\/library\/v1\/voicelines\/selena\/id\/01\.flac$/u);
+  await expect(page.locator("[data-voicelines-save-all]")).toBeEnabled();
+});
+
+test("the addresses of the first version of the room still arrive", async ({ page }) => {
+  await skipGate(page);
+  await page.goto(url("/collection/voicelines/?who=obsidia"));
+  await expect(page.locator("[data-voicelines-character=obsidia]")).toBeVisible({
+    timeout: 60_000,
+  });
+  await page.goto(url("/collection/voicelines/?i=voice-fanny-03"));
+  await expect(page.locator("[data-voicelines-character=fanny]")).toBeVisible({ timeout: 60_000 });
+  const params = new URL(page.url()).searchParams;
+  expect(params.get("lang")).toBe("jp");
+  expect(params.get("i")).toBe("03");
+  await expect(page.locator("[data-voicelines-lines] li#line-03")).toBeVisible();
+});
+
+test("no sideways scroll at a phone's width, and the language row slides", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openRoom(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  await page.goto(url("/collection/voicelines/vexana/?lang=ru"));
+  await expect(page.locator("[data-voicelines-lines] li").first()).toBeVisible({ timeout: 60_000 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  await expect(page.locator("[data-voicelines-rail] a[data-lang=ru]")).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
+});
+
+async function seriousViolations(page: Page) {
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
+    .analyze();
+  return results.violations
+    .filter((v) => v.impact === "serious" || v.impact === "critical")
+    .map((v) => ({ id: v.id, help: v.help, nodes: v.nodes.map((n) => n.target.join(" ")) }));
+}
+
+test("no serious accessibility violations on the room", async ({ page }) => {
+  await openRoom(page);
+  // The film streams, so the network never goes quiet: wait a moment instead.
+  await page.waitForTimeout(1500);
+  const serious = await seriousViolations(page);
+  expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+});
+
+for (const query of ["?lang=jp", "?lang=ar", "?lang=tr"]) {
+  test(`no serious accessibility violations on the page of an Aspirant (${query})`, async ({
+    page,
+  }) => {
+    await openPage(page, "layla", query);
+    await page.waitForTimeout(800);
+    const serious = await seriousViolations(page);
+    expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
+  });
+}
