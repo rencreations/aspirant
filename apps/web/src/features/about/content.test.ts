@@ -11,7 +11,7 @@ import {
   FILM_COUNT,
   LABEL,
   LEDGER,
-  OUTRO,
+  NOTICE,
   PHASES,
   STATEMENT_LINES,
   STATEMENT_SOURCE,
@@ -116,17 +116,15 @@ describe("the figures", () => {
     const room = library<{ items: unknown[] }>("music.json");
     expect(LEDGER.find((r) => r.id === "music")?.figure).toBe(room.items.length);
     expect(EP_COUNT).toBe(6);
-    expect(LEDGER.find((r) => r.id === "music")?.unit).toBe("Tracks on 6 EPs");
   });
 
-  it("are the six of the design, each a whole number with a link", () => {
+  it("are the three rooms the owner named, each a whole number with a link", () => {
+    const index = library<{ counts: { voicelines: number } }>("index.json");
     expect(LEDGER.map((r) => [r.id, r.figure])).toEqual([
       ["films", 10],
       ["music", 7],
-      ["voice", 380],
-      ["comic", 2],
-      ["drama", 6],
-      ["lore", 28],
+      // The count the shelf of the collection shows.
+      ["voice", index.counts.voicelines],
     ]);
     expect(new Set(LEDGER.map((r) => r.href)).size).toBe(LEDGER.length);
   });
@@ -134,7 +132,8 @@ describe("the figures", () => {
   it("lead to pages that exist", () => {
     const rooms = new Set(readdirSync(path.join(APP, "collection")));
     for (const row of LEDGER) {
-      const parts = row.href.split("/").filter(Boolean);
+      // The address may carry the way back to this page: only its path names a page.
+      const parts = (row.href.split("?")[0] ?? "").split("/").filter(Boolean);
       if (parts[0] === "story") {
         expect(existsSync(path.join(APP, ...parts, "page.tsx")), row.href).toBe(true);
       } else {
@@ -143,8 +142,6 @@ describe("the figures", () => {
         expect(rooms.has(parts[1] ?? "") || rooms.has("[slug]"), row.href).toBe(true);
       }
     }
-    expect(OUTRO.story.href).toBe("/story");
-    expect(OUTRO.collection.href).toBe("/collection");
   });
 });
 
@@ -153,7 +150,7 @@ describe("the words", () => {
     PHASES,
     LEDGER,
     LABEL,
-    OUTRO,
+    NOTICE,
     STATEMENT_LINES,
     STATEMENT_SOURCE,
     DRONE_CAPTION,
@@ -191,8 +188,10 @@ describe("the pictures", () => {
   });
 
   it("keep the focus of every picture clear of the game mark at the top left", () => {
+    // A tall window shows about two fifths of the picture's width. The mark ends an eighth of
+    // the way in, so a focus of 22 percent or more keeps it out of the window.
     for (const s of PHASES.flatMap((p) => p.skins)) {
-      expect(s.focus[0]).toBeGreaterThanOrEqual(40);
+      expect(s.focus[0]).toBeGreaterThanOrEqual(22);
       expect(s.focus[0]).toBeLessThanOrEqual(70);
     }
   });

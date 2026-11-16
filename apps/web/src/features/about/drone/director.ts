@@ -36,7 +36,13 @@ import {
 } from "../choreo/tricks";
 import { uncovered, type Box } from "../film-geometry";
 import { LAYER } from "../layout";
-import { stageRefs, useAboutStage, type EngineState, type IntroPhase } from "../stage-bus";
+import {
+  stageRefs,
+  useAboutStage,
+  type DroneReport,
+  type EngineState,
+  type IntroPhase,
+} from "../stage-bus";
 
 import type { DroneDraw, DroneScene, TrailPoint } from "./drone-scene";
 import { measureAnchors } from "./measure";
@@ -63,6 +69,9 @@ interface DirectorParts {
   /** Where the still picture goes when there is no scene (the hero's place in the document). */
   onStill: (place: { x: number; y: number; size: number }) => void;
 }
+
+/** How long the page must rest before a flight caught half way is finished, in seconds. */
+const SETTLE_AFTER = 0.45;
 
 export interface Director {
   /** The scene to draw with, or null when it has gone. */
@@ -182,6 +191,8 @@ export function createDirector(parts: DirectorParts): Director {
   let last = 0;
   let time = 0;
   let lastScroll = 0;
+  /** Seconds since the page last moved. */
+  let stillFor = 0;
   /** How fast the page is being scrolled, smoothed, in screens per second. */
   let scrollSpeed = 0;
 
@@ -198,6 +209,8 @@ export function createDirector(parts: DirectorParts): Director {
   let presses: number[] = [];
   let answer = 0;
   let dizzyNext = false;
+  /** What the drone says of itself to a part that plays with it (Tetra): one object, rewritten. */
+  const report: DroneReport = { x: 0, y: 0, size: 0, presses: 0 };
   let buttonOn = false;
   let overControl = false;
   let sinceLook = 0;
@@ -373,6 +386,7 @@ export function createDirector(parts: DirectorParts): Director {
   };
 
   const press = () => {
+    report.presses += 1;
     const now = performance.now();
     presses = presses.filter((t) => now - t < DIZZY_WINDOW);
     presses.push(now);
@@ -408,7 +422,9 @@ export function createDirector(parts: DirectorParts): Director {
     const moved = scroll - lastScroll;
     lastScroll = scroll;
     if (dt > 0) scrollSpeed = mix(scrollSpeed, Math.abs(moved) / dt / vh, 1 - Math.exp(-12 * dt));
-    target = path.at(scroll);
+    // A page that has come to rest: a flight that was caught half way is finished (see `at`).
+    stillFor = Math.abs(moved) > 0.5 ? 0 : stillFor + dt;
+    target = path.at(scroll, stillFor > SETTLE_AFTER);
     const film = stageRefs.film ?? path.film(scroll);
 
     let effort = 0;
@@ -487,6 +503,12 @@ export function createDirector(parts: DirectorParts): Director {
 
       stepTricks(tricks, dt, { ...flight, travelling: target.travelling });
       if (dizzyNext && startTrick(tricks, "dizzy", 1)) dizzyNext = false;
+      // A move asked for by a part that plays with the drone. It is taken once, when the drone
+      // is free; an ask that finds it busy is dropped, not kept for later.
+      if (stageRefs.ask) {
+        startTrick(tricks, stageRefs.ask, pose.x < vw / 2 ? 1 : -1);
+        stageRefs.ask = null;
+      }
       const show = trickPose(tricks);
       const span = Math.max(1, path.spin.to - path.spin.from);
       const turned = stepSpin(
@@ -562,6 +584,11 @@ export function createDirector(parts: DirectorParts): Director {
       const draw: DroneDraw = { ...pose, rig: rigPose, face: faceFrame, trail, trailPoints };
       scene.draw(draw);
     }
+
+    report.x = pose.x;
+    report.y = pose.y;
+    report.size = pose.size;
+    stageRefs.drone = report;
 
     // The page's own links and buttons come first: where the drone sits over one of them (a row
     // of the ledger is a link from edge to edge), its button stands down. Looked at a few times
@@ -697,6 +724,7 @@ export function createDirector(parts: DirectorParts): Director {
       window.removeEventListener("touchmove", onIntent);
       window.removeEventListener("keydown", onKey);
       if (window.__aboutDrone === probeApi) delete window.__aboutDrone;
+      if (stageRefs.drone === report) stageRefs.drone = null;
     },
   };
 }

@@ -8,6 +8,7 @@ import { TLink } from "@/components/transition/t-link";
 import { LEGAL_ROUTES } from "@/lib/legal";
 import { libUrl } from "@/lib/library";
 import { collectionRoute, routes } from "@/lib/site";
+import { useReturnTo } from "@/lib/use-return-to";
 
 import { COLLECTIONS, getCollection, nextCollection } from "../registry";
 import { SearchButton } from "../search/search-host";
@@ -32,9 +33,13 @@ export const TAKEDOWN_URL = LEGAL_ROUTES.takedown;
  * The frame of every collection page: the header (breadcrumb, the name, one sentence, the
  * count, the cover), the switcher to the other nine, the page's own controls and content, and
  * the footer (what this archive is, how to ask for a removal, the next room).
+ *
+ * The first word of the breadcrumb is the way out. It is the shelf, or the page that sent the
+ * visitor here when the address names one (`from=about`, `lib/return-to.ts`).
  */
 export function LibraryShell({ slug, count, stat, controls, children }: LibraryShellProps) {
   const meta = getCollection(slug);
+  const back = useReturnTo();
   const vars = { "--lib-colour": meta.colour, "--lib-ink": meta.ink } as CSSProperties;
 
   return (
@@ -47,8 +52,12 @@ export function LibraryShell({ slug, count, stat, controls, children }: LibraryS
         <div className="relative shell">
           <p className={`${styles.crumb} hud-label`}>
             <StarGlyph className="size-3 text-accent" />
-            <TLink href={routes.collection} transitionLabel="Collection" className={styles.back}>
-              Collection
+            <TLink
+              href={back?.href ?? routes.collection}
+              transitionLabel={back?.label ?? "Collection"}
+              className={styles.back}
+            >
+              {back?.label ?? "Collection"}
             </TLink>
             <span aria-hidden="true">/</span>
             <span>
@@ -133,6 +142,8 @@ export function LibraryFooter({
 }) {
   const next = nextCollection(slug);
   const meta = getCollection(slug);
+  // The page that sent the visitor here, when the address names one: the way back leads to it.
+  const back = useReturnTo();
   return (
     <footer className={`${styles.foot} shell`}>
       <p className={styles.note}>
@@ -146,13 +157,15 @@ export function LibraryFooter({
       </p>
       {variant === "back" ? (
         <TLink
-          href={routes.collection}
-          transitionLabel="Collection"
+          href={back?.href ?? routes.collection}
+          transitionLabel={back?.label ?? "Collection"}
           className={styles.next}
           style={{ "--pill-colour": meta.colour, "--pill-ink": meta.ink } as CSSProperties}
         >
-          <span className="hud-label">The whole collection</span>
-          <span className={`${styles.nextName} display`}>Back to the collection</span>
+          <span className="hud-label">{back ? "Where you came from" : "The whole collection"}</span>
+          <span className={`${styles.nextName} display`}>
+            {back ? `Back to ${back.label}` : "Back to the collection"}
+          </span>
         </TLink>
       ) : (
         <TLink

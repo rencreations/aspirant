@@ -18,5 +18,7 @@ export const REEL_ASPECT = 1920 / 810;
 /**
  * Layers inside the page, all under the site's bar and frame. Text is at the bottom, the drone
  * flies over it, and the film's window is over the drone, so the drone passes behind the film.
+ * `cover` is TheMLabel's stage at the end of the page: it closes over everything, the drone too
+ * (the drone's layer goes up to 4 when it passes in front of the film).
  */
-export const LAYER = { text: 1, drone: 2, film: 3 } as const;
+export const LAYER = { text: 1, drone: 2, film: 3, cover: 6 } as const;

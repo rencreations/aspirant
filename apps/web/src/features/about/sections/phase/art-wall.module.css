@@ -1,0 +1,533 @@
+/* The official art of a phase: whole pictures in windows with a hairline and an index under
+   them, composed by their number and never as a uniform grid. The wall lays itself out by its own
+   width (a container). Everything that moves is a transform or an opacity. `--house` is the curve
+   of the site's mask reveals. The five phases arrive in five different ways: those rules are
+   grouped by phase at the end. */
+.wall {
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  --gap: clamp(0.9rem, 2cqw, 2.25rem);
+  /* How much lower the second picture of a pair hangs. */
+  --drop: clamp(2.5rem, 9cqw, 8.5rem);
+  container: wall / inline-size;
+}
+
+.head {
+  margin-bottom: clamp(1.25rem, 2.4cqw, 2.25rem);
+}
+
+.headMask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.headWord,
+.headCount {
+  display: block;
+  transition: transform 1000ms var(--house) 80ms;
+}
+
+.headCount {
+  transition-delay: 240ms;
+}
+
+/* The compositions --------------------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  /* Its place among the pictures that arrive with it: the stagger. */
+  --o: 0;
+  position: relative;
+  grid-column: span 6;
+  min-width: 0;
+}
+
+.wall[data-layout="solo"] .tile {
+  grid-column: 1 / -1;
+}
+
+/* Two: a pair at two heights, a large one and a smaller one that hangs lower. */
+.wall[data-layout="pair"] .tile {
+  grid-row: 1;
+}
+
+.wall[data-layout="pair"] .tile:nth-child(1) {
+  grid-column: 1 / span 7;
+}
+
+.wall[data-layout="pair"] .tile:nth-child(2) {
+  --o: 1;
+  grid-column: 8 / span 5;
+  margin-top: var(--drop);
+}
+
+.wall[data-layout="pair"][data-flip="true"] .tile:nth-child(1) {
+  grid-column: 6 / span 7;
+}
+
+.wall[data-layout="pair"][data-flip="true"] .tile:nth-child(2) {
+  grid-column: 1 / span 5;
+}
+
+/* The last phase turns the pair round: the smaller one first and high, the large one lower. */
+.wall[data-layout="pair"][data-phase="5"] .tile:nth-child(1) {
+  grid-column: 1 / span 5;
+}
+
+.wall[data-layout="pair"][data-phase="5"] .tile:nth-child(2) {
+  grid-column: 6 / span 7;
+  margin-top: calc(var(--drop) * 0.6);
+}
+
+/* Four: a stepped collage. A large one and a smaller one that stands on the same floor, then a
+   second row set in by a column, the smaller one first. */
+.wall[data-layout="collage"] .tile:nth-child(1) {
+  grid-column: 1 / span 7;
+}
+
+.wall[data-layout="collage"] .tile:nth-child(2) {
+  --o: 1;
+  grid-column: 8 / span 5;
+  align-self: end;
+}
+
+.wall[data-layout="collage"] .tile:nth-child(3) {
+  grid-column: 2 / span 5;
+}
+
+.wall[data-layout="collage"] .tile:nth-child(4) {
+  --o: 1;
+  grid-column: 7 / span 6;
+}
+
+/* Five: the middle one large, the first two in a column beside it (one step higher than its
+   head), the last two under them, side by side. */
+.wall[data-layout="mosaic"] .tile:nth-child(1) {
+  grid-area: 1 / 9 / 2 / 13;
+}
+
+.wall[data-layout="mosaic"] .tile:nth-child(2) {
+  --o: 1;
+  grid-area: 2 / 9 / 3 / 13;
+}
+
+.wall[data-layout="mosaic"] .tile:nth-child(3) {
+  --o: 2;
+  grid-area: 1 / 1 / 3 / 9;
+  align-self: end;
+}
+
+.wall[data-layout="mosaic"] .tile:nth-child(4) {
+  grid-area: 3 / 1 / 4 / 7;
+}
+
+.wall[data-layout="mosaic"] .tile:nth-child(5) {
+  --o: 1;
+  grid-area: 3 / 7 / 4 / 13;
+}
+
+.wall[data-layout="mosaic"][data-flip="true"] .tile:nth-child(1) {
+  grid-area: 1 / 1 / 2 / 5;
+}
+
+.wall[data-layout="mosaic"][data-flip="true"] .tile:nth-child(2) {
+  grid-area: 2 / 1 / 3 / 5;
+}
+
+.wall[data-layout="mosaic"][data-flip="true"] .tile:nth-child(3) {
+  grid-area: 1 / 5 / 3 / 13;
+}
+
+/* A picture ----------------------------------------------------------------------------------- */
+
+.hit {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The window: the picture's own shape, nothing cut. */
+.frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  transition: transform 420ms var(--ease-out);
+}
+
+.hit:active .frame {
+  transform: scale(0.985);
+}
+
+.open,
+.openIn,
+.zoom,
+.drift {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.open,
+.openIn {
+  overflow: hidden;
+  transition: transform 1350ms var(--house) calc(var(--o) * 140ms);
+}
+
+.zoom {
+  transition: transform 2100ms var(--ease-out) calc(var(--o) * 140ms);
+}
+
+/* The picture leans toward the pointer (written by script) and eases to where it is put. */
+.drift {
+  transition: transform 1000ms var(--ease-out);
+}
+
+.picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* Paper that lies over the window of some phases until it arrives, and then leaves for good. */
+.cover {
+  position: absolute;
+  display: none;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* Under the window: a hairline, the picture's place, and its name, which the pointer calls up. */
+.caption {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.9rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.captionRule,
+.captionRule::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: 0 50%;
+}
+
+.captionRule {
+  background: var(--line-strong);
+  transition: transform 1200ms var(--house) calc(var(--o) * 140ms + 300ms);
+}
+
+.captionRule::after {
+  background: var(--text);
+  transform: scaleX(0);
+  transition: transform 700ms var(--house);
+  content: "";
+}
+
+.index {
+  color: var(--text-faint);
+  transition: opacity 700ms var(--ease-out) calc(var(--o) * 140ms + 500ms);
+}
+
+.nameMask {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  transform: translate3d(0, 115%, 0);
+  transition: transform 620ms var(--house);
+}
+
+.grow {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition:
+    opacity 700ms var(--ease-out) calc(var(--o) * 140ms + 700ms),
+    transform 520ms var(--ease-spring);
+}
+
+.grow svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hit:focus-visible .name,
+.hit:focus-visible .captionRule::after {
+  transform: none;
+}
+
+.hit:focus-visible .grow {
+  transform: scale(1.14);
+}
+
+@media (hover: hover) {
+  .hit:hover .name,
+  .hit:hover .captionRule::after {
+    transform: none;
+  }
+
+  .hit:hover .grow {
+    transform: scale(1.14);
+  }
+}
+
+/* Without a pointer that rests, the name is simply there. */
+@media (hover: none) {
+  .name {
+    transform: none;
+  }
+}
+
+/* The line under the wall: what the pictures are. */
+.note {
+  display: grid;
+  gap: 0.85rem;
+  margin: clamp(1.5rem, 3.4cqw, 3rem) 0 0;
+}
+
+.noteLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em 1.4em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.noteLine b {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.noteName {
+  position: relative;
+}
+
+/* A small dot before each name. */
+.noteName::before {
+  position: absolute;
+  top: 50%;
+  left: -0.8em;
+  width: 3px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.55;
+  content: "";
+}
+
+/* The arrivals --------------------------------------------------------------------------------- */
+
+/* Every phase: the hairline under a picture draws itself and its small parts fade in. */
+:global(:root.js) .tile[data-in="false"] .captionRule {
+  transform: scaleX(0);
+}
+
+:global(:root.js) .tile[data-in="false"] :is(.index, .grow) {
+  opacity: 0;
+}
+
+/* Phase 1: dealt like cards. Each picture comes in from below, a little turned and off to one
+   side, and settles into its place with a small overshoot. */
+.wall[data-phase="1"] .hit {
+  transition:
+    opacity 520ms var(--ease-out) calc(var(--o) * 150ms),
+    transform 1450ms cubic-bezier(0.18, 1.18, 0.32, 1) calc(var(--o) * 150ms);
+}
+
+.wall[data-phase="1"] .tile:nth-child(odd) {
+  --dx: -4.5rem;
+  --rot: -5deg;
+}
+
+.wall[data-phase="1"] .tile:nth-child(even) {
+  --dx: 4.5rem;
+  --rot: 6deg;
+}
+
+:global(:root.js) .wall[data-phase="1"] .tile[data-in="false"] .hit {
+  opacity: 0;
+  transform: translate3d(var(--dx), 7.5rem, 0) rotate(var(--rot));
+}
+
+:global(:root.js) .wall[data-phase="1"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, 120%, 0);
+}
+
+/* Phase 2: two windows that open from their outer edges toward each other, from a closer view. */
+:global(:root.js) .wall[data-phase="2"] .tile[data-in="false"] .open {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="2"] .tile[data-in="false"] .openIn {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="2"] .tile[data-in="false"]:nth-child(2) .open {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="2"] .tile[data-in="false"]:nth-child(2) .openIn {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="2"] .tile[data-in="false"] .zoom {
+  transform: scale(1.22);
+}
+
+:global(:root.js) .wall[data-phase="2"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, -120%, 0);
+}
+
+/* Phase 3: the two pictures slide out of the gap between them, each through the near edge of
+   its own window, as if one had been lying behind the other. */
+.wall[data-phase="3"] .open {
+  transition-duration: 1500ms;
+}
+
+:global(:root.js) .wall[data-phase="3"] .tile[data-in="false"] .open {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="3"] .tile[data-in="false"]:nth-child(2) .open {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="3"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(-104%, 0, 0);
+}
+
+/* Phase 4: each window opens from an upright hairline down its middle. Two sheets of paper part
+   and the picture comes back from a closer view. */
+.wall[data-phase="4"] .cover {
+  top: 0;
+  bottom: 0;
+  display: block;
+  width: 50.5%;
+  transition: transform 1300ms var(--house) calc(var(--o) * 140ms + 80ms);
+}
+
+.wall[data-phase="4"] .cover:nth-of-type(2) {
+  left: 0;
+  transform: translate3d(-101%, 0, 0);
+}
+
+.wall[data-phase="4"] .cover:nth-of-type(3) {
+  right: 0;
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="4"] .tile[data-in="false"] .cover {
+  transform: translate3d(0, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="4"] .tile[data-in="false"] .zoom {
+  transform: scale(1.28);
+}
+
+.wall[data-phase="4"] .headCount {
+  transition-delay: 460ms;
+}
+
+:global(:root.js) .wall[data-phase="4"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, 120%, 0);
+}
+
+/* Phase 5: a slanted sheet of paper slides off each window, the two in opposite directions. */
+.wall[data-phase="5"] .cover:nth-of-type(2) {
+  inset: 0 -22%;
+  display: block;
+  transform: skewX(-14deg) translate3d(-101%, 0, 0);
+  transition: transform 1500ms var(--house) calc(var(--o) * 140ms + 80ms);
+}
+
+.wall[data-phase="5"] .tile:nth-child(2) .cover:nth-of-type(2) {
+  transform: skewX(-14deg) translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="5"] .tile[data-in="false"] .cover:nth-of-type(2) {
+  transform: skewX(-14deg) translate3d(0, 0, 0);
+}
+
+:global(:root.js) .wall[data-phase="5"] .tile[data-in="false"] .zoom {
+  transform: scale(1.18);
+}
+
+:global(:root.js) .wall[data-phase="5"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(104%, 0, 0);
+}
+
+/* A narrow box ---------------------------------------------------------------------------------- */
+
+/* One column. The pictures keep their two widths, a full one and a smaller one set to the other
+   side, so the wall still steps. */
+@container wall (max-width: 40rem) {
+  /* These undo every composition above, so they are written to outweigh all of them. */
+  .wall[data-layout][data-flip] .grid .tile:nth-child(n) {
+    grid-area: auto;
+    grid-column: 1 / -1;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .wall[data-layout][data-flip] .grid .tile:nth-child(even):not([data-hero="true"]) {
+    grid-column: 3 / -1;
+  }
+
+  .wall[data-layout][data-flip="true"] .grid .tile:nth-child(even):not([data-hero="true"]) {
+    grid-column: 1 / span 10;
+  }
+
+  .grid {
+    row-gap: clamp(1.5rem, 7cqw, 2.25rem);
+  }
+}

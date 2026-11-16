@@ -2,6 +2,8 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
+import { keepReturn } from "@/lib/return-to";
+
 import { lorePath, slugFromPath } from "./model";
 
 /**
@@ -9,7 +11,14 @@ import { lorePath, slugFromPath } from "./model";
  * and the address shows it, like a post that opens over a feed and has its own link. The room
  * stays mounted (the pages are `app/collection/lore/`, one layout, nothing to swap), so opening a
  * window is a `pushState` and the Back button closes it.
+ *
+ * The way back of the room's address (`from=about`, `lib/return-to.ts`) travels to the address of a
+ * window, so a visitor who was sent here is still led back from an entry.
  */
+
+/** The address of a window (or of the room), with the way back of the address we are on. */
+const pathOf = (slug: string): string => keepReturn(lorePath(slug), window.location.search);
+
 const listeners = new Set<() => void>();
 
 function subscribe(onChange: () => void): () => void {
@@ -46,7 +55,7 @@ export function useOpenLore(): { open: (slug: string) => void; close: () => void
   const open = useCallback((slug: string) => {
     if (read() === slug) return;
     const state = window.history.state as Record<string, unknown> | null;
-    window.history.pushState({ ...(state ?? {}), [DEPTH]: depthOf() + 1 }, "", lorePath(slug));
+    window.history.pushState({ ...(state ?? {}), [DEPTH]: depthOf() + 1 }, "", pathOf(slug));
     notify();
   }, []);
   const close = useCallback(() => {
@@ -58,7 +67,7 @@ export function useOpenLore(): { open: (slug: string) => void; close: () => void
     }
     // A window the visitor arrived on (a shared link): the room replaces it.
     const state = window.history.state as Record<string, unknown> | null;
-    window.history.replaceState(state, "", lorePath(""));
+    window.history.replaceState(state, "", pathOf(""));
     notify();
   }, []);
   return { open, close };

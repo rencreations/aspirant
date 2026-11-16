@@ -60,7 +60,7 @@ test("loads with one h1, every section, no console errors and no horizontal over
   const errors = await open(page);
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
   await expect(page.getByRole("heading", { level: 1, name: "About Aspirant" })).toBeVisible();
-  for (const id of ["statement", "phases", "ledger", "label", "outro"]) {
+  for (const id of ["statement", "phases", "ledger", "stop", "label"]) {
     await expect(page.locator(`[data-about-section="${id}"]`)).toHaveCount(1);
   }
   await expect(root(page)).toHaveAttribute("data-about-intro", "done");
@@ -99,7 +99,7 @@ test("a scroll during the opening ends it at once, with the title whole", async 
   await expect(page.locator("#about-title")).toHaveAttribute("data-finished", "");
 });
 
-test("the reel grows into its window, and a trailer opens in the player", async ({
+test("the film grows into its window, and the play control opens it in the player", async ({
   page,
 }, info) => {
   test.skip(info.project.name !== "desktop", "The wheel is a desktop input");
@@ -113,10 +113,10 @@ test("the reel grows into its window, and a trailer opens in the player", async 
     await page.waitForTimeout(40);
   }
   await expect(film).toHaveAttribute("data-complete", "", { timeout: 5000 });
+  await expect(film.getByText("From concept and design to production").first()).toBeAttached();
 
-  const pills = page.getByRole("list", { name: "The trailer of each phase" }).getByRole("button");
-  await expect(pills).toHaveCount(5);
-  await pills.nth(1).click();
+  // One film now: how the series started. Its play control opens the site's player.
+  await film.getByRole("button", { name: /^Play .+, with sound$/ }).click();
   const player = page.getByRole("dialog");
   await expect(player).toBeVisible();
   await page.keyboard.press("Escape");
@@ -211,34 +211,161 @@ test("the five phases name the ten skins and lead to their pages", async ({ page
   }
 });
 
-test("the ledger leads to the rooms and the outro carries the notice and the takedown link", async ({
+/** One of the parts a phase adds under its two skins. */
+const part = (page: Page, phase: number, name: string) =>
+  page.locator(`li[data-phase="${phase}"] [data-phase-part="${name}"]`);
+
+test("each phase lists its official videos, in the owner's order, the pinned ones first", async ({
+  page,
+}) => {
+  await open(page);
+  // The fourth phase shows its three films first: its six tall videos are behind a switch.
+  const counts = [8, 6, 4, 3, 4];
+  const first = [
+    "Go For It! Aspirants!",
+    "Awakening",
+    "Rekindled Light",
+    "Connection Lost",
+    "Day of Enders",
+  ];
+  for (const [i, count] of counts.entries()) {
+    const deck = part(page, i + 1, "videos");
+    const rows = deck.getByRole("tab");
+    await expect(rows).toHaveCount(count);
+    await expect(rows.first()).toHaveAttribute("aria-selected", "true");
+    await expect(rows.first()).toContainText(first[i] ?? "");
+  }
+
+  const deck = part(page, 4, "videos");
+  const kinds = deck.getByRole("radio");
+  await expect(kinds).toHaveCount(2);
+  await expect(kinds.first()).toHaveAttribute("aria-checked", "true");
+  await kinds.nth(1).scrollIntoViewIfNeeded();
+  await kinds.nth(1).click();
+  await expect(kinds.nth(1)).toHaveAttribute("aria-checked", "true");
+  await expect(deck.getByRole("tab")).toHaveCount(6);
+});
+
+test("a press on a row changes the window, and play opens the site's player", async ({ page }) => {
+  await open(page);
+  const deck = part(page, 2, "videos");
+  await deck.scrollIntoViewIfNeeded();
+  const rows = deck.getByRole("tab");
+  await rows.nth(1).click();
+  await expect(rows.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(rows.first()).toHaveAttribute("aria-selected", "false");
+  const play = deck.getByRole("button", { name: "Play A Way Out" });
+  await expect(play).toBeVisible();
+  await play.click();
+  const player = page.getByRole("dialog");
+  await expect(player).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(player).toBeHidden();
+});
+
+test("the parody in the first phase is marked as not canon", async ({ page }) => {
+  await open(page);
+  const deck = part(page, 1, "videos");
+  await deck.scrollIntoViewIfNeeded();
+  const row = deck.getByRole("tab").filter({ hasText: "Live-action parody" });
+  await expect(row).toContainText(/not canon/i);
+});
+
+test("every phase has its music, and nothing plays by itself", async ({ page }) => {
+  await open(page);
+  const tracks = [1, 1, 1, 2, 2];
+  for (const [i, count] of tracks.entries()) {
+    const deck = part(page, i + 1, "music");
+    // The play control of each track is a pill that says Play.
+    await expect(deck.locator("button[data-primary]")).toHaveCount(count);
+    await expect(deck.locator("button[data-primary]").first()).toHaveAttribute(
+      "aria-label",
+      /^Play /,
+    );
+  }
+  // The first phase's song has a music video, with its own way in.
+  await expect(
+    part(page, 1, "music").getByRole("button", { name: "Watch the music video" }),
+  ).toHaveCount(1);
+  // No audio or video of the page plays with sound without a press.
+  const loud = await page.evaluate(
+    () =>
+      [...document.querySelectorAll<HTMLMediaElement>("audio, video")].filter(
+        (m) => !m.paused && !m.muted,
+      ).length,
+  );
+  expect(loud).toBe(0);
+});
+
+test("the comics, the drama and the art of the phases lead where they say", async ({ page }) => {
+  await open(page);
+  await expect(
+    part(page, 1, "comic").locator('a[href*="/collection/comic/the-aspirant"]'),
+  ).not.toHaveCount(0);
+  await expect(
+    part(page, 4, "comic").locator('a[href*="/collection/comic/guinevere-and-vexana"]'),
+  ).not.toHaveCount(0);
+  await expect(
+    part(page, 4, "comic").getByRole("button", { name: /^Watch it voiced/ }),
+  ).toHaveCount(1);
+  await expect(
+    part(page, 4, "drama").locator('a[href*="/story/interactive-drama"]'),
+  ).not.toHaveCount(0);
+  for (const [i, count] of [4, 2, 2, 5, 2].entries()) {
+    await expect(
+      part(page, i + 1, "art").getByRole("button", { name: /^View larger/ }),
+    ).toHaveCount(count);
+  }
+  // Every link that leaves the page for the collection says where it came from.
+  const stray = await page.evaluate(() =>
+    [
+      ...document.querySelectorAll<HTMLAnchorElement>(
+        '[data-about-section="phases"] a[href*="/collection/"]',
+      ),
+    ]
+      .map((a) => a.getAttribute("href") ?? "")
+      .filter((href) => !href.includes("from=about")),
+  );
+  expect(stray).toEqual([]);
+});
+
+test("the two small scenes are there: Tetra in the second phase, the two drones in the fourth", async ({
+  page,
+}) => {
+  await open(page);
+  await expect(part(page, 2, "tetra")).toHaveCount(1);
+  await expect(part(page, 2, "tetra").getByText(/little companion/)).toBeAttached();
+  await expect(
+    part(page, 2, "tetra").getByText("Tetra is a gift from Ruby to Angela."),
+  ).toBeAttached();
+  await expect(part(page, 4, "companions")).toHaveCount(1);
+});
+
+test("the resources lead to their three rooms, with the collection's own count of voice lines", async ({
   page,
 }) => {
   await open(page);
   const ledger = page.locator('[data-about-section="ledger"]');
-  for (const end of [
-    "/collection/video/films/",
-    "/collection/music/",
-    "/collection/voicelines/",
-    "/collection/comic/",
-    "/story/interactive-drama/",
-    "/collection/lore/",
-  ]) {
-    await expect(ledger.locator(`a[href$="${end}"]`)).toHaveCount(1);
+  await expect(ledger.getByRole("heading", { level: 2 })).toHaveText(/Aspirant\s*resources/i);
+  for (const end of ["/collection/video/films/", "/collection/music/", "/collection/voicelines/"]) {
+    // The address also says where the visitor came from, so the path is looked for inside it.
+    await expect(ledger.locator(`a[href*="${end}"]`)).toHaveCount(1);
   }
-  const outro = page.locator('[data-about-section="outro"]');
-  await expect(outro.getByText(/Not affiliated with/i)).toBeAttached();
-  await expect(outro.getByRole("link", { name: /Copyright or takedown/i })).toHaveAttribute(
-    "href",
-    /\/takedown\/\?/,
-  );
+  await expect(ledger.locator("a")).toHaveCount(3);
 });
 
-test("the page ends with the way to the story", async ({ page }) => {
+test("the drone has a place to stop, and the page ends in TheMLabel with no way to a next page", async ({
+  page,
+}) => {
   await open(page);
-  await expect(page.getByRole("heading", { level: 2, name: "Next: Story" })).toBeAttached();
-  await expect(page.getByRole("heading", { level: 2, name: /^Next:/ })).toHaveCount(1);
-  await expect(page.getByRole("button", { name: "Continue to Story" })).toBeAttached();
+  await expect(page.locator('[data-about-section="stop"] [data-drone-anchor="stop"]')).toHaveCount(
+    1,
+  );
+  await expect(page.locator('[data-about-section="label"]')).toHaveCount(1);
+  // No footer to a next page, and no shortcut to the takedown page anywhere on this page.
+  await expect(page.getByRole("button", { name: /^Continue to/ })).toHaveCount(0);
+  await expect(page.locator('[data-about] a[href*="/takedown"]')).toHaveCount(0);
+  await expect(page.locator("[data-about]").getByText(/Not affiliated with/i)).toBeAttached();
 });
 
 test("axe finds no serious or critical violation", async ({ page }) => {

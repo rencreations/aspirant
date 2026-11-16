@@ -1,0 +1,982 @@
+/* TheMLabel, the close of the page. The section rises over the drone's ring (which is held on the
+   screen) and its first part is a stage stuck to the screen. `--hold` is the share of a screen
+   the ring stands still for before the black starts to come in. Only transform and opacity move. */
+.label {
+  --hold: 20vh;
+  --orange: #f14c02;
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  position: relative;
+  /* The ring's screen is 86vh tall and sticks 7vh down: this puts the stage on the screen
+     `--hold` of scroll after the ring has stopped. */
+  margin-top: calc(var(--hold) - 93vh);
+  color: #f3f1ee;
+  /* Its first screens lie over the ring, clear: the drone's button under them stays in reach. */
+  pointer-events: none;
+}
+
+/* The stretch the stage is held for: the close, then the finished logo for a while. */
+.track {
+  height: calc(100vh * (1 + var(--close) + var(--runway)));
+  height: calc(100lvh * (1 + var(--close) + var(--runway)));
+  pointer-events: none;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+/* While the page shows through the M the stage lets the pointer through to it. Closed, it does
+   not: the drone's button is under the black and must not answer there. */
+.stage[data-covered="true"] {
+  pointer-events: auto;
+}
+
+/* The black sheet with the M cut out of it. It is as large as the M and its black runs far past
+   the screen; the scale is written when the scroll changes. */
+.sheet {
+  position: absolute;
+  top: calc(50% - var(--mh) / 2);
+  left: calc(50% - var(--mw) / 2);
+  width: var(--mw);
+  height: var(--mh);
+  overflow: visible;
+  visibility: hidden;
+}
+
+/* A thin bright rim on the window, as on the plates. It keeps its width at any scale. */
+.rim {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.5);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.under {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+}
+
+.plates {
+  position: absolute;
+  inset: 0;
+}
+
+/* A plate: the box of the window. `land` lays the last one on the logo's M, `dolly` is the
+   camera drawing back, `flip` the swing about the bottom edge. */
+.land,
+.dolly,
+.flip,
+.face,
+.edge {
+  position: absolute;
+  inset: 0;
+}
+
+.land {
+  inset: auto;
+  width: var(--mw);
+  height: var(--mh);
+  top: calc(50% - var(--mh) / 2);
+  left: calc(50% - var(--mw) / 2);
+  transform-origin: 0 0;
+}
+
+.dolly {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.flip {
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* The plate's thickness: two chrome copies of the M behind its face. Lying flat they show as the
+   bright band along the top edge; standing, as slivers on the inner edges. */
+.edge {
+  background: linear-gradient(
+    180deg,
+    #fff 0%,
+    #c9ced6 22%,
+    #4a4f58 46%,
+    #e9edf2 60%,
+    #8d939d 82%,
+    #f7f8fa 100%
+  );
+}
+
+.edge[data-depth="1"] {
+  transform: translateZ(calc(var(--mh) * -0.035));
+}
+
+.edge[data-depth="2"] {
+  transform: translateZ(calc(var(--mh) * -0.07));
+}
+
+.face {
+  background: #111;
+  overflow: hidden;
+}
+
+.face[data-tone="4"] {
+  background: var(--orange);
+}
+
+.face img,
+.face video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The light that crosses a plate as it swings up. */
+.streak {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 46%;
+  height: 120%;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0) 0%,
+    rgb(255 255 255 / 0.85) 46%,
+    rgb(255 255 255 / 0.95) 54%,
+    rgb(255 255 255 / 0) 100%
+  );
+  transform: translate3d(-130%, 0, 0);
+  opacity: 0;
+}
+
+/* The logo, in the middle of the screen. Each letter is a slice of the one picture. */
+.logo {
+  position: absolute;
+  top: calc(50% - var(--lh) / 2);
+  left: calc(50% - var(--lw) / 2);
+  width: var(--lw);
+  height: var(--lh);
+}
+
+.letter,
+.logoM {
+  position: absolute;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.letter {
+  will-change: transform, opacity;
+}
+
+.letter img,
+.logoM img {
+  position: absolute;
+  max-width: none;
+}
+
+/* The light across the finished logo: a bright band that only translates, seen through the
+   logo's own shape (a mask that never changes). */
+.sheen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.beam {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 26%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    rgb(255 244 224 / 0) 0%,
+    rgb(255 244 224 / 0.95) 50%,
+    rgb(255 244 224 / 0) 100%
+  );
+  transform: translate3d(-140%, 0, 0);
+}
+
+/* The dark wave along the foot of the letters: black on black, so only its edge is seen where it
+   crosses them. */
+.wave {
+  position: absolute;
+  top: 100%;
+  left: -10%;
+  width: 240%;
+  height: 130%;
+  transform: translate3d(-52%, 70%, 0);
+  opacity: 0;
+}
+
+/* The footage is still arriving: a hairline under the window fills with the bytes received. */
+.wait {
+  position: absolute;
+  top: calc(50% + var(--mh) / 2 + clamp(1.25rem, 4vh, 2.5rem));
+  left: 50%;
+  width: clamp(6rem, 14vw, 11rem);
+  margin-left: calc(clamp(6rem, 14vw, 11rem) / -2);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+
+.stage[data-mode="waiting"] .wait {
+  opacity: 1;
+}
+
+.waitLine {
+  display: block;
+  height: 1px;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.waitFill {
+  display: block;
+  height: 1px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* The content after the scene ------------------------------------------------------------------ */
+
+.content {
+  position: relative;
+  pointer-events: auto;
+  background: #000;
+  --bg: #000;
+  --accent: var(--orange);
+}
+
+.screen {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  padding: clamp(5rem, 14vh, 10rem) var(--gutter);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+  margin: 0 0 clamp(1.5rem, 4vh, 3rem);
+  color: rgb(243 241 238 / 0.62);
+}
+
+.eyebrow b {
+  font-weight: 500;
+  color: var(--orange);
+}
+
+.rule {
+  display: block;
+  height: 1px;
+  background: rgb(255 255 255 / 0.22);
+  transform-origin: 0 50%;
+  transition: transform 1200ms var(--house);
+}
+
+:global(:root.js) [data-in="false"] .rule,
+:global(:root.js) .rule[data-in="false"] {
+  transform: scaleX(0);
+}
+
+/* 1. What it is: the official line, word by word, each word a plate that swings up. */
+.what {
+  margin: 0;
+  font-size: clamp(2.6rem, 9.2vw, 9.5rem);
+  perspective: 1200px;
+}
+
+.word {
+  display: inline-block;
+  margin-right: 0.22em;
+  transform-origin: 50% 100%;
+  transition:
+    transform 900ms var(--house),
+    opacity 500ms linear;
+  transition-delay: calc(var(--i) * 70ms);
+}
+
+.word[data-hot="true"] {
+  color: var(--orange);
+}
+
+:global(:root.js) [data-in="false"] .word {
+  opacity: 0;
+  transform: rotateX(-82deg) translate3d(0, 0.2em, 0);
+}
+
+.lead {
+  max-width: 34ch;
+  margin: clamp(2rem, 5vh, 3.5rem) 0 0;
+  font-size: clamp(1.35rem, 2.3vw, 2.2rem);
+  font-style: italic;
+  color: rgb(243 241 238 / 0.82);
+  transition:
+    transform 1000ms var(--house) 500ms,
+    opacity 700ms linear 500ms;
+}
+
+:global(:root.js) [data-in="false"] .lead {
+  opacity: 0;
+  transform: translate3d(0, 1.5rem, 0);
+}
+
+/* The three parts share one heading block. */
+.head {
+  display: grid;
+  gap: clamp(0.75rem, 2vh, 1.5rem);
+  margin-bottom: clamp(2.5rem, 7vh, 5rem);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 7vw, 7rem);
+  overflow: hidden;
+}
+
+.title span {
+  display: inline-block;
+  transition: transform 1000ms var(--house);
+}
+
+:global(:root.js) [data-in="false"] .title span {
+  transform: translate3d(0, 105%, 0);
+}
+
+.line {
+  max-width: 44ch;
+  margin: 0;
+  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+  font-style: italic;
+  color: rgb(243 241 238 / 0.78);
+  transition:
+    transform 900ms var(--house) 200ms,
+    opacity 600ms linear 200ms;
+}
+
+:global(:root.js) [data-in="false"] .line {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+}
+
+/* 2. One series, one hall: the ten Aspirants as tall plates that stand up from the floor. */
+.hall {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: clamp(0.25rem, 0.8vw, 0.9rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  perspective: 1400px;
+  perspective-origin: 50% 100%;
+}
+
+.tall {
+  position: relative;
+  aspect-ratio: 9 / 22;
+  transform-origin: 50% 100%;
+  transition:
+    transform 1100ms var(--house),
+    opacity 400ms linear;
+  transition-delay: calc(var(--i) * 85ms);
+}
+
+:global(:root.js) .hall[data-in="false"] .tall {
+  opacity: 0;
+  transform: rotateX(-88deg);
+}
+
+.tallIn {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #111;
+  transition: transform 500ms var(--ease-out);
+}
+
+.tall:hover .tallIn {
+  transform: translate3d(0, -4%, 0) scale(1.04);
+}
+
+.tall:active .tallIn {
+  transform: translate3d(0, -1%, 0) scale(0.99);
+}
+
+.tallIn img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+  transition: transform 900ms var(--ease-out);
+}
+
+.tall:hover img {
+  transform: scale(1.2);
+}
+
+/* A plate's own light, crossing it once as it stands, like the plates of the scene. */
+.tallIn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0),
+    rgb(255 255 255 / 0.55),
+    rgb(255 255 255 / 0)
+  );
+  transform: translate3d(260%, 0, 0) skewX(-20deg);
+  transition: transform 1100ms var(--ease-out);
+  transition-delay: calc(var(--i) * 85ms + 350ms);
+}
+
+:global(:root.js) .hall[data-in="false"] .tallIn::after {
+  transform: translate3d(-160%, 0, 0) skewX(-20deg);
+}
+
+.tallName {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 0;
+  white-space: nowrap;
+  color: rgb(243 241 238 / 0.6);
+  opacity: 0;
+  transform: translate3d(0, -0.4rem, 0);
+  transition:
+    opacity 250ms linear,
+    transform 350ms var(--ease-out);
+}
+
+.tall:hover .tallName {
+  opacity: 1;
+  transform: none;
+}
+
+.floor {
+  margin-top: 0;
+}
+
+/* 3. Four perks: four objects, each acting out what it is. */
+.perks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(255 255 255 / 0.22);
+}
+
+.perk {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.25rem;
+  min-height: clamp(18rem, 46vh, 28rem);
+  padding: clamp(1rem, 2vw, 1.75rem);
+  border-right: 1px solid rgb(255 255 255 / 0.22);
+  transition:
+    transform 900ms var(--house),
+    opacity 600ms linear;
+  transition-delay: calc(var(--i) * 110ms);
+}
+
+.perk:last-child {
+  border-right: 0;
+}
+
+:global(:root.js) .perks[data-in="false"] .perk {
+  opacity: 0;
+  transform: translate3d(0, 2.5rem, 0);
+}
+
+.perkNo {
+  color: rgb(243 241 238 / 0.5);
+}
+
+.perkName {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+}
+
+.act {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 8rem;
+}
+
+/* A golden skin name: the white name gives way to a gold one, and a light runs over it. */
+.gold {
+  position: relative;
+  font-size: clamp(1.6rem, 2.6vw, 2.6rem);
+  white-space: nowrap;
+}
+
+.gold span {
+  display: block;
+  /* Room for the slant of the last letter, which the gold's clip would cut. */
+  padding: 0 0.16em;
+  transition: opacity 700ms linear 900ms;
+}
+
+.gold span + span {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  background: linear-gradient(100deg, #b9862c 0%, #ffe9a3 38%, #f2c45a 55%, #a9741f 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+:global(:root.js) .perks[data-in="false"] .gold span + span {
+  opacity: 0;
+}
+
+.perks[data-in="true"] .gold span:first-child {
+  opacity: 0;
+}
+
+.perk:hover .gold {
+  animation: nudge 600ms var(--ease-out);
+}
+
+/* An animated skin tag: a small tag that never quite sits still. */
+.tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.5rem;
+  padding: 0 1.1rem;
+  overflow: hidden;
+  color: #000;
+  background: var(--orange);
+  border-radius: 999px;
+  animation: bob 2600ms ease-in-out infinite;
+}
+
+.tag::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #000;
+  border-radius: 50%;
+  animation: pulse 1300ms ease-in-out infinite;
+}
+
+.tag::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0),
+    rgb(255 255 255 / 0.7),
+    rgb(255 255 255 / 0)
+  );
+  animation: shine 2600ms var(--ease-out) infinite;
+}
+
+.perk:hover .tag {
+  animation-duration: 900ms;
+}
+
+/* A collection crest: four pieces of the M's own geometry that come together. */
+.crest {
+  position: relative;
+  width: clamp(5rem, 8vw, 7.5rem);
+  aspect-ratio: 1;
+  transition: transform 900ms var(--ease-out);
+}
+
+.perk:hover .crest {
+  transform: rotate(90deg);
+}
+
+.crest i {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid #f3f1ee;
+  transition:
+    transform 1200ms var(--house) 500ms,
+    opacity 500ms linear 500ms;
+}
+
+.crest i:nth-child(1) {
+  transform: rotate(45deg) scale(0.72);
+}
+
+.crest i:nth-child(2) {
+  transform: scale(0.72);
+}
+
+.crest i:nth-child(3) {
+  border-color: var(--orange);
+  border-radius: 50%;
+  transform: scale(0.5);
+}
+
+.crest i:nth-child(4) {
+  inset: 42%;
+  background: var(--orange);
+  border: 0;
+  transform: rotate(45deg);
+}
+
+:global(:root.js) .perks[data-in="false"] .crest i {
+  opacity: 0;
+}
+
+:global(:root.js) .perks[data-in="false"] .crest i:nth-child(1) {
+  transform: translate3d(-120%, 0, 0) rotate(-135deg) scale(0.72);
+}
+
+:global(:root.js) .perks[data-in="false"] .crest i:nth-child(2) {
+  transform: translate3d(120%, 0, 0) rotate(180deg) scale(0.72);
+}
+
+:global(:root.js) .perks[data-in="false"] .crest i:nth-child(3) {
+  transform: scale(1.8);
+}
+
+:global(:root.js) .perks[data-in="false"] .crest i:nth-child(4) {
+  transform: rotate(45deg) scale(0);
+}
+
+/* A showcase display: a picture on its stand, and the light that comes on over it. */
+.show {
+  position: relative;
+  width: clamp(5.5rem, 9vw, 8.5rem);
+  aspect-ratio: 3 / 4;
+}
+
+.show img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    opacity 900ms linear 900ms,
+    transform 900ms var(--ease-out);
+}
+
+.perk:hover .show img {
+  transform: scale(1.06);
+}
+
+.show::before {
+  content: "";
+  position: absolute;
+  top: -55%;
+  left: -45%;
+  width: 190%;
+  height: 160%;
+  background: linear-gradient(180deg, rgb(255 236 200 / 0.5), rgb(255 236 200 / 0) 78%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  transition: opacity 500ms linear 700ms;
+}
+
+.show::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: -18%;
+  width: 136%;
+  height: 1.5px;
+  background: #f3f1ee;
+  transform-origin: 50% 50%;
+  transition: transform 800ms var(--house) 400ms;
+}
+
+:global(:root.js) .perks[data-in="false"] .show img {
+  opacity: 0.12;
+}
+
+:global(:root.js) .perks[data-in="false"] .show::before {
+  opacity: 0;
+}
+
+:global(:root.js) .perks[data-in="false"] .show::after {
+  transform: scaleX(0);
+}
+
+/* 4. Skin story: three things in one place, as three rows that slide in from the side. */
+.story {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(3rem, 8vw, 7rem) 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding: clamp(1.1rem, 3vh, 2rem) 0;
+  overflow: hidden;
+}
+
+.row::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: rgb(255 255 255 / 0.22);
+  transform-origin: 0 50%;
+  transition: transform 1100ms var(--house);
+  transition-delay: calc(var(--i) * 140ms);
+}
+
+.rowNo {
+  color: rgb(243 241 238 / 0.5);
+}
+
+.rowName {
+  font-size: clamp(2rem, 6.4vw, 6.5rem);
+  transition:
+    transform 1000ms var(--house),
+    opacity 500ms linear;
+  transition-delay: calc(var(--i) * 140ms);
+}
+
+.rowName span {
+  display: inline-block;
+  transition: transform 500ms var(--ease-out);
+}
+
+.row:hover .rowName span {
+  transform: translate3d(1.2rem, 0, 0);
+}
+
+.rowMark {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--orange);
+  transform: rotate(45deg) scale(0);
+  transition: transform 400ms var(--ease-spring);
+}
+
+.row:hover .rowMark {
+  transform: rotate(45deg) scale(1);
+}
+
+:global(:root.js) .story[data-in="false"] .row::after {
+  transform: scaleX(0);
+}
+
+:global(:root.js) .story[data-in="false"] .rowName {
+  opacity: 0;
+  transform: translate3d(-12%, 0, 0);
+}
+
+/* The end of the page: the logo small, the last line, two ways on, the notice. */
+.end {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.5rem, 4vh, 2.75rem);
+  text-align: center;
+}
+
+.endLogo {
+  width: clamp(11rem, 22vw, 20rem);
+  height: auto;
+  transition:
+    transform 1100ms var(--house),
+    opacity 700ms linear;
+}
+
+.first {
+  max-width: 22ch;
+  margin: 0;
+  font-size: clamp(1.7rem, 3.6vw, 3.4rem);
+  font-style: italic;
+  transition:
+    transform 1000ms var(--house) 150ms,
+    opacity 700ms linear 150ms;
+}
+
+.ways {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  transition:
+    transform 1000ms var(--house) 300ms,
+    opacity 700ms linear 300ms;
+}
+
+:global(:root.js) .end[data-in="false"] .endLogo {
+  opacity: 0;
+  transform: scale(1.5);
+}
+
+:global(:root.js) .end[data-in="false"] .first,
+:global(:root.js) .end[data-in="false"] .ways {
+  opacity: 0;
+  transform: translate3d(0, 1.5rem, 0);
+}
+
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 2.75rem;
+  padding: 0 1.4rem;
+  overflow: hidden;
+  color: #f3f1ee;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  isolation: isolate;
+  transition: transform 300ms var(--ease-out);
+}
+
+.pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--orange);
+  border-radius: inherit;
+  transform: translate3d(0, 101%, 0);
+  transition: transform 450ms var(--house);
+}
+
+.pill:hover::before,
+.pill:focus-visible::before {
+  transform: none;
+}
+
+.pill:active {
+  transform: scale(0.96);
+}
+
+.notice {
+  max-width: 62ch;
+  margin: clamp(2rem, 8vh, 5rem) 0 0;
+  color: rgb(243 241 238 / 0.5);
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate3d(0, -0.4rem, 0) rotate(2deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+}
+
+@keyframes shine {
+  0%,
+  45% {
+    transform: translate3d(-120%, 0, 0) skewX(-20deg);
+  }
+
+  100% {
+    transform: translate3d(320%, 0, 0) skewX(-20deg);
+  }
+}
+
+@keyframes nudge {
+  0% {
+    transform: none;
+  }
+
+  40% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+@media (max-width: 58rem) {
+  .hall {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    row-gap: clamp(0.4rem, 1.5vw, 1rem);
+  }
+
+  .tall {
+    aspect-ratio: 9 / 16;
+  }
+
+  .tallName {
+    display: none;
+  }
+
+  .perks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .perk {
+    min-height: 15rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  }
+
+  .perk:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 30rem) {
+  .perks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .perk {
+    border-right: 0;
+  }
+}

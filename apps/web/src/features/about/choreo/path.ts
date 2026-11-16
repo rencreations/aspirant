@@ -227,12 +227,27 @@ export interface Path {
   clear: () => { x: number; y: number; size: number };
   /** The film's box at this scroll, by the arithmetic the film itself uses. */
   film: (scroll: number) => Box;
-  at: (scroll: number) => Target;
+  /**
+   * The target for a scroll. With `settled` (the page has come to rest), a flight between two
+   * plain anchors is not held half way, over whatever is there: the drone finishes the hop to the
+   * nearer of the two, and takes the flight up again from there when the page moves.
+   */
+  at: (scroll: number, settled?: boolean) => Target;
 }
 
 /** The band of the screen a plain anchor holds the drone in: it arrives low and leaves high. */
 const BAND_IN = 0.64;
 const BAND_OUT = 0.36;
+/**
+ * Where the drone waits when its anchor has left the screen and the next is not near: in the
+ * page's margin, small enough to fit there with its wings (it is drawn about one and a half times
+ * its size). `LOT_OVER` is the scroll, in screens, over which it draws back there.
+ */
+const LOT_OF_GUTTER = 0.6;
+const LOT_MIN = 30;
+const LOT_MAX = 46;
+const LOT_DOWN = 0.14;
+const LOT_OVER = 0.22;
 /** The longest flight between two plain anchors, and the shortest any flight may be, in screens. */
 const FLIGHT_MAX = 0.5;
 const FLIGHT_MIN = 0.12;
@@ -352,8 +367,23 @@ export function buildPath(layout: PathLayout): Path {
     if (i === 0) return { x: a.x, y: a.y, size: a.w };
     const raw = { x: a.x, y: a.y - carried(a, scroll), size: a.w };
     // The last anchor leaves with the page. Every other one keeps the drone on the screen while
-    // it waits for the next: it hovers under the bar when its anchor has gone up.
-    return i === last ? raw : fit(raw);
+    // it waits for the next.
+    if (i === last) return raw;
+    const held = fit(raw);
+    if (i < 3) return held;
+    // From the dock on, an anchor that has gone up leaves the drone over whatever fills the
+    // screen now (a picture, a list). So it does not wait under the bar: as its anchor leaves,
+    // it draws back, small, into the page's margin on its own side, and waits there.
+    const k = easeInOutSine(clamp01((navH + EDGE + raw.size / 2 - raw.y) / (LOT_OVER * vh)));
+    if (k <= 0) return held;
+    const size = clamp(LOT_OF_GUTTER * gutter, LOT_MIN, LOT_MAX);
+    const inset = Math.max(gutter / 2, EDGE + size * 0.8);
+    const lot = { x: a.x > vw / 2 ? vw - inset : inset, y: navH + LOT_DOWN * vh, size };
+    return {
+      x: mix(held.x, lot.x, k),
+      y: mix(held.y, lot.y, k),
+      size: mix(held.size, lot.size, k),
+    };
   };
 
   /** The way to the perch as it would be flown behind the film, before the edges are minded. */
@@ -451,7 +481,7 @@ export function buildPath(layout: PathLayout): Path {
     });
   };
 
-  const at = (scroll: number): Target => {
+  const at = (scroll: number, settled = false): Target => {
     const first = stations[0];
     if (!first) {
       return {
@@ -493,8 +523,25 @@ export function buildPath(layout: PathLayout): Path {
       };
     }
     const u = clamp01((s - here.leave) / Math.max(1, next.arrive - here.leave));
-    const p = route(i, place(i, s), place(i + 1, s), u);
     const near = u < 0.5 ? here : next;
+    if (settled && i >= 3) {
+      // At rest between two plain anchors: on to the nearer one, where there is room for it.
+      const k = u < 0.5 ? i : i + 1;
+      const p = place(k, s);
+      const a = near.anchor;
+      return {
+        ...p,
+        restTurn: near.turn,
+        face: near.face,
+        station: a.id,
+        travelling: 0,
+        parked: Math.hypot(p.x - a.x, p.y - (a.y - carried(a, s))) > 1,
+        from: here.anchor.id,
+        to: next.anchor.id,
+        u,
+      };
+    }
+    const p = route(i, place(i, s), place(i + 1, s), u);
     return {
       ...p,
       restTurn: mix(here.turn, next.turn, easeInOutSine(u)),

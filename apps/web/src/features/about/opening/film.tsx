@@ -12,7 +12,7 @@ import {
 import { createPortal } from "react-dom";
 
 import { useLenis } from "@/components/smooth-scroll";
-import { PlayerOverlay } from "@/components/video-player/player-overlay";
+import { PlayerOverlay, type PlayerVideo } from "@/components/video-player/player-overlay";
 import { lvh, put } from "@/features/character/vexana/seams/scroll-kit";
 import { useScrollSnap, type SnapRange } from "@/features/character/vexana/seams/snap";
 import { asset } from "@/lib/asset";
@@ -21,11 +21,10 @@ import { expectReady } from "@/lib/page-ready";
 
 import { morphEnd, type Box } from "../film-geometry";
 import { LAYER } from "../layout";
-import { pickReel, REEL_POSTER } from "../media";
+import { pickStart, START_POSTER } from "../media";
 import { stageRefs } from "../stage-bus";
 import styles from "./film.module.css";
 import { copyAt, PERCH, pictureAt, placementCss, tagAt, tintAt } from "./geometry";
-import { NEWEST, TRAILERS, type PhaseTrailer } from "./trailers";
 
 const fixed = (v: number) => String(Number(v.toFixed(3)));
 
@@ -53,10 +52,11 @@ function PlayMark({ className }: { className?: string }) {
  * written, and the picture's box is told to the drone, which flies behind it.
  *
  * A veil of the page's own paper lies over the preview. The pointer lifts it, a key's focus does
- * too, and the scroll takes it away for good. In the big window the play control and the five
- * phases open the site's player, with sound. A stop inside the morph settles after one second.
+ * too, and the scroll takes it away for good. In the big window the play control opens the whole
+ * film (`film`, the collection's own file) in the site's player, with sound. A stop inside the
+ * morph settles after one second.
  */
-export function Film() {
+export function Film({ film }: { film: PlayerVideo }) {
   const stage = useRef<HTMLDivElement>(null);
   const picture = useRef<HTMLDivElement>(null);
   const veil = useRef<HTMLDivElement>(null);
@@ -74,7 +74,7 @@ export function Film() {
   const [ready, setReady] = useState(false);
   const [near, setNear] = useState(true);
   const [shown, setShown] = useState(true);
-  const [playing, setPlaying] = useState<PhaseTrailer | null>(null);
+  const [playing, setPlaying] = useState(false);
 
   useScrollSnap("about-film", () => range.current, { idleMs: 1000 });
 
@@ -173,7 +173,7 @@ export function Film() {
     if (!el) return;
     el.defaultMuted = true;
     el.muted = true;
-    const picked = pickReel(window.innerWidth);
+    const picked = pickStart(window.innerWidth);
     const mark = expectReady("about-reel");
     const done = () => {
       setReady(true);
@@ -252,7 +252,7 @@ export function Film() {
 
   const getOrigin = useCallback(() => picture.current?.getBoundingClientRect() ?? null, []);
   const onClosed = useCallback(() => {
-    setPlaying(null);
+    setPlaying(false);
   }, []);
 
   return (
@@ -279,7 +279,7 @@ export function Film() {
             <video
               ref={video}
               className={styles.video}
-              poster={asset(REEL_POSTER)}
+              poster={asset(START_POSTER)}
               muted
               loop
               playsInline
@@ -299,7 +299,7 @@ export function Film() {
         ref={preview}
         type="button"
         className={styles.preview}
-        aria-label="Open the reel in its big window"
+        aria-label="Open the film in its big window"
         data-cursor="OPEN"
         inert={!small}
         onClick={openWindow}
@@ -320,7 +320,7 @@ export function Film() {
           <span className={styles.tagMark}>
             <PlayMark />
           </span>
-          <span className={styles.tagText}>Open the reel</span>
+          <span className={styles.tagText}>Open the film</span>
         </span>
       </button>
 
@@ -328,12 +328,17 @@ export function Film() {
         <p className={styles.index}>
           <span className={styles.mask}>
             <span>
-              <span className={styles.indexNo}>02</span> / The reel
+              <span className={styles.indexNo}>02</span> / How it started
             </span>
           </span>
           <span className={styles.indexRule} aria-hidden="true" />
           <span className={styles.mask}>
-            <span>Phase I to V, 2022 to 2026</span>
+            <span>From concept and design to production</span>
+          </span>
+        </p>
+        <p className={styles.under} aria-hidden="true">
+          <span className={styles.mask}>
+            <span>From concept and design to production</span>
           </span>
         </p>
 
@@ -342,42 +347,21 @@ export function Film() {
             ref={playButton}
             type="button"
             className={styles.play}
-            aria-label={`Play ${NEWEST.title}, the trailer of the newest phase`}
+            aria-label={`Play ${film.title}, with sound`}
             aria-haspopup="dialog"
             data-cursor="PLAY"
             onClick={() => {
-              setPlaying(NEWEST);
+              setPlaying(true);
             }}
           >
             <PlayMark className={styles.playMark} />
           </button>
         </div>
-
-        <ol className={styles.pills} aria-label="The trailer of each phase">
-          {TRAILERS.map((t, i) => (
-            <li key={t.no} className={styles.pillItem} style={{ "--i": i } as CSSProperties}>
-              <button
-                type="button"
-                className={styles.pill}
-                aria-label={`Play ${t.title}, the trailer of phase ${Number(t.no)}`}
-                aria-haspopup="dialog"
-                data-cursor="PLAY"
-                onClick={() => {
-                  setPlaying(t);
-                }}
-              >
-                <span className={styles.pillNo}>{t.no}</span>
-                <span className={styles.pillTitle}>{t.title}</span>
-                <span className={styles.pillYear}>{t.year}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
       </div>
 
       {playing
         ? createPortal(
-            <PlayerOverlay video={playing.video} getOrigin={getOrigin} onClosed={onClosed} />,
+            <PlayerOverlay video={film} getOrigin={getOrigin} onClosed={onClosed} />,
             document.body,
           )
         : null}

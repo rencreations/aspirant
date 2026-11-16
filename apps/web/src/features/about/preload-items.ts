@@ -1,7 +1,8 @@
 import { chunkItem, imageItem, mediaItem, type PreloadItem } from "@/lib/preload";
 
 import { ABOUT_PICTURES } from "./content";
-import { DRONE_MODEL, DRONE_MODEL_BYTES, pickReel, REEL_POSTER } from "./media";
+import { DRONE_MODEL, DRONE_MODEL_BYTES, pickStart, START_POSTER } from "./media";
+import { mlabelItems } from "./mlabel/footage";
 
 /** The first phase's two pictures arrive a few screens down: they are waited for, the rest follow. */
 const FIRST_PICTURES = 2;
@@ -17,7 +18,7 @@ const FIRST_PICTURES = 2;
  * where this list never ran (a returning tab, the browser's Back) still gets them.
  */
 export function aboutItems(): PreloadItem[] {
-  const reel = pickReel(typeof window === "undefined" ? 1920 : window.innerWidth);
+  const reel = pickStart(typeof window === "undefined" ? 1920 : window.innerWidth);
   return [
     chunkItem("about-drone", "Waking the drone", () => import("./drone/drone-scene"), 3),
     mediaItem(DRONE_MODEL, "Waking the drone", {
@@ -25,11 +26,13 @@ export function aboutItems(): PreloadItem[] {
       bytes: DRONE_MODEL_BYTES,
       weight: 1,
     }),
-    imageItem(REEL_POSTER, "Loading the reel", 1),
-    mediaItem(reel.src, "Loading the reel", { type: "video/mp4", bytes: reel.bytes }),
+    imageItem(START_POSTER, "Loading the film", 1),
+    mediaItem(reel.src, "Loading the film", { type: "video/mp4", bytes: reel.bytes }),
     ...ABOUT_PICTURES.map((path, i) => {
       const item = imageItem(path, "Loading the phases", 1);
       return i < FIRST_PICTURES ? item : { ...item, deferred: true, priority: 20 };
     }),
+    // The footage of TheMLabel's close, at the very end of the page: in the background.
+    ...mlabelItems(),
   ];
 }

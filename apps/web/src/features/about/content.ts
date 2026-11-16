@@ -1,8 +1,11 @@
 import type { Route } from "next";
 
 import { videoRoute } from "@/features/library/video/links";
-import { characterRoute, collectionRoute, routes } from "@/lib/site";
+import { withReturn } from "@/lib/return-to";
+import { characterRoute, collectionRoute } from "@/lib/site";
 import type { CharacterSlug } from "@/lib/slugs";
+
+import libraryIndex from "../../../public/data/library/index.json";
 
 /**
  * The facts of the About page, as data. They come from the official account's captions and the
@@ -39,10 +42,10 @@ export const STATEMENT_LINES: ReadonlyArray<readonly StatementWord[]> = [
   [{ text: "since" }, { text: "2022.", serif: "accent" }],
 ];
 
-/** What is known of the drone: four of the skins' model folders hold this same model. */
+/** The drone, in the owner's words (16 Nov 2026). */
 export const DRONE_CAPTION = {
   label: "The drone",
-  line: "One game model, shared by the skins of Layla, Fanny, Ruby and Angela.",
+  line: "The Aspirants official mascot.",
 } as const;
 
 // The phases --------------------------------------------------------------------------------------
@@ -60,6 +63,13 @@ export interface PhaseSkin {
    * It also keeps the game mark, which is baked into the top left of eight of the ten, outside.
    */
   readonly focus: readonly [x: number, y: number];
+  /**
+   * A tall window shows the whole height of a wide picture, so `focus` can only move it sideways.
+   * To set a face lower in its window the picture is drawn a little larger and moved down: the
+   * enlargement (1.12 is twelve percent) and the move, in percent of the window's height. The
+   * move may be at most half of what the enlargement adds, or an edge of the picture shows.
+   */
+  readonly nudge?: readonly [zoom: number, down: number];
 }
 
 interface PhaseEp {
@@ -127,6 +137,7 @@ function skin(
   name: string,
   title: string,
   focus: readonly [number, number],
+  nudge?: readonly [number, number],
 ): PhaseSkin {
   return {
     slug,
@@ -135,6 +146,7 @@ function skin(
     href: characterRoute(slug),
     picture: `/img/char/${slug}/splash.webp`,
     focus,
+    ...(nudge ? { nudge } : {}),
   };
 }
 
@@ -161,8 +173,8 @@ export const PHASES: readonly Phase[] = [
     label: "Phase II",
     sale: { day: 3, month: 12, year: 2022 },
     skins: [
-      skin("ruby", "Ruby", "Mecha Maiden", [45, 38]),
-      skin("angela", "Angela", "Cyber Cherubin", [57, 34]),
+      skin("ruby", "Ruby", "Mecha Maiden", [44, 38]),
+      skin("angela", "Angela", "Cyber Cherubin", [62, 34], [1.14, 6]),
     ],
     event: EVENT,
     films: ["A Friend", "A Way Out", "Awakening"],
@@ -176,7 +188,7 @@ export const PHASES: readonly Phase[] = [
     sale: { day: 4, month: 3, year: 2024 },
     skins: [
       skin("lesley", "Lesley", "Deadeye Spectre", [62, 30]),
-      skin("change", "Chang'e", "Tech Tensai", [55, 40]),
+      skin("change", "Chang'e", "Tech Tensai", [65, 40]),
     ],
     event: EVENT,
     films: ["Rekindled Light"],
@@ -204,7 +216,7 @@ export const PHASES: readonly Phase[] = [
     sale: { day: 9, month: 10, year: 2026 },
     skins: [
       skin("selena", "Selena", "Silverbolt Raiko", [62, 36]),
-      skin("obsidia", "Obsidia", "Imperatrix Arashi", [64, 32]),
+      skin("obsidia", "Obsidia", "Imperatrix Arashi", [56, 32], [1.3, 14]),
     ],
     event: EVENT,
     films: ["Day of Enders", "The Pawn's Gambit", "The Queen's Endgame"],
@@ -237,54 +249,41 @@ export const FILM_COUNT = PHASES.reduce((sum, phase) => sum + phase.films.length
 /** How many EPs the official soundtrack has. */
 export const EP_COUNT = PHASES.reduce((sum, phase) => sum + phase.music.length, 0);
 
+/**
+ * A link of the ledger: the page it opens leads back to this page, at the ledger (`from=about` and
+ * `at=ledger`, see `lib/return-to.ts`).
+ */
+const fromLedger = (href: string): Route => withReturn(href, "about", "ledger");
+
+/**
+ * The resources of the series, in the owner's words (16 Nov 2026): the three rooms of the
+ * collection that hold what every phase produced. The count of voice lines is the collection's own
+ * (the figure its shelf shows), so it follows the room.
+ */
 export const LEDGER: readonly LedgerRow[] = [
   {
     id: "films",
     figure: FILM_COUNT,
     unit: "Official films",
-    line: "From Go For It! Aspirants! in 2022 to The Queen's Endgame in 2026.",
-    href: videoRoute("films"),
+    line: "Animated films with lore explaining each character and storylines.",
+    href: fromLedger(videoRoute("films")),
     room: "Films",
   },
   {
     id: "music",
     figure: 7,
-    unit: `Tracks on ${EP_COUNT} EPs`,
-    line: "The soundtrack, from We Believe to Lullaby of Oblivion.",
-    href: collectionRoute("music"),
+    unit: "Music & Tracks",
+    line: "Original soundtrack and music produced for The Aspirants.",
+    href: fromLedger(collectionRoute("music")),
     room: "Music",
   },
   {
     id: "voice",
-    figure: 380,
+    figure: libraryIndex.counts.voicelines,
     unit: "Voice lines",
-    line: "What the skins say in the game, in Japanese and in English.",
-    href: collectionRoute("voicelines"),
+    line: "English, 日本語, español, português, русский, اللغة العربية, türkçe and Bahasa Indonesia.",
+    href: fromLedger(collectionRoute("voicelines")),
     room: "Voice lines",
-  },
-  {
-    id: "comic",
-    figure: 2,
-    unit: "Official webtoons",
-    line: "The Aspirant, and Guinevere and Vexana.",
-    href: collectionRoute("comic"),
-    room: "Comic",
-  },
-  {
-    id: "drama",
-    figure: 6,
-    unit: "Chapters of interactive drama",
-    line: "The official interactive drama. It plays here, in the browser.",
-    href: "/story/interactive-drama",
-    room: "Interactive drama",
-  },
-  {
-    id: "lore",
-    figure: 28,
-    unit: "Official lore texts",
-    line: "The world of the series, in the game's own words.",
-    href: collectionRoute("lore"),
-    room: "Lore",
   },
 ];
 
@@ -313,19 +312,14 @@ export const LABEL = {
   perks: ["Golden skin name", "Animated skin tag", "Collection crest", "Showcase display"],
 } as const;
 
-// The outro ---------------------------------------------------------------------------------------
+// The notice -------------------------------------------------------------------------------------
 
-export const OUTRO = {
-  story: { href: routes.story, label: "Read the story" },
-  collection: { href: routes.collection, label: "Open the collection" },
-  /** The house notice (`content/site-copy.ts`), with the non-commercial fact of the legal texts. */
-  notice:
-    "A fan project, and a non-commercial one. Not affiliated with or endorsed by Moonton. Mobile Legends: Bang Bang and its characters belong to their owners.",
-  /** The drone's credit. Every 3D model on the site carries a takedown link. */
-  credit: "The drone on this page is a game model of Mobile Legends: Bang Bang.",
-  /** How the takedown page names the drone. It has no id: the page itself is where it is. */
-  model: { title: "The drone (3D model on the About page)" },
-} as const;
+/**
+ * The house notice (`content/site-copy.ts`), with the non-commercial fact of the legal texts. It
+ * stands at the very foot of the page.
+ */
+export const NOTICE =
+  "A fan project, and a non-commercial one. Not affiliated with or endorsed by Moonton. Mobile Legends: Bang Bang and its characters belong to their owners.";
 
 // Pictures ----------------------------------------------------------------------------------------
 

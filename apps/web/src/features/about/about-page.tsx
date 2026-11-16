@@ -1,20 +1,18 @@
-import { NextFooter } from "@/components/next-footer/next-footer";
-import { routes } from "@/lib/site";
-
 import { AboutRoot } from "./about-root";
 import { DroneLayer } from "./drone/drone-layer";
+import { MLabel } from "./mlabel/mlabel";
 import { Opening } from "./opening/opening";
-import { Label } from "./sections/label";
+import { DroneStop } from "./sections/drone-stop";
 import { Ledger } from "./sections/ledger";
-import { Outro } from "./sections/outro";
 import { Phases } from "./sections/phases";
 import { Statement } from "./sections/statement";
 
 /**
- * /about: what the Aspirants series is. One drone flies through the whole page: it writes the
- * title, lands beside it, shows off while the reel grows into its window, rolls through the
- * statement and then keeps the visitor company down the five phases. The story itself is read at
- * /story.
+ * /about: what the Aspirants series is. One drone flies through the page: it writes the title,
+ * lands beside it, shows off while the film grows into its window, rolls through the statement,
+ * keeps the visitor company down the five phases and the resources, and comes to rest in a ring.
+ * There the page turns dark: TheMLabel closes over it and is the end of the page (it has no
+ * footer to a next page). The story itself is read at /story.
  */
 export function AboutPage() {
   return (
@@ -23,16 +21,9 @@ export function AboutPage() {
       <Statement />
       <Phases />
       <Ledger />
-      <Label />
-      <Outro />
+      <DroneStop />
       <DroneLayer />
-      <NextFooter
-        eyebrow="Next"
-        label="Story"
-        sublabel="Eighty-seven chapters in six acts, one chapter to a page."
-        href={routes.story}
-        image="/img/hero-stills/fanny-layla-01.webp"
-      />
+      <MLabel />
     </AboutRoot>
   );
 }

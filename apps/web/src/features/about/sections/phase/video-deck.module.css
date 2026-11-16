@@ -1,0 +1,1693 @@
+/* The videos of a phase: a list to choose from on the left and a large window on the right.
+   The deck lays itself out by its own width (a container), so it holds in any column the page
+   gives it. Everything that moves is a transform or an opacity. `--house` is the curve of the
+   site's mask reveals. The five phases arrive, and change their picture, in five different ways:
+   those rules are grouped by phase at the end of each part. */
+.deck {
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  /* The plate behind a poster: the page's ink. */
+  --plate: var(--text);
+  container: deck / inline-size;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem 2rem;
+  margin-bottom: clamp(1.25rem, 2.4cqw, 2.25rem);
+}
+
+/* The switch between the two kinds of a deck that holds both: two round pills in one line, and
+   a plate of ink that slides under the chosen one. The plate carries its own drawing of the two
+   words, in paper, inside two boxes that slide against each other, so a word turns to paper
+   exactly where the plate has reached and no colour is animated. */
+.switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 2.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  min-width: 7.25rem;
+  padding: 0 1.15rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pillCount {
+  opacity: 0.6;
+}
+
+.switchPlate,
+.switchInk {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  transition: transform 640ms var(--house);
+}
+
+.switchPlate {
+  width: 50%;
+  overflow: hidden;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.switchInk {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 200%;
+  background: var(--text);
+}
+
+.switchInk .pill {
+  color: var(--bg);
+}
+
+.switch[data-at="others"] .switchPlate {
+  transform: translate3d(100%, 0, 0);
+}
+
+.switch[data-at="others"] .switchInk {
+  transform: translate3d(-50%, 0, 0);
+}
+
+@media (hover: hover) {
+  .pill[aria-checked="false"]:hover .pillCount {
+    opacity: 1;
+  }
+}
+
+/* The two words of the head each wait under a mask of their own. */
+.headMask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.headWord,
+.headCount {
+  display: block;
+  transition: transform 1000ms var(--house) 80ms;
+}
+
+.headCount {
+  transition-delay: 240ms;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.44fr) minmax(0, 1fr);
+  align-items: stretch;
+  column-gap: clamp(1.5rem, 3.6cqw, 4.5rem);
+}
+
+/* The list ------------------------------------------------------------------------------------- */
+
+/* The cell is as tall as the window beside it and the list fills it, so the list can never be
+   the taller of the two: what does not fit scrolls inside. */
+.chooser {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.list {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+/* An end of the list that has more fades into the paper. */
+.fade {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 3rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms var(--ease-out);
+}
+
+.fade[data-end="before"] {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+}
+
+.fade[data-end="after"] {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg), transparent);
+}
+
+.chooser[data-before="true"] .fade[data-end="before"],
+.chooser[data-after="true"] .fade[data-end="after"] {
+  opacity: 1;
+}
+
+/* A row: its place, a small picture, the title and a line of labels. The rows share the height
+   of the list when they are few, and keep a least height when they are many. */
+.row {
+  --j: var(--i);
+  position: relative;
+  display: block;
+  flex: 1 0 auto;
+  width: 100%;
+  min-height: 4rem;
+  max-height: 7rem;
+  /* A row that is still arriving must not make the list longer than it is. */
+  overflow: clip;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.row:focus-visible {
+  outline-offset: -3px;
+}
+
+/* A hairline over each row, and one under the last. On hover a line of ink is drawn over it. */
+.rowLine,
+.rowLine::after,
+.row:last-child::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: 0 50%;
+}
+
+.rowLine {
+  top: 0;
+  background: var(--line-strong);
+  transition: transform 1200ms var(--house) calc(var(--j) * 70ms);
+}
+
+.rowLine::after {
+  top: 0;
+  background: var(--text);
+  transform: scaleX(0);
+  transition: transform 600ms var(--house);
+  content: "";
+}
+
+.row:last-child::after {
+  bottom: 0;
+  background: var(--line-strong);
+  transition: transform 1200ms var(--house) calc(var(--n) * 70ms);
+  content: "";
+}
+
+.rowBody {
+  position: relative;
+  display: grid;
+  /* The small picture is as wide as its share of the window's height allows (the window is
+     about half as tall as the deck is wide), so a long list still fits beside the window. */
+  grid-template-columns:
+    1.6rem clamp(4.5rem, calc((47cqw / var(--n) - 1.3rem) * 1.7778), 6.25rem)
+    minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(0.6rem, 1.2cqw, 1rem);
+  height: 100%;
+  padding: 0.6rem 0.25rem 0.6rem 0.85rem;
+  transition:
+    opacity 800ms var(--ease-out) calc(var(--j) * 70ms + 140ms),
+    transform 1100ms var(--house) calc(var(--j) * 70ms + 140ms);
+}
+
+/* The mark of the chosen row: a bar of ink at its left, drawn from the top. */
+.rowBody::before {
+  position: absolute;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 520ms var(--house);
+  content: "";
+}
+
+.row[aria-selected="true"] .rowBody::before {
+  transform: scaleY(1);
+}
+
+.no {
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.row[aria-selected="true"] .no {
+  color: var(--accent);
+}
+
+/* The small picture: whole, in its own shape, on the plate. */
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.thumbMask,
+.thumbIn {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  transition: transform 1100ms var(--house) calc(var(--j) * 70ms + 220ms);
+}
+
+.thumbIn {
+  background: var(--plate);
+}
+
+.thumbIn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 900ms var(--ease-out);
+  user-select: none;
+}
+
+/* The chosen row's picture carries a small play mark in its corner. */
+.showing {
+  position: absolute;
+  bottom: 0.3rem;
+  left: 0.3rem;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  transform: scale(0);
+  transition: transform 520ms var(--ease-spring);
+}
+
+.showing svg {
+  width: 62%;
+  height: 62%;
+}
+
+.row[aria-selected="true"] .showing {
+  transform: scale(1);
+}
+
+/* The words of a row that is not chosen stand back. */
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  opacity: 0.6;
+  transition: opacity 360ms var(--ease-out);
+}
+
+.row[aria-selected="true"] .rowText {
+  opacity: 1;
+}
+
+.rowTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  text-wrap: pretty;
+}
+
+.rowMeta,
+.kickerLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em 0.6em;
+  font-family: var(--font-mono-stack);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.pin {
+  display: inline-grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+/* A small dot between two labels. */
+.sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.55;
+}
+
+.badge {
+  padding: 0.22em 0.5em 0.2em;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  font-size: 0.92em;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .row:hover .rowLine::after {
+    transform: scaleX(1);
+  }
+
+  .row:hover .rowText {
+    opacity: 1;
+  }
+
+  .row:hover .thumbIn img {
+    transform: scale(1.07);
+  }
+}
+
+.row:focus-visible .rowText {
+  opacity: 1;
+}
+
+.row:active .thumbIn img {
+  transform: scale(0.97);
+}
+
+/* The window ----------------------------------------------------------------------------------- */
+
+.window {
+  min-width: 0;
+}
+
+/* One shape for every video, so a change of row never moves the page. */
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.open,
+.openIn,
+.plate,
+.drift,
+.layer,
+.stripIn {
+  position: absolute;
+  inset: 0;
+}
+
+.open,
+.openIn {
+  overflow: hidden;
+  transition: transform 1350ms var(--house);
+}
+
+/* The plate keeps the order of its layers to itself, so a picture that leaves over the new one
+   never lies over the play control. */
+.plate {
+  isolation: isolate;
+  background: var(--plate);
+  transition: transform 2100ms var(--ease-out);
+}
+
+/* The picture leans toward the pointer (written by script) and eases to where it is put. */
+.drift {
+  transition: transform 1100ms var(--ease-out);
+}
+
+/* A layer is one picture. While it arrives it may be cut into upright strips; each strip is a
+   window (two boxes, for the reveals that slide against each other) on one sheet as wide as the
+   whole window, so the strips together are one picture. */
+.layer {
+  perspective: 1600px;
+}
+
+.strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--k) / var(--of) * 100%);
+  width: calc(100% / var(--of));
+  overflow: hidden;
+}
+
+.stripIn {
+  overflow: hidden;
+}
+
+.sheet {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--k) * -100%);
+  width: calc(var(--of) * 100%);
+  /* Each picture brings its own plate, so one that leaves is a whole card. */
+  background: var(--plate);
+}
+
+.under,
+.poster,
+.film {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* The preview lies between the two pictures. Once it has drawn a frame they fade and it shows. */
+.under,
+.poster {
+  transition: opacity 560ms var(--ease-out);
+}
+
+.sheet[data-live="true"] :is(.under, .poster) {
+  opacity: 0;
+}
+
+/* The two faint copies beside a vertical poster. */
+.ghost {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.2;
+  user-select: none;
+}
+
+.ghost[data-side="before"] {
+  transform: translate3d(-34%, 0, 0) scale(0.84);
+}
+
+.ghost[data-side="after"] {
+  transform: translate3d(34%, 0, 0) scale(0.84);
+}
+
+/* The whole window is the play control: a press anywhere opens the player. */
+.hit {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A ring of paper with a ring of ink around it, so the focus shows on any poster. */
+.hit:focus-visible {
+  outline-color: var(--bg);
+  outline-offset: -6px;
+  box-shadow: inset 0 0 0 4px var(--text);
+}
+
+.play {
+  position: absolute;
+  bottom: clamp(0.85rem, 2.2cqw, 2rem);
+  left: clamp(0.85rem, 2.2cqw, 2rem);
+  display: block;
+  width: clamp(3.25rem, 6.2cqw, 5.75rem);
+  aspect-ratio: 1;
+  transition: transform 900ms var(--ease-spring) 700ms;
+}
+
+.playDisc,
+.playRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.playDisc {
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--text);
+  transition: transform 520ms var(--ease-spring);
+}
+
+.playDisc svg {
+  width: 44%;
+  height: 44%;
+}
+
+/* A ring that leaves the control while the pointer is on the window. */
+.playRing {
+  border: 1px solid var(--bg);
+  opacity: 0;
+}
+
+@keyframes ring {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@media (hover: hover) {
+  .frame:hover .playDisc {
+    transform: scale(1.1);
+  }
+
+  .frame:hover .playRing {
+    animation: ring 1500ms var(--ease-out) infinite;
+  }
+}
+
+.hit:focus-visible .playDisc {
+  transform: scale(1.1);
+}
+
+.hit:active .playDisc {
+  transform: scale(0.92);
+}
+
+/* Paper that lies over the window of some phases until it arrives, and then leaves for good. */
+.cover {
+  position: absolute;
+  display: none;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* Under the window: the labels and the way to the collection on one line, the title under it. */
+.meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: clamp(0.9rem, 1.6cqw, 1.4rem);
+}
+
+.kicker,
+.links {
+  margin: 0;
+}
+
+.kickerLine {
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+}
+
+.kickerLine b {
+  margin-right: 0.4em;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem 1.4rem;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.35rem 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* A hairline under the link. On hover a line of ink is drawn over it from the left. */
+.link::before,
+.link::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+}
+
+.link::before {
+  background: var(--line-strong);
+}
+
+.link::after {
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 600ms var(--house);
+}
+
+.link svg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.link:hover svg,
+.link:focus-visible svg {
+  transform: translate3d(4px, 0, 0);
+}
+
+/* Room for two lines always, so a longer title does not move what is under the deck. */
+.meta .title {
+  grid-column: 1 / -1;
+  min-height: 1.84em;
+  margin: 0;
+  font-size: clamp(1.9rem, 4.3cqw, 4.6rem);
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+/* A line that changes with the picture: the old one leaves upward under the mask, the new one
+   rises into its place. Both stand on one spot. */
+.swap {
+  display: grid;
+  overflow: visible clip;
+  margin-block: -0.08em;
+  padding-block: 0.08em;
+}
+
+.swapLine {
+  display: block;
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+@keyframes line-in {
+  from {
+    transform: translate3d(0, 125%, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes line-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -125%, 0);
+  }
+}
+
+.swapLine[data-role="in"] {
+  animation: line-in 760ms var(--house) 90ms both;
+}
+
+.swapLine[data-role="out"] {
+  animation: line-out 620ms var(--house) both;
+}
+
+/* The change of picture ------------------------------------------------------------------------ */
+
+/* A layer that arrives holds this for as long as its change takes: its end is what tells the
+   deck that the old picture can go. */
+@keyframes hold {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.layer[data-role="in"] {
+  animation: hold var(--swap, 1000ms) linear both;
+}
+
+/* Phase 1: a shutter. Six upright strips open one after the other, every second one from below.
+   The old picture stays under them and comes a little closer. */
+@keyframes shut-strip {
+  from {
+    transform: translate3d(0, calc(var(--s) * -101%), 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes shut-sheet {
+  from {
+    transform: translate3d(0, calc(var(--s) * 101%), 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes come-closer {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.deck[data-phase="1"] {
+  --swap: 1250ms;
+}
+
+.deck[data-phase="1"] .layer[data-role="in"] .strip {
+  animation: shut-strip 900ms var(--house) calc(var(--k) * 62ms) both;
+}
+
+.deck[data-phase="1"] .layer[data-role="in"] .stripIn {
+  animation: shut-sheet 900ms var(--house) calc(var(--k) * 62ms) both;
+}
+
+.deck[data-phase="1"] .layer[data-role="out"] .strip {
+  animation: come-closer 1250ms var(--ease-out) both;
+}
+
+/* Phase 2: a slide with depth. The new picture pushes in from the side the list moved to, and
+   both pictures move slower than their windows. */
+@keyframes slide-in {
+  from {
+    transform: translate3d(calc(var(--d) * 100%), 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-in-sheet {
+  from {
+    transform: translate3d(calc(var(--d) * -72%), 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--d) * -100%), 0, 0);
+  }
+}
+
+@keyframes slide-out-sheet {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--d) * 72%), 0, 0);
+  }
+}
+
+.deck[data-phase="2"] {
+  --swap: 1050ms;
+}
+
+.deck[data-phase="2"] .layer[data-role="in"] .strip {
+  animation: slide-in 1050ms var(--ease-heavy) both;
+}
+
+.deck[data-phase="2"] .layer[data-role="in"] .stripIn {
+  animation: slide-in-sheet 1050ms var(--ease-heavy) both;
+}
+
+.deck[data-phase="2"] .layer[data-role="out"] .strip {
+  animation: slide-out 1050ms var(--ease-heavy) both;
+}
+
+.deck[data-phase="2"] .layer[data-role="out"] .stripIn {
+  animation: slide-out-sheet 1050ms var(--ease-heavy) both;
+}
+
+/* Phase 3: a scale through. The old picture comes at the visitor and thins out, and the new one
+   comes up from far behind it. */
+@keyframes through-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes through-in {
+  from {
+    opacity: 0;
+    transform: scale(0.62);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.deck[data-phase="3"] {
+  --swap: 1000ms;
+}
+
+.deck[data-phase="3"] .layer[data-role="out"] {
+  z-index: 1;
+}
+
+.deck[data-phase="3"] .layer[data-role="out"] .strip {
+  animation: through-out 620ms var(--ease-in-out) both;
+}
+
+.deck[data-phase="3"] .layer[data-role="in"] .strip {
+  animation: through-in 1000ms var(--ease-out) both;
+}
+
+/* Phase 4: a door. The old picture swings away on the hinge of one edge and the new one, which
+   was behind it, settles from a closer view. */
+@keyframes door-out {
+  from {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: rotateY(calc(var(--d) * 84deg));
+  }
+}
+
+@keyframes door-in {
+  from {
+    transform: scale(1.16);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.deck[data-phase="4"] {
+  --swap: 1050ms;
+}
+
+.deck[data-phase="4"] .layer[data-role="out"] {
+  z-index: 1;
+}
+
+.deck[data-phase="4"] .layer[data-role="out"] .strip {
+  overflow: visible;
+  transform-origin: calc(50% - var(--d) * 50%) 50%;
+  animation: door-out 900ms var(--ease-in-out) both;
+}
+
+.deck[data-phase="4"] .layer[data-role="in"] .strip {
+  animation: door-in 1050ms var(--ease-out) both;
+}
+
+/* Phase 5: a slanted wipe. The new picture's window is a slanted box that slides in over the old
+   one while the picture inside it stands still (the inner box undoes the slant and the slide). The
+   box is wider than the window by what the slant needs. */
+@keyframes wipe-box {
+  from {
+    transform: skewX(-14deg) translate3d(calc(var(--d) * 101%), 0, 0);
+  }
+
+  to {
+    transform: skewX(-14deg) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes wipe-sheet {
+  from {
+    transform: translate3d(calc(var(--d) * -117.16%), 0, 0) skewX(14deg);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0) skewX(14deg);
+  }
+}
+
+@keyframes drift-aside {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--d) * -7%), 0, 0);
+  }
+}
+
+.deck[data-phase="5"] {
+  --swap: 1100ms;
+}
+
+.deck[data-phase="5"] .layer[data-role="in"] .strip {
+  right: -8%;
+  left: -8%;
+  width: auto;
+  animation: wipe-box 1100ms var(--house) both;
+}
+
+.deck[data-phase="5"] .layer[data-role="in"] .stripIn {
+  right: 6.8966%;
+  left: 6.8966%;
+  overflow: visible;
+  animation: wipe-sheet 1100ms var(--house) both;
+}
+
+.deck[data-phase="5"] .layer[data-role="out"] .strip {
+  animation: drift-aside 1100ms var(--house) both;
+}
+
+/* The arrivals --------------------------------------------------------------------------------- */
+
+/* Phase 1. The head rises. The rows rise one after the other and their pictures open from the
+   top. The window opens from its foot up, from a closer view. */
+:global(:root.js) .deck[data-phase="1"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, 120%, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .chooser[data-in="false"] .rowBody {
+  opacity: 0;
+  transform: translate3d(0, 1.6rem, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .chooser[data-in="false"] .thumbMask {
+  transform: translate3d(0, -101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .chooser[data-in="false"] .thumbIn {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .window[data-in="false"] .open {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .window[data-in="false"] .openIn {
+  transform: translate3d(0, -101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="1"] .window[data-in="false"] .plate {
+  transform: scale(1.22);
+}
+
+/* Phase 2. The head drops in from above. The rows slide out of the left edge and their pictures
+   open sideways. The window opens from the side of the list. */
+:global(:root.js) .deck[data-phase="2"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, -120%, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .chooser[data-in="false"] .rowBody {
+  opacity: 0;
+  transform: translate3d(-3rem, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .chooser[data-in="false"] .thumbMask {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .chooser[data-in="false"] .thumbIn {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .window[data-in="false"] .open {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .window[data-in="false"] .openIn {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="2"] .window[data-in="false"] .plate {
+  transform: scale(1.14);
+}
+
+/* Phase 3. The head slides in from the left under its masks. The rows grow from their left
+   edge and their pictures open from the foot. The window opens from a hairline across its
+   middle: two sheets of paper part. */
+:global(:root.js) .deck[data-phase="3"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(-104%, 0, 0);
+}
+
+.deck[data-phase="3"] .rowBody {
+  transform-origin: 0 50%;
+}
+
+:global(:root.js) .deck[data-phase="3"] .chooser[data-in="false"] .rowBody {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+:global(:root.js) .deck[data-phase="3"] .chooser[data-in="false"] .thumbMask {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="3"] .chooser[data-in="false"] .thumbIn {
+  transform: translate3d(0, -101%, 0);
+}
+
+.deck[data-phase="3"] .cover:nth-of-type(-n + 2) {
+  right: 0;
+  left: 0;
+  display: block;
+  height: 50.5%;
+  transition: transform 1300ms var(--house) 120ms;
+}
+
+.deck[data-phase="3"] .cover:nth-of-type(1) {
+  top: 0;
+  transform: translate3d(0, -101%, 0);
+}
+
+.deck[data-phase="3"] .cover:nth-of-type(2) {
+  bottom: 0;
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .deck[data-phase="3"] .window[data-in="false"] .cover {
+  transform: translate3d(0, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="3"] .window[data-in="false"] .plate {
+  transform: scale(1.3);
+}
+
+/* Phase 4. The head rises, the count well after the word. The rows fall open like the flaps of
+   a departure board. The window is behind five blinds that lift one after the other. */
+.deck[data-phase="4"] .headCount {
+  transition-delay: 460ms;
+}
+
+:global(:root.js) .deck[data-phase="4"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(0, 120%, 0);
+}
+
+.deck[data-phase="4"] .row {
+  perspective: 900px;
+}
+
+.deck[data-phase="4"] .rowBody {
+  transform-origin: 50% 0;
+}
+
+:global(:root.js) .deck[data-phase="4"] .chooser[data-in="false"] .rowBody {
+  opacity: 0;
+  transform: rotateX(-82deg);
+}
+
+.deck[data-phase="4"] .cover {
+  top: 0;
+  bottom: 0;
+  left: calc(var(--i) * 20%);
+  display: block;
+  width: 20.2%;
+  transform: translate3d(0, -101%, 0);
+  transition: transform 1100ms var(--house) calc(var(--i) * 90ms + 100ms);
+}
+
+:global(:root.js) .deck[data-phase="4"] .window[data-in="false"] .cover {
+  transform: translate3d(0, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="4"] .window[data-in="false"] .plate {
+  transform: scale(1.12);
+}
+
+/* Phase 5. The head slides in from the right. The rows come from the right, the last one first.
+   A slanted sheet of paper slides off the window. */
+:global(:root.js) .deck[data-phase="5"] .head[data-in="false"] :is(.headWord, .headCount) {
+  transform: translate3d(104%, 0, 0);
+}
+
+.deck[data-phase="5"] .row {
+  --j: calc(var(--n) - 1 - var(--i));
+}
+
+:global(:root.js) .deck[data-phase="5"] .chooser[data-in="false"] .rowBody {
+  opacity: 0;
+  transform: translate3d(3rem, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="5"] .chooser[data-in="false"] .thumbMask {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="5"] .chooser[data-in="false"] .thumbIn {
+  transform: translate3d(-101%, 0, 0);
+}
+
+.deck[data-phase="5"] .cover:nth-of-type(1) {
+  inset: 0 -22%;
+  display: block;
+  transform: skewX(-14deg) translate3d(101%, 0, 0);
+  transition: transform 1500ms var(--house) 100ms;
+}
+
+:global(:root.js) .deck[data-phase="5"] .window[data-in="false"] .cover {
+  transform: skewX(-14deg) translate3d(0, 0, 0);
+}
+
+:global(:root.js) .deck[data-phase="5"] .window[data-in="false"] .plate {
+  transform: scale(1.16);
+}
+
+/* Every phase: the hairlines draw themselves, the play control springs up last. */
+:global(:root.js) .chooser[data-in="false"] .rowLine,
+:global(:root.js) .chooser[data-in="false"] .row:last-child::after {
+  transform: scaleX(0);
+}
+
+:global(:root.js) .window[data-in="false"] .play {
+  transform: scale(0);
+}
+
+/* A box of middle width: the list is given a larger share and its rows drop their numbers, so
+   the words keep their room. */
+@container deck (max-width: 64rem) {
+  .body {
+    grid-template-columns: minmax(16.5rem, 0.56fr) minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 2.6cqw, 2rem);
+  }
+
+  .no {
+    display: none;
+  }
+
+  .rowBody {
+    grid-template-columns: clamp(4.5rem, 30%, 6.5rem) minmax(0, 1fr);
+  }
+}
+
+/* A narrow box ---------------------------------------------------------------------------------- */
+
+/* The window stands on top and the list lies on its side under it: a row of small pictures that
+   scrolls sideways and catches on each one, the title under its picture. */
+@container deck (max-width: 47.5rem) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(1.25rem, 5cqw, 2rem);
+  }
+
+  .window {
+    order: 1;
+  }
+
+  .chooser {
+    order: 2;
+  }
+
+  .list {
+    position: static;
+    flex-direction: row;
+    gap: 0.85rem;
+    overflow: auto hidden;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+  }
+
+  .row {
+    flex: 0 0 min(46cqw, 13.5rem);
+    max-height: none;
+    scroll-snap-align: start;
+  }
+
+  .row:last-child::after {
+    display: none;
+  }
+
+  .rowBody {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "thumb thumb"
+      "no text";
+    align-items: start;
+    gap: 0.7rem 0.6rem;
+    padding: 0.85rem 0 0.25rem;
+  }
+
+  /* On its side the mark of the chosen row is a bar across its top. */
+  .rowBody::before {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+
+  .row[aria-selected="true"] .rowBody::before {
+    transform: scaleX(1);
+  }
+
+  .no {
+    display: block;
+    grid-area: no;
+    padding-top: 0.2rem;
+  }
+
+  .thumb {
+    grid-area: thumb;
+  }
+
+  .rowText {
+    grid-area: text;
+  }
+
+  /* On its side the list shows a part of the next picture: that is the cue, no fade. */
+  .fade {
+    display: none;
+  }
+
+  .meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .links {
+    grid-row: 3;
+    justify-content: flex-start;
+  }
+
+  /* No room is kept for a second line here: it would be a hole over the link. */
+  .meta .title {
+    min-height: 0;
+    font-size: clamp(1.7rem, 8cqw, 3.2rem);
+  }
+}
+
+/* The two kinds ---------------------------------------------------------------------------------- */
+
+/* A change of kind deals the deck again in two steps. First what is there leaves, and the box
+   that holds the deck times it (`clear`). Then the layout changes while nothing shows, and the new
+   kind arrives (`hold` times that). The two are different names on purpose: one name would not
+   start again. */
+@keyframes clear {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes deal-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0.9rem, 0) scale(0.985);
+  }
+}
+
+/* A row of films comes back in from the left. */
+@keyframes deal-row {
+  from {
+    opacity: 0;
+    transform: translate3d(-2.25rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* A tall card is dealt from below, a little turned. */
+@keyframes deal-card {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.75rem, 0) rotate(-4deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+/* The wide window slides in from the side. */
+@keyframes deal-wide {
+  from {
+    opacity: 0;
+    transform: translate3d(5%, 0, 0) scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* The tall window is held up: it rises, turned, and stands. */
+@keyframes deal-tall {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 11%, 0) rotate(5deg) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes deal-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes deal-line {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.body[data-deal="out"] {
+  animation: clear 280ms linear both;
+}
+
+.body[data-deal="out"] :is(.list, .frame, .meta) {
+  animation: deal-out 260ms var(--ease-in) both;
+}
+
+.body[data-deal="in"] {
+  animation: hold 1250ms linear both;
+}
+
+.body[data-deal="in"] .rowLine {
+  animation: deal-line 900ms var(--house) calc(var(--i) * 60ms) both;
+}
+
+.body[data-deal="in"] .rowBody {
+  animation: deal-row 720ms var(--house) calc(var(--i) * 70ms + 80ms) both;
+}
+
+.body[data-deal="in"] .frame {
+  animation: deal-wide 860ms var(--house) both;
+}
+
+.body[data-deal="in"] .meta {
+  animation: deal-rise 760ms var(--ease-out) 240ms both;
+}
+
+.deck[data-group="others"] .body[data-deal="in"] .rowBody {
+  animation-name: deal-card;
+}
+
+.deck[data-group="others"] .body[data-deal="in"] .frame {
+  animation: deal-tall 980ms cubic-bezier(0.18, 1.18, 0.32, 1) 60ms both;
+}
+
+/* The others: vertical videos. The window is tall, like a phone held up, and as tall as the
+   screen lets it be under the bar and the deck's head. The tall pictures stand beside it as
+   cards, three to a line, and share its height. The words stand on its other side, under a large
+   figure, so nothing lies under the window and the whole deck fits one screen. */
+.deck[data-group="others"] {
+  --tall: clamp(19rem, calc(100svh - var(--nav-h) - 11.5rem), 46rem);
+}
+
+.deck[data-group="others"] .body {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.deck[data-group="others"] .window {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(1.25rem, 3cqw, 3.5rem);
+}
+
+.deck[data-group="others"] .frame {
+  height: var(--tall);
+  aspect-ratio: 9 / 16;
+}
+
+.deck[data-group="others"] .meta {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  align-items: end;
+  row-gap: 0.9rem;
+  margin-top: 0;
+}
+
+.deck[data-group="others"] .links {
+  grid-row: 4;
+  justify-content: flex-start;
+}
+
+.deck[data-group="others"] .meta .title {
+  min-height: 0;
+  font-size: clamp(1.9rem, 3.5cqw, 3.9rem);
+}
+
+/* The place of the chosen video among the others, large and in outline, the way the phase's own
+   figure stands before its ink arrives. */
+.big {
+  align-self: start;
+  margin: -0.06em 0 0;
+  color: transparent;
+  font-size: clamp(5rem, 13cqw, 14rem);
+  line-height: 0.8;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+
+.deck[data-group="others"] .list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.5cqw, 1.4rem);
+  overflow: hidden;
+}
+
+.deck[data-group="others"] .row {
+  min-height: 0;
+  max-height: none;
+}
+
+.deck[data-group="others"] .row:last-child::after {
+  display: none;
+}
+
+.deck[data-group="others"] .rowBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.8rem 0 0;
+}
+
+/* The mark of the chosen card is a bar across its top. */
+.deck[data-group="others"] .rowBody::before {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  width: auto;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.deck[data-group="others"] .row[aria-selected="true"] .rowBody::before {
+  transform: scaleX(1);
+}
+
+/* The card's picture takes the height the words leave, in the video's upright shape. */
+.deck[data-group="others"] .thumb {
+  flex: 1 1 0;
+  width: auto;
+  max-width: 100%;
+  min-height: 0;
+  aspect-ratio: 9 / 16;
+}
+
+.deck[data-group="others"] .thumbIn img {
+  object-fit: cover;
+}
+
+/* The card's number is a small tag of paper on the corner of its picture. */
+.deck[data-group="others"] .no {
+  position: absolute;
+  top: calc(0.8rem + 0.4rem);
+  left: 0.4rem;
+  z-index: 1;
+  display: block;
+  padding: 0.28rem 0.4rem 0.22rem;
+  background: var(--bg);
+}
+
+.deck[data-group="others"] .rowText {
+  flex: none;
+  max-width: 100%;
+}
+
+/* A card says its length only: its kind stands in the line beside the window. */
+.deck[data-group="others"] .kind {
+  display: none;
+}
+
+/* Room for two lines under every card, so the pictures of a line are one size. */
+.deck[data-group="others"] .rowTitle {
+  min-height: 2.44em;
+}
+
+.deck[data-group="others"] .showing {
+  bottom: 0.4rem;
+  left: auto;
+  right: 0.4rem;
+}
+
+/* A narrow box: the tall window stands in the middle, as tall as most of the screen, the words
+   under it and the cards in a row that scrolls sideways. */
+@container deck (max-width: 47.5rem) {
+  .deck[data-group="others"] .body,
+  .deck[data-group="others"] .window {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .deck[data-group="others"] .window {
+    row-gap: 1rem;
+  }
+
+  .deck[data-group="others"] .frame {
+    justify-self: center;
+    max-width: 100%;
+    height: clamp(18rem, 62svh, 36rem);
+  }
+
+  .deck[data-group="others"] .meta {
+    grid-template-rows: auto;
+    row-gap: 0.75rem;
+  }
+
+  .deck[data-group="others"] .links {
+    grid-row: 3;
+  }
+
+  .deck[data-group="others"] .meta .title {
+    font-size: clamp(1.7rem, 8cqw, 3.2rem);
+  }
+
+  .big {
+    display: none;
+  }
+
+  .deck[data-group="others"] .list {
+    display: flex;
+    gap: 0.75rem;
+    overflow: auto hidden;
+  }
+
+  .deck[data-group="others"] .row {
+    flex: 0 0 min(31cqw, 8.75rem);
+  }
+
+  .deck[data-group="others"] .rowBody {
+    padding: 0.8rem 0 0.25rem;
+  }
+
+  .deck[data-group="others"] .thumb {
+    flex: none;
+    width: 100%;
+  }
+}

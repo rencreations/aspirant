@@ -1,0 +1,64 @@
+/* The drone's last place: a circle on the paper, in the middle of a quiet screen. `--d` is the
+   drone's width; the circle is drawn around it with room for the wings. */
+.stop {
+  --d: clamp(96px, 10.5vw, 200px);
+  /* Held on the screen once it has come up: TheMLabel's stage closes over it from below, and the
+     page seen through its M-shaped window is this ring with the drone in it. */
+  position: sticky;
+  top: 7vh;
+  display: grid;
+  place-items: center;
+  min-height: 86vh;
+  padding: clamp(5rem, 14vh, 10rem) var(--gutter);
+}
+
+@supports (height: 100lvh) {
+  .stop {
+    top: calc(50lvh - 43vh);
+  }
+}
+
+.place {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--d) * 2.3);
+  aspect-ratio: 1;
+}
+
+.anchor {
+  width: var(--d);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.ring,
+.halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition:
+    transform 1400ms var(--ease-out) 120ms,
+    opacity 800ms var(--ease-out) 120ms;
+}
+
+/* The drone's cyan, used only on the marks that belong to it. */
+.ring {
+  border: 1.5px solid #23d0d8;
+}
+
+.halo {
+  inset: -9%;
+  border: 1px solid var(--line-strong);
+  transition-delay: 320ms;
+}
+
+:global(:root.js) .stop[data-in="false"] .ring {
+  opacity: 0;
+  transform: scale(0.62);
+}
+
+:global(:root.js) .stop[data-in="false"] .halo {
+  opacity: 0;
+  transform: scale(1.3);
+}

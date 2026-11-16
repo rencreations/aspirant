@@ -1,0 +1,270 @@
+{
+  "logo": {
+    "src": "/img/about/mlabel/logo.webp",
+    "width": 1329,
+    "height": 348
+  },
+  "letters": [
+    {
+      "id": "t",
+      "x": 0.00451,
+      "y": 0.02011,
+      "w": 0.10459,
+      "h": 0.8592
+    },
+    {
+      "id": "h",
+      "x": 0.11889,
+      "y": 0.02011,
+      "w": 0.08503,
+      "h": 0.81609
+    },
+    {
+      "id": "e",
+      "x": 0.21595,
+      "y": 0.02011,
+      "w": 0.07148,
+      "h": 0.79598
+    },
+    {
+      "id": "m",
+      "x": 0.30549,
+      "y": 0.01724,
+      "w": 0.23702,
+      "h": 0.92529
+    },
+    {
+      "id": "l",
+      "x": 0.56283,
+      "y": 0.02011,
+      "w": 0.05944,
+      "h": 0.9569
+    },
+    {
+      "id": "a",
+      "x": 0.62904,
+      "y": 0.02011,
+      "w": 0.10986,
+      "h": 0.96264
+    },
+    {
+      "id": "b",
+      "x": 0.74567,
+      "y": 0.02011,
+      "w": 0.07976,
+      "h": 0.95402
+    },
+    {
+      "id": "e2",
+      "x": 0.83672,
+      "y": 0.02011,
+      "w": 0.07675,
+      "h": 0.92241
+    },
+    {
+      "id": "l2",
+      "x": 0.9225,
+      "y": 0.01724,
+      "w": 0.07299,
+      "h": 0.86494
+    }
+  ],
+  "shape": {
+    "aspect": 1.1014,
+    "leg": 0.2873,
+    "notch": 0.3143,
+    "notch_tip": 0.3649,
+    "gap_top": 0.6014
+  },
+  "polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      0.3143,
+      0
+    ],
+    [
+      0.5,
+      0.3649
+    ],
+    [
+      0.6857,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0.7127,
+      1
+    ],
+    [
+      0.7127,
+      0.6014
+    ],
+    [
+      0.5,
+      1
+    ],
+    [
+      0.2873,
+      0.6014
+    ],
+    [
+      0.2873,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "quad": [
+    [
+      0.30549,
+      0.02011
+    ],
+    [
+      0.54251,
+      0.02011
+    ],
+    [
+      0.54251,
+      0.93966
+    ],
+    [
+      0.30549,
+      0.84195
+    ]
+  ],
+  "orange": "#f14c02",
+  "clips": [
+    {
+      "plate": "white",
+      "src": "/video/about/mlabel/white-1.mp4",
+      "still": "/video/about/mlabel/white-1.webp",
+      "bytes": 139320,
+      "seconds": 1.8,
+      "what": "Fanny in the white corridor (layla-fanny)"
+    },
+    {
+      "plate": "white",
+      "src": "/video/about/mlabel/white-2.mp4",
+      "still": "/video/about/mlabel/white-2.webp",
+      "bytes": 114467,
+      "seconds": 1.8,
+      "what": "the laboratory in the light (lesley-change)"
+    },
+    {
+      "plate": "white",
+      "src": "/video/about/mlabel/white-3.mp4",
+      "still": "/video/about/mlabel/white-3.webp",
+      "bytes": 181612,
+      "seconds": 1.8,
+      "what": "Angela waking in the white light (ruby-angela)"
+    },
+    {
+      "plate": "pink",
+      "src": "/video/about/mlabel/pink-1.mp4",
+      "still": "/video/about/mlabel/pink-1.webp",
+      "bytes": 229016,
+      "seconds": 1.8,
+      "what": "the wings of pink light (selena-obsidia)"
+    },
+    {
+      "plate": "pink",
+      "src": "/video/about/mlabel/pink-2.mp4",
+      "still": "/video/about/mlabel/pink-2.webp",
+      "bytes": 117006,
+      "seconds": 1.8,
+      "what": "Angela, close (ruby-angela)"
+    },
+    {
+      "plate": "pink",
+      "src": "/video/about/mlabel/pink-3.mp4",
+      "still": "/video/about/mlabel/pink-3.webp",
+      "bytes": 152179,
+      "seconds": 1.8,
+      "what": "the violet storm (connection-lost)"
+    },
+    {
+      "plate": "gold",
+      "src": "/video/about/mlabel/gold-1.mp4",
+      "still": "/video/about/mlabel/gold-1.webp",
+      "bytes": 168329,
+      "seconds": 1.8,
+      "what": "the city in the gold blast (lesley-change)"
+    },
+    {
+      "plate": "gold",
+      "src": "/video/about/mlabel/gold-2.mp4",
+      "still": "/video/about/mlabel/gold-2.webp",
+      "bytes": 137579,
+      "seconds": 1.8,
+      "what": "the city at sunset (layla-fanny)"
+    },
+    {
+      "plate": "gold",
+      "src": "/video/about/mlabel/gold-3.mp4",
+      "still": "/video/about/mlabel/gold-3.webp",
+      "bytes": 160012,
+      "seconds": 1.7,
+      "what": "the hand in the golden fire (selena-obsidia)"
+    },
+    {
+      "plate": "red",
+      "src": "/video/about/mlabel/red-1.mp4",
+      "still": "/video/about/mlabel/red-1.webp",
+      "bytes": 118432,
+      "seconds": 1.8,
+      "what": "the red sky (selena-obsidia)"
+    },
+    {
+      "plate": "red",
+      "src": "/video/about/mlabel/red-2.mp4",
+      "still": "/video/about/mlabel/red-2.webp",
+      "bytes": 184231,
+      "seconds": 1.8,
+      "what": "Ruby with her scythe (ruby-angela)"
+    },
+    {
+      "plate": "red",
+      "src": "/video/about/mlabel/red-3.mp4",
+      "still": "/video/about/mlabel/red-3.webp",
+      "bytes": 303631,
+      "seconds": 1.8,
+      "what": "the burst of red light (selena-obsidia)"
+    },
+    {
+      "plate": "orange",
+      "src": "/video/about/mlabel/orange-1.mp4",
+      "still": "/video/about/mlabel/orange-1.webp",
+      "bytes": 211257,
+      "seconds": 2.6,
+      "what": "Ruby, close (ruby-angela)"
+    },
+    {
+      "plate": "orange",
+      "src": "/video/about/mlabel/orange-2.mp4",
+      "still": "/video/about/mlabel/orange-2.webp",
+      "bytes": 228930,
+      "seconds": 2.6,
+      "what": "Fanny at sunset (layla-fanny)"
+    },
+    {
+      "plate": "orange",
+      "src": "/video/about/mlabel/orange-3.mp4",
+      "still": "/video/about/mlabel/orange-3.webp",
+      "bytes": 216999,
+      "seconds": 2.6,
+      "what": "Ruby at sunset (ruby-angela)"
+    }
+  ]
+}

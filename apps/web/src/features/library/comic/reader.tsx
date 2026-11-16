@@ -18,7 +18,9 @@ import { audio } from "@/lib/audio";
 import { isTypingTarget } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
 import { useNavLock } from "@/lib/nav-lock";
+import { withReturn, type ReturnTarget } from "@/lib/return-to";
 import { collectionRoute } from "@/lib/site";
+import { useReturnTo } from "@/lib/use-return-to";
 
 import { CanonBadge } from "../shell/credit";
 import { writeProgress } from "./progress";
@@ -129,11 +131,23 @@ function PageView({
   );
 }
 
-/** The comic before or after this one: its cover and its name, a link to its page. */
-function Neighbour({ comic, dir }: { comic: ComicItem; dir: "prev" | "next" }) {
+/**
+ * The comic before or after this one: its cover and its name, a link to its page. The way back of
+ * this page (`back`) travels with it, so the next comic still leads to where the visitor came from.
+ */
+function Neighbour({
+  comic,
+  dir,
+  back,
+}: {
+  comic: ComicItem;
+  dir: "prev" | "next";
+  back: ReturnTarget | null;
+}) {
+  const path = comicPath(comic.slug);
   return (
     <TLink
-      href={comicPath(comic.slug) as never}
+      href={(back ? withReturn(path, back.key, back.at) : path) as never}
       transitionLabel={comic.title}
       className={styles.neighbour}
       data-dir={dir}
@@ -168,6 +182,10 @@ function Neighbour({ comic, dir }: { comic: ComicItem; dir: "prev" | "next" }) {
  * list with the same things (the way back, the title, the page to go to, the text). Back at the
  * very top they unfold again. At the end of the comic are the comics before and after it, and a
  * zoom, for the pages, stays in a corner.
+ *
+ * The way back is the shelf of the comic room. A visitor who was sent here by another page (the
+ * About page: `from=about` in the address, `lib/return-to.ts`) is led back to that page instead,
+ * and the three links say its name.
  */
 export function Reader({ comic, prev, next, startPage }: ReaderProps) {
   const sequence = useMemo(() => sequenceOf(comic), [comic]);
@@ -431,7 +449,10 @@ export function Reader({ comic, prev, next, startPage }: ReaderProps) {
 
   const startIndex = sequence.findIndex((e) => e.n === initial);
   const fan = comic.canon !== "official";
-  const backHref = collectionRoute("comic");
+  const back = useReturnTo();
+  const backHref = back?.href ?? collectionRoute("comic");
+  const backName = back?.label ?? "Comics";
+  const backWords = back ? `Back to ${back.label}` : "Back to the shelf";
 
   const textSwitch = hasText ? (
     <button
@@ -470,12 +491,12 @@ export function Reader({ comic, prev, next, startPage }: ReaderProps) {
       >
         <TLink
           href={backHref}
-          transitionLabel="Comics"
+          transitionLabel={backName}
           className={styles.btn}
-          aria-label="Back to the shelf"
+          aria-label={backWords}
         >
           <Icon d="M10 2L4 8l6 6" />
-          <span className={styles.btnText}>Shelf</span>
+          <span className={styles.btnText}>{back?.label ?? "Shelf"}</span>
         </TLink>
         <div className={styles.titleBox}>
           <p className={`${styles.kicker} hud-label`}>
@@ -554,14 +575,14 @@ export function Reader({ comic, prev, next, startPage }: ReaderProps) {
             <p className={`${styles.panelTitle} display`}>{comic.title}</p>
             <TLink
               href={backHref}
-              transitionLabel="Comics"
+              transitionLabel={backName}
               className={styles.panelRow}
               onClick={() => {
                 setMenuOpen(false);
               }}
             >
               <Icon d="M10 2L4 8l6 6" />
-              <span>Back to the shelf</span>
+              <span>{backWords}</span>
             </TLink>
             <label className={styles.panelRow}>
               <span>Page</span>
@@ -634,11 +655,11 @@ export function Reader({ comic, prev, next, startPage }: ReaderProps) {
           <div className={styles.end}>
             <p className="hud-label">End of {comic.title}</p>
             <div className={styles.neighbours}>
-              {prev ? <Neighbour comic={prev} dir="prev" /> : <span />}
-              {next ? <Neighbour comic={next} dir="next" /> : <span />}
+              {prev ? <Neighbour comic={prev} dir="prev" back={back} /> : <span />}
+              {next ? <Neighbour comic={next} dir="next" back={back} /> : <span />}
             </div>
-            <TLink href={backHref} transitionLabel="Comics" className={styles.btn}>
-              Back to the shelf
+            <TLink href={backHref} transitionLabel={backName} className={styles.btn}>
+              {backWords}
             </TLink>
             {fan ? (
               <ReportLink item={{ id: comic.id, title: comic.title }} className={styles.report} />

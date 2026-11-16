@@ -133,12 +133,18 @@
   text-wrap: pretty;
 }
 
-.ledeEnd {
-  font-size: 1.1em;
-  font-style: italic;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  color: var(--accent);
+/* TheMLabel's mark, set into the line as its last word: as tall as a capital and a little more,
+   sitting on the baseline (the mark's own letters lean, so it hangs a hair under it). */
+.logoWord {
+  white-space: nowrap;
+}
+
+.ledeLogo {
+  display: inline-block;
+  width: auto;
+  height: 0.8em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
 }
 
 /* ---- the reel's place and the figures beside it ---- */
@@ -214,6 +220,13 @@
   color: var(--text);
 }
 
+/* The slanted figures stand taller and lean further than their line box: the mask is given room
+   on every side (taken back by the margins), so no stroke of a figure is cut. */
+.figureValue .mask {
+  padding: 0.16em 0.18em 0.2em 0.06em;
+  margin: -0.16em -0.18em -0.2em -0.06em;
+}
+
 .figureLabel {
   font-size: max(0.625rem, 0.72 * var(--u));
   white-space: nowrap;
@@ -234,12 +247,6 @@
 .mask > span,
 .word > span {
   display: inline-block;
-}
-
-/* The italic end of the description leans out of its box at the right. */
-.ledeEnd .word {
-  padding-right: 0.12em;
-  margin-right: -0.12em;
 }
 
 /* Hidden until the drone sits. Only here, by the phase on the page root, and only with scripts. */

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { TLink } from "@/components/transition/t-link";
@@ -48,8 +49,11 @@ const FullscreenIcon = () => (
  * from the episodes of "Become The Aspirants". One screen tall, so the title, the game and the line
  * under it are all in view. Nothing plays until the player presses Continue, Start New or Play
  * from here (the episodes then play with sound, and the page's music steps aside).
+ *
+ * The word over the title is the way out. It is the story, unless the page was given another place
+ * to go back to (`back`: the drama's own page passes the page that sent the visitor there).
  */
-export function Drama() {
+export function Drama({ back }: { back?: { href: Route; label: string } | null }) {
   const root = useRef<HTMLElement>(null);
   const cab = useRef<HTMLDivElement>(null);
   const visible = useInView(root, { threshold: 0.5 });
@@ -140,8 +144,12 @@ export function Drama() {
         <div className={styles.title}>
           <p className={styles.eyebrow}>
             <b>
-              <TLink href={routes.story} transitionLabel="Story">
-                Story
+              <TLink
+                href={back?.href ?? routes.story}
+                transitionLabel={back?.label ?? "Story"}
+                data-drama-back=""
+              >
+                {back?.label ?? "Story"}
               </TLink>
             </b>
             <i />

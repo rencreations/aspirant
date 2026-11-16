@@ -5,6 +5,7 @@ import { useEffect, type CSSProperties } from "react";
 import { TLink } from "@/components/transition/t-link";
 import { useNavLock } from "@/lib/nav-lock";
 import { routes } from "@/lib/site";
+import { useReturnTo } from "@/lib/use-return-to";
 
 import styles from "./room-chrome.module.css";
 
@@ -36,14 +37,20 @@ interface BackToCollectionProps {
 /**
  * The one way out of a redesigned room: a plain button back to the shelf (`/collection`). The
  * rooms do not link to each other. It sits under the top bar, on the left.
+ *
+ * A visitor who was sent here by another page (`from=about` in the address, `lib/return-to.ts`)
+ * gets that page instead: the button says its name and goes back to it, whatever the room asked for.
  */
 export function BackToCollection({
   tone = "dark",
-  href = routes.collection,
-  label = "Collection",
+  href: ownHref = routes.collection,
+  label: ownLabel = "Collection",
   className,
   style,
 }: BackToCollectionProps) {
+  const back = useReturnTo();
+  const href = back?.href ?? ownHref;
+  const label = back?.label ?? ownLabel;
   return (
     <TLink
       href={href as never}

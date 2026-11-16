@@ -34,10 +34,16 @@ export function holdEnd(vh: number): number {
   return (MORPH_SCREENS + HOLD_SCREENS) * vh;
 }
 
+/** The upright composition of the film's stylesheet: under 47.5 rem wide, 4.6 rem under the bar. */
+const UPRIGHT_MAX = 760;
+const UPRIGHT_GAP = 73.6;
+
 /**
  * The big window at rest: as wide as the page between the gutters, in the reel's own shape, in the
  * middle of the space under the bar. On a short, wide screen its height is held to that space less
- * a margin above (the drone perches there) and below, and it narrows to keep its shape.
+ * a margin above (the drone perches there) and below, and it narrows to keep its shape. On an
+ * upright or narrow screen (the stylesheet's own condition: taller than wide, or under 47.5 rem) it
+ * stands a little above the middle, never closer to the bar than the perched drone needs.
  */
 export function windowBox(vw: number, vh: number, navH: number, gutter: number): Box {
   const room = vh - navH;
@@ -49,7 +55,9 @@ export function windowBox(vw: number, vh: number, navH: number, gutter: number):
     w = h * REEL_ASPECT;
   }
   const spare = room - h;
-  return { x: (vw - w) / 2, y: navH + spare * 0.56, w, h };
+  const upright = vw <= vh || vw <= UPRIGHT_MAX;
+  const y = navH + (upright ? Math.max(UPRIGHT_GAP, spare * 0.42) : spare * 0.56);
+  return { x: (vw - w) / 2, y, w, h };
 }
 
 /**

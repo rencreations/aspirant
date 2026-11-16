@@ -117,6 +117,45 @@ describe("the drone's path", () => {
     }
   });
 
+  it("waits small in the page's margin when its anchor has left the screen", () => {
+    for (const c of CASES) {
+      const stations = c.path.stations;
+      const lastArrive = stations[stations.length - 1]?.arrive ?? 0;
+      let waited = 0;
+      for (let y = stations[3]?.arrive ?? 0; y < lastArrive; y += 10) {
+        const t = c.path.at(y);
+        const anchor = c.path.layout.anchors.find((box) => box.id === t.station);
+        if (t.travelling > 0 || !anchor || anchor.stick) continue;
+        // The anchor is well above the bar: the drone is in the lot, not over the page.
+        if (anchor.y - y > c.navH - 0.3 * c.vh) continue;
+        waited += 1;
+        expect(t.size, `${c.name} at ${y}`).toBeLessThanOrEqual(46);
+        expect(Math.min(t.x, c.vw - t.x), `${c.name} at ${y}`).toBeLessThanOrEqual(60);
+        expect(t.parked, `${c.name} at ${y}`).toBe(true);
+      }
+      // Where a plain anchor holds the drone long after it has gone up, it must show at least once.
+      const long = stations.slice(3, -1).some((st) => {
+        const box = c.path.layout.anchors.find((b) => b.id === st.id);
+        return box && !box.stick && st.leave > box.y - c.navH + 0.3 * c.vh + 20;
+      });
+      if (long) expect(waited, c.name).toBeGreaterThan(0);
+    }
+  });
+
+  it("finishes a flight between two plain anchors when the page has come to rest", () => {
+    for (const c of CASES) {
+      const stations = c.path.stations;
+      const lastArrive = stations[stations.length - 1]?.arrive ?? 0;
+      for (let y = stations[3]?.arrive ?? 0; y < lastArrive; y += 10) {
+        const flying = c.path.at(y);
+        if (flying.travelling === 0) continue;
+        const rested = c.path.at(y, true);
+        expect(rested.travelling, `${c.name} at ${y}`).toBe(0);
+        expect([flying.from, flying.to], `${c.name} at ${y}`).toContain(rested.station);
+      }
+    }
+  });
+
   it("stays mostly in view: clear of the film, or in front of it", () => {
     for (const c of CASES) {
       let worst = 1;

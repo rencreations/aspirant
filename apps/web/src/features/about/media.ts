@@ -1,6 +1,6 @@
 /**
  * The About page's own files. They are made by `scripts/about/` (the drone by `drone/build.cjs`,
- * the reel by `reel.py`): change the script and run it, never the files. The byte counts are the
+ * the loop of the first screen by `start.py`): change the script and run it, never the files. The byte counts are the
  * real sizes, for the loading bar.
  */
 
@@ -11,18 +11,24 @@ export const DRONE_MODEL_BYTES = 250_192;
 /** The drone as a still picture, for a browser that cannot draw the scene. */
 export const DRONE_STILL = "/img/about/drone.webp";
 
-/** The reel: a muted loop cut from the official films of the five phases, in two sizes. */
-const REEL_LARGE = "/video/about/reel-1920.mp4";
-const REEL_LARGE_BYTES = 8_460_783;
-const REEL_SMALL = "/video/about/reel-1280.mp4";
-const REEL_SMALL_BYTES = 4_795_108;
-export const REEL_POSTER = "/video/about/reel-poster.webp";
+/**
+ * How it started: a muted loop cut from the studio's own film about the first Aspirant ideas, in
+ * two sizes. The whole film, with sound, is the collection's file and is opened by the play control.
+ */
+const START_LARGE = "/video/about/start-1920.mp4";
+const START_LARGE_BYTES = 6_196_986;
+const START_SMALL = "/video/about/start-1280.mp4";
+const START_SMALL_BYTES = 3_482_943;
+export const START_POSTER = "/video/about/start-poster.webp";
 
-/** Below this display width the small reel is played. The width is all that is looked at. */
-const REEL_SMALL_BELOW = 700;
+/** TheMLabel's own mark, set into the description of the first screen. 720 by 184. */
+export const THEMLABEL_LOGO = "/img/about/themlabel.webp";
 
-export function pickReel(width: number): { src: string; bytes: number } {
-  return width < REEL_SMALL_BELOW
-    ? { src: REEL_SMALL, bytes: REEL_SMALL_BYTES }
-    : { src: REEL_LARGE, bytes: REEL_LARGE_BYTES };
+/** Below this display width the small loop is played. The width is all that is looked at. */
+const START_SMALL_BELOW = 700;
+
+export function pickStart(width: number): { src: string; bytes: number } {
+  return width < START_SMALL_BELOW
+    ? { src: START_SMALL, bytes: START_SMALL_BYTES }
+    : { src: START_LARGE, bytes: START_LARGE_BYTES };
 }

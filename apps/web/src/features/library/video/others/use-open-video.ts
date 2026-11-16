@@ -3,8 +3,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 import { useTransitionRouter } from "@/components/transition/transition-provider";
-
-import { returnOf, type ReturnTarget } from "../links";
+import { returnOf, type ReturnTarget } from "@/lib/return-to";
 
 /**
  * Which video is open in the viewer, kept in the address: `?i=<id>` and `&t=<seconds>`. Other rooms
@@ -14,8 +13,8 @@ import { returnOf, type ReturnTarget } from "../links";
  * next or the previous video replaces the entry, so Back never walks through them one by one. The
  * library search changes the address by itself and fires `popstate`: this hook follows it too.
  *
- * A link from another room carries `&from=<key>` (`returnOf`). Closing a video that was opened by
- * such a link goes back to that room, not to the wall.
+ * A link from another page carries `&from=<key>` (`returnOf` in `lib/return-to.ts`). Closing a video
+ * that was opened by such a link goes back to that page, not to the wall.
  */
 
 const listeners = new Set<() => void>();
@@ -52,7 +51,7 @@ export interface OpenVideo {
   show: (id: string) => void;
   /** Write the start time (replaces the entry). An empty value removes it. */
   setT: (t: string) => void;
-  /** The room the visitor came from (`&from=`), or null. */
+  /** The page the visitor came from (`&from=`), or null. */
   from: ReturnTarget | null;
   /** Close the viewer. */
   close: () => void;
@@ -108,7 +107,7 @@ export function useOpenVideo(): OpenVideo {
       return;
     }
     if (from) {
-      // Opened by a link from another room: closing goes back to it.
+      // Opened by a link from another page: closing goes back to it.
       router.push(from.href, { label: from.label });
       return;
     }

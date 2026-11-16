@@ -1,0 +1,1043 @@
+/* The music of a phase: a disc for each track and its details in hairline rows. The deck lays
+   itself out by its own width (a container), so it is right in a narrow column, across the whole
+   page and on a phone. `--house` is the curve of the site's mask reveals. A part arrives when its
+   box is marked `data-in="true"`; until then, and only with scripts on, it waits. Only transform
+   and opacity move. */
+
+.deck {
+  --house: cubic-bezier(0.32, 0.72, 0, 1);
+  position: relative;
+  container: music-deck / inline-size;
+}
+
+/* The head -------------------------------------------------------------------------------------- */
+
+.head,
+.ep {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.9em;
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+.head b,
+.ep b {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.head {
+  margin-bottom: clamp(2rem, 5cqw, 4rem);
+}
+
+.head > *,
+.ep > * {
+  transition:
+    opacity 800ms var(--ease-out) calc(var(--i, 0) * 80ms),
+    transform 1000ms var(--ease-out) calc(var(--i, 0) * 80ms);
+}
+
+.headRule,
+.epRule {
+  display: block;
+  width: 2.75rem;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: 0 50%;
+}
+
+.head .headRule,
+.ep .epRule {
+  transition: transform 900ms var(--house) 120ms;
+}
+
+:global(:root.js) .head[data-in="false"] > *,
+:global(:root.js) .unit[data-in="false"] .ep > * {
+  opacity: 0;
+  transform: translate3d(0, 0.6rem, 0);
+}
+
+:global(:root.js) .head[data-in="false"] .headRule,
+:global(:root.js) .unit[data-in="false"] .ep .epRule {
+  opacity: 1;
+  transform: scaleX(0);
+}
+
+/* The units ------------------------------------------------------------------------------------- */
+
+.units {
+  display: grid;
+  gap: clamp(3.5rem, 9cqw, 6rem);
+}
+
+.unit {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 6cqw, 4rem);
+  align-items: center;
+}
+
+.stage {
+  position: relative;
+  justify-self: center;
+  width: min(80%, 23rem);
+  aspect-ratio: 1;
+}
+
+.place {
+  position: relative;
+  width: 100%;
+  transition: transform 1100ms var(--ease-spring);
+}
+
+.arrive {
+  position: relative;
+}
+
+/* The details ----------------------------------------------------------------------------------- */
+
+.details {
+  min-width: 0;
+}
+
+.details .title {
+  margin: 0.55rem 0 0;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-block: 0.07em;
+  font-size: clamp(2.75rem, 12cqw, 4.25rem);
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.titleIn {
+  display: block;
+  transition:
+    transform 1100ms var(--house) 120ms,
+    opacity 500ms var(--ease-out) 120ms;
+}
+
+.rows {
+  margin: clamp(1.25rem, 3cqw, 2rem) 0 0;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.62rem 0 0.6rem;
+}
+
+.row::before,
+.row:last-child::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: 0 50%;
+  transition: transform 1200ms var(--house) calc(var(--i, 0) * 70ms + 200ms);
+  content: "";
+}
+
+.row::before {
+  top: 0;
+}
+
+.row:last-child::after {
+  bottom: 0;
+}
+
+.row dt {
+  flex: none;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.row dd {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text);
+}
+
+.row dt,
+.row dd {
+  transition:
+    opacity 700ms var(--ease-out) calc(var(--i, 0) * 70ms + 320ms),
+    transform 1000ms var(--ease-out) calc(var(--i, 0) * 70ms + 320ms);
+}
+
+.ran {
+  color: var(--accent);
+}
+
+/* The pills ------------------------------------------------------------------------------------- */
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: clamp(1.25rem, 3cqw, 2rem);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.5rem;
+  padding: 0 1.05rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pill[data-primary] {
+  min-width: 7.6rem;
+  border-color: #0b0b0e;
+  background: #0b0b0e;
+  color: #f4f6f9;
+}
+
+.pill svg {
+  flex: none;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+/* A pill pops in, one after the other, as an animation that lets go of it when it is over: from
+   then on it answers at once, lifting under the pointer and giving under a press. */
+.unit[data-in="true"] .pill,
+.unit[data-in="true"] .mark {
+  animation: music-pill 800ms var(--ease-spring) calc(var(--i, 0) * 70ms + 620ms) backwards;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+@keyframes music-pill {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.8rem, 0) scale(0.9);
+  }
+}
+
+.unit[data-in="true"] .pill:hover,
+.unit[data-in="true"] .pill:focus-visible,
+.unit[data-in="true"] .mark:hover,
+.unit[data-in="true"] .mark:focus-visible {
+  transform: translate3d(0, -2px, 0);
+}
+
+.unit[data-in="true"] .pill:active,
+.unit[data-in="true"] .mark:active {
+  transform: scale(0.96);
+}
+
+a.pill:hover svg,
+a.pill:focus-visible svg {
+  transform: translate3d(3px, 0, 0);
+}
+
+.pillIcon {
+  display: grid;
+  place-items: center;
+  width: 0.75rem;
+}
+
+/* Where else a track can be heard: the mark of each platform in a round button of the page's
+   ink. Its name comes up over it under the pointer or the focus. */
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mark svg {
+  transition: transform var(--dur-slow) var(--ease-spring);
+}
+
+.mark:hover,
+.mark:focus-visible {
+  border-color: var(--text);
+}
+
+.mark:hover svg,
+.mark:focus-visible svg {
+  transform: scale(1.16);
+}
+
+.markName {
+  position: absolute;
+  bottom: calc(100% + 0.45rem);
+  left: 50%;
+  padding: 0.32rem 0.5rem;
+  background: #0b0b0e;
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: #f4f6f9;
+  opacity: 0;
+  transform: translate3d(-50%, 0.3rem, 0);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+.mark:hover .markName,
+.mark:focus-visible .markName {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+}
+
+/* While the file is on its way the mark breathes. */
+.pill[data-state="Loading"] .pillIcon {
+  animation: music-wait 900ms var(--ease-in-out) infinite alternate;
+}
+
+@keyframes music-wait {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.25;
+  }
+}
+
+.dot {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* The reveals of the details: each phase's lines come from their own side ------------------------- */
+
+.deck {
+  --from-x: 0rem;
+  --from-y: 1.1rem;
+  --title-from: translate3d(0, 112%, 0);
+}
+
+.deck[data-phase="2"] {
+  --from-y: -1.1rem;
+  --title-from: translate3d(0, -112%, 0);
+}
+
+.deck[data-phase="3"] {
+  --from-x: -1.75rem;
+  --from-y: 0rem;
+  --title-from: translate3d(0, 112%, 0) rotate(4deg);
+}
+
+.deck[data-phase="4"] {
+  --from-x: -1.75rem;
+  --from-y: 0rem;
+}
+
+.deck[data-phase="5"] {
+  --title-from: translate3d(0, 112%, 0) scale(0.9);
+}
+
+:global(:root.js) .unit[data-in="false"] .titleIn {
+  opacity: 0;
+  transform: var(--title-from);
+}
+
+:global(:root.js) .unit[data-in="false"] .row::before,
+:global(:root.js) .unit[data-in="false"] .row:last-child::after {
+  transform: scaleX(0);
+}
+
+:global(:root.js) .unit[data-in="false"] .row dt,
+:global(:root.js) .unit[data-in="false"] .row dd {
+  opacity: 0;
+  transform: translate3d(var(--from-x), var(--from-y), 0);
+}
+
+:global(:root.js) .unit[data-in="false"] .pill,
+:global(:root.js) .unit[data-in="false"] .mark {
+  opacity: 0;
+}
+
+/* A hairline of a mirrored unit draws from its own outer edge. */
+.deck[data-phase="3"] .row::before,
+.deck[data-phase="3"] .row:last-child::after,
+.deck[data-count="2"] .unit[data-slot="1"] .row::before,
+.deck[data-count="2"] .unit[data-slot="1"] .row:last-child::after {
+  transform-origin: 100% 50%;
+}
+
+/* The discs arrive: each phase in its own way ------------------------------------------------------ */
+
+:global(:root.js) .unit[data-in="false"] .arrive {
+  opacity: 0;
+}
+
+/* 1. It rolls in from the outer side, as far as a disc of its size turns over that distance. */
+.deck[data-phase="1"] .unit[data-in="true"] .arrive {
+  --dir: -1;
+  animation: music-roll 1500ms both;
+}
+
+.deck[data-phase="1"] .unit[data-side="right"][data-in="true"] .arrive {
+  --dir: 1;
+}
+
+@keyframes music-roll {
+  0% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dir) * 140%), 0, 0) rotate(calc(var(--dir) * 160deg));
+    animation-timing-function: cubic-bezier(0.22, 0.7, 0.3, 1);
+  }
+
+  14% {
+    opacity: 1;
+  }
+
+  72% {
+    opacity: 1;
+    transform: translate3d(calc(var(--dir) * -3.5%), 0, 0) rotate(calc(var(--dir) * -4deg));
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+/* 2. It drops from above, gives a little as it lands, and bounces twice. */
+.deck[data-phase="2"] .unit[data-in="true"] .arrive {
+  transform-origin: 50% 100%;
+  animation: music-drop 1500ms both;
+}
+
+@keyframes music-drop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -130%, 0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  40% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.04, 0.95);
+    animation-timing-function: cubic-bezier(0.1, 0.6, 0.4, 1);
+  }
+
+  58% {
+    transform: translate3d(0, -16%, 0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5);
+  }
+
+  76% {
+    transform: translate3d(0, 0, 0) scale(1.015, 0.985);
+    animation-timing-function: cubic-bezier(0.1, 0.6, 0.4, 1);
+  }
+
+  88% {
+    transform: translate3d(0, -4%, 0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1, 1);
+  }
+}
+
+/* 3. It starts edge on, a line, and spins up to face the visitor. */
+.deck[data-phase="3"] .unit[data-in="true"] .arrive {
+  animation: music-spin-up 1900ms cubic-bezier(0.14, 0.75, 0.2, 1) both;
+}
+
+@keyframes music-spin-up {
+  0% {
+    opacity: 0;
+    transform: perspective(70rem) rotateY(-810deg) scale(0.72);
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: perspective(70rem) rotateY(0deg) scale(1);
+  }
+}
+
+/* 4. Side by side, the pair is one stack in the middle, and parts: each disc rolls out to its own
+   side (the rule is with the pair's layout, below). Stacked in a narrow column there is no middle
+   to part from, so each rolls in from the left, one after the other. */
+.deck[data-phase="4"] .unit[data-in="true"] .arrive {
+  --dir: -1;
+  animation: music-roll 1500ms both;
+}
+
+.deck[data-phase="4"] .unit[data-slot="1"][data-in="true"] .arrive {
+  animation-delay: 90ms;
+}
+
+@keyframes music-part {
+  0% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dir) * 46%), 0, 0) rotate(calc(var(--dir) * 53deg))
+      scale(0.86);
+    animation-timing-function: var(--ease-out);
+  }
+
+  16% {
+    opacity: 1;
+    transform: translate3d(calc(var(--dir) * 46%), 0, 0) rotate(calc(var(--dir) * 53deg)) scale(1);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1);
+  }
+
+  78% {
+    transform: translate3d(calc(var(--dir) * -2.5%), 0, 0) rotate(calc(var(--dir) * -3deg)) scale(1);
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+}
+
+/* 5. The pair lies flat and stands up, one after the other. */
+.deck[data-phase="5"] .unit[data-in="true"] .arrive {
+  transform-origin: 50% 100%;
+  animation: music-stand 1500ms var(--ease-spring) both;
+}
+
+.deck[data-phase="5"] .unit[data-slot="1"][data-in="true"] .arrive {
+  animation-delay: 180ms;
+}
+
+@keyframes music-stand {
+  0% {
+    opacity: 0;
+    transform: perspective(70rem) translate3d(0, 18%, 0) rotateX(84deg);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: perspective(70rem) translate3d(0, 0, 0) rotateX(0deg);
+  }
+}
+
+/* The music video: the insert behind the first phase's record --------------------------------------- */
+
+.unit[data-video] .stage {
+  --rest: 0.56;
+  width: min(100%, 26rem);
+  aspect-ratio: 10 / 9;
+}
+
+/* The disc's box is square: only the disc itself takes the pointer, so the part of the picture
+   that shows beside it can be pressed. */
+.unit[data-video] .place {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 72%;
+  margin-top: 4%;
+  pointer-events: none;
+}
+
+.sleeveIn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 16.875%;
+  transition:
+    opacity 600ms var(--ease-out) 900ms,
+    transform 1200ms var(--house) 900ms;
+}
+
+/* It comes out from behind the disc once the disc has rolled in. */
+:global(:root.js) .unit[data-in="false"] .sleeveIn {
+  opacity: 0;
+  transform: translate3d(-22%, 0, 0);
+}
+
+.sleeve {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: var(--bg-2, #e9edf2);
+  outline: 1px solid var(--line-strong);
+  outline-offset: -1px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate3d(20%, 41%, 0) rotate(4deg) scale(var(--rest));
+  transition: transform 1000ms var(--house);
+}
+
+.sleeve:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 3px;
+}
+
+.unit[data-video="in"] .sleeve:hover,
+.unit[data-video="in"] .sleeve:focus-visible {
+  transform: translate3d(25%, 44%, 0) rotate(6deg) scale(var(--rest));
+}
+
+.unit[data-video="out"] .sleeve {
+  transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+}
+
+/* Out, the record rolls off to the lower left corner of the picture and grows small. There it is
+   the way back. */
+.unit[data-video="out"] .place {
+  transform: translate3d(-31.94%, 45.83%, 0) rotate(-360deg) scale(0.34);
+}
+
+.poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* The film itself, playing without sound over its still, once its first frame is drawn. */
+.preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+  pointer-events: none;
+}
+
+.preview[data-drawn="true"] {
+  opacity: 1;
+}
+
+/* The labels on the picture keep their size while the picture is small. */
+.plate {
+  position: absolute;
+  right: 3%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 1.7rem;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  background: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text);
+  transform: scale(calc(1 / var(--rest)));
+  transition: transform 1000ms var(--house);
+}
+
+.plateKind {
+  top: 5%;
+  transform-origin: 100% 0;
+}
+
+.plateTime {
+  bottom: 5%;
+  transform-origin: 100% 100%;
+}
+
+.unit[data-video="out"] .plate {
+  transform: scale(1);
+}
+
+/* A play mark on the part of the picture that shows beside the disc. Out, a larger one stands
+   in the middle of the picture and says what a press does. */
+.peek {
+  position: absolute;
+  top: 50%;
+  right: 13%;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: -1.25rem -1.25rem 0 0;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  transform: scale(calc(1 / var(--rest)));
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 700ms var(--ease-spring);
+}
+
+.unit[data-video="in"] .sleeve:hover .peek {
+  transform: scale(calc(1.14 / var(--rest)));
+}
+
+.unit[data-video="out"] .peek {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.playMark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.75rem;
+  padding: 0 1.15rem;
+  border-radius: 999px;
+  background: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.7);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 600ms var(--ease-spring);
+}
+
+.unit[data-video="out"] .playMark {
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0) scale(1);
+  transition-delay: 450ms;
+}
+
+.unit[data-video="out"] .sleeve:hover .playMark,
+.unit[data-video="out"] .sleeve:focus-visible .playMark {
+  transform: translate3d(-50%, -50%, 0) scale(1.07);
+  transition-delay: 0ms;
+}
+
+/* The way back, three times over so that it cannot be missed: the small record, the words beside
+   it, and a round mark on the corner of the picture. They are there only while the picture is
+   out. */
+.badge {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  display: grid;
+  place-items: center;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 500ms var(--ease-out);
+  pointer-events: none;
+}
+
+.badge svg {
+  width: 44%;
+  height: 44%;
+}
+
+.unit[data-video="out"] .badge {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 400ms var(--ease-out) 600ms,
+    transform 800ms var(--ease-spring) 600ms;
+}
+
+.backTag {
+  position: absolute;
+  top: 85.56%;
+  left: 27.5%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--bg);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0;
+  transform: translate3d(-1rem, -50%, 0);
+  transition:
+    opacity 250ms var(--ease-out),
+    transform 500ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.closeMark {
+  position: absolute;
+  top: 5%;
+  left: 2.5%;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--text);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 250ms var(--ease-out),
+    transform 500ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.backTag:disabled,
+.closeMark:disabled {
+  pointer-events: none;
+}
+
+.unit[data-video="out"] .backTag {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+  transition:
+    opacity 400ms var(--ease-out) 700ms,
+    transform 800ms var(--ease-spring) 700ms;
+}
+
+.unit[data-video="out"] .closeMark {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 400ms var(--ease-out) 500ms,
+    transform 700ms var(--ease-spring) 500ms;
+}
+
+/* Under the pointer the three answer together, and at once. */
+.unit[data-video="out"] .backTag:hover,
+.unit[data-video="out"] .backTag:focus-visible,
+.unit[data-video="out"] .stage:has(.place button:hover) .backTag {
+  transform: translate3d(0.25rem, -50%, 0);
+  transition-delay: 0ms;
+}
+
+.unit[data-video="out"] .closeMark:hover,
+.unit[data-video="out"] .closeMark:focus-visible {
+  transform: scale(1.12);
+  transition-delay: 0ms;
+}
+
+.unit[data-video="out"] .stage:has(.place button:hover, .backTag:hover) .badge {
+  transform: scale(1.14);
+  transition-delay: 0ms;
+}
+
+.unit[data-video="out"] .backTag:active,
+.unit[data-video="out"] .closeMark:active {
+  transition-delay: 0ms;
+}
+
+/* A wide deck ------------------------------------------------------------------------------------ */
+
+@container music-deck (min-width: 46rem) {
+  .unit {
+    grid-template-columns: minmax(0, 0.84fr) minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 7cqw, 7rem);
+  }
+
+  .stage {
+    width: min(100%, 31rem);
+  }
+
+  .unit[data-side="right"] .stage {
+    order: 2;
+  }
+
+  .details .title {
+    font-size: clamp(3rem, 7.2cqw, 6.75rem);
+  }
+
+  .unit[data-video] {
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 5cqw, 5rem);
+  }
+
+  .unit[data-video] .stage {
+    --rest: 0.52;
+    width: 100%;
+    aspect-ratio: 14 / 9;
+  }
+
+  .unit[data-video] .place {
+    left: 4%;
+    width: 60%;
+    margin-top: 2.14%;
+  }
+
+  .sleeveIn {
+    margin-top: 4.02%;
+  }
+
+  .sleeve {
+    transform: translate3d(21%, 7%, 0) rotate(3deg) scale(var(--rest));
+  }
+
+  .unit[data-video="in"] .sleeve:hover,
+  .unit[data-video="in"] .sleeve:focus-visible {
+    transform: translate3d(26%, 8%, 0) rotate(5deg) scale(var(--rest));
+  }
+
+  .unit[data-video="out"] .place {
+    transform: translate3d(-39.17%, 36.43%, 0) rotate(-360deg) scale(0.33);
+  }
+
+  .backTag {
+    top: 84%;
+    left: 22%;
+  }
+}
+
+/* A pair across the page: the two discs lean on each other in the middle, details outside ----------- */
+
+@container music-deck (min-width: 62rem) {
+  .deck[data-count="2"] .units {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .deck[data-count="2"] .unit {
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 2.4cqw, 2.5rem);
+  }
+
+  .deck[data-count="2"] .unit[data-slot="1"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr);
+  }
+
+  .deck[data-count="2"] .stage {
+    width: 108%;
+    justify-self: end;
+    margin-right: -9%;
+  }
+
+  .deck[data-count="2"] .unit[data-slot="1"] .stage {
+    order: 0;
+    justify-self: start;
+    margin: 0 0 0 -9%;
+  }
+
+  /* Side by side, the first track's lines come from the middle, as the second's do. */
+  .deck[data-phase="4"] .unit[data-slot="0"] {
+    --from-x: 1.75rem;
+  }
+
+  .deck[data-phase="4"] .unit[data-in="true"] .arrive {
+    --dir: 1;
+    animation-name: music-part;
+  }
+
+  .deck[data-phase="4"] .unit[data-slot="1"][data-in="true"] .arrive {
+    --dir: -1;
+  }
+
+  /* The two sets of details start on one line, whatever the lengths of their titles. */
+  .deck[data-count="2"] .details {
+    align-self: start;
+  }
+
+  /* The one under the pointer, or the one that plays, is in front. */
+  .deck[data-count="2"] .unit[data-slot="0"] {
+    z-index: 1;
+  }
+
+  .deck[data-count="2"] .unit:hover,
+  .deck[data-count="2"] .unit[data-playing="true"] {
+    z-index: 2;
+  }
+
+  .deck[data-count="2"] .details .title {
+    font-size: clamp(2rem, 3.3cqw, 3.5rem);
+  }
+
+  .deck[data-count="2"] .unit[data-slot="1"] .details .title,
+  .deck[data-count="2"] .unit[data-slot="1"] .ep {
+    text-align: right;
+    justify-content: flex-end;
+  }
+
+  .deck[data-count="2"] .unit[data-slot="1"] .pills {
+    justify-content: flex-end;
+  }
+}

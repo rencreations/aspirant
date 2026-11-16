@@ -1,6 +1,3 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
-
 import { describe, expect, it } from "vitest";
 
 import { holdEnd, morphEnd, windowBox, type Box } from "../film-geometry";
@@ -19,7 +16,6 @@ import {
   TINT,
   type Placement,
 } from "./geometry";
-import { NEWEST, TRAILERS } from "./trailers";
 
 /** The four displays the page is checked on: width, height, the bar and the gutter in pixels. */
 const DISPLAYS = [
@@ -170,21 +166,5 @@ describe("the bands of the title", () => {
     expect(tickAt(left, left, width)).toBe(0);
     expect(tickAt(left - 90, left, width)).toBe(0);
     expect(tickAt(left + 0.07 * width, left, width)).toBeCloseTo(0.5, 6);
-  });
-});
-
-describe("the trailers", () => {
-  const pub = path.resolve(import.meta.dirname, "../../../../public");
-
-  it("is the five phases in order, and the play control opens the newest", () => {
-    expect(TRAILERS.map((t) => t.no)).toEqual(["01", "02", "03", "04", "05"]);
-    expect(NEWEST.no).toBe("05");
-  });
-
-  it("names only files the site holds", () => {
-    for (const t of TRAILERS) {
-      const files = [t.video.poster, t.video.captions, ...t.video.sources.map((s) => s.src)];
-      for (const file of files) if (file) expect(existsSync(path.join(pub, file)), file).toBe(true);
-    }
   });
 });

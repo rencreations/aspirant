@@ -50,16 +50,43 @@ export interface ViewPoint {
 }
 
 /**
+ * What the drone says of itself, for a part that plays with it (Tetra, in the second phase). The
+ * director writes it every frame it runs: where the drone really is in the viewport, how wide it
+ * is drawn, and how many times the visitor has pressed it so far. Whether the drone is "with" a
+ * part is that part's call, from how near and how still it is: the path's own idea of a station
+ * ends the moment the scroll leaves the station's band, while the drone is still there.
+ */
+export interface DroneReport {
+  x: number;
+  y: number;
+  size: number;
+  presses: number;
+}
+
+/** A move a part may ask of the drone: one of its answers to a press. */
+export type DroneAsk = "hop" | "nod" | "roll" | "dizzy";
+
+/**
  * Things that change too often, or are too big, for a store. Plain fields, read each frame.
  * `title` is set by the first screen while it is mounted. `gaze` is a point the drone should look
- * at instead of the pointer (a row the visitor hovers), or null. `film` is the box of the reel's
- * picture in the viewport right now, written by the film each frame it moves (null when the film
- * is not on the page): the drone is behind it, so it is what can hide the drone.
+ * at instead of the pointer (a row the visitor hovers, Tetra's face), or null. `film` is the box
+ * of the reel's picture in the viewport right now, written by the film each frame it moves (null
+ * when the film is not on the page): the drone is behind it, so it is what can hide the drone.
+ * `drone` is the drone's own report (null until the director runs). `ask` is one move asked of the
+ * drone: the director takes it the next frame the drone is free, and sets it back to null.
  */
-export const stageRefs: { title: TitleReveal | null; gaze: ViewPoint | null; film: Box | null } = {
+export const stageRefs: {
+  title: TitleReveal | null;
+  gaze: ViewPoint | null;
+  film: Box | null;
+  drone: DroneReport | null;
+  ask: DroneAsk | null;
+} = {
   title: null,
   gaze: null,
   film: null,
+  drone: null,
+  ask: null,
 };
 
 /** Back to the start, for the next visit of the page. */
@@ -68,4 +95,6 @@ export function resetAboutStage(): void {
   stageRefs.title = null;
   stageRefs.gaze = null;
   stageRefs.film = null;
+  stageRefs.drone = null;
+  stageRefs.ask = null;
 }

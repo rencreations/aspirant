@@ -501,13 +501,15 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* A picture may be drawn a little larger and set lower in its window (`nudge` in content.ts). */
+  transform: translate3d(0, var(--down, 0%), 0) scale(var(--zoom, 1));
   transition: transform 1100ms var(--ease-out);
   user-select: none;
 }
 
 .card:hover .picture,
 .card:focus-visible .picture {
-  transform: scale(1.055);
+  transform: translate3d(0, var(--down, 0%), 0) scale(calc(var(--zoom, 1) * 1.055));
 }
 
 .caption {
@@ -672,4 +674,127 @@
   .go {
     display: none;
   }
+}
+
+/* ---- what a phase adds to its two skins: videos, music, comic, drama, art ---- */
+
+.more {
+  --gap: clamp(7rem, 12vw, 12rem);
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--gap);
+  min-width: 0;
+  margin-top: var(--gap);
+}
+
+.part {
+  position: relative;
+  min-width: 0;
+}
+
+/* The drone's place for a part: in the gap above it, at one side. The drone is drawn about one
+   and a half times as wide as its place, and the gap is tall enough for that. */
+.partAnchor {
+  --d: clamp(4rem, 6.4vw, 6.5rem);
+  position: absolute;
+  top: calc(-0.5 * var(--gap) - 0.5 * var(--d));
+  width: var(--d);
+}
+
+.partAnchor[data-side="right"] {
+  right: calc(0.4 * var(--d));
+}
+
+.partAnchor[data-side="left"] {
+  left: calc(0.4 * var(--d));
+}
+
+/* ---- each phase opens in its own way ----
+   The first phase is the plain one above: the windows open from the top edge down and the rules
+   draw from the left. The other four change what moves and from where, with the same two boxes
+   that slide against each other, so a picture never moves while its window opens. */
+
+.window {
+  transition: transform 1500ms var(--house);
+}
+
+/* 2: the two windows slide open sideways, away from each other, and the rules draw from the right. */
+:global(:root.js) .phase[data-phase="2"] .slot[data-in="false"] .shutter {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="2"] .slot[data-in="false"] .shutterIn {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="2"] .slot:first-child[data-in="false"] .shutter {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="2"] .slot:first-child[data-in="false"] .shutterIn {
+  transform: translate3d(101%, 0, 0);
+}
+
+.phase[data-phase="2"] .row::before,
+.phase[data-phase="2"] .row:last-child::after,
+.phase[data-phase="4"] .row::before,
+.phase[data-phase="4"] .row:last-child::after {
+  transform-origin: 100% 50%;
+}
+
+/* 3: the windows open from the foot up while they rise into place, and the rows come in from
+   the side. */
+:global(:root.js) .phase[data-phase="3"] .slot[data-in="false"] .shutter {
+  transform: translate3d(0, 101%, 0);
+}
+
+:global(:root.js) .phase[data-phase="3"] .slot[data-in="false"] .shutterIn {
+  transform: translate3d(0, -101%, 0);
+}
+
+:global(:root.js) .phase[data-phase="3"] .slot[data-in="false"] .window {
+  transform: translate3d(0, 4rem, 0);
+}
+
+:global(:root.js) .phase[data-phase="3"] .rows[data-in="false"] dd,
+:global(:root.js) .phase[data-phase="5"] .rows[data-in="false"] dd {
+  transform: translate3d(-1.75rem, 0, 0);
+}
+
+/* 4: the windows open from one corner to the other and settle from a small turn, one each way. */
+:global(:root.js) .phase[data-phase="4"] .slot[data-in="false"] .shutter {
+  transform: translate3d(-101%, -101%, 0);
+}
+
+:global(:root.js) .phase[data-phase="4"] .slot[data-in="false"] .shutterIn {
+  transform: translate3d(101%, 101%, 0);
+}
+
+:global(:root.js) .phase[data-phase="4"] .slot[data-in="false"] .window {
+  transform: rotate(-3deg) translate3d(0, 2rem, 0);
+}
+
+:global(:root.js) .phase[data-phase="4"] .slot:last-child[data-in="false"] .window {
+  transform: rotate(3deg) translate3d(0, 2rem, 0);
+}
+
+/* 5: the windows open from the outer side in, and come up to their size as they do. */
+:global(:root.js) .phase[data-phase="5"] .slot[data-in="false"] .shutter {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="5"] .slot[data-in="false"] .shutterIn {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="5"] .slot:first-child[data-in="false"] .shutter {
+  transform: translate3d(101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="5"] .slot:first-child[data-in="false"] .shutterIn {
+  transform: translate3d(-101%, 0, 0);
+}
+
+:global(:root.js) .phase[data-phase="5"] .slot[data-in="false"] .window {
+  transform: scale(0.92);
 }

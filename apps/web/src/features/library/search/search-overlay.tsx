@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
+import { keepReturn } from "@/lib/return-to";
 import { collectionRoute } from "@/lib/site";
 import { isCharacterSlug } from "@/lib/slugs";
 
@@ -69,7 +70,9 @@ function go(entry: SearchEntry, push: (href: Route, options: { label: string }) 
   const query = `?i=${encodeURIComponent(entry.id)}`;
   const here = window.location.pathname.replace(/\/+$/u, "");
   if (here.endsWith(base)) {
-    window.history.replaceState(window.history.state, "", `${window.location.pathname}${query}`);
+    // The room stays the same room: the way back it was opened with (`from=`) stays in the address.
+    const next = keepReturn(`${window.location.pathname}${query}`, window.location.search);
+    window.history.replaceState(window.history.state, "", next);
     window.dispatchEvent(new PopStateEvent("popstate"));
     window.scrollTo({ top: 0, behavior: "smooth" });
     return;

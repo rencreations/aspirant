@@ -1,0 +1,242 @@
+/*
+ * The corner of the fourth phase where Guinevere's two drones meet ours (see
+ * companions-stage.tsx): two lines of type, then a wide stage on the page's paper. The stage is as
+ * wide as the screen, so the two come in from the screen's own edges. Everything that moves here
+ * is a transform or an opacity; the canvas and the comic marks take no pointer, so the wheel and a
+ * finger scroll the page as anywhere else.
+ */
+
+.companions {
+  /* The stage's own numbers: how tall it is, how big a ball is, where the two live and where our
+     drone rests between them. The scene reads them from the page, never the other way. */
+  --stage-h: clamp(27rem, 80vh, 46rem);
+  --ball: calc(var(--stage-h) * 0.17);
+  --floor: 9%;
+  position: relative;
+  display: grid;
+  gap: var(--space-l);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-s);
+}
+
+.line {
+  margin: 0;
+  font-size: var(--step-3);
+  font-style: italic;
+  line-height: 1.08;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.line em {
+  font-style: inherit;
+  color: var(--text-dim);
+}
+
+/* The stage ------------------------------------------------------------------------------------ */
+
+.stage {
+  position: relative;
+  width: 100vw;
+  height: var(--stage-h);
+  /* Out to the two edges of the screen, from a column that is centred on it. */
+  margin-inline: calc(50% - 50vw);
+  overflow: clip;
+  contain: layout style;
+}
+
+/* The ground far under them: one hairline across the screen. They never touch it; their shadows
+   lie on it and say how high each one is. */
+.floor {
+  position: absolute;
+  right: 0;
+  bottom: var(--floor);
+  left: 0;
+  height: 1px;
+  background: var(--line);
+  transform-origin: 100% 50%;
+  transition: transform 1400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:global(:root.js) .head[data-in="false"] ~ .stage .floor {
+  transform: scaleX(0);
+}
+
+/* Never seen: their boxes are read for the places and the size of a ball. */
+.spot {
+  position: absolute;
+  width: var(--ball);
+  height: var(--ball);
+  margin: calc(var(--ball) / -2) 0 0 calc(var(--ball) / -2);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.spot[data-spot="a"] {
+  top: 54%;
+  left: 27%;
+}
+
+.spot[data-spot="b"] {
+  top: 56%;
+  left: 73%;
+}
+
+/* A shadow: a flat ellipse of ink on the ground, moved and sized by the script. */
+.shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.canvas,
+.marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.marks {
+  overflow: visible;
+}
+
+.pop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Our drone's place: in the empty air between the two, a little above them. It is near the middle
+   of the stage's height on purpose: the drone keeps to an anchor while it is in the middle band
+   of the screen, which is when the stage is. */
+.anchor {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: clamp(84px, 10vw, 150px);
+  margin: calc(clamp(84px, 10vw, 150px) / -2) 0 0 calc(clamp(84px, 10vw, 150px) / -2);
+}
+
+/* The buttons: an empty round plate over each of the two, sized by the script and moved with it,
+   for the pointer, a press and the keyboard. */
+.button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.button[data-off] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* The line under the stage ---------------------------------------------------------------------- */
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-l);
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.foot b {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.credit {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.foot > * {
+  transition:
+    opacity 900ms var(--ease-out) 200ms,
+    transform 900ms var(--ease-out) 200ms;
+}
+
+.foot > :nth-child(2) {
+  transition-delay: 320ms;
+}
+
+:global(:root.js) .foot[data-in="false"] > * {
+  opacity: 0;
+  transform: translate3d(0, 0.8em, 0);
+}
+
+/* No scene (a browser without WebGL, a model that is gone): the stage and its line go, the two
+   lines of type stay. */
+.companions[data-companions="none"] .stage,
+.companions[data-companions="none"] .foot {
+  display: none;
+}
+
+/* A phone: our drone above, the two below it to the left and the right. */
+@media (max-width: 47.99rem) {
+  .companions {
+    --stage-h: clamp(24rem, 66vh, 34rem);
+    --ball: calc(var(--stage-h) * 0.125);
+    --floor: 7%;
+  }
+
+  .line {
+    font-size: var(--step-2);
+  }
+
+  .anchor {
+    top: 24%;
+  }
+
+  .spot[data-spot="a"] {
+    top: 50%;
+    left: 27%;
+  }
+
+  .spot[data-spot="b"] {
+    top: 54%;
+    left: 74%;
+  }
+}

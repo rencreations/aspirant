@@ -5,8 +5,12 @@
       // Repository scripts (asset pipeline, content builders, QA scans).
       "entry": ["scripts/**/*.{mjs,js,ts}"],
       "project": ["scripts/**/*.{mjs,js,ts}"],
-      // The drone build's own page runs in a browser and takes three from an import map.
-      "ignore": ["scripts/about/drone/page/**"],
+      // The model builds' own pages run in a browser and take three from an import map.
+      "ignore": [
+        "scripts/about/drone/page/**",
+        "scripts/about/tetra/page/**",
+        "scripts/about/companions/page/**",
+      ],
       "ignoreBinaries": ["ffmpeg"],
     },
     "apps/web": {

@@ -117,3 +117,33 @@ Not to be stated: other series in TheMLabel, the skin tier, the voice cast after
 ## Left to check
 
 Firefox, Safari, a real phone (the touch tests were synthetic, and the address bar of a real phone changes the height of the screen), a weak graphics chip, and a display wider than 2560 pixels below the opening (the sections keep to the site's column there while the first screen is as wide as the page). `docs/HISTORY.md` (15 and 16 Nov 2026) lists what was found and fixed on the way.
+
+## Second round (16 Nov 2026)
+
+Request: `2026-11-16-about-phases-request.md` (word for word). The owner looked at the page and asked for changes to the first screen and for the phases to carry everything made for them. What changed, and the calls in it:
+
+**The first screen.** The description is the owner's sentence and ends on TheMLabel's own mark, set into the line like a word (the mark is made for a dark ground, so its silver letters are redrawn in ink for the light page and the orange M is kept: `scripts/about/arts.py`). The three figures beside the film were cut by their masks (the slanted figures stand taller than their line box): the masks were given room. The film is no longer a reel of the five trailers. It is "How it started": the studio's own film about the first Aspirant ideas. The loop that plays by itself is cut from that film (`scripts/about/start.py`, about 20 s, no subtitle in the band that is shown), the play control opens the whole film from the collection, and the five trailer pills are gone, because each phase now shows its own videos.
+
+**The phases.** Each phase keeps its head (the numeral, the label, the date, its two skins) and now adds, under them: its official videos as a list to choose from beside a window (the owner's lists and order, the pinned ones first), its music as a disc for each track with the details beside it (the first phase also has its music video), Tetra's own corner (second phase), the interactive drama (fourth phase), the official webtoon (first and fourth phase, the fourth with its voiced film) and its official art. The title is "Aspirant Phases".
+
+- **Nothing is copied.** Every video, track, cover and comic panel is the collection's own file, named by its id in `features/about/phase-media.ts`, which runs while the page is built and hands each phase only the records it needs (`sections/phase/types.ts`). The art is the site's own splash and pair pictures; one picture was missing and was added (`scripts/about/arts.py`).
+- **Videos are opened, never played in place.** The window shows the chosen video's poster and its play control opens the site's player, with sound. The live-action parody is in the first phase's list because the owner listed it; it keeps its collection title, a "Not canon" label and the takedown link.
+- **Each phase opens in its own way.** The windows of the skins, the rules and the rows arrive differently in every phase (from the top, sideways, from the foot, corner to corner, from the outer side), and each added part has its own arrival per phase. All of it is transform and opacity.
+- **The drone has a place at every part** (an anchor in the gap above it, the side changing from part to part), so it is never left waiting over a long stretch of the page.
+- **The way back.** A link from this page says where the visitor came from (`from=about&at=phase-N`); the way out of the page it opens then reads "About" and leads back to that phase, without the opening (`lib/return-to.ts`, `about-root.tsx`).
+- **The second line of the lead** reads "Each phase releases two Aspirant characters." The owner's words were "Each phase will release 2 Aspirant character."; only the grammar was set right.
+- **The drone's caption** is the owner's: "The Aspirants official mascot."
+
+## Third round (16 Nov 2026, evening)
+
+Request: `2026-11-16-about-round3-request.md` (word for word). What changed, and the calls in it:
+
+- **Small corrections.** TheMLabel's mark in the description is smaller and sits lower in its line. Ruby's, Angela's and Obsidia's pictures were moved inside their windows; a tall window shows the whole height of a wide picture, so to set a face lower the picture is drawn a little larger and moved down (`nudge` in `content.ts`). How far it can go is limited: a face that is at the very top of its picture (Obsidia's) can only come down by enlarging the picture.
+- **Every video previews itself.** The window of each phase's videos plays the chosen video, muted, and so do the music video and the voiced comic. Sound is still only in the site's player.
+- **Phase four's videos** are split in two, Films and Others; the vertical videos are shown in a vertical window.
+- **Music.** The discs wear the Music room's own faces. The links to the music services are three marks, not words. The way back from the music video to the record was made plain.
+- **Tetra's entrance holds the scroll once** and then shows a small cue. This is the one hold and the one cue on the page, both asked for by the owner. Her line is the owner's: "Tetra is a gift from Ruby to Angela."
+- **Guinevere's two drones** have a corner of phase four, asked for during round two.
+- **The resources** (the old "Made around the skins") are three rooms, with the owner's titles and lines. The count of voice lines is read from the collection's index, so it follows the room (812 when this was written). The owner's line of languages read "türkçe, and, Bahasa Indonesia"; it is set "türkçe and Bahasa Indonesia".
+- **The end of the page.** The outro is gone. The drone stops in a circle with no words, and TheMLabel closes over the page after the official ident (the M window on the page, the flip book of plates with footage of the films, the logo). The content about TheMLabel is dark and is the end of the page: there is no footer to the next page. The fan notice stands at its foot.
+- **No shortcut to the takedown page on this page**, by the owner's decision. This overrides, for `/about` only, the site's rule that every 3D model and every non-canon item carries one. The legal pages are still reached from the menu.

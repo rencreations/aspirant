@@ -120,21 +120,19 @@ export function Ledger() {
             <b>04</b>
             <span>Around the skins</span>
             <span className={kit.eyebrowRule} aria-hidden="true" />
-            <span>{String(LEDGER.length).padStart(2, "0")} figures</span>
           </p>
           <h2 id="about-ledger" className={`display ${kit.title}`}>
             <span className={kit.mask}>
-              <span className={kit.line}>Made around </span>
+              <span className={kit.line}>Aspirant </span>
             </span>
             <span className={kit.mask}>
               <span className={kit.line} style={i(1)}>
-                the skins
+                resources
               </span>
             </span>
           </h2>
           <p className={`serif ${kit.lead} ${kit.rise}`} style={i(4)}>
-            A phase is more than two skins. Each came with films, music, voices and more. Every row
-            opens the room that keeps them.
+            Aspirant produced many content from each phases that you can view below.
           </p>
         </header>
 

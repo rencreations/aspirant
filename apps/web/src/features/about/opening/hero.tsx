@@ -2,14 +2,16 @@ import type { CSSProperties } from "react";
 
 import { asset } from "@/lib/asset";
 
-import { REEL_POSTER } from "../media";
+import { START_POSTER, THEMLABEL_LOGO } from "../media";
 import styles from "./opening.module.css";
 import { Title } from "./title";
 
-/** What the series is, in the game's own facts. The last words are set in the serif. */
+/**
+ * What the series is, in the owner's words (16 Nov 2026). The sentence ends on TheMLabel's own
+ * mark, set into the line like a word.
+ */
 const LEDE =
-  "The Aspirants is the anime skin series of Mobile Legends: Bang Bang. It began in January 2022 as the game's first anime-themed skins and is the first series featured in TheMLabel.";
-const LEDE_END = "Five phases so far, and still running.";
+  "The Aspirants is the first anime skin series of Mobile Legends: Bang Bang. It began in January 2022 as the first series featured in";
 
 const LABELS = ["TheMLabel series", "Since January 2022", "Now in Phase V"] as const;
 
@@ -75,9 +77,21 @@ export function Hero() {
           </p>
           <p className={styles.lede}>
             <Words text={LEDE} from={10} />{" "}
-            <em className={`${styles.ledeEnd} serif`}>
-              <Words text={LEDE_END} from={10 + ledeWords} />
-            </em>
+            <span className={`${styles.word} ${styles.logoWord}`}>
+              <span style={{ "--d": 10 + ledeWords } as CSSProperties}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- a mark set into a line of text */}
+                <img
+                  className={styles.ledeLogo}
+                  src={asset(THEMLABEL_LOGO)}
+                  alt="TheMLabel"
+                  width={720}
+                  height={184}
+                  decoding="async"
+                  draggable={false}
+                />
+                .
+              </span>
+            </span>
           </p>
         </div>
 
@@ -85,10 +99,7 @@ export function Hero() {
           <div className={styles.reel}>
             <p className={`${styles.caption} hud-label`}>
               <span className={styles.mask}>
-                <span style={{ "--d": 34 } as CSSProperties}>The reel</span>
-              </span>
-              <span className={styles.mask}>
-                <span style={{ "--d": 37 } as CSSProperties}>Five phases, one cut</span>
+                <span style={{ "--d": 34 } as CSSProperties}>How it started</span>
               </span>
             </p>
             {/* Where the preview rests. Without scripts the film is not placed, so its still shows here. */}
@@ -96,7 +107,7 @@ export function Hero() {
               className={styles.slot}
               data-about-slot=""
               aria-hidden="true"
-              style={{ "--poster": `url("${asset(REEL_POSTER)}")` } as CSSProperties}
+              style={{ "--poster": `url("${asset(START_POSTER)}")` } as CSSProperties}
             />
           </div>
 
