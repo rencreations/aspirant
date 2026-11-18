@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Component, useEffect, useRef, type ReactNode } from "react";
 
+import { hasWebGL } from "@/components/gl/use-gl-ready";
 import { HomeBoot } from "@/components/home-boot/home-boot";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { useScrollLock } from "@/features/character/vexana/seams/scroll-lock";
@@ -10,6 +11,7 @@ import { audio } from "@/lib/audio";
 import { runHomeFlow, selectHomeActive, useHomeFlow } from "@/lib/home-flow";
 import { useMounted } from "@/lib/hooks";
 import { loadingNote } from "@/lib/loading-note";
+import { useNavLock } from "@/lib/nav-lock";
 import { isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
 import { runPreload, type PreloadProgress } from "@/lib/preload";
@@ -142,7 +144,13 @@ export function LoaderGate() {
       if (!el) return;
       el.hidden = finished || !(slow || offline);
       if (!el.hidden) {
-        el.textContent = loadingNote(latest, { offline, retrying });
+        // On the home the screen's number is floored and never 100 before the list is done: the
+        // note says the same number as the bar, not a rounded one.
+        const said =
+          home && latest
+            ? { ...latest, progress: Math.min(0.99, Math.floor(latest.progress * 100) / 100) }
+            : latest;
+        el.textContent = loadingNote(said, { offline, retrying });
       }
     };
     const warn = window.setTimeout(() => {
@@ -164,6 +172,10 @@ export function LoaderGate() {
       releaseRouter = claim();
       releaseScroll = lock(HOME_HOLD_LIMIT_MS);
       window.scrollTo(0, 0);
+      // The bar is empty for the whole opening: the menu and the sound button come at its end, and
+      // the logo is not shown (the page's own big logo morphs into it). With no WebGL there is no
+      // big logo, so the bar keeps its own.
+      useNavLock.setState({ hideControls: true, hideLogo: hasWebGL() });
       run = runHomeFlow({
         // The same real preload as any page: the home's list, however long it takes.
         load: (report) =>
@@ -215,6 +227,9 @@ export function LoaderGate() {
         window.scrollTo(0, 0);
         releaseScroll?.();
         releaseRouter?.();
+        // However the opening ended (the intro, a skip, no WebGL, a failure): the menu and the sound
+        // button fade in. The logo is the page's to give back.
+        useNavLock.setState({ hideControls: false });
       }
       setEntered(true);
       say("Loaded");

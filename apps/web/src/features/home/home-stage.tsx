@@ -62,7 +62,8 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
   useEffect(() => {
     useNavLock.setState(
       mode === "off"
-        ? { theme: null, bare: false, fade: false, away: false }
+        ? // The plain page has no big logo to morph: the bar keeps its own (the opening hid it).
+          { theme: null, bare: false, fade: false, away: false, hideLogo: false }
         : { theme: "daybreak", bare: true, fade: false, away: false },
     );
   }, [mode]);

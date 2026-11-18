@@ -188,6 +188,17 @@ export function tapToContinue(): void {
   useHomeFlow.getState().tap();
 }
 
+let tapGuard: (() => boolean) | null = null;
+
+/**
+ * Lets the scene say that the press that is going on must not count as "continue" (it began on the
+ * drone). The scene sets it when it is built and clears it with `null` when it goes. Enter and Space
+ * are not guarded.
+ */
+export function setTapGuard(guard: (() => boolean) | null): void {
+  tapGuard = guard;
+}
+
 /**
  * Listens for the press while the tap gate is up: any click or tap (counted only when the press
  * began after the gate appeared, so a press that was already down when the files arrived does not
@@ -199,7 +210,9 @@ export function listenForTap(): () => void {
     armed = true;
   };
   const click = () => {
-    if (armed) tapToContinue();
+    // A press that began on something the page wants for itself (the loading screen's drone, which
+    // answers its own press) is not "continue": the visitor presses the empty space for that.
+    if (armed && !(tapGuard?.() ?? false)) tapToContinue();
   };
   const key = (e: KeyboardEvent) => {
     if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;

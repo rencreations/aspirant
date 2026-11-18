@@ -16,6 +16,7 @@ const {
   seedFor,
   selectHomeActive,
   selectIsOpen,
+  setTapGuard,
   shownPercent,
   stepShown,
   tapToContinue,
@@ -205,6 +206,26 @@ describe("the press", () => {
       expect(e.defaultPrevented).toBe(true);
       off();
     }
+  });
+
+  it("does not count a press that began on the drone (the scene's guard), but Enter still does", () => {
+    reset("document", "tap");
+    const stop = listenForTap();
+    setTapGuard(() => true);
+    window.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    window.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(useHomeFlow.getState().phase).toBe("tap");
+    // The guard is asked at the click: once the press is not on the drone, it counts.
+    setTapGuard(() => false);
+    window.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    window.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(useHomeFlow.getState().phase).toBe("intro");
+    reset("document", "tap");
+    setTapGuard(() => true);
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    expect(useHomeFlow.getState().phase).toBe("intro");
+    setTapGuard(null);
+    stop();
   });
 
   it("ignores other keys, modified Enter and a held key, and stops listening when told", () => {
