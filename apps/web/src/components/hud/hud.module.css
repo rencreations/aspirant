@@ -6,6 +6,13 @@
   color: var(--hud-ink);
   font-family: var(--font-mono-stack);
   background: none;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+/* While the home's opening hides the bar's controls the brackets are hidden too. */
+.hud[data-hidden="true"] {
+  opacity: 0;
+  transition-duration: var(--dur-fast);
 }
 
 .bottom {

@@ -101,6 +101,17 @@ export async function tapHome(page: Page, timeout = 60_000): Promise<boolean> {
   return true;
 }
 
+/**
+ * Waits until the home page is open and running (`data-open="1"`: the opening has ended or was
+ * switched off, and the stage has decided its mode). The home keeps downloading in the background
+ * (clips, models, voice lines), so the network never goes quiet: never wait for `networkidle` on `/`.
+ */
+export async function homeOpen(page: Page): Promise<void> {
+  const home = page.locator("[data-home]");
+  await expect(home).not.toHaveAttribute("data-gl", "pending", { timeout: 30_000 });
+  await expect(home).toHaveAttribute("data-open", "1", { timeout: 60_000 });
+}
+
 /** Collect console errors and uncaught exceptions. */
 export function watchErrors(page: Page): string[] {
   const errors: string[] = [];

@@ -4,6 +4,7 @@ import { useRef } from "react";
 
 import { audio } from "@/lib/audio";
 import { useHotkey, useScrollProgress, useThemeAt } from "@/lib/hooks";
+import { useNavLock } from "@/lib/nav-lock";
 import { useSiteStore } from "@/lib/stores";
 
 import styles from "./hud.module.css";
@@ -24,6 +25,8 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
 export function HudFrame() {
   const barRef = useRef<HTMLDivElement>(null);
   const toggleMute = useSiteStore((s) => s.toggleMute);
+  // The home's opening hides the bar's controls: the brackets wait with them and fade in together.
+  const hidden = useNavLock((s) => s.hideControls);
   // Fixed chrome follows the world underneath it.
   const theme = useThemeAt((w, h) => ({ x: w / 2, y: h * 0.28 }));
   const bottomTheme = useThemeAt((w, h) => ({ x: w / 2, y: h - 24 }));
@@ -41,7 +44,13 @@ export function HudFrame() {
 
   return (
     <>
-      <aside className={styles.hud} data-theme={theme} data-overlay="hud" aria-hidden="true">
+      <aside
+        className={styles.hud}
+        data-theme={theme}
+        data-overlay="hud"
+        data-hidden={hidden ? "true" : undefined}
+        aria-hidden="true"
+      >
         <Corner pos="tl" />
         <Corner pos="tr" />
         <div className={styles.bottom} data-theme={bottomTheme}>

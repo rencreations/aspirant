@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { settled, sitePath, skipGate, url } from "./helpers";
+import { homeOpen, settled, sitePath, skipGate, url } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
   await skipGate(page);
@@ -57,9 +57,11 @@ test("the next-destination chain goes all the way round", async ({ page, baseURL
   // The About page has no way on: it ends in TheMLabel (owner's decision, 16 Nov 2026). The
   // story page has none either: it is a page with no end, and it starts over by itself.
   await page.goto(url("/"));
+  await homeOpen(page);
   await page.getByRole("button", { name: /^Continue to/ }).click();
   await settled(page);
-  await expect.poll(() => sitePath(page, baseURL)).toBe("/about/");
+  // The way out of the home is a flight and a cover, not the curtain: it takes a few seconds.
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 20_000 }).toBe("/about/");
   await expect(page.getByRole("button", { name: /^Continue to/ })).toHaveCount(0);
 
   const rest = ["/collection/", "/"];
@@ -92,9 +94,9 @@ test("M toggles sound and the toggle reflects it", async ({ page }) => {
 
 test("scrolling through the footer opens the next page", async ({ page, baseURL }) => {
   await page.goto(url("/"));
-  await page.waitForLoadState("networkidle");
+  await homeOpen(page);
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/about/");
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 20_000 }).toBe("/about/");
 });
 
 test("the system reduced-motion setting is ignored: the footer still opens the next page", async ({
@@ -103,9 +105,9 @@ test("the system reduced-motion setting is ignored: the footer still opens the n
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(url("/"));
-  await page.waitForLoadState("networkidle");
+  await homeOpen(page);
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(() => sitePath(page, baseURL), { timeout: 8000 }).toBe("/about/");
+  await expect.poll(() => sitePath(page, baseURL), { timeout: 20_000 }).toBe("/about/");
 });
 
 test("the menu has no Reduce motion control", async ({ page }) => {
