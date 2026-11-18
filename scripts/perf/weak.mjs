@@ -9,7 +9,13 @@
  *   FULL=1 node scripts/perf/weak.mjs http://127.0.0.1:3190 soft 4 1366 768 1 "character/selena/"
  *
  * `soft` turns the GPU and the video acceleration off (every frame is decoded and composed by the
- * processor). Without FULL=1 the loading screen is skipped. Needs Microsoft Edge (H.264).
+ * processor). Needs Microsoft Edge (H.264).
+ *
+ * The home page (route "" or "/") is measured too: the page at rest for 6 s, then a real mouse wheel
+ * down the whole page (SCREENS screens, default 62, a frame report every 5). Its own opening (the
+ * drone loader, the tap gate "Touch anywhere to continue", the intro) is skipped with
+ * `aspirants:intro` = "off", so the numbers are the page's. FULL=1 plays the opening: the script
+ * reports the frames of the loading screen, presses the gate, and reports the frames of the intro.
  */
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
@@ -39,6 +45,15 @@ const c = await b.newContext({
   viewport: { width: Number(w), height: Number(h) },
   deviceScaleFactor: Number(dpr),
 });
+const homeRoute = route === "" || route === "/";
+if (homeRoute && !process.env.FULL) {
+  await c.addInitScript(() => {
+    try {
+      sessionStorage.setItem("aspirants:entered", "1");
+      sessionStorage.setItem("aspirants:intro", "off");
+    } catch {}
+  });
+}
 await c.addInitScript(() => {
   window.__frames = [];
   window.__loaf = [];
@@ -107,20 +122,22 @@ const mode_ = () =>
 const t0 = Date.now();
 await p.goto(base + "/" + route, { waitUntil: "load", timeout: 240000 });
 // boot: measure frames while the loading screen runs
-const boot = await (async () => {
-  for (
-    let i = 0;
-    i < 1200 &&
-    !(await p
-      .getByRole("button", { name: "Skip" })
-      .isVisible()
-      .catch(() => false)) &&
-    (await mode_()) !== "idle";
-    i++
-  )
-    await p.waitForTimeout(250);
-  return (Date.now() - t0) / 1000;
-})();
+const boot = homeRoute
+  ? (Date.now() - t0) / 1000
+  : await (async () => {
+      for (
+        let i = 0;
+        i < 1200 &&
+        !(await p
+          .getByRole("button", { name: "Skip" })
+          .isVisible()
+          .catch(() => false)) &&
+        (await mode_()) !== "idle";
+        i++
+      )
+        await p.waitForTimeout(250);
+      return (Date.now() - t0) / 1000;
+    })();
 const stat = async (label) => {
   const r = await p.evaluate(() => {
     const f = window.__frames.slice().sort((a, b) => a - b);
@@ -157,6 +174,29 @@ console.log(
   `mode ${mode} throttle ${throttle}x viewport ${w}x${h}@${dpr}; boot screen/skip visible after ${boot.toFixed(1)}s`,
 );
 await stat("boot (incl. loading)");
+if (homeRoute) {
+  if (process.env.FULL) {
+    const gate = p.getByRole("button", { name: /touch anywhere to continue/i });
+    await gate.waitFor({ state: "visible", timeout: 240000 });
+    await stat("loading screen");
+    await gate.click();
+    await p
+      .waitForFunction(() => !document.querySelector("[data-home-boot]"), null, { timeout: 120000 })
+      .catch(() => {});
+    await stat("intro");
+  }
+  await p.waitForTimeout(6000);
+  await stat("rest 6s");
+  await p.mouse.move(Number(w) / 2, Number(h) / 2);
+  const screens = Number(process.env.SCREENS || 62);
+  for (let i = 1; i <= screens; i++) {
+    await p.mouse.wheel(0, Number(h));
+    await p.waitForTimeout(700);
+    if (i % 5 === 0) await stat(`scroll to screen ${i}`);
+  }
+  await b.close();
+  process.exit(0);
+}
 await p
   .getByRole("button", { name: "Skip" })
   .click({ timeout: 120000 })

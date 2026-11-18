@@ -17,20 +17,38 @@ async function launch() {
   return chromium.launch({ channel: "chrome", headless: true });
 }
 
-/** A context with the loading gate skipped (as a returning visitor in the same tab). */
+/**
+ * A context with the loading gate skipped (as a returning visitor in the same tab) and the home
+ * page's own opening switched off: `aspirants:intro` = "off" is written when the document is the
+ * home page, so `/` opens at once with no drone loader, no tap gate and no intro. It is written
+ * only there on purpose. The other openings (About's flight, Tetra's entrance, TheMLabel's close,
+ * the roster's) are what other probes look at, and `about.cjs` decides for itself whether the About
+ * opening runs; a global "off" would have turned its `intro` part into a picture of the finished
+ * page. A probe that wants them off on every page sets the key itself. Probes that want to look at
+ * the home's own opening use `launch()` and a plain `browser.newContext()` (see first-visit.cjs and
+ * `tapHome` below).
+ */
 async function context(browser, options = {}) {
   const ctx = await browser.newContext(options);
-  await ctx.addInitScript(() => {
-    try {
-      sessionStorage.setItem("aspirants:entered", "1");
-      localStorage.setItem(
-        "aspirants:consent",
-        JSON.stringify({ choice: "rejected", at: Date.now() }),
-      );
-    } catch {
-      /* ignore */
-    }
-  });
+  const base = new URL(BASE).pathname.replace(/\/+$/, "");
+  await ctx.addInitScript(
+    ({ base }) => {
+      try {
+        sessionStorage.setItem("aspirants:entered", "1");
+        const path = location.pathname.replace(/\/+$/, "");
+        if (path === base || path === `${base}/index.html`) {
+          sessionStorage.setItem("aspirants:intro", "off");
+        }
+        localStorage.setItem(
+          "aspirants:consent",
+          JSON.stringify({ choice: "rejected", at: Date.now() }),
+        );
+      } catch {
+        /* ignore */
+      }
+    },
+    { base },
+  );
   return ctx;
 }
 
@@ -47,6 +65,29 @@ async function throttle(ctx, page, mbit, latency = 300) {
   return cdp;
 }
 
+/**
+ * Presses the home page's tap gate ("Touch anywhere to continue") once it appears, and waits for the
+ * page to open. Returns the seconds the gate waited for the files and the seconds the opening took
+ * after the press, or null when the page has no home loading screen (another route, or intro off).
+ * `timeout` is in milliseconds. It never gives up before then: a slow connection waits.
+ */
+async function tapHome(page, timeout = 120000) {
+  const t0 = Date.now();
+  const gate = page.getByRole("button", { name: /touch anywhere to continue/i });
+  const appeared = await gate
+    .waitFor({ state: "visible", timeout })
+    .then(() => true)
+    .catch(() => false);
+  if (!appeared) return null;
+  const gateAfter = (Date.now() - t0) / 1000;
+  const t1 = Date.now();
+  await gate.click();
+  await page
+    .waitForFunction(() => !document.querySelector("[data-home-boot]"), null, { timeout })
+    .catch(() => undefined);
+  return { gateAfter, openAfter: (Date.now() - t1) / 1000 };
+}
+
 const PHONE = {
   viewport: { width: 390, height: 844 },
   hasTouch: true,
@@ -54,4 +95,4 @@ const PHONE = {
   deviceScaleFactor: 2,
 };
 
-module.exports = { BASE, OUT, PHONE, launch, context, throttle };
+module.exports = { BASE, OUT, PHONE, launch, context, throttle, tapHome };

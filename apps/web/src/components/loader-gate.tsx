@@ -1,13 +1,17 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { Component, useEffect, useRef, type ReactNode } from "react";
 
+import { HomeBoot } from "@/components/home-boot/home-boot";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
+import { useScrollLock } from "@/features/character/vexana/seams/scroll-lock";
 import { audio } from "@/lib/audio";
+import { runHomeFlow, selectHomeActive, useHomeFlow } from "@/lib/home-flow";
 import { useMounted } from "@/lib/hooks";
 import { loadingNote } from "@/lib/loading-note";
 import { isOffline } from "@/lib/offline";
+import { whenPageReady } from "@/lib/page-ready";
 import { runPreload, type PreloadProgress } from "@/lib/preload";
 import { onRetries, retriesWaiting } from "@/lib/retry";
 import { routeItems } from "@/lib/route-preloads";
@@ -31,12 +35,46 @@ export const SHELL_ID = "site-shell";
 const SLOW_AFTER_MS = 15_000;
 
 /**
+ * How long the home opening may hold the scroll. This is only a guard against a hold nobody gave
+ * back, never a time to wait for: the opening ends when the intro ends, however long that takes.
+ */
+const HOME_HOLD_LIMIT_MS = 2 * 60 * 60 * 1000;
+
+/** If the home loading screen throws, the page opens at once (a failure handled, not a version). */
+class HomeBootBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  override state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  override componentDidCatch(error: unknown) {
+    console.warn("The home loading screen failed; opening the page.", error);
+    useHomeFlow.getState().abort();
+  }
+
+  override render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/**
  * The first visit of a browser session: shows the logo loading screen, loads everything the
  * landing page needs through `lib/preload.ts` (the bar reports real work), then opens the page
  * through the letters of the logo. There is nothing to click, and it waits for as long as the
  * connection needs: one version of the site only. The server always renders the
  * full site underneath, so crawlers and no-JS visitors get the content; a boot script paints a
  * light cover first (html[data-gate="on"]) to avoid a flash.
+ *
+ * The one exception is a document load of the home page (a visit from outside, or a reload: see
+ * `lib/home-arrival.ts`, decided by the boot script before first paint). That runs the home's own
+ * opening instead of the curtain, whether or not this tab has entered: a loading screen under the
+ * plain cover (`components/home-boot/`), the same real preload of the home's list, then one press
+ * ("Touch anywhere to continue", which is also the browser's gesture for the sound), then the intro.
+ * The press is only asked for at 100 percent, when nothing is skipped, so it is not an "Enter now".
+ * This component is the stable host of that opening and owns what must not depend on how it looks:
+ * the inert page, the router claim, the scroll hold, the listeners for the press, `entered` (set at
+ * the end of the intro, not at the press) and the notes for a slow connection and for no connection.
  *
  * Browsers only start audio after a gesture, so the first touch, click or key press anywhere
  * unlocks it.
@@ -46,7 +84,9 @@ export function LoaderGate() {
   const pathname = usePathname();
   const entered = useSiteStore((s) => s.entered);
   const setEntered = useSiteStore((s) => s.setEntered);
-  const { boot } = useTransitionRouter();
+  const homeActive = useHomeFlow(selectHomeActive);
+  const { boot, claim } = useTransitionRouter();
+  const { lock } = useScrollLock();
   const started = useRef(false);
   const noteRef = useRef<HTMLParagraphElement>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
@@ -73,9 +113,16 @@ export function LoaderGate() {
     const shell = document.getElementById(SHELL_ID);
     // The boot script's cover stays until this is set (the scripts have started).
     window.__aspirantsGate = true;
-    if (entered || readEntered()) {
+    const flow = useHomeFlow.getState();
+    // A home arrival that is already open means its loading screen failed before this ran
+    // (`abort`): the page is open, so there is nothing left to load behind a cover.
+    const home = flow.arrival === "document" && flow.phase !== "open";
+    const aborted = flow.arrival === "document" && flow.phase === "open";
+    if (!home && (aborted || entered || readEntered())) {
       delete root.dataset.gate;
+      delete root.dataset.gateKind;
       if (shell) shell.inert = false;
+      if (aborted) setEntered(true);
       started.current = true;
       return;
     }
@@ -89,11 +136,13 @@ export function LoaderGate() {
     let finished = false;
     const paint = () => {
       const el = noteRef.current;
-      if (!el) return;
       const offline = isOffline();
+      const retrying = retriesWaiting() > 0;
+      if (home) useHomeFlow.getState().setNotes({ slow, offline, retrying });
+      if (!el) return;
       el.hidden = finished || !(slow || offline);
       if (!el.hidden) {
-        el.textContent = loadingNote(latest, { offline, retrying: retriesWaiting() > 0 });
+        el.textContent = loadingNote(latest, { offline, retrying });
       }
     };
     const warn = window.setTimeout(() => {
@@ -104,20 +153,52 @@ export function LoaderGate() {
     window.addEventListener("online", paint);
     const stopRetries = onRetries(paint);
     paint();
-    const run = boot((report) =>
-      // Everything the page needs, however long it takes. Once the page is on its way open, the
-      // files that are still arriving (the deferred ones) must not move the curtain's bar any
-      // more: runPreload has ended by then, so nothing can.
-      runPreload(routeItems(pathname), (p) => {
-        latest = p;
-        report(p);
-        if (slow || isOffline()) paint();
-      }),
-    );
-    // The curtain is drawn now; the plain cover can go.
-    requestAnimationFrame(() => {
-      delete root.dataset.gate;
-    });
+
+    let releaseRouter: (() => void) | null = null;
+    let releaseScroll: (() => void) | null = null;
+    let run: Promise<void>;
+    if (home) {
+      // The home's own opening: no curtain. The tab counts as not entered until the intro has
+      // ended (the consent plate, the menu art and the About drone wait for it), also on a reload.
+      setEntered(false);
+      releaseRouter = claim();
+      releaseScroll = lock(HOME_HOLD_LIMIT_MS);
+      window.scrollTo(0, 0);
+      run = runHomeFlow({
+        // The same real preload as any page: the home's list, however long it takes.
+        load: (report) =>
+          runPreload(routeItems("/"), (p) => {
+            latest = p;
+            report(p);
+            if (slow || isOffline()) paint();
+          }),
+        ready: () => whenPageReady(),
+        // The loading screen has drawn its first frame: the plain cover can go.
+        dropCover: () => {
+          delete root.dataset.gate;
+          delete root.dataset.gateKind;
+        },
+        loaded: () => {
+          finished = true;
+          paint();
+        },
+      });
+    } else {
+      run = boot((report) =>
+        // Everything the page needs, however long it takes. Once the page is on its way open, the
+        // files that are still arriving (the deferred ones) must not move the curtain's bar any
+        // more: runPreload has ended by then, so nothing can.
+        runPreload(routeItems(pathname), (p) => {
+          latest = p;
+          report(p);
+          if (slow || isOffline()) paint();
+        }),
+      );
+      // The curtain is drawn now; the plain cover can go.
+      requestAnimationFrame(() => {
+        delete root.dataset.gate;
+      });
+    }
     void run.finally(() => {
       finished = true;
       window.clearTimeout(warn);
@@ -126,12 +207,20 @@ export function LoaderGate() {
       stopRetries();
       paint();
       delete root.dataset.gate;
+      delete root.dataset.gateKind;
       if (shell) shell.inert = false;
+      if (home) {
+        // The page opens at its top. Giving the scroll back makes the smooth scroller start again
+        // from where the page is.
+        window.scrollTo(0, 0);
+        releaseScroll?.();
+        releaseRouter?.();
+      }
       setEntered(true);
       say("Loaded");
       document.getElementById("main")?.focus({ preventScroll: true });
     });
-  }, [boot, entered, mounted, pathname, setEntered]);
+  }, [boot, claim, entered, lock, mounted, pathname, setEntered]);
 
   return (
     <>
@@ -141,6 +230,11 @@ export function LoaderGate() {
         hidden
         className="pointer-events-none fixed bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] left-1/2 z-[2000] w-[min(26rem,calc(100vw-2rem))] -translate-x-1/2 text-center text-[0.75rem] leading-relaxed tracking-[0.04em] text-[#140e26]"
       />
+      {homeActive ? (
+        <HomeBootBoundary>
+          <HomeBoot />
+        </HomeBootBoundary>
+      ) : null}
     </>
   );
 }

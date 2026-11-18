@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { skipGate, url } from "./helpers";
+import { skipGate, tapHome, url } from "./helpers";
 
 /**
  * The opening of /character. The picture is drawn in one WebGL canvas that covers the page and is
@@ -156,6 +156,8 @@ test.describe("roster intro, where it plays", () => {
   test("arriving from the home page plays it", async ({ page }) => {
     await skipGate(page, { intro: true });
     await page.goto(url("/"));
+    // A document load of the home runs its own opening (the loader, then the press): go through it.
+    await tapHome(page);
     test.skip(!(await hasWebGL2(page)), "no WebGL2 in this browser");
     await openRosterFromMenu(page);
     await expect

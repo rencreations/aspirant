@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Dialog } from "radix-ui";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { AspirantLogo } from "@/components/logo/aspirant-logo";
 import { useLenis } from "@/components/smooth-scroll";
@@ -12,7 +12,7 @@ import { asset } from "@/lib/asset";
 import { audio } from "@/lib/audio";
 import { useThemeAt } from "@/lib/hooks";
 import { LEGAL_ROUTES } from "@/lib/legal";
-import { useNavLock } from "@/lib/nav-lock";
+import { clearHomeNav, shouldClearHomeNav, useNavLock } from "@/lib/nav-lock";
 import { isActiveRoute, navItems, routes, siteConfig } from "@/lib/site";
 import { useSiteStore } from "@/lib/stores";
 
@@ -62,6 +62,12 @@ export function SiteNav() {
   const current = currentIndex >= 0 ? navItems[currentIndex] : undefined;
   /** The pair on show: the page being hovered, else the page the visitor is on, else the first. */
   const shownIndex = active ?? (currentIndex >= 0 ? currentIndex : 0);
+
+  // The home hides the logo and the controls while its opening runs. Every other page shows them,
+  // and does not wait for the home to unmount: this runs before the new page's own effects.
+  useLayoutEffect(() => {
+    if (shouldClearHomeNav(pathname)) clearHomeNav();
+  }, [pathname]);
 
   useEffect(() => {
     let raf = 0;
@@ -149,6 +155,8 @@ export function SiteNav() {
       data-bare={lock.bare ? "true" : undefined}
       data-fade={lock.fade ? "true" : undefined}
       data-away={lock.away ? "true" : undefined}
+      data-hide-logo={lock.hideLogo ? "true" : undefined}
+      data-hide-controls={lock.hideControls ? "true" : undefined}
       inert={lock.away}
       data-overlay="nav"
     >
@@ -164,7 +172,7 @@ export function SiteNav() {
         }}
       >
         <div className={styles.inner}>
-          <div className={styles.left}>
+          <div className={styles.left} inert={lock.hideControls}>
             <Dialog.Trigger className={styles.menuButton} aria-label="Open menu">
               <span className={styles.burger} aria-hidden="true" />
               <span className={styles.menuText} aria-hidden="true">
@@ -181,11 +189,12 @@ export function SiteNav() {
             aria-label={`${siteConfig.name}, home`}
             transitionLabel="Home"
             data-logo-host
+            inert={lock.hideLogo}
           >
             <AspirantLogo variant="interactive" className={styles.logo} decorative />
           </TLink>
 
-          <p className={styles.here}>
+          <p className={styles.here} inert={lock.hideControls}>
             {current ? (
               <>
                 <span className={styles.hereIndex}>{current.index}</span>

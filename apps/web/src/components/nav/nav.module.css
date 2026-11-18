@@ -162,6 +162,34 @@
   color: var(--accent);
 }
 
+/* The home page hides parts of the bar while its opening runs (`useNavLock`: hideControls and
+   hideLogo). Opacity and visibility only, and every box keeps its place, so nothing in the bar
+   moves and the logo's rect (the target of the home's logo morph, `[data-logo-host] svg`) can still
+   be measured. The controls fade out quickly and fade in slowly, so it is plain that the page can
+   be used now. The logo never fades: it swaps with the home's big logo in one frame. */
+.left,
+.here {
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+.nav[data-hide-controls="true"] .left,
+.nav[data-hide-controls="true"] .here {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    visibility 0s linear var(--dur-fast);
+}
+
+.nav[data-hide-logo="true"] .brand {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* Menu button: a plate that fills with ink on hover. ---------------------------------------- */
 .menuButton {
   position: relative;

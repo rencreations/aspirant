@@ -17,8 +17,7 @@ import { SiteProviders } from "@/components/site-providers";
 import { ConsentBanner } from "@/features/legal/consent/consent-banner";
 import { ComicLayer } from "@/features/library/comic/zoom/layer";
 import { MorphLayer } from "@/features/story/morph/morph-layer";
-import { RELOAD_KEY, RELOAD_WINDOW_MS } from "@/lib/chunk-guard";
-import { ENTERED_KEY } from "@/lib/stores";
+import { bootScript } from "@/lib/boot-script";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -56,18 +55,10 @@ export const viewport: Viewport = {
 };
 
 /*
- * Runs before first paint: marks JS and sets the pointer type,
- * and paints the gate cover when this tab has not entered yet, and for a returning tab whose scripts are slow to start (1.5 s).
- * The cover stays until the loader mounts (`window.__aspirantsGate`). There is no timer that lets
- * it go: a slow connection waits behind it, with a note, and never gets the plain server text of
- * the page, however long the scripts take (owner decision, 1 Nov 2026, one version only). The
- * only way out is the "Reload the page" link it shows after 90 s, for a visitor whose scripts
- * have really failed. A visitor without JavaScript never gets the cover (this script does not run).
- * It also catches a page whose own scripts or styles failed to arrive (an old deploy, or a
- * connection that dropped before they came): it reloads once, under the same one-a-minute rule as
- * `lib/chunk-guard.ts`, and when the device is offline it reloads as soon as the connection is back.
+ * Runs before first paint: marks JS, sets the pointer type and paints the gate cover. The script and
+ * its rules are in `lib/boot-script.ts` (and `lib/home-arrival.ts` for the home page's own opening).
  */
-const BOOT = `(function(){try{var d=document.documentElement;d.classList.add("js");d.dataset.pointer=matchMedia("(hover: hover) and (pointer: fine)").matches?"fine":"coarse";var e=!1;try{e=sessionStorage.getItem("${ENTERED_KEY}")==="1"}catch(x){}if(!e){d.dataset.gate="on"}else{setTimeout(function(){if(!window.__aspirantsGate)d.dataset.gate="on"},1500)}var k="${RELOAD_KEY}";var go=function(){try{var a=+sessionStorage.getItem(k)||0,n=Date.now();if(a&&n-a<${RELOAD_WINDOW_MS})return;sessionStorage.setItem(k,String(n));location.reload()}catch(x){}};addEventListener("error",function(v){var t=v.target;if(!t||(t.tagName!=="SCRIPT"&&t.tagName!=="LINK"))return;if((t.src||t.href||"").indexOf("/_next/static/")<0)return;try{if(!navigator.onLine){addEventListener("online",go,{once:true});return}go()}catch(x){}},true)}catch(x){}})();`;
+const BOOT = bootScript(siteConfig.basePath);
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (

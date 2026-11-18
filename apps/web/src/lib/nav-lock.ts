@@ -18,6 +18,18 @@ export interface NavLock {
    * shrinks toward the top left and fades, and is out of reach until it comes back.
    */
   readonly away: boolean;
+  /**
+   * The brand logo is hidden (it fades by opacity) but keeps its space, so nothing in the bar
+   * moves and the logo's rect can still be measured. The home page sets it while its own big logo
+   * stands in the middle of the screen and later morphs into the bar's logo. The brand link is
+   * inert while it is set.
+   */
+  readonly hideLogo: boolean;
+  /**
+   * The menu button, the sound button, the record widget and the page name are hidden (opacity
+   * only) and inert. The bar keeps its layout. The home page sets it until its opening has ended.
+   */
+  readonly hideControls: boolean;
 }
 
 export const useNavLock = create<NavLock>()(() => ({
@@ -25,4 +37,29 @@ export const useNavLock = create<NavLock>()(() => ({
   bare: false,
   fade: false,
   away: false,
+  hideLogo: false,
+  hideControls: false,
 }));
+
+/** The path with its slashes at the end taken off, `/` for the home page. */
+function normalPath(pathname: string): string {
+  return pathname.replace(/\/+$/, "") || "/";
+}
+
+/**
+ * Should the home's two hiding fields be cleared when the path becomes `pathname`? Yes, for every
+ * page but the home. The bar (`components/nav/site-nav.tsx`) asks this on every path change and does
+ * not wait for the home page to unmount, so `/about` and the rest never open with an empty bar. On
+ * the home page itself it says no, so a page that has just set the fields in the same commit keeps them.
+ */
+export function shouldClearHomeNav(pathname: string): boolean {
+  const path = normalPath(pathname);
+  return path !== "/" && path !== "/index.html";
+}
+
+/** Show the logo and the controls again. Changes nothing (and wakes nobody) when they are shown. */
+export function clearHomeNav(): void {
+  const { hideLogo, hideControls } = useNavLock.getState();
+  if (!hideLogo && !hideControls) return;
+  useNavLock.setState({ hideLogo: false, hideControls: false });
+}

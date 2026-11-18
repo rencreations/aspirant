@@ -37,10 +37,11 @@ export const ROUTES = [
 
 /**
  * Pages that stream video by themselves hold connections open, so the network never goes quiet
- * there: wait for `load` and a moment instead of `networkidle`.
+ * there: wait for `load` and a moment instead of `networkidle`. The home page plays muted clips
+ * and keeps loading its deferred files in the background, so it is one of them.
  */
 export function streamsVideo(route: string): boolean {
-  return /^\/(character\/(selena|obsidia|vexana|guinevere)\/|story\/$)/.test(route);
+  return /^\/($|character\/(selena|obsidia|vexana|guinevere)\/|story\/$)/.test(route);
 }
 
 /** Resolve a site path against the baseURL (which may include a base path). */
@@ -49,10 +50,13 @@ export function url(path: string): string {
 }
 
 /**
- * Skip the loader gate for this page (as a returning visitor in the same tab). The opening of the
- * roster is skipped too (`aspirants:intro` = "off"), so it never covers the page a spec drives.
- * Pass `{ intro: true }` to let it play (see roster-intro.spec.ts). The analytics question is
- * answered (rejected) unless `{ asked: false }` is passed (see consent.spec.ts).
+ * Skip the loader gate for this page (as a returning visitor in the same tab). Every opening is
+ * skipped too (`aspirants:intro` = "off"): the roster's, About's and the home page's own (the drone
+ * loader, the tap gate and the intro, which a document load of `/` otherwise runs even in a tab that
+ * has entered), so none of them covers the page a spec drives.
+ * Pass `{ intro: true }` to let them play (see roster-intro.spec.ts); a spec that opens `/` that way
+ * then presses the tap gate with `tapHome`. The analytics question is answered (rejected) unless
+ * `{ asked: false }` is passed (see consent.spec.ts).
  */
 export async function skipGate(
   page: Page,
@@ -77,6 +81,24 @@ export async function skipGate(
     },
     { intro: options.intro === true, asked: options.asked !== false },
   );
+}
+
+/**
+ * Presses the home page's tap gate ("Touch anywhere to continue") once it is up, and waits until the
+ * page behind it can be used (`#site-shell` is no longer inert, which happens when the intro has
+ * ended). For a spec that lets the home's own opening play (`skipGate(page, { intro: true })`).
+ * Returns false, after `timeout` ms, when no gate came (any route but `/`, or intro off).
+ */
+export async function tapHome(page: Page, timeout = 60_000): Promise<boolean> {
+  const gate = page.getByRole("button", { name: /touch anywhere to continue/i });
+  try {
+    await gate.waitFor({ state: "visible", timeout });
+  } catch {
+    return false;
+  }
+  await gate.click();
+  await expect(page.locator("#site-shell")).toHaveJSProperty("inert", false, { timeout });
+  return true;
 }
 
 /** Collect console errors and uncaught exceptions. */
