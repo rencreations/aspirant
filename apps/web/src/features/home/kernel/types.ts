@@ -76,6 +76,12 @@ export interface Actor {
   readonly name: string;
   visible: boolean;
   readonly object?: Object3D;
+  /**
+   * Called once a frame for an actor that is shown, after the sections have set what they want and
+   * before the stage draws. The actor integrates its own motion here (springs, idle, blinking,
+   * a mixer, a trail) toward the state the sections set. It is not called while `visible` is false.
+   */
+  update?(frame: FrameInfo): void;
   /** Free what the actor holds on the GPU. Called when it is removed and when the engine goes. */
   dispose?(): void;
 }
@@ -229,6 +235,8 @@ export interface Actors {
   hideAll(): void;
   /** Copy `visible` to each actor's `object`. The kernel calls this after the sections have run. */
   apply(): void;
+  /** Step every shown actor that has an `update`. The kernel calls this once a frame, before drawing. */
+  update(frame: FrameInfo): void;
 }
 
 /** Where the home is, for the shell, the footer and the probes. */

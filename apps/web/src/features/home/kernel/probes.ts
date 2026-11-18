@@ -34,6 +34,10 @@ export interface HomeProbe {
   skipIntro(): void;
   actor(name: string): { name: string; visible: boolean } | null;
   sections(): ReadonlyArray<{ id: SectionId; start: number; screens: number; mount: MountState }>;
+  /** Build an actor from the lab table, pin it shown and hand it back (see `kernel/lab.ts`). */
+  lab(name: string): Promise<unknown>;
+  /** Give a lab actor back to the sections. */
+  unpin(name: string): void;
 }
 
 declare global {

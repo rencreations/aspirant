@@ -1,4 +1,4 @@
-import type { Actor, Actors } from "./types";
+import type { Actor, Actors, FrameInfo } from "./types";
 
 /**
  * The registry of everything the stage draws and a section drives. The rule that makes the scroll
@@ -7,6 +7,13 @@ import type { Actor, Actors } from "./types";
  */
 export class ActorRegistry implements Actors {
   private readonly byName = new Map<string, Actor>();
+  /** Actors a probe holds shown (the lab): the hide-by-default rule skips them. */
+  private readonly pinned = new Set<string>();
+
+  pin(name: string, on: boolean): void {
+    if (on) this.pinned.add(name);
+    else this.pinned.delete(name);
+  }
 
   register<T extends Actor>(actor: T): T {
     if (this.byName.has(actor.name)) throw new Error(`actor "${actor.name}" is already registered`);
@@ -31,12 +38,18 @@ export class ActorRegistry implements Actors {
   }
 
   hideAll(): void {
-    for (const actor of this.byName.values()) actor.visible = false;
+    for (const actor of this.byName.values()) actor.visible = this.pinned.has(actor.name);
   }
 
   apply(): void {
     for (const actor of this.byName.values()) {
       if (actor.object) actor.object.visible = actor.visible;
+    }
+  }
+
+  update(frame: FrameInfo): void {
+    for (const actor of this.byName.values()) {
+      if (actor.visible) actor.update?.(frame);
     }
   }
 

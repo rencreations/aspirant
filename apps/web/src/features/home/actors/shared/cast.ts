@@ -1,0 +1,70 @@
+import {
+  AmbientLight,
+  DirectionalLight,
+  type Light,
+  type Object3D,
+  type Texture,
+  PMREMGenerator,
+} from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+
+import type { Stage, ScenePass } from "../../kernel/stage";
+
+/** Where the lit characters are drawn, above the flat passes (ortho 10, perspective 20). */
+export const CAST_ORDER = 30;
+
+export interface Cast {
+  /** The pass every lit actor puts its root in. Lights are already in its scene. */
+  readonly pass: ScenePass;
+  /** One environment for the whole cast. Give each material its own `envMap` and `envMapIntensity`. */
+  readonly env: Texture;
+  /** The key and the fill, to be moved by the section that wants another mood. */
+  readonly key: DirectionalLight;
+  readonly fill: DirectionalLight;
+  readonly ambient: AmbientLight;
+  add(root: Object3D): void;
+}
+
+const made = new WeakMap<Stage, Cast>();
+
+/**
+ * The shared lit scene of the home (Silverbolt, the doll, Selena, the hand, the gramophone, Tetra
+ * when she is lit). All of them are drawn in one pass so that the doll can sit in Silverbolt's
+ * mouth and in Selena's palm and the depth between them is right. One light rig, one environment.
+ * The renderer has no tone mapping, so a material's colour is what it says.
+ *
+ * Lights are children of the scene, and a pass is drawn while any child is visible, so the pass
+ * is told here that a light does not count.
+ */
+export function getCast(stage: Stage): Cast {
+  const known = made.get(stage);
+  if (known) return known;
+
+  const pass = stage.scenePass("cast", "perspective", CAST_ORDER);
+  const isLight = (child: Object3D): boolean => (child as Light).isLight === true;
+  pass.active = () => pass.scene.children.some((child) => child.visible && !isLight(child));
+
+  const ambient = new AmbientLight(0xffffff, 0.35);
+  const key = new DirectionalLight(0xfff4e6, 2.2);
+  key.position.set(-300, 500, 800);
+  const fill = new DirectionalLight(0xdbe8ff, 0.7);
+  fill.position.set(400, -100, 500);
+  pass.scene.add(ambient, key, fill);
+
+  const pmrem = new PMREMGenerator(stage.renderer);
+  const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+
+  const cast: Cast = {
+    pass,
+    env,
+    key,
+    fill,
+    ambient,
+    add(root) {
+      pass.scene.add(root);
+    },
+  };
+  made.set(stage, cast);
+  return cast;
+}

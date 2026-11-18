@@ -10,6 +10,7 @@ import { expectReady } from "@/lib/page-ready";
 import { useNavLock } from "@/lib/nav-lock";
 
 import { ActorRegistry } from "./actors";
+import { LABS } from "./lab";
 import { Background, groundAt, type GroundLayers } from "./background";
 import { Clock, ORDER } from "./clock";
 import { CursorProxy } from "./cursor";
@@ -198,6 +199,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       }
     }, ORDER.sections),
     clock.add(() => {
+      actors.update(frameInfo);
       actors.apply();
       background.apply(groundAt(layout, frameInfo.S));
     }, ORDER.background),
@@ -245,6 +247,15 @@ export function startEngine(options: EngineOptions): Engine | null {
       const a = actors.get(name);
       return a ? { name: a.name, visible: a.visible } : null;
     },
+    lab: async (name) => {
+      const ensure = LABS[name];
+      if (!ensure)
+        throw new Error(`no lab actor "${name}" (known: ${Object.keys(LABS).join(", ")})`);
+      const actor = await ensure({ stage, actors, pointer, cursor, viewport, audio });
+      actors.pin(actor.name, true);
+      return actor;
+    },
+    unpin: (name) => actors.pin(name, false),
     sections: () =>
       runner
         .report()
