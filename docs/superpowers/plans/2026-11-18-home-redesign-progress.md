@@ -45,7 +45,11 @@ See section 2 of the design. Changes after the fact are listed here with the dat
 
 - 19 Nov, 01:00: localhost:3000 now serves the production build (`npx serve out -l 3000`, the dev server there was stopped). Known small gaps after wave 4: Selena's flip is cut (the white-out starts after the dragon's pass; the clip's 4 to 5 s is not shown), the bend has 32 tab stops (credits and takedown links of 15 fan pictures), a few first-draw hitches of 100 to 270 ms in a scroll that never pauses, a jump (seek) far ahead shows no actors for about 2 s while they build.
 
-## RESUME HERE (written on the evening of 18 Nov, when the usage limit was close)
+## DONE (19 Nov, about 01:30): the home is on main and live
+
+All four waves are finished. `main` was pushed (commit `870a985`), the Pages deploy succeeded, https://aspirant.cc serves the new home (checked with real frames and no console errors), and `localhost:3000` serves the production build (`npx serve out -l 3000 --no-clipboard` from `apps/web`; after a reboot start it again, it does not restart by itself). The snapshot loop and the `home-wip` branch were removed. What follows is the old resume procedure, kept for the record. What is left to do is only polish: see the gaps in the 19 Nov note above, `docs/design/home/integration-*.md` (the "still wrong" lists), and the unverified list (Firefox, Safari, a real phone, a weak machine, sound).
+
+## Old resume procedure (kept for the record)
 
 If this session stopped, a new one picks up from this section.
 
