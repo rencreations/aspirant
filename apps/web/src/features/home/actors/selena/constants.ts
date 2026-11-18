@@ -112,15 +112,3 @@ export const POSE_FIT = {
   idle: { cx: -0.21, cy: 0.88, w: 2.3, h: 1.88 },
 } as const;
 export type PoseFitName = keyof typeof POSE_FIT;
-
-/** Her look: the toon recipe of the notes (three steps, a cool rim, an ink outline). */
-export const LOOK_RECIPE = {
-  steps: [105, 190, 255],
-  rim: [0.55, 0.65, 1.0] as const,
-  rimStrength: 0.22,
-  ink: 0x1b1424,
-  /** Outline width on the screen, in CSS pixels, and the least and most it may be in metres. */
-  outlinePx: 1.6,
-  outlineMin: 0.0014,
-  outlineMax: 0.006,
-} as const;

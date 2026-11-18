@@ -9,10 +9,6 @@
  */
 import { clamp, ramp, smootherstep } from "../../fx/image-field/math";
 
-/** Where the section starts on the scroll and how long it is (the registry's numbers, `strip.test.ts` keeps them equal). */
-export const STRIP_START = 8.2;
-export const STRIP_SCREENS = 3.1;
-
 /** The beats, in screens from the start of the section. */
 export const STRIP_BEATS = {
   /** The words, the line and the dots of the small frame come in (the lead of the section). */
@@ -28,6 +24,27 @@ export const STRIP_BEATS = {
   /** Everything leaves to the bottom right (the tail of the section). */
   fly: [2.7, 3.7],
 } as const;
+
+/**
+ * The story position (screens from the section's start) of the strip's virtual `local` `v` (the four
+ * plays of `index.ts`). 0 to 1 only brings the small words in (the rows' play draws the film in step),
+ * 1 to 2 expands the frame to the window, 2 to 3 pulls it into the orbit of the ten films, 3 to 4 is
+ * the fly-off. Each station rests in a frame that every beat function holds still: the small state
+ * from 0.2 to 0.45, the window at 1.5, the orbit at 2.7, the end at 3.7. Outside 0 to 4 it rests.
+ */
+export function stripS(v: number): number {
+  const x = clamp(v, 0, 4);
+  const B = STRIP_BEATS;
+  // The words wait for the last part of the rows' play (the film turning upright): they do not come
+  // in over the sliding cards.
+  if (x <= 1) return B.enter[0] + (B.enter[1] - B.enter[0]) * ramp(x, ENTER_WAITS, 1);
+  if (x <= 2) return B.expand[0] + (B.pull[0] - B.expand[0]) * (x - 1);
+  if (x <= 3) return B.pull[0] + (B.fly[0] - B.pull[0]) * (x - 2);
+  return B.fly[0] + (B.fly[1] - B.fly[0]) * (x - 3);
+}
+
+/** The share of the first play (it runs in step with the rows' play) that passes before the words begin. */
+const ENTER_WAITS = 0.5;
 
 /** The orbit's turn from the scroll, radians per screen (the reference: two slots of twelve per hold). */
 const TRAVEL_RATE = 2.1;

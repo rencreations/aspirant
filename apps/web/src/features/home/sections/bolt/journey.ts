@@ -1,42 +1,18 @@
 /**
- * The choreography of the bolt and the fall sections as one pure function of the scroll. `t` is the
- * position in screens since the start of the bolt section: the bolt runs 0 to 4, the fall 4 to 6.6.
- * Silverbolt flies the tib path (`path.ts`), hovers in the middle while the pair names turn, and at
- * 3.9 the doll that rides its head is thrown off. From then on a camera follows the doll and zooms
- * (a 2D camera in the stage's pixel plane: the pixel perspective camera stays, so the actors'
- * hit shapes stay right) and the dragon, still on its path, leaves the top of the picture.
+ * The choreography of the bolt and the fall sections as one pure function of beat time. `t` runs 0 to
+ * 6.6 (`stations.ts` says where the scene rests): the bolt section plays 0 to 3.3 and the fall 3.3 to
+ * 6.6, on a clock, each play triggered by the scroll. Silverbolt flies the tib path (`path.ts`),
+ * hovers in the middle while the pair names turn, rears at 3.3 and at 3.9 the doll that rides its
+ * head is thrown off. From then on a camera follows the doll and zooms (a 2D camera in the stage's
+ * pixel plane: the pixel perspective camera stays, so the actors' hit shapes stay right) and the
+ * dragon, still on its path, leaves the top of the picture.
  *
  * No DOM, no three: `Journey.at(t, w, h)` fills public fields (reused, nothing is allocated).
  */
 import { facing } from "../../actors/silverbolt/math";
 
 import { keyFraction, KEY_CENTRE, KEY_FALL, newPathPoint, pathAt } from "./path";
-
-/** Screens of the two sections (a test keeps these equal to the registry's). */
-export const BOLT_SCREENS = 4;
-export const FALL_SCREENS = 2.6;
-
-/** The beats, in screens since the start of the bolt section. */
-export const BEAT = {
-  /** The dragon starts to come in from the lower right. */
-  enter: 0.12,
-  /** The barrel roll of the arrival: from here to `arrive`. */
-  rollFrom: 0.5,
-  /** The dragon is at the middle and hovers until `leave`. */
-  arrive: 1.2,
-  leave: 3.25,
-  /** The doll is thrown off the head. */
-  launch: 3.9,
-  /** The dragon is at 75 percent of its path (the end of the bolt section). */
-  at75: 4.0,
-  /** The end of the fall section. */
-  end: BOLT_SCREENS + FALL_SCREENS,
-} as const;
-
-/** The wheel: the pair `i` is in focus at `WHEEL_FROM + i * WHEEL_STEP`. */
-export const WHEEL_FROM = 1.1;
-export const WHEEL_STEP = 0.53;
-export const WHEEL_ITEMS = 5;
+import { BEAT, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./stations";
 
 const TAU = Math.PI * 2;
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
@@ -90,7 +66,11 @@ export function pathParam(t: number): number {
   const c = keyFraction(KEY_CENTRE);
   const f = keyFraction(KEY_FALL);
   if (t <= BEAT.enter) return 0;
-  if (t < BEAT.arrive) return c * smooth((t - BEAT.enter) / (BEAT.arrive - BEAT.enter));
+  if (t < BEAT.arrive) {
+    // It comes in fast from beyond the corner and brakes to a hover at the middle.
+    const x = 1 - (t - BEAT.enter) / (BEAT.arrive - BEAT.enter);
+    return c * (1 - x * x);
+  }
   if (t <= BEAT.leave) return c;
   const x = (t - BEAT.leave) / (BEAT.at75 - BEAT.leave);
   return c + (f - c) * Math.pow(x, 1.5);
@@ -134,7 +114,7 @@ export class Journey {
   flail = 0;
   flailRate = 1;
   talk = 0;
-  /** Seconds into the fall's mood sequence (a scroll derived clock). */
+  /** Seconds into the fall's mood sequence (two a beat). */
   moodT = 0;
   /** True from the throw on: the fall's own mood sequence plays. */
   falling = false;
@@ -205,7 +185,8 @@ export class Journey {
     const dwell = bump(t, BEAT.arrive - 0.35, BEAT.arrive, BEAT.leave, BEAT.leave + 0.35);
     const f = facing(hx, hy, 0.3 + 0.3 * dwell);
     this.wyaw = f.yaw;
-    const rear = bump(t, BEAT.leave - 0.5, BEAT.leave - 0.1, BEAT.leave + 0.1, BEAT.leave + 0.45);
+    // The head rears as the dragon is frightened, and comes down again for the sneeze.
+    const rear = bump(t, BEAT.leave, BEAT.leave + 0.25, BEAT.launch - 0.15, BEAT.launch + 0.1);
     this.wpitch = f.pitch + 0.32 * rear;
     const turn = (t - BEAT.rollFrom) / (BEAT.arrive - 0.15 - BEAT.rollFrom);
     // One barrel roll on the way in. After it the angle is a whole turn, which is the same as none.
@@ -223,13 +204,7 @@ export class Journey {
     this.dragonWorld(t, w, h);
     const dwell = bump(t, BEAT.arrive - 0.35, BEAT.arrive, BEAT.leave, BEAT.leave + 0.35);
     this.hover = dwell;
-    this.fright = bump(
-      t,
-      BEAT.leave - 0.6,
-      BEAT.leave - 0.1,
-      BEAT.launch - 0.05,
-      BEAT.launch + 0.05,
-    );
+    this.fright = bump(t, BEAT.leave, BEAT.leave + 0.35, BEAT.launch - 0.05, BEAT.launch + 0.05);
     this.flyAmp = 1.25 - 0.85 * dwell;
     this.yaw = this.wyaw;
     this.pitch = this.wpitch;
@@ -315,7 +290,7 @@ export class Journey {
       this.poseW = 0.25 * (1 - this.hover) + 0.55 * this.fright;
       this.talk = 0.5 * (1 - this.hover);
       this.flail = 0;
-      if (t > BEAT.arrive + 0.15 && t < BEAT.leave) {
+      if (t >= WHEEL_FROM - 0.05 && t <= BEAT.leave + 1e-6) {
         const i = Math.round(Math.min(WHEEL_ITEMS - 1, Math.max(0, wheelPosition(t))));
         this.dwellFace = PAIR_FACES[i]!;
       }
@@ -324,7 +299,7 @@ export class Journey {
     // Thrown, then falling.
     this.dollMode = "fall";
     this.falling = true;
-    this.moodT = u * 4;
+    this.moodT = u * 2;
     this.dollHeight = this.launchRideH * this.zoom;
     const tumble = 1 - Math.pow(1 - clamp01(u / TUMBLE), 3);
     this.dollRoll = TAU * TUMBLE_TURNS * (1 - tumble);
@@ -347,8 +322,8 @@ export class Journey {
     this.flail = smooth(u / 0.35) * (1 - 0.8 * settle);
     this.flailRate = 1.4 - 0.8 * settle;
     this.talk = smooth((u - 0.4) / 0.3) * (1 - smooth((u - 1.7) / 0.5)) * 0.85;
-    // The streaks thin out as the fall ends and are gone a third of a screen into the next section.
-    this.air = smooth(u / 0.4) * (1 - 0.75 * settle) * (1 - smooth((t - BEAT.end) / 0.35));
+    // The streaks thin out as the fall ends and are gone at the rest (half a beat before the end).
+    this.air = smooth(u / 0.4) * (1 - 0.75 * settle) * (1 - smooth((t - (BEAT.end - 0.5)) / 0.5));
   }
 }
 

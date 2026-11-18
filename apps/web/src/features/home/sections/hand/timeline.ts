@@ -1,16 +1,24 @@
 /**
- * The beats of the hand and the list that follows it, as pure functions of the scroll. The two
+ * The beats of the hand and the list that follows it, as pure functions of three numbers. The two
  * sections are one choreography (the doll lands in the palm, sits there, is tossed onto the first
- * frame of the list, the hand leaves), so both read the same numbers and agree at the joint J7.
+ * frame of the list, rides the frames, the hand leaves), so both read the same numbers and agree at
+ * the joint J7. The scenes are plays (`stations.ts`), so their time is beat time, not scroll:
  *
- * Time here is in screens. `t` is the position since the start of the hand section (it is negative
- * in the hand's lead and runs on into the list); `s` is the position since the start of the list,
- * so `t = HAND_SCREENS + s`. Stage pixels: origin in the middle of the screen, x right, y up.
+ *  - `t` is the hand's beat, 0 to `HAND_LAST` (negative in the hand's lead, in screens);
+ *  - `u` is the list's beat, 0 to `LIST_LAST` (a few tenths of a screen below 0 in its lead);
+ *  - `ts` is the scroll, in screens, past the joint where the hand ends and the list begins: the
+ *    short scroll-linked join of the two rests (the hand comes down, the words leave, the frame
+ *    arrives) uses it.
+ *
+ * Stage pixels: origin in the middle of the screen, x right, y up.
  */
+import { sectionScreens } from "../../kernel/where";
 
-/** The lengths the registry uses (design section 4). The integrator may change them. */
-export const HAND_SCREENS = 3.4;
-export const LIST_SCREENS = 8.6;
+import { FRAME_COUNT, HAND_LAST, LIST_LAST } from "./stations";
+
+/** The lengths are the registry's (`kernel/where.ts`): change them in the sections' `index.ts`. */
+export const handScreens = (): number => sectionScreens("hand");
+export const listScreens = (): number => sectionScreens("list");
 
 export interface Vp {
   readonly w: number;
@@ -103,29 +111,34 @@ export function fallEnd(vp: Vp): { x: number; y: number; height: number } {
 }
 
 /**
- * The moments of the hand section, in screens from its start. The palm arrives at 1.0 and the
- * doll lands in it, the words come in while she stands up and sits, the fingers are live from 2.0
- * (three quarters of a screen of rest before the hand begins to come down), and the words are left
- * behind above while the hand goes down.
+ * The moments of the hand section, in its beats. The palm arrives at 0.9 and the doll lands in it,
+ * the words come in while she stands up and sits, and the fingers are live from 1.75 until the list's
+ * toss begins.
  */
 export const HAND_AT = {
   /** The fingertips show at the bottom edge here (joint J6). */
   tips: 0,
   /** The palm has arrived. */
-  arrived: 1.0,
+  arrived: 0.9,
   /** The doll lands in the palm. */
-  land: 1.0,
+  land: 0.9,
   /** She has stood up, and sat down. */
-  stood: 1.45,
-  sat: 1.9,
-  title: [1.5, 2.1],
-  desc: [1.75, 2.3],
-  hint: [2.0, 2.4],
-  react: [2.0, 2.4],
-  /** The hand comes down. */
-  drop: [2.75, 3.4],
-  /** The words rise away, left behind above, while the hand goes down and the frame arrives. */
-  textOut: [2.9, 3.4],
+  stood: 1.3,
+  sat: 1.7,
+  title: [1.3, 1.9],
+  desc: [1.5, 2.0],
+  hint: [1.7, HAND_LAST],
+  react: [1.75, HAND_LAST],
+} as const;
+
+/**
+ * The join of the hand's rest and the list's toss, in screens past the joint (negative before it):
+ * the hand comes down a little, the words are left behind above, the frame arrives behind the hand.
+ */
+export const JOIN_AT = {
+  drop: [-0.4, 0],
+  textOut: [-0.4, -0.05],
+  appear: [-0.35, 0.05],
 } as const;
 
 export interface HandBeats {
@@ -148,8 +161,8 @@ export interface HandBeats {
   textOut: number;
 }
 
-/** What the hand section does at `t` screens from its start. Fills `out` and returns it. */
-export function handBeats(t: number, out: HandBeats): HandBeats {
+/** What the hand section does at beat `t`, with the join `ts` screens past the hand's end. */
+export function handBeats(t: number, ts: number, out: HandBeats): HandBeats {
   const A = HAND_AT;
   // The fingertips come to the bottom edge in the lead (a rise of 0.13 puts them there), then the
   // palm comes up.
@@ -158,7 +171,7 @@ export function handBeats(t: number, out: HandBeats): HandBeats {
     t < A.tips
       ? tipsRise * smooth(seg(t, -0.5, A.tips))
       : mix(tipsRise, 1, smooth(seg(t, A.tips, A.arrived)));
-  out.drop = smooth(seg(t, A.drop[0], A.drop[1]));
+  out.drop = smooth(seg(ts, JOIN_AT.drop[0], JOIN_AT.drop[1]));
   out.fall = easeInQuad(seg(t, A.tips, A.land));
   out.landed = t >= A.land;
   out.stand = smooth(seg(t, A.land + 0.1, A.stood));
@@ -167,7 +180,7 @@ export function handBeats(t: number, out: HandBeats): HandBeats {
   out.title = seg(t, A.title[0], A.title[1]);
   out.desc = seg(t, A.desc[0], A.desc[1]);
   out.hint = seg(t, A.hint[0], A.hint[1]);
-  out.textOut = seg(t, A.textOut[0], A.textOut[1]);
+  out.textOut = seg(ts, JOIN_AT.textOut[0], JOIN_AT.textOut[1]);
   return out;
 }
 
@@ -189,56 +202,35 @@ export function newHandBeats(): HandBeats {
 
 // ----------------------------------------------------------------------------------------- list
 
-/** The moments of the list, in screens from its start. */
+/** The moments of the list, in its beats `u` (the frame `k` rests at `u = 1 + k`). */
 export const LIST_AT = {
-  /** The frame window, its chrome and the title come in (the lead, before the list starts). */
-  appear: [-0.3, 0.1],
-  /** The doll crouches, is tossed up and lands on the frame. */
-  crouch: [-0.08, 0.14],
-  toss: [0.14, 0.62],
+  /** She stands up in the palm, crouches, is tossed up and lands on the frame. */
+  stand: [0, 0.1],
+  crouch: [0.06, 0.2],
+  toss: [0.2, 0.62],
   settle: 0.82,
   /** The hand leaves. */
-  sink: [0.3, 0.95],
-  /** The first name, then the strip. */
+  sink: [0.35, 0.95],
+  /** The first name. */
   nameIn: [0.55, 0.95],
-  stripFrom: 1.05,
-  /** Screens for one step of the strip. */
-  step: 0.62,
-  /** The tenth frame (Selena) has arrived and stands still. */
-  expandFrom: 7.0,
-  expandTo: 8.05,
+  /** The first frame rests here, and the tenth frame has arrived (Selena, in the window). */
+  stripFrom: 1,
+  /** The tenth frame grows into the whole screen. */
+  expandFrom: FRAME_COUNT,
+  expandTo: LIST_LAST,
 } as const;
 
-/** The number of frames of the strip: nine pictures and Selena in 3D. */
-export const FRAME_COUNT = 10;
-
-/** Where the strip is after the last step. */
-export const STRIP_END = LIST_AT.stripFrom + LIST_AT.step * (FRAME_COUNT - 1);
-
-/** The scroll position (screens from the list's start) at which frame `i` stands at rest. */
-export function restOf(i: number): number {
-  return LIST_AT.stripFrom + LIST_AT.step * Math.min(FRAME_COUNT - 1, Math.max(0, i));
-}
-
-const sineInOut = (u: number): number => 0.5 * (1 - Math.cos(Math.PI * u));
-
-/**
- * The strip's index (0 to 9), after oryzo: each step is a tenth of rest, eight tenths of sineInOut
- * motion and a tenth of rest, so there is no snapping and the page keeps scrolling under it.
- */
-export function stripIndex(s: number): number {
-  const raw = (s - LIST_AT.stripFrom) / LIST_AT.step;
-  if (raw <= 0) return 0;
-  if (raw >= FRAME_COUNT - 1) return FRAME_COUNT - 1;
-  const whole = Math.floor(raw);
-  return whole + sineInOut(seg(raw - whole, 0.1, 0.9));
+/** The strip's index (0 to 9) at beat `u`: frame `k` stands at `u = 1 + k`, and the play moves it. */
+export function stripIndex(u: number): number {
+  return Math.min(FRAME_COUNT - 1, Math.max(0, u - LIST_AT.stripFrom));
 }
 
 export interface ListBeats {
   /** The frame, its chrome and the title arriving (0..1). */
   appear: number;
   index: number;
-  /** The doll's toss, 0 (on the palm) to 1 (on the frame), and the crouch before it (0..1). */
+  /** She stands up (0..1), the crouch before the toss, the toss (0 on the palm, 1 on the frame). */
+  stand: number;
   crouch: number;
   toss: number;
   /** She has landed and sits (0..1). */
@@ -249,20 +241,22 @@ export interface ListBeats {
   nameIn: number;
   /** The tenth frame growing into the whole screen (0..1, eased). */
   expand: number;
-  /** The same, linear in the scroll. */
+  /** The same, linear in the beat. */
   expandRaw: number;
 }
 
-export function listBeats(s: number, out: ListBeats): ListBeats {
+/** What the list does at beat `u`, with the join `ts` screens past the joint. */
+export function listBeats(u: number, ts: number, out: ListBeats): ListBeats {
   const A = LIST_AT;
-  out.appear = smooth(seg(s, A.appear[0], A.appear[1]));
-  out.index = stripIndex(s);
-  out.crouch = smooth(seg(s, A.crouch[0], A.crouch[1]));
-  out.toss = seg(s, A.toss[0], A.toss[1]);
-  out.settle = smooth(seg(s, A.toss[1], A.settle));
-  out.sink = seg(s, A.sink[0], A.sink[1]);
-  out.nameIn = smooth(seg(s, A.nameIn[0], A.nameIn[1]));
-  out.expandRaw = seg(s, A.expandFrom, A.expandTo);
+  out.appear = smooth(seg(ts, JOIN_AT.appear[0], JOIN_AT.appear[1]));
+  out.index = stripIndex(u);
+  out.stand = smooth(seg(u, A.stand[0], A.stand[1]));
+  out.crouch = smooth(seg(u, A.crouch[0], A.crouch[1]));
+  out.toss = seg(u, A.toss[0], A.toss[1]);
+  out.settle = smooth(seg(u, A.toss[1], A.settle));
+  out.sink = seg(u, A.sink[0], A.sink[1]);
+  out.nameIn = smooth(seg(u, A.nameIn[0], A.nameIn[1]));
+  out.expandRaw = seg(u, A.expandFrom, A.expandTo);
   out.expand = easeInOutCubic(out.expandRaw);
   return out;
 }
@@ -271,6 +265,7 @@ export function newListBeats(): ListBeats {
   return {
     appear: 0,
     index: 0,
+    stand: 0,
     crouch: 0,
     toss: 0,
     settle: 0,

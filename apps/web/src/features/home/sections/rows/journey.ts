@@ -8,10 +8,6 @@
  */
 import { clamp, ramp, smootherstep } from "../../fx/image-field/math";
 
-/** Where the section starts on the scroll and how long it is (the registry's numbers, `journey.test.ts` keeps them equal). */
-export const ROWS_START = 5.8;
-export const ROWS_SCREENS = 2.4;
-
 /** The beats, in screens from the start of the section. */
 export const ROWS_BEATS = {
   /** The rows slide until here and come to rest. */

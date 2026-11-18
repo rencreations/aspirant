@@ -2,12 +2,15 @@ import { SRGBColorSpace, Texture } from "three";
 
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
-import { walkPhaseFor, type DollActor } from "../../actors/doll";
+import { drawnHeight, walkPhaseFor, type DollActor } from "../../actors/doll";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
+import type { Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { SustainHandle } from "../../fx/comic-marks/system";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionEnd } from "../../kernel/where";
+import { backdropAt } from "./backdrop";
 import { coverBitmap, loadCovers, type CoverSide } from "./covers";
 import {
   T,
@@ -20,6 +23,7 @@ import {
   tetraRun,
   tetraStand,
   wordsAmount,
+  wordsLeave,
   type ChaseGeometry,
 } from "./timeline";
 
@@ -56,6 +60,7 @@ class ChaseRuntime implements SectionRuntime {
   private dragon: SilverboltActor | null = null;
   private doll: DollActor | null = null;
   private marks: MarksActor | null = null;
+  private backdrop: Backdrop | null = null;
   private disposed = false;
   private entered = false;
 
@@ -152,6 +157,14 @@ class ChaseRuntime implements SectionRuntime {
         },
       ),
       take(
+        "the backdrop",
+        async () => (await import("../../fx/backdrop")).ensureBackdrop(ctx),
+        (a) => {
+          this.backdrop = a;
+          void a.warm(["speed-lines", "soft-aurora", "pixel-blast"]);
+        },
+      ),
+      take(
         "Tetra",
         async () => (await import("../../actors/tetra")).ensureTetra(ctx),
         (a) => (this.tetra = a),
@@ -214,6 +227,7 @@ class ChaseRuntime implements SectionRuntime {
   leave(): void {
     this.entered = false;
     this.tetra?.book.onPress(null);
+    if (!this.kbd) this.words(0);
   }
 
   update(local: number, frame: FrameInfo): void {
@@ -232,7 +246,12 @@ class ChaseRuntime implements SectionRuntime {
       // (local below 0 or above 1) must leave the neighbour's marks alone.
       if (local <= 1) this.marks?.clear();
     }
-    this.words(this.kbd ? 1 : wordsAmount(local));
+    // The words come in with the second play and go with the scroll after the section (`frame.S`),
+    // so a section passed by a jump (replayed at its last station) shows none.
+    const gone = wordsLeave(frame.S, sectionEnd("chase"));
+    this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));
+    const ask = backdropAt(local);
+    this.backdrop?.set(ask.kind, ask.options);
     this.drawDoll(local, frame, jumped);
     this.drawDragon(local, frame);
     this.drawTetra(local, frame, jumped);
@@ -306,12 +325,13 @@ class ChaseRuntime implements SectionRuntime {
     this.anchorA.x = this.dollHead.x;
     this.anchorA.y = this.dollHead.y;
     this.beads?.update(this.anchorA, 0.8);
-    this.anchorB.x = d.x - 0.7 * g.dollH;
-    this.anchorB.y = d.y + 0.5 * g.dollH;
+    const drawn = drawnHeight(g.dollH);
+    this.anchorB.x = d.x - 0.7 * drawn;
+    this.anchorB.y = d.y + 0.5 * drawn;
     this.speedDoll?.update(this.anchorB, 0.8, Math.PI);
     if (frame.time - this.dustAt > 0.2) {
       this.dustAt = frame.time;
-      marks.emit("dust", { at: { x: d.x - 0.2 * g.dollH, y: d.y }, size: 0.3 * g.dollH });
+      marks.emit("dust", { at: { x: d.x - 0.2 * drawn, y: d.y }, size: 0.3 * drawn });
     }
   }
 

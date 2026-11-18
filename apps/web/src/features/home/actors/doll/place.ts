@@ -7,6 +7,20 @@
 import { DOLL_HEIGHT } from "./rig";
 
 export const CAMERA_DISTANCE = 1000;
+
+/**
+ * How big she is drawn, as a share of the height a section asks for (the owner, 19 Nov 2026: "the
+ * Obsidia doll are too big"). It is applied once, inside the actor, to every placement, so a section
+ * keeps asking for the size it always asked for: `place({ height })`, the fitting under a socket, the
+ * hang, the hop and the walk's stride all read it. A section that turns her height into an offset or
+ * the size of a mark of her own multiplies by it (`drawnHeight`).
+ */
+export const DOLL_SIZE = 0.6;
+
+/** The height on the screen of a doll that a section asked to be `height` tall. */
+export function drawnHeight(height: number): number {
+  return height * DOLL_SIZE;
+}
 /** Nothing is placed nearer the camera than this share of its distance (the scale would run away). */
 const NEAR_LIMIT = 0.9;
 

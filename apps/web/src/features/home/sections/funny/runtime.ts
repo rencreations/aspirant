@@ -1,12 +1,16 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import type { DollActor } from "../../actors/doll";
+import { DOLL_SIZE } from "../../actors/doll/place";
 import type { DuoActor } from "../../actors/duo";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionEnd } from "../../kernel/where";
 import {
+  GONE,
   T,
   bob,
   cutMoment,
@@ -24,8 +28,13 @@ import {
 
 /** The dragon turned three quarters toward us, heading left. */
 const YAW = -1.1;
-/** The doll is made bigger than the dragon's mouth: she is wedged in it, head and legs out. */
-const DOLL_SCALE = 1.7;
+/**
+ * The doll is made bigger than the dragon's mouth: she is wedged in it, head and legs out. This is
+ * the size she is DRAWN at, in mouths: the actor draws her at `DOLL_SIZE` of the height asked for, so
+ * the height asked for is this over it (she was 1.7 mouths before the doll was made smaller, and a
+ * 1.45 mouth doll is still wedged).
+ */
+const DOLL_SCALE = 1.45 / DOLL_SIZE;
 /** The doll's mood while she is eaten: a loop of her cursing and screaming (seconds). */
 const MOODS = [
   { face: "cursing", hold: 0.7 },
@@ -36,8 +45,6 @@ const MOODS = [
 const MOOD_LOOP = 2.6;
 /** A swear bubble leaves the doll this often (seconds) while the dragon is on screen. */
 const SWEAR_EVERY = 0.62;
-/** The page has ridden up this far (screens): the duo and the words are gone. */
-const GONE = 0.74;
 /** A step of `local` this big in a frame is a jump (a scrollbar drag, a probe seek). */
 const JUMP = 0.12;
 
@@ -58,6 +65,7 @@ class FunnyRuntime implements SectionRuntime {
   private duo: DuoActor | null = null;
   private marks: MarksActor | null = null;
   private disposed = false;
+  private backdrop: Backdrop | null = null;
   private entered = false;
   private sinkSet = false;
 
@@ -123,6 +131,14 @@ class FunnyRuntime implements SectionRuntime {
       }
     };
     await Promise.all([
+      take(
+        "the backdrop",
+        async () => ensureBackdrop(ctx),
+        (a) => {
+          this.backdrop = a;
+          void a.warm(["soft-aurora", "light-rays"]);
+        },
+      ),
       take(
         "the marks",
         async () => (await import("../../fx/comic-marks")).ensureMarks(ctx),
@@ -217,13 +233,35 @@ class FunnyRuntime implements SectionRuntime {
       // (local below 0 or above 1) must leave the neighbour's marks alone.
       if (local <= 1) this.marks?.clear();
     }
-    const rise = lift(local);
+    // The page rides up in the tail, by the real scroll: the duo and the words are gone for any jump.
+    const rise = lift(frame.S - sectionEnd("funny"));
     const gone = 1 - ramp(rise, GONE - 0.2, GONE);
     this.words((this.kbd ? 1 : ramp(local, T.textFrom, T.textTo)) * gone, rise, h);
     if (rise >= GONE) return;
+    this.drawSky(local, gone);
     this.drawTetra(local, frame, jumped);
     this.drawDragon(local, frame, jumped);
     this.drawDuo(local, rise);
+  }
+
+  /** The live sky: soft light while Tetra flies her kite and the dragon crosses, rays for the question. */
+  private drawSky(local: number, gone: number): void {
+    const backdrop = this.backdrop;
+    if (!backdrop) return;
+    if (ramp(local, T.centreFrom, T.centreTo) > 0.5) {
+      backdrop.set("light-rays", {
+        theme: "daybreak",
+        amount: 0.9 * gone,
+        speed: 0.7,
+      });
+    } else {
+      backdrop.set("soft-aurora", {
+        theme: "daybreak",
+        amount: 0.9 * gone,
+        speed: 0.8,
+        scale: 1.2,
+      });
+    }
   }
 
   // ---------------------------------------------------------------------------------------- words
@@ -345,7 +383,7 @@ class FunnyRuntime implements SectionRuntime {
     const doll = this.doll;
     if (!sb || !doll || !dragonOnScreen(local)) return;
     const g = this.geo;
-    const b = bob(local, g);
+    const b = bob(frame.time, g);
     const x = dragonX(local, g);
     sb.visible = true;
     sb.place({ x, y: b.y, z: 0, height: g.dragon.height, yaw: YAW, pitch: b.pitch, roll: b.roll });

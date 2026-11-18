@@ -13,6 +13,7 @@ import {
   tetraRun,
   tetraStand,
   wordsAmount,
+  wordsLeave,
   zoomAt,
 } from "./timeline";
 
@@ -32,8 +33,8 @@ describe("the story order", () => {
     expect(T.waved).toBeLessThan(T.sat);
     expect(T.zoomFrom).toBeLessThan(T.zoomTo);
     expect(T.wordsFrom).toBeLessThan(T.wordsTo);
-    expect(T.wordsTo).toBeLessThan(T.wordsOutFrom);
-    expect(T.wordsOutTo).toBeLessThan(1);
+    expect(T.wordsTo).toBeLessThan(T.comic);
+    expect(T.comic).toBeLessThan(1);
   });
 });
 
@@ -121,12 +122,25 @@ describe("the beats and the words", () => {
     expect(beatAt(1)).toBe("read");
   });
 
-  it("shows the words in, holds them and takes them away before the end", () => {
+  it("shows the words in by the comic's station and keeps them there", () => {
     expect(wordsAmount(0)).toBe(0);
     expect(wordsAmount(T.wordsFrom - 0.01)).toBe(0);
-    expect(wordsAmount((T.wordsTo + T.wordsOutFrom) / 2)).toBe(1);
-    expect(wordsAmount(1)).toBe(0);
-    expect(wordsAmount(0.97)).toBeGreaterThan(0);
-    expect(wordsAmount(0.97)).toBeLessThan(0.5);
+    expect(wordsAmount(T.wordsTo)).toBe(1);
+    expect(wordsAmount(T.comic)).toBe(1);
+    expect(wordsAmount(1)).toBe(1);
+  });
+
+  it("takes the words away with the scroll after the section's end, and only then", () => {
+    const end = 44.8;
+    expect(wordsLeave(end - 1, end)).toBe(0);
+    expect(wordsLeave(end, end)).toBe(0);
+    expect(wordsLeave(end + 0.15, end)).toBeGreaterThan(0.3);
+    expect(wordsLeave(end + 0.15, end)).toBeLessThan(0.7);
+    expect(wordsLeave(end + 0.4, end)).toBe(1);
+  });
+
+  it("rests on the comic with the zoom done and the book read", () => {
+    expect(zoomAt(T.comic)).toBe(1);
+    expect(beatAt(T.comic)).toBe("read");
   });
 });

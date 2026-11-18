@@ -19,7 +19,8 @@ const { BASE, OUT, launch, context } = require("./lib.cjs");
 const OUT_DIR = path.resolve(process.argv[2] || OUT);
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-const START = Number(process.env.START || 47.1);
+// The bend's start is the registry's: read from the page once it is open (START overrides it).
+let START = Number(process.env.START || Number.NaN);
 const SIZES = (process.env.SIZES || "1440x900,1706x950,390x844")
   .split(",")
   .map((s) => s.split("x").map(Number));
@@ -52,6 +53,9 @@ async function open(browser, w, h, touch) {
   await page.waitForFunction(() => window.__home && window.__home.state().open, null, {
     timeout: 180_000,
   });
+  if (!Number.isFinite(START)) {
+    START = await page.evaluate(() => window.__home.sections().find((s) => s.id === "bend").start);
+  }
   return { ctx, page, logs };
 }
 

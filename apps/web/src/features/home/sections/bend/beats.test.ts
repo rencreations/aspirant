@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  BEND_SCREENS,
   DRONE_CARD,
   FROM_CHASE,
   REST,
@@ -9,6 +8,7 @@ import {
   STANCES,
   T,
   artNeeded,
+  BEAT_SPAN,
   beatAt,
   fanNeeded,
   newBeat,
@@ -17,6 +17,9 @@ import {
   waveAt,
   waveStart,
 } from "./beats";
+
+// The length is the registry's (`index.ts`): the beats must fit whatever it is.
+const BEND_SCREENS = BEAT_SPAN;
 
 const at = (s: number) => beatAt(s / BEND_SCREENS, newBeat());
 

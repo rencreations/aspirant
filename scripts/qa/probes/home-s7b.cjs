@@ -17,7 +17,8 @@ const PARTS = (process.env.PARTS || "sheet,interact,handoff").split(",");
 const SIZES = (process.env.SIZES || "1440x900,1706x950,390x844")
   .split(",")
   .map((s) => s.split("x").map(Number));
-const STOPS = (process.env.STOPS || "56.1,56.45,56.6,57.2,58.0,58.4,58.8,59.2,59.6,60.1")
+// Screens from the start of the archive (the registry's start, read from the page).
+const STOPS = (process.env.STOPS || "0,0.35,0.5,1.1,1.9,2.3,2.7,3.1,3.5,4.0")
   .split(",")
   .map(Number);
 fs.mkdirSync(OUT, { recursive: true });
@@ -51,7 +52,11 @@ async function sheet(browser) {
       viewport: { width: w, height: h },
       deviceScaleFactor: 1,
     });
-    for (const S of STOPS) {
+    const archiveStart = await page.evaluate(
+      () => window.__home.sections().find((s) => s.id === "archive").start,
+    );
+    for (const offset of STOPS) {
+      const S = +(archiveStart + offset).toFixed(3);
       await page.evaluate((S) => {
         window.__home.freeze(false);
         window.__home.seek(S);

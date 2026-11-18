@@ -11,6 +11,7 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { ensureField, type FieldActor } from "../../fx/image-field";
 import {
   ART_ASPECT,
@@ -22,6 +23,8 @@ import {
   type LogoPose,
 } from "../../fx/logo";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+
+import { BACKDROP_KINDS_USED, backdropAt } from "../backdrops";
 
 import { ENTRANCE_SECONDS, FieldScene } from "./scene";
 import { cueOpacity, heroS, logoP, ramp, smooth } from "./timeline";
@@ -61,6 +64,7 @@ class HeroRuntime implements SectionRuntime {
     field: FieldActor,
     drone: DroneActor | null,
     logo: LogoActor | null,
+    private readonly backdrop: Backdrop | null,
   ) {
     this.logo = logo;
     this.scene = new FieldScene(field, drone);
@@ -82,6 +86,8 @@ class HeroRuntime implements SectionRuntime {
     const entrance = ramp(frame.time - this.entranceStart, 0, ENTRANCE_SECONDS);
     const look = this.updateLogo(P, vp.w, vp.h);
     this.scene.update({ S, viewport: vp, entrance, look });
+    const back = backdropAt(S);
+    this.backdrop?.set(back.kind, back.options);
     this.updateCue(S, vp.w, vp.h);
   }
 
@@ -169,10 +175,13 @@ class HeroRuntime implements SectionRuntime {
  */
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
   const needsLogo = ctx.scroll.raw() < BUILD_ABOVE;
-  const [field, drone, logo] = await Promise.all([
+  const [field, drone, logo, backdrop] = await Promise.all([
     ensureField(ctx),
     ensureDrone(ctx).catch(() => null),
     needsLogo ? ensureLogo(ctx).catch(() => null) : Promise.resolve(null),
+    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new HeroRuntime(ctx, field, drone, logo);
+  // Compile the first four kinds now, so the first frame of the backdrop is not a hitch.
+  void backdrop?.warm(BACKDROP_KINDS_USED);
+  return new HeroRuntime(ctx, field, drone, logo, backdrop);
 }

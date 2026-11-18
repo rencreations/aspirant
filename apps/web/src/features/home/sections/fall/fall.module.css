@@ -25,8 +25,8 @@
   position: absolute;
   inset: 0;
   display: grid;
-  /* The middle column is where the doll falls: a third of the screen's height wide. */
-  grid-template-columns: 1fr calc(0.34 * min(100lvh, 150vw)) 1fr;
+  /* The middle column is where the doll falls: about a quarter of the screen's height wide. */
+  grid-template-columns: 1fr calc(0.24 * min(100lvh, 150vw)) 1fr;
   align-items: center;
   /*
    * The row stands at the height of the doll's end place (joint J6): her feet are 0.1 of the screen
@@ -36,7 +36,7 @@
   /* The long word ("Characters", about 4.5 em) fills the column on its side of the doll. */
   font-size: clamp(
     2.4rem,
-    min(calc((50vw - 0.17 * min(100lvh, 150vw) - 2.5rem) / 4.5), 15vh),
+    min(calc((50vw - 0.12 * min(100lvh, 150vw) - 2.5rem) / 4.5), 15vh),
     9rem
   );
   white-space: nowrap;

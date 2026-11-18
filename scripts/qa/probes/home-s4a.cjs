@@ -19,11 +19,13 @@ fs.mkdirSync(OUT_DIR, { recursive: true });
 const SIZES = (process.env.SIZES || "1440x900,1706x950,390x844")
   .split(",")
   .map((s) => s.split("x").map(Number));
-/** Screens from the start of each section: the lead, the beats, the joints. */
-const HAND_STEPS = (process.env.HAND || "-0.45,0,0.5,1,1.3,1.7,2.2,2.6,3.3").split(",").map(Number);
-const LIST_STEPS = (process.env.LIST || "-0.3,0.1,0.4,1,1.7,3.3,6.4,7.2,7.6,8,8.6,9")
-  .split(",")
-  .map(Number);
+/**
+ * Screens from the start of each section: the lead, the plays, the joints (round two: the scenes are
+ * triggered, so a position is a rest. The hand rests from 0.5 to its join at 1.0, the list rests on
+ * frame `k` at 0.7 + 0.4 k and on the grown frame at 4.8).
+ */
+const HAND_STEPS = (process.env.HAND || "-0.45,0,0.1,0.6,0.9,1.2,1.4").split(",").map(Number);
+const LIST_STEPS = (process.env.LIST || "-0.4,0,0.3,0.7,1.1,2.3,4.3,4.8,5").split(",").map(Number);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const checks = [];
@@ -101,7 +103,7 @@ async function seek(page, S, wait = 1100) {
     const list = secs.find((s) => s.id === "list");
 
     // 1. The hand and the doll answer the pointer, with no label on the hand.
-    await seek(page, hand.start + 2.2, 2200);
+    await seek(page, hand.start + 0.6, 2200);
     await page.mouse.move(560, 560);
     await page.mouse.move(790, 470, { steps: 10 });
     await sleep(500);
@@ -118,7 +120,7 @@ async function seek(page, S, wait = 1100) {
     await page.mouse.move(60, 450, { steps: 6 });
 
     // 2. The loops play only for the frame in the window.
-    await seek(page, list.start + 2.29, 3500);
+    await seek(page, list.start + 1.5, 3500);
     const vids = await page.evaluate(() =>
       [...document.querySelectorAll("video")].map((v) => ({
         playing: !v.paused,
@@ -180,7 +182,7 @@ async function seek(page, S, wait = 1100) {
     );
 
     // 4. The keyboard: real Tab presses from the first name, to a frame's button.
-    await seek(page, list.start + 0.3, 1500);
+    await seek(page, list.start + 0.7, 1500);
     await page.evaluate(() => document.activeElement && document.activeElement.blur());
     await page.evaluate(() => document.querySelector('[data-list-name="0"] a').focus());
     await sleep(600);
@@ -214,7 +216,7 @@ async function seek(page, S, wait = 1100) {
     await sleep(1200);
 
     // 5. The frame grows into the screen; the end state of the section.
-    await seek(page, list.start + 8.6, 2500);
+    await seek(page, list.start + 4.8, 2500);
     const st = await page.evaluate(() => window.__home.state());
     check(
       "Selena and the doll are drawn at the end of the list",
@@ -236,7 +238,7 @@ async function seek(page, S, wait = 1100) {
     });
     errors.push(...e);
     const list = (await sections(page)).find((s) => s.id === "list");
-    await seek(page, list.start + 2.29, 3500);
+    await seek(page, list.start + 1.5, 3500);
     await page.touchscreen.tap(195, 480);
     await sleep(1500);
     await page.screenshot({ path: path.join(OUT_DIR, "s4a-touch-viewer.png") });

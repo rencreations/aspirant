@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import { SIZE_PER_HEIGHT } from "../../actors/drone/model";
 import { layoutSections } from "../../kernel/layout";
 import { SECTIONS } from "../../kernel/sections";
+import { sectionScreens } from "../../kernel/where";
 import { spotsOf } from "../bend/beats";
 
 import { STEPS, stripGeo } from "./geometry";
+import { ENTRY_SCREENS } from "./plays";
 import {
   AT,
   IN_RING,
@@ -19,6 +21,7 @@ import {
   lightAt,
   newTetraWant,
   restSpot,
+  routeS,
   stageTop,
   tetraAt,
   toStage,
@@ -111,12 +114,12 @@ describe("the drone's route", () => {
   });
 
   it("is glued to the card while it rises, then holds still while it stands", () => {
-    const a = at(59.5, 1440, 900);
-    const b = at(59.9, 1440, 900);
+    const a = at(AT.stuck + 0.4, 1440, 900);
+    const b = at(AT.stuck + 0.8, 1440, 900);
     expect(b).toEqual(a);
     // With the page lower, the ring is lower by the same amount.
-    const higher = at(58.9, 1440, 900, 58.9);
-    const lower = at(58.9, 1440, 900, 58.8);
+    const higher = at(AT.stuck - 0.2, 1440, 900, AT.stuck - 0.2);
+    const lower = at(AT.stuck - 0.2, 1440, 900, AT.stuck - 0.3);
     expect(lower.y).toBeGreaterThan(higher.y);
   });
 
@@ -150,9 +153,10 @@ describe("the drone's route", () => {
   });
 
   it("is the same line forwards and backwards (a pure function of the scroll)", () => {
-    const a = { ...at(57.3, 1440, 900) };
-    at(60.2, 1440, 900);
-    expect(at(57.3, 1440, 900)).toEqual(a);
+    const mid = AT.tourFrom + 0.75;
+    const a = { ...at(mid, 1440, 900) };
+    at(AT.end - 0.1, 1440, 900);
+    expect(at(mid, 1440, 900)).toEqual(a);
   });
 
   it("converts to the stage frame", () => {
@@ -166,6 +170,53 @@ describe("the drone's route", () => {
       y: 450,
       height: 5,
     });
+  });
+});
+
+describe("the route's clock", () => {
+  const length = sectionScreens("archive");
+  const done = ENTRY_SCREENS / length;
+
+  it("rests at the start before the entry, whatever the scroll does below the threshold", () => {
+    expect(routeS(0, AT.start - 0.5)).toBeCloseTo(AT.start, 9);
+    expect(routeS(0, AT.tourFrom - 0.01)).toBeCloseTo(AT.start, 9);
+    expect(routeS(0, AT.tourFrom)).toBeCloseTo(AT.start, 9);
+  });
+
+  it("runs through the entry on the play's value while the scroll is held at the threshold", () => {
+    for (let k = 0; k <= 10; k += 1) {
+      const v = (done * k) / 10;
+      expect(routeS(v, AT.tourFrom)).toBeCloseTo(AT.start + ENTRY_SCREENS * (k / 10), 9);
+    }
+    expect(routeS(done, AT.tourFrom)).toBeCloseTo(AT.tourFrom, 9);
+  });
+
+  it("goes on with the scroll after the entry, equal to the scroll itself", () => {
+    for (const S of [AT.tourFrom, AT.tourFrom + 0.3, AT.tourTo, AT.stuck, AT.end]) {
+      expect(routeS(done, S)).toBeCloseTo(S, 9);
+    }
+  });
+
+  it("ignores the plays' passthrough in the tail (the value above the last station)", () => {
+    expect(routeS(done + 0.2, AT.stuck + 0.2)).toBeCloseTo(AT.stuck + 0.2, 9);
+  });
+
+  it("is continuous across the threshold in both directions", () => {
+    const eps = 1e-6;
+    expect(
+      Math.abs(routeS(done, AT.tourFrom + eps) - routeS(done, AT.tourFrom - eps)),
+    ).toBeLessThan(3e-6);
+    expect(Math.abs(routeS(0, AT.tourFrom + eps) - routeS(0, AT.tourFrom - eps))).toBeLessThan(
+      3e-6,
+    );
+  });
+
+  it("puts every beat of the entry before the tour starts", () => {
+    expect(AT.runTo).toBeLessThan(AT.tourFrom);
+    expect(AT.arrive).toBeLessThanOrEqual(AT.tourFrom);
+    expect(AT.coversIn + AT.coverStep * 3 + AT.coverLen).toBeLessThanOrEqual(AT.tourFrom + 1e-9);
+    expect(headAt(AT.tourFrom, 0.06)).toBeCloseTo(1, 6);
+    expect(lightAt(AT.tourFrom)).toBeCloseTo(1, 6);
   });
 });
 
@@ -190,7 +241,10 @@ describe("the tour and the covers", () => {
       expect(coverIn(AT.tourFrom + 0.5, i)).toBe(1);
       expect(coverOut(AT.tourFrom + 0.5, i)).toBe(0);
       expect(coverOut(AT.coversOut + 1, i)).toBe(1);
-      if (i > 0 && i <= 3) expect(coverIn(56.5, i)).toBeLessThanOrEqual(coverIn(56.5, i - 1));
+      if (i > 0 && i <= 3)
+        expect(coverIn(AT.coversIn + 0.1, i)).toBeLessThanOrEqual(
+          coverIn(AT.coversIn + 0.1, i - 1),
+        );
     }
   });
 
@@ -203,16 +257,16 @@ describe("the tour and the covers", () => {
   });
 
   it("puts the footer's stage at the bottom before it rises and at the top once it stands", () => {
-    expect(stageTop(58.1, { w: 1440, h: 900 })).toBeCloseTo(900, 6);
-    expect(stageTop(59.1, { w: 1440, h: 900 })).toBe(0);
-    expect(stageTop(60, { w: 1440, h: 900 })).toBe(0);
+    expect(stageTop(AT.stuck - 1, { w: 1440, h: 900 })).toBeCloseTo(900, 6);
+    expect(stageTop(AT.stuck, { w: 1440, h: 900 })).toBe(0);
+    expect(stageTop(AT.stuck + 0.9, { w: 1440, h: 900 })).toBe(0);
   });
 });
 
 describe("Tetra's goodbye", () => {
   it("stands where the bend section leaves her (J14) and waves", () => {
     for (const [w, h] of SIZES) {
-      const t = tetraAt(AT.start + 0.1, { w, h }, newTetraWant());
+      const t = tetraAt(AT.start + 0.05, { w, h }, newTetraWant());
       expect(t.visible).toBe(true);
       const rest = spotsOf({ w, h }).rest;
       expect(t.x).toBeCloseTo(w / 2 + rest.tx * w, 6);

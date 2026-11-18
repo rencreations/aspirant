@@ -21,8 +21,6 @@ export interface MusicDomHandlers {
   track(index: number): void;
   /** "Another record". */
   another(): void;
-  /** "Continue": let go of the page and go on. */
-  keep(): void;
   /** The key that turns the crank for a moment. */
   crank(): void;
 }
@@ -33,9 +31,7 @@ export class MusicDom {
   private readonly label: HTMLElement | null;
   private readonly content: HTMLElement | null;
   private readonly another: HTMLElement | null;
-  private readonly keep: HTMLElement | null;
   private phase: Phase = "away";
-  private held = false;
   private again = false;
   private built = false;
 
@@ -49,21 +45,13 @@ export class MusicDom {
     this.label = root.querySelector<HTMLElement>("[data-music-label]");
     this.content = content;
     this.another = root.querySelector<HTMLElement>("[data-music-another]");
-    this.keep = root.querySelector<HTMLElement>("[data-music-continue]");
     this.another?.addEventListener("click", this.onAnother);
-    this.keep?.addEventListener("click", this.onKeep);
   }
 
   setPhase(phase: Phase): void {
     if (phase === this.phase) return;
     this.phase = phase;
     this.root.dataset.phase = phase;
-  }
-
-  setHeld(held: boolean): void {
-    if (held === this.held) return;
-    this.held = held;
-    this.root.dataset.held = held ? "1" : "0";
   }
 
   setAgain(on: boolean): void {
@@ -116,16 +104,11 @@ export class MusicDom {
 
   dispose(): void {
     this.another?.removeEventListener("click", this.onAnother);
-    this.keep?.removeEventListener("click", this.onKeep);
     put(this.content, "opacity", "");
     put(this.content, "transform", "");
   }
 
   private readonly onAnother = (): void => {
     this.handlers.another();
-  };
-
-  private readonly onKeep = (): void => {
-    this.handlers.keep();
   };
 }

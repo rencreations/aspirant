@@ -1,25 +1,29 @@
 /**
- * The beats of the Selena section as pure functions of the scroll. `u` is the position in screens
- * since the start of the section (negative in its lead, up to `SELENA_SCREENS` at its end, a little
- * more in its tail). Everything here is a function of `u` and nothing else, so a jump of the scroll
- * gives the picture a slow scroll gives.
+ * The beats of the Selena section as pure functions of the story clock. `u` is the story's own
+ * time in seconds (`stations.ts`: one unit is one second of a play), negative in the lead, `STORY`
+ * at the end. Everything here is a function of `u` and nothing else, so a jump of the scroll gives
+ * the picture a played scene gives.
  *
- * The story, in screens:
+ * The story, in seconds:
  *
- *   0 to 0.6      the drawer opens on the left; the dragon glides in from the right edge
- *   0.6 to 2.0    rest: Selena and Silverbolt in `city_idle`, fully interactive, the doll hangs
- *                 (the drawer is fully open at local 0.5, which is where a keyboard focus lands)
- *   2.0 to 2.45   the doll lets go of the top edge, falls and floats over Selena's right hand
- *   2.0 to 2.4    the words and the drawer leave
- *   2.25 to 2.65  the camera swings into the baked one, Selena's pose goes from the idle to the clip
- *   2.65 to 3.5   the clip `city_intercation03` plays by the scroll (the doll floats, the dragon
- *                 opens its jaw, eats it, passes the lens)
- *   3.22 to 3.36  the ground flashes white on the bite, before the dragon reaches the lens
- *   3.55 to 3.7   once the dragon has left, a white over the canvas takes Selena too; the actors leave
- *   3.8 and on    white, the first frame of the voices
+ *   0 to 1.0      play one: the drawer opens on the left, its words come, the dragon glides in
+ *   1.0           the rest: Selena and Silverbolt in `city_idle`, fully interactive, the doll hangs
+ *   1.0 to 1.5    the doll lets go of the top edge, falls and floats over Selena's right hand
+ *   1.0 to 1.3    the words and the drawer leave
+ *   1.15 to 1.6   the camera swings into the baked one, Selena's pose goes from the idle to the clip
+ *   1.6 to 3.75   the clip `city_intercation03` (the doll floats, the dragon opens its jaw, eats it,
+ *                 passes the lens), faster over the hover and slower over the pass
+ *   3.15 to 3.4   the ground flashes white on the bite, before the dragon reaches the lens
+ *   3.75 to 3.95  once the dragon has left, a white over the canvas takes Selena too; the actors leave
+ *   4.2           white, the first frame of the voices
  */
 
-export const SELENA_SCREENS = 3.8;
+import { sectionScreens } from "../../kernel/where";
+
+import { REST_U, STORY } from "./stations";
+
+/** The section's length is the registry's (`kernel/where.ts`): change it in `index.ts`. */
+export const selenaScreens = (): number => sectionScreens("selena");
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 /** 0 before `a`, 1 after `b`, linear between. */
@@ -27,54 +31,60 @@ export const seg = (v: number, a: number, b: number): number => clamp01((v - a) 
 export const smooth = (x: number): number => x * x * (3 - 2 * x);
 export const mix = (a: number, b: number, x: number): number => a + (b - a) * x;
 
-/** Where each beat lies, in screens. One place to tune them. */
+/** Where each beat lies, in seconds of the story. One place to tune them. */
 export const AT = {
-  /** The drawer's panel slides in; the words follow inside it. */
-  drawer: [0.05, 0.6],
-  words: [0.2, 0.8],
+  /** The drawer's panel slides in; the words follow inside it, one after another. */
+  drawer: [0, 0.7],
+  /** The first word starts here; each next one 0.1 s later, each takes `WORD_IN`. */
+  words: [0.15, 0.5],
   /** The dragon glides in from the right edge. */
-  dragon: [0.25, 1.1],
-  /** The last screen of the rest. The drawer is open through local 0.5 (u 1.9). */
-  restEnd: 2.0,
-  wordsOut: [2.0, 2.28],
-  drawerOut: [2.05, 2.42],
-  /** The camera leaves the pixel view for the baked one. */
-  camera: [2.25, 2.65],
+  dragon: [0, 0.95],
+  /** The room rests from here (the drawer is open) until the film's play starts at `restEnd`. */
+  restEnd: REST_U,
+  wordsOut: [REST_U, REST_U + 0.2],
+  drawerOut: [REST_U, REST_U + 0.3],
+  /** The camera leaves the pixel view for the baked one: a quick whip, the middle of it is a few frames. */
+  camera: [REST_U + 0.15, REST_U + 0.6],
   /** Selena's pose goes from the idle to the clip. */
-  pose: [2.3, 2.65],
-  /** The doll lets go of the top edge, falls and arrives over the hand (before the camera moves). */
-  doll: [2.0, 2.45],
+  pose: [REST_U + 0.2, REST_U + 0.6],
+  /** The doll lets go of the top edge, falls and arrives over the hand (before the camera is done). */
+  doll: [REST_U, REST_U + 0.5],
   /**
    * The ground goes white behind the dragon: a flash that starts on the bite and is complete before
    * the dragon's head reaches the lens (the clip's 3.7 s), so it passes over a white screen.
    */
-  white: [3.22, 3.36],
+  white: [3.15, 3.4],
   /** Then a white over everything takes Selena too, and the actors are gone by the end of it. */
-  front: [3.55, 3.7],
+  front: [3.75, 3.95],
   /** The white over the canvas hands over to the one under it (the same colour), at the end. */
-  frontOut: [3.8, 3.95],
-  /** The white of the layer leaves again in the tail, when the ground behind it is the next one's. */
-  whiteOut: [4.05, 4.3],
+  frontOut: [4.0, STORY],
+  /** In SCREENS past the section's end (its tail): the white layer leaves, under the voices' own ground. */
+  whiteOut: [0.25, 0.5],
 } as const;
 
+/** How long one word takes to come in, in seconds. */
+export const WORD_IN = 0.35;
+
 /**
- * Screens to seconds of the clip: the clip starts at the first key and ends at the last. The hover of
- * the doll (1.2 to 2.6 s) plays fastest, the eat (2.95 to 3.5 s) slower and the dragon's pass
- * (3.5 to 3.95 s) slowest (a third of a screen), so the pass is not over before it is seen.
+ * Seconds of the story to seconds of the clip: the clip starts at the first key and ends at the
+ * last. The camera swing carries the first second of it (fast), the hover of the doll (1.2 to 2.6 s)
+ * plays at twice the speed, the eat (2.6 to 3.5 s) a little faster than real, and the dragon's pass
+ * (3.5 to 3.95 s) a little slower, so the big sweep is seen. No dead time after the pass: the white
+ * follows it at once.
  */
 export const FILM_KEYS: ReadonlyArray<readonly [u: number, t: number]> = [
-  [2.65, 0],
-  [2.8, 1.2],
-  [3.0, 2.6],
-  [3.08, 2.95],
-  [3.22, 3.5],
-  [3.55, 3.95],
+  [REST_U + 0.6, 0],
+  [REST_U + 0.9, 1.2],
+  [REST_U + 1.55, 2.6],
+  [REST_U + 1.75, 2.95],
+  [REST_U + 2.15, 3.5],
+  [REST_U + 2.75, 3.95],
 ];
 
 /** The end of the clip we play: the dragon has left the frame at 3.9 s (`BAKED.pass.outAt`). */
 export const FILM_END = 3.95;
 
-/** The clip time in seconds for a position, 0 before the first key and `FILM_END` after the last. */
+/** The clip time in seconds for a story time, 0 before the first key and `FILM_END` after the last. */
 export function filmTime(u: number): number {
   const first = FILM_KEYS[0]!;
   const last = FILM_KEYS[FILM_KEYS.length - 1]!;
@@ -89,8 +99,8 @@ export function filmTime(u: number): number {
   return last[1];
 }
 
-/** The scroll for a clip time (the inverse of `filmTime`), for the probes and the tests. */
-export function screensAtFilm(t: number): number {
+/** The story time for a clip time (the inverse of `filmTime`), for the probes and the tests. */
+export function storyAtFilm(t: number): number {
   const first = FILM_KEYS[0]!;
   const last = FILM_KEYS[FILM_KEYS.length - 1]!;
   if (t <= first[1]) return first[0];
@@ -160,8 +170,11 @@ export function newBeats(): Beats {
   };
 }
 
-/** All the beats for `u` screens, written into `out`. */
-export function beatsAt(u: number, out: Beats = newBeats()): Beats {
+/**
+ * All the beats for the story time `u`, written into `out`. `tail` is how far the page has gone past
+ * the section's end, in screens: the white layer leaves in it, scroll linked, under the next ground.
+ */
+export function beatsAt(u: number, out: Beats = newBeats(), tail = 0): Beats {
   const open = smooth(seg(u, AT.drawer[0], AT.drawer[1]));
   const close = smooth(seg(u, AT.drawerOut[0], AT.drawerOut[1]));
   out.drawer = open * (1 - close);
@@ -173,9 +186,9 @@ export function beatsAt(u: number, out: Beats = newBeats()): Beats {
   out.white = smooth(seg(u, AT.white[0], AT.white[1]));
   out.front =
     smooth(seg(u, AT.front[0], AT.front[1])) * (1 - smooth(seg(u, AT.frontOut[0], AT.frontOut[1])));
-  out.whiteOut = smooth(seg(u, AT.whiteOut[0], AT.whiteOut[1]));
+  out.whiteOut = smooth(seg(tail, AT.whiteOut[0], AT.whiteOut[1]));
   out.film = out.camera >= 1;
-  out.live = u < AT.restEnd;
+  out.live = u <= AT.restEnd + 1e-6;
   out.actors = u < AT.front[1];
   return out;
 }

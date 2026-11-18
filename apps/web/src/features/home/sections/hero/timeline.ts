@@ -1,28 +1,32 @@
 /**
  * The hero and the aspirants are one scene (the logo goes to the bar, the cards gather, spiral and
  * land as the wall, the wall slides, then it opens into the full screen rows). Both sections run in
- * the overlap of the hero's tail and the aspirants' lead, and the field, the logo and the drone are
- * shared, so everything here is a pure function of one number: the absolute scroll `S` in screens.
- * Each runtime turns its own `local` into `S` and asks this file, so the order the kernel runs two
- * sections in never decides the picture (design section 4.1).
+ * parallel on the same clock and the field, the logo and the drone are shared, so everything here is
+ * a pure function of one number: the story position `S` in story screens (`../story.ts`). Each
+ * runtime turns its own virtual `local` (the number its plays animate) into `S` and asks this file, so
+ * the order the kernel runs two sections in never decides the picture (design section 4.1).
  *
- *   S 0 to 0.17    the freeze: the cards float around the logo
+ * Round two (19 Nov 2026): the scene is triggered, not scrolled. The hero has one play that carries
+ * `S` from 0 to 4.5 (the whole of it in about 3 s), the aspirants have one that closes the wall
+ * (4.5 to 5.3, about 1.5 s). The beats below are in story screens.
+ *
+ *   S 0 to 0.17    the first moments: the cards float around the logo
  *   S 0.2 to 1.4   the cards highest on the screen leave first and spiral into the ring (premotio)
  *   S 0.4 to 1.3   the logo morphs into the bar with a travelling wave, and is there before the
  *                  ring stands (story p 0.34 is S 1.43)
  *   S 1.43 to 1.76 the ring stands and turns
  *   S 1.76 to 3.95 the cards leave the ring one by one and land as the wall
  *   S 3.3 to 3.95  the picture is clipped to the wall's frame (the left 58 percent)
- *   S 3.9 to 4.5   the words on the right arrive, line by line
+ *   S 3.7 to 4.5   the words on the right arrive, line by line (the rest state of the aspirants)
  *   S 3.95 to 4.3  the wall begins to slide by itself
- *   S 5.02 to 5.2  the words fold away (the middle of the section, S 5.0, is the resting state: a
- *                  control focused by the keyboard moves the page there, and finds the words shown)
- *   S 5.05 to 5.3  the clip opens, the wall becomes the full screen rows, the slide stops (J2)
+ *   S 4.5 to 4.7   the words fold away (S 4.5 is the resting state: the wall, the words, the glide)
+ *   S 4.55 to 5.3  the clip opens, the wall becomes the full screen rows, the slide stops (J2)
  */
 
-export const HERO_SCREENS = 4.2;
-export const ASPIRANTS_START = 4.2;
-export const ASPIRANTS_SCREENS = 1.6;
+import { STORY } from "../story";
+
+/** premotio's story is three units of 1.4 screens: the hero's `p` is `S` over this. */
+const STORY_P_LENGTH = 4.2;
 
 const clamp01 = (x: number): number => Math.min(1, Math.max(0, x));
 
@@ -37,11 +41,21 @@ export function smooth(x: number, a: number, b: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** The scroll position of the hero's `local` (0 to 1 over its own length). */
-export const heroS = (local: number): number => local * HERO_SCREENS;
+/**
+ * The story position of the hero's virtual `local` `v` (0 the scatter, 1 the wall with the words in).
+ * Outside 0 to 1 it rests: the hero's tail does not run the story on.
+ */
+export const heroS = (v: number): number => clamp01(v) * STORY.hero.length;
 
-/** The scroll position of the aspirants' `local`. */
-export const aspirantsS = (local: number): number => ASPIRANTS_START + local * ASPIRANTS_SCREENS;
+/**
+ * The story position of the aspirants' virtual `local` `v`. From 0 to 1 it mirrors the hero's play
+ * (the two plays fire at the same scroll and run in step, so the words come in as the wall lands);
+ * from 1 to 2 it is the close of the wall into the rows. Outside it rests.
+ */
+export const aspirantsS = (v: number): number =>
+  v <= 1
+    ? clamp01(v) * STORY.hero.length
+    : STORY.aspirants.start + clamp01(v - 1) * STORY.aspirants.length;
 
 export const TIMES = {
   /** The logo's morph progress runs over these screens (a little under one screen, as the reel's). */
@@ -53,15 +67,15 @@ export const TIMES = {
   /** From here a card may be pressed: the cards have landed (story p 0.94). */
   viewable: 3.95,
   /** The words arrive: the first line starts, the last one ends, the stagger between lines. */
-  textIn: [3.9, 4.5] as const,
+  textIn: [3.7, 4.5] as const,
   /** The auto glide of the wall: it starts when the cards have landed. */
   slideIn: [3.95, 4.3] as const,
   /** The words fold away, the glide eases to a stop, the wall opens into the rows. */
-  textOut: [5.02, 5.2] as const,
-  slideOut: [5.0, 5.27] as const,
-  open: [5.08, 5.3] as const,
+  textOut: [4.5, 4.7] as const,
+  slideOut: [4.5, 4.85] as const,
+  open: [4.6, 5.3] as const,
   /** The clip opens again with the wall (a little ahead of it, so no card is cut while it opens). */
-  clipOpen: [5.05, 5.3] as const,
+  clipOpen: [4.55, 5.3] as const,
 } as const;
 
 /** How fast the wall slides by itself (px per second of the wall's plane). */
@@ -69,7 +83,7 @@ export const SLIDE_RATE = 80;
 
 /** The hero's story progress `p` (premotio's own 3 units are 4.2 screens, so it is the scroll). */
 export function storyP(S: number): number {
-  return clamp01(S / HERO_SCREENS);
+  return clamp01(S / STORY_P_LENGTH);
 }
 
 /** The logo's morph progress `P`, 0 at the rest place, 1 in the bar. Linear in the scroll, so it reverses. */
@@ -106,13 +120,13 @@ export function slideRate(S: number): number {
   );
 }
 
-/** The cards can be pressed (a preview opens) from the landing until the rows have opened. */
+/** The cards can be pressed (a preview opens) from the landing until the wall starts to close. */
 export function viewable(S: number): boolean {
-  return S >= TIMES.viewable && S < TIMES.open[1] - 0.05;
+  return S >= TIMES.viewable && S <= TIMES.textOut[0] + 1e-6;
 }
 
 /** The gap between two lines of the words, in screens. */
-const LINE_GAP = 0.09;
+const LINE_GAP = 0.08;
 
 /** Line `k` of the words, in (0 hidden, 1 shown): the lines arrive one after another. */
 export function lineIn(S: number, k: number): number {

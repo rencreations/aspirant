@@ -11,6 +11,7 @@ import {
   walkPhaseFor,
   walkRateFor,
 } from "./motion";
+import { DOLL_SIZE } from "./place";
 import { DOLL_HEIGHT, WALK_SECONDS, WALK_SPEED } from "./rig";
 
 describe("clamp, at, smoothstep", () => {
@@ -117,9 +118,14 @@ describe("hash", () => {
 });
 
 describe("the stride of the walk", () => {
-  it("the speed is the file's speed scaled by the doll's height", () => {
-    expect(strideSpeed(1, DOLL_HEIGHT)).toBeCloseTo(WALK_SPEED, 10);
-    expect(strideSpeed(2, 170)).toBeCloseTo(WALK_SPEED * 100 * 2, 6);
+  it("the speed is the file's speed scaled by the height she is drawn at (the asked height times DOLL_SIZE)", () => {
+    expect(strideSpeed(1, DOLL_HEIGHT / DOLL_SIZE)).toBeCloseTo(WALK_SPEED, 10);
+    expect(strideSpeed(2, 170 / DOLL_SIZE)).toBeCloseTo(WALK_SPEED * 100 * 2, 6);
+  });
+
+  it("a smaller doll covers less ground a step, so the same distance is more steps", () => {
+    expect(strideSpeed(1, 300)).toBeCloseTo(DOLL_SIZE * ((WALK_SPEED * 300) / DOLL_HEIGHT), 10);
+    expect(walkPhaseFor(500, 300)).toBeCloseTo(500 / (strideSpeed(1, 300) * WALK_SECONDS), 10);
   });
 
   it("a rate matches the speed it was asked for", () => {

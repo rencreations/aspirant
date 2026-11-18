@@ -14,7 +14,7 @@ export function view(): SectionMarkup {
   return {
     below: null,
     text: (
-      <div className={styles.music} data-music="" data-phase="away" data-held="0" data-again="0">
+      <div className={styles.music} data-music="" data-phase="away" data-again="0">
         <h2 className={styles.title} data-music-part="title">
           {MUSIC.title}
         </h2>
@@ -39,9 +39,6 @@ export function view(): SectionMarkup {
           </Pill>
           <button type="button" className={styles.text} data-music-another="">
             {MUSIC_UI.another}
-          </button>
-          <button type="button" className={styles.text} data-music-continue="">
-            {MUSIC_UI.keep}
           </button>
         </div>
       </div>

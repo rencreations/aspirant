@@ -1,6 +1,8 @@
 /**
- * The Obsidia doll: a plain class, no React. She is the lit skinned doll of `doll.glb` drawn in the
- * home's shared cast pass, with a face that is drawn by a shader (24 expressions, a blend between
+ * The Obsidia doll: a plain class, no React. She is the skinned doll of `doll.glb` drawn in the
+ * home's shared cast pass in the toon look (cel bands, an ink line, a rim, hard hair glints: the
+ * shared system in `actors/shared/toon.ts`, three parts: cloth, skin, hair), 60 percent of the height
+ * a section asks for (`DOLL_SIZE`), with a face that is drawn by a shader (24 expressions, a blend between
  * any two, an automatic blink, eyes that look, a mouth that talks), poses authored as turns about
  * the model's axes with a procedural layer on top (flail, run lean, breath, a head on a spring,
  * squash and stretch), a baked walk that can be scrubbed by distance, sockets for other actors,
@@ -14,16 +16,15 @@
  * (scale about the pivot) > `shift` (puts the pivot at the origin) > the GLB's own group.
  */
 import {
+  BufferAttribute,
   Color,
   Group,
   Matrix4,
   Quaternion,
-  Vector2,
   Vector3,
   Vector4,
   type AnimationClip,
   type Bone,
-  type Material,
   type MeshStandardMaterial,
   type Object3D,
   type SkinnedMesh,
@@ -35,23 +36,24 @@ import { clone as cloneSkinned } from "three/examples/jsm/utils/SkeletonUtils.js
 import type { Actor, FrameInfo } from "../../kernel/types";
 import type { Cast } from "../shared/cast";
 import { forgetGltf } from "../shared/gltf";
+import { INK_COLOR, InkMaterial, TOON_LOOKS, ToonMaterial, type Ink } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 
 import { FACE_FRAME, type FaceName } from "./face/presets";
 import { FACE_ARRAY_LENGTH, FACES, applyLive, autoBlink, mixFaces, swapsEyes } from "./face/mix";
-import {
-  FACE_FRAGMENT_HEAD,
-  FACE_FRAGMENT_MAP,
-  FACE_VERTEX_BODY,
-  FACE_VERTEX_HEAD,
-} from "./face/shader";
 import { moodAt, type MoodStep } from "./face/sequence";
+import { patchFaceFragment, patchFaceVertex } from "./face/toon-face";
 import { HANG_POSE, hangSway, rollToHang, wrapPi } from "./hang";
+import { addInkCopies } from "./ink";
 import { Reactions, type ReactionKind } from "./interaction";
+import { INK_SLOPE, PART_LOOKS, inkBoost, trimLook } from "./look";
 import { Spring, approach, at, clamp } from "./motion";
+import { PART, PART_COUNT, boneParts, splitParts, type PartKind } from "./parts";
 import {
+  DOLL_SIZE,
   clientToStage,
   depthScale,
+  drawnHeight,
   fitScale,
   hitDepth,
   insideCapsule,
@@ -143,9 +145,6 @@ const STRETCH_SPEED = 7;
 const MAX_STRETCH = 0.16;
 /** A step bigger than this many heights in a frame is a jump: nothing springs over it. */
 const JUMP_HEIGHTS = 1.2;
-/** The light trim of the doll inside the shared rig (see `docs/design/home/actor-doll.md`). */
-const DEFAULT_LIGHT = { direct: 0.45, ambient: 0.7, env: 0.45 } as const;
-
 /** The next animation frame, or 40 ms later where there are none (a hidden tab). */
 function nextFrame(): Promise<void> {
   return new Promise((resolve) => {
@@ -182,14 +181,19 @@ export class DollActor implements Actor {
   private readonly ctx: ActorCtx;
   private readonly gltfPath: string;
   private readonly walkSampler: WalkSampler | null;
-  private readonly material: MeshStandardMaterial;
+  /** The file's own material: only her picture is kept (the toon materials read its map). */
+  private readonly source: MeshStandardMaterial;
+  /** One toon material for each part (`PART`): cloth, skin (it draws the face), hair. */
+  private readonly toons: ToonMaterial[] = [];
+  /** The ink line: its width in pixels, shared by the eight copies of the mesh that draw it. */
+  private readonly ink = new InkMaterial(INK_COLOR);
+  private line: Ink | null = null;
   private readonly uniforms: {
     uFaceF: { value: Float32Array };
     uFaceFrame: { value: Vector4 };
     uIrisL: { value: Color };
     uIrisR: { value: Color };
     uInk: { value: Color };
-    uDollLight: { value: Vector2 };
   };
   private removeHit: (() => void) | null = null;
   private disposed = false;
@@ -314,10 +318,9 @@ export class DollActor implements Actor {
       return bone;
     });
 
-    this.material = this.wireMaterial(this.body.material as MeshStandardMaterial);
-    this.body.material = this.material;
+    this.source = this.body.material as MeshStandardMaterial;
     this.uniforms = this.makeUniforms();
-    this.installShader();
+    this.dress();
 
     this.root.add(this.squashNode);
     this.squashNode.add(this.shift);
@@ -567,7 +570,7 @@ export class DollActor implements Actor {
       this.pyaw = this.root.rotation.y;
       this.ppitch = this.root.rotation.x;
       this.proll = this.root.rotation.z;
-      this.pheight = worldHeight;
+      this.pheight = worldHeight / DOLL_SIZE;
     } else {
       socket.add(this.root);
       this.attachedTo = socket;
@@ -593,7 +596,7 @@ export class DollActor implements Actor {
     this.pyaw = this.root.rotation.y;
     this.ppitch = this.root.rotation.x;
     this.proll = this.root.rotation.z;
-    this.pheight = this.worldHeightPx();
+    this.pheight = this.worldHeightPx() / DOLL_SIZE;
     this.haveLast = false;
   }
 
@@ -629,8 +632,8 @@ export class DollActor implements Actor {
     }
     const compiled = performance.now() - t0;
     spent += compiled;
-    const m = this.material;
-    for (const t of new Set([m.map, m.normalMap, m.metalnessMap, m.roughnessMap])) {
+    // Only her picture goes to the GPU: the toon look reads no normal, metalness or roughness map.
+    for (const t of new Set([this.source.map])) {
       if (!t || this.disposed) continue;
       await nextFrame();
       const t1 = performance.now();
@@ -653,10 +656,15 @@ export class DollActor implements Actor {
     if (!on) this.hovered = false;
   }
 
-  /** Trim the doll inside the shared cast rig. `direct` scales the key and fill on her, `ambient` the ambient light and the environment's diffuse. */
-  light(direct: number, ambient: number, env: number = DEFAULT_LIGHT.env): void {
-    this.uniforms.uDollLight.value.set(direct, ambient);
-    this.material.envMapIntensity = env;
+  /**
+   * Trim her look for a section with another light: `direct` scales the lit colour and `ambient` the
+   * shade (1 and 1 are the plain look). She reads no environment and no scene light any more.
+   */
+  light(direct = 1, ambient = 1): void {
+    this.toons.forEach((toon, part) => {
+      const spec = PART_LOOKS[part as PartKind];
+      toon.setLook(trimLook({ ...TOON_LOOKS[spec.look], ...spec.tune }, direct, ambient));
+    });
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -679,6 +687,7 @@ export class DollActor implements Actor {
     this.composePose(time, dt, r.wobble);
     this.applyToBones();
     this.placeRoot(r.hop, r.spin, r.squash, time);
+    this.updateInk();
     this.updateFace(frame, r.face, dt);
     this.cacheHit();
 
@@ -693,16 +702,21 @@ export class DollActor implements Actor {
     this.removeHit?.();
     this.removeHit = null;
     this.root.removeFromParent();
+    this.line?.remove();
+    this.line = null;
     this.body.geometry.dispose();
     this.body.skeleton.dispose();
     const textures: Array<Texture | null> = [
-      this.material.map,
-      this.material.normalMap,
-      this.material.metalnessMap,
-      this.material.roughnessMap,
+      this.source.map,
+      this.source.normalMap,
+      this.source.metalnessMap,
+      this.source.roughnessMap,
     ];
     for (const t of new Set(textures)) t?.dispose();
-    this.material.dispose();
+    for (const toon of this.toons) toon.dispose();
+    this.toons.length = 0;
+    this.ink.dispose();
+    this.source.dispose();
     this.sockets.clear();
     if (this.ctx.pointer.state.hit === "doll") this.ctx.cursor.set(null);
     // A later engine must parse a fresh copy: this one is disposed.
@@ -846,17 +860,18 @@ export class DollActor implements Actor {
     this.squashNode.scale.set(1 / Math.sqrt(1 + sq), 1 + sq, 1 / Math.sqrt(1 + sq));
 
     this.root.rotation.set(this.ppitch, this.pyaw + spin, roll);
-    const lift = hop * HOP_SHARE * this.pheight;
+    const drawn = drawnHeight(this.pheight);
+    const lift = hop * HOP_SHARE * drawn;
     if (this.attachedTo) {
       // The depth that sizes her is her own, not the socket's: the pivot's world z.
       this.attachedTo.updateWorldMatrix(true, false);
       const ps = this.parentScale();
       this.root.position.set(this.px / ps, (this.py + lift) / ps, this.pz / ps);
       const worldZ = _v.copy(this.root.position).applyMatrix4(this.attachedTo.matrixWorld).z;
-      this.root.scale.setScalar(fitScale(this.pheight, worldZ, ps));
+      this.root.scale.setScalar(fitScale(drawn, worldZ, ps));
     } else {
       this.root.position.set(this.px, this.py + lift, this.pz);
-      this.root.scale.setScalar(rootScale(this.pheight, this.pz));
+      this.root.scale.setScalar(rootScale(drawn, this.pz));
     }
     this.root.updateMatrixWorld(true);
   }
@@ -869,7 +884,7 @@ export class DollActor implements Actor {
     return s > 1e-9 ? s : 1;
   }
 
-  /** Her height on the screen now, from her world scale (the inverse of `rootScale`). */
+  /** Her height on the screen now (drawn: `DOLL_SIZE` times the asked height), from her world scale (the inverse of `rootScale`). */
   private worldHeightPx(): number {
     const e = this.root.matrixWorld.elements;
     const worldScale = Math.hypot(e[0], e[1], e[2]);
@@ -984,13 +999,6 @@ export class DollActor implements Actor {
     return null;
   }
 
-  private wireMaterial(source: MeshStandardMaterial): MeshStandardMaterial {
-    const mat = source.clone();
-    mat.envMap = this.cast.env;
-    mat.envMapIntensity = DEFAULT_LIGHT.env;
-    return mat;
-  }
-
   private makeUniforms(): DollActor["uniforms"] {
     return {
       uFaceF: { value: new Float32Array(FACE_ARRAY_LENGTH) },
@@ -999,32 +1007,79 @@ export class DollActor implements Actor {
       },
       uIrisL: { value: new Color(0xd9262f) },
       uIrisR: { value: new Color(0x5cbcf2) },
-      uInk: { value: new Color(0x1d0f1d) },
-      uDollLight: { value: new Vector2(DEFAULT_LIGHT.direct, DEFAULT_LIGHT.ambient) },
+      // The drawn lashes and brows are the same ink as the line round her.
+      uInk: { value: new Color(INK_COLOR) },
     };
   }
 
-  private installShader(): void {
+  /** The ink line follows her size on the screen: sized every frame from her world scale and depth. */
+  private updateInk(): void {
+    const ink = this.ink;
+    const h = this.worldHeightPx();
+    ink.setSize(h);
+    // The copies are shifted by `px` on the screen and sent back by `push` in depth. A surface seen
+    // at a grazing angle moves in depth by its slope times the shift, so the push is that many times
+    // the shift: a smaller one lets the shifted copy of a sheet paint over the sheet next to it.
+    ink.setWidth(ink.px.value * inkBoost(h));
+    ink.card.value = 1;
+    ink.push.value = ink.px.value * INK_SLOPE;
+  }
+
+  /**
+   * Draw her in the toon look. The one mesh is sorted into three groups (cloth, skin, hair: `parts.ts`),
+   * each with its own toon material. Her line is `ink.ts`: the mesh drawn again eight times in ink,
+   * shifted by the line's width in a circle, behind her. A hull along the normals (the toon system's
+   * own ink) cannot outline her: her hair is made of open sheets, which have no inside.
+   * The skin material also draws the face (`face/toon-face.ts`).
+   */
+  private dress(): void {
+    const geo = this.body.geometry;
+    const position = geo.getAttribute("position");
+    const skinIndex = geo.getAttribute("skinIndex");
+    const skinWeight = geo.getAttribute("skinWeight");
+    const face = geo.getAttribute("_face");
+    const split = splitParts({
+      index: geo.index ? geo.index.array : null,
+      vertexCount: position.count,
+      skinIndex: skinIndex.array,
+      skinWeight: skinWeight.array,
+      face: face.array,
+      boneKind: boneParts(this.body.skeleton.bones.map((b) => b.name)),
+    });
+    geo.setIndex(new BufferAttribute(split.index, 1));
+    geo.clearGroups();
+    for (const g of split.groups) geo.addGroup(g.start, g.count, g.part);
+
+    const source = this.source;
+    for (let part = 0; part < PART_COUNT; part++) {
+      const spec = PART_LOOKS[part as PartKind];
+      const toon = new ToonMaterial({
+        map: source.map,
+        color: source.color,
+        look: spec.look,
+        tune: spec.tune,
+        side: source.side,
+        name: `doll_${["cloth", "skin", "hair"][part] ?? part}`,
+      });
+      if (part === PART.skin) this.wireFace(toon);
+      this.toons.push(toon);
+    }
+    this.body.material = this.toons;
+    this.line = addInkCopies(this.body, this.ink, source.side);
+  }
+
+  /** The face shader, drawn into the skin's toon material after the toon system's own patch. */
+  private wireFace(material: ToonMaterial): void {
     const uniforms = this.uniforms;
-    const material: Material = this.material;
-    material.onBeforeCompile = (shader) => {
+    const toon = material.onBeforeCompile.bind(material);
+    material.onBeforeCompile = (shader, renderer) => {
+      toon(shader, renderer);
       Object.assign(shader.uniforms, uniforms);
-      shader.vertexShader = shader.vertexShader
-        .replace("#include <common>", `#include <common>\n${FACE_VERTEX_HEAD}`)
-        .replace("#include <begin_vertex>", `#include <begin_vertex>\n${FACE_VERTEX_BODY}`);
-      shader.fragmentShader = shader.fragmentShader
-        .replace(
-          "#include <common>",
-          `#include <common>\n${FACE_FRAGMENT_HEAD}\nuniform vec2 uDollLight;`,
-        )
-        .replace("#include <map_fragment>", `#include <map_fragment>\n${FACE_FRAGMENT_MAP}`)
-        // The shared cast rig is brighter than the doll's recipe: trim her light here.
-        .replace(
-          "#include <aomap_fragment>",
-          "reflectedLight.directDiffuse *= uDollLight.x;\nreflectedLight.directSpecular *= uDollLight.x;\nreflectedLight.indirectDiffuse *= uDollLight.y;\n#include <aomap_fragment>",
-        );
+      shader.vertexShader = patchFaceVertex(shader.vertexShader);
+      shader.fragmentShader = patchFaceFragment(shader.fragmentShader);
     };
-    material.customProgramCacheKey = () => "home-doll-face-v1";
+    const key = material.customProgramCacheKey.bind(material);
+    material.customProgramCacheKey = () => `${key()}-doll-face-v2`;
     material.needsUpdate = true;
   }
 

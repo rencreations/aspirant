@@ -3,7 +3,7 @@
  * focus). Pure arithmetic: `wheelItem(r)` says where the item `r` places away from the focus
  * (r = 0 is in focus, 1 is the next one down) goes, with a transform and an opacity only.
  */
-import { BEAT, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./journey";
+import { BEAT, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./stations";
 
 export interface WheelItem {
   /** Vertical distance in em (the font size of the item). */
@@ -39,9 +39,9 @@ const smooth = (v: number): number => {
   return x * x * (3 - 2 * x);
 };
 
-/** How much of the wheel shows at `t`: it fades in before the dragon is at the middle and out as it leaves. */
+/** How much of the wheel shows at `t`: it fades in as the dragon lands and out as it rears. */
 export function wheelEnvelope(t: number): number {
-  return smooth((t - (WHEEL_FROM - 0.35)) / 0.45) * (1 - smooth((t - (BEAT.leave + 0.05)) / 0.4));
+  return smooth((t - (WHEEL_FROM - 0.5)) / 0.45) * (1 - smooth((t - BEAT.leave) / 0.35));
 }
 
 /** The position of the wheel in items at `t`, clamped a little beyond the first and the last. */

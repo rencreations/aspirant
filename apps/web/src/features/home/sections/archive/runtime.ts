@@ -17,8 +17,10 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { ensureTetra, type TetraActor } from "../../actors/tetra";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
+import { backdropAt } from "./backdrop";
 import {
   ROOMS,
   coverX,
@@ -38,6 +40,7 @@ import {
   coverOut,
   headAt,
   newTetraWant,
+  routeS,
   tetraAt,
   toStage,
   tourAt,
@@ -57,7 +60,6 @@ const TAP_HOLD = 4;
 /** Values are written in steps of this, so a still scene writes nothing. */
 const STEP = 50;
 
-const clamp = (v: number, a: number, b: number): number => Math.min(b, Math.max(a, v));
 const quant = (v: number): number => Math.round(v * STEP) / STEP;
 
 class ArchiveRuntime implements SectionRuntime {
@@ -94,6 +96,7 @@ class ArchiveRuntime implements SectionRuntime {
   private air = 0;
   private touch = false;
   private dir = 1;
+  private lastS = Number.NaN;
 
   private readonly spot: Spot = { x: 0, y: 0, height: 0 };
   private readonly stage: Spot = { x: 0, y: 0, height: 0 };
@@ -104,6 +107,7 @@ class ArchiveRuntime implements SectionRuntime {
     private readonly ctx: SectionCtx,
     private readonly drone: DroneActor | null,
     private readonly tetra: TetraActor | null,
+    private readonly backdrop: Backdrop | null,
   ) {
     const text = ctx.dom.text;
     this.below = ctx.dom.below;
@@ -122,12 +126,14 @@ class ArchiveRuntime implements SectionRuntime {
     this.geo = stripGeo(vp.w, vp.h);
     this.layout(vp.w, vp.h);
     this.listen();
+    void backdrop?.warm(["squares", "iridescence"]);
   }
 
   // ----------------------------------------------------------------------------- the frame
 
   update(local: number, frame: FrameInfo): void {
-    const S = AT.start + local * (AT.stuck - AT.start);
+    // The entry is a triggered scene on the play's clock (`local`), the rest is the scroll's.
+    const S = routeS(local, frame.S);
     const vp = frame.viewport;
     if (vp.w !== this.w || vp.h !== this.h) this.layout(vp.w, vp.h);
     this.now = frame.time;
@@ -144,6 +150,8 @@ class ArchiveRuntime implements SectionRuntime {
     this.lit = nearest(q);
     this.air = onAir;
 
+    const ask = backdropAt(S, AT.start, AT.coversOut);
+    if (ask) this.backdrop?.set(ask.kind, ask.options);
     this.head(S);
     this.cards(S, q, onAir);
     this.light(S, frame.raw, q, pS, onAir, vp);
@@ -157,7 +165,7 @@ class ArchiveRuntime implements SectionRuntime {
       this.seenTitle = title;
       this.writeHead(this.title, title);
     }
-    const button = Math.round(headAt(S, 0.12) * STEP) / STEP;
+    const button = Math.round(headAt(S, 0.06) * STEP) / STEP;
     if (button !== this.seenButton) {
       this.seenButton = button;
       this.writeHead(this.button, button);
@@ -275,8 +283,10 @@ class ArchiveRuntime implements SectionRuntime {
       const want = tetraAt(S, vp, this.tetraWant);
       if (!want.visible) return;
       toStage(vp, { x: want.x, y: want.y, height: want.height }, this.tetraStage);
-      const v = frame.velocity;
-      if (Math.abs(v) > 0.02) this.dir = v >= 0 ? 1 : -1;
+      // The way she faces follows the route's clock (a scroll up and a play run backward both turn her round).
+      const moved = Number.isNaN(this.lastS) ? 0 : S - this.lastS;
+      if (Math.abs(moved) > 1e-5) this.dir = moved >= 0 ? 1 : -1;
+      this.lastS = S;
       // She faces left (J14) and runs left; when the visitor scrolls back she turns and runs back.
       const running = want.run > 0 && want.run < 1;
       tetra.visible = true;
@@ -289,7 +299,7 @@ class ArchiveRuntime implements SectionRuntime {
       });
       tetra.runSpeed(0.55);
       if (running) {
-        tetra.pose("run", clamp(0.25 + Math.abs(v) * 1.5, 0, 1));
+        tetra.pose("run", 1);
         tetra.look(null);
       } else if (want.wave > 0.001) {
         tetra.pose("wave", want.wave);
@@ -406,9 +416,10 @@ class ArchiveRuntime implements SectionRuntime {
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [drone, tetra] = await Promise.all([
+  const [drone, tetra, backdrop] = await Promise.all([
     ensureDrone(ctx).catch(() => null),
     ensureTetra(ctx).catch(() => null),
+    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new ArchiveRuntime(ctx, drone, tetra);
+  return new ArchiveRuntime(ctx, drone, tetra, backdrop);
 }

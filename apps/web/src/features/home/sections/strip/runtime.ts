@@ -15,6 +15,7 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { newRoutePlace, routeAt, type DroneRoutePlace } from "../../drone-route";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { clamp, ramp } from "../../fx/image-field/math";
 import {
   FILM_ORDER,
@@ -27,7 +28,10 @@ import {
 import { makeState, type FilmState } from "../../fx/video-plane/types";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { filmStateAt } from "./film-state";
-import { makeBeats, STRIP_SCREENS, STRIP_START, stripBeats, type StripBeats } from "./journey";
+import { sectionScreens, sectionStart } from "../../kernel/where";
+import { backdropAt } from "../backdrops";
+import { storyAt } from "../story";
+import { makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
 import { LetterGroup } from "./letters";
 import { scrambleAt } from "./scramble";
 import { useStripPlayer } from "./store";
@@ -37,10 +41,14 @@ import { STRIP } from "../../content";
 const SWAP_IN = 0.4;
 const SWAP_OUT = 0.45;
 const NOISE_HZ = 22;
-/** Where the page goes for a control that is not on screen (screens from the start of the section). */
-const FOCUS_AT = { small: 0.3, window: 1.35, hold: 2.4 } as const;
-/** The ranges of the scroll in which each kind of control is on screen. */
-const FOCUS_RANGE = { small: [-0.2, 0.5], window: [1.25, 1.5], hold: [2.1, 2.7] } as const;
+/**
+ * Where the page goes for a control that is not on screen (a fraction of the section). The plays rest
+ * on a station for a position, so each is a place inside the dwell of the station that shows the
+ * control: the small frame, the window with the play button, the orbit with its button.
+ */
+const FOCUS_AT = { small: 0.12, window: 0.48, hold: 0.72 } as const;
+/** The ranges of the scroll (fractions of the section) in which each kind of control is on screen. */
+const FOCUS_RANGE = { small: [-0.17, 0.29], window: [0.3, 0.64], hold: [0.65, 0.99] } as const;
 /** The corner dots sit this far outside the frame's corners at rest and at the end of the expand (px). */
 const DOT_OFF = [9, 48] as const;
 /** The tick marks of the window stand this far outside its corners. */
@@ -92,6 +100,7 @@ class StripRuntime implements SectionRuntime {
     private readonly ctx: SectionCtx,
     private readonly film: FilmActor,
     private readonly drone: DroneActor | null,
+    private readonly backdrop: Backdrop | null,
   ) {
     const text = ctx.dom.text;
     const below = ctx.dom.below;
@@ -145,14 +154,20 @@ class StripRuntime implements SectionRuntime {
   // ---------------------------------------------------------------------------------------------
   // The page
 
-  update(local: number, frame: FrameInfo): void {
-    const s = local * STRIP_SCREENS;
-    const S = STRIP_START + s;
+  update(v: number, frame: FrameInfo): void {
+    const s = stripS(v);
+    const S = storyAt("strip", s);
     const vp = frame.viewport;
     const b = stripBeats(s, this.beats);
 
-    this.driveFilm(S, b);
-    this.driveDrone(S, vp);
+    // Until the first play is over the rows' play is still running in step with it and draws the
+    // film and the drone: this section only brings its words in.
+    if (v >= 1) {
+      this.driveFilm(S, b);
+      this.driveDrone(S, vp);
+    }
+    const back = backdropAt(S);
+    this.backdrop?.set(back.kind, back.options);
     this.writeSmall(b, vp);
     this.writeWindow(b, vp);
     this.writeSecond(b);
@@ -377,7 +392,7 @@ class StripRuntime implements SectionRuntime {
     on(this.cta, "blur", () => this.setSwap(0));
 
     on(this.play, "click", () => this.openPlayer());
-    on(this.scroll, "click", () => this.ctx.scroll.to(STRIP_START + FOCUS_AT.window));
+    on(this.scroll, "click", () => this.ctx.scroll.to(this.pageAt(FOCUS_AT.window)));
 
     // A control the page is not at: move to where it shows. This runs before the shell's own handler
     // (which goes to the middle of the section) and stops it.
@@ -385,10 +400,10 @@ class StripRuntime implements SectionRuntime {
       const kind = this.kindOf(e.target);
       if (!kind) return;
       e.stopPropagation();
-      const now = this.ctx.scroll.raw() - STRIP_START;
+      const now = (this.ctx.scroll.raw() - sectionStart("strip")) / sectionScreens("strip");
       const [from, to] = FOCUS_RANGE[kind];
       if (now >= from && now <= to) return;
-      this.ctx.scroll.to(STRIP_START + FOCUS_AT[kind], { immediate: true });
+      this.ctx.scroll.to(this.pageAt(FOCUS_AT[kind]), { immediate: true });
     });
 
     this.cleanups.push(
@@ -404,6 +419,11 @@ class StripRuntime implements SectionRuntime {
         }
       }),
     );
+  }
+
+  /** The scroll position (screens) of a fraction of the section. */
+  private pageAt(share: number): number {
+    return sectionStart("strip") + share * sectionScreens("strip");
   }
 
   /** Which part of the section a control belongs to, for the keyboard. */
@@ -434,6 +454,10 @@ class StripRuntime implements SectionRuntime {
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [film, drone] = await Promise.all([ensureFilm(ctx), ensureDrone(ctx).catch(() => null)]);
-  return new StripRuntime(ctx, film, drone);
+  const [film, drone, backdrop] = await Promise.all([
+    ensureFilm(ctx),
+    ensureDrone(ctx).catch(() => null),
+    ensureBackdrop(ctx).catch(() => null),
+  ]);
+  return new StripRuntime(ctx, film, drone, backdrop);
 }

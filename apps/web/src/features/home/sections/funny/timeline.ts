@@ -1,18 +1,19 @@
 /**
  * The funny section as arithmetic: where everyone stands and when, as pure functions of `local` and
  * the size of the screen. No three, no DOM. The runtime reads these and sets the actors; a test holds
- * the joints. Stage pixels (the origin in the middle of the screen, y UP), `local` 0 to 1 over the
- * section's own 4.2 screens.
+ * the joints. Stage pixels (the origin in the middle of the screen, y UP). `local` is the plays'
+ * value (`stations.ts`): a clock between three stations, not the scroll.
  *
  * The story, in `local`:
  *   0      the duo hover high at the left (the music's end); the stage is otherwise empty
- *   0 .. ENTER_END      Tetra runs in from the right with the kite behind her and stops to fly it
- *   DRAGON_IN .. OUT    Silverbolt crosses right to left with the doll in its mouth; its head meets
- *                       the rope at CUT and the kite comes down
- *   CUT ..              Tetra, angry, runs off to the left after the dragon
- *   CENTRE_FROM .. TO   the duo come to the middle, big, and question each other
- *   TEXT_FROM .. TO     the words arrive
- *   LIFT_FROM .. 1      the page scrolls up: the duo and the words ride it out of the screen
+ *   0 .. ENTER_END      play one: Tetra runs in from the right with the kite behind her and stops to
+ *                       fly it. The first rest.
+ *   DRAGON_IN .. OUT    play two: Silverbolt crosses right to left with the doll in its mouth; its
+ *                       head meets the rope at CUT and the kite comes down; Tetra, angry, runs off to
+ *                       the left after the dragon. The second rest, the drones confused.
+ *   CENTRE_FROM .. TO   play three: the duo come to the middle, big, and question each other
+ *   TEXT_FROM .. TO     the words arrive. The last rest is the end of the section.
+ *   past the end        the page rides up in the tail (scroll linked): the duo and the words leave
  */
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
@@ -26,30 +27,28 @@ export const ramp = (v: number, a: number, b: number): number => smooth((v - a) 
 /** 0 before `a`, 1 after `b`, a straight line between. */
 export const line = (v: number, a: number, b: number): number => clamp01((v - a) / (b - a));
 
-/** The length of the section in screens (design table, section 4). */
-export const SCREENS = 4.2;
+/** The page has ridden up this far (screens) past the section's end: the duo and the words are gone. */
+export const GONE = 0.74;
 
 /** The times of the story, as `local`. */
 export const T = {
-  enterEnd: 0.1,
-  dragonIn: 0.16,
-  dragonOut: 0.45,
+  enterEnd: 0.12,
+  dragonIn: 0.14,
+  dragonOut: 0.48,
   /** The duo start to watch (stare) before the dragon is in. */
-  watchFrom: 0.11,
+  watchFrom: 0.06,
   /** The stare turns into confusion. */
-  confusedFrom: 0.31,
-  confusedTo: 0.4,
+  confusedFrom: 0.34,
+  confusedTo: 0.44,
   /** Tetra's run to the left, after the cut. */
-  runFrom: 0.03,
-  runTo: 0.12,
-  centreFrom: 0.43,
-  centreTo: 0.57,
+  runFrom: 0.04,
+  runTo: 0.13,
+  centreFrom: 0.5,
+  centreTo: 0.72,
   /** The duo stop being confused and start to question each other. */
-  questionFrom: 0.57,
-  textFrom: 0.58,
-  textTo: 0.64,
-  /** From here the page rides up with the scroll. */
-  liftFrom: 0.8,
+  questionFrom: 0.72,
+  textFrom: 0.74,
+  textTo: 0.88,
   /** The kite, once it has fallen a while, shrinks away in a puff. */
   kiteAway: 0.07,
   kiteGone: 0.14,
@@ -160,14 +159,18 @@ export function cutMoment(g: FunnyGeometry): { local: number; at: number } {
   return { local, at: Math.min(0.85, Math.max(0.15, at)) };
 }
 
-/** How far the page has scrolled up, in screens: the duo and the words ride it out of the screen. */
-export function lift(local: number): number {
-  return Math.max(0, (local - T.liftFrom) * SCREENS);
+/**
+ * How far the page has ridden up, in screens, for a scroll position that is `pastEnd` screens past
+ * the section's end: the duo and the words ride it out of the screen. The real scroll, not the
+ * plays' `local`, so a jump past the section has them gone.
+ */
+export function lift(pastEnd: number): number {
+  return Math.max(0, pastEnd);
 }
 
-/** The dragon's wing clock and bob: a pure function of the scroll (it flies as it travels). */
-export function bob(local: number, g: FunnyGeometry): { y: number; pitch: number; roll: number } {
-  const t = local * SCREENS;
+/** The dragon's wing clock and bob: a function of the clock (it flies as it travels). */
+export function bob(seconds: number, g: FunnyGeometry): { y: number; pitch: number; roll: number } {
+  const t = seconds * 0.9;
   return {
     y: g.dragon.y + Math.sin(t * 5.2) * 0.035 * g.h,
     pitch: Math.cos(t * 5.2) * 0.07,

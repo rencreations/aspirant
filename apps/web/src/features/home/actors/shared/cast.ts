@@ -12,6 +12,8 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 
 import type { Stage, ScenePass } from "../../kernel/stage";
 
+import { setToonView, toonLight, type ToonLight } from "./toon";
+
 /** Where the lit characters are drawn, above the flat passes (ortho 10, perspective 20). */
 const CAST_ORDER = 30;
 
@@ -24,6 +26,12 @@ export interface Cast {
   readonly key: DirectionalLight;
   readonly fill: DirectionalLight;
   readonly ambient: AmbientLight;
+  /**
+   * The light of the toon characters (`toon.ts`): one direction in the camera's space shared by
+   * every toon material, plus an `amount` (0 flat, 1 full). A toon character needs nothing else of
+   * the cast rig: no environment map, no scene lights.
+   */
+  readonly toon: ToonLight;
   add(root: Object3D): void;
   /**
    * Draw the cast only inside a rectangle (CSS pixels, origin top left), or everywhere with null.
@@ -74,6 +82,8 @@ export function getCast(stage: Stage): Cast {
     return pass.scene.children.some((child) => child.visible && !isLight(child));
   };
   pass.render = (renderer) => {
+    // The ink of the toon characters is a width in CSS pixels: it needs the canvas size.
+    setToonView(stage.width, stage.height);
     const view = camera ?? pass.camera;
     const rect = onceClip ?? clipRect;
     if (!rect) {
@@ -104,6 +114,7 @@ export function getCast(stage: Stage): Cast {
     key,
     fill,
     ambient,
+    toon: toonLight,
     add(root) {
       pass.scene.add(root);
     },

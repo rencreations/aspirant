@@ -1,17 +1,18 @@
 /**
  * The hand and the doll across the two sections that share them: the doll falls into the palm,
  * stands up, sits, is tossed onto the first frame of the list, sits there with her legs swinging,
- * and, when the frame grows into the screen, stands, takes hold of its top edge with one hand and
- * hangs there (joint J8). The hand rises, holds her, flicks, and sinks away.
+ * and hops from frame to frame, and, when the last frame grows into the screen, stands, takes hold
+ * of its top edge with one hand and hangs there (joint J8). The hand rises, holds her, flicks, and
+ * sinks away.
  *
- * `Carry.apply(t, frame)` sets the whole state of both actors for `t` screens since the hand
- * section started. The hand section calls it with its own scroll, the list with `HAND_SCREENS + s`,
- * and in their overlap both give the same `t`, so there is no seam. It is a pure function of `t`
- * plus three pieces of state that follow from it: which socket the doll hangs under, the last two
- * `t` (so a one shot fires on a forward crossing and never in a replay after a jump), and the
- * pointer.
+ * `Carry.drive(t, ts, u, frame)` sets the whole state of both actors for the hand's beat `t`, the
+ * list's beat `u` and the join `ts` (`timeline.ts` says what each is). The hand section calls it
+ * with `u = 0`, the list with `t` at the hand's last beat, and in their overlap both give the same
+ * numbers, so there is no seam. It is a pure function of the three plus pieces of state that follow
+ * from them: which socket the doll hangs under, the last two beats (so a one shot fires on a
+ * forward crossing and never in a replay after a jump), and the pointer.
  */
-import { ensureDoll, type DollActor } from "../../actors/doll";
+import { drawnHeight, ensureDoll, type DollActor } from "../../actors/doll";
 import { ensureHand, type HandActor } from "../../actors/hand";
 import { ensureMarks, type MarksActor } from "../../fx/comic-marks";
 import type { Actors, FrameInfo, PointerState, SectionCtx } from "../../kernel/types";
@@ -20,9 +21,9 @@ import { listGeometry, mixRectInto, type ListGeometry, type Rect } from "../list
 import { dollHang, type DollHang } from "../list/selena-frame";
 
 import { FACES } from "./faces";
+import { HAND_LAST, LIST_LAST } from "./stations";
 import {
   HAND_AT,
-  HAND_SCREENS,
   HIPS_ABOVE_FEET,
   J6,
   LIST_AT,
@@ -42,8 +43,10 @@ import {
 const SEAT_DROP = 0.06;
 /** How high the toss goes above the straight line, in screens. */
 const ARC = 0.2;
-/** She is tossed this long after the hand has the last of her weight. */
+/** The flick of the hand that tosses her, in the list's beats after the toss begins. */
 const TOSS_FLICK = [0.1, 0.36] as const;
+/** How high she hops when the strip turns to the next frame, as a share of the screen's height. */
+const HOP = 0.03;
 
 export class Carry {
   private readonly hb = newHandBeats();
@@ -55,6 +58,8 @@ export class Carry {
   private prev = -99;
   private cur = -99;
   private seen = -1;
+  /** The whole frame she has hopped to, to knock her on the landing. */
+  private frameNo = -1;
   private readonly rect: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly full: Rect = { x: 0, y: 0, w: 0, h: 0 };
   /** The doll's world point on the palm, for the pointer's look. */
@@ -79,21 +84,33 @@ export class Carry {
     private readonly pointer: PointerState,
   ) {}
 
-  /** True when `t` crossed `at` forward in a small step (a one shot fires, a jump does not). */
+  /**
+   * True when the carry's clock (the hand's beat and the list's added) crossed `at` forward in a
+   * small step: a one shot fires on it, a jump does not.
+   */
   private crossed(at: number): boolean {
     return this.prev < at && this.cur >= at && this.cur - this.prev < 0.3;
   }
 
   /**
-   * Set both actors for `t`. `withDoll` is false in the hand's lead (the section before still owns
-   * the doll there).
+   * The end of the list, the state the selena section starts from (joint J8): the doll hangs from
+   * the top edge and the hand is gone. The number is not read: it stays for the callers that were
+   * written for the scroll.
    */
-  apply(t: number, frame: FrameInfo, withDoll: boolean): void {
+  apply(_t: number, frame: FrameInfo, withDoll: boolean): void {
+    this.drive(HAND_LAST, 0.6, LIST_LAST, frame, withDoll);
+  }
+
+  /**
+   * Set both actors for the hand's beat `t`, the join `ts` and the list's beat `u`. `withDoll` is
+   * false in the hand's lead (the section before still owns the doll there).
+   */
+  drive(t: number, ts: number, u: number, frame: FrameInfo, withDoll: boolean): void {
     if (frame.frame !== this.seen) {
       this.seen = frame.frame;
       this.prev = this.cur;
     }
-    this.cur = t;
+    this.cur = t + u;
 
     const vp = frame.viewport;
     const key = `${vp.w}x${vp.h}`;
@@ -104,18 +121,17 @@ export class Carry {
       this.hang = dollHang(vp);
     }
     const geo = this.geo;
-    const hb = handBeats(t, this.hb);
-    const s = t - HAND_SCREENS;
-    const lb = listBeats(s, this.lb);
+    const hb = handBeats(t, ts, this.hb);
+    const lb = listBeats(u, ts, this.lb);
 
-    this.applyHand(t, s, geo, hb.rise, hb.drop, hb.react, hb.landed, lb.sink);
+    this.applyHand(t, u, geo, hb.rise, hb.drop, hb.react, hb.landed, lb.sink);
     if (!withDoll) return;
-    this.applyDoll(t, s, frame, geo);
+    this.applyDoll(t, u, frame, geo);
   }
 
   private applyHand(
     t: number,
-    s: number,
+    u: number,
     geo: HandGeometry,
     rise: number,
     drop: number,
@@ -136,19 +152,19 @@ export class Carry {
     hand.rise(rise);
     hand.sink(sink);
     // The weight of the doll: the fingers cup, and no more. It is gone the moment she leaves.
-    const holding = landed && s < LIST_AT.toss[0];
+    const holding = landed && u < LIST_AT.toss[0];
     hand.setBurden(holding ? 1 : 0);
     // The pointer moves the fingers from when she has sat down until the toss begins.
-    const open = t >= HAND_AT.react[0] && s < LIST_AT.crouch[0];
+    const open = t >= HAND_AT.react[0] && u <= 0;
     hand.setInteractive(open);
     hand.setReactivity(open ? react : 0);
     // The flick that tosses her: a quick close and an open (the spring overshoots).
-    const flick = seg(s, LIST_AT.toss[0] + TOSS_FLICK[0] * 0, LIST_AT.toss[0] + TOSS_FLICK[1]);
+    const flick = seg(u, LIST_AT.toss[0], LIST_AT.toss[0] + TOSS_FLICK[1]);
     hand.setGrip(flick > 0 && flick < 1 ? 0.85 * Math.sin(Math.PI * flick) : 0);
     if (this.crossed(HAND_AT.land)) hand.impact(1);
   }
 
-  private applyDoll(t: number, s: number, frame: FrameInfo, geo: HandGeometry): void {
+  private applyDoll(t: number, u: number, frame: FrameInfo, geo: HandGeometry): void {
     const doll = this.doll;
     const vp = frame.viewport;
     const lg = this.lg;
@@ -161,7 +177,7 @@ export class Carry {
     doll.reset();
     doll.visible = true;
     doll.blinkAuto(true);
-    doll.mood(FACES, t);
+    doll.mood(FACES, t + u);
     this.lookAtPointer(frame);
 
     const palmX = geo.x + geo.standDx;
@@ -196,14 +212,17 @@ export class Carry {
 
     if (this.crossed(HAND_AT.land)) {
       doll.bump(1);
-      this.marks?.emit("poof", { at: { x: geo.x + geo.standDx, y: palmRestY }, size: 130 });
+      this.marks?.emit("poof", {
+        at: { x: geo.x + geo.standDx, y: palmRestY },
+        size: drawnHeight(130),
+      });
     }
 
-    const standUp = 1 - smooth(seg(s, -0.22, -0.06));
-    const sitW = hb.sit * standUp;
+    // She sits on the palm and stands up again (the first beat of the list) before she crouches.
+    const sitW = hb.sit * (1 - lb.stand);
     const toss = lb.toss;
 
-    if (s < LIST_AT.toss[0]) {
+    if (u < LIST_AT.toss[0]) {
       // On the palm: she lands, stands, sits, then stands again and crouches for the toss.
       this.onPalm();
       P.x = 0;
@@ -216,13 +235,13 @@ export class Carry {
     }
 
     const seat = this.seat(lg.sitX, lg.sitY, lg.dollHeight);
-    if (toss < 1 && s < LIST_AT.toss[1]) {
+    if (toss < 1 && u < LIST_AT.toss[1]) {
       // In the air: from the palm to the frame's top edge on a parabola, stretched.
       this.onPalm();
-      const u = 1 - (1 - toss) ** 1.6;
-      P.x = (seat.x - palmX) * u;
-      P.y = (seat.y - palmY) * u + ARC * vp.h * 4 * u * (1 - u);
-      P.height = mix(h0, lg.dollHeight, u);
+      const k = 1 - (1 - toss) ** 1.6;
+      P.x = (seat.x - palmX) * k;
+      P.y = (seat.y - palmY) * k + ARC * vp.h * 4 * k * (1 - k);
+      P.height = mix(h0, lg.dollHeight, k);
       doll.flail(0.45 * Math.sin(Math.PI * toss), 1.1);
       doll.squash(0.28 * Math.sin(Math.PI * Math.min(1, toss * 1.2)));
       doll.place(P);
@@ -231,10 +250,10 @@ export class Carry {
 
     // On the frame.
     this.detached();
-    if (this.crossed(HAND_SCREENS + LIST_AT.toss[1])) {
+    if (this.crossed(HAND_LAST + LIST_AT.toss[1])) {
       doll.bump(0.9);
-      this.marks?.emit("poof", { at: { x: seat.x, y: seat.y }, size: 110 });
-      this.marks?.emit("dust", { at: { x: seat.x, y: seat.y }, size: 60 });
+      this.marks?.emit("poof", { at: { x: seat.x, y: seat.y }, size: drawnHeight(110) });
+      this.marks?.emit("dust", { at: { x: seat.x, y: seat.y }, size: drawnHeight(60) });
     }
     this.onFrame(lg.frame, seat.x, vp, hang, lg.dollHeight);
   }
@@ -265,18 +284,24 @@ export class Carry {
     const edge = vp.h / 2 - grown.y;
     const feetY = edge - SEAT_DROP * h * (1 - standW);
     const x = mix(seatX, hang.x, smooth(seg(e, 0.1, 0.9)));
+    // The strip turns to the next frame: she hops up from her seat and lands on it (a small arc).
+    const turning = lb.index % 1;
+    const hop = lb.expandRaw > 0 || turning < 1e-6 ? 0 : Math.sin(Math.PI * turning);
     P.x = mix(x, hang.x, hangW);
-    P.y = mix(feetY, hang.y, hangW);
+    P.y = mix(feetY, hang.y, hangW) + hop * HOP * vp.h;
     P.height = h;
     doll.setPose("sit", "stand", standW);
     // Her seat has the legs swinging over the edge.
-    doll.dangle(settle * (1 - standW));
+    doll.dangle(settle * (1 - standW) * (1 - hop));
+    doll.flail(0.4 * hop, 1.3);
     doll.hang(hangW, 1);
     doll.place(P);
+    // She lands: a knock on each frame she hops to.
+    const landed = Math.floor(lb.index + 1e-6);
+    if (this.frameNo >= 0 && landed === this.frameNo + 1) doll.bump(0.4);
+    this.frameNo = landed;
     if (
-      this.crossed(
-        HAND_SCREENS + LIST_AT.expandFrom + 0.75 * (LIST_AT.expandTo - LIST_AT.expandFrom),
-      )
+      this.crossed(HAND_LAST + LIST_AT.expandFrom + 0.75 * (LIST_AT.expandTo - LIST_AT.expandFrom))
     ) {
       doll.bump(0.6);
     }

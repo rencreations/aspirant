@@ -3,14 +3,13 @@ import { describe, expect, it } from "vitest";
 import { geometry } from "../funny/timeline";
 import { cornerSpots, newSpots } from "../voices/choreo";
 
+import { validatePlays } from "../../kernel/plays";
+
 import {
-  ARRIVE_SECONDS,
   EXIT_FROM,
   LEAVE_TO,
-  LOCK_AT,
-  UNARRIVE_SECONDS,
   arrivalAt,
-  crossedLock,
+  arrivalOf,
   exitAt,
   j10,
   j11,
@@ -18,9 +17,9 @@ import {
   leaveWeight,
   newArrival,
   newLayout,
-  scrollArrival,
-  stepClock,
+  riseAt,
 } from "./choreo";
+import { AT_ARRIVE, AT_EXIT, MUSIC_PLAYS, SECONDS, STAND } from "./stations";
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -71,32 +70,53 @@ describe("the arrival", () => {
   });
 });
 
-describe("the clock and the scroll", () => {
-  it("fills in ARRIVE_SECONDS and empties in UNARRIVE_SECONDS", () => {
-    let c = 0;
-    for (let i = 0; i < Math.round(ARRIVE_SECONDS * 60) + 2; i++) c = stepClock(c, true, 1 / 60);
-    expect(c).toBe(1);
-    for (let i = 0; i < Math.round(UNARRIVE_SECONDS * 60) + 2; i++) c = stepClock(c, false, 1 / 60);
-    expect(c).toBe(0);
+describe("the plays", () => {
+  it("are a valid table: the pair's corners, the standing scene, the pair's rise", () => {
+    expect(() => {
+      validatePlays("music", MUSIC_PLAYS);
+    }).not.toThrow();
+    expect(MUSIC_PLAYS.map((p) => p.from)).toEqual([0, STAND]);
+    expect(MUSIC_PLAYS.map((p) => p.to)).toEqual([STAND, 1]);
+    expect(AT_ARRIVE).toBeLessThan(AT_EXIT);
   });
 
-  it("does not move on a zero step", () => {
-    expect(stepClock(0.3, true, 0)).toBe(0.3);
+  it("are short: the props come in within about three seconds, go out in under two", () => {
+    expect(SECONDS.arrive).toBeLessThanOrEqual(3.5);
+    expect(SECONDS.exit).toBeLessThanOrEqual(2);
   });
 
-  it("gives the scroll's own arrival, 0 before the lock and 1 well after it", () => {
-    expect(scrollArrival(LOCK_AT - 0.01)).toBe(0);
-    expect(scrollArrival(0.6)).toBe(1);
+  it("give the gramophone and the crate about a second and a half each", () => {
+    // The arrival is a straight line over the part of the play that follows the zip off.
+    const arriveSeconds = SECONDS.arrive * ((STAND - LEAVE_TO) / STAND);
+    expect(arriveSeconds * 0.55).toBeGreaterThan(1.1);
+    expect(arriveSeconds * 0.6).toBeLessThan(2.2);
   });
 
-  it("locks when the scroll crosses the lock going down, and only then", () => {
-    expect(crossedLock(LOCK_AT - 0.01, LOCK_AT + 0.01)).toBe(true);
-    expect(crossedLock(LOCK_AT + 0.01, LOCK_AT + 0.05)).toBe(false);
-    // Going up.
-    expect(crossedLock(LOCK_AT + 0.01, LOCK_AT - 0.01)).toBe(false);
-    // A jump (a seek, a scrollbar drag).
-    expect(crossedLock(0, 0.6)).toBe(false);
-    expect(crossedLock(0.9, 0.1)).toBe(false);
+  it("fill the arrival from nothing at the zip off's end to a whole scene at the stand", () => {
+    expect(arrivalOf(0)).toBe(0);
+    expect(arrivalOf(LEAVE_TO)).toBe(0);
+    expect(arrivalOf(STAND)).toBe(1);
+    expect(arrivalOf(1)).toBe(1);
+    let last = -1;
+    for (let v = 0; v <= 1; v += 0.01) {
+      const a = arrivalOf(v);
+      expect(a).toBeGreaterThanOrEqual(last);
+      last = a;
+    }
+  });
+
+  it("stand ready: both props at rest and the records can be picked", () => {
+    const a = arrivalAt(arrivalOf(STAND), newArrival());
+    expect(a.ready).toBe(true);
+    expect(a.gramophone).toBe(0);
+    expect(a.crate).toBe(0);
+    expect(exitAt(STAND)).toBe(0);
+  });
+
+  it("keep the stand dwell long enough to pick a record and short enough to be no dead scroll", () => {
+    // The screens are in `index.ts`; the thresholds' spacing is what the dwell is made of.
+    expect(AT_EXIT - AT_ARRIVE).toBeGreaterThan(0.5);
+    expect(AT_EXIT).toBeLessThanOrEqual(0.82);
   });
 });
 
@@ -104,15 +124,17 @@ describe("the leaving", () => {
   it("lets the drones go in the first stretch and keeps the scene until the exit", () => {
     expect(leaveWeight(0)).toBe(0);
     expect(leaveWeight(LEAVE_TO)).toBe(1);
-    expect(leaveWeight(0.5)).toBe(1);
+    expect(leaveWeight(0.3)).toBe(1);
     expect(exitAt(EXIT_FROM - 0.01)).toBe(0);
     expect(exitAt(1)).toBe(1);
     expect(exitAt(1.2)).toBe(1);
   });
 
-  it("puts the lock after the drones have gone and before the scene stands", () => {
-    expect(LOCK_AT).toBeGreaterThan(LEAVE_TO);
-    expect(LOCK_AT).toBeLessThan(EXIT_FROM - 0.3);
+  it("brings the pair up to the top left once the props are on their way out", () => {
+    expect(riseAt(EXIT_FROM)).toBe(0);
+    expect(riseAt(1)).toBe(1);
+    expect(exitAt(0.69)).toBeGreaterThan(0.25);
+    expect(riseAt(0.6)).toBe(0);
   });
 });
 

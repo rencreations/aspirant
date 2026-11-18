@@ -9,6 +9,7 @@ import type { Object3D, WebGLRenderer } from "three";
 import type { audio } from "@/lib/audio";
 import type { PreloadItem } from "@/lib/preload";
 
+import type { HomePlay } from "./plays";
 import type { Stage } from "./stage";
 
 /** The sixteen sections of the scroll story, in scroll order (design section 4). */
@@ -238,6 +239,18 @@ export interface HomeSection {
    * actor is shown.
    */
   readonly mountAhead?: number;
+  /**
+   * Triggered scenes (`kernel/plays.ts`, `docs/design/home/kernel-plays.md`). A section with plays
+   * gets a virtual `local` in `update` that runs on a clock between stations while the scroll is
+   * held; the plays are checked at startup. Leave it out and `update` gets the scroll's `local`.
+   */
+  readonly plays?: readonly HomePlay[];
+  /**
+   * With plays: the lead and the tail rest (`update` gets the played value only, never the scroll's
+   * passthrough). The section then runs in its lead and tail so that its scene is still on while a
+   * play holds the page, and nothing in it follows the scroll there.
+   */
+  readonly restOutside?: boolean;
   preload(): PreloadItem[];
   /** Called when the section is near. Loads the section's runtime chunk and builds its part of the scene. */
   mount(ctx: SectionCtx): Promise<SectionRuntime> | SectionRuntime;

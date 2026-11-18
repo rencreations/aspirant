@@ -1,16 +1,16 @@
 /**
  * The scene that the bolt and the fall sections share: Silverbolt, the doll that rides its head, the
  * wavy lines, the comic marks and the trails, driven by one pure function of the scroll
- * (`journey.ts`). Both sections call `update(t, frame)` with `t` in screens since the start of the
- * bolt section, so the picture is the same whichever of the two draws it, and a frame in which both
- * run (the lead of the fall) is drawn once.
+ * (`journey.ts`). Both sections call `update(t, frame)` with `t` in beat time (`stations.ts`), the
+ * bolt section for 0 to 3.3 and the fall for 3.3 to 6.6, so the picture is the same whichever of the
+ * two draws it, and a frame in which both run (the lead of the fall) is drawn once.
  *
  * Everything the visitor can do (poke the dragon, pull its tail, pet the doll) is the actors' own
  * and lives in their hit targets; this file turns their events into comic marks and into the doll's
  * faces. The scene is built when a section mounts and does not wait for the dragon: until the actors
  * have arrived `update` draws only what it has (the lines) and the sections' text carries on.
  */
-import { ensureDoll } from "../../actors/doll";
+import { drawnHeight, ensureDoll } from "../../actors/doll";
 import { getCast } from "../../actors/shared/cast";
 import { whenQuiet } from "../../actors/shared/quiet";
 import { warmCast } from "../../actors/shared/warm";
@@ -22,8 +22,9 @@ import { ensureMarks } from "../../fx/comic-marks";
 import { ensureTrails } from "../../fx/trail";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
 
-import { BEAT, FALL_MOODS, Journey } from "./journey";
+import { FALL_MOODS, Journey } from "./journey";
 import { WaveLines } from "./lines";
+import { BEAT, WHEEL_FROM } from "./stations";
 
 type Marks = Awaited<ReturnType<typeof ensureMarks>>;
 type Trails = Awaited<ReturnType<typeof ensureTrails>>;
@@ -35,19 +36,23 @@ type DollPlace = Parameters<DollActor["place"]>[0];
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 
 /** The part of the section's length in which the lines are drawn. */
-const LINES_FROM = 0.2;
+const LINES_FROM = 0.1;
 const LINES_TO = 4.3;
 
 /** How long the doll is startled when the dragon is poked, in seconds. */
 const STARTLE = 0.9;
 
-/** Where the doll sits on the dragon's head, in the head's own frame, in shares of her height (calibrated by eye). */
-const SEAT = { x: 0, y: 0.12, z: 0.4, yaw: 0.3, pitch: 0, roll: 0 } as const;
+/**
+ * Where the doll sits on the dragon's head, from the `headTop` socket, in shares of her height. The
+ * socket is on the skull of the straightened head (between the horns and the eyes) and stays upright,
+ * so the seat is only a small lift (calibrated by eye).
+ */
+const SEAT = { x: 0, y: 0.12, z: 0, yaw: 0.3, pitch: 0, roll: 0 } as const;
 
 const shared = new WeakMap<object, BoltScene>();
 
-/** From this `t` the falling air is over: its loops are stopped and what they made is swept away. */
-const AIR_END = 6.95;
+/** From this `t` (the end of the fall) the falling air is over: its loops are stopped and swept away. */
+const AIR_END = 6.6;
 
 export class BoltScene {
   /** Take part in the scene of this stage. Each section that acquires it must release it. */
@@ -178,7 +183,7 @@ export class BoltScene {
     const doll = this.doll;
     const marks = this.marks;
     if (!doll || !marks) return;
-    const size = Math.max(46, this.journey.dollHeight * 0.55);
+    const size = Math.max(30, drawnHeight(this.journey.dollHeight) * 0.6);
     if (kind === "press") marks.emit("starburst", { at: doll.socket("head"), size, strength: 0.7 });
     else if (kind === "dizzy")
       marks.emit("sweat", { at: doll.socket("head"), size: size * 0.4, count: 3 });
@@ -231,7 +236,7 @@ export class BoltScene {
     }
   }
 
-  /** Set the whole picture for `t` screens since the start of the bolt section. */
+  /** Set the whole picture for beat time `t`. */
   update(t: number, frame: FrameInfo): void {
     if (frame.frame === this.lastFrame && t === this.lastT) return;
     const first = frame.frame !== this.lastFrame;
@@ -436,8 +441,8 @@ export class BoltScene {
 function rideFaceAt(j: Journey, t: number): FaceName {
   if (j.dwellFace) return j.dwellFace;
   if (t < BEAT.rollFrom) return "laughing";
-  if (t < BEAT.arrive - 0.15) return "scream";
-  if (t < BEAT.arrive + 0.15) return "dizzy";
+  if (t < BEAT.arrive - 0.1) return "scream";
+  if (t < WHEEL_FROM - 0.05) return "dizzy";
   if (t < BEAT.launch - 0.12) return "worried";
   return "shocked";
 }

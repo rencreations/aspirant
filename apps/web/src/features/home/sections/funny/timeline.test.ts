@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { validatePlays } from "../../kernel/plays";
+
+import { AT_ARRIVE, AT_ASK, AT_CROSS, FUNNY_PLAYS, R1, R2, SECONDS } from "./stations";
 import {
-  SCREENS,
+  GONE,
   T,
   bob,
   cutMoment,
@@ -18,6 +21,38 @@ const SIZES: ReadonlyArray<[number, number]> = [
   [390, 844],
 ];
 
+describe("the plays", () => {
+  it("are a valid table: the stations are the end of each play and the next one's start", () => {
+    expect(() => {
+      validatePlays("funny", FUNNY_PLAYS);
+    }).not.toThrow();
+    expect(FUNNY_PLAYS.map((p) => p.from)).toEqual([0, R1, R2]);
+    expect(FUNNY_PLAYS.map((p) => p.to)).toEqual([R1, R2, 1]);
+    expect(AT_ARRIVE).toBeLessThan(AT_CROSS);
+    expect(AT_CROSS).toBeLessThan(AT_ASK);
+  });
+
+  it("keep every scene short: the crossing about 2.5 s, none over 3 s", () => {
+    expect(SECONDS.cross).toBeLessThanOrEqual(3);
+    expect(SECONDS.cross).toBeGreaterThanOrEqual(2);
+    expect(SECONDS.arrive).toBeLessThanOrEqual(0.8);
+    expect(SECONDS.ask).toBeLessThanOrEqual(2);
+  });
+
+  it("rest on composed frames: Tetra with the kite, then an empty sky with the confused pair", () => {
+    // First rest: Tetra has stopped, the dragon has not come, the pair stare.
+    expect(R1).toBeGreaterThanOrEqual(T.enterEnd);
+    expect(R1).toBeLessThan(T.dragonIn);
+    expect(R1).toBeGreaterThan(T.watchFrom + 0.04);
+    // Second rest: the dragon has left, the confusion is whole, the pair has not moved yet.
+    expect(R2).toBeGreaterThanOrEqual(T.dragonOut);
+    expect(R2).toBeGreaterThanOrEqual(T.confusedTo);
+    expect(R2).toBeLessThanOrEqual(T.centreFrom);
+    // Last rest: the words are in.
+    expect(T.textTo).toBeLessThan(1);
+  });
+});
+
 describe("the story order", () => {
   it("goes in order: arrive, watch, dragon, confusion, middle, question, words, lift", () => {
     expect(T.enterEnd).toBeLessThan(T.dragonIn);
@@ -29,8 +64,7 @@ describe("the story order", () => {
     expect(T.centreTo).toBeLessThanOrEqual(T.questionFrom);
     expect(T.questionFrom).toBeLessThan(T.textFrom);
     expect(T.textFrom).toBeLessThan(T.textTo);
-    expect(T.textTo).toBeLessThan(T.liftFrom);
-    expect(T.liftFrom).toBeLessThan(1);
+    expect(T.textTo).toBeLessThan(1);
   });
 });
 
@@ -96,15 +130,15 @@ describe.each(SIZES)("the geometry at %i x %i", (w, h) => {
     }
   });
 
-  it("has the duo gone off the top of the screen by the end of the section", () => {
+  it("has the duo gone off the top of the screen once the page has ridden up past GONE", () => {
     for (const d of g.centre) {
-      const bottom = d.y - 0.5 * d.height - 0.45 * d.height + lift(1) * h;
+      const bottom = d.y - 0.5 * d.height - 0.45 * d.height + lift(GONE) * h;
       expect(bottom).toBeGreaterThan(h / 2);
     }
   });
 
   it("keeps the dragon bob small and finite", () => {
-    for (let l = 0; l <= 1; l += 0.05) {
+    for (let l = 0; l <= 6; l += 0.1) {
       const b = bob(l, g);
       expect(Number.isFinite(b.y + b.pitch + b.roll)).toBe(true);
       expect(Math.abs(b.y - g.dragon.y)).toBeLessThan(0.05 * h);
@@ -113,11 +147,10 @@ describe.each(SIZES)("the geometry at %i x %i", (w, h) => {
 });
 
 describe("the lift", () => {
-  it("is zero until the page starts to ride up and grows with the scroll, one screen a screen", () => {
+  it("is zero until the page has passed the end and grows with the scroll, one screen a screen", () => {
+    expect(lift(-0.4)).toBe(0);
     expect(lift(0)).toBe(0);
-    expect(lift(T.liftFrom)).toBe(0);
-    expect(lift(T.liftFrom + 1 / SCREENS)).toBeCloseTo(1, 6);
-    expect(lift(1)).toBeGreaterThan(0.5);
+    expect(lift(0.5)).toBeCloseTo(0.5, 9);
   });
 
   it("knows when the dragon is on the screen", () => {

@@ -1,5 +1,7 @@
 # Home sections: bolt and fall (workstream S3)
 
+> Round two (19 Nov): the scenes are plays now and the lengths, thresholds and backdrops changed. Read `round2-R-B.md` first; the beat table of section 1 below is the old scroll linked one (the beats themselves moved to `sections/bolt/stations.ts`).
+
 Silverbolt flies across the screen with the doll on its head, hovers while the five pair names turn, throws the doll off, and the camera follows her down while "5 Phases" and "10 Characters" stand either side of her. Two sections (`sections/bolt/` 4 screens, `sections/fall/` 2.6 screens, both with a half screen of lead and tail) that draw one shared scene. Design: `docs/superpowers/specs/2026-11-18-home-page-redesign.md` (section 4 and joints 4.1). Actors: `actor-silverbolt.md`, `actor-doll.md`, `fx-marks.md`. Reference: `home-reference/ref-psychoactive-tib.md` (tibdigital half).
 
 ## 1. What the visitor gets (beat by beat)

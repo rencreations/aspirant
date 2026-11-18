@@ -25,6 +25,7 @@ import {
 import type { Actor, FrameInfo, HitTarget } from "../../kernel/types";
 import { getCast } from "../shared/cast";
 import { forgetGltf, loadGltf } from "../shared/gltf";
+import { INK_COLOR, InkMaterial, toonify, type ToonSet } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 import {
   BELL,
@@ -41,12 +42,14 @@ import {
   CAMERA_Z,
   clamp,
   clientToStage,
+  depthScale,
   hitDepth,
   project,
   scaleForSize,
   segmentDistance,
   unprojectToDepth,
 } from "./frame";
+import { pickFor } from "./look";
 import {
   TAU,
   planeAngle,
@@ -121,6 +124,14 @@ interface CrankView {
   depth: number;
 }
 
+/** A prop's line is a little bolder than a figure's: a gramophone has no face to carry the picture. */
+const INK_WEIGHT = 1.4;
+/**
+ * The hull is also pushed back by the slope of the surface (polygon offset). The horn is a thin
+ * shell seen at a grazing angle: a push by a fixed distance leaves the hull of its far wall poking
+ * through the near one in black sawteeth (looked at), and the slope term keeps it behind.
+ */
+const INK_SLOPE = 60;
 const HANDLE_HIT_M = 0.05;
 const ARM_HIT_M = 0.03;
 const MIN_HIT_PX = 16;
@@ -172,7 +183,10 @@ export class GramophoneActor implements Actor {
   private readonly platterNode: Object3D;
   private readonly soundboxNode: Object3D;
   private readonly sockets = new Map<GramophoneSocket, Object3D>();
+  /** The materials the file came with (never drawn: the toon set replaces them). */
   private readonly materials: MeshStandardMaterial[];
+  /** The toon look and the ink of every part (`look.ts`). */
+  private readonly toon: ToonSet;
   private readonly removeTarget: () => void;
   private readonly liftAxis = new Vector3(...SOUNDBOX.liftAxis).normalize();
   private readonly soundboxBase = new Quaternion();
@@ -262,15 +276,19 @@ export class GramophoneActor implements Actor {
       this.sockets.set(key, node);
     }
 
-    // The brass and the wood take the cast's environment (0.8 per the model's notes).
+    // The anime look: cel bands from the cast's one toon light, an ink line of constant width.
+    // The environment, the metalness and the roughness of the file are not read any more.
     this.materials = standardMaterials(this.model);
     const aniso = Math.min(8, ctx.stage.renderer.capabilities.getMaxAnisotropy());
-    for (const m of this.materials) {
-      m.envMap = cast.env;
-      m.envMapIntensity = 0.8;
-      if (m.map) m.map.anisotropy = aniso;
-      m.needsUpdate = true;
-    }
+    const ink = new InkMaterial(INK_COLOR, undefined, INK_WEIGHT);
+    ink.polygonOffset = true;
+    ink.polygonOffsetFactor = INK_SLOPE;
+    ink.polygonOffsetUnits = 8;
+    this.toon = toonify(this.model, {
+      pick: (mesh) => pickFor(mesh.name),
+      anisotropy: aniso,
+      ink,
+    });
 
     this.object.visible = false;
     this.object.name = "gramophone";
@@ -456,6 +474,8 @@ export class GramophoneActor implements Actor {
     if (gap && !this.drag.active) this.viewFresh = false;
 
     this.applyPlacement();
+    // The ink keeps its width in pixels: it needs the box's height on the screen.
+    this.toon.setHeight(this.pl.height * depthScale(this.pl.z));
     this.stepCrankAndPlatter(dt);
 
     const impact = stepArm(this.arm, this.armUp ? SOUNDBOX.liftDegrees : 0, dt);
@@ -472,6 +492,7 @@ export class GramophoneActor implements Actor {
     this.removeTarget();
     this.onNeedleLand = null;
     this.object.removeFromParent();
+    this.toon.dispose();
     const textures = new Set<{ dispose(): void }>();
     this.model.traverse((o) => {
       const mesh = o as Mesh;

@@ -119,3 +119,27 @@ describe("Background", () => {
     expect(l.daybreak.style.opacity).toBe("0");
   });
 });
+
+describe("the ground cue of a play", () => {
+  it("is used for one frame, then the scroll's ground comes back", async () => {
+    const { setGroundCue, groundNow } = await import("./background");
+    setGroundCue("daybreak", "storm", 0.5);
+    const a = groundNow(layout, 1);
+    expect(a.daybreak).toBeCloseTo(1, 9);
+    expect(a.storm).toBeCloseTo(0.5, 9);
+    expect(groundNow(layout, 1)).toEqual({
+      daybreak: 1,
+      storm: 0,
+      colour: 0,
+      colourHex: STORM_HEX,
+    });
+  });
+
+  it("clamps its share", async () => {
+    const { setGroundCue, groundNow } = await import("./background");
+    setGroundCue("daybreak", "storm", 3);
+    expect(groundNow(layout, 1).storm).toBe(1);
+    setGroundCue("daybreak", "storm", -1);
+    expect(groundNow(layout, 1).storm).toBe(0);
+  });
+});

@@ -59,12 +59,12 @@ export interface Commands {
 }
 
 /** Seconds each step lasts at least. A step that waits for the disc gives up after `GIVE_UP`. */
-export const TO_CRATE = 0.8;
-export const CARRY = 1.1;
-export const NEEDLE = 1.0;
-export const BACK = 1.0;
-export const LIFT = 1.0;
-export const RETURN_AT = 1.1;
+export const TO_CRATE = 0.5;
+export const CARRY = 0.8;
+export const NEEDLE = 0.7;
+export const BACK = 0.7;
+export const LIFT = 0.7;
+export const RETURN_AT = 0.8;
 export const GIVE_UP = 5;
 
 export class Scheduler {

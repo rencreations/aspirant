@@ -13,6 +13,8 @@ export const ORDER = {
   sections: 20,
   actors: 30,
   background: 40,
+  /** The live backdrop (its own small canvas under the page) draws after the sections have set it. */
+  backdrop: 45,
   draw: 50,
 } as const;
 

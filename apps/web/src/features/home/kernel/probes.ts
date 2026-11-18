@@ -4,7 +4,7 @@
  * holds the scene where it is (time stops, the scroll is not read), `state` says where everything
  * is, `skipIntro` opens the page, `actor` and `sections` look at one thing.
  */
-import type { MountState, SectionReport } from "./run";
+import type { MountState, PlayReport, SectionReport } from "./run";
 import type { SectionId } from "./types";
 
 /** What `state()` returns. Plain data: it goes through `JSON.stringify` in the probes. */
@@ -22,6 +22,8 @@ export interface HomeSnapshot {
   readonly size: { readonly w: number; readonly h: number; readonly dpr: number };
   readonly stage: { readonly lost: boolean; readonly failed: boolean; readonly passes: string[] };
   readonly active: SectionId | null;
+  /** The section whose play is running (the scroll is held), or null. */
+  readonly playing: SectionId | null;
   readonly sections: readonly SectionReport[];
   readonly actors: ReadonlyArray<{ readonly name: string; readonly visible: boolean }>;
   readonly hit: string | null;
@@ -34,6 +36,8 @@ export interface HomeProbe {
   skipIntro(): void;
   actor(name: string): { name: string; visible: boolean } | null;
   sections(): ReadonlyArray<{ id: SectionId; start: number; screens: number; mount: MountState }>;
+  /** Every section that has plays: `{ id, v, resting, active, fired, length, direction, progress }`. */
+  plays(): PlayReport[];
   /** Build an actor from the lab table, pin it shown and hand it back (see `kernel/lab.ts`). */
   lab(name: string): Promise<unknown>;
   /** Give a lab actor back to the sections. */

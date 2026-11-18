@@ -4,7 +4,7 @@ Code: `apps/web/src/features/home/actors/selena/`. Model and cameras: `docs/desi
 
 ## What she is
 
-A plain class (`SelenaActor`) drawn in the shared cast pass. A section builds her with `ensureSelena(ctx)`, sets her state every frame it shows her, and she integrates her own motion in `update(frame)`. Toon look with an ink line, four clips, head and eyes that follow the pointer, ten fingers, hair and skirt springs, a face of 17 shapes, six touch targets. 14 draw calls, `update` about 0.25 ms.
+A plain class (`SelenaActor`) drawn in the shared cast pass. A section builds her with `ensureSelena(ctx)`, sets her state every frame it shows her, and she integrates her own motion in `update(frame)`. Anime look (the shared toon system, `toon.md`) with an ink line, four clips, head and eyes that follow the pointer, ten fingers, hair and skirt springs, a face of 17 shapes, six touch targets. 20 draw calls (7 meshes, 5 ink hulls, 8 card ink copies of the front hair), `update` about 0.25 ms.
 
 **Read this first: `city_idle` is a lying pose.** She floats on her side with her legs up and her hair streaming to the right (the game's city idle). `city_interaction_R_loop` is the standing pose with the hands at the mouth. The rest pose of the file is a T pose nobody sees. The notes' sheet `selena-clips.webp` shows all four.
 
@@ -78,11 +78,15 @@ Every reaction is a timed pulse (`reactions.ts`) or a spring that always ends. T
 
 ## Look
 
-`material.ts`: `MeshToonMaterial` with the picture, three light steps `[105, 190, 255]` (nearest filtered), a cool rim added before `opaque_fragment`, a gain (`uGain`, 1.0) shared by all her materials, depth write on the hair. The ink is the same geometry again on back faces pushed along a smooth normal (normals averaged by place at build, read through the accessors); it is a sibling mesh with the same transform; its width is 1.6 px on the screen kept between 1.4 and 6 mm (`outlineUnits`). No ink on `hair_01` (alpha cards) or the eyes; the eyes are unlit (`MeshBasicMaterial`). Her lights are the cast's rig; she takes no environment map. Everything double sided (skirt cards).
+Round two (19 Nov 2026): she is drawn by the shared toon system (`actors/shared/toon.ts`, `toon.md`). `dress` in `actor.ts` calls `toonify(rig.scene, ...)` with one pick per mesh: the head is `skin` (a warm pink orange shade), both hairs are `hair` (three bands, a soft highlight), the three body meshes are `default`, the eyes are `unlit`. The front hair (`hair_01`, alpha cards, `alphaTest` 0.02, depth write, `renderOrder` 1) has the CARD INK: eight shifted copies cut by its alpha, a fine line round every lock. The other meshes have an ink hull (head, `hair_02`, body 01 to 03). Skin, face, springs, morph targets, the clipping planes of the 4:5 frame and the baked camera all work as before: the planes are on the skin and on the ink, the ink shares the face's morph weights, and the ink is sized every frame from her height on the screen (`updateOutline`: `toon.setHeight(height * D / (D - z))`).
+
+Light: `getCast(stage).toon`, one direction for every character. She takes no environment map and none of the cast rig's lights. Everything is double sided (skirt cards). The old recipe (`LOOK_RECIPE`, `material.ts`, `outline.ts`) is gone: the same smooth normal and width arithmetic live in `shared/toon-math.ts`.
+
+Seen (probes in `D:/ren/aspirant-work/home/TOON/`): face at 2600 px, upper body at 1500 px, full at 780 px, 240 px, the big idle pose, the 4:5 frame, the baked camera at 1.5 s and 3.7 s. The ink is about 2.9 px at 900 px tall and 1.5 at 240 px (the hair hull is 0.6 of that); the fringe reads as lock lines, not a box; the eyes stay crisp and unlit; the shade on the face is a warm pink band on the side away from the light.
 
 ## Tune
 
-`ANCHOR`, `REF_HEIGHT`, `POSE_FIT`, `FADE`, `LOOK_RECIPE` (steps, rim, ink colour, `outlinePx`, min and max width) in `constants.ts`; `DEFAULT_PARAMS` in `physics.ts`; the kick scale in the hair target of `actor.ts`; `LIMITS` in `look.ts`; `PRESETS` in `face.ts`. To measure again: `sl.measure(clip, time)` in the lab returns the skin box and a core box.
+`ANCHOR`, `REF_HEIGHT`, `POSE_FIT`, `FADE` in `constants.ts`; her looks in the `looks` map of `dress` (`actor.ts`) and `TOON_LOOKS` in `shared/toon.ts`; the ink in `outlineFor` (`shared/toon-math.ts`); `DEFAULT_PARAMS` in `physics.ts`; the kick scale in the hair target of `actor.ts`; `LIMITS` in `look.ts`; `PRESETS` in `face.ts`. To measure again: `sl.measure(clip, time)` in the lab returns the skin box and a core box.
 
 ## Looking at it
 
@@ -90,7 +94,7 @@ Scripts of this workstream are in `D:\ren\aspirant-work\home\SL\` (`lib.cjs` ope
 
 ## Cost
 
-Measured in Chrome on this machine (dev server): `update` 0.21 to 0.28 ms average, 0.4 ms p95 (`stats()`); 14 draw calls, their CPU time under 0.05 ms; the frame stays at 16.6 ms at 60 Hz with her full screen (`gl.finish` after the frame returns at once). GPU time is not measured (no timer query). The actor allocates nothing per frame (scratch arrays, bone indexes found once) except the small objects `frameCamera` returns while the baked camera is drawn.
+Measured in Chrome on this machine (dev server): `update` 0.1 to 0.28 ms average (0.225 after the toon change, the same as before), `stats()`; 20 draw calls and about 122k triangles a frame for her, of which 41k are the card ink (the draw calls went from 14 to 20). The cast pass with `gl.finish`: 0.13 to 0.17 ms with her hidden, 0.43 to 0.56 ms with her at full screen (two runs); the frame stays at 16.6 ms at 60 Hz with her full screen (`gl.finish` after the frame returns at once). GPU time is not measured (no timer query). The actor allocates nothing per frame (scratch arrays, bone indexes found once) except the small objects `frameCamera` returns while the baked camera is drawn.
 
 ## Checked, and not
 
@@ -101,7 +105,7 @@ Cut: finger stagger, a wink on a hover of the left hand, a foot tap (needs the f
 
 ## Shared files touched
 
-`kernel/lab.ts`: one line (`selena`). `actors/shared/cast.ts` already had `setCamera` and `clipOnce` (added by another workstream before this run); she uses `setCamera` and not `clipOnce` or `clip`. Nothing else outside the folder.
+`kernel/lab.ts`: one line (`selena`). `actors/shared/cast.ts`: `toon` (the shared light) and a `setToonView` call in the pass's `render` (round two); it already had `setCamera` and `clipOnce`, she uses `setCamera` and not `clipOnce` or `clip`. Nothing else outside the folder.
 
 ## Hands over
 

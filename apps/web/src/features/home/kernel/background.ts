@@ -105,6 +105,31 @@ export function groundAt(layout: Layout, S: number): GroundMix {
   return single(here.def.bg);
 }
 
+/**
+ * A ground change that belongs to a play, not to the scroll. A scene that changes the ground while
+ * the page is held (the wall of the aspirants opening into the dark rows) says, every frame it runs,
+ * which ground it leaves, which it goes to and how far (0 to 1). The engine uses it in place of
+ * `groundAt` for that frame and clears it. A frame in which nobody says anything follows the scroll.
+ */
+interface GroundCue {
+  from: GroundName;
+  to: GroundName;
+  t: number;
+}
+
+let cue: GroundCue | null = null;
+
+export function setGroundCue(from: GroundName, to: GroundName, t: number): void {
+  cue = { from, to, t: clamp01(t) };
+}
+
+/** The ground for this frame: the cue a section set, or the scroll's. The cue is used once. */
+export function groundNow(layout: Layout, S: number): GroundMix {
+  const c = cue;
+  cue = null;
+  return c ? blend(single(c.from), single(c.to), c.t) : groundAt(layout, S);
+}
+
 /** The three layers of the ground. */
 export interface GroundLayers {
   readonly daybreak: HTMLElement;

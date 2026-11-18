@@ -1,25 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import { section as fall } from "../fall";
 import { FACES } from "../hand/faces";
 import { fallEnd, handGeometry, J6 } from "../hand/timeline";
 
-import { section as bolt } from "./index";
 import {
-  BEAT,
-  BOLT_SCREENS,
   END_FEET_Y,
   END_HEIGHT,
   FALL_MOODS,
-  FALL_SCREENS,
   HIPS_ABOVE_FEET,
   Journey,
   PAIR_FACES,
-  WHEEL_ITEMS,
   pathParam,
   wheelPosition,
 } from "./journey";
 import { KEY_CENTRE, KEY_FALL, keyFraction, newPathPoint, pathAt } from "./path";
+import { BEAT, BOLT_LAST, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./stations";
 
 const sizes = [
   [1440, 900],
@@ -41,7 +36,7 @@ describe("the path", () => {
     expect(c).toBeLessThan(0.6);
     pathAt(c, p);
     expect(p.x).toBeCloseTo(0.05, 2);
-    expect(p.y).toBeCloseTo(-0.1, 2);
+    expect(p.y).toBeCloseTo(-0.17, 2);
   });
 
   it("is continuous and goes from the lower right to the upper left", () => {
@@ -72,9 +67,10 @@ describe("the path", () => {
 });
 
 describe("the journey", () => {
-  it("is as long as the two sections", () => {
-    expect(BOLT_SCREENS).toBe(bolt.screens);
-    expect(FALL_SCREENS).toBe(fall.screens);
+  it("is written in beat time: it does not read the registry", () => {
+    expect(BEAT.at75).toBeGreaterThan(BEAT.launch);
+    expect(BEAT.end).toBe(6.6);
+    expect(BOLT_LAST).toBeLessThanOrEqual(BEAT.leave);
   });
 
   it("pauses at the centre key and has no jump in the path parameter", () => {
@@ -187,11 +183,11 @@ describe("the journey", () => {
     expect(j.moodT).toBeGreaterThan(5);
   });
 
-  it("lets the air streaks go before the fall's tail ends", () => {
+  it("lets the air streaks go before the rest at the end of the fall", () => {
     const j = new Journey();
-    expect(j.at(BEAT.end, 1440, 900).air).toBeCloseTo(0.25, 6);
-    expect(j.at(BEAT.end + 0.4, 1440, 900).air).toBe(0);
-    expect(j.at(BEAT.end + 0.2, 1440, 900).air).toBeGreaterThan(0);
+    expect(j.at(BEAT.end, 1440, 900).air).toBe(0);
+    expect(j.at(BEAT.end - 0.25, 1440, 900).air).toBeGreaterThan(0);
+    expect(j.at(BEAT.end - 1.5, 1440, 900).air).toBeGreaterThan(0.1);
   });
 
   it.each(sizes)("moves the doll without a jump across the whole fall (%i x %i)", (w, h) => {
@@ -232,6 +228,32 @@ describe("the journey", () => {
   it("turns one pair at a time and has a face for each", () => {
     expect(PAIR_FACES).toHaveLength(WHEEL_ITEMS);
     expect(new Set(PAIR_FACES).size).toBe(WHEEL_ITEMS);
-    expect(Math.round(wheelPosition(1.1))).toBe(0);
+    expect(Math.round(wheelPosition(WHEEL_FROM))).toBe(0);
+  });
+
+  it("rests every station on its own pair, with that pair's face, and not on a pair's edge", () => {
+    for (let i = 0; i < WHEEL_ITEMS; i += 1) {
+      const t = WHEEL_FROM + i * WHEEL_STEP;
+      expect(wheelPosition(t)).toBeCloseTo(i, 9);
+      expect(new Journey().at(t, 1440, 900).dwellFace).toBe(PAIR_FACES[i]);
+    }
+  });
+
+  it("is calm at the rests: the dragon hovers, the doll sits, nothing has been thrown", () => {
+    for (let i = 0; i < WHEEL_ITEMS; i += 1) {
+      const j = new Journey().at(WHEEL_FROM + i * WHEEL_STEP, 1440, 900);
+      expect(j.dollMode).toBe("ride");
+      expect(j.hover).toBeCloseTo(1, 6);
+    }
+    // The first station has the dragon in, whole and still on its path.
+    expect(pathParam(WHEEL_FROM)).toBeCloseTo(keyFraction(KEY_CENTRE), 9);
+  });
+
+  it("rears only after the last station, and the head is down again for the sneeze", () => {
+    const rest = new Journey().at(BOLT_LAST, 1440, 900);
+    expect(rest.fright).toBe(0);
+    const rearing = new Journey().at(BEAT.launch - 0.2, 1440, 900);
+    expect(rearing.fright).toBeGreaterThan(0.9);
+    expect(rest.pitch).not.toBeCloseTo(rearing.pitch, 2);
   });
 });

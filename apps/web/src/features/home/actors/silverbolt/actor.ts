@@ -16,13 +16,11 @@ import {
   type Bone,
   Euler,
   Group,
-  type MeshStandardMaterial,
   type Object3D,
   Object3D as Node,
   type PerspectiveCamera,
   Quaternion,
   type SkinnedMesh,
-  Vector2,
   Vector3,
 } from "three";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -50,6 +48,7 @@ import {
   TAIL_PITCH_AXIS,
   TAIL_YAW_AXIS,
   TONGUE_AXIS,
+  HEAD_DROP,
   type ClipName,
 } from "./facts";
 import { FACES, Blinker, blendFace, neutralFace, type FaceName, type FaceState } from "./face";
@@ -70,11 +69,19 @@ import {
   wrapAngle,
   type SpringState,
 } from "./math";
-import { disposeStandard, dress, setOutlineNdc, type SbMaterials } from "./materials";
+import { dress, type SbMaterials } from "./materials";
 import { AnnoyMeter, Reactions } from "./mood";
 import { Pose, dancePose, flightPose, hoverPose } from "./pose";
 import { Rig } from "./rig";
 import { ClipSampler, clipTime } from "./sampler";
+import {
+  measureStraight,
+  meanStraightAngle,
+  straightAngle,
+  straightTurn,
+  uprightFix,
+  type StraightRest,
+} from "./straight";
 import { TailBody, dragPose, dragWeights, type DragOptions, type FollowOptions } from "./tail";
 
 /** The parts the pointer can be on. */
@@ -134,6 +141,8 @@ export interface ClipOptions {
 const DRAG: DragOptions = { maxPull: 0.42 };
 const DRAG_OMEGA = 20;
 const FOLLOW: FollowOptions = { omega: [0, 9, 7.5, 6.3, 5.4, 4.7, 4.2], zeta: 0.55 };
+/** How many times a clip is sampled to find the middle of its head motion. */
+const LIFT_SAMPLES = 32;
 const BEAT_HZ = 1.7;
 const DANCE_HZ = 0.95;
 /** The head's turn toward the pointer, radians. */
@@ -147,7 +156,10 @@ const LAG_MAX = 0.3;
 const SOCKET_AT: Readonly<
   Record<SocketName, { bone: string; at: readonly [number, number, number] }>
 > = {
-  headTop: { bone: BONE.head, at: [0, 3.93, -0.1] },
+  // The model's rest pose hangs the head down; these two are rest points of the head, which the
+  // straightening (`straight.ts`) turns up with it. `headTop` is the skull between the horns and the
+  // eyes, `snout` the nose, wherever the head is.
+  headTop: { bone: BONE.head, at: [0, 3.73, 0.22] },
   // On the head, so it stays in the gap while the jaw swings: the middle of the open mouth (jaw 0.7).
   mouth: { bone: BONE.head, at: [0, 3.17, 0.15] },
   // On the lower jaw: the front teeth. It swings with the jaw.
@@ -157,7 +169,7 @@ const SOCKET_AT: Readonly<
   bodyCentre: { bone: TAIL[0], at: [0, 3.62, -0.62] },
   wingL: { bone: BLADES[0], at: [0.344, 3.553, -0.857] },
   wingR: { bone: BLADES[1], at: [-0.344, 3.553, -0.857] },
-  snout: { bone: BONE.head, at: [0, 3.52, 0.52] },
+  snout: { bone: BONE.head, at: [0, 3.33, 0.38] },
   cheekL: { bone: BONE.cheekL, at: [0.305, 4.071, -0.377] },
   cheekR: { bone: BONE.cheekR, at: [-0.305, 4.071, -0.377] },
   eyeL: { bone: BONE.eyeL, at: [0.108, 3.576, 0.151] },
@@ -223,6 +235,8 @@ class Want {
   follow = 0;
   /** Below 0 means unset. */
   lids = -1;
+  /** How much of the straightening of the head is laid on (1 is all of it). */
+  straight = 1;
 
   reset(): void {
     this.fly = false;
@@ -235,6 +249,7 @@ class Want {
     this.look = false;
     this.follow = 0;
     this.lids = -1;
+    this.straight = 1;
   }
 }
 
@@ -259,12 +274,9 @@ export class SilverboltActor implements Actor {
   private readonly rig: Rig;
   private readonly sampler: ClipSampler;
   private readonly mats: SbMaterials;
-  private readonly extra: SkinnedMesh[];
-  private readonly outlineSize = new Vector2();
-  private outlineW = 0;
-  private outlineH = 0;
   private readonly sockets = new Map<SocketName, Object3D>();
   private readonly jawTipNode: Object3D;
+  private readonly snoutNode: Object3D;
   private readonly bus = new MarkBus();
   private readonly removeTargets: Array<() => void> = [];
   private readonly targets: HitTarget[] = [];
@@ -328,6 +340,18 @@ export class SilverboltActor implements Actor {
   private readonly lagPitch: SpringState = { x: 0, v: 0 };
   private readonly lagWing: SpringState = { x: 0, v: 0 };
   private followW = 0;
+  /** The straight head (`straight.ts`): what was measured at rest, and the turn made this frame. */
+  private readonly straightRest: StraightRest;
+  private readonly headBone: Bone;
+  private readonly headBefore = new Quaternion();
+  private readonly headTurn = new Quaternion();
+  private readonly seatFix = new Quaternion();
+  private readonly seatRest = new Quaternion();
+  private readonly seatNode: Object3D;
+  private readonly spine = new Vector3();
+  /** The lift of the head, radians, in the rest pose and in the middle of each baked clip. */
+  private readonly restLift: number;
+  private readonly clipLift = new Map<string, number>();
   private lastOutbursts = 0;
   private smokeAt = 0;
   private heartAt = 0;
@@ -374,7 +398,6 @@ export class SilverboltActor implements Actor {
     this.cast = getCast(ctx.stage);
     this.camera = this.cast.pass.camera as PerspectiveCamera;
     this.model = gltf.scene;
-    setOutlineNdc(this.outlineSize, ctx.stage.width, ctx.stage.height);
 
     this.rig = new Rig(this.model);
     const rig = this.rig;
@@ -404,11 +427,18 @@ export class SilverboltActor implements Actor {
       this.sockets.set(name, s);
     }
     this.jawTipNode = this.socket("jawTip");
+    this.snoutNode = this.socket("snout");
+    this.headBone = rig.bone(BONE.head);
+    this.straightRest = measureStraight(
+      rig.bone(BONE.root).quaternion,
+      this.headBone.quaternion,
+      HEAD_DROP,
+    );
+    this.seatNode = this.socket("headTop");
+    this.seatRest.copy(this.seatNode.quaternion);
     this.trailAnchors = [this.socket("wingL"), this.socket("wingR"), this.socket("tailTip")];
 
-    const dressed = dress(this.model, this.cast.env, this.outlineSize);
-    this.mats = dressed.materials;
-    this.extra = dressed.extra;
+    this.mats = dress(this.model).materials;
 
     this.pivot.add(this.model);
     this.pivot.position.set(-BODY_CENTRE[0], -BODY_CENTRE[1], -BODY_CENTRE[2]);
@@ -422,6 +452,7 @@ export class SilverboltActor implements Actor {
       new Map(this.rig.bones.map((bone) => [bone.name, bone])),
     );
 
+    this.restLift = this.measureLifts();
     for (const part of PARTS) this.registerPart(ctx, part);
   }
 
@@ -547,6 +578,16 @@ export class SilverboltActor implements Actor {
   /** Force how open the eyes are, 0 (shut) to 1.3 (wide), over the face and the blink's own. */
   lids(open: number): void {
     this.want.lids = clamp(open, 0, 1.3);
+  }
+
+  /**
+   * How much of the straightening of the head is laid on this frame, 0 to 1. The model hangs its
+   * head down from the neck like a seahorse; by default (1) the head is turned up into one line
+   * with the body in every pose and every clip. A section that must have the file's own pose (a
+   * pass that is matched to a recording) can ease it to 0.
+   */
+  straighten(weight: number): void {
+    this.want.straight = clamp(weight, 0, 1);
   }
 
   /** Close the eyes now (a reaction can call it). The dragon also blinks by itself. */
@@ -869,6 +910,8 @@ export class SilverboltActor implements Actor {
       this.playClip(want);
       if (!want.keepRoot) rig.restore(BONE.root);
     }
+    // The head in line with the body, under every turn that follows.
+    this.straightenHead(want.straight, want);
 
     // The procedural pose.
     const pose = this.pose.reset();
@@ -982,6 +1025,51 @@ export class SilverboltActor implements Actor {
       );
     }
     rig.apply();
+  }
+
+  /**
+   * The lift that puts the head in line with the spine: in the rest pose, and in the middle of each
+   * baked clip (sampled over its length). Called once, with the model at rest.
+   */
+  private measureLifts(): number {
+    const head = this.headBone;
+    this.spine.subVectors(head.position, this.tailBones[0]!.position);
+    const rest = straightAngle(this.straightRest, head.quaternion, this.spine);
+    const samples: Quaternion[] = [];
+    for (let k = 0; k < LIFT_SAMPLES; k++) samples.push(new Quaternion());
+    for (const name of Object.values(CLIP)) {
+      const duration = CLIP_DURATION[name];
+      for (let k = 0; k < LIFT_SAMPLES; k++) {
+        this.sampler.pose(name, (duration * k) / LIFT_SAMPLES);
+        samples[k]!.copy(head.quaternion);
+      }
+      this.clipLift.set(name, meanStraightAngle(this.straightRest, samples, this.spine));
+    }
+    this.rig.reset();
+    return rest;
+  }
+
+  /** The lift to lay on the head this frame: the rest pose's, or the clip's (and the blended clip's). */
+  private liftFor(want: Want): number {
+    if (!want.clip) return this.restLift;
+    const a = this.clipLift.get(want.clipName) ?? this.restLift;
+    if (!want.blend) return a;
+    const b = this.clipLift.get(want.blendName) ?? this.restLift;
+    return a + (b - a) * clamp(want.blendWeight, 0, 1);
+  }
+
+  /**
+   * Turn the head up about its joint so it is in line with the spine (see `straight.ts`). The doll's
+   * seat on the head is turned back by the same amount so a rider stays upright.
+   */
+  private straightenHead(weight: number, want: Want): void {
+    const head = this.headBone;
+    this.headBefore.copy(head.quaternion);
+    const angle = this.liftFor(want) * weight;
+    straightTurn(this.headTurn, this.straightRest, angle);
+    head.quaternion.premultiply(this.headTurn);
+    uprightFix(this.seatFix, this.headBefore, this.headTurn);
+    this.seatNode.quaternion.copy(this.seatFix).multiply(this.seatRest);
   }
 
   private hinge(i: number, name: string, raise: number, spread: number): void {
@@ -1129,27 +1217,21 @@ export class SilverboltActor implements Actor {
     const head = this.rig.bones[this.iHead]!;
     vA.setFromMatrixPosition(head.matrixWorld);
     this.headWorld.copy(vA);
-    // The way the face points: from the head bone to the middle of the eyes.
-    const eL = this.rig.bones[this.iEye[0]]!.matrixWorld;
-    const eR = this.rig.bones[this.iEye[1]]!.matrixWorld;
-    vB.set(
-      (eL.elements[12] + eR.elements[12]) / 2,
-      (eL.elements[13] + eR.elements[13]) / 2,
-      (eL.elements[14] + eR.elements[14]) / 2,
-    );
+    // The way the head points: from the head's joint to the nose.
+    vB.setFromMatrixPosition(this.snoutNode.matrixWorld);
     vC.copy(vB).sub(vA).normalize();
     const r = this.ranges;
 
-    // Head: from the head bone along the face to the snout, and the crest above.
+    // Head: from the head's joint along the head to the nose.
     let start = hf.mark();
     hf.add(
       vA.x,
       vA.y,
       vA.z,
-      vA.x + vC.x * 0.62 * ws,
-      vA.y + vC.y * 0.62 * ws,
-      vA.z + vC.z * 0.62 * ws,
-      0.27 * ws,
+      vA.x + vC.x * 0.46 * ws,
+      vA.y + vC.y * 0.46 * ws,
+      vA.z + vC.z * 0.46 * ws,
+      0.25 * ws,
       cam,
     );
     r.head.start = start;
@@ -1233,19 +1315,18 @@ export class SilverboltActor implements Actor {
   }
 
   private dressMaterials(): void {
-    const { gem, crystal } = this.mats;
+    const { gem, crystal, set } = this.mats;
     const f = this.faceCur;
     const hot = clamp(f.anger, 0, 1);
     const lidK = clamp(f.lid, 0.2, 1.2);
-    gem.emissiveIntensity = (0.55 + 0.45 * lidK) * f.glow;
-    crystal.emissiveIntensity = (0.8 + 0.2 * Math.sin(this.breathPhase * 2)) * f.glow;
-    gem.emissive.setRGB(1, 1 - 0.7 * hot, 1 - 0.85 * hot);
-    crystal.emissive.setRGB(1, 1 - 0.6 * hot, 1 - 0.8 * hot);
-    if (this.outlineW !== this.stage.width || this.outlineH !== this.stage.height) {
-      this.outlineW = this.stage.width;
-      this.outlineH = this.stage.height;
-      setOutlineNdc(this.outlineSize, this.outlineW, this.outlineH);
-    }
+    // The eyes: the picture, brighter with a wide eye, going red with anger.
+    const eye = (0.72 + 0.28 * lidK) * Math.min(1.15, f.glow);
+    gem.color.setRGB(eye, eye * (1 - 0.7 * hot), eye * (1 - 0.85 * hot));
+    // The crystals glow with the breath, and go red too.
+    const glow = (0.42 + 0.14 * Math.sin(this.breathPhase * 2)) * f.glow;
+    crystal.setEmissive(glow, glow * (1 - 0.6 * hot), glow * (1 - 0.8 * hot));
+    // The ink keeps its width in pixels: it needs the height of the body block on the screen.
+    set.setHeight(this.pxPerMetre * BODY_HEIGHT_M);
   }
 
   // ---------------------------------------------------------------- the pointer
@@ -1354,21 +1435,15 @@ export class SilverboltActor implements Actor {
     for (const remove of this.removeTargets) remove();
     this.removeTargets.length = 0;
     this.cast.pass.scene.remove(this.object);
-    for (const s of this.extra) s.parent?.remove(s);
-    const seen = new Set<unknown>();
     this.model.traverse((o) => {
       const mesh = o as SkinnedMesh;
       if (!mesh.isMesh) return;
       mesh.geometry.dispose();
-      const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      for (const m of list) {
-        if (seen.has(m)) continue;
-        seen.add(m);
-        disposeStandard(m as MeshStandardMaterial);
-      }
       mesh.skeleton?.dispose();
     });
-    this.mats.outline.dispose();
+    // The hulls, the materials and the shared ink first, then the pictures they read.
+    this.mats.set.dispose();
+    for (const texture of this.mats.set.textures) texture.dispose();
     forgetGltf(SB_MODEL);
   }
 }

@@ -469,7 +469,9 @@ test.describe("on the stage (WebGL)", () => {
     expect(await link.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
     // And the one of the section that is on does.
     const near = page.getByRole("link", { name: "About Aspirant", exact: true });
-    await seek(page, 5);
+    // The middle of the aspirants, wherever the registry puts them.
+    const aspirants = (await placed(page)).find((s) => s.id === "aspirants")!;
+    await seek(page, aspirants.start + aspirants.screens * 0.5);
     await expect
       .poll(async () => near.evaluate((el) => getComputedStyle(el).pointerEvents), {
         timeout: 10_000,
@@ -479,10 +481,11 @@ test.describe("on the stage (WebGL)", () => {
 
   test("a control of a section the page is not at moves the page there", async ({ page }) => {
     await openStage(page);
+    const aspirants = (await placed(page)).find((s) => s.id === "aspirants")!;
     await page.getByRole("link", { name: "About Aspirant", exact: true }).focus();
     await expect
       .poll(async () => (await state(page)).raw, { timeout: 10_000 })
-      .toBeGreaterThan(4.2);
+      .toBeGreaterThan(aspirants.start);
     await expect.poll(async () => (await state(page)).active).toBe("aspirants");
   });
 

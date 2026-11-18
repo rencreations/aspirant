@@ -162,7 +162,7 @@
     visibility 0s linear 0s;
 }
 
-/* Another record and Continue come and go with the scene. */
+/* Another record comes and goes with the scene. */
 :global(.js) :global([data-home]:not([data-gl="off"])) :is(.text) {
   opacity: 0;
   visibility: hidden;
@@ -173,8 +173,7 @@
     visibility 0s linear 450ms;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-again="1"] [data-music-another],
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-held="1"] [data-music-continue] {
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-again="1"] [data-music-another] {
   opacity: 1;
   visibility: visible;
   transform: none;

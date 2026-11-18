@@ -21,7 +21,9 @@ kernel/background.ts  the three ground layers and groundAt(S)
 kernel/pointer.ts     PointerHub: window pointer, 3D hit targets, DOM controls win
 kernel/cursor.ts      CursorProxy: a label for the site's cursor from a 3D target
 kernel/actors.ts      ActorRegistry: hide by default, last writer wins
-kernel/hold.ts        the scroll hold (wraps seams/scroll-lock.ts, bound by the shell)
+kernel/hold.ts        the scroll hold (wraps seams/scroll-lock.ts, bound by the shell; holds are counted)
+kernel/plays.ts       pure: triggered scenes (HomePlay, PlayMachine), see kernel-plays.md
+kernel/where.ts       sectionStart(id), sectionScreens(id): lengths and positions read from the registry
 kernel/handoff.ts     the way to /about: claim, cover, push, wait, uncover; the exit hook
 kernel/probes.ts      window.__home
 kernel/preload.ts     aggregateItems (every section's list in one)
@@ -106,7 +108,9 @@ The site's cursor reads `data-cursor` from the element under the pointer, and a 
 
 **A 3D hit.** `ctx.pointer.add({ id, test(x, y), cursor, enter, leave, press })` in `mount`; keep the return to remove it in `dispose`. `test` runs every frame while the pointer is live: keep it cheap (a projected circle, not a raycast against a skinned mesh).
 
-**A hold.** `const release = ctx.scroll.hold(limitMs)`; call `release()` when the scene ends. The page has no scrollbar (`BareScrollbar`), so the hold never shifts the layout. Never `lenis.stop()` directly. Holds are skipped in tests (`aspirants:intro = off` makes the page open at once), so make a hold something the section can run without.
+**Plays (round two).** A section can declare `plays` in its `index.ts`: triggered scenes that run on a clock between stations while the scroll is held, forward going down and backward going up. `update` then gets a virtual `local`. The API, the rules, how to choose thresholds and how to test are in `docs/design/home/kernel-plays.md`. **Lengths.** Never write another section's start or length as a number: ask `kernel/where.ts` (`sectionStart`, `sectionScreens`); the rule and its test are in the same note.
+
+**A hold.** `const release = ctx.scroll.hold(limitMs)`; call `release()` when the scene ends. Holds are counted (one lock for any number of holders, each with its own release and timer). The page has no scrollbar (`BareScrollbar`), so the hold never shifts the layout. Never `lenis.stop()` directly. Holds are skipped in tests (`aspirants:intro = off` makes the page open at once), so make a hold something the section can run without.
 
 **The exit hook.** The last section's runtime calls `setExitHook(() => promise)` (from `kernel/handoff.ts`) to fly the drone out to the right before the page changes; the hook may return a promise and the change waits for it.
 

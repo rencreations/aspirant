@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   CAMERA_DISTANCE,
+  DOLL_SIZE,
   clientToStage,
   depthScale,
+  drawnHeight,
   fitScale,
   hitDepth,
   insideCapsule,
@@ -92,5 +94,22 @@ describe("clientToStage", () => {
     expect(out).toEqual({ x: -720, y: 450 });
     clientToStage(out, 1440, 900, 1440, 900);
     expect(out).toEqual({ x: 720, y: -450 });
+  });
+});
+
+describe("DOLL_SIZE", () => {
+  it("is about 40 percent smaller than the height asked for", () => {
+    expect(DOLL_SIZE).toBeGreaterThan(0.55);
+    expect(DOLL_SIZE).toBeLessThan(0.65);
+    expect(drawnHeight(500)).toBe(500 * DOLL_SIZE);
+  });
+
+  it("a placement of the drawn height is as tall on the screen as the section asked, times the size", () => {
+    for (const z of [-300, 0, 240]) {
+      expect(rootScale(drawnHeight(400), z) * DOLL_HEIGHT * depthScale(z)).toBeCloseTo(
+        400 * DOLL_SIZE,
+        8,
+      );
+    }
   });
 });

@@ -23,38 +23,46 @@ import { key, span, type Key } from "../actors/duo/curves";
 import { newRoutePlace, routeAt } from "../drone-route";
 import { ART, ART_ASPECT, SOCKETS, heroRect } from "../fx/logo/math";
 
-/** The seconds of each beat since the press. */
+/**
+ * The seconds of each beat since the press. Round two (19 Nov 2026): the owner found the opening too
+ * long (it was 13.2 s). Every beat is kept and the beats overlap now: the pair arrive while the drone
+ * already sees them, the help starts before the drop is over, the pull starts as the logo is put down,
+ * the thanks and the leaving share a second. It ends at 8.0 s.
+ */
 export const T = {
   /** The loading words and the bar are gone by here (DOM). */
-  uiOut: 0.5,
+  uiOut: 0.35,
   /** The drone leaves the loader's place for its corner. */
-  droneMove: [0, 1.0],
+  droneMove: [0, 0.7],
   /** The pair and the logo begin to come in from the left. */
-  enter: 0.9,
+  enter: 0.45,
   /** The normal drone sees them. */
-  shock: 1.85,
+  shock: 1.0,
   /** The normal drone goes under the logo. */
-  helpFly: [3.55, 4.55],
+  helpFly: [2.0, 2.7],
   /** Its help takes the weight off. */
-  help: [4.3, 5.1],
+  help: [2.5, 3.0],
   /** The three carry the logo to the middle. */
-  toMiddle: [5.1, 6.8],
+  toMiddle: [3.0, 4.1],
   /** The carry is let go and the logo stands by itself. */
-  putDown: [6.5, 6.9],
+  putDown: [3.8, 4.1],
   /** The drone steps back to its corner. */
-  helpBack: [6.8, 7.7],
+  helpBack: [4.1, 4.7],
   /** The pair take the corners. */
-  pull: 7.0,
+  pull: 4.3,
   /** The logo grows to the hero width. */
-  grow: [7.7, 9.4],
+  grow: [4.65, 5.85],
   /** The drone thanks, the pair bow. */
-  thanks: 9.65,
-  bow: [9.7, 10.25],
+  thanks: 5.95,
+  bow: [6.0, 6.35],
   /** The pair leave. */
-  leave: [11.15, 12.45],
+  leave: [6.9, 7.5],
   /** What remains is held for a moment: the intro ends here. */
-  end: 13.2,
+  end: 8.0,
 } as const;
+
+/** Seconds after `T.enter` at which the pair have reached the place where the logo hangs. */
+export const CARRY_ARRIVE = 1.35;
 
 /** The calm ripple of the big logo at rest. It is the hero's own (`REST_WAVE` in `sections/hero/runtime.ts`): the two must match. */
 export const LOGO_REST_WAVE = 0.3;
@@ -63,7 +71,7 @@ export const LOGO_REST_WAVE = 0.3;
 export const INTRO_SECONDS = T.end;
 
 /** The part of the intro after the pair are gone: a skip jumps to here and lets the springs rest. */
-export const SETTLE_SECONDS = 0.7;
+export const SETTLE_SECONDS = 0.5;
 
 export interface IntroGeo {
   /** The viewport in CSS pixels. */
@@ -244,38 +252,38 @@ export function pullRectFor(
 // ----------------------------------------------------------------------------------------------
 // The curves of the carry (the opening's struggle, timed to this intro)
 
-/** Seconds since the pair began to carry (`T.enter`). The drop is at 2.45 s. */
+/** Seconds since the pair began to carry (`T.enter`). The drop is at 1.42 s. */
 const STRUGGLE: readonly Key[] = [
   [0, 0.3],
-  [0.9, 0.5],
-  [1.7, 0.8],
-  [2.3, 1.0],
-  [2.6, 0.9],
-  [3.3, 0.95],
-  [3.7, 1.0],
-  [4.5, 0.85],
+  [0.52, 0.5],
+  [0.99, 0.8],
+  [1.33, 1.0],
+  [1.51, 0.9],
+  [1.91, 0.95],
+  [2.15, 1.0],
+  [2.6, 0.85],
 ];
 const LIFT: readonly Key[] = [
   [0, 0.35],
-  [1.2, 0.3],
-  [1.8, 0.1],
-  [2.2, 0.45, "out"],
-  [2.45, -0.7, "in"],
-  [2.9, -0.55],
-  [3.4, 0.0],
-  [3.8, 0.35, "back"],
-  [4.8, 0.15],
+  [0.7, 0.3],
+  [1.04, 0.1],
+  [1.2, 0.45, "out"],
+  [1.42, -0.7, "in"],
+  [1.68, -0.55],
+  [1.97, 0.0],
+  [2.2, 0.35, "back"],
+  [2.8, 0.15],
 ];
 const TENSION: readonly Key[] = [
   [0, 0.35],
-  [1.8, 0.75],
-  [2.3, 0.95],
-  [3.8, 1.0],
-  [4.6, 0.9],
+  [1.04, 0.75],
+  [1.33, 0.95],
+  [2.2, 1.0],
+  [2.67, 0.9],
 ];
 
 /** The drop of the logo: the moment the lift falls (seconds since the press). */
-export const DROP_AT = T.enter + 2.45;
+export const DROP_AT = T.enter + 1.42;
 
 const smooth = (u: number): number => u * u * (3 - 2 * u);
 const sm = (t: number, a: number, b: number): number => smooth(span(t, a, b));
@@ -313,7 +321,7 @@ export function introAt(t: number, geo: IntroGeo, out: IntroState): IntroState {
   const xStuck = stuckX(w);
   const carryX =
     t < T.toMiddle[0]
-      ? mix(x0, xStuck, easeOut(span(t, T.enter, 4.1)))
+      ? mix(x0, xStuck, easeOut(span(t, T.enter, T.enter + CARRY_ARRIVE)))
       : mix(xStuck, 0, sm(t, T.toMiddle[0], T.toMiddle[1]));
 
   // --- the help of the normal drone
@@ -339,7 +347,9 @@ export function introAt(t: number, geo: IntroGeo, out: IntroState): IntroState {
   out.pull.cy = pullBox.cy;
   out.pull.w = pullBox.w;
   out.pull.h = pullBox.h;
-  out.pull.strain = 0.25 + 0.75 * sm(t, T.grow[0] - 0.1, T.grow[0] + 0.5) * (1 - sm(t, 9.2, 9.7));
+  out.pull.strain =
+    0.25 +
+    0.75 * sm(t, T.grow[0] - 0.1, T.grow[0] + 0.5) * (1 - sm(t, T.grow[1] - 0.2, T.thanks + 0.05));
 
   // Where the pair stand when they bow and leave: below the logo's left end and above its right
   // end, inside the screen so the thanks is seen. Their balls are smaller than when they carried:
@@ -438,18 +448,18 @@ export const CUES: readonly IntroCue[] = (
     { at: T.shock, kind: "shock" },
     { at: DROP_AT, kind: "dropBang" },
     { at: T.helpFly[1] - 0.2, kind: "droneSweat" },
-    { at: 5.5, kind: "droneSweat" },
-    { at: 6.2, kind: "droneSweat" },
+    { at: 3.3, kind: "droneSweat" },
+    { at: 3.9, kind: "droneSweat" },
     { at: T.grow[0] + 0.3, kind: "droneSweat" },
     { at: T.grow[1] - 0.15, kind: "burst" },
     { at: T.grow[1] - 0.15, kind: "blip", sound: "star" },
-    { at: T.thanks + 0.5, kind: "hearts" },
-    { at: 10.7, kind: "bubble", icon: "heart" },
-    { at: T.bow[1] + 0.35, kind: "duoReact", react: "cheer" },
-    { at: 11.5, kind: "bubble", icon: "sparkle" },
-    { at: T.bow[1] + 1.1, kind: "duoReact", react: "shy" },
+    { at: T.thanks + 0.35, kind: "hearts" },
+    { at: T.thanks + 0.5, kind: "bubble", icon: "heart" },
+    { at: T.bow[1] + 0.15, kind: "duoReact", react: "cheer" },
+    { at: T.leave[0] + 0.05, kind: "bubble", icon: "sparkle" },
+    { at: T.bow[1] + 0.5, kind: "duoReact", react: "shy" },
     { at: T.leave[0] + 0.05, kind: "blip", sound: "whoosh" },
-    { at: 12.2, kind: "bubble", icon: "smile" },
+    { at: T.leave[0] + 0.55, kind: "bubble", icon: "smile" },
     { at: T.leave[1], kind: "blip", sound: "confirm" },
   ] satisfies IntroCue[]
 ).sort((a, b) => a.at - b.at);

@@ -1,75 +1,79 @@
 /**
- * The beats of the bend section, as numbers. The section is nine screens long; this file says what
- * happens at each screen and is the one place the times are written. Pure: no three.js, no DOM, no
- * allocation per call (`beatAt` writes into the object it is given). The runtime reads it every
- * frame, and the tests hold it (every beat in order, the joints at both ends, a jump anywhere).
+ * The beats of the bend section, as numbers. The section is three triggered scenes (`plays.ts`);
+ * this file says what happens at each moment of their clock and is the one place the times are
+ * written. Pure: no three.js, no DOM, no allocation per call (`beatAt` writes into the object it is
+ * given). The runtime reads it every frame, and the tests hold it (every beat in order, the joints
+ * at both ends, a jump anywhere).
  *
- * Times are in screens from the start of the section (`s = local * 9`). Places are fractions of the
- * viewport: x of the width, y and heights of the height, the origin in the middle, y up (the stage
- * frame of the actors).
+ * Times are in beats, the virtual clock of the section (`s = local * BEAT_SPAN`, `local` being the
+ * plays' value). One beat is about a second of play. Places are fractions of the viewport: x of the
+ * width, y and heights of the height, the origin in the middle, y up (the stage frame of the actors).
  *
- *   0.00 to 0.75   Tetra closes the book, puts it away and stands (she moves from the chase's frame to the stage)
- *   0.95 to 2.47   she bends earth, air, water and fire; the fan pictures fly in from the edges, wave by wave
- *   2.5  to 3.3    the wall of fan pictures stands (the garuda hero): "Fan art", "See all fanart"
- *   3.3  to 4.25   the pictures gather into a ring around her
- *   4.25 to 5.0    the ring turns
- *   5.0  to 5.65   the ring is thrown off the screen
- *   5.15 to 6.45   the splash arts fly in and take a spiral round her: "Artwork", "See all artwork"
- *   6.35 to 7.55   the spiral turns to the last picture, the drone's
- *   7.55 to 7.88   the drone's picture glides to the right of her, the rest streams off
- *   7.9  to 8.15   the drone comes out of the paper
- *   8.1  to 9.0    the drone meets Tetra: it flies to her, pats her head, they hug, and they go to the lower left
+ *   0.00 to 0.70   Tetra closes the book, puts it away and stands (she moves from the chase's frame to the stage)
+ *   0.55 to 2.15   she bends earth, air, water and fire; the fan pictures fly in from the edges, wave by wave
+ *   2.55           REST 1: the wall of fan pictures stands (the garuda hero): "Fan art", "See all fanart"
+ *   2.55 to 3.85   the pictures gather into a ring around her, the ring turns
+ *   3.85 to 4.45   the ring is thrown off the screen
+ *   3.95 to 5.1    the splash arts fly in and take a spiral round her
+ *   5.15           REST 2: "Artwork", "See all artwork"
+ *   5.15 to 6.0    the spiral turns to the last picture, the drone's
+ *   6.0  to 6.25   the drone's picture glides to the right of her, the rest streams off
+ *   6.27 to 6.5    the drone comes out of the paper
+ *   6.45 to 7.3    the drone meets Tetra: it flies to her, pats her head, they hug, and they go to the lower left
+ *   7.3            REST 3: the end (the archive starts from it)
  */
-
-export const BEND_SCREENS = 9;
 
 type TetraPoseName = "read" | "close" | "stand" | "idle" | "bend" | "pat" | "hug" | "run";
 type BendName = "earth" | "air" | "water" | "fire";
 
-/** The times, in screens from the start of the section. */
+/** The times, in beats from the start of the section. */
 export const T = {
   /** The book shuts, she puts it away, she stands. */
-  closeFrom: 0.28,
-  standAt: 0.66,
+  closeFrom: 0.05,
+  standAt: 0.4,
   /** She moves from the place the chase left her in to the stage. */
-  moveFrom: 0.4,
-  moveTo: 1.0,
+  moveFrom: 0.05,
+  moveTo: 0.7,
   /** The four stances, one wave of pictures each. */
-  bendFrom: 0.95,
-  wave: 0.38,
-  /** The wall stands, and is touched. */
-  holdFrom: 2.5,
-  holdTo: 3.3,
+  bendFrom: 0.55,
+  wave: 0.4,
+  /** The wall stands (the first rest, `holdTo`) and is touched. */
+  holdFrom: 2.16,
+  holdTo: 2.55,
   /** Into the ring. */
-  gatherFrom: 3.3,
-  gatherTo: 4.25,
-  ringTo: 5.0,
+  gatherFrom: 2.55,
+  gatherTo: 3.45,
+  ringTo: 3.85,
   /** Out of the ring. */
-  outFrom: 5.0,
-  outTo: 5.65,
-  /** The spiral. */
-  spiralFrom: 5.15,
-  spiralTo: 6.45,
-  advFrom: 6.35,
-  advTo: 7.55,
+  outFrom: 3.85,
+  outTo: 4.45,
+  /** The spiral, and the second rest (`restArt`). */
+  spiralFrom: 3.95,
+  spiralTo: 5.1,
+  restArt: 5.15,
+  advFrom: 5.15,
+  advTo: 6.0,
   /** The drone's picture leaves the spiral for its place beside her. */
-  glideFrom: 7.55,
-  glideTo: 7.88,
+  glideFrom: 6.0,
+  glideTo: 6.25,
   /** The drone comes out of the paper. */
-  popFrom: 7.9,
-  popTo: 8.15,
+  popFrom: 6.27,
+  popTo: 6.5,
   /** The drone and Tetra. */
-  meetFrom: 8.1,
-  flyTo: 8.3,
-  patTo: 8.55,
-  hugTo: 8.8,
-  goTo: 9.0,
+  meetFrom: 6.45,
+  flyTo: 6.65,
+  patTo: 6.85,
+  hugTo: 7.05,
+  goTo: 7.3,
   /** The words. */
-  fanTitleIn: 2.1,
-  fanTitleOut: 3.35,
-  artTitleIn: 6.0,
-  artTitleOut: 7.5,
+  fanTitleIn: 2.0,
+  fanTitleOut: 2.6,
+  artTitleIn: 4.75,
+  artTitleOut: 5.4,
 } as const;
+
+/** The length of the section's own clock, in beats: `local` 1 is the end (the drone and Tetra at rest). */
+export const BEAT_SPAN = T.goTo;
 
 /** The stances in the order of the waves, and the side each is aimed at. */
 export const STANCES: ReadonlyArray<{ kind: BendName; aim: number }> = [
@@ -205,6 +209,9 @@ function mixSpot(a: Spot, b: Spot, k: number, out: Spot): void {
   out.th = a.th + (b.th - a.th) * k;
 }
 
+/** A rest keeps the standing pose this long (beats) past its exact value, so float error never tips it into the next scene. */
+const REST_GRACE = 0.03;
+
 /** How long a change from one stance to the next takes, in screens: the stance dips to the stand and returns. */
 const DIP = 0.07;
 
@@ -232,7 +239,7 @@ export function beatAt(
   out: BeatState,
   vp: { readonly w: number; readonly h: number } = DEFAULT_VP,
 ): BeatState {
-  const s = local * BEND_SCREENS;
+  const s = local * BEAT_SPAN;
   const spots = spotsOf(vp);
   out.s = s;
 
@@ -260,7 +267,8 @@ export function beatAt(
     out.bend = stance.kind;
     out.aim = stance.aim;
     out.blend = 1 - 0.85 * dipAt(s);
-  } else if (s < T.gatherFrom) {
+  } else if (s < T.gatherFrom + REST_GRACE) {
+    // The first rest: she stands, no stance and no marks, so the frame the visitor stands in is calm.
     out.pose = "idle";
   } else if (s < T.ringTo) {
     // Gathering the pictures into a ring: the flowing stance, then the sweeping one.
@@ -275,6 +283,9 @@ export function beatAt(
     out.bend = earth ? "earth" : "fire";
     out.aim = earth ? -1 : 1;
     out.blend = 1 - 0.85 * dipAt(s);
+  } else if (s < T.restArt + REST_GRACE) {
+    // The second rest: the same.
+    out.pose = "idle";
   } else if (s < T.glideFrom) {
     out.pose = "bend";
     out.bend = "air";

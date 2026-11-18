@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { geometry, tetraStand } from "../chase/timeline";
 
-import { BEND_SCREENS, beatAt, isCompact, newBeat, spotsOf } from "./beats";
+import { beatAt, isCompact, newBeat, spotsOf } from "./beats";
 import { droneAt, newDroneWant, restOf } from "./meet";
 
 const SIZES = [
@@ -60,6 +60,5 @@ describe("J14: the bend to the archive", () => {
   it("holds the end after the section (the tail)", () => {
     const vp = { w: 1440, h: 900 };
     expect(beatAt(1.06, newBeat(), vp).spot).toEqual(beatAt(1, newBeat(), vp).spot);
-    expect(BEND_SCREENS).toBe(9);
   });
 });

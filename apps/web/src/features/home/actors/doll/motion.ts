@@ -2,6 +2,7 @@
  * Small pure helpers of motion: springs that are exact for any step (a frozen frame and a long
  * frame both behave), easing, the walk's stride and a deterministic noise. No three.js here.
  */
+import { DOLL_SIZE } from "./place";
 import { DOLL_HEIGHT, WALK_SECONDS, WALK_SPEED } from "./rig";
 
 /** An element of an array, 0 when there is none: the repository reads arrays with `noUncheckedIndexedAccess`. */
@@ -83,18 +84,23 @@ export function hash(n: number): number {
   return ((x >>> 0) / 4294967295) * 2 - 1;
 }
 
-/** Pixels per second that the planted foot moves at when the walk plays at `rate`, for a doll `height` px tall. */
+/**
+ * The three below take the height a section asks for (`place({ height })`), not the one she is drawn
+ * at: they apply `DOLL_SIZE` themselves, so a planted foot does not slide.
+ */
+
+/** Pixels per second that the planted foot moves at when the walk plays at `rate`, for a doll placed `height` px tall. */
 export function strideSpeed(rate: number, height: number): number {
-  return (WALK_SPEED * rate * height) / DOLL_HEIGHT;
+  return (WALK_SPEED * rate * height * DOLL_SIZE) / DOLL_HEIGHT;
 }
 
 /** The walk rate that matches a ground speed in pixels per second. */
 export function walkRateFor(speed: number, height: number): number {
-  return height > 0 ? (speed * DOLL_HEIGHT) / (WALK_SPEED * height) : 0;
+  return height > 0 ? (speed * DOLL_HEIGHT) / (WALK_SPEED * height * DOLL_SIZE) : 0;
 }
 
-/** The walk's phase, in cycles, after a doll `height` px tall has travelled `distance` px. Scrub the walk with it. */
+/** The walk's phase, in cycles, after a doll placed `height` px tall has travelled `distance` px. Scrub the walk with it. */
 export function walkPhaseFor(distance: number, height: number): number {
-  const cyclePx = (WALK_SPEED * WALK_SECONDS * height) / DOLL_HEIGHT;
+  const cyclePx = (WALK_SPEED * WALK_SECONDS * height * DOLL_SIZE) / DOLL_HEIGHT;
   return cyclePx > 0 ? distance / cyclePx : 0;
 }

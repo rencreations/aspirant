@@ -1,26 +1,30 @@
 /**
- * The rows (screens 5.8 to 8.2): the full screen rows of the picture field slide left under the
- * scroll, a small angled film appears in a gap of the middle row and rides it to the middle, the other
- * cards leave from it outward, and the film turns from angled to upright until it stands as the strip
- * (joint J3, `strip/film-state.ts` holds the film's whole state as a function of the scroll). The
- * ground goes dark at the start of the section (the kernel's cross-fade). The drone floats over the
- * rows on the lead's route.
+ * The rows: the full screen rows of the picture field slide left, a small angled film appears in a gap
+ * of the middle row and rides it to the middle, the other cards leave from it outward, and the film
+ * turns from angled to upright until it stands as the strip (joint J3, `strip/film-state.ts` holds
+ * the film's whole state as a function of the story position). It is one play of 3 s, fired by the
+ * scroll (`index.ts`); the section's virtual `local` is 0 at rest and 1 when the strip's small state
+ * stands. The ground is dark already (the aspirants' close set it). The drone floats over the rows on
+ * the lead's route.
  *
  * The field is the aspirants' wall at its end, so in the lead this runtime sets exactly what the
  * aspirants set (the rows at no offset). Everything is a function of the section's `local`.
  */
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { newRoutePlace, routeAt, type DroneRoutePlace } from "../../drone-route";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { FIELD_ORDER, ensureField, type FieldActor } from "../../fx/image-field";
 import type { CardPose } from "../../fx/image-field/types";
 import { FILM_ORDER, ensureFilm, type FilmActor } from "../../fx/video-plane";
 import { rowsGeom } from "../../fx/video-plane/hero";
 import { makeState, type FilmState } from "../../fx/video-plane/types";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { backdropAt } from "../backdrops";
+import { STORY, storyAt } from "../story";
 import { filmStateAt, rowsScale } from "../strip/film-state";
 
 import { clearedPose } from "./clearing";
-import { clearAt, ROWS_SCREENS, ROWS_START, slideProgress, slideTravel } from "./journey";
+import { clearAt, slideProgress, slideTravel } from "./journey";
 
 /** The rows are seen through the wall's long lens, with the edge smear the field gives the rows. */
 const ROWS_LENS = 2000;
@@ -48,13 +52,15 @@ class RowsRuntime implements SectionRuntime {
     private readonly field: FieldActor,
     private readonly film: FilmActor,
     private readonly drone: DroneActor | null,
+    private readonly backdrop: Backdrop | null,
   ) {
     this.slots = Array.from({ length: field.count }, (_, i) => field.cardInfo(i)?.slot ?? i);
   }
 
-  update(local: number, frame: FrameInfo): void {
-    const s = local * ROWS_SCREENS;
-    const S = ROWS_START + s;
+  update(v: number, frame: FrameInfo): void {
+    // `v` is the play's: 0 the rows at rest, 1 the strip's small state. The lead and the tail rest.
+    const s = Math.min(1, Math.max(0, v)) * STORY.rows.length;
+    const S = storyAt("rows", s);
     const vp = frame.viewport;
     if (this.geomFor?.w !== vp.w || this.geomFor.h !== vp.h) {
       this.geomFor = { w: vp.w, h: vp.h };
@@ -78,6 +84,8 @@ class RowsRuntime implements SectionRuntime {
     this.driveField(s, travel * along);
     this.driveFilm(S, travel);
     this.driveDrone(S, vp);
+    const back = backdropAt(S);
+    this.backdrop?.set(back.kind, back.options);
   }
 
   /** `slid`: how far the rows have slid since the section began, in the rows plane's pixels. */
@@ -128,10 +136,11 @@ class RowsRuntime implements SectionRuntime {
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [field, film, drone] = await Promise.all([
+  const [field, film, drone, backdrop] = await Promise.all([
     ensureField(ctx),
     ensureFilm(ctx),
     ensureDrone(ctx).catch(() => null),
+    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new RowsRuntime(field, film, drone);
+  return new RowsRuntime(field, film, drone, backdrop);
 }

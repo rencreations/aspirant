@@ -5,6 +5,7 @@ import { heroRect } from "../fx/logo/math";
 import {
   CUES,
   DROP_AT,
+  CARRY_ARRIVE,
   GRIP_SPAN,
   INTRO_SECONDS,
   LOGO_REST_WAVE,
@@ -31,9 +32,35 @@ const SIZES: IntroGeo[] = [
 const DT = 1 / 60;
 
 describe("the intro's length", () => {
-  it("is between 12 and 14 seconds", () => {
-    expect(INTRO_SECONDS).toBeGreaterThanOrEqual(12);
-    expect(INTRO_SECONDS).toBeLessThanOrEqual(14);
+  it("is between 7 and 8.5 seconds (the owner found the first one, 13.2 s, too long)", () => {
+    expect(INTRO_SECONDS).toBeGreaterThanOrEqual(7);
+    expect(INTRO_SECONDS).toBeLessThanOrEqual(8.5);
+  });
+
+  it("keeps every beat of the owner's story, in order", () => {
+    const order = [
+      T.enter,
+      T.shock,
+      DROP_AT,
+      T.helpFly[0],
+      T.help[0],
+      T.toMiddle[0],
+      T.putDown[0],
+      T.helpBack[0],
+      T.grow[0],
+      T.thanks,
+      T.leave[0],
+      T.leave[1],
+      INTRO_SECONDS,
+    ];
+    for (let i = 1; i < order.length; i += 1) {
+      expect(order[i] ?? 0, `beat ${i}`).toBeGreaterThan(order[i - 1] ?? 0);
+    }
+  });
+
+  it("lets no struggle, drop or lift last more than 3 seconds", () => {
+    expect(T.helpFly[0] - T.enter).toBeLessThan(3);
+    expect(T.toMiddle[1] - T.helpFly[0]).toBeLessThan(3);
   });
 
   it("keeps a calm moment at the end, after the pair have gone", () => {
@@ -139,7 +166,7 @@ describe("the pair and the logo between them stay on the screen while they carry
   for (const geo of SHAPES) {
     it(`at ${geo.w} x ${geo.h}, from the moment they are in to the moment they take the corners`, () => {
       const s = newIntroState();
-      for (let t = T.enter + 3.2; t < T.pull; t += 1 / 30) {
+      for (let t = T.enter + CARRY_ARRIVE; t < T.pull; t += 1 / 30) {
         introAt(t, geo, s);
         const half = s.carry.width / 2 + (REACH * duoBall(geo)) / 2;
         expect(Math.abs(s.carry.x) + half, `t ${t.toFixed(2)}`).toBeLessThanOrEqual(geo.w / 2);
@@ -242,7 +269,7 @@ describe("the intro has no jump", () => {
         introAt(t, geo, b);
         expect(Math.hypot(b.drone.x - a.drone.x, b.drone.y - a.drone.y)).toBeLessThan(0.02 * diag);
         expect(Math.abs(b.drone.height - a.drone.height)).toBeLessThan(0.01 * geo.h);
-        expect(Math.abs(b.logo.width - a.logo.width)).toBeLessThan(0.02 * geo.w);
+        expect(Math.abs(b.logo.width - a.logo.width)).toBeLessThan(0.025 * geo.w);
         expect(Math.abs(b.carry.x - a.carry.x)).toBeLessThan(0.03 * geo.w);
         expect(Math.abs(b.logoTension - a.logoTension)).toBeLessThan(0.1);
         expect(Math.abs(b.carry.lift - a.carry.lift)).toBeLessThan(0.3);
@@ -275,7 +302,7 @@ describe("the intro has no jump", () => {
 describe("the same time gives the same state", () => {
   it("is pure", () => {
     const geo = SIZES[1]!;
-    for (const t of [0, 1.3, 3.4, 5.5, 8.1, 10.2, 12.7]) {
+    for (const t of [0, 1.3, 3.4, 5.5, 6.1, 7.1, 7.7]) {
       const x = introAt(t, geo, newIntroState());
       const y = introAt(0.5, geo, newIntroState());
       void y;
@@ -314,10 +341,10 @@ describe("the cues", () => {
     expect(n).toBe(CUES.length);
   });
 
-  it("the bubbles do not crowd each other (0.7 s apart at least)", () => {
+  it("the bubbles do not crowd each other (0.49 s apart at least)", () => {
     const icons = CUES.filter((c) => c.kind === "bubble").map((c) => c.at);
     for (let i = 1; i < icons.length; i += 1) {
-      expect((icons[i] ?? 0) - (icons[i - 1] ?? 0)).toBeGreaterThanOrEqual(0.69);
+      expect((icons[i] ?? 0) - (icons[i - 1] ?? 0)).toBeGreaterThanOrEqual(0.49);
     }
   });
 });

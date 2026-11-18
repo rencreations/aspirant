@@ -1,165 +1,154 @@
 /**
- * The look of Silverbolt in the shared cast pass. The loader gives every part a
- * `MeshStandardMaterial` painted with the light already in the pictures; here they get the cast's
- * environment (one PMREM for the whole home) and a crisper, metallic read, the two emissive parts
- * (the eyes and the cheek crystals) are kept for mood glows, and the flame ribbon is sorted last
- * with no depth write. A thin ink outline (a shell of the head, pushed out along the normal by a
- * fixed number of screen pixels) gives the comic edge the rest of the site has.
+ * The look of Silverbolt in the shared cast pass: the anime look of the toon system
+ * (`actors/shared/toon.ts`), the same drawing as Tetra and the drone. The loader gives every part a
+ * `MeshStandardMaterial` painted with the light already in the pictures; `toonify` replaces them.
+ *
+ *  - the silver armour is cel shaded metal: three crisp bands, a hard glint, a pale rim, no
+ *    reflection and no environment;
+ *  - the cheek crystals are saturated colour that glows (`setEmissive`) with the same bands;
+ *  - the eyes are the picture itself, unlit, tinted red when it is angry;
+ *  - the flame ribbon is a flat saturated sheet with a lighter inner band and a rim, drawn last with
+ *    no depth write, and an ink line round it (the card ink: copies shifted by the line width);
+ *  - an ink hull of constant width on the screen round the armour (`set.setHeight` every frame).
  */
 import {
-  BackSide,
-  Color,
   type Material,
-  Mesh,
-  MeshBasicMaterial,
+  type MeshBasicMaterial,
   type MeshStandardMaterial,
   type Object3D,
-  SkinnedMesh,
-  type Texture,
-  type Vector2,
+  type SkinnedMesh,
 } from "three";
 
-export interface SbMaterials {
-  body: MeshStandardMaterial;
-  gem: MeshStandardMaterial;
-  socket: MeshStandardMaterial;
-  crystal: MeshStandardMaterial;
-  ribbon: MeshStandardMaterial;
-  outline: MeshBasicMaterial;
-}
+import { toonify, type ToonMaterial, type ToonPick, type ToonSet } from "../shared/toon";
 
-/** The outline width in CSS pixels. */
-const OUTLINE_PX = 1.6;
-/** The outline's colour: a deep violet ink, not black, so it sits in the palette. */
-const INK = 0x1c1233;
+export interface SbMaterials {
+  body: ToonMaterial;
+  socket: ToonMaterial;
+  crystal: ToonMaterial;
+  ribbon: ToonMaterial;
+  /** The eyes: the atlas as it is. The actor tints `color` for the glow and the anger. */
+  gem: MeshBasicMaterial;
+  set: ToonSet;
+}
 
 const isStandard = (m: Material): m is MeshStandardMaterial =>
   (m as MeshStandardMaterial).isMeshStandardMaterial === true;
 
+/** How each of the five named materials is drawn. */
+const PICKS: Readonly<Record<string, ToonPick>> = {
+  // The armour: metal, with a hull. The hull is the one outline of the figure.
+  silverbolt_body: { look: "metal", inkWeight: 1.4 },
+  // The two eyes: flat, bright, no hull (they are 3 px at the smallest size).
+  silverbolt_gem: { unlit: true },
+  // The silver lid behind each eye.
+  silverbolt_socket: { look: "metal", ink: false },
+  // The cheek crystals: glow, bands, no hull (the cheek blade's hull is round them).
+  silverbolt_crystal: { look: "default", ink: false },
+  // The flame ribbon: a sheet, a flat colour with a lighter band, ink by the card copies.
+  silverbolt_ribbon: { look: "soft", ink: false, tune: { rim: 0.55, rimWidth: 0.3 } },
+};
+
+/** Where the stock fragment shader samples the picture. */
+export const MAP_CHUNK = "#include <map_fragment>";
+
 /**
- * Find the five materials by name, set them up and add the outline shells. Returns what the actor
- * drives and the meshes it added (to remove them on dispose).
+ * Cut a painted gradient into steps (`levels`, in a gamma 2 space so the steps are even to the
+ * eye): a flat colour for each, as a cel drawing has it, not an airbrush. `mode` "colour" cuts each
+ * channel (the ribbon's flame goes cyan, blue, violet, red in flat bands); "tone" cuts only the
+ * lightness and keeps the hue, so the soft highlights of the armour become hard shapes without the
+ * speckle that cutting each channel makes of the noise in the paint.
  */
-export function dress(
-  scene: Object3D,
-  env: Texture,
-  outlineSize: Vector2,
-): { materials: SbMaterials; extra: SkinnedMesh[]; skinned: SkinnedMesh[] } {
-  const found: Partial<Record<keyof Omit<SbMaterials, "outline">, MeshStandardMaterial>> = {};
+export function posterizeGlsl(levels: number, mode: StepMode): string {
+  const n = levels.toFixed(1);
+  if (mode === "colour") {
+    return `${MAP_CHUNK}
+	{
+		vec3 stepped = sqrt( max( diffuseColor.rgb, vec3( 0.0 ) ) );
+		stepped = floor( stepped * ${n} + 0.5 ) / ${n};
+		diffuseColor.rgb = stepped * stepped;
+	}`;
+  }
+  return `${MAP_CHUNK}
+	{
+		float tone = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
+		float toneG = sqrt( max( tone, 0.0001 ) );
+		float cut = floor( toneG * ${n} + 0.5 ) / ${n};
+		diffuseColor.rgb *= clamp( ( cut * cut ) / max( tone, 0.0001 ), 0.0, 1.6 );
+	}`;
+}
+
+export type StepMode = "colour" | "tone";
+
+/** The same cut of one channel (or of the tone) in plain numbers; the tests hold the shader to it. */
+export function posterizeChannel(value: number, levels: number): number {
+  const g = Math.sqrt(Math.max(0, value));
+  const cut = Math.floor(g * levels + 0.5) / levels;
+  return cut * cut;
+}
+
+/** How many steps a channel of the ribbon's colour has, and of the armour's. */
+const RIBBON_STEPS = 6;
+const BODY_STEPS = 6;
+
+/** Make a toon material draw its picture in steps (the painted soft light becomes flat shapes). */
+function cutIntoSteps(material: ToonMaterial, levels: number, mode: StepMode): void {
+  const patched = material.onBeforeCompile.bind(material);
+  const key = material.customProgramCacheKey.bind(material);
+  material.onBeforeCompile = (shader, renderer) => {
+    patched(shader, renderer);
+    shader.fragmentShader = shader.fragmentShader.replace(MAP_CHUNK, posterizeGlsl(levels, mode));
+  };
+  material.customProgramCacheKey = () => `${key()}-${mode}${levels}`;
+  material.needsUpdate = true;
+}
+
+/**
+ * Convert the model. Finds the five materials by name (throws if the build changed them), puts the
+ * toon look and the ink on them and sorts the ribbon after everything opaque.
+ */
+export function dress(scene: Object3D): { materials: SbMaterials; skinned: SkinnedMesh[] } {
   const skinned: SkinnedMesh[] = [];
+  const sources: MeshStandardMaterial[] = [];
   scene.traverse((o) => {
     const mesh = o as SkinnedMesh;
     if (!mesh.isSkinnedMesh) return;
     skinned.push(mesh);
     // The pose of the bones, not the quantised box, decides what is in view.
     mesh.frustumCulled = false;
-    const list: Material[] = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    for (const m of list) {
-      if (!isStandard(m)) continue;
-      if (m.name === "silverbolt_body") found.body = m;
-      else if (m.name === "silverbolt_gem") found.gem = m;
-      else if (m.name === "silverbolt_socket") found.socket = m;
-      else if (m.name === "silverbolt_crystal") found.crystal = m;
-      else if (m.name === "silverbolt_ribbon") found.ribbon = m;
-    }
+    if (!Array.isArray(mesh.material) && isStandard(mesh.material)) sources.push(mesh.material);
   });
-  const { body, gem, socket, crystal, ribbon } = found;
+  const set = toonify(scene, {
+    pick: (_mesh, source) => PICKS[source.name],
+    anisotropy: 8,
+  });
+  // The loader's own materials are not drawn any more: let go of the maps the toon look does not read.
+  for (const source of sources) {
+    source.normalMap?.dispose();
+    source.roughnessMap?.dispose();
+    source.metalnessMap?.dispose();
+    source.aoMap?.dispose();
+    source.dispose();
+  }
+
+  const found: Record<string, Material> = {};
+  for (const m of set.materials) found[m.name] = m;
+  const body = found.silverbolt_body as ToonMaterial | undefined;
+  const gem = found.silverbolt_gem as MeshBasicMaterial | undefined;
+  const socket = found.silverbolt_socket as ToonMaterial | undefined;
+  const crystal = found.silverbolt_crystal as ToonMaterial | undefined;
+  const ribbon = found.silverbolt_ribbon as ToonMaterial | undefined;
   if (!body || !gem || !socket || !crystal || !ribbon) {
     throw new Error("Silverbolt's materials are not the ones the build wrote");
   }
-
-  // The armour: a little metal and a sheen from the cast's environment, crisp normals.
-  body.envMap = env;
-  body.envMapIntensity = 0.85;
-  body.metalness = 0.32;
-  body.roughness = 0.46;
-  // The eyes and crystals glow by themselves; the environment adds a glassy highlight.
-  for (const m of [gem, crystal]) {
-    m.envMap = env;
-    m.envMapIntensity = 0.5;
-    m.metalness = 0.1;
-    m.roughness = 0.25;
-  }
-  socket.envMap = env;
-  socket.envMapIntensity = 0.7;
-  socket.metalness = 0.5;
-  socket.roughness = 0.4;
-  // The flame ribbon is a soft sheet: no depth write, drawn after the opaque parts.
+  // The painted gradients are cut into steps in the fragment shader, after the toon patch.
+  cutIntoSteps(ribbon, RIBBON_STEPS, "colour");
+  cutIntoSteps(body, BODY_STEPS, "tone");
+  // The ribbon is a soft sheet: no depth write, drawn after the opaque parts.
   ribbon.transparent = true;
   ribbon.depthWrite = false;
-  ribbon.envMap = env;
-  ribbon.envMapIntensity = 0.25;
-  ribbon.metalness = 0;
-  ribbon.roughness = 0.8;
-  for (const m of [body, gem, socket, crystal, ribbon]) m.needsUpdate = true;
-
-  const outline = new MeshBasicMaterial({
-    color: new Color(INK),
-    side: BackSide,
-    // The shell sits behind the armour: push it back a little so a thin blade seen edge on does not speckle.
-    polygonOffset: true,
-    polygonOffsetFactor: 1,
-    polygonOffsetUnits: 1,
-  });
-  outline.name = "silverbolt_outline";
-  outline.toneMapped = false;
-  outline.onBeforeCompile = (shader) => {
-    shader.uniforms.uOutline = { value: outlineSize };
-    shader.vertexShader = shader.vertexShader
-      .replace("#include <common>", "#include <common>\nuniform vec2 uOutline;")
-      .replace(
-        "#include <project_vertex>",
-        `#include <project_vertex>
-        vec3 vnOut = normalize(normalMatrix * objectNormal);
-        vec2 dirOut = (projectionMatrix * vec4(vnOut, 0.0)).xy;
-        float lenOut = length(dirOut);
-        if (lenOut > 1e-5) gl_Position.xy += dirOut / lenOut * uOutline * gl_Position.w;`,
-      );
-  };
-
-  // One shell for the head and horns. The ribbon, the eyes and the crystals are not outlined.
-  const extra: SkinnedMesh[] = [];
-  for (const src of skinned) {
-    const list = Array.isArray(src.material) ? src.material : [src.material];
-    if (!list.includes(body) || !src.parent) continue;
-    const shell = new SkinnedMesh(src.geometry, outline);
-    shell.name = "silverbolt_outline";
-    shell.bind(src.skeleton, src.bindMatrix);
-    shell.frustumCulled = false;
-    shell.renderOrder = -1;
-    src.parent.add(shell);
-    extra.push(shell);
-  }
-  // The ribbon is sorted after everything opaque.
   scene.traverse((o) => {
-    if (o instanceof Mesh && o.material === ribbon) o.renderOrder = 1;
+    const mesh = o as SkinnedMesh;
+    if (mesh.isMesh && mesh.material === ribbon) mesh.renderOrder = 1;
   });
-  return { materials: { body, gem, socket, crystal, ribbon, outline }, extra, skinned };
-}
-
-/** Write the outline's offset in normalised device units for a canvas of `w` by `h` CSS pixels. */
-export function setOutlineNdc(
-  out: Vector2,
-  w: number,
-  h: number,
-  px: number = OUTLINE_PX,
-): Vector2 {
-  return out.set((2 * px) / Math.max(1, w), (2 * px) / Math.max(1, h));
-}
-
-/** The texture slots a model's materials hold. The cast's environment is never one of them. */
-const TEXTURE_SLOTS = [
-  "map",
-  "normalMap",
-  "emissiveMap",
-  "roughnessMap",
-  "metalnessMap",
-  "alphaMap",
-  "aoMap",
-] as const;
-
-/** Free the maps of a standard material and the material itself. */
-export function disposeStandard(m: MeshStandardMaterial): void {
-  for (const slot of TEXTURE_SLOTS) m[slot]?.dispose();
-  m.dispose();
+  return { materials: { body, gem, socket, crystal, ribbon, set }, skinned };
 }

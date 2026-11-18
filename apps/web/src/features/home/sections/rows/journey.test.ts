@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { layoutSections } from "../../kernel/layout";
-import { SECTIONS } from "../../kernel/sections";
+import { STORY } from "../story";
 
 import {
   appearAt,
@@ -12,19 +11,14 @@ import {
   MIN_SLIDE_PITCHES,
   morphAt,
   ROWS_BEATS,
-  ROWS_SCREENS,
-  ROWS_START,
   slideProgress,
   slideTravel,
 } from "./journey";
 
-describe("the rows' place on the scroll", () => {
-  it("matches the registry", () => {
-    const placed = layoutSections(SECTIONS).placed.find((p) => p.id === "rows")!;
-    expect(placed.start).toBeCloseTo(ROWS_START, 6);
-    expect(placed.def.screens).toBe(ROWS_SCREENS);
-  });
+// The rows' story is `STORY.rows` (`../story.ts`): the beats must end with it.
+const ROWS_SCREENS = STORY.rows.length;
 
+describe("the rows' beats on the scroll", () => {
   it("is ordered: slide, appear, clear, morph, and the morph ends with the section", () => {
     const B = ROWS_BEATS;
     expect(B.appear[0]).toBeGreaterThan(B.slide[0]);

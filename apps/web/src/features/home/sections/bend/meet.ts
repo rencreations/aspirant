@@ -4,7 +4,7 @@
  * to the rest beside her (joint J14), and where Tetra's own marks are for the actors that follow them.
  * Stage frame: the origin in the middle, y up, pixels. No three.js, no DOM, nothing allocated per call.
  */
-import { BEND_SCREENS, T, ramp, smoother, spotsOf, type BeatState } from "./beats";
+import { T, ramp, smoother, spotsOf, type BeatState } from "./beats";
 import { LENS, baseOf, makePose, paperPose, type CardPose, type Vp } from "./formations";
 
 /** The flat drone fills this share of the paper's width, its middle sits at this height of the paper. */
@@ -144,7 +144,7 @@ export function droneAt(beat: BeatState, vp: Vp, time: number, out: DroneWant): 
     return out;
   }
   // Going to the rest together.
-  const go = smoother(ramp(s, T.hugTo, BEND_SCREENS));
+  const go = smoother(ramp(s, T.hugTo, T.goTo));
   const rest = spotsOf(vp).restDrone;
   out.x = mix(hugX, rest.x * vp.w, go);
   out.y = mix(hugY, rest.y * vp.h, go);

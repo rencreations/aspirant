@@ -139,6 +139,13 @@ export const BODY_HEIGHT_M = 1.0;
  * where a turn (`yaw`) pivots: between the head and the wing root.
  */
 export const BODY_CENTRE = [0, 3.58, -0.3] as const;
+/**
+ * How far below the body's level the rest head's snout points, radians. The model hangs its head
+ * down from the neck (about 55 degrees, like a seahorse); `straight.ts` turns it up by this much and
+ * the spine's own slope. Measured on side views of the rest pose, tuned by eye: 0.9 to 1.0 all read
+ * as one straight dragon.
+ */
+export const HEAD_DROP = 0.92;
 /** The scale of the clips: the 1.4 m dragon that stands beside Selena. */
 export const CLIP_SCALE = 0.4;
 /**

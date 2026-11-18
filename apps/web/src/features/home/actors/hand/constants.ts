@@ -45,21 +45,42 @@ export const PALM = {
 /** Per finger hit radius around the line from the knuckle to the claw tip, in metres. */
 export const FINGER_HIT_RADIUS = 0.017;
 
-/** The look: one recipe for every screen. */
+/**
+ * The look: the anime recipe of the shared toon system (`../shared/toon.ts`), one for every screen.
+ * Black leather does not show a shade that is only the colour times a tint, so the dark texels are
+ * lifted to a violet black first (`lift`, linear): the lit step is a dark slate violet, the shade a
+ * saturated blue, the core a deep indigo. A hard glint shape sits on the leather and a crisp violet
+ * rim on the edge, and the claws and the gold of the bracer are drawn as flat bright colour.
+ */
 export const LOOK = {
-  /** The three light steps of the toon ramp. */
-  steps: [64, 150, 255],
-  /** A cool rim, a violet fill. */
-  rim: [0.62, 0.55, 1.0] as const,
-  rimStrength: 0.55,
-  ink: 0x120c1c,
-  /** The ink's width on the screen, in CSS pixels. */
-  inkPx: 2.2,
-  /** The glove's gloss: the highlight's tightness and its strength. */
-  gloss: 70,
-  glossStrength: 0.3,
-  /** The claws are lit from within: how much of their own colour is added. */
-  clawGlow: 0.55,
+  /** The leather's bands (`ToonLookSpec` numbers). The rim is the glove's own (below). */
+  leather: {
+    bands: 3,
+    cut: [-0.2, 0.12],
+    soft: 0.04,
+    shade: [0.42, 0.5, 1.0],
+    deep: [0.2, 0.26, 0.85],
+    lit: [1, 1, 1],
+    sat: 1.3,
+    rim: 0,
+    rimWidth: 0.3,
+    glint: 0.6,
+    glintSize: 0.978,
+  },
+  /** What the dark texels of the picture are raised by (linear): a violet black. */
+  lift: [0.02, 0.018, 0.05],
+  /** The crisp rim: its colour, its strength and the share of the radius it covers. */
+  rim: [0.66, 0.5, 1.0],
+  rimStrength: 0.95,
+  rimWidth: 0.3,
+  /** The claws: how bright the flat colour is, and how much of the band shading is kept under it. */
+  clawFlat: 1.3,
+  clawKeep: 0.3,
+  /** The colour of a claw (linear): a bright violet. */
+  clawColor: [0.42, 0.22, 0.95],
+  /** Where a claw starts on a fingertip bone, as shares of the bone's reach (`claws.ts`): a soft edge from `from` to `to`. */
+  clawFrom: 0.34,
+  clawTo: 0.44,
 } as const;
 
 /**

@@ -13,7 +13,7 @@ import { expectReady } from "@/lib/page-ready";
 
 import styles from "./home.module.css";
 import { focusScreens } from "./kernel/focus";
-import { bindHold } from "./kernel/hold";
+import { bindHold, requestSnap } from "./kernel/hold";
 import { layoutSections } from "./kernel/layout";
 import { SECTIONS } from "./kernel/sections";
 import type { HomeMode } from "./kernel/types";
@@ -51,6 +51,7 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
   const dayRef = useRef<HTMLDivElement>(null);
   const stormRef = useRef<HTMLDivElement>(null);
   const colourRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   const { scrollTo } = useLenis();
   const { lock } = useScrollLock();
@@ -110,6 +111,7 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
           root,
           host,
           grounds: { daybreak: day, storm, colour },
+          backdrop: backdropRef.current,
           sections: SECTIONS,
           scrollTo: (y, options) => {
             scrollTo(y, options);
@@ -155,6 +157,8 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
         placed.def.focus,
         target?.closest<HTMLElement>("[data-home-focus-at]")?.dataset.homeFocusAt,
       );
+      // A move by the keyboard's focus is not a scroll: no play fires on the way.
+      requestSnap();
       scrollTo((placed.start + at) * unit, { immediate: true });
     };
     root.addEventListener("focusin", onFocus);
@@ -170,6 +174,7 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
         <div ref={dayRef} className={`${styles.ground} ${styles.groundDaybreak}`} />
         <div ref={stormRef} className={`${styles.ground} ${styles.groundStorm}`} />
         <div ref={colourRef} className={`${styles.ground} ${styles.groundColour}`} />
+        <div ref={backdropRef} className={styles.backdrop} />
       </div>
       <div className={styles.below} aria-hidden="true">
         {below}

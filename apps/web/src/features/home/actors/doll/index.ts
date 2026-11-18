@@ -13,6 +13,7 @@ export type { MoodStep } from "./face/sequence";
 export type { ReactionKind } from "./interaction";
 export type { PoseName } from "./pose/poses";
 export { walkPhaseFor } from "./motion";
+export { DOLL_SIZE, drawnHeight } from "./place";
 
 /**
  * The doll, built once and shared by every section that needs her. The model comes through the

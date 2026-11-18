@@ -6,12 +6,16 @@
  * `meet.ts` how the drone goes; this file puts them on the actors and the cards, every frame, as a
  * pure function of the scroll plus the pointer. See `docs/design/home/section-bend.md`.
  */
+import type { Backdrop } from "../../fx/backdrop";
+import { ensureBackdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import { ensureMarks } from "../../fx/comic-marks";
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { ensureTetra, type TetraActor } from "../../actors/tetra";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionStart } from "../../kernel/where";
 
+import { backdropAt } from "./backdrop";
 import {
   DRONE_CARD,
   SPIRAL_CARDS,
@@ -53,6 +57,7 @@ import {
   type Vp,
 } from "./formations";
 import { droneAt, newDroneWant, paperDrone, restOf } from "./meet";
+import { restScreens } from "./plays";
 import { platePlace, wallPictures } from "./order";
 import {
   FAN_PICS,
@@ -79,13 +84,16 @@ const NAV_INSET = 78;
 /** The paper of the drone. */
 const PAPER: readonly [number, number, number] = [0.97, 0.94, 0.9];
 
-/** Where each group of words is shown (screens from the section's start), and where the page goes to show it. */
+/**
+ * Where each group of words is shown (beats of the section's clock), and the dwell the page goes to
+ * (screens from the section's start) to show it: the first rest holds the wall, the second the spiral.
+ */
 type FocusKind = "fan" | "art" | "notice" | "plates";
 const FOCUS_BEATS: Record<FocusKind, { from: number; to: number; at: number }> = {
-  fan: { from: T.fanTitleIn + 0.3, to: T.fanTitleOut, at: (T.holdFrom + T.holdTo) / 2 },
-  art: { from: T.artTitleIn + 0.3, to: T.artTitleOut, at: T.artTitleIn + 0.7 },
-  notice: { from: T.fanTitleIn + 0.3, to: T.outTo - 0.4, at: (T.holdFrom + T.holdTo) / 2 },
-  plates: { from: T.holdFrom - 0.3, to: T.outFrom + 0.3, at: (T.holdFrom + T.holdTo) / 2 },
+  fan: { from: T.fanTitleIn + 0.3, to: T.fanTitleOut, at: restScreens(1) },
+  art: { from: T.artTitleIn + 0.3, to: T.artTitleOut, at: restScreens(2) },
+  notice: { from: T.fanTitleIn + 0.3, to: T.outTo - 0.4, at: restScreens(1) },
+  plates: { from: T.holdFrom - 0.3, to: T.outFrom + 0.3, at: restScreens(1) },
 };
 
 const sources = (): PicSource[] => [...FAN_PICS.map(fanSource), ...artSources(), droneSource()];
@@ -167,6 +175,7 @@ class BendRuntime implements SectionRuntime {
     private readonly tetra: TetraActor,
     private readonly drone: DroneActor,
     private readonly marks: MarksActor,
+    private readonly backdrop: Backdrop | null,
   ) {
     this.layer = new CardLayer(ctx.stage, sources(), TOTAL_CARDS, () => {
       this.readyFlag.fill(false);
@@ -219,6 +228,17 @@ class BendRuntime implements SectionRuntime {
       glad: marks.sustain("sparkle", { size: 40 }),
     };
     tetra.book.auto();
+    void backdrop?.warm([
+      "pixel-blast",
+      "earth",
+      "air",
+      "water",
+      "fire",
+      "soft-aurora",
+      "iridescence",
+      "aurora",
+      "particles",
+    ]);
     // The fan pictures go to the GPU now, a screen or two before they are seen, not in the frame they are first drawn.
     this.textures(-2);
   }
@@ -229,7 +249,7 @@ class BendRuntime implements SectionRuntime {
     const vp = frame.viewport;
     const b = beatAt(local, this.beat, vp);
     const s = b.s;
-    this.startS = frame.S - s;
+    this.startS = sectionStart("bend");
     if (this.pendingFocus) {
       const kind = this.pendingFocus;
       this.pendingFocus = null;
@@ -237,8 +257,11 @@ class BendRuntime implements SectionRuntime {
     }
     this.layer.store.now = frame.time;
     this.textures(s);
-    this.live = s > T.holdFrom - 0.35 && s < T.outFrom + 0.3;
+    // The credits answer while the wall stands, and a moment into the gather.
+    this.live = s > T.holdFrom - 0.2 && s < T.holdTo + 0.5;
     this.interactive = s > T.bendFrom + 0.3 && s < T.glideFrom + 0.2;
+    const want = backdropAt(b);
+    this.backdrop?.set(want.kind, want.options);
     this.pointer(frame);
     this.cards(b, vp, frame);
     this.actors(b, vp, frame);
@@ -820,10 +843,11 @@ class BendRuntime implements SectionRuntime {
 
 /** Build the section's scene: the cards, and Tetra, the drone and the marks it shares with the others. */
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [tetra, drone, marks] = await Promise.all([
+  const [tetra, drone, marks, backdrop] = await Promise.all([
     ensureTetra(ctx),
     ensureDrone(ctx),
     ensureMarks(ctx),
+    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new BendRuntime(ctx, tetra, drone, marks);
+  return new BendRuntime(ctx, tetra, drone, marks, backdrop);
 }

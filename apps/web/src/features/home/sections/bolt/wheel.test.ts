@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { BEAT, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./journey";
+import { BEAT, WHEEL_FROM, WHEEL_ITEMS, WHEEL_STEP } from "./stations";
 import { wheelEnvelope, wheelItem, wheelPlace, wheelTransform, type WheelItem } from "./wheel";
 
 const item = (): WheelItem => ({ y: 0, z: 0, scale: 1, rotX: 0, opacity: 0 });
@@ -51,7 +51,8 @@ describe("the text wheel", () => {
 
   it("hides the whole wheel before the dragon arrives and after it has left", () => {
     expect(wheelEnvelope(0.2)).toBe(0);
-    expect(wheelEnvelope(WHEEL_FROM + 0.5)).toBe(1);
+    expect(wheelEnvelope(WHEEL_FROM)).toBe(1);
+    expect(wheelEnvelope(BEAT.leave)).toBe(1);
     expect(wheelEnvelope(BEAT.launch)).toBe(0);
   });
 });

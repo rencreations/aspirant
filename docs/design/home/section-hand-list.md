@@ -1,5 +1,7 @@
 # Home sections: the hand and the list (workstream S4a)
 
+> Round two (19 Nov): the scenes are plays now and the lengths, thresholds and backdrops changed. Read `round2-R-B.md` first; the beat table of section 2 below is the old scroll linked one (see `sections/hand/stations.ts` and `timeline.ts`). `Carry.apply(t, frame, withDoll)` is now only the end of the list; the sections call `Carry.drive(t, ts, u, frame, withDoll)`.
+
 Selena's hand with the doll (`hand`, 17.9 to 21.3) and oryzo's character list (`list`, 21.3 to 29.9), written as one choreography. Request: "Hand section" and "Characters list" of `docs/superpowers/specs/2026-11-18-home-page-request.md`; reference: `docs/design/home-reference/ref-oryzo.md` (sections 5 to 9). Code: `apps/web/src/features/home/sections/hand/` and `sections/list/`. Probe: `node scripts/qa/probes/home-s4a.cjs <out>`.
 
 ## 1. The one rule: two runtimes, one carry

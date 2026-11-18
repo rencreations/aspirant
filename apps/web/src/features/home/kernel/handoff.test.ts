@@ -77,11 +77,17 @@ describe("holdScroll", () => {
     expect(holdScroll()).not.toBe(release);
   });
 
-  it("takes a limit from the caller", () => {
-    const lock = vi.fn((_limitMs?: number) => () => undefined);
+  it("lets go after the limit the caller gave (each hold has its own timer; see hold.test.ts)", () => {
+    vi.useFakeTimers();
+    const release = vi.fn();
+    const lock = vi.fn((_limitMs?: number) => release);
     const unbind = bindHold(lock);
     holdScroll(5000);
-    expect(lock).toHaveBeenCalledWith(5000);
+    vi.advanceTimersByTime(4999);
+    expect(release).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(2);
+    expect(release).toHaveBeenCalledTimes(1);
     unbind();
+    vi.useRealTimers();
   });
 });

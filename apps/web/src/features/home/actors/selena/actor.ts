@@ -11,17 +11,13 @@
  */
 import {
   Box3,
-  DoubleSide,
   Float32BufferAttribute,
   Group,
-  MeshBasicMaterial,
   Object3D,
   PerspectiveCamera,
   Plane,
   Vector3,
   type BufferGeometry,
-  type Material,
-  type MeshToonMaterial,
   type SkinnedMesh,
   type Texture,
   type WebGLRenderer,
@@ -30,6 +26,7 @@ import {
 import { PIXEL_DISTANCE } from "../../kernel/stage";
 import type { Actor, FrameInfo, HitTarget } from "../../kernel/types";
 import type { Cast } from "../shared/cast";
+import { toonify, type ToonPick, type ToonSet } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 
 import {
@@ -46,7 +43,6 @@ import {
   CLIP,
   DOLL_ANCHOR,
   FADE,
-  LOOK_RECIPE,
   POSE_FIT,
   REF_HEIGHT,
   fingerBones,
@@ -67,9 +63,7 @@ import {
 import { frameFor, inside, worldPoint, worldScale, type PlaceInput, type Rect } from "./framing";
 import { capsuleHit } from "./hit";
 import { emptyGaze, gazeAngles, splitGaze } from "./look";
-import { makeInk, makeShared, makeToon, type Ink, type ToonShared } from "./material";
 import { Spring, clamp } from "./motion";
-import { outlineUnits } from "./outline";
 import { SpringBones, emptyEnv, type SpringEnv } from "./physics";
 import { ClipPlayer, type ClipName, type PlayOptions, type PlayerPose } from "./player";
 import { POINT, pointSpecs } from "./points";
@@ -174,11 +168,9 @@ export class SelenaActor implements Actor {
   private readonly fingerAxis = new Float32Array(30 * 3);
   private readonly env: SpringEnv = emptyEnv();
 
-  private readonly shared: ToonShared;
-  private readonly inks: Ink[] = [];
-  private readonly toons: MeshToonMaterial[] = [];
-  private readonly materials: Material[] = [];
-  private readonly textures = new Set<Texture>();
+  /** Her toon materials, their ink and her pictures (`actors/shared/toon.ts`). */
+  private readonly toon: ToonSet;
+  private readonly textures: Set<Texture>;
   private readonly geometries = new Set<BufferGeometry>();
   private readonly planes = [new Plane(), new Plane(), new Plane(), new Plane()];
   private readonly morphIndex: Int16Array;
@@ -269,16 +261,12 @@ export class SelenaActor implements Actor {
     this.head = rig.meshes.head;
     this.morphIndex = new Int16Array(MORPH_NAMES.length).fill(-1);
     this.splitBlink(this.head);
-    this.shared = makeShared(1);
-    this.dress(rig);
+    const aniso = Math.min(8, ctx.stage.renderer.capabilities.getMaxAnisotropy());
+    this.toon = this.dress(rig, aniso);
+    this.textures = this.toon.textures;
     MORPH_NAMES.forEach((name, i) => {
       this.morphIndex[i] = this.head.morphTargetDictionary?.[name] ?? -1;
     });
-
-    const aniso = Math.min(8, ctx.stage.renderer.capabilities.getMaxAnisotropy());
-    for (const toon of this.toons) {
-      if (toon.map) toon.map.anisotropy = aniso;
-    }
 
     // Sockets: children of her own space, moved every frame onto the animated bones.
     this.sockets = {
@@ -659,11 +647,9 @@ export class SelenaActor implements Actor {
     for (const remove of this.removeHits) remove();
     this.removeHits.length = 0;
     this.object.removeFromParent();
-    for (const ink of this.inks) ink.mesh.removeFromParent();
-    for (const m of this.materials) m.dispose();
+    this.toon.dispose();
     for (const g of this.geometries) g.dispose();
     for (const t of this.textures) t.dispose();
-    this.shared.gradient.dispose();
   }
 
   // ------------------------------------------------------------------ pose
@@ -1010,61 +996,40 @@ export class SelenaActor implements Actor {
     set(this.planes[3]!, 0, -D, -yt);
   }
 
-  /** Keep the ink line about a pixel and a half wide whatever her size on the screen. */
+  /** The ink keeps its width in pixels whatever her size: it only needs her height on the screen. */
   private updateOutline(): void {
-    const pxPerMetre = (this.height / REF_HEIGHT) * (D / Math.max(1, D - this.pz));
-    const width = outlineUnits(
-      LOOK_RECIPE.outlinePx,
-      pxPerMetre,
-      1,
-      LOOK_RECIPE.outlineMin,
-      LOOK_RECIPE.outlineMax,
-    );
-    for (const ink of this.inks) ink.width.value = width;
+    this.toon.setHeight((this.height * D) / Math.max(1, D - this.pz));
   }
 
   // ------------------------------------------------------------------ build
 
-  /** Put the toon look, the ink and the draw order on every mesh. */
-  private dress(rig: Rig): void {
+  /**
+   * Put the toon look and the ink on every mesh (`toonify`): skin warm on the face, hair with a
+   * crisp highlight, the armour and claws as metal, the eyes unlit. The alpha cards of the fringe
+   * have no ink (a line along a card's edge is a box) and write depth, drawn after the head.
+   */
+  private dress(rig: Rig, anisotropy: number): ToonSet {
     const { head, eye, hair01, hair02, body } = rig.meshes;
     for (const mesh of rig.meshes.all) {
       mesh.frustumCulled = false;
-      const source = standardOf(mesh);
-      if (source.map) this.textures.add(source.map);
       this.geometries.add(mesh.geometry);
     }
-    const toon = (mesh: SkinnedMesh, alpha: boolean): void => {
-      const made = makeToon(standardOf(mesh), this.shared, { alpha }, 1);
-      made.clippingPlanes = this.planes;
-      this.toons.push(made);
-      this.materials.push(made);
-      mesh.material = made;
-    };
-    const ink = (mesh: SkinnedMesh): void => {
-      const made = makeInk(mesh, mesh.geometry);
-      const material = made.mesh.material as Material;
-      material.clippingPlanes = this.planes;
-      this.materials.push(material);
-      mesh.parent?.add(made.mesh);
-      this.inks.push(made);
-    };
-    for (const mesh of [head, hair02, ...body]) {
-      toon(mesh, false);
-      ink(mesh);
-    }
-    toon(hair01, true);
+    const fringe = standardOf(hair01);
+    fringe.alphaTest = 0.02;
+    fringe.depthWrite = true;
     hair01.renderOrder = 1;
-    // The eyes are painted bright: they take no light.
-    const eyeSource = standardOf(eye);
-    const basic = new MeshBasicMaterial({
-      map: eyeSource.map,
-      color: eyeSource.color,
-      side: DoubleSide,
+    const looks = new Map<SkinnedMesh, ToonPick>([
+      [head, { look: "skin" }],
+      [hair01, { look: "hair", ink: "card" }],
+      [hair02, { look: "hair", inkWeight: 0.6 }],
+      [eye, { unlit: true }],
+      ...body.map((mesh): [SkinnedMesh, ToonPick] => [mesh, { look: "default" }]),
+    ]);
+    return toonify(rig.scene, {
+      pick: (mesh) => looks.get(mesh as SkinnedMesh),
       clippingPlanes: this.planes,
+      anisotropy,
     });
-    this.materials.push(basic);
-    eye.material = basic;
   }
 
   /** Make a left and a right blink out of the one the file has, so she can wink. */

@@ -3,6 +3,7 @@
  * DOM, no three. Everything the runner, the ground and the probes need to know about position is
  * computed here from the registry, so a section that changes its length moves every later one.
  */
+import { validatePlays } from "./plays";
 import type { HomeSection, SectionId } from "./types";
 
 /** A section placed on the scroll. All numbers are in screens. */
@@ -36,6 +37,7 @@ export function layoutSections(defs: readonly HomeSection[]): Layout {
     if (def.dom === "flow" && index !== defs.length - 1) {
       throw new Error(`section ${def.id}: only the last section may be "flow"`);
     }
+    if (def.plays) validatePlays(def.id, def.plays);
     const start = at;
     at += def.screens;
     return {
@@ -54,6 +56,14 @@ export function layoutSections(defs: readonly HomeSection[]): Layout {
 /** 0 at the start of the section, 1 at its end. Outside the section it runs on, unclamped. */
 export function localOf(p: Placed, S: number): number {
   return (S - p.start) / p.def.screens;
+}
+
+/**
+ * The lowest `local` the scroll can reach while the section runs: the start of its lead, or the top
+ * of the page for the first section. A play's threshold is kept above it so it can be crossed back.
+ */
+export function floorOf(p: Placed): number {
+  return (Math.max(p.from, 0) - p.start) / p.def.screens;
 }
 
 /** True while the section runs: from its lead to the end of its tail. */

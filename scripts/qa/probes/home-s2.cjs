@@ -25,8 +25,9 @@ const ROWS = (process.env.ROWS || "-0.2,0,0.7,1.1,1.4,1.7,2.1,2.4").split(",").m
 const STRIP = (process.env.STRIP || "0,0.3,0.7,1.1,1.4,1.8,2.1,2.4,2.9,3.4,3.7")
   .split(",")
   .map(Number);
-const ROWS_START = 5.8;
-const STRIP_START = 8.2;
+// Where the sections start is the registry's: read from the page (`__home.sections()`) once it is open.
+let ROWS_START = 0;
+let STRIP_START = 0;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const checks = [];
@@ -49,6 +50,11 @@ async function openHome(browser, [w, h], extra = {}) {
     timeout: 240000,
   });
   await page.addStyleTag({ content: "nextjs-portal{display:none !important}" });
+  const starts = await page.evaluate(() =>
+    Object.fromEntries(window.__home.sections().map((s) => [s.id, s.start])),
+  );
+  ROWS_START = starts.rows;
+  STRIP_START = starts.strip;
   await sleep(2600);
   return { ctx, page, errors };
 }

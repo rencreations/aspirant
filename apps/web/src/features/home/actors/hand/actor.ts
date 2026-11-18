@@ -13,6 +13,7 @@
 import {
   AnimationClip,
   AnimationMixer,
+  Float32BufferAttribute,
   Group,
   Matrix4,
   Object3D,
@@ -30,16 +31,18 @@ import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import type { Cast } from "../shared/cast";
 import { forgetGltf } from "../shared/gltf";
+import { addInk, type Ink, type InkMaterial, type ToonMaterial } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 import type { Actor, FrameInfo } from "../../kernel/types";
 
+import { clawWeight } from "./claws";
 import {
   BONE,
   BREATH_SECONDS,
   CLIP,
+  LOOK,
   FINGER_HIT_RADIUS,
   HAND_MODEL,
-  LOOK,
   PALM,
   REACH_SECONDS,
 } from "./constants";
@@ -61,14 +64,7 @@ import {
   type FingerName,
 } from "./fingers";
 import { handHit, makeShape } from "./hit";
-import {
-  makeGlove,
-  makeInk,
-  makeUniforms,
-  type Glove,
-  type Ink,
-  type LookUniforms,
-} from "./material";
+import { makeGlove, makeInk, makeUniforms, type LookUniforms } from "./material";
 import { Spring, approach, clamp, smoothstep } from "./motion";
 import {
   depthScale,
@@ -106,9 +102,6 @@ const GRIP_MAX = 1.2;
 const RIPPLE_SECONDS = 1.1;
 /** A frame this long after the last one means the actor was hidden: its springs start from rest. */
 const GAP_FRAMES = 6;
-/** The ink's width in pixels is turned into mesh units by the world scale. */
-const INK_MIN = 0.0002;
-
 /** The flat rest of a spread, positive toward the thumb: `SPREAD_SIGN` turns the maths into the model's axis. */
 const SPREAD_SIGN = 1;
 
@@ -142,8 +135,10 @@ export class HandActor implements Actor {
 
   private readonly model: Object3D;
   private readonly mesh: SkinnedMesh;
-  private readonly ink: Ink;
-  private readonly glove: Glove;
+  /** The ink's material (shared toon one with the fade) and the hull that wears it. */
+  private readonly ink: InkMaterial;
+  private readonly hull: Ink;
+  private readonly glove: ToonMaterial;
   private readonly uniforms: LookUniforms;
   private readonly mixer: AnimationMixer;
   private readonly reachAction: AnimationAction;
@@ -232,12 +227,16 @@ export class HandActor implements Actor {
 
     this.uniforms = makeUniforms();
     const anisotropy = Math.min(8, ctx.stage.renderer.capabilities.getMaxAnisotropy());
-    this.glove = makeGlove(mesh.material as MeshStandardMaterial, this.uniforms, anisotropy);
-    mesh.material = this.glove.material;
+    const source = mesh.material as MeshStandardMaterial;
+    this.glove = makeGlove(source, this.uniforms, anisotropy);
+    mesh.material = this.glove;
     mesh.renderOrder = 1;
-    this.ink = makeInk(mesh, mesh.geometry, this.uniforms);
-    this.ink.mesh.renderOrder = 0;
-    (mesh.parent ?? this.model).add(this.ink.mesh);
+    this.ink = makeInk(this.uniforms);
+    this.hull = addInk(mesh, this.ink);
+    // The glove draws first, then the ink behind it: a hull drawn first wins the depth test over a
+    // thin claw (looked at: the claws came out all ink), drawn after it only fills what is free.
+    this.hull.mesh.renderOrder = 2;
+    source.dispose();
 
     // The bones.
     const bone = (name: string): Bone => {
@@ -415,7 +414,7 @@ export class HandActor implements Actor {
     this.object.position.set(0, 1e6, 0);
     this.object.visible = true;
     try {
-      const map = this.glove.material.map;
+      const map = this.glove.map;
       if (map) renderer.initTexture(map);
       await renderer.compileAsync(this.object, camera);
     } catch {
@@ -457,6 +456,7 @@ export class HandActor implements Actor {
       }
     }
     const world = new Vector3();
+    const claw = new Float32Array(count);
     for (let f = 0; f < FINGER_COUNT; f += 1) {
       const rig = this.fingers[f]!;
       const set = new Set(rig.bones.map((b) => index.get(b)!));
@@ -474,6 +474,14 @@ export class HandActor implements Actor {
           tip.copy(world);
         }
       }
+      // The claw: the part of the fingertip bone far out along the finger (`claws.ts`).
+      const tipBone = index.get(rig.bones[2])!;
+      for (let v = 0; v < count; v += 1) {
+        if (owner[v] !== tipBone) continue;
+        this.mesh.getVertexPosition(v, world).applyMatrix4(this.mesh.matrixWorld);
+        const out = world.sub(head2).dot(dir);
+        claw[v] = clawWeight(out, farthest, LOOK.clawFrom, LOOK.clawTo);
+      }
       this.restTips[f * 3] = tip.x;
       this.restTips[f * 3 + 1] = tip.y;
       this.restTips[f * 3 + 2] = tip.z;
@@ -484,6 +492,8 @@ export class HandActor implements Actor {
       rig.bones[2].add(socket);
       this.sockets.set(rig.name, socket);
     }
+
+    this.mesh.geometry.setAttribute("aClaw", new Float32BufferAttribute(claw, 1));
 
     // The palm: its frame in the hand bone, from the surface offset and the normal of the notes.
     this.handBone.updateWorldMatrix(true, false);
@@ -648,7 +658,8 @@ export class HandActor implements Actor {
     this.placeStand();
     this.readScreen();
     this.fillShape();
-    this.ink.width.value = Math.max(INK_MIN, LOOK.inkPx / (this.k * depthScale(this.pz)));
+    // The line keeps its width on the screen: it only needs the hand's height there.
+    this.ink.setSize(height * this.pscale);
 
     const ms = performance.now() - t0;
     this.stats.updateMs = ms;
@@ -758,10 +769,10 @@ export class HandActor implements Actor {
     const dispose = (m: Material | Material[]): void => {
       for (const one of Array.isArray(m) ? m : [m]) one.dispose();
     };
-    const map = this.glove.material.map;
-    dispose(this.glove.material);
-    dispose(this.ink.material);
-    this.glove.gradient.dispose();
+    const map = this.glove.map;
+    this.hull.remove();
+    dispose(this.glove);
+    dispose(this.ink);
     map?.dispose();
     forgetGltf(HAND_MODEL);
     this.cast.pass.scene.remove(this.object);

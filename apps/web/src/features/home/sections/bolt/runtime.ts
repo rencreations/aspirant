@@ -1,42 +1,42 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
+import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionScreens } from "../../kernel/where";
 
-import { BOLT_SCREENS } from "./journey";
+import { newBackdropPlan, planBackdrop } from "./backdrop-plan";
 import { BoltScene } from "./scene";
+import { BOLT_LAST } from "./stations";
 import { wheelEnvelope, wheelItem, wheelPlace, wheelTransform, type WheelItem } from "./wheel";
 
-const smooth = (v: number): number => {
-  const x = Math.min(1, Math.max(0, v));
-  return x * x * (3 - 2 * x);
-};
-
 /**
- * The bolt section: Silverbolt flies in from the lower right with the doll on its head, hovers in the
- * middle while the five pair names turn on the wheel, and leaves toward the upper left. The scene is
- * shared with the fall (`scene.ts`); this runtime adds the DOM of the section: the wheel and the bloom.
+ * The bolt section: Silverbolt flies in from the lower right with the doll on its head and hovers in
+ * the middle while the five pair names turn on the wheel, one pair for each play. The scene is shared
+ * with the fall (`scene.ts`); this runtime adds the wheel and the live backdrop (a green aurora). It
+ * runs on beat time: the plays of `stations.ts` move it on a clock, the lead goes with the scroll.
  */
 class BoltRuntime implements SectionRuntime {
   private readonly scene: BoltScene;
   private readonly items: HTMLElement[];
-  private readonly tint: HTMLElement | null;
-  private readonly glow: HTMLElement | null;
-  private readonly band: HTMLElement | null;
   private readonly item: WheelItem = { y: 0, z: 0, scale: 1, rotX: 0, opacity: 0 };
+  private readonly plan = newBackdropPlan();
 
-  constructor(ctx: SectionCtx) {
+  constructor(
+    ctx: SectionCtx,
+    private readonly backdrop: Backdrop | null,
+  ) {
     this.scene = BoltScene.acquire(ctx);
     this.items = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-bolt-item]"));
-    this.tint = ctx.dom.below.querySelector<HTMLElement>("[data-bolt-tint]");
-    this.glow = ctx.dom.below.querySelector<HTMLElement>("[data-bolt-glow]");
-    this.band = ctx.dom.below.querySelector<HTMLElement>("[data-bolt-band]");
   }
 
-  update(local: number, frame: FrameInfo): void {
-    const t = local * BOLT_SCREENS;
+  update(v: number, frame: FrameInfo): void {
+    // The tail is nothing: the fall takes the scene over at the last station.
+    const t = Math.min(BOLT_LAST, beatFor(v, 0, BOLT_LAST, sectionScreens("bolt")));
     this.scene.update(t, frame);
     this.wheel(t);
-    this.bloom(t);
+    const plan = planBackdrop(t, this.plan);
+    this.backdrop?.set(plan.kind, plan.options);
   }
 
   enter(): void {
@@ -57,31 +57,17 @@ class BoltRuntime implements SectionRuntime {
     }
   }
 
-  /**
-   * The ground turns dark green-black as the dragon comes in (over the storm ground, so no ground
-   * crosses another), and a green bloom rises from below; both sink when the dragon has gone.
-   */
-  private bloom(t: number): void {
-    put(this.tint, "opacity", (smooth((t + 0.5) / 0.8) * (1 - smooth((t - 3.3) / 1.1))).toFixed(3));
-    const b = smooth((t + 0.4) / 1.6) * (1 - smooth((t - 3.2) / 1.2));
-    put(this.glow, "opacity", b.toFixed(3));
-    put(this.glow, "transform", `translate3d(0, ${((1 - b) * 35).toFixed(2)}%, 0)`);
-    put(this.band, "opacity", (b * 0.9).toFixed(3));
-  }
-
   dispose(): void {
     for (const el of this.items) {
       el.style.removeProperty("transform");
       el.style.removeProperty("opacity");
     }
-    this.tint?.style.removeProperty("opacity");
-    this.glow?.style.removeProperty("opacity");
-    this.glow?.style.removeProperty("transform");
-    this.band?.style.removeProperty("opacity");
     this.scene.release();
   }
 }
 
-export function createRuntime(ctx: SectionCtx): SectionRuntime {
-  return new BoltRuntime(ctx);
+export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
+  // The backdrop never throws: with no WebGL it is a no-op and the plain ground stays.
+  const backdrop = await ensureBackdrop(ctx).catch(() => null);
+  return new BoltRuntime(ctx, backdrop);
 }

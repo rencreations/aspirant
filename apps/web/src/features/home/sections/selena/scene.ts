@@ -25,7 +25,7 @@ import type { MarkEvent } from "../../actors/silverbolt/marks";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
 import type { Carry } from "../hand/carry";
-import { HAND_SCREENS, LIST_SCREENS, isPortrait } from "../hand/timeline";
+import { handScreens, isPortrait, listScreens } from "../hand/timeline";
 import { dollHang, selenaEnd, type DollHang, type Placement } from "../list/selena-frame";
 
 import { blendLens, newLens, pixelFov, type BakedLens } from "./camera-blend";
@@ -199,7 +199,7 @@ export class SelenaScene {
     if (b.doll <= 0) {
       // The room: the doll hangs from the top, the list's last state (the carry is the list's own
       // choreography, so this is the same picture at the joint). It needs neither Selena nor the dragon.
-      if (doll) this.carry?.apply(HAND_SCREENS + LIST_SCREENS, frame, true);
+      if (doll) this.carry?.apply(handScreens() + listScreens(), frame, true);
     } else if (sl && doll) {
       this.dollStep(sl, sb, doll, b, frame);
     }

@@ -7,16 +7,21 @@
  * `local` 1 they stand in the two bottom corners (J10) and the list has faded.
  */
 
+import { REST_V } from "./stations";
+
 export const ramp = (v: number, a: number, b: number): number =>
   Math.min(1, Math.max(0, (v - a) / (b - a)));
 
 export const smooth = (u: number): number => u * u * (3 - 2 * u);
 
-/** The art arrives and the list fills in over this stretch of the section. */
+/**
+ * `local` is the plays' value (`stations.ts`): the art arrives and the list fills in over this
+ * stretch, and everything stands from `REST_V` until the leave starts.
+ */
 const IN_FROM = 0.015;
 const IN_TO = 0.2;
 /** The list fades and the art leaves over this stretch. */
-export const OUT_FROM = 0.84;
+export const OUT_FROM = REST_V + 0.04;
 const OUT_TO = 1;
 
 /** How far each stagger step waits, as a fraction of the `IN_TO - IN_FROM` stretch. */

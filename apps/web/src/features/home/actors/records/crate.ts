@@ -1,21 +1,26 @@
 /**
- * The record crate: an open wooden box with a low front, built in code (rounded boards with a wood
- * grain drawn on a canvas, and a brass plate), and the places a drone's glove can take it by.
- * Metres, X along the crate, Y up from the ground, Z toward the viewer.
+ * The record crate: an open wooden box with a low front, built in code (rounded boards with a
+ * crisp wood grain drawn on a canvas, and a brass plate), and the places a drone's glove can take it
+ * by. Metres, X along the crate, Y up from the ground, Z toward the viewer.
+ *
+ * It is drawn in the anime look of the shared toon system (`../shared/toon.ts`), with the same
+ * wood and brass as the gramophone's cabinet and horn (`../gramophone/look.ts`): flat warm brown
+ * with a lighter step where the key light reaches, orange brown brass, and an ink line round every
+ * board. The grain is a few long dark strokes, not noise.
  */
 import {
   CanvasTexture,
-  Color,
   Group,
   Mesh,
-  MeshStandardMaterial,
   Object3D,
   RepeatWrapping,
   SRGBColorSpace,
   type BufferGeometry,
-  type Texture,
 } from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+
+import { BRASS, WOOD } from "../gramophone/look";
+import { addInk, ToonMaterial, type Ink, type InkMaterial } from "../shared/toon";
 
 import { crateDims, type CrateDims } from "./layout";
 
@@ -30,7 +35,7 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-/** A plank's grain: warm brown with long wavy dark lines and a few knots. */
+/** A plank's grain: flat warm brown with a few long, gently wavy dark strokes and two knots. */
 function woodTexture(): CanvasTexture {
   const w = 512;
   const h = 256;
@@ -40,19 +45,16 @@ function woodTexture(): CanvasTexture {
   const g = canvas.getContext("2d");
   if (g) {
     const rand = mulberry32(7);
-    const base = g.createLinearGradient(0, 0, 0, h);
-    base.addColorStop(0, "#8a5d3a");
-    base.addColorStop(0.5, "#7b5232");
-    base.addColorStop(1, "#8f6340");
-    g.fillStyle = base;
+    g.fillStyle = "#9b6b47";
     g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 70; i++) {
-      const y = rand() * h;
-      const amp = 1 + rand() * 3;
+    // A few long strokes, each a clean line: the grain of a drawn plank.
+    for (let i = 0; i < 9; i++) {
+      const y = (i + 0.5 + (rand() - 0.5) * 0.5) * (h / 9);
+      const amp = 1 + rand() * 2.5;
       const phase = rand() * 6.28;
-      const freq = 0.004 + rand() * 0.01;
-      g.strokeStyle = `rgba(${40 + rand() * 30},${22 + rand() * 18},${10},${0.08 + rand() * 0.18})`;
-      g.lineWidth = 0.6 + rand() * 1.6;
+      const freq = 0.005 + rand() * 0.006;
+      g.strokeStyle = `rgba(88,50,30,${0.22 + rand() * 0.16})`;
+      g.lineWidth = 2.4 + rand() * 2;
       g.beginPath();
       for (let x = 0; x <= w; x += 8) {
         const yy = y + Math.sin(x * freq + phase) * amp;
@@ -61,12 +63,12 @@ function woodTexture(): CanvasTexture {
       }
       g.stroke();
     }
-    for (let i = 0; i < 3; i++) {
-      const x = rand() * w;
-      const y = rand() * h;
-      for (let r = 14; r > 2; r -= 3) {
-        g.strokeStyle = `rgba(45,25,12,${0.1 + (14 - r) * 0.02})`;
-        g.lineWidth = 1.2;
+    for (let i = 0; i < 2; i++) {
+      const x = 80 + rand() * (w - 160);
+      const y = 40 + rand() * (h - 80);
+      for (let r = 12; r > 3; r -= 4) {
+        g.strokeStyle = "rgba(88,50,30,0.5)";
+        g.lineWidth = 1.8;
         g.beginPath();
         g.ellipse(x, y, r * 2.2, r, 0, 0, Math.PI * 2);
         g.stroke();
@@ -90,27 +92,26 @@ export interface Crate {
   dispose(): void;
 }
 
-/** Build the crate for `n` sleeves. `env` is the cast's environment. */
-export function createCrate(n: number, env: Texture): Crate {
+/** Build the crate for `n` sleeves. `ink` is the actor's one hull material (every board wears it). */
+export function createCrate(n: number, ink: InkMaterial): Crate {
   const dims = crateDims(n);
   const group = new Group();
   group.name = "crate";
   const geometries: BufferGeometry[] = [];
+  const hulls: Ink[] = [];
   const grain = woodTexture();
-  const wood = new MeshStandardMaterial({
+  const wood = new ToonMaterial({
     map: grain,
-    roughness: 0.62,
-    metalness: 0,
-    envMap: env,
-    envMapIntensity: 0.55,
+    look: "default",
+    tune: { ...WOOD, lit: [1.1, 1.04, 0.98], sat: 1.05 },
+    name: "crate-wood",
   });
-  wood.color = new Color(0xd9c3ad);
-  const brass = new MeshStandardMaterial({
+  // A flat plate: no glint (one normal over the whole face would turn all of it white at an angle).
+  const brass = new ToonMaterial({
     color: 0xd8a23c,
-    roughness: 0.3,
-    metalness: 0.9,
-    envMap: env,
-    envMapIntensity: 0.9,
+    look: "metal",
+    tune: { ...BRASS, glint: 0 },
+    name: "crate-brass",
   });
 
   const board = (
@@ -120,7 +121,7 @@ export function createCrate(n: number, env: Texture): Crate {
     x: number,
     y: number,
     z: number,
-    material: MeshStandardMaterial = wood,
+    material: ToonMaterial = wood,
     radius = 0.006,
   ): Mesh => {
     const geometry = new RoundedBoxGeometry(w, h, d, 2, Math.min(radius, w / 2, h / 2, d / 2));
@@ -128,6 +129,7 @@ export function createCrate(n: number, env: Texture): Crate {
     const mesh = new Mesh(geometry, material);
     mesh.position.set(x, y, z);
     group.add(mesh);
+    hulls.push(addInk(mesh, ink));
     return mesh;
   };
 
@@ -160,6 +162,7 @@ export function createCrate(n: number, env: Texture): Crate {
     dims,
     sockets,
     dispose() {
+      for (const hull of hulls) hull.remove();
       for (const g of geometries) g.dispose();
       wood.dispose();
       brass.dispose();

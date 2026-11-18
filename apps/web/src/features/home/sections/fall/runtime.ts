@@ -1,8 +1,12 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
+import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
-import { BOLT_SCREENS, FALL_SCREENS } from "../bolt/journey";
+import { sectionEnd, sectionScreens } from "../../kernel/where";
+import { newBackdropPlan, planBackdrop } from "../bolt/backdrop-plan";
 import { BoltScene } from "../bolt/scene";
+import { BEAT, BOLT_LAST } from "../bolt/stations";
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 const smooth = (v: number): number => {
@@ -11,36 +15,56 @@ const smooth = (v: number): number => {
 };
 const easeOut = (v: number): number => 1 - Math.pow(1 - clamp01(v), 3);
 
-/** When each line arrives and leaves, in the section's local 0 to 1: [in from, in to, out from, out to]. */
-const TIMES = [
-  [0.1, 0.23, 0.4, 0.5],
-  [0.47, 0.6, 0.86, 0.97],
+/**
+ * When each line arrives, in beat time: [in from, in to]. "5 Phases" leaves again at `PHASES_OUT`;
+ * "10 Characters" stays at the rest and leaves with the scroll, in the screens before the section's
+ * end (the hand's fingertips come up there): `CHARACTERS_OUT` is [from, to] in screens past that end.
+ */
+const IN = [
+  [4.25, 4.6],
+  [5.25, 5.65],
 ] as const;
+const PHASES_OUT = [5.1, 5.4] as const;
+const CHARACTERS_OUT = [-0.45, -0.1] as const;
 
 /**
  * The fall: the doll is thrown off the dragon's head and falls with a camera that follows and zooms
- * (the scene is shared with the bolt section), and two big lines come in one after the other on each
- * side of her. "5 Phases" slides in from both edges and leaves to them; "10 Characters" rises from
- * below, as if left behind by the fall, and leaves upward. Transform and opacity only.
+ * (the scene is shared with the bolt section), one play of about three seconds, and two big lines come
+ * in one after the other on each side of her. "5 Phases" slides in from both edges and leaves to them;
+ * "10 Characters" rises from below, as if left behind by the fall, and stands. It leaves upward as the
+ * page goes on to the hand. Transform and opacity only.
  */
 class FallRuntime implements SectionRuntime {
   private readonly scene: BoltScene;
   private readonly lefts: HTMLElement[];
   private readonly rights: HTMLElement[];
+  private readonly plan = newBackdropPlan();
 
-  constructor(ctx: SectionCtx) {
+  constructor(
+    ctx: SectionCtx,
+    private readonly backdrop: Backdrop | null,
+  ) {
     this.scene = BoltScene.acquire(ctx);
     this.lefts = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-fall-left]"));
     this.rights = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-fall-right]"));
   }
 
-  update(local: number, frame: FrameInfo): void {
-    this.scene.update(BOLT_SCREENS + local * FALL_SCREENS, frame);
+  update(v: number, frame: FrameInfo): void {
+    // The lead rests on the bolt's last station: both sections draw the same moment there.
+    const t = Math.max(BOLT_LAST, beatFor(v, BOLT_LAST, BEAT.end, sectionScreens("fall")));
+    this.scene.update(t, frame);
+    const plan = planBackdrop(t, this.plan);
+    this.backdrop?.set(plan.kind, plan.options);
+    const ts = frame.S - sectionEnd("fall");
     for (let i = 0; i < this.lefts.length; i += 1) {
-      const [a, b, c, d] = TIMES[Math.min(i, TIMES.length - 1)]!;
-      // The right half comes a little after the left one and leaves a little after it.
-      this.piece(this.lefts[i], i, -1, local, a, b, c, d);
-      this.piece(this.rights[i], i, 1, local, a + 0.02, b + 0.02, c + 0.015, d + 0.015);
+      const [a, b] = IN[Math.min(i, IN.length - 1)]!;
+      // The right half comes a little after the left one.
+      const out0 = i === 0 ? smooth((t - PHASES_OUT[0]) / (PHASES_OUT[1] - PHASES_OUT[0])) : 0;
+      const out1 =
+        i === 0 ? 0 : smooth((ts - CHARACTERS_OUT[0]) / (CHARACTERS_OUT[1] - CHARACTERS_OUT[0]));
+      const out = i === 0 ? out0 : out1;
+      this.piece(this.lefts[i], i, -1, easeOut((t - a) / (b - a)), out);
+      this.piece(this.rights[i], i, 1, easeOut((t - a - 0.06) / (b - a)), out);
     }
   }
 
@@ -49,15 +73,10 @@ class FallRuntime implements SectionRuntime {
     el: HTMLElement | undefined,
     line: number,
     side: -1 | 1,
-    local: number,
-    a: number,
-    b: number,
-    c: number,
-    d: number,
+    inn: number,
+    out: number,
   ): void {
     if (!el) return;
-    const inn = easeOut((local - a) / (b - a));
-    const out = smooth((local - c) / (d - c));
     const opacity = inn * (1 - out);
     let x: number;
     let y: number;
@@ -89,6 +108,7 @@ class FallRuntime implements SectionRuntime {
   }
 }
 
-export function createRuntime(ctx: SectionCtx): SectionRuntime {
-  return new FallRuntime(ctx);
+export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
+  const backdrop = await ensureBackdrop(ctx).catch(() => null);
+  return new FallRuntime(ctx, backdrop);
 }

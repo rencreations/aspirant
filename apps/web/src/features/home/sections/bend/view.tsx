@@ -7,6 +7,7 @@ import { Pill } from "../../ui";
 import type { SectionMarkup } from "../../kernel/types";
 
 import styles from "./bend.module.css";
+import { restScreens } from "./plays";
 import { FAN_PICS } from "./pictures";
 
 /**
@@ -20,7 +21,7 @@ export function view(): SectionMarkup {
   return {
     text: (
       <>
-        <div className={styles.group} data-bend="fan">
+        <div className={styles.group} data-bend="fan" data-home-focus-at={restScreens(1)}>
           <h2 className={`${home.title} ${styles.title}`}>{BEND.title}</h2>
           <div className={`${home.actions} ${styles.actions}`}>
             <Pill href={BEND.fanart.href} label="Fan art">
@@ -29,11 +30,16 @@ export function view(): SectionMarkup {
           </div>
         </div>
         {FAN_PICS.some((pic) => pic.canon !== "official") ? (
-          <p className={styles.notice} data-bend="notice">
+          <p className={styles.notice} data-bend="notice" data-home-focus-at={restScreens(1)}>
             <ReportLink item={{ title: "Fan art on the home page" }} />
           </p>
         ) : null}
-        <ul className={styles.plates} data-bend="plates" aria-label="The fan art and its credits">
+        <ul
+          className={styles.plates}
+          data-bend="plates"
+          data-home-focus-at={restScreens(1)}
+          aria-label="The fan art and its credits"
+        >
           {FAN_PICS.map((pic, i) => (
             <li className={styles.plate} key={pic.id} data-bend-plate={i}>
               <CanonBadge canon={pic.canon} />
@@ -49,7 +55,11 @@ export function view(): SectionMarkup {
             </li>
           ))}
         </ul>
-        <div className={`${styles.group} ${styles.groupTop}`} data-bend="art">
+        <div
+          className={`${styles.group} ${styles.groupTop}`}
+          data-bend="art"
+          data-home-focus-at={restScreens(2)}
+        >
           <h2 className={`${home.title} ${styles.title}`}>{BEND.artworkTitle}</h2>
           <div className={`${home.actions} ${styles.actions}`}>
             <Pill href={BEND.artwork.href} label="Arts">

@@ -251,11 +251,11 @@ export function rankFromTop(i: number, vp: Vp): number {
 }
 
 /** How long one poster's flight takes, in screens. */
-export const FLIGHT = 0.55;
+export const FLIGHT = 0.5;
 
 /** The screen at which poster `i` leaves for its wall slot. */
 export function arriveAt(i: number, vp: Vp): number {
-  return T.bendFrom + waveOf(i, vp) * T.wave + orderInWave(i, vp) * 0.045;
+  return T.bendFrom + waveOf(i, vp) * T.wave + orderInWave(i, vp) * 0.04;
 }
 
 /**
@@ -348,7 +348,7 @@ export function ringPose(k: number, n: number, turn: number, vp: Vp, out: CardPo
 
 /** The ring's turn at `s` screens from the start of the section: a turn of the page, no idle (the runtime adds it). */
 export function ringTurn(s: number): number {
-  return 0.9 * (s - T.gatherFrom) + 1.2 * ramp(s, T.outFrom - 0.2, T.outTo);
+  return 1.3 * (s - T.gatherFrom) + 1.2 * ramp(s, T.outFrom - 0.2, T.outTo);
 }
 
 /** The screen at which ring card `k` leaves the wall for the ring: the highest poster first. */

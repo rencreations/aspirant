@@ -3,6 +3,7 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 import { ensureDoll } from "../../actors/doll";
 import { ensureSelena } from "../../actors/selena";
 import { ensureSilverbolt } from "../../actors/silverbolt";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { ensureMarks } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { ensureCarry } from "../hand/carry";
@@ -10,9 +11,17 @@ import { whenIdle } from "../hand/idle";
 import { isPortrait } from "../hand/timeline";
 
 import { SelenaScene } from "./scene";
-import { AT, SELENA_SCREENS, beatsAt, newBeats, seg, smooth, type Beats } from "./timeline";
+import { STORY } from "./stations";
+import { AT, WORD_IN, beatsAt, newBeats, seg, selenaScreens, smooth, type Beats } from "./timeline";
 
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
+
+/** Her colours for the aurora behind the room: the cyan of her wings, her violet, the pink of her hair. */
+const AURORA = ["#4fd8ff", "#8b6cff", "#ff5fb8", "#ffc46b"] as const;
+/** How strong the aurora is behind the room. The drawer's words stay readable over it. */
+const AURORA_AMOUNT = 1;
+/** What is left of the list's dusk sky once the aurora is in (the sky is opaque and sits over it). */
+const SKY_LEFT = 0.06;
 
 /**
  * The Selena section: the drawer with its words (DOM), the stars and the white of the way out, and
@@ -32,6 +41,8 @@ class SelenaRuntime implements SectionRuntime {
   private readonly body: HTMLElement | null;
   private readonly action: HTMLElement | null;
   private disposed = false;
+  /** The live backdrop, once the second canvas is made. Never required: the room works without. */
+  backdrop: Backdrop | null = null;
 
   constructor(ctx: SectionCtx) {
     this.scene = new SelenaScene(ctx);
@@ -61,10 +72,32 @@ class SelenaRuntime implements SectionRuntime {
   }
 
   update(local: number, frame: FrameInfo): void {
-    const u = local * SELENA_SCREENS;
-    const b = beatsAt(u, this.b);
+    // The story runs on the plays' clock (`stations.ts`). In the tail the page has gone past the end
+    // and only the white layer still moves, with the scroll.
+    const u = Math.min(local, 1) * STORY;
+    const tail = Math.max(0, local - 1) * selenaScreens();
+    const b = beatsAt(u, this.b, tail);
     this.dom(b, u, isPortrait(frame.viewport));
+    this.live(b, u);
     this.scene.apply(b, frame);
+  }
+
+  /** The aurora behind the room: it comes in with the drawer and goes with the white. */
+  private live(b: Beats, u: number): void {
+    const backdrop = this.backdrop;
+    if (!backdrop) return;
+    const enter = smooth(seg(u, 0, 0.9));
+    const amount = AURORA_AMOUNT * enter * (1 - b.white);
+    // Nothing is asked at the joint with the list (u 0): the sky of the list stays whole there.
+    if (amount <= 0.002) return;
+    backdrop.set("aurora", {
+      theme: "storm",
+      colors: AURORA,
+      amount,
+      speed: 0.9,
+      scale: 1.1,
+      intensity: 1.6,
+    });
   }
 
   private dom(b: Beats, u: number, portrait: boolean): void {
@@ -77,6 +110,8 @@ class SelenaRuntime implements SectionRuntime {
     );
     put(this.drawer, "opacity", f(Math.min(1, b.drawer * 1.6)));
     put(this.drawer, "visibility", b.drawer > 0 ? "visible" : "hidden");
+    // The list's sky is opaque and sits over the backdrop: it gives way as the aurora comes in.
+    put(this.sky, "opacity", f(1 - (1 - SKY_LEFT) * smooth(seg(u, 0, 0.9))));
 
     // The words: the title, the line and the button come one after another, and leave in turn.
     this.word(this.title, u, 0);
@@ -89,7 +124,7 @@ class SelenaRuntime implements SectionRuntime {
 
     // The stars come as the drawer opens. The four point star of the film's sky follows the camera.
     put(this.stars, "opacity", f(0.9 * smooth(seg(u, 0, 0.8)) * (1 - b.white)));
-    const star = smooth(seg(u, 2.25, 2.75)) * (1 - b.white);
+    const star = smooth(seg(u, AT.camera[0], AT.camera[0] + 0.5)) * (1 - b.white);
     put(this.star, "opacity", f(0.92 * star));
     put(this.star, "transform", `scale(${f(0.8 + 0.2 * star)})`);
 
@@ -103,10 +138,10 @@ class SelenaRuntime implements SectionRuntime {
 
   private word(el: HTMLElement | null, u: number, index: number): void {
     if (!el) return;
-    const inAt = AT.words[0] + index * 0.12;
-    const outAt = AT.wordsOut[0] + index * 0.06;
-    const shown = smooth(seg(u, inAt, inAt + 0.45));
-    const gone = smooth(seg(u, outAt, outAt + 0.2));
+    const inAt = AT.words[0] + index * 0.1;
+    const outAt = AT.wordsOut[0] + index * 0.04;
+    const shown = smooth(seg(u, inAt, inAt + WORD_IN));
+    const gone = smooth(seg(u, outAt, outAt + 0.15));
     put(el, "opacity", f(shown * (1 - gone)));
     put(el, "transform", `translate3d(0, ${f(26 * (1 - shown) - 22 * gone)}px, 0)`);
   }
@@ -141,5 +176,15 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
     });
   };
   whenIdle(join, 3000);
+  // The backdrop is a second small canvas: made once, shared by every section. The shader is compiled
+  // now so that it never compiles in the middle of the room's first play.
+  void ensureBackdrop(ctx).then(
+    (backdrop) => {
+      if (runtime.isDisposed) return;
+      runtime.backdrop = backdrop;
+      void backdrop.warm(["aurora"]);
+    },
+    () => undefined,
+  );
   return runtime;
 }

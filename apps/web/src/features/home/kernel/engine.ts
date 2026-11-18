@@ -11,19 +11,29 @@ import { useNavLock } from "@/lib/nav-lock";
 
 import type { BootRuntime } from "../boot/runtime";
 import { getCast } from "../actors/shared/cast";
+import { bindBackdrop } from "../fx/backdrop/host";
 import { ActorRegistry } from "./actors";
 import { LABS } from "./lab";
-import { Background, groundAt, type GroundLayers } from "./background";
+import { Background, groundNow, type GroundLayers } from "./background";
 import { Clock, ORDER } from "./clock";
 import { CursorProxy } from "./cursor";
-import { holdScroll } from "./hold";
+import { holdScroll, takeSnap } from "./hold";
 import { isRunning, layoutSections } from "./layout";
 import { PointerHub } from "./pointer";
 import { installProbes, type HomeSnapshot } from "./probes";
 import { SectionRunner } from "./run";
 import { SceneScroll, screensOf } from "./scroll";
 import { createStage } from "./stage";
-import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, Viewport } from "./types";
+import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, SectionId, Viewport } from "./types";
+
+/** A smooth move of the page by a script is over when the page is this near (screens) its target. */
+const MOVE_ARRIVED = 0.02;
+/** The longest a script's move holds the plays still, in milliseconds. */
+const MOVE_MAX_MS = 5000;
+/** Frames the plays rest after an immediate move (the scroll is read a frame later). */
+const SNAP_FRAMES = 2;
+/** The hold's own limit sits this far past the machine's, so the machine is the one that ends it. */
+const HOLD_BACKSTOP_MS = 500;
 
 export interface EngineOptions {
   /** The root of the home page: the slots are found inside it. */
@@ -31,6 +41,8 @@ export interface EngineOptions {
   /** The fixed box (100lvh) the canvas goes in. Its height is the unit of the scroll. */
   host: HTMLElement;
   grounds: GroundLayers;
+  /** The box in the ground stack where the live backdrop's canvas goes (absent: no backdrop). */
+  backdrop?: HTMLElement | null;
   sections: readonly HomeSection[];
   /** Move the page (pixels). The shell binds it to the smooth scroller. */
   scrollTo(y: number, options?: { immediate?: boolean }): void;
@@ -88,6 +100,7 @@ export function startEngine(options: EngineOptions): Engine | null {
   const cursor = new CursorProxy(host);
   const pointer = new PointerHub(cursor);
   const background = new Background(grounds);
+  const backdrop = bindBackdrop(stage, options.backdrop ?? null);
   const scene = new SceneScroll();
 
   let unit = Math.max(1, host.getBoundingClientRect().height);
@@ -134,13 +147,59 @@ export function startEngine(options: EngineOptions): Engine | null {
     }
   }
 
+  // A move of the page by a script is not a scroll the visitor made: a play that sits on its way
+  // would fire, hold and cut it short. While it lasts the plays rest on the position (`snap`).
+  let moveTarget: number | null = null;
+  let moveUntil = 0;
+  let snapFrames = 0;
+  const cancelMove = () => {
+    moveTarget = null;
+  };
+  // The visitor takes the page back: the move is over.
+  window.addEventListener("wheel", cancelMove, { passive: true });
+  window.addEventListener("touchstart", cancelMove, { passive: true });
+  window.addEventListener("keydown", cancelMove, { passive: true });
+
   const scrollApi: ScrollApi = {
     raw: () => scene.raw,
     shown: () => scene.shown,
     to: (screens, opts) => {
+      if (opts?.immediate) {
+        snapFrames = SNAP_FRAMES;
+      } else {
+        moveTarget = screens;
+        moveUntil = performance.now() + MOVE_MAX_MS;
+      }
       options.scrollTo(screens * unit, { immediate: opts?.immediate ?? false });
     },
     hold: (limitMs) => holdScroll(limitMs),
+  };
+
+  // What the plays ask of the scroll hold: one hold while any play runs, renewed when a new play
+  // starts in the middle of a chain (the new hold is taken before the old one is given back).
+  let playHold: (() => void) | null = null;
+  let playToken = -1;
+  let playing: SectionId | null = null;
+  const applyPlays = () => {
+    const h = runner.holdState();
+    if (h.holding) {
+      if (!playHold || h.token !== playToken) {
+        const next = holdScroll(h.limitMs + HOLD_BACKSTOP_MS);
+        playHold?.();
+        playHold = next;
+        playToken = h.token;
+      }
+    } else if (playHold) {
+      playHold();
+      playHold = null;
+      playToken = -1;
+    }
+    const now = h.holding ? h.playing : null;
+    if (now !== playing) {
+      playing = now;
+      if (now) root.dataset.homePlaying = now;
+      else delete root.dataset.homePlaying;
+    }
   };
 
   const ctxFor = (p: { id: HomeSection["id"] }): SectionCtx => {
@@ -236,7 +295,21 @@ export function startEngine(options: EngineOptions): Engine | null {
           boot = null;
           bootWanted = false;
         }
-        runner.step(frameInfo, jumped);
+        // The page is moved by a script, or has just been: the plays rest on the position.
+        if (takeSnap()) snapFrames = SNAP_FRAMES;
+        let snap = snapFrames > 0;
+        if (snapFrames > 0) snapFrames--;
+        if (moveTarget !== null) {
+          snap = true;
+          if (
+            Math.abs(frameInfo.raw - moveTarget) < MOVE_ARRIVED ||
+            performance.now() > moveUntil
+          ) {
+            moveTarget = null;
+          }
+        }
+        runner.step(frameInfo, jumped, snap);
+        applyPlays();
         primed = true;
       } else {
         actors.hideAll();
@@ -260,8 +333,11 @@ export function startEngine(options: EngineOptions): Engine | null {
     clock.add(() => {
       actors.update(frameInfo);
       actors.apply();
-      background.apply(groundAt(layout, frameInfo.S));
+      background.apply(groundNow(layout, frameInfo.S));
     }, ORDER.background),
+    clock.add(() => {
+      backdrop.draw(frameInfo, jumped);
+    }, ORDER.backdrop),
     clock.add(() => {
       stage.draw(frameInfo);
       // The page is ready when it has drawn twice and the sections near the top are built.
@@ -280,6 +356,8 @@ export function startEngine(options: EngineOptions): Engine | null {
       window.scrollTo(0, y);
       scene.snap(screens);
       frozenS = screens;
+      // Every section's plays go to rest for the position, with no animation and no hold.
+      moveTarget = null;
       forceJump = true;
     },
     freeze: (on) => {
@@ -296,6 +374,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       size: viewport(),
       stage: { lost: stage.lost, failed: failed || stage.failed, passes: stage.passNames() },
       active,
+      playing,
       sections: runner.report(frameInfo.S),
       actors: actors.list().map((a) => ({ name: a.name, visible: a.visible })),
       hit: pointer.state.hit,
@@ -320,6 +399,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       runner
         .report()
         .map((r) => ({ id: r.id, start: r.start, screens: r.screens, mount: r.mount })),
+    plays: () => runner.plays(),
   });
 
   clock.start();
@@ -333,10 +413,17 @@ export function startEngine(options: EngineOptions): Engine | null {
       boot?.dispose();
       boot = null;
       stopProbes();
+      playHold?.();
+      playHold = null;
+      delete root.dataset.homePlaying;
+      window.removeEventListener("wheel", cancelMove);
+      window.removeEventListener("touchstart", cancelMove);
+      window.removeEventListener("keydown", cancelMove);
       window.removeEventListener("resize", onResize);
       observer.disconnect();
       pointer.detach();
       runner.dispose();
+      backdrop.dispose();
       actors.dispose();
       cursor.dispose();
       stage.dispose();

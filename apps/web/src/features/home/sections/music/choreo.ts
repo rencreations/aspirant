@@ -1,60 +1,37 @@
 /**
- * The arithmetic of the music section. Pure: no DOM, no three. `local` is 0 at the start of the
- * section and 1 at its end (a little outside it in the lead and the tail).
+ * The arithmetic of the music section. Pure: no DOM, no three. `local` is the plays' value
+ * (`stations.ts`): a clock between two stations while the page is held, not the scroll.
  *
- * The story of the scroll, in `local`:
+ * The story, in `local`:
  *
  *   0 to LEAVE_TO       the two drones, in the bottom corners (J10), zip off the screen
- *   LEAVE_TO to LOCK_AT an empty screen
- *   LOCK_AT             the page is held (once) and the scene arrives by a clock: the right hand
- *                       drone drags the gramophone in from the right, the left hand one the crate
- *                       of records from the left. With no hold (tests, a jump, a visitor who came
- *                       back from below) the scroll brings the same scene in, `ARRIVE_SCROLL`.
- *   LOCK_AT to EXIT_FROM the scene stands: the visitor picks a record, a drone puts it on, the
- *                       other cranks, notes come out of the horn
- *   EXIT_FROM to 1      the music fades, the drones drag the gramophone off to the right and the
- *                       crate off to the left, and rise to the top left (J11)
- *
- * Arrival `A` (0 to 1) is `max(clock, scroll)`: one number that says how much of the scene is in.
+ *   LEAVE_TO to STAND   play one: the right hand drone drags the gramophone in from the right, the
+ *                       left hand one the crate of records from the left. `arrivalOf` is how much of
+ *                       the scene is in (0 to 1).
+ *   STAND               the rest: the scene stands, the visitor picks a record, a drone puts it on,
+ *                       the other cranks, notes come out of the horn
+ *   STAND to 1          play two: the music fades, the drones drag the gramophone off to the right
+ *                       and the crate off to the left, and rise to the top left (J11)
  */
 import { geometry } from "../funny/timeline";
 import { cornerSpots, type DuoSpots, type Screen } from "../voices/choreo";
 
 import { ramp, smooth } from "../voices/choreo";
+import { STAND } from "./stations";
 
-/** The section's length in screens (its registry entry reads this). */
-export const SCREENS = 2.8;
-
-export const LEAVE_TO = 0.14;
-export const LOCK_AT = 0.22;
-const ARRIVE_SCROLL: readonly [number, number] = [0.22, 0.5];
-export const EXIT_FROM = 0.84;
+export const LEAVE_TO = 0.08;
+/** The arrival runs over this stretch of `local`, from nothing to a scene that stands. */
+const ARRIVE: readonly [number, number] = [LEAVE_TO, STAND];
+export const EXIT_FROM = STAND;
 const EXIT_TO = 1;
-
-/** Seconds the arrival takes on the clock, from nothing to a scene that stands. */
-export const ARRIVE_SECONDS = 5.2;
-/** Seconds the scene takes to take itself apart when the visitor scrolls back above the lock. */
-export const UNARRIVE_SECONDS = 1;
+/** The pair rises to the top left over the last stretch of the exit (the props are gone by then). */
+const RISE_FROM = 0.69;
 
 const easeOut = (u: number): number => 1 - (1 - u) * (1 - u) * (1 - u);
 
-/** The arrival that the scroll alone gives, for a position. */
-export function scrollArrival(local: number): number {
-  return smooth(ramp(local, ARRIVE_SCROLL[0], ARRIVE_SCROLL[1]));
-}
-
-/** The clock's arrival after `dt` seconds: it fills while the scene is wanted and empties when not. */
-export function stepClock(clock: number, wanted: boolean, dt: number): number {
-  const rate = wanted ? 1 / ARRIVE_SECONDS : -1 / UNARRIVE_SECONDS;
-  return Math.min(1, Math.max(0, clock + rate * Math.max(0, dt)));
-}
-
-/**
- * True on the frame that a scroll position crosses the lock going down. A jump (a seek, a
- * scrollbar drag) never locks, nor does arriving from below.
- */
-export function crossedLock(previous: number, now: number): boolean {
-  return previous < LOCK_AT && now >= LOCK_AT && now - previous < 0.25;
+/** How much of the scene is in, 0 to 1, for a `local` (a straight line: the props ease themselves). */
+export function arrivalOf(local: number): number {
+  return Math.min(1, Math.max(0, (local - ARRIVE[0]) / (ARRIVE[1] - ARRIVE[0])));
 }
 
 /** How far the props are from their rest, as a fraction of the way in from off screen (1 is off). */
@@ -75,8 +52,8 @@ export function newArrival(): Arrival {
   return { gramophone: 1, crate: 1, dragging: false, carrying: false, ready: false };
 }
 
-const G_IN: readonly [number, number] = [0.04, 0.5];
-const C_IN: readonly [number, number] = [0.38, 0.88];
+const G_IN: readonly [number, number] = [0.04, 0.55];
+const C_IN: readonly [number, number] = [0.35, 0.95];
 
 /** The scene at an arrival `A`, written into `out`. */
 export function arrivalAt(a: number, out: Arrival): Arrival {
@@ -84,8 +61,13 @@ export function arrivalAt(a: number, out: Arrival): Arrival {
   out.crate = 1 - easeOut(ramp(a, C_IN[0], C_IN[1]));
   out.dragging = a > 0 && a < G_IN[1] + 0.04;
   out.carrying = a > C_IN[0] - 0.02 && a < C_IN[1] + 0.04;
-  out.ready = a >= 0.92;
+  out.ready = a >= 0.98;
   return out;
+}
+
+/** The weight of the pair's rise to the top left (J11) at the end of the exit, 0 to 1. */
+export function riseAt(local: number): number {
+  return smooth(ramp(local, RISE_FROM, EXIT_TO));
 }
 
 /** The leaving, 0 while the scene stands, 1 when the props and the drones have gone. */

@@ -1,22 +1,16 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureSelena, type SelenaActor } from "../../actors/selena";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
+import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, PointerState, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionScreens, sectionStart } from "../../kernel/where";
 import { ensureCarry, type Carry } from "../hand/carry";
 import { whenIdle } from "../hand/idle";
-import {
-  FRAME_COUNT,
-  HAND_SCREENS,
-  LIST_AT,
-  LIST_SCREENS,
-  listBeats,
-  mix,
-  newListBeats,
-  restOf,
-  seg,
-  type ListBeats,
-} from "../hand/timeline";
+import { FRAME_COUNT, frameRestScreens, HAND_LAST, LIST_LAST } from "../hand/stations";
+import { listBeats, mix, newListBeats, seg, type ListBeats } from "../hand/timeline";
 
+import { newListBackdrop, planListBackdrop } from "./backdrop-plan";
 import { PICTURE_FRAMES } from "./frames";
 import { listGeometry, mixRectInto, type ListGeometry, type Rect } from "./layout";
 import { LoopVideo } from "./loop-video";
@@ -43,12 +37,14 @@ interface Item {
 }
 
 /**
- * The list: nine pictures and Selena in a 4:5 window, one at a time, by the scroll. The strip, the
- * names, the chrome and the open buttons are DOM; the doll and the hand are driven by `Carry`
- * (shared with the hand section); the tenth frame is Selena, drawn in the stage through the
- * window and growing into the whole screen. Everything is a function of `local` plus the section's
- * own state: which frame is open in the viewer and the loops' play state. The strip, the words and
- * the viewer work before the actors have arrived.
+ * The list: nine pictures and Selena in a 4:5 window, one at a time. Each frame is one play: the
+ * scroll reaches a threshold, the strip turns to the next frame by itself (the doll hops with it)
+ * and the page waits for it. The strip, the names, the chrome and the open buttons are DOM; the doll
+ * and the hand are driven by `Carry` (shared with the hand section); the tenth frame is Selena,
+ * drawn in the stage through the window and growing into the whole screen. Everything is a function
+ * of the list's beat `u` plus the section's own state: which frame is open in the viewer and the
+ * loops' play state. The strip, the words and the viewer work before the actors have arrived. The
+ * live backdrop takes the colours of the picture in the window.
  */
 class ListRuntime implements SectionRuntime {
   private readonly b: ListBeats = newListBeats();
@@ -71,12 +67,12 @@ class ListRuntime implements SectionRuntime {
   private readonly opensOn: Array<boolean | null>;
   private readonly viewer: PictureViewer;
   private readonly pointer: PointerState;
+  private readonly plan = newListBackdrop();
 
   private carry: Carry | null = null;
   private g: ListGeometry | null = null;
   private vw = 0;
   private vh = 0;
-  private startS = 0;
   private running = false;
   private seen = false;
   private disposed = false;
@@ -93,7 +89,10 @@ class ListRuntime implements SectionRuntime {
   private readonly place = { x: 0, y: 0, z: 0, height: 0 };
   private readonly removers: Array<() => void> = [];
 
-  constructor(ctx: SectionCtx) {
+  constructor(
+    ctx: SectionCtx,
+    private readonly backdrop: Backdrop | null,
+  ) {
     const below = ctx.dom.below;
     const text = ctx.dom.text;
     this.pointer = ctx.pointer.state;
@@ -205,7 +204,7 @@ class ListRuntime implements SectionRuntime {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (this.disposed || !this.seen || i === this.current) return;
-        this.scrollTo(this.startS + restOf(i));
+        this.scrollTo(sectionStart("list") + frameRestScreens(i));
       });
     });
   }
@@ -284,10 +283,12 @@ class ListRuntime implements SectionRuntime {
 
   // ------------------------------------------------------------------ the frame
 
-  update(local: number, frame: FrameInfo): void {
-    const s = local * LIST_SCREENS;
+  update(v: number, frame: FrameInfo): void {
+    // The list's beat: 0 to 11 across the plays, the lead a little below 0 and the tail above 11 in
+    // real screens. The join with the hand is the screens past the joint (the list's start).
+    const u = beatFor(v, 0, LIST_LAST, sectionScreens("list"));
+    const ts = frame.S - sectionStart("list");
     const vp = frame.viewport;
-    this.startS = frame.S - local * LIST_SCREENS;
     if (!this.seen) {
       this.seen = true;
       this.followFocus();
@@ -295,12 +296,14 @@ class ListRuntime implements SectionRuntime {
     if (vp.w !== this.vw || vp.h !== this.vh || !this.g) this.layout(vp);
     const g = this.g;
     if (!g) return;
-    const b = listBeats(s, this.b);
+    const b = listBeats(u, ts, this.b);
 
-    this.carry?.apply(HAND_SCREENS + s, frame, true);
+    this.carry?.drive(HAND_LAST, ts, Math.max(0, u), frame, true);
     this.strip(b, g);
-    this.selenaDraw(b, s, g, vp);
-    this.words(b, s);
+    this.selenaDraw(b, u, g, vp);
+    this.words(b);
+    const plan = planListBackdrop(b.index, b.expandRaw, this.plan);
+    this.backdrop?.set(plan.kind, plan.options);
   }
 
   /** The strip: its slide, each frame's seam, the loops, the chrome. */
@@ -349,7 +352,7 @@ class ListRuntime implements SectionRuntime {
    * end of the section and through its tail, in the state the section after it starts from (J8):
    * `city_idle` at `selenaEnd`, no clip. The sky stays full to the end and fades over the tail.
    */
-  private selenaDraw(b: ListBeats, s: number, g: ListGeometry, vp: { w: number; h: number }): void {
+  private selenaDraw(b: ListBeats, u: number, g: ListGeometry, vp: { w: number; h: number }): void {
     const sl = this.selena;
     const idx = b.index;
     const e = b.expand;
@@ -386,7 +389,7 @@ class ListRuntime implements SectionRuntime {
       `translate3d(${f(-(rect.x + iw))}px, ${f(-(rect.y + ih))}px, 0)`,
     );
     put(this.panel, "visibility", sl && rect.w > 1 && peeks ? "visible" : "hidden");
-    put(this.panel, "opacity", f(1 - seg(s, LIST_SCREENS, LIST_SCREENS + SKY_FADE)));
+    put(this.panel, "opacity", f(1 - seg(u, LIST_LAST, LIST_LAST + SKY_FADE)));
     if (!sl || !drawn) return;
 
     // Her place: the frame's fit, carried by the slide, then the end placement.
@@ -446,7 +449,7 @@ class ListRuntime implements SectionRuntime {
   }
 
   /** The title, the names and the open buttons over the window. */
-  private words(b: ListBeats, s: number): void {
+  private words(b: ListBeats): void {
     const idx = b.index;
     const out = 1 - seg(b.expandRaw, 0, 0.3);
     put(this.title, "opacity", f(b.appear * out));
@@ -473,7 +476,7 @@ class ListRuntime implements SectionRuntime {
     // `disabled` (that would take it out of the tab order): `aria-disabled` says it is not ready.
     const atRest = Math.abs(idx - rest) < 0.05;
     const ready =
-      atRest && rest < SELENA_AT && b.expandRaw <= 0 && b.appear > 0.99 && s >= LIST_AT.nameIn[0];
+      atRest && rest < SELENA_AT && b.expandRaw <= 0 && b.appear > 0.99 && b.nameIn > 0.99;
     for (let i = 0; i < this.opens.length; i += 1) {
       const btn = this.opens[i];
       if (!btn) continue;
@@ -494,8 +497,9 @@ class ListRuntime implements SectionRuntime {
   }
 }
 
-export function createRuntime(ctx: SectionCtx): SectionRuntime {
-  const runtime = new ListRuntime(ctx);
+export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
+  const backdrop = await ensureBackdrop(ctx).catch(() => null);
+  const runtime = new ListRuntime(ctx, backdrop);
   // The hand, the doll and Selena are the biggest files: the section is built without them and they
   // join when ready (a jump into the list before they arrive shows the frames and the words). Each
   // is built when the page is idle, so the long task falls between two scroll events.

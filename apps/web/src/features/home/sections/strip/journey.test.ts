@@ -1,28 +1,30 @@
 import { describe, expect, it } from "vitest";
 
-import { layoutSections } from "../../kernel/layout";
-import { SECTIONS } from "../../kernel/sections";
-import { ROWS_START } from "../rows/journey";
+import { homeLayout } from "../../kernel/where";
+import { STORY } from "../story";
 
-import {
-  letterIn,
-  letterMoment,
-  makeBeats,
-  STRIP_BEATS,
-  STRIP_SCREENS,
-  STRIP_START,
-  stripBeats,
-} from "./journey";
+import { letterIn, letterMoment, makeBeats, STRIP_BEATS, stripBeats, stripS } from "./journey";
+
+const stripPlaced = () => homeLayout().placed.find((p) => p.id === "strip")!;
+// The strip's story is `STORY.strip` (`../story.ts`) and its tail is the fly-off's: the beats must fit.
+const STRIP_SCREENS = STORY.strip.length;
+const STORY_TAIL = 0.6;
 
 describe("the strip's place on the scroll", () => {
-  it("matches the registry and follows the rows", () => {
-    const placed = layoutSections(SECTIONS).placed.find((p) => p.id === "strip")!;
-    expect(placed.start).toBeCloseTo(STRIP_START, 6);
-    expect(placed.def.screens).toBe(STRIP_SCREENS);
-    expect(placed.def.tail).toBeGreaterThanOrEqual(1);
-    const rows = layoutSections(SECTIONS).placed.find((p) => p.id === "rows")!;
-    expect(rows.end).toBeCloseTo(STRIP_START, 6);
-    expect(rows.start).toBeCloseTo(ROWS_START, 6);
+  it("follows the rows, in step with their play, and keeps a tail for the fly-off", () => {
+    const placed = stripPlaced();
+    expect(placed.def.tail).toBeGreaterThanOrEqual(0.15);
+    expect(placed.def.lead).toBeGreaterThanOrEqual(0.25);
+    const rows = homeLayout().placed.find((p) => p.id === "rows")!;
+    expect(rows.end).toBeCloseTo(placed.start, 6);
+  });
+
+  it("has four plays: the words in step with the rows, the window, the orbit, the fly-off", () => {
+    const plays = stripPlaced().def.plays!;
+    expect(plays).toHaveLength(4);
+    expect(plays[0]!.at).toBe(0);
+    expect(plays[3]!.at).toBe(1);
+    for (const p of plays) expect(p.seconds).toBeLessThanOrEqual(3);
   });
 
   it("has its beats in order, the fly-off ending inside the tail", () => {
@@ -33,8 +35,56 @@ describe("the strip's place on the scroll", () => {
     expect(B.pull[0]).toBeGreaterThanOrEqual(B.expand[1]);
     expect(B.hold[0]).toBe(B.pull[1]);
     expect(B.fly[0]).toBe(B.hold[1]);
-    const placed = layoutSections(SECTIONS).placed.find((p) => p.id === "strip")!;
-    expect(B.fly[1]).toBeLessThanOrEqual(STRIP_SCREENS + placed.def.tail);
+    expect(B.fly[1]).toBeLessThanOrEqual(STRIP_SCREENS + STORY_TAIL);
+  });
+});
+
+describe("stripS: the story position of a station", () => {
+  it("runs the four plays through the strip's beats and rests outside them", () => {
+    const B = STRIP_BEATS;
+    expect(stripS(-3)).toBe(B.enter[0]);
+    expect(stripS(0)).toBe(B.enter[0]);
+    expect(stripS(1)).toBeCloseTo(B.enter[1], 9);
+    expect(stripS(2)).toBeCloseTo(B.pull[0], 9);
+    expect(stripS(3)).toBeCloseTo(B.fly[0], 9);
+    expect(stripS(4)).toBeCloseTo(B.fly[1], 9);
+    expect(stripS(9)).toBe(B.fly[1]);
+  });
+
+  it("never goes back as v grows", () => {
+    let last = -Infinity;
+    for (let v = -0.5; v <= 4.5; v += 0.01) {
+      const s = stripS(v);
+      expect(s).toBeGreaterThanOrEqual(last);
+      last = s;
+    }
+  });
+
+  it("rests the small state, the window, the orbit and the end in frames the beats hold still", () => {
+    const a = makeBeats();
+    const b = makeBeats();
+    // The small state: from the end of the words to the start of the expand nothing changes.
+    stripBeats(STRIP_BEATS.enter[1], a);
+    stripBeats(STRIP_BEATS.expand[0], b);
+    // The orbit's turn is not seen yet (no film has been pulled), so it is left out.
+    a.travel = 0;
+    b.travel = 0;
+    expect(b).toEqual(a);
+    // The window: the expand is done, the pull has not begun.
+    stripBeats(stripS(2), a);
+    expect(a.expand).toBe(1);
+    expect(a.windowIn).toBe(1);
+    expect(a.pull).toBe(0);
+    // The orbit with its words fully in.
+    stripBeats(stripS(3), a);
+    expect(a.pull).toBe(1);
+    expect(a.hold).toBe(1);
+    expect(a.textIn).toBeCloseTo(1, 9);
+    expect(a.fly).toBe(0);
+    // The end: everything has flown and the words are gone.
+    stripBeats(stripS(4), a);
+    expect(a.fly).toBe(1);
+    expect(a.textIn).toBe(0);
   });
 });
 

@@ -1,16 +1,17 @@
 /**
- * The film plane's whole state as a pure function of the scroll `S` (absolute, in screens). The rows
- * and the strip both drive the one `film` actor and their ranges overlap (the strip's lead is the
- * rows' end), so both call this: the later section can never disagree with the earlier one. The
+ * The film plane's whole state as a pure function of the story position `S` (`../story.ts`, in story
+ * screens). The rows and the strip both drive the one `film` actor and their stories meet (the strip's
+ * start is the rows' end), so both call this: the later section can never disagree with the earlier one. The
  * rows' part is the angled film riding a gap of the middle row and turning upright; the strip's part
  * is the expand, the pull, the orbit and the fly-off. See `rows/journey.ts` and `strip/journey.ts`.
  */
 import { buildFormations } from "../../fx/image-field/formations";
 import { rowsGeom } from "../../fx/video-plane/hero";
 import { DEFAULT_STATE, type FilmState } from "../../fx/video-plane/types";
-import { appearAt, filmAlong, morphAt, ROWS_START } from "../rows/journey";
+import { appearAt, filmAlong, morphAt } from "../rows/journey";
+import { STORY } from "../story";
 
-import { makeBeats, STRIP_START, stripBeats } from "./journey";
+import { makeBeats, stripBeats } from "./journey";
 
 /** The cards of the picture field (the rows are laid out for this many). */
 const FIELD_CARDS = 18;
@@ -44,8 +45,8 @@ export function rowsScale(vp: { readonly w: number; readonly h: number }): RowsS
  * Writes `out` and returns it.
  */
 export function filmStateAt(S: number, travel: number, out: FilmState): FilmState {
-  const s = S - ROWS_START;
-  const b = stripBeats(S - STRIP_START, beats);
+  const s = S - STORY.rows.start;
+  const b = stripBeats(S - STORY.strip.start, beats);
   Object.assign(out, DEFAULT_STATE);
   out.heroBox = null;
   out.appear = appearAt(s);

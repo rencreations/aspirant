@@ -6,6 +6,7 @@ import type { DuoActor } from "../../actors/duo";
 import type { BellView, GramophoneActor } from "../../actors/gramophone/actor";
 import type { TrackArt } from "../../actors/records/covers";
 import type { RecordsActor } from "../../actors/records/actor";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { SustainHandle } from "../../fx/comic-marks/system";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
@@ -13,10 +14,8 @@ import { newSpots, ramp, smooth } from "../voices/choreo";
 import { bridgeDuoMarks } from "../voices/marks-bridge";
 
 import {
-  EXIT_FROM,
-  SCREENS,
   arrivalAt,
-  crossedLock,
+  arrivalOf,
   exitAt,
   j10,
   j11,
@@ -24,13 +23,10 @@ import {
   leaveWeight,
   newArrival,
   newLayout,
-  scrollArrival,
-  stepClock,
-  LOCK_AT,
+  riseAt,
   type Place,
 } from "./choreo";
 import { MusicDom, type Phase } from "./dom";
-import { IntentGate, TOUCH_PX, WHEEL_PX, isScrollOnKey } from "./intent";
 import { Scheduler, type DroneSpot } from "./scheduler";
 
 /** The shared pass the pair of drones is drawn in, and its place in the draw order (the lit cast is 30). */
@@ -46,37 +42,24 @@ const KEY_RPS = 1.4;
 const BOOST_SECONDS = 2.5;
 /** The level of a song, as in the Music room. */
 const MUSIC_VOLUME = 0.7;
-/** The page lets go after the visitor has heard this many seconds of the song. */
-const HEARD_SECONDS = 6;
-/**
- * The longest the page is ever held, a net for a hold nobody released (the kernel's own limit).
- * The real ways out are a fresh scroll, a scroll key, "Continue" and the song heard for a while.
- */
-const HOLD_LIMIT_MS = 30_000;
 /** The platter must turn this fast (turns a second) before the needle's song starts. */
 const PLATTER_MIN_RPS = 0.3;
-
-function introOff(): boolean {
-  try {
-    return window.sessionStorage.getItem("aspirants:intro") === "off";
-  } catch {
-    return false;
-  }
-}
+/** How strong the stage (slats of soft colour) is behind the scene, and how much the beat adds. */
+const STAGE_AMOUNT = 0.7;
+const STAGE_BEAT = 0.35;
 
 /** The work a drone is on: "free" (it floats where `place` says), "crank", or the key of a haul. */
 type Solo = string;
 
 /**
- * The music section. The two drones leave the screen, the page is held once, and the right hand
- * drone drags the gramophone in while the left hand one drags in a crate of records. The visitor
- * picks a record, the left drone puts it on and lowers the needle, the right drone cranks, notes
- * come out of the horn and the song plays. The scroll then takes everything off again and leaves
- * the pair hovering at the top left for the next section.
+ * The music section. The two drones leave the screen, and while the page is held by the first play
+ * the right hand drone drags the gramophone in and the left hand one drags in a crate of records.
+ * The page is then free: the visitor picks a record, the left drone puts it on and lowers the
+ * needle, the right drone cranks, notes come out of the horn and the song plays. The second play
+ * takes everything off again and leaves the pair hovering at the top left for the next section.
  *
- * Nothing here is a function of the scroll alone: the arrival is `max(clock, scroll)`, so the scene
- * works with no hold (tests, a jump, coming back from below). `update(1)` leaves nothing behind:
- * every persistent setter of the duo and the gramophone is cleared.
+ * `local` is the plays' value, so the arrival is a function of it and nothing else. `update(1)`
+ * leaves nothing behind: every persistent setter of the duo and the gramophone is cleared.
  */
 class MusicRuntime implements SectionRuntime {
   private readonly dom: MusicDom;
@@ -98,18 +81,14 @@ class MusicRuntime implements SectionRuntime {
   private propsReady = false;
   private disposed = false;
 
-  private clock = 0;
-  private prevRaw = 0;
-  private hasPrev = false;
   private dt = 0;
-  private start = 0;
   private local = -1;
-  private lockedOnce = false;
-  private release: (() => void) | null = null;
   private queued: number | null = null;
-  /** A fresh scroll gesture after the scene stands (or a record is picked) lets the page go. */
-  private readonly gate = new IntentGate();
-  private stood = false;
+  /** The live stage behind the scene, once the second canvas is made. */
+  private backdrop: Backdrop | null = null;
+  private bins: Uint8Array<ArrayBuffer> | null = null;
+  /** The beat of the song, 0 to 1: fast attack, slow release. */
+  private beat = 0;
 
   private musicOn = false;
   private musicEl: HTMLAudioElement | null = null;
@@ -134,9 +113,6 @@ class MusicRuntime implements SectionRuntime {
       another: () => {
         this.another();
       },
-      keep: () => {
-        this.keep();
-      },
       crank: () => {
         this.boost = BOOST_SECONDS;
       },
@@ -153,49 +129,12 @@ class MusicRuntime implements SectionRuntime {
     this.stopListening.push(() => {
       window.removeEventListener("pointerdown", unlock, true);
     });
-    // Nobody is trapped: once the scene stands (or a record is picked) a fresh scroll gesture or a
-    // scroll key lets the page go. These listeners run before the hold's own (they were added
-    // first), so the first event is let through as the hold goes.
-    const wheel = (e: WheelEvent) => {
-      if (this.release && this.gate.feed(performance.now(), e.deltaY, WHEEL_PX)) this.letGo();
-    };
-    let lastY = 0;
-    const touchStart = (e: TouchEvent) => {
-      lastY = e.touches[0]?.clientY ?? 0;
-      this.gate.begin();
-    };
-    const touchMove = (e: TouchEvent) => {
-      const y = e.touches[0]?.clientY ?? lastY;
-      const moved = y - lastY;
-      lastY = y;
-      if (this.release && this.gate.feed(performance.now(), moved, TOUCH_PX)) this.letGo();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (!this.release || !this.gate.armed || !isScrollOnKey(e.key)) return;
-      // Space on a button presses it, it does not scroll.
-      const target = e.target instanceof Element ? e.target : null;
-      if (e.key === " " && target?.closest("button, a, input, textarea, select")) return;
-      this.letGo();
-    };
-    window.addEventListener("wheel", wheel, { passive: true, capture: true });
-    window.addEventListener("touchstart", touchStart, { passive: true, capture: true });
-    window.addEventListener("touchmove", touchMove, { passive: true, capture: true });
-    window.addEventListener("keydown", keys, true);
-    this.stopListening.push(() => {
-      window.removeEventListener("wheel", wheel, true);
-      window.removeEventListener("touchstart", touchStart, true);
-      window.removeEventListener("touchmove", touchMove, true);
-      window.removeEventListener("keydown", keys, true);
-    });
-
     (window as unknown as { __homeMusic?: unknown }).__homeMusic = {
       state: () => ({
         local: this.local,
-        clock: this.clock,
         step: this.sched.step,
-        held: this.release !== null,
-        lockedOnce: this.lockedOnce,
         musicOn: this.musicOn,
+        beat: this.beat,
         propsReady: this.propsReady,
         tracks: this.tracks.map((t) => t.title),
         solo: [...this.solo],
@@ -212,10 +151,11 @@ class MusicRuntime implements SectionRuntime {
       another: () => {
         this.another();
       },
-      keep: () => {
-        this.keep();
-      },
     };
+  }
+
+  setBackdrop(backdrop: Backdrop): void {
+    if (!this.disposed) this.backdrop = backdrop;
   }
 
   /** Make the gramophone, the crate and the records' covers. Runs after the section has mounted. */
@@ -256,41 +196,17 @@ class MusicRuntime implements SectionRuntime {
   private step(local: number, frame: FrameInfo): void {
     const vp = frame.viewport;
     this.local = local;
-    this.start = frame.S - local * SCREENS;
-    const raw = local + (frame.raw - frame.S) / SCREENS;
-
-    // The page is held once, when the scroll comes down to the lock point and the scene has what it
-    // needs. With the gramophone or the covers still on their way nothing is held (a visitor would
-    // wait on a line of text): the scroll then brings the scene in by itself, and it stands when
-    // its files have arrived.
-    if (
-      !this.lockedOnce &&
-      this.release === null &&
-      this.hasPrev &&
-      this.propsReady &&
-      crossedLock(this.prevRaw, raw) &&
-      !introOff()
-    ) {
-      this.lockedOnce = true;
-      this.release = this.ctx.scroll.hold(HOLD_LIMIT_MS);
-    }
-    this.prevRaw = raw;
-    this.hasPrev = true;
     this.dt = frame.dt;
 
     const exit = exitAt(local);
     // The props are leaving: whatever the visitor had started ends now (the song fades, the disc
-    // goes home, the hold is let go). Otherwise a jump back in would find a record "playing" that
-    // nobody pressed, and start the song by itself.
-    if (exit > 0 && this.sched.step !== "idle") {
-      this.resetScene();
-      this.letGo();
-    }
-    this.clock = stepClock(this.clock, local >= LOCK_AT, frame.dt);
-    const A = Math.max(this.clock, scrollArrival(local));
+    // goes home). Otherwise a jump back in would find a record "playing" that nobody pressed, and
+    // start the song by itself.
+    if (exit > 0 && this.sched.step !== "idle") this.resetScene();
+    const A = arrivalOf(local);
     arrivalAt(A, this.arrival);
 
-    const fade = ramp(local, 0, 0.1) * (1 - ramp(local, 0.88, 1));
+    const fade = ramp(local, 0.04, 0.12) * (1 - ramp(local, 0.9, 1));
     this.dom.setFade(fade, (1 - fade) * 14);
 
     // Before the section starts the voices section still owns the pair (its tail and this lead
@@ -307,11 +223,7 @@ class MusicRuntime implements SectionRuntime {
 
     layoutFor(vp, this.layout);
     const scene = A > 0 || exit > 0;
-    const stands = this.propsReady && A >= 0.92 && exit === 0;
-    // From the frame the scene stands, a fresh scroll gesture lets the page go.
-    if (stands && !this.stood) this.gate.arm(performance.now());
-    else if (!stands && this.stood) this.gate.disarm();
-    this.stood = stands;
+    const stands = this.propsReady && this.arrival.ready && exit === 0;
 
     // The scheduler: what the visitor started, in order.
     const cmd = this.sched.update({ dt: frame.dt, discPhase: this.r ? this.r.phase : "idle" });
@@ -331,13 +243,44 @@ class MusicRuntime implements SectionRuntime {
       if (this.g) this.g.visible = false;
       if (this.r) this.r.visible = false;
     }
-    this.driveSound(A, exit, cmd.music, cmd.choice);
+    this.driveSound(exit, cmd.music, cmd.choice);
     this.driveNotes();
+    this.driveStage(A, exit, scene, frame.dt);
     this.driveWords(stands, A > 0 && exit === 0);
     this.boost = Math.max(0, this.boost - frame.dt);
+  }
 
-    // The page lets go once the song has been heard for a few seconds.
-    if (this.release && this.musicEl && this.musicEl.currentTime > HEARD_SECONDS) this.letGo();
+  /** The beat of the song: the low end of the music's analyser, with a fast attack and a slow release. */
+  private readBeat(dt: number): void {
+    const analyser = this.musicOn ? this.ctx.audio.getMusicAnalyser() : null;
+    let level = 0;
+    if (analyser) {
+      if (this.bins?.length !== analyser.frequencyBinCount) {
+        this.bins = new Uint8Array(analyser.frequencyBinCount);
+      }
+      analyser.getByteFrequencyData(this.bins);
+      let sum = 0;
+      for (let i = 1; i < 11; i += 1) sum += this.bins[i] ?? 0;
+      level = Math.min(1, sum / (10 * 190));
+    }
+    const k = 1 - Math.exp(-(level > this.beat ? 28 : 5) * Math.max(0, dt));
+    this.beat += (level - this.beat) * k;
+  }
+
+  /** The stage behind the scene: slats of soft colour that come in with the props and swell with the song. */
+  private driveStage(A: number, exit: number, scene: boolean, dt: number): void {
+    this.readBeat(dt);
+    const backdrop = this.backdrop;
+    if (!backdrop || !scene) return;
+    const enter = smooth(ramp(A, 0.05, 0.6)) * (1 - exit);
+    if (enter <= 0.002) return;
+    backdrop.set("gradient-blinds", {
+      theme: "daybreak",
+      amount: enter * (STAGE_AMOUNT + STAGE_BEAT * this.beat),
+      speed: this.musicOn ? 1.5 : 0.7,
+      intensity: 1 + 0.5 * this.beat,
+      scale: 1.1,
+    });
   }
 
   enter(): void {
@@ -350,16 +293,12 @@ class MusicRuntime implements SectionRuntime {
   leave(): void {
     this.ctx.stage.reorder(DUO_PASS, DUO_UNDER_CAST);
     this.resetScene();
-    this.letGo();
-    this.clock = 0;
-    this.hasPrev = false;
   }
 
   dispose(): void {
     this.disposed = true;
     this.ctx.stage.reorder(DUO_PASS, DUO_UNDER_CAST);
     this.resetScene();
-    this.letGo();
     for (const stop of this.stopListening) stop();
     this.stopListening.length = 0;
     this.notes?.stop();
@@ -385,8 +324,6 @@ class MusicRuntime implements SectionRuntime {
     withSound("This song", () => {
       if (this.sched.step === "idle") {
         this.sched.choose(index);
-        // A fresh scroll after the pick lets the page go (the song is heard for a while first).
-        this.gate.arm(performance.now(), 0);
       } else if (this.sched.again()) {
         // Another song while one is out: this one goes back first.
         this.queued = index;
@@ -397,18 +334,6 @@ class MusicRuntime implements SectionRuntime {
   /** "Another record": the needle goes up, the song fades, the disc goes home. */
   private another(): void {
     this.sched.again();
-  }
-
-  /** "Continue": the page is let go and goes on past the scene. */
-  private keep(): void {
-    this.letGo();
-    this.ctx.scroll.to(this.start + 1.02 * SCREENS);
-  }
-
-  private letGo(): void {
-    const release = this.release;
-    this.release = null;
-    release?.();
   }
 
   // ---- the scene -----------------------------------------------------------------------
@@ -534,7 +459,7 @@ class MusicRuntime implements SectionRuntime {
     b.height = ball;
 
     // After the props have gone the pair rises to the top left (J11).
-    const rise = smooth(ramp(local, EXIT_FROM + 0.06, 1));
+    const rise = riseAt(local);
     if (rise > 0) {
       j11(vp, this.endSpots);
       a.x += (this.endSpots.a.x - a.x) * rise;
@@ -554,7 +479,7 @@ class MusicRuntime implements SectionRuntime {
     if (leaving) this.haul("b", "out", () => g.socket("dragBack"), 1, 0, 0.7);
     else if (this.arrival.dragging && exit === 0) {
       this.haul("b", "in", () => g.socket("dragFront"), -1, 0, 0.7);
-    } else if (!(crank && A >= 0.92 && exit === 0)) this.free("b");
+    } else if (!(crank && this.arrival.ready && exit === 0)) this.free("b");
     // The left drone: drags the crate in, works the needle, drags the crate out.
     if (leaving) this.haul("a", "out", () => r.socket("carryL"), -1, 0, 0.6);
     else if (this.arrival.carrying && exit === 0) {
@@ -586,10 +511,10 @@ class MusicRuntime implements SectionRuntime {
 
   // ---- sound ---------------------------------------------------------------------------
 
-  private driveSound(A: number, exit: number, wants: boolean, choice: number | null): void {
+  private driveSound(exit: number, wants: boolean, choice: number | null): void {
     const g = this.g;
     if (!g) return;
-    const may = wants && A >= 0.92 && exit < 0.02 && choice !== null;
+    const may = wants && this.arrival.ready && exit < 0.02 && choice !== null;
     if (may && !this.musicOn && g.needleDown && g.platterRps > PLATTER_MIN_RPS) {
       this.startSong(choice);
     } else if (!may && this.musicOn) {
@@ -644,7 +569,6 @@ class MusicRuntime implements SectionRuntime {
     const phase: Phase = step !== "idle" ? "picked" : stands ? "ready" : arriving ? "wait" : "away";
     dom.setPhase(phase);
     dom.setSounding(this.musicOn);
-    dom.setHeld(this.release !== null && (stands || step !== "idle"));
     dom.setAgain(step === "needle" || step === "back" || step === "playing" || step === "ended");
   }
 
@@ -665,11 +589,8 @@ class MusicRuntime implements SectionRuntime {
     this.r?.putBack();
     this.r?.setHandSocket(null);
     this.notes?.stop();
-    this.gate.disarm();
-    this.stood = false;
     this.dom.setPhase("away");
     this.dom.setAgain(false);
-    this.dom.setHeld(false);
   }
 
   /** The scene has been on and is now behind or ahead of the section: put everything back, once. */
@@ -677,8 +598,6 @@ class MusicRuntime implements SectionRuntime {
     if (!this.dirty) return;
     this.dirty = false;
     this.resetScene();
-    this.letGo();
-    this.clock = 0;
   }
 
   /** `local` 1 and past: the scene has gone, the pair hovers at the top left (J11). */
@@ -718,5 +637,13 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
   const runtime = new MusicRuntime(ctx, duo, marks);
   // The gramophone and the crate arrive in the background: the scene shows its waiting line meanwhile.
   void runtime.loadProps();
+  // The stage behind the scene is a second small canvas. Its shader is compiled now, not mid-play.
+  void ensureBackdrop(ctx).then(
+    (backdrop) => {
+      runtime.setBackdrop(backdrop);
+      void backdrop.warm(["gradient-blinds"]);
+    },
+    () => undefined,
+  );
   return runtime;
 }

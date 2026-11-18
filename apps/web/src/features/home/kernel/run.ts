@@ -12,8 +12,15 @@
  *
  * A runtime that is still mounting is skipped. If it is passed when it arrives, it replays
  * `local = 1` once. A runtime that throws is logged once and left out.
+ *
+ * A section with plays (`kernel/plays.ts`) is given a virtual `local` that its machine animates on
+ * the clock, in place of the scroll's: the thresholds come from the real scroll, the lead and the
+ * tail from the smoothed one. The machine says when the scroll is held (`holdState`); the engine
+ * takes and gives the hold. A jump, a programmatic move (`snap`) or a runtime that was not ready
+ * puts the machine on the resting value for the position, with no play.
  */
 import {
+  floorOf,
   isPassed,
   isRunning,
   localOf,
@@ -22,6 +29,7 @@ import {
   type Layout,
   type Placed,
 } from "./layout";
+import { PlayMachine } from "./plays";
 import type { FrameInfo, SectionCtx, SectionId, SectionRuntime } from "./types";
 
 export type MountState = "idle" | "mounting" | "ready" | "failed";
@@ -33,6 +41,14 @@ interface Slot {
   running: boolean;
   /** Replay `local = 1` on the next frame (a runtime that arrived after a jump past it). */
   settleNext: boolean;
+  /** The plays of the section, or null (the section follows the scroll). */
+  readonly machine: PlayMachine | null;
+  /** The scroll is inside the section's range (whether or not its runtime is ready). */
+  inRange: boolean;
+  /** The range was entered on this frame. */
+  entering: boolean;
+  /** The machine has been placed and stepped since the section last ran. */
+  live: boolean;
 }
 
 export interface RunnerDeps {
@@ -43,6 +59,20 @@ export interface RunnerDeps {
   /** The section that owns the scroll position changed (the top bar's theme follows it). */
   onActive?(p: Placed): void;
   onError?(id: SectionId, error: unknown): void;
+  /** Wall-clock milliseconds, for the plays' safety limit (`performance.now` when not given). */
+  now?(): number;
+}
+
+/** What the plays ask of the scroll hold. One object, written in place every frame. */
+export interface HoldState {
+  /** Some play is running: the scroll is held. */
+  holding: boolean;
+  /** The longest wall-clock limit among the running plays, in milliseconds. */
+  limitMs: number;
+  /** Grows by one each time a play starts: a new play while holding renews the hold. */
+  token: number;
+  /** The section whose play is running (the first, in scroll order), or null. */
+  playing: SectionId | null;
 }
 
 export interface SectionReport {
@@ -52,6 +82,20 @@ export interface SectionReport {
   readonly local: number;
   readonly running: boolean;
   readonly mount: MountState;
+  /** The number `update` gets: the machine's `v` for a section with plays, `local` for the others. */
+  readonly v: number;
+}
+
+/** What a section's plays are doing now (`window.__home.plays()`). */
+export interface PlayReport {
+  readonly id: SectionId;
+  readonly v: number;
+  readonly resting: number;
+  readonly active: boolean;
+  readonly fired: number;
+  readonly length: number;
+  readonly direction: -1 | 0 | 1;
+  readonly progress: number;
 }
 
 export class SectionRunner {
@@ -59,6 +103,7 @@ export class SectionRunner {
   private disposed = false;
   private active: SectionId | null = null;
   private lastS = 0;
+  private readonly hold: HoldState = { holding: false, limitMs: 0, token: 0, playing: null };
 
   constructor(private readonly deps: RunnerDeps) {
     this.slots = deps.layout.placed.map((p) => ({
@@ -67,6 +112,16 @@ export class SectionRunner {
       runtime: null,
       running: false,
       settleNext: false,
+      machine: p.def.plays
+        ? new PlayMachine(p.id, p.def.plays, {
+            screens: p.def.screens,
+            floor: floorOf(p),
+            restOutside: p.def.restOutside,
+          })
+        : null,
+      inRange: false,
+      entering: false,
+      live: false,
     }));
   }
 
@@ -87,11 +142,22 @@ export class SectionRunner {
     return this.slots.filter((slot) => slot.mount === "mounting").length;
   }
 
-  /** Run one frame. `jumped` is true when the scroll position leapt (see `SceneScroll`). */
-  step(frame: FrameInfo, jumped: boolean): void {
+  /**
+   * Run one frame. `jumped` is true when the scroll position leapt (see `SceneScroll`). `snap` is
+   * true while the page is being moved by a script (a smooth `scroll.to` on its way, a control that
+   * took the focus): the plays rest on the position instead of firing.
+   */
+  step(frame: FrameInfo, jumped: boolean, snap = false): void {
     if (this.disposed) return;
     const S = frame.S;
     this.lastS = S;
+    const now = this.deps.now ? this.deps.now() : performance.now();
+
+    for (const slot of this.slots) {
+      const inRange = isRunning(slot.p, S);
+      slot.entering = inRange && !slot.inRange;
+      slot.inRange = inRange;
+    }
 
     for (const slot of this.slots) {
       if (slot.mount === "idle" && wantsMount(slot.p, S)) this.mount(slot);
@@ -118,21 +184,92 @@ export class SectionRunner {
       }
     }
 
+    // A section that is not running (or not built, or failed) lets go of its play.
+    for (const slot of this.slots) {
+      if (slot.machine && slot.live && !(slot.mount === "ready" && slot.inRange)) {
+        slot.machine.leave();
+        slot.live = false;
+      }
+    }
+
     // The passed sections, in order, once. Their effect on actors is wiped by the next step.
     for (const slot of this.slots) {
       if (slot.mount !== "ready" || !isPassed(slot.p, S)) continue;
       if (jumped || slot.settleNext) {
         slot.settleNext = false;
-        this.guard(slot, () => slot.runtime?.update(1, frame));
+        // A section with plays ends where its last play ends.
+        const end = slot.machine ? slot.machine.end : 1;
+        this.guard(slot, () => slot.runtime?.update(end, frame));
       }
     }
 
     this.deps.actors.hideAll();
     for (const slot of this.slots) {
       if (slot.mount !== "ready" || !isRunning(slot.p, S)) continue;
-      this.guard(slot, () => slot.runtime?.update(localOf(slot.p, S), frame));
+      let local = localOf(slot.p, S);
+      const machine = slot.machine;
+      if (machine) {
+        const sRaw = (frame.raw - slot.p.start) / slot.p.def.screens;
+        const direct = jumped || snap;
+        if (!slot.live) {
+          slot.live = true;
+          // A scroll that ran into the range fires its crossing; anything else lands on its place.
+          if (slot.entering && !direct) machine.enter(local);
+          else machine.jump(sRaw, local);
+        } else if (direct) {
+          machine.jump(sRaw, local);
+        }
+        if (!direct) machine.step(sRaw, local, frame.dt, now);
+        local = machine.value;
+      }
+      this.guard(slot, () => slot.runtime?.update(local, frame));
     }
     this.deps.actors.apply();
+    this.collectHold();
+  }
+
+  /** What the plays ask of the scroll hold, as of the last frame. The object is reused. */
+  holdState(): Readonly<HoldState> {
+    return this.hold;
+  }
+
+  /** What every section's plays are doing now (the probe). */
+  plays(): PlayReport[] {
+    const out: PlayReport[] = [];
+    for (const slot of this.slots) {
+      const m = slot.machine;
+      if (!m) continue;
+      out.push({
+        id: slot.p.id,
+        v: slot.live ? m.value : localOf(slot.p, this.lastS),
+        resting: m.resting,
+        active: m.active,
+        fired: m.fired,
+        length: m.length,
+        direction: m.direction,
+        progress: m.progress,
+      });
+    }
+    return out;
+  }
+
+  private collectHold(): void {
+    const h = this.hold;
+    h.holding = false;
+    h.limitMs = 0;
+    h.playing = null;
+    let token = 0;
+    for (const slot of this.slots) {
+      const m = slot.machine;
+      if (!m) continue;
+      token += m.started;
+      if (slot.live && m.active) {
+        h.holding = true;
+        h.limitMs = Math.max(h.limitMs, m.limitMs);
+        h.playing ??= slot.p.id;
+      }
+    }
+    h.token = token;
   }
 
   /** What each section is doing now (the probe). */
@@ -144,6 +281,7 @@ export class SectionRunner {
       local: localOf(slot.p, S),
       running: slot.running,
       mount: slot.mount,
+      v: slot.machine && slot.live ? slot.machine.value : localOf(slot.p, S),
     }));
   }
 
@@ -155,6 +293,8 @@ export class SectionRunner {
   dispose(): void {
     this.disposed = true;
     for (const slot of this.slots) {
+      slot.machine?.leave();
+      slot.live = false;
       const runtime = slot.runtime;
       slot.runtime = null;
       if (runtime) {

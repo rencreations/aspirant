@@ -1,71 +1,8 @@
 /*
- * The bolt section: the bloom of the ground (below the canvas) and the text wheel of the five pairs
- * (above it). Only transform and opacity are written, by the section's runtime. The wheel and the
- * bloom exist only in the stage; the plain page shows the five names as a list.
+ * The bolt section: the text wheel of the five pairs, above the canvas. Only transform and opacity
+ * are written, by the section's runtime. The wheel exists only in the stage; the plain page shows the
+ * five names as a list. The green of the ground is the live backdrop (`backdrop-plan.ts`).
  */
-
-/* ---------------------------------------------------------------- the bloom */
-
-.bloom {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.tint,
-.glow,
-.band {
-  position: absolute;
-  opacity: 0;
-  will-change: transform, opacity;
-}
-
-/* The dark green-black of the section, over the storm ground. */
-.tint {
-  inset: 0;
-  background: #07130f;
-}
-
-/* A green ellipse that rises from below the screen (the reference's gradient bloom). */
-.glow {
-  left: -25%;
-  right: -25%;
-  bottom: -55%;
-  height: 110%;
-  transform: translate3d(0, 35%, 0);
-}
-
-.glowInner {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 50% 50% at 50% 55%,
-    rgb(37 235 168 / 0.58) 0%,
-    rgb(14 128 92 / 0.3) 38%,
-    rgb(7 40 30 / 0.1) 62%,
-    transparent 78%
-  );
-  animation: drift 17s ease-in-out infinite alternate;
-}
-
-/* A faint band of the same green along the top edge. */
-.band {
-  left: -10%;
-  right: -10%;
-  top: -30%;
-  height: 62%;
-  background: radial-gradient(ellipse 55% 55% at 50% 40%, rgb(60 240 190 / 0.2), transparent 72%);
-}
-
-@keyframes drift {
-  from {
-    transform: translate3d(-4%, 2%, 0) scale(1);
-  }
-  to {
-    transform: translate3d(4%, -3%, 0) scale(1.06);
-  }
-}
 
 /* ---------------------------------------------------------------- the wheel */
 
@@ -87,13 +24,13 @@
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .wheel {
-  --wheel-y: 25%;
+  --wheel-y: 20%;
   position: absolute;
   inset: 0;
   display: block;
   margin: 0;
   perspective: 1000px;
-  /* The names stand in the upper third, over the dragon's head, clear of the doll that rides it. */
+  /* The names stand in the upper fifth, clear of the dragon's head and the doll that rides it. */
   perspective-origin: 50% var(--wheel-y);
   transform-style: preserve-3d;
   pointer-events: none;

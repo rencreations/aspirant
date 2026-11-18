@@ -34,31 +34,30 @@ describe("the registry", () => {
     expect(SECTIONS.map((s) => s.id)).toEqual([...SECTION_IDS]);
   });
 
-  it("starts each section where the design table says (screens)", () => {
+  it("starts each section where the one before it ends, from the sections' own lengths", () => {
+    // The lengths are the sections' (their `index.ts`): nothing here may pin where a section is.
     const layout = layoutSections(SECTIONS);
-    const starts = Object.fromEntries(layout.placed.map((p) => [p.id, p.start]));
-    const expected = {
-      hero: 0,
-      aspirants: 4.2,
-      rows: 5.8,
-      strip: 8.2,
-      bolt: 11.3,
-      fall: 15.3,
-      hand: 17.9,
-      list: 21.3,
-      selena: 29.9,
-      voices: 33.7,
-      music: 36.1,
-      funny: 38.9,
-      chase: 43.1,
-      bend: 47.1,
-      archive: 56.1,
-      footer: 59.1,
-    };
-    for (const [id, start] of Object.entries(expected)) {
-      expect(starts[id], id).toBeCloseTo(start, 6);
+    let at = 0;
+    for (const p of layout.placed) {
+      expect(p.start, p.id).toBeCloseTo(at, 9);
+      expect(p.def.screens, p.id).toBeGreaterThan(0);
+      at += p.def.screens;
+      expect(p.end, p.id).toBeCloseTo(at, 9);
     }
-    expect(layout.total).toBeCloseTo(60.3, 6);
+    expect(layout.total).toBeCloseTo(at, 9);
+    expect(layout.placed[0]?.start).toBe(0);
+  });
+
+  it("keeps every lead and tail inside the page and inside the neighbours it overlaps", () => {
+    const layout = layoutSections(SECTIONS);
+    for (const p of layout.placed) {
+      // A lead can reach back into the previous section at most, a tail into the next one at most.
+      const before = layout.placed[p.index - 1];
+      const after = layout.placed[p.index + 1];
+      if (before)
+        expect(p.def.lead, p.id).toBeLessThanOrEqual(before.def.screens + before.def.tail);
+      if (after) expect(p.def.tail, p.id).toBeLessThanOrEqual(after.def.screens + after.def.lead);
+    }
   });
 
   it("keeps the footer's text in the page's flow and every other section's in the stage", () => {

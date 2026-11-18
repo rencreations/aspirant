@@ -19,7 +19,7 @@ import {
   Group,
   type Material,
   Mesh,
-  MeshStandardMaterial,
+  MeshBasicMaterial,
   type Object3D,
   Quaternion,
   SRGBColorSpace,
@@ -39,6 +39,7 @@ import {
   unprojectToDepth,
 } from "../gramophone/frame";
 import { getCast, type Cast } from "../shared/cast";
+import { addInk, INK_COLOR, InkMaterial, ToonMaterial, type Ink } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 import { coverCrop, getCover, loadTracks, type TrackArt } from "./covers";
 import { createCrate, type Crate, type CrateSocket } from "./crate";
@@ -91,7 +92,10 @@ export interface RecordSeat {
 interface Sleeve {
   group: Group;
   mesh: Mesh;
-  front: MeshStandardMaterial;
+  /** The line round the sleeve (it shares the actor's one ink material). */
+  hull: Ink;
+  /** The cover face: unlit, so the picture is exactly the picture. */
+  front: MeshBasicMaterial;
   texture: Texture | null;
   art: TrackArt;
 }
@@ -99,6 +103,8 @@ interface Sleeve {
 /** Floats per sleeve in the hit cache: ax, ay, bx, by, radius, depth. */
 const HIT_STRIDE = 6;
 const HOVER_BIAS = 30;
+/** A prop's line is a little bolder than a figure's (the crate has no face to carry the picture). */
+const INK_WEIGHT = 1.2;
 /** Where the held disc hangs from a glove: its rim at the glove, its face to the viewer, a little turned. */
 const HELD_YAW = 0.3;
 /** Without a hand the disc is held above the crate, toward the viewer. */
@@ -150,13 +156,12 @@ export class RecordsActor implements Actor {
 
   private readonly viewport: ActorCtx["viewport"];
   private readonly cast: Cast;
-  private readonly env: Texture;
+  /** The line of every hull of the actor: the crate's boards, the sleeves and the disc. */
+  private readonly ink = new InkMaterial(INK_COLOR, undefined, INK_WEIGHT);
   private readonly holder = new Group();
   private readonly sockets: Record<CrateSocket, Group>;
   private readonly vinyl: Vinyl;
   private readonly sleeveGeometry: BoxGeometry;
-  private readonly keyDir = new Vector3(-0.3, 0.5, 0.8).normalize();
-  private readonly fillDir = new Vector3(0.6, -0.1, 0.8).normalize();
   private readonly removeTargets: Array<() => void> = [];
 
   private crate: Crate | null = null;
@@ -199,7 +204,6 @@ export class RecordsActor implements Actor {
   private constructor(ctx: ActorCtx) {
     this.viewport = ctx.viewport;
     this.cast = getCast(ctx.stage);
-    this.env = this.cast.env;
 
     this.object.name = "records";
     this.holder.position.y = -BOX_HEIGHT / 2;
@@ -213,8 +217,14 @@ export class RecordsActor implements Actor {
     this.sleeveGeometry = new BoxGeometry(SLEEVE.size, SLEEVE.size, SLEEVE.thickness);
     // The box's origin is its middle: move it so a sleeve's origin is the middle of its bottom edge.
     this.sleeveGeometry.translate(0, SLEEVE.size / 2, 0);
+    // Three draws for a sleeve, not six: the box's faces are +x, -x, +y, -y, +z (the cover), -z, six
+    // indices each. The paper takes the first four and the last, the cover the one between.
+    this.sleeveGeometry.clearGroups();
+    this.sleeveGeometry.addGroup(0, 24, 0);
+    this.sleeveGeometry.addGroup(24, 6, 1);
+    this.sleeveGeometry.addGroup(30, 6, 0);
 
-    this.vinyl = createVinyl(this.env, { key: this.keyDir, fill: this.fillDir });
+    this.vinyl = createVinyl(this.ink);
     this.vinyl.group.visible = false;
     this.holder.add(this.vinyl.group);
 
@@ -386,10 +396,6 @@ export class RecordsActor implements Actor {
     this.holder.updateMatrixWorld(true);
     this.measureHits();
 
-    // The sheen of the grooves follows the cast's lights (a section may move them).
-    this.keyDir.copy(this.cast.key.position).normalize();
-    this.fillDir.copy(this.cast.fill.position).normalize();
-
     this.cost += (performance.now() - t0 - this.cost) * 0.05;
   }
 
@@ -401,6 +407,7 @@ export class RecordsActor implements Actor {
     this.crate?.dispose();
     this.crate = null;
     this.vinyl.dispose();
+    this.ink.dispose();
     this.sleeveGeometry.dispose();
     this.object.removeFromParent();
   }
@@ -418,6 +425,8 @@ export class RecordsActor implements Actor {
     unprojectToDepth(pt, pl.x, pl.y, pl.z);
     o.position.set(pt.x, pt.y, Math.min(pl.z, CAMERA_Z * 0.9));
     o.scale.setScalar(scale);
+    // The ink keeps its width in pixels: it needs the crate's height on the screen.
+    this.ink.setSize(scale * BOX_HEIGHT * depthScale(pl.z));
     o.rotation.set(pl.pitch, pl.yaw, pl.roll);
     o.updateMatrixWorld(true);
   }
@@ -699,7 +708,7 @@ export class RecordsActor implements Actor {
 
   private rebuildCrate(n: number): void {
     this.crate?.dispose();
-    const crate = createCrate(Math.max(1, n), this.env);
+    const crate = createCrate(Math.max(1, n), this.ink);
     this.crate = crate;
     this.holder.add(crate.group);
     const { width, depth } = crate.dims;
@@ -709,13 +718,7 @@ export class RecordsActor implements Actor {
   }
 
   private makeSleeve(art: TrackArt, bitmap: ImageBitmap | null, index: number): Sleeve {
-    const paper = new MeshStandardMaterial({
-      color: 0xe8dfcf,
-      roughness: 0.85,
-      metalness: 0,
-      envMap: this.env,
-      envMapIntensity: 0.3,
-    });
+    const paper = new ToonMaterial({ color: 0xe8dfcf, look: "soft", name: "sleeve-paper" });
     let texture: Texture | null = null;
     if (bitmap) {
       texture = new Texture(bitmap);
@@ -729,28 +732,30 @@ export class RecordsActor implements Actor {
       texture.needsUpdate = true;
     }
     const fallback = art.color ?? `hsl(${(index * 47) % 360} 30% 45%)`;
-    const front = new MeshStandardMaterial({
+    // The cover is unlit: the art is shown as it is, crisp, with the ink line round the card.
+    const front = new MeshBasicMaterial({
       map: texture,
-      color: texture ? 0xdcdcdc : fallback,
-      roughness: 0.7,
-      metalness: 0,
-      envMap: this.env,
-      envMapIntensity: 0.3,
+      color: texture ? 0xffffff : fallback,
+      toneMapped: false,
+      fog: false,
     });
-    // BoxGeometry's groups: +x, -x, +y, -y, +z (the cover), -z.
-    const mesh = new Mesh(this.sleeveGeometry, [paper, paper, paper, paper, front, paper]);
+    front.name = "sleeve-cover";
+    // The groups of the geometry: the paper (0), the cover (1), the paper again.
+    const mesh = new Mesh(this.sleeveGeometry, [paper, front]);
     mesh.name = `sleeve_${index}`;
     const group = new Group();
     group.name = `sleeve_${index}_pivot`;
     group.rotation.order = "YXZ";
     group.add(mesh);
+    const hull = addInk(mesh, this.ink);
     this.holder.add(group);
-    return { group, mesh, front, texture, art };
+    return { group, mesh, hull, front, texture, art };
   }
 
   private clearSleeves(): void {
     for (const sleeve of this.sleeves) {
       const materials = sleeve.mesh.material as Material[];
+      sleeve.hull.remove();
       // The paper is one material used five times.
       materials[0]?.dispose();
       sleeve.front.dispose();

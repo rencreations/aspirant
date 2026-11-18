@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { BEND_SCREENS, STAGE, T, beatAt, newBeat, spotsOf } from "./beats";
+import { BEAT_SPAN, STAGE, T, beatAt, newBeat, spotsOf } from "./beats";
+
+// The length is the registry's (`index.ts`): the beats must fit whatever it is.
+const BEND_SCREENS = BEAT_SPAN;
 import { droneAt, headOf, newDroneWant, paperDrone, restOf } from "./meet";
 
 const vps = [

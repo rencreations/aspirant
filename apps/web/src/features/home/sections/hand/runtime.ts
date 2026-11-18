@@ -1,21 +1,29 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureSelena } from "../../actors/selena";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
+import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
+import { sectionEnd, sectionScreens } from "../../kernel/where";
+import { newBackdropPlan } from "../bolt/backdrop-plan";
 
+import { planHandBackdrop } from "./backdrop-plan";
 import { ensureCarry, type Carry } from "./carry";
 import { whenIdle } from "./idle";
-import { HAND_SCREENS, handBeats, newHandBeats, seg, type HandBeats } from "./timeline";
+import { HAND_LAST } from "./stations";
+import { handBeats, newHandBeats, seg, type HandBeats } from "./timeline";
 
 const expoOut = (u: number): number => (u >= 1 ? 1 : 1 - 2 ** (-10 * u));
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 
 /**
- * The hand section: the hand rises, the doll lands in the palm and sits, the words come in letter
- * by letter, the hint says to hover, then the hand goes down and the words are left behind above.
- * The actors are driven by `Carry` (shared with the list); this file owns the words. Everything is a
- * function of `local`. The words work before the actors have arrived (a jump into the section while
- * the hand and the doll are still loading shows the words and the empty stage, never a half page).
+ * The hand section: one play (about two seconds) in which the hand rises, the doll lands in the palm
+ * and sits, the words come in letter by letter and the hint says to hover; then the page rests with
+ * the fingers live; then, as the page goes on to the list, the hand comes down and the words are left
+ * behind above (a short join that follows the scroll). The actors are driven by `Carry` (shared with
+ * the list); this file owns the words and the live backdrop (a deep nebula). The words work before
+ * the actors have arrived (a jump into the section while the hand and the doll are still loading shows
+ * the words and the empty stage, never a half page).
  */
 class HandRuntime implements SectionRuntime {
   private carry: Carry | null = null;
@@ -27,9 +35,13 @@ class HandRuntime implements SectionRuntime {
   private readonly hint: HTMLElement | null;
   private readonly hintLine: HTMLElement | null;
   private readonly hintIcon: SVGElement | null;
+  private readonly plan = newBackdropPlan();
   private vh = 900;
 
-  constructor(private readonly ctx: SectionCtx) {
+  constructor(
+    private readonly ctx: SectionCtx,
+    private readonly backdrop: Backdrop | null,
+  ) {
     const root = ctx.dom.text;
     this.chars = Array.from(root.querySelectorAll<HTMLElement>("[data-hand-ch]"));
     this.head = root.querySelector<HTMLElement>("[data-hand-head]");
@@ -48,11 +60,16 @@ class HandRuntime implements SectionRuntime {
     if (!this.disposed) this.carry = carry;
   }
 
-  update(local: number, frame: FrameInfo): void {
-    const t = local * HAND_SCREENS;
+  update(v: number, frame: FrameInfo): void {
+    // The lead goes with the scroll (negative beats are screens); the tail rests on the last beat.
+    const t = Math.min(HAND_LAST, beatFor(v, 0, HAND_LAST, sectionScreens("hand")));
+    // The join with the list: the screens past the place where the hand ends and the list begins.
+    const ts = frame.S - sectionEnd("hand");
     this.vh = frame.viewport.h;
-    this.carry?.apply(t, frame, t >= 0);
-    this.words(handBeats(t, this.b), frame.time);
+    this.carry?.drive(t, ts, 0, frame, t >= 0);
+    this.words(handBeats(t, ts, this.b), frame.time);
+    const plan = planHandBackdrop(t, this.plan);
+    this.backdrop?.set(plan.kind, plan.options);
   }
 
   /** The title letter by letter (oryzo's recipe: a slide of a quarter em and a fade, staggered). */
@@ -100,8 +117,9 @@ class HandRuntime implements SectionRuntime {
   }
 }
 
-export function createRuntime(ctx: SectionCtx): SectionRuntime {
-  const runtime = new HandRuntime(ctx);
+export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
+  const backdrop = await ensureBackdrop(ctx).catch(() => null);
+  const runtime = new HandRuntime(ctx, backdrop);
   // The hand and the doll are the biggest files: the section is built without them and they join
   // when ready. The list section shares the same pair (`ensureCarry` builds them once). The section
   // mounts twelve screens early, so this falls in a pause of the scroll long before the hand shows;

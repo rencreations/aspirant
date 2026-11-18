@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { REST_V } from "./stations";
+
 import {
   OUT_FROM,
   ballSize,
@@ -37,9 +39,9 @@ function artFor(vp: { w: number; h: number }): StageRect {
 
 describe("emerge and leave", () => {
   it("starts hidden, ends shown, and never goes backwards", () => {
-    for (let part = 0; part < 12; part++) {
+    for (const part of [0, 1, 2, 3, 3 + 7 * 0.6]) {
       expect(emergeAt(0, part)).toBe(0);
-      expect(emergeAt(0.5, part)).toBe(1);
+      expect(emergeAt(REST_V, part)).toBe(1);
       let last = 0;
       for (let i = 0; i <= 100; i++) {
         const v = emergeAt(i / 100, part);
@@ -58,7 +60,7 @@ describe("emerge and leave", () => {
   it("keeps every row shown while the section stands and hidden after it", () => {
     const out = { opacity: 0, lift: 0 };
     for (let row = 0; row < 8; row++) {
-      rowLook(0.5, row, out);
+      rowLook(REST_V, row, out);
       expect(out.opacity).toBe(1);
       expect(out.lift).toBe(0);
       rowLook(1, row, out);
@@ -116,7 +118,7 @@ describe("where the drones are", () => {
   it("stands at the dwell spots in the middle of the section, on the screen", () => {
     for (const vp of VIEWS) {
       const art = artFor(vp);
-      const stand = duoSpotsAt(0.5, vp, art, newSpots());
+      const stand = duoSpotsAt(REST_V, vp, art, newSpots());
       const dwell = dwellSpots(vp, art, newSpots());
       for (const [got, want] of [
         [stand.a, dwell.a],
@@ -202,7 +204,7 @@ describe("the narrow layout", () => {
   it("keeps the pair in the band's corner on a 900 px screen, off the chooser", () => {
     const vp = { w: 900, h: 700 };
     const art = artFor(vp);
-    const spots = duoSpotsAt(0.5, vp, art, newSpots());
+    const spots = duoSpotsAt(REST_V, vp, art, newSpots());
     for (const s of [spots.a, spots.b]) {
       // Below the top of the band (the chooser is above it).
       expect(s.y + s.h / 2).toBeLessThanOrEqual(art.top);
