@@ -1,0 +1,29 @@
+/*
+ * The words of the funny section. In the stage they stand in the lower part of the screen (the two
+ * drones are big in the middle above them) and the runtime moves and fades the whole content.
+ * Without scripts or WebGL they are an ordinary block.
+ */
+
+.box {
+  text-align: center;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .box {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.25rem, 6.5vh, 4rem);
+  width: min(92vw, 60rem);
+  transform: translate3d(-50%, 0, 0);
+  display: grid;
+  justify-items: center;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .box > p {
+  max-width: 34ch;
+}
+
+@media (max-width: 47.5em) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .box {
+    bottom: clamp(1rem, 4vh, 2.5rem);
+  }
+}

@@ -1,11 +1,12 @@
 import type { HomeSection } from "../../kernel/types";
 
+import { SCREENS } from "./choreo";
 import { preload } from "./preload";
 
 /** the gramophone and the records. Length, lead and tail are in screens (design section 4). */
 export const section: HomeSection = {
   id: "music",
-  screens: 2.8,
+  screens: SCREENS,
   lead: 0.5,
   tail: 0.5,
   bg: "daybreak",

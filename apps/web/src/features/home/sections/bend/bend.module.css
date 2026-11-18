@@ -1,0 +1,153 @@
+/*
+ * The bend section's words. In the stage (scripts on, WebGL) the two titles with their buttons are
+ * laid over the screen, the title at the top and the button at the foot, so the middle is Tetra's
+ * and the pictures'; the runtime fades them in and out (opacity, a small lift) and hides them
+ * (`visibility`) when they are off, so a hidden button never takes a press or the tab key. The plates
+ * of the fan pictures' credits are small cards the runtime moves beside the card under the pointer.
+ * In the plain page (no WebGL, no scripts) everything is an ordinary block, nothing is hidden.
+ */
+
+.group {
+  display: grid;
+  gap: var(--space-s);
+  justify-items: center;
+  text-align: center;
+  margin-top: var(--space-xl);
+}
+
+.title {
+  text-align: center;
+}
+
+.actions {
+  justify-content: center;
+}
+
+.notice {
+  margin: var(--space-m) 0 0;
+  font-size: var(--step--1);
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.notice a {
+  color: inherit;
+}
+
+.plates {
+  display: grid;
+  gap: var(--space-s);
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plate {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+  padding: 0.8rem 0.95rem 0.85rem;
+  border: 1px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.plateTitle {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.plateReport {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+/* ---------------------------------------------------------------- the stage */
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .group {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: calc(var(--nav-h) + clamp(0.5rem, 3vh, 2.2rem)) var(--gutter) clamp(1.4rem, 5vh, 3rem);
+  /* Off until the runtime says otherwise. Not `visibility: hidden`: a hidden control cannot take the
+     focus, and a keyboard that reaches one moves the page to the place where it shows. */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Off, a button takes no press (this has to outweigh the stage's rule that gives a link its pointer). */
+:global(.js) :global([data-home]):not([data-gl="off"]) .group:not([data-live="1"]) a[href],
+:global(.js) :global([data-home]):not([data-gl="off"]) .notice:not([data-live="1"]) a[href] {
+  pointer-events: none;
+}
+
+/* The spiral's front passes low on the screen, so its button stands under its title, at the top. */
+:global(.js) :global([data-home]):not([data-gl="off"]) .group.groupTop {
+  justify-content: flex-start;
+  gap: clamp(0.7rem, 2.2vh, 1.5rem);
+}
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .group .title {
+  font-size: var(--step-5);
+}
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .group .actions {
+  margin: 0;
+}
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .notice {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(0.4rem, 1.6vh, 1rem);
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .plates {
+  position: absolute;
+  inset: 0;
+  display: block;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* A plate is in the page for a keyboard and a screen reader; it is seen only beside its picture. */
+:global(.js) :global([data-home]):not([data-gl="off"]) .plate {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 17.5rem;
+  max-width: calc(100vw - 2rem);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-out);
+}
+
+:global(.js) :global([data-home]):not([data-gl="off"]) .plate[data-on="1"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A plate that is not shown takes no press on its links (they stay in the tab order). */
+:global(.js) :global([data-home]):not([data-gl="off"]) .plate:not([data-on="1"]) a[href] {
+  pointer-events: none;
+}
+
+@media (max-width: 40rem) {
+  :global(.js) :global([data-home]):not([data-gl="off"]) .group .title {
+    font-size: var(--step-4);
+  }
+}

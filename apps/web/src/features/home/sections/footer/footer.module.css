@@ -1,0 +1,233 @@
+/*
+ * The footer: a card of hairlines with the drone's ring in its middle. Plain first (a block on the
+ * paper for no scripts and no WebGL), then the stage, where the footer is the page's own last
+ * screens: a sticky stage that rises over the fixed layers. The card has NO fill: the drone is drawn
+ * on the canvas under the text layer, so a filled card would hide it. The fixed ground shows
+ * through, and the card's edge is a hairline with a soft lip above it. Only transform and opacity move.
+ */
+
+.card {
+  display: grid;
+  gap: var(--space-l);
+  padding: var(--space-l) 0;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.centre {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+/* Where the drone rests. Empty and decorative; the runtime measures it. */
+.ring {
+  display: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: var(--step-5);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.line {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--text-dim);
+  text-wrap: balance;
+}
+
+.rule {
+  display: block;
+  width: min(24rem, 70vw);
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--space-2xs);
+}
+
+.hint {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.foot {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.madeBy,
+.legalLink {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-s);
+}
+
+.legalLink {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.legalLink:hover,
+.legalLink:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.notice {
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--text-faint);
+}
+
+.pool {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- the stage */
+
+:global(.js)
+  :global([data-home]:not([data-gl="off"]))
+  :global(section[data-home-section="footer"]) {
+  display: block;
+  place-items: stretch;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.9rem, 2vw, 1.6rem);
+  border: 1px solid var(--line-strong);
+  border-radius: clamp(1.25rem, 2.4vw, 2.25rem);
+}
+
+/* The lip: a soft edge above the card's top, so it reads as a page that rises. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .card::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: -1.5rem;
+  height: 1.5rem;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: linear-gradient(to top, rgb(11 11 14 / 0.07), transparent);
+  pointer-events: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .centre {
+  gap: var(--space-2xs);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .ring {
+  display: block;
+  position: relative;
+  width: min(22vh, 44vw);
+  aspect-ratio: 1;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .ring::before {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border: 1px dashed var(--line);
+  border-radius: 50%;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .fill {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .foot {
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-2xs) var(--space-m);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .notice {
+  grid-column: 1 / -1;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .pool {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+    transparent 64%
+  );
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 40em) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .foot {
+    grid-template-columns: 1fr;
+  }
+}

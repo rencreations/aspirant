@@ -1,0 +1,188 @@
+/*
+ * The music section's words. The gramophone, the crate of records and the two drones are drawn by
+ * the stage; this is the title at the top left, the line that says what to do (and then what
+ * plays), the keys for the keyboard and the buttons at the foot. The phase of the scene is
+ * `data-phase` on the root: "wait" while the props are coming in, "ready" when a record can be
+ * picked, "picked" once one is. `data-held` is "1" while the page is held (Continue shows) and
+ * `data-again` is "1" while a disc is on the platter. Only transform and opacity move.
+ */
+
+.music {
+  position: relative;
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+  justify-items: start;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: clamp(2.2rem, 6vh, 3.4rem);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.hint,
+.loading,
+.now {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.now b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-s);
+}
+
+.text {
+  padding: 0.4rem 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    opacity 350ms var(--ease-out),
+    transform 350ms var(--ease-out);
+}
+
+.text:hover {
+  color: var(--accent);
+}
+
+.text:focus-visible,
+.key:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+/* The records and the crank, one button each, for the keyboard. They show only when focused. */
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-width: 34rem;
+  opacity: 0;
+  /* Out of the way of the 3D crate underneath until a key has the focus. */
+  pointer-events: none;
+}
+
+.keys:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.key {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--bg, #f4f6f9);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.key:hover {
+  background: var(--text);
+  color: var(--bg, #f4f6f9);
+}
+
+/* ---------------------------------------------------------------- the stage */
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .music {
+  position: absolute;
+  inset: calc(var(--nav-h) + 0.4rem) var(--gutter) clamp(0.9rem, 2.4vh, 1.6rem);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .actions {
+  grid-row: 5;
+  align-self: end;
+}
+
+/* The keys stand in the free column under the line, not over the crate. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .keys {
+  grid-row: 3;
+  align-self: start;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 22rem;
+  z-index: 1;
+}
+
+/* The hint, the waiting line and the playing line take turns in one place. */
+:global(.js) :global([data-home]:not([data-gl="off"])) :is(.hint, .loading, .now) {
+  grid-row: 2;
+  grid-column: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 8px, 0);
+  /* The line that goes leaves quickly, so two lines never stand on each other. */
+  transition:
+    opacity 160ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    visibility 0s linear 160ms;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="wait"] .loading,
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="ready"] .hint,
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="picked"] .now {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  /* The line that comes waits for the other to go. */
+  transition:
+    opacity 450ms var(--ease-out) 180ms,
+    transform 450ms var(--ease-out) 180ms,
+    visibility 0s linear 0s;
+}
+
+/* Another record and Continue come and go with the scene. */
+:global(.js) :global([data-home]:not([data-gl="off"])) :is(.text) {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 450ms var(--ease-out),
+    transform 450ms var(--ease-out),
+    visibility 0s linear 450ms;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-again="1"] [data-music-another],
+:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-held="1"] [data-music-continue] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+/* The plain page: the title and the button to the room. */
+:global([data-home][data-gl="off"]) :is(.hint, .loading, .now, .keys, .text),
+:global(html:not(.js)) :is(.hint, .loading, .now, .keys, .text) {
+  display: none;
+}

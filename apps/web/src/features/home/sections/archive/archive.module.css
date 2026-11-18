@@ -1,0 +1,255 @@
+/*
+ * The archive: ten covers in one row, lit one at a time by the drone. Plain first (a grid of cards on
+ * the paper, for no scripts and no WebGL), then the stage: the row is moved by the scroll and every
+ * cover's state comes from three numbers the runtime writes on its list item (`--in` how far it has
+ * risen, `--out` how far it has lifted away, `--lit` how much the light is on it). The only things
+ * that change are transform and opacity.
+ */
+
+.title {
+  margin: 0 0 var(--space-m);
+  font-family: var(--font-display-stack);
+  font-size: var(--step-5);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: var(--space-m) var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.room {
+  position: relative;
+  min-width: 0;
+}
+
+.card {
+  display: block;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 1.6vw, 1.25rem);
+  background: var(--room);
+  box-shadow: 0 0 0 1px rgb(11 11 14 / 0.08);
+}
+
+.cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The paper over a cover the light is not on. */
+.veil {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.meta {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: var(--space-2xs);
+}
+
+.idx,
+.count,
+.open {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.idx {
+  color: var(--text-faint);
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-2);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.more {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.count {
+  color: var(--text-dim);
+}
+
+.tag {
+  font-family: var(--font-serif-stack);
+  font-size: var(--step--1);
+  font-style: italic;
+  line-height: 1.2;
+  color: var(--text-dim);
+  text-wrap: balance;
+}
+
+.open {
+  margin-top: 0.15rem;
+  color: var(--accent);
+}
+
+.foot {
+  margin-top: var(--space-m);
+}
+
+.card:hover .name,
+.card:focus-visible .name {
+  color: var(--accent);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+.beam,
+.pool {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- the stage */
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .title {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--nav-h) + var(--space-s));
+  margin: 0;
+  font-size: var(--step-4);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .foot {
+  position: absolute;
+  right: var(--gutter);
+  top: calc(var(--nav-h) + var(--space-s));
+  margin: 0;
+}
+
+/* The row. The runtime sets the size and place of every item once per resize, and moves the row by
+   transform. A press on the row's items is a press on a link. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .room {
+  --in: 0;
+  --out: 0;
+  --lit: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: calc(var(--in) * (1 - var(--out)));
+  transform: translate3d(0, calc((1 - var(--in)) * 44px - var(--out) * 96px), 0);
+  will-change: transform, opacity;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .card {
+  position: absolute;
+  inset: 0;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .frame {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  transform: translate3d(0, calc(var(--lit) * -14px), 0) scale(calc(1 + var(--lit) * 0.06));
+  transform-origin: 50% 70%;
+  will-change: transform;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .veil {
+  opacity: calc((1 - var(--lit)) * 0.62);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 1.1rem);
+  margin: 0;
+  opacity: calc(0.55 + var(--lit) * 0.45);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .more {
+  opacity: var(--lit);
+  transform: translate3d(0, calc((1 - var(--lit)) * 8px), 0);
+}
+
+/* The light: a pool under the lit cover and a beam from the drone to it. Both sit under the canvas,
+   take the lit room's colour from `--glow` on their slot, and move by transform and opacity. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .pool,
+:global(.js) :global([data-home]:not([data-gl="off"])) .beam {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .pool {
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--glow, #2a5bff) 42%, transparent) 0%,
+    transparent 66%
+  );
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .beam {
+  transform-origin: 50% 0;
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--glow, #2a5bff) 55%, transparent) 0%,
+    color-mix(in srgb, var(--glow, #2a5bff) 6%, transparent) 100%
+  );
+}
+
+@media (max-width: 40em) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .foot {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: var(--space-m);
+    width: max-content;
+    translate: -50% 0;
+  }
+}

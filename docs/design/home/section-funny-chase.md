@@ -1,0 +1,103 @@
+# Home sections: funny and chase (workstream S6)
+
+Two scenes, 8.2 screens, `38.9 to 47.1`. Tetra flies a kite, Silverbolt crosses with the doll cursing in its mouth and breaks the rope, the two Guinevere drones stare, come to the middle and question each other (copy: "What's going on?", "Understand all The Aspirants story for all characters in one novel", "Read The Story"); then the doll runs, Silverbolt chases her, Tetra chases both, runs out of breath, waves, sits and reads a comic while the camera comes in on her and the giant word COMIC, the two comics and "See all comics" arrive and leave. Code: `apps/web/src/features/home/sections/funny/` and `.../chase/`. Owner's words: the "Comedy section" and "Chase" paragraphs of `docs/superpowers/specs/2026-11-18-home-page-request.md`. The owner's copy is in `content.ts` (`FUNNY`, `CHASE`).
+
+Every frame is a pure function of `local`, the screen size and the section's small state (the cut kite, the marks already thrown, the frame count since an actor appeared). The arithmetic is in `timeline.ts` (no three, no DOM, tested); `runtime.ts` sets the actors in full every frame they are shown.
+
+## 1. Funny (4.2 screens, lead 0.5, tail 0.5, daybreak)
+
+| local        | what                                                                                                                                                                                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 to 0.10    | the duo hover high at the left (J11, music's end). Tetra runs in from the right, kite behind her, decelerates into her spot and flies it (pose `kite`, kite high on a verlet rope)                                                                                              |
+| 0.11 to 0.31 | the duo `stare` (eyes on Tetra, then on the dragon's head). 0.16 to 0.45: Silverbolt crosses right to left, smiling, jaw open, flight loop; the doll is in its mouth (socket `mouth`), `scream` pose, `cursing`/`scream`/`angry` mood loop, `talk()`, a swear mark every 0.62 s |
+| the cut      | `cutMoment(g)`: the dragon's head meets the rope. `kite.ropeNear` gives where, `kite.cut(at, "fall")` (the owner's words: "the kite down"). A bang over each drone. Tetra turns angry (`setFace("angry")`, vein, dust) and runs off to the left                                 |
+| 0.31 to 0.40 | the duo turn from stare to `confused` (question marks and sweat from the duo's own cues, which become comic marks through `setMarkSink`)                                                                                                                                        |
+| 0.43 to 0.57 | the dragon has left. The duo come to the middle, big (ball 0.3 h, at +-0.15 w, 0.14 h above the middle)                                                                                                                                                                         |
+| 0.57 on      | `question`: they question each other. 0.58 to 0.64 the words arrive (title, line, button), in the lower part of the screen under the two drones                                                                                                                                 |
+| 0.8 to 1     | the page rides up: the duo and the words move up one screen a screen and are gone (the owner: "they will stay in this section ... and not follow the user again")                                                                                                               |
+
+Kite: `kite.fly(...)` every frame it is shown; it follows Tetra in, then hangs at `geometry().kite`; after the cut it falls, and shrinks away in a puff (`kiteAway` to `kiteGone`). `mend()` when `local` goes back above the cut, `settle(4)` two frames after a jump past it. The cut is idempotent in `local`.
+
+## 2. Chase (4 screens, lead 0.5, tail 0.5, daybreak)
+
+| local        | what                                                                                                                                                                                                                          |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 to 0.02    | empty and light (J12)                                                                                                                                                                                                         |
+| 0.02 to 0.24 | the doll runs left to right (run cycle scrubbed by distance, `walkPhaseFor`), scared faces (`scared`, `scream`, `crying`), `talk()`, sweat beads, speed lines, dust                                                           |
+| 0.07 to 0.37 | Silverbolt chases her, head turned to the right, jaw snapping three times a second, speed lines; it stays behind her until she is gone, then goes on at her speed                                                             |
+| 0.15 to 0.46 | Tetra runs in from the left, angry (steam, speed lines, dust, a vein), slows down and stops in the middle                                                                                                                     |
+| 0.46 to 0.65 | `pant` (steam, sweat, a cloud), `wave` (tired face), `sit`                                                                                                                                                                    |
+| 0.60 to 0.78 | the camera comes in on her (`zoomAt`: her height 0.38 h to 0.85 h, feet to -0.376 h). From 0.64 the pose `read`: the book comes out and opens by itself (`book.auto()`), a page turns every 3.4 s                             |
+| 0.70 to 0.78 | the words arrive: COMIC behind her (a drawn word in the `below` layer, accent colour, ink stroke and shadow), the two comics left and right (real links, tilted covers), the button "See all comics" (on a solid page colour) |
+| 0.90 to 0.99 | the words leave gracefully (opacity and transform only)                                                                                                                                                                       |
+
+The two covers are the collection's own: `comic/the-aspirant/cover/p.webp` (left, "The Aspirants") and `comic/guinevere-vexana/cover/p.webp` (right, "Vexana & Guinevere"), named in `covers.ts` and checked against `public/data/library/comic.json` by a test. The book (Tetra's actor) shows them as textures; a press on a cover (a 3D hit target, cursor "READ") clicks the real link of that comic, so the page change goes through the site's transition. The same two links are real DOM for the keyboard and for readers.
+
+## 3. End states (the joints)
+
+Stage frame: origin in the middle, y up, pixels; `w`, `h` the screen. `T` and `G` are the numbers of `timeline.ts`.
+
+**Funny, local 0 (S 38.9).** Duo: visible, pose `float` at weight 1, `place` at `geometry(w, h).watch` (wide: a at (-0.3 w, 0.28 h), b at (-0.17 w, 0.34 h), ball diameter min(0.13 h, 0.1 w); compact: (-0.3 w, 0.3 h) and (-0.06 w, 0.36 h), diameter min(0.12 h, 0.2 w)). The music section imports `geometry` for its J11, so the two agree by construction. Tetra: visible, `run` at x = w/2 + 0.2 H + 40 (off the right edge), flip, her kite behind her; she is not seen. Silverbolt, doll, marks: hidden. Words: opacity 0, links `pointer-events: none`. Ground and bar: daybreak.
+
+**Funny, local 1 (S 43.1).** Nothing of the section is drawn: the lift is 0.84 screens, past `GONE` (0.74), so the duo are above the screen, the words are at opacity 0 and no actor is set. Marks cleared on leave. The doll is detached from the dragon's mouth on `leave`. Kite state: cut if the scroll passed the cut slowly, untouched if the section was jumped over (the chase calls `kite.fly(null)` whenever it shows Tetra, which puts it away).
+
+**Chase, local 0 (S 43.1).** Empty and light: no actor set, the words at opacity 0 (`wordsAmount(0) = 0`). The doll appears at 0.02, off the left edge.
+
+**Chase, local 1 (S 47.1).** Tetra: visible, `pose("read", 1)`, `place({ x: 0, y: zoomFeet, height: zoomH, flip: false })` with zoomFeet = -0.376 h and zoomH = 0.85 h (compact, `w < 760 || w < 0.8 h`: -0.3 h and 0.6 h). The book is out and open in her hands showing the two covers (`book.auto()` from the pose), the kite put away (`kite.fly(null)`), no reel, look `pointer`, interactive, face her own. Doll, Silverbolt, duo, marks: hidden. COMIC, the cards and the button: opacity 0 and `pointer-events: none` on the links. Daybreak ground. The bend section starts from exactly this (`bend/joints.test.ts` holds `tetraStand(1, geometry)` equal to its `FROM_CHASE`) and closes the book in its first screen.
+
+## 4. Files
+
+| file                                           | what                                                                                                                                                       |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `funny/index.ts, view.tsx, funny.module.css`   | the registry entry, the server markup (h2, line, pill link), the words' place (lower part of the screen)                                                   |
+| `funny/timeline.ts`                            | `T`, `geometry`, `dragonX`, `cutMoment`, `lift`, `bob`, `tetraPlace`. Tested in `timeline.test.ts`                                                         |
+| `funny/runtime.ts`                             | the scene: loads the five actors (marks, Tetra, Silverbolt, doll, duo) on their own, each used from the frame it arrives                                   |
+| `funny/preload.ts`                             | `tetraItems()`, `silverboltItems()`, `dollItems()`, `duoItems()`, all `deferred`                                                                           |
+| `chase/timeline.ts`                            | `T`, `geometry`, `dollPlace`, `dragonHeadX/Span/Place`, `tetraRun`, `beatAt`, `zoomAt`, `tetraStand`, `wordsAmount`. Tested in `timeline.test.ts`          |
+| `chase/covers.ts`                              | the two cover keys, `loadCovers` (whole through the media store, so the bar and the retry rules apply), `coverBitmap`, `coverItem` (deferred, priority 64) |
+| `chase/runtime.ts, view.tsx, chase.module.css` | the scene, the markup (heading for readers, two cover links, the button; COMIC in `below`), the layout of the words                                        |
+| `chase/preload.ts`                             | `dollItems()`, `silverboltItems()`, `tetraItems()`, `coverItem()`, all `deferred`                                                                          |
+
+Other helpers import `funny/timeline.geometry` (music's J11) and `chase/timeline.geometry`, `tetraStand` and the `compact` rule (bend's J13): keep those names and numbers.
+
+## 5. Numbers to tune
+
+`funny/timeline.ts`: `T` (every time), `geometry` (Tetra 0.34 h, kite, dragon 0.4 h at y 0.06 h, the duo's places), `DRAGON_LENGTH` 3.5, `HEAD_LEAD` 0.62. `funny/runtime.ts`: `YAW` -1.1, `DOLL_SCALE` 1.7 and the mouth offset (`y -0.03`, `z 0.2` metres), `MOODS`, `SWEAR_EVERY` 0.62, `GONE` 0.74. `chase/timeline.ts`: `T`, `geometry` (do not change `zoomH`, `zoomFeet`, `compact` without the bend section: its test holds them), `GAP_END` 0.2. `chase/runtime.ts`: `DOLL_YAW` 0.5, `SCARED`, `PAGE_EVERY` 3.4. `chase.module.css`: the card width and places (`--card-w`, +-37 vw), the word's size (`min(26vw, 40vh)`).
+
+## 6. Loading
+
+Everything is `deferred` (the section is far down the page): Tetra's chunk, model and kite pictures, Silverbolt, the doll, the duo, the two covers. Items two sections ask for are kept once by `aggregateItems`. The scene shows nothing of an actor that has not arrived; the words are always there. A cover that has not arrived leaves the book with its plain boards; the two DOM cards load their own `img` (`loading="lazy"`, `fetchPriority="low"`), 95 KB. The marks load nothing.
+
+## 7. How to look
+
+Dev server `http://localhost:3100`, real Chrome. `node scripts/qa/probes/home-s6.cjs <out>` (`BASE`, `SIZES`, `STEPS`): both sections at -5, 0, 25, 50, 75, 100 and 105 percent, the kite walked with a real wheel (down, up, down) and after jumps, a jump sequence, the two links, a hover and a press on the left cover of the book, a focus on the button from far away, frame gaps. The dev server reloads the page whenever any file of the tree changes (the other helpers' work): the probe waits for the home and its cast again. My own frame sheets and crops were made with scripts in `D:\ren\aspirant-work\home\S6\` (`funny.cjs`, `chase.cjs`, `crop.cjs`, `perf.cjs`, `sheet.py`).
+
+## 8. What was checked (dev server `http://localhost:3100`, real Chrome with the real GPU, pictures looked at)
+
+- **Frame sheets** at 1440x900, 1706x950 and 390x844: funny at 0, 4, 8, 14, 20, 26, 32, 38, 44, 50, 58, 62, 66, 70, 80, 90 and 100 percent, chase at 4, 9, 10, 16, 20, 22, 28, 34, 40, 46, 50, 55, 56, 62, 68, 74, 82, 84, 92, 95 and 100 percent. The beats come in the right order and read: the kite on its rope, the dragon with the doll in its mouth (her head sits under the upper jaw, cursing, the swear bubble over her), the cut with a bang over each drone, the drones staring, confused, then big in the middle with the words under them; the doll running scared, the dragon on her heels, Tetra angry behind both, then out of breath, waving, sitting, reading, the camera in, COMIC, the two covers and the button, and all of it leaving.
+- **Real wheel** (`wheel.cjs`, steps of 0.1 screen): the kite reads `tethered` below the cut (about 0.24), `cut` above it, and is mended again coming back up (read from the shared actor), and after a jump to chase 0.9 and a jump back to funny 0.1 it is tethered and flies (picture).
+- **Jumps** (probe `jumps`): funny 0.5, funny 0.14, chase 0.9, funny 0.3, chase 0.17, funny 0.35 (from chase): the right cast every time (e.g. chase 0.9 shows only Tetra, funny 0.3 shows the duo, Silverbolt, Tetra, doll).
+- **Mouse**: a hover on a drone in the middle gives the hit target `duo-a` / `duo-b` and the site cursor label SPAR / HELLO; a press spins `a` and makes `b` hide and giggle (pictures). A hover on the left cover of Tetra's book gives `tetra-book-left` (a 3D target, cursor READ) and a press goes to `/collection/comic/the-aspirant/`. The links and the button are real anchors.
+- **Keyboard**: a focus on "Read The Story" from far away moves the page to the funny section and its words show (a section whose control has the focus keeps its words shown: `kbd` in the runtimes); real Tab presses go to the two comics, then "See all comics", then the next section's button; Shift+Tab comes back. The focus ring is visible (picture).
+- **Performance** (`perf.cjs`, 240 frames each, 1440x900, dev server): median 16.7 ms and p95 16.9 to 17.1 ms in the kite, the dragon, the duo, the run, Tetra and the reading scenes; one 50 ms frame on the first frame of the kite (the rope settles 1.2 s at once, noted in the Tetra notes). No allocation per frame in the scenes' own code beyond the formatted style strings of the words (written only while they change).
+- **Covers blocked** (the library requests aborted): the book keeps its plain blue and pink boards, the two cards show an empty box with their names under it (a broken-image mark in the corner), no console error from the section. A failure handled, not a version.
+- **Touch** (390x844 with `hasTouch`): a tap on "Read The Story" goes to `/story/`, a tap on the right cover of the book (the 3D target) goes to `/collection/comic/guinevere-and-vexana/`, a tap on the left card goes to `/collection/comic/the-aspirant/`.
+- **Phone** (390x844, 2x): both sections as sheets; the covers and the word stand, the cards overlap Tetra's ears a little, the button sits on a solid page colour.
+- **Unit tests** (`npx vitest run src/features/home/sections/funny src/features/home/sections/chase`): the order of the story, the geometry at three sizes, the cut, the lift, the runners, the zoom, the words, the covers against `comic.json`. `eslint`, `tsc` and `prettier` are clean for both folders, `scan-text` reports 0 problems.
+
+## 9. Calls I made without the owner
+
+- The kite **falls** when cut (the owner: "the kite down"), then shrinks away in a puff. `kite.cut(at, "fly")` is the other outcome.
+- Tetra stays on the right and **runs off to the left** after the cut ("angrily chased silverbolt to off screen"); in the chase she comes in from the left behind the dragon.
+- The doll is wedged in the dragon's mouth facing us, bigger than her model's size at that depth (`DOLL_SCALE` 1.7) so she reads. The "shaken fist" is the scream pose's raised arms with the flail layer on top (no separate fist gesture).
+- The words of the funny scene stand in the lower part of the screen under the two drones. COMIC is a drawn word (not the Comic room's SVG) in the `below` layer, behind Tetra. The button "See all comics" is under everything, not under the word (Tetra's head is between them), on a solid page colour so her feet do not show through.
+- A **control with the keyboard focus keeps its section's words shown**. The kernel moves the page to the middle of a section when one of its controls takes the focus (funny 0.5, chase 0.5), where the words would not be out yet.
+- Only a **jump** clears the comic marks; a slow scroll leaves the neighbours' marks alone (the funny and chase sections overlap in their lead and tail).
+
+## 10. Not verified, and what was cut
+
+- **Not verified**: the production build and `scripts/perf/weak.mjs` (helpers do not build); Firefox, Safari, a real phone (the 390x844 runs are desktop Chrome with touch emulation); GPU time; a lost context with these actors on screen; the `lvh` unit on a phone with a moving address bar; the loading list on a throttled network (the items are `deferred`, their sizes are tested in the actors' own tests).
+- **The doll's "mouth"** is a placement by eye (`y -0.03`, `z 0.04` metres at the `mouth` socket, `jaw` about 0.6). It reads as held by the upper teeth from the three sizes looked at; at yaw other than -1.1 it would need another pass.
+- **The dev server reloads the page** whenever any file of the tree changes, which made the long probes retry; the numbers above are from runs that did not reload.
+- **Cut**: a separate shaken fist gesture for the doll; the doll's face is hair-covered from the side while she runs (turned to 0.5 rad so one eye shows); no hand-held reel dragging the cut string in the chase (the actor's `setReel` shows only the reel); Tetra's kite is not pre-warmed before the section (one slow frame the first time the rope is laid, dev server).
+- **A neighbour's note**: `bend/beats.ts` holds `FROM_CHASE` equal to this section's `zoomFeet` and `zoomH` (a test of theirs checks it): change them together.

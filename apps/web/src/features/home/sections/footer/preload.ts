@@ -1,9 +1,22 @@
-import type { PreloadItem } from "@/lib/preload";
+import { chunkItem, type PreloadItem } from "@/lib/preload";
+
+import { droneItems } from "../../actors/drone/preload";
+
+/** The footer is the last screen of the story: it comes after the archive's files. */
+const PRIORITY = 74;
 
 /**
- * What this section needs, as loading items (see `kernel/preload.ts`). Nothing yet: the owner of the
- * section lists its files here, waited for when the first screen needs them, `deferred` otherwise.
+ * What the footer needs, all deferred: its own code (the drone's flight and the way out) and the
+ * drone, which the earlier sections list too (an item two lists share is kept once). The card, the
+ * links and the button are the page's own HTML and need no loading.
  */
 export function preload(): PreloadItem[] {
-  return [];
+  return [
+    {
+      ...chunkItem("home-footer", "Setting up the footer", () => import("./runtime"), 1),
+      deferred: true,
+      priority: PRIORITY,
+    },
+    ...droneItems({ priority: 10 }),
+  ];
 }
