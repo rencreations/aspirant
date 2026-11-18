@@ -1,0 +1,93 @@
+/*
+ * The hero's own parts: the cue under the logo (a label and a hairline that draws itself again and
+ * again). The logo and the cards are drawn on the canvas; the DOM logo in the h1 is the page's one
+ * heading, and the plain page's logo. Only transform and opacity animate.
+ */
+
+.cue {
+  margin: var(--space-m) 0 0;
+  display: grid;
+  justify-items: center;
+}
+
+/* On the stage the cue sits under the logo the canvas draws (the runtime sets its top). */
+:global([data-home]:not([data-gl="off"])) .cue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66lvh;
+  margin: 0;
+}
+
+.cueIn {
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .cueIn {
+  opacity: 0;
+}
+
+/* The page has opened: the cue comes in after the cards have flown out (the runtime sets the flag). */
+:global(.js) :global([data-entered="1"]) .cueIn {
+  animation: cueIn 800ms 1.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cueLabel {
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.cueLine {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 3.5rem;
+  overflow: hidden;
+  background: var(--line-strong);
+}
+
+.cueLine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  transform: translate3d(0, -101%, 0);
+  animation: cueDraw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 1.6s infinite;
+}
+
+@keyframes cueIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The hairline draws down, rests a moment, and leaves by the bottom. */
+@keyframes cueDraw {
+  0% {
+    transform: translate3d(0, -101%, 0);
+  }
+  42% {
+    transform: translate3d(0, 0, 0);
+  }
+  58% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 101%, 0);
+  }
+}
+
+/* The page's logo is only for the plain page and for the screen reader on the stage. */
+.logo {
+  margin: 0;
+}

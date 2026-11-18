@@ -3,37 +3,54 @@ import { asset } from "@/lib/asset";
 
 import { ASPIRANTS } from "../../content";
 import styles from "../../home.module.css";
-import { Pill, Stub } from "../../ui";
+import { Pill } from "../../ui";
+import { PreviewHost, PreviewTrigger } from "../../preview/preview";
 import type { SectionMarkup } from "../../kernel/types";
 
-/** What the server draws for the section: real copy and real links, from `content.ts`. */
+import local from "./aspirants.module.css";
+
+/**
+ * What the server draws for the section: the owner's words and the button, from `content.ts`, and
+ * the preview window (it draws nothing until a card of the wall has been pressed). The wall itself
+ * is on the canvas. Each of the four lines is one element (`data-home-line`) the runtime moves.
+ */
 export function view(): SectionMarkup {
   return {
-    below: <Stub id="aspirants" note="the sliding wall of wide cards" />,
     text: (
-      <div className={styles.rightBox}>
-        <h2 className={styles.title}>{ASPIRANTS.title}</h2>
-        <p className={styles.lead}>
+      <div className={local.box}>
+        <h2 className={`${styles.title} ${local.line} ${local.title}`} data-home-line="">
+          {ASPIRANTS.title}
+        </h2>
+        <p className={`${styles.lead} ${local.line} ${local.leadLogo}`} data-home-line="">
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
           <img
             src={asset("/img/home/mlbb.webp")}
             alt={ASPIRANTS.game}
             width={555}
             height={167}
+            className={local.logos}
           />{" "}
           {ASPIRANTS.line}
         </p>
-        <p className={styles.lead}>
+        <p className={`${styles.lead} ${local.line} ${local.leadLogo}`} data-home-line="">
           {ASPIRANTS.partOf}{" "}
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
-          <img src={asset(THEMLABEL_LOGO)} alt={ASPIRANTS.label} width={720} height={184} />{" "}
+          <img
+            src={asset(THEMLABEL_LOGO)}
+            alt={ASPIRANTS.label}
+            width={720}
+            height={184}
+            className={local.logos}
+          />{" "}
           {ASPIRANTS.partOfEnd}
         </p>
-        <div className={styles.actions}>
+        <div className={`${styles.actions} ${local.line}`} data-home-line="">
           <Pill href={ASPIRANTS.button.href} label="About">
             {ASPIRANTS.button.label}
           </Pill>
         </div>
+        <PreviewTrigger className={local.viewArt} />
+        <PreviewHost />
       </div>
     ),
   };

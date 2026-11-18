@@ -1,0 +1,663 @@
+/*
+ * The strip's own parts: the psychoactive hero, laid out in the scene box (a 2 to 1 box as wide as the
+ * screen less its padding, the reference's `.scene`), and the words of "Official animations" in the
+ * middle of the stage. The scene's box is the same arithmetic as `fx/video-plane/layout.ts sceneBox`,
+ * written in CSS so the server markup is placed before any script runs. Only transform and opacity
+ * animate; the runtime writes them on the elements named here. Every control stays focusable and takes
+ * a press only while its part is on (`pointer-events` is the runtime's).
+ */
+
+/* ---------------------------------------------------------------- the scene box */
+
+.scene,
+.sceneBelow {
+  --sw: min(1600px, calc(100vw - 2 * max(160px, 50vw - 800px)), calc((100lvh - 96px) * 16 / 9));
+  --sh: calc(var(--sw) / 2);
+  --sx: calc((100vw - var(--sw)) / 2);
+  --sy: calc((100lvh - var(--sh)) / 2);
+}
+
+/* A tall screen: the column of the reference's portrait rules. */
+@media (max-aspect-ratio: 1/1) {
+  .scene,
+  .sceneBelow {
+    --sw: calc(100vw - 48px);
+    --sh: calc(100lvh - 208px);
+    --sx: 24px;
+    --sy: 160px;
+  }
+}
+
+/* Plain page (no scripts, or no WebGL): a readable column, nothing placed. */
+.scene {
+  display: grid;
+  gap: var(--space-s);
+  justify-items: start;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .scene {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: var(--sw);
+  height: var(--sh);
+  display: block;
+}
+
+.sceneBelow {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .sceneBelow {
+  display: block;
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: var(--sw);
+  height: var(--sh);
+}
+
+/* ---------------------------------------------------------------- words made of letters */
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.chars {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .chars {
+  display: inline;
+}
+
+/* The letters are hidden under the stage until the runtime shows them: a letter that has not come in. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .ch {
+  opacity: 0;
+}
+
+.ch {
+  display: inline-block;
+}
+
+/* In the stage the plain text only reads for a screen reader. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .plain {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- the small state's words */
+
+.mono {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.brand {
+  font-size: max(11px, min(1.12vw, 16px));
+  color: color-mix(in srgb, var(--text) 62%, transparent);
+  padding: 0 48px 48px 0;
+}
+
+.agency {
+  max-width: min(21rem, calc(var(--sw) - 120px));
+  font-size: max(10px, min(1.12vw, 16px));
+  line-height: 1.05;
+  color: color-mix(in srgb, var(--text) 62%, transparent);
+  text-align: right;
+  text-wrap: balance;
+}
+
+.display {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.videoWord {
+  font-size: clamp(48px, 4.79vw, 92px);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
+  margin-bottom: 24px;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .brandBox {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .rightBox {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* The tick marks that hang off the brand label. */
+.plus {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+}
+
+.plus::before,
+.plus::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in srgb, var(--text) 50%, transparent);
+}
+
+.plus::before {
+  left: 3px;
+  top: 0;
+  width: 1px;
+  height: 7px;
+}
+
+.plus::after {
+  left: 0;
+  top: 3px;
+  width: 7px;
+  height: 1px;
+}
+
+.plusRight {
+  right: 0;
+  top: 0;
+}
+
+.plusDown {
+  left: 0;
+  bottom: 0;
+}
+
+/* The button of the strip: the site's own pill, in the reference's smaller size. */
+.cta {
+  min-height: 3rem;
+  font-size: clamp(11px, 0.78vw, 14px);
+  letter-spacing: 0.06em;
+  padding: 0 1.4rem;
+  border-width: 1px;
+}
+
+.coord {
+  margin: 0;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--text) 50%, transparent);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .coordLeft,
+:global(.js) :global([data-home]:not([data-gl="off"])) .coordRight {
+  position: absolute;
+  top: calc(50% + 10px);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .coordLeft {
+  left: 0;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .coordRight {
+  right: 0;
+  text-align: right;
+}
+
+.bottomBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .bottomBox {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.smallWord {
+  font-size: clamp(48px, 4.79vw, 92px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
+  margin-bottom: 0.12em;
+}
+
+.bigWord {
+  font-size: clamp(64px, min(12.6vw, calc(var(--sw) / 5)), 242px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* The stage sets the two words tight, as the reference does; the plain page keeps a whole line for each. */
+:global(.js) :global([data-home]:not([data-gl="off"])) :is(.smallWord, .bigWord) {
+  line-height: 0.77;
+}
+
+/* The two words that change on a hover are one line of fixed height, so nothing under them moves. */
+.swap {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .swap {
+  display: inline-block;
+}
+
+/* ---------------------------------------------------------------- the line, the dots and the arcs (below the film) */
+
+.line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  transform-origin: 50% 50%;
+}
+
+.dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #878788;
+}
+
+.endDot {
+  top: 50%;
+}
+
+.arcs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--sh);
+  height: var(--sh);
+  margin: calc(var(--sh) / -2) 0 0 calc(var(--sh) / -2);
+  opacity: 0;
+}
+
+.arcs svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.arcs circle,
+.arcs path {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 0.3;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The tick marks at the window's corners. */
+.cornerPlus {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  opacity: 0;
+}
+
+.cornerPlus::before,
+.cornerPlus::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in srgb, var(--text) 70%, transparent);
+}
+
+.cornerPlus::before {
+  left: 3px;
+  top: 0;
+  width: 1px;
+  height: 7px;
+}
+
+.cornerPlus::after {
+  left: 0;
+  top: 3px;
+  width: 7px;
+  height: 1px;
+}
+
+/* ---------------------------------------------------------------- the window: play button and its words */
+
+.windowBox {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .windowBox {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 6%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A soft dark under the words, so they read on a bright frame (a plain gradient, nothing over the film's pixels). */
+.windowWord + .play + .windowWord {
+  justify-self: start;
+}
+
+.scrim {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgb(5 7 12 / 0.55), rgb(5 7 12 / 0) 68%);
+  pointer-events: none;
+}
+
+.windowWord {
+  position: relative;
+  justify-self: end;
+  font-size: 12px;
+  color: rgb(255 255 255 / 0.86);
+  white-space: nowrap;
+}
+
+.play {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 3rem;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 3rem;
+  background: transparent;
+  color: #0b0b0e;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* The white fill of the button: it opens into a ring on a hover, the triangle changes colour with it. */
+.play::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #fff;
+  border-radius: inherit;
+  transition: transform 300ms cubic-bezier(0, 0, 0.02, 0.99);
+}
+
+.play svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+  transition: color 90ms ease-out;
+}
+
+.play:hover::before,
+.play:focus-visible::before {
+  transform: scale(0.94, 0.86);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+.play:hover,
+.play:focus-visible {
+  color: #fff;
+}
+
+.play:focus-visible {
+  outline: 2px solid var(--focus, #fff);
+  outline-offset: 4px;
+}
+
+/* ---------------------------------------------------------------- the second screen's words */
+
+.amb {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .amb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(44rem, 72%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* A soft dark behind the words, so a preview passing behind them never costs the letters (a plain gradient, nothing over the film). */
+.ambScrim {
+  position: absolute;
+  left: -45%;
+  right: -45%;
+  top: -55%;
+  bottom: -55%;
+  z-index: -1;
+  background: radial-gradient(ellipse at center, rgb(5 7 12 / 0.82), rgb(5 7 12 / 0) 68%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.ambHeading {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.ambLead {
+  display: block;
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-style: italic;
+  font-size: clamp(22px, 1.67vw, 32px);
+  line-height: 1.12;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
+}
+
+.ambBig {
+  display: block;
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(52px, 6.4vw, 124px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.ambBody {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 16px;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--text) 65%, transparent);
+  text-wrap: balance;
+}
+
+.ambButton {
+  margin-top: 0.75rem;
+  pointer-events: auto;
+  min-height: 3rem;
+  padding: 0 1.6rem;
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.ambButton::before {
+  background: var(--accent);
+}
+
+.ambButton:hover,
+.ambButton:focus-visible {
+  color: var(--ink, #05070c);
+  border-color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- the ten films, for the keyboard and a screen reader */
+
+.previews {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  list-style: none;
+}
+
+/* A preview link takes the focus: it stands where the orbit is, as a visible pill, so the keyboard sees where it is. */
+.previews a:focus-visible {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-l);
+  z-index: 6;
+  transform: translateX(-50%);
+  padding: 0.8rem 1.3rem;
+  clip-path: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+:global([data-home][data-gl="off"]) .previews {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip-path: none;
+  display: grid;
+  gap: 0.25rem;
+}
+
+/* ---------------------------------------------------------------- the button that scrolls to the film */
+
+.scrollButton {
+  position: relative;
+  display: none;
+  width: 62px;
+  height: 62px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .scrollButton {
+  display: block;
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+}
+
+.scrollButton i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.scrollButton i:nth-child(1) {
+  left: 21px;
+  top: 21px;
+}
+
+.scrollButton i:nth-child(2) {
+  left: 35px;
+  top: 21px;
+}
+
+.scrollButton i:nth-child(3) {
+  left: 28px;
+  top: 34px;
+}
+
+.scrollButton:hover i,
+.scrollButton:focus-visible i {
+  animation: flicker 0.6s steps(1, end) both;
+}
+
+.scrollButton:focus-visible {
+  outline: 2px solid var(--focus, #fff);
+  outline-offset: -6px;
+  border-radius: 50%;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------- the plain page: one readable column */
+
+:global([data-home][data-gl="off"]) .windowBox,
+:global(html:not(.js)) .windowBox {
+  display: none;
+}

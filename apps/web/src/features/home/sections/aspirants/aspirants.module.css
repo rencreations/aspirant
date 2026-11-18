@@ -1,0 +1,101 @@
+/*
+ * The aspirants section's own parts. The words are the owner's, in the right 42 percent (the box is
+ * `rightBox` of the home's stylesheet). Each line is one element the runtime moves: it rises into
+ * place, and at the end it folds up on its top edge and goes. Only transform and opacity animate.
+ */
+
+/* The words stay in the right 42 percent: left of it is the wall's frame, and the gutter keeps them off its edge. */
+.box {
+  justify-self: end;
+  width: min(100%, calc(42vw - var(--gutter)));
+}
+
+@media (max-width: 56.25em) {
+  .box {
+    width: 100%;
+  }
+}
+
+/* A tall screen: the wall is the top 56 percent, so the words stand in the part under it. */
+@media (max-aspect-ratio: 1/1) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .box {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: var(--space-l);
+    width: auto;
+  }
+}
+
+/* A line with a logo in it needs more room than a plain one, or the logo runs into the next line. */
+.line.leadLogo {
+  line-height: 1.5;
+}
+
+.line {
+  transform-origin: 50% 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.title {
+  margin: 0;
+}
+
+.logos {
+  display: inline-block;
+  height: 1.35em;
+  width: auto;
+  vertical-align: -0.3em;
+}
+
+/*
+ * The one control that opens the preview for the keyboard and a screen reader. The cards are drawn
+ * on the canvas, so this is their way in: hidden until it has the focus, then a small pill at the
+ * foot of the wall's frame. On the plain page (no WebGL) it is an ordinary pill.
+ */
+.viewArt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viewArt:focus-visible,
+:global([data-home][data-gl="off"]) .viewArt {
+  position: fixed;
+  left: var(--gutter);
+  bottom: var(--space-l);
+  z-index: 5;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.8rem 1.3rem;
+  overflow: visible;
+  clip-path: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono-stack);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+:global([data-home][data-gl="off"]) .viewArt {
+  position: static;
+  margin-top: var(--space-s);
+}
+
+.viewArt:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
