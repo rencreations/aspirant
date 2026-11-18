@@ -39,6 +39,8 @@ See section 2 of the design. Changes after the fact are listed here with the dat
 
 - Wave 1: format, typecheck, lint, unit tests (166 files) and knip all pass. The skeleton renders all 16 sections on the dev server with no console errors (probe `home.cjs`).
 
+- 18 Nov, 21:25: wave 3 first run `wf_1a494cc6-9d5` finished VP (film plane, `fx-video-plane.md`) and S1 (hero and aspirants, `section-hero-aspirants.md`); the other eight helpers were cut off by the usage limit and left partial files. Relaunched as `wf_bdf30a79-382` with `args` naming A2, S4a, S3, S6, S7a, S5, S7b, S2 and S4b (S4b waits for S4a).
+
 ## RESUME HERE (written on the evening of 18 Nov, when the usage limit was close)
 
 If this session stopped, a new one picks up from this section.
