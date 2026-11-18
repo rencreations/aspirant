@@ -4,7 +4,7 @@ Resume from this file. The request is `docs/superpowers/specs/2026-11-18-home-pa
 
 ## Standing rules for every helper
 
-- No assistant or tool name in the repository or its history: no `Co-Authored-By`, no session links, nowhere. After a commit run `git log -1 --format=%B`.
+- No assistant or tool name anywhere in the repository or its history: no trailer lines that credit a tool, no session links. After a commit run `git log -1 --format=%B`.
 - Helpers do not commit, push or run `pnpm build`. The main session commits, builds and pushes.
 - Dev server for helpers: `http://localhost:3100` (`npx next dev -p 3100` from `apps/web`). Port 3000 is the owner's: only the main session restarts it, with the production build of `main` (`npx serve out -l 3000 --no-clipboard` from `apps/web`). Free a specific port only, never kill other node processes.
 - Python: `C:\Users\muham\anaconda3\python.exe -I`. Blender: `"C:\Program Files\Blender Foundation\Blender 4.5\blender.exe" -b --python`. C: is nearly full: write work files to `D:\ren\aspirant-work\home\`.
@@ -14,13 +14,13 @@ Resume from this file. The request is `docs/superpowers/specs/2026-11-18-home-pa
 
 ## Waves
 
-| wave | what                                                          | status  | notes                                                                           |
-| ---- | ------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------- |
-| 0    | recon (ten digests), request and design written, housekeeping | done    | commit "docs(home): record the owner's home page request and the recon digests" |
-| 1    | K kernel + walking skeleton; M1 models; M2 models; D media    | pending |                                                                                 |
-| 2    | A boot + intro + drone/duo; SB, DL, SL, HD, GR, TT actors     | pending |                                                                                 |
-| 3    | sections S1 to S7                                             | pending |                                                                                 |
-| 4    | integration, performance, QA, docs, push                      | pending |                                                                                 |
+| wave | what                                                                | status  | notes                                                                              |
+| ---- | ------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------- |
+| 0    | recon (ten digests), request and design written, housekeeping       | done    | commit "docs(home): record the owner's home page request and the recon digests"    |
+| 1    | K kernel + walking skeleton; X infra; M1 models; M2 models; D media | done    | five helpers reported; pnpm check green in the main session; skeleton seen on 3100 |
+| 2    | A boot + intro + drone/duo; SB, DL, SL, HD, GR, TT actors           | pending |                                                                                    |
+| 3    | sections S1 to S7                                                   | pending |                                                                                    |
+| 4    | integration, performance, QA, docs, push                            | pending |                                                                                    |
 
 ## Decisions log
 
@@ -28,4 +28,4 @@ See section 2 of the design. Changes after the fact are listed here with the dat
 
 ## Verified so far
 
-Nothing yet.
+- Wave 1: format, typecheck, lint, unit tests (166 files) and knip all pass. The skeleton renders all 16 sections on the dev server with no console errors (probe `home.cjs`).

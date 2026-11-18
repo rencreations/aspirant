@@ -32,12 +32,12 @@ import { guinevereFirstPaint, guinevereLater } from "@/features/character/guinev
 import { lfFirstPaint, lfLater } from "@/features/character/layla-fanny/preload-items";
 import { lcFirstPaint, lcLater } from "@/features/character/lesley-change/preload-items";
 import { vexanaFirstPaint, vexanaLater } from "@/features/character/vexana/preload-items";
+import { homeItems } from "@/features/home/preload-items";
 import { libraryPageItems, shelfItems } from "@/features/library/preloads";
 import { dramaPageItems } from "@/features/story/interactive-drama/preload-items";
 import { storyLandingItems } from "@/features/story/landing/preload-items";
 import { chapterItems } from "@/features/story/reader/preload-items";
 import {
-  chunkItem,
   dataItem,
   fontsItem,
   imageItem,
@@ -66,21 +66,10 @@ export function routeItems(pathname: string): PreloadItem[] {
   const shared = [fontsItem()];
 
   if (path === "/") {
-    return [
-      ...shared,
-      chunkItem(
-        "home-scene",
-        "Loading the portal engine",
-        () => import("@/features/home/hero/PortalScene"),
-        4,
-      ),
-      imageItem("/img/portal/vexana/base.webp", "Loading the hero art", 2),
-      imageItem("/img/portal/vexana/depth.webp", "Loading depth maps", 1),
-      imageItem("/img/portal/vexana/alt.webp", "Loading the hero art", 2),
-      imageItem("/img/portal/vexana/depth-alt.webp", "Loading depth maps", 1),
-      imageItem("/img/char/vexana/splash-sm.webp", "Loading backdrops", 1),
-      imageItem("/img/char/vexana/extra-1.webp", "Loading backdrops", 1),
-    ];
+    // The home: the lazy engine and every section's own list, in scroll order. The first screen is
+    // waited for, the rest keeps downloading in the background (`features/home/preload-items.ts`).
+    // The first loading screen of a document load and the page change use the same list.
+    return [...shared, ...homeItems()];
   }
 
   if (path === "/about") {

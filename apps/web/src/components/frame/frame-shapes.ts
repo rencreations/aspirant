@@ -239,28 +239,7 @@ export const FRAME_SHAPES: Readonly<Record<FrameShape, readonly FrameVertex[]>> 
   emblem: emblem(),
 };
 
-function coord(p: number, o: number): string {
-  if (o === 0) return `${p}%`;
-  if (p === 0) return `${o}px`;
-  return `calc(${p}% ${o < 0 ? "-" : "+"} ${Math.abs(o)}px)`;
-}
-
-function toClipPath(vertices: readonly FrameVertex[]): string {
-  return `polygon(${vertices.map(([xp, xo, yp, yo]) => `${coord(xp, xo)} ${coord(yp, yo)}`).join(", ")})`;
-}
-
-/** CSS `clip-path: polygon(...)` value for every shape. */
-export const FRAME_CLIP_PATHS: Readonly<Record<FrameShape, string>> = Object.fromEntries(
-  (Object.keys(FRAME_SHAPES) as FrameShape[]).map((k) => [k, toClipPath(FRAME_SHAPES[k])]),
-) as Record<FrameShape, string>;
-
 /** The shape's vertices in px for a box of `w` by `h` (for SVG outlines). @public */
 export function framePoints(shape: FrameShape, w: number, h: number): Array<[number, number]> {
   return FRAME_SHAPES[shape].map(([xp, xo, yp, yo]) => [(xp / 100) * w + xo, (yp / 100) * h + yo]);
-}
-
-/** SVG path data (closed) for the shape in a `w` by `h` box. */
-export function framePath(shape: FrameShape, w: number, h: number): string {
-  const pts = framePoints(shape, w, h);
-  return `${pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`).join("")}Z`;
 }
