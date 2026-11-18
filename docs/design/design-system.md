@@ -687,3 +687,14 @@ Her page is a long scroll of its own design, not the stage engine of Selena and 
 - The WebGL scene of the hero asks for its script up to four times and builds itself again when the connection returns, instead of leaving the flat picture for the visit; nothing is left rejected without a handler.
 - `error.tsx` in `app/character/vexana/` shows a calm "this page stumbled" screen with Try again, Reload and a way back to the roster, for her page and her two story pages.
 - Known limit: a jump that lands inside the dead stretch before a lower section (a programmatic jump, never the wheel, a key or Back, which only restore places the visitor stood in) shows two sections half on screen until the next scroll.
+
+## The home page (`/`, rebuilt 18 Nov 2026)
+
+The home is a scroll story on one canvas, not a page of components. Its own rules, so a change keeps it one piece (the engineering rules are in CLAUDE.md "The home page"):
+
+- **Grounds.** Three stacked layers behind everything: the daybreak paper with its dot grid, the storm night and a plain colour for a section that wants one. At a joint only the upper layer fades over the lower one, which stays whole. Text takes the theme of its section (`nav.theme`), and the top bar follows it.
+- **Words.** The owner's copy is exact. Headings and big words are the display face in caps; small words are the mono stack with wide tracking; every button is the site's pill (`Pill` in `features/home/ui.tsx`: a hairline, a fill on hover, a small press). A word that animates in uses transform and opacity only, line by line, and never moves after it has settled.
+- **Cursor.** The custom cursor carries a label for 3D things: VIEW on the carousel, a film's title on a preview, PLAY on the trailer, PET and POKE on the dragon and the doll, Click to view on the list. A label is a word, never an icon.
+- **Characters.** The drones and Tetra are unlit toon like `/about`; the dragon, Selena, her hand, the gramophone, the crate and the doll are lit. Every character answers the pointer (a look, a hover, a press) and an annoyed one forgives by itself. Comic marks (the bang, the question, sweat, hearts, notes, steam, dust, the swear bubble) are the one shared language of their feelings.
+- **Edges.** The page is never covered by an overlay that appears for no reason: a transition is made by the layout (a ring that lands as a wall, a plane that turns upright, a white that a dragon sweeps in). A scroll hold (the music) always has a way out, and nothing holds in tests.
+- **Dialogs.** The carousel's preview and the list's viewer are real dialogs: focus goes in, Escape and the margin close them, focus returns. They animate transform and opacity.
