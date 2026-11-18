@@ -14,17 +14,21 @@ Resume from this file. The request is `docs/superpowers/specs/2026-11-18-home-pa
 
 ## Waves
 
-| wave | what                                                                | status  | notes                                                                              |
-| ---- | ------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------- |
-| 0    | recon (ten digests), request and design written, housekeeping       | done    | commit "docs(home): record the owner's home page request and the recon digests"    |
-| 1    | K kernel + walking skeleton; X infra; M1 models; M2 models; D media | done    | five helpers reported; pnpm check green in the main session; skeleton seen on 3100 |
-| 2    | A boot + intro + drone/duo; SB, DL, SL, HD, GR, TT actors           | pending |                                                                                    |
-| 3    | sections S1 to S7                                                   | pending |                                                                                    |
-| 4    | integration, performance, QA, docs, push                            | pending |                                                                                    |
+| wave | what                                                                                                                       | status  | notes                                                                                                                       |
+| ---- | -------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 0    | recon (ten digests), request and design written, housekeeping                                                              | done    | commit "docs(home): record the owner's home page request and the recon digests"                                             |
+| 1    | K kernel + walking skeleton; X infra; M1 models; M2 models; D media                                                        | done    | five helpers reported; pnpm check green in the main session; skeleton seen on 3100                                          |
+| 2    | actors (drone, duo, Silverbolt, doll, Selena, hand, gramophone+records, Tetra), comic marks+trails, image field, logo wave | running | workflow run wf_b3bff944-f43, script in the session scratchpad (home-wave2.js), eight at a time; boot+intro moved to wave 3 |
+| 3    | sections S1 to S7                                                                                                          | pending |                                                                                                                             |
+| 4    | integration, performance, QA, docs, push                                                                                   | pending |                                                                                                                             |
 
 ## Decisions log
 
 See section 2 of the design. Changes after the fact are listed here with the date.
+
+- 18 Nov: actors get a per-frame `update(frame)` (kernel), a lab (`window.__home.lab(name)` builds an actor from `kernel/lab.ts`, pins it shown) so each can be looked at on the real stage, and a shared cast pass (`actors/shared/cast.ts`: lit PBR, one light rig, one PMREM, scissor clip) plus `gltf.ts` and `ensure.ts`.
+- 18 Nov: the boot loader, tap gate and intro (helper A) moved to wave 3: they need the drone, the duo and the logo from wave 2.
+- 18 Nov: the character pages and the story reader still play voice files that never get the gain `g` (about 9 LU louder than the room): the owner decides; left alone.
 
 ## Verified so far
 
