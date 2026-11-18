@@ -143,7 +143,16 @@ async function change(deps: HandoffDeps): Promise<void> {
   try {
     // Warm the page we are going to, as the curtain does.
     void runPreload(routeItems(routes.about), () => undefined);
-    await Promise.all([cover.show(), Promise.resolve(exitHook?.())]);
+    // The exit first (the drone flies out to the right), then the cover: the cover is mostly opaque
+    // within 150 ms, so run together the flight would never be seen. A hook has nothing to wait for
+    // when the scroll has already taken the drone out, so the scroll's way in is not delayed.
+    await Promise.resolve(exitHook?.());
+    await cover.show();
+    // Back to the top while the cover hides the page, so About mounts at its top: its opening (the
+    // drone crossing the title) is skipped for a page that is already scrolled down when its drone
+    // is ready, and that moment comes before `whenPageReady`.
+    deps.scrollTo(0, { immediate: true });
+    window.scrollTo(0, 0);
     deps.push(routes.about);
     await pathReached(routes.about);
     await whenPageReady();

@@ -35,24 +35,25 @@ describe("groundAt", () => {
     expect(c.colourHex).toBe("#07130f");
   });
 
-  it("is half and half exactly at a joint", () => {
+  it("is half and half exactly at a joint: the lower layer stays whole, the upper is at half", () => {
     const m = groundAt(layout, 4);
-    expect(m.daybreak).toBeCloseTo(0.5);
+    expect(m.daybreak).toBeCloseTo(1);
     expect(m.storm).toBeCloseTo(0.5);
   });
 
   it("crosses over GROUND_FADE screens centred on the joint, in both directions", () => {
     const half = GROUND_FADE / 2;
-    expect(groundAt(layout, 4 - half).daybreak).toBeCloseTo(1);
+    expect(groundAt(layout, 4 - half).storm).toBeCloseTo(0);
     expect(groundAt(layout, 4 + half).storm).toBeCloseTo(1);
     expect(groundAt(layout, 4 - half / 2).storm).toBeCloseTo(0.25);
     expect(groundAt(layout, 4 + half / 2).storm).toBeCloseTo(0.75);
   });
 
-  it("always adds up to one", () => {
+  it("never lets the page show through: the lowest layer in use stays whole", () => {
     for (let S = -1; S < 21; S += 0.07) {
       const m = groundAt(layout, S);
-      expect(m.daybreak + m.storm + m.colour).toBeCloseTo(1, 9);
+      const lowest = m.daybreak > 0 ? m.daybreak : m.storm > 0 ? m.storm : m.colour;
+      expect(lowest).toBeCloseTo(1, 9);
     }
   });
 
@@ -64,7 +65,7 @@ describe("groundAt", () => {
 
   it("mixes the colour in while the colour ground comes in", () => {
     const m = groundAt(layout, 8);
-    expect(m.storm).toBeCloseTo(0.5);
+    expect(m.storm).toBeCloseTo(1);
     expect(m.colour).toBeCloseTo(0.5);
     expect(m.colourHex).toBe("#07130f");
   });

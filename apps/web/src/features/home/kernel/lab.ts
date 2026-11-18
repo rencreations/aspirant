@@ -26,4 +26,5 @@ export const LABS: Readonly<Record<string, Ensure>> = {
   records: async (ctx) => (await import("../actors/records")).ensureRecords(ctx),
   marks: async (ctx) => (await import("../fx/comic-marks/lab")).ensureMarksLab(ctx),
   field: async (ctx) => (await import("../fx/image-field")).ensureField(ctx),
+  film: async (ctx) => (await import("../fx/video-plane")).ensureFilm(ctx),
 };

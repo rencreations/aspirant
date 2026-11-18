@@ -1,7 +1,8 @@
 /**
  * The ground behind the page: two stacked layers (the daybreak paper with its dot grid, the storm
  * night) and a third that holds a plain colour for a section that wants one. They cross-fade by
- * opacity at the joints between sections, driven by the position on the scroll. Nothing is written
+ * opacity at the joints between sections, driven by the position on the scroll (the upper layer
+ * fades over the lower one, which stays whole). Nothing is written
  * to `<html>` or `<body>`: only the three layers' own opacity and the colour layer's own colour.
  */
 import { sectionAt, type Layout } from "./layout";
@@ -53,18 +54,33 @@ function single(ground: GroundName): GroundMix {
   return { daybreak: 0, storm: 0, colour: 1, colourHex: ground };
 }
 
-/** Blend two mixes: `t` of 0 is `a`, 1 is `b`. */
+/** The stacking of the three layers, bottom to top (the order of the elements in the stage). */
+function layerOf(mix: GroundMix): 0 | 1 | 2 {
+  return mix.colour > 0 ? 2 : mix.storm > 0 ? 1 : 0;
+}
+
+/**
+ * Blend two single grounds: `t` of 0 is `a`, 1 is `b`. The layers are stacked, so only the upper
+ * of the two fades and the lower one stays whole: two opaque layers that fade against each other
+ * both show the page behind them in the middle (a grey wash on a dark to dark joint).
+ */
 function blend(a: GroundMix, b: GroundMix, t: number): GroundMix {
-  const colour = a.colour * (1 - t) + b.colour * t;
-  // Show the colour of the side that has any colour; mix them when both do.
+  const ra = layerOf(a);
+  const rb = layerOf(b);
   let colourHex = a.colour > 0 ? a.colourHex : b.colourHex;
   if (a.colour > 0 && b.colour > 0) colourHex = mixHex(a.colourHex, b.colourHex, t);
-  return {
-    daybreak: a.daybreak * (1 - t) + b.daybreak * t,
-    storm: a.storm * (1 - t) + b.storm * t,
-    colour,
-    colourHex,
-  };
+  // The weight of each layer: the lower stays at 1, the upper takes t (coming in) or 1 - t (going out).
+  const weight = [0, 0, 0];
+  if (ra === rb) {
+    weight[ra] = 1;
+  } else if (rb > ra) {
+    weight[ra] = 1;
+    weight[rb] = t;
+  } else {
+    weight[rb] = 1;
+    weight[ra] = 1 - t;
+  }
+  return { daybreak: weight[0]!, storm: weight[1]!, colour: weight[2]!, colourHex };
 }
 
 /**

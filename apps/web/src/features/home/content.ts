@@ -54,6 +54,20 @@ export const ASPIRANTS = {
   label: "TheMLabel",
   partOfEnd: "as the first featured series.",
   button: { label: "About Aspirant", href: HOME_ROUTES.about },
+  /** The wall's pictures can be pressed (the cursor says VIEW): the window they open, and its controls. */
+  view: "VIEW",
+} as const;
+
+/** The preview window of the wall (`features/home/preview/`). Not part of the owner's copy: labels only. */
+export const PREVIEW = {
+  /** The name of the one button that opens the preview for the keyboard (hidden until focused). */
+  open: "View the splash art",
+  dialog: "Splash art",
+  close: "Close",
+  previous: "Previous picture",
+  next: "Next picture",
+  more: "More splash art",
+  help: "Press the left and right arrow keys for another picture. Press Escape to close.",
 } as const;
 
 // 4 strip ------------------------------------------------------------------------------------------
@@ -67,8 +81,16 @@ export const STRIP = {
   bottomLeft: { rest: ["Aspirant 5.0", "Trailer"], hover: ["Our", "Collections"] },
   /** The button of the strip. Its hover changes the bottom left words, not the tag above it. */
   button: { label: "See All", href: HOME_ROUTES.collection },
-  /** What the frame shows after it has grown (the press opens the site's player). */
-  play: { label: "Play Films", duration: "3:00" },
+  /**
+   * What the frame shows after it has grown (the press opens the site's player). The duration is the
+   * trailer's own, 180.8 s of `video-films.json`, written as the Films room writes it (the whole seconds) (`sections/strip/strip.test.ts` keeps them equal).
+   */
+  play: { label: "Play Films", duration: "03:00", open: "Play the trailer with sound" },
+  /** Names for the controls of the strip that have no words of the owner's. */
+  controls: {
+    previews: "The ten official animated films",
+    scroll: "Scroll to the film",
+  },
   expand: {
     lead: "Official animations for",
     title: "The Aspirants",
@@ -169,11 +191,35 @@ export const VOICES = {
   button: { label: "See all voicelines", href: HOME_ROUTES.voicelines },
 } as const;
 
+/** The small functional words of the voices section (names of controls, not copy of the owner's). */
+export const VOICES_UI = {
+  chooser: "Choose a character",
+  play: "Play",
+  stop: "Stop",
+  loading: "Loading",
+  /** The label of the link to one Aspirant's room, shown on the plain page only. */
+  herLines: "All her lines",
+} as const;
+
 // 11 music -----------------------------------------------------------------------------------------
 
 export const MUSIC = {
   title: "Music",
   button: { label: "See all music", href: HOME_ROUTES.music },
+} as const;
+
+/** The small functional words of the music section (names of controls, not copy of the owner's). */
+export const MUSIC_UI = {
+  hint: "Pick a record",
+  loading: "Winding up the gramophone",
+  nowPlaying: "Now playing",
+  /** The line while the chosen record is on its way to the platter. */
+  picked: "Picked",
+  another: "Another record",
+  keep: "Continue",
+  records: "Records",
+  crank: "Turn the crank",
+  listen: "Play",
 } as const;
 
 // 12 funny -----------------------------------------------------------------------------------------
@@ -207,6 +253,10 @@ export const BEND = {
 export const ARCHIVE = {
   title: "The archive",
   button: { label: "Open the collection", href: HOME_ROUTES.collection },
+  /** The name of the list of the ten rooms, and the words each cover carries (names of controls). */
+  rooms: "The ten rooms of the collection",
+  items: "items",
+  open: "Open the room",
 } as const;
 
 // 16 footer ----------------------------------------------------------------------------------------
@@ -216,7 +266,17 @@ export const FOOTER = {
   title: "About",
   line: "Scroll more to see the about page",
   /** The visible word of the button. Its accessible name is "Continue to About". */
-  button: "Continue",
+  button: "About",
   buttonName: "Continue to About",
   hint: "Keep scrolling or press N",
+  /** The foot of the card: the same words and links as the menu's foot, and the takedown shortcut. */
+  legal: {
+    label: "Legal",
+    madeBy: "Made by MLBB Community",
+    terms: "Terms",
+    privacy: "Privacy",
+    cookies: "Cookie settings",
+    /** What the takedown link names (the home shows 3D models and fan art). */
+    takedownItem: "3D models and fan art on the home page",
+  },
 } as const;

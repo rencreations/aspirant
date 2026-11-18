@@ -333,6 +333,8 @@ export class SilverboltActor implements Actor {
   private heartAt = 0;
   private sweatAt = 0;
   private hover: SilverboltPart | null = null;
+  /** The hit targets answer (a section turns them off while the baked camera draws the cast). */
+  private interactiveOn = true;
   private readonly hoverW: Record<SilverboltPart, number> = {
     head: 0,
     jaw: 0,
@@ -509,6 +511,18 @@ export class SilverboltActor implements Actor {
   /** The jaw: 0 shut, 1 wide. Unset, the face decides (the model's own mouth is about 0.23). */
   jaw(open: number): void {
     this.want.jaw = clamp(open, 0, 1);
+  }
+
+  /**
+   * Whether the pointer reaches the dragon. Persistent: a section that draws the cast through
+   * another camera (the hit shapes are projected through the pixel camera) turns it off, and back on.
+   */
+  interactive(on: boolean): void {
+    this.interactiveOn = on;
+    if (!on) {
+      this.hover = null;
+      if (this.drag.on) this.endDrag();
+    }
   }
 
   /** A named face, blended in by `weight` 0..1. */
@@ -1261,7 +1275,7 @@ export class SilverboltActor implements Actor {
   }
 
   private testPart(part: SilverboltPart, x: number, y: number): number | null {
-    if (!this.visible) return null;
+    if (!this.visible || !this.interactiveOn) return null;
     if (performance.now() - this.cacheMs > 120) return null;
     const r = this.ranges[part];
     return this.hits.test(

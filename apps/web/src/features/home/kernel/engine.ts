@@ -9,6 +9,7 @@ import { selectIsOpen, useHomeFlow } from "@/lib/home-flow";
 import { expectReady } from "@/lib/page-ready";
 import { useNavLock } from "@/lib/nav-lock";
 
+import type { BootRuntime } from "../boot/runtime";
 import { ActorRegistry } from "./actors";
 import { LABS } from "./lab";
 import { Background, groundAt, type GroundLayers } from "./background";
@@ -86,10 +87,42 @@ export function startEngine(options: EngineOptions): Engine | null {
   let forceJump = true;
   let firstFrames = 0;
   let firstDone = false;
+  // The sections near the top have been asked to build (held back on a document load until the
+  // drone is on the stage), so "nothing is mounting" means they are built, not that none started.
+  let primed = false;
   let active: HomeSection["id"] | null = null;
   let disposed = false;
 
   const viewport = (): Viewport => ({ w: stage.width, h: stage.height, dpr: stage.dpr });
+
+  // The opening of a document load of the home (the drone that waits with the visitor, then the
+  // intro): its scene is a lazy chunk, built once and run in place of the sections while the page
+  // is not open. The page is not called ready before it has drawn (`features/home/boot/`).
+  let boot: BootRuntime | null = null;
+  let bootWanted = false;
+  let bootFailed = false;
+  {
+    const flow = useHomeFlow.getState();
+    if (flow.arrival === "document" && flow.phase !== "open") {
+      bootWanted = true;
+      void import("../boot/runtime").then(
+        (m) => {
+          if (disposed || selectIsOpen(useHomeFlow.getState())) {
+            bootWanted = false;
+            return;
+          }
+          boot = m.createBootRuntime({ stage, actors, pointer, cursor, viewport, audio, host });
+        },
+        (error: unknown) => {
+          console.warn(
+            "[home] the opening's scene could not load; the page opens without it.",
+            error,
+          );
+          bootFailed = true;
+        },
+      );
+    }
+  }
 
   const scrollApi: ScrollApi = {
     raw: () => scene.raw,
@@ -187,11 +220,24 @@ export function startEngine(options: EngineOptions): Engine | null {
     clock.add(() => {
       const open = selectIsOpen(useHomeFlow.getState());
       if (open) {
+        if (boot || bootWanted) {
+          // The opening is over (it ended, or the page opened early): the sections take over.
+          boot?.dispose();
+          boot = null;
+          bootWanted = false;
+        }
         runner.step(frameInfo, jumped);
+        primed = true;
       } else {
         actors.hideAll();
+        boot?.update(frameInfo);
         actors.apply();
-        runner.prime(frameInfo.S);
+        // On a document load the drone's files have the connection to themselves until the drone
+        // is drawn: the sections near the top start to build (and ask for their files) after it.
+        if (!bootWanted || (boot ? boot.canPrime() : bootFailed)) {
+          runner.prime(frameInfo.S);
+          primed = true;
+        }
         // The page is not the visitor's yet: when it opens, replay the passed sections once.
         forceJump = true;
       }
@@ -209,7 +255,8 @@ export function startEngine(options: EngineOptions): Engine | null {
     clock.add(() => {
       stage.draw(frameInfo);
       // The page is ready when it has drawn twice and the sections near the top are built.
-      if (!firstDone && ++firstFrames >= 2 && runner.mounting() === 0) {
+      const bootReady = !bootWanted || (boot ? boot.ready() : bootFailed);
+      if (!firstDone && ++firstFrames >= 2 && primed && runner.mounting() === 0 && bootReady) {
         firstDone = true;
         options.onFirstFrame();
       }
@@ -273,6 +320,8 @@ export function startEngine(options: EngineOptions): Engine | null {
       disposed = true;
       clock.stop();
       for (const remove of removers) remove();
+      boot?.dispose();
+      boot = null;
       stopProbes();
       window.removeEventListener("resize", onResize);
       observer.disconnect();

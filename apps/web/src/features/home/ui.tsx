@@ -22,16 +22,3 @@ export function Pill({
     </TLink>
   );
 }
-
-/**
- * A labelled box that stands where a section's real picture will be. Part of the walking skeleton:
- * the owner of a section deletes it when the section's own visual is there.
- */
-export function Stub({ id, note }: { id: string; note: string }) {
-  return (
-    <div className={styles.stub} aria-hidden="true" data-stub={id}>
-      <b>{id}</b>
-      <span>{note}</span>
-    </div>
-  );
-}

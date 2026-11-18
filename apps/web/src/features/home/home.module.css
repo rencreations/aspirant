@@ -109,6 +109,15 @@
   pointer-events: none;
 }
 
+/*
+ * ...whatever a control of it says for itself: a section's runtime may set `pointer-events: auto` on
+ * its own link (the current name of the list, the strip's buttons), which would leave an invisible
+ * link over the next sections' 3D pointer targets after the section has gone.
+ */
+:global(.js) .root:not([data-gl="off"]) .slotText:not([data-on="1"]) * {
+  pointer-events: none !important;
+}
+
 /* Only the controls of a section that is on take a press: a hidden one must never catch it. */
 :global(.js)
   .root:not([data-gl="off"])
@@ -438,38 +447,4 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-dim);
-}
-
-/* ---------------------------------------------------------------- placeholders of the walking skeleton */
-
-.stub {
-  position: absolute;
-  inset: auto var(--gutter) var(--space-l) auto;
-  display: grid;
-  gap: 0.25rem;
-  min-width: 14rem;
-  padding: var(--space-xs) var(--space-s);
-  border: 1px dashed var(--line-strong);
-  border-radius: 0.75rem;
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.stub b {
-  color: var(--text);
-  font-weight: 500;
-}
-
-.testMark {
-  position: absolute;
-  left: var(--gutter);
-  bottom: var(--space-l);
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-faint);
 }

@@ -409,6 +409,10 @@ export class HandActor implements Actor {
   /** Compile the programs and upload the pictures now, so the first frame the hand shows does not hitch. */
   async warm(renderer: WebGLRenderer, camera: PerspectiveCamera): Promise<void> {
     const was = this.object.visible;
+    // Compile far off the screen: the pass draws what is visible, and the page may be showing
+    // while this awaits (a section builds its actors two screens early).
+    const at = this.object.position.clone();
+    this.object.position.set(0, 1e6, 0);
     this.object.visible = true;
     try {
       const map = this.glove.material.map;
@@ -418,6 +422,7 @@ export class HandActor implements Actor {
       // A failed warm only means the first frame compiles them.
     }
     this.object.visible = was;
+    this.object.position.copy(at);
   }
 
   /**

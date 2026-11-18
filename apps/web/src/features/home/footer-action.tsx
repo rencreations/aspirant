@@ -24,9 +24,14 @@ const LOCK_MS = 520;
 /**
  * The end of the home page: the Continue button, the N key, and the scroll to the very end of the
  * page all take the visitor to About. It reads the document, not the scene, so it works the same
- * before the stage has started and with no WebGL. The change itself is `kernel/handoff.ts`.
+ * before the stage has started and with no WebGL. The change itself is `kernel/handoff.ts`. The
+ * footer section passes the classes of its own card (`actionsClassName`, `hintClassName`); without
+ * them the kernel's plain classes are used.
  */
-export function FooterAction() {
+export function FooterAction({
+  actionsClassName,
+  hintClassName,
+}: { actionsClassName?: string; hintClassName?: string } = {}) {
   const go = useHomeHandoff();
   const goRef = useRef(go);
   const [announce, setAnnounce] = useState("");
@@ -84,10 +89,11 @@ export function FooterAction() {
 
   return (
     <>
-      <div className={styles.actions}>
+      <div className={actionsClassName ?? styles.actions}>
         <StarButton
           size="lg"
           pulse
+          arrow
           onClick={open}
           aria-keyshortcuts="N"
           aria-label={FOOTER.buttonName}
@@ -95,7 +101,7 @@ export function FooterAction() {
           {FOOTER.button}
         </StarButton>
       </div>
-      <p className={styles.hint}>{FOOTER.hint}</p>
+      <p className={hintClassName ?? styles.hint}>{FOOTER.hint}</p>
       <p className={styles.srOnly} aria-live="polite">
         {announce}
       </p>
