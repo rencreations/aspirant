@@ -1,0 +1,83 @@
+// Saves the whole working tree of D:\aspirant (committed state plus every change and new file,
+// minus what .gitignore skips) as one commit on the side branch "home-wip" and pushes it.
+// It never touches the real index, the checked out branch or main, so the live site is not
+// deployed (the Pages workflow runs on main only). Run once, or with "loop" to repeat every 10 min.
+const { execFileSync } = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const REPO = "D:/aspirant";
+const INDEX = path.join(REPO, ".git", "home-wip-index");
+const LOG = "D:/ren/aspirant-work/home/snapshot.log";
+const NL = String.fromCharCode(10);
+
+function git(args, env) {
+  return execFileSync("git", args, {
+    cwd: REPO,
+    env: { ...process.env, ...env },
+    encoding: "utf8",
+    maxBuffer: 1 << 28,
+  }).trim();
+}
+
+function log(line) {
+  fs.appendFileSync(LOG, new Date().toISOString() + " " + line + NL);
+}
+
+function sleep(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+// A helper may be writing a file at the moment git reads it (a short read): try again a few times.
+function snapshot() {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    if (snapshotOnce(attempt === 4)) return;
+    sleep(15000);
+  }
+}
+
+function snapshotOnce(last) {
+  try {
+    const env = { GIT_INDEX_FILE: INDEX };
+    const head = git(["rev-parse", "HEAD"]);
+    // The real index carries the stat cache: only files that changed are read again (seconds, not minutes).
+    try {
+      fs.copyFileSync(path.join(REPO, ".git", "index"), INDEX);
+    } catch {
+      git(["read-tree", head], env);
+    }
+    try {
+      git(["add", "-A", "--ignore-errors"], env);
+    } catch (error) {
+      // A file that a helper is writing right now is skipped this time; the next snapshot has it.
+      log("skipped a file being written: " + String(error.stderr || error.message).split(NL).filter((l) => /^error/.test(l)).slice(0, 1).join(""));
+    }
+    const tree = git(["write-tree"], env);
+    const commit = git(
+      ["commit-tree", tree, "-p", head, "-m", "wip(home): snapshot of the working tree on top of " + head.slice(0, 7)],
+      {
+        ...env,
+        GIT_AUTHOR_NAME: "snapshot",
+        GIT_AUTHOR_EMAIL: "snapshot@localhost",
+        GIT_COMMITTER_NAME: "snapshot",
+        GIT_COMMITTER_EMAIL: "snapshot@localhost",
+      },
+    );
+    git(["update-ref", "refs/heads/home-wip", commit]);
+    git(["push", "-f", "origin", "refs/heads/home-wip:refs/heads/home-wip"]);
+    log("pushed " + commit.slice(0, 7) + " (tree " + tree.slice(0, 7) + ") on " + head.slice(0, 7));
+    return true;
+  } catch (error) {
+    const text = String(error.stderr || error.message || error);
+    const lines = text.split(NL).filter((l) => /^(error|fatal)/.test(l));
+    log((last ? "FAILED " : "retry ") + (lines.slice(0, 3).join(" | ") || text.slice(0, 200)));
+    return false;
+  }
+}
+
+snapshot();
+if (process.argv[2] === "loop") {
+  setInterval(snapshot, 10 * 60 * 1000);
+} else {
+  process.exit(0);
+}
