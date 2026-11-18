@@ -82,6 +82,7 @@ export function startEngine(options: EngineOptions): Engine | null {
   let unit = Math.max(1, host.getBoundingClientRect().height);
   let frozen = false;
   let frozenS = 0;
+  let heldTime = 0;
   let forceJump = true;
   let firstFrames = 0;
   let firstDone = false;
@@ -166,10 +167,12 @@ export function startEngine(options: EngineOptions): Engine | null {
       // The scroll: the real position, then the scene's smoothed one.
       const raw = frozen ? frozenS : screensOf(window.scrollY, unit);
       const dt = frozen ? 0 : f.dt;
+      // Frozen time stands still too, so idle motion does not drift in a frame sheet.
+      if (!frozen) heldTime = f.time;
       jumped = scene.step(raw, dt) || forceJump;
       forceJump = false;
       frameInfo = {
-        time: f.time,
+        time: heldTime,
         dt,
         S: scene.shown,
         raw: scene.raw,

@@ -124,6 +124,7 @@ export class StageTarget {
     options: RenderTargetOptions,
     deviceW: number,
     deviceH: number,
+    private readonly onDispose?: () => void,
   ) {
     this.target = new WebGLRenderTarget(
       Math.max(1, Math.round(deviceW * scale)),
@@ -142,6 +143,7 @@ export class StageTarget {
 
   dispose(): void {
     this.target.dispose();
+    this.onDispose?.();
   }
 }
 
@@ -204,7 +206,10 @@ export class Stage {
 
   /** A render target at `scale` of the canvas's size in device pixels. It follows the screen. */
   target(scale = 1, options: RenderTargetOptions = {}): StageTarget {
-    const t = new StageTarget(scale, options, this.width * this.dpr, this.height * this.dpr);
+    const t = new StageTarget(scale, options, this.width * this.dpr, this.height * this.dpr, () => {
+      const at = this.targets.indexOf(t);
+      if (at >= 0) this.targets.splice(at, 1);
+    });
     this.targets.push(t);
     return t;
   }

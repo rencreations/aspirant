@@ -13,4 +13,17 @@ import type { Actor } from "./types";
 
 type Ensure = (ctx: ActorCtx) => Promise<Actor>;
 
-export const LABS: Readonly<Record<string, Ensure>> = {};
+export const LABS: Readonly<Record<string, Ensure>> = {
+  logo: async (ctx) => (await import("../fx/logo")).ensureLogo(ctx),
+  duo: async (ctx) => (await import("../actors/duo")).ensureDuo(ctx),
+  doll: async (ctx) => (await import("../actors/doll")).ensureDoll(ctx),
+  drone: async (ctx) => (await import("../actors/drone")).ensureDrone(ctx),
+  silverbolt: async (ctx) => (await import("../actors/silverbolt")).ensureSilverbolt(ctx),
+  tetra: async (ctx) => (await import("../actors/tetra")).ensureTetra(ctx),
+  selena: async (ctx) => (await import("../actors/selena")).ensureSelena(ctx),
+  hand: async (ctx) => (await import("../actors/hand")).ensureHand(ctx),
+  gramophone: async (ctx) => (await import("../actors/gramophone")).ensureGramophone(ctx),
+  records: async (ctx) => (await import("../actors/records")).ensureRecords(ctx),
+  marks: async (ctx) => (await import("../fx/comic-marks/lab")).ensureMarksLab(ctx),
+  field: async (ctx) => (await import("../fx/image-field")).ensureField(ctx),
+};

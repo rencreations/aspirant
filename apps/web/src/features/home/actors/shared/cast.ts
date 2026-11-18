@@ -1,8 +1,10 @@
 import {
   AmbientLight,
   DirectionalLight,
+  type Camera,
   type Light,
   type Object3D,
+  type PerspectiveCamera,
   type Texture,
   PMREMGenerator,
 } from "three";
@@ -11,7 +13,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import type { Stage, ScenePass } from "../../kernel/stage";
 
 /** Where the lit characters are drawn, above the flat passes (ortho 10, perspective 20). */
-export const CAST_ORDER = 30;
+const CAST_ORDER = 30;
 
 export interface Cast {
   /** The pass every lit actor puts its root in. Lights are already in its scene. */
@@ -28,6 +30,16 @@ export interface Cast {
    * The list's 3D frame uses it: the actor stands in a frame and nothing of it shows outside.
    */
   clip(rect: { x: number; y: number; w: number; h: number } | null): void;
+  /**
+   * Draw the next frame through this camera instead of the pixel camera (a baked camera, a close
+   * up). It lasts for one draw: call it every frame while it is wanted. A frame without a call, or
+   * with null, uses the pixel camera again, so a hidden actor never leaves another one framed wrong.
+   */
+  setCamera(camera: PerspectiveCamera | null): void;
+  /** Like `clip`, for the next draw only (the same one-frame rule as `setCamera`). */
+  clipOnce(rect: { x: number; y: number; w: number; h: number } | null): void;
+  /** The camera this frame's draw uses (a baked camera, or the pixel camera). The comic marks project through it. */
+  view(): Camera;
 }
 
 const made = new WeakMap<Stage, Cast>();
@@ -47,19 +59,31 @@ export function getCast(stage: Stage): Cast {
 
   const pass = stage.scenePass("cast", "perspective", CAST_ORDER);
   const isLight = (child: Object3D): boolean => (child as Light).isLight === true;
-  pass.active = () => pass.scene.children.some((child) => child.visible && !isLight(child));
-
-  let clipRect: { x: number; y: number; w: number; h: number } | null = null;
-  const drawAll = pass.render.bind(pass);
+  type Rect = { x: number; y: number; w: number; h: number };
+  let clipRect: Rect | null = null;
+  // A camera or a rectangle set for one draw: set while the actors update, taken by `active()`.
+  let pendingCamera: PerspectiveCamera | null = null;
+  let pendingClip: Rect | null = null;
+  let camera: PerspectiveCamera | null = null;
+  let onceClip: Rect | null = null;
+  pass.active = () => {
+    camera = pendingCamera;
+    onceClip = pendingClip;
+    pendingCamera = null;
+    pendingClip = null;
+    return pass.scene.children.some((child) => child.visible && !isLight(child));
+  };
   pass.render = (renderer) => {
-    if (!clipRect) {
-      drawAll(renderer);
+    const view = camera ?? pass.camera;
+    const rect = onceClip ?? clipRect;
+    if (!rect) {
+      renderer.render(pass.scene, view);
       return;
     }
     // three's scissor is in CSS pixels, from the bottom left.
     renderer.setScissorTest(true);
-    renderer.setScissor(clipRect.x, stage.height - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
-    drawAll(renderer);
+    renderer.setScissor(rect.x, stage.height - rect.y - rect.h, rect.w, rect.h);
+    renderer.render(pass.scene, view);
     renderer.setScissorTest(false);
   };
 
@@ -85,6 +109,15 @@ export function getCast(stage: Stage): Cast {
     },
     clip(rect) {
       clipRect = rect;
+    },
+    setCamera(next) {
+      pendingCamera = next;
+    },
+    view() {
+      return camera ?? pass.camera;
+    },
+    clipOnce(rect) {
+      pendingClip = rect;
     },
   };
   made.set(stage, cast);
