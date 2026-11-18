@@ -30,6 +30,10 @@ How the languages relate (checked, see the report this prints):
 
 AAC is for playing (96 kbps), the original is for downloading. Idempotent: a step whose output is newer
 than its input is skipped, and a key that exists is never written again with other content.
+
+Loudness (loudness.py, added 18 Nov 2026): every line, trailer clip and recording carries `g`, a gain in dB that
+levels it to the others. It is measured on the AAC in the mirror (cached in loudness.json) and applied by the player
+(`audio.playVoice`, option `gainDb`). No file is encoded again and no key changes.
 """
 
 from __future__ import annotations
@@ -45,7 +49,9 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common  # noqa: E402
+import loudness  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 CARRY = HERE / "carry.json"
@@ -362,6 +368,9 @@ def main() -> None:
         copied = sum(pool.map(lambda c: copy_unchanged(*c), copies))
     print(f"encoded {ran}, copied {copied} (the rest were fresh)")
 
+    # --- the gain of every clip, so the player can level them
+    gain_report = add_gains(files)
+
     # --- the files
     hero = json.loads(HERO.read_text(encoding="utf-8")) if HERO.exists() else None
     all_seconds = round(sum(t["seconds"] for t in totals_by_lang.values()), 1)
@@ -391,9 +400,40 @@ def main() -> None:
     for lang in languages:
         print(f"  {lang['id']}  {lang['english']:11} {lang['lines']:4} lines  {lang['seconds'] / 60:6.1f} min  no audio: {lang['noAudio']}")
     print(f"mirror voicelines/: flac {common.human(flac_bytes)}, m4a {common.human(m4a_bytes)}")
+    print(gain_report)
     for entry in report:
         print("  note:", entry)
     print(f"ignored.json updated with {len(ignored)} entries")
+
+
+def line_key(slug: str, lang: str, n: int) -> str:
+    """The key of the AAC that plays a line (the same rule as `lineStem` in features/library/voicelines/model.ts)."""
+    return f"voicelines/{slug}/{n:02d}.m4a" if lang == "jp" else f"voicelines/{slug}/{lang}/{n:02d}.m4a"
+
+
+def add_gains(files: dict[str, dict[str, Any]]) -> str:
+    """Write `g` (dB, one decimal) on every line, trailer clip and recording. See loudness.py for the formula.
+
+    A line or a clip plays through the voice bus (a fixed lift), a recording through the music bus (none), so the
+    recording's gain is worked out without the lift.
+    """
+    jobs: list[tuple[dict[str, Any], str, float]] = []  # (record, key, bus dB)
+    for slug, data in files.items():
+        for lang, rows in data["langs"].items():
+            jobs += [(r, line_key(slug, lang, r["n"]), loudness.BUS_DB) for r in rows if "d" in r]
+        jobs.append((data["full"], data["full"]["m4a"], 0.0))
+        jobs += [(t, t["m4a"], loudness.BUS_DB) for t in data.get("trailer", [])]
+    loud = loudness.ensure(sorted({key for _, key, _ in jobs}))
+    after = []
+    for record, key, bus in jobs:
+        m = loud[key]
+        record["g"] = loudness.gain_db(m["i"], m["tp"], bus)
+        if bus:
+            after.append(m["i"] + record["g"] + bus)
+    return (
+        f"gain g written on {len(jobs)} records; level after the gain: {min(after):.1f} to {max(after):.1f} LUFS "
+        f"over {len(after)} clips (target {loudness.TARGET_LUFS})"
+    )
 
 
 def merge_ignored(entries: dict[str, str]) -> None:

@@ -11,6 +11,7 @@ import { create } from "zustand";
 import { audio } from "@/lib/audio";
 import { libUrl } from "@/lib/library";
 import { withSound } from "@/lib/sound-prompt";
+import { voiceLevel } from "@/lib/voice-gain";
 
 interface RecordingState {
   /** The recording that owns the music element, or null. */
@@ -20,7 +21,10 @@ interface RecordingState {
 
 export const useRecording = create<RecordingState>(() => ({ id: null, playing: false }));
 
-/** Full level: a line is lifted by the voice bus, so a recording should not sit below it. */
+/**
+ * Full level, times the recording's baked gain `g` (a recording plays through the music bus, which has no
+ * lift, so its gain brings it to the loudness of the lines).
+ */
 const RECORDING_VOLUME = 1;
 
 function stopRecording(): void {
@@ -29,8 +33,15 @@ function stopRecording(): void {
   useRecording.setState({ id: null, playing: false });
 }
 
+interface LineOptions {
+  /** Called when the line ends or is stopped. */
+  onEnd?: () => void;
+  /** The baked gain `g` of the line's record (dB), so every clip plays at the same loudness. */
+  gainDb?: number;
+}
+
 /** Play a line, or stop it when it is the one that plays. Call inside the press. */
-export function toggleLine(url: string, onEnd?: () => void): void {
+export function toggleLine(url: string, { onEnd, gainDb }: LineOptions = {}): void {
   audio.unlock();
   const voice = audio.getVoiceState();
   if (voice.playing && voice.url === url) {
@@ -40,12 +51,12 @@ export function toggleLine(url: string, onEnd?: () => void): void {
   withSound("This voice line", () => {
     stopRecording();
     audio.blip("click");
-    void audio.playVoice(url, onEnd ? { onEnd } : {});
+    void audio.playVoice(url, { onEnd, gainDb });
   });
 }
 
 /** Play, pause or restart the long recording of a character. Call inside the press. */
-export function toggleRecording(recording: { id: string; m4a: string }): void {
+export function toggleRecording(recording: { id: string; m4a: string; g?: number }): void {
   audio.unlock();
   const { id, playing } = useRecording.getState();
   const el = audio.getMusicElement();
@@ -64,7 +75,11 @@ export function toggleRecording(recording: { id: string; m4a: string }): void {
   }
   withSound("This recording", () => {
     audio.stopVoice();
-    audio.playMusic(libUrl(recording.m4a), { loop: false, volume: RECORDING_VOLUME, fadeMs: 200 });
+    audio.playMusic(libUrl(recording.m4a), {
+      loop: false,
+      volume: voiceLevel(RECORDING_VOLUME, recording.g),
+      fadeMs: 200,
+    });
     useRecording.setState({ id: recording.id, playing: true });
   });
 }

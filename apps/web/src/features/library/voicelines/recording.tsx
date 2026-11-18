@@ -126,7 +126,7 @@ export function TrailerClips({
 }: {
   clips: readonly VoiceTrailerClip[];
   playingUrl: string | null;
-  onPlay: (url: string) => void;
+  onPlay: (url: string, gainDb?: number) => void;
 }) {
   return (
     <section className={styles.trailer} aria-labelledby="vl-trailer-h" data-voicelines-trailer="">
@@ -151,7 +151,7 @@ export function TrailerClips({
                 aria-label={`Play trailer clip ${clip.n}, ${clip.who}`}
                 aria-pressed={playing}
                 onClick={() => {
-                  onPlay(url);
+                  onPlay(url, clip.g);
                 }}
                 onPointerEnter={(e) => {
                   if (e.pointerType === "mouse") audio.preloadVoice(url);

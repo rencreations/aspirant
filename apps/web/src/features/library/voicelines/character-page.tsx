@@ -120,22 +120,25 @@ export default function CharacterPage({ character }: { character: CharacterSlug 
     (line: VoiceLine, url: string) => {
       const startedAt = performance.now();
       const main = url === lineAudioUrl(character, langRef.current, line.n);
-      toggleLine(url, () => {
-        // A line that was stopped by hand (or by another press) does not start the next one.
-        const natural = performance.now() - startedAt >= (line.d ?? 0) * 1000 - 600;
-        if (!main || !natural || !playOnRef.current) return;
-        const list = shownRef.current;
-        const at = list.findIndex((l) => l.n === line.n);
-        const next = list.slice(at + 1).find((l) => l.d !== undefined);
-        if (!next) {
-          setPlayOn(false);
-          return;
-        }
-        window.setTimeout(() => {
-          if (!playOnRef.current) return;
-          scrollToLine(next.n);
-          playRef.current(next, lineAudioUrl(character, langRef.current, next.n));
-        }, 320);
+      toggleLine(url, {
+        gainDb: line.g,
+        onEnd: () => {
+          // A line that was stopped by hand (or by another press) does not start the next one.
+          const natural = performance.now() - startedAt >= (line.d ?? 0) * 1000 - 600;
+          if (!main || !natural || !playOnRef.current) return;
+          const list = shownRef.current;
+          const at = list.findIndex((l) => l.n === line.n);
+          const next = list.slice(at + 1).find((l) => l.d !== undefined);
+          if (!next) {
+            setPlayOn(false);
+            return;
+          }
+          window.setTimeout(() => {
+            if (!playOnRef.current) return;
+            scrollToLine(next.n);
+            playRef.current(next, lineAudioUrl(character, langRef.current, next.n));
+          }, 320);
+        },
       });
     },
     [character, scrollToLine],
@@ -410,8 +413,8 @@ export default function CharacterPage({ character }: { character: CharacterSlug 
             <TrailerClips
               clips={data.trailer}
               playingUrl={playingUrl}
-              onPlay={(url) => {
-                toggleLine(url);
+              onPlay={(url, gainDb) => {
+                toggleLine(url, { gainDb });
               }}
             />
           ) : null}

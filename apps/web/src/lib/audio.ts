@@ -11,6 +11,7 @@
  */
 
 import { cachedFetch } from "@/lib/media-store";
+import { VOICE_BUS_GAIN, voiceLevel } from "@/lib/voice-gain";
 
 export type BlipKind = "hover" | "click" | "confirm" | "whoosh" | "star" | "error";
 
@@ -18,14 +19,19 @@ export type BlipKind = "hover" | "click" | "confirm" | "whoosh" | "star" | "erro
 export interface VoiceOptions {
   /** Called when the line finishes or is stopped. */
   onEnd?: () => void;
-  /** 0 to 1. Default 1. */
+  /** A linear factor on the line, default 1. Above 1 is allowed (the master compressor catches peaks). */
   volume?: number;
+  /**
+   * The baked gain `g` of the line's record, in dB (`scripts/library/voicelines/loudness.py`). It
+   * levels every clip to the same loudness. Leave it out for a file with no measured gain.
+   */
+  gainDb?: number;
 }
 
 /** @public */
 export interface MusicOptions {
   loop?: boolean;
-  /** 0 to 1. Default 0.5. */
+  /** A linear level, default 0.5. Above 1 works through Web Audio (a recording with a baked gain). */
   volume?: number;
   /** Fade-in time. Default 1200 ms. */
   fadeMs?: number;
@@ -208,7 +214,7 @@ class AudioEngine {
       if (ctx.state !== "running") await ctx.resume().catch(() => undefined);
       const src = ctx.createBufferSource();
       const gain = ctx.createGain();
-      gain.gain.value = options.volume ?? 1;
+      gain.gain.value = voiceLevel(options.volume, options.gainDb);
       src.buffer = buffer;
       src.connect(gain).connect(this.voiceBus);
       src.onended = () => {
@@ -390,7 +396,7 @@ class AudioEngine {
       analyser.smoothingTimeConstant = 0.78;
       const voiceBus = ctx.createGain();
       // Voice lines are recorded quieter than the music, so the bus lifts them.
-      voiceBus.gain.value = 1.9;
+      voiceBus.gain.value = VOICE_BUS_GAIN;
       voiceBus.connect(analyser).connect(master);
       const musicBus = ctx.createGain();
       musicBus.connect(master);
@@ -464,7 +470,8 @@ class AudioEngine {
     const step = () => {
       const k = Math.min(1, (performance.now() - t0) / Math.max(1, fadeMs));
       const eased = k * k * (3 - 2 * k);
-      slot.el.volume = start + (volume - start) * eased;
+      // A media element takes 0 to 1 only: a level above 1 (a baked gain) needs the Web Audio gain.
+      slot.el.volume = Math.min(1, Math.max(0, start + (volume - start) * eased));
       if (k < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);

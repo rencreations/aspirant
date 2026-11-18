@@ -92,6 +92,11 @@ export interface VoiceLine {
   d?: number;
   /** Japanese only: the original file is an mp3 (a trailer line), not a FLAC. */
   x?: "mp3";
+  /**
+   * Gain in dB that levels this clip to the others (`scripts/library/voicelines/loudness.py`). Pass it to
+   * `audio.playVoice` as `gainDb`.
+   */
+  g?: number;
   note?: string;
 }
 
@@ -106,6 +111,8 @@ export interface VoiceTrailerClip {
   /** Library keys. */
   m4a: string;
   flac: string;
+  /** Gain in dB, as on a `VoiceLine`. */
+  g?: number;
   /** The id of the film it was cut from, in the Films room (the first sixteen only). */
   film?: string;
   /** Where it starts in that film, in seconds. */
@@ -122,6 +129,6 @@ export interface VoiceCharacterFile {
   card: Pick<VoiceCharacter, "jp" | "romaji" | "aspirant" | "palette">;
   langs: Record<LangId, VoiceLine[]>;
   /** The long recording of the Japanese lines. */
-  full: { id: string; m4a: string; d: number; note: string };
+  full: { id: string; m4a: string; d: number; note: string; g?: number };
   trailer?: VoiceTrailerClip[];
 }
