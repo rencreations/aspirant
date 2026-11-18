@@ -1,20 +1,31 @@
 import { FALL } from "../../content";
 import styles from "../../home.module.css";
-import { Stub } from "../../ui";
 import type { SectionMarkup } from "../../kernel/types";
 
-/** What the server draws for the section: real copy and real links, from `content.ts`. */
+import fall from "./fall.module.css";
+
+/**
+ * What the server draws for the section: the two lines of the fall as real text, "5 Phases" and
+ * "10 Characters" (the number on the left of the doll, the word on the right). The doll and the air
+ * marks are drawn by the canvas; the runtime moves these lines with the scroll.
+ */
 export function view(): SectionMarkup {
   return {
-    below: <Stub id="fall" note="the doll falls: 5 Phases, 10 Characters" />,
     text: (
       <>
         <h2 className={styles.srOnly}>{FALL.heading}</h2>
-        {FALL.lines.map((line) => (
-          <p key={line.right} className={styles.counter}>
-            <span className={styles.counterNumber}>{line.left}</span> {line.right}
-          </p>
-        ))}
+        <div className={fall.pairs}>
+          {FALL.lines.map((line) => (
+            <p key={line.right} className={fall.pair} data-fall-pair="">
+              <span className={`${fall.left} ${fall.number}`} data-fall-left="">
+                {line.left}
+              </span>{" "}
+              <span className={fall.right} data-fall-right="">
+                {line.right}
+              </span>
+            </p>
+          ))}
+        </div>
       </>
     ),
   };

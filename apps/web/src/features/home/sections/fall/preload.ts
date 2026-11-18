@@ -1,8 +1,8 @@
 import type { PreloadItem } from "@/lib/preload";
 
 /**
- * What this section needs, as loading items (see `kernel/preload.ts`). Nothing yet: the owner of the
- * section lists its files here, waited for when the first screen needs them, `deferred` otherwise.
+ * The fall draws the same dragon, doll, marks and trails as the bolt section (its list holds the
+ * dragon and the doll), and its two lines are text. Nothing of its own to load.
  */
 export function preload(): PreloadItem[] {
   return [];

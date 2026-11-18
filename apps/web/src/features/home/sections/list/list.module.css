@@ -1,0 +1,268 @@
+/*
+ * The list: nine pictures and Selena in 3D, one at a time, in a 4:5 window. The runtime writes the
+ * sizes in pixels (the window, the items, the chrome, the button) when the screen changes, and
+ * transform and opacity every frame. This file has the look and the plain page (no scripts, no
+ * WebGL): a title and the ten names as links.
+ */
+
+/* ------------------------------------------------------------------ the layer under the canvas */
+
+.below {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.window {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.row {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.item {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The loops of a still: a slow push while it is the one on show. */
+  transform-origin: 50% 40%;
+}
+
+.video {
+  position: absolute;
+  max-width: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.videoOn {
+  opacity: 1;
+}
+
+@keyframes push {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+.push {
+  animation: push 7s ease-in-out infinite alternate;
+}
+
+/* ------------------------------------------------------------------ the 3D frame's sky */
+
+.panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.panelOuter,
+.panelInner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.panelCounter {
+  position: absolute;
+  inset: 0;
+}
+
+/* Its background is `SKY` (selena-frame.ts), written by the runtime. */
+.panelSky {
+  position: absolute;
+  inset: 0;
+  background: #0b0f22;
+}
+
+/* ------------------------------------------------------------------ the chrome of the window */
+
+.chrome {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.chromeRect {
+  fill: none;
+  stroke: rgb(238 243 250 / 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ the words */
+
+.stage {
+  position: relative;
+  display: grid;
+  gap: var(--space-s);
+}
+
+:global([data-home]:not([data-gl="off"])) .stage {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.head {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+:global([data-home]:not([data-gl="off"])) .head {
+  position: absolute;
+  left: 3.125vw;
+  top: calc(50lvh - 11rem);
+  width: min(32vw, 28rem);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.names {
+  position: relative;
+  display: grid;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:global([data-home]:not([data-gl="off"])) .names {
+  display: block;
+  height: 1.05em;
+  font-size: clamp(2.6rem, min(6.2vw, 9.9lvh), 6.6rem);
+}
+
+.entry {
+  display: block;
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+:global([data-home]:not([data-gl="off"])) .name {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:global([data-home]:not([data-gl="off"])) .name[data-current="1"] {
+  pointer-events: auto;
+}
+
+/* The words are hidden until the runtime shows them (only with scripts and the stage). */
+:global(.js) :global([data-home]:not([data-gl="off"])) :is(.title, .name) {
+  opacity: 0;
+}
+
+.name a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.name a:hover,
+.name a:focus-visible {
+  color: var(--accent);
+}
+
+@media (max-width: 56.25em) {
+  :global([data-home]:not([data-gl="off"])) .head {
+    left: var(--gutter);
+    top: calc(var(--nav-h) + 3lvh);
+    width: 58vw;
+  }
+
+  :global([data-home]:not([data-gl="off"])) .names {
+    font-size: clamp(2.2rem, 11vw, 3.6rem);
+  }
+}
+
+/* ------------------------------------------------------------------ the button over the window */
+
+.open {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  cursor: none;
+  pointer-events: none;
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+:global([data-home][data-gl="off"]) .open {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ the plain page */
+
+:global([data-home][data-gl="off"]) .below {
+  display: none;
+}

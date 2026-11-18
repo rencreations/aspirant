@@ -1,0 +1,102 @@
+/*
+ * The open view of a frame: the whole picture, with margins all round, over a dark backdrop. The
+ * window opens from the frame to the picture with two nested clips that only translate, so nothing
+ * is stretched (the chapter morph's technique). Only transform and opacity change.
+ */
+
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  color: #eef3fa;
+  touch-action: none;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(5 7 12 / 0.92);
+  opacity: 0;
+}
+
+.outer,
+.inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100lvh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.counter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background: #0b0e18;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.content img,
+.content video {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.close {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(238 243 250 / 0.5);
+  border-radius: 50%;
+  background: rgb(5 7 12 / 0.6);
+  color: inherit;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.close:hover {
+  background: #eef3fa;
+  color: #05070c;
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--accent, #ff2d7a);
+  outline-offset: 3px;
+}
+
+.close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.caption {
+  position: absolute;
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  margin: 0;
+  font-family: var(--font-mono-stack, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+}

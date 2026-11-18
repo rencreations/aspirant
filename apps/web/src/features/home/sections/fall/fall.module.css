@@ -1,0 +1,88 @@
+/*
+ * The fall: two big lines, one after the other, one on each side of the doll that falls between them
+ * ("5 | Phases", then "10 | Characters"). The runtime writes only transform and opacity. On a phone
+ * the two halves go above and below the doll instead of beside it.
+ */
+
+.pairs {
+  display: contents;
+}
+
+.pair {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.number {
+  color: var(--accent);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .pair {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  /* The middle column is where the doll falls: a third of the screen's height wide. */
+  grid-template-columns: 1fr calc(0.34 * min(100lvh, 150vw)) 1fr;
+  align-items: center;
+  /*
+   * The row stands at the height of the doll's end place (joint J6): her feet are 0.1 of the screen
+   * above the middle and she is 0.26 tall, so her centre is 0.23 above it.
+   */
+  padding-bottom: 46lvh;
+  /* The long word ("Characters", about 4.5 em) fills the column on its side of the doll. */
+  font-size: clamp(
+    2.4rem,
+    min(calc((50vw - 0.17 * min(100lvh, 150vw) - 2.5rem) / 4.5), 15vh),
+    9rem
+  );
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .left,
+:global(.js) :global([data-home]:not([data-gl="off"])) .right {
+  opacity: 0;
+  will-change: transform, opacity;
+  text-shadow:
+    0 0.03em 0.35em rgb(2 4 10 / 0.7),
+    0 0 0.8em rgb(2 4 10 / 0.5);
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .left {
+  grid-column: 1;
+  justify-self: end;
+  text-align: right;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .right {
+  grid-column: 3;
+  justify-self: start;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .pair {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr calc(0.4 * min(100lvh, 150vw)) 1fr;
+    justify-items: center;
+    font-size: clamp(2.4rem, min(15vw, 9vh), 9rem);
+  }
+
+  :global(.js) :global([data-home]:not([data-gl="off"])) .left {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    justify-self: center;
+    text-align: center;
+  }
+
+  :global(.js) :global([data-home]:not([data-gl="off"])) .right {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    justify-self: center;
+  }
+}

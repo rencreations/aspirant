@@ -1,0 +1,125 @@
+/*
+ * The bolt section: the bloom of the ground (below the canvas) and the text wheel of the five pairs
+ * (above it). Only transform and opacity are written, by the section's runtime. The wheel and the
+ * bloom exist only in the stage; the plain page shows the five names as a list.
+ */
+
+/* ---------------------------------------------------------------- the bloom */
+
+.bloom {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tint,
+.glow,
+.band {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* The dark green-black of the section, over the storm ground. */
+.tint {
+  inset: 0;
+  background: #07130f;
+}
+
+/* A green ellipse that rises from below the screen (the reference's gradient bloom). */
+.glow {
+  left: -25%;
+  right: -25%;
+  bottom: -55%;
+  height: 110%;
+  transform: translate3d(0, 35%, 0);
+}
+
+.glowInner {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 55%,
+    rgb(37 235 168 / 0.58) 0%,
+    rgb(14 128 92 / 0.3) 38%,
+    rgb(7 40 30 / 0.1) 62%,
+    transparent 78%
+  );
+  animation: drift 17s ease-in-out infinite alternate;
+}
+
+/* A faint band of the same green along the top edge. */
+.band {
+  left: -10%;
+  right: -10%;
+  top: -30%;
+  height: 62%;
+  background: radial-gradient(ellipse 55% 55% at 50% 40%, rgb(60 240 190 / 0.2), transparent 72%);
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-4%, 2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) scale(1.06);
+  }
+}
+
+/* ---------------------------------------------------------------- the wheel */
+
+.wheel {
+  display: grid;
+  gap: var(--space-3xs);
+  margin: var(--space-m) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: var(--step-3);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .wheel {
+  --wheel-y: 25%;
+  position: absolute;
+  inset: 0;
+  display: block;
+  margin: 0;
+  perspective: 1000px;
+  /* The names stand in the upper third, over the dragon's head, clear of the doll that rides it. */
+  perspective-origin: 50% var(--wheel-y);
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--wheel-y);
+  margin-top: -0.55em;
+  /* The size of the wheel's lines: wide on a wide screen, held by the height, never wider than the phone. */
+  font-size: clamp(2rem, min(7.6vw, 13vh), 8.5rem);
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .item .name {
+  font-size: inherit;
+  /* A dark halo keeps the white lines readable where the dragon passes behind them. */
+  text-shadow:
+    0 0.03em 0.4em rgb(2 10 8 / 0.8),
+    0 0 0.9em rgb(2 10 8 / 0.55);
+}
