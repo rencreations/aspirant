@@ -1,0 +1,282 @@
+{
+  "model": "hand",
+  "schema": 1,
+  "space": "glTF world, metres, Y up, the hand turned for the page: the WRIST is the origin, the forearm lies along +Z toward the camera and a little rising, the palm faces up and a little toward the camera (+Y, +Z), the fingers point away (-Z), the thumb is on the left (-X). Bones hang on the scene root (no armature node).",
+  "loader": {
+    "three": "r186",
+    "loader": "GLTFLoader",
+    "decoders": "setMeshoptDecoder(MeshoptDecoder) from three/examples/jsm/libs/meshopt_decoder.module.js",
+    "extensions": "EXT_meshopt_compression and KHR_mesh_quantization (both required), EXT_texture_webp (read by GLTFLoader with no plugin)",
+    "notNeeded": "no DRACOLoader, no KTX2Loader",
+    "materials": "MeshStandardMaterial; the build removes every KHR_materials_* extension so no MeshPhysicalMaterial appears"
+  },
+  "variant": "Selena's LEFT hand in her black clawed glove with the gold and violet bracer on the back of the forearm. A white glove or a bare hand cannot be made from the sources (the file has this glove only, no skin); the black glove is the design.",
+  "meshes": {
+    "mesh": "selena_hand",
+    "material": "selena_hand_glove",
+    "note": "opaque, double sided. The whole atlas of the body picture is kept (the bracer's pieces lie all over it), at 1024.",
+    "sleeve": "The glove's cuff is open in the source (a ring of 14 edges). The build grows a sleeve from it along the arm (0.16 m, tapering to half, five rings) and closes it with a soft cone, so there is no flat cap and no hole. Everything of the sleeve is skinned to the forearm bone. The end lies about 0.3 m behind the wrist, outside any frame of the view below."
+  },
+  "view": {
+    "camera": {
+      "position": [0, 0.16, 0.26],
+      "target": [0, 0.05, -0.24],
+      "fov": 38,
+      "portrait": { "target": [0, 0.1, -0.24], "fov": 48 }
+    },
+    "note": "The page starts from this camera (the owner's elbow: behind and above the wrist, 0.43 m from the palm). With the hand root at the origin the wrist is just under the bottom edge at 16:9, 21:9 (fov 38) and 9:16 (position the same, target and fov from `portrait`), the palm and the claws of the four fingers are in the frame, the end of the sleeve is not, and the palm faces the camera within 55 degrees (`framing`, asserted by the build). Lay a soft fade over the bottom of the canvas. hand-views.png shows it and hand-closed*.png shows with culling on that nothing is open from six sides and at the three aspects.",
+    "framing": {
+      "16:9": {
+        "wrist": [8.695757784014478e-7, -1.0113590085938948],
+        "palm": [0.025039713342283713, -0.6855290881487478],
+        "tips": [
+          [-0.12264959339378183, 0.4029913955969296],
+          [0.06506330904738171, 0.47570694571898614],
+          [0.26093622302138925, 0.4533064086644658],
+          [0.3480971194705083, 0.3209994389882789]
+        ],
+        "thumb": [-0.6998945660615217, 0.10741321831434796],
+        "apexOutside": true,
+        "palmAngleDegrees": 44.61285619860926
+      },
+      "21:9": {
+        "wrist": [6.625339264011031e-7, -1.0113590085938948],
+        "palm": [0.019077876832216158, -0.6855290881487478],
+        "tips": [
+          [-0.0934473092524052, 0.4029913955969296],
+          [0.04957204498848129, 0.47570694571898614],
+          [0.19880855087343943, 0.4533064086644658],
+          [0.2652168529299111, 0.3209994389882789]
+        ],
+        "thumb": [-0.5332530027135403, 0.10741321831434796],
+        "apexOutside": true,
+        "palmAngleDegrees": 44.61285619860926
+      },
+      "9:16": {
+        "wrist": [0.000002210513462545316, -1.036138161571148],
+        "palm": [0.06294030354436274, -0.7666264978366834],
+        "tips": [
+          [-0.29718663662382205, 0.09159747740600253],
+          [0.15727340230900055, 0.14673039622269754],
+          [0.6312114376634816, 0.1297745509162496],
+          [0.8457535500196395, 0.029111983551865308]
+        ],
+        "thumb": [-1.7126382543720904, -0.13526879840596193],
+        "apexOutside": true,
+        "palmAngleDegrees": 44.61285619860926
+      }
+    }
+  },
+  "skeleton": {
+    "root": "Bip001 L UpperArm",
+    "forearm": "Bip001 L Forearm",
+    "foreTwist": "Bip001 L ForeTwist",
+    "hand": "Bip001 L Hand",
+    "bracer": "Bone01_JianJia_L_03",
+    "fingers": {
+      "thumb": {
+        "chain": ["Bip001_L_Finger0", "Bip001_L_Finger01", "Bip001_L_Finger02"],
+        "flexAxisLocal": [0, 1, 0],
+        "flexMovesTipBy": 0.0381,
+        "spreadAxisLocal": [1, 0, 0],
+        "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+      },
+      "index": {
+        "chain": ["Bip001_L_Finger1", "Bip001_L_Finger11", "Bip001_L_Finger12"],
+        "flexAxisLocal": [0, 0, 1],
+        "flexMovesTipBy": 0.0256,
+        "spreadAxisLocal": [0, 1, 0],
+        "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+      },
+      "middle": {
+        "chain": ["Bip001_L_Finger2", "Bip001_L_Finger21", "Bip001_L_Finger22"],
+        "flexAxisLocal": [0, 0, 1],
+        "flexMovesTipBy": 0.0262,
+        "spreadAxisLocal": [0, 1, 0],
+        "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+      },
+      "ring": {
+        "chain": ["Bip001_L_Finger3", "Bip001_L_Finger31", "Bip001_L_Finger32"],
+        "flexAxisLocal": [0, 0, 1],
+        "flexMovesTipBy": 0.0231,
+        "spreadAxisLocal": [0, 1, 0],
+        "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+      },
+      "pinky": {
+        "chain": ["Bip001_L_Finger4", "Bip001_L_Finger41", "Bip001_L_Finger42"],
+        "flexAxisLocal": [0, 0, 1],
+        "flexMovesTipBy": 0.0191,
+        "spreadAxisLocal": [0, 1, 0],
+        "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+      }
+    },
+    "fingerNote": "Per finger: the chain (base to tip, three.js names), the local axis a positive angle about which curls it toward the palm (flexAxisLocal) and the axis that spreads it toward the thumb (spreadAxisLocal). Measured in three on this file by turning the base bone and following the claw tip. Apply on top of the mixer: bone.quaternion.multiply(q.setFromAxisAngle(axis, angle)) on every bone of the chain."
+  },
+  "curl": {
+    "suggestion": "Per joint [knuckle, middle, tip] at weight 1: [0.18, 0.28, 0.20] rad, scaled by finger: index 0.8, middle 1.0, ring 1.1, pinky 1.25. Thumb: 0.35 rad about its flexAxisLocal over the chain. A cursor reaching over a finger flexes it; add up to 0.12 rad of spread toward the cursor. Spring each finger (frequency 1.5, damping 0.5) and ripple 25 to 40 ms from the nearest finger."
+  },
+  "palm": {
+    "bone": "Bip001_L_Hand",
+    "centre": [0.0032, 0.0331, -0.0345],
+    "normal": [-0.091, 0.937, 0.338],
+    "offsetInBoneFrame": [0.0391, 0.0171, 0.0218],
+    "wrist": [0, 0, 0],
+    "spanAcross": 0.0522,
+    "spanAlong": 0.0799,
+    "surfaceNormalNote": "face normal of the hit, for reference",
+    "note": "At the end of palm_up. offsetInBoneFrame is where a thing laid on the palm sits, in the frame of the bone `bone` (parent the doll to that bone with this offset and it stays on the palm through the breath). normal is the palm's normal in world space; the doll stands along it. spanAcross is knuckle to knuckle (index to pinky), spanAlong wrist to knuckles."
+  },
+  "clips": {
+    "palm_up": { "alias": "palm_up", "frames": 25, "fps": 24, "duration": 1, "loop": false },
+    "breath": { "alias": "breath", "frames": 97, "fps": 24, "duration": 4, "loop": true }
+  },
+  "clipNote": "palm_up is a reach: 25 frames (1 s) from the bind pose (a flat hand, fingers together) to the open palm of hand.jpg, eased. Scrub it with the scroll (mixer.setTime) or play it once. breath is a 4 s loop of 1 to 2 degrees on every joint, ending on its first key. The last key of palm_up is the pose breath moves around.",
+  "pose": {
+    "degrees": {
+      "Hand": [0, 0, 22],
+      "Finger0": [6, 10, -30],
+      "Finger01": [0, 12, -4],
+      "Finger02": [0, 16, 0],
+      "Finger1": [0, 12, 6],
+      "Finger11": [0, 0, 14],
+      "Finger12": [0, 0, 10],
+      "Finger2": [0, 3, 4],
+      "Finger21": [0, 0, 16],
+      "Finger22": [0, 0, 10],
+      "Finger3": [0, -7, 8],
+      "Finger31": [0, 0, 20],
+      "Finger32": [0, 0, 12],
+      "Finger4": [0, -16, 10],
+      "Finger41": [0, 0, 24],
+      "Finger42": [0, 0, 14]
+    },
+    "note": "bone-local Euler XYZ at the end of palm_up, X roll, Y spread (positive toward the thumb), Z flex (positive toward the palm)"
+  },
+  "bones": {
+    "Bip001 L UpperArm": {
+      "three": "Bip001_L_UpperArm",
+      "parent": null,
+      "restLocal": [-0.091539, 0.035375, 0.464492, 0.640041, 0.744792, 0.123339, 0.142899, 1, 1, 1],
+      "restHead": [-0.09154, 0.03537, 0.46449]
+    },
+    "Bip001 L Forearm": {
+      "three": "Bip001_L_Forearm",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [-0.011593, 0, 0.242533, 0.193333, 0.002596, 0.009755, 0.981081, 1, 1, 1],
+      "restHead": [0, 0.02411, 0.23988]
+    },
+    "Bip001 L Hand": {
+      "three": "Bip001_L_Hand",
+      "parent": "Bip001 L Forearm",
+      "restLocal": [-0.012784, 0, 0.24075, -0.450634, -0.36752, -0.587325, 0.562946, 1, 1, 1],
+      "restHead": [0, 0, 0]
+    },
+    "Bip001 L Finger0": {
+      "three": "Bip001_L_Finger0",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.017485, 0.009405, -0.016692, 0.410047, 0.457753, 0.446315, 0.650482, 1, 1, 1],
+      "restHead": [-0.02324, 0.00483, -0.01047]
+    },
+    "Bip001 L Finger01": {
+      "three": "Bip001_L_Finger01",
+      "parent": "Bip001 L Finger0",
+      "restLocal": [0.029214, 0, 0.047414, -0.02871, 0.010376, 0.017278, 0.999385, 1, 1, 1],
+      "restHead": [-0.04074, 0.02505, -0.05932]
+    },
+    "Bip001 L Finger02": {
+      "three": "Bip001_L_Finger02",
+      "parent": "Bip001 L Finger01",
+      "restLocal": [0.009895, 0.000001, 0.016832, -0.028586, 0.008648, 0.016471, 0.999418, 1, 1, 1],
+      "restHead": [-0.04572, 0.03274, -0.07656]
+    },
+    "Bip001 L Finger1": {
+      "three": "Bip001_L_Finger1",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.084658, -0.000753, 0.017999, 0.0262, 0.064596, 0.052123, 0.996205, 1, 1, 1],
+      "restHead": [-0.01201, -0.00073, -0.08571]
+    },
+    "Bip001 L Finger11": {
+      "three": "Bip001_L_Finger11",
+      "parent": "Bip001 L Finger1",
+      "restLocal": [0.027302, 0, 0.016307, -0.000968, 0.00104, 0.001626, 0.999998, 1, 1, 1],
+      "restHead": [-0.01068, 0.0028, -0.11729]
+    },
+    "Bip001 L Finger12": {
+      "three": "Bip001_L_Finger12",
+      "parent": "Bip001 L Finger11",
+      "restLocal": [0.018753, 0, 0.011254, -0.002506, 0.002631, 0.004146, 0.999985, 1, 1, 1],
+      "restHead": [-0.00978, 0.00531, -0.139]
+    },
+    "Bip001 L Finger2": {
+      "three": "Bip001_L_Finger2",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.076375, -0.006509, 0.032669, -0.05501, 0.060811, 0.127652, 0.988423, 1, 1, 1],
+      "restHead": [0.00547, -0.00284, -0.0831]
+    },
+    "Bip001 L Finger21": {
+      "three": "Bip001_L_Finger21",
+      "parent": "Bip001 L Finger2",
+      "restLocal": [0.032999, 0, 0.026326, 0.021998, -0.014559, -0.028417, 0.999248, 1, 1, 1],
+      "restHead": [0.01107, 0.01129, -0.12247]
+    },
+    "Bip001 L Finger22": {
+      "three": "Bip001_L_Finger22",
+      "parent": "Bip001 L Finger21",
+      "restLocal": [0.015202, 0, 0.011419, -0.012177, 0.008362, 0.015932, 0.999764, 1, 1, 1],
+      "restHead": [0.01387, 0.01637, -0.14058]
+    },
+    "Bip001 L Finger3": {
+      "three": "Bip001_L_Finger3",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.064069, -0.007156, 0.048342, -0.158826, 0.018519, 0.122601, 0.97949, 1, 1, 1],
+      "restHead": [0.02413, 0.00042, -0.07688]
+    },
+    "Bip001 L Finger31": {
+      "three": "Bip001_L_Finger31",
+      "parent": "Bip001 L Finger3",
+      "restLocal": [
+        0.027959, -0.000001, 0.023846, -0.004692, -0.010988, 0.005627, 0.999913, 1, 1, 1
+      ],
+      "restHead": [0.03074, 0.01731, -0.10884]
+    },
+    "Bip001 L Finger32": {
+      "three": "Bip001_L_Finger32",
+      "parent": "Bip001 L Finger31",
+      "restLocal": [0.016127, 0, 0.014657, -0.004721, 0.001849, 0.005174, 0.999974, 1, 1, 1],
+      "restHead": [0.03557, 0.02791, -0.12726]
+    },
+    "Bip001 L Finger4": {
+      "three": "Bip001_L_Finger4",
+      "parent": "Bip001 L Hand",
+      "restLocal": [
+        0.052389, 0.000772, 0.059042, -0.236786, -0.043394, 0.077378, 0.967503, 1, 1, 1
+      ],
+      "restHead": [0.03617, 0.01097, -0.0693]
+    },
+    "Bip001 L Finger41": {
+      "three": "Bip001_L_Finger41",
+      "parent": "Bip001 L Finger4",
+      "restLocal": [0.019509, 0.000001, 0.017232, -0.058337, 0.016243, 0.063914, 0.996116, 1, 1, 1],
+      "restHead": [0.04278, 0.02448, -0.09055]
+    },
+    "Bip001 L Finger42": {
+      "three": "Bip001_L_Finger42",
+      "parent": "Bip001 L Finger41",
+      "restLocal": [0.014007, 0, 0.01321, 0.000185, -0.000039, -0.000201, 1, 1, 1, 1],
+      "restHead": [0.0457, 0.03684, -0.10501]
+    },
+    "Bone01_JianJia_L_03": {
+      "three": "Bone01_JianJia_L_03",
+      "parent": "Bip001 L Forearm",
+      "restLocal": [-0.029202, -0.000926, 0.24186, -0.264148, 0.406215, 0.67264, 0.559259, 1, 1, 1],
+      "restHead": [0.00107, -0.01644, -0.00034]
+    },
+    "Bip001 L ForeTwist": {
+      "three": "Bip001_L_ForeTwist",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [-0.011593, 0, 0.242532, 0.194117, -0.003297, -0.010051, 0.980921, 1, 1, 1],
+      "restHead": [0, 0.02411, 0.23988]
+    }
+  },
+  "checks": { "worstHeadErrorMetres": 0.000088, "closestFingersMetres": 0.005 }
+}

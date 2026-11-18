@@ -1,0 +1,271 @@
+{
+  "cellsPerSide": 3,
+  "size": 1024,
+  "ground": "#0a121a",
+  "ink": "#23d0d8",
+  "flip": "stored upside down, like the shipped atlas",
+  "faces": {
+    "shocked": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 0,
+      "row": 2,
+      "uCell": [-1, 0],
+      "rect": {
+        "x": 0,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "confused": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 1,
+      "row": 2,
+      "uCell": [0, 0],
+      "rect": {
+        "x": 341,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "thanks": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": false,
+      "col": 2,
+      "row": 2,
+      "uCell": [1, 0],
+      "rect": {
+        "x": 683,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "sweat": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 0,
+      "row": 1,
+      "uCell": [-1, -1],
+      "rect": {
+        "x": 0,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "exclaim": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": false,
+      "col": 1,
+      "row": 1,
+      "uCell": [0, -1],
+      "rect": {
+        "x": 341,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "question": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": false,
+      "col": 2,
+      "row": 1,
+      "uCell": [1, -1],
+      "rect": {
+        "x": 683,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "sparkle": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 0,
+      "row": 0,
+      "uCell": [-1, -2],
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "sad": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 1,
+      "row": 0,
+      "uCell": [0, -2],
+      "rect": {
+        "x": 341,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "dizzy": {
+      "page": "A",
+      "file": "drone-faces.webp",
+      "blinks": true,
+      "col": 2,
+      "row": 0,
+      "uCell": [1, -2],
+      "rect": {
+        "x": 683,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "proud": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": true,
+      "col": 0,
+      "row": 2,
+      "uCell": [-1, 0],
+      "rect": {
+        "x": 0,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "cry": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": false,
+      "col": 1,
+      "row": 2,
+      "uCell": [0, 0],
+      "rect": {
+        "x": 341,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "heart": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": true,
+      "col": 2,
+      "row": 2,
+      "uCell": [1, 0],
+      "rect": {
+        "x": 683,
+        "y": 683,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "smug": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": true,
+      "col": 0,
+      "row": 1,
+      "uCell": [-1, -1],
+      "rect": {
+        "x": 0,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "wink": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": true,
+      "col": 1,
+      "row": 1,
+      "uCell": [0, -1],
+      "rect": {
+        "x": 341,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "dots": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": false,
+      "col": 2,
+      "row": 1,
+      "uCell": [1, -1],
+      "rect": {
+        "x": 683,
+        "y": 341,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "music": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": false,
+      "col": 0,
+      "row": 0,
+      "uCell": [-1, -2],
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "determined": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": true,
+      "col": 1,
+      "row": 0,
+      "uCell": [0, -2],
+      "rect": {
+        "x": 341,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    },
+    "laugh": {
+      "page": "B",
+      "file": "drone-faces-2.webp",
+      "blinks": false,
+      "col": 2,
+      "row": 0,
+      "uCell": [1, -2],
+      "rect": {
+        "x": 683,
+        "y": 0,
+        "width": 341,
+        "height": 341
+      }
+    }
+  },
+  "pages": {
+    "A": {
+      "file": "drone-faces.webp",
+      "bytes": 21286
+    },
+    "B": {
+      "file": "drone-faces-2.webp",
+      "bytes": 12976
+    }
+  }
+}

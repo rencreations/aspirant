@@ -1,0 +1,1797 @@
+{
+  "model": "selena",
+  "schema": 1,
+  "space": "glTF world: metres, Y up. She faces +Z in the rest pose. This is the space cameras.json is in. Bones hang on the scene root (no armature node); local transforms are plain armature-space transforms. `bones[name].three` is the name three.js gives a bone (spaces become underscores).",
+  "loader": {
+    "three": "r186",
+    "loader": "GLTFLoader",
+    "decoders": "setMeshoptDecoder(MeshoptDecoder) from three/examples/jsm/libs/meshopt_decoder.module.js",
+    "extensions": "EXT_meshopt_compression and KHR_mesh_quantization (both required), EXT_texture_webp (read by GLTFLoader with no plugin)",
+    "notNeeded": "no DRACOLoader, no KTX2Loader",
+    "materials": "MeshStandardMaterial; the build removes every KHR_materials_* extension so no MeshPhysicalMaterial appears"
+  },
+  "meshes": {
+    "head": {
+      "mesh": "selena_mesh_head",
+      "material": "selena_head",
+      "note": "skinned, with the face morph targets (see morphs)"
+    },
+    "eye": {
+      "mesh": "selena_mesh_eye",
+      "material": "selena_eye",
+      "note": "the two eyeballs, skinned to Bone01_Eye_L_02 and Bone01_Eye_R_02. They stay in place under every face morph; the blink closes the lids over them."
+    },
+    "hair": [
+      {
+        "mesh": "selena_mesh_hair_01",
+        "material": "selena_hair_01",
+        "note": "alpha blended by the picture's alpha, UV set 3 (the loader maps it)"
+      },
+      { "mesh": "selena_mesh_hair_02", "material": "selena_hair_02", "note": "opaque, UV set 3" }
+    ],
+    "body": [
+      {
+        "mesh": "selena_mesh_body_01",
+        "material": "selena_body_01",
+        "note": "torso, arms, gloves, armour"
+      },
+      {
+        "mesh": "selena_mesh_body_02",
+        "material": "selena_body_02",
+        "note": "legs, skirt, boots, and the two floating white claws (Bip001 Prop1 and Prop2)"
+      },
+      {
+        "mesh": "selena_mesh_body_03_claws",
+        "material": "selena_body_03_claws",
+        "note": "skirt cloth and the claws' blades"
+      }
+    ]
+  },
+  "render": {
+    "hair_01": "set material.depthWrite = true, material.alphaTest = 0.02, side DoubleSide, and draw it after the head (renderOrder 1). The loader gives it transparent = true and depthWrite = false, which sorts the fringe behind the face.",
+    "frustumCulled": "set false on every skinned mesh (the quantised bounds are not the pose's)",
+    "plainStandard": "The pictures are painted bright. Under MeshStandardMaterial keep the hemisphere light at 0.9 or less, one directional light at 1.2 or less and an environment at envMapIntensity 0.3 or less, or the skin and the hair blow out to white (selena-material.png, left).",
+    "recipe": {
+      "what": "selena-material.png (right) is the look the build recommends: MeshToonMaterial with the base picture and a 3 step gradientMap [105, 190, 255] (NearestFilter), a thin cool rim added before opaque_fragment (vec3(0.55, 0.65, 1.0) * pow(1 - saturate(dot(normalize(vViewPosition), normal)), 3) * 0.22), an ink outline on every opaque mesh, and for hair_01 depthWrite on with alphaTest 0.02.",
+      "outline": "the same SkinnedMesh again, bound to the same skeleton, MeshBasicMaterial colour 0x1b1424 on the back faces, vertices pushed along the skinned normal by 0.0032 m (after #include <skinning_vertex>: transformed += normalize(objectNormal) * uOutline). The source normals are hard on the armour: for a closed outline there, average the normals by position into a custom attribute at load.",
+      "notDone": "the game's own toon pipeline (a colour ramp per material region, the face shadow SDF, the masks m, m2, m3, m5, m6) is not shipped: the file carries the base pictures and the normal maps only. README.md says where the ramp pictures are."
+    }
+  },
+  "skeleton": {
+    "root": "root",
+    "pelvis": "Bip001 Pelvis",
+    "spine": ["Bip001 Spine", "Bip001 Spine1", "Bip001 Spine2"],
+    "neck": "Bip001 Neck",
+    "head": "Bip001 Head",
+    "eyes": {
+      "bones": ["Bone01_Eye_L_02", "Bone01_Eye_R_02"],
+      "Bone01_Eye_L_02": {
+        "forwardLocal": [0.9809, 0.1897, 0.0419],
+        "upLocal": [-0.1896, 0.9818, -0.0081],
+        "note": "rest pose, she faces +Z: forwardLocal is where the iris points in the bone's frame. To look right turn about the bone's local image of world +Y; to look up, about world -X."
+      },
+      "Bone01_Eye_R_02": {
+        "forwardLocal": [0.9809, 0.1897, -0.0419],
+        "upLocal": [-0.1896, 0.9818, 0.0081],
+        "note": "rest pose, she faces +Z: forwardLocal is where the iris points in the bone's frame. To look right turn about the bone's local image of world +Y; to look up, about world -X."
+      }
+    },
+    "mouth": {
+      "bone": "Bone01_Mouth_01",
+      "note": "skins the lower face (528 weight units). Use the morph targets for speech; turn this bone only for a small jaw drop."
+    },
+    "left": {
+      "hand": "Bip001 L Hand",
+      "forearm": "Bip001 L Forearm",
+      "foreTwist": "Bip001 L ForeTwist",
+      "upperArm": "Bip001 L UpperArm",
+      "clavicle": "Bip001 L Clavicle",
+      "fingers": {
+        "thumb": {
+          "chain": ["Bip001_L_Finger0", "Bip001_L_Finger01", "Bip001_L_Finger02"],
+          "flexAxisLocal": [0, 1, 0],
+          "flexMovesTipBy": 0.0381,
+          "spreadAxisLocal": [0, 0, -1],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "index": {
+          "chain": ["Bip001_L_Finger1", "Bip001_L_Finger11", "Bip001_L_Finger12"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0306,
+          "spreadAxisLocal": [0, 1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "middle": {
+          "chain": ["Bip001_L_Finger2", "Bip001_L_Finger21", "Bip001_L_Finger22"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0337,
+          "spreadAxisLocal": [0, 1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "ring": {
+          "chain": ["Bip001_L_Finger3", "Bip001_L_Finger31", "Bip001_L_Finger32"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0306,
+          "spreadAxisLocal": [0, 1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "pinky": {
+          "chain": ["Bip001_L_Finger4", "Bip001_L_Finger41", "Bip001_L_Finger42"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0232,
+          "spreadAxisLocal": [0, 1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        }
+      }
+    },
+    "right": {
+      "hand": "Bip001 R Hand",
+      "forearm": "Bip001 R Forearm",
+      "foreTwist": "Bip001 R ForeTwist",
+      "upperArm": "Bip001 R UpperArm",
+      "clavicle": "Bip001 R Clavicle",
+      "fingers": {
+        "thumb": {
+          "chain": ["Bip001_R_Finger0", "Bip001_R_Finger01", "Bip001_R_Finger02"],
+          "flexAxisLocal": [0, -1, 0],
+          "flexMovesTipBy": 0.0381,
+          "spreadAxisLocal": [0, 0, -1],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "index": {
+          "chain": ["Bip001_R_Finger1", "Bip001_R_Finger11", "Bip001_R_Finger12"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0306,
+          "spreadAxisLocal": [0, -1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "middle": {
+          "chain": ["Bip001_R_Finger2", "Bip001_R_Finger21", "Bip001_R_Finger22"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0337,
+          "spreadAxisLocal": [0, -1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "ring": {
+          "chain": ["Bip001_R_Finger3", "Bip001_R_Finger31", "Bip001_R_Finger32"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0306,
+          "spreadAxisLocal": [0, -1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        },
+        "pinky": {
+          "chain": ["Bip001_R_Finger4", "Bip001_R_Finger41", "Bip001_R_Finger42"],
+          "flexAxisLocal": [0, 0, 1],
+          "flexMovesTipBy": 0.0232,
+          "spreadAxisLocal": [0, -1, 0],
+          "note": "a positive angle about flexAxisLocal curls the finger toward the palm; apply it to every bone of the chain"
+        }
+      }
+    },
+    "legs": {
+      "L": ["Bip001 L Thigh", "Bip001 L Calf", "Bip001 L Foot"],
+      "R": ["Bip001 R Thigh", "Bip001 R Calf", "Bip001 R Foot"]
+    },
+    "claws": {
+      "note": "the two white claws float at her sides. Each hangs on a prop socket; the clips key them.",
+      "R": { "socket": "Bip001 Prop1", "bones": ["Bone01_weapon_R_01", "Bone01_weapon_R_03"] },
+      "L": { "socket": "Bip001 Prop2", "bones": ["Bone01_weapon_L_01", "Bone01_weapon_L_03"] }
+    },
+    "dollSocket": {
+      "bone": "Bip001 R Hand",
+      "three": "Bip001_R_Hand",
+      "note": "her RIGHT hand, the one on the screen-left side in the video. In interaction_03 the hand is empty and the doll hovers above it (cameras.facts.json has the offsets and the times)."
+    }
+  },
+  "springs": {
+    "note": "The clips key every one of these bones (the authored motion, including the hair whips of interaction_03). Run a spring solver on top as secondary motion: read the pose the mixer wrote, then spring toward it, so the hair follows the clip and also answers the cursor. Rows are in hierarchy order.",
+    "hair": [
+      {
+        "bone": "Bone01_Hair_B_01",
+        "three": "Bone01_Hair_B_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.1016
+      },
+      {
+        "bone": "Bone01_Hair_F_01",
+        "three": "Bone01_Hair_F_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.1334
+      },
+      {
+        "bone": "Bone01_Hair_F_03",
+        "three": "Bone01_Hair_F_03",
+        "parent": "Bip001 Head",
+        "restLength": 0.1562
+      },
+      {
+        "bone": "Bone01_Hair_F_05",
+        "three": "Bone01_Hair_F_05",
+        "parent": "Bip001 Head",
+        "restLength": 0.1853
+      },
+      {
+        "bone": "Bone01_Hair_L_01",
+        "three": "Bone01_Hair_L_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.115
+      },
+      {
+        "bone": "Bone01_Hair_L_04",
+        "three": "Bone01_Hair_L_04",
+        "parent": "Bip001 Head",
+        "restLength": 0.0772
+      },
+      {
+        "bone": "Bone01_Hair_R_01",
+        "three": "Bone01_Hair_R_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.1004
+      },
+      {
+        "bone": "Bone01_Hair_R_03",
+        "three": "Bone01_Hair_R_03",
+        "parent": "Bip001 Head",
+        "restLength": 0.0905
+      },
+      {
+        "bone": "Bone01_Hair_R_06",
+        "three": "Bone01_Hair_R_06",
+        "parent": "Bip001 Head",
+        "restLength": 0.1353
+      },
+      {
+        "bone": "Bone01_Hair_R_08",
+        "three": "Bone01_Hair_R_08",
+        "parent": "Bip001 Head",
+        "restLength": 0.1328
+      },
+      {
+        "bone": "Bone01_Hair_LB_01",
+        "three": "Bone01_Hair_LB_01",
+        "parent": "Bone01_Hair_B_01",
+        "restLength": 0.2627
+      },
+      {
+        "bone": "Bone01_Hair_RB_01",
+        "three": "Bone01_Hair_RB_01",
+        "parent": "Bone01_Hair_B_01",
+        "restLength": 0.2628
+      },
+      {
+        "bone": "Bone01_Hair_F_02",
+        "three": "Bone01_Hair_F_02",
+        "parent": "Bone01_Hair_F_01",
+        "restLength": 0.0306
+      },
+      {
+        "bone": "Bone01_Hair_F_04",
+        "three": "Bone01_Hair_F_04",
+        "parent": "Bone01_Hair_F_03",
+        "restLength": 0.0493
+      },
+      {
+        "bone": "Bone01_Hair_F_06",
+        "three": "Bone01_Hair_F_06",
+        "parent": "Bone01_Hair_F_05",
+        "restLength": 0.0402
+      },
+      {
+        "bone": "Bone01_Hair_L_02",
+        "three": "Bone01_Hair_L_02",
+        "parent": "Bone01_Hair_L_01",
+        "restLength": 0.0433
+      },
+      {
+        "bone": "Bone01_Hair_L_05",
+        "three": "Bone01_Hair_L_05",
+        "parent": "Bone01_Hair_L_04",
+        "restLength": 0.0781
+      },
+      {
+        "bone": "Bone01_Hair_R_02",
+        "three": "Bone01_Hair_R_02",
+        "parent": "Bone01_Hair_R_01",
+        "restLength": 0.0529
+      },
+      {
+        "bone": "Bone01_Hair_R_04",
+        "three": "Bone01_Hair_R_04",
+        "parent": "Bone01_Hair_R_03",
+        "restLength": 0.0731
+      },
+      {
+        "bone": "Bone01_Hair_R_07",
+        "three": "Bone01_Hair_R_07",
+        "parent": "Bone01_Hair_R_06",
+        "restLength": 0.0371
+      },
+      {
+        "bone": "Bone01_Hair_R_09",
+        "three": "Bone01_Hair_R_09",
+        "parent": "Bone01_Hair_R_08",
+        "restLength": 0.0536
+      },
+      {
+        "bone": "Bone01_Hair_LB_02",
+        "three": "Bone01_Hair_LB_02",
+        "parent": "Bone01_Hair_LB_01",
+        "restLength": 0.2436
+      },
+      {
+        "bone": "Bone01_Hair_RB_02",
+        "three": "Bone01_Hair_RB_02",
+        "parent": "Bone01_Hair_RB_01",
+        "restLength": 0.2436
+      },
+      {
+        "bone": "Bone01_Hair_F_07",
+        "three": "Bone01_Hair_F_07",
+        "parent": "Bone01_Hair_F_06",
+        "restLength": 0.0334
+      },
+      {
+        "bone": "Bone01_Hair_L_03",
+        "three": "Bone01_Hair_L_03",
+        "parent": "Bone01_Hair_L_02",
+        "restLength": 0.041
+      },
+      {
+        "bone": "Bone01_Hair_L_06",
+        "three": "Bone01_Hair_L_06",
+        "parent": "Bone01_Hair_L_05",
+        "restLength": 0.0681
+      },
+      {
+        "bone": "Bone01_Hair_R_05",
+        "three": "Bone01_Hair_R_05",
+        "parent": "Bone01_Hair_R_04",
+        "restLength": 0.0613
+      },
+      {
+        "bone": "Bone01_Hair_LB_03",
+        "three": "Bone01_Hair_LB_03",
+        "parent": "Bone01_Hair_LB_02",
+        "restLength": 0.2601
+      },
+      {
+        "bone": "Bone01_Hair_RB_03",
+        "three": "Bone01_Hair_RB_03",
+        "parent": "Bone01_Hair_RB_02",
+        "restLength": 0.2601
+      },
+      {
+        "bone": "Bone01_Hair_LB_04",
+        "three": "Bone01_Hair_LB_04",
+        "parent": "Bone01_Hair_LB_03",
+        "restLength": 0.2352
+      },
+      {
+        "bone": "Bone01_Hair_RB_04",
+        "three": "Bone01_Hair_RB_04",
+        "parent": "Bone01_Hair_RB_03",
+        "restLength": 0.2352
+      }
+    ],
+    "skirt": [
+      {
+        "bone": "Bone01_Skirt_L_01",
+        "three": "Bone01_Skirt_L_01",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1254
+      },
+      {
+        "bone": "Bone01_Skirt_L_06",
+        "three": "Bone01_Skirt_L_06",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1389
+      },
+      {
+        "bone": "Bone01_Skirt_L_16",
+        "three": "Bone01_Skirt_L_16",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1562
+      },
+      {
+        "bone": "Bone01_Skirt_R_01",
+        "three": "Bone01_Skirt_R_01",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1254
+      },
+      {
+        "bone": "Bone01_Skirt_R_06",
+        "three": "Bone01_Skirt_R_06",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1387
+      },
+      {
+        "bone": "Bone01_Skirt_R_16",
+        "three": "Bone01_Skirt_R_16",
+        "parent": "Bip001 Pelvis",
+        "restLength": 0.1562
+      },
+      {
+        "bone": "Bone01_Skirt_L_02",
+        "three": "Bone01_Skirt_L_02",
+        "parent": "Bone01_Skirt_L_01",
+        "restLength": 0.2583
+      },
+      {
+        "bone": "Bone01_Skirt_L_07",
+        "three": "Bone01_Skirt_L_07",
+        "parent": "Bone01_Skirt_L_06",
+        "restLength": 0.2341
+      },
+      {
+        "bone": "Bone01_Skirt_L_11",
+        "three": "Bone01_Skirt_L_11",
+        "parent": "Bone01_Skirt_L_06",
+        "restLength": 0.2081
+      },
+      {
+        "bone": "Bone01_Skirt_R_02",
+        "three": "Bone01_Skirt_R_02",
+        "parent": "Bone01_Skirt_R_01",
+        "restLength": 0.2583
+      },
+      {
+        "bone": "Bone01_Skirt_R_07",
+        "three": "Bone01_Skirt_R_07",
+        "parent": "Bone01_Skirt_R_06",
+        "restLength": 0.2341
+      },
+      {
+        "bone": "Bone01_Skirt_R_11",
+        "three": "Bone01_Skirt_R_11",
+        "parent": "Bone01_Skirt_R_06",
+        "restLength": 0.2082
+      },
+      {
+        "bone": "Bone01_Skirt_L_03",
+        "three": "Bone01_Skirt_L_03",
+        "parent": "Bone01_Skirt_L_02",
+        "restLength": 0.2446
+      },
+      {
+        "bone": "Bone01_Skirt_L_08",
+        "three": "Bone01_Skirt_L_08",
+        "parent": "Bone01_Skirt_L_07",
+        "restLength": 0.2065
+      },
+      {
+        "bone": "Bone01_Skirt_L_12",
+        "three": "Bone01_Skirt_L_12",
+        "parent": "Bone01_Skirt_L_11",
+        "restLength": 0.2441
+      },
+      {
+        "bone": "Bone01_Skirt_R_03",
+        "three": "Bone01_Skirt_R_03",
+        "parent": "Bone01_Skirt_R_02",
+        "restLength": 0.2446
+      },
+      {
+        "bone": "Bone01_Skirt_R_08",
+        "three": "Bone01_Skirt_R_08",
+        "parent": "Bone01_Skirt_R_07",
+        "restLength": 0.2065
+      },
+      {
+        "bone": "Bone01_Skirt_R_12",
+        "three": "Bone01_Skirt_R_12",
+        "parent": "Bone01_Skirt_R_11",
+        "restLength": 0.2441
+      },
+      {
+        "bone": "Bone01_Skirt_L_04",
+        "three": "Bone01_Skirt_L_04",
+        "parent": "Bone01_Skirt_L_03",
+        "restLength": 0.238
+      },
+      {
+        "bone": "Bone01_Skirt_L_09",
+        "three": "Bone01_Skirt_L_09",
+        "parent": "Bone01_Skirt_L_08",
+        "restLength": 0.1895
+      },
+      {
+        "bone": "Bone01_Skirt_L_13",
+        "three": "Bone01_Skirt_L_13",
+        "parent": "Bone01_Skirt_L_12",
+        "restLength": 0.2443
+      },
+      {
+        "bone": "Bone01_Skirt_R_04",
+        "three": "Bone01_Skirt_R_04",
+        "parent": "Bone01_Skirt_R_03",
+        "restLength": 0.238
+      },
+      {
+        "bone": "Bone01_Skirt_R_09",
+        "three": "Bone01_Skirt_R_09",
+        "parent": "Bone01_Skirt_R_08",
+        "restLength": 0.1895
+      },
+      {
+        "bone": "Bone01_Skirt_R_13",
+        "three": "Bone01_Skirt_R_13",
+        "parent": "Bone01_Skirt_R_12",
+        "restLength": 0.2443
+      },
+      {
+        "bone": "Bone01_Skirt_L_05",
+        "three": "Bone01_Skirt_L_05",
+        "parent": "Bone01_Skirt_L_04",
+        "restLength": 0.2516
+      },
+      {
+        "bone": "Bone01_Skirt_L_10",
+        "three": "Bone01_Skirt_L_10",
+        "parent": "Bone01_Skirt_L_09",
+        "restLength": 0.1724
+      },
+      {
+        "bone": "Bone01_Skirt_L_14",
+        "three": "Bone01_Skirt_L_14",
+        "parent": "Bone01_Skirt_L_13",
+        "restLength": 0.1841
+      },
+      {
+        "bone": "Bone01_Skirt_R_05",
+        "three": "Bone01_Skirt_R_05",
+        "parent": "Bone01_Skirt_R_04",
+        "restLength": 0.2516
+      },
+      {
+        "bone": "Bone01_Skirt_R_10",
+        "three": "Bone01_Skirt_R_10",
+        "parent": "Bone01_Skirt_R_09",
+        "restLength": 0.1724
+      },
+      {
+        "bone": "Bone01_Skirt_R_14",
+        "three": "Bone01_Skirt_R_14",
+        "parent": "Bone01_Skirt_R_13",
+        "restLength": 0.1841
+      },
+      {
+        "bone": "Bone01_Skirt_L_15",
+        "three": "Bone01_Skirt_L_15",
+        "parent": "Bone01_Skirt_L_14",
+        "restLength": 0.184
+      },
+      {
+        "bone": "Bone01_Skirt_R_15",
+        "three": "Bone01_Skirt_R_15",
+        "parent": "Bone01_Skirt_R_14",
+        "restLength": 0.184
+      }
+    ],
+    "ears": [
+      {
+        "bone": "Bone01_Ear_L_01",
+        "three": "Bone01_Ear_L_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.0791
+      },
+      {
+        "bone": "Bone01_Ear_R_01",
+        "three": "Bone01_Ear_R_01",
+        "parent": "Bip001 Head",
+        "restLength": 0.0789
+      },
+      {
+        "bone": "Bone01_Ear_L_02",
+        "three": "Bone01_Ear_L_02",
+        "parent": "Bone01_Ear_L_01",
+        "restLength": 0.0589
+      },
+      {
+        "bone": "Bone01_Ear_R_02",
+        "three": "Bone01_Ear_R_02",
+        "parent": "Bone01_Ear_R_01",
+        "restLength": 0.0589
+      }
+    ],
+    "jewelry": [
+      {
+        "bone": "Bone01_shiPin_01",
+        "three": "Bone01_shiPin_01",
+        "parent": "Bip001 Spine2",
+        "restLength": 0.1928
+      },
+      {
+        "bone": "Bone01_shiPin_02",
+        "three": "Bone01_shiPin_02",
+        "parent": "Bone01_shiPin_01",
+        "restLength": 0.1249
+      }
+    ],
+    "cloth": [
+      {
+        "bone": "Bone01_Cloth_L_01",
+        "three": "Bone01_Cloth_L_01",
+        "parent": "Bip001 L Thigh",
+        "restLength": 0.1213
+      },
+      {
+        "bone": "Bone01_Cloth_R_01",
+        "three": "Bone01_Cloth_R_01",
+        "parent": "Bip001 R Thigh",
+        "restLength": 0.1212
+      },
+      { "bone": "Bone299", "three": "Bone299", "parent": "Bip001 Spine2", "restLength": 0.0809 },
+      { "bone": "Bone300", "three": "Bone300", "parent": "Bip001 Spine2", "restLength": 0.0782 },
+      { "bone": "Bone301", "three": "Bone301", "parent": "Bip001 Spine2", "restLength": 0.1544 },
+      { "bone": "Bone303", "three": "Bone303", "parent": "Bip001 Spine2", "restLength": 0.1544 },
+      { "bone": "Bone304", "three": "Bone304", "parent": "Bip001 Spine2", "restLength": 0.1576 }
+    ]
+  },
+  "morphs": {
+    "mesh": "selena_mesh_head",
+    "note": "head.morphTargetDictionary[name] gives the index into head.morphTargetInfluences, 0 to 1. They are absolute shapes: two at once add their displacements. The names are ours, read from a render of each target (selena-faces.png); `source` is the game's own number.",
+    "transferred": "from the raw head to this head by the nearest vertex in world space. The two heads share every vertex (mean distance 1e-6 m), so nothing was guessed.",
+    "targets": [
+      {
+        "name": "blink",
+        "source": "biyan",
+        "vertices": 1049,
+        "largestMetres": 0.01248,
+        "afterNoiseCut": { "vertices": 1038, "largestMetres": 0.01248 }
+      },
+      {
+        "name": "wince_open",
+        "source": "194",
+        "vertices": 2050,
+        "largestMetres": 0.01596,
+        "afterNoiseCut": { "vertices": 2047, "largestMetres": 0.01596 }
+      },
+      {
+        "name": "strain",
+        "source": "249",
+        "vertices": 1709,
+        "largestMetres": 0.01711,
+        "afterNoiseCut": { "vertices": 1630, "largestMetres": 0.01711 }
+      },
+      {
+        "name": "shout",
+        "source": "257",
+        "vertices": 2194,
+        "largestMetres": 0.02393,
+        "afterNoiseCut": { "vertices": 2138, "largestMetres": 0.02393 }
+      },
+      {
+        "name": "laugh",
+        "source": "1156",
+        "vertices": 2137,
+        "largestMetres": 0.02283,
+        "afterNoiseCut": { "vertices": 2125, "largestMetres": 0.02283 }
+      },
+      {
+        "name": "smile_closed",
+        "source": "1163",
+        "vertices": 1600,
+        "largestMetres": 0.0149,
+        "afterNoiseCut": { "vertices": 1522, "largestMetres": 0.0149 }
+      },
+      {
+        "name": "smile",
+        "source": "780",
+        "vertices": 1557,
+        "largestMetres": 0.0115,
+        "afterNoiseCut": { "vertices": 1416, "largestMetres": 0.0115 }
+      },
+      {
+        "name": "smile_soft",
+        "source": "500",
+        "vertices": 1768,
+        "largestMetres": 0.00595,
+        "afterNoiseCut": { "vertices": 1697, "largestMetres": 0.00595 }
+      },
+      {
+        "name": "angry",
+        "source": "240",
+        "vertices": 1719,
+        "largestMetres": 0.01451,
+        "afterNoiseCut": { "vertices": 1585, "largestMetres": 0.01451 }
+      },
+      {
+        "name": "angry_shout",
+        "source": "915",
+        "vertices": 2049,
+        "largestMetres": 0.01635,
+        "afterNoiseCut": { "vertices": 2003, "largestMetres": 0.01635 }
+      },
+      {
+        "name": "snarl",
+        "source": "937",
+        "vertices": 1898,
+        "largestMetres": 0.02015,
+        "afterNoiseCut": { "vertices": 1817, "largestMetres": 0.02015 }
+      },
+      {
+        "name": "surprised",
+        "source": "149",
+        "vertices": 1307,
+        "largestMetres": 0.0182,
+        "afterNoiseCut": { "vertices": 1173, "largestMetres": 0.0182 }
+      },
+      {
+        "name": "lips_pursed",
+        "source": "2215",
+        "vertices": 1966,
+        "largestMetres": 0.01406,
+        "afterNoiseCut": { "vertices": 1833, "largestMetres": 0.01406 }
+      },
+      {
+        "name": "mouth_o",
+        "source": "155_2",
+        "vertices": 2006,
+        "largestMetres": 0.01826,
+        "afterNoiseCut": { "vertices": 1919, "largestMetres": 0.01826 }
+      },
+      {
+        "name": "mouth_tiny_o",
+        "source": "2170",
+        "vertices": 1950,
+        "largestMetres": 0.01479,
+        "afterNoiseCut": { "vertices": 1872, "largestMetres": 0.01479 }
+      }
+    ],
+    "dropped": [],
+    "bytesInFile": 92141,
+    "match": {
+      "vertices": 2953,
+      "meanDistance": 6.222349049557199e-7,
+      "maxDistance": 7.362139058386674e-7,
+      "farther": 0,
+      "limit": 0.003
+    }
+  },
+  "clips": {
+    "city_idle": { "alias": "idle", "frames": 66, "fps": 24, "duration": 2.708333, "loop": true },
+    "city_interaction_R_loop": {
+      "alias": "hands_to_mouth_loop",
+      "frames": 66,
+      "fps": 24,
+      "duration": 2.708333,
+      "loop": true
+    },
+    "city_interaction_back_R": {
+      "alias": "hands_to_mouth_release",
+      "frames": 78,
+      "fps": 24,
+      "duration": 3.208333,
+      "loop": false
+    },
+    "city_intercation03": {
+      "alias": "interaction_03",
+      "frames": 152,
+      "fps": 24,
+      "duration": 6.291667,
+      "loop": false
+    }
+  },
+  "clipNote": "Durations are (frames - 1) / 24 s. The two loops end on their first key exactly. The names keep the source's spelling (intercation). Sequence for the Selena section: hands_to_mouth_loop, then hands_to_mouth_release, then idle.",
+  "seams": {
+    "note": "worst and mean distance (metres) between the bone heads at the end of the first clip and at the start of the second: cross fade over this much",
+    "release_to_idle": { "worst": 0.0365, "mean": 0.0052 },
+    "loop_to_release": { "worst": 0.0149, "mean": 0.0001 },
+    "interaction_03_to_idle": { "worst": 0.1189, "mean": 0.0093 }
+  },
+  "bones": {
+    "root": {
+      "three": "root",
+      "parent": null,
+      "restLocal": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+      "restHead": [0, 0, 0]
+    },
+    "Bip001": {
+      "three": "Bip001",
+      "parent": "root",
+      "restLocal": [0, 1.060157, -0.004308, -0.5, -0.5, -0.5, 0.5, 1, 1, 1],
+      "restHead": [0, 1.06016, -0.00431]
+    },
+    "Bip001 Pelvis": {
+      "three": "Bip001_Pelvis",
+      "parent": "Bip001",
+      "restLocal": [0, 0, 0, -0.5, -0.5, -0.5, 0.5, 1, 1, 1],
+      "restHead": [0, 1.06016, -0.00431]
+    },
+    "Bip001 Prop1": {
+      "three": "Bip001_Prop1",
+      "parent": "Bip001",
+      "restLocal": [
+        0.156298, -0.68945, -0.144164, 0.717906, -0.339749, -0.07729, 0.602667, 1, 1, 1
+      ],
+      "restHead": [-0.68945, 0.91599, 0.15199]
+    },
+    "Bip001 Prop2": {
+      "three": "Bip001_Prop2",
+      "parent": "Bip001",
+      "restLocal": [
+        0.156309, 0.688999, -0.143805, -0.809338, -0.296665, 0.01148, 0.506783, 1, 1, 1
+      ],
+      "restHead": [0.689, 0.91635, 0.152]
+    },
+    "Bip001 Spine": {
+      "three": "Bip001_Spine",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.092556, 0.013012, 0, -0.000002, 0.000001, 0.008938, 0.99996, 1, 1, 1],
+      "restHead": [0, 1.15271, 0.0087]
+    },
+    "Bone01_Skirt_L_01": {
+      "three": "Bone01_Skirt_L_01",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.035845, -0.113706, 0.039, 0.197015, -0.955907, 0.185803, 0.113595, 1, 1, 1],
+      "restHead": [0.039, 1.096, -0.11801]
+    },
+    "Bone01_Skirt_L_06": {
+      "three": "Bone01_Skirt_L_06",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.029963, -0.080668, 0.109, 0.117203, -0.904768, 0.386113, 0.136289, 1, 1, 1],
+      "restHead": [0.109, 1.09012, -0.08498]
+    },
+    "Bone01_Skirt_L_16": {
+      "three": "Bone01_Skirt_L_16",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.095764, 0.010096, 0.123, 0.159996, -0.688767, 0.688769, 0.159997, 1, 1, 1],
+      "restHead": [0.123, 1.15592, 0.00579]
+    },
+    "Bone01_Skirt_R_01": {
+      "three": "Bone01_Skirt_R_01",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.035844, -0.113707, -0.038889, -0.197018, 0.955907, 0.1858, 0.113594, 1, 1, 1],
+      "restHead": [-0.03889, 1.096, -0.11801]
+    },
+    "Bone01_Skirt_R_06": {
+      "three": "Bone01_Skirt_R_06",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [0.029963, -0.080669, -0.108841, -0.117205, 0.904769, 0.38611, 0.13629, 1, 1, 1],
+      "restHead": [-0.10884, 1.09012, -0.08498]
+    },
+    "Bone01_Skirt_R_16": {
+      "three": "Bone01_Skirt_R_16",
+      "parent": "Bip001 Pelvis",
+      "restLocal": [
+        0.095763, 0.010095, -0.122949, -0.159997, 0.688769, 0.688767, 0.159996, 1, 1, 1
+      ],
+      "restHead": [-0.12295, 1.15592, 0.00579]
+    },
+    "Bone01_weapon_R_01": {
+      "three": "Bone01_weapon_R_01",
+      "parent": "Bip001 Prop1",
+      "restLocal": [0, 0, 0, 0, -0.707106, -0.000001, 0.707107, 1, 1, 1],
+      "restHead": [-0.68945, 0.91599, 0.15199]
+    },
+    "Bone01_weapon_R_03": {
+      "three": "Bone01_weapon_R_03",
+      "parent": "Bip001 Prop1",
+      "restLocal": [0.002216, -0.108, 0.007515, 0.30632, -0.624681, -0.291481, 0.656491, 1, 1, 1],
+      "restHead": [-0.69223, 0.81556, 0.19238]
+    },
+    "Bone01_weapon_L_01": {
+      "three": "Bone01_weapon_L_01",
+      "parent": "Bip001 Prop2",
+      "restLocal": [0, 0, 0, -0.000001, -0.707107, 0.000001, 0.707107, 1, 1, 1],
+      "restHead": [0.689, 0.91635, 0.152]
+    },
+    "Bone01_weapon_L_03": {
+      "three": "Bone01_weapon_L_03",
+      "parent": "Bip001 Prop2",
+      "restLocal": [0.006245, 0.101394, 0.038442, 0.673825, 0.163698, 0.678706, 0.24191, 1, 1, 1],
+      "restHead": [0.69188, 0.81556, 0.19238]
+    },
+    "Bip001 L Thigh": {
+      "three": "Bip001_L_Thigh",
+      "parent": "Bip001 Spine",
+      "restLocal": [
+        -0.092774, -0.011355, 0.065423, -0.007185, 0.999939, -0.0001, 0.008389, 1, 1, 1
+      ],
+      "restHead": [0.06542, 1.06016, -0.00431]
+    },
+    "Bip001 R Thigh": {
+      "three": "Bip001_R_Thigh",
+      "parent": "Bip001 Spine",
+      "restLocal": [
+        -0.092774, -0.011355, -0.065423, 0.007185, -0.999939, -0.000103, 0.008388, 1, 1, 1
+      ],
+      "restHead": [-0.06542, 1.06016, -0.00431]
+    },
+    "Bip001 Spine1": {
+      "three": "Bip001_Spine1",
+      "parent": "Bip001 Spine",
+      "restLocal": [0.078545, -0.000074, 0, 0, 0, -0.048365, 0.99883, 1, 1, 1],
+      "restHead": [0, 1.23125, 0.01003]
+    },
+    "Bone01_Skirt_L_02": {
+      "three": "Bone01_Skirt_L_02",
+      "parent": "Bone01_Skirt_L_01",
+      "restLocal": [0.258291, 0, 0, -0.00073, -0.006588, -0.117428, 0.993059, 1, 1, 1],
+      "restHead": [0.114, 0.86443, -0.2044]
+    },
+    "Bone01_Skirt_L_07": {
+      "three": "Bone01_Skirt_L_07",
+      "parent": "Bone01_Skirt_L_06",
+      "restLocal": [
+        0.234088, -0.000001, -0.000001, -0.001911, -0.034092, -0.022693, 0.999159, 1, 1, 1
+      ],
+      "restHead": [0.18792, 0.87116, -0.10999]
+    },
+    "Bone01_Skirt_L_11": {
+      "three": "Bone01_Skirt_L_11",
+      "parent": "Bone01_Skirt_L_06",
+      "restLocal": [
+        0.201309, 0.004209, -0.052566, 0.021272, -0.015429, -0.081733, 0.996308, 1, 1, 1
+      ],
+      "restHead": [0.209, 0.90869, -0.06524]
+    },
+    "Bone01_Skirt_R_02": {
+      "three": "Bone01_Skirt_R_02",
+      "parent": "Bone01_Skirt_R_01",
+      "restLocal": [0.258291, 0.000001, 0, 0.000731, 0.006587, -0.117427, 0.993059, 1, 1, 1],
+      "restHead": [-0.11389, 0.86443, -0.2044]
+    },
+    "Bone01_Skirt_R_07": {
+      "three": "Bone01_Skirt_R_07",
+      "parent": "Bone01_Skirt_R_06",
+      "restLocal": [0.234088, 0, 0.000001, 0.001021, 0.038078, -0.048377, 0.998103, 1, 1, 1],
+      "restHead": [-0.18776, 0.87116, -0.10999]
+    },
+    "Bone01_Skirt_R_11": {
+      "three": "Bone01_Skirt_R_11",
+      "parent": "Bone01_Skirt_R_06",
+      "restLocal": [0.201409, 0.004012, 0.052764, -0.021272, 0.015429, -0.08173, 0.996308, 1, 1, 1],
+      "restHead": [-0.20914, 0.90869, -0.06524]
+    },
+    "Bip001 L Calf": {
+      "three": "Bip001_L_Calf",
+      "parent": "Bip001 L Thigh",
+      "restLocal": [0.471432, -0.000002, 0, 0, 0, -0.034951, 0.999389, 1, 1, 1],
+      "restHead": [0.05752, 0.58904, -0.01951]
+    },
+    "Bone01_Cloth_L_01": {
+      "three": "Bone01_Cloth_L_01",
+      "parent": "Bip001 L Thigh",
+      "restLocal": [0.065571, 0.097015, -0.031712, 0.028602, -0.921005, 0.000403, 0.3885, 1, 1, 1],
+      "restHead": [0.096, 0.99097, 0.09054]
+    },
+    "Bip001 R Calf": {
+      "three": "Bip001_R_Calf",
+      "parent": "Bip001 R Thigh",
+      "restLocal": [0.471432, -0.000001, 0, 0, 0, -0.034951, 0.999389, 1, 1, 1],
+      "restHead": [-0.05751, 0.58904, -0.01951]
+    },
+    "Bone01_Cloth_R_01": {
+      "three": "Bone01_Cloth_R_01",
+      "parent": "Bip001 R Thigh",
+      "restLocal": [0.065576, 0.097015, 0.031383, -0.028602, 0.921005, 0.000405, 0.388499, 1, 1, 1],
+      "restHead": [-0.09567, 0.99097, 0.09054]
+    },
+    "Bip001 Spine2": {
+      "three": "Bip001_Spine2",
+      "parent": "Bip001 Spine1",
+      "restLocal": [0.094135, -0.000113, 0, 0, 0, -0.058948, 0.998261, 1, 1, 1],
+      "restHead": [0, 1.32508, 0.0025]
+    },
+    "Bone01_Skirt_L_03": {
+      "three": "Bone01_Skirt_L_03",
+      "parent": "Bone01_Skirt_L_02",
+      "restLocal": [0.244569, 0, 0, 0.011881, 0.099464, -0.0369, 0.994286, 1, 1, 1],
+      "restHead": [0.19783, 0.67465, -0.3339]
+    },
+    "Bone01_Skirt_L_08": {
+      "three": "Bone01_Skirt_L_08",
+      "parent": "Bone01_Skirt_L_07",
+      "restLocal": [0.206494, 0, -0.000001, 0.004077, -0.022467, -0.082759, 0.996308, 1, 1, 1],
+      "restHead": [0.25416, 0.67942, -0.14856]
+    },
+    "Bone01_Skirt_L_12": {
+      "three": "Bone01_Skirt_L_12",
+      "parent": "Bone01_Skirt_L_11",
+      "restLocal": [0.244071, 0, 0, -0.000625, -0.001006, 0.000939, 0.999999, 1, 1, 1],
+      "restHead": [0.31233, 0.69518, -0.12273]
+    },
+    "Bone01_Skirt_R_03": {
+      "three": "Bone01_Skirt_R_03",
+      "parent": "Bone01_Skirt_R_02",
+      "restLocal": [0.244568, 0, 0, -0.012995, -0.108925, -0.036133, 0.993308, 1, 1, 1],
+      "restHead": [-0.19772, 0.67465, -0.3339]
+    },
+    "Bone01_Skirt_R_08": {
+      "three": "Bone01_Skirt_R_08",
+      "parent": "Bone01_Skirt_R_07",
+      "restLocal": [0.206495, 0, 0, 0.002446, 0.015392, -0.036653, 0.999207, 1, 1, 1],
+      "restHead": [-0.25969, 0.68334, -0.1568]
+    },
+    "Bone01_Skirt_R_12": {
+      "three": "Bone01_Skirt_R_12",
+      "parent": "Bone01_Skirt_R_11",
+      "restLocal": [0.244071, -0.000001, 0, 0.00597, 0.000657, 0.007787, 0.999952, 1, 1, 1],
+      "restHead": [-0.31247, 0.69518, -0.12273]
+    },
+    "Bip001 L Foot": {
+      "three": "Bip001_L_Foot",
+      "parent": "Bip001 L Calf",
+      "restLocal": [0.417478, -0.000015, 0, -0.000319, 0.008383, 0.051058, 0.99866, 1, 1, 1],
+      "restHead": [0.05054, 0.1738, -0.0621]
+    },
+    "Bip001 R Foot": {
+      "three": "Bip001_R_Foot",
+      "parent": "Bip001 R Calf",
+      "restLocal": [0.417479, -0.000014, 0, 0.000319, -0.008382, 0.051062, 0.99866, 1, 1, 1],
+      "restHead": [-0.05054, 0.17379, -0.0621]
+    },
+    "Bip001 Neck": {
+      "three": "Bip001_Neck",
+      "parent": "Bip001 Spine2",
+      "restLocal": [0.191676, -0.008608, 0, 0, -0.000001, 0.239658, 0.970857, 1, 1, 1],
+      "restHead": [0, 1.51137, -0.04343]
+    },
+    "Bone01_shiPin_01": {
+      "three": "Bone01_shiPin_01",
+      "parent": "Bip001 Spine2",
+      "restLocal": [0.189404, 0.036119, 0, 0.250992, 0.967989, 0, 0, 1, 1, 1],
+      "restHead": [0, 1.51789, 0.00088]
+    },
+    "Bone299": {
+      "three": "Bone299",
+      "parent": "Bip001 Spine2",
+      "restLocal": [
+        0.027466, 0.041641, -0.063684, 0.609257, 0.792529, -0.016174, 0.021039, 1, 1, 1
+      ],
+      "restHead": [-0.06368, 1.36016, 0.03797]
+    },
+    "Bone300": {
+      "three": "Bone300",
+      "parent": "Bip001 Spine2",
+      "restLocal": [
+        0.027466, 0.041641, 0.060285, -0.609058, -0.79227, -0.022449, 0.029201, 1, 1, 1
+      ],
+      "restHead": [0.06028, 1.36016, 0.03797]
+    },
+    "Bone301": {
+      "three": "Bone301",
+      "parent": "Bip001 Spine2",
+      "restLocal": [0.102485, 0.085125, -0.078, -0.215477, 0.351376, 0.874207, 0.256647, 1, 1, 1],
+      "restHead": [-0.078, 1.44223, 0.06594]
+    },
+    "Bone303": {
+      "three": "Bone303",
+      "parent": "Bip001 Spine2",
+      "restLocal": [0.102485, 0.085125, 0.078, -0.258479, -0.875322, -0.350029, 0.210904, 1, 1, 1],
+      "restHead": [0.078, 1.44224, 0.06594]
+    },
+    "Bone304": {
+      "three": "Bone304",
+      "parent": "Bip001 Spine2",
+      "restLocal": [0.142574, 0.045148, -0.04959, 0.336288, 0.928413, -0.136197, 0.080058, 1, 1, 1],
+      "restHead": [-0.04959, 1.47373, 0.01889]
+    },
+    "Bone01_Skirt_L_04": {
+      "three": "Bone01_Skirt_L_04",
+      "parent": "Bone01_Skirt_L_03",
+      "restLocal": [0.237975, 0, 0, 0.097409, -0.002805, 0.100459, 0.990157, 1, 1, 1],
+      "restHead": [0.32453, 0.51088, -0.45119]
+    },
+    "Bone01_Skirt_L_09": {
+      "three": "Bone01_Skirt_L_09",
+      "parent": "Bone01_Skirt_L_08",
+      "restLocal": [0.189525, 0.000001, 0.000001, 0.000319, 0.003753, -0.008419, 0.999957, 1, 1, 1],
+      "restHead": [0.32862, 0.51648, -0.21042]
+    },
+    "Bone01_Skirt_L_13": {
+      "three": "Bone01_Skirt_L_13",
+      "parent": "Bone01_Skirt_L_12",
+      "restLocal": [0.244327, 0, -0.000001, -0.001311, -0.00404, 0.001929, 0.999989, 1, 1, 1],
+      "restHead": [0.41516, 0.48117, -0.18037]
+    },
+    "Bone01_Skirt_R_04": {
+      "three": "Bone01_Skirt_R_04",
+      "parent": "Bone01_Skirt_R_03",
+      "restLocal": [0.237975, 0, 0, -0.098008, 0.005416, 0.100655, 0.990068, 1, 1, 1],
+      "restHead": [-0.32803, 0.51187, -0.4486]
+    },
+    "Bone01_Skirt_R_09": {
+      "three": "Bone01_Skirt_R_09",
+      "parent": "Bone01_Skirt_R_08",
+      "restLocal": [0.189524, 0, -0.000001, 0.001635, -0.006924, -0.024709, 0.999669, 1, 1, 1],
+      "restHead": [-0.3302, 0.51664, -0.21298]
+    },
+    "Bone01_Skirt_R_13": {
+      "three": "Bone01_Skirt_R_13",
+      "parent": "Bone01_Skirt_R_12",
+      "restLocal": [0.244326, 0, 0, 0.001866, -0.000937, -0.006547, 0.999976, 1, 1, 1],
+      "restHead": [-0.41329, 0.47964, -0.17816]
+    },
+    "Bone01_TuiJia_L_02": {
+      "three": "Bone01_TuiJia_L_02",
+      "parent": "Bip001 L Foot",
+      "restLocal": [
+        0.040562, 0.006211, -0.040461, 0.054253, 0.012199, -0.974132, 0.219032, 0.999999, 1, 1
+      ],
+      "restHead": [0.091, 0.13323, -0.05589]
+    },
+    "Bone01_TuiJia_R_02": {
+      "three": "Bone01_TuiJia_R_02",
+      "parent": "Bip001 R Foot",
+      "restLocal": [
+        0.040562, 0.00621, 0.040033, -0.054252, -0.012198, -0.974133, 0.219029, 1.000001, 1, 1
+      ],
+      "restHead": [-0.09057, 0.13323, -0.05589]
+    },
+    "Bip001 Head": {
+      "three": "Bip001_Head",
+      "parent": "Bip001 Neck",
+      "restLocal": [0.082137, 0.000001, 0, 0, 0, -0.109309, 0.994008, 1, 1, 1],
+      "restHead": [0, 1.59014, -0.02016]
+    },
+    "Bip001 L Clavicle": {
+      "three": "Bip001_L_Clavicle",
+      "parent": "Bip001 Neck",
+      "restLocal": [
+        -0.035467, 0.006486, 0.028678, 0.575372, -0.215214, 0.777319, 0.135663, 0.999999, 1, 1
+      ],
+      "restHead": [0.02868, 1.47552, -0.04725]
+    },
+    "Bip001 R Clavicle": {
+      "three": "Bip001_R_Clavicle",
+      "parent": "Bip001 Neck",
+      "restLocal": [
+        -0.035467, 0.006486, -0.028678, -0.575373, 0.215212, 0.777319, 0.135665, 1, 1, 1
+      ],
+      "restHead": [-0.02868, 1.47552, -0.04725]
+    },
+    "Bone01_shiPin_02": {
+      "three": "Bone01_shiPin_02",
+      "parent": "Bone01_shiPin_01",
+      "restLocal": [0.124945, 0.000003, 0, 0, 0, 0.005185, 0.999987, 1, 1, 1],
+      "restHead": [0, 1.42267, 0.08178]
+    },
+    "Bone01_Skirt_L_05": {
+      "three": "Bone01_Skirt_L_05",
+      "parent": "Bone01_Skirt_L_04",
+      "restLocal": [0.25156, 0.000001, 0, -0.018321, -0.084362, 0.232329, 0.968798, 1, 1, 1],
+      "restHead": [0.4395, 0.30586, -0.54083]
+    },
+    "Bone01_Skirt_L_10": {
+      "three": "Bone01_Skirt_L_10",
+      "parent": "Bone01_Skirt_L_09",
+      "restLocal": [0.172352, 0, 0, 0.008772, 0.009274, -0.017867, 0.999759, 1, 1, 1],
+      "restHead": [0.39895, 0.36987, -0.26755]
+    },
+    "Bone01_Skirt_L_14": {
+      "three": "Bone01_Skirt_L_14",
+      "parent": "Bone01_Skirt_L_13",
+      "restLocal": [
+        0.184092, 0.000001, 0.000001, -0.001283, 0.004577, -0.001912, 0.999987, 1, 1, 1
+      ],
+      "restHead": [0.49122, 0.31943, -0.22447]
+    },
+    "Bone01_Skirt_R_05": {
+      "three": "Bone01_Skirt_R_05",
+      "parent": "Bone01_Skirt_R_04",
+      "restLocal": [0.25156, 0, 0, 0.011713, 0.113112, 0.23417, 0.965522, 1, 1, 1],
+      "restHead": [-0.44562, 0.30753, -0.53633]
+    },
+    "Bone01_Skirt_R_10": {
+      "three": "Bone01_Skirt_R_10",
+      "parent": "Bone01_Skirt_R_09",
+      "restLocal": [
+        0.172353, 0.000001, 0.000001, -0.007689, -0.008302, -0.017494, 0.999783, 1, 1, 1
+      ],
+      "restHead": [-0.40105, 0.3694, -0.26782]
+    },
+    "Bone01_Skirt_R_14": {
+      "three": "Bone01_Skirt_R_14",
+      "parent": "Bone01_Skirt_R_13",
+      "restLocal": [0.184092, 0, 0, 0.00113, -0.004612, 0.000738, 0.999988, 1, 1, 1],
+      "restHead": [-0.491, 0.31839, -0.22118]
+    },
+    "Bone01_Ear_L_01": {
+      "three": "Bone01_Ear_L_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.047822, -0.001401, 0.063, -0.318052, -0.476756, -0.621158, 0.534518, 1, 1, 1],
+      "restHead": [0.063, 1.63795, -0.01831]
+    },
+    "Bone01_Ear_R_01": {
+      "three": "Bone01_Ear_R_01",
+      "parent": "Bip001 Head",
+      "restLocal": [
+        0.047822, -0.001401, -0.062688, -0.534515, 0.621159, 0.476758, 0.318054, 1, 1, 1
+      ],
+      "restHead": [-0.06269, 1.63795, -0.01831]
+    },
+    "Bone01_Eye_L_01": {
+      "three": "Bone01_Eye_L_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.043905, 0.037125, 0.034, -0.850344, -0.513108, 0.020697, 0.114926, 1, 1, 1],
+      "restHead": [0.034, 1.63142, 0.01986]
+    },
+    "Bone01_Eye_L_02": {
+      "three": "Bone01_Eye_L_02",
+      "parent": "Bip001 Head",
+      "restLocal": [0.043906, 0.037125, 0.034, -0.662245, -0.748984, -0.014129, 0.015979, 1, 1, 1],
+      "restHead": [0.034, 1.63142, 0.01986]
+    },
+    "Bone01_Eye_R_01": {
+      "three": "Bone01_Eye_R_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.043905, 0.037125, -0.034, 0.850347, 0.513103, 0.020699, 0.114926, 1, 1, 1],
+      "restHead": [-0.034, 1.63142, 0.01986]
+    },
+    "Bone01_Eye_R_02": {
+      "three": "Bone01_Eye_R_02",
+      "parent": "Bip001 Head",
+      "restLocal": [0.043906, 0.037125, -0.034, 0.662245, 0.748984, -0.014128, 0.015978, 1, 1, 1],
+      "restHead": [-0.034, 1.63142, 0.01986]
+    },
+    "Bone01_Hair_B_01": {
+      "three": "Bone01_Hair_B_01",
+      "parent": "Bip001 Head",
+      "restLocal": [-0.023557, -0.098874, 0, 0, 0, -0.960361, 0.27876, 1, 1, 1],
+      "restHead": [0, 1.57337, -0.12041]
+    },
+    "Bone01_Hair_F_01": {
+      "three": "Bone01_Hair_F_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.106132, 0.08079, 0, -0.019174, -0.999816, -0.000003, 0, 1, 1, 1],
+      "restHead": [0, 1.69053, 0.06766]
+    },
+    "Bone01_Hair_F_03": {
+      "three": "Bone01_Hair_F_03",
+      "parent": "Bip001 Head",
+      "restLocal": [0.121838, 0.09166, 0.034081, 0.132628, -0.719805, -0.264761, 0.627847, 1, 1, 1],
+      "restHead": [0.03408, 1.70546, 0.07958]
+    },
+    "Bone01_Hair_F_05": {
+      "three": "Bone01_Hair_F_05",
+      "parent": "Bip001 Head",
+      "restLocal": [
+        0.178979, 0.042125, 0.023196, -0.799993, -0.325467, -0.365363, 0.347263, 1, 1, 1
+      ],
+      "restHead": [0.0232, 1.76584, 0.03405]
+    },
+    "Bone01_Hair_L_01": {
+      "three": "Bone01_Hair_L_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.068417, 0.022359, 0.089715, 0.032388, 0.867385, 0.480107, 0.12685, 1, 1, 1],
+      "restHead": [0.08971, 1.65688, 0.0068]
+    },
+    "Bone01_Hair_L_04": {
+      "three": "Bone01_Hair_L_04",
+      "parent": "Bip001 Head",
+      "restLocal": [0.011707, -0.005831, 0.076118, 0.102299, 0.955608, 0.250261, 0.117119, 1, 1, 1],
+      "restHead": [0.07612, 1.60222, -0.02518]
+    },
+    "Bone01_Hair_R_01": {
+      "three": "Bone01_Hair_R_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.04524, 0.02393, -0.086381, 0.035095, -0.783393, 0.595487, 0.174525, 1, 1, 1],
+      "restHead": [-0.08638, 1.63365, 0.00679]
+    },
+    "Bone01_Hair_R_03": {
+      "three": "Bone01_Hair_R_03",
+      "parent": "Bip001 Head",
+      "restLocal": [0.031585, -0.023732, -0.081463, 0.0105, 0.729252, -0.683324, 0.033912, 1, 1, 1],
+      "restHead": [-0.08146, 1.62327, -0.04169]
+    },
+    "Bone01_Hair_R_06": {
+      "three": "Bone01_Hair_R_06",
+      "parent": "Bip001 Head",
+      "restLocal": [
+        0.090334, -0.001499, -0.100691, -0.033677, 0.924827, -0.370297, 0.080263, 1, 1, 1
+      ],
+      "restHead": [-0.10069, 1.68037, -0.01551]
+    },
+    "Bone01_Hair_R_08": {
+      "three": "Bone01_Hair_R_08",
+      "parent": "Bip001 Head",
+      "restLocal": [
+        0.090988, -0.006911, -0.096512, -0.209062, 0.781882, -0.493205, 0.318907, 1, 1, 1
+      ],
+      "restHead": [-0.09651, 1.68139, -0.02087]
+    },
+    "Bone01_Mouth_01": {
+      "three": "Bone01_Mouth_01",
+      "parent": "Bip001 Head",
+      "restLocal": [0.022929, 0.003067, 0, -0.389953, -0.920835, -0.000001, 0, 1, 1, 1],
+      "restHead": [0, 1.61281, -0.01554]
+    },
+    "Bip001 L UpperArm": {
+      "three": "Bip001_L_UpperArm",
+      "parent": "Bip001 L Clavicle",
+      "restLocal": [0.095106, 0, 0, 0.091181, 0.288456, 0.047952, 0.951935, 1, 1, 1],
+      "restHead": [0.1193, 1.44905, -0.05872]
+    },
+    "Bip001 R UpperArm": {
+      "three": "Bip001_R_UpperArm",
+      "parent": "Bip001 R Clavicle",
+      "restLocal": [0.095106, 0, 0, -0.091177, -0.288456, 0.047948, 0.951935, 1, 1, 1],
+      "restHead": [-0.1193, 1.44905, -0.05872]
+    },
+    "Bone01_Skirt_L_15": {
+      "three": "Bone01_Skirt_L_15",
+      "parent": "Bone01_Skirt_L_14",
+      "restLocal": [
+        0.184046, 0.000001, -0.000001, -0.00302, -0.011001, -0.003835, 0.999928, 1, 1, 1
+      ],
+      "restHead": [0.5688, 0.15824, -0.26774]
+    },
+    "Bone01_Skirt_R_15": {
+      "three": "Bone01_Skirt_R_15",
+      "parent": "Bone01_Skirt_R_14",
+      "restLocal": [0.184046, 0.000001, 0, 0.000985, 0.003777, -0.005968, 0.999975, 1, 1, 1],
+      "restHead": [-0.56963, 0.15726, -0.26275]
+    },
+    "Bone01_Ear_L_02": {
+      "three": "Bone01_Ear_L_02",
+      "parent": "Bone01_Ear_L_01",
+      "restLocal": [0.058901, 0, 0, 0.000052, -0.030199, 0.002696, 0.99954, 1, 1, 1],
+      "restHead": [0.11629, 1.6261, -0.04041]
+    },
+    "Bone01_Ear_R_02": {
+      "three": "Bone01_Ear_R_02",
+      "parent": "Bone01_Ear_R_01",
+      "restLocal": [0.058901, 0, 0, -0.000053, -0.030196, -0.002696, 0.99954, 1, 1, 1],
+      "restHead": [-0.11598, 1.6261, -0.04041]
+    },
+    "Bone01_Hair_LB_01": {
+      "three": "Bone01_Hair_LB_01",
+      "parent": "Bone01_Hair_B_01",
+      "restLocal": [
+        0.241843, -0.004427, 0.102512, 0.106887, -0.219912, 0.113554, 0.962974, 1, 1, 1
+      ],
+      "restHead": [0.10251, 1.37578, -0.25993]
+    },
+    "Bone01_Hair_RB_01": {
+      "three": "Bone01_Hair_RB_01",
+      "parent": "Bone01_Hair_B_01",
+      "restLocal": [
+        0.241843, -0.004428, -0.102764, -0.097091, 0.173445, 0.116038, 0.973152, 1, 1, 1
+      ],
+      "restHead": [-0.10276, 1.37578, -0.25993]
+    },
+    "Bone01_Hair_F_02": {
+      "three": "Bone01_Hair_F_02",
+      "parent": "Bone01_Hair_F_01",
+      "restLocal": [0.030633, 0, 0, 0.000002, 0, -0.04455, 0.999007, 1, 1, 1],
+      "restHead": [0, 1.65991, 0.06675]
+    },
+    "Bone01_Hair_F_04": {
+      "three": "Bone01_Hair_F_04",
+      "parent": "Bone01_Hair_F_03",
+      "restLocal": [
+        0.049268, 0.000001, -0.000007, 0.107998, 0.468051, -0.136063, 0.866459, 1, 1, 1
+      ],
+      "restHead": [0.07515, 1.69855, 0.05326]
+    },
+    "Bone01_Hair_F_06": {
+      "three": "Bone01_Hair_F_06",
+      "parent": "Bone01_Hair_F_05",
+      "restLocal": [0.040168, 0.000005, 0.000001, 0.053114, 0.01275, 0.571818, 0.81856, 1, 1, 1],
+      "restHead": [0.05575, 1.786, 0.04617]
+    },
+    "Bone01_Hair_L_02": {
+      "three": "Bone01_Hair_L_02",
+      "parent": "Bone01_Hair_L_01",
+      "restLocal": [0.043297, 0, 0, -0.046311, -0.156025, -0.147938, 0.975513, 1, 1, 1],
+      "restHead": [0.08153, 1.61464, 0.01164]
+    },
+    "Bone01_Hair_L_05": {
+      "three": "Bone01_Hair_L_05",
+      "parent": "Bone01_Hair_L_04",
+      "restLocal": [0.078078, 0, 0, -0.034421, 0.043176, 0.347928, 0.935894, 1, 1, 1],
+      "restHead": [0.06264, 1.52674, -0.01044]
+    },
+    "Bone01_Hair_R_02": {
+      "three": "Bone01_Hair_R_02",
+      "parent": "Bone01_Hair_R_01",
+      "restLocal": [
+        0.052864, 0.000001, 0.000001, -0.013831, 0.319893, -0.203695, 0.925195, 1, 1, 1
+      ],
+      "restHead": [-0.06972, 1.5837, 0.01148]
+    },
+    "Bone01_Hair_R_04": {
+      "three": "Bone01_Hair_R_04",
+      "parent": "Bone01_Hair_R_03",
+      "restLocal": [0.073088, 0, -0.000001, 0.006994, 0.350972, 0.106054, 0.930335, 1, 1, 1],
+      "restHead": [-0.08613, 1.55069, -0.04891]
+    },
+    "Bone01_Hair_R_07": {
+      "three": "Bone01_Hair_R_07",
+      "parent": "Bone01_Hair_R_06",
+      "restLocal": [0.037095, 0, 0, -0.025855, -0.214239, 0.122596, 0.968712, 1, 1, 1],
+      "restHead": [-0.10527, 1.64423, -0.0225]
+    },
+    "Bone01_Hair_R_09": {
+      "three": "Bone01_Hair_R_09",
+      "parent": "Bone01_Hair_R_08",
+      "restLocal": [0.053638, 0, -0.000001, 0.010196, -0.461609, 0.025013, 0.886672, 1, 1, 1],
+      "restHead": [-0.1122, 1.64578, -0.05778]
+    },
+    "Bip001 L Forearm": {
+      "three": "Bip001_L_Forearm",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [0.24281, 0, 0, 0.000001, 0, -0.193579, 0.981085, 1, 1, 1],
+      "restHead": [0.27269, 1.26281, -0.08601]
+    },
+    "Bip001 L ForeTwist": {
+      "three": "Bip001_L_ForeTwist",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [0.242809, 0, 0, -0.017959, 0.003544, -0.193546, 0.98092, 1, 1, 1],
+      "restHead": [0.27269, 1.26281, -0.08601]
+    },
+    "Bone01_JianJia_L_01": {
+      "three": "Bone01_JianJia_L_01",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [
+        -0.032799, -0.000538, 0.033412, -0.662525, -0.048399, -0.138485, 0.734534, 1, 1, 1
+      ],
+      "restHead": [0.124, 1.49563, -0.05842]
+    },
+    "Bone01_Upperarm_L_01": {
+      "three": "Bone01_Upperarm_L_01",
+      "parent": "Bip001 L UpperArm",
+      "restLocal": [-0.000192, 0.000049, -0.00023, 0.000002, 0, -0.000001, 1, 1, 1, 1],
+      "restHead": [0.119, 1.44905, -0.05872]
+    },
+    "Bip001 R Forearm": {
+      "three": "Bip001_R_Forearm",
+      "parent": "Bip001 R UpperArm",
+      "restLocal": [0.24281, 0.000002, 0, -0.000003, -0.000001, -0.193574, 0.981086, 1, 1, 1],
+      "restHead": [-0.27269, 1.26281, -0.08601]
+    },
+    "Bip001 R ForeTwist": {
+      "three": "Bip001_R_ForeTwist",
+      "parent": "Bip001 R UpperArm",
+      "restLocal": [0.242809, 0.000002, 0, 0.017958, -0.003544, -0.193545, 0.980921, 1, 1, 1],
+      "restHead": [-0.27269, 1.26281, -0.08601]
+    },
+    "Bone01_JianJia_R_01": {
+      "three": "Bone01_JianJia_R_01",
+      "parent": "Bip001 R UpperArm",
+      "restLocal": [
+        -0.032815, -0.000534, -0.033393, 0.662523, 0.048404, -0.138482, 0.734536, 1, 1, 1
+      ],
+      "restHead": [-0.12397, 1.49563, -0.05842]
+    },
+    "Bone01_Upperarm_R_01": {
+      "three": "Bone01_Upperarm_R_01",
+      "parent": "Bip001 R UpperArm",
+      "restLocal": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+      "restHead": [-0.1193, 1.44905, -0.05872]
+    },
+    "Bone01_Hair_LB_02": {
+      "three": "Bone01_Hair_LB_02",
+      "parent": "Bone01_Hair_LB_01",
+      "restLocal": [
+        0.243602, 0.000004, 0.000001, -0.005133, -0.001735, -0.061856, 0.99807, 1, 1, 1
+      ],
+      "restHead": [0.2116, 1.2282, -0.42012]
+    },
+    "Bone01_Hair_RB_02": {
+      "three": "Bone01_Hair_RB_02",
+      "parent": "Bone01_Hair_RB_01",
+      "restLocal": [
+        0.243605, -0.000001, 0.000001, -0.002302, 0.020405, -0.054917, 0.99828, 1, 1, 1
+      ],
+      "restHead": [-0.19049, 1.22419, -0.42925]
+    },
+    "Bone01_Hair_F_07": {
+      "three": "Bone01_Hair_F_07",
+      "parent": "Bone01_Hair_F_06",
+      "restLocal": [
+        0.033368, -0.000001, 0.000001, 0.101059, -0.168708, 0.344596, 0.917921, 1, 1, 1
+      ],
+      "restHead": [0.05451, 1.81753, 0.03532]
+    },
+    "Bone01_Hair_L_03": {
+      "three": "Bone01_Hair_L_03",
+      "parent": "Bone01_Hair_L_02",
+      "restLocal": [
+        0.040953, -0.000001, 0.000001, 0.074241, -0.524415, -0.127113, 0.838642, 1, 1, 1
+      ],
+      "restHead": [0.05846, 1.58206, 0.02078]
+    },
+    "Bone01_Hair_L_06": {
+      "three": "Bone01_Hair_L_06",
+      "parent": "Bone01_Hair_L_05",
+      "restLocal": [0.068072, 0.000005, 0.000001, 0.056281, -0.182179, -0.00315, 0.981648, 1, 1, 1],
+      "restHead": [0.08198, 1.47884, 0.03389]
+    },
+    "Bone01_Hair_R_05": {
+      "three": "Bone01_Hair_R_05",
+      "parent": "Bone01_Hair_R_04",
+      "restLocal": [
+        0.061287, 0.000001, -0.000002, 0.001242, 0.236315, -0.029855, 0.971217, 1, 1, 1
+      ],
+      "restHead": [-0.09878, 1.50279, -0.01284]
+    },
+    "Bip001 L Hand": {
+      "three": "Bip001_L_Hand",
+      "parent": "Bip001 L Forearm",
+      "restLocal": [0.241089, 0, 0, -0.731973, -0.014011, 0.110618, 0.672148, 1, 1, 1],
+      "restHead": [0.42842, 1.09074, -0.02072]
+    },
+    "Bone01_JianJia_L_03": {
+      "three": "Bone01_JianJia_L_03",
+      "parent": "Bip001 L Forearm",
+      "restLocal": [
+        0.243068, -0.000926, 0.016335, -0.103223, -0.681975, -0.715237, 0.112654, 1, 1, 1
+      ],
+      "restHead": [0.442, 1.10006, -0.02122]
+    },
+    "Bone01_JianJia_L_02": {
+      "three": "Bone01_JianJia_L_02",
+      "parent": "Bone01_JianJia_L_01",
+      "restLocal": [
+        0.038108, 0.052871, 0.077641, -0.479468, -0.240485, 0.180932, 0.824343, 1, 1, 1
+      ],
+      "restHead": [0.125, 1.43047, -0.13606]
+    },
+    "Bone296": {
+      "three": "Bone296",
+      "parent": "Bone01_JianJia_L_01",
+      "restLocal": [0.018015, -0.029779, 0.000749, 0.932653, -0.360775, 0, 0, 1, 1, 1],
+      "restHead": [0.15581, 1.50975, -0.05917]
+    },
+    "Bone298": {
+      "three": "Bone298",
+      "parent": "Bone01_JianJia_L_01",
+      "restLocal": [-0.002839, 0.001174, 0.000749, 0.634369, -0.77303, 0, 0, 1, 1, 1],
+      "restHead": [0.121, 1.49629, -0.05917]
+    },
+    "Bip001 R Hand": {
+      "three": "Bip001_R_Hand",
+      "parent": "Bip001 R Forearm",
+      "restLocal": [0.241089, -0.000001, 0, 0.731974, 0.01401, 0.110618, 0.672147, 1, 1, 1],
+      "restHead": [-0.42842, 1.09074, -0.02072]
+    },
+    "Bone01_JianJia_R_03": {
+      "three": "Bone01_JianJia_R_03",
+      "parent": "Bip001 R Forearm",
+      "restLocal": [
+        0.242903, -0.000948, -0.016141, 0.103225, 0.681976, -0.715235, 0.112657, 1, 1, 1
+      ],
+      "restHead": [-0.44175, 1.10006, -0.02122]
+    },
+    "Bone01_JianJia_R_02": {
+      "three": "Bone01_JianJia_R_02",
+      "parent": "Bone01_JianJia_R_01",
+      "restLocal": [0.038525, 0.05258, -0.077641, 0.479472, 0.240481, 0.180941, 0.82434, 1, 1, 1],
+      "restHead": [-0.12548, 1.43047, -0.13606]
+    },
+    "Bone296(mirrored)": {
+      "three": "Bone296(mirrored)",
+      "parent": "Bone01_JianJia_R_01",
+      "restLocal": [0.018037, -0.029793, -0.000749, 0.932653, -0.360774, 0, 0, 1, 1, 1],
+      "restHead": [-0.15581, 1.50975, -0.05917]
+    },
+    "Bone298(mirrored)": {
+      "three": "Bone298(mirrored)",
+      "parent": "Bone01_JianJia_R_01",
+      "restLocal": [-0.002818, 0.001159, -0.000749, 0.634367, -0.773032, 0, 0, 1, 1, 1],
+      "restHead": [-0.121, 1.49629, -0.05917]
+    },
+    "Bone01_Hair_LB_03": {
+      "three": "Bone01_Hair_LB_03",
+      "parent": "Bone01_Hair_LB_02",
+      "restLocal": [0.260137, -0.000001, 0, 0.002026, 0.033376, -0.357275, 0.933401, 1, 1, 1],
+      "restHead": [0.32314, 1.04703, -0.56982]
+    },
+    "Bone01_Hair_RB_03": {
+      "three": "Bone01_Hair_RB_03",
+      "parent": "Bone01_Hair_RB_02",
+      "restLocal": [
+        0.260132, 0.000006, -0.000002, -0.005634, -0.030701, -0.356512, 0.933769, 1, 1, 1
+      ],
+      "restHead": [-0.28898, 1.04259, -0.58733]
+    },
+    "Bip001 L Finger0": {
+      "three": "Bip001_L_Finger0",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.007139, 0.009405, -0.023095, 0.604838, 0.278941, 0.03878, 0.744889, 1, 1, 1],
+      "restHead": [0.42627, 1.08439, 0.00434]
+    },
+    "Bip001 L Finger1": {
+      "three": "Bip001_L_Finger1",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.082703, -0.000754, -0.02552, 0.04875, 0.049828, 0.032039, 0.997053, 1, 1, 1],
+      "restHead": [0.47556, 1.02696, 0.01396]
+    },
+    "Bip001 L Finger2": {
+      "three": "Bip001_L_Finger2",
+      "parent": "Bip001 L Hand",
+      "restLocal": [
+        0.082614, -0.00651, -0.008673, 0.025457, -0.020648, 0.136642, 0.990078, 1, 1, 1
+      ],
+      "restHead": [0.47894, 1.02675, -0.00352]
+    },
+    "Bip001 L Finger3": {
+      "three": "Bip001_L_Finger3",
+      "parent": "Bip001 L Hand",
+      "restLocal": [
+        0.079502, -0.007157, 0.011009, -0.060431, -0.078082, 0.19132, 0.976549, 1, 1, 1
+      ],
+      "restHead": [0.47618, 1.02589, -0.02324]
+    },
+    "Bip001 L Finger4": {
+      "three": "Bip001_L_Finger4",
+      "parent": "Bip001 L Hand",
+      "restLocal": [0.074513, 0.000772, 0.026044, -0.148531, -0.146814, 0.19998, 0.957284, 1, 1, 1],
+      "restHead": [0.46559, 1.02307, -0.03716]
+    },
+    "Bip001 R Finger0": {
+      "three": "Bip001_R_Finger0",
+      "parent": "Bip001 R Hand",
+      "restLocal": [0.00714, 0.009405, 0.023095, -0.604839, -0.27894, 0.03878, 0.744888, 1, 1, 1],
+      "restHead": [-0.42628, 1.08439, 0.00434]
+    },
+    "Bip001 R Finger1": {
+      "three": "Bip001_R_Finger1",
+      "parent": "Bip001 R Hand",
+      "restLocal": [0.082703, -0.000753, 0.02552, -0.048757, -0.049829, 0.03202, 0.997053, 1, 1, 1],
+      "restHead": [-0.47556, 1.02696, 0.01396]
+    },
+    "Bip001 R Finger2": {
+      "three": "Bip001_R_Finger2",
+      "parent": "Bip001 R Hand",
+      "restLocal": [
+        0.082615, -0.006509, 0.008673, -0.025458, 0.020648, 0.136646, 0.990077, 1, 1, 1
+      ],
+      "restHead": [-0.47894, 1.02675, -0.00352]
+    },
+    "Bip001 R Finger3": {
+      "three": "Bip001_R_Finger3",
+      "parent": "Bip001 R Hand",
+      "restLocal": [
+        0.079503, -0.007157, -0.011009, 0.060429, 0.078083, 0.191318, 0.976549, 1, 1, 1
+      ],
+      "restHead": [-0.47618, 1.02589, -0.02324]
+    },
+    "Bip001 R Finger4": {
+      "three": "Bip001_R_Finger4",
+      "parent": "Bip001 R Hand",
+      "restLocal": [0.074514, 0.000772, -0.026044, 0.148532, 0.146815, 0.199979, 0.957284, 1, 1, 1],
+      "restHead": [-0.4656, 1.02307, -0.03716]
+    },
+    "Bone01_Hair_LB_04": {
+      "three": "Bone01_Hair_LB_04",
+      "parent": "Bone01_Hair_LB_03",
+      "restLocal": [0.235226, 0, 0, 0.169225, -0.010071, -0.459093, 0.872064, 1, 1, 1],
+      "restHead": [0.35325, 0.81375, -0.56855]
+    },
+    "Bone01_Hair_RB_04": {
+      "three": "Bone01_Hair_RB_04",
+      "parent": "Bone01_Hair_RB_03",
+      "restLocal": [0.235228, 0.000001, 0, -0.168147, 0.008786, -0.459452, 0.872097, 1, 1, 1],
+      "restHead": [-0.31187, 0.80853, -0.59213]
+    },
+    "Bip001 L Finger01": {
+      "three": "Bip001_L_Finger01",
+      "parent": "Bip001 L Finger0",
+      "restLocal": [0.055691, 0, 0, -0.000002, 0, 0.033508, 0.999438, 1, 1, 1],
+      "restHead": [0.43465, 1.03788, 0.0338]
+    },
+    "Bip001 L Finger11": {
+      "three": "Bip001_L_Finger11",
+      "parent": "Bip001 L Finger1",
+      "restLocal": [0.031801, 0, 0, 0.000003, 0, 0.001888, 0.999998, 1, 1, 1],
+      "restHead": [0.49092, 1.00005, 0.0211]
+    },
+    "Bip001 L Finger21": {
+      "three": "Bip001_L_Finger21",
+      "parent": "Bip001 L Finger2",
+      "restLocal": [0.042214, 0, 0, -0.000002, 0, -0.035931, 0.999354, 1, 1, 1],
+      "restHead": [0.49101, 0.98659, 0.00132]
+    },
+    "Bip001 L Finger31": {
+      "three": "Bip001_L_Finger31",
+      "parent": "Bip001 L Finger3",
+      "restLocal": [0.036747, -0.000001, 0, 0.000197, -0.026741, 0.007325, 0.999616, 1, 1, 1],
+      "restHead": [0.482, 0.98965, -0.02145]
+    },
+    "Bip001 L Finger41": {
+      "three": "Bip001_L_Finger41",
+      "parent": "Bip001 L Finger4",
+      "restLocal": [0.026029, 0.000001, 0, -0.000003, 0, 0.086536, 0.996249, 1, 1, 1],
+      "restHead": [0.46804, 0.99718, -0.03816]
+    },
+    "Bip001 R Finger01": {
+      "three": "Bip001_R_Finger01",
+      "parent": "Bip001 R Finger0",
+      "restLocal": [0.055691, 0, 0, 0, 0, 0.033512, 0.999438, 1, 1, 1],
+      "restHead": [-0.43465, 1.03788, 0.0338]
+    },
+    "Bip001 R Finger11": {
+      "three": "Bip001_R_Finger11",
+      "parent": "Bip001 R Finger1",
+      "restLocal": [0.031801, 0.000001, 0, 0.000003, 0, 0.001906, 0.999998, 1, 1, 1],
+      "restHead": [-0.49092, 1.00005, 0.0211]
+    },
+    "Bip001 R Finger21": {
+      "three": "Bip001_R_Finger21",
+      "parent": "Bip001 R Finger2",
+      "restLocal": [0.042214, 0, 0, 0.000002, 0, -0.035938, 0.999354, 1, 1, 1],
+      "restHead": [-0.49101, 0.98659, 0.00132]
+    },
+    "Bip001 R Finger31": {
+      "three": "Bip001_R_Finger31",
+      "parent": "Bip001 R Finger3",
+      "restLocal": [0.036747, 0, 0, -0.000196, 0.026741, 0.007326, 0.999616, 1, 1, 1],
+      "restHead": [-0.482, 0.98965, -0.02145]
+    },
+    "Bip001 R Finger41": {
+      "three": "Bip001_R_Finger41",
+      "parent": "Bip001 R Finger4",
+      "restLocal": [0.026029, 0.000001, 0, 0, 0, 0.086535, 0.996249, 1, 1, 1],
+      "restHead": [-0.46804, 0.99718, -0.03816]
+    },
+    "Bip001 L Finger02": {
+      "three": "Bip001_L_Finger02",
+      "parent": "Bip001 L Finger01",
+      "restLocal": [0.019525, 0.000001, 0, 0.000003, 0, 0.03299, 0.999456, 1, 1, 1],
+      "restHead": [0.43738, 1.02089, 0.04303]
+    },
+    "Bip001 L Finger12": {
+      "three": "Bip001_L_Finger12",
+      "parent": "Bip001 L Finger11",
+      "restLocal": [0.021871, 0, 0, -0.000001, 0, 0.004847, 0.999988, 1, 1, 1],
+      "restHead": [0.50142, 0.9815, 0.02601]
+    },
+    "Bip001 L Finger22": {
+      "three": "Bip001_L_Finger22",
+      "parent": "Bip001 L Finger21",
+      "restLocal": [0.019013, -0.000001, 0, 0.000002, 0, 0.020052, 0.999799, 1, 1, 1],
+      "restHead": [0.49774, 0.96892, 0.00336]
+    },
+    "Bip001 L Finger32": {
+      "three": "Bip001_L_Finger32",
+      "parent": "Bip001 L Finger31",
+      "restLocal": [0.021793, 0, 0, -0.000001, 0, 0.007005, 0.999976, 1, 1, 1],
+      "restHead": [0.48485, 0.96804, -0.02143]
+    },
+    "Bip001 L Finger42": {
+      "three": "Bip001_L_Finger42",
+      "parent": "Bip001 L Finger41",
+      "restLocal": [0.019254, 0, 0, 0.000001, 0, -0.000279, 1, 1, 1, 1],
+      "restHead": [0.46687, 0.97797, -0.03741]
+    },
+    "Bip001 R Finger02": {
+      "three": "Bip001_R_Finger02",
+      "parent": "Bip001 R Finger01",
+      "restLocal": [0.019526, 0.000001, 0, 0, 0, 0.032991, 0.999456, 1, 1, 1],
+      "restHead": [-0.43738, 1.02089, 0.04304]
+    },
+    "Bip001 R Finger12": {
+      "three": "Bip001_R_Finger12",
+      "parent": "Bip001 R Finger11",
+      "restLocal": [0.021871, 0, 0, 0.000001, 0, 0.004848, 0.999988, 1, 1, 1],
+      "restHead": [-0.50142, 0.9815, 0.02601]
+    },
+    "Bip001 R Finger22": {
+      "three": "Bip001_R_Finger22",
+      "parent": "Bip001 R Finger21",
+      "restLocal": [0.019013, 0, 0, -0.000003, 0, 0.020054, 0.999799, 1, 1, 1],
+      "restHead": [-0.49774, 0.96892, 0.00337]
+    },
+    "Bip001 R Finger32": {
+      "three": "Bip001_R_Finger32",
+      "parent": "Bip001 R Finger31",
+      "restLocal": [0.021793, 0, 0, 0, 0, 0.007004, 0.999976, 1, 1, 1],
+      "restHead": [-0.48485, 0.96804, -0.02143]
+    },
+    "Bip001 R Finger42": {
+      "three": "Bip001_R_Finger42",
+      "parent": "Bip001 R Finger41",
+      "restLocal": [0.019254, 0, 0, 0.000003, 0, -0.000279, 1, 1, 1, 1],
+      "restHead": [-0.46688, 0.97797, -0.03741]
+    }
+  },
+  "checks": {
+    "worstUnevenScale": 0.0000021457672119140625,
+    "worstHeadErrorMetres": 0.00084,
+    "loopGapMetres": { "city_idle": 0, "city_interaction_R_loop": 0 }
+  }
+}

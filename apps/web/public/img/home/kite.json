@@ -1,0 +1,70 @@
+{
+  "file": "kite.webp",
+  "width": 630,
+  "height": 859,
+  "aspect": 0.73341,
+  "figure": {
+    "x": 10,
+    "y": 10,
+    "width": 610,
+    "height": 839
+  },
+  "sourceBox": [528, 45, 1138, 884],
+  "bytes": 68762,
+  "anchors": {
+    "top": {
+      "u": 0.5,
+      "v": 0.0
+    },
+    "bridleTop": {
+      "u": 0.5,
+      "v": 0.3
+    },
+    "knot": {
+      "u": 0.5,
+      "v": 0.52
+    },
+    "bridleLow": {
+      "u": 0.5,
+      "v": 0.72
+    },
+    "tail": {
+      "u": 0.5,
+      "v": 1.0
+    },
+    "handLeft": {
+      "u": 0.0,
+      "v": 0.8
+    },
+    "handRight": {
+      "u": 1.0,
+      "v": 0.8
+    }
+  },
+  "bows": {
+    "file": "kite-bows.webp",
+    "width": 288,
+    "height": 72,
+    "cells": {
+      "pink": {
+        "x": 0,
+        "y": 0,
+        "width": 96,
+        "height": 72
+      },
+      "lilac": {
+        "x": 96,
+        "y": 0,
+        "width": 96,
+        "height": 72
+      },
+      "cyan": {
+        "x": 192,
+        "y": 0,
+        "width": 96,
+        "height": 72
+      }
+    },
+    "bytes": 6400
+  }
+}

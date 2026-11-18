@@ -1,0 +1,328 @@
+{
+  "file": "doll.glb",
+  "bytes": 1132208,
+  "frame": "metres, Y up, the feet on y 0, the figure's centre line on the Y axis, the front +Z; no node has a rotation or a scale; Hips is the root bone",
+  "heightMetres": 1.7,
+  "scaleForHeight": "multiply by h / 1.7 (0.1765 for a doll 0.30 m tall); the facts below are in the file's own 1.7 m units",
+  "recentre": {
+    "fromCentimetres": [3.6, 0, 19.9],
+    "note": "the FBX is in centimetres; the build moved x by -3.6 cm (the body's line is 3.6 cm off the hair's middle) and z by -19.9 cm (to the feet), then scaled by 0.01"
+  },
+  "box": {
+    "min": [-0.84042, 0, -0.78419],
+    "max": [0.76842, 1.7, 0.38619]
+  },
+  "triangles": 14385,
+  "vertices": 14445,
+  "faceVertices": 813,
+  "textures": {
+    "base": [2048, 2048],
+    "normal": [1024, 1024],
+    "orm": [1024, 1024],
+    "note": "base is the colour picture the FBX itself carries (warmer and brighter than the separate base file) with the painted face replaced by skin; normal is flat on the face; orm: R 255, G roughness, B metalness, one picture for both maps; the uvs are glTF's (v down) and the pictures are upright (flipY false)"
+  },
+  "loader": "plain GLTFLoader from three/addons, no Meshopt, no Draco, no KTX2. The WebP pictures are read through EXT_texture_webp, which GLTFLoader handles by itself. The mesh is one SkinnedMesh `doll_body` with one MeshStandardMaterial `doll`; find it by name.",
+  "attributes": {
+    "position": {
+      "itemSize": 3,
+      "count": 14445,
+      "array": "Float32Array",
+      "normalized": false
+    },
+    "normal": {
+      "itemSize": 3,
+      "count": 14445,
+      "array": "Float32Array",
+      "normalized": false
+    },
+    "uv": {
+      "itemSize": 2,
+      "count": 14445,
+      "array": "Uint16Array",
+      "normalized": true
+    },
+    "skinIndex": {
+      "itemSize": 4,
+      "count": 14445,
+      "array": "Uint8Array",
+      "normalized": false
+    },
+    "skinWeight": {
+      "itemSize": 4,
+      "count": 14445,
+      "array": "Uint8Array",
+      "normalized": true
+    },
+    "_face": {
+      "itemSize": 1,
+      "count": 14445,
+      "array": "Float32Array",
+      "normalized": false
+    }
+  },
+  "faceAttribute": {
+    "file": "_FACE",
+    "loaded": "_face",
+    "note": "1 on the face triangles, 0 elsewhere, constant per triangle (vertices are split on the border). A page that draws the face reads it in the vertex shader (face/face.glsl)"
+  },
+  "bones": {
+    "Hips": {
+      "parent": null,
+      "bindWorld": [-0.00012, 0.39616, 0.00017],
+      "localPosition": [-0.000123, 0.396164, 0.000171],
+      "localQuaternion": [-0.026264, -0.004478, -0.004478, 0.999635]
+    },
+    "Spine02": {
+      "parent": "Hips",
+      "bindWorld": [0.00037, 0.44994, -0.00265],
+      "localPosition": [0, 0.053853, 0],
+      "localQuaternion": [0, 0, 0, 1]
+    },
+    "Spine01": {
+      "parent": "Spine02",
+      "bindWorld": [0.00087, 0.50372, -0.00548],
+      "localPosition": [0, 0.053853, 0],
+      "localQuaternion": [0, 0, 0, 1]
+    },
+    "Spine": {
+      "parent": "Spine01",
+      "bindWorld": [0.00138, 0.55912, -0.00839],
+      "localPosition": [0, 0.055485, 0],
+      "localQuaternion": [-0.000013, -0.001027, -0.001082, 0.999999]
+    },
+    "neck": {
+      "parent": "Spine",
+      "bindWorld": [0.00202, 0.61537, -0.01135],
+      "localPosition": [0, 0.056326, 0],
+      "localQuaternion": [0, 0, 0, 1]
+    },
+    "Head": {
+      "parent": "neck",
+      "bindWorld": [0.00288, 0.69101, -0.01532],
+      "localPosition": [0, 0.075748, 0],
+      "localQuaternion": [0.053096, -0.010018, -0.011163, 0.998477]
+    },
+    "LeftShoulder": {
+      "parent": "Spine",
+      "bindWorld": [0.03113, 0.57612, -0.00934],
+      "localPosition": [0.029552, 0.017363, -0.000379],
+      "localQuaternion": [-0.540221, -0.426228, -0.443328, 0.574414]
+    },
+    "LeftArm": {
+      "parent": "LeftShoulder",
+      "bindWorld": [0.14757, 0.57612, -0.03719],
+      "localPosition": [0, 0.119722, 0],
+      "localQuaternion": [0.107497, -0.630382, 0.33809, -0.690477]
+    },
+    "LeftForeArm": {
+      "parent": "LeftArm",
+      "bindWorld": [0.27828, 0.48275, -0.01314],
+      "localPosition": [0, 0.16243, 0],
+      "localQuaternion": [-0.037456, 0.087883, 0.043978, 0.994454]
+    },
+    "LeftHand": {
+      "parent": "LeftForeArm",
+      "bindWorld": [0.3936, 0.4145, -0.00368],
+      "localPosition": [0, 0.134336, 0],
+      "localQuaternion": [-0.078402, -0.160754, -0.130316, -0.975207]
+    },
+    "RightShoulder": {
+      "parent": "Spine",
+      "bindWorld": [-0.02925, 0.57612, -0.00922],
+      "localPosition": [-0.030816, 0.016671, 0.000395],
+      "localQuaternion": [-0.548504, 0.415515, 0.444417, 0.573571]
+    },
+    "RightArm": {
+      "parent": "RightShoulder",
+      "bindWorld": [-0.15432, 0.57612, -0.04438],
+      "localPosition": [0, 0.129917, 0],
+      "localQuaternion": [-0.079289, -0.622768, 0.369964, 0.684836]
+    },
+    "RightForeArm": {
+      "parent": "RightArm",
+      "bindWorld": [-0.28504, 0.48275, -0.0117],
+      "localPosition": [0, 0.163932, 0],
+      "localQuaternion": [-0.065715, -0.088695, -0.04479, 0.992879]
+    },
+    "RightHand": {
+      "parent": "RightForeArm",
+      "bindWorld": [-0.40032, 0.4145, -0.00285],
+      "localPosition": [0, 0.134265, 0],
+      "localQuaternion": [0.076133, -0.157893, -0.127988, 0.976162]
+    },
+    "LeftUpLeg": {
+      "parent": "Hips",
+      "bindWorld": [0.08423, 0.35651, 0.00017],
+      "localPosition": [0.084696, -0.03882, -0.002819],
+      "localQuaternion": [0.957685, 0.198685, 0.200595, 0.055899]
+    },
+    "LeftLeg": {
+      "parent": "LeftUpLeg",
+      "bindWorld": [0.14511, 0.1979, 0.04176],
+      "localPosition": [0, 0.174907, 0],
+      "localQuaternion": [0.238221, -0.165922, 0.230901, 0.928658]
+    },
+    "LeftFoot": {
+      "parent": "LeftLeg",
+      "bindWorld": [0.1445, 0.06081, -0.00503],
+      "localPosition": [0, 0.14486, 0],
+      "localQuaternion": [-0.454768, 0.002314, -0.001198, 0.890606]
+    },
+    "LeftToeBase": {
+      "parent": "LeftFoot",
+      "bindWorld": [0.1445, 0.01824, 0.02505],
+      "localPosition": [0, 0.052129, 0],
+      "localQuaternion": [-0.075098, 0.88484, -0.458156, -0.038885]
+    },
+    "RightUpLeg": {
+      "parent": "Hips",
+      "bindWorld": [-0.08688, 0.35651, 0.00017],
+      "localPosition": [-0.086407, -0.040393, -0.001327],
+      "localQuaternion": [0.953109, -0.200517, -0.220108, 0.054123]
+    },
+    "RightLeg": {
+      "parent": "RightUpLeg",
+      "bindWorld": [-0.15187, 0.1979, 0.04176],
+      "localPosition": [0, 0.176378, 0],
+      "localQuaternion": [0.232778, 0.175073, -0.244152, 0.924961]
+    },
+    "RightFoot": {
+      "parent": "RightLeg",
+      "bindWorld": [-0.15125, 0.06081, -0.00529],
+      "localPosition": [0, 0.144943, 0],
+      "localQuaternion": [-0.449468, 0.059055, -0.084721, 0.887307]
+    },
+    "RightToeBase": {
+      "parent": "RightFoot",
+      "bindWorld": [-0.14615, 0.01824, 0.02488],
+      "localPosition": [0, 0.052426, 0],
+      "localQuaternion": [0.132591, 0.871213, -0.439588, 0.173692]
+    }
+  },
+  "mixamoNames": {
+    "Spine02": "Spine",
+    "Spine01": "Spine1",
+    "Spine": "Spine2",
+    "neck": "Neck",
+    "note": "the other bones keep the Mixamo names; the spine numbering of the Meshy rig is reversed"
+  },
+  "removedBones": [
+    "head_end (folded into Head: its weights carried 5,475 vertices)",
+    "headfront (folded into Head)"
+  ],
+  "sockets": {
+    "socket_hand_L": {
+      "parent": "LeftHand",
+      "localPosition": [0, 0.06, 0],
+      "note": "the mitten's middle; local Y along the bone"
+    },
+    "socket_hand_R": {
+      "parent": "RightHand",
+      "localPosition": [0, 0.06, 0]
+    },
+    "socket_head_top": {
+      "parent": "Head",
+      "localPosition": [0, 0.596, 0],
+      "note": "where the Meshy rig's head_end was, the top of the hair's crown"
+    }
+  },
+  "boneLengthsMetres": {
+    "upperArm": 0.162,
+    "forearm": 0.134,
+    "hand": 0.134,
+    "thigh": 0.175,
+    "shin": 0.145,
+    "foot": 0.052
+  },
+  "face": {
+    "note": "all positions in the file's final metres, in the bind pose (the vertex positions before the skin), measured on an orthographic front view (plus or minus 1 cm). The head is tilted a little: the blue eye is 2.8 cm higher than the red one.",
+    "eyeRed": {
+      "screenSide": "left",
+      "dollSide": "right",
+      "centre": [-0.181, 0.884],
+      "irisRadius": 0.0785,
+      "colour": "#d9262f"
+    },
+    "eyeBlue": {
+      "screenSide": "right",
+      "dollSide": "left",
+      "centre": [0.2015, 0.912],
+      "irisRadius": 0.0785,
+      "colour": "#5cbcf2"
+    },
+    "mouth": {
+      "centre": [0.005, 0.757],
+      "width": 0.08
+    },
+    "browY": 1.005,
+    "chinY": 0.7,
+    "outerCorners": [-0.336, 0.364],
+    "shaderFrame": {
+      "uFaceFrame": [0.01025, 0.898, 0.1, 0.07307],
+      "note": "x, y of the middle of the eyes (bind metres), the unit in metres, the roll of the eye line in radians",
+      "eyeHalfDistanceUnits": 1.9176,
+      "mouthUnits": [-0.155, -1.402]
+    },
+    "expressions": "scripts/home/models/doll/face/presets.json (24 expressions, 55 floats each) and face.glsl",
+    "triangles": {
+      "face": 753,
+      "relief": 94
+    }
+  },
+  "walk": {
+    "node": "the clip `walk` in the file",
+    "seconds": 1.0333,
+    "keys": 32,
+    "tracks": 23,
+    "droppedTracks": 52,
+    "hipsLiftMetres": 0.02126,
+    "lowestFootBeforeLift": -0.02126,
+    "lowestFootAfterLift": 0,
+    "speedMetresPerSecond": 0.5418,
+    "plantedSeconds": 0.9365,
+    "note": "in place; 32 keys at 30 fps, the last key equals the first. Play it at rate r and move the doll at speedMetresPerSecond * r (in the file's 1.7 m units: scale the speed with the doll). The hips are lifted so the lowest foot touches y 0 (hipsLiftMetres)."
+  },
+  "armStretch": {
+    "bone": "LeftArm",
+    "scaleY": 1.6,
+    "handCounterScale": [1, 0.625, 1],
+    "never": "ForeArm (it compounds: 1.6 x 1.6 and the arm leaves the frame)",
+    "note": "stretches the upper arm, the forearm and the mitten together to about 1.5 to 2 times the reach with no shear (stretch.png). Any arm above the shoulder line puts the hand into the hair mass and it vanishes from every angle (a hang by one hand was tried and is not achievable, see poses.json notAchievable): the best is the reach pose, forward and up, stretched"
+  },
+  "limits": [
+    "Hands are bare mittens and legs end in rounded stumps: no gloves, no fingers, no toes, no stirrups.",
+    "Head plus hair is 82 percent of the vertices and 59 percent of the height: arms above the shoulder line vanish into the hair from the front. Fists up means forward arms (the 'scream' pose), a body roll of 20 to 35 degrees (Hips z) or the stretch.",
+    "A head turn moves the hair as one piece; a raised arm drags the nearby hair locks a little (the hair is bound to Head with a little Shoulder weight).",
+    "Hair tips sweep about 0.2 m sideways and clip into the shoulder at a 45 degree head yaw (in the 1.7 m units).",
+    "Never mirror a pose by negating X: the left and right bone frames are not mirrors. Write each side.",
+    "The Walking clip is in place. No sit, wave, run or fall clip exists: the poses in poses.json are authored."
+  ],
+  "poses": "scripts/home/models/doll/poses.json (turns in model axes, the formula, notes) and poses.png in the check pictures",
+  "lighting": {
+    "environment": "RoomEnvironment through PMREMGenerator.fromScene(env, 0.04)",
+    "environmentIntensity": 0.45,
+    "toneMapping": "NoToneMapping",
+    "key": {
+      "color": 16774374,
+      "intensity": 1,
+      "position": [-1.2, 2.2, 2.4]
+    },
+    "fill": {
+      "color": 13623551,
+      "intensity": 0.35,
+      "position": [2, 0.8, 1]
+    },
+    "rim": {
+      "color": 16777215,
+      "intensity": 0.5,
+      "position": [0.5, 1.5, -2.5]
+    },
+    "hemisphere": {
+      "sky": 16777215,
+      "ground": 12167593,
+      "intensity": 0.25
+    },
+    "background": "#c9ced6"
+  },
+  "lightingNote": "A lit MeshStandardMaterial (the doll's gloss is part of her): a PMREM of RoomEnvironment at 0.45, a warm key 1.0, a cool fill 0.35, a rim 0.5 and a hemisphere 0.25, NoToneMapping. The sum is about 1: more burns the skin to white. This is a recorded exception to the site's unlit style."
+}

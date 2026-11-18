@@ -10,6 +10,9 @@
         "scripts/about/drone/page/**",
         "scripts/about/tetra/page/**",
         "scripts/about/companions/page/**",
+        // The pages of the home scripts (the models' check pages, the drone and the doll's previews)
+        // run in a browser and take three from an import map.
+        "scripts/home/**/{page,preview}/**",
       ],
       "ignoreBinaries": ["ffmpeg"],
     },
@@ -26,6 +29,10 @@
         // Toolkit kept for page work (design brief): cva for variants. Remove an entry once a
         // page imports it (lucide icons are used by the story's chapter morph).
         "class-variance-authority",
+        // The old home was their only user (R3F stage, GSAP hook). The integrator removes both from
+        // the catalog, the package file and the lockfile once the rebuilt home has landed.
+        "@react-three/fiber",
+        "@gsap/react",
       ],
     },
     "packages/ui": {

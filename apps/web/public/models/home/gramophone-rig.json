@@ -1,0 +1,262 @@
+{
+  "file": "gramophone.glb",
+  "bytes": 788884,
+  "frame": "metres, Y up, floor at y 0, the cabinet centred on the Y axis; the horn points +X, tilted 19.4 degrees up; the crank is on -Z; the tonearm's post is on -X",
+  "box": {
+    "min": [-0.21985508501529694, 0, -0.22304178512096404],
+    "max": [0.2205962836742401, 0.5322260856628418, 0.17725707590579987],
+    "size": [0.44, 0.532, 0.4]
+  },
+  "yawOfSource": {
+    "radians": 0.9892526,
+    "degrees": 56.68
+  },
+  "presentation": {
+    "yawDegrees": 220,
+    "yawRadians": 3.84,
+    "note": "rotate the root `gramophone` about Y by this to face the horn to the left of the screen, as in the owner's screenshot (the horn is +X: at 180 it is exactly screen left)"
+  },
+  "nodes": {
+    "gramophone": {
+      "position": [0, 0, 0],
+      "children": [
+        "cabinet",
+        "horn",
+        "crank",
+        "platter",
+        "soundbox",
+        "anchor_bell_mouth",
+        "anchor_elbow"
+      ]
+    },
+    "cabinet": {
+      "position": [0, 0, 0],
+      "children": []
+    },
+    "horn": {
+      "position": [0, 0, 0],
+      "children": []
+    },
+    "crank": {
+      "position": [-0.092, 0.104, -0.141],
+      "children": ["crank_mesh", "anchor_crank_handle"]
+    },
+    "anchor_crank_handle": {
+      "position": [0.06, 0, -0.058],
+      "children": []
+    },
+    "platter": {
+      "position": [0, 0.148, 0],
+      "children": ["platter_mesh", "anchor_record_seat"]
+    },
+    "anchor_record_seat": {
+      "position": [0, -0.0005, 0],
+      "children": []
+    },
+    "soundbox": {
+      "position": [-0.081, 0.193, -0.045],
+      "children": ["soundbox_mesh", "anchor_needle_tip"]
+    },
+    "anchor_needle_tip": {
+      "position": [-0.0005, -0.041, -0.0075],
+      "children": []
+    },
+    "anchor_bell_mouth": {
+      "position": [0.16533, 0.37622, -0.00001],
+      "children": []
+    },
+    "anchor_elbow": {
+      "position": [-0.081, 0.193, -0.045],
+      "children": []
+    }
+  },
+  "parts": {
+    "cabinet": {
+      "vertices": 6692,
+      "triangles": 10752,
+      "from": [
+        "pCube16",
+        "pCube19",
+        "pCube22",
+        "pCube27",
+        "pCube28",
+        "pCube29",
+        "polySurface1",
+        "pCylinder15",
+        "pCube20",
+        "pCube21",
+        "pCube23",
+        "pCube24",
+        "pCube25"
+      ]
+    },
+    "horn": {
+      "vertices": 958,
+      "triangles": 1650,
+      "from": ["pCylinder21", "pCylinder19"]
+    },
+    "crank": {
+      "vertices": 930,
+      "triangles": 1480,
+      "from": ["pCylinder16", "pCylinder17", "pCylinder18"]
+    },
+    "platter": {
+      "vertices": 226,
+      "triangles": 320,
+      "from": ["disk_holder"]
+    },
+    "soundbox": {
+      "vertices": 897,
+      "triangles": 1440,
+      "from": ["pCylinder20", "pointer"]
+    }
+  },
+  "crank": {
+    "node": "crank",
+    "axis": [0, 0, 1],
+    "pivot": [-0.092, 0.104, -0.141],
+    "throwRadius": 0.06,
+    "handleAtRest": [-0.032, 0.104, -0.199],
+    "note": "rotation.z turns it; the arm lies along +X at rest; the whole turn is free"
+  },
+  "platter": {
+    "node": "platter",
+    "axis": [0, 1, 0],
+    "pivot": [0, 0.148, 0],
+    "radius": 0.14153779524215912,
+    "plateTopY": 0.14669699962437152,
+    "spindleTopY": 0.1561148762255907,
+    "recordSeatY": 0.1475,
+    "recordRadius": 0.14,
+    "note": "the default record is not in the file. Put the page's own record (4 to 5 mm thick, radius 0.14) on `anchor_record_seat` and make it a child of the `platter` node so it spins with it; the needle tip (y 0.152) then rests on its top. The spindle (a small brass stub) is part of the platter mesh and ends 4.6 mm above the top of a 4 mm record, so the label needs a hole of radius 0.006."
+  },
+  "soundbox": {
+    "node": "soundbox",
+    "pivot": [-0.081, 0.193, -0.045],
+    "liftAxis": [0.38, 0, 0.93],
+    "needleTipAtRest": [-0.0814, 0.1519, -0.0523],
+    "needleRadiusFromPlatterCentre": 0.097,
+    "needleTrace": {
+      "0": [-0.0814, 0.1519, -0.0523],
+      "20": [-0.0685, 0.1552, -0.0575],
+      "35": [-0.0599, 0.1607, -0.061],
+      "45": [-0.0551, 0.1656, -0.063],
+      "60": [-0.0495, 0.1745, -0.0653],
+      "-60": [-0.1155, 0.1704, -0.0383],
+      "-45": [-0.1089, 0.1622, -0.041],
+      "-35": [-0.1036, 0.1579, -0.0432],
+      "-20": [-0.0945, 0.1535, -0.0469]
+    },
+    "liftDegrees": {
+      "down": 0,
+      "up": 50,
+      "note": "rotate the node about liftAxis (quaternion.setFromAxisAngle). A positive angle lifts the needle (9 mm at 35 degrees, 14 mm at 45, 17 mm at 50, 23 mm at 60) and draws it 3 cm in toward the platter's middle; a negative angle swings it out over the rim. The drum tilts like a soundbox rocked on its hinge and nothing intersects the horn. 0 is the needle down on a record."
+    }
+  },
+  "anchors": {
+    "anchor_crank_handle": {
+      "parent": "crank",
+      "localPosition": [0.06, 0, -0.058],
+      "worldAtRest": [-0.032, 0.104, -0.199],
+      "note": "rides on crank: its world position follows the part"
+    },
+    "anchor_record_seat": {
+      "parent": "platter",
+      "localPosition": [0, -0.0005, 0],
+      "worldAtRest": [0, 0.1475, 0],
+      "note": "rides on platter: its world position follows the part"
+    },
+    "anchor_needle_tip": {
+      "parent": "soundbox",
+      "localPosition": [-0.0005, -0.041, -0.0075],
+      "worldAtRest": [-0.0815, 0.152, -0.0525],
+      "note": "rides on soundbox: its world position follows the part"
+    },
+    "anchor_bell_mouth": {
+      "parent": "gramophone",
+      "localPosition": [0.16533, 0.37622, -0.00001],
+      "worldAtRest": [0.16533, 0.37622, -0.00001],
+      "note": "static"
+    },
+    "anchor_elbow": {
+      "parent": "gramophone",
+      "localPosition": [-0.081, 0.193, -0.045],
+      "worldAtRest": [-0.081, 0.193, -0.045],
+      "note": "static"
+    }
+  },
+  "bellMouth": {
+    "centre": [0.16533, 0.37622, -0.00001],
+    "across": 0.3311,
+    "axis": [0.9435, 0.3312, 0]
+  },
+  "textures": {
+    "map": {
+      "size": 2048,
+      "colorSpace": "srgb"
+    },
+    "normalMap": {
+      "size": 1024,
+      "convention": "flipped to OpenGL in the build"
+    },
+    "orm": {
+      "size": 1024,
+      "note": "R 255 (no baked occlusion), G roughness, B metalness; the one texture is metalnessMap and roughnessMap"
+    }
+  },
+  "lighting": {
+    "environment": "RoomEnvironment through PMREMGenerator.fromScene(env, 0.04)",
+    "environmentIntensity": 1,
+    "toneMapping": "ACESFilmicToneMapping",
+    "exposure": 1,
+    "outputColorSpace": "SRGBColorSpace",
+    "key": {
+      "color": 16773336,
+      "intensity": 2.6,
+      "position": [-0.9, 1.6, 1.4]
+    },
+    "rim": {
+      "color": 11060479,
+      "intensity": 0.9,
+      "position": [1.2, 0.6, -1.4]
+    },
+    "fill": {
+      "sky": 16777215,
+      "ground": 4864560,
+      "intensity": 0.25
+    },
+    "background": "#2b2c2f"
+  },
+  "tests": {
+    "crankRadii": [0.02956, 0.02956, 0.02956, 0.02956],
+    "crankConstant": true,
+    "platter": {
+      "innerTopY": 0.1561148762255907,
+      "rimTopY": 0.14669699962437152,
+      "radius": 0.14153779524215912
+    },
+    "platterMoves": 2.8949512813486273e-7,
+    "needleTip": {
+      "0": [-0.0814, 0.1519, -0.0523],
+      "20": [-0.0685, 0.1552, -0.0575],
+      "35": [-0.0599, 0.1607, -0.061],
+      "45": [-0.0551, 0.1656, -0.063],
+      "60": [-0.0495, 0.1745, -0.0653],
+      "-60": [-0.1155, 0.1704, -0.0383],
+      "-45": [-0.1089, 0.1622, -0.041],
+      "-35": [-0.1036, 0.1579, -0.0432],
+      "-20": [-0.0945, 0.1535, -0.0469]
+    },
+    "handleRadii": [0.06, 0.06, 0.06, 0.06],
+    "handleAt90": [-0.092, 0.164, -0.199],
+    "needleAnchorError": {
+      "0": 0.0002,
+      "20": 0.0003,
+      "35": 0.0003,
+      "45": 0.0003,
+      "60": 0.0003
+    },
+    "recordSeatAfterTurn": [0, 0.1475, 0],
+    "needleAnchor": [-0.0005000000000000004, -0.04100000000000001, -0.0075]
+  }
+}

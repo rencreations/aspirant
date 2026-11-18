@@ -1,0 +1,120 @@
+{
+  "note": "Poses of the doll, as turns about the MODEL's axes (+X the doll's left, +Y up, +Z forward), in degrees, applied to a bone in its parent's bind frame: q_local = inverse(pBind) * R * pBind * restLocal, where pBind is the parent's bind-pose world rotation and R is Euler XYZ of the numbers. Never author a limb as a local Euler: the limb bones are Blender-style frames (local Y along the bone) and the left and right ones are not mirrored. A positive turn about +X on a limb that hangs down swings it BACKWARD. `hips` is an offset of the root bone in metres, `scales` a bone scale. The numbers are the ones checked on pictures (poses.png); the file is 1.7 m tall, so a page that draws her 0.3 m tall scales the whole thing by 0.176 and these offsets with it.",
+  "formula": "q_local = inverse(pBind) * R(model axes) * pBind * restLocal",
+  "poses": {
+    "rest": {
+      "turns": {},
+      "note": "the bind pose: an A pose, arms about 35 degrees below horizontal"
+    },
+    "stand": {
+      "turns": {
+        "LeftArm": [0, 0, 25],
+        "RightArm": [0, 0, -25],
+        "LeftForeArm": [-10, 0, 0],
+        "RightForeArm": [-10, 0, 0]
+      },
+      "note": "standing on a palm: arms out a little for balance"
+    },
+    "ride": {
+      "turns": {
+        "LeftUpLeg": [-60, 0, 45],
+        "RightUpLeg": [-60, 0, -45],
+        "LeftLeg": [55, 0, 0],
+        "RightLeg": [55, 0, 0],
+        "Spine02": [-8, 0, 0],
+        "Spine": [-6, 0, 0],
+        "LeftArm": [-75, 0, 12],
+        "RightArm": [-75, 0, -12],
+        "LeftForeArm": [-35, 0, 0],
+        "RightForeArm": [-35, 0, 0]
+      },
+      "hips": [0, -0.12, 0],
+      "note": "astride a dragon's head, holding on: legs spread, knees bent, arms forward. Feet are stumps: the stirrup reads poorly but is fine at chibi size"
+    },
+    "scream": {
+      "turns": {
+        "LeftArm": [-82, 0, 15],
+        "RightArm": [-82, 0, -15],
+        "LeftForeArm": [-100, 0, 0],
+        "RightForeArm": [-100, 0, 0],
+        "Head": [-12, 0, 0],
+        "Spine02": [6, 0, 0]
+      },
+      "note": "fists up in front of the chest: the only fist pose that shows. Hands over z 0.6 m clear the front hair"
+    },
+    "fall": {
+      "turns": {
+        "Hips": [-80, 0, 0],
+        "LeftArm": [-30, 0, 60],
+        "RightArm": [-60, 0, -75],
+        "LeftForeArm": [-20, 0, 0],
+        "RightForeArm": [-40, 0, 0],
+        "LeftUpLeg": [-20, 0, 40],
+        "RightUpLeg": [15, 0, -35],
+        "LeftLeg": [40, 0, 0],
+        "RightLeg": [25, 0, 0]
+      },
+      "note": "falling face down, limbs flailing. Reads as a ball of pink hair with tiny limbs: spread the limbs wide and use the camera"
+    },
+    "sit": {
+      "turns": {
+        "LeftUpLeg": [-90, 0, 6],
+        "RightUpLeg": [-90, 0, -6],
+        "LeftLeg": [88, 0, 0],
+        "RightLeg": [92, 0, 0]
+      },
+      "hips": [0, -0.1, 0],
+      "note": "on the edge of a frame, shins hanging: swing by animating the two Leg turns between 70 and 100"
+    },
+    "run": {
+      "turns": {
+        "LeftUpLeg": [-55, 0, 0],
+        "LeftLeg": [15, 0, 0],
+        "RightUpLeg": [35, 0, 0],
+        "RightLeg": [85, 0, 0],
+        "LeftArm": [40, 0, 0],
+        "RightArm": [-50, 0, 0],
+        "LeftForeArm": [-90, 0, 0],
+        "RightForeArm": [-90, 0, 0],
+        "Spine02": [-12, 0, 0]
+      },
+      "note": "run contact pose. Arms are tiny"
+    },
+    "held": {
+      "turns": {
+        "LeftArm": [0, 0, 45],
+        "RightArm": [0, 0, -45],
+        "LeftUpLeg": [6, 0, 8],
+        "RightUpLeg": [-4, 0, -8],
+        "LeftLeg": [20, 0, 0],
+        "RightLeg": [14, 0, 0],
+        "Head": [10, 0, 6]
+      },
+      "note": "dangling from a hand or a beak: arms out, legs limp, head dropped"
+    },
+    "reach": {
+      "turns": {
+        "LeftArm": [-165, 0, 10],
+        "LeftUpLeg": [8, 0, 6],
+        "RightUpLeg": [10, 0, -8],
+        "LeftLeg": [12, 0, 0],
+        "RightLeg": [22, 0, 0],
+        "RightArm": [0, 0, -30],
+        "Spine02": [-6, 0, 0]
+      },
+      "scales": {
+        "LeftArm": [1, 1.6, 1],
+        "LeftHand": [1, 0.625, 1]
+      },
+      "note": "an arm stretched forward and a little up (about 30 degrees above horizontal), the left arm stretched: LeftArm scale y 1.6 with the hand counter-scaled so the mitten stays round, NEVER ForeArm too (they compound). The hand ends beside the head, never above it. This is a reach, not a hang: see notAchievable"
+    }
+  },
+  "notAchievable": [
+    {
+      "name": "hang by one hand",
+      "tried": "LeftArm turned about Z by +100 to +150 degrees (straight up) with the stretch, with and without a Hips roll of 28 degrees either way, seen from the front, the three-quarter and the side",
+      "why": "head and hair are 59 percent of her height and 82 percent of her vertices: an arm above the shoulder line goes inside the hair mass and the hand is not seen from any angle. A forward and up arm (reach) clears the hair but ends at head height, far from a ledge above her.",
+      "instead": "Show the hold with the thing she holds: put the edge or the string at socket_hand_L and let her legs dangle (the held pose), or camera from below. The hand is still there for a hit test or a prop."
+    }
+  ]
+}

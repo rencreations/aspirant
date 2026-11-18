@@ -1,0 +1,484 @@
+{
+  "model": "silverbolt",
+  "schema": 1,
+  "space": "glTF world: metres, Y up. The head faces +Z and the tail trails toward -Z. This is the space cameras.json is in. Bones hang on the scene root (no armature node) and every local transform is a plain armature-space transform.",
+  "loader": {
+    "three": "r186",
+    "loader": "GLTFLoader",
+    "decoders": "setMeshoptDecoder(MeshoptDecoder) from three/examples/jsm/libs/meshopt_decoder.module.js",
+    "extensions": "EXT_meshopt_compression and KHR_mesh_quantization (both required), EXT_texture_webp (read by GLTFLoader with no plugin)",
+    "notNeeded": "no DRACOLoader, no KTX2Loader",
+    "materials": "MeshStandardMaterial; the build removes every KHR_materials_* extension so no MeshPhysicalMaterial appears"
+  },
+  "sizes": {
+    "restLength": "about 3.5 m from the snout to the tail tip in the rest pose",
+    "clipScale": "every source clip scales the whole dragon through D_she_root: 0.4 in the loops, 0.4 to 0.64 in interaction_03, 0.105 to 1 in flight_path"
+  },
+  "meshes": {
+    "head": {
+      "material": "silverbolt_body",
+      "note": "armour, horns, jaw, tongue, wing blades. Opaque, double sided."
+    },
+    "eyes": {
+      "material": "silverbolt_gem",
+      "note": "the two eye almonds, skinned to sb_eye_L and sb_eye_R. Scale the eye bones in Y to blink. Emissive (the picture itself): drive material.emissiveIntensity for a glow."
+    },
+    "socket": {
+      "material": "silverbolt_socket",
+      "note": "a flat silver backing 2.5 mm behind each eye gem, on the head bone. It shows when the gem is squashed, so a shut eye reads as a lid and the head never shows through."
+    },
+    "crystals": {
+      "material": "silverbolt_crystal",
+      "note": "the big cheek crystals (cheek blades She_05 and She_06). Emissive, for a glow that follows a mood."
+    },
+    "ribbon": {
+      "material": "silverbolt_ribbon",
+      "note": "the flame tail and the body. Alpha blended, double sided."
+    },
+    "triangles": { "eyeTriangles": 28, "crystalTriangles": 54 }
+  },
+  "render": {
+    "ribbon": {
+      "transparent": true,
+      "depthWrite": false,
+      "side": "DoubleSide",
+      "renderOrder": "draw it after the head (renderOrder 1 against 0); the loader already sets transparent and depthWrite false"
+    },
+    "head": "opaque; set frustumCulled = false on every skinned mesh (the quantised bounds are not the pose's)",
+    "lighting": "the pictures are painted with the light in them: under MeshBasicMaterial with no lights the model reads well (silverbolt-angles.png), under MeshStandardMaterial with one environment map it reads better. Metalness and roughness are the exporter's defaults; envMapIntensity 0.6 to 1 against a bright ground."
+  },
+  "root": {
+    "bone": "D_she_root",
+    "note": "the body root. Clips key its translation in world metres and its uniform scale. Move and scale the dragon with a parent Group; drive this bone only if you play no clip."
+  },
+  "head": {
+    "bone": "Bone02_She_01",
+    "note": "turn this bone to look at things. Its children (jaw, cheek blades, crest, tongue, eyes) follow."
+  },
+  "jaw": {
+    "bone": "Bone02_She_02",
+    "axisLocal": [0, 0, -1],
+    "note": "As modelled the mouth is a little open (angle 0). Angles below about -0.3 push the lower jaw through the snout. Open to 1.0 for a wide mouth. gaps: the distance in metres between the front of the upper jaw and the front of the lower jaw at rest scale (it never reaches 0 because it measures between two centres): multiply by the dragon's scale (0.4 in the clips) to compare with the doll.",
+    "gaps": {
+      "0": 0.231,
+      "1": 0.488,
+      "-0.4": 0.089,
+      "-0.3": 0.112,
+      "-0.2": 0.147,
+      "0.2": 0.31,
+      "0.4": 0.347,
+      "0.6": 0.396,
+      "0.8": 0.444
+    },
+    "restAngle": 0,
+    "closedAngle": -0.3,
+    "openMax": 1
+  },
+  "eyes": {
+    "bones": ["sb_eye_L", "sb_eye_R"],
+    "axis": "y",
+    "note": "sb_eye_L is on the +X side. Blink: scale.y 1 to 0.06 and back in about 120 ms on both bones, with material emissiveIntensity dipping with it.",
+    "centre": { "sb_eye_L": [0.108, 3.576, 0.151], "sb_eye_R": [-0.108, 3.576, 0.151] }
+  },
+  "tongue": {
+    "Bone02_She_19": {
+      "curl": {
+        "axisLocal": [0, 0, -1],
+        "tipRest": [0.066, 3.518, 0.016],
+        "length": 0.111,
+        "sideX": 1
+      }
+    },
+    "Bone02_She_20": {
+      "curl": { "axisLocal": [0, 0, 1], "tipRest": [0, 3.265, 0.14], "length": 0.179, "sideX": -1 }
+    }
+  },
+  "wings": {
+    "note": "raise: the local axis (sign included) that a positive angle turns about to lift the blade tip. spread: the same for moving the tip away from the body line. Left and right come out with opposite signs by themselves. She_08 is the root of the six blades.",
+    "root": "Bone02_She_08",
+    "pairs": [
+      ["Bone02_She_13", "Bone02_She_14"],
+      ["Bone02_She_15", "Bone02_She_16"],
+      ["Bone02_She_17", "Bone02_She_18"]
+    ],
+    "cheekBlades": ["Bone02_She_05", "Bone02_She_06"],
+    "crest": "Bone02_She_07",
+    "bones": {
+      "Bone02_She_05": {
+        "raise": {
+          "axisLocal": [-0.549, 0.82813, 0.11317],
+          "tipRest": [0.305, 4.071, -0.377],
+          "length": 0.643,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [-0.81107, -0.56054, 0.1672],
+          "tipRest": [0.305, 4.071, -0.377],
+          "length": 0.643,
+          "sideX": 1
+        }
+      },
+      "Bone02_She_06": {
+        "raise": {
+          "axisLocal": [0.549, 0.82813, -0.11317],
+          "tipRest": [-0.305, 4.071, -0.377],
+          "length": 0.643,
+          "sideX": -1
+        },
+        "spread": {
+          "axisLocal": [0.81107, -0.56054, -0.16719],
+          "tipRest": [-0.305, 4.071, -0.377],
+          "length": 0.643,
+          "sideX": -1
+        }
+      },
+      "Bone02_She_13": {
+        "raise": {
+          "axisLocal": [-0.8955, -0.36461, 0.25523],
+          "tipRest": [0.344, 3.553, -0.857],
+          "length": 0.372,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [0.35026, -0.93116, -0.10129],
+          "tipRest": [0.344, 3.553, -0.857],
+          "length": 0.372,
+          "sideX": 1
+        }
+      },
+      "Bone02_She_14": {
+        "raise": {
+          "axisLocal": [0.8955, -0.36461, -0.25522],
+          "tipRest": [-0.344, 3.553, -0.857],
+          "length": 0.371,
+          "sideX": -1
+        },
+        "spread": {
+          "axisLocal": [-0.35026, -0.93116, 0.10129],
+          "tipRest": [-0.344, 3.553, -0.857],
+          "length": 0.371,
+          "sideX": -1
+        }
+      },
+      "Bone02_She_15": {
+        "raise": {
+          "axisLocal": [-0.82472, -0.17681, 0.53719],
+          "tipRest": [0.377, 3.523, -0.424],
+          "length": 0.279,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [0.04348, -0.96688, -0.25149],
+          "tipRest": [0.377, 3.523, -0.424],
+          "length": 0.279,
+          "sideX": 1
+        }
+      },
+      "Bone02_She_16": {
+        "raise": {
+          "axisLocal": [0.82472, -0.17681, -0.53719],
+          "tipRest": [-0.377, 3.523, -0.424],
+          "length": 0.28,
+          "sideX": -1
+        },
+        "spread": {
+          "axisLocal": [-0.04348, -0.96688, 0.25149],
+          "tipRest": [-0.377, 3.523, -0.424],
+          "length": 0.28,
+          "sideX": -1
+        }
+      },
+      "Bone02_She_17": {
+        "raise": {
+          "axisLocal": [0.88487, -0.43248, -0.1731],
+          "tipRest": [0.181, 3.929, -0.628],
+          "length": 0.369,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [-0.44831, -0.89157, -0.06422],
+          "tipRest": [0.181, 3.929, -0.628],
+          "length": 0.369,
+          "sideX": 1
+        }
+      },
+      "Bone02_She_18": {
+        "raise": {
+          "axisLocal": [0.88487, 0.43248, -0.1731],
+          "tipRest": [-0.181, 3.929, -0.628],
+          "length": 0.369,
+          "sideX": -1
+        },
+        "spread": {
+          "axisLocal": [0.44831, -0.89157, 0.06422],
+          "tipRest": [-0.181, 3.929, -0.628],
+          "length": 0.369,
+          "sideX": -1
+        }
+      },
+      "Bone02_She_08": {
+        "raise": {
+          "axisLocal": [-0.99759, 0.06933, 0],
+          "tipRest": [0.086, 3.737, -0.534],
+          "length": 0.416,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [0.06933, 0.99759, 0],
+          "tipRest": [0.086, 3.737, -0.534],
+          "length": 0.416,
+          "sideX": 1
+        }
+      },
+      "Bone02_She_07": {
+        "raise": {
+          "axisLocal": [0.23134, 0.97287, -0.00122],
+          "tipRest": [0, 4.031, -0.141],
+          "length": 0.524,
+          "sideX": 1
+        },
+        "spread": {
+          "axisLocal": [0.97286, -0.23135, -0.00474],
+          "tipRest": [0, 4.031, -0.141],
+          "length": 0.524,
+          "sideX": 1
+        }
+      }
+    }
+  },
+  "tail": {
+    "chain": [
+      "Bone02_She_09",
+      "Bone02_She_10",
+      "Bone02_She_11",
+      "Bone02_She_12",
+      "Bone02_She_21",
+      "Bone02_She_22",
+      "Bone02_She_23"
+    ],
+    "aimAxisLocal": [0, 1, 0],
+    "pitchAxisLocal": [1, 0, 0],
+    "note": "A chain: She_09 hangs on D_she_root, each bone on the one before, each aimed at the next (local +Y), local +X across the tail, +Z up. segmentLengths are between joints. Drive it with FABRIK on the heads, or spring each bone's rotation about pitchAxisLocal and yawAxisLocal.",
+    "tipRest": [0.029, 3.209, -2.915],
+    "tipAfter": [0.028, 5.017, -2.097],
+    "perBoneTurn": 0.25,
+    "segmentLengths": [0.38, 0.4512, 0.4584, 0.4588, 0.4354, 0.3384],
+    "yawAxisLocal": [0, 0, 1]
+  },
+  "clips": {
+    "city_idle": {
+      "alias": "idle",
+      "frames": 66,
+      "fps": 24,
+      "duration": 2.708333,
+      "loop": true,
+      "rootScale": [0.4, 0.4]
+    },
+    "city_idle_BP": {
+      "alias": "idle_standing",
+      "frames": 50,
+      "fps": 24,
+      "duration": 2.041667,
+      "loop": true,
+      "rootScale": [0.4, 0.4]
+    },
+    "city_interaction_R_loop": {
+      "alias": "hands_to_mouth_loop",
+      "frames": 66,
+      "fps": 24,
+      "duration": 2.708333,
+      "loop": true,
+      "rootScale": [0.4, 0.4]
+    },
+    "city_intercation03": {
+      "alias": "interaction_03",
+      "frames": 152,
+      "fps": 24,
+      "duration": 6.291667,
+      "loop": false,
+      "rootScale": [0.4, 0.6377]
+    },
+    "city_action": {
+      "alias": "flight_path",
+      "frames": 384,
+      "fps": 24,
+      "duration": 15.958333,
+      "loop": false,
+      "rootScale": [0.1054, 1]
+    }
+  },
+  "clipNote": "Durations are (frames - 1) / 24 s: a clip ends on its last key. The loops end on their first key exactly, so wrap by the duration. The names keep the source's spelling (intercation).",
+  "bones": {
+    "D_she_root": {
+      "three": "D_she_root",
+      "parent": null,
+      "restLocal": [0, 3.636041, 0, 0, -0.707107, 0, 0.707107, 1, 1, 1],
+      "restHead": [0, 3.63604, 0]
+    },
+    "Bone02_She_01": {
+      "three": "Bone02_She_01",
+      "parent": "D_she_root",
+      "restLocal": [-0.136006, 0.002986, 0, 0, 0, -0.311621, 0.950207, 1, 1, 1],
+      "restHead": [0, 3.63903, -0.13601]
+    },
+    "Bone02_She_08": {
+      "three": "Bone02_She_08",
+      "parent": "D_she_root",
+      "restLocal": [-0.137905, 0.008521, 0.000001, 0, 0, -0.999398, 0.034685, 1.000006, 1, 1],
+      "restHead": [0, 3.64456, -0.13791]
+    },
+    "Bone02_She_09": {
+      "three": "Bone02_She_09",
+      "parent": "D_she_root",
+      "restLocal": [
+        -0.464483, -0.013827, 0.000018, -0.604448, 0.366937, 0.604448, 0.366938, 1, 1, 1
+      ],
+      "restHead": [-0.00002, 3.62221, -0.46448]
+    },
+    "Bone02_She_02": {
+      "three": "Bone02_She_02",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.04639, -0.068474, 0.000001, 0, -0.000001, -0.122593, 0.992457, 1, 1, 1],
+      "restHead": [0, 3.55638, -0.13918]
+    },
+    "Bone02_She_05": {
+      "three": "Bone02_She_05",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.145961, 0.01761, -0.154, 0.169271, 0.980332, -0.017265, 0.099992, 1, 1, 1],
+      "restHead": [0.154, 3.56678, -0.00796]
+    },
+    "Bone02_She_06": {
+      "three": "Bone02_She_06",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.14596, 0.017611, 0.153889, 0.099992, -0.017264, 0.980332, 0.169271, 1, 1, 1],
+      "restHead": [-0.15389, 3.56678, -0.00796]
+    },
+    "Bone02_She_07": {
+      "three": "Bone02_She_07",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.162848, -0.027541, 0, 0.002316, -0.0008, 0.938762, 0.344558, 1, 1, 1],
+      "restHead": [0, 3.52039, -0.0211]
+    },
+    "Bone02_She_19": {
+      "three": "Bone02_She_19",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.105207, -0.016635, 0, 0, 0, -0.137609, 0.990487, 1, 1, 1],
+      "restHead": [0, 3.56332, -0.06108]
+    },
+    "sb_eye_L": {
+      "three": "sb_eye_L",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.26859, 0.11918, -0.108, -0.220349, 0.671897, 0.220349, 0.671898, 1, 1, 1],
+      "restHead": [0.108, 3.576, 0.151]
+    },
+    "sb_eye_R": {
+      "three": "sb_eye_R",
+      "parent": "Bone02_She_01",
+      "restLocal": [0.26859, 0.11918, 0.108, -0.220349, 0.671898, 0.220349, 0.671898, 1, 1, 1],
+      "restHead": [-0.108, 3.576, 0.151]
+    },
+    "Bone02_She_13": {
+      "three": "Bone02_She_13",
+      "parent": "Bone02_She_08",
+      "restLocal": [
+        0.385521, -0.069595, -0.238889, 0.978952, 0.149781, -0.136937, 0.021619, 0.999998, 1, 1
+      ],
+      "restHead": [0.23889, 3.68726, -0.52733]
+    },
+    "Bone02_She_14": {
+      "three": "Bone02_She_14",
+      "parent": "Bone02_She_08",
+      "restLocal": [0.385521, -0.069594, 0.239348, 0.02162, -0.136937, 0.149779, 0.978952, 1, 1, 1],
+      "restHead": [-0.23935, 3.68726, -0.52733]
+    },
+    "Bone02_She_15": {
+      "three": "Bone02_She_15",
+      "parent": "Bone02_She_08",
+      "restLocal": [
+        0.067964, 0.07112, -0.215225, 0.949693, 0.025154, -0.294093, 0.104688, 0.999998, 1, 0.999995
+      ],
+      "restHead": [0.21522, 3.5689, -0.20078]
+    },
+    "Bone02_She_16": {
+      "three": "Bone02_She_16",
+      "parent": "Bone02_She_08",
+      "restLocal": [0.067964, 0.07112, 0.214853, 0.10469, -0.294096, 0.025154, 0.949692, 1, 1, 1],
+      "restHead": [-0.21485, 3.5689, -0.20078]
+    },
+    "Bone02_She_17": {
+      "three": "Bone02_She_17",
+      "parent": "Bone02_She_08",
+      "restLocal": [
+        0.169589, -0.103748, -0.157729, 0.960978, -0.260627, -0.079006, 0.048515, 1, 1, 1
+      ],
+      "restHead": [0.15773, 3.7363, -0.31428]
+    },
+    "Bone02_She_18": {
+      "three": "Bone02_She_18",
+      "parent": "Bone02_She_08",
+      "restLocal": [
+        0.169589, -0.103749, 0.157325, 0.048515, -0.079007, -0.260627, 0.960977, 1, 1, 1
+      ],
+      "restHead": [-0.15733, 3.7363, -0.31428]
+    },
+    "Bone02_She_10": {
+      "three": "Bone02_She_10",
+      "parent": "Bone02_She_09",
+      "restLocal": [0, 0.379954, 0, 0.073712, -0.000017, 0.000039, 0.99728, 1, 1, 1],
+      "restHead": [-0.00002, 3.44689, -0.80157]
+    },
+    "Bone02_She_20": {
+      "three": "Bone02_She_20",
+      "parent": "Bone02_She_19",
+      "restLocal": [0.181441, 0.000001, 0, 0, 0, -0.076473, 0.997072, 1, 1, 1],
+      "restHead": [0, 3.42008, 0.05029]
+    },
+    "Bone02_She_11": {
+      "three": "Bone02_She_11",
+      "parent": "Bone02_She_10",
+      "restLocal": [0, 0.451221, 0, 0.115112, -0.000143, 0.000651, 0.993352, 1, 1, 1],
+      "restHead": [-0.00005, 3.2998, -1.22814]
+    },
+    "Bone02_She_12": {
+      "three": "Bone02_She_12",
+      "parent": "Bone02_She_11",
+      "restLocal": [0, 0.458364, 0, 0.048521, 0.000319, -0.006031, 0.998804, 1, 1, 1],
+      "restHead": [-0.0007, 3.25345, -1.68416]
+    },
+    "Bone02_She_21": {
+      "three": "Bone02_She_21",
+      "parent": "Bone02_She_12",
+      "restLocal": [0, 0.458832, 0, -0.008535, 0.000103, -0.008054, 0.999931, 1, 1, 1],
+      "restHead": [0.00419, 3.25151, -2.14296]
+    },
+    "Bone02_She_22": {
+      "three": "Bone02_She_22",
+      "parent": "Bone02_She_21",
+      "restLocal": [0, 0.435422, 0, -0.038493, 0.000411, -0.006868, 0.999235, 1, 1, 1],
+      "restHead": [0.01584, 3.24223, -2.57813]
+    },
+    "Bone02_She_23": {
+      "three": "Bone02_She_23",
+      "parent": "Bone02_She_22",
+      "restLocal": [0, 0.3384, 0, 0, 0, 0, 1, 1, 1, 1],
+      "restHead": [0.02949, 3.20902, -2.91462]
+    }
+  },
+  "checks": {
+    "worstJointMove": 0.000016376423607897183,
+    "worstUnevenScale": 0.00002682209014892578,
+    "materials": [
+      "silverbolt_body",
+      "silverbolt_gem",
+      "silverbolt_socket",
+      "silverbolt_crystal",
+      "silverbolt_ribbon"
+    ],
+    "worstHeadErrorMetres": 0.00246,
+    "loopGapMetres": {
+      "city_idle": 0.00345,
+      "city_idle_BP": 0.00145,
+      "city_interaction_R_loop": 0.00008
+    }
+  }
+}
