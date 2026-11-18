@@ -45,6 +45,16 @@ See section 2 of the design. Changes after the fact are listed here with the dat
 
 - 19 Nov, 01:00: localhost:3000 now serves the production build (`npx serve out -l 3000`, the dev server there was stopped). Known small gaps after wave 4: Selena's flip is cut (the white-out starts after the dragon's pass; the clip's 4 to 5 s is not shown), the bend has 32 tab stops (credits and takedown links of 15 fan pictures), a few first-draw hitches of 100 to 270 ms in a scroll that never pauses, a jump (seek) far ahead shows no actors for about 2 s while they build.
 
+## ROUND TWO (19 Nov, from 02:10): the owner's feedback after seeing the live site
+
+The owner's feedback is `docs/superpowers/specs/2026-11-19-home-feedback-request.md` (word for word): shorter animations; every 3D model in an anime look like Tetra and the drone; the doll smaller; Silverbolt's head straight; check and fix every ugly animation; lots of live shader backgrounds (reactbits style, the Selena section named); TRIGGER based scenes with a scroll lock instead of scroll linked, up and down; a UX pass. Plan, all in one workflow, `wf_a7807b8a-e37` (script `docs/superpowers/plans/home-wave5-workflow.js.txt`, copy it to a `.js`, `Workflow({ scriptPath, args: [names] })`):
+
+- K5-plays: `kernel/plays.ts`, a virtual local animated by the clock with a scroll hold (`HomeSection.plays`), and lengths made safe to change.
+- BG-backdrops: `fx/backdrop/`, a second small WebGL canvas in the ground stack (above the grounds, below the `below` layer): the home now has TWO contexts, the stage and the backdrop (update CLAUDE.md at the end).
+- TOON-CORE (shared toon system and Selena), then TOON-SB (Silverbolt and its straight head), TOON-DOLL (anime look and about 40 percent smaller), TOON-PROPS (hand, gramophone, records).
+- After K5 and BG: R-A-first, R-B-middle, R-C-selena, R-D-last (audit, shorten, convert to plays, backdrops, UX per range); then R-E-ux (the whole page, tests, e2e, knip).
+- The main session then does `pnpm check`, the build, the perf run and the push (the live site is the round one build until then; `localhost:3000` serves the round one production build).
+
 ## DONE (19 Nov, about 01:30): the home is on main and live
 
 All four waves are finished. `main` was pushed (commit `870a985`), the Pages deploy succeeded, https://aspirant.cc serves the new home (checked with real frames and no console errors), and `localhost:3000` serves the production build (`npx serve out -l 3000 --no-clipboard` from `apps/web`; after a reboot start it again, it does not restart by itself). The snapshot loop and the `home-wip` branch were removed. What follows is the old resume procedure, kept for the record. What is left to do is only polish: see the gaps in the 19 Nov note above, `docs/design/home/integration-*.md` (the "still wrong" lists), and the unverified list (Firefox, Safari, a real phone, a weak machine, sound).
