@@ -7,6 +7,10 @@
  *    wins: no 3D target is asked and the site's cursor shows the control's own label;
  *  - among the 3D targets the nearest hit wins (smaller depth);
  *  - a touch has no hover: a target is found at the press and let go at the release;
+ *  - a touch (or a pen) presses its target only when it lifts as a tap. A finger that goes down on a
+ *    3D target may be the start of a scroll, and a scroll must never poke the actor under it. A mouse
+ *    presses at pointer-down (a drag, such as Silverbolt's tail, begins there; a mouse never scrolls
+ *    by pressing);
  *  - the cursor label of the winning target goes to the site's cursor through `CursorApi`.
  *
  * The state is resolved once per frame (`resolve`), not per event, so it also follows the scroll
@@ -17,6 +21,19 @@ import type { CursorApi, HitTarget, PointerApi, PointerState } from "./types";
 /** What counts as a control of the page: the pointer is on the DOM, not on a 3D target. */
 const DOM_HIT =
   'a[href], button, input, select, textarea, summary, label, [role="button"], [role="link"], [data-home-hit="dom"]';
+
+/** A touch that lifts within this many pixels of where it began, and soon enough, is a tap. */
+export const TAP_PX = 12;
+export const TAP_MS = 600;
+
+/**
+ * Was a touch a tap? A finger that goes down on a target may be the start of a scroll. A press
+ * counts only when the finger lifts almost where it began, and soon (a cancel, which is the browser
+ * taking the gesture for a scroll, never counts).
+ */
+export function isTap(dx: number, dy: number, ms: number): boolean {
+  return dx * dx + dy * dy <= TAP_PX * TAP_PX && ms >= 0 && ms <= TAP_MS;
+}
 
 /** True when `target` is, or is inside, a control the DOM owns. */
 export function isDomControl(target: EventTarget | null): boolean {
@@ -55,6 +72,9 @@ export class PointerHub implements PointerApi {
   private current: HitTarget | null = null;
   private overDom = false;
   private pressed: HitTarget | null = null;
+  /** A touch down on a target that has not been pressed yet: it is pressed if it lifts as a tap. */
+  private pending: { target: HitTarget; x: number; y: number; at: number; moved: boolean } | null =
+    null;
   private lastMove = 0;
   private attached = false;
 
@@ -66,6 +86,7 @@ export class PointerHub implements PointerApi {
       this.targets.delete(target);
       if (this.current === target) this.setCurrent(null);
       if (this.pressed === target) this.pressed = null;
+      if (this.pending?.target === target) this.pending = null;
     };
   }
 
@@ -143,6 +164,10 @@ export class PointerHub implements PointerApi {
     s.speed = Math.min(6000, s.speed * 0.5 + (Math.hypot(dx, dy) / dtMs) * 1000 * 0.5);
     this.read(e);
     s.inside = true;
+    const pending = this.pending;
+    if (pending && !pending.moved && !isTap(s.x - pending.x, s.y - pending.y, 0)) {
+      pending.moved = true;
+    }
   };
 
   private readonly onDown = (e: PointerEvent): void => {
@@ -155,8 +180,13 @@ export class PointerHub implements PointerApi {
     const hit = nearestHit(this.targets, s.x, s.y);
     const target = hit?.target ?? null;
     if (target !== this.current) this.setCurrent(target);
-    this.pressed = target;
-    target?.press?.(s.x, s.y);
+    if (s.type === "mouse") {
+      this.pressed = target;
+      target?.press?.(s.x, s.y);
+      return;
+    }
+    // A finger: wait for the lift to know whether it was a tap or the start of a scroll.
+    this.pending = target ? { target, x: s.x, y: s.y, at: performance.now(), moved: false } : null;
   };
 
   private readonly onUp = (e: PointerEvent): void => {
@@ -166,6 +196,15 @@ export class PointerHub implements PointerApi {
     const pressed = this.pressed;
     this.pressed = null;
     pressed?.release?.(s.x, s.y);
+    const pending = this.pending;
+    this.pending = null;
+    if (pending && e.type === "pointerup" && !pending.moved) {
+      const tap = isTap(s.x - pending.x, s.y - pending.y, performance.now() - pending.at);
+      if (tap) {
+        pending.target.press?.(s.x, s.y);
+        pending.target.release?.(s.x, s.y);
+      }
+    }
     if (s.type === "touch") {
       s.inside = false;
       this.setCurrent(null);

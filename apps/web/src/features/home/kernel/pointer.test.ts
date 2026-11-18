@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PointerHub, isDomControl, nearestHit } from "./pointer";
+import { PointerHub, TAP_MS, TAP_PX, isDomControl, isTap, nearestHit } from "./pointer";
 import type { CursorApi, HitTarget } from "./types";
 
 function target(id: string, depth: number | null, extra: Partial<HitTarget> = {}): HitTarget {
@@ -139,6 +139,53 @@ describe("PointerHub", () => {
     expect(hub.state.hit).toBeNull();
   });
 
+  it("presses a mouse target at pointer-down (a drag begins there)", () => {
+    const press = vi.fn();
+    hub.add(target("tail", 1, { press }));
+    fire(window, "pointerdown", 50, 60);
+    expect(press).toHaveBeenCalledTimes(1);
+  });
+
+  it("presses a touch target when the finger lifts as a tap, not at the press", () => {
+    const press = vi.fn();
+    const release = vi.fn();
+    hub.add(target("doll", 1, { press, release }));
+    fire(window, "pointerdown", 50, 60, "touch");
+    expect(press).not.toHaveBeenCalled();
+    fire(window, "pointerup", 52, 61, "touch");
+    expect(press).toHaveBeenCalledTimes(1);
+    expect(press).toHaveBeenCalledWith(52, 61);
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it("never presses a touch target for a swipe (a scroll that begins on an actor)", () => {
+    const press = vi.fn();
+    const release = vi.fn();
+    hub.add(target("doll", 1, { press, release }));
+    fire(window, "pointerdown", 50, 60, "touch");
+    fire(window, "pointermove", 50, 140, "touch");
+    fire(window, "pointerup", 50, 62, "touch");
+    expect(press).not.toHaveBeenCalled();
+    expect(release).not.toHaveBeenCalled();
+  });
+
+  it("never presses a touch target when the browser takes the gesture (pointercancel)", () => {
+    const press = vi.fn();
+    hub.add(target("doll", 1, { press }));
+    fire(window, "pointerdown", 50, 60, "touch");
+    fire(window, "pointercancel", 50, 60, "touch");
+    expect(press).not.toHaveBeenCalled();
+  });
+
+  it("does not press a touch target twice for two taps' worth of events", () => {
+    const press = vi.fn();
+    hub.add(target("doll", 1, { press }));
+    fire(window, "pointerdown", 50, 60, "touch");
+    fire(window, "pointerup", 50, 60, "touch");
+    fire(window, "pointerup", 50, 60, "touch");
+    expect(press).toHaveBeenCalledTimes(1);
+  });
+
   it("lets a target go when it is taken out", () => {
     const leave = vi.fn();
     const remove = hub.add(target("doll", 1, { leave, cursor: "POKE" }));
@@ -160,5 +207,28 @@ describe("PointerHub", () => {
     hub.detach();
     fire(window, "pointermove", 123, 45);
     expect(hub.state.x).not.toBe(123);
+  });
+});
+
+describe("isTap", () => {
+  it("is a finger that lifts where it went down, soon", () => {
+    expect(isTap(0, 0, 90)).toBe(true);
+    expect(isTap(3, -4, TAP_MS)).toBe(true);
+  });
+
+  it("is not a drag", () => {
+    expect(isTap(0, TAP_PX + 1, 100)).toBe(false);
+    expect(isTap(40, 0, 100)).toBe(false);
+  });
+
+  it("is not a long press", () => {
+    expect(isTap(0, 0, TAP_MS + 1)).toBe(false);
+    expect(isTap(0, 0, -1)).toBe(false);
+  });
+
+  it("counts the distance, not each axis", () => {
+    // 9 and 9 is about 12.7 pixels away: past the limit.
+    expect(isTap(9, 9, 100)).toBe(false);
+    expect(isTap(8, 8, 100)).toBe(true);
   });
 });

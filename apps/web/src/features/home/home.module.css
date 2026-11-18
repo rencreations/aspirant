@@ -199,6 +199,15 @@
   display: none;
 }
 
+/*
+ * Nothing of a section may widen the plain page: a decoration that is wider than the screen (the
+ * strip's scrim is 2.7 times its words) is cut at the page's edge. `clip` makes no scroll box.
+ */
+.root[data-gl="off"],
+:global(html:not(.js)) .root {
+  overflow-x: clip;
+}
+
 /* Each section carries its own theme's ground, so a dark section is still readable. */
 .root[data-gl="off"] .slot,
 :global(html:not(.js)) .root .slot {

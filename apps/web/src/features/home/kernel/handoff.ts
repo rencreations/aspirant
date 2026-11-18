@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useLenis } from "@/components/smooth-scroll";
 import { useTransitionRouter } from "@/components/transition/transition-provider";
 import { NAVIGATED_EVENT, REVEAL_EVENT } from "@/lib/hooks";
+import { OFFLINE_BLOCKED_EVENT, isOffline } from "@/lib/offline";
 import { whenPageReady } from "@/lib/page-ready";
 import { runPreload } from "@/lib/preload";
 import { routeItems } from "@/lib/route-preloads";
@@ -26,6 +27,8 @@ const COVER_COLOUR = "#f4f6f9";
 /** How long the cover takes to come and to go. */
 const COVER_MS = 380;
 const EASE = "cubic-bezier(.32, .72, 0, 1)";
+/** A page that is not ready this long after the push gets the loading words (as the logo curtain does). */
+const LOADING_STATE_AFTER_MS = 500;
 
 type ExitHook = () => Promise<void> | void;
 
@@ -47,6 +50,12 @@ export function setExitHook(hook: ExitHook): () => void {
 
 function normal(path: string): string {
   return path.replace(/\/+$/u, "") || "/";
+}
+
+/** The words on the cover while About is not ready: what it loads, how far it is, or that the line is down. */
+export function handoffWords(progress: number, offline: boolean): string {
+  if (offline) return "Offline. Waiting for the connection";
+  return `Loading About ${Math.round(Math.min(1, Math.max(0, progress)) * 100)}%`;
 }
 
 /** Resolve when the address is `target`. No timer: the new page's files may be slow. */
@@ -89,8 +98,16 @@ function guardScroll(): () => void {
   };
 }
 
+interface Cover {
+  show(): Promise<void>;
+  hide(): Promise<void>;
+  /** The loading words and the real progress under them (0 to 1), shown on the first call. */
+  note(words: string, progress: number): void;
+  remove(): void;
+}
+
 /** A fixed plate of the daybreak ground over everything, made and removed here. */
-function makeCover(): { show(): Promise<void>; hide(): Promise<void>; remove(): void } {
+function makeCover(): Cover {
   const el = document.createElement("div");
   el.setAttribute("aria-hidden", "true");
   el.dataset.homeCover = "";
@@ -100,6 +117,30 @@ function makeCover(): { show(): Promise<void>; hide(): Promise<void>; remove(): 
     `background-image:radial-gradient(circle, rgb(11 11 14 / .09) 1px, transparent 1.4px);` +
     `background-size:28px 28px;`;
   document.body.appendChild(el);
+  // The loading words: a mono line and a hairline that fills (transform only), made on the first note.
+  let words: HTMLElement | null = null;
+  let line: HTMLElement | null = null;
+  const makeNote = () => {
+    const box = document.createElement("div");
+    box.style.cssText =
+      "position:absolute;left:50%;top:50%;width:min(240px,60vw);transform:translate(-50%,-50%);" +
+      "display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;transition:opacity .4s ease;";
+    words = document.createElement("p");
+    words.style.cssText =
+      "margin:0;font:500 11px/1 var(--font-mono, ui-monospace, monospace);letter-spacing:.14em;" +
+      "text-transform:uppercase;color:rgb(11 11 14 / .62);text-align:center;";
+    const rail = document.createElement("div");
+    rail.style.cssText = "width:100%;height:1px;background:rgb(11 11 14 / .14);overflow:hidden;";
+    line = document.createElement("div");
+    line.style.cssText =
+      "width:100%;height:100%;background:rgb(11 11 14 / .8);transform-origin:left;transform:scaleX(0);";
+    rail.appendChild(line);
+    box.append(words, rail);
+    el.appendChild(box);
+    requestAnimationFrame(() => {
+      box.style.opacity = "1";
+    });
+  };
   const fade = (to: 0 | 1) =>
     new Promise<void>((resolve) => {
       const a = el.animate([{ opacity: to === 1 ? 0 : 1 }, { opacity: to }], {
@@ -118,6 +159,11 @@ function makeCover(): { show(): Promise<void>; hide(): Promise<void>; remove(): 
   return {
     show: () => fade(1),
     hide: () => fade(0),
+    note: (text, progress) => {
+      if (!words) makeNote();
+      if (words) words.textContent = text;
+      if (line) line.style.transform = `scaleX(${Math.min(1, Math.max(0, progress)).toFixed(3)})`;
+    },
     remove: () => {
       el.remove();
     },
@@ -140,9 +186,18 @@ async function change(deps: HandoffDeps): Promise<void> {
     released = true;
     deps.release();
   };
+  let progress = 0;
+  let waiting = false;
+  const say = () => {
+    if (waiting) cover.note(handoffWords(progress, isOffline()), progress);
+  };
   try {
-    // Warm the page we are going to, as the curtain does.
-    void runPreload(routeItems(routes.about), () => undefined);
+    // The page we are going to loads while the drone leaves, as the curtain's change does, and the
+    // change waits for all of it: a slow connection waits behind the cover, with the real percentage.
+    const assets = runPreload(routeItems(routes.about), (p) => {
+      progress = p.progress;
+      say();
+    });
     // The exit first (the drone flies out to the right), then the cover: the cover is mostly opaque
     // within 150 ms, so run together the flight would never be seen. A hook has nothing to wait for
     // when the scroll has already taken the drone out, so the scroll's way in is not delayed.
@@ -153,9 +208,25 @@ async function change(deps: HandoffDeps): Promise<void> {
     // is ready, and that moment comes before `whenPageReady`.
     deps.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
+    const pushedAt = performance.now();
     deps.push(routes.about);
-    await pathReached(routes.about);
-    await whenPageReady();
+    let ready = false;
+    const arrived = Promise.all([pathReached(routes.about), assets])
+      .then(() => whenPageReady())
+      .then(() => {
+        ready = true;
+      });
+    const left = LOADING_STATE_AFTER_MS - (performance.now() - pushedAt);
+    await Promise.race([arrived, new Promise<void>((r) => window.setTimeout(r, left))]);
+    if (!ready) {
+      waiting = true;
+      say();
+      window.addEventListener("offline", say);
+      window.addEventListener("online", say);
+      await arrived;
+      window.removeEventListener("offline", say);
+      window.removeEventListener("online", say);
+    }
     deps.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
     window.dispatchEvent(new Event(REVEAL_EVENT));
@@ -187,6 +258,11 @@ export function useHomeHandoff(): () => void {
   return useCallback(() => {
     if (running) return;
     const { transition: t, router: r, scrollTo: to } = live.current;
+    // Offline, a page that was never opened cannot load: the calm notice, and the home stays.
+    if (!t.canOpen(routes.about)) {
+      window.dispatchEvent(new Event(OFFLINE_BLOCKED_EVENT));
+      return;
+    }
     const release = t.claim();
     if (!release) return;
     running = true;

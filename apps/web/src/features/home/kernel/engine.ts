@@ -10,6 +10,7 @@ import { expectReady } from "@/lib/page-ready";
 import { useNavLock } from "@/lib/nav-lock";
 
 import type { BootRuntime } from "../boot/runtime";
+import { getCast } from "../actors/shared/cast";
 import { ActorRegistry } from "./actors";
 import { LABS } from "./lab";
 import { Background, groundAt, type GroundLayers } from "./background";
@@ -71,6 +72,15 @@ export function startEngine(options: EngineOptions): Engine | null {
     },
   });
   if (!stage) return null;
+
+  // The lit scene that every 3D actor shares has an environment map, which is the longest single task
+  // of the page's build (half a second or more of the driver's work). It is made here, once, while the
+  // loading screen is up, and not in the middle of the first scroll.
+  try {
+    getCast(stage);
+  } catch (error) {
+    console.warn("[home] the shared lit scene could not be made", error);
+  }
 
   const layout = layoutSections(sections);
   const clock = new Clock();

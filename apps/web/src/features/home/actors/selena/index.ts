@@ -1,5 +1,3 @@
-import type { PerspectiveCamera } from "three";
-
 import { cachedFetch } from "@/lib/media-store";
 import { asset } from "@/lib/asset";
 
@@ -7,6 +5,7 @@ import { getCast } from "../shared/cast";
 import { ensureActor } from "../shared/ensure";
 import { loadGltf } from "../shared/gltf";
 import type { ActorCtx } from "../shared/types";
+import { warmCast } from "../shared/warm";
 
 import { SelenaActor } from "./actor";
 import type { CameraData } from "./camera";
@@ -28,13 +27,15 @@ export type {
 /**
  * Selena, built once and shared by every section that needs her (the list's 3D frame, the room
  * after it). The model and the baked cameras come through the same saved copies the loading list
- * fills (`selenaItems()`), and her programs and pictures are compiled before she is handed back.
+ * fills (`selenaItems()`), and her programs and pictures are compiled, and drawn once, before she is handed back.
  */
 export function ensureSelena(ctx: ActorCtx): Promise<SelenaActor> {
   return ensureActor(ctx.actors, "selena", async () => {
     const [gltf, cams] = await Promise.all([loadGltf(SELENA_MODEL), loadCameras()]);
-    const actor = new SelenaActor(ctx, gltf, cams, getCast(ctx.stage));
-    await actor.warm(ctx.stage.renderer, getCast(ctx.stage).pass.camera as PerspectiveCamera);
+    const cast = getCast(ctx.stage);
+    const actor = new SelenaActor(ctx, gltf, cams, cast);
+    // Her materials are clipped by planes: the programs are made with clipping on, like her frames.
+    await warmCast(ctx.stage, cast, actor.object, { localClipping: true });
     return actor;
   });
 }

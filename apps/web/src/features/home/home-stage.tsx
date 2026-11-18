@@ -12,6 +12,7 @@ import { useNavLock } from "@/lib/nav-lock";
 import { expectReady } from "@/lib/page-ready";
 
 import styles from "./home.module.css";
+import { focusScreens } from "./kernel/focus";
 import { bindHold } from "./kernel/hold";
 import { layoutSections } from "./kernel/layout";
 import { SECTIONS } from "./kernel/sections";
@@ -149,7 +150,12 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
       const placed = layout.placed.find((p) => p.id === slot.dataset.homeText);
       if (!placed || placed.def.dom === "flow") return;
       const unit = host.getBoundingClientRect().height;
-      scrollTo((placed.start + placed.def.screens * 0.5) * unit, { immediate: true });
+      const at = focusScreens(
+        placed.def.screens,
+        placed.def.focus,
+        target?.closest<HTMLElement>("[data-home-focus-at]")?.dataset.homeFocusAt,
+      );
+      scrollTo((placed.start + at) * unit, { immediate: true });
     };
     root.addEventListener("focusin", onFocus);
     return () => {

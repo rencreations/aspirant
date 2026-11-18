@@ -5,7 +5,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push: () => undefined })
 import { NAVIGATED_EVENT } from "@/lib/hooks";
 
 import { bindHold, holdScroll } from "./hold";
-import { pathReached, setExitHook } from "./handoff";
+import { handoffWords, pathReached, setExitHook } from "./handoff";
 
 describe("pathReached", () => {
   afterEach(() => {
@@ -28,6 +28,23 @@ describe("pathReached", () => {
     window.dispatchEvent(new Event(NAVIGATED_EVENT));
     await waiting;
     expect(done).toBe(true);
+  });
+});
+
+describe("handoffWords", () => {
+  it("says what loads and how far, with the real percentage", () => {
+    expect(handoffWords(0, false)).toBe("Loading About 0%");
+    expect(handoffWords(0.426, false)).toBe("Loading About 43%");
+    expect(handoffWords(1, false)).toBe("Loading About 100%");
+  });
+
+  it("keeps the percentage inside 0 to 100", () => {
+    expect(handoffWords(-0.2, false)).toBe("Loading About 0%");
+    expect(handoffWords(3, false)).toBe("Loading About 100%");
+  });
+
+  it("says the line is down while offline", () => {
+    expect(handoffWords(0.5, true)).toBe("Offline. Waiting for the connection");
   });
 });
 

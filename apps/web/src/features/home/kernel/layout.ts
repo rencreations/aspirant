@@ -66,10 +66,14 @@ export function isPassed(p: Placed, S: number): boolean {
   return S > p.to;
 }
 
-/** True when the section should have its runtime mounted: near, or running, or carried. */
+/**
+ * True when the section should have its runtime mounted: near, or running, or carried. A section
+ * that builds a heavy actor names its own `mountAhead` (it is given a long way to do it between two
+ * scroll events, instead of two screens).
+ */
 export function wantsMount(p: Placed, S: number, ahead = MOUNT_AHEAD): boolean {
   if (p.def.carry) return true;
-  return S >= p.from - ahead && S <= p.to + 1;
+  return S >= p.from - (p.def.mountAhead ?? ahead) && S <= p.to + 1;
 }
 
 /** The section that owns a scroll position: the last one whose start is at or before it. */
@@ -78,6 +82,20 @@ export function sectionAt(layout: Layout, S: number): Placed {
   let found = list[0]!;
   for (const p of list) {
     if (p.start <= S) found = p;
+    else break;
+  }
+  return found;
+}
+
+/**
+ * The section that owns the top bar at a scroll position: the last one whose start, less its own
+ * `nav.early`, is at or before it.
+ */
+export function navOwnerAt(layout: Layout, S: number): Placed {
+  const list = layout.placed;
+  let found = list[0]!;
+  for (const p of list) {
+    if (p.start - (p.def.nav.early ?? 0) <= S) found = p;
     else break;
   }
   return found;

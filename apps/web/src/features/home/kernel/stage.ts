@@ -89,7 +89,8 @@ export class ScenePass implements Pass {
 
   constructor(
     readonly name: string,
-    readonly order: number,
+    /** Smaller draws first. `Stage.reorder` changes it. */
+    public order: number,
     readonly kind: "ortho" | "perspective",
     w: number,
     h: number,
@@ -190,6 +191,18 @@ export class Stage {
       if (at >= 0) this.passes.splice(at, 1);
       pass.dispose?.();
     };
+  }
+
+  /**
+   * Move a shared scene pass in the draw order (the music section draws the pair of drones over the
+   * lit cast while one of them cranks the gramophone, and puts them back after). Does nothing for a
+   * pass that does not exist.
+   */
+  reorder(name: string, order: number): void {
+    const pass = this.passes.find((p) => p.name === name);
+    if (!(pass instanceof ScenePass) || pass.order === order) return;
+    pass.order = order;
+    this.passes.sort((a, b) => a.order - b.order);
   }
 
   /**

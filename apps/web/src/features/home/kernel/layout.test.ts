@@ -8,6 +8,7 @@ import {
   isRunning,
   layoutSections,
   localOf,
+  navOwnerAt,
   sectionAt,
   trackScreens,
   wantsMount,
@@ -141,6 +142,12 @@ describe("the run rule", () => {
     expect(wantsMount(a, 0)).toBe(true);
   });
 
+  it("mounts a section that asks for it further ahead", () => {
+    const early = layoutSections([fake("a", 1), { ...fake("b", 1), mountAhead: 6 }]).placed[1]!;
+    expect(wantsMount(early, early.from - 6.01)).toBe(false);
+    expect(wantsMount(early, early.from - 5.99)).toBe(true);
+  });
+
   it("mounts a carried section wherever the scroll is", () => {
     const carried = layoutSections([{ ...fake("c", 1), carry: true }]).placed[0]!;
     expect(wantsMount(carried, 500)).toBe(true);
@@ -151,5 +158,29 @@ describe("the run rule", () => {
     expect(sectionAt(layout, 1.99).id).toBe("a");
     expect(sectionAt(layout, 2).id).toBe("b");
     expect(sectionAt(layout, 99).id).toBe("b");
+  });
+});
+
+describe("navOwnerAt", () => {
+  it("is the section owner unless a later section asks for the bar early", () => {
+    const early = fake("b", 2);
+    (early as { nav: { theme: string; early?: number } }).nav = { theme: "storm", early: 0.3 };
+    const layout = layoutSections([fake("a", 3), early, fake("c", 1)]);
+    expect(navOwnerAt(layout, 2.6).id).toBe("a");
+    expect(navOwnerAt(layout, 2.7).id).toBe("b");
+    expect(navOwnerAt(layout, 3.5).id).toBe("b");
+    expect(navOwnerAt(layout, 5.1).id).toBe("c");
+    // Without `early` it is the section the scroll is in.
+    for (const S of [0, 1, 2.99, 3, 4.9, 5, 5.5]) {
+      const plain = layoutSections([fake("a", 3), fake("b", 2), fake("c", 1)]);
+      expect(navOwnerAt(plain, S).id).toBe(sectionAt(plain, S).id);
+    }
+  });
+
+  it("makes the voices take the top bar a little before the white is whole", () => {
+    const layout = layoutSections(SECTIONS);
+    const voices = layout.placed.find((p) => p.id === "voices")!;
+    expect(navOwnerAt(layout, voices.start - 0.46).id).toBe("selena");
+    expect(navOwnerAt(layout, voices.start - 0.44).id).toBe("voices");
   });
 });

@@ -211,14 +211,33 @@ export interface HomeSection {
   /** Screens after the end in which the section still runs. */
   readonly tail: number;
   readonly bg: GroundName;
-  readonly nav: { readonly theme: HomeTheme };
+  readonly nav: {
+    readonly theme: HomeTheme;
+    /**
+     * Screens before the section's start at which the top bar already takes its theme. A joint where
+     * the screen goes white before the next section starts (Selena to the voices) needs the bar's
+     * ink to turn with it.
+     */
+    readonly early?: number;
+  };
   /**
    * Where the text lives. "fixed": in the fixed text layer (every section but the last). "flow": in
    * the page itself, after the scroll room, so a visitor can scroll to it (the footer only).
    */
   readonly dom: "fixed" | "flow";
+  /**
+   * The `local` the page moves to when a control of the section takes the keyboard focus while the
+   * section is off (0.5 when not given). Choose a place where every control of the section shows.
+   */
+  readonly focus?: number;
   /** Mount even when the section is far behind, so a jump past it can replay its end (rare). */
   readonly carry?: boolean;
+  /**
+   * Screens before the section's range at which it mounts (the default is two). A section that
+   * builds a heavy actor asks for more, so the build falls in a pause of the scroll long before the
+   * actor is shown.
+   */
+  readonly mountAhead?: number;
   preload(): PreloadItem[];
   /** Called when the section is near. Loads the section's runtime chunk and builds its part of the scene. */
   mount(ctx: SectionCtx): Promise<SectionRuntime> | SectionRuntime;

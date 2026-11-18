@@ -17,7 +17,7 @@ import {
   isPassed,
   isRunning,
   localOf,
-  sectionAt,
+  navOwnerAt,
   wantsMount,
   type Layout,
   type Placed,
@@ -97,7 +97,8 @@ export class SectionRunner {
       if (slot.mount === "idle" && wantsMount(slot.p, S)) this.mount(slot);
     }
 
-    const owner = sectionAt(this.deps.layout, S);
+    // The top bar's owner may take the bar a little before its start (`nav.early`).
+    const owner = navOwnerAt(this.deps.layout, S);
     if (owner.id !== this.active) {
       this.active = owner.id;
       this.deps.onActive?.(owner);
