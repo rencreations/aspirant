@@ -119,6 +119,7 @@ export function view(): SectionMarkup {
             className={`${styles.pill} ${local.cta}`}
             transitionLabel="Collection"
             data-strip-cta=""
+            data-home-focus-at="0.3"
           >
             {STRIP.button.label}
           </TLink>
@@ -128,6 +129,7 @@ export function view(): SectionMarkup {
           type="button"
           className={local.scrollButton}
           data-strip-scroll=""
+          data-home-focus-at="0.3"
           aria-label={STRIP.controls.scroll}
         >
           <i />
@@ -160,6 +162,7 @@ export function view(): SectionMarkup {
             type="button"
             className={local.play}
             data-strip-play=""
+            data-home-focus-at="1.35"
             aria-label={STRIP.play.open}
           >
             <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -189,6 +192,7 @@ export function view(): SectionMarkup {
             className={`${styles.pill} ${local.ambButton}`}
             transitionLabel="Films"
             data-strip-button=""
+            data-home-focus-at="2.4"
           >
             {STRIP.expand.button.label}
           </TLink>
@@ -197,7 +201,12 @@ export function view(): SectionMarkup {
         <ul className={local.previews} aria-label={STRIP.controls.previews}>
           {PREVIEWS.map((film) => (
             <li key={film.id}>
-              <TLink href={film.href as Route} transitionLabel={film.title} data-strip-film="">
+              <TLink
+                href={film.href as Route}
+                transitionLabel={film.title}
+                data-strip-film=""
+                data-home-focus-at="2.4"
+              >
                 {film.title}
               </TLink>
             </li>

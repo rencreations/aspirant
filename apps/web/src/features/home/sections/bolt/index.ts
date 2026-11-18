@@ -17,6 +17,9 @@ export const section: HomeSection = {
   bg: "storm",
   nav: { theme: "storm" },
   dom: "fixed",
+  // The dragon, the doll and the shared lit scene are built in pauses of the scroll, long before the
+  // dragon shows (the environment map and the programs cost a few hundred milliseconds each).
+  mountAhead: 9,
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

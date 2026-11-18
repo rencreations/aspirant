@@ -1,16 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  GRACE_MS,
-  IntentGate,
-  QUIET_MS,
-  TAP_MS,
-  TAP_PX,
-  TOUCH_PX,
-  WHEEL_PX,
-  isScrollOnKey,
-  isTap,
-} from "./intent";
+import { GRACE_MS, IntentGate, QUIET_MS, TOUCH_PX, WHEEL_PX, isScrollOnKey } from "./intent";
 
 describe("IntentGate", () => {
   it("counts nothing before it is armed", () => {
@@ -88,28 +78,5 @@ describe("isScrollOnKey", () => {
     for (const key of ["ArrowUp", "PageUp", "Home", "a", "Enter", "Tab"]) {
       expect(isScrollOnKey(key)).toBe(false);
     }
-  });
-});
-
-describe("isTap", () => {
-  it("is a finger that lifts where it went down, soon", () => {
-    expect(isTap(0, 0, 90)).toBe(true);
-    expect(isTap(3, -4, TAP_MS)).toBe(true);
-  });
-
-  it("is not a drag", () => {
-    expect(isTap(0, TAP_PX + 1, 100)).toBe(false);
-    expect(isTap(40, 0, 100)).toBe(false);
-  });
-
-  it("is not a long press", () => {
-    expect(isTap(0, 0, TAP_MS + 1)).toBe(false);
-    expect(isTap(0, 0, -1)).toBe(false);
-  });
-
-  it("counts the distance, not each axis", () => {
-    // 9 and 9 is about 12.7 pixels away: past the limit.
-    expect(isTap(9, 9, 100)).toBe(false);
-    expect(isTap(8, 8, 100)).toBe(true);
   });
 });

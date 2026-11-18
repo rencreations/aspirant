@@ -38,6 +38,7 @@ export function view(): SectionMarkup {
                     src={f.poster}
                     alt=""
                     decoding="async"
+                    fetchPriority="low"
                   />
                 </div>
               </div>
@@ -52,6 +53,7 @@ export function view(): SectionMarkup {
                   src={SELENA_FRAME.poster}
                   alt=""
                   decoding="async"
+                  fetchPriority="low"
                 />
               </div>
             </div>

@@ -223,6 +223,8 @@ uniform float uPixel;
 uniform float uEdges;
 uniform float uWake;
 uniform vec2 uNose;
+uniform vec4 uClip;
+uniform vec4 uSoft;
 varying vec2 vUv;
 ${SPECTRUM}
 
@@ -280,6 +282,13 @@ void main() {
     rgb *= 1.0 + 0.035 * clamp(wk.z / 500.0, -1.0, 1.0);
   }
   rgb += (ign(gl_FragCoord.xy + 7.0) - 0.5) / 255.0 * cover;
-  gl_FragColor = vec4(rgb, cover);
+  // A clip with a soft edge (the wall under the words): the picture thins out toward the cut instead
+  // of ending on a hard line. uClip is minX, minY, maxX, maxY and uSoft the widths of the thin part
+  // at the left, bottom, right and top, all in device pixels from the bottom left.
+  vec4 sd = vec4(p.x - uClip.x, p.y - uClip.y, uClip.z - p.x, uClip.w - p.y);
+  vec4 sm = clamp(sd / max(uSoft, vec4(1.0)), 0.0, 1.0);
+  float soft = min(min(sm.x, sm.y), min(sm.z, sm.w));
+  soft = soft * soft * (3.0 - 2.0 * soft);
+  gl_FragColor = vec4(rgb * soft, cover * soft);
 }
 `;

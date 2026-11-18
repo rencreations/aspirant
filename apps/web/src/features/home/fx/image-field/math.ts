@@ -197,3 +197,29 @@ export function qRotate(q: Q, vx: number, vy: number, vz: number, out: V3): V3 {
 export function perspectiveScale(z: number, d: number): number {
   return d / (d - z);
 }
+
+/**
+ * The box of a clip and the width of its soft part, in device pixels from the bottom left (what the
+ * composite's `uClip` and `uSoft` read). An edge that falls short of the screen's edge thins out over
+ * `soft` CSS px at most, and over its distance to the screen's edge when that is less, so an edge on
+ * the border has no soft part and a clip that opens loses it smoothly. Writes into the two arrays.
+ */
+export function clipSoftEdges(
+  clip: { x: number; y: number; w: number; h: number },
+  vw: number,
+  vh: number,
+  soft: number,
+  dpr: number,
+  box: number[],
+  widths: number[],
+): void {
+  const free = (d: number): number => Math.min(soft, Math.max(0, d)) * dpr;
+  box[0] = clip.x * dpr;
+  box[1] = (vh - clip.y - clip.h) * dpr;
+  box[2] = (clip.x + clip.w) * dpr;
+  box[3] = (vh - clip.y) * dpr;
+  widths[0] = free(clip.x);
+  widths[1] = free(vh - clip.y - clip.h);
+  widths[2] = free(vw - clip.x - clip.w);
+  widths[3] = free(clip.y);
+}

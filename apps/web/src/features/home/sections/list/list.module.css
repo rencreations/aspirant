@@ -266,3 +266,11 @@
 :global([data-home][data-gl="off"]) .below {
   display: none;
 }
+
+/* A name is a link: on the plain page it is as tall as a finger needs (24 px at least). */
+:global([data-home][data-gl="off"]) .name a,
+:global(html:not(.js)) .name a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+}

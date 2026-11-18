@@ -11,10 +11,10 @@
  *
  * Times, in screens of the home's scroll (the archive starts at 56.1 and the page ends at 60.3):
  *
- *   56.10 to 56.35   Tetra waves goodbye; the drone, beside her, looks at her
+ *   56.10 to 56.30   Tetra waves goodbye; the drone, beside her, looks at her
  *   56.20 to 56.60   the drone leaves her and flies up over the first cover
- *   56.30 to 56.65   Tetra runs off to the left
- *   56.35 to 56.65   the covers rise in, the left one first
+ *   56.28 to 56.55   Tetra runs off to the left (the first cover rises where she stood: she is out first)
+ *   56.45 to 56.80   the covers rise in, the left one first
  *   56.55 to 58.10   the tour: the drone rests over each room in turn and the light follows it
  *   58.10 to 58.80   the covers lift away, the light goes out, the footer's card rises
  *   58.10 to 59.10   the drone flies down to the middle of the footer's card (it rises to meet it)
@@ -23,19 +23,19 @@
  *   60.00 to 60.30   the drone leaves to the right, at the height where About's drone comes in
  */
 import { SIZE_PER_HEIGHT } from "../../actors/drone/model";
-import { REST, REST_DRONE } from "../bend/beats";
+import { spotsOf } from "../bend/beats";
 
 import { coverX, tourP, type StripGeo } from "./geometry";
 
 export const AT = {
   /** The archive's own start (joint J14). */
   start: 56.1,
-  waveTo: 56.35,
+  waveTo: 56.3,
   leave: 56.2,
   arrive: 56.6,
-  runFrom: 56.3,
-  runTo: 56.65,
-  coversIn: 56.35,
+  runFrom: 56.28,
+  runTo: 56.55,
+  coversIn: 56.45,
   coverStep: 0.05,
   coverLen: 0.3,
   tourFrom: 56.55,
@@ -185,9 +185,11 @@ export function aboutEntry(vp: Vp): { y: number; size: number } {
 
 /** The drone at rest beside Tetra: the end of the bend section (joint J14). */
 export function restSpot(vp: Vp, out: Spot): Spot {
-  out.x = vp.w / 2 + REST_DRONE.x * vp.w;
-  out.y = vp.h / 2 - REST_DRONE.y * vp.h;
-  out.height = REST_DRONE.h * vp.h;
+  // The bend section's own rest for this shape of screen (a phone has its own), so J14 has no jump.
+  const rest = spotsOf(vp).restDrone;
+  out.x = vp.w / 2 + rest.x * vp.w;
+  out.y = vp.h / 2 - rest.y * vp.h;
+  out.height = rest.h * vp.h;
   return out;
 }
 
@@ -277,11 +279,12 @@ export function newTetraWant(): TetraWant {
 
 export function tetraAt(S: number, vp: Vp, out: TetraWant): TetraWant {
   out.visible = S < AT.runTo + 0.02;
-  const x = vp.w / 2 + REST.tx * vp.w;
-  const height = REST.th * vp.h;
+  const rest = spotsOf(vp).rest;
+  const x = vp.w / 2 + rest.tx * vp.w;
+  const height = rest.th * vp.h;
   out.run = smooth(ramp(S, AT.runFrom, AT.runTo));
   out.x = mix(x, -0.6 * height, out.run);
-  out.y = vp.h / 2 - REST.ty * vp.h;
+  out.y = vp.h / 2 - rest.ty * vp.h;
   out.height = height;
   out.wave =
     ramp(S, AT.start, AT.start + 0.1) * (1 - ramp(S, AT.runFrom - 0.02, AT.runFrom + 0.04));

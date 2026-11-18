@@ -4,10 +4,14 @@
  * place, and at the end it folds up on its top edge and goes. Only transform and opacity animate.
  */
 
-/* The words stay in the right 42 percent: left of it is the wall's frame, and the gutter keeps them off its edge. */
+/*
+ * The words stay in the right 42 percent: left of it is the wall's frame. The box is the 42 percent
+ * minus the gutter on the right and a gap on the left (the wall thins out toward its edge, the
+ * words do not touch it).
+ */
 .box {
   justify-self: end;
-  width: min(100%, calc(42vw - var(--gutter)));
+  width: min(100%, calc(42vw - 1.65 * var(--gutter)));
 }
 
 @media (max-width: 56.25em) {
@@ -24,6 +28,8 @@
     right: var(--gutter);
     bottom: var(--space-l);
     width: auto;
+    max-width: 36rem;
+    justify-self: stretch;
   }
 }
 

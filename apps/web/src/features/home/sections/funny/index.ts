@@ -10,6 +10,8 @@ export const section: HomeSection = {
   tail: 0.5,
   bg: "daybreak",
   nav: { theme: "daybreak" },
+  // The words are in from local 0.64 and ride up from 0.8: a focus on the button lands between.
+  focus: 0.7,
   dom: "fixed",
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),

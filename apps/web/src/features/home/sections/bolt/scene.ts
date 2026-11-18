@@ -12,6 +12,8 @@
  */
 import { ensureDoll } from "../../actors/doll";
 import { getCast } from "../../actors/shared/cast";
+import { whenQuiet } from "../../actors/shared/quiet";
+import { warmCast } from "../../actors/shared/warm";
 import type { DollActor, FaceName } from "../../actors/doll";
 import { ensureSilverbolt } from "../../actors/silverbolt";
 import type { SilverboltActor } from "../../actors/silverbolt/actor";
@@ -19,7 +21,6 @@ import type { MarkEvent } from "../../actors/silverbolt/marks";
 import { ensureMarks } from "../../fx/comic-marks";
 import { ensureTrails } from "../../fx/trail";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
-import type { Mesh, MeshStandardMaterial, Texture } from "three";
 
 import { BEAT, FALL_MOODS, Journey } from "./journey";
 import { WaveLines } from "./lines";
@@ -45,27 +46,8 @@ const SEAT = { x: 0, y: 0.12, z: 0.4, yaw: 0.3, pitch: 0, roll: 0 } as const;
 
 const shared = new WeakMap<object, BoltScene>();
 
-/** The maps of a standard material that the dragon's look uses. */
-const TEXTURE_KEYS = [
-  "map",
-  "emissiveMap",
-  "normalMap",
-  "roughnessMap",
-  "metalnessMap",
-  "alphaMap",
-  "aoMap",
-] as const;
-
-/** The next animation frame, or 40 ms later where there are none (a hidden tab). */
-function nextFrame(): Promise<void> {
-  return new Promise((resolve) => {
-    const id = setTimeout(resolve, 40);
-    requestAnimationFrame(() => {
-      clearTimeout(id);
-      resolve();
-    });
-  });
-}
+/** From this `t` the falling air is over: its loops are stopped and what they made is swept away. */
+const AIR_END = 6.95;
 
 export class BoltScene {
   /** Take part in the scene of this stage. Each section that acquires it must release it. */
@@ -97,6 +79,8 @@ export class BoltScene {
   private lastFrame = -1;
   private lastT = NaN;
   private time = 0;
+  /** When this scene last drew, by the clock of the page: the dragon's marks belong only while it does. */
+  private ranAt = -1e9;
   private startleUntil = 0;
   private startleFace: FaceName = "shocked";
   /** The doll's place on the screen when she left the head, minus where the fall says she is: it fades out. */
@@ -121,14 +105,20 @@ export class BoltScene {
   private async build(): Promise<void> {
     const ctx = this.ctx;
     try {
-      // Effects first (they are small), then the dragon, then the doll, so the registry steps the dragon
-      // before the doll that hangs on it.
+      // Everything here is heavy and waits for a pause of the scroll: the section is mounted nine
+      // screens early for this. Effects first (they are small), then the shared lit scene, then the
+      // dragon, then the doll, so the registry steps the dragon before the doll that hangs on it.
+      await whenQuiet();
       const [marks, trails] = await Promise.all([ensureMarks(ctx), ensureTrails(ctx)]);
       if (this.disposed) return;
       this.marks = marks;
       this.speed = marks.sustain("speed", { size: 70 });
       this.air = marks.sustain("air", { size: 170 });
       this.makeClouds(marks);
+      // The engine made the shared lit scene (and its environment map) behind the loading screen.
+      const cast = getCast(ctx.stage);
+      await whenQuiet();
+      if (this.disposed) return;
       const sb = await ensureSilverbolt(ctx);
       if (this.disposed) return;
       this.wingL = trails.create({ colors: ["gold", "pink"], width: 26, life: 0.7, taper: 1.5 });
@@ -138,10 +128,13 @@ export class BoltScene {
         this.onDragonMark(event);
       });
       this.sb = sb;
+      await warmCast(ctx.stage, cast, sb.object);
+      if (this.disposed) return;
+      await whenQuiet();
       const doll = await ensureDoll(ctx);
       if (this.disposed) return;
       this.doll = doll;
-      await this.warm(sb, doll);
+      await warmCast(ctx.stage, cast, doll.object);
     } catch (error) {
       // A part that fails to build is left out: the lines and the text still run.
       console.error("bolt scene", error);
@@ -158,63 +151,6 @@ export class BoltScene {
       marks.sustain("cloud", { size: 130, offset: { x: -0.32 * w, y: -0.5 * h } }),
       marks.sustain("cloud", { size: 110, offset: { x: 0.3 * w, y: -0.58 * h } }),
     ];
-  }
-
-  /**
-   * Compile the dragon's programs now, while it is far away, so that the frame it first shows does not
-   * stall on the driver (measured: half a second). `compileAsync` collects the visible materials at
-   * the call and waits for the programs without blocking the frame. The kernel hides the actors again
-   * at the next frame.
-   */
-  private async warm(sb: SilverboltActor, doll: DollActor): Promise<void> {
-    const { renderer } = this.ctx.stage;
-    const cast = getCast(this.ctx.stage);
-    const sbWas = sb.object.visible;
-    const dollWas = doll.object.visible;
-    sb.object.visible = true;
-    doll.object.visible = true;
-    try {
-      await renderer.compileAsync(cast.pass.scene, cast.pass.camera);
-    } catch {
-      // A lost context compiles on the first draw instead.
-    } finally {
-      sb.object.visible = sbWas;
-      doll.object.visible = dollWas;
-    }
-    // The dragon's maps go to the GPU one to a frame (the doll does the same for hers), so that the
-    // frame it first shows does not have to send them all at once.
-    const maps = new Set<Texture>();
-    sb.object.traverse((node) => {
-      const material = (node as Mesh).material as
-        MeshStandardMaterial | MeshStandardMaterial[] | undefined;
-      for (const m of Array.isArray(material) ? material : material ? [material] : []) {
-        for (const key of TEXTURE_KEYS) {
-          const map = m[key];
-          if (map) maps.add(map);
-        }
-      }
-    });
-    for (const map of maps) {
-      if (this.disposed) return;
-      await nextFrame();
-      renderer.initTexture(map);
-    }
-    // One real draw of both into a single pixel of the canvas: the buffers, the bone textures and every
-    // program variant the first visible frame needs are made now. The stage clears the canvas each frame.
-    if (this.disposed) return;
-    await nextFrame();
-    sb.object.visible = true;
-    doll.object.visible = true;
-    const scissor = renderer.getScissorTest();
-    renderer.setScissorTest(true);
-    renderer.setScissor(0, 0, 1, 1);
-    try {
-      renderer.render(cast.pass.scene, cast.pass.camera);
-    } finally {
-      renderer.setScissorTest(scissor);
-      sb.object.visible = sbWas;
-      doll.object.visible = dollWas;
-    }
   }
 
   release(): void {
@@ -252,7 +188,8 @@ export class BoltScene {
   /** Silverbolt says a mark belongs: draw it (the table of `fx-marks.md`), and startle the doll. */
   private onDragonMark(event: MarkEvent): void {
     const marks = this.marks;
-    if (!marks) return;
+    // The dragon also shows in other sections (Selena's room, the comedy): their scenes draw its marks.
+    if (!marks || performance.now() - this.ranAt > 250) return;
     const h = this.journey.dragonHeight;
     const size = Math.max(44, h * 0.3);
     const strength = event.strength;
@@ -301,6 +238,7 @@ export class BoltScene {
     const prevT = this.lastT;
     this.lastFrame = frame.frame;
     this.lastT = t;
+    this.ranAt = performance.now();
     if (first) this.time = frame.time;
     const { w, h } = frame.viewport;
     const j = this.journey.at(t, w, h);
@@ -319,6 +257,9 @@ export class BoltScene {
     // A jump in the scroll: nothing that follows a path may be carried across it.
     const jumped = Number.isNaN(prevT) || Math.abs(t - prevT) > 0.5;
     const threw = !jumped && prevT < BEAT.launch && t >= BEAT.launch;
+    // The marks are the air of a moment, not a state: a jump sweeps them away (the loops that made
+    // them are not run in the jump's frame), and the falling air ends for good where the fall ends.
+    if (jumped && marks) marks.clear();
 
     if (sb) {
       sb.visible = j.dragonVisible;
@@ -359,10 +300,14 @@ export class BoltScene {
       this.driveDoll(doll, sb, j, t, threw, jumped, w, h);
     }
 
-    if (marks && this.air && doll && j.dollMode === "fall") {
+    if (marks && this.air && doll && j.dollMode === "fall" && !jumped && t < AIR_END) {
       if (this.cloudsFor.w !== w || this.cloudsFor.h !== h) this.makeClouds(marks);
       this.air.update(doll.socket("hips"), j.air, Math.PI / 2);
       for (const cloud of this.clouds) cloud.update(doll.socket("hips"), j.air * 0.4, Math.PI / 2);
+    } else if (t >= AIR_END && this.air) {
+      // Past the fall: the loops are left to run dry (a loop not set ends by itself).
+      this.air.stop();
+      for (const cloud of this.clouds) cloud.stop();
     }
   }
 

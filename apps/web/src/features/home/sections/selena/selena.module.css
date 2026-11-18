@@ -226,3 +226,19 @@
     font-size: 1rem;
   }
 }
+
+/* ------------------------------------------------------------------ the plain page */
+
+/* No stage, no drawer: the words stand in the page's flow, shown, with room around them. */
+:global([data-gl="off"]) .copy,
+:global(html:not(.js)) .copy {
+  position: relative;
+  inset: auto;
+  width: auto;
+  min-width: 0;
+  padding: var(--space-xl) 0;
+}
+
+:global([data-gl="off"]) .copy > * {
+  opacity: 1;
+}

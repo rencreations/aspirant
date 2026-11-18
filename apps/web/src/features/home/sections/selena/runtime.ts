@@ -23,6 +23,7 @@ class SelenaRuntime implements SectionRuntime {
   private readonly b: Beats = newBeats();
   readonly scene: SelenaScene;
   private readonly drawer: HTMLElement | null;
+  private readonly sky: HTMLElement | null;
   private readonly stars: SVGElement | null;
   private readonly star: SVGElement | null;
   private readonly white: HTMLElement | null;
@@ -37,6 +38,7 @@ class SelenaRuntime implements SectionRuntime {
     const below = ctx.dom.below;
     const text = ctx.dom.text;
     this.drawer = below.querySelector<HTMLElement>("[data-selena-drawer]");
+    this.sky = below.querySelector<HTMLElement>("[data-selena-sky]");
     this.stars = below.querySelector<SVGElement>("[data-selena-stars]");
     this.star = below.querySelector<SVGElement>("[data-selena-star]");
     this.white = below.querySelector<HTMLElement>("[data-selena-white]");
@@ -80,6 +82,10 @@ class SelenaRuntime implements SectionRuntime {
     this.word(this.title, u, 0);
     this.word(this.body, u, 1);
     this.word(this.action, u, 2);
+
+    // The sky is under the white: once the white is whole it is hidden, so the white that leaves in
+    // the tail shows the ground (the voices' own) and never a flash of the night.
+    put(this.sky, "visibility", b.white < 1 ? "visible" : "hidden");
 
     // The stars come as the drawer opens. The four point star of the film's sky follows the camera.
     put(this.stars, "opacity", f(0.9 * smooth(seg(u, 0, 0.8)) * (1 - b.white)));

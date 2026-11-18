@@ -102,7 +102,7 @@ export const STAGE: Spot = { tx: 0, ty: -0.3, th: 0.46 };
 /** Where she and the drone rest at the end (joint J14): the lower left. */
 export const REST: Spot = { tx: -0.34, ty: -0.4, th: 0.3 };
 /** The drone's rest, beside her, as fractions of the viewport (and its height). */
-export const REST_DRONE = { x: -0.21, y: -0.3, h: 0.13 };
+const REST_DRONE = { x: -0.21, y: -0.3, h: 0.13 };
 /** The same on a phone: narrower, so she stands a little in from the edge and the drone is on her right. */
 const REST_COMPACT: Spot = { tx: -0.22, ty: -0.4, th: 0.26 };
 const REST_DRONE_COMPACT = { x: 0.1, y: -0.32, h: 0.1 };
@@ -321,11 +321,14 @@ export function beatAt(
 }
 
 /**
- * The splash cards are in use (loaded onto the GPU) from the middle of the fan wall to the end of the
- * section. Early on purpose: the wall stands still there, so the upload of ten pictures is not seen.
+ * The splash cards are in use (loaded onto the GPU) from the moment the section is built, two screens
+ * before it, to its end. Early on purpose: the chase's quiet beat (Tetra sits and reads) draws no card,
+ * the uploads are spread over about a second and a half (`cards.ts`, one every third frame) and are
+ * done long before the wall, the heaviest frames, stands. The peak is the same as when they were asked
+ * for later: the fan pictures are held to 6.15 screens anyway.
  */
 export function artNeeded(s: number): boolean {
-  return s > T.holdFrom;
+  return s > -3;
 }
 
 /** The fan cards are in use from before the first wave to the end of the ring's exit. */

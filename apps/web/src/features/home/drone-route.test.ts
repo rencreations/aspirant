@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { newRoutePlace, ROUTE_END, routeAt } from "./drone-route";
+import { COMPACT_ROUTE_W, isCompactView, newRoutePlace, ROUTE_END, routeAt } from "./drone-route";
 
 const VIEW = { w: 1440, h: 900 };
 
@@ -44,9 +44,51 @@ describe("the drone's route", () => {
   });
 
   it("scales with the viewport", () => {
-    const small = routeAt(2, { w: 390, h: 844 }, newRoutePlace());
+    const wide = { w: 1706, h: 950 };
+    const small = routeAt(2, wide, newRoutePlace());
     const big = routeAt(2, VIEW, newRoutePlace());
-    expect(small.height / 844).toBeCloseTo(big.height / 900, 6);
-    expect(small.x / 390).toBeCloseTo(big.x / 1440, 6);
+    expect(small.height / 950).toBeCloseTo(big.height / 900, 6);
+    expect(small.x / 1706).toBeCloseTo(big.x / 1440, 6);
+  });
+
+  describe("on a narrow screen", () => {
+    const PHONE = { w: 390, h: 844 };
+
+    it("takes its own route under the width and on an upright screen only", () => {
+      expect(COMPACT_ROUTE_W).toBeGreaterThan(390);
+      const at = (w: number, h: number) => routeAt(0, { w, h }, newRoutePlace()).x / w;
+      expect(at(COMPACT_ROUTE_W - 1, 500)).not.toBeCloseTo(at(COMPACT_ROUTE_W, 500), 3);
+      expect(isCompactView(768, 1024)).toBe(true);
+      expect(isCompactView(1440, 900)).toBe(false);
+      expect(isCompactView(1024, 700)).toBe(false);
+      expect(at(768, 1024)).toBeCloseTo(at(390, 844), 6);
+    });
+
+    it("rests with its wing on the screen at joint J0 (reach 1.2 of its height)", () => {
+      const p = routeAt(0, PHONE, newRoutePlace());
+      expect(p.x + 1.2 * p.height).toBeLessThan(PHONE.w / 2 - 8);
+      expect(p.x - 1.2 * p.height).toBeGreaterThan(-PHONE.w / 2);
+    });
+
+    it("keeps clear of the words under the wall (a quarter of the screen up, the wall's corner)", () => {
+      const p = routeAt(4.6, PHONE, newRoutePlace());
+      expect(p.y).toBeGreaterThan(0);
+    });
+
+    it("has no jump and ends off the screen like the wide route", () => {
+      const p = newRoutePlace();
+      let px = routeAt(0, PHONE, p).x;
+      let py = p.y;
+      for (let s = 0.01; s <= ROUTE_END; s += 0.01) {
+        routeAt(s, PHONE, p);
+        expect(Math.abs(p.x - px)).toBeLessThan(30);
+        expect(Math.abs(p.y - py)).toBeLessThan(30);
+        px = p.x;
+        py = p.y;
+      }
+      const end = routeAt(ROUTE_END, PHONE, newRoutePlace());
+      expect(end.visible).toBe(false);
+      expect(Math.abs(end.x)).toBeGreaterThan(PHONE.w / 2);
+    });
   });
 });

@@ -89,7 +89,7 @@ export function geometry(w: number, h: number): FunnyGeometry {
   const dh = compact ? 0.27 * h : 0.4 * h;
   const tetraH = compact ? 0.3 * h : 0.34 * h;
   const watchD = compact ? Math.min(0.12 * h, 0.2 * w) : Math.min(0.13 * h, 0.1 * w);
-  const centreD = compact ? Math.min(0.2 * h, 0.28 * w) : Math.min(0.3 * h, 0.2 * w);
+  const centreD = compact ? Math.min(0.2 * h, 0.28 * w) : Math.min(0.27 * h, 0.19 * w);
   const tetraX = compact ? 0.2 * w : 0.3 * w;
   const floor = -0.43 * h;
   return {
@@ -123,8 +123,9 @@ export function geometry(w: number, h: number): FunnyGeometry {
           { x: 0.2 * w, y: 0.2 * h, height: centreD },
         ]
       : [
-          { x: -0.15 * w, y: 0.14 * h, height: centreD },
-          { x: 0.15 * w, y: 0.14 * h, height: centreD },
+          // Low enough that the ears of the higher drone clear the top bar (they bob a little).
+          { x: -0.15 * w, y: 0.075 * h, height: centreD },
+          { x: 0.15 * w, y: 0.075 * h, height: centreD },
         ],
   };
 }

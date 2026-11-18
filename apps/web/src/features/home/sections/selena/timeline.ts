@@ -14,8 +14,8 @@
  *   2.25 to 2.65  the camera swings into the baked one, Selena's pose goes from the idle to the clip
  *   2.65 to 3.5   the clip `city_intercation03` plays by the scroll (the doll floats, the dragon
  *                 opens its jaw, eats it, passes the lens)
- *   3.3 to 3.5    the ground goes white behind the dragon as it sweeps the lens
- *   3.5 to 3.66   a white over the canvas takes Selena too; the actors leave
+ *   3.22 to 3.36  the ground flashes white on the bite, before the dragon reaches the lens
+ *   3.55 to 3.7   once the dragon has left, a white over the canvas takes Selena too; the actors leave
  *   3.8 and on    white, the first frame of the voices
  */
 
@@ -44,10 +44,13 @@ export const AT = {
   pose: [2.3, 2.65],
   /** The doll lets go of the top edge, falls and arrives over the hand (before the camera moves). */
   doll: [2.0, 2.45],
-  /** The ground goes white behind the dragon as it sweeps the lens. */
-  white: [3.3, 3.5],
+  /**
+   * The ground goes white behind the dragon: a flash that starts on the bite and is complete before
+   * the dragon's head reaches the lens (the clip's 3.7 s), so it passes over a white screen.
+   */
+  white: [3.22, 3.36],
   /** Then a white over everything takes Selena too, and the actors are gone by the end of it. */
-  front: [3.5, 3.66],
+  front: [3.55, 3.7],
   /** The white over the canvas hands over to the one under it (the same colour), at the end. */
   frontOut: [3.8, 3.95],
   /** The white of the layer leaves again in the tail, when the ground behind it is the next one's. */
@@ -57,15 +60,15 @@ export const AT = {
 /**
  * Screens to seconds of the clip: the clip starts at the first key and ends at the last. The hover of
  * the doll (1.2 to 2.6 s) plays fastest, the eat (2.95 to 3.5 s) slower and the dragon's pass
- * (3.5 to 3.95 s) slowest, so the pass is not over before it is seen.
+ * (3.5 to 3.95 s) slowest (a third of a screen), so the pass is not over before it is seen.
  */
 export const FILM_KEYS: ReadonlyArray<readonly [u: number, t: number]> = [
   [2.65, 0],
-  [2.82, 1.2],
-  [3.06, 2.6],
-  [3.17, 2.95],
-  [3.33, 3.5],
-  [3.5, 3.95],
+  [2.8, 1.2],
+  [3.0, 2.6],
+  [3.08, 2.95],
+  [3.22, 3.5],
+  [3.55, 3.95],
 ];
 
 /** The end of the clip we play: the dragon has left the frame at 3.9 s (`BAKED.pass.outAt`). */

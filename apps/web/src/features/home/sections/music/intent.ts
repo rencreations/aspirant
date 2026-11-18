@@ -70,17 +70,3 @@ export class IntentGate {
 export function isScrollOnKey(key: string): boolean {
   return key === " " || key === "PageDown" || key === "ArrowDown" || key === "End";
 }
-
-/** A touch that lifts within this many pixels of where it began, and soon enough, is a tap. */
-export const TAP_PX = 12;
-export const TAP_MS = 600;
-
-/**
- * Was a touch a tap? The pointer hub reports a press the moment a finger goes down, but a finger
- * that goes down on a sleeve may be the start of a scroll. The pick counts only when the finger
- * lifts almost where it began, and soon (a cancel, which is the browser taking the gesture for a
- * scroll, never counts).
- */
-export function isTap(dx: number, dy: number, ms: number): boolean {
-  return dx * dx + dy * dy <= TAP_PX * TAP_PX && ms >= 0 && ms <= TAP_MS;
-}

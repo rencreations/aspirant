@@ -28,6 +28,31 @@ const STOPS: readonly Stop[] = [
   [10.4, 0.8, 0.62, 0.1],
 ];
 
+/**
+ * The route of a narrow or upright screen (a phone, a tablet held upright). The drone is a little smaller and stays
+ * clear of the right edge, so its wing is never cut at rest (joint J0: its reach is about 1.2 of its
+ * height to the side), and in the aspirants it stands over the wall's corner, because the words
+ * stand under the wall there. Same scroll stops, same joints.
+ */
+const COMPACT_STOPS: readonly Stop[] = [
+  [0, 0.12, -0.27, 0.133],
+  [1.2, 0.18, -0.3, 0.12],
+  [2.6, -0.2, -0.3, 0.115],
+  [4.2, 0.2, 0.3, 0.1],
+  [5, 0.2, 0.3, 0.1],
+  [6.6, -0.22, 0.32, 0.1],
+  [7.6, 0.2, 0.3, 0.1],
+  [8.2, 0.2, -0.3, 0.1],
+  [9.4, 0.2, -0.36, 0.1],
+  [10.4, 0.8, 0.62, 0.1],
+];
+
+/** A viewport narrower than this (in CSS px), or taller than it is wide, takes the compact route. */
+export const COMPACT_ROUTE_W = 700;
+
+/** True for the screens whose words stand under the wall (the layout's tall rule) and for narrow ones. */
+export const isCompactView = (w: number, h: number): boolean => w < COMPACT_ROUTE_W || w <= h;
+
 /** From this scroll on the drone has left the screen: the route stops drawing it. */
 export const ROUTE_END = 10.4;
 
@@ -41,7 +66,8 @@ export interface DroneRoutePlace {
   visible: boolean;
 }
 
-const stopAt = (i: number): Stop => STOPS[Math.min(STOPS.length - 1, i)] ?? STOPS[0]!;
+const stopAt = (stops: readonly Stop[], i: number): Stop =>
+  stops[Math.min(stops.length - 1, i)] ?? stops[0]!;
 
 const smooth = (u: number): number => u * u * (3 - 2 * u);
 
@@ -51,11 +77,12 @@ export function routeAt(
   viewport: { readonly w: number; readonly h: number },
   out: DroneRoutePlace,
 ): DroneRoutePlace {
-  const last = STOPS.length - 1;
+  const stops = isCompactView(viewport.w, viewport.h) ? COMPACT_STOPS : STOPS;
+  const last = stops.length - 1;
   let i = 0;
-  while (i < last - 1 && S >= stopAt(i + 1)[0]) i += 1;
-  const a = stopAt(i);
-  const b = stopAt(i + 1);
+  while (i < last - 1 && S >= stopAt(stops, i + 1)[0]) i += 1;
+  const a = stopAt(stops, i);
+  const b = stopAt(stops, i + 1);
   const span = b[0] - a[0];
   const u = span > 0 ? Math.min(1, Math.max(0, (S - a[0]) / span)) : 1;
   const e = smooth(u);

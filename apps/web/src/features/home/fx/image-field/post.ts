@@ -9,6 +9,7 @@ import {
   Scene,
   ShaderMaterial,
   Vector2,
+  Vector4,
   type Texture,
   type WebGLRenderer,
 } from "three";
@@ -55,6 +56,10 @@ export interface CompositeParams {
   /** The pointer in device pixels from the bottom left. */
   noseX: number;
   noseY: number;
+  /** The clip's box (minX, minY, maxX, maxY) in device pixels from the bottom left. */
+  clip: Vector4;
+  /** The width of the thin part at its left, bottom, right and top, in device pixels. */
+  soft: Vector4;
 }
 
 /** The composite: the card render to the canvas, through the smear and the wake. Premultiplied. */
@@ -69,6 +74,8 @@ export class Composite {
     uEdges: { value: 1 },
     uWake: { value: 0 },
     uNose: { value: new Vector2(0, 0) },
+    uClip: { value: new Vector4(-1e6, -1e6, 1e6, 1e6) },
+    uSoft: { value: new Vector4(0, 0, 0, 0) },
   };
 
   constructor() {
@@ -99,6 +106,8 @@ export class Composite {
     u.uPixel.value = p.pixel;
     u.uEdges.value = p.edges;
     u.uNose.value.set(p.noseX, p.noseY);
+    u.uClip.value.copy(p.clip);
+    u.uSoft.value.copy(p.soft);
     this.pass.render(renderer);
   }
 

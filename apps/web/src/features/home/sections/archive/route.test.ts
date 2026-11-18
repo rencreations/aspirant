@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { SIZE_PER_HEIGHT } from "../../actors/drone/model";
 import { layoutSections } from "../../kernel/layout";
 import { SECTIONS } from "../../kernel/sections";
-import { REST, REST_DRONE } from "../bend/beats";
+import { spotsOf } from "../bend/beats";
 
 import { STEPS, stripGeo } from "./geometry";
 import {
@@ -82,9 +82,10 @@ describe("the drone's route", () => {
   it("starts at the rest the bend section ends in (J14)", () => {
     for (const [w, h] of SIZES) {
       const p = at(AT.start, w, h);
-      expect(p.x).toBeCloseTo(w / 2 + REST_DRONE.x * w, 6);
-      expect(p.y).toBeCloseTo(h / 2 - REST_DRONE.y * h, 6);
-      expect(p.height).toBeCloseTo(REST_DRONE.h * h, 6);
+      const rest = spotsOf({ w, h }).restDrone;
+      expect(p.x).toBeCloseTo(w / 2 + rest.x * w, 6);
+      expect(p.y).toBeCloseTo(h / 2 - rest.y * h, 6);
+      expect(p.height).toBeCloseTo(rest.h * h, 6);
       expect(p).toEqual(restSpot({ w, h }, spot()));
     }
   });
@@ -196,7 +197,7 @@ describe("the tour and the covers", () => {
   it("shows the title once the first cover rises and takes it away with the covers", () => {
     expect(headAt(AT.start)).toBe(0);
     expect(headAt(AT.tourFrom + 0.3)).toBe(1);
-    expect(headAt(AT.tourFrom + 0.3, 0.1)).toBe(1);
+    expect(headAt(AT.tourFrom + 0.45, 0.1)).toBe(1);
     expect(headAt(AT.coversOut + 0.6)).toBe(0);
     expect(headAt(AT.coversIn + 0.1, 0.1)).toBeLessThan(headAt(AT.coversIn + 0.1));
   });
@@ -213,11 +214,12 @@ describe("Tetra's goodbye", () => {
     for (const [w, h] of SIZES) {
       const t = tetraAt(AT.start + 0.1, { w, h }, newTetraWant());
       expect(t.visible).toBe(true);
-      expect(t.x).toBeCloseTo(w / 2 + REST.tx * w, 6);
-      expect(t.y).toBeCloseTo(h / 2 - REST.ty * h, 6);
-      expect(t.height).toBeCloseTo(REST.th * h, 6);
+      const rest = spotsOf({ w, h }).rest;
+      expect(t.x).toBeCloseTo(w / 2 + rest.tx * w, 6);
+      expect(t.y).toBeCloseTo(h / 2 - rest.ty * h, 6);
+      expect(t.height).toBeCloseTo(rest.th * h, 6);
       expect(t.run).toBe(0);
-      expect(t.wave).toBe(1);
+      expect(t.wave).toBeCloseTo(1, 6);
       expect(tetraAt(AT.start, { w, h }, newTetraWant()).wave).toBe(0);
     }
   });

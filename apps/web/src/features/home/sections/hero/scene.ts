@@ -24,6 +24,10 @@ export const ENTRANCE_SECONDS = 1.7;
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
 
+/** The wall's cut edge thins out over this much of the screen's width, never over more than the max (CSS px). */
+const WALL_SOFT = 0.07;
+const WALL_SOFT_MAX = 120;
+
 export interface SceneInput {
   /** The scroll position, from the section's own `local`. */
   S: number;
@@ -111,7 +115,8 @@ export class FieldScene {
       c.y = mix(this.wall.y, 0, open);
       c.w = mix(this.wall.w, viewport.w, open);
       c.h = mix(this.wall.h, viewport.h, open);
-      f.setClip(c);
+      // The wall's cut edge (the right one, or the foot on a tall screen) thins out instead of a hard line.
+      f.setClip(c, Math.min(WALL_SOFT_MAX, viewport.w * WALL_SOFT));
     }
 
     // 3. The glide, the hover, the cursor and the press.

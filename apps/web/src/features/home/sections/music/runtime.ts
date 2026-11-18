@@ -30,9 +30,13 @@ import {
   type Place,
 } from "./choreo";
 import { MusicDom, type Phase } from "./dom";
-import { IntentGate, TOUCH_PX, WHEEL_PX, isScrollOnKey, isTap } from "./intent";
+import { IntentGate, TOUCH_PX, WHEEL_PX, isScrollOnKey } from "./intent";
 import { Scheduler, type DroneSpot } from "./scheduler";
 
+/** The shared pass the pair of drones is drawn in, and its place in the draw order (the lit cast is 30). */
+const DUO_PASS = "perspective";
+const DUO_UNDER_CAST = 20;
+const DUO_OVER_CAST = 35;
 /** Turns a second of the crank the right drone gives the machine. */
 const CRANK_RPS = 1.6;
 /** The key that turns the crank adds this much for a moment. */
@@ -106,8 +110,6 @@ class MusicRuntime implements SectionRuntime {
   /** A fresh scroll gesture after the scene stands (or a record is picked) lets the page go. */
   private readonly gate = new IntentGate();
   private stood = false;
-  /** A touch that went down on a sleeve: it picks it only if it turns out to be a tap. */
-  private touchPick: { index: number; x: number; y: number; at: number } | null = null;
 
   private musicOn = false;
   private musicEl: HTMLAudioElement | null = null;
@@ -178,19 +180,8 @@ class MusicRuntime implements SectionRuntime {
     window.addEventListener("wheel", wheel, { passive: true, capture: true });
     window.addEventListener("touchstart", touchStart, { passive: true, capture: true });
     window.addEventListener("touchmove", touchMove, { passive: true, capture: true });
-    // A finger that goes down on a sleeve picks it only if it lifts as a tap (see `press`).
-    const lift = (e: PointerEvent) => {
-      const t = this.touchPick;
-      this.touchPick = null;
-      if (!t || e.type === "pointercancel") return;
-      if (isTap(e.clientX - t.x, e.clientY - t.y, performance.now() - t.at)) this.choose(t.index);
-    };
-    window.addEventListener("pointerup", lift, { passive: true, capture: true });
-    window.addEventListener("pointercancel", lift, { passive: true, capture: true });
     window.addEventListener("keydown", keys, true);
     this.stopListening.push(() => {
-      window.removeEventListener("pointerup", lift, true);
-      window.removeEventListener("pointercancel", lift, true);
       window.removeEventListener("wheel", wheel, true);
       window.removeEventListener("touchstart", touchStart, true);
       window.removeEventListener("touchmove", touchMove, true);
@@ -351,9 +342,13 @@ class MusicRuntime implements SectionRuntime {
 
   enter(): void {
     if (this.duo && this.marks) bridgeDuoMarks(this.duo, this.marks);
+    // The drone that cranks stands at the gramophone: it is drawn over the lit cast, so the box
+    // never hides half of it.
+    this.ctx.stage.reorder(DUO_PASS, DUO_OVER_CAST);
   }
 
   leave(): void {
+    this.ctx.stage.reorder(DUO_PASS, DUO_UNDER_CAST);
     this.resetScene();
     this.letGo();
     this.clock = 0;
@@ -362,6 +357,7 @@ class MusicRuntime implements SectionRuntime {
 
   dispose(): void {
     this.disposed = true;
+    this.ctx.stage.reorder(DUO_PASS, DUO_UNDER_CAST);
     this.resetScene();
     this.letGo();
     for (const stop of this.stopListening) stop();
@@ -374,17 +370,11 @@ class MusicRuntime implements SectionRuntime {
   // ---- the visitor ---------------------------------------------------------------------
 
   /**
-   * The pointer hub reports a press the moment a pointer goes down. A mouse means it. A finger may
-   * be the start of a scroll, so it picks only when it lifts as a tap (the page is held here, so a
-   * scroll that begins on the crate is never cancelled by the browser and would pick otherwise).
+   * The pointer hub reports a mouse press at pointer-down and a finger's press only when it lifts as
+   * a tap (a scroll that begins on the crate is never a press, `kernel/pointer.ts`).
    */
   private press(index: number): void {
-    const p = this.ctx.pointer.state;
-    if (p.type !== "touch") {
-      this.choose(index);
-      return;
-    }
-    this.touchPick = { index, x: p.x, y: p.y, at: performance.now() };
+    this.choose(index);
   }
 
   /** A record was chosen: by a press on a sleeve or by a key. */

@@ -12,6 +12,8 @@ export const section: HomeSection = {
   bg: "storm",
   nav: { theme: "storm" },
   dom: "fixed",
+  // The hand and Selena are built in pauses of the scroll, long before they show.
+  mountAhead: 12,
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

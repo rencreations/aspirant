@@ -165,6 +165,12 @@
   :global(.js) :global([data-home]:not([data-gl="off"])) .card {
     top: calc(44% - var(--card-w) * 0.7);
   }
+
+  /* The name must fit under its cover: a longer one would run off the edge of a phone's screen. */
+  :global(.js) :global([data-home]:not([data-gl="off"])) .name {
+    font-size: clamp(0.8rem, 3.9vw, 1rem);
+    text-wrap: balance;
+  }
 }
 
 /* Hidden until the runtime shows them (the runtime writes an inline opacity and it wins). */

@@ -11,9 +11,24 @@ import { ARCHIVE } from "../../content";
 import { Pill } from "../../ui";
 import type { SectionMarkup } from "../../kernel/types";
 
+import { restU } from "./geometry";
+import { AT } from "./route";
+
 import styles from "./archive.module.css";
 
 const COUNTS: Readonly<Record<string, number>> = libraryIndex.counts;
+
+/**
+ * Where the page stands, in screens from the start of the section, when the drone rests over cover
+ * `i`: the keyboard that reaches a cover from far away puts the page there, so the cover is on the
+ * screen (the section's own handler takes over once it is built).
+ */
+function focusAt(i: number): number {
+  const rest = AT.tourFrom + restU(i) * (AT.tourTo - AT.tourFrom);
+  // Never before the cover has finished rising: the first one is still fading in at its rest.
+  const risen = AT.coversIn + AT.coverStep * Math.min(i, 3) + AT.coverLen + 0.02;
+  return Math.round((Math.max(rest, risen) - AT.start) * 1000) / 1000;
+}
 
 /** A count as the site writes it: "1,371". */
 function figure(n: number): string {
@@ -52,6 +67,7 @@ export function view(): SectionMarkup {
                   transitionLabel={room.name}
                   className={styles.card}
                   data-cursor="OPEN"
+                  data-home-focus-at={focusAt(i)}
                   aria-label={`${room.name}, ${figure(count)} ${ARCHIVE.items}`}
                 >
                   <span className={styles.frame}>
@@ -63,6 +79,7 @@ export function view(): SectionMarkup {
                       width={512}
                       height={512}
                       decoding="async"
+                      fetchPriority="low"
                       crossOrigin="anonymous"
                     />
                     <span className={styles.veil} aria-hidden="true" />

@@ -463,6 +463,12 @@
 
 /* A soft dark behind the words, so a preview passing behind them never costs the letters (a plain gradient, nothing over the film). */
 .ambScrim {
+  display: none;
+}
+
+/* Only on the stage: on the plain page its negative insets would make the page wider than the screen. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .ambScrim {
+  display: block;
   position: absolute;
   left: -45%;
   right: -45%;

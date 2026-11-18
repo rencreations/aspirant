@@ -1,5 +1,6 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import { ensureSelena } from "../../actors/selena";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
 import { ensureCarry, type Carry } from "./carry";
@@ -102,12 +103,15 @@ class HandRuntime implements SectionRuntime {
 export function createRuntime(ctx: SectionCtx): SectionRuntime {
   const runtime = new HandRuntime(ctx);
   // The hand and the doll are the biggest files: the section is built without them and they join
-  // when ready. The list section shares the same pair (`ensureCarry` builds them once).
+  // when ready. The list section shares the same pair (`ensureCarry` builds them once). The section
+  // mounts twelve screens early, so this falls in a pause of the scroll long before the hand shows;
+  // Selena, the next heavy actor, is built right after them for the same reason (the list draws her).
   whenIdle(() => {
     if (runtime.isDisposed) return;
     void ensureCarry(ctx).then(
       (carry) => {
         runtime.setCarry(carry);
+        if (!runtime.isDisposed) void ensureSelena(ctx).catch(() => undefined);
       },
       () => {
         runtime.setCarry(null);

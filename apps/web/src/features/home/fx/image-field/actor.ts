@@ -30,6 +30,7 @@ import {
   Scene,
   Texture,
   UnsignedByteType,
+  Vector4,
   type WebGLRenderer,
 } from "three";
 
@@ -66,7 +67,7 @@ import {
   streakOf,
   type Idle,
 } from "./live";
-import { clamp, mix, qFromEuler, qMul, type Q } from "./math";
+import { clamp, clipSoftEdges, mix, qFromEuler, qMul, type Q } from "./math";
 import { cardCountOf, assignPictures, cardKeys, slotKeys, type CardPictures } from "./pictures";
 import { Composite, type CompositeParams } from "./post";
 import { cardQuad, pointInQuad, quadBounds } from "./project";
@@ -308,6 +309,10 @@ export class FieldActor implements Actor {
   private holdOnHover = true;
   private clickHandler: ((press: CardPress) => void) | null = null;
   private clipRect: Rect | null = null;
+  /** The widest soft edge (CSS px) the clip may have: where it cuts the picture short of the screen's edge. */
+  private clipSoft = 0;
+  private readonly softBox = [0, 0, 0, 0];
+  private readonly softWidths = [0, 0, 0, 0];
 
   // What the field integrates by itself.
   private readonly car = makeCarousel();
@@ -421,6 +426,8 @@ export class FieldActor implements Actor {
       edges: 1,
       noseX: 0,
       noseY: 0,
+      clip: new Vector4(-1e6, -1e6, 1e6, 1e6),
+      soft: new Vector4(0, 0, 0, 0),
     };
 
     this.pass = new FieldPass(this);
@@ -519,8 +526,9 @@ export class FieldActor implements Actor {
   }
 
   /** Draw only inside a rectangle (CSS px from the top left), or everywhere with null. */
-  setClip(rect: Rect | null): void {
+  setClip(rect: Rect | null, soft = 0): void {
     this.clipRect = rect;
+    this.clipSoft = soft;
   }
 
   /** The edge smear (0 to 1) to use instead of the formation's own, or null to follow the formation. */
@@ -1058,6 +1066,22 @@ export class FieldActor implements Actor {
     cp.edges = this.edges;
     cp.noseX = this.noseX * this.dpr;
     cp.noseY = (this.vp.h - this.noseY) * this.dpr;
+    if (clip && this.clipSoft > 0) {
+      clipSoftEdges(
+        clip,
+        this.vp.w,
+        this.vp.h,
+        this.clipSoft,
+        this.dpr,
+        this.softBox,
+        this.softWidths,
+      );
+      cp.clip.fromArray(this.softBox);
+      cp.soft.fromArray(this.softWidths);
+    } else {
+      cp.clip.set(-1e6, -1e6, 1e6, 1e6);
+      cp.soft.set(0, 0, 0, 0);
+    }
     this.composite.render(renderer, cp);
     if (clip) renderer.setScissorTest(false);
     this.updated = false;

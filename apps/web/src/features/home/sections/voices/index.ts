@@ -9,7 +9,8 @@ export const section: HomeSection = {
   lead: 0.5,
   tail: 0.5,
   bg: "daybreak",
-  nav: { theme: "daybreak" },
+  // The screen goes white before the section starts: the bar's ink turns with it.
+  nav: { theme: "daybreak", early: 0.45 },
   dom: "fixed",
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),

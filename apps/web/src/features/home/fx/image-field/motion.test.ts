@@ -15,6 +15,7 @@ import {
   streakOf,
   type Idle,
 } from "./live";
+import { clipSoftEdges } from "./math";
 import { lowpassGain, makeSpring, softClamp, springSnap, springStep } from "./spring";
 import {
   smoothVelocity,
@@ -233,5 +234,35 @@ describe("the wake", () => {
     expect(wakeIsLive(WAKE_LIVE_S - 0.01)).toBe(true);
     expect(wakeIsLive(WAKE_LIVE_S + 0.01)).toBe(false);
     expect(stirRadius(1440, 900)).toBe(45);
+  });
+});
+
+describe("clipSoftEdges", () => {
+  const box = [0, 0, 0, 0];
+  const widths = [0, 0, 0, 0];
+
+  it("gives the wall's cut edge the soft width and the screen's own edges none", () => {
+    // The wall: the left 58 percent of a 1440 by 900 screen, at a device pixel ratio of 2.
+    clipSoftEdges({ x: 0, y: 0, w: 835, h: 900 }, 1440, 900, 100, 2, box, widths);
+    expect(box).toEqual([0, 0, 1670, 1800]);
+    expect(widths).toEqual([0, 0, 200, 0]);
+  });
+
+  it("puts the soft edge at the foot on a tall screen", () => {
+    clipSoftEdges({ x: 0, y: 0, w: 390, h: 470 }, 390, 844, 27, 1, box, widths);
+    expect(widths).toEqual([0, 27, 0, 0]);
+    expect(box[1]).toBe(844 - 470);
+  });
+
+  it("shrinks the soft width with the gap to the screen's edge, so an opening clip loses it smoothly", () => {
+    clipSoftEdges({ x: 0, y: 0, w: 1400, h: 900 }, 1440, 900, 100, 1, box, widths);
+    expect(widths[2]).toBe(40);
+    clipSoftEdges({ x: 0, y: 0, w: 1440, h: 900 }, 1440, 900, 100, 1, box, widths);
+    expect(widths).toEqual([0, 0, 0, 0]);
+  });
+
+  it("never gives a negative width for a clip that is wider than the screen", () => {
+    clipSoftEdges({ x: -10, y: -5, w: 1500, h: 950 }, 1440, 900, 100, 1, box, widths);
+    expect(widths.every((w) => w >= 0)).toBe(true);
   });
 });

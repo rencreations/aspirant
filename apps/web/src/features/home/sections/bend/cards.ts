@@ -30,6 +30,8 @@ import { decodedSize, hexToRgb, type PicSource, type Rgb } from "./pictures";
 
 const BACK_ORDER = 24;
 const FRONT_ORDER = 28;
+/** Frames left empty between two texture uploads. */
+const UPLOAD_GAP = 2;
 /** How long a picture takes to come up out of its card's colour, in seconds. */
 const REVEAL_SECONDS = 0.5;
 
@@ -144,16 +146,25 @@ class PicStore {
     this.drain();
   }
 
-  /** Upload one texture a frame (about 15 ms of the driver each), so no frame pays for all twenty-six. */
+  /**
+   * Upload one texture every third frame (about 15 ms of the driver each in dev), so no frame pays for
+   * more than one and the frames in between are clean: twenty-six pictures take about a second and a
+   * half, in the quiet beat where nothing else is drawn (see `artNeeded`).
+   */
   private drain(): void {
     if (this.uploading) return;
     this.uploading = true;
+    let wait = 0;
     const step = (): void => {
       if (this.disposed) return;
-      for (let k = 0; k < 1; k += 1) {
-        const t = this.uploads.shift();
-        if (t && !this.stage.lost) this.stage.renderer.initTexture(t);
+      if (wait > 0) {
+        wait -= 1;
+        window.requestAnimationFrame(step);
+        return;
       }
+      const t = this.uploads.shift();
+      if (t && !this.stage.lost) this.stage.renderer.initTexture(t);
+      wait = UPLOAD_GAP;
       if (this.uploads.length > 0) window.requestAnimationFrame(step);
       else this.uploading = false;
     };

@@ -202,9 +202,13 @@ describe("the pictures and the words", () => {
   it("keeps the textures of a group only while it is used", () => {
     expect(fanNeeded(0)).toBe(true);
     expect(fanNeeded(T.outTo + 1)).toBe(false);
-    expect(artNeeded(0)).toBe(false);
+    // Both groups are asked for when the section is built (the constructor passes -2).
+    expect(artNeeded(-2)).toBe(true);
     expect(artNeeded(T.spiralFrom)).toBe(true);
     expect(artNeeded(BEND_SCREENS)).toBe(true);
+    // Never first asked for in the busy wall.
+    expect(artNeeded(T.standAt)).toBe(true);
+    expect(artNeeded(T.holdFrom)).toBe(true);
     // The two overlap in time, so the ring's exit and the spiral's entrance are both covered.
     expect(fanNeeded(T.spiralFrom) && artNeeded(T.spiralFrom)).toBe(true);
   });
