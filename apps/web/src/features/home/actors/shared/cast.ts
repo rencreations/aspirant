@@ -23,6 +23,11 @@ export interface Cast {
   readonly fill: DirectionalLight;
   readonly ambient: AmbientLight;
   add(root: Object3D): void;
+  /**
+   * Draw the cast only inside a rectangle (CSS pixels, origin top left), or everywhere with null.
+   * The list's 3D frame uses it: the actor stands in a frame and nothing of it shows outside.
+   */
+  clip(rect: { x: number; y: number; w: number; h: number } | null): void;
 }
 
 const made = new WeakMap<Stage, Cast>();
@@ -44,6 +49,20 @@ export function getCast(stage: Stage): Cast {
   const isLight = (child: Object3D): boolean => (child as Light).isLight === true;
   pass.active = () => pass.scene.children.some((child) => child.visible && !isLight(child));
 
+  let clipRect: { x: number; y: number; w: number; h: number } | null = null;
+  const drawAll = pass.render.bind(pass);
+  pass.render = (renderer) => {
+    if (!clipRect) {
+      drawAll(renderer);
+      return;
+    }
+    // three's scissor is in CSS pixels, from the bottom left.
+    renderer.setScissorTest(true);
+    renderer.setScissor(clipRect.x, stage.height - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+    drawAll(renderer);
+    renderer.setScissorTest(false);
+  };
+
   const ambient = new AmbientLight(0xffffff, 0.35);
   const key = new DirectionalLight(0xfff4e6, 2.2);
   key.position.set(-300, 500, 800);
@@ -63,6 +82,9 @@ export function getCast(stage: Stage): Cast {
     ambient,
     add(root) {
       pass.scene.add(root);
+    },
+    clip(rect) {
+      clipRect = rect;
     },
   };
   made.set(stage, cast);
