@@ -29,6 +29,7 @@ import {
   type Q,
   type V3,
 } from "./math";
+import type { WallGrid } from "./grid";
 import { BASE_DISTANCE, project } from "./project";
 import { scatterLayout } from "./scatter";
 import { makePose, type CardPose, type Vp } from "./types";
@@ -184,6 +185,11 @@ export interface StoryOptions {
    */
   cardKeys?: ReadonlyArray<string | null>;
   slotKeys?: ReadonlyArray<string | null>;
+  /**
+   * The plane the wall lands on (many more slots than cards, over the whole screen: `grid.ts`). A
+   * card lands on a slot inside the wall's frame, so it is seen; the other slots are wall-only cells.
+   */
+  grid?: WallGrid;
 }
 
 const wrapPi = (a: number): number => a - TAU * Math.round(a / TAU);
@@ -204,7 +210,9 @@ function projectedY(pose: CardPose): number {
 export function buildStory(n: number, vp: Vp, options: StoryOptions = {}): StoryLayout {
   const scatter = scatterLayout(n, vp, options.seed);
   const ring = ringSpec(vp, options.ringY);
-  const wall = wallGeom(n, wallFrame(vp, "wall"), options.wall);
+  const wall = options.grid?.geom ?? wallGeom(n, wallFrame(vp, "wall"), options.wall);
+  const slots = wall.n;
+  const inFrame = options.grid?.inFrame ?? null;
   const pick = new Float64Array(n);
   const slot = new Int32Array(n).fill(-1);
   const leave = new Float64Array(n);
@@ -262,14 +270,18 @@ export function buildStory(n: number, vp: Vp, options: StoryOptions = {}): Story
   }
 
   // The wall slot: a card with a key first takes the slot with the same key, the rest the nearest free one.
-  const freeSlot = new Array<boolean>(n).fill(true);
+  // A slot outside the wall's frame is taken only when every slot inside it is.
+  const freeSlot = new Array<boolean>(slots).fill(true);
+  const seen = (s: number): boolean => inFrame === null || inFrame[s] === 1;
   const byLeave = Array.from({ length: n }, (_, i) => i).sort((a, b) => leave[a]! - leave[b]!);
   const { cardKeys, slotKeys } = options;
   if (cardKeys && slotKeys) {
     for (const card of byLeave) {
       const key = cardKeys[card] ?? null;
       if (key === null) continue;
-      const s = slotKeys.findIndex((k, idx) => k === key && freeSlot[idx] === true && idx < n);
+      const s = slotKeys.findIndex(
+        (k, idx) => k === key && freeSlot[idx] === true && idx < slots && seen(idx),
+      );
       if (s >= 0) {
         freeSlot[s] = false;
         wallSlot[card] = s;
@@ -285,16 +297,20 @@ export function buildStory(n: number, vp: Vp, options: StoryOptions = {}): Story
     project(tmp[0], tmp[1], tmp[2], BASE_DISTANCE, vp, spot);
     let best = -1;
     let bestD = Infinity;
-    for (let s = 0; s < n; s++) {
-      if (!freeSlot[s]) continue;
-      wallSlotPose(wall, s, 0, there);
-      project(there.x, there.y, there.z, WALL_DISTANCE, vp, target);
-      const d = Math.hypot(spot[0] - target[0], spot[1] - target[1]);
-      if (d < bestD) {
-        bestD = d;
-        best = s;
+    for (let pass = 0; pass < 2 && best < 0; pass++) {
+      for (let s = 0; s < slots; s++) {
+        if (!freeSlot[s] || (pass === 0 && !seen(s))) continue;
+        wallSlotPose(wall, s, 0, there);
+        project(there.x, there.y, there.z, WALL_DISTANCE, vp, target);
+        const d = Math.hypot(spot[0] - target[0], spot[1] - target[1]);
+        if (d < bestD) {
+          bestD = d;
+          best = s;
+        }
       }
     }
+    // More cards than slots (a tiny screen): the last cards share a slot, hidden under another.
+    if (best < 0) best = card % slots;
     freeSlot[best] = false;
     wallSlot[card] = best;
   }

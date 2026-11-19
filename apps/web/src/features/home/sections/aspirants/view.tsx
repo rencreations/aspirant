@@ -18,21 +18,33 @@ export function view(): SectionMarkup {
   return {
     text: (
       <div className={local.box}>
-        <h2 className={`${styles.title} ${local.line} ${local.title}`} data-home-line="">
+        <h2
+          className={`${styles.title} ${local.line} ${local.title}`}
+          data-home-line=""
+          data-home-wait=""
+        >
           {ASPIRANTS.title}
         </h2>
-        <p className={`${styles.lead} ${local.line} ${local.leadLogo}`} data-home-line="">
+        <p
+          className={`${styles.lead} ${local.line} ${local.leadLogo}`}
+          data-home-line=""
+          data-home-wait=""
+        >
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
           <img
             src={asset("/img/home/mlbb.webp")}
             alt={ASPIRANTS.game}
             width={555}
             height={167}
-            className={local.logos}
+            className={local.logoGame}
           />{" "}
           {ASPIRANTS.line}
         </p>
-        <p className={`${styles.lead} ${local.line} ${local.leadLogo}`} data-home-line="">
+        <p
+          className={`${styles.lead} ${local.line} ${local.leadLogo} ${local.indent}`}
+          data-home-line=""
+          data-home-wait=""
+        >
           {ASPIRANTS.partOf}{" "}
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
           <img
@@ -40,11 +52,11 @@ export function view(): SectionMarkup {
             alt={ASPIRANTS.label}
             width={720}
             height={184}
-            className={local.logos}
+            className={local.logoLabel}
           />{" "}
           {ASPIRANTS.partOfEnd}
         </p>
-        <div className={`${styles.actions} ${local.line}`} data-home-line="">
+        <div className={`${styles.actions} ${local.line}`} data-home-line="" data-home-wait="">
           <Pill href={ASPIRANTS.button.href} label="About">
             {ASPIRANTS.button.label}
           </Pill>

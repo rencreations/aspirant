@@ -9,24 +9,19 @@
  * any lens draws it the same.
  */
 import { qSlerp, mix, smootherstep, type Q } from "../image-field/math";
-import { WALL_DISTANCE, wallFrame, wallGeom, type WallGeom } from "../image-field/wall";
+import { wallGrid } from "../image-field/grid";
+import { WALL_DISTANCE, type WallGeom } from "../image-field/wall";
 import { expandBox, sceneWidth, toFrame, WINDOW_ASPECT } from "./layout";
 import type { FilmState, PlanePose, Vp } from "./types";
 
 /** The camera distance at which one unit is one pixel (the stage's `PIXEL_DISTANCE`). */
 export const PIXEL_LENS = 1000;
-/** The cards in the picture field's wall (the rows lay out for this many). */
-const FIELD_CARDS = 18;
-
-let cached: { w: number; h: number; geom: WallGeom } | null = null;
-
-/** The geometry of the field's rows for a viewport: what `buildFormations` makes, made once per size. */
+/**
+ * The geometry of the field's plane for a viewport: the same object the field's cards stand on (one
+ * plane over the whole screen, `image-field/grid.ts`), so the film leans exactly as they do.
+ */
 export function rowsGeom(vp: Vp): WallGeom {
-  if (cached?.w === vp.w && cached.h === vp.h) return cached.geom;
-  const tall = vp.h > vp.w;
-  const geom = wallGeom(FIELD_CARDS, wallFrame(vp, "rows"), { size: tall ? 0.5 : 0.34 });
-  cached = { w: vp.w, h: vp.h, geom };
-  return geom;
+  return wallGrid(vp).geom;
 }
 
 /** The trailer draws over the field's cards and wins a hit against them (the order is a small bias). */
@@ -81,7 +76,7 @@ export function heroBase(vp: Vp, st: FilmState, out: PlanePose): number {
   const ah = aw / WINDOW_ASPECT;
 
   // The strip or the window it has opened to.
-  expandBox(vp.w, vp.h, st.expand, WINDOW_ASPECT, boxScratch);
+  expandBox(vp.w, vp.h, st.expand, st.aspect, boxScratch);
   const centre = toFrame(boxScratch, vp.w, vp.h);
 
   out.x = mix(ax, centre.x, m);

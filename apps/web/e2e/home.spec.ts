@@ -35,13 +35,49 @@ interface PlacedSection {
   screens: number;
 }
 
+interface PlayState {
+  id: string;
+  v: number;
+  resting: number;
+  active: boolean;
+  fired: number;
+  length: number;
+  direction: -1 | 0 | 1;
+  progress: number;
+  waiting: boolean;
+}
+
+interface SnapState {
+  armed: boolean;
+  moving: boolean;
+  blocked: string | null;
+  thresholds: number[];
+  joints: Array<{ from: number; to: number }>;
+}
+
 type HomeWindow = {
   __home: {
     state(): HomeState;
     seek(s: number): void;
     sections(): PlacedSection[];
+    plays(): PlayState[];
+    snap(): SnapState;
   };
 };
+
+const plays = (page: Page) =>
+  page.evaluate<PlayState[]>(() => (window as unknown as HomeWindow).__home.plays());
+
+const snap = (page: Page) =>
+  page.evaluate<SnapState>(() => (window as unknown as HomeWindow).__home.snap());
+
+/** Wait until no scene is playing: tests that cross a threshold wait for its play to end. */
+const playsEnded = (page: Page, timeout = 45_000) =>
+  page.waitForFunction(
+    () => !(window as unknown as HomeWindow).__home.plays().some((p) => p.active),
+    null,
+    { timeout },
+  );
 
 const state = (page: Page) =>
   page.evaluate<HomeState>(() => (window as unknown as HomeWindow).__home.state());
@@ -132,7 +168,7 @@ const HEADINGS = [
 
 const LINKS: Array<[string, RegExp]> = [
   ["About Aspirant", /\/about\/?$/],
-  ["See All", /\/collection\/?$/],
+  ["See All", /\/collection\/video\/films\/?$/],
   ["See Collections", /\/collection\/video\/films\/?$/],
   ["See All Animations", /\/collection\/animation\/?$/],
   ["See all voicelines", /\/collection\/voicelines\/?$/],
@@ -376,14 +412,21 @@ test.describe("on the stage (WebGL)", () => {
     const first = await state(page);
     expect(first.stage.failed).toBe(false);
     expect(first.sections).toHaveLength(16);
-    expect(first.total).toBeGreaterThan(55);
-    expect(first.total).toBeLessThan(70);
-    // One canvas, on the home's own layer, and the reader's tree never sees it.
+    // Round two (19 Nov 2026): scenes play on a clock at thresholds, so the scroll is short.
+    expect(first.total).toBeGreaterThan(25);
+    expect(first.total).toBeLessThan(40);
+    // The stage's canvas, on the home's own layer, and the reader's tree never sees it. Round two
+    // added a second, small canvas for the live backdrops: two WebGL contexts in all, no more.
     await expect(page.locator("canvas[data-home-canvas]")).toHaveCount(1);
     await expect(page.locator("canvas[data-home-canvas]")).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator("canvas[data-home-backdrop]")).toHaveCount(1);
+    await expect(page.locator("canvas[data-home-backdrop]")).toHaveAttribute("aria-hidden", "true");
     expect(
       await page.evaluate(
-        () => document.querySelectorAll("[data-home] canvas:not([data-home-canvas])").length,
+        () =>
+          document.querySelectorAll(
+            "[data-home] canvas:not([data-home-canvas]):not([data-home-backdrop])",
+          ).length,
       ),
     ).toBe(0);
     // The decorative layer is hidden from a reader as a whole, the text layer is not.
@@ -443,6 +486,112 @@ test.describe("on the stage (WebGL)", () => {
       ).toBeLessThanOrEqual(2);
     }
     expect(await overflow(page)).toBeLessThanOrEqual(0);
+  });
+
+  test("a seek puts every scene at rest: no play is half done and nothing holds the page", async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await openStage(page);
+    const sections = await placed(page);
+    for (const s of sections.filter((x) => x.id !== "footer")) {
+      await seek(page, s.start + s.screens * 0.5);
+      const now = await plays(page);
+      expect(
+        now.filter((p) => p.active),
+        `a play is still running after a seek into ${s.id}`,
+      ).toEqual([]);
+      for (const p of now) {
+        expect(p.length, `${p.id}: the table has at least one play`).toBeGreaterThan(0);
+        expect(p.direction, `${p.id} has no direction at rest`).toBe(0);
+      }
+      expect(
+        await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
+      ).toBe(false);
+    }
+  });
+
+  test("the thresholds and the joints are inside the page, in order", async ({ page }) => {
+    await openStage(page);
+    const { thresholds, joints } = await snap(page);
+    const { total } = await state(page);
+    expect(thresholds.length).toBeGreaterThan(20);
+    for (const t of thresholds) {
+      expect(t).toBeGreaterThanOrEqual(0);
+      expect(t).toBeLessThan(total);
+    }
+    expect([...thresholds].sort((a, b) => a - b)).toEqual(thresholds);
+    expect(joints.length).toBeGreaterThan(5);
+    for (const [i, j] of joints.entries()) {
+      expect(j.to).toBeGreaterThan(j.from);
+      if (i > 0) expect(j.from).toBeGreaterThanOrEqual(joints[i - 1]!.to);
+    }
+  });
+
+  test("a scene fires at its threshold, holds the scroll until it ends, and plays back going up", async ({
+    page,
+  }) => {
+    test.setTimeout(180_000);
+    await openStage(page);
+    await page.mouse.move(400, 300);
+    const heroAt = (await snap(page)).thresholds[0]!;
+    const unit = (await state(page)).unit;
+    // Down: steady wheel notches until the hero's scene starts.
+    let started = false;
+    for (let i = 0; i < 60 && !started; i++) {
+      await page.mouse.wheel(0, 100);
+      await page.waitForTimeout(40);
+      started = (await plays(page)).some((p) => p.id === "hero" && p.active);
+    }
+    expect(started, "the hero's scene never started").toBe(true);
+    const held = await page.evaluate(() => ({
+      locked: document.documentElement.classList.contains("lenis-stopped"),
+      playing: (
+        window as unknown as { __home: { state(): HomeState & { playing: string | null } } }
+      ).__home.state().playing,
+      y: window.scrollY,
+    }));
+    expect(held.locked, "the site's scroll lock is on while a scene plays").toBe(true);
+    expect(held.playing).toBe("hero");
+    // The visitor goes on wheeling: the page does not move while the scene plays.
+    for (let i = 0; i < 6; i++) {
+      await page.mouse.wheel(0, 100);
+      await page.waitForTimeout(30);
+    }
+    const during = await page.evaluate(() => window.scrollY);
+    expect(Math.abs(during - held.y), "the page moved while a scene was playing").toBeLessThan(
+      0.05 * unit,
+    );
+    await playsEnded(page);
+    expect(
+      await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
+    ).toBe(false);
+    const afterDown = (await plays(page)).find((p) => p.id === "hero")!;
+    expect(afterDown.fired).toBe(1);
+    expect(afterDown.active).toBe(false);
+    // The wheel moves the page again.
+    const y0 = await page.evaluate(() => window.scrollY);
+    for (let i = 0; i < 6; i++) {
+      await page.mouse.wheel(0, 100);
+      await page.waitForTimeout(40);
+    }
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 })
+      .toBeGreaterThan(y0 + 0.1 * unit);
+    // Up: back across the threshold, the scene plays backward and lets go.
+    let back = false;
+    for (let i = 0; i < 80 && !back; i++) {
+      await page.mouse.wheel(0, -100);
+      await page.waitForTimeout(40);
+      back = (await plays(page)).some((p) => p.id === "hero" && p.active && p.direction === -1);
+    }
+    expect(back, `the hero's scene never played back (threshold ${heroAt})`).toBe(true);
+    await playsEnded(page);
+    const afterUp = (await plays(page)).find((p) => p.id === "hero")!;
+    expect(afterUp.fired).toBe(0);
+    expect(
+      await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
+    ).toBe(false);
   });
 
   test("has no serious accessibility violation at a place in every part of the scroll", async ({

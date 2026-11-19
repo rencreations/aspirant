@@ -6,14 +6,13 @@
  *  - "peek": the drone has stepped to the edge of the screen and looks at something: it turns its
  *    face and its eyes toward the thing, leans, and makes itself a little small. `dir` is the side
  *    the thing is on, -1 left and 1 right.
- *  - "thanks": a bow with the kind face and the thank-you bubble. The bow is played once when the
+ *  - "thanks": a bow with the kind face. The bow is played once when the
  *    pose is entered; the kind face and the happy fins stay while the pose does.
  *
  * Everything is in the screen frame (y down). `dx` and `dy` are in widths of the drone. No three here.
  */
 import { clamp01, mix } from "./ease";
 import type { FaceName } from "./faces";
-import type { IconName } from "./marks";
 import { bowCurve, TRICK_SECONDS } from "./tricks";
 
 export type PoseName = "peek" | "thanks";
@@ -24,8 +23,6 @@ export interface PoseState {
   t: number;
   /** 0 to 1: how far the pose is worn. */
   amount: number;
-  /** The thank-you bubble has been asked for. */
-  cued: boolean;
 }
 
 export interface PoseLook {
@@ -40,15 +37,10 @@ export interface PoseLook {
   happy: number;
   droop: number;
   face: FaceName | null;
-  /** A bubble to make now, once. */
-  cue: IconName | null;
 }
 
-/** The thank-you bubble comes as the head dips. */
-export const THANKS_CUE_AT = 0.3;
-
 export function createPoseState(): PoseState {
-  return { current: null, t: 0, amount: 0, cued: false };
+  return { current: null, t: 0, amount: 0 };
 }
 
 export function createPoseLook(): PoseLook {
@@ -64,7 +56,6 @@ export function createPoseLook(): PoseLook {
     happy: 0,
     droop: 0,
     face: null,
-    cue: null,
   };
 }
 
@@ -86,12 +77,10 @@ export function stepPose(
   out.happy = 0;
   out.droop = 0;
   out.face = null;
-  out.cue = null;
 
   if (wanted && wanted !== s.current) {
     s.current = wanted;
     s.t = 0;
-    s.cued = false;
   }
   const k = 1 - Math.exp(-7 * Math.max(0, dt));
   s.amount = mix(s.amount, wanted ? 1 : 0, k);
@@ -121,10 +110,6 @@ export function stepPose(
     out.dy = 0.07 * c * a;
     out.happy = a;
     out.face = a > 0.4 ? "thanks" : null;
-    if (!s.cued && s.t >= THANKS_CUE_AT && wanted) {
-      s.cued = true;
-      out.cue = "thanks";
-    }
   }
   return out;
 }
@@ -133,5 +118,4 @@ export function clearPose(s: PoseState): void {
   s.current = null;
   s.t = 0;
   s.amount = 0;
-  s.cued = false;
 }

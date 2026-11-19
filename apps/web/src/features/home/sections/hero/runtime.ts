@@ -33,8 +33,8 @@ import { cueOpacity, heroS, logoP, ramp, smooth } from "./timeline";
 const BUILD_ABOVE = 2.5;
 /** On a stage whose pixel grid is not the page's the bar's logo is shown a little early and the actor fades under it. */
 const SOFT_FROM = 0.96;
-/** The calm ripple of the logo at rest (it lets go as the morph begins). */
-const REST_WAVE = 0.3;
+/** The big logo stands perfectly still at rest (the owner's call, 19 Nov 2026). It is the intro's own (`LOGO_REST_WAVE`): the two must match. The morph keeps its wave (`waveEnvelope`). */
+const REST_WAVE = 0;
 /** The cue sits this far under the logo (px, at least) and moves with the screen's height. */
 const CUE_GAP = 0.045;
 /** Where the bar's logo is from the top of the screen (px, about): the drone's eyes aim there. */

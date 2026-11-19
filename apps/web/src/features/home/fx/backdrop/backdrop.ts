@@ -10,7 +10,7 @@
  */
 import type { Actor, FrameInfo, PointerApi } from "../../kernel/types";
 import { sameColors } from "./colors";
-import { FadeMix } from "./mix";
+import { FADE_S, FadeMix } from "./mix";
 import type { BackdropDrawable } from "./host";
 import { BACKDROP_PALETTES, type BackdropKind, type BackdropTheme } from "./palettes";
 import {
@@ -27,6 +27,7 @@ import {
 } from "./params";
 import { BackdropGL, type FrameFeed, type LayerDraw } from "./renderer";
 import { KIND_DEFS, type KindDef } from "./registry";
+import { PointerTrail } from "./trail";
 
 /** What a section may ask for. Everything is optional: the kind and the ground give the defaults. */
 export interface BackdropOptions extends NumberOptions {
@@ -36,6 +37,11 @@ export interface BackdropOptions extends NumberOptions {
   theme?: BackdropTheme;
   /** The highlight colour of the kind (white on storm, a deep blue-grey on daybreak by default). */
   ink?: string;
+  /**
+   * Seconds the cross-fade takes when this kind comes in over another (0.5 by default, 0.1 at the
+   * least). A scene that changes the kind every half second asks for a quicker one.
+   */
+  fade?: number;
 }
 
 export interface BackdropState {
@@ -92,9 +98,19 @@ export class BackdropActor implements Backdrop, BackdropDrawable {
   private readonly mix = new FadeMix<BackdropKind>();
   private readonly states = new Map<BackdropKind, LayerState>();
   private readonly list: LayerDraw[] = [];
-  private readonly feed: FrameFeed = { pointerX: 0.5, pointerY: 0.5, pointerOn: 0, S: 0, vel: 0 };
+  private readonly trail = new PointerTrail();
+  private readonly feed: FrameFeed = {
+    pointerX: 0.5,
+    pointerY: 0.5,
+    pointerOn: 0,
+    S: 0,
+    vel: 0,
+    trail: this.trail.data,
+  };
   private readonly wantP = makeParams();
   private wantKind: BackdropKind | null = null;
+  /** The cross-fade the last `set` asked for, in seconds. */
+  private wantFade = FADE_S;
   private wantTheme: BackdropTheme = "daybreak";
   private wantColors: readonly string[] | undefined;
   private wantInk: string | undefined;
@@ -161,6 +177,7 @@ export class BackdropActor implements Backdrop, BackdropDrawable {
       this.wantTheme = theme;
     }
     writeNumbers(w, def, palette.intensity, options);
+    this.wantFade = options.fade ?? FADE_S;
     this.wantKind = kind;
   }
 
@@ -207,7 +224,7 @@ export class BackdropActor implements Backdrop, BackdropDrawable {
     this.snapOnce = false;
 
     const wasActive = this.mix.active();
-    this.mix.step(dt, this.visible ? this.wantKind : null, snap);
+    this.mix.step(dt, this.visible ? this.wantKind : null, snap, this.wantFade);
     if (!this.mix.active()) {
       // The draw-skip rule: nothing is drawn, the canvas leaves the paint, no state moves.
       this.drawing = false;
@@ -215,7 +232,10 @@ export class BackdropActor implements Backdrop, BackdropDrawable {
       gl.setShown(false);
       return;
     }
-    if (!wasActive) this.states.clear();
+    if (!wasActive) {
+      this.states.clear();
+      this.trail.clear();
+    }
 
     const k = snap ? 1 : approachK(dt, FOLLOW_RATE);
     const master = this.mix.master();
@@ -298,6 +318,9 @@ export class BackdropActor implements Backdrop, BackdropDrawable {
       feed.pointerY += (0.5 - state.ny * 0.5 - feed.pointerY) * follow;
     }
     feed.pointerOn += ((state.inside ? 1 : 0) - feed.pointerOn) * (snap ? 1 : approachK(dt, 5));
+    // The ripples follow the raw pointer (the smoothed one would blur a quick flick into one).
+    if (snap) this.trail.clear();
+    this.trail.step(dt, state.nx * 0.5 + 0.5, 0.5 - state.ny * 0.5, state.inside, state.down);
     feed.S = frame.S;
     feed.vel += (Math.min(Math.abs(frame.velocity), 5) - feed.vel) * (snap ? 1 : approachK(dt, 6));
   }

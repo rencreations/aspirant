@@ -46,6 +46,9 @@ uniform vec2 uCut;
 uniform vec2 uRim;
 uniform vec2 uGlint;
 uniform vec3 uEmissive;
+uniform float uSkinSplit;
+uniform vec3 uWarm;
+uniform vec3 uWarmDeep;
 #ifdef TOON_EMISSIVE_MAP
 uniform sampler2D uEmissiveMap;
 #endif
@@ -58,26 +61,44 @@ vec3 toonTint( vec3 albedo, vec3 m ) {
 	return mix( vec3( l ), c, uSat );
 }
 
+// Skin by its colour, for a body painted on one sheet with its armour: pink to peach (green about
+// half and blue about half of the red), not white, grey, violet, red or gold. 0 to 1.
+float toonSkin( vec3 a ) {
+	float r = max( a.r, 0.0001 );
+	float gr = a.g / r;
+	float br = a.b / r;
+	float lum = dot( a, vec3( 0.2126, 0.7152, 0.0722 ) );
+	return smoothstep( 0.28, 0.36, br ) * ( 1.0 - smoothstep( 0.66, 0.78, br ) )
+		* smoothstep( 0.46, 0.54, gr ) * ( 1.0 - smoothstep( 0.82, 0.9, gr ) )
+		* smoothstep( 0.18, 0.3, lum );
+}
+
 vec3 toonShade( vec3 albedo, vec3 N, vec3 V ) {
 	float ndl = dot( N, uToonL );
 	float lit = smoothstep( uCut.y - uSoft, uCut.y + uSoft, ndl );
-	vec3 shade = mix( albedo, toonTint( albedo, uShade ), uToonAmt );
+	float skinK = uSkinSplit > 0.0 ? uSkinSplit * toonSkin( albedo ) : 0.0;
+	vec3 shade = mix( albedo, toonTint( albedo, mix( uShade, uWarm, skinK ) ), uToonAmt );
 	vec3 col;
 	#if TOON_BANDS == 3
 		float mid = smoothstep( uCut.x - uSoft, uCut.x + uSoft, ndl );
-		vec3 deep = mix( albedo, toonTint( albedo, uDeep ), uToonAmt );
+		vec3 deep = mix( albedo, toonTint( albedo, mix( uDeep, uWarmDeep, skinK ) ), uToonAmt );
 		col = mix( mix( deep, shade, mid ), albedo * uLit, lit );
 	#else
 		col = mix( shade, albedo * uLit, lit );
 	#endif
-	// A thin rim on the silhouette: full on the shadow side, a third of it on the lit side.
+	// A thin rim on the silhouette: full on the shadow side, a third of it on the lit side. A pale
+	// glow on a dark surface; on a light one (where a glow would vanish) a cool deepening instead.
 	float fres = 1.0 - clamp( dot( N, V ), 0.0, 1.0 );
 	float rimBand = smoothstep( 1.0 - uRim.y - 0.06, 1.0 - uRim.y + 0.06, fres );
-	col += uToonRim * ( rimBand * ( 0.3 + 0.7 * ( 1.0 - lit ) ) * uRim.x * uToonAmt );
-	// A small crisp highlight on the lit side: a shape, not a reflection.
+	float rimK = rimBand * ( 0.3 + 0.7 * ( 1.0 - lit ) ) * uRim.x * uToonAmt;
+	float onLight = smoothstep( 0.55, 0.85, dot( col, vec3( 0.2126, 0.7152, 0.0722 ) ) );
+	col = mix( col + uToonRim * rimK, mix( col, col * vec3( 0.6, 0.68, 1.0 ), min( 1.0, rimK * 1.4 ) ), onLight );
+	// A small crisp highlight on the lit side: a shape, not a reflection. The edge is one pixel
+	// wide whatever the curvature (a fixed width spans a whole horn).
 	vec3 H = normalize( uToonL + V );
 	float nh = dot( N, H );
-	float glint = smoothstep( uGlint.y - 0.01, uGlint.y + 0.01, nh ) * uGlint.x * lit;
+	float glintEdge = clamp( fwidth( nh ) * 0.75, 0.0004, 0.012 );
+	float glint = smoothstep( uGlint.y - glintEdge, uGlint.y + glintEdge, nh ) * uGlint.x * lit;
 	col = mix( col, mix( vec3( 1.0 ), albedo, 0.18 ), glint );
 	return col;
 }

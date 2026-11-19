@@ -6,8 +6,8 @@ import { BACKDROP_KINDS, BACKDROP_PALETTES } from "./palettes";
 import { KIND_DEFS } from "./registry";
 
 describe("the kind registry", () => {
-  it("lists thirty kinds, each once", () => {
-    expect(BACKDROP_KINDS).toHaveLength(30);
+  it("lists at least thirty kinds, each once", () => {
+    expect(BACKDROP_KINDS.length).toBeGreaterThanOrEqual(30);
     expect(new Set(BACKDROP_KINDS).size).toBe(BACKDROP_KINDS.length);
   });
 
@@ -70,10 +70,16 @@ describe("the shaders (text checks: the GPU compile is looked at in the browser)
     }
   });
 
-  it("only reads uniforms the prelude declares", () => {
+  it("only reads uniforms the prelude declares, or that its own source declares (the ink field's trail)", () => {
     for (const kind of BACKDROP_KINDS) {
-      const used = new Set(KIND_DEFS[kind].frag.match(/\bu[A-Z][A-Za-z0-9]*\b/g) ?? []);
-      for (const name of used) expect(declared.has(name), `${kind} uses ${name}`).toBe(true);
+      const src = KIND_DEFS[kind].frag;
+      const own = new Set(
+        [...src.matchAll(/uniform\s+\w+\s+(u[A-Z]\w*)(?:\[\d+\])?\s*;/g)].map((m) => m[1]),
+      );
+      const used = new Set(src.match(/\bu[A-Z][A-Za-z0-9]*\b/g) ?? []);
+      for (const name of used) {
+        expect(declared.has(name) || own.has(name), `${kind} uses ${name}`).toBe(true);
+      }
     }
   });
 

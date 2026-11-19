@@ -106,14 +106,37 @@ describe("ToonMaterial", () => {
   });
 });
 
+describe("ToonMaterial skin split", () => {
+  it("is off by default and on when asked, without a new program", () => {
+    const off = new ToonMaterial({ look: "default" });
+    const on = new ToonMaterial({ look: "default", skinSplit: true });
+    expect(off.customProgramCacheKey()).toBe(on.customProgramCacheKey());
+    const shader = {
+      uniforms: {} as Record<string, { value: unknown }>,
+      vertexShader: "",
+      fragmentShader: "",
+    };
+    off.onBeforeCompile(shader as never, undefined as never);
+    expect(shader.uniforms.uSkinSplit?.value).toBe(0);
+    const shaderOn = {
+      uniforms: {} as Record<string, { value: unknown }>,
+      vertexShader: "",
+      fragmentShader: "",
+    };
+    on.onBeforeCompile(shaderOn as never, undefined as never);
+    expect(shaderOn.uniforms.uSkinSplit?.value).toBe(1);
+    expect(shaderOn.uniforms.uWarm).toBeDefined();
+  });
+});
+
 describe("InkMaterial", () => {
   it("draws inside out and sizes its line from the height", () => {
     const ink = new InkMaterial();
     expect(ink.side).toBe(BackSide);
     ink.setSize(900);
-    expect(ink.width).toBeGreaterThan(2.5);
+    expect(ink.width).toBeGreaterThan(3);
     ink.setSize(100);
-    expect(ink.width).toBe(1.2);
+    expect(ink.width).toBe(1.1);
     ink.setWidth(4);
     expect(ink.width).toBe(4);
   });
@@ -205,11 +228,11 @@ describe("toonify", () => {
 });
 
 describe("addCardInk", () => {
-  it("puts eight shifted copies next to an alpha card and takes them away again", () => {
+  it("puts six shifted copies next to an alpha card and takes them away again", () => {
     const { root, meshes } = scene(new MeshStandardMaterial({ transparent: true, alphaTest: 0.1 }));
     const set = toonify(root, { pick: () => ({ ink: "card" }) });
     expect(set.inks).toHaveLength(1);
-    expect(root.children).toHaveLength(1 + 8);
+    expect(root.children).toHaveLength(1 + 6);
     const copy = root.children[1] as Mesh;
     expect(copy.material).toBeInstanceOf(CardInkMaterial);
     expect(copy.geometry).toBe(meshes[0]!.geometry);

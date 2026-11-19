@@ -8,6 +8,7 @@ import { libUrl } from "@/lib/library";
 import { asset } from "@/lib/asset";
 
 import { HERO_PORTRAITS, HERO_WALLS } from "./picks-data";
+import { WALL_TILES } from "./tiles-data";
 
 /** A rectangle as fractions of a whole picture. */
 interface Window {
@@ -48,12 +49,19 @@ export interface FieldSetDef {
   readonly portraits: readonly PortraitPic[];
   /** The wall's pictures in one cyclic order: slot `s` of the wall shows `walls[s]`. */
   readonly walls: readonly WidePic[];
+  /** More official pictures for the wall only (small thumbnails), so the many small cards do not repeat much. */
+  readonly tiles: readonly WidePic[];
+}
+
+/** Every picture the wall can show: the splash art, then the tiles. A card's `wide` is an index into it. */
+export function poolOf(def: FieldSetDef): readonly WidePic[] {
+  return def.tiles.length === 0 ? def.walls : [...def.walls, ...def.tiles];
 }
 
 export type FieldSetName = "hero";
 
 const SETS: Readonly<Record<FieldSetName, FieldSetDef>> = {
-  hero: { name: "hero", portraits: HERO_PORTRAITS, walls: HERO_WALLS },
+  hero: { name: "hero", portraits: HERO_PORTRAITS, walls: HERO_WALLS, tiles: WALL_TILES },
 };
 
 export function setDef(name: FieldSetName): FieldSetDef {

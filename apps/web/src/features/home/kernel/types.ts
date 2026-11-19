@@ -51,6 +51,16 @@ export interface Viewport {
   readonly dpr: number;
 }
 
+/** How hard the visitor is pushing the page (`kernel/input.ts`). The one object is written in place. */
+interface InputInfo {
+  /**
+   * The signed, smoothed velocity of the scroll input (wheel deltas and touch moves) in pixels per
+   * second, positive going down, with a time constant of 140 ms. It is measured from the input, so
+   * it still reads while a play holds the page. 0 when nobody is pushing.
+   */
+  readonly wheel: number;
+}
+
 /** What one frame knows. Every section and every pass gets the same object for one frame. */
 export interface FrameInfo {
   /** Seconds since the clock started. Frozen while the probe freezes the scene. */
@@ -65,6 +75,8 @@ export interface FrameInfo {
   readonly velocity: number;
   readonly viewport: Viewport;
   readonly frame: number;
+  /** The energy of the visitor's scroll input (see `InputInfo`). */
+  readonly input: InputInfo;
 }
 
 /**
@@ -154,8 +166,8 @@ export interface ScrollApi {
   raw(): number;
   /** The position in screens the scene is drawn at. */
   shown(): number;
-  /** Move the page to a position in screens. */
-  to(screens: number, options?: { immediate?: boolean }): void;
+  /** Move the page to a position in screens (`duration`: seconds, for a smooth move). */
+  to(screens: number, options?: { immediate?: boolean; duration?: number }): void;
   /**
    * Hold the page still (wheel, touch and scroll keys do nothing) until the returned release is
    * called. It never stops the smooth scroller by itself and has a long safety limit.
@@ -191,6 +203,14 @@ export interface SectionRuntime {
   enter?(): void;
   /** The section left its range (pause its videos, stop its audio). */
   leave?(): void;
+  /**
+   * The ready gate (`kernel/plays.ts`): false while what the section's scene needs is not built yet
+   * (a model, a texture, a shader that must compile). A forward play of the section does not fire,
+   * and does not hold the scroll, until this says true; it then fires at once if the scroll is still
+   * past its threshold. A play going back never waits, and a jump or a seek is not gated. Optional:
+   * a runtime without it is always ready. Called once a frame at most, so keep it a flag read.
+   */
+  ready?(): boolean;
   dispose(): void;
 }
 

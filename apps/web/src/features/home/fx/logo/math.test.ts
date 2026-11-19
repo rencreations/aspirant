@@ -288,6 +288,24 @@ describe("the reel's corner stagger", () => {
     expect(waveEnvelope(0.3, 5)).toBeLessThanOrEqual(1);
   });
 
+  it("stands perfectly still at rest, and the morph keeps the wave it had before (19 Nov 2026)", () => {
+    expect(waveEnvelope(0, 0)).toBe(0);
+    const before = (P: number): number =>
+      Math.max(morphEnvelope(P), 0.3 * (1 - smoothstep(0, 0.2, P)));
+    // From 8 percent of the progress on, the wave is exactly the old one.
+    for (const P of [0.08, 0.1, 0.15, 0.2, 0.3, 0.5, 0.8, 0.95, 1]) {
+      expect(waveEnvelope(P, 0), `P ${P}`).toBeCloseTo(before(P), 12);
+    }
+    // It comes in from nothing over the first part, never in one step.
+    let last = 0;
+    for (let P = 0; P <= 0.08; P += 0.004) {
+      const e = waveEnvelope(P, 0);
+      expect(e).toBeGreaterThanOrEqual(0);
+      expect(Math.abs(e - last)).toBeLessThan(0.05);
+      last = e;
+    }
+  });
+
   it("runs a crest 2.2 wavelengths over the morph", () => {
     expect(phaseAt(0)).toBe(0);
     expect(phaseAt(1)).toBeCloseTo(2.2, 9);

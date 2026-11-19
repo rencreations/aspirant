@@ -17,6 +17,7 @@ import { bindHold, requestSnap } from "./kernel/hold";
 import { layoutSections } from "./kernel/layout";
 import { SECTIONS } from "./kernel/sections";
 import type { HomeMode } from "./kernel/types";
+import { RestCue } from "./cue";
 
 export interface HomeStageProps {
   /** The scroll room of the fixed sections, in screens. */
@@ -29,6 +30,16 @@ export interface HomeStageProps {
   text: ReactNode;
   /** The last section's text, in the page's flow. */
   flow: ReactNode;
+}
+
+/** True when `el` and its parents up to `stop` are not faded out. */
+function shownNow(el: Element, stop: Element): boolean {
+  let opacity = 1;
+  for (let e: Element | null = el; e; e = e.parentElement) {
+    opacity *= Number.parseFloat(getComputedStyle(e).opacity);
+    if (e === stop) break;
+  }
+  return opacity > 0.05;
 }
 
 /**
@@ -148,7 +159,17 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
     const onFocus = (e: FocusEvent) => {
       const target = e.target instanceof Element ? e.target : null;
       const slot = target?.closest<HTMLElement>("[data-home-text]");
-      if (!slot || slot.dataset.on === "1") return;
+      if (!slot) return;
+      // A section that is on keeps the page where it is. The one exception is words that wait for a
+      // scene to bring them in (`data-home-wait`: the aspirants' words wait for the hero's scene): a
+      // focus on one of them that has not come in yet moves the page to where it shows, because a
+      // focus mark on an invisible control is no focus mark. (Controls that are hidden by design in
+      // a section that is on, like the list's names, have their own rule.)
+      if (
+        slot.dataset.on === "1" &&
+        !(target?.closest("[data-home-wait]") && !shownNow(target, slot))
+      )
+        return;
       const placed = layout.placed.find((p) => p.id === slot.dataset.homeText);
       if (!placed || placed.def.dom === "flow") return;
       const unit = host.getBoundingClientRect().height;
@@ -181,6 +202,7 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
       </div>
       <div ref={hostRef} className={styles.canvasHost} aria-hidden="true" />
       <div className={styles.text}>{text}</div>
+      <RestCue />
       <div
         className={styles.track}
         style={{ "--track": trackScreens } as CSSProperties}

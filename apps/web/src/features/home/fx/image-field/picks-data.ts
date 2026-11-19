@@ -1,5 +1,6 @@
 /**
- * The hero's pictures: the ten 4:5 cards and the eighteen wide pictures of the wall, in the wall's
+ * The hero's pictures: the eighteen 4:5 cards (ten single splash arts, then eight official Game art stills,
+ * all different) and the eighteen wide pictures of the wall, in the wall's
  * one cyclic order. Written from `public/data/home/picks.json` (`hero.portrait` and `wall.order`),
  * which the media workstream makes: `sets.test.ts` keeps this file equal to it. It is small on
  * purpose, because `preload.ts` is in the bundle of every page.
@@ -125,6 +126,102 @@ export const HERO_PORTRAITS: readonly PortraitPic[] = [
     focus: {
       x: 0.58,
       y: 0.32,
+    },
+  },
+  {
+    id: "fanny-b",
+    chars: ["fanny"],
+    path: "/img/home/cards/fanny-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 42832,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "layla-b",
+    chars: ["layla"],
+    path: "/img/home/cards/layla-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 39944,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "ruby-b",
+    chars: ["ruby"],
+    path: "/img/home/cards/ruby-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 40196,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "angela-b",
+    chars: ["angela"],
+    path: "/img/home/cards/angela-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 28078,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "lesley-b",
+    chars: ["lesley"],
+    path: "/img/home/cards/lesley-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 56124,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "change-b",
+    chars: ["change"],
+    path: "/img/home/cards/change-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 54732,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "guinevere-b",
+    chars: ["guinevere"],
+    path: "/img/home/cards/guinevere-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 59776,
+    focus: {
+      x: 0.5,
+      y: 0.3,
+    },
+  },
+  {
+    id: "vexana-b",
+    chars: ["vexana"],
+    path: "/img/home/cards/vexana-b-45.webp",
+    w: 640,
+    h: 800,
+    bytes: 56580,
+    focus: {
+      x: 0.5,
+      y: 0.3,
     },
   },
 ];

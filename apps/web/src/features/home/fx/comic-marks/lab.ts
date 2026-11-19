@@ -255,6 +255,7 @@ export async function ensureMarksLab(ctx: ActorCtx): Promise<MarksLab> {
         velocity: 0,
         viewport: { w: stage.width, h: stage.height, dpr: stage.dpr },
         frame: 0,
+        input: { wheel: 0 },
       };
       const gl = stage.renderer.getContext();
       const handles = Array.from({ length: n }, () => trails.create({ width: 20 }));
@@ -295,6 +296,7 @@ export async function ensureMarksLab(ctx: ActorCtx): Promise<MarksLab> {
         velocity: 0,
         viewport: { w: stage.width, h: stage.height, dpr: stage.dpr },
         frame: 0,
+        input: { wheel: 0 },
       };
       const gl = stage.renderer.getContext();
       const time = (run: () => void): number => {

@@ -14,7 +14,7 @@
 import { clamp, mix, ramp, smootherstep } from "../image-field/math";
 import { orbitCardWidth, orbitStage, sceneCentre } from "./layout";
 import { PLANE_COUNT, type PlanePose, type Vp } from "./types";
-import { PREVIEW_ASPECT } from "./data";
+import { PREVIEWS, PREVIEW_ASPECT, TRAILER_FILM, previewAspect } from "./data";
 
 /** The train: a geometric series of gaps (ratio 0.88) over 0.62 of a turn. */
 const GAP_RATIO = 0.88;
@@ -104,6 +104,12 @@ const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 
 const slots = makeSlots();
 
+/** The shape of card `k` (1 to 10): its own film's, 16 to 9 or about 2.37 to 1. The ring is laid out for the nominal one. */
+export function cardAspect(k: number): number {
+  const film = PREVIEWS[k - 1];
+  return film ? previewAspect(film) : PREVIEW_ASPECT;
+}
+
 /** The orbit's own corner radius for a card of height `h`. */
 function cardCorner(h: number): number {
   return 0.05 * h;
@@ -142,7 +148,8 @@ export function orbitPoses(
   const hx = base.x + along * (t0x - base.x);
   const hy = base.y + along * (t0y - base.y);
   const baseAspect = base.w / Math.max(1, base.h);
-  const hAspect = mix(baseAspect, PREVIEW_ASPECT, ease);
+  // The leader is the trailer at its own shape (2.376 to 1): the picture is shown whole in the ring too.
+  const hAspect = mix(baseAspect, TRAILER_FILM.aspect, ease);
 
   const hero = out[0]!;
   hero.x = hx;
@@ -175,7 +182,7 @@ export function orbitPoses(
       p.x = hx + (slot.x - s0.x) * Z;
       p.y = hy - (slot.y - s0.y) * Z;
       p.w = w;
-      p.h = w / PREVIEW_ASPECT;
+      p.h = w / cardAspect(k);
       p.opacity = slot.o * smootherstep(ramp(c, 0, 0.2));
       p.corner = cardCorner(p.h);
     } else {
@@ -193,7 +200,7 @@ export function orbitPoses(
       p.y = hy + dy * e + (dx / len) * arc * (k % 2 === 0 ? 1 : -1);
       const grown = mix(0.18, 1, e);
       p.w = w * grown;
-      p.h = p.w / PREVIEW_ASPECT;
+      p.h = p.w / cardAspect(k);
       p.opacity = slot.o * smootherstep(ramp(g, 0, 0.35));
       p.corner = cardCorner(p.h);
     }

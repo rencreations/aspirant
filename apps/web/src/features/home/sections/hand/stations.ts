@@ -29,8 +29,11 @@ export const HAND_STEPS: readonly BeatStep[] = [
   { atScreens: 0.2, to: HAND_LAST, seconds: 2.1, ease: "linear" },
 ];
 
-/** Screens of scroll between two frames of the list (the dwell the visitor stands in). */
-const STEP = 0.4;
+/**
+ * Screens of scroll between two frames of the list (the dwell the visitor stands in). Each frame is
+ * a name that leads to a page, so it takes more scroll than a picture would (the owner's threshold).
+ */
+const STEP = 0.55;
 /** Where the toss fires, in screens after the list's start (the hand's tail ends before it). */
 const FIRST_AT = 0.5;
 

@@ -118,6 +118,8 @@ export function passthrough(s: number): number {
   return 0;
 }
 
+const alwaysReady = (): boolean => true;
+
 /** The longest the hold of one play is kept, in wall-clock milliseconds. */
 export function playLimitMs(seconds: number): number {
   return seconds * 1000 + HOLD_SLACK_MS;
@@ -138,6 +140,12 @@ export interface PlayOptions {
    * only so that it is still running while its play holds the page).
    */
   readonly restOutside?: boolean;
+  /**
+   * The ready gate: a forward play whose threshold is reached does not start (and does not hold the
+   * scroll) while this says false, and starts on the first step after it says true if the scroll is
+   * still past the threshold. A play that runs backward never waits. Default: always ready.
+   */
+  readonly ready?: () => boolean;
 }
 
 /**
@@ -154,6 +162,9 @@ export class PlayMachine {
   private readonly plays: readonly HomePlay[];
   private readonly backAt: Float64Array;
   private readonly restOutside: boolean;
+  private readonly gate: () => boolean;
+  /** A forward play is due (its threshold is reached) but the ready gate is closed. */
+  private due = false;
   /** How many plays have fired (the resting station; moves when a play starts). */
   private idx = 0;
   /** The animated value, without the lead and tail passthrough. */
@@ -185,6 +196,7 @@ export class PlayMachine {
     });
     this.base = plays[0]!.from;
     this.restOutside = options.restOutside === true;
+    this.gate = options.ready ?? alwaysReady;
   }
 
   /** `v`: the value `update` gets. The animated value plus the lead and tail passthrough. */
@@ -210,6 +222,11 @@ export class PlayMachine {
   /** A play is running: the scroll is held. */
   get active(): boolean {
     return this.playing;
+  }
+
+  /** A forward play is due but the ready gate is closed: nothing runs and nothing holds yet. */
+  get waiting(): boolean {
+    return this.due;
   }
 
   /** 1 forward, -1 backward, 0 at rest. */
@@ -247,6 +264,7 @@ export class PlayMachine {
    */
   jump(sRaw: number, sShown: number = sRaw): void {
     this.sShown = sShown;
+    this.due = false;
     this.playing = false;
     this.dir = 0;
     this.t = 0;
@@ -260,6 +278,7 @@ export class PlayMachine {
    */
   enter(sShown: number): void {
     this.sShown = sShown;
+    this.due = false;
     this.playing = false;
     this.dir = 0;
     this.t = 0;
@@ -269,6 +288,7 @@ export class PlayMachine {
 
   /** The section went out of range: a play that was running ends where it was going. */
   leave(): void {
+    this.due = false;
     if (this.playing) this.finish();
   }
 
@@ -300,10 +320,16 @@ export class PlayMachine {
   private trigger(sRaw: number, now: number): boolean {
     const n = this.plays.length;
     if (this.idx < n && sRaw >= this.plays[this.idx]!.at) {
+      if (!this.gate()) {
+        this.due = true;
+        return false;
+      }
+      this.due = false;
       this.begin(this.idx, 1, now);
       this.idx++;
       return true;
     }
+    this.due = false;
     if (this.idx > 0 && sRaw < this.backAt[this.idx - 1]!) {
       this.idx--;
       this.begin(this.idx, -1, now);

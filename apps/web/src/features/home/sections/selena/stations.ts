@@ -18,7 +18,7 @@ import type { HomePlay } from "../../kernel/plays";
 /** The rest station, in seconds of the story. */
 export const REST_U = 1.0;
 /** The whole story, in seconds. The first play is REST_U long, the second is the rest of it. */
-export const STORY = 4.2;
+export const STORY = 3.95;
 /** The rest station as a `local`. */
 export const REST_V = REST_U / STORY;
 

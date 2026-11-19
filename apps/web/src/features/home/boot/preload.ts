@@ -10,8 +10,8 @@ import { chunkItem, type PreloadItem } from "@/lib/preload";
  * the opening's own scene code. The drone is what a waiting visitor looks at, so on a slow link it
  * must appear long before the rest has arrived. Tier two is what the intro needs after the press
  * (the two Guinevere drones, the logo's drawing) and every section's first screen. All of it is
- * waited for, so the intro never stalls for a file after the press. The marks (bang, sweat,
- * hearts) are drawn by a shader and load nothing: their code is in the scene chunk.
+ * waited for, so the intro never stalls for a file after the press. The opening draws no comic
+ * marks of its own (the drone's shock mark is the drone's).
  *
  * The ORDER is real: the items of tier two do not start until tier one has arrived (`afterTheDrone`),
  * so the drone's files do not share the connection with thirty pictures. Nothing is skipped, capped
@@ -26,7 +26,7 @@ export function droneTier(): PreloadItem[] {
       "home-boot",
       "Preparing the opening",
       async () => {
-        await Promise.all([import("./runtime"), import("../fx/comic-marks")]);
+        await import("./runtime");
       },
       1,
     ),

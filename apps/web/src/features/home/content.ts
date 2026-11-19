@@ -61,12 +61,12 @@ export const ASPIRANTS = {
 /** The preview window of the wall (`features/home/preview/`). Not part of the owner's copy: labels only. */
 export const PREVIEW = {
   /** The name of the one button that opens the preview for the keyboard (hidden until focused). */
-  open: "View the splash art",
-  dialog: "Splash art",
+  open: "View the art",
+  dialog: "Official art",
   close: "Close",
   previous: "Previous picture",
   next: "Next picture",
-  more: "More splash art",
+  more: "More official art",
   help: "Press the left and right arrow keys for another picture. Press Escape to close.",
 } as const;
 
@@ -80,7 +80,7 @@ export const STRIP = {
   middleRight: "Obsidia",
   bottomLeft: { rest: ["Aspirant 5.0", "Trailer"], hover: ["Our", "Collections"] },
   /** The button of the strip. Its hover changes the bottom left words, not the tag above it. */
-  button: { label: "See All", href: HOME_ROUTES.collection },
+  button: { label: "See All", href: HOME_ROUTES.films },
   /**
    * What the frame shows after it has grown (the press opens the site's player). The duration is the
    * trailer's own, 180.8 s of `video-films.json`, written as the Films room writes it (the whole seconds) (`sections/strip/strip.test.ts` keeps them equal).

@@ -31,9 +31,21 @@ function isPortrait(vw: number, vh: number): boolean {
   return vh > vw;
 }
 
-/** The scale of the strip against the full window, and the share of the window's height clipped at each side. */
-export function stripLook(vw: number, vh: number): { scale: number; inset: number } {
-  return isPortrait(vw, vh) ? { scale: 0.7, inset: 0.2198 } : { scale: 0.45, inset: 0.2597 };
+/**
+ * The scale of the strip against the full window, and the share of the window's height clipped at each
+ * side. The inset is the reference's for a 16 to 9 window. A window of another shape (the film's own,
+ * 2.38 to 1) keeps the strip at the same ratio (3.70 to 1), so the inset is worked out from the shape:
+ * a window nearer the strip's shape has less to clip.
+ */
+export function stripLook(
+  vw: number,
+  vh: number,
+  aspect = WINDOW_ASPECT,
+): { scale: number; inset: number } {
+  const look = isPortrait(vw, vh) ? { scale: 0.7, inset: 0.2198 } : { scale: 0.45, inset: 0.2597 };
+  if (aspect === WINDOW_ASPECT) return look;
+  const kept = ((1 - 2 * look.inset) * aspect) / WINDOW_ASPECT;
+  return { scale: look.scale, inset: Math.max(0, Math.min(0.45, (1 - kept) / 2)) };
 }
 
 /** The width of the full window (`W` of the digest). */
@@ -79,11 +91,12 @@ export function expandBox(
   aspect = WINDOW_ASPECT,
   out: Box = { x: 0, y: 0, w: 0, h: 0 },
 ): Box {
-  const { scale, inset } = stripLook(vw, vh);
+  const { scale, inset } = stripLook(vw, vh, aspect);
   const k = clamp(e, 0, 1);
   const s = mix(scale, 1, k);
   const cut = mix(inset, 0, k);
-  const W = sceneWidth(vw, vh, aspect);
+  // The scene's width is the same for every window shape (the CSS scene box uses the 16 to 9 cap).
+  const W = sceneWidth(vw, vh);
   const c = sceneCentre(vw, vh);
   out.w = s * W;
   out.h = ((s * W) / aspect) * (1 - 2 * cut);

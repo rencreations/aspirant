@@ -22,6 +22,7 @@ import { ensureMarks } from "../../fx/comic-marks";
 import { ensureTrails } from "../../fx/trail";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
 
+import { BuildGate } from "./build-gate";
 import { FALL_MOODS, Journey } from "./journey";
 import { WaveLines } from "./lines";
 import { BEAT, WHEEL_FROM } from "./stations";
@@ -76,7 +77,6 @@ export class BoltScene {
   private tail: Trail | null = null;
   private speed: Sustain | null = null;
   private air: Sustain | null = null;
-  private clouds: Sustain[] = [];
   private offMarks: (() => void) | null = null;
   private users = 0;
   private disposed = false;
@@ -98,8 +98,11 @@ export class BoltScene {
   private readonly dragonFly = { amplitude: 1 };
   private readonly dollPlace: DollPlace = { x: 0, y: 0, height: 1 };
   private readonly gaze = { x: 0, y: 0 };
-  /** The viewport the cloud loops were made for: they are made again when it changes. */
-  private cloudsFor = { w: 0, h: 0 };
+  /** Whether the actors are built, and the visitor's hurry (`ready()` of the two sections). */
+  readonly gate = new BuildGate();
+  /** A pause for a quiet scroll that ends at once when the visitor is waiting (also inside `warmCast`). */
+  private readonly quiet = (maxWaitMs: number): Promise<void> =>
+    this.gate.pause(() => whenQuiet(maxWaitMs));
 
   private constructor(private readonly ctx: SectionCtx) {
     this.lines = ctx.stage.failed ? null : new WaveLines(ctx.stage);
@@ -113,16 +116,15 @@ export class BoltScene {
       // Everything here is heavy and waits for a pause of the scroll: the section is mounted nine
       // screens early for this. Effects first (they are small), then the shared lit scene, then the
       // dragon, then the doll, so the registry steps the dragon before the doll that hangs on it.
-      await whenQuiet();
+      await this.gate.pause(() => whenQuiet());
       const [marks, trails] = await Promise.all([ensureMarks(ctx), ensureTrails(ctx)]);
       if (this.disposed) return;
       this.marks = marks;
       this.speed = marks.sustain("speed", { size: 70 });
       this.air = marks.sustain("air", { size: 170 });
-      this.makeClouds(marks);
       // The engine made the shared lit scene (and its environment map) behind the loading screen.
       const cast = getCast(ctx.stage);
-      await whenQuiet();
+      await this.gate.pause(() => whenQuiet());
       if (this.disposed) return;
       const sb = await ensureSilverbolt(ctx);
       if (this.disposed) return;
@@ -133,29 +135,19 @@ export class BoltScene {
         this.onDragonMark(event);
       });
       this.sb = sb;
-      await warmCast(ctx.stage, cast, sb.object);
+      await warmCast(ctx.stage, cast, sb.object, { quiet: this.quiet });
       if (this.disposed) return;
-      await whenQuiet();
+      await this.gate.pause(() => whenQuiet());
       const doll = await ensureDoll(ctx);
       if (this.disposed) return;
       this.doll = doll;
-      await warmCast(ctx.stage, cast, doll.object);
+      await warmCast(ctx.stage, cast, doll.object, { quiet: this.quiet });
     } catch (error) {
       // A part that fails to build is left out: the lines and the text still run.
       console.error("bolt scene", error);
+    } finally {
+      this.gate.finish();
     }
-  }
-
-  /** Two clouds that rise past the falling doll from the lower corners, for the viewport of now. */
-  private makeClouds(marks: Marks): void {
-    const { w, h } = this.ctx.viewport();
-    for (const cloud of this.clouds) cloud.stop();
-    this.cloudsFor.w = w;
-    this.cloudsFor.h = h;
-    this.clouds = [
-      marks.sustain("cloud", { size: 130, offset: { x: -0.32 * w, y: -0.5 * h } }),
-      marks.sustain("cloud", { size: 110, offset: { x: 0.3 * w, y: -0.58 * h } }),
-    ];
   }
 
   release(): void {
@@ -165,7 +157,7 @@ export class BoltScene {
     shared.delete(this.ctx.stage);
     this.offMarks?.();
     this.offMarks = null;
-    for (const handle of [this.speed, this.air, ...this.clouds]) handle?.stop();
+    for (const handle of [this.speed, this.air]) handle?.stop();
     const doll = this.doll;
     if (doll?.onReact === this.onDollReact) doll.onReact = null;
     this.ctx.actors.remove("bolt-lines");
@@ -238,6 +230,8 @@ export class BoltScene {
 
   /** Set the whole picture for beat time `t`. */
   update(t: number, frame: FrameInfo): void {
+    // A section runs: the visitor is here, so the build does not wait for a pause any more.
+    if (!this.gate.done) this.gate.hurry();
     if (frame.frame === this.lastFrame && t === this.lastT) return;
     const first = frame.frame !== this.lastFrame;
     const prevT = this.lastT;
@@ -306,13 +300,10 @@ export class BoltScene {
     }
 
     if (marks && this.air && doll && j.dollMode === "fall" && !jumped && t < AIR_END) {
-      if (this.cloudsFor.w !== w || this.cloudsFor.h !== h) this.makeClouds(marks);
       this.air.update(doll.socket("hips"), j.air, Math.PI / 2);
-      for (const cloud of this.clouds) cloud.update(doll.socket("hips"), j.air * 0.4, Math.PI / 2);
     } else if (t >= AIR_END && this.air) {
-      // Past the fall: the loops are left to run dry (a loop not set ends by itself).
+      // Past the fall: the loop is left to run dry (a loop not set ends by itself).
       this.air.stop();
-      for (const cloud of this.clouds) cloud.stop();
     }
   }
 

@@ -1023,7 +1023,8 @@ export class SelenaActor implements Actor {
       [hair01, { look: "hair", ink: "card" }],
       [hair02, { look: "hair", inkWeight: 0.6 }],
       [eye, { unlit: true }],
-      ...body.map((mesh): [SkinnedMesh, ToonPick] => [mesh, { look: "default" }]),
+      // The body sheet holds her skin beside the armour: the skin colours take the warm shade.
+      ...body.map((mesh): [SkinnedMesh, ToonPick] => [mesh, { look: "default", skinSplit: true }]),
     ]);
     return toonify(rig.scene, {
       pick: (mesh) => looks.get(mesh as SkinnedMesh),

@@ -1,5 +1,7 @@
 # Actor: the normal drone (workstream DR)
 
+> **Round two update (19 Nov 2026).** The drone has no speech bubbles: `bubble()`, the bubble mesh, `bubble-place.ts`, `bubbleAt`, the icon names other than the bang, `PoseLook.cue` and the reactions' icons are gone (`Answer.shock` replaces `icon`). The shock mark stays: `shock(seconds)`. The icons file is loaded for its bang only. See `round2-R-A1.md` section 4.
+
 The Aspirants' official mascot, in the home's shared renderer, with the About page's look. Code: `apps/web/src/features/home/actors/drone/`. A plain TS class, no React. The model is `/models/about/drone.glb` (never changed); the extra faces and the icons are M2's (`public/img/home/drone-faces.webp`, `drone-faces-2.webp`, `marks.webp`).
 
 ## 1. What a section does

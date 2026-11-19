@@ -24,7 +24,7 @@ export const DRAWER_SHARE = 0.315;
 export const SKY =
   "radial-gradient(ellipse 70% 55% at 50% 38%, rgb(70 84 150 / 0.55), transparent 70%), linear-gradient(180deg, #151b38 0%, #0b0f22 62%, #060813 100%)";
 /** The share of the free area her pose may take. */
-const FILL_IDLE = 0.94;
+const FILL_IDLE = 0.82;
 const FILL_HANDS = 1.0;
 
 export interface Placement {

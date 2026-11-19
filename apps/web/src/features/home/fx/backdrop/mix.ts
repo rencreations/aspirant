@@ -12,6 +12,8 @@
 
 /** Seconds a cross-fade, a fade in or a fade out takes. */
 export const FADE_S = 0.5;
+/** The shortest cross-fade a section may ask for. */
+export const MIN_FADE_S = 0.1;
 /** Most layers drawn at once. A fourth arrival drops the weakest of the others. */
 export const MAX_LAYERS = 3;
 /** Under this a weight is zero and the layer is dropped. */
@@ -61,9 +63,11 @@ export class FadeMix<K extends string> {
 
   /**
    * One step. `want` is the kind a section asked for this frame, or null when none did. `snap` puts
-   * the end state in at once (a jump of the scroll, a probe).
+   * the end state in at once (a jump of the scroll, a probe). `fadeS` is how long a change of kind
+   * takes to cross (the whole backdrop's own fade in and out always takes `FADE_S`); a scene that
+   * changes the kind every half second asks for a quicker cross.
    */
-  step(dt: number, want: K | null, snap = false): void {
+  step(dt: number, want: K | null, snap = false, fadeS: number = FADE_S): void {
     if (snap) {
       this.layers.length = 0;
       if (want !== null) {
@@ -74,13 +78,14 @@ export class FadeMix<K extends string> {
       }
       return;
     }
-    const d = dt > 0 ? dt / FADE_S : 0;
+    const dp = dt > 0 ? dt / FADE_S : 0;
+    const d = dt > 0 ? dt / Math.max(MIN_FADE_S, fadeS) : 0;
     if (want === null) {
-      this.presence = Math.max(0, this.presence - d);
+      this.presence = Math.max(0, this.presence - dp);
     } else {
       // Nothing of the old one is left to cross with: start fresh.
       if (this.presence <= EPS) this.layers.length = 0;
-      this.presence = Math.min(1, this.presence + d);
+      this.presence = Math.min(1, this.presence + dp);
       const top = this.top();
       if (!top) this.layers.push({ kind: want, w: 1, share: 1, p: 1 });
       else if (top.kind !== want) this.push(want);

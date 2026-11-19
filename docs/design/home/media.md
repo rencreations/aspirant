@@ -104,6 +104,8 @@ Eight come from the owner's `splash-art/cropped` (1152x1440, Vexana 973x1216, th
 
 ## 5. The trailer strip
 
+> **Round two (19 Nov 2026): replaced.** The strip no longer plays a cut loop. It plays the library's whole film (`trailer.film`, 145 MB, 1920 by 808), streamed, from the rest moment `trailer.film.start` (11.7 s), and the bar waits for its first 6 s (`trailer.film.warm`, 4.8 MB). `strip-1280.mp4`, `strip-1920.mp4`, `strip-poster.webp` and `trailer.py` are deleted. Notes: `round2-R-A4.md`. The text below is the first version.
+
 Source: the 1920x1080 VP9 file with black bars (the picture is 1920x808, `crop=1920:808:0:136`, verified on frames), 180.8 s, with burned in English subtitles at y 0.90 to 0.97, and a song line at the very top from about 120 s. The page crops with CSS, so **the whole picture is kept** (a centred 3.7:1 cut loses the faces).
 
 No stretch of 9 s is both free of subtitles and good looking (the only long clean one, 38.5 to 49 s, is Obsidia's hair and a dark dip). So the loop is two clean stretches joined by a dissolve, with a dissolve back into the first, so the loop has no seam (the method of `scripts/story/media.py`): 44.6 to 46.9 s (the horned Ender queen in the purple hall) and 90.0 to 97.45 s (the fight, with the film's own hard cuts at 91.17 and 95.42). The subtitle bands were scanned (a static bright pixel test, then frames every half second of each candidate, in the bands), and the loop was looked at frame by frame at 20 moments and at the seam (`loop-sheet.jpg`, `seam-sheet.jpg`): no subtitle, no title, no black bar. 8.95 s, 24 fps, muted, H.264 High, faststart.
@@ -116,6 +118,8 @@ No stretch of 9 s is both free of subtitles and good looking (the only long clea
 Pick by the display only (width times pixel ratio). The poster is the first frame of the loop (`strip-poster.webp`, 1280 wide). "Play Films" opens `trailer.film.lib.video` (the library's 145 MB H.264 film, faststart, so it streams with range requests) or the 23 MB repo copy.
 
 ## 6. The ten previews
+
+> **Round two (19 Nov 2026): re-cut.** `preview/v2/<film-id>.mp4`, 1280 wide, the whole picture at each film's own shape (no 1.96 to 1 crop), CRF 21, 0.70 to 2.02 MB each, 14.7 MB in all, windows chosen again at full frame so no subtitle shows, and Awakening moved from the meadow to the burning city (118 s) so no two share a scene. The table below is the first version (windows and sizes); the current windows are in `previews.py` and `round2-R-A4.md`.
 
 One clip per film of `FILM_IDS`, cut from the library's own films. 4 s (97 frames at 24 fps), 560x286 (1.96 to 1, the card of the reference is 1.45 by 0.74), H.264 Main CRF 26, no audio, faststart, plus a WebP poster (the first frame). The crop is the middle of the picture between 7 and 87 percent of its height, which leaves out the burned in subtitles (below 88 percent, and the few lines at the very top of Re:Link and Connection Lost). Each loop closes with a 0.35 s dissolve into its head. Total 2.69 MB, 142 to 489 KB each.
 

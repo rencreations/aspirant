@@ -1,14 +1,17 @@
 /* The home page's loading screen, tap gate. The drone, the pair and the logo are drawn on
    the home's canvas, which is lifted above this screen's ground while the opening runs (see
-   `features/home/boot/lift.ts`); this file is only the ground, the bar and the words. The first
-   frame matches the plain cover that the boot script paints (`.gate-cover` in styles/base.css: the
-   same ground, mark and bar), so the hand-over is not seen. */
+   `features/home/boot/lift.ts`); this file is only the ground, the bar and the words. The drone
+   stands small in the middle of the screen (12 percent of its height, `LOADER_DRONE` in
+   `boot/timeline.ts`); the mark stands above it and the bar, the percent, the real words and the
+   gate under it. The first frame matches the plain cover that the boot script paints
+   (`html[data-gate-kind="home"] .gate-cover` in styles/base.css: the same ground, mark and bar at the
+   same places), so the hand-over is not seen. */
 .root {
+  /* Half the drone's height, silhouette and all (0.12 of the screen's height, 1.06 for the wings). */
+  --boot-drone-half: 6.4vh;
   position: fixed;
   inset: 0;
   z-index: var(--z-transition);
-  display: grid;
-  place-items: center;
   overflow: hidden;
   background: #f4f6f9;
   color: #140e26;
@@ -17,6 +20,12 @@
 
 /* The site's own dot grid: it comes in as the drone appears, so the ground this screen hands over
    to (the page's daybreak ground, the same grid) is already there. */
+@supports (height: 1dvh) {
+  .root {
+    --boot-drone-half: 6.4dvh;
+  }
+}
+
 .dots {
   position: absolute;
   inset: 0;
@@ -32,30 +41,45 @@
   opacity: 1;
 }
 
-.inner {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 1.1rem;
-  /* The extra 1.1rem on top puts the mark and the bar where the plain cover's stand (measured at
-     1440 and 390 wide), so the hand-over does not move them. */
-  padding: 2.6rem 1.5rem 1.5rem;
-  text-align: center;
-  transition: opacity 0.5s ease;
+.mark,
+.stack {
+  transition: opacity 0.2s ease;
 }
 
-.root[data-phase="intro"] .inner {
-  opacity: 0;
-  pointer-events: none;
-}
-
+/* Above the drone, on a clear gap. */
 .mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% + var(--boot-drone-half) + 1.6rem);
   margin: 0;
+  text-align: center;
   font-family: var(--font-display-stack, inherit);
   font-size: clamp(1.4rem, 5vw, 2.2rem);
   font-weight: 800;
   letter-spacing: 0.3em;
   text-transform: uppercase;
+}
+
+/* Under the drone: the bar, the percent and the real words, then the small print. */
+.stack {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--boot-drone-half) + 2rem);
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  width: min(30rem, 92vw);
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.root[data-phase="intro"] .mark,
+.root[data-phase="intro"] .stack {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .barWrap {
@@ -175,7 +199,7 @@
   justify-items: center;
   gap: 0.7rem;
   width: min(30rem, 92vw);
-  margin-top: -0.4rem;
+  margin-top: 0.5rem;
   transform: translateX(-50%);
   transition: opacity 0.4s ease;
 }

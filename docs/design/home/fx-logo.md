@@ -1,5 +1,7 @@
 # Home: the logo wave (workstream F1b)
 
+> **Round two update (19 Nov 2026).** The big logo stands perfectly still at rest: the hero's `REST_WAVE` and the intro's `LOGO_REST_WAVE` are 0, and the pointer ripple is opt in (`LogoPose.ripple`, default false). The morph keeps its wave: `waveEnvelope` gives the calm ripple the logo used to rest in (`MORPH_KICK` 0.3) as the first 8 percent of the morph, so from P 0.08 the wave is the old one. See `round2-R-A1.md`.
+
 The Aspirants logo as an actor of the home's one stage: a finely cut quad, drawn from the vector, that stands big in the hero, can be carried and tipped, morphs with a travelling wave into the top bar's logo, and hands over to the real DOM logo with no visible change. Code: `apps/web/src/features/home/fx/logo/`. Brief and numbers: `docs/design/home-reference/logo-wave-morph.md`.
 
 ## 1. Files

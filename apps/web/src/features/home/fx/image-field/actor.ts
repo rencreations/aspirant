@@ -47,6 +47,7 @@ import {
   lensOf,
   poseOf,
   rankCards,
+  slotOf,
   storyProgress,
   type FormationName,
   type FormationSet,
@@ -68,11 +69,12 @@ import {
   type Idle,
 } from "./live";
 import { clamp, clipSoftEdges, mix, qFromEuler, qMul, type Q } from "./math";
-import { cardCountOf, assignPictures, cardKeys, slotKeys, type CardPictures } from "./pictures";
+import { cardCountOf, assignPictures, cardKeys, poolKeys, type CardPictures } from "./pictures";
 import { Composite, type CompositeParams } from "./post";
 import { cardQuad, pointInQuad, quadBounds } from "./project";
 import {
   focusInWindow,
+  poolOf,
   portraitSource,
   setDef,
   wideSource,
@@ -270,7 +272,10 @@ export class FieldActor implements Actor {
   readonly ready: Promise<void>;
 
   private readonly def: FieldSetDef;
+  /** The cards of the hero (the story's). */
   private readonly n: number;
+  /** Every cell of the field: the story's cards and the wall-only cells that fill the plane. */
+  private total = 0;
   private readonly scene = new Scene();
   private readonly camera: PerspectiveCamera;
   private readonly cells: Cell[] = [];
@@ -354,6 +359,7 @@ export class FieldActor implements Actor {
     light: 0,
   };
   private readonly compositeParams: CompositeParams;
+  private readonly cullBox: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private wideSources: PicSource[] = [];
   private wideRequested = false;
   private unsubscribe: (() => void) | null = null;
@@ -394,16 +400,13 @@ export class FieldActor implements Actor {
     this.blank.needsUpdate = true;
 
     this.layout = this.makeLayout();
-    this.ranks = new Float64Array(this.n);
+    this.total = this.layout.total;
+    this.ranks = new Float64Array(this.total);
     this.camera = makePixelPerspectiveCamera(vp.w, vp.h);
     this.lens = this.camera.position.z;
 
-    for (let i = 0; i < this.n; i++) {
-      const view = new CardView(this.blank, `field-card-${i}`);
-      this.scene.add(view.mesh);
-      this.cells.push(makeCell(view, i));
-    }
-    this.pictures = assignPictures(this.def, this.layout.story.wallSlot, this.n);
+    this.growCells();
+    this.pictures = assignPictures(this.def, this.layout);
 
     this.target = stage.target(1, {
       format: RGBAFormat,
@@ -498,6 +501,17 @@ export class FieldActor implements Actor {
     if (offset !== undefined) this.offset = offset;
   }
 
+  /**
+   * Put the slide at exactly `x` (the wall plane's pixels) and stop the glide there, for a scene that
+   * drives the rows by hand (the rows' transition). Call it every frame it drives them; `setSlide`
+   * and the glide take over again when it stops.
+   */
+  holdSlideAt(x: number): void {
+    this.rate = 0;
+    this.car.speed = 0;
+    this.car.pos = x - this.offset;
+  }
+
   /** A multiplier of every card's opacity, 0 to 1 (fading the field in or out). */
   setOpacity(opacity: number): void {
     this.opacity = clamp(opacity);
@@ -570,7 +584,7 @@ export class FieldActor implements Actor {
   // What a section asks
 
   get count(): number {
-    return this.n;
+    return this.total;
   }
 
   /** The lens distance of the last frame (px): 1000 is the pixel lens, 2000 the wall's. */
@@ -583,6 +597,11 @@ export class FieldActor implements Actor {
     return this.car.pos + this.offset;
   }
 
+  /** The glide's speed now, px/s of the wall plane. */
+  get slideSpeed(): number {
+    return this.car.speed;
+  }
+
   /** The index of the card under the pointer, or -1. */
   get hovered(): number {
     return this.hoverCard;
@@ -593,7 +612,7 @@ export class FieldActor implements Actor {
    * past its right edge, so a section shows it with `setClip(field.frameRect("wall"))`.
    */
   frameRect(kind: "wall" | "rows" = "wall", out: Rect = { x: 0, y: 0, w: 0, h: 0 }): Rect {
-    const f = kind === "rows" ? this.layout.rows.frame : this.layout.story.wall.frame;
+    const f = kind === "rows" ? this.layout.rows.frame : this.layout.grid.wall;
     out.x = this.vp.w / 2 + f.cx - f.w / 2;
     out.y = this.vp.h / 2 - f.cy - f.h / 2;
     out.w = f.w;
@@ -612,10 +631,32 @@ export class FieldActor implements Actor {
   cardInfo(i: number): CardPress | null {
     const p = this.pictures[i];
     if (!p) return null;
-    const wide = this.def.walls[p.wide];
+    const wide = poolOf(this.def)[p.wide];
     const portrait = this.def.portraits[p.portrait];
     if (!wide || !portrait) return null;
-    return { index: i, wide, portrait, slot: this.layout.story.wallSlot[i]! };
+    return { index: i, wide, portrait, slot: slotOf(this.layout, i) };
+  }
+
+  /** The number of cells drawn: the hero's cards and the wall-only cells. */
+  get cellCount(): number {
+    return this.total;
+  }
+
+  /** Make a mesh for every cell the layout has (a smaller screen needs fewer, a larger one more). */
+  private growCells(): void {
+    while (this.cells.length < this.total) {
+      const i = this.cells.length;
+      const view = new CardView(this.blank, `field-card-${i}`);
+      view.mesh.visible = false;
+      this.scene.add(view.mesh);
+      this.cells.push(makeCell(view, i));
+    }
+    for (let i = this.total; i < this.cells.length; i++) {
+      const c = this.cells[i]!;
+      c.shown = false;
+      c.quadOk = false;
+      c.view.mesh.visible = false;
+    }
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -651,7 +692,7 @@ export class FieldActor implements Actor {
     const d = this.lens;
 
     // 1. Base poses and where they are on the screen.
-    for (let i = 0; i < this.n; i++) {
+    for (let i = 0; i < this.total; i++) {
       const c = this.cells[i]!;
       this.evalBase(i, slide, c.base);
       const s0 = d / (d - c.base.z);
@@ -665,7 +706,7 @@ export class FieldActor implements Actor {
     const hovered = this.hoverCard >= 0 ? this.cells[this.hoverCard]! : null;
     const pushOn = this.pointerLive && this.dt > 0;
     let needWide = false;
-    for (let i = 0; i < this.n; i++) {
+    for (let i = 0; i < this.total; i++) {
       const c = this.cells[i]!;
       const b = c.base;
       const live = b.live;
@@ -844,8 +885,27 @@ export class FieldActor implements Actor {
     l.light = 0.28;
     c.view.write(l);
     c.shown = p.opacity > 0.003;
-    c.view.mesh.visible = c.shown;
     c.quadOk = c.shown && cardQuad(p.x, p.y, p.z, c.q, hw * 2, hh * 2, this.lens, this.vp, c.quad);
+    // A cell that is wholly off the screen or outside the clip is not drawn (the plane is much larger than the screen).
+    c.view.mesh.visible = c.shown && (!c.quadOk || this.seen(c.quad));
+  }
+
+  /** Some of the quad is on the screen and inside the clip (a margin for the shadow and the smear). */
+  private seen(quad: Quad): boolean {
+    const b = quadBounds(quad, this.cullBox);
+    const m = 48;
+    let x0 = -m;
+    let y0 = -m;
+    let x1 = this.vp.w + m;
+    let y1 = this.vp.h + m;
+    const clip = this.clipRect;
+    if (clip) {
+      x0 = Math.max(x0, clip.x - m);
+      y0 = Math.max(y0, clip.y - m);
+      x1 = Math.min(x1, clip.x + clip.w + m);
+      y1 = Math.min(y1, clip.y + clip.h + m);
+    }
+    return b.x + b.w >= x0 && b.x <= x1 && b.y + b.h >= y0 && b.y <= y1;
   }
 
   private evalBase(i: number, slide: number, out: CardPose): void {
@@ -979,7 +1039,7 @@ export class FieldActor implements Actor {
     if (clip && (x < clip.x || x > clip.x + clip.w || y < clip.y || y > clip.y + clip.h)) return -1;
     let best = -1;
     let bestZ = -Infinity;
-    for (let i = 0; i < this.n; i++) {
+    for (let i = 0; i < this.total; i++) {
       const c = this.cells[i]!;
       if (!c.quadOk || c.pose.opacity < 0.2) continue;
       if (c.pose.z <= bestZ) continue;
@@ -1092,7 +1152,7 @@ export class FieldActor implements Actor {
 
   private async loadAll(): Promise<void> {
     const portraits = this.def.portraits.map((p) => portraitSource(p));
-    this.wideSources = this.def.walls.map((p) => wideSource(p));
+    this.wideSources = poolOf(this.def).map((p) => wideSource(p));
     for (const src of [...portraits, ...this.wideSources]) {
       this.textures.set(src.id, { src, texture: null, ready: false });
     }
@@ -1188,10 +1248,11 @@ export class FieldActor implements Actor {
    * portrait in its place (cover-cropped), never a blank.
    */
   private applyPictures(): void {
-    for (let i = 0; i < this.n; i++) {
+    const pool = poolOf(this.def);
+    for (let i = 0; i < this.total; i++) {
       const pic = this.pictures[i]!;
       const portrait = this.def.portraits[pic.portrait]!;
-      const wide = this.def.walls[pic.wide]!;
+      const wide = pool[pic.wide]!;
       const ps = portraitSource(portrait);
       const ws = wideSource(wide);
       const focus = focusInWindow(wide);
@@ -1205,7 +1266,7 @@ export class FieldActor implements Actor {
   private makeLayout(): FormationSet {
     return buildFormations(this.n, this.vp, {
       cardKeys: cardKeys(this.def, this.n),
-      slotKeys: slotKeys(this.def),
+      poolKeys: poolKeys(this.def),
     });
   }
 
@@ -1216,7 +1277,10 @@ export class FieldActor implements Actor {
     if (this.disposed || (w === this.vp.w && h === this.vp.h)) return;
     this.vp = { w, h };
     this.layout = this.makeLayout();
-    this.pictures = assignPictures(this.def, this.layout.story.wallSlot, this.n);
+    this.total = this.layout.total;
+    this.ranks = new Float64Array(this.total);
+    this.growCells();
+    this.pictures = assignPictures(this.def, this.layout);
     this.applyPictures();
     if (this.spec.kind === "blend") this.rankFor(this.spec.from, this.spec.by);
     this.wake?.resize(w, h);

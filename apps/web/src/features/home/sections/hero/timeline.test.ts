@@ -127,12 +127,11 @@ describe("the clip", () => {
 });
 
 describe("the wall's glide", () => {
-  it("is still while the cards land, runs on the wall, and stops as the rows open", () => {
+  it("is still while the cards land, runs on the wall, and never stops (the rows go on with it)", () => {
     expect(slideRate(0)).toBe(0);
     expect(slideRate(TIMES.slideIn[0])).toBe(0);
     expect(slideRate(WALL)).toBeCloseTo(SLIDE_RATE, 6);
-    expect(slideRate(TIMES.slideOut[1])).toBe(0);
-    expect(slideRate(7)).toBe(0);
+    for (let S = WALL; S <= 8; S += 0.05) expect(slideRate(S)).toBeCloseTo(SLIDE_RATE, 6);
   });
 
   it("is never negative and never above the rate", () => {
@@ -161,7 +160,6 @@ describe("the wall to the rows", () => {
     expect(TIMES.open[0]).toBeGreaterThanOrEqual(WALL);
     expect(TIMES.open[1]).toBeLessThanOrEqual(ROWS + 1e-9);
     expect(TIMES.clipOpen[1]).toBeLessThanOrEqual(ROWS + 1e-9);
-    expect(TIMES.slideOut[1]).toBeLessThanOrEqual(ROWS + 1e-9);
   });
 
   it("opens the clip with the rows, not after", () => {

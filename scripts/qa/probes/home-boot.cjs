@@ -5,7 +5,7 @@
 //   node scripts/qa/probes/home-boot.cjs <outFolder>
 //
 // Environment: BASE (default http://localhost:3000), SIZES ("1440x900,1706x950,390x844"), TIMES (the
-// seconds of the intro to photograph, default every 1 s from 0.5 to 13), STAGES=0 to skip the loader
+// seconds of the intro to photograph, default every 0.2 s from 0.1 to 1.8), STAGES=0 to skip the loader
 // quarters, INTRO=0 to skip the intro frames.
 //
 // What it does for each size:
@@ -29,7 +29,9 @@ fs.mkdirSync(out, { recursive: true });
 const SIZES = (process.env.SIZES || "1440x900,1706x950,390x844")
   .split(",")
   .map((s) => s.split("x").map(Number));
-const TIMES = (process.env.TIMES || "0.5,1,2,3,4,5,6,7,8,9,10,11,12,13").split(",").map(Number);
+const TIMES = (process.env.TIMES || "0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7,1.8")
+  .split(",")
+  .map(Number);
 
 const phase = (page) =>
   page
@@ -138,7 +140,7 @@ function joint(w, h) {
         });
       }
       // J0: the last instant of the intro against the joint.
-      await page.evaluate(() => window.__homeBoot.seekIntro(13.19));
+      await page.evaluate(() => window.__homeBoot.seekIntro(1.849));
       await page.waitForTimeout(250);
       entry.end = await page.evaluate(() => {
         const s = window.__homeBoot.state();

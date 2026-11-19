@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { PREVIEW_ASPECT } from "./data";
+import { PREVIEWS, TRAILER_FILM, previewAspect } from "./data";
 import {
+  cardAspect,
   orbitMetrics,
   makeSlots,
   ORBIT_START,
@@ -15,6 +16,29 @@ import { makePoses as makePose } from "./scene";
 import { makePlane, PLANE_COUNT } from "./types";
 
 const vp = { w: 1440, h: 900 };
+
+describe("the cards' shapes", () => {
+  it("are each film's own, and the ring's nominal shape for a card that has none", () => {
+    for (let k = 1; k <= PREVIEWS.length; k++) {
+      expect(cardAspect(k)).toBeCloseTo(previewAspect(PREVIEWS[k - 1]!), 9);
+    }
+    expect(cardAspect(0)).toBeCloseTo(560 / 286, 9);
+    expect(cardAspect(99)).toBeCloseTo(560 / 286, 9);
+    // The ten films are a mix of 16 to 9 and about 2.37 to 1: the shapes differ.
+    expect(new Set(PREVIEWS.map((p) => (p.w / p.h).toFixed(2))).size).toBeGreaterThan(1);
+  });
+
+  it("gives the gather the same shapes", () => {
+    const base = makePlane();
+    base.w = 1120;
+    base.h = 1120 / TRAILER_FILM.aspect;
+    const out = makePose();
+    orbitPoses(vp, "gather", 1, ORBIT_START, base, out);
+    for (let k = 1; k < PLANE_COUNT; k++) {
+      expect(out[k]!.w / out[k]!.h).toBeCloseTo(cardAspect(k), 6);
+    }
+  });
+});
 
 describe("the train", () => {
   it("has gaps in the digest's series: 0.619 rad first for twelve cards, each 0.88 of the last", () => {
@@ -101,11 +125,13 @@ describe("the pull", () => {
       expect(p[0]!.x).toBeCloseTo(cx + slots[0]!.x, 6);
       expect(p[0]!.y).toBeCloseTo(cy - slots[0]!.y, 6);
       expect(p[0]!.w).toBeCloseTo(cardW * slots[0]!.s, 6);
-      expect(p[0]!.w / p[0]!.h).toBeCloseTo(PREVIEW_ASPECT, 6);
+      // The leader is the trailer at the film's own shape, the others are their films' own shapes.
+      expect(p[0]!.w / p[0]!.h).toBeCloseTo(TRAILER_FILM.aspect, 6);
       for (let k = 1; k < PLANE_COUNT; k++) {
         expect(p[k]!.x).toBeCloseTo(cx + slots[k]!.x, 6);
         expect(p[k]!.y).toBeCloseTo(cy - slots[k]!.y, 6);
         expect(p[k]!.w).toBeCloseTo(cardW * slots[k]!.s, 6);
+        expect(p[k]!.w / p[k]!.h).toBeCloseTo(previewAspect(PREVIEWS[k - 1]!), 6);
         expect(p[k]!.opacity).toBeCloseTo(slots[k]!.o, 6);
       }
     }

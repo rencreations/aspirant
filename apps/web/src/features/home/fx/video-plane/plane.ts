@@ -45,6 +45,9 @@ export interface PlaneLook {
   time: number;
   phase: number;
   light: number;
+  /** The trailer's thin loading line: how visible it is (0 to 1) and how much is in hand (0 to 1). */
+  load: number;
+  loadFraction: number;
 }
 
 /** Margin around the plane the quad covers, so the soft edge is not cut by the mesh. */
@@ -70,6 +73,7 @@ export class PlaneView {
     uBend: { value: 0 },
     uFlutter: { value: 0 },
     uPhase: { value: 0 },
+    uLoad: { value: new Vector2(0, 0) },
   };
 
   constructor(texture: Texture, color: string, name: string) {
@@ -113,6 +117,7 @@ export class PlaneView {
     u.uFx.value.set(l.lens, l.split, 0, l.sweep);
     u.uTime.value = l.time;
     u.uLight.value = l.light;
+    u.uLoad.value.set(l.load, l.loadFraction);
   }
 
   dispose(): void {

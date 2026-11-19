@@ -6,9 +6,9 @@ import { preload } from "./preload";
 
 /**
  * The length in screens: the toss fires half a screen in (after the hand's tail), then a dwell of
- * 0.4 of a screen for each frame, the growth of the last frame, and a rest before the tail.
+ * 0.55 of a screen for each frame, the growth of the last frame, and a rest before the tail.
  */
-const SCREENS = 5;
+const SCREENS = 6.5;
 
 /**
  * The list of ten frames, one play each (`../hand/stations.ts`): the toss onto the first frame, nine

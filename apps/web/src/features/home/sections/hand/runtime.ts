@@ -27,6 +27,7 @@ const f = (v: number): string => String(Math.round(v * 1000) / 1000);
  */
 class HandRuntime implements SectionRuntime {
   private carry: Carry | null = null;
+  private carryDone = false;
   private disposed = false;
   private readonly b: HandBeats = newHandBeats();
   private readonly chars: HTMLElement[];
@@ -57,7 +58,14 @@ class HandRuntime implements SectionRuntime {
 
   /** The hand and the doll are built (the list section shares them). */
   setCarry(carry: Carry | null): void {
-    if (!this.disposed) this.carry = carry;
+    if (this.disposed) return;
+    this.carry = carry;
+    this.carryDone = true;
+  }
+
+  /** The hand and the doll are built (or failed for good): the rise does not fire before. */
+  ready(): boolean {
+    return this.carryDone;
   }
 
   update(v: number, frame: FrameInfo): void {

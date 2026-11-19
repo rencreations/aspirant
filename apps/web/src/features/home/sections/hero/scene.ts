@@ -14,25 +14,28 @@ import {
   type FormationRef,
   type Rect,
 } from "../../fx/image-field";
-import { PREVIEW_PICTURES } from "../../preview/pictures";
+import { ALL_PREVIEW_PICTURES } from "../../preview/pictures";
 import { setPreviewResolver, useHomePreview } from "../../preview/store";
 
 import { clipOpen, rowsBlend, slideRate, storyP, viewable } from "./timeline";
 
-/** The beat the cards fly out of the ring in when the page opens (seconds, real time). */
-export const ENTRANCE_SECONDS = 1.7;
+/**
+ * The beat the cards expand from behind the logo in when the page opens (seconds, real time). They
+ * all go at once, the ones nearest the middle first (`ENTRANCE_SPREAD`), each with an ease out.
+ */
+export const ENTRANCE_SECONDS = 0.7;
+/** The share of the entrance the starts of the cards are spread over (the rest is one card's flight). */
+const ENTRANCE_SPREAD = 0.2;
+/** The ease of the entrance: fast at first, then it settles into the float. */
+const entranceEase = (u: number): number => 1 - (1 - u) * (1 - u);
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
-
-/** The wall's cut edge thins out over this much of the screen's width, never over more than the max (CSS px). */
-const WALL_SOFT = 0.07;
-const WALL_SOFT_MAX = 120;
 
 export interface SceneInput {
   /** The scroll position, from the section's own `local`. */
   S: number;
   viewport: { readonly w: number; readonly h: number };
-  /** 0 to 1: how far the cards have come out of the ring since the page opened (1 after it). */
+  /** 0 to 1: how far the cards have come out from behind the logo since the page opened (1 after it). */
   entrance: number;
   /** A point (stage px, y up) the drone looks at, or null for the pointer. */
   look?: { x: number; y: number } | null;
@@ -43,16 +46,17 @@ export class FieldScene {
   private readonly wall: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly wallRef: FormationRef = { name: "wall" };
   private readonly rowsRef: FormationRef = { name: "rows" };
-  private readonly ringRef: FormationRef = { name: "ring" };
-  private readonly scatterRef: FormationRef = { name: "scatter" };
+  private readonly originRef: FormationRef = { name: "origin" };
+  private readonly storyRef: FormationRef = { name: "story", t: 0 };
   private readonly route: DroneRoutePlace = newRoutePlace();
 
   private readonly box: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  private readonly near: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly removeResolver: () => void;
 
   /** A press on a card once the wall can be pressed: the preview opens, growing out of the card. */
   private readonly onPress = (press: CardPress): void => {
-    const index = PREVIEW_PICTURES.findIndex((p) => p.id === press.wide.id);
+    const index = ALL_PREVIEW_PICTURES.findIndex((p) => p.id === press.wide.id);
     if (index < 0) return;
     const r = this.field.slotRect(press.index, this.box);
     useHomePreview.getState().show(index, r ? { x: r.x, y: r.y, w: r.w, h: r.h } : null);
@@ -63,13 +67,29 @@ export class FieldScene {
     private readonly drone: DroneActor | null,
   ) {
     // Where a picture's card is now, so the window can fly back into it when it closes.
+    // A picture is on the wall more than once: the instance that is seen (inside the clip) and nearest
+    // the card that was pressed is the one the window flies back into.
     this.removeResolver = setPreviewResolver((id) => {
+      const from = useHomePreview.getState().from;
+      const cx = from ? from.x + from.w / 2 : this.clip.x + this.clip.w / 2;
+      const cy = from ? from.y + from.h / 2 : this.clip.y + this.clip.h / 2;
+      let best: Rect | null = null;
+      let bestD = Infinity;
       for (let i = 0; i < field.count; i++) {
         if (field.cardInfo(i)?.wide.id !== id) continue;
-        const r = field.slotRect(i, this.box);
-        return r ? { x: r.x, y: r.y, w: r.w, h: r.h } : null;
+        const r = field.slotRect(i, this.near);
+        if (!r) continue;
+        const mx = r.x + r.w / 2;
+        const my = r.y + r.h / 2;
+        const c = this.clip;
+        if (c.w > 0 && (mx < c.x || mx > c.x + c.w || my < c.y || my > c.y + c.h)) continue;
+        const d = Math.hypot(mx - cx, my - cy);
+        if (d < bestD) {
+          bestD = d;
+          best = { x: r.x, y: r.y, w: r.w, h: r.h };
+        }
       }
-      return null;
+      return best;
     });
   }
 
@@ -97,12 +117,15 @@ export class FieldScene {
       f.show("rows");
     } else if (rows > 0) {
       f.blend(this.wallRef, this.rowsRef, rows, 0.25, "left");
-    } else if (entrance < 1 && S < 0.1) {
-      f.blend(this.ringRef, this.scatterRef, entrance, 0.55, "top");
+    } else if (entrance < 1) {
+      // The cards expand from a heap behind the logo into whatever the story shows now (the
+      // scatter at rest), so a scroll that comes early never makes them jump.
+      this.storyRef.t = storyP(S);
+      f.blend(this.originRef, this.storyRef, entranceEase(entrance), ENTRANCE_SPREAD, "centre");
     } else {
       f.show("story", storyP(S));
     }
-    f.setOpacity(entrance < 1 && S < 0.1 ? Math.min(1, entrance * 5) : 1);
+    f.setOpacity(1);
 
     // 2. The clip: the whole screen while the cards fly, the wall's frame under the words.
     const open = clipOpen(S);
@@ -115,8 +138,8 @@ export class FieldScene {
       c.y = mix(this.wall.y, 0, open);
       c.w = mix(this.wall.w, viewport.w, open);
       c.h = mix(this.wall.h, viewport.h, open);
-      // The wall's cut edge (the right one, or the foot on a tall screen) thins out instead of a hard line.
-      f.setClip(c, Math.min(WALL_SOFT_MAX, viewport.w * WALL_SOFT));
+      // The wall's cut edge (the right one, or the foot on a tall screen) is sharp: the pictures just end.
+      f.setClip(c);
     }
 
     // 3. The glide, the hover, the cursor and the press.

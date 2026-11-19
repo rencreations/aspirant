@@ -12,7 +12,17 @@ import { isPortrait } from "../hand/timeline";
 
 import { SelenaScene } from "./scene";
 import { STORY } from "./stations";
-import { AT, WORD_IN, beatsAt, newBeats, seg, selenaScreens, smooth, type Beats } from "./timeline";
+import {
+  AT,
+  WORD_IN,
+  beatsAt,
+  newBeats,
+  seg,
+  selenaScreens,
+  smooth,
+  stepWhite,
+  type Beats,
+} from "./timeline";
 
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 
@@ -41,8 +51,16 @@ class SelenaRuntime implements SectionRuntime {
   private readonly body: HTMLElement | null;
   private readonly action: HTMLElement | null;
   private disposed = false;
+  /** How far the white layer has let go by the clock, 0 (whole) to 1 (gone). */
+  private whiteClock = 0;
   /** The live backdrop, once the second canvas is made. Never required: the room works without. */
   backdrop: Backdrop | null = null;
+  /** The actors have arrived, or have failed for good: the scene is as whole as it will be. */
+  built = false;
+  /** The aurora's shader is compiled (or the backdrop cannot be had). */
+  warmed = false;
+  /** The backdrop really draws. Without it the list's dusk sky stays, so the room is never a black void. */
+  backdropOn = false;
 
   constructor(ctx: SectionCtx) {
     this.scene = new SelenaScene(ctx);
@@ -63,7 +81,17 @@ class SelenaRuntime implements SectionRuntime {
     return this.disposed;
   }
 
+  /**
+   * The ready gate: a play does not fire on an empty sky. The doll falls, the camera swings and the
+   * dragon eats her, so all three must be built, and the aurora's shader compiled so that its first
+   * draw does not hitch inside the play.
+   */
+  ready(): boolean {
+    return this.built && this.warmed;
+  }
+
   enter(): void {
+    this.whiteClock = 0;
     this.scene.enter();
   }
 
@@ -77,6 +105,8 @@ class SelenaRuntime implements SectionRuntime {
     const u = Math.min(local, 1) * STORY;
     const tail = Math.max(0, local - 1) * selenaScreens();
     const b = beatsAt(u, this.b, tail);
+    this.whiteClock = stepWhite(this.whiteClock, tail, frame.dt);
+    b.whiteOut = Math.max(b.whiteOut, smooth(this.whiteClock));
     this.dom(b, u, isPortrait(frame.viewport));
     this.live(b, u);
     this.scene.apply(b, frame);
@@ -109,9 +139,10 @@ class SelenaRuntime implements SectionRuntime {
       portrait ? `translate3d(0, ${f(away)}%, 0)` : `translate3d(${f(-away)}%, 0, 0)`,
     );
     put(this.drawer, "opacity", f(Math.min(1, b.drawer * 1.6)));
-    put(this.drawer, "visibility", b.drawer > 0 ? "visible" : "hidden");
+    put(this.drawer, "visibility", b.drawer > 0 ? "inherit" : "hidden");
     // The list's sky is opaque and sits over the backdrop: it gives way as the aurora comes in.
-    put(this.sky, "opacity", f(1 - (1 - SKY_LEFT) * smooth(seg(u, 0, 0.9))));
+    const skyGone = this.backdropOn ? (1 - SKY_LEFT) * smooth(seg(u, 0, 0.9)) : 0;
+    put(this.sky, "opacity", f(1 - skyGone));
 
     // The words: the title, the line and the button come one after another, and leave in turn.
     this.word(this.title, u, 0);
@@ -120,7 +151,7 @@ class SelenaRuntime implements SectionRuntime {
 
     // The sky is under the white: once the white is whole it is hidden, so the white that leaves in
     // the tail shows the ground (the voices' own) and never a flash of the night.
-    put(this.sky, "visibility", b.white < 1 ? "visible" : "hidden");
+    put(this.sky, "visibility", b.white < 1 ? "inherit" : "hidden");
 
     // The stars come as the drawer opens. The four point star of the film's sky follows the camera.
     put(this.stars, "opacity", f(0.9 * smooth(seg(u, 0, 0.8)) * (1 - b.white)));
@@ -131,7 +162,7 @@ class SelenaRuntime implements SectionRuntime {
     // The white: the way out, then it leaves again in the tail, under the next section's own.
     const white = b.white * (1 - b.whiteOut);
     put(this.white, "opacity", f(white));
-    put(this.white, "visibility", white > 0 ? "visible" : "hidden");
+    put(this.white, "visibility", white > 0 ? "inherit" : "hidden");
     put(this.front, "opacity", f(b.front));
     put(this.front, "visibility", b.front > 0 ? "visible" : "hidden");
   }
@@ -166,6 +197,7 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
       ensureCarry(ctx),
     ]).then(([sl, sb, doll, marks, carry]) => {
       if (runtime.isDisposed) return;
+      runtime.built = true;
       runtime.scene.setActors({
         sl: sl.status === "fulfilled" ? sl.value : null,
         sb: sb.status === "fulfilled" ? sb.value : null,
@@ -182,9 +214,14 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
     (backdrop) => {
       if (runtime.isDisposed) return;
       runtime.backdrop = backdrop;
-      void backdrop.warm(["aurora"]);
+      void backdrop.warm(["aurora"]).finally(() => {
+        runtime.backdropOn = backdrop.state().available;
+        runtime.warmed = true;
+      });
     },
-    () => undefined,
+    () => {
+      runtime.warmed = true;
+    },
   );
   return runtime;
 }

@@ -179,11 +179,15 @@ export class Journey {
     this.wx = a.x * w;
     this.wy = a.y * h;
     this.wheight = BASE_HEIGHT * this.ref * a.size;
-    // The heading on the screen: the tangent of the path in pixels.
+    // The heading on the screen: the tangent of the path in pixels. The head is turned by it, and a
+    // tall narrow screen would make every heading vertical: the head would face the lens straight on,
+    // the doll would sit behind it (she hid behind the mane on a phone). So the width counts for at
+    // least 1.6 heights in the turn of the head (a screen as wide as 16 to 10 is not changed by it).
     const hx = (a.tx / 1.6) * w;
     const hy = a.ty * h;
+    const turnX = (a.tx / 1.6) * Math.max(w, 1.6 * h);
     const dwell = bump(t, BEAT.arrive - 0.35, BEAT.arrive, BEAT.leave, BEAT.leave + 0.35);
-    const f = facing(hx, hy, 0.3 + 0.3 * dwell);
+    const f = facing(turnX, hy, 0.3 + 0.3 * dwell);
     this.wyaw = f.yaw;
     // The head rears as the dragon is frightened, and comes down again for the sneeze.
     const rear = bump(t, BEAT.leave, BEAT.leave + 0.25, BEAT.launch - 0.15, BEAT.launch + 0.1);

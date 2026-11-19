@@ -5,7 +5,8 @@ import { FilmActor } from "./actor";
 export { FilmActor, FILM_ORDER } from "./actor";
 export type { PreviewPress } from "./actor";
 export { HOVER_MODES, type HoverMode, type HoverWeights } from "./hover";
-export { PREVIEWS, TRAILER_FILM, STRIPS, type PreviewFilm } from "./data";
+export { PREVIEWS, TRAILER_FILM, previewAspect, type PreviewFilm } from "./data";
+export type { StreamStatus } from "./stream";
 export {
   expandBox,
   orbitStage,

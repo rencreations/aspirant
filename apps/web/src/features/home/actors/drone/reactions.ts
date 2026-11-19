@@ -1,18 +1,17 @@
 /**
  * How the drone answers a visitor who presses it. Pure and on its own clock, so a section that
  * keeps the drone in one place (the loader) still gets a drone that reacts: an answer never moves
- * the drone's target, it only asks for a move (`tricks.ts`), a face and a bubble.
+ * the drone's target, it only asks for a move (`tricks.ts`), a face and the shock mark.
  *
- *  - the first presses are friendly: a hop, a roll, a nod, each with its own bubble;
- *  - three quick presses make it dizzy, the fourth puzzles it ("?");
- *  - the fifth in a short while makes it annoyed: an angry face, a bang and a shake, and more
+ *  - the first presses are friendly: a hop, a roll, a nod, with a happy face;
+ *  - three quick presses make it dizzy, the fourth puzzles it (a confused face);
+ *  - the fifth in a short while makes it annoyed: an angry face, the shock mark and a shake, and more
  *    presses keep it annoyed for a little longer (to a limit);
- *  - when the visitor stops and a moment has gone by, it forgives: a nod, a heart and a kind face.
+ *  - when the visitor stops and a moment has gone by, it forgives: a nod and a kind face.
  *
  * No three here.
  */
 import type { FaceName } from "./faces";
-import type { IconName } from "./marks";
 import type { TrickKind } from "./tricks";
 
 type Mood = "calm" | "annoyed" | "forgiving";
@@ -33,7 +32,8 @@ export interface Reactions {
 export interface Answer {
   fired: boolean;
   trick: TrickKind | null;
-  icon: IconName | null;
+  /** The comic shock mark (lines and a bang) over its head. */
+  shock: boolean;
   /** A face to wear for `faceSeconds`, or null. */
   face: FaceName | null;
   faceSeconds: number;
@@ -50,20 +50,19 @@ export const ANNOYED_MAX = 6;
 const FORGIVE_SECONDS = 1.8;
 
 const FRIENDLY_TRICKS: readonly TrickKind[] = ["hop", "roll", "nod"];
-const FRIENDLY_ICONS: readonly IconName[] = ["heart", "sparkle", "smile"];
 
 export function createReactions(): Reactions {
   return { presses: [], answer: 0, mood: "calm", until: 0, started: 0 };
 }
 
 export function createAnswer(): Answer {
-  return { fired: false, trick: null, icon: null, face: null, faceSeconds: 0 };
+  return { fired: false, trick: null, shock: false, face: null, faceSeconds: 0 };
 }
 
 function clear(out: Answer): Answer {
   out.fired = false;
   out.trick = null;
-  out.icon = null;
+  out.shock = false;
   out.face = null;
   out.faceSeconds = 0;
   return out;
@@ -86,7 +85,7 @@ export function press(r: Reactions, now: number, out: Answer): Answer {
   if (r.mood === "annoyed") {
     r.until = Math.min(r.started + ANNOYED_MAX, now + ANNOYED_HOLD);
     out.trick = "shake";
-    out.icon = "bang";
+    out.shock = true;
     out.face = "angry";
     out.faceSeconds = 1.2;
     return out;
@@ -96,13 +95,12 @@ export function press(r: Reactions, now: number, out: Answer): Answer {
     r.started = now;
     r.until = now + ANNOYED_HOLD;
     out.trick = "shake";
-    out.icon = "bang";
+    out.shock = true;
     out.face = "angry";
     out.faceSeconds = 1.4;
     return out;
   }
   if (count === PUZZLED_AT) {
-    out.icon = "question";
     out.face = "confused";
     out.faceSeconds = 1;
     return out;
@@ -113,7 +111,6 @@ export function press(r: Reactions, now: number, out: Answer): Answer {
   }
   const at = r.answer % FRIENDLY_TRICKS.length;
   out.trick = FRIENDLY_TRICKS[at] ?? "hop";
-  out.icon = FRIENDLY_ICONS[at] ?? "heart";
   out.face = "happy";
   out.faceSeconds = 1;
   r.answer += 1;
@@ -129,7 +126,6 @@ export function stepReactions(r: Reactions, now: number, out: Answer): Answer {
     r.presses.length = 0;
     out.fired = true;
     out.trick = "nod";
-    out.icon = "heart";
     out.face = "thanks";
     out.faceSeconds = FORGIVE_SECONDS * 0.9;
   } else if (r.mood === "forgiving" && now >= r.until) {

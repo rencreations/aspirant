@@ -57,3 +57,21 @@ export function blendLens(
   out.offsetY = baked.offsetY * k;
   return out;
 }
+
+/**
+ * How far along its way the camera is when the swing is at `k` (0 to 1 both ways). A power above 1
+ * keeps it out at first and brings it in fast at the end.
+ */
+export function travelOf(k: number, power: number): number {
+  const x = k <= 0 ? 0 : k >= 1 ? 1 : k;
+  return Math.pow(x, power);
+}
+
+/**
+ * How far the camera is drawn back along its view axis at `k`, as a share of its distance in the
+ * pixel view. Zero at both ends, so the swing starts and ends on the two views exactly.
+ */
+export function pullOf(k: number, amount: number): number {
+  const x = k <= 0 ? 0 : k >= 1 ? 1 : k;
+  return amount * Math.sin(Math.PI * x);
+}

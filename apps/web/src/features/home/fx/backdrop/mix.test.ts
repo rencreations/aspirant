@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { FADE_S, FadeMix, MAX_LAYERS, easeFade } from "./mix";
+import { FADE_S, FadeMix, MAX_LAYERS, MIN_FADE_S, easeFade } from "./mix";
 
 const DT = 1 / 60;
 const sum = (m: FadeMix<string>) => m.layers.reduce((s, l) => s + l.w, 0);
@@ -151,5 +151,36 @@ describe("FadeMix: cross-fade between kinds", () => {
     run(m, FADE_S / 2, "beams");
     run(m, FADE_S, null);
     expect(m.active()).toBe(false);
+  });
+});
+
+describe("FadeMix: a quicker cross-fade", () => {
+  it("crosses to a new kind over the seconds asked for, and the presence still takes FADE_S", () => {
+    const m = new FadeMix<string>();
+    run(m, FADE_S * 2, "earth");
+    const steps = Math.round(0.25 / DT);
+    for (let i = 0; i < steps; i++) m.step(DT, "air", false, 0.25);
+    expect(m.layers).toHaveLength(1);
+    expect(m.top()?.kind).toBe("air");
+    expect(m.top()?.w).toBe(1);
+    // Half way through the same cross takes the default time to be done.
+    const slow = new FadeMix<string>();
+    run(slow, FADE_S * 2, "earth");
+    for (let i = 0; i < steps; i++) slow.step(DT, "air");
+    expect(slow.layers.length).toBeGreaterThan(1);
+  });
+
+  it("never goes under the shortest cross-fade, and keeps the weights summing to 1", () => {
+    const m = new FadeMix<string>();
+    run(m, FADE_S * 2, "earth");
+    m.step(DT, "air", false, 0);
+    m.step(DT, "air", false, 0);
+    expect(sum(m)).toBeCloseTo(1, 9);
+    expect(MIN_FADE_S).toBeGreaterThan(0);
+    // A first frame of the cross moves by at most one frame of the shortest time.
+    const first = new FadeMix<string>();
+    run(first, FADE_S * 2, "earth");
+    first.step(DT, "air", false, 0);
+    expect(first.top()!.p).toBeLessThanOrEqual(DT / MIN_FADE_S + 1e-9);
   });
 });

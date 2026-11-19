@@ -24,7 +24,7 @@ import {
 
 import { INK_COLOR, toonLight, type Ink, type InkMaterial } from "../shared/toon";
 
-export const COPIES = 8;
+export const COPIES = 6;
 
 const PROJECT_CHUNK = "#include <project_vertex>";
 

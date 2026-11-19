@@ -3,6 +3,7 @@
  * `palettes.ts` (data only); this file holds the GLSL, so it is only imported by the renderer side.
  */
 import { AIR, EARTH, FIRE, WATER } from "./glsl-elements";
+import { INK_FIELD } from "./glsl-ink";
 import {
   AURORA,
   DARK_VEIL,
@@ -88,4 +89,5 @@ export const KIND_DEFS: Readonly<Record<BackdropKind, KindDef>> = {
   air: { frag: AIR, res: MID, speed: 1, scale: 1, angle: 0 },
   water: { frag: WATER, res: MID, speed: 1, scale: 1, angle: 0 },
   fire: { frag: FIRE, res: SOFT, speed: 1, scale: 1, angle: 0 },
+  "ink-field": { frag: INK_FIELD, res: MID, speed: 1, scale: 1, angle: 0 },
 };

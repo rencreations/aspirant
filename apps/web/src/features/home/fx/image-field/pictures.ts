@@ -5,7 +5,8 @@
  * A card with a one-character portrait lands on the slot that shows the same character when there
  * is one, so its subject keeps its place through the flight.
  */
-import type { FieldSetDef } from "./sets";
+import { slotOf, type FormationSet } from "./formations";
+import { poolOf, type FieldSetDef } from "./sets";
 
 export interface CardPictures {
   /** Index into `portraits`. */
@@ -27,19 +28,15 @@ export function cardKeys(def: FieldSetDef, n: number): Array<string | null> {
   });
 }
 
-/** The character each wall slot shows when it shows one alone, else null. */
-export function slotKeys(def: FieldSetDef): Array<string | null> {
-  return def.walls.map((pic) => (pic.chars.length === 1 ? pic.chars[0]! : null));
+/** The character of each picture of the pool (a one-character picture), else null. */
+export function poolKeys(def: FieldSetDef): Array<string | null> {
+  return poolOf(def).map((pic) => (pic.chars.length === 1 ? pic.chars[0]! : null));
 }
 
-/** The pictures of every card, once the cards have their wall slots. */
-export function assignPictures(
-  def: FieldSetDef,
-  wallSlot: ArrayLike<number>,
-  n: number,
-): CardPictures[] {
-  return Array.from({ length: n }, (_, i) => ({
+/** The pictures of every cell, once the cards have their wall slots: the picture of the slot it stands in. */
+export function assignPictures(def: FieldSetDef, set: FormationSet): CardPictures[] {
+  return Array.from({ length: set.total }, (_, i) => ({
     portrait: i % def.portraits.length,
-    wide: wallSlot[i]! % def.walls.length,
+    wide: set.slotPic[slotOf(set, i)]!,
   }));
 }

@@ -59,6 +59,7 @@ import {
 import { droneAt, newDroneWant, paperDrone, restOf } from "./meet";
 import { restScreens } from "./plays";
 import { platePlace, wallPictures } from "./order";
+import { isRovingKey, rovingNext, rovingStart } from "./roving";
 import {
   FAN_PICS,
   SPIRAL_ORDER,
@@ -114,6 +115,8 @@ class BendRuntime implements SectionRuntime {
   private readonly c = makePose();
   private readonly hover = new Float32Array(TOTAL_CARDS);
   private readonly readyFlag: boolean[] = [];
+  /** The nine backdrop shaders are compiled (or there is no backdrop): a play's first draw is no hitch. */
+  private warmed = false;
   private readonly removeHit: () => void;
   private readonly groups: {
     fan: HTMLElement | null;
@@ -228,17 +231,25 @@ class BendRuntime implements SectionRuntime {
       glad: marks.sustain("sparkle", { size: 40 }),
     };
     tetra.book.auto();
-    void backdrop?.warm([
-      "pixel-blast",
-      "earth",
-      "air",
-      "water",
-      "fire",
-      "soft-aurora",
-      "iridescence",
-      "aurora",
-      "particles",
-    ]);
+    if (backdrop) {
+      void backdrop
+        .warm([
+          "pixel-blast",
+          "earth",
+          "air",
+          "water",
+          "fire",
+          "soft-aurora",
+          "iridescence",
+          "aurora",
+          "particles",
+        ])
+        .finally(() => {
+          this.warmed = true;
+        });
+    } else {
+      this.warmed = true;
+    }
     // The fan pictures go to the GPU now, a screen or two before they are seen, not in the frame they are first drawn.
     this.textures(-2);
   }
@@ -267,6 +278,14 @@ class BendRuntime implements SectionRuntime {
     this.actors(b, vp, frame);
     this.words(b);
     this.platesStep(b, vp, frame);
+  }
+
+  /**
+   * The ready gate. The actors are built before this runtime exists, so what a play can still wait
+   * for is the shaders: the first bend play draws four new backdrops in two seconds.
+   */
+  ready(): boolean {
+    return this.warmed;
   }
 
   enter(): void {
@@ -776,7 +795,53 @@ class BendRuntime implements SectionRuntime {
       list.removeEventListener("pointerleave", leave);
       list.removeEventListener("focusin", focusIn);
       list.removeEventListener("focusout", focusOut);
-    });
+    }, this.rove(list));
+  }
+
+  /**
+   * One tab stop for the whole list of credit plates (fifteen plates, thirty links): the links of
+   * the plate last used take the tab key, the others are taken out of it, and the arrow keys, Home
+   * and End move between plates. The links stay in the page for a screen reader and for a visitor
+   * without scripts, which keeps the credits and the takedown links. Returns the way to undo it.
+   */
+  private rove(list: HTMLElement): () => void {
+    const plates = Array.from(list.querySelectorAll<HTMLElement>("[data-bend-plate]"));
+    const linksOf = (li: HTMLElement): HTMLElement[] =>
+      Array.from(li.querySelectorAll<HTMLElement>("a[href]"));
+    const has = plates.map((li) => linksOf(li).length > 0);
+    let current = rovingStart(0, has);
+    const paint = (): void => {
+      plates.forEach((li, i) => {
+        for (const link of linksOf(li)) link.tabIndex = i === current ? 0 : -1;
+      });
+    };
+    paint();
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.altKey || event.ctrlKey || event.metaKey || !isRovingKey(event.key)) return;
+      const li = (event.target as HTMLElement).closest<HTMLElement>("[data-bend-plate]");
+      const from = li ? plates.indexOf(li) : -1;
+      if (from < 0) return;
+      const to = rovingNext(event.key, from, has);
+      if (to === null) return;
+      event.preventDefault();
+      current = to;
+      paint();
+      linksOf(plates[to]!)[0]?.focus();
+    };
+    const onFocus = (event: FocusEvent): void => {
+      const li = (event.target as HTMLElement).closest<HTMLElement>("[data-bend-plate]");
+      const i = li ? plates.indexOf(li) : -1;
+      if (i < 0 || i === current) return;
+      current = i;
+      paint();
+    };
+    list.addEventListener("keydown", onKey);
+    list.addEventListener("focusin", onFocus);
+    return () => {
+      list.removeEventListener("keydown", onKey);
+      list.removeEventListener("focusin", onFocus);
+      for (const li of plates) for (const link of linksOf(li)) link.removeAttribute("tabindex");
+    };
   }
 
   private platesStep(b: BeatState, vp: Vp, frame: FrameInfo): void {

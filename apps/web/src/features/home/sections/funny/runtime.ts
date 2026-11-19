@@ -106,6 +106,9 @@ class FunnyRuntime implements SectionRuntime {
     if (!(to instanceof Node) || !this.ctx.dom.text.contains(to)) this.kbd = false;
   };
 
+  /** Every actor has arrived or failed for good, and the backdrop's shaders are compiled. */
+  private loaded = false;
+
   constructor(private readonly ctx: SectionCtx) {
     ctx.dom.text.addEventListener("focusin", this.onFocusIn);
     ctx.dom.text.addEventListener("focusout", this.onFocusOut);
@@ -133,10 +136,14 @@ class FunnyRuntime implements SectionRuntime {
     await Promise.all([
       take(
         "the backdrop",
-        async () => ensureBackdrop(ctx),
+        async () => {
+          const a = await ensureBackdrop(ctx);
+          // Compiled before the first play, so its first draw is no hitch inside the scene.
+          await a.warm(["soft-aurora", "light-rays"]).catch(() => undefined);
+          return a;
+        },
         (a) => {
           this.backdrop = a;
-          void a.warm(["soft-aurora", "light-rays"]);
         },
       ),
       take(
@@ -168,7 +175,13 @@ class FunnyRuntime implements SectionRuntime {
         (a) => (this.duo = a),
       ),
     ]);
+    this.loaded = true;
     if (this.entered) void this.listen();
+  }
+
+  /** The ready gate: the scenes need Tetra, the dragon, the doll and the duo built. */
+  ready(): boolean {
+    return this.loaded;
   }
 
   enter(): void {

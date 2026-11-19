@@ -11,6 +11,7 @@ const frame: FrameInfo = {
   velocity: 0,
   viewport: { w: 100, h: 100, dpr: 1 },
   frame: 1,
+  input: { wheel: 0 },
 };
 
 describe("ActorRegistry", () => {

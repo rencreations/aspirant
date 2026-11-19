@@ -8,12 +8,12 @@ describe("the loading lists of the rows and the strip", () => {
   const all = aggregateItems([rows, strip]);
   const { waited, deferred } = splitItems(all);
 
-  it("wait for the scene code of both sections, the film's code and the trailer loop", () => {
+  it("wait for the scene code of both sections, the film's code and the first seconds of the trailer", () => {
     const ids = waited.map((i) => i.id);
     expect(ids).toContain("chunk:home-rows");
     expect(ids).toContain("chunk:home-strip");
     expect(ids).toContain("chunk:home-film");
-    expect(ids.some((id) => /strip-(1280|1920)\.mp4/.test(id))).toBe(true);
+    expect(ids).toContain("stream:home-trailer");
   });
 
   it("keep the ten preview clips behind everything, in a fixed order", () => {

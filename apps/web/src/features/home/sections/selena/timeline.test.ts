@@ -12,7 +12,10 @@ import {
   beatsAt,
   filmTime,
   newBeats,
+  WHITE_LEAVE_AT,
+  WHITE_LEAVE_SECONDS,
   selenaScreens,
+  stepWhite,
   storyAtFilm,
 } from "./timeline";
 
@@ -178,5 +181,27 @@ describe("the beats", () => {
     const scratch = newBeats();
     for (let u = 0; u < 2.9; u += 0.1) beatsAt(u, scratch);
     expect(beatsAt(2.9, scratch)).toEqual(a);
+  });
+});
+
+describe("the white layer's clock", () => {
+  it("lets go over its own seconds once the page is into the tail, whatever the frame rate", () => {
+    for (const fps of [30, 60, 144]) {
+      let c = 0;
+      const frames = Math.round(WHITE_LEAVE_SECONDS * fps);
+      for (let i = 0; i < frames; i++) c = stepWhite(c, WHITE_LEAVE_AT + 0.1, 1 / fps);
+      expect(c).toBeCloseTo(1, 6);
+    }
+  });
+
+  it("waits while the page is not yet into the tail, and comes back when it scrolls up", () => {
+    expect(stepWhite(0, WHITE_LEAVE_AT - 0.01, 0.1)).toBe(0);
+    expect(stepWhite(0, 0, 1)).toBe(0);
+    expect(stepWhite(1, 0, WHITE_LEAVE_SECONDS)).toBe(0);
+    expect(stepWhite(0.5, 0.3, 0)).toBe(0.5);
+  });
+
+  it("starts before the voices' entrance has finished (the first play fires 0.06 screen in)", () => {
+    expect(WHITE_LEAVE_AT).toBeLessThan(0.06);
   });
 });

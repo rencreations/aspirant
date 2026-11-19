@@ -64,18 +64,19 @@ describe("weldStep", () => {
 });
 
 describe("outlineFor", () => {
-  it("is 1.2 px for a small figure and thicker as it grows", () => {
-    expect(outlineFor(120).px).toBeCloseTo(1.2, 6);
-    expect(outlineFor(40).px).toBe(1.2);
-    expect(outlineFor(400).px).toBeGreaterThan(1.7);
-    expect(outlineFor(400).px).toBeLessThan(2);
-    expect(outlineFor(900).px).toBeGreaterThan(2.7);
-    expect(outlineFor(900).px).toBeLessThan(3.1);
+  it("is 1.1 px for a small figure and thicker as it grows", () => {
+    expect(outlineFor(120).px).toBeCloseTo(1.1, 6);
+    expect(outlineFor(40).px).toBe(1.1);
+    expect(outlineFor(400).px).toBeGreaterThan(1.8);
+    expect(outlineFor(400).px).toBeLessThan(2.1);
+    expect(outlineFor(600).px).toBeGreaterThan(2.3);
+    expect(outlineFor(600).px).toBeLessThan(2.7);
+    expect(outlineFor(900).px).toBeGreaterThan(3.1);
   });
 
-  it("never goes past 3.5 px and survives a bad height", () => {
-    expect(outlineFor(5000).px).toBe(3.5);
-    expect(outlineFor(-5).px).toBe(1.2);
+  it("never goes past 3.3 px and survives a bad height", () => {
+    expect(outlineFor(5000).px).toBe(3.3);
+    expect(outlineFor(-5).px).toBe(1.1);
     expect(Number.isFinite(outlineFor(Number.NaN).px)).toBe(true);
   });
 
@@ -87,7 +88,7 @@ describe("outlineFor", () => {
   it("writes into the object it is given", () => {
     const out = { px: 0, push: 0, card: 0 };
     expect(outlineFor(600, out)).toBe(out);
-    expect(out.px).toBeGreaterThan(2);
+    expect(out.px).toBeGreaterThan(2.3);
   });
 });
 

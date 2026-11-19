@@ -57,6 +57,13 @@ class VoicesRuntime implements SectionRuntime {
   private observer: ResizeObserver | null = null;
   /** The live backdrop, once the second canvas is made. The section works without it. */
   backdrop: Backdrop | null = null;
+  /** The waves' shader is compiled (or the backdrop cannot be had). */
+  warmed = false;
+
+  /** The ready gate: the entrance's first draw of the waves is no hitch. The pair is built already. */
+  ready(): boolean {
+    return this.warmed;
+  }
 
   constructor(
     private readonly ctx: SectionCtx,
@@ -276,9 +283,13 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
   void ensureBackdrop(ctx).then(
     (backdrop) => {
       runtime.backdrop = backdrop;
-      void backdrop.warm(["waves"]);
+      void backdrop.warm(["waves"]).finally(() => {
+        runtime.warmed = true;
+      });
     },
-    () => undefined,
+    () => {
+      runtime.warmed = true;
+    },
   );
   return runtime;
 }

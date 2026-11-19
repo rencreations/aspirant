@@ -1,15 +1,19 @@
 /**
  * The opening's scene: the drone that waits with the visitor while the page loads, and the intro
- * that follows the press (the two Guinevere drones carry the logo in, the drone helps, they pull
- * it to the hero's size, are thanked and leave). It runs inside the one stage of the home, in the
- * engine's frame loop, while the page is not open yet. The kernel gives it the frame (`update`),
- * hides every actor first, and stops calling it when the page opens.
+ * that follows the press (the two Guinevere drones swoop in with the logo, the drone dashes under it,
+ * the three set it down, the pair pull it to the hero's size and leave: two seconds in all). It runs
+ * inside the one stage of the home, in the engine's frame loop, while the page is not open yet. The
+ * kernel gives it the frame (`update`), hides every actor first, and stops calling it when the page
+ * opens.
  *
- *   loader   the drone pops in and idles in one place (`loader.ts`: tricks, a cheer at each real
- *            quarter, a worried look when the files really stall); the loading screen draws the bar
+ *   loader   the drone pops in, small, in the middle of the screen and idles there (`loader.ts`:
+ *            tricks, a cheer at each real quarter, a worried look when the files really stall); the
+ *            loading screen draws the bar under it
  *   intro    after the press, a clock: `introAt(t)` (`timeline.ts`) gives every actor's state, the
- *            cues (`CUES`) fire the one-shots (a bang, a bubble, a burst of stars)
+ *            cues (`CUES`) fire the one-shots (the drone's shock mark and a few sounds)
  *   the end  the intro ends on joint J0 (the hero's first frame) and calls `finishIntro()`
+ *
+ * There are no comic marks here except the drone's shock mark, and no speech bubbles.
  *
  * The screen of the loader is DOM (`components/home-boot/`) and shares only `bus.ts` with this file.
  * See `docs/design/home/boot.md`.
@@ -18,9 +22,6 @@ import { phaseAtLeast, setTapGuard, useHomeFlow } from "@/lib/home-flow";
 
 import type { DroneActor } from "../actors/drone";
 import type { DuoActor } from "../actors/duo";
-import type { DuoMark } from "../actors/duo/pose";
-import { comicMark } from "../actors/duo/marks-map";
-import type { MarksActor } from "../fx/comic-marks";
 import type { LogoActor, LogoPose } from "../fx/logo";
 import type { ActorCtx } from "../actors/shared/types";
 import type { FrameInfo } from "../kernel/types";
@@ -71,14 +72,13 @@ declare global {
   }
 }
 
-/** How long each icon of the thanks stays on screen, in seconds. */
-const ICON_SECONDS: Readonly<Record<string, number>> = { heart: 0.95, sparkle: 0.95, smile: 0.9 };
+/** The logo is carried level: whatever the two gloves do, it tilts by this much at most (radians, about 3 degrees). */
+const MAX_CARRY_ROLL = 0.05;
 
 class BootScene implements BootRuntime {
   private drone: DroneActor | null = null;
   private duo: DuoActor | null = null;
   private logo: LogoActor | null = null;
-  private marks: MarksActor | null = null;
   private built = false;
   private failed = false;
   private disposed = false;
@@ -150,9 +150,6 @@ class BootScene implements BootRuntime {
       const droneMod = await import("../actors/drone");
       this.drone = await droneMod.ensureDrone(this.ctx);
       if (this.disposed) return;
-      const marksMod = await import("../fx/comic-marks");
-      this.marks = await marksMod.ensureMarks(this.ctx);
-      if (this.disposed) return;
       const duoMod = await import("../actors/duo");
       this.duo = await duoMod.ensureDuo(this.ctx);
       if (this.disposed) return;
@@ -218,7 +215,6 @@ class BootScene implements BootRuntime {
     const a = this.action;
     if (a.trick) drone.trickNow(a.trick, this.brain.cheered % 2 === 0 ? 1 : -1);
     if (a.face) drone.emote(a.face, a.faceSeconds);
-    if (a.bubble) drone.bubble(a.bubble);
     // The loading screen's plain mark can leave once the drone has really appeared.
     if (!bootBus.droneShown && this.shownChecks++ % 6 === 0 && drone.state().presence > 0.3) {
       bootBus.droneShown = true;
@@ -259,18 +255,10 @@ class BootScene implements BootRuntime {
     this.introT = 0;
     this.prevT = -1e-6;
     bootBus.introT = 0;
-    this.marks?.clear();
     this.duo?.restart();
     this.duo?.ambient(false);
-    this.duo?.setMarkSink((m: DuoMark) => {
-      const c = comicMark(m);
-      this.marks?.emit(c.kind, {
-        at: { x: m.x, y: m.y },
-        size: c.size,
-        color: c.color,
-        rotation: c.rotation,
-      });
-    });
+    // The pair draw no comic marks (sweat, sparks, hearts): the owner wants the necessary ones only.
+    this.duo?.setMarkSink(null);
   }
 
   private runIntro(frame: FrameInfo): void {
@@ -323,9 +311,6 @@ class BootScene implements BootRuntime {
         case "pull":
           duo.pull(null, s.pull);
           break;
-        case "bow":
-          duo.pose("bow", s.poseW);
-          break;
         case "leave":
           this.dirs[0].x = s.leaveA.x;
           this.dirs[0].y = s.leaveA.y;
@@ -352,7 +337,7 @@ class BootScene implements BootRuntime {
         this.rect.cx += (c.cx - this.rect.cx) * w;
         this.rect.cy += (c.cy - this.rect.cy) * w;
         this.rect.width += (c.width - this.rect.width) * w;
-        roll = c.roll * w;
+        roll = Math.max(-MAX_CARRY_ROLL, Math.min(MAX_CARRY_ROLL, c.roll)) * w;
       }
       const pose = this.logoPose;
       pose.roll = roll;
@@ -366,61 +351,11 @@ class BootScene implements BootRuntime {
   /** One thing that happens once. */
   private fire(cue: IntroCue): void {
     const drone = this.drone;
-    const marks = this.marks;
-    const logo = this.logo;
     if (!drone) return;
-    const geo = this.lastFrame?.viewport;
-    const s = this.state;
     switch (cue.kind) {
       case "shock":
-        drone.shock();
-        drone.emote("shocked", 1.5);
-        drone.trickNow("hop");
-        break;
-      case "dropBang":
-        logo?.jolt(0.8);
-        marks?.emit("bang", {
-          at: { x: s.carry.x, y: s.logo.cy + (geo ? 0.12 * geo.h : 100) },
-          size: 70,
-          color: "gold",
-          accent: "pink",
-        });
-        break;
-      case "droneSweat": {
-        const st = drone.state();
-        marks?.emit("sweat", {
-          at: { x: st.x + st.height * 0.32, y: st.y + st.height * 0.38 },
-          size: Math.max(18, st.height * 0.2),
-          count: 2,
-        });
-        break;
-      }
-      case "bubble":
-        drone.bubble(cue.icon, ICON_SECONDS[cue.icon] ?? 1);
-        break;
-      case "duoReact":
-        this.duo?.react(cue.react);
-        break;
-      case "burst": {
-        // The logo is at size: stars at its two corners.
-        const rect = this.rect;
-        const hw = rect.width / 2;
-        const hh = rect.width / 4.013 / 2;
-        marks?.emit("starburst", { at: { x: rect.cx - hw, y: rect.cy - hh }, size: 84 });
-        marks?.emit("starburst", { at: { x: rect.cx + hw, y: rect.cy + hh }, size: 84 });
-        marks?.emit("spark", { at: { x: rect.cx, y: rect.cy + hh + 30 }, size: 70, color: "gold" });
-        break;
-      }
-      case "hearts":
-        marks?.emit("heart", {
-          at: { x: s.duoA.x, y: s.duoA.y + 0.75 * s.duoA.height },
-          size: 52,
-        });
-        marks?.emit("heart", {
-          at: { x: s.duoB.x, y: s.duoB.y + 0.75 * s.duoB.height },
-          size: 52,
-          delay: 0.2,
-        });
+        // The one comic mark of the opening: the drone sees the pair.
+        drone.shock(0.55);
         break;
       case "blip":
         this.ctx.audio.blip(cue.sound);
@@ -493,7 +428,6 @@ class BootScene implements BootRuntime {
       drone.advance(step);
       duo.advance(step);
       logo.update({ ...frame, dt: step });
-      this.marks?.advance(step);
     }
     this.introT = target;
     this.prevT = target;

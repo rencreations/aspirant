@@ -11,6 +11,7 @@ import styles from "../../home.module.css";
 import { PREVIEWS, TRAILER_FILM } from "../../fx/video-plane/data";
 import type { SectionMarkup } from "../../kernel/types";
 
+import { focusScreensOf, STRIP_FOCUS_AT } from "./dwell";
 import { StripPlayerHost } from "./player";
 import local from "./strip.module.css";
 
@@ -37,15 +38,38 @@ function Chars({ text, group }: { text: string; group: string }) {
   );
 }
 
-/** A word that changes on a hover (the runtime writes into the aria-hidden copy; the plain text stays the resting word). */
-function Swap({ text, slot }: { text: string; slot: number }) {
+/** The letters of one layer of a swap: every character is a letter of its own (a space is kept as a blank one). */
+function SwapLayer({ text, name }: { text: string; name: "rest" | "hover" }) {
   return (
-    <>
-      <span className={local.plain}>{text}</span>
-      <span className={local.swap} aria-hidden="true" data-strip-swap={slot}>
-        {text}
+    <span
+      className={name === "hover" ? `${local.swapLayer} ${local.swapHover}` : local.swapLayer}
+      data-sw-layer={name}
+    >
+      {Array.from(text).map((c, i) => (
+        <span key={i} className={local.sw} data-sw="">
+          {c === " " ? " " : c}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/**
+ * A word that changes letter by letter on a hover: the word at rest and the word of the hover stand
+ * in one grid cell (so the cell is as wide as the wider, and nothing under it moves), the runtime
+ * gives each letter its own moment. The plain text is what a reader gets; the letters are for the eye.
+ */
+function Swap({ rest, hover, slot }: { rest: string; hover: string; slot: number }) {
+  return (
+    <span className={local.swapWord} data-strip-swap={slot}>
+      <span className={local.plain} data-sw-plain="">
+        {rest}
       </span>
-    </>
+      <span className={local.swapStack} aria-hidden="true">
+        <SwapLayer text={rest} name="rest" />
+        <SwapLayer text={hover} name="hover" />
+      </span>
+    </span>
   );
 }
 
@@ -117,9 +141,9 @@ export function view(): SectionMarkup {
           <TLink
             href={STRIP.button.href}
             className={`${styles.pill} ${local.cta}`}
-            transitionLabel="Collection"
+            transitionLabel="Films"
             data-strip-cta=""
-            data-home-focus-at="0.3"
+            data-home-focus-at={focusScreensOf(STRIP_FOCUS_AT.small)}
           >
             {STRIP.button.label}
           </TLink>
@@ -129,7 +153,7 @@ export function view(): SectionMarkup {
           type="button"
           className={local.scrollButton}
           data-strip-scroll=""
-          data-home-focus-at="0.3"
+          data-home-focus-at={focusScreensOf(STRIP_FOCUS_AT.small)}
           aria-label={STRIP.controls.scroll}
         >
           <i />
@@ -146,30 +170,30 @@ export function view(): SectionMarkup {
 
         <div className={local.bottomBox} data-strip-g="bottom">
           <p className={`${local.display} ${local.smallWord}`}>
-            <Swap text={STRIP.bottomLeft.rest[0]} slot={0} />
+            <Swap rest={STRIP.bottomLeft.rest[0]} hover={STRIP.bottomLeft.hover[0]} slot={0} />
           </p>
           <p className={`${local.display} ${local.bigWord}`}>
-            <Swap text={STRIP.bottomLeft.rest[1]} slot={1} />
+            <Swap rest={STRIP.bottomLeft.rest[1]} hover={STRIP.bottomLeft.hover[1]} slot={1} />
           </p>
         </div>
 
         <div className={local.windowBox} data-strip-window="">
           <span className={local.scrim} aria-hidden="true" />
-          <span className={`${local.mono} ${local.windowWord}`} data-strip-g="wl">
+          <span className={local.windowWord} data-strip-g="wl">
             <Chars text={STRIP.play.label} group="wl" />
           </span>
           <button
             type="button"
             className={local.play}
             data-strip-play=""
-            data-home-focus-at="1.35"
+            data-home-focus-at={focusScreensOf(STRIP_FOCUS_AT.window)}
             aria-label={STRIP.play.open}
           >
             <svg viewBox="0 0 16 16" aria-hidden="true">
               <path d="M4 2.2v11.6L13.6 8z" />
             </svg>
           </button>
-          <span className={`${local.mono} ${local.windowWord}`} data-strip-g="wd">
+          <span className={local.windowWord} data-strip-g="wd">
             <Chars text={STRIP.play.duration} group="wd" />
           </span>
         </div>
@@ -192,7 +216,7 @@ export function view(): SectionMarkup {
             className={`${styles.pill} ${local.ambButton}`}
             transitionLabel="Films"
             data-strip-button=""
-            data-home-focus-at="2.4"
+            data-home-focus-at={focusScreensOf(STRIP_FOCUS_AT.hold)}
           >
             {STRIP.expand.button.label}
           </TLink>
@@ -205,7 +229,7 @@ export function view(): SectionMarkup {
                 href={film.href as Route}
                 transitionLabel={film.title}
                 data-strip-film=""
-                data-home-focus-at="2.4"
+                data-home-focus-at={focusScreensOf(STRIP_FOCUS_AT.hold)}
               >
                 {film.title}
               </TLink>

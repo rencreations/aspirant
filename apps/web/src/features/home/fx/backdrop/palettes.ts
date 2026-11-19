@@ -39,6 +39,7 @@ export const BACKDROP_KINDS = [
   "air",
   "water",
   "fire",
+  "ink-field",
 ] as const;
 
 export type BackdropKind = (typeof BACKDROP_KINDS)[number];
@@ -192,5 +193,10 @@ export const BACKDROP_PALETTES: Readonly<
   fire: {
     daybreak: pal(["#ffcf5c", "#ffa24a", "#ff5468", "#c8203a"], 0.85, DAY_INK),
     storm: pal(["#ffe9a0", "#ffa24a", "#ff5468", "#7a0f2a"], 1, NIGHT_INK),
+  },
+  // The strip's own: a near black blue ground, cyan light, a hot pink where the cursor touches it.
+  "ink-field": {
+    daybreak: pal(["#c9d6ee", "#8cc4f0", "#e3b4da", "#ff7ac8"], 0.5, DAY_INK),
+    storm: pal(["#070c24", "#12307f", "#1fa6e8", "#ff4fb0"], 1, "#dff6ff"),
   },
 };

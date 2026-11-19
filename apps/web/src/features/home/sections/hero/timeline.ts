@@ -70,12 +70,12 @@ export const TIMES = {
   textIn: [3.7, 4.5] as const,
   /** The auto glide of the wall: it starts when the cards have landed. */
   slideIn: [3.95, 4.3] as const,
-  /** The words fold away, the glide eases to a stop, the wall opens into the rows. */
-  textOut: [4.5, 4.7] as const,
-  slideOut: [4.5, 4.85] as const,
-  open: [4.6, 5.3] as const,
-  /** The clip opens again with the wall (a little ahead of it, so no card is cut while it opens). */
-  clipOpen: [4.55, 5.3] as const,
+  /** The words leave to the right. The glide never stops: the wall goes on sliding as the rows. */
+  textOut: [4.5, 4.78] as const,
+  /** The wall is the rows' plane: this is the clip's own sweep, a hard edge that moves out and reveals the rest. */
+  open: [4.55, 5.1] as const,
+  /** The clip opens (a hard edge sweeping to the screen's edge). */
+  clipOpen: [4.55, 5.1] as const,
 } as const;
 
 /** How fast the wall slides by itself (px per second of the wall's plane). */
@@ -111,13 +111,9 @@ export function rowsBlend(S: number): number {
   return smooth(S, TIMES.open[0], TIMES.open[1]);
 }
 
-/** The glide of the wall, px per second: in once the cards have landed, out as the rows open. */
+/** The glide of the wall, px per second: in once the cards have landed, and it never stops (the rows go on with it). */
 export function slideRate(S: number): number {
-  return (
-    SLIDE_RATE *
-    smooth(S, TIMES.slideIn[0], TIMES.slideIn[1]) *
-    (1 - smooth(S, TIMES.slideOut[0], TIMES.slideOut[1]))
-  );
+  return SLIDE_RATE * smooth(S, TIMES.slideIn[0], TIMES.slideIn[1]);
 }
 
 /** The cards can be pressed (a preview opens) from the landing until the wall starts to close. */

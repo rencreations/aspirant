@@ -1,5 +1,7 @@
 # Home: the hero and the aspirants (workstream S1)
 
+> **Round two update (19 Nov 2026).** The hero is triggered (`sections/hero/index.ts`, plays), the logo is still at rest, the cards expand from behind the logo in 0.7 s (the first row of the table in section 2, "on open", is replaced), the hero has eighteen different portraits. See `round2-R-A1.md` and `round2-R-A.md`.
+
 The first two scenes of the home, one continuous piece of choreography: the logo and the floating splash cards (premotio's hero), the logo morphing into the bar, the cards gathering, spiralling into the ring and landing as the wall, the wall sliding by itself under the owner's words, a preview window for every picture, and the wall opening into the full screen rows. Request: "Hero" and "The Aspirants" of `docs/superpowers/specs/2026-11-18-home-page-request.md`. Code: `apps/web/src/features/home/sections/hero/`, `sections/aspirants/`, `preview/`.
 
 ## 1. The one rule: everything is a function of the absolute scroll

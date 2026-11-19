@@ -18,6 +18,8 @@ export interface Params {
   readonly stops: Float32Array;
   /** The highlight colour, rgb. */
   readonly ink: Float32Array;
+  /** Four numbers a kind may read as `uX` for what only it needs (the ink field's film glow). */
+  readonly extras: Float32Array;
 }
 
 export function makeParams(): Params {
@@ -30,6 +32,7 @@ export function makeParams(): Params {
     seed: 0,
     stops: new Float32Array(12),
     ink: new Float32Array([1, 1, 1]),
+    extras: new Float32Array(4),
   };
 }
 
@@ -42,6 +45,7 @@ export function copyParams(to: Params, from: Params): void {
   to.seed = from.seed;
   to.stops.set(from.stops);
   to.ink.set(from.ink);
+  to.extras.set(from.extras);
 }
 
 /** The step of an exponential approach that is the same at 60 and at 144 frames a second. */
@@ -59,6 +63,7 @@ export function approachParams(cur: Params, tgt: Params, k: number): void {
   cur.seed = tgt.seed;
   for (let i = 0; i < 12; i++) cur.stops[i]! += (tgt.stops[i]! - cur.stops[i]!) * k;
   for (let i = 0; i < 3; i++) cur.ink[i]! += (tgt.ink[i]! - cur.ink[i]!) * k;
+  for (let i = 0; i < 4; i++) cur.extras[i]! += (tgt.extras[i]! - cur.extras[i]!) * k;
 }
 
 /** Write one to four colours as the four stops of `to`. */
@@ -98,6 +103,8 @@ export interface NumberOptions {
   /** Degrees. */
   angle?: number;
   seed?: number;
+  /** Up to four numbers for a kind that reads `uX` (the ink field: film glow, half width, half height). */
+  extras?: readonly number[];
 }
 
 /** Write the numbers a section gave (or the kind's and the palette's defaults) into `to`. */
@@ -113,6 +120,7 @@ export function writeNumbers(
   to.intensity = Math.max(0, (o.intensity ?? 1) * paletteIntensity);
   to.angle = ((o.angle ?? defaults.angle) * Math.PI) / 180;
   to.seed = o.seed ?? 0;
+  for (let i = 0; i < 4; i++) to.extras[i] = o.extras?.[i] ?? 0;
 }
 
 /** The most pixels the drawing buffer may hold. A backdrop is soft, so this is far under the stage's. */

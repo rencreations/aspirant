@@ -49,6 +49,11 @@ class FallRuntime implements SectionRuntime {
     this.rights = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-fall-right]"));
   }
 
+  /** The dragon and the doll are built: the throw does not fire before (the kernel's ready gate). */
+  ready(): boolean {
+    return this.scene.gate.done;
+  }
+
   update(v: number, frame: FrameInfo): void {
     // The lead rests on the bolt's last station: both sections draw the same moment there.
     const t = Math.max(BOLT_LAST, beatFor(v, BOLT_LAST, BEAT.end, sectionScreens("fall")));

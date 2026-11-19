@@ -5,8 +5,8 @@ import { describe, expect, it } from "vitest";
 
 import { alongPath, besidePoint, type PathPoint } from "./path";
 import { BODY_HEIGHT_METRES, FACES_A_BYTES, FACES_B_BYTES, MARKS_BYTES } from "./model";
-import { bubbleAt, createBubbleLook, createShockLook, shockAt, SHOCK_SECONDS } from "./marks-anim";
-import { ICON_NAMES, ICONS, iconUv } from "./marks";
+import { createShockLook, shockAt, SHOCK_SECONDS } from "./marks-anim";
+import { BANG_CELL, CELL } from "./marks";
 import {
   ANNOYED_AT,
   ANNOYED_MAX,
@@ -18,7 +18,7 @@ import {
   stepReactions,
   WINDOW,
 } from "./reactions";
-import { createPoseLook, createPoseState, stepPose, THANKS_CUE_AT } from "./pose";
+import { createPoseLook, createPoseState, stepPose } from "./pose";
 import {
   bowCurve,
   clearTrick,
@@ -107,7 +107,7 @@ describe("the moves", () => {
 });
 
 describe("the answers to a press", () => {
-  it("answers the first presses kindly, each with its own move and bubble", () => {
+  it("answers the first presses kindly, each with its own move and never a mark", () => {
     const r = createReactions();
     const out = createAnswer();
     const seen: string[] = [];
@@ -115,10 +115,12 @@ describe("the answers to a press", () => {
       press(r, 10 + i * 5, out);
       expect(out.fired).toBe(true);
       expect(out.face).toBe("happy");
-      seen.push(`${out.trick}/${out.icon}`);
+      expect(out.shock).toBe(false);
+      seen.push(`${out.trick}`);
     }
     press(r, 100, out);
-    seen.push(`${out.trick}/${out.icon}`);
+    expect(out.shock).toBe(false);
+    seen.push(`${out.trick}`);
     expect(new Set(seen).size).toBe(3);
   });
 
@@ -128,11 +130,11 @@ describe("the answers to a press", () => {
     const log: string[] = [];
     for (let i = 1; i <= ANNOYED_AT; i += 1) {
       press(r, i * 0.3, out);
-      log.push(`${out.trick}|${out.icon}|${out.face}`);
+      log.push(`${out.trick}|${out.shock}|${out.face}`);
     }
-    expect(log[DIZZY_AT - 1]).toBe("dizzy|null|null");
-    expect(log[PUZZLED_AT - 1]).toBe("null|question|confused");
-    expect(log[ANNOYED_AT - 1]).toBe("shake|bang|angry");
+    expect(log[DIZZY_AT - 1]).toBe("dizzy|false|null");
+    expect(log[PUZZLED_AT - 1]).toBe("null|false|confused");
+    expect(log[ANNOYED_AT - 1]).toBe("shake|true|angry");
     expect(r.mood).toBe("annoyed");
   });
 
@@ -153,7 +155,7 @@ describe("the answers to a press", () => {
     const started = r.started;
     for (let i = 0; i < 40; i += 1) press(r, started + i * 0.4, out);
     expect(r.until).toBeLessThanOrEqual(started + ANNOYED_MAX + 1e-9);
-    expect(out.icon).toBe("bang");
+    expect(out.shock).toBe(true);
   });
 
   it("forgives when the visitor stops, once, and then is calm again", () => {
@@ -167,7 +169,7 @@ describe("the answers to a press", () => {
       stepReactions(r, now, out);
       if (out.fired) {
         forgiven += 1;
-        expect(out.icon).toBe("heart");
+        expect(out.shock).toBe(false);
         expect(out.face).toBe("thanks");
       }
     }
@@ -182,12 +184,8 @@ describe("the named poses", () => {
   const run = (wanted: "peek" | "thanks" | null, seconds: number, dir = 1) => {
     const s = createPoseState();
     const out = createPoseLook();
-    const cues: string[] = [];
-    for (let i = 0; i < seconds * 60; i += 1) {
-      stepPose(s, wanted, dir, 1 / 60, out);
-      if (out.cue) cues.push(out.cue);
-    }
-    return { s, out, cues };
+    for (let i = 0; i < seconds * 60; i += 1) stepPose(s, wanted, dir, 1 / 60, out);
+    return { s, out };
   };
 
   it("peeks toward the side of the thing: the face, the eyes and the lean go that way", () => {
@@ -202,9 +200,8 @@ describe("the named poses", () => {
     expect(right.scale).toBeLessThan(1);
   });
 
-  it("bows once for a thank you, with the kind face and the bubble, then stands upright", () => {
-    const { s, out, cues } = run("thanks", 3);
-    expect(cues).toEqual(["thanks"]);
+  it("bows once for a thank you, with the kind face, then stands upright", () => {
+    const { s, out } = run("thanks", 3);
     expect(out.face).toBe("thanks");
     expect(out.pitch).toBeCloseTo(0, 2);
     expect(s.t).toBeGreaterThan(2.9);
@@ -221,18 +218,6 @@ describe("the named poses", () => {
     expect(deepest).toBeGreaterThan(0.4);
   });
 
-  it("makes the bubble only after the head has started down", () => {
-    const s = createPoseState();
-    const out = createPoseLook();
-    let at = -1;
-    for (let i = 0; i < 120 && at < 0; i += 1) {
-      stepPose(s, "thanks", 1, 1 / 60, out);
-      if (out.cue) at = (i + 1) / 60;
-    }
-    expect(at).toBeGreaterThanOrEqual(THANKS_CUE_AT - 1 / 60);
-    expect(at).toBeLessThan(THANKS_CUE_AT + 0.1);
-  });
-
   it("blends out when it is no longer wanted and leaves nothing behind", () => {
     const s = createPoseState();
     const out = createPoseLook();
@@ -245,26 +230,15 @@ describe("the named poses", () => {
 });
 
 describe("the icons", () => {
-  it("are nine, on a grid, and the six of the file sit where the file says", () => {
-    expect(ICON_NAMES).toHaveLength(9);
+  it("keep the bang where the file says", () => {
     const root = path.resolve(import.meta.dirname, "../../../../../public/img/home");
     const json = JSON.parse(readFileSync(path.join(root, "marks.json"), "utf8")) as {
       cell: number;
-      width: number;
-      icons: Record<string, { x: number; y: number; u: number; v: number }>;
+      icons: Record<string, { x: number; y: number }>;
     };
-    expect(Object.keys(json.icons)).toHaveLength(6);
-    for (const [name, icon] of Object.entries(json.icons)) {
-      const mine = ICONS[name as keyof typeof ICONS];
-      expect(mine.col * json.cell, name).toBe(icon.x);
-      expect(mine.row * json.cell, name).toBe(icon.y);
-    }
-    const uv = { u: 0, v: 0, du: 0, dv: 0 };
-    iconUv("thanks", uv);
-    expect(uv.u).toBeCloseTo(2 / 3, 9);
-    expect(uv.v).toBe(0);
-    iconUv("sweat", uv);
-    expect(uv.v).toBeCloseTo(2 / 3, 9);
+    expect(json.cell).toBe(CELL);
+    expect(BANG_CELL.col * json.cell).toBe(json.icons.bang?.x);
+    expect(BANG_CELL.row * json.cell).toBe(json.icons.bang?.y);
   });
 
   it("have the sizes the loading list says", () => {
@@ -276,22 +250,6 @@ describe("the icons", () => {
 });
 
 describe("the marks' timing", () => {
-  it("pops with an overshoot, wobbles less and less, drifts up and fades out", () => {
-    const out = createBubbleLook();
-    let peak = 0;
-    for (let t = 0; t < 0.5; t += 1 / 60) peak = Math.max(peak, bubbleAt(t, 1.7, out).scale);
-    expect(peak).toBeGreaterThan(1.02);
-    expect(bubbleAt(0.001, 1.7, out).scale).toBeLessThan(0.1);
-    const early = Math.abs(bubbleAt(0.1, 1.7, out).rot);
-    const late = Math.abs(bubbleAt(1.2, 1.7, out).rot);
-    expect(early).toBeGreaterThan(late);
-    expect(bubbleAt(0.9, 1.7, out).alpha).toBe(1);
-    expect(bubbleAt(1.69, 1.7, out).alpha).toBeLessThan(0.2);
-    expect(bubbleAt(1.7, 1.7, out)).toEqual({ scale: 0, rot: 0, alpha: 0, lift: 0 });
-    expect(bubbleAt(-1, 1.7, out).alpha).toBe(0);
-    expect(bubbleAt(1.2, 1.7, out).lift).toBeGreaterThan(bubbleAt(0.2, 1.7, out).lift);
-  });
-
   it("bursts the lines out fast and is gone at its end", () => {
     const out = createShockLook();
     expect(shockAt(0.4, out).burst).toBeGreaterThan(0.99);

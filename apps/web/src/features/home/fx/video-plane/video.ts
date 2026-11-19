@@ -1,23 +1,28 @@
 /**
- * One video of the film plane: a real `<video>` kept off the page, muted, looping and playing
- * inline, and the texture that follows it. The file comes from the media store (`loadMedia`, the
- * same path string the loading list used, so one download serves both) and is a blob in memory.
+ * One video of the film plane: a real `<video>` kept off the page, muted and playing inline, and the
+ * texture that follows it. The ten previews are small clips: the file comes from the media store
+ * (`loadMedia`, the same path string the loading list used, so one download serves both), is a blob
+ * in memory and loops. The trailer is the whole film and is never held in memory: its element is the
+ * stream's (`stream.ts`), which the browser fills a few seconds ahead.
  *
  * `play` and `pause` follow what is on screen, so only the planes a visitor can see are decoded.
  * The texture is a `VideoTexture` (it uploads when the browser presents a new frame, about 24 times
  * a second, not every frame of the page), with mipmaps and anisotropy, because the pictures are
- * drawn smaller than they are and, for the trailer, at an angle.
+ * drawn smaller than they are and, for the trailer, at an angle. While a stream waits for more
+ * picture no new frame is presented, so the texture keeps the last good one.
  */
 import { LinearFilter, LinearMipmapLinearFilter, VideoTexture } from "three";
 
 import { loadMedia } from "@/lib/media-store";
+
+import type { TrailerStream } from "./stream";
 
 export interface VideoSpec {
   readonly path: string;
   readonly w: number;
   readonly h: number;
   readonly bytes: number;
-  /** Loaded behind the urgent downloads (the previews), or as urgent as the page (the trailer). */
+  /** Loaded behind the urgent downloads (the previews), or as urgent as the page (a clip the strip needs at once). */
   readonly background: boolean;
 }
 
@@ -34,20 +39,27 @@ export class FilmVideo {
   private disposed = false;
   private starting = false;
 
+  /** `stream` makes this the trailer: the element is the stream's and the file is not held in memory. */
   constructor(
     readonly spec: VideoSpec,
     anisotropy: number,
+    private readonly stream: TrailerStream | null = null,
   ) {
-    const el = document.createElement("video");
-    el.muted = true;
-    el.defaultMuted = true;
-    el.loop = true;
-    el.playsInline = true;
-    el.preload = "auto";
-    el.setAttribute("muted", "");
-    el.setAttribute("playsinline", "");
-    el.disablePictureInPicture = true;
-    el.disableRemotePlayback = true;
+    let el: HTMLVideoElement;
+    if (stream) {
+      el = stream.el;
+    } else {
+      el = document.createElement("video");
+      el.muted = true;
+      el.defaultMuted = true;
+      el.loop = true;
+      el.playsInline = true;
+      el.preload = "auto";
+      el.setAttribute("muted", "");
+      el.setAttribute("playsinline", "");
+      el.disablePictureInPicture = true;
+      el.disableRemotePlayback = true;
+    }
     this.el = el;
 
     const tex = new VideoTexture(el);
@@ -61,6 +73,7 @@ export class FilmVideo {
 
     el.addEventListener("loadeddata", this.onData);
     el.addEventListener("seeked", this.onData);
+    if (el.readyState >= 2) this.onData();
     if ("requestVideoFrameCallback" in el) this.countFrames();
   }
 
@@ -68,6 +81,10 @@ export class FilmVideo {
   start(): void {
     if (this.starting || this.disposed) return;
     this.starting = true;
+    if (this.stream) {
+      this.stream.start();
+      return;
+    }
     void loadMedia(this.spec.path, {
       type: "video/mp4",
       expectedBytes: this.spec.bytes,
@@ -99,6 +116,11 @@ export class FilmVideo {
   /** Play (a plane the visitor can see). */
   play(): void {
     this.wanted = true;
+    if (this.stream) {
+      this.starting = true;
+      this.stream.play();
+      return;
+    }
     this.start();
     this.tryPlay();
   }
@@ -112,11 +134,20 @@ export class FilmVideo {
   /** Pause (off screen, hidden, a frozen probe). The last frame stays in the texture. */
   pause(): void {
     this.wanted = false;
+    if (this.stream) {
+      this.stream.pause();
+      return;
+    }
     if (!this.el.paused) this.el.pause();
   }
 
   get playing(): boolean {
     return !this.el.paused && !this.el.ended;
+  }
+
+  /** `play` was called and `pause` not: a stream may be holding for more picture while it wants to play. */
+  get wantsPlay(): boolean {
+    return this.wanted;
   }
 
   /** The context was made again: upload the frame once more. */
@@ -129,8 +160,13 @@ export class FilmVideo {
     this.disposed = true;
     this.el.removeEventListener("loadeddata", this.onData);
     this.el.removeEventListener("seeked", this.onData);
-    this.el.pause();
     this.texture.dispose();
+    if (this.stream) {
+      // The film lets go of its file and its buffer with the plane.
+      this.stream.release();
+      return;
+    }
+    this.el.pause();
     this.el.removeAttribute("src");
     this.el.load();
   }

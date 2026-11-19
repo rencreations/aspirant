@@ -17,12 +17,14 @@ import { LABS } from "./lab";
 import { Background, groundNow, type GroundLayers } from "./background";
 import { Clock, ORDER } from "./clock";
 import { CursorProxy } from "./cursor";
-import { holdScroll, takeSnap } from "./hold";
+import { holdCount, holdScroll, takeSnap } from "./hold";
+import { InputEnergy } from "./input";
 import { isRunning, layoutSections } from "./layout";
 import { PointerHub } from "./pointer";
 import { installProbes, type HomeSnapshot } from "./probes";
 import { SectionRunner } from "./run";
 import { SceneScroll, screensOf } from "./scroll";
+import { FlickLimiter, JointSnap, type FlickFrame, type SnapFrame } from "./snap";
 import { createStage } from "./stage";
 import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, SectionId, Viewport } from "./types";
 
@@ -44,8 +46,8 @@ export interface EngineOptions {
   /** The box in the ground stack where the live backdrop's canvas goes (absent: no backdrop). */
   backdrop?: HTMLElement | null;
   sections: readonly HomeSection[];
-  /** Move the page (pixels). The shell binds it to the smooth scroller. */
-  scrollTo(y: number, options?: { immediate?: boolean }): void;
+  /** Move the page (pixels). The shell binds it to the smooth scroller (`duration` is in seconds). */
+  scrollTo(y: number, options?: { immediate?: boolean; duration?: number }): void;
   /** The stage could not be made or was lost for good: the page lays itself out plain. */
   onFailed(): void;
   /** The first frame has been drawn (two frames after the engine started). */
@@ -102,6 +104,9 @@ export function startEngine(options: EngineOptions): Engine | null {
   const background = new Background(grounds);
   const backdrop = bindBackdrop(stage, options.backdrop ?? null);
   const scene = new SceneScroll();
+  // The energy of the visitor's scroll input: passive listeners, measured also while a play holds.
+  const input = new InputEnergy();
+  input.attach();
 
   let unit = Math.max(1, host.getBoundingClientRect().height);
   let frozen = false;
@@ -170,10 +175,55 @@ export function startEngine(options: EngineOptions): Engine | null {
         moveTarget = screens;
         moveUntil = performance.now() + MOVE_MAX_MS;
       }
-      options.scrollTo(screens * unit, { immediate: opts?.immediate ?? false });
+      options.scrollTo(screens * unit, {
+        immediate: opts?.immediate ?? false,
+        ...(opts?.duration ? { duration: opts.duration } : {}),
+      });
     },
     hold: (limitMs) => holdScroll(limitMs),
   };
+
+  // The scene's view of the page's position (a very hard flick is taken a screen a frame, so the
+  // plays on the way fire in order), and the snap to a rest when the visitor lets go in a joint.
+  const flick = new FlickLimiter();
+  const joint = new JointSnap(
+    {
+      layout,
+      move: (screens, seconds) => scrollApi.to(screens, { duration: seconds }),
+      // A held page and a smooth move that must end now: the lock's pause resets the smooth scroller.
+      stop: () => holdScroll(1000)(),
+    },
+    performance.now(),
+  );
+  const flickFrame: FlickFrame = {
+    real: 0,
+    now: 0,
+    forced: false,
+    holding: false,
+    pushAt: 0,
+    keyAt: 0,
+  };
+  const snapFrame: SnapFrame = {
+    now: 0,
+    real: 0,
+    unit: 1,
+    open: false,
+    frozen: false,
+    pushAt: 0,
+    keyAt: 0,
+    touching: false,
+    holds: 0,
+    playing: false,
+    chasing: false,
+    scripted: false,
+  };
+  // The visitor takes the page back: a snap on its way is over (a wheel or a touch replaces the
+  // smooth scroller's own move; a key does not, so it also stops it).
+  const cancelSnap = () => joint.cancel(false);
+  const cancelSnapKey = () => joint.cancel(true);
+  window.addEventListener("wheel", cancelSnap, { passive: true });
+  window.addEventListener("touchstart", cancelSnap, { passive: true });
+  window.addEventListener("keydown", cancelSnapKey, { passive: true });
 
   // What the plays ask of the scroll hold: one hold while any play runs, renewed when a new play
   // starts in the middle of a chain (the new hold is taken before the old one is given back).
@@ -189,7 +239,8 @@ export function startEngine(options: EngineOptions): Engine | null {
         playHold = next;
         playToken = h.token;
       }
-    } else if (playHold) {
+    } else if (playHold && !flick.engaged) {
+      // (A chase of a flick keeps the hold across the frame between two plays.)
       playHold();
       playHold = null;
       playToken = -1;
@@ -244,8 +295,16 @@ export function startEngine(options: EngineOptions): Engine | null {
   });
 
   const onResize = () => {
+    const before = unit;
     stage.resize();
     unit = Math.max(1, host.getBoundingClientRect().height);
+    // The page is a number of screens tall, so the same pixel is another place once the screen
+    // changes size (a window resized, a phone turned): keep the place in screens.
+    if (!frozen && Math.abs(unit - before) > 1) {
+      const y = scene.raw * unit;
+      options.scrollTo(y, { immediate: true });
+      window.scrollTo(0, y);
+    }
   };
   window.addEventListener("resize", onResize);
   const observer = new ResizeObserver(onResize);
@@ -261,18 +320,34 @@ export function startEngine(options: EngineOptions): Engine | null {
     velocity: 0,
     viewport: viewport(),
     frame: 0,
+    input: input.state,
   };
   let jumped = true;
+  // The page's real position this frame (the scene's `raw` can be behind it in a flick).
+  let realRaw = 0;
 
   const removers = [
     clock.add((f) => {
       // The scroll: the real position, then the scene's smoothed one.
-      const raw = frozen ? frozenS : screensOf(window.scrollY, unit);
+      const wall = performance.now();
+      realRaw = frozen ? frozenS : screensOf(window.scrollY, unit);
       const dt = frozen ? 0 : f.dt;
       // Frozen time stands still too, so idle motion does not drift in a frame sheet.
       if (!frozen) heldTime = f.time;
+      // The scene sees the page, except in a very hard flick (`kernel/snap.ts`): then it follows a
+      // screen a frame, and the page is pulled back to within two screens of it.
+      flickFrame.real = realRaw;
+      flickFrame.now = wall;
+      flickFrame.forced = forceJump || snapFrames > 0 || moveTarget !== null || frozen;
+      flickFrame.holding = playing !== null;
+      flickFrame.pushAt = input.pushAt;
+      flickFrame.keyAt = input.keyAt;
+      const raw = flick.step(flickFrame);
+      if (!Number.isNaN(flick.pull)) options.scrollTo(flick.pull * unit, { immediate: true });
       jumped = scene.step(raw, dt) || forceJump;
+      if (jumped || snapFrames > 0) joint.noteJump(wall);
       forceJump = false;
+      input.step(dt);
       frameInfo = {
         time: heldTime,
         dt,
@@ -281,6 +356,7 @@ export function startEngine(options: EngineOptions): Engine | null {
         velocity: scene.velocity,
         viewport: viewport(),
         frame: f.frame,
+        input: input.state,
       };
     }, ORDER.scroll),
     clock.add((f) => {
@@ -324,6 +400,23 @@ export function startEngine(options: EngineOptions): Engine | null {
         // The page is not the visitor's yet: when it opens, replay the passed sections once.
         forceJump = true;
       }
+      // The snap: when the visitor lets go inside a joint, the page runs to the nearer rest.
+      snapFrame.now = performance.now();
+      snapFrame.real = realRaw;
+      snapFrame.unit = unit;
+      snapFrame.open = open;
+      snapFrame.frozen = frozen;
+      snapFrame.pushAt = input.pushAt;
+      snapFrame.keyAt = input.keyAt;
+      snapFrame.touching = input.touching;
+      snapFrame.holds = holdCount();
+      snapFrame.playing = open && (runner.holdState().holding || runner.waiting());
+      snapFrame.chasing = flick.engaged;
+      snapFrame.scripted = moveTarget !== null && !joint.moving;
+      // A section's own move of the page (a button) is where the page is meant to be: no snap
+      // away from it until the visitor pushes the page again.
+      if (snapFrame.scripted) joint.noteJump(snapFrame.now);
+      joint.step(snapFrame);
       for (const s of slots) {
         const on = open && isRunning(s.p, frameInfo.S);
         setOn(s.below, on);
@@ -359,6 +452,8 @@ export function startEngine(options: EngineOptions): Engine | null {
       // Every section's plays go to rest for the position, with no animation and no hold.
       moveTarget = null;
       forceJump = true;
+      input.reset();
+      joint.noteJump(performance.now());
     },
     freeze: (on) => {
       frozen = on;
@@ -378,6 +473,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       sections: runner.report(frameInfo.S),
       actors: actors.list().map((a) => ({ name: a.name, visible: a.visible })),
       hit: pointer.state.hit,
+      input: input.wheel,
     }),
     skipIntro: () => {
       useHomeFlow.getState().abort();
@@ -400,6 +496,12 @@ export function startEngine(options: EngineOptions): Engine | null {
         .report()
         .map((r) => ({ id: r.id, start: r.start, screens: r.screens, mount: r.mount })),
     plays: () => runner.plays(),
+    snap: () => ({
+      ...joint.report(),
+      chasing: flick.engaged,
+      real: realRaw,
+      seen: flick.seen,
+    }),
   });
 
   clock.start();
@@ -415,6 +517,10 @@ export function startEngine(options: EngineOptions): Engine | null {
       stopProbes();
       playHold?.();
       playHold = null;
+      input.detach();
+      window.removeEventListener("wheel", cancelSnap);
+      window.removeEventListener("touchstart", cancelSnap);
+      window.removeEventListener("keydown", cancelSnapKey);
       delete root.dataset.homePlaying;
       window.removeEventListener("wheel", cancelMove);
       window.removeEventListener("touchstart", cancelMove);

@@ -1,5 +1,7 @@
 # Home: the picture field (workstream F1a)
 
+> **Round two update (19 Nov 2026, R-A1).** New formation `origin` (every card at 0.12 of its size in the logo's band, flat) and rank `centre` (nearest the middle first, the hero's own cards only). The hero's entrance is a blend `origin` to the story at the scroll's progress, 0.7 s, ease out (`sections/hero/scene.ts`), not a ring to scatter blend. The hero has eighteen different portraits (ten from `cards.py`, eight from `hero_cards.py`). See `round2-R-A1.md`.
+
 The premotio hero, rebuilt for the Aspirants: floating splash cards with a velocity smear and the cursor's wake, the spiral into a ring, the land on a wall of wide cards that slides by itself, and the full-screen rows. One actor named `field`, drawn in one pass of the home's one stage. Code: `apps/web/src/features/home/fx/image-field/`. Recon: `docs/design/home-reference/ref-premotio-garuda.md` (the premotio half). Sections (wave 3) do the scroll choreography with the API below.
 
 ## API a section uses

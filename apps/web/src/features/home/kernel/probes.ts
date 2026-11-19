@@ -5,6 +5,7 @@
  * is, `skipIntro` opens the page, `actor` and `sections` look at one thing.
  */
 import type { MountState, PlayReport, SectionReport } from "./run";
+import type { SnapReport } from "./snap";
 import type { SectionId } from "./types";
 
 /** What `state()` returns. Plain data: it goes through `JSON.stringify` in the probes. */
@@ -27,6 +28,8 @@ export interface HomeSnapshot {
   readonly sections: readonly SectionReport[];
   readonly actors: ReadonlyArray<{ readonly name: string; readonly visible: boolean }>;
   readonly hit: string | null;
+  /** The energy of the scroll input in px/s (`FrameInfo.input.wheel`), positive going down. */
+  readonly input: number;
 }
 
 export interface HomeProbe {
@@ -36,8 +39,14 @@ export interface HomeProbe {
   skipIntro(): void;
   actor(name: string): { name: string; visible: boolean } | null;
   sections(): ReadonlyArray<{ id: SectionId; start: number; screens: number; mount: MountState }>;
-  /** Every section that has plays: `{ id, v, resting, active, fired, length, direction, progress }`. */
+  /** Every section that has plays: `{ id, v, resting, active, fired, length, direction, progress, waiting }`. */
   plays(): PlayReport[];
+  /**
+   * The snap: `idleMs`, `armed` (the visitor pushed since the last seek), `moving`, `blocked` (why it
+   * does not snap now, or null), `zone` (the joint the page is in), `target` (the rest it would run
+   * to), and the flick limiter's `chasing`, `real` (the page, in screens) and `seen` (the scene's).
+   */
+  snap(): SnapReport & { chasing: boolean; real: number; seen: number };
   /** Build an actor from the lab table, pin it shown and hand it back (see `kernel/lab.ts`). */
   lab(name: string): Promise<unknown>;
   /** Give a lab actor back to the sections. */

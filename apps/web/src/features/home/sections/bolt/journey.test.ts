@@ -249,6 +249,17 @@ describe("the journey", () => {
     expect(pathParam(WHEEL_FROM)).toBeCloseTo(keyFraction(KEY_CENTRE), 9);
   });
 
+  it("keeps the head from tipping over the doll at the rests, on every screen (a phone too)", () => {
+    // A head pitched up 30 degrees or more turns its back to the lens and hides the doll on its crown.
+    const limit = 0.3;
+    for (const [w, h] of sizes) {
+      for (let i = 0; i < WHEEL_ITEMS; i += 1) {
+        const j = new Journey().at(WHEEL_FROM + i * WHEEL_STEP, w, h);
+        expect(j.pitch, `${w}x${h} pair ${i}`).toBeLessThanOrEqual(limit);
+      }
+    }
+  });
+
   it("rears only after the last station, and the head is down again for the sneeze", () => {
     const rest = new Journey().at(BOLT_LAST, 1440, 900);
     expect(rest.fright).toBe(0);

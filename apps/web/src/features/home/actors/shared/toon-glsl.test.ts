@@ -101,3 +101,22 @@ describe("the card ink", () => {
     expect(out.startsWith("uniform vec3 uInkColor;")).toBe(true);
   });
 });
+
+describe("the cel shade function", () => {
+  const out = patchToonFragment(basic.fragmentShader);
+  it("cuts the glint's edge to a pixel by the screen derivative of the half vector", () => {
+    expect(out).toContain("fwidth( nh )");
+    expect(out).not.toContain("uGlint.y - 0.01");
+  });
+
+  it("warms the skin coloured texels of a body sheet only when asked (uSkinSplit)", () => {
+    expect(out).toContain("float toonSkin( vec3 a )");
+    expect(out).toContain("uSkinSplit > 0.0");
+    expect(out).toContain("uniform float uSkinSplit;");
+    expect(out).toContain("uniform vec3 uWarmDeep;");
+  });
+
+  it("deepens the rim on a light surface instead of adding a glow that would vanish", () => {
+    expect(out).toContain("onLight");
+  });
+});

@@ -10,19 +10,22 @@ import { preload } from "./preload";
  *    (`at: 0` here, `at: 1` in the hero), runs the same 2.8 s on the same curve, and drives only the
  *    owner's words (they are this section's DOM). `lead` is the hero's length so this section runs
  *    from the top of the page and its back threshold equals the hero's.
- * 2. The close. After a dwell on the wall (the carousel slides by itself, a card lifts, VIEW opens the
- *    preview) the next scroll folds the words and opens the wall into the full screen rows on the dark
- *    ground, 1.5 s, scroll held. Back plays it in reverse.
+ * 2. The close. The wall is a plane of small cards over the whole screen, seen through a clip; after a
+ *    dwell of about a screen (this section has words and information: the owner asked for a longer
+ *    threshold, "scroll more to trigger") the next scroll slides the words out to the right and opens
+ *    the clip, a hard edge that sweeps out and shows the rest of the plane. The cards never stop: the
+ *    glide goes on as the rows. 1.2 s, scroll held. Back plays it in reverse.
  *
  * `update` gets 0 to 1 for the first play and 1 to 2 for the second (`aspirantsS` in `hero/timeline.ts`).
- * The dark ground comes with the close (`setGroundCue`), and the top bar turns with it through the
- * rows' `nav.early` (`ASPIRANTS_CLOSE_AT` below says where it fires).
+ * The ground stays light: it goes dark with the rows' transition, not with the close.
  */
-export const ASPIRANTS_SCREENS = 0.9;
-/** The close fires at this share of the section: 0.63 screens of dwell after the hero's play. */
-export const ASPIRANTS_CLOSE_AT = 0.7;
+const ASPIRANTS_SCREENS = 1.3;
+/** Screens of scroll between the hero's play and the close: the dwell on the words. */
+const ASPIRANTS_DWELL = 1;
+/** The close fires at this share of the section. */
+const ASPIRANTS_CLOSE_AT = ASPIRANTS_DWELL / ASPIRANTS_SCREENS;
 /** The close, in seconds going forward. */
-const ASPIRANTS_CLOSE_SECONDS = 1.5;
+const ASPIRANTS_CLOSE_SECONDS = 1.2;
 
 export const section: HomeSection = {
   id: "aspirants",

@@ -9,7 +9,16 @@ import type { Actor, FrameInfo, HomeSection, SectionCtx, SectionRuntime } from "
 const VIEW = { w: 1000, h: 800, dpr: 1 };
 
 function frame(S: number): FrameInfo {
-  return { time: 0, dt: 1 / 60, S, raw: S, velocity: 0, viewport: VIEW, frame: 0 };
+  return {
+    time: 0,
+    dt: 1 / 60,
+    S,
+    raw: S,
+    velocity: 0,
+    viewport: VIEW,
+    frame: 0,
+    input: { wheel: 0 },
+  };
 }
 
 const flush = async () => {
@@ -139,6 +148,20 @@ describe("SectionRunner", () => {
       "c.update(0.50)",
     ]);
     expect(actors.get("x")?.visible).toBe(true);
+  });
+
+  it("replays a passed section with its tail ridden out, so what leaves in the tail is gone", async () => {
+    const { runner, log } = setup((l, reg) => {
+      const x = reg.register({ name: "x", visible: false });
+      return [fakeSection("a", 2, 0, 1, l, x), fakeSection("b", 1, 0, 0, l, x)];
+    });
+    runner.step(frame(0.5), true);
+    await flush();
+    runner.step(frame(0.5), false);
+    log.calls.length = 0;
+    runner.step(frame(4), true);
+    // a is 2 screens long with a tail of 1 screen: its last frame was at local 1.5.
+    expect(log.calls.filter((c) => c.startsWith("a.update"))).toEqual(["a.update(1.50)"]);
   });
 
   it("does not run the passed sections again on a frame that is not a jump", async () => {

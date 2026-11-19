@@ -3,7 +3,7 @@
     C:/Users/muham/anaconda3/python.exe scripts/home/media/picks.py            write public/data/home/picks.json
     C:/Users/muham/anaconda3/python.exe scripts/home/media/picks.py --sheet    also write the looking sheets
 
-Run the other scripts of this folder first (cards, logo, trailer, previews, loops, voices): this one reads what they
+Run the other scripts of this folder first (cards, logo, previews, loops, voices): this one reads what they
 wrote (sizes, durations) and fails when a file is missing. Nothing is typed by hand into the JSON; the library data
 is the source and a pick is an id. Official pictures only in the hero, the wall and the spiral. Never edit the output.
 
@@ -29,7 +29,6 @@ from PIL import Image, ImageDraw
 import hcommon as h
 import loops as L
 import previews as P
-import trailer as T
 
 SPLASH = h.library_data("arts-splash")
 SPLASH_BY_ID = {i["id"]: i for i in SPLASH["items"]}
@@ -113,9 +112,15 @@ def hero() -> dict[str, Any]:
                       "focus": art["focus"], "alt": art["alt"],
                       "source": "cropped by the owner (4:5, the corner mark is out)" if slug not in ("obsidia", "selena")
                       else "cut by scripts/home/media/cards.py from the 2560 wide art, centred on the character"})
+    # Eight more official stills cut by hero_cards.py, so the hero's eighteen cards are all different.
+    more = h.read_json(h.DATA / "hero-cards.json")["cards"]
+    for c in more:
+        if not (h.PUBLIC / c["repo"].lstrip("/")).exists():
+            raise SystemExit(f"{c['id']}: file missing, run hero_cards.py first")
+    cards.extend(more)
     return {
         "note": "wide: 10 single and 6 group pictures, all official, 16:9 by `clean` (the shared `p` of the wall, no new file). "
-                "portrait: ten 4:5 cards, one for each Aspirant, new files.",
+                "portrait: ten 4:5 cards, one for each Aspirant, then eight more official stills cut to 4:5 (hero_cards.py), new files.",
         "wide": {"single": singles, "group": groups}, "portrait": cards,
     }
 
@@ -292,33 +297,32 @@ def clock(seconds: float) -> str:
     return f"{total // 60:02d}:{total % 60:02d}"
 
 
+# The strip plays the whole trailer, streamed from the library's own file (round two, 19 Nov 2026). It rests on a chosen
+# moment: the wide shot of Selena on the ledge with the silver dragon (the cut is at 11.67 s). The film's own opening is a
+# dark hall with a subtitle for four seconds, which is a poor first frame. The loop goes from the end back to this moment.
+TRAILER_START = 11.7
+# The seconds of the film the loading bar waits for (buffered from TRAILER_START). The rest streams while it plays.
+TRAILER_WARM_SECONDS = 6
+
+
 def trailer() -> dict[str, Any]:
     film_id = P.film_items()[0]["id"]
     film = next(i for i in h.library_data("video-films")["items"] if i["id"] == film_id)
     v = film["video"]
-    strip = []
-    for name, minw in (("1280", 0), ("1920", 1920)):
-        path = h.VIDEO / f"strip-{name}.mp4"
-        if not path.exists():
-            continue
-        info = h.probe(path)
-        strip.append({"repo": h.public_path(path), "w": info["w"], "h": info["h"], "dur": round(info["dur"], 2), "fps": round(info["fps"]),
-                      "bytes": path.stat().st_size, "pick": f"the display's width in physical pixels (CSS width x pixel ratio) is {'at least ' + str(minw) if minw else 'under 1920'}: by the display only"})
-    poster = h.IMG / "strip-poster.webp"
-    with Image.open(poster) as im:
-        pw, ph = im.size
     repo_copy = h.PUBLIC / "video" / "selena-obsidia" / "trailer.mp4"
     return {
-        "note": "The whole picture, 1920x808 (2.376 to 1), in the strip and in the expand: crop it with CSS (object-fit: cover). Muted loop of "
-                f"{T.SEGMENTS}, seamless (a dissolve closes it). No subtitle and no black bar in any frame.",
-        "strip": strip, "poster": {"repo": h.public_path(poster), "w": pw, "h": ph, "bytes": poster.stat().st_size},
+        "note": "The strip and its window play the library's whole film (`film.lib.video`, H.264 faststart, range requests) in a streamed "
+                "<video> that buffers seconds ahead: never held whole. The picture is 1920x808 (2.376 to 1) and the window takes that shape, "
+                "no crop. It rests at `start` and loops there. The loading bar waits for `warm.seconds` of it.",
         "film": {
             "id": film_id, "title": film["title"], "date": film["date"], "href": f"/collection/video/films?i={film_id}",
-            "lib": {"video": v["src"], "poster": v["poster"], "thumb": film["thumb"]}, "w": v["w"], "h": v["h"], "dur": v["dur"], "durLabel": clock(v["dur"]),
-            "bytes": film["bytes"],
+            "lib": {"video": v["src"], "poster": v["poster"], "thumb": film["thumb"]}, "w": v["w"], "h": v["h"],
+            "aspect": round(v["w"] / v["h"], 4), "dur": v["dur"], "durLabel": clock(v["dur"]), "fps": film.get("fps"),
+            "bytes": film["bytes"], "start": TRAILER_START,
+            "warm": {"seconds": TRAILER_WARM_SECONDS, "bytes": round(film["bytes"] * TRAILER_WARM_SECONDS / v["dur"])},
             "smallerCopy": {"repo": "/video/selena-obsidia/trailer.mp4", "w": 1280, "h": 540, "bytes": repo_copy.stat().st_size,
                             "vtt": "/video/selena-obsidia/trailer.vtt", "note": "the repo's own 23 MB stream of the same film"},
-            "note": "\"Play Films\": open the library's film in the site's player (PlayerOverlay). `lib.video` is H.264 faststart: range requests work.",
+            "note": "\"Play Films\": open the library's film in the site's player (PlayerOverlay). The strip's own element streams the same file.",
         },
     }
 
@@ -326,13 +330,13 @@ def trailer() -> dict[str, Any]:
 def previews() -> list[dict[str, Any]]:
     out = []
     for n, film in enumerate(P.film_items()):
-        mp4 = h.VIDEO / "preview" / f"{film['id']}.mp4"
+        mp4 = P.OUT_DIR / f"{film['id']}.mp4"
         webp = mp4.with_suffix(".webp")
         info = h.probe(mp4)
         out.append({
             "n": n, "id": film["id"], "title": film["title"], "chars": film["chars"], "pair": film["pair"], "date": film.get("date"),
             "href": f"/collection/video/films?i={film['id']}", "start": P.STARTS[film["id"]],
-            "video": {"repo": h.public_path(mp4), "w": info["w"], "h": info["h"], "dur": round(info["dur"], 2), "fps": round(info["fps"]), "bytes": mp4.stat().st_size},
+            "video": {"repo": h.public_path(mp4), "w": info["w"], "h": info["h"], "aspect": round(info["w"] / info["h"], 4), "dur": round(info["dur"], 2), "fps": round(info["fps"]), "bytes": mp4.stat().st_size},
             "poster": {"repo": h.public_path(webp), "bytes": webp.stat().st_size}, "color": film["c"],
         })
     return out
@@ -379,11 +383,11 @@ def loading(parts: dict[str, Any]) -> dict[str, Any]:
     """What to wait for and what to defer, by the sizes of the files (the design's section 6)."""
     wall_p = sum(p["p"]["bytes"] for p in parts["wall"]["order"])
     cards = sum(c["bytes"] for c in parts["hero"]["portrait"])
-    strip = next(s for s in parts["trailer"]["strip"] if s["w"] == 1280)
+    warm = parts["trailer"]["film"]["warm"]
     waited = {
         "hero portrait cards (10)": cards,
         "wall and hero wide pictures, p (18, shared by the hero, the wall and the spiral)": wall_p,
-        "trailer strip 1280 (loop, held whole) and its poster": strip["bytes"] + parts["trailer"]["poster"]["bytes"],
+        f"the trailer's first {warm['seconds']} s (streamed, buffered before the page opens)": warm["bytes"],
         "logos (MLBB, TheMLabel)": parts["logos"]["mlbb"]["bytes"] + parts["logos"]["themlabel"]["bytes"],
     }
     music_b = sum(m["disc"]["bytes"] + (m["jacket"]["bytes"] if m["jacket"] else 0) for m in parts["music"])
@@ -401,8 +405,7 @@ def loading(parts: dict[str, Any]) -> dict[str, Any]:
     on_demand = {
         "music audio (7 tracks, streamed on pick)": sum(m["audio"]["bytes"] for m in parts["music"]),
         "fan art p (15, on hover) and f (on press)": sum(f["bytes"]["p"] + f["bytes"]["f"] for f in parts["fanart"]["items"]),
-        "trailer strip 1920 (large displays, instead of the 1280 one)": sum(s["bytes"] for s in parts["trailer"]["strip"] if s["w"] == 1920),
-        "the film for Play Films (streamed, never whole)": parts["trailer"]["film"]["bytes"],
+        "the whole trailer (streamed while it plays, never held whole; also the film of Play Films)": parts["trailer"]["film"]["bytes"],
     }
     return {
         "note": "bytes of the files; `waited` is what the loading bar waits for before the page opens, `deferred` loads in the background after "

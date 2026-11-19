@@ -17,6 +17,7 @@ import {
   ShaderMaterial,
   Vector2,
   Vector3,
+  Vector4,
   WebGLRenderer,
   ZeroFactor,
 } from "three";
@@ -49,6 +50,8 @@ export interface FrameFeed {
   S: number;
   /** The smoothed speed of the scroll, screens a second, absolute. */
   vel: number;
+  /** The ripples the pointer left (`trail.ts`): x, y, age and strength for each of ten. */
+  trail: Float32Array;
 }
 
 type UniformSet = {
@@ -71,6 +74,8 @@ type UniformSet = {
   uC2: { value: Vector3 };
   uC3: { value: Vector3 };
   uInk: { value: Vector3 };
+  uTrail: { value: Float32Array };
+  uX: { value: Vector4 };
 };
 
 function makeUniforms(): UniformSet {
@@ -94,6 +99,8 @@ function makeUniforms(): UniformSet {
     uC2: { value: new Vector3() },
     uC3: { value: new Vector3() },
     uInk: { value: new Vector3(1, 1, 1) },
+    uTrail: { value: new Float32Array(40) },
+    uX: { value: new Vector4() },
   };
 }
 
@@ -191,6 +198,8 @@ export class BackdropGL {
       u.uC2.value.set(p.stops[6]!, p.stops[7]!, p.stops[8]);
       u.uC3.value.set(p.stops[9]!, p.stops[10]!, p.stops[11]);
       u.uInk.value.set(p.ink[0]!, p.ink[1]!, p.ink[2]);
+      u.uTrail.value = feed.trail;
+      u.uX.value.set(p.extras[0]!, p.extras[1]!, p.extras[2]!, p.extras[3]!);
       // The first layer replaces the canvas, the others add to it: in premultiplied colour that is
       // `old * (1 - t) + new * t`, a true linear cross-fade (no dip where the ground shows through).
       material.blendDst = i === 0 ? ZeroFactor : OneFactor;

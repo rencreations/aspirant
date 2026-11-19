@@ -10,7 +10,7 @@ const VIEW = { w: 1000, h: 800, dpr: 1 };
 const DT = 1 / 60;
 
 function frame(S: number, raw = S, dt = DT): FrameInfo {
-  return { time: 0, dt, S, raw, velocity: 0, viewport: VIEW, frame: 0 };
+  return { time: 0, dt, S, raw, velocity: 0, viewport: VIEW, frame: 0, input: { wheel: 0 } };
 }
 
 const flush = async () => {
@@ -226,7 +226,7 @@ describe("a section with plays in the runner", () => {
     expect(p.runner.holdState().holding).toBe(false);
   });
 
-  it("replays a passed section at the end of its last play", async () => {
+  it("replays a passed section at the end of its last play, its tail ridden out", async () => {
     const p = setup((calls) => [
       section("a", 2, 0, 0.5, calls, [{ at: 0.5, from: 0, to: 1.25, seconds: 1 }]),
       section("b", 2, 0, 0, calls),
@@ -236,7 +236,8 @@ describe("a section with plays in the runner", () => {
     p.tick(0.5);
     p.calls.length = 0;
     p.tick(3.5, { jumped: true });
-    expect(p.calls.filter((c) => c[0] === "a")).toEqual([["a", 1.25]]);
+    // The section is 2 screens long with a tail of 0.5 screen: its last frame was 0.25 past the play's end.
+    expect(p.calls.filter((c) => c[0] === "a")).toEqual([["a", 1.25 + 0.25]]);
   });
 
   it("does not hold for a runtime that is still mounting, and lands where the page is when it arrives", async () => {

@@ -21,11 +21,10 @@ import { releaseFull } from "../../preview/files";
 import { useHomePreview } from "../../preview/store";
 import { backdropAt } from "../backdrops";
 import { FieldScene } from "../hero/scene";
-import { aspirantsS, lineIn, lineOut, rowsBlend } from "../hero/timeline";
-import { setGroundCue } from "../../kernel/background";
+import { aspirantsS, lineIn, lineOut } from "../hero/timeline";
 
-/** The words fold up on their top edge by this much (degrees) as they go. */
-const FOLD_DEG = -86;
+/** The words leave to the right by this much of the screen's width as they go (the first line first). */
+const EXIT_SHARE = 0.16;
 /** The words rise this far (px) as they arrive. */
 const RISE_PX = 26;
 
@@ -35,6 +34,7 @@ class AspirantsRuntime implements SectionRuntime {
   private release: (() => void) | null = null;
   /** The position the words were last written for (a still page writes nothing). */
   private wordsAt = Number.NaN;
+  private wordsW = 0;
   private readonly unsubscribe: () => void;
 
   constructor(
@@ -60,18 +60,17 @@ class AspirantsRuntime implements SectionRuntime {
       this.scene.update({ S, viewport: frame.viewport, entrance: 1 });
       // The bar's own logo is the logo from the end of the hero's morph on.
       showNavLogo(true);
-      // The dark ground comes with the wall opening into the rows, on the same clock.
-      if (v > 1) setGroundCue("daybreak", "storm", rowsBlend(S));
     }
     const back = backdropAt(S);
     this.backdrop?.set(back.kind, back.options);
-    this.words(S);
+    this.words(S, frame.viewport.w);
   }
 
-  /** Line `k` rises in one after another, and at the end folds up and goes, the first line first. */
-  private words(S: number): void {
-    if (Math.abs(S - this.wordsAt) < 1e-5) return;
+  /** Line `k` rises in one after another, and at the end slides out to the right and fades, the first line first. */
+  private words(S: number, width: number): void {
+    if (Math.abs(S - this.wordsAt) < 1e-5 && width === this.wordsW) return;
     this.wordsAt = S;
+    this.wordsW = width;
     for (let k = 0; k < this.lines.length; k++) {
       const el = this.lines[k]!;
       const a = lineIn(S, k);
@@ -80,10 +79,12 @@ class AspirantsRuntime implements SectionRuntime {
       put(
         el,
         "transform",
-        `perspective(720px) translate3d(0, ${((1 - a) * RISE_PX).toFixed(2)}px, 0) rotateX(${(b * FOLD_DEG).toFixed(2)}deg)`,
+        `translate3d(${(b * EXIT_SHARE * width).toFixed(1)}px, ${((1 - a) * RISE_PX).toFixed(2)}px, 0)`,
       );
-      // Not there yet, or folded away: a link in it must not be reachable by the keyboard or a press.
-      put(el, "visibility", a * (1 - b) < 0.01 ? "hidden" : "visible");
+      // Not there yet, or folded away: it takes no press. It stays in the page's tree and the tab
+      // order (a hidden link could not be reached by a reader or the keyboard): a focus on it moves the
+      // page to where it shows (`home-stage.tsx`).
+      put(el, "pointer-events", a * (1 - b) < 0.01 ? "none" : "");
     }
   }
 
@@ -110,7 +111,7 @@ class AspirantsRuntime implements SectionRuntime {
     this.scene.dispose();
     releaseFull();
     for (const el of this.lines) {
-      for (const prop of ["opacity", "transform", "visibility"]) el.style.removeProperty(prop);
+      for (const prop of ["opacity", "transform", "pointer-events"]) el.style.removeProperty(prop);
     }
   }
 }

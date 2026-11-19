@@ -1,0 +1,67 @@
+/*
+ * The cue at a rest: one hairline in the lower right corner (the foot's middle holds the buttons of
+ * several sections) with a short stroke running down it.
+ * Transform and opacity only. It takes no pointer and is hidden from assistive tech (the page's
+ * own text says what to do). The colour is a mid grey that reads on both the daybreak and the
+ * storm grounds.
+ */
+.cue {
+  position: fixed;
+  right: 36px;
+  bottom: max(44px, calc(env(safe-area-inset-bottom) + 30px));
+  z-index: 5;
+  width: 2px;
+  height: 44px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.cue[data-on="1"] {
+  opacity: 1;
+}
+
+.cue::before,
+.cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(108 114 138);
+}
+
+.cue::before {
+  opacity: 0.32;
+}
+
+.cue::after {
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: run 2.2s cubic-bezier(0.55, 0, 0.25, 1) infinite;
+  animation-play-state: paused;
+}
+
+.cue[data-on="1"]::after {
+  animation-play-state: running;
+}
+
+@keyframes run {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}

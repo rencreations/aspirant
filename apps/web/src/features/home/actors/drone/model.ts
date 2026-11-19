@@ -3,7 +3,7 @@
  * `preload.ts` (which is in the bundle of every page) and the tests can import it.
  *
  * The model is the About page's own file, never changed (`public/models/about/drone.glb`). The two
- * extra face atlases and the icons of the speech bubble are made by `scripts/home/drone/`.
+ * extra face atlases and the icons file (of which only the bang is used) are made by `scripts/home/drone/`.
  */
 import { DRONE_MODEL, DRONE_MODEL_BYTES } from "@/features/about/media";
 import { BODY_METRES } from "@/features/about/drone/model";
@@ -15,7 +15,7 @@ export const FACES_A = "/img/home/drone-faces.webp";
 export const FACES_A_BYTES = 21_286;
 export const FACES_B = "/img/home/drone-faces-2.webp";
 export const FACES_B_BYTES = 12_976;
-/** The icons of the bubble and the shock mark: six on a 576 by 384 picture. */
+/** The icons file: six cells on a 576 by 384 picture. The shock mark draws its bang. */
 export const MARKS = "/img/home/marks.webp";
 export const MARKS_BYTES = 24_700;
 

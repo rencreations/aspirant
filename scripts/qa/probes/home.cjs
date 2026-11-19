@@ -10,6 +10,9 @@
 // Files: <outFolder>/home-<size>-<nn>-<section>-<percent>.png and home-<size>.json. The last
 // section's 100 percent is taken a little before the end of the page, because the very end opens
 // About. A line is printed for every frame, and every console error of the page is listed at the end.
+// Round two: scenes play on a clock at a threshold and hold the scroll, so the wheel waits for
+// `__home.plays()` to end before it goes on, and a picture at a joint shows the rest the page snaps
+// to (`__home.snap()`), not the target. See docs/design/home/kernel-plays.md and kernel-snap.md.
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -32,13 +35,45 @@ const pad = (n) => String(n).padStart(2, "0");
 const pct = (f) => String(Math.round(f * 100)).padStart(3, "0");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** Move the page to `target` screens with the wheel, in a few big steps, waiting for each to land. */
+/**
+ * Round two: scenes play on a clock at a threshold and hold the page while they run, and a stop
+ * inside a joint is carried to the nearer rest by the page itself (`kernel-snap.md`). So a wheel
+ * move waits for the plays to end before it goes on, and for the snap to be done (it starts about
+ * 0.8 s after the last wheel and runs for 0.5 s). A threshold is crossed by a wheel of at most 800 px
+ * a step: a bigger step is a flick, which the kernel limits and chains.
+ */
+async function playsEnded(page) {
+  await page
+    .waitForFunction(() => !window.__home.plays().some((p) => p.active), null, { timeout: 60_000 })
+    .catch(() => undefined);
+}
+
+async function snapDone(page) {
+  await page
+    .waitForFunction(
+      () => {
+        const s = window.__home.snap();
+        return !s.moving && s.blocked !== "input" && s.blocked !== "grace";
+      },
+      null,
+      { timeout: 4_000 },
+    )
+    .catch(() => undefined);
+}
+
+/** Move the page to `target` screens with the wheel, in a few steps, waiting for each to land. */
 async function wheelTo(page, target) {
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 120; i++) {
+    await playsEnded(page);
     const s = await page.evaluate(() => ({ y: window.scrollY, unit: window.__home.state().unit }));
     const remaining = target * s.unit - s.y;
-    if (Math.abs(remaining) < 3) return;
-    await page.mouse.wheel(0, Math.max(-2400, Math.min(2400, remaining)));
+    if (Math.abs(remaining) < 3) {
+      // In a joint the page is carried to the nearer rest once the visitor lets go: take the picture
+      // where it stops (the probe's own pictures at a joint show that rest, not the target).
+      await snapDone(page);
+      return;
+    }
+    await page.mouse.wheel(0, Math.max(-800, Math.min(800, remaining)));
     // Lenis eases the page to the new target: wait until it has stopped moving.
     let last = s.y;
     for (let k = 0; k < 40; k++) {
@@ -48,6 +83,8 @@ async function wheelTo(page, target) {
       last = y;
     }
   }
+  await playsEnded(page);
+  await snapDone(page);
 }
 
 /** Wait until the scene has caught up with the scroll and the sections near it have mounted. */

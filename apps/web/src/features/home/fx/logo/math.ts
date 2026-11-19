@@ -282,8 +282,17 @@ export function morphEnvelope(P: number): number {
  * section may pass it every frame and the logo is still flat when it reaches the bar.
  */
 export function waveEnvelope(P: number, restWave: number): number {
-  return Math.max(morphEnvelope(P), clamp(restWave) * (1 - smoothstep(0, 0.2, P)));
+  const rest = clamp(restWave) * (1 - smoothstep(0, 0.2, P));
+  // The logo stands perfectly still (rest wave 0). The morph begins with the wave it always had (the
+  // calm ripple it used to rest in): it comes in over the first 8 percent of the progress and
+  // dies away by 20 percent, so from there on the morph is as it was.
+  const kick = MORPH_KICK * smoothstep(0, KICK_IN, P) * (1 - smoothstep(0, 0.2, P));
+  return Math.max(morphEnvelope(P), rest, kick);
 }
+
+/** The wave the morph starts with, and the part of the progress it comes in over. */
+const MORPH_KICK = 0.3;
+const KICK_IN = 0.08;
 
 /** The wave's phase in cycles at progress `P` (a crest travels `WAVE.run` wavelengths). */
 export const phaseAt = (P: number): number => P * WAVE.run;

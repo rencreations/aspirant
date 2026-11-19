@@ -30,7 +30,11 @@ const STOPS: readonly RelStop[] = [
   ["hero", 2.6 / 4.2, -0.38, -0.3, 0.14],
   ["aspirants", 0, 0.38, -0.34, 0.13],
   ["aspirants", 0.8 / 1.6, 0.38, -0.34, 0.13],
+  // The rows' dwell (the rows glide for ever): the drone stays at the lower right, clear of the middle row.
+  ["rows", 0, 0.38, -0.34, 0.13],
   ["rows", 0.8 / 2.4, -0.4, 0.32, 0.12],
+  // Round the film (it stands at the middle), along the lower left: it never passes in front of it.
+  ["rows", 1.3 / 2.4, -0.3, -0.32, 0.12],
   ["rows", 1.8 / 2.4, 0.4, -0.3, 0.12],
   ["strip", 0, 0.4, -0.3, 0.12],
   ["strip", 1.5 / 3.1, 0.4, -0.3, 0.12],
@@ -49,7 +53,9 @@ const COMPACT_STOPS: readonly RelStop[] = [
   ["hero", 2.6 / 4.2, -0.2, -0.3, 0.115],
   ["aspirants", 0, 0.2, 0.3, 0.1],
   ["aspirants", 0.8 / 1.6, 0.2, 0.3, 0.1],
+  ["rows", 0, 0.2, 0.3, 0.1],
   ["rows", 0.8 / 2.4, -0.22, 0.32, 0.1],
+  ["rows", 1.3 / 2.4, -0.2, -0.32, 0.1],
   ["rows", 1.8 / 2.4, 0.2, -0.3, 0.1],
   ["strip", 0, 0.2, -0.3, 0.1],
   ["strip", 1.5 / 3.1, 0.2, -0.36, 0.1],

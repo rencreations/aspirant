@@ -132,6 +132,14 @@ class ChaseRuntime implements SectionRuntime {
     void this.load();
   }
 
+  /** Every actor has arrived or failed for good, and the backdrop's shaders are compiled. */
+  private loaded = false;
+
+  /** The ready gate: the run and the book need Tetra, the dragon and the doll built. */
+  ready(): boolean {
+    return this.loaded;
+  }
+
   /** Build or find every actor; each one that arrives is used from the next frame, whatever the others do. */
   private async load(): Promise<void> {
     const ctx = this.ctx;
@@ -158,10 +166,14 @@ class ChaseRuntime implements SectionRuntime {
       ),
       take(
         "the backdrop",
-        async () => (await import("../../fx/backdrop")).ensureBackdrop(ctx),
+        async () => {
+          const a = await (await import("../../fx/backdrop")).ensureBackdrop(ctx);
+          // Compiled before the first play, so its first draw is no hitch inside the scene.
+          await a.warm(["speed-lines", "soft-aurora", "pixel-blast"]).catch(() => undefined);
+          return a;
+        },
         (a) => {
           this.backdrop = a;
-          void a.warm(["speed-lines", "soft-aurora", "pixel-blast"]);
         },
       ),
       take(
@@ -180,6 +192,7 @@ class ChaseRuntime implements SectionRuntime {
         (a) => (this.doll = a),
       ),
     ]);
+    this.loaded = true;
     // The covers come last and on their own: the book keeps its plain boards until they are here.
     void loadCovers().then(() => {
       this.setCovers();

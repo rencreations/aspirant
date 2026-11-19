@@ -36,7 +36,7 @@ function run(
   const log: Array<{ t: number; a: LoaderAction }> = [];
   for (let t = 0; t < seconds; t += DT) {
     stepLoader(brain, input(at(t)), out);
-    if (out.trick || out.face || out.bubble) log.push({ t, a: { ...out } });
+    if (out.trick || out.face) log.push({ t, a: { ...out } });
   }
   return log;
 }
@@ -122,12 +122,11 @@ describe("the truth shows", () => {
     expect(log.some((l) => l.a.why === "stall")).toBe(true);
   });
 
-  it("is sad when there is no connection, and says so with an icon only", () => {
+  it("is sad when there is no connection", () => {
     const log = run(14, () => ({ progress: 0.4, offline: true }));
     const sad = log.filter((l) => l.a.why === "offline");
     expect(sad.length).toBeGreaterThanOrEqual(2);
     expect(sad[0]?.a.face).toBe("sad");
-    expect(sad[0]?.a.bubble).toBe("dots");
   });
 
   it("never worries once everything has arrived", () => {

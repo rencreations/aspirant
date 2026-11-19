@@ -14,10 +14,10 @@ import {
 /**
  * What the normal drone needs: its script (three's scene code, one lazy chunk), the model it
  * shares with `/about` (250 KB, the same file and the same saved copy), the two pages of extra
- * faces (35 KB together) and the icons of the speech bubble (25 KB). The bubble and the extra faces
- * are not needed to draw the drone at rest: a page that did not arrive shows the plain face and no
- * bubble, and the actor loads them itself through the same store, so a visit that never ran this
- * list still works.
+ * faces (35 KB together) and the icons file (25 KB, only its bang is used, for the shock mark). The
+ * shock mark and the extra faces are not needed to draw the drone at rest: a page that did not
+ * arrive shows the plain face and no mark, and the actor loads them itself through the same store,
+ * so a visit that never ran this list still works.
  *
  * A section decides whether the first screen waits for the drone: pass `deferred: false` where it is
  * in view when the page opens (the loader, the hero), and leave the default where it comes later (it

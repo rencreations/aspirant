@@ -6,6 +6,8 @@
  * for this site is in the list (design call 8).
  */
 
+import { TILE_PICTURES } from "./tile-pictures";
+
 export interface PreviewPicture {
   /** The id of the splash art in the collection (the same as the wall card's). */
   id: string;
@@ -233,4 +235,13 @@ export const PREVIEW_PICTURES: readonly PreviewPicture[] = [
     h: 1027,
     bytes: 306124,
   },
+];
+
+/**
+ * Every picture the wall can open: the eighteen splash arts, then the wall-only stills
+ * (`tile-pictures.ts`). The window steps through this list.
+ */
+export const ALL_PREVIEW_PICTURES: readonly PreviewPicture[] = [
+  ...PREVIEW_PICTURES,
+  ...TILE_PICTURES,
 ];

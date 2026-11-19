@@ -61,6 +61,7 @@ uniform float uHover;
 uniform vec2 uPointer;
 uniform vec4 uFx;
 uniform float uLight;
+uniform vec2 uLoad;
 varying vec2 vLp;
 varying vec3 vView;
 
@@ -169,6 +170,20 @@ void main() {
   // A hairline of light inside the rim.
   float inside = clamp(-sd / pxl, 0.0, 4.0);
   rgb += 0.09 * (1.0 - smoothstep(0.0, 1.4, inside)) * (0.6 + 0.4 * uHover);
+
+  // The calm loading line of a film that waits for more picture: a thin track along the foot of the
+  // plane with the seconds in hand lit, inside the rim. It is drawn only when uLoad.x is above zero.
+  if (uLoad.x > 0.002) {
+    float m = clamp(uHalf.x * 0.06, 6.0, 20.0);
+    float span = max(uHalf.x - m, 1.0);
+    float y0 = -uHalf.y + m;
+    float on = 1.0 - smoothstep(0.0, pxl, abs(vLp.y - y0) - pxl);
+    float u = (vLp.x * face + span) / (2.0 * span);
+    float within = step(0.0, u) * step(u, 1.0);
+    float lit = 1.0 - smoothstep(0.0, 2.0 * pxl / (2.0 * span), u - uLoad.y);
+    float line = on * within * (0.28 + 0.72 * lit) * uLoad.x;
+    rgb = mix(rgb, vec3(1.0), line * 0.9);
+  }
 
   gl_FragColor = vec4(rgb * cover, cover) * uOpacity;
 }

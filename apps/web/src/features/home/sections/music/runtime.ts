@@ -79,6 +79,9 @@ class MusicRuntime implements SectionRuntime {
   private tracks: readonly TrackArt[] = [];
   private notes: SustainHandle | null = null;
   private propsReady = false;
+  /** `loadProps` has finished, with or without the props. */
+  private propsDone = false;
+  private warmed = false;
   private disposed = false;
 
   private dt = 0;
@@ -158,6 +161,20 @@ class MusicRuntime implements SectionRuntime {
     if (!this.disposed) this.backdrop = backdrop;
   }
 
+  /** The stage's shader is compiled, or the backdrop cannot be had: the arrival's first draw is no hitch. */
+  markWarmed(): void {
+    this.warmed = true;
+  }
+
+  /**
+   * The ready gate: the arrival drags the gramophone in and carries the crate, so a play on a bare
+   * stage would be a play of two drones in front of nothing. True once the props are made (or have
+   * failed for good) and the stage's shader is compiled.
+   */
+  ready(): boolean {
+    return this.propsDone && this.warmed;
+  }
+
   /** Make the gramophone, the crate and the records' covers. Runs after the section has mounted. */
   async loadProps(): Promise<void> {
     try {
@@ -182,6 +199,8 @@ class MusicRuntime implements SectionRuntime {
       this.propsReady = true;
     } catch (error) {
       console.warn("music: the gramophone or the records could not be made", error);
+    } finally {
+      this.propsDone = true;
     }
   }
 
@@ -641,9 +660,13 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
   void ensureBackdrop(ctx).then(
     (backdrop) => {
       runtime.setBackdrop(backdrop);
-      void backdrop.warm(["gradient-blinds"]);
+      void backdrop.warm(["gradient-blinds"]).finally(() => {
+        runtime.markWarmed();
+      });
     },
-    () => undefined,
+    () => {
+      runtime.markWarmed();
+    },
   );
   return runtime;
 }

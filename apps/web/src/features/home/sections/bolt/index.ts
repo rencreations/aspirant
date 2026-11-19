@@ -4,8 +4,8 @@ import type { HomeSection } from "../../kernel/types";
 import { preload } from "./preload";
 import { BOLT_LAST, BOLT_STEPS } from "./stations";
 
-/** The length in screens: the last threshold (2.1) clears the fall's lead of half a screen. */
-const SCREENS = 2.7;
+/** The length in screens: the last threshold (2.45) clears the fall's lead of half a screen. */
+const SCREENS = 3;
 
 /**
  * Silverbolt, the doll and the five pairs, as triggered scenes (`stations.ts`): the arrival, then one

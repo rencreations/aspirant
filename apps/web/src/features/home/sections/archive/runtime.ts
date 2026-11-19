@@ -71,6 +71,8 @@ class ArchiveRuntime implements SectionRuntime {
   private readonly beam: HTMLElement | null;
   private readonly below: HTMLElement;
   private readonly off: Array<() => void> = [];
+  /** The backdrop's shaders are compiled (or there is no backdrop). */
+  private warmed = false;
 
   private geo: StripGeo;
   private w = 0;
@@ -126,7 +128,18 @@ class ArchiveRuntime implements SectionRuntime {
     this.geo = stripGeo(vp.w, vp.h);
     this.layout(vp.w, vp.h);
     this.listen();
-    void backdrop?.warm(["squares", "iridescence"]);
+    if (backdrop) {
+      void backdrop.warm(["squares", "iridescence"]).finally(() => {
+        this.warmed = true;
+      });
+    } else {
+      this.warmed = true;
+    }
+  }
+
+  /** The ready gate: the entry's play waits for the backdrop's shaders (the actors are built already). */
+  ready(): boolean {
+    return this.warmed;
   }
 
   // ----------------------------------------------------------------------------- the frame

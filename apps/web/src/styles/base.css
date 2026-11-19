@@ -207,6 +207,54 @@ html[data-gate="on"] .gate-cover {
   text-decoration: underline;
 }
 
+/*
+ * The home page's own cover (a document load of "/", `data-gate-kind="home"` until the loading screen has drawn): the same places as its loading screen
+ * (`components/home-boot`), so the hand-over is not seen. The drone stands small in the middle of
+ * the screen where nothing is drawn yet, the mark above it, the bar and the words under it.
+ */
+html[data-gate-kind="home"] .gate-cover-inner {
+  --boot-drone-half: 6.4vh;
+  --boot-bar-top: calc(50% + var(--boot-drone-half) + 2rem);
+  display: block;
+  padding: 0;
+}
+
+@supports (height: 1dvh) {
+  html[data-gate-kind="home"] .gate-cover-inner {
+    --boot-drone-half: 6.4dvh;
+  }
+}
+
+html[data-gate-kind="home"] .gate-cover-mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% + var(--boot-drone-half) + 1.6rem);
+}
+
+html[data-gate-kind="home"] .gate-cover-bar {
+  position: absolute;
+  top: var(--boot-bar-top);
+  left: calc(50% - min(16rem, 60vw) / 2);
+}
+
+html[data-gate-kind="home"] .gate-cover-notes {
+  position: absolute;
+  top: calc(var(--boot-bar-top) + 2px + 1.1rem);
+  left: 50%;
+  width: min(26rem, 92vw);
+  transform: translateX(-50%);
+}
+
+html[data-gate-kind="home"] .gate-cover-stuck {
+  position: absolute;
+  top: auto;
+  bottom: 2rem;
+  left: 50%;
+  width: min(26rem, 92vw);
+  transform: translateX(-50%);
+}
+
 @keyframes gate-sweep {
   50% {
     transform: translateX(0);

@@ -20,11 +20,11 @@ import { collectionRoute } from "@/lib/site";
 import { PREVIEW } from "../content";
 import { loadFull, onFull, peekFull } from "./files";
 import { flipBetween, isOnScreen, wrapIndex, type Box } from "./math";
-import { PREVIEW_PICTURES } from "./pictures";
+import { ALL_PREVIEW_PICTURES } from "./pictures";
 import { cardBoxOf, useHomePreview } from "./store";
 import styles from "./preview.module.css";
 
-const COUNT = PREVIEW_PICTURES.length;
+const COUNT = ALL_PREVIEW_PICTURES.length;
 const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EASE_IN = "cubic-bezier(0.5, 0, 0.75, 0)";
 /** How far a finger must travel across the picture to step to another one. */
@@ -85,12 +85,12 @@ export function PreviewHost() {
 function PreviewContent({ open }: { open: boolean }) {
   const index = useHomePreview((s) => s.index);
   const step = useHomePreview((s) => s.step);
-  const pic = PREVIEW_PICTURES[index]!;
+  const pic = ALL_PREVIEW_PICTURES[index]!;
 
   // The full size pictures are brought in behind the list; the ones next to this one first.
   useEffect(() => {
     for (const by of [0, 1, -1]) {
-      const next = PREVIEW_PICTURES[wrapIndex(index, by, COUNT)];
+      const next = ALL_PREVIEW_PICTURES[wrapIndex(index, by, COUNT)];
       if (next) {
         loadFull(next).catch(() => undefined);
       }
@@ -176,7 +176,7 @@ function PreviewContent({ open }: { open: boolean }) {
  */
 function PreviewFrame({ open }: { open: boolean }) {
   const index = useHomePreview((s) => s.index);
-  const pic = PREVIEW_PICTURES[index]!;
+  const pic = ALL_PREVIEW_PICTURES[index]!;
   const frameRef = useRef<HTMLDivElement>(null);
   const shownIndex = useRef(index);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);

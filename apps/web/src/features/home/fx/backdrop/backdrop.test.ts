@@ -32,6 +32,7 @@ const frame = (dt = 1 / 60): FrameInfo => ({
   velocity: 0,
   viewport: { w: 1440, h: 900, dpr: 1 },
   frame: 0,
+  input: { wheel: 0 },
 });
 
 describe("BackdropActor without WebGL (no host)", () => {

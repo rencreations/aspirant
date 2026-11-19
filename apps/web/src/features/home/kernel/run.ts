@@ -42,7 +42,9 @@ interface Slot {
   /** Replay `local = 1` on the next frame (a runtime that arrived after a jump past it). */
   settleNext: boolean;
   /** The plays of the section, or null (the section follows the scroll). */
-  readonly machine: PlayMachine | null;
+  machine: PlayMachine | null;
+  /** The runtime's `ready()` threw and was reported once (it is taken as ready after that). */
+  readyFailed: boolean;
   /** The scroll is inside the section's range (whether or not its runtime is ready). */
   inRange: boolean;
   /** The range was entered on this frame. */
@@ -96,6 +98,8 @@ export interface PlayReport {
   readonly length: number;
   readonly direction: -1 | 0 | 1;
   readonly progress: number;
+  /** A forward play is due but the runtime is not ready: nothing runs and nothing holds yet. */
+  readonly waiting: boolean;
 }
 
 export class SectionRunner {
@@ -106,23 +110,44 @@ export class SectionRunner {
   private readonly hold: HoldState = { holding: false, limitMs: 0, token: 0, playing: null };
 
   constructor(private readonly deps: RunnerDeps) {
-    this.slots = deps.layout.placed.map((p) => ({
-      p,
-      mount: "idle",
-      runtime: null,
-      running: false,
-      settleNext: false,
-      machine: p.def.plays
-        ? new PlayMachine(p.id, p.def.plays, {
-            screens: p.def.screens,
-            floor: floorOf(p),
-            restOutside: p.def.restOutside,
-          })
-        : null,
-      inRange: false,
-      entering: false,
-      live: false,
-    }));
+    this.slots = deps.layout.placed.map((p) => {
+      const slot: Slot = {
+        p,
+        mount: "idle",
+        runtime: null,
+        running: false,
+        settleNext: false,
+        machine: null,
+        readyFailed: false,
+        inRange: false,
+        entering: false,
+        live: false,
+      };
+      if (p.def.plays) {
+        slot.machine = new PlayMachine(p.id, p.def.plays, {
+          screens: p.def.screens,
+          floor: floorOf(p),
+          restOutside: p.def.restOutside,
+          ready: () => this.isReady(slot),
+        });
+      }
+      return slot;
+    });
+  }
+
+  /** The ready gate of a section: its runtime's `ready()`, true when it has none or it throws. */
+  private isReady(slot: Slot): boolean {
+    const runtime = slot.runtime;
+    if (!runtime?.ready) return true;
+    try {
+      return runtime.ready();
+    } catch (error) {
+      if (!slot.readyFailed) {
+        slot.readyFailed = true;
+        this.deps.onError?.(slot.p.id, error);
+      }
+      return true;
+    }
   }
 
   /**
@@ -197,8 +222,12 @@ export class SectionRunner {
       if (slot.mount !== "ready" || !isPassed(slot.p, S)) continue;
       if (jumped || slot.settleNext) {
         slot.settleNext = false;
-        // A section with plays ends where its last play ends.
-        const end = slot.machine ? slot.machine.end : 1;
+        // A section with plays ends where its last play ends, and its tail has been ridden out: a
+        // jump past it gives the picture of its last frame, as scrolling there slowly would have (a
+        // layer that leaves in the tail is gone, not stuck over the sections after it).
+        const base = slot.machine ? slot.machine.end : 1;
+        const tail = slot.p.def.restOutside ? 0 : slot.p.def.tail / slot.p.def.screens;
+        const end = base + tail;
         this.guard(slot, () => slot.runtime?.update(end, frame));
       }
     }
@@ -228,6 +257,14 @@ export class SectionRunner {
     this.collectHold();
   }
 
+  /** Some section has a forward play due that its runtime's ready gate holds back. */
+  waiting(): boolean {
+    for (const slot of this.slots) {
+      if (slot.live && slot.machine?.waiting) return true;
+    }
+    return false;
+  }
+
   /** What the plays ask of the scroll hold, as of the last frame. The object is reused. */
   holdState(): Readonly<HoldState> {
     return this.hold;
@@ -248,6 +285,7 @@ export class SectionRunner {
         length: m.length,
         direction: m.direction,
         progress: m.progress,
+        waiting: slot.live && m.waiting,
       });
     }
     return out;

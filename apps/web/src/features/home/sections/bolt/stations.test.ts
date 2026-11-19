@@ -64,6 +64,13 @@ describe("the stations of the bolt and the fall", () => {
     expect(toThrow).toBeLessThanOrEqual(1);
   });
 
+  it("asks for at least half a screen of scroll between two turns of the names (text to read)", () => {
+    const ats = BOLT_STEPS.map((s) => s.atScreens);
+    for (let i = 2; i < ats.length; i += 1) {
+      expect(ats[i]! - ats[i - 1]!).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+
   it("holds the whole chain of a hard flick to about seven seconds", () => {
     const total = [...BOLT_STEPS, ...FALL_STEPS].reduce((sum, s) => sum + s.seconds, 0);
     expect(total).toBeLessThan(8);

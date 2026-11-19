@@ -70,11 +70,16 @@ export interface InkSize {
   card: number;
 }
 
+/** The line's width in CSS pixels for a figure of `heightPx` on the screen: the one rule of the whole cast. */
+const LINE = { min: 1.1, slope: 0.0029, max: 3.3, from: 120 } as const;
+
 /**
  * The ink for a figure `heightPx` tall on the screen (CSS pixels). A small figure keeps a clear
- * line, a big one gets a little more, so the drawing keeps its weight: 1.2 px at 120 px tall (a
- * heavier line fills a figure that small with ink), about 1.8 at 400, 2.9 at 900 and never more
- * than 3.5. The push is a thin share of the height: it keeps
+ * line, a big one gets a little more, so the drawing keeps its weight: 1.1 px at 120 px tall (a
+ * heavier line fills a figure that small with ink), 1.9 at 400, 2.5 at 600, 3.3 at 900 and never
+ * more than that (`LINE`). Every actor feeds this the height of its own main figure and scales it by
+ * its own `weight` (hair 0.6, and a thin share for the parts of a model that are all outline), so
+ * the cast draws one weight of line. The push is a thin share of the height: it keeps
  * the hull behind the skin so a one sided card does not fight its own ink, and it is small enough
  * that a part a centimetre behind another still hides the ink of the one in front of it.
  */
@@ -82,8 +87,8 @@ export function outlineFor(heightPx: number, out: InkSize = { px: 0, push: 0, ca
   const h = heightPx > 0 ? heightPx : 0;
   // Hair strands are thin: a small figure gets a fine line round its cards, a big one up to 0.5.
   out.card = Math.min(0.5, 0.12 + h / 2400);
-  const px = 1.2 + (h - 120) * 0.0022;
-  out.px = px < 1.2 ? 1.2 : px > 3.5 ? 3.5 : px;
+  const px = LINE.min + (h - LINE.from) * LINE.slope;
+  out.px = px < LINE.min ? LINE.min : px > LINE.max ? LINE.max : px;
   out.push = Math.max(0.1, h * 0.0012);
   return out;
 }

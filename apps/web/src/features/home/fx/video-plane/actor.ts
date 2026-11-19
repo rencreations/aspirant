@@ -28,7 +28,7 @@ import { makePixelPerspectiveCamera, pixelFov } from "../../kernel/stage";
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
 import { clamp, qMul, ramp, smootherstep, type Q } from "../image-field/math";
 import { lowpassGain } from "../image-field/spring";
-import { PREVIEWS, PREVIEW_ASPECT, stripForWindow, type PreviewFilm, type StripFile } from "./data";
+import { PREVIEWS, TRAILER_FILM, previewAspect, type PreviewFilm } from "./data";
 import { TRAIL_POINTS, trailOf } from "./flyoff";
 import { boundsOf, contentWindow, inQuad, planeQuad, pointerOnPlane } from "./hit";
 import {
@@ -52,6 +52,7 @@ import {
   type Vp,
 } from "./types";
 import { WINDOW_ASPECT } from "./layout";
+import { trailerStream, type StreamStatus, type TrailerStream } from "./stream";
 import { FilmVideo } from "./video";
 
 /** Above the picture field (12) and under the logo (15), the drones (25, 35), Tetra (27), the cast (30) and the marks (40). */
@@ -68,6 +69,14 @@ const GROW = 0.07;
 const HIT_OPACITY = 0.25;
 /** A plane has to be at least this visible to be drawn. */
 const DRAW_OPACITY = 0.003;
+/**
+ * The trailer's thin loading line shows only when the film has been waiting this long (ms): a short
+ * stall holds the last frame and shows nothing. The line itself is real (seconds in hand over the
+ * seconds it needs), this only delays when it appears.
+ */
+const LINE_AFTER_MS = 1200;
+/** How fast the loading line comes and goes (per second). */
+const LINE_RATE = 5;
 
 /** What a press on a preview reports. */
 export interface PreviewPress {
@@ -154,7 +163,7 @@ export class FilmActor implements Actor {
   private readonly pass: FilmPass;
   private removePass: () => void;
   private readonly removeHit: () => void;
-  readonly strip: StripFile;
+  private readonly stream: TrailerStream;
 
   private vp: Vp = { w: 1, h: 1 };
   private readonly state: FilmState = makeState();
@@ -186,6 +195,9 @@ export class FilmActor implements Actor {
   private readonly rect = { x: 0, y: 0, w: 0, h: 0 };
   private updateMs = 0;
   private drawMs = 0;
+  /** The trailer's loading line: how visible it is, and how long the film has been waiting (ms). */
+  private line = 0;
+  private waitingMs = 0;
 
   constructor(private readonly ctx: ActorCtx) {
     const { stage } = ctx;
@@ -193,17 +205,18 @@ export class FilmActor implements Actor {
     this.vp = { w: vp.w, h: vp.h };
     const anisotropy = Math.min(8, stage.renderer.capabilities.getMaxAnisotropy());
     this.camera = makePixelPerspectiveCamera(vp.w, vp.h);
-    this.strip = stripForWindow();
+    this.stream = trailerStream();
 
     const hero = new FilmVideo(
       {
-        path: this.strip.path,
-        w: this.strip.w,
-        h: this.strip.h,
-        bytes: this.strip.bytes,
+        path: TRAILER_FILM.key,
+        w: TRAILER_FILM.w,
+        h: TRAILER_FILM.h,
+        bytes: TRAILER_FILM.bytes,
         background: false,
       },
       anisotropy,
+      this.stream,
     );
     this.videos.push(hero);
     for (const film of PREVIEWS) {
@@ -238,6 +251,8 @@ export class FilmActor implements Actor {
         time: 0,
         phase: k * 1.7,
         light: 0.28,
+        load: 0,
+        loadFraction: 0,
       });
     }
 
@@ -393,7 +408,13 @@ export class FilmActor implements Actor {
   /** What the probes read: the videos, the frame costs, the state. Plain data. */
   debug(): Record<string, unknown> {
     return {
-      strip: this.strip.path,
+      trailer: TRAILER_FILM.key,
+      stream: {
+        ...this.stream.status,
+        retries: this.stream.retries,
+        events: [...this.stream.events],
+      },
+      line: this.line,
       lens: this.lens,
       hover: this.hoverIdx,
       drift: this.drift,
@@ -490,9 +511,11 @@ export class FilmActor implements Actor {
       const aspect = pose.w / Math.max(1, pose.h);
       const zoom = 1 + TILT.zoom * h * w.tilt;
       if (k === 0) {
+        // The frame that covers the picture is 16 to 9 in the strip and the film's own shape once the
+        // window is open (so the whole picture shows), and it changes with the expand.
         contentWindow(
           aspect,
-          WINDOW_ASPECT,
+          WINDOW_ASPECT + (st.aspect - WINDOW_ASPECT) * st.expand,
           video.spec.w / video.spec.h,
           st.focusX,
           st.focusY,
@@ -502,10 +525,12 @@ export class FilmActor implements Actor {
           win,
         );
       } else {
+        // A preview shows its whole clip at its own shape.
+        const own = previewAspect(PREVIEWS[k - 1]!);
         contentWindow(
           aspect,
-          PREVIEW_ASPECT,
-          PREVIEW_ASPECT,
+          own,
+          own,
           0.5,
           0.5,
           zoom,
@@ -522,6 +547,8 @@ export class FilmActor implements Actor {
       // The picture fades in once its first frame is decoded.
       if (video.ready) video.shown = Math.min(1, video.shown + dt / 0.25);
       look.ready = video.shown;
+      look.load = k === 0 ? this.line : 0;
+      look.loadFraction = k === 0 ? this.stream.status.progress : 0;
       look.effect = k === 0 ? st.effect * smootherstep(ramp(st.morph, 0.35, 1)) : 0;
       look.hover = h;
       look.pointerX = px;
@@ -535,7 +562,7 @@ export class FilmActor implements Actor {
     }
 
     this.updateQuads();
-    this.playPolicy();
+    this.playPolicy(dt);
     this.writeTrails();
     this.updated = true;
     this.hasQuads = true;
@@ -551,8 +578,25 @@ export class FilmActor implements Actor {
     }
   }
 
+  /**
+   * The trailer waits for more picture (its stream ran out, or is being fetched again) or has no
+   * first frame yet. The plane keeps the last good frame; the thin line shows only if this lasts.
+   */
+  private stepLine(dt: number, heroPlays: boolean): void {
+    const waiting = heroPlays && (this.stream.status.stalled || !this.videos[0]!.ready);
+    this.waitingMs = waiting ? this.waitingMs + dt * 1000 : 0;
+    const goal = this.waitingMs > LINE_AFTER_MS ? 1 : 0;
+    this.line += (goal - this.line) * lowpassGain(LINE_RATE, dt);
+    if (this.line < 0.002 && goal === 0) this.line = 0;
+  }
+
+  /** What the trailer's stream knows now, for a section that wants a word of its own about it. */
+  get heroBuffer(): Readonly<StreamStatus> {
+    return this.stream.status;
+  }
+
   /** Play what is on the screen, pause the rest. A frozen scene holds its video still too. */
-  private playPolicy(): void {
+  private playPolicy(dt: number): void {
     const frozen = this.frozenFrames >= FROZEN_FRAMES;
     const st = this.state;
     for (let k = 0; k < PLANE_COUNT; k++) {
@@ -565,8 +609,11 @@ export class FilmActor implements Actor {
         want = b.x < this.vp.w && b.y < this.vp.h && b.x + b.w > 0 && b.y + b.h > 0;
       }
       if (want) v.play();
-      else if (v.playing) v.pause();
+      else if (v.playing || v.wantsPlay) v.pause();
+      if (k === 0) this.stepLine(dt, want);
     }
+    // The stream looks at its own playback a few times a second (a stall, the loop, a stuck download).
+    this.stream.update(performance.now());
   }
 
   private writeTrails(): void {

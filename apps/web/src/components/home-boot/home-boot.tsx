@@ -189,10 +189,10 @@ export function HomeBoot() {
   return (
     <div ref={rootRef} className={styles.root} data-home-boot data-phase={phase} data-drone="0">
       <div className={styles.dots} aria-hidden="true" />
-      <div className={styles.inner}>
-        <p className={styles.mark} aria-hidden="true">
-          The Aspirants
-        </p>
+      <p className={styles.mark} aria-hidden="true">
+        The Aspirants
+      </p>
+      <div className={styles.stack}>
         <div className={styles.barWrap}>
           <div
             ref={barRef}

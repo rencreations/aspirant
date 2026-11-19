@@ -112,6 +112,19 @@ export function stripBeats(s: number, out: StripBeats): StripBeats {
 }
 
 /**
+ * How much the film lights the ink field around it (0 to 1): nothing on the small frame, the most on
+ * the open window, fading as the window is pulled into the orbit, and gone when the set has flown off.
+ */
+export function inkGlow(expand: number, pull: number, fly: number): number {
+  return smootherstep(clamp(expand)) * (1 - ramp(pull, 0, 0.7)) * (1 - clamp(fly));
+}
+
+/** The ink field's own speed: 1 at rest, up to 2.8 while the wheel is pushed (px a second, signed). */
+export function inkSpeed(wheel: number): number {
+  return 1 + Math.min(1.8, Math.abs(wheel) / 900);
+}
+
+/**
  * Whether letter `i` of `n` has come in at `progress` (0 to 1). Each letter has its own moment, taken
  * at random from a fixed seed, so the words appear letter by letter in no order and leave the same way
  * when the visitor scrolls back (the reference's SplitText, scrubbed by the scroll). `spread` is how

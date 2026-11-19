@@ -1,6 +1,6 @@
 # Home round two: R-A (loader, tap gate, intro, hero, aspirants, rows, strip)
 
-Status: in progress. This file is written as the work goes, so a cut-off leaves notes behind.
+Status: the intro and the hero are finished by R-A1, see `round2-R-A1.md`; the intro table below (8 s) is superseded by the 1.85 s timeline there. The rest of this file is the earlier run's work on the wall, rows and strip, which other helpers own now.
 
 ## 1. The intro (done)
 

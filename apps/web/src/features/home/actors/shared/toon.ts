@@ -233,6 +233,11 @@ export interface ToonParams {
   vertexColors?: boolean;
   name?: string;
   clippingPlanes?: Plane[] | null;
+  /**
+   * Draw the skin colours of the picture with the skin's warm shade and the rest with the look's
+   * (a body painted on one sheet with its armour). Off by default.
+   */
+  skinSplit?: boolean;
 }
 
 /** The uniforms one toon material owns. */
@@ -247,6 +252,9 @@ interface OwnUniforms {
   glint: IUniform<Vector2>;
   emissive: IUniform<Vector3>;
   emissiveMap: IUniform<Texture | null>;
+  skin: IUniform<number>;
+  warm: IUniform<Vector3>;
+  warmDeep: IUniform<Vector3>;
 }
 
 export class ToonMaterial extends MeshBasicMaterial {
@@ -261,6 +269,9 @@ export class ToonMaterial extends MeshBasicMaterial {
     glint: { value: new Vector2() },
     emissive: { value: new Vector3() },
     emissiveMap: { value: null },
+    skin: { value: 0 },
+    warm: { value: new Vector3(...TOON_LOOKS.skin.shade) },
+    warmDeep: { value: new Vector3(...TOON_LOOKS.skin.deep) },
   };
   private bands: 2 | 3 = 2;
   private readonly glowMap: boolean;
@@ -284,6 +295,7 @@ export class ToonMaterial extends MeshBasicMaterial {
     this.own.emissiveMap.value = this.glowMap ? (params.emissiveMap ?? null) : null;
     const e = params.emissive ?? [0, 0, 0];
     this.own.emissive.value.set(e[0], e[1], e[2]);
+    this.own.skin.value = params.skinSplit ? 1 : 0;
     this.setLook(tuneLook(TOON_LOOKS[params.look ?? "default"], params.tune));
     this.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
       Object.assign(shader.uniforms, {
@@ -300,6 +312,9 @@ export class ToonMaterial extends MeshBasicMaterial {
         uGlint: this.own.glint,
         uEmissive: this.own.emissive,
         uEmissiveMap: this.own.emissiveMap,
+        uSkinSplit: this.own.skin,
+        uWarm: this.own.warm,
+        uWarmDeep: this.own.warmDeep,
       });
       shader.vertexShader = patchToonVertex(shader.vertexShader);
       shader.fragmentShader = patchToonFragment(shader.fragmentShader);
@@ -503,7 +518,7 @@ export function addInk(source: Mesh, material: InkMaterial): Ink {
 }
 
 /**
- * The ink of an alpha card: `copies` (8) siblings of the mesh, each drawn shifted by the line width
+ * The ink of an alpha card: `copies` (6) siblings of the mesh, each drawn shifted by the line width
  * in another direction round the circle, in ink colour, cut by the card's own alpha. They share the
  * mesh's skeleton and the width of `ink`. `look` is the material the card is drawn with.
  */
@@ -511,7 +526,7 @@ export function addCardInk(
   source: Mesh,
   look: MeshBasicMaterial,
   ink: InkMaterial,
-  copies = 8,
+  copies = 6,
 ): Ink {
   const hulls: Mesh[] = [];
   const skinned = (source as SkinnedMesh).isSkinnedMesh ? (source as SkinnedMesh) : null;
@@ -563,6 +578,8 @@ export interface ToonPick {
   inkWeight?: number;
   /** Glow of the surface (linear). */
   emissive?: Rgb;
+  /** Warm skin shade on the skin coloured texels of a mesh that also holds armour (see `ToonParams`). */
+  skinSplit?: boolean;
 }
 
 export interface ToonifyOptions {
@@ -641,7 +658,7 @@ export function toonify(root: Object3D, options: ToonifyOptions = {}): ToonSet {
     if (Array.isArray(source) || !isStandard(source)) return;
     const pick = options.pick?.(mesh, source) ?? {};
     const look: ToonLookName = pick.look ?? (source.metalness >= 0.6 ? "metal" : "default");
-    const key = `${source.uuid}|${pick.unlit ? "u" : look}|${JSON.stringify(pick.tune ?? null)}`;
+    const key = `${source.uuid}|${pick.unlit ? "u" : look}|${JSON.stringify(pick.tune ?? null)}|${pick.skinSplit ? "s" : ""}`;
     let material = made.get(key);
     if (!material) {
       if (source.map && options.anisotropy) source.map.anisotropy = options.anisotropy;
@@ -665,6 +682,7 @@ export function toonify(root: Object3D, options: ToonifyOptions = {}): ToonSet {
                 ]
               : undefined),
           emissiveMap: lit > 0.02 ? source.emissiveMap : null,
+          skinSplit: pick.skinSplit,
           alphaTest: source.alphaTest,
           transparent: source.transparent,
           opacity: source.opacity,

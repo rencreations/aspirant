@@ -43,6 +43,11 @@ class BoltRuntime implements SectionRuntime {
     this.scene.fresh();
   }
 
+  /** The dragon and the doll are built: a play does not fire before (the kernel's ready gate). */
+  ready(): boolean {
+    return this.scene.gate.done;
+  }
+
   /** The five names turn on a barrel: one in focus, the neighbours dim, shrink and tilt away. */
   private wheel(t: number): void {
     const place = wheelPlace(t);

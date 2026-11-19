@@ -1,5 +1,7 @@
 # Home: the loader, the tap gate and the intro (workstream A2)
 
+> **Round two update (19 Nov 2026, R-A1, see `round2-R-A1.md`).** Superseded here: the intro is 1.85 s (not 13.2 s) and has no struggle, drop, thanks, bow or hearts (section 3 and the joints of section 7 keep J0 but the logo's rest wave is 0); the drone has no speech bubbles (sections 2 and 3 mention them); the loader's drone is small (0.12 of the height) and in the middle of the screen with the mark above it and the bar and words under it (section 2); the opening draws no comic marks but the drone's shock mark, so the comic marks chunk is no longer in the opening's list; the Skip button no longer exists (the owner's call of 18 Nov).
+
 What a document load of `/` shows before the page is the visitor's: the drone that waits with them while the real list loads, the gate ("Touch anywhere to continue") and a 13.2 second intro in which two Guinevere drones bring the logo, struggle, are helped by the normal drone, pull the logo to its hero size, are thanked and leave. It ends exactly on joint J0 (the hero's first frame). Everything is built on the wave 1 and 2 pieces: `lib/home-flow.ts` (phases, shown progress), `components/loader-gate.tsx` (the host), the drone, the duo, the logo and the comic marks, all drawn in the home's one canvas. No second WebGL context exists. Notes on the host and the phases: `infra.md`. Notes on the kernel: `kernel.md`.
 
 ## 1. Files

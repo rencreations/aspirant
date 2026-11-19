@@ -6,7 +6,6 @@ import { buildDrone, type DroneActor } from "./actor";
 export type { DroneActor, DroneLayer, LookAt } from "./actor";
 export type { DronePlace } from "./coords";
 export type { FaceName } from "./faces";
-export type { IconName } from "./marks";
 export { alongPath, besidePoint } from "./path";
 export type { PathPoint, Side } from "./path";
 export type { PoseName } from "./pose";

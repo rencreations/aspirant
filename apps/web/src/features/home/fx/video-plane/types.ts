@@ -96,6 +96,11 @@ export interface FilmState {
   angleU: number;
   angleV: number;
   angleSize: number;
+  /**
+   * The film's own shape (width over height). The window the strip opens to takes it, so the picture
+   * shows whole, uncropped. The strip keeps its own 3.70 to 1 ratio. The default is 16 to 9.
+   */
+  aspect: number;
   /** The point of the trailer the strip is centred on, fractions of its picture (y from the top). */
   focusX: number;
   focusY: number;
@@ -115,6 +120,7 @@ export const DEFAULT_STATE: Readonly<FilmState> = {
   angleU: 0,
   angleV: 0,
   angleSize: 0.62,
+  aspect: 16 / 9,
   focusX: 0.5,
   focusY: 0.45,
   heroBox: null,

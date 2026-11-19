@@ -79,7 +79,7 @@ async function openHome(browser, [w, h], extra = {}) {
   {
     const { ctx, page, errors: e } = await openHome(browser, SIZES[0]);
     errors.push(...e);
-    await page.evaluate(() => window.__home.seek(4.6));
+    await page.evaluate(() => window.__home.seek(1.0));
     await sleep(1500);
     await page.mouse.move(450, 450, { steps: 8 });
     await sleep(700);
@@ -118,7 +118,7 @@ async function openHome(browser, [w, h], extra = {}) {
       errors: e,
     } = await openHome(browser, [390, 844], { hasTouch: true, isMobile: true });
     errors.push(...e);
-    await page.evaluate(() => window.__home.seek(4.6));
+    await page.evaluate(() => window.__home.seek(1.0));
     await sleep(1500);
     await page.touchscreen.tap(120, 200);
     await sleep(1000);

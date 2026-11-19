@@ -60,6 +60,13 @@ describe("the stations of the hand and the list", () => {
     expect(list.screens - ats[ats.length - 1]!).toBeGreaterThanOrEqual(0.4);
   });
 
+  it("ask for at least half a screen of scroll for each name of the list (text that links)", () => {
+    const ats = LIST_STEPS.map((s) => s.atScreens);
+    for (let i = 2; i < ats.length; i += 1) {
+      expect(ats[i]! - ats[i - 1]!).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+
   it("rest the page of a frame between the play that brought it and the next one", () => {
     for (let i = 0; i < FRAME_COUNT; i += 1) {
       const at = frameRestScreens(i);

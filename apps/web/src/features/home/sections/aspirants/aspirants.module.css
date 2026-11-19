@@ -12,11 +12,14 @@
 .box {
   justify-self: end;
   width: min(100%, calc(42vw - 1.65 * var(--gutter)));
+  /* The block stands a little above the middle: the drone rests at the foot of the screen under it. */
+  translate: 0 -7vh;
 }
 
 @media (max-width: 56.25em) {
   .box {
     width: 100%;
+    translate: none;
   }
 }
 
@@ -30,6 +33,7 @@
     width: auto;
     max-width: 36rem;
     justify-self: stretch;
+    translate: none;
   }
 }
 
@@ -48,11 +52,40 @@
   margin: 0;
 }
 
-.logos {
+/*
+ * The two logos in the lines. `.lead img` of the home's stylesheet sets 1.35em, so these say what
+ * they are (two classes beat it): the game's mark a little smaller, TheMLabel's smaller still with
+ * room on both sides, so it reads as a mark in the sentence and not as a word.
+ */
+.leadLogo .logoGame {
   display: inline-block;
-  height: 1.35em;
+  height: 1.05em;
   width: auto;
-  vertical-align: -0.3em;
+  vertical-align: -0.2em;
+}
+
+.leadLogo .logoLabel {
+  display: inline-block;
+  height: 0.92em;
+  width: auto;
+  margin-inline: 0.2em;
+  vertical-align: -0.16em;
+}
+
+/*
+ * The second description steps in from the left by about a third of the column, so the block reads
+ * left, then right, then left again (the title, the game's line and the button are flush left).
+ */
+.indent {
+  margin-inline-start: 30%;
+  max-width: 22ch;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .indent {
+    margin-inline-start: 16%;
+    max-width: 26ch;
+  }
 }
 
 /*

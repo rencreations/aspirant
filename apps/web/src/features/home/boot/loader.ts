@@ -2,7 +2,7 @@
  * What the drone does while the page loads, so a waiting visitor has something to watch and is
  * never left wondering whether the site has frozen. A plain state machine: each frame it is told
  * the time, the REAL progress and the real notes (slow, offline, retrying), and it answers with at
- * most one thing to do now (a move, a face, an icon). The runtime hands the answer to the drone.
+ * most one thing to do now (a move, a face). The runtime hands the answer to the drone.
  * The drone itself already floats, blinks and looks at the pointer; this adds the little tricks on a
  * timer, a cheer at each real quarter, and a worried look when the files really have stalled.
  *
@@ -11,7 +11,6 @@
  */
 import { seeded } from "../actors/duo/curves";
 import type { FaceName } from "../actors/drone/faces";
-import type { IconName } from "../actors/drone/marks";
 import type { TrickKind } from "../actors/drone/tricks";
 
 export interface LoaderInput {
@@ -33,7 +32,6 @@ export interface LoaderAction {
   trick: TrickKind | null;
   face: FaceName | null;
   faceSeconds: number;
-  bubble: IconName | null;
   /** A place for the eyes to wander to (stage pixels, as a fraction of the half screen), or null. */
   look: { x: number; y: number } | null;
   /** "idle", "cheer", "stall" or "offline": why, for the probes. */
@@ -70,28 +68,27 @@ export const STILL_AFTER = 4;
 interface Idle {
   trick: TrickKind;
   face: FaceName | null;
-  bubble: IconName | null;
 }
 
 /** The little tricks, one every few seconds. Each is a move the drone really has. */
 const IDLE: readonly Idle[] = [
-  { trick: "wiggle", face: "happy", bubble: null },
-  { trick: "nod", face: null, bubble: "smile" },
-  { trick: "hop", face: "sparkle", bubble: null },
-  { trick: "spin", face: null, bubble: null },
-  { trick: "roll", face: "wink", bubble: null },
-  { trick: "barrel", face: "laugh", bubble: null },
-  { trick: "frontflip", face: "proud", bubble: null },
-  { trick: "loop", face: "music", bubble: "note" },
+  { trick: "wiggle", face: "happy" },
+  { trick: "nod", face: null },
+  { trick: "hop", face: "sparkle" },
+  { trick: "spin", face: null },
+  { trick: "roll", face: "wink" },
+  { trick: "barrel", face: "laugh" },
+  { trick: "frontflip", face: "proud" },
+  { trick: "loop", face: "music" },
 ];
 
 const CHEERS: readonly Idle[] = [
-  { trick: "hop", face: "happy", bubble: "sparkle" },
-  { trick: "backflip", face: "sparkle", bubble: "sparkle" },
-  { trick: "barrel", face: "proud", bubble: "heart" },
+  { trick: "hop", face: "happy" },
+  { trick: "backflip", face: "sparkle" },
+  { trick: "barrel", face: "proud" },
 ];
 
-const READY: Idle = { trick: "frontflip", face: "happy", bubble: "heart" };
+const READY: Idle = { trick: "frontflip", face: "happy" };
 
 export function newLoaderBrain(seed = 7): LoaderBrain {
   const rand = seeded(seed);
@@ -111,7 +108,7 @@ export function newLoaderBrain(seed = 7): LoaderBrain {
 }
 
 export function newLoaderAction(): LoaderAction {
-  return { trick: null, face: null, faceSeconds: 1.2, bubble: null, look: null, why: null };
+  return { trick: null, face: null, faceSeconds: 1.2, look: null, why: null };
 }
 
 function pickIdle(brain: LoaderBrain): Idle {
@@ -126,7 +123,6 @@ function play(out: LoaderAction, what: Idle, why: LoaderAction["why"], seconds =
   out.trick = what.trick;
   out.face = what.face;
   out.faceSeconds = seconds;
-  out.bubble = what.bubble;
   out.why = why;
 }
 
@@ -142,7 +138,6 @@ export function stepLoader(
 ): LoaderAction {
   out.trick = null;
   out.face = null;
-  out.bubble = null;
   out.look = null;
   out.why = null;
   const dt = Math.max(0, input.dt);
@@ -165,7 +160,6 @@ export function stepLoader(
     out.trick = "dizzy";
     out.face = "sad";
     out.faceSeconds = 2.4;
-    out.bubble = "dots";
     out.why = "offline";
     brain.nextTrick = Math.max(brain.nextTrick, 3);
     return wander(brain, input, out);
@@ -180,7 +174,6 @@ export function stepLoader(
     out.trick = "nod";
     out.face = "sweat";
     out.faceSeconds = 2.2;
-    out.bubble = "sweat";
     out.why = "stall";
     brain.nextTrick = Math.max(brain.nextTrick, 3);
     return wander(brain, input, out);

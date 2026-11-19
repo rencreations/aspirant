@@ -98,6 +98,11 @@ const HEAVY_DRAW_MS = 6;
 export interface WarmOptions {
   /** Selena's materials are clipped by planes: the programs for them are made with clipping on. */
   localClipping?: boolean;
+  /**
+   * How a heavy step waits for a quiet moment (default `whenQuiet`). A caller whose visitor is
+   * already waiting for the actor passes one that returns at once.
+   */
+  quiet?: (maxWaitMs: number) => Promise<void>;
 }
 
 /**
@@ -128,8 +133,9 @@ export async function warmCast(
   const wasClipping = renderer.localClippingEnabled;
   if (options.localClipping) renderer.localClippingEnabled = true;
 
+  const quiet = options.quiet ?? whenQuiet;
   try {
-    await whenQuiet(1200);
+    await quiet(1200);
     {
       // `compile` reads what is visible at the call, so the parts are shown only for the call.
       const back = showAll(root);
@@ -164,7 +170,7 @@ export async function warmCast(
     let heavy = true;
     for (const mesh of distinctMeshes(root)) {
       if (stage.lost) return;
-      if (heavy) await whenQuiet(420);
+      if (heavy) await quiet(420);
       await nextFrame();
       const back = showOnly(root, mesh);
       const scissor = renderer.getScissorTest();

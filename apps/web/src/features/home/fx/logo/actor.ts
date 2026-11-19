@@ -57,8 +57,10 @@ export interface LogoPose {
   tilt?: number;
   /** Turn about the vertical axis, radians (the right side goes away when positive). */
   yaw?: number;
-  /** A calm travelling ripple at rest, 0 to 1 (0 is none). */
+  /** A calm travelling ripple at rest, 0 to 1 (0 is none). The hero's logo is stiff: it passes none. */
   wave?: number;
+  /** The pointer ripples the logo (hover and press). Default false: the big logo stands still (the owner's call, 19 Nov 2026). */
+  ripple?: boolean;
   /** 0 hidden to 1 drawn: the logo rises into place under a front that crosses it. Default 1. */
   reveal?: number;
   /** How taut it is held between its two ends: 1 is flat, 0 hangs loose and heavy. Default 1. */
@@ -104,6 +106,7 @@ export class LogoActor implements Actor {
     tilt: 0,
     yaw: 0,
     wave: 0,
+    ripple: false,
     reveal: 1,
     tension: 1,
     wobble: 0,
@@ -178,6 +181,7 @@ export class LogoActor implements Actor {
         this.hoverAt(x, y);
       },
       press: (x, y) => {
+        if (!this.pose.ripple) return;
         this.hoverAt(x, y);
         this.ripple = Math.max(this.ripple, 1);
       },
@@ -199,6 +203,7 @@ export class LogoActor implements Actor {
     p.tilt = pose.tilt ?? 0;
     p.yaw = pose.yaw ?? 0;
     p.wave = clamp(pose.wave ?? 0);
+    p.ripple = pose.ripple ?? false;
     p.reveal = clamp(pose.reveal ?? 1);
     p.tension = clamp(pose.tension ?? 1);
     p.wobble = clamp(pose.wobble ?? 0, -1, 1);
@@ -419,7 +424,7 @@ export class LogoActor implements Actor {
 
     // The pointer's ripple: follows the pointer while it is over the logo, dies when it leaves.
     if (dt > 0) {
-      if (this.hovered) {
+      if (this.hovered && p.ripple) {
         const follow = 1 - Math.exp(-RIPPLE_FOLLOW * dt);
         this.ripX += (this.hoverX - this.ripX) * follow;
         this.ripY += (this.hoverY - this.ripY) * follow;

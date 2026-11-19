@@ -21,13 +21,15 @@ import { homeItems } from "./preload-items";
 const WAITED_SITE = [
   /^chunk:/,
   /^field:(p|w):/,
+  // The wall's extra thumbnails, one item for fifty small pictures.
+  "field:tiles",
   "media:/models/about/drone.glb",
   "media:/img/home/drone-faces.webp",
   "media:/img/home/drone-faces-2.webp",
   "media:/img/home/marks.webp",
   "img:/img/home/mlbb.webp",
   "img:/img/about/themlabel.webp",
-  "media:/video/home/strip-1280.mp4",
+  "stream:home-trailer",
 ];
 
 /** A document load adds what the opening carries in: the two Guinevere drones. */
@@ -114,7 +116,7 @@ describe("homeItems", () => {
     const items = listFor("site");
     const byId = new Map(items.map((i) => [i.id, i]));
     expect(byId.get("chunk:home-hero")?.deferred).toBeFalsy();
-    expect(byId.get("media:/video/home/strip-1280.mp4")?.deferred).toBeFalsy();
+    expect(byId.get("stream:home-trailer")?.deferred).toBeFalsy();
     // The ten previews, Silverbolt, the doll, Selena, the voice lines and the covers come later.
     for (const id of [
       "media:/models/home/silverbolt.glb",
@@ -125,7 +127,7 @@ describe("homeItems", () => {
     ]) {
       expect(byId.get(id)?.deferred, id).toBe(true);
     }
-    expect(items.some((i) => i.id.startsWith("media:/video/home/preview/") && i.deferred)).toBe(
+    expect(items.some((i) => i.id.startsWith("media:/video/home/preview/v2/") && i.deferred)).toBe(
       true,
     );
     expect(items.some((i) => i.id.startsWith("home-voices:clips:") && i.deferred)).toBe(true);

@@ -7,7 +7,7 @@
  *   drone.face("shocked", 1);            // a face, and how strongly it is worn
  *   drone.look("pointer");               // eyes and body follow the cursor
  *
- * One-shot reactions (a blink, a hop, a bubble) are timed inside the drone and always finish. A
+ * One-shot reactions (a blink, a hop, the shock mark) are timed inside the drone and always finish. A
  * jump of the scroll, a drone that was hidden and is shown again, and a target that moves by most of
  * the screen in one frame all put the drone on its target at once, with no spring left flying.
  * `docs/design/home/actor-drone.md` has the whole API, the numbers and how to look at it.
@@ -35,15 +35,7 @@ import {
   snapFollower,
   stepFollower,
 } from "./follow";
-import type { IconName } from "./marks";
-import {
-  BUBBLE_SECONDS,
-  bubbleAt,
-  createBubbleLook,
-  createShockLook,
-  SHOCK_SECONDS,
-  shockAt,
-} from "./marks-anim";
+import { createShockLook, SHOCK_MIN_SECONDS, SHOCK_SECONDS, shockAt } from "./marks-anim";
 import { SIZE_PER_HEIGHT } from "./model";
 import { createPresence, stepPresence } from "./presence";
 import { clearPose, createPoseLook, createPoseState, stepPose, type PoseName } from "./pose";
@@ -106,7 +98,6 @@ interface DroneState {
   hovered: boolean;
   presence: number;
   mood: string;
-  bubble: IconName | null;
   shock: boolean;
   layer: DroneLayer;
   snaps: number;
@@ -172,11 +163,8 @@ export class DroneActor implements Actor {
   private readonly hitPoint = { x: 0, y: 0 };
 
   // The marks.
-  private bubbleIcon: IconName | null = null;
-  private bubbleT = 0;
-  private bubbleLife = BUBBLE_SECONDS;
   private shockT = -1;
-  private readonly bubbleLook = createBubbleLook();
+  private shockLife = SHOCK_SECONDS;
   private readonly shockLook = createShockLook();
 
   // What is drawn: the composed pose, in the screen frame.
@@ -307,16 +295,10 @@ export class DroneActor implements Actor {
     }
   }
 
-  /** An icon in a speech bubble: it pops, wobbles, drifts up and fades. One at a time. */
-  bubble(icon: IconName, seconds = BUBBLE_SECONDS): void {
-    this.bubbleIcon = icon;
-    this.bubbleT = 0;
-    this.bubbleLife = Math.max(0.4, seconds);
-  }
-
-  /** The comic shock mark above the head: a burst of lines and a bang. */
-  shock(): void {
+  /** The comic shock mark above the head: a burst of lines and a bang, for `seconds`. */
+  shock(seconds = SHOCK_SECONDS): void {
     this.shockT = 0;
+    this.shockLife = Math.max(SHOCK_MIN_SECONDS, seconds);
   }
 
   /**
@@ -345,7 +327,7 @@ export class DroneActor implements Actor {
   /**
    * A named pose, blended in and out: "peek" (it has stepped to a corner and looks at something
    * on `side`, -1 left and 1 right: the face, the eyes and the lean turn to it) and "thanks" (a
-   * bow with the kind face and the thank-you bubble, played once when the pose begins). `null`
+   * bow with the kind face, played once when the pose begins). `null`
    * gives the pose back. The section places the drone; the pose only shapes it.
    */
   pose(name: PoseName | null, side = 1): void {
@@ -390,7 +372,6 @@ export class DroneActor implements Actor {
       hovered: this.hovered,
       presence: this.presence.x,
       mood: this.reactions.mood,
-      bubble: this.bubbleLook.alpha > 0 ? this.bubbleIcon : null,
       shock: this.shockLook.bangAlpha > 0,
       layer: this.layerName,
       snaps: this.snaps,
@@ -496,9 +477,7 @@ export class DroneActor implements Actor {
     if (a.trick && !startTrick(this.tricks, a.trick, this.reactions.answer % 2 === 0 ? 1 : -1)) {
       this.pendingTrick = a.trick;
     }
-    // A bang is the comic shock mark (lines and a "!"): the bubble would say the same thing twice.
-    if (a.icon === "bang") this.shock();
-    else if (a.icon) this.bubble(a.icon);
+    if (a.shock) this.shock();
     if (a.face) this.emote(a.face, a.faceSeconds);
   }
 
@@ -507,8 +486,6 @@ export class DroneActor implements Actor {
     this.pendingTrick = null;
     this.emoteLeft = 0;
     this.emoteFace = null;
-    this.bubbleIcon = null;
-    this.bubbleT = 0;
     this.shockT = -1;
     resetReactions(this.reactions);
     clearPose(this.poseState);
@@ -567,7 +544,6 @@ export class DroneActor implements Actor {
 
     // The poses and the answers to a press.
     stepPose(this.poseState, this.poseName, this.poseSide, dt, this.poseLook);
-    if (this.poseLook.cue) this.bubble(this.poseLook.cue, 2);
     stepReactions(this.reactions, time, this.answer);
     this.applyAnswer();
     if (this.pendingTrick && startTrick(this.tricks, this.pendingTrick, 1))
@@ -698,19 +674,10 @@ export class DroneActor implements Actor {
 
   private stepMarks(dt: number): void {
     const height = this.draw.size / SIZE_PER_HEIGHT;
-    if (this.bubbleIcon) {
-      this.bubbleT += dt;
-      bubbleAt(this.bubbleT, this.bubbleLife, this.bubbleLook);
-      if (this.bubbleT >= this.bubbleLife) this.bubbleIcon = null;
-    } else {
-      this.bubbleLook.alpha = 0;
-      this.bubbleLook.scale = 0;
-    }
-    this.flat.setBubble(this.bubbleIcon, this.bubbleLook, this.draw.x, this.draw.y, height);
     if (this.shockT >= 0) {
       this.shockT += dt;
-      shockAt(this.shockT, this.shockLook);
-      if (this.shockT >= SHOCK_SECONDS) this.shockT = -1;
+      shockAt(this.shockT, this.shockLook, this.shockLife);
+      if (this.shockT >= this.shockLife) this.shockT = -1;
     } else {
       this.shockLook.bangAlpha = 0;
       this.shockLook.lineAlpha = 0;

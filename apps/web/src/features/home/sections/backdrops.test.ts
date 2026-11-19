@@ -7,8 +7,8 @@ import { STORY } from "./story";
 
 describe("the backdrop of the first four sections", () => {
   it("is light and airy on the daybreak ground and dark and rich on the storm one", () => {
-    for (const S of [0, 1, 2, 3, 4, 4.5]) expect(backdropAt(S).options.theme).toBe("daybreak");
-    for (const S of [5.3, 6, 7.7, 8.5, 10, 12]) expect(backdropAt(S).options.theme).toBe("storm");
+    for (const S of [0, 1, 2, 3, 4, 4.5, 5.3]) expect(backdropAt(S).options.theme).toBe("daybreak");
+    for (const S of [6, 7.7, 8.5, 10, 12]) expect(backdropAt(S).options.theme).toBe("storm");
   });
 
   it("changes kind only at the places it says, in order, and never returns", () => {
@@ -17,17 +17,24 @@ describe("the backdrop of the first four sections", () => {
       const kind = backdropAt(S).kind;
       if (seen[seen.length - 1] !== kind) seen.push(kind);
     }
-    expect(seen).toEqual(["soft-aurora", "silk", "beams", "threads"]);
+    expect(seen).toEqual(["soft-aurora", "silk", "ink-field"]);
   });
 
-  it("turns dark with the wall's close, not before it, and not after the rows have started", () => {
-    expect(BACKDROP_AT.beams).toBeGreaterThan(STORY.aspirants.start);
-    expect(BACKDROP_AT.beams).toBeLessThan(STORY.rows.start);
+  it("turns dark inside the rows' transition: after the rows have started, before the film has turned", () => {
+    expect(BACKDROP_AT.ink).toBeGreaterThan(STORY.rows.start);
+    expect(BACKDROP_AT.ink).toBeLessThan(STORY.rows.start + 1.4);
   });
 
-  it("is the threads once the orbit has been pulled in (the strip's pull begins at s 1.5)", () => {
-    expect(BACKDROP_AT.threads).toBeGreaterThanOrEqual(STORY.strip.start + 1.5);
-    expect(BACKDROP_AT.threads).toBeLessThanOrEqual(STORY.strip.start + 2.1);
+  it("is the ink field all the way from the rows' transition to the end of the strip's story (the window, the orbit)", () => {
+    for (const S of [
+      BACKDROP_AT.ink,
+      STORY.rows.start + 1.5,
+      STORY.strip.start,
+      STORY.strip.start + 1.7,
+      10.8,
+    ]) {
+      expect(backdropAt(S).kind).toBe("ink-field");
+    }
   });
 
   it("uses kinds the backdrop has, with palettes for the ground it asks", () => {

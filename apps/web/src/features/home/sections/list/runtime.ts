@@ -21,6 +21,17 @@ import { PictureViewer } from "./viewer";
 const SELENA_AT = FRAME_COUNT - 1;
 /** The sky fades over the half screen of the section's tail, in screens after its end. */
 const SKY_FADE = 0.5;
+/**
+ * Her first real draw (her clip, her skin, her ink) costs one long frame (0.8 s measured on the dev
+ * server) the first time she is drawn. Left to the turn to her frame it freezes the scene in the
+ * middle of a play. It is spent here instead, at the rest of the third frame, with a window that
+ * shows nothing (a zero width clip): the visitor stands in a still frame and the later turn is smooth.
+ */
+const PRIME_AT = 2;
+const PRIME_FRAMES = 3;
+/** She is drawn once the strip has sat on that frame this long (seconds): the turn's landing is over. */
+const PRIME_AFTER = 0.5;
+const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 const backOut = (u: number): number => 1 + 2.70158 * (u - 1) ** 3 + 1.70158 * (u - 1) ** 2;
@@ -70,6 +81,8 @@ class ListRuntime implements SectionRuntime {
   private readonly plan = newListBackdrop();
 
   private carry: Carry | null = null;
+  private carryDone = false;
+  private selenaDone = false;
   private g: ListGeometry | null = null;
   private vw = 0;
   private vh = 0;
@@ -82,6 +95,10 @@ class ListRuntime implements SectionRuntime {
   private selenaFrame: Placement | null = null;
   private selenaTail: Placement | null = null;
   private releasing = false;
+  private primed = 0;
+  /** The list's beat of the last frame, and since when (the page's time) the strip has sat on the priming frame. */
+  private u = 0;
+  private sinceAtPrime = -1;
   private interactive: boolean | null = null;
   private readonly clip: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly win0: Rect = { x: 0, y: 0, w: 0, h: 0 };
@@ -216,12 +233,23 @@ class ListRuntime implements SectionRuntime {
   /** The hand and the doll are built (the hand section shares them). */
   setCarry(carry: Carry | null): void {
     this.carry = carry;
+    this.carryDone = true;
   }
 
   /** Selena arrives after the section is built (her model is the largest file). */
   setSelena(sl: SelenaActor | null): void {
     this.selena = sl;
+    this.selenaDone = true;
     this.interactive = null;
+  }
+
+  /**
+   * The hand and the doll are built (or failed for good): the toss does not fire before. Selena is
+   * only needed from the turn to her frame (beat 9 to 10): the nine plays before it do not wait for
+   * her, so a late model cannot hold the strip back and then chain ten seconds of scenes.
+   */
+  ready(): boolean {
+    return this.carryDone && (this.selenaDone || this.u < SELENA_AT);
   }
 
   enter(): void {
@@ -297,10 +325,16 @@ class ListRuntime implements SectionRuntime {
     const g = this.g;
     if (!g) return;
     const b = listBeats(u, ts, this.b);
+    this.u = u;
+    if (Math.abs(b.index - PRIME_AT) < 0.001) {
+      if (this.sinceAtPrime < 0) this.sinceAtPrime = frame.time;
+    } else {
+      this.sinceAtPrime = -1;
+    }
 
     this.carry?.drive(HAND_LAST, ts, Math.max(0, u), frame, true);
     this.strip(b, g);
-    this.selenaDraw(b, u, g, vp);
+    this.selenaDraw(b, u, g, vp, frame.time);
     this.words(b);
     const plan = planListBackdrop(b.index, b.expandRaw, this.plan);
     this.backdrop?.set(plan.kind, plan.options);
@@ -312,7 +346,7 @@ class ListRuntime implements SectionRuntime {
     const fw = g.frame.w;
     const grow = seg(b.expandRaw, 0, 0.35);
     put(this.win, "opacity", f(b.appear * (1 - grow)));
-    put(this.win, "visibility", grow >= 1 ? "hidden" : "visible");
+    put(this.win, "visibility", grow >= 1 ? "hidden" : "inherit");
     put(this.win, "transform", `translate3d(0, ${f((1 - b.appear) * 0.06 * this.vh)}px, 0)`);
     put(this.row, "transform", `translate3d(${f(-idx * fw)}px, 0, 0)`);
 
@@ -324,7 +358,7 @@ class ListRuntime implements SectionRuntime {
       const visible = show > 0 && hide < 1;
       if (visible !== it.shown) {
         it.shown = visible;
-        put(it.el, "visibility", visible ? "visible" : "hidden");
+        put(it.el, "visibility", visible ? "inherit" : "hidden");
       }
       if (visible) {
         const o = show - 1 + hide;
@@ -352,7 +386,13 @@ class ListRuntime implements SectionRuntime {
    * end of the section and through its tail, in the state the section after it starts from (J8):
    * `city_idle` at `selenaEnd`, no clip. The sky stays full to the end and fades over the tail.
    */
-  private selenaDraw(b: ListBeats, u: number, g: ListGeometry, vp: { w: number; h: number }): void {
+  private selenaDraw(
+    b: ListBeats,
+    u: number,
+    g: ListGeometry,
+    vp: { w: number; h: number },
+    time: number,
+  ): void {
     const sl = this.selena;
     const idx = b.index;
     const e = b.expand;
@@ -388,9 +428,15 @@ class ListRuntime implements SectionRuntime {
       "transform",
       `translate3d(${f(-(rect.x + iw))}px, ${f(-(rect.y + ih))}px, 0)`,
     );
-    put(this.panel, "visibility", sl && rect.w > 1 && peeks ? "visible" : "hidden");
+    put(this.panel, "visibility", sl && rect.w > 1 && peeks ? "inherit" : "hidden");
     put(this.panel, "opacity", f(1 - seg(u, LIST_LAST, LIST_LAST + SKY_FADE)));
-    if (!sl || !drawn) return;
+    const prime =
+      sl !== null &&
+      !drawn &&
+      this.primed < PRIME_FRAMES &&
+      this.sinceAtPrime >= 0 &&
+      time - this.sinceAtPrime > PRIME_AFTER;
+    if (!sl || (!drawn && !prime)) return;
 
     // Her place: the frame's fit, carried by the slide, then the end placement.
     const a = this.selenaFrame;
@@ -402,6 +448,12 @@ class ListRuntime implements SectionRuntime {
     p.height = mix(a.height, z.height, e);
     sl.visible = true;
     sl.place(p);
+    if (prime) {
+      this.primed += 1;
+      sl.clipRectangle(NO_WINDOW);
+      sl.play("city_interaction_R_loop");
+      return;
+    }
     sl.clipRectangle(e >= 1 ? null : rect);
     this.selenaClips(e, idx, sl);
     // Her touch targets answer only where she is drawn: inside the window, with the pointer on it.

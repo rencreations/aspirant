@@ -61,6 +61,20 @@ export interface WallGeom {
   readonly up: V3;
   readonly q: Q;
   readonly aspect: number;
+  /** v (across the rows) of each row, the top row first. */
+  readonly rowV: readonly number[];
+  /** The middle of each row's wrap window along u (0 for the plain wall). */
+  readonly rowCenter: readonly number[];
+  /** The row that runs through v = 0, or -1 when there is none. */
+  readonly midRow: number;
+}
+
+/** The rows of a wall that covers a region: which rows, how many cards each, and where each wraps. */
+export interface RowPlan {
+  /** v of each row, the top row first (a multiple of the rise). */
+  readonly rowV: readonly number[];
+  readonly counts: readonly number[];
+  readonly centers: readonly number[];
 }
 
 /** The frame the wall (kind "wall") or the rows (kind "rows") fills, for a viewport. */
@@ -84,6 +98,25 @@ function rowCounts(n: number, rows: number): number[] {
 export function wallGeom(n: number, frame: Frame, options: Partial<WallOptions> = {}): WallGeom {
   const o = { ...WALL_DEFAULTS, ...options };
   const counts = rowCounts(n, o.rows);
+  const rise = o.size * Math.sqrt(frame.w * frame.h) * (1 + o.gap);
+  const rowV = Array.from({ length: o.rows }, (_, r) => ((o.rows - 1) / 2 - r) * rise);
+  const centers = new Array<number>(o.rows).fill(0);
+  return buildGeom(frame, o, { rowV, counts, centers });
+}
+
+/** A wall laid out by a plan (the rows and the cards in each), over a frame. */
+export function planGeom(
+  frame: Frame,
+  plan: RowPlan,
+  options: Partial<WallOptions> = {},
+): WallGeom {
+  const o = { ...WALL_DEFAULTS, ...options, rows: plan.rowV.length };
+  return buildGeom(frame, o, plan);
+}
+
+function buildGeom(frame: Frame, o: WallOptions, plan: RowPlan): WallGeom {
+  const counts = plan.counts;
+  const n = counts.reduce((a, b) => a + b, 0);
   const slotRow = new Int32Array(n);
   const slotCol = new Int32Array(n);
   let s = 0;
@@ -122,6 +155,9 @@ export function wallGeom(n: number, frame: Frame, options: Partial<WallOptions> 
     up,
     q,
     aspect: o.aspect,
+    rowV: plan.rowV,
+    rowCenter: plan.centers,
+    midRow: plan.rowV.findIndex((v) => Math.abs(v) < 1e-6),
   };
 }
 
@@ -135,14 +171,17 @@ export function wrapAround(x: number, len: number): number {
   return ((((x + len / 2) % len) + len) % len) - len / 2;
 }
 
-/** The place of a slot on the plane (u along the row, v across the rows), after the slide. */
-function slotPlane(g: WallGeom, slot: number, slide: number, out: [number, number]): void {
+/**
+ * The place of a slot on the plane (u along the row, v across the rows), after the slide. A row wraps
+ * inside a window of its own length centred on `rowCenter`, so the slide never ends and never shows a seam.
+ */
+export function slotPlane(g: WallGeom, slot: number, slide: number, out: [number, number]): void {
   const r = g.slotRow[slot]!;
   const c = g.slotCol[slot]!;
   const count = g.rowCount[r]!;
   const len = count * g.pitch;
-  out[0] = wrapAround((c - (count - 1) / 2) * g.pitch + rowWay(r) * slide, len);
-  out[1] = ((g.rows - 1) / 2 - r) * g.rise;
+  out[0] = g.rowCenter[r]! + wrapAround((c - (count - 1) / 2) * g.pitch + rowWay(r) * slide, len);
+  out[1] = g.rowV[r]!;
 }
 
 const place: [number, number] = [0, 0];

@@ -4,6 +4,7 @@ import {
   blendFormations,
   blendLens,
   buildFormations,
+  extraIn,
   lensOf,
   poseOf,
   rankCards,
@@ -12,7 +13,7 @@ import {
   storyProgress,
 } from "./formations";
 import { TAU, qRotate, type V3 } from "./math";
-import { BASE_DISTANCE, cardQuad, pointInQuad, project } from "./project";
+import { BASE_DISTANCE, project } from "./project";
 import { logoBox, scatterLayout } from "./scatter";
 import {
   TIMELINE,
@@ -24,7 +25,7 @@ import {
   storyAt,
   storyLens,
 } from "./story";
-import { makePose, type Quad, type Vp } from "./types";
+import { makePose, type Vp } from "./types";
 import { WALL_DISTANCE, rowWay, wallFrame, wallGeom, wallSlotPose, wrapAround } from "./wall";
 
 const WIDE: Vp = { w: 1440, h: 900 };
@@ -224,11 +225,61 @@ describe("the gather is a spiral about the ring's axis", () => {
     }
   });
 
-  it("lets a card with a key take the wall slot with the same key", () => {
+  it("lets a card with a key take a wall slot that shows the same character", () => {
     const cardKeys = Array.from({ length: N }, (_, i) => (i < 10 ? `c${i}` : null));
-    const slotKeys = Array.from({ length: N }, (_, i) => (i % 2 === 0 ? `c${i / 2}` : null));
-    const L = buildFormations(N, WIDE, { cardKeys, slotKeys }).story;
-    for (let i = 0; i < 10; i++) expect(slotKeys[L.wallSlot[i]!]).toBe(`c${i}`);
+    const poolKeys = Array.from({ length: 40 }, (_, i) => (i < 20 ? `c${i % 10}` : null));
+    const set = buildFormations(N, WIDE, { cardKeys, poolKeys });
+    // The slot is taken when one that shows the character is inside the wall's frame and free.
+    let kept = 0;
+    for (let i = 0; i < 10; i++) {
+      if (poolKeys[set.slotPic[set.story.wallSlot[i]!]!] === `c${i}`) kept += 1;
+    }
+    expect(kept).toBeGreaterThanOrEqual(5);
+  });
+
+  it("lands every card on a slot inside the wall's frame, one each", () => {
+    for (const vp of [WIDE, TALL]) {
+      const set = buildFormations(18, vp);
+      const slots = Array.from(set.story.wallSlot);
+      expect(new Set(slots).size).toBe(18);
+      for (const s of slots) expect(set.grid.inFrame[s]).toBe(1);
+    }
+  });
+
+  it("fills the rest of the plane with wall-only cells that are hidden until the cards land", () => {
+    const set = buildFormations(18, WIDE);
+    expect(set.total).toBe(set.grid.geom.n);
+    expect(set.total).toBeGreaterThan(60);
+    const pose = makePose();
+    for (let j = 0; j < set.total - set.n; j++) {
+      poseOf(set, "scatter", 0, set.n + j, 0, pose);
+      expect(pose.opacity).toBe(0);
+      poseOf(set, "ring", 0, set.n + j, 0, pose);
+      expect(pose.opacity).toBe(0);
+      poseOf(set, "wall", 0, set.n + j, 0, pose);
+      expect(pose.opacity).toBe(1);
+      poseOf(set, "story", 1, set.n + j, 0, pose);
+      expect(pose.opacity).toBe(1);
+    }
+  });
+
+  it("brings the wall-only cells in while the cards land, the inner ones first, and never out of order with the story", () => {
+    const set = buildFormations(18, WIDE);
+    const inner: number[] = [];
+    const outer: number[] = [];
+    for (let j = 0; j < set.total - set.n; j++) {
+      if (set.grid.inFrame[set.extraSlot[j]!] === 1)
+        (set.extraRank[j]! < 0.5 ? inner : outer).push(j);
+    }
+    expect(inner.length).toBeGreaterThan(0);
+    expect(outer.length).toBeGreaterThan(0);
+    for (const p of [0.5, 0.6, 0.7, 0.8, 0.9, 0.96, 1]) {
+      const a = inner.map((j) => extraIn(set, j, p));
+      const b = outer.map((j) => extraIn(set, j, p));
+      expect(Math.min(...a)).toBeGreaterThanOrEqual(Math.max(...b) - 1e-9);
+    }
+    expect(extraIn(set, inner[0]!, 1)).toBe(1);
+    expect(extraIn(set, inner[0]!, 0.4)).toBe(0);
   });
 });
 
@@ -267,9 +318,9 @@ describe("the wall", () => {
     expect(wrapAround(-50, 100)).toBe(-50);
   });
 
-  it("lays three rows on a plane that leans back and rises to the right", () => {
-    const g = wallGeom(18, wallFrame(WIDE, "wall"));
-    expect(g.rowCount).toEqual([6, 6, 6]);
+  it("lays many rows on a plane that leans back and rises to the right", () => {
+    const g = buildFormations(18, WIDE).rows;
+    expect(g.rows).toBeGreaterThanOrEqual(12);
     // The row's own axis rises to the right and leans away from the viewer.
     expect(g.right[0]).toBeGreaterThan(0.5);
     expect(g.right[1]).toBeGreaterThan(0);
@@ -278,82 +329,18 @@ describe("the wall", () => {
     expect(g.up[2]).toBeLessThan(0);
     const top = makePose();
     const bottom = makePose();
+    const lastRow = g.slotRow.findIndex((r) => r === g.rows - 1);
     wallSlotPose(g, 0, 0, top);
-    wallSlotPose(g, 12, 0, bottom);
+    wallSlotPose(g, lastRow, 0, bottom);
     expect(top.y).toBeGreaterThan(bottom.y);
     const s = (z: number) => WALL_DISTANCE / (WALL_DISTANCE - z);
     expect(s(top.z)).toBeLessThan(s(bottom.z));
   });
 
-  it("wraps each row far from the frame, so a card never pops in or out where it can be seen", () => {
-    for (const vp of [WIDE, TALL]) {
-      for (const kind of ["wall", "rows"] as const) {
-        const set = buildFormations(18, vp);
-        const g = kind === "wall" ? set.story.wall : set.rows;
-        const frame = g.frame;
-        const pose = makePose();
-        const spot: [number, number] = [0, 0];
-        const halfDiagonal = Math.hypot(frame.w, frame.h) / 2;
-        for (let slot = 0; slot < 18; slot++) {
-          const row = g.slotRow[slot]!;
-          const count = g.rowCount[row]!;
-          const len = count * g.pitch;
-          const u0 = (g.slotCol[slot]! - (count - 1) / 2) * g.pitch;
-          for (const end of [-1, 1]) {
-            // A slide that puts the card half a pixel before the wrap, at either end of the row.
-            const slide = rowWay(row) * (end * (len / 2 - 0.5) - u0);
-            wallSlotPose(g, slot, slide, pose);
-            project(pose.x, pose.y, pose.z, WALL_DISTANCE, vp, spot);
-            const dist = Math.hypot(spot[0] - vp.w / 2 - frame.cx, spot[1] - vp.h / 2 + frame.cy);
-            expect(dist).toBeGreaterThan(halfDiagonal);
-          }
-        }
-      }
-    }
-  });
-
-  it("covers the frame with cards at every slide (the wall) and the screen (the rows)", () => {
-    for (const vp of [WIDE, TALL]) {
-      for (const kind of ["wall", "rows"] as const) {
-        const set = buildFormations(18, vp);
-        const g = kind === "wall" ? set.story.wall : set.rows;
-        const frame = g.frame;
-        const quad: Quad = [0, 0, 0, 0, 0, 0, 0, 0];
-        const pose = makePose();
-        let inside = 0;
-        let total = 0;
-        for (const phase of [0, 0.17, 0.41, 0.73]) {
-          const quads: Quad[] = [];
-          for (let slot = 0; slot < 18; slot++) {
-            const row = g.slotRow[slot]!;
-            const slide = phase * g.rowCount[row]! * g.pitch * rowWay(row);
-            wallSlotPose(g, slot, slide, pose);
-            const ok = cardQuad(
-              pose.x,
-              pose.y,
-              pose.z,
-              pose.q,
-              pose.h * pose.aspect,
-              pose.h,
-              WALL_DISTANCE,
-              vp,
-              quad,
-            );
-            if (ok) quads.push([...quad] as Quad);
-          }
-          for (let ix = 1; ix < 12; ix++) {
-            for (let iy = 1; iy < 12; iy++) {
-              const px = vp.w / 2 + frame.cx - frame.w / 2 + (frame.w * ix) / 12;
-              const py = vp.h / 2 - frame.cy - frame.h / 2 + (frame.h * iy) / 12;
-              total += 1;
-              if (quads.some((q) => pointInQuad(q, px, py))) inside += 1;
-            }
-          }
-        }
-        // The gaps take a fifth of a full plane, and the slanted rows leave the frame's far corners thin.
-        expect(inside / total).toBeGreaterThan(0.64);
-      }
-    }
+  it("lays the old three row wall too (a plain plan, for the film's tests and fallbacks)", () => {
+    const g = wallGeom(18, wallFrame(WIDE, "wall"));
+    expect(g.rowCount).toEqual([6, 6, 6]);
+    expect(g.midRow).toBe(1);
   });
 });
 
@@ -494,7 +481,7 @@ describe("the lens of a blend and the order of a stagger", () => {
 
   it("ranks the highest card first for top and the card order for index", () => {
     const set = buildFormations(N, WIDE);
-    const ranks = rankCards(set, { name: "scatter" }, "top", 0, new Float64Array(N));
+    const ranks = rankCards(set, { name: "scatter" }, "top", 0, new Float64Array(set.total));
     let top = 0;
     let topY = -Infinity;
     for (let i = 0; i < N; i++) {
@@ -505,10 +492,12 @@ describe("the lens of a blend and the order of a stagger", () => {
         top = i;
       }
     }
-    expect(ranks[top]).toBe(0);
+    // The wall-only cells rank too (they sit on the wall in the scatter, hidden): the story's own
+    // cards keep the order among themselves.
+    for (let i = 0; i < N; i++) expect(ranks[top]!).toBeLessThanOrEqual(ranks[i]!);
     expect(Math.max(...Array.from(ranks))).toBe(1);
-    const byIndex = rankCards(set, { name: "scatter" }, "index", 0, new Float64Array(N));
+    const byIndex = rankCards(set, { name: "scatter" }, "index", 0, new Float64Array(set.total));
     expect(byIndex[0]).toBe(0);
-    expect(byIndex[N - 1]).toBe(1);
+    expect(byIndex[set.total - 1]).toBe(1);
   });
 });

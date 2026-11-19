@@ -125,7 +125,7 @@ interface CrankView {
 }
 
 /** A prop's line is a little bolder than a figure's: a gramophone has no face to carry the picture. */
-const INK_WEIGHT = 1.4;
+const INK_WEIGHT = 1.2;
 /**
  * The hull is also pushed back by the slope of the surface (polygon offset). The horn is a thin
  * shell seen at a grazing angle: a push by a fixed distance leaves the hull of its far wall poking

@@ -86,10 +86,10 @@ const HEAD_LEAD = 0.62;
 export function geometry(w: number, h: number): FunnyGeometry {
   const compact = w < 760 || w < h * 0.8;
   const dh = compact ? 0.27 * h : 0.4 * h;
-  const tetraH = compact ? 0.3 * h : 0.34 * h;
+  const tetraH = compact ? 0.3 * h : 0.42 * h;
   const watchD = compact ? Math.min(0.12 * h, 0.2 * w) : Math.min(0.13 * h, 0.1 * w);
   const centreD = compact ? Math.min(0.2 * h, 0.28 * w) : Math.min(0.27 * h, 0.19 * w);
-  const tetraX = compact ? 0.2 * w : 0.3 * w;
+  const tetraX = compact ? 0.2 * w : 0.2 * w;
   const floor = -0.43 * h;
   return {
     w,
@@ -98,7 +98,7 @@ export function geometry(w: number, h: number): FunnyGeometry {
     tetra: { x: tetraX, y: floor, height: tetraH },
     kite: compact
       ? { x: -0.02 * w, y: 0.27 * h, height: 0.17 * h }
-      : { x: 0.14 * w, y: 0.29 * h, height: 0.2 * h },
+      : { x: -0.02 * w, y: 0.27 * h, height: 0.24 * h },
     dragon: {
       y: compact ? 0.1 * h : 0.06 * h,
       height: dh,

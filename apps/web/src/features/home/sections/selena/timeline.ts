@@ -8,14 +8,15 @@
  *
  *   0 to 1.0      play one: the drawer opens on the left, its words come, the dragon glides in
  *   1.0           the rest: Selena and Silverbolt in `city_idle`, fully interactive, the doll hangs
- *   1.0 to 1.5    the doll lets go of the top edge, falls and floats over Selena's right hand
+ *   1.0 to 1.45   the doll lets go of the top edge, falls and floats over Selena's right hand
  *   1.0 to 1.3    the words and the drawer leave
- *   1.15 to 1.6   the camera swings into the baked one, Selena's pose goes from the idle to the clip
- *   1.6 to 3.75   the clip `city_intercation03` (the doll floats, the dragon opens its jaw, eats it,
+ *   1.0 to 1.35   Selena rises from the idle to the clip's first pose, while the camera is still out
+ *   1.1 to 1.5    the camera swings into the baked one: it holds back, then punches in
+ *   1.5 to 3.45   the clip `city_intercation03` (the doll floats, the dragon opens its jaw, eats it,
  *                 passes the lens), faster over the hover and slower over the pass
- *   3.15 to 3.4   the ground flashes white on the bite, before the dragon reaches the lens
- *   3.75 to 3.95  once the dragon has left, a white over the canvas takes Selena too; the actors leave
- *   4.2           white, the first frame of the voices
+ *   2.95 to 3.2   the ground flashes white on the bite, before the dragon reaches the lens
+ *   3.5 to 3.7    once the dragon has left, a white over the canvas takes Selena too; the actors leave
+ *   3.95          white, the first frame of the voices
  */
 
 import { sectionScreens } from "../../kernel/where";
@@ -44,20 +45,23 @@ export const AT = {
   wordsOut: [REST_U, REST_U + 0.2],
   drawerOut: [REST_U, REST_U + 0.3],
   /** The camera leaves the pixel view for the baked one: a quick whip, the middle of it is a few frames. */
-  camera: [REST_U + 0.15, REST_U + 0.6],
-  /** Selena's pose goes from the idle to the clip. */
-  pose: [REST_U + 0.2, REST_U + 0.6],
+  camera: [REST_U + 0.1, REST_U + 0.5],
+  /**
+   * Selena goes from the idle to the clip's first pose. It is done before the camera punches in, so
+   * the lens never lands on her while she is still lying.
+   */
+  pose: [REST_U, REST_U + 0.35],
   /** The doll lets go of the top edge, falls and arrives over the hand (before the camera is done). */
-  doll: [REST_U, REST_U + 0.5],
+  doll: [REST_U, REST_U + 0.45],
   /**
    * The ground goes white behind the dragon: a flash that starts on the bite and is complete before
    * the dragon's head reaches the lens (the clip's 3.7 s), so it passes over a white screen.
    */
-  white: [3.15, 3.4],
+  white: [REST_U + 1.95, REST_U + 2.2],
   /** Then a white over everything takes Selena too, and the actors are gone by the end of it. */
-  front: [3.75, 3.95],
+  front: [REST_U + 2.5, REST_U + 2.7],
   /** The white over the canvas hands over to the one under it (the same colour), at the end. */
-  frontOut: [4.0, STORY],
+  frontOut: [REST_U + 2.75, STORY],
   /** In SCREENS past the section's end (its tail): the white layer leaves, under the voices' own ground. */
   whiteOut: [0.25, 0.5],
 } as const;
@@ -73,12 +77,12 @@ export const WORD_IN = 0.35;
  * follows it at once.
  */
 export const FILM_KEYS: ReadonlyArray<readonly [u: number, t: number]> = [
-  [REST_U + 0.6, 0],
-  [REST_U + 0.9, 1.2],
-  [REST_U + 1.55, 2.6],
-  [REST_U + 1.75, 2.95],
-  [REST_U + 2.15, 3.5],
-  [REST_U + 2.75, 3.95],
+  [REST_U + 0.5, 0],
+  [REST_U + 0.85, 1.2],
+  [REST_U + 1.4, 2.6],
+  [REST_U + 1.55, 2.95],
+  [REST_U + 1.95, 3.5],
+  [REST_U + 2.5, 3.95],
 ];
 
 /** The end of the clip we play: the dragon has left the frame at 3.9 s (`BAKED.pass.outAt`). */
@@ -191,4 +195,23 @@ export function beatsAt(u: number, out: Beats = newBeats(), tail = 0): Beats {
   out.live = u <= AT.restEnd + 1e-6;
   out.actors = u < AT.front[1];
   return out;
+}
+
+/**
+ * The white layer lets go by the clock, not the scroll: once the page is `WHITE_LEAVE_AT` screens
+ * into the tail it leaves over `WHITE_LEAVE_SECONDS`. The voices' entrance runs at the same moment,
+ * so the waves come up behind its title while it comes in. The scroll's own fade (`whiteOut`) stays
+ * as the fallback that has it gone by the end of the tail whatever the clock did.
+ */
+export const WHITE_LEAVE_AT = 0.04;
+export const WHITE_LEAVE_SECONDS = 0.7;
+
+/**
+ * The clock of the white's leaving: `c` is 0 (whole) to 1 (gone), `tail` how far the page is past the
+ * section's end in screens, `dt` the frame's seconds. It moves toward 1 past `WHITE_LEAVE_AT` and
+ * back toward 0 before it, at the same rate (a scroll up brings the white back as fast as it left).
+ */
+export function stepWhite(c: number, tail: number, dt: number): number {
+  const step = Math.max(0, dt) / WHITE_LEAVE_SECONDS;
+  return clamp01(tail > WHITE_LEAVE_AT ? c + step : c - step);
 }

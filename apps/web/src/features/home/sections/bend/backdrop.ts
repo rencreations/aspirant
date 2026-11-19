@@ -12,12 +12,17 @@ const ask = (kind: BackdropKind, options: BackdropOptions): BackdropAsk => ({ ki
 
 /** The chase's last backdrop goes on while the book closes (the same call: no cross-fade at the joint). */
 const COMIC = ask("pixel-blast", { amount: 0.5, speed: 0.7 });
+/**
+ * A stance lasts about 0.45 s, so the four elements cross in 0.2 s and each one stands formed for a
+ * moment. At the default 0.5 s they were never whole (each was gone before it had come in).
+ */
+export const ELEMENT_FADE = 0.2;
 /** The four stances: the element she bends, drawn behind her. */
 const ELEMENT: readonly BackdropAsk[] = [
-  ask("earth", { amount: 0.85 }),
-  ask("air", { amount: 0.85 }),
-  ask("water", { amount: 0.85 }),
-  ask("fire", { amount: 0.85 }),
+  ask("earth", { amount: 0.85, fade: ELEMENT_FADE }),
+  ask("air", { amount: 0.85, fade: ELEMENT_FADE }),
+  ask("water", { amount: 0.85, fade: ELEMENT_FADE }),
+  ask("fire", { amount: 0.85, fade: ELEMENT_FADE }),
 ];
 /** The wall of fan art stands: soft pools of colour behind the pictures. */
 const WALL = ask("soft-aurora", { amount: 0.85, speed: 0.8 });

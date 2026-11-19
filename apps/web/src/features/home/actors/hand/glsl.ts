@@ -81,6 +81,15 @@ float gMn = min( min( diffuseColor.r, diffuseColor.g ), diffuseColor.b );
 float gTex = smoothstep( 0.1, 0.26, gMx - gMn ) * smoothstep( 0.12, 0.3, gMx );
 float gClaw = max( gTex, vClaw );
 diffuseColor.rgb = mix( diffuseColor.rgb, uClawColor, vClaw * 0.85 );
+// The leather's painted shine is a soft airbrushed cloud: cut it into a dark leather and hard edged
+// pale shapes (the cel highlight), so the glove reads drawn and not as latex.
+{
+	float gLum = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
+	float gW = clamp( fwidth( gLum ) * 0.75, 0.004, 0.03 );
+	float gShine = smoothstep( 0.2 - gW, 0.2 + gW, gLum ) * ( 1.0 - gClaw );
+	vec3 gDark = diffuseColor.rgb * min( 1.0, 0.1 / max( gLum, 0.1 ) );
+	diffuseColor.rgb = mix( mix( diffuseColor.rgb, gDark, 1.0 - gClaw ), vec3( 0.4, 0.32, 0.8 ), gShine );
+}
 diffuseColor.rgb += uLift * ( 1.0 - gClaw );
 `;
 
@@ -93,7 +102,11 @@ const GLOVE_FINISH = /* glsl */ `
 	// Flat bright colour, two tone: the lit side as it is, the other side a bluer violet.
 	float gBand = smoothstep( -0.12, 0.12, dot( toonN, uToonL ) );
 	vec3 gFlat = ( outgoingLight * uClaw.y + diffuseColor.rgb * uClaw.x ) * mix( vec3( 0.6, 0.56, 0.95 ), vec3( 1.0 ), gBand );
-	outgoingLight = mix( outgoingLight, gFlat, gClaw );
+	// The gold of the bracer: its own colour in two tones, a warm deep orange on the shade side,
+	// not the claws' bright flat (which turns pale gold into pale yellow).
+	vec3 gGold = diffuseColor.rgb * mix( vec3( 0.72, 0.44, 0.34 ), vec3( 1.04, 0.98, 0.9 ), gBand );
+	float gGoldK = gTex * ( 1.0 - vClaw );
+	outgoingLight = mix( mix( outgoingLight, gGold, gGoldK ), gFlat, vClaw );
 	diffuseColor.a *= smoothstep( uFade.x, uFade.y, vFadeY );
 }
 `;

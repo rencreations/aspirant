@@ -28,7 +28,8 @@ import type { Carry } from "../hand/carry";
 import { handScreens, isPortrait, listScreens } from "../hand/timeline";
 import { dollHang, selenaEnd, type DollHang, type Placement } from "../list/selena-frame";
 
-import { blendLens, newLens, pixelFov, type BakedLens } from "./camera-blend";
+import { blendLens, newLens, pixelFov, pullOf, travelOf, type BakedLens } from "./camera-blend";
+import { roomPlace } from "./room";
 import { DOLL_T, FILM_END, mix, seg, smooth, type Beats } from "./timeline";
 
 /** The doll's height in the film, in metres of Selena's space (the recording shows her about this size). */
@@ -39,6 +40,12 @@ const HIPS_UNDER_HAND = { x: 0.05, y: -0.62 } as const;
 const PORTRAIT_FOV = 112;
 /** The dragon starts this many screen widths to the right of its place. */
 const GLIDE = 1.15;
+/**
+ * The camera swing from the room to the film. The camera's way is eased with this power (it holds
+ * back, then punches in) and drawn back by this share of its distance at the middle of the swing.
+ */
+const SWING_POW = 1.8;
+const SWING_PULL = 0.8;
 
 /** The doll's faces by the clip's seconds: shocked as she lands, scared as she floats, a scream in the jaws. */
 const FILM_FACES: readonly MoodStep[] = [
@@ -67,6 +74,7 @@ export class SelenaScene {
   private readonly film = new Vector3();
   private readonly filmQ = new Quaternion();
   private readonly hover = new Vector3();
+  private readonly back = new Vector3();
   private readonly mouth = new Vector3();
   private readonly hips0: Pt = { x: 0, y: 0, z: 0 };
   private readonly spot: Pt = { x: 0, y: 0, z: 0 };
@@ -263,10 +271,24 @@ export class SelenaScene {
     this.baked.fullHeight = view.fullHeight;
     this.baked.offsetY = view.offsetY;
     const k = b.camera;
-    const lens = blendLens(vp.w, vp.h, pixelFov(vp.h, pixel.position.z), this.baked, k, this.lens);
+    // The camera holds back while she turns up, then punches in; a dolly out under it keeps the
+    // middle of the swing wide, so it never passes through her hair or her chest.
+    const travel = travelOf(k, SWING_POW);
+    const lens = blendLens(
+      vp.w,
+      vp.h,
+      pixelFov(vp.h, pixel.position.z),
+      this.baked,
+      travel,
+      this.lens,
+    );
     const cam = this.camera;
-    cam.position.lerpVectors(pixel.position, baked.position, k);
+    cam.position.lerpVectors(pixel.position, baked.position, travel);
     cam.quaternion.slerpQuaternions(pixel.quaternion, baked.quaternion, k);
+    const pull = pullOf(k, SWING_PULL) * pixel.position.length();
+    if (pull > 0) {
+      cam.position.addScaledVector(this.back.set(0, 0, 1).applyQuaternion(cam.quaternion), pull);
+    }
     cam.fov = lens.fov;
     cam.aspect = lens.aspect;
     cam.near = pixel.near + (baked.near - pixel.near) * k;
@@ -285,10 +307,13 @@ export class SelenaScene {
     this.filmSpace(sl);
     sb.visible = true;
     const slide = (1 - b.dragon) * GLIDE * frame.viewport.w;
-    this.world.x = this.film.x + slide;
-    this.world.y = this.film.y;
+    // In the room the dragon rests below her, out of her pose; the swing brings it back to the film.
+    const rest = roomPlace(frame.viewport);
+    const room = 1 - b.camera;
+    this.world.x = this.film.x + slide + rest.dx * frame.viewport.w * room;
+    this.world.y = this.film.y + rest.dy * frame.viewport.h * room;
     this.world.z = this.film.z;
-    sb.placeWorld(this.world, sl.object.scale.x, this.filmQ);
+    sb.placeWorld(this.world, sl.object.scale.x * (1 + (rest.scale - 1) * room), this.filmQ);
     if (b.pose > 0) {
       sb.clip("city_idle", frame.time, {
         root: "keep",

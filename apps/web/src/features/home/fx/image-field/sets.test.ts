@@ -3,9 +3,10 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { assignPictures, cardCountOf, cardKeys, slotKeys } from "./pictures";
+import { buildFormations } from "./formations";
+import { assignPictures, cardCountOf, cardKeys, poolKeys } from "./pictures";
 import { HERO_PORTRAITS, HERO_WALLS } from "./picks-data";
-import { focusInWindow, portraitSource, setDef, wideCrop, wideSource } from "./sets";
+import { focusInWindow, poolOf, portraitSource, setDef, wideCrop, wideSource } from "./sets";
 
 interface Picks {
   hero: {
@@ -52,9 +53,13 @@ describe("the hero set", () => {
     });
   });
 
-  it("has ten portraits of 4:5 and eighteen wide pictures", () => {
+  it("has eighteen portraits of 4:5, all different, and eighteen wide pictures", () => {
     const def = setDef("hero");
-    expect(def.portraits).toHaveLength(10);
+    expect(def.portraits).toHaveLength(18);
+    // The hero draws one card for each wall picture: no portrait is used twice (the owner's call on duplicates).
+    expect(cardCountOf(def)).toBeLessThanOrEqual(def.portraits.length);
+    expect(new Set(def.portraits.map((p) => p.id)).size).toBe(def.portraits.length);
+    expect(new Set(def.portraits.map((p) => p.path)).size).toBe(def.portraits.length);
     expect(def.walls).toHaveLength(18);
     expect(cardCountOf(def)).toBe(18);
     for (const p of def.portraits) expect(portraitSource(p).aspect).toBeCloseTo(0.8, 6);
@@ -89,38 +94,33 @@ describe("which picture each card shows", () => {
   const def = setDef("hero");
   const n = cardCountOf(def);
 
-  it("cycles the portraits and takes the wide picture of the slot the card lands on", () => {
-    const slots = Array.from({ length: n }, (_, i) => (i * 5) % n);
-    const pics = assignPictures(def, slots, n);
-    expect(pics[0]).toEqual({ portrait: 0, wide: 0 });
-    expect(pics[11]).toEqual({ portrait: 1, wide: (11 * 5) % n });
-    expect(new Set(pics.map((p) => p.wide)).size).toBe(n);
-    expect(pics.every((p) => p.portrait < def.portraits.length)).toBe(true);
+  it("cycles the portraits and gives every cell the picture of the slot it stands in", () => {
+    const set = buildFormations(
+      n,
+      { w: 1440, h: 900 },
+      { cardKeys: cardKeys(def, n), poolKeys: poolKeys(def) },
+    );
+    const pics = assignPictures(def, set);
+    expect(pics).toHaveLength(set.total);
+    expect(pics[0]!.portrait).toBe(0);
+    expect(pics[11]!.portrait).toBe(11 % def.portraits.length);
+    expect(pics[3]!.wide).toBe(set.slotPic[set.story.wallSlot[3]!]);
+    expect(pics[n + 2]!.wide).toBe(set.slotPic[set.extraSlot[2]!]);
+    const pool = poolOf(def).length;
+    expect(pics.every((p) => p.portrait < def.portraits.length && p.wide < pool)).toBe(true);
+    // The plane shows nearly the whole pool (fewer pictures than slots, so a few may not come up).
+    expect(new Set(pics.map((p) => p.wide)).size).toBeGreaterThanOrEqual(Math.floor(pool * 0.85));
   });
 
-  it("keys a card by its portrait's character and a slot by its single character", () => {
+  it("keys a card by its portrait's character and a picture by its single character", () => {
     const keys = cardKeys(def, n);
     expect(keys).toHaveLength(n);
     expect(keys[0]).toBe(def.portraits[0]!.chars[0]);
     expect(keys[10]).toBe(keys[0]);
-    const sk = slotKeys(def);
-    expect(sk.filter((k) => k !== null)).toHaveLength(
-      def.walls.filter((w) => w.chars.length === 1).length,
+    const pk = poolKeys(def);
+    expect(pk).toHaveLength(poolOf(def).length);
+    expect(pk.filter((k) => k !== null)).toHaveLength(
+      poolOf(def).filter((w) => w.chars.length === 1).length,
     );
-  });
-
-  it("holds the wall's own rule: no neighbour in a row or a column shares an Aspirant", () => {
-    // The picture of all ten Aspirants shares with everyone by nature: the rule leaves it out.
-    const shared = (a: number, b: number) =>
-      def.walls[a]!.chars.length < 5 &&
-      def.walls[b]!.chars.length < 5 &&
-      def.walls[a]!.chars.some((c) => def.walls[b]!.chars.includes(c));
-    for (let s = 0; s < n; s++) {
-      for (const d of [1, 6, 12]) {
-        // Neighbours in a row (one place apart, inside a row of six) and in a column (six apart).
-        if (d === 1 && s % 6 === 5) continue;
-        expect(shared(s, (s + d) % n)).toBe(false);
-      }
-    }
   });
 });

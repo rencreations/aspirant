@@ -15,7 +15,7 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { newRoutePlace, routeAt, type DroneRoutePlace } from "../../drone-route";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
+import { ensureBackdrop, type Backdrop, type BackdropOptions } from "../../fx/backdrop";
 import { clamp, ramp } from "../../fx/image-field/math";
 import {
   FILM_ORDER,
@@ -25,30 +25,26 @@ import {
   type Box,
   type FilmActor,
 } from "../../fx/video-plane";
+import { TRAILER_FILM } from "../../fx/video-plane/data";
 import { makeState, type FilmState } from "../../fx/video-plane/types";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { filmStateAt } from "./film-state";
 import { sectionScreens, sectionStart } from "../../kernel/where";
 import { backdropAt } from "../backdrops";
 import { storyAt } from "../story";
-import { makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
+import { inkGlow, inkSpeed, makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
 import { LetterGroup } from "./letters";
-import { scrambleAt } from "./scramble";
+import { STRIP_FOCUS_AT, STRIP_FOCUS_RANGE } from "./dwell";
 import { useStripPlayer } from "./store";
-import { STRIP } from "../../content";
+import { WordSwap } from "./swap";
 
-/** The scramble of a word swap: seconds in (the digest's 0.4) and out (0.45), and how often the noise changes. */
-const SWAP_IN = 0.4;
-const SWAP_OUT = 0.45;
-const NOISE_HZ = 22;
 /**
- * Where the page goes for a control that is not on screen (a fraction of the section). The plays rest
- * on a station for a position, so each is a place inside the dwell of the station that shows the
- * control: the small frame, the window with the play button, the orbit with its button.
+ * Where the page goes for a control that is not on screen, and the ranges of the scroll in which each
+ * kind of control is on screen: `dwell.ts` (a place inside the dwell of the rest that shows it, so no
+ * play fires on the way).
  */
-const FOCUS_AT = { small: 0.12, window: 0.48, hold: 0.72 } as const;
-/** The ranges of the scroll (fractions of the section) in which each kind of control is on screen. */
-const FOCUS_RANGE = { small: [-0.17, 0.29], window: [0.3, 0.64], hold: [0.65, 0.99] } as const;
+const FOCUS_AT = STRIP_FOCUS_AT;
+const FOCUS_RANGE = STRIP_FOCUS_RANGE;
 /** The corner dots sit this far outside the frame's corners at rest and at the end of the expand (px). */
 const DOT_OFF = [9, 48] as const;
 /** The tick marks of the window stand this far outside its corners. */
@@ -79,7 +75,7 @@ class StripRuntime implements SectionRuntime {
   private readonly ambScrim: HTMLElement | null;
   private readonly ambButton: HTMLElement | null;
   private readonly scroll: HTMLElement | null;
-  private readonly swapEls: HTMLElement[];
+  private readonly swaps: WordSwap[];
   private readonly links: HTMLElement[];
   private readonly line: HTMLElement | null;
   private readonly ends: Record<string, HTMLElement | null>;
@@ -87,11 +83,11 @@ class StripRuntime implements SectionRuntime {
   private readonly cplus: Record<string, HTMLElement | null>;
   private readonly arcs: HTMLElement | null;
 
-  /** The two words at the bottom left: which set is asked for, and the scramble that is running. */
-  private swapShown = ["", ""];
-  private swapTime = 1e9;
-  private swapDur = SWAP_IN;
-  private swapGoal = 0;
+  /** What the ink field is asked for: the numbers are written in place every frame (nothing is allocated). */
+  private readonly inkExtras: number[] = [0, 0, 0, 0];
+  private readonly ink: BackdropOptions = { theme: "storm", amount: 0.9, extras: this.inkExtras };
+  /** The two words at the bottom left, which change letter by letter, and which set is asked for. */
+  private swapGoal: 0 | 1 = 0;
   private release: (() => void) | null = null;
   private playerOpen = false;
   private readonly cleanups: Array<() => void> = [];
@@ -135,7 +131,9 @@ class StripRuntime implements SectionRuntime {
     this.ambScrim = q("[data-strip-amb-scrim]");
     this.ambButton = q("[data-strip-button]");
     this.scroll = q("[data-strip-scroll]");
-    this.swapEls = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-swap]"));
+    this.swaps = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-swap]")).map(
+      (el, i) => new WordSwap(el, i + 1),
+    );
     this.links = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-film]"));
     this.line = q("[data-strip-line]", below);
     this.ends = { l: q('[data-strip-end="l"]', below), r: q('[data-strip-end="r"]', below) };
@@ -146,7 +144,6 @@ class StripRuntime implements SectionRuntime {
       this.cplus[c] = q(`[data-strip-cplus="${c}"]`, below);
     }
     this.arcs = q("[data-strip-arcs]", below);
-    this.swapShown = [STRIP.bottomLeft.rest[0], STRIP.bottomLeft.rest[1]];
 
     this.listen();
   }
@@ -166,12 +163,40 @@ class StripRuntime implements SectionRuntime {
       this.driveFilm(S, b);
       this.driveDrone(S, vp);
     }
-    const back = backdropAt(S);
-    this.backdrop?.set(back.kind, back.options);
+    this.driveBackdrop(S, b, vp, frame.input.wheel);
     this.writeSmall(b, vp);
     this.writeWindow(b, vp);
     this.writeSecond(b);
     this.stepSwap(frame.dt, b);
+  }
+
+  /**
+   * The strip's dark ground: the section's own pure choice (`backdrops.ts`), and for the ink field the
+   * two things only this section knows. The film's glow: the light of the picture bleeds into the mist
+   * around the frame as it opens (strongest on the window, gone as the orbit takes over), and the
+   * scroll input: the mist flows faster while the visitor pushes the wheel, also while a scene holds
+   * the page (the wheel is read from the input, not from the page's position).
+   */
+  private driveBackdrop(
+    S: number,
+    b: StripBeats,
+    vp: { readonly w: number; readonly h: number },
+    wheel: number,
+  ): void {
+    const back = backdropAt(S);
+    if (back.kind !== "ink-field") {
+      this.backdrop?.set(back.kind, back.options);
+      return;
+    }
+    const box = expandBox(vp.w, vp.h, b.expand, TRAILER_FILM.aspect, this.box);
+    const glow = inkGlow(b.expand, b.pull, b.fly);
+    const x = this.inkExtras;
+    x[0] = glow;
+    x[1] = box.w / 2 / vp.h;
+    x[2] = box.h / 2 / vp.h;
+    this.ink.amount = back.options.amount ?? 1;
+    this.ink.speed = inkSpeed(wheel);
+    this.backdrop?.set("ink-field", this.ink);
   }
 
   private driveFilm(S: number, b: StripBeats): void {
@@ -261,7 +286,7 @@ class StripRuntime implements SectionRuntime {
     put(this.ends.r, "opacity", enterE.toFixed(3));
 
     // The four dots hang outside the frame's corners and drift outward as it grows, then go.
-    const box = expandBox(vp.w, vp.h, b.expand, undefined, this.box);
+    const box = expandBox(vp.w, vp.h, b.expand, TRAILER_FILM.aspect, this.box);
     const off = DOT_OFF[0] + (DOT_OFF[1] - DOT_OFF[0]) * b.expand;
     const dotOpacity = enterE * (1 - ramp(b.expand, 0.55, 0.95));
     this.place(this.corners.tl, box.x - off - sc.x, box.y - off - sc.y, dotOpacity);
@@ -323,32 +348,21 @@ class StripRuntime implements SectionRuntime {
   // ---------------------------------------------------------------------------------------------
   // The two words that swap on a hover of "See All"
 
-  private setSwap(to: number): void {
+  private setSwap(to: 0 | 1): void {
     if (to === this.swapGoal) return;
     this.swapGoal = to;
-    this.swapTime = 0;
-    this.swapDur = to === 1 ? SWAP_IN : SWAP_OUT;
+    for (const word of this.swaps) word.go(to);
   }
 
-  /** Runs the scramble with the frame's own time (a frozen frame holds it) and writes the words that changed. */
+  /** Runs the letters with the frame's own time (a frozen frame holds them). */
   private stepSwap(dt: number, b: StripBeats): void {
     // Out of the small state the words are at rest, so they are right when the visitor scrolls back.
     if (b.leave > 0.5 && this.swapGoal !== 0) {
       this.swapGoal = 0;
-      this.swapTime = 1e9;
+      for (const word of this.swaps) word.reset();
+      return;
     }
-    this.swapTime += Math.max(0, dt);
-    const progress = clamp(this.swapTime / this.swapDur);
-    const goal = this.swapGoal === 1 ? STRIP.bottomLeft.hover : STRIP.bottomLeft.rest;
-    const tick = Math.floor(this.swapTime * NOISE_HZ);
-    for (let slot = 0; slot < 2; slot++) {
-      const el = this.swapEls[slot];
-      if (!el) continue;
-      const text = scrambleAt(goal[slot]!, progress, tick + slot * 7);
-      if (text === this.swapShown[slot]) continue;
-      this.swapShown[slot] = text;
-      el.textContent = text;
-    }
+    for (const word of this.swaps) word.step(dt);
   }
 
   // ---------------------------------------------------------------------------------------------

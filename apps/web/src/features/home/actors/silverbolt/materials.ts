@@ -64,7 +64,11 @@ export function posterizeGlsl(levels: number, mode: StepMode): string {
     return `${MAP_CHUNK}
 	{
 		vec3 stepped = sqrt( max( diffuseColor.rgb, vec3( 0.0 ) ) );
-		stepped = floor( stepped * ${n} + 0.5 ) / ${n};
+		vec3 level = stepped * ${n};
+		// Where one pixel spans many steps (a small figure) keep the colour as it is: cutting
+		// what is already a blur of noisy paint only speckles it.
+		float span = max( max( fwidth( level.r ), fwidth( level.g ) ), fwidth( level.b ) );
+		stepped = mix( floor( level + 0.5 ), level, smoothstep( 0.35, 0.9, span ) ) / ${n};
 		diffuseColor.rgb = stepped * stepped;
 	}`;
   }
@@ -72,7 +76,9 @@ export function posterizeGlsl(levels: number, mode: StepMode): string {
 	{
 		float tone = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
 		float toneG = sqrt( max( tone, 0.0001 ) );
-		float cut = floor( toneG * ${n} + 0.5 ) / ${n};
+		float toneLevel = toneG * ${n};
+		float toneSpan = fwidth( toneLevel );
+		float cut = mix( floor( toneLevel + 0.5 ), toneLevel, smoothstep( 0.35, 0.9, toneSpan ) ) / ${n};
 		diffuseColor.rgb *= clamp( ( cut * cut ) / max( tone, 0.0001 ), 0.0, 1.6 );
 	}`;
 }

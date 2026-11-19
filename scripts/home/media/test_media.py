@@ -86,12 +86,13 @@ class Windows(unittest.TestCase):
         self.assertEqual([s["slug"] for s in L.LOOPS],
                          ["obsidia", "fanny", "guinevere", "angela", "lesley", "layla", "ruby", "vexana", "change"])
 
-    def test_preview_crop_is_the_card_shape(self) -> None:
+    def test_preview_keeps_the_films_own_shape(self) -> None:
+        # Round two: no crop. The clip is the whole picture at its film's shape, 1280 wide, with even sides.
         for w, hh in ((1920, 1080), (2560, 1080), (1920, 808), (1920, 820)):
-            cw, ch, x, y = P.crop_box(w, hh)
-            self.assertAlmostEqual(cw / ch, P.CARD_RATIO, delta=0.01)
-            self.assertLessEqual(x + cw, w)
-            self.assertLessEqual(y + ch, hh)
+            ow, oh = P.out_size(w, hh)
+            self.assertEqual(ow, 1280)
+            self.assertEqual(oh % 2, 0)
+            self.assertAlmostEqual(ow / oh, w / hh, delta=0.012)
 
     def test_previews_cover_the_ten_films_in_order(self) -> None:
         ids = [f["id"] for f in P.film_items()]
@@ -120,7 +121,8 @@ class Picks(unittest.TestCase):
         p = picks()
         self.assertEqual(len(p["hero"]["wide"]["single"]), 10)
         self.assertEqual(len(p["hero"]["wide"]["group"]), 6)
-        self.assertEqual(len(p["hero"]["portrait"]), 10)
+        self.assertEqual(len(p["hero"]["portrait"]), 18)
+        self.assertEqual(len({c["id"] for c in p["hero"]["portrait"]}), 18)  # no portrait twice
         self.assertEqual(len(p["wall"]["order"]), 18)
         self.assertEqual(len({r["id"] for r in p["wall"]["order"]}), 18)
         self.assertEqual(len(p["spiral"]), 10)
@@ -158,26 +160,43 @@ class Picks(unittest.TestCase):
     def test_cards_are_four_by_five_and_small(self) -> None:
         total = 0
         for c in picks()["hero"]["portrait"]:
-            self.assertEqual((c["w"], c["h"]), (960, 1200))
+            self.assertIn((c["w"], c["h"]), ((960, 1200), (640, 800)))
             total += c["bytes"]
         self.assertLess(total, 3_000_000)
 
-    def test_previews_are_four_seconds_and_light(self) -> None:
+    def test_previews_are_four_seconds_sharp_and_in_budget(self) -> None:
         total = 0
         for r in picks()["previews"]:
             v = r["video"]
-            self.assertEqual(v["w"], 560)
+            self.assertEqual(v["w"], 1280)
+            self.assertTrue(v["repo"].startswith("/video/home/preview/v2/"), v["repo"])
             self.assertAlmostEqual(v["dur"], 4.0, delta=0.1)  # whole frames at 24 fps
             self.assertLessEqual(v["fps"], 24)
+            self.assertGreater(v["bytes"], 500_000, r["title"])
+            self.assertLess(v["bytes"], 2_500_000, r["title"])  # about 1 to 2.5 MB each
             total += v["bytes"]
-        self.assertLess(total, 3_000_000)
+        self.assertLess(total, 20_000_000)
 
-    def test_trailer_strip_is_the_whole_picture(self) -> None:
-        t = picks()["trailer"]
-        self.assertEqual({(s["w"], s["h"]) for s in t["strip"]}, {(1280, 538), (1920, 808)})
-        for s in t["strip"]:
-            self.assertLess(s["bytes"], 4_000_000)
-        self.assertEqual(t["film"]["durLabel"], "03:01")
+    def test_every_preview_is_its_own_scene(self) -> None:
+        # Awakening and A Friend showed the same garden: no two previews may share a film or a window.
+        starts = [(r["id"], r["start"]) for r in picks()["previews"]]
+        self.assertEqual(len({i for i, _ in starts}), 10)
+        by = {i: s for i, s in starts}
+        self.assertNotEqual(by["film-ruby-and-angela-video-trailer-trailer-final"], 64.7)
+        self.assertGreater(by["film-ruby-and-angela-video-trailer-trailer-final"], 100)
+
+    def test_trailer_is_the_library_film_streamed_whole(self) -> None:
+        f = picks()["trailer"]["film"]
+        self.assertEqual((f["w"], f["h"]), (1920, 808))
+        self.assertAlmostEqual(f["aspect"], 1920 / 808, places=3)
+        self.assertEqual(f["durLabel"], "03:01")
+        self.assertEqual(f["lib"]["video"], f"video/films/{f['id']}/video.mp4")
+        # It rests on the wide shot after the opening (the opening is a dark hall with a subtitle), inside the film.
+        self.assertGreater(f["start"], 11)
+        self.assertLess(f["start"], f["dur"] - 10)
+        # The bar waits for a few seconds of it, not for the 145 MB.
+        self.assertEqual(f["warm"]["seconds"], 6)
+        self.assertLess(f["warm"]["bytes"], 6_000_000)
 
     def test_loops_are_light_and_the_seam_is_close(self) -> None:
         total = 0

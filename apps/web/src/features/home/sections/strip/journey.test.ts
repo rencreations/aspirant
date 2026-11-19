@@ -3,7 +3,16 @@ import { describe, expect, it } from "vitest";
 import { homeLayout } from "../../kernel/where";
 import { STORY } from "../story";
 
-import { letterIn, letterMoment, makeBeats, STRIP_BEATS, stripBeats, stripS } from "./journey";
+import {
+  inkGlow,
+  inkSpeed,
+  letterIn,
+  letterMoment,
+  makeBeats,
+  STRIP_BEATS,
+  stripBeats,
+  stripS,
+} from "./journey";
 
 const stripPlaced = () => homeLayout().placed.find((p) => p.id === "strip")!;
 // The strip's story is `STORY.strip` (`../story.ts`) and its tail is the fly-off's: the beats must fit.
@@ -171,5 +180,33 @@ describe("letterIn", () => {
         seen = on;
       }
     }
+  });
+});
+
+describe("the ink field's two inputs from the strip", () => {
+  it("glows with the expand, is gone on the small frame and as the orbit comes, and when the set has flown", () => {
+    expect(inkGlow(0, 0, 0)).toBe(0);
+    expect(inkGlow(1, 0, 0)).toBe(1);
+    expect(inkGlow(1, 0.35, 0)).toBeGreaterThan(0);
+    expect(inkGlow(1, 0.35, 0)).toBeLessThan(1);
+    expect(inkGlow(1, 1, 0)).toBe(0);
+    expect(inkGlow(1, 1, 1)).toBe(0);
+    expect(inkGlow(1, 0, 1)).toBe(0);
+  });
+
+  it("rises steadily with the expand", () => {
+    let last = -1;
+    for (let e = 0; e <= 1.0001; e += 0.05) {
+      const g = inkGlow(e, 0, 0);
+      expect(g).toBeGreaterThanOrEqual(last - 1e-9);
+      last = g;
+    }
+  });
+
+  it("speeds the mist up with the wheel, up and down, to a limit", () => {
+    expect(inkSpeed(0)).toBe(1);
+    expect(inkSpeed(900)).toBeCloseTo(2, 9);
+    expect(inkSpeed(-900)).toBeCloseTo(2, 9);
+    expect(inkSpeed(1e6)).toBeCloseTo(2.8, 9);
   });
 });
