@@ -1,26 +1,33 @@
 /**
- * The beats of the bend section, as numbers. The section is three triggered scenes (`plays.ts`);
- * this file says what happens at each moment of their clock and is the one place the times are
- * written. Pure: no three.js, no DOM, no allocation per call (`beatAt` writes into the object it is
- * given). The runtime reads it every frame, and the tests hold it (every beat in order, the joints
- * at both ends, a jump anywhere).
+ * The beats of the bend section, as numbers. The section is a row of scroll zones (`plays.ts`): the
+ * scroll scrubs this clock through a zone and the page snaps to a rest at either end when the
+ * visitor stops. This file says what happens at each moment of the clock and is the one place the
+ * times are written. Pure: no three.js, no DOM, no allocation per call (`beatAt` writes into the
+ * object it is given). The runtime reads it every frame, and the tests hold it (every beat in
+ * order, the joints at both ends, a jump anywhere).
  *
  * Times are in beats, the virtual clock of the section (`s = local * BEAT_SPAN`, `local` being the
- * plays' value). One beat is about a second of play. Places are fractions of the viewport: x of the
+ * zones' value). One beat is about a screen of scroll. Places are fractions of the viewport: x of the
  * width, y and heights of the height, the origin in the middle, y up (the stage frame of the actors).
  *
- *   0.00 to 0.70   Tetra closes the book, puts it away and stands (she moves from the chase's frame to the stage)
- *   0.55 to 2.15   she bends earth, air, water and fire; the fan pictures fly in from the edges, wave by wave
- *   2.55           REST 1: the wall of fan pictures stands (the garuda hero): "Fan art", "See all fanart"
- *   2.55 to 3.85   the pictures gather into a ring around her, the ring turns
- *   3.85 to 4.45   the ring is thrown off the screen
- *   3.95 to 5.1    the splash arts fly in and take a spiral round her
- *   5.15           REST 2: "Artwork", "See all artwork"
- *   5.15 to 6.0    the spiral turns to the last picture, the drone's
- *   6.0  to 6.25   the drone's picture glides to the right of her, the rest streams off
- *   6.27 to 6.5    the drone comes out of the paper
- *   6.45 to 7.3    the drone meets Tetra: it flies to her, pats her head, they hug, and they go to the lower left
- *   7.3            REST 3: the end (the archive starts from it)
+ * Every stance has a rest of its own, `REST_BEFORE_EDGE` before the next stance begins: the
+ * stance is formed, its backdrop is whole and every picture of its wave has landed.
+ *
+ *   0.00 to 0.60   Tetra closes the book, puts it away and stands (she moves from the chase's frame to the stage)
+ *   0.58           REST: the book is shut, she stands in the middle
+ *   0.60 to 4.20   she bends earth, air, water and fire, 0.9 beat each; the fan pictures fly in from the edges, wave by wave
+ *   1.42 2.32 3.22 4.12   REST: each stance formed
+ *   4.20 to 4.70   she stands down, the wall settles, "Fan art" and "See all fanart" come in
+ *   4.70           REST: the wall of fan pictures stands (the garuda hero)
+ *   4.70 to 6.00   the pictures gather into a ring around her, the ring turns
+ *   6.00 to 6.60   the ring is thrown off the screen
+ *   6.10 to 7.25   the splash arts fly in and take a spiral round her
+ *   7.30           REST: "Artwork", "See all artwork"
+ *   7.30 to 8.15   the spiral turns to the last picture, the drone's
+ *   8.15 to 8.40   the drone's picture glides to the right of her, the rest streams off
+ *   8.42 to 8.65   the drone comes out of the paper
+ *   8.60 to 9.45   the drone meets Tetra: it flies to her, pats her head, they hug, and they go to the lower left
+ *   9.45           REST: the end (the archive starts from it)
  */
 
 type TetraPoseName = "read" | "close" | "stand" | "idle" | "bend" | "pat" | "hug" | "run";
@@ -33,44 +40,53 @@ export const T = {
   standAt: 0.4,
   /** She moves from the place the chase left her in to the stage. */
   moveFrom: 0.05,
-  moveTo: 0.7,
-  /** The four stances, one wave of pictures each. */
-  bendFrom: 0.55,
-  wave: 0.4,
-  /** The wall stands (the first rest, `holdTo`) and is touched. */
-  holdFrom: 2.16,
-  holdTo: 2.55,
+  moveTo: 0.5,
+  /**
+   * The four stances, one wave of pictures each. A wave is long enough for its last picture to land
+   * (the longest wave staggers 0.28 beat, a flight is `FLIGHT` 0.5) before the stance's rest.
+   */
+  bendFrom: 0.6,
+  wave: 0.9,
+  /** The wall stands (the rest, `holdTo`) and is touched. */
+  holdFrom: 4.21,
+  holdTo: 4.7,
   /** Into the ring. */
-  gatherFrom: 2.55,
-  gatherTo: 3.45,
-  ringTo: 3.85,
+  gatherFrom: 4.7,
+  gatherTo: 5.6,
+  ringTo: 6.0,
   /** Out of the ring. */
-  outFrom: 3.85,
-  outTo: 4.45,
-  /** The spiral, and the second rest (`restArt`). */
-  spiralFrom: 3.95,
-  spiralTo: 5.1,
-  restArt: 5.15,
-  advFrom: 5.15,
-  advTo: 6.0,
+  outFrom: 6.0,
+  outTo: 6.6,
+  /** The spiral, and the rest that shows it (`restArt`). */
+  spiralFrom: 6.1,
+  spiralTo: 7.25,
+  restArt: 7.3,
+  advFrom: 7.3,
+  advTo: 8.15,
   /** The drone's picture leaves the spiral for its place beside her. */
-  glideFrom: 6.0,
-  glideTo: 6.25,
+  glideFrom: 8.15,
+  glideTo: 8.4,
   /** The drone comes out of the paper. */
-  popFrom: 6.27,
-  popTo: 6.5,
+  popFrom: 8.42,
+  popTo: 8.65,
   /** The drone and Tetra. */
-  meetFrom: 6.45,
-  flyTo: 6.65,
-  patTo: 6.85,
-  hugTo: 7.05,
-  goTo: 7.3,
+  meetFrom: 8.6,
+  flyTo: 8.8,
+  patTo: 9.0,
+  hugTo: 9.2,
+  goTo: 9.45,
   /** The words. */
-  fanTitleIn: 2.0,
-  fanTitleOut: 2.6,
-  artTitleIn: 4.75,
-  artTitleOut: 5.4,
+  fanTitleIn: 4.15,
+  fanTitleOut: 4.75,
+  artTitleIn: 6.9,
+  artTitleOut: 7.55,
 } as const;
+
+/**
+ * How far before the edge of a stance (or of a scene) its rest stands. It is past the dip to the
+ * stand (`DIP`), so the rest shows the stance worn in full.
+ */
+export const REST_BEFORE_EDGE = 0.08;
 
 /** The length of the section's own clock, in beats: `local` 1 is the end (the drone and Tetra at rest). */
 export const BEAT_SPAN = T.goTo;

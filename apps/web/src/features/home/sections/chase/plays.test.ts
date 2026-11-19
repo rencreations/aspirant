@@ -1,18 +1,29 @@
 import { describe, expect, it } from "vitest";
 
-import { PlayMachine, validatePlays } from "../../kernel/plays";
+import { validatePlays, zoneProgress, zoneValue } from "../../kernel/plays";
 import { SECTIONS } from "../../kernel/sections";
+import { CHASE_ZONES } from "./index";
 import { T, beatAt, dollPlace, geometry, tetraStand, wordsAmount } from "./timeline";
 
 const chase = SECTIONS.find((s) => s.id === "chase")!;
 const plays = chase.plays!;
+const screens = chase.screens;
 
-describe("the chase's plays", () => {
-  it("make a valid table with two scenes", () => {
+/** The value of the section's clock at a scroll position, in screens from the section's start. */
+function at(screensFromStart: number): number {
+  const s = screensFromStart / screens;
+  let v = plays[0]!.from;
+  for (const p of plays) if (s >= p.at) v = zoneValue(p, s);
+  return v;
+}
+
+describe("the chase's zones", () => {
+  it("make a valid table of two scroll zones", () => {
     expect(() => {
       validatePlays("chase", plays);
     }).not.toThrow();
     expect(plays).toHaveLength(2);
+    for (const p of plays) expect(p.span).toBeGreaterThan(0);
   });
 
   it("start from the empty page and rest on the panting Tetra and then on the comic", () => {
@@ -35,43 +46,52 @@ describe("the chase's plays", () => {
     expect(s.y).toBeCloseTo(g.zoomFeet, 9);
   });
 
-  it("are short: 3 s at most for one scene, 4.5 s for both", () => {
-    for (const p of plays) expect(p.seconds).toBeLessThanOrEqual(3);
-    expect(plays.reduce((a, p) => a + p.seconds, 0)).toBeLessThanOrEqual(4.5);
+  it("are short: each zone is 0.8 to 1.5 screens", () => {
+    for (const p of plays) {
+      const len = p.span! * screens;
+      expect(len).toBeGreaterThanOrEqual(0.8);
+      expect(len).toBeLessThanOrEqual(1.5);
+    }
   });
 
-  it("fire a little after the start and leave a dwell of 0.4 to 1 screen", () => {
-    const length = chase.screens;
-    const first = plays[0]!.at * length;
+  it("start a little after the section does, and leave a short rest and a longer one", () => {
+    const first = plays[0]!.at * screens;
     expect(first).toBeGreaterThanOrEqual(0.15);
     expect(first).toBeLessThanOrEqual(1.1);
-    const dwell = (plays[1]!.at - plays[0]!.at) * length;
-    expect(dwell).toBeGreaterThanOrEqual(0.4);
-    expect(dwell).toBeLessThanOrEqual(1);
-    // The comic's own dwell, to the end of the section.
-    expect((1 - plays[1]!.at) * length).toBeLessThanOrEqual(1);
-    expect(chase.focus!).toBeGreaterThan(plays[1]!.at);
+    // Tetra panting: a short rest.
+    const rest = (plays[1]!.at - plays[0]!.at - plays[0]!.span!) * screens;
+    expect(rest).toBeGreaterThanOrEqual(0.1);
+    expect(rest).toBeLessThanOrEqual(0.4);
+    // The comic and its buttons: the page stays a while.
+    const dwell = (1 - plays[1]!.at - plays[1]!.span!) * screens;
+    expect(dwell).toBeGreaterThanOrEqual(0.6);
+    expect(dwell).toBeLessThanOrEqual(1.2);
+    expect(chase.focus!).toBeGreaterThan(plays[1]!.at + plays[1]!.span!);
   });
 
-  it("fire after the funny section's tail has ended, so the scroll is never held while its words are half way up", () => {
+  it("start after the funny section's tail has ended, so its words are gone before the doll runs", () => {
     const funny = SECTIONS.find((x) => x.id === "funny")!;
-    expect(plays[0]!.at * chase.screens).toBeGreaterThanOrEqual(funny.tail + 0.05);
+    expect(plays[0]!.at * screens).toBeGreaterThanOrEqual(funny.tail + 0.05 - 1e-9);
+    expect(CHASE_ZONES.run.at).toBeCloseTo(plays[0]!.at * screens, 9);
   });
 
-  it("run the chase and the comic on the clock when the scroll crosses the thresholds", () => {
-    const m = new PlayMachine("chase", plays, { screens: chase.screens });
-    m.enter(-0.1);
-    let now = 0;
-    let held = 0;
-    for (let f = 0; f < 60 * 8; f += 1) {
-      now += 1000 / 60;
-      m.step(0.8, 0.8, 1 / 60, now);
-      if (m.active) held += 1 / 60;
-    }
-    expect(m.value).toBeCloseTo(T.comic, 9);
-    expect(held).toBeCloseTo(
-      plays.reduce((a, p) => a + p.seconds, 0),
-      0,
-    );
+  it("scrub the story with the scroll, both ways, and give the same frame at the same place", () => {
+    const run = CHASE_ZONES.run;
+    expect(at(run.at - 0.2)).toBe(0);
+    expect(at(run.at + run.len / 2)).toBeCloseTo(T.tetraTo / 2, 9);
+    expect(at(run.at + run.len)).toBeCloseTo(T.tetraTo, 9);
+    // Down and up over the same places read the same.
+    const down = [0.1, 0.4, 0.7, 1.0].map((k) => at(run.at + run.len * k));
+    const up = [1.0, 0.7, 0.4, 0.1].map((k) => at(run.at + run.len * k)).reverse();
+    expect(up).toEqual(down);
+    for (let i = 1; i < down.length; i += 1) expect(down[i]!).toBeGreaterThan(down[i - 1]!);
+    const comic = CHASE_ZONES.comic;
+    expect(at(comic.at + comic.len / 2)).toBeCloseTo((T.tetraTo + T.comic) / 2, 9);
+    expect(at(screens)).toBeCloseTo(T.comic, 9);
+  });
+
+  it("hold no clock: a zone has progress, not a hold", () => {
+    expect(zoneProgress(plays[0]!, plays[0]!.at - 0.01)).toBe(0);
+    expect(zoneProgress(plays[0]!, plays[0]!.at + plays[0]!.span!)).toBe(1);
   });
 });

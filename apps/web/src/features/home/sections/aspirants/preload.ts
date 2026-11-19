@@ -1,6 +1,7 @@
 import { chunkItem, imageItem, type PreloadItem } from "@/lib/preload";
 import { THEMLABEL_LOGO } from "@/features/about/media";
 
+import { poolItems } from "../../fx/image-field/pool-preload";
 import { fullItems } from "../../preview/files";
 
 /**
@@ -17,5 +18,7 @@ export function preload(): PreloadItem[] {
     imageItem("/img/home/mlbb.webp", "Loading the logos", 1),
     imageItem(THEMLABEL_LOGO, "Loading the logos", 1),
     ...fullItems(),
+    // The wall's picture pool (round three): the first 24 waited, the other 135 deferred (`fx/image-field/pool-preload.ts`).
+    ...poolItems(),
   ];
 }

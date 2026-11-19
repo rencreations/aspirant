@@ -1,30 +1,28 @@
+import { playsOf, type BeatStep } from "../../kernel/beat";
 import type { HomeSection } from "../../kernel/types";
 
 import { preload } from "./preload";
+import { ROWS_DWELL, ROWS_SCREENS, ROWS_ZONE, ROWS_ZONE_SECONDS } from "./zone";
 
 /**
- * The rows and their transition into the strip (round two, 19 Nov 2026).
+ * The rows and their transition into the strip (round three, 20 Nov 2026: scroll based).
  *
- * The rows are the aspirants' wall with the clip open: one plane of small cards over the whole screen.
- * They never stop. They glide by themselves, endlessly, and the visitor's scroll makes them faster
- * (`frame.input.wheel`, see `speed.ts`); the cards still lift under the pointer and the wake still
- * ripples. The ground darkens a little as the visitor scrolls on (scroll linked, reversible), then at
- * the threshold, the end of this section's range, the TRANSITION fires as one play of 3 s with the
- * scroll held: a space opens in the middle row, the film rides in with the row into the space (never
- * over a picture), the rows come to rest, the other cards clear away from the film, and the film turns
- * upright into the strip. Scrolling back plays it in reverse.
+ * The rows are the aspirants' wall with the clip open: one plane of cards over the whole screen. The
+ * pictures slide along their rows with the visitor's scroll (no glide of their own, both directions:
+ * `slide.ts`) for a short dwell, then the transition is a scroll ZONE (`kernel/scrub.ts`) of about a
+ * screen and a bit: a space opens in the middle row, the film shows in it at the size of a picture and
+ * rides with the row to the middle, the other pictures slide off along their rows, and the film grows
+ * and turns upright into the strip. The ground goes dark through it (`ground.ts`). If the visitor stops
+ * inside the zone the page finishes it by itself, forward or back. `update` gets 0 in the dwell, 0 to 1
+ * across the zone and 1 after it; the lead is negative (the aspirants' close still owns the field there)
+ * and the dwell's slide comes from the scroll itself (`frame.S`).
  *
- * The strip fires its first play at the same scroll (`at: 0` there, `at: 1` here) and runs it in step:
- * that is where the strip's small words come in. `update` gets 0 (the rows at rest) to 1 (the strip's
- * small state); `s = v * STORY.rows.length` in `runtime.ts`. `lead` lets the section run while the wall
- * is still closing (it does nothing to the field there: the aspirants own it).
- *
- * The rows have no words, so the dwell is the short kind of a section made of motion: 0.7 screens, enough
- * to feel the speed answer the scroll.
+ * The zone ends 0.3 screens before the section does (`ROWS_REST`, the strip's lead): the film stands upright as the
+ * strip for those, and the strip, which starts where this section ends, draws the same state.
  */
-const ROWS_SCREENS = 0.7;
-/** The play of the rows, in seconds going forward. */
-export const ROWS_PLAY_SECONDS = 3;
+const STEPS: readonly BeatStep[] = [
+  { atScreens: ROWS_DWELL, spanScreens: ROWS_ZONE, to: 1, seconds: ROWS_ZONE_SECONDS },
+];
 
 export const section: HomeSection = {
   id: "rows",
@@ -35,8 +33,7 @@ export const section: HomeSection = {
   bg: "daybreak",
   nav: { theme: "daybreak" },
   dom: "fixed",
-  restOutside: true,
-  plays: [{ at: 1, from: 0, to: 1, seconds: ROWS_PLAY_SECONDS, ease: "linear" }],
+  plays: playsOf(0, 1, ROWS_SCREENS, STEPS),
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

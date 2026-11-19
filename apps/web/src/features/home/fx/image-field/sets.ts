@@ -34,8 +34,12 @@ export interface PortraitPic {
 export interface WidePic {
   id: string;
   chars: readonly string[];
-  /** The library key of the 1280 wide `p` picture. */
+  /** The library key of the 1280 wide `p` picture (for a picture with a `file`, the library's own copy of it). */
   key: string;
+  /** A path under `public/` of a picture cut for the wall (640 wide, no corner mark): used in place of `key` when set. */
+  file?: string;
+  /** Pictures that look alike (the same scene or shot) share a group: they are never near each other on the wall. */
+  group?: string;
   w: number;
   h: number;
   bytes: number;
@@ -107,6 +111,16 @@ export function portraitSource(pic: PortraitPic): PicSource {
 }
 
 export function wideSource(pic: WidePic): PicSource {
+  if (pic.file !== undefined) {
+    // Already cut to the window: the whole file, same origin.
+    return {
+      id: `field:w:${pic.id}`,
+      url: asset(pic.file),
+      crop: null,
+      bytes: pic.bytes,
+      aspect: pic.w / pic.h,
+    };
+  }
   const crop = wideCrop(pic);
   return {
     id: `field:w:${pic.id}`,

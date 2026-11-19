@@ -2,7 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { validatePlays } from "../../kernel/plays";
 
-import { AT_ENTER, AT_FILM, REST_U, REST_V, SELENA_PLAYS, STORY } from "./stations";
+import {
+  LENGTHS,
+  REST_U,
+  REST_V,
+  SELENA_FOCUS,
+  SELENA_PLAYS,
+  SELENA_SCREENS,
+  SELENA_ZONES,
+  STORY,
+} from "./stations";
 import {
   AT,
   DOLL_T,
@@ -12,39 +21,61 @@ import {
   beatsAt,
   filmTime,
   newBeats,
-  WHITE_LEAVE_AT,
-  WHITE_LEAVE_SECONDS,
   selenaScreens,
-  stepWhite,
   storyAtFilm,
 } from "./timeline";
 
-describe("the plays", () => {
+describe("the zones", () => {
   it("are a valid table that starts at the list's end and ends at the white", () => {
     expect(() => {
       validatePlays("selena", SELENA_PLAYS);
     }).not.toThrow();
+    expect(SELENA_PLAYS).toHaveLength(2);
     expect(SELENA_PLAYS[0]!.from).toBe(0);
     expect(SELENA_PLAYS[0]!.to).toBe(REST_V);
     expect(SELENA_PLAYS[1]!.to).toBe(1);
   });
 
-  it("run one story unit a second, so a beat in `u` is a beat in seconds", () => {
-    for (const p of SELENA_PLAYS) expect(p.seconds).toBeCloseTo((p.to - p.from) * STORY, 9);
+  it("are scroll zones with no clock: every play has a span", () => {
+    for (const p of SELENA_PLAYS) expect(p.span).toBeGreaterThan(0);
   });
 
-  it("keep every scene short: nothing holds the visitor for more than about four seconds", () => {
-    for (const p of SELENA_PLAYS) expect(p.seconds).toBeLessThanOrEqual(4);
-    expect(SELENA_PLAYS[0]!.seconds).toBeLessThanOrEqual(1.2);
+  it("lay out in screens: enter, a rest, the film, a white rest", () => {
+    const [enter, film] = SELENA_ZONES;
+    expect(enter!.from).toBe(0);
+    expect(enter!.to).toBeCloseTo(LENGTHS.enter, 9);
+    expect(film!.from).toBeCloseTo(LENGTHS.enter + LENGTHS.rest, 9);
+    expect(film!.to).toBeCloseTo(SELENA_SCREENS - LENGTHS.white, 9);
+    expect(SELENA_SCREENS).toBeCloseTo(
+      LENGTHS.enter + LENGTHS.rest + LENGTHS.film + LENGTHS.white,
+      9,
+    );
+    expect(selenaScreens()).toBeCloseTo(SELENA_SCREENS, 9);
   });
 
-  it("fire the film at least half a screen before the end (the voices' lead is not touched)", () => {
-    expect(AT_FILM).toBeLessThanOrEqual(1 - 0.5 / selenaScreens() + 1e-9);
-    expect(AT_ENTER).toBeLessThan(AT_FILM);
+  it("keep each zone short and the rest between them a real dwell", () => {
+    for (const z of SELENA_ZONES) {
+      expect(z.to - z.from).toBeGreaterThanOrEqual(0.6);
+      expect(z.to - z.from).toBeLessThanOrEqual(1.6);
+    }
+    expect(LENGTHS.rest).toBeGreaterThanOrEqual(0.6);
   });
 
-  it("leave a dwell of at least 0.6 screen in the room between the two", () => {
-    expect((AT_FILM - AT_ENTER) * selenaScreens()).toBeGreaterThanOrEqual(0.6);
+  it("leave a white rest before the end, so the bar's ink turns over a white screen", () => {
+    expect(LENGTHS.white).toBeGreaterThanOrEqual(0.2);
+    // The ground is white from `AT.white[1]` and the front layer takes Selena from `AT.front[1]`.
+    expect(AT.front[1]).toBeLessThan(STORY);
+  });
+
+  it("put the focus in the middle of the rest, where the drawer and its words show", () => {
+    const at = SELENA_FOCUS * SELENA_SCREENS;
+    expect(at).toBeGreaterThan(LENGTHS.enter);
+    expect(at).toBeLessThan(LENGTHS.enter + LENGTHS.rest);
+  });
+
+  it("carry the film at one story unit a second of the clock it replaces", () => {
+    // The beats are in seconds of the story: the zones map them to the scroll in a straight line.
+    expect((SELENA_PLAYS[1]!.to - SELENA_PLAYS[1]!.from) * STORY).toBeCloseTo(STORY - REST_U, 9);
   });
 });
 
@@ -170,10 +201,11 @@ describe("the beats", () => {
   });
 
   it("leaves the white layer in the tail, after the ground behind it is the voices' own", () => {
-    expect(at(STORY, 0.2).whiteOut).toBe(0);
+    expect(at(STORY, 0).whiteOut).toBe(0);
     expect(at(STORY, AT.whiteOut[1]).whiteOut).toBe(1);
-    // The kernel's ground is the next section's from a quarter screen after the joint.
-    expect(AT.whiteOut[0]).toBeGreaterThanOrEqual(0.25);
+    // It is gone before the tail ends (half a screen) and starts right after the joint.
+    expect(AT.whiteOut[1]).toBeLessThanOrEqual(0.5);
+    expect(AT.whiteOut[0]).toBeLessThan(0.1);
   });
 
   it("gives the same beats for the same position (a jump is a played scene)", () => {
@@ -181,27 +213,5 @@ describe("the beats", () => {
     const scratch = newBeats();
     for (let u = 0; u < 2.9; u += 0.1) beatsAt(u, scratch);
     expect(beatsAt(2.9, scratch)).toEqual(a);
-  });
-});
-
-describe("the white layer's clock", () => {
-  it("lets go over its own seconds once the page is into the tail, whatever the frame rate", () => {
-    for (const fps of [30, 60, 144]) {
-      let c = 0;
-      const frames = Math.round(WHITE_LEAVE_SECONDS * fps);
-      for (let i = 0; i < frames; i++) c = stepWhite(c, WHITE_LEAVE_AT + 0.1, 1 / fps);
-      expect(c).toBeCloseTo(1, 6);
-    }
-  });
-
-  it("waits while the page is not yet into the tail, and comes back when it scrolls up", () => {
-    expect(stepWhite(0, WHITE_LEAVE_AT - 0.01, 0.1)).toBe(0);
-    expect(stepWhite(0, 0, 1)).toBe(0);
-    expect(stepWhite(1, 0, WHITE_LEAVE_SECONDS)).toBe(0);
-    expect(stepWhite(0.5, 0.3, 0)).toBe(0.5);
-  });
-
-  it("starts before the voices' entrance has finished (the first play fires 0.06 screen in)", () => {
-    expect(WHITE_LEAVE_AT).toBeLessThan(0.06);
   });
 });

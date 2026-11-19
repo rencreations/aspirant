@@ -27,24 +27,21 @@ export const STRIP_BEATS = {
 
 /**
  * The story position (screens from the section's start) of the strip's virtual `local` `v` (the four
- * plays of `index.ts`). 0 to 1 only brings the small words in (the rows' play draws the film in step),
- * 1 to 2 expands the frame to the window, 2 to 3 pulls it into the orbit of the ten films, 3 to 4 is
- * the fly-off. Each station rests in a frame that every beat function holds still: the small state
+ * plays of `index.ts`). 0 to 1 (a scroll zone) only brings the small words in, 1 to 2 (a trigger) expands
+ * the frame to the window, 2 to 3 (a trigger) pulls it into the orbit of the ten films, 3 to 4 (a scroll
+ * zone) is the fly-off. Each station rests in a frame that every beat function holds still: the small state
  * from 0.2 to 0.45, the window at 1.5, the orbit at 2.7, the end at 3.7. Outside 0 to 4 it rests.
  */
 export function stripS(v: number): number {
   const x = clamp(v, 0, 4);
   const B = STRIP_BEATS;
-  // The words wait for the last part of the rows' play (the film turning upright): they do not come
-  // in over the sliding cards.
-  if (x <= 1) return B.enter[0] + (B.enter[1] - B.enter[0]) * ramp(x, ENTER_WAITS, 1);
+  // The words come in across the first zone, by the scroll (the rows' zone before it has ended with the
+  // film upright, so nothing slides under them).
+  if (x <= 1) return B.enter[0] + (B.enter[1] - B.enter[0]) * x;
   if (x <= 2) return B.expand[0] + (B.pull[0] - B.expand[0]) * (x - 1);
   if (x <= 3) return B.pull[0] + (B.fly[0] - B.pull[0]) * (x - 2);
   return B.fly[0] + (B.fly[1] - B.fly[0]) * (x - 3);
 }
-
-/** The share of the first play (it runs in step with the rows' play) that passes before the words begin. */
-const ENTER_WAITS = 0.5;
 
 /** The orbit's turn from the scroll, radians per screen (the reference: two slots of twelve per hold). */
 const TRAVEL_RATE = 2.1;
@@ -112,16 +109,13 @@ export function stripBeats(s: number, out: StripBeats): StripBeats {
 }
 
 /**
- * How much the film lights the ink field around it (0 to 1): nothing on the small frame, the most on
- * the open window, fading as the window is pulled into the orbit, and gone when the set has flown off.
+ * How much of the live light overlay the trailer wears (0 to 1): it comes on as the film turns upright
+ * (with the strip's own overlay), is a little softer on the open window, and fades out gradually as
+ * the strip is left (the exit: the set flying off to the next section). A pure function of the beats.
  */
-export function inkGlow(expand: number, pull: number, fly: number): number {
-  return smootherstep(clamp(expand)) * (1 - ramp(pull, 0, 0.7)) * (1 - clamp(fly));
-}
-
-/** The ink field's own speed: 1 at rest, up to 2.8 while the wheel is pushed (px a second, signed). */
-export function inkSpeed(wheel: number): number {
-  return 1 + Math.min(1.8, Math.abs(wheel) / 900);
+export function overlayAmount(morph: number, expand: number, fly: number): number {
+  const on = smootherstep(ramp(morph, 0.35, 1));
+  return on * (1 - 0.4 * clamp(expand)) * (1 - ramp(fly, 0, 0.75));
 }
 
 /**

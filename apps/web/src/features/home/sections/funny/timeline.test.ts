@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { validatePlays } from "../../kernel/plays";
 
-import { AT_ARRIVE, AT_ASK, AT_CROSS, FUNNY_PLAYS, R1, R2, SECONDS } from "./stations";
+import { FUNNY_FOCUS, FUNNY_PLAYS, FUNNY_SCREENS, FUNNY_ZONES, LENGTHS, R1, R2 } from "./stations";
 import {
   GONE,
   T,
@@ -21,22 +21,36 @@ const SIZES: ReadonlyArray<[number, number]> = [
   [390, 844],
 ];
 
-describe("the plays", () => {
-  it("are a valid table: the stations are the end of each play and the next one's start", () => {
+describe("the zones", () => {
+  it("are a valid table: the stations are the end of each zone and the next one's start", () => {
     expect(() => {
       validatePlays("funny", FUNNY_PLAYS);
     }).not.toThrow();
     expect(FUNNY_PLAYS.map((p) => p.from)).toEqual([0, R1, R2]);
     expect(FUNNY_PLAYS.map((p) => p.to)).toEqual([R1, R2, 1]);
-    expect(AT_ARRIVE).toBeLessThan(AT_CROSS);
-    expect(AT_CROSS).toBeLessThan(AT_ASK);
+    for (const p of FUNNY_PLAYS) expect(p.span).toBeGreaterThan(0);
   });
 
-  it("keep every scene short: the crossing about 2.5 s, none over 3 s", () => {
-    expect(SECONDS.cross).toBeLessThanOrEqual(3);
-    expect(SECONDS.cross).toBeGreaterThanOrEqual(2);
-    expect(SECONDS.arrive).toBeLessThanOrEqual(0.8);
-    expect(SECONDS.ask).toBeLessThanOrEqual(2);
+  it("lay out in screens: three zones with a rest after each, the last the longest", () => {
+    const [arrive, cross, ask] = FUNNY_ZONES;
+    expect(arrive!.from).toBe(0);
+    expect(cross!.from).toBeCloseTo(arrive!.to + LENGTHS.watch, 9);
+    expect(ask!.from).toBeCloseTo(cross!.to + LENGTHS.confused, 9);
+    expect(ask!.to + LENGTHS.words).toBeCloseTo(FUNNY_SCREENS, 9);
+    expect(LENGTHS.words).toBeGreaterThan(LENGTHS.watch);
+    expect(LENGTHS.words).toBeGreaterThan(LENGTHS.confused);
+  });
+
+  it("keep every zone short: the crossing about a screen, none over 1.5", () => {
+    for (const z of FUNNY_ZONES) expect(z.to - z.from).toBeLessThanOrEqual(1.5);
+    expect(LENGTHS.cross).toBeGreaterThanOrEqual(0.9);
+    expect(LENGTHS.ask).toBeGreaterThanOrEqual(0.8);
+  });
+
+  it("put the focus in the middle of the last rest, where the words are in", () => {
+    const at = FUNNY_FOCUS * FUNNY_SCREENS;
+    expect(at).toBeGreaterThan(FUNNY_ZONES[2]!.to);
+    expect(at).toBeLessThan(FUNNY_SCREENS);
   });
 
   it("rest on composed frames: Tetra with the kite, then an empty sky with the confused pair", () => {

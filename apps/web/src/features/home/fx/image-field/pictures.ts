@@ -33,6 +33,11 @@ export function poolKeys(def: FieldSetDef): Array<string | null> {
   return poolOf(def).map((pic) => (pic.chars.length === 1 ? pic.chars[0]! : null));
 }
 
+/** The group of each picture of the pool (pictures that look alike share one), else null. */
+export function poolGroups(def: FieldSetDef): Array<string | null> {
+  return poolOf(def).map((pic) => pic.group ?? null);
+}
+
 /** The pictures of every cell, once the cards have their wall slots: the picture of the slot it stands in. */
 export function assignPictures(def: FieldSetDef, set: FormationSet): CardPictures[] {
   return Array.from({ length: set.total }, (_, i) => ({

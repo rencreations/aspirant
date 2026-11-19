@@ -15,6 +15,8 @@ export interface ScrollToOptions {
   immediate?: boolean;
   /** Duration in seconds for the smooth scroll. */
   duration?: number;
+  /** The curve of the smooth scroll (0 to 1 in, 0 to 1 out). Lenis's own ease out when not given. */
+  easing?: (t: number) => number;
 }
 
 export interface SmoothScrollApi {
@@ -78,6 +80,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
             immediate,
             force: true,
             ...(options.duration ? { duration: options.duration } : {}),
+            ...(options.easing ? { easing: options.easing } : {}),
           });
           return;
         }

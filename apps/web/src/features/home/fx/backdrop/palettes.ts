@@ -194,9 +194,9 @@ export const BACKDROP_PALETTES: Readonly<
     daybreak: pal(["#ffcf5c", "#ffa24a", "#ff5468", "#c8203a"], 0.85, DAY_INK),
     storm: pal(["#ffe9a0", "#ffa24a", "#ff5468", "#7a0f2a"], 1, NIGHT_INK),
   },
-  // The strip's own: a near black blue ground, cyan light, a hot pink where the cursor touches it.
+  // The strip's own: a near black blue ground, deep blue and ice cyan light. No pink (round three).
   "ink-field": {
-    daybreak: pal(["#c9d6ee", "#8cc4f0", "#e3b4da", "#ff7ac8"], 0.5, DAY_INK),
-    storm: pal(["#070c24", "#12307f", "#1fa6e8", "#ff4fb0"], 1, "#dff6ff"),
+    daybreak: pal(["#c9d6ee", "#8cc4f0", "#9cc8f5", "#ffffff"], 0.5, DAY_INK),
+    storm: pal(["#060b22", "#0f2a78", "#1a6bc8", "#6fd2ff"], 1, "#dff6ff"),
   },
 };

@@ -14,6 +14,7 @@ import type { V3 } from "./math";
 import type { Vp } from "./types";
 import {
   WALL_DISTANCE,
+  WALL_SHARE,
   planGeom,
   slotPlane,
   wallFrame,
@@ -23,7 +24,7 @@ import {
 } from "./wall";
 
 /** Card height over the square root of the wall frame's area: wide screens, tall screens. */
-const GRID_SIZE = { wide: 0.15, tall: 0.18 } as const;
+const GRID_SIZE = { wide: 0.25, tall: 0.3 } as const;
 /** How far past the screen the plane is laid out (CSS px), for the push of the pointer and a hovered card's lift. */
 const COVER_MARGIN = 40;
 
@@ -156,11 +157,22 @@ let cached: { w: number; h: number; grid: WallGrid } | null = null;
 /** The plane for a viewport, made once per size. */
 export function wallGrid(vp: Vp): WallGrid {
   if (cached?.w === vp.w && cached.h === vp.h) return cached.grid;
+  const grid = buildGrid(vp, WALL_SHARE, GRID_SIZE);
+  cached = { w: vp.w, h: vp.h, grid };
+  return grid;
+}
+
+/** The plane for a viewport with a given wall share and card sizes (`wallGrid` memoizes the shipped numbers; tests and tuning pass their own). */
+export function buildGrid(
+  vp: Vp,
+  share: number,
+  sizes: { readonly wide: number; readonly tall: number },
+): WallGrid {
   const tall = vp.h > vp.w;
   const screen = wallFrame(vp, "rows");
-  const wall = wallFrame(vp, "wall");
+  const wall = wallFrame(vp, "wall", share);
   const size =
-    (tall ? GRID_SIZE.tall : GRID_SIZE.wide) *
+    (tall ? sizes.tall : sizes.wide) *
     (Math.sqrt(wall.w * wall.h) / Math.sqrt(screen.w * screen.h));
   // A one-row geometry gives the angles, the card size and the pitch.
   const probe = planGeom(screen, { rowV: [0], counts: [1], centers: [0] }, { size });
@@ -173,30 +185,8 @@ export function wallGrid(vp: Vp): WallGrid {
     slotPlane(geom, s, 0, uv);
     planeToScreen(geom, uv[0], uv[1], xy);
     const inside =
-      Math.abs(xy[0] - wall.cx) <= wall.w / 2 - geom.cardW * 0.15 &&
-      Math.abs(xy[1] - wall.cy) <= wall.h / 2 - geom.cardH * 0.15;
+      Math.abs(xy[0] - wall.cx) <= wall.w / 2 && Math.abs(xy[1] - wall.cy) <= wall.h / 2;
     inFrame[s] = inside ? 1 : 0;
   }
-  const grid = { geom, wall, inFrame };
-  cached = { w: vp.w, h: vp.h, grid };
-  return grid;
-}
-
-/**
- * Which picture of a pool of `pool` pictures a slot shows. The even rows use the even pictures and
- * the odd rows the odd ones, so two rows that slide past each other never show the same picture side
- * by side, and a row repeats a picture only after the whole of its half of the pool. The rows of one
- * parity start a whole row further on in the cycle, so a screen shows the whole pool.
- */
-export function slotPicture(g: WallGeom, slot: number, pool: number): number {
-  if (pool <= 1) return 0;
-  const r = g.slotRow[slot]!;
-  const c = g.slotCol[slot]!;
-  const half = Math.ceil(pool / 2);
-  const parity = r % 2;
-  const size = parity === 0 ? half : Math.floor(pool / 2);
-  if (size <= 0) return 0;
-  const shift = Math.floor(r / 2) * (g.rowCount[r]! + 1);
-  const at = (((c + shift) % size) + size) % size;
-  return at * 2 + parity;
+  return { geom, wall, inFrame };
 }

@@ -33,6 +33,8 @@ export interface PlaneLook {
   ready: number;
   /** The overlay of the strip, 0 to 1. */
   effect: number;
+  /** The live light overlay (scanlines, grain, sweep, vignette, fringe), 0 to 1. */
+  overlay: number;
   /** 0 to 1: the pointer is on this plane. */
   hover: number;
   /** The pointer on the plane, fractions of its size from its centre, y up. */
@@ -66,6 +68,7 @@ export class PlaneView {
     uReady: { value: 0 },
     uTime: { value: 0 },
     uEffect: { value: 0 },
+    uOverlay: { value: 0 },
     uHover: { value: 0 },
     uPointer: { value: new Vector2(0, 0) },
     uFx: { value: new Vector4(0, 0, 0, 0) },
@@ -112,6 +115,7 @@ export class PlaneView {
     u.uWin.value.set(l.win[0], l.win[1], l.win[2], l.win[3]);
     u.uReady.value = l.ready;
     u.uEffect.value = l.effect;
+    u.uOverlay.value = l.overlay;
     u.uHover.value = l.hover;
     u.uPointer.value.set(l.pointerX, l.pointerY);
     u.uFx.value.set(l.lens, l.split, 0, l.sweep);

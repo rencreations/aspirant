@@ -55,6 +55,14 @@ const shared = new WeakMap<object, BoltScene>();
 /** From this `t` (the end of the fall) the falling air is over: its loops are stopped and swept away. */
 const AIR_END = 6.6;
 
+/**
+ * The most the scroll may move, in screens, in one frame and still be the visitor's own. The scenes
+ * follow the scroll (a zone is about a screen of beats), so how many beats a frame covers depends on
+ * the zone: the jump is judged on the scroll. The flick limiter hands the scene at most one screen a
+ * frame, so a hard flick still plays every scene; a seek or a drag of the bar is more and is a jump.
+ */
+const JUMP_SCREENS = 1.2;
+
 export class BoltScene {
   /** Take part in the scene of this stage. Each section that acquires it must release it. */
   static acquire(ctx: SectionCtx): BoltScene {
@@ -83,6 +91,9 @@ export class BoltScene {
 
   private lastFrame = -1;
   private lastT = NaN;
+  /** The scroll of the last frame, and whether it moved so far since the one before that it was a jump. */
+  private lastS = NaN;
+  private jumpS = true;
   private time = 0;
   /** When this scene last drew, by the clock of the page: the dragon's marks belong only while it does. */
   private ranAt = -1e9;
@@ -234,6 +245,10 @@ export class BoltScene {
     if (!this.gate.done) this.gate.hurry();
     if (frame.frame === this.lastFrame && t === this.lastT) return;
     const first = frame.frame !== this.lastFrame;
+    if (first) {
+      this.jumpS = !(Math.abs(frame.S - this.lastS) < JUMP_SCREENS);
+      this.lastS = frame.S;
+    }
     const prevT = this.lastT;
     this.lastFrame = frame.frame;
     this.lastT = t;
@@ -254,7 +269,7 @@ export class BoltScene {
     const marks = this.marks;
 
     // A jump in the scroll: nothing that follows a path may be carried across it.
-    const jumped = Number.isNaN(prevT) || Math.abs(t - prevT) > 0.5;
+    const jumped = Number.isNaN(prevT) || this.jumpS;
     const threw = !jumped && prevT < BEAT.launch && t >= BEAT.launch;
     // The marks are the air of a moment, not a state: a jump sweeps them away (the loops that made
     // them are not run in the jump's frame), and the falling air ends for good where the fall ends.

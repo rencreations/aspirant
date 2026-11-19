@@ -2,7 +2,7 @@
  * The chase section as arithmetic: where the doll, Silverbolt and Tetra are and when, and how the
  * camera closes in on Tetra reading, as pure functions of `local` and the size of the screen. No
  * three, no DOM. Stage pixels (the origin in the middle of the screen, y UP), `local` the virtual
- * clock of the section's two plays (0 to `T.comic`, see `index.ts`).
+ * clock of the section's two scroll zones (0 to `T.comic`, see `index.ts`).
  *
  * The story, in `local`:
  *   0 .. DOLL_FROM      the stage is empty and light (the funny section's end)
@@ -12,7 +12,7 @@
  *   PANT, WAVE, SIT     she pants, waves to us, sits down
  *   READ                she takes out a comic and reads it; the camera comes in
  *   WORDS               COMIC, the two comics and the button arrive; they leave with the scroll after the section
- *   COMIC               she sits reading, the camera close, the words all on (the second play ends here)
+ *   COMIC               she sits reading, the camera close, the words all on (the second zone ends here)
  */
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
@@ -26,7 +26,7 @@ const line = (v: number, a: number, b: number): number => clamp01((v - a) / (b -
 
 /**
  * The length of the story's own timeline, in screens. The scene is a function of `local`, the
- * virtual clock of the two plays (`index.ts`), so the times below keep their meaning whatever the
+ * virtual clock of the two zones (`index.ts`), so the times below keep their meaning whatever the
  * section's length is. Only the wobble of the dragon's flight reads it.
  */
 const STORY_SCREENS = 4;
@@ -48,7 +48,7 @@ export const T = {
   zoomTo: 0.78,
   wordsFrom: 0.7,
   wordsTo: 0.78,
-  /** The comic stands (the second play ends here): the camera is in and the words are all on. */
+  /** The comic stands (the second zone ends here): the camera is in and the words are all on. */
   comic: 0.9,
 } as const;
 

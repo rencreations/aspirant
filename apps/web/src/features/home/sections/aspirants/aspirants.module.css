@@ -1,19 +1,19 @@
 /*
- * The aspirants section's own parts. The words are the owner's, in the right 42 percent (the box is
- * `rightBox` of the home's stylesheet). Each line is one element the runtime moves: it rises into
- * place, and at the end it folds up on its top edge and goes. Only transform and opacity animate.
+ * The aspirants section's own parts (round three, 20 Nov 2026). The wall fills the left half of the
+ * screen; the owner's words stand in the right half, in ONE left aligned column: the title, one
+ * paragraph (flowing, no break of mine, the two marks inline) and the button. Each of the three is
+ * one element the runtime moves by a trigger (`words.ts`): only transform and opacity animate.
  */
 
 /*
- * The words stay in the right 42 percent: left of it is the wall's frame. The box is the 42 percent
- * minus the gutter on the right and a gap on the left (the wall thins out toward its edge, the
- * words do not touch it).
+ * The right half of a wide screen, left of the gutter on the right, with a gap from the wall's hard
+ * edge. The block stands a little above the middle: the drone rests at the foot under it.
  */
 .box {
   justify-self: end;
-  width: min(100%, calc(42vw - 1.65 * var(--gutter)));
-  /* The block stands a little above the middle: the drone rests at the foot of the screen under it. */
-  translate: 0 -7vh;
+  width: min(100%, calc(50vw - var(--gutter) - 4vw));
+  text-align: left;
+  translate: 0 -4vh;
 }
 
 @media (max-width: 56.25em) {
@@ -37,13 +37,8 @@
   }
 }
 
-/* A line with a logo in it needs more room than a plain one, or the logo runs into the next line. */
-.line.leadLogo {
-  line-height: 1.5;
-}
-
 .line {
-  transform-origin: 50% 0;
+  transform-origin: 0 50%;
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
@@ -53,39 +48,35 @@
 }
 
 /*
- * The two logos in the lines. `.lead img` of the home's stylesheet sets 1.35em, so these say what
- * they are (two classes beat it): the game's mark a little smaller, TheMLabel's smaller still with
- * room on both sides, so it reads as a mark in the sentence and not as a word.
+ * The paragraph: one text, left aligned, with the two marks in it (the game's before the series
+ * line, TheMLabel's in the middle of the second sentence). A little more leading than plain text so
+ * a mark never runs into the line above.
  */
-.leadLogo .logoGame {
+.paragraph {
+  margin: var(--space-m) 0 0;
+  max-width: 34ch;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.55;
+  text-align: left;
+  color: var(--text-dim);
+}
+
+.paragraph .logoGame {
+  display: inline-block;
+  height: 1.3em;
+  width: auto;
+  vertical-align: -0.34em;
+}
+
+/* TheMLabel's mark reads as a mark in the sentence, with a little room either side. */
+.paragraph .logoLabel {
   display: inline-block;
   height: 1.05em;
   width: auto;
+  margin-inline: 0.22em;
   vertical-align: -0.2em;
-}
-
-.leadLogo .logoLabel {
-  display: inline-block;
-  height: 0.92em;
-  width: auto;
-  margin-inline: 0.2em;
-  vertical-align: -0.16em;
-}
-
-/*
- * The second description steps in from the left by about a third of the column, so the block reads
- * left, then right, then left again (the title, the game's line and the button are flush left).
- */
-.indent {
-  margin-inline-start: 30%;
-  max-width: 22ch;
-}
-
-@media (max-aspect-ratio: 1/1) {
-  .indent {
-    margin-inline-start: 16%;
-    max-width: 26ch;
-  }
 }
 
 /*

@@ -1,50 +1,52 @@
 /**
  * The rows' transition, as pure functions of `s`, the story position in screens from the start of the
- * rows' play (0 the rows at rest, `STORY.rows.length` the strip's small state: joint J3). A jump lands
- * exactly and the strip, which runs in the tail of the rows, agrees at the joint.
+ * rows' transition (0 the rows at rest, `STORY.rows.length` the strip's small state: joint J3). A jump
+ * lands exactly and the strip, which runs in the tail of the rows, agrees at the joint.
  *
- * What happens (round two, 19 Nov 2026). Until the play the rows glide by themselves for ever (the
- * visitor's scroll makes them faster). The play is the transition the owner described: the film is the
- * next thing that scrolls in on the middle row. A space opens in that row (the cards on either side
- * slide apart), the film rides in with the row into the space, the rows come to rest with the film at
- * the middle, every other card clears away from it, and the film turns upright into the strip.
+ * Round three (20 Nov 2026): the transition is scroll based. `s` is the visitor's scroll through a
+ * zone (the kernel's, `index.ts`), so every function here is also its own reverse: scroll up and the
+ * film leaves, the pictures come back, the rows slide the other way. Nothing here has a clock.
  *
- *   slide   the rows decelerate from the speed they had to rest (a cubic that starts at that speed)
+ * What happens. The pictures slide along their rows with the scroll (`slide.ts`). Then a space opens
+ * in the middle row (the neighbours slide apart by the row's own gap, so the space is one more place of
+ * the row), the film shows in it at the size of a picture (16 to 9, on the rows' plane, tilted as they
+ * are), rides on with its row to the middle of the screen where the rows come to rest, the other
+ * pictures slide off along their rows, and the film grows and turns upright into the strip.
+ *
+ *   slide   the rows come to rest (a cubic that starts at the speed the scroll gave them)
  *   gap     the space opens in the middle row, before the film shows in it
- *   appear  the film fades and grows into the space
- *   clear   every other card leaves from the film outward
- *   morph   the film turns upright into the strip (done at the end: J3)
+ *   appear  the film fades in, in the space, at full size: it never overlaps a picture
+ *   clear   every other picture slides off along its row, the nearest to the film first
+ *   morph   the film grows and turns upright into the strip (done at the end: J3)
  *
  * Distances are in the plane's pixels, `pitch` is a card and its gap along a row.
  */
 import { clamp, ramp, smootherstep } from "../../fx/image-field/math";
 import { WALL_DISTANCE, rowWay, type WallGeom } from "../../fx/image-field/wall";
 
-/** The beats, in screens from the start of the play. */
+/** The beats, in screens from the start of the transition. */
 export const ROWS_BEATS = {
   /** The rows slide until here and come to rest. */
-  slide: [0, 1.5],
+  slide: [0, 1.1],
   /** The space opens in the middle row. */
-  gap: [0, 0.55],
-  /** The film shows in the space (after it has begun to open, never before). */
-  appear: [0.25, 0.8],
-  /** The clearing grows from the film outward: every other card leaves. */
+  gap: [0, 0.45],
+  /** The film shows in the space (only once the space is open: it never overlaps a picture). */
+  appear: [0.45, 0.8],
+  /** The clearing grows from the film outward: every other picture slides off. */
   clear: [1.1, 1.8],
-  /** The film turns from angled to upright (done at the end of the section: J3). */
+  /** The film grows and turns from angled to upright (done at the end of the section: J3). */
   morph: [1.8, 2.4],
 } as const;
 
-/** The film on the rows plane, as a share of a card's width (it is 1920 by 810, so shorter than a card). */
+/** The film on the rows plane, as a share of a card's width: the same size as a picture (both are 16 to 9). */
 export const ANGLE_SIZE = 1;
-/** Clear room kept between the film and the cards beside it, as a share of a card's width. */
-export const GAP_MARGIN = 0.2;
 /** The least the rows slide in all, in pitches (and the floor of the film's ride). */
 export const MIN_RIDE_PITCHES = 1.5;
 
 /**
  * How far the rows have slid, 0 to 1, as the cubic that starts with slope `a` and comes to rest:
- * `h(x) = a x + (3 - 2a) x^2 + (a - 2) x^3`. `a` is the speed the rows had, so nothing jumps when the
- * play begins (0 is a plain smoothstep, 3 is the steepest that stays monotone).
+ * `h(x) = a x + (3 - 2a) x^2 + (a - 2) x^3`. `a` is the speed the scroll gave them, so nothing jumps
+ * where the transition takes over (0 is a plain smoothstep, 3 is the steepest that stays monotone).
  */
 export function slideShape(s: number, a = 0): number {
   const [from, to] = ROWS_BEATS.slide;
@@ -82,9 +84,12 @@ export function morphAt(s: number): number {
   return ramp(s, from, to);
 }
 
-/** The clearing's reach in the plane's pixels, from its progress, for a clearing that must cover `max` and soften over `feather`. */
+/**
+ * The clearing's reach, from its progress, for a clearing that must cover `max` and soften over
+ * `feather`. Linear: the scroll is the visitor's own easing, and every card leaves with its own ease.
+ */
 export function clearRadius(progress: number, max: number, feather: number): number {
-  return smootherstep(clamp(progress)) * (max + feather);
+  return clamp(progress) * (max + feather);
 }
 
 /**
@@ -96,36 +101,23 @@ export function leaveOf(radius: number, rho: number, feather: number): number {
 }
 
 /**
- * How far the film rides in all, in the plane's pixels, when the play begins with the rows at `slide`
- * and moving at `speed` (px/s of the plane), and its slot in the row must end at the middle. It is at
- * least `reach` (the film must start outside the screen) and the least that (a) is steep enough for
- * the slide's cubic to start at `speed` (`a <= 3`) and (b) puts the space between two cards of the
- * middle row, so no card is under the film. `gridAt` is where a card of that row stands in the row's
- * own frame (its first card's place, modulo a pitch).
- *
- * `secondsPerShape` is how long the slide's whole shape takes in real time.
+ * How far the film rides in all, in the plane's pixels, when the transition begins with the rows at
+ * `slide`. It is at least `reach` (the film must start outside the screen), at least `MIN_RIDE_PITCHES`
+ * and at least `floor` (what the slide's cubic needs to start at the speed the scroll gave the rows:
+ * `slope <= 2.5`), and the least that puts the space between two cards of the middle row, so no card is
+ * under the film. `gridAt` is where a card of that row stands in the row's own frame (its first
+ * card's place, modulo a pitch).
  */
-export function rideDistance(
-  g: WallGeom,
-  slide: number,
-  speed: number,
-  reach: number,
-  secondsPerShape: number,
-): number {
+export function rideDistance(g: WallGeom, slide: number, reach: number, floor = 0): number {
   const r = g.midRow;
   const way = rowWay(r);
   const count = g.rowCount[r]!;
   const grid0 = g.rowCenter[r]! - ((count - 1) / 2) * g.pitch;
-  const floor = Math.max(
-    reach,
-    MIN_RIDE_PITCHES * g.pitch,
-    // The cubic starts at slope `a = speed * T / ride`: keep a at 2.5 or less.
-    (Math.abs(speed) * secondsPerShape) / 2.5,
-  );
+  const least = Math.max(reach, MIN_RIDE_PITCHES * g.pitch, floor);
   // The film is `way * (ride + slide)` back along the row from the middle, in the row's frame. The
   // space is between two cards when that sits half a pitch from the card grid.
   const phase = (((-way * (grid0 + g.pitch / 2) - slide) % g.pitch) + g.pitch) % g.pitch;
-  return phase + Math.ceil((floor - phase) / g.pitch) * g.pitch;
+  return phase + Math.ceil((least - phase) / g.pitch) * g.pitch;
 }
 
 /** The film's place along the middle row (plane u) when the rows have come to rest: the middle of the screen. */

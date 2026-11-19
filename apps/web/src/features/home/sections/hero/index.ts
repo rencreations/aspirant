@@ -3,20 +3,33 @@ import type { HomeSection } from "../../kernel/types";
 import { preload } from "./preload";
 
 /**
- * The logo and the splash cards (premotio's hero), as one triggered scene (round two, 19 Nov 2026).
- * The page opens on the scatter, the rest state of the hero. The first scroll of `screens` (0.3, the
- * small threshold) fires the play: the logo morphs into the bar, the cards above gather, spiral into
- * the ring and land as the wall, and the owner's words come in. It runs on a clock for 2.8 s with the
- * scroll held, and scrolling back up across the threshold plays it back.
+ * The logo and the splash cards (premotio's hero), as one scroll ZONE (round three, 20 Nov 2026).
+ * The page opens on the scatter, the rest state of the hero (the cards fly in on a clock, the paper
+ * entrance, `fx/image-field/flight.ts`). Then the visitor scrolls and the scene plays by the scroll:
+ * the logo morphs into the bar, the cards above gather, spiral into the ring and land as the wall.
+ * Scrolling back plays it back. If the visitor stops in the middle the page finishes it by itself, to
+ * the scatter or to the wall (`kernel/scrub.ts`, `kernel-scrub.md`).
  *
- * The aspirants fire their own play (the words) at the same scroll, with the same length and curve, so
- * the two machines run in step (`sections/pair.test.ts` holds the arithmetic): the thresholds are at
- * the joint (`at: 1`), and the hero keeps a tail so it is still running while the play holds. `carry`:
- * a jump past the hero replays its end, which gives the bar its own logo. Its `update` gets 0 for
- * the scatter and 1 for the wall (`heroS` in `timeline.ts`), and rests there in the tail.
+ * The zone is `HERO_ZONE` screens long, after a short rest on the scatter (`HERO_REST`) and before a
+ * short dwell on the wall (`HERO_DWELL`): the aspirants' words are a trigger that comes after the
+ * dwell. `heroS` (`timeline.ts`) turns the zone's value (0 the scatter, 1 the wall) into the story
+ * position, so every beat of the scene is unchanged. `carry`: a jump past the hero replays its end,
+ * which gives the bar its own logo.
  */
-export const HERO_SCREENS = 0.3;
-/** The play of the hero, in seconds going forward. */
+/** Screens of rest on the scatter before the zone starts (the cue, the stiff logo). */
+export const HERO_REST = 0.1;
+/** The length of the zone, in screens: the whole of the scene (the morph, the gather, the ring, the land). */
+export const HERO_ZONE = 2.8;
+/** Screens of dwell on the wall after the zone, before the words' trigger of the aspirants. */
+export const HERO_DWELL = 0.2;
+/** The length of the section in screens. */
+export const HERO_SCREENS = HERO_REST + HERO_ZONE + HERO_DWELL;
+/** The idle snap for a full traverse of the zone (seconds): the page carries the scene the rest of the way. */
+export const HERO_SNAP_SECONDS = 2.4;
+/**
+ * The aspirants' first play (the words) still runs this long on a clock (round two). It is the
+ * aspirants' to change: the hero no longer plays on a clock.
+ */
 export const HERO_PLAY_SECONDS = 2.8;
 
 export const section: HomeSection = {
@@ -29,7 +42,16 @@ export const section: HomeSection = {
   dom: "fixed",
   restOutside: true,
   carry: true,
-  plays: [{ at: 1, from: 0, to: 1, seconds: HERO_PLAY_SECONDS, ease: "linear" }],
+  plays: [
+    {
+      at: HERO_REST / HERO_SCREENS,
+      span: HERO_ZONE / HERO_SCREENS,
+      from: 0,
+      to: 1,
+      seconds: HERO_SNAP_SECONDS,
+      ease: "linear",
+    },
+  ],
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

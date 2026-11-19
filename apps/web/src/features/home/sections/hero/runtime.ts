@@ -24,7 +24,7 @@ import {
 } from "../../fx/logo";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
-import { BACKDROP_KINDS_USED, backdropAt } from "../backdrops";
+import { BACKDROP_KINDS_USED } from "../backdrops";
 
 import { ENTRANCE_SECONDS, FieldScene } from "./scene";
 import { cueOpacity, heroS, logoP, ramp, smooth } from "./timeline";
@@ -54,6 +54,7 @@ class HeroRuntime implements SectionRuntime {
   private logoFailed = false;
   private logoLoading = false;
   private entranceStart: number | null = null;
+  private warmed = false;
   private cueW = 0;
   private cueH = 0;
   private cueAt = Number.NaN;
@@ -86,8 +87,12 @@ class HeroRuntime implements SectionRuntime {
     const entrance = ramp(frame.time - this.entranceStart, 0, ENTRANCE_SECONDS);
     const look = this.updateLogo(P, vp.w, vp.h);
     this.scene.update({ S, viewport: vp, entrance, look });
-    const back = backdropAt(S);
-    this.backdrop?.set(back.kind, back.options);
+    // The hero has no live backdrop (the plain daybreak ground, round three). The later sections'
+    // shaders are compiled once the cards have landed, never while they fly.
+    if (!this.warmed && entrance >= 1) {
+      this.warmed = true;
+      void this.backdrop?.warm(BACKDROP_KINDS_USED);
+    }
     this.updateCue(S, vp.w, vp.h);
   }
 
@@ -181,7 +186,5 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
     needsLogo ? ensureLogo(ctx).catch(() => null) : Promise.resolve(null),
     ensureBackdrop(ctx).catch(() => null),
   ]);
-  // Compile the first four kinds now, so the first frame of the backdrop is not a hitch.
-  void backdrop?.warm(BACKDROP_KINDS_USED);
   return new HeroRuntime(ctx, field, drone, logo, backdrop);
 }

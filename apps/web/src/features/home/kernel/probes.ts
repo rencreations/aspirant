@@ -5,6 +5,7 @@
  * is, `skipIntro` opens the page, `actor` and `sections` look at one thing.
  */
 import type { MountState, PlayReport, SectionReport } from "./run";
+import type { ScrubReport } from "./scrub";
 import type { SnapReport } from "./snap";
 import type { SectionId } from "./types";
 
@@ -45,8 +46,10 @@ export interface HomeProbe {
    * The snap: `idleMs`, `armed` (the visitor pushed since the last seek), `moving`, `blocked` (why it
    * does not snap now, or null), `zone` (the joint the page is in), `target` (the rest it would run
    * to), and the flick limiter's `chasing`, `real` (the page, in screens) and `seen` (the scene's).
+   * `scrub` is the idle snap of the scroll zones (`kernel/scrub.ts`): `idleMs`, `armed`, `moving`,
+   * `blocked`, `zone` (the zone the page is in, with `p`), `target`, `heading` and every zone.
    */
-  snap(): SnapReport & { chasing: boolean; real: number; seen: number };
+  snap(): SnapReport & { chasing: boolean; real: number; seen: number; scrub: ScrubReport };
   /** Build an actor from the lab table, pin it shown and hand it back (see `kernel/lab.ts`). */
   lab(name: string): Promise<unknown>;
   /** Give a lab actor back to the sections. */

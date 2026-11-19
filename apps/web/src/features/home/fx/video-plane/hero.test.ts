@@ -62,12 +62,12 @@ describe("the trailer's base pose", () => {
     expect(out.z).toBeCloseTo(300 * g.right[2] - 100 * g.up[2], 6);
   });
 
-  it("appears as a small scale up and a fade", () => {
+  it("appears as a fade at its full size (the rows' space is made for it)", () => {
     const a = pose({ morph: 0, appear: 0 }).out;
     const b = pose({ morph: 0, appear: 1 }).out;
     expect(a.opacity).toBe(0);
     expect(b.opacity).toBe(1);
-    expect(a.w).toBeCloseTo(0.6 * b.w, 6);
+    expect(a.w).toBeCloseTo(b.w, 6);
   });
 
   it("is the same pose for the same state, and moves smoothly between", () => {

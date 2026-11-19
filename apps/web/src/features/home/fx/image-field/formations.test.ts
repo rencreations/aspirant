@@ -237,12 +237,14 @@ describe("the gather is a spiral about the ring's axis", () => {
     expect(kept).toBeGreaterThanOrEqual(5);
   });
 
-  it("lands every card on a slot inside the wall's frame, one each", () => {
+  it("lands the cards on one slot each, inside the wall's frame while there is room (round three: the cards are big)", () => {
     for (const vp of [WIDE, TALL]) {
       const set = buildFormations(18, vp);
       const slots = Array.from(set.story.wallSlot);
       expect(new Set(slots).size).toBe(18);
-      for (const s of slots) expect(set.grid.inFrame[s]).toBe(1);
+      const room = set.grid.inFrame.reduce((x, y) => x + y, 0);
+      const inside = slots.filter((s) => set.grid.inFrame[s] === 1).length;
+      expect(inside).toBe(Math.min(18, room));
     }
   });
 
@@ -263,14 +265,11 @@ describe("the gather is a spiral about the ring's axis", () => {
     }
   });
 
-  it("brings the wall-only cells in while the cards land, the inner ones first, and never out of order with the story", () => {
+  it("brings the wall-only cells in while the cards land, the ones nearest the wall's middle first", () => {
     const set = buildFormations(18, WIDE);
     const inner: number[] = [];
     const outer: number[] = [];
-    for (let j = 0; j < set.total - set.n; j++) {
-      if (set.grid.inFrame[set.extraSlot[j]!] === 1)
-        (set.extraRank[j]! < 0.5 ? inner : outer).push(j);
-    }
+    for (let j = 0; j < set.total - set.n; j++) (set.extraRank[j]! < 0.5 ? inner : outer).push(j);
     expect(inner.length).toBeGreaterThan(0);
     expect(outer.length).toBeGreaterThan(0);
     for (const p of [0.5, 0.6, 0.7, 0.8, 0.9, 0.96, 1]) {
@@ -280,6 +279,33 @@ describe("the gather is a spiral about the ring's axis", () => {
     }
     expect(extraIn(set, inner[0]!, 1)).toBe(1);
     expect(extraIn(set, inner[0]!, 0.4)).toBe(0);
+    // Every cell is in by the time the cards have landed (0.94), so none can appear after it.
+    for (let j = 0; j < set.total - set.n; j++) expect(extraIn(set, j, 0.95)).toBe(1);
+  });
+
+  it("flies a wall-only cell in from beyond the screen along its row, never just there", () => {
+    const set = buildFormations(18, WIDE);
+    const j = Math.floor((set.total - set.n) / 2);
+    const slot = set.extraSlot[j]!;
+    const home = makePose();
+    const early = makePose();
+    poseOf(set, "wall", 0, set.n + j, 0, home);
+    // Part way through its flight the cell stands back along its row and is not yet opaque.
+    const p = 0.5 + 0.26 * set.extraRank[j]! + 0.02;
+    poseOf(set, "story", p, set.n + j, 0, early);
+    const g = set.rows;
+    const dx = early.x - home.x;
+    const dy = early.y - home.y;
+    expect(Math.hypot(dx, dy)).toBeGreaterThan(g.pitch);
+    // The move is along the plane's u axis.
+    const along = dx * g.right[0] + dy * g.right[1];
+    expect(Math.abs(along)).toBeGreaterThan(0.5 * Math.hypot(dx, dy));
+    expect(early.opacity).toBeLessThan(1);
+    // Before its flight it is off screen and clear, after it the cell is on its slot and opaque.
+    const before = makePose();
+    poseOf(set, "story", 0.4, set.n + j, 0, before);
+    expect(before.opacity).toBe(0);
+    expect(slot).toBeGreaterThanOrEqual(0);
   });
 });
 

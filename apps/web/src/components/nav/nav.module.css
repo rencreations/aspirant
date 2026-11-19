@@ -169,8 +169,9 @@
    be used now. The logo never fades: it swaps with the home's big logo in one frame. */
 .left,
 .here {
+  /* The controls of the home come in slowly and softly after the opening (round three, 20 Nov 2026). */
   transition:
-    opacity var(--dur-slow) var(--ease-out),
+    opacity 1200ms cubic-bezier(0.22, 0.61, 0.36, 1) 400ms,
     visibility 0s linear 0s;
 }
 

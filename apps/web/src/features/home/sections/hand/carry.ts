@@ -47,6 +47,8 @@ const ARC = 0.2;
 const TOSS_FLICK = [0.1, 0.36] as const;
 /** How high she hops when the strip turns to the next frame, as a share of the screen's height. */
 const HOP = 0.03;
+/** The most the scroll may move in one frame (screens) and still count as the visitor's, not a jump. */
+const CROSS_SCREENS = 1.2;
 
 export class Carry {
   private readonly hb = newHandBeats();
@@ -57,6 +59,9 @@ export class Carry {
   private geoKey = "";
   private prev = -99;
   private cur = -99;
+  /** The scroll of this frame and of the frame before (NaN until two have been seen). */
+  private prevS = NaN;
+  private curS = NaN;
   private seen = -1;
   /** The whole frame she has hopped to, to knock her on the landing. */
   private frameNo = -1;
@@ -85,11 +90,14 @@ export class Carry {
   ) {}
 
   /**
-   * True when the carry's clock (the hand's beat and the list's added) crossed `at` forward in a
-   * small step: a one shot fires on it, a jump does not.
+   * True when the carry's clock (the hand's beat and the list's added) crossed `at` forward while the
+   * scroll moved the way the visitor moves it: a one shot fires on it, a jump does not. The scenes
+   * follow the scroll (a zone is a screen or so of beats), so a quick wheel moves the beat by half a
+   * beat or more in one frame and must still fire the poof. The jump is judged on the scroll, not on
+   * the beat: how many beats a frame covers depends on the zone.
    */
   private crossed(at: number): boolean {
-    return this.prev < at && this.cur >= at && this.cur - this.prev < 0.3;
+    return this.prev < at && this.cur >= at && Math.abs(this.curS - this.prevS) < CROSS_SCREENS;
   }
 
   /**
@@ -109,6 +117,8 @@ export class Carry {
     if (frame.frame !== this.seen) {
       this.seen = frame.frame;
       this.prev = this.cur;
+      this.prevS = this.curS;
+      this.curS = frame.S;
     }
     this.cur = t + u;
 

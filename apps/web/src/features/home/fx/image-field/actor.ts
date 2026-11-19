@@ -40,6 +40,7 @@ import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
 import { getBitmap, onBitmap, peekBitmap, releaseBitmap } from "./bitmaps";
 import { CardView, disposeCardGeometry, type CardLook } from "./card";
 import { makeCarousel, stepCarousel } from "./carousel";
+import { flyFormation } from "./flight";
 import {
   blendFormations,
   blendLens,
@@ -69,7 +70,14 @@ import {
   type Idle,
 } from "./live";
 import { clamp, clipSoftEdges, mix, qFromEuler, qMul, type Q } from "./math";
-import { cardCountOf, assignPictures, cardKeys, poolKeys, type CardPictures } from "./pictures";
+import {
+  cardCountOf,
+  assignPictures,
+  cardKeys,
+  poolGroups,
+  poolKeys,
+  type CardPictures,
+} from "./pictures";
 import { Composite, type CompositeParams } from "./post";
 import { cardQuad, pointInQuad, quadBounds } from "./project";
 import {
@@ -107,10 +115,14 @@ export interface FormationRef {
   t?: number;
 }
 
+/** The heap behind the logo, the formation the entrance's cards are ranked from (nearest the middle first). */
+const ORIGIN_REF: FormationRef = { name: "origin" };
+
 type Spec =
   | { kind: "one"; name: FormationName; t: number }
   | { kind: "blend"; from: FormationRef; to: FormationRef; t: number; spread: number; by: RankBy }
-  | { kind: "custom"; fn: PoseFn; lens: number; edges: number };
+  | { kind: "custom"; fn: PoseFn; lens: number; edges: number }
+  | { kind: "fly"; to: FormationRef; seconds: number };
 
 /** What a press on a card reports. */
 export interface CardPress {
@@ -475,6 +487,22 @@ export class FieldActor implements Actor {
       this.spec = { kind: "blend", from, to, t, spread, by };
     }
     this.rankFor(from, by);
+  }
+
+  /**
+   * The hero's entrance (`flight.ts`): every card flies from the heap behind the logo to the
+   * formation `to` like a sheet of paper, each with its own start, duration and path. `seconds` is
+   * the time since the entrance began; at the landing second every card is on `to`, exactly.
+   */
+  fly(to: FormationRef, seconds: number): void {
+    const s = this.spec;
+    if (s.kind === "fly") {
+      s.to = to;
+      s.seconds = seconds;
+    } else {
+      this.spec = { kind: "fly", to, seconds };
+    }
+    this.rankFor(ORIGIN_REF, "centre");
   }
 
   /**
@@ -917,6 +945,9 @@ export class FieldActor implements Actor {
       case "blend":
         blendFormations(this.layout, s.from, s.to, s.t, s.spread, this.ranks[i]!, i, slide, out);
         break;
+      case "fly":
+        flyFormation(this.layout, s.to, s.seconds, this.ranks[i]!, i, slide, out);
+        break;
       case "custom":
         // Every field of the pose starts from its default, so a function that leaves one out is not stale.
         out.x = out.y = out.z = 0;
@@ -939,6 +970,9 @@ export class FieldActor implements Actor {
         return lensOf(s.name, s.t);
       case "blend":
         return blendLens(lensOf(s.from.name, s.from.t ?? 0), lensOf(s.to.name, s.to.t ?? 0), s.t);
+      case "fly":
+        // The heap and the scatter share the pixel lens: the flight is seen through the target's.
+        return lensOf(s.to.name, s.to.t ?? 0);
       case "custom":
         return s.lens;
     }
@@ -955,6 +989,8 @@ export class FieldActor implements Actor {
           edgeStrength(storyProgress(s.to.name, s.to.t ?? 0)),
           clamp(s.t),
         );
+      case "fly":
+        return edgeStrength(storyProgress(s.to.name, s.to.t ?? 0));
       case "custom":
         return s.edges;
     }
@@ -1267,6 +1303,7 @@ export class FieldActor implements Actor {
     return buildFormations(this.n, this.vp, {
       cardKeys: cardKeys(this.def, this.n),
       poolKeys: poolKeys(this.def),
+      poolGroups: poolGroups(this.def),
     });
   }
 
@@ -1283,6 +1320,7 @@ export class FieldActor implements Actor {
     this.pictures = assignPictures(this.def, this.layout);
     this.applyPictures();
     if (this.spec.kind === "blend") this.rankFor(this.spec.from, this.spec.by);
+    else if (this.spec.kind === "fly") this.rankFor(ORIGIN_REF, "centre");
     this.wake?.resize(w, h);
     for (const c of this.cells) {
       c.hasPrev = false;

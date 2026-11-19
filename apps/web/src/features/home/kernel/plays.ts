@@ -27,6 +27,13 @@ export interface HomePlay {
   readonly ease?: PlayEase;
   /** The share of `seconds` that the play takes when it runs backward. Default `PLAY_BACK`. */
   readonly back?: number;
+  /**
+   * With a span the play is a ZONE (`kernel/scrub.ts`, `kernel-scrub.md`): it has no clock and holds
+   * nothing. While the scroll is inside `[at, at + span]` (fractions of the section) the value is
+   * `from + (to - from) * ease(p)`, `p` being how far through the zone the scroll is, up or down. The
+   * curve defaults to `linear`. `seconds` is then the length of the idle snap for a full traverse.
+   */
+  readonly span?: number;
 }
 
 /** The share of a play's length that its backward run takes when the play does not say. */
@@ -37,6 +44,8 @@ export const HOLD_SLACK_MS = 1500;
 export const MAX_PLAY_SECONDS = 10;
 /** A table of values closer than this counts as equal. */
 const SAME = 1e-9;
+/** The least gap (screens) between a zone's end and a clock play after it (a dev warning, not an error). */
+const ZONE_CLOCK_GAP = 0.15;
 
 /** The hysteresis below a threshold, in `local` units: 0.04 of the section or 0.12 screens. */
 export function hystOf(screens: number): number {
@@ -55,6 +64,25 @@ export function easeValue(ease: PlayEase, t: number): number {
     case "inOut":
       return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   }
+}
+
+/** A play with a span is a scroll zone (no clock, no hold). */
+export function isZone(p: HomePlay): boolean {
+  return p.span !== undefined;
+}
+
+/** How far through a zone the section's scroll `s` is: 0 before it, 1 after it. A clock play is 0 or 1 at `at`. */
+export function zoneProgress(p: HomePlay, s: number): number {
+  const span = p.span ?? 0;
+  if (!(span > 0)) return s >= p.at ? 1 : 0;
+  const x = (s - p.at) / span;
+  return x <= 0 ? 0 : x >= 1 ? 1 : x;
+}
+
+/** The value a zone gives at the section's scroll `s`: `from` before it, `to` after it, the curve between. */
+export function zoneValue(p: HomePlay, s: number): number {
+  const k = easeValue(p.ease ?? "linear", zoneProgress(p, s));
+  return p.from + (p.to - p.from) * k;
 }
 
 /**
@@ -80,10 +108,27 @@ export function validatePlays(id: string, plays: readonly HomePlay[]): void {
     }
     if (Math.abs(p.to - p.from) < SAME)
       fail(i, `from ${p.from} equals to ${p.to}: nothing to play`);
+    if (p.span !== undefined) {
+      if (!Number.isFinite(p.span) || !(p.span > 0)) {
+        fail(i, `span ${String(p.span)} must be above 0 (a fraction of the section)`);
+      }
+      if (p.at + p.span > 1 + SAME) {
+        fail(
+          i,
+          `a zone ends at ${p.at + p.span}, past the section's end 1 (at ${p.at} + span ${p.span}): the tail is for the scroll's passthrough`,
+        );
+      }
+    }
     const prev = plays[i - 1];
     if (prev) {
       if (!(p.at > prev.at)) {
         fail(i, `at ${p.at} must be above the previous at ${prev.at} (the list is ordered by at)`);
+      }
+      if (prev.span !== undefined && p.at < prev.at + prev.span - SAME) {
+        fail(
+          i,
+          `at ${p.at} is inside the previous zone (${prev.at} to ${prev.at + prev.span}): zones and plays do not overlap in position`,
+        );
       }
       if (Math.abs(p.from - prev.to) > SAME) {
         fail(
@@ -194,14 +239,53 @@ export class PlayMachine {
       const room = Math.max(0, p.at - floor) / 2;
       this.backAt[i] = p.at - Math.min(hyst, room);
     });
+    if (process.env.NODE_ENV === "development") {
+      // A clock play right after a zone: the idle snap lands on the zone's end, which would be the play's threshold.
+      plays.forEach((p, i) => {
+        const prev = plays[i - 1];
+        if (!prev || prev.span === undefined || p.span !== undefined) return;
+        const gap = (p.at - (prev.at + prev.span)) * options.screens;
+        if (gap < ZONE_CLOCK_GAP) {
+          console.warn(
+            `[home] section ${id}: plays[${i}] fires ${gap.toFixed(2)} screens after the zone before it ends. Leave at least ${ZONE_CLOCK_GAP} (kernel-scrub.md section 5).`,
+          );
+        }
+      });
+    }
     this.base = plays[0]!.from;
     this.restOutside = options.restOutside === true;
     this.gate = options.ready ?? alwaysReady;
   }
 
-  /** `v`: the value `update` gets. The animated value plus the lead and tail passthrough. */
+  /**
+   * `v`: the value `update` gets. The animated value (a running clock play) or the zone the scroll is
+   * in or has passed (a pure function of the smoothed scroll), or the resting station; plus the lead
+   * and tail passthrough.
+   */
   get value(): number {
-    return this.restOutside ? this.base : this.base + passthrough(this.sShown);
+    let v = this.base;
+    if (!this.playing) {
+      const z = this.zoneBehind();
+      v = z ? zoneValue(z, this.sShown) : this.resting;
+    }
+    return this.restOutside ? v : v + passthrough(this.sShown);
+  }
+
+  /** The zone the machine stands in or just after (the play before the station), or null. */
+  private zoneBehind(): HomePlay | null {
+    if (this.idx <= 0) return null;
+    const p = this.plays[this.idx - 1]!;
+    return p.span === undefined ? null : p;
+  }
+
+  /** The table, for the probe and the zone snap. */
+  get table(): readonly HomePlay[] {
+    return this.plays;
+  }
+
+  /** The index of the zone the machine is in or just after, or -1 (the probe). */
+  get zoneIndex(): number {
+    return this.zoneBehind() ? this.idx - 1 : -1;
   }
 
   /** The value the machine rests on, or runs toward. */
@@ -268,8 +352,21 @@ export class PlayMachine {
     this.playing = false;
     this.dir = 0;
     this.t = 0;
-    this.idx = restingIndexAt(this.plays, sRaw);
+    this.idx = this.indexAt(sRaw, sShown);
     this.base = this.resting;
+  }
+
+  /**
+   * How many plays are passed at a position: a clock play by the real scroll (its threshold), a zone
+   * by the smoothed one (its value follows that scroll, so its start must too).
+   */
+  private indexAt(sRaw: number, sShown: number): number {
+    let n = 0;
+    for (const p of this.plays) {
+      if (p.at <= (p.span === undefined ? sRaw : sShown)) n++;
+      else break;
+    }
+    return n;
   }
 
   /**
@@ -319,7 +416,26 @@ export class PlayMachine {
 
   private trigger(sRaw: number, now: number): boolean {
     const n = this.plays.length;
-    if (this.idx < n && sRaw >= this.plays[this.idx]!.at) {
+    // Zones have no clock: the station follows the smoothed scroll, down into a zone and up out of it.
+    while (this.idx < n) {
+      const z = this.plays[this.idx]!;
+      if (z.span !== undefined && this.sShown >= z.at) this.idx++;
+      else break;
+    }
+    while (this.idx > 0) {
+      const z = this.plays[this.idx - 1]!;
+      if (z.span !== undefined && this.sShown < z.at) this.idx--;
+      else break;
+    }
+    const next = this.idx < n ? this.plays[this.idx]! : null;
+    if (next && next.span === undefined && sRaw >= next.at) {
+      // A clock play after a zone waits until the smoothed scroll has finished the zone, so the
+      // scene never jumps from the middle of the zone to the play's start.
+      const before = this.idx > 0 ? this.plays[this.idx - 1]! : null;
+      if (before && before.span !== undefined && this.sShown < before.at + before.span) {
+        this.due = false;
+        return false;
+      }
       if (!this.gate()) {
         this.due = true;
         return false;
@@ -330,7 +446,11 @@ export class PlayMachine {
       return true;
     }
     this.due = false;
-    if (this.idx > 0 && sRaw < this.backAt[this.idx - 1]!) {
+    if (
+      this.idx > 0 &&
+      this.plays[this.idx - 1]!.span === undefined &&
+      sRaw < this.backAt[this.idx - 1]!
+    ) {
       this.idx--;
       this.begin(this.idx, -1, now);
       return true;

@@ -9,25 +9,25 @@ import { newRoutePlace, routeAt, type DroneRoutePlace } from "../../drone-route"
 import type { DroneActor } from "../../actors/drone";
 import {
   FIELD_ORDER,
+  FLIGHT,
   type CardPress,
   type FieldActor,
   type FormationRef,
   type Rect,
 } from "../../fx/image-field";
+import { wallGrid } from "../../fx/image-field/grid";
+import { scrollSlide } from "../../fx/image-field/scroll-slide";
 import { ALL_PREVIEW_PICTURES } from "../../preview/pictures";
 import { setPreviewResolver, useHomePreview } from "../../preview/store";
 
-import { clipOpen, rowsBlend, slideRate, storyP, viewable } from "./timeline";
+import { clipOpen, rowsBlend, storyP, viewable } from "./timeline";
 
 /**
- * The beat the cards expand from behind the logo in when the page opens (seconds, real time). They
- * all go at once, the ones nearest the middle first (`ENTRANCE_SPREAD`), each with an ease out.
+ * The entrance of the cards when the page opens (seconds, real time): every card is a sheet of paper
+ * thrown out from behind the logo with its own start, speed and wavy path (`fx/image-field/flight.ts`,
+ * round three). The last card has landed after this long.
  */
-export const ENTRANCE_SECONDS = 0.7;
-/** The share of the entrance the starts of the cards are spread over (the rest is one card's flight). */
-const ENTRANCE_SPREAD = 0.2;
-/** The ease of the entrance: fast at first, then it settles into the float. */
-const entranceEase = (u: number): number => 1 - (1 - u) * (1 - u);
+export const ENTRANCE_SECONDS = FLIGHT.total;
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
 
@@ -46,7 +46,6 @@ export class FieldScene {
   private readonly wall: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly wallRef: FormationRef = { name: "wall" };
   private readonly rowsRef: FormationRef = { name: "rows" };
-  private readonly originRef: FormationRef = { name: "origin" };
   private readonly storyRef: FormationRef = { name: "story", t: 0 };
   private readonly route: DroneRoutePlace = newRoutePlace();
 
@@ -97,6 +96,15 @@ export class FieldScene {
     this.removeResolver();
   }
 
+  /**
+   * The plane's slide follows the page's absolute scroll `scroll` (screens), never a glide of its own
+   * (round three: `scroll-slide.ts`, the line the rows continue). The aspirants call it every frame
+   * they run, which is the whole hero too (their lead), so the slide is exact wherever the visitor is.
+   */
+  follow(scroll: number, viewport: { readonly w: number; readonly h: number }): void {
+    this.field.holdSlideAt(scrollSlide(wallGrid({ w: viewport.w, h: viewport.h }).geom, scroll));
+  }
+
   /** Every setter of the field this scene owns, as it stands at `S`. */
   update(input: SceneInput): void {
     const { S, viewport, entrance } = input;
@@ -118,10 +126,10 @@ export class FieldScene {
     } else if (rows > 0) {
       f.blend(this.wallRef, this.rowsRef, rows, 0.25, "left");
     } else if (entrance < 1) {
-      // The cards expand from a heap behind the logo into whatever the story shows now (the
-      // scatter at rest), so a scroll that comes early never makes them jump.
+      // The cards fly out of a heap behind the logo into whatever the story shows now (the scatter
+      // at rest), so a scroll that comes early never makes them jump.
       this.storyRef.t = storyP(S);
-      f.blend(this.originRef, this.storyRef, entranceEase(entrance), ENTRANCE_SPREAD, "centre");
+      f.fly(this.storyRef, entrance * ENTRANCE_SECONDS);
     } else {
       f.show("story", storyP(S));
     }
@@ -142,9 +150,7 @@ export class FieldScene {
       f.setClip(c);
     }
 
-    // 3. The glide, the hover, the cursor and the press.
-    // The offset is the rows section's (it scrolls them): it is zero here, so scrolling back is exact.
-    f.setSlide(previewOpen ? 0 : slideRate(S), 0);
+    // 3. The hover, the cursor and the press. The slide is not set here: it follows the scroll (`follow`).
     const pressable = viewable(S) && !previewOpen;
     f.setInteractive(!previewOpen);
     f.setCursor(pressable ? "VIEW" : null);

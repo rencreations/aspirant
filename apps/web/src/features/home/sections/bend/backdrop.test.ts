@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ELEMENT_FADE, backdropAt } from "./backdrop";
 import { BEAT_SPAN, T, beatAt, newBeat, type BeatState } from "./beats";
-import { BEND_PLAYS, REST_BEATS } from "./plays";
+import { REST_BEATS } from "./plays";
 
 const at = (s: number): BeatState => beatAt(s / BEAT_SPAN, newBeat());
 
@@ -17,12 +17,24 @@ describe("the bend section's backdrop", () => {
     expect(kinds).toEqual(["earth", "air", "water", "fire"]);
   });
 
-  it("crosses from one element to the next within a stance, so each one is formed", () => {
-    const seconds = BEND_PLAYS[0]!.seconds / (REST_BEATS[1] - REST_BEATS[0]);
-    const stance = T.wave * seconds;
-    expect(ELEMENT_FADE).toBeLessThan(stance * 0.6);
+  it("asks for the element at the rest of its stance, formed, and crosses in a short fade", () => {
+    const rests = [REST_BEATS[2]!, REST_BEATS[3]!, REST_BEATS[4]!, REST_BEATS[5]!];
+    const kinds = rests.map((s) => backdropAt(at(s)).kind);
+    expect(kinds).toEqual(["earth", "air", "water", "fire"]);
+    // The change of element is a short cross, so a stance is whole a moment after it begins.
+    expect(ELEMENT_FADE).toBeLessThanOrEqual(0.4);
     for (const w of [0, 1, 2, 3]) {
       expect(backdropAt(at(T.bendFrom + (w + 0.5) * T.wave)).options.fade).toBe(ELEMENT_FADE);
+    }
+  });
+
+  it("asks for the next element only after the stance's own rest", () => {
+    // The rest stands before the edge: the visitor who stops there sees this stance, not the next.
+    for (let w = 0; w < 3; w += 1) {
+      const rest = REST_BEATS[w + 2]!;
+      const edge = T.bendFrom + (w + 1) * T.wave;
+      expect(rest).toBeLessThan(edge);
+      expect(backdropAt(at(rest)).kind).not.toBe(backdropAt(at(edge + 0.01)).kind);
     }
   });
 

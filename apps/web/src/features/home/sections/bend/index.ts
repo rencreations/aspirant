@@ -3,7 +3,7 @@ import type { HomeSection } from "../../kernel/types";
 import { BEND_PLAYS, BEND_SCREENS } from "./plays";
 import { preload } from "./preload";
 
-/** Tetra bends the pictures: three triggered scenes with a rest after each (`plays.ts`). */
+/** Tetra bends the pictures: ten scroll zones with a rest after each (`plays.ts`). */
 export const section: HomeSection = {
   id: "bend",
   screens: BEND_SCREENS,

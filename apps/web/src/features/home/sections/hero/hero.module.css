@@ -29,9 +29,13 @@
   opacity: 0;
 }
 
-/* The page has opened: the cue comes in after the cards have flown out (the runtime sets the flag). */
+/*
+ * The page has opened (the runtime sets the flag): the cue comes in last and gently. The paper cards
+ * fly for 2.8 s, so it begins as the last of them are settling and takes 1.4 s (round three: the
+ * first appear animations of the hero were too fast).
+ */
 :global(.js) :global([data-entered="1"]) .cueIn {
-  animation: cueIn 800ms 1.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cueIn 1400ms 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 .cueLabel {
@@ -57,7 +61,7 @@
   inset: 0;
   background: var(--text);
   transform: translate3d(0, -101%, 0);
-  animation: cueDraw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 1.6s infinite;
+  animation: cueDraw 3.2s cubic-bezier(0.65, 0, 0.35, 1) 3.4s infinite;
 }
 
 @keyframes cueIn {

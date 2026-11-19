@@ -17,7 +17,8 @@
  * read it through the ratio of the two plane scales, so a blend between wall and rows keeps every
  * card at the same phase of its row however far the rows have slid.
  */
-import { wallGrid, slotPicture, type WallGrid } from "./grid";
+import { alongAtRest, arrangePictures } from "./arrange";
+import { wallGrid, type WallGrid } from "./grid";
 import { clamp, mix, qSlerp, ramp, smootherstep } from "./math";
 import {
   buildStory,
@@ -28,7 +29,7 @@ import {
   type StoryOptions,
 } from "./story";
 import { copyPose, makePose, type CardPose, type Vp } from "./types";
-import { WALL_DISTANCE, wallSlotPose, type WallGeom, type WallOptions } from "./wall";
+import { WALL_DISTANCE, rowWay, wallSlotPose, type WallGeom, type WallOptions } from "./wall";
 
 export type FormationName =
   "scatter" | "origin" | "gather" | "ring" | "land" | "wall" | "rows" | "story";
@@ -58,6 +59,8 @@ export interface FormationOptions extends StoryOptions {
   rows?: Partial<WallOptions>;
   /** The character of each picture of the pool, or null, in the pool's order (a card lands on its own). */
   poolKeys?: ReadonlyArray<string | null>;
+  /** The look-alike group of each picture of the pool, or null (never near each other). */
+  poolGroups?: ReadonlyArray<string | null>;
 }
 
 /** The story progress at which the ring is complete and still (the middle of the hold). */
@@ -66,9 +69,15 @@ export const RING_P = (TIMELINE.gatherEnd + TIMELINE.leaveStart) / 2;
 export function buildFormations(n: number, vp: Vp, options: FormationOptions = {}): FormationSet {
   const grid = wallGrid(vp);
   const geom = grid.geom;
-  const pool = options.poolKeys?.length ?? 1;
-  const slotPic = new Int32Array(geom.n);
-  for (let s = 0; s < geom.n; s++) slotPic[s] = slotPicture(geom, s, pool);
+  // No picture twice in a row or in two rows next to each other, a gap before the same picture or
+  // Aspirant comes back (`arrange.ts`).
+  const slotPic = arrangePictures(
+    geom,
+    options.poolKeys ?? [null],
+    alongAtRest(geom),
+    1,
+    options.poolGroups,
+  );
   const slotKeys = options.poolKeys
     ? Array.from(slotPic, (p) => options.poolKeys![p] ?? null)
     : undefined;
@@ -87,7 +96,7 @@ export function buildFormations(n: number, vp: Vp, options: FormationOptions = {
     c.x = scratchA.x - grid.wall.cx;
     c.y = scratchA.y - grid.wall.cy;
     const d = Math.hypot(c.x, c.y);
-    if (grid.inFrame[s] === 1) far = Math.max(far, d);
+    far = Math.max(far, d);
     return d;
   });
   dist.forEach((d, j) => {
@@ -112,18 +121,19 @@ export function slotOf(set: FormationSet, i: number): number {
   return i < set.n ? set.story.wallSlot[i]! : set.extraSlot[i - set.n]!;
 }
 
+/** The wall-only cells fly in between these story positions (the cards of the hero land by 0.94). */
+export const EXTRA_WINDOW = { from: 0.5, spread: 0.26, flight: 0.18 } as const;
+
 /**
- * How far a wall-only cell has come in (0 not there, 1 there) while the story is at `p`. The cells
- * inside the wall's frame fill in from the middle outward as the cards land; the ones outside it
- * (under the clip, for the rows) come in once the clip has closed on the frame.
+ * How far a wall-only cell has come in (0 not there, 1 there) while the story is at `p`. Every cell
+ * of the plane flies in from off screen along its own row as the cards of the hero land, the ones
+ * nearest the middle of the wall first (round three: nothing is ever just there). The cells outside
+ * the wall's frame fly in too: the plane covers the screen while the cards land, and the clip then
+ * closes on the frame, as premotio's does. So a cell that slides into the frame later was already there.
  */
 export function extraIn(set: FormationSet, j: number, p: number): number {
-  const slot = set.extraSlot[j]!;
-  if (set.grid.inFrame[slot] === 1) {
-    const from = 0.58 + 0.24 * set.extraRank[j]!;
-    return smootherstep(ramp(p, from, from + 0.16));
-  }
-  return ramp(p, 0.95, 0.985);
+  const from = EXTRA_WINDOW.from + EXTRA_WINDOW.spread * set.extraRank[j]!;
+  return smootherstep(ramp(p, from, from + EXTRA_WINDOW.flight));
 }
 
 /** The story progress of a named window at `t` (0 to 1). */
@@ -189,7 +199,11 @@ function originPose(set: FormationSet, i: number, out: CardPose): CardPose {
   return out;
 }
 
-/** The pose of wall-only cell `j`: on its slot, hidden until the wall is landing, there once it has landed. */
+/**
+ * The pose of wall-only cell `j`: on its slot once it has landed, before that flying in along its row
+ * from beyond the screen's edge, the way the row slides (so it arrives moving the way its neighbours
+ * move), and faded in over the first part of the flight while it is still off screen.
+ */
 function extraPoseOf(
   set: FormationSet,
   name: FormationName,
@@ -198,17 +212,28 @@ function extraPoseOf(
   slide: number,
   out: CardPose,
 ): CardPose {
-  wallSlotPose(set.rows, set.extraSlot[j]!, slide, out);
+  const slot = set.extraSlot[j]!;
+  wallSlotPose(set.rows, slot, slide, out);
   const k =
     name === "wall" || name === "rows"
       ? 1
       : name === "scatter" || name === "origin" || name === "gather" || name === "ring"
         ? 0
         : extraIn(set, j, storyProgress(name, t));
-  out.opacity = k;
-  out.h *= mix(0.78, 1, k);
+  if (k >= 1) return out;
+  const g = set.rows;
+  const row = g.slotRow[slot]!;
+  // Half a wrap window further back along the row: past the screen's edge for every cell of it.
+  const back = -rowWay(row) * g.rowCount[row]! * g.pitch * EXTRA_BACK * (1 - k) * (1 - k);
+  out.x += back * g.right[0];
+  out.y += back * g.right[1];
+  out.z += back * g.right[2];
+  out.opacity = ramp(k, 0, 0.1);
   return out;
 }
+
+/** The distance a cell flies in from, as a share of its row's wrap length. */
+const EXTRA_BACK = 0.55;
 
 /** The camera distance a formation is seen through: the pixel lens, or the long lens of the wall. */
 export function lensOf(name: FormationName, t: number): number {

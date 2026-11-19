@@ -31,7 +31,8 @@ describe("the strip's words", () => {
       STRIP.middleRight,
       STRIP.bottomLeft.rest[0],
       STRIP.bottomLeft.rest[1],
-      STRIP.play.label,
+      STRIP.play.left,
+      STRIP.play.right,
       STRIP.play.duration,
       STRIP.expand.lead,
       STRIP.expand.title,
@@ -62,8 +63,6 @@ describe("the strip's words", () => {
       STRIP.topRightTag,
       STRIP.middleLeft,
       STRIP.middleRight,
-      STRIP.play.label,
-      STRIP.play.duration,
       STRIP.expand.lead,
       STRIP.expand.title,
       STRIP.expand.body,
@@ -95,10 +94,33 @@ describe("the play button", () => {
 });
 
 describe("the scene's chrome", () => {
-  it("has the line, its two end dots, four corner dots and four tick marks, all decorative", () => {
+  it("has the line, its two end dots and four corner dots, all decorative", () => {
     expect(below).toContain('data-strip-line=""');
     expect(below.match(/data-strip-end=/g)).toHaveLength(2);
     expect(below.match(/data-strip-corner=/g)).toHaveLength(4);
-    expect(below.match(/data-strip-cplus=/g)).toHaveLength(4);
+  });
+
+  it("has no scroll button (the three dots that led to the window were removed)", () => {
+    expect(text).not.toContain("data-strip-scroll");
+  });
+});
+
+describe("the window's deck (after Vexana's film section)", () => {
+  it("has PLAY on the left and FILMS on the right of the button, a letter at a time", () => {
+    const words = text.match(/data-deck="word"/g) ?? [];
+    expect(words).toHaveLength(2);
+    const chars = text.match(/data-deck="char"/g) ?? [];
+    expect(chars).toHaveLength(STRIP.play.left.length + STRIP.play.right.length);
+    // The words stand in a grid on either side of the centred button, which sits over their inner ends.
+    expect(text.indexOf(">Play<")).toBeGreaterThan(-1);
+    expect(text.indexOf(">Play<")).toBeLessThan(text.indexOf(">Films<"));
+  });
+
+  it("has two bands of five marks and eight running strips each, and the readout pill", () => {
+    expect(text.match(/data-deck="mark-slot"/g)).toHaveLength(10);
+    expect(text.match(/data-deck="strip-item"/g)).toHaveLength(16);
+    expect(text).toContain('data-deck="readout"');
+    expect(text).toContain(escape(STRIP.deck.readout[0]));
+    expect(text).toContain(STRIP.play.duration);
   });
 });

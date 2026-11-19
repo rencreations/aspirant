@@ -77,14 +77,17 @@ export interface RowPlan {
   readonly centers: readonly number[];
 }
 
+/** The share of a wide screen's width the wall's frame fills. */
+export const WALL_SHARE = 0.5;
+
 /** The frame the wall (kind "wall") or the rows (kind "rows") fills, for a viewport. */
-export function wallFrame(vp: Vp, kind: "wall" | "rows"): Frame {
+export function wallFrame(vp: Vp, kind: "wall" | "rows", share: number = WALL_SHARE): Frame {
   if (kind === "rows") return { cx: 0, cy: 0, w: vp.w, h: vp.h };
   if (vp.h > vp.w) {
     const h = vp.h * 0.56;
     return { cx: 0, cy: vp.h / 2 - h / 2, w: vp.w, h };
   }
-  const w = vp.w * 0.58;
+  const w = vp.w * share;
   return { cx: -vp.w / 2 + w / 2, cy: 0, w, h: vp.h };
 }
 

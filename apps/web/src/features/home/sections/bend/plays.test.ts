@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { PlayMachine, hystOf, validatePlays } from "../../kernel/plays";
-import { BEAT_SPAN, REST, T, beatAt, newBeat } from "./beats";
-import { FLIGHT, arriveAt, spiralInAt, wallCount } from "./formations";
-import { BEND_PLAYS, BEND_SCREENS, FIRE_AT, REST_BEATS, restScreens } from "./plays";
+import { validatePlays, zoneProgress, zoneValue } from "../../kernel/plays";
+import { backdropAt } from "./backdrop";
+import { BEAT_SPAN, REST, STANCES, T, beatAt, newBeat } from "./beats";
+import { FLIGHT, arriveAt, spiralInAt, wallCount, waveOf } from "./formations";
+import { BEND_PLAYS, BEND_SCREENS, REST_BEATS, ZONE_SCREENS, restScreens } from "./plays";
 
 const SIZES = [
   { w: 1440, h: 900 },
@@ -11,142 +12,160 @@ const SIZES = [
   { w: 390, h: 844 },
 ] as const;
 
-describe("the bend section's plays", () => {
-  it("make a valid table", () => {
+/** The state of the section's clock at a rest (beats). */
+const rest = (k: number, vp: { w: number; h: number } = SIZES[0]) =>
+  beatAt(REST_BEATS[k]! / BEAT_SPAN, newBeat(), vp);
+
+describe("the bend section's zones", () => {
+  it("make a valid table of ten scroll zones", () => {
     expect(() => {
       validatePlays("bend", BEND_PLAYS);
     }).not.toThrow();
+    expect(BEND_PLAYS).toHaveLength(10);
+    expect(ZONE_SCREENS).toHaveLength(10);
+    expect(REST_BEATS).toHaveLength(11);
+    for (const p of BEND_PLAYS) expect(p.span).toBeGreaterThan(0);
   });
 
   it("start at the chase's frame and end at the rest the archive starts from", () => {
     expect(BEND_PLAYS[0]!.from).toBe(0);
     expect(BEND_PLAYS[BEND_PLAYS.length - 1]!.to).toBeCloseTo(1, 12);
     expect(REST_BEATS[0]).toBe(0);
-    expect(REST_BEATS[3]).toBe(BEAT_SPAN);
+    expect(REST_BEATS[10]).toBe(BEAT_SPAN);
     const end = beatAt(1, newBeat());
     expect(end.spot.tx).toBeCloseTo(REST.tx, 6);
     expect(end.spot.ty).toBeCloseTo(REST.ty, 6);
+    // The last zone ends with the section.
+    const last = ZONE_SCREENS[9]!;
+    expect(last.at + last.len).toBeCloseTo(BEND_SCREENS, 9);
   });
 
-  it("rest on the beats the table says", () => {
+  it("rest on the beats the table says, in order", () => {
     BEND_PLAYS.forEach((p, i) => {
-      expect(p.to * BEAT_SPAN).toBeCloseTo(REST_BEATS[i + 1]!, 9);
       expect(p.from * BEAT_SPAN).toBeCloseTo(REST_BEATS[i]!, 9);
+      expect(p.to * BEAT_SPAN).toBeCloseTo(REST_BEATS[i + 1]!, 9);
+      expect(REST_BEATS[i + 1]!).toBeGreaterThan(REST_BEATS[i]!);
     });
   });
 
-  it("keep every scene short: 3 s at most, 8 s for all three", () => {
-    for (const p of BEND_PLAYS) {
-      expect(p.seconds).toBeLessThanOrEqual(3);
-      expect(p.seconds * (p.back ?? 0.7)).toBeLessThanOrEqual(2);
-    }
-    expect(BEND_PLAYS.reduce((a, p) => a + p.seconds, 0)).toBeLessThanOrEqual(8);
-  });
-
-  it("run at about a beat a second, not faster than 1.3", () => {
-    for (const p of BEND_PLAYS) {
-      expect(((p.to - p.from) * BEAT_SPAN) / p.seconds).toBeLessThanOrEqual(1.3);
-    }
-  });
-
-  it("fire a little after the section starts and leave a dwell of 0.4 to 1 screen between scenes", () => {
-    expect(FIRE_AT[0]).toBeGreaterThanOrEqual(0.2);
-    expect(FIRE_AT[0]).toBeLessThanOrEqual(0.5);
-    for (let i = 1; i < FIRE_AT.length; i += 1) {
-      const dwell = FIRE_AT[i]! - FIRE_AT[i - 1]!;
-      expect(dwell).toBeGreaterThanOrEqual(0.4);
-      expect(dwell).toBeLessThanOrEqual(1);
-    }
-    // No dead scroll at the end: the last scene fires within a screen of the end.
-    expect(BEND_SCREENS - FIRE_AT[2]).toBeLessThanOrEqual(0.6);
+  it("keep every zone short: 0.5 to 1 screen, at least 0.9 beat to the screen at most 1.8", () => {
     BEND_PLAYS.forEach((p, i) => {
-      expect(p.at * BEND_SCREENS).toBeCloseTo(FIRE_AT[i]!, 9);
+      const len = p.span! * BEND_SCREENS;
+      expect(len, `zone ${i + 1}`).toBeGreaterThanOrEqual(0.5 - 1e-9);
+      expect(len, `zone ${i + 1}`).toBeLessThanOrEqual(1 + 1e-9);
+      const pace = (REST_BEATS[i + 1]! - REST_BEATS[i]!) / len;
+      expect(pace, `zone ${i + 1}`).toBeLessThanOrEqual(1.8);
     });
   });
 
-  it("stand the page in the middle of each dwell, clear of the hysteresis", () => {
-    const hyst = hystOf(BEND_SCREENS) * BEND_SCREENS;
-    for (const k of [1, 2, 3] as const) {
+  it("leave a short rest between scenes and a longer one where there are words", () => {
+    const gaps = ZONE_SCREENS.slice(1).map(
+      (z, i) => z.at - (ZONE_SCREENS[i]!.at + ZONE_SCREENS[i]!.len),
+    );
+    gaps.forEach((gap, i) => {
+      // Zone 6 (the wall settles) and zone 8 (the spiral) are followed by words and a button.
+      const words = i === 5 || i === 7;
+      if (words) {
+        expect(gap, `after zone ${i + 1}`).toBeGreaterThanOrEqual(0.9);
+        expect(gap, `after zone ${i + 1}`).toBeLessThanOrEqual(1.2);
+      } else {
+        expect(gap, `after zone ${i + 1}`).toBeGreaterThanOrEqual(0.05);
+        expect(gap, `after zone ${i + 1}`).toBeLessThanOrEqual(0.2);
+      }
+    });
+    // The section starts with the chase's words still riding out.
+    expect(ZONE_SCREENS[0]!.at).toBeGreaterThanOrEqual(0.3);
+    expect(ZONE_SCREENS[0]!.at).toBeLessThanOrEqual(0.6);
+  });
+
+  it("stand the page in the middle of each long rest", () => {
+    for (const k of [1, 2] as const) {
+      const z = ZONE_SCREENS[k === 1 ? 5 : 7]!;
+      const next = ZONE_SCREENS[k === 1 ? 6 : 8]!;
       const at = restScreens(k);
-      expect(at).toBeGreaterThan(FIRE_AT[k - 1]! + hyst);
-      if (k !== 3) expect(at).toBeLessThan(FIRE_AT[k]);
-      else expect(at).toBeLessThan(BEND_SCREENS);
+      expect(at).toBeGreaterThan(z.at + z.len);
+      expect(at).toBeLessThan(next.at);
+    }
+    expect(restScreens(3)).toBeLessThan(BEND_SCREENS);
+  });
+
+  it("show each stance formed at its rest: the right pose, worn in full, and every picture of its wave landed", () => {
+    for (const vp of SIZES) {
+      STANCES.forEach((stance, w) => {
+        const b = rest(w + 2, vp);
+        expect(b.pose, `stance ${w}`).toBe("bend");
+        expect(b.bend).toBe(stance.kind);
+        expect(b.blend).toBeCloseTo(1, 9);
+        expect(backdropAt(b).kind).toBe(stance.kind);
+        const restBeat = REST_BEATS[w + 2]!;
+        for (let i = 0; i < wallCount(vp); i += 1) {
+          if (waveOf(i, vp) !== w) continue;
+          expect(
+            arriveAt(i, vp) + FLIGHT,
+            `${vp.w}x${vp.h} stance ${w} poster ${i}`,
+          ).toBeLessThanOrEqual(restBeat + 1e-9);
+        }
+      });
     }
   });
 
-  it("show the wall whole at the first rest: every poster has landed, the title is on, she stands", () => {
+  it("show the book shut at the first rest: she stands in the middle and the comic's backdrop is on", () => {
+    const b = rest(1);
+    expect(b.pose).toBe("stand");
+    expect(b.spot.tx).toBeCloseTo(0, 9);
+    expect(b.spot.th).toBeCloseTo(0.46, 3);
+    expect(backdropAt(b).kind).toBe("pixel-blast");
+  });
+
+  it("show the wall whole at its rest: every poster has landed, the title is on, she stands", () => {
     for (const vp of SIZES) {
       for (let i = 0; i < wallCount(vp); i += 1) {
         expect(arriveAt(i, vp) + FLIGHT, `${vp.w}x${vp.h} poster ${i}`).toBeLessThanOrEqual(
           T.holdTo + 1e-9,
         );
       }
-      const b = beatAt(BEND_PLAYS[0]!.to, newBeat(), vp);
+      const b = rest(6, vp);
       expect(b.fanTitle).toBe(1);
       expect(b.pose).toBe("idle");
       expect(b.artTitle).toBe(0);
     }
   });
 
-  it("show the spiral whole at the second rest: every card is in, the title is on, she stands", () => {
+  it("show the ring turning at its rest, her stance worn in full", () => {
+    const b = rest(7);
+    expect(b.pose).toBe("bend");
+    expect(b.blend).toBeCloseTo(1, 9);
+    expect(backdropAt(b).kind).toBe("iridescence");
+    expect(b.fanTitle).toBe(0);
+  });
+
+  it("show the spiral whole at its rest: every card is in, the title is on, she stands", () => {
     // The runtime flies each splash card in over 0.75 beat.
     expect(spiralInAt(10) + 0.75).toBeLessThanOrEqual(T.restArt + 1e-9);
-    const b = beatAt(BEND_PLAYS[1]!.to, newBeat());
+    const b = rest(8);
     expect(b.artTitle).toBe(1);
     expect(b.fanTitle).toBe(0);
     expect(b.pose).toBe("idle");
     expect(b.adv).toBe(0);
   });
 
-  it("plays out on the clock: the scroll crosses a threshold, the value runs to the rest and holds", () => {
-    const m = new PlayMachine("bend", BEND_PLAYS, { screens: BEND_SCREENS });
-    m.enter(-0.1);
-    let now = 0;
-    const s = BEND_PLAYS[0]!.at + 0.01;
-    let held = 0;
-    for (let f = 0; f < 60 * 5; f += 1) {
-      now += 1000 / 60;
-      m.step(s, s, 1 / 60, now);
-      if (m.active) held += 1 / 60;
-    }
-    expect(m.active).toBe(false);
-    expect(m.value).toBeCloseTo(BEND_PLAYS[0]!.to, 9);
-    expect(held).toBeCloseTo(BEND_PLAYS[0]!.seconds, 1);
+  it("show the drone out of its paper at the rest before they meet", () => {
+    const b = rest(9);
+    expect(b.pop).toBe(1);
+    expect(b.pose).toBe("idle");
+    expect(b.pat).toBe(0);
   });
 
-  it("a hard flick through the whole section chains the three scenes, each on its clock", () => {
-    const m = new PlayMachine("bend", BEND_PLAYS, { screens: BEND_SCREENS });
-    m.enter(-0.1);
-    let now = 0;
-    let held = 0;
-    let last = -1;
-    for (let f = 0; f < 60 * 12; f += 1) {
-      now += 1000 / 60;
-      m.step(0.9, 0.9, 1 / 60, now);
-      if (m.active) held += 1 / 60;
-      expect(m.value).toBeGreaterThanOrEqual(last - 1e-9);
-      last = m.value;
+  it("scrub the clock with the scroll, up and down, to the same value at the same place", () => {
+    for (let i = 0; i < BEND_PLAYS.length; i += 1) {
+      const p = BEND_PLAYS[i]!;
+      expect(zoneProgress(p, p.at - 0.001)).toBe(0);
+      expect(zoneProgress(p, p.at + p.span! + 0.001)).toBe(1);
+      const down = [0.2, 0.5, 0.8].map((k) => zoneValue(p, p.at + p.span! * k));
+      const up = [0.8, 0.5, 0.2].map((k) => zoneValue(p, p.at + p.span! * k)).reverse();
+      expect(up).toEqual(down);
+      expect(down[0]!).toBeGreaterThan(p.from);
+      expect(down[2]!).toBeLessThan(p.to);
     }
-    expect(m.value).toBeCloseTo(1, 9);
-    expect(held).toBeCloseTo(
-      BEND_PLAYS.reduce((a, p) => a + p.seconds, 0),
-      0,
-    );
-  });
-
-  it("runs back when the scroll goes up across a threshold, shorter", () => {
-    const m = new PlayMachine("bend", BEND_PLAYS, { screens: BEND_SCREENS });
-    m.jump(BEND_PLAYS[0]!.at + 0.05);
-    expect(m.value).toBeCloseTo(BEND_PLAYS[0]!.to, 9);
-    let now = 0;
-    let held = 0;
-    const s = BEND_PLAYS[0]!.at - 0.1;
-    for (let f = 0; f < 60 * 4; f += 1) {
-      now += 1000 / 60;
-      m.step(s, s, 1 / 60, now);
-      if (m.active) held += 1 / 60;
-    }
-    expect(m.value).toBeCloseTo(0, 9);
-    expect(held).toBeLessThan(BEND_PLAYS[0]!.seconds);
   });
 });

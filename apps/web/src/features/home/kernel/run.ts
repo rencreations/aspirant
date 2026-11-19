@@ -29,7 +29,7 @@ import {
   type Layout,
   type Placed,
 } from "./layout";
-import { PlayMachine } from "./plays";
+import { PlayMachine, isZone, zoneProgress } from "./plays";
 import type { FrameInfo, SectionCtx, SectionId, SectionRuntime } from "./types";
 
 export type MountState = "idle" | "mounting" | "ready" | "failed";
@@ -100,6 +100,23 @@ export interface PlayReport {
   readonly progress: number;
   /** A forward play is due but the runtime is not ready: nothing runs and nothing holds yet. */
   readonly waiting: boolean;
+  /** What the table is made of: clock plays only, zones only, or both. */
+  readonly kind: "clock" | "zone" | "mixed";
+  /** Every zone of the table (empty for a table of clock plays): `{ index, kind: "zone", p, v, resting }`. */
+  readonly zones: readonly ZoneReport[];
+}
+
+/** One scroll zone of a section (`window.__home.plays()[i].zones`). */
+export interface ZoneReport {
+  /** The index of the play in the section's table. */
+  readonly index: number;
+  readonly kind: "zone";
+  /** How far through the zone the scene's scroll is, 0 before it and 1 after it. */
+  readonly p: number;
+  /** The number `update` gets (the section's `v`). */
+  readonly v: number;
+  /** The scroll is outside the zone: `v` is at a rest. */
+  readonly resting: boolean;
 }
 
 export class SectionRunner {
@@ -276,9 +293,20 @@ export class SectionRunner {
     for (const slot of this.slots) {
       const m = slot.machine;
       if (!m) continue;
+      const v = slot.live ? m.value : localOf(slot.p, this.lastS);
+      const s = localOf(slot.p, this.lastS);
+      const zones: ZoneReport[] = [];
+      m.table.forEach((play, index) => {
+        if (!isZone(play)) return;
+        const p = zoneProgress(play, s);
+        zones.push({ index, kind: "zone", p, v, resting: p <= 0 || p >= 1 });
+      });
+      const kind = zones.length === 0 ? "clock" : zones.length === m.length ? "zone" : "mixed";
       out.push({
         id: slot.p.id,
-        v: slot.live ? m.value : localOf(slot.p, this.lastS),
+        v,
+        kind,
+        zones,
         resting: m.resting,
         active: m.active,
         fired: m.fired,

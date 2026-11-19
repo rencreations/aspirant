@@ -168,7 +168,7 @@ class ChaseRuntime implements SectionRuntime {
         "the backdrop",
         async () => {
           const a = await (await import("../../fx/backdrop")).ensureBackdrop(ctx);
-          // Compiled before the first play, so its first draw is no hitch inside the scene.
+          // Compiled before the first zone, so its first draw is no hitch inside the scene.
           await a.warm(["speed-lines", "soft-aurora", "pixel-blast"]).catch(() => undefined);
           return a;
         },
@@ -259,7 +259,7 @@ class ChaseRuntime implements SectionRuntime {
       // (local below 0 or above 1) must leave the neighbour's marks alone.
       if (local <= 1) this.marks?.clear();
     }
-    // The words come in with the second play and go with the scroll after the section (`frame.S`),
+    // The words come in with the second zone and go with the scroll after the section (`frame.S`),
     // so a section passed by a jump (replayed at its last station) shows none.
     const gone = wordsLeave(frame.S, sectionEnd("chase"));
     this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));

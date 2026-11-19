@@ -7,9 +7,10 @@ import { sectionScreens } from "../../kernel/where";
 import { spotsOf } from "../bend/beats";
 
 import { STEPS, stripGeo } from "./geometry";
-import { ENTRY_SCREENS } from "./plays";
+import { ENTRY_AT, ENTRY_SCREENS } from "./plays";
 import {
   AT,
+  BUTTON_LATE,
   IN_RING,
   aboutEntry,
   coverIn,
@@ -21,7 +22,6 @@ import {
   lightAt,
   newTetraWant,
   restSpot,
-  routeS,
   stageTop,
   tetraAt,
   toStage,
@@ -173,50 +173,39 @@ describe("the drone's route", () => {
   });
 });
 
-describe("the route's clock", () => {
-  const length = sectionScreens("archive");
-  const done = ENTRY_SCREENS / length;
-
-  it("rests at the start before the entry, whatever the scroll does below the threshold", () => {
-    expect(routeS(0, AT.start - 0.5)).toBeCloseTo(AT.start, 9);
-    expect(routeS(0, AT.tourFrom - 0.01)).toBeCloseTo(AT.start, 9);
-    expect(routeS(0, AT.tourFrom)).toBeCloseTo(AT.start, 9);
+describe("the entry", () => {
+  it("is one screen of scroll that begins a little after the start and ends where the tour begins", () => {
+    expect(AT.entry - AT.start).toBeCloseTo(ENTRY_AT, 9);
+    expect(AT.tourFrom - AT.entry).toBeCloseTo(ENTRY_SCREENS, 9);
+    expect(sectionScreens("archive")).toBeGreaterThan(ENTRY_AT + ENTRY_SCREENS);
   });
 
-  it("runs through the entry on the play's value while the scroll is held at the threshold", () => {
-    for (let k = 0; k <= 10; k += 1) {
-      const v = (done * k) / 10;
-      expect(routeS(v, AT.tourFrom)).toBeCloseTo(AT.start + ENTRY_SCREENS * (k / 10), 9);
+  it("rests at the start until the entry begins", () => {
+    for (const [w, h] of SIZES) {
+      expect(at(AT.entry, w, h)).toEqual(restSpot({ w, h }, spot()));
+      expect(tetraAt(AT.entry, { w, h }, newTetraWant()).run).toBe(0);
     }
-    expect(routeS(done, AT.tourFrom)).toBeCloseTo(AT.tourFrom, 9);
-  });
-
-  it("goes on with the scroll after the entry, equal to the scroll itself", () => {
-    for (const S of [AT.tourFrom, AT.tourFrom + 0.3, AT.tourTo, AT.stuck, AT.end]) {
-      expect(routeS(done, S)).toBeCloseTo(S, 9);
-    }
-  });
-
-  it("ignores the plays' passthrough in the tail (the value above the last station)", () => {
-    expect(routeS(done + 0.2, AT.stuck + 0.2)).toBeCloseTo(AT.stuck + 0.2, 9);
-  });
-
-  it("is continuous across the threshold in both directions", () => {
-    const eps = 1e-6;
-    expect(
-      Math.abs(routeS(done, AT.tourFrom + eps) - routeS(done, AT.tourFrom - eps)),
-    ).toBeLessThan(3e-6);
-    expect(Math.abs(routeS(0, AT.tourFrom + eps) - routeS(0, AT.tourFrom - eps))).toBeLessThan(
-      3e-6,
-    );
+    expect(lightAt(AT.entry)).toBe(0);
+    expect(headAt(AT.entry)).toBe(0);
   });
 
   it("puts every beat of the entry before the tour starts", () => {
     expect(AT.runTo).toBeLessThan(AT.tourFrom);
     expect(AT.arrive).toBeLessThanOrEqual(AT.tourFrom);
     expect(AT.coversIn + AT.coverStep * 3 + AT.coverLen).toBeLessThanOrEqual(AT.tourFrom + 1e-9);
-    expect(headAt(AT.tourFrom, 0.06)).toBeCloseTo(1, 6);
+    expect(headAt(AT.tourFrom, BUTTON_LATE)).toBeCloseTo(1, 6);
     expect(lightAt(AT.tourFrom)).toBeCloseTo(1, 6);
+  });
+
+  it("runs forward and back along the same line (a pure function of the scroll)", () => {
+    const sample = (S: number) => ({
+      d: { ...at(S, 1440, 900) },
+      t: { ...tetraAt(S, { w: 1440, h: 900 }, newTetraWant()) },
+      c: coverIn(S, 2),
+    });
+    const a = sample(AT.entry + 0.5);
+    sample(AT.tourFrom + 0.3);
+    expect(sample(AT.entry + 0.5)).toEqual(a);
   });
 });
 
@@ -266,7 +255,7 @@ describe("the tour and the covers", () => {
 describe("Tetra's goodbye", () => {
   it("stands where the bend section leaves her (J14) and waves", () => {
     for (const [w, h] of SIZES) {
-      const t = tetraAt(AT.start + 0.05, { w, h }, newTetraWant());
+      const t = tetraAt(AT.waveTo, { w, h }, newTetraWant());
       expect(t.visible).toBe(true);
       const rest = spotsOf({ w, h }).rest;
       expect(t.x).toBeCloseTo(w / 2 + rest.tx * w, 6);
@@ -274,7 +263,7 @@ describe("Tetra's goodbye", () => {
       expect(t.height).toBeCloseTo(rest.th * h, 6);
       expect(t.run).toBe(0);
       expect(t.wave).toBeCloseTo(1, 6);
-      expect(tetraAt(AT.start, { w, h }, newTetraWant()).wave).toBe(0);
+      expect(tetraAt(AT.entry, { w, h }, newTetraWant()).wave).toBe(0);
     }
   });
 

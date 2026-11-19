@@ -27,17 +27,15 @@ describe("the rows' beats", () => {
   it("is ordered: the space opens, then the film shows, the rows rest, the clearing, the morph", () => {
     const B = ROWS_BEATS;
     expect(B.gap[0]).toBe(B.slide[0]);
-    // The film shows after the space has begun to open, never before.
-    expect(B.appear[0]).toBeGreaterThan(B.gap[0]);
-    // The space is wide enough before the film has grown to its size.
-    expect(B.appear[1]).toBeGreaterThanOrEqual(B.gap[1]);
+    // The film shows only once the space is open (it is as big as a picture: it must never overlap one).
+    expect(B.appear[0]).toBeGreaterThanOrEqual(B.gap[1]);
     expect(B.clear[0]).toBeGreaterThanOrEqual(B.appear[1]);
     expect(B.morph[0]).toBeGreaterThanOrEqual(B.clear[1]);
     expect(B.morph[1]).toBe(ROWS_SCREENS);
   });
 
-  it("lets the rows come to rest before the clearing starts", () => {
-    expect(ROWS_BEATS.slide[1]).toBeLessThanOrEqual(ROWS_BEATS.clear[0] + 0.5);
+  it("lets the rows come to rest before the clearing starts, so the clearing works on a still plane", () => {
+    expect(ROWS_BEATS.slide[1]).toBeLessThanOrEqual(ROWS_BEATS.clear[0]);
   });
 });
 
@@ -116,7 +114,7 @@ describe("the ride", () => {
       const grid0 = g.rowCenter[r]! - ((count - 1) / 2) * g.pitch;
       for (const slide of [0, 13.7, 500, 99999.5, -420]) {
         for (const speed of [0, 80, 700, 1500]) {
-          const ride = rideDistance(g, slide, speed, rideReach(g, vp.w), 1.9);
+          const ride = rideDistance(g, slide, rideReach(g, vp.w), speed);
           // The film's place in the row's own frame, from the grid: half a pitch off a card.
           const f0 = -way * (slide + ride);
           const off = (((f0 - grid0) % g.pitch) + g.pitch) % g.pitch;
@@ -128,15 +126,14 @@ describe("the ride", () => {
     }
   });
 
-  it("is long enough: the least pitches, the reach, and steep enough for the speed it starts at", () => {
+  it("is long enough: the least pitches, the reach, and the floor the slide's slope asks for", () => {
     for (const vp of sizes) {
       const g = wallGrid(vp).geom;
-      for (const speed of [0, 400, 1500]) {
-        const ride = rideDistance(g, 321, speed, rideReach(g, vp.w), 1.9);
+      for (const floor of [0, 400, 15000]) {
+        const ride = rideDistance(g, 321, rideReach(g, vp.w), floor);
         expect(ride).toBeGreaterThanOrEqual(MIN_RIDE_PITCHES * g.pitch - 1e-6);
         expect(ride).toBeGreaterThanOrEqual(rideReach(g, vp.w) - 1e-6);
-        // The slide's slope a = speed * T / ride stays inside the cubic's monotone range.
-        expect((speed * 1.9) / ride).toBeLessThanOrEqual(2.5 + 1e-9);
+        expect(ride).toBeGreaterThanOrEqual(floor - 1e-6);
       }
     }
   });

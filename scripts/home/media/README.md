@@ -13,9 +13,11 @@ Run with the anaconda Python, **without `-I`** (the scripts import `hcommon.py` 
 | `loops.py [--sheet]`             | `media/_all/webmedia/*.mov`, `public/video/obsidia/1080/idle.mp4` | `public/video/home/loops/<slug>.mp4`, `public/img/home/loops/<slug>-45.webp` and `-full.webp` |
 | `voices.py`                      | `public/data/library/voicelines*.json`, the mirror                | `public/data/home/voices.json`                                                                |
 | `picks.py [--sheet]`             | the library data, the mirror, the files above                     | `public/data/home/picks.json`                                                                 |
+| `pool_scan.py`                   | the Arts data (splash, game, scene official) and the mirror       | `D:/ren/aspirant-work/home/M-pool/pool-scan.{json,npz}` (measures every candidate once)       |
+| `pool.py [--sheet]`              | the scan, `pool-curation.json`, `picks.json` (the clean windows)  | `public/img/home/wall/<id>.webp` (about 160, 640 wide), `public/data/home/wall.json`          |
 | `test_media.py`                  | all of the above                                                  | none (`python -m unittest test_media`, from this folder)                                      |
 
-Order: `cards`, `hero_cards`, `logo`, `previews`, `loops`, `voices`, then `picks` (it reads what the others wrote and stops when a file is missing), then the tests.
+Order: `cards`, `hero_cards`, `logo`, `previews`, `loops`, `voices`, `pool_scan` then `pool` (the wall's picture pool, round three: `docs/design/home/round3-M-pool.md`), then `picks` (it reads what the others wrote and stops when a file is missing), then the tests.
 
 The voice gain is in `scripts/library/voicelines/`: `loudness.py` (measures every clip, caches in `loudness.json`, holds the formula), `build.py` (writes `g` into the data, new step `add_gains`) and `verify_gain.cjs` (checks the result through a copy of the real audio graph in Chrome).
 

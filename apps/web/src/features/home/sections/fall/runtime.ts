@@ -29,8 +29,8 @@ const CHARACTERS_OUT = [-0.45, -0.1] as const;
 
 /**
  * The fall: the doll is thrown off the dragon's head and falls with a camera that follows and zooms
- * (the scene is shared with the bolt section), one play of about three seconds, and two big lines come
- * in one after the other on each side of her. "5 Phases" slides in from both edges and leaves to them;
+ * (the scene is shared with the bolt section), in two scroll zones with a rest on "5 Phases" between
+ * them, and two big lines come in one after the other on each side of her. "5 Phases" slides in from both edges and leaves to them;
  * "10 Characters" rises from below, as if left behind by the fall, and stands. It leaves upward as the
  * page goes on to the hand. Transform and opacity only.
  */
@@ -47,11 +47,6 @@ class FallRuntime implements SectionRuntime {
     this.scene = BoltScene.acquire(ctx);
     this.lefts = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-fall-left]"));
     this.rights = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("[data-fall-right]"));
-  }
-
-  /** The dragon and the doll are built: the throw does not fire before (the kernel's ready gate). */
-  ready(): boolean {
-    return this.scene.gate.done;
   }
 
   update(v: number, frame: FrameInfo): void {

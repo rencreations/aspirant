@@ -1,16 +1,16 @@
 /**
- * The arithmetic of the music section. Pure: no DOM, no three. `local` is the plays' value
- * (`stations.ts`): a clock between two stations while the page is held, not the scroll.
+ * The arithmetic of the music section. Pure: no DOM, no three. `local` is the zones' value
+ * (`stations.ts`): the scroll carries it between two stations, up and down, and it rests between.
  *
  * The story, in `local`:
  *
  *   0 to LEAVE_TO       the two drones, in the bottom corners (J10), zip off the screen
- *   LEAVE_TO to STAND   play one: the right hand drone drags the gramophone in from the right, the
+ *   LEAVE_TO to STAND   zone one: the right hand drone drags the gramophone in from the right, the
  *                       left hand one the crate of records from the left. `arrivalOf` is how much of
  *                       the scene is in (0 to 1).
  *   STAND               the rest: the scene stands, the visitor picks a record, a drone puts it on,
  *                       the other cranks, notes come out of the horn
- *   STAND to 1          play two: the music fades, the drones drag the gramophone off to the right
+ *   STAND to 1          zone two: the music fades, the drones drag the gramophone off to the right
  *                       and the crate off to the left, and rise to the top left (J11)
  */
 import { geometry } from "../funny/timeline";
@@ -23,6 +23,14 @@ export const LEAVE_TO = 0.08;
 /** The arrival runs over this stretch of `local`, from nothing to a scene that stands. */
 const ARRIVE: readonly [number, number] = [LEAVE_TO, STAND];
 export const EXIT_FROM = STAND;
+/**
+ * The exit is under way once it is this far along. It is the exit curve (a smooth step) at 0.25 of the
+ * zone, which is where the idle snap starts to carry a stop forward (`ZONE_FORWARD_DOWN`): a stop
+ * that snaps back to the stand never got this far, so the song, the disc and the crank are left
+ * alone, and a stop that carries on has already reset them. A wheel notch that wanders off the stand
+ * and back is meant to leave the song playing. From here the song fades and the disc goes home.
+ */
+export const EXIT_RESET = 0.156;
 const EXIT_TO = 1;
 /** The pair rises to the top left over the last stretch of the exit (the props are gone by then). */
 const RISE_FROM = 0.69;

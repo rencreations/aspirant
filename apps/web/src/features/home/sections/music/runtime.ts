@@ -16,6 +16,7 @@ import { bridgeDuoMarks } from "../voices/marks-bridge";
 import {
   arrivalAt,
   arrivalOf,
+  EXIT_RESET,
   exitAt,
   j10,
   j11,
@@ -52,13 +53,13 @@ const STAGE_BEAT = 0.35;
 type Solo = string;
 
 /**
- * The music section. The two drones leave the screen, and while the page is held by the first play
+ * The music section. The two drones leave the screen, and as the scroll carries the first zone
  * the right hand drone drags the gramophone in and the left hand one drags in a crate of records.
  * The page is then free: the visitor picks a record, the left drone puts it on and lowers the
- * needle, the right drone cranks, notes come out of the horn and the song plays. The second play
+ * needle, the right drone cranks, notes come out of the horn and the song plays. The second zone
  * takes everything off again and leaves the pair hovering at the top left for the next section.
  *
- * `local` is the plays' value, so the arrival is a function of it and nothing else. `update(1)`
+ * `local` is the zones' value (the scroll's), so the arrival is a function of it and nothing else. `update(1)`
  * leaves nothing behind: every persistent setter of the duo and the gramophone is cleared.
  */
 class MusicRuntime implements SectionRuntime {
@@ -221,7 +222,7 @@ class MusicRuntime implements SectionRuntime {
     // The props are leaving: whatever the visitor had started ends now (the song fades, the disc
     // goes home). Otherwise a jump back in would find a record "playing" that nobody pressed, and
     // start the song by itself.
-    if (exit > 0 && this.sched.step !== "idle") this.resetScene();
+    if (exit > EXIT_RESET && this.sched.step !== "idle") this.resetScene();
     const A = arrivalOf(local);
     arrivalAt(A, this.arrival);
 
@@ -533,7 +534,7 @@ class MusicRuntime implements SectionRuntime {
   private driveSound(exit: number, wants: boolean, choice: number | null): void {
     const g = this.g;
     if (!g) return;
-    const may = wants && this.arrival.ready && exit < 0.02 && choice !== null;
+    const may = wants && this.arrival.ready && exit < EXIT_RESET && choice !== null;
     if (may && !this.musicOn && g.needleDown && g.platterRps > PLATTER_MIN_RPS) {
       this.startSong(choice);
     } else if (!may && this.musicOn) {

@@ -1,30 +1,34 @@
 /**
- * The stations and the triggers of the music section (round two). Pure and import free on purpose:
- * `index.ts` reads it, and `index.ts` must never reach `kernel/where.ts`.
+ * The stations and the zones of the music section (round three: scroll based, with an idle snap).
+ * Pure and import free on purpose: `index.ts` reads it, and `index.ts` must never reach
+ * `kernel/where.ts`.
  *
- * Two plays carry `local`, the value `update` gets, from station to station on a clock while the
- * page is held:
+ * Two scroll zones carry `local`, the value `update` gets, from station to station, with the visitor's
+ * own scroll as the clock, down and up (`kernel/scrub.ts` finishes a zone the visitor leaves half way):
  *
  *   0       the pair stands in the bottom corners (J10), the screen is empty
  *   STAND   the gramophone and the crate have been dragged in and stand. The visitor picks a record
- *           here with the page free to scroll (the rest)
+ *           here with the page free to scroll (the rest). The pick, the disc, the needle and the
+ *           song are interactions on their own clock, not scenes of the scroll.
  *   1       the props are dragged out, the pair has risen to the top left (J11)
  *
- * The lock of round one (a hold released by a gesture, a key, a button or six seconds of the song) is
- * gone: the play holds the page for its few seconds, and the stand never holds it.
+ * Nothing holds the page and nobody can be trapped: a zone is only the scroll.
  */
-import type { HomePlay } from "../../kernel/plays";
+import { zoneTable } from "../zone-table";
 
 export const STAND = 0.5;
 
-/** Where the plays fire, as a share of the section's range. */
-export const AT_ARRIVE = 0.07;
-export const AT_EXIT = 0.76;
+/** The lengths, in screens. One place to tune them. */
+export const LENGTHS = { arrive: 1.2, stand: 0.8, exit: 0.9 } as const;
 
-/** How long each play runs, in seconds: the pair zips off (0.5 s), then each prop takes about 1.5 s. */
-export const SECONDS = { arrive: 3.2, exit: 1.5 } as const;
+const TABLE = zoneTable(0, [
+  { zone: LENGTHS.arrive, to: STAND },
+  { rest: LENGTHS.stand },
+  { zone: LENGTHS.exit, to: 1 },
+]);
 
-export const MUSIC_PLAYS: readonly HomePlay[] = [
-  { at: AT_ARRIVE, from: 0, to: STAND, seconds: SECONDS.arrive, ease: "linear", back: 0.6 },
-  { at: AT_EXIT, from: STAND, to: 1, seconds: SECONDS.exit, ease: "linear", back: 0.6 },
-];
+/** The section's length in screens (`index.ts`). */
+export const MUSIC_SCREENS = TABLE.screens;
+export const MUSIC_PLAYS = TABLE.plays;
+/** Where each zone lies, in screens from the section's start. */
+export const MUSIC_ZONES = TABLE.zones;

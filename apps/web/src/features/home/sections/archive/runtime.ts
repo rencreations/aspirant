@@ -33,6 +33,7 @@ import {
 } from "./geometry";
 import {
   AT,
+  BUTTON_LATE,
   droneAt,
   footFor,
   lightAt,
@@ -40,7 +41,6 @@ import {
   coverOut,
   headAt,
   newTetraWant,
-  routeS,
   tetraAt,
   toStage,
   tourAt,
@@ -137,16 +137,16 @@ class ArchiveRuntime implements SectionRuntime {
     }
   }
 
-  /** The ready gate: the entry's play waits for the backdrop's shaders (the actors are built already). */
+  /** The ready gate: the backdrop's shaders are compiled (the actors are built already). */
   ready(): boolean {
     return this.warmed;
   }
 
   // ----------------------------------------------------------------------------- the frame
 
-  update(local: number, frame: FrameInfo): void {
-    // The entry is a triggered scene on the play's clock (`local`), the rest is the scroll's.
-    const S = routeS(local, frame.S);
+  update(_local: number, frame: FrameInfo): void {
+    // The whole route is the scene's scroll: the entry is a stretch of it that the visitor scrubs.
+    const S = frame.S;
     const vp = frame.viewport;
     if (vp.w !== this.w || vp.h !== this.h) this.layout(vp.w, vp.h);
     this.now = frame.time;
@@ -163,7 +163,7 @@ class ArchiveRuntime implements SectionRuntime {
     this.lit = nearest(q);
     this.air = onAir;
 
-    const ask = backdropAt(S, AT.start, AT.coversOut);
+    const ask = backdropAt(S, AT.entry, AT.coversOut);
     if (ask) this.backdrop?.set(ask.kind, ask.options);
     this.head(S);
     this.cards(S, q, onAir);
@@ -178,7 +178,7 @@ class ArchiveRuntime implements SectionRuntime {
       this.seenTitle = title;
       this.writeHead(this.title, title);
     }
-    const button = Math.round(headAt(S, 0.06) * STEP) / STEP;
+    const button = Math.round(headAt(S, BUTTON_LATE) * STEP) / STEP;
     if (button !== this.seenButton) {
       this.seenButton = button;
       this.writeHead(this.button, button);
@@ -296,7 +296,7 @@ class ArchiveRuntime implements SectionRuntime {
       const want = tetraAt(S, vp, this.tetraWant);
       if (!want.visible) return;
       toStage(vp, { x: want.x, y: want.y, height: want.height }, this.tetraStage);
-      // The way she faces follows the route's clock (a scroll up and a play run backward both turn her round).
+      // The way she faces follows the scroll (a scroll up turns her round and she runs back).
       const moved = Number.isNaN(this.lastS) ? 0 : S - this.lastS;
       if (Math.abs(moved) > 1e-5) this.dir = moved >= 0 ? 1 : -1;
       this.lastS = S;

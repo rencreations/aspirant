@@ -11,7 +11,8 @@ import { homeLayout } from "../kernel/where";
  * would break the scene (the words arriving while the cards do not).
  */
 const PAIRS: ReadonlyArray<readonly [string, string]> = [
-  ["hero", "aspirants"],
+  // Round three: the hero is a scroll zone and the aspirants' words are a trigger of their own, so
+  // the two no longer run one play in step (kernel-scrub.md).
   ["rows", "strip"],
 ];
 

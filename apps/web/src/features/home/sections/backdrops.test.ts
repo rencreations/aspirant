@@ -6,34 +6,31 @@ import { BACKDROP_AT, BACKDROP_KINDS_USED, backdropAt } from "./backdrops";
 import { STORY } from "./story";
 
 describe("the backdrop of the first four sections", () => {
+  it("has none for the hero and the wall: the ground is the plain daybreak off white", () => {
+    for (const S of [-1, 0, 0.5, 1, 2, 3, 3.29, 4.5, 5.29]) expect(backdropAt(S)).toBeNull();
+  });
+
   it("is light and airy on the daybreak ground and dark and rich on the storm one", () => {
-    for (const S of [0, 1, 2, 3, 4, 4.5, 5.3]) expect(backdropAt(S).options.theme).toBe("daybreak");
-    for (const S of [6, 7.7, 8.5, 10, 12]) expect(backdropAt(S).options.theme).toBe("storm");
+    for (const S of [5.3, 5.5, 6.5]) expect(backdropAt(S)?.options.theme).toBe("daybreak");
+    for (const S of [7.7, 8.5, 10, 12]) expect(backdropAt(S)?.options.theme).toBe("storm");
   });
 
   it("changes kind only at the places it says, in order, and never returns", () => {
     const seen: string[] = [];
     for (let S = -1; S <= 14; S += 0.01) {
-      const kind = backdropAt(S).kind;
+      const kind = backdropAt(S)?.kind ?? "none";
       if (seen[seen.length - 1] !== kind) seen.push(kind);
     }
-    expect(seen).toEqual(["soft-aurora", "silk", "ink-field"]);
+    expect(seen).toEqual(["none", "silk", "ink-field"]);
   });
 
-  it("turns dark inside the rows' transition: after the rows have started, before the film has turned", () => {
-    expect(BACKDROP_AT.ink).toBeGreaterThan(STORY.rows.start);
-    expect(BACKDROP_AT.ink).toBeLessThan(STORY.rows.start + 1.4);
+  it("turns dark where the rows' transition ends (the ground and the silk have gone by then: no flash)", () => {
+    expect(BACKDROP_AT.ink).toBe(STORY.rows.start + STORY.rows.length);
   });
 
   it("is the ink field all the way from the rows' transition to the end of the strip's story (the window, the orbit)", () => {
-    for (const S of [
-      BACKDROP_AT.ink,
-      STORY.rows.start + 1.5,
-      STORY.strip.start,
-      STORY.strip.start + 1.7,
-      10.8,
-    ]) {
-      expect(backdropAt(S).kind).toBe("ink-field");
+    for (const S of [BACKDROP_AT.ink, STORY.strip.start, STORY.strip.start + 1.7, 10.8]) {
+      expect(backdropAt(S)?.kind).toBe("ink-field");
     }
   });
 
@@ -46,11 +43,12 @@ describe("the backdrop of the first four sections", () => {
   });
 
   it("returns the same object for the same station (nothing is allocated per frame)", () => {
-    expect(backdropAt(1)).toBe(backdropAt(2));
-    expect(backdropAt(6)).toBe(backdropAt(8));
+    expect(backdropAt(3.5)).toBe(backdropAt(5));
+    expect(backdropAt(9)).toBe(backdropAt(10));
   });
 
-  it("keeps the amount calm where the owner's words are on it", () => {
-    expect(backdropAt(4.4).options.amount).toBeLessThanOrEqual(0.5);
+  it("has nothing behind the owner's words on the wall, and a calm silk under the rows", () => {
+    expect(backdropAt(4.4)).toBeNull();
+    expect(backdropAt(5.4)?.options.amount).toBeLessThanOrEqual(0.5);
   });
 });

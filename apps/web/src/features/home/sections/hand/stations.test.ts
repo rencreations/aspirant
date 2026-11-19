@@ -1,20 +1,27 @@
 import { describe, expect, it } from "vitest";
 
 import { playsOf } from "../../kernel/beat";
-import { validatePlays } from "../../kernel/plays";
+import { isZone, validatePlays } from "../../kernel/plays";
 import { section as list } from "../list/index";
 
 import { section as hand } from "./index";
 import {
   FRAME_COUNT,
+  FRAME_REST,
   frameRestScreens,
+  HAND_DWELL,
   HAND_LAST,
   HAND_STEPS,
+  LIST_DWELL,
+  LIST_FIRST_AT,
   LIST_LAST,
   LIST_STEPS,
 } from "./stations";
 
-describe("the stations of the hand and the list", () => {
+const end = (s: { atScreens: number; spanScreens?: number }): number =>
+  s.atScreens + (s.spanScreens ?? 0);
+
+describe("the zones of the hand and the list", () => {
   it("make tables the registry's sections accept, and the sections use them", () => {
     expect(() => {
       validatePlays("hand", playsOf(0, HAND_LAST, hand.screens, HAND_STEPS));
@@ -24,55 +31,58 @@ describe("the stations of the hand and the list", () => {
     expect(list.plays).toEqual(playsOf(0, LIST_LAST, list.screens, LIST_STEPS));
   });
 
-  it("have one play for the toss, one for each turn of the strip and one for the growth", () => {
+  it("are all scroll zones: nothing on the list or the hand runs on a clock", () => {
+    for (const step of [...HAND_STEPS, ...LIST_STEPS]) expect(step.spanScreens).toBeGreaterThan(0);
+    for (const play of [...(hand.plays ?? []), ...(list.plays ?? [])]) {
+      expect(isZone(play)).toBe(true);
+    }
+  });
+
+  it("have one zone for the toss, one for each turn of the strip and one for the growth", () => {
     expect(LIST_STEPS).toHaveLength(1 + (FRAME_COUNT - 1) + 1);
     expect(LIST_STEPS[LIST_STEPS.length - 1]!.to).toBe(LIST_LAST);
     expect(LIST_STEPS[0]!.to).toBe(1);
     LIST_STEPS.forEach((step, i) => {
-      // The play `i` (after the toss) brings frame `i` to the window, which rests at beat 1 + i.
+      // The zone `i` (after the toss) brings frame `i` to the window, which rests at beat 1 + i.
       if (i > 0 && i < LIST_STEPS.length - 1) expect(step.to).toBe(1 + i);
     });
   });
 
-  it("keep every scene short: nothing holds the scroll for more than about two seconds", () => {
+  it("keep every zone short: about a screen, a turn of the strip under half of one", () => {
     for (const step of [...HAND_STEPS, ...LIST_STEPS]) {
-      expect(step.seconds).toBeLessThanOrEqual(2.2);
+      expect(step.spanScreens!).toBeLessThanOrEqual(1.5);
     }
-    // A turn of the strip is under a second.
-    for (const step of LIST_STEPS.slice(1, -1)) expect(step.seconds).toBeLessThanOrEqual(0.8);
+    for (const step of LIST_STEPS.slice(1, -1)) expect(step.spanScreens!).toBeLessThanOrEqual(0.5);
   });
 
-  it("fire the toss after the hand's tail, so the hand's section is over when it holds the page", () => {
-    expect(LIST_STEPS[0]!.atScreens).toBeGreaterThan(hand.tail);
-    // The hand's one play fires after its start and well before the join.
+  it("start the toss after the hand's tail, so the toss is the only scene on the scroll", () => {
+    expect(LIST_STEPS[0]!.atScreens).toBeGreaterThanOrEqual(hand.tail);
+    expect(LIST_STEPS[0]!.atScreens).toBe(LIST_FIRST_AT);
+    // The hand's zone starts after its start and ends well before the join with the list.
     expect(HAND_STEPS[0]!.atScreens).toBeGreaterThan(0);
-    expect(HAND_STEPS[0]!.atScreens).toBeLessThan(hand.screens - hand.lead);
+    expect(end(HAND_STEPS[0]!)).toBeLessThanOrEqual(hand.screens - list.lead);
+    // The long rest on the words is before the join (0.4).
+    expect(hand.screens - end(HAND_STEPS[0]!)).toBeCloseTo(HAND_DWELL, 9);
+    expect(HAND_DWELL).toBeGreaterThanOrEqual(1);
   });
 
-  it("leave a dwell of 0.4 to 1 screen between two triggers", () => {
-    const ats = LIST_STEPS.map((s) => s.atScreens);
-    for (let i = 1; i < ats.length; i += 1) {
-      const gap = ats[i]! - ats[i - 1]!;
-      expect(gap).toBeGreaterThanOrEqual(0.4 - 1e-9);
-      expect(gap).toBeLessThanOrEqual(1);
+  it("rest on every frame between two zones, and keep the last zone clear of the next lead", () => {
+    for (let i = 1; i < LIST_STEPS.length; i += 1) {
+      const gap = LIST_STEPS[i]!.atScreens - end(LIST_STEPS[i - 1]!);
+      expect(gap).toBeGreaterThanOrEqual(FRAME_REST - 1e-9);
     }
-    // After the last play the visitor has a rest before the tail.
-    expect(list.screens - ats[ats.length - 1]!).toBeGreaterThanOrEqual(0.4);
+    // After the growth the visitor has the rest before the tail, which holds the next section's lead.
+    expect(list.screens - end(LIST_STEPS[LIST_STEPS.length - 1]!)).toBeCloseTo(LIST_DWELL, 9);
+    expect(LIST_DWELL).toBeGreaterThanOrEqual(0.5);
   });
 
-  it("ask for at least half a screen of scroll for each name of the list (text that links)", () => {
-    const ats = LIST_STEPS.map((s) => s.atScreens);
-    for (let i = 2; i < ats.length; i += 1) {
-      expect(ats[i]! - ats[i - 1]!).toBeGreaterThanOrEqual(0.5);
-    }
-  });
-
-  it("rest the page of a frame between the play that brought it and the next one", () => {
+  it("rest the page of a frame in the middle of the rest after the zone that brought it", () => {
     for (let i = 0; i < FRAME_COUNT; i += 1) {
       const at = frameRestScreens(i);
-      const fired = LIST_STEPS.filter((s) => s.atScreens <= at).length;
-      // The toss, then one play for each frame after the first.
-      expect(fired).toBe(i + 1);
+      // The zone that brought frame `i` has ended, the next one has not begun.
+      expect(end(LIST_STEPS[i]!)).toBeLessThan(at);
+      expect(LIST_STEPS[i + 1]!.atScreens).toBeGreaterThan(at);
+      expect(at - end(LIST_STEPS[i]!)).toBeCloseTo(FRAME_REST / 2, 9);
     }
     expect(frameRestScreens(-3)).toBe(frameRestScreens(0));
     expect(frameRestScreens(99)).toBe(frameRestScreens(FRAME_COUNT - 1));

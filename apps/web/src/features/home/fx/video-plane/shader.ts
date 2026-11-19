@@ -57,6 +57,7 @@ uniform vec3 uColor;
 uniform float uReady;
 uniform float uTime;
 uniform float uEffect;
+uniform float uOverlay;
 uniform float uHover;
 uniform vec2 uPointer;
 uniform vec4 uFx;
@@ -126,6 +127,9 @@ void main() {
 
   // The split of the colour: from the effects overlay toward the edges, and on the pointer's side on hover.
   vec2 split = q * 0.012 * fx * length(c);
+  // The overlay's fringe: the colour parts a little toward the edges, more under the pointer.
+  float nearP = exp(-dot(vec2((c.x - uPointer.x) * asp, c.y - uPointer.y), vec2((c.x - uPointer.x) * asp, c.y - uPointer.y)) / 0.07);
+  split += q * 0.0065 * uOverlay * (0.6 + 0.5 * length(c) + 1.6 * uHover * nearP);
   float side = 0.0;
   if (uFx.y > 0.001) {
     vec2 pd = uPointer / max(length(uPointer), 1e-3);
@@ -134,7 +138,7 @@ void main() {
     split += pd * 0.014 * side * vec2(1.0 / max(asp, 1.0), 1.0);
   }
   vec3 rgb;
-  if (fx > 0.001 || uFx.y > 0.001) {
+  if (fx > 0.001 || uFx.y > 0.001 || uOverlay > 0.001) {
     rgb = vec3(pic(q + split).r, pic(q).g, pic(q - split).b);
   } else {
     rgb = pic(q);
@@ -157,6 +161,27 @@ void main() {
     float spot = exp(-dot(dn, dn) / 0.035);
     vec3 add = vec3(0.92, 0.95, 1.0) * uFx.w * (0.17 * band + 0.12 * spot);
     rgb = 1.0 - (1.0 - rgb) * (1.0 - add);
+  }
+
+  // The live light overlay (round three): fine scanlines that drift, a grain that never rests, a slow
+  // sweep of light that crosses the frame, and a vignette that breathes. On a hover the lines and the
+  // grain come up around the pointer and the idle sweep gives way to the pointer's own. It is light
+  // work (a few multiplies), and it fades out as the strip is left.
+  if (uOverlay > 0.001) {
+    float ov = uOverlay;
+    float scan = 0.5 + 0.5 * sin((vLp.y + uTime * 11.0) * 2.0943951);
+    float lift = 1.0 + 1.8 * uHover * nearP;
+    rgb *= 1.0 - ov * 0.07 * lift * scan;
+    float grain = hash(vLp * 0.53 + floor(uTime * 24.0) * 7.31) - 0.5;
+    rgb += grain * ov * 0.07 * lift;
+    vec2 ca = c * vec2(asp, 1.0);
+    float along = dot(ca, normalize(vec2(1.0, 0.35)));
+    float pos = mix(-asp * 0.75, asp * 0.75, fract(uTime * 0.1));
+    float idle = exp(-pow((along - pos) / 0.11, 2.0));
+    rgb = 1.0 - (1.0 - rgb) * (1.0 - vec3(0.72, 0.86, 1.0) * ov * 0.11 * idle * (1.0 - 0.7 * uHover));
+    float vr = length(c * vec2(1.0, 1.1));
+    float vig = smoothstep(0.3, 0.78, vr) * (0.32 + 0.07 * sin(uTime * 1.3));
+    rgb *= 1.0 - ov * vig * (1.0 - 0.4 * uHover);
   }
 
   // The picture before it has arrived is the clip's own colour.

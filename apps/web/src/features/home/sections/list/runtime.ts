@@ -32,6 +32,8 @@ const PRIME_FRAMES = 3;
 /** She is drawn once the strip has sat on that frame this long (seconds): the turn's landing is over. */
 const PRIME_AFTER = 0.5;
 const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
+/** Scrolling back, she is in the hands at the mouth again once the frame has shrunk below this share. */
+const BACK_TO_LOOP = 0.5;
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 const backOut = (u: number): number => 1 + 2.70158 * (u - 1) ** 3 + 1.70158 * (u - 1) ** 2;
@@ -48,10 +50,10 @@ interface Item {
 }
 
 /**
- * The list: nine pictures and Selena in a 4:5 window, one at a time. Each frame is one play: the
- * scroll reaches a threshold, the strip turns to the next frame by itself (the doll hops with it)
- * and the page waits for it. The strip, the names, the chrome and the open buttons are DOM; the doll
- * and the hand are driven by `Carry` (shared with the hand section); the tenth frame is Selena,
+ * The list: nine pictures and Selena in a 4:5 window, one at a time. Each frame is one scroll zone: the
+ * strip turns to the next frame with the scroll (the doll hops with it) and rests on it. The strip,
+ * the names, the chrome and the open buttons are DOM; the doll and the hand are driven by `Carry`
+ * (shared with the hand section); the tenth frame is Selena,
  * drawn in the stage through the window and growing into the whole screen. Everything is a function
  * of the list's beat `u` plus the section's own state: which frame is open in the viewer and the
  * loops' play state. The strip, the words and the viewer work before the actors have arrived. The
@@ -81,8 +83,6 @@ class ListRuntime implements SectionRuntime {
   private readonly plan = newListBackdrop();
 
   private carry: Carry | null = null;
-  private carryDone = false;
-  private selenaDone = false;
   private g: ListGeometry | null = null;
   private vw = 0;
   private vh = 0;
@@ -95,9 +95,10 @@ class ListRuntime implements SectionRuntime {
   private selenaFrame: Placement | null = null;
   private selenaTail: Placement | null = null;
   private releasing = false;
+  /** The growth of the last frame at the last draw, to tell a scroll forward from one back. */
+  private lastGrow = 0;
   private primed = 0;
-  /** The list's beat of the last frame, and since when (the page's time) the strip has sat on the priming frame. */
-  private u = 0;
+  /** Since when (the page's time) the strip has sat on the priming frame. */
   private sinceAtPrime = -1;
   private interactive: boolean | null = null;
   private readonly clip: Rect = { x: 0, y: 0, w: 0, h: 0 };
@@ -233,23 +234,12 @@ class ListRuntime implements SectionRuntime {
   /** The hand and the doll are built (the hand section shares them). */
   setCarry(carry: Carry | null): void {
     this.carry = carry;
-    this.carryDone = true;
   }
 
   /** Selena arrives after the section is built (her model is the largest file). */
   setSelena(sl: SelenaActor | null): void {
     this.selena = sl;
-    this.selenaDone = true;
     this.interactive = null;
-  }
-
-  /**
-   * The hand and the doll are built (or failed for good): the toss does not fire before. Selena is
-   * only needed from the turn to her frame (beat 9 to 10): the nine plays before it do not wait for
-   * her, so a late model cannot hold the strip back and then chain ten seconds of scenes.
-   */
-  ready(): boolean {
-    return this.carryDone && (this.selenaDone || this.u < SELENA_AT);
   }
 
   enter(): void {
@@ -325,7 +315,6 @@ class ListRuntime implements SectionRuntime {
     const g = this.g;
     if (!g) return;
     const b = listBeats(u, ts, this.b);
-    this.u = u;
     if (Math.abs(b.index - PRIME_AT) < 0.001) {
       if (this.sinceAtPrime < 0) this.sinceAtPrime = frame.time;
     } else {
@@ -475,13 +464,18 @@ class ListRuntime implements SectionRuntime {
 
   /**
    * Her clips. In the frame she plays the hands at the mouth in a loop. When the frame starts to
-   * grow she waits for the loop to come round, plays the way out, and goes on to the idle, all by
-   * herself (her own clock: after a fast scroll she may still be on the way out at the end, and
-   * the section after this one must not start her again). A jump to the end puts her in the idle
-   * at once.
+   * grow (the scroll moves forward) she waits for the loop to come round, plays the way out, and goes
+   * on to the idle, all by herself (her own clock: after a fast scroll she may still be on the way out
+   * at the end, and the section after this one must not start her again). A jump to the end puts her
+   * in the idle at once. The growth is a scroll zone, so the visitor can also take it back: once the
+   * frame has shrunk below half of the way and she is in the idle, she goes back to the hands at the
+   * mouth (only while the scroll moves back, so a slow scroll forward never flips her).
    */
   private selenaClips(e: number, idx: number, sl: SelenaActor): void {
     const state = sl.clipState();
+    const forward = e > this.lastGrow + 1e-4;
+    const back = e < this.lastGrow - 1e-4;
+    this.lastGrow = e;
     if (e <= 0) {
       if (idx > SELENA_AT - 0.5 || state.clip !== "city_interaction_R_loop") {
         sl.play("city_interaction_R_loop");
@@ -494,7 +488,12 @@ class ListRuntime implements SectionRuntime {
       this.releasing = false;
       return;
     }
-    if (!this.releasing && state.clip === "city_interaction_R_loop") {
+    if (back && e < BACK_TO_LOOP && state.clip === "city_idle") {
+      sl.play("city_interaction_R_loop");
+      this.releasing = false;
+      return;
+    }
+    if (forward && !this.releasing && state.clip === "city_interaction_R_loop") {
       this.releasing = true;
       sl.playRelease();
     }

@@ -20,10 +20,12 @@ import { CursorProxy } from "./cursor";
 import { holdCount, holdScroll, takeSnap } from "./hold";
 import { InputEnergy } from "./input";
 import { isRunning, layoutSections } from "./layout";
+import { easeValue } from "./plays";
 import { PointerHub } from "./pointer";
 import { installProbes, type HomeSnapshot } from "./probes";
 import { SectionRunner } from "./run";
 import { SceneScroll, screensOf } from "./scroll";
+import { ZoneSnap } from "./scrub";
 import { FlickLimiter, JointSnap, type FlickFrame, type SnapFrame } from "./snap";
 import { createStage } from "./stage";
 import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, SectionId, Viewport } from "./types";
@@ -37,6 +39,9 @@ const SNAP_FRAMES = 2;
 /** The hold's own limit sits this far past the machine's, so the machine is the one that ends it. */
 const HOLD_BACKSTOP_MS = 500;
 
+/** The site's scroll lock is on (the smooth scroller is stopped): a menu, a player, a dialog, a hold. */
+const lockedByOthers = (): boolean => document.documentElement.classList.contains("lenis-stopped");
+
 export interface EngineOptions {
   /** The root of the home page: the slots are found inside it. */
   root: HTMLElement;
@@ -47,7 +52,10 @@ export interface EngineOptions {
   backdrop?: HTMLElement | null;
   sections: readonly HomeSection[];
   /** Move the page (pixels). The shell binds it to the smooth scroller (`duration` is in seconds). */
-  scrollTo(y: number, options?: { immediate?: boolean; duration?: number }): void;
+  scrollTo(
+    y: number,
+    options?: { immediate?: boolean; duration?: number; easing?: (t: number) => number },
+  ): void;
   /** The stage could not be made or was lost for good: the page lays itself out plain. */
   onFailed(): void;
   /** The first frame has been drawn (two frames after the engine started). */
@@ -175,9 +183,11 @@ export function startEngine(options: EngineOptions): Engine | null {
         moveTarget = screens;
         moveUntil = performance.now() + MOVE_MAX_MS;
       }
+      const ease = opts?.ease;
       options.scrollTo(screens * unit, {
         immediate: opts?.immediate ?? false,
         ...(opts?.duration ? { duration: opts.duration } : {}),
+        ...(ease ? { easing: (t: number) => easeValue(ease, t) } : {}),
       });
     },
     hold: (limitMs) => holdScroll(limitMs),
@@ -191,6 +201,16 @@ export function startEngine(options: EngineOptions): Engine | null {
       layout,
       move: (screens, seconds) => scrollApi.to(screens, { duration: seconds }),
       // A held page and a smooth move that must end now: the lock's pause resets the smooth scroller.
+      stop: () => holdScroll(1000)(),
+    },
+    performance.now(),
+  );
+  // The idle snap of the scroll zones (`kernel/scrub.ts`): a visitor who stops inside a zone has the
+  // page finish it by itself, to the end they were heading to, eased in and out.
+  const zoneSnap = new ZoneSnap(
+    {
+      layout,
+      move: (screens, seconds) => scrollApi.to(screens, { duration: seconds, ease: "inOut" }),
       stop: () => holdScroll(1000)(),
     },
     performance.now(),
@@ -219,8 +239,14 @@ export function startEngine(options: EngineOptions): Engine | null {
   };
   // The visitor takes the page back: a snap on its way is over (a wheel or a touch replaces the
   // smooth scroller's own move; a key does not, so it also stops it).
-  const cancelSnap = () => joint.cancel(false);
-  const cancelSnapKey = () => joint.cancel(true);
+  const cancelSnap = () => {
+    joint.cancel(false);
+    zoneSnap.cancel(false);
+  };
+  const cancelSnapKey = () => {
+    joint.cancel(true);
+    zoneSnap.cancel(true);
+  };
   window.addEventListener("wheel", cancelSnap, { passive: true });
   window.addEventListener("touchstart", cancelSnap, { passive: true });
   window.addEventListener("keydown", cancelSnapKey, { passive: true });
@@ -345,7 +371,10 @@ export function startEngine(options: EngineOptions): Engine | null {
       const raw = flick.step(flickFrame);
       if (!Number.isNaN(flick.pull)) options.scrollTo(flick.pull * unit, { immediate: true });
       jumped = scene.step(raw, dt) || forceJump;
-      if (jumped || snapFrames > 0) joint.noteJump(wall);
+      if (jumped || snapFrames > 0) {
+        joint.noteJump(wall);
+        zoneSnap.noteJump(wall);
+      }
       forceJump = false;
       input.step(dt);
       frameInfo = {
@@ -410,12 +439,20 @@ export function startEngine(options: EngineOptions): Engine | null {
       snapFrame.keyAt = input.keyAt;
       snapFrame.touching = input.touching;
       snapFrame.holds = holdCount();
+      // A lock the home did not take (the menu, a player, a dialog): the page is not ours to move.
+      snapFrame.locked = lockedByOthers();
       snapFrame.playing = open && (runner.holdState().holding || runner.waiting());
       snapFrame.chasing = flick.engaged;
-      snapFrame.scripted = moveTarget !== null && !joint.moving;
+      snapFrame.scripted = moveTarget !== null && !joint.moving && !zoneSnap.moving;
       // A section's own move of the page (a button) is where the page is meant to be: no snap
       // away from it until the visitor pushes the page again.
-      if (snapFrame.scripted) joint.noteJump(snapFrame.now);
+      if (snapFrame.scripted) {
+        joint.noteJump(snapFrame.now);
+        zoneSnap.noteJump(snapFrame.now);
+      }
+      // A page inside a scroll zone is the zone snap's: the joint snap leaves it alone.
+      snapFrame.zoned = zoneSnap.inside(realRaw);
+      zoneSnap.step(snapFrame);
       joint.step(snapFrame);
       for (const s of slots) {
         const on = open && isRunning(s.p, frameInfo.S);
@@ -454,6 +491,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       forceJump = true;
       input.reset();
       joint.noteJump(performance.now());
+      zoneSnap.noteJump(performance.now());
     },
     freeze: (on) => {
       frozen = on;
@@ -501,6 +539,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       chasing: flick.engaged,
       real: realRaw,
       seen: flick.seen,
+      scrub: zoneSnap.report(),
     }),
   });
 

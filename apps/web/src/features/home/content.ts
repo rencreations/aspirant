@@ -85,11 +85,26 @@ export const STRIP = {
    * What the frame shows after it has grown (the press opens the site's player). The duration is the
    * trailer's own, 180.8 s of `video-films.json`, written as the Films room writes it (the whole seconds) (`sections/strip/strip.test.ts` keeps them equal).
    */
-  play: { label: "Play Films", duration: "03:00", open: "Play the trailer with sound" },
+  play: {
+    label: "Play Films",
+    /** The two words on either side of the play button (round three: like Vexana's "02, the film"). */
+    left: "Play",
+    right: "Films",
+    duration: "03:00",
+    open: "Play the trailer with sound",
+  },
+  /**
+   * What hangs above and below the open window (the strips of running words and the readout pill, in
+   * the way of Vexana's film section). Only the series' own words and the film's real duration.
+   */
+  deck: {
+    strips: ["Play the trailer", "Aspirant 5.0 Trailer", "Selena & Obsidia", "The Aspirants"],
+    readout: ["Aspirant 5.0 Trailer", "Selena & Obsidia"],
+    durationLabel: "Duration",
+  },
   /** Names for the controls of the strip that have no words of the owner's. */
   controls: {
     previews: "The ten official animated films",
-    scroll: "Scroll to the film",
   },
   expand: {
     lead: "Official animations for",

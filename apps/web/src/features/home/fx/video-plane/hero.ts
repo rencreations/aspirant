@@ -65,10 +65,11 @@ export function heroBase(vp: Vp, st: FilmState, out: PlanePose): number {
   const m = smootherstep(st.morph);
   const a = smootherstep(st.appear);
 
-  // The angled card: a place on the rows' plane, as large as a share of a rows card (16 to 9).
+  // The angled card: a place on the rows' plane, as large as a share of a rows card (16 to 9). It shows
+  // at its full size (the rows' space is made for it) and only fades in: it never grows out of a small card.
   const u = st.angleU;
   const v = st.angleV;
-  const grow = mix(0.6, 1, a) * st.angleSize;
+  const grow = st.angleSize;
   const ax = g.frame.cx + u * g.right[0] + v * g.up[0];
   const ay = g.frame.cy + u * g.right[1] + v * g.up[1];
   const az = u * g.right[2] + v * g.up[2];

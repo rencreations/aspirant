@@ -9,20 +9,20 @@
  * Two frames meet here. The route works in the screen frame (pixels, origin at the top left, y down)
  * and hands the result to the actors in the stage frame (origin in the middle, y up): `toStage`.
  *
- * Times, in screens of the route's clock `S`. They are read from the registry (`kernel/where.ts`), so
+ * Times, in screens of the scene's scroll `S`. They are read from the registry (`kernel/where.ts`), so
  * they move with the sections: each is an offset from the archive's start, the footer's start or
- * the end of the page. The first 0.4 screen of the clock is the entry, a triggered scene (`plays.ts`):
- * the archive's runtime gives the route `routeS(local, S)`, which runs through it on the play's
- * clock and then goes on with the scroll, so everything after the entry is the scroll's own and
- * the footer's card (the page's flow) stays glued to the real scroll. Offsets from the archive's start:
+ * the end of the page. The whole route is a function of the scroll (round three): the entry is one
+ * screen of scroll that the visitor scrubs, and the page snaps to either end of it when they stop
+ * half way. Offsets from the archive's start:
  *
- *   0.00 to 0.10   Tetra waves goodbye; the drone, beside her, looks at her
- *   0.07 to 0.30   the drone leaves her and flies up over the first cover
- *   0.10 to 0.29   Tetra runs off to the left (the first cover rises where she stood: she is out first)
- *   0.14 to 0.40   the covers rise in, the left one first; the title and the button
- *   0.40 to 1.60   the tour: the drone rests over each room in turn and the light follows it
- *   1.55 to 2.30   the covers lift away, the light goes out, the footer's card rises
- *   1.60 to 2.30   the drone flies down to the middle of the footer's card (it rises to meet it)
+ *   0.00 to 0.10   rest (joint J14): Tetra and the drone at the lower left
+ *   0.10 to 0.20   the entry begins: Tetra waves goodbye; the drone, beside her, looks at her
+ *   0.20 to 0.82   the drone leaves her and flies up over the first cover
+ *   0.20 to 0.82   Tetra runs off to the left (the first cover rises where she stood: she is out first)
+ *   0.45 to 1.10   the covers rise in, the left one first; the title and the button
+ *   1.10 to 2.30   the tour: the drone rests over each room in turn and the light follows it
+ *   2.25 to 3.00   the covers lift away, the light goes out, the footer's card rises
+ *   2.30 to 3.00   the drone flies down to the middle of the footer's card (it rises to meet it)
  *   footer 0 to 0.9   the card stands; the drone rests in its ring
  *   footer 0.3 to the end   the hairline under the words fills (full at the point the page opens About)
  *   footer 0.9 to the end   the drone leaves to the right, at the height where About's drone comes in
@@ -32,39 +32,51 @@ import { sectionEnd, sectionFrom, sectionScreens, sectionStart } from "../../ker
 import { spotsOf } from "../bend/beats";
 
 import { coverX, tourP, type StripGeo } from "./geometry";
-import { ENTRY_SCREENS, EXIT_SCREENS } from "./plays";
+import { ENTRY_AT, ENTRY_SCREENS, EXIT_SCREENS } from "./plays";
 
 const fromArchive = (offset: number): number => sectionStart("archive") + offset;
 const fromFooter = (offset: number): number => sectionStart("footer") + offset;
+
+/**
+ * The entry's beats were first written for 0.4 screen of route. They keep their shape over the
+ * entry's real length: `entryAt(u)` is the place at the fraction `u` of the entry.
+ */
+const entryAt = (u: number): number => fromArchive(ENTRY_AT + u * ENTRY_SCREENS);
+/** The scale from the first 0.4-screen entry to the real one, for the lengths that stay in screens. */
+const STRETCH = ENTRY_SCREENS / 0.4;
 
 export const AT = {
   /** The archive's own start (joint J14). */
   get start(): number {
     return fromArchive(0);
   },
+  /** The entry begins here: Tetra starts to wave. */
+  get entry(): number {
+    return entryAt(0);
+  },
   get waveTo(): number {
-    return fromArchive(0.04);
+    return entryAt(0.1);
   },
   get leave(): number {
-    return fromArchive(0.07);
+    return entryAt(0.175);
   },
   get arrive(): number {
-    return fromArchive(0.3);
+    return entryAt(0.75);
   },
   get runFrom(): number {
-    return fromArchive(0.1);
+    return entryAt(0.25);
   },
   get runTo(): number {
-    return fromArchive(0.29);
+    return entryAt(0.725);
   },
   get coversIn(): number {
-    return fromArchive(0.14);
+    return entryAt(0.35);
   },
-  coverStep: 0.03,
-  coverLen: 0.17,
-  /** The entry's end, and the scroll position that fires it: the tour goes on from here. */
+  coverStep: 0.03 * STRETCH,
+  coverLen: 0.17 * STRETCH,
+  /** The entry's end: the tour goes on from here. */
   get tourFrom(): number {
-    return fromArchive(ENTRY_SCREENS);
+    return entryAt(1);
   },
   get tourTo(): number {
     return fromArchive(sectionScreens("archive") - EXIT_SCREENS);
@@ -101,17 +113,8 @@ export const AT = {
   },
 } as const;
 
-/**
- * The route's clock for the archive's section value `local` (the plays' value) and the scene's
- * scroll `S` (screens). Before the entry fires `local` is 0 and the clock rests at the start;
- * while it runs `local` moves and the scroll is held; after it the clock goes on with the scroll.
- * Continuous at the threshold in both directions, so the entry plays and plays back with no step.
- */
-export function routeS(local: number, S: number): number {
-  const length = sectionScreens("archive");
-  const done = ENTRY_SCREENS / length;
-  return AT.start + Math.min(local, done) * length + Math.max(0, S - AT.tourFrom);
-}
+/** The button of the archive comes in this far behind its title, in screens. */
+export const BUTTON_LATE = 0.06 * STRETCH;
 
 export interface Vp {
   readonly w: number;
@@ -185,7 +188,7 @@ export function tourAt(S: number): number {
 /** How much the spotlight is on, 0 to 1: it comes on as the drone arrives and goes as the tour ends. */
 export function lightAt(S: number): number {
   return (
-    ramp(S, AT.arrive - 0.1, AT.arrive + 0.1) *
+    ramp(S, AT.arrive - 0.1 * STRETCH, AT.arrive + 0.1 * STRETCH) *
     (1 - ramp(S, AT.lightOut, AT.lightOut + AT.lightLen))
   );
 }
@@ -212,7 +215,7 @@ export function coverOut(S: number, i: number): number {
  */
 export function headAt(S: number, late = 0): number {
   return (
-    ramp(S, AT.coversIn + late, AT.coversIn + 0.2 + late) *
+    ramp(S, AT.coversIn + late, AT.coversIn + 0.2 * STRETCH + late) *
     (1 - ramp(S, AT.coversOut + 0.1, AT.coversOut + 0.5))
   );
 }
@@ -343,6 +346,6 @@ export function tetraAt(S: number, vp: Vp, out: TetraWant): TetraWant {
   out.x = mix(x, -0.6 * height, out.run);
   out.y = vp.h / 2 - rest.ty * vp.h;
   out.height = height;
-  out.wave = ramp(S, AT.start, AT.start + 0.04) * (1 - ramp(S, AT.runFrom - 0.03, AT.runFrom));
+  out.wave = ramp(S, AT.entry, AT.waveTo) * (1 - ramp(S, AT.runFrom - 0.03 * STRETCH, AT.runFrom));
   return out;
 }

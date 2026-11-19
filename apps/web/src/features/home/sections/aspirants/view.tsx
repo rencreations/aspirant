@@ -12,7 +12,10 @@ import local from "./aspirants.module.css";
 /**
  * What the server draws for the section: the owner's words and the button, from `content.ts`, and
  * the preview window (it draws nothing until a card of the wall has been pressed). The wall itself
- * is on the canvas. Each of the four lines is one element (`data-home-line`) the runtime moves.
+ * is on the canvas. Round three (20 Nov 2026): the title, ONE paragraph (the game's mark, the series
+ * line, "A part of", TheMLabel's mark, "as the first featured series.", flowing as one text, anchored
+ * left, no break of mine) and the button, in one left aligned column. Each of the three is one element
+ * (`data-home-line`) the runtime moves, by a trigger (`words.ts`).
  */
 export function view(): SectionMarkup {
   return {
@@ -25,11 +28,7 @@ export function view(): SectionMarkup {
         >
           {ASPIRANTS.title}
         </h2>
-        <p
-          className={`${styles.lead} ${local.line} ${local.leadLogo}`}
-          data-home-line=""
-          data-home-wait=""
-        >
+        <p className={`${local.line} ${local.paragraph}`} data-home-line="" data-home-wait="">
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
           <img
             src={asset("/img/home/mlbb.webp")}
@@ -38,14 +37,7 @@ export function view(): SectionMarkup {
             height={167}
             className={local.logoGame}
           />{" "}
-          {ASPIRANTS.line}
-        </p>
-        <p
-          className={`${styles.lead} ${local.line} ${local.leadLogo} ${local.indent}`}
-          data-home-line=""
-          data-home-wait=""
-        >
-          {ASPIRANTS.partOf}{" "}
+          {ASPIRANTS.line} {ASPIRANTS.partOf}{" "}
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
           <img
             src={asset(THEMLABEL_LOGO)}

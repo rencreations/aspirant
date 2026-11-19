@@ -1,0 +1,378 @@
+/*
+ * The open window's dress, after Vexana's film section ("02, the film", reel.module.css): PLAY and
+ * FILMS either side of a button, two bands of marks and running words above and below the picture, and
+ * a readout pill at its corner. The deck is a box of the window's own size and place (the scene's width
+ * at the film's shape, in the middle of the scene), so every part hangs off the picture's edges. An em
+ * is a 80th of the window's width, as on Vexana's page it is a 100th of the screen's. The runtime
+ * (deck.ts) writes transform and opacity only.
+ */
+
+.deck {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .deck {
+  --deck-ink: #05070c;
+  --deck-ice: #dff6ff;
+  --deck-cyan: #1fa6e8;
+  --deck-blue: #1a6bc8;
+  --deck-sky: #6fd2ff;
+  --deck-ease: cubic-bezier(0.35, 0, 0, 1);
+  --cross: max(11px, 1em);
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: calc(var(--sw) / var(--wa));
+  transform: translateY(-50%);
+  font-size: calc(var(--sw) * 0.0125);
+  opacity: 0;
+  pointer-events: none;
+}
+
+:global([data-home][data-gl="off"]) .deck,
+:global(html:not(.js)) .deck {
+  display: none;
+}
+
+/* In the stage the plain text only reads for a screen reader. */
+.plain {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A soft dark under the words, so they read on a bright frame (a plain gradient, nothing over the film's pixels). */
+.scrim {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgb(5 7 12 / 0.5), rgb(5 7 12 / 0) 68%);
+  pointer-events: none;
+}
+
+/* The bands hang above and below the picture: two crosses off its edge, one cross high. */
+.deco {
+  position: absolute;
+  top: calc(-2 * var(--cross));
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: calc(100% + 4 * var(--cross));
+  pointer-events: none;
+}
+
+.band {
+  position: relative;
+  height: var(--cross);
+  overflow: hidden;
+}
+
+.marks {
+  position: absolute;
+  inset: 0;
+}
+
+.markSlot {
+  position: absolute;
+  top: 0;
+  width: var(--cross);
+  height: var(--cross);
+}
+
+.markSlot:nth-child(1) {
+  left: 0;
+}
+.markSlot:nth-child(2) {
+  left: calc(25% - var(--cross) / 2);
+}
+.markSlot:nth-child(3) {
+  left: calc(50% - var(--cross) / 2);
+}
+.markSlot:nth-child(4) {
+  left: calc(75% - var(--cross) / 2);
+}
+.markSlot:nth-child(5) {
+  left: calc(100% - var(--cross));
+}
+
+.markEmerge,
+.markSwap {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The marks wait at scale 0 until the window is complete (the controller grows them in). */
+.markEmerge {
+  transform: scale(0);
+}
+
+.mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: color-mix(in srgb, var(--text) 78%, transparent);
+}
+
+.mark > g {
+  display: none;
+}
+
+.markSwap[data-kind="plus"] .kindPlus,
+.markSwap[data-kind="x"] .kindX,
+.markSwap[data-kind="circle"] .kindCircle,
+.markSwap[data-kind="triangle"] .kindTriangle,
+.markSwap[data-kind="half"] .kindHalf {
+  display: inline;
+}
+
+.strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 200%;
+  height: 100%;
+}
+
+.stripItem {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-width: 0;
+  height: 100%;
+  font-family: var(--font-mono-stack);
+  font-size: calc(var(--cross) * 0.78);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--text) 78%, transparent);
+  /* The running words wait below the band's edge until a hover raises them. */
+  transform: translate3d(0, 120%, 0);
+}
+
+.stripArrows {
+  display: block;
+  flex: none;
+  width: 2.6em;
+  height: 0.8em;
+  color: var(--deck-sky);
+}
+
+.stripMask {
+  display: grid;
+  justify-items: start;
+  height: 1.1em;
+  overflow: hidden;
+}
+
+/* The two rolling lines and a sizer share one cell: the box is as wide as the longest line. */
+.stripText,
+.stripSizer {
+  grid-area: 1 / 1;
+  display: block;
+  height: 1.1em;
+  line-height: 1.1em;
+}
+
+.stripSizer {
+  visibility: hidden;
+}
+
+/* The readout pill, at the picture's top left. */
+.readout {
+  position: absolute;
+  top: 1.1em;
+  left: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.45em 0.8em 0.45em 0.7em;
+  border-radius: 999px;
+  background: rgb(5 8 24 / 72%);
+  font-family: var(--font-mono-stack);
+  font-size: max(9px, 0.82em);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.readoutDot {
+  flex: none;
+  width: 0.62em;
+  height: 0.62em;
+  border-radius: 50%;
+  background: var(--deck-cyan);
+  box-shadow: 0 0 0 1px rgb(5 8 24 / 25%);
+}
+
+.readoutMask {
+  position: relative;
+  display: block;
+  width: 21ch;
+  height: 1.2em;
+  overflow: hidden;
+  transition: width 0.45s var(--deck-ease);
+}
+
+.readoutLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 1.2em;
+  line-height: 1.2em;
+  white-space: nowrap;
+}
+
+/* The two big words: the gap stays centred on the button whatever the two words' widths. */
+.words {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 2em 1fr;
+  align-items: center;
+  font-family: var(--font-display-stack);
+  font-size: 7.5em;
+  font-weight: 800;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0.02em 0.12em rgb(5 7 12 / 0.45);
+  pointer-events: none;
+}
+
+.playWord {
+  display: flex;
+  justify-self: end;
+}
+
+.playWord + .playWord {
+  grid-column: 3;
+  justify-self: start;
+}
+
+.playChars {
+  display: flex;
+}
+
+.char {
+  display: block;
+  transform-origin: 50% 100%;
+}
+
+.charMask {
+  display: block;
+  height: 0.9em;
+  overflow: hidden;
+}
+
+.charTrack {
+  display: block;
+  /* The letters wait under their masks until the window is complete. */
+  transform: translate3d(0, 100%, 0);
+}
+
+.glyph {
+  display: block;
+  height: 0.9em;
+  line-height: 1;
+  /* Caps sit in the middle of the mask, overshoots included. */
+  margin-top: -0.02em;
+  margin-bottom: 0.02em;
+}
+
+.magnet {
+  position: absolute;
+  top: calc(50% - 3em);
+  left: calc(50% - 4.7em);
+  width: 9.4em;
+  height: 6em;
+}
+
+/* The idle call: a ring that leaves the button like a ripple. */
+.watchRing {
+  position: absolute;
+  inset: 0;
+  border: 0.16em solid var(--deck-sky);
+  border-radius: 22.5em;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.play {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 22.5em;
+  background: var(--deck-ice);
+  color: var(--deck-ink);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.play:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--deck-blue);
+}
+
+/* A disc that rises from the bottom edge on a hover: its top reads as a half disc sweeping up through the pill. */
+.watchFill {
+  position: absolute;
+  top: calc(100% - 8em);
+  left: calc(50% - 8em);
+  width: 16em;
+  height: 16em;
+  border-radius: 50%;
+  background: var(--deck-cyan);
+  transform: translate3d(0, 8em, 0) scale(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.1, 1);
+}
+
+.watchIcon {
+  position: relative;
+  width: 2em;
+  height: 2em;
+  transition: color 0.3s var(--deck-ease);
+}
+
+.play[data-hover="true"] .watchFill {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.play[data-hover="true"] .watchIcon {
+  color: #fff;
+}

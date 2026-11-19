@@ -19,9 +19,27 @@ import type { HomePlay, PlayEase } from "./plays";
 export interface BeatStep {
   readonly atScreens: number;
   readonly to: number;
+  /** A clock play: its length. A zone: the length of the idle snap for the full traverse. */
   readonly seconds: number;
   readonly ease?: PlayEase;
   readonly back?: number;
+  /**
+   * With a span the step is a scroll ZONE (`kernel/scrub.ts`): the beats run from the previous
+   * station to `to` while the scroll covers `spanScreens` screens from `atScreens`, up or down, with no
+   * clock and no hold. The curve defaults to `linear`. Without it the step is a clock play.
+   */
+  readonly spanScreens?: number;
+}
+
+/**
+ * The length in screens a section needs for these steps: the end of the last zone or the threshold of
+ * the last clock play, plus `dwell` (the rest after it). So a section writes `screens: zoneLength(STEPS, 0.8)`
+ * and moves with its steps.
+ */
+export function zoneLength(steps: readonly BeatStep[], dwell = 0): number {
+  let end = 0;
+  for (const s of steps) end = Math.max(end, s.atScreens + (s.spanScreens ?? 0));
+  return end + dwell;
 }
 
 /** Beat time at the virtual `local` `v`: `length` beats across the section, real screens outside. */
@@ -45,13 +63,15 @@ export function playsOf(
   const span = last - first;
   let from = first;
   return steps.map((step) => {
+    const zone = step.spanScreens !== undefined;
     const play: HomePlay = {
       at: step.atScreens / screens,
       from: (from - first) / span,
       to: (step.to - first) / span,
       seconds: step.seconds,
-      ease: step.ease ?? "inOut",
+      ease: step.ease ?? (zone ? "linear" : "inOut"),
       ...(step.back === undefined ? {} : { back: step.back }),
+      ...(step.spanScreens === undefined ? {} : { span: step.spanScreens / screens }),
     };
     from = step.to;
     return play;

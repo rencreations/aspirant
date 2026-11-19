@@ -115,7 +115,7 @@ class BendRuntime implements SectionRuntime {
   private readonly c = makePose();
   private readonly hover = new Float32Array(TOTAL_CARDS);
   private readonly readyFlag: boolean[] = [];
-  /** The nine backdrop shaders are compiled (or there is no backdrop): a play's first draw is no hitch. */
+  /** The nine backdrop shaders are compiled (or there is no backdrop): a zone's first draw is no hitch. */
   private warmed = false;
   private readonly removeHit: () => void;
   private readonly groups: {
@@ -281,8 +281,8 @@ class BendRuntime implements SectionRuntime {
   }
 
   /**
-   * The ready gate. The actors are built before this runtime exists, so what a play can still wait
-   * for is the shaders: the first bend play draws four new backdrops in two seconds.
+   * The ready gate. The actors are built before this runtime exists, so what a zone can still wait
+   * for is the shaders: the first stances draw four new backdrops in a few seconds.
    */
   ready(): boolean {
     return this.warmed;

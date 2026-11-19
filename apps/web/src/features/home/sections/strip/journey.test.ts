@@ -4,11 +4,10 @@ import { homeLayout } from "../../kernel/where";
 import { STORY } from "../story";
 
 import {
-  inkGlow,
-  inkSpeed,
   letterIn,
   letterMoment,
   makeBeats,
+  overlayAmount,
   STRIP_BEATS,
   stripBeats,
   stripS,
@@ -28,11 +27,16 @@ describe("the strip's place on the scroll", () => {
     expect(rows.end).toBeCloseTo(placed.start, 6);
   });
 
-  it("has four plays: the words in step with the rows, the window, the orbit, the fly-off", () => {
+  it("has four plays: the words (a zone), the window and the orbit (triggers), the exit (a zone)", () => {
     const plays = stripPlaced().def.plays!;
     expect(plays).toHaveLength(4);
     expect(plays[0]!.at).toBe(0);
-    expect(plays[3]!.at).toBe(1);
+    expect(plays[0]!.span).toBeGreaterThan(0);
+    expect(plays[1]!.span).toBeUndefined();
+    expect(plays[2]!.span).toBeUndefined();
+    expect(plays[3]!.span).toBeGreaterThan(0);
+    // The exit's zone ends at the section's end (a zone never runs into the tail).
+    expect(plays[3]!.at + plays[3]!.span!).toBeCloseTo(1, 9);
     for (const p of plays) expect(p.seconds).toBeLessThanOrEqual(3);
   });
 
@@ -183,30 +187,21 @@ describe("letterIn", () => {
   });
 });
 
-describe("the ink field's two inputs from the strip", () => {
-  it("glows with the expand, is gone on the small frame and as the orbit comes, and when the set has flown", () => {
-    expect(inkGlow(0, 0, 0)).toBe(0);
-    expect(inkGlow(1, 0, 0)).toBe(1);
-    expect(inkGlow(1, 0.35, 0)).toBeGreaterThan(0);
-    expect(inkGlow(1, 0.35, 0)).toBeLessThan(1);
-    expect(inkGlow(1, 1, 0)).toBe(0);
-    expect(inkGlow(1, 1, 1)).toBe(0);
-    expect(inkGlow(1, 0, 1)).toBe(0);
+describe("the live overlay of the trailer", () => {
+  it("is off while the film lies angled, on once it stands, a little softer on the window", () => {
+    expect(overlayAmount(0, 0, 0)).toBe(0);
+    expect(overlayAmount(1, 0, 0)).toBe(1);
+    expect(overlayAmount(1, 1, 0)).toBeCloseTo(0.6, 9);
   });
 
-  it("rises steadily with the expand", () => {
-    let last = -1;
-    for (let e = 0; e <= 1.0001; e += 0.05) {
-      const g = inkGlow(e, 0, 0);
-      expect(g).toBeGreaterThanOrEqual(last - 1e-9);
-      last = g;
+  it("fades out steadily as the set flies off to the next section, and is gone before the end", () => {
+    let last = 2;
+    for (let f = 0; f <= 1.0001; f += 0.05) {
+      const o = overlayAmount(1, 0, f);
+      expect(o).toBeLessThanOrEqual(last + 1e-9);
+      last = o;
     }
-  });
-
-  it("speeds the mist up with the wheel, up and down, to a limit", () => {
-    expect(inkSpeed(0)).toBe(1);
-    expect(inkSpeed(900)).toBeCloseTo(2, 9);
-    expect(inkSpeed(-900)).toBeCloseTo(2, 9);
-    expect(inkSpeed(1e6)).toBeCloseTo(2.8, 9);
+    expect(overlayAmount(1, 0, 0.75)).toBe(0);
+    expect(overlayAmount(1, 1, 1)).toBe(0);
   });
 });

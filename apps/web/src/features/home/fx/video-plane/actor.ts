@@ -242,6 +242,7 @@ export class FilmActor implements Actor {
         win: [0.5, 0.5, 1, 1],
         ready: 0,
         effect: 0,
+        overlay: 0,
         hover: 0,
         pointerX: 0,
         pointerY: 0,
@@ -550,6 +551,7 @@ export class FilmActor implements Actor {
       look.load = k === 0 ? this.line : 0;
       look.loadFraction = k === 0 ? this.stream.status.progress : 0;
       look.effect = k === 0 ? st.effect * smootherstep(ramp(st.morph, 0.35, 1)) : 0;
+      look.overlay = k === 0 ? st.overlay : 0;
       look.hover = h;
       look.pointerX = px;
       look.pointerY = py;

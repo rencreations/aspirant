@@ -16,7 +16,7 @@ export interface FieldItemOptions {
 
 /**
  * Many small pictures as one item: the bar counts all their bytes, and one entry in the list does not
- * crowd it (the wall's extra thumbnails are fifty pictures of 15 KB). Each is kept in the store.
+ * crowd it (the wall's extra pictures are a hundred files of about 27 KB, 2.7 MB). Each is kept in the store.
  */
 function bundleItem(id: string, sources: readonly PicSource[], label: string): PreloadItem {
   const total = sources.reduce((a, s) => a + s.bytes, 0);
@@ -62,7 +62,7 @@ export function fieldItems(
         priority: options.priority ?? 20,
       }),
     ),
-    // The wall's extra thumbnails are small and the wall fills with them as it lands: always waited.
+    // The wall's extra pictures are small and the wall fills with them as it lands: always waited.
     ...(def.tiles.length > 0
       ? [bundleItem("field:tiles", def.tiles.map(wideSource), "Loading the wall")]
       : []),

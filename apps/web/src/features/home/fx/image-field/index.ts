@@ -6,6 +6,7 @@ import type { FieldSetName } from "./sets";
 export { FieldActor, FIELD_ORDER, FIELD_ORDER_FRONT } from "./actor";
 export type { CardPress, FormationRef } from "./actor";
 export { RING_P, type FormationName, type RankBy } from "./formations";
+export { FLIGHT } from "./flight";
 export type { PoseFn, Rect } from "./types";
 /** @public */
 export { fieldItems } from "./preload";

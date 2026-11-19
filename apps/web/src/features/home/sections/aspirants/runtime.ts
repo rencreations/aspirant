@@ -1,14 +1,15 @@
 /**
- * The aspirants: the wall of wide official splash art slides by itself under the owner's words on the
- * right. A card lifts when hovered and stops the wall, the cursor says VIEW, a press opens the preview
- * window (`features/home/preview/`). The close is a play: the words fold away, the wall opens into the
- * full screen rows at the same angle, the glide stops and the ground goes dark (joint J2).
+ * The aspirants: the wall of big tilted official pictures on the left half, the owner's words on the
+ * right (round three, 20 Nov 2026). The pictures slide with the scroll (`FieldScene.follow`), a card
+ * lifts when hovered, the cursor says VIEW, a press opens the preview window
+ * (`features/home/preview/`). The words are a trigger (`words.ts`): a short clock that plays them in when
+ * the wall has landed and out when the visitor leaves, whatever the scroll does in between. The close is
+ * a scroll zone (`index.ts`): the clip opens and the wall becomes the rows.
  *
- * Its `local` is virtual (`index.ts`): 0 to 1 runs in step with the hero's play and only moves the
- * words (the hero draws the scene), 1 to 2 is the close. From 1 on the field, the clip, the glide and
- * the drone are set by `FieldScene` from the story position (`aspirantsS`). This runtime owns the
- * words, the scroll hold while the preview is open, the dark ground and the bar's logo (it is the
- * bar's from the end of the hero's morph on).
+ * Its `local` is the section's own (`index.ts`): negative in the lead (the hero's zone: the hero draws
+ * the scene), 1 at rest, 1 to 2 across the close. From 1 on the field, the clip and the drone are set by
+ * `FieldScene` from the story position (`aspirantsS`). This runtime owns the words, the scroll hold
+ * while the preview is open and the bar's logo (it is the bar's from the end of the hero's morph on).
  */
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
@@ -21,20 +22,22 @@ import { releaseFull } from "../../preview/files";
 import { useHomePreview } from "../../preview/store";
 import { backdropAt } from "../backdrops";
 import { FieldScene } from "../hero/scene";
-import { aspirantsS, lineIn, lineOut } from "../hero/timeline";
+import { aspirantsS } from "../hero/timeline";
 
-/** The words leave to the right by this much of the screen's width as they go (the first line first). */
-const EXIT_SHARE = 0.16;
-/** The words rise this far (px) as they arrive. */
-const RISE_PX = 26;
+import { lineAt, stepWordsClock, WORDS_SHOW_AT, wordsShown } from "./words";
+
+/** The words rise this far (px) as they arrive and sink as they leave. */
+const RISE_PX = 28;
 
 class AspirantsRuntime implements SectionRuntime {
   private readonly scene: FieldScene;
   private readonly lines: HTMLElement[];
   private release: (() => void) | null = null;
-  /** The position the words were last written for (a still page writes nothing). */
+  /** The words' clock (seconds, 0 to `WORDS_SECONDS`) and whether the trigger says they are shown. */
+  private clock = 0;
+  private shown = false;
+  /** What was last written (a still page writes nothing). */
   private wordsAt = Number.NaN;
-  private wordsW = 0;
   private readonly unsubscribe: () => void;
 
   constructor(
@@ -54,37 +57,41 @@ class AspirantsRuntime implements SectionRuntime {
 
   update(v: number, frame: FrameInfo): void {
     const S = aspirantsS(v);
-    // Before the wall has landed the hero draws the scene (its logo, its burst, its gaze): this
-    // section only brings the words in, in step with it.
-    if (v >= 1) {
+    // The pictures slide with the page's scroll, wherever the visitor is (this section runs in the
+    // hero's lead too), so the plane is exact when the wall lands and when the rows take it over.
+    this.scene.follow(frame.S, frame.viewport);
+    // Before the wall has landed the hero draws the scene (its logo, its burst, its gaze). In the hero's
+    // zone this section's `v` already stands at its rest (1), so the scroll says where the zone ends.
+    if (v >= 1 && frame.S >= WORDS_SHOW_AT) {
       this.scene.update({ S, viewport: frame.viewport, entrance: 1 });
       // The bar's own logo is the logo from the end of the hero's morph on.
       showNavLogo(true);
     }
+    // Nothing behind the wall (the owner: no dynamic background on the right): the backdrop is
+    // there only from the rows on, and this call stays so the answer is one function of S.
     const back = backdropAt(S);
-    this.backdrop?.set(back.kind, back.options);
-    this.words(S, frame.viewport.w);
+    if (back) this.backdrop?.set(back.kind, back.options);
+    this.words(frame, v);
   }
 
-  /** Line `k` rises in one after another, and at the end slides out to the right and fades, the first line first. */
-  private words(S: number, width: number): void {
-    if (Math.abs(S - this.wordsAt) < 1e-5 && width === this.wordsW) return;
-    this.wordsAt = S;
-    this.wordsW = width;
+  /**
+   * The words: a trigger on a clock. The three lines rise in one after another when the wall has landed
+   * and sink out when the visitor leaves the rest, back or on. The scroll never moves them.
+   */
+  private words(frame: FrameInfo, v: number): void {
+    this.shown = wordsShown(this.shown, frame.S, v);
+    this.clock = stepWordsClock(this.clock, this.shown, frame.dt);
+    if (this.clock === this.wordsAt) return;
+    this.wordsAt = this.clock;
     for (let k = 0; k < this.lines.length; k++) {
       const el = this.lines[k]!;
-      const a = lineIn(S, k);
-      const b = lineOut(S, k);
-      put(el, "opacity", (a * (1 - b)).toFixed(3));
-      put(
-        el,
-        "transform",
-        `translate3d(${(b * EXIT_SHARE * width).toFixed(1)}px, ${((1 - a) * RISE_PX).toFixed(2)}px, 0)`,
-      );
-      // Not there yet, or folded away: it takes no press. It stays in the page's tree and the tab
-      // order (a hidden link could not be reached by a reader or the keyboard): a focus on it moves the
-      // page to where it shows (`home-stage.tsx`).
-      put(el, "pointer-events", a * (1 - b) < 0.01 ? "none" : "");
+      const a = lineAt(this.clock, k);
+      put(el, "opacity", a.toFixed(3));
+      put(el, "transform", `translate3d(0, ${((1 - a) * RISE_PX).toFixed(2)}px, 0)`);
+      // Not there yet, or gone: it takes no press. It stays in the page's tree and the tab order (a
+      // hidden link could not be reached by a reader or the keyboard): a focus on it moves the page
+      // to where it shows (`home-stage.tsx`).
+      put(el, "pointer-events", a < 0.01 ? "none" : "");
     }
   }
 

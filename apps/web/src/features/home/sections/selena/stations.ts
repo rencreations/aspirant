@@ -1,36 +1,43 @@
 /**
- * The stations and the triggers of the Selena section (round two: a played scene, not a scrubbed
- * one). Pure and import free on purpose: `index.ts` reads it, and `index.ts` must never reach
+ * The stations and the zones of the Selena section (round three: scroll based, with an idle snap).
+ * Pure and import free on purpose: `index.ts` reads it, and `index.ts` must never reach
  * `kernel/where.ts` (a cycle through the registry).
  *
- * The story runs on its own clock. One unit `u` is one second of a play, so a beat written in `u`
- * is a beat written in seconds, whatever the section's length in screens is. The virtual `local`
- * the kernel hands to `update` is `u / STORY`.
+ * The story has its own unit. One unit `u` is one second of the story, so a beat written in `u` does
+ * not change when the section's length in screens does. The virtual `local` the kernel hands to
+ * `update` is `u / STORY`, and the scroll carries it through the zones:
  *
- *   u 0           the list's last frame (J8): the sky, the doll hanging
- *   0 to REST_U   play one, the drawer, its words and the dragon come in
- *   REST_U        the rest: Selena and the dragon in the room, fully interactive
- *   to STORY      play two, the doll falls, the camera swings, the dragon eats her and sweeps past
- *                 the lens over white, and the screen ends white (the first frame of the voices)
+ *   zone one   0.7 screens   the drawer, its words and the dragon come in, the aurora rises (u 0 to REST_U)
+ *   rest       0.8 screens   Selena and the dragon in the room, fully interactive, the words to read
+ *   zone two   1.5 screens   the doll falls, the camera swings, the dragon eats her and sweeps past the
+ *                            lens over white (u REST_U to STORY). Down plays it, up plays it back.
+ *   rest       0.3 screens   white, the first frame of the voices (the bar's ink turns here)
+ *
+ * A visitor who stops inside a zone is carried to its nearer end by the kernel (`kernel/scrub.ts`).
  */
-import type { HomePlay } from "../../kernel/plays";
+import { zoneTable } from "../zone-table";
 
 /** The rest station, in seconds of the story. */
 export const REST_U = 1.0;
-/** The whole story, in seconds. The first play is REST_U long, the second is the rest of it. */
+/** The whole story, in seconds. Zone one is REST_U of it, zone two is the rest. */
 export const STORY = 3.95;
 /** The rest station as a `local`. */
 export const REST_V = REST_U / STORY;
 
-/** Where the plays fire, as a share of the section's range. */
-export const AT_ENTER = 0.12;
-/**
- * The film fires half a screen before the end at the latest (`1 - 0.5 / screens`), so it has ended
- * before the voices' lead begins to run and the top bar turns for the white right after it.
- */
-export const AT_FILM = 0.66;
+/** The lengths, in screens. One place to tune them. */
+export const LENGTHS = { enter: 0.7, rest: 0.8, film: 1.5, white: 0.3 } as const;
 
-export const SELENA_PLAYS: readonly HomePlay[] = [
-  { at: AT_ENTER, from: 0, to: REST_V, seconds: REST_U, ease: "linear", back: 0.7 },
-  { at: AT_FILM, from: REST_V, to: 1, seconds: STORY - REST_U, ease: "linear", back: 0.6 },
-];
+const TABLE = zoneTable(0, [
+  { zone: LENGTHS.enter, to: REST_V },
+  { rest: LENGTHS.rest },
+  { zone: LENGTHS.film, to: 1 },
+  { rest: LENGTHS.white },
+]);
+
+/** The section's length in screens (`index.ts`). */
+export const SELENA_SCREENS = TABLE.screens;
+export const SELENA_PLAYS = TABLE.plays;
+/** Where each zone lies, in screens from the section's start. */
+export const SELENA_ZONES = TABLE.zones;
+/** A control taking the keyboard focus lands in the middle of the rest, where the words show. */
+export const SELENA_FOCUS = (LENGTHS.enter + LENGTHS.rest / 2) / SELENA_SCREENS;

@@ -9,7 +9,7 @@ import type { Object3D, WebGLRenderer } from "three";
 import type { audio } from "@/lib/audio";
 import type { PreloadItem } from "@/lib/preload";
 
-import type { HomePlay } from "./plays";
+import type { HomePlay, PlayEase } from "./plays";
 import type { Stage } from "./stage";
 
 /** The sixteen sections of the scroll story, in scroll order (design section 4). */
@@ -166,8 +166,11 @@ export interface ScrollApi {
   raw(): number;
   /** The position in screens the scene is drawn at. */
   shown(): number;
-  /** Move the page to a position in screens (`duration`: seconds, for a smooth move). */
-  to(screens: number, options?: { immediate?: boolean; duration?: number }): void;
+  /**
+   * Move the page to a position in screens (`duration`: seconds, for a smooth move, `ease` its curve:
+   * the smooth scroller's own ease out when not given).
+   */
+  to(screens: number, options?: { immediate?: boolean; duration?: number; ease?: PlayEase }): void;
   /**
    * Hold the page still (wheel, touch and scroll keys do nothing) until the returned release is
    * called. It never stops the smooth scroller by itself and has a long safety limit.
@@ -263,6 +266,8 @@ export interface HomeSection {
    * Triggered scenes (`kernel/plays.ts`, `docs/design/home/kernel-plays.md`). A section with plays
    * gets a virtual `local` in `update` that runs on a clock between stations while the scroll is
    * held; the plays are checked at startup. Leave it out and `update` gets the scroll's `local`.
+   * A play with a `span` is a scroll zone instead (`kernel/scrub.ts`): the scroll drives it, and the
+   * page finishes it by itself when the visitor stops inside it.
    */
   readonly plays?: readonly HomePlay[];
   /**

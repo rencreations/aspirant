@@ -23,6 +23,8 @@ const WAITED_SITE = [
   /^field:(p|w):/,
   // The wall's extra thumbnails, one item for fifty small pictures.
   "field:tiles",
+  // The first 24 pictures of the wall's pool (round three); the other 135 are deferred.
+  "field:pool:first",
   "media:/models/about/drone.glb",
   "media:/img/home/drone-faces.webp",
   "media:/img/home/drone-faces-2.webp",

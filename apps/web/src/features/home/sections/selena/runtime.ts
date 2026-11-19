@@ -12,17 +12,7 @@ import { isPortrait } from "../hand/timeline";
 
 import { SelenaScene } from "./scene";
 import { STORY } from "./stations";
-import {
-  AT,
-  WORD_IN,
-  beatsAt,
-  newBeats,
-  seg,
-  selenaScreens,
-  smooth,
-  stepWhite,
-  type Beats,
-} from "./timeline";
+import { AT, WORD_IN, beatsAt, newBeats, seg, selenaScreens, smooth, type Beats } from "./timeline";
 
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 
@@ -51,8 +41,6 @@ class SelenaRuntime implements SectionRuntime {
   private readonly body: HTMLElement | null;
   private readonly action: HTMLElement | null;
   private disposed = false;
-  /** How far the white layer has let go by the clock, 0 (whole) to 1 (gone). */
-  private whiteClock = 0;
   /** The live backdrop, once the second canvas is made. Never required: the room works without. */
   backdrop: Backdrop | null = null;
   /** The actors have arrived, or have failed for good: the scene is as whole as it will be. */
@@ -91,7 +79,6 @@ class SelenaRuntime implements SectionRuntime {
   }
 
   enter(): void {
-    this.whiteClock = 0;
     this.scene.enter();
   }
 
@@ -100,13 +87,11 @@ class SelenaRuntime implements SectionRuntime {
   }
 
   update(local: number, frame: FrameInfo): void {
-    // The story runs on the plays' clock (`stations.ts`). In the tail the page has gone past the end
-    // and only the white layer still moves, with the scroll.
+    // The story is carried by the scroll's zones (`stations.ts`). In the tail the page has gone past
+    // the end and only the white layer still moves, with the scroll.
     const u = Math.min(local, 1) * STORY;
     const tail = Math.max(0, local - 1) * selenaScreens();
     const b = beatsAt(u, this.b, tail);
-    this.whiteClock = stepWhite(this.whiteClock, tail, frame.dt);
-    b.whiteOut = Math.max(b.whiteOut, smooth(this.whiteClock));
     this.dom(b, u, isPortrait(frame.viewport));
     this.live(b, u);
     this.scene.apply(b, frame);

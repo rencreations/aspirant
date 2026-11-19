@@ -15,7 +15,7 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { newRoutePlace, routeAt, type DroneRoutePlace } from "../../drone-route";
-import { ensureBackdrop, type Backdrop, type BackdropOptions } from "../../fx/backdrop";
+import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { clamp, ramp } from "../../fx/image-field/math";
 import {
   FILM_ORDER,
@@ -31,8 +31,10 @@ import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { filmStateAt } from "./film-state";
 import { sectionScreens, sectionStart } from "../../kernel/where";
 import { backdropAt } from "../backdrops";
-import { storyAt } from "../story";
-import { inkGlow, inkSpeed, makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
+import { STORY, storyAt } from "../story";
+import { makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
+import { DECK_READOUT, DECK_STRIPS } from "./deck-copy";
+import { WindowDeck } from "./deck";
 import { LetterGroup } from "./letters";
 import { STRIP_FOCUS_AT, STRIP_FOCUS_RANGE } from "./dwell";
 import { useStripPlayer } from "./store";
@@ -47,8 +49,9 @@ const FOCUS_AT = STRIP_FOCUS_AT;
 const FOCUS_RANGE = STRIP_FOCUS_RANGE;
 /** The corner dots sit this far outside the frame's corners at rest and at the end of the expand (px). */
 const DOT_OFF = [9, 48] as const;
-/** The tick marks of the window stand this far outside its corners. */
-const PLUS_OFF = 14;
+
+/** One em of the window's deck is this share of its width (the CSS: `font-size: calc(var(--sw) * 0.0125)`). */
+const DECK_EM = 0.0125;
 
 const ease = (x: number): number => x * x * (3 - 2 * x);
 
@@ -68,24 +71,17 @@ class StripRuntime implements SectionRuntime {
   private readonly videoWord: HTMLElement | null;
   private readonly bottom: HTMLElement | null;
   private readonly plus: HTMLElement[];
-  private readonly windowBox: HTMLElement | null;
-  private readonly play: HTMLElement | null;
-  private readonly scrim: HTMLElement | null;
+  private readonly deck: WindowDeck;
   private readonly amb: HTMLElement | null;
   private readonly ambScrim: HTMLElement | null;
   private readonly ambButton: HTMLElement | null;
-  private readonly scroll: HTMLElement | null;
   private readonly swaps: WordSwap[];
   private readonly links: HTMLElement[];
   private readonly line: HTMLElement | null;
   private readonly ends: Record<string, HTMLElement | null>;
   private readonly corners: Record<string, HTMLElement | null>;
-  private readonly cplus: Record<string, HTMLElement | null>;
   private readonly arcs: HTMLElement | null;
 
-  /** What the ink field is asked for: the numbers are written in place every frame (nothing is allocated). */
-  private readonly inkExtras: number[] = [0, 0, 0, 0];
-  private readonly ink: BackdropOptions = { theme: "storm", amount: 0.9, extras: this.inkExtras };
   /** The two words at the bottom left, which change letter by letter, and which set is asked for. */
   private swapGoal: 0 | 1 = 0;
   private release: (() => void) | null = null;
@@ -104,33 +100,20 @@ class StripRuntime implements SectionRuntime {
     const q = <T extends HTMLElement>(sel: string, root: ParentNode = text) =>
       root.querySelector<T>(sel);
 
-    const groups = [
-      "brand",
-      "agency",
-      "video",
-      "coordl",
-      "coordr",
-      "wl",
-      "wd",
-      "ambl",
-      "ambb",
-      "ambt",
-    ];
+    const groups = ["brand", "agency", "video", "coordl", "coordr", "ambl", "ambb", "ambt"];
     groups.forEach((g, i) => (this.letters[g] = new LetterGroup(text, g, i + 1)));
     this.cta = q("[data-strip-cta]");
     this.videoWord = q('[data-strip-g="video"]');
     this.bottom = q('[data-strip-g="bottom"]');
     this.plus = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-plus]"));
-    this.windowBox = q("[data-strip-window]");
-    this.play = q("[data-strip-play]");
-    this.scrim =
-      this.windowBox?.firstElementChild instanceof HTMLElement
-        ? this.windowBox.firstElementChild
-        : null;
+    this.deck = new WindowDeck(text, {
+      strips: DECK_STRIPS,
+      readout: DECK_READOUT,
+      onPress: this.openPlayer,
+    });
     this.amb = q("[data-strip-amb]");
     this.ambScrim = q("[data-strip-amb-scrim]");
     this.ambButton = q("[data-strip-button]");
-    this.scroll = q("[data-strip-scroll]");
     this.swaps = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-swap]")).map(
       (el, i) => new WordSwap(el, i + 1),
     );
@@ -138,10 +121,8 @@ class StripRuntime implements SectionRuntime {
     this.line = q("[data-strip-line]", below);
     this.ends = { l: q('[data-strip-end="l"]', below), r: q('[data-strip-end="r"]', below) };
     this.corners = {};
-    this.cplus = {};
     for (const c of ["tl", "tr", "bl", "br"]) {
       this.corners[c] = q(`[data-strip-corner="${c}"]`, below);
-      this.cplus[c] = q(`[data-strip-cplus="${c}"]`, below);
     }
     this.arcs = q("[data-strip-arcs]", below);
 
@@ -157,46 +138,26 @@ class StripRuntime implements SectionRuntime {
     const vp = frame.viewport;
     const b = stripBeats(s, this.beats);
 
-    // Until the first play is over the rows' play is still running in step with it and draws the
-    // film and the drone: this section only brings its words in.
-    if (v >= 1) {
-      this.driveFilm(S, b);
-      this.driveDrone(S, vp);
-    }
-    this.driveBackdrop(S, b, vp, frame.input.wheel);
+    // The rows' zone ended with the film upright at the strip's start, so the film and the drone are
+    // never earlier than that (the words come in over it, in the first zone).
+    const Sf = Math.max(S, STORY.strip.start);
+    this.driveFilm(Sf, b);
+    this.driveDrone(Sf, vp);
+    this.driveBackdrop(Sf);
     this.writeSmall(b, vp);
-    this.writeWindow(b, vp);
+    this.writeWindow(b, vp, frame.dt);
     this.writeSecond(b);
     this.stepSwap(frame.dt, b);
   }
 
   /**
-   * The strip's dark ground: the section's own pure choice (`backdrops.ts`), and for the ink field the
-   * two things only this section knows. The film's glow: the light of the picture bleeds into the mist
-   * around the frame as it opens (strongest on the window, gone as the orbit takes over), and the
-   * scroll input: the mist flows faster while the visitor pushes the wheel, also while a scene holds
-   * the page (the wheel is read from the input, not from the page's position).
+   * The strip's dark ground: the section's own pure choice (`backdrops.ts`). The ink field answers
+   * the cursor only; it has no glow around the film and no reaction to the scroll (the owner, round three).
    */
-  private driveBackdrop(
-    S: number,
-    b: StripBeats,
-    vp: { readonly w: number; readonly h: number },
-    wheel: number,
-  ): void {
+  private driveBackdrop(S: number): void {
     const back = backdropAt(S);
-    if (back.kind !== "ink-field") {
-      this.backdrop?.set(back.kind, back.options);
-      return;
-    }
-    const box = expandBox(vp.w, vp.h, b.expand, TRAILER_FILM.aspect, this.box);
-    const glow = inkGlow(b.expand, b.pull, b.fly);
-    const x = this.inkExtras;
-    x[0] = glow;
-    x[1] = box.w / 2 / vp.h;
-    x[2] = box.h / 2 / vp.h;
-    this.ink.amount = back.options.amount ?? 1;
-    this.ink.speed = inkSpeed(wheel);
-    this.backdrop?.set("ink-field", this.ink);
+    if (!back) return;
+    this.backdrop?.set(back.kind, back.options);
   }
 
   private driveFilm(S: number, b: StripBeats): void {
@@ -263,14 +224,10 @@ class StripRuntime implements SectionRuntime {
       put(p, "opacity", plus.toFixed(3));
     }
 
-    const scrollOn = ramp(enter, 0.5, 1) * (1 - ramp(out, 0, 0.4));
-    put(this.scroll, "opacity", scrollOn.toFixed(3));
-    put(this.scroll, "pointer-events", scrollOn > 0.5 ? "" : "none");
-
     this.writeChrome(b, vp);
   }
 
-  /** The line, the dots, the arcs and the tick marks in the scene (under the film). */
+  /** The line, the dots and the arcs in the scene (under the film). */
   private writeChrome(b: StripBeats, vp: { readonly w: number; readonly h: number }): void {
     const sc = sceneBox(vp.w, vp.h, this.scene);
     const enterE = ease(ramp(b.enter, 0, 0.6));
@@ -294,18 +251,6 @@ class StripRuntime implements SectionRuntime {
     this.place(this.corners.bl, box.x - off - sc.x, box.y + box.h + off - sc.y, dotOpacity);
     this.place(this.corners.br, box.x + box.w + off - sc.x, box.y + box.h + off - sc.y, dotOpacity);
 
-    // The window's own tick marks come in as it is opened and go as it is pulled into the orbit.
-    const plus = b.windowIn * (1 - ramp(b.pull, 0, 0.2));
-    this.place(this.cplus.tl, box.x - PLUS_OFF - sc.x, box.y - PLUS_OFF - sc.y, plus);
-    this.place(this.cplus.tr, box.x + box.w + PLUS_OFF - sc.x, box.y - PLUS_OFF - sc.y, plus);
-    this.place(this.cplus.bl, box.x - PLUS_OFF - sc.x, box.y + box.h + PLUS_OFF - sc.y, plus);
-    this.place(
-      this.cplus.br,
-      box.x + box.w + PLUS_OFF - sc.x,
-      box.y + box.h + PLUS_OFF - sc.y,
-      plus,
-    );
-
     // The faint arcs turn as they come in and as they leave.
     put(this.arcs, "opacity", (0.18 * alive * (1 - ramp(b.leave, 0, 0.34))).toFixed(3));
     put(this.arcs, "transform", `rotate(${(30 - (1 - enterE) * 60 + out * 120).toFixed(2)}deg)`);
@@ -319,17 +264,15 @@ class StripRuntime implements SectionRuntime {
   // ---------------------------------------------------------------------------------------------
   // The window and the second screen
 
-  private writeWindow(b: StripBeats, vp: { readonly w: number; readonly h: number }): void {
-    void vp;
-    const L = this.letters;
+  /** The window's deck (PLAY, the button, FILMS, the bands and the readout): `deck.ts`, after Vexana's film section. */
+  private writeWindow(
+    b: StripBeats,
+    vp: { readonly w: number; readonly h: number },
+    dt: number,
+  ): void {
+    const sc = sceneBox(vp.w, vp.h, this.scene);
     const up = b.windowIn * b.play;
-    L.wl!.set(up);
-    L.wd!.set(up);
-    put(this.windowBox, "opacity", b.windowIn > 0 && b.play > 0 ? "1" : "0");
-    put(this.scrim, "opacity", (0.9 * up).toFixed(3));
-    put(this.play, "opacity", up.toFixed(3));
-    put(this.play, "transform", `scale(${(0.7 + 0.3 * b.play * b.windowIn).toFixed(3)})`);
-    put(this.play, "pointer-events", up > 0.5 ? "" : "none");
+    this.deck.step(dt, up, Math.max(11, sc.w * DECK_EM), sc.w);
   }
 
   private writeSecond(b: StripBeats): void {
@@ -405,9 +348,6 @@ class StripRuntime implements SectionRuntime {
     on(this.cta, "focus", () => this.setSwap(1));
     on(this.cta, "blur", () => this.setSwap(0));
 
-    on(this.play, "click", () => this.openPlayer());
-    on(this.scroll, "click", () => this.ctx.scroll.to(this.pageAt(FOCUS_AT.window)));
-
     // A control the page is not at: move to where it shows. This runs before the shell's own handler
     // (which goes to the middle of the section) and stops it.
     on(this.el, "focusin", (e) => {
@@ -443,7 +383,7 @@ class StripRuntime implements SectionRuntime {
   /** Which part of the section a control belongs to, for the keyboard. */
   private kindOf(target: EventTarget | null): Kind | null {
     if (!(target instanceof Element)) return null;
-    if (target.closest("[data-strip-cta], [data-strip-scroll]")) return "small";
+    if (target.closest("[data-strip-cta]")) return "small";
     if (target.closest("[data-strip-play]")) return "window";
     if (target.closest("[data-strip-film], [data-strip-button]")) return "hold";
     return null;
@@ -454,12 +394,14 @@ class StripRuntime implements SectionRuntime {
     this.release?.();
     this.release = null;
     this.playerOpen = false;
+    this.deck.reset();
     this.setSwap(0);
   }
 
   dispose(): void {
     for (const off of this.cleanups) off();
     this.cleanups.length = 0;
+    this.deck.dispose();
     useStripPlayer.getState().close();
     this.release?.();
     this.release = null;

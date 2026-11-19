@@ -1,37 +1,52 @@
 import { describe, expect, it } from "vitest";
 
 import { playsOf } from "../../kernel/beat";
-import { validatePlays } from "../../kernel/plays";
+import { isZone, validatePlays } from "../../kernel/plays";
 import { section as bolt } from "./index";
 import { section as fall } from "../fall/index";
 
 import {
   BEAT,
+  BOLT_DWELL,
   BOLT_LAST,
   BOLT_STEPS,
+  FALL_DWELL,
   FALL_STEPS,
+  TURN_REST,
   WHEEL_FROM,
   WHEEL_ITEMS,
   WHEEL_STEP,
 } from "./stations";
 
-describe("the stations of the bolt and the fall", () => {
+const end = (s: { atScreens: number; spanScreens?: number }): number =>
+  s.atScreens + (s.spanScreens ?? 0);
+
+describe("the zones of the bolt and the fall", () => {
   it("rest the wheel on one pair each, the last one where the fall begins", () => {
     expect(BOLT_STEPS).toHaveLength(WHEEL_ITEMS);
     BOLT_STEPS.forEach((step, i) => {
       expect(step.to).toBeCloseTo(WHEEL_FROM + i * WHEEL_STEP, 9);
     });
     expect(BOLT_LAST).toBeCloseTo(3.3, 9);
-    expect(FALL_STEPS[0]!.to).toBe(BEAT.end);
+    expect(FALL_STEPS[FALL_STEPS.length - 1]!.to).toBe(BEAT.end);
   });
 
-  it("keep every scene short: nothing holds the scroll for more than about three seconds", () => {
-    for (const step of [...BOLT_STEPS, ...FALL_STEPS]) {
-      expect(step.seconds).toBeLessThanOrEqual(3);
-      expect(step.seconds).toBeGreaterThanOrEqual(0.5);
+  it("are all scroll zones: nothing here runs on a clock or holds the page", () => {
+    for (const step of [...BOLT_STEPS, ...FALL_STEPS]) expect(step.spanScreens).toBeGreaterThan(0);
+    for (const play of [...(bolt.plays ?? []), ...(fall.plays ?? [])]) {
+      expect(isZone(play)).toBe(true);
     }
-    // The wheel turns one pair in about half a second.
-    for (const step of BOLT_STEPS.slice(1)) expect(step.seconds).toBeLessThanOrEqual(0.7);
+  });
+
+  it("keep every zone short: a turn of the wheel about half a screen, a scene about a screen", () => {
+    for (const step of BOLT_STEPS.slice(1)) {
+      expect(step.spanScreens!).toBeGreaterThanOrEqual(0.3);
+      expect(step.spanScreens!).toBeLessThanOrEqual(0.6);
+    }
+    for (const step of [BOLT_STEPS[0]!, ...FALL_STEPS]) {
+      expect(step.spanScreens!).toBeGreaterThanOrEqual(0.6);
+      expect(step.spanScreens!).toBeLessThanOrEqual(1.5);
+    }
   });
 
   it("gives the tables the registry's sections accept", () => {
@@ -43,36 +58,35 @@ describe("the stations of the bolt and the fall", () => {
     expect(fall.plays).toEqual(playsOf(BOLT_LAST, BEAT.end, fall.screens, FALL_STEPS));
   });
 
-  it("fires the last wheel turn before the fall's lead, so no two scenes are on screen at once", () => {
-    const lastAt = BOLT_STEPS[BOLT_STEPS.length - 1]!.atScreens;
-    expect(lastAt).toBeLessThan(bolt.screens - fall.lead);
-    // The bolt has no tail: its range ends where the fall's throw can fire.
+  it("ends the last turn of the wheel before the fall's lead, so no zone has two scenes on screen", () => {
+    const last = BOLT_STEPS[BOLT_STEPS.length - 1]!;
+    expect(end(last)).toBeLessThanOrEqual(bolt.screens - fall.lead + 1e-9);
+    expect(bolt.screens - end(last)).toBeCloseTo(BOLT_DWELL, 9);
+    // The bolt has no tail: its range ends where the fall's rest on the last pair begins.
     expect(bolt.tail).toBe(0);
     expect(FALL_STEPS[0]!.atScreens).toBeGreaterThan(0);
   });
 
-  it("leaves a dwell of 0.4 to 1 screen between two triggers", () => {
-    const ats = BOLT_STEPS.map((s) => s.atScreens);
-    for (let i = 1; i < ats.length; i += 1) {
-      const gap = ats[i]! - ats[i - 1]!;
-      expect(gap).toBeGreaterThanOrEqual(0.4);
-      expect(gap).toBeLessThanOrEqual(1);
-    }
-    // From the last wheel turn to the throw: the rest of the bolt plus the fall's own threshold.
-    const toThrow = bolt.screens - ats[ats.length - 1]! + FALL_STEPS[0]!.atScreens;
-    expect(toThrow).toBeGreaterThanOrEqual(0.4);
-    expect(toThrow).toBeLessThanOrEqual(1);
+  it("ends the fall's last zone before the hand's lead, so the last line stands first", () => {
+    const last = FALL_STEPS[FALL_STEPS.length - 1]!;
+    expect(fall.screens - end(last)).toBeCloseTo(FALL_DWELL, 9);
+    expect(end(last)).toBeLessThanOrEqual(fall.screens - 0.5 - 0.3 + 1e-9);
   });
 
-  it("asks for at least half a screen of scroll between two turns of the names (text to read)", () => {
-    const ats = BOLT_STEPS.map((s) => s.atScreens);
-    for (let i = 2; i < ats.length; i += 1) {
-      expect(ats[i]! - ats[i - 1]!).toBeGreaterThanOrEqual(0.5);
+  it("leaves a rest between two zones, longer on the words of the fall", () => {
+    for (let i = 1; i < BOLT_STEPS.length; i += 1) {
+      const gap = BOLT_STEPS[i]!.atScreens - end(BOLT_STEPS[i - 1]!);
+      expect(gap).toBeGreaterThanOrEqual(TURN_REST - 1e-9);
     }
+    // "5 Phases" is information: at least 0.4 screens between the two zones of the fall.
+    expect(FALL_STEPS[1]!.atScreens - end(FALL_STEPS[0]!)).toBeGreaterThanOrEqual(0.4);
+    // The rest on the fifth pair, up to the throw: the bolt's dwell and the fall's first screens.
+    expect(BOLT_DWELL + FALL_STEPS[0]!.atScreens).toBeGreaterThanOrEqual(0.6);
   });
 
-  it("holds the whole chain of a hard flick to about seven seconds", () => {
-    const total = [...BOLT_STEPS, ...FALL_STEPS].reduce((sum, s) => sum + s.seconds, 0);
-    expect(total).toBeLessThan(8);
+  it("puts the first line of the fall whole in the rest between its two zones", () => {
+    expect(FALL_STEPS[0]!.to).toBe(BEAT.phases);
+    expect(BEAT.phases).toBeGreaterThan(BEAT.launch);
+    expect(BEAT.phases).toBeLessThan(BEAT.end);
   });
 });

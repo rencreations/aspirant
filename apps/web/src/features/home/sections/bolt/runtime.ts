@@ -12,9 +12,10 @@ import { wheelEnvelope, wheelItem, wheelPlace, wheelTransform, type WheelItem } 
 
 /**
  * The bolt section: Silverbolt flies in from the lower right with the doll on its head and hovers in
- * the middle while the five pair names turn on the wheel, one pair for each play. The scene is shared
+ * the middle while the five pair names turn on the wheel, one pair for each zone. The scene is shared
  * with the fall (`scene.ts`); this runtime adds the wheel and the live backdrop (a green aurora). It
- * runs on beat time: the plays of `stations.ts` move it on a clock, the lead goes with the scroll.
+ * runs on beat time: the zones of `stations.ts` move it with the scroll, the lead goes with the scroll
+ * too, and nothing in it has a clock of its own (a scene that is not built yet shows the text only).
  */
 class BoltRuntime implements SectionRuntime {
   private readonly scene: BoltScene;
@@ -41,11 +42,6 @@ class BoltRuntime implements SectionRuntime {
 
   enter(): void {
     this.scene.fresh();
-  }
-
-  /** The dragon and the doll are built: a play does not fire before (the kernel's ready gate). */
-  ready(): boolean {
-    return this.scene.gate.done;
   }
 
   /** The five names turn on a barrel: one in focus, the neighbours dim, shrink and tilt away. */

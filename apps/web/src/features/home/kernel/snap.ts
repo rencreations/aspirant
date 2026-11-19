@@ -92,7 +92,11 @@ export function jointZones(layout: Layout): JointZone[] {
 export function playThresholds(layout: Layout): number[] {
   const out: number[] = [];
   for (const p of layout.placed) {
-    for (const play of p.def.plays ?? []) out.push(p.start + play.at * p.def.screens);
+    for (const play of p.def.plays ?? []) {
+      out.push(p.start + play.at * p.def.screens);
+      // A zone is not a place to rest: its far end is a threshold too (the joint snap keeps clear of both).
+      if (play.span !== undefined) out.push(p.start + (play.at + play.span) * p.def.screens);
+    }
   }
   return out.sort((a, b) => a - b);
 }
@@ -164,7 +168,8 @@ export type SnapBlock =
   | "chase"
   | "outside"
   | "no-rest"
-  | "script";
+  | "script"
+  | "zone";
 
 /** What the engine tells the snap each frame. Plain numbers and flags, written in place by the caller. */
 export interface SnapFrame {
@@ -191,6 +196,13 @@ export interface SnapFrame {
   chasing: boolean;
   /** A script's own move of the page is on its way (a button, a focus move), not ours. */
   scripted: boolean;
+  /** The page is inside a scroll zone (`kernel/scrub.ts`): the zone snap owns the place, not the joint snap. */
+  zoned?: boolean;
+  /**
+   * The site's scroll lock is on for a reason the home did not take (the menu, a player, a dialog:
+   * the `lenis-stopped` class on `html`). Not a hold of the home's, so `holds` does not count it.
+   */
+  locked?: boolean;
 }
 
 export interface SnapDeps {
@@ -306,6 +318,7 @@ export class JointSnap {
   private blockOf(f: SnapFrame): SnapBlock | null {
     if (!f.open) return "closed";
     if (f.frozen) return "frozen";
+    if (f.zoned) return "zone";
     const inputAt = Math.max(f.pushAt, f.keyAt);
     if (inputAt <= this.jumpAt) return "unarmed";
     if (f.now - this.jumpAt < SNAP_GRACE_MS) return "grace";
@@ -313,7 +326,7 @@ export class JointSnap {
     if (f.scripted) return "script";
     if (f.touching) return "touch";
     if (f.now - Math.max(inputAt, this.movedAt) < SNAP_IDLE_MS) return "input";
-    if (f.holds > 0) return "hold";
+    if (f.holds > 0 || f.locked) return "hold";
     if (f.playing) return "play";
     if (f.chasing) return "chase";
     return null;

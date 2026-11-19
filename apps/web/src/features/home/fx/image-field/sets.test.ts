@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { buildFormations } from "./formations";
-import { assignPictures, cardCountOf, cardKeys, poolKeys } from "./pictures";
+import { assignPictures, cardCountOf, cardKeys, poolGroups, poolKeys } from "./pictures";
 import { HERO_PORTRAITS, HERO_WALLS } from "./picks-data";
 import { focusInWindow, poolOf, portraitSource, setDef, wideCrop, wideSource } from "./sets";
 
@@ -98,7 +98,7 @@ describe("which picture each card shows", () => {
     const set = buildFormations(
       n,
       { w: 1440, h: 900 },
-      { cardKeys: cardKeys(def, n), poolKeys: poolKeys(def) },
+      { cardKeys: cardKeys(def, n), poolKeys: poolKeys(def), poolGroups: poolGroups(def) },
     );
     const pics = assignPictures(def, set);
     expect(pics).toHaveLength(set.total);
@@ -108,8 +108,9 @@ describe("which picture each card shows", () => {
     expect(pics[n + 2]!.wide).toBe(set.slotPic[set.extraSlot[2]!]);
     const pool = poolOf(def).length;
     expect(pics.every((p) => p.portrait < def.portraits.length && p.wide < pool)).toBe(true);
-    // The plane shows nearly the whole pool (fewer pictures than slots, so a few may not come up).
-    expect(new Set(pics.map((p) => p.wide)).size).toBeGreaterThanOrEqual(Math.floor(pool * 0.85));
+    // The pool is larger than the plane has cells (round three): every cell has a picture of its own.
+    expect(pool).toBeGreaterThanOrEqual(100);
+    expect(new Set(pics.map((p) => p.wide)).size).toBe(Math.min(pool, set.total));
   });
 
   it("keys a card by its portrait's character and a picture by its single character", () => {

@@ -179,7 +179,8 @@ describe("navOwnerAt", () => {
   it("makes the voices take the top bar a little before the white is whole", () => {
     const layout = layoutSections(SECTIONS);
     const voices = layout.placed.find((p) => p.id === "voices")!;
-    expect(navOwnerAt(layout, voices.start - 0.46).id).toBe("selena");
-    expect(navOwnerAt(layout, voices.start - 0.44).id).toBe("voices");
+    // The bar turns over Selena's white rest (0.3 screens), after the film's zone has ended.
+    expect(navOwnerAt(layout, voices.start - 0.31).id).toBe("selena");
+    expect(navOwnerAt(layout, voices.start - 0.29).id).toBe("voices");
   });
 });

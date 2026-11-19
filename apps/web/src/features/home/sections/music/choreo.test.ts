@@ -7,6 +7,7 @@ import { validatePlays } from "../../kernel/plays";
 
 import {
   EXIT_FROM,
+  EXIT_RESET,
   LEAVE_TO,
   arrivalAt,
   arrivalOf,
@@ -19,7 +20,7 @@ import {
   newLayout,
   riseAt,
 } from "./choreo";
-import { AT_ARRIVE, AT_EXIT, MUSIC_PLAYS, SECONDS, STAND } from "./stations";
+import { LENGTHS, MUSIC_PLAYS, MUSIC_SCREENS, MUSIC_ZONES, STAND } from "./stations";
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -70,26 +71,40 @@ describe("the arrival", () => {
   });
 });
 
-describe("the plays", () => {
+describe("the zones", () => {
   it("are a valid table: the pair's corners, the standing scene, the pair's rise", () => {
     expect(() => {
       validatePlays("music", MUSIC_PLAYS);
     }).not.toThrow();
     expect(MUSIC_PLAYS.map((p) => p.from)).toEqual([0, STAND]);
     expect(MUSIC_PLAYS.map((p) => p.to)).toEqual([STAND, 1]);
-    expect(AT_ARRIVE).toBeLessThan(AT_EXIT);
   });
 
-  it("are short: the props come in within about three seconds, go out in under two", () => {
-    expect(SECONDS.arrive).toBeLessThanOrEqual(3.5);
-    expect(SECONDS.exit).toBeLessThanOrEqual(2);
+  it("are scroll zones with no clock: every play has a span", () => {
+    for (const p of MUSIC_PLAYS) expect(p.span).toBeGreaterThan(0);
   });
 
-  it("give the gramophone and the crate about a second and a half each", () => {
-    // The arrival is a straight line over the part of the play that follows the zip off.
-    const arriveSeconds = SECONDS.arrive * ((STAND - LEAVE_TO) / STAND);
-    expect(arriveSeconds * 0.55).toBeGreaterThan(1.1);
-    expect(arriveSeconds * 0.6).toBeLessThan(2.2);
+  it("lay out in screens: arrive, the stand, exit, the exit ending at the section's end", () => {
+    const [arrive, exit] = MUSIC_ZONES;
+    expect(arrive!.from).toBe(0);
+    expect(arrive!.to).toBeCloseTo(LENGTHS.arrive, 9);
+    expect(exit!.from).toBeCloseTo(LENGTHS.arrive + LENGTHS.stand, 9);
+    expect(exit!.to).toBeCloseTo(MUSIC_SCREENS, 9);
+  });
+
+  it("are short: each zone is about a screen, the stand a real dwell", () => {
+    for (const z of MUSIC_ZONES) {
+      expect(z.to - z.from).toBeGreaterThanOrEqual(0.8);
+      expect(z.to - z.from).toBeLessThanOrEqual(1.5);
+    }
+    expect(LENGTHS.stand).toBeGreaterThanOrEqual(0.6);
+  });
+
+  it("give the gramophone and the crate most of a screen each to come in", () => {
+    // The arrival is a straight line over the part of the zone that follows the zip off.
+    const arriveScreens = LENGTHS.arrive * ((STAND - LEAVE_TO) / STAND);
+    expect(arriveScreens * 0.51).toBeGreaterThan(0.45);
+    expect(arriveScreens * 0.6).toBeLessThan(1);
   });
 
   it("fill the arrival from nothing at the zip off's end to a whole scene at the stand", () => {
@@ -112,15 +127,16 @@ describe("the plays", () => {
     expect(a.crate).toBe(0);
     expect(exitAt(STAND)).toBe(0);
   });
-
-  it("keep the stand dwell long enough to pick a record and short enough to be no dead scroll", () => {
-    // The screens are in `index.ts`; the thresholds' spacing is what the dwell is made of.
-    expect(AT_EXIT - AT_ARRIVE).toBeGreaterThan(0.5);
-    expect(AT_EXIT).toBeLessThanOrEqual(0.82);
-  });
 });
 
 describe("the leaving", () => {
+  it("resets the scene where the idle snap starts to carry a stop forward (a quarter of the zone)", () => {
+    // Below a quarter the snap goes back to the stand, so the scene must still be whole there.
+    expect(exitAt(STAND + (1 - STAND) * 0.1)).toBeLessThan(EXIT_RESET);
+    expect(exitAt(STAND + (1 - STAND) * 0.24)).toBeLessThanOrEqual(EXIT_RESET);
+    expect(exitAt(STAND + (1 - STAND) * 0.3)).toBeGreaterThan(EXIT_RESET);
+  });
+
   it("lets the drones go in the first stretch and keeps the scene until the exit", () => {
     expect(leaveWeight(0)).toBe(0);
     expect(leaveWeight(LEAVE_TO)).toBe(1);

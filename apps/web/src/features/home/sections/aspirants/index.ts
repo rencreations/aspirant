@@ -1,31 +1,38 @@
 import type { HomeSection } from "../../kernel/types";
-import { HERO_PLAY_SECONDS, HERO_SCREENS } from "../hero";
+import { HERO_SCREENS } from "../hero";
 
 import { preload } from "./preload";
 
 /**
- * The sliding wall of wide cards, as two plays (round two, 19 Nov 2026).
+ * The wall of big tilted pictures on the left half, the owner's words on the right (round three,
+ * 20 Nov 2026: scroll based, like premotio).
  *
- * 1. The words come in. It is the hero's play seen from this side: it fires at the same scroll
- *    (`at: 0` here, `at: 1` in the hero), runs the same 2.8 s on the same curve, and drives only the
- *    owner's words (they are this section's DOM). `lead` is the hero's length so this section runs
- *    from the top of the page and its back threshold equals the hero's.
- * 2. The close. The wall is a plane of small cards over the whole screen, seen through a clip; after a
- *    dwell of about a screen (this section has words and information: the owner asked for a longer
- *    threshold, "scroll more to trigger") the next scroll slides the words out to the right and opens
- *    the clip, a hard edge that sweeps out and shows the rest of the plane. The cards never stop: the
- *    glide goes on as the rows. 1.2 s, scroll held. Back plays it in reverse.
+ * The section has a rest and one scroll zone, and the scene it shows is the hero's landing (the hero's
+ * own zone ends on the wall, `HERO_SCREENS` before this section starts, and this section's lead covers
+ * it).
  *
- * `update` gets 0 to 1 for the first play and 1 to 2 for the second (`aspirantsS` in `hero/timeline.ts`).
- * The ground stays light: it goes dark with the rows' transition, not with the close.
+ * 1. THE REST (`ASPIRANTS_REST`, about a screen: the section has words, so the visitor must scroll a
+ *    little more before the page moves on). The words come in by a TRIGGER on a short clock when the wall
+ *    has landed (`words.ts`), and the pictures slide along their rows with the scroll, up and down, and
+ *    stand when the scroll stands (`fx/image-field/scroll-slide.ts`). A card lifts when hovered, the
+ *    cursor says VIEW, a press opens the preview.
+ * 2. THE CLOSE (`ASPIRANTS_CLOSE`, a scroll ZONE, `kernel/scrub.ts`): the words leave (a trigger), and
+ *    the hard edge of the wall sweeps out and the plane opens into the full screen rows (the clip
+ *    opens). The visitor drives it, up and down, and if they stop inside it the page finishes it by
+ *    itself, forward or back. Its end is the rows' first frame (`rows/`).
+ *
+ * `update` gets 1 at rest (the wall with the words in) and 1 to 2 across the close (`aspirantsS` in
+ * `hero/timeline.ts`). In the lead (the hero's zone) it is negative and the hero drives the scene.
+ * The ground stays light, with nothing behind the wall (`sections/backdrops.ts`).
  */
-const ASPIRANTS_SCREENS = 1.3;
-/** Screens of scroll between the hero's play and the close: the dwell on the words. */
-const ASPIRANTS_DWELL = 1;
-/** The close fires at this share of the section. */
-const ASPIRANTS_CLOSE_AT = ASPIRANTS_DWELL / ASPIRANTS_SCREENS;
-/** The close, in seconds going forward. */
-const ASPIRANTS_CLOSE_SECONDS = 1.2;
+/** Screens of rest on the wall with the words (the pictures only slide with the scroll). */
+export const ASPIRANTS_REST = 1;
+/** The close: the length of the scroll zone, in screens. */
+export const ASPIRANTS_CLOSE = 1;
+/** The section's length in screens. */
+export const ASPIRANTS_SCREENS = ASPIRANTS_REST + ASPIRANTS_CLOSE;
+/** The idle snap for a full traverse of the close (seconds): the page carries the scene the rest of the way. */
+export const ASPIRANTS_SNAP_SECONDS = 1.6;
 
 export const section: HomeSection = {
   id: "aspirants",
@@ -37,13 +44,13 @@ export const section: HomeSection = {
   dom: "fixed",
   restOutside: true,
   plays: [
-    { at: 0, from: 0, to: 1, seconds: HERO_PLAY_SECONDS, ease: "linear" },
     {
-      at: ASPIRANTS_CLOSE_AT,
+      at: ASPIRANTS_REST / ASPIRANTS_SCREENS,
+      span: ASPIRANTS_CLOSE / ASPIRANTS_SCREENS,
       from: 1,
       to: 2,
-      seconds: ASPIRANTS_CLOSE_SECONDS,
-      ease: "inOut",
+      seconds: ASPIRANTS_SNAP_SECONDS,
+      ease: "linear",
     },
   ],
   preload,

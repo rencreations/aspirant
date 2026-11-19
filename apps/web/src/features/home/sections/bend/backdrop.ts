@@ -13,10 +13,11 @@ const ask = (kind: BackdropKind, options: BackdropOptions): BackdropAsk => ({ ki
 /** The chase's last backdrop goes on while the book closes (the same call: no cross-fade at the joint). */
 const COMIC = ask("pixel-blast", { amount: 0.5, speed: 0.7 });
 /**
- * A stance lasts about 0.45 s, so the four elements cross in 0.2 s and each one stands formed for a
- * moment. At the default 0.5 s they were never whole (each was gone before it had come in).
+ * Each stance is a scroll zone with a rest at its end, so the visitor can stand in a formed element.
+ * The elements still cross in 0.3 s, quicker than the default 0.5 s, so a brisk scroll through a
+ * zone (about 0.4 s) leaves the element whole before the next one begins.
  */
-export const ELEMENT_FADE = 0.2;
+export const ELEMENT_FADE = 0.3;
 /** The four stances: the element she bends, drawn behind her. */
 const ELEMENT: readonly BackdropAsk[] = [
   ask("earth", { amount: 0.85, fade: ELEMENT_FADE }),

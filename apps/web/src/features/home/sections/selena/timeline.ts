@@ -62,8 +62,11 @@ export const AT = {
   front: [REST_U + 2.5, REST_U + 2.7],
   /** The white over the canvas hands over to the one under it (the same colour), at the end. */
   frontOut: [REST_U + 2.75, STORY],
-  /** In SCREENS past the section's end (its tail): the white layer leaves, under the voices' own ground. */
-  whiteOut: [0.25, 0.5],
+  /**
+   * In SCREENS past the section's end (its tail): the white layer leaves with the scroll, as the
+   * voices' entrance comes in, so its waves come up behind its title (scroll based, both ways).
+   */
+  whiteOut: [0.04, 0.45],
 } as const;
 
 /** How long one word takes to come in, in seconds. */
@@ -195,23 +198,4 @@ export function beatsAt(u: number, out: Beats = newBeats(), tail = 0): Beats {
   out.live = u <= AT.restEnd + 1e-6;
   out.actors = u < AT.front[1];
   return out;
-}
-
-/**
- * The white layer lets go by the clock, not the scroll: once the page is `WHITE_LEAVE_AT` screens
- * into the tail it leaves over `WHITE_LEAVE_SECONDS`. The voices' entrance runs at the same moment,
- * so the waves come up behind its title while it comes in. The scroll's own fade (`whiteOut`) stays
- * as the fallback that has it gone by the end of the tail whatever the clock did.
- */
-export const WHITE_LEAVE_AT = 0.04;
-export const WHITE_LEAVE_SECONDS = 0.7;
-
-/**
- * The clock of the white's leaving: `c` is 0 (whole) to 1 (gone), `tail` how far the page is past the
- * section's end in screens, `dt` the frame's seconds. It moves toward 1 past `WHITE_LEAVE_AT` and
- * back toward 0 before it, at the same rate (a scroll up brings the white back as fast as it left).
- */
-export function stepWhite(c: number, tail: number, dt: number): number {
-  const step = Math.max(0, dt) / WHITE_LEAVE_SECONDS;
-  return clamp01(tail > WHITE_LEAVE_AT ? c + step : c - step);
 }
