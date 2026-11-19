@@ -4,7 +4,7 @@
  */
 import type { Placement, Rect as MorphRect } from "@/features/story/morph/morph-math";
 
-import { isPortrait, type Vp } from "../hand/timeline";
+import { isPortrait, type Vp } from "../vp";
 
 import type { PictureFrame } from "./frames";
 
@@ -15,33 +15,94 @@ export interface Rect {
   h: number;
 }
 
-/** The width of a frame over its height: 4 to 5, the owner's. */
+/** The width of a frame over its height: 4 to 5, the owner's (Oryzo's own is 85 to 110). */
 export const FRAME_RATIO = 0.8;
+/** The small pictures beside the frame are this share of it (Oryzo: 0.35), with a gap of 0.08 of one. */
+export const THUMB_SCALE = 0.35;
+export const THUMB_GAP = 0.08;
+/** The gap between the frame and the small pictures, as a share of the frame's width (Oryzo: 0.0406). */
+export const SIDE_GUTTER = 0.0406;
+/** The dashed line stands this far outside the frame. */
+export const CHROME_PAD = 6;
 
 export interface ListGeometry {
   /** The window every frame passes through. */
   frame: Rect;
-  /** Stage: where the doll's hips sit, on the top edge of the frame, right of its middle. */
+  /** The small pictures: their size, the step from one to the next, and the two clips they pass through. */
+  thumb: { w: number; h: number; pitch: number; y: number };
+  left: Rect;
+  right: Rect;
+  /**
+   * The words: `x` is the left edge, `bottom` the line above which the block stands (the top of the
+   * small pictures in a wide screen, the top of the frame in a narrow one), `unit` the size of the
+   * muted line (the name is 1.5 of it).
+   */
+  head: { x: number; bottom: number; unit: number };
+  /** The hint's centre line, from the top of the screen. */
+  cueY: number;
+  /** True when the screen is too narrow for words beside the frame: they stand above it. */
+  stacked: boolean;
+  /** Stage: where a doll would sit on the frame's top edge (kept for the older carry until it is gone). */
   sitX: number;
   sitY: number;
-  /** The doll's standing height on the screen while she sits there. */
   dollHeight: number;
 }
 
 /**
- * The frame is 4:5, 0.70 of the screen's height, centred 0.58 down (the added space on top is where
- * the doll sits, under the bar). On a phone it is as wide as the screen allows.
+ * Oryzo's layout (`ref-oryzo.md` 7.3) in our proportions. A wide screen: the frame is 4:5, 0.8 of the
+ * screen's height, centred; the small pictures stand on both sides on the middle line, the words above
+ * the left ones. Nothing is added above the frame: the doll and the drone live at the bottom right.
+ * A narrow screen (a phone, a small tablet): the words stand above the frame, the whole block is
+ * centred between the bar and the foot, and the small pictures only peek at the sides.
  */
 export function listGeometry(vp: Vp): ListGeometry {
   const portrait = isPortrait(vp);
+  const wideH = 0.8 * vp.h;
+  const stacked = portrait || (vp.w - wideH * FRAME_RATIO) / 2 < 330;
   const gutter = portrait ? 24 : 45;
-  const h = Math.min(0.7 * vp.h, (vp.w - 2 * gutter) / FRAME_RATIO);
-  const w = h * FRAME_RATIO;
+  let h: number;
+  let w: number;
+  let y: number;
+  let unit: number;
+  let headX: number;
+  let headBottom: number;
+  if (!stacked) {
+    h = wideH;
+    w = h * FRAME_RATIO;
+    y = (vp.h - h) / 2;
+    unit = Math.max(16, h / 30);
+    headX = Math.max(gutter, 0.03125 * vp.w);
+    headBottom = 0;
+  } else {
+    unit = portrait ? 16 : 20;
+    const headH = 2.9 * unit;
+    const bar = 64;
+    const foot = portrait ? 0.8 * vp.h : 0.92 * vp.h;
+    const maxH = foot - bar - headH - 24;
+    h = Math.min(0.72 * vp.h, maxH, (0.76 * vp.w) / FRAME_RATIO);
+    w = h * FRAME_RATIO;
+    const block = headH + 14 + h;
+    const top = bar + Math.max(8, (foot - bar - block) / 2);
+    y = top + headH + 14;
+    headX = (vp.w - w) / 2;
+  }
   const x = (vp.w - w) / 2;
-  const y = 0.58 * vp.h - h / 2;
   const frame = { x, y, w, h };
+  const tw = w * THUMB_SCALE;
+  const th = h * THUMB_SCALE;
+  const ty = y + h / 2 - th / 2;
+  const gap = SIDE_GUTTER * w;
+  const leftW = Math.max(0, x - gap);
+  const rightX = x + w + gap;
+  headBottom = stacked ? y - 14 : ty - 0.4 * unit;
   return {
     frame,
+    thumb: { w: tw, h: th, pitch: tw * (1 + THUMB_GAP), y: ty },
+    left: { x: 0, y: ty, w: leftW, h: th },
+    right: { x: rightX, y: ty, w: Math.max(0, vp.w - rightX), h: th },
+    head: { x: headX, bottom: headBottom, unit },
+    cueY: vp.h - Math.max(28, 0.035 * vp.h) - 8,
+    stacked,
     sitX: x + w - 0.2 * w - vp.w / 2,
     sitY: vp.h / 2 - y - 4,
     dollHeight: (portrait ? 0.15 : 0.165) * vp.h,

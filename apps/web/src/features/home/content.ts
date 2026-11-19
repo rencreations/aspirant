@@ -114,38 +114,6 @@ export const STRIP = {
   },
 } as const;
 
-// 5 bolt -------------------------------------------------------------------------------------------
-
-/** The five pairs, in the order the text wheel turns. */
-export const PAIRS = [
-  "Layla & Fanny",
-  "Ruby & Angela",
-  "Lesley & Chang'e",
-  "Guinevere & Vexana",
-  "Selena & Obsidia",
-] as const;
-
-export const BOLT = { heading: "The five pairs", pairs: PAIRS } as const;
-
-// 6 fall -------------------------------------------------------------------------------------------
-
-/** The two lines of the fall, shown one after another: the number word on the left, the noun on the right (round four: FIVE PHASES, TEN HEROES). */
-export const FALL = {
-  heading: "In numbers",
-  lines: [
-    { left: "Five", right: "Phases" },
-    { left: "Ten", right: "Heroes" },
-  ],
-} as const;
-
-// 7 hand -------------------------------------------------------------------------------------------
-
-export const HAND = {
-  title: "2022 - Present",
-  body: "Many collections from these 4+ years",
-  hint: "Try to hover",
-} as const;
-
 // 8 list -------------------------------------------------------------------------------------------
 
 /** The ten frames of the list, in the owner's order. The last one is Selena in 3D. */

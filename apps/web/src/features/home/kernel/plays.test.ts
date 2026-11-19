@@ -53,7 +53,7 @@ function rig(plays: readonly HomePlay[], screens = 4, floor?: number) {
 }
 
 describe("validatePlays", () => {
-  const bad = (plays: HomePlay[]) => () => validatePlays("fall", plays);
+  const bad = (plays: HomePlay[]) => () => validatePlays("list", plays);
 
   it("accepts a contiguous, ordered table", () => {
     expect(bad(THREE)).not.toThrow();

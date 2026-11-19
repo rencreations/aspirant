@@ -28,7 +28,7 @@ describe("the server markup of the home page", () => {
 
   it("keeps the last section's text in the flow and the others in the stage", () => {
     expect(html.match(/data-home-section="footer"/g)).toHaveLength(1);
-    expect(html.match(/data-home-content/g)).toHaveLength(15);
+    expect(html.match(/data-home-content/g)).toHaveLength(13);
   });
 
   it("starts in neither mode: the page is the stage until the client says it is plain", () => {
@@ -43,8 +43,6 @@ describe("the server markup of the home page", () => {
       content.STRIP.topRight,
       content.STRIP.expand.body,
       content.STRIP.expand.button.label,
-      content.HAND.title,
-      content.HAND.hint,
       content.SELENA.body,
       content.FUNNY.body,
       content.FOOTER.line,
@@ -58,10 +56,7 @@ describe("the server markup of the home page", () => {
     }
   });
 
-  it("lists the five pairs and the ten Aspirants as real links", () => {
-    for (const pair of content.PAIRS) {
-      expect(html.includes(pair.replace(/&/g, "&amp;").replace(/'/g, "&#x27;"))).toBe(true);
-    }
+  it("lists the ten Aspirants as real links", () => {
     for (const slug of content.LIST_ORDER)
       expect(html.includes(`href="/character/${slug}"`), slug).toBe(true);
   });

@@ -1,8 +1,9 @@
 /*
- * The list: nine pictures and Selena in 3D, one at a time, in a 4:5 window. The runtime writes the
- * sizes in pixels (the window, the items, the chrome, the button) when the screen changes, and
- * transform and opacity every frame. This file has the look and the plain page (no scripts, no
- * WebGL): a title and the ten names as links.
+ * The characters, as the oryzo.ai strip: a 4:5 window with a dashed line around it, small pictures of
+ * the frames before and after it in a row on each side, the words above the left ones, a hint at the
+ * foot. The runtime writes the sizes and places in pixels when the screen changes, and transform and
+ * opacity every frame. This file has the look and the plain page (no scripts, no WebGL): a title and
+ * the ten names as links.
  */
 
 /* ------------------------------------------------------------------ the layer under the canvas */
@@ -11,6 +12,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  --list-ink: rgb(11 11 14 / 0.55);
 }
 
 .window {
@@ -18,7 +20,7 @@
   left: 0;
   top: 0;
   overflow: hidden;
-  will-change: transform, opacity;
+  will-change: transform;
 }
 
 .row {
@@ -75,6 +77,42 @@
   animation: push 7s ease-in-out infinite alternate;
 }
 
+/* ------------------------------------------------------------------ the small pictures */
+
+/* A clip that cuts the row on the side of the window only: the pictures come up from below it. */
+.side {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  overflow-x: clip;
+  overflow-y: visible;
+  pointer-events: none;
+}
+
+.thumbRow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  will-change: transform;
+}
+
+.thumb {
+  position: relative;
+  flex: 0 0 auto;
+  overflow: hidden;
+  opacity: 0.66;
+}
+
+.thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
 /* ------------------------------------------------------------------ the 3D frame's sky */
 
 .panel {
@@ -105,31 +143,121 @@
 
 /* ------------------------------------------------------------------ the chrome of the window */
 
+/*
+ * The dashed line, drawn by the scroll: each side is a clip (`.edge`) and a dashed bar (`.dash`)
+ * that only translates into it, so nothing is stretched and only transform changes. It stands 6 px
+ * outside the frame (the runtime writes the box).
+ */
 .chrome {
   position: absolute;
   left: 0;
   top: 0;
-  overflow: visible;
   pointer-events: none;
+  will-change: transform;
 }
 
-.chromeRect {
-  fill: none;
-  stroke: rgb(11 11 14 / 0.38);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
+.edge {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+}
+
+.top,
+.bottom {
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.top {
+  top: 0;
+}
+
+.bottom {
+  bottom: 0;
+}
+
+.right,
+.left {
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.right {
+  right: 0;
+}
+
+.left {
+  left: 0;
+}
+
+.dash {
+  position: absolute;
+  inset: 0;
+  display: block;
+  will-change: transform;
+}
+
+.top .dash,
+.bottom .dash {
+  background: repeating-linear-gradient(90deg, var(--list-ink) 0 3px, transparent 3px 6px);
+}
+
+.right .dash,
+.left .dash {
+  background: repeating-linear-gradient(180deg, var(--list-ink) 0 3px, transparent 3px 6px);
+}
+
+/* Four short marks inside the edges, near their middles (paper white, they read on any picture). */
+.tick {
+  position: absolute;
+  display: block;
+  background: rgb(255 255 255 / 0.85);
+  will-change: opacity;
+}
+
+.tick-top,
+.tick-bottom {
+  left: 50%;
+  width: 1px;
+  height: 10px;
+  margin-left: -0.5px;
+}
+
+.tick-top {
+  top: 10px;
+}
+
+.tick-bottom {
+  bottom: 10px;
+}
+
+.tick-left,
+.tick-right {
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  margin-top: -0.5px;
+}
+
+.tick-left {
+  left: 10px;
+}
+
+.tick-right {
+  right: 10px;
 }
 
 .dot {
   position: absolute;
-  left: 0;
-  top: 0;
+  right: 12px;
+  top: 12px;
   width: 10px;
   height: 10px;
-  margin: -5px 0 0 -5px;
   border-radius: 50%;
   background: var(--accent);
-  pointer-events: none;
+  will-change: transform;
 }
 
 /* ------------------------------------------------------------------ the words */
@@ -152,21 +280,41 @@
   gap: var(--space-xs);
 }
 
+/* With the stage the words are a layer of their own over the whole screen; the runtime places each. */
 :global([data-home]:not([data-gl="off"])) .head {
   position: absolute;
-  left: 3.125vw;
-  top: calc(50lvh - 11rem);
-  width: min(32vw, 28rem);
+  inset: 0;
+  display: block;
+  --list-u: 24px;
 }
 
+/* The muted line, "CHARACTERS,", in the manner of "SO PORTABLE,". */
 .title {
   margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--1);
+  /* The grotesk of the site's body, as near to Oryzo's Halyard as our fonts get; upright. */
+  font-family: var(--font-body-stack);
+  font-style: normal;
+  font-size: var(--step-0);
   font-weight: 500;
-  letter-spacing: 0.14em;
+  line-height: 1.1;
+  letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: color-mix(in srgb, var(--text) 45%, transparent);
+}
+
+/* The comma of "CHARACTERS," is drawn with the stage only: the plain page and a reader say "Characters". */
+:global([data-home]:not([data-gl="off"])) .title::after {
+  content: ",";
+}
+
+:global([data-home]:not([data-gl="off"])) .title {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--list-u);
+  line-height: 1.1;
+  white-space: nowrap;
+  will-change: transform, opacity;
 }
 
 .names {
@@ -179,22 +327,25 @@
 }
 
 :global([data-home]:not([data-gl="off"])) .names {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: block;
-  height: 1.05em;
-  font-size: clamp(2.6rem, min(6.2vw, 9.9lvh), 6.6rem);
+  height: 1.15em;
+  font-size: calc(var(--list-u) * 1.5);
 }
 
 .entry {
   display: block;
 }
 
+/* The line that changes with the frame, in the manner of "it's wearable". */
 .name {
-  font-family: var(--font-display-stack);
-  font-style: italic;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  font-family: var(--font-body-stack);
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   white-space: nowrap;
 }
 
@@ -204,6 +355,7 @@
   top: 0;
   opacity: 0;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 :global([data-home]:not([data-gl="off"])) .name[data-current="1"] {
@@ -225,15 +377,58 @@
   color: var(--accent);
 }
 
-@media (max-width: 56.25em) {
-  :global([data-home]:not([data-gl="off"])) .head {
-    left: var(--gutter);
-    top: calc(var(--nav-h) + 3lvh);
-    width: 58vw;
-  }
+/* ------------------------------------------------------------------ the hint at the foot */
 
-  :global([data-home]:not([data-gl="off"])) .names {
-    font-size: clamp(2.2rem, 11vw, 3.6rem);
+.cueRow {
+  display: none;
+}
+
+:global([data-home]:not([data-gl="off"])) .cueRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.cue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-body-stack);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* The round dashed ring with a chevron: the chevron nods, on the compositor. */
+.ring {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+}
+
+.ring svg {
+  width: 12px;
+  height: 12px;
+  animation: nod 1.6s ease-in-out infinite;
+}
+
+@keyframes nod {
+  0%,
+  100% {
+    transform: translateY(-1px);
+  }
+  50% {
+    transform: translateY(2px);
   }
 }
 
@@ -254,7 +449,7 @@
 
 .open:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 6px;
+  outline-offset: 10px;
 }
 
 :global([data-home][data-gl="off"]) .open {

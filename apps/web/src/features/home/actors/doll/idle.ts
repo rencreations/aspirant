@@ -137,6 +137,8 @@ export class RideBehaviour {
   private sitFace: FaceName = "smile";
   private lastKind: IdleName = "sit";
   private strained = false;
+  /** A host that does not let her slip (the pair makes its own nearly-slip moment). */
+  noSlip = false;
   readonly cue: Cue = {
     name: "sit",
     t: 0,
@@ -198,7 +200,10 @@ export class RideBehaviour {
     const s = this.since;
     // A state that has not run for a long time goes first (the rare one, the oldest).
     const due: IdleName[] = (["slip", "adjust", "look", "fidget"] as const).filter(
-      (k) => s[k] > FORCE_AFTER && k !== this.lastKind && (k !== "slip" || s.slip > SLIP_GAP),
+      (k) =>
+        s[k] > FORCE_AFTER &&
+        k !== this.lastKind &&
+        (k !== "slip" || (!this.noSlip && s.slip > SLIP_GAP)),
     );
     if (due.length > 0) {
       let oldest = due[0] ?? "look";
@@ -206,7 +211,7 @@ export class RideBehaviour {
       return oldest;
     }
     const r = this.rng.next();
-    const slipOk = s.slip > SLIP_GAP && this.lastKind !== "slip";
+    const slipOk = !this.noSlip && s.slip > SLIP_GAP && this.lastKind !== "slip";
     const wSlip = slipOk ? 0.1 : 0;
     const pick = r * (0.9 + wSlip);
     if (pick < 0.32 && this.lastKind !== "look") return "look";

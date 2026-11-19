@@ -24,11 +24,11 @@ import { getCast, type Cast } from "../../actors/shared/cast";
 import type { MarkEvent } from "../../actors/silverbolt/marks";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
-import type { Carry } from "../hand/carry";
-import { handScreens, isPortrait, listScreens } from "../hand/timeline";
 import { dollHang, selenaEnd, type DollHang, type Placement } from "../list/selena-frame";
+import { isPortrait } from "../vp";
 
 import { blendLens, newLens, pixelFov, pullOf, travelOf, type BakedLens } from "./camera-blend";
+import { hangDoll } from "./hang";
 import { roomPlace } from "./room";
 import { DOLL_T, FILM_END, mix, seg, smooth, type Beats } from "./timeline";
 
@@ -65,7 +65,6 @@ export class SelenaScene {
   sb: SilverboltActor | null = null;
   doll: DollActor | null = null;
   marks: MarksActor | null = null;
-  carry: Carry | null = null;
 
   private cast: Cast | null = null;
   private readonly camera = new PerspectiveCamera();
@@ -104,7 +103,7 @@ export class SelenaScene {
 
   constructor(private readonly ctx: SectionCtx) {}
 
-  setActors(parts: Partial<Pick<SelenaScene, "sl" | "sb" | "doll" | "marks" | "carry">>): void {
+  setActors(parts: Partial<Pick<SelenaScene, "sl" | "sb" | "doll" | "marks">>): void {
     Object.assign(this, parts);
     if (this.sl && !this.cast) this.cast = getCast(this.ctx.stage);
     this.bindMarks();
@@ -205,9 +204,9 @@ export class SelenaScene {
     else this.camPos.set(0, 0, 1000);
     if (sl && sb) this.dragon(sl, sb, b, frame);
     if (b.doll <= 0) {
-      // The room: the doll hangs from the top, the list's last state (the carry is the list's own
-      // choreography, so this is the same picture at the joint). It needs neither Selena nor the dragon.
-      if (doll) this.carry?.apply(handScreens() + listScreens(), frame, true);
+      // The room: the doll hangs from the top, the list's last state (`list/pair.ts` ends on the same
+      // picture, so there is no seam at the joint). It needs neither Selena nor the dragon.
+      if (doll) hangDoll(doll, this.hang, frame, this.ctx.pointer.state);
     } else if (sl && doll) {
       this.dollStep(sl, sb, doll, b, frame);
     }

@@ -31,10 +31,9 @@ const SILK_FADING: BackdropSpec = {
 };
 const SILK_AMOUNT = SILK.options.amount ?? 0.5;
 /**
- * The strip's mist on the light ground (round five: light only). Its steady numbers are shared with the
- * bolt, which carries the same mist on (`bolt/backdrop-plan.ts` asks for the same level and intensity),
- * so nothing changes hue or strength where the strip ends. `amount` is written in place: it is the
- * entrance's, 0 when the strip has just arrived and `INK_LEVEL` after `INK_ENTRANCE_S` seconds.
+ * The strip's mist on the light ground (round five: light only). `amount` is written in place: it is
+ * the entrance's, 0 when the strip has just arrived and `INK_LEVEL` after `INK_ENTRANCE_S` seconds.
+ * The descent that follows has no backdrop of its own: the mist is gone with the strip (round six).
  */
 export const INK_LEVEL = 0.9;
 export const INK_INTENSITY = 1.7;

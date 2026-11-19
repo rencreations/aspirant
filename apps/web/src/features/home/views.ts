@@ -5,12 +5,10 @@
 import { view as archive } from "./sections/archive/view";
 import { view as aspirants } from "./sections/aspirants/view";
 import { view as bend } from "./sections/bend/view";
-import { view as bolt } from "./sections/bolt/view";
 import { view as chase } from "./sections/chase/view";
-import { view as fall } from "./sections/fall/view";
+import { view as descent } from "./sections/descent/view";
 import { view as footer } from "./sections/footer/view";
 import { view as funny } from "./sections/funny/view";
-import { view as hand } from "./sections/hand/view";
 import { view as hero } from "./sections/hero/view";
 import { view as list } from "./sections/list/view";
 import { view as music } from "./sections/music/view";
@@ -25,9 +23,7 @@ export const VIEWS: Readonly<Record<SectionId, () => SectionMarkup>> = {
   aspirants,
   rows,
   strip,
-  bolt,
-  fall,
-  hand,
+  descent,
   list,
   selena,
   voices,

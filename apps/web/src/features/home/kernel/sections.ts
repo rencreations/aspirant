@@ -1,5 +1,5 @@
 /**
- * The registry: the sixteen sections in scroll order. Mechanical on purpose. A section is a folder
+ * The registry: the fourteen sections in scroll order. Mechanical on purpose. A section is a folder
  * under `sections/` with its own length, lead, tail, ground, loading list and runtime; this file only
  * puts them in order. It imports no runtime and no three.js: each section loads its own scene code
  * when it comes near (`mount` in the section's `index.ts`).
@@ -7,12 +7,10 @@
 import { section as archive } from "../sections/archive";
 import { section as aspirants } from "../sections/aspirants";
 import { section as bend } from "../sections/bend";
-import { section as bolt } from "../sections/bolt";
 import { section as chase } from "../sections/chase";
-import { section as fall } from "../sections/fall";
+import { section as descent } from "../sections/descent";
 import { section as footer } from "../sections/footer";
 import { section as funny } from "../sections/funny";
-import { section as hand } from "../sections/hand";
 import { section as hero } from "../sections/hero";
 import { section as list } from "../sections/list";
 import { section as music } from "../sections/music";
@@ -27,9 +25,7 @@ export const SECTIONS: readonly HomeSection[] = [
   aspirants,
   rows,
   strip,
-  bolt,
-  fall,
-  hand,
+  descent,
   list,
   selena,
   voices,

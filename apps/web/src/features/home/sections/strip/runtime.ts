@@ -188,7 +188,11 @@ class StripRuntime implements SectionRuntime {
     const drone = this.drone;
     if (!drone) return;
     const r = routeAt(S, vp, this.route);
-    drone.visible = r.visible;
+    // The route has ended: the drone is gone from the strip. The pair of the descent (the drone with
+    // the doll, `descent/runtime.ts`) own it from there, and the strip runs on in its tail, so it
+    // must not touch the drone any more (round six).
+    if (!r.visible) return;
+    drone.visible = true;
     drone.layer("back");
     drone.setInteractive(true);
     drone.look("pointer");

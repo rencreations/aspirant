@@ -12,6 +12,7 @@ import { DOLL_MODEL_PATH } from "./preload";
 
 export { DollActor } from "./actor";
 export type { AttachOptions, DollPlacement, DollSocketName, MarkPoint } from "./actor";
+export type { RideGesture, RideOptions } from "./ride";
 export type { FaceName } from "./face/presets";
 export type { MoodStep } from "./face/sequence";
 export type { ReactionKind } from "./interaction";

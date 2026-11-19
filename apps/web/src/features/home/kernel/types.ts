@@ -12,15 +12,13 @@ import type { PreloadItem } from "@/lib/preload";
 import type { HomePlay, PlayEase } from "./plays";
 import type { Stage } from "./stage";
 
-/** The sixteen sections of the scroll story, in scroll order (design section 4). */
+/** The fourteen sections of the scroll story, in scroll order (design section 4). */
 export const SECTION_IDS = [
   "hero",
   "aspirants",
   "rows",
   "strip",
-  "bolt",
-  "fall",
-  "hand",
+  "descent",
   "list",
   "selena",
   "voices",

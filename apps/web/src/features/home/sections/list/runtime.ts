@@ -1,20 +1,19 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureSelena, type SelenaActor } from "../../actors/selena";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, PointerState, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionScreens, sectionStart } from "../../kernel/where";
-import { ensureCarry, type Carry } from "../hand/carry";
-import { whenIdle } from "../hand/idle";
-import { FRAME_COUNT, frameRestScreens, HAND_LAST, LIST_LAST } from "../hand/stations";
-import { listBeats, mix, newListBeats, seg, type ListBeats } from "../hand/timeline";
+import { whenIdle } from "../idle";
+import { mix, seg } from "../vp";
 
-import { newListBackdrop, planListBackdrop } from "./backdrop-plan";
 import { PICTURE_FRAMES } from "./frames";
-import { listGeometry, mixRectInto, type ListGeometry, type Rect } from "./layout";
+import { CHROME_PAD, listGeometry, mixRectInto, type ListGeometry, type Rect } from "./layout";
 import { LoopVideo } from "./loop-video";
+import { createListPair, type ListPair } from "./pair";
 import { SKY, selenaEnd, selenaInFrame, type Placement } from "./selena-frame";
+import { FRAME_COUNT, frameRestScreens, LIST_LAST } from "./stations";
+import { backOut, listBeats, newListBeats, thumbRise, type ListBeats } from "./timeline";
 import styles from "./list.module.css";
 import { PictureViewer } from "./viewer";
 
@@ -34,9 +33,12 @@ const PRIME_AFTER = 0.5;
 const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
 /** Scrolling back, she is in the hands at the mouth again once the frame has shrunk below this share. */
 const BACK_TO_LOOP = 0.5;
+/** The frame lifts this far (px) and grows this much while the pointer is on it. */
+const LIFT = 6;
+const LIFT_SCALE = 0.012;
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
+const px = (n: number): string => `${Math.round(n * 100) / 100}px`;
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
-const backOut = (u: number): number => 1 + 2.70158 * (u - 1) ** 3 + 1.70158 * (u - 1) ** 2;
 
 interface Item {
   el: HTMLElement;
@@ -49,28 +51,42 @@ interface Item {
   live: boolean;
 }
 
+/** A small picture of a row: its frame's number and its element. */
+interface Thumb {
+  i: number;
+  el: HTMLElement;
+}
+
+type Side = "left" | "right";
+const SIDES: readonly Side[] = ["left", "right"];
+
 /**
- * The list: nine pictures and Selena in a 4:5 window, one at a time. Each frame is one scroll zone: the
- * strip turns to the next frame with the scroll (the doll hops with it) and rests on it. The strip,
- * the names, the chrome and the open buttons are DOM; the doll and the hand are driven by `Carry`
- * (shared with the hand section); the tenth frame is Selena,
- * drawn in the stage through the window and growing into the whole screen. Everything is a function
- * of the list's beat `u` plus the section's own state: which frame is open in the viewer and the
- * loops' play state. The strip, the words and the viewer work before the actors have arrived. The
- * live backdrop takes the colours of the picture in the window.
+ * The characters (round six): nine pictures and Selena in a 4:5 window, with the frames before and
+ * after it in a row on each side (the oryzo.ai strip). Each frame is one scroll zone: the strip turns
+ * to the next frame with the scroll and rests on it. The words, the strip, the small pictures, the
+ * dashed line and the open buttons are DOM; the tenth frame is Selena, drawn in the stage through the
+ * window and growing into the whole screen, and the pair (drone and doll) is the descent's, docked at
+ * the bottom right (`pair.ts` only helps at the end). Everything is a function of the list's beat `u`
+ * plus the section's own state: which frame is open in the viewer and the loops' play state. The
+ * ground is the plain page ground: nothing here paints a background of its own.
  */
 class ListRuntime implements SectionRuntime {
   private readonly b: ListBeats = newListBeats();
   private readonly win: HTMLElement | null;
   private readonly row: HTMLElement | null;
   private readonly items: Item[] = [];
-  private readonly chrome: SVGElement | null;
-  private readonly chromeRect: SVGElement | null;
+  private readonly chrome: HTMLElement | null;
+  private readonly edges: Array<HTMLElement | null>;
+  private readonly ticks: HTMLElement[];
   private readonly dot: HTMLElement | null;
+  private readonly sides: Record<Side, HTMLElement | null>;
+  private readonly thumbRows: Record<Side, HTMLElement | null>;
+  private readonly thumbs: Record<Side, Thumb[]> = { left: [], right: [] };
   private readonly panel: HTMLElement | null;
   private readonly panelOuter: HTMLElement | null;
   private readonly panelInner: HTMLElement | null;
   private readonly panelCounter: HTMLElement | null;
+  private readonly head: HTMLElement | null;
   private readonly title: HTMLElement | null;
   private readonly namesBox: HTMLElement | null;
   private readonly names: HTMLElement[];
@@ -78,11 +94,12 @@ class ListRuntime implements SectionRuntime {
   private readonly opens: Array<HTMLButtonElement | null>;
   /** What each button's state was last written as (null: never, so the first frame writes it). */
   private readonly opensOn: Array<boolean | null>;
+  private readonly cueRow: HTMLElement | null;
+  private readonly cue: HTMLElement | null;
   private readonly viewer: PictureViewer;
   private readonly pointer: PointerState;
-  private readonly plan = newListBackdrop();
 
-  private carry: Carry | null = null;
+  private pair: ListPair | null = null;
   private g: ListGeometry | null = null;
   private vw = 0;
   private vh = 0;
@@ -101,30 +118,46 @@ class ListRuntime implements SectionRuntime {
   /** Since when (the page's time) the strip has sat on the priming frame. */
   private sinceAtPrime = -1;
   private interactive: boolean | null = null;
+  /** The pointer is on the frame in the window, eased (0 to 1). */
+  private hover = 0;
   private readonly clip: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly win0: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly full: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly place = { x: 0, y: 0, z: 0, height: 0 };
   private readonly removers: Array<() => void> = [];
 
-  constructor(
-    ctx: SectionCtx,
-    private readonly backdrop: Backdrop | null,
-  ) {
+  constructor(ctx: SectionCtx) {
     const below = ctx.dom.below;
     const text = ctx.dom.text;
     this.pointer = ctx.pointer.state;
     this.win = below.querySelector<HTMLElement>("[data-list-window]");
     this.row = below.querySelector<HTMLElement>("[data-list-row]");
-    this.chrome = below.querySelector<SVGElement>("[data-list-chrome]");
-    this.chromeRect = below.querySelector<SVGElement>("[data-list-chrome-rect]");
+    this.chrome = below.querySelector<HTMLElement>("[data-list-chrome]");
+    this.edges = [0, 1, 2, 3].map((i) =>
+      below.querySelector<HTMLElement>(`[data-list-edge="${i}"] b`),
+    );
+    this.ticks = Array.from(below.querySelectorAll<HTMLElement>("[data-list-tick]"));
     this.dot = below.querySelector<HTMLElement>("[data-list-dot]");
+    this.sides = {
+      left: below.querySelector<HTMLElement>('[data-list-side="left"]'),
+      right: below.querySelector<HTMLElement>('[data-list-side="right"]'),
+    };
+    this.thumbRows = {
+      left: below.querySelector<HTMLElement>('[data-list-thumbs="left"]'),
+      right: below.querySelector<HTMLElement>('[data-list-thumbs="right"]'),
+    };
+    for (const side of SIDES) {
+      this.thumbRows[side]?.querySelectorAll<HTMLElement>("[data-list-thumb]").forEach((el) => {
+        this.thumbs[side].push({ i: Number(el.dataset.listThumb), el });
+      });
+    }
     this.panel = below.querySelector<HTMLElement>("[data-list-panel]");
     this.panelOuter = below.querySelector<HTMLElement>("[data-list-panel-outer]");
     this.panelInner = below.querySelector<HTMLElement>("[data-list-panel-inner]");
     this.panelCounter = below.querySelector<HTMLElement>("[data-list-panel-counter]");
     const sky = below.querySelector<HTMLElement>("[data-list-sky]");
     if (sky) sky.style.background = SKY;
+    this.head = text.querySelector<HTMLElement>("[data-list-head]");
     this.title = text.querySelector<HTMLElement>("[data-list-title]");
     this.namesBox = text.querySelector<HTMLElement>("[data-list-names]");
     this.names = Array.from(text.querySelectorAll<HTMLElement>("[data-list-name]"));
@@ -133,6 +166,8 @@ class ListRuntime implements SectionRuntime {
       text.querySelector<HTMLButtonElement>(`[data-list-open="${i}"]`),
     );
     this.opensOn = this.opens.map(() => null);
+    this.cueRow = text.querySelector<HTMLElement>("[data-list-cuerow]");
+    this.cue = text.querySelector<HTMLElement>("[data-list-cue]");
 
     below.querySelectorAll<HTMLElement>("[data-list-item]").forEach((el, i) => {
       const inner = el.querySelector<HTMLElement>("[data-list-inner]");
@@ -177,23 +212,16 @@ class ListRuntime implements SectionRuntime {
       });
     });
     // A name or a button that gets the focus (the keyboard) brings its frame to the window.
-    this.nameLinks.forEach((a, i) => {
+    const focusable = [...this.nameLinks, ...this.opens];
+    focusable.forEach((el, k) => {
+      if (!el) return;
+      const i = k % this.names.length;
       const go = () => {
         this.bringFrame(i);
       };
-      a.addEventListener("focus", go);
+      el.addEventListener("focus", go);
       this.removers.push(() => {
-        a.removeEventListener("focus", go);
-      });
-    });
-    this.opens.forEach((btn, i) => {
-      if (!btn) return;
-      const go = () => {
-        this.bringFrame(i);
-      };
-      btn.addEventListener("focus", go);
-      this.removers.push(() => {
-        btn.removeEventListener("focus", go);
+        el.removeEventListener("focus", go);
       });
     });
     this.scrollTo = (screens) => {
@@ -231,9 +259,8 @@ class ListRuntime implements SectionRuntime {
     return this.disposed;
   }
 
-  /** The hand and the doll are built (the hand section shares them). */
-  setCarry(carry: Carry | null): void {
-    this.carry = carry;
+  setPair(pair: ListPair | null): void {
+    this.pair = pair;
   }
 
   /** Selena arrives after the section is built (her model is the largest file). */
@@ -259,8 +286,7 @@ class ListRuntime implements SectionRuntime {
     this.vw = vp.w;
     this.vh = vp.h;
     const fr = g.frame;
-    const px = (n: number) => `${Math.round(n * 100) / 100}px`;
-    const place = (el: HTMLElement | SVGElement | null, r: Rect) => {
+    const place = (el: HTMLElement | null, r: Rect) => {
       if (!el) return;
       el.style.left = px(r.x);
       el.style.top = px(r.y);
@@ -273,28 +299,52 @@ class ListRuntime implements SectionRuntime {
       it.el.style.width = px(fr.w);
       it.video?.fit(fr.w, fr.h);
     }
-    // The buttons are in the names' box (it never moves or turns): put them over the frame.
-    const box = this.namesBox?.getBoundingClientRect();
-    const ox = box ? box.left : 0;
-    const oy = box ? box.top : 0;
+
+    // The small pictures: two clips (one on each side of the window) and a row in each.
+    const { thumb } = g;
+    for (const side of SIDES) {
+      const clip = this.sides[side];
+      const r = side === "left" ? g.left : g.right;
+      if (clip) {
+        clip.style.left = px(r.x);
+        clip.style.width = px(r.w);
+      }
+      const row = this.thumbRows[side];
+      if (row) {
+        row.style.top = px(thumb.y);
+        row.style.gap = px(thumb.pitch - thumb.w);
+      }
+      for (const t of this.thumbs[side]) {
+        t.el.style.width = px(thumb.w);
+        t.el.style.height = px(thumb.h);
+      }
+    }
+
+    // The words: the muted line over the name, both placed from the screen's top left.
+    const u = g.head.unit;
+    this.head?.style.setProperty("--list-u", px(u));
+    const namesH = 1.15 * 1.5 * u;
+    const namesTop = g.head.bottom - namesH;
+    if (this.namesBox) {
+      this.namesBox.style.left = px(g.head.x);
+      this.namesBox.style.top = px(namesTop);
+    }
+    if (this.title) {
+      this.title.style.left = px(g.head.x);
+      this.title.style.top = px(namesTop - 1.1 * u - 0.1 * u);
+    }
+    // The buttons are in the names' box: put them over the frame.
     for (const btn of this.opens) {
       if (!btn) continue;
-      place(btn, { x: fr.x - ox, y: fr.y - oy, w: fr.w, h: fr.h });
+      place(btn, { x: fr.x - g.head.x, y: fr.y - namesTop, w: fr.w, h: fr.h });
     }
     if (this.chrome) {
-      this.chrome.style.left = px(fr.x - 6);
-      this.chrome.style.top = px(fr.y - 6);
-      this.chrome.style.width = px(fr.w + 12);
-      this.chrome.style.height = px(fr.h + 12);
+      this.chrome.style.left = px(fr.x - CHROME_PAD);
+      this.chrome.style.top = px(fr.y - CHROME_PAD);
+      this.chrome.style.width = px(fr.w + 2 * CHROME_PAD);
+      this.chrome.style.height = px(fr.h + 2 * CHROME_PAD);
     }
-    this.chromeRect?.setAttribute("x", "0.5");
-    this.chromeRect?.setAttribute("y", "0.5");
-    this.chromeRect?.setAttribute("width", f(fr.w + 11));
-    this.chromeRect?.setAttribute("height", f(fr.h + 11));
-    if (this.dot) {
-      this.dot.style.left = px(fr.x + fr.w - 13);
-      this.dot.style.top = px(fr.y + 13);
-    }
+    if (this.cueRow) this.cueRow.style.top = px(g.cueY - 12);
     this.selenaFrame = selenaInFrame(vp, fr);
     this.selenaTail = selenaEnd(vp);
   }
@@ -302,10 +352,9 @@ class ListRuntime implements SectionRuntime {
   // ------------------------------------------------------------------ the frame
 
   update(v: number, frame: FrameInfo): void {
-    // The list's beat: 0 to 11 across the plays, the lead a little below 0 and the tail above 11 in
-    // real screens. The join with the hand is the screens past the joint (the list's start).
+    // The list's beat: 0 to `LIST_LAST` across the zones, the lead (the rise) below 0 and the tail
+    // above `LIST_LAST` in real screens.
     const u = beatFor(v, 0, LIST_LAST, sectionScreens("list"));
-    const ts = frame.S - sectionStart("list");
     const vp = frame.viewport;
     if (!this.seen) {
       this.seen = true;
@@ -314,29 +363,46 @@ class ListRuntime implements SectionRuntime {
     if (vp.w !== this.vw || vp.h !== this.vh || !this.g) this.layout(vp);
     const g = this.g;
     if (!g) return;
-    const b = listBeats(u, ts, this.b);
+    const b = listBeats(u, this.b);
     if (Math.abs(b.index - PRIME_AT) < 0.001) {
       if (this.sinceAtPrime < 0) this.sinceAtPrime = frame.time;
     } else {
       this.sinceAtPrime = -1;
     }
 
-    this.carry?.drive(HAND_LAST, ts, Math.max(0, u), frame, true);
-    this.strip(b, g);
+    this.strip(b, g, frame);
     this.selenaDraw(b, u, g, vp, frame.time);
     this.words(b);
-    const plan = planListBackdrop(b.index, b.expandRaw, this.plan);
-    this.backdrop?.set(plan.kind, plan.options);
+    // The pair is the descent's and is docked: the list only tells it how far the last frame has
+    // grown, from the section's start on (in the lead the pair is not touched).
+    if (u >= 0) this.pair?.step(b.expand, g.frame.y * (1 - b.expand), frame);
   }
 
-  /** The strip: its slide, each frame's seam, the loops, the chrome. */
-  private strip(b: ListBeats, g: ListGeometry): void {
+  /** The pointer is on the frame in the window, at rest: it lifts a little and its line brightens. */
+  private hoverTarget(b: ListBeats, g: ListGeometry): number {
+    const ps = this.pointer;
+    if (ps.type !== "mouse" || !ps.inside || this.viewer.isOpen) return 0;
+    if (b.rise < 0.999 || b.expandRaw > 0) return 0;
+    if (Math.abs(b.index - Math.round(b.index)) > 0.05 || Math.round(b.index) >= SELENA_AT) {
+      return 0;
+    }
+    const fr = g.frame;
+    return ps.x >= fr.x && ps.x <= fr.x + fr.w && ps.y >= fr.y && ps.y <= fr.y + fr.h ? 1 : 0;
+  }
+
+  /** The strip: its rise, its slide, each frame's seam, the loops, the small pictures, the chrome. */
+  private strip(b: ListBeats, g: ListGeometry, frame: FrameInfo): void {
     const idx = b.index;
     const fw = g.frame.w;
     const grow = seg(b.expandRaw, 0, 0.35);
-    put(this.win, "opacity", f(b.appear * (1 - grow)));
+    const k = 1 - Math.exp(-12 * frame.dt);
+    this.hover += (this.hoverTarget(b, g) - this.hover) * k;
+    if (this.hover < 0.001) this.hover = 0;
+    const lift = this.hover;
+    const at = `translate3d(0, ${f((1 - b.strip) * this.vh - lift * LIFT)}px, 0) scale(${f(1 + lift * LIFT_SCALE)})`;
+    put(this.win, "opacity", f(1 - grow));
     put(this.win, "visibility", grow >= 1 ? "hidden" : "inherit");
-    put(this.win, "transform", `translate3d(0, ${f((1 - b.appear) * 0.06 * this.vh)}px, 0)`);
+    put(this.win, "transform", at);
     put(this.row, "transform", `translate3d(${f(-idx * fw)}px, 0, 0)`);
 
     for (let i = 0; i < this.items.length; i += 1) {
@@ -350,11 +416,12 @@ class ListRuntime implements SectionRuntime {
         put(it.el, "visibility", visible ? "inherit" : "hidden");
       }
       if (visible) {
+        // The seam of Oryzo: the picture that arrives is turned and too large, and settles.
         const o = show - 1 + hide;
         put(it.inner, "transform", `rotate(${f(o * -10)}deg) scale(${f(1 + Math.abs(o) * 0.2)})`);
       }
       // Loops and the slow push of a still run for the frames that are on screen only.
-      const live = visible && this.running && b.appear > 0.5;
+      const live = visible && this.running && b.strip > 0.5;
       if (live !== it.live) {
         it.live = live;
         it.video?.play(live);
@@ -364,10 +431,50 @@ class ListRuntime implements SectionRuntime {
       if (it.video && Math.abs(i - idx) < 2.2) it.video.want(Math.abs(i - idx) < 1.2);
     }
 
-    const chromeOp = b.appear * (1 - seg(b.expandRaw, 0, 0.25));
-    put(this.chrome, "opacity", f(chromeOp));
-    put(this.dot, "opacity", f(chromeOp));
-    put(this.dot, "transform", `scale(${f(backOut(clamp01((b.appear - 0.4) / 0.6)))})`);
+    this.thumbRowsDraw(b, g, idx);
+
+    // The dashed line draws itself side by side as the strip arrives (each side is a bar that
+    // translates into its clip), the marks and the dot come last. All of it rides with the window.
+    put(this.chrome, "transform", at);
+    put(this.chrome, "opacity", f((1 - seg(b.expandRaw, 0, 0.25)) * (0.75 + 0.25 * lift)));
+    const c = b.chrome;
+    put(this.edges[0], "transform", `translate3d(${f(-(1 - seg(c, 0, 0.3)) * 100)}%, 0, 0)`);
+    put(this.edges[1], "transform", `translate3d(0, ${f(-(1 - seg(c, 0.2, 0.5)) * 100)}%, 0)`);
+    put(this.edges[2], "transform", `translate3d(${f((1 - seg(c, 0.4, 0.7)) * 100)}%, 0, 0)`);
+    put(this.edges[3], "transform", `translate3d(0, ${f((1 - seg(c, 0.6, 0.9)) * 100)}%, 0)`);
+    const tickOp = f(seg(c, 0.8, 1));
+    for (const t of this.ticks) put(t, "opacity", tickOp);
+    put(this.dot, "transform", `scale(${f(backOut(seg(c, 0.65, 1)))})`);
+  }
+
+  /**
+   * The two rows of small pictures. At position `idx` the left row shows the frames before the one in
+   * the window, the next one right beside it, and the right row the ones to come; a step of the strip
+   * moves both by one picture and its gap (Oryzo's 210 px at 1440). They rise from below at the start,
+   * the near ones first, and leave with the growth of the last frame.
+   */
+  private thumbRowsDraw(b: ListBeats, g: ListGeometry, idx: number): void {
+    const { thumb } = g;
+    const rest = Math.round(idx);
+    const op = f(1 - seg(b.expandRaw, 0, 0.3));
+    put(this.sides.left, "opacity", op);
+    put(this.sides.right, "opacity", op);
+    // The left row's picture `i` stands at `leftW - w - (idx - 1 - i) * pitch` from the clip's left
+    // (it is at `i * pitch` in its flex row), the right row's picture `i` at `(i - idx - 1) * pitch`
+    // (at `(i - 1) * pitch` in its row).
+    put(
+      this.thumbRows.left,
+      "transform",
+      `translate3d(${f(g.left.w - thumb.w - (idx - 1) * thumb.pitch)}px, 0, 0)`,
+    );
+    put(this.thumbRows.right, "transform", `translate3d(${f(-idx * thumb.pitch)}px, 0, 0)`);
+    for (const side of SIDES) {
+      for (const t of this.thumbs[side]) {
+        const order = Math.max(0, side === "left" ? rest - 1 - t.i : t.i - rest - 1);
+        const y = thumbRise(b.rise, order) * this.vh;
+        put(t.el, "transform", y > 0.5 ? `translate3d(0, ${f(y)}px, 0)` : "none");
+      }
+    }
   }
 
   /**
@@ -499,20 +606,24 @@ class ListRuntime implements SectionRuntime {
     }
   }
 
-  /** The title, the names and the open buttons over the window. */
+  /** The heading, the names, the hint and the open buttons. */
   private words(b: ListBeats): void {
     const idx = b.index;
     const out = 1 - seg(b.expandRaw, 0, 0.3);
-    put(this.title, "opacity", f(b.appear * out));
-    put(this.title, "transform", `translate3d(0, ${f((1 - b.appear) * 24)}px, 0)`);
+    const lift = f((1 - b.head) * this.vh);
+    put(this.title, "opacity", f(b.head * out));
+    put(this.title, "translate", `0 ${lift}px`);
 
     const rest = Math.min(FRAME_COUNT - 1, Math.max(0, Math.round(idx)));
     for (let i = 0; i < this.names.length; i += 1) {
       const o = i - idx;
-      const op = clamp01(1 - Math.abs(o) * 1.8) * b.nameIn * out;
+      // The name of the frame in the window is the line under the muted one; a step of the strip
+      // takes the old name up and out and brings the next from below, as the picture changes.
+      const op = clamp01(1 - Math.abs(o) * 1.8) * b.head * out;
       const el = this.names[i];
       put(el, "opacity", f(op));
       put(el, "transform", `translate3d(0, ${f(o * 55)}%, 0)`);
+      put(el, "translate", `0 ${lift}px`);
     }
     if (rest !== this.current) {
       this.current = rest;
@@ -523,11 +634,14 @@ class ListRuntime implements SectionRuntime {
       });
     }
 
+    // The hint at the foot comes at the end of the rise and goes with the growth.
+    put(this.cue, "opacity", f(b.cue * out));
+    put(this.cue, "transform", `translate3d(0, ${f((1 - b.cue) * 12)}px, 0)`);
+
     // A button is live for the frame in the window once the strip stands still on it. It is never
     // `disabled` (that would take it out of the tab order): `aria-disabled` says it is not ready.
     const atRest = Math.abs(idx - rest) < 0.05;
-    const ready =
-      atRest && rest < SELENA_AT && b.expandRaw <= 0 && b.appear > 0.99 && b.nameIn > 0.99;
+    const ready = atRest && rest < SELENA_AT && b.expandRaw <= 0 && b.rise > 0.999;
     for (let i = 0; i < this.opens.length; i += 1) {
       const btn = this.opens[i];
       if (!btn) continue;
@@ -541,7 +655,8 @@ class ListRuntime implements SectionRuntime {
 
   dispose(): void {
     this.disposed = true;
-    this.carry = null;
+    this.pair?.dispose();
+    this.pair = null;
     this.viewer.dispose();
     for (const r of this.removers) r();
     for (const it of this.items) it.video?.dispose();
@@ -549,22 +664,11 @@ class ListRuntime implements SectionRuntime {
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const backdrop = await ensureBackdrop(ctx).catch(() => null);
-  const runtime = new ListRuntime(ctx, backdrop);
-  // The hand, the doll and Selena are the biggest files: the section is built without them and they
-  // join when ready (a jump into the list before they arrive shows the frames and the words). Each
-  // is built when the page is idle, so the long task falls between two scroll events.
-  whenIdle(() => {
-    if (runtime.isDisposed) return;
-    void ensureCarry(ctx).then(
-      (carry) => {
-        runtime.setCarry(carry);
-      },
-      () => {
-        runtime.setCarry(null);
-      },
-    );
-  }, 1200);
+  const runtime = new ListRuntime(ctx);
+  runtime.setPair(createListPair(ctx));
+  // Selena is the biggest file of the page: the section is built without her and she joins when
+  // ready (a jump into the list before she arrives shows the frames and the words). She is built
+  // when the page is idle, so the long task falls between two scroll events.
   whenIdle(() => {
     if (runtime.isDisposed) return;
     void ensureSelena(ctx).then(

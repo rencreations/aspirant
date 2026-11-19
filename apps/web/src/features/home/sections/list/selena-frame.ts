@@ -7,7 +7,7 @@
  */
 import { ANCHOR, POSE_FIT, REF_HEIGHT } from "../../actors/selena/constants";
 import { frameFor } from "../../actors/selena/framing";
-import { isPortrait, type Vp } from "../hand/timeline";
+import { isPortrait, type Vp } from "../vp";
 
 import type { Rect } from "./layout";
 

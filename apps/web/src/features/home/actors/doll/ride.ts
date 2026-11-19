@@ -60,6 +60,61 @@ export interface RideOptions {
   gripR?: Object3D | null;
   headPoint?: Object3D | null;
   seed?: number;
+  /** Where she sits from the seat socket, in her drawn heights along its axes (the dragon's neck by default). */
+  seatOffset?: readonly [number, number, number];
+  /** How much of the seat's tilt she holds against (0 leans with it, 1 stays upright). Default `UPRIGHT`. */
+  upright?: number;
+  /** A host whose grips are hand targets a controller moves: no walk toward the grips, no spread rule, no slips. */
+  free?: boolean;
+}
+
+/**
+ * What a controller asks of the rider each frame on top of her own life (round six: the pair). The
+ * hands are the grip sockets themselves (a controller moves them); these are the rest of the body.
+ * Radians unless said. The controller eases them, the rider adds them as they are.
+ */
+export interface RideGesture {
+  /** The weight of each hand on its socket, 0 to 1 (times the grip weight of the behaviour). */
+  handL: number;
+  handR: number;
+  /** The trunk: sideways lean (positive: the top to her left), forward nod, a twist about her vertical. */
+  roll: number;
+  nod: number;
+  twist: number;
+  /** The head on top: tilt, turn about the vertical, nod. */
+  headTilt: number;
+  headTurn: number;
+  headNod: number;
+  /** The legs swing: amplitude (radians), rate (hertz), the knees lifted 0 to 1. */
+  legAmp: number;
+  legRate: number;
+  knees: number;
+  /** A slide off the seat to the side, -1 to 1, with no flail (the pair's nearly slip). */
+  slide: number;
+  /** Where she looks, in stage pixels, when `look` is true. */
+  lookX: number;
+  lookY: number;
+  look: boolean;
+}
+
+export function createGesture(): RideGesture {
+  return {
+    handL: 1,
+    handR: 1,
+    roll: 0,
+    nod: 0,
+    twist: 0,
+    headTilt: 0,
+    headTurn: 0,
+    headNod: 0,
+    legAmp: 0,
+    legRate: 2,
+    knees: 0,
+    slide: 0,
+    lookX: 0,
+    lookY: 0,
+    look: false,
+  };
 }
 
 /** What the actor gives the rider. */
@@ -129,6 +184,11 @@ export class Rider {
   readonly counter = new Quaternion();
   grip = 1;
   onLetGo: (() => void) | null = null;
+  /** A controller's asks (see `RideGesture`): written each frame, read in `measure`, `addTurns` and `solveArms`. */
+  readonly gesture: RideGesture = createGesture();
+  private seatOffset: readonly [number, number, number] = SEAT_OFFSET;
+  private uprightShare = UPRIGHT;
+  private free = false;
 
   /** The walk toward the grips (world px): she sits where her hands can hold (see `fitToGrips`). */
   private readonly fit = new Vector3();
@@ -171,6 +231,11 @@ export class Rider {
     this.gripR = opts.gripR ?? null;
     this.headPoint = opts.headPoint ?? null;
     this.behaviour = new RideBehaviour(opts.seed ?? 7);
+    this.seatOffset = opts.seatOffset ?? SEAT_OFFSET;
+    this.uprightShare = opts.upright ?? UPRIGHT;
+    this.free = opts.free ?? false;
+    this.behaviour.noSlip = this.free;
+    Object.assign(this.gesture, createGesture());
     this.motion.reset();
     this.chains.reset();
     this.upright.reset();
@@ -246,13 +311,15 @@ export class Rider {
     if (!Number.isFinite(shake)) this.motion.reset();
     const cue = this.behaviour.step(dt, { shake, lostGrip: this.lost });
     // A slip tips and slides her; a tremble shakes her.
-    const roll = 0.55 * cue.slide + 0.03 * cue.tremble * Math.sin(this.time * 41);
+    const g = this.gesture;
+    const slide = cue.slide + g.slide;
+    const roll = 0.55 * slide + 0.03 * cue.tremble * Math.sin(this.time * 41) + g.roll;
     this.chains.step(
       dt,
       this.motion,
       roll,
-      -0.26 * cue.slide + cue.shiftX,
-      -0.12 * Math.abs(cue.slide) + cue.shiftY,
+      -0.26 * slide + cue.shiftX,
+      -0.12 * Math.abs(slide) + cue.shiftY,
     );
     // The grip: it eases to the cue (a loss goes in `GRIP_LOSS`).
     this.grip = approach(this.grip, cue.grip, cue.name === "gone" ? 1 / GRIP_LOSS : 9, dt);
@@ -266,7 +333,7 @@ export class Rider {
 
   /** The counter turn that keeps her upright on a seat that pitches in the screen plane. */
   private holdUp(dt: number, tilt: number): void {
-    if (Number.isFinite(tilt)) this.upright.step(-UPRIGHT * tilt, dt);
+    if (Number.isFinite(tilt)) this.upright.step(-this.uprightShare * tilt, dt);
     // The camera's axis, in the seat's frame: the turn is about it.
     _m.copy(this.seat?.matrixWorld ?? _m).invert();
     _d.set(0, 0, 1).transformDirection(_m);
@@ -279,7 +346,10 @@ export class Rider {
     const pointer = this.host.pointer();
     const near = head.h * 3.2;
     const out = _look;
-    if (pointer && Math.hypot(pointer.x - head.x, pointer.y - head.y) < near) {
+    if (this.gesture.look) {
+      out.x = this.gesture.lookX;
+      out.y = this.gesture.lookY;
+    } else if (pointer && Math.hypot(pointer.x - head.x, pointer.y - head.y) < near) {
       out.x = pointer.x;
       out.y = pointer.y;
     } else {
@@ -311,16 +381,17 @@ export class Rider {
     const b = this.body;
     const c = this.cue;
     // The trunk: roll in the screen plane (about the model's Z) and a nod (about X, forward is negative).
-    addTurn(turns, BONE.spine02, -f * b.nod * 0.5, 0, f * b.roll * 0.55);
-    addTurn(turns, BONE.spine, -f * b.nod * 0.3, 0, f * b.roll * 0.3);
-    addTurn(turns, BONE.neck, -f * b.nod * 0.2, 0, f * b.roll * 0.15);
+    const g = this.gesture;
+    addTurn(turns, BONE.spine02, -f * (b.nod + g.nod) * 0.5, f * g.twist * 0.5, f * b.roll * 0.55);
+    addTurn(turns, BONE.spine, -f * (b.nod + g.nod) * 0.3, f * g.twist * 0.3, f * b.roll * 0.3);
+    addTurn(turns, BONE.neck, -f * (b.nod + g.nod) * 0.2, f * g.twist * 0.2, f * b.roll * 0.15);
     // The head lags on top of the trunk, tilts and turns with the behaviour.
     addTurn(
       turns,
       BONE.head,
-      -f * (b.headNod + 0.02 * c.tremble * Math.sin(time * 37)),
-      0,
-      f * (b.headRoll + c.tilt),
+      -f * (b.headNod + g.headNod + 0.02 * c.tremble * Math.sin(time * 37)),
+      f * g.headTurn,
+      f * (b.headRoll + c.tilt + g.headTilt),
     );
     // The legs swing like pendulums (about Z) and flop (about X), a kick bends the knees.
     const swing = f * b.legSwing;
@@ -329,6 +400,15 @@ export class Rider {
     const kick = f * c.legs * (0.5 + 0.5 * Math.sin(time * 15));
     addTurn(turns, BONE.legL, -0.9 * kick, 0, 0);
     addTurn(turns, BONE.legR, -0.9 * (f * c.legs * (0.5 + 0.5 * Math.sin(time * 15 + 2))), 0, 0);
+    // The legs swing like a child's on a high seat: the shins kick forward and back in turn.
+    if (g.legAmp > 0 || g.knees > 0) {
+      const w = Math.PI * 2 * g.legRate * time;
+      const a = f * g.legAmp;
+      addTurn(turns, BONE.legL, -a * (0.5 + 0.5 * Math.sin(w)), 0, 0);
+      addTurn(turns, BONE.legR, -a * (0.5 + 0.5 * Math.sin(w + Math.PI)), 0, 0);
+      addTurn(turns, BONE.upLegL, -f * g.knees * 0.5 - a * 0.12 * Math.sin(w), 0, 0);
+      addTurn(turns, BONE.upLegR, -f * g.knees * 0.5 + a * 0.12 * Math.sin(w), 0, 0);
+    }
     // The arms that are free sway, and flail when she slips.
     const free = 1 - this.grip;
     addTurn(turns, BONE.armL, 0, 0, f * free * b.armSway);
@@ -350,9 +430,9 @@ export class Rider {
     this.off.addScaledVector(_d, b.shiftY * drawn * this.fade);
     // Her place on the dragon: on the near side of the neck (toward the camera, so the wings do not
     // cover her), above it and a little forward, in the seat's axes (+X the dragon's near side, +Y up, +Z the nose).
-    this.off.x += SEAT_OFFSET[0] * drawn * this.fade;
-    this.off.y += SEAT_OFFSET[1] * drawn * this.fade;
-    this.off.z += SEAT_OFFSET[2] * drawn * this.fade;
+    this.off.x += this.seatOffset[0] * drawn * this.fade;
+    this.off.y += this.seatOffset[1] * drawn * this.fade;
+    this.off.z += this.seatOffset[2] * drawn * this.fade;
     // The walk toward the grips, a world vector turned into the seat's axes (its length kept).
     const len = this.fit.length();
     if (len > 1e-6) {
@@ -374,7 +454,7 @@ export class Rider {
     const seat = this.seat;
     const a = this.gripL;
     const b = this.gripR;
-    if (!seat || (!a && !b) || !(dt > 0)) {
+    if (this.free || !seat || (!a && !b) || !(dt > 0)) {
       if (!seat) this.fit.set(0, 0, 0);
       return;
     }
@@ -413,16 +493,17 @@ export class Rider {
   solveArms(): void {
     const w = this.grip * this.fade;
     if (w <= 0.001) return;
-    this.hold(this.chainL, this.gripL, w, 1);
-    this.hold(this.chainR, this.gripR, w, -1);
+    const g = this.gesture;
+    this.hold(this.chainL, this.gripL, w * g.handL, 1);
+    this.hold(this.chainR, this.gripR, w * g.handR, -1);
   }
 
   private hold(chain: ArmChain, grip: Object3D | null, w: number, side: 1 | -1): void {
-    if (!grip) return;
+    if (!grip || w <= 0.001) return;
     grip.updateWorldMatrix(true, false);
     grip.getWorldPosition(_target);
     // Hands wider apart than her arms can spread are brought toward the middle of the grips.
-    if (this.gripL && this.gripR) {
+    if (!this.free && this.gripL && this.gripR) {
       this.gripL.getWorldPosition(_grip);
       this.gripR.getWorldPosition(_grip2);
       _grip.add(_grip2).multiplyScalar(0.5);

@@ -305,7 +305,6 @@ test("the copy and the links of every section are in the page", async ({ page })
     await expect(list.nth(i), name).toHaveText(name);
     await expect(list.nth(i), name).toHaveAttribute("href", new RegExp(`/character/${slug}/?$`));
   }
-  await expect(page.locator('[data-home-section="bolt"] li')).toHaveCount(5);
   for (const text of COPY) {
     await expect(page.getByText(text, { exact: false }).first(), text).toBeAttached();
   }
@@ -456,9 +455,7 @@ test.describe("on the stage (WebGL)", () => {
       "aspirants",
       "rows",
       "strip",
-      "bolt",
-      "fall",
-      "hand",
+      "descent",
       "list",
       "selena",
       "voices",

@@ -53,6 +53,7 @@ import {
   clearTrick,
   createTrickPose,
   createTricks,
+  rockForRider,
   startTrick,
   stepTricks,
   trickPose,
@@ -84,6 +85,18 @@ const DEPTH_BACK = 600;
 const DEPTH_FRONT = 100;
 const CURSOR_LABEL = "HELLO";
 
+/**
+ * What a pair controller does with a press or a hover instead of the drone's own answer (round six:
+ * the drone and the doll answer together). Set `hooks` and the drone's reactions to the pointer are
+ * off; its hover look (a lift, the eyes) stays.
+ */
+export interface PointerHooks {
+  enter?(): void;
+  leave?(): void;
+  press?(x: number, y: number): void;
+  release?(x: number, y: number): void;
+}
+
 /** A place in the stage frame, for the probes. */
 interface DroneState {
   x: number;
@@ -107,6 +120,17 @@ export class DroneActor implements Actor {
   readonly name = "drone";
   visible = false;
   readonly object: Object3D;
+  /**
+   * A pair controller steps the drone itself (it must run before the doll that sits on it): the
+   * kernel's `update` is then a no-op and the controller calls `drive`.
+   */
+  external = false;
+  /** A pair controller answers the pointer (see `PointerHooks`). */
+  hooks: PointerHooks | null = null;
+  /** A rider sits on the drone: a roll or a flip is a rock from side to side (`rockForRider`), a spin stays a spin. */
+  carrying = false;
+  /** A pair controller sets the depth the drone's hit reports (larger is farther): the doll on its head is hit first. */
+  hitDepth: number | null = null;
 
   private readonly ctx: ActorCtx;
   private readonly model: DroneModel;
@@ -151,6 +175,8 @@ export class DroneActor implements Actor {
   private readonly poseLook = createPoseLook();
   private emoteFace: FaceName | null = null;
   private emoteLeft = 0;
+  private flutterAmount = 0;
+  private spinYaw = 0;
   private hovered = false;
   private readonly lift = { x: 0, v: 0 };
   private readonly presence = createPresence();
@@ -234,12 +260,18 @@ export class DroneActor implements Actor {
       test: (x, y) => this.hit(x, y),
       enter: () => {
         this.hovered = true;
+        this.hooks?.enter?.();
       },
       leave: () => {
         this.hovered = false;
+        this.hooks?.leave?.();
       },
-      press: () => {
-        this.onPress();
+      press: (x, y) => {
+        if (this.hooks) this.hooks.press?.(x, y);
+        else this.onPress();
+      },
+      release: (x, y) => {
+        this.hooks?.release?.(x, y);
       },
     };
     this.removers.push(ctx.pointer.add(target));
@@ -352,10 +384,34 @@ export class DroneActor implements Actor {
     this.presenceGoal = 1;
     this.presence.x = 1;
     this.presence.v = 0;
+    this.spinYaw = 0;
+    this.flutterAmount = 0;
     this.clearOneShots();
   }
 
   // ---------------------------------------------------------------- what a section reads
+
+  /** What is drawn this frame, in the screen frame (y down): for the pair's seat arithmetic. Read only. */
+  get drawn(): Readonly<{
+    x: number;
+    y: number;
+    size: number;
+    yaw: number;
+    pitch: number;
+    roll: number;
+  }> {
+    return this.draw;
+  }
+
+  /** A turn about its vertical axis added to what is drawn, with no spring: a dance's spin (wrapped by the caller). */
+  spin(angle: number): void {
+    this.spinYaw = Number.isFinite(angle) ? angle : 0;
+  }
+
+  /** The wings work at least this hard, 0 to 1 (a dance, a descent). Sticky; 0 gives them back. */
+  flutter(amount: number): void {
+    this.flutterAmount = Math.max(0, Math.min(1, amount));
+  }
 
   /** The drone as it is drawn (stage frame), for a probe or a section that stands something beside it. */
   state(): DroneState {
@@ -412,6 +468,12 @@ export class DroneActor implements Actor {
   // ---------------------------------------------------------------- the frame
 
   update(frame: FrameInfo): void {
+    if (this.external) return;
+    this.drive(frame);
+  }
+
+  /** The frame's work: the kernel's `update`, or a pair controller's call in its own order. */
+  drive(frame: FrameInfo): void {
     const resumed = frame.frame !== this.lastFrame + 1;
     const jumped = Math.abs(frame.S - this.lastS) > S_JUMP;
     this.lastFrame = frame.frame;
@@ -462,6 +524,7 @@ export class DroneActor implements Actor {
     const dy = p.y - this.draw.y;
     const r = 0.5 * (this.draw.size / SIZE_PER_HEIGHT);
     if (dx * dx + dy * dy > r * r) return null;
+    if (this.hitDepth !== null) return this.hitDepth;
     return this.layerName === "front" ? DEPTH_FRONT : DEPTH_BACK;
   }
 
@@ -550,6 +613,7 @@ export class DroneActor implements Actor {
       this.pendingTrick = null;
     stepTricks(this.tricks, dt);
     trickPose(this.tricks, this.trick);
+    if (this.carrying) rockForRider(this.tricks.kind, this.trick);
     this.emoteLeft = Math.max(0, this.emoteLeft - dt);
 
     // Hover: it lifts a little and gets a little bigger (it never moves its target).
@@ -580,7 +644,7 @@ export class DroneActor implements Actor {
       this.bob.dy +
       (this.trick.dy + poseL.dy - HOVER_LIFT * this.lift.x) * base;
     d.size = size;
-    d.yaw = this.follower.yaw.x + this.trick.yaw + poseL.yaw;
+    d.yaw = this.follower.yaw.x + this.trick.yaw + poseL.yaw + this.spinYaw;
     d.pitch = this.follower.pitch.x + this.bob.pitch + this.trick.pitch + poseL.pitch;
     d.roll = this.follower.roll.x + this.bob.roll + this.trick.roll + poseL.roll;
     this.at.x = d.x;
@@ -627,6 +691,7 @@ export class DroneActor implements Actor {
     input.time = time;
     // The wings flutter as it pops in or out.
     if (Math.abs(this.presence.v) > 0.05) input.effort = Math.max(input.effort, 0.7);
+    input.effort = Math.max(input.effort, this.flutterAmount);
     stepRig(this.rig, input, dt, this.rigPose);
 
     const eyeX = this.gaze.eyeX * this.engaged + poseL.eyeX;

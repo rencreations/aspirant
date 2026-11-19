@@ -19,30 +19,63 @@ const SIZES = [
 ];
 
 describe("list geometry", () => {
-  it("keeps the frame 4:5, inside the screen, with room on top for the doll", () => {
+  it("keeps the frame 4:5 and inside the screen, under the bar", () => {
     for (const vp of SIZES) {
       const g = listGeometry(vp);
       expect(g.frame.w / g.frame.h).toBeCloseTo(FRAME_RATIO, 6);
       expect(g.frame.x).toBeGreaterThanOrEqual(0);
       expect(g.frame.x + g.frame.w).toBeLessThanOrEqual(vp.w);
+      expect(g.frame.y).toBeGreaterThanOrEqual(64);
       expect(g.frame.y + g.frame.h).toBeLessThanOrEqual(vp.h);
-      // The doll sits on the top edge: her height fits between the bar (64 px) and the edge.
-      expect(g.frame.y - g.dollHeight * 0.7).toBeGreaterThan(40);
     }
   });
 
-  it("is 0.70 of the screen tall on a desktop and as wide as the screen allows on a phone", () => {
-    expect(listGeometry({ w: 1440, h: 900 }).frame.h).toBeCloseTo(630, 3);
-    const p = listGeometry({ w: 390, h: 844 });
-    expect(p.frame.w).toBeCloseTo(390 - 48, 3);
+  it("is 0.8 of the screen tall and centred on a wide screen: no empty space on top", () => {
+    for (const vp of [
+      { w: 1440, h: 900 },
+      { w: 1706, h: 950 },
+    ]) {
+      const g = listGeometry(vp);
+      expect(g.stacked).toBe(false);
+      expect(g.frame.h).toBeCloseTo(0.8 * vp.h, 6);
+      expect(g.frame.y + g.frame.h / 2).toBeCloseTo(vp.h / 2, 6);
+      expect(g.frame.x + g.frame.w / 2).toBeCloseTo(vp.w / 2, 6);
+    }
   });
 
-  it("seats the doll right of the middle, on the top edge", () => {
+  it("puts small pictures of 0.35 on both sides, on the middle line, clear of the frame", () => {
     for (const vp of SIZES) {
       const g = listGeometry(vp);
-      expect(g.sitX).toBeGreaterThan(0);
-      expect(g.sitX).toBeLessThan(g.frame.x + g.frame.w - vp.w / 2);
-      expect(g.sitY).toBeCloseTo(vp.h / 2 - g.frame.y - 4, 6);
+      expect(g.thumb.w / g.frame.w).toBeCloseTo(0.35, 6);
+      expect(g.thumb.y + g.thumb.h / 2).toBeCloseTo(g.frame.y + g.frame.h / 2, 6);
+      expect(g.left.x + g.left.w).toBeLessThan(g.frame.x);
+      expect(g.right.x).toBeGreaterThan(g.frame.x + g.frame.w);
+      expect(g.right.x + g.right.w).toBeCloseTo(vp.w, 6);
+    }
+  });
+
+  it("stands the words over the left small pictures on a wide screen, over the frame on a narrow one", () => {
+    const wide = listGeometry({ w: 1440, h: 900 });
+    expect(wide.head.x).toBeCloseTo(45, 6);
+    expect(wide.head.bottom).toBeLessThan(wide.thumb.y);
+    expect(wide.head.x + 300).toBeLessThan(wide.frame.x);
+    const phone = listGeometry({ w: 390, h: 844 });
+    expect(phone.stacked).toBe(true);
+    expect(phone.head.bottom).toBeLessThan(phone.frame.y);
+    expect(phone.head.bottom).toBeGreaterThan(64);
+    expect(phone.frame.w).toBeGreaterThan(0.6 * 390);
+  });
+
+  it("leaves the bottom right free for the pair", () => {
+    for (const vp of [
+      { w: 1440, h: 900 },
+      { w: 1706, h: 950 },
+    ]) {
+      const g = listGeometry(vp);
+      // The right small pictures end above the corner (the lowest 30 percent of the screen).
+      expect(g.thumb.y + g.thumb.h).toBeLessThan(0.7 * vp.h);
+      // The hint is at the foot, in the middle.
+      expect(g.cueY).toBeGreaterThan(0.9 * vp.h);
     }
   });
 });

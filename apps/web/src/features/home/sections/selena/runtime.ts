@@ -6,9 +6,9 @@ import { ensureSilverbolt } from "../../actors/silverbolt";
 import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import { ensureMarks } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
-import { ensureCarry } from "../hand/carry";
-import { whenIdle } from "../hand/idle";
-import { isPortrait } from "../hand/timeline";
+
+import { whenIdle } from "../idle";
+import { isPortrait } from "../vp";
 
 import { SelenaScene } from "./scene";
 import { STORY } from "./stations";
@@ -185,8 +185,7 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
       ensureSilverbolt(ctx),
       ensureDoll(ctx),
       ensureMarks(ctx),
-      ensureCarry(ctx),
-    ]).then(([sl, sb, doll, marks, carry]) => {
+    ]).then(([sl, sb, doll, marks]) => {
       if (runtime.isDisposed) return;
       runtime.built = true;
       runtime.scene.setActors({
@@ -194,7 +193,6 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
         sb: sb.status === "fulfilled" ? sb.value : null,
         doll: doll.status === "fulfilled" ? doll.value : null,
         marks: marks.status === "fulfilled" ? marks.value : null,
-        carry: carry.status === "fulfilled" ? carry.value : null,
       });
     });
   };

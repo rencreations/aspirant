@@ -193,3 +193,25 @@ export function trickPose(tr: Tricks, out: TrickPose): TrickPose {
   }
   return out;
 }
+
+/** The turns a rider cannot ride through: a roll or a flip is a rock of this many radians, not a whole turn. */
+export const ROCK = 0.62;
+
+/**
+ * With a rider on its head the drone does not turn upside down: the roll and the flips become a rock
+ * from side to side (or back and forth) that is still a whole swing in the same time, so it begins and
+ * ends at rest. A spin about its own vertical axis is left as it is: she turns with it.
+ */
+export function rockForRider(kind: TrickKind | null, out: TrickPose): TrickPose {
+  if (
+    kind === "barrel" ||
+    kind === "roll" ||
+    kind === "frontflip" ||
+    kind === "backflip" ||
+    kind === "loop"
+  ) {
+    out.roll = ROCK * Math.sin(out.roll);
+    out.pitch = ROCK * Math.sin(out.pitch);
+  }
+  return out;
+}

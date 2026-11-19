@@ -78,7 +78,7 @@ describe("the strip's mist comes in slowly", () => {
     }
   });
 
-  it("runs on its own clock and ends on the level and intensity the bolt carries on with", () => {
+  it("runs on its own clock and ends on its level and intensity", () => {
     const spec = backdropAt(8);
     for (let i = 0; i < 20; i++) stepInkEntrance(0.05, false);
     expect(spec?.options.amount).toBe(0);

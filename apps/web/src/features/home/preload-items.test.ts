@@ -123,7 +123,6 @@ describe("homeItems", () => {
     for (const id of [
       "media:/models/home/silverbolt.glb",
       "media:/models/home/doll.glb",
-      "media:/models/home/hand.glb",
       "media:/models/home/selena.glb",
       "media:/models/home/gramophone.glb",
     ]) {

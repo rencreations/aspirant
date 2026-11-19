@@ -55,7 +55,7 @@ import { patchFaceFragment, patchFaceVertex } from "./face/toon-face";
 import { HANG_POSE, hangSway, rollToHang, wrapPi } from "./hang";
 import { applyFlatNormals, chainFlat } from "./dress-flat";
 import { addInkCopies } from "./ink";
-import { RIDE_POSE, Rider, type RideOptions } from "./ride";
+import { RIDE_POSE, Rider, type RideGesture, type RideOptions } from "./ride";
 import { Reactions, type ReactionKind } from "./interaction";
 import { INK_SLOPE, PART_LOOKS, inkBoost, trimLook } from "./look";
 import { Spring, approach, at, clamp, smoothstep } from "./motion";
@@ -307,6 +307,15 @@ export class DollActor implements Actor {
   /** Called once when the grip is lost (`loseGrip`): call `release()` there, or earlier. */
   onLetGo: (() => void) | null = null;
   private interactive = true;
+  /** A pair controller steps her itself (after the drone she sits on): the kernel's `update` is then a no-op. */
+  external = false;
+  /** A pair controller answers the pointer for her (hover and press); her own reactions are off then. */
+  hooks: {
+    enter?(): void;
+    leave?(): void;
+    press?(x: number, y: number): void;
+    release?(x: number, y: number): void;
+  } | null = null;
   private readonly hit = {
     headX: 0,
     headY: 0,
@@ -399,13 +408,19 @@ export class DollActor implements Actor {
       test: (x, y) => this.hitTest(x, y),
       enter: () => {
         this.hovered = true;
-        if (this.interactive) this.reactions.enter();
+        if (this.hooks) this.hooks.enter?.();
+        else if (this.interactive) this.reactions.enter();
       },
       leave: () => {
         this.hovered = false;
+        this.hooks?.leave?.();
       },
-      press: () => {
-        if (this.interactive) this.reactions.press(Math.random());
+      press: (x, y) => {
+        if (this.hooks) this.hooks.press?.(x, y);
+        else if (this.interactive) this.reactions.press(Math.random());
+      },
+      release: (x, y) => {
+        this.hooks?.release?.(x, y);
       },
     });
   }
@@ -744,6 +759,16 @@ export class DollActor implements Actor {
     return this.rider.seated;
   }
 
+  /** The asks a pair controller writes each frame while she rides (`RideGesture`). */
+  get gesture(): RideGesture {
+    return this.rider.gesture;
+  }
+
+  /** The pointer is over her (read only). */
+  get isHovered(): boolean {
+    return this.hovered;
+  }
+
   /** What the rider is doing, for probes and marks. */
   get rideState(): { idle: string; grip: number; slip: number; lean: number } {
     return this.rider.state();
@@ -831,6 +856,12 @@ export class DollActor implements Actor {
   // The frame.
 
   update(frame: FrameInfo): void {
+    if (this.external) return;
+    this.drive(frame);
+  }
+
+  /** The frame's work: the kernel's `update`, or a pair controller's call in its own order. */
+  drive(frame: FrameInfo): void {
     if (this.disposed) return;
     const t0 = performance.now();
     const dt = frame.dt;

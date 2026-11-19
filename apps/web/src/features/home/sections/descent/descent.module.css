@@ -1,0 +1,34 @@
+.wind {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.streak,
+.dot,
+.cloud {
+  position: absolute;
+  top: 0;
+  display: block;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* A thin line of paper blue with a soft end, so it reads as moving air and not as a rule. */
+.streak {
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent, rgb(112 150 214 / 0.9) 45%, transparent);
+}
+
+.dot {
+  border-radius: 50%;
+  background: rgb(150 176 230 / 0.9);
+}
+
+/* A soft patch of paper blue, a radial gradient with no filter, so it costs nothing to move. */
+.cloud {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(176 196 240 / 0.55), rgb(176 196 240 / 0));
+}

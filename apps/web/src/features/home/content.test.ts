@@ -39,9 +39,6 @@ describe("the copy of the home page", () => {
     expect(content.STRIP.topRight).toBe(
       "Trailer video for the new Selena & Obsidia Aspirant skin.",
     );
-    expect(content.HAND.title).toBe("2022 - Present");
-    expect(content.HAND.body).toBe("Many collections from these 4+ years");
-    expect(content.HAND.hint).toBe("Try to hover");
     expect(content.SELENA.title).toBe("Immersive Interaction");
     expect(content.SELENA.button.label).toBe("See All Animations");
     expect(content.FUNNY.title).toBe("What's going on?");
@@ -68,16 +65,6 @@ describe("the copy of the home page", () => {
     }
   });
 
-  it("writes the pairs as the owner wrote them (Chang'e with its apostrophe, Guinevere spelled right)", () => {
-    expect(content.PAIRS).toEqual([
-      "Layla & Fanny",
-      "Ruby & Angela",
-      "Lesley & Chang'e",
-      "Guinevere & Vexana",
-      "Selena & Obsidia",
-    ]);
-  });
-
   it("lists the ten Aspirants once each, in the owner's order, ending on Selena", () => {
     expect(content.LIST_ORDER).toHaveLength(10);
     expect(new Set(content.LIST_ORDER).size).toBe(10);
@@ -98,11 +85,7 @@ describe("the copy of the home page", () => {
     }
   });
 
-  it("counts the phases and the characters the way the page says them", () => {
-    expect(content.FALL.lines).toEqual([
-      { left: "Five", right: "Phases" },
-      { left: "Ten", right: "Heroes" },
-    ]);
+  it("counts the characters the way the page says them", () => {
     expect(CHARACTER_SLUGS.length).toBe(10);
   });
 

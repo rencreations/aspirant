@@ -3,7 +3,7 @@
  * Selena's chest (the clip was made for the camera of the film), so in the room it is moved out of
  * her, to the foot of the frame, and the camera swing brings it back as it arrives. Pure.
  */
-import { isPortrait, type Vp } from "../hand/timeline";
+import { isPortrait, type Vp } from "../vp";
 
 /** An offset of the dragon from its place in the clip: shares of the screen, and a scale factor. */
 export interface RoomPlace {
