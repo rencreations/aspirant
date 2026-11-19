@@ -19,13 +19,14 @@ Reads (read only): `D:\ren\aspirant\3d\selena_silverbolt_raiko\selena_silverbolt
 
 Writes to `apps/web/public/models/home/`:
 
-| File                | What                                                                                                |       Size |
-| ------------------- | --------------------------------------------------------------------------------------------------- | ---------: |
-| `silverbolt.glb`    | Silverbolt: 24 bones, 5 meshes, 5 clips                                                             |    300,108 |
-| `selena.glb`        | Selena (normal form): 155 bones, 7 meshes, 15 face targets, 4 clips                                 |  1,753,200 |
-| `hand.glb`          | Selena's left glove and bracer: 20 bones, 2 clips                                                   |    271,760 |
-| `cameras.json`      | the camera of the five clips, 30 keys a second; 4.2 KB gzipped                                      |     13,949 |
-| `<name>.facts.json` | the numbers an actor needs (also inside each GLB, `gltf.scene.userData.home`), not loaded by a page | 3 to 65 KB |
+| File                | What                                                                                                                                                                                                  |       Size |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------: |
+| `silverbolt.glb`    | Silverbolt: 24 bones, 5 meshes, 5 clips                                                                                                                                                               |    300,108 |
+| `selena.glb`        | Selena (normal form): 155 bones, 7 meshes, 15 face targets, 4 clips                                                                                                                                   |  1,753,200 |
+| `selena-r7.glb`     | The same with 6 clips (round seven adds `interaction_R` and `intercation02`): built with `build.mjs selena --out <trial folder>`, the two files copied under the `-r7` name. The site loads this one. |  1,984,760 |
+| `hand.glb`          | Selena's left glove and bracer: 20 bones, 2 clips                                                                                                                                                     |    271,760 |
+| `cameras.json`      | the camera of the five clips, 30 keys a second; 4.2 KB gzipped                                                                                                                                        |     13,949 |
+| `<name>.facts.json` | the numbers an actor needs (also inside each GLB, `gltf.scene.userData.home`), not loaded by a page                                                                                                   | 3 to 65 KB |
 
 `doll.glb`, `gramophone.glb` and their rig files in the same folder come from `scripts/home/models/doll/` and `gramophone/`, which are another set of scripts.
 
@@ -62,6 +63,7 @@ Blender (blender/*.py, headless)            Node (lib/*.mjs, gltf-transform, sha
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `build.mjs`                                                        | the command above, the size budgets, the final load                                                                                   |
 | `silverbolt.mjs`, `selena.mjs`, `hand.mjs`, `cameras.mjs`          | one build each; `selena-facts.mjs`, `hand-facts.mjs` hold the long facts                                                              |
+| `cameras-r7.mjs`                                                   | round seven: the cameras fitted to the recording, with the sky's orientation (`cameras-r7/README.md`)                                 |
 | `blender/common.py`                                                | the bake, the node-local tracks, the probes, the export                                                                               |
 | `blender/silverbolt.py`, `selena.py`, `hand.py`, `cameras.py`      | the Blender steps (run by `build.mjs`)                                                                                                |
 | `lib/env.mjs`, `rig.mjs`, `split.mjs`, `optimize.mjs`, `facts.mjs` | paths and Blender, the rig and the clips, cutting primitives, the size pass, the facts                                                |

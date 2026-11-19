@@ -42,8 +42,13 @@ export interface Cast {
    * Draw the next frame through this camera instead of the pixel camera (a baked camera, a close
    * up). It lasts for one draw: call it every frame while it is wanted. A frame without a call, or
    * with null, uses the pixel camera again, so a hidden actor never leaves another one framed wrong.
+   *
+   * `framed` (round seven) names the roots that belong to the camera's picture (Selena with her sky,
+   * Silverbolt): they are drawn through `camera` and cut by `clipOnce`, and everything else in the
+   * pass (the drone, the doll) is drawn after them through the pixel camera, uncut and in front, so
+   * a part placed in the screen's pixels keeps its place whatever lens the picture has.
    */
-  setCamera(camera: PerspectiveCamera | null): void;
+  setCamera(camera: PerspectiveCamera | null, framed?: ReadonlyArray<Object3D>): void;
   /** Like `clip`, for the next draw only (the same one-frame rule as `setCamera`). */
   clipOnce(rect: { x: number; y: number; w: number; h: number } | null): void;
   /** The camera this frame's draw uses (a baked camera, or the pixel camera). The comic marks project through it. */
@@ -71,13 +76,18 @@ export function getCast(stage: Stage): Cast {
   let clipRect: Rect | null = null;
   // A camera or a rectangle set for one draw: set while the actors update, taken by `active()`.
   let pendingCamera: PerspectiveCamera | null = null;
+  let pendingFramed: ReadonlyArray<Object3D> | null = null;
   let pendingClip: Rect | null = null;
   let camera: PerspectiveCamera | null = null;
+  let framed: ReadonlyArray<Object3D> | null = null;
   let onceClip: Rect | null = null;
+  const shown: boolean[] = [];
   pass.active = () => {
     camera = pendingCamera;
+    framed = pendingFramed;
     onceClip = pendingClip;
     pendingCamera = null;
+    pendingFramed = null;
     pendingClip = null;
     return pass.scene.children.some((child) => child.visible && !isLight(child));
   };
@@ -86,6 +96,30 @@ export function getCast(stage: Stage): Cast {
     setToonView(stage.width, stage.height);
     const view = camera ?? pass.camera;
     const rect = onceClip ?? clipRect;
+    if (camera && framed && framed.length > 0) {
+      // Two draws: the framed roots through the lens of the picture (cut to the window), then the
+      // rest through the pixel camera over them (the depth of the first draw means nothing to it).
+      const kids = pass.scene.children;
+      for (let i = 0; i < kids.length; i += 1) {
+        const kid = kids[i]!;
+        shown[i] = kid.visible;
+        if (!isLight(kid) && !framed.includes(kid)) kid.visible = false;
+      }
+      if (rect) {
+        renderer.setScissorTest(true);
+        renderer.setScissor(rect.x, stage.height - rect.y - rect.h, rect.w, rect.h);
+      }
+      renderer.render(pass.scene, camera);
+      renderer.setScissorTest(false);
+      for (let i = 0; i < kids.length; i += 1) {
+        const kid = kids[i]!;
+        kid.visible = shown[i]! && (isLight(kid) || !framed.includes(kid));
+      }
+      renderer.clearDepth();
+      renderer.render(pass.scene, pass.camera);
+      for (let i = 0; i < kids.length; i += 1) kids[i]!.visible = shown[i]!;
+      return;
+    }
     if (!rect) {
       renderer.render(pass.scene, view);
       return;
@@ -121,8 +155,9 @@ export function getCast(stage: Stage): Cast {
     clip(rect) {
       clipRect = rect;
     },
-    setCamera(next) {
+    setCamera(next, group) {
       pendingCamera = next;
+      pendingFramed = group ?? null;
     },
     view() {
       return camera ?? pass.camera;

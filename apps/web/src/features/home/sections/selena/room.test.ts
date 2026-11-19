@@ -5,17 +5,13 @@ import { selenaEnd } from "../list/selena-frame";
 import { roomPlace } from "./room";
 
 describe("the dragon's place in the room", () => {
-  it("is below Selena on a wide screen and on a phone, so the two read apart", () => {
+  it("is where the clip puts it (round seven: the recording's own composition)", () => {
     for (const vp of [
       { w: 1440, h: 900 },
       { w: 1706, h: 950 },
       { w: 390, h: 844 },
     ]) {
-      const place = roomPlace(vp);
-      expect(place.dy).toBeLessThan(0);
-      expect(Math.abs(place.dx)).toBeLessThan(0.2);
-      expect(place.scale).toBeGreaterThan(0.5);
-      expect(place.scale).toBeLessThan(1.5);
+      expect(roomPlace(vp)).toEqual({ dx: 0, dy: 0, scale: 1 });
     }
   });
 

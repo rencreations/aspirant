@@ -22,6 +22,7 @@ export const LABS: Readonly<Record<string, Ensure>> = {
   silverbolt: async (ctx) => (await import("../actors/silverbolt")).ensureSilverbolt(ctx),
   tetra: async (ctx) => (await import("../actors/tetra")).ensureTetra(ctx),
   selena: async (ctx) => (await import("../actors/selena")).ensureSelena(ctx),
+  sheet: async (ctx) => (await import("../fx/sheet")).ensureSheet(ctx),
   gramophone: async (ctx) => (await import("../actors/gramophone")).ensureGramophone(ctx),
   records: async (ctx) => (await import("../actors/records")).ensureRecords(ctx),
   marks: async (ctx) => (await import("../fx/comic-marks/lab")).ensureMarksLab(ctx),

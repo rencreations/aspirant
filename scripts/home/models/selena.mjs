@@ -23,6 +23,8 @@ const CLIP_ALIAS = {
   interaction_R_loop: "hands_to_mouth_loop",
   interaction_back_R: "hands_to_mouth_release",
   intercation03: "interaction_03",
+  interaction_R: "pose_in",
+  intercation02: "out",
 };
 /** A morph delta below this (metres) is noise: zeroed, so the target is sparse and the file small. */
 const MORPH_NOISE = 2e-4;

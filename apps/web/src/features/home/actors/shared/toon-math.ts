@@ -83,15 +83,32 @@ const LINE = { min: 1.1, slope: 0.0029, max: 3.3, from: 120 } as const;
  * the hull behind the skin so a one sided card does not fight its own ink, and it is small enough
  * that a part a centimetre behind another still hides the ink of the one in front of it.
  */
-export function outlineFor(heightPx: number, out: InkSize = { px: 0, push: 0, card: 0 }): InkSize {
+export function outlineFor(
+  heightPx: number,
+  out: InkSize = { px: 0, push: 0, card: 0 },
+  fine = false,
+): InkSize {
   const h = heightPx > 0 ? heightPx : 0;
+  out.push = Math.max(0.1, h * 0.0012);
+  if (fine) {
+    const f = FINE_LINE.min + (h - FINE_LINE.from) * FINE_LINE.slope;
+    out.px = f < FINE_LINE.min ? FINE_LINE.min : f > FINE_LINE.max ? FINE_LINE.max : f;
+    out.card = FINE_LINE.card;
+    return out;
+  }
   // Hair strands are thin: a small figure gets a fine line round its cards, a big one up to 0.5.
   out.card = Math.min(0.5, 0.12 + h / 2400);
   const px = LINE.min + (h - LINE.from) * LINE.slope;
   out.px = px < LINE.min ? LINE.min : px > LINE.max ? LINE.max : px;
-  out.push = Math.max(0.1, h * 0.0012);
   return out;
 }
+
+/**
+ * The fine line of the in-game recordings of Selena and Silverbolt: about 3 px at 3840 wide, so a
+ * hairline at the sizes of the page (0.65 px for a small figure, 1.1 at the most). The line round
+ * an alpha card (the fringe of her hair) is this times `card`.
+ */
+const FINE_LINE = { min: 0.65, slope: 0.0004, max: 1.1, from: 120, card: 0.75 } as const;
 
 /** A colour as three numbers in 0..1 (linear). */
 export type Rgb = readonly [number, number, number];

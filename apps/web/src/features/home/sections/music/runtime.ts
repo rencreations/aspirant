@@ -6,7 +6,6 @@ import type { DuoActor } from "../../actors/duo";
 import type { BellView, GramophoneActor } from "../../actors/gramophone/actor";
 import type { TrackArt } from "../../actors/records/covers";
 import type { RecordsActor } from "../../actors/records/actor";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { SustainHandle } from "../../fx/comic-marks/system";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
@@ -45,9 +44,6 @@ const BOOST_SECONDS = 2.5;
 const MUSIC_VOLUME = 0.7;
 /** The platter must turn this fast (turns a second) before the needle's song starts. */
 const PLATTER_MIN_RPS = 0.3;
-/** How strong the stage (slats of soft colour) is behind the scene, and how much the beat adds. */
-const STAGE_AMOUNT = 0.7;
-const STAGE_BEAT = 0.35;
 
 /** The work a drone is on: "free" (it floats where `place` says), "crank", or the key of a haul. */
 type Solo = string;
@@ -82,17 +78,11 @@ class MusicRuntime implements SectionRuntime {
   private propsReady = false;
   /** `loadProps` has finished, with or without the props. */
   private propsDone = false;
-  private warmed = false;
   private disposed = false;
 
   private dt = 0;
   private local = -1;
   private queued: number | null = null;
-  /** The live stage behind the scene, once the second canvas is made. */
-  private backdrop: Backdrop | null = null;
-  private bins: Uint8Array<ArrayBuffer> | null = null;
-  /** The beat of the song, 0 to 1: fast attack, slow release. */
-  private beat = 0;
 
   private musicOn = false;
   private musicEl: HTMLAudioElement | null = null;
@@ -138,7 +128,6 @@ class MusicRuntime implements SectionRuntime {
         local: this.local,
         step: this.sched.step,
         musicOn: this.musicOn,
-        beat: this.beat,
         propsReady: this.propsReady,
         tracks: this.tracks.map((t) => t.title),
         solo: [...this.solo],
@@ -158,22 +147,13 @@ class MusicRuntime implements SectionRuntime {
     };
   }
 
-  setBackdrop(backdrop: Backdrop): void {
-    if (!this.disposed) this.backdrop = backdrop;
-  }
-
-  /** The stage's shader is compiled, or the backdrop cannot be had: the arrival's first draw is no hitch. */
-  markWarmed(): void {
-    this.warmed = true;
-  }
-
   /**
    * The ready gate: the arrival drags the gramophone in and carries the crate, so a play on a bare
    * stage would be a play of two drones in front of nothing. True once the props are made (or have
-   * failed for good) and the stage's shader is compiled.
+   * failed for good).
    */
   ready(): boolean {
-    return this.propsDone && this.warmed;
+    return this.propsDone;
   }
 
   /** Make the gramophone, the crate and the records' covers. Runs after the section has mounted. */
@@ -265,42 +245,8 @@ class MusicRuntime implements SectionRuntime {
     }
     this.driveSound(exit, cmd.music, cmd.choice);
     this.driveNotes();
-    this.driveStage(A, exit, scene, frame.dt);
     this.driveWords(stands, A > 0 && exit === 0);
     this.boost = Math.max(0, this.boost - frame.dt);
-  }
-
-  /** The beat of the song: the low end of the music's analyser, with a fast attack and a slow release. */
-  private readBeat(dt: number): void {
-    const analyser = this.musicOn ? this.ctx.audio.getMusicAnalyser() : null;
-    let level = 0;
-    if (analyser) {
-      if (this.bins?.length !== analyser.frequencyBinCount) {
-        this.bins = new Uint8Array(analyser.frequencyBinCount);
-      }
-      analyser.getByteFrequencyData(this.bins);
-      let sum = 0;
-      for (let i = 1; i < 11; i += 1) sum += this.bins[i] ?? 0;
-      level = Math.min(1, sum / (10 * 190));
-    }
-    const k = 1 - Math.exp(-(level > this.beat ? 28 : 5) * Math.max(0, dt));
-    this.beat += (level - this.beat) * k;
-  }
-
-  /** The stage behind the scene: slats of soft colour that come in with the props and swell with the song. */
-  private driveStage(A: number, exit: number, scene: boolean, dt: number): void {
-    this.readBeat(dt);
-    const backdrop = this.backdrop;
-    if (!backdrop || !scene) return;
-    const enter = smooth(ramp(A, 0.05, 0.6)) * (1 - exit);
-    if (enter <= 0.002) return;
-    backdrop.set("gradient-blinds", {
-      theme: "daybreak",
-      amount: enter * (STAGE_AMOUNT + STAGE_BEAT * this.beat),
-      speed: this.musicOn ? 1.5 : 0.7,
-      intensity: 1 + 0.5 * this.beat,
-      scale: 1.1,
-    });
   }
 
   enter(): void {
@@ -657,17 +603,5 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
   const runtime = new MusicRuntime(ctx, duo, marks);
   // The gramophone and the crate arrive in the background: the scene shows its waiting line meanwhile.
   void runtime.loadProps();
-  // The stage behind the scene is a second small canvas. Its shader is compiled now, not mid-play.
-  void ensureBackdrop(ctx).then(
-    (backdrop) => {
-      runtime.setBackdrop(backdrop);
-      void backdrop.warm(["gradient-blinds"]).finally(() => {
-        runtime.markWarmed();
-      });
-    },
-    () => {
-      runtime.markWarmed();
-    },
-  );
   return runtime;
 }

@@ -18,8 +18,8 @@ import { preload } from "./preload";
  *    cursor says VIEW, a press opens the preview.
  * 2. THE CLOSE (`ASPIRANTS_CLOSE`, a scroll ZONE, `kernel/scrub.ts`): the words leave (a trigger), and
  *    the hard edge of the wall sweeps out and the plane opens into the full screen rows (the clip
- *    opens). The visitor drives it, up and down, and if they stop inside it the page finishes it by
- *    itself, forward or back. Its end is the rows' first frame (`rows/`).
+ *    opens). The visitor drives it, up and down, and if they stop inside it the page stays where they
+ *    stopped: no idle snap (`noSnap`, round eight). Its end is the rows' first frame (`rows/`).
  *
  * `update` gets 1 at rest (the wall with the words in) and 1 to 2 across the close (`aspirantsS` in
  * `hero/timeline.ts`). In the lead (the hero's zone) it is negative and the hero drives the scene.
@@ -31,7 +31,7 @@ export const ASPIRANTS_REST = 1;
 export const ASPIRANTS_CLOSE = 1;
 /** The section's length in screens. */
 export const ASPIRANTS_SCREENS = ASPIRANTS_REST + ASPIRANTS_CLOSE;
-/** The idle snap for a full traverse of the close (seconds): the page carries the scene the rest of the way. */
+/** Kept for the table's validation only: the close has `noSnap`, so the page never carries the scene by itself. */
 export const ASPIRANTS_SNAP_SECONDS = 1.6;
 
 export const section: HomeSection = {
@@ -51,6 +51,8 @@ export const section: HomeSection = {
       to: 2,
       seconds: ASPIRANTS_SNAP_SECONDS,
       ease: "linear",
+      // Round eight: a plain scroll linked passage. Nothing finishes it by itself when the visitor stops.
+      noSnap: true,
     },
   ],
   preload,

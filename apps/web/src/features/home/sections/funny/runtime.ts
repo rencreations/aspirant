@@ -5,7 +5,6 @@ import { DOLL_SIZE } from "../../actors/doll/place";
 import type { DuoActor } from "../../actors/duo";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
@@ -63,7 +62,6 @@ class FunnyRuntime implements SectionRuntime {
   private duo: DuoActor | null = null;
   private marks: MarksActor | null = null;
   private disposed = false;
-  private backdrop: Backdrop | null = null;
   private entered = false;
   private sinkSet = false;
 
@@ -103,7 +101,7 @@ class FunnyRuntime implements SectionRuntime {
     if (!(to instanceof Node) || !this.ctx.dom.text.contains(to)) this.kbd = false;
   };
 
-  /** Every actor has arrived or failed for good, and the backdrop's shaders are compiled. */
+  /** Every actor has arrived or failed for good. */
   private loaded = false;
 
   constructor(private readonly ctx: SectionCtx) {
@@ -131,18 +129,6 @@ class FunnyRuntime implements SectionRuntime {
       }
     };
     await Promise.all([
-      take(
-        "the backdrop",
-        async () => {
-          const a = await ensureBackdrop(ctx);
-          // Compiled before the first play, so its first draw is no hitch inside the scene.
-          await a.warm(["soft-aurora", "light-rays"]).catch(() => undefined);
-          return a;
-        },
-        (a) => {
-          this.backdrop = a;
-        },
-      ),
       take(
         "the marks",
         async () => (await import("../../fx/comic-marks")).ensureMarks(ctx),
@@ -248,30 +234,9 @@ class FunnyRuntime implements SectionRuntime {
     const gone = 1 - ramp(rise, GONE - 0.2, GONE);
     this.words((this.kbd ? 1 : ramp(local, T.textFrom, T.textTo)) * gone, rise, h);
     if (rise >= GONE) return;
-    this.drawSky(local, gone);
     this.drawTetra(local, frame, jumped);
     this.drawDragon(local, frame);
     this.drawDuo(local, rise);
-  }
-
-  /** The live sky: soft light while Tetra flies her kite and the dragon crosses, rays for the question. */
-  private drawSky(local: number, gone: number): void {
-    const backdrop = this.backdrop;
-    if (!backdrop) return;
-    if (ramp(local, T.centreFrom, T.centreTo) > 0.5) {
-      backdrop.set("light-rays", {
-        theme: "daybreak",
-        amount: 0.9 * gone,
-        speed: 0.7,
-      });
-    } else {
-      backdrop.set("soft-aurora", {
-        theme: "daybreak",
-        amount: 0.9 * gone,
-        speed: 0.8,
-        scale: 1.2,
-      });
-    }
   }
 
   // ---------------------------------------------------------------------------------------- words

@@ -38,17 +38,11 @@ function figure(n: number): string {
 /**
  * What the server draws for the archive: the ten rooms of the collection as ten covers, each a real
  * link to its room with its count (from the library's index, read when the page is built, so the
- * numbers are in the HTML and need no loading), and the way to the whole collection. The spotlight
- * (a beam and a pool of light) is drawn under the canvas; the drone is the light's source.
+ * numbers are in the HTML and need no loading), and the way to the whole collection. Nothing is
+ * drawn on the ground behind them.
  */
 export function view(): SectionMarkup {
   return {
-    below: (
-      <>
-        <div className={styles.pool} data-archive-pool="" />
-        <div className={styles.beam} data-archive-beam="" />
-      </>
-    ),
     text: (
       <>
         <h2 className={styles.title}>{ARCHIVE.title}</h2>

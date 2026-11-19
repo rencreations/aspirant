@@ -1,9 +1,10 @@
 /**
  * The archive (screens 56.1 to 59.1): the ten rooms of the collection as ten covers in a row, and the
  * drone as the spotlight. It leaves Tetra at the lower left (she waves and runs off), flies up over
- * the first cover and tours the rooms: it rests over each one, a beam and a pool of the room's own
- * colour light that cover (the others stand back under a veil of paper), and its count and "Open the
- * room" come up under it. The row slides the other way under the drone, so both are seen moving.
+ * the first cover and tours the rooms: it rests over each one, that cover is lit (the others stand
+ * back under a veil of paper), and its count and "Open the room" come up under it. There is no beam
+ * and no pool of colour on the ground (the owner, 20 Nov 2026: no dynamic background). The row
+ * slides the other way under the drone, so both are seen moving.
  * Hovering or focusing a cover pulls the drone to it; a tap on a cover that is not lit pulls the drone
  * there and a second tap opens it. At the end the covers lift away and the drone flies down to the
  * footer's card (joint J15), which is the footer's runtime's part (it takes the drone at 58.6).
@@ -17,10 +18,8 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { ensureTetra, type TetraActor } from "../../actors/tetra";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
-import { backdropAt } from "./backdrop";
 import {
   ROOMS,
   coverX,
@@ -47,12 +46,6 @@ import {
   type Spot,
 } from "./route";
 
-/** The pool of light is this many covers wide. */
-const POOL = 2.3;
-/** The beam's base is this many covers wide. */
-const BEAM = 1.25;
-/** The gap between the top of a cover and where the beam ends. */
-const BEAM_LAND = 6;
 /** The hover lets go this long after the pointer leaves a cover (seconds), so a gap between two is not a flicker. */
 const HOLD = 0.35;
 /** A tap on a cover pulls the drone for this long (seconds). */
@@ -66,13 +59,7 @@ class ArchiveRuntime implements SectionRuntime {
   private readonly strip: HTMLElement | null;
   private readonly rooms: HTMLElement[];
   private readonly links: HTMLAnchorElement[];
-  private readonly colours: string[];
-  private readonly pool: HTMLElement | null;
-  private readonly beam: HTMLElement | null;
-  private readonly below: HTMLElement;
   private readonly off: Array<() => void> = [];
-  /** The backdrop's shaders are compiled (or there is no backdrop). */
-  private warmed = false;
 
   private geo: StripGeo;
   private w = 0;
@@ -82,7 +69,6 @@ class ArchiveRuntime implements SectionRuntime {
   private readonly seenIn: number[];
   private readonly seenOut: number[];
   private readonly seenLit: number[];
-  private seenGlow = -1;
   private seenTitle = -1;
   private seenButton = -1;
   private readonly title: HTMLElement | null;
@@ -109,18 +95,13 @@ class ArchiveRuntime implements SectionRuntime {
     private readonly ctx: SectionCtx,
     private readonly drone: DroneActor | null,
     private readonly tetra: TetraActor | null,
-    private readonly backdrop: Backdrop | null,
   ) {
     const text = ctx.dom.text;
-    this.below = ctx.dom.below;
     this.strip = text.querySelector<HTMLElement>("[data-archive-strip]");
     this.title = text.querySelector<HTMLElement>("h2");
     this.button = text.querySelector<HTMLElement>("[data-archive-button]");
     this.rooms = Array.from(text.querySelectorAll<HTMLElement>("[data-archive-room]"));
     this.links = this.rooms.map((li) => li.querySelector<HTMLAnchorElement>("a")!);
-    this.colours = this.rooms.map((li) => li.style.getPropertyValue("--room").trim() || "#2a5bff");
-    this.pool = this.below.querySelector<HTMLElement>("[data-archive-pool]");
-    this.beam = this.below.querySelector<HTMLElement>("[data-archive-beam]");
     this.seenIn = this.rooms.map(() => -1);
     this.seenOut = this.rooms.map(() => -1);
     this.seenLit = this.rooms.map(() => -1);
@@ -128,18 +109,6 @@ class ArchiveRuntime implements SectionRuntime {
     this.geo = stripGeo(vp.w, vp.h);
     this.layout(vp.w, vp.h);
     this.listen();
-    if (backdrop) {
-      void backdrop.warm(["squares", "iridescence"]).finally(() => {
-        this.warmed = true;
-      });
-    } else {
-      this.warmed = true;
-    }
-  }
-
-  /** The ready gate: the backdrop's shaders are compiled (the actors are built already). */
-  ready(): boolean {
-    return this.warmed;
   }
 
   // ----------------------------------------------------------------------------- the frame
@@ -163,11 +132,8 @@ class ArchiveRuntime implements SectionRuntime {
     this.lit = nearest(q);
     this.air = onAir;
 
-    const ask = backdropAt(S, AT.entry, AT.coversOut);
-    if (ask) this.backdrop?.set(ask.kind, ask.options);
     this.head(S);
     this.cards(S, q, onAir);
-    this.light(S, frame.raw, q, pS, onAir, vp);
     if (S >= AT.start && S < AT.handover) this.actors(S, frame, q, onAir);
   }
 
@@ -224,50 +190,6 @@ class ArchiveRuntime implements SectionRuntime {
         li.style.setProperty("--lit", String(light));
       }
     }
-  }
-
-  /** The beam from the drone to the lit cover and the pool of light under it. */
-  private light(
-    S: number,
-    raw: number,
-    q: number,
-    pS: number,
-    onAir: number,
-    vp: { w: number; h: number },
-  ): void {
-    const g = this.geo;
-    if (onAir < 0.002) {
-      put(this.beam, "opacity", "0");
-      put(this.pool, "opacity", "0");
-      return;
-    }
-    const near = this.lit;
-    if (near !== this.seenGlow) {
-      this.seenGlow = near;
-      this.below.style.setProperty("--glow", this.colours[near] ?? "#2a5bff");
-    }
-    const bx = coverX(g, q, pS);
-    // The drone's own target (the same function the drone is placed by), so the beam is never a frame behind.
-    droneAt(S, raw, q, vp, g, footFor(vp), this.spot);
-    const ax = this.spot.x;
-    const ay = this.spot.y + 0.33 * this.spot.height;
-    const by = g.top - BEAM_LAND;
-    const dx = bx - ax;
-    const dy = Math.max(8, by - ay);
-    const len = Math.hypot(dx, dy);
-    const angle = -Math.atan2(dx, dy);
-    put(
-      this.beam,
-      "transform",
-      `translate3d(${(ax - 50).toFixed(1)}px, ${ay.toFixed(1)}px, 0) rotate(${angle.toFixed(4)}rad) scale(${((BEAM * g.s) / 100).toFixed(3)}, ${(len / 100).toFixed(3)})`,
-    );
-    put(this.beam, "opacity", (onAir * 0.9).toFixed(3));
-    put(
-      this.pool,
-      "transform",
-      `translate3d(${(bx - 50).toFixed(1)}px, ${(g.yc - 50).toFixed(1)}px, 0) scale(${((POOL * g.s) / 100).toFixed(3)})`,
-    );
-    put(this.pool, "opacity", (onAir * 0.95).toFixed(3));
   }
 
   /** The drone and Tetra, while the archive is the one that places them (from J14 to the footer's hand-over). */
@@ -328,7 +250,7 @@ class ArchiveRuntime implements SectionRuntime {
 
   // ----------------------------------------------------------------------------- the DOM
 
-  /** Size and place every cover and the pool. Once per resize, never per frame. */
+  /** Size and place every cover. Once per resize, never per frame. */
   private layout(w: number, h: number): void {
     this.w = w;
     this.h = h;
@@ -420,19 +342,13 @@ class ArchiveRuntime implements SectionRuntime {
     for (const el of [this.title, this.button]) {
       for (const p of ["opacity", "transform", "visibility"]) el?.style.removeProperty(p);
     }
-    for (const el of [this.pool, this.beam]) {
-      el?.style.removeProperty("transform");
-      el?.style.removeProperty("opacity");
-    }
-    this.below.style.removeProperty("--glow");
   }
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [drone, tetra, backdrop] = await Promise.all([
+  const [drone, tetra] = await Promise.all([
     ensureDrone(ctx).catch(() => null),
     ensureTetra(ctx).catch(() => null),
-    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new ArchiveRuntime(ctx, drone, tetra, backdrop);
+  return new ArchiveRuntime(ctx, drone, tetra);
 }

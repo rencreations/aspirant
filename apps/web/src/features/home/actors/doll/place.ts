@@ -24,27 +24,46 @@ export function drawnHeight(height: number): number {
 /** Nothing is placed nearer the camera than this share of its distance (the scale would run away). */
 const NEAR_LIMIT = 0.9;
 
-/** How much larger a thing at `z` is drawn than at z = 0. */
-export function depthScale(z: number): number {
-  const nearest = CAMERA_DISTANCE * NEAR_LIMIT;
-  return CAMERA_DISTANCE / (CAMERA_DISTANCE - Math.min(z, nearest));
+/** How much larger a thing at `z` is drawn than at z = 0. `distance` is the camera's (the drone's lens while she rides it). */
+export function depthScale(z: number, distance: number = CAMERA_DISTANCE): number {
+  const nearest = distance * NEAR_LIMIT;
+  return distance / (distance - Math.min(z, nearest));
 }
 
 /**
  * The scale of the doll's root (the file's 1.7 unit doll to world units) so that she is `height`
  * CSS pixels tall on the screen at depth `z`.
  */
-export function rootScale(height: number, z: number): number {
-  return height / depthScale(z) / DOLL_HEIGHT;
+export function rootScale(height: number, z: number, distance: number = CAMERA_DISTANCE): number {
+  return height / depthScale(z, distance) / DOLL_HEIGHT;
 }
 
 /**
  * The same, under a parent whose own world scale is `parentScale` (a socket of another actor): the
  * local scale that makes her `height` pixels tall on the screen at the parent's depth `z`.
  */
-export function fitScale(height: number, z: number, parentScale: number): number {
-  return parentScale > 0 ? rootScale(height, z) / parentScale : rootScale(height, z);
+export function fitScale(
+  height: number,
+  z: number,
+  parentScale: number,
+  distance: number = CAMERA_DISTANCE,
+): number {
+  const own = rootScale(height, z, distance);
+  return parentScale > 0 ? own / parentScale : own;
 }
+
+/**
+ * A camera's view: how far it stands, and where its axis meets the picture plane (stage pixels). The
+ * cast pass's camera is at `CAMERA_DISTANCE` with its axis at the middle of the screen; the drone's lens
+ * stands in front of the drone, so a thing at depth z grows about the drone, not about the screen's middle.
+ */
+export interface Lens {
+  distance: number;
+  cx: number;
+  cy: number;
+}
+
+export const castLens = (): Lens => ({ distance: CAMERA_DISTANCE, cx: 0, cy: 0 });
 
 /** The screen position of a world point (stage pixels) and how much that point is magnified. */
 export function projectToStage(
@@ -52,17 +71,20 @@ export function projectToStage(
   x: number,
   y: number,
   z: number,
+  lens?: Lens,
 ): { x: number; y: number; s: number } {
-  const s = depthScale(z);
-  out.x = x * s;
-  out.y = y * s;
+  const s = depthScale(z, lens ? lens.distance : CAMERA_DISTANCE);
+  const cx = lens ? lens.cx : 0;
+  const cy = lens ? lens.cy : 0;
+  out.x = cx + (x - cx) * s;
+  out.y = cy + (y - cy) * s;
   out.s = s;
   return out;
 }
 
 /** The depth for a hit: smaller is nearer, so the one with the larger z wins. */
-export function hitDepth(z: number): number {
-  return CAMERA_DISTANCE - z;
+export function hitDepth(z: number, distance: number = CAMERA_DISTANCE): number {
+  return distance - z;
 }
 
 /** A point inside a circle. */

@@ -22,19 +22,21 @@ What the other helpers can rely on:
 | funny   | The soft aurora and the light rays (`drawSky`) and the warm                                                                                                                                                                                                                    |
 | chase   | The speed lines, the soft sky and the halftone (`chase/backdrop.ts` and its test) and the warm                                                                                                                                                                                 |
 | bend    | All nine backdrops: the four element backdrops, the wall's soft aurora, the ring's iridescence, the spiral's aurora, the particles and the comic's halftone (`bend/backdrop.ts` and its test, the warm, `ready()`); three assertions of `plays.test.ts` that read `backdropAt` |
-| archive | The squares grid and the calm iridescence (`archive/backdrop.ts` and its test), the warm, `ready()`                                                                                                                                                                            |
+| archive | The squares grid and the calm iridescence (`archive/backdrop.ts` and its test), the warm, `ready()`. Second pass: the teal pool and the beam under the drone (the two elements, their CSS, the `--glow` write, `light()` and its constants in `archive/runtime.ts`)            |
 | footer  | The iridescence call, the warm, and the pink pool of light behind the drone's ring (its element, its CSS and its per frame write)                                                                                                                                              |
 
 `sections/backdrops.ts` has no entry for these sections (it covers the hero to the strip only), so it is unchanged. The engine, `fx/backdrop` and the first four sections are untouched: the strip keeps its mist.
 
 ## What was kept on purpose
 
-- The archive's pool and beam under the drone (`.pool`, `.beam` in `archive.module.css`): the light the drone throws on the lit cover. It tells the visitor which cover is chosen, so it is content, not a ground. If the owner calls it a background too, remove the two elements and the `--glow` write in `archive/runtime.ts`.
 - The drawer's pale glass and grain, the cards, the lines and the buttons.
+- The voices' picture placeholder gradient (`.fig`, behind the art), the footer card's lip and the archive's veil over the covers that are not lit: they belong to a card, not to the ground.
+
+The first pass kept the archive's pool and beam as content (the light the drone throws on the lit cover). On the second pass I looked at the frame: the pool is a large coloured haze that changes with the room, so it reads as a dynamic background, and the owner said ALL. Both are removed. The lit cover still reads as chosen (full colour and lifted, the others under a veil) and the drone rests above it. To bring the light back, restore `.pool`, `.beam`, `light()` and the `--glow` write from git history.
 
 ## Checked
 
-Real Chrome, the dev server, `window.__home.seek` to 27.5, 28.5, 29.8, 31.5, 34, 37.5, 41.5, 46, 50, 52.5, 55.5 and 57.8 screens. At every one the backdrop's canvas is `visibility: hidden` and the `backdrop` actor is not visible. Also looked at 1440 by 900 at 33.5, 36.5, 38.5, 40.5, 42.5, 44.5, 48, 53.5 and 57.8 and at 390 by 844 (touch) at 28.5, 31.5, 34, 37.5, 46, 52.5, 55.5 and 57.8: plain ground, legible words, the drones and Tetra read well on it. Frames before and after are in `D:\ren\aspirant-work\home\NOBG\` (`before_sheet.png`, `after_sheet1.png`, `after_sheet2.png`).
+Real Chrome, the dev server, `window.__home.seek` to 27.5, 28.5, 29.8, 31.5, 34, 37.5, 41.5, 46, 50, 52.5, 55.5 and 57.8 screens. At every one the backdrop's canvas is `visibility: hidden` and the `backdrop` actor is not visible. Also looked at 1440 by 900 at 33.5, 36.5, 38.5, 40.5, 42.5, 44.5, 48, 53.5 and 57.8 and at 390 by 844 (touch) at 28.5, 31.5, 34, 37.5, 46, 52.5, 55.5 and 57.8: plain ground, legible words, the drones and Tetra read well on it. Second pass (re-checked, not trusted): a new probe (`D:\aspirant-work\home\NOBG\probe.cjs`) seeked to three stops in every section after the list at 1440 by 900 (27 frames) and to ten stops at 390 by 844. At every stop the backdrop canvas is `hidden`, the `backdrop` actor is not visible and the console has no errors. Contact sheets (`d1.png`, `d2.png`, `d3.png`, `a1.png`, `m1.png`) are in `D:\aspirant-work\home\NOBG\`. The filtered `tsc --noEmit -p apps/web` is clean.
 
 A note for whoever measures this: `window.__home.lab("backdrop")` pins the backdrop actor visible, so a probe that calls it shows the last kind for ever. Read the canvas visibility and `state().actors` instead.
 

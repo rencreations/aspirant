@@ -11,7 +11,7 @@
  * width, y and heights of the height, the origin in the middle, y up (the stage frame of the actors).
  *
  * Every stance has a rest of its own, `REST_BEFORE_EDGE` before the next stance begins: the
- * stance is formed, its backdrop is whole and every picture of its wave has landed.
+ * stance is formed and every picture of its wave has landed.
  *
  *   0.00 to 0.60   Tetra closes the book, puts it away and stands (she moves from the chase's frame to the stage)
  *   0.58           REST: the book is shut, she stands in the middle

@@ -147,14 +147,45 @@ export function patchInkVertex(source: string): string {
 		#ifdef FLIP_SIDED
 			inkNormal = - inkNormal;
 		#endif
+		// A face keeps its line on the outline only: a place that looks at the viewer (the nose, the
+		// eye sockets, the lips) gets no push, so no line is drawn inside the face.
+		float inkLine = 1.0 - smoothstep( uInkFace.x, uInkFace.y, dot( normalize( inkNormal ), normalize( - mvPosition.xyz ) ) );
 		vec2 inkDir = ( projectionMatrix * vec4( inkNormal, 0.0 ) ).xy * uToonView;
 		float inkLen = length( inkDir );
 		inkDir = inkLen > 0.00001 ? inkDir / inkLen : vec2( 0.0 );
-		inkClip.xy += inkDir * ( 2.0 * uInkPx ) / uToonView * inkClip.w;
+		inkClip.xy += inkDir * ( 2.0 * uInkPx * mix( 1.0, inkLine, uInkFace.z ) ) / uToonView * inkClip.w;
 		gl_Position = inkClip;
 	}`,
   );
-  return `attribute vec3 aSmooth;\nuniform float uInkPx;\nuniform float uInkPush;\nuniform vec2 uToonView;\n${out}`;
+  return `attribute vec3 aSmooth;\nuniform float uInkPx;\nuniform float uInkPush;\nuniform vec2 uToonView;\nuniform vec3 uInkFace;\n${out}`;
+}
+
+/**
+ * The line takes the colour of what it draws: the painted colour of the surface, pushed in
+ * saturation, raised to a power (a bright colour falls much further than a dark one, so gold goes
+ * to orange brown and white to a deep grey) and scaled by a share that grows with the saturation.
+ * `uInkTint` is (share for grey, share for a saturated colour, saturation push, power). A line
+ * is never darker than `uInkFloor` (the texels at the edge of a lock are black).
+ */
+const INK_TINT = /* glsl */ `
+uniform vec3 uInkColor;
+uniform vec4 uInkTint;
+uniform vec3 uInkFloor;
+vec3 inkTint( vec3 c ) {
+	float mx = max( c.r, max( c.g, c.b ) );
+	float mn = min( c.r, min( c.g, c.b ) );
+	float chroma = mx > 0.0001 ? ( mx - mn ) / mx : 0.0;
+	float l = dot( c, vec3( 0.2126, 0.7152, 0.0722 ) );
+	vec3 t = max( mix( vec3( l ), c, uInkTint.z ), vec3( 0.0 ) );
+	float share = mix( uInkTint.x, uInkTint.y, smoothstep( 0.1, 0.6, chroma ) );
+	return max( mix( uInkColor, pow( t, vec3( uInkTint.w ) ) * share, step( 0.0001, uInkTint.y ) ), uInkFloor );
+}
+`;
+
+/** The hull's fragment: its colour from the surface (see `INK_TINT`). Needs a `map` on the hull material. */
+export function patchInkFragment(source: string): string {
+  const out = replaceOnce(source, MAIN_OPEN, `${INK_TINT}\n${MAIN_OPEN}`);
+  return replaceOnce(out, OUTGOING, "vec3 outgoingLight = inkTint( diffuseColor.rgb );");
 }
 
 /**
@@ -180,7 +211,8 @@ export function patchCardInkVertex(source: string): string {
 }
 
 /** The card ink's fragment: the picture only decides the shape, the colour is the ink's. */
-export function patchCardInkFragment(source: string): string {
+export function patchCardInkFragment(source: string, tinted = false): string {
+  if (tinted) return patchInkFragment(source);
   const out = replaceOnce(source, OUTGOING, "vec3 outgoingLight = uInkColor;");
   return `uniform vec3 uInkColor;\n${out}`;
 }

@@ -27,13 +27,16 @@ import type { ActorCtx } from "../../actors/shared/types";
 import { makePixelPerspectiveCamera, pixelFov } from "../../kernel/stage";
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
 import { clamp, qMul, type Q } from "../image-field/math";
-import { lowpassGain } from "../image-field/spring";
+import { lowpassGain, makeSpring, springStep, type Spring } from "../image-field/spring";
 import { PREVIEWS, TRAILER_FILM, previewAspect, type PreviewFilm } from "./data";
 import { TRAIL_POINTS, trailOf } from "./flyoff";
 import { boundsOf, contentWindow, inQuad, planeQuad, pointerOnPlane } from "./hit";
 import {
+  HOVER_IN_OMEGA,
   HOVER_MODES,
-  HOVER_RATE,
+  HOVER_OUT_OMEGA,
+  POINTER_FOLLOW_RATE,
+  POINTER_SNAP_BELOW,
   TILT,
   tiltQuat,
   type HoverMode,
@@ -155,7 +158,14 @@ export class FilmActor implements Actor {
     [];
   private readonly quadOk: boolean[] = [];
   private readonly looks: PlaneLook[] = [];
+  /** The hover amount of each plane (0 to 1): the position of its spring, read by the look and the pose. */
   private readonly hover = new Float64Array(PLANE_COUNT);
+  private readonly hoverSprings: Spring[] = Array.from({ length: PLANE_COUNT }, () =>
+    makeSpring(0),
+  );
+  /** Where the pointer was on each plane (fractions of the frame from its centre), held after it leaves. */
+  private readonly heldX = new Float64Array(PLANE_COUNT);
+  private readonly heldY = new Float64Array(PLANE_COUNT);
   private readonly trailGeometry: BufferGeometry;
   private readonly trailMaterial: ShaderMaterial;
   private readonly trails: LineSegments;
@@ -417,6 +427,8 @@ export class FilmActor implements Actor {
       line: this.line,
       lens: this.lens,
       hover: this.hoverIdx,
+      hoverAmount: this.hover[0],
+      held: [this.heldX[0], this.heldY[0]],
       drift: this.drift,
       state: { ...this.state },
       updateMs: this.updateMs,
@@ -465,24 +477,55 @@ export class FilmActor implements Actor {
       if (p.hit === "film") this.showLabel(this.labelOf(idx));
     }
 
-    const rate = lowpassGain(HOVER_RATE, dt);
+    const follow = lowpassGain(POINTER_FOLLOW_RATE, dt);
     const w = this.weights;
     const win = this.win;
     for (let k = 0; k < PLANE_COUNT; k++) {
       const pose = poses[k]!;
       const look = this.looks[k]!;
       const video = this.videos[k]!;
-      const h = (this.hover[k] =
-        this.hover[k]! + ((k === this.hoverIdx ? 1 : 0) - this.hover[k]!) * rate);
+      // The hover amount is a critically damped spring: a cursor that leaves (the pointer moves off,
+      // the window loses it, a touch ends, the scroll carries the film away) eases back to flat and
+      // never snaps. Entering is quick but smoothed too.
+      const on = k === this.hoverIdx;
+      const spring = this.hoverSprings[k]!;
+      springStep(spring, on ? 1 : 0, on ? HOVER_IN_OMEGA : HOVER_OUT_OMEGA, 1, dt);
+      if (spring.x <= 0.0005 && !on) {
+        spring.x = 0;
+        spring.v = 0;
+      } else if (spring.x < 0) {
+        spring.x = 0;
+        spring.v = 0;
+      } else if (spring.x > 1) {
+        spring.x = 1;
+        spring.v = 0;
+      }
+      const h = (this.hover[k] = spring.x);
+
+      // The pointer's place on the plane: followed while hovered, HELD where it was once the cursor has
+      // left, so the lean, the shift and the lens ease back from where they stood (no jump to the middle).
+      let px = this.heldX[k]!;
+      let py = this.heldY[k]!;
+      if (on && pointerOnPlane(p.x, p.y, pose, this.lens, vp, this.local)) {
+        const tx = clamp(this.local[0], -0.5, 0.5);
+        const ty = clamp(this.local[1], -0.5, 0.5);
+        if (h < POINTER_SNAP_BELOW) {
+          px = tx;
+          py = ty;
+        } else {
+          px += (tx - px) * follow;
+          py += (ty - py) * follow;
+        }
+        this.heldX[k] = px;
+        this.heldY[k] = py;
+      }
+      if (h <= 0) {
+        px = 0;
+        py = 0;
+      }
 
       // The hover lifts a preview toward the viewer and leans the frame toward the pointer.
-      let px = 0;
-      let py = 0;
       if (h > 0.002) {
-        if (k === this.hoverIdx && pointerOnPlane(p.x, p.y, pose, this.lens, vp, this.local)) {
-          px = clamp(this.local[0], -0.5, 0.5);
-          py = clamp(this.local[1], -0.5, 0.5);
-        }
         const preview = k > 0;
         const lift = preview ? h : 0.0;
         pose.z += LIFT * lift;
@@ -745,6 +788,10 @@ export class FilmActor implements Actor {
       this.trails.visible = false;
       this.hoverIdx = -1;
       this.hover.fill(0);
+      for (const spring of this.hoverSprings) {
+        spring.x = 0;
+        spring.v = 0;
+      }
     }
     return false;
   }

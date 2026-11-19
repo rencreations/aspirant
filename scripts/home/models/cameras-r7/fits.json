@@ -1,0 +1,19 @@
+{
+  "idle": {
+    "matrix": null,
+    "vfov": 51.28200009643916,
+    "shy": -0.125
+  },
+  "pose": {
+    "matrix": null,
+    "vfov": 51.28200009643916,
+    "shy": -0.125
+  },
+  "sky": [
+    0.9697490109354632, -0.24396326378221292, 0.008293474206956013, 0.20839571817751934,
+    0.8097203840160758, -0.5485655150974538, 0.12711443834186184, 0.533699190212604,
+    0.8360664410986988
+  ],
+  "note": "the game's own cameras; the fit to the recording is not done (see README)",
+  "skyNote": "yaw -0.429 pitch 0.446 roll 0 for the idle camera: the star of the sky at (335, 15) of the 960 by 432 recording frame; the rest of the sky is not the recording's (see README)"
+}

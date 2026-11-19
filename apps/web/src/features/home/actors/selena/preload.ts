@@ -1,6 +1,7 @@
 import { dataItem, mediaItem, type PreloadItem } from "@/lib/preload";
 
-import { SELENA_CAMERAS, SELENA_MODEL, SELENA_MODEL_BYTES } from "./constants";
+import { SELENA_CAMERAS, SELENA_CAMERAS_R7, SELENA_MODEL, SELENA_MODEL_BYTES } from "./constants";
+import { SKY_IMAGE, SKY_IMAGE_BYTES } from "./sky";
 
 /**
  * What Selena needs: her model (1.75 MB, with the pictures, the skin weights, the four clips and
@@ -20,6 +21,9 @@ export function selenaItems(
       bytes: SELENA_MODEL_BYTES,
     }),
     dataItem(SELENA_CAMERAS, "Loading the camera"),
+    dataItem(SELENA_CAMERAS_R7, "Loading the camera"),
+    // The sky behind her (the owner's equirectangular picture, 266 KB).
+    mediaItem(SKY_IMAGE, "Loading the sky", { type: "image/webp", bytes: SKY_IMAGE_BYTES }),
   ];
   return deferred
     ? items.map((i) => ({ ...i, deferred: true, priority: options.priority ?? 40 }))

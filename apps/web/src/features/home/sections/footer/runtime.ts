@@ -15,9 +15,7 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { SIZE_PER_HEIGHT } from "../../actors/drone/model";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
-import { CALM } from "../archive/backdrop";
 import { stripGeo, type StripGeo } from "../archive/geometry";
 import {
   AT,
@@ -26,7 +24,6 @@ import {
   footFor,
   hairAt,
   setFoot,
-  stageTop,
   toStage,
   type Spot,
 } from "../archive/route";
@@ -39,18 +36,14 @@ const DART_MS = 450;
 const SAFETY_MS = 1400;
 /** From here the scroll's own exit has already taken the drone away: nothing to wait for. */
 const GONE_AT = AT.end - 0.06;
-/** The pool of light under the ring is this many rings wide. */
-const POOL = 2.6;
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
-const ramp = (v: number, a: number, b: number): number => clamp01((v - a) / (b - a));
 const mix = (a: number, b: number, k: number): number => a + (b - a) * k;
 
 class FooterRuntime implements SectionRuntime {
   private readonly stageEl: HTMLElement;
   private readonly ring: HTMLElement | null;
   private readonly fill: HTMLElement | null;
-  private readonly pool: HTMLElement | null;
   private readonly observer: ResizeObserver | null;
   private readonly onResize = (): void => {
     this.measure();
@@ -75,12 +68,10 @@ class FooterRuntime implements SectionRuntime {
   constructor(
     private readonly ctx: SectionCtx,
     private readonly drone: DroneActor | null,
-    private readonly backdrop: Backdrop | null,
   ) {
     this.stageEl = ctx.dom.text;
     this.ring = this.stageEl.querySelector<HTMLElement>("[data-footer-ring]");
     this.fill = this.stageEl.querySelector<HTMLElement>("[data-footer-fill]");
-    this.pool = ctx.dom.below.querySelector<HTMLElement>("[data-footer-pool]");
     const vp = ctx.viewport();
     this.strip = stripGeo(vp.w, vp.h);
     this.measure();
@@ -90,7 +81,6 @@ class FooterRuntime implements SectionRuntime {
     this.observer?.observe(this.stageEl);
     void document.fonts?.ready.then(this.onResize);
     exitBridge.run = () => this.exit();
-    void backdrop?.warm(["iridescence"]);
   }
 
   /** Where the ring is, relative to the footer's stage. The stage moves with the scroll, so only the difference counts. */
@@ -124,8 +114,6 @@ class FooterRuntime implements SectionRuntime {
       this.measure();
     }
     const foot = footFor(vp);
-    // The same calm thin-film colour the archive ends on: the hand-over has no cross-fade.
-    this.backdrop?.set(CALM.kind, CALM.options);
 
     // The hairline: full at the point where the page opens About.
     const hair = Math.round(hairAt(S) * 500) / 500;
@@ -133,16 +121,6 @@ class FooterRuntime implements SectionRuntime {
       this.seenHair = hair;
       put(this.fill, "transform", `scaleX(${hair})`);
     }
-
-    // The pool of light under the ring, glued to the card.
-    const top = stageTop(frame.raw, vp);
-    const glow = ramp(S, AT.handover + 0.1, AT.stuck) * (1 - ramp(S, AT.exitFrom, AT.end));
-    put(
-      this.pool,
-      "transform",
-      `translate3d(${(foot.x - 50).toFixed(1)}px, ${(top + foot.offY - 50).toFixed(1)}px, 0) scale(${((POOL * foot.size) / 100).toFixed(3)})`,
-    );
-    put(this.pool, "opacity", glow.toFixed(3));
 
     const drone = this.drone;
     if (!drone) return;
@@ -221,15 +199,10 @@ class FooterRuntime implements SectionRuntime {
     window.removeEventListener("resize", this.onResize);
     setFoot(null);
     this.fill?.style.removeProperty("transform");
-    this.pool?.style.removeProperty("transform");
-    this.pool?.style.removeProperty("opacity");
   }
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [drone, backdrop] = await Promise.all([
-    ensureDrone(ctx).catch(() => null),
-    ensureBackdrop(ctx).catch(() => null),
-  ]);
-  return new FooterRuntime(ctx, drone, backdrop);
+  const drone = await ensureDrone(ctx).catch(() => null);
+  return new FooterRuntime(ctx, drone);
 }

@@ -13,6 +13,7 @@ export {
   orbitCardWidth,
   sceneBox,
   stripBox,
+  stripLift,
   windowBox,
   toFrame,
   type Box,

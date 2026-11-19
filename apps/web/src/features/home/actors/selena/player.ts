@@ -11,7 +11,12 @@
 import { clipTime } from "./sampler";
 
 export type ClipName =
-  "city_idle" | "city_interaction_R_loop" | "city_interaction_back_R" | "city_intercation03";
+  | "city_idle"
+  | "city_interaction_R_loop"
+  | "city_interaction_back_R"
+  | "city_interaction_R"
+  | "city_intercation02"
+  | "city_intercation03";
 
 interface ClipInfo {
   readonly duration: number;

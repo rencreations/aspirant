@@ -90,6 +90,17 @@ describe("outlineFor", () => {
     expect(outlineFor(600, out)).toBe(out);
     expect(out.px).toBeGreaterThan(2.3);
   });
+
+  it("has a fine line for the in-game look: a hairline, 1.1 px at the most", () => {
+    expect(outlineFor(120, undefined, true).px).toBeCloseTo(0.65, 6);
+    expect(outlineFor(40, undefined, true).px).toBe(0.65);
+    expect(outlineFor(400, undefined, true).px).toBeGreaterThan(0.7);
+    expect(outlineFor(400, undefined, true).px).toBeLessThan(0.9);
+    expect(outlineFor(900, undefined, true).px).toBeLessThan(1.1);
+    expect(outlineFor(5000, undefined, true).px).toBe(1.1);
+    expect(outlineFor(900, undefined, true).card).toBeCloseTo(0.75, 6);
+    expect(outlineFor(900, undefined, true).push).toBe(outlineFor(900).push);
+  });
 });
 
 describe("shadeOf", () => {

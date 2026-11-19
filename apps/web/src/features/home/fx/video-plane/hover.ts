@@ -38,5 +38,19 @@ export function tiltQuat(px: number, py: number, amount: number, out: Q): Q {
   return qFromEuler(py * TILT.x * amount, -px * TILT.y * amount, 0, out);
 }
 
-/** The ease of a hover toward its target, per second. */
-export const HOVER_RATE = 9;
+/**
+ * The hover amount of a plane is a critically damped spring (round eight): no overshoot, and it starts
+ * and ends gently, so a cursor that leaves never snaps the frame flat. Angular speeds (rad/s): a
+ * critically damped spring is within 2 percent of its target after about 5.8 / omega seconds, so
+ * entering takes about 0.4 s and leaving about 0.6 s.
+ */
+export const HOVER_IN_OMEGA = 14;
+export const HOVER_OUT_OMEGA = 9.5;
+/**
+ * The pointer's place on a plane (fractions of the frame) follows the real pointer on a low pass of this
+ * rate per second while hovered, and is HELD where it was once the cursor has left, so the lean, the
+ * shift and the lens ease back from where they were instead of jumping to the middle first.
+ */
+export const POINTER_FOLLOW_RATE = 18;
+/** Below this hover amount the held pointer may jump to the real one (nothing shows of it yet). */
+export const POINTER_SNAP_BELOW = 0.02;

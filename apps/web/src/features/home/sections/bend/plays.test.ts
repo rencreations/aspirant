@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { validatePlays, zoneProgress, zoneValue } from "../../kernel/plays";
-import { backdropAt } from "./backdrop";
 import { BEAT_SPAN, REST, STANCES, T, beatAt, newBeat } from "./beats";
 import { FLIGHT, arriveAt, spiralInAt, wallCount, waveOf } from "./formations";
 import { BEND_PLAYS, BEND_SCREENS, REST_BEATS, ZONE_SCREENS, restScreens } from "./plays";
@@ -96,7 +95,6 @@ describe("the bend section's zones", () => {
         expect(b.pose, `stance ${w}`).toBe("bend");
         expect(b.bend).toBe(stance.kind);
         expect(b.blend).toBeCloseTo(1, 9);
-        expect(backdropAt(b).kind).toBe(stance.kind);
         const restBeat = REST_BEATS[w + 2]!;
         for (let i = 0; i < wallCount(vp); i += 1) {
           if (waveOf(i, vp) !== w) continue;
@@ -109,12 +107,11 @@ describe("the bend section's zones", () => {
     }
   });
 
-  it("show the book shut at the first rest: she stands in the middle and the comic's backdrop is on", () => {
+  it("show the book shut at the first rest: she stands in the middle", () => {
     const b = rest(1);
     expect(b.pose).toBe("stand");
     expect(b.spot.tx).toBeCloseTo(0, 9);
     expect(b.spot.th).toBeCloseTo(0.46, 3);
-    expect(backdropAt(b).kind).toBe("pixel-blast");
   });
 
   it("show the wall whole at its rest: every poster has landed, the title is on, she stands", () => {
@@ -135,7 +132,6 @@ describe("the bend section's zones", () => {
     const b = rest(7);
     expect(b.pose).toBe("bend");
     expect(b.blend).toBeCloseTo(1, 9);
-    expect(backdropAt(b).kind).toBe("iridescence");
     expect(b.fanTitle).toBe(0);
   });
 

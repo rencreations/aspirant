@@ -1,11 +1,11 @@
 /**
  * Selena, in the shared cast pass. A plain class: a section builds her through `ensureSelena`,
- * sets her state every frame it shows her (`place`, a clip, a look, an expression), and she
- * integrates her own motion in `update`: the clip, the head and eyes that follow the pointer, the
- * fingers, the hair and skirt springs, the face, the reactions to being touched. Every one-shot
- * reaction is timed here and always finishes.
+ * sets her state every frame it shows her (`place`, `drive` or a clip, an expression), and she
+ * integrates her own motion in `update`: the clip (the four states of `states.ts`), the head and
+ * eyes that follow the pointer a little, the hair and skirt springs and the face. She has no touch
+ * targets: the pointer only turns her head and eyes (in the pose and in the idle) and the view.
  *
- * The pose is made without the animation mixer: the four clips are sampled by `sampler.ts` (a pure
+ * The pose is made without the animation mixer: the clips are sampled by `sampler.ts` (a pure
  * scrub of any time, a cross fade of any two), turns are added on top (`skeleton.ts`), the springs
  * run last (`physics.ts`), and the result is written to the bones once. Docs: `docs/design/home/actor-selena.md`.
  */
@@ -13,9 +13,12 @@ import {
   Box3,
   Float32BufferAttribute,
   Group,
+  Matrix3,
+  Matrix4,
   Object3D,
   PerspectiveCamera,
   Plane,
+  Quaternion,
   Vector3,
   type BufferGeometry,
   type SkinnedMesh,
@@ -24,62 +27,50 @@ import {
 } from "three";
 
 import { PIXEL_DISTANCE } from "../../kernel/stage";
-import type { Actor, FrameInfo, HitTarget } from "../../kernel/types";
+import type { Actor, FrameInfo } from "../../kernel/types";
 import type { Cast } from "../shared/cast";
-import { toonify, type ToonPick, type ToonSet } from "../shared/toon";
+import { INK_FLOOR_BODY, INK_TINTS, toonify, type ToonPick, type ToonSet } from "../shared/toon";
+import { FACE_LINE, FRINGE_COPIES, INK_FLOORS, SELENA_TUNE } from "./toon-look";
 import type { ActorCtx } from "../shared/types";
 
-import {
-  type CameraData,
-  dollOffset,
-  frameCamera,
-  sampleBakedCamera,
-  type FrameOptions,
-} from "./camera";
-import {
-  ANCHOR,
-  BAKED,
-  BONE,
-  CLIP,
-  DOLL_ANCHOR,
-  FADE,
-  POSE_FIT,
-  REF_HEIGHT,
-  fingerBones,
-  type PoseFitName,
-} from "./constants";
+import { type CameraData, frameCamera, sampleBakedCamera, type FrameOptions } from "./camera";
+import { ANCHOR, BAKED, BONE, CLIP, POSE_FIT, REF_HEIGHT, type PoseFitName } from "./constants";
 import { Face, MORPH_NAMES, type Expression } from "./face";
-import {
-  FIST,
-  FINGERS,
-  FingerBank,
-  breath,
-  flexAxis,
-  jointAngle,
-  pointerCurl,
-  waveCurl,
-  type HandInput,
-} from "./fingers";
-import { frameFor, inside, worldPoint, worldScale, type PlaceInput, type Rect } from "./framing";
-import { capsuleHit } from "./hit";
-import { emptyGaze, gazeAngles, splitGaze } from "./look";
-import { Spring, clamp } from "./motion";
+import { frameFor, worldPoint, worldScale, type PlaceInput, type Rect } from "./framing";
+import { emptyGaze, gentleGaze } from "./look";
+import { Spring, approach, clamp } from "./motion";
 import { SpringBones, emptyEnv, type SpringEnv } from "./physics";
-import { ClipPlayer, type ClipName, type PlayOptions, type PlayerPose } from "./player";
+import { ClipPlayer, type ClipName, type PlayOptions } from "./player";
 import { POINT, pointSpecs } from "./points";
 import { qaxis, qmul, qrotate } from "./quat";
-import { Pulse } from "./reactions";
 import { buildRig, standardOf, type Rig } from "./rig";
 import { POSE_STRIDE, blendPoses, sampleClip } from "./sampler";
 import { PoseWork } from "./skeleton";
+import { PullArm, type PullInput } from "./pull-arm";
 import { buildSpringDefs } from "./springs";
+import { STATE_FADE, StateMachine, interactionOf, type SelenaState } from "./states";
+import {
+  R7_SHY,
+  R7_STRIDE,
+  R7_VFOV,
+  VIEW_TURN,
+  lensFor,
+  mixLens,
+  mixR7,
+  newLens,
+  orbitAbout,
+  sampleR7,
+  type R7Data,
+  type R7Lens,
+} from "./camera-r7";
+import { Sky } from "./sky";
 
 export type { ClipName, PlayOptions } from "./player";
 export type { Expression } from "./face";
 export type { PlaceInput, Rect } from "./framing";
 export type { FrameOptions } from "./camera";
 
-export type SocketName = "rightHand" | "leftHand" | "mouth" | "head" | "rightHover";
+export type SocketName = "rightHand" | "leftHand" | "mouth" | "head";
 
 /** Where she looks: the pointer (default), the viewer, a point on the screen, or the idle drift. */
 export type LookTarget = "pointer" | "viewer" | "idle" | { x: number; y: number };
@@ -92,21 +83,41 @@ export interface SelenaStats {
 
 /** What the lab and the probes may read. */
 export interface SelenaDebug {
-  /** The ten finger curls (left hand thumb to pinky, then the right). */
-  curl: number[];
-  fist: boolean[];
   scale: number;
+  /** The state of the machine and how much the cursor turns her head and eyes and the view. */
+  state: SelenaState | "free";
+  look: number;
+  view: number;
   points: Float32Array;
   filmCamera: PerspectiveCamera;
 }
 
 const D = PIXEL_DISTANCE;
+const DEG = Math.PI / 180;
+
+/** What `cameraFor(clip, ...)` may be asked (round seven). */
+export interface R7Options {
+  /** 1 or true: the frame covers `rect` (the list's window); 0 or false: the whole recording frame on the screen. */
+  portrait?: number | boolean;
+  /** CSS pixels, top left origin: the window the frame is shown in (the lens is centred on it). Default the whole screen. */
+  rect?: Rect | null;
+  /** What the screen shows of that window (the scissor), when it is only a part of it. Default `rect`. */
+  clip?: Rect | null;
+  /** Draw the cast through the camera for the next frame (default true). */
+  draw?: boolean;
+}
 /** How big she is by default: a share of the viewport height. */
 const DEFAULT_HEIGHT = 0.8;
-/** A frame this far from the last one is a jump: the springs and the fingers start over. */
+/** A frame this far from the last one is a jump: the springs start over. */
 const GAP_FRAMES = 2;
 /** A scrub that moves the clip by more than this in a frame is a jump (seconds). */
 const SCRUB_JUMP = 0.3;
+/** The cross fade of a jump (a seek, a reload, the machine taking the control back): never a pop. */
+const JUMP_FADE = 0.2;
+/** The share of the head's turn the neck takes. */
+const NECK_SHARE = 0.3;
+/** While a section drives a clip itself the cursor keeps what it had. */
+const FREE_WEIGHTS = { look: 0, view: 0 } as const;
 
 export class SelenaActor implements Actor {
   readonly name = "selena";
@@ -126,7 +137,11 @@ export class SelenaActor implements Actor {
   private readonly player: ClipPlayer;
   private readonly work: PoseWork;
   private readonly springs: SpringBones;
-  private readonly fingers = new FingerBank();
+  /** The pulling arm of the out animation (`pull-arm.ts`) and what a section asked for this frame. */
+  private readonly pullArm: PullArm;
+  private pullIn: PullInput | null = null;
+  /** Sockets a section pinned on bones (`pin`), moved with the others every frame. */
+  private readonly pins: Array<{ obj: Object3D; node: number; along: number }> = [];
   private readonly face = new Face();
 
   private readonly pose: Float32Array;
@@ -135,37 +150,16 @@ export class SelenaActor implements Actor {
   private readonly tmp = new Float32Array(16);
   /** Scratch that a frame reuses: no frame makes an array or an object. */
   private readonly wish = new Float32Array(6);
-  private readonly curlScratch = new Float32Array(5);
-  private readonly tipScratch = new Float32Array(10);
-  private readonly hoverScratch = [0, 0, 0];
-  private readonly angleScratch = { yaw: 0, pitch: 0 };
-  private readonly handIn: HandInput = {
-    px: 0,
-    py: 0,
-    tips: this.tipScratch,
-    palmX: 0,
-    palmY: 0,
-    radius: 1,
-    live: false,
-  };
   /** Bone indexes the frame turns, found once. */
   private readonly ix = {
     neck: -1,
     head: -1,
     eyeL: -1,
     eyeR: -1,
-    spine1: -1,
-    spine2: -1,
-    pelvis: -1,
-    propL: -1,
-    propR: -1,
     handL: -1,
     handR: -1,
     mouth: -1,
   };
-  /** The nodes and the flex axes of the fingers: [hand][finger][joint] flattened. */
-  private readonly fingerNode = new Int32Array(30);
-  private readonly fingerAxis = new Float32Array(30 * 3);
   private readonly env: SpringEnv = emptyEnv();
 
   /** Her toon materials, their ink and her pictures (`actors/shared/toon.ts`). */
@@ -176,12 +170,10 @@ export class SelenaActor implements Actor {
   private readonly morphIndex: Int16Array;
   private readonly head: SkinnedMesh;
   private readonly sockets: Record<SocketName, Object3D>;
-  private readonly removeHits: Array<() => void> = [];
 
   // Placement.
   private pz = 0;
   private height = 0;
-  private yaw = 0;
   private scale = 1;
   private readonly gq = new Float32Array([0, 0, 0, 1]);
   private placed = false;
@@ -195,35 +187,86 @@ export class SelenaActor implements Actor {
   private clipKey = "";
   private readonly filmCamera = new PerspectiveCamera(BAKED.vfovDeg, BAKED.aspect, 0.1, 1000);
   private readonly camScratch = new Float32Array(7);
+
+  // Round seven's cameras (`camera-r7.ts`): fitted to the recording; the sky; the view turn.
+  private readonly r7: R7Data | null;
+  /** The skybox behind her: null when the picture was not given. Drawn only while a camera is. */
+  readonly sky: Sky | null;
+  private readonly keyA = new Float32Array(R7_STRIDE);
+  private readonly keyB = new Float32Array(R7_STRIDE);
+  private readonly keyC = new Float32Array(R7_STRIDE);
+  private readonly lensA: R7Lens = newLens();
+  private readonly lensB: R7Lens = newLens();
+  private readonly lensC: R7Lens = newLens();
+  private readonly r7Pos = new Float32Array(3);
+  private readonly r7Quat = new Float32Array(4);
+  private readonly r7World = new Float32Array(8);
+  private readonly r7Base = new Matrix4();
+  private readonly r7Film = new Matrix4();
+  private readonly r7Q = new Quaternion();
+  private r7Clip: ClipName = CLIP.idle;
+  /** The cursor turns the whole model (the camera orbits her): springs, no overshoot. */
+  private readonly turnYaw = new Spring(6, 1, 0);
+  private readonly turnPitch = new Spring(6, 1, 0);
+  private readonly turnW = new Spring(5, 1, 0);
+  private turnClock = 0;
+  private skyOn = true;
+  /** What `frame()` asked for, kept for `update`. */
+  private readonly frameAsk = {
+    on: false,
+    vp: { w: 1, h: 1 },
+    rect: { x: 0, y: 0, w: 1, h: 1 },
+    cut: { x: 0, y: 0, w: 1, h: 1 },
+    options: {
+      portrait: 0,
+      rect: null as Rect | null,
+      clip: null as Rect | null,
+      draw: true,
+    } as R7Options,
+  };
+  /** The roots drawn through the fitted camera (hers, and Silverbolt's once `frameWith` added it). */
+  private readonly framed: Object3D[] = [];
+  /** Her height on the screen while a fitted camera is drawn (CSS pixels): the ink follows it. */
+  private inkHeight = 0;
   private lastFrame = -10;
   private lastClip: ClipName = CLIP.idle;
   private lastClipTime = 0;
   private lastScrubbed = false;
   private clock = 0;
-  private interactiveOn = true;
   private filmDrawn = false;
-  /** The baked camera was drawn on the last frame: the pointer is not on the pixel picture. */
-  private filmWas = false;
+
+  // The four states (`states.ts`): the machine runs inside `update`, from the growth `drive` gave.
+  private readonly machine = new StateMachine();
+  /** The scene is driving her (`drive` was called and no direct clip call since). */
+  private driven = false;
+  private expand = 0;
+  /** A jump was asked for: the next `update` sets the loop with no transition. */
+  private jumpAsked = false;
+  /**
+   * The handover fade: when a section takes a clip from the machine (`clip`, `blend`) the clip she
+   * was showing keeps running under the new pose for `JUMP_FADE` seconds and fades out, so a flick
+   * that skips a section's own first blend (the out zone) never pops her pose.
+   */
+  private carryClip: ClipName = CLIP.idle;
+  private carryT = 0;
+  private carryW = 0;
+  /** How much the head and eyes follow the cursor, and how much the model turns with it (0 to 1). */
+  private lookW = 0;
+  private viewW = 0;
+  /** The cursor, eased, as a share of the screen from her eyes (-1 to 1): the view turn reads it. */
+  private readonly viewX = new Spring(4, 1, 0);
+  private readonly viewY = new Spring(4, 1, 0);
 
   // Look.
   private lookTarget: LookTarget = "pointer";
   private readonly gaze = emptyGaze();
-  private readonly gazeSprings = Array.from({ length: 6 }, () => new Spring(10, 0.8, 0));
-  private readonly bodyYaw = new Spring(5, 0.8, 0);
-  private readonly bodyLean = new Spring(6, 0.7, 0);
-
-  // Touch.
-  private readonly pat = new Pulse();
-  private readonly tilt = new Pulse();
-  private readonly hip = new Pulse();
-  private readonly wiggle = [new Pulse(), new Pulse()];
-  private readonly fist: [boolean, boolean] = [false, false];
-  private readonly clawSpin = [new Spring(7, 0.55, 0), new Spring(7, 0.55, 0)];
-  private readonly clawTurns = [0, 0];
-  private tiltSign = 1;
-  private hairLastX = 0;
-  private hairLastY = 0;
-  private hairHas = false;
+  /** The head and the eyes follow the cursor on slow springs; the eyes lead the head a little. */
+  private readonly gazeSprings = [
+    new Spring(5, 0.9, 0),
+    new Spring(5, 0.9, 0),
+    new Spring(9, 0.9, 0),
+    new Spring(9, 0.9, 0),
+  ];
 
   // Projection of her points to the screen: x, y (stage pixels) and the pixel size of a metre.
   private readonly scr = new Float32Array(POINT.count * 3);
@@ -239,9 +282,20 @@ export class SelenaActor implements Actor {
     gltf: Parameters<typeof buildRig>[0],
     cams: CameraData,
     cast: Cast,
+    r7: R7Data | null = null,
+    skyTexture: Texture | null = null,
   ) {
     this.cams = cams;
     this.cast = cast;
+    this.r7 = r7;
+    const m = r7?.sky.fromFilm ?? [];
+    this.sky =
+      r7 && skyTexture
+        ? new Sky(
+            skyTexture,
+            new Matrix3().set(m[0]!, m[1]!, m[2]!, m[3]!, m[4]!, m[5]!, m[6]!, m[7]!, m[8]!),
+          )
+        : null;
     const rig = buildRig(gltf);
     this.rig = rig;
     const n = rig.nodes.length;
@@ -251,10 +305,14 @@ export class SelenaActor implements Actor {
     this.poseB = new Float32Array(rig.rest);
     this.player = new ClipPlayer(rig.info, CLIP.idle);
     this.springs = new SpringBones(buildSpringDefs(rig.names, rig.parent, rig.rest));
+    this.pullArm = new PullArm(rig);
 
     // The scene graph: root > film > the loaded scene.
     this.film.add(rig.scene);
     this.object.add(this.film);
+    this.framed.push(this.object);
+    // The sky is a screen quad (it ignores this transform) that hides and shows with her.
+    if (this.sky) this.object.add(this.sky.mesh);
     this.object.visible = false;
     cast.add(this.object);
 
@@ -274,7 +332,6 @@ export class SelenaActor implements Actor {
       leftHand: new Object3D(),
       mouth: new Object3D(),
       head: new Object3D(),
-      rightHover: new Object3D(),
     };
     for (const [key, socket] of Object.entries(this.sockets)) {
       socket.name = `selena_socket_${key}`;
@@ -296,27 +353,9 @@ export class SelenaActor implements Actor {
       head: at(BONE.head),
       eyeL: at(BONE.eyeL),
       eyeR: at(BONE.eyeR),
-      spine1: at(BONE.spine[1]),
-      spine2: at(BONE.spine[2]),
-      pelvis: at(BONE.pelvis),
-      propL: at(BONE.propL),
-      propR: at(BONE.propR),
       handL: at(BONE.handL),
       handR: at(BONE.handR),
       mouth: at(BONE.mouth),
-    });
-    (["L", "R"] as const).forEach((side, hand) => {
-      FINGERS.forEach((finger, f) => {
-        const chain = fingerBones(side, finger);
-        const axis = flexAxis(side, finger);
-        for (let j = 0; j < 3; j += 1) {
-          const slot = (hand * 5 + f) * 3 + j;
-          this.fingerNode[slot] = at(chain[j]!);
-          this.fingerAxis[slot * 3] = axis[0];
-          this.fingerAxis[slot * 3 + 1] = axis[1];
-          this.fingerAxis[slot * 3 + 2] = axis[2];
-        }
-      });
     });
 
     // The idle pose at time zero, composed once so the first frame is already her.
@@ -329,7 +368,6 @@ export class SelenaActor implements Actor {
     });
     this.updateClip();
     ctx.stage.renderer.localClippingEnabled = true;
-    this.registerHits();
   }
 
   // ------------------------------------------------------------------ placement
@@ -358,7 +396,6 @@ export class SelenaActor implements Actor {
     }
     this.pz = z;
     this.height = height;
-    this.yaw = yaw;
     this.scale = scale;
     this.object.position.set(wx, wy, wz);
     this.object.scale.setScalar(scale);
@@ -404,32 +441,68 @@ export class SelenaActor implements Actor {
 
   // ------------------------------------------------------------------ clips
 
+  /**
+   * The state machine takes (back) the control. `expand` is the growth of the list's last frame, 0
+   * to 1: past 0.12 going up she goes to the idle, below 0.04 going down she goes back to the pose
+   * (`states.ts`). Call it every frame she is shown in the frame or the room. A transition clip
+   * that began always plays to its end, whatever `expand` does.
+   */
+  drive(expand: number): void {
+    this.expand = expand;
+    if (!this.driven) {
+      // Taking the control back: the loop that matches, cross faded from what was showing.
+      this.driven = true;
+      this.jumpAsked = true;
+    }
+  }
+
+  /** A seek or a reload: the loop that matches `expand`, no transition. */
+  jump(expand: number): void {
+    this.expand = expand;
+    this.driven = true;
+    this.jumpAsked = true;
+  }
+
+  /** The state of the machine, or "free" when a section plays or scrubs a clip itself. */
+  state(): SelenaState | "free" {
+    return this.driven ? this.machine.state : "free";
+  }
+
+  /** Let go of the machine: she keeps what she plays until a section plays or scrubs something else. */
+  handOver(): void {
+    this.driven = false;
+  }
+
   /** Show a clip at a time: a pure scrub. Loops wrap, the others hold their first and last pose. */
   clip(name: ClipName, time: number): void {
+    this.startCarry();
+    this.driven = false;
     this.player.scrub(name, time);
   }
 
   /** Show two clips at once, `b` blended over `a` by `w` (0 to 1): a cross fade a section drives. */
   blend(a: ClipName, ta: number, b: ClipName, tb: number, w: number): void {
+    this.startCarry();
+    this.driven = false;
     this.player.scrub(a, ta, b, tb, w);
+  }
+
+  /** The machine had her and a section takes a clip: remember what she showed (see `carryW`). */
+  private startCarry(): void {
+    if (!this.driven) return;
+    this.carryClip = this.player.current();
+    this.carryT = this.player.time();
+    this.carryW = 1;
   }
 
   /**
    * Let her play on her own clock: loops loop (the seams are exact), a one shot holds its last
    * pose, `then` chains. Asking again for what already plays does nothing, so a section may call it
-   * every frame. `fade` seconds cross fade from what was showing.
+   * every frame. `fade` seconds cross fade from what was showing. The machine lets go.
    */
   play(name: ClipName, options?: PlayOptions): void {
+    this.driven = false;
     this.player.play(name, options);
-  }
-
-  /** The way out of the hands at the mouth: wait for the loop, release, then idle. */
-  playRelease(): void {
-    this.player.play(CLIP.release, {
-      when: "loopEnd",
-      fade: FADE.intoRelease,
-      then: [{ clip: CLIP.idle, fade: FADE.intoIdle }],
-    });
   }
 
   /** What the player shows now: the clip, its time, and whether it plays by itself. */
@@ -453,6 +526,40 @@ export class SelenaActor implements Actor {
    * `docs/design/home/actor-selena.md`).
    */
   cameraFor(
+    clipTime: number,
+    viewport: { w: number; h: number },
+    options?: FrameOptions & { draw?: boolean },
+  ): PerspectiveCamera;
+  /**
+   * Round seven: the camera fitted to the recording for a clip at a clip time (`camera-r7.ts`,
+   * `cameras-r7.json`). `portrait` 1 puts the frame in `rect` and covers it (the list's 4:5
+   * window), 0 shows the whole recording frame on the screen, a number between mixes the two
+   * lenses (the frame growing). With `draw` (default) the cast is drawn through it for the next
+   * frame, with the sky behind her, and the cursor's view turn (`setView`) orbits it round her.
+   */
+  cameraFor(
+    clip: ClipName,
+    clipTime: number,
+    viewport: { w: number; h: number },
+    options?: R7Options,
+  ): PerspectiveCamera;
+  cameraFor(
+    a: number | ClipName,
+    b: number | { w: number; h: number },
+    c?: { w: number; h: number } | (FrameOptions & { draw?: boolean }),
+    d?: R7Options,
+  ): PerspectiveCamera {
+    if (typeof a === "string") {
+      return this.cameraForClip(a, b as number, c as { w: number; h: number }, d);
+    }
+    return this.cameraForBaked(
+      a,
+      b as { w: number; h: number },
+      c as (FrameOptions & { draw?: boolean }) | undefined,
+    );
+  }
+
+  private cameraForBaked(
     clipTime: number,
     viewport: { w: number; h: number },
     options: FrameOptions & { draw?: boolean } = {},
@@ -492,6 +599,187 @@ export class SelenaActor implements Actor {
     return cam;
   }
 
+  private cameraForClip(
+    clip: ClipName,
+    clipTime: number,
+    viewport: { w: number; h: number },
+    options: R7Options = {},
+  ): PerspectiveCamera {
+    const data = this.r7;
+    if (!data) throw new Error("cameras-r7.json was not loaded");
+    this.r7Clip = clip;
+    this.object.updateMatrixWorld(true);
+    const cam = this.filmCamera;
+    const wide = this.keyA;
+    sampleR7(data, clip, clipTime, wide);
+    // The lens: the whole recording frame on the screen, or the portrait camera's frame covering the
+    // window, or a mix of the two (the pose mixes too).
+    const k =
+      typeof options.portrait === "number"
+        ? clamp(options.portrait, 0, 1)
+        : options.portrait
+          ? 1
+          : 0;
+    const screen = { x: 0, y: 0, w: viewport.w, h: viewport.h };
+    let lens = lensFor(screen, viewport, wide[R7_VFOV]!, wide[R7_SHY]!, data.aspect, 0, this.lensA);
+    let key = wide;
+    if (k > 0) {
+      const tall = this.keyB;
+      sampleR7(data, clip, clipTime, tall, "portrait");
+      const rect = options.rect ?? screen;
+      lensFor(rect, viewport, tall[R7_VFOV]!, tall[R7_SHY]!, data.aspect, 1, this.lensB);
+      lens = k >= 1 ? this.lensB : mixLens(viewport, this.lensA, this.lensB, k, this.lensC);
+      if (k >= 1) key = tall;
+      else {
+        mixR7(wide, tall, k, this.keyC);
+        key = this.keyC;
+      }
+    }
+    // The pose in her own space, then the cursor's turn: the camera orbits her about the anchor,
+    // as if she and Silverbolt turned together the other way. The sky is read before the turn.
+    const w = this.turnW.x;
+    const yaw = -this.turnYaw.x * w * VIEW_TURN.yawDeg * DEG;
+    const pitch = this.turnPitch.x * w * VIEW_TURN.pitchDeg * DEG;
+    const pos = this.r7Pos;
+    const quat = this.r7Quat;
+    for (let i = 0; i < 3; i += 1) pos[i] = key[i]!;
+    for (let i = 0; i < 4; i += 1) quat[i] = key[3 + i]!;
+    const gq = this.gq;
+    // The world rotations the sky needs: the camera before the turn, and her own space.
+    qmul(gq, 0, key, 3, this.r7World, 0);
+    this.r7Q.set(this.r7World[0]!, this.r7World[1]!, this.r7World[2]!, this.r7World[3]!);
+    this.r7Base.makeRotationFromQuaternion(this.r7Q);
+    this.r7Q.set(gq[0]!, gq[1]!, gq[2]!, gq[3]!);
+    this.r7Film.makeRotationFromQuaternion(this.r7Q);
+    if (yaw !== 0 || pitch !== 0) orbitAbout(ANCHOR, yaw, pitch, pos, quat);
+    const p = this.tmp;
+    qrotate(gq, 0, pos[0]! - ANCHOR[0], pos[1]! - ANCHOR[1], pos[2]! - ANCHOR[2], p, 0);
+    cam.position.set(
+      this.object.position.x + p[0]! * this.scale,
+      this.object.position.y + p[1]! * this.scale,
+      this.object.position.z + p[2]! * this.scale,
+    );
+    qmul(gq, 0, quat, 0, p, 4);
+    cam.quaternion.set(p[4]!, p[5]!, p[6]!, p[7]!);
+    cam.fov = lens.fov;
+    cam.aspect = lens.aspect;
+    cam.near = 0.04 * this.scale;
+    cam.far = 120 * this.scale;
+    cam.setViewOffset(lens.fullWidth, lens.fullHeight, lens.x, lens.y, lens.width, lens.height);
+    cam.updateProjectionMatrix();
+    cam.updateMatrixWorld(true);
+    // How tall she is on the screen at the anchor's distance: the ink's width follows it.
+    const dx = pos[0]! - ANCHOR[0];
+    const dy = pos[1]! - ANCHOR[1];
+    const dz = pos[2]! - ANCHOR[2];
+    this.inkHeight = (lens.focal * REF_HEIGHT) / Math.max(0.2, Math.hypot(dx, dy, dz));
+    if (options.draw !== false) {
+      this.sky?.point(cam, this.r7Base, this.r7Film);
+      const cut = options.clip ?? options.rect;
+      if (k > 0 && cut) this.cast.clipOnce(cut);
+      // Her and what she stands with are drawn through this lens; the pair is drawn after, in pixels.
+      this.cast.setCamera(cam, this.framed);
+      this.filmDrawn = true;
+    }
+    return cam;
+  }
+
+  /**
+   * Draw a root (Silverbolt) through the same lens as her whenever a fitted camera is drawn: it
+   * stands in her own space, so it keeps its place beside her. Call it once.
+   */
+  frameWith(root: Object3D): void {
+    if (!this.framed.includes(root)) this.framed.push(root);
+  }
+
+  /**
+   * Ask for her picture through the fitted camera of the clip she is playing, for the next draw:
+   * the actor draws it itself in `update`, after the pose of this frame is written, so the camera
+   * and the pose never differ by a frame. Call it every frame she is shown in a frame or a room.
+   * `portrait` and `rect` are as in `cameraFor`. Nothing is allocated.
+   */
+  frame(viewport: { w: number; h: number }, options: R7Options = {}): void {
+    const ask = this.frameAsk;
+    ask.on = true;
+    ask.vp.w = viewport.w;
+    ask.vp.h = viewport.h;
+    const portrait = options.portrait;
+    ask.options.portrait = typeof portrait === "number" ? portrait : portrait ? 1 : 0;
+    const r = options.rect;
+    if (r) {
+      ask.rect.x = r.x;
+      ask.rect.y = r.y;
+      ask.rect.w = r.w;
+      ask.rect.h = r.h;
+      ask.options.rect = ask.rect;
+    } else {
+      ask.options.rect = null;
+    }
+    const c = options.clip;
+    if (c) {
+      ask.cut.x = c.x;
+      ask.cut.y = c.y;
+      ask.cut.w = c.w;
+      ask.cut.h = c.h;
+      ask.options.clip = ask.cut;
+    } else {
+      ask.options.clip = null;
+    }
+  }
+
+  private drawFrame(): void {
+    const ask = this.frameAsk;
+    if (!ask.on) return;
+    ask.on = false;
+    if (!this.r7) return;
+    this.cameraForClip(this.player.current(), this.player.time(), ask.vp, ask.options);
+  }
+
+  /** True when `cameras-r7.json` was loaded: `cameraFor(clip, ...)` and `frame` work. */
+  hasFittedCameras(): boolean {
+    return this.r7 !== null;
+  }
+
+  /**
+   * Point the sky through a camera a section set itself (a zoomed window of the out camera) and
+   * draw it in this frame. The camera's own pose is the sky's: no view turn. Call it with every
+   * `cast.setCamera(camera)` that is not made by `frame` or `cameraFor`.
+   */
+  pointSky(camera: PerspectiveCamera): void {
+    if (!this.sky) return;
+    camera.updateMatrixWorld(true);
+    this.r7Base.extractRotation(camera.matrixWorld);
+    this.r7Q.set(this.gq[0]!, this.gq[1]!, this.gq[2]!, this.gq[3]!);
+    this.r7Film.makeRotationFromQuaternion(this.r7Q);
+    this.sky.point(camera, this.r7Base, this.r7Film);
+    this.filmDrawn = true;
+  }
+
+  /** The clip the last `cameraFor(clip, ...)` followed. */
+  cameraClip(): ClipName {
+    return this.r7Clip;
+  }
+
+  /** Show or hide the sky (default shown): a section that wants her over its own background hides it. */
+  skyVisible(on: boolean): void {
+    this.skyOn = on;
+  }
+
+  /**
+   * The cursor turns the whole model, slightly: `nx` and `ny` are the cursor from the middle of the
+   * screen, -1 to 1 (`nx` right, `ny` up), `weight` 0 to 1 how much of the turn is on (1 in the
+   * idle, 0 in the pose and in the transitions). The camera orbits her about her anchor by up to
+   * `VIEW_TURN` degrees on springs that do not overshoot, and the sky does not move, so she and
+   * Silverbolt turn against it. Call it every frame.
+   */
+  setView(nx: number, ny: number, weight: number): void {
+    const dt = Math.min(0.1, Math.max(0, this.clock - this.turnClock));
+    this.turnClock = this.clock;
+    this.turnYaw.step(clamp(nx, -1, 1), dt);
+    this.turnPitch.step(clamp(ny, -1, 1), dt);
+    this.turnW.step(clamp(weight, 0, 1), dt);
+  }
+
   // ------------------------------------------------------------------ looks and the face
 
   /** Where she looks. The pointer by default (the head and eyes follow it, within limits). */
@@ -514,14 +802,36 @@ export class SelenaActor implements Actor {
     this.face.react(name, seconds);
   }
 
-  /** Whether the hit targets answer (a section turns them off while she is only to be watched). */
-  interactive(on: boolean): void {
-    this.interactiveOn = on;
-  }
-
   /** A point of her body, in her own space (an Object3D that follows the animated bone). */
   socket(name: SocketName): Object3D {
     return this.sockets[name];
+  }
+
+  /**
+   * A socket on any bone of hers (her own space), `along` the bone's axis, kept on it every frame.
+   * The out animation pins the fingertips to hang the white sheet on them. Call it once.
+   */
+  pin(bone: string, along = 0): Object3D {
+    const obj = new Object3D();
+    obj.name = `selena_pin_${bone}`;
+    this.film.add(obj);
+    const node = this.rig.index.get(bone) ?? -1;
+    this.pins.push({ obj, node, along });
+    return obj;
+  }
+
+  /**
+   * The out animation: for the next frame the right arm is solved so that the wrist is at a point
+   * of the picture seen through `input.camera`, and the fingers close (`pull-arm.ts`). Call it every
+   * frame it is wanted; a frame without a call is the clip's own arm.
+   */
+  pull(input: PullInput | null): void {
+    this.pullIn = input;
+  }
+
+  /** The wrist in the world as the clip has it, before any pull (it reads what the last frame set). */
+  clipHandWorld(): { x: number; y: number; z: number } {
+    return this.pullArm.clipHand;
   }
 
   /** A bone's place on the screen right now (stage pixels), for a section that points at her. */
@@ -592,9 +902,10 @@ export class SelenaActor implements Actor {
 
   debug(): SelenaDebug {
     return {
-      curl: Array.from({ length: 10 }, (_, i) => this.fingers.value(i < 5 ? 0 : 1, i % 5)),
-      fist: [...this.fist],
       scale: this.scale,
+      state: this.state(),
+      look: this.lookW,
+      view: this.viewW,
       points: this.scr,
       filmCamera: this.filmCamera,
     };
@@ -627,12 +938,17 @@ export class SelenaActor implements Actor {
     if (frame.frame - this.lastFrame > GAP_FRAMES) this.snap();
     this.lastFrame = frame.frame;
 
+    this.stepMachine();
     this.writePose(dt);
+    // A pull lasts one frame: the section asks again while it wants the arm.
+    this.pullIn = null;
+    this.pushView();
+    this.drawFrame();
     this.updateClip();
     this.updateOutline();
     this.ctx.stage.renderer.localClippingEnabled = true;
-    // The baked camera, if a section asked for it, is drawn this frame: the pointer is not on her.
-    this.filmWas = this.filmDrawn;
+    // The sky is drawn only in a frame a camera was set for (`cameraFor`), like the clip rectangle.
+    if (this.sky) this.sky.visible = this.filmDrawn && this.skyOn;
     this.filmDrawn = false;
 
     const ms = performance.now() - t0;
@@ -644,8 +960,6 @@ export class SelenaActor implements Actor {
   }
 
   dispose(): void {
-    for (const remove of this.removeHits) remove();
-    this.removeHits.length = 0;
     this.object.removeFromParent();
     this.toon.dispose();
     for (const g of this.geometries) g.dispose();
@@ -665,6 +979,18 @@ export class SelenaActor implements Actor {
       sampleClip(rig.clips[pp.b], pp.tb, poseB);
       blendPoses(pose, poseB, pp.w, pose);
     }
+    if (this.carryW > 0) {
+      const k = this.carryW;
+      poseB.set(rig.rest);
+      sampleClip(rig.clips[this.carryClip], this.carryT, poseB);
+      blendPoses(pose, poseB, k * k * (3 - 2 * k), pose);
+      const info = rig.info[this.carryClip];
+      this.carryT += dt;
+      if (this.carryT > info.duration) {
+        this.carryT = info.loop ? this.carryT - info.duration : info.duration;
+      }
+      this.carryW = Math.max(0, k - dt / JUMP_FADE);
+    }
 
     // A scrub that jumps, or a clip switched while scrubbing, is not a swing.
     const scrubbed = !this.player.playing();
@@ -681,8 +1007,15 @@ export class SelenaActor implements Actor {
     this.lastClipTime = pp.ta;
 
     work.clearTurns();
-    this.addTurns(dt, pp.a === CLIP.fall || pp.b === CLIP.fall);
+    this.addTurns(dt);
     work.compose(this.hier, pose);
+    // The out animation's pull: where the clip has the wrist, then (when a section asks) the arm
+    // solved to the screen's target and the fingers closed, and the hierarchy composed once more.
+    this.pullArm.measure(work, this.object.position, this.gq, this.scale);
+    if (this.pullIn) {
+      this.pullArm.apply(this.pullIn, work, this.object.position, this.gq, this.scale);
+      work.compose(this.hier, pose);
+    }
 
     // The springs, with what the world does to them: the figure's own move and a breeze.
     const env = this.env;
@@ -697,7 +1030,7 @@ export class SelenaActor implements Actor {
 
     this.writeBones();
     this.writeFace(dt);
-    this.writeSockets(pp);
+    this.writeSockets();
     this.project();
   }
 
@@ -759,19 +1092,13 @@ export class SelenaActor implements Actor {
   }
 
   /** Move the sockets onto the animated bones (her own space). */
-  private writeSockets(pp: PlayerPose): void {
+  private writeSockets(): void {
     const { ix, sockets } = this;
     this.putSocket(sockets.rightHand, ix.handR, 0.045);
     this.putSocket(sockets.leftHand, ix.handL, 0.045);
     this.putSocket(sockets.head, ix.head, 0.2);
     this.putSocket(sockets.mouth, ix.mouth, 0.02);
-    // The doll's hover point in the film: the hand plus the notes' offset (model space, y up).
-    let time = 0;
-    if (pp.a === CLIP.fall) time = pp.ta;
-    else if (pp.b === CLIP.fall && pp.w > 0.5) time = pp.tb;
-    const offs = this.hoverScratch;
-    dollOffset(time, DOLL_ANCHOR, offs);
-    this.putSocket(sockets.rightHover, ix.handR, 0, offs[0], offs[1], offs[2], false);
+    for (const pin of this.pins) this.putSocket(pin.obj, pin.node, pin.along);
   }
 
   /** Project her points to the screen, once a frame, for the gaze, the fingers and the hit tests. */
@@ -806,168 +1133,121 @@ export class SelenaActor implements Actor {
     }
   }
 
+  // ------------------------------------------------------------------ the states
+
+  /** Look at the growth and the machine, and start a clip only when the state changes. */
+  private stepMachine(): void {
+    if (!this.driven) return;
+    const m = this.machine;
+    if (this.jumpAsked) {
+      this.jumpAsked = false;
+      m.jump(this.expand);
+      this.enter(m.state, JUMP_FADE);
+      return;
+    }
+    m.target(this.expand);
+    const next = m.step(this.player.hasEnded());
+    if (next) this.enter(next, STATE_FADE[next]);
+  }
+
+  /** Start the clip of a state. A loop that already plays is not restarted (the player knows). */
+  private enter(state: SelenaState, fade: number): void {
+    switch (state) {
+      case "pose":
+        this.player.play(CLIP.hands, { loop: true, fade });
+        break;
+      case "idle":
+        this.player.play(CLIP.idle, { loop: true, fade });
+        break;
+      case "toIdle":
+        this.player.play(CLIP.release, { loop: false, fade });
+        break;
+      case "toPose":
+        this.player.play(CLIP.poseIn, { loop: false, fade });
+        break;
+    }
+  }
+
   // ------------------------------------------------------------------ turns on top of the clip
 
-  private addTurns(dt: number, inFall: boolean): void {
+  /**
+   * The only things the cursor does (round seven): her head and eyes follow it a little, in the
+   * pose and in the idle, and the view turns a little in the idle. Both fade with the state and are
+   * zero in the two transitions. Nothing else reacts.
+   */
+  private addTurns(dt: number): void {
     const { work, ix } = this;
+    const want = this.driven ? interactionOf(this.machine.state) : FREE_WEIGHTS;
+    const rate = approach(5, dt);
+    this.lookW += (want.look - this.lookW) * rate;
+    this.viewW += (want.view - this.viewW) * rate;
 
-    // --- the pointer and the gaze
+    // The pointer, as a share of the screen from her eyes (the head) and from the middle (the view).
     const ps = this.ctx.pointer.state;
     const W = this.ctx.stage.width;
     const H = this.ctx.stage.height;
     const live = ps.type === "touch" ? ps.down : ps.inside;
-    let tx = 0;
-    let ty = 0;
-    let mode: "point" | "viewer" | "idle" = "idle";
+    let px = 0;
+    let py = 0;
+    let has = false;
     if (this.lookTarget === "pointer") {
       if (live) {
-        mode = "point";
-        tx = ps.x - W / 2;
-        ty = H / 2 - ps.y;
+        px = ps.x - W / 2;
+        py = H / 2 - ps.y;
+        has = true;
       }
-    } else if (this.lookTarget === "viewer") {
-      mode = "viewer";
-    } else if (this.lookTarget !== "idle") {
-      mode = "point";
-      tx = this.lookTarget.x;
-      ty = this.lookTarget.y;
+    } else if (typeof this.lookTarget === "object") {
+      px = this.lookTarget.x;
+      py = this.lookTarget.y;
+      has = true;
     }
-    let yawWish = 0;
-    let pitchWish = 0;
     const eyes = POINT.eyes * 3;
-    if (mode === "point") {
-      const dx = tx - this.scr[eyes]!;
-      const dy = ty - this.scr[eyes + 1]!;
-      const depth = Math.max(260, H * 0.7);
-      const c = Math.cos(this.yaw);
-      const sn = Math.sin(this.yaw);
-      const a = gazeAngles(dx * c - depth * sn, dy, dx * sn + depth * c, this.angleScratch);
-      yawWish = a.yaw;
-      pitchWish = a.pitch;
-    } else if (mode === "viewer") {
-      yawWish = -this.yaw;
-    } else {
-      const c = this.clock;
-      yawWish = 0.16 * Math.sin(c * 0.37) + 0.08 * Math.sin(c * 0.93 + 1);
-      pitchWish = 0.05 * Math.sin(c * 0.53 + 2);
-    }
-    // The fall clip has its own head: she looks where the film looks.
-    if (inFall) {
-      yawWish = 0;
-      pitchWish = 0;
-    }
-    const split = splitGaze(yawWish, pitchWish, this.gaze);
+    const nx = has ? clamp((px - this.scr[eyes]!) / (0.5 * W), -1, 1) : 0;
+    const ny = has ? clamp((py - this.scr[eyes + 1]!) / (0.5 * H), -1, 1) : 0;
+    this.viewX.step(has ? clamp(px / (0.5 * W), -1, 1) : 0, dt);
+    this.viewY.step(has ? clamp(py / (0.5 * H), -1, 1) : 0, dt);
+
+    const split = gentleGaze(nx * this.lookW, ny * this.lookW, this.gaze);
     const gs = this.gazeSprings;
     const v = this.wish;
-    v[0] = split.neckYaw;
-    v[1] = split.neckPitch;
-    v[2] = split.headYaw;
-    v[3] = split.headPitch;
-    v[4] = split.eyeYaw;
-    v[5] = split.eyePitch;
-    for (let i = 0; i < 6; i += 1) gs[i]!.step(v[i]!, dt);
-    this.bodyYaw.step(clamp(gs[2]!.x * 0.5 + gs[0]!.x * 0.5, -0.4, 0.4) * 0.4, dt);
-    this.bodyLean.step(clamp(gs[3]!.x + gs[1]!.x, -0.4, 0.4) * 0.25, dt);
+    v[0] = split.headYaw;
+    v[1] = split.headPitch;
+    v[2] = split.eyeYaw;
+    v[3] = split.eyePitch;
+    for (let i = 0; i < 4; i += 1) gs[i]!.step(v[i]!, dt);
 
-    // --- the touches
-    const patV = this.pat.step(dt);
-    const tiltV = this.tilt.step(dt);
-    const hipV = this.hip.step(dt);
-    const c = this.clock;
-    const { neck, head, spine1, spine2, pelvis } = ix;
-
+    // The head takes most of its turn, the neck the rest; the eyes lead the head a little.
+    const { neck, head } = ix;
+    const yaw = gs[0]!.x;
+    const pitch = gs[1]!.x;
     if (neck >= 0) {
-      work.turnModel(neck, 0, 1, 0, gs[0]!.x);
-      work.turnModel(neck, 1, 0, 0, -(gs[1]!.x - patV * 0.07));
+      work.turnModel(neck, 0, 1, 0, yaw * NECK_SHARE);
+      work.turnModel(neck, 1, 0, 0, -pitch * NECK_SHARE);
     }
     if (head >= 0) {
-      work.turnModel(head, 0, 1, 0, gs[2]!.x);
-      work.turnModel(head, 1, 0, 0, -(gs[3]!.x - patV * 0.2));
-      work.turnModel(head, 0, 0, 1, Math.sin(c * 11) * patV * 0.04);
+      work.turnModel(head, 0, 1, 0, yaw * (1 - NECK_SHARE));
+      work.turnModel(head, 1, 0, 0, -pitch * (1 - NECK_SHARE));
     }
-    if (ix.eyeL >= 0) {
-      work.turnModel(ix.eyeL, 0, 1, 0, gs[4]!.x);
-      work.turnModel(ix.eyeL, 1, 0, 0, -gs[5]!.x);
-    }
-    if (ix.eyeR >= 0) {
-      work.turnModel(ix.eyeR, 0, 1, 0, gs[4]!.x);
-      work.turnModel(ix.eyeR, 1, 0, 0, -gs[5]!.x);
-    }
-    if (spine1 >= 0) {
-      work.turnModel(spine1, 0, 1, 0, this.bodyYaw.x);
-      work.turnModel(spine1, 1, 0, 0, -this.bodyLean.x);
-      work.turnModel(spine1, 0, 0, 1, this.tiltSign * tiltV * 0.1);
-    }
-    if (spine2 >= 0) work.turnModel(spine2, 0, 0, 1, this.tiltSign * tiltV * 0.06);
-    if (pelvis >= 0) work.turnModel(pelvis, 0, 0, 1, hipV * 0.06 * Math.sin(c * 13));
-
-    // --- the claws spin when poked
-    const spinL = this.clawSpin[0]!;
-    const spinR = this.clawSpin[1]!;
-    spinL.step(this.clawTurns[0]! * 2 * Math.PI, dt);
-    spinR.step(this.clawTurns[1]! * 2 * Math.PI, dt);
-    if (ix.propL >= 0) work.turnModel(ix.propL, 0, 1, 0, spinL.x);
-    if (ix.propR >= 0) work.turnModel(ix.propR, 0, 1, 0, spinR.x);
-
-    // --- the fingers
-    this.addFingers(dt);
-  }
-
-  private addFingers(dt: number): void {
-    const { work } = this;
-    const ps = this.ctx.pointer.state;
-    const input = this.handIn;
-    input.px = ps.x - this.ctx.stage.width / 2;
-    input.py = this.ctx.stage.height / 2 - ps.y;
-    input.live = (ps.type === "touch" ? ps.down : ps.inside) && this.interactiveOn;
-    const curl = this.curlScratch;
-    const tips = this.tipScratch;
-    for (let h = 0; h < 2; h += 1) {
-      const hand = h === 0 ? 0 : 1;
-      const side = hand === 0 ? "L" : "R";
-      const tipBase = hand === 0 ? POINT.tipsL : POINT.tipsR;
-      const palm = (hand === 0 ? POINT.handL : POINT.handR) * 3;
-      for (let f = 0; f < 5; f += 1) {
-        tips[f * 2] = this.scr[(tipBase + f) * 3]!;
-        tips[f * 2 + 1] = this.scr[(tipBase + f) * 3 + 1]!;
-      }
-      const middle = (tipBase + 2) * 3;
-      input.palmX = this.scr[palm]!;
-      input.palmY = this.scr[palm + 1]!;
-      input.radius =
-        Math.hypot(input.palmX - this.scr[middle]!, input.palmY - this.scr[middle + 1]!) * 1.1;
-      pointerCurl(input, curl, 0);
-      const wave = this.wiggle[hand]!.step(dt);
-      for (let f = 0; f < 5; f += 1) {
-        const wanted = (this.fist[hand] ? FIST : 0) + curl[f]! + waveCurl(f, this.clock, wave);
-        const value = this.fingers.step(hand, f, wanted, dt);
-        const finger = FINGERS[f]!;
-        for (let j = 0; j < 3; j += 1) {
-          const slot = (hand * 5 + f) * 3 + j;
-          const node = this.fingerNode[slot]!;
-          if (node < 0) continue;
-          const angle = jointAngle(finger, j as 0 | 1 | 2, value) + breath(side, f, j, this.clock);
-          work.turnLocal(
-            node,
-            this.fingerAxis[slot * 3]!,
-            this.fingerAxis[slot * 3 + 1]!,
-            this.fingerAxis[slot * 3 + 2]!,
-            angle,
-          );
-        }
-      }
+    for (const eye of [ix.eyeL, ix.eyeR]) {
+      if (eye < 0) continue;
+      work.turnModel(eye, 0, 1, 0, gs[2]!.x);
+      work.turnModel(eye, 1, 0, 0, -gs[3]!.x);
     }
   }
 
-  /** Start the springs and the fingers over (a jump, or a frame after she was hidden). */
+  /**
+   * Hand the cursor to the view turn (SEL-camera-sky's `setView(nx, ny, weight)`): the cursor as a
+   * share of the screen from its middle, eased, and the weight that is 1 in the idle and 0 in the
+   * pose and in the two transitions.
+   */
+  private pushView(): void {
+    this.setView(this.viewX.x, this.viewY.x, this.viewW);
+  }
+
+  /** Start the springs and the gaze over (a jump, or a frame after she was hidden). */
   private snap(): void {
     this.springs.snap();
-    this.fingers.snap();
     for (const s of this.gazeSprings) s.snap(0);
-    this.pat.reset();
-    this.tilt.reset();
-    this.hip.reset();
-    for (const w of this.wiggle) w.reset();
   }
 
   // ------------------------------------------------------------------ the frame, the clip planes, the ink
@@ -998,7 +1278,11 @@ export class SelenaActor implements Actor {
 
   /** The ink keeps its width in pixels whatever her size: it only needs her height on the screen. */
   private updateOutline(): void {
-    this.toon.setHeight((this.height * D) / Math.max(1, D - this.pz));
+    this.toon.setHeight(
+      this.filmDrawn && this.inkHeight > 0
+        ? this.inkHeight
+        : (this.height * D) / Math.max(1, D - this.pz),
+    );
   }
 
   // ------------------------------------------------------------------ build
@@ -1019,17 +1303,57 @@ export class SelenaActor implements Actor {
     fringe.depthWrite = true;
     hair01.renderOrder = 1;
     const looks = new Map<SkinnedMesh, ToonPick>([
-      [head, { look: "skin" }],
-      [hair01, { look: "hair", ink: "card" }],
-      [hair02, { look: "hair", inkWeight: 0.6 }],
+      // The line is the in-game hairline in the colour of what it draws (warm on the hair, rose on
+      // the skin, deep on the armour). The face has it on its outline only, none inside it.
+      [
+        head,
+        {
+          look: "skin",
+          tune: SELENA_TUNE.head,
+          inkTint: INK_TINTS.skin,
+          inkFace: FACE_LINE,
+          inkFloor: INK_FLOORS.skin,
+        },
+      ],
+      [
+        hair01,
+        {
+          look: "hair",
+          tune: SELENA_TUNE.hair,
+          ink: "card",
+          inkCopies: FRINGE_COPIES,
+          inkTint: INK_TINTS.hair,
+          inkFloor: INK_FLOORS.hair,
+        },
+      ],
+      [
+        hair02,
+        {
+          look: "hair",
+          tune: SELENA_TUNE.hair,
+          inkWeight: 0.8,
+          inkTint: INK_TINTS.hair,
+          inkFloor: INK_FLOORS.hair,
+        },
+      ],
       [eye, { unlit: true }],
       // The body sheet holds her skin beside the armour: the skin colours take the warm shade.
-      ...body.map((mesh): [SkinnedMesh, ToonPick] => [mesh, { look: "default", skinSplit: true }]),
+      ...body.map((mesh): [SkinnedMesh, ToonPick] => [
+        mesh,
+        {
+          look: "default",
+          tune: SELENA_TUNE.body,
+          skinSplit: true,
+          inkTint: INK_TINTS.body,
+          inkFloor: INK_FLOOR_BODY,
+        },
+      ]),
     ]);
     return toonify(rig.scene, {
       pick: (mesh) => looks.get(mesh as SkinnedMesh),
       clippingPlanes: this.planes,
       anisotropy,
+      fineInk: true,
     });
   }
 
@@ -1076,202 +1400,5 @@ export class SelenaActor implements Actor {
       );
     });
     head.updateMorphTargets();
-  }
-
-  // ------------------------------------------------------------------ hit targets
-
-  /** The distance from the camera of a point whose metre is `k` pixels: nearer parts win a tie. */
-  private depthOf(k: number): number {
-    return D / Math.max(0.05, k / this.scale);
-  }
-
-  private registerHits(): void {
-    const scr = this.scr;
-    const W = (): number => this.ctx.stage.width;
-    const H = (): number => this.ctx.stage.height;
-    const live = (x: number, y: number): boolean =>
-      this.visible &&
-      this.interactiveOn &&
-      !this.filmWas &&
-      (this.clipRect === null || inside(this.clipRect, x, y));
-    const to = (x: number, y: number): [number, number] => [x - W() / 2, H() / 2 - y];
-
-    const disc =
-      (index: number, metres: number, bias: number) =>
-      (x: number, y: number): number | null => {
-        if (!live(x, y)) return null;
-        const [sx, sy] = to(x, y);
-        const ax = scr[index * 3]!;
-        const ay = scr[index * 3 + 1]!;
-        const k = scr[index * 3 + 2]!;
-        return capsuleHit(sx, sy, ax, ay, ax, ay, metres * k, this.depthOf(k), bias);
-      };
-    const capsule =
-      (a: number, b: number, metres: number, bias: number) =>
-      (x: number, y: number): number | null => {
-        if (!live(x, y)) return null;
-        const [sx, sy] = to(x, y);
-        const k = scr[a * 3 + 2]!;
-        return capsuleHit(
-          sx,
-          sy,
-          scr[a * 3]!,
-          scr[a * 3 + 1]!,
-          scr[b * 3]!,
-          scr[b * 3 + 1]!,
-          metres * k,
-          this.depthOf(k),
-          bias,
-        );
-      };
-    const first =
-      (...tests: Array<(x: number, y: number) => number | null>) =>
-      (x: number, y: number): number | null => {
-        for (const test of tests) {
-          const hit = test(x, y);
-          if (hit !== null) return hit;
-        }
-        return null;
-      };
-    const add = (target: HitTarget): void => {
-      this.removeHits.push(this.ctx.pointer.add(target));
-    };
-
-    const headTest = disc(POINT.head, 0.13, 0);
-    add({
-      id: "selena:head",
-      cursor: "PAT",
-      test: headTest,
-      enter: () => {
-        this.face.react("happy", 0.9);
-      },
-      press: () => {
-        this.pat.start(1.3, 0.14, 0.7);
-        this.face.react("content", 1.4);
-        this.springs.kick("hair", 0, -0.9, 0);
-        this.springs.kick("ponytail", 0, -0.6, 0.2);
-      },
-    });
-
-    const strands = first(
-      ...[POINT.ponyL, POINT.ponyR].flatMap((base) =>
-        [0, 1, 2, 3].map((i) => capsule(base + i, base + i + 1, 0.06, 30)),
-      ),
-      disc(POINT.frontHair, 0.08, 45),
-    );
-    // The face wins where hair lies over it: the hair is what is left around the head.
-    const hairTest = (x: number, y: number): number | null =>
-      headTest(x, y) === null ? strands(x, y) : null;
-    add({
-      id: "selena:hair",
-      cursor: "SWISH",
-      test: hairTest,
-      enter: () => {
-        this.hairHas = false;
-      },
-      move: (x, y) => {
-        // Brush the hair along the pointer: the move since the last frame is the push.
-        const had = this.hairHas;
-        const dx = x - this.hairLastX;
-        const dy = this.hairLastY - y;
-        this.hairLastX = x;
-        this.hairLastY = y;
-        this.hairHas = true;
-        if (!had) return;
-        const k = 0.03 / Math.max(1, this.scale);
-        this.springs.kick(
-          "ponytail",
-          clamp(dx * k, -1.6, 1.6),
-          clamp(dy * k * 0.4, -0.8, 0.8),
-          0.05,
-        );
-        this.springs.kick(
-          "hair",
-          clamp(dx * k * 0.6, -1.2, 1.2),
-          clamp(dy * k * 0.3, -0.6, 0.6),
-          0,
-        );
-      },
-      leave: () => {
-        this.hairHas = false;
-      },
-      press: () => {
-        this.springs.kick("ponytail", 2.2, 0.8, 0.5);
-        this.springs.kick("hair", 1.4, 0.5, 0.3);
-        this.face.react("surprised", 0.7);
-      },
-    });
-
-    for (const hand of [0, 1] as const) {
-      add({
-        id: hand === 0 ? "selena:hand-l" : "selena:hand-r",
-        cursor: "WIGGLE",
-        // The hand and its fingers, from the wrist along the hand's own axis (the curl of the
-        // fingers does not move this, so a fist does not let go of itself).
-        test: capsule(
-          hand === 0 ? POINT.handL : POINT.handR,
-          hand === 0 ? POINT.handEndL : POINT.handEndR,
-          0.07,
-          0,
-        ),
-        enter: () => {
-          this.wiggle[hand]!.start(1.6, 0.1, 0.8);
-          if (hand === 1) this.face.react("wink", 1.1);
-        },
-        press: () => {
-          this.fist[hand] = true;
-        },
-        release: () => {
-          this.fist[hand] = false;
-        },
-        leave: () => {
-          // A fist is held while the pointer is down, even if it slides off the hand.
-          if (!this.ctx.pointer.state.down) this.fist[hand] = false;
-        },
-      });
-    }
-
-    for (const k of [0, 1] as const) {
-      add({
-        id: k === 0 ? "selena:claw-l" : "selena:claw-r",
-        cursor: "SPIN",
-        test: disc(k === 0 ? POINT.propL : POINT.propR, 0.2, 6),
-        enter: () => {
-          this.clawTurns[k] = this.clawTurns[k]! + 1;
-        },
-        press: () => {
-          this.clawTurns[k] = this.clawTurns[k]! + 2;
-          this.face.react("surprised", 0.9);
-        },
-      });
-    }
-
-    add({
-      id: "selena:body",
-      cursor: "POKE",
-      test: capsule(POINT.neck, POINT.pelvis, 0.17, 60),
-      press: (x) => {
-        const [sx] = to(x, 0);
-        this.tiltSign = sx > scr[POINT.pelvis * 3]! ? -1 : 1;
-        this.tilt.start(1.1, 0.12, 0.7);
-        this.face.react("laugh", 1.2);
-        this.springs.kick("skirt", this.tiltSign * -0.9, 0.3, 0);
-        this.springs.kick("ponytail", this.tiltSign * -0.6, 0.2, 0);
-      },
-    });
-
-    add({
-      id: "selena:legs",
-      cursor: "TAP",
-      test: first(
-        capsule(POINT.thighL, POINT.footL, 0.085, 70),
-        capsule(POINT.thighR, POINT.footR, 0.085, 70),
-      ),
-      press: () => {
-        this.hip.start(1.2, 0.1, 0.6);
-        this.face.react("wink", 0.9);
-        this.springs.kick("skirt", 0, 0.8, 0.5);
-      },
-    });
   }
 }

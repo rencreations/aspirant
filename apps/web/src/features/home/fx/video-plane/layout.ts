@@ -80,6 +80,21 @@ export function sceneCentre(vw: number, vh: number): { x: number; y: number } {
 }
 
 /**
+ * How far the SMALL strip (and its line) stands above the middle of the scene, as a share of the
+ * screen's height (round eight: centred by the numbers, not balanced by eye, because the big word at the
+ * bottom left weighs the frame down). It is 0 for the window, so the window and the orbit stay exactly
+ * centred, and it eases out with the expand: `smoothstep`, so it starts and ends gently whatever the
+ * section's own ease of `e` is.
+ */
+export const STRIP_LIFT = 0.05;
+
+/** The lift in CSS px at an expand `e` (0 the small strip, 1 the window): `STRIP_LIFT` of the height, easing to 0. */
+export function stripLift(vh: number, e: number): number {
+  const k = clamp(e, 0, 1);
+  return STRIP_LIFT * vh * (1 - k * k * (3 - 2 * k));
+}
+
+/**
  * The frame at an expand `e` (0 the strip, 1 the full window): the digest scales the whole player
  * from 0.45 to 1 and opens the band by the same step, so the width is `s W` and the height
  * `s (W / aspect) (1 - 2 inset)`. The picture is not touched: the frame only opens.
@@ -101,7 +116,8 @@ export function expandBox(
   out.w = s * W;
   out.h = ((s * W) / aspect) * (1 - 2 * cut);
   out.x = c.x - out.w / 2;
-  out.y = c.y - out.h / 2;
+  // Up by the lift: the small strip stands a little above the centre, the window is centred.
+  out.y = c.y - out.h / 2 - stripLift(vh, k);
   return out;
 }
 

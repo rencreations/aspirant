@@ -5,12 +5,10 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 import { drawnHeight, walkPhaseFor, type DollActor } from "../../actors/doll";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
-import type { Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { SustainHandle } from "../../fx/comic-marks/system";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
-import { backdropAt } from "./backdrop";
 import { coverBitmap, loadCovers, type CoverSide } from "./covers";
 import {
   T,
@@ -60,7 +58,6 @@ class ChaseRuntime implements SectionRuntime {
   private dragon: SilverboltActor | null = null;
   private doll: DollActor | null = null;
   private marks: MarksActor | null = null;
-  private backdrop: Backdrop | null = null;
   private disposed = false;
   private entered = false;
 
@@ -132,7 +129,7 @@ class ChaseRuntime implements SectionRuntime {
     void this.load();
   }
 
-  /** Every actor has arrived or failed for good, and the backdrop's shaders are compiled. */
+  /** Every actor has arrived or failed for good. */
   private loaded = false;
 
   /** The ready gate: the run and the book need Tetra, the dragon and the doll built. */
@@ -162,18 +159,6 @@ class ChaseRuntime implements SectionRuntime {
           this.speedTetra = a.sustain("speed", { size: 0.14 * this.geo.h, direction: Math.PI });
           this.beads = a.sustain("beads", { size: 0.1 * this.geo.h });
           this.steam = a.sustain("steam", { size: 0.035 * this.geo.h });
-        },
-      ),
-      take(
-        "the backdrop",
-        async () => {
-          const a = await (await import("../../fx/backdrop")).ensureBackdrop(ctx);
-          // Compiled before the first zone, so its first draw is no hitch inside the scene.
-          await a.warm(["speed-lines", "soft-aurora", "pixel-blast"]).catch(() => undefined);
-          return a;
-        },
-        (a) => {
-          this.backdrop = a;
         },
       ),
       take(
@@ -263,8 +248,6 @@ class ChaseRuntime implements SectionRuntime {
     // so a section passed by a jump (replayed at its last station) shows none.
     const gone = wordsLeave(frame.S, sectionEnd("chase"));
     this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));
-    const ask = backdropAt(local);
-    this.backdrop?.set(ask.kind, ask.options);
     this.drawDoll(local, frame, jumped);
     this.drawDragon(local, frame);
     this.drawTetra(local, frame, jumped);

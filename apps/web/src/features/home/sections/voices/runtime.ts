@@ -2,26 +2,15 @@ import { libUrl } from "@/lib/library";
 import { withSound } from "@/lib/sound-prompt";
 
 import type { DuoActor } from "../../actors/duo";
-import { ensureBackdrop, type Backdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
-import {
-  OUT_FROM,
-  duoSpotsAt,
-  emergeAt,
-  leaveAt,
-  newSpots,
-  stepDance,
-  type StageRect,
-} from "./choreo";
+import { OUT_FROM, duoSpotsAt, newSpots, stepDance, type StageRect } from "./choreo";
 import { VoicesDom } from "./dom";
 import { bridgeDuoMarks } from "./marks-bridge";
 
 /** A line that is still playing when the leave is this far along is stopped. */
 const STOP_AT = OUT_FROM + 0.12;
-/** The calm backdrop behind the chooser and the art: slow pastel waves along the foot. */
-const BACKDROP_AMOUNT = 0.85;
 /** A heart between the drones: the first after this many seconds of dancing, then this often. */
 const HEART_FIRST = 0.5;
 const HEART_EVERY = 1.15;
@@ -55,15 +44,6 @@ class VoicesRuntime implements SectionRuntime {
   private activeUrl: string | null = null;
   private readonly stopListening: () => void;
   private observer: ResizeObserver | null = null;
-  /** The live backdrop, once the second canvas is made. The section works without it. */
-  backdrop: Backdrop | null = null;
-  /** The waves' shader is compiled (or the backdrop cannot be had). */
-  warmed = false;
-
-  /** The ready gate: the entrance's first draw of the waves is no hitch. The pair is built already. */
-  ready(): boolean {
-    return this.warmed;
-  }
 
   constructor(
     private readonly ctx: SectionCtx,
@@ -121,16 +101,6 @@ class VoicesRuntime implements SectionRuntime {
 
   private step(local: number, frame: FrameInfo): void {
     this.dom.apply(local, frame.viewport.w);
-    // The backdrop comes in with the title and goes with the list. Nothing is asked while the
-    // section has not begun (its lead), so Selena's last frames keep the ground.
-    const enter = emergeAt(local, 0) * (1 - leaveAt(local));
-    if (this.backdrop && enter > 0.002) {
-      this.backdrop.set("waves", {
-        theme: "daybreak",
-        amount: BACKDROP_AMOUNT * enter,
-        speed: 0.6,
-      });
-    }
     // The list has faded: a line still playing would be a voice from a page nobody can see.
     if (local > STOP_AT && this.activeUrl !== null) this.stopOurVoice();
     const duo = this.duo;
@@ -279,17 +249,5 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
     // The pair is a flourish: the chooser and the lines work without it.
     console.warn("voices: the drones could not be made", error);
   }
-  const runtime = new VoicesRuntime(ctx, duo, marks);
-  void ensureBackdrop(ctx).then(
-    (backdrop) => {
-      runtime.backdrop = backdrop;
-      void backdrop.warm(["waves"]).finally(() => {
-        runtime.warmed = true;
-      });
-    },
-    () => {
-      runtime.warmed = true;
-    },
-  );
-  return runtime;
+  return new VoicesRuntime(ctx, duo, marks);
 }

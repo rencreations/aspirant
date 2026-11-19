@@ -23,7 +23,6 @@ import styles from "./footer.module.css";
 export function view(): SectionMarkup {
   const legal = FOOTER.legal;
   return {
-    below: <div className={styles.pool} data-footer-pool="" />,
     text: (
       <div className={styles.card} data-footer-card="">
         <ExitHook />

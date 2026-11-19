@@ -9,8 +9,10 @@
  *
  *   zone one   0.7 screens   the drawer, its words and the dragon come in, the aurora rises (u 0 to REST_U)
  *   rest       0.8 screens   Selena and the dragon in the room, fully interactive, the words to read
- *   zone two   1.5 screens   the doll falls, the camera swings, the dragon eats her and sweeps past the
- *                            lens over white (u REST_U to STORY). Down plays it, up plays it back.
+ *   zone two   2.4 screens   the out animation (round seven, `out.ts`): the clip `city_intercation02`
+ *                            plays by the scroll, her hand reaches up, takes a white sheet by its edge
+ *                            and pulls it down over the screen (u REST_U to STORY). Down plays it, up
+ *                            plays it back.
  *   rest       0.3 screens   white, the first frame of the voices (the bar's ink turns here)
  *
  * A visitor who stops inside a zone is carried to its nearer end by the kernel (`kernel/scrub.ts`).
@@ -20,12 +22,12 @@ import { zoneTable } from "../zone-table";
 /** The rest station, in seconds of the story. */
 export const REST_U = 1.0;
 /** The whole story, in seconds. Zone one is REST_U of it, zone two is the rest. */
-export const STORY = 3.95;
+export const STORY = 4;
 /** The rest station as a `local`. */
 export const REST_V = REST_U / STORY;
 
 /** The lengths, in screens. One place to tune them. */
-export const LENGTHS = { enter: 0.7, rest: 0.8, film: 1.5, white: 0.3 } as const;
+export const LENGTHS = { enter: 0.7, rest: 0.8, film: 2.4, white: 0.3 } as const;
 
 const TABLE = zoneTable(0, [
   { zone: LENGTHS.enter, to: REST_V },

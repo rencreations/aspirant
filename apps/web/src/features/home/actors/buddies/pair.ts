@@ -7,17 +7,22 @@
  *
  * A section sets, every frame it shows the pair: `visible`, `place`, `mode` (sticky), maybe `dance`,
  * `descent`, `look`. Nothing a visitor does moves the place the section gave.
+ *
+ * Round eight: while she rides, the doll is in the drone's own scene (one world, one lens, one depth
+ * buffer), so the drone's body hides her parts; and the pair's life (the cursor, the hover and press
+ * answers, the docked moments, the drone's float) is locked while the visitor scrolls and while a dance
+ * drives them, with a tolerance before and after (`lock.ts`).
  */
 import { Object3D } from "three";
 
 import type { Actor, FrameInfo } from "../../kernel/types";
-import { getCast } from "../shared/cast";
 import type { ActorCtx } from "../shared/types";
 import type { DollActor } from "../doll/actor";
 import type { FaceName as DollFace } from "../doll/face/presets";
 import { DOLL_SIZE } from "../doll/place";
-import type { DroneActor } from "../drone/actor";
+import type { DroneActor, DroneLayer } from "../drone/actor";
 import type { DronePlace } from "../drone/coords";
+import { lensDistance } from "../drone/model";
 import type { TrickKind } from "../drone/tricks";
 
 import {
@@ -31,6 +36,7 @@ import {
 } from "./choreo";
 import { LifeScheduler } from "./life";
 import { createHands, stepHands, type Hands } from "./hands";
+import { closeLock, createLock, stepLock } from "./lock";
 import { createHeadFrame, headFrame, modelToStage, FACE_POINT, perMetreOf } from "./seat";
 import { createTouchOut, Touch, type TouchOut } from "./touch";
 
@@ -40,8 +46,13 @@ export type ReactName =
 
 /** How tall she is drawn beside the drone (her drawn height over its height). Tuned by eye. */
 export const DOLL_RATIO = 0.5;
-/** Where her hips sit from the seat, in her drawn heights along the seat's axes: on the dome. */
-const SEAT_OFFSET: readonly [number, number, number] = [0, 0.06, -0.02];
+/**
+ * Where her hips sit from the seat, in her drawn heights along the seat's axes. Round eight: she is in
+ * the drone's own scene, so the helmet's dome is a real surface. Its top is flat from 0.06 m behind the
+ * seat to 0.15 m in front (the profile of the model), so she sits on the front half of it, high enough
+ * that her seat rests on the dome and her legs go over its front edge. Looked at on eight attitudes.
+ */
+const SEAT_OFFSET: readonly [number, number, number] = [0, 0.24, 0.5];
 /** How much of the drone's roll she holds against. */
 const UPRIGHT = 0.5;
 /** A frame longer than this is taken as this long. */
@@ -50,6 +61,10 @@ const DT_MAX = 0.05;
 const MODE_RATE = 5;
 /** How long a change of her face takes. */
 const FACE_RAMP = 0.16;
+/** A press is heard only while the lock's weight is at least this (the hit shapes are off under 0.02). */
+const PRESS_MIN = 0.5;
+/** The pair's own life and the cursor's pull count as on above this share of their weight. */
+const CURSOR_ON = 0.5;
 
 export interface PairState {
   mode: PairMode;
@@ -67,7 +82,7 @@ export class BuddyPair implements Actor {
   readonly drone: DroneActor;
   readonly doll: DollActor;
 
-  /** The seat: a node of the cast scene at the top of the drone's helmet. The doll is its child. */
+  /** The seat: a node of the drone's scene at the top of its helmet. The doll is its child while she rides. */
   readonly seat = new Object3D();
   private readonly gripL = new Object3D();
   private readonly gripR = new Object3D();
@@ -124,17 +139,34 @@ export class BuddyPair implements Actor {
   private readonly smooth = { lean: 0, lookUp: 0, looksDown: 0 };
   private readonly dollPoint = { x: 0, y: 0 };
 
+  // The lock (`lock.ts`): the weight of the pair's own life, from the scroll and from how still the drone is.
+  private readonly lock = createLock();
+  private lockW = 0;
+  private userInteractive = true;
+  /** Which side of the cast the pair is drawn on this frame (`layer`). */
+  private layerWant: DroneLayer = "back";
+  private interactiveNow = true;
+  private readonly lastDraw = { x: 0, y: 0, ok: false };
+  private speed = 0;
+  private cursorOn = false;
+  /** Where her hips sit from the seat, in her drawn heights (see `SEAT_OFFSET`); a probe may tune it. */
+  private seatOffset: [number, number, number] = [...SEAT_OFFSET];
+  /** A probe's switch: the lock is open whatever the scroll does (to measure what it fixes). Never set by the page. */
+  probeNoLock = false;
+
   constructor(ctx: ActorCtx, drone: DroneActor, doll: DollActor) {
     this.ctx = ctx;
     this.drone = drone;
     this.doll = doll;
-    const cast = getCast(ctx.stage);
     this.seat.name = "buddies-seat";
     this.seat.visible = false;
     this.gripL.name = "buddies-gripL";
     this.gripR.name = "buddies-gripR";
     this.seat.add(this.gripL, this.gripR);
-    cast.add(this.seat);
+    // The seat is in the drone's scene: she is drawn with the drone, through its lens, in its depth buffer.
+    drone.hostScene.add(this.seat);
+    // Her programs for that scene are made now, not in the first frame she rides.
+    drone.warmGuest(doll.object);
 
     this.droneHooks = {
       enter: () => {
@@ -145,7 +177,9 @@ export class BuddyPair implements Actor {
         if (this.hover === "drone") this.hover = null;
         this.touch.hover(null, this.time);
       },
-      press: () => this.touch.press("drone", this.time),
+      press: () => {
+        if (this.lockW >= PRESS_MIN) this.touch.press("drone", this.time);
+      },
       release: () => this.touch.release(this.time),
     };
     this.dollHooks = {
@@ -157,7 +191,9 @@ export class BuddyPair implements Actor {
         if (this.hover === "doll") this.hover = null;
         this.touch.hover(null, this.time);
       },
-      press: () => this.touch.press("doll", this.time),
+      press: () => {
+        if (this.lockW >= PRESS_MIN) this.touch.press("doll", this.time);
+      },
       release: () => this.touch.release(this.time),
     };
   }
@@ -186,6 +222,12 @@ export class BuddyPair implements Actor {
       this.doll.visible = v;
       this.doll.external = v;
     }
+  }
+
+  /** A probe's handle: sit her somewhere else on the helmet (her drawn heights along the seat's axes). */
+  tuneSeat(x: number, y: number, z: number): void {
+    this.seatOffset = [x, y, z];
+    this.seated = false;
   }
 
   /** The DRONE's place (stage frame, y up). `height` is its on-screen height. She comes with it. */
@@ -229,9 +271,30 @@ export class BuddyPair implements Actor {
     this.lookPoint = at;
   }
 
+  /** The hit targets answer or not (a section's switch). The scroll lock closes them too, by itself. */
   setInteractive(on: boolean): void {
+    this.userInteractive = on;
+    this.applyInteractive();
+  }
+
+  private applyInteractive(): void {
+    const on = this.userInteractive && (this.lockW > 0.02 || this.probeNoLock);
+    if (on === this.interactiveNow) return;
+    this.interactiveNow = on;
     this.drone.setInteractive(on);
     this.doll.setInteractive(on);
+    if (!on) {
+      this.hover = null;
+      this.touch.hover(null, this.time);
+    }
+  }
+
+  /**
+   * Draw the pair in front of the cast for this frame (the Selena room: its sky is drawn in the cast and
+   * would cover a drone behind it). It lasts one frame: a section asks again every frame it wants it.
+   */
+  layer(layer: DroneLayer): void {
+    this.layerWant = layer;
   }
 
   react(name: ReactName): void {
@@ -243,10 +306,15 @@ export class BuddyPair implements Actor {
     this.lookPoint = null;
     this.descentAmount = 0;
     this.danceAsked = false;
-    this.setInteractive(true);
+    this.userInteractive = true;
+    closeLock(this.lock);
+    this.lockW = 0;
+    // `drone.reset()` below opens its hit target: the lock closes it again at once.
+    this.interactiveNow = true;
     this.touch.reset();
     this.drone.reset();
     this.drone.carrying = true;
+    this.applyInteractive();
   }
 
   state(): PairState {
@@ -271,6 +339,7 @@ export class BuddyPair implements Actor {
     this.time += dt;
     this.apartNow = this.baseMode === "apart";
     if (!this.hasPlace) this.place({ x: 0, y: 0, height: 160 });
+    this.stepLock(frame, dt, resumed);
 
     // The modes: the weights move to the one that is wanted (a dance asked this frame counts).
     const goal: PairMode = this.danceAsked
@@ -284,6 +353,13 @@ export class BuddyPair implements Actor {
     this.weight.dock += ((goal === "dock" ? 1 : 0) - this.weight.dock) * k;
     this.descentNow +=
       (this.descentAmount - this.descentNow) * (resumed ? 1 : 1 - Math.exp(-4 * dt));
+    // What is the pair's own while nothing drives them: the cursor's pull, the docked moments, the
+    // drone's float, her fidgets. It is off while a dance drives them and while the scroll does. What
+    // the visitor starts (a hover, a press) is off while the scroll runs and back after it (`lockW`).
+    const lockW = this.lockW;
+    const own = lockW * (1 - this.weight.dance);
+    this.cursorOn = own > CURSOR_ON;
+    this.applyInteractive();
 
     // What each producer asks.
     clearCue(this.cueDance);
@@ -291,19 +367,17 @@ export class BuddyPair implements Actor {
     if (this.weight.dance > 0.002 && this.danceName) {
       danceCue(this.danceName, this.danceT, this.danceEnergy, this.danceBpm, this.cueDance);
     }
-    this.life.step(
-      dt,
-      this.time,
-      this.cueLife,
-      this.weight.dock + 0.55 * this.weight.carry + 0.3 * this.weight.dance,
-    );
+    // The moments run on their own clock whatever the lock does (so none is lost), and show as much
+    // as `own` lets them: a dance and the scroll fade them out and back, they are never cut.
+    this.life.step(dt, this.time, this.cueLife, this.weight.dock + 0.55 * this.weight.carry);
     this.touch.step(dt, this.time, this.touchOut, this.cueTouch);
     blendCue(this.cue, [
       [this.cueDance, this.weight.dance],
-      [this.cueLife, 1 - 0.6 * this.weight.dance],
-      [this.cueTouch, 1],
+      [this.cueLife, own],
+      [this.cueTouch, lockW],
     ]);
-    this.fireTouch(this.touchOut);
+    if (lockW >= PRESS_MIN) this.fireTouch(this.touchOut);
+    else this.pendingTrick = null;
     if (this.pendingTrick) {
       this.pendingLeft -= dt;
       if (this.drone.trickNow(this.pendingTrick, this.pendingDir) || this.pendingLeft <= 0) {
@@ -316,7 +390,7 @@ export class BuddyPair implements Actor {
     const c = this.cue;
     const s = this.smooth;
     const ease = resumed ? 1 : 1 - Math.exp(-8 * dt);
-    s.lean += (this.touch.leaning - s.lean) * ease;
+    s.lean += (this.touch.leaning * lockW - s.lean) * ease;
     s.lookUp += (c.droneLooksUp - s.lookUp) * ease;
     s.looksDown += (c.looksDown - s.looksDown) * ease;
 
@@ -342,7 +416,10 @@ export class BuddyPair implements Actor {
     });
     drone.spin(c.yaw);
     drone.flutter(Math.max(c.flutter, 0.45 * d));
-    drone.layer("back");
+    drone.layer(this.layerWant);
+    this.layerWant = "back";
+    // The drone's own float is the pair's life (off in a dance); its answers to the visitor go with the lock.
+    drone.gains(own, lockW);
     this.aimDrone(c);
     if (resumed) {
       drone.snapTo({ x: w.x, y: w.y, z: w.z, height: h, pitch: w.pitch, roll: w.roll });
@@ -351,6 +428,34 @@ export class BuddyPair implements Actor {
 
     // The seat, from the pose the drone is drawn in this frame, then the doll.
     if (!this.apartNow) this.stepDoll(frame, c, dt, lean);
+  }
+
+  /**
+   * The scroll lock for this frame (`lock.ts`): from the section's scroll (its speed and the visitor's
+   * wheel or touch) and from how still the drone is drawn. A jump (a frame that did not follow the
+   * last, a scroll that leapt) closes it with no ramp: nothing is animated across a jump.
+   */
+  private stepLock(frame: FrameInfo, dt: number, resumed: boolean): void {
+    const dr = this.drone.drawn;
+    const h = Math.max(1, this.drone.state().height);
+    const last = this.lastDraw;
+    let inst = 0;
+    if (last.ok && !resumed && dt > 0) {
+      inst = Math.hypot(dr.x - last.x, dr.y - last.y) / dt / h;
+    }
+    last.x = dr.x;
+    last.y = dr.y;
+    last.ok = true;
+    // A short low pass, so one odd frame is not a gust.
+    this.speed += (inst - this.speed) * (resumed ? 1 : 1 - Math.exp(-12 * dt));
+    if (resumed) closeLock(this.lock);
+    this.lockW = this.probeNoLock
+      ? 1
+      : stepLock(this.lock, dt, {
+          velocity: frame.velocity,
+          wheel: frame.input.wheel,
+          droneSpeed: this.speed,
+        });
   }
 
   /** The height she is asked for (the doll draws `DOLL_SIZE` of it). */
@@ -363,12 +468,16 @@ export class BuddyPair implements Actor {
     const stage = this.ctx.stage;
     const dr = this.drone.drawn;
     const head = this.head;
-    headFrame(dr, stage.height, head);
+    // The seat is where the top of the helmet is in the world the drone is drawn in, turned as it is:
+    // she is in that scene, so the drone's body can hide her.
+    headFrame(dr, head);
     this.seat.quaternion.copy(head.q);
-    this.seat.position.set(head.x, head.y, 0);
+    this.seat.position.set(head.x, head.y, head.z);
     this.seat.scale.setScalar(1);
     this.seat.visible = true;
     this.seat.updateMatrixWorld(true);
+    // She is drawn through the drone's lens, which stands in front of the drone.
+    doll.setLens(lensDistance(stage.height), dr.x, -dr.y);
     const asked = this.dollAsked();
     const drawn = asked * DOLL_SIZE;
 
@@ -381,7 +490,7 @@ export class BuddyPair implements Actor {
       doll.rideOn(this.seat, {
         gripL: this.gripL,
         gripR: this.gripR,
-        seatOffset: SEAT_OFFSET,
+        seatOffset: this.seatOffset,
         upright: UPRIGHT,
         free: true,
         seed: 5,
@@ -410,6 +519,8 @@ export class BuddyPair implements Actor {
     g.slide = c.slide;
     g.handL = this.hands.wl;
     g.handR = this.hands.wr;
+    // Her own fidgets go with the same weight as the drone's float.
+    g.idle = this.lockW * (1 - this.weight.dance);
     this.aimDoll(c, drawn, g);
     this.setDollFace(c.dollFace ?? "smile", dt);
     doll.drive(frame);
@@ -435,7 +546,9 @@ export class BuddyPair implements Actor {
       const s = drone.state();
       drone.look({ x: s.x, y: s.y + s.height * 2.2 });
     } else {
-      drone.look("pointer");
+      // The cursor pulls its eyes and body only while the pair are their own (a dance and the scroll
+      // let it go over about half a second: the drone's own gaze ease).
+      drone.look(this.cursorOn ? "pointer" : null);
     }
     drone.face(c.droneFace ?? "normal", c.droneFace ? 1 : 0);
   }
@@ -469,7 +582,7 @@ export class BuddyPair implements Actor {
       g.lookY = this.dollPoint.y;
       return;
     }
-    if (this.cursor.near) {
+    if (this.cursor.near && this.cursorOn) {
       g.look = true;
       g.lookX = this.cursor.x;
       g.lookY = this.cursor.y;

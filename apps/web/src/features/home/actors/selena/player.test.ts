@@ -6,6 +6,8 @@ const TABLE: ClipTable = {
   city_idle: { duration: 2.708333, loop: true },
   city_interaction_R_loop: { duration: 2.708333, loop: true },
   city_interaction_back_R: { duration: 3.208333, loop: false },
+  city_interaction_R: { duration: 3.291667, loop: false },
+  city_intercation02: { duration: 5.958333, loop: false },
   city_intercation03: { duration: 6.291667, loop: false },
 };
 

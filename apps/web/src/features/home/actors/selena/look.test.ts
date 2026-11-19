@@ -1,59 +1,36 @@
 import { describe, expect, it } from "vitest";
 
-import { LIMITS, emptyGaze, gazeAngles, splitGaze } from "./look";
+import { GENTLE, emptyGaze, gentleGaze } from "./look";
 
-describe("gazeAngles", () => {
-  it("is zero straight ahead, positive to +x and up", () => {
-    expect(gazeAngles(0, 0, 1)).toEqual({ yaw: 0, pitch: 0 });
-    expect(gazeAngles(1, 0, 1).yaw).toBeCloseTo(Math.PI / 4, 6);
-    expect(gazeAngles(0, 1, 1).pitch).toBeCloseTo(Math.PI / 4, 6);
-    expect(gazeAngles(-1, 0, 1).yaw).toBeLessThan(0);
-  });
-});
-
-describe("splitGaze", () => {
-  it("a small turn is the eyes alone", () => {
-    const g = splitGaze(0.08, -0.05, emptyGaze());
-    expect(g.headYaw).toBe(0);
-    expect(g.neckYaw).toBe(0);
-    expect(g.eyeYaw).toBeCloseTo(0.08, 6);
-    expect(g.eyePitch).toBeCloseTo(-0.05, 6);
+describe("gentleGaze", () => {
+  it("is zero with the cursor on her eyes", () => {
+    expect(gentleGaze(0, 0, emptyGaze())).toEqual(emptyGaze());
   });
 
-  it("a larger turn brings the head and the neck, and the parts add up near the wish", () => {
-    const g = splitGaze(0.5, 0.2, emptyGaze());
+  it("follows the cursor: right and up are positive", () => {
+    const g = gentleGaze(0.5, 0.5, emptyGaze());
     expect(g.headYaw).toBeGreaterThan(0);
-    expect(g.neckYaw).toBeGreaterThan(0);
-    expect(g.headYaw).toBeGreaterThan(g.neckYaw);
-    expect(g.neckYaw + g.headYaw + g.eyeYaw).toBeCloseTo(0.5, 6);
+    expect(g.headPitch).toBeGreaterThan(0);
+    expect(g.eyeYaw).toBeGreaterThan(0);
+    const l = gentleGaze(-0.5, -0.5, emptyGaze());
+    expect(l.headYaw).toBeCloseTo(-g.headYaw, 9);
+    expect(l.eyePitch).toBeCloseTo(-g.eyePitch, 9);
   });
 
-  it("never passes the limits, for any cursor", () => {
+  it("is small: about 8 degrees of head sideways and 5 up, whatever the cursor does", () => {
+    const deg = (r: number): number => (r * 180) / Math.PI;
     const g = emptyGaze();
-    for (const yaw of [-3, -1.5, 1.5, 3]) {
-      for (const pitch of [-1.5, 1.5]) {
-        splitGaze(yaw, pitch, g);
-        expect(Math.abs(g.neckYaw + g.headYaw)).toBeLessThanOrEqual(LIMITS.headYaw + 1e-9);
-        expect(Math.abs(g.eyeYaw)).toBeLessThanOrEqual(LIMITS.eyeYaw + 1e-9);
-        expect(g.neckPitch + g.headPitch).toBeLessThanOrEqual(LIMITS.headUp + 1e-9);
-        expect(g.neckPitch + g.headPitch).toBeGreaterThanOrEqual(-LIMITS.headDown - 1e-9);
-        expect(g.eyePitch).toBeLessThanOrEqual(LIMITS.eyeUp + 1e-9);
-        expect(g.eyePitch).toBeGreaterThanOrEqual(-LIMITS.eyeDown - 1e-9);
-      }
+    for (const v of [-9, -1, 1, 9]) {
+      gentleGaze(v, v, g);
+      expect(deg(Math.abs(g.headYaw))).toBeLessThanOrEqual(8.1);
+      expect(deg(Math.abs(g.headPitch))).toBeLessThanOrEqual(5.2);
+      expect(Math.abs(g.eyeYaw)).toBeLessThanOrEqual(GENTLE.eyeYaw + 1e-9);
     }
   });
 
-  it("is monotone in the wish and symmetric", () => {
-    let last = -1;
-    for (let yaw = 0; yaw <= 1.2; yaw += 0.05) {
-      const g = splitGaze(yaw, 0, emptyGaze());
-      const total = g.neckYaw + g.headYaw + g.eyeYaw;
-      expect(total).toBeGreaterThanOrEqual(last - 1e-9);
-      last = total;
-    }
-    const a = splitGaze(0.4, 0.1, emptyGaze());
-    const b = splitGaze(-0.4, -0.1, emptyGaze());
-    expect(b.headYaw).toBeCloseTo(-a.headYaw, 9);
-    expect(b.eyeYaw).toBeCloseTo(-a.eyeYaw, 9);
+  it("makes the eyes lead the head", () => {
+    const g = gentleGaze(0.6, 0.6, emptyGaze());
+    expect(g.eyeYaw).toBeGreaterThan(g.headYaw);
+    expect(g.eyePitch).toBeGreaterThan(g.headPitch);
   });
 });

@@ -23,6 +23,7 @@ import {
   ensureFilm,
   expandBox,
   sceneBox,
+  stripLift,
   type Box,
   type FilmActor,
 } from "../../fx/video-plane";
@@ -82,6 +83,8 @@ class StripRuntime implements SectionRuntime {
   private readonly ends: Record<string, HTMLElement | null>;
   private readonly corners: Record<string, HTMLElement | null>;
   private readonly arcs: HTMLElement | null;
+  /** The two middle words hang off the line's ends, so they rise with the line (round eight). */
+  private readonly coords: Array<HTMLElement | null>;
 
   /** The two words at the bottom left, which change letter by letter, and which set is asked for. */
   private swapGoal: 0 | 1 = 0;
@@ -130,6 +133,7 @@ class StripRuntime implements SectionRuntime {
       this.corners[c] = q(`[data-strip-corner="${c}"]`, below);
     }
     this.arcs = q("[data-strip-arcs]", below);
+    this.coords = [q('[data-strip-g="coordl"]'), q('[data-strip-g="coordr"]')];
 
     this.listen();
   }
@@ -245,12 +249,20 @@ class StripRuntime implements SectionRuntime {
     const enterE = ease(ramp(b.enter, 0, 0.6));
     const out = ease(b.leave);
     const alive = enterE * (1 - out);
-    put(this.line, "transform", `scaleX(${alive.toFixed(4)})`);
+    // The small strip stands a little above the middle (round eight) and eases down to it as the frame
+    // grows into the window: the line, its two dots, the arcs and the two middle words rise with the film.
+    const up = (-stripLift(vp.h, b.expand)).toFixed(2);
+    put(this.line, "transform", `translate3d(0,${up}px,0) scaleX(${alive.toFixed(4)})`);
     // The two dots of the line travel apart with the frame and come together as it goes.
     const half = sc.w / 2;
     const shift = (half * (1 - alive)).toFixed(2);
-    put(this.ends.l, "transform", `translate3d(${shift}px,0,0)`);
-    put(this.ends.r, "transform", `translate3d(${(sc.w - half * (1 - alive)).toFixed(2)}px,0,0)`);
+    put(this.ends.l, "transform", `translate3d(${shift}px,${up}px,0)`);
+    put(
+      this.ends.r,
+      "transform",
+      `translate3d(${(sc.w - half * (1 - alive)).toFixed(2)}px,${up}px,0)`,
+    );
+    for (const word of this.coords) put(word, "transform", `translate3d(0,${up}px,0)`);
     put(this.ends.l, "opacity", enterE.toFixed(3));
     put(this.ends.r, "opacity", enterE.toFixed(3));
 
@@ -265,7 +277,11 @@ class StripRuntime implements SectionRuntime {
 
     // The faint arcs turn as they come in and as they leave.
     put(this.arcs, "opacity", (0.18 * alive * (1 - ramp(b.leave, 0, 0.34))).toFixed(3));
-    put(this.arcs, "transform", `rotate(${(30 - (1 - enterE) * 60 + out * 120).toFixed(2)}deg)`);
+    put(
+      this.arcs,
+      "transform",
+      `translate3d(0,${up}px,0) rotate(${(30 - (1 - enterE) * 60 + out * 120).toFixed(2)}deg)`,
+    );
   }
 
   private place(el: HTMLElement | null | undefined, x: number, y: number, opacity: number): void {

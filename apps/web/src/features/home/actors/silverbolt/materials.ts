@@ -19,7 +19,14 @@ import {
   type SkinnedMesh,
 } from "three";
 
-import { toonify, type ToonMaterial, type ToonPick, type ToonSet } from "../shared/toon";
+import {
+  INK_FLOOR_BODY,
+  INK_TINTS,
+  toonify,
+  type ToonMaterial,
+  type ToonPick,
+  type ToonSet,
+} from "../shared/toon";
 
 export interface SbMaterials {
   body: ToonMaterial;
@@ -42,7 +49,11 @@ const PICKS: Readonly<Record<string, ToonPick>> = {
   // heavy navy rim round every panel, worst on the head).
   silverbolt_body: {
     look: "metal",
-    inkWeight: 0.85,
+    // Round seven: the in-game hairline (about 3 px at 3840 wide) in the colour of the armour, a
+    // deep lavender grey on the white and a brown on the gold, never a black navy rim.
+    inkWeight: 1,
+    inkTint: INK_TINTS.body,
+    inkFloor: INK_FLOOR_BODY,
     tune: { shade: [0.72, 0.72, 0.93], deep: [0.52, 0.54, 0.82], sat: 1.12, rim: 0.45, glint: 0.8 },
   },
   // The two eyes: flat, bright, no hull (they are 3 px at the smallest size).
@@ -173,6 +184,7 @@ export function dress(scene: Object3D): { materials: SbMaterials; skinned: Skinn
   const set = toonify(scene, {
     pick: (_mesh, source) => PICKS[source.name],
     anisotropy: 8,
+    fineInk: true,
   });
   // The loader's own materials are not drawn any more: let go of the maps the toon look does not read.
   for (const source of sources) {

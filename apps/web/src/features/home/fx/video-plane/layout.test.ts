@@ -8,6 +8,8 @@ import {
   sceneCentre,
   sceneWidth,
   stripBox,
+  STRIP_LIFT,
+  stripLift,
   stripLook,
   toFrame,
   windowBox,
@@ -37,13 +39,14 @@ describe("the scene, after the reference's own numbers", () => {
 });
 
 describe("the strip and the window", () => {
-  it("is 504 by 136.25, centred, at 1440 by 900 (3.70 to 1)", () => {
+  it("is 504 by 136.25 at 1440 by 900 (3.70 to 1), centred across and a little above the middle", () => {
     const s = stripBox(1440, 900);
     expect(s.w).toBeCloseTo(504, 6);
     expect(s.h).toBeCloseTo(136.25, 2);
     expect(s.w / s.h).toBeCloseTo(3.7, 2);
     expect(s.x + s.w / 2).toBeCloseTo(720, 6);
-    expect(s.y + s.h / 2).toBeCloseTo(450, 6);
+    // Round eight: the small strip stands STRIP_LIFT of the height above the middle (balanced by eye).
+    expect(s.y + s.h / 2).toBeCloseTo(450 - STRIP_LIFT * 900, 6);
   });
 
   it("is 623.7 wide at 1706 by 950", () => {
@@ -55,8 +58,8 @@ describe("the strip and the window", () => {
     const s = stripBox(390, 844);
     expect(s.w).toBeCloseTo(0.7 * 342, 6);
     expect(s.h).toBeCloseTo(0.7 * (342 / (16 / 9)) * (1 - 2 * 0.2198), 6);
-    // Centred on the scene's own centre.
-    expect(s.y + s.h / 2).toBeCloseTo(sceneCentre(390, 844).y, 6);
+    // On the scene's own centre, less the lift.
+    expect(s.y + s.h / 2).toBeCloseTo(sceneCentre(390, 844).y - stripLift(844, 0), 6);
   });
 
   it("opens to 1120 by 630 at (160, 135) at 1440 by 900", () => {
@@ -70,15 +73,33 @@ describe("the strip and the window", () => {
     expect(expandBox(1440, 900, e).w / 1120).toBeCloseTo(0.45 + 0.55 * e, 6);
   });
 
-  it("keeps its centre while it opens and grows in both sides", () => {
+  it("keeps its centre across while it opens, settles to the middle and grows in both sides", () => {
     let last = 0;
     for (let i = 0; i <= 10; i++) {
       const b = expandBox(1440, 900, i / 10);
       expect(b.x + b.w / 2).toBeCloseTo(720, 6);
-      expect(b.y + b.h / 2).toBeCloseTo(450, 6);
+      expect(b.y + b.h / 2).toBeCloseTo(450 - stripLift(900, i / 10), 6);
       expect(b.h).toBeGreaterThan(last);
       last = b.h;
     }
+  });
+
+  it("lifts the small strip only: the window is exactly centred and the lift eases to 0", () => {
+    expect(stripLift(900, 0)).toBeCloseTo(STRIP_LIFT * 900, 6);
+    expect(stripLift(900, 1)).toBe(0);
+    const w = windowBox(1440, 900);
+    expect(w.y + w.h / 2).toBeCloseTo(450, 6);
+    // Monotone down, and flat at both ends (smoothstep), so no jump at the start of the expand.
+    let prev = Infinity;
+    for (let i = 0; i <= 20; i++) {
+      const v = stripLift(900, i / 20);
+      expect(v).toBeLessThanOrEqual(prev + 1e-9);
+      prev = v;
+    }
+    expect(stripLift(900, 0) - stripLift(900, 0.01)).toBeLessThan(0.05);
+    expect(stripLift(900, 0.99)).toBeLessThan(0.05);
+    // The orbit's centre is the scene's, untouched.
+    expect(sceneCentre(1440, 900)).toEqual({ x: 720, y: 450 });
   });
 
   it("clamps a progress outside 0 and 1", () => {

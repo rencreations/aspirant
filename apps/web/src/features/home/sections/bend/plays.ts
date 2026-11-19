@@ -23,8 +23,8 @@ import { BEAT_SPAN, REST_BEFORE_EDGE, T } from "./beats";
  *   zone 10  the drone flies to her, pats her head, they hug and go to the lower left
  *   rest 10  Tetra and the drone at the lower left (joint J14, the archive starts from it)
  *
- * Each stance has a rest of its own, formed (`REST_BEFORE_EDGE`): the element's backdrop is whole and
- * every picture of its wave has landed. A rest is where the zone before it ends, so the pictures are
+ * Each stance has a rest of its own, formed (`REST_BEFORE_EDGE`): every picture of its wave has
+ * landed and she wears the stance in full. A rest is where the zone before it ends, so the pictures are
  * never left in the air.
  */
 

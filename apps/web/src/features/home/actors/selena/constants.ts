@@ -4,19 +4,33 @@
  */
 import type { ClipName } from "./player";
 
-export const SELENA_MODEL = "/models/home/selena.glb";
+/** Round seven's file: the six clips (idle to pose and the out clip are new). */
+export const SELENA_MODEL = "/models/home/selena-r7.glb";
 export const SELENA_CAMERAS = "/models/home/cameras.json";
+/** Round seven: the cameras fitted to the recording, with the sky's orientation (`camera-r7.ts`). */
+export const SELENA_CAMERAS_R7 = "/models/home/cameras-r7.json";
 /** The model's size on disk, for the loading list. */
-export const SELENA_MODEL_BYTES = 1_753_220;
+export const SELENA_MODEL_BYTES = 1_984_760;
 
 export const CLIP = {
   idle: "city_idle",
   hands: "city_interaction_R_loop",
   release: "city_interaction_back_R",
+  /** Idle to pose. */
+  poseIn: "city_interaction_R",
+  /** The character's own out clip (its camera is `cam_city_intercation02`). */
+  out: "city_intercation02",
   fall: "city_intercation03",
 } as const satisfies Record<string, ClipName>;
 
-export const CLIP_NAMES: readonly ClipName[] = [CLIP.idle, CLIP.hands, CLIP.release, CLIP.fall];
+export const CLIP_NAMES: readonly ClipName[] = [
+  CLIP.idle,
+  CLIP.hands,
+  CLIP.release,
+  CLIP.poseIn,
+  CLIP.out,
+  CLIP.fall,
+];
 
 /** Cross fade lengths (seconds) at the seams the notes measured. */
 export const FADE = {
@@ -32,45 +46,14 @@ export const BONE = {
   head: "Bip001_Head",
   neck: "Bip001_Neck",
   pelvis: "Bip001_Pelvis",
-  spine: ["Bip001_Spine", "Bip001_Spine1", "Bip001_Spine2"],
   eyeL: "Bone01_Eye_L_02",
   eyeR: "Bone01_Eye_R_02",
   mouth: "Bone01_Mouth_01",
   handL: "Bip001_L_Hand",
   handR: "Bip001_R_Hand",
-  propL: "Bip001_Prop2",
-  propR: "Bip001_Prop1",
   footL: "Bip001_L_Foot",
   footR: "Bip001_R_Foot",
-  thighL: "Bip001_L_Thigh",
-  thighR: "Bip001_R_Thigh",
 } as const;
-
-/** The long ponytails: three bones each below the root `Hair_B_01` (the hair target's capsules). */
-export const PONYTAIL_L = [
-  "Bone01_Hair_B_01",
-  "Bone01_Hair_LB_01",
-  "Bone01_Hair_LB_02",
-  "Bone01_Hair_LB_03",
-  "Bone01_Hair_LB_04",
-] as const;
-export const PONYTAIL_R = [
-  "Bone01_Hair_B_01",
-  "Bone01_Hair_RB_01",
-  "Bone01_Hair_RB_02",
-  "Bone01_Hair_RB_03",
-  "Bone01_Hair_RB_04",
-] as const;
-
-export type FingerName = "thumb" | "index" | "middle" | "ring" | "pinky";
-const FINGER_NAMES: readonly FingerName[] = ["thumb", "index", "middle", "ring", "pinky"];
-
-/** The three bones of a finger, root first: `Bip001_<L|R>_Finger<n>`, `...<n>1`, `...<n>2`. */
-export function fingerBones(side: "L" | "R", finger: FingerName): string[] {
-  const n = FINGER_NAMES.indexOf(finger);
-  const base = `Bip001_${side}_Finger${n}`;
-  return [base, `${base}1`, `${base}2`];
-}
 
 /**
  * Where the doll hangs over her right hand in `city_intercation03` (cameras.facts.json): the

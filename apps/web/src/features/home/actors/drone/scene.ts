@@ -38,16 +38,8 @@ import { loadMedia } from "@/lib/media-store";
 import { clamp } from "./ease";
 import { FACES, type AtlasPage, type FaceName } from "./faces";
 import { forgetGltf, loadGltf } from "../shared/gltf";
-import {
-  BODY_METRES,
-  DISTANCE,
-  DRONE_MODEL,
-  FACES_A,
-  FACES_B,
-  FOV,
-  INK,
-  VIEW_HEIGHT,
-} from "./model";
+import { setToonView } from "../shared/toon";
+import { BODY_METRES, DRONE_MODEL, FACES_A, FACES_B, FOV, INK, lensDistance } from "./model";
 import type { RigPose } from "./rig";
 
 /** What the scene is handed to draw. Screen frame: the middle of the screen, y down, CSS pixels. */
@@ -131,12 +123,18 @@ async function loadAtlas(path: string): Promise<Texture | null> {
 }
 
 export class DroneModel {
-  /** The drone's group: scale is the size, rotation the attitude. Its `visible` is the actor's. */
+  /** The drone's group: position, scale and rotation are where it is drawn, how big and its attitude. Its `visible` is the actor's. */
   readonly root = new Group();
+  /**
+   * The stage's pixel world (one unit one CSS pixel at z = 0, origin at the middle, y up), seen through
+   * the drone's own narrow lens. Whatever rides the drone (the doll) is put in this scene, so the
+   * drone and its rider are drawn in one depth buffer with one camera (round eight).
+   */
   readonly scene = new Scene();
-  private readonly camera = new PerspectiveCamera(FOV, 1, 0.5, 40);
+  private readonly camera = new PerspectiveCamera(FOV, 1, 1, 1000);
   private width = 1;
   private height = 1;
+  private lens = lensDistance(1);
 
   private readonly faceMaterial: MeshBasicMaterial | null;
   private readonly pages: Record<AtlasPage, Texture | null>;
@@ -176,7 +174,7 @@ export class DroneModel {
     this.root.rotation.order = "YXZ";
     this.root.add(model);
     this.scene.add(this.root);
-    this.camera.position.set(0, 0, DISTANCE);
+    this.camera.position.set(0, 0, this.lens);
     this.camera.updateMatrixWorld(true);
     model.updateMatrixWorld(true);
 
@@ -272,7 +270,31 @@ export class DroneModel {
     this.width = Math.max(1, w);
     this.height = Math.max(1, h);
     this.camera.aspect = this.width / this.height;
+    // The camera stands `lens` from the picture plane; the planes keep the ratio of the stage's own.
+    this.lens = lensDistance(this.height);
+    this.camera.near = this.lens * 0.01;
+    this.camera.far = this.lens * 40;
     this.camera.updateProjectionMatrix();
+  }
+
+  /**
+   * Compile what will ride in this scene (the doll) now, so the first frame she rides does not stall
+   * on a program the cast pass never made for this scene. She is put in and taken out again.
+   */
+  warmGuest(renderer: WebGLRenderer, guest: Object3D): void {
+    const parent = guest.parent;
+    const was = guest.visible;
+    this.scene.add(guest);
+    guest.visible = true;
+    try {
+      renderer.compile(this.scene, this.camera);
+    } catch {
+      // A lost context compiles on the first draw instead.
+    } finally {
+      guest.visible = was;
+      if (parent) parent.add(guest);
+      else guest.removeFromParent();
+    }
   }
 
   /** Shaders and pictures go to the card now, not in the first frame of a flight. */
@@ -299,12 +321,18 @@ export class DroneModel {
 
   /** Put the drone and its rig and face as `d` says, and draw it. */
   draw(renderer: WebGLRenderer, d: DroneDraw): void {
-    // Pixels for a metre of the model at this size.
+    // Pixels for a metre of the model at this size. The drone stands where it is drawn (stage
+    // pixels, y up) and the camera stands straight in front of it, so the lens looks at it square on
+    // wherever it is on the screen (never sheared at the edge) and slides the picture to its place
+    // with the view offset. What rides the drone is in the same world: her place is the drone's.
     const perMetre = Math.max(1, d.size) / BODY_METRES;
-    this.root.scale.setScalar((perMetre * VIEW_HEIGHT) / this.height);
+    this.root.position.set(d.x, -d.y, 0);
+    this.root.scale.setScalar(perMetre);
     this.root.rotation.set(d.pitch, d.yaw, d.roll);
-    // The origin is drawn in the middle of the full view: slide the view so that is (x, y).
+    this.camera.position.set(d.x, -d.y, this.lens);
     this.camera.setViewOffset(this.width, this.height, -d.x, -d.y, this.width, this.height);
+    // The doll's line is a width in CSS pixels: it needs the canvas size (the cast pass does the same).
+    setToonView(this.width, this.height);
 
     // A wing is spread outward, then raised, then turned flat. The two sides share a frame, so
     // the turns about the bone's own Z and Y take opposite signs.

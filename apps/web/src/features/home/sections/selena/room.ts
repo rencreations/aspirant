@@ -1,5 +1,5 @@
 /**
- * Where the dragon rests in the room, before the film. In the clip's own space it lies across
+ * Where the dragon rests in the room (round seven: where its clip puts it, as in the recording). Before: it lay across
  * Selena's chest (the clip was made for the camera of the film), so in the room it is moved out of
  * her, to the foot of the frame, and the camera swing brings it back as it arrives. Pure.
  */
@@ -15,9 +15,9 @@ export interface RoomPlace {
   readonly scale: number;
 }
 
-const LANDSCAPE: RoomPlace = { dx: 0.02, dy: -0.36, scale: 1.05 };
+const LANDSCAPE: RoomPlace = { dx: 0, dy: 0, scale: 1 };
 /** On a phone Selena has the upper part and the drawer is a sheet over the foot. */
-const PORTRAIT: RoomPlace = { dx: -0.04, dy: -0.2, scale: 0.9 };
+const PORTRAIT: RoomPlace = { dx: 0, dy: 0, scale: 1 };
 
 export function roomPlace(vp: Vp): RoomPlace {
   return isPortrait(vp) ? PORTRAIT : LANDSCAPE;

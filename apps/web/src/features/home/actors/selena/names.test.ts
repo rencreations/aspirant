@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { BONE, CLIP, PONYTAIL_L, PONYTAIL_R, fingerBones } from "./constants";
+import { BONE, CLIP } from "./constants";
 import { pointSpecs } from "./points";
 import { springGroup } from "./springs";
 
@@ -16,22 +16,13 @@ interface Facts {
 
 // The notes' facts file is the truth about the rig: every name the actor looks for must be in it.
 const facts = JSON.parse(
-  readFileSync(join(process.cwd(), "public/models/home/selena.facts.json"), "utf8"),
+  readFileSync(join(process.cwd(), "public/models/home/selena-r7.facts.json"), "utf8"),
 ) as Facts;
 const names = new Set(Object.values(facts.bones).map((b) => b.three));
 
 describe("the names the actor uses are in the rig", () => {
   it("the bones of constants", () => {
-    const wanted = [
-      ...Object.values(BONE).flat(),
-      ...PONYTAIL_L,
-      ...PONYTAIL_R,
-      ...(["L", "R"] as const).flatMap((side) =>
-        (["thumb", "index", "middle", "ring", "pinky"] as const).flatMap((f) =>
-          fingerBones(side, f),
-        ),
-      ),
-    ];
+    const wanted = Object.values(BONE).flat();
     for (const name of wanted) expect(names.has(name), name).toBe(true);
   });
 
@@ -39,7 +30,7 @@ describe("the names the actor uses are in the rig", () => {
     for (const spec of pointSpecs()) expect(names.has(spec.bone), spec.bone).toBe(true);
   });
 
-  it("the four clips", () => {
+  it("the six clips", () => {
     for (const clip of Object.values(CLIP)) expect(clip in facts.clips, clip).toBe(true);
   });
 

@@ -95,6 +95,11 @@ export interface RideGesture {
   lookX: number;
   lookY: number;
   look: boolean;
+  /**
+   * How much of her own life shows, 0 to 1: the behaviour's fidgets, looks round, seat shifts, kicks and
+   * trembles (not a lost grip). A controller that drives her entirely (a dance) eases it to 0 and back.
+   */
+  idle: number;
 }
 
 export function createGesture(): RideGesture {
@@ -114,6 +119,7 @@ export function createGesture(): RideGesture {
     lookX: 0,
     lookY: 0,
     look: false,
+    idle: 1,
   };
 }
 
@@ -312,17 +318,24 @@ export class Rider {
     const cue = this.behaviour.step(dt, { shake, lostGrip: this.lost });
     // A slip tips and slides her; a tremble shakes her.
     const g = this.gesture;
-    const slide = cue.slide + g.slide;
-    const roll = 0.55 * slide + 0.03 * cue.tremble * Math.sin(this.time * 41) + g.roll;
+    const k = clamp(g.idle, 0, 1);
+    const slide = k * cue.slide + g.slide;
+    const roll = 0.55 * slide + 0.03 * k * cue.tremble * Math.sin(this.time * 41) + g.roll;
     this.chains.step(
       dt,
       this.motion,
       roll,
-      -0.26 * slide + cue.shiftX,
-      -0.12 * Math.abs(slide) + cue.shiftY,
+      -0.26 * slide + k * cue.shiftX,
+      -0.12 * Math.abs(slide) + k * cue.shiftY,
     );
-    // The grip: it eases to the cue (a loss goes in `GRIP_LOSS`).
-    this.grip = approach(this.grip, cue.grip, cue.name === "gone" ? 1 / GRIP_LOSS : 9, dt);
+    // The grip: it eases to the cue (a loss goes in `GRIP_LOSS`). A fidget of the grip shows as much as her life does.
+    const gone = cue.name === "gone";
+    this.grip = approach(
+      this.grip,
+      gone ? cue.grip : 1 - (1 - cue.grip) * k,
+      gone ? 1 / GRIP_LOSS : 9,
+      dt,
+    );
     if (this.lost && !this.fired && this.time - this.lostAt >= LET_GO_AFTER) {
       this.fired = true;
       this.onLetGo?.();
@@ -370,7 +383,7 @@ export class Rider {
       out.x = head.x + (fx / l) * head.h * 4;
       out.y = head.y + (fy / l) * head.h * 4;
     }
-    out.x += cue.sweep * head.h * 3;
+    out.x += cue.sweep * clamp(this.gesture.idle, 0, 1) * head.h * 3;
     this.look = out;
   }
 
@@ -380,6 +393,7 @@ export class Rider {
     if (f <= 0) return;
     const b = this.body;
     const c = this.cue;
+    const k = clamp(this.gesture.idle, 0, 1);
     // The trunk: roll in the screen plane (about the model's Z) and a nod (about X, forward is negative).
     const g = this.gesture;
     addTurn(turns, BONE.spine02, -f * (b.nod + g.nod) * 0.5, f * g.twist * 0.5, f * b.roll * 0.55);
@@ -389,17 +403,23 @@ export class Rider {
     addTurn(
       turns,
       BONE.head,
-      -f * (b.headNod + g.headNod + 0.02 * c.tremble * Math.sin(time * 37)),
+      -f * (b.headNod + g.headNod + 0.02 * k * c.tremble * Math.sin(time * 37)),
       f * g.headTurn,
-      f * (b.headRoll + c.tilt + g.headTilt),
+      f * (b.headRoll + k * c.tilt + g.headTilt),
     );
     // The legs swing like pendulums (about Z) and flop (about X), a kick bends the knees.
     const swing = f * b.legSwing;
     addTurn(turns, BONE.upLegL, -f * b.legFlop, 0, swing);
     addTurn(turns, BONE.upLegR, -f * b.legFlop, 0, swing);
-    const kick = f * c.legs * (0.5 + 0.5 * Math.sin(time * 15));
+    const kick = f * k * c.legs * (0.5 + 0.5 * Math.sin(time * 15));
     addTurn(turns, BONE.legL, -0.9 * kick, 0, 0);
-    addTurn(turns, BONE.legR, -0.9 * (f * c.legs * (0.5 + 0.5 * Math.sin(time * 15 + 2))), 0, 0);
+    addTurn(
+      turns,
+      BONE.legR,
+      -0.9 * (f * k * c.legs * (0.5 + 0.5 * Math.sin(time * 15 + 2))),
+      0,
+      0,
+    );
     // The legs swing like a child's on a high seat: the shins kick forward and back in turn.
     if (g.legAmp > 0 || g.knees > 0) {
       const w = Math.PI * 2 * g.legRate * time;
@@ -413,7 +433,7 @@ export class Rider {
     const free = 1 - this.grip;
     addTurn(turns, BONE.armL, 0, 0, f * free * b.armSway);
     addTurn(turns, BONE.armR, 0, 0, f * free * b.armSway);
-    if (c.flail > 0) addFlail(turns, time, f * c.flail, 1.3);
+    if (c.flail > 0) addFlail(turns, time, f * k * c.flail, 1.3);
   }
 
   /** The seat offset in the seat's own axes (stage pixels): the chains' slide along the screen's x and y. */

@@ -131,11 +131,6 @@
   border-radius: 0.5rem;
 }
 
-.beam,
-.pool {
-  display: none;
-}
-
 /* ---------------------------------------------------------------- the stage */
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .title {
@@ -207,40 +202,6 @@
 :global(.js) :global([data-home]:not([data-gl="off"])) .more {
   opacity: var(--lit);
   transform: translate3d(0, calc((1 - var(--lit)) * 8px), 0);
-}
-
-/* The light: a pool under the lit cover and a beam from the drone to it. Both sit under the canvas,
-   take the lit room's colour from `--glow` on their slot, and move by transform and opacity. */
-:global(.js) :global([data-home]:not([data-gl="off"])) .pool,
-:global(.js) :global([data-home]:not([data-gl="off"])) .beam {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100px;
-  height: 100px;
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-:global(.js) :global([data-home]:not([data-gl="off"])) .pool {
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--glow, #2a5bff) 42%, transparent) 0%,
-    transparent 66%
-  );
-}
-
-:global(.js) :global([data-home]:not([data-gl="off"])) .beam {
-  transform-origin: 50% 0;
-  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--glow, #2a5bff) 55%, transparent) 0%,
-    color-mix(in srgb, var(--glow, #2a5bff) 6%, transparent) 100%
-  );
 }
 
 @media (max-width: 40em) {

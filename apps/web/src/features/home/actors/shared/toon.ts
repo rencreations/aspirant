@@ -61,6 +61,7 @@ import {
   SkinnedMesh,
   Vector2,
   Vector3,
+  Vector4,
   type BufferGeometry,
   type Color,
   type ColorRepresentation,
@@ -77,6 +78,7 @@ import {
 import {
   patchCardInkFragment,
   patchCardInkVertex,
+  patchInkFragment,
   patchInkVertex,
   patchToonFragment,
   patchToonVertex,
@@ -371,12 +373,54 @@ export function unlitFrom(
 
 // ------------------------------------------------------------------ the ink
 
+/**
+ * The colour of a line that takes the surface's own colour (see `INK_TINT` in `toon-glsl.ts`):
+ * (share for a grey surface, share for a saturated one, saturation push, power). A bright colour
+ * falls further than a dark one, so gold goes to an orange brown and white to a deep grey.
+ */
+export type InkTint = readonly [number, number, number, number];
+
+/** The tints of the in-game look: a hair line is warm and light, a body line deep. */
+export const INK_TINTS = {
+  hair: [0.1, 0.62, 1.5, 2.3],
+  skin: [0.12, 0.5, 1.3, 1.9],
+  body: [0.1, 0.42, 1.3, 2.0],
+} as const satisfies Record<string, InkTint>;
+
+/**
+ * The darkest a body line may be (linear). The armour's picture is painted black along its edges,
+ * so a line taken from it was pure black: the recordings' line on the armour is a soft dark grey
+ * (about 60 of 255 on the white, 25 on the black).
+ */
+export const INK_FLOOR_BODY = [0.03, 0.026, 0.036] as const;
+
+/** (facing from, facing to) of a face's line: a place that looks at the viewer gets no push. */
+export type InkFace = readonly [number, number];
+
+export interface InkOptions {
+  /** The painted picture the line takes its colour from. Without it the line is one colour. */
+  map?: Texture | null;
+  tint?: InkTint;
+  /** A face: no line inside it, only on its outline (`InkFace`). */
+  face?: InkFace;
+  /** The darkest a tinted line may be (linear): the texels at the edge of a lock are black. */
+  floor?: Rgb;
+  /** The fine in-game line (`outlineFor`) instead of the cast's. */
+  fine?: boolean;
+}
+
 /** The hull's material: one for an actor, shared by its hulls. */
 export class InkMaterial extends MeshBasicMaterial {
   /** The width and the push, shared with the card ink copies of the same figure. */
   readonly px: IUniform<number> = { value: 2 };
   readonly push: IUniform<number> = { value: 1 };
   readonly card: IUniform<number> = { value: 0.5 };
+  /** Shared with the card ink copies too. */
+  readonly tint: IUniform<Vector4> = { value: new Vector4(0, 0, 1, 1) };
+  readonly face: IUniform<Vector3> = { value: new Vector3(0, 1, 0) };
+  readonly floor: IUniform<Vector3> = { value: new Vector3(0, 0, 0) };
+  readonly tinted: boolean;
+  private readonly fine: boolean;
   private readonly size: InkSize = { px: 2, push: 1, card: 0.5 };
 
   /**
@@ -387,23 +431,40 @@ export class InkMaterial extends MeshBasicMaterial {
     color: ColorRepresentation = INK_COLOR,
     clippingPlanes?: Plane[] | null,
     private readonly weight = 1,
+    options: InkOptions = {},
   ) {
-    super({ color, side: BackSide, toneMapped: false, fog: false });
+    super({
+      color,
+      side: BackSide,
+      toneMapped: false,
+      fog: false,
+      map: options.tint ? (options.map ?? null) : null,
+    });
+    this.fine = options.fine ?? false;
+    this.tinted = !!(options.tint && options.map);
+    if (options.tint && this.tinted) this.tint.value.set(...options.tint);
+    if (options.face) this.face.value.set(options.face[0], options.face[1], 1);
+    if (options.floor) this.floor.value.set(...options.floor);
     if (clippingPlanes !== undefined) this.clippingPlanes = clippingPlanes;
     this.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
       Object.assign(shader.uniforms, {
         uInkPx: this.px,
         uInkPush: this.push,
         uToonView: toonLight.view,
+        uInkFace: this.face,
+        uInkTint: this.tint,
+        uInkFloor: this.floor,
+        uInkColor: { value: this.color },
       });
       shader.vertexShader = patchInkVertex(shader.vertexShader);
+      if (this.tinted) shader.fragmentShader = patchInkFragment(shader.fragmentShader);
     };
-    this.customProgramCacheKey = () => "home-toon-ink";
+    this.customProgramCacheKey = () => (this.tinted ? "home-toon-ink-t" : "home-toon-ink");
   }
 
   /** The line for a figure `heightPx` tall on the screen (CSS pixels). */
   setSize(heightPx: number): void {
-    outlineFor(heightPx, this.size);
+    outlineFor(heightPx, this.size, this.fine);
     this.px.value = this.size.px * this.weight;
     this.push.value = this.size.push;
     this.card.value = this.size.card;
@@ -422,7 +483,14 @@ export class InkMaterial extends MeshBasicMaterial {
 
 /** One copy of the card ink: a card drawn shifted on the screen in ink colour, shaped by its alpha. */
 export class CardInkMaterial extends MeshBasicMaterial {
-  constructor(source: MeshBasicMaterial, ink: InkMaterial, dx: number, dy: number) {
+  constructor(
+    source: MeshBasicMaterial,
+    ink: InkMaterial,
+    dx: number,
+    dy: number,
+    tint?: InkTint,
+    floor?: Rgb,
+  ) {
     super({
       map: source.map,
       side: source.side,
@@ -432,6 +500,9 @@ export class CardInkMaterial extends MeshBasicMaterial {
     });
     const shift: IUniform<Vector2> = { value: new Vector2(dx, dy) };
     const color: IUniform<Color> = { value: ink.color };
+    // With a tint the copy takes the colour of the card it is shifted from (the same texel, darkened).
+    const tinted: IUniform<Vector4> = { value: new Vector4(...(tint ?? [0, 0, 1, 1])) };
+    const floored: IUniform<Vector3> = { value: new Vector3(...(floor ?? [0, 0, 0])) };
     if (source.clippingPlanes) this.clippingPlanes = source.clippingPlanes;
     this.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
       Object.assign(shader.uniforms, {
@@ -441,11 +512,13 @@ export class CardInkMaterial extends MeshBasicMaterial {
         uToonView: toonLight.view,
         uInkShift: shift,
         uInkColor: color,
+        uInkTint: tinted,
+        uInkFloor: floored,
       });
       shader.vertexShader = patchCardInkVertex(shader.vertexShader);
-      shader.fragmentShader = patchCardInkFragment(shader.fragmentShader);
+      shader.fragmentShader = patchCardInkFragment(shader.fragmentShader, !!tint);
     };
-    this.customProgramCacheKey = () => "home-toon-card-ink";
+    this.customProgramCacheKey = () => (tint ? "home-toon-card-ink-t" : "home-toon-card-ink");
   }
 }
 
@@ -527,12 +600,14 @@ export function addCardInk(
   look: MeshBasicMaterial,
   ink: InkMaterial,
   copies = 6,
+  tint?: InkTint,
+  floor?: Rgb,
 ): Ink {
   const hulls: Mesh[] = [];
   const skinned = (source as SkinnedMesh).isSkinnedMesh ? (source as SkinnedMesh) : null;
   for (let i = 0; i < copies; i += 1) {
     const a = (i / copies) * Math.PI * 2;
-    const material = new CardInkMaterial(look, ink, Math.cos(a), Math.sin(a));
+    const material = new CardInkMaterial(look, ink, Math.cos(a), Math.sin(a), tint, floor);
     const hull: Mesh = skinned
       ? new SkinnedMesh(source.geometry, material)
       : new Mesh(source.geometry, material);
@@ -576,6 +651,14 @@ export interface ToonPick {
   ink?: boolean | "card";
   /** The hull's line, as a share of the figure's (hair 0.6). Only for a hull. */
   inkWeight?: number;
+  /** The line takes the colour of the picture (`INK_TINTS`): a hull, or the copies of a card. */
+  inkTint?: InkTint;
+  /** A face: its hull draws only the outline, nothing inside it (`InkFace`). */
+  inkFace?: InkFace;
+  /** The darkest a tinted line may be (linear). Hair: the texels at the edge of a lock are black. */
+  inkFloor?: Rgb;
+  /** How many shifted copies a card's line is made of (default 6). A hairline needs fewer. */
+  inkCopies?: number;
   /** Glow of the surface (linear). */
   emissive?: Rgb;
   /** Warm skin shade on the skin coloured texels of a mesh that also holds armour (see `ToonParams`). */
@@ -589,6 +672,8 @@ export interface ToonifyOptions {
   ink?: InkMaterial;
   /** The planes that cut the skin and the ink (a frame). */
   clippingPlanes?: Plane[] | null;
+  /** The fine line of the in-game recordings (`outlineFor`): a hairline at the sizes of the page. */
+  fineInk?: boolean;
   /** Anisotropy to set on every picture. */
   anisotropy?: number;
 }
@@ -602,9 +687,12 @@ export class ToonSet {
   readonly textures = new Set<Texture>();
   /** The hull materials of a different weight (`ToonPick.inkWeight`), by weight. */
   private readonly weighted = new Map<number, InkMaterial>();
+  /** The hulls that take the colour of their surface, by picture and weight. */
+  private readonly tinted = new Map<string, InkMaterial>();
   constructor(
     readonly ink: InkMaterial,
     private readonly planes?: Plane[] | null,
+    private readonly fine = false,
   ) {}
 
   /** The hull material for a mesh that wants a finer or a bolder line than the rest. */
@@ -612,8 +700,25 @@ export class ToonSet {
     if (weight === 1) return this.ink;
     let made = this.weighted.get(weight);
     if (!made) {
-      made = new InkMaterial(INK_COLOR, this.planes, weight);
+      made = new InkMaterial(INK_COLOR, this.planes, weight, { fine: this.fine });
       this.weighted.set(weight, made);
+    }
+    return made;
+  }
+
+  /** The hull material for a mesh whose line takes its colour from its picture (`InkTint`). */
+  inkTinted(weight: number, map: Texture, tint: InkTint, face?: InkFace, floor?: Rgb): InkMaterial {
+    const key = `${map.uuid}|${weight}|${tint.join(",")}|${face ? face.join(",") : ""}|${floor ? floor.join(",") : ""}`;
+    let made = this.tinted.get(key);
+    if (!made) {
+      made = new InkMaterial(INK_COLOR, this.planes, weight, {
+        map,
+        tint,
+        face,
+        floor,
+        fine: this.fine,
+      });
+      this.tinted.set(key, made);
     }
     return made;
   }
@@ -622,6 +727,7 @@ export class ToonSet {
   setHeight(heightPx: number): void {
     this.ink.setSize(heightPx);
     for (const ink of this.weighted.values()) ink.setSize(heightPx);
+    for (const ink of this.tinted.values()) ink.setSize(heightPx);
   }
 
   dispose(): void {
@@ -629,7 +735,9 @@ export class ToonSet {
     for (const material of this.materials) material.dispose();
     this.ink.dispose();
     for (const ink of this.weighted.values()) ink.dispose();
+    for (const ink of this.tinted.values()) ink.dispose();
     this.weighted.clear();
+    this.tinted.clear();
     this.materials.length = 0;
     this.toons.length = 0;
     this.inks.length = 0;
@@ -647,8 +755,9 @@ function isStandard(material: Material): material is MeshStandardMaterial {
  */
 export function toonify(root: Object3D, options: ToonifyOptions = {}): ToonSet {
   const set = new ToonSet(
-    options.ink ?? new InkMaterial(INK_COLOR, options.clippingPlanes),
+    options.ink ?? new InkMaterial(INK_COLOR, options.clippingPlanes, 1, { fine: options.fineInk }),
     options.clippingPlanes,
+    options.fineInk,
   );
   const made = new Map<string, ToonMaterial | MeshBasicMaterial>();
   root.traverse((o) => {
@@ -704,8 +813,25 @@ export function toonify(root: Object3D, options: ToonifyOptions = {}): ToonSet {
     // Alpha cards and unlit parts have no hull by default: a line along a card's edge is a box.
     const alpha = source.alphaTest > 0 || source.transparent;
     const wants = pick.ink ?? (!pick.unlit && !alpha);
-    if (wants === "card") set.inks.push(addCardInk(mesh, material, set.ink));
-    else if (wants) set.inks.push(addInk(mesh, set.inkFor(pick.inkWeight ?? 1)));
+    if (wants === "card") {
+      set.inks.push(
+        addCardInk(
+          mesh,
+          material,
+          set.ink,
+          pick.inkCopies ?? 6,
+          source.map ? pick.inkTint : undefined,
+          pick.inkFloor,
+        ),
+      );
+    } else if (wants) {
+      const weight = pick.inkWeight ?? 1;
+      const hull =
+        pick.inkTint && source.map
+          ? set.inkTinted(weight, source.map, pick.inkTint, pick.inkFace, pick.inkFloor)
+          : set.inkFor(weight);
+      set.inks.push(addInk(mesh, hull));
+    }
   });
   return set;
 }

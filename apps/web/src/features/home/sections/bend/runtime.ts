@@ -6,8 +6,6 @@
  * `meet.ts` how the drone goes; this file puts them on the actors and the cards, every frame, as a
  * pure function of the scroll plus the pointer. See `docs/design/home/section-bend.md`.
  */
-import type { Backdrop } from "../../fx/backdrop";
-import { ensureBackdrop } from "../../fx/backdrop";
 import type { MarksActor } from "../../fx/comic-marks";
 import { ensureMarks } from "../../fx/comic-marks";
 import { ensureDrone, type DroneActor } from "../../actors/drone";
@@ -15,7 +13,6 @@ import { ensureTetra, type TetraActor } from "../../actors/tetra";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionStart } from "../../kernel/where";
 
-import { backdropAt } from "./backdrop";
 import {
   DRONE_CARD,
   SPIRAL_CARDS,
@@ -115,8 +112,6 @@ class BendRuntime implements SectionRuntime {
   private readonly c = makePose();
   private readonly hover = new Float32Array(TOTAL_CARDS);
   private readonly readyFlag: boolean[] = [];
-  /** The nine backdrop shaders are compiled (or there is no backdrop): a zone's first draw is no hitch. */
-  private warmed = false;
   private readonly removeHit: () => void;
   private readonly groups: {
     fan: HTMLElement | null;
@@ -178,7 +173,6 @@ class BendRuntime implements SectionRuntime {
     private readonly tetra: TetraActor,
     private readonly drone: DroneActor,
     private readonly marks: MarksActor,
-    private readonly backdrop: Backdrop | null,
   ) {
     this.layer = new CardLayer(ctx.stage, sources(), TOTAL_CARDS, () => {
       this.readyFlag.fill(false);
@@ -231,25 +225,6 @@ class BendRuntime implements SectionRuntime {
       glad: marks.sustain("sparkle", { size: 40 }),
     };
     tetra.book.auto();
-    if (backdrop) {
-      void backdrop
-        .warm([
-          "pixel-blast",
-          "earth",
-          "air",
-          "water",
-          "fire",
-          "soft-aurora",
-          "iridescence",
-          "aurora",
-          "particles",
-        ])
-        .finally(() => {
-          this.warmed = true;
-        });
-    } else {
-      this.warmed = true;
-    }
     // The fan pictures go to the GPU now, a screen or two before they are seen, not in the frame they are first drawn.
     this.textures(-2);
   }
@@ -271,21 +246,11 @@ class BendRuntime implements SectionRuntime {
     // The credits answer while the wall stands, and a moment into the gather.
     this.live = s > T.holdFrom - 0.2 && s < T.holdTo + 0.5;
     this.interactive = s > T.bendFrom + 0.3 && s < T.glideFrom + 0.2;
-    const want = backdropAt(b);
-    this.backdrop?.set(want.kind, want.options);
     this.pointer(frame);
     this.cards(b, vp, frame);
     this.actors(b, vp, frame);
     this.words(b);
     this.platesStep(b, vp, frame);
-  }
-
-  /**
-   * The ready gate. The actors are built before this runtime exists, so what a zone can still wait
-   * for is the shaders: the first stances draw four new backdrops in a few seconds.
-   */
-  ready(): boolean {
-    return this.warmed;
   }
 
   enter(): void {
@@ -908,11 +873,10 @@ class BendRuntime implements SectionRuntime {
 
 /** Build the section's scene: the cards, and Tetra, the drone and the marks it shares with the others. */
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
-  const [tetra, drone, marks, backdrop] = await Promise.all([
+  const [tetra, drone, marks] = await Promise.all([
     ensureTetra(ctx),
     ensureDrone(ctx),
     ensureMarks(ctx),
-    ensureBackdrop(ctx).catch(() => null),
   ]);
-  return new BendRuntime(ctx, tetra, drone, marks, backdrop);
+  return new BendRuntime(ctx, tetra, drone, marks);
 }

@@ -38,6 +38,15 @@ export const FOV = 20;
 export const DISTANCE = 8;
 export const VIEW_HEIGHT = 2 * DISTANCE * Math.tan((FOV * Math.PI) / 360);
 
+/**
+ * The same lens in the stage's pixel world (one unit one CSS pixel at z = 0, y up): how far the
+ * camera stands from the picture plane so that it shows `stageHeight` pixels with `FOV` degrees.
+ * The drone and the doll who rides it are drawn in this world, in one depth buffer (round eight).
+ */
+export function lensDistance(stageHeight: number): number {
+  return Math.max(1, stageHeight) / 2 / Math.tan((FOV * Math.PI) / 360);
+}
+
 /** The colours of the drone's own line and of its trail, as on `/about`. */
 export const INK = 0x1f2735;
 export const CYAN = 0x23d0d8;

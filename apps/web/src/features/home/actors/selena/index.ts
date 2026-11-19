@@ -9,7 +9,9 @@ import { warmCast } from "../shared/warm";
 
 import { SelenaActor } from "./actor";
 import type { CameraData } from "./camera";
-import { SELENA_CAMERAS, SELENA_MODEL } from "./constants";
+import { SELENA_CAMERAS, SELENA_CAMERAS_R7, SELENA_MODEL } from "./constants";
+import type { R7Data } from "./camera-r7";
+import { loadSkyTexture } from "./sky";
 
 export { SelenaActor } from "./actor";
 export type {
@@ -31,13 +33,27 @@ export type {
  */
 export function ensureSelena(ctx: ActorCtx): Promise<SelenaActor> {
   return ensureActor(ctx.actors, "selena", async () => {
-    const [gltf, cams] = await Promise.all([loadGltf(SELENA_MODEL), loadCameras()]);
+    const [gltf, cams, r7, sky] = await Promise.all([
+      loadGltf(SELENA_MODEL),
+      loadCameras(),
+      loadCamerasR7(),
+      loadSkyTexture().catch(() => null),
+    ]);
     const cast = getCast(ctx.stage);
-    const actor = new SelenaActor(ctx, gltf, cams, cast);
+    const actor = new SelenaActor(ctx, gltf, cams, cast, r7, sky);
     // Her materials are clipped by planes: the programs are made with clipping on, like her frames.
     await warmCast(ctx.stage, cast, actor.object, { localClipping: true });
     return actor;
   });
+}
+
+async function loadCamerasR7(): Promise<R7Data | null> {
+  try {
+    const response = await cachedFetch(asset(SELENA_CAMERAS_R7));
+    return (await response.json()) as R7Data;
+  } catch {
+    return null;
+  }
 }
 
 async function loadCameras(): Promise<CameraData> {

@@ -16,7 +16,7 @@
  * right, y UP). Inside, the motion is the About page's, in the SCREEN frame (middle origin, y DOWN):
  * the two meet only in `coords.ts`.
  */
-import { Object3D, type WebGLRenderer } from "three";
+import { Object3D, type Scene, type WebGLRenderer } from "three";
 
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
 import type { ActorCtx } from "../shared/types";
@@ -151,6 +151,9 @@ export class DroneActor implements Actor {
   private poseName: PoseName | null = null;
   private poseSide = 1;
   private interactive = true;
+  /** How much of its own idle float and of its answers to the visitor it shows (`gains`), 0 to 1. */
+  private idleGain = 1;
+  private reactGain = 1;
   private presenceGoal = 1;
   private appearAsked = false;
 
@@ -367,6 +370,17 @@ export class DroneActor implements Actor {
     this.poseSide = side;
   }
 
+  /**
+   * How much of the drone's own life it shows, 0 to 1 each (a pair controller locks them while the
+   * scroll or a dance drives it, and eases them back): `idle` is its float and sway at rest, `react`
+   * is everything the visitor starts (the move a press plays, the lift of a hover, the eyes and the
+   * body following the cursor). Both are 1 by default and are never a switch: a section eases them.
+   */
+  gains(idle: number, react: number): void {
+    this.idleGain = Math.max(0, Math.min(1, idle));
+    this.reactGain = Math.max(0, Math.min(1, react));
+  }
+
   /** Whether hover and press reach the drone. On by default. */
   setInteractive(on: boolean): void {
     this.interactive = on;
@@ -443,6 +457,20 @@ export class DroneActor implements Actor {
    */
   socket(name: "above" | "side"): Object3D {
     return this.sockets[name];
+  }
+
+  /**
+   * The scene the drone is drawn in (the stage's pixel world seen through the drone's lens). A rider
+   * goes in it, so the drone and the rider share one depth buffer and one camera: the drone's body can
+   * hide the rider's parts. Read only; add and remove children, nothing else.
+   */
+  get hostScene(): Scene {
+    return this.model.scene;
+  }
+
+  /** Compile the programs of a rider that will be put in `hostScene` (the doll), once, before she rides. */
+  warmGuest(guest: Object3D): void {
+    this.model.warmGuest(this.ctx.stage.renderer, guest);
   }
 
   /** Run the drone's own clock for `seconds` as if frames had passed: for probes holding a frozen scene. */
@@ -591,18 +619,22 @@ export class DroneActor implements Actor {
     // What it looks at.
     // A hovered drone looks at whoever is over it, whatever the section asked.
     let hasPoint = false;
+    // The cursor's pull is the visitor's: it is as strong as the drone's `react` gain (a locked drone
+    // eases its eyes and body back to the section's own attitude in about half a second).
+    let gazeGain = 1;
     if (this.lookMode === "pointer" || (this.hovered && this.interactive)) {
       const p = this.ctx.pointer.state;
       if (p.inside && p.type === "mouse") {
         clientToScreen(p.x, p.y, w, h, this.point);
         hasPoint = true;
+        gazeGain = this.reactGain;
       }
     } else if (this.lookMode) {
       this.point.x = this.lookPoint.x;
       this.point.y = this.lookPoint.y;
       hasPoint = true;
     }
-    this.engaged = mix(this.engaged, hasPoint ? 1 : 0, 1 - Math.exp(-5 * dt));
+    this.engaged = mix(this.engaged, hasPoint ? gazeGain : 0, 1 - Math.exp(-5 * dt));
     lookAt(this.at, this.point.x, this.point.y, h, this.gaze);
 
     // The poses and the answers to a press.
@@ -614,12 +646,13 @@ export class DroneActor implements Actor {
     stepTricks(this.tricks, dt);
     trickPose(this.tricks, this.trick);
     if (this.carrying) rockForRider(this.tricks.kind, this.trick);
+    if (this.reactGain < 1) this.scaleTrick(this.reactGain);
     this.emoteLeft = Math.max(0, this.emoteLeft - dt);
 
     // Hover: it lifts a little and gets a little bigger (it never moves its target).
     const hov = this.hovered && this.interactive ? 1 : 0;
     const k = 1 - Math.exp(-14 * dt);
-    this.lift.x = mix(this.lift.x, hov, dt > 0 ? k : 0);
+    this.lift.x = mix(this.lift.x, hov * this.reactGain, dt > 0 ? k : 0);
 
     // The flight.
     const poseL = this.poseLook;
@@ -630,7 +663,7 @@ export class DroneActor implements Actor {
     flightOf(this.follower, h, this.flight);
     const fl = this.flight;
     const calm = 1 - fl.fast;
-    floatOf(time, calm, this.follower.size.x, this.bob);
+    floatOf(time, calm * this.idleGain, this.follower.size.x, this.bob);
 
     // The pose it is drawn in.
     const base = this.follower.size.x;
@@ -705,6 +738,18 @@ export class DroneActor implements Actor {
     this.stepTrail(dt, time, fl.speed);
     this.stepMarks(dt);
     this.stepSockets();
+  }
+
+  /** The move a press plays, scaled (a locked drone lets it go smoothly instead of finishing it over the dance). */
+  private scaleTrick(k: number): void {
+    const t = this.trick;
+    t.yaw *= k;
+    t.pitch *= k;
+    t.roll *= k;
+    t.dx *= k;
+    t.dy *= k;
+    t.effort *= k;
+    t.flare *= k;
   }
 
   private stepTrail(dt: number, time: number, speed: number): void {

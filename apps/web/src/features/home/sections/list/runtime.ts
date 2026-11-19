@@ -31,8 +31,11 @@ const PRIME_FRAMES = 3;
 /** She is drawn once the strip has sat on that frame this long (seconds): the turn's landing is over. */
 const PRIME_AFTER = 0.5;
 const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
-/** Scrolling back, she is in the hands at the mouth again once the frame has shrunk below this share. */
-const BACK_TO_LOOP = 0.5;
+/**
+ * The growth moves at most about 0.02 a frame in a play; a step of more than this in one frame is a
+ * seek or a jump of the scroll, and she goes to the loop that matches with no transition.
+ */
+const JUMP_STEP = 0.3;
 /** The frame lifts this far (px) and grows this much while the pointer is on it. */
 const LIFT = 6;
 const LIFT_SCALE = 0.012;
@@ -111,18 +114,19 @@ class ListRuntime implements SectionRuntime {
   private selena: SelenaActor | null = null;
   private selenaFrame: Placement | null = null;
   private selenaTail: Placement | null = null;
-  private releasing = false;
-  /** The growth of the last frame at the last draw, to tell a scroll forward from one back. */
-  private lastGrow = 0;
+  /** The growth of the last frame at the last draw (-1: she was not drawn, so the next draw jumps). */
+  private lastGrow = -1;
   private primed = 0;
   /** Since when (the page's time) the strip has sat on the priming frame. */
   private sinceAtPrime = -1;
-  private interactive: boolean | null = null;
   /** The pointer is on the frame in the window, eased (0 to 1). */
   private hover = 0;
   private readonly clip: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly win0: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly full: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  /** The whole card (not the part the screen shows): the lens of her camera is centred on it. */
+  private readonly card: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  private readonly lensRect: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly place = { x: 0, y: 0, z: 0, height: 0 };
   private readonly removers: Array<() => void> = [];
 
@@ -266,7 +270,7 @@ class ListRuntime implements SectionRuntime {
   /** Selena arrives after the section is built (her model is the largest file). */
   setSelena(sl: SelenaActor | null): void {
     this.selena = sl;
-    this.interactive = null;
+    this.lastGrow = -1;
   }
 
   enter(): void {
@@ -532,7 +536,11 @@ class ListRuntime implements SectionRuntime {
       this.primed < PRIME_FRAMES &&
       this.sinceAtPrime >= 0 &&
       time - this.sinceAtPrime > PRIME_AFTER;
-    if (!sl || (!drawn && !prime)) return;
+    if (!sl || (!drawn && !prime)) {
+      // Not drawn: the next time she is, she jumps to the loop that matches (no half played clip).
+      this.lastGrow = -1;
+      return;
+    }
 
     // Her place: the frame's fit, carried by the slide, then the end placement.
     const a = this.selenaFrame;
@@ -547,63 +555,37 @@ class ListRuntime implements SectionRuntime {
     if (prime) {
       this.primed += 1;
       sl.clipRectangle(NO_WINDOW);
-      sl.play("city_interaction_R_loop");
+      sl.jump(0);
       return;
     }
     sl.clipRectangle(e >= 1 ? null : rect);
-    this.selenaClips(e, idx, sl);
-    // Her touch targets answer only where she is drawn: inside the window, with the pointer on it.
-    const ps = this.pointer;
-    const over =
-      ps.type !== "touch" || ps.down
-        ? ps.inside &&
-          ps.x >= rect.x &&
-          ps.x <= rect.x + rect.w &&
-          ps.y >= rect.y &&
-          ps.y <= rect.y + rect.h
-        : false;
-    const at = Math.abs(idx - SELENA_AT) < 0.02 && (e >= 0.85 || over);
-    if (at !== this.interactive) {
-      this.interactive = at;
-      sl.interactive(at);
-    }
+    this.selenaStates(e, sl);
+    // Round seven: her picture is the fitted camera of the clip she plays (`actors/selena/camera-r7.ts`),
+    // the portrait lens in the 4:5 window and the recording's whole frame at the end of the growth,
+    // mixed in pixels as the window grows.
+    // The lens takes the whole card, not the slice the screen shows while it slides in, so she
+    // moves with the card and not at half its speed. The scissor takes the visible `rect`.
+    const card = this.card;
+    card.x = g.frame.x + slide;
+    card.y = g.frame.y;
+    card.w = g.frame.w;
+    card.h = g.frame.h;
+    sl.frame(vp, { portrait: 1 - e, rect: mixRectInto(this.lensRect, card, full, e), clip: rect });
   }
 
   /**
-   * Her clips. In the frame she plays the hands at the mouth in a loop. When the frame starts to
-   * grow (the scroll moves forward) she waits for the loop to come round, plays the way out, and goes
-   * on to the idle, all by herself (her own clock: after a fast scroll she may still be on the way out
-   * at the end, and the section after this one must not start her again). A jump to the end puts her
-   * in the idle at once. The growth is a scroll zone, so the visitor can also take it back: once the
-   * frame has shrunk below half of the way and she is in the idle, she goes back to the hands at the
-   * mouth (only while the scroll moves back, so a slow scroll forward never flips her).
+   * Her four states (`actors/selena/states.ts`). In the frame she loops the pose (the hands at the
+   * mouth). The growth of the frame is the only thing she is told: past 0.12 going up she plays
+   * pose to idle once and loops the idle, below 0.04 going down she plays idle to pose once and
+   * loops the pose. A transition clip is her own clock at speed 1 and always plays to its end, so a
+   * visitor who stops half way sees it finish by itself while the frame snaps to where it rests, and
+   * the loop that matches follows. A jump of the scroll (a seek, a reload) sets the loop directly.
    */
-  private selenaClips(e: number, idx: number, sl: SelenaActor): void {
-    const state = sl.clipState();
-    const forward = e > this.lastGrow + 1e-4;
-    const back = e < this.lastGrow - 1e-4;
+  private selenaStates(e: number, sl: SelenaActor): void {
+    const jump = this.lastGrow < 0 || Math.abs(e - this.lastGrow) > JUMP_STEP;
     this.lastGrow = e;
-    if (e <= 0) {
-      if (idx > SELENA_AT - 0.5 || state.clip !== "city_interaction_R_loop") {
-        sl.play("city_interaction_R_loop");
-      }
-      this.releasing = false;
-      return;
-    }
-    if (e >= 1 && state.clip === "city_interaction_R_loop") {
-      sl.play("city_idle");
-      this.releasing = false;
-      return;
-    }
-    if (back && e < BACK_TO_LOOP && state.clip === "city_idle") {
-      sl.play("city_interaction_R_loop");
-      this.releasing = false;
-      return;
-    }
-    if (forward && !this.releasing && state.clip === "city_interaction_R_loop") {
-      this.releasing = true;
-      sl.playRelease();
-    }
+    if (jump) sl.jump(e);
+    else sl.drive(e);
   }
 
   /** The heading, the names, the hint and the open buttons. */

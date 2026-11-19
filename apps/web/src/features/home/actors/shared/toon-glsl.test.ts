@@ -9,6 +9,7 @@ import {
   PROJECT_CHUNK,
   patchCardInkFragment,
   patchCardInkVertex,
+  patchInkFragment,
   patchInkVertex,
   patchToonFragment,
   patchToonVertex,
@@ -85,6 +86,18 @@ describe("patchInkVertex", () => {
   });
 });
 
+describe("the tinted ink", () => {
+  it("keeps the line off the inside of a face (uInkFace) and takes the colour of the surface", () => {
+    const vertex = patchInkVertex(basic.vertexShader);
+    expect(vertex).toContain("uniform vec3 uInkFace;");
+    expect(vertex).toContain("mix( 1.0, inkLine, uInkFace.z )");
+    const fragment = patchInkFragment(basic.fragmentShader);
+    expect(fragment).toContain("vec3 inkTint( vec3 c )");
+    expect(fragment).toContain("vec3 outgoingLight = inkTint( diffuseColor.rgb );");
+    expect(fragment).toContain("uInkFloor");
+  });
+});
+
 describe("the card ink", () => {
   it("shifts the whole card on the screen by the line width and pushes it back", () => {
     const out = patchCardInkVertex(basic.vertexShader);
@@ -92,6 +105,12 @@ describe("the card ink", () => {
     expect(out).toContain("inkClip.xy += uInkShift");
     expect(out).toContain("inkView.z -= uInkPush;");
     expect(out).not.toContain("aSmooth");
+  });
+
+  it("takes the colour of the picture when it is tinted", () => {
+    const out = patchCardInkFragment(basic.fragmentShader, true);
+    expect(out).toContain("vec3 outgoingLight = inkTint( diffuseColor.rgb );");
+    expect(out).toContain("uniform vec4 uInkTint;");
   });
 
   it("paints the ink colour and leaves the alpha test to the picture", () => {

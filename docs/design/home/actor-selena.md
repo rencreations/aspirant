@@ -30,7 +30,7 @@ sl.interactive(false);                               // turn the hit targets off
 sl.clipRectangle(rect | null);                       // the 4:5 frame (CSS px, top left origin)
 sl.frameFor(rect, "hands" | "idle", fill = 0.94);    // -> { x, y, height } for place()
 sl.cameraFor(clipTime, { w, h }, { fit?, band?, maxFov?, draw? }); // the baked camera, see below
-sl.socket("rightHover" | "rightHand" | "leftHand" | "mouth" | "head"); // Object3D in her own space
+sl.socket("rightHand" | "leftHand" | "mouth" | "head"); // Object3D in her own space ("rightHover" was removed in round seven)
 sl.screenPoint("head" | "eyes" | "handL" | "handR" | "pelvis", out); // stage pixels
 sl.stats();  sl.debug();  sl.measure(clip, time);    // probes
 ```
@@ -47,7 +47,7 @@ Clips: `city_idle`, `city_interaction_R_loop`, `city_interaction_back_R`, `city_
 
 `sl.cameraFor(t, { w, h })` returns a `PerspectiveCamera`: the baked pose of `cameras.json` composed with her own placement (her space is the camera's space), `fov` 61.9275 and `aspect w / (1.25 h)` with `setViewOffset(w, 1.25 h, 0, 0.25 h, w, h)` (the notes' formula, `fit: "height"`, the default). `fit: "width"` widens the lens up to `maxFov` (80) so a narrow screen keeps the sides of the 16:9 frame. With `draw` (default) it also calls `cast.setCamera(camera)`, so the whole cast is drawn through it on the next draw; call it every frame it is wanted (the cast forgets it after one draw). The picture is the same for every `place`, `z` and `yaw` (looked at, two placements).
 
-Contract for the other actors in the film: Silverbolt and the doll must stand in **her space**, `sl.film` (a `Group` whose world matrix is the film's). A section places them with `sl.film.matrixWorld` times their own film transform (Silverbolt's `cameras.facts.json` pass, the doll's `socket("rightHover")`). `socket("rightHover")` is the hand bone plus the notes' offset `(-0.06, 0.27, 0)` blended to `(-0.38, 0.28, 0)` between 2.8 and 3.2 s of the clip (model space, y up); outside the fall clip it holds the first offset. The notes say the doll shows from 1.6 to 3.4 s; that is the section's call. A doll attached to a socket inherits her scale (about 400 to 800 px per metre): attach with `Object3D.attach` (keeps the world transform) and do not call the doll's own `place` while attached. Detach before the section leaves.
+Contract for the other actors in the film: Silverbolt and the doll must stand in **her space**, `sl.film` (a `Group` whose world matrix is the film's). A section places them with `sl.film.matrixWorld` times their own film transform (Silverbolt's `cameras.facts.json` pass). Round seven removed the doll's `socket("rightHover")` (nothing used it). It was the hand bone plus the notes' offset `(-0.06, 0.27, 0)` blended to `(-0.38, 0.28, 0)` between 2.8 and 3.2 s of the clip (model space, y up); outside the fall clip it holds the first offset. The notes say the doll shows from 1.6 to 3.4 s; that is the section's call. A doll attached to a socket inherits her scale (about 400 to 800 px per metre): attach with `Object3D.attach` (keeps the world transform) and do not call the doll's own `place` while attached. Detach before the section leaves.
 
 While the film camera is drawn the hit targets answer nothing (the pointer is not on the pixel picture).
 

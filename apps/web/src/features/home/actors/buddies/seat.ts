@@ -1,9 +1,11 @@
 /**
- * Where the doll sits on the drone, as arithmetic (round six). The drone is drawn in a lens of its
- * own (`actors/drone/scene.ts`), so nothing can be parented to its bones: the pair computes where the
- * top of its helmet is on the screen for the pose it is drawn in this frame, and the doll is put under
- * a node of the cast scene at that place (the seat). No scene here, only `Quaternion` and `Vector3`
- * as numbers, and nothing is allocated per call.
+ * Where the doll sits on the drone, as arithmetic (round six, made exact in round eight). The drone is
+ * drawn in the stage's pixel world through a lens of its own (`actors/drone/scene.ts`), and the doll
+ * who rides it is put in that same scene, so the drone's body and her body are sorted by one depth
+ * buffer. Nothing is parented to the drone's bones: the pair computes where the top of its helmet is
+ * in that world for the pose it is drawn in this frame (a point, and the drone's turn), and the doll
+ * is put under a node at that place (the seat). No scene here, only `Quaternion` and `Vector3` as
+ * numbers, and nothing is allocated per call.
  */
 import { Euler, Quaternion, Vector3 } from "three";
 
@@ -28,16 +30,20 @@ export interface DroneDrawLike {
   roll: number;
 }
 
-/** The seat: a point in the stage frame (y UP), the turn of the drone, and the pixels in a metre. */
+/**
+ * The seat: a point of the stage's pixel world (x right, y UP, z toward the viewer), the turn of the
+ * drone, and the pixels in a metre of the model.
+ */
 export interface HeadFrame {
   x: number;
   y: number;
+  z: number;
   perMetre: number;
   readonly q: Quaternion;
 }
 
 export function createHeadFrame(): HeadFrame {
-  return { x: 0, y: 0, perMetre: 1, q: new Quaternion() };
+  return { x: 0, y: 0, z: 0, perMetre: 1, q: new Quaternion() };
 }
 
 const _e = new Euler(0, 0, 0, "YXZ");
@@ -75,10 +81,17 @@ export function modelToStage(
   return out;
 }
 
-/** The head frame of the drone for this draw, into `out`. */
-export function headFrame(d: DroneDrawLike, stageHeight: number, out: HeadFrame): HeadFrame {
+/**
+ * The head frame of the drone for this draw, into `out`: the true place of the top of the helmet in the
+ * world the drone is drawn in. The lens magnifies it as it does the drone, so nothing is approximated.
+ */
+export function headFrame(d: DroneDrawLike, out: HeadFrame): HeadFrame {
   droneTurn(d, out.q);
-  out.perMetre = perMetreOf(d.size);
-  modelToStage(d, out.q, HEAD_TOP, stageHeight, out);
+  const perMetre = perMetreOf(d.size);
+  out.perMetre = perMetre;
+  _v.set(HEAD_TOP[0], HEAD_TOP[1], HEAD_TOP[2]).applyQuaternion(out.q);
+  out.x = d.x + _v.x * perMetre;
+  out.y = -d.y + _v.y * perMetre;
+  out.z = _v.z * perMetre;
   return out;
 }

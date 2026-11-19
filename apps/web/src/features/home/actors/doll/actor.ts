@@ -62,6 +62,7 @@ import { Spring, approach, at, clamp, smoothstep } from "./motion";
 import { PART, PART_COUNT, boneParts, splitParts, type PartKind } from "./parts";
 import {
   DOLL_SIZE,
+  castLens,
   clientToStage,
   depthScale,
   drawnHeight,
@@ -71,6 +72,7 @@ import {
   insideCircle,
   projectToStage,
   rootScale,
+  type Lens,
 } from "./place";
 import { addBreath, addDangle, addFlail, addHead, addRunLean, BONE } from "./pose/layers";
 import {
@@ -219,6 +221,8 @@ export class DollActor implements Actor {
   private proll = 0;
   private ppivot: Pivot = "feet";
   private attachedTo: Object3D | null = null;
+  /** The camera she is drawn through: the cast pass's, or the drone's lens while she rides it (`setLens`). */
+  private readonly lens: Lens = castLens();
   private lastX = 0;
   private lastY = 0;
   private haveLast = false;
@@ -653,7 +657,7 @@ export class DollActor implements Actor {
   markPoint(name: DollSocketName, out: MarkPoint): MarkPoint {
     const node = this.socket(name);
     _v.setFromMatrixPosition(node.matrixWorld);
-    projectToStage(this.tmpMark, _v.x, _v.y, _v.z);
+    projectToStage(this.tmpMark, _v.x, _v.y, _v.z, this.lens);
     out.x = this.tmpMark.x;
     out.y = this.tmpMark.y;
     out.s = this.tmpMark.s;
@@ -715,8 +719,22 @@ export class DollActor implements Actor {
     this.pyaw = this.root.rotation.y;
     this.ppitch = this.root.rotation.x;
     this.proll = this.root.rotation.z;
+    // Her size on the screen is kept through the lens she was drawn in, then the cast pass's is hers again.
     this.pheight = this.worldHeightPx() / DOLL_SIZE;
+    this.setLens(castLens().distance, 0, 0);
     this.haveLast = false;
+  }
+
+  /**
+   * The camera she is drawn through. A pair controller sets it each frame she rides the drone: the
+   * drone's lens stands `distance` from the picture plane in front of the drone, whose centre is
+   * (`cx`, `cy`) in stage pixels. Her size, the hit shapes and the marks follow it. `detach` gives her the cast
+   * pass's camera back.
+   */
+  setLens(distance: number, cx: number, cy: number): void {
+    this.lens.distance = distance;
+    this.lens.cx = cx;
+    this.lens.cy = cy;
   }
 
   /** The socket she hangs under, or null. */
@@ -1130,10 +1148,10 @@ export class DollActor implements Actor {
         (this.pz + ro.z) / ps,
       );
       const worldZ = _v.copy(this.root.position).applyMatrix4(this.attachedTo.matrixWorld).z;
-      this.root.scale.setScalar(fitScale(drawn, worldZ, ps));
+      this.root.scale.setScalar(fitScale(drawn, worldZ, ps, this.lens.distance));
     } else {
       this.root.position.set(this.px, this.py + lift, this.pz);
-      this.root.scale.setScalar(rootScale(drawn, this.pz));
+      this.root.scale.setScalar(rootScale(drawn, this.pz, this.lens.distance));
     }
     this.root.updateMatrixWorld(true);
   }
@@ -1151,7 +1169,7 @@ export class DollActor implements Actor {
     const e = this.root.matrixWorld.elements;
     const worldScale = Math.hypot(e[0], e[1], e[2]);
     const z = e[14];
-    return worldScale * DOLL_HEIGHT * depthScale(z);
+    return worldScale * DOLL_HEIGHT * depthScale(z, this.lens.distance);
   }
 
   private updateFace(frame: FrameInfo, reactFace: FaceName | null, dt: number): void {
@@ -1207,9 +1225,10 @@ export class DollActor implements Actor {
   /** A node's origin in stage pixels (into `out`); returns its world z. */
   private stagePoint(node: Object3D, out: { x: number; y: number }): number {
     _v.setFromMatrixPosition(node.matrixWorld);
-    const s = depthScale(_v.z);
-    out.x = _v.x * s;
-    out.y = _v.y * s;
+    const s = depthScale(_v.z, this.lens.distance);
+    const l = this.lens;
+    out.x = l.cx + (_v.x - l.cx) * s;
+    out.y = l.cy + (_v.y - l.cy) * s;
     return _v.z;
   }
 
@@ -1234,7 +1253,7 @@ export class DollActor implements Actor {
     h.footRY = tmp.y;
     // One file unit, in stage pixels, at the head's depth.
     const e = this.root.matrixWorld.elements;
-    const unit = Math.hypot(e[0], e[1], e[2]) * depthScale(headZ);
+    const unit = Math.hypot(e[0], e[1], e[2]) * depthScale(headZ, this.lens.distance);
     h.headR = HEAD_HIT.r * unit;
     h.bodyR = BODY_HIT_R * unit;
     h.legR = LEG_HIT_R * unit;

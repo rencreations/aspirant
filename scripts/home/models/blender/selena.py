@@ -42,7 +42,15 @@ from common import (  # noqa: E402
     write_json,
 )
 
-CLIPS = ["idle", "interaction_R_loop", "interaction_back_R", "intercation03"]
+CLIPS = [
+    "idle",
+    "interaction_R_loop",
+    "interaction_back_R",
+    "intercation03",
+    # Round seven: idle to pose, and the out clip.
+    "interaction_R",
+    "intercation02",
+]
 KEEP = [PREFIX + n for n in ("head", "eye", "hair_01", "hair_02", "body_01", "body_02", "body_03")]
 RAW_HEAD = "selena_silverbolt_raiko_head"
 
@@ -103,7 +111,7 @@ source_order = [b.name for b in arm.data.bones]
 order = sorted(keep, key=lambda n: (depth(n), source_order.index(n)))
 print("BONES kept", len(order), "weighted", len(used))
 
-# 2. Bake the clips.
+# 2. Bake the clips (six since round seven).
 baked = {}
 for clip in CLIPS:
     frames, deform = bake_clip(arm, clip, order)

@@ -51,6 +51,10 @@
   margin: 0;
   font-size: clamp(2.2rem, calc(var(--col) / 4.95), 6.2rem);
   text-wrap: nowrap;
+  /* Round eight: normal type. The page's headings are slanted by the browser (font-synthesis: style);
+     this title is upright, with no slant and no skew anywhere. */
+  font-style: normal;
+  font-synthesis: none;
 }
 
 /*
@@ -60,7 +64,8 @@
  */
 .box .paragraph {
   margin: var(--space-m) 0 0;
-  max-width: min(34ch, 100%);
+  /* Round eight: as wide as the column (it was 34ch, a narrow strip squeezed to the left of the window). */
+  max-width: 100%;
   font-family: var(--font-serif-stack);
   font-size: clamp(1.05rem, calc(var(--col) / 20), 1.6rem);
   font-style: italic;
@@ -148,5 +153,7 @@
 
   .box .paragraph {
     font-size: var(--step-1);
+    /* The stacked layout is wide or tall: keep a readable measure, still much wider than before. */
+    max-width: min(46ch, 100%);
   }
 }

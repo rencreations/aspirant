@@ -7,8 +7,8 @@ import { preload } from "./preload";
  * The page opens on the scatter, the rest state of the hero (the cards fly in on a clock, the paper
  * entrance, `fx/image-field/flight.ts`). Then the visitor scrolls and the scene plays by the scroll:
  * the logo morphs into the bar, the cards above gather, spiral into the ring and land as the wall.
- * Scrolling back plays it back. If the visitor stops in the middle the page finishes it by itself, to
- * the scatter or to the wall (`kernel/scrub.ts`, `kernel-scrub.md`).
+ * Scrolling back plays it back. If the visitor stops in the middle the page stays exactly there: the
+ * zone has no idle snap (`noSnap`, round eight), it is a plain scroll linked passage.
  *
  * The zone is `HERO_ZONE` screens long, after a short rest on the scatter (`HERO_REST`) and before a
  * short dwell on the wall (`HERO_DWELL`): the aspirants' words are a trigger that comes after the
@@ -24,7 +24,7 @@ export const HERO_ZONE = 2.8;
 export const HERO_DWELL = 0.2;
 /** The length of the section in screens. */
 export const HERO_SCREENS = HERO_REST + HERO_ZONE + HERO_DWELL;
-/** The idle snap for a full traverse of the zone (seconds): the page carries the scene the rest of the way. */
+/** Kept for the table's validation only: the zone has `noSnap`, so the page never carries the scene by itself. */
 export const HERO_SNAP_SECONDS = 2.4;
 /**
  * The aspirants' first play (the words) still runs this long on a clock (round two). It is the
@@ -50,6 +50,8 @@ export const section: HomeSection = {
       to: 1,
       seconds: HERO_SNAP_SECONDS,
       ease: "linear",
+      // Round eight: a plain scroll linked passage. Nothing finishes it by itself when the visitor stops.
+      noSnap: true,
     },
   ],
   preload,
