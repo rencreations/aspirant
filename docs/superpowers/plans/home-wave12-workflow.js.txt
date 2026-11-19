@@ -1,0 +1,72 @@
+export const meta = {
+  name: 'home-wave12',
+  description: 'Wave 12: the owner\'s eighth message: no idle snap at the hero and wall transitions, the wall words, a smooth hover release and a balanced small frame in the strip, and the drone and doll pair (interaction lock while scrolling, real 3D occlusion)',
+  phases: [{ title: 'Wave 12', detail: 'hero, wall and strip fixes; the pair\'s lock and depth' }],
+}
+
+const COMMON = `
+You are a helper on the Aspirants site (repo D:\\aspirant: Next.js 16 static export, React 19, three.js r186, GSAP, Lenis, Tailwind 4, pnpm workspace; the app is apps/web). The owner is asleep or away and the work must finish without questions: pick the sensible default, say so in your report.
+THIS IS ROUND EIGHT OF THE HOME PAGE "/". Work FAST and only on what is asked. The owner's newest message is word for word in docs/superpowers/specs/2026-11-20-home-feedback-8-request.md: READ IT FIRST (earlier rounds in the same folder still hold where it is silent: LIGHT MODE ONLY, scroll based scenes, no dialogue boxes on the drone or the doll, anime toon look).
+THE PROCESS RULE OF THE OWNER: no CI. NO pnpm check, NO full vitest run, NO knip, NO full eslint, NO e2e, NO build. You may run ONE targeted vitest file for a pure function you wrote and one filtered "npx tsc --noEmit -p apps/web" at the end (filter to your paths). If an existing test of your area fails because you changed a number on purpose, fix or delete that test quickly and say so.
+A FIVE HELPER WAVE (round seven: Selena's rendering, camera, skybox, animation states and the out animation, and the removal of the backdrops after the character page) runs at the same time on other files. Do not touch actors/selena, sections/selena, fx/sheet, sections/list (except where your task says), or the backdrop calls of the sections after the list. Edit shared files with Edit only, never overwrite with Write (re-read right before each edit); keep every file compiling at all times (the owner watches the dev server on http://localhost:3000: your edits appear live).
+WHAT EXISTS: apps/web/src/features/home/ (kernel/, sections/<id>/, actors/, fx/). Notes in docs/design/home/: kernel-scrub.md (scroll zones and the idle snap: how a zone opts out of the snap), kernel-snap.md, kernel.md, round3-*.md, round4-*.md, round5-*.md, round6-*.md, actor-buddies.md, actor-drone.md, actor-doll.md, toon.md.
+HARD RULES.
+1. Never name an assistant or tool anywhere in the repository. You do NOT commit, push or build.
+2. Dev server http://localhost:3000 (running). Real Chrome through Playwright (channel "chrome", headless, the real GPU) with localStorage aspirants:consent = rejected and sessionStorage aspirants:intro = off, at 1440x900 (390x844 touch when it matters), with the REAL wheel and window.__home.seek / freeze / sections() / lab(name); contact sheets with C:\\Users\\muham\\anaconda3\\python.exe -I (Pillow): D:\\ren\\aspirant-work\\home\\lead\\stitch.py out.png cols scale file... and D:\\ren\\aspirant-work\\home\\lead\\sheet.cjs <base> <w> <h> <outdir> <S,S,...>; READ every image with the Read tool. Scripts go in D:\\ren\\aspirant-work\\home\\<ws>\\. ffmpeg on PATH. C: is nearly full: work files on D:.
+3. Writing (code comments, docs): short sentences, no em-dashes or en-dashes anywhere. The owner's copy is exact.
+4. Quality: LOOK at what you change; never claim something works that you did not see. No per-frame allocation; DOM animates transform and opacity only. One version only (CLAUDE.md).
+5. Notes: a short docs/design/home/round8-<ws>.md.
+6. Finish within about 50 minutes of work.
+7. Report honestly: done, looked at and how, not done.
+`
+
+const RESULT = {
+  type: 'object',
+  properties: {
+    summary: { type: 'string', description: 'under 200 words' },
+    done: { type: 'array', items: { type: 'string' } },
+    api: { type: 'string' },
+    filesEdited: { type: 'array', items: { type: 'string' } },
+    verified: { type: 'array', items: { type: 'string' } },
+    stillWrong: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['summary', 'done', 'api', 'filesEdited', 'verified', 'stillWrong'],
+}
+
+const TASKS = {
+  'FIX-hero-wall-strip': {
+    prompt: `YOUR NAME: FIX-hero-wall-strip. YOUR AREA: the sections hero, aspirants, rows (the wall), and strip, with the film plane (fx/video-plane) and the kernel snap opt-out. Read docs/design/home/kernel-scrub.md, kernel-snap.md, round3-H1.md, round3-H2-wall.md, round5-W-wall.md, round5-S-strip.md, fx-video-plane.md.
+DO, four items:
+1. NO IDLE SNAP AT TWO TRANSITIONS: (a) the transition from the HERO to the next section (the hero's scroll zone: the logo morph, the gather, the ring, the landing as the wall) and (b) the WALL's transition (the aspirants' wall to the next: the wall scrolling and the move into the rows) must stay scroll based but WITHOUT the idle snap and without any automatic scrolling when the visitor stops: a plain scroll linked passage (the strip's exit has this already from round five: find how it was done (a no snap option on a zone or a plain linked range) and do the same: tiny kernel edit if an option is missing). Make sure the kernel joint snap (kernel/snap.ts) does not pull the page at the hero to aspirants joint or in the wall either. Check with a real wheel: stop in the middle of each transition: the page stays exactly where you stopped for 4 seconds, and the scene shows that mid state correctly (the cards mid flight, the wall mid slide) both scrolling down and up.
+2. THE WALL'S WORDS (sections/aspirants view and CSS): the title "THE ASPIRANTS" is NORMAL type: not italic and not skewed (font-style normal, no skew transform, no oblique synthesis: check the font used (Big Shoulders has no italic: a browser slant) and any transform: skew in the CSS or inline); the description under it is WIDER: it is heavily leaned to the left now (a narrow column squeezed to the left inside the 35 percent text window): widen the measure so the paragraph fills the window comfortably (padding balanced left and right, no huge empty space on the right of it), still one paragraph anchored left with the two logos inline; look at it at 1440x900, 1706x950 and 390x844 and make it balanced.
+3. THE STRIP'S HOVER RELEASE: when the visitor hovers the video it tilts in 3D toward the cursor (the film plane's hover tilt and parallax: fx/video-plane/hover.ts and the actor). When the cursor leaves it snaps back to flat: make the RETURN smooth: the hover amount (the tilt, the parallax shift, any hover effect left) eases back to zero over about 0.5 to 0.7 s with a critically damped spring or an exponential ease on the frame's dt (and the enter stays quick but also smoothed so it never jumps), for the SMALL preview and for the BIG window alike, also when the cursor leaves while the section scrolls, and when the pointer is lost (the window blur, a touch end). Record the pointer's last position so the tilt eases back from where it was (no jump to the centre first). Verify with a timed sheet (0.1 s steps) after moving the cursor off the video: the tilt decreases smoothly.
+4. THE SMALL PREVIEW'S POSITION: in the strip's small state (the upright slit video and its line) the composition is centred but not balanced by eye: move the video and its line UP a little (about 3 to 6 percent of the screen height: look at it visually with the words around it (the labels at the corners, the middle words Selena and Obsidia, the bottom-left pair, the button) and choose the offset that looks balanced). The BIG window stays exactly centred. The offset must ease in and out smoothly as the video grows into the big window (no jump at the start of the expand). Check at 1440x900, 1706x950 and 390x844.
+Notes: round8-FIX-hero-wall-strip.md.`,
+  },
+
+  'FIX-pair': {
+    prompt: `YOUR NAME: FIX-pair. YOUR AREA: the drone and Obsidia doll pair (actors/buddies/, small surgical edits in actors/drone and actors/doll, the render passes) and the descent section's use of it (sections/descent/). Read docs/design/home/actor-buddies.md, round6-BUDDY-actor.md, round6-DESC-descent.md, actor-drone.md, actor-doll.md ("Round four: riding"), toon.md, kernel-snap.md (FrameInfo.input.wheel and the scroll velocity).
+DO, two bugs:
+1. THE DRONE MOVES WEIRDLY IN THE DESCENT (the owner: "the drone will move weirdly because it's still reacting to cursor position and have normal animation"). In the descent section the pair dance and descend by the scroll (mode "dance": the choreography drives the drone's offsets and attitude), but the pair's own LIFE (the docked idle moments, the cursor follow, hover and click reactions, the drone's own idle float, tricks) also runs, and they fight. Fix it: the interactive and idle layers must be LOCKED while the visitor scrolls and while the section drives the dance: (a) a lock with a tolerance: the interaction weight goes to 0 as soon as the scroll is active (the scroll velocity or the input energy above a small threshold, with hysteresis: lock when |velocity| > about 0.15 screens per second or any wheel/touch input in the last 120 ms; this is the tolerance BEFORE) and stays 0 until the scroll has been calm for about 450 ms AND the drone has settled (its own velocity and the dance's drive near zero: this is the tolerance AFTER), then ramps back to 1 over about 0.4 s (smooth, no pop); (b) in mode "dance" the idle life and the cursor follow are always off (the choreography is the only motion; keep only the physical rider reactions of the doll to the drone's motion and the wing flutter); in mode "dock" (the bottom right) all life and interaction are on, subject to the same scroll lock; (c) every weight (follow offsets, hover reactions, trick blends, idle moments, the dance's own blend between routines, the dock transition) is smoothed by critically damped springs or eased ramps on the frame dt so that NOTHING SNAPS: at the idle snap that finishes a scroll zone, at a mode change (carry to dance to dock), after a jump (seek) (a jump may reset to the target without animation, a scroll must never), and at the lock and unlock; look for pops: a per frame log of the drone's and the doll's screen positions and rotations over a scripted scroll with stops, flicks and the snap finish: no frame-to-frame jump larger than the smooth motion explains (plot or print the max step) and look at timed sheets. Pure functions for the lock logic (the hysteresis and the ramp) with a small test.
+2. THE DOLL MUST RIDE IN REAL 3D SPACE (the owner: "When drone are rotated in which it should cover some parts of obsidia doll, that part is still showing and it looks like the obsidia doll are completely in front of the drone. I don't want this and I want the doll to be in 3d spaces riding the drone and not in front of it, so when the drone are rotated and some obsidia doll parts should be hidden, it should be hidden covered by the drone section that should be on top"). Today the drone is drawn in its own passes (orders 25 back and 35 front, its own camera and lens) and the doll in the cast pass (30, the pixel camera), so the doll is always entirely in front of the drone. Fix it for real: while paired, the drone and the doll must be drawn in the SAME depth buffer with the SAME camera so the geometry sorts them: the doll's scene graph goes into the drone's pass scene (or both go into one new shared pass: choose what is cleanest) while she rides, with her root parented to the drone's seat socket as a real Object3D in that scene (so she is in the drone's 3D space: its rotations, rolls and flips carry her, and its body can hide her parts: when the drone rolls so the helmet or a wing is nearer the camera than her legs, the helmet or wing covers them), depth test and depth write ON for both (and for the toon ink hulls: check there is no z-fighting or ink showing through), the toon materials need no scene lights (they use the shared light uniform) so they work in any pass; her size and perspective follow the drone's lens (it is about 20 degrees: nearly orthographic: fine). Take her out of that scene and back to the cast pass when she is not riding (the hand-over to the Selena section is being reworked by another helper: keep the API: doll.rideOn/release and the buddies modes working; if something else needs her in the cast pass when released, restore her there on release). Cover the draw order against everything else: the drone's two layers (back and front) are for ordering against the lit cast characters (Selena, Silverbolt, Tetra): for the paired drone pick the pass that keeps the right order against them in the sections where the pair appear (descent and the list's dock and the selena section's dock): check each. VERIFY with the real drone tricks and attitudes in the lab (window.__home.lab("buddies")): a barrel roll, a flip, a spin, tilts: contact sheets at 8 attitudes: the doll's parts hidden behind the helmet when the drone turns, her legs and hands visible in front when they should be; no popping at the moment the occlusion changes; her hands still hold the antennae or the helmet. Also at 390x844.
+Own: actors/buddies, surgical edits in actors/drone and actors/doll, the pass wiring, sections/descent (the pair's calls only). Notes: round8-FIX-pair.md.`,
+  },
+}
+
+const results = []
+const WANT = Array.isArray(args) && args.length ? args : Object.keys(TASKS)
+const queue = Object.keys(TASKS).filter((k) => WANT.includes(k))
+
+async function worker() {
+  while (queue.length) {
+    const name = queue.shift()
+    log(`start ${name}`)
+    const r = await agent(`${COMMON}\n${TASKS[name].prompt}`, { label: name, phase: 'Wave 12', schema: RESULT })
+    results.push({ name, ...(r || { summary: 'NO RESULT (agent failed or was skipped)' }) })
+    log(`done ${name}`)
+  }
+}
+
+phase('Wave 12')
+await Promise.all(Array.from({ length: 2 }, () => worker()))
+return results
