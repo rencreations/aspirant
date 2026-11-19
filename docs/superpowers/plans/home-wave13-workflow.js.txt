@@ -1,0 +1,70 @@
+export const meta = {
+  name: 'home-wave13',
+  description: 'Wave 13: fit Selena\'s cameras 1:1 to the video reference (landscape and portrait), align the skybox, and put Silverbolt in the character frame',
+  phases: [{ title: 'Wave 13', detail: 'landscape camera and sky, portrait camera and the frame' }],
+}
+
+const COMMON = `
+You are a helper on the Aspirants site (repo D:\\aspirant: Next.js 16 static export, React 19, three.js r186, pnpm workspace; the app is apps/web). The owner is asleep or away and the work must finish without questions: pick the sensible default, say so in your report.
+THIS IS THE LAST OPEN PART OF ROUND SEVEN of the home page "/". The owner's message is word for word in docs/superpowers/specs/2026-11-20-home-feedback-7-request.md: READ IT FIRST. The owner's terms: the SOURCE MODEL is D:\\ren\\aspirant\\3d\\selena_silverbolt_raiko\\selena_silverbolt_raiko\\entrance (selena_silverbolt_raiko_entrance.blend, .glb, textures/; Blender 4.5 at "C:\\Program Files\\Blender Foundation\\Blender 4.5\\blender.exe" -b --python x.py); the VIDEO REFERENCE is D:\\ren\\aspirant\\media\\_others\\in-game-animation\\selena (horizontal.mkv: idle-to-pose, pose-to-idle, idle, pose; vertical.mkv: the portrait version; extract frames with ffmpeg and LOOK at them). The video reference is the ABSOLUTE source of truth: "match the camera position, angle, focal length, and perspective and so much more and make sure it's 1:1 to the video reference". The skybox is C:\\Users\\muham\\Downloads\\skybox.png.
+WHAT IS DONE: a five helper wave built the Selena actor's states and out sequence, a thin outline, the sky quad and the camera plumbing (actors/selena/camera-r7.ts, sky.ts, sl.frame(vp, {portrait, rect, clip}), sl.cameraFor(clip, t, vp, opts), sl.setView(nx, ny, weight)). READ docs/design/home/round7-SEL-camera-sky.md and scripts/home/models/cameras-r7/README.md (the previous attempt to FIT the cameras to the recording FAILED: it ships the game's own camera data, which is about 1.7 times TIGHTER than horizontal.mkv (the idle crops the dragon's head, the pose crops the dragon and the claws); the README says why the earlier fits did not converge: the score let a face-only camera score as well as a full-body one and the landmark fits did not converge). Also read docs/design/home/actor-selena.md.
+THE PROCESS RULE OF THE OWNER: no CI. NO pnpm check, NO full vitest run, NO knip, NO full eslint, NO e2e, NO build. One targeted vitest file and one filtered "npx tsc --noEmit -p apps/web" at the end are fine.
+TWO HELPERS work at the same time: CAM-landscape and CAM-portrait. They share scripts/home/models/cameras-r7/ (fits.json: keep the keys separate: landscape and portrait) and actors/selena/camera-r7.ts: Edit only, re-read before each edit; keep every file compiling at all times (the owner watches http://localhost:3000, your edits appear live).
+HARD RULES.
+1. Never name an assistant or tool anywhere in the repository. You do NOT commit, push or build.
+2. Dev server http://localhost:3000 (running; Selena and the sheet take about 15 s to build after a seek: wait for them). Real Chrome through Playwright (channel "chrome", headless, the real GPU) with localStorage aspirants:consent = rejected and sessionStorage aspirants:intro = off, window.__home.seek / lab("selena") / sections(); sections list: the character list starts at about S 17 and has ten screens, the Selena room starts about S 27 (use window.__home.sections()). Contact sheets: C:\\Users\\muham\\anaconda3\\python.exe -I (Pillow, numpy, OpenCV if installed: check "import cv2"; if not, pip install opencv-python-headless into that python is allowed on this machine); D:\\ren\\aspirant-work\\home\\lead\\stitch.py out.png cols scale file... ; READ every image with the Read tool. Scripts go in D:\\ren\\aspirant-work\\home\\<ws>\\. ffmpeg on PATH. C: is nearly full: work on D:. Sources are read only.
+4. Writing: short sentences, no em-dashes or en-dashes anywhere.
+5. Quality: never claim a match you did not compare: put the reference frame and ours side by side AND as a 50 percent overlay and read both.
+6. Notes: docs/design/home/round7-<ws>.md. Finish within about 70 minutes. Report honestly.
+HOW TO FIT A CAMERA (do not repeat the failed method; use this): (a) find the frames: for each animation locate 3 frames in the recording (start, middle, end of the clip or the loop) by watching a ffmpeg contact sheet of the whole recording at 1 frame per second, then extract them at full size; (b) pose the model at the SAME animation time in the real renderer or in Blender (the actions are in the source: city_interaction_R, city_interaction_back_R, city_idle, city_interaction_R_loop, the out clip) and get its 3D joint positions (the bones of the rig: head, neck, shoulders, elbows, hands, hips, the dragon's head and horns); (c) ANNOTATE landmarks in the recording frame: at least 10 well spread points that are certain in both views (the eyes, the nose tip, the chin, the ears or horns, the shoulders, the elbows, the wrists, the hips, the tips of the claws, the dragon's snout and horn tips: zoom into crops with a pixel grid overlay and read the coordinates carefully; spread over the whole body so the fit cannot cheat with a face-only view); (d) SOLVE: minimise the reprojection error of the landmarks over a pinhole camera with unknown position, rotation and vertical field of view (scan the fov from 10 to 70 degrees and solve the pose with cv2.solvePnP or a least squares per fov, take the minimum; report the residual in pixels at 1440 wide: it must be under about 12 px); the reference may have lens shift or a cropped aspect: if the residual stays high allow a principal point offset; (e) VALIDATE with a 50 percent overlay of the real render at that camera over the recording frame: the silhouette (hair tips, hand, dragon) must coincide within a few percent of the screen height; iterate; (f) the camera may MOVE during a clip: fit the start, middle and end and store a keyframed camera (the source's camera clip gives the shape of the motion: keep its motion but correct it with the fitted offsets, interpolated); (g) store the results as data (fits.json and the camera tables the actor already reads: see camera-r7.ts) and make the actor use them.
+`
+
+const RESULT = {
+  type: 'object',
+  properties: {
+    summary: { type: 'string', description: 'under 200 words' },
+    done: { type: 'array', items: { type: 'string' } },
+    api: { type: 'string' },
+    filesEdited: { type: 'array', items: { type: 'string' } },
+    verified: { type: 'array', items: { type: 'string' } },
+    stillWrong: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['summary', 'done', 'api', 'filesEdited', 'verified', 'stillWrong'],
+}
+
+const TASKS = {
+  'CAM-landscape': {
+    prompt: `YOUR NAME: CAM-landscape. YOUR PART: the LANDSCAPE (16:9) cameras for all five animations from horizontal.mkv (idle to pose, pose to idle, idle, pose, and the out clip: for the out clip there is no recording: keep the source's own camera clip but make it continuous with the pose/idle fitted camera at its start, so the camera swing into the out does not jump and does not pass through the model; look at how the out camera begins: the Selena room's last rest camera must equal the out clip's first camera: blend if needed), and the SKYBOX alignment.
+1. CAMERAS: fit them 1:1 per the method above. The target: our frame of the idle and of the pose overlaps the recording's frame: the whole of her and the dragon framed exactly as in the recording (the game's data is 1.7 times too tight: it crops the dragon's head and the claws). Wire them: sl.cameraFor(clip, t, vp) returns the fitted camera; the room, the list's growth end and the out start use it; the camera blend (sections/selena/camera-blend.ts) from the portrait frame camera to this landscape camera at the end of the list's growth must be smooth (helper CAM-portrait fits the portrait one: poll its notes).
+2. THE SKYBOX: align C:\\Users\\muham\\Downloads\\skybox.png so that the background of our render matches the recording's background for each animation: the red giant planet, the star, the horizon and the city below, the light. The previous attempt aligned only the star because the sky and the recording "disagree geometrically": find out why (the recording's background may be a different crop or projection of the same painting, or a separate backdrop that moves a little with the camera): reproduce the recording's background composition with what fits best: a true equirect lookup with yaw, pitch, fov and roll fitted by the planet and the horizon (several landmarks of the sky: the planet's limb, the star, the horizon line, a few cloud features: annotate them in both), or, if no equirect orientation matches, a planar backdrop or a spherical cap with its own scale and offset (the owner only needs it to look the same and to stay SEPARATE from the model so the model moves against it with the parallax). The sky must be the same in all five animations (one fixed sky per scene: the camera moves, the sky follows the camera's rotation like a real sky).
+3. Check the cursor parallax on the final camera: setView at the four corners moves the model by a few pixels against the sky, never more than slight.
+Notes: round7-CAM-landscape.md. Own: actors/selena/camera-r7.ts landscape tables, sky.ts, scripts/home/models/cameras-r7/ (landscape keys), the camera calls in sections/selena.`,
+  },
+
+  'CAM-portrait': {
+    prompt: `YOUR NAME: CAM-portrait. YOUR PART: the PORTRAIT camera of the character page's frame (the 4:5 frame in the oryzo style list: Selena live in the tenth frame, looping the POSE animation) fitted to vertical.mkv, and SILVERBOLT in that frame.
+1. THE PORTRAIT CAMERA: the list's tenth frame is a 4:5 window (sections/list/layout.ts listGeometry, selena-frame.ts, runtime.ts) showing Selena in the POSE loop (city_interaction_R_loop); vertical.mkv is the portrait recording (look at its aspect: it may be 9:16: the 4:5 window then shows a centred crop of it: decide the crop that keeps her and the dragon framed like the recording). Fit the portrait camera to vertical.mkv's pose loop (and the idle for the growth) by the method above; store it under the portrait keys (the code supports a portrait table that is empty today: actors/selena/camera-r7.ts) and make sl.frame(vp, { portrait: true, rect }) use it. The result: the frame shows what the recording shows: her pose, the dragon behind, the same perspective.
+2. SILVERBOLT IN THE LIST FRAME: today only the room has the dragon (frameWith); the recording's pose frame has it behind her (and the owner's scene): put Silverbolt in the list frame too, playing its matching clip in sync with hers (the pose loop: the source has it in the same action set: city_interaction_R_loop for Silverbolt: check the glb's actions: actors/silverbolt clip names), placed by the same fitted camera in the shared scene, behind her, in front of the sky, clipped by the frame's rect like her; its head still (no follow). The cost must stay sane (report update and draw ms).
+3. THE GROWTH: as the frame grows to the whole screen the camera blends from the portrait camera to the landscape camera (helper CAM-landscape fits it: poll docs/design/home/round7-CAM-landscape.md; the blend code is sections/selena/camera-blend.ts and the list runtime): the growth must look smooth: no jump of the framing, the sky and the model keep their relation: look at a timed sheet of the growth every 0.1 of the growth zone at 1440x900 and 390x844.
+4. THE PHONE: at 390x844 the portrait frame is large: check the framing, and the swing from the room to the out camera (a previous helper saw her legs large and cut on a phone at the start of the out: fix the out camera's portrait handling if it belongs to the camera data).
+Notes: round7-CAM-portrait.md. Own: actors/selena/camera-r7.ts portrait tables and fits.json portrait keys, the list's Selena frame code (selena-frame.ts, the Selena parts of runtime.ts), Silverbolt's placement in that scene.`,
+  },
+}
+
+const results = []
+const WANT = Array.isArray(args) && args.length ? args : Object.keys(TASKS)
+const queue = Object.keys(TASKS).filter((k) => WANT.includes(k))
+
+async function worker() {
+  while (queue.length) {
+    const name = queue.shift()
+    log(`start ${name}`)
+    const r = await agent(`${COMMON}\n${TASKS[name].prompt}`, { label: name, phase: 'Wave 13', schema: RESULT })
+    results.push({ name, ...(r || { summary: 'NO RESULT (agent failed or was skipped)' }) })
+    log(`done ${name}`)
+  }
+}
+
+phase('Wave 13')
+await Promise.all(Array.from({ length: 2 }, () => worker()))
+return results
