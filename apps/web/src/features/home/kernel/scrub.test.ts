@@ -253,7 +253,7 @@ describe("zoneRanges", () => {
 });
 
 describe("the snap decision", () => {
-  const z: ZoneRange = { id: "rows" as never, index: 0, from: 10, to: 14, seconds: 2 };
+  const z: ZoneRange = { id: "rows" as never, index: 0, from: 10, to: 14, seconds: 2, snap: true };
   const at = (p: number) => z.from + p * (z.to - z.from);
 
   it("going down finishes forward from a quarter, else goes back", () => {
@@ -481,5 +481,56 @@ describe("ZoneSnap", () => {
     expect(r.snap.inside(4)).toBe(true);
     expect(r.snap.inside(3)).toBe(false);
     expect(r.snap.inside(5.5)).toBe(false);
+  });
+});
+
+describe("a zone flagged noSnap", () => {
+  const layout = layoutOf([
+    section("hero", 2),
+    section("exit", 4, [
+      { at: 0.25, span: 0.5, from: 0, to: 1, seconds: 2, noSnap: true },
+      { at: 0.8, from: 1, to: 2, seconds: 1 },
+    ]),
+  ]);
+  const frame = (): SnapFrame => ({
+    now: 0,
+    real: 0,
+    unit: 900,
+    open: true,
+    frozen: false,
+    pushAt: 0,
+    keyAt: 0,
+    touching: false,
+    holds: 0,
+    playing: false,
+    chasing: false,
+    scripted: false,
+  });
+
+  it("is a zone for the arithmetic and for the joint snap, but never moves the page by itself", () => {
+    const moves: number[] = [];
+    const snap = new ZoneSnap({ layout, move: (s) => moves.push(s), stop: () => undefined }, 0);
+    expect(zoneRanges(layout)[0]!.snap).toBe(false);
+    expect(snap.inside(4)).toBe(true);
+    const f = frame();
+    f.now = 1000;
+    f.real = 4;
+    f.pushAt = 1000;
+    snap.step(f);
+    for (let t = 1016; t < 4000; t += 16) {
+      f.now = t;
+      snap.step(f);
+    }
+    expect(moves).toHaveLength(0);
+    expect(snap.report().blocked).toBe("free");
+  });
+
+  it("takes noSnap for a zone only", () => {
+    expect(() =>
+      validatePlays("x", [{ at: 0.1, from: 0, to: 1, seconds: 1, noSnap: true }]),
+    ).toThrow(/noSnap/);
+    expect(() =>
+      validatePlays("x", [{ at: 0.1, span: 0.5, from: 0, to: 1, seconds: 1, noSnap: true }]),
+    ).not.toThrow();
   });
 });

@@ -23,8 +23,12 @@ import {
   type WallGeom,
 } from "./wall";
 
-/** Card height over the square root of the wall frame's area: wide screens, tall screens. */
-const GRID_SIZE = { wide: 0.25, tall: 0.3 } as const;
+/**
+ * Card height over the square root of the wall frame's area: wide screens, tall screens. The wide figure
+ * was 0.25 for a frame of half the screen's width (round five: the frame is 65 percent now); the factor keeps
+ * the cards the size they had, so the wider frame shows more of the wall and not bigger pictures.
+ */
+const GRID_SIZE = { wide: 0.25 * Math.sqrt(0.5 / WALL_SHARE), tall: 0.3 } as const;
 /** How far past the screen the plane is laid out (CSS px), for the push of the pointer and a hovered card's lift. */
 const COVER_MARGIN = 40;
 

@@ -13,9 +13,7 @@ export const section: HomeSection = {
   lead: 0.5,
   tail: 0.5,
   bg: "daybreak",
-  // The screen goes white before the section starts: the bar's ink turns with it. Selena's white
-  // rest (0.3 screens) is where it turns, so the film is over when it does.
-  nav: { theme: "daybreak", early: 0.3 },
+  nav: { theme: "daybreak" },
   dom: "fixed",
   plays: VOICES_PLAYS,
   preload,

@@ -1,5 +1,5 @@
 /**
- * The aspirants: the wall of big tilted official pictures on the left half, the owner's words on the
+ * The aspirants: the wall of big tilted official pictures on the left 65 percent, the owner's words on the
  * right (round three, 20 Nov 2026). The pictures slide with the scroll (`FieldScene.follow`), a card
  * lifts when hovered, the cursor says VIEW, a press opens the preview window
  * (`features/home/preview/`). The words are a trigger (`words.ts`): a short clock that plays them in when

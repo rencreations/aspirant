@@ -75,6 +75,8 @@ export class PictureViewer {
     root.setAttribute("aria-modal", "true");
     root.setAttribute("aria-label", `${frame.name}, the whole picture`);
     root.dataset.homeHit = "dom";
+    // The view stands on the page, outside the home's slots: say the ground is light for the cursor and the focus ring.
+    root.dataset.theme = "daybreak";
 
     const backdrop = document.createElement("div");
     backdrop.className = styles.backdrop ?? "";

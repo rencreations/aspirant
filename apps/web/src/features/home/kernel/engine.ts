@@ -14,7 +14,7 @@ import { getCast } from "../actors/shared/cast";
 import { bindBackdrop } from "../fx/backdrop/host";
 import { ActorRegistry } from "./actors";
 import { LABS } from "./lab";
-import { Background, groundNow, type GroundLayers } from "./background";
+import { Background, groundAt, type GroundLayers } from "./background";
 import { Clock, ORDER } from "./clock";
 import { CursorProxy } from "./cursor";
 import { holdCount, holdScroll, takeSnap } from "./hold";
@@ -463,7 +463,7 @@ export function startEngine(options: EngineOptions): Engine | null {
     clock.add(() => {
       actors.update(frameInfo);
       actors.apply();
-      background.apply(groundNow(layout, frameInfo.S));
+      background.apply(groundAt(layout, frameInfo.S));
     }, ORDER.background),
     clock.add(() => {
       backdrop.draw(frameInfo, jumped);

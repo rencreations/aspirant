@@ -60,7 +60,6 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
   const rootRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const dayRef = useRef<HTMLDivElement>(null);
-  const stormRef = useRef<HTMLDivElement>(null);
   const colourRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -106,9 +105,8 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
     const root = rootRef.current;
     const host = hostRef.current;
     const day = dayRef.current;
-    const storm = stormRef.current;
     const colour = colourRef.current;
-    if (!root || !host || !day || !storm || !colour) return;
+    if (!root || !host || !day || !colour) return;
     const ready = expectReady("home-stage");
     let cancelled = false;
     let engine: { dispose(): void } | null = null;
@@ -121,7 +119,7 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
         engine = m.startEngine({
           root,
           host,
-          grounds: { daybreak: day, storm, colour },
+          grounds: { daybreak: day, colour },
           backdrop: backdropRef.current,
           sections: SECTIONS,
           scrollTo: (y, options) => {
@@ -193,7 +191,6 @@ export function HomeStage({ trackScreens, flowScreens, below, text, flow }: Home
       <BareScrollbar />
       <div className={styles.grounds} aria-hidden="true">
         <div ref={dayRef} className={`${styles.ground} ${styles.groundDaybreak}`} />
-        <div ref={stormRef} className={`${styles.ground} ${styles.groundStorm}`} />
         <div ref={colourRef} className={`${styles.ground} ${styles.groundColour}`} />
         <div ref={backdropRef} className={styles.backdrop} />
       </div>

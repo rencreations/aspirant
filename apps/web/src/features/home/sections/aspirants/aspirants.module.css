@@ -1,17 +1,20 @@
 /*
- * The aspirants section's own parts (round three, 20 Nov 2026). The wall fills the left half of the
- * screen; the owner's words stand in the right half, in ONE left aligned column: the title, one
+ * The aspirants section's own parts (round three, 20 Nov 2026). The wall fills the left 65 percent of
+ * the screen (round five: it was a half); the owner's words stand in the right 35 percent, in ONE left aligned column: the title, one
  * paragraph (flowing, no break of mine, the two marks inline) and the button. Each of the three is
  * one element the runtime moves by a trigger (`words.ts`): only transform and opacity animate.
  */
 
 /*
- * The right half of a wide screen, left of the gutter on the right, with a gap from the wall's hard
- * edge. The block stands a little above the middle: the drone rests at the foot under it.
+ * The right 35 percent of a wide screen (round five: the owner asked for about 35 instead of a half),
+ * left of the gutter on the right, with a gap from the wall's hard edge. `--col` is the column's width:
+ * the title and the paragraph size themselves from it so the block never looks cramped. The block
+ * stands a little above the middle: the drone rests at the foot under it.
  */
 .box {
+  --col: calc(35vw - var(--gutter) - 2.4vw);
   justify-self: end;
-  width: min(100%, calc(50vw - var(--gutter) - 4vw));
+  width: min(100%, var(--col));
   text-align: left;
   translate: 0 -4vh;
 }
@@ -43,8 +46,11 @@
   backface-visibility: hidden;
 }
 
-.title {
+/* One line in the column: "THE ASPIRANTS" is about 4.75 times as wide as the type is high. */
+.box .title {
   margin: 0;
+  font-size: clamp(2.2rem, calc(var(--col) / 4.95), 6.2rem);
+  text-wrap: nowrap;
 }
 
 /*
@@ -52,11 +58,11 @@
  * line, TheMLabel's in the middle of the second sentence). A little more leading than plain text so
  * a mark never runs into the line above.
  */
-.paragraph {
+.box .paragraph {
   margin: var(--space-m) 0 0;
-  max-width: 34ch;
+  max-width: min(34ch, 100%);
   font-family: var(--font-serif-stack);
-  font-size: var(--step-1);
+  font-size: clamp(1.05rem, calc(var(--col) / 20), 1.6rem);
   font-style: italic;
   line-height: 1.55;
   text-align: left;
@@ -128,4 +134,19 @@
 .viewArt:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/*
+ * The stacked layouts (a narrow window, a phone, a tall screen) keep the page's own title and text
+ * sizes: the column sizing above is for the wide screen only. These come last so they win.
+ */
+@media (max-width: 56.25em), (max-aspect-ratio: 1/1) {
+  .box .title {
+    font-size: var(--step-6);
+    text-wrap: balance;
+  }
+
+  .box .paragraph {
+    font-size: var(--step-1);
+  }
 }

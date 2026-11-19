@@ -88,14 +88,6 @@ export interface FilmState {
   fly: number;
   /** The orbit's turn from the scroll, radians (the actor adds its own slow drift). */
   travel: number;
-  /** 0 the clean film, 1 the strip's effects overlay (ink, split colour, the dark wash). */
-  effect: number;
-  /**
-   * 0 none, 1 the live light overlay of the trailer (fine scanlines, grain, a slow sweep, a breathing
-   * vignette, a colour fringe at the edges), which also answers the pointer. It stays on the window and
-   * fades out as the strip is left (round three).
-   */
-  overlay: number;
   /** How the previews arrive: the camera pulls back ("dolly", the reference) or they leave the slit ("gather"). */
   arrival: "dolly" | "gather";
   /** Where the angled trailer lies on the rows' plane: plane pixels from its centre, and its size as a share of a card. */
@@ -121,8 +113,6 @@ export const DEFAULT_STATE: Readonly<FilmState> = {
   pull: 0,
   fly: 0,
   travel: 0,
-  effect: 1,
-  overlay: 0,
   arrival: "dolly",
   angleU: 0,
   angleV: 0,

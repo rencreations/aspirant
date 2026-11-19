@@ -14,8 +14,8 @@ export const section: HomeSection = {
   screens: HAND_SCREENS,
   lead: 0.5,
   tail: 0.4,
-  bg: "storm",
-  nav: { theme: "storm" },
+  bg: "daybreak",
+  nav: { theme: "daybreak" },
   dom: "fixed",
   plays: playsOf(0, HAND_LAST, HAND_SCREENS, HAND_STEPS),
   // The hand and Selena are built in pauses of the scroll, long before they show. The page before the

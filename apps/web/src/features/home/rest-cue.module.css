@@ -2,8 +2,8 @@
  * The cue at a rest: one hairline in the lower right corner (the foot's middle holds the buttons of
  * several sections) with a short stroke running down it.
  * Transform and opacity only. It takes no pointer and is hidden from assistive tech (the page's
- * own text says what to do). The colour is a mid grey that reads on both the daybreak and the
- * storm grounds.
+ * own text says what to do). The colour is a mid grey that reads on the daybreak ground (the home
+ * is light only).
  */
 .cue {
   position: fixed;

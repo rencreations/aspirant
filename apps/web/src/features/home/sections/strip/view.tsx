@@ -91,7 +91,7 @@ function MarkShapes() {
         <rect x="6.9" y="-0.5" width="2.2" height="17" style={{ fill: "var(--deck-cyan)" }} />
       </g>
       <g className={dk.kindCircle}>
-        <circle cx="8" cy="8" r="7" style={{ fill: "var(--deck-ice)" }} />
+        <circle cx="8" cy="8" r="7" style={{ fill: "var(--deck-mark-ice)" }} />
       </g>
       <g className={dk.kindTriangle}>
         <path d="M8 1.2 15.2 14.4H.8Z" style={{ fill: "var(--deck-blue)" }} />
@@ -204,6 +204,17 @@ export function view(): SectionMarkup {
         {(["tl", "tr", "bl", "br"] as const).map((c) => (
           <i key={c} className={local.dot} data-strip-corner={c} />
         ))}
+        <div
+          className={dk.deckBelow}
+          data-strip-deck-below=""
+          style={{ "--wa": TRAILER_FILM.aspect } as CSSProperties}
+          aria-hidden="true"
+        >
+          <div className={dk.deco}>
+            <Band position="top" firstLine={firstStrip} longestLine={longestStrip} />
+            <Band position="bottom" firstLine={firstStrip} longestLine={longestStrip} />
+          </div>
+        </div>
       </div>
     ),
     text: (
@@ -262,10 +273,6 @@ export function view(): SectionMarkup {
           style={{ "--wa": TRAILER_FILM.aspect } as CSSProperties}
         >
           <span className={dk.scrim} aria-hidden="true" />
-          <div className={dk.deco} aria-hidden="true">
-            <Band position="top" firstLine={firstStrip} longestLine={longestStrip} />
-            <Band position="bottom" firstLine={firstStrip} longestLine={longestStrip} />
-          </div>
           <div className={dk.readout} data-deck="readout" aria-hidden="true">
             <span className={dk.readoutDot} />
             <span className={dk.readoutMask}>

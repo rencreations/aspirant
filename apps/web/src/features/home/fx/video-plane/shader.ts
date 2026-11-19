@@ -9,14 +9,11 @@
  * width, height as fractions of the picture, so the picture is placed by the plane's own size and
  * never refitted when a frame opens.
  *
- * The look has three layers, each an amount the actor sets:
- *  - the effects overlay (`uEffect`): a slow flow that bends the picture a little, a split of the
- *    colour toward the edges, a cool tint and a dark wash. It is the strip's look and fades out as
- *    the strip opens, leaving the clean film.
- *  - the hover (`uHover` and the four weights of `uFx`): a lens that magnifies under the pointer
- *    with a ripple, a colour split on the pointer's side, and a sweep of light that follows it.
- *    (The tilt and the shift of the picture are written by the actor, in the plane's pose and in
- *    `uWin`.)
+ * The look has two layers, each an amount the actor sets. The film itself is always the clean picture:
+ * there is no overlay over it and no light that follows the pointer (round five, the owner).
+ *  - the hover (`uHover` and the two weights of `uFx`): a lens that magnifies under the pointer
+ *    with a ripple, and a colour split on the pointer's side. (The tilt and the shift of the
+ *    picture are written by the actor, in the plane's pose and in `uWin`.)
  *  - the edge: a hairline of light inside the rim.
  */
 
@@ -56,12 +53,11 @@ uniform float uOpacity;
 uniform vec3 uColor;
 uniform float uReady;
 uniform float uTime;
-uniform float uEffect;
-uniform float uOverlay;
 uniform float uHover;
 uniform vec2 uPointer;
-uniform vec4 uFx;
+uniform vec2 uFx;
 uniform float uLight;
+uniform float uShadow;
 uniform vec2 uLoad;
 varying vec2 vLp;
 varying vec3 vView;
@@ -69,24 +65,6 @@ varying vec3 vView;
 float sdBox(vec2 p, vec2 b, float r) {
   vec2 q = abs(p) - b + r;
   return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
-}
-
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-
-float vnoise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-}
-
-float fbm(vec2 p) {
-  return 0.6 * vnoise(p) + 0.4 * vnoise(p * 2.07 + 5.1);
 }
 
 vec3 pic(vec2 c) {
@@ -100,20 +78,23 @@ void main() {
   float pxl = max(0.5 * (length(dx) + length(dy)), 1e-4);
   float sd = sdBox(vLp, uHalf, uCorner);
   float cover = clamp(0.5 - sd / pxl, 0.0, 1.0);
-  if (cover <= 0.0) discard;
+
+  // A soft shadow under the card, on the light page (round five): a blurred copy of the card's shape
+  // pushed a little down and to the right. Only a plane that asked for it (uShadow) has a margin wide
+  // enough to show it. It is drawn premultiplied, behind the card's own colour.
+  float shade = 0.0;
+  if (uShadow > 0.001) {
+    float blur = clamp(uHalf.y * 0.55, 8.0, 24.0);
+    float sds = sdBox(vLp - vec2(blur * 0.12, -blur * 0.5), uHalf, uCorner);
+    shade = uShadow * 0.5 * (1.0 - smoothstep(-blur * 0.25, blur, sds));
+  }
+  if (cover <= 0.0 && shade <= 0.004) discard;
 
   float face = gl_FrontFacing ? 1.0 : -1.0;
   vec2 c = vLp / (2.0 * uHalf);
   c.x *= face;
   float asp = uHalf.x / uHalf.y;
   vec2 q = c;
-
-  // The effects overlay: a slow flow bends the picture (the ink in water).
-  float fx = uEffect;
-  if (fx > 0.001) {
-    vec2 n = vec2(fbm(c * vec2(asp, 1.0) * 3.0 + uTime * 0.07), fbm(c * vec2(asp, 1.0) * 3.0 + 7.3 - uTime * 0.06)) - 0.5;
-    q += n * 0.045 * fx * (0.5 + 0.5 * uHover);
-  }
 
   // The hover lens: the picture swells under the pointer, with a ripple that runs out from it.
   vec2 d = c - uPointer;
@@ -125,11 +106,8 @@ void main() {
     q += normalize(d + 1e-5) * sin(r * 30.0 - uTime * 5.0) * 0.006 * uFx.x * bump * bump;
   }
 
-  // The split of the colour: from the effects overlay toward the edges, and on the pointer's side on hover.
-  vec2 split = q * 0.012 * fx * length(c);
-  // The overlay's fringe: the colour parts a little toward the edges, more under the pointer.
-  float nearP = exp(-dot(vec2((c.x - uPointer.x) * asp, c.y - uPointer.y), vec2((c.x - uPointer.x) * asp, c.y - uPointer.y)) / 0.07);
-  split += q * 0.0065 * uOverlay * (0.6 + 0.5 * length(c) + 1.6 * uHover * nearP);
+  // The split of the colour, on the pointer's side on hover.
+  vec2 split = vec2(0.0);
   float side = 0.0;
   if (uFx.y > 0.001) {
     vec2 pd = uPointer / max(length(uPointer), 1e-3);
@@ -138,50 +116,10 @@ void main() {
     split += pd * 0.014 * side * vec2(1.0 / max(asp, 1.0), 1.0);
   }
   vec3 rgb;
-  if (fx > 0.001 || uFx.y > 0.001 || uOverlay > 0.001) {
+  if (uFx.y > 0.001) {
     rgb = vec3(pic(q + split).r, pic(q).g, pic(q - split).b);
   } else {
     rgb = pic(q);
-  }
-
-  // The tint and the dark wash of the overlay: cool and low at the top, darker toward the bottom.
-  if (fx > 0.001) {
-    float wash = fx * (0.28 + 0.24 * (0.5 - c.y));
-    float luma = dot(rgb, vec3(0.299, 0.587, 0.114));
-    rgb = mix(vec3(luma), rgb, 1.0 + 0.25 * fx);
-    rgb = mix(rgb, rgb * vec3(0.66, 0.64, 1.0), 0.34 * fx);
-    rgb *= 1.0 - wash * (1.0 - 0.5 * uHover);
-    rgb += vec3(0.04, 0.06, 0.16) * fx * fbm(c * 2.0 + uTime * 0.05);
-  }
-
-  // The sweep of light that follows the pointer.
-  if (uFx.w > 0.001) {
-    vec2 sdir = normalize(vec2(1.0, 0.35));
-    float band = exp(-pow((dot(c * vec2(asp, 1.0), sdir) - dot(uPointer * vec2(asp, 1.0), sdir)) / 0.085, 2.0));
-    float spot = exp(-dot(dn, dn) / 0.035);
-    vec3 add = vec3(0.92, 0.95, 1.0) * uFx.w * (0.17 * band + 0.12 * spot);
-    rgb = 1.0 - (1.0 - rgb) * (1.0 - add);
-  }
-
-  // The live light overlay (round three): fine scanlines that drift, a grain that never rests, a slow
-  // sweep of light that crosses the frame, and a vignette that breathes. On a hover the lines and the
-  // grain come up around the pointer and the idle sweep gives way to the pointer's own. It is light
-  // work (a few multiplies), and it fades out as the strip is left.
-  if (uOverlay > 0.001) {
-    float ov = uOverlay;
-    float scan = 0.5 + 0.5 * sin((vLp.y + uTime * 11.0) * 2.0943951);
-    float lift = 1.0 + 1.8 * uHover * nearP;
-    rgb *= 1.0 - ov * 0.07 * lift * scan;
-    float grain = hash(vLp * 0.53 + floor(uTime * 24.0) * 7.31) - 0.5;
-    rgb += grain * ov * 0.07 * lift;
-    vec2 ca = c * vec2(asp, 1.0);
-    float along = dot(ca, normalize(vec2(1.0, 0.35)));
-    float pos = mix(-asp * 0.75, asp * 0.75, fract(uTime * 0.1));
-    float idle = exp(-pow((along - pos) / 0.11, 2.0));
-    rgb = 1.0 - (1.0 - rgb) * (1.0 - vec3(0.72, 0.86, 1.0) * ov * 0.11 * idle * (1.0 - 0.7 * uHover));
-    float vr = length(c * vec2(1.0, 1.1));
-    float vig = smoothstep(0.3, 0.78, vr) * (0.32 + 0.07 * sin(uTime * 1.3));
-    rgb *= 1.0 - ov * vig * (1.0 - 0.4 * uHover);
   }
 
   // The picture before it has arrived is the clip's own colour.
@@ -194,7 +132,7 @@ void main() {
 
   // A hairline of light inside the rim.
   float inside = clamp(-sd / pxl, 0.0, 4.0);
-  rgb += 0.09 * (1.0 - smoothstep(0.0, 1.4, inside)) * (0.6 + 0.4 * uHover);
+  rgb += 0.054 * (1.0 - smoothstep(0.0, 1.4, inside));
 
   // The calm loading line of a film that waits for more picture: a thin track along the foot of the
   // plane with the seconds in hand lit, inside the rim. It is drawn only when uLoad.x is above zero.
@@ -210,7 +148,9 @@ void main() {
     rgb = mix(rgb, vec3(1.0), line * 0.9);
   }
 
-  gl_FragColor = vec4(rgb * cover, cover) * uOpacity;
+  vec3 shadowRgb = vec3(0.06, 0.09, 0.22);
+  float a = cover + shade * (1.0 - cover);
+  gl_FragColor = vec4(rgb * cover + shadowRgb * shade * (1.0 - cover), a) * uOpacity;
 }
 `;
 

@@ -6,14 +6,14 @@
  * target goes, the label is taken off and the cursor is told again. The proxy has no size, takes no
  * pointer events and is hidden from assistive technology.
  */
-import type { CursorApi } from "./types";
+import type { CursorApi, HomeTheme } from "./types";
 
 export class CursorProxy implements CursorApi {
   private readonly el: HTMLElement;
   private label: string | null = null;
 
   /** `theme` is the ring colour the proxy asks for (the cursor reads the nearest `data-theme`). */
-  constructor(host: HTMLElement, theme: "daybreak" | "storm" = "daybreak") {
+  constructor(host: HTMLElement, theme: HomeTheme = "daybreak") {
     this.el = document.createElement("span");
     this.el.setAttribute("aria-hidden", "true");
     this.el.dataset.homeCursor = "";
@@ -23,7 +23,7 @@ export class CursorProxy implements CursorApi {
     host.appendChild(this.el);
   }
 
-  setTheme(theme: "daybreak" | "storm"): void {
+  setTheme(theme: HomeTheme): void {
     if (this.el.dataset.theme !== theme) this.el.dataset.theme = theme;
   }
 

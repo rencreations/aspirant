@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Background, GROUND_FADE, STORM_HEX, groundAt, mixHex } from "./background";
+import { Background, GROUND_FADE, groundAt, mixHex } from "./background";
 import { layoutSections } from "./layout";
 import type { GroundName, HomeSection } from "./types";
 
@@ -18,41 +18,42 @@ function fake(id: string, screens: number, bg: GroundName) {
   } as unknown as HomeSection;
 }
 
+const PAPER = "#f4f6f9";
+
 const layout = layoutSections([
   fake("a", 4, "daybreak"),
-  fake("b", 4, "storm"),
-  fake("c", 4, "#07130f"),
-  fake("d", 4, "#07130f"),
+  fake("b", 4, "#e8ecf4"),
+  fake("c", 4, "#eef5f1"),
+  fake("d", 4, "#eef5f1"),
   fake("e", 4, "daybreak"),
 ]);
 
 describe("groundAt", () => {
   it("is the section's own ground inside it", () => {
-    expect(groundAt(layout, 1)).toEqual({ daybreak: 1, storm: 0, colour: 0, colourHex: STORM_HEX });
-    expect(groundAt(layout, 6)).toEqual({ daybreak: 0, storm: 1, colour: 0, colourHex: STORM_HEX });
-    const c = groundAt(layout, 10);
-    expect(c.colour).toBe(1);
-    expect(c.colourHex).toBe("#07130f");
+    expect(groundAt(layout, 1)).toEqual({ daybreak: 1, colour: 0, colourHex: PAPER });
+    const b = groundAt(layout, 6);
+    expect(b.colour).toBe(1);
+    expect(b.colourHex).toBe("#e8ecf4");
   });
 
   it("is half and half exactly at a joint: the lower layer stays whole, the upper is at half", () => {
     const m = groundAt(layout, 4);
     expect(m.daybreak).toBeCloseTo(1);
-    expect(m.storm).toBeCloseTo(0.5);
+    expect(m.colour).toBeCloseTo(0.5);
   });
 
   it("crosses over GROUND_FADE screens centred on the joint, in both directions", () => {
     const half = GROUND_FADE / 2;
-    expect(groundAt(layout, 4 - half).storm).toBeCloseTo(0);
-    expect(groundAt(layout, 4 + half).storm).toBeCloseTo(1);
-    expect(groundAt(layout, 4 - half / 2).storm).toBeCloseTo(0.25);
-    expect(groundAt(layout, 4 + half / 2).storm).toBeCloseTo(0.75);
+    expect(groundAt(layout, 4 - half).colour).toBeCloseTo(0);
+    expect(groundAt(layout, 4 + half).colour).toBeCloseTo(1);
+    expect(groundAt(layout, 4 - half / 2).colour).toBeCloseTo(0.25);
+    expect(groundAt(layout, 4 + half / 2).colour).toBeCloseTo(0.75);
   });
 
   it("never lets the page show through: the lowest layer in use stays whole", () => {
     for (let S = -1; S < 21; S += 0.07) {
       const m = groundAt(layout, S);
-      const lowest = m.daybreak > 0 ? m.daybreak : m.storm > 0 ? m.storm : m.colour;
+      const lowest = m.daybreak > 0 ? m.daybreak : m.colour;
       expect(lowest).toBeCloseTo(1, 9);
     }
   });
@@ -60,14 +61,19 @@ describe("groundAt", () => {
   it("does not move between two sections that share a ground", () => {
     const m = groundAt(layout, 12);
     expect(m.colour).toBe(1);
-    expect(m.colourHex).toBe("#07130f");
+    expect(m.colourHex).toBe("#eef5f1");
   });
 
-  it("mixes the colour in while the colour ground comes in", () => {
+  it("mixes the two plain colours while one comes in over the other", () => {
     const m = groundAt(layout, 8);
-    expect(m.storm).toBeCloseTo(1);
+    expect(m.colour).toBeCloseTo(1);
+    expect(m.colourHex).toBe(mixHex("#e8ecf4", "#eef5f1", 0.5));
+  });
+
+  it("goes back to the paper under a colour that leaves", () => {
+    const m = groundAt(layout, 16);
+    expect(m.daybreak).toBeCloseTo(1);
     expect(m.colour).toBeCloseTo(0.5);
-    expect(m.colourHex).toBe("#07130f");
   });
 });
 
@@ -83,17 +89,15 @@ describe("Background", () => {
   function layers() {
     return {
       daybreak: document.createElement("div"),
-      storm: document.createElement("div"),
       colour: document.createElement("div"),
     };
   }
 
-  it("writes the opacities and the colour to its three layers only", () => {
+  it("writes the opacities and the colour to its two layers only", () => {
     const l = layers();
     const bg = new Background(l);
-    bg.apply({ daybreak: 0.25, storm: 0.5, colour: 0.25, colourHex: "#07130f" });
+    bg.apply({ daybreak: 0.25, colour: 0.25, colourHex: "#07130f" });
     expect(l.daybreak.style.opacity).toBe("0.25");
-    expect(l.storm.style.opacity).toBe("0.5");
     expect(l.colour.style.opacity).toBe("0.25");
     expect(l.colour.style.backgroundColor).toBe("rgb(7, 19, 15)");
     expect(document.documentElement.getAttribute("style")).toBeNull();
@@ -103,43 +107,19 @@ describe("Background", () => {
   it("does not write again for a change too small to see", () => {
     const l = layers();
     const bg = new Background(l);
-    bg.apply({ daybreak: 0.5, storm: 0.5, colour: 0, colourHex: STORM_HEX });
+    bg.apply({ daybreak: 0.5, colour: 0.5, colourHex: PAPER });
     l.daybreak.style.opacity = "0.9"; // a mark of the test, to see whether the layer is written
-    bg.apply({ daybreak: 0.5005, storm: 0.4995, colour: 0, colourHex: STORM_HEX });
+    bg.apply({ daybreak: 0.5005, colour: 0.4995, colourHex: PAPER });
     expect(l.daybreak.style.opacity).toBe("0.9");
-    bg.apply({ daybreak: 0.6, storm: 0.4, colour: 0, colourHex: STORM_HEX });
+    bg.apply({ daybreak: 0.6, colour: 0.4, colourHex: PAPER });
     expect(l.daybreak.style.opacity).toBe("0.6");
   });
 
   it("writes a layer that went to nothing", () => {
     const l = layers();
     const bg = new Background(l);
-    bg.apply({ daybreak: 0.001, storm: 0.999, colour: 0, colourHex: STORM_HEX });
-    bg.apply({ daybreak: 0, storm: 1, colour: 0, colourHex: STORM_HEX });
+    bg.apply({ daybreak: 0.001, colour: 0.999, colourHex: "#e8ecf4" });
+    bg.apply({ daybreak: 0, colour: 1, colourHex: "#e8ecf4" });
     expect(l.daybreak.style.opacity).toBe("0");
-  });
-});
-
-describe("the ground cue of a play", () => {
-  it("is used for one frame, then the scroll's ground comes back", async () => {
-    const { setGroundCue, groundNow } = await import("./background");
-    setGroundCue("daybreak", "storm", 0.5);
-    const a = groundNow(layout, 1);
-    expect(a.daybreak).toBeCloseTo(1, 9);
-    expect(a.storm).toBeCloseTo(0.5, 9);
-    expect(groundNow(layout, 1)).toEqual({
-      daybreak: 1,
-      storm: 0,
-      colour: 0,
-      colourHex: STORM_HEX,
-    });
-  });
-
-  it("clamps its share", async () => {
-    const { setGroundCue, groundNow } = await import("./background");
-    setGroundCue("daybreak", "storm", 3);
-    expect(groundNow(layout, 1).storm).toBe(1);
-    setGroundCue("daybreak", "storm", -1);
-    expect(groundNow(layout, 1).storm).toBe(0);
   });
 });

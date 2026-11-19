@@ -1,7 +1,7 @@
 /*
- * The bolt section (round four): the text wheel of the five pairs, small and centred above the canvas,
- * and the white that rises from the bottom under the canvas. Only transform and opacity are written, by
- * the section's runtime. The wheel exists only in the stage; the plain page shows the five names as a
+ * The bolt section (round four, light mode in round five): the text wheel of the five pairs, small and
+ * centred above the canvas, and the white that rises from the bottom under the canvas. Only transform
+ * and opacity are written, by the section's runtime. The wheel exists only in the stage; the plain page shows the five names as a
  * list. The wheel follows the tibdigital.com "Since 2007" wheel: 72 px at 1440 (5vw), weight 400,
  * tracking -0.06em, a perspective of 1000 px.
  */
@@ -21,16 +21,16 @@
   /* Taller than the screen: the runtime lifts it by `translate3d`, its soft top edge goes up with it. */
   height: calc(1.35 * 100lvh);
   pointer-events: none;
-  /* Off white, solid in the lower part, a long soft edge above it (the reference's rising glow). */
+  /* Near white, solid in the lower part, a long soft edge above it (the reference's rising glow). */
   background: linear-gradient(
     to top,
-    #f3f1ec 0%,
-    #f3f1ec 60%,
-    rgb(243 241 236 / 0.9) 68%,
-    rgb(243 241 236 / 0.62) 77%,
-    rgb(243 241 236 / 0.3) 87%,
-    rgb(243 241 236 / 0.08) 95%,
-    rgb(243 241 236 / 0) 100%
+    #fcfdff 0%,
+    #fcfdff 60%,
+    rgb(252 253 255 / 0.9) 68%,
+    rgb(252 253 255 / 0.62) 77%,
+    rgb(252 253 255 / 0.3) 87%,
+    rgb(252 253 255 / 0.08) 95%,
+    rgb(252 253 255 / 0) 100%
   );
   transform: translate3d(0, 100%, 0);
   will-change: transform;
@@ -52,10 +52,6 @@
   font-weight: 400;
   letter-spacing: -0.06em;
   line-height: 1;
-}
-
-.ink {
-  display: none;
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .wheel {
@@ -92,21 +88,10 @@
   font-size: inherit;
 }
 
-/* A soft halo keeps each copy readable where the dragon's pale head passes behind the line (a still shadow, never animated). */
-:global(.js) :global([data-home]:not([data-gl="off"])) .item .light {
-  color: #fff;
-  text-shadow:
-    0 0 0.35em rgb(4 8 24 / 0.7),
-    0 0 0.1em rgb(4 8 24 / 0.55);
-}
-
-/* The ink copy lies over the white one and takes over as the white rises behind the wheel. */
-:global(.js) :global([data-home]:not([data-gl="off"])) .item .ink {
-  position: absolute;
-  inset: 0;
+/* The ink of the names on the light ground. A soft paper halo keeps a name readable where the dragon's dark outline passes behind it (a still shadow, never animated). */
+:global(.js) :global([data-home]:not([data-gl="off"])) .item .name {
   color: #0c1020;
-  opacity: 0;
   text-shadow:
-    0 0 0.35em rgb(243 241 236 / 0.75),
-    0 0 0.1em rgb(243 241 236 / 0.6);
+    0 0 0.35em rgb(244 246 249 / 0.8),
+    0 0 0.1em rgb(244 246 249 / 0.65);
 }

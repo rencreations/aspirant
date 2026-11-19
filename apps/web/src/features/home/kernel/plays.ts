@@ -34,6 +34,12 @@ export interface HomePlay {
    * curve defaults to `linear`. `seconds` is then the length of the idle snap for a full traverse.
    */
   readonly span?: number;
+  /**
+   * A zone only: the page does not finish it by itself when the visitor stops inside it (no idle snap,
+   * and no joint snap while the page is inside it either). It is a plain scroll linked passage: the
+   * scene follows the scroll up and down and the page stays where the visitor leaves it (round five).
+   */
+  readonly noSnap?: boolean;
 }
 
 /** The share of a play's length that its backward run takes when the play does not say. */
@@ -108,6 +114,9 @@ export function validatePlays(id: string, plays: readonly HomePlay[]): void {
     }
     if (Math.abs(p.to - p.from) < SAME)
       fail(i, `from ${p.from} equals to ${p.to}: nothing to play`);
+    if (p.noSnap !== undefined && p.span === undefined) {
+      fail(i, "noSnap is for a zone (a play with a span): a clock play holds the page by design");
+    }
     if (p.span !== undefined) {
       if (!Number.isFinite(p.span) || !(p.span > 0)) {
         fail(i, `span ${String(p.span)} must be above 0 (a fraction of the section)`);

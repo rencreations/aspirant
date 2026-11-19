@@ -34,9 +34,10 @@ interface LineSpec {
   opacity: number;
 }
 
-// Round four: the lines are blue (the white that rises from the bottom would hide white ones).
-const WHITE = 0x7fc4ff;
-const MINT = 0x2f7bff;
+// Round four: the lines are blue (the white that rises from the bottom would hide white ones). Round
+// five (light mode only): a fine blue on the light ground, a sky blue and a deeper royal blue.
+const WHITE = 0x59a6ff;
+const MINT = 0x2458e0;
 
 /** The table of the reference, with its white and green changed for two blues (the names are the old ones). */
 export const LINES: readonly LineSpec[] = [

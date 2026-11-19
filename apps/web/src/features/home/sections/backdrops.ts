@@ -7,10 +7,11 @@
  *
  *   S 0 to 5.3     none: the hero and the wall (the owner's words on the right) stand on the plain daybreak ground
  *   S 5.3 to 7.7   silk, daybreak, low: a quiet cloth under the rows;
- *                  the rows fade it out with the ground as the transition runs (`rows/ground.ts`)
- *   S 7.7 on       ink field, storm: the strip's own dark ground (a flowing luminous mist that answers
- *                  the cursor, `fx/backdrop/glsl-ink.ts`), from where the rows' transition ends through
- *                  the window and the orbit of the ten films.
+ *                  the rows fade it out as the transition runs (`rows/ground.ts`)
+ *   S 7.7 on       ink field, daybreak: the strip's own mist (a very soft, slowly flowing pastel on the
+ *                  paper that leans a little toward the cursor, `fx/backdrop/glsl-ink.ts`), from where
+ *                  the rows' transition ends through the window and the orbit of the ten films. It
+ *                  comes in over about four seconds of real time (`stepInkEntrance`).
  */
 import type { BackdropKind, BackdropOptions } from "../fx/backdrop";
 
@@ -29,10 +30,51 @@ const SILK_FADING: BackdropSpec = {
   options: { theme: "daybreak", amount: SILK.options.amount ?? 0.5 },
 };
 const SILK_AMOUNT = SILK.options.amount ?? 0.5;
-const INK: BackdropSpec = { kind: "ink-field", options: { theme: "storm", amount: 0.9 } };
+/**
+ * The strip's mist on the light ground (round five: light only). Its steady numbers are shared with the
+ * bolt, which carries the same mist on (`bolt/backdrop-plan.ts` asks for the same level and intensity),
+ * so nothing changes hue or strength where the strip ends. `amount` is written in place: it is the
+ * entrance's, 0 when the strip has just arrived and `INK_LEVEL` after `INK_ENTRANCE_S` seconds.
+ */
+export const INK_LEVEL = 0.9;
+export const INK_INTENSITY = 1.7;
+const INK: BackdropSpec = {
+  kind: "ink-field",
+  options: { theme: "daybreak", amount: 0, intensity: INK_INTENSITY },
+};
+
+/** Seconds of real time the mist takes to come in once the strip has arrived (not tied to the scroll). */
+export const INK_ENTRANCE_S = 4;
+
+/** The entrance's curve: 0 to 1 over `INK_ENTRANCE_S`, starting so gently that nobody sees it begin. */
+export function inkEntrance(seconds: number): number {
+  const t = Math.min(1, Math.max(0, seconds / INK_ENTRANCE_S));
+  return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
+/** The entrance's clock, in seconds since the strip arrived. Written by `stepInkEntrance` only. */
+let inkClock = 0;
+
+/**
+ * One frame of the entrance. The strip calls it once a frame with the frame's `dt` (a frozen frame
+ * holds it): the mist's amount rises on its own clock while the strip is on, and falls back quickly
+ * when the strip is left (so it comes in again, slowly, on the next arrival). A long frame is cut to a
+ * tenth of a second, so a sleeping tab does not skip the entrance.
+ */
+export function stepInkEntrance(dt: number, on: boolean): void {
+  const step = Math.min(Math.max(dt, 0), 0.1);
+  inkClock = on ? Math.min(INK_ENTRANCE_S, inkClock + step) : Math.max(0, inkClock - 4 * step);
+  INK.options.amount = INK_LEVEL * inkEntrance(inkClock);
+}
+
+/** The strip was left upward: the next arrival brings the mist in again, from nothing. */
+export function resetInkEntrance(): void {
+  inkClock = 0;
+  INK.options.amount = 0;
+}
 
 /** Where each backdrop begins on the story axis, in order. */
-/** The ink field comes in where the rows' transition ends (the ground is already dark and the silk is gone): no flash. */
+/** The ink field comes in where the rows' transition ends (the silk is gone by then): no flash. */
 /** The silk begins with the rows: the wall (the hero's landing, the owner's words, the clip opening) has no backdrop behind it (the owner, 20 Nov 2026). */
 export const BACKDROP_AT = {
   silk: STORY.rows.start,
@@ -50,7 +92,7 @@ export const BACKDROP_KINDS_USED: readonly BackdropKind[] = [SILK.kind, INK.kind
 export function backdropAt(S: number): BackdropSpec | null {
   if (S < BACKDROP_AT.silk) return null;
   if (S < BACKDROP_AT.ink) {
-    // From the start of the rows' transition the silk goes out with the paper: no light cloth over the dark ground.
+    // From the start of the rows' transition the silk goes out, ahead of the strip's own backdrop.
     const share = S > STORY.rows.start ? silkShare(S - STORY.rows.start) : 1;
     if (share >= 1) return SILK;
     SILK_FADING.options.amount = SILK_AMOUNT * share;

@@ -3,15 +3,7 @@ import { describe, expect, it } from "vitest";
 import { homeLayout } from "../../kernel/where";
 import { STORY } from "../story";
 
-import {
-  letterIn,
-  letterMoment,
-  makeBeats,
-  overlayAmount,
-  STRIP_BEATS,
-  stripBeats,
-  stripS,
-} from "./journey";
+import { letterIn, letterMoment, makeBeats, STRIP_BEATS, stripBeats, stripS } from "./journey";
 
 const stripPlaced = () => homeLayout().placed.find((p) => p.id === "strip")!;
 // The strip's story is `STORY.strip` (`../story.ts`) and its tail is the fly-off's: the beats must fit.
@@ -27,14 +19,16 @@ describe("the strip's place on the scroll", () => {
     expect(rows.end).toBeCloseTo(placed.start, 6);
   });
 
-  it("has four plays: the words (a zone), the window and the orbit (triggers), the exit (a zone)", () => {
+  it("has four plays: the words (a zone), the window (a trigger), the pull and the exit (zones)", () => {
     const plays = stripPlaced().def.plays!;
     expect(plays).toHaveLength(4);
     expect(plays[0]!.at).toBe(0);
     expect(plays[0]!.span).toBeGreaterThan(0);
     expect(plays[1]!.span).toBeUndefined();
-    expect(plays[2]!.span).toBeUndefined();
+    expect(plays[2]!.span).toBeGreaterThan(0);
     expect(plays[3]!.span).toBeGreaterThan(0);
+    // The exit is a plain scroll linked passage: no snap by itself.
+    expect(plays[3]!.noSnap).toBe(true);
     // The exit's zone ends at the section's end (a zone never runs into the tail).
     expect(plays[3]!.at + plays[3]!.span!).toBeCloseTo(1, 9);
     for (const p of plays) expect(p.seconds).toBeLessThanOrEqual(3);
@@ -119,14 +113,12 @@ describe("stripBeats", () => {
     expect(b.enter).toBe(1);
     stripBeats(STRIP_BEATS.expand[0], b);
     expect(b.expand).toBe(0);
-    expect(b.clean).toBe(0);
   });
 
-  it("opens the window, takes the overlay off and lowers the play button as the pull starts", () => {
+  it("opens the window and lowers the play button as the pull starts", () => {
     stripBeats(STRIP_BEATS.expand[1], b);
     expect(b.expand).toBe(1);
     expect(b.leave).toBe(1);
-    expect(b.clean).toBe(1);
     stripBeats(STRIP_BEATS.pull[0], b);
     expect(b.play).toBe(1);
     stripBeats(STRIP_BEATS.pull[0] + 0.2 * (STRIP_BEATS.pull[1] - STRIP_BEATS.pull[0]), b);
@@ -184,24 +176,5 @@ describe("letterIn", () => {
         seen = on;
       }
     }
-  });
-});
-
-describe("the live overlay of the trailer", () => {
-  it("is off while the film lies angled, on once it stands, a little softer on the window", () => {
-    expect(overlayAmount(0, 0, 0)).toBe(0);
-    expect(overlayAmount(1, 0, 0)).toBe(1);
-    expect(overlayAmount(1, 1, 0)).toBeCloseTo(0.6, 9);
-  });
-
-  it("fades out steadily as the set flies off to the next section, and is gone before the end", () => {
-    let last = 2;
-    for (let f = 0; f <= 1.0001; f += 0.05) {
-      const o = overlayAmount(1, 0, f);
-      expect(o).toBeLessThanOrEqual(last + 1e-9);
-      last = o;
-    }
-    expect(overlayAmount(1, 0, 0.75)).toBe(0);
-    expect(overlayAmount(1, 1, 1)).toBe(0);
   });
 });

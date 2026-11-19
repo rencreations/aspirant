@@ -72,18 +72,12 @@
   background-image: radial-gradient(circle, rgb(11 11 14 / 0.09) 1px, transparent 1.4px);
 }
 
-.groundStorm {
-  background-color: #05070c;
-  background-image: radial-gradient(circle, rgb(238 243 250 / 0.08) 1px, transparent 1.4px);
-  opacity: 0;
-}
-
 .groundColour {
   background-image: none;
   opacity: 0;
 }
 
-/* The live backdrop: its own small canvas, above the three grounds and under the `below` layer. */
+/* The live backdrop: its own small canvas, above the two grounds and under the `below` layer. */
 .backdrop {
   position: absolute;
   inset: 0;
@@ -221,7 +215,7 @@
   overflow-x: clip;
 }
 
-/* Each section carries its own theme's ground, so a dark section is still readable. */
+/* Each section carries its own theme's ground (the home is light only). */
 .root[data-gl="off"] .slot,
 :global(html:not(.js)) .root .slot {
   border-top: 1px solid var(--line);

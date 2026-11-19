@@ -2,7 +2,7 @@
  * The wall and the rows: wide cards in rows on one tilted plane, after premotio's wall (twist 35,
  * tilt 53, roll -6 degrees: `q = Rz(roll) Rx(-tilt) Rz(twist)`, first the twist about the plane's
  * own normal, then the plane leaning back, then the roll). The rows slide by themselves, in
- * opposite directions, and wrap, so the slide never ends. The wall fills a frame (the left 58
+ * opposite directions, and wrap, so the slide never ends. The wall fills a frame (the left 65
  * percent of the screen on a wide display, the top part on a tall one); the rows are the same
  * plane over the whole screen. A card's place is a pure function of its slot and the slide.
  */
@@ -77,8 +77,11 @@ export interface RowPlan {
   readonly centers: readonly number[];
 }
 
-/** The share of a wide screen's width the wall's frame fills. */
-export const WALL_SHARE = 0.5;
+/**
+ * The share of a wide screen's width the wall's frame fills (round five, 20 Nov 2026: the owner's
+ * words take about 35 percent, so the wall takes the other 65; it was one half).
+ */
+export const WALL_SHARE = 0.65;
 
 /** The frame the wall (kind "wall") or the rows (kind "rows") fills, for a viewport. */
 export function wallFrame(vp: Vp, kind: "wall" | "rows", share: number = WALL_SHARE): Frame {

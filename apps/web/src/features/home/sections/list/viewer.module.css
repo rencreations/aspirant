@@ -1,5 +1,5 @@
 /*
- * The open view of a frame: the whole picture, with margins all round, over a dark backdrop. The
+ * The open view of a frame: the whole picture, with margins all round, over a pale backdrop. The
  * window opens from the frame to the picture with two nested clips that only translate, so nothing
  * is stretched (the chapter morph's technique). Only transform and opacity change.
  */
@@ -8,14 +8,14 @@
   position: fixed;
   inset: 0;
   z-index: 80;
-  color: #eef3fa;
+  color: #0b0b0e;
   touch-action: none;
 }
 
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgb(5 7 12 / 0.92);
+  background: rgb(244 246 249 / 0.94);
   opacity: 0;
 }
 
@@ -43,7 +43,7 @@
   left: 0;
   top: 0;
   transform-origin: 0 0;
-  background: #0b0e18;
+  background: #ffffff;
   pointer-events: auto;
   cursor: default;
 }
@@ -66,17 +66,17 @@
   display: grid;
   place-items: center;
   padding: 0;
-  border: 1px solid rgb(238 243 250 / 0.5);
+  border: 1px solid rgb(11 11 14 / 0.35);
   border-radius: 50%;
-  background: rgb(5 7 12 / 0.6);
+  background: rgb(255 255 255 / 0.72);
   color: inherit;
   cursor: pointer;
   opacity: 0;
 }
 
 .close:hover {
-  background: #eef3fa;
-  color: #05070c;
+  background: #0b0b0e;
+  color: #f4f6f9;
 }
 
 .close:focus-visible {

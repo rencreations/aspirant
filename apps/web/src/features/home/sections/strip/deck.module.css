@@ -7,13 +7,22 @@
  * (deck.ts) writes transform and opacity only.
  */
 
-.deck {
+.deck,
+.deckBelow {
   display: none;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .deck {
+/*
+ * `.deck` is the dress on the picture (the words, the button, the readout: in the text layer, over the
+ * canvas). `.deckBelow` holds the two bands, which hang outside the picture: it stands in the layer
+ * under the canvas, so the drone (drawn in the canvas) passes in front of them, never behind
+ * (round five, the owner). The two boxes are the same box.
+ */
+:global(.js) :global([data-home]:not([data-gl="off"])) :is(.deck, .deckBelow) {
   --deck-ink: #05070c;
   --deck-ice: #dff6ff;
+  /* The marks of the bands stand on the light page (outside the picture): their pale fills are bluer. */
+  --deck-mark-ice: #a9cdf5;
   --deck-cyan: #1fa6e8;
   --deck-blue: #1a6bc8;
   --deck-sky: #6fd2ff;
@@ -31,8 +40,8 @@
   pointer-events: none;
 }
 
-:global([data-home][data-gl="off"]) .deck,
-:global(html:not(.js)) .deck {
+:global([data-home][data-gl="off"]) :is(.deck, .deckBelow),
+:global(html:not(.js)) :is(.deck, .deckBelow) {
   display: none;
 }
 
@@ -174,7 +183,7 @@
   flex: none;
   width: 2.6em;
   height: 0.8em;
-  color: var(--deck-sky);
+  color: var(--deck-blue);
 }
 
 .stripMask {

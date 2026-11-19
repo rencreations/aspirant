@@ -12,7 +12,7 @@ const STARS = starField(46);
 
 /**
  * What the server draws for the section. Under the canvas: the sky (the one the list ends on, so the
- * two meet without a seam), its stars, the drawer's panel and the white of the way out. Over the
+ * two meet without a seam, a pastel dawn), its stars, the drawer's panel and the white of the way out. Over the
  * canvas: the owner's words and the button, in the drawer. The panel is a gradient made to read as
  * frosted glass (no `backdrop-filter`, which the site never puts over a live picture): the sky's
  * lights are drawn again inside it, large and soft.
@@ -30,7 +30,7 @@ export function view(): SectionMarkup {
           aria-hidden="true"
         >
           {STARS.map((s, i) => (
-            <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#dfe6ff" opacity={s.o} />
+            <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#8390dc" opacity={s.o} />
           ))}
         </svg>
         <svg
@@ -41,18 +41,18 @@ export function view(): SectionMarkup {
         >
           <defs>
             <radialGradient id="selena-star-glow">
-              <stop offset="0" stopColor="#ff6a3c" stopOpacity="0.55" />
-              <stop offset="0.45" stopColor="#c8325a" stopOpacity="0.22" />
-              <stop offset="1" stopColor="#c8325a" stopOpacity="0" />
+              <stop offset="0" stopColor="#ffb08a" stopOpacity="0.6" />
+              <stop offset="0.45" stopColor="#ff8aa8" stopOpacity="0.26" />
+              <stop offset="1" stopColor="#ff8aa8" stopOpacity="0" />
             </radialGradient>
           </defs>
           <circle r="50" fill="url(#selena-star-glow)" />
           <path
             d="M0 -46 C2 -12 12 -2 46 0 C12 2 2 12 0 46 C-2 12 -12 2 -46 0 C-12 -2 -2 -12 0 -46Z"
-            fill="#2a0f1c"
-            stroke="#ff9a5a"
-            strokeWidth="0.8"
-            strokeOpacity="0.7"
+            fill="#fff4ee"
+            stroke="#ff7a58"
+            strokeWidth="1"
+            strokeOpacity="0.85"
           />
         </svg>
         <div className={styles.drawer} data-selena-drawer="">

@@ -106,7 +106,7 @@ describe("jointZones", () => {
   it("adds the ground cross-fade of a pair whose grounds follow the scroll", () => {
     const layout = layoutSections([
       sec({ id: "a", screens: 3, bg: "daybreak" }),
-      sec({ id: "b", screens: 3, bg: "storm" }),
+      sec({ id: "b", screens: 3, bg: "#e8ecf4" }),
     ]);
     const zones = jointZones(layout);
     expect(zones).toHaveLength(1);
@@ -117,7 +117,7 @@ describe("jointZones", () => {
   it("leaves the ground of a pair out when one section rests outside its range", () => {
     const layout = layoutSections([
       sec({ id: "a", screens: 3, bg: "daybreak", restOutside: true }),
-      sec({ id: "b", screens: 3, bg: "storm" }),
+      sec({ id: "b", screens: 3, bg: "#e8ecf4" }),
     ]);
     expect(jointZones(layout)).toEqual([]);
   });

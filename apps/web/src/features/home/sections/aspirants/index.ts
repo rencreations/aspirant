@@ -4,7 +4,7 @@ import { HERO_SCREENS } from "../hero";
 import { preload } from "./preload";
 
 /**
- * The wall of big tilted pictures on the left half, the owner's words on the right (round three,
+ * The wall of big tilted pictures on the left 65 percent, the owner's words on the right 35 (round three,
  * 20 Nov 2026: scroll based, like premotio).
  *
  * The section has a rest and one scroll zone, and the scene it shows is the hero's landing (the hero's

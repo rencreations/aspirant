@@ -17,12 +17,13 @@ import type { Rect } from "./layout";
  */
 export const DRAWER_SHARE = 0.315;
 /**
- * The sky behind her (a CSS background): a dusk blue, lighter at the top left of the middle. The list
- * paints it in its own layer and holds it to the end of the section and through its tail; the section
- * after it draws the same sky (or lets this one fade over the tail).
+ * The sky behind her (a CSS background): a pastel dawn, lavender at the top, pale rose at the foot,
+ * with a white bloom behind her (the home is light only). The list paints it in its own layer and
+ * holds it to the end of the section and through its tail; the section after it draws the same sky
+ * (or lets this one fade over the tail).
  */
 export const SKY =
-  "radial-gradient(ellipse 70% 55% at 50% 38%, rgb(70 84 150 / 0.55), transparent 70%), linear-gradient(180deg, #151b38 0%, #0b0f22 62%, #060813 100%)";
+  "radial-gradient(ellipse 70% 55% at 50% 38%, rgb(255 255 255 / 0.7), transparent 72%), linear-gradient(180deg, #d9e0fb 0%, #e8e3fa 52%, #fadfe8 100%)";
 /** The share of the free area her pose may take. */
 const FILL_IDLE = 0.82;
 const FILL_HANDS = 1.0;

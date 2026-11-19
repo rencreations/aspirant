@@ -6,6 +6,9 @@
  * of thin light (beams, stars, hairlines), so they still read on the paper. Storm is rich: saturated
  * light on near black. `ink` is the highlight colour of a kind (white on storm, a deep blue-grey on
  * daybreak); the last stop of `colors` is its other end of the ramp.
+ *
+ * The home page is light only (the owner, 20 Nov 2026, round five): every section asks for the
+ * daybreak palette (or gives its own pastel stops). The storm palettes stay in the table, unused.
  */
 
 export const BACKDROP_KINDS = [
@@ -194,9 +197,9 @@ export const BACKDROP_PALETTES: Readonly<
     daybreak: pal(["#ffcf5c", "#ffa24a", "#ff5468", "#c8203a"], 0.85, DAY_INK),
     storm: pal(["#ffe9a0", "#ffa24a", "#ff5468", "#7a0f2a"], 1, NIGHT_INK),
   },
-  // The strip's own: a near black blue ground, deep blue and ice cyan light. No pink (round three).
+  // The strip's own, light only (round five): pale blue and a hint of lilac on the paper, very low in contrast. No pink (round three).
   "ink-field": {
-    daybreak: pal(["#c9d6ee", "#8cc4f0", "#9cc8f5", "#ffffff"], 0.5, DAY_INK),
+    daybreak: pal(["#b4d0f5", "#a3caf2", "#c8bcf2", "#e4edfa"], 0.5, DAY_INK),
     storm: pal(["#060b22", "#0f2a78", "#1a6bc8", "#6fd2ff"], 1, "#dff6ff"),
   },
 };

@@ -12,7 +12,7 @@ import { ROWS_DWELL, ROWS_SCREENS, ROWS_ZONE, ROWS_ZONE_SECONDS } from "./zone";
  * `slide.ts`) for a short dwell, then the transition is a scroll ZONE (`kernel/scrub.ts`) of about a
  * screen and a bit: a space opens in the middle row, the film shows in it at the size of a picture and
  * rides with the row to the middle, the other pictures slide off along their rows, and the film grows
- * and turns upright into the strip. The ground goes dark through it (`ground.ts`). If the visitor stops
+ * and turns upright into the strip. The ground stays the light daybreak paper (round five: light only). If the visitor stops
  * inside the zone the page finishes it by itself, forward or back. `update` gets 0 in the dwell, 0 to 1
  * across the zone and 1 after it; the lead is negative (the aspirants' close still owns the field there)
  * and the dwell's slide comes from the scroll itself (`frame.S`).
@@ -29,7 +29,7 @@ export const section: HomeSection = {
   screens: ROWS_SCREENS,
   lead: 0.3,
   tail: 0.4,
-  // The rows stand on the light ground of the wall: it goes dark inside the transition (the runtime's cue).
+  // The rows stand on the light ground of the wall and keep it through the transition (light only, round five).
   bg: "daybreak",
   nav: { theme: "daybreak" },
   dom: "fixed",

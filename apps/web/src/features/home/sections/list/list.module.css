@@ -100,7 +100,7 @@
 .panelSky {
   position: absolute;
   inset: 0;
-  background: #0b0f22;
+  background: #e4e6fb;
 }
 
 /* ------------------------------------------------------------------ the chrome of the window */
@@ -115,7 +115,7 @@
 
 .chromeRect {
   fill: none;
-  stroke: rgb(238 243 250 / 0.55);
+  stroke: rgb(11 11 14 / 0.38);
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }

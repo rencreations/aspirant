@@ -26,7 +26,7 @@ import {
 import type { ActorCtx } from "../../actors/shared/types";
 import { makePixelPerspectiveCamera, pixelFov } from "../../kernel/stage";
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
-import { clamp, qMul, ramp, smootherstep, type Q } from "../image-field/math";
+import { clamp, qMul, type Q } from "../image-field/math";
 import { lowpassGain } from "../image-field/spring";
 import { PREVIEWS, TRAILER_FILM, previewAspect, type PreviewFilm } from "./data";
 import { TRAIL_POINTS, trailOf } from "./flyoff";
@@ -241,17 +241,15 @@ export class FilmActor implements Actor {
       this.looks.push({
         win: [0.5, 0.5, 1, 1],
         ready: 0,
-        effect: 0,
-        overlay: 0,
         hover: 0,
         pointerX: 0,
         pointerY: 0,
         lens: 0,
         split: 0,
-        sweep: 0,
         time: 0,
         phase: k * 1.7,
         light: 0.28,
+        shadow: 0,
         load: 0,
         loadFraction: 0,
       });
@@ -263,7 +261,8 @@ export class FilmActor implements Actor {
     this.trailGeometry.setAttribute("position", new BufferAttribute(new Float32Array(segs * 6), 3));
     this.trailGeometry.setAttribute("aA", new BufferAttribute(new Float32Array(segs * 2), 1));
     this.trailMaterial = new ShaderMaterial({
-      uniforms: { uColor: { value: new Color(0.86, 0.9, 1) }, uAlpha: { value: 0.55 } },
+      // Ink blue on the light page (the trails were pale on the dark one).
+      uniforms: { uColor: { value: new Color(0.1, 0.16, 0.36) }, uAlpha: { value: 0.32 } },
       vertexShader: TRAIL_VERTEX,
       fragmentShader: TRAIL_FRAGMENT,
       transparent: true,
@@ -301,7 +300,7 @@ export class FilmActor implements Actor {
     this.visible = true;
   }
 
-  /** Which hover effects are on: a named mode, or the four amounts. */
+  /** Which hover effects are on: a named mode, or the three amounts. */
   setHover(mode: HoverMode | HoverWeights): void {
     this.weights = typeof mode === "string" ? { ...HOVER_MODES[mode] } : { ...mode };
   }
@@ -550,14 +549,14 @@ export class FilmActor implements Actor {
       look.ready = video.shown;
       look.load = k === 0 ? this.line : 0;
       look.loadFraction = k === 0 ? this.stream.status.progress : 0;
-      look.effect = k === 0 ? st.effect * smootherstep(ramp(st.morph, 0.35, 1)) : 0;
-      look.overlay = k === 0 ? st.overlay : 0;
+      // The cards of the orbit stand on the light page with a soft shadow. The trailer wears one as it
+      // becomes the orbit's leader (the pull), so the ten and the leader agree; it has none before.
+      look.shadow = k === 0 ? st.pull : 1;
       look.hover = h;
       look.pointerX = px;
       look.pointerY = py;
       look.lens = w.lens * h;
       look.split = w.split * h;
-      look.sweep = w.sweep * h;
       look.time = this.time;
       this.views[k]!.write(pose, look);
       this.views[k]!.mesh.visible = pose.opacity > DRAW_OPACITY && pose.w > 1;

@@ -117,8 +117,12 @@ describe("the window's deck (after Vexana's film section)", () => {
   });
 
   it("has two bands of five marks and eight running strips each, and the readout pill", () => {
-    expect(text.match(/data-deck="mark-slot"/g)).toHaveLength(10);
-    expect(text.match(/data-deck="strip-item"/g)).toHaveLength(16);
+    // The bands hang outside the picture and stand in the layer under the canvas, so the drone is drawn
+    // in front of them (round five); the readout pill and the words stay in the text layer.
+    expect(below.match(/data-deck="mark-slot"/g)).toHaveLength(10);
+    expect(below.match(/data-deck="strip-item"/g)).toHaveLength(16);
+    expect(below).toContain("data-strip-deck-below");
+    expect(text).not.toContain('data-deck="mark-slot"');
     expect(text).toContain('data-deck="readout"');
     expect(text).toContain(escape(STRIP.deck.readout[0]));
     expect(text).toContain(STRIP.play.duration);

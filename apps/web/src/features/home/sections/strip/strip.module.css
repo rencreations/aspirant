@@ -355,7 +355,7 @@
   pointer-events: none;
 }
 
-/* A soft dark behind the words, so a preview passing behind them never costs the letters (a plain gradient, nothing over the film). */
+/* A soft paper tint behind the words, so a preview passing behind them never costs the letters (a plain gradient, nothing over the film). */
 .ambScrim {
   display: none;
 }
@@ -369,7 +369,11 @@
   top: -55%;
   bottom: -55%;
   z-index: -1;
-  background: radial-gradient(ellipse at center, rgb(5 7 12 / 0.82), rgb(5 7 12 / 0) 68%);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--bg) 88%, transparent),
+    color-mix(in srgb, var(--bg) 0%, transparent) 68%
+  );
   pointer-events: none;
   opacity: 0;
 }
@@ -432,7 +436,7 @@
 
 .ambButton:hover,
 .ambButton:focus-visible {
-  color: var(--ink, #05070c);
+  color: #fff;
   border-color: var(--accent);
 }
 

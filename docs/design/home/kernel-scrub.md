@@ -16,14 +16,15 @@ plays: [
 ],
 ```
 
-| field       | meaning for a zone                                                                                                                             |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `at`        | where the zone starts: a fraction of the section's own range.                                                                                  |
-| `span`      | its length, a fraction of the section. This is what makes the play a zone.                                                                     |
-| `from`/`to` | the value before and after, as for a clock play. `from` must equal the previous play's `to` (the table is contiguous in value).                |
-| `ease`      | the curve of `p`. Default `linear` (a clock play's default is `inOut`). Also `inOut`, `inOutSoft`, `out`.                                      |
-| `seconds`   | the length of the idle snap for a full traverse of the zone (at most 10). It is not a clock: nothing runs for this long unless the page snaps. |
-| `back`      | ignored.                                                                                                                                       |
+| field       | meaning for a zone                                                                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `at`        | where the zone starts: a fraction of the section's own range.                                                                                   |
+| `span`      | its length, a fraction of the section. This is what makes the play a zone.                                                                      |
+| `from`/`to` | the value before and after, as for a clock play. `from` must equal the previous play's `to` (the table is contiguous in value).                 |
+| `ease`      | the curve of `p`. Default `linear` (a clock play's default is `inOut`). Also `inOut`, `inOutSoft`, `out`.                                       |
+| `seconds`   | the length of the idle snap for a full traverse of the zone (at most 10). It is not a clock: nothing runs for this long unless the page snaps.  |
+| `back`      | ignored.                                                                                                                                        |
+| `noSnap`    | `true`: the page is never finished by itself inside this zone (a plain scroll linked passage). The joint snap keeps out of it too (round five). |
 
 Validation (at startup, in `layoutSections`, with errors that name the section and the play): `span` finite and above 0; `at + span <= 1` (a zone never runs into the tail: the tail is the scroll's passthrough); the next play's `at` is at or after `at + span` (zones and plays do not overlap in position); everything a clock table already needs (ordered, contiguous in value, `from !== to`, `seconds` in range).
 

@@ -10,7 +10,7 @@ import { FRAME_PALETTES } from "./palettes";
 export interface ListBackdropPlan {
   kind: BackdropKind;
   options: {
-    theme: "storm";
+    theme: "daybreak";
     colors: readonly string[];
     amount: number;
     speed: number;
@@ -18,10 +18,19 @@ export interface ListBackdropPlan {
   };
 }
 
+/** A soft cloth on the paper: the pastel stops carry the colour, so the amount stays modest. */
+const AMOUNT = 0.62;
+
 export function newListBackdrop(): ListBackdropPlan {
   return {
     kind: "silk",
-    options: { theme: "storm", colors: FRAME_PALETTES[0]!, amount: 0.6, speed: 0.8, intensity: 1 },
+    options: {
+      theme: "daybreak",
+      colors: FRAME_PALETTES[0]!,
+      amount: AMOUNT,
+      speed: 0.8,
+      intensity: 1,
+    },
   };
 }
 
@@ -36,7 +45,7 @@ export function planListBackdrop(
   plan.kind = "silk";
   o.colors = FRAME_PALETTES[k]!;
   // Calm behind the pictures, a little livelier as the last frame opens into the screen.
-  o.amount = 0.6;
+  o.amount = AMOUNT;
   o.speed = 0.8 + 0.6 * growth;
   o.intensity = 1;
   return plan;

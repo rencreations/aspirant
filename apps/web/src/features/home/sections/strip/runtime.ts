@@ -2,10 +2,11 @@
  * The strip (screens 8.2 to 11.3, tail 1.2): the psychoactive hero. The film stands as the 3.7 to 1
  * strip with its words, line, dots and arcs, and answers the pointer (the film plane's own hover
  * effects); a hover of "See All" swaps the two words at the bottom left. On the scroll the frame
- * grows to the window, the small words leave and the effects overlay goes, a play button and the
- * duration come in (a press opens the whole trailer in the site's player), then the window becomes the
- * leader of an orbit of the ten films under "Official animations for The Aspirants", and in the tail
- * the whole set flies off to the bottom right. The drone follows the journey and leaves in the pull.
+ * grows to the window and the small words leave, a play button and the duration come in (a press
+ * opens the whole trailer in the site's player), then the window becomes the leader of an orbit of
+ * the ten films under "Official animations for The Aspirants" as the visitor scrolls (round five), and
+ * in the exit the whole set flies off to the bottom right. The drone follows the journey and leaves
+ * in the exit. The film is always the clean picture: no overlay over it, no light that follows the pointer.
  *
  * The film is driven by `film-state.ts` (a pure function of the scroll, shared with the rows, which
  * hand it over at joint J3); this runtime owns the words and chrome, the player, the keyboard and the
@@ -30,7 +31,7 @@ import { makeState, type FilmState } from "../../fx/video-plane/types";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { filmStateAt } from "./film-state";
 import { sectionScreens, sectionStart } from "../../kernel/where";
-import { backdropAt } from "../backdrops";
+import { backdropAt, resetInkEntrance, stepInkEntrance } from "../backdrops";
 import { STORY, storyAt } from "../story";
 import { makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
 import { DECK_READOUT, DECK_STRIPS } from "./deck-copy";
@@ -106,11 +107,15 @@ class StripRuntime implements SectionRuntime {
     this.videoWord = q('[data-strip-g="video"]');
     this.bottom = q('[data-strip-g="bottom"]');
     this.plus = Array.from(text.querySelectorAll<HTMLElement>("[data-strip-plus]"));
-    this.deck = new WindowDeck(text, {
-      strips: DECK_STRIPS,
-      readout: DECK_READOUT,
-      onPress: this.openPlayer,
-    });
+    this.deck = new WindowDeck(
+      text,
+      {
+        strips: DECK_STRIPS,
+        readout: DECK_READOUT,
+        onPress: this.openPlayer,
+      },
+      below,
+    );
     this.amb = q("[data-strip-amb]");
     this.ambScrim = q("[data-strip-amb-scrim]");
     this.ambButton = q("[data-strip-button]");
@@ -143,7 +148,7 @@ class StripRuntime implements SectionRuntime {
     const Sf = Math.max(S, STORY.strip.start);
     this.driveFilm(Sf, b);
     this.driveDrone(Sf, vp);
-    this.driveBackdrop(Sf);
+    this.driveBackdrop(Sf, frame.dt);
     this.writeSmall(b, vp);
     this.writeWindow(b, vp, frame.dt);
     this.writeSecond(b);
@@ -151,10 +156,13 @@ class StripRuntime implements SectionRuntime {
   }
 
   /**
-   * The strip's dark ground: the section's own pure choice (`backdrops.ts`). The ink field answers
-   * the cursor only; it has no glow around the film and no reaction to the scroll (the owner, round three).
+   * The strip's mist on the light ground: the section's own pure choice (`backdrops.ts`). The ink field
+   * answers the cursor only; it has no glow around the film and no reaction to the scroll (the owner,
+   * round three). It comes in over about four seconds of real time on its own clock (round five), so
+   * the amount is stepped here, once a frame, before the spec is asked for.
    */
-  private driveBackdrop(S: number): void {
+  private driveBackdrop(S: number, dt: number): void {
+    stepInkEntrance(dt, true);
     const back = backdropAt(S);
     if (!back) return;
     this.backdrop?.set(back.kind, back.options);
@@ -390,6 +398,9 @@ class StripRuntime implements SectionRuntime {
   }
 
   leave(): void {
+    // Left upward (back into the rows): the mist comes in again, slowly, on the next arrival. Left
+    // downward (into the bolt, which carries the same mist on) it stays at its level.
+    if (this.ctx.scroll.raw() < sectionStart("strip")) resetInkEntrance();
     useStripPlayer.getState().close();
     this.release?.();
     this.release = null;

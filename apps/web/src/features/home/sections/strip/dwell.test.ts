@@ -21,20 +21,24 @@ describe("the strip's scroll lengths", () => {
       STRIP_ZONES.words +
         STRIP_DWELL.small +
         STRIP_DWELL.window +
+        STRIP_ZONES.pull +
         STRIP_DWELL.orbit +
         STRIP_ZONES.exit,
       9,
     );
     expect(STRIP_AT.window).toBeGreaterThan(STRIP_SPAN.words);
-    expect(STRIP_AT.orbit).toBeGreaterThan(STRIP_AT.window);
-    expect(STRIP_AT.exit).toBeGreaterThan(STRIP_AT.orbit);
+    expect(STRIP_AT.pull).toBeGreaterThan(STRIP_AT.window);
+    expect(STRIP_AT.exit).toBeGreaterThan(STRIP_AT.pull + STRIP_SPAN.pull);
     expect(STRIP_AT.exit + STRIP_SPAN.exit).toBeCloseTo(1, 9);
   });
 
   it("are the scroll between two scenes, in screens", () => {
     expect(STRIP_AT.window * STRIP_SCREENS - STRIP_ZONES.words).toBeCloseTo(STRIP_DWELL.small, 9);
-    expect((STRIP_AT.orbit - STRIP_AT.window) * STRIP_SCREENS).toBeCloseTo(STRIP_DWELL.window, 9);
-    expect((STRIP_AT.exit - STRIP_AT.orbit) * STRIP_SCREENS).toBeCloseTo(STRIP_DWELL.orbit, 9);
+    expect((STRIP_AT.pull - STRIP_AT.window) * STRIP_SCREENS).toBeCloseTo(STRIP_DWELL.window, 9);
+    expect((STRIP_AT.exit - STRIP_AT.pull - STRIP_SPAN.pull) * STRIP_SCREENS).toBeCloseTo(
+      STRIP_DWELL.orbit,
+      9,
+    );
     expect(STRIP_AT.exit * STRIP_SCREENS).toBeCloseTo(STRIP_AT_SCREENS.exit, 9);
   });
 
@@ -42,17 +46,20 @@ describe("the strip's scroll lengths", () => {
     expect(STRIP_ZONES.words).toBeLessThanOrEqual(1.5);
     expect(STRIP_ZONES.exit).toBeGreaterThanOrEqual(0.6);
     expect(STRIP_ZONES.exit).toBeLessThanOrEqual(1.5);
+    expect(STRIP_ZONES.pull).toBeGreaterThanOrEqual(0.6);
+    expect(STRIP_ZONES.pull).toBeLessThanOrEqual(1.5);
     expect(STRIP_DWELL.orbit).toBeGreaterThanOrEqual(0.8);
     expect(STRIP_DWELL.window).toBeLessThan(STRIP_DWELL.orbit);
     // A clock play keeps a clear dwell after a zone: the snap lands on the zone's end.
     expect(STRIP_DWELL.small).toBeGreaterThanOrEqual(0.15);
   });
 
-  it("are the plays of the registry's section: two zones and two triggers", () => {
+  it("are the plays of the registry's section: three zones and one trigger, the exit without a snap", () => {
     const plays = section.plays!;
     expect(section.screens).toBeCloseTo(STRIP_SCREENS, 9);
-    expect(plays.map((p) => p.at)).toEqual([0, STRIP_AT.window, STRIP_AT.orbit, STRIP_AT.exit]);
-    expect(plays.map((p) => p.span !== undefined)).toEqual([true, false, false, true]);
+    expect(plays.map((p) => p.at)).toEqual([0, STRIP_AT.window, STRIP_AT.pull, STRIP_AT.exit]);
+    expect(plays.map((p) => p.span !== undefined)).toEqual([true, false, true, true]);
+    expect(plays.map((p) => p.noSnap === true)).toEqual([false, false, false, true]);
     expect(homeLayout().placed.find((p) => p.id === "strip")?.def.screens).toBeCloseTo(
       STRIP_SCREENS,
       9,

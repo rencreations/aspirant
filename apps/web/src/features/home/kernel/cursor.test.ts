@@ -14,13 +14,13 @@ describe("CursorProxy", () => {
       seen.push({ label: el.getAttribute("data-cursor"), theme: el.dataset.theme });
     };
     document.addEventListener("pointerover", onOver);
-    const cursor = new CursorProxy(document.body, "storm");
+    const cursor = new CursorProxy(document.body, "daybreak");
     cursor.set("VIEW");
     cursor.set(null);
     document.removeEventListener("pointerover", onOver);
     expect(seen).toEqual([
-      { label: "VIEW", theme: "storm" },
-      { label: null, theme: "storm" },
+      { label: "VIEW", theme: "daybreak" },
+      { label: null, theme: "daybreak" },
     ]);
   });
 
@@ -44,10 +44,12 @@ describe("CursorProxy", () => {
     expect(el?.style.opacity).toBe("0");
   });
 
-  it("follows the theme of the section", () => {
+  it("is on the light theme, the home's only one", () => {
     const cursor = new CursorProxy(document.body);
-    cursor.setTheme("storm");
-    expect(document.querySelector<HTMLElement>("[data-home-cursor]")?.dataset.theme).toBe("storm");
+    cursor.setTheme("daybreak");
+    expect(document.querySelector<HTMLElement>("[data-home-cursor]")?.dataset.theme).toBe(
+      "daybreak",
+    );
   });
 
   it("clears its label and leaves the page when disposed", () => {

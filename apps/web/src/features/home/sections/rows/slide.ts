@@ -1,19 +1,20 @@
 /**
- * How the rows slide (round three, 20 Nov 2026): with the scroll, never by themselves. Before the
- * transition the plane slides a fixed share of a picture for every screen the visitor scrolls, in both
- * directions (`fx/image-field/scroll-slide.ts`, shared with the wall). The transition
- * (`journey.ts`) then takes the slide over: it comes to rest with the film at the middle of the screen.
+ * How the rows slide (round three, 20 Nov 2026): with the scroll, never by themselves. Round five: the
+ * speed is eased. Before the transition the plane gains speed with the scroll, from nothing at the
+ * wall's landing (an ease in), in both directions (`fx/image-field/scroll-slide.ts`, shared with the wall).
+ * The transition (`journey.ts`) then takes the slide over at that speed and slows it (the ease out): it
+ * comes to rest with the film at the middle of the screen.
  *
  * Pure: no three.js, no DOM. Every number is a function of the scroll position, so a seek, a jump and a
  * scroll back land exactly.
  */
-import { SLIDE_PITCHES_PER_SCREEN, scrollSlide } from "../../fx/image-field/scroll-slide";
+import { SLIDE_PITCHES, scrollSlide, scrollSlideSpeed } from "../../fx/image-field/scroll-slide";
 import type { Vp } from "../../fx/image-field/types";
 import type { WallGeom } from "../../fx/image-field/wall";
 
 import { filmStartU, rideDistance, rideReach, ROWS_BEATS } from "./journey";
 
-export { SLIDE_PITCHES_PER_SCREEN, scrollSlide };
+export { SLIDE_PITCHES, scrollSlide, scrollSlideSpeed };
 
 /** The steepest start the slide's cubic is allowed (3 is the limit that stays monotone). */
 const MAX_SLOPE = 2.5;
@@ -45,10 +46,11 @@ export function planRide(
   out: Ride,
   anchor = 0,
 ): Ride {
-  const phase0 = scrollSlide(g, zoneStart) + anchor;
-  // Scroll screens the slide beat spans, and the plane px the scroll alone would slide in them.
+  // The ease in ends where the zone starts (`SLIDE_EASE_END`): the speed it arrives with is the speed the cubic starts with.
+  const phase0 = scrollSlide(g, zoneStart, zoneStart) + anchor;
+  // Scroll screens the slide beat spans, and the plane px the scroll's own speed would slide in them.
   const slideScroll = (ROWS_BEATS.slide[1] / storyLength) * zoneScreens;
-  const scrollPx = SLIDE_PITCHES_PER_SCREEN * g.pitch * slideScroll;
+  const scrollPx = scrollSlideSpeed(g, zoneStart, zoneStart) * slideScroll;
   const ride = rideDistance(g, phase0, rideReach(g, vp.w), scrollPx / MAX_SLOPE);
   out.phase0 = phase0;
   out.ride = ride;

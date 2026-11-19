@@ -7,7 +7,7 @@
  * 1.7) scaled to the scroll of this page: the expand is 0.8 of a screen (the reference's 703 px of
  * 900), the pull 0.6, the hold 0.6.
  */
-import { clamp, ramp, smootherstep } from "../../fx/image-field/math";
+import { clamp, ramp } from "../../fx/image-field/math";
 
 /** The beats, in screens from the start of the section. */
 export const STRIP_BEATS = {
@@ -53,8 +53,6 @@ export interface StripBeats {
   leave: number;
   /** 0 the strip, 1 the window (power1.out, the reference's own curve). */
   expand: number;
-  /** 0 the strip's effects overlay, 1 the clean film: the overlay "slowly disappears". */
-  clean: number;
   /** 0 to 1: the play button and its words are in. */
   windowIn: number;
   pull: number;
@@ -73,7 +71,6 @@ export function makeBeats(): StripBeats {
     enter: 0,
     leave: 0,
     expand: 0,
-    clean: 0,
     windowIn: 0,
     pull: 0,
     hold: 0,
@@ -93,7 +90,6 @@ export function stripBeats(s: number, out: StripBeats): StripBeats {
   const p = ramp(s, B.expand[0], B.expand[1]);
   out.expand = easeOut(p);
   out.leave = easeOut(ramp(p, 0, 0.6));
-  out.clean = smootherstep(ramp(p, 0.1, 0.85));
   out.windowIn = ramp(s, B.window[0], B.window[1]);
   out.pull = ramp(s, B.pull[0], B.pull[1]);
   out.hold = ramp(s, B.hold[0], B.hold[1]);
@@ -106,16 +102,6 @@ export function stripBeats(s: number, out: StripBeats): StripBeats {
   out.play = 1 - q * q * (3 - 2 * q);
   out.travel = TRAVEL_RATE * (s - B.hold[0]);
   return out;
-}
-
-/**
- * How much of the live light overlay the trailer wears (0 to 1): it comes on as the film turns upright
- * (with the strip's own overlay), is a little softer on the open window, and fades out gradually as
- * the strip is left (the exit: the set flying off to the next section). A pure function of the beats.
- */
-export function overlayAmount(morph: number, expand: number, fly: number): number {
-  const on = smootherstep(ramp(morph, 0.35, 1));
-  return on * (1 - 0.4 * clamp(expand)) * (1 - ramp(fly, 0, 0.75));
 }
 
 /**

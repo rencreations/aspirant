@@ -1,9 +1,10 @@
 /**
- * The ground behind the page: two stacked layers (the daybreak paper with its dot grid, the storm
- * night) and a third that holds a plain colour for a section that wants one. They cross-fade by
- * opacity at the joints between sections, driven by the position on the scroll (the upper layer
- * fades over the lower one, which stays whole). Nothing is written
- * to `<html>` or `<body>`: only the three layers' own opacity and the colour layer's own colour.
+ * The ground behind the page: the daybreak paper with its dot grid, and a second layer that holds a
+ * plain colour for a section that wants one. The home is light only (the owner, 20 Nov 2026, round
+ * five), so there is no dark ground: the two layers cross-fade by opacity at the joints between
+ * sections, driven by the position on the scroll (the upper layer fades over the lower one, which
+ * stays whole). Nothing is written to `<html>` or `<body>`: only the two layers' own opacity and the
+ * colour layer's own colour.
  */
 import { sectionAt, type Layout } from "./layout";
 import type { GroundName } from "./types";
@@ -11,14 +12,12 @@ import type { GroundName } from "./types";
 /** The scroll distance, in screens, over which two grounds cross at a joint (centred on it). */
 export const GROUND_FADE = 0.5;
 
-/** The colour of the storm ground (`--bg` of the storm theme). */
-export const STORM_HEX = "#05070c";
+/** The colour of the daybreak ground (`--bg` of the daybreak theme), the colour layer's resting colour. */
+const DAYBREAK_HEX = "#f4f6f9";
 
 export interface GroundMix {
   /** Opacity of the daybreak layer, 0 to 1. */
   readonly daybreak: number;
-  /** Opacity of the storm layer. */
-  readonly storm: number;
   /** Opacity of the colour layer. */
   readonly colour: number;
   /** The colour (`#rrggbb`) the colour layer shows. */
@@ -49,14 +48,13 @@ export function mixHex(a: string, b: string, t: number): string {
 }
 
 function single(ground: GroundName): GroundMix {
-  if (ground === "daybreak") return { daybreak: 1, storm: 0, colour: 0, colourHex: STORM_HEX };
-  if (ground === "storm") return { daybreak: 0, storm: 1, colour: 0, colourHex: STORM_HEX };
-  return { daybreak: 0, storm: 0, colour: 1, colourHex: ground };
+  if (ground === "daybreak") return { daybreak: 1, colour: 0, colourHex: DAYBREAK_HEX };
+  return { daybreak: 0, colour: 1, colourHex: ground };
 }
 
-/** The stacking of the three layers, bottom to top (the order of the elements in the stage). */
-function layerOf(mix: GroundMix): 0 | 1 | 2 {
-  return mix.colour > 0 ? 2 : mix.storm > 0 ? 1 : 0;
+/** The stacking of the two layers, bottom to top (the order of the elements in the stage). */
+function layerOf(mix: GroundMix): 0 | 1 {
+  return mix.colour > 0 ? 1 : 0;
 }
 
 /**
@@ -70,7 +68,7 @@ function blend(a: GroundMix, b: GroundMix, t: number): GroundMix {
   let colourHex = a.colour > 0 ? a.colourHex : b.colourHex;
   if (a.colour > 0 && b.colour > 0) colourHex = mixHex(a.colourHex, b.colourHex, t);
   // The weight of each layer: the lower stays at 1, the upper takes t (coming in) or 1 - t (going out).
-  const weight = [0, 0, 0];
+  const weight = [0, 0];
   if (ra === rb) {
     weight[ra] = 1;
   } else if (rb > ra) {
@@ -80,7 +78,7 @@ function blend(a: GroundMix, b: GroundMix, t: number): GroundMix {
     weight[rb] = 1;
     weight[ra] = 1 - t;
   }
-  return { daybreak: weight[0]!, storm: weight[1]!, colour: weight[2]!, colourHex };
+  return { daybreak: weight[0]!, colour: weight[1]!, colourHex };
 }
 
 /**
@@ -105,41 +103,15 @@ export function groundAt(layout: Layout, S: number): GroundMix {
   return single(here.def.bg);
 }
 
-/**
- * A ground change that belongs to a play, not to the scroll. A scene that changes the ground while
- * the page is held (the wall of the aspirants opening into the dark rows) says, every frame it runs,
- * which ground it leaves, which it goes to and how far (0 to 1). The engine uses it in place of
- * `groundAt` for that frame and clears it. A frame in which nobody says anything follows the scroll.
- */
-interface GroundCue {
-  from: GroundName;
-  to: GroundName;
-  t: number;
-}
-
-let cue: GroundCue | null = null;
-
-export function setGroundCue(from: GroundName, to: GroundName, t: number): void {
-  cue = { from, to, t: clamp01(t) };
-}
-
-/** The ground for this frame: the cue a section set, or the scroll's. The cue is used once. */
-export function groundNow(layout: Layout, S: number): GroundMix {
-  const c = cue;
-  cue = null;
-  return c ? blend(single(c.from), single(c.to), c.t) : groundAt(layout, S);
-}
-
-/** The three layers of the ground. */
+/** The two layers of the ground. */
 export interface GroundLayers {
   readonly daybreak: HTMLElement;
-  readonly storm: HTMLElement;
   readonly colour: HTMLElement;
 }
 
 /** Writes a ground mix to its layers, only when something changed enough to see. */
 export class Background {
-  private last = { d: -1, s: -1, c: -1, hex: "" };
+  private last = { d: -1, c: -1, hex: "" };
 
   constructor(private readonly layers: GroundLayers) {}
 
@@ -148,10 +120,6 @@ export class Background {
     if (Math.abs(mix.daybreak - l.d) > 0.002 || (mix.daybreak === 0) !== (l.d === 0)) {
       l.d = mix.daybreak;
       this.layers.daybreak.style.opacity = String(Number(mix.daybreak.toFixed(3)));
-    }
-    if (Math.abs(mix.storm - l.s) > 0.002 || (mix.storm === 0) !== (l.s === 0)) {
-      l.s = mix.storm;
-      this.layers.storm.style.opacity = String(Number(mix.storm.toFixed(3)));
     }
     if (mix.colourHex !== l.hex && mix.colour > 0) {
       l.hex = mix.colourHex;

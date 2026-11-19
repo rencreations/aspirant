@@ -163,7 +163,7 @@ describe("the run rule", () => {
 describe("navOwnerAt", () => {
   it("is the section owner unless a later section asks for the bar early", () => {
     const early = fake("b", 2);
-    (early as { nav: { theme: string; early?: number } }).nav = { theme: "storm", early: 0.3 };
+    (early as { nav: { theme: string; early?: number } }).nav = { theme: "daybreak", early: 0.3 };
     const layout = layoutSections([fake("a", 3), early, fake("c", 1)]);
     expect(navOwnerAt(layout, 2.6).id).toBe("a");
     expect(navOwnerAt(layout, 2.7).id).toBe("b");
@@ -174,13 +174,5 @@ describe("navOwnerAt", () => {
       const plain = layoutSections([fake("a", 3), fake("b", 2), fake("c", 1)]);
       expect(navOwnerAt(plain, S).id).toBe(sectionAt(plain, S).id);
     }
-  });
-
-  it("makes the voices take the top bar a little before the white is whole", () => {
-    const layout = layoutSections(SECTIONS);
-    const voices = layout.placed.find((p) => p.id === "voices")!;
-    // The bar turns over Selena's white rest (0.3 screens), after the film's zone has ended.
-    expect(navOwnerAt(layout, voices.start - 0.31).id).toBe("selena");
-    expect(navOwnerAt(layout, voices.start - 0.29).id).toBe("voices");
   });
 });

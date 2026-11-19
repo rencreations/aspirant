@@ -10,7 +10,7 @@ import { DEFAULT_STATE, type FilmState } from "../../fx/video-plane/types";
 import { ANGLE_SIZE, appearAt, filmAlong, morphAt } from "../rows/journey";
 import { STORY } from "../story";
 
-import { makeBeats, overlayAmount, stripBeats } from "./journey";
+import { makeBeats, stripBeats } from "./journey";
 
 const beats = makeBeats();
 
@@ -37,7 +37,5 @@ export function filmStateAt(S: number, travel: number, out: FilmState, a = 0): F
   out.pull = b.pull;
   out.fly = b.fly;
   out.travel = b.travel;
-  out.effect = 1 - b.clean;
-  out.overlay = overlayAmount(out.morph, b.expand, b.fly);
   return out;
 }

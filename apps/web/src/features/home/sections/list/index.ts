@@ -14,8 +14,8 @@ export const section: HomeSection = {
   screens: LIST_SCREENS,
   lead: 0.4,
   tail: 0.5,
-  bg: "storm",
-  nav: { theme: "storm" },
+  bg: "daybreak",
+  nav: { theme: "daybreak" },
   dom: "fixed",
   plays: playsOf(0, LIST_LAST, LIST_SCREENS, LIST_STEPS),
   // A control that takes the focus from far away brings the page to the first frame's rest (the idle

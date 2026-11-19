@@ -169,7 +169,8 @@ export type SnapBlock =
   | "outside"
   | "no-rest"
   | "script"
-  | "zone";
+  | "zone"
+  | "free";
 
 /** What the engine tells the snap each frame. Plain numbers and flags, written in place by the caller. */
 export interface SnapFrame {

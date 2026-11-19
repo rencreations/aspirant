@@ -52,6 +52,8 @@ export interface ZoneRange {
   readonly to: number;
   /** The length of the snap for the full traverse (`seconds` of the play). */
   readonly seconds: number;
+  /** False for a zone flagged `noSnap`: the page is never finished by itself inside it. */
+  readonly snap: boolean;
 }
 
 /** Every zone of the page, in scroll order. */
@@ -66,6 +68,7 @@ export function zoneRanges(layout: Layout): ZoneRange[] {
         from: p.start + play.at * p.def.screens,
         to: p.start + (play.at + play.span) * p.def.screens,
         seconds: play.seconds,
+        snap: play.noSnap !== true,
       });
     });
   }
@@ -213,6 +216,12 @@ export class ZoneSnap {
     const i = zoneIndexAt(this.zones, f.real, ZONE_EDGE);
     if (i < 0) {
       this.lastBlock = "outside";
+      return;
+    }
+    // A zone flagged `noSnap` is a plain scroll linked passage: still a zone for the joint snap (it
+    // keeps out), but the page is left where the visitor stops.
+    if (!this.zones[i]!.snap) {
+      this.lastBlock = "free";
       return;
     }
     const plan = zonePlan(this.zones[i]!, f.real, this.lastDown, f.keyAt > f.pushAt);

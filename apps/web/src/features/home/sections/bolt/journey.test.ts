@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   Journey,
-  backdropAmount,
   easeInOut,
   headSpeed,
+  mistLeft,
   pathParam,
   wheelAt,
   wheelShow,
@@ -74,7 +74,7 @@ describe("the wheel", () => {
   });
 });
 
-describe("the white and the blue", () => {
+describe("the white and the mist", () => {
   it("rises with the scroll through the bolt, stays through the fall and goes back at the hand", () => {
     expect(whiteRise(0)).toBe(0);
     expect(whiteRise(1.5)).toBeGreaterThan(whiteRise(0.8));
@@ -83,10 +83,10 @@ describe("the white and the blue", () => {
     expect(whiteRise(BOLT_SCREENS + FALL_SCREENS + 0.3)).toBeLessThan(0.01);
   });
 
-  it("fades the blue to black only, and not before the dragon comes", () => {
-    expect(backdropAmount(0.1)).toBeCloseTo(0.9, 6);
-    expect(backdropAmount(BOLT_SCREENS)).toBeLessThan(0.01);
-    expect(backdropAmount(2)).toBeLessThan(backdropAmount(1));
+  it("thins the pale mist out to the plain paper, and not before the dragon comes", () => {
+    expect(mistLeft(0.1)).toBeCloseTo(1, 6);
+    expect(mistLeft(BOLT_SCREENS)).toBeLessThan(0.01);
+    expect(mistLeft(2)).toBeLessThan(mistLeft(1));
   });
 });
 

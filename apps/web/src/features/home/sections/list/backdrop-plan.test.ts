@@ -7,7 +7,7 @@ import { PICTURE_FRAMES } from "./frames";
 import { FRAME_PALETTES } from "./palettes";
 
 describe("the list's backdrop", () => {
-  it("has a palette for every frame, four stops each, dark to light", () => {
+  it("has a palette for every frame, four stops each, all pastel (the home is light only)", () => {
     expect(FRAME_PALETTES).toHaveLength(FRAME_COUNT);
     expect(FRAME_PALETTES).toHaveLength(PICTURE_FRAMES.length + 1);
     for (const stops of FRAME_PALETTES) {
@@ -17,7 +17,7 @@ describe("the list's backdrop", () => {
         const n = parseInt(c.slice(1), 16);
         return 0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255);
       });
-      expect(lum[0]!).toBeLessThan(lum[2]!);
+      for (const l of lum) expect(l).toBeGreaterThan(150);
     }
   });
 

@@ -104,9 +104,9 @@ export function whiteRise(u: number): number {
   return up * (1 - smooth((fall - (FALL_AT.out[0] + 0.1)) / 0.45));
 }
 
-/** How much of the blue backdrop is left (it fades to black only, over the whole slow range). */
-export function backdropAmount(u: number): number {
-  return 0.9 * (1 - smooth((u - 0.2) / (BOLT_SCREENS - 0.2 - 0.3)));
+/** How much of the strip's mist is left, 1 to 0: it thins out to the plain paper over the whole slow range. */
+export function mistLeft(u: number): number {
+  return 1 - smooth((u - 0.2) / (BOLT_SCREENS - 0.2 - 0.3));
 }
 
 /** The dragon's length on the screen, in pixels (a side view: the whole body along its diagonal). */

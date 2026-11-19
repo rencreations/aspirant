@@ -113,11 +113,13 @@ describe("the wall's plane", () => {
     }
   });
 
-  it("has big cards: a wall frame of about half the width shows five to nine rows", () => {
+  it("has big cards: a wall frame of about two thirds of the width shows five to nine rows", () => {
     const { geom, wall, inFrame } = wallGrid({ w: 1440, h: 900 });
     // Round three: big tilted pictures (the owner's premotio reference), not a mosaic.
     expect(geom.cardH).toBeGreaterThan(0.15 * wall.h);
-    expect(wall.w / 1440).toBeCloseTo(0.5, 5);
+    // Round five: the owner's words take about 35 percent, the wall the other 65 (the cards keep their size).
+    expect(wall.w / 1440).toBeCloseTo(0.65, 5);
+    expect(geom.cardW).toBeCloseTo(358, -1);
     const rows = new Set<number>();
     for (let s = 0; s < geom.n; s++) if (inFrame[s]) rows.add(geom.slotRow[s]!);
     expect(rows.size).toBeGreaterThanOrEqual(5);

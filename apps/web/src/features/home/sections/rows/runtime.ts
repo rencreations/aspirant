@@ -20,7 +20,6 @@ import type { CardPose } from "../../fx/image-field/types";
 import type { WallGeom } from "../../fx/image-field/wall";
 import { FILM_ORDER, ensureFilm, type FilmActor } from "../../fx/video-plane";
 import { makeState, type FilmState } from "../../fx/video-plane/types";
-import { setGroundCue } from "../../kernel/background";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionStart } from "../../kernel/where";
 import { backdropAt } from "../backdrops";
@@ -29,7 +28,6 @@ import { filmStateAt } from "../strip/film-state";
 
 import { rowsPose, visibleReach, type RowsPlay } from "./clearing";
 import { appearAt, clearAt, gapAt, slideShape } from "./journey";
-import { groundDark } from "./ground";
 import { makeRide, planRide, scrollSlide, type Ride } from "./slide";
 import { ROWS_DWELL, ROWS_ZONE } from "./zone";
 
@@ -100,9 +98,6 @@ class RowsRuntime implements SectionRuntime {
     const t = Math.min(1, Math.max(0, v));
     const s = t * STORY.rows.length;
     const S = storyAt("rows", s);
-
-    // The ground goes dark through the transition (scroll based, reversible).
-    setGroundCue("daybreak", "storm", groundDark(s));
 
     // The lead: the wall is still closing and the aspirants' scene owns the field.
     if (v >= 0) this.driveField(t, s, frame.S);

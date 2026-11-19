@@ -34,12 +34,16 @@ export const SECTION_IDS = [
 
 export type SectionId = (typeof SECTION_IDS)[number];
 
-/** The theme a section lays under the top bar and under its own text. */
-type HomeTheme = "daybreak" | "storm";
+/**
+ * The theme a section lays under the top bar and under its own text. The home is light only (the
+ * owner, 20 Nov 2026, round five): there is no dark theme here, so no section changes the bar, the
+ * cursor or the ground from light to dark.
+ */
+export type HomeTheme = "daybreak";
 
 /**
- * The ground behind a section: the daybreak paper, the storm night, or a plain colour (`#rrggbb`).
- * Two grounds cross-fade by opacity at a joint (`kernel/background.ts`).
+ * The ground behind a section: the daybreak paper or a plain light colour (`#rrggbb`). Two grounds
+ * cross-fade by opacity at a joint (`kernel/background.ts`).
  */
 export type GroundName = HomeTheme | `#${string}`;
 

@@ -77,6 +77,7 @@ export interface DeckOptions {
 
 export class WindowDeck {
   private readonly all: HTMLElement | null;
+  private readonly allBelow: HTMLElement | null;
   private readonly watch: HTMLElement | null;
   private readonly icon: HTMLElement | null;
   private readonly ring: HTMLElement | null;
@@ -124,21 +125,30 @@ export class WindowDeck {
   private lastLabel = "";
   private fitted = false;
 
+  /**
+   * `root` holds the dress on the picture (the words, the button, the readout). `below` holds the two
+   * bands, which hang outside the picture and stand in the layer under the canvas so that the drone is
+   * drawn in front of them (round five); without it the bands are looked for in `root`.
+   */
   constructor(
     root: ParentNode,
     private readonly options: DeckOptions,
+    below: ParentNode = root,
   ) {
     const all = (sel: string): HTMLElement[] =>
       Array.from(root.querySelectorAll<HTMLElement>(`[data-deck="${sel}"]`));
+    const inBands = (sel: string): HTMLElement[] =>
+      Array.from(below.querySelectorAll<HTMLElement>(`[data-deck="${sel}"]`));
     this.all = root.querySelector<HTMLElement>("[data-strip-deck]");
+    this.allBelow = below.querySelector<HTMLElement>("[data-strip-deck-below]");
     this.watch = root.querySelector<HTMLElement>("[data-strip-play]");
     this.icon = root.querySelector<HTMLElement>('[data-deck="watch-icon"]');
     this.ring = root.querySelector<HTMLElement>('[data-deck="watch-ring"]');
-    this.slots = all("mark-slot");
-    this.emerges = all("mark-emerge");
-    this.swapEls = all("mark-swap");
-    this.strips = all("strip");
-    this.stripItems = all("strip-item");
+    this.slots = inBands("mark-slot");
+    this.emerges = inBands("mark-emerge");
+    this.swapEls = inBands("mark-swap");
+    this.strips = inBands("strip");
+    this.stripItems = inBands("strip-item");
     this.stripTexts = this.stripItems.map((item) => {
       const t = Array.from(item.querySelectorAll<HTMLElement>('[data-deck="strip-text"]'));
       return [t[0]!, t[1]!];
@@ -174,6 +184,7 @@ export class WindowDeck {
     const full = up >= 0.98;
     const btnR = fit(up, 0.3, 1, 0, 1);
     put(this.all, "opacity", up > 0.001 ? "1" : "0");
+    put(this.allBelow, "opacity", up > 0.001 ? "1" : "0");
     // The pill is as wide as its first line, once the fonts are in and the deck can be measured.
     if (!this.fitted && up > 0.001) {
       const first = this.readoutLines[0];

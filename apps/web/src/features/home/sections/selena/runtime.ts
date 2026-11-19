@@ -16,12 +16,18 @@ import { AT, WORD_IN, beatsAt, newBeats, seg, selenaScreens, smooth, type Beats 
 
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 
-/** Her colours for the aurora behind the room: the cyan of her wings, her violet, the pink of her hair. */
-const AURORA = ["#4fd8ff", "#8b6cff", "#ff5fb8", "#ffc46b"] as const;
+/**
+ * Her colours for the aurora behind the room, lightened for the paper (the home is light only): the
+ * cyan of her wings, her violet, the pink of her hair and the gold of her hair's ends.
+ */
+const AURORA = ["#8fe3ff", "#b7a4ff", "#ffa6d6", "#ffd89a"] as const;
 /** How strong the aurora is behind the room. The drawer's words stay readable over it. */
 const AURORA_AMOUNT = 1;
-/** What is left of the list's dusk sky once the aurora is in (the sky is opaque and sits over it). */
-const SKY_LEFT = 0.06;
+/**
+ * What is left of the list's pastel sky once the aurora is in (the sky is opaque and sits over the
+ * backdrop, so it gives way as the aurora comes in and a little of it stays as a haze).
+ */
+const SKY_LEFT = 0.22;
 
 /**
  * The Selena section: the drawer with its words (DOM), the stars and the white of the way out, and
@@ -106,12 +112,12 @@ class SelenaRuntime implements SectionRuntime {
     // Nothing is asked at the joint with the list (u 0): the sky of the list stays whole there.
     if (amount <= 0.002) return;
     backdrop.set("aurora", {
-      theme: "storm",
+      theme: "daybreak",
       colors: AURORA,
       amount,
       speed: 0.9,
       scale: 1.1,
-      intensity: 1.6,
+      intensity: 1.8,
     });
   }
 
@@ -139,9 +145,9 @@ class SelenaRuntime implements SectionRuntime {
     put(this.sky, "visibility", b.white < 1 ? "inherit" : "hidden");
 
     // The stars come as the drawer opens. The four point star of the film's sky follows the camera.
-    put(this.stars, "opacity", f(0.9 * smooth(seg(u, 0, 0.8)) * (1 - b.white)));
+    put(this.stars, "opacity", f(0.6 * smooth(seg(u, 0, 0.8)) * (1 - b.white)));
     const star = smooth(seg(u, AT.camera[0], AT.camera[0] + 0.5)) * (1 - b.white);
-    put(this.star, "opacity", f(0.92 * star));
+    put(this.star, "opacity", f(0.95 * star));
     put(this.star, "transform", `scale(${f(0.8 + 0.2 * star)})`);
 
     // The white: the way out, then it leaves again in the tail, under the next section's own.

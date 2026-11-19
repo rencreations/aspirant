@@ -31,22 +31,19 @@ export interface PlaneLook {
   win: [number, number, number, number];
   /** 0 to 1: the picture is in. */
   ready: number;
-  /** The overlay of the strip, 0 to 1. */
-  effect: number;
-  /** The live light overlay (scanlines, grain, sweep, vignette, fringe), 0 to 1. */
-  overlay: number;
   /** 0 to 1: the pointer is on this plane. */
   hover: number;
   /** The pointer on the plane, fractions of its size from its centre, y up. */
   pointerX: number;
   pointerY: number;
-  /** The weights of the lens, the colour split, (unused) and the sweep, already scaled by the hover. */
+  /** The weights of the lens and the colour split, already scaled by the hover. */
   lens: number;
   split: number;
-  sweep: number;
   time: number;
   phase: number;
   light: number;
+  /** 0 to 1: the soft shadow under the card on the light page (a plane without one stays two pixels wide). */
+  shadow: number;
   /** The trailer's thin loading line: how visible it is (0 to 1) and how much is in hand (0 to 1). */
   load: number;
   loadFraction: number;
@@ -54,6 +51,8 @@ export interface PlaneLook {
 
 /** Margin around the plane the quad covers, so the soft edge is not cut by the mesh. */
 const PAD = 2;
+/** The margin of a plane that has a shadow: it holds the blur. */
+const SHADOW_PAD = 28;
 
 export class PlaneView {
   readonly mesh: Mesh<PlaneGeometry, ShaderMaterial>;
@@ -67,12 +66,11 @@ export class PlaneView {
     uColor: { value: new Color(0x2a2a3a) },
     uReady: { value: 0 },
     uTime: { value: 0 },
-    uEffect: { value: 0 },
-    uOverlay: { value: 0 },
     uHover: { value: 0 },
     uPointer: { value: new Vector2(0, 0) },
-    uFx: { value: new Vector4(0, 0, 0, 0) },
+    uFx: { value: new Vector2(0, 0) },
     uLight: { value: 0.28 },
+    uShadow: { value: 0 },
     uBend: { value: 0 },
     uFlutter: { value: 0 },
     uPhase: { value: 0 },
@@ -114,13 +112,13 @@ export class PlaneView {
     u.uPhase.value = l.phase;
     u.uWin.value.set(l.win[0], l.win[1], l.win[2], l.win[3]);
     u.uReady.value = l.ready;
-    u.uEffect.value = l.effect;
-    u.uOverlay.value = l.overlay;
     u.uHover.value = l.hover;
     u.uPointer.value.set(l.pointerX, l.pointerY);
-    u.uFx.value.set(l.lens, l.split, 0, l.sweep);
+    u.uFx.value.set(l.lens, l.split);
     u.uTime.value = l.time;
     u.uLight.value = l.light;
+    u.uShadow.value = l.shadow;
+    u.uPad.value = l.shadow > 0.001 ? SHADOW_PAD : PAD;
     u.uLoad.value.set(l.load, l.loadFraction);
   }
 
