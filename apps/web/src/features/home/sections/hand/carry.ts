@@ -12,7 +12,13 @@
  * from them: which socket the doll hangs under, the last two beats (so a one shot fires on a
  * forward crossing and never in a replay after a jump), and the pointer.
  */
-import { drawnHeight, ensureDoll, type DollActor } from "../../actors/doll";
+import {
+  LAND_SECONDS,
+  STAND_SECONDS,
+  drawnHeight,
+  ensureDoll,
+  type DollActor,
+} from "../../actors/doll";
 import { ensureHand, type HandActor } from "../../actors/hand";
 import { ensureMarks, type MarksActor } from "../../fx/comic-marks";
 import type { Actors, FrameInfo, PointerState, SectionCtx } from "../../kernel/types";
@@ -47,6 +53,8 @@ const ARC = 0.2;
 const TOSS_FLICK = [0.1, 0.36] as const;
 /** How high she hops when the strip turns to the next frame, as a share of the screen's height. */
 const HOP = 0.03;
+/** Seconds into the landing when her feet meet the palm: the hand is knocked and the poof goes up. */
+const TOUCH_AT = 0.3;
 /** The most the scroll may move in one frame (screens) and still count as the visitor's, not a jump. */
 const CROSS_SCREENS = 1.2;
 
@@ -63,6 +71,15 @@ export class Carry {
   private prevS = NaN;
   private curS = NaN;
   private seen = -1;
+  /**
+   * Seconds since she touched the palm, on the frame's own dt (never the scroll): the clock of the
+   * landing and the standing up. -1 while she is still falling.
+   */
+  private landClock = -1;
+  /** She has touched the palm in this landing (the poof, the knock of the hand): once, at `TOUCH_AT`. */
+  private touched = false;
+  /** True on the one frame the touch happens. */
+  private touchNow = false;
   /** The whole frame she has hopped to, to knock her on the landing. */
   private frameNo = -1;
   private readonly rect: Rect = { x: 0, y: 0, w: 0, h: 0 };
@@ -119,6 +136,13 @@ export class Carry {
       this.prev = this.cur;
       this.prevS = this.curS;
       this.curS = frame.S;
+      // The landing runs on a clock of its own: it starts when she reaches the palm by position and
+      // never follows the scroll (a scroll back up gives the fall loop again).
+      this.landClock =
+        t >= HAND_AT.land ? (this.landClock < 0 ? 0 : this.landClock + frame.dt) : -1;
+      if (this.landClock < 0) this.touched = false;
+      this.touchNow = !this.touched && this.landClock >= TOUCH_AT;
+      if (this.touchNow) this.touched = true;
     }
     this.cur = t + u;
 
@@ -171,7 +195,7 @@ export class Carry {
     // The flick that tosses her: a quick close and an open (the spring overshoots).
     const flick = seg(u, LIST_AT.toss[0], LIST_AT.toss[0] + TOSS_FLICK[1]);
     hand.setGrip(flick > 0 && flick < 1 ? 0.85 * Math.sin(Math.PI * flick) : 0);
-    if (this.crossed(HAND_AT.land)) hand.impact(1);
+    if (this.touchNow) hand.impact(1);
   }
 
   private applyDoll(t: number, u: number, frame: FrameInfo, geo: HandGeometry): void {
@@ -212,19 +236,25 @@ export class Carry {
       P.y = mix(end.y, palmRestY + HIPS_ABOVE_FEET * h0, f);
       P.height = mix(end.height, h0, f);
       P.z = mix(J6.z, 0, f);
-      const arrive = 1 - smooth(seg(f, 0.75, 1));
-      doll.setPose("fall", "stand", mix(J6.standWeight, 1, smooth(f)));
-      doll.flail((J6.flail + 0.45 * Math.sin(Math.PI * f)) * arrive, mix(J6.flailRate, 1.2, f));
-      doll.squash(0.1 * smooth(seg(f, 0.85, 1)));
+      // The fall loop is the doll's own animation on its own clock (round four): the scroll moves her
+      // along the path (`place`) and nothing else. Without the clip (still loading) the old scrubbed
+      // pose shows instead.
+      doll.fallLoop(1);
+      if (doll.fallSeconds === 0) {
+        const arrive = 1 - smooth(seg(f, 0.75, 1));
+        doll.setPose("fall", "stand", mix(J6.standWeight, 1, smooth(f)));
+        doll.flail((J6.flail + 0.45 * Math.sin(Math.PI * f)) * arrive, mix(J6.flailRate, 1.2, f));
+        doll.squash(0.1 * smooth(seg(f, 0.85, 1)));
+      }
       doll.place(P);
       return;
     }
 
-    if (this.crossed(HAND_AT.land)) {
-      doll.bump(1);
+    if (this.touchNow) {
+      doll.bump(0.6);
       this.marks?.emit("poof", {
         at: { x: geo.x + geo.standDx, y: palmRestY },
-        size: drawnHeight(130),
+        size: drawnHeight(80),
       });
     }
 
@@ -240,6 +270,14 @@ export class Carry {
       P.height = h0;
       doll.setPose("stand", "sit", sitW);
       doll.squash(-0.3 * lb.crouch);
+      // She lands, then stands up: two blends on the clock of the landing, from the fall loop she was
+      // in (any phase) through the catch to the pose the palm asks for (`standUp` ends on `setPose`).
+      const lt = Math.min(1, this.landClock / LAND_SECONDS);
+      const st = Math.min(1, Math.max(0, (this.landClock - LAND_SECONDS) / STAND_SECONDS));
+      if (st < 1) {
+        doll.land(lt);
+        doll.standUp(st);
+      }
       doll.place(P);
       return;
     }

@@ -1,8 +1,40 @@
 /*
- * The bolt section: the text wheel of the five pairs, above the canvas. Only transform and opacity
- * are written, by the section's runtime. The wheel exists only in the stage; the plain page shows the
- * five names as a list. The green of the ground is the live backdrop (`backdrop-plan.ts`).
+ * The bolt section (round four): the text wheel of the five pairs, small and centred above the canvas,
+ * and the white that rises from the bottom under the canvas. Only transform and opacity are written, by
+ * the section's runtime. The wheel exists only in the stage; the plain page shows the five names as a
+ * list. The wheel follows the tibdigital.com "Since 2007" wheel: 72 px at 1440 (5vw), weight 400,
+ * tracking -0.06em, a perspective of 1000 px.
  */
+
+/* ---------------------------------------------------------------- the white */
+
+.white {
+  display: none;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .white {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Taller than the screen: the runtime lifts it by `translate3d`, its soft top edge goes up with it. */
+  height: calc(1.35 * 100lvh);
+  pointer-events: none;
+  /* Off white, solid in the lower part, a long soft edge above it (the reference's rising glow). */
+  background: linear-gradient(
+    to top,
+    #f3f1ec 0%,
+    #f3f1ec 60%,
+    rgb(243 241 236 / 0.9) 68%,
+    rgb(243 241 236 / 0.62) 77%,
+    rgb(243 241 236 / 0.3) 87%,
+    rgb(243 241 236 / 0.08) 95%,
+    rgb(243 241 236 / 0) 100%
+  );
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+}
 
 /* ---------------------------------------------------------------- the wheel */
 
@@ -16,22 +48,23 @@
 
 .name {
   font-family: var(--font-display-stack);
-  font-size: var(--step-3);
-  font-style: italic;
-  font-weight: 800;
+  font-size: var(--step-2);
+  font-weight: 400;
+  letter-spacing: -0.06em;
   line-height: 1;
-  text-transform: uppercase;
+}
+
+.ink {
+  display: none;
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .wheel {
-  --wheel-y: 20%;
   position: absolute;
   inset: 0;
   display: block;
   margin: 0;
   perspective: 1000px;
-  /* The names stand in the upper fifth, clear of the dragon's head and the doll that rides it. */
-  perspective-origin: 50% var(--wheel-y);
+  perspective-origin: 50% 50%;
   transform-style: preserve-3d;
   pointer-events: none;
 }
@@ -40,10 +73,11 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: var(--wheel-y);
-  margin-top: -0.55em;
-  /* The size of the wheel's lines: wide on a wide screen, held by the height, never wider than the phone. */
-  font-size: clamp(2rem, min(7.6vw, 13vh), 8.5rem);
+  top: 50%;
+  margin-top: -0.5em;
+  /* The reference's 72 px at 1440 (5vw), held between a phone and a very wide screen. */
+  font-size: clamp(1.7rem, 5vw, 5rem);
+  line-height: 1;
   text-align: center;
   white-space: nowrap;
   opacity: 0;
@@ -54,9 +88,25 @@
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .item .name {
+  display: block;
   font-size: inherit;
-  /* A dark halo keeps the white lines readable where the dragon passes behind them. */
+}
+
+/* A soft halo keeps each copy readable where the dragon's pale head passes behind the line (a still shadow, never animated). */
+:global(.js) :global([data-home]:not([data-gl="off"])) .item .light {
+  color: #fff;
   text-shadow:
-    0 0.03em 0.4em rgb(2 10 8 / 0.8),
-    0 0 0.9em rgb(2 10 8 / 0.55);
+    0 0 0.35em rgb(4 8 24 / 0.7),
+    0 0 0.1em rgb(4 8 24 / 0.55);
+}
+
+/* The ink copy lies over the white one and takes over as the white rises behind the wheel. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .item .ink {
+  position: absolute;
+  inset: 0;
+  color: #0c1020;
+  opacity: 0;
+  text-shadow:
+    0 0 0.35em rgb(243 241 236 / 0.75),
+    0 0 0.1em rgb(243 241 236 / 0.6);
 }

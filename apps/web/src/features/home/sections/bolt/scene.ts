@@ -1,67 +1,67 @@
 /**
- * The scene that the bolt and the fall sections share: Silverbolt, the doll that rides its head, the
- * wavy lines, the comic marks and the trails, driven by one pure function of the scroll
- * (`journey.ts`). Both sections call `update(t, frame)` with `t` in beat time (`stations.ts`), the
- * bolt section for 0 to 3.3 and the fall for 3.3 to 6.6, so the picture is the same whichever of the
- * two draws it, and a frame in which both run (the lead of the fall) is drawn once.
+ * The scene that the bolt and the fall sections share (round four, 20 Nov 2026): Silverbolt in a side
+ * view, the doll that rides it, and the blue wavy lines, driven by one pure function of the scroll
+ * (`journey.ts`). Both sections call `update(u, frame)` with `u` the scroll in screens since the start
+ * of the bolt (`stations.ts`), so the picture is the same whichever of the two draws it. There are no
+ * effects here: no marks, no trails, no speed lines. Only the dragon, the doll and the lines.
  *
- * Everything the visitor can do (poke the dragon, pull its tail, pet the doll) is the actors' own
- * and lives in their hit targets; this file turns their events into comic marks and into the doll's
- * faces. The scene is built when a section mounts and does not wait for the dragon: until the actors
- * have arrived `update` draws only what it has (the lines) and the sections' text carries on.
+ * The dragon is placed by its HEAD: `headPoint` is put on the path's point every frame (the offset
+ * between the body's place and the head is read from the actor, so the head stands where the path says
+ * while the body leans and shakes). The doll rides the `seat` socket (`doll.rideOn`, her own physics and
+ * idle). At the end of the slow range the dragon shakes (`sb.shake`) and she loses her grip; from then
+ * on she is free, placed in the screen by the fall's ease, on her own fall loop (`doll.fallLoop`).
+ *
+ * The scene is built when a section mounts and does not wait for the dragon: until the actors have
+ * arrived `update` draws only what it has (the lines) and the sections' text carries on.
  */
-import { drawnHeight, ensureDoll } from "../../actors/doll";
+import { Vector3, type Object3D } from "three";
+
+import { ensureDoll } from "../../actors/doll";
+import type { DollActor } from "../../actors/doll";
 import { getCast } from "../../actors/shared/cast";
 import { whenQuiet } from "../../actors/shared/quiet";
 import { warmCast } from "../../actors/shared/warm";
-import type { DollActor, FaceName } from "../../actors/doll";
 import { ensureSilverbolt } from "../../actors/silverbolt";
-import type { SilverboltActor } from "../../actors/silverbolt/actor";
-import type { MarkEvent } from "../../actors/silverbolt/marks";
-import { ensureMarks } from "../../fx/comic-marks";
-import { ensureTrails } from "../../fx/trail";
+import { SilverboltActor } from "../../actors/silverbolt/actor";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
 
 import { BuildGate } from "./build-gate";
-import { FALL_MOODS, Journey } from "./journey";
+import { Journey, whiteRise } from "./journey";
 import { WaveLines } from "./lines";
-import { BEAT, WHEEL_FROM } from "./stations";
+import { BOLT_AT, BOLT_SCREENS, FALL_LEAD } from "./stations";
 
-type Marks = Awaited<ReturnType<typeof ensureMarks>>;
-type Trails = Awaited<ReturnType<typeof ensureTrails>>;
-type Sustain = ReturnType<Marks["sustain"]>;
-type Trail = ReturnType<Trails["create"]>;
 type DragonPlace = NonNullable<Parameters<SilverboltActor["place"]>[0]>;
 type DollPlace = Parameters<DollActor["place"]>[0];
 
+/** The rider API of the doll (`actor-doll.md`, "Round four: riding"). Read through one type so a missing method never throws. */
+interface Rider {
+  rideOn?(
+    seat: Object3D,
+    options?: {
+      gripL?: Object3D | null;
+      gripR?: Object3D | null;
+      headPoint?: Object3D | null;
+      seed?: number;
+    },
+  ): void;
+  loseGrip?(): void;
+  release?(): void;
+  onLetGo?: (() => void) | null;
+  readonly riding?: boolean;
+}
+
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
-
-/** The part of the section's length in which the lines are drawn. */
-const LINES_FROM = 0.1;
-const LINES_TO = 4.3;
-
-/** How long the doll is startled when the dragon is poked, in seconds. */
-const STARTLE = 0.9;
-
-/**
- * Where the doll sits on the dragon's head, from the `headTop` socket, in shares of her height. The
- * socket is on the skull of the straightened head (between the horns and the eyes) and stays upright,
- * so the seat is only a small lift (calibrated by eye).
- */
-const SEAT = { x: 0, y: 0.12, z: 0, yaw: 0.3, pitch: 0, roll: 0 } as const;
 
 const shared = new WeakMap<object, BoltScene>();
 
-/** From this `t` (the end of the fall) the falling air is over: its loops are stopped and swept away. */
-const AIR_END = 6.6;
-
-/**
- * The most the scroll may move, in screens, in one frame and still be the visitor's own. The scenes
- * follow the scroll (a zone is about a screen of beats), so how many beats a frame covers depends on
- * the zone: the jump is judged on the scroll. The flick limiter hands the scene at most one screen a
- * frame, so a hard flick still plays every scene; a seek or a drag of the bar is more and is a jump.
- */
+/** The most the scroll may move, in screens, in one frame and still be the visitor's own (else it is a jump). */
 const JUMP_SCREENS = 1.2;
+
+/** The shake: it starts this far (screens) before she loses her grip and is kept going until then. */
+const SHAKE_LEAD = 0.45;
+
+/** How far the head is from the body's centre along the nose, in metres, until it has been measured. */
+const HEAD_AHEAD_M = 1.2;
 
 export class BoltScene {
   /** Take part in the scene of this stage. Each section that acquires it must release it. */
@@ -78,32 +78,36 @@ export class BoltScene {
   readonly journey = new Journey();
   sb: SilverboltActor | null = null;
   doll: DollActor | null = null;
-  private marks: Marks | null = null;
   private readonly lines: WaveLines | null;
-  private wingL: Trail | null = null;
-  private wingR: Trail | null = null;
-  private tail: Trail | null = null;
-  private speed: Sustain | null = null;
-  private air: Sustain | null = null;
-  private offMarks: (() => void) | null = null;
+  /** The white's two layers: one in the bolt's slot of the page's DOM and one in the fall's (a slot is only on while its section runs). */
+  private whiteBolt: HTMLElement | null = null;
+  private whiteFall: HTMLElement | null = null;
+  private whiteKey = "";
   private users = 0;
   private disposed = false;
 
   private lastFrame = -1;
-  private lastT = NaN;
-  /** The scroll of the last frame, and whether it moved so far since the one before that it was a jump. */
+  private lastU = NaN;
   private lastS = NaN;
   private jumpS = true;
   private time = 0;
-  /** When this scene last drew, by the clock of the page: the dragon's marks belong only while it does. */
-  private ranAt = -1e9;
-  private startleUntil = 0;
-  private startleFace: FaceName = "shocked";
-  /** The doll's place on the screen when she left the head, minus where the fall says she is: it fades out. */
+  // The dragon's head servo: where the body was put and how far the head stood from it.
+  private readonly head = new Vector3();
+  private placedX = 0;
+  private placedY = 0;
+  private placedHeight = 0;
+  private offX = 0;
+  private offY = 0;
+  private offSeen = false;
+  private shakeUntil = -1;
+  // The doll's launch: where her hips were when she let go, in the world of the bolt.
+  private launchSeen = false;
+  private letGo = false;
+  private letGoMove = 0;
   private readonly offset = { x: 0, y: 0 };
-  private offsetOn = false;
   private readonly point = { x: 0, y: 0, s: 1, unit: 1 };
-  private sneeze = 0;
+  private lost = false;
+  private riding = false;
   // Reused every frame: the actors read these and keep nothing.
   private readonly dragonPlace: DragonPlace = {};
   private readonly dragonFly = { amplitude: 1 };
@@ -125,26 +129,15 @@ export class BoltScene {
     const ctx = this.ctx;
     try {
       // Everything here is heavy and waits for a pause of the scroll: the section is mounted nine
-      // screens early for this. Effects first (they are small), then the shared lit scene, then the
-      // dragon, then the doll, so the registry steps the dragon before the doll that hangs on it.
+      // screens early for this. The shared lit scene first, then the dragon, then the doll, so the
+      // registry steps the dragon before the doll that hangs on it.
       await this.gate.pause(() => whenQuiet());
-      const [marks, trails] = await Promise.all([ensureMarks(ctx), ensureTrails(ctx)]);
-      if (this.disposed) return;
-      this.marks = marks;
-      this.speed = marks.sustain("speed", { size: 70 });
-      this.air = marks.sustain("air", { size: 170 });
       // The engine made the shared lit scene (and its environment map) behind the loading screen.
       const cast = getCast(ctx.stage);
       await this.gate.pause(() => whenQuiet());
       if (this.disposed) return;
       const sb = await ensureSilverbolt(ctx);
       if (this.disposed) return;
-      this.wingL = trails.create({ colors: ["gold", "pink"], width: 26, life: 0.7, taper: 1.5 });
-      this.wingR = trails.create({ colors: ["gold", "pink"], width: 26, life: 0.7, taper: 1.5 });
-      this.tail = trails.create({ colors: ["sky", "white"], width: 22, life: 0.9, taper: 1.4 });
-      this.offMarks = sb.onMark((event) => {
-        this.onDragonMark(event);
-      });
       this.sb = sb;
       await warmCast(ctx.stage, cast, sb.object, { quiet: this.quiet });
       if (this.disposed) return;
@@ -166,289 +159,252 @@ export class BoltScene {
     if (this.users > 0) return;
     this.disposed = true;
     shared.delete(this.ctx.stage);
-    this.offMarks?.();
-    this.offMarks = null;
-    for (const handle of [this.speed, this.air]) handle?.stop();
-    const doll = this.doll;
-    if (doll?.onReact === this.onDollReact) doll.onReact = null;
+    const rider = this.doll as unknown as Rider | null;
+    if (rider && rider.onLetGo === this.onLetGo) rider.onLetGo = null;
     this.ctx.actors.remove("bolt-lines");
+    this.whiteBolt?.style.removeProperty("transform");
+    this.whiteFall?.style.removeProperty("transform");
   }
 
   /** Forget what the visitor did to the dragon: a fresh start when the section is entered. */
   fresh(): void {
     this.sb?.calm();
-    this.marks?.clear();
-    this.offsetOn = false;
+    this.launchSeen = false;
+    this.letGo = false;
+    this.lost = false;
   }
 
-  /** The doll's own marks: a press throws stars, a dizzy spell sweats. */
-  private readonly onDollReact = (kind: "hover" | "press" | "dizzy"): void => {
-    const doll = this.doll;
-    const marks = this.marks;
-    if (!doll || !marks) return;
-    const size = Math.max(30, drawnHeight(this.journey.dollHeight) * 0.6);
-    if (kind === "press") marks.emit("starburst", { at: doll.socket("head"), size, strength: 0.7 });
-    else if (kind === "dizzy")
-      marks.emit("sweat", { at: doll.socket("head"), size: size * 0.4, count: 3 });
-    else marks.emit("sparkle", { at: doll.socket("cheekL"), size: size * 0.35 });
+  /** The grip is gone (the rider says so about 0.15 s after `loseGrip`): she leaves the seat. */
+  private readonly onLetGo = (): void => {
+    this.letGoNow(true);
   };
 
-  /** Silverbolt says a mark belongs: draw it (the table of `fx-marks.md`), and startle the doll. */
-  private onDragonMark(event: MarkEvent): void {
-    const marks = this.marks;
-    // The dragon also shows in other sections (Selena's room, the comedy): their scenes draw its marks.
-    if (!marks || performance.now() - this.ranAt > 250) return;
-    const h = this.journey.dragonHeight;
-    const size = Math.max(44, h * 0.3);
-    const strength = event.strength;
-    const at = event.at;
-    switch (event.kind) {
-      case "sparks":
-        marks.emit("spark", { at, strength, size });
-        break;
-      case "smoke":
-        marks.emit("steam", { at, strength, rotation: this.journey.heading, size: size * 0.7 });
-        break;
-      case "vein":
-        marks.emit("vein", { at, strength, size });
-        break;
-      case "sweat":
-        marks.emit("sweat", { at, strength, size: size * 0.5 });
-        break;
-      case "stars":
-        marks.emit("starburst", { at, strength, size: size * 1.2 });
-        break;
-      case "gust":
-        marks.emit("speed", { at, strength, rotation: this.journey.heading + Math.PI, size });
-        break;
-      case "puff":
-        marks.emit("poof", { at, strength, size: size * 1.4 });
-        break;
-      case "heart":
-        marks.emit("heart", { at, strength, size: size * 0.8 });
-        break;
-      case "chomp":
-        marks.emit("flash", { at, size: size * 1.3 });
-        marks.emit("spark", { at, size });
-        break;
-    }
-    // The doll feels everything the dragon does.
-    if (event.kind !== "heart" && event.kind !== "smoke") {
-      this.startleUntil = this.time + STARTLE;
-      this.startleFace = event.kind === "stars" ? "dizzy" : "shocked";
-    }
+  /** She leaves the seat. `seam`: hide the step from where she was to where the fall puts her (not after a jump). */
+  private letGoNow(seam: boolean): void {
+    const doll = this.doll;
+    if (!doll) return;
+    const rider = doll as unknown as Rider;
+    if (seam) doll.markPoint("hips", this.point);
+    if (rider.release) rider.release();
+    else doll.detach();
+    this.letGo = true;
+    this.letGoMove = this.journey.move;
+    this.offset.x = seam ? this.point.x - this.journey.dollX : 0;
+    this.offset.y = seam ? this.point.y - this.journey.dollY : 0;
   }
 
-  /** Set the whole picture for beat time `t`. */
-  update(t: number, frame: FrameInfo): void {
+  /**
+   * The white that rises from the bottom (`whiteRise`): a lift of its layer, nothing else. The layer is
+   * 1.35 screens tall and sits with its bottom on the screen's bottom: at `rise` 0 it is all below the
+   * screen, at 1 its top edge is 1.35 screens up. Two copies stand in the DOM, one in each section's slot
+   * (the slot of a section is only on while it runs); in the overlap of the two the fall's shows it.
+   */
+  private writeWhite(u: number): void {
+    const doc = this.ctx.dom.root.ownerDocument;
+    this.whiteBolt ??= doc.querySelector<HTMLElement>('[data-bolt-white="bolt"]');
+    this.whiteFall ??= doc.querySelector<HTMLElement>('[data-bolt-white="fall"]');
+    const rise = whiteRise(u);
+    const onBolt = u < BOLT_SCREENS - FALL_LEAD;
+    const key = `${rise.toFixed(3)}|${onBolt ? 1 : 0}`;
+    if (key === this.whiteKey) return;
+    this.whiteKey = key;
+    const y = ((1 - rise) * 100).toFixed(2);
+    const away = "translate3d(0, 100%, 0)";
+    const here = `translate3d(0, ${y}%, 0)`;
+    if (this.whiteBolt) this.whiteBolt.style.transform = onBolt ? here : away;
+    if (this.whiteFall) this.whiteFall.style.transform = onBolt ? away : here;
+  }
+
+  /** Set the whole picture for the scroll `u` (screens since the start of the bolt). */
+  update(u: number, frame: FrameInfo): void {
     // A section runs: the visitor is here, so the build does not wait for a pause any more.
     if (!this.gate.done) this.gate.hurry();
-    if (frame.frame === this.lastFrame && t === this.lastT) return;
+    if (frame.frame === this.lastFrame && u === this.lastU) return;
     const first = frame.frame !== this.lastFrame;
     if (first) {
       this.jumpS = !(Math.abs(frame.S - this.lastS) < JUMP_SCREENS);
       this.lastS = frame.S;
+      this.time = frame.time;
     }
-    const prevT = this.lastT;
+    const prevU = this.lastU;
     this.lastFrame = frame.frame;
-    this.lastT = t;
-    this.ranAt = performance.now();
-    if (first) this.time = frame.time;
+    this.lastU = u;
     const { w, h } = frame.viewport;
-    const j = this.journey.at(t, w, h);
+    const j = this.journey;
+    const jumped = Number.isNaN(prevU) || this.jumpS;
+    this.writeWhite(u);
+
+    // The doll's launch point: measured from the seat while she rides, else the nominal one.
+    const sb = this.sb;
+    const doll = this.doll;
+    const fallen = u >= BOLT_SCREENS;
+    if (!fallen) {
+      if (doll?.visible && !this.lost) {
+        doll.markPoint("hips", this.point);
+        j.launchX = this.point.x;
+        j.launchY = this.point.y;
+        this.launchSeen = true;
+      }
+    } else if (!this.launchSeen) {
+      // A jump past the throw: the seat as the path puts it at the end of the slow range.
+      j.at(BOLT_SCREENS, w, h);
+      j.launchX = j.headX - Math.cos(j.heading) * 0.04 * j.length;
+      j.launchY = j.headY + 0.15 * j.length;
+      this.launchSeen = true;
+    }
+    j.at(u, w, h);
 
     const lines = this.lines;
     if (lines) {
-      const on = t > LINES_FROM - 0.05 && t < LINES_TO;
+      const on = u > BOLT_AT.enter && u < BOLT_SCREENS - 0.1;
       lines.visible = on;
-      if (on) lines.set(clamp01((t - LINES_FROM) / (LINES_TO - LINES_FROM)), w, h);
+      if (on) lines.set(clamp01((u - BOLT_AT.enter) / (BOLT_SCREENS - 0.1 - BOLT_AT.enter)), w, h);
     }
 
-    const sb = this.sb;
-    const doll = this.doll;
-    const marks = this.marks;
-
-    // A jump in the scroll: nothing that follows a path may be carried across it.
-    const jumped = Number.isNaN(prevT) || this.jumpS;
-    const threw = !jumped && prevT < BEAT.launch && t >= BEAT.launch;
-    // The marks are the air of a moment, not a state: a jump sweeps them away (the loops that made
-    // them are not run in the jump's frame), and the falling air ends for good where the fall ends.
-    if (jumped && marks) marks.clear();
-
-    if (sb) {
-      sb.visible = j.dragonVisible;
-      if (j.dragonVisible) {
-        const sway = j.hover;
-        const sx = Math.sin(this.time * 0.85) * 0.016 * w * sway;
-        const sy = Math.sin(this.time * 1.3 + 1) * 0.014 * h * sway;
-        const place = this.dragonPlace;
-        place.x = j.dragonX + sx;
-        place.y = j.dragonY + sy;
-        place.z = 0;
-        place.height = j.dragonHeight;
-        place.yaw = j.yaw;
-        place.pitch = j.pitch;
-        place.roll = j.roll;
-        sb.place(place);
-        this.dragonFly.amplitude = j.flyAmp;
-        sb.fly(this.time, this.dragonFly);
-        sb.follow(0.3 + 0.3 * j.hover);
-        if (this.sneeze > this.time) sb.jaw(0.85);
-        const moving = j.speed > 0.2 * h;
-        if (this.wingL && this.wingR && this.tail) {
-          const a = sb.trailAnchors;
-          if (moving && !jumped) {
-            this.wingL.track(a[0]!);
-            this.wingR.track(a[1]!);
-            this.tail.track(a[2]!);
-          }
-        }
-        if (this.speed && moving) {
-          this.speed.update(sb.socket("bodyCentre"), clamp01(j.speed / (1.1 * h)) * 0.8, j.heading);
-        }
-      }
-      if (threw) this.sneezeNow(sb);
-    }
-
-    if (doll) {
-      this.driveDoll(doll, sb, j, t, threw, jumped, w, h);
-    }
-
-    if (marks && this.air && doll && j.dollMode === "fall" && !jumped && t < AIR_END) {
-      this.air.update(doll.socket("hips"), j.air, Math.PI / 2);
-    } else if (t >= AIR_END && this.air) {
-      // Past the fall: the loop is left to run dry (a loop not set ends by itself).
-      this.air.stop();
-    }
+    if (sb) this.driveDragon(sb, j, u, jumped);
+    if (doll) this.driveDoll(doll, sb, j, u, prevU, jumped);
   }
 
-  /** The sneeze that throws the doll: the dragon rears its head, opens its mouth and puffs. */
-  private sneezeNow(sb: SilverboltActor): void {
-    const marks = this.marks;
-    this.sneeze = this.time + 0.35;
-    sb.react("shake", 1.5);
-    sb.blink();
-    if (!marks) return;
-    const size = Math.max(60, this.journey.dragonHeight * 0.4);
-    marks.emit("steam", { at: sb.socket("snout"), rotation: this.journey.heading, size, count: 6 });
-    marks.emit("poof", { at: sb.socket("headTop"), size: size * 1.1 });
-    marks.emit("bang", {
-      at: sb.socket("headTop"),
-      size: size * 1.1,
-      offset: { x: 0, y: size * 0.9 },
-    });
+  private driveDragon(sb: SilverboltActor, j: Journey, u: number, jumped: boolean): void {
+    sb.visible = j.dragonVisible;
+    if (!j.dragonVisible) {
+      this.offSeen = false;
+      return;
+    }
+    const height = j.length / SilverboltActor.LENGTH_M;
+    // The head stands on the path's point: the offset between the head and the body's place is what the
+    // last frame showed (scaled by the camera's zoom).
+    const nx = Math.cos(j.heading);
+    const ny = Math.sin(j.heading);
+    if (this.offSeen && !jumped && this.placedHeight > 0) {
+      sb.socket("headPoint").getWorldPosition(this.head);
+      const k = height / this.placedHeight;
+      this.offX = (this.head.x - this.placedX) * k;
+      this.offY = (this.head.y - this.placedY) * k;
+      // A stale read (a frame before the matrices moved) is never trusted past two lengths.
+      if (Math.hypot(this.offX, this.offY) > 2 * j.length) this.offSeen = false;
+    }
+    if (!this.offSeen) {
+      this.offX = nx * HEAD_AHEAD_M * height;
+      this.offY = ny * HEAD_AHEAD_M * height;
+      this.offSeen = true;
+    }
+    const x = j.headX - this.offX;
+    const y = j.headY - this.offY;
+    const place = this.dragonPlace;
+    place.x = x;
+    place.y = y;
+    place.z = 0;
+    place.height = height;
+    place.heading = j.heading;
+    sb.place(place);
+    this.placedX = x;
+    this.placedY = y;
+    this.placedHeight = height;
+    // The wings beat harder when it flies in and calm while the head crawls.
+    this.dragonFly.amplitude = 1.15 - 0.55 * j.hover;
+    sb.fly(this.time, this.dragonFly);
+    // Only the body answers the pointer (the head is locked): a calm lean toward it (SB-dragon asks for 1 here).
+    sb.follow(1);
+
+    // The shake: it builds toward the end of the slow range and is kept going until she lets go.
+    const from = BOLT_SCREENS - SHAKE_LEAD;
+    const into = u >= from && u < BOLT_SCREENS + 0.25;
+    if (into && !jumped && sb.shakeAmount < 0.3 && this.time >= this.shakeUntil) {
+      sb.shake(1);
+      this.shakeUntil = this.time + 0.35;
+    }
   }
 
   private driveDoll(
     doll: DollActor,
     sb: SilverboltActor | null,
     j: Journey,
-    t: number,
-    threw: boolean,
+    u: number,
+    prevU: number,
     jumped: boolean,
-    w: number,
-    h: number,
   ): void {
-    if (j.dollMode === "hidden") {
+    const rider = doll as unknown as Rider;
+    if (j.dollMode === "hidden" || (!sb && j.dollMode === "ride")) {
       doll.visible = false;
-      this.offsetOn = false;
       return;
     }
     doll.visible = true;
-    doll.onReact = this.onDollReact;
     doll.reset();
     doll.blinkAuto(true);
     const pointer = this.ctx.pointer.state;
-    if (pointer.inside && j.dollMode === "ride" && j.hover > 0.3) {
-      this.gaze.x = pointer.x - w / 2;
-      this.gaze.y = h / 2 - pointer.y;
-      doll.look(this.gaze);
-    }
+    const { w, h } = j;
+    const ridingNow = j.dollMode === "ride" || (j.dollMode === "fall" && !this.letGo);
 
-    if (j.dollMode === "ride") {
-      if (!sb) {
-        doll.visible = false;
-        return;
-      }
-      const seat = sb.socket("headTop");
-      if (doll.parentSocket !== seat) doll.attach(seat, { keepWorld: false });
-      this.offsetOn = false;
-      const hh = j.dollHeight;
+    if (ridingNow && sb) {
+      this.ride(doll, sb, rider);
       const seatPlace = this.dollPlace;
-      seatPlace.x = SEAT.x * hh;
-      seatPlace.y = SEAT.y * hh;
-      seatPlace.z = SEAT.z * hh;
-      seatPlace.height = hh;
-      seatPlace.yaw = SEAT.yaw;
-      seatPlace.pitch = SEAT.pitch;
-      seatPlace.roll = SEAT.roll;
+      seatPlace.x = 0;
+      seatPlace.y = 0;
+      seatPlace.z = 0;
+      seatPlace.height = j.rideHeight;
+      seatPlace.yaw = 0;
+      seatPlace.pitch = 0;
+      seatPlace.roll = 0;
       seatPlace.pivot = "hips";
       doll.place(seatPlace);
-      doll.setPose(j.poseA, j.poseB, j.poseW);
-      doll.talk(j.talk);
-      this.rideFace(doll, sb, j, t);
+      if (pointer.inside) {
+        this.gaze.x = pointer.x - w / 2;
+        this.gaze.y = h / 2 - pointer.y;
+        doll.look(this.gaze);
+      }
+      // She loses her grip where the slow range ends (crossing forward); a jump past it just lets go.
+      if (j.dollMode === "fall" && !this.lost) {
+        this.lost = true;
+        if (jumped || Number.isNaN(prevU)) {
+          this.letGoNow(false);
+        } else if (rider.loseGrip) {
+          rider.loseGrip();
+          rider.onLetGo = this.onLetGo;
+        } else {
+          this.letGoNow(true);
+        }
+      }
       return;
     }
 
-    // Free: placed in the screen, and the camera of the fall zooms on her.
-    if (doll.parentSocket) {
-      if (!jumped && !threw) {
-        // Not a throw and not a jump (a slow scroll that arrived after the throw): no seam to hide.
-        doll.detach();
-      } else if (threw) {
-        doll.markPoint("hips", this.point);
-        doll.detach();
-        this.offset.x = this.point.x - j.dollX;
-        this.offset.y = this.point.y - j.dollY;
-        this.offsetOn = true;
-      } else {
-        doll.detach();
-      }
+    // Free: placed in the screen by the fall's ease, on her own fall loop.
+    if (this.lost && !this.letGo) this.letGoNow(false);
+    if (j.dollMode === "ride") {
+      // Back above the throw: she sits again.
+      this.lost = false;
+      this.letGo = false;
     }
-    // The seam fades over a third of a screen of scroll.
-    const k = this.offsetOn ? clamp01(1 - (t - BEAT.launch) / 0.35) : 0;
-    if (k <= 0) this.offsetOn = false;
-    // She bobs a little as she falls, and holds still at the end (joint J6).
-    const bob =
-      Math.sin(this.time * 1.7) *
-      0.01 *
-      h *
-      clamp01(j.dollHeight / (0.3 * j.ref) - 0.6) *
-      (1 - j.settle);
+    const k = this.letGo ? clamp01(1 - (j.move - this.letGoMove) / 0.12) : 0;
     const free = this.dollPlace;
     free.x = j.dollX + this.offset.x * k;
-    free.y = j.dollY + this.offset.y * k + bob;
+    free.y = j.dollY + this.offset.y * k;
     free.z = 60;
     free.height = j.dollHeight;
-    free.yaw = j.dollYaw;
-    free.pitch = j.dollPitch;
-    free.roll = j.dollRoll;
+    free.yaw = 0;
+    free.pitch = 0;
+    free.roll = 0;
     free.pivot = "hips";
     doll.place(free);
-    doll.setPose(j.poseA, j.poseB, j.poseW);
-    doll.flail(j.flail, j.flailRate);
-    doll.talk(j.talk);
-    doll.mood(FALL_MOODS, j.moodT);
+    doll.fallLoop(1);
+    void u;
   }
 
-  /** The face of a doll that rides: by the beats of the ride, and startled when the dragon is. */
-  private rideFace(doll: DollActor, sb: SilverboltActor, j: Journey, t: number): void {
-    if (this.time < this.startleUntil) {
-      doll.faceTo(this.startleFace, 0.12);
-    } else if (sb.annoyed && j.hover > 0.2) {
-      doll.faceTo("worried", 0.2);
-    } else {
-      doll.faceTo(rideFaceAt(j, t), 0.2);
+  /** Put her on the seat (once, and again when she comes back to it). */
+  private ride(doll: DollActor, sb: SilverboltActor, rider: Rider): void {
+    const seat = sb.socket("seat");
+    if (rider.rideOn) {
+      if (!this.riding || !rider.riding) {
+        rider.rideOn(seat, {
+          gripL: sb.socket("gripL"),
+          gripR: sb.socket("gripR"),
+          headPoint: sb.socket("headPoint"),
+        });
+        this.riding = true;
+      }
+    } else if (doll.parentSocket !== seat) {
+      doll.attach(seat, { keepWorld: false });
     }
+    this.letGo = false;
   }
-}
-
-/** The face the ride calls for at `t` (the wheel's pair, the roll, the rearing). */
-function rideFaceAt(j: Journey, t: number): FaceName {
-  if (j.dwellFace) return j.dwellFace;
-  if (t < BEAT.rollFrom) return "laughing";
-  if (t < BEAT.arrive - 0.1) return "scream";
-  if (t < WHEEL_FROM - 0.05) return "dizzy";
-  if (t < BEAT.launch - 0.12) return "worried";
-  return "shocked";
 }

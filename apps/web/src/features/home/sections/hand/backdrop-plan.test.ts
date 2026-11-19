@@ -1,18 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { BEAT } from "../bolt/stations";
-import { newBackdropPlan, planBackdrop } from "../bolt/backdrop-plan";
+import { newBackdropPlan } from "../bolt/backdrop-plan";
 
 import { NEBULA_FROM, planHandBackdrop } from "./backdrop-plan";
 import { HAND_LAST } from "./stations";
 
 describe("the hand's backdrop", () => {
-  it("goes on from the fall's rest and then changes to the nebula", () => {
+  it("is nothing in the hand's lead and then rises to the nebula", () => {
     const a = newBackdropPlan();
-    const b = newBackdropPlan();
-    expect(planHandBackdrop(-0.3, a)).toEqual(planBackdrop(BEAT.end, b));
-    expect(planHandBackdrop(0, a).kind).toBe("aurora");
-    expect(planHandBackdrop(NEBULA_FROM, a).kind).toBe("galaxy");
+    expect(planHandBackdrop(-0.3, a).on).toBe(false);
+    expect(planHandBackdrop(NEBULA_FROM, a).on).toBe(false);
+    expect(planHandBackdrop(NEBULA_FROM + 0.1, a).on).toBe(true);
     expect(planHandBackdrop(HAND_LAST, a).kind).toBe("galaxy");
   });
 

@@ -37,7 +37,14 @@ const isStandard = (m: Material): m is MeshStandardMaterial =>
 /** How each of the five named materials is drawn. */
 const PICKS: Readonly<Record<string, ToonPick>> = {
   // The armour: metal, with a hull. The hull is the one outline of the figure.
-  silverbolt_body: { look: "metal", inkWeight: 1.4 },
+  // Round four: softer than the stock metal. The in-game armour is white lilac with a gentle lilac
+  // shade, so the shade bands are light and the hull is a fine line (the old 1.4 weight inked a
+  // heavy navy rim round every panel, worst on the head).
+  silverbolt_body: {
+    look: "metal",
+    inkWeight: 0.85,
+    tune: { shade: [0.72, 0.72, 0.93], deep: [0.52, 0.54, 0.82], sat: 1.12, rim: 0.45, glint: 0.8 },
+  },
   // The two eyes: flat, bright, no hull (they are 3 px at the smallest size).
   silverbolt_gem: { unlit: true },
   // The silver lid behind each eye.
@@ -83,6 +90,35 @@ export function posterizeGlsl(levels: number, mode: StepMode): string {
 	}`;
 }
 
+/**
+ * Take the painted shading out of the armour's picture. The atlas is 512 pixels with the light
+ * painted into it (airbrushed shadows, cream blotches). Cutting that into steps made the mottled
+ * patches of the old head, and leaving it as it is under the toon bands doubles every shadow. Here
+ * the lightness is pulled toward one value for each kind of surface (silver, gold), so the colour
+ * and the panel edges stay and the blotches go; the toon bands then draw the shape. Gold gets a
+ * richer saturation (the picture's gold is a muddy tan). The blue crystals are left as drawn.
+ */
+export function flattenGlsl(): string {
+  return `${MAP_CHUNK}
+	{
+		float tone = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
+		vec3 g = sqrt( max( diffuseColor.rgb, vec3( 0.0 ) ) );
+		float lum = dot( g, vec3( 0.299, 0.587, 0.114 ) );
+		float hi = max( g.r, max( g.g, g.b ) );
+		float lo = min( g.r, min( g.g, g.b ) );
+		float sat = ( hi - lo ) / max( hi, 0.001 );
+		float warm = smoothstep( 0.1, 0.26, g.r - g.b ) * smoothstep( 0.0, 0.08, g.g - g.b );
+		float blue = smoothstep( 0.25, 0.5, g.b - g.r ) * smoothstep( 0.3, 0.55, sat );
+		float mid = mix( 0.86, 0.68, warm );
+		float amount = mix( 0.6, 0.0, blue ) * smoothstep( 0.1, 0.3, lum );
+		float level = mix( lum, mid, amount );
+		g *= clamp( level / max( lum, 0.001 ), 0.6, 2.0 );
+		float lum2 = dot( g, vec3( 0.299, 0.587, 0.114 ) );
+		g = mix( vec3( lum2 ), g, 1.0 + 0.95 * warm );
+		diffuseColor.rgb = clamp( g * g, 0.0, 1.0 );
+	}`;
+}
+
 export type StepMode = "colour" | "tone";
 
 /** The same cut of one channel (or of the tone) in plain numbers; the tests hold the shader to it. */
@@ -93,8 +129,19 @@ export function posterizeChannel(value: number, levels: number): number {
 }
 
 /** How many steps a channel of the ribbon's colour has, and of the armour's. */
-const RIBBON_STEPS = 6;
-const BODY_STEPS = 6;
+const RIBBON_STEPS = 10;
+
+/** Make a toon material draw its picture through a different fragment patch at the map chunk. */
+function patchMap(material: ToonMaterial, glsl: string, key: string): void {
+  const patched = material.onBeforeCompile.bind(material);
+  const cache = material.customProgramCacheKey.bind(material);
+  material.onBeforeCompile = (shader, renderer) => {
+    patched(shader, renderer);
+    shader.fragmentShader = shader.fragmentShader.replace(MAP_CHUNK, glsl);
+  };
+  material.customProgramCacheKey = () => `${cache()}-${key}`;
+  material.needsUpdate = true;
+}
 
 /** Make a toon material draw its picture in steps (the painted soft light becomes flat shapes). */
 function cutIntoSteps(material: ToonMaterial, levels: number, mode: StepMode): void {
@@ -148,7 +195,7 @@ export function dress(scene: Object3D): { materials: SbMaterials; skinned: Skinn
   }
   // The painted gradients are cut into steps in the fragment shader, after the toon patch.
   cutIntoSteps(ribbon, RIBBON_STEPS, "colour");
-  cutIntoSteps(body, BODY_STEPS, "tone");
+  patchMap(body, flattenGlsl(), "flat1");
   // The ribbon is a soft sheet: no depth write, drawn after the opaque parts.
   ribbon.transparent = true;
   ribbon.depthWrite = false;

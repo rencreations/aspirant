@@ -129,12 +129,12 @@ export const BOLT = { heading: "The five pairs", pairs: PAIRS } as const;
 
 // 6 fall -------------------------------------------------------------------------------------------
 
-/** The two lines of the fall, shown one after another: the number on the left, the word on the right. */
+/** The two lines of the fall, shown one after another: the number word on the left, the noun on the right (round four: FIVE PHASES, TEN HEROES). */
 export const FALL = {
   heading: "In numbers",
   lines: [
-    { left: "5", right: "Phases" },
-    { left: "10", right: "Characters" },
+    { left: "Five", right: "Phases" },
+    { left: "Ten", right: "Heroes" },
   ],
 } as const;
 

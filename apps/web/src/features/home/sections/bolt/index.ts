@@ -1,25 +1,25 @@
-import { playsOf } from "../../kernel/beat";
 import type { HomeSection } from "../../kernel/types";
 
 import { preload } from "./preload";
-import { BOLT_LAST, BOLT_SCREENS, BOLT_STEPS } from "./stations";
+import { BOLT_LEAD, BOLT_SCREENS } from "./stations";
 
 /**
- * Silverbolt, the doll and the five pairs, as scroll zones (`stations.ts`): the arrival, then one
- * turn of the wheel for each pair, each played by the scroll, up and down. Length, lead and tail are in
- * screens. The ground is the storm ground and the live backdrop (`backdrop-plan.ts`) gives the section
- * its green. It has no tail: the fall's lead takes the scene over from the last rest, with the same
- * picture, so the two never draw different moments.
+ * Silverbolt, the doll and the five pairs (round four, 20 Nov 2026): plain scroll, no zones, no plays,
+ * no idle snap and no wait. The dragon flies in a straight diagonal in a side view, its head crawls
+ * through the middle while the text wheel turns with the scroll (a continuous wheel like the
+ * tibdigital.com "Since 2007" one), a white rises from the bottom while the strip's blue ink field fades
+ * to black, and at the end of the slow range the dragon shakes and the doll loses her grip. The section
+ * has no tail: the fall's lead takes the scene over, with the same picture (both read `u`, the scroll
+ * since this section's start).
  */
 export const section: HomeSection = {
   id: "bolt",
   screens: BOLT_SCREENS,
-  lead: 0.5,
+  lead: BOLT_LEAD,
   tail: 0,
   bg: "storm",
   nav: { theme: "storm" },
   dom: "fixed",
-  plays: playsOf(0, BOLT_LAST, BOLT_SCREENS, BOLT_STEPS),
   // The dragon, the doll and the shared lit scene are built in pauses of the scroll, long before the
   // dragon shows (the environment map and the programs cost a few hundred milliseconds each).
   mountAhead: 9,

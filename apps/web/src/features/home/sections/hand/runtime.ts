@@ -70,7 +70,7 @@ class HandRuntime implements SectionRuntime {
     this.carry?.drive(t, ts, 0, frame, t >= 0);
     this.words(handBeats(t, ts, this.b), frame.time);
     const plan = planHandBackdrop(t, this.plan);
-    this.backdrop?.set(plan.kind, plan.options);
+    if (plan.on) this.backdrop?.set(plan.kind, plan.options);
   }
 
   /** The title letter by letter (oryzo's recipe: a slide of a quarter em and a fade, staggered). */

@@ -1,26 +1,22 @@
-import { playsOf } from "../../kernel/beat";
 import type { HomeSection } from "../../kernel/types";
-import { BEAT, BOLT_LAST, FALL_SCREENS, FALL_STEPS } from "../bolt/stations";
+import { FALL_LEAD, FALL_SCREENS } from "../bolt/stations";
 
 import { preload } from "./preload";
 
 /**
- * The doll is thrown and falls: two scroll zones (`../bolt/stations.ts`), the throw and the fall to
- * "5 Phases", then the rest of the fall to "10 Characters". Length, lead and tail are in screens. It has
- * no tail: the hand's lead (the fingertips coming up) is the last half screen of this section, and the
- * doll goes from this scene to the hand's on the same picture (joint J6).
+ * The doll falls (round four): plain scroll, no zones and no plays. Her place and the camera ease in
+ * and out from where she let go to the middle of the screen, then FIVE | PHASES and TEN | HEROES come
+ * in once she is centred and the camera is still. Length, lead and tail are in screens. The tail is a
+ * little over the hand's lead so the last frame of the section is written (the white goes back down).
  */
 export const section: HomeSection = {
   id: "fall",
   screens: FALL_SCREENS,
-  lead: 0.5,
-  tail: 0,
+  lead: FALL_LEAD,
+  tail: 0.3,
   bg: "storm",
   nav: { theme: "storm" },
   dom: "fixed",
-  plays: playsOf(BOLT_LAST, BEAT.end, FALL_SCREENS, FALL_STEPS),
-  // Its lead is the bolt's last rest drawn again (the same moment), so the lead is not a joint to snap in.
-  restOutside: true,
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

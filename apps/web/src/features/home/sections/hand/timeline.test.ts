@@ -96,12 +96,12 @@ describe("the joint with the fall (J6)", () => {
     expect(HIPS).toBe(HIPS_ABOVE_FEET);
   });
 
-  it("puts the doll's hips above her feet, 0.26 of the screen tall", () => {
+  it("puts the doll's hips at the middle of the screen, 0.38 of the screen tall", () => {
     const vp = { w: 1440, h: 900 };
     const e = fallEnd(vp);
-    expect(e.height).toBeCloseTo(0.26 * 900, 6);
+    expect(e.height).toBeCloseTo(0.38 * 900, 6);
     expect(e.x).toBe(0);
-    expect(e.y - HIPS * e.height).toBeCloseTo(0.1 * 900, 6);
+    expect(e.y).toBeCloseTo(0, 6);
   });
 
   it("has the fingers live by the hand's last beat, before the join takes the hand down", () => {

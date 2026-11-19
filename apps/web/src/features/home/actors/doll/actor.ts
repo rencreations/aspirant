@@ -39,15 +39,26 @@ import { forgetGltf } from "../shared/gltf";
 import { INK_COLOR, InkMaterial, TOON_LOOKS, ToonMaterial, type Ink } from "../shared/toon";
 import type { ActorCtx } from "../shared/types";
 
+import {
+  CATCH_LOW,
+  CATCH_WIDE,
+  FallPlayer,
+  landPose,
+  landSquash,
+  standPose,
+  type FallClip,
+} from "./fall";
 import { FACE_FRAME, type FaceName } from "./face/presets";
 import { FACE_ARRAY_LENGTH, FACES, applyLive, autoBlink, mixFaces, swapsEyes } from "./face/mix";
 import { moodAt, type MoodStep } from "./face/sequence";
 import { patchFaceFragment, patchFaceVertex } from "./face/toon-face";
 import { HANG_POSE, hangSway, rollToHang, wrapPi } from "./hang";
+import { applyFlatNormals, chainFlat } from "./dress-flat";
 import { addInkCopies } from "./ink";
+import { RIDE_POSE, Rider, type RideOptions } from "./ride";
 import { Reactions, type ReactionKind } from "./interaction";
 import { INK_SLOPE, PART_LOOKS, inkBoost, trimLook } from "./look";
-import { Spring, approach, at, clamp } from "./motion";
+import { Spring, approach, at, clamp, smoothstep } from "./motion";
 import { PART, PART_COUNT, boneParts, splitParts, type PartKind } from "./parts";
 import {
   DOLL_SIZE,
@@ -247,6 +258,19 @@ export class DollActor implements Actor {
   private readonly lookX = new Spring(26, 1);
   private readonly lookY = new Spring(26, 1);
 
+  // The fall loop and the landing (round four, `fall.ts`). The loop has its own clock (the frame's dt,
+  // never the scroll); `fallBase` is the pose the bones showed when the loop began.
+  private fallClip: FallClip | null = null;
+  private readonly fall = new FallPlayer();
+  private readonly fallBuf = createPoseData();
+  private readonly fallBase = createPoseData();
+  private readonly targetBuf = createPoseData();
+  private readonly catchWide: PoseData;
+  private readonly catchLow: PoseData;
+  private landT = 0;
+  private standT = 0;
+  private landWasOn = false;
+
   // Face.
   private readonly faceFrom = new Float32Array(FACE_ARRAY_LENGTH);
   private faceTarget: Float32Array = FACES.neutral;
@@ -274,6 +298,14 @@ export class DollActor implements Actor {
 
   // Interaction.
   private readonly reactions = new Reactions();
+  // The rider (round four, `ride.ts`): the physics, the hands and the behaviour of a doll on a seat.
+  private readonly rider: Rider;
+  private readonly ridePose: PoseData;
+  private readonly riderHead = { x: 0, y: 0, h: 1 };
+  private readonly riderPointer = { x: 0, y: 0 };
+  private faceSetThisFrame = false;
+  /** Called once when the grip is lost (`loseGrip`): call `release()` there, or earlier. */
+  onLetGo: (() => void) | null = null;
   private interactive = true;
   private readonly hit = {
     headX: 0,
@@ -334,6 +366,28 @@ export class DollActor implements Actor {
       this.poses.set(name, compilePose(this.bind, POSES[name]));
     }
     this.poses.set("hang", compilePose(this.bind, HANG_POSE));
+    this.ridePose = compilePose(this.bind, RIDE_POSE);
+    this.rider = new Rider({
+      bone: (i) => this.bone(i),
+      frame: () => this.model,
+      armScale: (i) => at(this.work.scale, i * 3 + 1),
+      head: () => {
+        const r = this.riderHead;
+        r.x = this.hit.headX;
+        r.y = this.hit.headY;
+        r.h = drawnHeight(this.pheight);
+        return r;
+      },
+      pointer: () => {
+        const s = this.ctx.pointer.state;
+        if (!s.inside) return null;
+        const vp = this.ctx.viewport();
+        return clientToStage(this.riderPointer, s.x, s.y, vp.w, vp.h);
+      },
+    });
+    this.rider.onLetGo = () => this.onLetGo?.();
+    this.catchWide = compilePose(this.bind, CATCH_WIDE);
+    this.catchLow = compilePose(this.bind, CATCH_LOW);
     copyPoseData(this.work, this.poses.get("stand") ?? this.work);
     this.measureHang();
     this.faceFrom.set(FACES.neutral);
@@ -396,6 +450,52 @@ export class DollActor implements Actor {
     this.walkByTime = opts.phase === undefined;
   }
 
+  /**
+   * The fall loop (round four): fitted from `Falling.fbx`, on her front, face to the camera, on its own
+   * clock. Call it every frame with 1 while she falls and 0 (or leave it out after `reset()`) when she
+   * does not: the loop blends in over 0.25 s from the pose the bones showed the frame before, and out
+   * the same way. The clock is the frame's dt and nothing else: a scroll, a seek or a jump never speeds
+   * it up, restarts it or drives it. Without the clip (it loads with her) the call does nothing and the
+   * pose the section set shows.
+   */
+  fallLoop(weight: number): void {
+    this.fall.target = this.fallClip ? clamp(weight, 0, 1) : 0;
+  }
+
+  /** The loop is on the screen (its weight is above 0). */
+  get falling(): boolean {
+    return this.fall.weight > 0;
+  }
+
+  /** The length of the loop, seconds (4.5). The speed is `FALL_SPEED`, 1: it is not a setting. */
+  get fallSeconds(): number {
+    return this.fallClip ? this.fallClip.seconds : 0;
+  }
+
+  /** Give her the fitted clip (`ensureDoll` does). */
+  setFallClip(clip: FallClip | null): void {
+    this.fallClip = clip;
+  }
+
+  /**
+   * The landing in the palm, `t` 0 to 1 on the section's own clock (`LAND_SECONDS`, 0.5 s): from the
+   * fall pose she has (the loop goes on under the blend, so the limbs do not stop dead) the arms are
+   * thrown wide, then come in with the knees bent, and a short squash lands on the palm. `t` 0 gives the
+   * loop back. Call it every frame while it runs.
+   */
+  land(t: number): void {
+    this.landT = clamp(t, 0, 1);
+  }
+
+  /**
+   * The standing up after the landing, `t` 0 to 1 (`STAND_SECONDS`, 0.7 s): from the low catch pose to
+   * the pose the section sets that frame (`setPose`, `dangle`, ...), easing in and out. Call `land(1)`
+   * with it, or on its own: it starts from the same low pose.
+   */
+  standUp(t: number): void {
+    this.standT = clamp(t, 0, 1);
+  }
+
   /** The flail of a fall, 0 to 1. `rate` scales its speed. */
   flail(amount: number, rate = 1): void {
     this.flailAmount = clamp(amount, 0, 1);
@@ -453,6 +553,9 @@ export class DollActor implements Actor {
     this.hangW = 0;
     this.talkAmount = 0;
     this.lookAt = null;
+    this.fall.target = 0;
+    this.landT = 0;
+    this.standT = 0;
   }
 
   /**
@@ -493,6 +596,7 @@ export class DollActor implements Actor {
 
   /** A face that is a pure function of `w`: `a` at 0, `b` at 1, nothing remembered (scroll scrubbing, the sequencer). */
   setFace(a: FaceName, b: FaceName = a, w = 0): void {
+    this.faceSetThisFrame = true;
     this.mixOn = true;
     this.mixA = FACES[a];
     this.mixB = FACES[b];
@@ -606,6 +710,62 @@ export class DollActor implements Actor {
   }
 
   // ---------------------------------------------------------------------------------------------
+  // The rider (round four: `ride.ts`).
+
+  /**
+   * Sit her on a seat socket of another actor (Silverbolt's `seat`, with `gripL` and `gripR` for her
+   * hands and `headPoint` for where her head looks ahead). `place` stays the offset of her hips from the
+   * seat; the rider adds its own slide on top. `reset()` and `place()` do not touch the ride.
+   */
+  rideOn(seat: Object3D, opts: RideOptions = {}): void {
+    this.attach(seat, { keepWorld: false });
+    this.rider.start(seat, opts);
+    this.faceTo("smile", 0.2);
+  }
+
+  /** She leaves the seat: detached with her world transform kept, the ride layers fade out over `RELEASE_FADE`. */
+  release(): void {
+    if (!this.rider.seated) return;
+    this.rider.stop();
+    this.detach();
+  }
+
+  /** The hard shake has peaked: the grip goes, the arms fly up and the body tips. `onLetGo` fires soon after. */
+  loseGrip(): void {
+    this.rider.loseGrip();
+  }
+
+  /** A shove the seat's motion does not show: 0 to 1. */
+  rideShake(strength: number): void {
+    this.rider.shake(strength);
+  }
+
+  get riding(): boolean {
+    return this.rider.seated;
+  }
+
+  /** What the rider is doing, for probes and marks. */
+  get rideState(): { idle: string; grip: number; slip: number; lean: number } {
+    return this.rider.state();
+  }
+
+  private stepRider(dt: number): void {
+    const rider = this.rider;
+    if (rider.seated && this.attachedTo !== rider.seat) rider.stop();
+    if (!rider.active) {
+      rider.off.set(0, 0, 0);
+      return;
+    }
+    const drawn = drawnHeight(this.pheight);
+    rider.measure(dt, drawn);
+    rider.fitToGrips(dt, drawn);
+    rider.offset(drawn);
+    if (!rider.seated) return;
+    this.lookAt = rider.look;
+    if (rider.face && !this.faceSetThisFrame) this.faceTo(rider.face, 0.2);
+  }
+
+  // ---------------------------------------------------------------------------------------------
   // Interaction and light.
 
   /**
@@ -684,11 +844,15 @@ export class DollActor implements Actor {
     if (r.began) this.onReact?.(r.began);
 
     this.stepSprings(dt);
+    this.stepRider(dt);
     this.composePose(time, dt, r.wobble);
     this.applyToBones();
-    this.placeRoot(r.hop, r.spin, r.squash, time);
+    this.placeRoot(r.hop, r.spin, r.squash + this.rider.body.squash * this.rider.fade, time);
+    // The hands hold the grips after the body has moved (the matrices are current now).
+    this.rider.solveArms();
     this.updateInk();
     this.updateFace(frame, r.face, dt);
+    this.faceSetThisFrame = false;
     this.cacheHit();
 
     const ms = performance.now() - t0;
@@ -757,7 +921,10 @@ export class DollActor implements Actor {
     const stretchAuto = clamp(Math.abs(vy) / (h * STRETCH_SPEED), 0, 1) * MAX_STRETCH;
     this.headRoll.step(clamp(-vx * 0.0004, -0.35, 0.35), dt);
     this.headNod.step(clamp(vy * 0.0002, -0.25, 0.25), dt);
-    this.squashSpring.step(this.squashTarget + stretchAuto, dt);
+    this.squashSpring.step(
+      this.squashTarget + stretchAuto + landSquash(this.landT, this.standT),
+      dt,
+    );
   }
 
   private composePose(time: number, dt: number, wobble: number): void {
@@ -765,6 +932,8 @@ export class DollActor implements Actor {
     const b = this.poses.get(this.poseB);
     if (!a || !b) return;
     blendPoseData(this.work, a, b, this.poseW);
+    // A rider sits in her own pose (it fades out over RELEASE_FADE after `release`).
+    if (this.rider.fade > 0) blendPoseData(this.work, this.work, this.ridePose, this.rider.fade);
     const hang = this.poses.get("hang");
     if (this.hangW > 0 && hang) blendPoseData(this.work, this.work, hang, this.hangW);
     if (this.walkWeight > 0 && this.walkSampler) {
@@ -773,11 +942,13 @@ export class DollActor implements Actor {
       this.walkSampler.sample(this.walkPhase, this.walkBuf);
       blendPoseData(this.work, this.work, this.walkBuf, this.walkWeight);
     }
+    this.applyFall(dt);
     this.turns.fill(0);
     addBreath(this.turns, time);
     addFlail(this.turns, time, this.flailAmount, this.flailRate);
     addDangle(this.turns, time, this.dangleAmount);
     addRunLean(this.turns, this.walkWeight * this.walkLean);
+    this.rider.addTurns(this.turns, time);
     // The head: its spring, the look and a dizzy wobble.
     addHead(
       this.turns,
@@ -788,6 +959,59 @@ export class DollActor implements Actor {
     applyTurns(this.bind, this.work.q, this.turns);
     stretchArm(this.work.scale, BONE.armL, BONE.handL, 1 + 0.6 * this.stretchL);
     stretchArm(this.work.scale, BONE.armR, BONE.handR, 1 + 0.6 * this.stretchR);
+  }
+
+  /**
+   * The fall loop, the landing and the standing up, over the pose the section set (`this.work`).
+   * Only the frame's dt moves the loop: nothing in here reads the scroll.
+   */
+  private applyFall(dt: number): void {
+    const fall = this.fall;
+    const clip = this.fallClip;
+    const landing = clip !== null && (this.landT > 0 || this.standT > 0);
+    if (landing) {
+      // The loop goes on under the landing (the limbs do not stop dead) and is forgotten when it ends.
+      fall.target = 1;
+      if (!this.landWasOn) fall.weight = 1;
+    } else if (this.landWasOn) {
+      // The landing was let go (the scroll went back up): ramp the loop in from what she showed.
+      fall.weight = 0;
+      this.copyBones(this.fallBase);
+    }
+    this.landWasOn = landing;
+    if (!clip) return;
+    // The loop begins: remember the pose the bones showed last frame, blend from that frozen pose.
+    if (!landing && fall.target > 0 && fall.weight <= 0) this.copyBones(this.fallBase);
+    const easingIn = fall.easingIn;
+    fall.step(dt);
+    if (!fall.running) return;
+    if (this.standT > 0) copyPoseData(this.targetBuf, this.work);
+    clip.sample(fall.time, this.fallBuf);
+    if (landing) {
+      if (this.standT > 0) standPose(this.work, this.catchLow, this.targetBuf, this.standT);
+      else landPose(this.work, this.fallBuf, this.catchWide, this.catchLow, this.landT);
+      return;
+    }
+    const w = smoothstep(fall.weight);
+    blendPoseData(this.work, easingIn ? this.fallBase : this.work, this.fallBuf, w);
+  }
+
+  /** The bones as they stand now, as a pose (rotations and the root's position). */
+  private copyBones(out: PoseData): void {
+    for (let i = 0; i < BONE_COUNT; i++) {
+      const q = this.bones[i]?.quaternion;
+      if (!q) continue;
+      out.q[i * 4] = q.x;
+      out.q[i * 4 + 1] = q.y;
+      out.q[i * 4 + 2] = q.z;
+      out.q[i * 4 + 3] = q.w;
+    }
+    const p = this.bones[0]?.position;
+    if (p) {
+      out.hips[0] = p.x;
+      out.hips[1] = p.y;
+      out.hips[2] = p.z;
+    }
   }
 
   private bone(i: number): Bone {
@@ -860,13 +1084,20 @@ export class DollActor implements Actor {
     this.squashNode.scale.set(1 / Math.sqrt(1 + sq), 1 + sq, 1 / Math.sqrt(1 + sq));
 
     this.root.rotation.set(this.ppitch, this.pyaw + spin, roll);
+    // A rider keeps her head up while the dragon pitches (`ride.ts`).
+    if (this.rider.fade > 0) this.root.quaternion.premultiply(this.rider.counter);
     const drawn = drawnHeight(this.pheight);
     const lift = hop * HOP_SHARE * drawn;
     if (this.attachedTo) {
       // The depth that sizes her is her own, not the socket's: the pivot's world z.
       this.attachedTo.updateWorldMatrix(true, false);
       const ps = this.parentScale();
-      this.root.position.set(this.px / ps, (this.py + lift) / ps, this.pz / ps);
+      const ro = this.rider.off;
+      this.root.position.set(
+        (this.px + ro.x) / ps,
+        (this.py + lift + ro.y) / ps,
+        (this.pz + ro.z) / ps,
+      );
       const worldZ = _v.copy(this.root.position).applyMatrix4(this.attachedTo.matrixWorld).z;
       this.root.scale.setScalar(fitScale(drawn, worldZ, ps));
     } else {
@@ -1038,14 +1269,18 @@ export class DollActor implements Actor {
     const skinIndex = geo.getAttribute("skinIndex");
     const skinWeight = geo.getAttribute("skinWeight");
     const face = geo.getAttribute("_face");
-    const split = splitParts({
+    const boneNames = this.body.skeleton.bones.map((b) => b.name);
+    const partInput = {
       index: geo.index ? geo.index.array : null,
       vertexCount: position.count,
       skinIndex: skinIndex.array,
       skinWeight: skinWeight.array,
       face: face.array,
-      boneKind: boneParts(this.body.skeleton.bones.map((b) => b.name)),
-    });
+      boneKind: boneParts(boneNames),
+    };
+    const split = splitParts(partInput);
+    // The shading normals of an anime head (`flat.ts`): a ball for the hair, flat lit face and neck.
+    applyFlatNormals(geo, partInput, boneNames);
     geo.setIndex(new BufferAttribute(split.index, 1));
     geo.clearGroups();
     for (const g of split.groups) geo.addGroup(g.start, g.count, g.part);
@@ -1062,6 +1297,7 @@ export class DollActor implements Actor {
         name: `doll_${["cloth", "skin", "hair"][part] ?? part}`,
       });
       if (part === PART.skin) this.wireFace(toon);
+      chainFlat(toon, part as PartKind);
       this.toons.push(toon);
     }
     this.body.material = this.toons;

@@ -1,7 +1,8 @@
 /*
- * The fall: two big lines, one after the other, one on each side of the doll that falls between them
- * ("5 | Phases", then "10 | Characters"). The runtime writes only transform and opacity. On a phone
- * the two halves go above and below the doll instead of beside it.
+ * The fall (round four): FIVE | PHASES, then TEN | HEROES, one after the other. The doll falls in the
+ * middle of the screen; the left word is centred in the left half, the right word in the right half,
+ * and all three stand at the middle of the screen's height. The runtime writes only transform and
+ * opacity. On a phone the two words go above and below the doll instead of beside it.
  */
 
 .pairs {
@@ -25,20 +26,11 @@
   position: absolute;
   inset: 0;
   display: grid;
-  /* The middle column is where the doll falls: about a quarter of the screen's height wide. */
-  grid-template-columns: 1fr calc(0.24 * min(100lvh, 150vw)) 1fr;
+  /* Two halves of the screen: each word is centred in its own half. The doll stands on the seam. */
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  /*
-   * The row stands at the height of the doll's end place (joint J6): her feet are 0.1 of the screen
-   * above the middle and she is 0.26 tall, so her centre is 0.23 above it.
-   */
-  padding-bottom: 46lvh;
-  /* The long word ("Characters", about 4.5 em) fills the column on its side of the doll. */
-  font-size: clamp(
-    2.4rem,
-    min(calc((50vw - 0.12 * min(100lvh, 150vw) - 2.5rem) / 4.5), 15vh),
-    9rem
-  );
+  /* The long words ("Phases", "Heroes", about 3.7 em) fill most of their half beside the doll. */
+  font-size: clamp(2.4rem, min(calc((50vw - 0.2 * min(100lvh, 150vw) - 2rem) / 3.7), 15vh), 9rem);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -47,20 +39,20 @@
 :global(.js) :global([data-home]:not([data-gl="off"])) .right {
   opacity: 0;
   will-change: transform, opacity;
-  text-shadow:
-    0 0.03em 0.35em rgb(2 4 10 / 0.7),
-    0 0 0.8em rgb(2 4 10 / 0.5);
+  text-align: center;
+  /* The ink of the words over the white (the white is under the doll and the words, `bolt.module.css`). */
+  color: #0c1020;
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .left {
   grid-column: 1;
-  justify-self: end;
-  text-align: right;
+  justify-self: center;
+  color: var(--accent);
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .right {
-  grid-column: 3;
-  justify-self: start;
+  grid-column: 2;
+  justify-self: center;
 }
 
 @media (max-aspect-ratio: 1/1) {
@@ -76,7 +68,6 @@
     grid-row: 1;
     align-self: end;
     justify-self: center;
-    text-align: center;
   }
 
   :global(.js) :global([data-home]:not([data-gl="off"])) .right {

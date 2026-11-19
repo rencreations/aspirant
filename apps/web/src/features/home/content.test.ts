@@ -100,10 +100,10 @@ describe("the copy of the home page", () => {
 
   it("counts the phases and the characters the way the page says them", () => {
     expect(content.FALL.lines).toEqual([
-      { left: "5", right: "Phases" },
-      { left: "10", right: "Characters" },
+      { left: "Five", right: "Phases" },
+      { left: "Ten", right: "Heroes" },
     ]);
-    expect(Number(content.FALL.lines[1].left)).toBe(CHARACTER_SLUGS.length);
+    expect(CHARACTER_SLUGS.length).toBe(10);
   });
 
   it("has a description of a length a search result can show", () => {

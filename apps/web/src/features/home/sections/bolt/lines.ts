@@ -1,7 +1,7 @@
 /**
  * The four wavy lines of the tib section ("flexible lines"): thin strokes that cross the screen on a
  * slant, undulate as the page scrolls, draw on from the right, hold, and erase. Reproduced from the
- * reference's numbers (digest `ref-psychoactive-tib.md` section 2.3), in white and our mint, in the
+ * reference's numbers (digest `ref-psychoactive-tib.md` section 2.3), in two blues, in the
  * stage's ortho pass under the cast (so the dragon passes in front of them). Each line is a strip of
  * triangles whose sides are pushed out by the vertex shader, so the stroke is a true 1.4 CSS px wide at
  * any pixel ratio. Nothing is allocated per frame: `update` writes uniforms.
@@ -34,10 +34,11 @@ interface LineSpec {
   opacity: number;
 }
 
-const WHITE = 0xffffff;
-const MINT = 0x4ff0c4;
+// Round four: the lines are blue (the white that rises from the bottom would hide white ones).
+const WHITE = 0x7fc4ff;
+const MINT = 0x2f7bff;
 
-/** The table of the reference, with the green changed for the site's mint. */
+/** The table of the reference, with its white and green changed for two blues (the names are the old ones). */
 export const LINES: readonly LineSpec[] = [
   { y: 0.6, angle: 0.05, delay: 0.03, amp: 0.3, freq: 1.6, phase: 0, colour: WHITE, opacity: 0.7 },
   {

@@ -2,6 +2,8 @@ import { FALL } from "../../content";
 import styles from "../../home.module.css";
 import type { SectionMarkup } from "../../kernel/types";
 
+import bolt from "../bolt/bolt.module.css";
+
 import fall from "./fall.module.css";
 
 /**
@@ -11,6 +13,8 @@ import fall from "./fall.module.css";
  */
 export function view(): SectionMarkup {
   return {
+    // The white of the bolt goes on through the fall: its own copy in this section's slot (`bolt/scene.ts`).
+    below: <div className={bolt.white} data-bolt-white="fall" />,
     text: (
       <>
         <h2 className={styles.srOnly}>{FALL.heading}</h2>

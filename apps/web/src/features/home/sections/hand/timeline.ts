@@ -81,20 +81,20 @@ export function handGeometry(vp: Vp): HandGeometry {
     drop: 0.08 * vp.h,
     dollHeight,
     airX: 0,
-    airY: 0.1 * vp.h,
-    airHeight: 0.26 * vp.h,
+    airY: 0,
+    airHeight: 0.38 * vp.h,
   };
 }
 
 /**
- * The doll at the end of the fall (joint J6), as the bolt section's journey leaves her: her feet 0.1
- * of the screen above the middle, 0.26 of the screen tall, hips as the pivot, depth 60, the pose 0.7
+ * The doll at the end of the fall (joint J6), as the bolt section's journey leaves her (round four): her
+ * hips at the middle of the screen, 0.38 of the screen tall, hips as the pivot, depth 60, the pose 0.7
  * of the way from "fall" to "stand", a little flail. The bolt folder owns the numbers and
  * `timeline.test.ts` keeps these equal to its exports.
  */
 export const J6 = {
-  feetY: 0.1,
-  height: 0.26,
+  feetY: -(0.396 / 1.7) * 0.38,
+  height: 0.38,
   z: 60,
   standWeight: 0.7,
   flail: 0.2,

@@ -14,9 +14,52 @@ export interface PartLook {
 }
 
 export const PART_LOOKS: Readonly<Record<PartKind, PartLook>> = {
-  [PART.cloth]: { look: "default", tune: {} },
-  [PART.skin]: { look: "skin", tune: { rim: 0.22 } },
-  [PART.hair]: { look: "hair", tune: { glint: 0.6, glintSize: 0.972 } },
+  // Cloth and gloves: flat, one cool shade.
+  [PART.cloth]: {
+    look: "default",
+    tune: { rim: 0.3, rimWidth: 0.2, soft: 0.03, cut: [-0.25, -0.02] },
+  },
+  // Skin and the face: lit almost everywhere (the normals lean to the viewer), a thin warm shade, no pale rim.
+  [PART.skin]: { look: "skin", tune: { rim: 0.1, rimWidth: 0.2, soft: 0.03, cut: [-0.25, -0.12] } },
+  // Hair: two flat tones, one hard terminator, the highlight is the arc of `flat.ts` (no glint).
+  [PART.hair]: {
+    look: "hair",
+    tune: { bands: 2, glint: 0, rim: 0.3, rimWidth: 0.2, soft: 0.012, cut: [-0.2, 0.28] },
+  },
+};
+
+/** The numbers of `flat.ts`: the shading normals, the steps of the picture and the hair's highlight arc. */
+export interface FlatSpec {
+  /** The centre of the ball the hair and the face are shaded as, in the model's file units (1.7 tall). */
+  head: readonly [number, number, number];
+  /** The direction the face, the neck and (a little) the rest lean to: toward the viewer and up. */
+  front: readonly [number, number, number];
+  /** How far the face's normals are pulled to `front` (1 is flat), the share of the hair's own normal kept, and the neck's pull. */
+  faceFront: number;
+  hairOwn: number;
+  neckFront: number;
+  /** Steps of the picture's lightness, by `PART` (cloth, skin, hair). */
+  levels: readonly [number, number, number];
+  /** The highlight arc: the axis (view space), the cosines it spans, how white it is and how strong. */
+  ringAxis: readonly [number, number, number];
+  ringFrom: number;
+  ringTo: number;
+  ringWhite: number;
+  ringAmount: number;
+}
+
+export const FLAT: FlatSpec = {
+  head: [0, 0.98, -0.12],
+  front: [0, 0.28, 1],
+  faceFront: 0.72,
+  hairOwn: 0.15,
+  neckFront: 0.8,
+  levels: [0, 0, 0],
+  ringAxis: [-0.5, 0.75, 0.43],
+  ringFrom: 0.825,
+  ringTo: 0.855,
+  ringWhite: 0.45,
+  ringAmount: 0.85,
 };
 
 /**

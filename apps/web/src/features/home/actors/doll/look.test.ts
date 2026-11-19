@@ -6,14 +6,15 @@ import { INK_BOOST, INK_SLOPE, PART_LOOKS, inkBoost, trimLook } from "./look";
 import { PART } from "./parts";
 
 describe("the doll's looks", () => {
-  it("has one look for each part: cloth and skin in two bands, hair in three", () => {
+  it("has one look for each part: all in two bands (round four), hair without a glint (its highlight is the arc of flat.ts)", () => {
     for (const part of [PART.cloth, PART.skin, PART.hair]) {
       const spec = PART_LOOKS[part];
       const look = { ...TOON_LOOKS[spec.look], ...spec.tune };
       expect([2, 3]).toContain(look.bands);
       expect(look.soft).toBeGreaterThan(0);
     }
-    expect(TOON_LOOKS[PART_LOOKS[PART.hair].look].bands).toBe(3);
+    expect({ ...TOON_LOOKS.hair, ...PART_LOOKS[PART.hair].tune }.bands).toBe(2);
+    expect({ ...TOON_LOOKS.hair, ...PART_LOOKS[PART.hair].tune }.glint).toBe(0);
     expect(TOON_LOOKS[PART_LOOKS[PART.skin].look].glint).toBe(0);
   });
 });

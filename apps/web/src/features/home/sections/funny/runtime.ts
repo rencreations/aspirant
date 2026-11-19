@@ -43,8 +43,6 @@ const MOODS = [
   { face: "cursing", hold: 0.8, blend: 0.1 },
 ] as const;
 const MOOD_LOOP = 2.6;
-/** A swear bubble leaves the doll this often (seconds) while the dragon is on screen. */
-const SWEAR_EVERY = 0.62;
 /** A step of `local` this big in a frame is a jump (a scrollbar drag, a probe seek). */
 const JUMP = 0.12;
 
@@ -83,7 +81,6 @@ class FunnyRuntime implements SectionRuntime {
   private cutDone = false;
   private settleFrames = 0;
   private lastLocal = Number.NaN;
-  private swearAt = 0;
   private dustAt = 0;
   private veinAt = 0;
   private bangPending = false;
@@ -253,7 +250,7 @@ class FunnyRuntime implements SectionRuntime {
     if (rise >= GONE) return;
     this.drawSky(local, gone);
     this.drawTetra(local, frame, jumped);
-    this.drawDragon(local, frame, jumped);
+    this.drawDragon(local, frame);
     this.drawDuo(local, rise);
   }
 
@@ -391,7 +388,7 @@ class FunnyRuntime implements SectionRuntime {
 
   // ---------------------------------------------------------------------------------------- the dragon
 
-  private drawDragon(local: number, frame: FrameInfo, jumped: boolean): void {
+  private drawDragon(local: number, frame: FrameInfo): void {
     const sb = this.dragon;
     const doll = this.doll;
     if (!sb || !doll || !dragonOnScreen(local)) return;
@@ -425,16 +422,6 @@ class FunnyRuntime implements SectionRuntime {
     doll.mood(MOODS, frame.time % MOOD_LOOP);
     doll.talk(0.55 + 0.45 * Math.sin(frame.time * 13));
     doll.blinkAuto(false);
-
-    const marks = this.marks;
-    if (marks && !jumped && frame.dt > 0 && frame.time - this.swearAt > SWEAR_EVERY) {
-      this.swearAt = frame.time;
-      marks.emit("swear", {
-        at: doll.socket("headTop"),
-        offset: { x: -0.42 * g.dragon.height, y: 0.02 * g.dragon.height },
-        size: 0.42 * g.dragon.height,
-      });
-    }
   }
 
   // ---------------------------------------------------------------------------------------- the duo

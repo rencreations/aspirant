@@ -53,20 +53,19 @@ import {
 } from "./facts";
 import { FACES, Blinker, blendFace, neutralFace, type FaceName, type FaceState } from "./face";
 import { HitField } from "./hit";
+import { leanFor, newLean } from "./lean";
 import { MarkBus, type MarkEvent, type MarkKind, type MarkListener } from "./marks";
 import {
   clamp,
   clampDepth,
   clipJumped,
   damp,
+  facing,
   perspectiveFactor,
   scaleForHeight,
-  smoothstep,
-  softClamp,
   springSnap,
   springStep,
   unprojectToDepth,
-  wrapAngle,
   type SpringState,
 } from "./math";
 import { dress, type SbMaterials } from "./materials";
@@ -74,6 +73,7 @@ import { AnnoyMeter, Reactions } from "./mood";
 import { Pose, dancePose, flightPose, hoverPose } from "./pose";
 import { Rig } from "./rig";
 import { ClipSampler, clipTime } from "./sampler";
+import { newShakeValues, shakeAt, shakeLength } from "./shake";
 import {
   measureStraight,
   meanStraightAngle,
@@ -85,7 +85,7 @@ import {
 import { TailBody, dragPose, dragWeights, type DragOptions, type FollowOptions } from "./tail";
 
 /** The parts the pointer can be on. */
-export type SilverboltPart = "head" | "jaw" | "body" | "wings" | "tail";
+export type SilverboltPart = "body" | "wings" | "tail";
 
 export type SocketName =
   | "headTop"
@@ -100,7 +100,12 @@ export type SocketName =
   | "cheekL"
   | "cheekR"
   | "eyeL"
-  | "eyeR";
+  | "eyeR"
+  // Round four: where a rider sits and holds (see `actor-silverbolt.md`, "Round four").
+  | "seat"
+  | "gripL"
+  | "gripR"
+  | "headPoint";
 
 export interface Placement {
   /** The picture-plane position of the body centre, in CSS pixels from the middle of the screen, y up. */
@@ -110,6 +115,11 @@ export interface Placement {
   z?: number;
   /** The on-screen height of the body block (head, wings and body, about 1 m of the model), in CSS pixels. */
   height?: number;
+  /**
+   * The screen angle of the nose, radians (0 right, PI/2 up, 3 PI/4 upper left): the dragon is seen
+   * in pure side view with its body axis in the screen plane. Wins over `yaw` and `pitch`.
+   */
+  heading?: number;
   /** About the vertical axis. 0 faces the camera. Positive turns the head toward screen right. */
   yaw?: number;
   /** About the dragon's own side axis. Positive lifts the nose. */
@@ -145,13 +155,18 @@ const FOLLOW: FollowOptions = { omega: [0, 9, 7.5, 6.3, 5.4, 4.7, 4.2], zeta: 0.
 const LIFT_SAMPLES = 32;
 const BEAT_HZ = 1.7;
 const DANCE_HZ = 0.95;
-/** The head's turn toward the pointer, radians. */
-const FOLLOW_YAW = 0.55;
-const FOLLOW_UP = 0.35;
-const FOLLOW_DOWN = 0.45;
-/** Radians of head lag per pixel per second of the dragon's own speed, and its limit. */
+/** Radians of wing lift per pixel per second of the dragon's own speed, and its limit. */
 const LAG_K = 2.4e-4;
 const LAG_MAX = 0.3;
+/** The default pose of a dragon nobody placed: side view, the nose to the upper left. */
+const DEFAULT_YAW = -Math.PI / 2;
+const DEFAULT_PITCH = 0.5;
+/** Snout to tail tip at the rest scale, metres (a side view at `height` h is `h * LENGTH_M` px long). */
+const LENGTH_M = 3.6;
+/** How far the tip of the level tail hangs below the body's axis, radians (4 degrees: a calm long line). */
+const TAIL_DROOP = 0.07;
+/** The body's own calm: the breath moves the whole body by this much, uniformly (2 percent). */
+const BREATH_SCALE = 0.012;
 
 const SOCKET_AT: Readonly<
   Record<SocketName, { bone: string; at: readonly [number, number, number] }>
@@ -174,32 +189,34 @@ const SOCKET_AT: Readonly<
   cheekR: { bone: BONE.cheekR, at: [-0.305, 4.071, -0.377] },
   eyeL: { bone: BONE.eyeL, at: [0.108, 3.576, 0.151] },
   eyeR: { bone: BONE.eyeR, at: [-0.108, 3.576, 0.151] },
+  // Round four. Rest points of the model (the head hangs down at rest, see `straight.ts`); the seat
+  // is on the neck (the wing root, which the head's straightening barely moves), the grips and the
+  // head point are on the head and follow its straightening. Placed by eye on side views.
+  seat: { bone: BONE.wingRoot, at: [0, 3.86, -0.3] },
+  gripL: { bone: BONE.wingRoot, at: [0.04, 3.9, -0.24] },
+  gripR: { bone: BONE.wingRoot, at: [-0.04, 3.9, -0.24] },
+  headPoint: { bone: BONE.head, at: [0, 3.55, 0.2] },
 };
 
+/** The head and jaw are not separate targets any more (the head is locked): the body answers. */
 const CURSOR: Readonly<Record<SilverboltPart, string>> = {
-  head: "PET",
-  jaw: "BOOP",
   body: "POKE",
   wings: "FLAP",
   tail: "DRAG",
 };
 /** What the cursor says while the dragon is annoyed. */
 const CURSOR_ANNOYED: Readonly<Record<SilverboltPart, string>> = {
-  head: "STOP IT",
-  jaw: "GRRR",
   body: "GRRR",
   wings: "GRRR",
   tail: "LET GO",
 };
 /** A part that wins an overlap with another gets a smaller bias. */
 const BIAS: Readonly<Record<SilverboltPart, number>> = {
-  jaw: -8,
-  head: -6,
   wings: -2,
   tail: 2,
-  body: 6,
+  body: 0,
 };
-const PARTS: readonly SilverboltPart[] = ["head", "jaw", "body", "wings", "tail"];
+const PARTS: readonly SilverboltPart[] = ["body", "wings", "tail"];
 
 const eulerA = new Euler();
 const quatA = new Quaternion();
@@ -296,7 +313,16 @@ export class SilverboltActor implements Actor {
   private readonly tailBones: Bone[];
 
   // What the section last asked for.
-  private pl = { x: 0, y: 0, z: 0, height: 300, yaw: 0, pitch: 0, roll: 0 };
+  private pl = {
+    x: 0,
+    y: 0,
+    z: 0,
+    height: 300,
+    yaw: DEFAULT_YAW,
+    pitch: DEFAULT_PITCH,
+    roll: 0,
+    heading: NaN,
+  };
   private world: { scale: number; set: boolean } = { scale: 1, set: false };
   private want = new Want();
   private spare = new Want();
@@ -309,6 +335,8 @@ export class SilverboltActor implements Actor {
   private prevX = 0;
   private prevY = 0;
   private prevScale = 1;
+  private prevYaw = DEFAULT_YAW;
+  private prevPitch = DEFAULT_PITCH;
   private velX = 0;
   private velY = 0;
   private prevClip: ClipName | null = null;
@@ -331,15 +359,31 @@ export class SilverboltActor implements Actor {
   private readonly blinker = new Blinker();
   private readonly annoy = new AnnoyMeter();
   private readonly reactions = new Reactions();
-  private readonly followYaw: SpringState = { x: 0, v: 0 };
-  private readonly followPitch: SpringState = { x: 0, v: 0 };
-  private readonly lookX: SpringState = { x: 0, v: 0 };
-  private readonly lookY: SpringState = { x: 0, v: 0 };
-  /** The light spring of the head and wings against the dragon's own velocity. */
-  private readonly lagYaw: SpringState = { x: 0, v: 0 };
-  private readonly lagPitch: SpringState = { x: 0, v: 0 };
+  /** The body's answer to the pointer (`lean.ts`): slow springs, the head is locked to the body. */
+  private readonly leanPitch: SpringState = { x: 0, v: 0 };
+  private readonly leanRoll: SpringState = { x: 0, v: 0 };
+  private readonly leanShift: SpringState = { x: 0, v: 0 };
+  private readonly leanTail: SpringState = { x: 0, v: 0 };
+  private readonly leanGoal = newLean();
+  /** The light spring of the wings against the dragon's own velocity. */
   private readonly lagWing: SpringState = { x: 0, v: 0 };
   private followW = 0;
+  /** The hard shake (round four): seconds since it started (-1 none), its strength, this frame's values. */
+  private shakeAge = -1;
+  private shakeStrength = 0;
+  private readonly shakeNow = newShakeValues();
+  /** What the rider's physics reads (`sb.motion`). Plain numbers, updated every frame. */
+  readonly motion = {
+    seatVel: { x: 0, y: 0, z: 0 },
+    seatAcc: { x: 0, y: 0, z: 0 },
+    shake: 0,
+    shakeOsc: 0,
+    lean: 0,
+    tilt: 0,
+  };
+  private readonly seatPrev = new Vector3();
+  private seatPrevReady = false;
+  private readonly seatVelPrev = new Vector3();
   /** The straight head (`straight.ts`): what was measured at rest, and the turn made this frame. */
   private readonly straightRest: StraightRest;
   private readonly headBone: Bone;
@@ -349,19 +393,18 @@ export class SilverboltActor implements Actor {
   private readonly seatRest = new Quaternion();
   private readonly seatNode: Object3D;
   private readonly spine = new Vector3();
+  /** Per tail joint, the pitch that lays the rest tail on the body's axis (a long body, no droop). */
+  private readonly tailLevel = new Float64Array(7);
   /** The lift of the head, radians, in the rest pose and in the middle of each baked clip. */
   private readonly restLift: number;
   private readonly clipLift = new Map<string, number>();
   private lastOutbursts = 0;
   private smokeAt = 0;
-  private heartAt = 0;
   private sweatAt = 0;
   private hover: SilverboltPart | null = null;
   /** The hit targets answer (a section turns them off while the baked camera draws the cast). */
   private interactiveOn = true;
   private readonly hoverW: Record<SilverboltPart, number> = {
-    head: 0,
-    jaw: 0,
     body: 0,
     wings: 0,
     tail: 0,
@@ -382,8 +425,6 @@ export class SilverboltActor implements Actor {
   // Hit cache.
   private readonly hits = new HitField(48);
   private readonly ranges: Record<SilverboltPart, { start: number; count: number }> = {
-    head: { start: 0, count: 0 },
-    jaw: { start: 0, count: 0 },
     body: { start: 0, count: 0 },
     wings: { start: 0, count: 0 },
     tail: { start: 0, count: 0 },
@@ -453,6 +494,7 @@ export class SilverboltActor implements Actor {
     );
 
     this.restLift = this.measureLifts();
+    this.measureTailLevel();
     for (const part of PARTS) this.registerPart(ctx, part);
   }
 
@@ -476,8 +518,46 @@ export class SilverboltActor implements Actor {
     if (p.yaw !== undefined) pl.yaw = p.yaw;
     if (p.pitch !== undefined) pl.pitch = p.pitch;
     if (p.roll !== undefined) pl.roll = p.roll;
+    if (p.heading !== undefined) {
+      // A heading drawn on the screen: the exact side view of the nose along it (never upside down).
+      pl.heading = p.heading;
+      const hx = Math.cos(p.heading);
+      const f = facing(Math.abs(hx) < 1e-3 ? -1e-3 : hx, Math.sin(p.heading), 0);
+      pl.yaw = f.yaw;
+      pl.pitch = f.pitch;
+      if (p.roll === undefined) pl.roll = 0;
+    }
     this.world.set = false;
   }
+
+  /**
+   * One hard shake of the whole body, 0.8 to 1.2 s: it rattles along its own axis with a decaying
+   * oscillation, the spine rolls once, the wings flare. It throws a rider off; nothing is hit.
+   * `strength` 0 to 1. A shake that is running restarts at the larger of the two strengths.
+   */
+  shake(strength = 1): void {
+    const s = clamp(strength, 0, 1);
+    this.shakeStrength = this.shakeAge >= 0 ? Math.max(this.shakeStrength, s) : s;
+    this.shakeAge = 0;
+  }
+
+  /** The shake's envelope, 0 to 1 (1 as it starts, 0 when it is over). */
+  get shakeAmount(): number {
+    return this.shakeNow.amount;
+  }
+
+  /** The shake's signed oscillation, -1 to 1 (positive is toward the tail). */
+  get shakeOsc(): number {
+    return this.shakeNow.osc;
+  }
+
+  /** How long the shake last asked for, seconds (0.8 to 1.2 by strength). */
+  static shakeSeconds(strength: number): number {
+    return shakeLength(strength);
+  }
+
+  /** Snout to tail tip at the rest scale, in metres of the model: `sb.metre * LENGTH_M` pixels in a side view. */
+  static readonly LENGTH_M = LENGTH_M;
 
   /**
    * Put the model's own space on the stage, for a clip played with `root: "keep"`: the same
@@ -563,14 +643,14 @@ export class SilverboltActor implements Actor {
     this.want.faceWeight = clamp(weight, 0, 1);
   }
 
-  /** Look at a point of the stage (pixels from the middle, y up): the eyes lead, the head follows a little. */
+  /** Lean toward a point of the stage (pixels from the middle, y up). Only the body answers: the head is locked. */
   look(x: number, y: number): void {
     this.want.look = true;
     this.want.lookX = x;
     this.want.lookY = y;
   }
 
-  /** Follow the pointer with the eyes and the head, within limits, by `weight` 0..1. */
+  /** Lean the body toward the pointer, slowly and within small limits, by `weight` 0..1. The head does not follow. */
   follow(weight = 1): void {
     this.want.follow = clamp(weight, 0, 1);
   }
@@ -666,6 +746,7 @@ export class SilverboltActor implements Actor {
     this.placeObject(want);
     this.object.updateMatrixWorld(true);
     this.runTail(dt);
+    this.updateMotion(dt);
     this.cacheHits();
     this.dressMaterials();
 
@@ -690,6 +771,11 @@ export class SilverboltActor implements Actor {
     const stepPx = Math.hypot(dx, dy);
     const stepScale = Math.abs(Math.log(Math.max(1e-6, scale) / Math.max(1e-6, this.prevScale)));
     let jumped = stepPx > this.stage.height * 0.6 || stepScale > 0.7;
+    // The nose swung round in one frame (a section changed the heading): the tail cannot follow that.
+    const turned = Math.abs(pl.yaw - this.prevYaw) + Math.abs(pl.pitch - this.prevPitch);
+    this.prevYaw = pl.yaw;
+    this.prevPitch = pl.pitch;
+    jumped = jumped || turned > 0.5;
     // A clip that was scrubbed to another place (or another clip, or none) moved every bone at once.
     if (want.clip) {
       jumped =
@@ -715,13 +801,12 @@ export class SilverboltActor implements Actor {
     if (reset) {
       this.snap = false;
       this.tailReady = false;
-      springSnap(this.followYaw, 0);
-      springSnap(this.followPitch, 0);
-      springSnap(this.lookX, 0);
-      springSnap(this.lookY, 0);
-      springSnap(this.lagYaw, 0);
-      springSnap(this.lagPitch, 0);
+      springSnap(this.leanPitch, 0);
+      springSnap(this.leanRoll, 0);
+      springSnap(this.leanShift, 0);
+      springSnap(this.leanTail, 0);
       springSnap(this.lagWing, 0);
+      this.seatPrevReady = false;
       this.velX = 0;
       this.velY = 0;
       this.wFly = want.fly ? 1 : 0;
@@ -745,6 +830,13 @@ export class SilverboltActor implements Actor {
     // Moods.
     this.annoy.step(dt);
     this.reactions.step(dt);
+    // The hard shake: a pure function of its age (a jump of the scroll does not restart it).
+    if (this.shakeAge >= 0) {
+      this.shakeAge += dt;
+      if (this.shakeAge >= shakeLength(this.shakeStrength)) this.shakeAge = -1;
+    }
+    if (this.shakeAge >= 0) shakeAt(this.shakeNow, this.shakeAge, this.shakeStrength);
+    else shakeAt(this.shakeNow, -1, 0);
     if (this.annoy.outbursts !== this.lastOutbursts) {
       this.lastOutbursts = this.annoy.outbursts;
       this.reactions.trigger("shake", 1.4);
@@ -760,15 +852,6 @@ export class SilverboltActor implements Actor {
       }
     } else {
       this.smokeAt = 0;
-    }
-    if (this.hover === "head" && !this.annoy.annoyed) {
-      this.heartAt -= dt;
-      if (this.heartAt <= 0) {
-        this.heartAt = 1.3;
-        this.mark("heart", "headTop", 0.6);
-      }
-    } else {
-      this.heartAt = 0.4;
     }
     if (this.drag.on) {
       this.dragHeld += dt;
@@ -791,12 +874,13 @@ export class SilverboltActor implements Actor {
     if (want.face) blendFace(tgt, FACES.neutral, FACES[want.faceName], want.faceWeight);
     else if (want.dance) blendFace(tgt, FACES.neutral, FACES.smile, 1);
     else blendFace(tgt, FACES.neutral, FACES.neutral, 0);
-    if (!this.annoy.annoyed && this.hoverW.head > 0.01) {
-      blendFace(tgt, tgt, FACES.content, 0.55 * this.hoverW.head);
+    if (!this.annoy.annoyed && this.hoverW.body > 0.01) {
+      blendFace(tgt, tgt, FACES.content, 0.4 * this.hoverW.body);
     }
     blendFace(tgt, tgt, FACES.annoyed, this.annoy.anger());
-    // A hard poke on the head: a growl for as long as the shake lasts.
+    // A hard poke: a growl for as long as the shiver lasts. The hard shake (the throw) growls too.
     blendFace(tgt, tgt, FACES.growl, 0.6 * this.reactions.remaining("shake"));
+    if (this.shakeAge >= 0) blendFace(tgt, tgt, FACES.growl, 0.7 * this.shakeNow.amount);
     const yelp = this.reactions.value("yelp");
     if (yelp > 0) blendFace(tgt, tgt, FACES.surprised, clamp(yelp, 0, 1) * 0.8);
     if (want.lids >= 0) tgt.lid = want.lids;
@@ -814,77 +898,52 @@ export class SilverboltActor implements Actor {
     cur.flare += (tgt.flare - cur.flare) * k;
     this.breathPhase += dt * cur.breath;
 
-    // The light spring of the head and wings: the head trails its own motion, the wings lift with speed.
-    quatA.copy(this.object.quaternion).invert();
-    vD.set(this.velX, this.velY, 0).applyQuaternion(quatA);
+    // The light spring of the wings: they lift with the dragon's own speed (the head is locked).
     const speed = Math.hypot(this.velX, this.velY);
-    springStep(this.lagYaw, clamp(-vD.x * LAG_K, -LAG_MAX, LAG_MAX), 9, 0.45, dt);
-    springStep(this.lagPitch, clamp(-vD.y * LAG_K, -LAG_MAX, LAG_MAX), 9, 0.45, dt);
     springStep(this.lagWing, clamp(speed * LAG_K, 0, LAG_MAX), 8, 0.5, dt);
 
-    // Follow the pointer.
-    const wantFollow = Math.max(want.follow, 0.65 * this.hoverW.head);
-    this.followW = damp(this.followW, wantFollow, 6, dt);
-    this.updateGaze(dt, want);
+    // The pointer: only the body answers it, slowly. The head is one piece with the body.
+    const wantFollow = Math.max(want.follow, 0.5 * this.hoverW.body);
+    this.followW = damp(this.followW, wantFollow, 4, dt);
+    this.updateLean(dt, want);
     this.updateCursor();
   }
 
-  /** Where the pointer (or a `look` point) is, as angles of the head and the eyes. */
-  private updateGaze(dt: number, want: Want): void {
+  /**
+   * The body's lean toward the pointer (or a `look` point): a small turn in the screen plane, a bank,
+   * a shift along the body and a livelier tail, all slow and small (`lean.ts`). The head does not
+   * move on its own and the eyes do not follow.
+   */
+  private updateLean(dt: number, want: Want): void {
     const state = this.pointer.state;
-    const W = this.stage.width;
-    const H = this.stage.height;
+    const goal = this.leanGoal;
+    let have = false;
     let sx = 0;
     let sy = 0;
-    let have = false;
     if (want.look) {
       sx = want.lookX;
       sy = want.lookY;
       have = true;
-    } else if (this.hoverW.tail > 0.3 && this.tailReady) {
-      const f = perspectiveFactor(this.tail.q[20]!, this.camera.position.z);
-      sx = this.tail.q[18]! * f;
-      sy = this.tail.q[19]! * f;
-      have = true;
     } else if (state.inside || state.down) {
-      sx = state.x - W / 2;
-      sy = H / 2 - state.y;
-      have = this.followW > 0.01 || this.hover !== null;
+      sx = state.x - this.stage.width / 2;
+      sy = this.stage.height / 2 - state.y;
+      have = this.followW > 0.01;
     }
-    let tYaw = 0;
-    let tPitch = 0;
-    let eyeX = 0;
-    let eyeY = 0;
-    let weight = this.followW;
-    if (want.look) weight = Math.max(weight, 0.8);
     if (have) {
-      // The head's place and the point, on the plane at the head's depth, in the dragon's frame.
-      const hz = this.headWorld.z;
-      unprojectToDepth(sx, sy, hz, this.camera.position.z, pt);
+      // The point on the plane at the head's depth, in the dragon's frame, in metres of the model.
+      unprojectToDepth(sx, sy, this.headWorld.z, this.camera.position.z, pt);
       vA.set(pt.x - this.headWorld.x, pt.y - this.headWorld.y, 0);
-      const px = vA.length() * perspectiveFactor(hz, this.camera.position.z);
       quatA.copy(this.object.quaternion).invert();
       vA.applyQuaternion(quatA);
-      // A pointer in front of the screen plane looks like a point a little toward the camera.
-      vA.z += px * 0.6 + 1;
-      const yawAbs = Math.atan2(vA.x, vA.z);
-      const pitchAbs = Math.atan2(vA.y, Math.hypot(vA.x, vA.z));
-      // Near the head itself the angle means nothing: ease the follow off inside 14 to 90 px.
-      const near = smoothstep(14, 90, px);
-      tYaw = softClamp(wrapAngle(yawAbs), FOLLOW_YAW) * near;
-      tPitch =
-        softClamp(pitchAbs, pitchAbs > 0 ? FOLLOW_UP : FOLLOW_DOWN) *
-        near *
-        (pitchAbs > 0 ? 1 : 0.8);
-      const len = Math.max(1, Math.hypot(vA.x, vA.y, vA.z));
-      eyeX = clamp(vA.x / len, -1, 1) * near;
-      eyeY = clamp(vA.y / len, -1, 1) * near;
+      const metres = 1 / Math.max(1e-6, this.object.scale.x);
+      leanFor(goal, vA.z * metres, vA.y * metres, Math.max(this.followW, want.look ? 0.8 : 0));
+    } else {
+      leanFor(goal, 0, 0, 0);
     }
-    springStep(this.followYaw, tYaw * weight, 11, 0.8, dt);
-    springStep(this.followPitch, tPitch * weight, 11, 0.8, dt);
-    const eyeW = Math.max(weight, this.hover ? 0.8 : 0);
-    springStep(this.lookX, eyeX * eyeW, 22, 0.9, dt);
-    springStep(this.lookY, eyeY * eyeW, 22, 0.9, dt);
+    springStep(this.leanPitch, goal.pitch, 5, 1, dt);
+    springStep(this.leanRoll, goal.roll, 5, 1, dt);
+    springStep(this.leanShift, goal.shift, 4, 1, dt);
+    springStep(this.leanTail, goal.tail, 3, 1, dt);
   }
 
   /** The word the cursor shows follows the mood, also while the pointer rests on a part. */
@@ -933,6 +992,18 @@ export class SilverboltActor implements Actor {
     }
     pose.wingRoot += 0.28 * this.hoverW.wings + this.lagWing.x;
     pose.cheekSpread += 0.25 * this.hoverW.wings + 0.5 * this.faceCur.flare;
+    // The hard shake flares the wings and the cheek blades (the body's own rattle is in `placeObject`).
+    const sh = this.shakeNow;
+    if (sh.amount > 0.001) {
+      const flare = sh.amount;
+      pose.wingRoot += 0.4 * flare * (0.7 + 0.3 * Math.sin(this.clock * 34));
+      for (let i = 0; i < 6; i++) {
+        pose.blade[i] = pose.blade[i]! + 0.3 * flare * Math.sin(this.clock * 29 + i * 1.3);
+        pose.bladeSpread[i] = pose.bladeSpread[i]! + 0.28 * flare;
+      }
+      pose.cheekSpread += 0.55 * flare;
+      pose.crest += 0.18 * flare * Math.sin(this.clock * 37);
+    }
 
     // Wings and blades along their measured hinges.
     this.hinge(this.iWing, BONE.wingRoot, pose.wingRoot, 0);
@@ -943,39 +1014,16 @@ export class SilverboltActor implements Actor {
     this.hinge(this.iCheek[1], BONE.cheekR, pose.cheekRaise, pose.cheekSpread);
     this.hinge(this.iCrest, BONE.crest, pose.crest, 0);
 
-    // The head: the pose, the face, the reactions and the follow, in the model's frame.
-    const shake = this.reactions.value("shake");
-    const flinch = this.reactions.value("flinch");
+    // The head is locked: straight, in one line with the body, looking toward the heading. It has no
+    // turn of its own (no pose, no follow, no reaction); it moves only with the body.
     const chomp = this.reactions.value("chomp");
     const yelp = this.reactions.value("yelp");
     const lash = this.faceCur.lash;
-    const yaw =
-      pose.headYaw +
-      this.followYaw.x +
-      this.lagYaw.x +
-      shake * 0.4 +
-      flinch * 0.15 * this.reactions.flinchSide;
-    const pitch =
-      pose.headPitch +
-      this.followPitch.x +
-      this.lagPitch.x -
-      this.faceCur.headDip -
-      yelp * 0.2 -
-      chomp * 0.08 +
-      flinch * 0.1;
-    const roll = pose.headRoll + this.faceCur.headTilt + shake * 0.08;
-    eulerA.set(-pitch, yaw, roll, "YXZ");
-    quatA.setFromEuler(eulerA);
-    rig.turnFrame(this.iHead, quatA);
-    // The wing root rides a quarter of the head's turn (there is no neck bone).
-    eulerA.set(-pitch * 0.25, yaw * 0.25, 0, "YXZ");
-    quatA.setFromEuler(eulerA);
-    rig.turnFrame(this.iWing, quatA);
 
     // The jaw, relative to the modelled mouth (angle 0).
     const talk = this.annoy.annoyed ? 0.05 * Math.sin(this.clock * 26) : 0;
     let open = want.jaw >= 0 ? want.jaw : this.faceCur.jaw;
-    open = clamp(open + chomp * (1 - open) + yelp * 0.2 + talk + this.hoverW.jaw * 0.1, 0, 1);
+    open = clamp(open + chomp * (1 - open) + yelp * 0.2 + talk, 0, 1);
     const angle = JAW_ANGLE.closed + open * (JAW_ANGLE.wide - JAW_ANGLE.closed);
     rig.turnLocal(this.iJaw, JAW_AXIS[0], JAW_AXIS[1], JAW_AXIS[2], angle - JAW_ANGLE.rest);
     const tongue = pose.tongue + open * 0.25;
@@ -998,7 +1046,6 @@ export class SilverboltActor implements Actor {
     const rate = this.annoy.annoyed ? 2.5 : 1;
     const closed = this.blinker.step(dt, rate);
     const lid = clamp(this.faceCur.lid * (1 - closed), 0.05, 1.35);
-    const slide = 0.011;
     for (let side = 0; side < 2; side++) {
       const i = this.iEye[side]!;
       const sign = side === 0 ? 1 : -1;
@@ -1006,23 +1053,30 @@ export class SilverboltActor implements Actor {
       eulerA.set(0, 0, sign * this.faceCur.slant);
       quatA.setFromEuler(eulerA);
       rig.turnFrame(i, quatA);
-      rig.offsetFrame(i, this.lookX.x * slide, this.lookY.x * slide, 0);
     }
 
     // The tail's own wave (the body of the pose); the physics and the drag come after the matrices.
+    // In a side view the pitch is what the eye sees, so the wave a pointer or a shake adds is a pitch
+    // wave first. It travels back from the body: gentle, never a stretch.
     const lashWave = lash * 0.2;
+    const lively = this.leanTail.x;
+    const whip = this.shakeNow.whip;
     for (let j = 0; j < 7; j++) {
       const bone = this.iTail[j]!;
+      const grow = 0.4 + (0.6 * j) / 6;
+      const travel = this.clock * 3.1 - 0.85 * j;
       const yawJ =
-        pose.tailYaw[j]! + lashWave * (0.3 + j / 8) * Math.sin(this.clock * 17 - 0.9 * j);
+        pose.tailYaw[j]! +
+        lashWave * (0.3 + j / 8) * Math.sin(this.clock * 17 - 0.9 * j) +
+        0.03 * lively * grow * Math.sin(travel + 1.2) +
+        0.1 * whip * grow * Math.sin(this.clock * 52 - 1.1 * j);
+      const pitchJ =
+        pose.tailPitch[j]! +
+        (want.clip ? 0 : this.tailLevel[j]!) +
+        0.04 * lively * grow * Math.sin(travel) +
+        0.12 * whip * grow * Math.sin(this.clock * 47 - 1.0 * j + 0.5);
       rig.turnLocal(bone, TAIL_YAW_AXIS[0], TAIL_YAW_AXIS[1], TAIL_YAW_AXIS[2], yawJ);
-      rig.turnLocal(
-        bone,
-        TAIL_PITCH_AXIS[0],
-        TAIL_PITCH_AXIS[1],
-        TAIL_PITCH_AXIS[2],
-        pose.tailPitch[j]!,
-      );
+      rig.turnLocal(bone, TAIL_PITCH_AXIS[0], TAIL_PITCH_AXIS[1], TAIL_PITCH_AXIS[2], pitchJ);
     }
     rig.apply();
   }
@@ -1047,6 +1101,32 @@ export class SilverboltActor implements Actor {
     }
     this.rig.reset();
     return rest;
+  }
+
+  /**
+   * The rest tail leaves the neck steeply and bends down (about 26 degrees on the first segment): the
+   * seahorse's curl. Measure, once, the pitch of each joint that lays every segment on the body's axis
+   * (the line from the head joint to the first tail joint, the one the head is straightened to) with
+   * a very slight droop, so the whole dragon is one long line. Called once, with the model at rest.
+   */
+  private measureTailLevel(): void {
+    this.model.updateMatrixWorld(true);
+    const pos: Vector3[] = [new Vector3(), ...this.tailBones.map(() => new Vector3())];
+    this.headBone.getWorldPosition(pos[0]!);
+    for (let i = 0; i < 7; i++) this.tailBones[i]!.getWorldPosition(pos[i + 1]!);
+    // Elevation of a direction about the side axis: 0 along -Z (toward the tail), positive up.
+    const elevation = (a: Vector3, b: Vector3): number => Math.atan2(b.y - a.y, -(b.z - a.z));
+    const axis = elevation(pos[0]!, pos[1]!);
+    let currentPrev = axis;
+    let targetPrev = axis;
+    for (let i = 0; i < 6; i++) {
+      const current = elevation(pos[i + 1]!, pos[i + 2]!);
+      const target = axis - TAIL_DROOP * ((i + 1) / 6);
+      this.tailLevel[i] = target - targetPrev - (current - currentPrev);
+      currentPrev = current;
+      targetPrev = target;
+    }
+    this.tailLevel[6] = 0;
   }
 
   /** The lift to lay on the head this frame: the rest pose's, or the clip's (and the blended clip's). */
@@ -1117,14 +1197,65 @@ export class SilverboltActor implements Actor {
       return;
     }
     const p = this.pose;
-    const puff = this.reactions.value("puff");
-    // The body puffs on a poke and swells a little when it is angry.
-    this.puff.scale.setScalar(
-      1 + 0.14 * puff + 0.04 * this.hoverW.body + 0.05 * this.faceCur.anger,
-    );
-    eulerA.set(-p.bodyPitch, p.bodyYaw, p.bodyRoll, "YXZ");
+    const sh = this.shakeNow;
+    // A poke or an old style `shake` reaction is a small jolt of the whole body, never a stretch.
+    const jolt = this.reactions.value("puff");
+    const shiver = this.reactions.value("shake");
+    const flinch = this.reactions.value("flinch");
+    // The whole body breathes by a uniform two percent at most: the proportions are the model's.
+    this.puff.scale.setScalar(1 + BREATH_SCALE * Math.sin(this.breathPhase * 1.3));
+    const pitch =
+      p.bodyPitch + this.leanPitch.x + sh.nod + 0.05 * jolt + 0.025 * shiver + 0.03 * flinch;
+    const roll = p.bodyRoll + this.leanRoll.x + sh.roll + 0.03 * shiver;
+    eulerA.set(-pitch, p.bodyYaw, roll, "YXZ");
     this.puff.quaternion.setFromEuler(eulerA);
-    this.pivot.position.set(-BODY_CENTRE[0], -BODY_CENTRE[1] + p.bob, -BODY_CENTRE[2]);
+    // Along the body: the pointer's shift (toward the nose) and the shake's rattle (+ toward the tail).
+    this.pivot.position.set(
+      -BODY_CENTRE[0],
+      -BODY_CENTRE[1] + p.bob + sh.up + 0.02 * jolt,
+      -BODY_CENTRE[2] + this.leanShift.x - sh.along + 0.015 * shiver,
+    );
+  }
+
+  /**
+   * What the rider's physics reads (`motion`): the seat's velocity and acceleration in stage pixels,
+   * the shake and the lean, the angle of the body axis on the screen. After the matrices, before the
+   * hit shapes. A step that is a jump (a snap, a teleport) gives no speed.
+   */
+  private updateMotion(dt: number): void {
+    const m = this.motion;
+    const seat = this.sockets.get("seat");
+    if (seat) {
+      vA.setFromMatrixPosition(seat.matrixWorld);
+      const far =
+        Math.hypot(vA.x - this.seatPrev.x, vA.y - this.seatPrev.y) > this.stage.height * 0.25;
+      if (!this.seatPrevReady || dt < 1e-4 || far) {
+        m.seatVel.x = m.seatVel.y = m.seatVel.z = 0;
+        m.seatAcc.x = m.seatAcc.y = m.seatAcc.z = 0;
+      } else {
+        vB.copy(vA)
+          .sub(this.seatPrev)
+          .multiplyScalar(1 / dt);
+        // A light smoothing (a 60 Hz position difference of a spring driven body is noisy).
+        const k = 1 - Math.exp(-40 * dt);
+        vC.copy(this.seatVelPrev).lerp(vB, k);
+        m.seatAcc.x = (vC.x - this.seatVelPrev.x) / dt;
+        m.seatAcc.y = (vC.y - this.seatVelPrev.y) / dt;
+        m.seatAcc.z = (vC.z - this.seatVelPrev.z) / dt;
+        m.seatVel.x = vC.x;
+        m.seatVel.y = vC.y;
+        m.seatVel.z = vC.z;
+      }
+      this.seatPrev.copy(vA);
+      this.seatVelPrev.set(m.seatVel.x, m.seatVel.y, m.seatVel.z);
+      this.seatPrevReady = true;
+    }
+    m.shake = this.shakeNow.amount;
+    m.shakeOsc = this.shakeNow.osc;
+    m.lean = this.leanPitch.x;
+    // The nose's direction on the screen, with the body's own lean and shake laid on.
+    vB.set(0, 0, 1).applyQuaternion(this.puff.quaternion).applyQuaternion(this.object.quaternion);
+    m.tilt = Math.atan2(vB.y, vB.x);
   }
 
   // ---------------------------------------------------------------- the tail
@@ -1222,7 +1353,8 @@ export class SilverboltActor implements Actor {
     vC.copy(vB).sub(vA).normalize();
     const r = this.ranges;
 
-    // Head: from the head's joint along the head to the nose.
+    // Body: the head (from its joint along it to the nose), the chin, the neck and the first two
+    // tail segments, thick. The head is not a target of its own any more: the body answers.
     let start = hf.mark();
     hf.add(
       vA.x,
@@ -1234,11 +1366,6 @@ export class SilverboltActor implements Actor {
       0.25 * ws,
       cam,
     );
-    r.head.start = start;
-    r.head.count = hf.count(start);
-
-    // Jaw and neck.
-    start = hf.mark();
     const jaw = this.rig.bones[this.iJaw]!;
     vB.setFromMatrixPosition(jaw.matrixWorld);
     // The chin: from the hinge to the front teeth, wherever the jaw swings.
@@ -1247,11 +1374,6 @@ export class SilverboltActor implements Actor {
     const neck = this.tailBones[0]!;
     vB.setFromMatrixPosition(neck.matrixWorld);
     hf.add(vA.x, vA.y, vA.z, vB.x, vB.y, vB.z, 0.2 * ws, cam);
-    r.jaw.start = start;
-    r.jaw.count = hf.count(start);
-
-    // Body: the first two tail segments, thick.
-    start = hf.mark();
     const b = this.tailBase;
     for (let i = 0; i < 2; i++) {
       hf.add(
@@ -1372,21 +1494,11 @@ export class SilverboltActor implements Actor {
     const re = this.reactions;
     const cam = this.camera.position.z;
     switch (part) {
-      case "head":
-        re.trigger("shake", 1);
-        this.blinker.now();
-        this.mark("sparks", "headTop", 1);
-        this.annoy.poke(0.22);
-        break;
-      case "jaw":
-        re.trigger("chomp", 1);
-        this.mark("chomp", "mouth", 0.8);
-        this.annoy.poke(0.1);
-        break;
       case "body":
-        re.trigger("puff", 1);
-        this.mark("puff", "bodyCentre", 0.8);
-        this.annoy.poke(0.1);
+        // A quiet shiver of the whole body: a small jolt, a mark, a little more annoyance.
+        re.trigger("puff", 0.8);
+        this.mark("puff", "bodyCentre", 0.6);
+        this.annoy.poke(0.12);
         break;
       case "wings":
         re.trigger("flutter", 1);
