@@ -54,7 +54,9 @@ import {
   R7_STRIDE,
   R7_VFOV,
   VIEW_TURN,
+  cropFor,
   lensFor,
+  lensForCrop,
   mixLens,
   mixR7,
   newLens,
@@ -197,6 +199,7 @@ export class SelenaActor implements Actor {
   private readonly keyC = new Float32Array(R7_STRIDE);
   private readonly lensA: R7Lens = newLens();
   private readonly lensB: R7Lens = newLens();
+  private readonly cropNow = new Float32Array(3);
   private readonly lensC: R7Lens = newLens();
   private readonly r7Pos = new Float32Array(3);
   private readonly r7Quat = new Float32Array(4);
@@ -294,6 +297,7 @@ export class SelenaActor implements Actor {
         ? new Sky(
             skyTexture,
             new Matrix3().set(m[0]!, m[1]!, m[2]!, m[3]!, m[4]!, m[5]!, m[6]!, m[7]!, m[8]!),
+            r7.sky.poly,
           )
         : null;
     const rig = buildRig(gltf);
@@ -627,7 +631,17 @@ export class SelenaActor implements Actor {
       const tall = this.keyB;
       sampleR7(data, clip, clipTime, tall, "portrait");
       const rect = options.rect ?? screen;
-      lensFor(rect, viewport, tall[R7_VFOV]!, tall[R7_SHY]!, data.aspect, 1, this.lensB);
+      // A portrait window is a crop of the recording's frame (the same camera): `cropFor`.
+      cropFor(data, clip, clipTime, this.cropNow);
+      lensForCrop(
+        rect,
+        viewport,
+        tall[R7_VFOV]!,
+        tall[R7_SHY]!,
+        data.aspect,
+        this.cropNow,
+        this.lensB,
+      );
       lens = k >= 1 ? this.lensB : mixLens(viewport, this.lensA, this.lensB, k, this.lensC);
       if (k >= 1) key = tall;
       else {

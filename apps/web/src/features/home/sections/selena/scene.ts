@@ -13,10 +13,9 @@
  * Every actor is optional: the section works (a drawer and its words on the plain ground) before any
  * of them has arrived. Nothing is allocated in a frame.
  */
-import { PerspectiveCamera, Quaternion, Vector3 } from "three";
+import { PerspectiveCamera, Vector3 } from "three";
 
 import type { BuddyPair } from "../../actors/buddies";
-import { ANCHOR } from "../../actors/selena/constants";
 import type { CameraData } from "../../actors/selena/camera";
 import type { ClipName, SelenaActor } from "../../actors/selena";
 import { getCast, type Cast } from "../../actors/shared/cast";
@@ -25,6 +24,7 @@ import type { SheetActor } from "../../fx/sheet";
 import { isCompactView } from "../../drone-route";
 import type { FrameInfo, SectionCtx } from "../../kernel/types";
 import { dockPlace } from "../descent/dock";
+import { showDragon } from "../list/dragon";
 import { selenaEnd, type Placement } from "../list/selena-frame";
 import { isPortrait } from "../vp";
 
@@ -41,11 +41,8 @@ import {
   zoomRect,
   type ViewRect,
 } from "./out";
-import { roomPlace } from "./room";
 import type { Beats } from "./timeline";
 
-/** The dragon starts this many screen widths to the right of its place. */
-const GLIDE = 1.15;
 /**
  * The camera's first move, from the pixel view of the room to the out camera (they are the same
  * picture when the room shows the game's idle camera, and this hides any difference): it starts when
@@ -82,11 +79,8 @@ export class SelenaScene {
   private readonly rectA: ViewRect = zeroRect();
   private readonly rectB: ViewRect = zeroRect();
   private readonly rectC: ViewRect = zeroRect();
-  private readonly film = new Vector3();
-  private readonly filmQ = new Quaternion();
   private readonly hand = new Vector3();
   private readonly back = new Vector3();
-  private readonly world = { x: 0, y: 0, z: 0 };
   private endKey = "";
   private end: Placement = { x: 0, y: 0, height: 1 };
   private exiting = false;
@@ -140,7 +134,7 @@ export class SelenaScene {
 
     if (sl) this.selena(sl, b, frame.dt);
     if (sl && this.cast) this.view(sl, this.cast, b, vp);
-    if (sl && sb) this.dragon(sl, sb, b, frame);
+    if (sl && sb) this.dragon(sl, sb, frame);
     this.buddies(b, vp);
   }
 
@@ -176,17 +170,6 @@ export class SelenaScene {
   }
 
   // ------------------------------------------------------------------ the camera and the sheet
-
-  /** Her own space in the world: where the dragon's clip lives. */
-  private filmSpace(sl: SelenaActor): void {
-    const o = sl.object;
-    const s = o.scale.x;
-    this.filmQ.copy(o.quaternion);
-    this.film
-      .set(-ANCHOR[0] * s, -ANCHOR[1] * s, -ANCHOR[2] * s)
-      .applyQuaternion(o.quaternion)
-      .add(o.position);
-  }
 
   private view(sl: SelenaActor, cast: Cast, b: Beats, vp: { w: number; h: number }): void {
     const o = b.out;
@@ -310,22 +293,13 @@ export class SelenaScene {
 
   // ------------------------------------------------------------------ the dragon
 
-  private dragon(sl: SelenaActor, sb: SilverboltActor, b: Beats, frame: FrameInfo): void {
-    if (b.dragon <= 0) return;
-    this.filmSpace(sl);
-    sb.visible = true;
-    // It is part of her picture: drawn through the same fitted lens, in front of the sky.
-    sl.frameWith(sb.object);
-    const slide = (1 - b.dragon) * GLIDE * frame.viewport.w;
-    // The dragon rests below her, out of her pose, where it stood in the room, and stays there.
-    const rest = roomPlace(frame.viewport);
-    this.world.x = this.film.x + slide + rest.dx * frame.viewport.w;
-    this.world.y = this.film.y + rest.dy * frame.viewport.h;
-    this.world.z = this.film.z;
-    sb.placeWorld(this.world, sl.object.scale.x * rest.scale, this.filmQ);
-    sb.clip("city_idle", frame.time, { root: "keep" });
-    // Silverbolt only plays its clip: its head stays still (round seven).
-    sb.follow(0);
+  /**
+   * The dragon is in her picture from the list on (`list/dragon.ts`): it stands where its clip puts
+   * it, plays the clip that matches hers and keeps its head still. The room does not bring it in
+   * again: it was already behind her when the frame had grown.
+   */
+  private dragon(sl: SelenaActor, sb: SilverboltActor, frame: FrameInfo): void {
+    showDragon(sl, sb, frame.time);
   }
 
   // ------------------------------------------------------------------ the pair

@@ -12,21 +12,28 @@ node scripts/home/models/cameras-r7.mjs
 runs `blender/cameras_r7.py` on the entrance file with `fits.json` (this folder) and copies the result
 to the models folder. The file name is new, so no cache name moves.
 
-## State of the work: NOT 1:1 with the recording yet
+## State of the work: the landscape camera and sky are fitted to the recording (CAM-landscape, 20 Nov 2026)
 
-What ships today (`fits.json`): **the game's own cameras** (`cam_city_*`, a 30 mm lens read as the
-vertical field of view of a 16:9 frame of which the recording shows the bottom 80 percent: 51.28
-degrees, shift -0.125) with no correction. The idle and pose loops are the game's static cameras, the
-two transitions and the out clip keep the game's own paths, and the out clip starts and ends on the
-idle camera. These are about 1.7 times tighter than `horizontal.mkv` (the recording shows more: the
-dragon's head at the left of the idle, both claws and the dragon in the pose). They are a coherent,
-good looking framing, not the owner's reference. The sky's turn is solved from one landmark (the star
-at (335, 15) of the 960 by 432 recording frame, no roll).
+`fits.json` `landscape` is **one static camera** for `horizontal.mkv`: idle, pose and both
+transitions (the recording's background never moves, and the fitted rotations of the idle and the
+pose agree to 0.6 degree). Its position is the game's camera position (0, 1.1053, 0.9545 in her
+space), its vertical field of view is **60 degrees over the whole 2.222 frame** (the Unity default),
+its optical axis is in the middle (`shy` 0) and its rotation is the one the landmarks give
+(rotvec -0.1065, -0.0230, -0.2586: a roll of 15 degrees). `cameras_r7.py` writes it as one key for
+the four non-out clips. The out clip keeps the game's own path, offset so that it starts and ends on
+this camera. The earlier "1.7 times tighter" was the 51.28 degree lens of the game's data against 60
+degrees here, together with a camera that was not rolled. How: `fit/landscape/` (see the round notes,
+`docs/design/home/round7-CAM-landscape.md`).
 
-`fits.json` also accepts a fitted camera: `idle.matrix` and `pose.matrix` are 16 numbers (a Blender
-world matrix, row major) with their own `vfov` and `shy`; the build takes the offset of each from the
-game's camera of that loop and carries it through the clip, blending the offset of the loop a
-transition leaves into the one it reaches. `matrix: null` is the game's camera.
+`fits.json` `portrait` is the portrait window (CAM-portrait's keys). `idle` and `pose` are the older
+game cameras and are only used when `landscape` is missing.
+
+**The sky** (`skyPoly`, `sky`): the recording's background is the painting as a flat picture bent
+by a smooth (cubic) map of the recording's frame, not an equirectangular sky. `sky` is the fitted
+camera's rotation transposed (her space to the camera); the shader takes each ray to that frame and
+then through the cubic to the painting.
+
+The older notes below are about the failed attempts. The method that worked is in the round notes.
 
 ## What was tried to find the recording's camera, and why it is not done
 

@@ -37,11 +37,74 @@ export interface R7Data {
    */
   portrait?: Record<string, R7Clip>;
   /**
-   * Where the skybox sits: the matrix (row major, 3 by 3) that takes a direction in her own space
-   * to the direction the equirectangular picture is read in (`sky.ts`). One for the whole scene:
-   * the sky is fixed to the world.
+   * The sky (`sky.ts`). `fromFilm`: the matrix (row major, 3 by 3) that takes a direction in her
+   * own space to the rest camera's space (the fitted camera of the recording, transposed).
+   * `poly`: 20 numbers, the cubic that takes the recording's pixel (1920 by 864 frame) to the
+   * painting's pixel (1774 by 887), the recording's background being the painting as a flat
+   * picture bent by a smooth map (`sky.ts`). One for the
+   * whole scene: the sky is fixed to the world.
    */
-  sky: { fromFilm: number[] };
+  sky: { fromFilm: number[]; poly: number[] };
+  /**
+   * Where a portrait window looks in the recording's frame, for the idle and the pose: `[fx, fy, h]`,
+   * see `R7Crop`. Missing keys use `DEFAULT_CROP`.
+   */
+  portraitCrop?: Partial<Record<"idle" | "pose", number[]>>;
+}
+
+/**
+ * A portrait window (the list's 4:5 frame, a phone's screen) is a crop of the recording's own frame:
+ * the same camera, the same lens, the same perspective. The recording is 20:9 and the window is
+ * tall, so the window picks a part of it: `fx` and `fy` are the middle of that part as a share of
+ * the frame's width and height (from the top left) and `h` is the window's height as a share of the
+ * frame's height (1 is the whole height, more shows more sky above and below). The window's width
+ * follows from its shape. Found against `horizontal.mkv` and `vertical.mkv`, which share one static
+ * camera (their backgrounds agree): `vertical.mkv` shows another animation (the left hand's kiss) of
+ * the same camera, so it has the same frame and no camera of its own.
+ */
+export interface R7Crop {
+  fx: number;
+  fy: number;
+  h: number;
+}
+
+/**
+ * The crops used when `cameras-r7.json` has none. The pose: she is in the middle of the frame (head
+ * at 0.58, 0.36), the window's middle sits a little to the right of her so the dragon's jaw and the
+ * claw come in behind her. The idle: the head and the body, the dragon's head at the left.
+ */
+export const DEFAULT_CROP: Readonly<Record<"idle" | "pose", readonly [number, number, number]>> = {
+  pose: [0.545, 0.5, 1.2],
+  idle: [0.6, 0.45, 1.3],
+};
+
+/** The two ends of each clip's crop: a loop keeps one, a transition goes from one to the other. */
+const CROP_ENDS: Readonly<Record<string, readonly ["idle" | "pose", "idle" | "pose"]>> = {
+  city_idle: ["idle", "idle"],
+  city_interaction_R_loop: ["pose", "pose"],
+  city_interaction_R: ["idle", "pose"],
+  city_interaction_back_R: ["pose", "idle"],
+  city_intercation02: ["idle", "idle"],
+};
+
+const smoothstep = (x: number): number => {
+  const v = Math.max(0, Math.min(1, x));
+  return v * v * (3 - 2 * v);
+};
+
+/** The crop of a clip at a clip time, written into `out` (3 numbers). Nothing is allocated. */
+export function cropFor(
+  data: R7Data,
+  clip: string,
+  t: number,
+  out: ArrayLike<number> & Record<number, number>,
+): void {
+  const ends = CROP_ENDS[clip] ?? CROP_ENDS.city_idle!;
+  const a = data.portraitCrop?.[ends[0]] ?? DEFAULT_CROP[ends[0]];
+  const b = data.portraitCrop?.[ends[1]] ?? DEFAULT_CROP[ends[1]];
+  const duration = data.clips[clip]?.duration ?? 1;
+  const w = ends[0] === ends[1] ? 0 : smoothstep(t / Math.max(1e-3, duration));
+  for (let k = 0; k < 3; k += 1) out[k] = a[k]! + (b[k]! - a[k]!) * w;
 }
 
 /** One key of a clip, written into `out` (9 numbers). A clip that is not there gives the idle. */
@@ -176,6 +239,28 @@ export function lensFor(
   const focal = fh / (2 * Math.tan((vfovDeg * Math.PI) / 360));
   const cx = rect.x + rect.w / 2;
   const cy = rect.y + rect.h / 2 + shy * fh;
+  return lensFromPixels(canvas, focal, cx, cy, out);
+}
+
+/**
+ * The lens of a key shown in `rect` as a crop of the recording's frame: the frame is `rect.h / h`
+ * tall on the screen, the crop's middle (`fx`, `fy` of the frame) is at the rectangle's middle, and
+ * the optical axis stays where the key has it (the middle of the frame, `shy` below it). Same camera
+ * as `lensFor`, another window onto it.
+ */
+export function lensForCrop(
+  rect: Rect,
+  canvas: { w: number; h: number },
+  vfovDeg: number,
+  shy: number,
+  aspect: number,
+  crop: ArrayLike<number>,
+  out: R7Lens = newLens(),
+): R7Lens {
+  const fh = rect.h / crop[2]!;
+  const focal = fh / (2 * Math.tan((vfovDeg * Math.PI) / 360));
+  const cx = rect.x + rect.w / 2 + (0.5 - crop[0]!) * fh * aspect;
+  const cy = rect.y + rect.h / 2 + (0.5 + shy - crop[1]!) * fh;
   return lensFromPixels(canvas, focal, cx, cy, out);
 }
 

@@ -1,12 +1,14 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import { ensureSelena, type SelenaActor } from "../../actors/selena";
+import { ensureSilverbolt, type SilverboltActor } from "../../actors/silverbolt";
 import { beatFor } from "../../kernel/beat";
 import type { FrameInfo, PointerState, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionScreens, sectionStart } from "../../kernel/where";
 import { whenIdle } from "../idle";
-import { mix, seg } from "../vp";
+import { isPortrait, mix, seg } from "../vp";
 
+import { showDragon } from "./dragon";
 import { PICTURE_FRAMES } from "./frames";
 import { CHROME_PAD, listGeometry, mixRectInto, type ListGeometry, type Rect } from "./layout";
 import { LoopVideo } from "./loop-video";
@@ -112,6 +114,8 @@ class ListRuntime implements SectionRuntime {
   private scrollTo: (screens: number) => void = () => undefined;
   private current = -1;
   private selena: SelenaActor | null = null;
+  /** Silverbolt, behind her in the frame (round seven): it joins after her. */
+  private dragon: SilverboltActor | null = null;
   private selenaFrame: Placement | null = null;
   private selenaTail: Placement | null = null;
   /** The growth of the last frame at the last draw (-1: she was not drawn, so the next draw jumps). */
@@ -271,6 +275,11 @@ class ListRuntime implements SectionRuntime {
   setSelena(sl: SelenaActor | null): void {
     this.selena = sl;
     this.lastGrow = -1;
+  }
+
+  /** The dragon arrives after her (the second biggest file of the page). */
+  setDragon(sb: SilverboltActor | null): void {
+    this.dragon = sb;
   }
 
   enter(): void {
@@ -570,7 +579,16 @@ class ListRuntime implements SectionRuntime {
     card.y = g.frame.y;
     card.w = g.frame.w;
     card.h = g.frame.h;
-    sl.frame(vp, { portrait: 1 - e, rect: mixRectInto(this.lensRect, card, full, e), clip: rect });
+    // On a phone the room after the list covers the screen with the portrait crop, so the frame
+    // keeps the crop all the way (the lens rect grows to the whole screen): no change of lens at the
+    // handover. On a wide screen the crop gives way to the recording's whole frame.
+    sl.frame(vp, {
+      portrait: isPortrait(vp) ? 1 : 1 - e,
+      rect: mixRectInto(this.lensRect, card, full, e),
+      clip: rect,
+    });
+    // The dragon is in her picture, behind her: the clip that matches hers, at her time.
+    if (this.dragon) showDragon(sl, this.dragon, time);
   }
 
   /**
@@ -659,6 +677,15 @@ export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
       },
       () => {
         runtime.setSelena(null);
+      },
+    );
+    // Silverbolt stands behind her in the same picture. A failure only leaves the frame without it.
+    void ensureSilverbolt(ctx).then(
+      (sb) => {
+        runtime.setDragon(sb);
+      },
+      () => {
+        runtime.setDragon(null);
       },
     );
   }, 3000);

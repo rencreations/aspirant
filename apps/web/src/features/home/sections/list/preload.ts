@@ -2,6 +2,7 @@ import { libUrl } from "@/lib/library";
 import { chunkItem, imageItem, mediaItem, type PreloadItem } from "@/lib/preload";
 
 import { selenaItems } from "../../actors/selena/preload";
+import { silverboltItems } from "../../actors/silverbolt/preload";
 
 import { PICTURE_FRAMES, SELENA_FRAME } from "./frames";
 
@@ -43,6 +44,8 @@ export function preload(): PreloadItem[] {
     );
   });
   items.push(...selenaItems({ priority: 40 }));
+  // The dragon stands behind her in the tenth frame (round seven).
+  items.push(...silverboltItems({ priority: 41 }));
   PICTURE_FRAMES.forEach((f, i) => {
     const whole = f.kind === "video" ? f.posterFull : libUrl(f.full.lib);
     items.push(later(imageItem(whole, `Loading the whole picture of ${f.name}`), 46 + i * 0.01));

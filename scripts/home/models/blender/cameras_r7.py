@@ -42,6 +42,11 @@ opt = options()
 work = work_dir()
 fits = json.load(open(opt["fits"]))
 turn = Quaternion((1, 0, 0), -math.pi / 2)
+# `landscape` (horizontal.mkv): one static camera, held for idle, pose and both transitions. The
+# out clip keeps the game's own path, started from this camera (the idle's offset).
+LAND = fits.get("landscape")
+if LAND:
+    fits["idle"] = fits["pose"] = LAND
 
 
 def smooth(x):
@@ -91,7 +96,16 @@ def offset_mix(a, b, w):
     return Matrix.Translation(t) @ q.to_matrix().to_4x4()
 
 
-out = {"fps": FPS, "aspect": round(ASPECT, 5), "clips": {}, "sky": {"fromFilm": fits["sky"]}}
+out = {
+    "fps": FPS,
+    "aspect": round(ASPECT, 5),
+    "clips": {},
+    "sky": {"fromFilm": fits["sky"], "poly": fits["skyPoly"]},
+}
+# The portrait window is a crop of the recording's frame (the same camera): [fx, fy, h] for the idle
+# and the pose (`portrait.crop` of fits.json, see round7-CAM-portrait.md).
+if fits.get("portrait", {}).get("crop"):
+    out["portraitCrop"] = fits["portrait"]["crop"]
 for clip, (action_name, a_name, b_name) in CLIPS.items():
     action = bpy.data.actions[PREFIX + action_name]
     start, end = action.frame_range
@@ -116,7 +130,12 @@ for clip, (action_name, a_name, b_name) in CLIPS.items():
         a, b = rows[i - 1], rows[i]
         if sum(a[3 + k] * b[3 + k] for k in range(4)) < 0:
             rows[i] = b[:3] + [-v for v in b[3:7]] + b[7:]
-    static = a_name == b_name and all(
+    if LAND and clip != "city_intercation02":
+        m = mat_of(LAND["matrix"])
+        p = m.to_translation()
+        q = turn @ m.to_quaternion()
+        rows = [[p.x, p.z, -p.y, q.x, q.y, q.z, q.w, LAND["vfov"], LAND["shy"]]] * frames
+    static = (a_name == b_name or bool(LAND and clip != "city_intercation02")) and all(
         max(abs(rows[i][k] - rows[0][k]) for k in range(9)) < 2e-4 for i in range(frames)
     )
     if static:

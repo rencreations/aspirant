@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_CROP,
   R7_STRIDE,
+  cropFor,
   frameHeight,
   lensFor,
+  lensForCrop,
   lensFromPixels,
   mixLens,
   mixR7,
@@ -24,7 +27,10 @@ function data(): R7Data {
       still: { frames: 50, duration: 1.6, static: true, keys: still },
       move: { frames: 2, duration: 1 / 30, static: false, keys: move },
     },
-    sky: { fromFilm: [1, 0, 0, 0, 1, 0, 0, 0, 1] },
+    sky: {
+      fromFilm: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+      poly: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    },
   };
 }
 
@@ -139,5 +145,70 @@ describe("orbitAbout", () => {
     expect(s.pos[2]).toBeCloseTo(3 * Math.cos(0.1), 6);
     // The camera turned about +Y by the same angle: its look direction (-z) swings toward -x.
     expect(s.quat[1]).toBeCloseTo(Math.sin(0.05), 6);
+  });
+});
+
+describe("the portrait crop", () => {
+  const rect = { x: 432, y: 90, w: 576, h: 720 };
+  const canvas = { w: 1440, h: 900 };
+
+  it("a crop of the middle at the full height is the cover lens", () => {
+    const cover = lensFor(rect, canvas, 60, 0.05, ASPECT, 1);
+    const crop = lensForCrop(rect, canvas, 60, 0.05, ASPECT, [0.5, 0.5, 1]);
+    expect(crop.focal).toBeCloseTo(cover.focal, 9);
+    expect(crop.cx).toBeCloseTo(cover.cx, 9);
+    expect(crop.cy).toBeCloseTo(cover.cy, 9);
+  });
+
+  it("puts the chosen point of the frame at the middle of the window, the lens unchanged", () => {
+    const lens = lensForCrop(rect, canvas, 60, 0, ASPECT, [0.6, 0.4, 1.2]);
+    // The frame is rect.h / 1.2 tall; its point (0.6, 0.4) lands on the window's middle.
+    const fh = rect.h / 1.2;
+    const px = lens.cx + (0.6 - 0.5) * fh * ASPECT;
+    const py = lens.cy + (0.4 - 0.5) * fh;
+    expect(px).toBeCloseTo(rect.x + rect.w / 2, 6);
+    expect(py).toBeCloseTo(rect.y + rect.h / 2, 6);
+    expect(lens.focal).toBeCloseTo(fh / (2 * Math.tan((60 * Math.PI) / 360)), 9);
+  });
+
+  it("a loop keeps its crop and a transition goes from one end to the other", () => {
+    const d = {
+      ...data(),
+      clips: {
+        city_idle: { frames: 2, duration: 1, static: true, keys: [0, 1, 2, 0, 0, 0, 1, 60, 0] },
+        city_interaction_R_loop: {
+          frames: 2,
+          duration: 1,
+          static: true,
+          keys: [0, 1, 2, 0, 0, 0, 1, 60, 0],
+        },
+        city_interaction_R: {
+          frames: 2,
+          duration: 3,
+          static: true,
+          keys: [0, 1, 2, 0, 0, 0, 1, 60, 0],
+        },
+      },
+    } satisfies R7Data;
+    const out = [0, 0, 0];
+    cropFor(d, "city_interaction_R_loop", 0.7, out);
+    expect(out).toEqual([...DEFAULT_CROP.pose]);
+    cropFor(d, "city_idle", 0.7, out);
+    expect(out).toEqual([...DEFAULT_CROP.idle]);
+    cropFor(d, "city_interaction_R", 0, out);
+    expect(out[2]).toBeCloseTo(DEFAULT_CROP.idle[2], 9);
+    cropFor(d, "city_interaction_R", 3, out);
+    expect(out[2]).toBeCloseTo(DEFAULT_CROP.pose[2], 9);
+    cropFor(d, "city_interaction_R", 1.5, out);
+    expect(out[0]).toBeCloseTo((DEFAULT_CROP.idle[0] + DEFAULT_CROP.pose[0]) / 2, 9);
+  });
+
+  it("the data's own crop wins over the default", () => {
+    const d = { ...data(), portraitCrop: { pose: [0.4, 0.3, 0.9] } };
+    const out = [0, 0, 0];
+    cropFor(d, "city_interaction_R_loop", 0, out);
+    expect(out).toEqual([0.4, 0.3, 0.9]);
+    cropFor(d, "city_idle", 0, out);
+    expect(out).toEqual([...DEFAULT_CROP.idle]);
   });
 });
