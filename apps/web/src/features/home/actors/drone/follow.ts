@@ -42,6 +42,52 @@ const MAX_YAW = 1.22;
 const MAX_PITCH = 0.72;
 const MAX_ROLL = 0.66;
 
+/** The limits of a flight, in pixels a second and pixels a second squared (they scale with the screen's height). */
+export interface SpeedCap {
+  v: number;
+  a: number;
+}
+
+/**
+ * After a step of the springs, limit the change of the velocity (the acceleration) and the speed of the
+ * place as one vector. A step the limits do not touch is left exactly as the spring made it, so a calm
+ * flight is the same as before. The speed is capped as a vector so a diagonal flight is not faster.
+ */
+function capPlace(
+  px: Sprung,
+  py: Sprung,
+  x0: number,
+  y0: number,
+  vx0: number,
+  vy0: number,
+  cap: SpeedCap,
+  dt: number,
+): void {
+  let dvx = px.v - vx0;
+  let dvy = py.v - vy0;
+  const da = Math.hypot(dvx, dvy);
+  const maxDv = cap.a * dt;
+  let touched = false;
+  if (da > maxDv) {
+    dvx *= maxDv / da;
+    dvy *= maxDv / da;
+    touched = true;
+  }
+  let vx = vx0 + dvx;
+  let vy = vy0 + dvy;
+  const speed = Math.hypot(vx, vy);
+  if (speed > cap.v) {
+    vx *= cap.v / speed;
+    vy *= cap.v / speed;
+    touched = true;
+  }
+  if (!touched) return;
+  px.v = vx;
+  py.v = vy;
+  px.x = x0 + 0.5 * (vx0 + vx) * dt;
+  py.x = y0 + 0.5 * (vy0 + vy) * dt;
+}
+
 export function createFollower(): Follower {
   const zero = (): Sprung => ({ x: 0, v: 0 });
   return {
@@ -99,12 +145,18 @@ export function stepFollower(
   dt: number,
   flight: Flight,
   limit = 1,
+  cap: SpeedCap | null = null,
 ): void {
   if (dt <= 0) return;
   const vx0 = f.x.v;
   const vy0 = f.y.v;
+  const x0 = f.x.x;
+  const y0 = f.y.x;
   springTo(f.x, t.x, OMEGA_PLACE, dt);
   springTo(f.y, t.y, OMEGA_PLACE, dt);
+  // A drone with a rider (round nine) never zips: after a flick or a jump of the target the spring
+  // would close a big gap at a great speed, so its speed and its acceleration are capped.
+  if (cap) capPlace(f.x, f.y, x0, y0, vx0, vy0, cap, dt);
   springTo(f.size, t.size, OMEGA_SIZE, dt);
   const k = 1 - Math.exp(-14 * dt);
   f.ax = mix(f.ax, (f.x.v - vx0) / dt, k);

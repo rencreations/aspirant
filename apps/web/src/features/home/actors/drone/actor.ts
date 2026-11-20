@@ -34,6 +34,7 @@ import {
   lookAt,
   snapFollower,
   stepFollower,
+  type SpeedCap,
 } from "./follow";
 import { createShockLook, SHOCK_MIN_SECONDS, SHOCK_SECONDS, shockAt } from "./marks-anim";
 import { SIZE_PER_HEIGHT } from "./model";
@@ -86,6 +87,9 @@ const DEPTH_FRONT = 100;
 const CURSOR_LABEL = "HELLO";
 /** How far the flight may turn a drone that carries a rider, as a share of its own limit (round nine). */
 const CARRY_LIMIT = 0.5;
+/** The fastest a drone with a rider flies, in screen heights a second (0.9 is 1.5 percent a frame at 60 Hz), and its acceleration. */
+const CARRY_SPEED = 0.9;
+const CARRY_ACCEL = 12;
 
 /**
  * What a pair controller does with a press or a hover instead of the drone's own answer (round six:
@@ -131,6 +135,8 @@ export class DroneActor implements Actor {
   hooks: PointerHooks | null = null;
   /** A rider sits on the drone: a roll or a flip is a rock from side to side (`rockForRider`), a spin stays a spin. */
   carrying = false;
+  /** A section caps the drone's flight (see `CARRY_SPEED`): the pair in the descent. Off by default. */
+  speedCap = false;
   /** A pair controller sets the depth the drone's hit reports (larger is farther): the doll on its head is hit first. */
   hitDepth: number | null = null;
 
@@ -182,6 +188,7 @@ export class DroneActor implements Actor {
   private emoteLeft = 0;
   private flutterAmount = 0;
   private attLimit = 1;
+  private readonly cap: SpeedCap = { v: 0, a: 0 };
   private spinYaw = 0;
   private hovered = false;
   private readonly lift = { x: 0, v: 0 };
@@ -664,7 +671,15 @@ export class DroneActor implements Actor {
     rest.pitch = t.pitch + 0.03 + this.gaze.pitch * this.engaged;
     // A drone that carries a rider turns less with its flight, and eases to that, never snaps to it.
     this.attLimit += ((this.carrying ? CARRY_LIMIT : 1) - this.attLimit) * (1 - Math.exp(-4 * dt));
-    stepFollower(this.follower, t, rest, h, dt, this.flight, this.attLimit);
+    // With a rider the flight is capped (screens a second): no frame moves it by more than about
+    // 1.5 percent of the screen's height at 60 Hz, whatever the scroll or a jump of the target did.
+    let cap: SpeedCap | null = null;
+    if (this.speedCap) {
+      this.cap.v = CARRY_SPEED * h;
+      this.cap.a = CARRY_ACCEL * h;
+      cap = this.cap;
+    }
+    stepFollower(this.follower, t, rest, h, dt, this.flight, this.attLimit, cap);
     flightOf(this.follower, h, this.flight);
     const fl = this.flight;
     const calm = 1 - fl.fast;

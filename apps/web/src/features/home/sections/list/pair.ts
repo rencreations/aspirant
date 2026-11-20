@@ -41,6 +41,8 @@ class ListPairRuntime implements ListPair {
     if (!pair) return;
     dockPlace(frame.viewport, dock);
     pair.visible = true;
+    // The pair that arrives from the descent keeps the calm flight to the dock (round nine).
+    pair.capFlight(true);
     pair.place(dock);
     pair.mode("dock");
   }

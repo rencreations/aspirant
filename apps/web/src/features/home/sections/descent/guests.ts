@@ -1,75 +1,127 @@
 /**
- * The two Guinevere drones that join the pair in the descent (round nine, 20 Nov 2026). Pure: a
- * function of `p`, the descent's progress (0 at its start, 1 where the pair dock), so the scene
- * is the same both ways: scroll back up and they dance backwards, fly out to the sides and are gone.
+ * The two Guinevere drones that join the pair in the descent (round nine, 20 Nov 2026). Pure.
  *
- *   0.20 to 0.30  they fly in from the left and the right edge and stop beside the pair
- *   0.30 to 0.37  they bow, the pair look at them (the show's wave is here: `choreo.ts` SHOW)
- *   0.37 to 0.62  they dance with the pair, on the pair's beat
- *   0.62 to 0.66  they float
- *   0.66 to 0.84  they fly out to the edges; they are off the screen from 0.84
- *   0.86          they are no longer drawn (the list is rising and the pair dock from 0.91)
+ * A VISIT, not a scrub. The scroll only decides whether they are wanted (`visitWanted`: from 20 percent
+ * of the descent to 60 percent). Their flights in and out are timed, speed limited and eased, and
+ * their bow and their dance run on their own clock from the moment they stand beside the pair. So
+ * however fast the visitor scrolls, a flight never moves a guest by more than a smooth flight shows
+ * (the whole way out to an edge takes `GUEST_FLY` seconds), they are never snapped in or out, and the
+ * pair's greeting is timed to their arrival and not to a beat that lags a quick scroll. A reverse
+ * scroll sends them out again the same way. The dance itself is on the pair's beat (`runtime.ts`).
+ *
+ *   arrive   the flight in from the edges (the `leave` pose played back), `GUEST_FLY` seconds
+ *   bow      `GUEST_BOW` seconds: they bow, the pair wave and look at them
+ *   dance    on the pair's beat, as long as they are wanted
+ *   stop     the dance eases out over `GUEST_STOP` seconds, then they float and fly out
  */
+import { dampTo, setDamped, type Damped } from "../../actors/buddies/smooth";
 import { clamp01, seg, smooth } from "../vp";
 
+/** The share of the descent where they are wanted: they come at 20 percent, leave before the dock. */
 export const GUEST_IN_FROM = 0.2;
-export const GUEST_IN_TO = 0.3;
-export const GUEST_BOW_TO = 0.37;
-export const GUEST_DANCE_FROM = 0.37;
-export const GUEST_DANCE_TO = 0.62;
-export const GUEST_LEAVE_FROM = 0.66;
-export const GUEST_LEAVE_TO = 0.84;
-export const GUEST_GONE = 0.86;
+export const GUEST_OUT_FROM = 0.6;
+/** Seconds of a whole flight in or out (under 1.5 percent of the screen's height a frame). */
+export const GUEST_FLY = 2.5;
+/** Seconds of the bow and the greeting, from the moment they stand beside the pair. */
+export const GUEST_BOW = 1.6;
+/** Seconds the dance takes to come in and to go out. */
+export const GUEST_DANCE_IN = 0.6;
+export const GUEST_STOP = 0.45;
+/** Seconds of the pair's greeting wave (the bow and a little after). */
+const GREET = GUEST_BOW + 0.8;
 
 export type GuestPose = "leave" | "bow" | "dance" | "float";
 
-export interface GuestState {
-  /** False before they come and after they are gone: nothing is drawn. */
+/** Whether the descent's progress `p` wants the guests here. */
+export const visitWanted = (p: number): boolean => p >= GUEST_IN_FROM && p < GUEST_OUT_FROM;
+
+export interface Visit {
+  /** How far in they are, 0 (off the screen) to 1 (beside the pair): the flight's own follower. */
+  flight: Damped;
+  /** Seconds they have stood beside the pair (0 while they fly). */
+  stood: number;
+  /** The dance's weight, 0 to 1. */
+  perform: number;
+  /** False while nobody is drawn. */
   shown: boolean;
+  /** The pose and its weight (for `leave`: 0 at their places, 1 gone). */
   pose: GuestPose;
-  /** The pose's weight (for `leave`: 0 at their places, 1 gone). */
   w: number;
   /** 0 to 1: the pair look at them. */
   attention: number;
   /** -1 to 1: which one the pair look at (-1 the left, 1 the right). */
   gaze: number;
+  /** 0 to 1: the pair's greeting wave. */
+  greet: number;
+  /** True on the one frame the dance begins (the pair's beat is marked then). */
+  danceFrom: boolean;
 }
 
-export const newGuestState = (): GuestState => ({
+export const newVisit = (): Visit => ({
+  flight: { x: 0, v: 0 },
+  stood: 0,
+  perform: 0,
   shown: false,
   pose: "float",
   w: 0,
   attention: 0,
   gaze: 0,
+  greet: 0,
+  danceFrom: false,
 });
 
-/** What the two do at the descent's progress `p`. Writes `out` and returns it. */
-export function guestsAt(p: number, out: GuestState): GuestState {
-  out.attention = smooth(seg(p, 0.25, 0.3)) * (1 - smooth(seg(p, 0.37, 0.42)));
-  out.gaze = -1 + 2 * smooth(seg(p, 0.3, 0.35));
-  out.shown = p >= GUEST_IN_FROM && p < GUEST_GONE;
-  if (!out.shown) {
-    out.pose = "float";
-    out.w = 0;
-  } else if (p < GUEST_IN_TO) {
-    out.pose = "leave";
-    out.w = 1 - smooth(seg(p, GUEST_IN_FROM, GUEST_IN_TO));
-  } else if (p < GUEST_BOW_TO) {
-    out.pose = "bow";
-    out.w = 0.6 * Math.sin(Math.PI * seg(p, GUEST_IN_TO, GUEST_BOW_TO)) ** 2;
-  } else if (p < GUEST_DANCE_TO) {
-    out.pose = "dance";
-    out.w =
-      smooth(seg(p, GUEST_DANCE_FROM, GUEST_DANCE_FROM + 0.04)) *
-      (1 - smooth(seg(p, GUEST_DANCE_TO - 0.04, GUEST_DANCE_TO)));
-  } else if (p < GUEST_LEAVE_FROM) {
-    out.pose = "float";
-    out.w = 1;
+/** Back to the start: nobody is here (a section that is left). */
+export function resetVisit(v: Visit): void {
+  setDamped(v.flight, 0);
+  v.stood = 0;
+  v.perform = 0;
+  v.shown = false;
+  v.pose = "float";
+  v.w = 0;
+  v.attention = 0;
+  v.gaze = 0;
+  v.greet = 0;
+  v.danceFrom = false;
+}
+
+/**
+ * One step of the visit. `wanted` is `visitWanted(p)`. Every number it writes is continuous in time.
+ * The flight has its own limit: it never goes faster than `1 / GUEST_FLY` of the whole way in a second.
+ */
+export function stepVisit(v: Visit, wanted: boolean, dt: number): Visit {
+  if (dt <= 0) return v;
+  const standing = v.flight.x >= 0.999;
+  v.stood = standing ? v.stood + dt : 0;
+  const was = v.perform;
+  // The dance comes in after the bow; it goes out first when they are no longer wanted.
+  const danceWanted = wanted && standing && v.stood >= GUEST_BOW;
+  v.perform = clamp01(v.perform + (danceWanted ? dt / GUEST_DANCE_IN : -dt / GUEST_STOP));
+  v.danceFrom = was <= 0 && v.perform > 0;
+  // They fly out only when they have stopped dancing, and in as soon as they are wanted.
+  const flightGoal = wanted || v.perform > 0.001 ? 1 : 0;
+  dampTo(v.flight, flightGoal, 0.35, 1 / GUEST_FLY, dt);
+  v.shown = v.flight.x > 0.0005;
+  if (!v.shown) {
+    v.pose = "float";
+    v.w = 0;
+  } else if (v.flight.x < 0.999) {
+    v.pose = "leave";
+    v.w = 1 - smooth(v.flight.x);
+  } else if (v.perform > 0.001) {
+    v.pose = "dance";
+    v.w = smooth(v.perform);
+  } else if (v.stood < GUEST_BOW && wanted) {
+    v.pose = "bow";
+    v.w = 0.6 * Math.sin(Math.PI * clamp01(v.stood / GUEST_BOW)) ** 2;
   } else {
-    out.pose = "leave";
-    out.w = smooth(seg(p, GUEST_LEAVE_FROM, GUEST_LEAVE_TO));
+    v.pose = "float";
+    v.w = 1;
   }
-  return out;
+  const arrived = smooth(seg(v.flight.x, 0.7, 1));
+  v.attention = arrived * (1 - smooth(seg(v.stood, GUEST_BOW, GUEST_BOW + 0.5)));
+  v.gaze = -1 + 2 * smooth(seg(v.stood, 0.25, GUEST_BOW - 0.25));
+  v.greet = Math.sin(Math.PI * clamp01(v.stood / GREET)) ** 2;
+  return v;
 }
 
 /**

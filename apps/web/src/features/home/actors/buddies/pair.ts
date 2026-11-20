@@ -129,6 +129,7 @@ export class BuddyPair implements Actor {
   private readonly weight = { carry: 1, dance: 0, dock: 0 };
   private readonly cue: PairCue = createCue();
   private readonly cueDance: PairCue = createCue();
+  private readonly cueGreet: PairCue = createCue();
   private readonly cueLife: PairCue = createCue();
   private readonly cueTouch: PairCue = createCue();
   private danceName: DanceName | null = null;
@@ -136,6 +137,8 @@ export class BuddyPair implements Actor {
   private danceEnergy = 0.6;
   private danceBpm = 100;
   private danceAsked = false;
+  private greetW = 0;
+  private greetT = 0;
   private hover: "drone" | "doll" | null = null;
   private seated = false;
   /** A trick asked while another plays waits for it (up to 1.4 s). */
@@ -274,6 +277,25 @@ export class BuddyPair implements Actor {
     this.danceAsked = true;
   }
 
+  /**
+   * The pair wave at somebody who has just come (round nine): the routine `wave` at `t` seconds,
+   * cross-faded over the dance by `w` (0 to 1). For this frame only; the section times it (the guests'
+   * arrival), so the greeting never waits for a dance that lags a quick scroll.
+   */
+  greet(w: number, t: number): void {
+    this.greetW = clamp01(w);
+    this.greetT = t;
+  }
+
+  /**
+   * The pair's flight is capped (round nine): the drone never moves faster than about 1.5 percent of the
+   * screen's height a frame or accelerates harder than a smooth flight shows, so a flick of the scroll
+   * or a leap of the route makes the pair fly to the new place and never zip. Sticky. `reset()` clears it.
+   */
+  capFlight(on: boolean): void {
+    this.drone.speedCap = on;
+  }
+
   /** How much they are flying down, 0 to 1. */
   descent(amount: number): void {
     this.descentAmount = clamp01(amount);
@@ -327,6 +349,7 @@ export class BuddyPair implements Actor {
     this.touch.reset();
     this.drone.reset();
     this.drone.carrying = true;
+    this.drone.speedCap = false;
     this.applyInteractive();
   }
 
@@ -376,16 +399,23 @@ export class BuddyPair implements Actor {
 
     // What each producer asks.
     clearCue(this.cueDance);
+    clearCue(this.cueGreet);
     clearCue(this.cueLife);
+    const greet = this.greetW;
+    this.greetW = 0;
     if (this.weight.dance > 0.002 && this.danceName) {
       danceCue(this.danceName, this.danceT, this.danceEnergy, this.danceBpm, this.cueDance);
+      if (greet > 0.002) {
+        danceCue("wave", this.greetT, this.danceEnergy, this.danceBpm, this.cueGreet);
+      }
     }
     // The moments run on their own clock whatever the lock does (so none is lost), and show as much
     // as `own` lets them: a dance and the scroll fade them out and back, they are never cut.
     this.life.step(dt, this.time, this.cueLife, this.weight.dock + 0.55 * this.weight.carry);
     this.touch.step(dt, this.time, this.touchOut, this.cueTouch);
     blendCue(this.cue, [
-      [this.cueDance, this.weight.dance],
+      [this.cueDance, this.weight.dance * (1 - greet)],
+      [this.cueGreet, this.weight.dance * greet],
       [this.cueLife, own],
       [this.cueTouch, lockW],
     ]);

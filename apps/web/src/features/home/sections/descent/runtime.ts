@@ -11,10 +11,11 @@ import { clamp01, seg, smooth } from "../vp";
 import { dockPlace } from "./dock";
 import {
   danceClock,
-  GUEST_DANCE_FROM,
   guestPlace,
-  guestsAt,
-  newGuestState,
+  newVisit,
+  resetVisit,
+  stepVisit,
+  visitWanted,
   type GuestPlace,
 } from "./guests";
 import { newPairPlace, pairAt, type PairPlace } from "./route";
@@ -44,22 +45,8 @@ const CLOCK_BEATS = 0.35;
 const BEAT_TIME = 0.3;
 const BEAT_MAX = 4.5;
 const JUMP_SCREENS = 1.2;
-/**
- * The guests' progress follows the descent's with a limit (0.2 of the descent a second, a screen a
- * second), so a flick cannot make them zip in and out. Two guards keep that from stranding them: they
- * are forced out before the pair dock and before the descent's start, whatever the lag.
- */
-const GUEST_TIME = 0.25;
-const GUEST_MAX = 0.2;
 /** The duo's beat is half a second: one of the pair's beats is one of theirs. */
 const GUEST_BEAT_SECONDS = 0.5;
-/** The beat at which the guests' dance begins, on the show's scale. */
-const BEAT_AT_GUEST_DANCE = (GUEST_DANCE_FROM * DESCENT_SCREENS - SHOW_FROM_U) * BEATS_PER_SCREEN;
-
-/** The least progress the guests may show when the scroll is at `p` (a lagging follower is pulled on). */
-const forcedHigh = (p: number): number => 0.86 * seg(p, 0.5, 0.86);
-/** The most progress they may show: before the start they are hidden even if the follower still lags. */
-const forcedLow = (p: number): number => 0.19 + 0.81 * seg(p, 0.07, 0.17);
 
 class DescentRuntime implements SectionRuntime {
   private pair: BuddyPair | null = null;
@@ -72,11 +59,14 @@ class DescentRuntime implements SectionRuntime {
   private readonly beatNow: Damped = { x: 0, v: 0 };
   private lastU = Number.NaN;
   private duo: DuoActor | null = null;
-  private readonly guestP: Damped = { x: 0, v: 0 };
-  private readonly guest = newGuestState();
+  /** The guests' visit (`guests.ts`): timed flights, their own bow and dance. */
+  private readonly visit = newVisit();
+  /** The pair's beat at the moment their dance began: the guests dance on the pair's beat from there. */
+  private danceBeat0 = 0;
   private readonly guestA: GuestPlace = { x: 0, y: 0, height: 0 };
   private readonly guestB: GuestPlace = { x: 0, y: 0, height: 0 };
   private readonly look = { x: 0, y: 0 };
+  private readonly drawnAt = { x: 0, y: 0, height: 0 };
   private guestsOn = false;
   private vpW = 1440;
 
@@ -102,6 +92,9 @@ class DescentRuntime implements SectionRuntime {
   }
 
   leave(): void {
+    // The cap stays on: the pair that is still flying to the dock finishes the calm flight (the
+    // list keeps it, the Selena section lifts it).
+    resetVisit(this.visit);
     this.releaseGuests();
   }
 
@@ -116,8 +109,14 @@ class DescentRuntime implements SectionRuntime {
     this.vpW = vp.w;
     const place = pairAt(u, vp, this.place);
     // Before the pair are on the page and after the list has taken them over, nothing is set.
-    if (!place.visible) return;
+    if (!place.visible) {
+      // Before the pair are on the page nobody else is: the visit starts again from outside.
+      resetVisit(this.visit);
+      this.releaseGuests();
+      return;
+    }
     pair.visible = true;
+    pair.capFlight(true);
     pair.place(place);
     pair.descent(place.descent);
     const dt = Math.min(frame.dt, 0.05);
@@ -127,8 +126,8 @@ class DescentRuntime implements SectionRuntime {
       // The last half screen: they come to the dock and live there.
       dockPlace(vp, this.dock);
       pair.mode("dock");
-      this.releaseGuests();
-      pair.look(null);
+      // Guests still on their way out finish their flight (no snap): nobody is wanted now.
+      this.guests(dt, pair, false);
       this.lastU = u;
       return;
     }
@@ -144,7 +143,7 @@ class DescentRuntime implements SectionRuntime {
     this.energy += (target - this.energy) * Math.min(1, dt * 3);
     const tempo = BPM * (0.92 + 0.16 * this.energy);
     pair.dance("show", (this.beatNow.x * 60) / tempo, { energy: this.energy, bpm: BPM });
-    this.guests(u / DESCENT_SCREENS, jumped, dt, pair);
+    this.guests(dt, pair, visitWanted(u / DESCENT_SCREENS));
   }
 
   /**
@@ -152,34 +151,40 @@ class DescentRuntime implements SectionRuntime {
    * the pair, dance with them on the pair's beat, and fly out before the pair dock. A function of the
    * descent's progress through a limited follower, so a quick scroll never makes them jump.
    */
-  private guests(p: number, jumped: boolean, dt: number, pair: BuddyPair): void {
+  private guests(dt: number, pair: BuddyPair, wanted: boolean): void {
     const duo = this.duo;
     if (!duo) return;
-    if (jumped) setDamped(this.guestP, p);
-    else dampTo(this.guestP, p, GUEST_TIME, GUEST_MAX, dt);
-    // The follower may lag the scroll: it never strands them on the screen.
-    const shownP = Math.min(Math.max(this.guestP.x, forcedHigh(p)), forcedLow(p));
-    const g = guestsAt(shownP, this.guest);
+    const g = stepVisit(this.visit, wanted, dt);
     if (!g.shown) {
       this.releaseGuests();
       pair.look(null);
       return;
     }
     if (!this.guestsOn) {
+      // They come in from off the screen: the flight starts from the `leave` pose, all the way out.
       this.guestsOn = true;
       duo.ambient(false);
       duo.restart();
     }
     duo.visible = true;
     duo.locked = true;
-    const place = this.place;
+    // They stand beside the pair as it is DRAWN (it flies on a capped, smooth flight), never beside the
+    // route's own place, which a quick scroll moves by several screens in a frame.
+    const d = pair.drone.state();
+    const place = this.drawnAt;
+    place.x = d.x;
+    place.y = d.y;
+    place.height = d.height;
     const lift = g.pose === "bow" ? g.w / 0.6 : 0;
     const a = guestPlace(-1, place.x, place.y, place.height, this.vpW, lift, this.guestA);
     const b = guestPlace(1, place.x, place.y, place.height, this.vpW, lift, this.guestB);
     duo.place(a, b);
     duo.pose(g.pose, g.w);
-    const tau = (this.beatNow.x - BEAT_AT_GUEST_DANCE) * GUEST_BEAT_SECONDS;
-    duo.poseClock = danceClock(tau);
+    // They dance on the pair's beat, from the beat they began on, so the first phrase starts at rest.
+    if (g.danceFrom) this.danceBeat0 = this.beatNow.x;
+    duo.poseClock = danceClock((this.beatNow.x - this.danceBeat0) * GUEST_BEAT_SECONDS);
+    // The pair greet them the moment they stand beside the pair, on the guests' own time.
+    if (g.greet > 0.002) pair.greet(g.greet, g.stood);
     if (g.attention > 0.01) {
       const k = 0.5 + 0.5 * g.gaze;
       this.look.x = a.x + (b.x - a.x) * k;

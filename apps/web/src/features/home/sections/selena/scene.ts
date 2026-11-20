@@ -322,6 +322,8 @@ export class SelenaScene {
     put.y = dock.y + exit * EXIT_Y * vp.h;
     put.height = dock.height * (1 - 0.25 * exit);
     pair.visible = true;
+    // The exit is the section's own scroll linked flight (the descent's cap is off here).
+    pair.capFlight(false);
     pair.place(put);
     pair.mode("dock");
     // The sky of the room is drawn in the cast: the pair stand in front of it (and of her).

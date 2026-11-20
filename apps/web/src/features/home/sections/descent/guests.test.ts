@@ -2,97 +2,126 @@ import { describe, expect, it } from "vitest";
 
 import {
   danceClock,
-  GUEST_GONE,
-  GUEST_IN_FROM,
-  GUEST_LEAVE_TO,
+  GUEST_BOW,
+  GUEST_FLY,
   guestPlace,
-  guestsAt,
-  newGuestState,
-  type GuestState,
+  newVisit,
+  stepVisit,
+  visitWanted,
+  type Visit,
 } from "./guests";
 
-describe("the guests' schedule", () => {
-  it("is absent before 20 percent and after the gone mark, and off the screen at both ends", () => {
-    const s = newGuestState();
-    expect(guestsAt(GUEST_IN_FROM - 0.01, s).shown).toBe(false);
-    expect(guestsAt(GUEST_GONE + 0.01, s).shown).toBe(false);
-    // The first and the last frame they are drawn, they are all the way out (leave 1).
-    const first = guestsAt(GUEST_IN_FROM + 1e-6, newGuestState());
-    expect(first.pose).toBe("leave");
-    expect(first.w).toBeGreaterThan(0.999);
-    const last = guestsAt(GUEST_GONE - 1e-6, newGuestState());
-    expect(last.pose).toBe("leave");
-    expect(last.w).toBe(1);
-    expect(guestsAt(GUEST_LEAVE_TO, newGuestState()).w).toBe(1);
+const DT = 1 / 60;
+
+/** Run the visit for `seconds` with `wanted` and return the largest step of the flight in one frame. */
+function run(v: Visit, wanted: boolean, seconds: number): number {
+  let worst = 0;
+  for (let i = 0; i < Math.round(seconds / DT); i += 1) {
+    const before = v.flight.x;
+    stepVisit(v, wanted, DT);
+    worst = Math.max(worst, Math.abs(v.flight.x - before));
+  }
+  return worst;
+}
+
+describe("the guests' visit", () => {
+  it("is wanted from 20 to 60 percent of the descent", () => {
+    expect(visitWanted(0.19)).toBe(false);
+    expect(visitWanted(0.2)).toBe(true);
+    expect(visitWanted(0.59)).toBe(true);
+    expect(visitWanted(0.6)).toBe(false);
   });
 
-  it("walks the scroll with no jump in the weight where the pose changes", () => {
-    const a = newGuestState();
-    const b: GuestState = newGuestState();
-    let worst = 0;
-    // The leave weight is the distance out: it must be continuous, the other poses start and end at 0.
-    for (let i = 0; i < 2000; i += 1) {
-      const p = 0.2 + (0.64 * i) / 2000;
-      guestsAt(p, a);
-      guestsAt(p + 0.64 / 2000, b);
-      const wa = a.pose === "leave" ? 1 - a.w : a.w;
-      const wb = b.pose === "leave" ? 1 - b.w : b.w;
-      if (a.pose !== b.pose) {
-        // Across a change of pose both sides are at rest (leave 0, bow 0, dance 0, float 1).
-        expect(a.pose === "leave" ? a.w : a.pose === "float" ? 0 : a.w).toBeLessThan(0.02);
-        continue;
-      }
-      worst = Math.max(worst, Math.abs(wa - wb));
-    }
-    expect(worst).toBeLessThan(0.02);
+  it("starts off the screen and flies in over about GUEST_FLY seconds, never faster than that", () => {
+    const v = newVisit();
+    stepVisit(v, false, DT);
+    expect(v.shown).toBe(false);
+    const worst = run(v, true, GUEST_FLY + 1);
+    // The weight of the flight: at most 1 / GUEST_FLY of the way a second, and in a frame a 60th of that.
+    expect(worst).toBeLessThanOrEqual(1 / GUEST_FLY / 60 + 1e-9);
+    expect(v.flight.x).toBeGreaterThan(0.999);
+    expect(v.pose === "bow" || v.pose === "dance" || v.pose === "float").toBe(true);
   });
 
-  it("is the same both ways (a pure function of p)", () => {
-    const a = newGuestState();
-    const b = newGuestState();
-    for (const p of [0.1, 0.25, 0.33, 0.5, 0.64, 0.7, 0.8, 0.9]) {
-      guestsAt(p, a);
-      guestsAt(0.9, b);
-      guestsAt(p, b);
-      expect(b).toEqual(a);
+  it("is smooth when the scroll reverses in the middle of a flight (no jump in the weight)", () => {
+    const v = newVisit();
+    run(v, true, 0.7);
+    const mid = v.flight.x;
+    expect(mid).toBeGreaterThan(0.1);
+    expect(mid).toBeLessThan(0.9);
+    const worst = run(v, false, 3);
+    expect(worst).toBeLessThanOrEqual(1 / GUEST_FLY / 60 + 1e-9);
+    expect(v.shown).toBe(false);
+  });
+
+  it("bows first, dances after the bow, and stops dancing before it flies out", () => {
+    const v = newVisit();
+    run(v, true, GUEST_FLY + 0.2);
+    const poses = new Set<string>();
+    let sawDance = false;
+    for (let i = 0; i < Math.round((GUEST_BOW + 3) / DT); i += 1) {
+      stepVisit(v, true, DT);
+      poses.add(v.pose);
+      if (v.pose === "dance") sawDance = true;
     }
+    expect(poses.has("bow")).toBe(true);
+    expect(sawDance).toBe(true);
+    // No longer wanted: the dance ends before the flight out begins.
+    let flewWhileDancing = false;
+    for (let i = 0; i < Math.round(7 / DT); i += 1) {
+      const before = v.flight.x;
+      stepVisit(v, false, DT);
+      if (v.perform > 0.01 && v.flight.x < before - 1e-9) flewWhileDancing = true;
+    }
+    expect(flewWhileDancing).toBe(false);
+    expect(v.shown).toBe(false);
+  });
+
+  it("greets once they stand beside the pair, on their own clock, and not before", () => {
+    const v = newVisit();
+    run(v, true, GUEST_FLY * 0.5);
+    expect(v.greet).toBe(0);
+    run(v, true, GUEST_FLY + GUEST_BOW * 0.5);
+    expect(v.greet).toBeGreaterThan(0.3);
+  });
+
+  it("marks the beat the dance begins on, once", () => {
+    const v = newVisit();
+    let marks = 0;
+    for (let i = 0; i < Math.round(8 / DT); i += 1) {
+      stepVisit(v, true, DT);
+      if (v.danceFrom) marks += 1;
+    }
+    expect(marks).toBe(1);
   });
 });
 
-describe("danceClock", () => {
-  it("skips the fist bump and never steps back", () => {
+describe("the guests' dance clock", () => {
+  it("skips the third phrase and is continuous", () => {
     let last = danceClock(0);
-    for (let i = 1; i < 400; i += 1) {
-      const t = danceClock(i * 0.05);
-      expect(t).toBeGreaterThanOrEqual(last);
-      last = t;
+    for (let i = 1; i <= 2000; i += 1) {
+      const t = (i * 18) / 2000;
+      const c = danceClock(t);
+      const jump = c - last;
+      // Only the skip of the third phrase (3 s) is a step, and only at 6 s into each 9.
+      expect(jump).toBeLessThan(3.1);
+      last = c;
     }
-    // Phrase 2 ends at 6 s of the loop and phrase 4 begins at 9: the clock jumps by exactly one phrase there.
-    expect(danceClock(5.999)).toBeCloseTo(5.999, 6);
-    expect(danceClock(6)).toBeCloseTo(9, 6);
-    expect(danceClock(9)).toBeCloseTo(12, 6);
-  });
-
-  it("runs backwards for a negative time", () => {
-    expect(danceClock(-1)).toBeCloseTo(-1 - 3 + 3 + 0, 6);
-    expect(danceClock(-9)).toBeCloseTo(-12, 6);
+    expect(danceClock(0)).toBe(0);
+    expect(danceClock(6.0001)).toBeGreaterThan(8.9);
   });
 });
 
-describe("guestPlace", () => {
-  it("keeps the whole drone on the screen when the pair is at the edge", () => {
-    const out = { x: 0, y: 0, height: 0 };
-    guestPlace(1, 640, 0, 126, 1440, 0, out);
-    expect(out.x + (out.height / 2) * 2.8).toBeLessThanOrEqual(720 + 1e-6);
-    guestPlace(-1, -640, 0, 126, 1440, 0, out);
-    expect(out.x - (out.height / 2) * 2.8).toBeGreaterThanOrEqual(-720 - 1e-6);
-  });
-
-  it("stands one on each side of the pair", () => {
-    const l = guestPlace(-1, 0, 0, 100, 1440, 0, { x: 0, y: 0, height: 0 });
-    const r = guestPlace(1, 0, 0, 100, 1440, 0, { x: 0, y: 0, height: 0 });
-    expect(l.x).toBeLessThan(-100);
-    expect(r.x).toBeGreaterThan(100);
-    expect(l.height).toBeLessThan(100);
+describe("where the guests stand", () => {
+  it("keeps both on the screen, a side each, whatever the pair's place", () => {
+    const a = { x: 0, y: 0, height: 0 };
+    const b = { x: 0, y: 0, height: 0 };
+    for (const x of [-700, -300, 0, 300, 700]) {
+      guestPlace(-1, x, 0, 140, 1440, 0, a);
+      guestPlace(1, x, 0, 140, 1440, 0, b);
+      expect(Math.abs(a.x)).toBeLessThanOrEqual(720);
+      expect(Math.abs(b.x)).toBeLessThanOrEqual(720);
+      expect(a.x).toBeLessThanOrEqual(b.x);
+    }
   });
 });
