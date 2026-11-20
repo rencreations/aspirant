@@ -7,9 +7,15 @@
  * radians (about 28 degrees, descending to the right), offset along its normal, and bent by
  * `y += sin(aX pi freq + phase) amp`, so each has about `freq` gentle S curves over its length. An
  * item first leaves its own place for the nearest line, then rides it out of the corner, turning as
- * it goes (a roll, a yaw and a small tumble: the spiral), growing small and far. The set starts with
- * the tail of the orbit and ends with the trailer, so every item is done at `f` = 1. A trail of
- * each item's own path is what shows the line.
+ * it goes (a roll, a yaw and a small tumble: the spiral), growing small. A trail of each item's own
+ * path is what shows the line.
+ *
+ * Round nine (20 Nov 2026): the whole exit is one steady scroll linked motion. Every item is moving
+ * from the first pixel (the trailer too: it used to wait half the exit while the previews went) at a
+ * constant speed along its line, with a short ease over the first and last `EASE_EDGE` of its ride and
+ * nothing else (the old smootherstep made a slow, fast, slow ride, and the recede in depth slowed the
+ * picture on the screen). The tail of the train starts up to `STAGGER` later than the leader, so the
+ * set pulls out like a train, and every item is done at `f` = 1.
  */
 import {
   clamp,
@@ -32,11 +38,29 @@ export const LINES = [
 ] as const;
 
 const BASE_TILT = -0.5;
-/** How far back (px of z) an item has gone when it leaves. */
-const FLY_DEPTH = 380;
 const END_SCALE = 0.32;
-/** The share of the fly-off over which the starts of the items are spread. */
-export const STAGGER = 0.5;
+/** The share of the fly-off by which the last card of the train starts later than the leader. */
+export const STAGGER = 0.12;
+/** The share of a ride over which the speed comes up from nothing, and goes down to nothing at the end. */
+export const EASE_EDGE = 0.04;
+/** The share of a ride in which an item closes the gap between its own place and its line. */
+const JOIN_END = 0.6;
+
+/**
+ * Where an item is along its ride (0 to 1) at the share `u` of the ride: a straight run at a constant
+ * speed with a short ease in and a short ease out (`e` of the ride each). The speed is continuous, so
+ * nothing jumps, and the middle is exactly linear: the same distance for the same scroll.
+ */
+export function steady(u: number, e: number = EASE_EDGE): number {
+  const x = clamp(u);
+  const k = 1 - e;
+  if (x < e) return (0.5 * x * x) / e / k;
+  if (x > 1 - e) {
+    const t = 1 - x;
+    return 1 - (0.5 * t * t) / e / k;
+  }
+  return (0.5 * e + (x - e)) / k;
+}
 
 /** Per item seeds, fixed: the same spiral on every load. */
 const rand = seeded(7021);
@@ -62,6 +86,9 @@ export function lineAt(vp: Vp, k: number, aX: number, out: [number, number]): vo
   out[1] = lx * s + ly * c + c * off;
 }
 
+/** How many pieces the path of an item is cut into to measure its length. */
+const ARC_STEPS = 96;
+
 /** What one item's route needs, made once a frame from where the item is. */
 export interface Route {
   line: number;
@@ -70,13 +97,29 @@ export interface Route {
   /** Where on its line the item joins it, and where it leaves the screen. */
   a0: number;
   a1: number;
+  /** The length of the path from the item's own place up to each of the `ARC_STEPS` cuts (px). */
+  cum: Float64Array;
+  /** The length of the ride: from the item's own place to where it is clear of the screen (px). */
+  total: number;
 }
 
 export function makeRoute(): Route {
-  return { line: 0, p0x: 0, p0y: 0, a0: 0, a1: 1 };
+  return { line: 0, p0x: 0, p0y: 0, a0: 0, a1: 1, cum: new Float64Array(ARC_STEPS + 1), total: 1 };
 }
 
-/** The line nearest an item, the foot of the perpendicular on it, and the end of the ride. */
+const point: [number, number] = [0, 0];
+const from: [number, number] = [0, 0];
+const to: [number, number] = [0, 0];
+
+/** A point of the item's path at the share `v` (0 to 1) of its own parameter. Not by length: see `routeAt`. */
+function pathAt(vp: Vp, r: Route, v: number, out: [number, number]): void {
+  lineAt(vp, r.line, mix(r.a0, r.a1, v), point);
+  const join = smootherstep(ramp(v, 0, JOIN_END));
+  out[0] = mix(r.p0x, point[0], join);
+  out[1] = mix(r.p0y, point[1], join);
+}
+
+/** The line nearest an item, the foot of the perpendicular on it, the end of the ride and the path's length. */
 export function setupRoute(vp: Vp, bx: number, by: number, margin: number, out: Route): Route {
   const unit = vp.h / 6;
   const half = 0.75 * Math.hypot(vp.w, vp.h);
@@ -108,29 +151,63 @@ export function setupRoute(vp: Vp, bx: number, by: number, margin: number, out: 
   const tx = dx > 1e-3 ? (vp.w / 2 + reach - ox) / dx : Infinity;
   const ty = dy < -1e-3 ? (-vp.h / 2 - reach - oy) / dy : Infinity;
   out.a1 = Math.max(out.a0 + 0.2, Math.min(tx, ty) / half);
+  // The length of the path up to each cut, so that `routeAt` can walk it at a constant speed, and the
+  // length at which the item is clear of the screen (its reach is a little over half its diagonal, and
+  // it has shrunk by then): the ride ends there, so no scroll is spent on a picture nobody can see.
+  const reachNow = margin * 0.55;
+  out.cum[0] = 0;
+  out.total = 0;
+  pathAt(vp, out, 0, from);
+  let clearBefore = outside(vp, from, reachNow);
+  let found = false;
+  for (let i = 1; i <= ARC_STEPS; i++) {
+    pathAt(vp, out, i / ARC_STEPS, to);
+    out.cum[i] = out.cum[i - 1]! + Math.hypot(to[0] - from[0], to[1] - from[1]);
+    const clear = outside(vp, to, reachNow);
+    if (!found && clear >= 0) {
+      found = true;
+      const t = clearBefore < 0 ? -clearBefore / (clear - clearBefore) : 0;
+      out.total = out.cum[i - 1]! + t * (out.cum[i]! - out.cum[i - 1]!);
+    }
+    clearBefore = clear;
+    from[0] = to[0];
+    from[1] = to[1];
+  }
+  if (!found) out.total = out.cum[ARC_STEPS]!;
+  out.total = Math.max(1, out.total);
   return out;
 }
 
-const point: [number, number] = [0, 0];
+/** How far a disc of radius `r` at `p` is outside the screen: negative while any of it is on the screen. */
+function outside(vp: Vp, p: readonly [number, number], r: number): number {
+  const dx = Math.abs(p[0]) - vp.w / 2;
+  const dy = Math.abs(p[1]) - vp.h / 2;
+  return Math.max(dx, dy) - r;
+}
 
-/** The item's centre at the progress `u` of its ride (0 its own place, 1 clear of the screen). */
+/**
+ * The item's centre at the progress `u` of its ride (0 its own place, 1 clear of the screen). The
+ * ride is walked by LENGTH, not by the path's own parameter: the join and the bend of the line would
+ * otherwise make it slow and fast, so the item moves the same distance for the same scroll.
+ */
 export function routeAt(vp: Vp, r: Route, u: number, out: [number, number]): void {
-  const t = smootherstep(u);
-  const aX = mix(r.a0, r.a1, t);
-  lineAt(vp, r.line, aX, point);
-  const join = smootherstep(ramp(u, 0, 0.5));
-  out[0] = mix(r.p0x, point[0], join);
-  out[1] = mix(r.p0y, point[1], join);
+  const want = steady(u) * r.total;
+  let i = 0;
+  while (i < ARC_STEPS - 1 && r.cum[i + 1]! < want) i++;
+  const span = r.cum[i + 1]! - r.cum[i]!;
+  const t = span > 1e-9 ? clamp((want - r.cum[i]!) / span) : 0;
+  pathAt(vp, r, (i + t) / ARC_STEPS, out);
 }
 
-/** The place of an item in the order of leaving: the tail of the orbit first, the trailer last (0 to 1). */
+/** The place of an item in the order of leaving: the leader (the trailer) first, the tail of the train last (0 to 1). */
 export function leaveRank(a: number): number {
-  return 1 - a;
+  return a;
 }
 
-/** One item's own progress for the set's `f`: its start is its rank of the spread, and it ends at `f` = 1. */
+/** One item's own progress for the set's `f`: it starts `rank * STAGGER` late, and it ends at `f` = 1. */
 export function itemProgress(f: number, rank: number): number {
-  return clamp((f - rank * STAGGER) / (1 - STAGGER));
+  const delay = rank * STAGGER;
+  return clamp((f - delay) / (1 - delay));
 }
 
 const route = makeRoute();
@@ -172,18 +249,22 @@ export function flyPose(
   const seed = SEEDS[k % PLANE_COUNT]!;
   setupRoute(vp, base.x, base.y, Math.hypot(base.w, base.h) * 0.8, route);
   routeAt(vp, route, u, spot);
-  const shrink = mix(1, END_SCALE, smootherstep(ramp(u, 0.08, 1)));
+  const g = steady(u);
+  const shrink = mix(1, END_SCALE, ramp(g, 0.05, 1));
 
   // The spiral: a roll in the screen's plane, a yaw about the item's own vertical axis, a small tumble.
-  const roll = seed.side * (0.5 + 0.7 * seed.roll) * Math.PI * smootherstep(u);
-  const yaw = seed.side * (0.9 + 1.1 * seed.yaw) * Math.PI * smootherstep(u);
+  const roll = seed.side * (0.5 + 0.7 * seed.roll) * Math.PI * g;
+  // The turn about the vertical stays under a quarter turn: at a steady speed a full turn kept the big
+  // video edge on (a dark sliver) for much of the exit, and the owner wants to see it move right.
+  const yaw = seed.side * (0.2 + 0.25 * seed.yaw) * Math.PI * g;
   const tumble = Math.sin(Math.PI * u) * (0.35 + 0.35 * seed.tumble) * -seed.side;
   qFromEuler(tumble, yaw, roll, qa);
   qMul(qa, base.q, qb);
 
   out.x = spot[0];
   out.y = spot[1];
-  out.z = base.z - FLY_DEPTH * smootherstep(u);
+  // No recede in depth: under the lens it slows the picture on the screen toward the end.
+  out.z = base.z;
   out.q[0] = qb[0];
   out.q[1] = qb[1];
   out.q[2] = qb[2];
@@ -191,7 +272,7 @@ export function flyPose(
   out.w = base.w * shrink;
   out.h = base.h * shrink;
   out.corner = base.corner * shrink;
-  out.opacity = base.opacity * (1 - smootherstep(ramp(u, 0.82, 1)));
+  out.opacity = base.opacity * (1 - smootherstep(ramp(u, 0.85, 1)));
   out.order = base.order;
   out.bend = 0.5 * Math.sin(Math.PI * u) * seed.side;
   out.flutter = 0.04 * base.h * Math.sin(Math.PI * u);

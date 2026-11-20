@@ -458,8 +458,12 @@ export class FilmActor implements Actor {
     const t0 = performance.now();
     const dt = Math.max(0, frame.dt);
     this.time += dt;
-    // The orbit drifts only while it is there, so it starts from the same composition every time.
-    this.drift = this.state.pull > 0 ? this.drift + dt * ORBIT_DRIFT : 0;
+    // The orbit drifts only while it is there, so it starts from the same composition every time. It
+    // holds still in the fly-off: the routes of the items are made from where the orbit stands, and a
+    // base that moves by the clock could change the line an item rides in the middle of the flight.
+    if (this.state.fly <= 0) {
+      this.drift = this.state.pull > 0 ? this.drift + dt * ORBIT_DRIFT : 0;
+    }
     this.idleFrames = 0;
     this.frozenFrames = dt > 0 ? 0 : this.frozenFrames + 1;
     const vp = this.vp;

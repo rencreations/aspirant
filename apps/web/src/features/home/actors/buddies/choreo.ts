@@ -1,6 +1,8 @@
 import type { FaceName as DollFace } from "../doll/face/presets";
 import type { FaceName as DroneFace } from "../drone/faces";
 
+import { wrapPi } from "./smooth";
+
 /**
  * The dances of the pair, pure (round six, `actor-buddies.md` section 3). A routine is a function of
  * time: `danceCue(name, t, energy, bpm, out)` writes what the drone and the doll do at `t` seconds
@@ -204,13 +206,17 @@ export const BEATS: Readonly<Record<Exclude<DanceName, "show">, number>> = {
   spiral: 16,
 };
 
-/** The show: every routine in turn (beats), with a cross-fade of `FADE_BEATS` into the next. */
+/**
+ * The show: every routine in turn (beats), with a cross-fade of `FADE_BEATS` into the next. Round nine:
+ * the wave is at beats 40 to 48, which the descent's scroll reaches while the two Guinevere drones
+ * arrive (`sections/descent/guests.ts`), so she waves at them.
+ */
 export const SHOW: ReadonlyArray<readonly [Exclude<DanceName, "show">, number]> = [
   ["sway", 8],
   ["bob", 8],
   ["eight", 8],
-  ["wave", 8],
   ["spiral", 16],
+  ["wave", 8],
   ["hop2", 8],
   ["clap", 8],
   ["twirl", 8],
@@ -222,10 +228,7 @@ export const SHOW: ReadonlyArray<readonly [Exclude<DanceName, "show">, number]> 
 export const FADE_BEATS = 1.5;
 
 const TAU = Math.PI * 2;
-/** An angle as the same turn in (-pi, pi]: a yaw that counts turns is wrapped before it is weighted. */
-export function wrapPi(a: number): number {
-  return a - Math.round(a / TAU) * TAU;
-}
+export { wrapPi };
 const smooth = (x: number): number => {
   const t = x < 0 ? 0 : x > 1 ? 1 : x;
   return t * t * (3 - 2 * t);

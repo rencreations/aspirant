@@ -18,14 +18,21 @@ Kinds
     idle       Obsidia: the site's own seamless idle loop (public/video/obsidia/1080/idle.mp4, 8.033 s, the loop
                points 2.30 to 10.33 of the in-game recording found by the loop finder, closure under one frame
                step), halved to 30 fps (every second frame: the loop stays exact). 1920x864 (the recording's ratio).
-    pingpong   Angela, Lesley, Ruby, Vexana, Chang'e, Guinevere: the owner's `media/_all/webmedia/<name>.mov`, the
+    pingpong   Angela, Lesley, Chang'e: the owner's `media/_all/webmedia/<name>.mov`, the
                official animated title banners (1920x1080, 30 fps, 2 to 5 s, a slow push, no loop: the first and
                last frames differ). Played forward then backward, with neither end frame repeated, so the loop is
                seamless by construction. The banner's title text sits in the lower fifth (and, for Lesley, at the
                lower right): the 4:5 window leaves it out; the full picture keeps it (it is the official banner).
-    still      Fanny and Layla: the owner's `webmedia` has only a picture for them. No file is made here: the list
-               state is img/home/cards/<slug>-45.webp (cards.py) and the full picture is the library's own art
-               (arts/v2/splash/<id>/f.webp). The page gives a still a slow push by itself.
+    still      Fanny, Guinevere, Layla, Ruby and Vexana: the splash art of the owner's folder
+               `media/_all/splash-art/cropped` (round nine, 20 Nov 2026: Guinevere, Ruby and Vexana were loops
+               before). No file is made here: the list state is img/home/cards/<slug>-45.webp (cards.py, cut from
+               that folder) and the full picture is the library's own art (arts/v2/splash/<id>/f.webp). The folder's
+               pictures are exact windows of that art (found by matching, see docs/design/home/round9-FIX-chars.md),
+               so `crop` is where each one sits in the 2560x1440 picture. The page gives a still a slow push.
+
+Chang'e's window (round nine): zoomed out a little (970 of the 1080 rows, was 864) and moved so she stands in the
+middle, with the banner's title text and the quote box still outside it. Her 4:5 poster is under a new name
+(`poster` in the spec); the video is not encoded again. `--only change --posters-only` makes just that.
 
 Size. The 4:5 window of the 1080p banners is 864 source pixels tall (Vexana's 720), and of Obsidia's picture 864,
 so a frame about 720 CSS px tall (80vh at 900) is sharp up to a pixel ratio of 1.2 and acceptable at 1.5. The
@@ -58,13 +65,17 @@ POSTER_DIR = h.IMG / "loops"
 LOOPS: list[dict[str, Any]] = [
     {"slug": "obsidia", "name": "Obsidia", "kind": "idle", "src": OBSIDIA_LOOP, "crop": (690, 0, 691, 864), "crf": 32},
     {"slug": "fanny", "name": "Fanny", "kind": "still", "art": "arts-splash-fanny-a4bc10", "crop": (904, 0, 1152, 1440)},
-    {"slug": "guinevere", "name": "Guinevere", "kind": "pingpong", "src": WEBMEDIA / "guin.mov", "crop": (837, 0, 691, 864), "crf": 31},
+    {"slug": "guinevere", "name": "Guinevere", "kind": "still", "art": "arts-splash-guinevere-915d8d", "crop": (996, 0, 1152, 1440)},
     {"slug": "angela", "name": "Angela", "kind": "pingpong", "src": WEBMEDIA / "angela.mov", "crop": (783, 0, 691, 864), "crf": 28},
     {"slug": "lesley", "name": "Lesley", "kind": "pingpong", "src": WEBMEDIA / "lesley.mov", "crop": (620, 0, 672, 840), "crf": 28},
     {"slug": "layla", "name": "Layla", "kind": "still", "art": "arts-splash-layla-f5d919", "crop": (984, 0, 1152, 1440)},
-    {"slug": "ruby", "name": "Ruby", "kind": "pingpong", "src": WEBMEDIA / "ruby.mov", "crop": (501, 0, 691, 864), "crf": 28},
-    {"slug": "vexana", "name": "Vexana", "kind": "pingpong", "src": WEBMEDIA / "vexana.mov", "crop": (876, 60, 576, 720), "crf": 28},
-    {"slug": "change", "name": "Chang'e", "kind": "pingpong", "src": WEBMEDIA / "change.mov", "crop": (806, 0, 691, 864), "crf": 28},
+    {"slug": "ruby", "name": "Ruby", "kind": "still", "art": "arts-splash-ruby-753f93", "crop": (555, 0, 1152, 1440)},
+    # Vexana's file of the owner's folder is 973x1216 (a native window of the art, not scaled): x 1060, y 224.
+    {"slug": "vexana", "name": "Vexana", "kind": "still", "art": "arts-splash-vexana-6a1b9d", "crop": (1060, 224, 973, 1216)},
+    # Round nine: zoomed out (970 rows, was 864) and centred on her (the window's middle is x 1028, her face is at
+    # about 1010 to 1040 and the torso at 1050). x 640 keeps the quote box (it ends at 635) and the title out.
+    {"slug": "change", "name": "Chang'e", "kind": "pingpong", "src": WEBMEDIA / "change.mov", "crop": (640, 0, 776, 970), "crf": 28,
+     "poster": "change-45-v2"},
 ]
 # The full picture of the stills is the art of the library: 2560 by 1440 (the crop is in those pixels).
 STILL_FULL = (2560, 1440)
@@ -115,11 +126,16 @@ def first_frame(video: Path) -> Image.Image:
     return Image.open(png).convert("RGB")
 
 
+def poster_stem(spec: dict[str, Any]) -> str:
+    """The file name (without the extension) of a loop's 4:5 poster. A re-cut window gets a new name."""
+    return spec.get("poster", f"{spec['slug']}-45")
+
+
 def posters(spec: dict[str, Any], video: Path) -> tuple[Path, Path]:
     im = first_frame(video)
     x, y, w, hh = spec["crop"]
     win = im.crop((x, y, x + w, y + hh)).resize((640, 800), Image.LANCZOS)
-    p45 = h.ensure(POSTER_DIR / f"{spec['slug']}-45.webp")
+    p45 = h.ensure(POSTER_DIR / f"{poster_stem(spec)}.webp")
     win.save(p45, "WEBP", quality=80, method=6)
     full = im.resize((1280, round(1280 * im.height / im.width)), Image.LANCZOS)
     pfull = h.ensure(POSTER_DIR / f"{spec['slug']}-full.webp")
@@ -173,14 +189,20 @@ def sheets(done: list[tuple[dict[str, Any], Path]]) -> None:
 def main() -> None:
     LOOP_DIR.mkdir(parents=True, exist_ok=True)
     POSTER_DIR.mkdir(parents=True, exist_ok=True)
+    only: set[str] = set()
+    if "--only" in sys.argv:
+        only = set(sys.argv[sys.argv.index("--only") + 1].split(","))
+    posters_only = "--posters-only" in sys.argv  # keep the video file, cut the posters again (a new window)
     done = []
     total = 0
     for spec in LOOPS:
+        if only and spec["slug"] not in only:
+            continue
         if spec["kind"] == "still":
             w = window(spec, STILL_FULL)
             print(f"{spec['name']:10} still   window x {w['x']} w {w['w']} (card file img/home/cards/{spec['slug']}-45.webp)")
             continue
-        video = encode(spec)
+        video = LOOP_DIR / f"{spec['slug']}.mp4" if posters_only else encode(spec)
         first = h.probe(video)
         size = video.stat().st_size
         total += size

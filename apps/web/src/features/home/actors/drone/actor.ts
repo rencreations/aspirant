@@ -84,6 +84,8 @@ const FRONT_ORDER = 35;
 const DEPTH_BACK = 600;
 const DEPTH_FRONT = 100;
 const CURSOR_LABEL = "HELLO";
+/** How far the flight may turn a drone that carries a rider, as a share of its own limit (round nine). */
+const CARRY_LIMIT = 0.5;
 
 /**
  * What a pair controller does with a press or a hover instead of the drone's own answer (round six:
@@ -179,6 +181,7 @@ export class DroneActor implements Actor {
   private emoteFace: FaceName | null = null;
   private emoteLeft = 0;
   private flutterAmount = 0;
+  private attLimit = 1;
   private spinYaw = 0;
   private hovered = false;
   private readonly lift = { x: 0, v: 0 };
@@ -659,7 +662,9 @@ export class DroneActor implements Actor {
     const rest = this.rest;
     rest.yaw = mix(t.yaw, t.yaw * 0.3 + this.gaze.yaw, this.engaged);
     rest.pitch = t.pitch + 0.03 + this.gaze.pitch * this.engaged;
-    stepFollower(this.follower, t, rest, h, dt, this.flight);
+    // A drone that carries a rider turns less with its flight, and eases to that, never snaps to it.
+    this.attLimit += ((this.carrying ? CARRY_LIMIT : 1) - this.attLimit) * (1 - Math.exp(-4 * dt));
+    stepFollower(this.follower, t, rest, h, dt, this.flight, this.attLimit);
     flightOf(this.follower, h, this.flight);
     const fl = this.flight;
     const calm = 1 - fl.fast;

@@ -38,6 +38,7 @@ import { LifeScheduler } from "./life";
 import { createHands, stepHands, type Hands } from "./hands";
 import { closeLock, createLock, stepLock } from "./lock";
 import { createHeadFrame, headFrame, modelToStage, FACE_POINT, perMetreOf } from "./seat";
+import { dampAngle, setDamped, wrapPi, type Damped } from "./smooth";
 import { createTouchOut, Touch, type TouchOut } from "./touch";
 
 export type PairMode = "carry" | "dance" | "dock" | "apart";
@@ -51,8 +52,12 @@ export const DOLL_RATIO = 0.5;
  * the drone's own scene, so the helmet's dome is a real surface. Its top is flat from 0.06 m behind the
  * seat to 0.15 m in front (the profile of the model), so she sits on the front half of it, high enough
  * that her seat rests on the dome and her legs go over its front edge. Looked at on eight attitudes.
+ * Round nine: she hovered. Measured in the seat's frame (the lowest vertices of her pelvis over the
+ * surface of the helmet under them, `FIX-descent/gap2.cjs`): the gap was 0.05 of the drone's height with
+ * the height at 0.24 (15 px at a 300 px drone), and it is under 0.01 at 0.09, the least that keeps her
+ * bottom on the dome with nothing sunk into it. Looked at on thirteen attitudes (0.10 then 0.09).
  */
-const SEAT_OFFSET: readonly [number, number, number] = [0, 0.24, 0.5];
+const SEAT_OFFSET: readonly [number, number, number] = [0, 0.09, 0.5];
 /** How much of the drone's roll she holds against. */
 const UPRIGHT = 0.5;
 /** A frame longer than this is taken as this long. */
@@ -61,6 +66,13 @@ const DT_MAX = 0.05;
 const MODE_RATE = 5;
 /** How long a change of her face takes. */
 const FACE_RAMP = 0.16;
+/**
+ * The dance's turn about the drone's vertical axis follows its cue as one continuous angle (round
+ * nine): by the short way round, at most `SPIN_MAX` radians a second, so a scroll that leaps through
+ * the show can never turn the pair by radians in one frame.
+ */
+const SPIN_TIME = 0.08;
+const SPIN_MAX = 8;
 /** A press is heard only while the lock's weight is at least this (the hit shapes are off under 0.02). */
 const PRESS_MIN = 0.5;
 /** The pair's own life and the cursor's pull count as on above this share of their weight. */
@@ -138,6 +150,7 @@ export class BuddyPair implements Actor {
   private readonly cursor = { x: 0, y: 0, near: false };
   private readonly smooth = { lean: 0, lookUp: 0, looksDown: 0 };
   private readonly dollPoint = { x: 0, y: 0 };
+  private readonly spinNow: Damped = { x: 0, v: 0 };
 
   // The lock (`lock.ts`): the weight of the pair's own life, from the scroll and from how still the drone is.
   private readonly lock = createLock();
@@ -414,7 +427,9 @@ export class BuddyPair implements Actor {
       pitch: w.pitch + c.pitch + 0.22 * d,
       roll: w.roll + c.roll - 0.16 * lean,
     });
-    drone.spin(c.yaw);
+    if (resumed) setDamped(this.spinNow, wrapPi(c.yaw));
+    else dampAngle(this.spinNow, c.yaw, SPIN_TIME, SPIN_MAX, dt);
+    drone.spin(this.spinNow.x);
     drone.flutter(Math.max(c.flutter, 0.45 * d));
     drone.layer(this.layerWant);
     this.layerWant = "back";

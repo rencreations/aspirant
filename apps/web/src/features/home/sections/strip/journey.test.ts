@@ -3,7 +3,15 @@ import { describe, expect, it } from "vitest";
 import { homeLayout } from "../../kernel/where";
 import { STORY } from "../story";
 
-import { letterIn, letterMoment, makeBeats, STRIP_BEATS, stripBeats, stripS } from "./journey";
+import {
+  letterIn,
+  letterMoment,
+  makeBeats,
+  STRIP_BEATS,
+  stripBeats,
+  stripS,
+  travelAt,
+} from "./journey";
 
 const stripPlaced = () => homeLayout().placed.find((p) => p.id === "strip")!;
 // The strip's story is `STORY.strip` (`../story.ts`) and its tail is the fly-off's: the beats must fit.
@@ -132,6 +140,20 @@ describe("stripBeats", () => {
     expect(b.textIn).toBeCloseTo(0.4, 6);
     stripBeats(STRIP_BEATS.hold[0] + 0.6 * (STRIP_BEATS.hold[1] - STRIP_BEATS.hold[0]), b);
     expect(b.textIn).toBeCloseTo(1, 6);
+  });
+
+  it("turns the orbit at a steady rate, slows it to a stop as the exit starts and holds it still in the exit (round nine)", () => {
+    const rate = (s: number) => (travelAt(s + 1e-5) - travelAt(s - 1e-5)) / 2e-5;
+    expect(rate(2.3)).toBeCloseTo(2.1, 4);
+    expect(rate(STRIP_BEATS.fly[0] - 0.15)).toBeCloseTo(1.05, 4);
+    expect(rate(STRIP_BEATS.fly[0])).toBeCloseTo(0, 4);
+    // Still through the whole exit: a turn there moved the trailer left and changed the lines' choice.
+    expect(travelAt(STRIP_BEATS.fly[0])).toBeCloseTo(travelAt(STRIP_BEATS.fly[1]), 9);
+    // No jump in the turn where the taper begins.
+    expect(travelAt(STRIP_BEATS.fly[0] - 0.3 + 1e-6)).toBeCloseTo(
+      travelAt(STRIP_BEATS.fly[0] - 0.3),
+      4,
+    );
   });
 
   it("takes the words out in the first third of the fly-off and has flown everything off by its end", () => {

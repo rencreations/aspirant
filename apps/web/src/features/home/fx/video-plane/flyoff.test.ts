@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  EASE_EDGE,
   flyPose,
   itemProgress,
   LINES,
@@ -9,6 +10,7 @@ import {
   routeAt,
   setupRoute,
   STAGGER,
+  steady,
   TRAIL_POINTS,
   trailOf,
   leaveRank,
@@ -67,14 +69,56 @@ describe("the ride", () => {
     }
   });
 
-  it("starts with the tail of the orbit and ends with the trailer", () => {
-    expect(leaveRank(1)).toBe(0);
-    expect(leaveRank(0)).toBe(1);
-    expect(itemProgress(0.4, 1)).toBe(0);
-    expect(itemProgress(0.4, 0)).toBeGreaterThan(0);
+  it("starts with the leader (the trailer) and the tail follows a little later, all done at 1", () => {
+    expect(leaveRank(0)).toBe(0);
+    expect(leaveRank(1)).toBe(1);
+    expect(itemProgress(0.01, 0)).toBeGreaterThan(0);
+    expect(itemProgress(0.01, 1)).toBe(0);
+    expect(itemProgress(STAGGER, 1)).toBeCloseTo(0, 9);
     expect(itemProgress(1, 1)).toBe(1);
     expect(itemProgress(1, 0)).toBe(1);
-    expect(itemProgress(STAGGER, 1)).toBeCloseTo(0, 9);
+  });
+
+  it("steady: linear between two short eases, from 0 to 1, with a continuous speed", () => {
+    expect(steady(0)).toBe(0);
+    expect(steady(1)).toBeCloseTo(1, 12);
+    // The middle is exactly linear: equal steps of the ride are equal distances.
+    const d1 = steady(0.4) - steady(0.3);
+    const d2 = steady(0.7) - steady(0.6);
+    expect(d1).toBeCloseTo(d2, 12);
+    // Monotone, and the speed does not jump at the ends of the eases.
+    let last = 0;
+    for (let i = 1; i <= 100; i++) {
+      const v = steady(i / 100);
+      expect(v).toBeGreaterThanOrEqual(last);
+      last = v;
+    }
+    const speed = (u: number) => (steady(u + 1e-6) - steady(u - 1e-6)) / 2e-6;
+    expect(speed(EASE_EDGE - 1e-4)).toBeCloseTo(speed(EASE_EDGE + 1e-4), 2);
+    expect(speed(1 - EASE_EDGE - 1e-4)).toBeCloseTo(speed(1 - EASE_EDGE + 1e-4), 2);
+  });
+
+  it("walks the path at a constant speed: equal scroll, equal distance (round nine)", () => {
+    for (const [x, y] of [
+      [-300, -250],
+      [0, 0],
+      [-400, 250],
+    ] as const) {
+      setupRoute(vp, x, y, 300, route);
+      const a: [number, number] = [0, 0];
+      const b: [number, number] = [0, 0];
+      const steps: number[] = [];
+      routeAt(vp, route, 0.1, a);
+      for (let i = 1; i <= 16; i++) {
+        routeAt(vp, route, 0.1 + (0.8 * i) / 16, b);
+        steps.push(Math.hypot(b[0] - a[0], b[1] - a[1]));
+        a[0] = b[0];
+        a[1] = b[1];
+      }
+      const lo = Math.min(...steps);
+      const hi = Math.max(...steps);
+      expect(hi / lo).toBeLessThan(1.12);
+    }
   });
 });
 
@@ -115,23 +159,24 @@ describe("the fly-off", () => {
     expect(again.q).toEqual(pose.q);
   });
 
-  it("holds the trailer back until the tail has gone", () => {
+  it("moves the trailer from the first pixel, and the tail of the train a little later (round nine)", () => {
     const hero = base(300, -100, 400);
-    flyPose(vp, 0, 0, hero, STAGGER * 0.9, pose);
-    expect(pose.x).toBe(300);
-    flyPose(vp, 0, 0, hero, STAGGER * 1.4, pose);
+    flyPose(vp, 0, 0, hero, 0.03, pose);
     expect(pose.x).not.toBe(300);
     const tail = base(-300, 200);
-    flyPose(vp, 1, 1, tail, 0.05, pose);
+    flyPose(vp, 1, 1, tail, STAGGER * 0.5, pose);
+    expect(pose.x).toBe(-300);
+    flyPose(vp, 1, 1, tail, STAGGER * 1.5, pose);
     expect(pose.x).not.toBe(-300);
   });
 
-  it("turns as it goes (a spiral): the rotation grows and the plane is small and far at the end", () => {
+  it("turns as it goes (a spiral), stays at its depth and is small at the end", () => {
     const b = base(0, 0);
     flyPose(vp, 5, 0.5, b, 0.9, pose);
     const turned = Math.abs(pose.q[0]) + Math.abs(pose.q[1]) + Math.abs(pose.q[2]);
     expect(turned).toBeGreaterThan(0.1);
-    expect(pose.z).toBeLessThan(-100);
+    // No recede in depth: it slowed the picture on the screen.
+    expect(pose.z).toBe(b.z);
     expect(pose.w).toBeLessThan(200);
   });
 
@@ -157,7 +202,7 @@ describe("the trail", () => {
 
   it("is empty before the item starts and after it has gone", () => {
     const pts = new Float32Array(TRAIL_POINTS * 2);
-    expect(trailOf(vp, 0, base(0, 0), STAGGER * 0.5, pts, 0)).toBe(0);
+    expect(trailOf(vp, 1, base(0, 0), STAGGER * 0.5, pts, 0)).toBe(0);
     expect(trailOf(vp, 1, base(0, 0), 1, pts, 0)).toBe(0);
     expect(trailOf(vp, 1, base(0, 0), 0, pts, 0)).toBe(0);
   });

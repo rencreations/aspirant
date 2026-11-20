@@ -15,7 +15,8 @@ const later = (item: PreloadItem, priority: number): PreloadItem => ({
 /**
  * The list is about twenty screens down, so nothing here holds the first screen. In the order the
  * scroll reaches them: the code of the section, the ten 4:5 stills (the first thing a frame shows,
- * and what stays while its loop is on the way), the seven loops in the frame order, Selena's model
+ * and what stays while its loop is on the way), the four loops in the frame order (Obsidia, Angela,
+ * Lesley and Chang'e; the other five frames are pictures, round nine), Selena's model
  * and cameras (her frame is the last), then what only a press needs: the whole picture of a still
  * and of a loop. The loops are held whole in memory by the media store (a seamless loop is better
  * whole) and saved in the browser, so a second visit does not download them again.

@@ -166,6 +166,13 @@ interface DuoState {
 export class DuoActor implements Actor {
   readonly name = "duo";
   visible = false;
+  /** A section that wants no answers to the pointer (a scene on the scroll) sets this: the hit targets are off. */
+  locked = false;
+  /**
+   * The pose's clock, in seconds, when a section makes the dance a function of the scroll. `null`: the
+   * pose runs on the duo's own clock. The blinks, the ambient life and the one-shots keep their own.
+   */
+  poseClock: number | null = null;
   readonly object: Group;
 
   private readonly built: readonly [Built, Built];
@@ -873,7 +880,7 @@ export class DuoActor implements Actor {
       const g = this.goals[i];
       const state = this.states[i];
       if (!place) continue;
-      c.t = this.time;
+      c.t = this.poseClock ?? this.time;
       c.dt = dt;
       c.r = place.height / 2;
       c.view.w = this.viewW;
@@ -972,7 +979,7 @@ export class DuoActor implements Actor {
       id: `duo-${droneId(i)}`,
       cursor: i === 0 ? "SPAR" : "HELLO",
       test: (cx, cy) => {
-        if (!this.visible) return null;
+        if (!this.visible || this.locked) return null;
         clientToStage(cx, cy, this.viewW, this.viewH, this.screenPoint);
         if (!insideAny(discs, this.screenPoint.x, this.screenPoint.y)) return null;
         // Smaller is nearer: the distance from the camera.

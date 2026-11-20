@@ -98,6 +98,7 @@ export function stepFollower(
   vh: number,
   dt: number,
   flight: Flight,
+  limit = 1,
 ): void {
   if (dt <= 0) return;
   const vx0 = f.x.v;
@@ -111,10 +112,15 @@ export function stepFollower(
 
   flightOf(f, vh, flight);
   // The nose goes where the drone goes, the more so the faster it is.
-  const yaw = mix(rest.yaw, clamp(flight.vx * 1.15, -MAX_YAW, MAX_YAW), flight.fast);
-  const pitch = mix(rest.pitch, clamp(flight.vy * 0.8, -MAX_PITCH, MAX_PITCH), flight.fast);
+  // `limit` (0 to 1) scales how far the flight may turn it: a drone with a rider on its head keeps
+  // a steadier attitude, so a quick scroll never swings the pair side-on (round nine).
+  const maxYaw = MAX_YAW * limit;
+  const maxPitch = MAX_PITCH * limit;
+  const maxRoll = MAX_ROLL * limit;
+  const yaw = mix(rest.yaw, clamp(flight.vx * 1.15 * limit, -maxYaw, maxYaw), flight.fast);
+  const pitch = mix(rest.pitch, clamp(flight.vy * 0.8 * limit, -maxPitch, maxPitch), flight.fast);
   // It leans into its movement, and a little more into a change of it.
-  const roll = clamp(-flight.vx * 0.4 - (f.ax / vh) * 0.035, -MAX_ROLL, MAX_ROLL) + t.roll;
+  const roll = clamp((-flight.vx * 0.4 - (f.ax / vh) * 0.035) * limit, -maxRoll, maxRoll) + t.roll;
   springTo(f.yaw, yaw, OMEGA_YAW, dt);
   springTo(f.pitch, pitch, OMEGA_PITCH, dt);
   springTo(f.roll, roll, OMEGA_ROLL, dt);

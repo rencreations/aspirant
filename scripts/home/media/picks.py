@@ -360,7 +360,7 @@ def loops() -> list[dict[str, Any]]:
         else:
             video = h.VIDEO / "loops" / f"{slug}.mp4"
             info = h.probe(video)
-            p45, pfull = h.IMG / "loops" / f"{slug}-45.webp", h.IMG / "loops" / f"{slug}-full.webp"
+            p45, pfull = h.IMG / "loops" / f"{L.poster_stem(spec)}.webp", h.IMG / "loops" / f"{slug}-full.webp"
             rec.update({
                 "video": {"repo": h.public_path(video), "w": info["w"], "h": info["h"], "dur": round(info["dur"], 3), "fps": round(info["fps"]),
                           "bytes": video.stat().st_size, "loop": "seamless: ping-pong" if spec["kind"] == "pingpong" else "seamless: the site's idle loop"},
@@ -393,8 +393,8 @@ def loading(parts: dict[str, Any]) -> dict[str, Any]:
     music_b = sum(m["disc"]["bytes"] + (m["jacket"]["bytes"] if m["jacket"] else 0) for m in parts["music"])
     deferred = {
         "preview clips (10) and posters": sum(p["video"]["bytes"] + p["poster"]["bytes"] for p in parts["previews"]),
-        "character loops (7 videos) and posters": sum(l["video"]["bytes"] + l["poster45"]["bytes"] + l["posterFull"]["bytes"] for l in parts["loops"] if l["video"]),
-        "stills of the list (the library's f, 2: Fanny and Layla)": sum(l["full"]["bytes"] for l in parts["loops"] if l["kind"] == "still"),
+        "character loops (4 videos) and posters": sum(l["video"]["bytes"] + l["poster45"]["bytes"] + l["posterFull"]["bytes"] for l in parts["loops"] if l["video"]),
+        "stills of the list (the library's f, 5: Fanny, Guinevere, Layla, Ruby, Vexana)": sum(l["full"]["bytes"] for l in parts["loops"] if l["kind"] == "still"),
         "voice lines (80 clips)": sum((h.MIRROR / r["key"]).stat().st_size for c in parts["voices"]["characters"] for r in c["lines"].values()),
         "music discs and jackets (7)": music_b,
         "comic panels, stickers and covers (2 comics)": sum(c["cover"]["bytes"] + sum(p["bytes"] for p in c["panels"]) + sum(p["bytes"] for p in c["chibi"]) for c in parts["comics"]),

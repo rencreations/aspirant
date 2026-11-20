@@ -142,6 +142,8 @@ Windows, chosen by looking at frames every 4 s, then every half second (my first
 
 ## 7. The character list loops
 
+> **Round nine (20 Nov 2026): Guinevere, Ruby and Vexana are pictures now** (the splash art of the owner's `splash-art/cropped`, like Fanny and Layla), and Chang'e's window was re-cut. Four loops remain (Obsidia, Angela, Lesley, Chang'e). The table below is the first version. Notes: `round9-FIX-chars.md`.
+
 Owner's order: Obsidia, Fanny, Guinevere, Angela, Lesley, Layla, Ruby, Vexana, Chang'e. **One file serves both states**: the full picture is the file, the list shows `window`, a 4:5 window of it, and a press opens the same file whole with the empty space around it.
 
 ```ts

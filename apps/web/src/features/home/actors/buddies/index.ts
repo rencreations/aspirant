@@ -4,6 +4,7 @@ import { ensureActor } from "../shared/ensure";
 import type { ActorCtx } from "../shared/types";
 
 import { BuddyPair } from "./pair";
+import { programsReady } from "./programs-ready";
 
 export { BuddyPair, DOLL_RATIO } from "./pair";
 export type { PairMode, PairState, ReactName } from "./pair";
@@ -17,6 +18,10 @@ export type { DanceName } from "./choreo";
 export function ensureBuddies(ctx: ActorCtx): Promise<BuddyPair> {
   return ensureActor(ctx.actors, "buddies", async () => {
     const [drone, doll] = await Promise.all([ensureDrone(ctx), ensureDoll(ctx)]);
-    return new BuddyPair(ctx, drone, doll);
+    const pair = new BuddyPair(ctx, drone, doll);
+    // The pair's programs are linking now (the guest's compile in the constructor). The pair is handed
+    // over only when they are done, so the first frame that draws them never waits for the driver.
+    await programsReady(ctx.stage.renderer);
+    return pair;
   });
 }
