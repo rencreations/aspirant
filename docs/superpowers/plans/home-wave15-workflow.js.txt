@@ -1,0 +1,34 @@
+export const meta = {
+  name: 'home-wave15',
+  description: 'Wave 15: film every drone and doll animation of the descent as timed sheets and fix what looks like a glitch, a sudden turn or a pop',
+  phases: [{ title: 'Wave 15', detail: 'one visual pass over the descent' }],
+}
+
+const PROMPT = `
+You are a helper on the Aspirants site (repo D:\\aspirant: Next.js 16, three.js r186, pnpm workspace; the app is apps/web). The owner is asleep or away: decide and say so in your report. Work only on the home page "/" (apps/web/src/features/home/).
+CONTEXT: the owner's ninth message (word for word in docs/superpowers/specs/2026-11-20-home-feedback-9-request.md, READ the part about the descent) says: "there's a bug when some of the drone animations are bug and it's suddenly turned and like glitches, and I wanted you to see it visually for all of the drone animations, and make sure how fast user are scrolling, it will not looked like glitches or suddenly turned." The previous helper judged glitches from logged numbers only and did NOT film the routines as the owner asked (read docs/design/home/round9-FIX-descent.md, actor-buddies.md, round6-BUDDY-actor.md, round8-FIX-pair.md, actor-duo.md). It left: the pair still zips up to about 5 percent of the screen height in one frame after a very fast flick or a large jump (a spring catch-up), the two Guinevere guests' flights in and out reach 3 to 8 percent per frame and their first drawn frame is a snap to an off-screen place, the doll's seat was not looked at again at the list's dock and the Selena section's dock, and 390x844 and touch were not run.
+THE PROCESS RULE OF THE OWNER: no CI. NO pnpm check, NO full vitest run, NO knip, NO full eslint, NO e2e, NO build. One targeted vitest file for a pure function you wrote and one filtered "npx tsc --noEmit -p apps/web" at the end are fine. Edit shared files with Edit only; keep every file compiling at all times (the owner watches the dev server http://localhost:3000, your edits appear live). Never name an assistant or tool anywhere in the repository; you do NOT commit, push or build. Short sentences, no em-dashes or en-dashes.
+HOW TO LOOK: real Chrome through Playwright (channel "chrome", headless, the real GPU) with localStorage aspirants:consent = rejected and sessionStorage aspirants:intro = off, at 1440x900 and 390x844 (touch), window.__home.seek / freeze / sections() / lab("buddies") / lab("duo"); the pair and the guests take about 15 s to build after a seek: wait. Contact sheets: C:\\Users\\muham\\anaconda3\\python.exe -I with Pillow; D:\\ren\\aspirant-work\\home\\lead\\stitch.py out.png cols scale file...; READ every image with the Read tool. Scripts in D:\\ren\\aspirant-work\\home\\VIS\\. A screenshot on the dev server takes 0.5 to 1.4 s, so for motion use window.__home.freeze(true) and step the scene by seek of tiny scroll amounts, or use the actor's own time controls in the lab (advance(seconds) style methods if they exist: check actor-buddies.md and the lab objects), or page.screencast/video recording (Playwright recordVideo at 60 fps then ffmpeg frame extraction: this is the best way to see real motion: record the real descent scroll with a real wheel at several speeds and extract frames every 2 or 3 video frames into sheets).
+DO:
+1. FILM EVERYTHING: (a) every dance routine of actors/buddies/choreo.ts (sway, bob, spin, eight, twirl, hop2, shimmy, wave, clap, cheer, lean, spiral, the show) and every drone trick the pair can show (barrel roll, frontflip, backflip, spin, wiggle, loop, hop, roll, nod, dizzy, shake, bow), each as a timed sheet at 0.1 s in the lab; (b) the real descent with a real wheel at slow, medium, fast, very fast, reversing and stopping scrolls, recorded as video and extracted at about 12 frames a second into sheets (the whole descent, 1440x900 and 390x844); (c) the guests' arrival at 20 percent, the greeting, the dance together, the departure by about 86 percent; (d) the doll at the list's dock and in the Selena section's dock. LOOK at all of it with the Read tool, frame by frame in the places where anything turns or jumps.
+2. FIX every visible glitch, sudden turn, pop, jerk, snap, teleport, flip, wrong-way spin, gimbal flip, a limb or the drone body passing through the doll the wrong way, the doll leaving the helmet, the guests appearing by a snap (their first drawn frame must already be at a plausible on-screen or just off-screen place and they must fly in smoothly: spawn them off screen with the velocity of the approach), the pair's catch-up after a flick (limit the catch-up speed to what a smooth flight can show: a critically damped follower with a speed cap and an acceleration cap so no frame moves more than about 1.5 percent of the screen height at 60 Hz, still arriving within about 0.4 s), the greeting wave coming after the guests have left (tie the greeting to the guests' own arrival time, not to a lagging beat), and anything else you see. Keep the dance a pure function of a smoothed progress so scroll up reverses it.
+3. THE SIT: confirm at the dock (list and Selena) and in the descent at ten attitudes that the doll sits ON the helmet with no gap and no sinking (a zoomed contact sheet of the contact area), and fix any attitude where she hovers or intersects.
+4. Re-run the per frame log over scripted scrolls (slow, medium, fast flick, very fast flick, a jump, up and down, a stop and a quick reverse) and report the maximum step per frame of the drone's angles and positions, the doll's, and the guests'; all must be smooth by your sheets as well as by the numbers.
+Notes: docs/design/home/round9-VIS-descent.md. Finish within about 60 minutes. Report honestly: what you filmed, what you fixed, what remains.
+`
+
+const RESULT = {
+  type: 'object',
+  properties: {
+    summary: { type: 'string' },
+    done: { type: 'array', items: { type: 'string' } },
+    filesEdited: { type: 'array', items: { type: 'string' } },
+    verified: { type: 'array', items: { type: 'string' } },
+    stillWrong: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['summary', 'done', 'filesEdited', 'verified', 'stillWrong'],
+}
+
+phase('Wave 15')
+const r = await agent(PROMPT, { label: 'VIS-descent', phase: 'Wave 15', schema: RESULT })
+return r || { summary: 'NO RESULT (agent failed or was skipped)' }

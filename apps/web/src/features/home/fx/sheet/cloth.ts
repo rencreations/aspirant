@@ -78,7 +78,6 @@ export function edgeAt(s: Shape, x: number): number {
 /** Fill the grid for a shape. */
 export function fillGrid(s: Shape, g: Grid): Grid {
   const { pos, shade, ink } = g;
-  let v = 0;
   for (let c = 0; c <= COLS; c += 1) {
     // Columns bunch a little toward the grip, where the folds are.
     const u = c / COLS;
@@ -111,7 +110,6 @@ export function fillGrid(s: Shape, g: Grid): Grid {
       pos[i * 3 + 2] = amount * 0.012 * wave;
       shade[i] = isInk ? 0 : clamp01(0.5 + 0.42 * amount * wave);
       ink[i] = isInk;
-      v += 1;
     }
   }
   return g;

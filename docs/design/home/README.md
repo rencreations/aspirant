@@ -1,0 +1,61 @@
+# Home page notes: which to read, which are history
+
+The home page (`/`, code in `apps/web/src/features/home/`) was built from nothing on 18 Nov 2026 and then reworked in nine rounds of the owner's feedback until 21 Nov 2026. Every part of that work left a note in this folder, about 70 files. **They were written by different helpers on different days, so many of them describe a state that a later round changed or deleted.** This page says which note to trust.
+
+**Round naming.** Round one is the first build (18 Nov 2026). Round two answers the owner's first and second messages of feedback (19 Nov). Rounds three to nine answer messages three to nine (20 Nov). A note called `round6-...` answers the owner's sixth message, `docs/superpowers/specs/2026-11-20-home-feedback-6-request.md`.
+
+Rules for reading them:
+
+1. **The code is the final word.** A note is a map made at one moment.
+2. **A later round beats an earlier note.** Round nine beats round two. The owner's own words for every round are in `docs/superpowers/specs/2026-11-19-home-feedback-request.md` and `2026-11-20-home-feedback-*-request.md` (word for word), and they override the first request (`2026-11-18-home-page-request.md`) where they differ.
+3. **The rules that apply to every change are in `CLAUDE.md`, section "The home page".** Read that first, then `kernel.md`, then the note of the part you touch.
+4. The ledger `docs/superpowers/plans/2026-11-18-home-redesign-progress.md` says what each wave did, in order, with the owner's message that started it.
+
+## What the page is now (21 Nov 2026)
+
+14 sections, about 59 screens, in this order: `hero`, `aspirants`, `rows`, `strip`, `descent`, `list`, `selena`, `voices`, `music`, `funny`, `chase`, `bend`, `archive`, `footer`. Light mode only. Two WebGL contexts (the stage and the backdrop). Every model in the anime (toon) style. Scenes follow the scroll in zones with an idle snap, except named clock triggers. `node scripts/qa/home/sections.cjs <base>` prints the real list.
+
+Sections that **no longer exist**: `bolt` (Silverbolt carrying the doll), `fall` (the doll's fall) and `hand` (Selena's hand). The owner had them deleted in round six; the drone now carries the doll in `descent`. Silverbolt is still an actor (Selena's dragon, in the list frame and the Selena room).
+
+## Current: read these
+
+| Note                                                                                                                                 | What it covers                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kernel.md`                                                                                                                          | The kernel: the stage, the scroll `S`, the section runner, the grounds, `window.__home`, the lab. Start here.                                  |
+| `kernel-scrub.md`                                                                                                                    | Scroll zones: a play with a `span` is a pure function of the scroll, with an idle snap. How to author a zone, `noSnap`, the tables in screens. |
+| `kernel-plays.md`                                                                                                                    | Clock plays (a scene that runs for a time and holds the scroll) and the validation of a section's table.                                       |
+| `kernel-snap.md`                                                                                                                     | Input energy, the ready gate, the joint snap, the flick.                                                                                       |
+| `toon.md`                                                                                                                            | The shared toon (cel) shader and outline used by every model.                                                                                  |
+| `infra.md`, `media.md`                                                                                                               | Shared infrastructure (loading lists, caches), the media derivatives and the voice gain.                                                       |
+| `boot.md`                                                                                                                            | The loader (3D drone), the tap gate, the 2 second intro. The "13 second" and "dialogue box" parts are old: round two shortened it.             |
+| `fx-backdrop.md`                                                                                                                     | The live backdrop: the second WebGL canvas with about 30 shader grounds.                                                                       |
+| `fx-image-field.md`, `fx-logo.md`, `fx-marks.md`, `fx-video-plane.md`                                                                | The picture field, the logo wave, the comic marks and trails, the film plane.                                                                  |
+| `actor-drone.md`, `actor-duo.md`, `actor-doll.md`, `actor-gramophone.md`, `actor-tetra.md`, `actor-silverbolt.md`, `actor-selena.md` | One note per actor. They were written in round one and patched later: read the round notes below for the final behaviour.                      |
+| `actor-buddies.md`                                                                                                                   | The pair: the drone that carries the doll, the dock, the lock, the guests.                                                                     |
+| `models-selena-silverbolt.md`, `models-doll-gramophone.md` (and their folders)                                                       | How the models were built from the owner's source files (`scripts/home/models/`).                                                              |
+
+## Round notes, in order (history of why it is as it is)
+
+Each one is the report of a helper for one part of one round. Read the ones for the part you touch, newest last.
+
+| Round | Date   | Notes                                                                                                                                                                                                                                                                        |
+| ----- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | 18 Nov | `section-hero-aspirants`, `section-rows-strip`, `section-voices-music`, `section-funny-chase`, `section-bend`, `section-archive-footer`, `section-selena`, `integration-W4A`, `integration-W4C`, `integration-W4-D`, `integration-W4-E`. The first build of the 16 sections. |
+| 2     | 19 Nov | `round2-R-A`, `round2-R-A1` to `A4` (loader, intro, hero, wall, strip), `round2-R-C`, `round2-R-D`, `round2-R-F`, `round2-ux`. Triggered scenes, 30 backdrops, the toon cast, a UX pass.                                                                                     |
+| 3     | 20 Nov | `round3-H1` (hero), `round3-H2-rows`, `round3-H2-wall`, `round3-H3` (strip), `round3-K7` (scroll zones), `round3-M-pool` (the wall's 120 picture pool), `round3-R2`, `round3-R3`.                                                                                            |
+| 4     | 20 Nov | `round4-SB-dragon` (side-view dragon, straight head), `round4-DOLL-look-ride` (anime doll, rider physics).                                                                                                                                                                   |
+| 5     | 20 Nov | `round5-L2` (list, light only plumbing), `round5-S-strip` (light strip, no overlay, steady exit), `round5-W-wall` (eased wall).                                                                                                                                              |
+| 6     | 20 Nov | `round6-BUDDY-actor` (the pair), `round6-DESC-descent` (the new section), `round6-ORYZO` (the character list as a film strip).                                                                                                                                               |
+| 7     | 20 Nov | `round7-SEL-render`, `round7-SEL-anim`, `round7-SEL-out` (the white sheet), `round7-SEL-camera-sky`, `round7-CAM-landscape`, `round7-CAM-portrait` (cameras fitted to the game's recording), `round7-NOBG`.                                                                  |
+| 8     | 20 Nov | `round8-FIX-hero-wall-strip`, `round8-FIX-pair`.                                                                                                                                                                                                                             |
+| 9     | 20 Nov | `round9-FIX-strip-exit`, `round9-FIX-descent`, `round9-VIS-descent` (the descent filmed and the glitches fixed), `round9-FIX-chars` (new Guinevere, Vexana and Ruby pictures, Chang'e's video).                                                                              |
+
+## Deleted parts: history only
+
+These describe sections or actors that were removed. Do not build on them.
+
+`section-bolt-fall`, `section-hand-list` (its list half was rebuilt in round six), `actor-hand`, `round2-R-B`, `round3-R1`, `round4-SEC-bolt-fall`, `round4-DOLL-fall` (the doll's fall as its own section; the fall loop itself, `actors/doll/fall.ts` and `public/models/home/doll-fall.json`, is still part of the doll actor), `round5-L1`, `integration-W4-B`.
+
+## Other folders
+
+`docs/design/home-reference/` holds the studies of the reference sites the owner named (premotio, oryzo, psychoactive and tibdigital) and the media inventory. `docs/superpowers/plans/home-wave*-workflow.js.txt` are the scripts that ran each wave of helpers; their prompt strings are plain text and make good briefs for any tool (see `docs/HANDOFF.md`, "Working with helper sessions").
