@@ -31,17 +31,6 @@ export const CLIP_NAMES: readonly ClipName[] = [
   CLIP.out,
   CLIP.fall,
 ];
-
-/** Cross fade lengths (seconds) at the seams the notes measured. */
-export const FADE = {
-  /** Idle, hands and the way back: the bone heads agree within 4 cm, a short fade hides it. */
-  between: 0.18,
-  /** The way out of the hands loop: 1.5 cm apart. */
-  intoRelease: 0.08,
-  /** `back_R` into idle: 3.7 cm. */
-  intoIdle: 0.15,
-} as const;
-
 export const BONE = {
   head: "Bip001_Head",
   neck: "Bip001_Neck",
@@ -54,22 +43,6 @@ export const BONE = {
   footL: "Bip001_L_Foot",
   footR: "Bip001_R_Foot",
 } as const;
-
-/**
- * Where the doll hangs over her right hand in `city_intercation03` (cameras.facts.json): the
- * hand's position in the model's own space plus `hover`, from `from` to `hold` seconds, then
- * blended to plus `drift` by `driftTo`. The offsets are in the model's space (Y up), not in the
- * bone's frame, so the socket is a child of the model, moved every frame.
- */
-export const DOLL_ANCHOR = {
-  hover: [-0.06, 0.27, 0],
-  drift: [-0.38, 0.28, 0],
-  from: 1.2,
-  hold: 2.8,
-  driftTo: 3.2,
-  visible: [1.6, 3.4],
-} as const;
-
 /** Where the cameras were baked and how the recording was framed (cameras.facts.json). */
 export const BAKED = {
   fps: 30,

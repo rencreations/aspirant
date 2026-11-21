@@ -37,7 +37,7 @@ import {
 import { LifeScheduler } from "./life";
 import { createHands, stepHands, type Hands } from "./hands";
 import { closeLock, createLock, stepLock } from "./lock";
-import { createHeadFrame, headFrame, modelToStage, FACE_POINT, perMetreOf } from "./seat";
+import { createHeadFrame, headFrame, modelToStage, FACE_POINT } from "./seat";
 import { dampAngle, setDamped, wrapPi, type Damped } from "./smooth";
 import { createTouchOut, Touch, type TouchOut } from "./touch";
 
@@ -688,5 +688,3 @@ export class BuddyPair implements Actor {
     this.seat.removeFromParent();
   }
 }
-
-export { perMetreOf };

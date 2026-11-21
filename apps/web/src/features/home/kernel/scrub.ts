@@ -20,11 +20,8 @@
  * `docs/design/home/kernel-scrub.md` says how to author and how to look at it.
  */
 import type { Layout } from "./layout";
-import { isZone, zoneProgress, zoneValue } from "./plays";
 import type { SnapBlock, SnapDeps, SnapFrame } from "./snap";
 import type { SectionId } from "./types";
-
-export { isZone, zoneProgress, zoneValue };
 
 /** The scroll has to be still, and nobody pushing, this long before the page finishes a zone. */
 export const ZONE_IDLE_MS = 220;
@@ -35,9 +32,9 @@ export const ZONE_MIN_SECONDS = 0.35;
 /** Inside this share of a zone's length from either end the page counts as at rest there. */
 export const ZONE_EDGE = 0.02;
 /** Going down, the zone is finished forward from this share of it; below it goes back. */
-export const ZONE_FORWARD_DOWN = 0.25;
+const ZONE_FORWARD_DOWN = 0.25;
 /** Going up, the zone goes back up to this share of it; above it is finished forward. */
-export const ZONE_BACK_UP = 0.75;
+const ZONE_BACK_UP = 0.75;
 /** The scroll moves this many pixels or more: it is still moving. */
 const MOVE_EPS_PX = 1.5;
 /** The move is over when the page is this near (screens) its target. */
@@ -76,7 +73,7 @@ export function zoneRanges(layout: Layout): ZoneRange[] {
 }
 
 /** How far through a zone the real scroll is, 0 to 1 unclamped (below 0 before it, above 1 after it). */
-export function rangeProgress(z: ZoneRange, s: number): number {
+function rangeProgress(z: ZoneRange, s: number): number {
   const length = z.to - z.from;
   return length > 0 ? (s - z.from) / length : s >= z.from ? 1 : 0;
 }

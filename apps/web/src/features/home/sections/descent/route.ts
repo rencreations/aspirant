@@ -121,7 +121,7 @@ export function pairAt(
  * How much they are flying down: they dive in, are busy through the middle, and ease to a hover as the dock
  * comes (the last screen). 0 before they enter and at the dock.
  */
-export function descentAt(u: number): number {
+function descentAt(u: number): number {
   const into = clamp01((u - PAIR_FROM_U) / 0.9);
   const outOf = 1 - clamp01((u - (DESCENT_SCREENS - 0.9)) / 0.9);
   return into * outOf;

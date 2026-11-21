@@ -9,7 +9,7 @@
  */
 import type { PairCue } from "./choreo";
 
-export interface Hand {
+interface Hand {
   x: number;
   y: number;
   z: number;
@@ -28,12 +28,12 @@ export function createHands(): Hands {
 }
 
 /** The poses, in `u` from the seat's origin: `[x, y, z]` for her left hand (the right is mirrored in x). */
-export const REST: readonly [number, number, number] = [0.2, 0.03, 0.12];
-export const UP: readonly [number, number, number] = [0.27, 0.44, 0.0];
-export const WAVE: readonly [number, number, number] = [0.3, 0.42, 0.05];
-export const CLAP: readonly [number, number, number] = [0.04, 0.2, 0.2];
-export const PAT: readonly [number, number, number] = [0.05, 0.0, 0.3];
-export const HUG: readonly [number, number, number] = [0.27, -0.04, 0.2];
+const REST: readonly [number, number, number] = [0.2, 0.03, 0.12];
+const UP: readonly [number, number, number] = [0.27, 0.44, 0.0];
+const WAVE: readonly [number, number, number] = [0.3, 0.42, 0.05];
+const CLAP: readonly [number, number, number] = [0.04, 0.2, 0.2];
+const PAT: readonly [number, number, number] = [0.05, 0.0, 0.3];
+const HUG: readonly [number, number, number] = [0.27, -0.04, 0.2];
 
 const TAU = Math.PI * 2;
 

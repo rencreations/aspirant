@@ -17,7 +17,7 @@ import type { WallGeom } from "./wall";
 export const SLIDE_PITCHES = 4;
 
 /** The exponent of the ease in: 2 is a speed that grows in a straight line from nothing. */
-export const SLIDE_EASE_POWER = 2;
+const SLIDE_EASE_POWER = 2;
 
 /**
  * The scroll (screens) where the hero's zone ends and the wall has landed: the plane stands still until
@@ -33,7 +33,7 @@ export const SLIDE_ORIGIN = 2.9;
 export const SLIDE_EASE_END = 5.5;
 
 /** How far along the ease in the scroll `S` is, 0 to 1 (0 before the origin, 1 from the end on). */
-export function slideProgress(S: number, end: number = SLIDE_EASE_END): number {
+function slideProgress(S: number, end: number = SLIDE_EASE_END): number {
   return end > SLIDE_ORIGIN ? ramp(S, SLIDE_ORIGIN, end) : 0;
 }
 

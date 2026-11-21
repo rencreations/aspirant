@@ -109,7 +109,7 @@ export function posterizeGlsl(levels: number, mode: StepMode): string {
  * and the panel edges stay and the blotches go; the toon bands then draw the shape. Gold gets a
  * richer saturation (the picture's gold is a muddy tan). The blue crystals are left as drawn.
  */
-export function flattenGlsl(): string {
+function flattenGlsl(): string {
   return `${MAP_CHUNK}
 	{
 		float tone = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );

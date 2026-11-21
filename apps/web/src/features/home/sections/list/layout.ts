@@ -18,10 +18,10 @@ export interface Rect {
 /** The width of a frame over its height: 4 to 5, the owner's (Oryzo's own is 85 to 110). */
 export const FRAME_RATIO = 0.8;
 /** The small pictures beside the frame are this share of it (Oryzo: 0.35), with a gap of 0.08 of one. */
-export const THUMB_SCALE = 0.35;
-export const THUMB_GAP = 0.08;
+const THUMB_SCALE = 0.35;
+const THUMB_GAP = 0.08;
 /** The gap between the frame and the small pictures, as a share of the frame's width (Oryzo: 0.0406). */
-export const SIDE_GUTTER = 0.0406;
+const SIDE_GUTTER = 0.0406;
 /** The dashed line stands this far outside the frame. */
 export const CHROME_PAD = 6;
 

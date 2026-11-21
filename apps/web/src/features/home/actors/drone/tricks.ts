@@ -195,7 +195,7 @@ export function trickPose(tr: Tricks, out: TrickPose): TrickPose {
 }
 
 /** The turns a rider cannot ride through: a roll or a flip is a rock of this many radians, not a whole turn. */
-export const ROCK = 0.62;
+const ROCK = 0.62;
 
 /**
  * With a rider on its head the drone does not turn upside down: the roll and the flips become a rock

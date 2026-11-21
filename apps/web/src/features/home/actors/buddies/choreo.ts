@@ -273,7 +273,7 @@ export function danceCue(
 }
 
 /** The show at `beat`: the routine that plays, and the next one fading in at the end. */
-export function showAt(beat: number, en: number, out: PairCue): PairCue {
+function showAt(beat: number, en: number, out: PairCue): PairCue {
   const total = showBeats();
   const b = ((beat % total) + total) % total;
   let at = 0;

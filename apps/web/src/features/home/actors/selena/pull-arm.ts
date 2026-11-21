@@ -94,7 +94,7 @@ export class PullArm {
   measure(work: PoseWork, pos: Vector3, gq: Float32Array, scale: number): void {
     if (!this.ok) return;
     const mp = work.mp;
-    this.a.set(mp[this.hand * 3]!, mp[this.hand * 3 + 1]!, mp[this.hand * 3 + 2]!);
+    this.a.set(mp[this.hand * 3]!, mp[this.hand * 3 + 1]!, mp[this.hand * 3 + 2]);
     this.toWorld(this.a, pos, gq, scale, this.clipHand);
   }
 

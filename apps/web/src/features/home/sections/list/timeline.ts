@@ -9,9 +9,9 @@ import { seg } from "../vp";
 import { FRAME_COUNT, LIST_LAST, LIST_LEAD } from "./stations";
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
-export const sineInOut = (u: number): number => 0.5 * (1 - Math.cos(Math.PI * clamp01(u)));
-export const cubicOut = (u: number): number => 1 - (1 - clamp01(u)) ** 3;
-export const cubicInOut = (u: number): number => {
+const sineInOut = (u: number): number => 0.5 * (1 - Math.cos(Math.PI * clamp01(u)));
+const cubicOut = (u: number): number => 1 - (1 - clamp01(u)) ** 3;
+const cubicInOut = (u: number): number => {
   const t = clamp01(u);
   return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 };

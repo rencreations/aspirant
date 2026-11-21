@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { AT, CLIP_KEYS, T_EXT, ZOOM, clipTime, newOut, outAt, zoomRect } from "./out";
+import { AT, CLIP_KEYS, T_EXT, ZOOM, clipTime, type newOut, outAt, zoomRect } from "./out";
 
 const STEPS = 400;
 

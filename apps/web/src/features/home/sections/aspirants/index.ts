@@ -26,13 +26,13 @@ import { preload } from "./preload";
  * The ground stays light, with nothing behind the wall (`sections/backdrops.ts`).
  */
 /** Screens of rest on the wall with the words (the pictures only slide with the scroll). */
-export const ASPIRANTS_REST = 1;
+const ASPIRANTS_REST = 1;
 /** The close: the length of the scroll zone, in screens. */
-export const ASPIRANTS_CLOSE = 1;
+const ASPIRANTS_CLOSE = 1;
 /** The section's length in screens. */
-export const ASPIRANTS_SCREENS = ASPIRANTS_REST + ASPIRANTS_CLOSE;
+const ASPIRANTS_SCREENS = ASPIRANTS_REST + ASPIRANTS_CLOSE;
 /** Kept for the table's validation only: the close has `noSnap`, so the page never carries the scene by itself. */
-export const ASPIRANTS_SNAP_SECONDS = 1.6;
+const ASPIRANTS_SNAP_SECONDS = 1.6;
 
 export const section: HomeSection = {
   id: "aspirants",

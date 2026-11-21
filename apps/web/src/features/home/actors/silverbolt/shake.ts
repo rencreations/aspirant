@@ -10,17 +10,17 @@ import { clamp, smoothstep } from "./math";
 export const SHAKE_LENGTH_MIN = 0.8;
 export const SHAKE_LENGTH_MAX = 1.2;
 /** The rattle along the body axis, in Hz, and its size in metres at the rest scale (strength 1). */
-export const SHAKE_HZ = 6.5;
-export const SHAKE_REACH_M = 0.12;
+const SHAKE_HZ = 6.5;
+const SHAKE_REACH_M = 0.12;
 /** The vertical shudder: a faster, smaller rattle (Hz, metres). */
-export const SHAKE_SHUDDER_HZ = 9.3;
-export const SHAKE_SHUDDER_M = 0.035;
+const SHAKE_SHUDDER_HZ = 9.3;
+const SHAKE_SHUDDER_M = 0.035;
 /** The roll of the spine about the body's own axis (radians at strength 1) and its pace. */
-export const SHAKE_ROLL = 0.35;
-export const SHAKE_ROLL_HZ = 3.2;
+const SHAKE_ROLL = 0.35;
+const SHAKE_ROLL_HZ = 3.2;
 /** The nod of the whole body in the screen plane (radians at strength 1). */
-export const SHAKE_NOD = 0.11;
-export const SHAKE_NOD_HZ = 4.1;
+const SHAKE_NOD = 0.11;
+const SHAKE_NOD_HZ = 4.1;
 
 export function shakeLength(strength: number): number {
   const s = clamp(strength, 0, 1);
@@ -39,12 +39,6 @@ export function shakeEnvelope(age: number, strength: number): number {
   const end = 1 - smoothstep(0.78 * length, length, age);
   return attack * decay * end;
 }
-
-/** The signed oscillation along the body axis, -1 to 1 (positive is toward the tail). */
-export function shakeOscillation(age: number, strength: number): number {
-  return Math.sin(age * Math.PI * 2 * SHAKE_HZ) * shakeEnvelope(age, strength);
-}
-
 /** What the pose takes from a shake `age` seconds after it started. */
 export interface ShakeValues {
   /** The envelope, 0 to 1. */

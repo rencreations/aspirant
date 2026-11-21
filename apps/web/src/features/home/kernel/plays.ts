@@ -252,7 +252,7 @@ export class PlayMachine {
       // A clock play right after a zone: the idle snap lands on the zone's end, which would be the play's threshold.
       plays.forEach((p, i) => {
         const prev = plays[i - 1];
-        if (!prev || prev.span === undefined || p.span !== undefined) return;
+        if (prev?.span === undefined || p.span !== undefined) return;
         const gap = (p.at - (prev.at + prev.span)) * options.screens;
         if (gap < ZONE_CLOCK_GAP) {
           console.warn(
@@ -441,7 +441,7 @@ export class PlayMachine {
       // A clock play after a zone waits until the smoothed scroll has finished the zone, so the
       // scene never jumps from the middle of the zone to the play's start.
       const before = this.idx > 0 ? this.plays[this.idx - 1]! : null;
-      if (before && before.span !== undefined && this.sShown < before.at + before.span) {
+      if (before?.span !== undefined && this.sShown < before.at + before.span) {
         this.due = false;
         return false;
       }

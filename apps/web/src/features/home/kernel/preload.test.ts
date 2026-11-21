@@ -73,7 +73,7 @@ describe("homeItems", () => {
   });
 
   it("asks every section for its list", () => {
-    expect(SECTIONS).toHaveLength(16);
+    expect(SECTIONS).toHaveLength(14);
     for (const s of SECTIONS) expect(Array.isArray(s.preload()), s.id).toBe(true);
   });
 

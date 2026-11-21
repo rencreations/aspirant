@@ -11,12 +11,12 @@
 import type { HomePlay, PlayEase } from "../kernel/plays";
 
 /** A stretch where the page is free and the scene stands. */
-export interface RestSegment {
+interface RestSegment {
   readonly rest: number;
 }
 
 /** A stretch where the scroll drives the scene from the station before it to `to`. */
-export interface ZoneSegment {
+interface ZoneSegment {
   /** Length in screens. */
   readonly zone: number;
   /** The value of `local` at the end of the zone. */
@@ -31,7 +31,7 @@ export interface ZoneTable {
   readonly screens: number;
   readonly plays: readonly HomePlay[];
   /** Where each zone starts and ends, in screens from the section's start. */
-  readonly zones: readonly { readonly from: number; readonly to: number }[];
+  readonly zones: ReadonlyArray<{ readonly from: number; readonly to: number }>;
 }
 
 /** The idle snap of a full traverse: about half a second a screen, never under 0.35 s or over 0.9 s. */
@@ -47,7 +47,7 @@ export function zoneTable(first: number, segments: readonly Segment[]): ZoneTabl
   let total = 0;
   for (const s of segments) total += "zone" in s ? s.zone : s.rest;
   const plays: HomePlay[] = [];
-  const zones: { from: number; to: number }[] = [];
+  const zones: Array<{ from: number; to: number }> = [];
   let at = 0;
   let value = first;
   for (const s of segments) {

@@ -253,7 +253,7 @@ describe("zoneRanges", () => {
 });
 
 describe("the snap decision", () => {
-  const z: ZoneRange = { id: "rows" as never, index: 0, from: 10, to: 14, seconds: 2, snap: true };
+  const z: ZoneRange = { id: "rows", index: 0, from: 10, to: 14, seconds: 2, snap: true };
   const at = (p: number) => z.from + p * (z.to - z.from);
 
   it("going down finishes forward from a quarter, else goes back", () => {

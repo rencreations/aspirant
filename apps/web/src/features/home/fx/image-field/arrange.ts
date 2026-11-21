@@ -45,7 +45,7 @@ function hash01(a: number, b: number, seed: number): number {
  */
 export function arrangePictures(
   g: WallGeom,
-  keys: ReadonlyArray<PoolKey>,
+  keys: readonly PoolKey[],
   along: (slot: number) => number,
   seed = 1,
   groups?: ReadonlyArray<string | null>,

@@ -55,7 +55,7 @@ export const LENGTH: Readonly<Record<MomentName, readonly [number, number]>> = {
 };
 
 /** The pause between two moments, seconds. */
-export const GAP: readonly [number, number] = [0.8, 2.0];
+const GAP: readonly [number, number] = [0.8, 2.0];
 
 export class Rng {
   private s: number;

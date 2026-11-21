@@ -21,17 +21,11 @@ export const HERO_REST = 0.1;
 /** The length of the zone, in screens: the whole of the scene (the morph, the gather, the ring, the land). */
 export const HERO_ZONE = 2.8;
 /** Screens of dwell on the wall after the zone, before the words' trigger of the aspirants. */
-export const HERO_DWELL = 0.2;
+const HERO_DWELL = 0.2;
 /** The length of the section in screens. */
 export const HERO_SCREENS = HERO_REST + HERO_ZONE + HERO_DWELL;
 /** Kept for the table's validation only: the zone has `noSnap`, so the page never carries the scene by itself. */
-export const HERO_SNAP_SECONDS = 2.4;
-/**
- * The aspirants' first play (the words) still runs this long on a clock (round two). It is the
- * aspirants' to change: the hero no longer plays on a clock.
- */
-export const HERO_PLAY_SECONDS = 2.8;
-
+const HERO_SNAP_SECONDS = 2.4;
 export const section: HomeSection = {
   id: "hero",
   screens: HERO_SCREENS,

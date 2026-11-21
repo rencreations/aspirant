@@ -32,7 +32,7 @@ export const IDLE_NAMES: readonly IdleName[] = [
 ];
 
 /** The most one step may advance the machine: a long frame (a hidden tab) must not skip a whole state. */
-export const MAX_STEP = 0.25;
+const MAX_STEP = 0.25;
 
 /** The length of each state, in seconds: [min, max]. `sit` is the pause between the others. */
 export const LENGTH: Readonly<Record<IdleName, readonly [number, number]>> = {
@@ -49,10 +49,10 @@ export const LENGTH: Readonly<Record<IdleName, readonly [number, number]>> = {
 /** A state that has not come up for this many seconds is chosen next (the dice may pick it earlier). */
 export const FORCE_AFTER = 13;
 /** The least time between two slips, seconds. */
-export const SLIP_GAP = 8;
+const SLIP_GAP = 8;
 /** The envelope of the dragon's shake at which she starts to strain, and below which she stops. */
-export const STRAIN_ON = 0.28;
-export const STRAIN_OFF = 0.12;
+const STRAIN_ON = 0.28;
+const STRAIN_OFF = 0.12;
 
 /** What the machine asks of her body, in units that do not depend on her size. */
 export interface Cue {

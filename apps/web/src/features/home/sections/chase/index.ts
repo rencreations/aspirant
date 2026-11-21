@@ -18,7 +18,7 @@ import { T } from "./timeline";
  */
 
 /** The section's length in screens, and where each zone stands in it (screens from the start). */
-export const CHASE_SCREENS = 4.1;
+const CHASE_SCREENS = 4.1;
 export const CHASE_ZONES = {
   run: { at: 0.85, len: 1.1 },
   comic: { at: 2.2, len: 1 },
@@ -27,7 +27,7 @@ export const CHASE_ZONES = {
 /** The seconds the page takes to finish a whole zone by itself when the visitor stops inside it. */
 const SNAP_SECONDS = 0.9;
 
-export const CHASE_PLAYS: readonly HomePlay[] = [
+const CHASE_PLAYS: readonly HomePlay[] = [
   {
     at: CHASE_ZONES.run.at / CHASE_SCREENS,
     span: CHASE_ZONES.run.len / CHASE_SCREENS,

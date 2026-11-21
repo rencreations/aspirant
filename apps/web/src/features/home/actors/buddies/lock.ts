@@ -23,8 +23,8 @@
 export const SPEED_ON = 0.15;
 export const SPEED_OFF = 0.07;
 /** The smoothed wheel or touch energy (pixels a second) that counts as input, and how long it holds the lock. */
-export const INPUT_ON = 20;
-export const INPUT_HOLD = 0.12;
+const INPUT_ON = 20;
+const INPUT_HOLD = 0.12;
 /** The scroll must be calm this long (seconds) before the lock can be let go. */
 export const CALM_FOR = 0.45;
 /** The drone is settled when it moves slower than this (drone heights a second). */

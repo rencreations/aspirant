@@ -13,11 +13,11 @@ export const LEAN_ROLL = 0.07;
 /** The largest shift of the body toward the pointer, metres at the rest scale. */
 export const LEAN_SHIFT_M = 0.09;
 /** The pointer's distance, in metres of the dragon's own size, at which the lean is full. */
-export const LEAN_REACH_M = 1.3;
+const LEAN_REACH_M = 1.3;
 /** Inside this many metres of the body the pointer says little (it is on the dragon). */
-export const LEAN_DEAD_M = 0.25;
+const LEAN_DEAD_M = 0.25;
 /** The tail wave grows by this much with the lean (0 to 1 is the share of the pointer's pull). */
-export const LEAN_TAIL_BOOST = 0.9;
+const LEAN_TAIL_BOOST = 0.9;
 
 export interface Lean {
   /** Radians: positive lifts the nose (the pointer is above). */

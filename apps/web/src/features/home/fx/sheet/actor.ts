@@ -181,8 +181,8 @@ export class SheetActor implements Actor {
     const near = Math.max(0.01, depth);
     for (let i = 0; i < VERTS; i += 1) {
       const d = near * (1 + g.pos[i * 3 + 2]!);
-      const zClip = P[10]! * -d + P[14]!;
-      const wClip = P[11]! * -d + P[15]!;
+      const zClip = P[10] * -d + P[14];
+      const wClip = P[11] * -d + P[15];
       v.set(g.pos[i * 3]!, g.pos[i * 3 + 1]!, zClip / wClip)
         .applyMatrix4(camera.projectionMatrixInverse)
         .applyMatrix4(camera.matrixWorld);

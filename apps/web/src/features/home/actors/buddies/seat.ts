@@ -12,12 +12,9 @@ import { Euler, Quaternion, Vector3 } from "three";
 import { BODY_METRES, DISTANCE, VIEW_HEIGHT } from "../drone/model";
 
 /** Model metres (the drone's frame: +Y up, +Z its face). The top of the helmet between the fins. */
-export const HEAD_TOP: readonly [number, number, number] = [0, 0.158, 0.02];
-/** Her hands rest on the dome in front of her hips: this far to each side, down and forward of `HEAD_TOP`. */
-export const GRIP_REST: readonly [number, number, number] = [0.05, -0.012, 0.085];
-/** The tip of the right fin as the viewer sees it (the drone's left), for a high five. */
-export const FIN_TIP: readonly [number, number, number] = [-0.15, 0.2, -0.045];
-/** The drone's face, for the doll to look down at. */
+const HEAD_TOP: readonly [number, number, number] = [
+  0, 0.158, 0.02,
+]; /** The drone's face, for the doll to look down at. */
 export const FACE_POINT: readonly [number, number, number] = [0, -0.04, 0.2];
 
 /** What the drone is drawn at: the screen frame (middle origin, y DOWN) and its attitude. */
@@ -50,13 +47,13 @@ const _e = new Euler(0, 0, 0, "YXZ");
 const _v = new Vector3();
 
 /** The drone's turn as a quaternion (the order the scene draws it in: yaw, then pitch, then roll). */
-export function droneTurn(d: DroneDrawLike, out: Quaternion): Quaternion {
+function droneTurn(d: DroneDrawLike, out: Quaternion): Quaternion {
   _e.set(d.pitch, d.yaw, d.roll, "YXZ");
   return out.setFromEuler(_e);
 }
 
 /** The model's metres in pixels at the drone's drawn size. */
-export function perMetreOf(size: number): number {
+function perMetreOf(size: number): number {
   return Math.max(1, size) / BODY_METRES;
 }
 

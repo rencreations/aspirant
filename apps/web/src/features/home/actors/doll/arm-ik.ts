@@ -32,7 +32,7 @@ const _wq = new Quaternion();
 const _pq = new Quaternion();
 
 /** The elbow's place: on the circle of points `l1` from the shoulder and `l2` from the target. Pure on vectors. */
-export function elbowPlace(
+function elbowPlace(
   out: Vector3,
   shoulder: Vector3,
   target: Vector3,

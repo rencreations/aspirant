@@ -20,13 +20,13 @@ export { LIST_LEAD };
 /** The number of frames of the strip: nine pictures and Selena in 3D. */
 export const FRAME_COUNT = 10;
 /** The list's last beat: the last frame has grown into the screen. */
-export const LIST_LAST = FRAME_COUNT;
+export const LIST_LAST = 10;
 
 /** The first frame rests this long before the first turn begins (screens after the section's start). */
-export const LIST_FIRST_AT = 0.4;
+const LIST_FIRST_AT = 0.4;
 /** A turn of the strip, and the rest on the frame it brings. Oryzo's step is 0.75 screens. */
 export const TURN_SPAN = 0.6;
-export const TURN_REST = 0.3;
+const TURN_REST = 0.3;
 /** The growth of the last frame into the screen. */
 const GROW_SPAN = 1;
 
@@ -60,7 +60,7 @@ export const LIST_STEPS: readonly BeatStep[] = [
  * The rest after the growth: the screen is Selena's, and the next section's lead (half a screen)
  * begins in it.
  */
-export const LIST_DWELL = 0.5;
+const LIST_DWELL = 0.5;
 
 /** The list's length in screens. */
 export const LIST_SCREENS = zoneLength(LIST_STEPS, LIST_DWELL);

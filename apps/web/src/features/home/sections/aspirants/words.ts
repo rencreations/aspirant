@@ -26,7 +26,7 @@ export const WORDS_RETURN_V = 1.04;
 /** The clock's length (seconds): the last line has arrived when it has run this long. */
 export const WORDS_SECONDS = 0.9;
 /** The words go out this many times faster than they come in. */
-export const WORDS_OUT_SPEED = 2.6;
+const WORDS_OUT_SPEED = 2.6;
 /** Each line starts this much later than the one before (seconds), and takes `LINE_SECONDS`. */
 export const LINE_STAGGER = 0.14;
 export const LINE_SECONDS = 0.62;

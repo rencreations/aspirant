@@ -153,8 +153,7 @@ describe("the bend section's zones", () => {
   });
 
   it("scrub the clock with the scroll, up and down, to the same value at the same place", () => {
-    for (let i = 0; i < BEND_PLAYS.length; i += 1) {
-      const p = BEND_PLAYS[i]!;
+    for (const p of BEND_PLAYS) {
       expect(zoneProgress(p, p.at - 0.001)).toBe(0);
       expect(zoneProgress(p, p.at + p.span! + 0.001)).toBe(1);
       const down = [0.2, 0.5, 0.8].map((k) => zoneValue(p, p.at + p.span! * k));

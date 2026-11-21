@@ -27,7 +27,7 @@ export const FLIGHT = {
 } as const;
 
 /** A sine on a card's angle: the amplitude (rad), the cycles over the flight and the phase (rad). */
-export interface Wave {
+interface Wave {
   amp: number;
   cycles: number;
   phase: number;

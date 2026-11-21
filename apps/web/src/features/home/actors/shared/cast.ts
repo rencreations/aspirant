@@ -48,7 +48,7 @@ export interface Cast {
    * pass (the drone, the doll) is drawn after them through the pixel camera, uncut and in front, so
    * a part placed in the screen's pixels keeps its place whatever lens the picture has.
    */
-  setCamera(camera: PerspectiveCamera | null, framed?: ReadonlyArray<Object3D>): void;
+  setCamera(camera: PerspectiveCamera | null, framed?: readonly Object3D[]): void;
   /** Like `clip`, for the next draw only (the same one-frame rule as `setCamera`). */
   clipOnce(rect: { x: number; y: number; w: number; h: number } | null): void;
   /** The camera this frame's draw uses (a baked camera, or the pixel camera). The comic marks project through it. */
@@ -76,10 +76,10 @@ export function getCast(stage: Stage): Cast {
   let clipRect: Rect | null = null;
   // A camera or a rectangle set for one draw: set while the actors update, taken by `active()`.
   let pendingCamera: PerspectiveCamera | null = null;
-  let pendingFramed: ReadonlyArray<Object3D> | null = null;
+  let pendingFramed: readonly Object3D[] | null = null;
   let pendingClip: Rect | null = null;
   let camera: PerspectiveCamera | null = null;
-  let framed: ReadonlyArray<Object3D> | null = null;
+  let framed: readonly Object3D[] | null = null;
   let onceClip: Rect | null = null;
   const shown: boolean[] = [];
   pass.active = () => {

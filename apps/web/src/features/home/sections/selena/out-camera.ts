@@ -5,7 +5,7 @@
  * cameras, and closes in on the hand for the pull (`zoomRect` in `out.ts`). The clip starts and ends
  * on the game's idle camera, so it begins on the picture the room shows.
  */
-import { PerspectiveCamera } from "three";
+import { type PerspectiveCamera } from "three";
 
 import { asset } from "@/lib/asset";
 import { cachedFetch } from "@/lib/media-store";
@@ -17,7 +17,6 @@ import type { SelenaActor } from "../../actors/selena";
 import { type ViewRect } from "./out";
 
 export const OUT_CAMERAS = "/models/home/cameras-out.json";
-export const OUT_CAMERAS_BYTES = 9_830;
 export const OUT_CLIP = "city_intercation02";
 /** The widest vertical field of view the camera may take on a phone, in degrees. */
 const PORTRAIT_FOV = 112;

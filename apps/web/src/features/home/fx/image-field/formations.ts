@@ -122,7 +122,7 @@ export function slotOf(set: FormationSet, i: number): number {
 }
 
 /** The wall-only cells fly in between these story positions (the cards of the hero land by 0.94). */
-export const EXTRA_WINDOW = { from: 0.5, spread: 0.26, flight: 0.18 } as const;
+const EXTRA_WINDOW = { from: 0.5, spread: 0.26, flight: 0.18 } as const;
 
 /**
  * How far a wall-only cell has come in (0 not there, 1 there) while the story is at `p`. Every cell

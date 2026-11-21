@@ -43,7 +43,7 @@ const SHARE: Readonly<Record<Finger, number>> = {
 };
 /** A closed hand in these units (the pose of a fist). The grip takes `GRIP_CURL` of it. */
 const FIST = 3;
-export const GRIP_CURL = 0.8 * FIST;
+const GRIP_CURL = 0.8 * FIST;
 /** The most any joint may turn. */
 const MAX_JOINT = 1.35;
 

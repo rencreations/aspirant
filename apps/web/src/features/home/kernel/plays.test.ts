@@ -60,9 +60,9 @@ describe("validatePlays", () => {
   });
 
   it("names the section and the play in every error", () => {
-    expect(bad([])).toThrow(/section fall: plays is empty/);
+    expect(bad([])).toThrow(/section list: plays is empty/);
     expect(bad([{ at: 0.1, from: 0, to: 1, seconds: 0 }])).toThrow(
-      /section fall: plays\[0\] seconds 0 must be above 0/,
+      /section list: plays\[0\] seconds 0 must be above 0/,
     );
     expect(bad([{ at: 1.2, from: 0, to: 1, seconds: 1 }])).toThrow(
       /plays\[0\] at 1.2 is outside 0 to 1/,

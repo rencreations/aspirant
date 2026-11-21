@@ -107,7 +107,7 @@ export interface PlayReport {
 }
 
 /** One scroll zone of a section (`window.__home.plays()[i].zones`). */
-export interface ZoneReport {
+interface ZoneReport {
   /** The index of the play in the section's table. */
   readonly index: number;
   readonly kind: "zone";

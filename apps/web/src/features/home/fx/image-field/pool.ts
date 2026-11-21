@@ -17,7 +17,7 @@ import { untilItArrives } from "@/lib/retry";
 
 import type { PicSource } from "./sets";
 
-export const POOL_DATA_PATH = "/data/home/wall.json";
+const POOL_DATA_PATH = "/data/home/wall.json";
 
 /** One of the ten Aspirants (a picture of her alone), or "group" (two or more Aspirants, or none). */
 export type PoolCharacter =

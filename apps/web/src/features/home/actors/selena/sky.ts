@@ -87,10 +87,10 @@ void main() {
 `;
 
 /** The share of the camera's turn (from the fitted camera) that the sky follows. */
-export const SKY_FOLLOW = 0.35;
+const SKY_FOLLOW = 0.35;
 
 /** The frame the sky's map is written in: the recording scaled to 1920 by 864, 60 degrees tall. */
-export const SKY_REF = { w: 1920, h: 864, vfovDeg: 60, picW: 1774, picH: 887 } as const;
+const SKY_REF = { w: 1920, h: 864, vfovDeg: 60, picW: 1774, picH: 887 } as const;
 
 export class Sky {
   readonly mesh: Mesh<PlaneGeometry, ShaderMaterial>;

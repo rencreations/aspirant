@@ -73,11 +73,11 @@ export const LENGTH: Readonly<Record<Reaction, number>> = {
 };
 
 /** Presses this close together are a double press, and a spree is this many within `SPREE_WINDOW`. */
-export const DOUBLE = 0.4;
-export const SPREE_AT = 4;
-export const SPREE_WINDOW = 2.2;
+const DOUBLE = 0.4;
+const SPREE_AT = 4;
+const SPREE_WINDOW = 2.2;
 /** A press held this long is a hold, and the lean grows over `HOLD_RAMP`. */
-export const HOLD_AFTER = 0.28;
+const HOLD_AFTER = 0.28;
 const HOLD_RAMP = 0.5;
 
 const smooth = (x: number): number => {
@@ -153,7 +153,7 @@ export class Touch {
 
   /** A cue asked for by name (a section, a probe). */
   cue(name: Reaction | "cheer", now: number): void {
-    this.start(name as Reaction, now, true);
+    this.start(name, now, true);
   }
 
   private start(name: Reaction, now: number, force = false): void {

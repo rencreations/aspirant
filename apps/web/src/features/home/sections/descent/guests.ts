@@ -18,19 +18,19 @@ import { dampTo, setDamped, type Damped } from "../../actors/buddies/smooth";
 import { clamp01, seg, smooth } from "../vp";
 
 /** The share of the descent where they are wanted: they come at 20 percent, leave before the dock. */
-export const GUEST_IN_FROM = 0.2;
-export const GUEST_OUT_FROM = 0.6;
+const GUEST_IN_FROM = 0.2;
+const GUEST_OUT_FROM = 0.6;
 /** Seconds of a whole flight in or out (under 1.5 percent of the screen's height a frame). */
 export const GUEST_FLY = 2.5;
 /** Seconds of the bow and the greeting, from the moment they stand beside the pair. */
 export const GUEST_BOW = 1.6;
 /** Seconds the dance takes to come in and to go out. */
-export const GUEST_DANCE_IN = 0.6;
-export const GUEST_STOP = 0.45;
+const GUEST_DANCE_IN = 0.6;
+const GUEST_STOP = 0.45;
 /** Seconds of the pair's greeting wave (the bow and a little after). */
 const GREET = GUEST_BOW + 0.8;
 
-export type GuestPose = "leave" | "bow" | "dance" | "float";
+type GuestPose = "leave" | "bow" | "dance" | "float";
 
 /** Whether the descent's progress `p` wants the guests here. */
 export const visitWanted = (p: number): boolean => p >= GUEST_IN_FROM && p < GUEST_OUT_FROM;
@@ -137,8 +137,8 @@ export function danceClock(tau: number): number {
 }
 
 /** Where the two stand, beside the pair: the side distance and the ball's size, in the pair's drone heights. */
-export const GUEST_SIDE = 2.0;
-export const GUEST_BALL = 0.62;
+const GUEST_SIDE = 2.0;
+const GUEST_BALL = 0.62;
 
 export interface GuestPlace {
   x: number;

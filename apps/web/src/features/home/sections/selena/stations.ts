@@ -24,10 +24,10 @@ export const REST_U = 1.0;
 /** The whole story, in seconds. Zone one is REST_U of it, zone two is the rest. */
 export const STORY = 4;
 /** The rest station as a `local`. */
-export const REST_V = REST_U / STORY;
+const REST_V = REST_U / STORY;
 
 /** The lengths, in screens. One place to tune them. */
-export const LENGTHS = { enter: 0.7, rest: 0.8, film: 2.4, white: 0.3 } as const;
+const LENGTHS = { enter: 0.7, rest: 0.8, film: 2.4, white: 0.3 } as const;
 
 const TABLE = zoneTable(0, [
   { zone: LENGTHS.enter, to: REST_V },
@@ -38,8 +38,6 @@ const TABLE = zoneTable(0, [
 
 /** The section's length in screens (`index.ts`). */
 export const SELENA_SCREENS = TABLE.screens;
-export const SELENA_PLAYS = TABLE.plays;
-/** Where each zone lies, in screens from the section's start. */
-export const SELENA_ZONES = TABLE.zones;
-/** A control taking the keyboard focus lands in the middle of the rest, where the words show. */
+export const SELENA_PLAYS =
+  TABLE.plays; /** A control taking the keyboard focus lands in the middle of the rest, where the words show. */
 export const SELENA_FOCUS = (LENGTHS.enter + LENGTHS.rest / 2) / SELENA_SCREENS;

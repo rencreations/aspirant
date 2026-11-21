@@ -17,23 +17,23 @@
 import { Spring, approach, clamp } from "./motion";
 
 /** The most the smoothed acceleration may be, in her heights a second squared. */
-export const ACC_MAX = 28;
+const ACC_MAX = 28;
 /** The most the smoothed turning rate may be, radians a second. */
-export const TURN_MAX = 7;
+const TURN_MAX = 7;
 /** How fast the raw velocity and acceleration are smoothed (1 over the time constant, per second). */
-export const VEL_RATE = 22;
-export const ACC_RATE = 12;
+const VEL_RATE = 22;
+const ACC_RATE = 12;
 /** The part of the acceleration that is ordinary flight (the dragon's own bob): it makes no lean. */
-export const ACC_DEAD = 6;
+const ACC_DEAD = 6;
 
 /** The acceleration with the dead zone taken off (the sign kept). */
-export function liveAcc(a: number): number {
+function liveAcc(a: number): number {
   const m = Math.abs(a) - ACC_DEAD;
   return m > 0 ? Math.sign(a) * m : 0;
 }
 
 /** A soft clamp: linear near 0, never beyond `limit`. */
-export function softClamp(x: number, limit: number): number {
+function softClamp(x: number, limit: number): number {
   return limit * Math.tanh(x / limit);
 }
 
@@ -123,7 +123,7 @@ export interface RideBody {
 }
 
 /** What each chain is driven by, as the gain from the measured motion and the spring's numbers (omega, zeta). */
-export const CHAIN = {
+const CHAIN = {
   roll: { omega: 8.5, zeta: 0.34, gainAcc: 0.013, gainTurn: -0.03, limit: 0.62 },
   nod: { omega: 8, zeta: 0.36, gainAcc: 0.008, limit: 0.3 },
   headRoll: { omega: 13, zeta: 0.28, gainAcc: 0.009, limit: 0.42 },

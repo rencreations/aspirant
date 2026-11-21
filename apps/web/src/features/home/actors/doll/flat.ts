@@ -125,7 +125,7 @@ export function flatNormals(input: FlatInput, spec: FlatSpec = FLAT): Float32Arr
 }
 
 /** The step cut of one part's picture, as GLSL that follows `#include <map_fragment>`. */
-export function stepsGlsl(levels: number): string {
+function stepsGlsl(levels: number): string {
   const n = levels.toFixed(1);
   return `{
 	float flatTone = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
@@ -140,7 +140,7 @@ export function stepsGlsl(levels: number): string {
  * The hair's highlight arc: a ring round an axis of the ball normal (view space), crisp, one pixel
  * of edge. It is laid over the shaded colour just before the end of the fragment.
  */
-export function ringGlsl(spec: FlatSpec = FLAT): string {
+function ringGlsl(spec: FlatSpec = FLAT): string {
   const [ax, ay, az] = spec.ringAxis;
   const f = (v: number): string => v.toFixed(4);
   return `{

@@ -17,7 +17,7 @@ export const R7_STRIDE = 9;
 export const R7_VFOV = 7;
 export const R7_SHY = 8;
 
-export interface R7Clip {
+interface R7Clip {
   frames: number;
   duration: number;
   /** A loop's camera is static: one key. */
@@ -51,23 +51,6 @@ export interface R7Data {
    */
   portraitCrop?: Partial<Record<"idle" | "pose", number[]>>;
 }
-
-/**
- * A portrait window (the list's 4:5 frame, a phone's screen) is a crop of the recording's own frame:
- * the same camera, the same lens, the same perspective. The recording is 20:9 and the window is
- * tall, so the window picks a part of it: `fx` and `fy` are the middle of that part as a share of
- * the frame's width and height (from the top left) and `h` is the window's height as a share of the
- * frame's height (1 is the whole height, more shows more sky above and below). The window's width
- * follows from its shape. Found against `horizontal.mkv` and `vertical.mkv`, which share one static
- * camera (their backgrounds agree): `vertical.mkv` shows another animation (the left hand's kiss) of
- * the same camera, so it has the same frame and no camera of its own.
- */
-export interface R7Crop {
-  fx: number;
-  fy: number;
-  h: number;
-}
-
 /**
  * The crops used when `cameras-r7.json` has none. The pose: she is in the middle of the frame (head
  * at 0.58, 0.36), the window's middle sits a little to the right of her so the dragon's jaw and the

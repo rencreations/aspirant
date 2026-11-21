@@ -663,7 +663,7 @@ class ListRuntime implements SectionRuntime {
   }
 }
 
-export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {
+export function createRuntime(ctx: SectionCtx): SectionRuntime {
   const runtime = new ListRuntime(ctx);
   runtime.setPair(createListPair(ctx));
   // Selena is the biggest file of the page: the section is built without her and she joins when

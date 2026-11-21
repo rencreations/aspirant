@@ -167,7 +167,7 @@ export function wallGrid(vp: Vp): WallGrid {
 }
 
 /** The plane for a viewport with a given wall share and card sizes (`wallGrid` memoizes the shipped numbers; tests and tuning pass their own). */
-export function buildGrid(
+function buildGrid(
   vp: Vp,
   share: number,
   sizes: { readonly wide: number; readonly tall: number },

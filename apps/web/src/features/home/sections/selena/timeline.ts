@@ -17,7 +17,7 @@ import { sectionScreens } from "../../kernel/where";
 import { newOut, outAt, seg, smooth, type OutBeats } from "./out";
 import { REST_U, STORY } from "./stations";
 
-export { seg, smooth, mix } from "./out";
+export { seg, smooth } from "./out";
 
 /** The section's length is the registry's (`kernel/where.ts`): change it in `index.ts`. */
 export const selenaScreens = (): number => sectionScreens("selena");

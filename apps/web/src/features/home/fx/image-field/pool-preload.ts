@@ -20,11 +20,11 @@ import { bitmapItem } from "./bitmaps";
 import { firstScreen, loadPool, ordered, poolSource, type PoolPicture } from "./pool";
 
 /** Pictures in a deferred item. */
-export const POOL_TRANCHE = 20;
+const POOL_TRANCHE = 20;
 /** Deferred items. Eight of twenty cover the 135 pictures after the first 24 with room to grow. */
-export const POOL_TRANCHES = 8;
+const POOL_TRANCHES = 8;
 /** The deferred items start in this order, after the other deferred pictures of the wall (the smaller, the sooner). */
-export const POOL_PRIORITY = 40;
+const POOL_PRIORITY = 40;
 
 const LABEL = "Loading the wall";
 

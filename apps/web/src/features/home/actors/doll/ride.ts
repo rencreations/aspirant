@@ -28,11 +28,11 @@ import { BONE, addFlail } from "./pose/layers";
 import type { PoseDef } from "./pose/poses";
 
 /** How long the ride layers take to fade out after `release()`, seconds (her own clock). */
-export const RELEASE_FADE = 0.25;
+const RELEASE_FADE = 0.25;
 /** How long the grip takes to go once `loseGrip()` is called, seconds. */
-export const GRIP_LOSS = 0.12;
+const GRIP_LOSS = 0.12;
 /** How long after `loseGrip()` the let go callback fires, seconds. */
-export const LET_GO_AFTER = 0.15;
+const LET_GO_AFTER = 0.15;
 
 /** The seated pose of a rider: thighs forward and a little apart, knees bent, a slight lean, the arms forward (the IK finishes them). */
 export const RIDE_POSE: PoseDef = {
@@ -51,7 +51,7 @@ export const RIDE_POSE: PoseDef = {
 };
 
 /** How much of the seat's tilt (the dragon pitching in the screen plane) she holds against, and the lag's spring. */
-export const UPRIGHT = 0.82;
+const UPRIGHT = 0.82;
 const UPRIGHT_OMEGA = 7;
 const UPRIGHT_ZETA = 0.55;
 
@@ -102,7 +102,7 @@ export interface RideGesture {
   idle: number;
 }
 
-export function createGesture(): RideGesture {
+function createGesture(): RideGesture {
   return {
     handL: 1,
     handR: 1,
@@ -148,13 +148,13 @@ const _grip2 = new Vector3();
 const _shoulder = new Vector3();
 
 /** The share of her reach at which the middle of the grips should be from her shoulders, how fast she walks there, and the most she may (in her heights). */
-export const FIT_REACH = 0.72;
+const FIT_REACH = 0.72;
 const FIT_RATE = 9;
 /** The farthest a hand may be from the middle of the grips, as a share of her reach. */
 const SPREAD = 0.5;
-export const FIT_MAX = 0.35;
+const FIT_MAX = 0.35;
 /** Where she sits from the seat socket, in her drawn heights along the socket's axes (tuned by eye on the dragon's neck, `ride-physics` notes). */
-export const SEAT_OFFSET: readonly [number, number, number] = [0.9, 0.65, 0.65];
+const SEAT_OFFSET: readonly [number, number, number] = [0.9, 0.65, 0.65];
 
 function addTurn(turns: Float32Array, bone: number, x: number, y: number, z: number): void {
   const k = bone * 3;

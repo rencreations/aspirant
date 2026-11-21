@@ -59,14 +59,14 @@ export const ZOOM_PORTRAIT = 2.1;
 /** Where the clip's wrist is in the zoomed picture (device units, y up) when the reach begins. */
 export const WRIST_AT = { x: -0.28, y: -0.2 } as const;
 /** Where the hand goes: the top of its reach, in the zoomed picture, and where it ends, below it. */
-export const REACH_TO = { x: -0.06, y: 0.52 } as const;
-export const PULL_TO = { x: -0.14, y: -0.78 } as const;
+const REACH_TO = { x: -0.06, y: 0.52 } as const;
+const PULL_TO = { x: -0.14, y: -0.78 } as const;
 /** How far the picture itself is drawn up as the sheet comes down, so the hand leaves by the bottom. */
-export const PAN_TO = 0.95;
+const PAN_TO = 0.95;
 /** Where the sheet hangs when it is first seen, and where it waits for the hand. */
-export const HANG = { from: 1.3, to: 0.86 } as const;
+const HANG = { from: 1.3, to: 0.86 } as const;
 /** The distance of the hand from the camera at the end of the pull, as a share of the clip's. */
-export const DEPTH_TO = 0.86;
+const DEPTH_TO = 0.86;
 
 export interface OutBeats {
   /** Seconds of the clip. */
