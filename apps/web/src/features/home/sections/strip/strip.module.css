@@ -206,6 +206,12 @@
   color: color-mix(in srgb, var(--text) 50%, transparent);
 }
 
+/* On the plain page the label is ordinary text and keeps the contrast of the site's faint text. */
+:global([data-home][data-gl="off"]) .coord,
+:global(html:not(.js)) .coord {
+  color: var(--text-faint);
+}
+
 :global(.js) :global([data-home]:not([data-gl="off"])) .coordLeft,
 :global(.js) :global([data-home]:not([data-gl="off"])) .coordRight {
   position: absolute;

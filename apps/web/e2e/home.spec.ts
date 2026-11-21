@@ -1,6 +1,22 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import {
+  ARCHIVE,
+  ASPIRANTS,
+  BEND,
+  CHASE,
+  FOOTER,
+  FUNNY,
+  HERO,
+  LIST,
+  MUSIC,
+  SELENA,
+  STRIP,
+  VOICES,
+} from "../src/features/home/content";
+import { CHARACTER_NAMES } from "../src/lib/slugs";
+
 import { homeOpen, settled, sitePath, skipGate, tapHome, url, watchErrors } from "./helpers";
 
 /**
@@ -12,9 +28,16 @@ import { homeOpen, settled, sitePath, skipGate, tapHome, url, watchErrors } from
  * Back from About) and the ways out. Accessibility is checked with axe at a place in every part of
  * the scroll.
  *
+ * The page has fourteen sections (`kernel/types.ts`). Scenes follow the scroll in zones, and a few
+ * words and one growing window run on a clock (`docs/design/home/kernel-scrub.md`), so nothing here
+ * pins a scroll position in numbers: a place is taken from `window.__home.sections()`. The copy and
+ * the links are read from `features/home/content.ts`, the owner's own words.
+ *
  * Most specs start with the opening switched off (`skipGate`): the opening has its own specs below
  * and in a11y.spec.ts. The page keeps downloading in the background (video, models, voice lines),
- * so nothing here waits for `networkidle`: it waits for what the home itself reports.
+ * so nothing here waits for `networkidle`: it waits for what the home itself reports. Selena and the
+ * pair take a while to build after a seek (the first time, with a software renderer, up to about
+ * fifteen seconds), so a wait for a section to be the active one is generous.
  */
 
 interface HomeState {
@@ -24,6 +47,7 @@ interface HomeState {
   unit: number;
   open: boolean;
   active: string | null;
+  playing: string | null;
   stage: { passes: string[]; failed: boolean; lost: boolean };
   sections: Array<{ id: string; mount: string; running: boolean; local: number }>;
   actors: Array<{ name: string; visible: boolean }>;
@@ -70,14 +94,6 @@ const plays = (page: Page) =>
 
 const snap = (page: Page) =>
   page.evaluate<SnapState>(() => (window as unknown as HomeWindow).__home.snap());
-
-/** Wait until no scene is playing: tests that cross a threshold wait for its play to end. */
-const playsEnded = (page: Page, timeout = 45_000) =>
-  page.waitForFunction(
-    () => !(window as unknown as HomeWindow).__home.plays().some((p) => p.active),
-    null,
-    { timeout },
-  );
 
 const state = (page: Page) =>
   page.evaluate<HomeState>(() => (window as unknown as HomeWindow).__home.state());
@@ -146,77 +162,92 @@ async function overflow(page: Page): Promise<number> {
   });
 }
 
+/** The fourteen sections, in scroll order (`SECTION_IDS` of `kernel/types.ts`). */
+const SECTION_IDS = [
+  "hero",
+  "aspirants",
+  "rows",
+  "strip",
+  "descent",
+  "list",
+  "selena",
+  "voices",
+  "music",
+  "funny",
+  "chase",
+  "bend",
+  "archive",
+  "footer",
+];
+
 /** The h2 of every section, in the order of the page. The names the page gives to a reader. */
 const HEADINGS = [
-  "The Aspirants",
+  ASPIRANTS.title,
   "Trailer",
-  "Official animations for The Aspirants",
-  "The five pairs",
-  "In numbers",
-  "2022 - Present",
-  "Characters",
-  "Immersive Interaction",
-  "Voicelines",
-  "Music",
-  "What's going on?",
-  "COMIC",
-  "Fan art",
-  "Artwork",
-  "The archive",
-  "About",
+  `${STRIP.expand.lead} ${STRIP.expand.title}`,
+  LIST.title,
+  SELENA.title,
+  VOICES.title,
+  MUSIC.title,
+  FUNNY.title,
+  CHASE.title,
+  BEND.title,
+  BEND.artworkTitle,
+  ARCHIVE.title,
+  FOOTER.title,
 ];
 
-const LINKS: Array<[string, RegExp]> = [
-  ["About Aspirant", /\/about\/?$/],
-  ["See All", /\/collection\/video\/films\/?$/],
-  ["See Collections", /\/collection\/video\/films\/?$/],
-  ["See All Animations", /\/collection\/animation\/?$/],
-  ["See all voicelines", /\/collection\/voicelines\/?$/],
-  ["See all music", /\/collection\/music\/?$/],
-  ["Read The Story", /\/story\/?$/],
-  ["See all comics", /\/collection\/comic\/?$/],
-  ["See all fanart", /\/collection\/arts\/fanart\/?$/],
-  ["See all artwork", /\/collection\/arts\/?$/],
+/** The address a link of the page leads to: the route, with or without its closing slash. */
+const toHref = (route: string): RegExp => new RegExp(`${route}/?$`);
+
+/** The owner's links: the name of the link, where it lives and where it goes. */
+const LINKS: Array<{ name: string; section: string; href: RegExp }> = [
+  { name: ASPIRANTS.button.label, section: "aspirants", href: toHref(ASPIRANTS.button.href) },
+  { name: STRIP.button.label, section: "strip", href: toHref(STRIP.button.href) },
+  { name: STRIP.expand.button.label, section: "strip", href: toHref(STRIP.expand.button.href) },
+  { name: SELENA.button.label, section: "selena", href: toHref(SELENA.button.href) },
+  { name: VOICES.button.label, section: "voices", href: toHref(VOICES.button.href) },
+  { name: MUSIC.button.label, section: "music", href: toHref(MUSIC.button.href) },
+  { name: FUNNY.button.label, section: "funny", href: toHref(FUNNY.button.href) },
+  { name: CHASE.left.label, section: "chase", href: toHref(CHASE.left.href) },
+  { name: CHASE.right.label, section: "chase", href: toHref(CHASE.right.href) },
+  { name: CHASE.button.label, section: "chase", href: toHref(CHASE.button.href) },
+  { name: BEND.fanart.label, section: "bend", href: toHref(BEND.fanart.href) },
+  { name: BEND.artwork.label, section: "bend", href: toHref(BEND.artwork.href) },
+  { name: ARCHIVE.button.label, section: "archive", href: toHref(ARCHIVE.button.href) },
 ];
 
-/** The owner's copy, exact. */
+/** A link of the page by its name, looked for inside its own section. */
+const linkOf = (page: Page, section: string, name: string): Locator =>
+  page.locator(`[data-home-section="${section}"]`).getByRole("link", { name, exact: true });
+
+/** The owner's copy, exact (`features/home/content.ts`). */
 const COPY = [
-  "original anime inspired skin series.",
-  "A part of",
-  "as the first featured series.",
-  "Trailer video for the new Selena & Obsidia Aspirant skin.",
-  "10 official animated films produced in the last 4 years.",
-  "Official animations for",
-  "2022 - Present",
-  "Many collections from these 4+ years",
-  "Try to hover",
-  "Immersive Interaction",
-  "Each model and animations are made with love that's written through interactive media.",
-  "What's going on?",
-  "Understand all The Aspirants story for all characters in one novel",
-  "Layla & Fanny",
-  "Ruby & Angela",
-  "Lesley & Chang'e",
-  "Guinevere & Vexana",
-  "Selena & Obsidia",
-  "Phases",
-  "Characters",
-  "Scroll more to see the about page",
+  HERO.cue,
+  ASPIRANTS.line,
+  ASPIRANTS.partOf,
+  ASPIRANTS.partOfEnd,
+  STRIP.topRight,
+  STRIP.topRightTag,
+  STRIP.middleLeft,
+  STRIP.middleRight,
+  ...STRIP.bottomLeft.rest,
+  STRIP.expand.lead,
+  STRIP.expand.title,
+  STRIP.expand.body,
+  STRIP.play.duration,
+  SELENA.title,
+  SELENA.body,
+  FUNNY.title,
+  FUNNY.body,
+  FOOTER.eyebrow,
+  FOOTER.line,
+  FOOTER.hint,
+  FOOTER.legal.madeBy,
 ];
 
 /** The ten Aspirants of the list, in the owner's order. */
-const LIST_ORDER = [
-  ["Obsidia", "obsidia"],
-  ["Fanny", "fanny"],
-  ["Guinevere", "guinevere"],
-  ["Angela", "angela"],
-  ["Lesley", "lesley"],
-  ["Layla", "layla"],
-  ["Ruby", "ruby"],
-  ["Vexana", "vexana"],
-  ["Chang'e", "change"],
-  ["Selena", "selena"],
-] as const;
+const LIST_ORDER = LIST.order.map((slug) => [CHARACTER_NAMES[slug], slug] as const);
 
 /** Headings in the order of the page: one h1 first, and no level skipped on the way down. */
 async function expectHeadingOutline(page: Page): Promise<void> {
@@ -239,7 +270,7 @@ test("has one visible h1, a main area and a bar whose controls are usable", asyn
   await page.goto(url("/"));
   await mode(page);
   await expect(page.locator("h1")).toHaveCount(1);
-  await expect(page.getByRole("heading", { level: 1, name: "The Aspirants" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: HERO.name })).toBeVisible();
   await expect(page.locator("main#main")).toHaveCount(1);
   await expect(page.getByRole("banner").getByRole("button", { name: "Open menu" })).toBeVisible();
   await expect(page.getByRole("banner").getByRole("button", { name: "Sound" })).toBeVisible();
@@ -292,29 +323,52 @@ test("the headings run in the order of the page and none is skipped", async ({ p
 test("the copy and the links of every section are in the page", async ({ page }) => {
   await page.goto(url("/"));
   await mode(page);
-  for (const [name, href] of LINKS) {
-    await expect(page.getByRole("link", { name, exact: true }).first(), name).toHaveAttribute(
+  for (const { name, section, href } of LINKS) {
+    await expect(linkOf(page, section, name).first(), `${section}: ${name}`).toHaveAttribute(
       "href",
       href,
     );
   }
   // The ten Aspirants of the list link to their pages, in the owner's order.
-  const list = page.locator('[data-home-section="list"] a');
+  const list = page.locator('[data-home-section="list"] [data-list-names] a');
   await expect(list).toHaveCount(10);
   for (const [i, [name, slug]] of LIST_ORDER.entries()) {
     await expect(list.nth(i), name).toHaveText(name);
     await expect(list.nth(i), name).toHaveAttribute("href", new RegExp(`/character/${slug}/?$`));
   }
-  for (const text of COPY) {
-    await expect(page.getByText(text, { exact: false }).first(), text).toBeAttached();
-  }
-  // Both comics and the ten rooms of the archive.
+  // The ten films of the strip and the ten rooms of the archive.
+  await expect(
+    page.locator(`[data-home-section="strip"] ul[aria-label="${STRIP.controls.previews}"] a`),
+  ).toHaveCount(10);
+  await expect(
+    page.locator(`[data-home-section="archive"] ul[aria-label="${ARCHIVE.rooms}"] a`),
+  ).toHaveCount(10);
+  // The two comics and the button of the comic section (each is a link to the collection's comics).
   await expect(
     page.locator('[data-home-section="chase"] a[href*="/collection/comic/"]'),
   ).toHaveCount(3);
-  await expect(page.locator('[data-home-section="archive"] a')).toHaveCount(11);
+  // The way on to About is a real button with its own name.
+  await expect(
+    page.locator('[data-home-section="footer"]').getByRole("button", { name: FOOTER.buttonName }),
+  ).toBeAttached();
+  for (const text of COPY) {
+    await expect(page.getByText(text, { exact: false }).first(), text).toBeAttached();
+  }
+  // The foot every page carries: Terms, Privacy and the cookie settings, and who made the site.
+  const foot = page.locator('[data-home-section="footer"]');
+  await expect(
+    foot.getByRole("link", { name: FOOTER.legal.terms, exact: true }),
+    FOOTER.legal.terms,
+  ).toHaveAttribute("href", /\/terms\/?$/);
+  await expect(
+    foot.getByRole("link", { name: FOOTER.legal.privacy, exact: true }),
+    FOOTER.legal.privacy,
+  ).toHaveAttribute("href", /\/privacy\/?$/);
+  await expect(foot.getByRole("button", { name: FOOTER.legal.cookies })).toBeAttached();
   // Fan art and the 3D models carry the takedown shortcut.
-  await expect(page.getByRole("link", { name: /Copyright or takedown/ }).first()).toBeAttached();
+  await expect(
+    page.locator('[data-home-section="bend"]').getByRole("link", { name: /Copyright or takedown/ }),
+  ).not.toHaveCount(0);
   await expect(
     page
       .locator('[data-home-section="footer"]')
@@ -372,7 +426,7 @@ test("the next page is one press, one key or one scroll away", async ({ page, ba
 
   await page.goto(url("/"));
   await homeOpen(page);
-  await page.getByRole("button", { name: "Continue to About" }).click();
+  await page.getByRole("button", { name: FOOTER.buttonName }).click();
   await settled(page);
   await expect.poll(() => sitePath(page, baseURL), { timeout: 20_000 }).toBe("/about/");
 
@@ -401,7 +455,7 @@ test("a reload part way down opens at the top", async ({ page }) => {
   await page.reload();
   await homeOpen(page);
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 }).toBe(0);
-  await expect(page.getByRole("heading", { level: 1, name: "The Aspirants" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: HERO.name })).toBeVisible();
 });
 
 test.describe("on the stage (WebGL)", () => {
@@ -410,12 +464,16 @@ test.describe("on the stage (WebGL)", () => {
     await openStage(page);
     const first = await state(page);
     expect(first.stage.failed).toBe(false);
-    expect(first.sections).toHaveLength(16);
-    // Round two (19 Nov 2026): scenes play on a clock at thresholds, so the scroll is short.
-    expect(first.total).toBeGreaterThan(25);
-    expect(first.total).toBeLessThan(40);
-    // The stage's canvas, on the home's own layer, and the reader's tree never sees it. Round two
-    // added a second, small canvas for the live backdrops: two WebGL contexts in all, no more.
+    expect(first.stage.lost).toBe(false);
+    const sections = await placed(page);
+    expect(sections.map((s) => s.id)).toEqual(SECTION_IDS);
+    // The story is a long scroll: its length is the sum of the sections' own lengths (about sixty
+    // screens), which no test pins to a number.
+    const last = sections[sections.length - 1];
+    expect(first.total).toBeCloseTo((last?.start ?? 0) + (last?.screens ?? 0), 6);
+    expect(first.total).toBeGreaterThan(40);
+    // The stage's canvas, on the home's own layer, and the reader's tree never sees it. The live
+    // backdrops have a small canvas of their own beside it, and nothing else draws in the home.
     await expect(page.locator("canvas[data-home-canvas]")).toHaveCount(1);
     await expect(page.locator("canvas[data-home-canvas]")).toHaveAttribute("aria-hidden", "true");
     await expect(page.locator("canvas[data-home-backdrop]")).toHaveCount(1);
@@ -448,29 +506,16 @@ test.describe("on the stage (WebGL)", () => {
   test("the scene follows the scroll and every section hides what is not its own", async ({
     page,
   }) => {
+    test.setTimeout(150_000);
     await openStage(page);
     const sections = await placed(page);
-    expect(sections.map((s) => s.id)).toEqual([
-      "hero",
-      "aspirants",
-      "rows",
-      "strip",
-      "descent",
-      "list",
-      "selena",
-      "voices",
-      "music",
-      "funny",
-      "chase",
-      "bend",
-      "archive",
-      "footer",
-    ]);
-    // The fixed sections, in the middle of each: it is the active one, its words are on and the
-    // words of every other section are off (a hidden control never catches a press).
+    expect(sections.map((s) => s.id)).toEqual(SECTION_IDS);
+    // The middle of each fixed section: it is the active one, its words are on and the words of
+    // every other section are off (a hidden control never catches a press). A section whose scene
+    // is heavy (Selena, the pair) is the active one only when it has been built, so this waits.
     for (const s of sections.filter((x) => x.id !== "footer")) {
       await seek(page, s.start + s.screens * 0.5);
-      await expect.poll(async () => (await state(page)).active, { timeout: 20_000 }).toBe(s.id);
+      await expect.poll(async () => (await state(page)).active, { timeout: 40_000 }).toBe(s.id);
       const on = await page.evaluate(() =>
         Array.from(document.querySelectorAll<HTMLElement>("[data-home-text][data-on='1']")).map(
           (el) => el.dataset.homeText,
@@ -512,83 +557,109 @@ test.describe("on the stage (WebGL)", () => {
     await openStage(page);
     const { thresholds, joints } = await snap(page);
     const { total } = await state(page);
-    expect(thresholds.length).toBeGreaterThan(20);
+    expect(thresholds.length).toBeGreaterThan(0);
     for (const t of thresholds) {
       expect(t).toBeGreaterThanOrEqual(0);
       expect(t).toBeLessThan(total);
     }
     expect([...thresholds].sort((a, b) => a - b)).toEqual(thresholds);
-    expect(joints.length).toBeGreaterThan(5);
+    expect(joints.length).toBeGreaterThan(0);
     for (const [i, j] of joints.entries()) {
       expect(j.to).toBeGreaterThan(j.from);
       if (i > 0) expect(j.from).toBeGreaterThanOrEqual(joints[i - 1]!.to);
     }
   });
 
-  test("a scene fires at its threshold, holds the scroll until it ends, and plays back going up", async ({
+  test("the wheel moves the page both ways, the scene follows it and nothing holds the scroll", async ({
     page,
   }) => {
     test.setTimeout(180_000);
     await openStage(page);
     await page.mouse.move(400, 300);
-    const heroAt = (await snap(page)).thresholds[0]!;
-    const unit = (await state(page)).unit;
-    // Down: steady wheel notches until the hero's scene starts.
-    let started = false;
-    for (let i = 0; i < 60 && !started; i++) {
-      await page.mouse.wheel(0, 100);
-      await page.waitForTimeout(40);
-      started = (await plays(page)).some((p) => p.id === "hero" && p.active);
-    }
-    expect(started, "the hero's scene never started").toBe(true);
-    const held = await page.evaluate(() => ({
-      locked: document.documentElement.classList.contains("lenis-stopped"),
-      playing: (
-        window as unknown as { __home: { state(): HomeState & { playing: string | null } } }
-      ).__home.state().playing,
-      y: window.scrollY,
-    }));
-    expect(held.locked, "the site's scroll lock is on while a scene plays").toBe(true);
-    expect(held.playing).toBe("hero");
-    // The visitor goes on wheeling: the page does not move while the scene plays.
-    for (let i = 0; i < 6; i++) {
+    const locked = () =>
+      page.evaluate(() => document.documentElement.classList.contains("lenis-stopped"));
+    // Down: a steady wheel carries the page and the scene's scroll after it (the scenes are scroll
+    // zones: no scene starts by itself and holds the visitor).
+    for (let i = 0; i < 24; i++) {
       await page.mouse.wheel(0, 100);
       await page.waitForTimeout(30);
+      expect(await locked(), "the scroll is held while the visitor wheels").toBe(false);
     }
-    const during = await page.evaluate(() => window.scrollY);
-    expect(Math.abs(during - held.y), "the page moved while a scene was playing").toBeLessThan(
-      0.05 * unit,
-    );
-    await playsEnded(page);
-    expect(
-      await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
-    ).toBe(false);
-    const afterDown = (await plays(page)).find((p) => p.id === "hero")!;
-    expect(afterDown.fired).toBe(1);
-    expect(afterDown.active).toBe(false);
-    // The wheel moves the page again.
-    const y0 = await page.evaluate(() => window.scrollY);
-    for (let i = 0; i < 6; i++) {
-      await page.mouse.wheel(0, 100);
-      await page.waitForTimeout(40);
-    }
+    await expect.poll(async () => (await state(page)).raw, { timeout: 15_000 }).toBeGreaterThan(1);
     await expect
-      .poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 })
-      .toBeGreaterThan(y0 + 0.1 * unit);
-    // Up: back across the threshold, the scene plays backward and lets go.
-    let back = false;
-    for (let i = 0; i < 80 && !back; i++) {
+      .poll(
+        async () => {
+          const now = await state(page);
+          return Math.abs(now.S - now.raw);
+        },
+        { timeout: 20_000, message: "the scene's scroll catches up with the page" },
+      )
+      .toBeLessThan(0.05);
+    expect((await state(page)).playing).toBeNull();
+    // Up: a longer wheel than the way down brings the page back to the top, and the hero is the
+    // section on again.
+    for (let i = 0; i < 60; i++) {
       await page.mouse.wheel(0, -100);
-      await page.waitForTimeout(40);
-      back = (await plays(page)).some((p) => p.id === "hero" && p.active && p.direction === -1);
+      await page.waitForTimeout(30);
     }
-    expect(back, `the hero's scene never played back (threshold ${heroAt})`).toBe(true);
-    await playsEnded(page);
-    const afterUp = (await plays(page)).find((p) => p.id === "hero")!;
-    expect(afterUp.fired).toBe(0);
+    await expect.poll(async () => (await state(page)).raw, { timeout: 15_000 }).toBeLessThan(0.5);
+    await expect.poll(async () => (await state(page)).active, { timeout: 15_000 }).toBe("hero");
+    expect(await locked()).toBe(false);
+  });
+
+  test("the strip's small frame grows into its window on a clock and holds the scroll until it has", async ({
+    page,
+  }) => {
+    test.setTimeout(150_000);
+    await openStage(page);
+    await page.mouse.move(400, 300);
+    const strip = (await placed(page)).find((s) => s.id === "strip");
+    expect(strip).toBeDefined();
+    if (!strip) return;
+    // The strip is the one scene the owner kept on a clock: its words are a scroll zone, the
+    // growing window is a play. Stand a little into the strip (a seek rests every scene), then
+    // wheel on until the window starts.
+    await seek(page, strip.start + 0.2);
+    await expect.poll(async () => (await state(page)).active, { timeout: 40_000 }).toBe("strip");
+    // A play that is due while its scene is still being built waits for it, so wait for the scene.
+    await expect
+      .poll(async () => (await state(page)).sections.find((s) => s.id === "strip")?.mount, {
+        timeout: 60_000,
+      })
+      .toBe("ready");
+    let seen = "";
+    for (let i = 0; i < 90 && !seen; i++) {
+      await page.mouse.wheel(0, 100);
+      await page.waitForTimeout(60);
+      const play = (await plays(page)).find((p) => p.id === "strip");
+      seen = play?.active ? "active" : play?.waiting ? "waiting" : "";
+    }
+    expect(seen, "the strip's window never started").not.toBe("");
+    if (seen === "waiting") {
+      await page.waitForFunction(
+        () =>
+          (window as unknown as HomeWindow).__home
+            .plays()
+            .some((p) => p.id === "strip" && p.active),
+        null,
+        { timeout: 30_000, polling: 50 },
+      );
+    }
+    // While it runs the site's scroll lock is on and the strip is the scene that plays.
+    expect(
+      await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
+    ).toBe(true);
+    expect((await state(page)).playing).toBe("strip");
+    // It ends by itself and gives the scroll back.
+    await page.waitForFunction(
+      () => !(window as unknown as HomeWindow).__home.plays().some((p) => p.active),
+      null,
+      { timeout: 30_000 },
+    );
     expect(
       await page.evaluate(() => document.documentElement.classList.contains("lenis-stopped")),
     ).toBe(false);
+    expect((await state(page)).playing).toBeNull();
   });
 
   test("has no serious accessibility violation at a place in every part of the scroll", async ({
@@ -611,10 +682,10 @@ test.describe("on the stage (WebGL)", () => {
     await expect.poll(async () => (await state(page)).active, { timeout: 15_000 }).toBe("hero");
     // At the top the strip's button is invisible and takes no press (a hidden link must never
     // catch the visitor's click on whatever is in front of it).
-    const link = page.getByRole("link", { name: "See Collections", exact: true }).first();
+    const link = linkOf(page, "strip", STRIP.expand.button.label);
     expect(await link.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
     // And the one of the section that is on does.
-    const near = page.getByRole("link", { name: "About Aspirant", exact: true });
+    const near = linkOf(page, "aspirants", ASPIRANTS.button.label);
     // The middle of the aspirants, wherever the registry puts them.
     const aspirants = (await placed(page)).find((s) => s.id === "aspirants")!;
     await seek(page, aspirants.start + aspirants.screens * 0.5);
@@ -628,7 +699,7 @@ test.describe("on the stage (WebGL)", () => {
   test("a control of a section the page is not at moves the page there", async ({ page }) => {
     await openStage(page);
     const aspirants = (await placed(page)).find((s) => s.id === "aspirants")!;
-    await page.getByRole("link", { name: "About Aspirant", exact: true }).focus();
+    await linkOf(page, "aspirants", ASPIRANTS.button.label).focus();
     await expect
       .poll(async () => (await state(page)).raw, { timeout: 10_000 })
       .toBeGreaterThan(aspirants.start);
@@ -641,12 +712,17 @@ test.describe("on the stage (WebGL)", () => {
     const strip = sections.find((s) => s.id === "strip");
     expect(strip).toBeDefined();
     if (!strip) return;
-    // "See All" shows only at the start of its section (the strip), not in the middle.
-    const link = page.getByRole("link", { name: "See All", exact: true });
+    // "See All" shows only at the start of its section (the strip), not in the middle: a focus on it
+    // moves the page into the strip, to the rest that carries the button, and the button shows.
+    const link = linkOf(page, "strip", STRIP.button.label);
     await link.focus();
     await expect
-      .poll(async () => (await state(page)).raw - strip.start, { timeout: 10_000 })
-      .toBeLessThan(0.8);
+      .poll(async () => (await state(page)).raw, { timeout: 10_000 })
+      .toBeGreaterThanOrEqual(strip.start);
+    // At the place the control names (the start of the strip), not the middle of the section, which
+    // is where a control that said nothing would take the page.
+    expect((await state(page)).raw - strip.start).toBeLessThan(strip.screens * 0.4);
+    await expect.poll(async () => (await state(page)).active, { timeout: 20_000 }).toBe("strip");
     await expect
       .poll(async () => shown(link), {
         timeout: 10_000,
@@ -658,7 +734,7 @@ test.describe("on the stage (WebGL)", () => {
   test("every section's first and last control shows when the keyboard reaches it", async ({
     page,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     await openStage(page);
     const ids = [
       "aspirants",
@@ -680,7 +756,12 @@ test.describe("on the stage (WebGL)", () => {
         .filter({ visible: true });
       const count = await controls.count();
       expect(count, `${id} has controls`).toBeGreaterThan(0);
-      for (const control of [controls.first(), controls.last()]) {
+      for (const pick of [controls.first(), controls.last()]) {
+        // The very element, held by a handle: a locator would look again at every poll, and the
+        // scene may add controls of its own (the music's records) that change what "last" means.
+        const control = await pick.elementHandle();
+        expect(control, `${id} has a control to focus`).not.toBeNull();
+        if (!control) return;
         const name = (
           (await control.getAttribute("aria-label")) ??
           (await control.textContent()) ??
@@ -694,11 +775,11 @@ test.describe("on the stage (WebGL)", () => {
           (document.activeElement as HTMLElement | null)?.blur();
         });
         await seek(page, 0);
-        await expect.poll(async () => (await state(page)).active, { timeout: 20_000 }).toBe("hero");
+        await expect.poll(async () => (await state(page)).active, { timeout: 40_000 }).toBe("hero");
         await control.focus();
         await expect
-          .poll(async () => shown(control), {
-            timeout: 20_000,
+          .poll(async () => control.evaluate(isShown), {
+            timeout: 40_000,
             message: `${id}: "${name}" shows when focused`,
           })
           .toBe(true);
@@ -736,7 +817,9 @@ test.describe("on the stage (WebGL)", () => {
       if (!stop) break;
       if (stop.skip) continue;
       stops.push(stop);
-      if (stops.length > 8 && !stop.main && stops.some((s) => s.section === 15)) break;
+      // The last section is the footer: once the keyboard has left it for the page's foot, stop.
+      if (stops.length > 8 && !stop.main && stops.some((s) => s.section === SECTION_IDS.length - 1))
+        break;
     }
     const inPage = stops.filter((s) => s.section >= 0);
     expect(inPage.length).toBeGreaterThan(60);
@@ -762,7 +845,7 @@ test.describe("on the stage (WebGL)", () => {
     page,
   }) => {
     await openStage(page);
-    const play = page.getByRole("button", { name: "Play the trailer with sound" });
+    const play = page.getByRole("button", { name: STRIP.play.open });
     await expect(play).toBeAttached();
     expect(await play.evaluate((el) => el.tagName)).toBe("BUTTON");
   });
@@ -777,17 +860,19 @@ test.describe("without WebGL (the plain page)", () => {
 
     await expect(page.locator("canvas[data-home-canvas]")).toHaveCount(0);
     await expect(page.locator("[data-home-below]").first()).toBeHidden();
-    // Every section that has words shows them, in order, on the page itself.
-    for (const heading of [
-      "Immersive Interaction",
-      "2022 - Present",
-      "What's going on?",
-      "The archive",
-    ]) {
-      await expect(page.getByRole("heading", { name: heading }), heading).toBeVisible();
+    // Every section that has words shows them, in order, on the page itself. (The strip's own h2,
+    // "Trailer", is for a reader and takes no room.)
+    for (const heading of HEADINGS.filter((h) => h !== "Trailer")) {
+      await expect(
+        page.getByRole("heading", { level: 2, name: heading, exact: true }),
+        heading,
+      ).toBeVisible();
     }
-    await expect(page.getByRole("link", { name: "About Aspirant", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Continue to About" })).toBeAttached();
+    await expect(linkOf(page, "aspirants", ASPIRANTS.button.label)).toBeVisible();
+    await expect(page.getByRole("button", { name: FOOTER.buttonName })).toBeVisible();
+    // The strip draws its words letter by letter for the stage: on the plain page each shows once.
+    await expect(page.locator("[data-strip-chars]:visible")).toHaveCount(0);
+    await expectListReadable(page);
     expect(await overflow(page)).toBeLessThanOrEqual(0);
     await expectHeadingOutline(page);
     expect(errors.filter((e) => !e.includes("Failed to load resource"))).toEqual([]);
@@ -801,7 +886,7 @@ test.describe("without WebGL (the plain page)", () => {
       const h2s = Array.from(document.querySelectorAll("main h2"));
       return h2s.map((h) => h.getBoundingClientRect().top + window.scrollY);
     });
-    expect(tops.length).toBeGreaterThanOrEqual(HEADINGS.length - 1);
+    expect(tops.length).toBeGreaterThanOrEqual(HEADINGS.length);
     // The order of the document is the order on the page: no heading sits above the one before it.
     for (let i = 1; i < tops.length; i++) {
       expect(tops[i] ?? 0, `heading ${i}`).toBeGreaterThanOrEqual((tops[i - 1] ?? 0) - 1);
@@ -910,8 +995,8 @@ test.describe("without scripts (the server's page)", () => {
         heading,
       ).toBeAttached();
     }
-    for (const [name, href] of LINKS) {
-      await expect(page.getByRole("link", { name, exact: true }).first(), name).toHaveAttribute(
+    for (const { name, section, href } of LINKS) {
+      await expect(linkOf(page, section, name).first(), `${section}: ${name}`).toHaveAttribute(
         "href",
         href,
       );
@@ -919,9 +1004,12 @@ test.describe("without scripts (the server's page)", () => {
     for (const text of COPY) {
       await expect(page.getByText(text, { exact: false }).first(), text).toBeAttached();
     }
-    await expect(page.getByRole("heading", { name: "Immersive Interaction" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Read The Story", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "See all comics", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: SELENA.title })).toBeVisible();
+    await expect(linkOf(page, "funny", FUNNY.button.label)).toBeVisible();
+    await expect(linkOf(page, "chase", CHASE.button.label)).toBeVisible();
+    // The strip's letter by letter copies are for the stage: without scripts each word shows once.
+    await expect(page.locator("[data-strip-chars]:visible")).toHaveCount(0);
+    await expectListReadable(page);
     expect(await overflow(page)).toBeLessThanOrEqual(0);
     await expectHeadingOutline(page);
   });
@@ -965,7 +1053,11 @@ test.describe("the ways in", () => {
       await expect(page.locator("[data-home]")).not.toHaveAttribute("data-open", "1");
       await page.waitForTimeout(1200);
       await expect(gate).toBeVisible();
+      // The opening cannot be skipped: no Skip button at the gate or while the intro plays.
+      const skip = page.getByRole("button", { name: /skip/i });
+      await expect(skip).toHaveCount(0);
       await gate.click();
+      await expect(skip).toHaveCount(0);
       await expect(page.locator("#site-shell")).toHaveJSProperty("inert", false, {
         timeout: 90_000,
       });
@@ -978,16 +1070,19 @@ test.describe("the ways in", () => {
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
     });
 
-    test("Enter and Space answer the gate as a press does", async ({ page }) => {
-      test.setTimeout(150_000);
-      await page.goto(url("/"));
-      const gate = page.getByRole("button", { name: "Touch anywhere to continue" });
-      await expect(gate).toBeVisible({ timeout: 90_000 });
-      await page.keyboard.press("Enter");
-      await expect(page.locator("#site-shell")).toHaveJSProperty("inert", false, {
-        timeout: 90_000,
+    for (const key of ["Enter", "Space"]) {
+      test(`${key} answers the gate as a press does`, async ({ page }) => {
+        test.setTimeout(150_000);
+        await page.goto(url("/"));
+        const gate = page.getByRole("button", { name: "Touch anywhere to continue" });
+        await expect(gate).toBeVisible({ timeout: 90_000 });
+        await page.keyboard.press(key);
+        await expect(page.locator("#site-shell")).toHaveJSProperty("inert", false, {
+          timeout: 90_000,
+        });
+        await expect(page.locator("[data-home]")).toHaveAttribute("data-open", "1");
       });
-    });
+    }
 
     test("Back from About opens the home at rest, with no second opening", async ({
       page,
@@ -1012,7 +1107,7 @@ test.describe("the ways in", () => {
       await expect(page.getByRole("button", { name: /touch anywhere to continue/i })).toHaveCount(
         0,
       );
-      await expect(page.getByRole("heading", { level: 1, name: "The Aspirants" })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: HERO.name })).toBeVisible();
     });
   });
 });
@@ -1021,6 +1116,14 @@ test.describe("the ways in", () => {
 async function seriousViolations(page: Page): Promise<Array<{ id: string; nodes: string[] }>> {
   for (let attempt = 0; ; attempt++) {
     try {
+      // A colour that is half way through a fade (the sound button's words) is not a colour to judge.
+      await page
+        .waitForFunction(
+          () => !document.getAnimations().some((a) => a instanceof CSSTransition),
+          null,
+          { timeout: 5000 },
+        )
+        .catch(() => undefined);
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
         .analyze();
@@ -1035,27 +1138,50 @@ async function seriousViolations(page: Page): Promise<Array<{ id: string; nodes:
 }
 
 /** True when the element can be seen now: on, in the viewport, and not faded out by its parents. */
+function isShown(el: Element): boolean {
+  let opacity = 1;
+  for (let e: Element | null = el; e; e = e.parentElement) {
+    const cs = getComputedStyle(e);
+    opacity *= parseFloat(cs.opacity);
+    if (cs.visibility === "hidden" || cs.display === "none") return false;
+  }
+  const r = el.getBoundingClientRect();
+  const slot = el.closest<HTMLElement>("[data-home-text]");
+  const on =
+    !slot || slot.dataset.on === "1" || slot.matches("section[data-home-text]:not([data-on])");
+  return (
+    on &&
+    opacity > 0.6 &&
+    r.width > 0 &&
+    r.height > 0 &&
+    r.bottom > 0 &&
+    r.top < window.innerHeight &&
+    r.right > 0 &&
+    r.left < window.innerWidth
+  );
+}
+
 async function shown(target: Locator): Promise<boolean> {
-  return target.evaluate((el) => {
-    let opacity = 1;
-    for (let e: Element | null = el; e; e = e.parentElement) {
-      const cs = getComputedStyle(e);
-      opacity *= parseFloat(cs.opacity);
-      if (cs.visibility === "hidden" || cs.display === "none") return false;
-    }
-    const r = el.getBoundingClientRect();
-    const slot = el.closest<HTMLElement>("[data-home-text]");
-    const on =
-      !slot || slot.dataset.on === "1" || slot.matches("section[data-home-text]:not([data-on])");
-    return (
-      on &&
-      opacity > 0.6 &&
-      r.width > 0 &&
-      r.height > 0 &&
-      r.bottom > 0 &&
-      r.top < window.innerHeight &&
-      r.right > 0 &&
-      r.left < window.innerWidth
-    );
-  });
+  return target.evaluate(isShown);
+}
+
+/** True when the element is part of the page as a reader sees it: it has a box, and nothing hid or faded it. */
+function isReadable(el: Element): boolean {
+  let opacity = 1;
+  for (let e: Element | null = el; e; e = e.parentElement) {
+    const cs = getComputedStyle(e);
+    opacity *= parseFloat(cs.opacity);
+    if (cs.visibility === "hidden" || cs.display === "none") return false;
+  }
+  const r = el.getBoundingClientRect();
+  return opacity > 0.9 && r.width > 0 && r.height > 0;
+}
+
+/** The ten Aspirants of the list are plain, readable links on a page that has no stage. */
+async function expectListReadable(page: Page): Promise<void> {
+  const names = page.locator('[data-home-section="list"] [data-list-names] a');
+  await expect(names).toHaveCount(10);
+  for (const [i, [name]] of LIST_ORDER.entries()) {
+    expect(await names.nth(i).evaluate(isReadable), `${name} of the list can be read`).toBe(true);
+  }
 }

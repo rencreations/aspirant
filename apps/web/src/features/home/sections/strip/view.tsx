@@ -25,7 +25,7 @@ function Chars({ text, group }: { text: string; group: string }) {
   return (
     <>
       <span className={local.plain}>{text}</span>
-      <span className={dk.chars} aria-hidden="true" data-strip-chars={group}>
+      <span className={local.chars} aria-hidden="true" data-strip-chars={group}>
         {text.split(" ").map((word, w) => (
           <Fragment key={w}>
             {w > 0 ? " " : null}

@@ -268,7 +268,7 @@
   gap: var(--space-s);
 }
 
-:global([data-home]:not([data-gl="off"])) .stage {
+:global(.js) :global([data-home]:not([data-gl="off"])) .stage {
   position: absolute;
   inset: 0;
   display: block;
@@ -281,7 +281,7 @@
 }
 
 /* With the stage the words are a layer of their own over the whole screen; the runtime places each. */
-:global([data-home]:not([data-gl="off"])) .head {
+:global(.js) :global([data-home]:not([data-gl="off"])) .head {
   position: absolute;
   inset: 0;
   display: block;
@@ -302,12 +302,22 @@
   color: color-mix(in srgb, var(--text) 45%, transparent);
 }
 
-/* The comma of "CHARACTERS," is drawn with the stage only: the plain page and a reader say "Characters". */
-:global([data-home]:not([data-gl="off"])) .title::after {
-  content: ",";
+/* On the plain page the line is ordinary text and keeps the contrast of the site's faint text. */
+:global([data-home][data-gl="off"]) .title,
+:global(html:not(.js)) .title {
+  color: var(--text-faint);
 }
 
-:global([data-home]:not([data-gl="off"])) .title {
+/*
+ * The comma of "CHARACTERS," is drawn with the stage only: the plain page and a reader say
+ * "Characters" (the second line gives the comma no spoken text, where the browser knows how).
+ */
+:global(.js) :global([data-home]:not([data-gl="off"])) .title::after {
+  content: ",";
+  content: "," / "";
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .title {
   position: absolute;
   left: 0;
   top: 0;
@@ -326,7 +336,7 @@
   list-style: none;
 }
 
-:global([data-home]:not([data-gl="off"])) .names {
+:global(.js) :global([data-home]:not([data-gl="off"])) .names {
   position: absolute;
   left: 0;
   top: 0;
@@ -349,7 +359,7 @@
   white-space: nowrap;
 }
 
-:global([data-home]:not([data-gl="off"])) .name {
+:global(.js) :global([data-home]:not([data-gl="off"])) .name {
   position: absolute;
   left: 0;
   top: 0;
@@ -358,7 +368,7 @@
   will-change: transform, opacity;
 }
 
-:global([data-home]:not([data-gl="off"])) .name[data-current="1"] {
+:global(.js) :global([data-home]:not([data-gl="off"])) .name[data-current="1"] {
   pointer-events: auto;
 }
 
@@ -383,7 +393,7 @@
   display: none;
 }
 
-:global([data-home]:not([data-gl="off"])) .cueRow {
+:global(.js) :global([data-home]:not([data-gl="off"])) .cueRow {
   position: absolute;
   left: 0;
   right: 0;
