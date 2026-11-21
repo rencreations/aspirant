@@ -22,7 +22,7 @@ import { PermanentFailure, isGone, untilItArrives } from "@/lib/retry";
  * everything still works from memory. The saved copy is named by `CACHE`. Change that name when a
  * file is replaced under the same address, and the old copy is thrown away.
  */
-const CACHE = "aspirants-media-v5";
+const CACHE = "aspirants-media-v6";
 const CACHE_PREFIX = "aspirants-media-";
 
 const loading = new Map<string, Promise<string>>();

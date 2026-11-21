@@ -8,6 +8,7 @@ import { sectionScreens, sectionStart } from "../../kernel/where";
 import { whenIdle } from "../idle";
 import { isPortrait, mix, seg } from "../vp";
 
+import { onWideSelena, wideSelena } from "../vp";
 import { showDragon } from "./dragon";
 import { PICTURE_FRAMES } from "./frames";
 import { CHROME_PAD, listGeometry, mixRectInto, type ListGeometry, type Rect } from "./layout";
@@ -33,11 +34,6 @@ const PRIME_FRAMES = 3;
 /** She is drawn once the strip has sat on that frame this long (seconds): the turn's landing is over. */
 const PRIME_AFTER = 0.5;
 const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
-/**
- * The growth moves at most about 0.02 a frame in a play; a step of more than this in one frame is a
- * seek or a jump of the scroll, and she goes to the loop that matches with no transition.
- */
-const JUMP_STEP = 0.3;
 /** The frame lifts this far (px) and grows this much while the pointer is on it. */
 const LIFT = 6;
 const LIFT_SCALE = 0.012;
@@ -118,8 +114,8 @@ class ListRuntime implements SectionRuntime {
   private dragon: SilverboltActor | null = null;
   private selenaFrame: Placement | null = null;
   private selenaTail: Placement | null = null;
-  /** The growth of the last frame at the last draw (-1: she was not drawn, so the next draw jumps). */
-  private lastGrow = -1;
+  /** The clip chosen at the last endpoint of the card expansion. */
+  private returning = false;
   private primed = 0;
   /** Since when (the page's time) the strip has sat on the priming frame. */
   private sinceAtPrime = -1;
@@ -263,6 +259,8 @@ class ListRuntime implements SectionRuntime {
     });
   }
 
+  wideCleanup: () => void = () => undefined;
+
   get isDisposed(): boolean {
     return this.disposed;
   }
@@ -274,7 +272,6 @@ class ListRuntime implements SectionRuntime {
   /** Selena arrives after the section is built (her model is the largest file). */
   setSelena(sl: SelenaActor | null): void {
     this.selena = sl;
-    this.lastGrow = -1;
   }
 
   /** The dragon arrives after her (the second biggest file of the page). */
@@ -502,7 +499,8 @@ class ListRuntime implements SectionRuntime {
     vp: { w: number; h: number },
     time: number,
   ): void {
-    const sl = this.selena;
+    const wide = wideSelena(vp);
+    const sl = wide ? this.selena : null;
     const idx = b.index;
     const e = b.expand;
     const slide = (SELENA_AT - idx) * g.frame.w;
@@ -537,7 +535,7 @@ class ListRuntime implements SectionRuntime {
       "transform",
       `translate3d(${f(-(rect.x + iw))}px, ${f(-(rect.y + ih))}px, 0)`,
     );
-    put(this.panel, "visibility", sl && rect.w > 1 && peeks ? "inherit" : "hidden");
+    put(this.panel, "visibility", rect.w > 1 && peeks ? "inherit" : "hidden");
     put(this.panel, "opacity", f(1 - seg(u, LIST_LAST, LIST_LAST + SKY_FADE)));
     const prime =
       sl !== null &&
@@ -547,7 +545,6 @@ class ListRuntime implements SectionRuntime {
       time - this.sinceAtPrime > PRIME_AFTER;
     if (!sl || (!drawn && !prime)) {
       // Not drawn: the next time she is, she jumps to the loop that matches (no half played clip).
-      this.lastGrow = -1;
       return;
     }
 
@@ -588,22 +585,19 @@ class ListRuntime implements SectionRuntime {
       clip: rect,
     });
     // The dragon is in her picture, behind her: the clip that matches hers, at her time.
-    if (this.dragon) showDragon(sl, this.dragon, time);
+    if (this.dragon) showDragon(sl, this.dragon);
   }
 
-  /**
-   * Her four states (`actors/selena/states.ts`). In the frame she loops the pose (the hands at the
-   * mouth). The growth of the frame is the only thing she is told: past 0.12 going up she plays
-   * pose to idle once and loops the idle, below 0.04 going down she plays idle to pose once and
-   * loops the pose. A transition clip is her own clock at speed 1 and always plays to its end, so a
-   * visitor who stops half way sees it finish by itself while the frame snaps to where it rests, and
-   * the loop that matches follows. A jump of the scroll (a seek, a reload) sets the loop directly.
-   */
   private selenaStates(e: number, sl: SelenaActor): void {
-    const jump = this.lastGrow < 0 || Math.abs(e - this.lastGrow) > JUMP_STEP;
-    this.lastGrow = e;
-    if (jump) sl.jump(e);
-    else sl.drive(e);
+    if (e <= 0 || e >= 1) {
+      sl.drive(e);
+      this.returning = e >= 1;
+    } else {
+      // Pick the authored return on departure from the full room. Reversing mid-shot
+      // scrubs that same take back, so there is no cut between unrelated poses.
+      const clip = this.returning ? "city_interaction_R" : "city_interaction_back_R";
+      sl.clip(clip, this.returning ? (1 - e) * 3.291667 : e * 3.208333);
+    }
   }
 
   /** The heading, the names, the hint and the open buttons. */
@@ -657,6 +651,7 @@ class ListRuntime implements SectionRuntime {
     this.disposed = true;
     this.pair?.dispose();
     this.pair = null;
+    this.wideCleanup();
     this.viewer.dispose();
     for (const r of this.removers) r();
     for (const it of this.items) it.video?.dispose();
@@ -669,25 +664,27 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
   // Selena is the biggest file of the page: the section is built without her and she joins when
   // ready (a jump into the list before she arrives shows the frames and the words). She is built
   // when the page is idle, so the long task falls between two scroll events.
-  whenIdle(() => {
-    if (runtime.isDisposed) return;
-    void ensureSelena(ctx).then(
-      (sl) => {
-        runtime.setSelena(sl);
-      },
-      () => {
-        runtime.setSelena(null);
-      },
-    );
-    // Silverbolt stands behind her in the same picture. A failure only leaves the frame without it.
-    void ensureSilverbolt(ctx).then(
-      (sb) => {
-        runtime.setDragon(sb);
-      },
-      () => {
-        runtime.setDragon(null);
-      },
-    );
-  }, 3000);
+  runtime.wideCleanup = onWideSelena(() =>
+    whenIdle(() => {
+      if (runtime.isDisposed) return;
+      void ensureSelena(ctx).then(
+        (sl) => {
+          runtime.setSelena(sl);
+        },
+        () => {
+          runtime.setSelena(null);
+        },
+      );
+      // Silverbolt stands behind her in the same picture. A failure only leaves the frame without it.
+      void ensureSilverbolt(ctx).then(
+        (sb) => {
+          runtime.setDragon(sb);
+        },
+        () => {
+          runtime.setDragon(null);
+        },
+      );
+    }, 3000),
+  );
   return runtime;
 }

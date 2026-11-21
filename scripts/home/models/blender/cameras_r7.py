@@ -35,6 +35,7 @@ CLIPS = {
     "city_interaction_R_loop": ("cam_city_interaction_R_loop", "pose", "pose"),
     "city_interaction_R": ("cam_city_interaction_R_", "idle", "pose"),
     "city_interaction_back_R": ("cam_city_interaction_back_R", "pose", "idle"),
+    "city_intercation03": ("cam_city_intercation03", "idle", "idle"),
     "city_intercation02": ("cam_city_intercation02", "idle", "idle"),
 }
 
@@ -130,12 +131,12 @@ for clip, (action_name, a_name, b_name) in CLIPS.items():
         a, b = rows[i - 1], rows[i]
         if sum(a[3 + k] * b[3 + k] for k in range(4)) < 0:
             rows[i] = b[:3] + [-v for v in b[3:7]] + b[7:]
-    if LAND and clip != "city_intercation02":
+    if LAND and clip not in ("city_intercation02", "city_intercation03"):
         m = mat_of(LAND["matrix"])
         p = m.to_translation()
         q = turn @ m.to_quaternion()
         rows = [[p.x, p.z, -p.y, q.x, q.y, q.z, q.w, LAND["vfov"], LAND["shy"]]] * frames
-    static = (a_name == b_name or bool(LAND and clip != "city_intercation02")) and all(
+    static = (a_name == b_name or bool(LAND and clip not in ("city_intercation02", "city_intercation03"))) and all(
         max(abs(rows[i][k] - rows[0][k]) for k in range(9)) < 2e-4 for i in range(frames)
     )
     if static:

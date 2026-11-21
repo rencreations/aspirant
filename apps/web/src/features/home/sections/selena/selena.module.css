@@ -43,7 +43,8 @@
       rgb(255 255 255 / 0.04) 55%,
       rgb(255 255 255 / 0.1)
     ),
-    linear-gradient(180deg, rgb(252 253 255 / 0.8), rgb(234 237 252 / 0.9));
+    linear-gradient(180deg, rgb(252 253 255 / 0.83), rgb(234 237 252 / 0.88)),
+    center / cover url("/img/home/selena-glass.webp");
 }
 
 .grain {
@@ -154,7 +155,10 @@
   opacity: 0;
 }
 
-@media (max-aspect-ratio: 3 / 4) {
+@media (max-width: 899.98px), (orientation: portrait) {
+  .below {
+    background: center / cover url("/img/home/cards/selena-45.webp");
+  }
   .drawer {
     top: 62%;
     right: 0;

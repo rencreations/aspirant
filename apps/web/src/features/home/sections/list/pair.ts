@@ -36,10 +36,13 @@ class ListPairRuntime implements ListPair {
     );
   }
 
-  step(_grow: number, _edgeY: number, frame: FrameInfo): void {
+  step(grow: number, _edgeY: number, frame: FrameInfo): void {
     const pair = this.pair;
     if (!pair) return;
     dockPlace(frame.viewport, dock);
+    const arc = Math.sin(Math.PI * grow) ** 2;
+    dock.x -= arc * frame.viewport.w * 0.28;
+    dock.y += arc * frame.viewport.h * 0.19;
     pair.visible = true;
     // The pair that arrives from the descent keeps the calm flight to the dock (round nine).
     pair.capFlight(true);

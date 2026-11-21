@@ -34,6 +34,7 @@ import { filmStateAt } from "./film-state";
 import { sectionScreens, sectionStart } from "../../kernel/where";
 import { backdropAt, resetInkEntrance, stepInkEntrance } from "../backdrops";
 import { STORY, storyAt } from "../story";
+import { STRIP_AT_SCREENS, STRIP_ZONES } from "./dwell";
 import { makeBeats, stripBeats, stripS, type StripBeats } from "./journey";
 import { DECK_READOUT, DECK_STRIPS } from "./deck-copy";
 import { WindowDeck } from "./deck";
@@ -150,7 +151,7 @@ class StripRuntime implements SectionRuntime {
     // The rows' zone ended with the film upright at the strip's start, so the film and the drone are
     // never earlier than that (the words come in over it, in the first zone).
     const Sf = Math.max(S, STORY.strip.start);
-    this.driveFilm(Sf, b);
+    this.driveFilm(Sf, b, frame.S);
     this.driveDrone(Sf, vp);
     this.driveBackdrop(Sf, frame.dt);
     this.writeSmall(b, vp);
@@ -172,11 +173,13 @@ class StripRuntime implements SectionRuntime {
     this.backdrop?.set(back.kind, back.options);
   }
 
-  private driveFilm(S: number, b: StripBeats): void {
+  private driveFilm(S: number, b: StripBeats, scroll: number): void {
     const film = this.film;
     // Gone to the bottom right: nothing to draw, nothing for the pointer to find.
     if (b.fly >= 0.9999) return;
     filmStateAt(S, 0, this.state);
+    const afterPull = scroll - sectionStart("strip") - STRIP_AT_SCREENS.pull - STRIP_ZONES.pull;
+    this.state.travel += Math.max(0, afterPull) * 1.25;
     film.show(this.state);
     film.setOrder(FILM_ORDER);
     film.setHover("signature");

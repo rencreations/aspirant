@@ -35,6 +35,7 @@ import type { ActorCtx } from "../shared/types";
 
 import { type CameraData, frameCamera, sampleBakedCamera, type FrameOptions } from "./camera";
 import { ANCHOR, BAKED, BONE, CLIP, POSE_FIT, REF_HEIGHT, type PoseFitName } from "./constants";
+import { IdleTouch } from "./touch";
 import { Face, MORPH_NAMES, type Expression } from "./face";
 import { frameFor, worldPoint, worldScale, type PlaceInput, type Rect } from "./framing";
 import { emptyGaze, gentleGaze } from "./look";
@@ -99,6 +100,7 @@ const DEG = Math.PI / 180;
 
 /** What `cameraFor(clip, ...)` may be asked (round seven). */
 export interface R7Options {
+  shift?: number;
   /** 1 or true: the frame covers `rect` (the list's window); 0 or false: the whole recording frame on the screen. */
   portrait?: number | boolean;
   /** CSS pixels, top left origin: the window the frame is shown in (the lens is centred on it). Default the whole screen. */
@@ -203,7 +205,6 @@ export class SelenaActor implements Actor {
   private readonly lensC: R7Lens = newLens();
   private readonly r7Pos = new Float32Array(3);
   private readonly r7Quat = new Float32Array(4);
-  private readonly r7World = new Float32Array(8);
   private readonly r7Base = new Matrix4();
   private readonly r7Film = new Matrix4();
   private readonly r7Q = new Quaternion();
@@ -212,6 +213,7 @@ export class SelenaActor implements Actor {
   private readonly turnYaw = new Spring(6, 1, 0);
   private readonly turnPitch = new Spring(6, 1, 0);
   private readonly turnW = new Spring(5, 1, 0);
+  private readonly idleTouch: IdleTouch;
   private turnClock = 0;
   private skyOn = true;
   /** What `frame()` asked for, kept for `update`. */
@@ -302,6 +304,7 @@ export class SelenaActor implements Actor {
         : null;
     const rig = buildRig(gltf);
     this.rig = rig;
+    this.idleTouch = new IdleTouch(rig);
     const n = rig.nodes.length;
     this.hier = { count: n, parent: rig.parent };
     this.work = new PoseWork(n);
@@ -512,8 +515,8 @@ export class SelenaActor implements Actor {
   /** What the player shows now: the clip, its time, and whether it plays by itself. */
   clipState(): { clip: ClipName; time: number; playing: boolean; ended: boolean } {
     return {
-      clip: this.player.current(),
-      time: this.player.time(),
+      clip: this.player.playing() ? this.player.current() : this.player.pose.a,
+      time: this.player.playing() ? this.player.time() : this.player.pose.ta,
       playing: this.player.playing(),
       ended: this.player.hasEnded(),
     };
@@ -659,10 +662,6 @@ export class SelenaActor implements Actor {
     for (let i = 0; i < 3; i += 1) pos[i] = key[i]!;
     for (let i = 0; i < 4; i += 1) quat[i] = key[3 + i]!;
     const gq = this.gq;
-    // The world rotations the sky needs: the camera before the turn, and her own space.
-    qmul(gq, 0, key, 3, this.r7World, 0);
-    this.r7Q.set(this.r7World[0]!, this.r7World[1]!, this.r7World[2]!, this.r7World[3]!);
-    this.r7Base.makeRotationFromQuaternion(this.r7Q);
     this.r7Q.set(gq[0]!, gq[1]!, gq[2]!, gq[3]!);
     this.r7Film.makeRotationFromQuaternion(this.r7Q);
     if (yaw !== 0 || pitch !== 0) orbitAbout(ANCHOR, yaw, pitch, pos, quat);
@@ -679,7 +678,14 @@ export class SelenaActor implements Actor {
     cam.aspect = lens.aspect;
     cam.near = 0.04 * this.scale;
     cam.far = 120 * this.scale;
-    cam.setViewOffset(lens.fullWidth, lens.fullHeight, lens.x, lens.y, lens.width, lens.height);
+    cam.setViewOffset(
+      lens.fullWidth,
+      lens.fullHeight,
+      lens.x - (options.shift ?? 0) * viewport.w,
+      lens.y,
+      lens.width,
+      lens.height,
+    );
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld(true);
     // How tall she is on the screen at the anchor's distance: the ink's width follows it.
@@ -688,6 +694,7 @@ export class SelenaActor implements Actor {
     const dz = pos[2]! - ANCHOR[2];
     this.inkHeight = (lens.focal * REF_HEIGHT) / Math.max(0.2, Math.hypot(dx, dy, dz));
     if (options.draw !== false) {
+      this.r7Base.makeRotationFromQuaternion(cam.quaternion);
       this.sky?.point(cam, this.r7Base, this.r7Film);
       const cut = options.clip ?? options.rect;
       if (k > 0 && cut) this.cast.clipOnce(cut);
@@ -717,6 +724,7 @@ export class SelenaActor implements Actor {
     ask.on = true;
     ask.vp.w = viewport.w;
     ask.vp.h = viewport.h;
+    ask.options.shift = options.shift ?? 0;
     const portrait = options.portrait;
     ask.options.portrait = typeof portrait === "number" ? portrait : portrait ? 1 : 0;
     const r = options.rect;
@@ -746,7 +754,8 @@ export class SelenaActor implements Actor {
     if (!ask.on) return;
     ask.on = false;
     if (!this.r7) return;
-    this.cameraForClip(this.player.current(), this.player.time(), ask.vp, ask.options);
+    const c = this.clipState();
+    this.cameraForClip(c.clip, c.time, ask.vp, ask.options);
   }
 
   /** True when `cameras-r7.json` was loaded: `cameraFor(clip, ...)` and `frame` work. */
@@ -1022,6 +1031,18 @@ export class SelenaActor implements Actor {
 
     work.clearTurns();
     this.addTurns(dt);
+    this.idleTouch.step(
+      work,
+      this.filmCamera,
+      this.ctx.pointer.state,
+      this.ctx.stage.width,
+      this.ctx.stage.height,
+      this.scale,
+      this.driven && this.machine.state === "idle",
+      this.viewW,
+      dt,
+      this.clock,
+    );
     work.compose(this.hier, pose);
     // The out animation's pull: where the clip has the wrist, then (when a section asks) the arm
     // solved to the screen's target and the fingers closed, and the hierarchy composed once more.

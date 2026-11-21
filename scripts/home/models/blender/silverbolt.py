@@ -41,7 +41,7 @@ from common import (  # noqa: E402
 )
 from mathutils import Vector  # noqa: E402
 
-CLIPS = ["idle", "idle_BP", "interaction_R_loop", "intercation03", "action"]
+CLIPS = ["idle", "idle_BP", "interaction_R", "interaction_back_R", "interaction_R_loop", "intercation03", "action"]
 MESHES = [PREFIX + "abyssal_devil_01", PREFIX + "abyssal_devil_02"]
 # The tail, from the body outward. In the source all seven hang on D_she_root.
 CHAIN = ["Bone02_She_%02d" % n for n in (9, 10, 11, 12, 21, 22, 23)]

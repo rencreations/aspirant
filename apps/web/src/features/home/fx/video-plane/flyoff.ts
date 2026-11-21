@@ -120,21 +120,18 @@ function pathAt(vp: Vp, r: Route, v: number, out: [number, number]): void {
 }
 
 /** The line nearest an item, the foot of the perpendicular on it, the end of the ride and the path's length. */
-export function setupRoute(vp: Vp, bx: number, by: number, margin: number, out: Route): Route {
+export function setupRoute(
+  vp: Vp,
+  bx: number,
+  by: number,
+  margin: number,
+  out: Route,
+  place = 0,
+): Route {
   const unit = vp.h / 6;
   const half = 0.75 * Math.hypot(vp.w, vp.h);
-  let best = 0;
-  let bestD = Infinity;
-  for (let k = 0; k < LINES.length; k++) {
-    const rz = BASE_TILT + LINES[k]!.angle;
-    const nx = -Math.sin(rz);
-    const ny = Math.cos(rz);
-    const d = Math.abs(bx * nx + by * ny - LINES[k]!.y * 3 * unit);
-    if (d < bestD) {
-      bestD = d;
-      best = k;
-    }
-  }
+  // Each preview keeps its rail while the orbit underneath it keeps turning.
+  const best = Math.round(place * (PLANE_COUNT - 1)) % LINES.length;
   const line = LINES[best]!;
   const rz = BASE_TILT + line.angle;
   const dx = Math.cos(rz);
@@ -247,7 +244,7 @@ export function flyPose(
     return out;
   }
   const seed = SEEDS[k % PLANE_COUNT]!;
-  setupRoute(vp, base.x, base.y, Math.hypot(base.w, base.h) * 0.8, route);
+  setupRoute(vp, base.x, base.y, Math.hypot(base.w, base.h) * 0.8, route, a);
   routeAt(vp, route, u, spot);
   const g = steady(u);
   const shrink = mix(1, END_SCALE, ramp(g, 0.05, 1));
@@ -299,7 +296,7 @@ export function trailOf(
 ): number {
   const u = itemProgress(f, leaveRank(a));
   if (u <= 0.004 || u >= 0.995) return 0;
-  setupRoute(vp, base.x, base.y, Math.hypot(base.w, base.h) * 0.8, route);
+  setupRoute(vp, base.x, base.y, Math.hypot(base.w, base.h) * 0.8, route, a);
   const span = Math.min(u, TRAIL_SPAN);
   for (let j = 0; j < TRAIL_POINTS; j++) {
     routeAt(vp, route, u - (span * j) / (TRAIL_POINTS - 1), spot);

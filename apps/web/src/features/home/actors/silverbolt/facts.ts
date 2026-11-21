@@ -9,7 +9,7 @@
  */
 
 export const SB_MODEL = "/models/home/silverbolt.glb";
-export const SB_MODEL_BYTES = 300_108;
+export const SB_MODEL_BYTES = 343_668;
 
 /** The model's own name for the dragon, and the key the registry uses. */
 export const SB_NAME = "silverbolt";
@@ -102,6 +102,8 @@ export const BLADE_LENGTH: Readonly<Record<string, number>> = {
 export const CLIP = {
   idle: "city_idle",
   idleStanding: "city_idle_BP",
+  toPose: "city_interaction_R",
+  toIdle: "city_interaction_back_R",
   handsToMouth: "city_interaction_R_loop",
   interaction03: "city_intercation03",
   flightPath: "city_action",
@@ -110,6 +112,8 @@ export const CLIP = {
 export type ClipName = (typeof CLIP)[keyof typeof CLIP];
 
 export const CLIP_DURATION: Readonly<Record<ClipName, number>> = {
+  city_interaction_R: 3.291667,
+  city_interaction_back_R: 3.208333,
   city_idle: 2.708333,
   city_idle_BP: 2.041667,
   city_interaction_R_loop: 2.708333,
@@ -119,6 +123,8 @@ export const CLIP_DURATION: Readonly<Record<ClipName, number>> = {
 
 /** The loops wrap on their duration. */
 export const CLIP_LOOPS: Readonly<Record<ClipName, boolean>> = {
+  city_interaction_R: false,
+  city_interaction_back_R: false,
   city_idle: true,
   city_idle_BP: true,
   city_interaction_R_loop: true,

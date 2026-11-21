@@ -17,6 +17,10 @@ Rules for reading them:
 
 Sections that **no longer exist**: `bolt` (Silverbolt carrying the doll), `fall` (the doll's fall) and `hand` (Selena's hand). The owner had them deleted in round six; the drone now carries the doll in `descent`. Silverbolt is still an actor (Selena's dragon, in the list frame and the Selena room).
 
+## Home character and film changes, 22 Nov 2026
+
+The film orbit turns during the reading rest and gains speed during its exit. Selena uses the splash card on portrait layouts and below 900 pixels wide. On wider landscape layouts the card opens on the live cast. The two authored transition clips follow its expansion. Both actors share the exit clip and its camera. The pair delivers the doll to the hand. The bite carries it to the mouth and the second turn brings in the white of Voicelines from the right. Wheel and touch can reverse the shot.
+
 ## Current: read these
 
 | Note                                                                                                                                 | What it covers                                                                                                                                 |

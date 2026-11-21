@@ -215,6 +215,12 @@ export function startEngine(options: EngineOptions): Engine | null {
     },
     performance.now(),
   );
+  const filmZone = layout.placed.find((p) => p.id === "selena");
+  const filmPlay = filmZone?.def.plays?.[1];
+  const filmStart =
+    filmZone && filmPlay ? filmZone.start + filmPlay.at * filmZone.def.screens : Infinity;
+  const filmEnd =
+    filmZone && filmPlay ? filmStart + (filmPlay.span ?? 0) * filmZone.def.screens : Infinity;
   const flickFrame: FlickFrame = {
     real: 0,
     now: 0,
@@ -368,7 +374,19 @@ export function startEngine(options: EngineOptions): Engine | null {
       flickFrame.holding = playing !== null;
       flickFrame.pushAt = input.pushAt;
       flickFrame.keyAt = input.keyAt;
-      const raw = flick.step(flickFrame);
+      let raw = flick.step(flickFrame);
+      // Keep ordinary input reversible, but give the camera time to show the turn on a hard flick.
+      // Explicit seeks, keyboard focus jumps and the idle continuation retain their destinations.
+      if (
+        !flickFrame.forced &&
+        ((scene.raw >= filmStart && scene.raw <= filmEnd) ||
+          (scene.raw < filmStart && raw >= filmStart) ||
+          (scene.raw > filmEnd && raw <= filmEnd))
+      ) {
+        const from = Math.max(filmStart, Math.min(filmEnd, scene.raw));
+        const limit = Math.max(0.001, dt * 0.82);
+        raw = from + Math.max(-limit, Math.min(limit, raw - from));
+      }
       if (!Number.isNaN(flick.pull)) options.scrollTo(flick.pull * unit, { immediate: true });
       jumped = scene.step(raw, dt) || forceJump;
       if (jumped || snapFrames > 0) {

@@ -479,3 +479,11 @@
   align-items: center;
   min-height: 1.75rem;
 }
+
+/* Visible through the growing window until the wide cast paints over it. */
+.panelSky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: center / cover url("/img/home/cards/selena-45.webp");
+}

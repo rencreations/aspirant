@@ -3,13 +3,11 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 import { ensureBuddies } from "../../actors/buddies";
 import { ensureSelena } from "../../actors/selena";
 import { ensureSilverbolt } from "../../actors/silverbolt";
-import { ensureSheet } from "../../fx/sheet";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
 import { whenIdle } from "../idle";
-import { isPortrait } from "../vp";
+import { onWideSelena, wideSelena } from "../vp";
 
-import { loadOutCameras } from "./out-camera";
 import { SelenaScene } from "./scene";
 import { STORY } from "./stations";
 import { AT, WORD_IN, beatsAt, newBeats, seg, selenaScreens, smooth, type Beats } from "./timeline";
@@ -24,6 +22,7 @@ const f = (v: number): string => String(Math.round(v * 1000) / 1000);
 class SelenaRuntime implements SectionRuntime {
   private readonly b: Beats = newBeats();
   readonly scene: SelenaScene;
+  private readonly background: HTMLElement | null;
   private readonly drawer: HTMLElement | null;
   private readonly white: HTMLElement | null;
   private readonly front: HTMLElement | null;
@@ -35,10 +34,11 @@ class SelenaRuntime implements SectionRuntime {
   built = false;
 
   constructor(ctx: SectionCtx) {
-    this.scene = new SelenaScene(ctx);
+    this.scene = new SelenaScene();
     const below = ctx.dom.below;
     const text = ctx.dom.text;
-    this.drawer = below.querySelector<HTMLElement>("[data-selena-drawer]");
+    this.drawer = text.querySelector<HTMLElement>("[data-selena-drawer]");
+    this.background = below.firstElementChild as HTMLElement | null;
     this.white = below.querySelector<HTMLElement>("[data-selena-white]");
     this.front = text.querySelector<HTMLElement>("[data-selena-front]");
     this.title = text.querySelector<HTMLElement>("[data-selena-title]");
@@ -58,10 +58,6 @@ class SelenaRuntime implements SectionRuntime {
     return this.built;
   }
 
-  enter(): void {
-    this.scene.enter();
-  }
-
   leave(): void {
     this.scene.leave();
   }
@@ -72,8 +68,10 @@ class SelenaRuntime implements SectionRuntime {
     const u = Math.min(local, 1) * STORY;
     const tail = Math.max(0, local - 1) * selenaScreens();
     const b = beatsAt(u, this.b, tail);
-    this.dom(b, u, isPortrait(frame.viewport));
-    this.scene.apply(b, frame);
+    const wide = wideSelena(frame.viewport);
+    put(this.background, "opacity", f(local < 0 ? 0 : 1 - b.whiteOut));
+    this.dom(b, u, !wide);
+    if (wide && local >= 0) this.scene.apply(b, frame);
   }
 
   private dom(b: Beats, u: number, portrait: boolean): void {
@@ -95,8 +93,10 @@ class SelenaRuntime implements SectionRuntime {
     const white = b.white * (1 - b.whiteOut);
     put(this.white, "opacity", f(white));
     put(this.white, "visibility", white > 0 ? "inherit" : "hidden");
-    put(this.front, "opacity", f(b.front));
-    put(this.front, "visibility", b.front > 0 ? "visible" : "hidden");
+    const wipe = portrait ? smooth(seg(b.o, 0.1, 0.96)) : b.wipe;
+    put(this.front, "opacity", f(1 - b.whiteOut));
+    put(this.front, "transform", `translate3d(${f(100 * (1 - wipe))}%, 0, 0)`);
+    put(this.front, "visibility", wipe > 0 && b.whiteOut < 1 ? "inherit" : "hidden");
   }
 
   private word(el: HTMLElement | null, u: number, index: number): void {
@@ -104,12 +104,15 @@ class SelenaRuntime implements SectionRuntime {
     const inAt = AT.words[0] + index * 0.1;
     const shown = smooth(seg(u, inAt, inAt + WORD_IN));
     // They leave with the drawer, in the first part of the out animation.
-    const gone = 1 - this.b.out.room;
+    const gone = 1 - this.b.room;
     put(el, "opacity", f(shown * (1 - gone)));
     put(el, "transform", `translate3d(0, ${f(26 * (1 - shown) - 22 * gone)}px, 0)`);
   }
 
+  wideCleanup: () => void = () => undefined;
+
   dispose(): void {
+    this.wideCleanup();
     this.disposed = true;
     this.scene.leave();
   }
@@ -126,22 +129,15 @@ export function createRuntime(ctx: SectionCtx): SectionRuntime {
       ensureSilverbolt(ctx),
       // The pair after her (the registry steps actors in the order they were made), then the sheet.
       ensureBuddies(ctx),
-      loadOutCameras(),
-    ]).then(async ([sl, sb, pair, cams]) => {
-      if (runtime.isDisposed) return;
-      // The sheet reads her hand: it is built once she is.
-      const sheet = sl.status === "fulfilled" ? await ensureSheet(ctx).catch(() => null) : null;
+    ]).then(([sl, sb, pair]) => {
       if (runtime.isDisposed) return;
       runtime.built = true;
-      runtime.scene.setActors({
-        sl: sl.status === "fulfilled" ? sl.value : null,
-        sb: sb.status === "fulfilled" ? sb.value : null,
-        pair: pair.status === "fulfilled" ? pair.value : null,
-        sheet,
-        cams: cams.status === "fulfilled" ? cams.value : null,
-      });
+      runtime.scene.sl = sl.status === "fulfilled" ? sl.value : null;
+      runtime.scene.sb = sb.status === "fulfilled" ? sb.value : null;
+      runtime.scene.pair = pair.status === "fulfilled" ? pair.value : null;
     });
   };
-  whenIdle(join, 3000);
+  runtime.built = !wideSelena({ w: innerWidth, h: innerHeight });
+  runtime.wideCleanup = onWideSelena(() => whenIdle(join, 3000));
   return runtime;
 }

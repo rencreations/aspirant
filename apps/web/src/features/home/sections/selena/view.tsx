@@ -15,16 +15,16 @@ export function view(): SectionMarkup {
   return {
     below: (
       <div className={styles.below}>
-        <div className={styles.drawer} data-selena-drawer="">
-          <div className={styles.glass} />
-          <div className={styles.grain} />
-          <i className={styles.edge} />
-        </div>
         <div className={styles.white} data-selena-white="" />
       </div>
     ),
     text: (
       <>
+        <div className={styles.drawer} data-selena-drawer="">
+          <div className={styles.glass} />
+          <div className={styles.grain} />
+          <i className={styles.edge} />
+        </div>
         <div className={styles.front} data-selena-front="" aria-hidden="true" />
         <div className={styles.copy} data-selena-copy="">
           <h2

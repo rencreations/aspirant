@@ -142,18 +142,11 @@ describe("stripBeats", () => {
     expect(b.textIn).toBeCloseTo(1, 6);
   });
 
-  it("turns the orbit at a steady rate, slows it to a stop as the exit starts and holds it still in the exit (round nine)", () => {
-    const rate = (s: number) => (travelAt(s + 1e-5) - travelAt(s - 1e-5)) / 2e-5;
-    expect(rate(2.3)).toBeCloseTo(2.1, 4);
-    expect(rate(STRIP_BEATS.fly[0] - 0.15)).toBeCloseTo(1.05, 4);
-    expect(rate(STRIP_BEATS.fly[0])).toBeCloseTo(0, 4);
-    // Still through the whole exit: a turn there moved the trailer left and changed the lines' choice.
-    expect(travelAt(STRIP_BEATS.fly[0])).toBeCloseTo(travelAt(STRIP_BEATS.fly[1]), 9);
-    // No jump in the turn where the taper begins.
-    expect(travelAt(STRIP_BEATS.fly[0] - 0.3 + 1e-6)).toBeCloseTo(
-      travelAt(STRIP_BEATS.fly[0] - 0.3),
-      4,
-    );
+  it("keeps turning across the exit and accelerates into the flight", () => {
+    const start = STRIP_BEATS.fly[0];
+    const step = (s: number) => travelAt(s + 0.01) - travelAt(s);
+    expect(step(start - 0.01)).toBeCloseTo(step(start), 3);
+    expect(step(start + 0.5)).toBeGreaterThan(step(start));
   });
 
   it("takes the words out in the first third of the fly-off and has flown everything off by its end", () => {

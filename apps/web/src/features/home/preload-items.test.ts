@@ -1,7 +1,7 @@
 import { statSync } from "node:fs";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useHomeFlow } from "@/lib/home-flow";
 import type { PreloadItem } from "@/lib/preload";
@@ -123,7 +123,6 @@ describe("homeItems", () => {
     for (const id of [
       "media:/models/home/silverbolt.glb",
       "media:/models/home/doll.glb",
-      "media:/models/home/selena-r7.glb",
       "media:/models/home/gramophone.glb",
     ]) {
       expect(byId.get(id)?.deferred, id).toBe(true);
@@ -132,6 +131,19 @@ describe("homeItems", () => {
       true,
     );
     expect(items.some((i) => i.id.startsWith("home-voices:clips:") && i.deferred)).toBe(true);
+  });
+
+  it.each([false, true])("loads the Selena rig when the wide layout matches %s", (wide) => {
+    const query = window.matchMedia("(min-width: 900px) and (orientation: landscape)");
+    const media = vi.spyOn(window, "matchMedia").mockReturnValue({ ...query, matches: wide });
+    try {
+      const items = listFor("site");
+      const rig = items.find((item) => item.id === "media:/models/home/selena-r7.glb");
+      expect(rig?.deferred).toBe(wide ? true : undefined);
+      expect(items.some((item) => item.id === "img:/img/home/cards/selena-45.webp")).toBe(true);
+    } finally {
+      media.mockRestore();
+    }
   });
 
   it("takes every section's list into the aggregate", () => {

@@ -104,25 +104,10 @@ export function stripBeats(s: number, out: StripBeats): StripBeats {
   return out;
 }
 
-/** The screens before the fly-off in which the orbit's turn slows to a stop (round nine). */
-const TRAVEL_TAPER = 0.3;
-
-/**
- * The orbit's turn at `s`: a steady turn with the scroll through the rest, slowing to nothing over the
- * last `TRAVEL_TAPER` screens before the exit and then still. The exit is one steady flight to the
- * right: a turn that went on through it moved the trailer to the left at first and let the route's
- * line change under an item, and a turn that stopped in one frame reversed the trailer at the very
- * first pixel. The taper is a rest, so nothing there has to keep a speed. Continuous in the turn and
- * in its rate.
- */
+/** Angular displacement from the pull, with a rising rate through the fly-off. */
 export function travelAt(s: number): number {
-  const B = STRIP_BEATS;
-  const from = B.fly[0] - TRAVEL_TAPER;
-  if (s <= from) return TRAVEL_RATE * (s - B.hold[0]);
-  // The turn's rate falls linearly from the full rate to 0 over the taper (`k` screens into it), so
-  // the part of the plain turn that is not made is `k * k / (2 * TRAVEL_TAPER)`.
-  const k = Math.min(s, B.fly[0]) - from;
-  return TRAVEL_RATE * (from - B.hold[0] + k - (k * k) / (2 * TRAVEL_TAPER));
+  const exit = Math.max(0, s - STRIP_BEATS.fly[0]);
+  return TRAVEL_RATE * (s - STRIP_BEATS.hold[0] + 0.35 * exit * exit);
 }
 
 /**

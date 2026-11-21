@@ -17,3 +17,27 @@ export const mix = (a: number, b: number, u: number): number => a + (b - a) * u;
 export function isPortrait(vp: Vp): boolean {
   return vp.w < vp.h * 0.75;
 }
+
+/** The character spread needs room for both the cast and the left copy column. */
+const SELENA_WIDE = "(min-width: 900px) and (orientation: landscape)";
+
+export function wideSelena(vp: Vp): boolean {
+  return vp.w >= 900 && vp.w > vp.h;
+}
+
+/** Build the shared cast on the first wide layout, including after rotation. */
+export function onWideSelena(start: () => void): () => void {
+  const media = matchMedia(SELENA_WIDE);
+  const check = () => {
+    if (!media.matches) return;
+    media.removeEventListener("change", check);
+    start();
+  };
+  media.addEventListener("change", check);
+  check();
+  return () => media.removeEventListener("change", check);
+}
+
+export function preloadSelenaCast(): boolean {
+  return typeof matchMedia !== "function" || matchMedia(SELENA_WIDE).matches;
+}

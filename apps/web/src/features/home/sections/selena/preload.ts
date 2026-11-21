@@ -1,10 +1,9 @@
-import { chunkItem, dataItem, type PreloadItem } from "@/lib/preload";
+import { chunkItem, imageItem, type PreloadItem } from "@/lib/preload";
 
 import { dollItems } from "../../actors/doll/preload";
+import { preloadSelenaCast } from "../vp";
 import { selenaItems } from "../../actors/selena/preload";
 import { silverboltItems } from "../../actors/silverbolt/preload";
-
-import { OUT_CAMERAS } from "./out-camera";
 
 /**
  * The section is about thirty screens down, so nothing here holds the first screen. Its code, then
@@ -21,10 +20,13 @@ export function preload(): PreloadItem[] {
       deferred: true,
       priority: 47,
     },
-    ...selenaItems({ priority: 40 }),
-    // The camera of the out animation (10 KB).
-    { ...dataItem(OUT_CAMERAS, "Loading the camera"), deferred: true, priority: 39 },
-    ...silverboltItems({ priority: 36 }),
+    ...(preloadSelenaCast() ? selenaItems({ priority: 40 }) : []),
+    ...(preloadSelenaCast() ? silverboltItems({ priority: 36 }) : []),
+    {
+      ...imageItem("/img/home/selena-glass.webp", "Loading the room"),
+      deferred: true,
+      priority: 40,
+    },
     ...dollItems({ priority: 37 }),
   ];
 }

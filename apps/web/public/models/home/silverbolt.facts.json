@@ -282,6 +282,22 @@
       "loop": true,
       "rootScale": [0.4, 0.4]
     },
+    "city_interaction_R": {
+      "alias": "interaction_R",
+      "frames": 80,
+      "fps": 24,
+      "duration": 3.291667,
+      "loop": false,
+      "rootScale": [0.4, 0.4]
+    },
+    "city_interaction_back_R": {
+      "alias": "interaction_back_R",
+      "frames": 78,
+      "fps": 24,
+      "duration": 3.208333,
+      "loop": false,
+      "rootScale": [0.4, 0.4]
+    },
     "city_interaction_R_loop": {
       "alias": "hands_to_mouth_loop",
       "frames": 66,

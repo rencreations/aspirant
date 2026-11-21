@@ -116,7 +116,11 @@ export interface ZonePlan {
 
 export function zonePlan(z: ZoneRange, s: number, down: boolean, commit = false): ZonePlan {
   const length = Math.max(1e-9, z.to - z.from);
-  const heading = zoneHeading(rangeProgress(z, s), down, commit);
+  const heading = zoneHeading(
+    rangeProgress(z, s),
+    down,
+    commit || (z.id === "selena" && z.index === 1),
+  );
   const target = heading === "forward" ? z.to : z.from;
   const left = Math.min(1, Math.abs(target - s) / length);
   return { heading, target, seconds: Math.max(ZONE_MIN_SECONDS, z.seconds * left) };
