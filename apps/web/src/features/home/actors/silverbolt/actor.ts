@@ -179,7 +179,7 @@ const SOCKET_AT: Readonly<
   // On the head, so it stays in the gap while the jaw swings: the middle of the open mouth (jaw 0.7).
   mouth: { bone: BONE.head, at: [0, 3.17, 0.15] },
   // Just behind the front teeth of the closed jaw, inside the width of the skull.
-  bite: { bone: BONE.head, at: [0, 3.34, 0.23] },
+  bite: { bone: BONE.head, at: [0, 3.465, 0.225] },
   // On the lower jaw: the front teeth. It swings with the jaw.
   jawTip: { bone: BONE.jaw, at: [0, 3.256, 0.3] },
   tongue: { bone: BONE.tongue1, at: [0, 3.265, 0.14] },

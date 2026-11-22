@@ -140,7 +140,7 @@ export class SelenaScene {
       pitch: this.angles.x,
       yaw: this.angles.y,
       roll: this.angles.z,
-      pivot: "hips",
+      pivot: "center",
     });
     doll.setPose("stand", "scream", 0.48 + 0.45 * caught);
     doll.flail(0.45 * (1 - caught) + 0.1);
