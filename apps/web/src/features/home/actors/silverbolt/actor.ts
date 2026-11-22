@@ -90,6 +90,7 @@ export type SilverboltPart = "body" | "wings" | "tail";
 export type SocketName =
   | "headTop"
   | "mouth"
+  | "bite"
   | "jawTip"
   | "tongue"
   | "tailTip"
@@ -177,6 +178,8 @@ const SOCKET_AT: Readonly<
   headTop: { bone: BONE.head, at: [0, 3.73, 0.22] },
   // On the head, so it stays in the gap while the jaw swings: the middle of the open mouth (jaw 0.7).
   mouth: { bone: BONE.head, at: [0, 3.17, 0.15] },
+  // Just behind the front teeth of the closed jaw, inside the width of the skull.
+  bite: { bone: BONE.head, at: [0, 3.34, 0.23] },
   // On the lower jaw: the front teeth. It swings with the jaw.
   jawTip: { bone: BONE.jaw, at: [0, 3.256, 0.3] },
   tongue: { bone: BONE.tongue1, at: [0, 3.265, 0.14] },
@@ -243,6 +246,7 @@ class Want {
   blendWeight = 0;
   /** Below 0 means unset. */
   jaw = -1;
+  grip = 0;
   face = false;
   faceName: FaceName = "neutral";
   faceWeight = 0;
@@ -262,6 +266,7 @@ class Want {
     this.keepRoot = false;
     this.blend = false;
     this.jaw = -1;
+    this.grip = 0;
     this.face = false;
     this.look = false;
     this.follow = 0;
@@ -302,6 +307,7 @@ export class SilverboltActor implements Actor {
   private readonly iRoot: number;
   private readonly iHead: number;
   private readonly iJaw: number;
+  private readonly heldJaw = new Quaternion();
   private readonly iWing: number;
   private readonly iBlade: number[];
   private readonly bladeLen: number[];
@@ -445,6 +451,9 @@ export class SilverboltActor implements Actor {
     this.iRoot = rig.id(BONE.root);
     this.iHead = rig.id(BONE.head);
     this.iJaw = rig.id(BONE.jaw);
+    this.heldJaw
+      .copy(rig.bones[this.iJaw]!.quaternion)
+      .multiply(quatA.setFromAxisAngle(vA.set(0, 0, 1), 0.22));
     this.iWing = rig.id(BONE.wingRoot);
     this.iBlade = BLADES.map((n) => rig.id(n));
     this.bladeLen = BLADES.map((n) => BLADE_LENGTH[n] ?? 0.3);
@@ -622,6 +631,11 @@ export class SilverboltActor implements Actor {
   /** The jaw: 0 shut, 1 wide. Unset, the face decides (the model's own mouth is about 0.23). */
   jaw(open: number): void {
     this.want.jaw = clamp(open, 0, 1);
+  }
+
+  /** Close around the doll while the head continues the authored turn. */
+  gripDoll(weight: number): void {
+    this.want.grip = clamp(weight, 0, 1);
   }
 
   /**
@@ -1025,7 +1039,14 @@ export class SilverboltActor implements Actor {
     let open = want.jaw >= 0 ? want.jaw : this.faceCur.jaw;
     open = clamp(open + chomp * (1 - open) + yelp * 0.2 + talk, 0, 1);
     const angle = JAW_ANGLE.closed + open * (JAW_ANGLE.wide - JAW_ANGLE.closed);
-    rig.turnLocal(this.iJaw, JAW_AXIS[0], JAW_AXIS[1], JAW_AXIS[2], angle - JAW_ANGLE.rest);
+    rig.turnLocal(
+      this.iJaw,
+      JAW_AXIS[0],
+      JAW_AXIS[1],
+      JAW_AXIS[2],
+      (angle - JAW_ANGLE.rest) * (1 - want.grip),
+    );
+    if (want.grip > 0) rig.bones[this.iJaw]!.quaternion.slerp(this.heldJaw, want.grip);
     const tongue = pose.tongue + open * 0.25;
     rig.turnLocal(
       this.iTongue[0],

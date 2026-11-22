@@ -216,6 +216,7 @@ export class DollActor implements Actor {
   private py = 0;
   private pz = 0;
   private pheight = 100;
+  private worldHeight = 0;
   private pyaw = 0;
   private ppitch = 0;
   private proll = 0;
@@ -434,6 +435,7 @@ export class DollActor implements Actor {
 
   /** Where she stands and how big. Omitted fields go back to their defaults: the call sets the whole placement. */
   place(p: DollPlacement): void {
+    this.worldHeight = 0;
     this.px = p.x;
     this.py = p.y;
     this.pz = p.z ?? 0;
@@ -442,6 +444,13 @@ export class DollActor implements Actor {
     this.ppitch = p.pitch ?? 0;
     this.proll = p.roll ?? 0;
     this.ppivot = p.pivot ?? "feet";
+  }
+
+  /** Local coordinates under a film rig, with a standing height measured in world units. */
+  placeInScene(parent: Object3D, p: DollPlacement): void {
+    if (this.attachedTo !== parent) this.attach(parent, { keepWorld: false });
+    this.place(p);
+    this.worldHeight = p.height;
   }
 
   /** `name` at weight `w` over the plain standing pose. */
@@ -710,6 +719,7 @@ export class DollActor implements Actor {
   /** Take her out from under a socket, keeping where she is on the screen. She goes back to the cast pass's scene. */
   detach(): void {
     if (!this.attachedTo) return;
+    this.worldHeight = 0;
     this.root.updateWorldMatrix(true, false);
     this.cast.pass.scene.attach(this.root);
     this.attachedTo = null;
@@ -1137,7 +1147,11 @@ export class DollActor implements Actor {
     if (this.rider.fade > 0) this.root.quaternion.premultiply(this.rider.counter);
     const drawn = drawnHeight(this.pheight);
     const lift = hop * HOP_SHARE * drawn;
-    if (this.attachedTo) {
+    if (this.worldHeight > 0 && this.attachedTo) {
+      this.attachedTo.updateWorldMatrix(true, false);
+      this.root.position.set(this.px, this.py, this.pz);
+      this.root.scale.setScalar(this.worldHeight / (DOLL_HEIGHT * this.parentScale()));
+    } else if (this.attachedTo) {
       // The depth that sizes her is her own, not the socket's: the pivot's world z.
       this.attachedTo.updateWorldMatrix(true, false);
       const ps = this.parentScale();

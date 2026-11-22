@@ -21,6 +21,8 @@ Sections that **no longer exist**: `bolt` (Silverbolt carrying the doll), `fall`
 
 The film orbit turns during the reading rest and gains speed during its exit. Selena uses the splash card on portrait layouts and below 900 pixels wide. On wider landscape layouts the card opens on the live cast. The two authored transition clips follow its expansion. Both actors share the exit clip and its camera. The pair delivers the doll to the hand. The bite carries it to the mouth and the second turn brings in the white of Voicelines from the right. Wheel and touch can reverse the shot.
 
+The exit blends into the camera from `cameras.json`. Its crop follows the palm and bite in `short-1.mkv`. Silverbolt's approach is corrected in model space. The doll hovers above Selena's palm until the jaws reach her at 3.75 seconds of the clip. Her hips then follow the socket behind the front teeth. She stays 13.5 cm tall in the scene as the head turns. The skull, teeth and doll share a depth buffer.
+
 ## Current: read these
 
 | Note                                                                                                                                 | What it covers                                                                                                                                 |

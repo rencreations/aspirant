@@ -9,14 +9,13 @@ const filmQ = new Quaternion();
 const at = { x: 0, y: 0, z: 0 };
 
 /** Place both rigs in the same camera space and sample the matching take. */
-export function showDragon(sl: SelenaActor, sb: SilverboltActor): void {
+export function showDragon(sl: SelenaActor, sb: SilverboltActor, offset?: Vector3): void {
   const o = sl.object;
   const s = o.scale.x;
   filmQ.copy(o.quaternion);
-  film
-    .set(-ANCHOR[0] * s, -ANCHOR[1] * s, -ANCHOR[2] * s)
-    .applyQuaternion(filmQ)
-    .add(o.position);
+  film.set(-ANCHOR[0], -ANCHOR[1], -ANCHOR[2]);
+  if (offset) film.add(offset);
+  film.multiplyScalar(s).applyQuaternion(filmQ).add(o.position);
   at.x = film.x;
   at.y = film.y;
   at.z = film.z;

@@ -190,6 +190,7 @@ export class SelenaActor implements Actor {
   private clipRect: Rect | null = null;
   private clipKey = "";
   private readonly filmCamera = new PerspectiveCamera(BAKED.vfovDeg, BAKED.aspect, 0.1, 1000);
+  private readonly roomCamera = new PerspectiveCamera();
   private readonly camScratch = new Float32Array(7);
 
   // Round seven's cameras (`camera-r7.ts`): fitted to the recording; the sky; the view turn.
@@ -488,8 +489,9 @@ export class SelenaActor implements Actor {
   }
 
   /** Show two clips at once, `b` blended over `a` by `w` (0 to 1): a cross fade a section drives. */
-  blend(a: ClipName, ta: number, b: ClipName, tb: number, w: number): void {
-    this.startCarry();
+  blend(a: ClipName, ta: number, b: ClipName, tb: number, w: number, carry = true): void {
+    if (carry) this.startCarry();
+    else this.carryW = 0;
     this.driven = false;
     this.player.scrub(a, ta, b, tb, w);
   }
@@ -711,6 +713,31 @@ export class SelenaActor implements Actor {
    */
   frameWith(root: Object3D): void {
     if (!this.framed.includes(root)) this.framed.push(root);
+  }
+
+  /** Leave the room through the lens and crop measured from the bite recording. */
+  exitCamera(t: number, vp: { w: number; h: number }): PerspectiveCamera {
+    const u = Math.min(1, t / 0.45);
+    const w = u * u * (3 - 2 * u);
+    const room = this.roomCamera;
+    if (w < 1 && this.r7) room.copy(this.cameraForClip(CLIP.idle, 0, vp, { draw: false }), false);
+    const cam = this.cameraForBaked(t, vp, { draw: false, band: 0.84 });
+    // Keep the palm to the left of her face as in the recording, including on a 16:10 canvas.
+    cam.view!.offsetX = -0.095 * vp.h;
+    cam.updateProjectionMatrix();
+    if (w < 1 && this.r7) {
+      cam.position.lerp(room.position, 1 - w);
+      cam.quaternion.slerp(room.quaternion, 1 - w);
+      // Mix the focal lengths and principal point of the two off-centre frusta.
+      for (const i of [0, 5, 8, 9]) {
+        const e = cam.projectionMatrix.elements;
+        e[i] = room.projectionMatrix.elements[i]! * (1 - w) + e[i]! * w;
+      }
+      cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert();
+    }
+    this.pointSky(cam);
+    this.cast.setCamera(cam, this.framed);
+    return cam;
   }
 
   /**
