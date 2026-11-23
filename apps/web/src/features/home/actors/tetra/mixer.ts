@@ -1,6 +1,12 @@
 import { clamp01, springTo, type Sprung } from "./ease";
 import { type Channels, copyChannels, mixChannels, restChannels } from "./channels";
-import { composePose, createPoseInput, type PoseInput, type PoseName } from "./poses";
+import {
+  composePose,
+  createPoseInput,
+  type BendKind,
+  type PoseInput,
+  type PoseName,
+} from "./poses";
 
 /**
  * Which pose she wears and how fast she changes into another. A section names one pose and how
@@ -11,6 +17,11 @@ import { composePose, createPoseInput, type PoseInput, type PoseName } from "./p
  */
 const NAMES: readonly PoseName[] = [
   "idle",
+  "point",
+  "pocket",
+  "carry",
+  "toss",
+  "swipe",
   "kite",
   "run",
   "pant",
@@ -34,8 +45,13 @@ export class PoseMixer {
   private readonly weights = new Map<PoseName, Sprung>();
   private readonly goal = new Map<PoseName, number>();
   private readonly scratch = restChannels();
+  private bendKind: BendKind | null = null;
+  private bendMix = 1;
+  private readonly previousBend = restChannels();
+  private readonly currentBend = restChannels();
   private name: PoseName = "idle";
   private blend = 1;
+  private from: PoseName = "idle";
 
   constructor() {
     for (const n of NAMES) {
@@ -45,8 +61,9 @@ export class PoseMixer {
   }
 
   /** The pose asked for and its strength. */
-  set(name: PoseName, blend = 1): void {
+  set(name: PoseName, blend = 1, from: PoseName = "idle"): void {
     this.name = name;
+    this.from = from;
     this.blend = clamp01(blend);
   }
 
@@ -66,6 +83,8 @@ export class PoseMixer {
 
   /** Put every weight on what is asked at once (a jump, the first frame). */
   snap(): void {
+    this.bendKind = this.input.bend.kind;
+    this.bendMix = 1;
     this.updateGoals();
     for (const n of NAMES) {
       const w = this.weights.get(n);
@@ -78,16 +97,18 @@ export class PoseMixer {
 
   private updateGoals(): void {
     for (const n of NAMES) this.goal.set(n, 0);
-    if (this.name === "idle") {
-      this.goal.set("idle", 1);
-    } else {
-      this.goal.set(this.name, this.blend);
-      this.goal.set("idle", 1 - this.blend);
-    }
+    this.goal.set(this.from, 1 - this.blend);
+    this.goal.set(this.name, (this.goal.get(this.name) ?? 0) + this.blend);
   }
 
   /** Step the weights, then blend the poses that have weight into `out`. */
   step(dt: number, out: Channels): void {
+    if (this.bendKind !== this.input.bend.kind) {
+      copyChannels(this.previousBend, this.currentBend);
+      this.bendMix = this.weightOf("bend") > GONE ? 0 : 1;
+      this.bendKind = this.input.bend.kind;
+    }
+    this.bendMix = Math.min(1, this.bendMix + dt / 0.32);
     this.updateGoals();
     for (const n of NAMES) {
       const w = this.weights.get(n);
@@ -104,6 +125,11 @@ export class PoseMixer {
       const w = Math.max(0, this.weights.get(n)?.x ?? 0);
       if (w < GONE) continue;
       composePose(n, this.input, this.scratch);
+      if (n === "bend") {
+        const t = this.bendMix;
+        mixChannels(this.currentBend, this.previousBend, this.scratch, t * t * (3 - 2 * t));
+        copyChannels(this.scratch, this.currentBend);
+      }
       if (first) {
         copyChannels(out, this.scratch);
         first = false;

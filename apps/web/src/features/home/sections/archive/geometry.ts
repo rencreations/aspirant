@@ -44,7 +44,7 @@ export function stripGeo(w: number, h: number): StripGeo {
   const portrait = w < 0.8 * h;
   const s = portrait ? Math.min(0.58 * w, 0.34 * h) : Math.min(0.32 * h, 0.21 * w);
   const pitch = 1.22 * s;
-  const x0 = (portrait ? 0.4 : 0.2) * w;
+  const x0 = 0.5 * w;
   const x1 = (portrait ? 0.6 : 0.8) * w;
   const yc = 0.585 * h;
   const top = yc - s / 2;

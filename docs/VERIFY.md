@@ -108,6 +108,10 @@ State at commit `bb3622e1` (21 Nov 2026). Do not spend a session on these unless
 | Security                      | failure                 | The OpenSSF Scorecard step cannot pull its image, and a Gitleaks scan of the full history. Fails on every push.                                                                                                               |
 | Container                     | failure                 | `Trivy image scan (fail on fixable HIGH/CRITICAL)` fails, then `docker logs web` finds no container. Same step failed on the push before.                                                                                     |
 
+### Browser suite on 24 Nov 2026
+
+Each CI browser project runs in three Playwright shards. All three projects use the same specs. The previous phone and desktop jobs reached their 45 minute limit. The previous tablet job found four visible Fanart thumbnails missing from the loading list. The list now includes each row that starts inside the viewport, including the last partial row on a tall tablet.
+
 ## 9. Cleaning up after yourself
 
 - Stop the servers you started (`static-server`, `next dev -p 3100`) and free only those ports.

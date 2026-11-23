@@ -732,6 +732,14 @@ export class SilverboltActor implements Actor {
     return s;
   }
 
+  /** Project the animated nose into the stage coordinates used by Tetra's string. */
+  snoutOnStage(out: { x: number; y: number }): void {
+    this.snoutNode.getWorldPosition(vA);
+    const factor = perspectiveFactor(vA.z, this.camera.position.z);
+    out.x = vA.x * factor;
+    out.y = vA.y * factor;
+  }
+
   /** The stage pixels (at the dragon's depth) of one metre of the model's rest scale. */
   get metre(): number {
     return this.pxPerMetre;

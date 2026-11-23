@@ -1,3 +1,7 @@
+import type { PoseName } from "../../actors/tetra/poses";
+import { geometry as kiteGeometry } from "../funny/timeline";
+import { DOLL_SIZE } from "../../actors/doll/place";
+
 /**
  * The chase section as arithmetic: where the doll, Silverbolt and Tetra are and when, and how the
  * camera closes in on Tetra reading, as pure functions of `local` and the size of the screen. No
@@ -9,7 +13,7 @@
  *   DOLL                the doll runs for her life, left to right, scared
  *   DRAGON              Silverbolt chases her, the jaw snapping
  *   TETRA               Tetra, angry, chases them both and runs out of breath in the middle
- *   PANT, WAVE, SIT     she pants, waves to us, sits down
+ *   PANT, POINT, SIT    she catches her breath, points after the dragon and sits down
  *   READ                she takes out a comic and reads it; the camera comes in
  *   WORDS               COMIC, the two comics and the button arrive; they leave with the scroll after the section
  *   COMIC               she sits reading, the camera close, the words all on (the second zone ends here)
@@ -39,21 +43,31 @@ export const T = {
   tetraFrom: 0.15,
   /** She reaches the middle and stops. */
   tetraTo: 0.46,
-  panted: 0.53,
-  waved: 0.6,
-  sat: 0.65,
+  panted: 0.515,
+  waved: 0.615,
+  sat: 0.685,
   /** The book is out and she reads. */
-  readFrom: 0.64,
+  readFrom: 0.77,
   zoomFrom: 0.6,
   zoomTo: 0.78,
-  wordsFrom: 0.7,
-  wordsTo: 0.78,
+  wordsFrom: 0.79,
+  wordsTo: 0.89,
   /** The comic stands (the second zone ends here): the camera is in and the words are all on. */
   comic: 0.9,
 } as const;
 
 /** The poses of Tetra, in the order the story goes through them. */
-export type TetraBeat = "run" | "pant" | "wave" | "sit" | "read";
+const POSES = [
+  { name: "run", from: "run", start: -1, end: 0 },
+  { name: "pant", from: "run", start: T.tetraTo - 0.027, end: T.tetraTo + 0.014 },
+  { name: "point", from: "pant", start: T.panted, end: T.panted + 0.039 },
+  { name: "sit", from: "point", start: T.waved, end: T.sat - 0.013 },
+  { name: "pocket", from: "sit", start: T.sat, end: 0.718 },
+  { name: "carry", from: "pocket", start: 0.731, end: T.readFrom },
+  { name: "read", from: "carry", start: T.readFrom, end: 0.811 },
+] as const satisfies ReadonlyArray<{ name: PoseName; from: PoseName; start: number; end: number }>;
+
+export type TetraBeat = (typeof POSES)[number]["name"];
 
 export interface ChaseGeometry {
   w: number;
@@ -76,14 +90,15 @@ export const HEAD_LEAD = 0.62;
 
 export function geometry(w: number, h: number): ChaseGeometry {
   const compact = w < 760 || w < h * 0.8;
+  const kite = kiteGeometry(w, h);
   return {
     w,
     h,
     compact,
     floor: -0.26 * h,
-    dollH: (compact ? 0.17 : 0.27) * h,
-    dragonH: (compact ? 0.17 : 0.34) * h,
-    tetraH: (compact ? 0.26 : 0.38) * h,
+    dollH: (0.4 * kite.dragon.height * 1.55) / DOLL_SIZE,
+    dragonH: kite.dragon.height * 1.22,
+    tetraH: kite.tetra.height * 1.22,
     zoomH: (compact ? 0.6 : 0.85) * h,
     zoomFeet: (compact ? -0.3 : -0.376) * h,
   };
@@ -156,8 +171,8 @@ export function dragonPlace(
   const head = dragonHeadX(local, g);
   out.x = head - HEAD_LEAD * g.dragonH;
   const t = local * STORY_SCREENS;
-  out.y = g.floor + 0.3 * g.dragonH + Math.sin(t * 6.3) * 0.03 * g.h;
-  out.pitch = -0.22 + Math.cos(t * 6.3) * 0.08;
+  out.y = g.floor + 0.33 * g.h + Math.sin(t * 6.3) * 0.03 * g.h;
+  out.pitch = -0.09 + Math.cos(t * 6.3) * 0.08;
   out.roll = Math.sin(t * 3.7) * 0.06;
   out.on = local > span.from && local < span.to;
   return out;
@@ -180,11 +195,16 @@ export function tetraRun(
 }
 
 /** The beat of Tetra's story at `local`. */
+export function poseAt(local: number) {
+  for (let i = POSES.length - 1; i > 0; i--) {
+    const step = POSES[i]!;
+    if (local >= step.start) return step;
+  }
+  return POSES[0];
+}
+
 export function beatAt(local: number): TetraBeat {
-  if (local < T.panted - 0.035) return local < T.tetraTo - 0.02 ? "run" : "pant";
-  if (local < T.waved) return "wave";
-  if (local < T.readFrom) return "sit";
-  return "read";
+  return poseAt(local).name;
 }
 
 /** The camera coming in on Tetra: 0 standing in the road, 1 close, a little low, reading. */

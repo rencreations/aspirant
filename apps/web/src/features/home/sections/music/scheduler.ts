@@ -31,7 +31,7 @@ export type Step =
 /** What the records actor calls the places of its disc. */
 export type DiscPhase = "idle" | "picking" | "held" | "placing" | "seated" | "returning";
 
-export type DroneSpot = "idle" | "crate" | "platter" | "needle";
+type DroneSpot = "idle" | "crate" | "platter" | "needle";
 
 export interface SchedulerInput {
   /** Seconds since the last call. */

@@ -4,9 +4,8 @@ import { preload } from "./preload";
 import { MUSIC_PLAYS, MUSIC_SCREENS } from "./stations";
 
 /**
- * The gramophone and the records, as two scroll zones (`stations.ts`): the props come in with the
- * scroll, the visitor picks records while the page rests, and the props leave with the scroll on the
- * way out. Nothing holds the page. Length, lead and tail are in screens.
+ * The vinyl and the track lists arrive and leave with the scroll. Both drones meet the
+ * neighboring scenes at their shared stations.
  */
 export const section: HomeSection = {
   id: "music",

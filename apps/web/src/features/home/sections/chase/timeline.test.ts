@@ -110,8 +110,8 @@ describe.each(SIZES)("the runners at %i x %i", (w, h) => {
 });
 
 describe("the beats and the words", () => {
-  it("runs, pants, waves, sits and reads, in that order and never back", () => {
-    const order = ["run", "pant", "wave", "sit", "read"];
+  it("runs, pants, points, sits, takes the book and reads, in that order and never back", () => {
+    const order = ["run", "pant", "point", "sit", "pocket", "carry", "read"];
     let at = 0;
     for (let l = 0; l <= 1; l += 0.005) {
       const i = order.indexOf(beatAt(l));

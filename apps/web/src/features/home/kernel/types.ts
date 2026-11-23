@@ -271,6 +271,8 @@ export interface HomeSection {
    * A play with a `span` is a scroll zone instead (`kernel/scrub.ts`): the scroll drives it, and the
    * page finishes it by itself when the visitor stops inside it.
    */
+  /** Leave both the section and its joints at the visitor's scroll position. */
+  readonly manualScroll?: boolean;
   readonly plays?: readonly HomePlay[];
   /**
    * With plays: the lead and the tail rest (`update` gets the played value only, never the scroll's

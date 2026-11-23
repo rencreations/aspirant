@@ -1,10 +1,10 @@
-import type { PreloadItem } from "@/lib/preload";
+import { imageItem, type PreloadItem } from "@/lib/preload";
 
 import { dollItems } from "../../actors/doll/preload";
 import { silverboltItems } from "../../actors/silverbolt/preload";
 import { tetraItems } from "../../actors/tetra/preload";
 
-import { coverItem } from "./covers";
+import { CARD_PICTURES, coverItem } from "./covers";
 
 /**
  * What the chase and the comic need: the doll, Silverbolt and Tetra (the kite pictures too, she
@@ -14,5 +14,15 @@ import { coverItem } from "./covers";
  * until its pictures arrive). The marks are drawn by a shader and load nothing.
  */
 export function preload(): PreloadItem[] {
-  return [...dollItems(), ...silverboltItems(), ...tetraItems(), coverItem()];
+  return [
+    ...dollItems(),
+    ...silverboltItems(),
+    ...tetraItems(),
+    coverItem(),
+    ...Object.values(CARD_PICTURES).map((path) => ({
+      ...imageItem(path, "Loading the comic selections"),
+      deferred: true,
+      priority: 64,
+    })),
+  ];
 }

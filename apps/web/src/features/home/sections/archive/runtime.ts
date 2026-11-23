@@ -16,6 +16,7 @@
  */
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import { ScrollTravel } from "../travel";
 import { ensureDrone, type DroneActor } from "../../actors/drone";
 import { ensureTetra, type TetraActor } from "../../actors/tetra";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
@@ -35,6 +36,8 @@ import {
   BUTTON_LATE,
   droneAt,
   footFor,
+  entryRun,
+  runDistance,
   lightAt,
   coverIn,
   coverOut,
@@ -83,8 +86,7 @@ class ArchiveRuntime implements SectionRuntime {
   private lit = 0;
   private air = 0;
   private touch = false;
-  private dir = 1;
-  private lastS = Number.NaN;
+  private readonly travel = new ScrollTravel();
 
   private readonly spot: Spot = { x: 0, y: 0, height: 0 };
   private readonly stage: Spot = { x: 0, y: 0, height: 0 };
@@ -116,6 +118,7 @@ class ArchiveRuntime implements SectionRuntime {
   update(_local: number, frame: FrameInfo): void {
     // The whole route is the scene's scroll: the entry is a stretch of it that the visitor scrubs.
     const S = frame.S;
+    this.travel.update(frame, S > AT.tourFrom);
     const vp = frame.viewport;
     if (vp.w !== this.w || vp.h !== this.h) this.layout(vp.w, vp.h);
     this.now = frame.time;
@@ -163,7 +166,7 @@ class ArchiveRuntime implements SectionRuntime {
     put(
       this.strip,
       "transform",
-      `translate3d(${(-stripSlide(this.geo, tourAt(S))).toFixed(2)}px, 0, 0)`,
+      `translate3d(${(runDistance(this.geo) * (1 - entryRun(S)) - stripSlide(this.geo, tourAt(S))).toFixed(2)}px, 0, 0)`,
     );
     for (let i = 0; i < ROOMS; i += 1) {
       const li = this.rooms[i];
@@ -203,7 +206,7 @@ class ArchiveRuntime implements SectionRuntime {
       drone.visible = true;
       drone.layer("front");
       drone.setInteractive(true);
-      drone.pose(null);
+      drone.pose(S < AT.leave ? "thanks" : null);
       drone.place(this.stage);
       drone.face(this.blend > 0.5 ? "sparkle" : "happy", 1);
       if (pointer.inside && pointer.type === "mouse") {
@@ -218,23 +221,19 @@ class ArchiveRuntime implements SectionRuntime {
       const want = tetraAt(S, vp, this.tetraWant);
       if (!want.visible) return;
       toStage(vp, { x: want.x, y: want.y, height: want.height }, this.tetraStage);
-      // The way she faces follows the scroll (a scroll up turns her round and she runs back).
-      const moved = Number.isNaN(this.lastS) ? 0 : S - this.lastS;
-      if (Math.abs(moved) > 1e-5) this.dir = moved >= 0 ? 1 : -1;
-      this.lastS = S;
-      // She faces left (J14) and runs left; when the visitor scrolls back she turns and runs back.
       const running = want.run > 0 && want.run < 1;
+      const stride = Math.min(1, want.run * 12);
       tetra.visible = true;
       tetra.setInteractive(true);
       tetra.place({
         x: this.tetraStage.x,
         y: this.tetraStage.y,
         height: this.tetraStage.height,
-        flip: !running || this.dir >= 0,
+        yaw: this.travel.runYaw(-1) * stride,
       });
       tetra.runSpeed(0.55);
       if (running) {
-        tetra.pose("run", 1);
+        tetra.pose("run", stride);
         tetra.look(null);
       } else if (want.wave > 0.001) {
         tetra.pose("wave", want.wave);
@@ -325,6 +324,7 @@ class ArchiveRuntime implements SectionRuntime {
   }
 
   leave(): void {
+    this.travel.reset();
     this.hover = -1;
     this.hoverUntil = -1;
     this.blend = 0;

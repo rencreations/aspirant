@@ -28,10 +28,10 @@ import { loadMedia } from "@/lib/media-store";
 import { type BookState, boardAngles, pageTurn, popScale } from "./book";
 
 /** The size of one board, in metres. The open book is twice as wide. */
-const BOOK_W = 0.165;
-export const BOOK_H = 0.22;
-const BOARD_T = 0.009;
-const PAGE_T = 0.013;
+const BOOK_W = 0.078;
+export const BOOK_H = 0.11;
+const BOARD_T = 0.0025;
+const PAGE_T = 0.004;
 
 const INK = 0x2a3342;
 const BACK_COLOR = 0x3b5bdb;
@@ -220,13 +220,13 @@ export class BookMesh {
   }
 
   /** Lay the state on the boards and the page. `pocket` is where it comes from and goes back to. */
-  update(state: BookState, hold: Vector3, pocket: Vector3): void {
+  update(state: BookState, hold: Vector3, pocket: Vector3, carried = false): void {
     const present = state.present.x;
-    const scale = popScale(present);
+    const scale = carried ? present : popScale(present);
     this.root.visible = scale > 0.001;
     if (!this.root.visible) return;
     // The book is in her hands or in her pocket, and flies between them.
-    const k = Math.min(1, Math.max(0, present));
+    const k = carried ? 1 : Math.min(1, Math.max(0, present));
     this.root.position.set(
       pocket.x + (hold.x - pocket.x) * k,
       pocket.y + (hold.y - pocket.y) * k,
@@ -251,7 +251,7 @@ export class BookMesh {
       const t = pageTurn(turning, this.turnNow);
       this.leafHinge.rotation.y = t.angle;
       this.leafHinge.position.z = -(BOARD_T + PAGE_T);
-      this.leaf.position.y = 0.05 * t.lift;
+      this.leaf.position.y = BOOK_H * 0.22 * t.lift;
       this.leaf.rotation.x = 0.35 * t.bend;
       const m = this.leaf.material as MeshBasicMaterial;
       m.map = this.pages[(state.turned + 2) % 3] ?? null;

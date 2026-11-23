@@ -38,7 +38,7 @@
 .picture {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border: 2px solid var(--text);
   border-radius: 0.35rem;
@@ -57,6 +57,27 @@
   text-transform: uppercase;
 }
 
+.cover {
+  --tilt: 3deg;
+  perspective: 48rem;
+}
+.right .cover {
+  --tilt: -3deg;
+}
+.picture,
+.name {
+  transition: transform 260ms cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+.cover:is(:hover, :focus-visible) .picture {
+  transform: translateY(-5%) rotateY(var(--tilt)) scale(1.045);
+}
+.cover:is(:hover, :focus-visible) .name {
+  transform: translateY(0.12em);
+}
+.cover:active .picture {
+  transform: translateY(-1%) scale(0.975);
+  transition-duration: 80ms;
+}
 .cover:hover .name,
 .cover:focus-visible .name {
   color: var(--accent);
@@ -79,7 +100,7 @@
 /* ------------------------------------------------------------------------------------ the stage */
 
 :global(.js) :global([data-home]:not([data-gl="off"])) {
-  --card-w: clamp(6.5rem, 17vw, 17rem);
+  --card-w: clamp(6.5rem, 22vw, 21rem);
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .stage {
@@ -106,7 +127,7 @@
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .card {
   position: absolute;
-  top: calc(40% - var(--card-w) * 0.7);
+  top: calc(49% - var(--card-w) * 0.3);
   width: var(--card-w);
 }
 
@@ -163,7 +184,7 @@
   }
 
   :global(.js) :global([data-home]:not([data-gl="off"])) .card {
-    top: calc(44% - var(--card-w) * 0.7);
+    top: calc(37% - var(--card-w) * 0.3);
   }
 
   /* The name must fit under its cover: a longer one would run off the edge of a phone's screen. */

@@ -1,13 +1,10 @@
 /**
- * The stations and the zones of the funny section (round three: three scroll zones, with an idle
- * snap). Pure and import free on purpose: `index.ts` reads it, and `index.ts` must never reach
- * `kernel/where.ts`.
+ * Scroll distances for the kite scene and its reading pauses.
  *
  * The story is a `local` that the scroll carries from station to station through the zones, up and
- * down (`kernel/scrub.ts` finishes a zone the visitor leaves half way); `timeline.ts` has what happens
- * at each value.
+ * down. The scene stays at the visitor's position when they stop.
  *
- *   0       the duo hover high at the left (J11), the stage is empty
+ *   0       the duo hover high at the left (J11), Tetra is flying her kite
  *   R1      Tetra stands and flies her kite, the two drones watch her (a short rest)
  *   R2      the dragon has crossed and cut the rope, Tetra has run off after it, the drones are confused
  *           (a short rest)
@@ -24,11 +21,11 @@ export const R2 = 0.5;
 /** The lengths, in screens. One place to tune them. */
 export const LENGTHS = {
   arrive: 0.6,
-  watch: 0.3,
-  cross: 1.1,
-  confused: 0.25,
+  watch: 0.15,
+  cross: 1.45,
+  confused: 0.15,
   ask: 0.9,
-  words: 0.9,
+  words: 0.8,
 } as const;
 
 const TABLE = zoneTable(0, [
@@ -43,6 +40,19 @@ const TABLE = zoneTable(0, [
 /** The section's length in screens (`index.ts`). */
 export const FUNNY_SCREENS = TABLE.screens;
 export const FUNNY_PLAYS = TABLE.plays;
+
+/** Sample the beats directly. The section has no play machine or idle snap at its joints. */
+export function storyAt(scroll: number): number {
+  if (scroll < 0) return scroll;
+  let end = 0;
+  for (const beat of FUNNY_PLAYS) {
+    if (scroll < beat.at) return end;
+    const progress = (scroll - beat.at) / beat.span!;
+    if (progress < 1) return beat.from + (beat.to - beat.from) * progress;
+    end = beat.to;
+  }
+  return end;
+}
 /** Where each zone lies, in screens from the section's start. */
 export const FUNNY_ZONES = TABLE.zones;
 /** A control taking the keyboard focus lands in the middle of the last rest, where the words show. */

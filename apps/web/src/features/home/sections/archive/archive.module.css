@@ -168,7 +168,7 @@
   left: 0;
   top: 0;
   opacity: calc(var(--in) * (1 - var(--out)));
-  transform: translate3d(0, calc((1 - var(--in)) * 44px - var(--out) * 96px), 0);
+  transform: translate3d(0, calc(var(--out) * -96px), 0);
   will-change: transform, opacity;
 }
 

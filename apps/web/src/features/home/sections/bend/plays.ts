@@ -5,7 +5,7 @@ import { BEAT_SPAN, REST_BEFORE_EDGE, T } from "./beats";
 /**
  * The bend section is ten scroll zones with a rest after each (`kernel/scrub.ts`). `local` is the
  * beats' clock (`beats.ts`, `local * BEAT_SPAN` beats), not the scroll: the visitor scrolls for a
- * scene to play, up or down, and the page finishes a zone by itself when they stop inside it. Pure
+ * scene to play, up or down, and the pose stays where they stop. Pure
  * data: the registry entry (`index.ts`) and the runtime read it, and nothing here imports the registry.
  *
  *   rest 0   Tetra reads (the chase's last frame, joint J13)
@@ -52,34 +52,32 @@ export const REST_BEATS: readonly number[] = [
 
 /**
  * Where each zone stands and how long it is, in screens from the start of the section. A gap between
- * two zones is a short rest, except after the wall settles (zone 6) and after the spiral (zone 8),
- * which carry words and buttons and so rest a screen.
+ * two zones is a short rest, except for the reading space at the fan art wall. The artwork spiral advances as it arrives.
  */
 export const ZONE_SCREENS: ReadonlyArray<{ at: number; len: number }> = [
-  { at: 0.55, len: 0.5 },
+  { at: 0, len: 1.05 },
   { at: 1.1, len: 0.7 },
   { at: 1.9, len: 0.7 },
   { at: 2.7, len: 0.7 },
   { at: 3.5, len: 0.7 },
   { at: 4.3, len: 0.5 },
   { at: 5.8, len: 0.8 },
-  { at: 6.7, len: 0.9 },
-  { at: 8.6, len: 0.9 },
-  { at: 9.6, len: 0.7 },
+  { at: 6.6, len: 1.05 },
+  { at: 7.65, len: 1.85 },
+  { at: 9.5, len: 0.8 },
 ];
 
 /** The section's length in screens: the last zone ends with it (the archive starts from that rest). */
 export const BEND_SCREENS = 10.3;
 
-/** The seconds the page takes to finish a whole zone by itself when the visitor stops inside it. */
-const SNAP_SECONDS = 0.9;
+const ZONE_SECONDS = 0.9;
 
 export const BEND_PLAYS: readonly HomePlay[] = ZONE_SCREENS.map((z, i): HomePlay => ({
   at: z.at / BEND_SCREENS,
   span: z.len / BEND_SCREENS,
   from: REST_BEATS[i]! / BEAT_SPAN,
   to: REST_BEATS[i + 1]! / BEAT_SPAN,
-  seconds: SNAP_SECONDS,
+  seconds: ZONE_SECONDS,
   ease: "linear",
 }));
 

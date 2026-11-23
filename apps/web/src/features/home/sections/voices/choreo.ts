@@ -81,20 +81,14 @@ export interface Screen {
   h: number;
 }
 
-/** The ball's diameter. It follows the height of the screen, with a floor and a ceiling. */
-/** The widest screen (pixels) the narrow layout of the CSS covers: `max-width: 56.25em`, inclusive. */
-const NARROW_MAX = 900;
-
 export function ballSize(vp: Screen): number {
-  // A phone is narrow: the pair must leave room for the art and the lines.
-  if (vp.w <= NARROW_MAX) return Math.min(90, Math.max(56, 0.17 * vp.w));
-  return Math.min(210, Math.max(84, 0.17 * vp.h));
+  return Math.min(28, Math.max(15, 0.036 * vp.w));
 }
 
 /** J9: off screen at the two side edges, level with the dwell. */
 export function edgeSpots(vp: Screen, dwell: DuoSpots, out: DuoSpots): DuoSpots {
   const reach = vp.w / 2 + ballSize(vp) * 1.8;
-  out.a.x = -reach;
+  out.a.x = reach;
   out.a.y = dwell.a.y;
   out.a.h = dwell.a.h;
   out.b.x = reach;
@@ -106,7 +100,7 @@ export function edgeSpots(vp: Screen, dwell: DuoSpots, out: DuoSpots): DuoSpots 
 /** J10: in the two bottom corners, the list gone. */
 export function cornerSpots(vp: Screen, out: DuoSpots): DuoSpots {
   // A phone keeps the size it floated at, so the pair does not grow as it settles.
-  const h = vp.w <= NARROW_MAX ? ballSize(vp) : Math.min(150, Math.max(80, 0.14 * vp.h));
+  const h = ballSize(vp);
   // The ball and its gloves (about 1.25 diameters either side of the middle) stay on the screen,
   // on a phone as on a wide display.
   const x = Math.min(0.4 * vp.w, vp.w / 2 - 1.25 * h);
@@ -119,36 +113,17 @@ export function cornerSpots(vp: Screen, out: DuoSpots): DuoSpots {
   return out;
 }
 
-/**
- * Where they float while the section stands. With the art at the right they keep to its lower left
- * edge, in front of the picture and away from the text. On a narrow screen the art is a band under the
- * chooser and they keep to the band's lower right.
- */
-export function dwellSpots(vp: Screen, art: StageRect | null, out: DuoSpots): DuoSpots {
-  const h = ballSize(vp);
-  out.a.h = h;
-  out.b.h = h;
-  if (!art) {
-    out.a.x = 0.1 * vp.w;
-    out.a.y = -0.26 * vp.h;
-    out.b.x = 0.3 * vp.w;
-    out.b.y = -0.3 * vp.h;
-    return out;
-  }
-  const aw = art.right - art.left;
-  const ah = art.top - art.bottom;
-  const narrow = vp.w <= NARROW_MAX;
-  if (narrow) {
-    out.a.x = art.right - aw * 0.3;
-    out.a.y = art.bottom - h * 0.1;
-    out.b.x = art.right - aw * 0.1;
-    out.b.y = art.bottom + h * 0.05;
-  } else {
-    out.a.x = art.left + aw * 0.25;
-    out.a.y = art.bottom + ah * 0.2;
-    out.b.x = art.left + aw * 0.52;
-    out.b.y = art.bottom + ah * 0.13;
-  }
+/** Keep even the outer gloves inside the space reserved beside the character name. */
+export function dwellSpots(vp: Screen, dock: StageRect | null, out: DuoSpots): DuoSpots {
+  const width = dock ? dock.right - dock.left : ballSize(vp) * 6;
+  const height = dock ? dock.top - dock.bottom : ballSize(vp) * 2;
+  const left = dock?.left ?? vp.w / 2;
+  const center = dock ? (dock.top + dock.bottom) / 2 : 0;
+  out.a.h = out.b.h = Math.min(ballSize(vp), width / 5.6, height / 2.4);
+  out.a.x = left + width * 0.26;
+  out.b.x = left + width * 0.74;
+  out.a.y = center + height * 0.04;
+  out.b.y = center - height * 0.04;
   return out;
 }
 
@@ -178,17 +153,17 @@ function blend(from: Spot, to: Spot, t: number, out: Spot): void {
 export function duoSpotsAt(
   local: number,
   vp: Screen,
-  art: StageRect | null,
+  dock: StageRect | null,
   out: DuoSpots,
 ): DuoSpots {
-  const dwell = dwellSpots(vp, art, dwellScratch);
+  const dwell = dwellSpots(vp, dock, dwellScratch);
   const edge = edgeSpots(vp, dwell, edgeScratch);
   const corner = cornerSpots(vp, cornerScratch);
   const span = IN_TO - IN_FROM;
   const inA = smooth(ramp(local, IN_FROM + 0.1 * span, IN_TO));
   const inB = smooth(ramp(local, IN_FROM + 0.25 * span, IN_TO + 0.03));
-  const outA = smooth(ramp(local, OUT_FROM + 0.01, OUT_TO));
-  const outB = smooth(ramp(local, OUT_FROM + 0.04, OUT_TO));
+  const outA = smooth(ramp(local, OUT_FROM + (OUT_TO - OUT_FROM) * 0.6, OUT_TO));
+  const outB = smooth(ramp(local, OUT_FROM + (OUT_TO - OUT_FROM) * 0.64, OUT_TO));
   blend(edge.a, dwell.a, inA, out.a);
   blend(edge.b, dwell.b, inB, out.b);
   if (outA > 0) {

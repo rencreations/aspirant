@@ -213,7 +213,6 @@ class Card {
   pic = -1;
   /** Width over height of the picture. */
   aspect = 1;
-  front = false;
   shown = false;
   /** Where it is on the screen now, for the pointer: the middle, half the width and height, the depth. */
   cx = 0;
@@ -344,6 +343,9 @@ class Card {
 export class CardLayer {
   readonly cards: Card[] = [];
   readonly store: PicStore;
+  droneZ = Infinity;
+  private readonly backAboveDrone: Scene;
+  private readonly frontAboveDrone: Scene;
   private readonly back: Scene;
   private readonly frontScene: Scene;
   private readonly geometry = new PlaneGeometry(1, 1, 8, 8);
@@ -354,6 +356,8 @@ export class CardLayer {
     this.store = new PicStore(stage, sources);
     const backPass = stage.scenePass("bend-back", "perspective", BACK_ORDER);
     this.back = backPass.scene;
+    this.backAboveDrone = stage.scenePass("bend-back-near", "perspective", 26).scene;
+    this.frontAboveDrone = stage.scenePass("bend-front-near", "perspective", 36).scene;
     this.frontScene = stage.scenePass("bend-front", "perspective", FRONT_ORDER).scene;
     for (let i = 0; i < count; i += 1) {
       const card = new Card(this.geometry, this.blank, `bend-card-${i}`, i * 1.7);
@@ -422,10 +426,15 @@ export class CardLayer {
       return;
     }
     const front = pose.z > 0;
-    if (front !== card.front) {
-      (front ? this.frontScene : this.back).add(card.mesh);
-      card.front = front;
-    }
+    const aboveDrone = pose.z > this.droneZ;
+    const scene = front
+      ? aboveDrone
+        ? this.frontAboveDrone
+        : this.frontScene
+      : aboveDrone
+        ? this.backAboveDrone
+        : this.back;
+    if (card.mesh.parent !== scene) scene.add(card.mesh);
     card.mesh.visible = true;
     card.shown = true;
     card.write(pose, reveal, hover, pop, dt);

@@ -17,6 +17,9 @@ export const CAMERA_DISTANCE = 1000;
  */
 export const DOLL_SIZE = 0.6;
 
+/** Standing height in Selena's authored scene, in metres. */
+export const FILM_DOLL_HEIGHT = 0.135;
+
 /** The height on the screen of a doll that a section asked to be `height` tall. */
 export function drawnHeight(height: number): number {
   return height * DOLL_SIZE;

@@ -74,7 +74,7 @@ jobs:
           retention-days: 7
 
   e2e:
-    name: E2E (${{ matrix.project }})
+    name: E2E (${{ matrix.project }}, ${{ matrix.shard }}/3)
     needs: build
     runs-on: ubuntu-latest
     # The suite loads video-heavy pages; the desktop project alone ran past 30 minutes.
@@ -83,6 +83,7 @@ jobs:
       fail-fast: false
       matrix:
         project: [phone, tablet, desktop]
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
@@ -93,11 +94,11 @@ jobs:
       - name: Install Playwright browser
         run: pnpm --filter @aspirant/web exec playwright install --with-deps chromium
       - name: Run Playwright against the static export
-        run: pnpm --filter @aspirant/web exec playwright test --project=${{ matrix.project }}
+        run: pnpm --filter @aspirant/web exec playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}/3
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-${{ matrix.project }}
+          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
           path: |
             apps/web/playwright-report
             apps/web/test-results

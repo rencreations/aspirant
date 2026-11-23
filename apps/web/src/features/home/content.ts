@@ -170,6 +170,7 @@ export const VOICE_PICKS: ReadonlyArray<{ slug: CharacterSlug; line: number; jap
   ];
 
 export const VOICES = {
+  defaultCharacter: "guinevere",
   title: "Voicelines",
   button: { label: "See all voicelines", href: HOME_ROUTES.voicelines },
 } as const;
@@ -193,16 +194,11 @@ export const MUSIC = {
 
 /** The small functional words of the music section (names of controls, not copy of the owner's). */
 export const MUSIC_UI = {
-  hint: "Pick a record",
-  loading: "Winding up the gramophone",
-  nowPlaying: "Now playing",
-  /** The line while the chosen record is on its way to the platter. */
-  picked: "Picked",
-  another: "Another record",
-  keep: "Continue",
-  records: "Records",
-  crank: "Turn the crank",
-  listen: "Play",
+  songs: "Songs",
+  themes: "Character themes",
+  play: "Play",
+  pause: "Pause",
+  unavailable: "This track could not play. Select it to try again.",
 } as const;
 
 // 12 funny -----------------------------------------------------------------------------------------

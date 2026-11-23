@@ -1,187 +1,421 @@
-/*
- * The music section's words. The gramophone, the crate of records and the two drones are drawn by
- * the stage; this is the title at the top left, the line that says what to do (and then what
- * plays), the keys for the keyboard and the buttons at the foot. The phase of the scene is
- * `data-phase` on the root: "wait" while the props are coming in, "ready" when a record can be
- * picked, "picked" once one is. `data-held` is "1" while the page is held (Continue shows) and
- * `data-again` is "1" while a disc is on the platter. Only transform and opacity move.
- */
-
 .music {
-  position: relative;
-  display: grid;
-  gap: var(--space-xs);
-  align-content: start;
-  justify-items: start;
-}
-
-.title {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-size: clamp(2.2rem, 6vh, 3.4rem);
-  font-weight: 800;
-  font-style: italic;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-}
-
-.hint,
-.loading,
-.now {
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.now b {
-  font-weight: 500;
   color: var(--text);
 }
 
-.actions {
+.header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-xs) var(--space-s);
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.text {
-  padding: 0.4rem 0;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: none;
-  color: var(--text);
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    opacity 350ms var(--ease-out),
-    transform 350ms var(--ease-out);
+.header h2 {
+  margin: 0;
+  font: 800 clamp(2.6rem, 5.6vw, 6rem) / 0.92 var(--font-display-stack);
+  letter-spacing: -0.045em;
 }
 
-.text:hover {
-  color: var(--accent);
+.field,
+.deck {
+  display: none;
 }
 
-.text:focus-visible,
-.key:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
-}
-
-/* The records and the crank, one button each, for the keyboard. They show only when focused. */
-.keys {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  max-width: 34rem;
-  opacity: 0;
-  /* Out of the way of the 3D crate underneath until a key has the focus. */
+:global(.js) :global([data-home]:not([data-gl="off"])) .field {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
-.keys:focus-within {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.key {
-  padding: 0.35rem 0.8rem;
-  border: 1px solid var(--text);
-  border-radius: 999px;
-  background: var(--bg, #f4f6f9);
-  color: var(--text);
-  font-family: var(--font-mono-stack);
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.key:hover {
-  background: var(--text);
-  color: var(--bg, #f4f6f9);
-}
-
-/* ---------------------------------------------------------------- the stage */
-
 :global(.js) :global([data-home]:not([data-gl="off"])) .music {
   position: absolute;
-  inset: calc(var(--nav-h) + 0.4rem) var(--gutter) clamp(0.9rem, 2.4vh, 1.6rem);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  inset: calc(var(--nav-h) + clamp(0.5rem, 2vh, 1.4rem)) max(var(--gutter), 3.5vw)
+    clamp(1.25rem, 4vh, 3rem);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .actions {
-  grid-row: 5;
-  align-self: end;
-}
-
-/* The keys stand in the free column under the line, not over the crate. */
-:global(.js) :global([data-home]:not([data-gl="off"])) .keys {
-  grid-row: 3;
+:global(.js) :global([data-home]:not([data-gl="off"])) .header {
+  grid-area: 1 / 1;
   align-self: start;
-  flex-direction: column;
-  align-items: flex-start;
-  max-width: 22rem;
   z-index: 1;
 }
 
-/* The hint, the waiting line and the playing line take turns in one place. */
-:global(.js) :global([data-home]:not([data-gl="off"])) :is(.hint, .loading, .now) {
-  grid-row: 2;
-  grid-column: 1;
-  opacity: 0;
-  visibility: hidden;
-  transform: translate3d(0, 8px, 0);
-  /* The line that goes leaves quickly, so two lines never stand on each other. */
-  transition:
-    opacity 160ms var(--ease-out),
-    transform 160ms var(--ease-out),
-    visibility 0s linear 160ms;
+:global(.js) :global([data-home]:not([data-gl="off"])) .deck {
+  display: grid;
+  grid-area: 1 / 1;
+  align-self: center;
+  padding-bottom: clamp(1rem, 6vh, 4rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.95fr) minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(1rem, 2.5vw, 3.5rem);
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="wait"] .loading,
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="ready"] .hint,
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-phase="picked"] .now {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  /* The line that comes waits for the other to go. */
-  transition:
-    opacity 450ms var(--ease-out) 180ms,
-    transform 450ms var(--ease-out) 180ms,
-    visibility 0s linear 0s;
+.center {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(0.3rem, 1vh, 0.8rem);
+  min-width: 0;
 }
 
-/* Another record comes and goes with the scene. */
-:global(.js) :global([data-home]:not([data-gl="off"])) :is(.text) {
-  opacity: 0;
-  visibility: hidden;
-  transform: translate3d(0, 8px, 0);
-  transition:
-    opacity 450ms var(--ease-out),
-    transform 450ms var(--ease-out),
-    visibility 0s linear 450ms;
+.disc {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: min(100%, 64svh);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid #192030;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from -24deg,
+      transparent 0deg,
+      #728ab04a 29deg,
+      #c6ccee70 38deg,
+      transparent 65deg,
+      #97708c24 110deg,
+      transparent 141deg,
+      #a5b3d547 199deg,
+      transparent 228deg,
+      #6d819142 274deg,
+      transparent 305deg
+    ),
+    repeating-radial-gradient(
+      circle closest-side,
+      #252836 0 1px,
+      #151723 1.15px 2.1px,
+      #323444 2.3px 2.85px
+    );
+  box-shadow:
+    inset 0 0 0 3px #151723,
+    inset 0 0 0 5px #50505e,
+    0 10px 24px -14px #14213999;
+  cursor: pointer;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .music[data-again="1"] [data-music-another] {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition-delay: 0s;
+.rotor {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
 }
 
-/* The plain page: the title and the button to the room. */
-:global([data-home][data-gl="off"]) :is(.hint, .loading, .now, .keys, .text),
-:global(html:not(.js)) :is(.hint, .loading, .now, .keys, .text) {
+.label {
+  width: 78%;
+  aspect-ratio: 1;
+  border: 2px solid #242738;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #ab9fbb;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 0 0 6px #10121ccc,
+    0 0 0 7px #7071806b;
+}
+
+.label canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.spindle {
+  position: absolute;
+  width: 2.25%;
+  aspect-ratio: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #e3e3ee;
+  box-shadow:
+    inset 1px 2px 3px #191a2a,
+    0 0 0 2px #ffffff55;
+}
+
+.transport {
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem 0.65rem;
+  max-width: 100%;
+  padding: 0.45rem 0.8rem;
+  border-radius: 1.5rem;
+  background: #f4f6f9ed;
+}
+
+.status {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: currentColor;
+  clip-path: polygon(10% 0, 95% 50%, 10% 100%);
+}
+
+.music[data-playing="1"] .status {
+  clip-path: polygon(0 0, 38% 0, 38% 100%, 62% 100%, 62% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.caption {
+  font: 750 clamp(1.5rem, 2.8vw, 3rem)/1 var(--font-display-stack);
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-wrap: balance;
+}
+.transport {
+  flex-direction: column;
+  position: relative;
+  gap: 0.28rem;
+  background: transparent;
+}
+.status {
+  position: absolute;
+  bottom: 0.54rem;
+  left: calc(50% - 3.8rem);
+}
+.services {
+  min-height: 2.4rem;
+}
+.services ul {
+  justify-content: center;
+  margin: 0;
+}
+.videoLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.3rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text);
+  background: var(--bg);
+  font: 550 0.86rem/1 var(--font-mono-stack);
+  text-decoration: none;
+  transition: transform 160ms ease-out;
+}
+.videoLink:hover {
+  transform: translateY(-2px);
+}
+.preview {
   display: none;
+}
+:global(.js) :global([data-home]:not([data-gl="off"])) .preview {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: min(17rem, 28vw, 34vh);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+.preview img {
+  display: block;
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 0.8rem 2.4rem #17162642;
+  opacity: 0;
+  transform: scale(0.89) rotate(-4deg);
+  transition:
+    opacity 140ms ease,
+    transform 190ms ease-out;
+}
+.preview[data-open="1"] img {
+  opacity: 1;
+  transform: scale(1) rotate(-1deg);
+}
+.clock,
+.length {
+  color: #505465;
+  font: 500 0.72rem/1.2 var(--font-mono-stack);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.error {
+  position: absolute;
+  top: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.side {
+  min-width: 0;
+}
+.side h3 {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0 0 0.75rem;
+  font: 700 clamp(1.55rem, 2.6vw, 2.9rem)/1 var(--font-display-stack);
+}
+
+.side h3 small {
+  color: #555668;
+  font: 500 0.75rem/1.3 var(--font-mono-stack);
+}
+
+.side ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  width: 100%;
+  align-items: center;
+  gap: clamp(0.35rem, 0.75vw, 0.7rem);
+  padding: clamp(0.45rem, 1.1vh, 0.9rem) 0.4rem;
+  border: 0;
+  border-bottom: 1px solid #292f4529;
+  background: rgb(244 246 249 / 88%);
+  color: #191b29;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.track:hover,
+.track[data-selected="1"] {
+  background: #e3e2ef;
+}
+.track[data-selected="1"] {
+  box-shadow: inset 3px 0 #645b88;
+}
+
+.sleeve {
+  display: block;
+  width: clamp(2.1rem, 3vw, 3.4rem);
+  aspect-ratio: 1;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 1px 2px #0c15282b;
+}
+
+.trackTitle {
+  font-size: clamp(0.9rem, 1.23vw, 1.22rem);
+  font-weight: 600;
+  line-height: 1.17;
+}
+.trackTitle small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #505465;
+  font-size: 0.8em;
+  font-weight: 450;
+}
+.music :is(button, a):focus-visible {
+  outline: 2px solid #4a3f81;
+  outline-offset: 3px;
+}
+
+@media (max-width: 47.5em) and (orientation: portrait) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .music {
+    inset: calc(var(--nav-h) + 0.4rem) var(--gutter) 0.75rem;
+    gap: 0.4rem;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .header h2 {
+    font-size: 2.55rem;
+  }
+  :global(.js) :global([data-home]:not([data-gl="off"])) .deck {
+    grid-area: 2 / 1;
+    padding-bottom: clamp(0.5rem, 4vh, 2rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    gap: 0.85rem;
+    align-items: start;
+    align-content: center;
+  }
+  .center {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: center;
+    gap: 0.4rem;
+  }
+  .disc {
+    width: min(72vw, 32svh);
+  }
+  .side {
+    grid-row: 2;
+  }
+  .side h3 {
+    font-size: 1.42rem;
+    margin-bottom: 0.35rem;
+  }
+  .side h3 small {
+    font-size: 0.65rem;
+  }
+  .track {
+    grid-template-columns: auto minmax(0, 1fr);
+    min-height: 2.9rem;
+    gap: 0.4rem;
+    padding: 0.38rem 0.3rem;
+  }
+  .trackTitle {
+    font-size: 0.85rem;
+  }
+  .sleeve {
+    width: 1.75rem;
+  }
+  .length {
+    display: none;
+  }
+}
+
+@media (max-height: 43em) and (orientation: portrait) {
+  .disc {
+    width: min(61vw, 27svh);
+  }
+  .track {
+    min-height: 2.5rem;
+  }
+}
+
+@media (max-height: 32em) and (orientation: landscape) {
+  :global(.js) :global([data-home]:not([data-gl="off"])) .music {
+    inset: calc(var(--nav-h) + 0.25rem) var(--gutter) 0.35rem;
+    gap: 0.25rem;
+  }
+  .header h2 {
+    font-size: 2rem;
+  }
+  .disc {
+    width: min(100%, 51svh);
+  }
+  .center,
+  .side h3 {
+    gap: 0.15rem;
+  }
+  .side h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+  }
+  .track {
+    padding-block: 0.2rem;
+  }
+  .sleeve {
+    width: 1.5rem;
+  }
+  .length {
+    display: none;
+  }
+  .trackTitle {
+    font-size: 0.8rem;
+  }
 }

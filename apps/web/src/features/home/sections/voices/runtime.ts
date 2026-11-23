@@ -7,19 +7,9 @@ import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 
 import { OUT_FROM, duoSpotsAt, newSpots, stepDance, type StageRect } from "./choreo";
 import { VoicesDom } from "./dom";
-import { bridgeDuoMarks } from "./marks-bridge";
 
 /** A line that is still playing when the leave is this far along is stopped. */
 const STOP_AT = OUT_FROM + 0.12;
-/** A heart between the drones: the first after this many seconds of dancing, then this often. */
-const HEART_FIRST = 0.5;
-const HEART_EVERY = 1.15;
-
-interface Place {
-  x: number;
-  y: number;
-  height: number;
-}
 
 /**
  * The voices section: the chooser, the eight lines of the chosen Aspirant, her splash art, and the
@@ -32,12 +22,9 @@ class VoicesRuntime implements SectionRuntime {
   private readonly spots = newSpots();
   private readonly placeA = { x: 0, y: 0, height: 0 };
   private readonly placeB = { x: 0, y: 0, height: 0 };
-  /** The frame of the art in the stage's pixels (origin in the middle, y up), or null before it is measured. */
-  private art: StageRect | null = null;
+  private dock: StageRect | null = null;
   private readonly rectScratch: StageRect = { left: 0, right: 0, top: 0, bottom: 0 };
   private dance = 0;
-  private heartIn = HEART_FIRST;
-  private readonly heartAt = { x: 0, y: 0 };
   /** The mean cost of `update` in milliseconds (an exponential mean, for the probes). */
   private cost = 0;
   private speaking = false;
@@ -69,21 +56,23 @@ class VoicesRuntime implements SectionRuntime {
         this.dom.clearLines();
       }
     });
-    if (this.dom.artFrame && typeof ResizeObserver !== "undefined") {
-      this.observer = new ResizeObserver(() => {
-        this.measure();
-      });
-      this.observer.observe(this.dom.artFrame);
+    if (typeof ResizeObserver !== "undefined") {
+      this.observer = new ResizeObserver(this.measure);
+      for (const el of ctx.dom.text.querySelectorAll<HTMLElement>(
+        "[data-voices-panel], [data-voices-dock], [data-voices-part='listening']",
+      )) {
+        this.observer.observe(el);
+      }
     }
+    this.dom.listening?.addEventListener("scroll", this.measure, { passive: true });
     this.measure();
-    if (duo && marks) bridgeDuoMarks(duo, marks);
     (window as unknown as { __homeVoices?: unknown }).__homeVoices = {
       state: () => ({
         index: this.dom.index,
         speaking: this.speaking,
         dance: this.dance,
         url: this.activeUrl,
-        art: this.art,
+        dock: this.dock,
         placed: [{ ...this.placeA }, { ...this.placeB }],
         cost: this.cost,
       }),
@@ -105,8 +94,8 @@ class VoicesRuntime implements SectionRuntime {
     if (local > STOP_AT && this.activeUrl !== null) this.stopOurVoice();
     const duo = this.duo;
     if (!duo) return;
-    duo.visible = true;
-    const spots = duoSpotsAt(local, frame.viewport, this.art, this.spots);
+    duo.visible = this.dock !== null || local >= OUT_FROM;
+    const spots = duoSpotsAt(local, frame.viewport, this.dock, this.spots);
     const a = this.placeA;
     const b = this.placeB;
     a.x = spots.a.x;
@@ -119,37 +108,16 @@ class VoicesRuntime implements SectionRuntime {
     this.dance = stepDance(this.dance, this.speaking, frame.dt);
     if (this.dance > 0.02) duo.pose("dance", this.dance);
     else duo.pose("float", 1);
-    this.hearts(frame.dt, a, b);
-  }
-
-  /** While they dance on a line, a heart pops up between them now and then. */
-  private hearts(dt: number, a: Place, b: Place): void {
-    const marks = this.marks;
-    if (!marks || this.dance < 0.6) {
-      this.heartIn = HEART_FIRST;
-      return;
-    }
-    this.heartIn -= dt;
-    if (this.heartIn > 0) return;
-    this.heartIn = HEART_EVERY;
-    this.heartAt.x = (a.x + b.x) / 2;
-    this.heartAt.y = Math.max(a.y, b.y) + 0.7 * Math.max(a.height, b.height);
-    marks.emit("heart", {
-      at: this.heartAt,
-      size: 0.4 * Math.max(a.height, b.height),
-      color: "pink",
-      count: 1,
-      strength: this.dance,
-    });
   }
 
   enter(): void {
     this.measure();
     this.duo?.restart();
-    if (this.duo && this.marks) bridgeDuoMarks(this.duo, this.marks);
+    this.duo?.setMarkSink(null);
   }
 
   leave(): void {
+    this.dom.closePicker();
     this.stopOurVoice();
     this.speaking = false;
     this.dance = 0;
@@ -159,6 +127,7 @@ class VoicesRuntime implements SectionRuntime {
     this.stopOurVoice();
     this.stopListening();
     this.observer?.disconnect();
+    this.dom.listening?.removeEventListener("scroll", this.measure);
     this.dom.dispose();
     const w = window as unknown as { __homeVoices?: unknown };
     delete w.__homeVoices;
@@ -170,8 +139,8 @@ class VoicesRuntime implements SectionRuntime {
     if (index === this.dom.index) return;
     this.stopOurVoice();
     this.dom.setActive(index);
+    this.measure();
     this.ctx.audio.blip("click");
-    this.duo?.react("hello");
   }
 
   private play(line: HTMLElement): void {
@@ -204,8 +173,14 @@ class VoicesRuntime implements SectionRuntime {
         }
         this.dom.setLine(line, "playing");
         this.speaking = true;
-        this.duo?.react("cheer", "a");
-        this.duo?.react("hop", "b");
+        if (this.dock && this.duo?.visible) {
+          const { x, y, height } = this.placeB;
+          this.marks?.emit("note", {
+            at: { x, y: y + height * 0.5 },
+            size: height * 0.48,
+            count: 1,
+          });
+        }
       });
     });
   }
@@ -220,20 +195,39 @@ class VoicesRuntime implements SectionRuntime {
 
   // ---- the layout ----------------------------------------------------------------------
 
-  /** Where the art stands, in the stage's pixels. The layers start at the top left of the screen. */
-  private measure(): void {
-    const frame = this.dom.artFrame;
-    if (!frame) return;
+  /** Use layout offsets so entrance transforms never become part of the resting position. */
+  private readonly measure = (): void => {
+    const dock = this.dom.dock;
+    const column = this.dom.listening;
+    if (!dock || !column || dock.offsetWidth === 0) {
+      this.dock = null;
+      return;
+    }
     const { w, h } = this.ctx.viewport();
-    const left = frame.offsetLeft;
-    const top = frame.offsetTop;
+    let left = 0;
+    let top = 0;
+    for (
+      let el: HTMLElement | null = dock;
+      el && el !== column;
+      el = el.offsetParent as HTMLElement | null
+    ) {
+      left += el.offsetLeft;
+      top += el.offsetTop;
+    }
+    top -= column.scrollTop;
+    if (top < -1 || top + dock.offsetHeight > column.clientHeight + 1) {
+      this.dock = null;
+      return;
+    }
+    left += column.offsetLeft;
+    top += column.offsetTop;
     const r = this.rectScratch;
     r.left = left - w / 2;
-    r.right = left + frame.offsetWidth - w / 2;
+    r.right = left + dock.offsetWidth - w / 2;
     r.top = h / 2 - top;
-    r.bottom = h / 2 - (top + frame.offsetHeight);
-    this.art = r;
-  }
+    r.bottom = h / 2 - (top + dock.offsetHeight);
+    this.dock = r;
+  };
 }
 
 export async function createRuntime(ctx: SectionCtx): Promise<SectionRuntime> {

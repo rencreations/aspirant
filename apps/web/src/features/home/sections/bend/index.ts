@@ -13,6 +13,7 @@ export const section: HomeSection = {
   bg: "daybreak",
   nav: { theme: "daybreak" },
   dom: "fixed",
+  manualScroll: true,
   plays: BEND_PLAYS,
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),

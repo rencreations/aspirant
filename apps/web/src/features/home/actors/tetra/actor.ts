@@ -22,6 +22,7 @@ import { POSE_FACE, type BendKind, type PoseName } from "./poses";
 import { BookState } from "./props/book";
 import { BOOK_H, BookMesh } from "./props/book-mesh";
 import { KiteLayer } from "./props/kite-mesh";
+import { KiteShotPlayer, type KiteShot } from "./props/kite-shot";
 import { KiteSim, type CutOutcome, type KiteState } from "./props/kite-sim";
 import { SpoolMesh } from "./props/spool-mesh";
 import {
@@ -50,7 +51,7 @@ export type Side = "left" | "right";
 /** The kite and its rope. Set the spot every frame it is shown; `null` puts it away. */
 export interface KiteHandle {
   /** Where the kite hangs in the sky (the knot's place, the stage's frame) and how tall the sail is. */
-  fly(spot: { x: number; y: number; height: number } | null): void;
+  fly(spot: { x: number; y: number; height: number } | null, shot?: KiteShot): void;
   /** The rope breaks at `at` (0 her hand, 1 the kite). "fall" brings the kite down, "fly" lets it go. */
   cut(at?: number, outcome?: CutOutcome): void;
   /** The same as `cut`. */
@@ -83,6 +84,8 @@ export interface BookHandle {
   set(present: number, open: number): void;
   /** Let the pose decide (the read pose has it out and open, the close pose has it shut). */
   auto(): void;
+  /** Align the spine to the grip and scrub the open boards and release arc. */
+  scene(present: number, open: number, support: number, toss?: number): void;
   /** Turn a page. False when the book is not open or a page is turning. */
   turnPage(): boolean;
   /** The covers: the back cover on the left, the front cover on the right (null keeps the plain one). */
@@ -98,6 +101,11 @@ export interface BookHandle {
 
 const POSES_ALL: readonly PoseName[] = [
   "idle",
+  "point",
+  "pocket",
+  "carry",
+  "toss",
+  "swipe",
   "kite",
   "run",
   "pant",
@@ -115,7 +123,10 @@ const POSES_ALL: readonly PoseName[] = [
 const OWN_GAZE: Readonly<Partial<Record<PoseName, number>>> = {
   kite: 0,
   run: 0,
-  read: 0,
+  read: 0.19,
+  swipe: 0.12,
+  point: 0.16,
+  pocket: 0.16,
   pant: 0.3,
   bend: 0.3,
   hug: 0.2,
@@ -151,8 +162,14 @@ export class TetraActor implements Actor {
   private faceAskBlend = 1;
   private interactive = true;
   private kiteSpot: { x: number; y: number; height: number } | null = null;
+  private kiteShot: KiteShot | null = null;
+  private readonly kitePlayer = new KiteShotPlayer();
+  private stridePhase: number | undefined;
   private spoolOn = false;
   private bookAuto = true;
+  private bookScripted = false;
+  private bookSupport = 0;
+  private bookToss = 0;
   private bookPress: ((side: Side) => void) | null = null;
   private bookLabels = { left: "OPEN", right: "OPEN" };
   private readonly quadL: Point2[] = [0, 1, 2, 3].map(() => ({ x: 0, y: 0 }));
@@ -280,12 +297,17 @@ export class TetraActor implements Actor {
   }
 
   /** The pose and how strongly it is worn over the plain stand (0 to 1). Call it every frame. */
-  pose(name: PoseName, blend = 1): void {
-    this.mixer.set(name, blend);
+  pose(name: PoseName, blend = 1, from: PoseName = "idle"): void {
+    this.mixer.set(name, blend, from);
+  }
+
+  swipe(card: number): void {
+    this.mixer.input.swipe = card;
   }
 
   /** How fast she runs, 0 to 1 (the cycle quickens with it). */
-  runSpeed(speed: number): void {
+  runSpeed(speed: number, phase?: number): void {
+    this.stridePhase = phase;
     this.mixer.input.speed = speed;
   }
 
@@ -445,7 +467,15 @@ export class TetraActor implements Actor {
 
   private makeKiteHandle(): KiteHandle {
     return {
-      fly: (spot) => {
+      fly: (spot, shot) => {
+        if (this.kiteShot && !shot) {
+          this.kitePlayer.reset();
+          this.kiteSim.contact.index = -1;
+          if (this.kiteLayer) this.kiteLayer.scene.position.y = this.kiteLayer.ropes.position.y = 0;
+          this.hasReel = false;
+          this.kiteSim.state = "tethered";
+        }
+        this.kiteShot = shot ?? null;
         this.kiteSpot = spot;
       },
       cut: (at = 0.45, outcome = "fall") => {
@@ -483,11 +513,21 @@ export class TetraActor implements Actor {
   private makeBookHandle(): BookHandle {
     return {
       set: (present, open) => {
+        this.bookScripted = false;
         this.bookAuto = false;
         this.bookState.wantPresent = clamp(present, 0, 1);
         this.bookState.wantOpen = clamp(open, 0, 1);
       },
+      scene: (present, open, support, toss = 0) => {
+        this.bookScripted = true;
+        this.bookAuto = false;
+        this.bookState.wantPresent = present;
+        this.bookState.wantOpen = open;
+        this.bookSupport = support;
+        this.bookToss = toss;
+      },
       auto: () => {
+        this.bookScripted = false;
         this.bookAuto = true;
       },
       turnPage: () => {
@@ -516,7 +556,7 @@ export class TetraActor implements Actor {
     const input = this.mixer.input;
     input.time = this.time;
     const speed = Math.max(0.15, input.speed);
-    input.phase += dt * (1.8 + 2.2 * speed);
+    input.phase = this.stridePhase ?? input.phase + dt * (1.8 + 2.2 * speed);
     input.bend.phase += dt * 0.42;
 
     // The pose changes: from a seat to her feet she jumps up.
@@ -525,7 +565,7 @@ export class TetraActor implements Actor {
       const seated =
         this.lastPose === "sit" || this.lastPose === "read" || this.lastPose === "close";
       const standing = now === "stand" || now === "idle" || now === "bend";
-      if (seated && standing && !this.snapNext) this.play("rise");
+      if (seated && standing && !this.snapNext && !this.bookScripted) this.play("rise");
       this.lastPose = now;
     }
     if (this.snapNext) this.mixer.snap();
@@ -540,6 +580,11 @@ export class TetraActor implements Actor {
     }
     if (this.snapNext) this.bookState.snap();
     this.bookState.step(dt);
+    if (this.bookScripted) {
+      this.bookState.present.x = this.bookState.wantPresent;
+      this.bookState.open.x = this.bookState.wantOpen;
+      this.bookState.present.v = this.bookState.open.v = 0;
+    }
 
     // Where she looks: a point on the screen, in client pixels.
     const m = this.model.marks;
@@ -648,10 +693,27 @@ export class TetraActor implements Actor {
       .multiplyScalar(0.5)
       .add(this.vPocket.set(0, BOOK_H * 0.5 - 0.035, 0.012));
     this.vPocket.copy(this.vB).add(this.vA.set(0.06, 0.02, -0.15));
-    this.bookMesh.update(this.bookState, this.vHold, this.vPocket);
+    if (this.bookScripted) {
+      // Carry the closed spine in one hand. The other meets it as the boards open.
+      sockets.handR.getWorldPosition(this.vB);
+      this.vHold.lerp(this.vB, 1 - this.bookSupport);
+      this.vHold.y += BOOK_H * 0.2 * (1 - this.bookSupport);
+      const t = this.bookToss;
+      if (t > 0) {
+        // Ease away from the actual release grip, then follow a free arc in her scene.
+        this.vPocket.set(-0.23 - 0.53 * t, 0.36 + 0.83 * t - 0.67 * t * t, 0.14 + 0.32 * t);
+        this.vHold.lerp(this.vPocket, Math.min(1, t * 6));
+      }
+    }
+    this.bookMesh.update(this.bookState, this.vHold, this.vPocket, this.bookScripted);
     const flip = this.flip ? -1 : 1;
     this.bookMesh.root.rotation.order = "YXZ";
-    this.bookMesh.root.rotation.set(-0.3 + c.pitch, flip * (c.yaw + 0.0), c.roll);
+    const turn = this.bookScripted ? this.bookToss : 0;
+    this.bookMesh.root.rotation.set(
+      -0.42 + c.pitch + turn * 3.4,
+      flip * c.yaw + turn * 2.1,
+      c.roll + turn * 5.4,
+    );
     this.quadsLive = this.bookMesh.shown;
     if (this.quadsLive) {
       this.bookMesh.root.updateMatrixWorld(true);
@@ -664,6 +726,7 @@ export class TetraActor implements Actor {
     if (layer && kiteOn && this.kiteSpot) {
       this.vA.copy(this.spool.root.position).add(this.vPocket.set(0, 0.03, 0));
       model.toStage(this.vA, this.reel);
+      if (this.kiteShot) return;
       const jump =
         this.hasReel &&
         Math.hypot(this.reel.x - this.lastReel.x, this.reel.y - this.lastReel.y) > JUMP_PX;
@@ -692,6 +755,11 @@ export class TetraActor implements Actor {
   }
 
   private render(renderer: WebGLRenderer): void {
+    if (this.kiteLayer && this.kiteSpot && this.kiteShot) {
+      this.kitePlayer.update(this.kiteSim, this.reel, this.kiteSpot, this.kiteShot, this.dt);
+      this.kiteLayer.scene.position.y = this.kiteLayer.ropes.position.y = this.kiteShot.offsetY;
+      this.kiteLayer.update(this.kiteSim, this.kiteSim.look.flutter, 1);
+    }
     // The sail and its tail first (they are far behind her), then her, then the rope, which runs from the reel in front of her.
     const kite = this.kiteLayer?.visible ? this.kiteLayer : null;
     if (kite) {

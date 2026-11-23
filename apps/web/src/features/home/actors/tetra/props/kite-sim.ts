@@ -42,7 +42,7 @@ export type KiteState = "tethered" | "cut";
 
 const STEP = 1 / 120;
 const MAX_STEPS = 8;
-const ROPE_POINTS = 26;
+export const ROPE_POINTS = 44;
 const TAIL_POINTS = 8;
 /** How much longer the rope is than the way to the kite: the calm sag. */
 const SLACK = 1.045;
@@ -51,7 +51,7 @@ const ROPE_GRAVITY = 160;
 /** The tail's length, in sail heights. */
 const TAIL_HEIGHTS = 1.25;
 /** How hard the knot is pulled to its spot (per second squared per pixel). */
-const PULL = 70;
+const PULL = 160;
 
 export interface KiteLook {
   /** The sail's middle, its turn (radians, counter clockwise) and its height, in pixels. */
@@ -96,6 +96,7 @@ export class KiteSim {
   private readonly spin: Sprung = { x: 0, v: 0 };
   private readonly spot: KiteSpot = { x: 0, y: 400, height: 200 };
   private readonly hand = { x: 0, y: 0 };
+  readonly contact = { index: -1, x: 0, y: 0 };
   private floor: number | null = null;
   private clock = 0;
   private pending = 0;
@@ -106,6 +107,7 @@ export class KiteSim {
 
   constructor(seed = 7) {
     this.random = makeRandom(seed);
+    this.forces.iterations = 20;
   }
 
   /** The ground, in the stage's y (a cut kite lands on it), or null for none. */
@@ -136,6 +138,7 @@ export class KiteSim {
 
   /** Lay the rope straight and taut from the hand to the kite's spot: the first frame, or a jump. */
   reset(): void {
+    this.contact.index = -1;
     this.state = "tethered";
     this.sinceCut = 0;
     this.lower.n = 0;
@@ -229,7 +232,7 @@ export class KiteSim {
       f.tipPushX = 0;
       // The sail's lift carries the weight of the rope, so the knot hangs at its spot.
       f.tipPushY = 0.5 * ROPE_POINTS * ROPE_GRAVITY;
-      stepChain(this.rope, h, f);
+      stepChain(this.rope, h, f, this.contact.index >= 0 ? this.contact : undefined);
     } else {
       this.sinceCut += h;
       // The lower part hangs from her hand and swings: free at the cut end.

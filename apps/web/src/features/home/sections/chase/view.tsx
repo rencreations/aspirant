@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 import type { Route } from "next";
 
 import { TLink } from "@/components/transition/t-link";
@@ -8,7 +9,7 @@ import { Pill } from "../../ui";
 import type { SectionMarkup } from "../../kernel/types";
 
 import own from "./chase.module.css";
-import { coverUrl, type CoverSide } from "./covers";
+import { CARD_PICTURES, type CoverSide } from "./covers";
 
 const CARDS: ReadonlyArray<{ side: CoverSide; item: { label: string; href: Route } }> = [
   { side: "left", item: CHASE.left },
@@ -45,7 +46,7 @@ export function view(): SectionMarkup {
                 {/* eslint-disable-next-line @next/next/no-img-element -- static export, plain img */}
                 <img
                   className={own.picture}
-                  src={coverUrl(side)}
+                  src={asset(CARD_PICTURES[side])}
                   alt=""
                   loading="lazy"
                   decoding="async"

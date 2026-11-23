@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { BEAT_SPAN, STAGE, T, beatAt, newBeat, spotsOf } from "./beats";
+import { BEAT_SPAN, DRONE_CARD, STAGE, T, beatAt, newBeat, spotsOf } from "./beats";
 
 // The length is the registry's (`index.ts`): the beats must fit whatever it is.
 const BEND_SCREENS = BEAT_SPAN;
-import { droneAt, headOf, newDroneWant, paperDrone, restOf } from "./meet";
+import { droneAt, headOf, newDroneWant, restOf } from "./meet";
+
+import { makePose, spiralPose } from "./formations";
 
 const vps = [
   { w: 1440, h: 900 },
@@ -18,25 +20,21 @@ const at = (s: number, vp: { w: number; h: number }, time = 0) => {
 };
 
 describe("the drone", () => {
-  it("is not there before it comes out of the paper", () => {
+  it("flies the final spiral slot behind and in front of Tetra at a steady world size", () => {
     for (const vp of vps) {
-      expect(at(T.popFrom - 0.05, vp).want.visible).toBe(false);
-      expect(at(0, vp).want.visible).toBe(false);
-      expect(at(T.popFrom + 0.01, vp).want.visible).toBe(true);
-    }
-  });
-
-  it("comes out of the middle of the paper, small, and grows as it rises", () => {
-    for (const vp of vps) {
-      const paper = { x: 0, y: 0, height: 0, card: 0 };
-      paperDrone(vp, paper);
-      const a = at(T.popFrom + 0.001, vp).want;
-      const b = at(T.popTo - 0.02, vp).want;
-      expect(Math.abs(a.x - paper.x)).toBeLessThan(2);
-      expect(a.height).toBeLessThan(paper.height * 0.6);
-      expect(b.height).toBeGreaterThan(a.height);
-      expect(b.height).toBeLessThanOrEqual(paper.height * 1.001);
-      expect(b.y).toBeGreaterThan(a.y);
+      expect(at(T.advFrom, vp).want.visible).toBe(false);
+      const depths = [];
+      for (let s = T.advFrom; s < T.glideFrom; s += 0.015) {
+        const { beat, want } = at(s, vp);
+        if (!want.visible) continue;
+        const orbit = spiralPose(DRONE_CARD, beat.adv, vp, makePose());
+        expect(want.x).toBeCloseTo(orbit.x, 6);
+        expect(want.z).toBeCloseTo(orbit.z, 6);
+        expect(want.height).toBeCloseTo(restOf(vp).height, 6);
+        depths.push(want.z);
+      }
+      expect(Math.min(...depths)).toBeLessThan(0);
+      expect(Math.max(...depths)).toBeGreaterThan(0);
     }
   });
 

@@ -23,6 +23,14 @@ The film orbit turns during the reading rest and gains speed during its exit. Se
 
 The exit blends into the camera from `cameras.json`. Its crop follows the palm and bite in `short-1.mkv`. Silverbolt's approach is corrected in model space. The doll hovers above Selena's palm until the jaws reach her at 3.75 seconds of the clip. Her center then follows the socket behind the front teeth. She stays 13.5 cm tall in the scene as the head turns. The skull, teeth and doll share a depth buffer.
 
+## Voices, Music and the lower scroll, 24 Nov 2026
+
+- **Voicelines.** Guinevere opens the selector. Each of the ten portraits has its own framing. Eight language buttons play the selected character's lines. The small drone hovers to the right of the name.
+- **Music.** The two lists share a vinyl deck. The selected release uses the disc print from the Music room. A sleeve preview follows the pointer on a track. The title carries the release's available listening links. The backdrop and drone respond to the playing audio.
+- **Kite and chase.** Music scrolls up to reveal Tetra already flying her kite. Silverbolt stretches the line before it breaks. Below the story, the doll leads Silverbolt and Tetra. Scroll controls travel in both scenes. Pausing holds their positions while their flight and running cycles continue. Reversing changes their facing and formation.
+- **Comic and artwork.** Tetra sits, draws a small book, reads it and throws it away. The book is a mesh in her scene. The two comic links use the supplied selections from `scripts/home/media/comic_cards.py`. In Artwork, Tetra swipes with the spiral. The flying drone occupies its last slot and passes behind and in front of her.
+- **Collection.** Tetra and the drone say goodbye in the center. Tetra runs left as the first cover slides in from the right. The two share the travel distance in `sections/archive/route.ts`. Reversing the scroll turns her back toward the center. The lower sections leave the scroll position in the visitor's hands.
+
 ## Current: read these
 
 | Note                                                                                                                                 | What it covers                                                                                                                                 |

@@ -65,7 +65,7 @@ export function zoneRanges(layout: Layout): ZoneRange[] {
         from: p.start + play.at * p.def.screens,
         to: p.start + (play.at + play.span) * p.def.screens,
         seconds: play.seconds,
-        snap: play.noSnap !== true,
+        snap: !p.def.manualScroll && play.noSnap !== true,
       });
     });
   }

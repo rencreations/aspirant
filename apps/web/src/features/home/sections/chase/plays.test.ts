@@ -46,12 +46,9 @@ describe("the chase's zones", () => {
     expect(s.y).toBeCloseTo(g.zoomFeet, 9);
   });
 
-  it("are short: each zone is 0.8 to 1.5 screens", () => {
-    for (const p of plays) {
-      const len = p.span! * screens;
-      expect(len).toBeGreaterThanOrEqual(0.8);
-      expect(len).toBeLessThanOrEqual(1.5);
-    }
+  it("gives the point, sit and book sequence more scroll time than the run", () => {
+    expect(plays[1]!.span!).toBeGreaterThan(plays[0]!.span!);
+    expect(chase.manualScroll).toBe(true);
   });
 
   it("start a little after the section does, and leave a short rest and a longer one", () => {
@@ -64,7 +61,7 @@ describe("the chase's zones", () => {
     expect(rest).toBeLessThanOrEqual(0.4);
     // The comic and its buttons: the page stays a while.
     const dwell = (1 - plays[1]!.at - plays[1]!.span!) * screens;
-    expect(dwell).toBeGreaterThanOrEqual(0.6);
+    expect(dwell).toBeCloseTo(0.44, 6);
     expect(dwell).toBeLessThanOrEqual(1.2);
     expect(chase.focus!).toBeGreaterThan(plays[1]!.at + plays[1]!.span!);
   });
@@ -92,6 +89,6 @@ describe("the chase's zones", () => {
 
   it("hold no clock: a zone has progress, not a hold", () => {
     expect(zoneProgress(plays[0]!, plays[0]!.at - 0.01)).toBe(0);
-    expect(zoneProgress(plays[0]!, plays[0]!.at + plays[0]!.span!)).toBe(1);
+    expect(zoneProgress(plays[0]!, plays[0]!.at + plays[0]!.span!)).toBeCloseTo(1, 12);
   });
 });

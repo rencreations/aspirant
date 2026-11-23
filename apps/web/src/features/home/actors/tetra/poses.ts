@@ -17,6 +17,11 @@ export type PoseName =
   | "idle"
   | "kite"
   | "run"
+  | "point"
+  | "pocket"
+  | "carry"
+  | "toss"
+  | "swipe"
   | "pant"
   | "wave"
   | "sit"
@@ -36,6 +41,7 @@ export interface PoseInput {
   phase: number;
   /** How fast she runs, 0 (a stand) to 1 (flat out). */
   speed: number;
+  swipe: number;
   /** Which hand waves: -1 her right (the left of the screen), 1 her left. */
   side: number;
   /** The bending stance, how far the stance is worn (0 to 1), where it is aimed (-1 to 1) and its clock in turns. */
@@ -51,6 +57,7 @@ export function createPoseInput(): PoseInput {
     time: 0,
     phase: 0,
     speed: 1,
+    swipe: 0,
     side: 1,
     bend: { kind: "water", aim: 0, phase: 0 },
     pat: { side: 1, lean: 1 },
@@ -63,6 +70,11 @@ export const POSE_FACE: Readonly<Record<PoseName, FaceName>> = {
   idle: "neutral",
   kite: "happy",
   run: "angry",
+  point: "tired",
+  pocket: "focused",
+  carry: "focused",
+  toss: "happy",
+  swipe: "focused",
   pant: "tired",
   wave: "tired",
   sit: "neutral",
@@ -245,14 +257,14 @@ function read(i: PoseInput, c: Channels): void {
   sit(i, c);
   const t = i.time;
   c.spine.x = 0.13;
-  c.neck.x = 0.02;
-  c.head.x = 0.08;
+  c.neck.x = 0.1;
+  c.head.x = 0.27;
   c.head.y = 0.04 * Math.sin(TAU * 0.11 * t);
-  c.reachL.x = 0.12;
+  c.reachL.x = 0.064;
   c.reachL.y = 0.2;
   c.reachL.z = 0.17;
   c.reachL.w = 1;
-  c.reachR.x = -0.12;
+  c.reachR.x = -0.064;
   c.reachR.y = 0.2;
   c.reachR.z = 0.17;
   c.reachR.w = 1;
@@ -393,6 +405,69 @@ function bend(i: PoseInput, c: Channels): void {
   }
 }
 
+/** She catches her breath and points after the dragon. */
+function point(i: PoseInput, c: Channels): void {
+  pant(i, c);
+  c.yaw = 0.32;
+  c.head.y = 0.4;
+  c.head.x = -0.18;
+  c.spine.x *= 0.6;
+  c.reachL.x = 0.32;
+  c.reachL.y = 0.36 + 0.01 * Math.sin(i.time * 5);
+  c.reachL.z = 0.12;
+}
+
+/** Reach around the hip. The comic comes round the side in this hand. */
+function pocket(i: PoseInput, c: Channels): void {
+  sit(i, c);
+  c.spine.y = -0.43;
+  c.head.y = -0.32;
+  c.head.x = 0.22;
+  c.reachR.x = -0.11;
+  c.reachR.y = 0.12;
+  c.reachR.z = -0.12;
+  c.reachR.w = 1;
+}
+
+function carry(i: PoseInput, c: Channels): void {
+  pocket(i, c);
+  c.spine.y = -0.2;
+  c.reachR.x = -0.26;
+  c.reachR.y = 0.18;
+  c.reachR.z = 0.055;
+}
+
+function toss(i: PoseInput, c: Channels): void {
+  sit(i, c);
+  c.spine.y = -0.32;
+  c.head.y = -0.42;
+  c.head.x = -0.17;
+  c.roll = 0.06;
+  c.reachR.x = -0.29;
+  c.reachR.y = 0.42;
+  c.reachR.z = 0.16;
+  c.reachR.w = 1;
+}
+
+/** One sweep per card. Lift the hand on the return stroke. */
+function swipe(i: PoseInput, c: Channels): void {
+  stand(i, c);
+  const phase = i.swipe - Math.floor(i.swipe);
+  const recover = phase > 0.68;
+  const u = recover ? (phase - 0.68) / 0.32 : phase / 0.68;
+  const eased = u * u * (3 - 2 * u);
+  const across = recover ? 1 - eased : eased;
+  c.hips.y = 0.34 - 0.64 * across;
+  c.spine.y = 0.19 - 0.4 * across;
+  c.head.y = 0.25 - 0.55 * across;
+  c.reachR.w = 1;
+  c.reachR.x = 0.11 - 0.36 * across;
+  c.reachR.y = 0.3 + (recover ? 0.07 : 0.025) * Math.sin(Math.PI * u);
+  c.reachR.z = 0.18 + (recover ? -0.07 : 0.04) * Math.sin(Math.PI * u);
+  c.armL.z = 0.32 + 0.36 * across;
+  c.roll = 0.045 - 0.09 * across;
+}
+
 /** A hand on her head: she leans her head into it, squeezes her shoulders and her eyes shut. */
 function pat(i: PoseInput, c: Channels): void {
   idle(i, c);
@@ -441,6 +516,11 @@ function hug(i: PoseInput, c: Channels): void {
 
 const POSES: Readonly<Record<PoseName, (i: PoseInput, c: Channels) => void>> = {
   idle,
+  point,
+  pocket,
+  carry,
+  toss,
+  swipe,
   kite,
   run,
   pant,

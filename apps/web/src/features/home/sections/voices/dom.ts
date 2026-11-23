@@ -1,5 +1,5 @@
 /**
- * The DOM of the voices section after the server drew it: the chooser (a tablist), the panel of
+ * The DOM of the voices section after the server drew it: the portrait picker, the panel of
  * each Aspirant, the art of each Aspirant and the play buttons. It wires the clicks and the keys,
  * keeps the aria state, makes the pictures when they are wanted and writes the emerge and the leave
  * (opacity and transform, only when a value changed). It knows nothing about the audio or the
@@ -15,7 +15,7 @@ export type LineState = "idle" | "loading" | "playing";
 const q = (v: number, step: number): number => Math.round(v / step) * step;
 
 export interface VoicesDomHandlers {
-  /** The visitor chose another Aspirant (by a press or by the arrow keys). */
+  /** The visitor chose a portrait in the picker. */
   select(index: number, slug: string): void;
   /** The visitor pressed the play button of a line. */
   play(line: HTMLElement): void;
@@ -27,10 +27,9 @@ export class VoicesDom {
   private readonly panels: HTMLElement[];
   private readonly figs: HTMLElement[];
   private readonly rows: HTMLElement[][];
-  private readonly titles: Array<HTMLElement | null>;
-  private readonly title: HTMLElement | null;
-  private readonly chooser: HTMLElement | null;
-  private readonly actions: HTMLElement | null;
+  private readonly header: HTMLElement | null;
+  readonly listening: HTMLElement | null;
+  private readonly picker: HTMLDialogElement | null;
   private readonly large = new Set<number>();
   private current = 0;
   private readonly look = { opacity: 0, lift: 0 };
@@ -46,10 +45,9 @@ export class VoicesDom {
     this.panels = all(root, "[data-voices-panel]");
     this.figs = all(below, "[data-voices-fig]");
     this.rows = this.panels.map((panel) => all(panel, "[data-voices-line]"));
-    this.titles = this.panels.map((panel) => panel.querySelector<HTMLElement>("h3"));
-    this.title = root.querySelector<HTMLElement>('[data-voices-part="title"]');
-    this.chooser = root.querySelector<HTMLElement>('[data-voices-part="chooser"]');
-    this.actions = root.querySelector<HTMLElement>('[data-voices-part="actions"]');
+    this.header = root.querySelector('[data-voices-part="header"]');
+    this.listening = root.querySelector('[data-voices-part="listening"]');
+    this.picker = root.querySelector("[data-voices-picker]");
     this.artFrame = below.querySelector<HTMLElement>("[data-voices-art] > div");
     const active = this.panels.findIndex((p) => p.dataset.active === "1");
     this.current = Math.max(0, active);
@@ -63,12 +61,12 @@ export class VoicesDom {
     return this.current;
   }
 
-  get count(): number {
-    return this.tabs.length;
+  get dock(): HTMLElement | null {
+    return this.panels[this.current]?.querySelector<HTMLElement>("[data-voices-dock]") ?? null;
   }
 
-  slugAt(index: number): string {
-    return this.tabs[index]?.dataset.voicesTab ?? "";
+  get count(): number {
+    return this.tabs.length;
   }
 
   /** The line buttons of the Aspirant that is shown. */
@@ -82,8 +80,7 @@ export class VoicesDom {
     this.current = index;
     this.tabs.forEach((tab, i) => {
       const on = i === index;
-      tab.setAttribute("aria-selected", on ? "true" : "false");
-      tab.tabIndex = on ? 0 : -1;
+      tab.setAttribute("aria-pressed", on ? "true" : "false");
     });
     this.panels.forEach((panel, i) => {
       panel.dataset.active = i === index ? "1" : "0";
@@ -139,16 +136,16 @@ export class VoicesDom {
       put(el, "opacity", String(q(e * out, 0.005)));
       put(el, "transform", `translate3d(0, ${q((1 - e) * rise - leave * 28, 0.2)}px, 0)`);
     };
-    fade(this.title, 1, 22);
-    fade(this.chooser, 2, 18);
-    fade(this.actions, 9, 16);
-    fade(this.titles[this.current] ?? null, 3, 18);
-    const rows = this.rows[this.current] ?? [];
-    rows.forEach((row, i) => {
-      rowLook(local, i, this.look);
-      put(row, "opacity", String(q(this.look.opacity, 0.005)));
-      put(row, "transform", `translate3d(0, ${q(this.look.lift, 0.2)}px, 0)`);
-    });
+    fade(this.header, 1, 16);
+    if (this.listening) {
+      rowLook(local, 0, this.look);
+      put(
+        this.listening,
+        "opacity",
+        String(q(this.look.opacity * Math.max(0, 1 - leave / 0.64), 0.005)),
+      );
+      put(this.listening, "transform", `translate3d(0, ${q(this.look.lift, 0.2)}px, 0)`);
+    }
     if (this.artFrame) {
       const e = emergeAt(local, 0.4);
       const slide = (1 - e) * 0.1 * viewportW + leave * 0.12 * viewportW;
@@ -157,7 +154,12 @@ export class VoicesDom {
     }
   }
 
+  closePicker(): void {
+    if (this.picker?.open) this.picker.close();
+  }
+
   dispose(): void {
+    this.closePicker();
     this.root.removeEventListener("click", this.onClick);
     this.root.removeEventListener("keydown", this.onKey);
   }
@@ -209,30 +211,54 @@ export class VoicesDom {
   private readonly onClick = (e: MouseEvent): void => {
     const target = e.target instanceof Element ? e.target : null;
     if (!target) return;
+    if (target.closest("[data-voices-open]")) {
+      this.picker?.showModal();
+      this.focusTab(this.current);
+      return;
+    }
+    if (target.closest("[data-voices-close]")) {
+      this.closePicker();
+      return;
+    }
     const tab = target.closest<HTMLElement>("[data-voices-tab]");
     if (tab) {
       const index = this.tabs.indexOf(tab as HTMLButtonElement);
       if (index >= 0) this.handlers.select(index, tab.dataset.voicesTab ?? "");
+      this.closePicker();
       return;
     }
     const button = target.closest<HTMLElement>("[data-voices-play]");
     const line = button?.closest<HTMLElement>("[data-voices-line]");
-    if (line) this.handlers.play(line);
+    if (!line) return;
+    const language = line.dataset.voicesLine;
+    const panel = this.panels[this.current];
+    if (!panel) return;
+    for (const caption of panel.querySelectorAll<HTMLElement>("[data-voices-caption]")) {
+      caption.dataset.active = caption.dataset.voicesCaption === language ? "1" : "0";
+    }
+    for (const row of this.activeRows()) row.dataset.selected = row === line ? "1" : "0";
+    this.handlers.play(line);
   };
 
   private readonly onKey = (e: KeyboardEvent): void => {
-    const tab = e.target instanceof Element ? e.target.closest("[data-voices-tab]") : null;
+    const tab =
+      e.target instanceof Element ? e.target.closest<HTMLButtonElement>("[data-voices-tab]") : null;
     if (!tab) return;
-    const at = this.tabs.indexOf(tab as HTMLButtonElement);
+    const at = this.tabs.indexOf(tab);
     let next = -1;
-    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (at + 1) % this.tabs.length;
-    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const column = this.tabs.filter((button) => button.offsetLeft === tab.offsetLeft);
+      const row = column.indexOf(tab);
+      const neighbor =
+        column[(row + (e.key === "ArrowDown" ? 1 : -1) + column.length) % column.length];
+      if (neighbor) next = this.tabs.indexOf(neighbor);
+    } else if (e.key === "ArrowRight") next = (at + 1) % this.tabs.length;
+    else if (e.key === "ArrowLeft") {
       next = (at - 1 + this.tabs.length) % this.tabs.length;
     } else if (e.key === "Home") next = 0;
     else if (e.key === "End") next = this.tabs.length - 1;
     if (next < 0) return;
     e.preventDefault();
     this.focusTab(next);
-    this.handlers.select(next, this.slugAt(next));
   };
 }

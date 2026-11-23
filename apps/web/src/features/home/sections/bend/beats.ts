@@ -1,7 +1,6 @@
 /**
  * The beats of the bend section, as numbers. The section is a row of scroll zones (`plays.ts`): the
- * scroll scrubs this clock through a zone and the page snaps to a rest at either end when the
- * visitor stops. This file says what happens at each moment of the clock and is the one place the
+ * scroll scrubs this clock through a zone and the visitor can stop at any point. This file says what happens at each moment of the clock and is the one place the
  * times are written. Pure: no three.js, no DOM, no allocation per call (`beatAt` writes into the
  * object it is given). The runtime reads it every frame, and the tests hold it (every beat in
  * order, the joints at both ends, a jump anywhere).
@@ -37,9 +36,9 @@ type BendName = "earth" | "air" | "water" | "fire";
 export const T = {
   /** The book shuts, she puts it away, she stands. */
   closeFrom: 0.05,
-  standAt: 0.4,
+  standAt: 0.46,
   /** She moves from the place the chase left her in to the stage. */
-  moveFrom: 0.05,
+  moveFrom: 0.31,
   moveTo: 0.5,
   /**
    * The four stances, one wave of pictures each. A wave is long enough for its last picture to land
@@ -61,7 +60,7 @@ export const T = {
   spiralFrom: 6.1,
   spiralTo: 7.25,
   restArt: 7.3,
-  advFrom: 7.3,
+  advFrom: 6.8,
   advTo: 8.15,
   /** The drone's picture leaves the spiral for its place beside her. */
   glideFrom: 8.15,
@@ -119,13 +118,8 @@ export const FROM_CHASE: Spot = { tx: 0, ty: -0.376, th: 0.85 };
 const FROM_CHASE_COMPACT: Spot = { tx: 0, ty: -0.3, th: 0.6 };
 /** Where she stands to bend: in the middle, the lower half of the screen kept for her feet. */
 export const STAGE: Spot = { tx: 0, ty: -0.3, th: 0.46 };
-/** Where she and the drone rest at the end (joint J14): the lower left. */
-export const REST: Spot = { tx: -0.34, ty: -0.4, th: 0.3 };
-/** The drone's rest, beside her, as fractions of the viewport (and its height). */
-const REST_DRONE = { x: -0.21, y: -0.3, h: 0.13 };
-/** The same on a phone: narrower, so she stands a little in from the edge and the drone is on her right. */
-const REST_COMPACT: Spot = { tx: -0.22, ty: -0.4, th: 0.26 };
-const REST_DRONE_COMPACT = { x: 0.1, y: -0.32, h: 0.1 };
+const REST_DRONE = { x: 0.135, y: 0.045, h: 0.14 };
+const REST_DRONE_COMPACT = { ...REST_DRONE, x: 0.26 };
 
 /** The chase's rule for a compact screen (a phone, a narrow window). */
 export function isCompact(w: number, h: number): boolean {
@@ -138,10 +132,10 @@ interface Spots {
   restDrone: { x: number; y: number; h: number };
 }
 
-const WIDE_SPOTS: Spots = { from: FROM_CHASE, rest: REST, restDrone: REST_DRONE };
+const WIDE_SPOTS: Spots = { from: FROM_CHASE, rest: STAGE, restDrone: REST_DRONE };
 const COMPACT_SPOTS: Spots = {
   from: FROM_CHASE_COMPACT,
-  rest: REST_COMPACT,
+  rest: STAGE,
   restDrone: REST_DRONE_COMPACT,
 };
 
@@ -229,7 +223,7 @@ function mixSpot(a: Spot, b: Spot, k: number, out: Spot): void {
 const REST_GRACE = 0.03;
 
 /** How long a change from one stance to the next takes, in screens: the stance dips to the stand and returns. */
-const DIP = 0.07;
+const DIP = 0.14;
 
 /** The screens at which one stance gives way to the next. */
 const EDGES: readonly number[] = [
@@ -282,7 +276,7 @@ export function beatAt(
     out.wave = w;
     out.bend = stance.kind;
     out.aim = stance.aim;
-    out.blend = 1 - 0.85 * dipAt(s);
+    out.blend = smoother(1 - dipAt(s)) * (1 - smoother(ramp(s, T.holdFrom - 0.22, T.holdFrom)));
   } else if (s < T.gatherFrom + REST_GRACE) {
     // The first rest: she stands, no stance and no marks, so the frame the visitor stands in is calm.
     out.pose = "idle";
@@ -292,13 +286,14 @@ export function beatAt(
     const second = s >= T.gatherTo;
     out.bend = second ? "air" : "water";
     out.aim = second ? 1 : -1;
-    out.blend = 1 - 0.85 * dipAt(s);
+    out.blend =
+      smoother(1 - dipAt(s)) * smoother(ramp(s, T.gatherFrom + REST_GRACE, T.gatherFrom + 0.24));
   } else if (s < T.spiralTo) {
     out.pose = "bend";
     const earth = s >= T.outTo;
     out.bend = earth ? "earth" : "fire";
     out.aim = earth ? -1 : 1;
-    out.blend = 1 - 0.85 * dipAt(s);
+    out.blend = smoother(1 - dipAt(s));
   } else if (s < T.restArt + REST_GRACE) {
     // The second rest: the same.
     out.pose = "idle";
@@ -306,7 +301,7 @@ export function beatAt(
     out.pose = "bend";
     out.bend = "air";
     out.aim = 1;
-    out.blend = 1 - 0.85 * dipAt(s);
+    out.blend = smoother(1 - dipAt(s));
   } else if (s < T.meetFrom) {
     out.pose = "idle";
   } else if (s < T.flyTo) {
@@ -318,22 +313,16 @@ export function beatAt(
     out.pose = "hug";
     out.hug = 1;
   } else {
-    out.pose = s < T.goTo ? "run" : "idle";
-    out.go = ramp(s, T.hugTo, T.goTo);
-    out.face = -1;
+    out.pose = "idle";
   }
 
-  // ---- Where she stands.
   const arrive = smoother(ramp(s, T.moveFrom, T.moveTo));
   mixSpot(spots.from, STAGE, arrive, out.spot);
-  if (s > T.hugTo - 0.02) {
-    const g = smoother(ramp(s, T.hugTo, T.goTo));
-    mixSpot(STAGE, spots.rest, g, out.spot);
-  }
   if (s < 0) copySpot(spots.from, out.spot);
 
   // ---- The pictures.
-  const adv = smoother(ramp(s, T.advFrom, T.advTo));
+  const progress = ramp(s, T.advFrom, T.advTo);
+  const adv = progress * progress * (2 - progress);
   out.adv = adv * DRONE_CARD;
   out.glide = smoother(ramp(s, T.glideFrom, T.glideTo));
   out.pop = ramp(s, T.popFrom, T.popTo);

@@ -2,7 +2,7 @@ import { libUrl } from "@/lib/library";
 import { chunkItem, imageItem, savedItem, type PreloadItem } from "@/lib/preload";
 
 import { duoItems } from "../../actors/duo/preload";
-import { VOICE_PICKS } from "../../content";
+import { VOICES, VOICE_PICKS } from "../../content";
 
 /**
  * What the voices section needs. Nothing here is waited for: the section is far down the page, so
@@ -62,8 +62,9 @@ export function preload(): PreloadItem[] {
   VOICE_PICKS.forEach((pick, i) => {
     const slug = pick.slug;
     // The chooser's small pictures are all wanted at once; the rest waits for its turn.
-    const art = i === 0 ? PRIORITY + 0.2 : LATER + i * 0.1;
-    const clips = i === 0 ? PRIORITY + 0.3 : LATER + 0.05 + i * 0.1;
+    const first = slug === VOICES.defaultCharacter;
+    const art = first ? PRIORITY + 0.2 : LATER + i * 0.1;
+    const clips = first ? PRIORITY + 0.3 : LATER + 0.05 + i * 0.1;
     items.push(
       deferred(
         imageItem(`/img/char/${slug}/splash-sm.webp`, "Loading the characters"),

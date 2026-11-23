@@ -25,13 +25,13 @@ import { loadMedia } from "@/lib/media-store";
 
 import { KITE, KITE_BOWS, KITE_BOW_CELLS } from "../model";
 
-import type { KiteSim } from "./kite-sim";
+import { ROPE_POINTS, type KiteSim } from "./kite-sim";
 import { type Chain, smoothChain } from "./rope";
 
 const INK = 0x2a3342;
 /** How wide the rope is drawn, in CSS pixels. */
 const ROPE_WIDTH = 2.2;
-const SUB = 3;
+const SUB = 4;
 const BOW_COLORS = 3;
 /** The bows sit on these points of the tail, and are this wide next to the sail's width. */
 const BOW_AT = [2, 4, 6] as const;
@@ -193,9 +193,9 @@ export class KiteLayer {
     this.scene.add(this.spine, this.sail);
 
     const rope = (n: number) => new Ribbon(n, this.ropeMat, ROPE_WIDTH);
-    this.rope = rope(26 * SUB + 1);
-    this.lower = rope(26 * SUB + 1);
-    this.upper = rope(26 * SUB + 1);
+    this.rope = rope(ROPE_POINTS * SUB + 1);
+    this.lower = rope(ROPE_POINTS * SUB + 1);
+    this.upper = rope(ROPE_POINTS * SUB + 1);
     this.tail = new Ribbon(8 * SUB + 1, this.ropeMat, 1.4);
     this.ropes.add(this.rope.mesh, this.lower.mesh, this.upper.mesh);
     this.scene.add(this.tail.mesh);

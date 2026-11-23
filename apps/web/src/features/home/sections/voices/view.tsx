@@ -1,102 +1,131 @@
 import type { CSSProperties } from "react";
 
 import { TLink } from "@/components/transition/t-link";
-import { Flag } from "@/features/library/voicelines/flags";
-import type { FlagId } from "@/features/library/voicelines/languages";
 import { collectionRoute } from "@/lib/site";
 
 import { VOICES, VOICES_UI } from "../../content";
-import { Pill } from "../../ui";
 import type { SectionMarkup } from "../../kernel/types";
 
 import {
-  ART_POSITION,
+  APPROVED_POSITION,
+  PORTRAITS,
   VOICE_CHARACTERS,
   VOICE_LANGUAGES,
   splitDirections,
   type VoiceCharacter,
-  type VoiceLanguage,
 } from "./data";
 import styles from "./voices.module.css";
 
-const tone = (c: VoiceCharacter): CSSProperties =>
-  ({
+function artStyle(c: VoiceCharacter): CSSProperties {
+  if (APPROVED_POSITION[c.slug]) {
+    return { "--tone": c.palette.primary, "--pos": APPROVED_POSITION[c.slug] } as CSSProperties;
+  }
+  const [x, y, previous, shift, full, thumbnail] = PORTRAITS[c.slug] ?? [0.5, 0.33, 0.5, 0, 1, 1];
+  return {
     "--tone": c.palette.primary,
-    "--tone-ink": c.palette.ink,
-    "--pos": ART_POSITION[c.slug] ?? "50% 40%",
-  }) as CSSProperties;
-
-/** The text of a line, with a stage direction (for example "(Chuckles)") drawn small and quiet. */
-function LineText({ text }: { text: string }) {
-  return (
-    <>
-      {splitDirections(text).map((part, i) =>
-        part.direction ? (
-          <span key={i} className={styles.direction}>
-            {part.text}
-          </span>
-        ) : (
-          part.text
-        ),
-      )}
-    </>
-  );
+    "--eye-x": x,
+    "--eye-y": y,
+    "--previous": previous,
+    "--shift": `${100 * shift}cqw`,
+    "--portrait-zoom": full,
+    "--thumbnail-zoom": thumbnail,
+  } as CSSProperties;
 }
 
-function Row({ c, l, index }: { c: VoiceCharacter; l: VoiceLanguage; index: number }) {
-  const line = c.lines[l.id];
-  if (!line) return null;
-  const label = `${VOICES_UI.play} ${c.name}, ${l.english}`;
+function Panel({ character: c, active }: { character: VoiceCharacter; active: boolean }) {
   return (
-    <li
-      className={styles.line}
-      data-voices-line=""
-      data-key={line.key}
-      data-gain={line.g}
-      data-seconds={line.d}
-      data-state="idle"
-      style={{ "--row": index } as CSSProperties}
+    <section
+      className={styles.panel}
+      id={`voices-panel-${c.slug}`}
+      aria-labelledby={`voices-name-${c.slug}`}
+      data-voices-panel={c.slug}
+      data-active={active ? "1" : "0"}
     >
-      <button type="button" className={styles.play} data-voices-play="" aria-label={label}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path className={styles.iconPlay} d="M8 5.5v13l11-6.5z" />
-          <path className={styles.iconBars} d="M7 6h3v12H7zM14 6h3v12h-3z" />
-        </svg>
-        <span className={styles.ring} aria-hidden="true" />
-      </button>
-      <div className={styles.lineBody}>
-        <span className={styles.tag}>
-          <Flag id={l.flag as FlagId} className={styles.flag} />
-          <span lang={l.html} dir={l.dir}>
-            {l.native}
-          </span>
-        </span>
-        <p className={styles.text} lang={line.lang} dir={line.dir}>
-          <LineText text={line.t} />
-        </p>
-        {l.id === "jp" && line.tr ? (
-          <p className={styles.translation} lang="en">
-            {line.tr}
-          </p>
-        ) : null}
+      <div className={styles.nameRow}>
+        <h3 className={styles.name} id={`voices-name-${c.slug}`}>
+          {c.name}
+        </h3>
+        <span className={styles.dock} data-voices-dock="" aria-hidden="true" />
       </div>
-    </li>
+      <div className={styles.captions} aria-live="polite" aria-atomic="true">
+        {VOICE_LANGUAGES.map((language, index) => {
+          const line = c.lines[language.id];
+          if (!line) return null;
+          return (
+            <div
+              key={language.id}
+              data-voices-caption={language.id}
+              data-active={index === 0 ? "1" : "0"}
+            >
+              <b className={styles.plainOnly} lang={language.html} dir={language.dir}>
+                {language.native}
+              </b>
+              <blockquote className={styles.quote} lang={line.lang} dir={line.dir}>
+                {splitDirections(line.t).map((part, i) =>
+                  part.direction ? <em key={i}>{part.text}</em> : part.text,
+                )}
+              </blockquote>
+              {language.id === "jp" && line.tr && (
+                <p className={styles.translation} lang="en">
+                  {line.tr}
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <ul className={styles.languages} aria-label={`${c.name} voice languages`}>
+        {VOICE_LANGUAGES.map((language, index) => {
+          const line = c.lines[language.id];
+          if (!line) return null;
+          return (
+            <li
+              key={language.id}
+              data-voices-line={language.id}
+              data-key={line.key}
+              data-gain={line.g}
+              data-seconds={line.d}
+              data-state="idle"
+              data-selected={index === 0 ? "1" : "0"}
+            >
+              <button
+                type="button"
+                className={styles.play}
+                data-voices-play=""
+                aria-pressed="false"
+                aria-label={`${VOICES_UI.play} ${c.name}, ${language.english}`}
+              >
+                <span className={styles.symbol} aria-hidden="true" />
+                <span lang={language.html} dir={language.dir}>
+                  {language.native}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p className={styles.plainOnly}>
+        <TLink href={collectionRoute(`voicelines/${c.slug}`)} transitionLabel={c.name}>
+          {VOICES_UI.herLines}
+        </TLink>
+      </p>
+    </section>
   );
 }
 
-/** What the server draws for the section: the chooser, every Aspirant's eight lines, the button. */
 export function view(): SectionMarkup {
   return {
     below: (
-      <div className={styles.art} data-voices-art="">
+      <div className={styles.art} data-voices-art="" aria-hidden="true">
         <div className={styles.artFrame}>
-          {VOICE_CHARACTERS.map((c, i) => (
+          {VOICE_CHARACTERS.map((c) => (
             <div
               key={c.slug}
               className={styles.fig}
               data-voices-fig={c.slug}
-              data-active={i === 0 ? "1" : "0"}
-              style={tone(c)}
+              data-original-crop={APPROVED_POSITION[c.slug] ? "" : undefined}
+              data-active={c.slug === VOICES.defaultCharacter ? "1" : "0"}
+              style={artStyle(c)}
             />
           ))}
         </div>
@@ -104,70 +133,77 @@ export function view(): SectionMarkup {
     ),
     text: (
       <div className={styles.voices} data-voices="">
-        <h2 className={styles.title} data-voices-part="title">
-          {VOICES.title}
-        </h2>
-        <div
-          className={styles.chooser}
-          role="tablist"
-          aria-label={VOICES_UI.chooser}
-          data-voices-tabs=""
-          data-voices-part="chooser"
+        <header className={styles.header} data-voices-part="header">
+          <h2 className={styles.title}>{VOICES.title}</h2>
+          <button
+            type="button"
+            className={styles.choose}
+            data-voices-open=""
+            aria-haspopup="dialog"
+            aria-controls="home-voices-picker"
+          >
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">
+              <path d="M2 2h4v4H2zM10 2h4v4h-4zM2 10h4v4H2zM10 10h4v4h-4z" />
+            </svg>
+            {VOICES_UI.chooser}
+          </button>
+        </header>
+        <div className={styles.listening} data-voices-part="listening">
+          {VOICE_CHARACTERS.map((c) => (
+            <Panel key={c.slug} character={c} active={c.slug === VOICES.defaultCharacter} />
+          ))}
+          <div className={styles.archive}>
+            <TLink href={VOICES.button.href} transitionLabel={VOICES.title}>
+              {VOICES.button.label}
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M3 8h10m-4-4 4 4-4 4" />
+              </svg>
+            </TLink>
+          </div>
+        </div>
+        <dialog
+          id="home-voices-picker"
+          className={styles.picker}
+          aria-labelledby="home-voices-picker-title"
+          data-voices-picker=""
+          data-lenis-prevent=""
         >
-          {VOICE_CHARACTERS.map((c, i) => (
+          <div className={styles.pickerHeader}>
+            <h3 id="home-voices-picker-title">{VOICES_UI.chooser}</h3>
             <button
-              key={c.slug}
               type="button"
-              role="tab"
-              id={`voices-tab-${c.slug}`}
-              aria-selected={i === 0}
-              aria-controls={`voices-panel-${c.slug}`}
-              tabIndex={i === 0 ? 0 : -1}
-              className={styles.tab}
-              data-voices-tab={c.slug}
-              style={tone(c)}
+              className={styles.close}
+              aria-label="Close character picker"
+              data-voices-close=""
             >
-              <span className={styles.thumb} data-src={c.splash} aria-hidden="true" />
-              <span className={styles.tabName}>{c.name}</span>
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="m5 5 10 10m0-10L5 15" />
+              </svg>
             </button>
-          ))}
-        </div>
-        <div className={styles.panels} data-voices-part="panels">
-          {VOICE_CHARACTERS.map((c, i) => (
-            <section
-              key={c.slug}
-              className={styles.panel}
-              role="tabpanel"
-              id={`voices-panel-${c.slug}`}
-              aria-labelledby={`voices-tab-${c.slug}`}
-              data-voices-panel={c.slug}
-              data-active={i === 0 ? "1" : "0"}
-              style={tone(c)}
-            >
-              <h3 className={styles.who}>
+          </div>
+          <div
+            className={styles.chooser}
+            role="group"
+            aria-labelledby="home-voices-picker-title"
+            data-voices-tabs=""
+          >
+            {VOICE_CHARACTERS.map((c) => (
+              <button
+                key={c.slug}
+                type="button"
+                aria-pressed={c.slug === VOICES.defaultCharacter}
+                aria-controls={`voices-panel-${c.slug}`}
+                className={styles.tab}
+                data-voices-tab={c.slug}
+                data-original-crop={APPROVED_POSITION[c.slug] ? "" : undefined}
+                style={artStyle(c)}
+              >
+                <span className={styles.thumb} data-src={c.splash} aria-hidden="true" />
                 <span>{c.name}</span>
-                <span className={styles.jp} lang="ja">
-                  {c.jp}
-                </span>
-              </h3>
-              <ol className={styles.lines}>
-                {VOICE_LANGUAGES.map((l, row) => (
-                  <Row key={l.id} c={c} l={l} index={row} />
-                ))}
-              </ol>
-              <p className={styles.plainLink}>
-                <TLink href={collectionRoute(`voicelines/${c.slug}`)} transitionLabel={c.name}>
-                  {VOICES_UI.herLines}
-                </TLink>
-              </p>
-            </section>
-          ))}
-        </div>
-        <div className={styles.actions} data-voices-part="actions">
-          <Pill href={VOICES.button.href} label="Voicelines">
-            {VOICES.button.label}
-          </Pill>
-        </div>
+              </button>
+            ))}
+          </div>
+        </dialog>
       </div>
     ),
   };

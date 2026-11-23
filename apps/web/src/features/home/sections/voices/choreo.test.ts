@@ -80,11 +80,11 @@ describe("emerge and leave", () => {
 });
 
 describe("where the drones are", () => {
-  it("stands off screen at the side edges at the start (J9)", () => {
+  it("stands off screen on the right at the start (J9)", () => {
     for (const vp of VIEWS) {
       const spots = duoSpotsAt(0, vp, artFor(vp), newSpots());
       const r = ballSize(vp) / 2;
-      expect(spots.a.x + r).toBeLessThan(-vp.w / 2);
+      expect(spots.a.x - r).toBeGreaterThan(vp.w / 2);
       expect(spots.b.x - r).toBeGreaterThan(vp.w / 2);
     }
   });
@@ -185,20 +185,16 @@ describe("the dance weight", () => {
 
 describe("ballSize", () => {
   it("is held between a floor and a ceiling", () => {
-    expect(ballSize({ w: 1000, h: 300 })).toBe(84);
-    expect(ballSize({ w: 300, h: 300 })).toBe(56);
-    expect(ballSize({ w: 3000, h: 3000 })).toBe(210);
+    expect(ballSize({ w: 1000, h: 300 })).toBe(28);
+    expect(ballSize({ w: 300, h: 300 })).toBe(15);
+    expect(ballSize({ w: 3000, h: 3000 })).toBe(28);
     expect(ballSize({ w: 390, h: 844 })).toBeLessThan(80);
   });
 });
 
 describe("the narrow layout", () => {
-  it("is the CSS's own: a screen of 900 px is narrow, one of 901 is not", () => {
-    const narrow = ballSize({ w: 900, h: 700 });
-    const wide = ballSize({ w: 901, h: 700 });
-    // A narrow screen sizes the ball by its width (at most 90), a wide one by its height (0.17 of 700).
-    expect(narrow).toBeLessThanOrEqual(90);
-    expect(wide).toBeCloseTo(0.17 * 700, 6);
+  it("keeps the drone size continuous across the layout breakpoint", () => {
+    expect(ballSize({ w: 900, h: 700 })).toBe(ballSize({ w: 901, h: 700 }));
   });
 
   it("keeps the pair in the band's corner on a 900 px screen, off the chooser", () => {

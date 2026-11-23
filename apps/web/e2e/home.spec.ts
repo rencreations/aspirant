@@ -459,7 +459,7 @@ test("a reload part way down opens at the top", async ({ page }) => {
 });
 
 test.describe("on the stage (WebGL)", () => {
-  test("has one canvas, hidden from a reader, and the stage is running", async ({ page }) => {
+  test("keeps the stage, backdrop and music canvases hidden from readers", async ({ page }) => {
     const errors = watchErrors(page);
     await openStage(page);
     const first = await state(page);
@@ -478,11 +478,12 @@ test.describe("on the stage (WebGL)", () => {
     await expect(page.locator("canvas[data-home-canvas]")).toHaveAttribute("aria-hidden", "true");
     await expect(page.locator("canvas[data-home-backdrop]")).toHaveCount(1);
     await expect(page.locator("canvas[data-home-backdrop]")).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator("canvas[data-music-field]")).toHaveAttribute("aria-hidden", "true");
     expect(
       await page.evaluate(
         () =>
           document.querySelectorAll(
-            "[data-home] canvas:not([data-home-canvas]):not([data-home-backdrop])",
+            "[data-home] canvas:not([data-home-canvas]):not([data-home-backdrop]):not([data-music-field])",
           ).length,
       ),
     ).toBe(0);

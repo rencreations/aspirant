@@ -5,7 +5,7 @@ import { tetraItems } from "../../actors/tetra/preload";
 import { marksItems } from "../../fx/comic-marks/preload";
 
 import { bitmapItem } from "./bitmaps";
-import { FAN_PICS, artSources, droneSource, fanSource } from "./pictures";
+import { FAN_PICS, artSources, fanSource } from "./pictures";
 
 /**
  * What the bend section needs, all deferred: it is the fourteenth screen of the story, so none of it
@@ -29,6 +29,5 @@ export function preload(): PreloadItem[] {
     ...marksItems(),
     ...FAN_PICS.map((pic) => bitmapItem(fanSource(pic), "Loading the fan art", later(64))),
     ...artSources().map((src) => bitmapItem(src, "Loading the splash art", later(66))),
-    bitmapItem(droneSource(), "Loading the drone", later(66)),
   ];
 }

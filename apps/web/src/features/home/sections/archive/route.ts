@@ -1,25 +1,14 @@
 /**
  * The last stretch of the home's scroll, as pure functions of the position `S` (screens): the
- * drone's journey from Tetra at the lower left (joint J14), over the ten covers of the archive, down
+ * drone's journey from Tetra in the center (joint J14), over the ten covers of the archive, down
  * to the middle of the footer's card (joint J15) and out to the right, where About's opening picks it
  * up. The archive's runtime and the footer's runtime both read it, each for its own part of the
- * range, so the order they run in cannot matter and a jump anywhere gives the picture of a slow
- * scroll. No three.js, no DOM, nothing allocated per call (every function writes into `out`).
+ * range, so both sections agree at their boundary. Offsets from the archive's start:
  *
- * Two frames meet here. The route works in the screen frame (pixels, origin at the top left, y down)
- * and hands the result to the actors in the stage frame (origin in the middle, y up): `toStage`.
- *
- * Times, in screens of the scene's scroll `S`. They are read from the registry (`kernel/where.ts`), so
- * they move with the sections: each is an offset from the archive's start, the footer's start or
- * the end of the page. The whole route is a function of the scroll (round three): the entry is one
- * screen of scroll that the visitor scrubs, and the page snaps to either end of it when they stop
- * half way. Offsets from the archive's start:
- *
- *   0.00 to 0.10   rest (joint J14): Tetra and the drone at the lower left
- *   0.10 to 0.20   the entry begins: Tetra waves goodbye; the drone, beside her, looks at her
- *   0.20 to 0.82   the drone leaves her and flies up over the first cover
- *   0.20 to 0.82   Tetra runs off to the left (the first cover rises where she stood: she is out first)
- *   0.45 to 1.10   the covers rise in, the left one first; the title and the button
+ *   0.00 to 0.10   Tetra and the drone hold their places in the center
+ *   0.10 to 0.20   Tetra waves goodbye
+ *   0.20 to 0.82   she runs left as the strip moves in from the right
+ *   0.20 to 0.82   the drone flies over the first cover
  *   1.10 to 2.30   the tour: the drone rests over each room in turn and the light follows it
  *   2.25 to 3.00   the covers lift away, the light goes out, the footer's card rises
  *   2.30 to 3.00   the drone flies down to the middle of the footer's card (it rises to meet it)
@@ -67,10 +56,10 @@ export const AT = {
     return entryAt(0.25);
   },
   get runTo(): number {
-    return entryAt(0.725);
+    return entryAt(0.93);
   },
   get coversIn(): number {
-    return entryAt(0.35);
+    return AT.runFrom;
   },
   coverStep: 0.03 * STRETCH,
   coverLen: 0.17 * STRETCH,
@@ -193,13 +182,17 @@ export function lightAt(S: number): number {
   );
 }
 
-/**
- * How far cover `i` has risen in, 0 to 1. The first four are on the screen and rise one after the
- * other; the rest are off to the right and are in by the time the fourth is.
- */
-export function coverIn(S: number, i: number): number {
-  const at = AT.coversIn + AT.coverStep * Math.min(i, 3);
-  return smooth(ramp(S, at, at + AT.coverLen));
+/** Tetra and the strip travel the same distance over the same scroll interval. */
+export function entryRun(S: number): number {
+  return smooth(ramp(S, AT.runFrom, AT.runTo));
+}
+export function runDistance(vp: Vp): number {
+  return vp.w / 2 + 0.62 * spotsOf(vp).rest.th * vp.h;
+}
+
+/** All the covers enter together from outside the right edge. */
+export function coverIn(S: number, _i: number): number {
+  return S >= AT.runFrom ? 1 : 0;
 }
 
 /** How far cover `i` has lifted away, 0 to 1. */
@@ -342,8 +335,8 @@ export function tetraAt(S: number, vp: Vp, out: TetraWant): TetraWant {
   const rest = spotsOf(vp).rest;
   const x = vp.w / 2 + rest.tx * vp.w;
   const height = rest.th * vp.h;
-  out.run = smooth(ramp(S, AT.runFrom, AT.runTo));
-  out.x = mix(x, -0.6 * height, out.run);
+  out.run = entryRun(S);
+  out.x = x - runDistance(vp) * out.run;
   out.y = vp.h / 2 - rest.ty * vp.h;
   out.height = height;
   out.wave = ramp(S, AT.entry, AT.waveTo) * (1 - ramp(S, AT.runFrom - 0.03 * STRETCH, AT.runFrom));

@@ -1,350 +1,194 @@
-/*
- * The voices section: a chooser of the ten Aspirants on top, her eight curated lines at the left
- * and her splash art at the right (the art lives in the `below` layer, so the two drones fly in
- * front of it). Only transform and opacity move. In the plain page (no scripts, no WebGL) every
- * Aspirant's lines are shown one after the other and the chooser is not needed.
- *
- * The heights of the title and the chooser are variables shared by the text and the art, so the art
- * starts where the lines start.
- */
-
 .voices,
 .art {
-  --v-title: clamp(2.2rem, 6vh, 3.4rem);
-  --v-chooser: clamp(4.6rem, 10.6vh, 7rem);
-  --v-gap: clamp(0.4rem, 1.2vh, 0.8rem);
-  --v-top: calc(var(--nav-h) + 0.4rem);
-  --v-head: calc(var(--v-title) + var(--v-chooser) + var(--v-gap) * 2);
-  --v-band: clamp(6.5rem, 19vh, 10rem);
+  --edge: max(var(--gutter), 4vw);
+  --top: calc(var(--nav-h) + clamp(0.75rem, 2.2vh, 1.75rem));
+  --header: clamp(3.4rem, 8vh, 5rem);
+  --bottom: clamp(1.25rem, 5vh, 4rem);
+  --art-width: 46%;
+  --art-top: calc(var(--top) + var(--header) + 1rem);
 }
 
-.voices {
-  position: relative;
-  display: grid;
-  gap: var(--v-gap);
-  width: 100%;
+.header,
+.pickerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header {
+  border-bottom: 1px solid var(--line);
+}
+
+.title,
+.name,
+.pickerHeader h3 {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-weight: 700;
+  line-height: 1;
 }
 
 .title {
-  margin: 0;
-  font-family: var(--font-display-stack);
-  font-size: var(--v-title);
-  font-weight: 800;
-  font-style: italic;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  font-size: clamp(1.5rem, 3.2vw, 3rem);
+  letter-spacing: -0.035em;
 }
 
-/* ---------------------------------------------------------------- chooser */
-
-.chooser {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: clamp(0.3rem, 0.7vw, 0.6rem);
-  align-items: start;
-}
-
-.tab {
-  position: relative;
-  display: grid;
-  gap: 0.35rem;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--text);
+.choose,
+.close,
+.tab,
+.play {
+  color: inherit;
   font: inherit;
-  text-align: left;
   cursor: pointer;
-  opacity: 0.6;
-  transition:
-    opacity 300ms var(--ease-out),
-    transform 400ms var(--ease-out);
 }
 
-.tab:hover {
-  opacity: 0.92;
-  transform: translate3d(0, -3px, 0);
-}
-
-.tab[aria-selected="true"] {
-  opacity: 1;
-}
-
-.tab:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
-  border-radius: 0.5rem;
-}
-
-.thumb {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
+.choose,
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 2.75rem;
+  padding: 0 1rem;
   border: 1px solid var(--line);
-  border-radius: 0.55rem;
-  background: color-mix(in srgb, var(--tone, #888) 28%, #f4f6f9);
+  border-radius: 5rem;
+  background: var(--bg);
+  font-size: 0.875rem;
+  font-weight: 550;
 }
 
-.thumb img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--pos, 50% 40%);
+.choose svg,
+.close svg,
+.archive svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
 }
 
-.tab[aria-selected="true"] .thumb {
-  border-color: var(--tone, var(--text));
-  box-shadow: 0 0 0 1px var(--tone, var(--text));
+.name {
+  font-size: clamp(2.75rem, 6.1vw, 6.75rem);
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
 }
 
-.tabName {
-  position: relative;
-  display: block;
-  padding-bottom: 0.3rem;
-  overflow: hidden;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(0.56rem, 0.9vw, 0.7rem);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.tabName::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: var(--tone, var(--text));
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 450ms var(--ease-out);
-}
-
-.tab[aria-selected="true"] .tabName::after {
-  transform: scaleX(1);
-}
-
-/* ---------------------------------------------------------------- the lines */
-
-.panels {
-  min-height: 0;
-}
-
-.panel {
+.nameRow {
   display: grid;
-  gap: 0.15rem;
+  grid-template-columns: minmax(0, 1fr) clamp(5.25rem, 10vw, 8rem);
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.who {
-  display: flex;
-  align-items: baseline;
-  gap: 0.8rem;
-  margin: 0 0 0.25rem;
-  font-family: var(--font-display-stack);
-  font-size: clamp(1.3rem, 3.2vh, 2rem);
-  font-weight: 800;
-  font-style: italic;
-  line-height: 1;
-  text-transform: uppercase;
+.dock {
+  height: clamp(2.65rem, 5vw, 4.5rem);
 }
 
-.jp {
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  font-style: normal;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+.captions {
+  margin-block: clamp(1rem, 3vh, 2rem);
+}
+
+.quote {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: clamp(1.25rem, 2.2vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+.translation {
+  margin: 0.6em 0 0;
   color: var(--text-dim);
-  text-transform: none;
+  line-height: 1.45;
 }
 
-.lines {
+.languages {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(0.8rem, 2vw, 1.8rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.line {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(0.7rem, 1.4vw, 1.1rem);
-  padding: clamp(0.25rem, 0.75vh, 0.5rem) 0;
-  border-top: 1px solid var(--line);
-}
-
-.lineBody {
-  display: grid;
-  gap: 0.1rem;
-  min-width: 0;
-}
-
-.tag {
+.play {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  color: var(--text-dim);
+  gap: 0.8rem;
+  width: 100%;
+  min-height: clamp(2.75rem, 5.6vh, 3.6rem);
+  padding: 0.35rem 0.2rem;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  text-align: start;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
 }
 
-/* Joined letters (Arabic) must not be spaced out. */
-.tag [dir="rtl"] {
-  letter-spacing: 0;
-}
-
-.flag {
-  width: 1.05rem;
-  height: auto;
-  border-radius: 2px;
-  flex: none;
-}
-
-.text {
-  margin: 0;
-  font-size: clamp(0.8rem, 1.72vh, 1rem);
-  font-weight: 450;
-  line-height: 1.26;
-  text-wrap: pretty;
-}
-
-.direction {
-  font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: 0.92em;
-  color: var(--text-dim);
-}
-
-.translation {
-  margin: 0;
-  font-family: var(--font-serif-stack);
-  font-size: clamp(0.74rem, 1.55vh, 0.9rem);
-  font-style: italic;
-  line-height: 1.15;
-  color: var(--text-dim);
-}
-
-/* ---------------------------------------------------------------- the play button */
-
-.play {
-  position: relative;
+.symbol {
   display: grid;
   place-items: center;
-  width: clamp(2.3rem, 5vh, 2.8rem);
-  height: clamp(2.3rem, 5vh, 2.8rem);
-  padding: 0;
-  border: 1px solid var(--text);
+  flex: none;
+  width: 1.65rem;
+  height: 1.65rem;
+  border: 1px solid var(--line);
   border-radius: 50%;
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition:
-    background-color 250ms var(--ease-out),
-    color 250ms var(--ease-out),
-    transform 250ms var(--ease-out);
 }
 
-.play svg {
-  width: 42%;
-  height: 42%;
-  fill: currentColor;
+.symbol::before {
+  content: "";
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  border-block: 4px solid transparent;
+  border-left: 6px solid currentColor;
 }
 
-.iconBars {
-  display: none;
-}
-
-.play:hover {
-  transform: scale(1.07);
+.languages [data-selected="1"] .symbol,
+.play:hover .symbol {
+  color: var(--bg);
   background: var(--text);
-  color: var(--bg, #f4f6f9);
+  border-color: var(--text);
 }
 
-.play:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 3px;
+.languages [data-state="playing"] .symbol::before {
+  width: 0.55rem;
+  height: 0.55rem;
+  margin: 0;
+  border: 0;
+  background: currentColor;
 }
 
-.ring {
-  position: absolute;
-  inset: -5px;
-  border: 2px solid var(--tone, var(--text));
+.languages [data-state="loading"] .symbol::before {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 0;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
   border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
+  animation: spin 850ms linear infinite;
 }
 
-.line[data-state="playing"] .play {
-  background: var(--tone, var(--text));
-  border-color: var(--tone, var(--text));
-  color: var(--tone-ink, #0b0b0e);
-}
-
-.line[data-state="playing"] .iconPlay {
-  display: none;
-}
-
-.line[data-state="playing"] .iconBars {
-  display: inline;
-}
-
-.line[data-state="playing"] .ring {
-  animation: ringPulse 1100ms var(--ease-out) infinite;
-}
-
-.line[data-state="loading"] .ring {
-  opacity: 0.8;
-  border-style: dashed;
-  animation: ringSpin 1400ms linear infinite;
-}
-
-@keyframes ringPulse {
-  from {
-    opacity: 0.75;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 0;
-    transform: scale(1.35);
-  }
-}
-
-@keyframes ringSpin {
+@keyframes spin {
   to {
     transform: rotate(1turn);
   }
 }
 
-@keyframes panelIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.archive {
+  margin-top: clamp(0.75rem, 2.4vh, 1.75rem);
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
+.archive a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
 }
-
-/* ---------------------------------------------------------------- the art (below layer) */
 
 .art {
   position: absolute;
@@ -354,234 +198,282 @@
 
 .artFrame {
   position: absolute;
-  right: var(--gutter);
-  top: calc(var(--v-top) + var(--v-head));
-  bottom: clamp(0.9rem, 2.4vh, 1.6rem);
-  width: min(43vw, 62rem);
+  top: var(--art-top);
+  bottom: var(--bottom);
+  left: var(--edge);
+  width: var(--art-width);
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: clamp(1rem, 1.8vw, 1.6rem);
-  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border-radius: 0.65rem;
 }
 
-.fig {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--tone, #888) 45%, #f4f6f9),
-    color-mix(in srgb, var(--tone, #888) 12%, #f4f6f9)
-  );
-  transition: opacity 650ms var(--ease-out);
-}
-
-.fig[data-active="1"] {
-  opacity: 1;
-}
-
+.fig,
 .fig img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: var(--pos, 50% 40%);
   opacity: 0;
-  transform: scale(1.07);
-  transition:
-    opacity 500ms var(--ease-out),
-    transform 1500ms var(--ease-out);
+  transition: opacity 350ms var(--ease-out);
 }
 
+.fig {
+  container-type: size;
+  --zoom: var(--portrait-zoom);
+  background: var(--tone);
+}
+
+.fig[data-active="1"],
+.fig img[data-size="small"],
 .fig img[data-ready="1"] {
   opacity: 1;
 }
 
-.fig[data-active="1"] img {
-  transform: scale(1);
+.picker {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: min(50rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 3rem);
+  margin: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg, #f4f6f9);
+  color: var(--text);
+  pointer-events: auto;
 }
 
-/* The small picture sits under the large one until the large one has arrived. */
-.fig img[data-size="small"] {
-  opacity: 1;
-}
-
-/* ---------------------------------------------------------------- the plain page */
-
-.plainLink {
-  margin: 0.5rem 0 0;
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.plainLink a {
-  color: inherit;
-}
-
-/* The plain page lists every Aspirant, one after the other, and has no use for the chooser. */
-:global([data-home][data-gl="off"]) .chooser,
-:global([data-home][data-gl="off"]) .art,
-:global(html:not(.js)) .chooser,
-:global(html:not(.js)) .art {
+.picker:not([open]) {
   display: none;
 }
-
-:global([data-home][data-gl="off"]) .play,
-:global(html:not(.js)) .play {
-  display: none;
+.picker::backdrop {
+  background: rgb(12 17 24 / 64%);
+}
+.pickerHeader {
+  margin-bottom: 1.25rem;
+}
+.pickerHeader h3 {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+}
+.close {
+  width: 2.75rem;
+  padding: 0;
+}
+.close svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
-:global([data-home][data-gl="off"]) .line,
-:global(html:not(.js)) .line {
-  grid-template-columns: minmax(0, 1fr);
+.chooser {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem 0.75rem;
 }
 
-:global([data-home][data-gl="off"]) .panel,
-:global(html:not(.js)) .panel {
-  margin-top: var(--space-m);
+.tab {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  font-size: 0.9rem;
 }
 
-/* ---------------------------------------------------------------- the stage */
+.thumb {
+  position: relative;
+  container-type: size;
+  --zoom: var(--thumbnail-zoom);
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.05;
+  border-radius: 0.35rem;
+  background: var(--tone);
+}
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .plainLink {
-  display: none;
+.thumb img,
+.fig img {
+  position: absolute;
+  --base: max(100cqw, 177.7778cqh);
+  --width: calc(var(--base) * var(--zoom));
+  --height: calc(var(--width) * 0.5625);
+  inset: auto;
+  left: clamp(
+    calc(100cqw - var(--width)),
+    calc(
+      (100cqw - var(--base)) * var(--previous) + (var(--base) - var(--width)) * var(--eye-x) +
+        var(--shift)
+    ),
+    0px
+  );
+  top: clamp(calc(100cqh - var(--height)), calc(33.3333cqh - var(--eye-y) * var(--height)), 0px);
+  width: var(--width);
+  max-width: none;
+  height: auto;
+}
+
+.tab[data-original-crop] .thumb img,
+.fig[data-original-crop] img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos);
+  transform: none;
+}
+
+.tab[aria-pressed="true"] .thumb {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.tab:hover,
+.choose:hover,
+.close:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.voices :is(button, a):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 :global(.js) :global([data-home]:not([data-gl="off"])) .voices {
   position: absolute;
-  inset: var(--v-top) var(--gutter) clamp(0.9rem, 2.4vh, 1.6rem);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: var(--v-title) var(--v-chooser) minmax(0, 1fr) auto;
-  gap: var(--v-gap);
-  width: auto;
+  inset: 0;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .panels {
-  width: min(50%, 40rem);
+:global(.js) :global([data-home]:not([data-gl="off"])) .header {
+  position: absolute;
+  inset: var(--top) var(--edge) auto;
+  height: var(--header);
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .panel[data-active="0"] {
+:global(.js) :global([data-home]:not([data-gl="off"])) .listening {
+  position: absolute;
+  top: var(--art-top);
+  right: var(--edge);
+  bottom: var(--bottom);
+  left: calc(var(--edge) + var(--art-width) + clamp(1.5rem, 4.5vw, 5rem));
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  pointer-events: auto;
+}
+
+.listening > :first-child,
+.panel[data-active="1"] {
+  margin-top: auto;
+}
+.archive {
+  margin-bottom: auto;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .captions {
+  display: grid;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .captions > div {
+  grid-area: 1 / 1;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .captions > [data-active="0"] {
+  visibility: hidden;
+}
+
+:global(.js) :global([data-home]:not([data-gl="off"])) .panel[data-active="0"],
+:global(.js) :global([data-home]:not([data-gl="off"])) .plainOnly {
   display: none;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .panel[data-active="1"] {
-  animation: panelIn 480ms var(--ease-out) both;
+:global(html:not(.js)) :is(.art, .choose, .languages),
+:global([data-home][data-gl="off"]) :is(.art, .choose, .languages) {
+  display: none;
 }
 
-:global(.js) :global([data-home]:not([data-gl="off"])) .actions {
-  align-self: end;
+.plainOnly,
+.plainOnly a {
+  color: inherit;
+}
+.plainOnly {
+  display: block;
+  margin-block: 1rem 0.3rem;
 }
 
-/* A narrow screen: the art is a band under the chooser and the lines come under it. */
-@media (max-width: 56.25em) {
+@media (max-width: 44em) and (orientation: portrait) {
   .voices,
   .art {
-    --v-title: clamp(2rem, 5vh, 2.6rem);
-    --v-chooser: 4.5rem;
-    --v-gap: 0.4rem;
-    --v-band: clamp(5.5rem, 12.5vh, 7.5rem);
+    --edge: var(--gutter);
+    --top: calc(var(--nav-h) + 0.35rem);
+    --header: 3.4rem;
+    --art-top: calc(var(--top) + var(--header) + 0.7rem);
+    --band: clamp(5.5rem, 25svh, 15rem);
+    --bottom: 0.7rem;
   }
-
-  :global(.js) :global([data-home]:not([data-gl="off"])) .voices {
-    grid-template-rows: var(--v-title) var(--v-chooser) var(--v-band) minmax(0, 1fr) auto;
-  }
-
-  :global(.js) :global([data-home]:not([data-gl="off"])) .panels {
-    grid-row: 4;
-    width: auto;
-  }
-
-  :global(.js) :global([data-home]:not([data-gl="off"])) .actions {
-    grid-row: 5;
-  }
-
   .artFrame {
-    left: var(--gutter);
-    right: var(--gutter);
-    top: calc(var(--v-top) + var(--v-title) + var(--v-chooser) + var(--v-gap) * 2);
-    bottom: auto;
+    right: var(--edge);
     width: auto;
-    height: var(--v-band);
+    height: var(--band);
+    bottom: auto;
   }
-
-  .chooser {
-    grid-template-columns: repeat(10, minmax(4.6rem, 1fr));
-    overflow-x: auto;
-    padding-bottom: 0.2rem;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
+  :global(.js) :global([data-home]:not([data-gl="off"])) .listening {
+    top: calc(var(--art-top) + var(--band) + 0.8rem);
+    left: var(--edge);
   }
-
-  .tabName {
-    font-size: 0.56rem;
+  .name {
+    font-size: clamp(2.25rem, 10vw, 3.5rem);
   }
-
-  .who {
-    font-size: 1.25rem;
-    margin-bottom: 0.1rem;
+  .panel[data-active="1"] {
+    margin-top: 0;
   }
-
-  .jp {
-    display: none;
+  .captions {
+    margin-block: 0.6rem 0.85rem;
   }
-
-  .tag {
-    font-size: 0.54rem;
+  .quote {
+    font-size: 1.2rem;
   }
-
-  .text {
-    font-size: 0.8rem;
-    line-height: 1.22;
-  }
-
   .translation {
-    display: none;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
   }
-
-  .line {
-    gap: 0.6rem;
-    padding: 0.25rem 0;
+  .archive {
+    margin-top: 0.35rem;
   }
-
-  .play {
-    width: 2.4rem;
-    height: 2.4rem;
+  .chooser {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .choose {
+    padding-inline: 0.75rem;
+    font-size: 0.8rem;
   }
 }
 
-/* A narrow screen that is also short (a small tablet, a phone on its side): eight rows must still fit above the button. */
-@media (max-width: 56.25em) and (max-height: 780px) {
+@media (max-height: 34em) and (orientation: landscape) {
   .voices,
   .art {
-    --v-band: 4.6rem;
-    --v-chooser: 4rem;
+    --top: var(--nav-h);
+    --header: 2.9rem;
+    --bottom: 0.5rem;
+    --art-width: 37%;
   }
-
-  .line {
-    gap: 0.5rem;
-    padding: 0.14rem 0;
+  .name {
+    font-size: 2rem;
   }
-
+  .quote {
+    font-size: 1.1rem;
+  }
+  .captions {
+    margin-block: 0.45rem;
+  }
   .play {
-    width: 2.1rem;
-    height: 2.1rem;
+    min-height: 2.1rem;
   }
-
-  .text {
-    font-size: 0.76rem;
-    line-height: 1.16;
+  .archive {
+    margin-top: 0.2rem;
   }
-
-  .tag {
-    font-size: 0.5rem;
-  }
-}
-
-/* The wheel keeps the page moving over the chooser's own sideways scroll. */
-.chooser::-webkit-scrollbar {
-  display: none;
 }

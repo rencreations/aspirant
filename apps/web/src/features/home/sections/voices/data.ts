@@ -61,21 +61,30 @@ export const VOICE_LANGUAGES: readonly VoiceLanguage[] = FILE.languages;
 /** The ten Aspirants in the owner's order. */
 export const VOICE_CHARACTERS: readonly VoiceCharacter[] = FILE.characters;
 
-/**
- * Where the frame of the art rests on the 16 by 9 picture, so the Aspirant stays in view when the
- * frame is taller than the picture (`object-position`, x then y). Chosen by looking at the ten.
- */
-export const ART_POSITION: Readonly<Record<string, string>> = {
-  fanny: "32% 40%",
-  ruby: "28% 40%",
+/** Eye midpoint, previous horizontal crop, requested horizontal shift, and the two zoom factors. */
+type Portrait = [
+  eyeX: number,
+  eyeY: number,
+  previous: number,
+  shift: number,
+  full: number,
+  thumbnail: number,
+];
+export const PORTRAITS: Readonly<Record<string, Portrait>> = {
+  fanny: [0.575, 0.365, 0.32, -0.055, 1.09, 1.24],
+  ruby: [0.456, 0.35, 0.28, -0.018, 1.05, 1.17],
+  guinevere: [0.607, 0.365, 0.5, -0.048, 1.09, 1.24],
+  layla: [0.607, 0.492, 0.96, 0.055, 1.32, 1.36],
+  angela: [0.579, 0.253, 0.78, 0.043, 1.32, 1.36],
+  vexana: [0.605, 0.444, 0.86, 0.022, 1.21, 1.3],
+  obsidia: [0.484, 0.173, 0.24, -0.05, 1.18, 1.26],
+};
+
+/** These three compositions were approved in the local preview. */
+export const APPROVED_POSITION: Readonly<Record<string, string>> = {
   lesley: "68% 40%",
-  guinevere: "50% 40%",
   selena: "60% 40%",
-  layla: "96% 40%",
-  angela: "78% 40%",
   change: "76% 40%",
-  vexana: "86% 40%",
-  obsidia: "24% 40%",
 };
 
 /** The large picture of an Aspirant (2048 px). The small one is `splash`. */

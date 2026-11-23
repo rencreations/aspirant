@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { validatePlays, zoneProgress, zoneValue } from "../../kernel/plays";
-import { BEAT_SPAN, REST, STANCES, T, beatAt, newBeat } from "./beats";
+import { BEAT_SPAN, STAGE, STANCES, T, beatAt, newBeat } from "./beats";
 import { FLIGHT, arriveAt, spiralInAt, wallCount, waveOf } from "./formations";
 import { BEND_PLAYS, BEND_SCREENS, REST_BEATS, ZONE_SCREENS, restScreens } from "./plays";
 
@@ -32,8 +32,8 @@ describe("the bend section's zones", () => {
     expect(REST_BEATS[0]).toBe(0);
     expect(REST_BEATS[10]).toBe(BEAT_SPAN);
     const end = beatAt(1, newBeat());
-    expect(end.spot.tx).toBeCloseTo(REST.tx, 6);
-    expect(end.spot.ty).toBeCloseTo(REST.ty, 6);
+    expect(end.spot.tx).toBeCloseTo(STAGE.tx, 6);
+    expect(end.spot.ty).toBeCloseTo(STAGE.ty, 6);
     // The last zone ends with the section.
     const last = ZONE_SCREENS[9]!;
     expect(last.at + last.len).toBeCloseTo(BEND_SCREENS, 9);
@@ -47,54 +47,26 @@ describe("the bend section's zones", () => {
     });
   });
 
-  it("keep every zone short: 0.5 to 1 screen, at least 0.9 beat to the screen at most 1.8", () => {
-    BEND_PLAYS.forEach((p, i) => {
-      const len = p.span! * BEND_SCREENS;
-      expect(len, `zone ${i + 1}`).toBeGreaterThanOrEqual(0.5 - 1e-9);
-      expect(len, `zone ${i + 1}`).toBeLessThanOrEqual(1 + 1e-9);
-      const pace = (REST_BEATS[i + 1]! - REST_BEATS[i]!) / len;
-      expect(pace, `zone ${i + 1}`).toBeLessThanOrEqual(1.8);
-    });
-  });
-
-  it("leave a short rest between scenes and a longer one where there are words", () => {
-    const gaps = ZONE_SCREENS.slice(1).map(
-      (z, i) => z.at - (ZONE_SCREENS[i]!.at + ZONE_SCREENS[i]!.len),
-    );
-    gaps.forEach((gap, i) => {
-      // Zone 6 (the wall settles) and zone 8 (the spiral) are followed by words and a button.
-      const words = i === 5 || i === 7;
-      if (words) {
-        expect(gap, `after zone ${i + 1}`).toBeGreaterThanOrEqual(0.9);
-        expect(gap, `after zone ${i + 1}`).toBeLessThanOrEqual(1.2);
-      } else {
-        expect(gap, `after zone ${i + 1}`).toBeGreaterThanOrEqual(0.05);
-        expect(gap, `after zone ${i + 1}`).toBeLessThanOrEqual(0.2);
-      }
-    });
-    // The section starts with the chase's words still riding out.
-    expect(ZONE_SCREENS[0]!.at).toBeGreaterThanOrEqual(0.3);
-    expect(ZONE_SCREENS[0]!.at).toBeLessThanOrEqual(0.6);
-  });
-
-  it("stand the page in the middle of each long rest", () => {
-    for (const k of [1, 2] as const) {
-      const z = ZONE_SCREENS[k === 1 ? 5 : 7]!;
-      const next = ZONE_SCREENS[k === 1 ? 6 : 8]!;
-      const at = restScreens(k);
-      expect(at).toBeGreaterThan(z.at + z.len);
-      expect(at).toBeLessThan(next.at);
+  it("starts with the book and keeps the artwork moving as soon as it appears", () => {
+    expect(ZONE_SCREENS[0]!.at).toBe(0);
+    const wall = ZONE_SCREENS[5]!;
+    expect(restScreens(1)).toBeGreaterThan(wall.at + wall.len);
+    expect(restScreens(1)).toBeLessThan(ZONE_SCREENS[6]!.at);
+    for (const i of [6, 7, 8]) {
+      const zone = ZONE_SCREENS[i]!;
+      expect(zone.at + zone.len).toBeCloseTo(ZONE_SCREENS[i + 1]!.at, 8);
     }
+    expect(restScreens(2)).toBeCloseTo(ZONE_SCREENS[8]!.at, 8);
     expect(restScreens(3)).toBeLessThan(BEND_SCREENS);
   });
 
-  it("show each stance formed at its rest: the right pose, worn in full, and every picture of its wave landed", () => {
+  it("show each stance formed at its rest: the right pose, still blended, and every picture of its wave landed", () => {
     for (const vp of SIZES) {
       STANCES.forEach((stance, w) => {
         const b = rest(w + 2, vp);
         expect(b.pose, `stance ${w}`).toBe("bend");
         expect(b.bend).toBe(stance.kind);
-        expect(b.blend).toBeCloseTo(1, 9);
+        expect(b.blend).toBeGreaterThan(0);
         const restBeat = REST_BEATS[w + 2]!;
         for (let i = 0; i < wallCount(vp); i += 1) {
           if (waveOf(i, vp) !== w) continue;
@@ -128,10 +100,10 @@ describe("the bend section's zones", () => {
     }
   });
 
-  it("show the ring turning at its rest, her stance worn in full", () => {
+  it("show the ring turning at its rest, her stance still blended", () => {
     const b = rest(7);
     expect(b.pose).toBe("bend");
-    expect(b.blend).toBeCloseTo(1, 9);
+    expect(b.blend).toBeGreaterThan(0);
     expect(b.fanTitle).toBe(0);
   });
 
@@ -142,12 +114,12 @@ describe("the bend section's zones", () => {
     expect(b.artTitle).toBe(1);
     expect(b.fanTitle).toBe(0);
     expect(b.pose).toBe("idle");
-    expect(b.adv).toBe(0);
+    expect(b.adv).toBeGreaterThan(0);
   });
 
-  it("show the drone out of its paper at the rest before they meet", () => {
+  it("bring the drone to the front before the greeting", () => {
     const b = rest(9);
-    expect(b.pop).toBe(1);
+    expect(b.adv).toBe(10);
     expect(b.pose).toBe("idle");
     expect(b.pat).toBe(0);
   });

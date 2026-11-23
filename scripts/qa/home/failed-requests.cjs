@@ -19,7 +19,11 @@ const base = process.argv[2] || "http://localhost:3000/";
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await ctx.addInitScript(() => {
     try {
-      localStorage.setItem("aspirants:consent", "rejected");
+      sessionStorage.setItem("aspirants:entered", "1");
+      localStorage.setItem(
+        "aspirants:consent",
+        JSON.stringify({ choice: "rejected", at: Date.now() }),
+      );
       sessionStorage.setItem("aspirants:intro", "off");
     } catch {
       /* storage can be blocked */

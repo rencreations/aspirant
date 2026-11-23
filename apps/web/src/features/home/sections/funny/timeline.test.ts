@@ -125,11 +125,11 @@ describe.each(SIZES)("the geometry at %i x %i", (w, h) => {
     expect(Math.abs(head)).toBeLessThan(w / 2);
   });
 
-  it("has Tetra arrive from the right, stand, and run off to the left after the cut", () => {
+  it("has Tetra already flying her kite, and run off to the left after the cut", () => {
     const cut = cutMoment(g).local;
     const out = { x: 0, y: 0, running: false, speed: 0, arrive: 0, leave: 0 };
-    expect(tetraPlace(0, g, cut, out).x).toBeGreaterThan(w / 2);
-    expect(tetraPlace(0, g, cut, out).running).toBe(true);
+    expect(tetraPlace(0, g, cut, out).x).toBeCloseTo(g.tetra.x, 6);
+    expect(tetraPlace(0, g, cut, out).running).toBe(false);
     const stand = tetraPlace((T.enterEnd + cut) / 2, g, cut, out);
     expect(stand.x).toBeCloseTo(g.tetra.x, 3);
     expect(stand.running).toBe(false);

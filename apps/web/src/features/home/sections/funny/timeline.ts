@@ -1,15 +1,13 @@
 /**
  * The funny section as arithmetic: where everyone stands and when, as pure functions of `local` and
  * the size of the screen. No three, no DOM. The runtime reads these and sets the actors; a test holds
- * the joints. Stage pixels (the origin in the middle of the screen, y UP). `local` is the plays'
- * value (`stations.ts`): a clock between three stations, not the scroll.
+ * the joints. Stage pixels (the origin in the middle of the screen, y UP). `local` is sampled from
+ * the visitor's scroll position by `stations.ts`.
  *
  * The story, in `local`:
- *   0      the duo hover high at the left (the music's end); the stage is otherwise empty
- *   0 .. ENTER_END      play one: Tetra runs in from the right with the kite behind her and stops to
- *                       fly it. The first rest.
+ *   0 .. ENTER_END      Tetra is already flying her kite as Music scrolls away. The duo watch.
  *   DRAGON_IN .. OUT    play two: Silverbolt crosses right to left with the doll in its mouth; its
- *                       head meets the rope at CUT and the kite comes down; Tetra, angry, runs off to
+ *                       head pushes the rope until it breaks and the kite comes down. Tetra runs off to
  *                       the left after the dragon. The second rest, the drones confused.
  *   CENTRE_FROM .. TO   play three: the duo come to the middle, big, and question each other
  *   TEXT_FROM .. TO     the words arrive. The last rest is the end of the section.
@@ -49,8 +47,7 @@ export const T = {
   questionFrom: 0.72,
   textFrom: 0.74,
   textTo: 0.88,
-  /** The kite, once it has fallen a while, shrinks away in a puff. */
-  kiteAway: 0.07,
+  /** The end of the fall, once the kite has dropped out of view. */
   kiteGone: 0.14,
 } as const;
 
@@ -85,22 +82,20 @@ const HEAD_LEAD = 0.62;
 
 export function geometry(w: number, h: number): FunnyGeometry {
   const compact = w < 760 || w < h * 0.8;
-  const dh = compact ? 0.27 * h : 0.4 * h;
-  const tetraH = compact ? 0.3 * h : 0.42 * h;
-  const watchD = compact ? Math.min(0.12 * h, 0.2 * w) : Math.min(0.13 * h, 0.1 * w);
+  const dh = Math.min(0.205 * h, 0.265 * w);
+  const tetraH = Math.min(0.25 * h, 0.375 * w);
+  const watchD = Math.min(0.08 * h, 0.105 * w);
   const centreD = compact ? Math.min(0.2 * h, 0.28 * w) : Math.min(0.27 * h, 0.19 * w);
-  const tetraX = compact ? 0.2 * w : 0.2 * w;
-  const floor = -0.43 * h;
+  const tetraX = 0.19 * w;
+  const floor = -0.275 * h;
   return {
     w,
     h,
     compact,
     tetra: { x: tetraX, y: floor, height: tetraH },
-    kite: compact
-      ? { x: -0.02 * w, y: 0.27 * h, height: 0.17 * h }
-      : { x: -0.02 * w, y: 0.27 * h, height: 0.24 * h },
+    kite: { x: -0.055 * w, y: 0.19 * h, height: tetraH * 0.57 },
     dragon: {
-      y: compact ? 0.1 * h : 0.06 * h,
+      y: 0.012 * h,
       height: dh,
       // The head enters at the right edge; the tail tip clears the left edge at the end.
       x0: w / 2 + 30 + HEAD_LEAD * dh,
@@ -130,8 +125,17 @@ export function geometry(w: number, h: number): FunnyGeometry {
 }
 
 /** The dragon's body block middle at `local` (the head is `headLead` to the left of it). */
-export function dragonX(local: number, g: FunnyGeometry): number {
-  return lerp(g.dragon.x0, g.dragon.x1, line(local, T.dragonIn, T.dragonOut));
+export function dragonX(local: number, g: FunnyGeometry, hit = cutMoment(g)): number {
+  const { x0, x1 } = g.dragon;
+  const start = lerp(x0, x1, line(hit.contact, T.dragonIn, T.dragonOut));
+  const end = start - Math.min(g.w * 0.09, g.dragon.height * 0.64);
+  if (local <= hit.contact) return lerp(x0, start, line(local, T.dragonIn, hit.contact));
+  if (local < hit.local) {
+    const u = line(local, hit.contact, hit.local);
+    return lerp(start, end, 1 - (1 - u) ** 2);
+  }
+  const u = line(local, hit.local, T.dragonOut);
+  return lerp(end, x1, u * u * (2 - u));
 }
 
 /** True while some of the dragon is on the screen's width. */
@@ -145,7 +149,7 @@ function reelPoint(g: FunnyGeometry): { x: number; y: number } {
 }
 
 /** The `local` at which the dragon's head meets the rope, and where on the rope (0 her hand, 1 the kite). */
-export function cutMoment(g: FunnyGeometry): { local: number; at: number } {
+export function cutMoment(g: FunnyGeometry): { contact: number; local: number; at: number } {
   const reel = reelPoint(g);
   const k = g.kite;
   const y = g.dragon.y + 0.2 * g.dragon.height;
@@ -156,7 +160,7 @@ export function cutMoment(g: FunnyGeometry): { local: number; at: number } {
   const local =
     T.dragonIn +
     ((g.dragon.x0 - centre) / (g.dragon.x0 - g.dragon.x1)) * (T.dragonOut - T.dragonIn);
-  return { local, at: Math.min(0.85, Math.max(0.15, at)) };
+  return { contact: local, local: local + 0.054, at: Math.min(0.85, Math.max(0.15, at)) };
 }
 
 /**
@@ -172,31 +176,26 @@ export function lift(pastEnd: number): number {
 export function bob(seconds: number, g: FunnyGeometry): { y: number; pitch: number; roll: number } {
   const t = seconds * 0.9;
   return {
-    y: g.dragon.y + Math.sin(t * 5.2) * 0.035 * g.h,
+    y: g.dragon.y + Math.sin(t * 5.2) * 0.045 * g.dragon.height,
     pitch: Math.cos(t * 5.2) * 0.07,
     roll: Math.sin(t * 3.1) * 0.05,
   };
 }
 
-/** Tetra's feet at `local`: she runs in, stands, then runs off to the left once the rope is cut. */
+/** Tetra flies her kite in place until the rope breaks, then chases the dragon. */
 export function tetraPlace(
   local: number,
   g: FunnyGeometry,
   cut: number,
   out: { x: number; y: number; running: boolean; speed: number; arrive: number; leave: number },
 ): typeof out {
-  const arrive = ramp(local, 0, T.enterEnd);
-  const startX = g.w / 2 + 0.2 * g.tetra.height + 40;
   const leave = ramp(local, cut + T.runFrom, cut + T.runTo);
   const endX = -g.w / 2 - 0.5 * g.tetra.height - 40;
-  // She decelerates into her spot, and accelerates away after the cut.
-  const runIn = arrive < 1 && local < T.enterEnd;
-  out.x = lerp(startX, g.tetra.x, 1 - Math.pow(1 - clamp01(local / T.enterEnd), 2));
-  if (local > cut + T.runFrom) out.x = lerp(g.tetra.x, endX, leave * leave * (1.2 - 0.2 * leave));
+  out.x = lerp(g.tetra.x, endX, leave * leave * (1.2 - 0.2 * leave));
   out.y = g.tetra.y;
-  out.running = runIn || (local > cut + T.runFrom && leave < 1);
-  out.speed = runIn ? 0.6 * (1 - arrive * 0.6) : 0.4 + 0.6 * leave;
-  out.arrive = arrive;
+  out.running = local > cut + T.runFrom && leave < 1;
+  out.speed = 0.4 + 0.6 * leave;
+  out.arrive = 1;
   out.leave = leave;
   return out;
 }

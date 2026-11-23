@@ -21,6 +21,11 @@ export const COMIC_COVERS = {
   },
 } as const;
 
+export const CARD_PICTURES = {
+  left: "/img/home/comic-aspirants.webp",
+  right: "/img/home/comic-vexana-guinevere.webp",
+} as const;
+
 export type CoverSide = keyof typeof COMIC_COVERS;
 
 /** The address of a cover picture (for the plain `img` of the markup and for the fetch). */

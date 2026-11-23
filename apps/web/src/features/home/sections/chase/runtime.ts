@@ -2,21 +2,21 @@ import { SRGBColorSpace, Texture } from "three";
 
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
-import { drawnHeight, walkPhaseFor, type DollActor } from "../../actors/doll";
+import type { DollActor } from "../../actors/doll";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
 import type { MarksActor } from "../../fx/comic-marks";
-import type { SustainHandle } from "../../fx/comic-marks/system";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
+import { ScrollTravel } from "../travel";
 import { coverBitmap, loadCovers, type CoverSide } from "./covers";
 import {
   T,
-  beatAt,
   dollPlace,
   dragonPlace,
   geometry,
   lerp,
+  poseAt,
   ramp,
   tetraRun,
   tetraStand,
@@ -38,12 +38,6 @@ const SCARED = [
 const SCARED_LOOP = 1.9;
 /** A page of the comic turns this often while she reads (seconds). */
 const PAGE_EVERY = 3.4;
-
-interface Point {
-  x: number;
-  y: number;
-}
-const point = (): Point => ({ x: 0, y: 0 });
 
 /**
  * The chase and the comic: the doll runs for her life, Silverbolt chases her, Tetra chases both and
@@ -74,30 +68,15 @@ class ChaseRuntime implements SectionRuntime {
   private readonly textures: Texture[] = [];
   private coversSet = false;
 
-  private speedDoll: SustainHandle | null = null;
-  private speedDragon: SustainHandle | null = null;
-  private speedTetra: SustainHandle | null = null;
-  private beads: SustainHandle | null = null;
-  private steam: SustainHandle | null = null;
-
-  private dustAt = 0;
-  private veinAt = 0;
-  private sweatAt = 0;
+  private wasPanting = false;
   private pageAt = 0;
+  private readonly travel = new ScrollTravel();
+  private returnDragonX = 0;
   private lastLocal = Number.NaN;
-  /** Frames each runner has been drawn in a row: a mark point is stale (0, 0) before the third. */
-  private dollFrames = 0;
-  private tetraFrames = 0;
-
   private readonly dp = { x: 0, y: 0, dist: 0, on: false };
   private readonly bp = { x: 0, y: 0, pitch: 0, roll: 0, on: false };
   private readonly tr = { x: 0, y: 0, speed: 0, running: false };
   private readonly ts = { x: 0, y: 0, height: 0 };
-  private readonly dollHead = { x: 0, y: 0, s: 1, unit: 1 };
-  private readonly anchorA = point();
-  private readonly anchorB = point();
-  private readonly anchorC = point();
-
   /** A control of the section has the keyboard's focus: its words stay shown wherever the scroll is. */
   private kbd = false;
   private readonly onFocusIn = (): void => {
@@ -152,14 +131,7 @@ class ChaseRuntime implements SectionRuntime {
       take(
         "the marks",
         async () => (await import("../../fx/comic-marks")).ensureMarks(ctx),
-        (a) => {
-          this.marks = a;
-          this.speedDoll = a.sustain("speed", { size: 0.2 * this.geo.h, direction: Math.PI });
-          this.speedDragon = a.sustain("speed", { size: 0.26 * this.geo.h, direction: Math.PI });
-          this.speedTetra = a.sustain("speed", { size: 0.14 * this.geo.h, direction: Math.PI });
-          this.beads = a.sustain("beads", { size: 0.1 * this.geo.h });
-          this.steam = a.sustain("steam", { size: 0.035 * this.geo.h });
-        },
+        (a) => (this.marks = a),
       ),
       take(
         "Tetra",
@@ -216,7 +188,9 @@ class ChaseRuntime implements SectionRuntime {
   }
 
   enter(): void {
+    this.travel.reset();
     this.entered = true;
+    this.wasPanting = false;
     this.lastLocal = Number.NaN;
     this.dragon?.calm();
     this.bindBook();
@@ -224,11 +198,13 @@ class ChaseRuntime implements SectionRuntime {
 
   leave(): void {
     this.entered = false;
+    this.tetra?.book.auto();
     this.tetra?.book.onPress(null);
     if (!this.kbd) this.words(0);
   }
 
   update(local: number, frame: FrameInfo): void {
+    this.travel.update(frame, local > T.tetraTo);
     const { w, h } = frame.viewport;
     if (w !== this.geo.w || h !== this.geo.h) this.geo = geometry(w, h);
     const jumped = Number.isNaN(this.lastLocal) || Math.abs(local - this.lastLocal) > 0.12;
@@ -238,17 +214,11 @@ class ChaseRuntime implements SectionRuntime {
       this.words(0);
       return;
     }
-    if (jumped) {
-      this.dollFrames = this.tetraFrames = 0;
-      // Only a seek that lands inside the scene clears: a slow entry through the lead or the tail
-      // (local below 0 or above 1) must leave the neighbour's marks alone.
-      if (local <= 1) this.marks?.clear();
-    }
     // The words come in with the second zone and go with the scroll after the section (`frame.S`),
     // so a section passed by a jump (replayed at its last station) shows none.
     const gone = wordsLeave(frame.S, sectionEnd("chase"));
     this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));
-    this.drawDoll(local, frame, jumped);
+    this.drawDoll(local, frame);
     this.drawDragon(local, frame);
     this.drawTetra(local, frame, jumped);
   }
@@ -293,42 +263,30 @@ class ChaseRuntime implements SectionRuntime {
 
   // ---------------------------------------------------------------------------------------- the doll
 
-  private drawDoll(local: number, frame: FrameInfo, jumped: boolean): void {
+  private drawDoll(local: number, frame: FrameInfo): void {
     const doll = this.doll;
     const g = this.geo;
+    if (!doll || local < T.dollFrom || local > T.tetraTo) return;
+    const reverseX = -dollPlace(T.tetraTo + T.dollFrom - local, g, this.dp).x;
     const d = dollPlace(local, g, this.dp);
-    if (!doll || !d.on) {
-      this.beads?.stop();
-      this.speedDoll?.stop();
-      this.dollFrames = 0;
-      return;
-    }
-    this.dollFrames++;
+    const x = lerp(d.x, reverseX, this.travel.reverse);
+    if (Math.abs(x) > g.w / 2 + g.dollH * 0.49 + 30) return;
     // The funny section had her in the dragon's mouth: she is her own again.
     if (doll.parentSocket) doll.detach();
     doll.visible = true;
     doll.reset();
-    doll.place({ x: d.x, y: d.y, z: 24, height: g.dollH, yaw: DOLL_YAW });
+    doll.place({
+      x,
+      y: g.floor + 0.015 * g.dollH * Math.abs(Math.sin(frame.time * 10)),
+      z: 24,
+      height: g.dollH,
+      yaw: DOLL_YAW * this.travel.heading,
+    });
     doll.pose("run", 1);
-    doll.walk(1, { phase: walkPhaseFor(d.dist, g.dollH), lean: 1 });
+    doll.walk(1, { rate: 1.65, lean: 1 });
     doll.mood(SCARED, frame.time % SCARED_LOOP);
     doll.talk(0.6 + 0.4 * Math.sin(frame.time * 11));
     doll.blinkAuto(false);
-
-    const marks = this.marks;
-    if (!marks || jumped || frame.dt <= 0 || this.dollFrames <= 3) return;
-    doll.markPoint("head", this.dollHead);
-    this.anchorA.x = this.dollHead.x;
-    this.anchorA.y = this.dollHead.y;
-    this.beads?.update(this.anchorA, 0.8);
-    const drawn = drawnHeight(g.dollH);
-    this.anchorB.x = d.x - 0.7 * drawn;
-    this.anchorB.y = d.y + 0.5 * drawn;
-    this.speedDoll?.update(this.anchorB, 0.8, Math.PI);
-    if (frame.time - this.dustAt > 0.2) {
-      this.dustAt = frame.time;
-      marks.emit("dust", { at: { x: d.x - 0.2 * drawn, y: d.y }, size: 0.3 * drawn });
-    }
   }
 
   // ---------------------------------------------------------------------------------------- the dragon
@@ -336,25 +294,30 @@ class ChaseRuntime implements SectionRuntime {
   private drawDragon(local: number, frame: FrameInfo): void {
     const sb = this.dragon;
     const g = this.geo;
+    const mirrored = dragonPlace(T.tetraTo + T.dollFrom - local, g, this.bp);
+    this.returnDragonX = -mirrored.x;
+    if (!sb || local < T.dollFrom || local > T.tetraTo) return;
     const b = dragonPlace(local, g, this.bp);
-    if (!sb || !b.on) {
-      this.speedDragon?.stop();
-      return;
-    }
+    const limit = g.w / 2 + g.dragonH * 3.5 + 32;
+    const bound = (v: number) => Math.max(-limit, Math.min(limit, v));
+    const x = lerp(bound(b.x), bound(this.returnDragonX), this.travel.reverse);
+    if (Math.abs(x) >= limit - 1) return;
     sb.visible = true;
-    sb.place({ x: b.x, y: b.y, z: 0, height: g.dragonH, yaw: YAW, pitch: b.pitch, roll: b.roll });
+    sb.place({
+      x,
+      y: b.y + Math.sin(frame.time * 3.1) * 0.048 * g.dragonH,
+      z: 0,
+      height: g.dragonH,
+      yaw: YAW * this.travel.heading,
+      pitch: b.pitch,
+      roll: b.roll + 0.15 * (1 - this.travel.heading ** 2),
+    });
     sb.fly(frame.time, { amplitude: 1.25, speed: 1.3 });
     sb.face("growl", 0.7);
     // It snaps at her: the jaw opens wide and shuts again, three times a second.
     sb.jaw(0.5 + 0.5 * Math.abs(Math.sin(frame.time * Math.PI * 3)));
     sb.follow(0);
-    sb.look(b.x + 900, b.y - 0.3 * g.dragonH);
-
-    if (this.marks && frame.dt > 0) {
-      this.anchorC.x = b.x - 2.2 * g.dragonH;
-      this.anchorC.y = b.y;
-      this.speedDragon?.update(this.anchorC, 0.9, Math.PI);
-    }
+    sb.look(x + 900 * this.travel.heading, b.y - 0.3 * g.dragonH);
   }
 
   // ---------------------------------------------------------------------------------------- Tetra
@@ -362,100 +325,48 @@ class ChaseRuntime implements SectionRuntime {
   private drawTetra(local: number, frame: FrameInfo, jumped: boolean): void {
     const tetra = this.tetra;
     const g = this.geo;
-    if (!tetra || local < T.tetraFrom - 0.01) {
-      this.tetraFrames = 0;
-      return;
-    }
-    this.tetraFrames++;
-    const beat = beatAt(local);
+    if (!tetra || local < T.dollFrom) return;
     const run = tetraRun(local, g, this.tr);
     const stand = tetraStand(local, g, this.ts);
     const stopped = local >= T.tetraTo;
+    const left = -g.w / 2 - 0.5 * g.tetraH - 40;
+    // Wait for the returning pair to pass, then fall in behind the tail.
+    const returning = Math.max(
+      left,
+      Math.min(0, this.returnDragonX + g.dragonH * 2.0 + g.w * 0.12),
+    );
+    const x = stopped ? stand.x : lerp(run.x, returning, this.travel.reverse);
+    const chase = lerp(1, ramp(-returning, 0, g.tetraH * 0.12), this.travel.reverse);
+    const stride = chase * (1 - ramp(local, T.tetraTo - 0.027, T.tetraTo + 0.014));
 
     tetra.visible = true;
     tetra.kite.fly(null);
     tetra.setReel(false);
     tetra.place({
-      x: stopped ? stand.x : run.x,
+      x,
       y: stopped ? stand.y : run.y,
       height: stopped ? stand.height : g.tetraH,
-      flip: false,
+      yaw: this.travel.runYaw(1) * stride,
     });
     tetra.look("pointer");
     tetra.setInteractive(true);
-    tetra.pose(beat, 1);
-    tetra.runSpeed(run.speed);
-    tetra.waveWith(1);
-    if (beat === "run") tetra.setFace("angry", 1);
-    else if (beat === "pant" || beat === "wave") tetra.setFace("tired", 1);
-    else tetra.setFace(null);
-    // She is the one who reads: the book is out and open by the pose itself.
-    tetra.book.auto();
-    if (beat === "read" && !jumped && frame.dt > 0 && frame.time - this.pageAt > PAGE_EVERY) {
+    tetra.runSpeed(lerp(run.speed, 0.85, this.travel.reverse));
+    const panting = local >= T.tetraTo && local < T.panted;
+    if (panting && !this.wasPanting && !jumped) {
+      const head = tetra.marks().head;
+      this.marks?.emit("sweat", { at: { x: head.x, y: head.y }, size: 0.075 * g.tetraH, count: 1 });
+    }
+    this.wasPanting = panting;
+    const pose = poseAt(local);
+    if (pose.name === "run") tetra.pose("run", chase, "pant");
+    else tetra.pose(pose.name, ramp(local, pose.start, pose.end), pose.from);
+    const open = ramp(local, 0.789, 0.832);
+    tetra.book.scene(ramp(local, 0.716, 0.731), open, open);
+    tetra.setFace(null);
+    if (open === 1 && !jumped && frame.dt > 0 && frame.time - this.pageAt > PAGE_EVERY) {
       this.pageAt = frame.time;
       tetra.book.turnPage();
     }
-    this.tetraMarks(tetra, beat, local, frame, jumped);
-  }
-
-  private tetraMarks(
-    tetra: TetraActor,
-    beat: string,
-    local: number,
-    frame: FrameInfo,
-    jumped: boolean,
-  ): void {
-    const marks = this.marks;
-    const g = this.geo;
-    if (!marks || jumped || frame.dt <= 0 || this.tetraFrames <= 3) return;
-    const m = tetra.marks();
-    if (beat === "run") {
-      this.anchorA.x = m.head.x;
-      this.anchorA.y = m.head.y + 0.1 * g.tetraH;
-      this.steam?.update(this.anchorA, 0.8, Math.PI / 2);
-      this.anchorB.x = m.chest.x - 0.8 * g.tetraH;
-      this.anchorB.y = m.chest.y;
-      this.speedTetra?.update(this.anchorB, 0.6, Math.PI);
-      if (frame.time - this.dustAt > 0.2) {
-        this.dustAt = frame.time;
-        marks.emit("dust", { at: { x: m.ground.x, y: m.ground.y }, size: 0.1 * g.tetraH });
-      }
-      if (frame.time - this.veinAt > 0.9) {
-        this.veinAt = frame.time;
-        marks.emit("vein", {
-          at: { x: m.head.x + 0.08 * g.tetraH, y: m.head.y },
-          offset: { x: 0, y: 0.1 * g.tetraH },
-          size: 0.12 * g.tetraH,
-        });
-      }
-    } else if (beat === "pant") {
-      this.anchorA.x = m.head.x;
-      this.anchorA.y = m.head.y;
-      this.steam?.update(this.anchorA, 1, Math.PI / 4);
-      if (frame.time - this.sweatAt > 0.7) {
-        this.sweatAt = frame.time;
-        marks.emit("sweat", {
-          at: { x: m.head.x, y: m.head.y },
-          offset: { x: 0.1 * g.tetraH, y: 0.04 * g.tetraH },
-          size: 0.08 * g.tetraH,
-          count: 2,
-        });
-        marks.emit("cloud", {
-          at: { x: m.head.x, y: m.head.y },
-          offset: { x: -0.12 * g.tetraH, y: 0.1 * g.tetraH },
-          size: 0.16 * g.tetraH,
-        });
-      }
-    } else if (beat === "wave" && frame.time - this.sweatAt > 1.2) {
-      this.sweatAt = frame.time;
-      marks.emit("sweat", {
-        at: { x: m.head.x, y: m.head.y },
-        offset: { x: 0.1 * g.tetraH, y: 0.04 * g.tetraH },
-        size: 0.08 * g.tetraH,
-      });
-    }
-    void local;
-    void lerp;
   }
 
   dispose(): void {

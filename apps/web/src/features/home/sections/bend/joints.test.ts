@@ -50,10 +50,10 @@ describe("J14: the bend to the archive", () => {
     // They do not stand on each other: the drone is clear of her width.
     const herHalf = 0.28 * rest.th * h;
     expect(Math.abs(place.x - rest.tx * w)).toBeGreaterThan(herHalf * 0.9);
-    // Both are on the screen, low.
-    expect(place.y).toBeLessThan(0);
+    // The drone hovers alongside her upper body.
+    expect(place.y).toBeGreaterThan(rest.ty * h);
     expect(rest.ty * h).toBeLessThan(0);
-    expect(Math.abs(place.x) + place.height).toBeLessThan(w / 2);
+    expect(Math.abs(place.x) + place.height / 2).toBeLessThan(w / 2);
     expect(Math.abs(rest.tx * w) + rest.th * h * 0.3).toBeLessThan(w / 2);
   });
 

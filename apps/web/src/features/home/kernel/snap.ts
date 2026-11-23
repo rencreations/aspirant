@@ -62,7 +62,7 @@ export function jointZones(layout: Layout): JointZone[] {
   const blocked: JointZone[] = [];
   const list = layout.placed;
   list.forEach((p, i) => {
-    if (!p.def.plays) {
+    if (!p.def.plays || p.def.manualScroll) {
       blocked.push({ from: p.from, to: p.to });
       return;
     }

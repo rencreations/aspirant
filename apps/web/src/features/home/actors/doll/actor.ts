@@ -94,6 +94,8 @@ import { DOLL_HEIGHT, FACE_POINTS, RIG_BONES, WALK_SECONDS } from "./rig";
 type Pivot = "feet" | "hips" | "center" | "head" | "handL" | "handR";
 
 export interface DollPlacement {
+  /** Keep the supplied rotation in stage axes while the attachment moves. */
+  stageRotation?: boolean;
   /** Where the pivot stands, in stage pixels (origin at the middle of the screen, y up). */
   x: number;
   y: number;
@@ -217,6 +219,8 @@ export class DollActor implements Actor {
   private pz = 0;
   private pheight = 100;
   private worldHeight = 0;
+  private stageRotation = false;
+  private readonly socketTurn = new Quaternion();
   private pyaw = 0;
   private ppitch = 0;
   private proll = 0;
@@ -245,6 +249,7 @@ export class DollActor implements Actor {
   private walkByTime = true;
   private flailAmount = 0;
   private flailRate = 1;
+  private flailTime: number | undefined;
   private dangleAmount = 0;
   private squashTarget = 0;
   private stretchL = 0;
@@ -435,6 +440,7 @@ export class DollActor implements Actor {
 
   /** Where she stands and how big. Omitted fields go back to their defaults: the call sets the whole placement. */
   place(p: DollPlacement): void {
+    this.stageRotation = p.stageRotation ?? false;
     this.worldHeight = 0;
     this.px = p.x;
     this.py = p.y;
@@ -525,7 +531,8 @@ export class DollActor implements Actor {
   }
 
   /** The flail of a fall, 0 to 1. `rate` scales its speed. */
-  flail(amount: number, rate = 1): void {
+  flail(amount: number, rate = 1, time?: number): void {
+    this.flailTime = time;
     this.flailAmount = clamp(amount, 0, 1);
     this.flailRate = rate;
   }
@@ -574,6 +581,7 @@ export class DollActor implements Actor {
     this.poseW = 0;
     this.walkWeight = 0;
     this.flailAmount = 0;
+    this.flailTime = undefined;
     this.dangleAmount = 0;
     this.squashTarget = 0;
     this.stretchL = 0;
@@ -1004,7 +1012,7 @@ export class DollActor implements Actor {
     this.applyFall(dt);
     this.turns.fill(0);
     addBreath(this.turns, time);
-    addFlail(this.turns, time, this.flailAmount, this.flailRate);
+    addFlail(this.turns, this.flailTime ?? time, this.flailAmount, this.flailRate);
     addDangle(this.turns, time, this.dangleAmount);
     addRunLean(this.turns, this.walkWeight * this.walkLean);
     this.rider.addTurns(this.turns, time);
@@ -1149,6 +1157,11 @@ export class DollActor implements Actor {
     const lift = hop * HOP_SHARE * drawn;
     if (this.worldHeight > 0 && this.attachedTo) {
       this.attachedTo.updateWorldMatrix(true, false);
+      if (this.stageRotation) {
+        this.root.quaternion.premultiply(
+          this.attachedTo.getWorldQuaternion(this.socketTurn).invert(),
+        );
+      }
       this.root.position.set(this.px, this.py, this.pz);
       this.root.scale.setScalar(this.worldHeight / (DOLL_HEIGHT * this.parentScale()));
     } else if (this.attachedTo) {

@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   DRONE_CARD,
   FROM_CHASE,
-  REST,
   STAGE,
   STANCES,
   T,
@@ -108,10 +107,10 @@ describe("Tetra", () => {
     }
   });
 
-  it("pats and hugs one after the other, then runs to the rest", () => {
+  it("pats and hugs one after the other, then stands for the goodbye", () => {
     expect(at((T.flyTo + T.patTo) / 2).pose).toBe("pat");
     expect(at((T.patTo + T.hugTo) / 2).pose).toBe("hug");
-    expect(at((T.hugTo + T.goTo) / 2).pose).toBe("run");
+    expect(at((T.hugTo + T.goTo) / 2).pose).toBe("idle");
     expect(at(BEND_SCREENS).pose).toBe("idle");
   });
 
@@ -120,9 +119,9 @@ describe("Tetra", () => {
     expect(at(T.moveTo + 0.01).spot.th).toBeCloseTo(STAGE.th, 3);
     expect(at(T.holdFrom).spot).toEqual(STAGE);
     expect(at(T.hugTo).spot).toEqual(STAGE);
-    expect(at(BEND_SCREENS).spot.tx).toBeCloseTo(REST.tx, 6);
-    expect(at(BEND_SCREENS).spot.ty).toBeCloseTo(REST.ty, 6);
-    expect(at(BEND_SCREENS).spot.th).toBeCloseTo(REST.th, 6);
+    expect(at(BEND_SCREENS).spot.tx).toBeCloseTo(STAGE.tx, 6);
+    expect(at(BEND_SCREENS).spot.ty).toBeCloseTo(STAGE.ty, 6);
+    expect(at(BEND_SCREENS).spot.th).toBeCloseTo(STAGE.th, 6);
   });
 
   it("moves smoothly: no step of her place between two close samples is large", () => {

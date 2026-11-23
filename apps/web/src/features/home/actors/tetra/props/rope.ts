@@ -87,17 +87,28 @@ export function createForces(): Forces {
 }
 
 /** One fixed step of `h` seconds. */
-export function stepChain(c: Chain, h: number, f: Forces): void {
+export function stepChain(
+  c: Chain,
+  h: number,
+  f: Forces,
+  contact?: { index: number; x: number; y: number },
+): void {
   const n = c.n;
   if (n === 0) return;
   const { x, y, px, py } = c;
   const keep = Math.exp(-f.damp * h);
   const first = c.pin ? 1 : 0;
+  const held = contact?.index ?? -1;
+  if (contact) {
+    x[held] = px[held] = contact.x;
+    y[held] = py[held] = contact.y;
+  }
   if (c.pin) {
     x[0] = px[0] = c.pin.x;
     y[0] = py[0] = c.pin.y;
   }
   for (let i = first; i < n; i += 1) {
+    if (i === held) continue;
     const cx = at(x, i);
     const cy = at(y, i);
     const vx = (cx - at(px, i)) * keep;
@@ -127,9 +138,10 @@ export function stepChain(c: Chain, h: number, f: Forces): void {
       const dy = by - ay;
       const d = Math.hypot(dx, dy) || 1e-6;
       const diff = (d - c.link) / d;
-      const lockedA = i === 0 && c.pin !== null;
-      const wa = lockedA ? 0 : 0.5;
-      const wb = lockedA ? 1 : 0.5;
+      const lockedA = (i === 0 && c.pin !== null) || i === held;
+      const lockedB = i + 1 === held;
+      const wa = lockedA ? 0 : lockedB ? 1 : 0.5;
+      const wb = lockedB ? 0 : lockedA ? 1 : 0.5;
       x[i] = ax + dx * diff * wa;
       y[i] = ay + dy * diff * wa;
       x[i + 1] = bx - dx * diff * wb;

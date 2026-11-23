@@ -254,7 +254,11 @@ The home page was built and reworked by **waves** of parallel helpers run from o
 - **The owner's process rule changed during the rebuild.** From round three the owner said not to run CI or tests while iterating ("there will be more changes"), so rounds three to nine were built with only typecheck and targeted tests, and 16 commits piled up locally before the push. That rule ended with the owner's request of 21 Nov to check everything and push. The cost, paid in one go: 6 failing unit tests, 111 unused exports and 8 unused types for Knip, 20 lint problems, and a home e2e spec of which 26 tests failed because it still described the old page. If the owner asks for fast iteration again, run `pnpm typecheck` and the unit tests of the folder you touch, and do the full gate before the push.
 - **Look at the frames yourself.** A helper that judged glitches from logged numbers missed the glitch the owner saw (round nine). Record a real scroll, cut frames, read them.
 
-## Where things stand (22 Nov 2026)
+## Home page changes on 24 Nov 2026
+
+The [home page notes](design/home/README.md) describe the voice selector, vinyl deck, kite, comic and artwork scenes. From the kite through Collection, the visitor controls travel in both directions. The parent revision for this release is `5b6fdb8a`. Its Pages and Lighthouse workflows passed. Its CI, Security and Container workflows failed.
+
+## Verification snapshot from 22 Nov 2026
 
 - **Shipped.** `main` is at `bb3622e1` plus the documentation commit that adds this section, and https://aspirant.cc serves it (checked on 21 Nov with `scripts/qa/home/sections.cjs` and frame sheets: 14 sections, the right actors, no console errors). It is the home page after nine rounds of the owner's feedback: 14 sections, light only, two WebGL contexts, toon cast, scroll zones with an idle snap, the drone carrying the doll, Selena fitted to the game's recording.
 - **Checked locally on 21 Nov.** `pnpm check` green (360 test files, 4049 tests), 274 e2e passing and 0 failing, accessibility 1.0, scroll 117 to 164 fps. Details and commands: [VERIFY.md](VERIFY.md).

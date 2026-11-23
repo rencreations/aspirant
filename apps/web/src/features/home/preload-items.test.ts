@@ -123,7 +123,7 @@ describe("homeItems", () => {
     for (const id of [
       "media:/models/home/silverbolt.glb",
       "media:/models/home/doll.glb",
-      "media:/models/home/gramophone.glb",
+      "music-disc-faces",
     ]) {
       expect(byId.get(id)?.deferred, id).toBe(true);
     }

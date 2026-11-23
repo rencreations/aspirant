@@ -1,13 +1,15 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import type { DollActor } from "../../actors/doll";
-import { DOLL_SIZE } from "../../actors/doll/place";
 import type { DuoActor } from "../../actors/duo";
 import type { SilverboltActor } from "../../actors/silverbolt";
+import type { KiteShot } from "../../actors/tetra/props/kite-shot";
 import type { TetraActor } from "../../actors/tetra";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
+import { ScrollTravel } from "../travel";
+import { storyAt } from "./stations";
 import {
   GONE,
   T,
@@ -27,13 +29,6 @@ import {
 
 /** The dragon turned three quarters toward us, heading left. */
 const YAW = -1.1;
-/**
- * The doll is made bigger than the dragon's mouth: she is wedged in it, head and legs out. This is
- * the size she is DRAWN at, in mouths: the actor draws her at `DOLL_SIZE` of the height asked for, so
- * the height asked for is this over it (she was 1.7 mouths before the doll was made smaller, and a
- * 1.45 mouth doll is still wedged).
- */
-const DOLL_SCALE = 1.45 / DOLL_SIZE;
 /** The doll's mood while she is eaten: a loop of her cursing and screaming (seconds). */
 const MOODS = [
   { face: "cursing", hold: 0.7 },
@@ -52,8 +47,7 @@ const spot = (): Spot => ({ x: 0, y: 0, height: 0 });
  * breaks the rope, Tetra runs off after it, the two drones stare, go to the middle and question each
  * other. Every frame is a pure function of `local`, the size of the screen and the section's own
  * small state (the cut, the marks already thrown). The actors are shared: each is set in full, every
- * frame it is shown, and nothing is written before the section's own start (`local` 0) or after the
- * cast has gone.
+ * frame it is shown. Tetra and her kite rise into view as Music scrolls up.
  */
 class FunnyRuntime implements SectionRuntime {
   private tetra: TetraActor | null = null;
@@ -62,8 +56,6 @@ class FunnyRuntime implements SectionRuntime {
   private duo: DuoActor | null = null;
   private marks: MarksActor | null = null;
   private disposed = false;
-  private entered = false;
-  private sinkSet = false;
 
   private readonly content: HTMLElement | null;
   private readonly links: HTMLElement[];
@@ -73,18 +65,30 @@ class FunnyRuntime implements SectionRuntime {
   private shownH = Number.NaN;
 
   private geo: FunnyGeometry;
-  private cutAt = { local: 0.3, at: 0.5 };
-
-  // The section's own small state.
-  private cutDone = false;
-  private settleFrames = 0;
+  private cutAt: ReturnType<typeof cutMoment>;
+  private readonly travel = new ScrollTravel();
   private lastLocal = Number.NaN;
-  private dustAt = 0;
-  private veinAt = 0;
-  private bangPending = false;
-  private kiteShown = false;
-  /** Frames Tetra has been drawn in a row: her marks are stale before the third (they read 0, 0). */
-  private tetraFrames = 0;
+  private readonly kiteShot: KiteShot = {
+    offsetY: 0,
+    along: 0.5,
+    releaseHand: { x: 0, y: 0 },
+    pressure: 0,
+    broken: false,
+    fall: 0,
+    nose: (out) => {
+      const g = this.geo;
+      const cut = this.cutAt.local;
+      const local = Math.min(this.lastLocal, cut);
+      if (this.dragon?.visible) {
+        this.dragon.snoutOnStage(out);
+        // After release the free ends spring from the impact site as the dragon keeps flying.
+        out.x += dragonX(local, g, this.cutAt) - dragonX(this.lastLocal, g, this.cutAt);
+      } else {
+        out.x = dragonX(local, g, this.cutAt) - g.dragon.headLead * this.travel.heading;
+        out.y = g.dragon.y + 0.2 * g.dragon.height;
+      }
+    },
+  };
 
   private readonly tp = { x: 0, y: 0, running: false, speed: 0, arrive: 0, leave: 0 };
   private readonly aim = { x: 0, y: 0 };
@@ -137,10 +141,7 @@ class FunnyRuntime implements SectionRuntime {
       take(
         "Tetra",
         async () => (await import("../../actors/tetra")).ensureTetra(ctx),
-        (a) => {
-          this.tetra = a;
-          this.syncCut();
-        },
+        (a) => (this.tetra = a),
       ),
       take(
         "Silverbolt",
@@ -159,7 +160,6 @@ class FunnyRuntime implements SectionRuntime {
       ),
     ]);
     this.loaded = true;
-    if (this.entered) void this.listen();
   }
 
   /** The ready gate: the scenes need Tetra, the dragon, the doll and the duo built. */
@@ -168,74 +168,44 @@ class FunnyRuntime implements SectionRuntime {
   }
 
   enter(): void {
-    this.entered = true;
-    this.bangPending = false;
+    this.travel.reset();
     this.lastLocal = Number.NaN;
-    // The actor remembers a cut across a hide and a show: the flag follows it, so a visit that comes
-    // back above the cut mends the rope (the marks of the neighbours are left alone: only a jump clears).
-    this.syncCut();
     this.dragon?.calm();
-    void this.listen();
+    this.duo?.setMarkSink(null);
   }
 
   leave(): void {
-    this.entered = false;
-    this.sinkSet = false;
-    this.duo?.setMarkSink(null);
+    this.tetra?.kite.fly(null);
+    this.tetra?.runSpeed(0);
     // The doll leaves the dragon's mouth with the section: the earlier sections place her on their own.
     if (this.doll?.parentSocket) this.doll.detach();
   }
 
-  /** Whether the actor's rope is cut, read once (on entering and when Tetra arrives). */
-  private syncCut(): void {
-    if (this.tetra) this.cutDone = this.tetra.kite.state().state === "cut";
-  }
-
-  /** The duo's cues become the home's comic marks (the one sink the duo has). */
-  private async listen(): Promise<void> {
-    const duo = this.duo;
-    const marks = this.marks;
-    if (!duo || !marks || this.sinkSet) return;
-    this.sinkSet = true;
-    const { comicMark } = await import("../../actors/duo/marks-map");
-    if (this.disposed || !this.entered) return;
-    duo.setMarkSink((m) => {
-      const c = comicMark(m);
-      marks.emit(c.kind, {
-        at: { x: m.x, y: m.y },
-        size: c.size,
-        color: c.color,
-        rotation: c.rotation,
-      });
-    });
-  }
-
-  update(local: number, frame: FrameInfo): void {
+  update(scroll: number, frame: FrameInfo): void {
+    const local = storyAt(scroll);
+    this.travel.update(frame, scroll > 0.5);
     const { w, h } = frame.viewport;
     if (w !== this.geo.w || h !== this.geo.h) {
       this.geo = geometry(w, h);
       this.cutAt = cutMoment(this.geo);
     }
-    const jumped = Number.isNaN(this.lastLocal) || Math.abs(local - this.lastLocal) > JUMP;
+    const snapped =
+      this.lastLocal < this.cutAt.local &&
+      local >= this.cutAt.local &&
+      local - this.lastLocal < JUMP;
     this.lastLocal = local;
-    // Nothing is written before the section's own start: the music is still on the stage.
     if (local < 0) {
       this.words(0, 0, h);
+      this.drawTetra(0, false, (frame.S - sectionEnd("music")) * h);
       return;
-    }
-    if (jumped) {
-      this.tetraFrames = 0;
-      // Only a seek that lands inside the scene clears: a slow entry through the lead or the tail
-      // (local below 0 or above 1) must leave the neighbour's marks alone.
-      if (local <= 1) this.marks?.clear();
     }
     // The page rides up in the tail, by the real scroll: the duo and the words are gone for any jump.
     const rise = lift(frame.S - sectionEnd("funny"));
     const gone = 1 - ramp(rise, GONE - 0.2, GONE);
     this.words((this.kbd ? 1 : ramp(local, T.textFrom, T.textTo)) * gone, rise, h);
     if (rise >= GONE) return;
-    this.drawTetra(local, frame, jumped);
-    this.drawDragon(local, frame);
+    this.drawDragon(local, frame.time);
+    this.drawTetra(local, snapped);
     this.drawDuo(local, rise);
   }
 
@@ -263,129 +233,113 @@ class FunnyRuntime implements SectionRuntime {
 
   // ---------------------------------------------------------------------------------------- Tetra
 
-  private drawTetra(local: number, frame: FrameInfo, jumped: boolean): void {
+  private drawTetra(local: number, snapped: boolean, offsetY = 0): void {
     const tetra = this.tetra;
     if (!tetra) return;
     const g = this.geo;
-    const cut = this.cutAt.local;
-    // She has run off and the kite is gone: nothing of hers is on the stage.
-    if (local > cut + T.kiteGone + 0.02) {
-      this.tetraFrames = 0;
+    const { contact, local: cut, at } = this.cutAt;
+    if (local >= Math.max(cut + T.kiteGone, T.dragonOut)) {
+      tetra.kite.fly(null);
       return;
     }
     const p = tetraPlace(local, g, cut, this.tp);
-    this.tetraFrames++;
-
-    // The rope is whole until the head meets it and cut after. Idempotent in `local`.
-    const wantCut = local >= cut;
-    if (wantCut && !this.cutDone) {
-      this.cutDone = true;
-      const near = tetra.kite.ropeNear(dragonX(cut, g) - g.dragon.headLead, g.dragon.y);
-      tetra.kite.cut(near && near.dist < 90 ? near.at : this.cutAt.at, "fall");
-      if (jumped) this.settleFrames = 2;
-      else this.bangPending = true;
-    } else if (!wantCut && this.cutDone) {
-      this.cutDone = false;
-      this.kiteShown = false;
-      tetra.kite.mend();
-    }
-    if (this.settleFrames > 0 && --this.settleFrames === 0) tetra.kite.settle(4);
-
+    const pressure = ramp(local, contact - 0.008, contact + 0.008);
+    const release = line(local, cut, cut + T.kiteGone);
+    const brace = pressure * (1 - ramp(local, cut, cut + 0.025));
+    // Returning from below, she enters from the left behind the dragon and finishes at the reel.
+    const left = -g.w / 2 - g.tetra.height * 0.6 - 40;
+    const behind = dragonX(local, g, this.cutAt) - g.dragon.height * 1.12 - g.w * 0.13;
+    const returningX = Math.max(left, Math.min(g.tetra.x, behind));
+    const follow = this.travel.reverse;
+    const x = lerp(p.x, returningX, follow);
+    const outward = ramp(local, cut + T.runFrom - 0.018, cut + T.runFrom + 0.015);
+    const inward = ramp(g.tetra.x - returningX, 0, g.tetra.height * 0.24);
+    const run = lerp(outward, inward, follow);
     tetra.visible = true;
-    tetra.place({ x: p.x, y: p.y, height: g.tetra.height, flip: true });
-    tetra.look("pointer");
-    tetra.setInteractive(local < cut + T.runFrom);
+    tetra.place({
+      x: x - brace * g.tetra.height * 0.045,
+      y: p.y + offsetY,
+      height: g.tetra.height,
+      yaw: lerp(-0.22, this.travel.runYaw(-1), run),
+    });
+    tetra.look(null);
+    tetra.setInteractive(local < contact);
     tetra.setReel(false);
-    if (p.running) {
-      tetra.pose("run", 1);
-      tetra.runSpeed(p.speed);
-    } else {
-      tetra.pose("kite", 1);
-      tetra.runSpeed(0);
-    }
-    // Her face: her own, then startled as the dragon comes, then furious.
-    const startle = line(local, T.dragonIn, cut);
-    if (local >= cut + 0.01) tetra.setFace("angry", 1);
-    else if (startle > 0.6) tetra.setFace("surprised", 1);
-    else tetra.setFace(null);
+    tetra.runSpeed(lerp(p.speed, 0.84, follow));
+    tetra.pose("run", run, "kite");
+    if (local >= cut) tetra.setFace("angry", 1);
+    else if (local >= contact - 0.015) tetra.setFace("surprised", 1);
+    else tetra.setFace("happy", 0.7);
 
-    // The kite: behind her while she runs in, then up in the sky, then down and away in a puff.
-    const settled = ramp(local, T.enterEnd * 0.4, T.enterEnd + 0.04);
-    const kx = lerp(p.x + 0.14 * g.w, g.kite.x, settled);
-    const ky = lerp(g.tetra.y + 0.55 * g.tetra.height, g.kite.y, settled);
-    tetra.kite.ground(null);
-    const away = ramp(local, cut + T.kiteAway, cut + T.kiteGone);
-    if (away < 0.97) {
-      tetra.kite.fly({ x: kx, y: ky, height: Math.max(8, g.kite.height * (1 - away)) });
-      this.kiteShown = true;
-    } else {
-      if (this.kiteShown && !jumped && this.marks) {
-        const sail = tetra.kite.state().sail;
-        this.marks.emit("poof", { at: { x: sail.x, y: sail.y }, size: 0.5 * g.kite.height });
-      }
-      this.kiteShown = false;
-      tetra.kite.fly(null);
-    }
+    const shot = this.kiteShot;
+    shot.offsetY = offsetY;
+    shot.along = at;
+    shot.releaseHand.x = g.tetra.x - 0.12 * g.tetra.height;
+    shot.releaseHand.y = g.tetra.y + 0.5 * g.tetra.height;
+    shot.pressure = pressure;
+    shot.broken = local >= cut;
+    shot.fall = release;
+    // The wind carries the sail. The nose pulls the knot a little closer before the string breaks.
+    tetra.kite.fly(
+      {
+        x: g.kite.x - g.kite.height * 0.16 * ramp(local, contact, cut),
+        y: g.kite.y,
+        height: g.kite.height,
+      },
+      shot,
+    );
 
-    // Her run: dust at her feet and a vein over her head.
-    const marks = this.marks;
-    const inView = Math.abs(p.x) < g.w / 2 + 0.2 * g.tetra.height;
-    if (marks && p.running && inView && this.tetraFrames > 3 && !jumped && frame.dt > 0) {
-      const m = tetra.marks();
-      if (frame.time - this.dustAt > 0.22) {
-        this.dustAt = frame.time;
-        // Behind her heels (she runs left), where she stands: not from her marks, which lag a frame.
-        marks.emit("dust", {
-          at: { x: p.x + 0.12 * g.tetra.height, y: p.y },
-          size: 0.1 * g.tetra.height,
-        });
-      }
-      if (local > cut + 0.015 && frame.time - this.veinAt > 0.9) {
-        this.veinAt = frame.time;
-        marks.emit("vein", {
-          at: { x: m.head.x, y: m.head.y },
-          offset: { x: 0, y: 0.1 * g.tetra.height },
-          size: 0.12 * g.tetra.height,
-        });
-      }
+    if (snapped && this.marks) {
+      const hit = { x: 0, y: 0 };
+      shot.nose(hit);
+      this.marks.emit("spark", { at: hit, size: g.kite.height * 0.18, count: 1 });
     }
   }
 
   // ---------------------------------------------------------------------------------------- the dragon
 
-  private drawDragon(local: number, frame: FrameInfo): void {
+  private drawDragon(local: number, time: number): void {
     const sb = this.dragon;
     const doll = this.doll;
     if (!sb || !doll || !dragonOnScreen(local)) return;
     const g = this.geo;
-    const b = bob(frame.time, g);
-    const x = dragonX(local, g);
+    const flight = time;
+    const b = bob(flight, g);
+    const x = dragonX(local, g, this.cutAt);
     sb.visible = true;
-    sb.place({ x, y: b.y, z: 0, height: g.dragon.height, yaw: YAW, pitch: b.pitch, roll: b.roll });
-    sb.fly(frame.time, { amplitude: 1, speed: 1 });
+    sb.place({
+      x,
+      y: b.y,
+      z: 0,
+      height: g.dragon.height,
+      yaw: YAW * this.travel.heading,
+      pitch: b.pitch,
+      roll: b.roll,
+    });
+    sb.fly(flight, { amplitude: 1, speed: 1 });
     sb.face("smile", 1);
-    sb.jaw(0.6 + 0.05 * Math.sin(frame.time * 4));
+    const chew = Math.cos(time * 4.5);
+    sb.jaw(0.56 + 0.07 * chew);
     sb.follow(0);
-    sb.look(x - 900, b.y);
+    sb.look(x - 900 * this.travel.heading, b.y);
 
-    // The doll is wedged in its open mouth, facing us, cursing.
-    const mouth = sb.socket("mouth");
-    if (doll.parentSocket !== mouth) doll.attach(mouth, { keepWorld: false });
-    const metre = sb.metre;
+    // Her body rides between the teeth while her face stays turned toward the viewer.
     doll.visible = true;
     doll.reset();
-    doll.place({
-      x: 0,
-      y: -0.03 * metre,
-      z: 0.04 * metre,
-      height: DOLL_SCALE * 0.3 * metre,
-      yaw: -YAW,
+    doll.placeInScene(sb.socket("mouth"), {
+      x: 0.065 * this.travel.heading,
+      y: 0.025,
+      z: 0.04,
+      height: 0.4 * g.dragon.height,
+      stageRotation: true,
+      yaw: 0.14 * Math.sin(time * 3.4),
+      roll: 0.14 + 0.09 * chew,
       pivot: "center",
     });
     doll.pose("scream", 1);
-    doll.flail(0.4, 2.4);
-    doll.mood(MOODS, frame.time % MOOD_LOOP);
-    doll.talk(0.55 + 0.45 * Math.sin(frame.time * 13));
+    doll.flail(0.53, 2.4, time);
+    doll.mood(MOODS, time % MOOD_LOOP);
+    doll.talk(0.55 + 0.45 * Math.sin(time * 13));
     doll.blinkAuto(false);
   }
 
@@ -412,7 +366,7 @@ class FunnyRuntime implements SectionRuntime {
     const aim = this.aim;
     const dragonOn = dragonOnScreen(local);
     if (dragonOn) {
-      aim.x = dragonX(local, g) - g.dragon.headLead;
+      aim.x = dragonX(local, g, this.cutAt) - g.dragon.headLead * this.travel.heading;
       aim.y = g.dragon.y;
     } else {
       aim.x = g.tetra.x;
@@ -434,25 +388,13 @@ class FunnyRuntime implements SectionRuntime {
     } else {
       duo.pose("float", 1, { target: aim });
     }
-
-    // The cut startles them: a bang over each.
-    if (this.bangPending && this.marks) {
-      this.bangPending = false;
-      this.marks.emit("bang", { at: { x: a.x, y: a.y + 0.62 * a.height }, size: 0.8 * a.height });
-      this.marks.emit("bang", {
-        at: { x: b.x, y: b.y + 0.62 * b.height },
-        size: 0.8 * b.height,
-        delay: 0.12,
-      });
-    }
   }
 
   dispose(): void {
     this.disposed = true;
     this.ctx.dom.text.removeEventListener("focusin", this.onFocusIn);
     this.ctx.dom.text.removeEventListener("focusout", this.onFocusOut);
-    this.duo?.setMarkSink(null);
-    if (this.doll?.parentSocket) this.doll.detach();
+    this.leave();
     put(this.content, "opacity", "");
     put(this.content, "transform", "");
     for (const a of this.links) a.style.pointerEvents = "";

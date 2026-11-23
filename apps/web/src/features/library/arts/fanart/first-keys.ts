@@ -11,8 +11,6 @@ import {
 } from "./model";
 import type { FanItem } from "./types";
 
-/** About this many pictures of the rows are waited for. */
-const FIRST_PICTURES = 18;
 /** This many posters of the video row. */
 const FIRST_POSTERS = 6;
 /** The first thumbnails of the By artist view. */
@@ -71,7 +69,7 @@ export function firstKeys(all: readonly FanItem[], search: string, size: ScreenS
     const narrow = size.width <= NARROW;
     const strip = Math.round(m.rowH * STRIP_CARD) + (narrow ? STRIP_NARROW : STRIP_WIDE);
     const head = (narrow ? HEAD_NARROW : HEAD_WIDE) + (videos.length > 0 ? strip : 0);
-    for (const tile of firstScreenTiles(ratios, wall.parts, m, head, size.height, FIRST_PICTURES)) {
+    for (const tile of firstScreenTiles(ratios, wall.parts, m, head, size.height)) {
       const item = wall.items[tile.index];
       if (!item) continue;
       keys.push(item.img[pickSize(tile.w, tile.h, size.dpr)]);

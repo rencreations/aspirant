@@ -7,8 +7,7 @@ import type { HomePlay } from "../../kernel/plays";
  *
  *   0.0 to 0.1    rest (joint J14, the bend section's end): Tetra and the drone at the lower left
  *   entry         Tetra waves and runs off, the drone arcs up over the first cover, the title and the
- *                 ten covers rise in (one screen of scroll; the page snaps to either end of it when
- *                 the visitor stops half way)
+ *                 ten covers rise in (one screen of manual scroll)
  *   tour          the drone rests over each room in turn and the row slides under it
  *   way out       the covers lift away, the footer's card rises and the drone flies down to its ring
  */
@@ -22,11 +21,8 @@ export const ENTRY_SCREENS = 1;
 /** The way out (the covers lift, the drone flies down to the footer's ring), in screens. */
 export const EXIT_SCREENS = 0.7;
 
-/** The seconds the page takes to finish the whole entry by itself when the visitor stops inside it. */
-const SNAP_SECONDS = 1;
-
 /**
- * The entry is the one scroll zone: it tells the page where to snap. The route itself is a function
+ * The entry is the one scroll zone: it marks the first part of the tour. The route itself is a function
  * of the scene's scroll (`route.ts`), so the value of the zone is not read by the runtime.
  */
 export const ARCHIVE_PLAYS: readonly HomePlay[] = [
@@ -35,7 +31,7 @@ export const ARCHIVE_PLAYS: readonly HomePlay[] = [
     span: ENTRY_SCREENS / ARCHIVE_SCREENS,
     from: 0,
     to: ENTRY_SCREENS / ARCHIVE_SCREENS,
-    seconds: SNAP_SECONDS,
+    seconds: 1,
     ease: "linear",
   },
 ];

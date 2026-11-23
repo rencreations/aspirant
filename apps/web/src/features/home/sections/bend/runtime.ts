@@ -1,11 +1,12 @@
 /**
  * The bend section: Tetra closes the comic, stands, and bends the fan pictures out of the edges into
  * garuda2026.offwg.com's hero (posters at different tilts round her), then into a 3D ring, throws the
- * ring away, calls a spiral of the ten splash arts round her whose last picture is the drone's, and
- * the drone climbs out of its paper and meets her. `beats.ts` says when, `formations.ts` where,
+ * ring away, calls a spiral of the ten splash arts round her with the flying drone in the last slot.
+ * The drone circles her and comes close for a greeting. `beats.ts` says when, `formations.ts` where,
  * `meet.ts` how the drone goes; this file puts them on the actors and the cards, every frame, as a
  * pure function of the scroll plus the pointer. See `docs/design/home/section-bend.md`.
  */
+import { depthScale } from "../../actors/drone/coords";
 import type { MarksActor } from "../../fx/comic-marks";
 import { ensureMarks } from "../../fx/comic-marks";
 import { ensureDrone, type DroneActor } from "../../actors/drone";
@@ -13,18 +14,7 @@ import { ensureTetra, type TetraActor } from "../../actors/tetra";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionStart } from "../../kernel/where";
 
-import {
-  DRONE_CARD,
-  SPIRAL_CARDS,
-  T,
-  artNeeded,
-  beatAt,
-  fanNeeded,
-  newBeat,
-  ramp,
-  smoother,
-  type BeatState,
-} from "./beats";
+import { T, artNeeded, beatAt, fanNeeded, newBeat, ramp, smoother, type BeatState } from "./beats";
 import { CardLayer } from "./cards";
 import {
   FLIGHT,
@@ -38,7 +28,6 @@ import {
   gatherAt,
   makePose,
   outAt,
-  paperPose,
   ringExit,
   ringPose,
   ringTurn,
@@ -53,35 +42,24 @@ import {
   type CardPose,
   type Vp,
 } from "./formations";
-import { droneAt, newDroneWant, paperDrone, restOf } from "./meet";
+import { droneAt, newDroneWant } from "./meet";
 import { restScreens } from "./plays";
 import { platePlace, wallPictures } from "./order";
 import { isRovingKey, rovingNext, rovingStart } from "./roving";
-import {
-  FAN_PICS,
-  SPIRAL_ORDER,
-  artSources,
-  droneSource,
-  fanSource,
-  type PicSource,
-} from "./pictures";
+import { FAN_PICS, SPIRAL_ORDER, artSources, fanSource, type PicSource } from "./pictures";
 
 /** The cards: the wall and the ring use the first ones, the spiral the next ones. */
 const SPIRAL_BASE = WALL_CARDS;
-const TOTAL_CARDS = WALL_CARDS + SPIRAL_CARDS;
+const TOTAL_CARDS = WALL_CARDS + SPIRAL_ORDER.length;
 /** The slots of the picture store. */
 const FAN_BASE = 0;
 const ART_BASE = FAN_PICS.length;
-const SPRITE_SLOT = ART_BASE + SPIRAL_ORDER.length;
 /** How long the flights into the ring, out of it and into the spiral take, in screens. */
 const GATHER_LEN = 0.6;
 const OUT_LEN = 0.5;
 const SPIRAL_IN_LEN = 0.75;
 /** The top bar's foot, in pixels: a credit plate never stands under it. */
 const NAV_INSET = 78;
-/** The paper of the drone. */
-const PAPER: readonly [number, number, number] = [0.97, 0.94, 0.9];
-
 /**
  * Where each group of words is shown (beats of the section's clock), and the dwell the page goes to
  * (screens from the section's start) to show it: the first rest holds the wall, the second the spiral.
@@ -94,7 +72,7 @@ const FOCUS_BEATS: Record<FocusKind, { from: number; to: number; at: number }> =
   plates: { from: T.holdFrom - 0.3, to: T.outFrom + 0.3, at: restScreens(1) },
 };
 
-const sources = (): PicSource[] => [...FAN_PICS.map(fanSource), ...artSources(), droneSource()];
+const sources = (): PicSource[] => [...FAN_PICS.map(fanSource), ...artSources()];
 
 /** A point in the stage frame the marks and the actors can be given (a section keeps one and moves it). */
 interface Pt {
@@ -123,27 +101,6 @@ class BendRuntime implements SectionRuntime {
   private readonly plateBox = { w: 280, h: 150 };
   /** Where the plate stands (written by `platePlace`). */
   private readonly platePt: Pt = { x: 0, y: 0 };
-  /** One point for each loop of marks: a loop keeps the point it is given and reads it when it is drawn. */
-  private readonly lp = {
-    dustL: { x: 0, y: 0 },
-    dustR: { x: 0, y: 0 },
-    air: { x: 0, y: 0 },
-    water: { x: 0, y: 0 },
-    fire: { x: 0, y: 0 },
-    heart: { x: 0, y: 0 },
-    glad: { x: 0, y: 0 },
-  };
-  private readonly paper = { x: 0, y: 0, height: 0, card: 0 };
-  private readonly loops: {
-    dustL: ReturnType<MarksActor["sustain"]>;
-    dustR: ReturnType<MarksActor["sustain"]>;
-    air: ReturnType<MarksActor["sustain"]>;
-    water: ReturnType<MarksActor["sustain"]>;
-    fire: ReturnType<MarksActor["sustain"]>;
-    heart: ReturnType<MarksActor["sustain"]>;
-    glad: ReturnType<MarksActor["sustain"]>;
-  };
-
   /** The scroll position (in screens) at which the section starts, known once it has run. */
   private startS = Number.NaN;
   /** A group the keyboard reached before the section was running: the page moves to it on the next frame. */
@@ -151,9 +108,8 @@ class BendRuntime implements SectionRuntime {
   private fanOn = false;
   private artOn = false;
   private lastWave = -1;
-  private popped = false;
+  private noticed = false;
   private hugged = false;
-  private spin = 0;
   private lx = 0;
   private ly = 0;
   private candidate = -1;
@@ -186,7 +142,6 @@ class BendRuntime implements SectionRuntime {
     for (let i = 0; i < WALL_CARDS; i += 1) this.layer.setPicture(i, FAN_BASE + this.pics[i]!);
     for (let k = 0; k < SPIRAL_ORDER.length; k += 1)
       this.layer.setPicture(SPIRAL_BASE + k, ART_BASE + k);
-    this.layer.setPaper(SPIRAL_BASE + DRONE_CARD, SPRITE_SLOT, PAPER);
     this.readyFlag.length = TOTAL_CARDS;
     this.readyFlag.fill(false);
 
@@ -215,16 +170,6 @@ class BendRuntime implements SectionRuntime {
       },
     });
 
-    this.loops = {
-      dustL: marks.sustain("dust", { size: 64 }),
-      dustR: marks.sustain("dust", { size: 64 }),
-      air: marks.sustain("speed", { size: 90 }),
-      water: marks.sustain("sparkle", { size: 46 }),
-      fire: marks.sustain("sparkle", { size: 54, color: "gold" }),
-      heart: marks.sustain("heart", { size: 40 }),
-      glad: marks.sustain("sparkle", { size: 40 }),
-    };
-    tetra.book.auto();
     // The fan pictures go to the GPU now, a screen or two before they are seen, not in the frame they are first drawn.
     this.textures(-2);
   }
@@ -247,15 +192,17 @@ class BendRuntime implements SectionRuntime {
     this.live = s > T.holdFrom - 0.2 && s < T.holdTo + 0.5;
     this.interactive = s > T.bendFrom + 0.3 && s < T.glideFrom + 0.2;
     this.pointer(frame);
+    droneAt(b, vp, frame.time, this.want);
+    this.layer.droneZ = this.want.visible ? this.want.z : Infinity;
     this.cards(b, vp, frame);
-    this.actors(b, vp, frame);
+    if (s >= 0) this.actors(b, vp, frame);
     this.words(b);
     this.platesStep(b, vp, frame);
   }
 
   enter(): void {
     this.lastWave = -1;
-    this.popped = false;
+    this.noticed = false;
     this.hugged = false;
     this.drone.reset();
     this.layer.hideAll();
@@ -263,6 +210,7 @@ class BendRuntime implements SectionRuntime {
 
   leave(): void {
     this.startS = Number.NaN;
+    this.tetra.book.auto();
     this.layer.hideAll();
     this.pinned = -1;
     this.shown = -1;
@@ -299,19 +247,16 @@ class BendRuntime implements SectionRuntime {
         if (art) store.want(ART_BASE + k);
         else store.drop(ART_BASE + k);
       }
-      if (art) store.want(SPRITE_SLOT);
-      else store.drop(SPRITE_SLOT);
     }
     // A picture that has arrived (or been let go) since the card last looked: point the card at it.
     for (let i = 0; i < TOTAL_CARDS; i += 1) {
       const card = this.layer.cards[i]!;
-      const slot = i === SPIRAL_BASE + DRONE_CARD ? SPRITE_SLOT : card.pic;
+      const slot = card.pic;
       if (slot < 0) continue;
       const ready = store.isReady(slot);
       if (ready === this.readyFlag[i]) continue;
       this.readyFlag[i] = ready;
-      if (i === SPIRAL_BASE + DRONE_CARD) this.layer.setPaper(i, SPRITE_SLOT, PAPER);
-      else this.layer.refresh(i);
+      this.layer.refresh(i);
     }
   }
 
@@ -325,9 +270,7 @@ class BendRuntime implements SectionRuntime {
     const k = dt > 0 ? Math.min(1, dt * 8) : 0;
 
     const wallN = wallCount(vp);
-    const ringOn = s > T.gatherFrom - 0.2 && s < T.outTo + 0.4;
-    if (ringOn) this.spin += dt * 0.06;
-    const turn = ringTurn(s) + this.spin;
+    const turn = ringTurn(s);
 
     for (let i = 0; i < WALL_CARDS; i += 1) {
       const pose = this.c;
@@ -347,7 +290,7 @@ class BendRuntime implements SectionRuntime {
     }
     for (let i = wallN; i < WALL_CARDS; i += 1) layer.hide(i);
 
-    for (let j = 0; j < SPIRAL_CARDS; j += 1) {
+    for (let j = 0; j < SPIRAL_ORDER.length; j += 1) {
       const i = SPIRAL_BASE + j;
       const inAt = spiralInAt(j);
       if (s < inAt - 0.001 || s > T.popTo + 0.9) {
@@ -362,15 +305,7 @@ class BendRuntime implements SectionRuntime {
         pose.z += 40 * h;
         pose.size *= 1 + 0.04 * h;
       }
-      const slot = j === DRONE_CARD ? SPRITE_SLOT : ART_BASE + j;
-      layer.place(
-        i,
-        pose,
-        j === DRONE_CARD ? 1 : store.reveal(slot),
-        h,
-        j === DRONE_CARD ? b.pop : 0,
-        dt,
-      );
+      layer.place(i, pose, store.reveal(ART_BASE + j), h, 0, dt);
     }
   }
 
@@ -447,20 +382,6 @@ class BendRuntime implements SectionRuntime {
     } else {
       copyPose(t, out);
     }
-    if (j === DRONE_CARD) {
-      // To the stage on the right of Tetra, then it falls away once the drone is out.
-      copyPose(out, a);
-      paperPose(vp, t);
-      fly(a, t, b.glide, 0.3, out);
-      const fall = ramp(s, T.popTo + 0.05, T.popTo + 0.4);
-      if (fall > 0) {
-        out.y -= vp.h * 0.55 * fall * fall;
-        out.rz += 0.7 * fall;
-        out.x -= vp.w * 0.04 * fall;
-        out.opacity *= 1 - ramp(fall, 0.5, 1);
-      }
-      return;
-    }
     if (b.glide > 0) {
       copyPose(out, a);
       spiralExit(a, vp, t);
@@ -477,22 +398,9 @@ class BendRuntime implements SectionRuntime {
     const h = vp.h;
 
     // The drone first: Tetra hugs where it is.
-    droneAt(b, vp, frame.time, this.want);
     const want = this.want;
-    let dx = want.x;
-    let dy = want.y;
-    if (s >= T.goTo - 0.12) {
-      // At the rest it keeps her company and follows the cursor, politely: a small step toward it.
-      const p = this.ctx.pointer.state;
-      const rest = restOf(vp);
-      const k = ramp(s, T.goTo - 0.12, T.goTo + 0.05);
-      if (p.inside && p.type === "mouse") {
-        const px = p.x - w / 2;
-        const py = h / 2 - p.y;
-        dx += Math.max(-0.06 * w, Math.min(0.06 * w, (px - rest.x) * 0.1)) * k;
-        dy += Math.max(-0.05 * h, Math.min(0.05 * h, (py - rest.y) * 0.1)) * k;
-      }
-    }
+    const dx = want.x;
+    const dy = want.y;
 
     tetra.visible = true;
     tetra.setInteractive(true);
@@ -500,138 +408,78 @@ class BendRuntime implements SectionRuntime {
       x: b.spot.tx * w,
       y: b.spot.ty * h,
       height: b.spot.th * h,
-      flip: b.face < 0 && b.go > 0.02,
     });
-    tetra.pose(b.pose, b.blend);
+    const closed = smoother(ramp(s, T.closeFrom, 0.17));
+    const toss = ramp(s, 0.245, 0.425);
+    tetra.book.scene(1 - smoother(ramp(toss, 0.76, 1)), 1 - closed, 1 - closed, toss);
+    if (s < T.closeFrom) tetra.pose("read");
+    else if (s < 0.17) tetra.pose("close", closed, "read");
+    else if (s < 0.36) tetra.pose("toss", smoother(ramp(s, 0.17, 0.245)), "close");
+    else if (s < T.bendFrom) tetra.pose("stand", smoother(ramp(s, 0.36, 0.56)), "toss");
+    else if (s < T.bendFrom + 0.18)
+      tetra.pose("bend", smoother(ramp(s, T.bendFrom, T.bendFrom + 0.18)), "stand");
+    else if (s >= T.advFrom - 0.25 && s < T.glideFrom + 0.18) {
+      const inSwipe = smoother(ramp(s, T.advFrom - 0.25, T.advFrom));
+      const release = smoother(ramp(s, T.advTo, T.advTo + 0.18));
+      tetra.swipe(b.adv);
+      tetra.pose("swipe", inSwipe * (1 - release), s < T.advFrom ? "bend" : "idle");
+    } else if (s >= T.flyTo && s < T.patTo)
+      tetra.pose("pat", smoother(ramp(s, T.flyTo, T.flyTo + 0.08)));
+    else if (s >= T.patTo && s < T.hugTo)
+      tetra.pose("hug", smoother(ramp(s, T.patTo, T.patTo + 0.09)), "pat");
+    else if (s >= T.hugTo) tetra.pose("idle", smoother(ramp(s, T.hugTo, T.goTo)), "hug");
+    else tetra.pose(b.pose, b.blend);
     tetra.runSpeed(0.55);
     tetra.bend(b.bend, b.aim);
     if (b.pose === "pat") tetra.patFrom(1, b.pat);
-    if (b.pose === "hug") tetra.hugAt(dx, dy);
-    tetra.look(want.visible && want.look && s >= T.meetFrom ? { x: want.x, y: want.y } : "pointer");
+    if (b.pose === "hug" || s >= T.hugTo) tetra.hugAt(dx, dy);
+    const projection = depthScale(want.z);
+    tetra.look(
+      want.visible && (want.look || s >= T.advTo)
+        ? { x: dx * projection, y: dy * projection }
+        : "pointer",
+    );
     if (s < T.meetFrom - 0.05) tetra.setFace(null);
 
     if (want.visible) {
       drone.visible = true;
-      drone.layer("front");
-      if (!this.popped) {
-        this.popped = true;
-        drone.appear();
-        paperDrone(vp, this.paper);
-        // The poof belongs to the moment it comes out of the paper: a jump past it (a seek, Back) gets none.
-        if (s < T.popTo + 0.25) this.burst(frame.dt);
+      drone.layer(want.z < 0 ? "back" : "front");
+      drone.place({ x: dx, y: dy, z: want.z, height: want.height, yaw: want.yaw, roll: want.roll });
+      if (s >= T.advTo && !this.noticed) {
+        this.noticed = true;
+        if (s < T.advTo + 0.22) {
+          tetra.emoteFace("surprised", 0.95);
+          tetra.play("startle");
+        }
       }
-      drone.place({ x: dx, y: dy, height: want.height });
+      if (s < T.advTo - 0.08) this.noticed = false;
       if (want.look) drone.look({ x: want.lookX, y: want.lookY });
       else drone.look("pointer");
+      drone.pose(s >= T.hugTo ? "thanks" : null);
       drone.face(b.pat > 0 || b.hug > 0 ? "heart" : "happy", 1);
       if (b.hug > 0 && !this.hugged) {
         this.hugged = true;
         tetra.emoteFace("laugh", 1.4);
       }
       if (b.hug === 0) this.hugged = false;
-    } else if (this.popped) {
-      this.popped = false;
-      drone.disappear();
+    } else if (this.noticed) {
+      this.noticed = false;
     }
 
     this.waveMarks(b, frame);
-    this.loopMarks(b, dx, dy);
   }
 
-  /** The poof, the flash and the stars when the drone comes out of its paper. */
-  private burst(dt: number): void {
-    if (dt <= 0) return;
-    const at = { x: this.paper.x, y: this.paper.y };
-    this.marks.emit("flash", { at, size: this.paper.card * 0.5 });
-    this.marks.emit("poof", { at: { x: at.x, y: at.y }, size: this.paper.card * 0.55 });
-    this.marks.emit("starburst", { at: { x: at.x, y: at.y }, size: this.paper.card * 0.45 });
-    this.tetra.emoteFace("surprised", 1.1);
-    this.tetra.play("startle");
-  }
-
-  /** One burst when a stance begins: the stamp's dust, the wind, the splash, the fire. */
+  /** One puff under her foot when she plants it for the first cast. */
   private waveMarks(b: BeatState, frame: FrameInfo): void {
-    if (b.wave === this.lastWave) return;
-    const was = this.lastWave;
+    const stamp = this.lastWave < 0 && b.wave === 0;
     this.lastWave = b.wave;
-    if (b.wave < 0 || frame.dt <= 0 || was < 0) {
-      if (b.wave >= 0 && was < 0 && frame.dt > 0) this.stanceBurst(b.wave);
-      return;
-    }
-    this.stanceBurst(b.wave);
-  }
-
-  private stanceBurst(wave: number): void {
-    const m = this.tetra.marks();
-    const scale = Math.max(40, m.scale);
-    const marks = this.marks;
-    if (wave === 0) {
-      marks.emit("dust", {
-        at: { x: m.ground.x - 0.18 * scale, y: m.ground.y },
-        size: 0.3 * scale,
+    if (stamp && frame.dt > 0) {
+      const m = this.tetra.marks();
+      this.marks.emit("dust", {
+        at: { x: m.ground.x, y: m.ground.y },
+        size: 0.14 * m.scale,
+        count: 1,
       });
-      marks.emit("dust", {
-        at: { x: m.ground.x + 0.18 * scale, y: m.ground.y },
-        size: 0.3 * scale,
-        rotation: Math.PI,
-      });
-    } else if (wave === 1) {
-      marks.emit("speed", { at: { x: m.handL.x, y: m.handL.y }, size: 0.5 * scale, rotation: 0 });
-      marks.emit("speed", {
-        at: { x: m.handR.x, y: m.handR.y },
-        size: 0.5 * scale,
-        rotation: Math.PI,
-      });
-    } else if (wave === 2) {
-      marks.emit("beads", { at: { x: m.chest.x, y: m.chest.y }, size: 0.4 * scale, color: "sky" });
-      marks.emit("sparkle", { at: { x: m.handL.x, y: m.handL.y }, size: 0.25 * scale });
-    } else {
-      marks.emit("flash", { at: { x: m.handR.x, y: m.handR.y }, size: 0.7 * scale });
-      marks.emit("spark", { at: { x: m.handL.x, y: m.handL.y }, size: 0.5 * scale });
-    }
-  }
-
-  /** The loops that run while a stance, the pat or the hug does (they end on their own when not set). */
-  private loopMarks(b: BeatState, dx: number, dy: number): void {
-    const m = this.tetra.marks();
-    const scale = Math.max(40, m.scale);
-    const k = b.pose === "bend" ? b.blend : 0;
-    const lp = this.lp;
-    if (k > 0.2) {
-      if (b.bend === "earth") {
-        lp.dustL.x = m.ground.x - 0.2 * scale;
-        lp.dustL.y = m.ground.y;
-        this.loops.dustL.update(lp.dustL, 0.5 * k);
-        lp.dustR.x = m.ground.x + 0.2 * scale;
-        lp.dustR.y = m.ground.y;
-        this.loops.dustR.update(lp.dustR, 0.5 * k);
-      } else if (b.bend === "air") {
-        lp.air.x = b.aim > 0 ? m.handL.x : m.handR.x;
-        lp.air.y = b.aim > 0 ? m.handL.y : m.handR.y;
-        this.loops.air.update(lp.air, 0.6 * k, b.aim > 0 ? Math.PI : 0);
-      } else if (b.bend === "water") {
-        lp.water.x = m.handL.x;
-        lp.water.y = m.handL.y;
-        this.loops.water.update(lp.water, k);
-      } else {
-        lp.fire.x = m.handR.x;
-        lp.fire.y = m.handR.y;
-        this.loops.fire.update(lp.fire, k);
-      }
-    }
-    if (b.pat > 0.5) {
-      lp.heart.x = m.crown.x;
-      lp.heart.y = m.crown.y + 0.2 * scale;
-      this.loops.heart.update(lp.heart, 1);
-    } else if (b.hug > 0.5) {
-      lp.heart.x = (m.chest.x + dx) / 2;
-      lp.heart.y = Math.max(m.chest.y, dy) + 0.2 * scale;
-      this.loops.heart.update(lp.heart, 1);
-    }
-    if (b.s > T.popTo && b.s < T.meetFrom + 0.05) {
-      lp.glad.x = dx;
-      lp.glad.y = dy;
-      this.loops.glad.update(lp.glad, 0.8);
     }
   }
 

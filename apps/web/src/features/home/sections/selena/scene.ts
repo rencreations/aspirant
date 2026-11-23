@@ -1,6 +1,7 @@
 import { Euler, Quaternion, Vector3 } from "three";
 
 import type { BuddyPair } from "../../actors/buddies";
+import { FILM_DOLL_HEIGHT } from "../../actors/doll/place";
 import type { SelenaActor } from "../../actors/selena";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { FrameInfo } from "../../kernel/types";
@@ -13,7 +14,6 @@ import type { Beats } from "./timeline";
 
 const RELEASE = 1.28;
 const CONTACT = 3.75;
-const DOLL_HEIGHT_M = 0.135;
 const HOVER = new Vector3(-0.098, 0.706, -0.352);
 const STRIKE = new Vector3(-0.14, 0.733, -0.497);
 
@@ -136,7 +136,7 @@ export class SelenaScene {
       x: this.spot.x,
       y: this.spot.y,
       z: this.spot.z,
-      height: DOLL_HEIGHT_M * scale,
+      height: FILM_DOLL_HEIGHT * scale,
       pitch: this.angles.x,
       yaw: this.angles.y,
       roll: this.angles.z,

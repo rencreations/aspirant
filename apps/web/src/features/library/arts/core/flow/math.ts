@@ -193,7 +193,7 @@ export function firstScreenTiles(
   m: FlowMetrics,
   headOffset: number,
   vh: number,
-  limit: number,
+  limit = Infinity,
 ): Array<{ index: number; w: number; h: number }> {
   const out: Array<{ index: number; w: number; h: number }> = [];
   let y = headOffset;

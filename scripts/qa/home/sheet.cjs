@@ -38,7 +38,11 @@ const stops = list.split(",").map(Number);
   });
   await ctx.addInitScript(() => {
     try {
-      localStorage.setItem("aspirants:consent", "rejected");
+      sessionStorage.setItem("aspirants:entered", "1");
+      localStorage.setItem(
+        "aspirants:consent",
+        JSON.stringify({ choice: "rejected", at: Date.now() }),
+      );
       sessionStorage.setItem("aspirants:intro", "off");
       localStorage.setItem("aspirants:intro", "off");
     } catch {
