@@ -1,6 +1,7 @@
 import { TAU, clamp01, ramp } from "./ease";
 import { clearChannels, type Channels } from "./channels";
 import type { FaceName } from "./face";
+import { readReach } from "./props/book-hold";
 
 /**
  * Tetra's named poses, as functions of time. Each writes the absolute channels of the pose into one
@@ -15,7 +16,8 @@ import type { FaceName } from "./face";
  */
 export type PoseName =
   | "idle"
-  | "kite"
+  | "dance"
+  | "shock"
   | "run"
   | "point"
   | "pocket"
@@ -50,6 +52,8 @@ export interface PoseInput {
   pat: { side: number; lean: number };
   /** The place a hug goes to, in her own frame (metres). */
   hug: { x: number; y: number; z: number };
+  /** How open the book in her hands is (0 shut, 1 open): her palms follow the boards. */
+  bookOpen: number;
 }
 
 export function createPoseInput(): PoseInput {
@@ -62,13 +66,15 @@ export function createPoseInput(): PoseInput {
     bend: { kind: "water", aim: 0, phase: 0 },
     pat: { side: 1, lean: 1 },
     hug: { x: 0, y: 0.25, z: 0.2 },
+    bookOpen: 1,
   };
 }
 
 /** The face each pose wears if a section asks for none. */
 export const POSE_FACE: Readonly<Record<PoseName, FaceName>> = {
   idle: "neutral",
-  kite: "happy",
+  dance: "happy",
+  shock: "surprised",
   run: "angry",
   point: "tired",
   pocket: "focused",
@@ -104,35 +110,94 @@ function idle(i: PoseInput, c: Channels): void {
 }
 
 /**
- * She flies a kite: both hands on the reel in front of her chest, leaning back against the pull,
- * looking up at it, the wind tugging at her. The pull comes in gusts.
+ * An idle that dances, in place, facing us. One cycle is two beats (`DANCE_SECONDS`): her weight
+ * goes from one leg to the other, the hips swing, the shoulders answer them, the arms swing out and
+ * fold in turn, and her head bobs on every beat. Every term is a whole number of turns of the one
+ * phase, so the last frame of a cycle is the first frame of the next and the loop never shows a seam.
  */
-function kite(i: PoseInput, c: Channels): void {
+export const DANCE_SECONDS = 1.2;
+
+function dance(i: PoseInput, c: Channels): void {
+  const a = (TAU * i.time) / DANCE_SECONDS;
+  const sw = Math.sin(a);
+  const co = Math.cos(a);
+  // The beat is twice a cycle: down on the beat, up between.
+  const beat = Math.cos(2 * a);
+  const down = 0.5 - 0.5 * beat;
+  c.y = 0.004 - 0.014 * down + 0.012 * Math.abs(sw);
+  c.squash = 1 + 0.018 * beat;
+  c.yaw = 0.1 * sw;
+  c.hips.y = 0.2 * sw;
+  c.hips.z = 0.1 * sw;
+  c.spine.y = -0.14 * Math.sin(a + 0.5);
+  c.spine.z = -0.07 * sw;
+  c.spine.x = 0.04 + 0.03 * down;
+  c.spine2.z = 0.05 * Math.sin(a + 1);
+  c.neck.x = 0.02;
+  c.head.x = 0.05 + 0.1 * down;
+  c.head.y = -0.12 * Math.sin(a + 0.3);
+  c.head.z = 0.13 * Math.sin(a + 1.1);
+  // Weight on one leg and then the other, knees giving on the beat.
+  c.legL.z = 0.14 + 0.05 * sw;
+  c.legR.z = -0.14 + 0.05 * sw;
+  c.legL.x = -0.1 * Math.max(0, sw) - 0.04;
+  c.legR.x = 0.1 * Math.min(0, sw) - 0.04;
+  c.kneeL.x = 0.1 + 0.2 * down + 0.2 * Math.max(0, sw);
+  c.kneeR.x = 0.1 + 0.2 * down + 0.2 * Math.max(0, -sw);
+  // Arms: out and up on one side as the other folds in, swapping every half cycle.
+  c.armL.z = 0.7 + 0.5 * sw;
+  c.armR.z = -(0.7 - 0.5 * sw);
+  c.armL.x = -0.25 - 0.25 * co;
+  c.armR.x = -0.25 + 0.25 * co;
+  c.foreL.z = 0.35 + 0.3 * Math.sin(a - 0.8);
+  c.foreR.z = -(0.35 - 0.3 * Math.sin(a - 0.8));
+  c.foreL.x = -0.35 - 0.25 * Math.sin(2 * a);
+  c.foreR.x = -0.35 + 0.25 * Math.sin(2 * a);
+  c.wristL.z = 0.3 * Math.sin(2 * a + 0.4);
+  c.wristR.z = -0.3 * Math.sin(2 * a + 0.4);
+}
+
+/**
+ * Shocked, facing us: she is thrown back off her heels, the head back, the arms flung up and out
+ * with the elbows bent, the knees knocked together a little and the whole body shaking. The face
+ * is the wide eyes and the open mouth. It is a scroll-driven pose: a section ramps it in as the
+ * thing arrives and the shake never stops while it is worn.
+ */
+function shock(i: PoseInput, c: Channels): void {
   const t = i.time;
-  const gust = 0.5 + 0.5 * Math.sin(TAU * 0.23 * t) * Math.sin(TAU * 0.61 * t + 1);
-  c.spine.x = -0.2 - 0.06 * gust;
+  const shake = Math.sin(TAU * 7.5 * t);
+  const shake2 = Math.sin(TAU * 6.1 * t + 1.3);
+  // Off the ground a little, stretched tall by the fright, the weight thrown back on her heels.
+  c.y = 0.03 + 0.004 * shake;
+  c.squash = 1.07 + 0.012 * shake2;
+  c.pitch = -0.07;
+  c.hips.x = 0.12;
+  c.spine.x = -0.2 + 0.012 * shake;
   c.spine2.x = -0.08;
-  c.hips.x = 0.05;
-  c.neck.x = -0.12;
-  c.head.x = -0.2;
-  c.head.z = 0.04 * Math.sin(TAU * 0.31 * t);
-  // Feet apart, a little crouch, heels dug in.
-  c.legL.z = 0.14;
-  c.legR.z = -0.14;
-  c.legL.x = -0.12;
-  c.legR.x = 0.06;
-  c.kneeL.x = 0.12;
-  c.kneeR.x = 0.1;
-  c.squash = 1 - 0.01 * gust;
-  c.pitch = -0.04 * gust;
-  c.reachL.x = 0.045;
-  c.reachL.y = 0.27;
-  c.reachL.z = 0.16;
-  c.reachL.w = 1;
-  c.reachR.x = -0.045;
-  c.reachR.y = 0.29;
-  c.reachR.z = 0.16;
-  c.reachR.w = 1;
+  // The face stays to us: only a little back, so the wide eyes and the open mouth read.
+  c.neck.x = -0.06;
+  c.head.x = -0.1 + 0.015 * shake2;
+  c.head.z = 0.03 * shake;
+  // Arms flung out and up, the elbows bent and the hands up by her face, trembling.
+  c.shoulderL.z = 0.18;
+  c.shoulderR.z = -0.18;
+  c.armL.z = 1.3 + 0.04 * shake;
+  c.armR.z = -(1.3 + 0.04 * shake2);
+  c.armL.x = -0.32;
+  c.armR.x = -0.32;
+  c.foreL.z = 0.55 + 0.07 * shake2;
+  c.foreR.z = -(0.55 + 0.07 * shake);
+  c.foreL.x = -0.35;
+  c.foreR.x = -0.35;
+  c.wristL.z = 0.3 * shake;
+  c.wristR.z = -0.3 * shake2;
+  // One foot comes off the ground, the knees close in.
+  c.legL.z = 0.1;
+  c.legR.z = -0.04;
+  c.legL.x = -0.3;
+  c.legR.x = 0.1;
+  c.kneeL.x = 0.55;
+  c.kneeR.x = 0.12;
 }
 
 /**
@@ -159,8 +224,10 @@ function run(i: PoseInput, c: Channels): void {
   const swing = 0.55 + 0.55 * s;
   c.legL.x = -swing * sw;
   c.legR.x = swing * sw;
-  c.kneeL.x = (0.2 + 1.2 * s) * (0.5 + 0.5 * Math.sin(a + 1.1)) * (sw > -0.6 ? 1 : 0.5);
-  c.kneeR.x = (0.2 + 1.2 * s) * (0.5 - 0.5 * Math.sin(a - 1.1)) * (sw < 0.6 ? 1 : 0.5);
+  // The knee folds more while the leg is off the ground; the share eases (no step) in and out.
+  c.kneeL.x =
+    (0.2 + 1.2 * s) * (0.5 + 0.5 * Math.sin(a + 1.1)) * (0.5 + 0.5 * ramp(-0.8, -0.4, sw));
+  c.kneeR.x = (0.2 + 1.2 * s) * (0.5 - 0.5 * Math.sin(a - 1.1)) * (0.5 + 0.5 * ramp(0.8, 0.4, sw));
   // Arms pump against the legs with the forearms folded: furious, fists up.
   const pump = 0.5 + 0.55 * s;
   c.armL.x = pump * sw;
@@ -252,36 +319,38 @@ function sit(i: PoseInput, c: Channels): void {
   c.head.z = 0.025 * Math.sin(TAU * 0.13 * t + 1.3);
 }
 
-/** Sitting with the book held open in both hands, head bowed over it. */
+/**
+ * Sitting with the book held open in both hands, head bowed over it. The palms go to the places
+ * under the lower edge of each board (`readReach`), so the hands carry the book and never push into
+ * it, and the book is tilted up and back toward her face.
+ */
 function read(i: PoseInput, c: Channels): void {
   sit(i, c);
   const t = i.time;
   c.spine.x = 0.13;
   c.neck.x = 0.1;
-  c.head.x = 0.27;
+  c.head.x = 0.26;
   c.head.y = 0.04 * Math.sin(TAU * 0.11 * t);
-  c.reachL.x = 0.064;
-  c.reachL.y = 0.2;
-  c.reachL.z = 0.17;
+  const l = readReach(1, i.bookOpen);
+  const r = readReach(-1, i.bookOpen);
+  c.reachL.x = l.x;
+  c.reachL.y = l.y;
+  c.reachL.z = l.z;
   c.reachL.w = 1;
-  c.reachR.x = -0.064;
-  c.reachR.y = 0.2;
-  c.reachR.z = 0.17;
+  c.reachR.x = r.x;
+  c.reachR.y = r.y;
+  c.reachR.z = r.z;
   c.reachR.w = 1;
 }
 
-/** The book shut and held low, a little pleased, before she gets up. */
+/** The book shut and held low in the right hand, a little pleased, before she gets up. */
 function close(i: PoseInput, c: Channels): void {
   sit(i, c);
   c.spine.x = 0.06;
   c.head.x = -0.08;
-  c.reachL.x = 0.1;
-  c.reachL.y = 0.12;
-  c.reachL.z = 0.19;
-  c.reachL.w = 1;
-  c.reachR.x = -0.1;
-  c.reachR.y = 0.12;
-  c.reachR.z = 0.19;
+  c.reachR.x = -0.06;
+  c.reachR.y = 0.17;
+  c.reachR.z = 0.17;
   c.reachR.w = 1;
 }
 
@@ -516,12 +585,13 @@ function hug(i: PoseInput, c: Channels): void {
 
 const POSES: Readonly<Record<PoseName, (i: PoseInput, c: Channels) => void>> = {
   idle,
+  dance,
+  shock,
   point,
   pocket,
   carry,
   toss,
   swipe,
-  kite,
   run,
   pant,
   wave,

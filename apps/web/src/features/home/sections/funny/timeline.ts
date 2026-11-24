@@ -5,10 +5,11 @@
  * the visitor's scroll position by `stations.ts`.
  *
  * The story, in `local`:
- *   0 .. ENTER_END      Tetra is already flying her kite as Music scrolls away. The duo watch.
- *   DRAGON_IN .. OUT    play two: Silverbolt crosses right to left with the doll in its mouth; its
- *                       head pushes the rope until it breaks and the kite comes down. Tetra runs off to
- *                       the left after the dragon. The second rest, the drones confused.
+ *   0 .. ENTER_END      Tetra is already dancing, in place, as Music scrolls away. The duo watch.
+ *   DRAGON_IN .. OUT    play two: Silverbolt crosses right to left with the doll in its mouth. Tetra is
+ *                       shocked as its nose comes in, stays shocked while it passes over her, and runs
+ *                       off to the left behind its tail once the tail has cleared her. The second rest,
+ *                       the drones confused.
  *   CENTRE_FROM .. TO   play three: the duo come to the middle, big, and question each other
  *   TEXT_FROM .. TO     the words arrive. The last rest is the end of the section.
  *   past the end        the page rides up in the tail (scroll linked): the duo and the words leave
@@ -23,7 +24,7 @@ const smooth = (u: number): number => {
 /** 0 before `a`, 1 after `b`, a smooth step between. */
 export const ramp = (v: number, a: number, b: number): number => smooth((v - a) / (b - a));
 /** 0 before `a`, 1 after `b`, a straight line between. */
-export const line = (v: number, a: number, b: number): number => clamp01((v - a) / (b - a));
+const line = (v: number, a: number, b: number): number => clamp01((v - a) / (b - a));
 
 /** The page has ridden up this far (screens) past the section's end: the duo and the words are gone. */
 export const GONE = 0.74;
@@ -38,17 +39,17 @@ export const T = {
   /** The stare turns into confusion. */
   confusedFrom: 0.34,
   confusedTo: 0.44,
-  /** Tetra's run to the left, after the cut. */
-  runFrom: 0.04,
-  runTo: 0.13,
+  /** Tetra sees the dragon's nose come in (the shock starts) and is fully shocked. */
+  shockFrom: 0.138,
+  shockFull: 0.168,
+  /** Her turn from the shock into the run takes this much of `local`. */
+  turnLen: 0.03,
   centreFrom: 0.5,
   centreTo: 0.72,
   /** The duo stop being confused and start to question each other. */
   questionFrom: 0.72,
   textFrom: 0.74,
   textTo: 0.88,
-  /** The end of the fall, once the kite has dropped out of view. */
-  kiteGone: 0.14,
 } as const;
 
 /** One place of a character: the middle of a ball or the feet of a standing one, and a height. */
@@ -63,12 +64,10 @@ export interface FunnyGeometry {
   h: number;
   /** A narrow screen: the cast is smaller and nearer the middle. */
   compact: boolean;
-  /** Tetra's feet and her standing height while she flies the kite. */
+  /** Tetra's feet and her standing height while she dances. */
   tetra: Spot;
-  /** The knot of the kite in the sky, and the sail's height. */
-  kite: Spot;
   /** The dragon's flight: the body block's height, the height of its line, where its body block starts and ends. */
-  dragon: { y: number; height: number; x0: number; x1: number; headLead: number };
+  dragon: { y: number; height: number; mid0: number; mid1: number; headLead: number };
   /** The two drones while they watch. */
   watch: readonly [Spot, Spot];
   /** The two drones in the middle, big. */
@@ -79,6 +78,8 @@ export interface FunnyGeometry {
 const DRAGON_LENGTH = 3.5;
 /** How far the head is in front of the body block's middle, in body blocks. */
 const HEAD_LEAD = 0.62;
+/** From the dragon's visual middle to its body block's middle, in body blocks. */
+const MIDDLE = DRAGON_LENGTH / 2 - HEAD_LEAD;
 
 export function geometry(w: number, h: number): FunnyGeometry {
   const compact = w < 760 || w < h * 0.8;
@@ -87,19 +88,20 @@ export function geometry(w: number, h: number): FunnyGeometry {
   const watchD = Math.min(0.08 * h, 0.105 * w);
   const centreD = compact ? Math.min(0.2 * h, 0.28 * w) : Math.min(0.27 * h, 0.19 * w);
   const tetraX = 0.19 * w;
-  const floor = -0.275 * h;
+  // Her feet are on the ground, with the space of a tenth of the screen under them (the owner, 24 Nov).
+  const floor = -0.345 * h;
   return {
     w,
     h,
     compact,
     tetra: { x: tetraX, y: floor, height: tetraH },
-    kite: { x: -0.055 * w, y: 0.19 * h, height: tetraH * 0.57 },
     dragon: {
       y: 0.012 * h,
       height: dh,
-      // The head enters at the right edge; the tail tip clears the left edge at the end.
-      x0: w / 2 + 30 + HEAD_LEAD * dh,
-      x1: -w / 2 - 30 - (DRAGON_LENGTH - HEAD_LEAD) * dh,
+      // The middle of the whole dragon, nose to tail tip: all of it is beyond the right edge at the
+      // start of the crossing and beyond the left edge at the end, whichever way it heads.
+      mid0: w / 2 + 30 + (DRAGON_LENGTH / 2) * dh,
+      mid1: -w / 2 - 30 - (DRAGON_LENGTH / 2) * dh,
       headLead: HEAD_LEAD * dh,
     },
     watch: compact
@@ -124,43 +126,23 @@ export function geometry(w: number, h: number): FunnyGeometry {
   };
 }
 
-/** The dragon's body block middle at `local` (the head is `headLead` to the left of it). */
-export function dragonX(local: number, g: FunnyGeometry, hit = cutMoment(g)): number {
-  const { x0, x1 } = g.dragon;
-  const start = lerp(x0, x1, line(hit.contact, T.dragonIn, T.dragonOut));
-  const end = start - Math.min(g.w * 0.09, g.dragon.height * 0.64);
-  if (local <= hit.contact) return lerp(x0, start, line(local, T.dragonIn, hit.contact));
-  if (local < hit.local) {
-    const u = line(local, hit.contact, hit.local);
-    return lerp(start, end, 1 - (1 - u) ** 2);
-  }
-  const u = line(local, hit.local, T.dragonOut);
-  return lerp(end, x1, u * u * (2 - u));
+/** The middle of the whole dragon at `local`: one straight crossing, right to left. */
+function dragonMid(local: number, g: FunnyGeometry): number {
+  return lerp(g.dragon.mid0, g.dragon.mid1, line(local, T.dragonIn, T.dragonOut));
+}
+
+/**
+ * The dragon's body block middle at `local`. `heading` is 1 when it flies left (the scroll goes
+ * down) and -1 when it flies right (the scroll goes back): the dragon turns about the middle of its
+ * length, so the head is on the side it flies to and no part of it appears or vanishes in the turn.
+ */
+export function dragonX(local: number, g: FunnyGeometry, heading = 1): number {
+  return dragonMid(local, g) - heading * MIDDLE * g.dragon.height;
 }
 
 /** True while some of the dragon is on the screen's width. */
 export function dragonOnScreen(local: number): boolean {
   return local > T.dragonIn - 0.002 && local < T.dragonOut + 0.002;
-}
-
-/** Where Tetra's hand holds the reel, roughly, while she flies the kite (for the cut's timing). */
-function reelPoint(g: FunnyGeometry): { x: number; y: number } {
-  return { x: g.tetra.x - 0.12 * g.tetra.height, y: g.tetra.y + 0.5 * g.tetra.height };
-}
-
-/** The `local` at which the dragon's head meets the rope, and where on the rope (0 her hand, 1 the kite). */
-export function cutMoment(g: FunnyGeometry): { contact: number; local: number; at: number } {
-  const reel = reelPoint(g);
-  const k = g.kite;
-  const y = g.dragon.y + 0.2 * g.dragon.height;
-  const at = clamp01((y - reel.y) / (k.y - reel.y));
-  const ropeX = lerp(reel.x, k.x, at);
-  const headX = ropeX;
-  const centre = headX + g.dragon.headLead;
-  const local =
-    T.dragonIn +
-    ((g.dragon.x0 - centre) / (g.dragon.x0 - g.dragon.x1)) * (T.dragonOut - T.dragonIn);
-  return { contact: local, local: local + 0.054, at: Math.min(0.85, Math.max(0.15, at)) };
 }
 
 /**
@@ -182,20 +164,83 @@ export function bob(seconds: number, g: FunnyGeometry): { y: number; pitch: numb
   };
 }
 
-/** Tetra flies her kite in place until the rope breaks, then chases the dragon. */
+/** From the middle of the whole dragon to its tail tip (or its nose), in body blocks. */
+const HALF = DRAGON_LENGTH / 2;
+
+/** The middle of the crossing as if it went on in a straight line after the dragon has left. */
+function midRaw(local: number, g: FunnyGeometry): number {
+  const u = (local - T.dragonIn) / (T.dragonOut - T.dragonIn);
+  return lerp(g.dragon.mid0, g.dragon.mid1, Math.max(0, u));
+}
+
+/**
+ * Where the tip of the dragon's tail is at `local` (it flies left, the tail is on the right), as if
+ * the crossing went on in a straight line after the dragon has left: Tetra follows it out.
+ */
+export function tailX(local: number, g: FunnyGeometry): number {
+  return midRaw(local, g) + HALF * g.dragon.height;
+}
+
+/** How far behind the tail tip she runs: a half of her height at first, then close behind it. */
+function gapAt(local: number, g: FunnyGeometry): number {
+  return g.tetra.height * lerp(0.5, 0.17, ramp(local, T.dragonIn, T.dragonOut));
+}
+
+/** Where she runs when she follows the dragon out: close behind the tail tip. */
+function trailX(local: number, g: FunnyGeometry): number {
+  return tailX(local, g) + gapAt(local, g);
+}
+
+/**
+ * The `local` at which the dragon's tail has cleared her, so that she can run after it: the tail
+ * tip is a half of her height past her spot.
+ */
+export function runStart(g: FunnyGeometry): number {
+  const { mid0, mid1, height } = g.dragon;
+  const wanted = g.tetra.x - gapAt(T.dragonIn, g);
+  const u = (wanted - HALF * height - mid0) / (mid1 - mid0);
+  return T.dragonIn + u * (T.dragonOut - T.dragonIn);
+}
+
+/**
+ * Where she runs when the page is scrolled back up: the dragon flies right now, so she runs close
+ * behind its tail on the left, and no further right than her own place.
+ */
+export function tetraBehindReverse(local: number, g: FunnyGeometry): number {
+  return midRaw(local, g) - HALF * g.dragon.height - gapAt(local, g);
+}
+
+/**
+ * Tetra's feet. She dances where she is until the dragon's tail has cleared her, then runs to the
+ * left behind it: she leaves her spot slowly and then keeps close behind the tail, so she never
+ * passes it and is off the screen before the second rest.
+ */
 export function tetraPlace(
   local: number,
   g: FunnyGeometry,
-  cut: number,
-  out: { x: number; y: number; running: boolean; speed: number; arrive: number; leave: number },
+  out: { x: number; y: number; running: boolean; speed: number; leave: number },
 ): typeof out {
-  const leave = ramp(local, cut + T.runFrom, cut + T.runTo);
-  const endX = -g.w / 2 - 0.5 * g.tetra.height - 40;
-  out.x = lerp(g.tetra.x, endX, leave * leave * (1.2 - 0.2 * leave));
+  const start = runStart(g);
+  const leave = ramp(local, start, start + 0.07);
+  out.x = lerp(g.tetra.x, trailX(local, g), leave);
   out.y = g.tetra.y;
-  out.running = local > cut + T.runFrom && leave < 1;
-  out.speed = 0.4 + 0.6 * leave;
-  out.arrive = 1;
+  out.running = local > start + T.turnLen * 0.5;
+  out.speed = 0.55 + 0.45 * leave;
   out.leave = leave;
   return out;
+}
+
+/** The poses she wears, with the one she comes from: dance, then shock, then run. */
+export function tetraBeat(
+  local: number,
+  g: FunnyGeometry,
+): { name: "dance" | "shock" | "run"; from: "dance" | "shock"; blend: number } {
+  const start = runStart(g);
+  if (local >= start) {
+    return { name: "run", from: "shock", blend: ramp(local, start, start + T.turnLen) };
+  }
+  if (local >= T.shockFrom) {
+    return { name: "shock", from: "dance", blend: ramp(local, T.shockFrom, T.shockFull) };
+  }
+  return { name: "dance", from: "dance", blend: 1 };
 }

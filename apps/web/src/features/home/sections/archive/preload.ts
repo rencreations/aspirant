@@ -73,7 +73,7 @@ export function preload(): PreloadItem[] {
       priority: PRIORITY,
     },
     ...droneItems({ priority: 10 }),
-    ...tetraItems({ kite: false, priority: 60 }),
+    ...tetraItems({ priority: 60 }),
     ...COLLECTIONS.map((room) =>
       coverItem(room.cover, `Loading the ${room.name} cover`, PRIORITY + 1),
     ),

@@ -1,30 +1,30 @@
-import {
-  Vector3,
-  type Object3D,
-  type OrthographicCamera,
-  type Texture,
-  type WebGLRenderer,
-} from "three";
+import { Quaternion, Vector3, type Object3D, type WebGLRenderer } from "three";
 
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
-import { makePixelOrthoCamera } from "../../kernel/stage";
 import type { ActorCtx } from "../shared/types";
+import { setToonView, toonLight } from "../shared/toon";
 
 import { type Channels, restChannels } from "./channels";
 import { clamp, springTo, type Sprung } from "./ease";
 import { FaceState, createFaceOut, type FaceName, type FaceOut } from "./face";
 import { gazeFor, type Gaze } from "./gaze";
 import { PoseMixer } from "./mixer";
-import { TETRA_NAME } from "./model";
+import { TETRA_HEIGHT, TETRA_NAME } from "./model";
 import { inQuad } from "./quad";
 import { type Placed, type TetraPlace, clientToStage, placeToCanvas, stageToClient } from "./place";
 import { POSE_FACE, type BendKind, type PoseName } from "./poses";
 import { BookState } from "./props/book";
-import { BOOK_H, BookMesh } from "./props/book-mesh";
-import { KiteLayer } from "./props/kite-mesh";
-import { KiteShotPlayer, type KiteShot } from "./props/kite-shot";
-import { KiteSim, type CutOutcome, type KiteState } from "./props/kite-sim";
-import { SpoolMesh } from "./props/spool-mesh";
+import {
+  BOOK_H,
+  BOOK_SCALE,
+  CARRY_TILT,
+  ONE_HAND_X,
+  ONE_HAND_Y,
+  ONE_HAND_Z,
+  READ_TILT,
+  gripLocal,
+} from "./props/book-hold";
+import { BookMesh } from "./props/book-mesh";
 import {
   applyShot,
   createPresses,
@@ -42,41 +42,14 @@ const ORDER = 27;
 const DT_MAX = 0.05;
 /** The scene moving more than this many screens in one frame is a jump (a scrollbar drag). */
 const S_JUMP = 1.2;
-/** A hand that moves this far in one frame has jumped: the rope is laid again, not dragged. */
-const JUMP_PX = 700;
+/** How quickly her turn and her pace follow what a section asks (radians a second): about a third of a second. */
+const TURN_OMEGA = 11;
+const PACE_OMEGA = 9;
+/** How far behind the book (toward her) its soft shadow lies, in metres. */
+const SHADOW_BEHIND = 0.034;
 
 export type LookAt = { x: number; y: number } | "pointer" | null;
 export type Side = "left" | "right";
-
-/** The kite and its rope. Set the spot every frame it is shown; `null` puts it away. */
-export interface KiteHandle {
-  /** Where the kite hangs in the sky (the knot's place, the stage's frame) and how tall the sail is. */
-  fly(spot: { x: number; y: number; height: number } | null, shot?: KiteShot): void;
-  /** The rope breaks at `at` (0 her hand, 1 the kite). "fall" brings the kite down, "fly" lets it go. */
-  cut(at?: number, outcome?: CutOutcome): void;
-  /** The same as `cut`. */
-  snap(at?: number, outcome?: CutOutcome): void;
-  /**
-   * How near a point of the screen (the stage's frame) is to the rope: `at` along it (0 her hand, 1 the
-   * kite) and `dist` in pixels, or null when the rope is cut or the kite is away. Silverbolt crossing the
-   * rope: `const r = kite.ropeNear(x, y); if (r && r.dist < 30) kite.cut(r.at)`.
-   */
-  ropeNear(x: number, y: number): { at: number; dist: number } | null;
-  /** The rope is whole again, laid taut. */
-  mend(): void;
-  /** The ground a fallen kite lands on, in the stage's y (null for none). */
-  ground(y: number | null): void;
-  /** Run the world this many seconds at once (a jump past the cut). */
-  settle(seconds: number): void;
-  state(): {
-    state: KiteState;
-    outcome: CutOutcome;
-    sinceCut: number;
-    sail: { x: number; y: number; height: number; roll: number };
-    reel: Point2;
-    shown: boolean;
-  };
-}
 
 /** The comic book in her hands. */
 export interface BookHandle {
@@ -88,9 +61,6 @@ export interface BookHandle {
   scene(present: number, open: number, support: number, toss?: number): void;
   /** Turn a page. False when the book is not open or a page is turning. */
   turnPage(): boolean;
-  /** The covers: the back cover on the left, the front cover on the right (null keeps the plain one). */
-  setCovers(left: Texture | null, right: Texture | null): void;
-  setCoverUrls(left: string | null, right: string | null): Promise<void>;
   /** A press on a cover. */
   onPress(fn: ((side: Side) => void) | null): void;
   /** The words the site's cursor shows over each cover. */
@@ -101,12 +71,13 @@ export interface BookHandle {
 
 const POSES_ALL: readonly PoseName[] = [
   "idle",
+  "dance",
+  "shock",
   "point",
   "pocket",
   "carry",
   "toss",
   "swipe",
-  "kite",
   "run",
   "pant",
   "wave",
@@ -121,7 +92,8 @@ const POSES_ALL: readonly PoseName[] = [
 
 /** How much of the pointer's look each pose keeps (the others keep all of it). */
 const OWN_GAZE: Readonly<Partial<Record<PoseName, number>>> = {
-  kite: 0,
+  dance: 0.4,
+  shock: 0.5,
   run: 0,
   read: 0.19,
   swipe: 0.12,
@@ -139,17 +111,12 @@ export class TetraActor implements Actor {
   readonly name = TETRA_NAME;
   visible = false;
   readonly object: Object3D;
-  readonly kite: KiteHandle;
   readonly book: BookHandle;
 
   private readonly ctx: ActorCtx;
   private readonly model: TetraModel;
-  private readonly kiteLayer: KiteLayer | null;
-  private readonly kiteSim = new KiteSim();
   private readonly bookMesh = new BookMesh();
   private readonly bookState = new BookState();
-  private readonly spool = new SpoolMesh();
-  private readonly kiteCamera: OrthographicCamera;
   private readonly removers: Array<() => void> = [];
   private disposed = false;
 
@@ -161,11 +128,8 @@ export class TetraActor implements Actor {
   private faceAskName: FaceName | null = null;
   private faceAskBlend = 1;
   private interactive = true;
-  private kiteSpot: { x: number; y: number; height: number } | null = null;
-  private kiteShot: KiteShot | null = null;
-  private readonly kitePlayer = new KiteShotPlayer();
   private stridePhase: number | undefined;
-  private spoolOn = false;
+  private paceAsk = 1;
   private bookAuto = true;
   private bookScripted = false;
   private bookSupport = 0;
@@ -185,6 +149,9 @@ export class TetraActor implements Actor {
   private readonly faceOut: FaceOut = createFaceOut();
   private readonly channels: Channels = restChannels();
   private readonly gaze: Gaze = { yaw: 0, nod: 0 };
+  /** The turn of her whole body that a section asks for, and how fast she runs: both eased. */
+  private readonly turn: Sprung = { x: 0, v: 0 };
+  private readonly pace: Sprung = { x: 0, v: 0 };
   private readonly headYaw: Sprung = { x: 0, v: 0 };
   private readonly headNod: Sprung = { x: 0, v: 0 };
   private readonly bodyYaw: Sprung = { x: 0, v: 0 };
@@ -200,26 +167,24 @@ export class TetraActor implements Actor {
   private hovered = false;
   private lastPose: PoseName = "idle";
   private readonly point = { x: 0, y: 0 };
-  private readonly reel = { x: 0, y: 0 };
-  private lastReel = { x: 0, y: 0 };
-  private hasReel = false;
-  private readonly nearest = { at: 0, dist: 0 };
   private snapNext = true;
   private lastS = 0;
   private readonly vA = new Vector3();
+  private readonly light = new Vector3();
+  private readonly lightLocal = new Vector3();
+  private readonly qBook = new Quaternion();
+  private readonly gripA = { x: 0, y: 0, z: 0 };
+  private readonly gripB = { x: 0, y: 0, z: 0 };
   private readonly vB = new Vector3();
   private readonly vHold = new Vector3();
   private readonly vPocket = new Vector3();
   private readonly cornerBuf: Vector3[] = [];
 
-  constructor(ctx: ActorCtx, model: TetraModel, kiteLayer: KiteLayer | null) {
+  constructor(ctx: ActorCtx, model: TetraModel) {
     this.ctx = ctx;
     this.model = model;
-    this.kiteLayer = kiteLayer;
     this.object = model.root;
-    model.props.add(this.bookMesh.root, this.spool.root);
-    this.kiteCamera = makePixelOrthoCamera(ctx.stage.width, ctx.stage.height);
-    this.kite = this.makeKiteHandle();
+    model.props.add(this.bookMesh.root);
     this.book = this.makeBookHandle();
 
     const stage = ctx.stage;
@@ -232,11 +197,6 @@ export class TetraActor implements Actor {
       },
       resize: (w, h) => {
         this.model.resize(w, h);
-        this.kiteCamera.left = -w / 2;
-        this.kiteCamera.right = w / 2;
-        this.kiteCamera.top = h / 2;
-        this.kiteCamera.bottom = -h / 2;
-        this.kiteCamera.updateProjectionMatrix();
       },
       rebuild: () => {
         this.warm();
@@ -301,6 +261,15 @@ export class TetraActor implements Actor {
     this.mixer.set(name, blend, from);
   }
 
+  /**
+   * Several poses at once, each with a share (they are scaled to add up to one). For a stretch of the
+   * scroll where she moves from one pose through a second into a third, so every share is
+   * continuous with the scroll and nothing pops when the pose that leads changes.
+   */
+  poseMix(poses: ReadonlyArray<readonly [PoseName, number]>): void {
+    this.mixer.setMix(poses);
+  }
+
   swipe(card: number): void {
     this.mixer.input.swipe = card;
   }
@@ -308,7 +277,7 @@ export class TetraActor implements Actor {
   /** How fast she runs, 0 to 1 (the cycle quickens with it). */
   runSpeed(speed: number, phase?: number): void {
     this.stridePhase = phase;
-    this.mixer.input.speed = speed;
+    this.paceAsk = speed;
   }
 
   /** Which hand waves: -1 her right (the left of the screen), 1 her left. */
@@ -361,11 +330,6 @@ export class TetraActor implements Actor {
 
   setInteractive(on: boolean): void {
     this.interactive = on;
-  }
-
-  /** The reel in her hands, with or without the kite (the string in a chase after the cut). */
-  setReel(on: boolean): void {
-    this.spoolOn = on;
   }
 
   /** Where her head, hands and feet are on the screen (the stage's frame), as of the last frame. */
@@ -441,7 +405,6 @@ export class TetraActor implements Actor {
       // What is asked is put on at once, in the tick, after the section's wants are in.
       this.snapNext = true;
       this.model.settle();
-      this.hasReel = false;
     }
     this.tick(Math.min(frame.dt, DT_MAX));
     this.draw();
@@ -452,62 +415,17 @@ export class TetraActor implements Actor {
     this.disposed = true;
     for (const remove of this.removers) remove();
     this.removers.length = 0;
-    this.kiteLayer?.dispose();
     this.bookMesh.dispose();
-    this.spool.dispose();
     this.model.dispose();
   }
 
   // ---------------------------------------------------------------- inside
 
   private warm(): void {
+    // The book's shaders (toon, ink, shadow) compile now, not on the frame it first comes out.
+    this.bookMesh.root.visible = true;
     this.model.warm(this.ctx.stage.renderer);
-    this.kiteLayer?.warm(this.ctx.stage.renderer, this.kiteCamera);
-  }
-
-  private makeKiteHandle(): KiteHandle {
-    return {
-      fly: (spot, shot) => {
-        if (this.kiteShot && !shot) {
-          this.kitePlayer.reset();
-          this.kiteSim.contact.index = -1;
-          if (this.kiteLayer) this.kiteLayer.scene.position.y = this.kiteLayer.ropes.position.y = 0;
-          this.hasReel = false;
-          this.kiteSim.state = "tethered";
-        }
-        this.kiteShot = shot ?? null;
-        this.kiteSpot = spot;
-      },
-      cut: (at = 0.45, outcome = "fall") => {
-        this.kiteSim.cut(at, outcome);
-      },
-      snap: (at = 0.45, outcome = "fall") => {
-        this.kiteSim.cut(at, outcome);
-      },
-      ropeNear: (x, y) => (this.kiteSim.nearest(x, y, this.nearest) ? this.nearest : null),
-      mend: () => {
-        this.kiteSim.reset();
-      },
-      ground: (y) => {
-        this.kiteSim.setFloor(y);
-      },
-      settle: (seconds) => {
-        this.kiteSim.settle(seconds);
-      },
-      state: () => ({
-        state: this.kiteSim.state,
-        outcome: this.kiteSim.outcome,
-        sinceCut: this.kiteSim.sinceCut,
-        sail: {
-          x: this.kiteSim.look.x,
-          y: this.kiteSim.look.y,
-          height: this.kiteSim.look.height,
-          roll: this.kiteSim.look.roll,
-        },
-        reel: this.reel,
-        shown: this.kiteSpot !== null,
-      }),
-    };
+    this.bookMesh.root.visible = false;
   }
 
   private makeBookHandle(): BookHandle {
@@ -535,10 +453,6 @@ export class TetraActor implements Actor {
         if (ok) this.face.restartReading();
         return ok;
       },
-      setCovers: (l, r) => {
-        this.bookMesh.setCovers(l, r);
-      },
-      setCoverUrls: (l, r) => this.bookMesh.setCoverUrls(l, r),
       onPress: (fn) => {
         this.bookPress = fn;
       },
@@ -555,7 +469,19 @@ export class TetraActor implements Actor {
     const stage = this.ctx.stage;
     const input = this.mixer.input;
     input.time = this.time;
+    // What a section asks for (how fast she runs, which way her body faces) is eased, so a section
+    // that switches it on or off in a frame never turns her or speeds her up in a frame.
+    if (this.snapNext) {
+      this.pace.x = this.paceAsk;
+      this.pace.v = 0;
+      this.turn.x = this.placeAsk.yaw ?? 0;
+      this.turn.v = 0;
+    }
+    springTo(this.pace, this.paceAsk, PACE_OMEGA, dt);
+    springTo(this.turn, this.placeAsk.yaw ?? 0, TURN_OMEGA, dt);
+    input.speed = clamp(this.pace.x, 0, 1);
     const speed = Math.max(0.15, input.speed);
+    input.bookOpen = this.bookState.open.x;
     input.phase = this.stridePhase ?? input.phase + dt * (1.8 + 2.2 * speed);
     input.bend.phase += dt * 0.42;
 
@@ -640,7 +566,7 @@ export class TetraActor implements Actor {
     c.head.y += this.headYaw.x;
     c.head.x += this.headNod.x;
     c.spine.y += this.bodyYaw.x;
-    c.yaw += this.placeAsk.yaw ?? 0;
+    c.yaw += this.turn.x;
     applyShot(this.shot, c);
     this.tweaker?.(c);
   }
@@ -654,6 +580,7 @@ export class TetraActor implements Actor {
 
   private draw(): void {
     const stage = this.ctx.stage;
+    setToonView(stage.width, stage.height);
     const placed = placeToCanvas(this.placeAsk, stage.width, stage.height, this.placed);
     this.model.frame({
       width: stage.width,
@@ -668,80 +595,86 @@ export class TetraActor implements Actor {
     this.followProps();
   }
 
-  /** The reel, the book and the kite, laid where her hands came out this frame. */
+  /**
+   * The book, laid where her hands came out this frame. Her hands are the one thing that decides
+   * where it is: the book is placed so that her palms are on the places `book-hold.ts` says (under
+   * the lower edge of each board, a little behind it), so it cannot sink into her hands or her
+   * body, and it follows the real hands through a blend from one pose to another.
+   */
   private followProps(): void {
     const model = this.model;
     const sockets = model.sockets;
     const c = this.channels;
-    const kiteOn = this.kiteSpot !== null && this.kiteLayer !== null;
-    // The reel sits between her hands while she holds it with both, in her right hand otherwise.
+    const flip = this.flip ? -1 : 1;
+    const state = this.bookState;
     sockets.handL.getWorldPosition(this.vA);
     sockets.handR.getWorldPosition(this.vB);
-    const both = this.mixer.weightOf("kite");
-    const spoolOn = kiteOn || this.spoolOn;
-    this.spool.root.visible = spoolOn;
-    if (spoolOn) {
-      this.vHold.copy(this.vB).lerp(this.vA, 0.5 * both);
-      if (both > 0.5) this.vHold.copy(this.vA).add(this.vB).multiplyScalar(0.5);
-      this.spool.root.position.copy(this.vHold).add(this.vPocket.set(0, 0.012, 0.045));
-      this.spool.root.rotation.set(0, 0, 0);
-    }
-    // The book is out when the pose, or the section, says so.
-    this.vHold
-      .copy(this.vA)
-      .add(this.vB)
-      .multiplyScalar(0.5)
-      .add(this.vPocket.set(0, BOOK_H * 0.5 - 0.035, 0.012));
-    this.vPocket.copy(this.vB).add(this.vA.set(0.06, 0.02, -0.15));
-    if (this.bookScripted) {
-      // Carry the closed spine in one hand. The other meets it as the boards open.
-      sockets.handR.getWorldPosition(this.vB);
-      this.vHold.lerp(this.vB, 1 - this.bookSupport);
-      this.vHold.y += BOOK_H * 0.2 * (1 - this.bookSupport);
-      const t = this.bookToss;
-      if (t > 0) {
-        // Ease away from the actual release grip, then follow a free arc in her scene.
-        this.vPocket.set(-0.23 - 0.53 * t, 0.36 + 0.83 * t - 0.67 * t * t, 0.14 + 0.32 * t);
-        this.vHold.lerp(this.vPocket, Math.min(1, t * 6));
-      }
-    }
-    this.bookMesh.update(this.bookState, this.vHold, this.vPocket, this.bookScripted);
-    const flip = this.flip ? -1 : 1;
+
+    // How far both hands are on it, and how tilted it is toward her face.
+    const read = this.mixer.weightOf("read");
+    const support = this.bookScripted ? clamp(this.bookSupport, 0, 1) : clamp(read * 1.2, 0, 1);
+    const toss = this.bookScripted ? this.bookToss : 0;
+    const tilt = CARRY_TILT + (READ_TILT - CARRY_TILT) * support;
+    const open = clamp(state.open.x, 0, 1);
+
+    // Its orientation first (the hold is placed from it): leaning back toward her, turned with her.
+    const turn = toss;
     this.bookMesh.root.rotation.order = "YXZ";
-    const turn = this.bookScripted ? this.bookToss : 0;
     this.bookMesh.root.rotation.set(
-      -0.42 + c.pitch + turn * 3.4,
+      tilt + c.pitch + turn * 3.4,
       flip * c.yaw + turn * 2.1,
       c.roll + turn * 5.4,
     );
-    this.quadsLive = this.bookMesh.shown;
-    if (this.quadsLive) {
-      this.bookMesh.root.updateMatrixWorld(true);
+    this.bookMesh.root.updateMatrixWorld(true);
+
+    // Two hands: the book's middle is where the middle of the two palms plus the offset from a palm
+    // to the middle of the book (in the book's frame, turned into hers) puts it.
+    const left = gripLocal(1, open, this.gripA);
+    const right = gripLocal(-1, open, this.gripB);
+    this.vHold.copy(this.vA).add(this.vB).multiplyScalar(0.5);
+    this.vPocket.set((left.x + right.x) / 2, (left.y + right.y) / 2, (left.z + right.z) / 2);
+    this.vPocket.applyEuler(this.bookMesh.root.rotation);
+    this.vHold.sub(this.vPocket);
+    // One hand: the right hand holds the shut book under its middle, behind it.
+    this.vPocket.set(ONE_HAND_X, ONE_HAND_Y, ONE_HAND_Z).applyEuler(this.bookMesh.root.rotation);
+    this.vA.copy(this.vB).sub(this.vPocket);
+    this.vHold.lerp(this.vA, 1 - support);
+    if (toss > 0) {
+      // Ease away from the actual release grip, then follow a free arc in her scene.
+      this.vPocket.set(
+        -0.23 - 0.53 * toss,
+        0.36 + 0.83 * toss - 0.67 * toss * toss,
+        0.14 + 0.32 * toss,
+      );
+      this.vHold.lerp(this.vPocket, Math.min(1, toss * 6));
+    }
+    this.bookMesh.root.position.copy(this.vHold);
+    const shown = this.bookMesh.update(state, this.bookScripted);
+    this.bookMesh.root.updateMatrixWorld(true);
+    this.quadsLive = shown;
+    if (shown) {
+      this.bookMesh.size((this.placed.tall / TETRA_HEIGHT) * BOOK_H * BOOK_SCALE);
+      this.lightBook();
       this.projectQuad("left", this.quadL);
       this.projectQuad("right", this.quadR);
     }
+  }
 
-    // The kite: the rope is held at the reel's top.
-    const layer = this.kiteLayer;
-    if (layer && kiteOn && this.kiteSpot) {
-      this.vA.copy(this.spool.root.position).add(this.vPocket.set(0, 0.03, 0));
-      model.toStage(this.vA, this.reel);
-      if (this.kiteShot) return;
-      const jump =
-        this.hasReel &&
-        Math.hypot(this.reel.x - this.lastReel.x, this.reel.y - this.lastReel.y) > JUMP_PX;
-      this.lastReel.x = this.reel.x;
-      this.lastReel.y = this.reel.y;
-      const sim = this.kiteSim;
-      sim.setHand(this.reel.x, this.reel.y);
-      sim.setSpot(this.kiteSpot.x, this.kiteSpot.y, this.kiteSpot.height);
-      if (sim.state === "tethered" && (!this.hasReel || jump)) sim.reset();
-      this.hasReel = true;
-      sim.step(this.dt);
-      layer.update(sim, this.time, 1);
-    } else {
-      layer?.hide();
-    }
+  /** The key light for the book: the raised shapes' shadows and the soft shadow behind it. */
+  private lightBook(): void {
+    const world = this.light
+      .copy(toonLight.dir.value)
+      .applyQuaternion(this.model.camera.quaternion);
+    this.bookMesh.aim(world);
+    const q = this.bookMesh.worldQuaternion(this.qBook).invert();
+    const local = this.lightLocal.copy(world).applyQuaternion(q);
+    const t = SHADOW_BEHIND / Math.max(0.25, local.z);
+    this.bookMesh.shade(
+      -local.x * t,
+      -local.y * t,
+      SHADOW_BEHIND,
+      clamp(this.bookState.present.x, 0, 1),
+    );
   }
 
   /** The four corners of a cover on the screen. */
@@ -755,22 +688,7 @@ export class TetraActor implements Actor {
   }
 
   private render(renderer: WebGLRenderer): void {
-    if (this.kiteLayer && this.kiteSpot && this.kiteShot) {
-      this.kitePlayer.update(this.kiteSim, this.reel, this.kiteSpot, this.kiteShot, this.dt);
-      this.kiteLayer.scene.position.y = this.kiteLayer.ropes.position.y = this.kiteShot.offsetY;
-      this.kiteLayer.update(this.kiteSim, this.kiteSim.look.flutter, 1);
-    }
-    // The sail and its tail first (they are far behind her), then her, then the rope, which runs from the reel in front of her.
-    const kite = this.kiteLayer?.visible ? this.kiteLayer : null;
-    if (kite) {
-      renderer.render(kite.scene, this.kiteCamera);
-      renderer.clearDepth();
-    }
     this.model.draw(renderer);
-    if (kite) {
-      renderer.clearDepth();
-      renderer.render(kite.ropes, this.kiteCamera);
-    }
   }
 
   private onPress(): void {
@@ -801,8 +719,7 @@ export class TetraActor implements Actor {
   }
 }
 
-/** Build her: the model and the kite's pictures load in parallel (through the media store). */
+/** Build her: the model comes through the media store. */
 export async function buildTetra(ctx: ActorCtx): Promise<TetraActor> {
-  const [model, kite] = await Promise.all([TetraModel.load(), KiteLayer.load()]);
-  return new TetraActor(ctx, model, kite);
+  return new TetraActor(ctx, await TetraModel.load());
 }

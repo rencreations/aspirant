@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { type Channels, restChannels } from "./channels";
 import { FACE_NAMES } from "./face";
-import { type BendKind, type PoseName, POSE_FACE, composePose, createPoseInput } from "./poses";
+import {
+  type BendKind,
+  type PoseName,
+  DANCE_SECONDS,
+  POSE_FACE,
+  composePose,
+  createPoseInput,
+} from "./poses";
 
 const NAMES = Object.keys(POSE_FACE) as PoseName[];
 const BENDS: BendKind[] = ["earth", "air", "water", "fire"];
@@ -47,22 +54,53 @@ describe("the poses", () => {
   it("composing clears what the last pose left", () => {
     const c = restChannels();
     const input = createPoseInput();
-    composePose("kite", input, c);
+    composePose("hug", input, c);
     expect(c.reachL.w).toBe(1);
     composePose("idle", input, c);
     expect(c.reachL.w).toBe(0);
     expect(c.legL.z).toBeLessThan(0.1);
   });
 
-  it("the kite pose holds the reel with both hands, leans back and looks up", () => {
+  it("the dance loops without a seam, keeps both feet near the ground and swings her hips", () => {
+    const a = restChannels();
+    const b = restChannels();
+    const input = createPoseInput();
+    let swing = 0;
+    for (let t = 0; t < DANCE_SECONDS; t += 0.05) {
+      input.time = t;
+      composePose("dance", input, a);
+      input.time = t + DANCE_SECONDS;
+      composePose("dance", input, b);
+      const fb = flat(b);
+      flat(a).forEach((v, i) => {
+        expect(Math.abs(v - (fb[i] ?? 0))).toBeLessThan(1e-9);
+      });
+      swing = Math.max(swing, Math.abs(a.hips.y));
+      expect(a.y).toBeGreaterThan(-0.03);
+      expect(a.y).toBeLessThan(0.03);
+    }
+    expect(swing).toBeGreaterThan(0.15);
+  });
+
+  it("the shock throws her back with her arms up, the face to us, and it never stands still", () => {
     const c = restChannels();
-    composePose("kite", createPoseInput(), c);
-    expect(c.reachL.w).toBe(1);
-    expect(c.reachR.w).toBe(1);
-    expect(c.reachL.x).toBeGreaterThan(0);
-    expect(c.reachR.x).toBeLessThan(0);
-    expect(c.spine.x).toBeLessThan(0);
+    const input = createPoseInput();
+    composePose("shock", input, c);
+    expect(c.spine.x).toBeLessThan(-0.15);
+    // The head is only a little back: the face stays to the visitor so the eyes and the mouth read.
     expect(c.head.x).toBeLessThan(0);
+    expect(c.head.x).toBeGreaterThan(-0.25);
+    expect(c.armL.z).toBeGreaterThan(1.2);
+    expect(c.armR.z).toBeLessThan(-1.2);
+    expect(c.y).toBeGreaterThan(0.02);
+    expect(POSE_FACE.shock).toBe("surprised");
+    const seen = new Set<number>();
+    for (let t = 0; t < 1; t += 0.037) {
+      input.time = t;
+      composePose("shock", input, c);
+      seen.add(Math.round(c.wristL.z * 1000));
+    }
+    expect(seen.size).toBeGreaterThan(5);
   });
 
   it("the run alternates her legs and arms and bounces, harder with speed", () => {

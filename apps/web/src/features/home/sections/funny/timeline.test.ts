@@ -7,11 +7,14 @@ import {
   GONE,
   T,
   bob,
-  cutMoment,
   dragonOnScreen,
   dragonX,
   geometry,
   lift,
+  runStart,
+  tailX,
+  tetraBeat,
+  tetraBehindReverse,
   tetraPlace,
 } from "./timeline";
 
@@ -53,7 +56,7 @@ describe("the zones", () => {
     expect(at).toBeLessThan(FUNNY_SCREENS);
   });
 
-  it("rest on composed frames: Tetra with the kite, then an empty sky with the confused pair", () => {
+  it("rest on composed frames: Tetra dancing, then an empty sky with the confused pair", () => {
     // First rest: Tetra has stopped, the dragon has not come, the pair stare.
     expect(R1).toBeGreaterThanOrEqual(T.enterEnd);
     expect(R1).toBeLessThan(T.dragonIn);
@@ -114,34 +117,74 @@ describe.each(SIZES)("the geometry at %i x %i", (w, h) => {
     }
   });
 
-  it("cuts the rope while the dragon is crossing, at a place along the rope", () => {
-    const cut = cutMoment(g);
-    expect(cut.local).toBeGreaterThan(T.dragonIn);
-    expect(cut.local).toBeLessThan(T.dragonOut);
-    expect(cut.at).toBeGreaterThan(0.1);
-    expect(cut.at).toBeLessThan(0.9);
-    // The head is on the screen at the cut.
-    const head = dragonX(cut.local, g) - g.dragon.headLead;
-    expect(Math.abs(head)).toBeLessThan(w / 2);
+  it("turns the dragon about the middle of its length: clear of the screen at both ends, heading either way", () => {
+    const dh = g.dragon.height;
+    for (const heading of [1, -1]) {
+      // Nose to tail tip is 3.5 blocks; the nose is 0.62 blocks ahead of the body block.
+      const span = (center: number) =>
+        heading > 0
+          ? [center - 0.62 * dh, center + 2.88 * dh]
+          : [center - 2.88 * dh, center + 0.62 * dh];
+      const [a0, b0] = span(dragonX(T.dragonIn, g, heading));
+      expect(a0).toBeGreaterThanOrEqual(w / 2);
+      expect(b0).toBeGreaterThan(w / 2);
+      const [a1, b1] = span(dragonX(T.dragonOut, g, heading));
+      expect(b1).toBeLessThanOrEqual(-w / 2);
+      expect(a1).toBeLessThan(-w / 2);
+    }
+    // The middle of the whole dragon does not move when it turns.
+    const mid = (heading: number) =>
+      dragonX(0.3, g, heading) + (heading > 0 ? 1 : -1) * 1.13 * dh * -1 + 0;
+    expect(Math.abs(mid(1) - mid(1))).toBe(0);
+    expect(dragonX(0.3, g, 1) - dragonX(0.3, g, -1)).toBeCloseTo(-2 * 1.13 * dh, 6);
   });
 
-  it("has Tetra already flying her kite, and run off to the left after the cut", () => {
-    const cut = cutMoment(g).local;
-    const out = { x: 0, y: 0, running: false, speed: 0, arrive: 0, leave: 0 };
-    expect(tetraPlace(0, g, cut, out).x).toBeCloseTo(g.tetra.x, 6);
-    expect(tetraPlace(0, g, cut, out).running).toBe(false);
-    const stand = tetraPlace((T.enterEnd + cut) / 2, g, cut, out);
-    expect(stand.x).toBeCloseTo(g.tetra.x, 3);
-    expect(stand.running).toBe(false);
-    const gone = tetraPlace(cut + T.runTo + 0.01, g, cut, out);
-    expect(gone.x).toBeLessThan(-w / 2);
-    // She never goes backwards after the cut.
+  it("has Tetra dancing from the first frame, shocked when the nose comes in, and gone by the second rest", () => {
+    const out = { x: 0, y: 0, running: false, speed: 0, leave: 0 };
+    expect(tetraPlace(0, g, out).x).toBeCloseTo(g.tetra.x, 6);
+    expect(out.running).toBe(false);
+    expect(tetraBeat(0, g)).toMatchObject({ name: "dance", blend: 1 });
+    expect(tetraBeat(T.shockFrom - 0.001, g).name).toBe("dance");
+    const mid = tetraBeat((T.shockFrom + T.shockFull) / 2, g);
+    expect(mid.name).toBe("shock");
+    expect(mid.from).toBe("dance");
+    expect(mid.blend).toBeGreaterThan(0.2);
+    expect(mid.blend).toBeLessThan(0.8);
+    // She is fully shocked before the dragon's nose reaches her, and stays shocked until its tail has passed.
+    const nose = dragonX(T.shockFull, g) - g.dragon.headLead;
+    expect(nose).toBeGreaterThan(g.tetra.x);
+    expect(tetraBeat(runStart(g) - 0.002, g)).toMatchObject({ name: "shock", blend: 1 });
+    expect(tetraBeat(runStart(g) + T.turnLen, g)).toMatchObject({ name: "run", blend: 1 });
+    expect(tetraPlace(R2, g, out).x).toBeLessThan(-w / 2 - 0.35 * g.tetra.height);
+  });
+
+  it("has her run after the dragon from behind: never ahead of its tail, never going back", () => {
+    const out = { x: 0, y: 0, running: false, speed: 0, leave: 0 };
+    const start = runStart(g);
+    // Her spot is clear of the tail when she leaves it.
+    expect(tailX(start, g)).toBeLessThan(g.tetra.x - 0.3 * g.tetra.height);
+    expect(start).toBeGreaterThan(T.shockFull);
+    expect(start).toBeLessThan(R2 - 0.1);
     let last = Infinity;
-    for (let l = cut; l < cut + T.runTo + 0.02; l += 0.005) {
-      const x = tetraPlace(l, g, cut, out).x;
+    for (let l = start - 0.01; l <= R2; l += 0.004) {
+      const x = tetraPlace(l, g, out).x;
       expect(x).toBeLessThanOrEqual(last + 1e-9);
       last = x;
+      if (l >= start) expect(x).toBeGreaterThanOrEqual(tailX(l, g) + 0.1 * g.tetra.height);
     }
+  });
+
+  it("puts her feet low on the screen with room under them, and the dragon where it was", () => {
+    expect(g.tetra.y).toBeLessThan(-0.3 * h);
+    expect(g.tetra.y).toBeGreaterThan(-0.4 * h);
+    expect(g.dragon.y).toBeCloseTo(0.012 * h, 9);
+    expect(g.dragon.height).toBeCloseTo(Math.min(0.205 * h, 0.265 * w), 9);
+  });
+
+  it("runs back in behind the dragon when the page is scrolled up, and rests at her spot", () => {
+    const behind = tetraBehindReverse((T.dragonIn + T.dragonOut) / 2, g);
+    expect(behind).toBeLessThan(dragonX((T.dragonIn + T.dragonOut) / 2, g));
+    expect(Math.min(g.tetra.x, tetraBehindReverse(0, g))).toBeCloseTo(g.tetra.x, 6);
   });
 
   it("has the duo gone off the top of the screen once the page has ridden up past GONE", () => {

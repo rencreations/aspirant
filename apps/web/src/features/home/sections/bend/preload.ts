@@ -24,7 +24,7 @@ export function preload(): PreloadItem[] {
       ...chunkItem("home-bend", "Hanging the pictures", () => import("./runtime"), 2),
       ...later(62),
     },
-    ...tetraItems({ kite: false, priority: 60 }),
+    ...tetraItems({ priority: 60 }),
     ...droneItems({ priority: 10 }),
     ...marksItems(),
     ...FAN_PICS.map((pic) => bitmapItem(fanSource(pic), "Loading the fan art", later(64))),

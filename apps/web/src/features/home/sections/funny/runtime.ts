@@ -3,7 +3,6 @@ import { put } from "@/features/character/vexana/seams/scroll-kit";
 import type { DollActor } from "../../actors/doll";
 import type { DuoActor } from "../../actors/duo";
 import type { SilverboltActor } from "../../actors/silverbolt";
-import type { KiteShot } from "../../actors/tetra/props/kite-shot";
 import type { TetraActor } from "../../actors/tetra";
 import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
@@ -14,14 +13,14 @@ import {
   GONE,
   T,
   bob,
-  cutMoment,
   dragonOnScreen,
   dragonX,
   geometry,
   lerp,
   lift,
-  line,
   ramp,
+  tetraBeat,
+  tetraBehindReverse,
   tetraPlace,
   type FunnyGeometry,
   type Spot,
@@ -43,11 +42,11 @@ const JUMP = 0.12;
 const spot = (): Spot => ({ x: 0, y: 0, height: 0 });
 
 /**
- * The funny section: Tetra flies a kite, Silverbolt crosses with the doll cursing in its mouth and
- * breaks the rope, Tetra runs off after it, the two drones stare, go to the middle and question each
- * other. Every frame is a pure function of `local`, the size of the screen and the section's own
- * small state (the cut, the marks already thrown). The actors are shared: each is set in full, every
- * frame it is shown. Tetra and her kite rise into view as Music scrolls up.
+ * The funny section: Tetra dances, Silverbolt crosses with the doll cursing in its mouth, Tetra is
+ * shocked and runs off behind it, the two drones stare, go to the middle and question each other.
+ * Every frame is a pure function of `local`, the size of the screen and the section's own small
+ * state (the marks already thrown). The actors are shared: each is set in full, every frame it is
+ * shown. Tetra rises into view, already dancing, as Music scrolls up.
  */
 class FunnyRuntime implements SectionRuntime {
   private tetra: TetraActor | null = null;
@@ -65,32 +64,10 @@ class FunnyRuntime implements SectionRuntime {
   private shownH = Number.NaN;
 
   private geo: FunnyGeometry;
-  private cutAt: ReturnType<typeof cutMoment>;
   private readonly travel = new ScrollTravel();
   private lastLocal = Number.NaN;
-  private readonly kiteShot: KiteShot = {
-    offsetY: 0,
-    along: 0.5,
-    releaseHand: { x: 0, y: 0 },
-    pressure: 0,
-    broken: false,
-    fall: 0,
-    nose: (out) => {
-      const g = this.geo;
-      const cut = this.cutAt.local;
-      const local = Math.min(this.lastLocal, cut);
-      if (this.dragon?.visible) {
-        this.dragon.snoutOnStage(out);
-        // After release the free ends spring from the impact site as the dragon keeps flying.
-        out.x += dragonX(local, g, this.cutAt) - dragonX(this.lastLocal, g, this.cutAt);
-      } else {
-        out.x = dragonX(local, g, this.cutAt) - g.dragon.headLead * this.travel.heading;
-        out.y = g.dragon.y + 0.2 * g.dragon.height;
-      }
-    },
-  };
 
-  private readonly tp = { x: 0, y: 0, running: false, speed: 0, arrive: 0, leave: 0 };
+  private readonly tp = { x: 0, y: 0, running: false, speed: 0, leave: 0 };
   private readonly aim = { x: 0, y: 0 };
   private readonly pa: Spot = spot();
   private readonly pb: Spot = spot();
@@ -117,7 +94,6 @@ class FunnyRuntime implements SectionRuntime {
     this.links = Array.from(ctx.dom.text.querySelectorAll<HTMLElement>("a"));
     const v = ctx.viewport();
     this.geo = geometry(v.w, v.h);
-    this.cutAt = cutMoment(this.geo);
     void this.load();
   }
 
@@ -175,7 +151,6 @@ class FunnyRuntime implements SectionRuntime {
   }
 
   leave(): void {
-    this.tetra?.kite.fly(null);
     this.tetra?.runSpeed(0);
     // The doll leaves the dragon's mouth with the section: the earlier sections place her on their own.
     if (this.doll?.parentSocket) this.doll.detach();
@@ -185,14 +160,10 @@ class FunnyRuntime implements SectionRuntime {
     const local = storyAt(scroll);
     this.travel.update(frame, scroll > 0.5);
     const { w, h } = frame.viewport;
-    if (w !== this.geo.w || h !== this.geo.h) {
-      this.geo = geometry(w, h);
-      this.cutAt = cutMoment(this.geo);
-    }
-    const snapped =
-      this.lastLocal < this.cutAt.local &&
-      local >= this.cutAt.local &&
-      local - this.lastLocal < JUMP;
+    if (w !== this.geo.w || h !== this.geo.h) this.geo = geometry(w, h);
+    // She sees the dragon's nose come in: a start and a mark, once, on a slow scroll down.
+    const startled =
+      this.lastLocal < T.shockFrom && local >= T.shockFrom && local - this.lastLocal < JUMP;
     this.lastLocal = local;
     if (local < 0) {
       this.words(0, 0, h);
@@ -205,7 +176,7 @@ class FunnyRuntime implements SectionRuntime {
     this.words((this.kbd ? 1 : ramp(local, T.textFrom, T.textTo)) * gone, rise, h);
     if (rise >= GONE) return;
     this.drawDragon(local, frame.time);
-    this.drawTetra(local, snapped);
+    this.drawTetra(local, startled);
     this.drawDuo(local, rise);
   }
 
@@ -233,66 +204,62 @@ class FunnyRuntime implements SectionRuntime {
 
   // ---------------------------------------------------------------------------------------- Tetra
 
-  private drawTetra(local: number, snapped: boolean, offsetY = 0): void {
+  private drawTetra(local: number, startled: boolean, offsetY = 0): void {
     const tetra = this.tetra;
     if (!tetra) return;
     const g = this.geo;
-    const { contact, local: cut, at } = this.cutAt;
-    if (local >= Math.max(cut + T.kiteGone, T.dragonOut)) {
-      tetra.kite.fly(null);
-      return;
-    }
-    const p = tetraPlace(local, g, cut, this.tp);
-    const pressure = ramp(local, contact - 0.008, contact + 0.008);
-    const release = line(local, cut, cut + T.kiteGone);
-    const brace = pressure * (1 - ramp(local, cut, cut + 0.025));
-    // Returning from below, she enters from the left behind the dragon and finishes at the reel.
+    const beat = tetraBeat(local, g);
+    const p = tetraPlace(local, g, this.tp);
+    // Scrolling back up she runs back in behind the dragon (it heads right now) and stops at her place.
     const left = -g.w / 2 - g.tetra.height * 0.6 - 40;
-    const behind = dragonX(local, g, this.cutAt) - g.dragon.height * 1.12 - g.w * 0.13;
-    const returningX = Math.max(left, Math.min(g.tetra.x, behind));
+    const returningX = Math.max(left, Math.min(g.tetra.x, tetraBehindReverse(local, g)));
     const follow = this.travel.reverse;
     const x = lerp(p.x, returningX, follow);
-    const outward = ramp(local, cut + T.runFrom - 0.018, cut + T.runFrom + 0.015);
+    // She is off the screen to the left: nothing is drawn.
+    if (x <= left) return;
     const inward = ramp(g.tetra.x - returningX, 0, g.tetra.height * 0.24);
+    const outward = beat.name === "run" ? beat.blend : 0;
     const run = lerp(outward, inward, follow);
+
     tetra.visible = true;
     tetra.place({
-      x: x - brace * g.tetra.height * 0.045,
+      x,
       y: p.y + offsetY,
       height: g.tetra.height,
-      yaw: lerp(-0.22, this.travel.runYaw(-1), run),
+      yaw: lerp(0, this.travel.runYaw(-1), run),
     });
-    tetra.look(null);
-    tetra.setInteractive(local < contact);
-    tetra.setReel(false);
+    tetra.setInteractive(local < T.shockFrom);
     tetra.runSpeed(lerp(p.speed, 0.84, follow));
-    tetra.pose("run", run, "kite");
-    if (local >= cut) tetra.setFace("angry", 1);
-    else if (local >= contact - 0.015) tetra.setFace("surprised", 1);
-    else tetra.setFace("happy", 0.7);
+    // Dance, shock and run share the body by the scroll: no pose is ever dropped for another.
+    const shock = beat.name === "shock" ? beat.blend : beat.name === "run" ? 1 - beat.blend : 0;
+    const dance = Math.max(0, 1 - shock - run);
+    tetra.poseMix([
+      ["dance", dance],
+      ["shock", shock * (1 - run)],
+      ["run", run],
+    ]);
 
-    const shot = this.kiteShot;
-    shot.offsetY = offsetY;
-    shot.along = at;
-    shot.releaseHand.x = g.tetra.x - 0.12 * g.tetra.height;
-    shot.releaseHand.y = g.tetra.y + 0.5 * g.tetra.height;
-    shot.pressure = pressure;
-    shot.broken = local >= cut;
-    shot.fall = release;
-    // The wind carries the sail. The nose pulls the knot a little closer before the string breaks.
-    tetra.kite.fly(
-      {
-        x: g.kite.x - g.kite.height * 0.16 * ramp(local, contact, cut),
-        y: g.kite.y,
-        height: g.kite.height,
-      },
-      shot,
-    );
+    // What she looks at: the dragon's nose while it is on the screen.
+    if (dragonOnScreen(local) && run < 0.5) {
+      tetra.look({
+        x: dragonX(local, g, this.travel.heading) - g.dragon.headLead * this.travel.heading,
+        y: g.dragon.y,
+      });
+    } else {
+      tetra.look(null);
+    }
+    if (run > 0.5) tetra.setFace("angry", 1);
+    else if (shock > 0.05) tetra.setFace("surprised", Math.min(1, shock * 1.6));
+    else tetra.setFace("happy", 0.9);
 
-    if (snapped && this.marks) {
-      const hit = { x: 0, y: 0 };
-      shot.nose(hit);
-      this.marks.emit("spark", { at: hit, size: g.kite.height * 0.18, count: 1 });
+    if (startled) {
+      tetra.play("startle");
+      const head = tetra.marks().crown;
+      this.marks?.emit("bang", {
+        at: { x: head.x + 0.05 * g.tetra.height, y: head.y + 0.06 * g.tetra.height },
+        size: 0.26 * g.tetra.height,
+        count: 1,
+      });
     }
   }
 
@@ -305,7 +272,7 @@ class FunnyRuntime implements SectionRuntime {
     const g = this.geo;
     const flight = time;
     const b = bob(flight, g);
-    const x = dragonX(local, g, this.cutAt);
+    const x = dragonX(local, g, this.travel.heading);
     sb.visible = true;
     sb.place({
       x,
@@ -366,7 +333,7 @@ class FunnyRuntime implements SectionRuntime {
     const aim = this.aim;
     const dragonOn = dragonOnScreen(local);
     if (dragonOn) {
-      aim.x = dragonX(local, g, this.cutAt) - g.dragon.headLead * this.travel.heading;
+      aim.x = dragonX(local, g, this.travel.heading) - g.dragon.headLead * this.travel.heading;
       aim.y = g.dragon.y;
     } else {
       aim.x = g.tetra.x;

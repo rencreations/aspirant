@@ -74,4 +74,48 @@ describe("the pose mixer", () => {
     expect(out.y).toBeLessThanOrEqual(0);
     expect(out.y).toBeGreaterThanOrEqual(-0.145 - 1e-9);
   });
+
+  it("blends three poses at once and keeps the shares continuous when the leading pose changes", () => {
+    const m = new PoseMixer();
+    m.setMix([
+      ["dance", 1],
+      ["shock", 0],
+      ["run", 0],
+    ]);
+    m.snap();
+    const out = restChannels();
+    let last = Number.NaN;
+    let worst = 0;
+    // Dance, through shock, into the run: the shares move 0.01 a frame and the body never steps.
+    for (let i = 0; i <= 200; i += 1) {
+      const t = i / 200;
+      const shock = t < 0.5 ? t * 2 : 2 - t * 2;
+      const run = Math.max(0, t * 2 - 1);
+      m.setMix([
+        ["dance", Math.max(0, 1 - shock - run)],
+        ["shock", shock * (1 - run)],
+        ["run", run],
+      ]);
+      m.step(1 / 60, out);
+      if (!Number.isNaN(last)) worst = Math.max(worst, Math.abs(out.spine.x - last));
+      last = out.spine.x;
+    }
+    expect(worst).toBeLessThan(0.03);
+    expect(m.weightOf("dance") + m.weightOf("shock") + m.weightOf("run")).toBeCloseTo(1, 3);
+  });
+
+  it("scales the shares of a mix to one, and names the biggest as the current pose", () => {
+    const m = new PoseMixer();
+    m.setMix([
+      ["dance", 0.2],
+      ["shock", 0.6],
+    ]);
+    m.snap();
+    expect(m.current).toBe("shock");
+    expect(m.weightOf("shock")).toBeCloseTo(0.75, 6);
+    expect(m.weightOf("dance")).toBeCloseTo(0.25, 6);
+    m.set("idle");
+    m.snap();
+    expect(m.weightOf("idle")).toBe(1);
+  });
 });

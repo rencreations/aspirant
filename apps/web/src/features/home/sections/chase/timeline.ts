@@ -178,6 +178,47 @@ export function dragonPlace(
   return out;
 }
 
+/** How far the pair swing toward and away from the camera while they turn, as a share of half their length. */
+const SWING = 0.42;
+
+export interface Pair {
+  /** The doll's feet and Silverbolt's body block middle, in stage pixels. */
+  dollX: number;
+  dragonX: number;
+  /** Depth (stage pixels toward the camera) of each while they turn about the pair's middle. */
+  dollZ: number;
+  dragonZ: number;
+  /** Which way both face, from 1 (heading right, as the scroll goes down) to -1 (heading left). */
+  heading: number;
+}
+
+const doll0 = { x: 0, y: 0, dist: 0, on: false };
+const dragon0 = { x: 0, y: 0, pitch: 0, roll: 0, on: false };
+
+/**
+ * The doll and Silverbolt as one formation. Going down the page the doll runs to the right with the
+ * dragon behind her. When the scroll turns round they do not slide through each other: the pair
+ * turns about a point half way between them (`turn` from 0 to 1 is half a turn about the upright
+ * axis through it), the doll swings round toward the camera and the dragon away, and at the end the
+ * doll is in front again with the dragon behind her, now heading left. The middle keeps its place on
+ * the way, so the pair is one piece of the scene whichever way the visitor goes.
+ */
+export function pairAt(local: number, g: ChaseGeometry, turn: number, out: Pair): Pair {
+  const d = dollPlace(local, g, doll0);
+  const b = dragonPlace(local, g, dragon0);
+  const middle = (d.x + b.x) / 2;
+  const half = (d.x - b.x) / 2;
+  const angle = Math.PI * Math.min(1, Math.max(0, turn));
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  out.dollX = middle + half * c;
+  out.dragonX = middle - half * c;
+  out.dollZ = SWING * Math.abs(half) * s;
+  out.dragonZ = -SWING * Math.abs(half) * s;
+  out.heading = c;
+  return out;
+}
+
 /** Tetra's feet while she runs: she starts behind both and stops in the middle, out of breath. */
 export function tetraRun(
   local: number,

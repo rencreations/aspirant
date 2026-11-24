@@ -1,5 +1,3 @@
-import { SRGBColorSpace, Texture } from "three";
-
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
 import type { DollActor } from "../../actors/doll";
@@ -9,13 +7,13 @@ import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
 import { ScrollTravel } from "../travel";
-import { coverBitmap, loadCovers, type CoverSide } from "./covers";
+import { type CoverSide } from "./covers";
 import {
   T,
-  dollPlace,
   dragonPlace,
   geometry,
   lerp,
+  pairAt,
   poseAt,
   ramp,
   tetraRun,
@@ -23,6 +21,7 @@ import {
   wordsAmount,
   wordsLeave,
   type ChaseGeometry,
+  type Pair,
 } from "./timeline";
 
 /** The dragon heads right, turned three quarters toward us. */
@@ -58,22 +57,20 @@ class ChaseRuntime implements SectionRuntime {
   private readonly content: HTMLElement | null;
   private readonly word: HTMLElement | null;
   private readonly cards: Record<CoverSide, HTMLElement | null>;
-  private readonly links: Record<CoverSide, HTMLElement | null>;
   private readonly cta: HTMLElement | null;
   private readonly anchors: HTMLElement[];
   private linksLive = true;
   private shownAmount = Number.NaN;
 
   private geo: ChaseGeometry;
-  private readonly textures: Texture[] = [];
-  private coversSet = false;
 
   private wasPanting = false;
   private pageAt = 0;
   private readonly travel = new ScrollTravel();
   private returnDragonX = 0;
   private lastLocal = Number.NaN;
-  private readonly dp = { x: 0, y: 0, dist: 0, on: false };
+  private readonly pair: Pair = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: 1 };
+  private readonly back: Pair = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: -1 };
   private readonly bp = { x: 0, y: 0, pitch: 0, roll: 0, on: false };
   private readonly tr = { x: 0, y: 0, speed: 0, running: false };
   private readonly ts = { x: 0, y: 0, height: 0 };
@@ -97,10 +94,7 @@ class ChaseRuntime implements SectionRuntime {
     this.word = ctx.dom.below.querySelector<HTMLElement>("[data-chase-word]");
     const card = (side: CoverSide) =>
       text.querySelector<HTMLElement>(`[data-chase-card="${side}"]`);
-    const link = (side: CoverSide) =>
-      text.querySelector<HTMLElement>(`[data-chase-link="${side}"]`);
     this.cards = { left: card("left"), right: card("right") };
-    this.links = { left: link("left"), right: link("right") };
     this.cta = text.querySelector<HTMLElement>("[data-chase-cta]");
     this.anchors = Array.from(text.querySelectorAll<HTMLElement>("a"));
     const v = ctx.viewport();
@@ -150,41 +144,20 @@ class ChaseRuntime implements SectionRuntime {
       ),
     ]);
     this.loaded = true;
-    // The covers come last and on their own: the book keeps its plain boards until they are here.
-    void loadCovers().then(() => {
-      this.setCovers();
-    });
     if (this.entered) this.bindBook();
   }
 
-  /** The two covers as textures on the book (a no-op until both the book and the pictures are here). */
-  private setCovers(): void {
-    const tetra = this.tetra;
-    if (this.coversSet || this.disposed || !tetra) return;
-    const left = coverBitmap("left");
-    const right = coverBitmap("right");
-    if (!left && !right) return;
-    const make = (bitmap: ImageBitmap | null): Texture | null => {
-      if (!bitmap) return null;
-      const t = new Texture(bitmap);
-      t.colorSpace = SRGBColorSpace;
-      t.needsUpdate = true;
-      this.textures.push(t);
-      return t;
-    };
-    tetra.book.setCovers(make(left), make(right));
-    this.coversSet = true;
-  }
-
-  /** A press on a cover of the book follows the real link (the page change goes through the site's transition). */
+  /**
+   * A press on the book (either board) follows the real link to all the comics (the page change goes
+   * through the site's transition): the book carries no picture, so it does not say which comic.
+   */
   private bindBook(): void {
     const tetra = this.tetra;
     if (!tetra) return;
     tetra.book.labels("READ", "READ");
-    tetra.book.onPress((side) => {
-      this.links[side === "left" ? "left" : "right"]?.click();
+    tetra.book.onPress(() => {
+      this.cta?.querySelector<HTMLElement>("a")?.click();
     });
-    this.setCovers();
   }
 
   enter(): void {
@@ -218,6 +191,11 @@ class ChaseRuntime implements SectionRuntime {
     // so a section passed by a jump (replayed at its last station) shows none.
     const gone = wordsLeave(frame.S, sectionEnd("chase"));
     this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));
+    // The pair is one formation: forward as the scroll goes, and turned about its middle when it
+    // goes back. The same formation at its full turn is where the returning Tetra falls in behind.
+    pairAt(local, this.geo, this.travel.reverse, this.pair);
+    pairAt(local, this.geo, 1, this.back);
+    this.returnDragonX = this.back.dragonX;
     this.drawDoll(local, frame);
     this.drawDragon(local, frame);
     this.drawTetra(local, frame, jumped);
@@ -267,9 +245,8 @@ class ChaseRuntime implements SectionRuntime {
     const doll = this.doll;
     const g = this.geo;
     if (!doll || local < T.dollFrom || local > T.tetraTo) return;
-    const reverseX = -dollPlace(T.tetraTo + T.dollFrom - local, g, this.dp).x;
-    const d = dollPlace(local, g, this.dp);
-    const x = lerp(d.x, reverseX, this.travel.reverse);
+    const pair = this.pair;
+    const x = pair.dollX;
     if (Math.abs(x) > g.w / 2 + g.dollH * 0.49 + 30) return;
     // The funny section had her in the dragon's mouth: she is her own again.
     if (doll.parentSocket) doll.detach();
@@ -278,9 +255,9 @@ class ChaseRuntime implements SectionRuntime {
     doll.place({
       x,
       y: g.floor + 0.015 * g.dollH * Math.abs(Math.sin(frame.time * 10)),
-      z: 24,
+      z: 24 + pair.dollZ,
       height: g.dollH,
-      yaw: DOLL_YAW * this.travel.heading,
+      yaw: DOLL_YAW * pair.heading,
     });
     doll.pose("run", 1);
     doll.walk(1, { rate: 1.65, lean: 1 });
@@ -294,30 +271,28 @@ class ChaseRuntime implements SectionRuntime {
   private drawDragon(local: number, frame: FrameInfo): void {
     const sb = this.dragon;
     const g = this.geo;
-    const mirrored = dragonPlace(T.tetraTo + T.dollFrom - local, g, this.bp);
-    this.returnDragonX = -mirrored.x;
     if (!sb || local < T.dollFrom || local > T.tetraTo) return;
+    const pair = this.pair;
     const b = dragonPlace(local, g, this.bp);
     const limit = g.w / 2 + g.dragonH * 3.5 + 32;
-    const bound = (v: number) => Math.max(-limit, Math.min(limit, v));
-    const x = lerp(bound(b.x), bound(this.returnDragonX), this.travel.reverse);
+    const x = pair.dragonX;
     if (Math.abs(x) >= limit - 1) return;
     sb.visible = true;
     sb.place({
       x,
       y: b.y + Math.sin(frame.time * 3.1) * 0.048 * g.dragonH,
-      z: 0,
+      z: pair.dragonZ,
       height: g.dragonH,
-      yaw: YAW * this.travel.heading,
+      yaw: YAW * pair.heading,
       pitch: b.pitch,
-      roll: b.roll + 0.15 * (1 - this.travel.heading ** 2),
+      roll: b.roll + 0.15 * (1 - pair.heading ** 2),
     });
     sb.fly(frame.time, { amplitude: 1.25, speed: 1.3 });
     sb.face("growl", 0.7);
     // It snaps at her: the jaw opens wide and shuts again, three times a second.
     sb.jaw(0.5 + 0.5 * Math.abs(Math.sin(frame.time * Math.PI * 3)));
     sb.follow(0);
-    sb.look(x + 900 * this.travel.heading, b.y - 0.3 * g.dragonH);
+    sb.look(x + 900 * pair.heading, b.y - 0.3 * g.dragonH);
   }
 
   // ---------------------------------------------------------------------------------------- Tetra
@@ -340,8 +315,6 @@ class ChaseRuntime implements SectionRuntime {
     const stride = chase * (1 - ramp(local, T.tetraTo - 0.027, T.tetraTo + 0.014));
 
     tetra.visible = true;
-    tetra.kite.fly(null);
-    tetra.setReel(false);
     tetra.place({
       x,
       y: stopped ? stand.y : run.y,
@@ -374,9 +347,6 @@ class ChaseRuntime implements SectionRuntime {
     this.ctx.dom.text.removeEventListener("focusin", this.onFocusIn);
     this.ctx.dom.text.removeEventListener("focusout", this.onFocusOut);
     this.tetra?.book.onPress(null);
-    this.tetra?.book.setCovers(null, null);
-    for (const t of this.textures) t.dispose();
-    this.textures.length = 0;
     for (const el of [this.word, this.cards.left, this.cards.right, this.cta, this.content]) {
       put(el, "opacity", "");
       put(el, "transform", "");

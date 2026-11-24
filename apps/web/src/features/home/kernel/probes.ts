@@ -39,6 +39,12 @@ export interface HomeProbe {
   state(): HomeSnapshot;
   skipIntro(): void;
   actor(name: string): { name: string; visible: boolean } | null;
+  /**
+   * The actor itself, for a script that runs inside the page (`state()` says what it is doing,
+   * `tweak(fn)` hands a probe each frame's channels). Never return it to the script's own process:
+   * it is a three.js object graph and Playwright would try to serialise all of it.
+   */
+  peek(name: string): ({ name: string; visible: boolean } & { state?: () => unknown }) | null;
   sections(): ReadonlyArray<{ id: SectionId; start: number; screens: number; mount: MountState }>;
   /** Every section that has plays: `{ id, v, resting, active, fired, length, direction, progress, waiting }`. */
   plays(): PlayReport[];

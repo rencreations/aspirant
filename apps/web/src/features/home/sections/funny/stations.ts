@@ -1,13 +1,13 @@
 /**
- * Scroll distances for the kite scene and its reading pauses.
+ * Scroll distances for Tetra's dance, the dragon's crossing and their reading pauses.
  *
  * The story is a `local` that the scroll carries from station to station through the zones, up and
  * down. The scene stays at the visitor's position when they stop.
  *
- *   0       the duo hover high at the left (J11), Tetra is flying her kite
- *   R1      Tetra stands and flies her kite, the two drones watch her (a short rest)
- *   R2      the dragon has crossed and cut the rope, Tetra has run off after it, the drones are confused
- *           (a short rest)
+ *   0       the duo hover high at the left (J11), Tetra is already dancing
+ *   R1      Tetra dances, the two drones watch her (a short rest)
+ *   R2      the dragon has crossed (Tetra was shocked and has run off after it), the drones are
+ *           confused (a short rest)
  *   1       the two drones in the middle, big, questioning each other, the words and the button (a
  *           long rest: it is text and a button)
  *

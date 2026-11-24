@@ -26,7 +26,7 @@ export const GROUPS: readonly Group[] = [
   {
     id: "models",
     name: "3D models",
-    test: /selena|silverbolt|doll|hand|tetra|camera|kite|model|3d/i,
+    test: /selena|silverbolt|doll|hand|tetra|camera|model|3d/i,
   },
   {
     id: "art",

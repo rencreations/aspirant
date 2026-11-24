@@ -22,7 +22,7 @@ import { InputEnergy } from "./input";
 import { isRunning, layoutSections } from "./layout";
 import { easeValue } from "./plays";
 import { PointerHub } from "./pointer";
-import { installProbes, type HomeSnapshot } from "./probes";
+import { installProbes, type HomeProbe, type HomeSnapshot } from "./probes";
 import { SectionRunner } from "./run";
 import { SceneScroll, screensOf } from "./scroll";
 import { ZoneSnap } from "./scrub";
@@ -538,6 +538,7 @@ export function startEngine(options: EngineOptions): Engine | null {
       const a = actors.get(name);
       return a ? { name: a.name, visible: a.visible } : null;
     },
+    peek: (name) => (actors.get(name) as ReturnType<HomeProbe["peek"]>) ?? null,
     lab: async (name) => {
       const ensure = LABS[name];
       if (!ensure)

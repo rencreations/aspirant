@@ -17,12 +17,13 @@ import {
  */
 const NAMES: readonly PoseName[] = [
   "idle",
+  "dance",
+  "shock",
   "point",
   "pocket",
   "carry",
   "toss",
   "swipe",
-  "kite",
   "run",
   "pant",
   "wave",
@@ -52,6 +53,8 @@ export class PoseMixer {
   private name: PoseName = "idle";
   private blend = 1;
   private from: PoseName = "idle";
+  /** A section that blends more than two poses at once names them all (`setMix`). */
+  private mix: Array<readonly [PoseName, number]> | null = null;
 
   constructor() {
     for (const n of NAMES) {
@@ -62,9 +65,34 @@ export class PoseMixer {
 
   /** The pose asked for and its strength. */
   set(name: PoseName, blend = 1, from: PoseName = "idle"): void {
+    this.mix = null;
     this.name = name;
     this.from = from;
     this.blend = clamp01(blend);
+  }
+
+  /**
+   * Several poses at once, each with a share. The shares are scaled to add up to one, so a section
+   * that moves from a dance through a shock into a run keeps every share continuous with the scroll.
+   * The pose with the biggest share is the one the face and the look follow.
+   */
+  setMix(poses: ReadonlyArray<readonly [PoseName, number]>): void {
+    let total = 0;
+    let top: PoseName = this.name;
+    let best = -1;
+    for (const [name, w] of poses) {
+      const share = Math.max(0, w);
+      total += share;
+      if (share > best) {
+        best = share;
+        top = name;
+      }
+    }
+    if (total <= 1e-6) return;
+    this.mix = poses.map(([name, w]) => [name, Math.max(0, w) / total] as const);
+    this.name = top;
+    this.from = top;
+    this.blend = clamp01(best / total);
   }
 
   /** The pose asked for. */
@@ -97,6 +125,10 @@ export class PoseMixer {
 
   private updateGoals(): void {
     for (const n of NAMES) this.goal.set(n, 0);
+    if (this.mix) {
+      for (const [name, w] of this.mix) this.goal.set(name, (this.goal.get(name) ?? 0) + w);
+      return;
+    }
     this.goal.set(this.from, 1 - this.blend);
     this.goal.set(this.name, (this.goal.get(this.name) ?? 0) + this.blend);
   }

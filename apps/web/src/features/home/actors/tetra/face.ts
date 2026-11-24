@@ -123,7 +123,7 @@ export function readingGaze(t: number, rate: number, out: { x: number; y: number
   const along = ramp(0, 0.78, p);
   const back = ramp(0.78, 1, p);
   out.x = -0.6 + 1.2 * along * (1 - back);
-  out.y = -0.35 - 0.18 * line;
+  out.y = -0.56 - 0.12 * line;
 }
 
 export class FaceState {

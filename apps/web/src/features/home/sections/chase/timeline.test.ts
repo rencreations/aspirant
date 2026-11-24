@@ -10,6 +10,7 @@ import {
   dragonPlace,
   dragonSpan,
   geometry,
+  pairAt,
   tetraRun,
   tetraStand,
   wordsAmount,
@@ -142,5 +143,60 @@ describe("the beats and the words", () => {
   it("rests on the comic with the zoom done and the book read", () => {
     expect(zoomAt(T.comic)).toBe(1);
     expect(beatAt(T.comic)).toBe("read");
+  });
+});
+
+describe.each(SIZES)("the pair turning at %i x %i", (w, h) => {
+  const g = geometry(w, h);
+  const forward = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: 1 };
+  const turned = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: 1 };
+  const mid = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: 1 };
+
+  it("runs forward with the doll in front of the dragon (to the right), facing right", () => {
+    for (const l of [T.dollFrom + 0.02, T.dragonFrom + 0.05, T.dollTo, T.tetraFrom + 0.05]) {
+      pairAt(l, g, 0, forward);
+      expect(forward.dollX).toBeGreaterThan(forward.dragonX);
+      expect(forward.heading).toBe(1);
+      expect(forward.dollZ).toBeCloseTo(0, 9);
+    }
+  });
+
+  it("is the mirror of that, about the middle between them, once the turn is whole: the doll still in front", () => {
+    for (const l of [T.dollFrom + 0.02, T.dragonFrom + 0.05, T.dollTo, T.tetraFrom + 0.05]) {
+      pairAt(l, g, 0, forward);
+      pairAt(l, g, 1, turned);
+      // Heading left, the doll is to the left of the dragon.
+      expect(turned.dollX).toBeLessThan(turned.dragonX);
+      expect(turned.heading).toBeCloseTo(-1, 9);
+      // Both are where the mirror about the pair's middle puts them.
+      const middle = (forward.dollX + forward.dragonX) / 2;
+      expect(turned.dollX).toBeCloseTo(2 * middle - forward.dollX, 6);
+      expect(turned.dragonX).toBeCloseTo(2 * middle - forward.dragonX, 6);
+      expect((turned.dollX + turned.dragonX) / 2).toBeCloseTo(middle, 6);
+    }
+  });
+
+  it("keeps the middle of the pair where it is while it turns, and swings through the depth", () => {
+    const l = T.dragonFrom + 0.05;
+    pairAt(l, g, 0, forward);
+    const middle = (forward.dollX + forward.dragonX) / 2;
+    let deepest = 0;
+    for (let k = 0; k <= 20; k += 1) {
+      pairAt(l, g, k / 20, mid);
+      expect((mid.dollX + mid.dragonX) / 2).toBeCloseTo(middle, 6);
+      // The doll swings toward the camera while the dragon goes away from it, and the other way round never.
+      expect(mid.dollZ).toBeGreaterThanOrEqual(0);
+      expect(mid.dragonZ).toBeLessThanOrEqual(0);
+      expect(mid.dollZ).toBeCloseTo(-mid.dragonZ, 9);
+      deepest = Math.max(deepest, mid.dollZ);
+    }
+    expect(deepest).toBeGreaterThan(0.2 * Math.abs(forward.dollX - forward.dragonX) * 0.5);
+    // Nothing jumps: a small step of the turn is a small step of both.
+    let last = 0;
+    for (let k = 0; k <= 100; k += 1) {
+      pairAt(l, g, k / 100, mid);
+      if (k > 0) expect(Math.abs(mid.dollX - last)).toBeLessThan(0.1 * g.w);
+      last = mid.dollX;
+    }
   });
 });
