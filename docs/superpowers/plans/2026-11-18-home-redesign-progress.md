@@ -120,3 +120,12 @@ The owner asked for every check and a push. Result, in the order it happened:
 - The machine: the Turborepo cache had grown to 119 GB and filled `D:`, so a build took 18 minutes, and the `serve` package crashed with `EMFILE` under the e2e load. Both are written up in `docs/HANDOFF.md`, "The machine and its quirks"; the replacement server is `scripts/qa/static-server.cjs`.
 - The tools used for the frame sheets, the arrival and the sections list were moved from a scratch folder into `scripts/qa/home/`. The documentation was brought up to date for a session that has no memory: `AGENTS.md`, `docs/VERIFY.md`, `docs/STARTER-PROMPT.md`, `docs/design/home/README.md`, `docs/HISTORY.md` and `docs/HANDOFF.md` ("Where things stand").
 - Next, when the owner sends more: start from `docs/STARTER-PROMPT.md`, save the owner's words word for word in `docs/superpowers/specs/`, and iterate on the home with `pnpm typecheck` and the tests of the folder you touch. Do the full gate before every push.
+
+## ROUND TEN (24 Nov 2026): dance, shock, the pair's turn and a new book
+
+Owner's words: `docs/superpowers/specs/2026-11-24-home-feedback-10-request.md`.
+
+- **Blending.** A wheel probe (`scripts/qa/home/wheel-track.cjs`) found the pops: the body's turn switching in a frame as the chase's pair passed Tetra on the way back (2 radians), the run's knee fold with a step of two inside the cycle, and the run's pace dropping to zero. The turn and the pace are now eased in the actor, the knee fold eases, and `poseMix` lets a section blend three poses.
+- **Funny.** The kite, rope and reel were deleted with their files and loading items. Tetra dances (a loop with no seam), is shocked, and runs after the dragon from behind. Her feet are lower (0.345 of the height). The dragon turns about the middle of its length.
+- **Chase.** The doll and Silverbolt are one formation (`pairAt`) that turns about its middle when the scroll reverses.
+- **Comic.** A new book made of shapes (`props/book-mesh.ts`, `props/book-hold.ts`), toon lit, shadows from shapes, held from below by her palms and turned up toward her face; no texture. The chase's cover pictures and their loading item were removed.

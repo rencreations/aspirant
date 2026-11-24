@@ -5,11 +5,11 @@
 //   PARTS=keys,duo node scripts/qa/probes/home-s6.cjs out   (sheets, wheel, keys, duo, comic, speed, touch)
 //
 // Per size: both sections at -5, 0, 25, 50, 75, 100 and 105 percent (pictures
-// <out>/s6-<size>-<section>-<percent>.png and the visible actors), then, at the first size only, the
-// kite walked with a real wheel (cut going down, mended coming back, whole after a jump back), real Tab
+// <out>/s6-<size>-<section>-<percent>.png and the visible actors), then, at the first size only,
+// both sections walked with a real wheel (down and back up, the pose Tetra wears), real Tab
 // presses through the controls of both sections, a hover and a press on both drones in the middle,
-// the comic scene (the two links, a hover and a press on the cover of Tetra's book), and the frame
-// gaps. A second pass with touch (hasTouch) taps the button, a card and a cover of the book.
+// the comic scene (the two links, a hover and a press on Tetra's book, which goes to all the comics),
+// and the frame gaps. A second pass with touch (hasTouch) taps the button, a card and the book.
 //
 // The dev server reloads the page whenever any file of the tree changes (other work in progress):
 // each part notices a reload and starts again, up to six times. Judge speed on the production build.
@@ -54,14 +54,12 @@ const visible = (page) =>
       .map((a) => a.name),
   );
 
-/** The kite's state, from the shared actor (the lab hands out the same one and is let go at once). */
-const kite = (page) =>
+/** The pose Tetra wears, from the shared actor (the lab hands out the same one and is let go at once). */
+const pose = (page) =>
   page
-    .evaluate(async () => {
-      const t = await window.__home.lab("tetra");
-      const s = t.kite.state();
-      window.__home.unpin("tetra");
-      return s.state;
+    .evaluate(() => {
+      const a = window.__home.peek("tetra");
+      return a && a.state ? a.state().pose : null;
     })
     .catch(() => null);
 
@@ -183,18 +181,18 @@ async function wheel([w, h]) {
     for (let i = 0; i < 40; i++) {
       await page.mouse.wheel(0, 0.1 * h);
       await sleep(130);
-      if (i % 4 === 3) log.push(["down", await local(), await kite(page)]);
+      if (i % 4 === 3) log.push(["down", await local(), await pose(page)]);
     }
     await sleep(800);
     for (let i = 0; i < 40; i++) {
       await page.mouse.wheel(0, -0.1 * h);
       await sleep(130);
-      if (i % 4 === 3) log.push(["up", await local(), await kite(page)]);
+      if (i % 4 === 3) log.push(["up", await local(), await pose(page)]);
     }
-    console.log(w, h, "kite by wheel (cut near 0.25, whole again below it)", JSON.stringify(log));
+    console.log(w, h, "pose by wheel (dance, shock, run, then back)", JSON.stringify(log));
     await seek(page, "chase", 0.9, 2500);
     await seek(page, "funny", 0.1, 2500);
-    console.log(w, h, "kite after chase 0.9 then funny 0.1 (tethered)", await kite(page));
+    console.log(w, h, "pose after chase 0.9 then funny 0.1 (dance)", await pose(page));
   });
 }
 
@@ -277,11 +275,11 @@ async function comic([w, h]) {
       const [x, y] = mid(quads.left);
       await page.mouse.move(x, y);
       await sleep(400);
-      console.log(w, h, "hover the left cover of the book", JSON.stringify(await hit(page)));
+      console.log(w, h, "hover the left board of the book", JSON.stringify(await hit(page)));
       await page.mouse.down();
       await page.mouse.up();
       for (let i = 0; i < 80 && page.url() === ROOT; i++) await sleep(500);
-      console.log(w, h, "press the left cover goes to", page.url());
+      console.log(w, h, "press the book goes to", page.url());
     },
     true,
   );
@@ -306,7 +304,7 @@ async function touch([w, h]) {
     true,
   );
   await part(
-    `${w}x${h} touch (cover of the book)`,
+    `${w}x${h} touch (the book)`,
     [w, h],
     extra,
     async (page) => {
@@ -317,7 +315,7 @@ async function touch([w, h]) {
       const y = h / 2 - q.reduce((a, p) => a + p.y, 0) / q.length;
       await page.touchscreen.tap(x, y);
       for (let i = 0; i < 80 && page.url() === ROOT; i++) await sleep(500);
-      console.log(w, h, "tap the right cover of the book goes to", page.url());
+      console.log(w, h, "tap the book goes to", page.url());
     },
     true,
   );

@@ -242,3 +242,7 @@ The work was done by waves of helpers run from one lead session (see HANDOFF, "T
 ## 2026-11-24: voices, records and the lower home page
 
 Guinevere opens the new voice selector. A vinyl deck shares disc artwork and listening links with the Music room. Scrolling carries the deck up to reveal Tetra and her kite. Both chases turn with the visitor. Tetra reads a physical comic before she joins the artwork spiral. The drone takes the final orbit. Their goodbye leads straight into the Collection covers. See [the home page notes](design/home/README.md).
+
+## 2026-11-24: round ten (dance, shock, a new comic book)
+
+The owner's tenth message of feedback (`docs/superpowers/specs/2026-11-24-home-feedback-10-request.md`). The kite and its rope were removed completely: Tetra dances on the ground (lower than before), is shocked when Silverbolt comes in and runs after it from behind. The doll and Silverbolt turn about the middle between them when the scroll reverses, so the doll stays in front. The comic book was made again out of shapes with no picture on it, held from below by her palms and turned up toward her face. Every change of Tetra's pose is blended (a probe with a real wheel looks for pops: `scripts/qa/home/wheel-track.cjs`). See `docs/design/home/actor-tetra.md`, section 9.

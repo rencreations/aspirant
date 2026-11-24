@@ -25,3 +25,7 @@ python -I scripts/qa/home/stitch.py %TEMP%\home-sheet.png 4 0.4 %TEMP%\home-shee
 Then open the sheet and read it. Looking at the frames yourself is the check: a green test does not say that a scene looks right.
 
 `window.__home` (the probe the page exposes) has `seek(screens)`, `freeze(on)`, `state()`, `plays()`, `snap()`, `skipIntro()`, `lab(name)`, `unpin(name)`, `actor(name)` and `sections()`. `docs/design/home/kernel.md` says what each returns.
+
+## `wheel-track.cjs`: look for a pop in Tetra's body
+
+`node scripts/qa/home/wheel-track.cjs <fromS> <toS> [--back] [--px 40] [--gap 16] [--video dir]` scrolls with a real mouse wheel and records Tetra's channels every frame she is drawn (it hangs a hook on `tweak`), then prints the biggest second difference of each channel and where it was. A smooth swing has a small second difference and a jump has the size of the jump: above about 0.15 radians on a body turn, look at the frames. A `seek` is a jump on purpose, so only a wheel shows a pop. `--video dir` records the run (cut frames with `ffmpeg -i page.webm -vf fps=5 fr_%03d.png`).

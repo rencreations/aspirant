@@ -124,7 +124,7 @@ Measured (dev server, real Chrome, 1440 x 900): the cover opaque at 0.7 to 1.2 s
 
 ## 7. Looking at it
 
-`window.__home` (installed by the engine, only on the stage): `seek(screens)` (moves the page, snaps the scene, replays the passed sections), `freeze(on)` (time stops and the scroll is not read: a frame holds still), `state()` (S, raw, total, unit, open, frozen, size, stage passes and loss, the active section, every section's `local`, `running` and mount state, every actor's visibility, the 3D hit), `skipIntro()`, `actor(name)`, `sections()`.
+`window.__home` (installed by the engine, only on the stage): `seek(screens)` (moves the page, snaps the scene, replays the passed sections), `freeze(on)` (time stops and the scroll is not read: a frame holds still), `state()` (S, raw, total, unit, open, frozen, size, stage passes and loss, the active section, every section's `local`, `running` and mount state, every actor's visibility, the 3D hit), `skipIntro()`, `actor(name)` (name and visible), `peek(name)` (the actor itself, only for a script inside the page: never return it to Node), `sections()`.
 
 `node scripts/qa/probes/home.cjs <outFolder>` scrolls with a real wheel and takes every section at 0, 25, 50, 75 and 100 percent, at 1440x900, 1706x950 and 390x844, in real Chrome (`BASE`, `SIZES`, `STEPS`, `ONLY` set the rest), and writes the pictures and `home-<size>.json` (the kernel's state per frame). The last section's 100 percent is taken 0.1 screen before the end of the page, because the end opens About. Intro off and consent answered come from `context()` in `lib.cjs`.
 

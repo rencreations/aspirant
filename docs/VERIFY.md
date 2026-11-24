@@ -72,7 +72,7 @@ On 21 Nov: accessibility **1.0** (CI fails below 1), SEO 1.0, best practices 0.9
 
 ## 6. Look at it
 
-A green check does not say that it looks right. Use `scripts/qa/home/` (see its README): `sheet.cjs` for frames along the scroll, `arrival.cjs` for the loader, the tap and the intro, `failed-requests.cjs` for broken files. Read the images. Look at 1440x900 and a 390x844 phone at least. For motion (a glitch, a sudden turn), record a real wheel scroll as video and cut frames; numbers alone missed a glitch in round nine.
+A green check does not say that it looks right. Use `scripts/qa/home/` (see its README): `sheet.cjs` for frames along the scroll, `arrival.cjs` for the loader, the tap and the intro, `failed-requests.cjs` for broken files. Read the images. Look at 1440x900 and a 390x844 phone at least. For motion (a glitch, a sudden turn), record a real wheel scroll as video and cut frames; numbers alone missed a glitch in round nine. To look for a pop in Tetra's body use `scripts/qa/home/wheel-track.cjs` (a real wheel, her channels every frame, the biggest second differences first; a `seek` never shows a pop because the actor snaps on a jump).
 
 For the other pages use `scripts/qa/probes/` (`routes.cjs`, `library.cjs`, `about.cjs`, `story.cjs`, and the `home*.cjs` ones).
 

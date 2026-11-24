@@ -27,8 +27,8 @@ The exit blends into the camera from `cameras.json`. Its crop follows the palm a
 
 - **Voicelines.** Guinevere opens the selector. Each of the ten portraits has its own framing. Eight language buttons play the selected character's lines. The small drone hovers to the right of the name.
 - **Music.** The two lists share a vinyl deck. The selected release uses the disc print from the Music room. A sleeve preview follows the pointer on a track. The title carries the release's available listening links. The backdrop and drone respond to the playing audio.
-- **Kite and chase.** Music scrolls up to reveal Tetra already flying her kite. Silverbolt stretches the line before it breaks. Below the story, the doll leads Silverbolt and Tetra. Scroll controls travel in both scenes. Pausing holds their positions while their flight and running cycles continue. Reversing changes their facing and formation.
-- **Comic and artwork.** Tetra sits, draws a small book, reads it and throws it away. The book is a mesh in her scene. The two comic links use the supplied selections from `scripts/home/media/comic_cards.py`. In Artwork, Tetra swipes with the spiral. The flying drone occupies its last slot and passes behind and in front of her.
+- **Dance, shock and chase.** Music scrolls up to reveal Tetra already dancing on the ground. Silverbolt flies across with the doll in its mouth, Tetra is shocked and runs after it from behind (the kite was removed on 24 Nov 2026). Below the story, the doll leads Silverbolt and Tetra. Scroll controls travel in both scenes. Pausing holds their positions while their flight, dance and running cycles continue. Reversing turns the pair about the middle between them (the doll stays in front) and changes the facing of Silverbolt and Tetra.
+- **Comic and artwork.** Tetra sits, draws a small book, reads it and throws it away. The book is made of shapes in her scene, no picture on it (24 Nov 2026), held from below by her palms and turned up toward her face. The two comic links use the supplied selections from `scripts/home/media/comic_cards.py`. In Artwork, Tetra swipes with the spiral. The flying drone occupies its last slot and passes behind and in front of her.
 - **Collection.** Tetra and the drone say goodbye in the center. Tetra runs left as the first cover slides in from the right. The two share the travel distance in `sections/archive/route.ts`. Reversing the scroll turns her back toward the center. The lower sections leave the scroll position in the visitor's hands.
 
 ## Current: read these
@@ -73,3 +73,7 @@ These describe sections or actors that were removed. Do not build on them.
 ## Other folders
 
 `docs/design/home-reference/` holds the studies of the reference sites the owner named (premotio, oryzo, psychoactive and tibdigital) and the media inventory. `docs/superpowers/plans/home-wave*-workflow.js.txt` are the scripts that ran each wave of helpers; their prompt strings are plain text and make good briefs for any tool (see `docs/HANDOFF.md`, "Working with helper sessions").
+
+## Round ten, 24 Nov 2026
+
+Request word for word: `docs/superpowers/specs/2026-11-24-home-feedback-10-request.md`. Blends between all of Tetra's poses, the kite removed and the dance, the shock and the run in its place, the doll always in front when the chase turns, and a new book. Read `actor-tetra.md` section 9 and the head of `section-funny-chase.md`.
