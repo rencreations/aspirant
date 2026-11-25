@@ -3,8 +3,34 @@ import type Lenis from "lenis";
 import type { PointerState } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
-import { clamp, mix, ramp } from "../choreo/ease";
+import { createBunny, stepBunny, type BunnyPose } from "../choreo/bunny";
+import { createCompanion, stepCompanion, type CompanionBody } from "../choreo/companion";
+import { createDoll, stepDoll, startAct, type DollAct, type DollFrame } from "../choreo/doll";
+import { clamp, mix, ramp, springTo, type Sprung } from "../choreo/ease";
 import { createFace, stepFace, type FaceFrame } from "../choreo/face";
+import {
+  FRIEND_IDS,
+  friendOffScreen,
+  friendWindows,
+  leaving,
+  passStep,
+  placeOf,
+  presence,
+  reachOf,
+  slots as slotsOf,
+  type FriendId,
+  type FriendPlace,
+  type Slot,
+  type Windows,
+} from "../choreo/friends";
+import {
+  coveredShare,
+  createVisit,
+  dollSpan,
+  dollWanted,
+  stepVisit,
+  type HideBox,
+} from "../choreo/hide";
 import {
   createFollower,
   flightOf,
@@ -26,16 +52,26 @@ import {
 } from "../choreo/path";
 import { createRig, stepRig, type RigPose } from "../choreo/rig";
 import {
+  createShow,
+  routineFrame,
+  startRoutine,
+  stepShow,
+  type FriendBit,
+  type RoutineKind,
+} from "../choreo/routines";
+import {
   createSpin,
   createTricks,
   startTrick,
   stepSpin,
   stepTricks,
   trickPose,
+  TRICK_SECONDS,
   type TrickKind,
 } from "../choreo/tricks";
 import { uncovered, type Box } from "../film-geometry";
 import { LAYER } from "../layout";
+import { holdDown } from "../scroll-hold";
 import {
   stageRefs,
   useAboutStage,
@@ -44,8 +80,8 @@ import {
   type IntroPhase,
 } from "../stage-bus";
 
-import type { DroneDraw, DroneScene, TrailPoint } from "./drone-scene";
-import { measureAnchors } from "./measure";
+import type { CompanionDraw, DroneDraw, DroneScene, TrailPoint } from "./drone-scene";
+import { hidePainted, measureAnchors, measureHides, type MeasuredHide } from "./measure";
 
 /**
  * The director: the one clock of the drone. It is not in the lazy chunk, because it also runs
@@ -95,6 +131,31 @@ interface DroneState {
   side: Side;
   trick: string | null;
   speed: number;
+  /** The layer's place in the stack, and whether it is under the page (behind a picture). */
+  z: number;
+  under: boolean;
+  /** The doll: whether she rides, whether she should, her act, the visit, how hidden the drone is. */
+  doll: {
+    riding: boolean;
+    wanted: boolean;
+    act: string | null;
+    visit: string;
+    box: string | null;
+    covered: number;
+    span: [number, number] | null;
+  };
+  /** The friends: where each is, whether it is drawn, in front of the drone or behind. */
+  friends: Array<{
+    id: FriendId;
+    ready: boolean;
+    presence: number;
+    shown: boolean;
+    front: boolean;
+    x: number;
+    y: number;
+    size: number;
+  }>;
+  routine: string | null;
 }
 
 interface DroneProbe {
@@ -104,6 +165,12 @@ interface DroneProbe {
   freeze: (on: boolean) => void;
   seekIntro: (seconds: number) => void;
   skipIntro: () => void;
+  /** The pictures the drone flies behind, and the friends' stretches of scroll, as measured. */
+  hides: () => HideBox[];
+  windows: () => Windows;
+  /** Start a routine of the friends, or an act of the doll, now (for frame sheets). */
+  play: (kind: string) => boolean;
+  act: (kind: string) => void;
 }
 
 declare global {
@@ -114,6 +181,51 @@ declare global {
 
 /** The layer over the film, for the dive toward the visitor. */
 const FRONT = LAYER.film + 1;
+/** How quick a friend follows its place: a little softer than the drone, so it trails it. */
+const FRIEND_OMEGA = 6.4;
+/** How often, in seconds, the pictures the drone may fly behind are looked at while it may need one. */
+const PAINT_EVERY = 0.2;
+/** How far ahead of a friend's stretch of scroll its model is asked for, in screens. */
+const FRIEND_AHEAD = 2.5;
+/** The routines that `play` knows. */
+const ROUTINE_KINDS: ReadonlySet<string> = new Set<RoutineKind>([
+  "greet",
+  "hello",
+  "huddle",
+  "dance",
+  "orbit",
+  "bump",
+  "peek",
+  "spar",
+  "cheer",
+  "bye",
+  "farewell",
+]);
+
+/** One friend as the director flies it: its place on springs, and what it showed last frame. */
+interface Friend {
+  id: FriendId;
+  x: Sprung;
+  y: Sprung;
+  size: Sprung;
+  placed: boolean;
+  shown: boolean;
+  front: boolean;
+  presence: number;
+  ready: boolean;
+}
+
+const newFriend = (id: FriendId): Friend => ({
+  id,
+  x: { x: 0, v: 0 },
+  y: { x: 0, v: 0 },
+  size: { x: 10, v: 0 },
+  placed: false,
+  shown: false,
+  front: false,
+  presence: 0,
+  ready: false,
+});
 /** The button's own size in CSS pixels, before it is scaled to the drone. */
 const BUTTON_PX = 100;
 /** A scroll further than this from the top skips the opening: the page was opened part way. */
@@ -211,6 +323,41 @@ export function createDirector(parts: DirectorParts): Director {
   let dizzyNext = false;
   /** What the drone says of itself to a part that plays with it (Tetra): one object, rewritten. */
   const report: DroneReport = { x: 0, y: 0, size: 0, presses: 0 };
+
+  // The friends: Mr. Bunny, and Guinevere's two drones.
+  let windows: Windows = { bunny: null, bold: null, soft: null };
+  const friends: Record<FriendId, Friend> = {
+    bunny: newFriend("bunny"),
+    bold: newFriend("bold"),
+    soft: newFriend("soft"),
+  };
+  const bodies: Record<"bold" | "soft", CompanionBody> = {
+    bold: createCompanion(0),
+    soft: createCompanion(1),
+  };
+  const bunnyBody = createBunny();
+  let bunnyDraw: { front: boolean; pose: BunnyPose } | null = null;
+  const party = createShow();
+  const companionDraws: CompanionDraw[] = [];
+  let routineName: string | null = null;
+  let pressedNow = false;
+  let pressedNowDoll = false;
+  let dollCounter = 0;
+
+  // The doll and the pictures the drone fetches her from and takes her back to.
+  let hides: MeasuredHide[] = [];
+  const painted = new Map<string, boolean>();
+  let sincePaint = PAINT_EVERY;
+  const visit = createVisit();
+  const doll = createDoll();
+  let dollFrame: DollFrame | null = null;
+  let carrying = false;
+  let wantedDoll = false;
+  /** The way the page last went: 1 down, -1 up. */
+  let scrollDir = 1;
+  let under = false;
+  let homeward = false;
+  let layerZ = LAYER.drone as number;
   let buttonOn = false;
   let overControl = false;
   let sinceLook = 0;
@@ -272,6 +419,10 @@ export function createDirector(parts: DirectorParts): Director {
     // The film says where its picture is. At the top of the page that is the preview's slot.
     if (stageRefs.film && window.scrollY < 1) slot = { ...stageRefs.film };
     path = buildPath(completeLayout(vw, vh, navH, gutter, anchors, slot));
+    windows = friendWindows(path.layout);
+    hides = measureHides(root);
+    painted.clear();
+    sincePaint = PAINT_EVERY;
     const rect = stageRefs.title?.rect();
     titleBox =
       rect && rect.width > 0
@@ -312,8 +463,19 @@ export function createDirector(parts: DirectorParts): Director {
     placed = true;
   };
 
+  // The scroll is held while the opening plays (the owner, 25 Nov 2026: "lock user scroll until first
+  // animation are finished"): the page stays at the top until the drone has landed. Escape and Tab let
+  // go (a keyboard visitor is never trapped) and end the opening where it is.
+  let introHold: (() => void) | null = null;
+  const releaseIntroHold = () => {
+    const release = introHold;
+    introHold = null;
+    release?.();
+  };
+
   /** End the opening where it is: the title whole, everything shown, the flight carries on. */
   const endIntro = () => {
+    releaseIntroHold();
     introT = -1;
     seeking = null;
     showTitle();
@@ -345,11 +507,15 @@ export function createDirector(parts: DirectorParts): Director {
     held = 0;
     edge = Infinity;
     setPhase("title");
+    introHold = holdDown({ line: () => 0, getLenis: parts.getLenis, onLetGo: endIntro });
   };
 
-  /** The visitor scrolls during the flight: the opening gives way at once, with no jump. */
+  /**
+   * A scroll during the flight that the hold did not take (it holds the opening's whole length, so this
+   * is a scroll that came through some other way): the opening gives way at once, with no jump.
+   */
   const onIntent = () => {
-    if (introT < 0 || seeking !== null) return;
+    if (introT < 0 || seeking !== null || introHold) return;
     endIntro();
   };
   const onKey = (e: KeyboardEvent) => {
@@ -387,6 +553,8 @@ export function createDirector(parts: DirectorParts): Director {
 
   const press = () => {
     report.presses += 1;
+    pressedNow = true;
+    pressedNowDoll = true;
     const now = performance.now();
     presses = presses.filter((t) => now - t < DIZZY_WINDOW);
     presses.push(now);
@@ -459,6 +627,56 @@ export function createDirector(parts: DirectorParts): Director {
       });
     } else {
       if (!placed) placeAtScroll();
+      const settledNow = stillFor > SETTLE_AFTER;
+
+      // The doll: whether she should ride, and the visit that fetches her or takes her home.
+      const sceneNow = scene;
+      if (sceneNow && hides.length > 0) {
+        const span = dollSpan(hides, vh);
+        if (span && scroll > span[0] - FRIEND_AHEAD * vh && scroll < span[1] + FRIEND_AHEAD * vh) {
+          sceneNow.want("doll");
+        }
+      }
+      const dollReady = sceneNow?.has("doll") ?? false;
+      if (moved > 0.5) scrollDir = 1;
+      else if (moved < -0.5) scrollDir = -1;
+      wantedDoll = dollReady && dollWanted(scroll, hides, vh, scrollDir, wantedDoll);
+      sincePaint += dt;
+      if (sincePaint >= PAINT_EVERY && (wantedDoll !== carrying || visit.stage !== "idle")) {
+        sincePaint = 0;
+        for (const h of hides) painted.set(h.id, hidePainted(h));
+      }
+      const friendsDrawn = FRIEND_IDS.some((id) => friends[id].shown);
+      const stageWas = visit.stage;
+      const visited = stepVisit(visit, {
+        dt,
+        scroll,
+        vw,
+        vh,
+        wanted: wantedDoll,
+        carrying,
+        pose: { x: pose.x, y: pose.y, size: pose.size },
+        size: target.size,
+        hides,
+        painted: (id) => painted.get(id) === true,
+        free: !friendsDrawn,
+      });
+      let arrived = false;
+      if (visited.swap) {
+        carrying = !carrying;
+        if (!carrying) {
+          // She is home: whatever she was doing ends there.
+          dollFrame = null;
+          doll.act = null;
+        }
+      }
+      if (stageWas === "rise" && visit.stage === "out" && carrying) arrived = true;
+      if (stageWas === "edge" && visit.stage === "idle" && carrying) arrived = true;
+      const goingHome = carrying && visit.stage === "approach" && visit.box === "drop";
+      const homewardNow = goingHome && !homeward;
+      homeward = goingHome;
+      under = visited.under;
+      const visiting = visit.stage !== "idle";
 
       // Which side of the film, and a way round when the change cannot be made in place.
       const layered = layerStep({
@@ -472,11 +690,22 @@ export function createDirector(parts: DirectorParts): Director {
         navH,
         hurry: scrollSpeed > HURRY_SPEED,
       });
-      if (layered.side !== side) {
-        side = layered.side;
-        layer.style.zIndex = String(side === "front" ? FRONT : LAYER.drone);
+      if (layered.side !== side) side = layered.side;
+      const z = under ? LAYER.under : side === "front" ? FRONT : LAYER.drone;
+      if (z !== layerZ) {
+        layerZ = z;
+        layer.style.zIndex = String(z);
       }
-      const goal = layered.detour ?? target;
+      const goal = visited.goal ?? layered.detour ?? target;
+
+      // On a visit to a picture the drone rides with the page, as the picture does, and flies only
+      // the rest of the way: a scroll that goes on does not leave it trailing behind its door.
+      // Behind the picture it rides with it even through a jump: it leaves with the picture, out
+      // of sight, and comes back from the edge of the screen.
+      const behind = visit.stage === "dive" || visit.stage === "hold" || visit.stage === "rise";
+      if (behind || (visiting && visit.stage !== "edge" && Math.abs(moved) < 0.25 * vh)) {
+        follower.y.x -= moved;
+      }
 
       // A jump of the scroll to the far end of the page: the drone comes in from just off the
       // screen, not from thousands of pixels away.
@@ -484,10 +713,147 @@ export function createDirector(parts: DirectorParts): Director {
       const dy = follower.y.x - goal.y;
       if (Math.abs(dy) > far) follower.y.x = goal.y + Math.sign(dy) * far;
 
-      // At rest it looks at the pointer: the body turns and the eyes slide the same way.
+      // The friends: how far in each is, their places beside the drone, the routine they play.
+      const companionsReady = sceneNow?.has("companion") ?? false;
+      for (const id of FRIEND_IDS) {
+        const w = windows[id];
+        const f = friends[id];
+        if (sceneNow && w && scroll > w.in0 - FRIEND_AHEAD * vh && scroll < w.out1 + vh) {
+          sceneNow.want(id === "bunny" ? "bunny" : "companion");
+        }
+        f.ready = id === "bunny" ? (sceneNow?.has("bunny") ?? false) : companionsReady;
+        // A friend whose model is not here, or while the drone is behind a picture, stays away.
+        f.presence = f.ready && !visiting && !under ? presence(w, scroll, settledNow) : 0;
+      }
+      const presentNow = {
+        bunny: friends.bunny.presence,
+        bold: friends.bold.presence,
+        soft: friends.soft.presence,
+      };
+      const slotNow = slotsOf({ droneX: goal.x, vw, room: target.room, presence: presentNow });
+      const routine = stepShow(party, {
+        dt,
+        present: presentNow,
+        leaving: {
+          bunny: leaving(windows.bunny, scroll),
+          bold: leaving(windows.bold, scroll),
+          soft: leaving(windows.soft, scroll),
+        },
+        atRest: target.travelling === 0 && speed < 0.15 && !visiting,
+        pressed: pressedNow,
+        slots: slotNow,
+      });
+      routineName = routine?.kind ?? null;
+      const played = routine ? routineFrame(routine, slotNow) : null;
+      pressedNow = false;
+
+      companionDraws.length = 0;
+      bunnyDraw = null;
+      const lookOf = (id: FriendId | null) => {
+        if (!id) return null;
+        const f = friends[id];
+        return f.shown ? { x: f.x.x, y: f.y.x } : null;
+      };
+      for (const id of FRIEND_IDS) {
+        const f = friends[id];
+        if (!f.ready) {
+          // Not drawn; when its model is back (a new context) it comes in from its edge again.
+          f.shown = false;
+          f.placed = false;
+          continue;
+        }
+        const bit: FriendBit | null = played?.friends[id] ?? null;
+        const slot: Slot = slotNow[id];
+        const rel: Slot = bit
+          ? {
+              x: mix(slot.x, bit.x, bit.w),
+              y: mix(slot.y, bit.y, bit.w) + bit.lift,
+              scale: slot.scale * bit.scale,
+            }
+          : slot;
+        const out = leaving(windows[id], scroll);
+        const at: FriendPlace = placeOf({
+          id,
+          drone: goal,
+          rel,
+          presence: f.presence,
+          out,
+          vw,
+          vh,
+          navH,
+        });
+        if (!f.placed) {
+          // It comes in from its edge of the screen, never from where it was drawn last.
+          const away = placeOf({ id, drone: goal, rel, presence: 0, out: false, vw, vh, navH });
+          f.x = { x: away.x, v: 0 };
+          f.y = { x: away.y, v: 0 };
+          f.size = { x: away.size, v: 0 };
+          f.placed = true;
+        }
+        springTo(f.x, at.x, FRIEND_OMEGA, dt);
+        springTo(f.y, at.y, FRIEND_OMEGA, dt);
+        springTo(f.size, at.size, FRIEND_OMEGA, dt);
+        // A jump of the scroll: it comes in from just off the screen, as the drone does.
+        const off = f.y.x - at.y;
+        if (Math.abs(off) > 1.6 * vh) f.y.x = at.y + Math.sign(off) * 1.6 * vh;
+        const now = { x: f.x.x, y: f.y.x, size: f.size.x };
+        f.shown = !friendOffScreen(id, now, vw, vh);
+        f.front = passStep(
+          bit?.front ?? false,
+          f.front,
+          { x: now.x, y: now.y, reach: reachOf(id, now.size) },
+          { x: pose.x, y: pose.y, size: pose.size },
+        );
+        const pointer = parts.pointer.current;
+        if (id === "bunny") {
+          const nearB =
+            pointer.active &&
+            pointer.type === "mouse" &&
+            Math.hypot(pointer.clientX - now.x, pointer.clientY - now.y) < 2.5 * now.size;
+          const posedB = stepBunny(bunnyBody, {
+            dt,
+            x: now.x,
+            y: now.y,
+            size: now.size,
+            z: 60,
+            bit,
+            look: nearB ? { x: pointer.clientX, y: pointer.clientY } : { x: pose.x, y: pose.y },
+          });
+          if (f.shown) bunnyDraw = { front: f.front, pose: posedB };
+          continue;
+        }
+        const who = id === "bold" ? 0 : 1;
+        const near =
+          pointer.active &&
+          pointer.type === "mouse" &&
+          Math.hypot(pointer.clientX - now.x, pointer.clientY - now.y) < 6 * now.size;
+        const lookAtPoint = near
+          ? { x: pointer.clientX, y: pointer.clientY }
+          : id === "soft" && friends.bold.shown
+            ? (lookOf("bold") ?? { x: pose.x, y: pose.y })
+            : { x: pose.x, y: pose.y };
+        const posed = stepCompanion(bodies[id], {
+          dt,
+          x: now.x,
+          y: now.y,
+          radius: now.size,
+          z: who * 24,
+          bit,
+          look: lookAtPoint,
+          snap: false,
+        });
+        if (f.shown) companionDraws.push({ who, front: f.front, pose: posed });
+      }
+      const droneBit = played?.drone ?? null;
+
+      // At rest it looks at the pointer: the body turns and the eyes slide the same way. A routine
+      // may ask it to look at a friend instead.
       const p = parts.pointer.current;
+      const friendPoint = lookOf(droneBit?.look ?? null);
       const point =
-        stageRefs.gaze ?? (p.active && p.type === "mouse" ? { x: p.clientX, y: p.clientY } : null);
+        friendPoint ??
+        stageRefs.gaze ??
+        (p.active && p.type === "mouse" ? { x: p.clientX, y: p.clientY } : null);
       engaged = mix(engaged, point ? 1 : 0, 1 - Math.exp(-5 * dt));
       const look = lookAt(pose, point, vh);
       eye = { x: look.eyeX * engaged, y: look.eyeY * engaged };
@@ -501,7 +867,7 @@ export function createDirector(parts: DirectorParts): Director {
       const flight = flightOf(follower, vh);
       speed = flight.speed;
 
-      stepTricks(tricks, dt, { ...flight, travelling: target.travelling });
+      stepTricks(tricks, dt, { ...flight, travelling: visiting ? 0 : target.travelling });
       if (dizzyNext && startTrick(tricks, "dizzy", 1)) dizzyNext = false;
       // A move asked for by a part that plays with the drone. It is taken once, when the drone
       // is free; an ask that finds it busy is dropped, not kept for later.
@@ -521,22 +887,54 @@ export function createDirector(parts: DirectorParts): Director {
 
       const calm = 1 - flight.fast;
       const float = floatOf(time, calm, follower.size.x);
+      const bit = droneBit;
       pose.size = follower.size.x;
-      pose.x = follower.x.x + float.dx + show.dx * pose.size;
-      pose.y = follower.y.x + float.dy + show.dy * pose.size;
-      pose.yaw = follower.yaw.x + turned + show.yaw;
-      pose.pitch = follower.pitch.x + float.pitch + show.pitch;
-      pose.roll = follower.roll.x + float.roll + show.roll;
+      pose.x = follower.x.x + float.dx + (show.dx + (bit?.dx ?? 0)) * pose.size;
+      pose.y = follower.y.x + float.dy + (show.dy + (bit?.dy ?? 0)) * pose.size;
+      pose.yaw = follower.yaw.x + turned + show.yaw + (bit?.yaw ?? 0);
+      pose.pitch = follower.pitch.x + float.pitch + show.pitch + (bit?.pitch ?? 0);
+      pose.roll = follower.roll.x + float.roll + show.roll + (bit?.roll ?? 0);
 
       // It opens its wings to brake when it is slowing down hard.
       const along =
         flight.speed > 0.05
           ? -(flight.vx * follower.ax + flight.vy * follower.ay) / vh / flight.speed
           : 0;
-      effort = show.effort;
-      flare = Math.max(show.flare, ramp(1.2, 5, along) * ramp(0.1, 0.5, flight.speed));
+      effort = Math.max(show.effort, bit?.effort ?? 0);
+      flare = Math.max(
+        show.flare,
+        bit?.flare ?? 0,
+        ramp(1.2, 5, along) * ramp(0.1, 0.5, flight.speed),
+      );
       trail = ramp(0.55, 1.7, flight.speed);
-      wantedFace = show.face ?? target.face;
+      wantedFace = show.face ?? bit?.face ?? target.face;
+
+      // The doll on its head: she lives through the flight, the tricks and her own acts.
+      if (carrying && dollReady) {
+        const active = tricks.active;
+        const dp = parts.pointer.current;
+        const head = { x: pose.x, y: pose.y - 0.55 * pose.size };
+        const reach = Math.max(60, pose.size * 1.6);
+        dollFrame = stepDoll(doll, {
+          dt,
+          vx: flight.vx,
+          vy: flight.vy,
+          speed: flight.speed,
+          ax: follower.ax / vh,
+          ay: follower.ay / vh,
+          trick: active ? { kind: active.kind, p: active.t / TRICK_SECONDS[active.kind] } : null,
+          atRest: target.travelling === 0 && flight.speed < 0.12 && !visiting,
+          look:
+            dp.active && dp.type === "mouse"
+              ? { x: (dp.clientX - head.x) / reach, y: (dp.clientY - head.y) / reach }
+              : null,
+          pressed: pressedNowDoll,
+          arrived,
+          homeward: homewardNow,
+        });
+        dollCounter = -0.5 * (follower.roll.x + float.roll);
+      }
+      pressedNowDoll = false;
     }
 
     glee = mix(glee, wantedFace === "happy" || hovered ? 1 : 0, 1 - Math.exp(-8 * dt));
@@ -581,7 +979,19 @@ export function createDirector(parts: DirectorParts): Director {
 
     seen = side === "front" ? 1 : uncovered(pose.x, pose.y, pose.size / 2, film);
     if (scene && engine === "ready") {
-      const draw: DroneDraw = { ...pose, rig: rigPose, face: faceFrame, trail, trailPoints };
+      const draw: DroneDraw = {
+        ...pose,
+        rig: rigPose,
+        face: faceFrame,
+        trail,
+        trailPoints,
+        companions: phase === "done" || phase === "landed" ? companionDraws : [],
+        bunny: phase === "done" || phase === "landed" ? bunnyDraw : null,
+        doll:
+          carrying && dollFrame
+            ? { frame: dollFrame, time: doll.time, counter: dollCounter }
+            : null,
+      };
       scene.draw(draw);
     }
 
@@ -606,6 +1016,8 @@ export function createDirector(parts: DirectorParts): Director {
       (phase === "done" || phase === "landed") &&
       engine === "ready" &&
       scene !== null &&
+      !under &&
+      visit.stage === "idle" &&
       target.travelling === 0 &&
       !target.parked &&
       !overControl &&
@@ -674,6 +1086,37 @@ export function createDirector(parts: DirectorParts): Director {
       side,
       trick: tricks.active?.kind ?? null,
       speed,
+      z: layerZ,
+      under,
+      doll: {
+        riding: carrying,
+        wanted: wantedDoll,
+        act: doll.act?.kind ?? null,
+        visit: visit.stage,
+        box: visit.box,
+        covered: (() => {
+          const h = hides.find((x) => x.id === visit.box);
+          return h
+            ? coveredShare(
+                { x: pose.x, y: pose.y, size: pose.size },
+                // The scroll the frame was drawn with, as the pose is.
+                { x: h.x, y: h.y - lastScroll, w: h.w, h: h.h },
+              )
+            : 0;
+        })(),
+        span: dollSpan(hides, path.layout.vh),
+      },
+      friends: FRIEND_IDS.map((id) => ({
+        id,
+        ready: friends[id].ready,
+        presence: friends[id].presence,
+        shown: friends[id].shown,
+        front: friends[id].front,
+        x: friends[id].x.x,
+        y: friends[id].y.x,
+        size: friends[id].size.x,
+      })),
+      routine: routineName,
     }),
     layout: () => path.layout,
     freeze: (on) => {
@@ -689,6 +1132,27 @@ export function createDirector(parts: DirectorParts): Director {
       if (stale) measure();
       if (introT < 0 && seeking === null) placeAtScroll();
       endIntro();
+    },
+    hides: () => hides.map(({ id, x, y, w, h }) => ({ id, x, y, w, h })),
+    windows: () => windows,
+    play: (kind) => {
+      if (!ROUTINE_KINDS.has(kind)) return false;
+      const here = FRIEND_IDS.filter((id) => friends[id].presence > 0.5);
+      const slotNow = slotsOf({
+        droneX: pose.x,
+        vw: path.layout.vw,
+        room: target.room,
+        presence: {
+          bunny: friends.bunny.presence,
+          bold: friends.bold.presence,
+          soft: friends.soft.presence,
+        },
+      });
+      party.active = null;
+      return startRoutine(party, kind as RoutineKind, here, slotNow);
+    },
+    act: (kind) => {
+      startAct(doll, kind as DollAct);
     },
   };
   window.__aboutDrone = probeApi;
@@ -715,6 +1179,7 @@ export function createDirector(parts: DirectorParts): Director {
     },
     dispose: () => {
       disposed = true;
+      releaseIntroHold();
       stop();
       unsubscribe();
       watcher.disconnect();

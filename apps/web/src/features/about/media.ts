@@ -8,6 +8,14 @@
 export const DRONE_MODEL = "/models/about/drone.glb";
 export const DRONE_MODEL_BYTES = 250_192;
 
+/**
+ * The Obsidia doll who rides the drone in the fifth phase: the home's own model, the same file at
+ * the same address (`features/home/actors/doll/preload.ts` names it there; a test keeps the two
+ * equal). It is read here so this page's list never loads the home's pose code to learn its name.
+ */
+export const DOLL_MODEL = "/models/home/doll.glb";
+export const DOLL_MODEL_BYTES = 1_132_208;
+
 /** The drone as a still picture, for a browser that cannot draw the scene. */
 export const DRONE_STILL = "/img/about/drone.webp";
 

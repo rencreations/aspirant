@@ -21,7 +21,7 @@
  *   45 to 48   the logo holds, 68% of the screen wide.
  *   49 to 92   a dark wave runs along the foot of the letters, left to right; the M loses its
  *              footage for the logo's flat orange at 53 to 57; a warm light crosses the M at 61
- *              to 70. The logo draws back to 58% of the width.
+ *              to 70. The logo draws back to 58% of the width. (Ours keeps only the flat M.)
  *   93 to 139  it holds.
  *
  * OURS. The same beats, `SLOWER` times slower so they read on a page at 60 frames a second, and
@@ -71,12 +71,14 @@ export const SHORT_END = ms(35.5);
 
 /** The M's footage gives way to the logo's flat orange (frames 53 to 57). */
 export const FLAT = { start: ms(43), end: ms(47) } as const;
-/** The dark wave along the foot of the letters (frames 49 to 92). */
-export const WAVE = { start: ms(39), end: ms(82) } as const;
-/** The light across the logo (frames 61 to 70). */
-export const SHEEN = { start: ms(51), end: ms(62) } as const;
-/** The whole clock. */
-export const SCENE_END = WAVE.end;
+/** The footage plate fades off the flat M in this long, once the M is flat. */
+export const FLAT_FADE = 120;
+/**
+ * The whole clock: it ends when the M is flat. The reference's dark wave along the foot of the
+ * letters and the light across them (frames 49 to 92) are left out: the owner asked for nothing
+ * to pass over the logo once it stands (25 Nov 2026).
+ */
+export const SCENE_END = FLAT.end + FLAT_FADE;
 
 /** The logo's width on the screen when it stands (58% in the reference), and on a narrow one. */
 export const LOGO_WIDTH = { wide: 0.56, narrow: 0.86 } as const;

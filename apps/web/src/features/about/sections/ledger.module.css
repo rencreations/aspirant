@@ -123,6 +123,14 @@
   overflow-y: clip;
 }
 
+/* The comma of a figure of four digits or more: it does not roll. */
+.sep {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  padding: 0 0.03em;
+}
+
 .strip {
   display: flex;
   flex-direction: column;

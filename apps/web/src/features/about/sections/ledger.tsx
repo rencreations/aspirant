@@ -22,17 +22,32 @@ const i = (n: number) => ({ "--i": n }) as CSSProperties;
  * out again and nothing is written per frame.
  */
 function Counter({ value }: { value: number }) {
-  const digits = String(value).split("").map(Number);
+  // The figure as the site writes a count ("3,046"): the comma stands still between the strips.
+  const chars = value.toLocaleString("en-US").split("");
+  const digits = chars.filter((c) => c !== ",").length;
+  // Each digit's place among the digits (a comma has none).
+  const places = chars.map((c, at) =>
+    c === "," ? -1 : chars.slice(0, at).filter((d) => d !== ",").length,
+  );
   return (
     <span className={styles.counter} aria-hidden="true">
-      {digits.map((digit, k) => {
-        const turns = k === digits.length - 1 ? 1 : 0;
+      {chars.map((char, at) => {
+        if (char === ",") {
+          return (
+            <span key={at} className={styles.sep}>
+              ,
+            </span>
+          );
+        }
+        const k = places[at] ?? 0;
+        const digit = Number(char);
+        const turns = k === digits - 1 ? 1 : 0;
         const cells = Array.from({ length: turns + 1 }, () => DIGITS).flat();
         return (
-          <span key={k} className={styles.col}>
+          <span key={at} className={styles.col}>
             <span
               className={styles.strip}
-              style={{ "--to": turns * 10 + digit, "--k": digits.length - 1 - k } as CSSProperties}
+              style={{ "--to": turns * 10 + digit, "--k": digits - 1 - k } as CSSProperties}
             >
               {cells.map((cell, n) => (
                 <span key={n} className={styles.cell}>
@@ -55,7 +70,7 @@ function Face({ row, index, copy = false }: { row: LedgerRow; index: number; cop
         {String(index + 1).padStart(2, "0")}
       </span>
       <span className={`display ${styles.figure}`}>
-        {copy ? null : <span className="sr-only">{row.figure} </span>}
+        {copy ? null : <span className="sr-only">{row.figure.toLocaleString("en-US")} </span>}
         <Counter value={row.figure} />
       </span>
       <span className={styles.text}>

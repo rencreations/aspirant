@@ -6,7 +6,9 @@ Turns the two source files `D:\ren\aspirant\3d\guinevere\drone1.fbx` and `drone2
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/web/public/models/about/companion.glb` | The model: 241,420 bytes, unlit, six rigid parts, one picture inside. `COMPANION_MODEL` in `apps/web/src/features/about/companions/model.ts`. |
 
-Never edit the file by hand. Change the build and run it.
+Never edit the file by hand. Change the build and run it. The home's two guest drones read the same file at the same address (`features/home/actors/duo/`): never rename it or move it.
+
+On the About page the two fly with the page's drone through the fourth phase (since 25 Nov 2026; until then they had a corner of that phase with a canvas of their own). They are drawn by the drone's own renderer, in a flat pass of its scene (`apps/web/src/features/about/drone/companion-model.ts`, the parts built from this file as below), and posed by `apps/web/src/features/about/choreo/companion.ts` (their springs, their idle life and their gestures), from the places and routines of `choreo/friends.ts` and `choreo/routines.ts`. The facts the page and the home share stay in `apps/web/src/features/about/companions/` (`model.ts`, `face.ts`, `pose.ts`).
 
 ## How to run
 

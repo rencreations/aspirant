@@ -1,11 +1,12 @@
 import type { FaceLive, FaceShape } from "./face";
 
 /**
- * One frame of a companion, as the performance hands it to the scene. No three here: the
- * performance is plain arithmetic, the scene turns this into six rigid parts.
+ * One frame of one of Guinevere's two drones, as its body (`choreo/companion.ts`) hands it to the
+ * drone's scene. No three here: the body is plain arithmetic, the scene turns this into six rigid
+ * parts (`drone/companion-model.ts`).
  *
- * The stage is flat: a place is in CSS pixels of the stage (x to the right, y down), and `z` is
- * pixels toward the visitor, which only decides who is in front. Lengths on the companion itself
+ * The pass they are drawn in is flat: a place is in CSS pixels of the screen (x to the right, y
+ * down), and `z` is pixels toward the visitor, which only decides who is in front. Lengths on the companion itself
  * are in radii of its ball.
  */
 export interface GlovePose {
@@ -52,6 +53,3 @@ export interface CompanionPose {
   face: FaceShape;
   live: FaceLive;
 }
-
-/** The two of them. The first is the bold one, the second the soft one. */
-export type Cast = readonly [CompanionPose, CompanionPose];

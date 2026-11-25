@@ -29,11 +29,18 @@
   );
   mix-blend-mode: screen;
   will-change: transform;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
 /* On the light pages there is no glow: only the ring follows the pointer. */
 .root[data-theme="daybreak"] .disc {
   display: none;
+}
+
+/* Nor where a part asks for none (`data-cursor-glow="off"`, TheMLabel's close on /about). It fades
+   out rather than cutting, so the light never vanishes in one frame. */
+.root[data-glow="off"] .disc {
+  opacity: 0;
 }
 
 /* The lagging ring. */

@@ -15,7 +15,7 @@ import { createFx } from "./fx";
 import { TETRA_HEIGHT, TETRA_MODEL, TETRA_MODEL_BYTES } from "./model";
 import { createPerformance, type Performance } from "./performance";
 import type { TetraMarks } from "./pose";
-import { holdDown, jumpTo } from "./scroll-hold";
+import { holdDown, jumpTo } from "../scroll-hold";
 import type { StageView, TetraScene } from "./tetra-scene";
 import styles from "./tetra-stage.module.css";
 
@@ -32,9 +32,10 @@ const LOST_WAIT_MS = 1500;
 const REBUILDS = 3;
 
 /**
- * The hold on the scroll while her entrance plays for the first time (the owner's request, 16 Nov
- * 2026): from the moment the stage is well on the screen until she has stood up, the page does not
- * go down past the place where the whole stage is in view. It goes up freely.
+ * The hold on the scroll when her entrance begins for the first time (the owner's request, 16 Nov
+ * 2026, cut to one second on 25 Nov 2026): from the moment the stage is well on the screen, the page
+ * does not go down past the place where the whole stage is in view for `HOLD_MS`, and then it is let
+ * go whatever she is doing. It goes up freely.
  *
  * - `armed`: the entrance has not played and may still be held.
  * - `held`: the page is kept at the stage. The entrance plays, or the model is still arriving.
@@ -47,11 +48,8 @@ const REST_FOOT = 24;
 const GLIDE = 0.7;
 /** One step of the scroll longer than this many screens is a jump (a link, a key), not a scroll. */
 const JUMP = 1.2;
-/**
- * The longest the page is held once she has set off, in milliseconds: a safety net against a hold
- * nobody released (her entrance takes about four seconds), never a timer to wait for.
- */
-const HOLD_LIMIT_MS = 12_000;
+/** How long the page is held at her stage, in milliseconds (the owner: "locks for only 1 second"). */
+const HOLD_MS = 1000;
 /** The cue to scroll on stays this long if the visitor does not scroll, in milliseconds. */
 const CUE_MS = 6000;
 
@@ -299,7 +297,6 @@ export function TetraStage() {
       });
       marks = scene.draw(pose, dt);
       frames += 1;
-      if (hold === "held" && perf.state().stood) release(true);
 
       // The drone looks at her face while she has asked for its eyes.
       if (perf.wantsEyes()) {
@@ -383,7 +380,6 @@ export function TetraStage() {
       if (stale) measure();
       perf.begin(view);
       showWait(false);
-      if (hold === "held") safety = window.setTimeout(() => release(false), HOLD_LIMIT_MS);
     };
 
     const showWait = (on: boolean) => {
@@ -402,13 +398,11 @@ export function TetraStage() {
       if (hold !== "armed") return;
       hold = "held";
       unhold = holdDown({ line: () => rest, getLenis, onLetGo: () => release(false) });
+      safety = window.setTimeout(() => release(true), HOLD_MS);
       if (y > rest + 1) jumpTo(getLenis, rest);
       else if (!touching) glide();
-      // The model is asked for long before this. If it has not come, the wait is shown as it is;
-      // with no connection there is nothing to wait for, and the page is let go.
-      if (scene) return;
-      if (navigator.onLine) showWait(true);
-      else release(false);
+      // The model is asked for long before this. If it has not come, the wait is shown as it is.
+      if (!scene && navigator.onLine) showWait(true);
     };
 
     /** The last stretch to the rest, eased. A finger on the screen moves the page itself. */
@@ -422,7 +416,7 @@ export function TetraStage() {
       }
     };
 
-    /** The page moves again. With `done`, she has stood up: the cue says so, once. */
+    /** The page moves again. With `done`, the hold's second is over: the cue says so, once. */
     const release = (done: boolean) => {
       if (hold !== "held") {
         hold = "done";

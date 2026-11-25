@@ -13,9 +13,10 @@ const INTERACTIVE =
 /**
  * The lantern: a soft light disc that follows a mouse or pen closely and a ring that lags
  * behind. The ring grows over interactive elements; `data-cursor="PLAY"` on an element shows
- * a short label, `data-cursor-theme="light|dark"` forces the ring colour. An element with
- * `data-snap` pulls the ring to its centre while the pointer is over it, and keeps it there if
- * the element moves. `data-state` on the root says what the cursor is doing: idle, hover, snap
+ * a short label, `data-cursor-theme="light|dark"` forces the ring colour, and
+ * `data-cursor-glow="off"` puts the light out inside that element (the ring stays). An element
+ * with `data-snap` pulls the ring to its centre while the pointer is over it, and keeps it there
+ * if the element moves. `data-state` on the root says what the cursor is doing: idle, hover, snap
  * or pressed. The native cursor stays visible. Off for touch-first devices.
  *
  * It also publishes the light position as --mx/--my (local px) on every in-view element
@@ -205,6 +206,8 @@ function Lantern() {
       else delete root.dataset.ring;
       const zone = target?.closest<HTMLElement>("[data-theme]")?.dataset.theme;
       root.dataset.theme = zone === "daybreak" ? "daybreak" : "storm";
+      const glow = target?.closest<HTMLElement>("[data-cursor-glow]")?.dataset.cursorGlow;
+      root.dataset.glow = glow === "off" ? "off" : "on";
       syncState();
       wake();
     };
@@ -262,6 +265,7 @@ function Lantern() {
       data-state="idle"
       data-label="false"
       data-theme="storm"
+      data-glow="on"
       data-overlay="cursor"
       aria-hidden="true"
     >

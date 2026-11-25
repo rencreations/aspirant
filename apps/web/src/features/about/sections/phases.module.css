@@ -8,6 +8,8 @@
   --d: clamp(72px, 10vw, 190px);
   /* How much lower the second window of a pair hangs. */
   --drop: clamp(2.5rem, 10vh, 6.5rem);
+  /* The empty space between two phases. The drone and its friends meet in the middle of it. */
+  --between: clamp(7rem, 22vh, 15rem);
 }
 
 .head {
@@ -38,13 +40,14 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: clamp(7rem, 22vh, 15rem);
+  gap: var(--between);
   margin: clamp(5rem, 16vh, 11rem) 0 0;
   padding: 0;
   list-style: none;
 }
 
 .phase {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
@@ -53,6 +56,17 @@
     "top art"
     "rows art";
   column-gap: clamp(2rem, 6.5vw, 8rem);
+}
+
+/* Where the drone meets its friends: the middle of the empty space above the phase, a little
+   smaller than its places beside the numerals, so the friends have room in the row on either side.
+   It hangs out of the phase's box and takes no room. */
+.meet {
+  --dm: clamp(64px, 8vw, 132px);
+  position: absolute;
+  top: calc(-0.5 * var(--between) - 0.5 * var(--dm));
+  left: calc(50% - 0.5 * var(--dm));
+  width: var(--dm);
 }
 
 /* Every other phase is mirrored, so the page never reads as five copies of one card. */
@@ -432,6 +446,19 @@
   margin-top: var(--drop);
 }
 
+/* An unseen box of the window's own size, at its place, for the drone to fly behind (the window of
+   the Obsidia doll's skin, `data-drone-hide`). The slot itself never moves, so the box is the
+   window as it stands once it has opened. */
+.hide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* The pocket under the higher window: the drone's second place in a phase. It hangs out of the
    box, into the empty space between two phases, and takes no room itself. */
 .pocket {
@@ -699,6 +726,11 @@
   position: absolute;
   top: calc(-0.5 * var(--gap) - 0.5 * var(--d));
   width: var(--d);
+}
+
+/* In the last phase the drone carries the Obsidia doll: it is drawn larger there, so her face reads. */
+.phase[data-phase="5"] .partAnchor {
+  --d: clamp(5rem, 8.6vw, 8.5rem);
 }
 
 .partAnchor[data-side="right"] {

@@ -15,7 +15,6 @@ import {
   type PhaseSkin,
 } from "../content";
 
-import { CompanionsStage } from "../companions/companions-stage";
 import { TetraStage } from "../tetra/tetra-stage";
 
 import { useArrive } from "./arrive";
@@ -53,6 +52,22 @@ const LOWER: readonly number[] = [1, 0, 0, 1, 1];
 const i = (n: number) => ({ "--i": n }) as CSSProperties;
 
 const EMPTY_MEDIA: PhaseMedia = { videos: [], tracks: [], arts: [] };
+
+/**
+ * The drone's friends meet it in the empty gap above these phases: Mr. Bunny above the third, the
+ * four of them together above the fourth (Guinevere's two drones arrive as Mr. Bunny says goodbye),
+ * and the two leave above the fifth. Each gap carries an anchor, so the meetings happen where the
+ * page has room, whatever its size.
+ */
+const MEETS: ReadonlySet<number> = new Set([3, 4, 5]);
+
+/**
+ * Where the Obsidia doll lives in the fifth phase. The drone flies behind her skin's window (the
+ * right one of the pair) and comes out with her on its head, and at the end of the phase it flies
+ * behind her splash art (the left picture of the wall) and comes out without her. Each picture
+ * carries an unseen box of its own size (`data-drone-hide`): the drone's engine reads it.
+ */
+const DOLL_HOME = { phase: 5, skin: "obsidia", art: "splash-obsidia" } as const;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -270,6 +285,7 @@ function Part({
         data-drone-anchor={id}
         data-drone-face={face}
         data-drone-turn={side === "right" ? -20 : 20}
+        data-drone-room="wide"
       />
       {children}
     </div>
@@ -281,6 +297,16 @@ function PhaseBlock({ phase, index, media }: { phase: Phase; index: number; medi
   const lower = LOWER[index] ?? 1;
   return (
     <li className={styles.phase} data-flip={flip} data-phase={phase.n}>
+      {MEETS.has(phase.n) ? (
+        <div
+          className={`${kit.anchor} ${styles.meet}`}
+          aria-hidden="true"
+          data-drone-anchor={`meet-${phase.n}`}
+          data-drone-face="happy"
+          data-drone-turn={0}
+          data-drone-room="wide"
+        />
+      ) : null}
       <Ruler phase={phase} />
 
       <div className={styles.top} data-in="false">
@@ -353,6 +379,9 @@ function PhaseBlock({ phase, index, media }: { phase: Phase; index: number; medi
             data-lower={slot === lower}
           >
             <SkinCard skin={skin} order={index * 2 + slot + 1} slot={slot} />
+            {phase.n === DOLL_HOME.phase && skin.slug === DOLL_HOME.skin ? (
+              <div className={styles.hide} aria-hidden="true" data-drone-hide="pickup" />
+            ) : null}
             {slot === lower ? null : (
               <div
                 className={`${kit.anchor} ${styles.pocket}`}
@@ -388,10 +417,13 @@ function PhaseBlock({ phase, index, media }: { phase: Phase; index: number; medi
             <ComicFeature phase={phase.n} comic={media.comic} flip={flip} />
           </Part>
         ) : null}
-        {/* Guinevere's two drones have the drone's place inside their corner, as Tetra has. */}
-        {phase.n === 4 ? <CompanionsStage /> : null}
         <Part id={`phase-${phase.n}-arts`} side={flip ? "left" : "right"} face="normal">
-          <ArtWall phase={phase.n} arts={media.arts} flip={flip} />
+          <ArtWall
+            phase={phase.n}
+            arts={media.arts}
+            flip={flip}
+            {...(phase.n === DOLL_HOME.phase ? { hide: { id: DOLL_HOME.art, role: "drop" } } : {})}
+          />
         </Part>
       </div>
     </li>

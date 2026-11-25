@@ -162,6 +162,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* An unseen box of the window's own size, at its place, for the drone to fly behind (the tile of
+   the Obsidia doll's art, `data-drone-hide`). It is measured, never seen, and takes no pointer. */
+.hide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* The window: the picture's own shape, nothing cut. */
 .frame {
   position: relative;

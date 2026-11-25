@@ -35,6 +35,11 @@ export interface AnchorBox {
   face?: FaceName;
   /** The yaw at rest, in radians. Positive faces the right of the screen. */
   turn?: number;
+  /**
+   * 1 where the anchor stands in a wide empty row (the gap above a part, a meeting place between
+   * two phases), so the drone's friends can fly beside it. Without it they keep close behind it.
+   */
+  room?: number;
 }
 
 export interface PathLayout {
@@ -68,6 +73,8 @@ export interface Target {
   from: string;
   to: string;
   u: number;
+  /** The room beside the drone for its friends: 0 close, 1 a wide empty row (see `AnchorBox`). */
+  room: number;
 }
 
 /** The air kept between the drone and the edges of the screen, in pixels. */
@@ -251,6 +258,14 @@ const LOT_OVER = 0.22;
 /** The longest flight between two plain anchors, and the shortest any flight may be, in screens. */
 const FLIGHT_MAX = 0.5;
 const FLIGHT_MIN = 0.12;
+
+/**
+ * The room beside the drone at an anchor. It goes as the drone draws back, small, into the margin
+ * (the lot): there is no row beside it there.
+ */
+function roomAt(a: AnchorBox, size: number): number {
+  return (a.room ?? 0) * clamp01((size - LOT_MAX) / Math.max(1, a.w - LOT_MAX));
+}
 
 /** Lay the stations out along the scroll. */
 function schedule(layout: PathLayout): Station[] {
@@ -496,6 +511,7 @@ export function buildPath(layout: PathLayout): Path {
         from: "hero",
         to: "hero",
         u: 0,
+        room: 0,
       };
     }
     const s = Math.max(0, scroll);
@@ -520,6 +536,7 @@ export function buildPath(layout: PathLayout): Path {
         from: here.anchor.id,
         to: here.anchor.id,
         u: 0,
+        room: roomAt(a, p.size),
       };
     }
     const u = clamp01((s - here.leave) / Math.max(1, next.arrive - here.leave));
@@ -539,6 +556,7 @@ export function buildPath(layout: PathLayout): Path {
         from: here.anchor.id,
         to: next.anchor.id,
         u,
+        room: roomAt(a, p.size),
       };
     }
     const p = route(i, place(i, s), place(i + 1, s), u);
@@ -552,6 +570,7 @@ export function buildPath(layout: PathLayout): Path {
       from: here.anchor.id,
       to: next.anchor.id,
       u,
+      room: mix(here.anchor.room ?? 0, next.anchor.room ?? 0, easeInOutSine(u)),
     };
   };
 

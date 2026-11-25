@@ -289,34 +289,66 @@ export const LEDGER: readonly LedgerRow[] = [
 
 // TheMLabel ---------------------------------------------------------------------------------------
 
-/** TheMLabel in the official words. The name is one word and keeps its capitals. */
+/**
+ * TheMLabel. The name is one word and keeps its capitals. `definition` and `first` are the
+ * official words; the rest is the owner's own account of TheMLabel (25 Nov 2026), told in the
+ * order the page shows it: the system, a whole set and its rewards, the hall of honor, the story.
+ */
 export const LABEL = {
   name: "TheMLabel",
   launched: "16 Sep 2026",
   /** Quoted from the official announcement. */
   definition: "a dedicated gallery for MLBB's signature skin series",
   first: "The Aspirants is the first series to be featured.",
+  system: {
+    kicker: "The system",
+    title: ["An exclusive", "display system"],
+    line: "built for signature in-house skin series.",
+    carries: "Each series carries its own",
+    own: ["Original lore", "Character stories", "Art style"],
+  },
+  /** The three parts after the system, in page order. */
   parts: [
     {
-      id: "hall",
-      title: "One series, one hall",
-      line: "Each series has a gallery of its own, with its own visuals and theme music.",
+      id: "collect",
+      kicker: "Collect",
+      title: ["Collect every skin", "in a series"],
+      line: "to unlock exclusive visual effects and special perks.",
     },
-    { id: "perks", title: "Four perks", line: "" },
+    {
+      id: "hall",
+      kicker: "An entire series",
+      title: ["A", "hall", "of", "honor"],
+      line: "all your own",
+      more: [
+        "Collect an entire series to unlock an exclusive poster.",
+        "You can choose to display the full collection poster in your Showcase.",
+      ],
+    },
     {
       id: "story",
-      title: "Skin story",
-      line: "Lore, cinematic trailers and character designs, all in one place.",
+      kicker: "Skin story",
+      title: ["Every skin series", "has its own story"],
+      line: "Explore the lore behind each series, including",
+      more: ["Past cinematic trailers", "Character design", "Comics", "and more"],
     },
   ],
-  perks: ["Golden skin name", "Animated skin tag", "Collection crest", "Showcase display"],
+  rewards: { kicker: "The rewards", line: "These rewards include" },
+  /** The four rewards of a whole set, each with where it shows. */
+  perks: [
+    { name: "Golden skin name", line: "In gold, on the loading screen." },
+    { name: "Animated Skin Tag", line: "A skin tag that moves." },
+    { name: "Collection Crest", line: "On your Profile Namecard." },
+    { name: "Exclusive poster", line: "In your Showcase, to show off your prized collection." },
+  ],
 } as const;
 
 // The notice -------------------------------------------------------------------------------------
 
 /**
- * The house notice (`content/site-copy.ts`), with the non-commercial fact of the legal texts. It
- * stands at the very foot of the page.
+ * The house notice (`content/site-copy.ts`), with the non-commercial fact of the legal texts. The
+ * home's footer carries it. The About page no longer does: the owner took it off the foot of
+ * TheMLabel on 25 Nov 2026.
  */
 export const NOTICE =
   "A fan project, and a non-commercial one. Not affiliated with or endorsed by Moonton. Mobile Legends: Bang Bang and its characters belong to their owners.";

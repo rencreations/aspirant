@@ -10,6 +10,7 @@
         "scripts/about/drone/page/**",
         "scripts/about/tetra/page/**",
         "scripts/about/companions/page/**",
+        "scripts/about/bunny/page/**",
         // The pages of the home scripts (the models' check pages, the drone and the doll's previews)
         // run in a browser and take three from an import map.
         "scripts/home/**/{page,preview}/**",

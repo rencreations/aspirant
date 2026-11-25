@@ -24,6 +24,11 @@ interface ArtWallProps {
   arts: readonly PhaseArt[];
   /** The phase's art is on the left: the wall is composed the other way round. */
   flip: boolean;
+  /**
+   * A picture the drone may fly behind, by its record: its tile carries an unseen box of the
+   * picture's own size, `data-drone-hide` with this role (see `drone/measure.ts`).
+   */
+  hide?: { id: string; role: string };
 }
 
 /** The official art is the game's own: the credit the site gives it everywhere. */
@@ -43,12 +48,14 @@ function Tile({
   index,
   total,
   hero,
+  hide,
   onOpen,
 }: {
   art: PhaseArt;
   index: number;
   total: number;
   hero: boolean;
+  hide: string | null;
   onOpen: (index: number) => void;
 }) {
   const drift = useRef<HTMLSpanElement>(null);
@@ -81,6 +88,14 @@ function Tile({
 
   return (
     <li className={styles.tile} data-in="false" data-in-at="18" data-hero={hero} style={i(index)}>
+      {hide ? (
+        <span
+          className={styles.hide}
+          aria-hidden="true"
+          data-drone-hide={hide}
+          style={{ aspectRatio: `${art.w} / ${art.h}` }}
+        />
+      ) : null}
       <button
         type="button"
         className={styles.hit}
@@ -143,7 +158,7 @@ function Tile({
  * transforms and opacity. A press opens the picture in the site's viewer, which gives the focus
  * back to the picture when it closes.
  */
-export function ArtWall({ phase, arts, flip }: ArtWallProps) {
+export function ArtWall({ phase, arts, flip, hide }: ArtWallProps) {
   const [open, setOpen] = useState<number | null>(null);
 
   const items = useMemo<ViewerImage[]>(
@@ -197,6 +212,7 @@ export function ArtWall({ phase, arts, flip }: ArtWallProps) {
             index={index}
             total={total}
             hero={index === hero}
+            hide={hide?.id === art.id ? hide.role : null}
             onOpen={setOpen}
           />
         ))}

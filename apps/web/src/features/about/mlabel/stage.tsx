@@ -16,6 +16,7 @@ import {
   CLOSE,
   closeParts,
   FLAT,
+  FLAT_FADE,
   LAND,
   LAST_SCALE,
   LETTER_FLIGHT,
@@ -29,11 +30,9 @@ import {
   PLATE_START,
   quadMatrix,
   SCENE_END,
-  SHEEN,
   sheetScale,
   SHORT_END,
   SHORT_START,
-  WAVE,
 } from "./choreo";
 import {
   dropFootage,
@@ -65,7 +64,7 @@ const LOGO_M = LETTERS.find((letter) => letter.id === "m") ?? LETTERS[3];
 /** A letter and the two fainter copies that trail it, as the streak of its flight. */
 const TRAIL = [0, 1, 2] as const;
 
-type Group = "long" | "short" | "flat" | "fx";
+type Group = "long" | "short" | "flat";
 type Mode = "scroll" | "waiting" | "playing" | "held";
 
 interface Track {
@@ -170,7 +169,8 @@ function holdDown(at: () => number, jump: (y: number) => void): () => void {
  * after a second. When the M stands, the scene plays by itself with the scroll held: five M
  * plates with footage flip up from the floor, each over the one before, the last one in the
  * logo's orange draws back to the logo's M and the letters fly in from the sides. The scroll is
- * given back the moment the logo stands; a wave and a light then pass over it.
+ * given back the moment the logo stands; the M's footage then gives way to its flat orange, and
+ * nothing else passes over the logo.
  *
  * The scene plays in full once. After that (and in the tests, where `aspirants:intro` is off) the
  * last plate and the letters simply follow the scroll, down and up, so nobody is held twice.
@@ -375,7 +375,7 @@ export function Stage() {
             "cubic-bezier(0.35, 0, 0.15, 1)",
           );
           // The footage gives way to the logo's own flat M, which is already under it.
-          add(land, "flat", [{ opacity: 1 }, { opacity: 0 }], FLAT.end, 120);
+          add(land, "flat", [{ opacity: 1 }, { opacity: 0 }], FLAT.end, FLAT_FADE);
         }
         add(
           root.querySelector(`[data-plate="${i}"] [data-part="flip"]`) ?? undefined,
@@ -447,33 +447,6 @@ export function Stage() {
         FLAT.start,
         FLAT.end - FLAT.start,
       );
-      add(
-        root.querySelector('[data-part="wave"]') ?? undefined,
-        "fx",
-        [
-          { transform: "translate3d(-52%, 70%, 0)", opacity: 0 },
-          { transform: "translate3d(-50%, 50%, 0)", opacity: 1, offset: 0.04 },
-          { transform: "translate3d(-40%, -34%, 0)", offset: 0.22 },
-          { transform: "translate3d(-27%, -52%, 0)", offset: 0.45 },
-          { transform: "translate3d(-14%, -30%, 0)", offset: 0.72 },
-          { transform: "translate3d(-2%, 50%, 0)", opacity: 1, offset: 0.96 },
-          { transform: "translate3d(0%, 70%, 0)", opacity: 0 },
-        ],
-        WAVE.start,
-        WAVE.end - WAVE.start,
-        "cubic-bezier(0.4, 0, 0.5, 1)",
-      );
-      add(
-        root.querySelector('[data-part="beam"]') ?? undefined,
-        "fx",
-        [
-          { transform: "translate3d(-140%, 0, 0) skewX(-18deg)" },
-          { transform: "translate3d(380%, 0, 0) skewX(-18deg)" },
-        ],
-        SHEEN.start,
-        SHEEN.end - SHEEN.start,
-        "cubic-bezier(0.3, 0, 0.3, 1)",
-      );
     };
 
     const setTimes = (at: (group: Group) => number) => {
@@ -499,7 +472,7 @@ export function Stage() {
       // Once the black is whole, what is under it (the drone's button) is out of reach.
       root.dataset.covered = parts.sheet >= 1 ? "true" : "false";
       if (fx) {
-        // The wave and the light are still passing: leave them, unless the visitor turns back.
+        // The M is still turning flat on the clock: leave it, unless the visitor turns back.
         if (p >= 0.995) return;
         endFx();
       }
@@ -512,13 +485,13 @@ export function Stage() {
         if (group === "flat") {
           return parts.short < 1
             ? FLAT.start - 1
-            : FLAT.start + parts.flat * (FLAT.end + 120 - FLAT.start);
+            : FLAT.start + parts.flat * (FLAT.end + FLAT_FADE - FLAT.start);
         }
         return SCENE_END + 1000;
       });
     };
 
-    /** The wave and the light have passed (or are cut short): the footage is hidden and stops. */
+    /** The M has turned flat (or the visitor cut it short): the footage is hidden and stops. */
     function endFx() {
       window.clearTimeout(fxTimer);
       fx = false;
@@ -795,26 +768,6 @@ export function Stage() {
               />
             )),
           )}
-          <span
-            className={styles.sheen}
-            style={{
-              maskImage: `url(${asset(LOGO.src)})`,
-              WebkitMaskImage: `url(${asset(LOGO.src)})`,
-            }}
-          >
-            <span className={styles.beam} data-part="beam" />
-          </span>
-          <svg
-            className={styles.wave}
-            viewBox="0 0 1000 200"
-            preserveAspectRatio="none"
-            data-part="wave"
-          >
-            <path
-              d="M0 60C80 10 170 10 250 60S420 110 500 60S670 10 750 60S920 110 1000 60V200H0Z"
-              fill="#000"
-            />
-          </svg>
         </div>
 
         <div className={styles.wait}>

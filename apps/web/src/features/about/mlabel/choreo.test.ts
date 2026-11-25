@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import { M_POINTS, M_SOLID } from "./assets";
+import * as choreo from "./choreo";
 import {
   CLOSE,
   closeParts,
+  FLAT,
+  FLAT_FADE,
   openScale,
   PLATE_START,
   quadMatrix,
@@ -47,6 +50,15 @@ describe("the clock", () => {
     expect(SHORT_START).toBe(PLATE_START[4]);
     expect(SHORT_END).toBeGreaterThan(SHORT_START);
     expect(SCENE_END).toBeGreaterThan(SHORT_END);
+  });
+
+  it("ends when the M has turned flat: nothing passes over the logo once it stands", () => {
+    // The clock outlasts the flat M's fade, so the fade plays out and is never cut short.
+    expect(SCENE_END).toBe(FLAT.end + FLAT_FADE);
+    expect(FLAT.start).toBeGreaterThan(SHORT_END);
+    // The wave along the foot of the letters and the light across them are gone (25 Nov 2026).
+    expect(Object.keys(choreo)).not.toContain("WAVE");
+    expect(Object.keys(choreo)).not.toContain("SHEEN");
   });
 });
 

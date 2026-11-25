@@ -28,11 +28,17 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import { loadMedia } from "@/lib/media-store";
 
+import type { BunnyPose } from "../choreo/bunny";
+import type { DollFrame } from "../choreo/doll";
 import type { FaceFrame } from "../choreo/face";
 import type { FaceName } from "../choreo/path";
 import type { RigPose } from "../choreo/rig";
+import type { CompanionPose } from "../companions/pose";
 import { DRONE_MODEL } from "../media";
 
+import { buildBunny, loadBunnyFile, type BunnyModel } from "./bunny-model";
+import { buildCompanions, loadCompanionFile, type Companions } from "./companion-model";
+import { buildDoll, loadDollFile, type DollModel } from "./doll-model";
 import { BODY_METRES } from "./model";
 
 /**
@@ -43,6 +49,13 @@ import { BODY_METRES } from "./model";
  * The drone never leaves the origin. One narrow lens looks at it, and the picture is slid over
  * the screen with the camera's view offset, so the drone is not sheared at the edge of the
  * screen, and its size is the group's scale.
+ *
+ * The drone's friends are drawn on this same canvas, by this same renderer (the page keeps its
+ * WebGL contexts few): the Obsidia doll in the drone's own scene, on its helmet, so one depth
+ * buffer sorts the two; Mr. Bunny and Guinevere's two drones in a flat pass of their own, one unit a CSS pixel,
+ * before the drone (behind it) or after it (in front), each as the director says. Their models are
+ * not part of the drone's file: they are asked for when the page nears them (`want`), loaded and
+ * made ready here, and drawn once they are (`has`). A friend that is not ready is not drawn.
  */
 export interface DroneDraw {
   /** The centre on the screen and the width, in CSS pixels. */
@@ -58,7 +71,29 @@ export interface DroneDraw {
   /** How strong the trail behind the drone is, 0 to 1, and where the drone has just been. */
   trail: number;
   trailPoints: readonly TrailPoint[];
+  /** Guinevere's drones to draw, each in front of the drone or behind it. */
+  companions: readonly CompanionDraw[];
+  /** Mr. Bunny, or null when he is not on the screen. */
+  bunny: { front: boolean; pose: BunnyPose } | null;
+  /** The doll on the drone's head, or null when she is not riding. */
+  doll: DollDraw | null;
 }
+
+export interface CompanionDraw {
+  who: 0 | 1;
+  front: boolean;
+  pose: CompanionPose;
+}
+
+export interface DollDraw {
+  frame: DollFrame;
+  /** Her own clock, and the roll she holds against (radians). */
+  time: number;
+  counter: number;
+}
+
+/** The friends whose models the scene loads when asked. */
+export type FriendModel = "bunny" | "companion" | "doll";
 
 /** A place the drone was at, on the screen, and how old it is (0 now, 1 as old as a trail gets). */
 export interface TrailPoint {
@@ -70,6 +105,10 @@ export interface TrailPoint {
 export interface DroneScene {
   draw: (frame: DroneDraw) => void;
   resize: (width: number, height: number) => void;
+  /** Start loading a friend's model (once; a failed load is tried again later). */
+  want: (model: FriendModel) => void;
+  /** The friend's model is loaded and its programs are made: it can be drawn. */
+  has: (model: FriendModel) => boolean;
   dispose: () => void;
 }
 
@@ -102,6 +141,22 @@ const CELL: Record<FaceName, readonly [number, number]> = {
 
 /** The most points a trail is drawn from. */
 const TRAIL_POINTS = 24;
+
+/** The flat pass of the friends: its camera stands this far in front, in pixels. */
+const FLAT_DEPTH = 4000;
+/** A friend's model that failed to load is asked for again after this long, in milliseconds. */
+const RETRY_MS = 8000;
+
+/** The next frame, or a short wait where there are none (a hidden tab). */
+function nextFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    const id = window.setTimeout(resolve, 60);
+    requestAnimationFrame(() => {
+      window.clearTimeout(id);
+      resolve();
+    });
+  });
+}
 
 const X = new Vector3(1, 0, 0);
 const Y = new Vector3(0, 1, 0);
@@ -395,10 +450,67 @@ function assemble(
   flat.add(trail.mesh);
   disposables.push(trail.mesh.geometry, trail.mesh.material);
 
+  // The friends' flat pass: one unit a CSS pixel, y up from the foot of the canvas.
+  const friendsScene = new Scene();
+  const friendsCamera = new OrthographicCamera(0, 1, 1, 0, 1, FLAT_DEPTH * 2);
+  friendsCamera.position.set(0, 0, FLAT_DEPTH);
+  let companions: Companions | null = null;
+  let bunny: BunnyModel | null = null;
+  let doll: DollModel | null = null;
+  const ready = new Set<FriendModel>();
+  const asked = new Map<FriendModel, number>();
+
   let width = 1;
   let height = 1;
   let lost = false;
   let disposed = false;
+
+  const want = (model: FriendModel) => {
+    if (disposed || ready.has(model)) return;
+    const at = asked.get(model);
+    if (at !== undefined && (at < 0 || performance.now() - at < RETRY_MS)) return;
+    // Negative while it loads: asked once, and not again unless it fails.
+    asked.set(model, -1);
+    void (async () => {
+      try {
+        if (model === "bunny") {
+          const file = await loadBunnyFile();
+          if (disposed) return;
+          const made = buildBunny(file, friendsScene);
+          disposables.push(made);
+          await nextFrame();
+          if (disposed) return;
+          made.warm(renderer, friendsScene, friendsCamera);
+          bunny = made;
+        } else if (model === "companion") {
+          const file = await loadCompanionFile();
+          if (disposed) return;
+          const made = buildCompanions(file, friendsScene);
+          disposables.push(made);
+          // The programs and the picture go to the card a frame later, not in the frame of the build.
+          await nextFrame();
+          if (disposed) return;
+          made.warm(renderer, friendsCamera);
+          companions = made;
+        } else {
+          const file = await loadDollFile();
+          if (disposed) return;
+          const made = buildDoll(file);
+          disposables.push(made);
+          made.seat.visible = false;
+          body.add(made.seat);
+          await nextFrame();
+          if (disposed) return;
+          made.warm(renderer, scene, camera);
+          doll = made;
+        }
+        ready.add(model);
+      } catch (error) {
+        console.warn("[about] a friend of the drone could not be made ready", model, error);
+        asked.set(model, performance.now());
+      }
+    })();
+  };
 
   const onLost = (event: Event) => {
     // Without this the browser never gives the context back.
@@ -440,6 +552,35 @@ function assemble(
     flatCamera.right = width;
     flatCamera.bottom = height;
     flatCamera.updateProjectionMatrix();
+    friendsCamera.right = width;
+    friendsCamera.top = height;
+    friendsCamera.updateProjectionMatrix();
+    friendsCamera.updateMatrixWorld(true);
+  };
+
+  /** Draw the friends of one pass (behind the drone, or in front of it). */
+  const drawFriends = (f: DroneDraw, front: boolean): boolean => {
+    let any = false;
+    const set = companions;
+    if (set) {
+      for (const actor of set.actors) actor.visible = false;
+      for (const c of f.companions) {
+        if (c.front !== front) continue;
+        set.place(c.who, c.pose, height);
+        set.actors[c.who].visible = true;
+        any = true;
+      }
+    }
+    if (bunny) {
+      const show = f.bunny !== null && f.bunny.front === front;
+      bunny.actor.visible = show;
+      if (show && f.bunny) {
+        bunny.place(f.bunny.pose, height);
+        any = true;
+      }
+    }
+    if (any) renderer.render(friendsScene, friendsCamera);
+    return any;
   };
 
   const draw = (f: DroneDraw) => {
@@ -485,9 +626,26 @@ function assemble(
 
     buildTrail(trail, f.trailPoints, f.trail * 0.6, f.size * 0.3);
 
+    // The doll on its head, when she rides.
+    const rider = doll;
+    if (rider) {
+      rider.seat.visible = f.doll !== null;
+      if (f.doll) {
+        rider.pose(f.doll.frame, f.doll.time, f.doll.counter);
+        // Her line in CSS pixels, and a CSS pixel in the scene's units at the drone.
+        rider.line(Math.min(1.9, Math.max(1, f.size * 0.011)), width, height, VIEW_HEIGHT / height);
+      }
+    }
+
     renderer.clear();
     if (f.trail > 0.01) renderer.render(flat, flatCamera);
+    // Friends behind the drone, then the drone (and the doll) over them, then friends in front.
+    if (drawFriends(f, false)) renderer.clearDepth();
     renderer.render(scene, camera);
+    if (f.companions.some((c) => c.front) || f.bunny?.front) {
+      renderer.clearDepth();
+      drawFriends(f, true);
+    }
   };
 
   resize(canvas.clientWidth, canvas.clientHeight);
@@ -499,6 +657,8 @@ function assemble(
   return {
     draw,
     resize,
+    want,
+    has: (model) => ready.has(model),
     dispose: () => {
       if (disposed) return;
       disposed = true;

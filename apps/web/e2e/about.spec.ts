@@ -87,16 +87,25 @@ test("the opening plays once and ends with everything shown", async ({ page }) =
   ).toBeVisible();
 });
 
-test("a scroll during the opening ends it at once, with the title whole", async ({
+test("a scroll during the opening does not move the page, and the opening plays to its end", async ({
   page,
 }, info) => {
+  // The owner, 25 Nov 2026: the scroll is held until the first animation has finished.
   test.skip(info.project.name !== "desktop", "The wheel is a desktop input");
   await open(page, { intro: true });
   await expect(root(page)).not.toHaveAttribute("data-about-intro", "wait", { timeout: 20_000 });
   await page.mouse.move(700, 400);
-  await page.mouse.wheel(0, 120);
-  await expect(root(page)).toHaveAttribute("data-about-intro", "done", { timeout: 3000 });
+  for (let i = 0; i < 6; i += 1) {
+    await page.mouse.wheel(0, 240);
+    await page.waitForTimeout(80);
+  }
+  await expect(root(page)).not.toHaveAttribute("data-about-intro", "done");
+  expect(await page.evaluate(() => window.scrollY)).toBeLessThan(2);
+  await expect(root(page)).toHaveAttribute("data-about-intro", "done", { timeout: 8000 });
   await expect(page.locator("#about-title")).toHaveAttribute("data-finished", "");
+  // Then the page is the visitor's again.
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(50);
 });
 
 test("the film grows into its window, and the play control opens it in the player", async ({
@@ -329,7 +338,7 @@ test("the comics, the drama and the art of the phases lead where they say", asyn
   expect(stray).toEqual([]);
 });
 
-test("the two small scenes are there: Tetra in the second phase, the two drones in the fourth", async ({
+test("Tetra's scene is in the second phase, and the drones' meeting places are in the page", async ({
   page,
 }) => {
   await open(page);
@@ -338,7 +347,11 @@ test("the two small scenes are there: Tetra in the second phase, the two drones 
   await expect(
     part(page, 2, "tetra").getByText("Tetra is a gift from Ruby to Angela."),
   ).toBeAttached();
-  await expect(part(page, 4, "companions")).toHaveCount(1);
+  // Guinevere's two drones have no corner of their own any more (25 Nov 2026): they fly with the drone,
+  // from the meeting place above the fourth phase. The doll is picked up and dropped behind two pictures.
+  await expect(page.locator('[data-drone-anchor="meet-4"]')).toHaveCount(1);
+  await expect(page.locator('[data-drone-hide="pickup"]')).toHaveCount(1);
+  await expect(page.locator('[data-drone-hide="drop"]')).toHaveCount(1);
 });
 
 test("the resources lead to their three rooms, with the collection's own count of voice lines", async ({
@@ -365,7 +378,48 @@ test("the drone has a place to stop, and the page ends in TheMLabel with no way 
   // No footer to a next page, and no shortcut to the takedown page anywhere on this page.
   await expect(page.getByRole("button", { name: /^Continue to/ })).toHaveCount(0);
   await expect(page.locator('[data-about] a[href*="/takedown"]')).toHaveCount(0);
-  await expect(page.locator("[data-about]").getByText(/Not affiliated with/i)).toBeAttached();
+  // The fan notice was taken off the foot of TheMLabel by the owner (25 Nov 2026).
+  await expect(page.locator("[data-about]").getByText(/Not affiliated with/i)).toHaveCount(0);
+});
+
+test("TheMLabel tells what it is in type, drawn by the scroll, with the cursor's light out", async ({
+  page,
+}) => {
+  await open(page);
+  const label = page.locator('[data-about-section="label"]');
+  const parts = ["what", "system", "collect", "rewards", "hall", "story", "end"];
+  for (const id of parts) await expect(label.locator(`[data-label-part="${id}"]`)).toHaveCount(1);
+  // Between the definition and the end there are no pictures: no splash art, no drawn perks.
+  for (const id of parts.slice(1, -1)) {
+    await expect(label.locator(`[data-label-part="${id}"]`).locator("img, video")).toHaveCount(0);
+  }
+  // The logo's scene has no wave and no light passing over it any more.
+  await expect(label.locator('[data-part="wave"], [data-part="beam"]')).toHaveCount(0);
+  await expect(label).toHaveAttribute("data-cursor-glow", "off");
+
+  // Scrolled to, a row of the rewards stands whole; scrolled past and back, it stands whole again.
+  const row = label.locator('[data-scene="reward"]').nth(1);
+  const name = row.locator('[data-k="name"]');
+  const whole = () =>
+    name.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      const mask = el.parentElement?.getBoundingClientRect();
+      if (!mask) return false;
+      return Math.abs(box.left - mask.left) < 2 && Number(getComputedStyle(el).opacity) > 0.99;
+    });
+  const centre = async () => {
+    await row.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      window.scrollTo(0, window.scrollY + box.top + box.height / 2 - window.innerHeight / 2);
+    });
+  };
+  await centre();
+  await expect.poll(whole, { timeout: 5_000 }).toBe(true);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(whole, { timeout: 5_000 }).toBe(false);
+  await centre();
+  await expect.poll(whole, { timeout: 5_000 }).toBe(true);
+  await expect(label.getByText("These rewards include")).toBeVisible();
 });
 
 test("axe finds no serious or critical violation", async ({ page }) => {

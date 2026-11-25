@@ -184,45 +184,6 @@
   max-width: none;
 }
 
-/* The light across the finished logo: a bright band that only translates, seen through the
-   logo's own shape (a mask that never changes). */
-.sheen {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-}
-
-.beam {
-  position: absolute;
-  top: -20%;
-  left: 0;
-  width: 26%;
-  height: 140%;
-  background: linear-gradient(
-    90deg,
-    rgb(255 244 224 / 0) 0%,
-    rgb(255 244 224 / 0.95) 50%,
-    rgb(255 244 224 / 0) 100%
-  );
-  transform: translate3d(-140%, 0, 0);
-}
-
-/* The dark wave along the foot of the letters: black on black, so only its edge is seen where it
-   crosses them. */
-.wave {
-  position: absolute;
-  top: 100%;
-  left: -10%;
-  width: 240%;
-  height: 130%;
-  transform: translate3d(-52%, 70%, 0);
-  opacity: 0;
-}
-
 /* The footage is still arriving: a hairline under the window fills with the bytes received. */
 .wait {
   position: absolute;
@@ -254,12 +215,20 @@
 
 /* The content after the scene ------------------------------------------------------------------ */
 
+/* One opaque ground for everything below the stage. It never moves: only what is on it does, so
+   the light page and the drone's ring behind it never show. It starts 2px under the foot of the
+   stage, as a guard: the sticky stage and the content are the one place where two black boxes of
+   the close meet, and the section sits on a fractional pixel. Overlapping (black on black: the
+   stage is all black there), they have no shared edge that could open onto the page. */
 .content {
   position: relative;
+  margin-top: -2px;
   pointer-events: auto;
   background: #000;
   --bg: #000;
   --accent: var(--orange);
+  --dim: rgb(243 241 238 / 0.62);
+  --hair: rgb(255 255 255 / 0.22);
 }
 
 .screen {
@@ -282,25 +251,12 @@
   gap: 0.5rem 1.5rem;
   align-items: center;
   margin: 0 0 clamp(1.5rem, 4vh, 3rem);
-  color: rgb(243 241 238 / 0.62);
+  color: var(--dim);
 }
 
 .eyebrow b {
   font-weight: 500;
   color: var(--orange);
-}
-
-.rule {
-  display: block;
-  height: 1px;
-  background: rgb(255 255 255 / 0.22);
-  transform-origin: 0 50%;
-  transition: transform 1200ms var(--house);
-}
-
-:global(:root.js) [data-in="false"] .rule,
-:global(:root.js) .rule[data-in="false"] {
-  transform: scaleX(0);
 }
 
 /* 1. What it is: the official line, word by word, each word a plate that swings up. */
@@ -345,467 +301,468 @@
   transform: translate3d(0, 1.5rem, 0);
 }
 
-/* The three parts share one heading block. */
-.head {
-  display: grid;
-  gap: clamp(0.75rem, 2vh, 1.5rem);
-  margin-bottom: clamp(2.5rem, 7vh, 5rem);
-}
+/* The parts drawn by the scroll ------------------------------------------------------------------
+   Their moves are Web Animations set from the scroll (`use-scrub.ts`, `scenes.ts`): nothing here
+   animates by itself. A mask is a box that stands still and clips; what is in it moves. */
 
-.title {
-  margin: 0;
-  font-size: clamp(2.4rem, 7vw, 7rem);
+.mask {
+  display: block;
   overflow: hidden;
-}
-
-.title span {
-  display: inline-block;
-  transition: transform 1000ms var(--house);
-}
-
-:global(:root.js) [data-in="false"] .title span {
-  transform: translate3d(0, 105%, 0);
+  /* Room for the slant of the display face and for the descenders, which a tight box would cut. */
+  padding: 0.08em 0.16em 0.1em 0;
+  margin: -0.08em -0.16em -0.1em 0;
 }
 
 .line {
-  max-width: 44ch;
+  display: block;
+}
+
+/* A part that is held on the screen while the scroll tells it: a tall box and a screen in it. */
+.held {
+  position: relative;
+  height: calc(var(--len) * 100vh);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-items: center;
+  height: 100vh;
+  height: 100svh;
+  padding: clamp(5.5rem, 13vh, 8.5rem) var(--gutter) clamp(2.5rem, 7vh, 4.5rem);
+  overflow: hidden;
+  overflow: clip;
+}
+
+/* A part that scrolls by. */
+.flow {
+  position: relative;
+  padding: clamp(5rem, 16vh, 11rem) var(--gutter);
+}
+
+/* The head of a part: number, name, and a hairline drawn across to the far edge. */
+.kicker {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  margin: 0 0 clamp(1.5rem, 4.5vh, 3.25rem);
+  color: var(--dim);
+}
+
+.kicker b {
+  font-weight: 500;
+  color: var(--orange);
+}
+
+.kickRule,
+.rule {
+  display: block;
+  height: 1px;
+  overflow: hidden;
+}
+
+.kickRule {
+  flex: 1;
+}
+
+.kickRule i,
+.rule i {
+  display: block;
+  height: 1px;
+  background: var(--hair);
+}
+
+/* The held parts stand on one screen and cannot scroll, so their largest type is bounded by the
+   height of the screen as well as its width: a wide, short window never cuts their foot. */
+.big {
   margin: 0;
-  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+  font-size: clamp(2.2rem, min(9.4vw, 16vh), 10.5rem);
+}
+
+.say {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.4vw, 3.4rem);
+  font-weight: 400;
   font-style: italic;
-  color: rgb(243 241 238 / 0.78);
-  transition:
-    transform 900ms var(--house) 200ms,
-    opacity 600ms linear 200ms;
+  color: rgb(243 241 238 / 0.84);
 }
 
-:global(:root.js) [data-in="false"] .line {
-  opacity: 0;
-  transform: translate3d(0, 1.25rem, 0);
+/* 01. The system. */
+.built {
+  max-width: 30ch;
+  margin: clamp(0.9rem, 2.4vh, 1.75rem) 0 0;
+  font-size: clamp(1.45rem, 2.7vw, 2.8rem);
+  font-style: italic;
+  color: rgb(243 241 238 / 0.84);
 }
 
-/* 2. One series, one hall: the ten Aspirants as tall plates that stand up from the floor. */
-.hall {
+.carries {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+  gap: clamp(1rem, 2.5vh, 1.75rem) clamp(1.5rem, 4vw, 4rem);
+  margin-top: clamp(2.25rem, 7vh, 5rem);
+}
+
+.carries > .rule {
+  grid-column: 1 / -1;
+}
+
+.carry {
+  margin: 0;
+  font-size: clamp(1.1rem, 1.55vw, 1.55rem);
+  font-style: italic;
+  color: var(--dim);
+}
+
+.own {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.own li {
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+}
+
+.ownNo {
+  color: var(--orange);
+}
+
+.ownName {
+  font-size: clamp(1.6rem, 2.7vw, 3rem);
+}
+
+/* 02. Collect: the words on one side, the count on the other. */
+.collect {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-areas:
+    "kick kick"
+    "text meter";
+  column-gap: clamp(2rem, 6vw, 7rem);
+  align-items: end;
+}
+
+.collect > .kicker {
+  grid-area: kick;
+}
+
+.collectText {
+  grid-area: text;
+}
+
+.unlock {
+  max-width: 24ch;
+  margin: clamp(1.25rem, 3.5vh, 2.25rem) 0 0;
+  font-size: clamp(1.35rem, 2.3vw, 2.4rem);
+  font-style: italic;
+  color: rgb(243 241 238 / 0.84);
+}
+
+/* The wipe: the box moves in from the left and the words in it the other way, so the words stand
+   still and only the edge travels. */
+.wipe {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-right: 0.1em;
+}
+
+.wipeIn {
+  display: inline-block;
+}
+
+.meter {
+  grid-area: meter;
+  display: grid;
+  gap: clamp(0.8rem, 2vh, 1.25rem);
+}
+
+.meterLabel {
+  margin: 0;
+  color: var(--dim);
+}
+
+.count {
+  display: flex;
+  align-items: flex-end;
+  font-size: clamp(4.5rem, min(16vw, 26vh), 17rem);
+  font-variant-numeric: tabular-nums;
+}
+
+/* One wheel of the odometer: a window one digit high over a strip of digits. */
+.odo {
+  display: block;
+  height: 0.92em;
+  padding-right: 0.06em;
+  overflow: hidden;
+}
+
+.strip {
+  display: block;
+}
+
+.strip span {
+  display: block;
+  height: 0.92em;
+  line-height: 0.92em;
+}
+
+/* The tens stand against the ones, so a narrow 1 does not leave a gap in the middle of 10. */
+.strip[data-k="tens"] span {
+  text-align: right;
+}
+
+.of {
+  margin: 0 0 0.12em 0.18em;
+  font-size: 0.3em;
+  color: var(--dim);
+}
+
+/* Ten skins, ten ticks; the tenth is the logo's orange. */
+.ticks {
   display: grid;
   grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: clamp(0.25rem, 0.8vw, 0.9rem);
+  gap: clamp(0.25rem, 0.5vw, 0.45rem);
   margin: 0;
   padding: 0;
   list-style: none;
-  perspective: 1400px;
-  perspective-origin: 50% 100%;
 }
 
-.tall {
-  position: relative;
-  aspect-ratio: 9 / 22;
-  transform-origin: 50% 100%;
-  transition:
-    transform 1100ms var(--house),
-    opacity 400ms linear;
-  transition-delay: calc(var(--i) * 85ms);
-}
-
-:global(:root.js) .hall[data-in="false"] .tall {
-  opacity: 0;
-  transform: rotateX(-88deg);
-}
-
-.tallIn {
-  position: absolute;
-  inset: 0;
+.ticks li {
+  height: 3px;
   overflow: hidden;
-  background: #111;
-  transition: transform 500ms var(--ease-out);
+  background: rgb(255 255 255 / 0.14);
 }
 
-.tall:hover .tallIn {
-  transform: translate3d(0, -4%, 0) scale(1.04);
-}
-
-.tall:active .tallIn {
-  transform: translate3d(0, -1%, 0) scale(0.99);
-}
-
-.tallIn img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.12);
-  transition: transform 900ms var(--ease-out);
-}
-
-.tall:hover img {
-  transform: scale(1.2);
-}
-
-/* A plate's own light, crossing it once as it stands, like the plates of the scene. */
-.tallIn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgb(255 255 255 / 0),
-    rgb(255 255 255 / 0.55),
-    rgb(255 255 255 / 0)
-  );
-  transform: translate3d(260%, 0, 0) skewX(-20deg);
-  transition: transform 1100ms var(--ease-out);
-  transition-delay: calc(var(--i) * 85ms + 350ms);
-}
-
-:global(:root.js) .hall[data-in="false"] .tallIn::after {
-  transform: translate3d(-160%, 0, 0) skewX(-20deg);
-}
-
-.tallName {
-  position: absolute;
-  top: calc(100% + 0.6rem);
-  left: 0;
-  white-space: nowrap;
-  color: rgb(243 241 238 / 0.6);
-  opacity: 0;
-  transform: translate3d(0, -0.4rem, 0);
-  transition:
-    opacity 250ms linear,
-    transform 350ms var(--ease-out);
-}
-
-.tall:hover .tallName {
-  opacity: 1;
-  transform: none;
-}
-
-.floor {
-  margin-top: 0;
-}
-
-/* 3. Four perks: four objects, each acting out what it is. */
-.perks {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid rgb(255 255 255 / 0.22);
-}
-
-.perk {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 1.25rem;
-  min-height: clamp(18rem, 46vh, 28rem);
-  padding: clamp(1rem, 2vw, 1.75rem);
-  border-right: 1px solid rgb(255 255 255 / 0.22);
-  transition:
-    transform 900ms var(--house),
-    opacity 600ms linear;
-  transition-delay: calc(var(--i) * 110ms);
-}
-
-.perk:last-child {
-  border-right: 0;
-}
-
-:global(:root.js) .perks[data-in="false"] .perk {
-  opacity: 0;
-  transform: translate3d(0, 2.5rem, 0);
-}
-
-.perkNo {
-  color: rgb(243 241 238 / 0.5);
-}
-
-.perkName {
-  margin: 0;
-  font-size: clamp(1.5rem, 2.4vw, 2.4rem);
-}
-
-.act {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 8rem;
-}
-
-/* A golden skin name: the white name gives way to a gold one, and a light runs over it. */
-.gold {
-  position: relative;
-  font-size: clamp(1.6rem, 2.6vw, 2.6rem);
-  white-space: nowrap;
-}
-
-.gold span {
+.ticks i {
   display: block;
-  /* Room for the slant of the last letter, which the gold's clip would cut. */
-  padding: 0 0.16em;
-  transition: opacity 700ms linear 900ms;
-}
-
-.gold span + span {
-  position: absolute;
-  inset: 0;
-  color: transparent;
-  background: linear-gradient(100deg, #b9862c 0%, #ffe9a3 38%, #f2c45a 55%, #a9741f 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
-:global(:root.js) .perks[data-in="false"] .gold span + span {
-  opacity: 0;
-}
-
-.perks[data-in="true"] .gold span:first-child {
-  opacity: 0;
-}
-
-.perk:hover .gold {
-  animation: nudge 600ms var(--ease-out);
-}
-
-/* An animated skin tag: a small tag that never quite sits still. */
-.tag {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  height: 2.5rem;
-  padding: 0 1.1rem;
-  overflow: hidden;
-  color: #000;
-  background: var(--orange);
-  border-radius: 999px;
-  animation: bob 2600ms ease-in-out infinite;
-}
-
-.tag::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  background: #000;
-  border-radius: 50%;
-  animation: pulse 1300ms ease-in-out infinite;
-}
-
-.tag::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgb(255 255 255 / 0),
-    rgb(255 255 255 / 0.7),
-    rgb(255 255 255 / 0)
-  );
-  animation: shine 2600ms var(--ease-out) infinite;
-}
-
-.perk:hover .tag {
-  animation-duration: 900ms;
-}
-
-/* A collection crest: four pieces of the M's own geometry that come together. */
-.crest {
-  position: relative;
-  width: clamp(5rem, 8vw, 7.5rem);
-  aspect-ratio: 1;
-  transition: transform 900ms var(--ease-out);
-}
-
-.perk:hover .crest {
-  transform: rotate(90deg);
-}
-
-.crest i {
-  position: absolute;
-  inset: 0;
-  border: 1.5px solid #f3f1ee;
-  transition:
-    transform 1200ms var(--house) 500ms,
-    opacity 500ms linear 500ms;
-}
-
-.crest i:nth-child(1) {
-  transform: rotate(45deg) scale(0.72);
-}
-
-.crest i:nth-child(2) {
-  transform: scale(0.72);
-}
-
-.crest i:nth-child(3) {
-  border-color: var(--orange);
-  border-radius: 50%;
-  transform: scale(0.5);
-}
-
-.crest i:nth-child(4) {
-  inset: 42%;
-  background: var(--orange);
-  border: 0;
-  transform: rotate(45deg);
-}
-
-:global(:root.js) .perks[data-in="false"] .crest i {
-  opacity: 0;
-}
-
-:global(:root.js) .perks[data-in="false"] .crest i:nth-child(1) {
-  transform: translate3d(-120%, 0, 0) rotate(-135deg) scale(0.72);
-}
-
-:global(:root.js) .perks[data-in="false"] .crest i:nth-child(2) {
-  transform: translate3d(120%, 0, 0) rotate(180deg) scale(0.72);
-}
-
-:global(:root.js) .perks[data-in="false"] .crest i:nth-child(3) {
-  transform: scale(1.8);
-}
-
-:global(:root.js) .perks[data-in="false"] .crest i:nth-child(4) {
-  transform: rotate(45deg) scale(0);
-}
-
-/* A showcase display: a picture on its stand, and the light that comes on over it. */
-.show {
-  position: relative;
-  width: clamp(5.5rem, 9vw, 8.5rem);
-  aspect-ratio: 3 / 4;
-}
-
-.show img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition:
-    opacity 900ms linear 900ms,
-    transform 900ms var(--ease-out);
-}
-
-.perk:hover .show img {
-  transform: scale(1.06);
-}
-
-.show::before {
-  content: "";
-  position: absolute;
-  top: -55%;
-  left: -45%;
-  width: 190%;
-  height: 160%;
-  background: linear-gradient(180deg, rgb(255 236 200 / 0.5), rgb(255 236 200 / 0) 78%);
-  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
-  transition: opacity 500ms linear 700ms;
-}
-
-.show::after {
-  content: "";
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: -18%;
-  width: 136%;
-  height: 1.5px;
   background: #f3f1ee;
-  transform-origin: 50% 50%;
-  transition: transform 800ms var(--house) 400ms;
 }
 
-:global(:root.js) .perks[data-in="false"] .show img {
-  opacity: 0.12;
+.ticks li:last-child i {
+  background: var(--orange);
 }
 
-:global(:root.js) .perks[data-in="false"] .show::before {
-  opacity: 0;
+.done {
+  margin: 0;
+  color: var(--orange);
 }
 
-:global(:root.js) .perks[data-in="false"] .show::after {
-  transform: scaleX(0);
+/* 03. The rewards: a list of four, each row drawn as it comes up. */
+.rewardsHead {
+  margin-bottom: clamp(2rem, 7vh, 4.5rem);
 }
 
-/* 4. Skin story: three things in one place, as three rows that slide in from the side. */
-.story {
+.rewards {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.row {
+.reward {
   position: relative;
   display: grid;
-  grid-template-columns: clamp(3rem, 8vw, 7rem) 1fr auto;
+  grid-template-columns: clamp(3rem, 7vw, 7rem) minmax(0, 1.6fr) minmax(0, 1fr);
+  column-gap: clamp(1rem, 2.5vw, 2.5rem);
   align-items: baseline;
-  gap: 1rem;
-  padding: clamp(1.1rem, 3vh, 2rem) 0;
-  overflow: hidden;
+  padding: clamp(1.5rem, 4.5vh, 2.75rem) 0;
 }
 
-.row::after {
-  content: "";
+.reward > .rule {
   position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.rewardNo {
+  color: var(--orange);
+}
+
+.rewardName {
+  margin: 0;
+  font-size: clamp(2.3rem, 5.6vw, 6.25rem);
+}
+
+.rewardLine {
+  max-width: 26ch;
+  margin: 0;
+  justify-self: end;
+  font-size: clamp(1.05rem, 1.45vw, 1.45rem);
+  font-style: italic;
+  text-align: right;
+  color: var(--dim);
+}
+
+/* 04. The hall of honor: a frame on the screen, the title in the middle of it. */
+.frame {
+  position: absolute;
+  inset: clamp(6.5rem, 17vh, 10rem) clamp(1rem, 7vw, 8rem) clamp(3rem, 9vh, 6rem);
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: clamp(1.5rem, 3vw, 2.75rem);
+  aspect-ratio: 1;
+  border: 0 solid rgb(243 241 238 / 0.62);
+}
+
+.corner[data-corner="tl"] {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.corner[data-corner="tr"] {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.corner[data-corner="br"] {
   right: 0;
   bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.corner[data-corner="bl"] {
+  bottom: 0;
   left: 0;
-  height: 1px;
-  background: rgb(255 255 255 / 0.22);
-  transform-origin: 0 50%;
-  transition: transform 1100ms var(--house);
-  transition-delay: calc(var(--i) * 140ms);
+  border-bottom-width: 1px;
+  border-left-width: 1px;
 }
 
-.rowNo {
-  color: rgb(243 241 238 / 0.5);
+.hall {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  text-align: center;
 }
 
-.rowName {
-  font-size: clamp(2rem, 6.4vw, 6.5rem);
-  transition:
-    transform 1000ms var(--house),
-    opacity 500ms linear;
-  transition-delay: calc(var(--i) * 140ms);
+.hall .kicker {
+  justify-content: center;
 }
 
-.rowName span {
+.hallTitle {
+  margin: 0;
+  font-size: clamp(2.8rem, min(10.5vw, 18vh), 12rem);
+}
+
+.hallWord {
   display: inline-block;
-  transition: transform 500ms var(--ease-out);
 }
 
-.row:hover .rowName span {
-  transform: translate3d(1.2rem, 0, 0);
+.hallOwn {
+  display: block;
+  margin-top: 0.3em;
+  font-size: 0.36em;
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: none;
+  color: var(--orange);
 }
 
-.rowMark {
+.hallOwn .mask {
+  padding-inline: 0.16em;
+  margin-inline: -0.16em;
+}
+
+.hallSay {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 40ch;
+  margin-top: clamp(1.5rem, 4.5vh, 2.75rem);
+  font-size: clamp(1.1rem, 1.6vw, 1.6rem);
+}
+
+.hallSay p {
+  margin: 0;
+  font-style: italic;
+  color: rgb(243 241 238 / 0.8);
+}
+
+/* 05. The skin story: the heading held at the side, the list passing under a spotlight. */
+.story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  column-gap: clamp(2rem, 6vw, 7rem);
+  align-items: start;
+}
+
+.storyAside {
+  position: sticky;
+  top: clamp(7rem, 24vh, 15rem);
+}
+
+.storyTitle {
+  margin: 0;
+  font-size: clamp(2.6rem, 5.2vw, 6rem);
+}
+
+.storyAside .say {
+  max-width: 24ch;
+  margin-top: clamp(1.25rem, 3.5vh, 2.25rem);
+  font-size: clamp(1.2rem, 1.9vw, 1.9rem);
+}
+
+.spots {
+  display: grid;
+  gap: clamp(3rem, 13vh, 8rem);
+  margin: 0;
+  padding: 34vh 0 22vh;
+  list-style: none;
+}
+
+.spot {
+  display: grid;
+  grid-template-columns: clamp(2.5rem, 4.5vw, 4.5rem) minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.spotNo {
+  color: var(--orange);
+}
+
+.spotBody {
+  position: relative;
+  display: block;
+}
+
+.spotMark {
+  position: absolute;
+  top: 50%;
+  left: 0;
   width: 0.7rem;
   height: 0.7rem;
+  margin-top: -0.35rem;
   background: var(--orange);
-  transform: rotate(45deg) scale(0);
-  transition: transform 400ms var(--ease-spring);
-}
-
-.row:hover .rowMark {
-  transform: rotate(45deg) scale(1);
-}
-
-:global(:root.js) .story[data-in="false"] .row::after {
-  transform: scaleX(0);
-}
-
-:global(:root.js) .story[data-in="false"] .rowName {
   opacity: 0;
-  transform: translate3d(-12%, 0, 0);
 }
 
-/* The end of the page: the logo small, the last line, two ways on, the notice. */
+.spotName {
+  display: block;
+  font-size: clamp(2.3rem, 4.8vw, 5.5rem);
+}
+
+.spotName:global(.serif) {
+  font-size: clamp(2.2rem, 4.4vw, 5rem);
+  font-style: italic;
+  line-height: 1;
+}
+
+/* The end of the page: the logo small, the last line and two ways on. */
 .end {
   display: grid;
   justify-items: center;
@@ -886,97 +843,166 @@
   transform: scale(0.96);
 }
 
-.notice {
-  max-width: 62ch;
-  margin: clamp(2rem, 8vh, 5rem) 0 0;
-  color: rgb(243 241 238 / 0.5);
-  text-transform: none;
-  letter-spacing: 0.04em;
-}
-
-@keyframes bob {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(-2deg);
+/* A short, wide screen (a phone on its side): the held parts close up their gaps. */
+@media (max-height: 32rem) and (min-width: 45.0625rem) {
+  .pin {
+    padding-top: 4.75rem;
+    padding-bottom: 0.75rem;
   }
 
-  50% {
-    transform: translate3d(0, -0.4rem, 0) rotate(2deg);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
+  .big {
+    font-size: clamp(2rem, 13vh, 3.5rem);
   }
 
-  50% {
-    transform: scale(0.5);
-    opacity: 0.5;
-  }
-}
-
-@keyframes shine {
-  0%,
-  45% {
-    transform: translate3d(-120%, 0, 0) skewX(-20deg);
+  .kicker {
+    margin-bottom: 0.75rem;
   }
 
-  100% {
-    transform: translate3d(320%, 0, 0) skewX(-20deg);
-  }
-}
-
-@keyframes nudge {
-  0% {
-    transform: none;
+  .built {
+    margin-top: 0.4rem;
+    font-size: clamp(1.1rem, 5vh, 1.5rem);
   }
 
-  40% {
-    transform: scale(1.06);
+  .carries {
+    gap: 0.6rem 2rem;
+    margin-top: 1rem;
   }
 
-  100% {
-    transform: none;
+  .own li {
+    gap: 0.3rem;
+  }
+
+  .count {
+    font-size: clamp(3.5rem, 24vh, 6rem);
+  }
+
+  .unlock {
+    margin-top: 0.6rem;
+    font-size: clamp(1.1rem, 5vh, 1.5rem);
+  }
+
+  .meter {
+    gap: 0.5rem;
   }
 }
 
-@media (max-width: 58rem) {
-  .hall {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    row-gap: clamp(0.4rem, 1.5vw, 1rem);
+/* A narrow screen: each part is laid out again, not shrunk. --------------------------------------- */
+
+@media (max-width: 45rem) {
+  .pin {
+    padding-top: clamp(5rem, 12vh, 6.5rem);
+    padding-bottom: clamp(1.5rem, 5vh, 2.5rem);
   }
 
-  .tall {
-    aspect-ratio: 9 / 16;
+  .big {
+    font-size: clamp(2.6rem, 12.4vw, 4.5rem);
   }
 
-  .tallName {
-    display: none;
+  .built {
+    font-size: clamp(1.3rem, 5.6vw, 1.7rem);
   }
 
-  .perks {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* The three things a series carries stand one under the other. */
+  .carries {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: clamp(1.75rem, 5vh, 2.5rem);
   }
 
-  .perk {
-    min-height: 15rem;
-    border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  .own {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
   }
 
-  .perk:nth-child(2n) {
-    border-right: 0;
+  .own li {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0;
+    align-items: baseline;
   }
-}
 
-@media (max-width: 30rem) {
-  .perks {
+  .ownName {
+    font-size: clamp(1.7rem, 7.6vw, 2.3rem);
+  }
+
+  /* The count comes first and large, the words under it. */
+  .collect {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "kick"
+      "meter"
+      "text";
+    row-gap: clamp(1.75rem, 5vh, 2.75rem);
+    align-items: start;
+  }
+
+  .count {
+    font-size: clamp(6rem, 34vw, 9rem);
+  }
+
+  .unlock {
+    font-size: clamp(1.25rem, 5.4vw, 1.6rem);
+  }
+
+  /* A reward is its number and name on one line, its line under the name. */
+  .reward {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    row-gap: 0.6rem;
+    padding: clamp(1.25rem, 3.5vh, 1.75rem) 0;
+  }
+
+  .rewardName {
+    font-size: clamp(2rem, 9.6vw, 3rem);
+  }
+
+  .rewardLine {
+    grid-column: 2;
+    justify-self: start;
+    font-size: clamp(1.05rem, 4.4vw, 1.25rem);
+    text-align: left;
+  }
+
+  .say {
+    font-size: clamp(1.6rem, 7.4vw, 2.2rem);
+  }
+
+  .frame {
+    inset: clamp(5rem, 13vh, 6.5rem) 0.75rem clamp(1.5rem, 5vh, 2.5rem);
+  }
+
+  .hallTitle {
+    font-size: clamp(3rem, 16vw, 5rem);
+  }
+
+  .hallSay {
+    max-width: 26ch;
+    font-size: clamp(1.05rem, 4.6vw, 1.3rem);
+  }
+
+  /* The heading scrolls with the page and the list follows it. */
+  .story {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .perk {
-    border-right: 0;
+  .storyAside {
+    position: static;
+  }
+
+  .storyTitle {
+    font-size: clamp(2.6rem, 12.4vw, 4.5rem);
+  }
+
+  .spots {
+    padding: 14vh 0 24vh;
+  }
+
+  .spot {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .spotName {
+    font-size: clamp(2rem, 9.4vw, 3rem);
+  }
+
+  .spotName:global(.serif) {
+    font-size: clamp(2rem, 9vw, 2.8rem);
   }
 }
