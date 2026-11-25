@@ -121,5 +121,6 @@ export function boundsOf(root: Object3D): Bounds {
     radius: Math.max(0.02, size.length() / 2),
     minY: box.min.y,
     maxY: box.max.y,
+    span: Math.max(size.x, size.z),
   };
 }

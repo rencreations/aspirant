@@ -38,6 +38,8 @@ export interface Bounds {
   /** Its lowest and highest point. */
   minY: number;
   maxY: number;
+  /** Its widest horizontal extent (the larger of its width and depth), when it was measured. */
+  span?: number;
 }
 
 const DEG = Math.PI / 180;
@@ -161,9 +163,10 @@ export function homeOrbit(
     // A figure: frame its height and its width, not its diagonal, so it fills the screen.
     const tv = Math.tan((vfovDeg * DEG) / 2);
     const fitH = (height * 0.5) / (tv * fill);
-    // A standing figure is narrower than its box's diagonal; a free view (a long dragon) is not.
-    const across = mode === "character" ? 0.75 : 1;
-    const fitW = (Math.max(0.05, b.radius) * across) / (tv * Math.min(1, aspect) * fill);
+    // A standing figure is narrower than its box's diagonal. A free view is framed by how wide it
+    // really is (a long dragon seen from its side), when that was measured.
+    const half = mode === "free" && b.span ? b.span * 0.5 : Math.max(0.05, b.radius) * 0.75;
+    const fitW = half / (tv * Math.min(1, aspect) * fill);
     const radius = clamp(Math.max(fitH, fitW), l.minRadius, l.maxRadius);
     const ty = mode === "character" ? b.minY + height * 0.52 : b.cy;
     return clampOrbit(

@@ -91,7 +91,8 @@ export function breathClip(
 export function breatheBehaviour(gltf: GLTF, ctx: BehaviourContext): Behaviour {
   lightMaterials(gltf.scene, ctx.anisotropy);
   const bounds = boundsOf(gltf.scene);
-  const clip = breathClip(gltf.scene);
+  // Twice the table: small enough to stay in her pose, big enough to read as breathing.
+  const clip = breathClip(gltf.scene, BREATH, 2);
   const player = clip ? new ClipPlayer(gltf.scene, [clip]) : null;
   player?.play("idle", { fade: 0 });
   return {

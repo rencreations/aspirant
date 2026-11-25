@@ -115,6 +115,8 @@ export class ModelStage {
   private wasLed = false;
   private roll = 0;
   private readonly ledQ = new Quaternion();
+  /** Whether a show without a clip list plays (a new view always starts playing). */
+  private showPlaying = true;
   private readonly anisotropy: number;
   private readonly resize: ResizeObserver;
 
@@ -225,6 +227,7 @@ export class ModelStage {
     this.pivot.add(root);
     const bounds = behaviour.bounds();
     this.built = { view, root, behaviour, bounds };
+    this.showPlaying = true;
     this.mode = view.mode;
     // A character stands on the origin (the files put her feet there): she turns about her own axis,
     // not the middle of a box that her weapon (Ruby's scythe) pulls aside.
@@ -294,14 +297,17 @@ export class ModelStage {
   }
 
   setPlaying(playing: boolean): void {
+    this.showPlaying = playing;
     this.built?.behaviour.setPlaying?.(playing);
     this.emitClip();
     this.dirty = true;
   }
 
   togglePlay(): void {
+    // A view with clips knows whether it plays; a show without a list (Ruby's breath, Tetra, the
+    // drones) is remembered here, so Space pauses it and Space plays it again.
     const v = this.built?.behaviour.clipView?.();
-    this.setPlaying(!(v?.playing ?? true));
+    this.setPlaying(!(v ? v.playing : this.showPlaying));
   }
 
   seek(time: number): void {
