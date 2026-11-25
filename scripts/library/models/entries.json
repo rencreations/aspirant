@@ -1,0 +1,281 @@
+{
+  "comment": "The 3D Models room: the entries in the owner's order (request of 25 Nov 2026), their views and the clips each view lists. build.mjs reads this, the GLB files in the mirror and their posters, and writes apps/web/public/data/library/models.json. A view's file is models/v1/<view id>.glb; its posters are models/v1/posters/<view id>-t.webp and -p.webp.",
+  "entries": [
+    {
+      "id": "models-selena",
+      "slug": "selena",
+      "title": "Selena",
+      "aspirant": "Silverbolt Raiko",
+      "chars": ["selena"],
+      "pair": "selena-obsidia",
+      "views": [
+        {
+          "id": "selena-in-game",
+          "label": "In Game",
+          "mode": "free",
+          "behaviour": "forms",
+          "defaultClip": "normal/idle",
+          "forms": [
+            {
+              "id": "normal",
+              "label": "Normal",
+              "clips": [
+                ["normal/idle", "Idle"],
+                ["normal/random-idle", "Random when idle"],
+                ["normal/run", "Run"],
+                ["normal/sprint", "Sprint"],
+                ["normal/random-move", "Random when move"],
+                ["normal/attack-1", "Attack 1"],
+                ["normal/attack-2", "Attack 2"],
+                ["normal/skill-1", "Skill 1"],
+                ["normal/skill-2", "Skill 2"],
+                ["normal/stunned", "Stunned"],
+                ["normal/recall", "Recall"],
+                ["normal/landing", "Landing"],
+                ["normal/dead", "Dead"],
+                ["normal/respawn", "Respawn"]
+              ]
+            },
+            {
+              "id": "abyssal",
+              "label": "Abyssal",
+              "clips": [
+                ["abyssal/idle", "Idle"],
+                ["abyssal/run", "Run"],
+                ["abyssal/sprint", "Sprint"],
+                ["abyssal/attack-1", "Attack 1"],
+                ["abyssal/attack-2", "Attack 2"],
+                ["abyssal/skill-1", "Skill 1"],
+                ["abyssal/skill-2", "Skill 2"],
+                ["abyssal/stunned", "Stunned"],
+                ["abyssal/dead", "Dead"]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "selena-entrance",
+          "label": "Entrance",
+          "mode": "free",
+          "behaviour": "cinematic",
+          "defaultClip": "idle",
+          "clips": [
+            ["idle", "Idle"],
+            ["idle-standing", "Idle Standing"],
+            ["phone-in", "Idle to Phone", "phone", "Phone"],
+            ["phone-loop", "Phone Loop", "phone", "Phone"],
+            ["phone-out", "Phone to Idle", "phone", "Phone"],
+            ["interaction-l-in", "Idle to Interaction L", "interaction-l", "Interaction L"],
+            ["interaction-l-loop", "Interaction L Loop", "interaction-l", "Interaction L"],
+            ["interaction-l-out", "Interaction L to Idle", "interaction-l", "Interaction L"],
+            ["interaction-r-in", "Idle to Interaction R", "interaction-r", "Interaction R"],
+            ["interaction-r-loop", "Interaction R Loop", "interaction-r", "Interaction R"],
+            ["interaction-r-out", "Interaction R to Idle", "interaction-r", "Interaction R"],
+            ["interaction-1", "Interaction 1"],
+            ["interaction-2", "Interaction 2"],
+            ["interaction-3", "Interaction 3"]
+          ]
+        },
+        {
+          "id": "selena-phone",
+          "label": "Phone",
+          "mode": "item",
+          "behaviour": "still",
+          "home": [-0.2, 0.08]
+        }
+      ]
+    },
+    {
+      "id": "models-fanny",
+      "slug": "fanny",
+      "title": "Fanny",
+      "aspirant": "Blade of Kibou",
+      "chars": ["fanny"],
+      "pair": "fanny-layla",
+      "views": [
+        { "id": "fanny", "label": "Fanny", "mode": "character", "behaviour": "still" },
+        { "id": "fanny-blade", "label": "Blade", "mode": "item", "behaviour": "still" },
+        { "id": "fanny-thruster", "label": "Thruster", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-layla",
+      "slug": "layla",
+      "title": "Layla",
+      "aspirant": "Miss Hikari",
+      "chars": ["layla"],
+      "pair": "fanny-layla",
+      "views": [
+        { "id": "layla", "label": "Layla", "mode": "character", "behaviour": "still" },
+        { "id": "layla-gun", "label": "Malefic Gun", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-ruby",
+      "slug": "ruby",
+      "title": "Ruby",
+      "aspirant": "Mecha Maiden",
+      "chars": ["ruby"],
+      "pair": "ruby-angela",
+      "views": [
+        { "id": "ruby", "label": "Ruby", "mode": "character", "behaviour": "breathe" },
+        { "id": "ruby-scythe", "label": "Scythe", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-angela",
+      "slug": "angela",
+      "title": "Angela",
+      "aspirant": "Cyber Cherubin",
+      "chars": ["angela"],
+      "pair": "ruby-angela",
+      "views": [{ "id": "angela", "label": "Angela", "mode": "character", "behaviour": "breathe" }]
+    },
+    {
+      "id": "models-lesley",
+      "slug": "lesley",
+      "title": "Lesley",
+      "aspirant": "Deadeye Spectre",
+      "chars": ["lesley"],
+      "pair": "lesley-change",
+      "views": [
+        { "id": "lesley", "label": "Lesley", "mode": "character", "behaviour": "still" },
+        { "id": "lesley-sniper", "label": "Sniper", "mode": "item", "behaviour": "still" },
+        { "id": "lesley-mecha", "label": "Mecha", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-change",
+      "slug": "change",
+      "title": "Chang'e",
+      "aspirant": "Tech Tensai",
+      "chars": ["change"],
+      "pair": "lesley-change",
+      "views": [
+        { "id": "change", "label": "Chang'e", "mode": "character", "behaviour": "still" },
+        {
+          "id": "change-moon",
+          "label": "Crescent Moon",
+          "mode": "item",
+          "behaviour": "still",
+          "home": [0, 0.06]
+        }
+      ]
+    },
+    {
+      "id": "models-guinevere",
+      "slug": "guinevere",
+      "title": "Guinevere",
+      "aspirant": "Daybreak Halo",
+      "chars": ["guinevere"],
+      "pair": "guinevere-vexana",
+      "views": [
+        { "id": "guinevere", "label": "Guinevere", "mode": "character", "behaviour": "still" },
+        {
+          "id": "guinevere-weapon",
+          "label": "Weapon",
+          "mode": "item",
+          "behaviour": "still",
+          "home": [-0.2, 0.08]
+        }
+      ]
+    },
+    {
+      "id": "models-vexana",
+      "slug": "vexana",
+      "title": "Vexana",
+      "aspirant": "Twilight Star",
+      "chars": ["vexana"],
+      "pair": "guinevere-vexana",
+      "views": [
+        { "id": "vexana", "label": "Vexana", "mode": "character", "behaviour": "still" },
+        { "id": "vexana-staff", "label": "Staff", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-vexana-eternal-guard",
+      "slug": "eternal-guard",
+      "title": "Eternal Guard",
+      "chars": ["vexana"],
+      "pair": "guinevere-vexana",
+      "views": [
+        {
+          "id": "eternal-guard",
+          "label": "Eternal Guard",
+          "mode": "character",
+          "behaviour": "still"
+        },
+        { "id": "eternal-guard-sword", "label": "Sword", "mode": "item", "behaviour": "still" }
+      ]
+    },
+    {
+      "id": "models-aspirant-drone",
+      "slug": "aspirant-drone",
+      "title": "Aspirant Drone",
+      "chars": ["fanny", "layla", "ruby", "angela"],
+      "views": [
+        {
+          "id": "aspirant-drone",
+          "label": "Drone",
+          "mode": "item",
+          "behaviour": "drone",
+          "home": [-0.3, 0.12]
+        }
+      ]
+    },
+    {
+      "id": "models-guinevere-drone",
+      "slug": "guinevere-drone",
+      "title": "Guinevere Drone",
+      "chars": ["guinevere"],
+      "views": [
+        {
+          "id": "guinevere-drone",
+          "label": "Drone",
+          "mode": "item",
+          "behaviour": "pair",
+          "home": [0, 0.08]
+        }
+      ]
+    },
+    {
+      "id": "models-mr-bunny",
+      "slug": "mr-bunny",
+      "title": "Mr. Bunny",
+      "chars": ["change"],
+      "views": [
+        {
+          "id": "mr-bunny",
+          "label": "Mr. Bunny",
+          "mode": "item",
+          "behaviour": "bunny",
+          "home": [-0.3, 0.1]
+        }
+      ]
+    },
+    {
+      "id": "models-tetra",
+      "slug": "tetra",
+      "title": "Tetra",
+      "chars": ["angela"],
+      "views": [{ "id": "tetra", "label": "Tetra", "mode": "character", "behaviour": "tetra" }]
+    },
+    {
+      "id": "models-silverbolt",
+      "slug": "silverbolt",
+      "title": "Silverbolt",
+      "chars": ["selena"],
+      "views": [
+        {
+          "id": "silverbolt",
+          "label": "Silverbolt",
+          "mode": "free",
+          "behaviour": "clips",
+          "defaultClip": "idle",
+          "home": [1.15, 0.16],
+          "clips": [["idle", "Idle"]]
+        }
+      ]
+    }
+  ]
+}

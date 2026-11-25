@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Model parts</title>
+    <style>
+      body {
+        margin: 0;
+        background: #e4e2dc;
+        font:
+          13px/1.3 system-ui,
+          sans-serif;
+        color: #222;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 10px 14px;
+      }
+      .row {
+        display: flex;
+        gap: 6px;
+        padding: 6px 14px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .cell {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 12px;
+      }
+      .cell img {
+        display: block;
+        background: #f1f0ec;
+      }
+      .label {
+        width: 160px;
+        font-weight: 600;
+        padding-top: 8px;
+      }
+      .label small {
+        display: block;
+        font-weight: 400;
+        color: #555;
+        margin-top: 4px;
+        white-space: pre-wrap;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/three/build/three.module.js",
+          "three/addons/": "/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1 id="title"></h1>
+    <div id="rows"></div>
+    <script type="module" src="/page/main.js"></script>
+  </body>
+</html>

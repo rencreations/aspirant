@@ -14,6 +14,8 @@
         // The pages of the home scripts (the models' check pages, the drone and the doll's previews)
         // run in a browser and take three from an import map.
         "scripts/home/**/{page,preview}/**",
+        // The 3D Models room's poster page and its pipelines' check pages, the same way.
+        "scripts/library/models/**/{page,posters}/**",
       ],
       "ignoreBinaries": ["ffmpeg"],
     },

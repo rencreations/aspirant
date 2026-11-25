@@ -70,7 +70,7 @@ export const COLLECTIONS: readonly CollectionMeta[] = [
     index: "05",
     name: "3D Models",
     tagline: "Turn them round. Come closer.",
-    line: "The game client models of the Aspirants. Pick one, drag to turn it, scroll to come closer.",
+    line: "The 3D models of the Aspirants, their weapons and their companions. Pick one, drag to turn it, scroll to come closer.",
     colour: "#ff7a1a",
     ink: "#8a3a00",
     cover: "covers/models.webp",

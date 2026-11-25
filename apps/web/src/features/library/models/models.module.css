@@ -1,62 +1,35 @@
-/* The 3D Models room: one screen, a turntable that fills it, the words of the model on the left, its
-   layers on the right and a row of nine plates at the foot. Everything that moves in the page is
-   transform or opacity. The room's colour is the orange of the shelf (--lib-colour, --lib-ink). */
+/* The 3D Models room: one model on a stage that fills the screen, a quiet list on the left, the
+   animations on the right when the view has them, and the name, the timeline and the small print at
+   the foot. Everything that moves in the page is transform or opacity. On a phone the list and the
+   animations are sheets from the foot. The room's colour is the orange of the shelf (--lib-ink). */
 
 .root {
   --lib-colour: #ff7a1a;
   --lib-ink: #8a3a00;
-  --plate-w: 7.2rem;
+  --panel-w: 15.5rem;
+  --right-w: 13.5rem;
+  --edge: var(--gutter);
 
   position: relative;
   isolation: isolate;
-  display: grid;
-  grid-template-rows: var(--nav-h) minmax(0, 1fr) auto;
   height: 100svh;
   overflow: hidden;
-  background: color-mix(in srgb, var(--lib-colour) 5%, var(--bg-2));
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 46%, var(--bg) 0%, transparent 70%), var(--bg-2);
   color: var(--text);
 }
 
-/* A faint grid, fading towards the edges. It is static: nothing redraws it. */
-.root::before {
-  content: "";
+/* ---- The stage ------------------------------------------------------------------------------ */
+
+.stage {
   position: absolute;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--lib-ink) 8%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--lib-ink) 8%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 48px 48px;
-  background-position: center;
-  mask-image: radial-gradient(ellipse 70% 62% at 50% 48%, #000 30%, transparent 100%);
 }
 
-/* ---- The stage ----------------------------------------------------------------------------- */
-
-.stage {
-  position: relative;
-  z-index: 1;
-  grid-row: 2;
-  min-height: 0;
-  overflow: hidden;
-  outline: none;
-}
-
-/* The canvas lives in here (the viewer makes it). It fades out while a model loads and in when it is drawn. */
 .host {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  transition: transform 520ms var(--ease-out);
 }
 
 .host canvas {
@@ -77,41 +50,15 @@
   transition-duration: 160ms;
 }
 
-/* The name of the model, huge and faint, behind it. */
-.ghost {
-  position: absolute;
-  inset: auto 0 3.2rem 0;
-  z-index: 0;
-  margin: 0;
-  pointer-events: none;
-  text-align: center;
-  white-space: nowrap;
-  font-size: min(18rem, 34vh, calc(92vw / (var(--chars, 6) * 0.5)));
-  font-style: italic;
-  font-weight: 800;
-  line-height: 0.8;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--lib-colour) 9%, transparent);
-  animation: ghost-in 900ms var(--ease-out) both;
-}
-
-@keyframes ghost-in {
-  from {
-    opacity: 0;
-    transform: translateY(2.4rem);
-  }
-}
-
 /* The picture that stands in for the model without WebGL, or when it will not load. */
 .fallback {
   position: absolute;
-  inset: 0;
-  z-index: 2;
+  inset: calc(var(--nav-h) + 1rem) 0 9rem;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto auto;
   justify-items: center;
-  gap: 0.7rem;
-  padding: 1rem var(--gutter) 2.6rem;
+  gap: 0.6rem;
+  padding: 0 var(--gutter);
   text-align: center;
   pointer-events: none;
 }
@@ -119,10 +66,9 @@
 .fallback img {
   min-height: 0;
   max-height: 100%;
-  max-width: min(100%, 60rem);
   width: auto;
+  max-width: 100%;
   object-fit: contain;
-  animation: rise 600ms var(--ease-out) both;
 }
 
 .fallbackNote {
@@ -131,756 +77,760 @@
   color: var(--text-dim);
 }
 
-.fallback button {
+.fallback .btn {
   pointer-events: auto;
 }
 
-/* The loading line in the middle of the stage. It shows only if the wait is long enough to notice. */
+.btn {
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: var(--step--1);
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* The wait for a model, in the middle of the stage. It shows only while a model loads. */
 .loading {
   position: absolute;
-  inset: 0;
-  z-index: 3;
+  inset: 50% auto auto 50%;
+  z-index: 2;
   display: grid;
-  align-content: center;
+  gap: 0.5rem;
   justify-items: center;
-  gap: 0.8rem;
   margin: 0;
-  pointer-events: none;
-  color: var(--lib-ink);
+  color: var(--text-dim);
   opacity: 0;
-  visibility: hidden;
+  transform: translate(-50%, -50%);
+  transition: opacity 200ms var(--ease-out);
+  pointer-events: none;
 }
 
 .loading[data-on="true"] {
-  visibility: visible;
-  animation: fade-in 300ms linear 250ms both;
+  opacity: 1;
+  transition-delay: 220ms;
 }
 
 .percent {
-  display: inline-block;
-  min-width: 3ch;
-  text-align: right;
   font-variant-numeric: tabular-nums;
+  color: var(--text);
 }
 
 .loadBar {
   display: block;
-  width: 12rem;
-  height: 2px;
+  width: 8rem;
+  height: 1px;
   overflow: hidden;
-  background: color-mix(in srgb, var(--lib-ink) 18%, transparent);
+  background: var(--line);
 }
 
-.loadBar > span {
+.loadBar span {
   display: block;
   height: 100%;
-  transform-origin: left center;
   background: var(--lib-ink);
+  transform-origin: left;
+  transition: transform 160ms linear;
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+/* ---- The way back --------------------------------------------------------------------------- */
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-}
-
-/* ---- The words (left) and the layers (right) ------------------------------------------------ */
-
-.layout {
+.back {
   position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: grid;
-  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr) minmax(0, 15.5rem);
-  grid-template-rows: auto 1fr;
-  column-gap: var(--space-m);
-  align-content: start;
-  padding: 4rem var(--gutter) 2.6rem;
-  pointer-events: none;
+  z-index: 3;
+  top: calc(var(--nav-h) + 0.9rem);
+  left: var(--edge);
 }
 
-.layout button,
-.layout a {
-  pointer-events: auto;
-}
+/* ---- The panels ----------------------------------------------------------------------------- */
 
-/* The words sit on a soft plate, so a weapon that passes behind them never makes them hard to read. */
-.info,
-.facts,
-.parts {
-  padding: 0.9rem 1rem;
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-}
-
-.info {
-  grid-column: 1;
-  grid-row: 1;
-  padding-bottom: 0.4rem;
-}
-
-.kickerRow {
+.left,
+.right {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--nav-h) + 4.1rem);
   display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: calc(100svh - var(--nav-h) - 4.1rem - 4.2rem);
+}
+
+.left {
+  left: var(--edge);
+  width: var(--panel-w);
+}
+
+/* A soft veil of the ground behind each panel, so its words read over the model (a cinematic frame
+   runs under them). Static: it never moves or redraws. */
+.left::before,
+.right::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1.2rem -2.4rem -1.6rem -2.4rem;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 45%,
+    color-mix(in srgb, var(--bg) 78%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 52%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+.right {
+  right: var(--edge);
+  width: var(--right-w);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
-}
-
-.kicker {
-  margin: 0;
-  font-style: normal;
-  font-weight: 500;
-  color: var(--lib-ink);
-}
-
-.counter {
+  min-height: 1.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line);
   color: var(--text-faint);
 }
 
-.heading {
-  animation: rise 560ms var(--ease-out) both;
-}
-
-.name {
-  margin: 0;
-  font-size: clamp(3rem, 2rem + 3.4vw, 5.6rem);
-  font-style: italic;
-  font-weight: 800;
-  line-height: 0.92;
+.close {
+  border: 0;
+  background: none;
+  padding: 0.3rem 0;
+  font: inherit;
+  font-size: var(--step--1);
   color: var(--text);
-}
-
-.skin {
-  margin: 0.5rem 0 0;
-  font-family: var(--font-serif-stack);
-  font-style: italic;
-  font-size: var(--step-1);
-  line-height: 1.2;
-  color: var(--text-dim);
-}
-
-/* On a wide screen the sheet is not a box: its two sections stand in the layout's columns. */
-.sheet {
-  display: contents;
-}
-
-.sheetHead {
-  display: none;
-}
-
-.facts {
-  grid-column: 1;
-  grid-row: 2;
-  align-self: start;
-  display: grid;
-  gap: 0.9rem;
-  padding-top: 0.4rem;
+  cursor: pointer;
 }
 
 .note {
   margin: 0;
   font-size: var(--step--1);
-  line-height: 1.45;
   color: var(--text-dim);
 }
 
-.dl {
+/* The list: number, picture, name. */
+.list {
   display: grid;
-  grid-template-columns: auto 1fr;
+  gap: 0;
   margin: 0;
-  font-size: var(--step--1);
-  border-top: 1px solid var(--line-strong);
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
-.dl dt,
-.dl dd {
-  padding: 0.32rem 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.dl dt {
-  display: flex;
-  align-items: center;
-  color: var(--text-faint);
-  font-family: var(--font-mono-stack);
-  font-size: var(--step--2);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.dl dd {
-  margin: 0;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.credit {
-  margin: 0;
-  color: var(--lib-ink);
-}
-
-.parts {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  align-self: start;
-  display: grid;
-  gap: var(--space-s);
-}
-
-.partsHead {
-  margin: 0 0 0.5rem;
-  color: var(--text-faint);
-}
-
-.switches {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid var(--line-strong);
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  color: var(--text);
-  font-family: var(--font-body-stack);
-  font-size: var(--step--1);
-  cursor: pointer;
-  text-align: left;
-  transition: background-color var(--dur-fast) linear;
-}
-
-.switch:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
-}
-
-.switch:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.switchBox {
+.row {
   position: relative;
-  flex: none;
-  width: 2rem;
-  height: 0.9rem;
-  border: 1px solid var(--lib-ink);
 }
 
-.switchBox::after {
+.entry {
+  display: grid;
+  grid-template-columns: 1.6rem 1.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.1rem 0.2rem 0.1rem 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.entry::before {
   content: "";
   position: absolute;
-  top: 2px;
-  bottom: 2px;
-  left: 2px;
-  width: calc(50% - 2px);
+  left: -0.7rem;
+  top: 0.4rem;
+  width: 2px;
+  height: 1.2rem;
   background: var(--lib-ink);
-  transform: translateX(0);
-  transition: transform var(--dur-base) var(--ease-out);
+  opacity: 0;
+  transform: scaleY(0.3);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 260ms var(--ease-out);
 }
 
-.switch[aria-checked="true"] .switchBox {
-  background: color-mix(in srgb, var(--lib-colour) 28%, transparent);
+.row[data-on] > .entry::before {
+  opacity: 1;
+  transform: none;
 }
 
-.switch[aria-checked="true"] .switchBox::after {
-  transform: translateX(100%);
-}
-
-.faces {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.35rem;
-}
-
-.face {
-  position: relative;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  background: #0a1019;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-
-.face:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.face:disabled {
-  cursor: default;
-  opacity: 0.5;
-}
-
-.face[aria-pressed="true"] {
-  outline: 2px solid var(--lib-colour);
-  outline-offset: 1px;
-}
-
-/* Each sheet holds nine small pictures in a 3 by 3 grid. The robot's screen shows the top middle one. */
-.face img {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 300%;
-  height: auto;
-  max-width: none;
-  pointer-events: none;
-}
-
-.faceNo {
-  position: absolute;
-  left: 3px;
-  bottom: 2px;
-  z-index: 1;
-  font-family: var(--font-mono-stack);
-  font-size: 0.65rem;
-  color: #9fe7f2;
-}
-
-/* ---- The readout and the hint, at the foot of the stage ------------------------------------- */
-
-.read,
-.hint {
-  position: absolute;
-  z-index: 3;
-  bottom: 0.7rem;
-  margin: 0;
-  pointer-events: none;
-  color: var(--text-faint);
-}
-
-.read {
-  right: var(--gutter);
-  font-variant-numeric: tabular-nums;
-}
-
-.hint {
-  left: var(--gutter);
-}
-
-.read[hidden],
-.hint[hidden] {
-  display: none;
-}
-
-/* ---- The dock: buttons, the nine plates, the takedown line ---------------------------------- */
-
-.dock {
-  position: relative;
-  z-index: 5;
-  grid-row: 3;
-  display: grid;
-  gap: 0.7rem;
-  padding-bottom: 0.8rem;
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.4rem;
-  padding-inline: var(--gutter);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.8rem;
-  border: 1px solid var(--line-strong);
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  color: var(--text);
+.num {
   font-family: var(--font-mono-stack);
   font-size: var(--step--2);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    transform var(--dur-fast) var(--ease-out),
-    background-color var(--dur-fast) linear;
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background: color-mix(in srgb, var(--lib-colour) 10%, var(--bg));
-}
-
-.btn[aria-pressed="true"],
-.btn[aria-expanded="true"] {
-  background: var(--lib-ink);
-  border-color: var(--lib-ink);
-  color: #fff;
-}
-
-.btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.btn:focus-visible,
-.switch:focus-visible,
-.face:focus-visible,
-.plate:focus-visible,
-.sheetClose:focus-visible {
-  outline: 2px solid var(--lib-ink);
-  outline-offset: 2px;
-}
-
-.onlyNarrow {
-  display: none;
-}
-
-/* The rail of nine plates. It scrolls sideways when they do not fit, and centres when they do. */
-.rail {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  min-height: 7.7rem;
-  padding: 0.5rem var(--gutter) 0.3rem;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-}
-
-.rail::-webkit-scrollbar {
-  display: none;
-}
-
-.rail > :first-child {
-  margin-left: auto;
-}
-
-.rail > :last-child {
-  margin-right: auto;
-}
-
-.plate {
-  flex: none;
-  display: grid;
-  grid-template-rows: auto auto auto;
-  gap: 0.3rem;
-  width: var(--plate-w);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--text-dim);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    transform var(--dur-base) var(--ease-out),
-    color var(--dur-fast) linear;
-}
-
-.plate:hover {
-  transform: translateY(-3px);
-  color: var(--text);
-}
-
-.plate[aria-pressed="true"] {
-  transform: translateY(-5px);
-  color: var(--lib-ink);
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .thumb {
-  position: relative;
   display: block;
-  aspect-ratio: 8 / 5;
+  width: 1.5rem;
+  height: 1.875rem;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0.72;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.entryName {
   overflow: hidden;
-  border: 1px solid var(--line-strong);
-  background: color-mix(in srgb, var(--lib-ink) 8%, var(--bg-2));
-  transition:
-    border-color var(--dur-fast) linear,
-    box-shadow var(--dur-fast) linear;
+  font-size: var(--step--1);
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 160ms var(--ease-out);
 }
 
-.plate[aria-pressed="true"] .thumb {
-  border-color: var(--lib-ink);
-  box-shadow: 0 0 0 1px var(--lib-ink);
+.entry:hover,
+.entry[aria-current="true"] {
+  color: var(--text);
 }
 
-.thumb img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 0;
-  transform: scale(1.7);
-  transform-origin: 50% 14%;
-}
-
-.plateNo {
-  position: absolute;
-  top: 0.25rem;
-  left: 0.3rem;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: var(--lib-ink);
-}
-
-/* How far the model has come while it downloads in the background. */
-.plateBar {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 2px;
-  transform-origin: left center;
-  background: var(--lib-colour);
-  opacity: 0;
-  transition: opacity 240ms linear;
-}
-
-.plateBar[data-on="true"] {
+.entry:hover .thumb,
+.entry[aria-current="true"] .thumb {
   opacity: 1;
 }
 
-.plateName {
-  font-family: var(--font-display-stack);
-  font-size: var(--step-0);
-  font-weight: 800;
-  font-style: italic;
-  line-height: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.plateMeta {
-  font-family: var(--font-mono-stack);
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.takedown {
-  margin: 0;
-  padding-inline: var(--gutter);
-  text-align: center;
-  font-family: var(--font-mono-stack);
-  font-size: 0.62rem;
-  line-height: 1.5;
-  letter-spacing: 0.04em;
-  color: var(--text-faint);
-}
-
-.takedown a {
-  color: var(--text-dim);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-}
-
-.takedown a:hover {
+.entry[aria-current="true"] .num {
   color: var(--lib-ink);
 }
 
-.takedown a:focus-visible {
-  outline: 2px solid var(--lib-ink);
+/* The views of the chosen entry. */
+.views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.15rem 0 0.45rem 2.15rem;
+  padding: 0;
+  list-style: none;
+  animation: views-in 320ms var(--ease-out) both;
+}
+
+@keyframes views-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.3rem);
+  }
+}
+
+.viewPill {
+  padding: 0.28rem 0.6rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+
+.viewPill:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.viewPill[aria-current="true"] {
+  border-color: var(--lib-ink);
+  background: var(--lib-ink);
+  color: #fff;
+}
+
+/* The animations. */
+.clips {
+  display: grid;
+  gap: 0.7rem;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.forms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-strong);
+}
+
+.formBtn {
+  padding: 0.45rem 0.5rem;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.formBtn + .formBtn {
+  border-left: 1px solid var(--line-strong);
+}
+
+.formBtn[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.formBtn:disabled {
+  cursor: progress;
+}
+
+.formNote {
+  grid-column: 1 / -1;
+  min-height: 0;
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.formNote:empty {
+  display: none;
+}
+
+.clipList,
+.sub {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip,
+.subClip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.3rem 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  background: none;
+  font: inherit;
+  font-size: var(--step--1);
+  text-align: left;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 160ms var(--ease-out);
+}
+
+.subClip {
+  padding-left: 0.9rem;
+  font-size: var(--step--2);
+}
+
+.clip:hover,
+.subClip:hover {
+  color: var(--text);
+}
+
+.clip[aria-pressed="true"],
+.subClip[aria-pressed="true"],
+.clip[data-on] {
+  color: var(--lib-ink);
+  font-weight: 600;
+}
+
+.clip:disabled,
+.subClip:disabled {
+  cursor: progress;
+  opacity: 0.55;
+}
+
+.chev {
+  flex: none;
+  transition: transform 200ms var(--ease-out);
+}
+
+.group[data-open] .chev {
+  transform: rotate(180deg);
+}
+
+.sub:not([hidden]) {
+  animation: views-in 260ms var(--ease-out) both;
+}
+
+/* ---- The foot: name, timeline, small print -------------------------------------------------- */
+
+.foot {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 0 var(--edge) 0.9rem;
+  pointer-events: none;
+}
+
+.foot > * {
+  pointer-events: auto;
+}
+
+.title {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(2.2rem, 1.4rem + 3vw, 4.4rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  animation: name-in 520ms var(--ease-out) both;
+}
+
+@keyframes name-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+}
+
+.aspirant {
+  margin: 0;
+  font-family: var(--font-serif-stack);
+  font-size: var(--step-1);
+  font-style: italic;
+  color: var(--lib-ink);
+  animation: name-in 620ms var(--ease-out) 60ms both;
+}
+
+/* The timeline. */
+.timeline {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  /* Never under the panels at the sides. */
+  width: min(46rem, 100%, calc(100vw - 2 * (var(--panel-w) + var(--edge) + 1.5rem)));
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+}
+
+.play {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.play:disabled,
+.timeline[data-locked] .track {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.readout {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.of {
+  color: var(--text-faint);
+}
+
+.track {
+  position: relative;
+  height: 1.6rem;
+  cursor: ew-resize;
+  touch-action: none;
+  outline-offset: 3px;
+}
+
+.ticks {
+  position: absolute;
+  inset: 0.35rem 0 0.35rem 0;
+  width: 100%;
+  height: calc(100% - 0.7rem);
+  overflow: visible;
+}
+
+.ticks line {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.fill {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--lib-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  margin-left: -1px;
+  background: var(--lib-ink);
+}
+
+.head::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -4px;
+  width: 10px;
+  height: 6px;
+  background: var(--lib-ink);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* The last row: the hint, the camera's way back and the small print. */
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-faint);
+}
+
+.reset {
+  justify-self: center;
+  padding: 0.38rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  font-family: var(--font-mono-stack);
+  font-size: var(--step--2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+
+.reset[data-moved] {
+  border-color: var(--lib-ink);
+  color: var(--lib-ink);
+}
+
+.takedown {
+  justify-self: end;
+  margin: 0;
+  font-size: var(--step--2);
+  text-align: right;
+  color: var(--text-faint);
+}
+
+.takedown a,
+.report {
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dock,
+.scrim {
+  display: none;
+}
+
+/* Focus marks: the site's own colour, never removed. */
+.entry:focus-visible,
+.viewPill:focus-visible,
+.clip:focus-visible,
+.subClip:focus-visible,
+.formBtn:focus-visible,
+.play:focus-visible,
+.track:focus-visible,
+.reset:focus-visible,
+.close:focus-visible,
+.dockBtn:focus-visible {
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
-/* ---- Short screens: the note goes, the facts and layers stay -------------------------------- */
+/* ---- A narrower desktop: the panels draw in ------------------------------------------------- */
 
-@media (min-width: 992px) and (max-height: 780px) {
-  .note {
+@media (max-width: 1279px) {
+  .root {
+    --panel-w: 13.5rem;
+    --right-w: 12rem;
+  }
+
+  .thumb {
     display: none;
   }
 
-  .layout {
-    padding-top: 3.6rem;
+  .entry {
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+  }
+
+  .views {
+    margin-left: 2.15rem;
   }
 }
 
-/* ---- Narrow screens: one stage, a row of buttons, the plates, and a sheet for the details ---- */
+/* ---- A phone: the list and the animations are sheets from the foot -------------------------- */
 
 @media (max-width: 991px) {
   .root {
-    --plate-w: 5.2rem;
+    --edge: 1rem;
   }
 
-  .onlyWide,
-  .wide {
-    display: none;
-  }
-
-  /* The name stands in a band along the top, so the model never runs into it. */
-  .host {
-    inset: 5.6rem 0 0 0;
-  }
-
-  .fallback {
-    padding-top: 5.6rem;
-  }
-
-  .onlyNarrow {
-    display: inline-flex;
-  }
-
-  .word {
-    display: none;
-  }
-
-  .toolbar {
-    gap: 0.3rem;
-  }
-
-  .btn {
-    padding: 0.5rem 0.65rem;
-  }
-
-  .zoomBtn {
-    min-width: 2.4rem;
-    justify-content: center;
-  }
-
-  .rail {
-    min-height: 6.6rem;
-  }
-
-  .layout {
-    display: block;
-    padding: 0;
-  }
-
-  /* The name stands top right, clear of the Collection button on the left. */
-  .info {
-    padding: 0;
-    background: none;
-    position: absolute;
-    top: 0.75rem;
-    right: var(--gutter);
-    max-width: calc(100% - 2 * var(--gutter) - 8.5rem);
-    text-align: right;
-  }
-
-  .kickerRow {
-    justify-content: flex-end;
-    gap: 0.8rem;
-  }
-
-  .name {
-    font-size: clamp(2.2rem, 11vw, 3.4rem);
-  }
-
-  .skin {
-    font-size: var(--step-0);
-  }
-
-  .read {
-    display: none;
-  }
-
-  .sheet {
+  .left,
+  .right {
     position: fixed;
-    z-index: 8;
+    z-index: 5;
     inset: auto 0 0 0;
-    display: grid;
-    gap: var(--space-s);
-    max-height: 66svh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: 0 var(--gutter) 1.2rem;
-    background: var(--bg);
+    top: auto;
+    width: auto;
+    max-height: 72svh;
+    padding: 1rem 1.1rem 1.4rem;
     border-top: 1px solid var(--line-strong);
-    transform: translateY(104%);
-    transition: transform 460ms var(--ease-out);
-    pointer-events: auto;
+    background: var(--panel);
+    box-shadow: 0 -18px 40px rgb(11 11 14 / 0.12);
+    transform: translateY(105%);
+    transition: transform 360ms var(--ease-out);
   }
 
-  .sheet[data-open="true"] {
+  .root[data-sheet="models"] .left,
+  .root[data-sheet="clips"] .right {
     transform: none;
   }
 
-  /* The stage is its own layer, so while the sheet is open the stage as a whole stands above the dock. */
-  .root[data-sheet="open"] .stage {
-    z-index: 6;
+  .left::before,
+  .right::before {
+    display: none;
   }
 
-  .sheetHead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  .thumb {
+    display: block;
+  }
+
+  .entry {
+    grid-template-columns: 1.6rem 1.9rem minmax(0, 1fr);
+    padding: 0.28rem 0;
+  }
+
+  .thumb {
+    width: 1.9rem;
+    height: 2.375rem;
+  }
+
+  .entry::before {
+    left: -0.6rem;
+  }
+
+  .row .views {
+    display: none;
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    border: 0;
+    background: rgb(11 11 14 / 0.18);
+    cursor: default;
+  }
+
+  .foot {
+    gap: 0.55rem;
+    padding-bottom: 0.7rem;
+  }
+
+  .name {
+    font-size: clamp(1.9rem, 1.4rem + 3vw, 2.6rem);
+  }
+
+  .aspirant {
+    font-size: var(--step-0);
+  }
+
+  .dock {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.9rem 0 0.6rem;
-    background: var(--bg);
+    gap: 0.4rem;
+    width: 100%;
   }
 
-  .sheetHead p {
-    margin: 0;
-    color: var(--lib-ink);
+  .dockViews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
   }
 
-  .sheetClose {
-    min-width: 3.4rem;
-    min-height: 2.75rem;
-    padding: 0 0.9rem;
+  .dockBtn {
+    padding: 0.42rem 0.8rem;
     border: 1px solid var(--line-strong);
-    background: transparent;
-    color: var(--text);
+    border-radius: 999px;
+    background: var(--panel);
     font-family: var(--font-mono-stack);
     font-size: var(--step--2);
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: var(--text);
     cursor: pointer;
   }
 
-  .facts,
-  .parts {
-    grid-column: auto;
-    grid-row: auto;
-    margin: 0;
-    padding: 0;
-    background: none;
+  .timeline {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.35rem 0.5rem;
   }
 
-  .faces {
-    grid-template-columns: repeat(5, 1fr);
+  .timeline > .readout:first-of-type {
+    display: none;
   }
 
-  /* The model rises a little while the sheet is open, so the sheet does not cover it. */
-  .root[data-sheet="open"] .host {
-    transform: translateY(-11svh);
+  .bar {
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
   }
 
   .hint {
     display: none;
   }
-}
 
-/* "Copyright or takedown": small text, quiet, on its own line. */
-.report {
-  display: block;
-  width: fit-content;
-  margin: 0;
-  font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: inherit;
-  opacity: 0.7;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
+  .reset {
+    justify-self: start;
+  }
 
-.report:hover,
-.report:focus-visible {
-  opacity: 1;
+  .takedown {
+    font-size: 0.68rem;
+  }
 }

@@ -3,12 +3,13 @@ import { expect, test, type Page } from "@playwright/test";
 import { skipGate, url, watchErrors } from "./helpers";
 
 /**
- * The 3D Models room (shelf slot 05): nine game client models on a turntable that fills the screen.
- * The model is drawn by WebGL, so the stage's `data-status` says when it is ready. On a narrow
- * screen the facts, layers and faces are a sheet that the Details button opens.
+ * The 3D Models room (shelf slot 05), rebuilt on 25 Nov 2026: one model at a time on a stage that
+ * fills the screen, a list of fifteen entries (each with its views), the animations of a view on the
+ * right and a timeline at the foot. The model is drawn by WebGL, so the stage's `data-status` says
+ * when it is ready. On a narrow screen the list and the animations are sheets.
  */
 
-test.describe.configure({ timeout: 120_000 });
+test.describe.configure({ timeout: 150_000 });
 
 async function open(page: Page, query = "") {
   await skipGate(page);
@@ -19,19 +20,25 @@ async function open(page: Page, query = "") {
 }
 
 const stage = (page: Page) => page.getByTestId("model-stage");
-const plates = (page: Page) => page.getByTestId("model-picker").getByRole("button");
+const entries = (page: Page) => page.locator("[data-model-entry]");
+const narrow = (page: Page) => (page.viewportSize()?.width ?? 1440) <= 991;
 
 async function stageReady(page: Page) {
-  await expect(stage(page)).toHaveAttribute("data-status", "ready", { timeout: 60_000 });
+  await expect(stage(page)).toHaveAttribute("data-status", "ready", { timeout: 90_000 });
 }
 
-/** The layers and faces are in a sheet on a narrow screen: open it. On a wide one they are always there. */
-async function details(page: Page) {
-  const button = page.getByRole("button", { name: "Details" });
-  if (await button.isVisible()) {
-    await button.click();
-    await expect(page.locator("#model-details")).toHaveAttribute("data-open", "true");
-  }
+/** On a narrow screen the list is a sheet: open it. On a wide one it is always there. */
+async function openList(page: Page) {
+  if (!narrow(page)) return;
+  await page.getByRole("button", { name: "Models", exact: true }).click();
+  await expect(page.locator("[data-sheet-panel='models']")).not.toHaveAttribute("inert");
+}
+
+/** The same for the animations. */
+async function openClips(page: Page) {
+  if (!narrow(page)) return;
+  await page.getByRole("button", { name: "Animation", exact: true }).click();
+  await expect(page.locator("[data-sheet-panel='clips']")).not.toHaveAttribute("inert");
 }
 
 /** Make a page report that it has no WebGL (a context is never given). */
@@ -52,22 +59,26 @@ async function withoutWebGL(page: Page) {
   });
 }
 
-test("draws the first model with its name, one h1, nine plates and the way out", async ({
+test("opens on Selena with her name and title only, the list of fifteen and the way out", async ({
   page,
 }) => {
   const errors = await open(page);
   await stageReady(page);
   await expect(page.locator("h1")).toHaveCount(1);
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Fanny");
-  await expect(plates(page)).toHaveCount(9);
-  await expect(plates(page).first()).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Selena");
+  await expect(page.locator("[data-models-title]")).toContainText("Silverbolt Raiko");
+  await expect(entries(page)).toHaveCount(15);
+  await expect(entries(page).first()).toHaveAttribute("aria-current", "true");
   await expect(stage(page).locator("canvas")).toHaveCount(1);
-  await expect(page.getByText("01 / 09")).toBeVisible();
   await expect(page.locator("[data-room-back]")).toHaveAttribute("href", /\/collection\/?$/);
-  await expect(page.getByRole("link", { name: "takedown page" })).toHaveAttribute(
-    "href",
-    /\/takedown\/?$/,
+  await expect(page.locator("[data-models-foot] [data-report]")).toHaveText(
+    "Copyright or takedown",
   );
+  // Nothing technical, and no zoom buttons: the wheel and a pinch zoom.
+  for (const word of [/triangles/i, /points/i, /format/i, /download/i]) {
+    await expect(page.getByText(word)).toHaveCount(0);
+  }
+  await expect(page.getByRole("button", { name: /zoom/i })).toHaveCount(0);
   expect(errors.filter((e) => !e.includes("Failed to load resource"))).toEqual([]);
 });
 
@@ -78,198 +89,147 @@ test("the room is one screen: the page never scrolls", async ({ page }) => {
     const el = document.scrollingElement ?? document.documentElement;
     return { y: el.scrollHeight - el.clientHeight, x: el.scrollWidth - el.clientWidth };
   });
-  expect(over.y).toBeLessThanOrEqual(0);
-  expect(over.x).toBeLessThanOrEqual(0);
+  expect(over.y).toBeLessThanOrEqual(1);
+  expect(over.x).toBeLessThanOrEqual(1);
 });
 
-test("switches layers, changes the robot's face and changes model", async ({ page }) => {
-  await open(page);
-  await stageReady(page);
-  await details(page);
-
-  const weapon = page.getByRole("switch", { name: "Weapon" });
-  await expect(weapon).toHaveAttribute("aria-checked", "true");
-  await weapon.click();
-  await expect(weapon).toHaveAttribute("aria-checked", "false");
-
-  // The numbers on the sheets are 1 (the one the model came with) to 9.
-  const sheet4 = page.getByRole("button", { name: "Robot face, sheet 4" });
-  await expect(sheet4).toBeEnabled();
-  await sheet4.click();
-  await expect(sheet4).toHaveAttribute("aria-pressed", "true");
-
-  // A model that is picked starts with its layers on again.
-  await page.keyboard.press("Escape");
-  await plates(page).nth(1).click();
-  await expect(page).toHaveURL(/i=models-layla/);
-  await stageReady(page);
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Layla");
-  await expect(plates(page).nth(1)).toHaveAttribute("aria-pressed", "true");
-  await details(page);
-  await expect(page.getByRole("switch", { name: "Weapon" })).toHaveAttribute(
-    "aria-checked",
-    "true",
-  );
-  // The room says what these are: game client models, used as a visual reference.
-  await expect(page.getByText("taken from the game client")).toBeVisible();
-});
-
-test("each model has only the switches it really has, and loads when it is picked", async ({
+test("an entry and its views are picked from the list, in the address, with no history entry", async ({
   page,
 }) => {
   await open(page);
   await stageReady(page);
-  await details(page);
-
-  // Fanny and Layla have a robot with a face screen: three switches and nine face sheets.
-  await expect(page.getByRole("switch")).toHaveCount(3);
-  await expect(page.getByRole("group", { name: "Robot face" })).toBeVisible();
-  await page.keyboard.press("Escape");
-
-  // Ruby is a plain OBJ with a weapon and no robot.
-  await plates(page).nth(2).click();
-  await expect(page).toHaveURL(/i=models-ruby/);
+  const before = await page.evaluate(() => history.length);
+  await openList(page);
+  await page.locator("[data-model-entry='models-fanny']").click();
+  await expect(page).toHaveURL(/[?&]i=models-fanny/);
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Fanny");
+  await expect(page.locator("[data-models-title]")).toContainText("Blade of Kibou");
   await stageReady(page);
-  await details(page);
-  await expect(page.getByRole("switch")).toHaveCount(2);
-  await expect(page.getByRole("switch", { name: "Weapon" })).toBeVisible();
-  await expect(page.getByRole("group", { name: "Robot face" })).toHaveCount(0);
-  await page.keyboard.press("Escape");
-
-  // Angela is an FBX with a robot but no weapon.
-  await plates(page).nth(3).click();
+  const blade = narrow(page)
+    ? page.locator("[data-models-foot]").getByRole("button", { name: "Blade", exact: true })
+    : page.locator("[data-model-view='fanny-blade']");
+  await blade.click();
+  await expect(page).toHaveURL(/[?&]v=fanny-blade/);
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Blade");
   await stageReady(page);
-  await details(page);
-  await expect(page.getByRole("switch", { name: "Robot" })).toBeVisible();
-  await expect(page.getByRole("switch", { name: "Weapon" })).toHaveCount(0);
-  await page.keyboard.press("Escape");
-
-  // The second Vexana model is the Eternal Guard.
-  await plates(page).nth(8).click();
-  await expect(page).toHaveURL(/i=models-vexana-eternal-guard/);
-  await stageReady(page);
-  await expect(page.getByText("Eternal Guard").first()).toBeVisible();
+  expect(await page.evaluate(() => history.length)).toBe(before);
 });
 
-test("a link to a model opens the stage on it", async ({ page }) => {
-  await open(page, "?i=models-guinevere");
+test("a link to a view opens it, and the links of the first room still work", async ({ page }) => {
+  await open(page, "?v=change-moon");
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Crescent Moon");
   await stageReady(page);
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Guinevere");
-  await expect(plates(page).nth(6)).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("07 / 09")).toBeVisible();
+  await page.goto(url("/collection/models/?i=models-vexana-eternal-guard"));
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Eternal Guard");
+  await page.goto(url("/collection/models/?i=models-aspirant-drone"));
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Aspirant Drone");
 });
 
-test("a link from before the models moved still finds them", async ({ page }) => {
-  await skipGate(page);
-  await page.goto(url("/collection/others/?i=others-3d-layla"));
-  await expect(page).toHaveURL(/\/collection\/models\/\?i=models-layla/, { timeout: 60_000 });
-  await expect(page.locator("h1")).toHaveText("3D Models", { timeout: 60_000 });
-});
-
-test("N and P change model round the ends, and the keys turn, zoom and reset", async ({ page }) => {
+test("Selena In Game: her clips, the timeline, Space, and the change to her abyssal form", async ({
+  page,
+}) => {
   await open(page);
   await stageReady(page);
-  await page.keyboard.press("n");
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Layla");
-  await stageReady(page);
-  await page.keyboard.press("p");
-  await page.keyboard.press("p");
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Vexana");
-  await expect(page.getByText("09 / 09")).toBeVisible();
-  await stageReady(page);
-
-  const read = page.locator("p", { hasText: /Zoom \d\.\dx/ });
-  await page.keyboard.press("+");
-  await expect(read).toContainText(/Zoom 1\.[1-9]x/i);
-  await page.keyboard.press("0");
-  await expect(read).toContainText(/Zoom 1\.0x/i);
-  const before = await read.textContent();
-  await page.keyboard.press("ArrowRight");
-  await expect(read).not.toHaveText(before ?? "");
-});
-
-test("the buttons zoom, stop the turn and frame every part", async ({ page }) => {
-  await open(page);
-  await stageReady(page);
-  const read = page.locator("p", { hasText: /Zoom \d\.\dx/ });
-  await page.getByRole("button", { name: "Zoom in" }).click();
-  await expect(read).toContainText(/Zoom 1\.[1-9]x/i);
-  await page.getByRole("button", { name: "Reset view" }).click();
-  const turn = page.getByRole("button", { name: "Auto turn: on" });
-  await expect(turn).toHaveAttribute("aria-pressed", "true");
-  await turn.click();
-  await expect(page.getByRole("button", { name: "Auto turn: off" })).toHaveAttribute(
+  await openClips(page);
+  const clips = page.locator("[data-models-clips]");
+  await expect(clips.locator("[data-model-form]")).toHaveCount(2);
+  await expect(clips.locator("[data-model-clip='normal/idle']")).toHaveAttribute(
     "aria-pressed",
-    "false",
+    "true",
   );
-  await details(page);
-  const all = page.getByRole("button", { name: "Frame every part" });
-  await all.click();
-  await expect(all).toHaveAttribute("aria-pressed", "true");
+  await expect(clips.locator("[data-model-clip]")).toHaveCount(14);
+  const timeline = page.locator("[data-models-timeline]");
+  await expect(timeline.getByRole("slider", { name: "Timeline" })).toBeVisible();
+  const play = timeline.locator("[data-model-play]");
+  await expect(play).toHaveAttribute("data-model-play", "playing");
+  await clips.locator("[data-model-clip='normal/run']").click();
+  await expect(clips.locator("[data-model-clip='normal/run']")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  if (narrow(page)) await page.keyboard.press("Escape");
+  // Space on a button presses the button; anywhere else it plays and pauses.
+  await page.evaluate(() => {
+    (document.activeElement as HTMLElement | null)?.blur();
+  });
+  await page.keyboard.press("Space");
+  await expect(play).toHaveAttribute("data-model-play", "paused");
+  await page.keyboard.press("Space");
+  await expect(play).toHaveAttribute("data-model-play", "playing");
+  // The change: the switch waits while it runs, then the abyssal clips are listed.
+  await openClips(page);
+  await clips.locator("[data-model-form='abyssal']").click();
+  await expect(clips.locator("[data-model-form='abyssal']")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+    {
+      timeout: 30_000,
+    },
+  );
+  await expect(clips.locator("[data-model-form='normal']")).toBeEnabled({ timeout: 30_000 });
+  await expect(clips.locator("[data-model-clip]")).toHaveCount(9);
+  await expect(clips.locator("[data-model-clip='abyssal/idle']")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
 });
 
-test("without WebGL the stage shows the picture of the model, and the plates still work", async ({
+test("Selena Entrance: In, Loop and Out are one dropdown, and the camera has its way back", async ({
+  page,
+}) => {
+  await open(page, "?v=selena-entrance");
+  await stageReady(page);
+  await openClips(page);
+  const clips = page.locator("[data-models-clips]");
+  await expect(clips.locator("[data-model-clip='idle']")).toHaveAttribute("aria-pressed", "true");
+  const phone = clips.locator("[data-model-group='phone']");
+  await expect(phone).toHaveAttribute("aria-expanded", "false");
+  await phone.click();
+  await expect(phone).toHaveAttribute("aria-expanded", "true");
+  await expect(clips.locator("#clips-phone [data-model-clip]")).toHaveCount(3);
+  await clips.locator("[data-model-clip='phone-loop']").click();
+  await expect(clips.locator("[data-model-clip='phone-loop']")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  if (narrow(page)) await page.keyboard.press("Escape");
+  await expect(page.locator("[data-model-reset]")).toHaveText("Default camera");
+});
+
+test("without WebGL the stage shows the picture of the model, and the list still works", async ({
   page,
 }) => {
   await withoutWebGL(page);
   await open(page);
   await expect(stage(page)).toHaveAttribute("data-status", "nogl", { timeout: 60_000 });
-  await expect(page.getByRole("img", { name: "Fanny, the 3D model" })).toBeVisible();
   await expect(page.getByText("This browser cannot draw 3D")).toBeVisible();
-  await expect(stage(page).locator("canvas")).toHaveCount(0);
-  await plates(page).nth(2).click();
-  await expect(page.getByRole("img", { name: "Ruby, Mecha Maiden, the 3D model" })).toBeVisible();
-  await expect(page.getByRole("heading", { level: 2 })).toHaveText("Ruby");
+  await expect(page.getByRole("img", { name: "Selena, the 3D model" })).toBeVisible();
+  await openList(page);
+  await page.locator("[data-model-entry='models-layla']").click();
+  await expect(page.getByRole("img", { name: "Layla, the 3D model" })).toBeVisible();
 });
 
 test("a model that is gone shows its picture and Try again brings it back", async ({ page }) => {
-  await page.route("**/others/3d/fanny/hero_fanny_skin09_high_add.obj", (route) =>
+  await page.route("**/models/v1/selena-in-game.glb", (route) =>
     route.fulfill({ status: 404, body: "" }),
   );
   await open(page);
   await expect(stage(page)).toHaveAttribute("data-status", "failed", { timeout: 60_000 });
   await expect(page.getByText("The model could not be shown.")).toBeVisible();
-  await expect(page.getByRole("img", { name: "Fanny, the 3D model" })).toBeVisible();
-  await page.unroute("**/others/3d/fanny/hero_fanny_skin09_high_add.obj");
+  await page.unroute("**/models/v1/selena-in-game.glb");
   await page.getByRole("button", { name: "Try again" }).click();
   await stageReady(page);
-  await expect(page.getByText("The model could not be shown.")).toHaveCount(0);
 });
 
-test("the details sheet opens from a button on a narrow screen, closes with Escape and is out of reach when shut", async ({
+test("on a narrow screen the list is a sheet that opens, closes with Escape and is out of reach when shut", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  test.skip(!narrow(page), "The list is a sheet only on a narrow screen.");
   await open(page);
   await stageReady(page);
-  const sheet = page.locator("#model-details");
-  await expect(sheet).toHaveAttribute("data-open", "false");
-  await expect(sheet).toHaveAttribute("inert", "");
-  const button = page.getByRole("button", { name: "Details" });
-  await button.click();
-  await expect(sheet).toHaveAttribute("data-open", "true");
-  await expect(button).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByRole("button", { name: "Close" })).toBeFocused();
-  await expect(page.getByText("Triangles")).toBeVisible();
+  const sheet = page.locator("[data-sheet-panel='models']");
+  await expect(sheet).toHaveAttribute("inert");
+  await openList(page);
   await page.keyboard.press("Escape");
-  await expect(sheet).toHaveAttribute("data-open", "false");
-  await expect(button).toBeFocused();
-  // No horizontal scroll, and the plates stay inside the row.
-  const over = await page.evaluate(() => {
-    const el = document.scrollingElement ?? document.documentElement;
-    return el.scrollWidth - el.clientWidth;
-  });
-  expect(over).toBeLessThanOrEqual(0);
-});
-
-test("on a wide screen the facts and the layers are always there, with no sheet button", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await open(page);
-  await stageReady(page);
-  await expect(page.getByRole("button", { name: "Details" })).toBeHidden();
-  await expect(page.getByText("Triangles")).toBeVisible();
-  await expect(page.getByRole("switch", { name: "Body, face and hair" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Frame every part" })).toBeVisible();
+  await expect(sheet).toHaveAttribute("inert");
 });

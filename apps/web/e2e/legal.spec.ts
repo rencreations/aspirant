@@ -232,7 +232,11 @@ test.describe("Copyright or takedown on an item", () => {
   test("is on every 3D model", async ({ page }) => {
     await skipGate(page);
     await page.goto(url("/collection/models/"));
-    await expect(page.locator("#model-details [data-report]")).toBeAttached({ timeout: 60_000 });
-    await expect(page.locator("#model-details [data-report]")).toHaveText("Copyright or takedown");
+    await expect(page.locator("[data-models-foot] [data-report]")).toBeAttached({
+      timeout: 60_000,
+    });
+    await expect(page.locator("[data-models-foot] [data-report]")).toHaveText(
+      "Copyright or takedown",
+    );
   });
 });

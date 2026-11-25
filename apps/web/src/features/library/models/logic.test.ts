@@ -1,67 +1,91 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  azimuthDegrees,
-  count,
+  clipRows,
+  clipsOf,
   fetchOrder,
-  fractionOf,
-  humanBytes,
-  indexOfId,
-  pad2,
+  formOfClip,
+  mergeKeyTimes,
+  nearestKey,
+  placeOf,
   stepIndex,
-  whoOf,
 } from "./logic";
 
-describe("numbers", () => {
-  it("formats bytes", () => {
-    expect(humanBytes(512)).toBe("512 B");
-    expect(humanBytes(1536)).toBe("1.5 KB");
-    expect(humanBytes(4_300_000)).toBe("4.1 MB");
+const entries = [
+  { id: "models-selena", views: [{ id: "selena-in-game" }, { id: "selena-entrance" }] },
+  { id: "models-fanny", views: [{ id: "fanny" }, { id: "fanny-blade" }] },
+] as never;
+
+describe("the place in the list", () => {
+  it("opens on the first view of the first entry", () => {
+    expect(placeOf(entries, "", "")).toEqual({ entry: 0, view: 0 });
   });
-  it("groups thousands", () => {
-    expect(count(31620)).toBe("31,620");
+
+  it("reads the entry and the view of the address", () => {
+    expect(placeOf(entries, "models-fanny", "fanny-blade")).toEqual({ entry: 1, view: 1 });
+    expect(placeOf(entries, "models-fanny", "nope")).toEqual({ entry: 1, view: 0 });
   });
-  it("pads to two digits", () => {
-    expect(pad2(3)).toBe("03");
-    expect(pad2(12)).toBe("12");
+
+  it("finds the entry of a view named alone", () => {
+    expect(placeOf(entries, "", "selena-entrance")).toEqual({ entry: 0, view: 1 });
   });
-  it("wraps the azimuth into 0 to 359", () => {
-    expect(azimuthDegrees(0)).toBe(0);
-    expect(azimuthDegrees(Math.PI)).toBe(180);
-    expect(azimuthDegrees(-Math.PI / 2)).toBe(270);
-    expect(azimuthDegrees(Math.PI * 2)).toBe(0);
+
+  it("goes round the ends", () => {
+    expect(stepIndex(0, -1, 15)).toBe(14);
+    expect(stepIndex(14, 1, 15)).toBe(0);
   });
-  it("never reports a download as whole before it is", () => {
-    expect(fractionOf(50, 100)).toBe(0.5);
-    expect(fractionOf(100, 100)).toBe(0.99);
-    expect(fractionOf(5, 0)).toBe(0);
+
+  it("fetches the nearest views first", () => {
+    expect(fetchOrder(5, 2)).toEqual([2, 3, 1, 4, 0]);
   });
 });
 
-describe("whoOf", () => {
-  it("names the Aspirant, or falls back to the title", () => {
-    expect(whoOf({ chars: ["vexana"], title: "Eternal Guard" })).toBe("Vexana");
-    expect(whoOf({ chars: [], title: "A prop" })).toBe("A prop");
+describe("the clip list", () => {
+  const clips = [
+    { id: "idle", label: "Idle" },
+    { id: "phone-in", label: "Idle to Phone", group: "phone", groupLabel: "Phone" },
+    { id: "phone-loop", label: "Phone Loop", group: "phone", groupLabel: "Phone" },
+    { id: "interaction-1", label: "Interaction 1" },
+  ];
+
+  it("folds a group into one row where its first clip stands", () => {
+    const rows = clipRows(clips);
+    expect(rows.map((r) => r.kind)).toEqual(["clip", "group", "clip"]);
+    const group = rows[1];
+    expect(group?.kind === "group" ? group.clips.map((c) => c.id) : []).toEqual([
+      "phone-in",
+      "phone-loop",
+    ]);
+  });
+
+  it("lists the clips of the form on show", () => {
+    const view = {
+      forms: [
+        { id: "normal", label: "Normal", clips: [{ id: "normal/idle", label: "Idle" }] },
+        { id: "abyssal", label: "Abyssal", clips: [{ id: "abyssal/idle", label: "Idle" }] },
+      ],
+    };
+    expect(clipsOf(view, "abyssal")[0]?.id).toBe("abyssal/idle");
+    expect(clipsOf(view)[0]?.id).toBe("normal/idle");
+    expect(formOfClip("abyssal/idle")).toBe("abyssal");
   });
 });
 
-describe("the picker", () => {
-  const items = [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }];
-  it("finds a model by id and falls back to the first", () => {
-    expect(indexOfId(items, "c")).toBe(2);
-    expect(indexOfId(items, "nope")).toBe(0);
-    expect(indexOfId(items, "")).toBe(0);
+describe("the keys of a clip", () => {
+  it("merges the tracks' times into one sorted list", () => {
+    const keys = mergeKeyTimes(
+      [
+        [0, 0.5, 1],
+        [0, 0.25, 0.5000001, 1],
+      ],
+      1,
+    );
+    expect(keys).toEqual([0, 0.25, 0.5, 1]);
   });
-  it("steps round the ends both ways", () => {
-    expect(stepIndex(3, 1, 4)).toBe(0);
-    expect(stepIndex(0, -1, 4)).toBe(3);
-    expect(stepIndex(1, 1, 4)).toBe(2);
-    expect(stepIndex(0, 1, 0)).toBe(0);
-  });
-  it("fetches the one on show first, then its neighbours, nearest first", () => {
-    expect(fetchOrder(9, 0)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
-    expect(fetchOrder(9, 4)).toEqual([4, 5, 3, 6, 2, 7, 1, 8, 0]);
-    expect(fetchOrder(4, 3)).toEqual([3, 2, 1, 0]);
-    expect(fetchOrder(0, 0)).toEqual([]);
+
+  it("finds the nearest key", () => {
+    expect(nearestKey([0, 0.25, 0.5, 1], 0.6)).toBe(2);
+    expect(nearestKey([0, 0.25, 0.5, 1], 0.9)).toBe(3);
+    expect(nearestKey([], 1)).toBe(0);
   });
 });

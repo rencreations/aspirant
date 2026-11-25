@@ -132,7 +132,7 @@ export function useInView<T extends Element>(
 // Animation loop -----------------------------------------------------------------------------
 
 /** Document visibility as state. */
-export function usePageVisible(): boolean {
+function usePageVisible(): boolean {
   return useSyncExternalStore(
     (onChange) => {
       document.addEventListener("visibilitychange", onChange);

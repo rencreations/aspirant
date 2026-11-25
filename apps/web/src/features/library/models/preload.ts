@@ -3,9 +3,9 @@ import { libUrl } from "@/lib/library";
 import { chunkItem, imageItem, type PreloadItem } from "@/lib/preload";
 
 import { fetchLibraryJson, libraryDataItem, libraryDataPath } from "../data";
-import { fetchOrder, indexOfId } from "./logic";
-import { loadBundle, MODELS_GROUP } from "./model-bundle";
-import type { ModelItem, ModelsFile } from "./types";
+import { fetchOrder, flatViews, placeOf } from "./logic";
+import type { ModelView, ModelsFile } from "./types";
+import { loadViewFile, MODELS_GROUP } from "./view-files";
 
 const ROUTE = "/collection/models";
 
@@ -18,9 +18,9 @@ function onRoom(): boolean {
 }
 
 /**
- * The query the room opens with (`?i=<id>`). On a first visit the address is already the room's.
- * On a page change the loading list starts before the address changes, so this waits for the
- * change itself (the transition tells when it has happened), never for a time.
+ * The query the room opens with (`?i=<entry>&v=<view>`). On a first visit the address is already
+ * the room's. On a page change the loading list starts before the address changes, so this waits
+ * for the change itself (the transition tells when it has happened), never for a time.
  */
 function roomQuery(): Promise<string> {
   if (onRoom()) return Promise.resolve(window.location.search);
@@ -36,28 +36,32 @@ function roomQuery(): Promise<string> {
   });
 }
 
-/** The index of the model the room opens on: the one `?i=` names, else the first. */
-async function startIndex(file: ModelsFile): Promise<number> {
-  const id = new URLSearchParams(await roomQuery()).get("i") ?? "";
-  return indexOfId(file.items, id);
+/** The index (in the flat list of views) of the view the room opens on. */
+async function startView(file: ModelsFile): Promise<number> {
+  const q = new URLSearchParams(await roomQuery());
+  const place = placeOf(file.items, q.get("i") ?? "", q.get("v") ?? "");
+  let index = 0;
+  for (let e = 0; e < place.entry; e += 1) index += file.items[e]?.views.length ?? 0;
+  return index + place.view;
 }
 
-/** The nine small pictures of the picker, decoded into the browser cache. */
-function platesItem(): PreloadItem {
+/** The small pictures of the list, decoded into the browser cache. */
+function thumbsItem(): PreloadItem {
   return {
-    id: "models:plates",
-    label: "Loading the previews",
+    id: "models:thumbs",
+    label: "Loading the list",
     weight: 2,
     run: async (report, context) => {
       const file = await readModels();
+      const views = file.items.map((e) => e.views[0]).filter((v): v is ModelView => !!v);
       let done = 0;
       await Promise.all(
-        file.items.map((model) =>
-          imageItem(libUrl(model.img.t), "Loading the previews")
+        views.map((view) =>
+          imageItem(libUrl(view.poster.t), "Loading the list")
             .run(() => undefined, context)
             .then(() => {
               done += 1;
-              report(done / file.items.length);
+              report(done / views.length);
             }),
         ),
       );
@@ -65,21 +69,18 @@ function platesItem(): PreloadItem {
   };
 }
 
-/**
- * The model the room opens on: its file, its textures and (for Fanny and Layla) the nine sheets
- * of the robot's face, whole in memory and saved in the browser. The bar moves with the real bytes.
- */
-function firstModelItem(): PreloadItem {
+/** The model the room opens on, whole in memory and saved in the browser. The bar moves with the real bytes. */
+function firstViewItem(): PreloadItem {
   return {
     id: "models:first",
     label: "Loading the 3D model",
-    weight: 6,
+    weight: 8,
     memo: false,
     run: async (report) => {
       const file = await readModels();
-      const model = file.items[await startIndex(file)];
-      if (!model) return;
-      await loadBundle(model, {
+      const view = flatViews(file.items)[await startView(file)];
+      if (!view) return;
+      await loadViewFile(view, {
         onProgress: (fraction, bytes) => {
           report(fraction, bytes);
         },
@@ -88,26 +89,24 @@ function firstModelItem(): PreloadItem {
   };
 }
 
-/** How many models after the first can have an item of their own (the room has nine, so eight are used). */
-const BACKGROUND_SLOTS = 12;
+/** How many views after the first can have an item of their own (the room has 29). */
+const BACKGROUND_SLOTS = 36;
 
-/**
- * The model after the first that is nearest to it in the picker, number `k` from 1 (the ones next
- * to the model on show first). Null when the room has fewer models.
- */
-async function backgroundModel(k: number): Promise<ModelItem | null> {
+/** The view after the first that is nearest to it in the list, number `k` from 1. */
+async function backgroundView(k: number): Promise<ModelView | null> {
   const file = await readModels();
-  const order = fetchOrder(file.items.length, await startIndex(file));
+  const views = flatViews(file.items);
+  const order = fetchOrder(views.length, await startView(file));
   const at = order[k];
-  return at === undefined ? null : (file.items[at] ?? null);
+  return at === undefined ? null : (views[at] ?? null);
 }
 
 /**
- * One of the other models. The visitor must ask for these (a press on a plate), so the bar does not
- * wait: each downloads in the background once the room is open, the ones next to the model on
- * show first, a few at a time. Each is an item of its own so that leaving the room drops the
- * ones that have not started (`cancelDeferred`). A plate that is pressed before its model has come
- * loads it behind the stage's own percentage.
+ * One of the other views. The visitor must ask for these (a press in the list), so the bar does not
+ * wait: each downloads in the background once the room is open, the ones next to the view on show
+ * first, a few at a time. Each is an item of its own so that leaving the room drops the ones that
+ * have not started (`cancelDeferred`). A view that is pressed before its file has come loads it
+ * behind the stage's own percentage.
  */
 function backgroundItem(k: number): PreloadItem {
   return {
@@ -119,23 +118,23 @@ function backgroundItem(k: number): PreloadItem {
     priority: 40 + k,
     group: MODELS_GROUP,
     run: async () => {
-      const model = await backgroundModel(k);
-      if (model) await loadBundle(model, { background: true });
+      const view = await backgroundView(k);
+      if (view) await loadViewFile(view, { background: true });
     },
   };
 }
 
 /**
- * What the 3D Models room needs on first paint: its data, its code, the viewer's code (three), the
- * nine previews of the picker and the first model. The other models are deferred, one item each.
+ * What the 3D Models room needs on first paint: its data, its code, the stage's code (three), the
+ * pictures of the list and the model it opens on. The other views are deferred, one item each.
  */
 export function items(): PreloadItem[] {
   return [
     libraryDataItem("models", "Reading the 3D models"),
     chunkItem("library-models", "Opening the models", () => import("./page"), 2),
-    chunkItem("library-models-engine", "Loading the 3D viewer", () => import("./engine"), 3),
-    platesItem(),
-    firstModelItem(),
+    chunkItem("library-models-stage", "Loading the 3D viewer", () => import("./stage"), 3),
+    thumbsItem(),
+    firstViewItem(),
     ...Array.from({ length: BACKGROUND_SLOTS }, (_, i) => backgroundItem(i + 1)),
   ];
 }

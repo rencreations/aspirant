@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 
 import { ThemeZone } from "@/components/theme-zone";
 import { TLink } from "@/components/transition/t-link";
+import { ReportLink } from "@/features/legal/takedown/report-link";
 import { audio } from "@/lib/audio";
 import { isTypingTarget, useMediaQuery } from "@/lib/hooks";
 import { libUrl } from "@/lib/library";
@@ -14,144 +15,206 @@ import { getCollection } from "../registry";
 import { BackToCollection, useTransparentNav } from "../shell/room-chrome";
 import { TAKEDOWN_URL } from "../shell/library-shell";
 import { useQueryState } from "../use-query-state";
-import { Controls } from "./controls";
-import { Details } from "./details";
-import { indexOfId, pad2, stepIndex, whoOf } from "./logic";
-import { MODELS_GROUP, releaseModels } from "./model-bundle";
+import { ClipsPanel } from "./clips-panel";
+import { placeOf, stepIndex } from "./logic";
 import styles from "./models.module.css";
-import { Rail } from "./rail";
-import type { ModelItem } from "./types";
-import { useViewer } from "./use-viewer";
+import { Picker } from "./picker";
+import type { Insets } from "./scene-kit";
+import { Timeline } from "./timeline";
+import type { ModelEntry } from "./types";
+import { useStage, type TickSink } from "./use-stage";
+import { MODELS_GROUP, releaseViewFiles } from "./view-files";
 
-/** At this width and below the facts and layers are a sheet and the room is laid out for a phone. */
+/** At this width and below the list and the animations are sheets, and the room is laid out for a phone. */
 const NARROW = "(max-width: 991px)";
+/** One press of an arrow key turns this far (a fraction of the stage's height). */
+const KEY_TURN = 0.05;
+
+type Sheet = "models" | "clips" | null;
+
+const NO_INSETS: Insets = { left: 0, right: 0, top: 0, bottom: 0 };
 
 /**
- * The 3D Models room (`/collection/models`, shelf slot 05): the nine game client models of the
- * Aspirants on a turntable that fills the screen. Pick one in the row at the foot, drag to turn it,
- * scroll or pinch to come closer, switch its body, weapon and robot, and change the robot's face
- * (Fanny and Layla). The top bar has no background and the one way out is the Collection button.
- * The room does not scroll. Without WebGL, or when a model will not load, the stage shows the
- * model's picture instead.
+ * The 3D Models room (`/collection/models`, shelf slot 05): one model at a time on a stage that fills
+ * the screen. The list on the left picks a character or a companion and, under it, one of its views
+ * (Selena: In Game, Entrance, Phone). Drag to turn, scroll or pinch to zoom. A view with animations
+ * has them on the right and a timeline at the foot. The only words are the name and, for an
+ * Aspirant, her title.
  *
- * Keys: the arrows turn the model, plus and minus zoom, zero or Home resets, Space starts and stops
- * the turn, N and P change model, Escape closes the details on a narrow screen.
+ * Keys: Space plays and pauses, comma and full stop step one key, the arrows turn the model, plus and
+ * minus zoom, R (or 0, Home) brings the camera back, N and P change the entry, Escape closes a sheet.
  */
 export default function ModelsPage() {
   useTransparentNav("daybreak");
   const meta = getCollection("models");
-  const { data, failed } = useLibraryData<ModelItem>("models");
-  const items = useMemo(() => data?.items ?? [], [data]);
-  const [openId, setOpenId] = useQueryState("i");
-  const index = indexOfId(items, openId);
-  const model = items[index];
-  const hostRef = useRef<HTMLDivElement>(null);
-  const layoutRef = useRef<HTMLDivElement>(null);
-  const azRef = useRef<HTMLSpanElement>(null);
-  const zoomRef = useRef<HTMLSpanElement>(null);
-  const viewer = useViewer(model, {
-    host: hostRef,
-    layout: layoutRef,
-    az: azRef,
-    zoom: zoomRef,
-  });
+  const { data, failed } = useLibraryData<ModelEntry>("models");
+  const entries = useMemo(() => data?.items ?? [], [data]);
+  const [entryId, setEntryId] = useQueryState("i");
+  const [viewId, setViewId] = useQueryState("v");
+  const place = placeOf(entries, entryId, viewId);
+  const entry = entries[place.entry];
+  const view = entry?.views[place.view] ?? null;
   const narrow = useMediaQuery(NARROW);
-  const [sheet, setSheet] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const [sheet, setSheet] = useState<Sheet>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+  const footRef = useRef<HTMLDivElement>(null);
+  const tick = useRef<TickSink["current"]>(null) as TickSink;
+  const [insets, setInsets] = useState<Insets>(NO_INSETS);
+  const stage = useStage(hostRef, view, insets, tick);
+  const clip = stage.clip;
+  const hasClipView = clip !== null;
 
-  // What the model files hold in memory belongs to this room: it is let go when the visitor leaves.
+  // What the room holds in memory belongs to it: it is let go when the visitor leaves.
   useEffect(
     () => () => {
       cancelDeferred(MODELS_GROUP);
-      releaseModels();
+      releaseViewFiles();
     },
     [],
   );
 
-  const select = useCallback(
-    (step: number) => {
-      const next = items[stepIndex(index, step, items.length)];
-      if (!next || next.id === model?.id) return;
+  // The model is framed in the part of the screen the panels leave.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    const measure = () => {
+      const r = host.getBoundingClientRect();
+      const nav = parseFloat(getComputedStyle(host).getPropertyValue("--nav-h")) * 16 || 64;
+      const left = leftRef.current?.getBoundingClientRect();
+      const right = rightRef.current?.getBoundingClientRect();
+      const foot = footRef.current?.getBoundingClientRect();
+      const next: Insets = narrow
+        ? { left: 0, right: 0, top: nav, bottom: foot ? Math.max(0, r.bottom - foot.top) : 0 }
+        : {
+            left: left ? Math.max(0, left.right - r.left) : 0,
+            right: right && right.width > 0 ? Math.max(0, r.right - right.left) : 0,
+            top: nav,
+            bottom: foot ? Math.max(0, r.bottom - foot.top) : 0,
+          };
+      setInsets((now) =>
+        Math.abs(now.left - next.left) < 2 &&
+        Math.abs(now.right - next.right) < 2 &&
+        Math.abs(now.top - next.top) < 2 &&
+        Math.abs(now.bottom - next.bottom) < 2
+          ? now
+          : next,
+      );
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    for (const el of [host, leftRef.current, rightRef.current, footRef.current])
+      if (el) ro.observe(el);
+    return () => {
+      ro.disconnect();
+    };
+  }, [narrow, hasClipView, entries.length]);
+
+  const pick = useCallback(
+    (e: number, v: number) => {
+      const next = entries[e];
+      const nextView = next?.views[v];
+      if (!next || !nextView) return;
+      if (next.id === entry?.id && nextView.id === view?.id) return;
       audio.blip("click");
-      setOpenId(next.id);
+      setEntryId(next.id);
+      setViewId(v === 0 ? "" : nextView.id);
+      // On a phone the views of an entry are chosen in the dock, so the sheet closes on any pick.
+      if (narrow) setSheet(null);
     },
-    [items, index, model?.id, setOpenId],
+    [entries, entry?.id, view?.id, setEntryId, setViewId, narrow],
   );
 
   const closeSheet = useCallback(() => {
-    setSheet(false);
-    requestAnimationFrame(() => {
-      document.querySelector<HTMLElement>('[aria-controls="model-details"]')?.focus();
-    });
+    setSheet(null);
   }, []);
 
-  // A sheet that is open takes the focus. It is only a sheet on a narrow screen.
+  // A sheet that opens takes the focus (its chosen row, or its first control), and gives it back to
+  // the button that opened it when it shuts.
+  const opener = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    if (sheet && narrow) closeRef.current?.focus({ preventScroll: true });
+    if (!narrow) return;
+    if (sheet) {
+      const panel = document.querySelector<HTMLElement>(`[data-sheet-panel="${sheet}"]`);
+      const target =
+        panel?.querySelector<HTMLElement>('[aria-current="true"], [aria-pressed="true"]') ??
+        panel?.querySelector<HTMLElement>("button");
+      requestAnimationFrame(() => target?.focus({ preventScroll: true }));
+      return;
+    }
+    const back = opener.current;
+    opener.current = null;
+    if (back?.isConnected) back.focus({ preventScroll: true });
   }, [sheet, narrow]);
 
   // The keys. The latest state is read through a ref so the listener is bound once.
-  const latest = useRef({ viewer, select, sheet, closeSheet });
+  const latest = useRef({ stage, pick, place, entries, sheet, closeSheet });
   useEffect(() => {
-    latest.current = { viewer, select, sheet, closeSheet };
+    latest.current = { stage, pick, place, entries, sheet, closeSheet };
   });
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || isTypingTarget(e.target)) {
+      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || isTypingTarget(e.target))
         return;
-      }
-      const { viewer: v, select: pick, sheet: open, closeSheet: close } = latest.current;
+      const l = latest.current;
+      const s = l.stage.stage();
       const el = e.target instanceof HTMLElement ? e.target : null;
       const onControl =
         !!el &&
-        (["BUTTON", "A", "SUMMARY"].includes(el.tagName) || el.getAttribute("role") === "switch");
+        (["BUTTON", "A", "SUMMARY"].includes(el.tagName) || el.getAttribute("role") === "slider");
       switch (e.key) {
         case "Escape":
-          if (!open) return;
-          close();
+          if (!l.sheet) return;
+          l.closeSheet();
+          break;
+        case " ":
+          if (onControl || !s) return;
+          s.togglePlay();
+          break;
+        case ",":
+          s?.step(-1);
+          break;
+        case ".":
+          s?.step(1);
           break;
         case "n":
         case "N":
-          pick(1);
+          l.pick(stepIndex(l.place.entry, 1, l.entries.length), 0);
           break;
         case "p":
         case "P":
-          pick(-1);
+          l.pick(stepIndex(l.place.entry, -1, l.entries.length), 0);
           break;
         case "ArrowLeft":
-          if (v.status !== "ready") return;
-          v.turn(-1, 0);
+          if (onControl || !s) return;
+          s.nudge(-KEY_TURN, 0);
           break;
         case "ArrowRight":
-          if (v.status !== "ready") return;
-          v.turn(1, 0);
+          if (onControl || !s) return;
+          s.nudge(KEY_TURN, 0);
           break;
         case "ArrowUp":
-          if (v.status !== "ready") return;
-          v.turn(0, -1);
+          if (onControl || !s) return;
+          s.nudge(0, -KEY_TURN);
           break;
         case "ArrowDown":
-          if (v.status !== "ready") return;
-          v.turn(0, 1);
+          if (onControl || !s) return;
+          s.nudge(0, KEY_TURN);
           break;
         case "+":
         case "=":
-          if (v.status !== "ready") return;
-          v.zoomBy(0.85);
+          s?.zoomBy(0.85);
           break;
         case "-":
-          if (v.status !== "ready") return;
-          v.zoomBy(1.18);
+          s?.zoomBy(1.18);
           break;
+        case "r":
+        case "R":
         case "0":
         case "Home":
-          if (v.status !== "ready") return;
-          v.reset();
-          break;
-        case " ":
-          // On a button Space presses the button.
-          if (onControl || v.status !== "ready") return;
-          v.toggleSpin();
+          if (e.key === "Home" && onControl) return;
+          s?.resetCamera();
           break;
         default:
           return;
@@ -165,9 +228,11 @@ export default function ModelsPage() {
   }, []);
 
   const vars = { "--lib-colour": meta.colour, "--lib-ink": meta.ink } as CSSProperties;
-  const name = model ? whoOf(model) : "";
-  const showPicture = viewer.status === "nogl" || viewer.status === "failed";
-  const sheetOpen = sheet && narrow;
+  const showPicture = stage.status === "nogl" || stage.status === "failed";
+  const single = (entry?.views.length ?? 0) <= 1;
+  const heading = !entry ? "" : view && !single && view.mode === "item" ? view.label : entry.title;
+  const hasClips = !!clip && clip.clips.length > 0;
+  const s = stage.stage;
 
   return (
     <ThemeZone
@@ -175,128 +240,222 @@ export default function ModelsPage() {
       as="div"
       className={styles.root}
       style={vars}
-      data-status={viewer.status}
-      data-sheet={sheetOpen ? "open" : "closed"}
-      data-models={model ? "live" : failed ? "failed" : "pending"}
+      data-status={stage.status}
+      data-sheet={sheet ?? "none"}
+      data-clips={hasClips ? "" : undefined}
+      data-models={entry ? "live" : failed ? "failed" : "pending"}
     >
-      <BackToCollection tone="dark" />
+      <BackToCollection tone="dark" className={styles.back} />
+      <h1 className="sr-only">3D Models</h1>
 
-      <div className={styles.stage} data-testid="model-stage" data-status={viewer.status}>
-        {model ? (
-          <p
-            key={model.id}
-            className={`${styles.ghost} display`}
-            style={{ "--chars": name.length } as CSSProperties}
-            aria-hidden="true"
-          >
-            {name}
-          </p>
-        ) : null}
-
+      <div className={styles.stage} data-testid="model-stage" data-status={stage.status}>
         <div
-          className={styles.host}
           ref={hostRef}
-          role={model ? "img" : undefined}
-          aria-label={model ? `3D model of ${model.title}` : undefined}
+          className={styles.host}
+          role={view ? "img" : undefined}
+          aria-label={view && entry ? `3D model of ${heading}` : undefined}
         />
-
-        {model && showPicture ? (
+        {view && showPicture ? (
           <div className={styles.fallback}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              key={model.id}
-              src={libUrl(model.img.p)}
-              alt={`${model.title}, the 3D model`}
-              width={model.img.w}
-              height={model.img.h}
+              key={view.id}
+              src={libUrl(view.poster.p)}
+              alt={`${heading}, the 3D model`}
+              width={view.poster.w}
+              height={view.poster.h}
               crossOrigin="anonymous"
             />
             <p className={styles.fallbackNote} role="status">
-              {viewer.status === "nogl"
+              {stage.status === "nogl"
                 ? "This browser cannot draw 3D, so here is a picture of the model."
                 : "The model could not be shown."}
             </p>
-            {viewer.status === "failed" ? (
-              <button type="button" className={styles.btn} onClick={viewer.retry}>
+            {stage.status === "failed" ? (
+              <button type="button" className={styles.btn} onClick={stage.retry}>
                 Try again
               </button>
             ) : null}
           </div>
         ) : null}
-
         <p
           className={`${styles.loading} hud-label`}
           role="status"
-          data-on={viewer.status === "loading"}
+          data-on={stage.status === "loading"}
         >
           <span>
-            Loading the model <span className={styles.percent}>{viewer.percent}%</span>
+            Loading the model <span className={styles.percent}>{stage.percent}%</span>
           </span>
           <span className={styles.loadBar} aria-hidden="true">
-            <span style={{ transform: `scaleX(${viewer.percent / 100})` }} />
+            <span style={{ transform: `scaleX(${stage.percent / 100})` }} />
           </span>
         </p>
+      </div>
 
-        <div className={styles.layout} ref={layoutRef}>
-          <header className={styles.info}>
-            <div className={styles.kickerRow}>
-              <h1 className={`${styles.kicker} hud-label`}>3D Models</h1>
-              <span className={`${styles.counter} hud-label`}>
-                {model ? `${pad2(index + 1)} / ${pad2(items.length)}` : "..."}
-              </span>
-            </div>
-            {model ? (
-              <div key={model.id} className={styles.heading}>
-                <h2 className={`${styles.name} display`}>{name}</h2>
-                <p className={styles.skin}>{model.skin ?? "Game client model"}</p>
-              </div>
-            ) : failed ? (
-              <p className={styles.skin}>
-                The models could not be read. Reload the page to try again.
-              </p>
+      <nav
+        ref={leftRef}
+        className={styles.left}
+        aria-label="Models"
+        data-sheet-panel="models"
+        inert={narrow && sheet !== "models" ? true : undefined}
+      >
+        <div className={styles.panelHead}>
+          <span className="hud-label">3D Models</span>
+          {narrow ? (
+            <button type="button" className={styles.close} onClick={closeSheet}>
+              Close
+            </button>
+          ) : null}
+        </div>
+        {entries.length > 0 ? (
+          <Picker entries={entries} entry={place.entry} view={place.view} onPick={pick} />
+        ) : failed ? (
+          <p className={styles.note}>The models could not be read. Reload the page to try again.</p>
+        ) : null}
+      </nav>
+
+      {hasClips && clip ? (
+        <section
+          ref={rightRef}
+          className={styles.right}
+          aria-label="Animation"
+          data-sheet-panel="clips"
+          inert={narrow && sheet !== "clips" ? true : undefined}
+        >
+          <div className={styles.panelHead}>
+            <span className="hud-label">Animation</span>
+            {narrow ? (
+              <button type="button" className={styles.close} onClick={closeSheet}>
+                Close
+              </button>
             ) : null}
-          </header>
+          </div>
+          <ClipsPanel
+            view={clip}
+            onPick={(id) => {
+              s()?.pickClip(id);
+              if (narrow) setSheet(null);
+            }}
+            onForm={(f) => {
+              s()?.setForm(f);
+            }}
+          />
+        </section>
+      ) : null}
 
-          {model ? (
-            <Details
-              ref={closeRef}
-              model={model}
-              viewer={viewer}
-              open={sheetOpen}
-              inert={narrow && !sheetOpen}
-              onClose={closeSheet}
-            />
+      <div ref={footRef} className={styles.foot} data-models-foot="">
+        <div className={styles.title} data-models-title="">
+          {entry ? (
+            <>
+              <h2 key={`${entry.id}-${heading}`} className={`${styles.name} display`}>
+                {heading}
+              </h2>
+              {entry.aspirant ? <p className={styles.aspirant}>{entry.aspirant}</p> : null}
+            </>
           ) : null}
         </div>
 
-        <p className={`${styles.read} hud-label`} aria-hidden="true" hidden={showPicture}>
-          Az <span ref={azRef}>000</span>
-          {"°"} / Zoom <span ref={zoomRef}>1.0</span>x
-        </p>
-        <p className={`${styles.hint} hud-label`} hidden={showPicture}>
-          Drag to turn. Scroll or pinch to come closer.
-          <span className="sr-only">
-            {" "}
-            Arrow keys turn it, plus and minus zoom, zero resets, N and P change model.
-          </span>
-        </p>
+        {narrow && entry ? (
+          <div className={styles.dock}>
+            <button
+              type="button"
+              className={styles.dockBtn}
+              aria-haspopup="dialog"
+              aria-expanded={sheet === "models"}
+              onClick={(e) => {
+                opener.current = e.currentTarget;
+                setSheet(sheet === "models" ? null : "models");
+              }}
+            >
+              Models
+            </button>
+            {entry.views.length > 1 ? (
+              <div className={styles.dockViews} role="group" aria-label={`${entry.title}: views`}>
+                {entry.views.map((v, k) => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    className={styles.viewPill}
+                    aria-current={k === place.view ? "true" : undefined}
+                    onClick={() => {
+                      pick(place.entry, k);
+                    }}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {hasClips ? (
+              <button
+                type="button"
+                className={styles.dockBtn}
+                aria-haspopup="dialog"
+                aria-expanded={sheet === "clips"}
+                onClick={(e) => {
+                  opener.current = e.currentTarget;
+                  setSheet(sheet === "clips" ? null : "clips");
+                }}
+              >
+                Animation
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {hasClips && clip ? (
+          <Timeline
+            view={clip}
+            tickRef={tick}
+            onPlay={(p) => {
+              s()?.setPlaying(p);
+            }}
+            onSeek={(t) => {
+              s()?.seek(t);
+            }}
+            onStep={(d) => {
+              s()?.step(d);
+            }}
+          />
+        ) : null}
+
+        <div className={styles.bar}>
+          <p className={`${styles.hint} hud-label`} hidden={showPicture}>
+            Drag to turn. Scroll or pinch to zoom.
+          </p>
+          <button
+            type="button"
+            className={styles.reset}
+            data-model-reset=""
+            data-moved={stage.moved ? "" : undefined}
+            aria-keyshortcuts="R"
+            hidden={showPicture}
+            onClick={() => {
+              s()?.resetCamera();
+            }}
+          >
+            {clip?.cinematic ? "Default camera" : "Reset view"}
+          </button>
+          <p className={styles.takedown}>
+            A fan made archive. The models belong to Moonton.{" "}
+            {entry ? (
+              <ReportLink item={{ id: entry.id, title: entry.title }} className={styles.report} />
+            ) : (
+              <TLink href={TAKEDOWN_URL}>Copyright or takedown</TLink>
+            )}
+          </p>
+        </div>
       </div>
 
-      <div className={styles.dock}>
-        <Controls
-          viewer={viewer}
-          sheetOpen={sheetOpen}
-          onDetails={() => {
-            if (sheet) closeSheet();
-            else setSheet(true);
-          }}
+      {narrow && sheet ? (
+        <button
+          type="button"
+          className={styles.scrim}
+          aria-label="Close"
+          tabIndex={-1}
+          onClick={closeSheet}
         />
-        <Rail models={items} selected={model?.id ?? ""} onSelect={setOpenId} />
-        <p className={styles.takedown}>
-          A fan made archive. The models belong to Moonton. To ask for a takedown, use the{" "}
-          <TLink href={TAKEDOWN_URL}>takedown page</TLink>.
-        </p>
-      </div>
+      ) : null}
     </ThemeZone>
   );
 }

@@ -1,11 +1,12 @@
-"""The Others room and the 3D Models room.
+"""The Others room, and the game client files the first 3D Models room showed.
 
-Builds the mirror assets under library/v1/others/ and two data files in apps/web/public/data/library/:
-models.json (the 3D Models room, shelf slot 05) and others.json (the Others room, slot 10).
+Builds the mirror assets under library/v1/others/ and one data file in apps/web/public/data/library/:
+others.json (the Others room, slot 10). Since 25 Nov 2026 the 3D Models room has its own pipeline and
+data file (scripts/library/models/, models.json); the files below stay in the mirror (a key is never
+removed) and the room's parts pipeline reads them as a source.
 
   3D models   media/layla-and-fanny/3d/{fanny,layla}        copied unchanged (the .obj, the .mtl and the PNG textures)
-              and the nine models the owner supplied        -> models.json. The files stay under others/3d/ in the bucket
-                                                               (a key is never moved), so models.json names them there.
+              and the nine models the owner supplied        to others/3d/ in the bucket
   Emotes      media/layla-and-fanny/art/emotes              remuxed with faststart, posters picked from the frames
   Gameplay    media/selena-and-obsidia/video/_gameplay      VP9 re-encoded to H.264, posters, captions from captions.py
   Skill icons media/_others/web/skills-icon                 copied unchanged (100 px WebP)
@@ -808,7 +809,7 @@ def main() -> None:
     items += build_links()
     for it in [*models, *items]:
         it["tags"] = [t.lower() for t in it["tags"]]
-    common.write_json("models", {"v": 1, "slug": "models", "items": models})
+    # models.json is written by scripts/library/models/build.mjs (the room was rebuilt on 25 Nov 2026).
     common.write_json("others", {"v": 1, "slug": "others", "groups": GROUPS, "items": items})
     if not NO_IGNORED:
         update_ignored()
