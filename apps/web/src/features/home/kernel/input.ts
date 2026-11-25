@@ -58,6 +58,8 @@ export class InputEnergy {
   pushAt = 0;
   /** Wall-clock milliseconds of the last scroll key (0: none yet). */
   keyAt = 0;
+  /** Which way the last wheel or touch pushed the page: 1 down, -1 up. */
+  pushDir: 1 | -1 = 1;
   private pending = 0;
   private touchY: number | null = null;
   private attached: Source | null = null;
@@ -126,6 +128,7 @@ export class InputEnergy {
     if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
     const h = this.attached?.innerHeight ?? 800;
     this.pending += wheelPixels(e.deltaY, e.deltaMode, h);
+    if (e.deltaY !== 0) this.pushDir = e.deltaY > 0 ? 1 : -1;
   };
 
   private readonly onTouchStart = (e: TouchEvent): void => {
@@ -138,7 +141,10 @@ export class InputEnergy {
     const y = e.touches[0]?.clientY;
     if (y === undefined) return;
     // The finger going up is the page going down.
-    if (this.touchY !== null) this.pending += this.touchY - y;
+    if (this.touchY !== null) {
+      this.pending += this.touchY - y;
+      if (y !== this.touchY) this.pushDir = this.touchY - y > 0 ? 1 : -1;
+    }
     this.touchY = y;
   };
 

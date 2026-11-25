@@ -32,6 +32,12 @@ const WAITED_SITE = [
   "img:/img/home/mlbb.webp",
   "img:/img/about/themlabel.webp",
   "stream:home-trailer",
+  // Selena's card in the list and the glass of her room, with her model, the dragon's and their clips
+  // on a wide screen (the owner, 24 Nov 2026: a fast scroll must never meet her frame or her room empty).
+  "img:/img/home/cards/selena-45.webp",
+  "img:/img/home/selena-glass.webp",
+  /^media:\/models\/home\/(selena|silverbolt)/,
+  /^media:\/(img|data)\/home\/.*(selena|silverbolt|sky|camera)/i,
 ];
 
 /** A document load adds what the opening carries in: the two Guinevere drones. */
@@ -139,7 +145,9 @@ describe("homeItems", () => {
     try {
       const items = listFor("site");
       const rig = items.find((item) => item.id === "media:/models/home/selena-r7.glb");
-      expect(rig?.deferred).toBe(wide ? true : undefined);
+      // On a wide screen her rig is waited for (round eleven); on a narrow one the card stands in.
+      expect(rig === undefined).toBe(!wide);
+      expect(rig?.deferred).toBeFalsy();
       expect(items.some((item) => item.id === "img:/img/home/cards/selena-45.webp")).toBe(true);
     } finally {
       media.mockRestore();

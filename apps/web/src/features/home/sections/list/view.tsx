@@ -101,6 +101,8 @@ export function view(): SectionMarkup {
     ),
     text: (
       <div className={styles.stage}>
+        {/* Over her model while it is the small picture beside the frame: the other small pictures are paler. */}
+        <i className={styles.veil} data-list-veil="" aria-hidden="true" />
         <div className={styles.head} data-list-head="">
           <h2 className={styles.title} data-list-title="">
             {LIST.title}

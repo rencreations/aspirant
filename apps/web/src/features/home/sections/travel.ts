@@ -28,6 +28,11 @@ export class ScrollTravel {
     this.reverse += (goal - this.reverse) * (1 - Math.exp(-Math.abs(delta) * 6.5));
   }
 
+  /** The scroll is going back (the last move of the page was upward). */
+  get backward(): boolean {
+    return this.sign < 0;
+  }
+
   /** The run already turns the hips by 0.62 radians. Supply only the remaining yaw. */
   runYaw(forward: 1 | -1): number {
     return forward * this.heading * 1.49 - 0.62;

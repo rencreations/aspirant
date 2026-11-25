@@ -3,9 +3,16 @@ import { describe, expect, it } from "vitest";
 import { validatePlays } from "../../kernel/plays";
 
 import { OUT_FROM } from "./choreo";
-import { LENGTHS, REST_V, VOICES_PLAYS, VOICES_SCREENS, VOICES_ZONES } from "./stations";
+import {
+  ENTER_SECONDS,
+  LENGTHS,
+  REST_V,
+  VOICES_PLAYS,
+  VOICES_SCREENS,
+  VOICES_ZONES,
+} from "./stations";
 
-describe("the voices zones", () => {
+describe("the voices stations", () => {
   it("are a valid table: white at the start, the rest in the middle, the corners at the end", () => {
     expect(() => {
       validatePlays("voices", VOICES_PLAYS);
@@ -14,22 +21,30 @@ describe("the voices zones", () => {
     expect(VOICES_PLAYS.map((p) => p.to)).toEqual([REST_V, 1]);
   });
 
-  it("are scroll zones with no clock: every play has a span", () => {
-    for (const p of VOICES_PLAYS) expect(p.span).toBeGreaterThan(0);
+  it("come in on a clock (a trigger) and go out by the scroll (a zone)", () => {
+    const [enter, leave] = VOICES_PLAYS;
+    expect(enter!.span).toBeUndefined();
+    expect(enter!.seconds).toBe(ENTER_SECONDS);
+    expect(leave!.span).toBeGreaterThan(0);
   });
 
-  it("lay out in screens: enter, a long rest, leave, with the leave ending at the section's end", () => {
-    const [enter, leave] = VOICES_ZONES;
-    expect(enter!.from).toBe(0);
-    expect(enter!.to).toBeCloseTo(LENGTHS.enter, 9);
-    expect(leave!.from).toBeCloseTo(LENGTHS.enter + LENGTHS.rest, 9);
+  it("fire the way in a little after the section starts, when the white has covered the screen", () => {
+    const enter = VOICES_PLAYS[0]!;
+    expect(enter.at).toBeGreaterThan(0);
+    expect(enter.at * VOICES_SCREENS).toBeCloseTo(LENGTHS.arrive, 9);
+    // The page is held while it runs: it is short, as the owner asked of every scene.
+    expect(ENTER_SECONDS).toBeLessThanOrEqual(2.5);
+  });
+
+  it("lay out in screens: the white, a long rest, the way out ending at the section's end", () => {
+    const [leave] = VOICES_ZONES;
+    expect(leave!.from).toBeCloseTo(LENGTHS.arrive + LENGTHS.rest, 9);
     expect(leave!.to).toBeCloseTo(VOICES_SCREENS, 9);
   });
 
   it("are short, and the rest is the long part (it is text and information)", () => {
-    expect(LENGTHS.enter).toBeLessThanOrEqual(1);
     expect(LENGTHS.leave).toBeLessThanOrEqual(1);
-    expect(LENGTHS.rest).toBeGreaterThanOrEqual(LENGTHS.enter);
+    expect(LENGTHS.rest).toBeGreaterThanOrEqual(LENGTHS.leave);
     expect(LENGTHS.rest).toBeGreaterThanOrEqual(0.9);
   });
 

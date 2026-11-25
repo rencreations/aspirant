@@ -6,10 +6,8 @@
  * so a mirrored doll never mirrors a cover. The state is `book.ts`; this lays it on meshes.
  *
  * It is drawn in the home's toon look (`actors/shared/toon.ts`: the same key light and cel bands as
- * the rest of the cast, and the same kind of ink line). What a light does to a real object is
- * made out of shapes, so it holds at any angle: the raised parts cast a flat shadow on their board,
- * which moves with the light (`aim`), and the whole book lays a soft shadow on what is behind it
- * (`shade`), drawn by multiplying, so it darkens only what she has already drawn.
+ * the rest of the cast, and the same kind of ink line). It casts no shadow of its own, neither on
+ * its own boards nor on what is behind it (the owner, 25 Nov 2026: only the book, nothing dark round it).
  *
  * Seen from the visitor's side the book shows its outsides: open, the back cover is on the left and
  * the front cover on the right with the spine between them; shut, only the back cover shows.
@@ -21,13 +19,10 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
-  MultiplyBlending,
   Path,
   PlaneGeometry,
-  Quaternion,
-  ShaderMaterial,
+  type Quaternion,
   Shape,
-  ShapeGeometry,
   Vector3,
   type BufferGeometry,
   type Material,
@@ -112,15 +107,6 @@ function corner(sx: number, sy: number): Shape {
   return s;
 }
 
-/** The flat shadow of all that stands on one board, and the board whose frame the light is read in. */
-interface Shade {
-  mesh: Mesh;
-  board: Object3D;
-}
-
-/** How far a shadow reaches from what casts it, in metres, at a light that stands straight over it. */
-const SHADOW_LENGTH = 0.0014;
-
 type Side = "left" | "right";
 
 export class BookMesh {
@@ -133,15 +119,9 @@ export class BookMesh {
   private readonly back = new Group();
   private readonly front = new Group();
   private readonly leaf = new Group();
-  private readonly blocks: Mesh[] = [];
-  private readonly shades: Shade[] = [];
-  private readonly light = new Vector3();
-  private readonly turn = new Quaternion();
   private readonly geometries: BufferGeometry[] = [];
   private readonly materials: Material[] = [];
   private readonly ink = new InkMaterial(0x1d2347, undefined, 0.8, { fine: true });
-  private readonly cast: ShaderMaterial;
-  private readonly shadow: Mesh;
   private readonly angles = { front: 0, back: 0 };
   private readonly turnNow = { angle: 0, lift: 0, bend: 0 };
   private readonly outline: Mesh[] = [];
@@ -168,9 +148,6 @@ export class BookMesh {
     const sky = toon(SKY);
     const gold = toon(GOLD, "metal");
     const paper = toon(PAPER, "soft");
-    // The shadows of the raised shapes are the cloth's own colour, deep.
-    const deepBack = flat(0x142063);
-    const deepFront = flat(0x6d1239);
     this.materials.push(this.ink);
     this.ink.setSize(150);
 
@@ -197,22 +174,16 @@ export class BookMesh {
       0.0007,
     );
     boardGeo.translate(0, 0, -(BOARD_T - 0.0014) / 2);
-    const makeBoard = (
-      group: Group,
-      cloth: ToonMaterial,
-      deep: MeshBasicMaterial,
-      index: 0 | 1,
-    ) => {
+    const makeBoard = (group: Group, cloth: ToonMaterial, index: 0 | 1) => {
       const sign = index === 0 ? -1 : 1;
       const board = new Mesh(boardGeo, cloth);
       board.position.x = (sign * BOOK_W) / 2;
       group.add(board);
       withInk(board);
       // The raised shapes sit on the outer face, in the board's frame (x from its middle). They are
-      // collected by material and made into one mesh each, and their shadows into one flat mesh.
+      // collected by material and made into one mesh each.
       const top = BOARD_T / 2 + 0.0005;
       const parts = new Map<ToonMaterial, BufferGeometry[]>();
-      const shades: BufferGeometry[] = [];
       const add = (shape: Shape, material: ToonMaterial, x: number, y: number, lift = 0) => {
         const g = new ExtrudeGeometry(shape, {
           depth: RAISE,
@@ -224,10 +195,6 @@ export class BookMesh {
         });
         g.translate(x, y, top + lift);
         parts.set(material, [...(parts.get(material) ?? []), g]);
-        // Its shadow: the same outline, flat on the cloth, a little to the side the light is not.
-        const shade = new ShapeGeometry(shape, 10);
-        shade.translate(x, y, top - 0.0004);
-        shades.push(shade);
       };
       // A raised border all round, set in from the edge.
       add(ring(BOOK_W - 0.0145, BOOK_H - 0.0145, 0.0042, 0.0014), cream, 0, 0);
@@ -267,16 +234,9 @@ export class BookMesh {
         for (const g of geometries) g.dispose();
         if (merged) board.add(new Mesh(geo(merged), material));
       }
-      const flat = mergeGeometries(shades);
-      for (const g of shades) g.dispose();
-      if (flat) {
-        const mesh = new Mesh(geo(flat), deep);
-        board.add(mesh);
-        this.shades.push({ mesh, board });
-      }
     };
-    makeBoard(this.back, clothBack, deepBack, 0);
-    makeBoard(this.front, clothFront, deepFront, 1);
+    makeBoard(this.back, clothBack, 0);
+    makeBoard(this.front, clothFront, 1);
     this.backPivot.add(this.back);
     this.frontPivot.add(this.front);
 
@@ -329,7 +289,6 @@ export class BookMesh {
       const block = new Mesh(blockGeo, paper);
       block.position.set((sign * BOOK_W) / 2, 0, -BOARD_T / 2 + 0.0004);
       group.add(block);
-      this.blocks.push(block);
       // The block's inner face is toward -z: panels go on it, upright for the reader.
       const face = new Group();
       face.position.set(0, 0, -PAGE_T - 0.0001);
@@ -391,31 +350,6 @@ export class BookMesh {
     this.spine.scale.setScalar(BOOK_SCALE);
     this.root.add(this.spine);
     this.root.visible = false;
-
-    // ---- the shadow the book lays on what is behind it: it only darkens what is already drawn.
-    this.cast = new ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: MultiplyBlending,
-      premultipliedAlpha: true,
-      uniforms: { uShade: { value: 0.58 }, uSoft: { value: 0.3 } },
-      vertexShader:
-        "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-      fragmentShader: `varying vec2 vUv; uniform float uShade; uniform float uSoft;
-        float box(vec2 p, vec2 b, float r){ vec2 d = abs(p) - b + r; return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - r; }
-        void main(){
-          vec2 p = (vUv - 0.5) * 2.0;
-          float d = box(p, vec2(0.78, 0.8), 0.16);
-          float a = 1.0 - smoothstep(-uSoft, uSoft, d);
-          gl_FragColor = vec4(vec3(mix(1.0, uShade, a)), 1.0);
-        }`,
-    });
-    this.materials.push(this.cast);
-    this.shadow = new Mesh(geo(new PlaneGeometry(BOOK_W * 2.5, BOOK_H * 1.45)), this.cast);
-    this.shadow.scale.setScalar(BOOK_SCALE);
-    this.shadow.renderOrder = 10;
-    this.shadow.visible = false;
-    this.root.add(this.shadow);
   }
 
   /**
@@ -436,8 +370,8 @@ export class BookMesh {
     this.frontPivot.rotation.y = front;
     // Shut, the front board lies behind the back one: one thickness of boards and pages.
     this.frontPivot.position.z = -(2 * BOARD_T + 2 * PAGE_T) * (1 - Math.min(1, o * 2));
-    const showBlocks = o > 0.02;
-    for (const block of this.blocks) block.visible = showBlocks;
+    // The pages are always there (a shut book shows their edges between its covers): they were
+    // switched on at the first opening, which made them appear in one frame.
     // The turning page swings over the spine from the right block to the left, toward her, and
     // rises over the top as it goes, so its edge is seen over the book.
     const turning = state.turning;
@@ -451,37 +385,6 @@ export class BookMesh {
     }
     for (const hull of this.outline) hull.visible = true;
     return true;
-  }
-
-  /**
-   * The light (a unit vector toward it, in the world of her scene): the raised shapes of each board
-   * lay their shadow on the cloth away from it, read in that board's own frame (the boards lean).
-   * A board that turns its back to the light has no shadow to show.
-   */
-  aim(world: Vector3): void {
-    for (const { mesh, board } of this.shades) {
-      board.getWorldQuaternion(this.turn).invert();
-      const l = this.light.copy(world).applyQuaternion(this.turn);
-      if (l.z < 0.12) {
-        mesh.visible = false;
-        continue;
-      }
-      mesh.visible = true;
-      const k = SHADOW_LENGTH / l.z;
-      mesh.position.set(-l.x * k, -l.y * k, 0);
-    }
-  }
-
-  /**
-   * The soft shadow of the whole book: a plane just behind it (toward her), slid away from the light
-   * by `dx`, `dy` (metres, in the book's frame) and `behind` metres back.
-   */
-  shade(dx: number, dy: number, behind: number, strength: number): void {
-    this.shadow.visible = strength > 0.01;
-    if (!this.shadow.visible) return;
-    this.shadow.position.set(dx, dy, -behind);
-    this.shadow.rotation.set(0, 0, 0);
-    this.cast.uniforms.uShade!.value = 1 - 0.42 * strength;
   }
 
   /** The line's width follows how big the book is on the screen (CSS pixels, its height). */

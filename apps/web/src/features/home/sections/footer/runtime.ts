@@ -9,7 +9,8 @@
  * The drone's place is `droneAt` (the same function the archive's runtime uses for its part): the
  * archive writes it up to 58.6 and this runtime from there, so the order they run in cannot matter.
  * What is glued to the page's own flow (the ring in the footer's card, which rises and then sticks)
- * is read from the real scroll `raw`, not the scene's smoothed one, so it never trails the card.
+ * is read from the scene `S`: the kernel moves the card to where the scene is (the page can be a
+ * little ahead of the scene on a hard scroll), so the two never part.
  */
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
@@ -34,6 +35,8 @@ import { exitBridge } from "./exit-bridge";
 const DART_MS = 450;
 /** The dart never holds the page change longer than this (a hidden tab draws no frames). */
 const SAFETY_MS = 1400;
+/** The scene is this close to the end of the page (screens): the scroll's way to About may go. */
+const SETTLED_WITHIN = 0.04;
 /** From here the scroll's own exit has already taken the drone away: nothing to wait for. */
 const GONE_AT = AT.end - 0.06;
 
@@ -81,6 +84,7 @@ class FooterRuntime implements SectionRuntime {
     this.observer?.observe(this.stageEl);
     void document.fonts?.ready.then(this.onResize);
     exitBridge.run = () => this.exit();
+    exitBridge.settled = () => !this.running || this.lastS >= AT.end - SETTLED_WITHIN;
   }
 
   /** Where the ring is, relative to the footer's stage. The stage moves with the scroll, so only the difference counts. */
@@ -124,7 +128,7 @@ class FooterRuntime implements SectionRuntime {
 
     const drone = this.drone;
     if (!drone) return;
-    droneAt(S, frame.raw, 9, vp, this.strip, foot, this.spot);
+    droneAt(S, frame.S, 9, vp, this.strip, foot, this.spot);
     this.last.x = this.spot.x;
     this.last.y = this.spot.y;
     this.last.height = this.spot.height;
@@ -194,6 +198,7 @@ class FooterRuntime implements SectionRuntime {
 
   dispose(): void {
     if (exitBridge.run) exitBridge.run = null;
+    exitBridge.settled = null;
     this.finishDart();
     this.observer?.disconnect();
     window.removeEventListener("resize", this.onResize);

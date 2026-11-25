@@ -1,8 +1,8 @@
-import { Quaternion, Vector3, type Object3D, type WebGLRenderer } from "three";
+import { Vector3, type Object3D, type WebGLRenderer } from "three";
 
 import type { Actor, FrameInfo, HitTarget, Pass } from "../../kernel/types";
 import type { ActorCtx } from "../shared/types";
-import { setToonView, toonLight } from "../shared/toon";
+import { setToonView } from "../shared/toon";
 
 import { type Channels, restChannels } from "./channels";
 import { clamp, springTo, type Sprung } from "./ease";
@@ -45,8 +45,6 @@ const S_JUMP = 1.2;
 /** How quickly her turn and her pace follow what a section asks (radians a second): about a third of a second. */
 const TURN_OMEGA = 11;
 const PACE_OMEGA = 9;
-/** How far behind the book (toward her) its soft shadow lies, in metres. */
-const SHADOW_BEHIND = 0.034;
 
 export type LookAt = { x: number; y: number } | "pointer" | null;
 export type Side = "left" | "right";
@@ -170,9 +168,6 @@ export class TetraActor implements Actor {
   private snapNext = true;
   private lastS = 0;
   private readonly vA = new Vector3();
-  private readonly light = new Vector3();
-  private readonly lightLocal = new Vector3();
-  private readonly qBook = new Quaternion();
   private readonly gripA = { x: 0, y: 0, z: 0 };
   private readonly gripB = { x: 0, y: 0, z: 0 };
   private readonly vB = new Vector3();
@@ -389,6 +384,19 @@ export class TetraActor implements Actor {
       tall: this.placed.tall,
       shot: this.shot.name,
       channels: this.channels,
+      book: {
+        present: this.bookState.present.x,
+        open: this.bookState.open.x,
+        support: this.bookSupport,
+        position: this.bookMesh.root.position.toArray(),
+        rotation: [
+          this.bookMesh.root.rotation.x,
+          this.bookMesh.root.rotation.y,
+          this.bookMesh.root.rotation.z,
+        ],
+        scale: this.bookMesh.root.scale.x,
+        shown: this.bookMesh.shown,
+      },
     };
   }
 
@@ -422,7 +430,7 @@ export class TetraActor implements Actor {
   // ---------------------------------------------------------------- inside
 
   private warm(): void {
-    // The book's shaders (toon, ink, shadow) compile now, not on the frame it first comes out.
+    // The book's shaders (toon, ink) compile now, not on the frame it first comes out.
     this.bookMesh.root.visible = true;
     this.model.warm(this.ctx.stage.renderer);
     this.bookMesh.root.visible = false;
@@ -654,27 +662,9 @@ export class TetraActor implements Actor {
     this.quadsLive = shown;
     if (shown) {
       this.bookMesh.size((this.placed.tall / TETRA_HEIGHT) * BOOK_H * BOOK_SCALE);
-      this.lightBook();
       this.projectQuad("left", this.quadL);
       this.projectQuad("right", this.quadR);
     }
-  }
-
-  /** The key light for the book: the raised shapes' shadows and the soft shadow behind it. */
-  private lightBook(): void {
-    const world = this.light
-      .copy(toonLight.dir.value)
-      .applyQuaternion(this.model.camera.quaternion);
-    this.bookMesh.aim(world);
-    const q = this.bookMesh.worldQuaternion(this.qBook).invert();
-    const local = this.lightLocal.copy(world).applyQuaternion(q);
-    const t = SHADOW_BEHIND / Math.max(0.25, local.z);
-    this.bookMesh.shade(
-      -local.x * t,
-      -local.y * t,
-      SHADOW_BEHIND,
-      clamp(this.bookState.present.x, 0, 1),
-    );
   }
 
   /** The four corners of a cover on the screen. */

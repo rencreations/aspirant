@@ -72,6 +72,9 @@ export const BEND_SCREENS = 10.3;
 
 const ZONE_SECONDS = 0.9;
 
+/** The top scene speed through the zones, in screens a second (a little under the idle snap's own). */
+export const BEND_SPEED = 0.9;
+
 export const BEND_PLAYS: readonly HomePlay[] = ZONE_SCREENS.map((z, i): HomePlay => ({
   at: z.at / BEND_SCREENS,
   span: z.len / BEND_SCREENS,

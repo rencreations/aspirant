@@ -39,6 +39,8 @@ const TABLE = zoneTable(0, [
 /** The section's length in screens (`index.ts`). */
 export const SELENA_SCREENS = TABLE.screens;
 export const SELENA_PLAYS = TABLE.plays.map((play, index) =>
-  index === 1 ? { ...play, seconds: 7.2 } : play,
+  // The way out (the film) is the scroll's, and only the scroll's: the page is not finished by itself
+  // in it (the owner, 24 Nov 2026), and the kernel gives the scene a top speed through it.
+  index === 1 ? { ...play, seconds: 7.2, noSnap: true } : play,
 ); /** A control taking the keyboard focus lands in the middle of the rest, where the words show. */
 export const SELENA_FOCUS = (LENGTHS.enter + LENGTHS.rest / 2) / SELENA_SCREENS;

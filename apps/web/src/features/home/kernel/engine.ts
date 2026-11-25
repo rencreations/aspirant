@@ -26,7 +26,15 @@ import { installProbes, type HomeProbe, type HomeSnapshot } from "./probes";
 import { SectionRunner } from "./run";
 import { SceneScroll, screensOf } from "./scroll";
 import { ZoneSnap } from "./scrub";
-import { FlickLimiter, JointSnap, type FlickFrame, type SnapFrame } from "./snap";
+import {
+  AUTO_ZONE_SPEED,
+  SELENA_SPEED,
+  SceneGovernor,
+  normalizeRanges,
+  type GovernFrame,
+  type SpeedRange,
+} from "./speed";
+import { JointSnap, type SnapFrame } from "./snap";
 import { createStage } from "./stage";
 import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, SectionId, Viewport } from "./types";
 
@@ -34,6 +42,12 @@ import type { FrameInfo, HomeSection, ScrollApi, SectionCtx, SectionId, Viewport
 const MOVE_ARRIVED = 0.02;
 /** The longest a script's move holds the plays still, in milliseconds. */
 const MOVE_MAX_MS = 5000;
+/** A wheel or a touch this recently (ms) makes the page's move the visitor's own (`kernel/speed.ts`). */
+const VISITOR_MS = 1500;
+/** The page moved this recently (ms) after the visitor's last wheel or touch: its glide is theirs too. */
+const GLIDE_MS = 200;
+/** The scene is behind the page by more than this (screens): it is catching up. */
+const BEHIND = 0.05;
 /** Frames the plays rest after an immediate move (the scroll is read a frame later). */
 const SNAP_FRAMES = 2;
 /** The hold's own limit sits this far past the machine's, so the machine is the one that ends it. */
@@ -193,15 +207,18 @@ export function startEngine(options: EngineOptions): Engine | null {
     hold: (limitMs) => holdScroll(limitMs),
   };
 
-  // The scene's view of the page's position (a very hard flick is taken a screen a frame, so the
-  // plays on the way fire in order), and the snap to a rest when the visitor lets go in a joint.
-  const flick = new FlickLimiter();
+  // The snap to a rest when the visitor lets go in a joint.
   const joint = new JointSnap(
     {
       layout,
       move: (screens, seconds) => scrollApi.to(screens, { duration: seconds }),
       // A held page and a smooth move that must end now: the lock's pause resets the smooth scroller.
       stop: () => holdScroll(1000)(),
+      // The carry to a play that fires by itself is a plain smooth move of the page, not a script's
+      // move: the scene follows it as it follows a scroll, so the play fires and plays.
+      carry: (screens, seconds) => {
+        options.scrollTo(screens * unit, { immediate: false, duration: seconds });
+      },
     },
     performance.now(),
   );
@@ -215,20 +232,39 @@ export function startEngine(options: EngineOptions): Engine | null {
     },
     performance.now(),
   );
-  const filmZone = layout.placed.find((p) => p.id === "selena");
-  const filmPlay = filmZone?.def.plays?.[1];
-  const filmStart =
-    filmZone && filmPlay ? filmZone.start + filmPlay.at * filmZone.def.screens : Infinity;
-  const filmEnd =
-    filmZone && filmPlay ? filmStart + (filmPlay.span ?? 0) * filmZone.def.screens : Infinity;
-  const flickFrame: FlickFrame = {
-    real: 0,
-    now: 0,
-    forced: false,
-    holding: false,
-    pushAt: 0,
-    keyAt: 0,
+  // The scene's top speed (`kernel/speed.ts`): free ground, every scroll zone, Selena's growth into
+  // the screen (the list's last zone) and her way out (the film, the second zone of her section), and
+  // the stretches the sections name in `topSpeed`. Where two meet the lowest speed wins.
+  const speedRanges: SpeedRange[] = [];
+  const zoneOf = (id: SectionId, which: number): SpeedRange | null => {
+    const placed = layout.placed.find((p) => p.id === id);
+    const plays = placed?.def.plays;
+    const play = plays ? plays[which < 0 ? plays.length + which : which] : undefined;
+    if (!placed || !play) return null;
+    const start = placed.start + play.at * placed.def.screens;
+    return { start, end: start + (play.span ?? 0) * placed.def.screens, speed: SELENA_SPEED };
   };
+  for (const range of [zoneOf("list", -1), zoneOf("selena", 1)]) if (range) speedRanges.push(range);
+  for (const placed of layout.placed) {
+    for (const stretch of placed.def.topSpeed ?? []) {
+      speedRanges.push({
+        start: placed.start + stretch.from,
+        end: placed.start + stretch.to,
+        speed: stretch.speed,
+      });
+    }
+    for (const play of placed.def.plays ?? []) {
+      if (play.span === undefined) continue;
+      const start = placed.start + play.at * placed.def.screens;
+      speedRanges.push({
+        start,
+        end: start + play.span * placed.def.screens,
+        speed: AUTO_ZONE_SPEED,
+      });
+    }
+  }
+  const governor = new SceneGovernor(normalizeRanges(speedRanges));
+  const govern: GovernFrame = { real: 0, dt: 0, forced: false, holding: false, visitor: false };
   const snapFrame: SnapFrame = {
     now: 0,
     real: 0,
@@ -271,8 +307,8 @@ export function startEngine(options: EngineOptions): Engine | null {
         playHold = next;
         playToken = h.token;
       }
-    } else if (playHold && !flick.engaged) {
-      // (A chase of a flick keeps the hold across the frame between two plays.)
+    } else if (playHold && !behind) {
+      // (The scene catching up with a hard scroll keeps the hold across the frame between two plays.)
       playHold();
       playHold = null;
       playToken = -1;
@@ -309,6 +345,13 @@ export function startEngine(options: EngineOptions): Engine | null {
     below: slot(root, "below", p.id),
     text: p.def.dom === "fixed" ? slot(root, "text", p.id) : null,
   }));
+  // The last section lives in the page's own flow (the footer's card rises with the real scroll and
+  // sticks). Everything above it is drawn from the scene, which can be a little behind the page on a
+  // hard scroll, so the card is moved by the difference: it rises where the scene is, never over a
+  // section that is still on the screen.
+  const flowPlaced = layout.placed.find((p) => p.def.dom === "flow") ?? null;
+  const flowStage = flowPlaced ? slot(root, "text", flowPlaced.id) : null;
+  let flowOffset = 0;
 
   const runner = new SectionRunner({
     layout,
@@ -355,39 +398,44 @@ export function startEngine(options: EngineOptions): Engine | null {
     input: input.state,
   };
   let jumped = true;
-  // The page's real position this frame (the scene's `raw` can be behind it in a flick).
+  // The page's real position this frame (the scene's `raw` is behind it when held to its top speed).
   let realRaw = 0;
+  // When the page last moved by itself (not put back by the engine), for the glide of a wheel or a touch.
+  let movedAt = 0;
+  // The engine put the page back this frame (for the snap, which must not take it for the visitor's move).
+  let pulledNow = false;
+  // The scene is behind the page (catching up with a hard scroll).
+  let behind = false;
 
   const removers = [
     clock.add((f) => {
       // The scroll: the real position, then the scene's smoothed one.
       const wall = performance.now();
+      const lastReal = realRaw;
       realRaw = frozen ? frozenS : screensOf(window.scrollY, unit);
+      if (Math.abs(realRaw - lastReal) > 1e-4 && !pulledNow) movedAt = wall;
       const dt = frozen ? 0 : f.dt;
       // Frozen time stands still too, so idle motion does not drift in a frame sheet.
       if (!frozen) heldTime = f.time;
-      // The scene sees the page, except in a very hard flick (`kernel/snap.ts`): then it follows a
-      // screen a frame, and the page is pulled back to within two screens of it.
-      flickFrame.real = realRaw;
-      flickFrame.now = wall;
-      flickFrame.forced = forceJump || snapFrames > 0 || moveTarget !== null || frozen;
-      flickFrame.holding = playing !== null;
-      flickFrame.pushAt = input.pushAt;
-      flickFrame.keyAt = input.keyAt;
-      let raw = flick.step(flickFrame);
-      // Keep ordinary input reversible, but give the camera time to show the turn on a hard flick.
-      // Explicit seeks, keyboard focus jumps and the idle continuation retain their destinations.
-      if (
-        !flickFrame.forced &&
-        ((scene.raw >= filmStart && scene.raw <= filmEnd) ||
-          (scene.raw < filmStart && raw >= filmStart) ||
-          (scene.raw > filmEnd && raw <= filmEnd))
-      ) {
-        const from = Math.max(filmStart, Math.min(filmEnd, scene.raw));
-        const limit = Math.max(0.001, dt * 0.82);
-        raw = from + Math.max(-limit, Math.min(limit, raw - from));
+      // The scene sees the page through the governor (`kernel/speed.ts`): at most the top speed of the
+      // stretch it is in, with the page put back when the visitor's own scroll has run too far ahead.
+      // A seek, a focus move, a script's move and a frozen scene take the page as it is.
+      const pushed = input.pushAt > 0 && input.pushAt >= input.keyAt;
+      const scripted = moveTarget !== null || joint.moving || zoneSnap.moving;
+      govern.real = realRaw;
+      govern.dt = dt;
+      govern.forced = forceJump || snapFrames > 0 || moveTarget !== null || frozen;
+      govern.holding = playing !== null;
+      govern.visitor =
+        pushed && !scripted && (wall - input.pushAt < VISITOR_MS || wall - movedAt < GLIDE_MS);
+      const raw = governor.step(govern);
+      const pullTo = governor.pull;
+      pulledNow = !Number.isNaN(pullTo);
+      if (pulledNow) {
+        options.scrollTo(pullTo * unit, { immediate: true });
+        realRaw = pullTo;
       }
-      if (!Number.isNaN(flick.pull)) options.scrollTo(flick.pull * unit, { immediate: true });
+      behind = Math.abs(realRaw - raw) > BEHIND;
       jumped = scene.step(raw, dt) || forceJump;
       if (jumped || snapFrames > 0) {
         joint.noteJump(wall);
@@ -460,7 +508,11 @@ export function startEngine(options: EngineOptions): Engine | null {
       // A lock the home did not take (the menu, a player, a dialog): the page is not ours to move.
       snapFrame.locked = lockedByOthers();
       snapFrame.playing = open && (runner.holdState().holding || runner.waiting());
-      snapFrame.chasing = flick.engaged;
+      // The scene is behind the page (a flick, or held back by a top speed): the snap waits, so it never
+      // starts a move that would make the scene leap to where the page is.
+      snapFrame.pulled = pulledNow;
+      snapFrame.pushDir = input.pushDir;
+      snapFrame.chasing = behind || Math.abs(realRaw - scene.raw) > 0.03;
       snapFrame.scripted = moveTarget !== null && !joint.moving && !zoneSnap.moving;
       // A section's own move of the page (a button) is where the page is meant to be: no snap
       // away from it until the visitor pushes the page again.
@@ -476,6 +528,15 @@ export function startEngine(options: EngineOptions): Engine | null {
         const on = open && isRunning(s.p, frameInfo.S);
         setOn(s.below, on);
         setOn(s.text, on);
+      }
+      if (flowStage && flowPlaced) {
+        const top = (at: number) => Math.max(0, flowPlaced.start - at);
+        const offset =
+          open && !frozen ? Math.round((top(frameInfo.S) - top(realRaw)) * unit * 2) / 2 : 0;
+        if (offset !== flowOffset) {
+          flowOffset = offset;
+          flowStage.style.transform = offset === 0 ? "" : `translate3d(0, ${offset}px, 0)`;
+        }
       }
     }, ORDER.sections),
     clock.add(() => {
@@ -555,9 +616,9 @@ export function startEngine(options: EngineOptions): Engine | null {
     plays: () => runner.plays(),
     snap: () => ({
       ...joint.report(),
-      chasing: flick.engaged,
+      chasing: behind,
       real: realRaw,
-      seen: flick.seen,
+      seen: governor.seen,
       scrub: zoneSnap.report(),
     }),
   });

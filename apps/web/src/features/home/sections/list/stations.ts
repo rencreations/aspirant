@@ -53,6 +53,9 @@ export const LIST_STEPS: readonly BeatStep[] = [
     to: LIST_LAST,
     seconds: 0.9,
     ease: "linear",
+    // The growth is the scroll's, and only the scroll's: the page is not finished by itself here
+    // (the owner, 24 Nov 2026), and the kernel gives the scene a top speed through it.
+    noSnap: true,
   },
 ];
 

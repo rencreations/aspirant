@@ -245,6 +245,18 @@ describe("the tour and the covers", () => {
     expect(headAt(AT.coversIn + 0.1, 0.1)).toBeLessThan(headAt(AT.coversIn + 0.1));
   });
 
+  it("has the covers, the title and the light gone before the footer's card starts to rise", () => {
+    expect(AT.cardFrom).toBeCloseTo(AT.stuck - 1, 9);
+    for (let i = 0; i < 10; i += 1) expect(coverOut(AT.cardFrom, i), `cover ${i}`).toBe(1);
+    expect(headAt(AT.cardFrom)).toBe(0);
+    expect(lightAt(AT.cardFrom)).toBe(0);
+    // And the drone waits where the tour left it until then.
+    const before = at(AT.tourTo + 0.1, 1440, 900);
+    const waiting = at(AT.cardFrom - 0.05, 1440, 900);
+    expect(waiting.x).toBeCloseTo(before.x, 6);
+    expect(waiting.y).toBeCloseTo(before.y, 6);
+  });
+
   it("puts the footer's stage at the bottom before it rises and at the top once it stands", () => {
     expect(stageTop(AT.stuck - 1, { w: 1440, h: 900 })).toBeCloseTo(900, 6);
     expect(stageTop(AT.stuck, { w: 1440, h: 900 })).toBe(0);

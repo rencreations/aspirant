@@ -1,3 +1,4 @@
+import { PASSAGE_SPEED } from "../../kernel/speed";
 import type { HomeSection } from "../../kernel/types";
 
 import { preload } from "./preload";
@@ -22,6 +23,13 @@ export const section: HomeSection = {
   nav: { theme: "daybreak" },
   dom: "fixed",
   plays: SELENA_PLAYS,
+  // The room comes in at one screen a second (the drawer, its words and the dragon play whole), the
+  // film has its own top speed in the engine, and the rests between them are held too, so a hard scroll
+  // from the list lands in the room and not in the film (25 Nov 2026).
+  topSpeed: [
+    { from: 0, to: SELENA_PLAYS[0]!.span! * SELENA_SCREENS, speed: 1 },
+    { from: 0, to: SELENA_SCREENS, speed: PASSAGE_SPEED },
+  ],
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

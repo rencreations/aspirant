@@ -220,6 +220,7 @@ export class TetraModel {
   private readonly q = new Quaternion();
   private readonly up = new Quaternion();
   private readonly twist = new Quaternion();
+  private readonly whole = new Quaternion();
   private readonly euler = new Euler(0, 0, 0, "YXZ");
   private readonly v = new Vector3();
   private readonly w = new Vector3();
@@ -469,7 +470,13 @@ export class TetraModel {
     this.v.copy(this.wrist).sub(this.shoulder).normalize();
     this.w.copy(goal).sub(this.shoulder).normalize();
     this.twist.setFromUnitVectors(this.v, this.w);
-    if (amount < 1) this.twist.identity().slerp(this.twist, amount);
+    // A share of the swing: from no turn toward the whole one. (The whole swing is kept apart: slerping
+    // a quaternion toward itself after clearing it gave no turn at all, so an arm that was only
+    // part way to its target did not move and then jumped the whole way when the share reached one.)
+    if (amount < 1) {
+      this.whole.copy(this.twist);
+      this.twist.identity().slerp(this.whole, amount);
+    }
     this.up.identity();
     for (let at = bone.parent; at && at !== this.root; at = at.parent) {
       this.up.premultiply(at.quaternion);

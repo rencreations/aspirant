@@ -19,7 +19,7 @@ import {
   type GuestPlace,
 } from "./guests";
 import { newPairPlace, pairAt, type PairPlace } from "./route";
-import { DESCENT_SCREENS, LIST_RISE_AT_U } from "./stations";
+import { DESCENT_SCREENS, LIST_RISE_AT_U, PAIR_FROM_U } from "./stations";
 import { STREAKS } from "./streaks";
 
 const f = (v: number): string => String(Math.round(v * 1000) / 1000);
@@ -48,6 +48,25 @@ const JUMP_SCREENS = 1.2;
 /** The duo's beat is half a second: one of the pair's beats is one of theirs. */
 const GUEST_BEAT_SECONDS = 0.5;
 
+/**
+ * The cursor's pull (24 Nov 2026): the pair lean out of their route toward the cursor, as far as a share
+ * of the way to it and no farther than a share of the screen, and fall back to the route when the
+ * cursor goes. The pull is laid on the route's place before the pair are drawn, so the dance, the guests
+ * and the pair's own flight cap all go on as they were: it is a follower with a limit on its speed
+ * (never a step), and the drone banks into its own motion, so every change of the pull is a turn of the
+ * flight and never a snap.
+ */
+const PULL_REACH = 0.42;
+const PULL_MAX = 0.3;
+const PULL_TIME = 0.42;
+const PULL_SPEED = 1500;
+/** The pull comes in once the pair are on the page and goes out before the dock takes them. */
+const PULL_IN_U = PAIR_FROM_U + 0.9;
+const PULL_OUT_U = SETTLE_U - 0.6;
+/** How far the drone banks and noses over at the pull's top speed (radians). */
+const BANK = 0.32;
+const NOSE = 0.14;
+
 class DescentRuntime implements SectionRuntime {
   private pair: BuddyPair | null = null;
   private disposed = false;
@@ -69,8 +88,14 @@ class DescentRuntime implements SectionRuntime {
   private readonly drawnAt = { x: 0, y: 0, height: 0 };
   private guestsOn = false;
   private vpW = 1440;
+  private readonly ctx: SectionCtx;
+  /** The pull toward the cursor: an offset of the route's place, stage pixels, followed smoothly. */
+  private readonly pullX: Damped = { x: 0, v: 0 };
+  private readonly pullY: Damped = { x: 0, v: 0 };
+  private readonly drawn = { x: 0, y: 0, height: 0, pitch: 0, roll: 0 };
 
   constructor(ctx: SectionCtx) {
+    this.ctx = ctx;
     this.streaks = Array.from(ctx.dom.below.querySelectorAll<HTMLElement>("[data-descent-streak]"));
   }
 
@@ -117,10 +142,11 @@ class DescentRuntime implements SectionRuntime {
     }
     pair.visible = true;
     pair.capFlight(true);
-    pair.place(place);
-    pair.descent(place.descent);
+    pair.setInteractive(true);
     const dt = Math.min(frame.dt, 0.05);
     const jumped = !Number.isFinite(this.lastU) || Math.abs(u - this.lastU) > JUMP_SCREENS;
+    pair.place(this.pulled(place, u, vp, dt, jumped));
+    pair.descent(place.descent);
 
     if (u >= SETTLE_U) {
       // The last half screen: they come to the dock and live there.
@@ -144,6 +170,55 @@ class DescentRuntime implements SectionRuntime {
     const tempo = BPM * (0.92 + 0.16 * this.energy);
     pair.dance("show", (this.beatNow.x * 60) / tempo, { energy: this.energy, bpm: BPM });
     this.guests(dt, pair, visitWanted(u / DESCENT_SCREENS));
+  }
+
+  /**
+   * The route's place with the cursor's pull laid on it. The pull is a smooth follower of a target
+   * (a share of the way to the cursor, limited), faded in and out with the part of the descent that
+   * is the pair's own show, and the drone banks into the way it is being drawn: nothing here steps.
+   */
+  private pulled(
+    place: PairPlace,
+    u: number,
+    vp: { readonly w: number; readonly h: number },
+    dt: number,
+    jumped: boolean,
+  ): { x: number; y: number; height: number; pitch: number; roll: number } {
+    const p = this.ctx.pointer.state;
+    const live = p.type === "mouse" && p.inside;
+    const env =
+      smooth(seg(u, PAIR_FROM_U + 0.3, PULL_IN_U)) * (1 - smooth(seg(u, PULL_OUT_U, SETTLE_U)));
+    let tx = 0;
+    let ty = 0;
+    if (live && env > 0.001) {
+      const cx = p.x - vp.w / 2;
+      const cy = vp.h / 2 - p.y;
+      tx = (cx - place.x) * PULL_REACH;
+      ty = (cy - place.y) * PULL_REACH;
+      const limit = PULL_MAX * Math.min(vp.w, vp.h);
+      const len = Math.hypot(tx, ty);
+      if (len > limit) {
+        tx *= limit / len;
+        ty *= limit / len;
+      }
+      tx *= env;
+      ty *= env;
+    }
+    if (jumped) {
+      setDamped(this.pullX, tx);
+      setDamped(this.pullY, ty);
+    } else {
+      dampTo(this.pullX, tx, PULL_TIME, PULL_SPEED, dt);
+      dampTo(this.pullY, ty, PULL_TIME, PULL_SPEED, dt);
+    }
+    const d = this.drawn;
+    d.x = place.x + this.pullX.x;
+    d.y = place.y + this.pullY.x;
+    d.height = place.height;
+    // Banking: into the way it is being drawn (left or right of its route), nosing over as it dives.
+    d.roll = -BANK * Math.max(-1, Math.min(1, this.pullX.v / PULL_SPEED));
+    d.pitch = NOSE * Math.max(-1, Math.min(1, -this.pullY.v / PULL_SPEED));
+    return d;
   }
 
   /**

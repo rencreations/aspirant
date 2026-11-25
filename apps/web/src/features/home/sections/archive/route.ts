@@ -10,8 +10,8 @@
  *   0.20 to 0.82   she runs left as the strip moves in from the right
  *   0.20 to 0.82   the drone flies over the first cover
  *   1.10 to 2.30   the tour: the drone rests over each room in turn and the light follows it
- *   2.25 to 3.00   the covers lift away, the light goes out, the footer's card rises
- *   2.30 to 3.00   the drone flies down to the middle of the footer's card (it rises to meet it)
+ *   2.25 to 2.80   the covers lift away and the light goes out (the way out is 1.5 screens: 25 Nov 2026)
+ *   2.80 to 3.80   the footer's card rises; the drone flies down to the middle of it (it rises to meet it)
  *   footer 0 to 0.9   the card stands; the drone rests in its ring
  *   footer 0.3 to the end   the hairline under the words fills (full at the point the page opens About)
  *   footer 0.9 to the end   the drone leaves to the right, at the height where About's drone comes in
@@ -82,6 +82,10 @@ export const AT = {
   /** The footer's card is stuck from here (the start of the footer section: joint J15). */
   get stuck(): number {
     return fromFooter(0);
+  },
+  /** The footer's card starts to rise from the bottom of the screen: one screen before it is stuck. */
+  get cardFrom(): number {
+    return fromFooter(0) - 1;
   },
   get hairFrom(): number {
     return fromFooter(0.3);
@@ -218,7 +222,7 @@ export function hairAt(S: number): number {
   return ramp(S, AT.hairFrom, AT.hairTo);
 }
 
-/** The top of the footer's stage on the screen (px), at the real scroll `raw`: it rises, then sticks at 0. */
+/** The top of the footer's stage on the screen (px), at the scene `raw` (the kernel puts the card there): it rises, then sticks at 0. */
 export function stageTop(raw: number, vp: Vp): number {
   return Math.max(0, AT.stuck - raw) * vp.h;
 }
@@ -249,7 +253,7 @@ export function restSpot(vp: Vp, out: Spot): Spot {
 /**
  * The drone at `S`, in the screen frame. `q` is where the light is on the strip (a cover index, a
  * fraction between two): the tour's own position unless the visitor has pulled the drone to a cover.
- * `raw` is the real scroll, for what is glued to the page's flow (the footer's card).
+ * `raw` is the scene's position, for what is glued to the footer's card (the kernel moves the card to it).
  */
 export function droneAt(
   S: number,
@@ -274,8 +278,10 @@ export function droneAt(
     return out;
   }
 
-  if (S < AT.tourTo) {
-    // Pulled to a cover that is mostly off the screen (a neighbour on a phone), the drone still stays on it.
+  if (S < AT.cardFrom) {
+    // The tour, then the way out: the covers lift away under it and it waits where the tour left it
+    // until the footer's card rises. Pulled to a cover that is mostly off the screen (a neighbour on a
+    // phone), the drone still stays on it.
     out.x = Math.min(0.9 * vp.w, Math.max(0.1 * vp.w, coverX(strip, q, pS)));
     out.y = strip.droneY;
     out.height = strip.droneH;
@@ -287,7 +293,7 @@ export function droneAt(
 
   if (S < AT.stuck) {
     // Down to the ring of the footer's card, which rises to meet it.
-    const u = smooth(ramp(S, AT.tourTo, AT.stuck));
+    const u = smooth(ramp(S, AT.cardFrom, AT.stuck));
     out.x = mix(coverX(strip, 9, 9), foot.x, u);
     out.y = mix(strip.droneY, slotY, u);
     out.height = mix(strip.droneH, slotH, u);

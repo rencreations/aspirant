@@ -99,6 +99,50 @@ export function addFlail(turns: Float32Array, t: number, amount: number, rate = 
   );
 }
 
+/**
+ * The cartoon sprint (25 Nov 2026): a doll that runs for her life. It is not the baked walk made
+ * faster: the legs scissor wide with high knees, the arms are thrown up and swing against the legs,
+ * the trunk leans far forward and twists with each stride, and the head bobs. `phase` is in cycles
+ * (any real number, one cycle is two strides) and `amount` 0 to 1 scales every swing. It is added on
+ * top of the standing pose, so the walk clip is off while it runs (`walk(0)`). A pure function of its
+ * two numbers: a jump in time is safe.
+ */
+export function addSprint(turns: Float32Array, phase: number, amount: number): void {
+  if (amount <= 0) return;
+  const a = amount;
+  const w = phase * Math.PI * 2;
+  const s = Math.sin(w);
+  const c = Math.cos(w);
+  const s2 = Math.sin(2 * w);
+  // Legs. A hip turned about +X swings the leg back: forward is negative. The knee bends most while
+  // the leg swings through (cos above 0) and hardly at all while it pushes back.
+  const swing = (side: 1 | -1) => {
+    const t = side * s;
+    const tc = side * c;
+    return {
+      hip: -a * (20 + 56 * t) * DEG,
+      knee: a * (14 + 82 * Math.max(0, tc) ** 1.1) * DEG,
+    };
+  };
+  const left = swing(1);
+  const right = swing(-1);
+  add(turns, BONE.upLegL, left.hip, 0, a * 6 * DEG);
+  add(turns, BONE.upLegR, right.hip, 0, -a * 6 * DEG);
+  add(turns, BONE.legL, left.knee, 0, 0);
+  add(turns, BONE.legR, right.knee, 0, 0);
+  // Arms: flung up and forward, swinging against the legs, the forearms flapping at the wrists.
+  add(turns, BONE.armL, a * (-112 - 34 * s) * DEG, 0, a * (22 + 10 * c) * DEG);
+  add(turns, BONE.armR, a * (-112 + 34 * s) * DEG, 0, -a * (22 - 10 * c) * DEG);
+  add(turns, BONE.foreL, a * (-42 - 30 * Math.sin(w + 1.1)) * DEG, 0, 0);
+  add(turns, BONE.foreR, a * (-42 + 30 * Math.sin(w + 1.1)) * DEG, 0, 0);
+  // The trunk: a hard lean into it, a twist against the hips and a roll with every stride.
+  add(turns, BONE.hips, a * 9 * DEG, a * 7 * DEG * s, 0);
+  add(turns, BONE.spine, a * 8 * DEG, a * 8 * DEG * s, a * 4 * DEG * c);
+  add(turns, BONE.spine02, a * 14 * DEG, a * 10 * DEG * s, a * 5 * DEG * s2);
+  // The head is thrown back a little and bobs with each footfall.
+  add(turns, BONE.head, a * (-9 + 5 * s2) * DEG, 0, a * 7 * DEG * s);
+}
+
 /** A slow breath: the trunk and the head sway a degree. Always on, so a held doll is alive. */
 export function addBreath(turns: Float32Array, t: number, amount = 1): void {
   const s = Math.sin(t * 2.2);

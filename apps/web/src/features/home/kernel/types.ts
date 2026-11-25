@@ -227,6 +227,13 @@ export interface SectionMarkup {
   text: ReactNode;
 }
 
+/** A stretch of a section with a top scene speed (`HomeSection.topSpeed`). */
+interface TopSpeed {
+  readonly from: number;
+  readonly to: number;
+  readonly speed: number;
+}
+
 /** The static description of a section. The registry (`kernel/sections.ts`) lists them in order. */
 export interface HomeSection {
   readonly id: SectionId;
@@ -274,6 +281,13 @@ export interface HomeSection {
   /** Leave both the section and its joints at the visitor's scroll position. */
   readonly manualScroll?: boolean;
   readonly plays?: readonly HomePlay[];
+  /**
+   * Stretches of the section that have a top scene speed (25 Nov 2026): `from` and `to` are screens
+   * from the section's start (they may run past its end, into its tail) and `speed` is screens a
+   * second, lower than the page's own (`FREE_SPEED`, `AUTO_ZONE_SPEED`). However hard the visitor
+   * scrolls, the scene plays the stretch at that speed and the page waits close by. See `kernel/speed.ts`.
+   */
+  readonly topSpeed?: readonly TopSpeed[];
   /**
    * With plays: the lead and the tail rest (`update` gets the played value only, never the scroll's
    * passthrough). The section then runs in its lead and tail so that its scene is still on while a

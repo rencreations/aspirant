@@ -20,7 +20,7 @@ import { DOLL_SIZE } from "../../actors/doll/place";
  */
 
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
-export const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
 const smooth = (u: number): number => {
   const t = clamp01(u);
   return t * t * (3 - 2 * t);
@@ -46,8 +46,17 @@ export const T = {
   panted: 0.515,
   waved: 0.615,
   sat: 0.685,
-  /** The book is out and she reads. */
-  readFrom: 0.77,
+  /** The book is out and she reads: she brings it in front of her, then her pose is the reading one. */
+  readFrom: 0.79,
+  readTo: 0.85,
+  /** The book comes out of the pocket, then opens (the owner asked for it to blend, not snap). */
+  bookOutFrom: 0.708,
+  bookOutTo: 0.75,
+  /** It comes to her chest and both hands take it (the hold and the tilt), then the boards open. */
+  bookInFrom: 0.79,
+  bookInTo: 0.845,
+  openFrom: 0.815,
+  openTo: 0.885,
   zoomFrom: 0.6,
   zoomTo: 0.78,
   wordsFrom: 0.79,
@@ -63,8 +72,8 @@ const POSES = [
   { name: "point", from: "pant", start: T.panted, end: T.panted + 0.039 },
   { name: "sit", from: "point", start: T.waved, end: T.sat - 0.013 },
   { name: "pocket", from: "sit", start: T.sat, end: 0.718 },
-  { name: "carry", from: "pocket", start: 0.731, end: T.readFrom },
-  { name: "read", from: "carry", start: T.readFrom, end: 0.811 },
+  { name: "carry", from: "pocket", start: 0.735, end: T.readFrom },
+  { name: "read", from: "carry", start: T.readFrom, end: T.readTo },
 ] as const satisfies ReadonlyArray<{ name: PoseName; from: PoseName; start: number; end: number }>;
 
 export type TetraBeat = (typeof POSES)[number]["name"];
@@ -88,6 +97,12 @@ export const DRAGON_LENGTH = 3.5;
 /** How far the head is in front of the body block's middle, in body blocks. */
 export const HEAD_LEAD = 0.62;
 
+/**
+ * The doll runs this much bigger than she rides in the dragon's jaws (25 Nov 2026): her sprint and her
+ * faces of fear must read on the screen, and at her riding size they were a pink blur under the dragon.
+ */
+const DOLL_RUN_SCALE = 1.5;
+
 export function geometry(w: number, h: number): ChaseGeometry {
   const compact = w < 760 || w < h * 0.8;
   const kite = kiteGeometry(w, h);
@@ -96,7 +111,7 @@ export function geometry(w: number, h: number): ChaseGeometry {
     h,
     compact,
     floor: -0.26 * h,
-    dollH: (0.4 * kite.dragon.height * 1.55) / DOLL_SIZE,
+    dollH: (0.4 * kite.dragon.height * 1.55 * DOLL_RUN_SCALE) / DOLL_SIZE,
     dragonH: kite.dragon.height * 1.22,
     tetraH: kite.tetra.height * 1.22,
     zoomH: (compact ? 0.6 : 0.85) * h,
@@ -104,9 +119,22 @@ export function geometry(w: number, h: number): ChaseGeometry {
   };
 }
 
-/** How far along its run something is, 0 at its entrance and 1 gone (the cast leaves the screen at 1). */
-function runProgress(local: number, from: number, to: number): number {
-  return line(local, from, to);
+/**
+ * Where the run's zone stands in the section, in screens from its start (the first zone of
+ * `index.ts`). Before it the scroll goes on but the story's `local` stays 0: the pair that leaves
+ * to the left when the visitor scrolls back keeps walking over that stretch (`reachFor`).
+ */
+export const RUN_ZONE = { at: 0.85, len: 1.1 } as const;
+
+/**
+ * The story's clock for the doll and Silverbolt: `local`, and below zero for the stretch of scroll
+ * before the run's zone (`early` screens before it). The pair turns round when the scroll goes back
+ * and the dragon, heading left, has a tail of three body blocks that is still on the screen when the
+ * doll in front of it has left: the clock goes on below zero at the speed of the run so that the
+ * whole pair has walked out of sight before nothing is drawn.
+ */
+export function reachFor(local: number, early: number): number {
+  return local - Math.max(0, early) * (T.tetraTo / RUN_ZONE.len);
 }
 
 /** The doll's feet: she runs across the floor, left to right, a little ahead of the dragon. */
@@ -115,7 +143,8 @@ export function dollPlace(
   g: ChaseGeometry,
   out: { x: number; y: number; dist: number; on: boolean },
 ): typeof out {
-  const p = runProgress(local, T.dollFrom, T.dollTo);
+  // Not held at the start: before her entrance she is further to the left, on the same line.
+  const p = Math.min(1, (local - T.dollFrom) / (T.dollTo - T.dollFrom));
   const x0 = -g.w / 2 - 0.5 * g.dollH - 30;
   const x1 = g.w / 2 + 0.5 * g.dollH + 30;
   out.x = lerp(x0, x1, p);
@@ -272,7 +301,7 @@ export function wordsAmount(local: number): number {
 }
 
 /** The words go with the scroll, over this many screens after the section's end. */
-const WORDS_LEAVE_SCREENS = 0.3;
+export const WORDS_LEAVE_SCREENS = 0.3;
 
 /** How far the words have gone, 0 to 1, at the scene's scroll `S` (screens). */
 export function wordsLeave(S: number, sectionEndS: number): number {

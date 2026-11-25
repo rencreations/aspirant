@@ -6,27 +6,19 @@ import { selenaItems } from "../../actors/selena/preload";
 import { silverboltItems } from "../../actors/silverbolt/preload";
 
 /**
- * The section is about thirty screens down, so nothing here holds the first screen. Its code, then
- * the actors it uses, each under the priority the sections before it gave them (the aggregate keeps
- * one copy of an item two sections ask for): Selena and her cameras (the list's tenth frame), the
- * dragon (the bolt section) and the doll (the fall). Until they arrive the section is built and shows
- * the drawer with its words on the plain ground, a calm empty room. The drawer is CSS and needs no
- * file. The comic marks are code in the engine chunk.
+ * The section is about thirty screens down, but it is Selena's room, and the list shows her on the way:
+ * its code, Selena with her clips and cameras, the dragon and the room's glass are all WAITED for, so
+ * they are in place when the visitor gets here, however fast the scroll. The doll (the fall) stays
+ * deferred. The drawer is CSS and needs no file. The comic marks are code in the engine chunk.
  */
 export function preload(): PreloadItem[] {
   return [
-    {
-      ...chunkItem("home-selena", "Opening the room", () => import("./runtime"), 1),
-      deferred: true,
-      priority: 47,
-    },
-    ...(preloadSelenaCast() ? selenaItems({ priority: 40 }) : []),
-    ...(preloadSelenaCast() ? silverboltItems({ priority: 36 }) : []),
-    {
-      ...imageItem("/img/home/selena-glass.webp", "Loading the room"),
-      deferred: true,
-      priority: 40,
-    },
+    // Waited for with her files (the owner, 24 Nov 2026): the list shows her from far above, and a
+    // visitor who scrolls fast must find the room, her model, her clips and the dragon in place.
+    chunkItem("home-selena", "Opening the room", () => import("./runtime"), 1),
+    ...(preloadSelenaCast() ? selenaItems({ deferred: false }) : []),
+    ...(preloadSelenaCast() ? silverboltItems({ deferred: false }) : []),
+    imageItem("/img/home/selena-glass.webp", "Loading the room"),
     ...dollItems({ priority: 37 }),
   ];
 }

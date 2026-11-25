@@ -1,21 +1,25 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import { dampTo, type Damped } from "../../actors/buddies/smooth";
 import type { DollActor } from "../../actors/doll";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
-import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
-import { sectionEnd } from "../../kernel/where";
+import { sectionEnd, sectionStart } from "../../kernel/where";
 import { ScrollTravel } from "../travel";
 import { type CoverSide } from "./covers";
+import { TetraPath } from "./tetra-path";
 import {
+  DRAGON_LENGTH,
+  HEAD_LEAD,
   T,
   dragonPlace,
   geometry,
-  lerp,
   pairAt,
   poseAt,
   ramp,
+  reachFor,
+  RUN_ZONE,
   tetraRun,
   tetraStand,
   wordsAmount,
@@ -28,29 +32,41 @@ import {
 const YAW = 1.1;
 /** The doll runs side on, facing right. */
 const DOLL_YAW = 0.5;
+/**
+ * The doll's face while she runs for her life (25 Nov 2026): a loop of quick, different fears, each one
+ * on her face for a fraction of a second, so it never settles. She is scared, screams, goes wide eyed,
+ * cries, begs, and screams again.
+ */
 const SCARED = [
-  { face: "scared", hold: 0.6 },
-  { face: "scream", hold: 0.5, blend: 0.1 },
-  { face: "scared", hold: 0.4, blend: 0.1 },
-  { face: "crying", hold: 0.4, blend: 0.1 },
+  { face: "scared", hold: 0.26 },
+  { face: "scream", hold: 0.34, blend: 0.07 },
+  { face: "shocked", hold: 0.2, blend: 0.07 },
+  { face: "crying", hold: 0.3, blend: 0.08 },
+  { face: "worried", hold: 0.22, blend: 0.08 },
+  { face: "scream", hold: 0.3, blend: 0.06 },
+  { face: "scared", hold: 0.18, blend: 0.07 },
+  { face: "crying", hold: 0.26, blend: 0.08 },
 ] as const;
-const SCARED_LOOP = 1.9;
-/** A page of the comic turns this often while she reads (seconds). */
-const PAGE_EVERY = 3.4;
+const SCARED_LOOP = 2.41;
+/** The doll's strides: cycles a second (a cycle is two strides). A run for her life is quick. */
+const SPRINT_RATE = 3.2;
+/** How high a stride throws her, as a share of her height, and how much she squashes and stretches. */
+const BOUNCE = 0.11;
+/** She looks back at the dragon this often (radians a second of the glance's wave). */
+const GLANCE = 3.9;
 
 /**
  * The chase and the comic: the doll runs for her life, Silverbolt chases her, Tetra chases both and
  * runs out of breath in the middle, pants, waves, sits and reads; the camera comes in on her and the
  * giant word COMIC, the two comics and the button arrive behind and beside her, then leave. Every
  * frame is a pure function of `local`, the size of the screen and the section's small state (the
- * marks thrown, the page last turned). Nothing is written before the section's own start (the funny
+ * page last turned). Nothing is written before the section's own start (the funny
  * section's drones are still riding out of the screen) and every actor is set in full each frame.
  */
 class ChaseRuntime implements SectionRuntime {
   private tetra: TetraActor | null = null;
   private dragon: SilverboltActor | null = null;
   private doll: DollActor | null = null;
-  private marks: MarksActor | null = null;
   private disposed = false;
   private entered = false;
 
@@ -64,10 +80,11 @@ class ChaseRuntime implements SectionRuntime {
 
   private geo: ChaseGeometry;
 
-  private wasPanting = false;
-  private pageAt = 0;
+  private readonly path = new TetraPath();
+  private readonly dir: Damped = { x: 0, v: 0 };
+  private readonly runShare: Damped = { x: 1, v: 0 };
+  private returnTail = 0;
   private readonly travel = new ScrollTravel();
-  private returnDragonX = 0;
   private lastLocal = Number.NaN;
   private readonly pair: Pair = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: 1 };
   private readonly back: Pair = { dollX: 0, dragonX: 0, dollZ: 0, dragonZ: 0, heading: -1 };
@@ -123,11 +140,6 @@ class ChaseRuntime implements SectionRuntime {
     };
     await Promise.all([
       take(
-        "the marks",
-        async () => (await import("../../fx/comic-marks")).ensureMarks(ctx),
-        (a) => (this.marks = a),
-      ),
-      take(
         "Tetra",
         async () => (await import("../../actors/tetra")).ensureTetra(ctx),
         (a) => (this.tetra = a),
@@ -162,8 +174,12 @@ class ChaseRuntime implements SectionRuntime {
 
   enter(): void {
     this.travel.reset();
+    this.path.reset();
+    this.dir.x = 0;
+    this.dir.v = 0;
+    this.runShare.x = 1;
+    this.runShare.v = 0;
     this.entered = true;
-    this.wasPanting = false;
     this.lastLocal = Number.NaN;
     this.dragon?.calm();
     this.bindBook();
@@ -193,12 +209,17 @@ class ChaseRuntime implements SectionRuntime {
     this.words(this.kbd ? 1 : wordsAmount(local) * (1 - gone));
     // The pair is one formation: forward as the scroll goes, and turned about its middle when it
     // goes back. The same formation at its full turn is where the returning Tetra falls in behind.
-    pairAt(local, this.geo, this.travel.reverse, this.pair);
-    pairAt(local, this.geo, 1, this.back);
-    this.returnDragonX = this.back.dragonX;
-    this.drawDoll(local, frame);
-    this.drawDragon(local, frame);
-    this.drawTetra(local, frame, jumped);
+    // Before the run's zone the story stays at its start but the scroll goes on: the pair that
+    // walks out to the left on a scroll back keeps walking until all of it, tail included, is gone.
+    const early = sectionStart("chase") + RUN_ZONE.at - frame.S;
+    const pairAtClock = reachFor(local, early);
+    pairAt(pairAtClock, this.geo, this.travel.reverse, this.pair);
+    pairAt(pairAtClock, this.geo, 1, this.back);
+    // Heading left the dragon's tail is on its right: the end of it is where Tetra waits until it has gone by.
+    this.returnTail = this.back.dragonX + (DRAGON_LENGTH - HEAD_LEAD) * this.geo.dragonH;
+    this.drawDoll(pairAtClock, frame);
+    this.drawDragon(pairAtClock, frame);
+    this.drawTetra(local, jumped, frame);
   }
 
   // ---------------------------------------------------------------------------------------- words
@@ -244,7 +265,7 @@ class ChaseRuntime implements SectionRuntime {
   private drawDoll(local: number, frame: FrameInfo): void {
     const doll = this.doll;
     const g = this.geo;
-    if (!doll || local < T.dollFrom || local > T.tetraTo) return;
+    if (!doll || local > T.tetraTo) return;
     const pair = this.pair;
     const x = pair.dollX;
     if (Math.abs(x) > g.w / 2 + g.dollH * 0.49 + 30) return;
@@ -252,18 +273,35 @@ class ChaseRuntime implements SectionRuntime {
     if (doll.parentSocket) doll.detach();
     doll.visible = true;
     doll.reset();
+    // A cartoon sprint (25 Nov 2026): the stride is the clock's, so she runs at full tilt whatever the
+    // scroll does. Every footfall throws her up (`air`) and she lands squashed.
+    const phase = frame.time * SPRINT_RATE;
+    const air = Math.abs(Math.sin(phase * Math.PI * 2));
     doll.place({
       x,
-      y: g.floor + 0.015 * g.dollH * Math.abs(Math.sin(frame.time * 10)),
+      y: g.floor + BOUNCE * g.dollH * air,
       z: 24 + pair.dollZ,
       height: g.dollH,
       yaw: DOLL_YAW * pair.heading,
+      // Her whole body leans into the run, and rocks a little with each stride.
+      roll: -(0.2 + 0.07 * Math.sin(phase * Math.PI * 2)) * pair.heading,
     });
-    doll.pose("run", 1);
-    doll.walk(1, { rate: 1.65, lean: 1 });
+    doll.pose("stand", 1);
+    doll.walk(0);
+    doll.sprint(1, phase);
+    doll.squash(0.12 * air - 0.2 * (1 - air) ** 2);
     doll.mood(SCARED, frame.time % SCARED_LOOP);
-    doll.talk(0.6 + 0.4 * Math.sin(frame.time * 11));
+    // She screams and gabbles with the footfalls, and looks back at the jaws behind her, then ahead
+    // for a way out, then back again.
+    doll.talk(0.55 + 0.45 * Math.sin(frame.time * 14));
     doll.blinkAuto(false);
+    const glance = 0.5 + 0.5 * Math.sin(frame.time * GLANCE);
+    const jaws = pair.dragonX + HEAD_LEAD * g.dragonH * pair.heading;
+    const ahead = x + 900 * pair.heading;
+    doll.look({
+      x: ahead + (jaws - ahead) * glance * glance,
+      y: g.floor + g.dollH * (0.55 + 0.1 * (1 - glance)),
+    });
   }
 
   // ---------------------------------------------------------------------------------------- the dragon
@@ -271,7 +309,7 @@ class ChaseRuntime implements SectionRuntime {
   private drawDragon(local: number, frame: FrameInfo): void {
     const sb = this.dragon;
     const g = this.geo;
-    if (!sb || local < T.dollFrom || local > T.tetraTo) return;
+    if (!sb || local > T.tetraTo) return;
     const pair = this.pair;
     const b = dragonPlace(local, g, this.bp);
     const limit = g.w / 2 + g.dragonH * 3.5 + 32;
@@ -297,49 +335,87 @@ class ChaseRuntime implements SectionRuntime {
 
   // ---------------------------------------------------------------------------------------- Tetra
 
-  private drawTetra(local: number, frame: FrameInfo, jumped: boolean): void {
+  private drawTetra(local: number, jumped: boolean, frame: FrameInfo): void {
     const tetra = this.tetra;
     const g = this.geo;
-    if (!tetra || local < T.dollFrom) return;
+    // She is not cut off at the start of the story: on a scroll back she goes on running to the left
+    // behind the pair's tail until she is off the screen. She is not drawn only when she is there
+    // already (before her entrance she waits off the left edge).
+    if (!tetra) return;
+    const dt = frame.dt;
     const run = tetraRun(local, g, this.tr);
     const stand = tetraStand(local, g, this.ts);
     const stopped = local >= T.tetraTo;
     const left = -g.w / 2 - 0.5 * g.tetraH - 40;
-    // Wait for the returning pair to pass, then fall in behind the tail.
-    const returning = Math.max(
-      left,
-      Math.min(0, this.returnDragonX + g.dragonH * 2.0 + g.w * 0.12),
-    );
-    const x = stopped ? stand.x : lerp(run.x, returning, this.travel.reverse);
-    const chase = lerp(1, ramp(-returning, 0, g.tetraH * 0.12), this.travel.reverse);
-    const stride = chase * (1 - ramp(local, T.tetraTo - 0.027, T.tetraTo + 0.014));
+    // Going back she does not turn with the pair: she stops where she is, out of breath, lets them
+    // pass, and runs after the tail (`tetra-path.ts`).
+    // Once she has stopped (the pant, the wave, the seat, the book) the direction of the scroll does not
+    // move her: the comic stands whichever way the visitor turns.
+    const backward = !stopped && this.travel.backward && this.travel.reverse > 0.02;
+    const behind = Math.max(left, this.returnTail + 0.3 * g.tetraH);
+    const x = this.path.step({
+      forwardX: stopped ? stand.x : run.x,
+      behindX: behind,
+      backward,
+      corner: 0.2 * g.tetraH,
+      dt,
+      jumped,
+    });
+    if (!stopped && x <= left) return;
+    // How much of her is running: all of it going down, and what her speed says going back (so she
+    // slows into a stop and speeds into the chase, and pants in between).
+    const runTarget = backward ? Math.min(1, Math.abs(this.path.speed) / (0.45 * g.tetraH)) : 1;
+    const runShare = dampTo(this.runShare, runTarget, 0.2, 99, dt);
+    // Which way she faces follows her own movement, slowly: no sudden turn.
+    const dirTarget = backward
+      ? Math.max(-1, Math.min(1, this.path.speed / (0.45 * g.tetraH)))
+      : 1 - ramp(local, T.tetraTo - 0.027, T.tetraTo + 0.014);
+    const dir = dampTo(this.dir, dirTarget, 0.24, 99, dt);
+    // Waiting for the pair, she steps toward the camera so they run past behind her.
+    const wait = backward ? 1 - runShare : 0;
 
+    // The run pose turns her hips by 0.62: take it off only as far as the run pose is worn (the pant
+    // blends out of it), so a pose with no hip turn is never rotated by it.
+    const pose = poseAt(local);
+    const runWeight =
+      pose.name === "run"
+        ? runShare
+        : pose.name === "pant"
+          ? 1 - ramp(local, pose.start, pose.end)
+          : 0;
     tetra.visible = true;
     tetra.place({
       x,
       y: stopped ? stand.y : run.y,
+      z: 46 * wait,
       height: stopped ? stand.height : g.tetraH,
-      yaw: this.travel.runYaw(1) * stride,
+      yaw: dir * 1.49 - 0.62 * runWeight,
     });
-    tetra.look("pointer");
+    // She watches the doll go by while she waits.
+    if (backward && runShare < 0.6) {
+      tetra.look({ x: this.pair.dollX, y: g.floor + 0.5 * g.dollH });
+    } else {
+      tetra.look("pointer");
+    }
     tetra.setInteractive(true);
-    tetra.runSpeed(lerp(run.speed, 0.85, this.travel.reverse));
-    const panting = local >= T.tetraTo && local < T.panted;
-    if (panting && !this.wasPanting && !jumped) {
-      const head = tetra.marks().head;
-      this.marks?.emit("sweat", { at: { x: head.x, y: head.y }, size: 0.075 * g.tetraH, count: 1 });
+    tetra.runSpeed(runShare * (backward ? 0.85 : run.speed));
+    // Her breath is in her body and her face: no comic mark floats over her (the owner, 25 Nov 2026).
+    if (pose.name === "run") {
+      tetra.poseMix([
+        ["run", runShare],
+        ["pant", 1 - runShare],
+      ]);
+    } else {
+      tetra.pose(pose.name, ramp(local, pose.start, pose.end), pose.from);
     }
-    this.wasPanting = panting;
-    const pose = poseAt(local);
-    if (pose.name === "run") tetra.pose("run", chase, "pant");
-    else tetra.pose(pose.name, ramp(local, pose.start, pose.end), pose.from);
-    const open = ramp(local, 0.789, 0.832);
-    tetra.book.scene(ramp(local, 0.716, 0.731), open, open);
+    // The book comes out of the pocket, comes to her chest and into both hands, and then opens: three
+    // steps that overlap, each over its own stretch of the scroll, so no part of it snaps.
+    tetra.book.scene(
+      ramp(local, T.bookOutFrom, T.bookOutTo),
+      ramp(local, T.openFrom, T.openTo),
+      ramp(local, T.bookInFrom, T.bookInTo),
+    );
     tetra.setFace(null);
-    if (open === 1 && !jumped && frame.dt > 0 && frame.time - this.pageAt > PAGE_EVERY) {
-      this.pageAt = frame.time;
-      tetra.book.turnPage();
-    }
   }
 
   dispose(): void {

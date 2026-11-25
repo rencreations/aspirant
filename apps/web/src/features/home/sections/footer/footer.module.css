@@ -56,17 +56,23 @@
   text-wrap: balance;
 }
 
+/* The bar that says how much scroll is left before the next page opens: thick, with a track, and in the
+   accent colour so that it cannot be missed (25 Nov 2026). */
 .rule {
   display: block;
   width: min(24rem, 70vw);
-  height: 1px;
-  background: var(--line-strong);
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 
 .fill {
   display: block;
   height: 100%;
-  background: var(--text);
+  border-radius: 999px;
+  background: var(--accent);
 }
 
 .actions {

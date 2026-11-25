@@ -1,4 +1,5 @@
 import { playsOf } from "../../kernel/beat";
+import { PASSAGE_SPEED } from "../../kernel/speed";
 import type { HomeSection } from "../../kernel/types";
 
 import { preload } from "./preload";
@@ -20,11 +21,14 @@ export const section: HomeSection = {
   nav: { theme: "daybreak" },
   dom: "fixed",
   plays: playsOf(0, LIST_LAST, LIST_SCREENS, LIST_STEPS),
+  // The whole strip has a top speed, the rests between its turns too (25 Nov 2026): a hard scroll cannot
+  // leap past a frame or past the growth of the last one (which has its own, lower, in the engine).
+  topSpeed: [{ from: 0, to: LIST_SCREENS, speed: PASSAGE_SPEED }],
   // A control that takes the focus from far away brings the page to the first frame's rest (the idle
   // snap would otherwise move a page that landed inside a zone); the frame's own control then moves it.
   focus: frameRestScreens(0) / LIST_SCREENS,
   // Selena is the biggest file of the page: the section is built long before the strip reaches her.
-  mountAhead: 4,
+  mountAhead: 8,
   preload,
   mount: async (ctx) => (await import("./runtime")).createRuntime(ctx),
 };

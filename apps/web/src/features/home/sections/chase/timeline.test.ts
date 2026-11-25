@@ -11,6 +11,8 @@ import {
   dragonSpan,
   geometry,
   pairAt,
+  reachFor,
+  RUN_ZONE,
   tetraRun,
   tetraStand,
   wordsAmount,
@@ -197,6 +199,23 @@ describe.each(SIZES)("the pair turning at %i x %i", (w, h) => {
       pairAt(l, g, k / 100, mid);
       if (k > 0) expect(Math.abs(mid.dollX - last)).toBeLessThan(0.1 * g.w);
       last = mid.dollX;
+    }
+  });
+  it("walks the turned pair out of the left edge, tail and all, before the scroll is back at the section's start", () => {
+    // Scrolling back past the run's zone the story's `local` stays 0, but the clock goes on below zero.
+    const early = RUN_ZONE.at;
+    const lp = reachFor(0, early);
+    expect(lp).toBeLessThan(T.dollFrom);
+    pairAt(lp, g, 1, turned);
+    // Heading left, the doll in front: the dragon's tail runs about three body blocks to its right.
+    expect(turned.dollX).toBeLessThan(-w / 2);
+    expect(turned.dragonX + (DRAGON_LENGTH - HEAD_LEAD) * g.dragonH).toBeLessThan(-w / 2);
+    // And it keeps going left, never back, as the scroll goes back.
+    let last = Infinity;
+    for (let e = 0; e <= early; e += 0.05) {
+      pairAt(reachFor(0, e), g, 1, mid);
+      expect(mid.dragonX).toBeLessThanOrEqual(last + 1e-9);
+      last = mid.dragonX;
     }
   });
 });

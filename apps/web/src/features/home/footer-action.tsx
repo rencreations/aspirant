@@ -10,6 +10,7 @@ import { FOOTER } from "./content";
 import styles from "./home.module.css";
 import { useHomeHandoff } from "./kernel/handoff";
 import { screensToEnd } from "./kernel/scroll";
+import { exitBridge } from "./sections/footer/exit-bridge";
 
 /**
  * The way to About arms when the end of the page is this close (in screens), and is called off if the
@@ -20,6 +21,8 @@ const ARM_WITHIN = 0.025;
 const CANCEL_BEYOND = 0.07;
 /** How long the end must be held before the page changes (the visitor can still turn back). */
 const LOCK_MS = 520;
+/** How often the way waits again for a scene that has not reached the end yet. */
+const SETTLE_POLL_MS = 120;
 
 /**
  * The end of the home page: the Continue button, the N key, and the scroll to the very end of the
@@ -60,15 +63,22 @@ export function FooterAction({
         window.innerHeight,
       );
       if (left <= ARM_WITHIN && !lock) {
-        lock = window.setTimeout(() => {
+        const fire = () => {
           lock = 0;
           const now = screensToEnd(
             window.scrollY,
             document.documentElement.scrollHeight,
             window.innerHeight,
           );
-          if (now <= CANCEL_BEYOND) goRef.current();
-        }, LOCK_MS);
+          if (now > CANCEL_BEYOND) return;
+          // The scene is still on its way to the end (a hard scroll): wait for it.
+          if (exitBridge.settled && !exitBridge.settled()) {
+            lock = window.setTimeout(fire, SETTLE_POLL_MS);
+            return;
+          }
+          goRef.current();
+        };
+        lock = window.setTimeout(fire, LOCK_MS);
       } else if (left > CANCEL_BEYOND && lock) {
         window.clearTimeout(lock);
         lock = 0;

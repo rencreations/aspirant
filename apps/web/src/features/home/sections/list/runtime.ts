@@ -80,6 +80,7 @@ class ListRuntime implements SectionRuntime {
   private readonly edges: Array<HTMLElement | null>;
   private readonly ticks: HTMLElement[];
   private readonly dot: HTMLElement | null;
+  private readonly veil: HTMLElement | null;
   private readonly sides: Record<Side, HTMLElement | null>;
   private readonly thumbRows: Record<Side, HTMLElement | null>;
   private readonly thumbs: Record<Side, Thumb[]> = { left: [], right: [] };
@@ -127,6 +128,9 @@ class ListRuntime implements SectionRuntime {
   /** The whole card (not the part the screen shows): the lens of her camera is centred on it. */
   private readonly card: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly lensRect: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  /** Her small picture beside the frame: its whole card, and the part of it the row shows. */
+  private readonly thumbCard: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  private readonly thumbShown: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly place = { x: 0, y: 0, z: 0, height: 0 };
   private readonly removers: Array<() => void> = [];
 
@@ -142,6 +146,7 @@ class ListRuntime implements SectionRuntime {
     );
     this.ticks = Array.from(below.querySelectorAll<HTMLElement>("[data-list-tick]"));
     this.dot = below.querySelector<HTMLElement>("[data-list-dot]");
+    this.veil = text.querySelector<HTMLElement>("[data-list-veil]");
     this.sides = {
       left: below.querySelector<HTMLElement>('[data-list-side="left"]'),
       right: below.querySelector<HTMLElement>('[data-list-side="right"]'),
@@ -505,9 +510,31 @@ class ListRuntime implements SectionRuntime {
     const e = b.expand;
     const slide = (SELENA_AT - idx) * g.frame.w;
     const peeks = idx > SELENA_AT - 1 + 0.001;
-    const drawn = sl !== null && (peeks || e > 0);
+    // Before the strip turns to her she is the small picture beside the frame, and it is her model too
+    // (the owner, 24 Nov 2026): drawn in that card, in the part of it the row shows. Her small picture
+    // of the markup stays hidden for as long as her model can be drawn there.
+    const preview = sl !== null && !peeks && e <= 0 && this.previewRect(b, g, vp, idx);
+    const drawn = sl !== null && (peeks || e > 0 || preview);
     const poster = this.items[SELENA_AT]?.poster;
     put(poster, "opacity", sl && peeks ? "0" : "1");
+    // Once the strip has turned to her the small picture goes on with the row, to the left under the
+    // window's edge, like every other one (25 Nov 2026): it is hidden only while her model is drawn there.
+    for (const t of this.thumbs.right) {
+      // Hidden while her model stands there; otherwise the class decides (the pale small pictures).
+      if (t.i === SELENA_AT) put(t.el, "opacity", sl && preview ? "0" : "");
+    }
+    // Her model over the small picture is as pale as the pictures beside it (`.thumb` is 0.66).
+    if (preview) {
+      const r = this.thumbShown;
+      put(
+        this.veil,
+        "transform",
+        `translate3d(${f(r.x)}px, ${f(r.y)}px, 0) scale(${f(r.w)}, ${f(r.h)})`,
+      );
+      put(this.veil, "opacity", "0.34");
+    } else {
+      put(this.veil, "opacity", "0");
+    }
 
     if (!this.selenaFrame || !this.selenaTail) return;
     // The window the picture shows through: the frame's part that Selena's item covers, growing
@@ -537,6 +564,10 @@ class ListRuntime implements SectionRuntime {
     );
     put(this.panel, "visibility", rect.w > 1 && peeks ? "inherit" : "hidden");
     put(this.panel, "opacity", f(1 - seg(u, LIST_LAST, LIST_LAST + SKY_FADE)));
+    if (sl && preview) {
+      this.drawPreview(sl, vp);
+      return;
+    }
     const prime =
       sl !== null &&
       !drawn &&
@@ -585,6 +616,54 @@ class ListRuntime implements SectionRuntime {
       clip: rect,
     });
     // The dragon is in her picture, behind her: the clip that matches hers, at her time.
+    if (this.dragon) showDragon(sl, this.dragon);
+  }
+
+  /**
+   * Where her small picture is in the right row (the card) and how much of it the row shows (the part
+   * inside the row's clip, also while the picture rises into it). False when none of it is on the screen.
+   */
+  private previewRect(
+    b: ListBeats,
+    g: ListGeometry,
+    vp: { w: number; h: number },
+    idx: number,
+  ): boolean {
+    if (b.rise <= 0.001) return false;
+    const { thumb, right } = g;
+    const card = this.thumbCard;
+    // The right row's picture `i` stands at `(i - idx - 1) * pitch` from the row's clip, and rises from
+    // below with the near ones first (`thumbRise`), exactly as the markup's picture does.
+    const order = Math.max(0, SELENA_AT - Math.round(idx) - 1);
+    card.x = right.x + (SELENA_AT - idx - 1) * thumb.pitch;
+    card.y = thumb.y + thumbRise(b.rise, order) * this.vh;
+    card.w = thumb.w;
+    card.h = thumb.h;
+    const shown = this.thumbShown;
+    const x0 = Math.max(card.x, right.x);
+    const x1 = Math.min(card.x + card.w, right.x + right.w, vp.w);
+    const y0 = Math.max(card.y, right.y);
+    const y1 = Math.min(card.y + card.h, right.y + right.h);
+    shown.x = x0;
+    shown.y = y0;
+    shown.w = x1 - x0;
+    shown.h = y1 - y0;
+    return shown.w > 1 && shown.h > 1;
+  }
+
+  /** Her model in her small picture, in the lens of that card, with the dragon behind her. */
+  private drawPreview(sl: SelenaActor, vp: { w: number; h: number }): void {
+    const a = selenaInFrame(vp, this.thumbCard);
+    const p = this.place;
+    p.x = a.x;
+    p.y = a.y;
+    p.z = 0;
+    p.height = a.height;
+    sl.visible = true;
+    sl.place(p);
+    sl.clipRectangle(this.thumbShown);
+    this.selenaStates(0, sl);
+    sl.frame(vp, { portrait: 1, rect: this.thumbCard, clip: this.thumbShown });
     if (this.dragon) showDragon(sl, this.dragon);
   }
 

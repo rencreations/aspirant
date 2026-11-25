@@ -29,6 +29,8 @@ export interface BeatStep {
    * clock and no hold. The curve defaults to `linear`. Without it the step is a clock play.
    */
   readonly spanScreens?: number;
+  /** A zone the page is never finished in by itself: it stays where the visitor stops (`HomePlay.noSnap`). */
+  readonly noSnap?: boolean;
 }
 
 /**
@@ -72,6 +74,7 @@ export function playsOf(
       ease: step.ease ?? (zone ? "linear" : "inOut"),
       ...(step.back === undefined ? {} : { back: step.back }),
       ...(step.spanScreens === undefined ? {} : { span: step.spanScreens / screens }),
+      ...(step.noSnap ? { noSnap: true } : {}),
     };
     from = step.to;
     return play;

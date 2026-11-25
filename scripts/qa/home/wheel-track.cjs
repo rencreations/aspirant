@@ -115,6 +115,8 @@ const base = flag("--base", "http://localhost:3000/");
           weights: st.weights,
           c: flat(c),
           head: [st.marks.head.x, st.marks.head.y],
+          book: st.book,
+          hands: [st.marks.handL.x, st.marks.handL.y, st.marks.handR.x, st.marks.handR.y],
         });
       });
       return true;
@@ -184,6 +186,39 @@ const base = flag("--base", "http://localhost:3000/");
   for (const r of rows) {
     console.log(
       `${r.k.padEnd(12)} jump ${r.jump.toFixed(3)} (step ${r.step.toFixed(3)}) at S=${r.S.toFixed(2)} frame ${r.i} pose ${r.pose}`,
+    );
+  }
+  // The book and the hands: the same test on what she holds.
+  const extra = {};
+  for (let i = 2; i < data.length; i += 1) {
+    const a = data[i - 2];
+    const b = data[i - 1];
+    const c = data[i];
+    if (c.t - a.t > 80 || !a.book || !c.book) continue;
+    const series = {
+      "book.present": (o) => o.book.present,
+      "book.open": (o) => o.book.open,
+      "book.scale": (o) => o.book.scale,
+      "book.x mm": (o) => o.book.position[0] * 1000,
+      "book.y mm": (o) => o.book.position[1] * 1000,
+      "book.z mm": (o) => o.book.position[2] * 1000,
+      "book.rx": (o) => o.book.rotation[0],
+      "book.ry": (o) => o.book.rotation[1],
+      "book.rz": (o) => o.book.rotation[2],
+      "handL.x px": (o) => o.hands[0],
+      "handL.y px": (o) => o.hands[1],
+      "handR.x px": (o) => o.hands[2],
+      "handR.y px": (o) => o.hands[3],
+    };
+    for (const [k, f] of Object.entries(series)) {
+      const jump = Math.abs(f(c) - 2 * f(b) + f(a));
+      if (!extra[k] || jump > extra[k].jump) extra[k] = { jump, S: c.S, i, step: f(c) - f(b) };
+    }
+  }
+  console.log("book and hands (second difference):");
+  for (const [k, v] of Object.entries(extra)) {
+    console.log(
+      `${k.padEnd(12)} jump ${v.jump.toFixed(3)} (step ${v.step.toFixed(3)}) at S=${v.S.toFixed(2)} frame ${v.i}`,
     );
   }
   const out = path.join(process.env.TMP || ".", "wheel-track.json");

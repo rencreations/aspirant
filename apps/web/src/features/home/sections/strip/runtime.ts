@@ -266,8 +266,11 @@ class StripRuntime implements SectionRuntime {
       `translate3d(${(sc.w - half * (1 - alive)).toFixed(2)}px,${up}px,0)`,
     );
     for (const word of this.coords) put(word, "transform", `translate3d(0,${up}px,0)`);
-    put(this.ends.l, "opacity", enterE.toFixed(3));
-    put(this.ends.r, "opacity", enterE.toFixed(3));
+    // The two dots meet in the middle of the screen as the line goes: they fade out before they do, or
+    // one dot would stay there, fixed to the screen, for the whole orbit and the exit.
+    const endsOn = enterE * ramp(alive, 0, 0.3);
+    put(this.ends.l, "opacity", endsOn.toFixed(3));
+    put(this.ends.r, "opacity", endsOn.toFixed(3));
 
     // The four dots hang outside the frame's corners and drift outward as it grows, then go.
     const box = expandBox(vp.w, vp.h, b.expand, TRAILER_FILM.aspect, this.box);

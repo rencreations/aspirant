@@ -40,6 +40,13 @@ export interface HomePlay {
    * scene follows the scroll up and down and the page stays where the visitor leaves it (round five).
    */
   readonly noSnap?: boolean;
+  /**
+   * A clock play only: it fires by itself. The number is how far (screens) in front of the threshold the
+   * screen is already empty for it (the white in front of the voices): when the visitor lets go there,
+   * going down, the page is carried on past the threshold so that the play starts, instead of being left
+   * standing on an empty screen. It carries from a joint and from a zone that has no idle snap alike.
+   */
+  readonly auto?: number;
 }
 
 /** The share of a play's length that its backward run takes when the play does not say. */
@@ -114,6 +121,10 @@ export function validatePlays(id: string, plays: readonly HomePlay[]): void {
     }
     if (Math.abs(p.to - p.from) < SAME)
       fail(i, `from ${p.from} equals to ${p.to}: nothing to play`);
+    if (p.auto !== undefined && p.span !== undefined) {
+      fail(i, "auto is for a clock play (a play with no span): a zone is played by the scroll");
+    }
+    if (p.auto !== undefined && !(p.auto > 0)) fail(i, `auto ${p.auto} is not a reach in screens`);
     if (p.noSnap !== undefined && p.span === undefined) {
       fail(i, "noSnap is for a zone (a play with a span): a clock play holds the page by design");
     }

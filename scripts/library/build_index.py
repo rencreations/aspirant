@@ -138,6 +138,12 @@ def main() -> None:
                 # A collection with more than one room: count each room, as `video/films`.
                 rooms[f"{slug}/{name.removeprefix(slug + '-')}"] = room_n
         counts[slug] = n
+    # The Voicelines room is one entry per line of the first language, but it holds every line of all the
+    # languages: the count the site shows (the shelf, the home's archive, the About page) is the room's own
+    # figure, `totals.lines` of its data file (25 Nov 2026, the owner: 3,046).
+    voice_path = common.DATA_DIR / "voicelines.json"
+    if voice_path.exists():
+        counts["voicelines"] = int(json.loads(voice_path.read_text(encoding="utf-8"))["totals"]["lines"])
     if any(k.startswith("arts/") for k in rooms):
         rooms["arts/official"] = sum(rooms.get(f"arts/{r}", 0) for r in OFFICIAL_ROOMS)
 

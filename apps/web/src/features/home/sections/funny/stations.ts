@@ -55,5 +55,12 @@ export function storyAt(scroll: number): number {
 }
 /** Where each zone lies, in screens from the section's start. */
 export const FUNNY_ZONES = TABLE.zones;
+/**
+ * The top scene speeds (25 Nov 2026, screens a second): the arrival, the crossing and the question
+ * are one passage, and the drones and their words riding out of the screen are another, a little
+ * slower, so that they leave in a second and never in a frame.
+ */
+export const FUNNY_PASS_SPEED = 1.1;
+export const FUNNY_LEAVE_SPEED = 0.9;
 /** A control taking the keyboard focus lands in the middle of the last rest, where the words show. */
 export const FUNNY_FOCUS = (FUNNY_ZONES[2]!.to + LENGTHS.words / 2) / FUNNY_SCREENS;

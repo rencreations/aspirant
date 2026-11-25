@@ -74,7 +74,15 @@ import {
   rootScale,
   type Lens,
 } from "./place";
-import { addBreath, addDangle, addFlail, addHead, addRunLean, BONE } from "./pose/layers";
+import {
+  addBreath,
+  addDangle,
+  addFlail,
+  addHead,
+  addRunLean,
+  addSprint,
+  BONE,
+} from "./pose/layers";
 import {
   BONE_COUNT,
   BONE_NAMES,
@@ -248,6 +256,8 @@ export class DollActor implements Actor {
   private walkLean = 0;
   private walkByTime = true;
   private flailAmount = 0;
+  private sprintAmount = 0;
+  private sprintPhase = 0;
   private flailRate = 1;
   private flailTime: number | undefined;
   private dangleAmount = 0;
@@ -537,6 +547,16 @@ export class DollActor implements Actor {
     this.flailRate = rate;
   }
 
+  /**
+   * The cartoon sprint, 0 to 1 (25 Nov 2026): high knees, arms thrown up, a hard lean. `phase` is in
+   * cycles (one cycle is two strides), so the caller owns the clock and the doll never keeps one.
+   * It goes on top of the standing pose, so turn the baked walk off (`walk(0)`) while it runs.
+   */
+  sprint(amount: number, phase: number): void {
+    this.sprintAmount = clamp(amount, 0, 1);
+    this.sprintPhase = phase;
+  }
+
   /** The legs of a seated doll swing over an edge, 0 to 1. */
   dangle(amount: number): void {
     this.dangleAmount = clamp(amount, 0, 1);
@@ -580,6 +600,7 @@ export class DollActor implements Actor {
     this.poseB = "stand";
     this.poseW = 0;
     this.walkWeight = 0;
+    this.sprintAmount = 0;
     this.flailAmount = 0;
     this.flailTime = undefined;
     this.dangleAmount = 0;
@@ -1013,6 +1034,7 @@ export class DollActor implements Actor {
     this.turns.fill(0);
     addBreath(this.turns, time);
     addFlail(this.turns, this.flailTime ?? time, this.flailAmount, this.flailRate);
+    addSprint(this.turns, this.sprintPhase, this.sprintAmount);
     addDangle(this.turns, time, this.dangleAmount);
     addRunLean(this.turns, this.walkWeight * this.walkLean);
     this.rider.addTurns(this.turns, time);

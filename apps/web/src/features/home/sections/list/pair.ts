@@ -48,6 +48,10 @@ class ListPairRuntime implements ListPair {
     pair.capFlight(true);
     pair.place(dock);
     pair.mode("dock");
+    // The most front (24 Nov 2026): Selena's frame grows over the whole screen and her picture is drawn
+    // in the cast; a drone behind the cast was covered by it. In front, the drone is drawn over her
+    // for the whole of the growth and stays in sight.
+    pair.layer("front");
   }
 
   dispose(): void {

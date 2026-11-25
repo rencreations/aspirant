@@ -3,11 +3,6 @@ import { describe, expect, it } from "vitest";
 import { layoutSections } from "./layout";
 import type { HomePlay } from "./plays";
 import {
-  FLICK_ENGAGE,
-  FLICK_MAX_LEAD,
-  FLICK_STEP,
-  FLICK_WINDOW_MS,
-  FlickLimiter,
   JointSnap,
   SNAP_GRACE_MS,
   SNAP_IDLE_MS,
@@ -18,7 +13,6 @@ import {
   playThresholds,
   restFor,
   zoneIndexAt,
-  type FlickFrame,
   type SnapFrame,
 } from "./snap";
 import type { HomeSection } from "./types";
@@ -431,140 +425,5 @@ describe("JointSnap", () => {
     expect(r.target).toBeCloseTo(2.4);
     expect(r.armed).toBe(true);
     expect(r.blocked).toBe("input");
-  });
-});
-
-describe("FlickLimiter", () => {
-  function rig() {
-    const flick = new FlickLimiter();
-    let now = 10_000;
-    const base: FlickFrame = {
-      real: 0,
-      now,
-      forced: false,
-      holding: false,
-      pushAt: 9_950,
-      keyAt: 0,
-    };
-    const step = (real: number, over: Partial<FlickFrame> = {}) => {
-      now += 16;
-      return flick.step({ ...base, real, now, pushAt: now - 50, ...over });
-    };
-    return { flick, step };
-  }
-
-  it("follows the page exactly when the steps are small", () => {
-    const { flick, step } = rig();
-    expect(step(1)).toBe(1);
-    expect(step(1.7)).toBe(1.7);
-    expect(step(2.6)).toBe(2.6);
-    expect(flick.engaged).toBe(false);
-    expect(Number.isNaN(flick.pull)).toBe(true);
-  });
-
-  it("takes a step of more than a screen after a wheel one screen a frame", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(5.2)).toBeCloseTo(3 + FLICK_STEP);
-    expect(flick.engaged).toBe(true);
-    expect(step(5.2)).toBeCloseTo(3 + 2 * FLICK_STEP);
-    expect(step(5.2)).toBeCloseTo(5.2);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("is a jump (the scene takes the page) when no wheel or touch came lately", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(25, { pushAt: 0 })).toBe(25);
-    expect(flick.engaged).toBe(false);
-    step(25);
-    expect(step(40, { pushAt: 1 })).toBe(40);
-  });
-
-  it("is a jump when the last wheel is older than the flick window", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(25, { pushAt: 10_016 - FLICK_WINDOW_MS - 1 })).toBe(25);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("is a jump after a key (Home, End, Page Down), also right after a wheel", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(28, { keyAt: 20_000, pushAt: 9_000 })).toBe(28);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("is a jump when the page is moved by a seek, a focus move or a script (forced)", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(20, { forced: true })).toBe(20);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("pulls the page back so the chase is never longer than the lead", () => {
-    const { flick, step } = rig();
-    step(3);
-    const seen = step(22);
-    expect(flick.pull).toBeCloseTo(3 + FLICK_MAX_LEAD);
-    expect(seen).toBeCloseTo(3 + FLICK_STEP);
-    // the engine put the page there; the chase runs on to it and ends
-    step(3 + FLICK_MAX_LEAD);
-    expect(step(3 + FLICK_MAX_LEAD)).toBeCloseTo(3 + FLICK_MAX_LEAD);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("stands still while a play holds the page, and goes on when it lets go", () => {
-    const { flick, step } = rig();
-    step(3);
-    const first = step(6);
-    for (let i = 0; i < 20; i++) expect(step(6, { holding: true })).toBe(first);
-    expect(flick.engaged).toBe(true);
-    expect(step(6)).toBeCloseTo(first + FLICK_STEP);
-  });
-
-  it("walks every threshold in order (each frame crosses at most one screen)", () => {
-    const { step } = rig();
-    step(0);
-    let prev = 0;
-    let max = 0;
-    let s = step(9);
-    for (let i = 0; i < 20; i++) {
-      max = Math.max(max, s - prev);
-      prev = s;
-      s = step(9);
-    }
-    expect(max).toBeLessThanOrEqual(FLICK_STEP + 1e-9);
-    expect(prev).toBeCloseTo(9);
-  });
-
-  it("goes the other way too", () => {
-    const { step } = rig();
-    step(10);
-    expect(step(5)).toBeCloseTo(10 - FLICK_STEP);
-  });
-
-  it("ends the chase with a jump when a key is pressed in the middle", () => {
-    const { flick, step } = rig();
-    step(3);
-    step(6);
-    expect(flick.engaged).toBe(true);
-    expect(step(28, { keyAt: 99_999 })).toBe(28);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("gives up a chase that lasts too long", () => {
-    const { flick, step } = rig();
-    step(3);
-    step(6);
-    expect(step(6, { holding: true, now: 40_000, pushAt: 39_950 })).toBe(6);
-    expect(flick.engaged).toBe(false);
-  });
-
-  it("does not engage for a step just under the threshold", () => {
-    const { flick, step } = rig();
-    step(3);
-    expect(step(3 + FLICK_ENGAGE)).toBeCloseTo(3 + FLICK_ENGAGE);
-    expect(flick.engaged).toBe(false);
   });
 });

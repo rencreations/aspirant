@@ -4,7 +4,6 @@ import type { DollActor } from "../../actors/doll";
 import type { DuoActor } from "../../actors/duo";
 import type { SilverboltActor } from "../../actors/silverbolt";
 import type { TetraActor } from "../../actors/tetra";
-import type { MarksActor } from "../../fx/comic-marks";
 import type { FrameInfo, SectionCtx, SectionRuntime } from "../../kernel/types";
 import { sectionEnd } from "../../kernel/where";
 import { ScrollTravel } from "../travel";
@@ -45,7 +44,7 @@ const spot = (): Spot => ({ x: 0, y: 0, height: 0 });
  * The funny section: Tetra dances, Silverbolt crosses with the doll cursing in its mouth, Tetra is
  * shocked and runs off behind it, the two drones stare, go to the middle and question each other.
  * Every frame is a pure function of `local`, the size of the screen and the section's own small
- * state (the marks already thrown). The actors are shared: each is set in full, every frame it is
+ * state. The actors are shared: each is set in full, every frame it is
  * shown. Tetra rises into view, already dancing, as Music scrolls up.
  */
 class FunnyRuntime implements SectionRuntime {
@@ -53,7 +52,6 @@ class FunnyRuntime implements SectionRuntime {
   private dragon: SilverboltActor | null = null;
   private doll: DollActor | null = null;
   private duo: DuoActor | null = null;
-  private marks: MarksActor | null = null;
   private disposed = false;
 
   private readonly content: HTMLElement | null;
@@ -109,11 +107,6 @@ class FunnyRuntime implements SectionRuntime {
       }
     };
     await Promise.all([
-      take(
-        "the marks",
-        async () => (await import("../../fx/comic-marks")).ensureMarks(ctx),
-        (a) => (this.marks = a),
-      ),
       take(
         "Tetra",
         async () => (await import("../../actors/tetra")).ensureTetra(ctx),
@@ -252,15 +245,8 @@ class FunnyRuntime implements SectionRuntime {
     else if (shock > 0.05) tetra.setFace("surprised", Math.min(1, shock * 1.6));
     else tetra.setFace("happy", 0.9);
 
-    if (startled) {
-      tetra.play("startle");
-      const head = tetra.marks().crown;
-      this.marks?.emit("bang", {
-        at: { x: head.x + 0.05 * g.tetra.height, y: head.y + 0.06 * g.tetra.height },
-        size: 0.26 * g.tetra.height,
-        count: 1,
-      });
-    }
+    // Her start is in her body and her face (the owner, 25 Nov 2026: no floating "!" over her).
+    if (startled) tetra.play("startle");
   }
 
   // ---------------------------------------------------------------------------------------- the dragon

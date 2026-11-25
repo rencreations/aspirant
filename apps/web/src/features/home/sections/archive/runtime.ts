@@ -200,7 +200,7 @@ class ArchiveRuntime implements SectionRuntime {
     const vp = frame.viewport;
     const { drone, tetra } = this;
     const pointer = this.ctx.pointer.state;
-    droneAt(S, frame.raw, q, vp, this.geo, footFor(vp), this.spot);
+    droneAt(S, frame.S, q, vp, this.geo, footFor(vp), this.spot);
     toStage(vp, this.spot, this.stage);
     if (drone) {
       drone.visible = true;
